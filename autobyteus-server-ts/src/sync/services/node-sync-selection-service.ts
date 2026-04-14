@@ -34,7 +34,7 @@ type TeamNodeSnapshot = {
   memberName: string;
   ref: string;
   refType: "agent" | "agent_team";
-  refScope?: "shared" | "team_local" | null;
+  refScope?: "shared" | "team_local" | "application_owned" | null;
 };
 
 type AgentTeamDefinitionSnapshot = {

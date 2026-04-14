@@ -16,7 +16,8 @@ Today, the application subsystem is still too narrow:
 - the current runtime streams expose agent/team internals, but there is no clean promotion boundary from internal runtime activity to application/member-visible achieved state,
 - there is no authoritative backend-owned active-session binding shape for reconnect/page-refresh on `/applications/[id]`,
 - the current publication/projection concept is not yet family-tight enough to retain member artifact and progress simultaneously without ambiguity,
-- there is no frontend SDK for bundled applications, so app authors would otherwise need to understand raw iframe messaging and internal platform runtime details.
+- Applications visibility is still controlled by a frontend build-time flag baked into packaged Electron, so users cannot enable Applications after install without rebuilding the renderer,
+- and there is no frontend SDK for bundled applications, so app authors would otherwise need to understand raw iframe messaging and internal platform runtime details.
 
 The clarified target model is now larger than “importable custom applications.”
 
@@ -85,6 +86,11 @@ The target is a **bundle-driven application platform** where:
 - Architecture review round 4 added two authoritative tightening requirements:
   - reconnect/page-refresh on `/applications/[id]` needs one backend-owned active-session binding/lookup shape instead of frontend-only active-session lookup,
   - and the publication/projection contract must be family-tight so `MEMBER_ARTIFACT` and `PROGRESS` coexist deterministically without a free-form metadata escape hatch.
+- User clarification after round 4 added one more product requirement:
+  - Applications visibility should become runtime-configurable from the connected node/server instead of being baked into the Electron frontend build,
+  - so users can enable Applications after install without rebuilding the desktop app.
+- Design review round 6 added one rollout requirement:
+  - migration from the legacy build-time Applications flag to the runtime Applications capability must preserve already-discovered applications visibility through the cutover instead of forcing manual re-enable after upgrade.
 - Validation had already established one important topology constraint that still remains in force:
   - the packaged Electron shell runs from `file://`,
   - bundle assets are served from the bound backend over loopback HTTP,
@@ -125,6 +131,14 @@ The target is a **bundle-driven application platform** where:
   - runtime input APIs,
   - artifact resolution helpers,
   - and shared types.
+- Make Applications visibility/runtime enablement authoritative at the bound node/server:
+  - nav visibility and route guard must read the same runtime authority,
+  - each window follows its currently bound node,
+  - and Settings should expose a first-class Applications toggle instead of relying on arbitrary custom key editing.
+- Add one explicit capability cutover rule:
+  - if the node already has discovered applications and no persisted runtime Applications setting yet,
+  - first capability initialization should seed/persist Applications enabled automatically,
+  - and that discovery-based seed must never overwrite a later explicit user setting.
 - Keep the SDK above internal Pinia/context/store details.
 - Add one small reference application bundle that demonstrates:
   - bundle import,
@@ -165,6 +179,9 @@ Large
 - `UC-024`: A small reference application bundle demonstrates the publication flow and is runnable by downstream validation.
 - `UC-025`: User refreshes or reconnects while on `/applications/[id]`, and the application page reattaches to the current live application session through a backend-owned binding lookup rather than frontend memory.
 - `UC-026`: A member publishes both a member artifact and progress updates for the same live application session, and the projected state retains both families simultaneously so native Execution and SDK consumers can render them together deterministically.
+- `UC-027`: User enables or disables Applications from the connected node’s runtime settings without rebuilding Electron, and the Applications nav + route availability update for that window.
+- `UC-028`: Two Electron windows bound to different nodes can show different Applications availability based on each node’s runtime Applications capability.
+- `UC-029`: User upgrades a node that already has discoverable applications from the legacy build-time Applications gate to the runtime Applications capability, and the Applications module remains visible without a manual post-upgrade enable step.
 
 ## Out of Scope
 
@@ -252,6 +269,16 @@ Large
 - `REQ-058`: The publication contract v1 must not include free-form `metadata`, generic renderer-driving maps, or equivalent escape hatches that bypass typed family-specific fields.
 - `REQ-059`: Member projection state must retain `MEMBER_ARTIFACT` and `PROGRESS` in separate family-specific retained fields or keyed maps with deterministic coexistence and upsert/overwrite rules.
 - `REQ-060`: Application-level delivery projection must use explicit delivery-family retention rules that are separate from member artifact/progress retention and must not overwrite member family state.
+- `REQ-061`: Applications visibility and route availability must be controlled by a runtime/backend-owned typed Applications capability, not by Nuxt build-time frontend config.
+- `REQ-062`: The Applications capability must be resolved per bound node/window, so different windows connected to different nodes can legitimately expose different Applications availability.
+- `REQ-063`: Sidebar visibility, `/applications` route access, and Applications catalog fetch behavior must all consume the same runtime Applications capability authority.
+- `REQ-064`: Frontend startup must support a deterministic capability-resolution path for Applications visibility, including a hide-until-known or equivalent state that avoids showing stale build-baked visibility.
+- `REQ-065`: The connected node/server must expose a typed Applications capability/settings API that supports both reading current availability and updating it when the current user changes the Applications setting from Settings.
+- `REQ-066`: Settings must expose Applications enablement as a first-class supported control in the Server Settings area rather than relying only on arbitrary custom key/value editing.
+- `REQ-067`: The build-time frontend `runtimeConfig.public.enableApplications` gate must be removed from the target design for packaged runtime behavior.
+- `REQ-068`: During cutover from the legacy build-time Applications gate to the runtime Applications capability, if `ENABLE_APPLICATIONS` is absent and the node already has discoverable applications, first capability initialization must persist `ENABLE_APPLICATIONS=true` automatically so existing applications remain visible without manual re-enable.
+- `REQ-069`: Capability cutover/initialization must persist an explicit `ENABLE_APPLICATIONS` value on first resolution so later runtime behavior no longer depends on repeated inference from discovery state.
+- `REQ-070`: Discovery-based capability initialization must run only when `ENABLE_APPLICATIONS` is absent and must never overwrite an existing persisted value or a later user-driven enable/disable choice.
 
 ## Acceptance Criteria
 
@@ -294,6 +321,14 @@ Large
 - `AC-037`: Given an optional requested session id in the route/query, the backend binding lookup deterministically resolves either that live session for the same application, the current active live session for that application, or no session, and the shell updates to the resolved result.
 - `AC-038`: Given a member publishes both `MEMBER_ARTIFACT` and `PROGRESS` for the same live application session, the projected member state retains both families simultaneously and they remain observable after reconnect or page refresh.
 - `AC-039`: Given a publication payload includes fields not allowed for its declared family or attempts to include free-form metadata in v1, the backend rejects the publication with a clear validation error and does not mutate the projected state.
+- `AC-040`: Given the connected node reports Applications enabled at runtime, the Applications navigation item is visible in that window and `/applications` routes are accessible without rebuilding the Electron app.
+- `AC-041`: Given the connected node reports Applications disabled at runtime, the Applications navigation item is hidden in that window and direct navigation to `/applications` is blocked by the same runtime authority.
+- `AC-042`: Given two windows are bound to different nodes with different Applications capability values, each window reflects its own bound node’s Applications visibility independently.
+- `AC-043`: Given the user changes the Applications setting from Settings on the bound node, the Applications capability refreshes and the same window updates navigation/route behavior without rebuilding the packaged renderer.
+- `AC-044`: Given packaged Electron was built with Applications disabled previously, enabling Applications through the node-owned runtime setting still surfaces the Applications feature in that bound window after capability refresh.
+- `AC-045`: Given an upgraded node with discoverable applications and no persisted `ENABLE_APPLICATIONS` yet, the first runtime capability resolution persists `ENABLE_APPLICATIONS=true` automatically and the Applications module remains visible after upgrade without manual enablement.
+- `AC-046`: Given a node has no persisted `ENABLE_APPLICATIONS`, first capability initialization persists an explicit boolean result so subsequent capability reads no longer depend on repeated discovery inference.
+- `AC-047`: Given `ENABLE_APPLICATIONS` is already persisted for a node, later restarts or application-discovery refreshes do not overwrite that explicit value automatically, even if discoverable applications still exist.
 
 ## Constraints / Dependencies
 
@@ -305,6 +340,9 @@ Large
 - Existing single-agent runtime creation already exists separately and can be reused for single-agent applications.
 - Existing runtime streaming infrastructure and live artifact projection exist and should be reused rather than replaced.
 - Existing application sessions are frontend-only today, so application-visible/member-visible publication state will require a new authoritative backend owner and backend-owned active-session binding/reattachment shape.
+- Applications visibility is currently controlled by `runtimeConfig.public.enableApplications`, which is baked into the packaged frontend build and therefore cannot vary per bound node after install.
+- Existing server settings APIs and UI already exist and can be reused as the persistence/control surface for a typed runtime Applications setting, provided the shell does not depend on the generic settings table directly.
+- Existing application discovery already knows whether the node has discoverable applications, so the runtime Applications capability can use one-time discovery-seeded initialization without depending on the removed frontend build flag as the long-term authority.
 - Existing global discovery order shadows duplicate ids by earlier roots, so provenance and bundle-local resolution rules must stay explicit.
 
 ## Assumptions
@@ -318,6 +356,8 @@ Large
 - `ASM-007`: The first SDK slice should wrap existing platform runtime APIs/streams rather than introducing a second parallel runtime transport protocol.
 - `ASM-008`: Application/member renderers react to typed projected publication state; they do not receive direct UI-imperative commands from agents.
 - `ASM-009`: In v1, publication families should remain tightly typed even if that means omitting generic metadata extensibility until a later contract version.
+- `ASM-010`: Applications runtime enablement should follow the currently bound node/window rather than one global Electron-wide toggle.
+- `ASM-011`: One-time discovery-seeded initialization is an acceptable cutover rule for the Applications capability because it preserves visible applications during migration without keeping the removed frontend build flag as the steady-state authority.
 
 ## Risks / Open Questions
 
@@ -351,6 +391,8 @@ Large
 | `REQ-053`, `REQ-054` | `UC-024` |
 | `REQ-055`, `REQ-056` | `UC-025` |
 | `REQ-057`–`REQ-060` | `UC-026` |
+| `REQ-061`–`REQ-067` | `UC-027`, `UC-028` |
+| `REQ-068`–`REQ-070` | `UC-029` |
 
 ## Acceptance-Criteria-To-Use-Case Coverage
 
@@ -366,3 +408,5 @@ Large
 | `AC-035` | `UC-024` |
 | `AC-036`, `AC-037` | `UC-025` |
 | `AC-038`, `AC-039` | `UC-026` |
+| `AC-040`–`AC-044` | `UC-027`, `UC-028` |
+| `AC-045`–`AC-047` | `UC-029` |

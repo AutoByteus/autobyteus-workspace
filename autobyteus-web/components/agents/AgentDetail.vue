@@ -32,7 +32,7 @@
               <img
                 v-if="showAvatarImage"
                 :src="avatarUrl"
-                :alt="`${agentDef.name} avatar`"
+                :alt="$t('agents.components.agents.AgentDetail.avatarAlt', { name: agentDef.name })"
                 class="h-full w-full object-cover"
                 @error="avatarLoadError = true"
               />
@@ -43,7 +43,7 @@
               <h1 class="text-2xl font-bold text-gray-900">{{ agentDef.name }}</h1>
               <p v-if="agentDef.role" class="text-sm text-indigo-700 font-medium mt-1">{{ agentDef.role }}</p>
               <p v-if="teamLabel" class="text-sm text-gray-500 mt-1">{{ $t('agents.components.agents.AgentDetail.teamLabel', { team: teamLabel }) }}</p>
-              <p v-if="applicationLabel" class="text-sm text-gray-500 mt-1">Application: {{ applicationLabel }}</p>
+              <p v-if="applicationLabel" class="text-sm text-gray-500 mt-1">{{ $t('agents.components.agents.AgentDetail.applicationLabel', { application: applicationLabel }) }}</p>
               <div v-if="ownershipBadge" class="mt-2 flex justify-center">
                 <span
                   class="rounded-full px-2.5 py-0.5 text-[11px] font-semibold"
@@ -95,12 +95,12 @@
                   <p class="mt-1 text-sm text-gray-700">{{ agentDef.category || $t('agents.components.agents.AgentDetail.uncategorized') }}</p>
                 </div>
                 <div>
-                  <p class="text-xs uppercase tracking-wide text-gray-500">Default runtime</p>
-                  <p class="mt-1 text-sm text-gray-700">{{ agentDef.defaultLaunchConfig?.runtimeKind || 'Not set' }}</p>
+                  <p class="text-xs uppercase tracking-wide text-gray-500">{{ $t('agents.components.agents.AgentDetail.defaultRuntime') }}</p>
+                  <p class="mt-1 text-sm text-gray-700">{{ agentDef.defaultLaunchConfig?.runtimeKind || $t('agents.components.agents.AgentDetail.notSet') }}</p>
                 </div>
                 <div>
-                  <p class="text-xs uppercase tracking-wide text-gray-500">Default model</p>
-                  <p class="mt-1 break-all text-sm text-gray-700">{{ agentDef.defaultLaunchConfig?.llmModelIdentifier || 'Not set' }}</p>
+                  <p class="text-xs uppercase tracking-wide text-gray-500">{{ $t('agents.components.agents.AgentDetail.defaultModel') }}</p>
+                  <p class="mt-1 break-all text-sm text-gray-700">{{ agentDef.defaultLaunchConfig?.llmModelIdentifier || $t('agents.components.agents.AgentDetail.notSet') }}</p>
                 </div>
               </div>
             </div>
@@ -151,7 +151,7 @@
     <AgentDeleteConfirmDialog
       :show="showDeleteConfirm"
       :item-name="agentDef ? agentDef.name : ''"
-      item-type="Agent Definition"
+      :item-type="$t('agents.components.agents.AgentDetail.deleteItemType')"
       :title="$t('agents.components.agents.AgentDetail.delete_agent_definition')"
       :confirm-text="$t('agents.components.agents.AgentDetail.delete_definition')"
       @confirm="onDeleteConfirmed"
@@ -168,6 +168,7 @@ import AgentDuplicateButton from '~/components/agents/AgentDuplicateButton.vue';
 import ExpandableInstructionCard from '~/components/common/ExpandableInstructionCard.vue';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
+import { useLocalization } from '~/composables/useLocalization';
 import { formatApplicationOwnershipLabel } from '~/utils/definitionOwnership';
 
 const props = defineProps<{ agentDefinitionId: string }>();
@@ -178,6 +179,7 @@ const emit = defineEmits(['navigate']);
 const agentDefinitionStore = useAgentDefinitionStore();
 const runConfigStore = useAgentRunConfigStore();
 const selectionStore = useAgentSelectionStore();
+const { t: $t } = useLocalization();
 const agentDef = computed<AgentDefinition | null>(() => agentDefinitionStore.getAgentDefinitionById(agentDefinitionId.value) ?? null);
 const loading = ref(false);
 const avatarLoadError = ref(false);
@@ -201,13 +203,13 @@ type AgentDefinitionArrayField =
   | 'lifecycleProcessorNames'
 
 const componentLists: Array<{ title: string; key: AgentDefinitionArrayField }> = [
-  { title: 'Tools', key: 'toolNames' },
-  { title: 'Input Processors', key: 'inputProcessorNames' },
-  { title: 'LLM Response Processors', key: 'llmResponseProcessorNames' },
-  { title: 'System Prompt Processors', key: 'systemPromptProcessorNames' },
-  { title: 'Tool Result Processors', key: 'toolExecutionResultProcessorNames' },
-  { title: 'Tool Invocation Preprocessors', key: 'toolInvocationPreprocessorNames' },
-  { title: 'Lifecycle Processors', key: 'lifecycleProcessorNames' },
+  { title: $t('agents.components.agents.AgentDetail.optionalProcessor.tools'), key: 'toolNames' },
+  { title: $t('agents.components.agents.AgentDetail.optionalProcessor.inputProcessors'), key: 'inputProcessorNames' },
+  { title: $t('agents.components.agents.AgentDetail.optionalProcessor.llmResponseProcessors'), key: 'llmResponseProcessorNames' },
+  { title: $t('agents.components.agents.AgentDetail.optionalProcessor.systemPromptProcessors'), key: 'systemPromptProcessorNames' },
+  { title: $t('agents.components.agents.AgentDetail.optionalProcessor.toolExecutionResultProcessors'), key: 'toolExecutionResultProcessorNames' },
+  { title: $t('agents.components.agents.AgentDetail.optionalProcessor.toolInvocationPreprocessors'), key: 'toolInvocationPreprocessorNames' },
+  { title: $t('agents.components.agents.AgentDetail.optionalProcessor.lifecycleProcessors'), key: 'lifecycleProcessorNames' },
 ];
 
 const optionalProcessorLists = computed(() => {
@@ -240,10 +242,10 @@ const applicationLabel = computed(() => {
 });
 const ownershipBadge = computed(() => {
   if (isTeamLocal.value) {
-    return 'Team-local';
+    return $t('agents.components.agents.AgentDetail.ownership.teamLocal');
   }
   if (isApplicationOwned.value) {
-    return 'Application-owned';
+    return $t('agents.components.agents.AgentDetail.ownership.applicationOwned');
   }
   return '';
 });

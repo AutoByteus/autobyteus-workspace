@@ -3,6 +3,7 @@ import { constants as fsConstants } from "node:fs";
 import path from "node:path";
 import type { AgentDefinitionOwnershipScope } from "../domain/models.js";
 import { parseTeamLocalAgentDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-agent-definition-id.js";
+import type { ApplicationOwnedDefinitionSource } from "../../application-bundles/domain/models.js";
 import { parseCanonicalApplicationOwnedAgentId } from "../../application-bundles/utils/application-bundle-identity.js";
 import { readTeamOwnership } from "./team-local-agent-discovery.js";
 import { buildApplicationOwnedAgentSourcePaths } from "./application-owned-agent-source.js";
@@ -22,15 +23,7 @@ export type AgentSourcePaths = {
 };
 
 type ApplicationOwnedAgentSourceLookup = {
-  getApplicationOwnedAgentSourceById: (definitionId: string) => Promise<{
-    definitionId: string;
-    applicationId: string;
-    applicationName: string;
-    packageId: string;
-    localApplicationId: string;
-    localDefinitionId: string;
-    applicationRootPath: string;
-  } | null>;
+  getApplicationOwnedAgentSourceById: (definitionId: string) => Promise<ApplicationOwnedDefinitionSource | null>;
 };
 
 type FindAgentSourcePathInput = {

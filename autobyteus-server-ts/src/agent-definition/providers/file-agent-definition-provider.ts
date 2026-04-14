@@ -3,6 +3,7 @@ import type { Dirent } from "node:fs";
 import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { AgentDefinition } from "../domain/models.js";
+import type { AgentDefinitionOwnershipScope } from "../domain/models.js";
 import { writeRawFile, writeJsonFile, readJsonFile } from "../../persistence/file/store-utils.js";
 import { parseAgentMd, serializeAgentMd, AgentMdParseError } from "../utils/agent-md-parser.js";
 import {

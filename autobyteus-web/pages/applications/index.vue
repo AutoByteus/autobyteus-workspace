@@ -3,9 +3,9 @@
     <div class="mx-auto w-full max-w-[1400px] px-4 py-6 sm:px-6 lg:px-8">
       <header class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 class="text-3xl font-semibold text-slate-900">Applications</h1>
+          <h1 class="text-3xl font-semibold text-slate-900">{{ $t('applications.pages.applications.index.title') }}</h1>
           <p class="mt-1 text-sm text-slate-600">
-            Browse bundled applications, inspect their runtime targets, and launch them through the generic iframe host.
+            {{ $t('applications.pages.applications.index.description') }}
           </p>
         </div>
 
@@ -15,7 +15,9 @@
           :disabled="loading"
           @click="refreshApplications"
         >
-          {{ loading ? 'Refreshing…' : 'Refresh catalog' }}
+          {{ loading
+            ? $t('applications.pages.applications.index.refreshingCatalog')
+            : $t('applications.pages.applications.index.refreshCatalog') }}
         </button>
       </header>
 
@@ -23,23 +25,23 @@
         v-if="!applicationStore.isApplicationsEnabled()"
         class="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800"
       >
-        Applications are disabled in the current runtime configuration.
+        {{ $t('applications.pages.applications.index.applicationsDisabled') }}
       </div>
 
       <div v-else-if="loading && applications.length === 0" class="rounded-xl border border-slate-200 bg-white py-20 text-center shadow-sm">
         <div class="mx-auto mb-4 h-9 w-9 animate-spin rounded-full border-b-2 border-blue-600"></div>
-        <p class="text-slate-600">Loading applications…</p>
+        <p class="text-slate-600">{{ $t('applications.pages.applications.index.loadingApplications') }}</p>
       </div>
 
       <div v-else-if="error" class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-        <p class="font-semibold">Unable to load applications</p>
+        <p class="font-semibold">{{ $t('applications.pages.applications.index.unableToLoadApplications') }}</p>
         <p class="mt-1">{{ error.message }}</p>
       </div>
 
       <div v-else-if="applications.length === 0" class="rounded-xl border border-slate-200 bg-white py-16 text-center shadow-sm">
-        <h2 class="text-lg font-semibold text-slate-900">No applications found</h2>
+        <h2 class="text-lg font-semibold text-slate-900">{{ $t('applications.pages.applications.index.noApplicationsFound') }}</h2>
         <p class="mt-2 text-sm text-slate-500">
-          Import or add an application bundle under an application package root to populate this catalog.
+          {{ $t('applications.pages.applications.index.emptyStateHelp') }}
         </p>
       </div>
 
@@ -60,9 +62,11 @@
 import { onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import ApplicationCard from '~/components/applications/ApplicationCard.vue'
+import { useLocalization } from '~/composables/useLocalization'
 import { useApplicationSessionStore } from '~/stores/applicationSessionStore'
 import { useApplicationStore } from '~/stores/applicationStore'
 
+const { t: $t } = useLocalization()
 const applicationStore = useApplicationStore()
 const applicationSessionStore = useApplicationSessionStore()
 const { applications, loading, error } = storeToRefs(applicationStore)

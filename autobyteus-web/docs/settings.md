@@ -153,6 +153,10 @@ Manage agent package sources used by the app.
 
 A flexible key-value store for backend configurations.
 
+- **Applications feature toggle:** `components/settings/ApplicationsFeatureToggleCard.vue` sits above the generic settings table and is the first-class control for the bound node’s runtime Applications capability.
+- **Typed runtime authority:** The Applications card reads/writes the typed `applicationsCapability` / `setApplicationsEnabled(...)` boundary instead of treating the generic key-value table as the primary product-facing owner.
+- **Immediate runtime effect:** Enabling or disabling Applications refreshes the same window’s sidebar visibility, `/applications` route access, and catalog behavior without rebuilding the packaged frontend.
+- **Initialization source visibility:** The card surfaces whether the current value came from an explicit persisted server setting or from one-time discovery-seeded initialization during cutover.
 - **View & Edit:** precise control over server-side flags and parameters.
 - **Custom Settings:** Users can add new custom key-value pairs to configure plugins or experimental features.
 - **Custom Setting Cleanup:** Advanced table rows for custom keys include a remove action to delete obsolete entries.
@@ -187,6 +191,7 @@ Canonical app metadata and manual update controls.
 ## Related Documentation
 
 - **[Agent Management](./agent_management.md)**: API keys configured in Settings are used by Agents.
+- **[Applications](./applications.md)**: runtime Applications availability, routing, and catalog behavior consume the capability managed from Settings.
 - **[Electron Packaging](./electron_packaging.md)**: The Server Status monitor and managed extensions both interact with Electron-owned runtime services.
 - **[Localization](./localization.md)**: language selection, locale resolution, and localization contributor workflow.
 - **[Managed Messaging Setup](./messaging.md)**: End-to-end gateway, provider, binding, and verification flow.

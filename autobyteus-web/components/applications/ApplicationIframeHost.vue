@@ -9,9 +9,9 @@
           <span class="i-heroicons-exclamation-triangle-20-solid h-6 w-6"></span>
         </div>
         <div class="space-y-2">
-          <h3 class="text-lg font-semibold text-slate-900">Application initialization failed</h3>
+          <h3 class="text-lg font-semibold text-slate-900">{{ $t('applications.components.applications.ApplicationIframeHost.initializationFailed') }}</h3>
           <p class="max-w-xl text-sm text-slate-600">
-            {{ session.bootstrapError || 'The bundled application did not complete the required iframe handshake.' }}
+            {{ session.bootstrapError || $t('applications.components.applications.ApplicationIframeHost.handshakeDidNotComplete') }}
           </p>
         </div>
         <button
@@ -19,7 +19,7 @@
           class="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
           @click="retryBootstrap"
         >
-          Retry bootstrap
+          {{ $t('applications.components.applications.ApplicationIframeHost.retryBootstrap') }}
         </button>
       </div>
 
@@ -29,7 +29,7 @@
           :key="iframeRenderKey"
           :src="iframeSrc"
           class="h-full min-h-[28rem] w-full bg-white"
-          title="Application iframe host"
+          :title="$t('applications.components.applications.ApplicationIframeHost.iframeTitle')"
           @load="handleIframeLoad"
         />
 
@@ -39,7 +39,7 @@
         >
           <div class="flex flex-col items-center gap-3 text-slate-600">
             <div class="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
-            <p class="text-sm font-medium">Initializing application…</p>
+            <p class="text-sm font-medium">{{ $t('applications.components.applications.ApplicationIframeHost.initializingApplication') }}</p>
           </div>
         </div>
       </template>
@@ -49,6 +49,7 @@
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { useLocalization } from '~/composables/useLocalization'
 import { useApplicationSessionStore } from '~/stores/applicationSessionStore'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import {
@@ -78,6 +79,7 @@ const props = defineProps<{
   applicationSessionId: string
 }>()
 
+const { t: $t } = useLocalization()
 const applicationSessionStore = useApplicationSessionStore()
 const windowNodeContextStore = useWindowNodeContextStore()
 const iframeRef = ref<HTMLIFrameElement | null>(null)
@@ -110,7 +112,10 @@ const beginWaitingForReady = (): void => {
   applicationSessionStore.markSessionBootstrapWaiting(props.applicationSessionId)
   readyTimeoutHandle.value = window.setTimeout(() => {
     failBootstrap(
-      `The bundled application did not send a valid ${APPLICATION_IFRAME_READY_EVENT} message within ${APPLICATION_IFRAME_READY_TIMEOUT_MS} ms.`,
+      $t('applications.components.applications.ApplicationIframeHost.readyTimeout', {
+        eventName: APPLICATION_IFRAME_READY_EVENT,
+        timeoutMs: APPLICATION_IFRAME_READY_TIMEOUT_MS,
+      }),
     )
   }, APPLICATION_IFRAME_READY_TIMEOUT_MS)
 }
@@ -155,7 +160,7 @@ const postBootstrapPayload = (): void => {
   const launchDescriptor = iframeLaunchDescriptor.value
   const contentWindow = iframeRef.value?.contentWindow
   if (!currentSession || !contentWindow || !launchDescriptor) {
-    failBootstrap('Application iframe window is not available for bootstrap.')
+    failBootstrap($t('applications.components.applications.ApplicationIframeHost.iframeWindowUnavailable'))
     return
   }
 
@@ -210,7 +215,10 @@ const handleIframeMessage = (event: MessageEvent): void => {
   }
   if (payload.contractVersion !== APPLICATION_IFRAME_CONTRACT_VERSION_V1) {
     failBootstrap(
-      `Unsupported application iframe contract version '${payload.contractVersion}'. Expected '${APPLICATION_IFRAME_CONTRACT_VERSION_V1}'.`,
+      $t('applications.components.applications.ApplicationIframeHost.unsupportedContractVersion', {
+        actual: payload.contractVersion,
+        expected: APPLICATION_IFRAME_CONTRACT_VERSION_V1,
+      }),
     )
     return
   }

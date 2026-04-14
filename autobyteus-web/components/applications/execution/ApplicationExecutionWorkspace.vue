@@ -1,7 +1,7 @@
 <template>
   <div v-if="session" class="grid h-full min-h-[32rem] gap-4 lg:grid-cols-[20rem_minmax(0,1fr)]">
     <aside class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-      <h2 class="text-base font-semibold text-slate-900">Members</h2>
+      <h2 class="text-base font-semibold text-slate-900">{{ $t('applications.shared.members') }}</h2>
       <div class="mt-4 space-y-2">
         <button
           v-for="member in session.view.members"
@@ -19,7 +19,7 @@
               <p class="mt-1 text-xs text-slate-500">{{ member.memberRouteKey }}</p>
             </div>
             <span class="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-600">
-              {{ member.runtimeTarget?.runtimeKind || 'pending' }}
+              {{ member.runtimeTarget?.runtimeKind || $t('applications.shared.pending') }}
             </span>
           </div>
         </button>
@@ -31,7 +31,7 @@
         v-if="session.view.delivery.current"
         class="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900 shadow-sm"
       >
-        <p class="font-semibold">Current delivery</p>
+        <p class="font-semibold">{{ $t('applications.shared.currentDelivery') }}</p>
         <p class="mt-1">{{ session.view.delivery.current.title || session.view.delivery.current.deliveryState }}</p>
         <p v-if="session.view.delivery.current.summary" class="mt-1 text-emerald-800">
           {{ session.view.delivery.current.summary }}
@@ -44,20 +44,20 @@
             <div>
               <h2 class="text-lg font-semibold text-slate-900">{{ selectedMember.displayName }}</h2>
               <p class="mt-1 text-sm text-slate-500">
-                Route {{ selectedMember.memberRouteKey }}
+                {{ $t('applications.shared.route') }} {{ selectedMember.memberRouteKey }}
                 <span v-if="selectedMember.runtimeTarget">
                   · run {{ selectedMember.runtimeTarget.runId }}
                 </span>
               </p>
             </div>
             <p class="text-xs text-slate-500">
-              Team path: {{ selectedMember.teamPath.length ? selectedMember.teamPath.join(' / ') : 'root' }}
+              {{ $t('applications.shared.teamPath') }}: {{ selectedMember.teamPath.length ? selectedMember.teamPath.join(' / ') : $t('applications.shared.root') }}
             </p>
           </div>
         </div>
 
         <div v-if="primaryProgress || progressEntries.length" class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-          <h3 class="text-base font-semibold text-slate-900">Progress</h3>
+          <h3 class="text-base font-semibold text-slate-900">{{ $t('applications.shared.progress') }}</h3>
           <div class="mt-4 space-y-3">
             <article
               v-for="progress in progressEntries"
@@ -83,7 +83,7 @@
           v-else
           class="rounded-xl border border-dashed border-slate-300 bg-white p-10 text-center text-sm text-slate-600 shadow-sm"
         >
-          No retained member artifact yet.
+          {{ $t('applications.components.applications.execution.ApplicationExecutionWorkspace.noRetainedMemberArtifactYet') }}
         </div>
       </div>
 
@@ -91,7 +91,7 @@
         v-else
         class="rounded-xl border border-dashed border-slate-300 bg-white p-10 text-center text-sm text-slate-600 shadow-sm"
       >
-        Select a member to inspect retained progress and artifacts.
+        {{ $t('applications.components.applications.execution.ApplicationExecutionWorkspace.selectMemberHint') }}
       </div>
     </section>
   </div>
@@ -100,12 +100,13 @@
     v-else
     class="rounded-xl border border-dashed border-slate-300 bg-white p-10 text-center text-sm text-slate-600 shadow-sm"
   >
-    Launch the application to inspect retained member progress, artifacts, and delivery state.
+    {{ $t('applications.components.applications.execution.ApplicationExecutionWorkspace.launchToInspectHint') }}
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useLocalization } from '~/composables/useLocalization'
 import HostArtifactRenderer from '~/components/applications/renderers/HostArtifactRenderer.vue'
 import type {
   ApplicationMemberArtifactProjection,
@@ -117,6 +118,8 @@ const props = defineProps<{
   session: ApplicationSession | null
   selectedMemberRouteKey: string | null
 }>()
+
+const { t: $t } = useLocalization()
 
 defineEmits<{
   (e: 'update:selectedMemberRouteKey', value: string | null): void

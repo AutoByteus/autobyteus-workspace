@@ -6,7 +6,7 @@
         class="mb-5 inline-flex items-center rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100"
         @click="goBack"
       >
-        ← Back to applications
+        {{ $t('applications.components.applications.ApplicationShell.backToApplications') }}
       </button>
 
       <div
@@ -14,14 +14,14 @@
         class="rounded-xl border border-slate-200 bg-white py-20 text-center shadow-sm"
       >
         <div class="mx-auto mb-4 h-9 w-9 animate-spin rounded-full border-b-2 border-blue-600"></div>
-        <p class="text-slate-600">Loading application…</p>
+        <p class="text-slate-600">{{ $t('applications.components.applications.ApplicationShell.loadingApplication') }}</p>
       </div>
 
       <div
         v-else-if="loadError"
         class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"
       >
-        <p class="font-semibold">Unable to load application</p>
+        <p class="font-semibold">{{ $t('applications.components.applications.ApplicationShell.unableToLoadApplication') }}</p>
         <p class="mt-1">{{ loadError }}</p>
       </div>
 
@@ -29,8 +29,8 @@
         v-else-if="!application"
         class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"
       >
-        <p class="font-semibold">Application not found</p>
-        <p class="mt-1">No application exists for id <span class="font-mono">{{ applicationId }}</span>.</p>
+        <p class="font-semibold">{{ $t('applications.components.applications.ApplicationShell.applicationNotFound') }}</p>
+        <p class="mt-1">{{ $t('applications.components.applications.ApplicationShell.noApplicationExistsForId', { id: applicationId }) }}</p>
       </div>
 
       <template v-else>
@@ -40,36 +40,36 @@
               <div class="flex flex-wrap items-center gap-2">
                 <h1 class="truncate text-3xl font-semibold text-slate-900">{{ application.name }}</h1>
                 <span class="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700">
-                  {{ application.runtimeTarget.kind === 'AGENT' ? 'Single agent' : 'Agent team' }}
+                  {{ runtimeTargetLabel }}
                 </span>
                 <span
                   v-if="activeSession"
                   class="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700"
                 >
-                  Session active
+                  {{ $t('applications.shared.sessionActive') }}
                 </span>
               </div>
 
               <p class="mt-3 max-w-4xl text-sm text-slate-600">
-                {{ application.description || 'No description provided.' }}
+                {{ application.description || $t('applications.shared.noDescriptionProvided') }}
               </p>
 
               <div class="mt-5 grid gap-4 text-sm text-slate-700 sm:grid-cols-2 xl:grid-cols-4">
                 <div>
-                  <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Package</p>
+                  <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ $t('applications.shared.package') }}</p>
                   <p class="mt-1 break-all">{{ application.packageId }}</p>
                 </div>
                 <div>
-                  <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Local application id</p>
+                  <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ $t('applications.shared.localApplicationId') }}</p>
                   <p class="mt-1 break-all">{{ application.localApplicationId }}</p>
                 </div>
                 <div>
-                  <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Runtime target id</p>
+                  <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ $t('applications.shared.runtimeTargetId') }}</p>
                   <p class="mt-1 break-all">{{ application.runtimeTarget.definitionId }}</p>
                 </div>
                 <div>
-                  <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Writable source</p>
-                  <p class="mt-1">{{ application.writable ? 'Yes' : 'No' }}</p>
+                  <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ $t('applications.shared.writableSource') }}</p>
+                  <p class="mt-1">{{ application.writable ? $t('applications.shared.yes') : $t('applications.shared.no') }}</p>
                 </div>
               </div>
             </div>
@@ -80,7 +80,9 @@
                 class="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
                 @click="launchModalOpen = true"
               >
-                {{ activeSession ? 'Launch again' : 'Launch application' }}
+                {{ activeSession
+                  ? $t('applications.components.applications.ApplicationShell.launchAgain')
+                  : $t('applications.components.applications.ApplicationLaunchConfigModal.launch_application') }}
               </button>
               <button
                 v-if="activeSession"
@@ -88,7 +90,7 @@
                 class="inline-flex items-center rounded-md border border-red-200 bg-red-50 px-4 py-2 text-sm font-medium text-red-700 transition-colors hover:bg-red-100"
                 @click="terminateActiveSession"
               >
-                Stop session
+                {{ $t('applications.components.applications.ApplicationShell.stopSession') }}
               </button>
             </div>
           </div>
@@ -108,12 +110,12 @@
           >
             <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
               <div>
-                <h2 class="text-lg font-semibold text-slate-900">Bound session</h2>
+                <h2 class="text-lg font-semibold text-slate-900">{{ $t('applications.components.applications.ApplicationShell.boundSession') }}</h2>
                 <p class="mt-1 break-all text-sm text-slate-600">
-                  Session <span class="font-mono">{{ activeSession.applicationSessionId }}</span>
+                  {{ $t('applications.components.applications.ApplicationShell.sessionLabel', { id: activeSession.applicationSessionId }) }}
                 </p>
                 <p class="mt-1 text-xs text-slate-500">
-                  Binding result:
+                  {{ $t('applications.components.applications.ApplicationShell.bindingResult') }}
                   <span class="font-medium text-slate-700">{{ routeBinding?.resolution || 'requested_live' }}</span>
                   · runtime {{ activeSession.runtime.kind }}
                   · run <span class="font-mono">{{ activeSession.runtime.runId }}</span>
@@ -129,7 +131,7 @@
                     : 'border border-slate-300 bg-white text-slate-700 hover:bg-slate-100'"
                   @click="pageMode = 'application'"
                 >
-                  Application
+                  {{ $t('applications.components.applications.ApplicationShell.tabApplication') }}
                 </button>
                 <button
                   type="button"
@@ -139,7 +141,7 @@
                     : 'border border-slate-300 bg-white text-slate-700 hover:bg-slate-100'"
                   @click="pageMode = 'execution'"
                 >
-                  Execution
+                  {{ $t('applications.components.applications.ApplicationShell.tabExecution') }}
                 </button>
               </div>
             </div>
@@ -174,6 +176,7 @@ import { computed, ref, watch } from 'vue'
 import ApplicationLaunchConfigModal from '~/components/applications/ApplicationLaunchConfigModal.vue'
 import ApplicationSurface from '~/components/applications/ApplicationSurface.vue'
 import ApplicationExecutionWorkspace from '~/components/applications/execution/ApplicationExecutionWorkspace.vue'
+import { useLocalization } from '~/composables/useLocalization'
 import { useApplicationPageStore } from '~/stores/applicationPageStore'
 import { useApplicationSessionStore } from '~/stores/applicationSessionStore'
 import { useApplicationStore } from '~/stores/applicationStore'
@@ -184,6 +187,7 @@ const router = useRouter()
 const applicationStore = useApplicationStore()
 const applicationSessionStore = useApplicationSessionStore()
 const applicationPageStore = useApplicationPageStore()
+const { t: $t } = useLocalization()
 
 const loading = ref(false)
 const loadError = ref<string | null>(null)
@@ -204,6 +208,12 @@ const activeSession = computed(() => {
     ? applicationSessionStore.getSessionById(resolvedSessionId)
     : null
 })
+
+const runtimeTargetLabel = computed(() => (
+  application.value?.runtimeTarget.kind === 'AGENT'
+    ? $t('applications.shared.singleAgent')
+    : $t('applications.shared.agentTeam')
+))
 
 const pageMode = computed({
   get: () => applicationPageStore.getMode(applicationId.value),
@@ -231,11 +241,11 @@ const bindingNotice = computed(() => {
   }
 
   if (routeBinding.value.resolution === 'application_active') {
-    return 'The requested session was no longer live, so the page reattached to the current active session for this application.'
+    return $t('applications.components.applications.ApplicationShell.requestedSessionReattachedNotice')
   }
 
   if (routeBinding.value.resolution === 'none') {
-    return 'The requested session could not be restored, and there is no active session for this application right now.'
+    return $t('applications.components.applications.ApplicationShell.requestedSessionMissingNotice')
   }
 
   return null
@@ -282,7 +292,7 @@ const ensureSelectedMember = (): void => {
 
 const loadShell = async (): Promise<void> => {
   if (!applicationId.value) {
-    loadError.value = 'Application id is missing from the route.'
+    loadError.value = $t('applications.components.applications.ApplicationShell.applicationIdMissingFromRoute')
     routeBinding.value = null
     return
   }

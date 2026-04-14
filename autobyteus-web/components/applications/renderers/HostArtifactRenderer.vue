@@ -14,7 +14,7 @@
         <iframe
           :src="resolvedUrl"
           class="min-h-[24rem] w-full rounded-lg border border-slate-200"
-          title="Artifact preview"
+          :title="$t('applications.components.applications.renderers.HostArtifactRenderer.artifactPreview')"
         />
       </template>
 
@@ -24,7 +24,7 @@
 
       <template v-else>
         <div class="rounded-lg border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600">
-          <p class="font-medium text-slate-900">Artifact reference</p>
+          <p class="font-medium text-slate-900">{{ $t('applications.components.applications.renderers.HostArtifactRenderer.artifactReference') }}</p>
           <pre class="mt-2 whitespace-pre-wrap break-all text-xs text-slate-700">{{ referenceSummary }}</pre>
           <a
             v-if="resolvedUrl"
@@ -33,7 +33,7 @@
             rel="noreferrer"
             class="mt-3 inline-flex text-sm font-medium text-blue-700 hover:text-blue-800"
           >
-            Open artifact
+            {{ $t('applications.components.applications.renderers.HostArtifactRenderer.openArtifact') }}
           </a>
         </div>
       </template>
@@ -43,6 +43,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useLocalization } from '~/composables/useLocalization'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import type {
   ApplicationArtifactRef,
@@ -54,11 +55,12 @@ const props = defineProps<{
   artifact: ApplicationMemberArtifactProjection
 }>()
 
+const { t: $t } = useLocalization()
 const windowNodeContextStore = useWindowNodeContextStore()
 
-const title = computed(() => props.artifact.title.trim() || 'Untitled artifact')
+const title = computed(() => props.artifact.title.trim() || $t('applications.components.applications.renderers.HostArtifactRenderer.untitledArtifact'))
 const summary = computed(() => props.artifact.summary?.trim() || '')
-const artifactTypeLabel = computed(() => props.artifact.artifactType || 'artifact')
+const artifactTypeLabel = computed(() => props.artifact.artifactType || $t('applications.components.applications.renderers.HostArtifactRenderer.artifact'))
 
 const resolveArtifactUrl = (artifactRef: ApplicationArtifactRef): string | null => {
   if (artifactRef.kind === 'URL') {

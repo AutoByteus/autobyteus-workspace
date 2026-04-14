@@ -113,6 +113,11 @@ export class ApplicationBundleService {
     );
   }
 
+  async hasDiscoverableApplications(): Promise<boolean> {
+    await this.ensureCache();
+    return this.bundleById.size > 0;
+  }
+
   async getApplicationById(applicationId: string): Promise<ApplicationBundle | null> {
     await this.ensureCache();
     return this.bundleById.get(applicationId) ?? null;

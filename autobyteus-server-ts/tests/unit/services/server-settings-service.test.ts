@@ -158,4 +158,27 @@ describe("ServerSettingsService", () => {
     expect(message).toContain("does not exist");
     expect(mockConfig.delete).not.toHaveBeenCalled();
   });
+
+  it("reads the typed applications capability setting as true, false, or null", () => {
+    const service = new ServerSettingsService();
+
+    mockConfig.get.mockReturnValueOnce(' true ');
+    expect(service.getApplicationsEnabledSetting()).toBe(true);
+
+    mockConfig.get.mockReturnValueOnce('false');
+    expect(service.getApplicationsEnabledSetting()).toBe(false);
+
+    mockConfig.get.mockReturnValueOnce('   ');
+    expect(service.getApplicationsEnabledSetting()).toBeNull();
+  });
+
+  it("persists the typed applications capability setting as normalized strings", () => {
+    const service = new ServerSettingsService();
+
+    service.setApplicationsEnabledSetting(true);
+    service.setApplicationsEnabledSetting(false);
+
+    expect(mockConfig.set).toHaveBeenNthCalledWith(1, 'ENABLE_APPLICATIONS', 'true');
+    expect(mockConfig.set).toHaveBeenNthCalledWith(2, 'ENABLE_APPLICATIONS', 'false');
+  });
 });

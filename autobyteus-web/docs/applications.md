@@ -2,15 +2,17 @@
 
 ## Scope
 
-Shows Applications as a first-class top-level module, prepares launch drafts from bound runtime definitions, binds `/applications/[id]` to backend-owned application sessions, hosts bundled application UIs inside the generic iframe shell, and renders a native Execution view from retained application/member projections.
+Shows Applications as a first-class top-level module, resolves whether the module is available from a backend-owned per-node runtime capability, prepares launch drafts from bound runtime definitions, binds `/applications/[id]` to backend-owned application sessions, hosts bundled application UIs inside the generic iframe shell, and renders a native Execution view from retained application/member projections.
 
 ## Main Files
 
 - `pages/applications/index.vue`
 - `pages/applications/[id].vue`
+- `stores/applicationsCapabilityStore.ts`
 - `stores/applicationStore.ts`
 - `stores/applicationSessionStore.ts`
 - `stores/applicationPageStore.ts`
+- `middleware/feature-flags.global.ts`
 - `components/applications/ApplicationCard.vue`
 - `components/applications/ApplicationLaunchConfigModal.vue`
 - `components/applications/ApplicationShell.vue`
@@ -24,6 +26,19 @@ Shows Applications as a first-class top-level module, prepares launch drafts fro
 - `types/application/ApplicationSession.ts`
 - `types/application/ApplicationIframeContract.ts`
 - `docs/application-bundle-iframe-contract-v1.md`
+
+## Runtime Availability And Gating
+
+Applications availability is no longer controlled by a baked `runtimeConfig.public.enableApplications` flag.
+
+Instead:
+
+- `applicationsCapabilityStore` resolves the typed runtime Applications capability for the current bound node,
+- `AppLeftPanel.vue` and `LeftSidebarStrip.vue` show or hide the top-level Applications nav item from that store,
+- `middleware/feature-flags.global.ts` redirects away from `/applications` when the bound node says Applications is unavailable, and
+- `applicationStore` waits for capability resolution and clears cached catalog state when the capability is disabled, unresolved, or the bound node changes.
+
+This means two windows bound to different nodes can legitimately show different Applications visibility at the same time.
 
 ## Catalog Model
 
@@ -40,6 +55,8 @@ Each application entry carries:
 - a bound runtime target (`AGENT` or `AGENT_TEAM`) with a canonical `definitionId`.
 
 The frontend does not receive host-usable absolute URLs from the backend. It resolves asset paths against the currently bound REST base at render time.
+
+The store also owns stale-response protection for node switches: late catalog or detail responses from the old bound node are discarded instead of repopulating stale application state after `bindingRevision` changes.
 
 ## Route Shell And Binding Flow
 
@@ -132,5 +149,7 @@ The bootstrap payload includes transport metadata for:
 - `application-bundle-iframe-contract-v1.md`
 - `agent_management.md`
 - `agent_teams.md`
+- `settings.md`
+- `../../autobyteus-server-ts/docs/modules/application_capability.md`
 - `../../autobyteus-server-ts/docs/modules/applications.md`
 - `../../autobyteus-server-ts/docs/modules/application_sessions.md`

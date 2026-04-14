@@ -18,6 +18,7 @@ But the current application experience is still incomplete for the expanded prod
 - underlying agent/team runs are still launched directly from the frontend through `createAgentRun` / `createAgentTeamRun`,
 - there is no backend-owned active-session binding shape for reconnect/page-refresh on `/applications/[id]`,
 - there is no typed application publication contract tight enough to retain member artifact and progress simultaneously,
+- Applications visibility is still controlled by `runtimeConfig.public.enableApplications`, which is baked into the packaged frontend build and cannot vary by bound node after install,
 - there is no application/member projection layer above raw runtime events,
 - there is no frontend SDK for bundled applications,
 - the current built-in bundled app proves only iframe bootstrap, not the intended artifact/delivery-driven UX.
@@ -57,7 +58,12 @@ Keep the bundle-driven application import/discovery model, but evolve Applicatio
    - selected members open in artifact/status-first mode,
    - deeper runtime inspection hands off to the existing workspace/running experience.
 
-Under those UI layers, introduce one new authoritative backend boundary:
+Under those UI layers, introduce two authoritative backend boundaries:
+
+- **`ApplicationCapabilityService`**
+  - owns node/server runtime Applications availability,
+  - reads/writes the typed Applications setting backing store,
+  - exposes the authoritative capability used by nav visibility, route guarding, and application catalog behavior for the currently bound node/window.
 
 - **`ApplicationSessionService`**
   - owns application-session identity,
@@ -115,6 +121,7 @@ The current workspace/running UI remains the deepest technical inspection layer;
 - `Canonical application id`: globally unique application id derived from `{ packageId, localApplicationId }`.
 - `Application session`: one authoritative backend-owned launched application instance wrapping one underlying agent run or team run plus retained application/member state.
 - `Application session binding`: the backend-owned answer to “which live session, if any, should `/applications/[id]` bind to right now?”
+- `Applications capability`: the node-owned runtime answer to whether the Applications module is available in the currently bound window.
 - `Application publication`: one typed application-visible event emitted by an agent/member through the standard publication tool contract.
 - `Publication family`: the semantic class of one publication. V1 supports exactly `MEMBER_ARTIFACT`, `DELIVERY_STATE`, and `PROGRESS`.
 - `Publication key`: required stable upsert key within the family-specific retained scope.
@@ -131,6 +138,7 @@ The current workspace/running UI remains the deepest technical inspection layer;
 - The revised design does **not** keep frontend-direct application runtime launch as the steady-state authority.
 - The revised design does **not** expose raw iframe `postMessage` handling as the primary application-authoring interface.
 - The revised design does **not** keep one collapsed `latestPublication` shape for member state.
+- The revised design does **not** keep `runtimeConfig.public.enableApplications` as the packaged runtime authority for Applications visibility.
 
 ## Data-Flow Spine Inventory
 
@@ -145,6 +153,7 @@ The current workspace/running UI remains the deepest technical inspection layer;
 | `DS-007` | `Return-Event` | Bundled iframe app signals ready | SDK bootstraps from the host payload and opens application-session APIs | `ApplicationIframeHost` + `Application SDK` | Bundled app authors must not hand-roll host bootstrap logic. |
 | `DS-008` | `Primary End-to-End` | User requests deep inspection from application/member UI | Existing workspace/running view opens on the correct runtime target | `ApplicationExecutionWorkspace` | The deepest runtime surface must stay the current workspace view, not be reimplemented inside Applications. |
 | `DS-009` | `Primary End-to-End` | Native Agents/Teams edit UI | Persisted edits written back into owning application bundle folder | `AgentDefinitionService` / `AgentTeamDefinitionService` | App-owned definitions remain editable while preserving bundle ownership and same-bundle integrity. |
+| `DS-010` | `Primary End-to-End` | Bound window startup, node switch, or Applications settings change | Runtime Applications visibility/route availability for that window | `ApplicationCapabilityService` | Applications visibility must be runtime-configurable per bound node without rebuilding the Electron renderer, and cutover must preserve already-discovered applications without a legacy frontend fallback. |
 
 ## Primary Execution Spine(s)
 
@@ -156,6 +165,7 @@ The current workspace/running UI remains the deepest technical inspection layer;
 - `DS-006`: `Application page -> ApplicationPageStore mode/member selection -> bundled Application view or host Execution view`
 - `DS-008`: `Application page deep-inspection action -> workspace navigation helper -> existing workspace/running surface`
 - `DS-009`: `Agent/Team native edit UI -> GraphQL update mutation -> AgentDefinitionService/AgentTeamDefinitionService -> file provider -> application-owned source resolver -> bundle file write`
+- `DS-010`: `Window shell startup / bound-node change / Settings toggle -> ApplicationsCapabilityStore -> applicationsCapability query or setApplicationsEnabled mutation -> ApplicationCapabilityService -> (if setting absent: ApplicationBundleService discovery check + ServerSettingsService initialization write) -> refreshed capability -> nav/route/applicationStore behavior`
 
 ## Spine Narratives
 
@@ -170,6 +180,7 @@ The current workspace/running UI remains the deepest technical inspection layer;
 | `DS-007` | The iframe contract stays minimal and topology-aware, but the SDK becomes the public authoring boundary above it. | `ApplicationIframeHost`, `ApplicationIframeContract`, `Application SDK` | `Application SDK` (author-facing) / `ApplicationIframeHost` (host-facing) | contract constants, source/origin validation, bootstrap parsing. |
 | `DS-008` | Runtime-details drill-down stays outside the app iframe and outside the new execution summary shell; it reuses the existing workspace/running system. | `ApplicationExecutionWorkspace`, `workspace router`, `existing runtime stores/pages` | `ApplicationExecutionWorkspace` | route encoding, team/member target selection, no duplication of runtime UI. |
 | `DS-009` | Native definition editing keeps its existing authoritative services and validators, including same-bundle integrity rules for app-owned teams. | `native edit UI`, `GraphQL resolvers`, `definition services`, `file providers` | `AgentDefinitionService` / `AgentTeamDefinitionService` | canonical/local ref translation, writable-source checks, backend same-bundle validation. |
+| `DS-010` | Applications visibility stops being a baked frontend build flag. The host asks the bound node for the typed Applications capability at startup, on node switch, and after settings updates; if the capability setting is still absent, the backend seeds it once from current application discovery before returning the capability. Nav visibility, route guarding, and catalog fetch policy all follow that one authority. | `window shell`, `ApplicationsCapabilityStore`, `ApplicationCapabilityResolver`, `ApplicationCapabilityService`, `ApplicationBundleService`, `ServerSettingsService` | `ApplicationCapabilityService` | per-bound-node invalidation, one-time discovery-seeded initialization, hide-until-known startup state, settings-toggle refresh behavior. |
 
 ## Ownership Map
 
@@ -177,12 +188,16 @@ The current workspace/running UI remains the deepest technical inspection layer;
   - Owns package-root import/remove sequencing, validation, rollback, registry persistence, and cross-catalog refresh sequencing.
 - `ApplicationBundleService`
   - Owns application bundle discovery, manifest validation, canonical application ids, bundle-local runtime-target resolution, and backend asset-path construction.
+- `ApplicationCapabilityService` **(new authoritative backend owner)**
+  - Owns node-owned runtime Applications availability, one-time capability initialization when the setting is absent, typed read/update semantics for that capability, and translation to/from the persisted server setting backing store.
 - `ApplicationSessionService` **(new authoritative backend owner)**
   - Owns application-session identity, active-session indexing by application id, route-level binding lookup, runtime launch/termination for application sessions, publication validation entrypoint, retained projection state, session snapshot retrieval, and session replacement semantics.
 - `ApplicationPublicationProjector` **(new off-spine concern under application sessions)**
   - Owns family-specific retained projection updates from validated publications into application-level and member-level session state.
 - `ApplicationSessionStreamService` / stream handler **(new transport concern under application sessions)**
   - Owns live outward emission of session snapshots/deltas to the host shell and SDK clients.
+- `ApplicationsCapabilityStore` **(new frontend runtime-capability cache)**
+  - Owns frontend cache of the currently bound node’s Applications capability, invalidates on `windowNodeContextStore.bindingRevision`, and provides the single frontend visibility/route-availability answer.
 - `ApplicationSessionStore` (frontend)
   - Owns frontend cache of backend-owned application sessions, calls the backend binding lookup, attaches session streams, and issues create/terminate/send-input commands. It does **not** own active-session truth.
 - `ApplicationPageStore` **(new frontend host-shell UI state owner)**
@@ -201,6 +216,7 @@ The current workspace/running UI remains the deepest technical inspection layer;
 | Facade / Entry Wrapper | Governing Owner Behind It | Why It Exists | Must Not Secretly Own |
 | --- | --- | --- | --- |
 | `ApplicationResolver` | `ApplicationBundleService` | GraphQL transport for catalog/detail queries | filesystem scanning, manifest parsing, URL resolution policy |
+| `ApplicationCapabilityResolver` **(new)** | `ApplicationCapabilityService` | GraphQL transport for runtime Applications capability read/update | generic server-settings table semantics, frontend build config policy |
 | `ApplicationSessionResolver` **(new)** | `ApplicationSessionService` | GraphQL transport for create/query/bind/terminate/send-input | active-session policy, projection policy, runtime-launch branching |
 | application asset REST route | `ApplicationBundleService` | Serves bundle `ui/` assets over HTTP | raw path guessing or path-traversal policy outside the service |
 | application session stream route/handler **(new)** | `ApplicationSessionStreamService` | Transport for live session snapshot/delta emission | projection policy, runtime launch authority |
@@ -209,7 +225,19 @@ The current workspace/running UI remains the deepest technical inspection layer;
 
 ## Authoritative Boundary Decisions
 
-### 1. `ApplicationSessionService` owns active-session binding fully
+### 1. `ApplicationCapabilityService` owns runtime Applications availability fully
+
+The packaged renderer must not decide Applications availability from build-time Nuxt config.
+
+Therefore:
+- runtime Applications availability is a node-owned backend capability,
+- each window follows its currently bound node,
+- `ApplicationCapabilityService` becomes the authoritative read/update owner,
+- nav visibility, route guarding, and catalog fetch behavior all depend on that backend-owned capability through `ApplicationsCapabilityStore`,
+- frontend startup uses `unknown -> loading -> resolved` capability state and hides Applications until the capability is known,
+- the capability cutover must stay clean-cut: no legacy frontend flag, no dual authority, and no repeated inference after the explicit setting has been initialized.
+
+### 2. `ApplicationSessionService` owns active-session binding fully
 
 This closes `DAR-003`.
 
@@ -224,7 +252,7 @@ Therefore:
 - `applicationSessionBinding(applicationId, requestedSessionId?)` becomes the authoritative route-binding query,
 - `ApplicationSessionStore` becomes a cache/transport client only.
 
-### 2. Publication families project into family-specific retained state
+### 3. Publication families project into family-specific retained state
 
 This closes `DAR-004`.
 
@@ -236,15 +264,89 @@ Instead:
 - `DELIVERY_STATE` projects only into application delivery state,
 - families never overwrite each other’s retained fields.
 
-### 3. V1 publication contract removes free-form metadata
+### 4. V1 publication contract removes free-form metadata
 
 To keep the promoted contract family-tight, V1 has **no** `metadata?: Record<string, unknown>` escape hatch.
 
 If future extensibility is needed, it must arrive through an explicit V2 field design, not a generic rendering-affecting map.
 
-### 4. The SDK remains the author-facing boundary, not the raw iframe contract
+### 5. The SDK remains the author-facing boundary, not the raw iframe contract
 
 The iframe contract still exists for platform maintainers, but bundled applications are expected to depend on the SDK.
+
+## Backend Applications Capability Contract
+
+## Typed capability shape
+
+```ts
+interface ApplicationsCapability {
+  enabled: boolean
+  scope: 'BOUND_NODE'
+  settingKey: 'ENABLE_APPLICATIONS'
+  source: 'SERVER_SETTING' | 'INITIALIZED_FROM_DISCOVERED_APPLICATIONS' | 'INITIALIZED_EMPTY_CATALOG'
+}
+```
+
+## Backend application-capability subsystem
+
+Create one dedicated backend subsystem instead of hiding this under bundle discovery:
+
+- `autobyteus-server-ts/src/application-capability`
+
+Why:
+- this capability governs runtime product availability for the current node,
+- it is not bundle-discovery logic,
+- and callers above it should depend on the typed capability boundary rather than on generic server-settings internals.
+
+### New backend capability files
+
+| Path | Change | Responsibility |
+| --- | --- | --- |
+| `autobyteus-server-ts/src/application-capability/domain/models.ts` | `Add` | canonical `ApplicationsCapability` transport/domain shape |
+| `autobyteus-server-ts/src/application-capability/services/application-capability-service.ts` | `Add` | authoritative runtime Applications capability read/update owner |
+| `autobyteus-server-ts/src/api/graphql/types/application-capability.ts` | `Add` | GraphQL query/mutation boundary for runtime Applications capability |
+| `autobyteus-server-ts/src/application-bundles/services/application-bundle-service.ts` | `Modify` | expose lightweight discoverable-application summary used by capability initialization |
+| `autobyteus-server-ts/src/services/server-settings-service.ts` | `Modify` | register predefined `ENABLE_APPLICATIONS` setting plus typed helper access used by `ApplicationCapabilityService` |
+
+## GraphQL boundary
+
+Add one subject-specific transport file:
+- `autobyteus-server-ts/src/api/graphql/types/application-capability.ts`
+
+Expose:
+- `applicationsCapability(): ApplicationsCapability!`
+- `setApplicationsEnabled(enabled: Boolean!): ApplicationsCapability!`
+
+The mutation is a typed settings action, not a generic key/value write from the shell.
+
+## Persistence backing
+
+- Extend `ServerSettingsService` with the predefined editable setting key `ENABLE_APPLICATIONS`.
+- `ApplicationCapabilityService` reads/writes that backing key through typed methods; callers above it do not depend on the generic settings table directly.
+- `ServerSettingsManager` may still display the setting, but the shell/nav/route guard consume only the typed capability boundary.
+
+## Initialization / cutover rule
+
+`ApplicationCapabilityService` must not depend on the removed frontend build flag or any other legacy UI authority.
+
+Instead, every capability read/update first calls an internal `ensureInitialized()` step:
+
+1. If `ENABLE_APPLICATIONS` is already persisted, do nothing and read the persisted value.
+2. If `ENABLE_APPLICATIONS` is absent:
+   - ask `ApplicationBundleService` whether this node currently has any discoverable applications,
+   - if yes, persist `ENABLE_APPLICATIONS=true` and return `source = 'INITIALIZED_FROM_DISCOVERED_APPLICATIONS'`,
+   - if no, persist `ENABLE_APPLICATIONS=false` and return `source = 'INITIALIZED_EMPTY_CATALOG'`.
+
+After this initialization write exists:
+- all later reads use the persisted server setting directly,
+- later application discovery changes do not overwrite the explicit setting,
+- later user Settings changes also update only the persisted setting,
+- no legacy or repeated discovery inference remains in the steady-state path.
+
+## Per-node semantics
+
+- Capability is resolved from the currently bound node/server.
+- Each Electron window may therefore expose different Applications visibility depending on its own bound node.
 
 ## Backend Application-Session Binding Contract
 
@@ -581,6 +683,25 @@ Supported first-slice renderers should include at least:
 
 ## Frontend stores
 
+### `stores/applicationsCapabilityStore.ts` **(new)**
+Owns runtime capability state for the current bound window/node:
+- `status: 'unknown' | 'loading' | 'resolved' | 'error'`,
+- `capability: ApplicationsCapability | null`,
+- `ensureResolved()`,
+- `refresh()`,
+- `setEnabled(enabled)` for Settings-driven updates,
+- invalidation on `windowNodeContextStore.bindingRevision`,
+- conservative fallback behavior:
+  - unresolved/error => Applications hidden,
+  - `/applications` blocked,
+  - stale catalog/session UI cleared for that window.
+
+Consumers:
+- `AppLeftPanel.vue`,
+- `LeftSidebarStrip.vue`,
+- `/applications` route middleware,
+- `applicationStore`.
+
 ### `stores/applicationSessionStore.ts` (refactor)
 From:
 - frontend-owned session creation + direct run launch + active-session lookup
@@ -609,6 +730,17 @@ Owns host-local UI state only:
 - selected member route key,
 - member sub-mode (`Artifact` / `Runtime Details` intent),
 - workspace drill-down target.
+
+## Runtime Applications capability flow
+
+1. Window binds to a node or the bound node changes.
+2. `ApplicationsCapabilityStore` invalidates and enters `loading`.
+3. The store calls `applicationsCapability()` on the bound node after backend readiness is confirmed.
+4. If the bound node has no persisted `ENABLE_APPLICATIONS` yet, `ApplicationCapabilityService` initializes it once from current application discovery before responding.
+5. While capability is `unknown` or `loading`, nav surfaces hide Applications and `applicationStore` does not expose stale catalog data from a previous node/capability state.
+6. If capability resolution ends in `error` or resolves as disabled, `/applications` route middleware blocks/redirects by the same authority and the catalog store stays empty for that window.
+7. If capability resolves as enabled, nav surfaces show Applications and `applicationStore` may fetch catalog data for that bound node.
+8. If Settings toggles Applications, `setApplicationsEnabled(enabled)` updates the bound node through the typed mutation and refreshes the store so the same window updates without rebuild.
 
 ## Route binding flow
 
@@ -710,6 +842,9 @@ Changes in this scope:
 | Path | Change | Responsibility |
 | --- | --- | --- |
 | `autobyteus-web/pages/applications/[id].vue` | `Modify` | thin route entry into new application shell |
+| `autobyteus-web/components/AppLeftPanel.vue` | `Modify` | read runtime Applications capability instead of build-time config |
+| `autobyteus-web/components/layout/LeftSidebarStrip.vue` | `Modify` | read runtime Applications capability instead of build-time config |
+| `autobyteus-web/middleware/feature-flags.global.ts` | `Modify or Replace` | runtime Applications route guard driven by capability store instead of Nuxt build config |
 | `autobyteus-web/components/applications/ApplicationShell.vue` | `Add` | native host shell for app page |
 | `autobyteus-web/components/applications/ApplicationSurface.vue` | `Add` | Application-mode surface hosting iframe + fallback states |
 | `autobyteus-web/components/applications/ApplicationIframeHost.vue` | `Modify` | retain host bootstrap + session-aware iframe lifecycle |
@@ -717,12 +852,15 @@ Changes in this scope:
 | `autobyteus-web/components/applications/execution/ApplicationMemberList.vue` | `Add` | member list / selection |
 | `autobyteus-web/components/applications/execution/ApplicationMemberArtifactPanel.vue` | `Add` | artifact/status-first member panel |
 | `autobyteus-web/components/applications/renderers/HostArtifactRenderer.vue` | `Add` | built-in renderer registry for execution/member artifacts |
-| `autobyteus-web/stores/applicationStore.ts` | `Retain` | catalog fetch/store |
+| `autobyteus-web/stores/applicationStore.ts` | `Modify` | catalog fetch/store gated by runtime Applications capability instead of build-time config |
+| `autobyteus-web/stores/applicationsCapabilityStore.ts` | `Add` | frontend cache for node-owned Applications capability |
 | `autobyteus-web/stores/applicationSessionStore.ts` | `Modify` | backend-owned session cache + route binding + stream + commands |
 | `autobyteus-web/stores/applicationPageStore.ts` | `Add` | local host-shell UI state |
 | `autobyteus-web/services/applicationStreaming/ApplicationSessionStreamingService.ts` | `Add` | session stream client for host shell |
 | `autobyteus-web/utils/application/applicationLaunch.ts` | `Modify` | keep launch-draft preparation only; remove frontend session-id creation authority |
 | `autobyteus-web/utils/application/runtimeDrilldown.ts` | `Add` | translate application/member targets into workspace/runtime navigation |
+| `autobyteus-web/components/settings/ServerSettingsManager.vue` | `Modify` | host first-class Applications toggle under Server Settings / Advanced Server Settings |
+| `autobyteus-web/components/settings/ApplicationsFeatureToggleCard.vue` | `Add` | first-class Server Settings control for Applications enablement |
 | `autobyteus-web/types/application/ApplicationSession.ts` | `Modify` | match backend-owned binding/snapshot/projection shapes |
 | `autobyteus-web/types/application/ApplicationIframeContract.ts` | `Modify` | expanded bootstrap payload fields for SDK/session stream |
 
@@ -749,6 +887,7 @@ Provide one small, deterministic application bundle that proves together:
 - application import/discovery,
 - backend application-session launch,
 - backend route reattachment after refresh,
+- runtime Applications capability enablement from the bound node,
 - application publication tool flow,
 - bundled SDK usage,
 - top-level delivery rendering,
@@ -803,6 +942,10 @@ This keeps the application product surface flexible while preserving a consisten
 
 ## Dependency rules
 
+- `AppLeftPanel`, `LeftSidebarStrip`, `/applications` route guard, and `applicationStore` depend on `ApplicationsCapabilityStore`, not on `useRuntimeConfig().public.enableApplications`.
+- `ApplicationsCapabilityStore` depends on `ApplicationCapabilityResolver` and `windowNodeContextStore`, not on the generic server-settings table.
+- `ApplicationCapabilityService` may depend on `ApplicationBundleService` only for one-time missing-setting initialization; callers above the capability boundary must not reproduce that discovery/inference themselves.
+- `applicationStore` clears/keeps empty catalog state while Applications capability is unresolved, disabled, or errored for the current bound node; it must not surface stale entries from a previously enabled node/window state.
 - `ApplicationShell` depends on `ApplicationSessionStore` and `ApplicationPageStore`, not directly on runtime stores.
 - `ApplicationSessionStore` depends on backend `ApplicationSessionResolver` / session-stream transport; it does not compute active-session truth itself.
 - `ApplicationSessionStore` uses `applicationSessionBinding(...)` for route/session reattachment; it does not reconstruct that from cached memory.
@@ -821,12 +964,21 @@ This keeps the application product surface flexible while preserving a consisten
 | frontend-direct application session launch via `createAgentRun` / `createAgentTeamRun` inside `ApplicationSessionStore` | application sessions need one backend authoritative boundary | `createApplicationSession` | `In This Change` |
 | frontend-owned active-session lookup in `ApplicationSessionStore` | reconnect/page-refresh binding must be backend authoritative | `applicationSessionBinding(...)` | `In This Change` |
 | current application detail page as “metadata + iframe only” | application page becomes a layered host shell | `ApplicationShell.vue` + native Execution workspace | `In This Change` |
+| `runtimeConfig.public.enableApplications` packaged runtime gate | Applications visibility must be node-owned at runtime | `ApplicationCapabilityService` + `ApplicationsCapabilityStore` | `In This Change` |
+| any legacy/frontend fallback for Applications visibility during cutover | rollout must stay clean-cut and backend-owned | one-time `ApplicationCapabilityService.ensureInitialized()` discovery-seeded write | `In This Change` |
 | hand-written bootstrap logic in bundled sample app | SDK becomes the public authoring boundary | `autobyteus-ts/src/application-sdk` | `In This Change` |
 | collapsed member `latestPublication` / `latestStatus` projection idea | it cannot retain artifact + progress coexistence safely | family-tight retained projection fields/maps | `In This Change` |
 | free-form metadata on publication payload v1 | it weakens the typed promoted contract | explicit family-specific fields only | `In This Change` |
 
 ## Migration / implementation sequence
 
+0. **Runtime Applications capability**
+   - add `ApplicationCapabilityService`,
+   - add one-time `ensureInitialized()` cutover that seeds missing `ENABLE_APPLICATIONS` from current application discovery,
+   - add `applicationsCapability()` / `setApplicationsEnabled(...)`,
+   - refactor nav, route guard, and `applicationStore` to use `ApplicationsCapabilityStore`,
+   - remove build-time packaged runtime dependence on `runtimeConfig.public.enableApplications`,
+   - do not retain any legacy frontend fallback after the initialization write exists.
 1. **Backend session boundary**
    - add `application-sessions` subsystem,
    - add `applicationSessionBinding(...)`,
@@ -861,6 +1013,36 @@ This keeps the application product surface flexible while preserving a consisten
    - preserve previously fixed packaged Electron topology assertions.
 
 ## Tradeoffs
+
+### Chosen: backend/node-owned runtime Applications capability
+
+Pros:
+- no Electron rebuild required after install,
+- correct per-window/per-node behavior,
+- same authority for nav, route guard, and catalog behavior.
+
+Cons:
+- requires startup capability fetch and node-change invalidation logic.
+
+Rejected alternatives:
+- keep Nuxt build-time `enableApplications` as packaged runtime authority,
+- or make the shell read arbitrary server-settings table rows directly.
+- Rejected because Applications is backend-backed and should be a typed node capability, not a baked frontend constant or an ad-hoc generic settings dependency.
+
+### Chosen: one-time discovery-seeded capability initialization
+
+Pros:
+- preserves already-discovered applications through rollout,
+- stays backend-owned and clean-cut,
+- avoids keeping any legacy frontend flag or dual authority alive.
+
+Cons:
+- requires one lightweight discovery check when the setting is absent.
+
+Rejected alternatives:
+- default missing `ENABLE_APPLICATIONS` directly to false,
+- or seed from a legacy frontend/runtime flag.
+- Rejected because default-false cutover fails the approved migration requirement for already-visible applications, while a legacy flag seed would violate the project’s no-legacy/no-backward-compatibility direction and keep mixed authority alive.
 
 ### Chosen: backend-owned application-session binding
 
@@ -914,6 +1096,36 @@ Rejected alternative:
 
 ## Concrete examples
 
+### Example: per-window runtime Applications visibility
+
+```text
+Window A -> bound to local dev node
+  -> applicationsCapability() returns enabled=true
+  -> nav shows Applications
+
+Window B -> bound to remote production node
+  -> applicationsCapability() returns enabled=false
+  -> nav hides Applications and /applications is blocked
+```
+
+### Example: clean-cut capability cutover with discovered applications
+
+```text
+Node upgrade arrives
+  -> ENABLE_APPLICATIONS is absent
+  -> ApplicationCapabilityService.ensureInitialized() runs
+  -> ApplicationBundleService reports discoverable applications exist
+  -> ServerSettingsService persists ENABLE_APPLICATIONS=true
+  -> applicationsCapability() returns enabled=true
+  -> Applications remains visible after upgrade
+
+Later:
+  user disables Applications in Settings
+  -> setApplicationsEnabled(false) persists false
+  -> later restarts read the persisted false directly
+  -> discovery does not auto-enable it again
+```
+
 ### Example: route reattachment after refresh
 
 ```text
@@ -960,6 +1172,8 @@ The target design keeps the validated bundle-import and packaged-Electron topolo
 - bundle-driven discovery stays,
 - app-owned definition editing stays,
 - iframe topology-aware bootstrap stays,
+- **backend-owned runtime Applications capability is added**,
+- **capability cutover initializes once from current application discovery, then persists explicit runtime ownership without any legacy frontend fallback**,
 - **backend-owned application sessions are added**,
 - **backend-owned active-session binding for `/applications/[id]` is added**,
 - **typed application publication events are added**,

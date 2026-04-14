@@ -27,6 +27,10 @@
 - Migrated the built-in Socratic Math Teacher application to the new bundle format under `autobyteus-server-ts/applications/socratic-math-teacher/` with static `ui/` assets plus embedded app-owned runtime definitions and the revised topology-aware iframe bootstrap behavior.
 - Removed legacy application-specific runtime paths on both backend and frontend (`application-service`, hardcoded Socratic Vue app path, application run/profile/context stores, old app GraphQL mutation path, obsolete tests).
 - Added executable regression coverage for the packaged topology boundary so backend-served iframe assets are resolved from the bound REST base and the host validates bootstrap against the resolved iframe origin instead of assuming same-origin with the host shell.
+- Added the backend-owned runtime Applications capability boundary (`ApplicationCapabilityService`) so `ENABLE_APPLICATIONS` is now initialized once from current bundle discovery when absent, then persists as explicit bound-node runtime authority with no frontend build-flag fallback.
+- Added the frontend `applicationsCapabilityStore`, capability GraphQL query/mutation plumbing, a first-class Settings toggle card, and runtime gating for sidebar visibility, `/applications` route access, and stale Applications catalog clearing across capability / bound-node changes.
+- Removed the unreachable `activeSection === ''` empty-state branch from `autobyteus-web/pages/settings.vue` so the touched settings page no longer fails targeted typecheck with TS2367 after the round-7 capability changes.
+- Added bound-node revision guards to `applicationStore` catalog/detail fetches so late old-node responses are discarded instead of repopulating stale application data after `bindNodeContext()` switches, and added durable in-flight catalog/detail switch regressions for that behavior.
 
 ## Key Files Or Areas
 
@@ -54,6 +58,13 @@
   - `autobyteus-server-ts/src/application-bundles/utils/application-bundle-identity.ts`
   - `autobyteus-server-ts/src/api/rest/application-bundles.ts`
   - `autobyteus-server-ts/src/api/graphql/types/application.ts`
+- Backend runtime Applications capability
+  - `autobyteus-server-ts/src/application-capability/domain/models.ts`
+  - `autobyteus-server-ts/src/application-capability/services/application-capability-service.ts`
+  - `autobyteus-server-ts/src/api/graphql/types/application-capability.ts`
+  - `autobyteus-server-ts/src/services/server-settings-service.ts`
+  - `autobyteus-server-ts/tests/unit/application-capability/application-capability-service.test.ts`
+  - `autobyteus-server-ts/tests/unit/services/server-settings-service.test.ts`
 - Backend app-owned definition support / invariant enforcement
   - `autobyteus-server-ts/src/agent-definition/providers/agent-definition-config.ts`
   - `autobyteus-server-ts/src/agent-definition/providers/agent-definition-source-paths.ts`
@@ -90,6 +101,19 @@
   - `autobyteus-web/pages/applications/[id].vue`
   - `autobyteus-web/pages/applications/index.vue`
   - `autobyteus-web/docs/application-bundle-iframe-contract-v1.md`
+- Frontend runtime Applications capability gating
+  - `autobyteus-web/stores/applicationsCapabilityStore.ts`
+  - `autobyteus-web/graphql/queries/applicationCapabilityQueries.ts`
+  - `autobyteus-web/graphql/mutations/applicationCapabilityMutations.ts`
+  - `autobyteus-web/components/settings/ApplicationsFeatureToggleCard.vue`
+  - `autobyteus-web/components/AppLeftPanel.vue`
+  - `autobyteus-web/components/layout/LeftSidebarStrip.vue`
+  - `autobyteus-web/middleware/feature-flags.global.ts`
+  - `autobyteus-web/pages/settings.vue`
+  - `autobyteus-web/tests/stores/serverSettingsStore.test.ts`
+  - `autobyteus-web/stores/__tests__/applicationsCapabilityStore.spec.ts`
+  - `autobyteus-web/components/settings/__tests__/ApplicationsFeatureToggleCard.spec.ts`
+  - `autobyteus-web/stores/__tests__/applicationStore.spec.ts`
 - Executable topology regressions
   - `autobyteus-web/utils/application/__tests__/applicationAssetUrl.spec.ts`
   - `autobyteus-web/utils/application/__tests__/applicationSessionTransport.spec.ts`
@@ -118,6 +142,7 @@
 - App-owned team membership integrity remains backend-authoritative; frontend filtering is only UX guidance.
 - The v1 iframe contract is owned by `ApplicationIframeContract.ts`, `ApplicationIframeHost.vue`, and `application-bundle-iframe-contract-v1.md`; bundled UIs are consumers of that contract, not alternate owners.
 - Asset URL resolution is frontend-owned and must flow through `windowNodeContextStore.getBoundEndpoints().rest` plus `applicationAssetUrl.ts`, not through backend-emitted host URLs or inline component concatenation.
+- Runtime Applications availability is now backend-owned at the bound-node level; the frontend must resolve it through `applicationsCapabilityStore` / GraphQL rather than any baked `runtimeConfig` feature flag.
 
 ## Known Risks
 
@@ -126,6 +151,7 @@
 - Editing writable imported package roots can still diverge locally from upstream package sources by design.
 - `applicationQueries.ts` still appears in repo-wide `nuxi typecheck` output because the existing query layer baseline lacks a resolved `graphql-tag` type/module path; that baseline issue predates this slice and affects many existing GraphQL query files.
 - Full repo-wide web/server typechecks still have unrelated baseline failures; focused validation passed, but downstream validation should rely on scenario execution rather than repo-wide typecheck green status.
+- Bound-node switches now invalidate Applications capability/catalog state immediately; downstream validation should still watch for startup-error states or stale UI after switching between nodes with different application catalogs.
 - The narrow server `tsc` pass for this slice still trips the long-standing `rootDir` + `autobyteus-ts` path baseline, but no remaining application-session-slice-specific type errors were left after the focused fixes.
 
 ## Legacy / Compatibility Removal Check
@@ -139,6 +165,7 @@
 - Notes:
   - Removed backend `src/services/application-service.ts` and the app-specific frontend-builder tool path.
   - Removed frontend `applicationRunStore`, `applicationLaunchProfileStore`, `applicationContextStore`, old application mutations/types/tests, and the hardcoded Socratic application folder.
+  - Removed the stale frontend `runtimeConfig.public.enableApplications` mapping so runtime Applications availability now comes only from the backend-owned capability contract.
 
 ## Environment Or Dependency Notes
 
@@ -151,6 +178,11 @@
 - Applications catalog:
   - confirm built-in `Socratic Math Teacher` appears via the normal Applications page
   - open its detail route and verify metadata comes from the new catalog fields
+- Runtime capability:
+  - start against a node with discoverable applications and no persisted `ENABLE_APPLICATIONS`, then confirm the first capability resolution seeds `enabled=true`
+  - start against an empty-catalog node with no persisted `ENABLE_APPLICATIONS`, then confirm the first capability resolution seeds `enabled=false`
+  - switch between nodes with different application catalogs/capability states and confirm sidebar visibility, route access, and stale catalog clearing all update without a manual reload
+  - simulate capability resolution failure or backend-not-ready startup and confirm Applications stays hidden / redirects cleanly instead of showing stale data
 - Launch + iframe contract:
   - launch the built-in app, choose required runtime inputs, and verify the iframe transitions from waiting state to bootstrapped state
   - validate the packaged-topology path specifically: a packaged `file://` host window should still resolve the iframe/icon assets from the bound backend REST base and bootstrap the child served from backend HTTP origin
@@ -174,6 +206,8 @@
 ## What Needs Validation
 
 - End-to-end GraphQL + UI flows for bundle import, app catalog discovery, and app-owned definition exposure.
+- Runtime Applications capability initialization outcomes (`discovered -> true`, `empty catalog -> false`), explicit toggle persistence, and node-switch invalidation/error behavior.
+- Late old-node catalog/detail responses after a bound-node switch, ensuring stale Applications entries cannot repopulate after `bindNodeContext()` changes.
 - Same-session package import/remove refresh behavior for Applications / Agents / Agent Teams without a manual reload.
 - The exact topology-aware v1 iframe handshake behavior in a live browser/session, including timeout and retry semantics.
 - The packaged `file://` host + backend-served iframe asset topology that previously failed validation.
@@ -191,8 +225,14 @@
 - ✅ `pnpm -C autobyteus-server-ts exec vitest run tests/unit/application-sessions/application-session-service.test.ts tests/unit/application-sessions/application-publication-projector.test.ts tests/unit/agent-execution/agent-run-create-service.test.ts tests/unit/agent-team-execution/team-run-service.test.ts tests/unit/application-bundles/file-application-bundle-provider.test.ts`
 - ✅ `pnpm -C autobyteus-server-ts exec vitest run tests/unit/application-sessions/application-session-service.test.ts tests/unit/application-sessions/application-publication-projector.test.ts tests/unit/application-sessions/publish-application-event-tool.test.ts tests/unit/agent-execution/agent-run-create-service.test.ts tests/unit/agent-team-execution/team-run-service.test.ts tests/unit/application-bundles/file-application-bundle-provider.test.ts`
 - ✅ `pnpm -C autobyteus-web exec nuxi prepare`
+- ✅ `pnpm -C autobyteus-server-ts exec vitest run tests/unit/application-capability/application-capability-service.test.ts tests/unit/services/server-settings-service.test.ts tests/unit/api/graphql/types/server-settings.test.ts tests/unit/application-sessions/application-session-service.test.ts tests/unit/application-sessions/application-publication-projector.test.ts tests/unit/agent-execution/agent-run-create-service.test.ts tests/unit/agent-team-execution/team-run-service.test.ts tests/unit/application-bundles/file-application-bundle-provider.test.ts`
 - ✅ `pnpm -C autobyteus-web exec vitest --run stores/__tests__/agentPackagesStore.spec.ts stores/__tests__/agentDefinitionStore.spec.ts components/agents/__tests__/AgentDefinitionForm.spec.ts stores/__tests__/applicationStore.spec.ts utils/application/__tests__/applicationAssetUrl.spec.ts components/applications/__tests__/ApplicationIframeHost.spec.ts`
 - ✅ `pnpm -C autobyteus-web exec vitest run stores/__tests__/applicationStore.spec.ts stores/__tests__/applicationSessionStore.spec.ts utils/application/__tests__/applicationAssetUrl.spec.ts utils/application/__tests__/applicationSessionTransport.spec.ts components/applications/__tests__/ApplicationIframeHost.spec.ts`
+- ✅ `pnpm -C autobyteus-web exec vitest --run stores/__tests__/applicationsCapabilityStore.spec.ts stores/__tests__/applicationStore.spec.ts stores/__tests__/applicationSessionStore.spec.ts components/layout/__tests__/LeftSidebarStrip.spec.ts components/__tests__/AppLeftPanel_v2.spec.ts middleware/__tests__/feature-flags.global.spec.ts pages/__tests__/settings.spec.ts components/settings/__tests__/ApplicationsFeatureToggleCard.spec.ts tests/stores/serverSettingsStore.test.ts components/applications/__tests__/ApplicationIframeHost.spec.ts utils/application/__tests__/applicationAssetUrl.spec.ts utils/application/__tests__/applicationSessionTransport.spec.ts`
+- ✅ `pnpm -C autobyteus-web exec vitest --run pages/__tests__/settings.spec.ts`
+- ✅ `pnpm -C autobyteus-web exec vitest --run stores/__tests__/applicationStore.spec.ts`
+- ✅ `pnpm -C autobyteus-web exec nuxi typecheck` filtered with `rg "stores/applicationStore\.ts|stores/__tests__/applicationStore\.spec\.ts"` — no matches in the touched stale-response guard slice (repo-wide baseline still exits non-zero outside this slice)
+- ✅ `pnpm -C autobyteus-web exec nuxi typecheck` filtered with `rg "pages/settings\.vue|components/settings/ApplicationsFeatureToggleCard\.vue|stores/applicationsCapabilityStore\.ts|stores/applicationStore\.ts|stores/serverSettings\.ts|middleware/feature-flags\.global\.ts|components/AppLeftPanel\.vue|components/layout/LeftSidebarStrip\.vue"` — no matches in the touched runtime-capability/settings files (repo-wide baseline still exits non-zero outside this slice)
 - ✅ `pnpm -C autobyteus-web exec nuxi typecheck 2>&1 | rg "ApplicationIframeHost\\.vue|ApplicationCard\\.vue|applicationStore\\.ts|applicationSessionStore\\.ts|ApplicationIframeContract\\.ts|applicationAssetUrl\\.ts|ApplicationSession\\.ts|AgentDefinitionForm\\.vue|AgentDefaultLaunchConfigFields\\.vue|agentPackagesStore\\.ts|agentDefinitionStore\\.ts|agentTeamDefinitionStore\\.ts|applicationLaunch\\.ts"` — no matches
 - ✅ `pnpm -C autobyteus-web exec nuxi typecheck 2>&1 | rg "ApplicationShell\\.vue|ApplicationSurface\\.vue|ApplicationExecutionWorkspace\\.vue|applicationSessionStore\\.ts|ApplicationIframeHost\\.vue|ApplicationIframeContract\\.ts|applicationSessionTransport\\.ts|pages/applications/\\[id\\]\\.vue|pages/applications/index\\.vue"` — no matches
 - ⚠️ `pnpm -C autobyteus-web exec nuxi typecheck 2>&1 | rg "applicationQueries\\.ts"` — existing `graphql-tag` module-resolution baseline still matches this touched query file and many sibling query files

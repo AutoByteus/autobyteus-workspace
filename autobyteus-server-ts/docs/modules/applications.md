@@ -4,7 +4,7 @@
 
 Discovers self-contained application bundles, exposes transport-neutral application catalog metadata, validates bundle-owned runtime dependencies, and serves bundle-owned `ui/` assets for the generic frontend application host.
 
-Launched runtime lifecycle, route binding, retained session state, and publication projection are documented separately in [`application_sessions.md`](./application_sessions.md).
+Launched runtime lifecycle, route binding, retained session state, and publication projection are documented separately in [`application_sessions.md`](./application_sessions.md). Runtime module availability is documented separately in [`application_capability.md`](./application_capability.md).
 
 ## TS Source
 
@@ -36,6 +36,13 @@ Launched runtime lifecycle, route binding, retained session state, and publicati
 - Runtime targets are surfaced with canonical ids so launches bind to the owning bundle’s embedded agent or team instead of relying on global name lookup.
 - Session snapshots reuse this catalog metadata so `/applications/[id]` can render bundle ownership and asset details without a second lookup model.
 
+## Runtime Availability Boundary
+
+- Whether the Applications module is available at all is no longer a baked frontend build flag.
+- The backend answers that question through the typed runtime Applications capability documented in [`application_capability.md`](./application_capability.md).
+- Bundle discovery only participates in one place: first-time capability initialization when `ENABLE_APPLICATIONS` has not been persisted yet.
+- After initialization, bundle discovery and bundle serving remain distinct from the steady-state runtime capability authority.
+
 ## Runtime Session Handoff
 
 - The applications module owns discovery, validation, and asset serving only; it does not own live runtime state.
@@ -51,6 +58,7 @@ Launched runtime lifecycle, route binding, retained session state, and publicati
 
 ## Related Docs
 
+- [`application_capability.md`](./application_capability.md)
 - [`application_sessions.md`](./application_sessions.md)
 - `../../autobyteus-web/docs/applications.md`
 - `../../autobyteus-web/docs/application-bundle-iframe-contract-v1.md`

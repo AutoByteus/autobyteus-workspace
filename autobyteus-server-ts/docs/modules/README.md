@@ -14,6 +14,7 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 | Agent Team Definition | [agent_team_definition.md](./agent_team_definition.md) |
 | Agent Team Execution | [agent_team_execution.md](./agent_team_execution.md) |
 | Agent Tools | [agent_tools.md](./agent_tools.md) |
+| Application Capability | [application_capability.md](./application_capability.md) |
 | Application Sessions | [application_sessions.md](./application_sessions.md) |
 | Applications | [applications.md](./applications.md) |
 | Codex Integration | [codex_integration.md](./codex_integration.md) |

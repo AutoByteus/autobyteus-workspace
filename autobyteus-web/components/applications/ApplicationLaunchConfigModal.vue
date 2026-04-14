@@ -10,10 +10,12 @@
           <div class="flex items-start justify-between gap-4">
             <div>
               <h2 class="text-xl font-semibold text-slate-900">
-                {{ application ? `Launch ${application.name}` : 'Launch application' }}
+                {{ application
+                  ? $t('applications.components.applications.ApplicationLaunchConfigModal.launch_title', { name: application.name })
+                  : $t('applications.components.applications.ApplicationLaunchConfigModal.launch_application') }}
               </h2>
               <p class="mt-1 text-sm text-slate-600">
-                Configure the runtime session before the bundled iframe UI starts.
+                {{ $t('applications.components.applications.ApplicationLaunchConfigModal.description') }}
               </p>
             </div>
             <button
@@ -21,7 +23,7 @@
               class="rounded-md p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
               @click="closeModal"
             >
-              <span class="sr-only">Close</span>
+              <span class="sr-only">{{ $t('applications.components.applications.ApplicationLaunchConfigModal.close') }}</span>
               ✕
             </button>
           </div>
@@ -30,14 +32,14 @@
         <div class="flex-1 overflow-y-auto bg-slate-50 px-6 py-5">
           <div v-if="isLoading" class="flex min-h-[20rem] flex-col items-center justify-center gap-3 text-slate-500">
             <div class="h-9 w-9 animate-spin rounded-full border-b-2 border-blue-600"></div>
-            <p class="text-sm font-medium">Preparing launch defaults…</p>
+            <p class="text-sm font-medium">{{ $t('applications.components.applications.ApplicationLaunchConfigModal.preparingLaunchDefaults') }}</p>
           </div>
 
           <div
             v-else-if="loadError"
             class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"
           >
-            <p class="font-semibold">Unable to prepare application launch</p>
+            <p class="font-semibold">{{ $t('applications.components.applications.ApplicationLaunchConfigModal.unableToPrepareLaunch') }}</p>
             <p class="mt-1">{{ loadError }}</p>
           </div>
 
@@ -45,22 +47,22 @@
             <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
               <div class="grid gap-4 md:grid-cols-3">
                 <div>
-                  <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Runtime kind</p>
+                  <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ $t('applications.components.applications.ApplicationLaunchConfigModal.runtimeKind') }}</p>
                   <p class="mt-1 text-sm text-slate-900">{{ runtimeKindLabel }}</p>
                 </div>
                 <div>
-                  <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Package</p>
+                  <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ $t('applications.shared.package') }}</p>
                   <p class="mt-1 break-all text-sm text-slate-900">{{ preparedLaunch.application.packageId }}</p>
                 </div>
                 <div>
-                  <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Writable source</p>
-                  <p class="mt-1 text-sm text-slate-900">{{ preparedLaunch.application.writable ? 'Yes' : 'No' }}</p>
+                  <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ $t('applications.shared.writableSource') }}</p>
+                  <p class="mt-1 text-sm text-slate-900">{{ preparedLaunch.application.writable ? $t('applications.shared.yes') : $t('applications.shared.no') }}</p>
                 </div>
               </div>
             </section>
 
             <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <h3 class="text-base font-semibold text-slate-900">Bound runtime target</h3>
+              <h3 class="text-base font-semibold text-slate-900">{{ $t('applications.components.applications.ApplicationLaunchConfigModal.boundRuntimeTarget') }}</h3>
               <p class="mt-1 text-sm text-slate-600">
                 {{ boundDefinitionSummary }}
               </p>
@@ -97,7 +99,7 @@
         <div class="border-t border-slate-200 bg-white px-6 py-4">
           <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p class="text-xs text-slate-500">
-              The bundled iframe UI will not bootstrap until the exact v1 ready/bootstrap handshake succeeds.
+              {{ $t('applications.components.applications.ApplicationLaunchConfigModal.handshakeNote') }}
             </p>
 
             <div class="flex items-center justify-end gap-3">
@@ -107,7 +109,7 @@
                 :disabled="sessionStore.launching"
                 @click="closeModal"
               >
-                Cancel
+                {{ $t('applications.components.applications.ApplicationLaunchConfigModal.cancel') }}
               </button>
               <button
                 type="button"
@@ -119,7 +121,9 @@
                   v-if="sessionStore.launching"
                   class="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-b-transparent"
                 ></span>
-                {{ sessionStore.launching ? 'Launching…' : 'Launch application' }}
+                {{ sessionStore.launching
+                  ? $t('applications.components.applications.ApplicationLaunchConfigModal.launching')
+                  : $t('applications.components.applications.ApplicationLaunchConfigModal.launch_application') }}
               </button>
             </div>
           </div>
@@ -133,6 +137,7 @@
 import { computed, reactive, ref, watch } from 'vue'
 import AgentRunConfigForm from '~/components/workspace/config/AgentRunConfigForm.vue'
 import TeamRunConfigForm from '~/components/workspace/config/TeamRunConfigForm.vue'
+import { useLocalization } from '~/composables/useLocalization'
 import { useApplicationSessionStore, type PreparedApplicationLaunch } from '~/stores/applicationSessionStore'
 import type { ApplicationCatalogEntry } from '~/stores/applicationStore'
 import { useWorkspaceStore } from '~/stores/workspace'
@@ -155,6 +160,7 @@ const emit = defineEmits<{
 
 const sessionStore = useApplicationSessionStore()
 const workspaceStore = useWorkspaceStore()
+const { t: $t } = useLocalization()
 
 const isLoading = ref(false)
 const loadError = ref<string | null>(null)
@@ -196,7 +202,9 @@ const runtimeKindLabel = computed(() => {
   if (!preparedLaunch.value) {
     return ''
   }
-  return preparedLaunch.value.kind === 'AGENT' ? 'Single agent' : 'Agent team'
+  return preparedLaunch.value.kind === 'AGENT'
+    ? $t('applications.shared.singleAgent')
+    : $t('applications.shared.agentTeam')
 })
 
 const boundDefinitionSummary = computed(() => {
@@ -260,7 +268,7 @@ watch(
     }
 
     if (!applicationId) {
-      loadError.value = 'Application metadata is not available.'
+      loadError.value = $t('applications.components.applications.ApplicationLaunchConfigModal.applicationMetadataUnavailable')
       preparedLaunch.value = null
       return
     }
@@ -317,15 +325,15 @@ const launch = async (): Promise<void> => {
 
   if (preparedLaunch.value.kind === 'AGENT') {
     if (!preparedLaunch.value.config.workspaceId) {
-      loadError.value = 'Select a workspace before launching this application.'
+      loadError.value = $t('applications.components.applications.ApplicationLaunchConfigModal.selectWorkspaceBeforeLaunch')
       return
     }
     if (!preparedLaunch.value.config.llmModelIdentifier) {
-      loadError.value = 'Select a model before launching this application.'
+      loadError.value = $t('applications.components.applications.ApplicationLaunchConfigModal.selectModelBeforeLaunch')
       return
     }
   } else if (!preparedLaunch.value.config.llmModelIdentifier) {
-    loadError.value = 'Select a default model before launching this application.'
+    loadError.value = $t('applications.components.applications.ApplicationLaunchConfigModal.selectDefaultModelBeforeLaunch')
     return
   }
 

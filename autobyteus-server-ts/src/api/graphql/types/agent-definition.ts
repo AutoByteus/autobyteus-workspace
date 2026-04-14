@@ -9,6 +9,7 @@ import {
   registerEnumType,
 } from "type-graphql";
 import { GraphQLJSON } from "graphql-scalars";
+import type { AgentDefinitionDefaultLaunchConfig as DomainAgentDefinitionDefaultLaunchConfig } from "../../../agent-definition/domain/models.js";
 import { AgentDefinitionService } from "../../../agent-definition/services/agent-definition-service.js";
 import { AgentDefinitionConverter } from "../converters/agent-definition-converter.js";
 
@@ -22,6 +23,23 @@ registerEnumType(AgentDefinitionOwnershipScope, { name: "AgentDefinitionOwnershi
 
 const logger = {
   error: (...args: unknown[]) => console.error(...args),
+};
+
+
+const normalizeDefaultLaunchConfigInput = (
+  input: AgentDefinitionDefaultLaunchConfigInput | null | undefined,
+): DomainAgentDefinitionDefaultLaunchConfig | null | undefined => {
+  if (input === undefined) {
+    return undefined;
+  }
+  if (input === null) {
+    return null;
+  }
+  return {
+    llmModelIdentifier: input.llmModelIdentifier ?? null,
+    runtimeKind: input.runtimeKind ?? null,
+    llmConfig: input.llmConfig ?? null,
+  };
 };
 
 @ObjectType()
@@ -303,7 +321,7 @@ export class AgentDefinitionResolver {
         toolInvocationPreprocessorNames: input.toolInvocationPreprocessorNames ?? undefined,
         lifecycleProcessorNames: input.lifecycleProcessorNames ?? undefined,
         skillNames: input.skillNames ?? undefined,
-        defaultLaunchConfig: input.defaultLaunchConfig ?? undefined,
+        defaultLaunchConfig: normalizeDefaultLaunchConfigInput(input.defaultLaunchConfig),
       });
       return await AgentDefinitionConverter.toGraphql(domainDefinition);
     } catch (error) {
@@ -342,7 +360,9 @@ export class AgentDefinitionResolver {
         if (value === null && !nullableKeys.has(key)) {
           continue;
         }
-        updatePayload[key] = value;
+        updatePayload[key] = key === "defaultLaunchConfig"
+          ? normalizeDefaultLaunchConfigInput(value as AgentDefinitionDefaultLaunchConfigInput | null | undefined)
+          : value;
       }
       const domainDefinition = await service.updateAgentDefinition(
         id,

@@ -1,12 +1,12 @@
 <template>
   <fieldset class="border-t border-gray-200 pt-8">
-    <legend class="text-xl font-semibold text-gray-900">Default launch settings</legend>
+    <legend class="text-xl font-semibold text-gray-900">{{ $t('agents.components.agents.AgentDefaultLaunchConfigFields.defaultLaunchSettings') }}</legend>
     <p class="mt-2 text-sm text-gray-500">
-      Optional defaults used when this agent is launched directly or through an application bundle.
+      {{ $t('agents.components.agents.AgentDefaultLaunchConfigFields.launchDefaultsHelp') }}
     </p>
     <div class="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2">
       <div>
-        <label for="default-launch-runtime-kind" class="block text-base font-medium text-gray-800">Runtime kind</label>
+        <label for="default-launch-runtime-kind" class="block text-base font-medium text-gray-800">{{ $t('agents.components.agents.AgentDefaultLaunchConfigFields.runtimeKind') }}</label>
         <input
           id="default-launch-runtime-kind"
           :value="runtimeKind"
@@ -17,7 +17,7 @@
         />
       </div>
       <div>
-        <label for="default-launch-model" class="block text-base font-medium text-gray-800">LLM model identifier</label>
+        <label for="default-launch-model" class="block text-base font-medium text-gray-800">{{ $t('agents.components.agents.AgentDefaultLaunchConfigFields.llmModelIdentifier') }}</label>
         <input
           id="default-launch-model"
           :value="modelIdentifier"
@@ -28,7 +28,7 @@
         />
       </div>
       <div class="md:col-span-2">
-        <label for="default-launch-llm-config" class="block text-base font-medium text-gray-800">LLM config JSON</label>
+        <label for="default-launch-llm-config" class="block text-base font-medium text-gray-800">{{ $t('agents.components.agents.AgentDefaultLaunchConfigFields.llmConfigJson') }}</label>
         <textarea
           id="default-launch-llm-config"
           :value="llmConfigJson"
@@ -44,12 +44,16 @@
 </template>
 
 <script setup lang="ts">
+import { useLocalization } from '~/composables/useLocalization'
+
 defineProps<{
   runtimeKind: string
   modelIdentifier: string
   llmConfigJson: string
   jsonError: string | null
 }>()
+
+const { t: $t } = useLocalization()
 
 const emit = defineEmits<{
   'update:runtimeKind': [value: string]

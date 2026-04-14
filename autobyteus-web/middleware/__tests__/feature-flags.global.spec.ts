@@ -1,54 +1,57 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { mockNuxtImport } from '@nuxt/test-utils/runtime';
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 
-const { mockRuntimeConfig, navigateToMock } = vi.hoisted(() => ({
-  mockRuntimeConfig: {
-    public: {
-      enableApplications: false,
-    },
+const { applicationsCapabilityStoreMock, navigateToMock } = vi.hoisted(() => ({
+  applicationsCapabilityStoreMock: {
+    isEnabled: false,
+    ensureResolved: vi.fn().mockResolvedValue(null),
   },
   navigateToMock: vi.fn(),
-}));
+}))
 
-mockNuxtImport('useRuntimeConfig', () => () => mockRuntimeConfig);
-mockNuxtImport('navigateTo', () => navigateToMock);
-vi.stubGlobal('defineNuxtRouteMiddleware', vi.fn((fn: any) => fn));
+vi.mock('~/stores/applicationsCapabilityStore', () => ({
+  useApplicationsCapabilityStore: () => applicationsCapabilityStoreMock,
+}))
 
-// Now import the middleware
-import middleware from '../feature-flags.global';
+mockNuxtImport('navigateTo', () => navigateToMock)
+vi.stubGlobal('defineNuxtRouteMiddleware', vi.fn((fn: any) => fn))
+
+import middleware from '../feature-flags.global'
 
 describe('feature-flags.global middleware', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
-    mockRuntimeConfig.public.enableApplications = false;
-  });
+    applicationsCapabilityStoreMock.isEnabled = false
+    applicationsCapabilityStoreMock.ensureResolved.mockResolvedValue(null)
+    vi.clearAllMocks()
+  })
 
-  it('redirects to / when accessing /applications and feature is disabled', () => {
-    const to = { path: '/applications' } as any;
-    middleware(to);
+  it('redirects to / when accessing /applications and the capability is disabled', async () => {
+    await middleware({ path: '/applications' } as any)
 
-    expect(navigateToMock).toHaveBeenCalledWith('/');
-  });
+    expect(applicationsCapabilityStoreMock.ensureResolved).toHaveBeenCalledOnce()
+    expect(navigateToMock).toHaveBeenCalledWith('/')
+  })
 
-  it('redirects to / when accessing /applications/123 and feature is disabled', () => {
-    const to = { path: '/applications/123' } as any;
-    middleware(to);
+  it('redirects to / when capability resolution fails', async () => {
+    applicationsCapabilityStoreMock.ensureResolved.mockRejectedValueOnce(new Error('boom'))
 
-    expect(navigateToMock).toHaveBeenCalledWith('/');
-  });
+    await middleware({ path: '/applications/123' } as any)
 
-  it('does not redirect when accessing /applications and feature is enabled', () => {
-    mockRuntimeConfig.public.enableApplications = true;
-    const to = { path: '/applications' } as any;
-    middleware(to);
+    expect(navigateToMock).toHaveBeenCalledWith('/')
+  })
 
-    expect(navigateToMock).not.toHaveBeenCalled();
-  });
+  it('does not redirect when accessing /applications and the capability is enabled', async () => {
+    applicationsCapabilityStoreMock.isEnabled = true
 
-  it('does not redirect when accessing other routes', () => {
-    const to = { path: '/agents' } as any;
-    middleware(to);
+    await middleware({ path: '/applications' } as any)
 
-    expect(navigateToMock).not.toHaveBeenCalled();
-  });
-});
+    expect(navigateToMock).not.toHaveBeenCalled()
+  })
+
+  it('does not resolve the capability for non-application routes', async () => {
+    await middleware({ path: '/agents' } as any)
+
+    expect(applicationsCapabilityStoreMock.ensureResolved).not.toHaveBeenCalled()
+    expect(navigateToMock).not.toHaveBeenCalled()
+  })
+})

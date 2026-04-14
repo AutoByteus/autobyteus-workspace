@@ -103,7 +103,7 @@
         v-if="isApplicationOwnedTeam"
         class="rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800"
       >
-        This team is owned by an application bundle. Member selection is limited to agents and teams from the same owning application as UI guidance; backend validation remains authoritative.
+        {{ $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.applicationOwnedBundleNotice') }}
       </div>
 
       <section class="grid grid-cols-1 gap-4 xl:grid-cols-[18rem_minmax(0,1fr)_16rem]">

@@ -79,6 +79,7 @@ const messages = {
   'agentTeams.components.agentTeams.AgentTeamDefinitionForm.check.status.added': 'added',
   'agentTeams.components.agentTeams.AgentTeamDefinitionForm.check.status.assigned': 'assigned',
   'agentTeams.components.agentTeams.AgentTeamDefinitionForm.avatarUploadFailed': 'Failed to upload avatar image.',
+  'agentTeams.components.agentTeams.AgentTeamDefinitionForm.applicationOwnedBundleNotice': 'This team is owned by an application bundle. Member selection is limited to agents and teams from the same owning application as UI guidance; backend validation remains authoritative.',
   'agentTeams.components.agentTeams.form.AgentTeamMemberDetailsPanel.type': 'Type',
   'agentTeams.components.agentTeams.form.AgentTeamMemberDetailsPanel.source': 'Source',
   'agentTeams.components.agentTeams.form.AgentTeamMemberDetailsPanel.scope': 'Scope',

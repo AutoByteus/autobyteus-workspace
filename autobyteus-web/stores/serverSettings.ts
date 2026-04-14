@@ -6,6 +6,7 @@ import {
   SET_SEARCH_CONFIG,
   UPDATE_SERVER_SETTING,
 } from '~/graphql/mutations/server_settings_mutations'
+import { useApplicationsCapabilityStore } from '~/stores/applicationsCapabilityStore'
 
 export interface ServerSetting {
   key: string
@@ -46,6 +47,8 @@ const defaultSearchConfig = (): SearchConfigState => ({
   vertexAiSearchApiKeyConfigured: false,
   vertexAiSearchServingConfig: null,
 })
+
+const APPLICATIONS_SETTING_KEY = 'ENABLE_APPLICATIONS'
 
 export const useServerSettingsStore = defineStore('serverSettings', {
   state: () => ({
@@ -188,6 +191,9 @@ export const useServerSettingsStore = defineStore('serverSettings', {
         if (responseMessage && responseMessage.includes("successfully")) {
           // Reload settings from server to ensure state is consistent
           await this.reloadServerSettings();
+          if (key.trim().toUpperCase() === APPLICATIONS_SETTING_KEY) {
+            await useApplicationsCapabilityStore().refresh()
+          }
           return true
         }
         

@@ -212,14 +212,16 @@
           initial-root-section="mcp-servers"
         />
         <AgentPackagesManager v-if="activeSection === 'agent-packages'" />
-        <ServerSettingsManager
+        <div
           v-if="activeSection === 'server-settings'"
-          :section-mode="serverSettingsMode"
-        />
-        <div v-else-if="activeSection === ''" class="flex-1 flex flex-col items-center justify-center text-gray-400">
-          <span class="i-heroicons-cog-8-tooth-20-solid w-16 h-16 mb-6 opacity-20"></span>
-          <h3 class="text-xl font-medium mb-2 text-gray-500">{{ $t('settings.page.empty.title') }}</h3>
-          <p class="text-gray-400">{{ $t('settings.page.empty.description') }}</p>
+          class="flex h-full min-h-0 flex-col gap-4"
+        >
+          <div class="px-4 pt-4">
+            <ApplicationsFeatureToggleCard />
+          </div>
+          <div class="min-h-0 flex-1">
+            <ServerSettingsManager :section-mode="serverSettingsMode" />
+          </div>
         </div>
       </div>
     </div>
@@ -236,6 +238,7 @@ import ProviderAPIKeyManager from '~/components/settings/ProviderAPIKeyManager.v
 import TokenUsageStatistics from '~/components/settings/TokenUsageStatistics.vue';
 import NodeManager from '~/components/settings/NodeManager.vue';
 import ServerSettingsManager from '~/components/settings/ServerSettingsManager.vue';
+import ApplicationsFeatureToggleCard from '~/components/settings/ApplicationsFeatureToggleCard.vue';
 import MessagingSetupManager from '~/components/settings/MessagingSetupManager.vue';
 import ExtensionsManager from '~/components/settings/ExtensionsManager.vue';
 import AboutSettingsManager from '~/components/settings/AboutSettingsManager.vue';
