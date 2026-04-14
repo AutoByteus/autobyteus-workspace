@@ -9,6 +9,10 @@ class FakeWebContents extends EventEmitter {
   private currentUrl = '';
   focusCount = 0;
 
+  constructor(readonly session: object = { id: 'browser-session' }) {
+    super();
+  }
+
   async loadURL(url: string): Promise<void> {
     this.currentUrl = url;
     return new Promise((resolve, reject) => {
@@ -44,7 +48,7 @@ class FakeWebContents extends EventEmitter {
     this.windowOpenHandler = handler;
   }
 
-  openWindow(url: string): any {
+  openWindow(url: string, popupWebContents = new FakeWebContents(this.session)): any {
     if (!this.windowOpenHandler) {
       throw new Error("window open handler is not installed");
     }
@@ -62,7 +66,6 @@ class FakeWebContents extends EventEmitter {
       return response;
     }
 
-    const popupWebContents = new FakeWebContents();
     const createdWebContents = response.createWindow({ webContents: popupWebContents });
     if (createdWebContents !== popupWebContents) {
       throw new Error(
@@ -106,6 +109,26 @@ class FakeWebContentsView {
   }
 }
 
+const createViewFactory = (
+  views: FakeWebContentsView[],
+  browserSession: object = { id: 'browser-session' },
+) => ({
+  createBrowserView: () => {
+    const view = new FakeWebContentsView(new FakeWebContents(browserSession));
+    views.push(view);
+    return view as any;
+  },
+  adoptPopupWebContents: (popupWebContents: FakeWebContents) => {
+    if (popupWebContents.session !== browserSession) {
+      throw new Error('Popup webContents session does not match the Browser-owned session.');
+    }
+
+    const view = new FakeWebContentsView(popupWebContents);
+    views.push(view);
+    return view as any;
+  },
+})
+
 class FakeShellWindow {
   readonly browserWindow = new EventEmitter();
   readonly nodeId = "embedded-local";
@@ -147,13 +170,7 @@ describe("BrowserShellController", () => {
   it("attaches the active browser session into the shell host and publishes a snapshot", async () => {
     const views: FakeWebContentsView[] = [];
     const manager = new BrowserTabManager({
-      viewFactory: {
-        createBrowserView: (options?: { webContents?: FakeWebContents | null }) => {
-          const view = new FakeWebContentsView(options?.webContents ?? undefined);
-          views.push(view);
-          return view as any;
-        },
-      } as any,
+      viewFactory: createViewFactory(views) as any,
       screenshotWriter: {
         write: async () => "/tmp/browser.png",
       } as any,
@@ -179,13 +196,7 @@ describe("BrowserShellController", () => {
   it("removes the browser tab state when the last session closes", async () => {
     const views: FakeWebContentsView[] = [];
     const manager = new BrowserTabManager({
-      viewFactory: {
-        createBrowserView: (options?: { webContents?: FakeWebContents | null }) => {
-          const view = new FakeWebContentsView(options?.webContents ?? undefined);
-          views.push(view);
-          return view as any;
-        },
-      } as any,
+      viewFactory: createViewFactory(views) as any,
       screenshotWriter: {
         write: async () => "/tmp/browser.png",
       } as any,
@@ -212,13 +223,7 @@ describe("BrowserShellController", () => {
   it("unregisters a closed shell without rereading shell identity after teardown", async () => {
     const views: FakeWebContentsView[] = [];
     const manager = new BrowserTabManager({
-      viewFactory: {
-        createBrowserView: (options?: { webContents?: FakeWebContents | null }) => {
-          const view = new FakeWebContentsView(options?.webContents ?? undefined);
-          views.push(view);
-          return view as any;
-        },
-      } as any,
+      viewFactory: createViewFactory(views) as any,
       screenshotWriter: {
         write: async () => "/tmp/browser.png",
       } as any,
@@ -244,13 +249,7 @@ describe("BrowserShellController", () => {
   it("does not let one shell steal another shell's browser session", async () => {
     const views: FakeWebContentsView[] = [];
     const manager = new BrowserTabManager({
-      viewFactory: {
-        createBrowserView: (options?: { webContents?: FakeWebContents | null }) => {
-          const view = new FakeWebContentsView(options?.webContents ?? undefined);
-          views.push(view);
-          return view as any;
-        },
-      } as any,
+      viewFactory: createViewFactory(views) as any,
       screenshotWriter: {
         write: async () => "/tmp/browser.png",
       } as any,
@@ -290,13 +289,7 @@ describe("BrowserShellController", () => {
   it("releases a shell lease when the owning shell closes", async () => {
     const views: FakeWebContentsView[] = [];
     const manager = new BrowserTabManager({
-      viewFactory: {
-        createBrowserView: (options?: { webContents?: FakeWebContents | null }) => {
-          const view = new FakeWebContentsView(options?.webContents ?? undefined);
-          views.push(view);
-          return view as any;
-        },
-      } as any,
+      viewFactory: createViewFactory(views) as any,
       screenshotWriter: {
         write: async () => "/tmp/browser.png",
       } as any,
@@ -327,13 +320,7 @@ describe("BrowserShellController", () => {
   it("skips redundant host-bounds projection work when bounds are unchanged", async () => {
     const views: FakeWebContentsView[] = [];
     const manager = new BrowserTabManager({
-      viewFactory: {
-        createBrowserView: (options?: { webContents?: FakeWebContents | null }) => {
-          const view = new FakeWebContentsView(options?.webContents ?? undefined);
-          views.push(view);
-          return view as any;
-        },
-      } as any,
+      viewFactory: createViewFactory(views) as any,
       screenshotWriter: {
         write: async () => "/tmp/browser.png",
       } as any,
@@ -362,13 +349,7 @@ describe("BrowserShellController", () => {
   it("activates popup-created sessions in the same shell as the opener and allows closing them", async () => {
     const views: FakeWebContentsView[] = [];
     const manager = new BrowserTabManager({
-      viewFactory: {
-        createBrowserView: (options?: { webContents?: FakeWebContents | null }) => {
-          const view = new FakeWebContentsView(options?.webContents ?? undefined);
-          views.push(view);
-          return view as any;
-        },
-      } as any,
+      viewFactory: createViewFactory(views) as any,
       screenshotWriter: {
         write: async () => "/tmp/browser.png",
       } as any,

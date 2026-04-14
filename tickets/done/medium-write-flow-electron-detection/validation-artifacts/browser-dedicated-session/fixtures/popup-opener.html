@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Validation Popup Opener</title>
+</head>
+<body>
+  <script>
+    window.readAuthStorage = () => localStorage.getItem('auth') || '';
+    window.openPopupChild = (targetUrl) => {
+      const child = window.open(targetUrl, '_blank');
+      return !!child;
+    };
+  </script>
+</body>
+</html>

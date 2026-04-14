@@ -1,0 +1,11 @@
+{
+  "phase": "restart_check",
+  "openerId": "06998c",
+  "secondId": "41c9a7",
+  "storageAfterRestart": "1",
+  "secondTabStorageAfterRestart": "1",
+  "persistedCookieValue": "persisted",
+  "persistedCookieCount": 1,
+  "sessionCount": 2,
+  "partitionMatchesDedicatedBrowserSession": true
+}

@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Validation Auth Page</title>
+</head>
+<body>
+  <script>
+    window.readAuthStorage = () => localStorage.getItem('auth') || '';
+    window.setAuthStorage = () => {
+      localStorage.setItem('auth', '1');
+      return window.readAuthStorage();
+    };
+  </script>
+</body>
+</html>

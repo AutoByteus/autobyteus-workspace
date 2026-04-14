@@ -1,6 +1,7 @@
 import { BrowserBridgeServer } from './browser-bridge-server'
 import { BrowserShellController } from './browser-shell-controller'
 import { BrowserScreenshotArtifactWriter } from './browser-screenshot-artifact-writer'
+import { BrowserSessionProfile } from './browser-session-profile'
 import { BrowserTabManager } from './browser-tab-manager'
 import { BrowserViewFactory } from './browser-view-factory'
 import { BrowserBridgeAuthRegistry } from './browser-bridge-auth-registry'
@@ -26,8 +27,9 @@ export class BrowserRuntime {
   constructor(private readonly options: BrowserRuntimeOptions) {}
 
   async start(): Promise<void> {
+    const sessionProfile = new BrowserSessionProfile()
     this.browserSessionManager = new BrowserTabManager({
-      viewFactory: new BrowserViewFactory(),
+      viewFactory: new BrowserViewFactory(sessionProfile),
       screenshotWriter: new BrowserScreenshotArtifactWriter(this.options.artifactsDir),
     })
     this.browserShellController = new BrowserShellController(this.browserSessionManager)

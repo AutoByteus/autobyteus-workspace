@@ -6,6 +6,8 @@ const {
   browserBridgeServerState,
   closeAllSessionsMock,
   disposeShellControllerMock,
+  browserSessionProfiles,
+  browserViewFactorySessionProfiles,
 } = vi.hoisted(() => {
   const browserBridgeServerState = {
     bindHost: null as string | null,
@@ -20,6 +22,8 @@ const {
     browserBridgeServerState,
     closeAllSessionsMock: vi.fn().mockResolvedValue(undefined),
     disposeShellControllerMock: vi.fn(),
+    browserSessionProfiles: [] as unknown[],
+    browserViewFactorySessionProfiles: [] as unknown[],
   }
 })
 
@@ -72,14 +76,28 @@ vi.mock('../browser-screenshot-artifact-writer', () => ({
   },
 }))
 
+vi.mock('../browser-session-profile', () => ({
+  BrowserSessionProfile: class MockBrowserSessionProfile {
+    constructor() {
+      browserSessionProfiles.push(this)
+    }
+  },
+}))
+
 vi.mock('../browser-view-factory', () => ({
-  BrowserViewFactory: class MockBrowserViewFactory {},
+  BrowserViewFactory: class MockBrowserViewFactory {
+    constructor(sessionProfile: unknown) {
+      browserViewFactorySessionProfiles.push(sessionProfile)
+    }
+  },
 }))
 
 describe('BrowserRuntime', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     browserBridgeServerState.bindHost = null
+    browserSessionProfiles.length = 0
+    browserViewFactorySessionProfiles.length = 0
   })
 
   it('passes the authoritative listener host into the browser bridge server at startup', async () => {
@@ -95,6 +113,8 @@ describe('BrowserRuntime', () => {
 
     expect(runtime).not.toBeNull()
     expect(browserBridgeServerState.bindHost).toBe('0.0.0.0')
+    expect(browserSessionProfiles).toHaveLength(1)
+    expect(browserViewFactorySessionProfiles).toEqual([browserSessionProfiles[0]])
     expect(setRuntimeEnvOverrides).toHaveBeenCalledWith({
       AUTOBYTEUS_BROWSER_BRIDGE_BASE_URL: 'http://127.0.0.1:30123',
       AUTOBYTEUS_BROWSER_BRIDGE_TOKEN: 'embedded-token',

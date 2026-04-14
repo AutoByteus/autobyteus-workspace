@@ -2,10 +2,7 @@ import type { Rectangle, WebContentsView } from 'electron'
 import type { BrowserReadPageCleaningMode } from './browser-page-cleaner'
 import type { BrowserDomSnapshotElement } from './browser-dom-snapshot-script'
 import type { BrowserScreenshotArtifactWriter } from './browser-screenshot-artifact-writer'
-import type {
-  BrowserViewCreationOptions,
-  BrowserViewFactory,
-} from './browser-view-factory'
+import type { BrowserViewFactory } from './browser-view-factory'
 
 export type BrowserReadyState = 'domcontentloaded' | 'load'
 
@@ -126,6 +123,7 @@ export type BrowserTabErrorCode =
   | 'browser_session_closed'
   | 'browser_session_not_found'
   | 'browser_navigation_failed'
+  | 'browser_popup_session_mismatch'
   | 'browser_page_read_failed'
   | 'dom_snapshot_failed'
   | 'browser_javascript_execution_failed'
@@ -157,5 +155,3 @@ export type BrowserTabManagerOptions = {
   viewFactory: BrowserViewFactory
   screenshotWriter: BrowserScreenshotArtifactWriter
 }
-
-export type { BrowserViewCreationOptions }

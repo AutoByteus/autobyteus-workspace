@@ -30,7 +30,6 @@ import type {
   BrowserTabManagerOptions,
   BrowserTabRecord,
   BrowserTabSummary,
-  BrowserViewCreationOptions,
   ReadBrowserPageRequest,
   ReadBrowserPageResult,
 } from './browser-tab-types'
@@ -108,6 +107,7 @@ export class BrowserTabManager extends EventEmitter {
       customTitle: input.title ?? null,
       openerSessionId: null,
       state: 'opening',
+      view: this.options.viewFactory.createBrowserView(),
     })
 
     this.sessions.set(session.id, session)
@@ -404,9 +404,8 @@ export class BrowserTabManager extends EventEmitter {
     customTitle: string | null
     openerSessionId: string | null
     state: BrowserTabRecord['state']
-    viewOptions?: BrowserViewCreationOptions
+    view: WebContentsView
   }): BrowserTabRecord {
-    const view = this.options.viewFactory.createBrowserView(input.viewOptions)
     const customTitle = input.customTitle?.trim() || null
     return {
       id: input.id,
@@ -417,7 +416,7 @@ export class BrowserTabManager extends EventEmitter {
       leasedShellId: null,
       state: input.state,
       openPromise: null,
-      view,
+      view: input.view,
       viewportBounds: { ...DEFAULT_BROWSER_VIEW_BOUNDS },
     }
   }
@@ -427,47 +426,96 @@ export class BrowserTabManager extends EventEmitter {
     normalizedUrl: string,
     options: BrowserWindowCreateOptions,
   ): WebContents {
-    const childSession = this.createSessionRecord({
-      id: this.generateSessionId(),
-      url: normalizedUrl,
-      customTitle: null,
-      openerSessionId: openerSession.id,
-      state: options.webContents ? 'open' : 'opening',
-      viewOptions: {
-        webContents: options.webContents ?? null,
-      },
-    })
+    let childSession: BrowserTabRecord | null = null
 
-    this.sessions.set(childSession.id, childSession)
-    this.attachSessionObservers(childSession)
-    childSession.view.setBounds(childSession.viewportBounds)
+    try {
+      childSession = this.createSessionRecord({
+        id: this.generateSessionId(),
+        url: normalizedUrl,
+        customTitle: null,
+        openerSessionId: openerSession.id,
+        state: options.webContents ? 'open' : 'opening',
+        view: this.buildPopupChildView(options),
+      })
 
-    if (!options.webContents) {
-      childSession.openPromise = this.navigation
-        .loadUrl(childSession, normalizedUrl, 'load')
-        .then(() => {
-          childSession.state = 'open'
-          this.updateSessionTitle(childSession, childSession.customTitle)
-          this.emitSessionUpserted(childSession)
-        })
-        .catch((error) => {
-          this.sessions.delete(childSession.id)
-          this.destroySessionView(childSession.view)
-          logger.warn(
-            `Popup browser child session '${childSession.id}' failed to load '${normalizedUrl}': ${String(error)}`,
-          )
-        })
+      this.sessions.set(childSession.id, childSession)
+      this.attachSessionObservers(childSession)
+      childSession.view.setBounds(childSession.viewportBounds)
+
+      if (!options.webContents) {
+        childSession.openPromise = this.navigation
+          .loadUrl(childSession, normalizedUrl, 'load')
+          .then(() => {
+            childSession!.state = 'open'
+            this.updateSessionTitle(childSession!, childSession!.customTitle)
+            this.emitSessionUpserted(childSession!)
+          })
+          .catch((error) => {
+            this.sessions.delete(childSession!.id)
+            this.destroySessionView(childSession!.view)
+            logger.warn(
+              `Popup browser child session '${childSession!.id}' failed to load '${normalizedUrl}': ${String(error)}`,
+            )
+          })
+      }
+
+      this.emitSessionUpserted(childSession)
+      this.emit('popup-opened', {
+        opener_tab_id: openerSession.id,
+        tab_id: childSession.id,
+        url: childSession.url,
+        title: childSession.title,
+      } satisfies BrowserPopupOpenedEvent)
+
+      return childSession.view.webContents
+    } catch (error) {
+      this.abortPopupChildCreation(openerSession, normalizedUrl, options, childSession, error)
+      throw error
+    }
+  }
+
+  private buildPopupChildView(options: BrowserWindowCreateOptions): WebContentsView {
+    if (options.webContents) {
+      return this.options.viewFactory.adoptPopupWebContents(options.webContents)
     }
 
-    this.emitSessionUpserted(childSession)
-    this.emit('popup-opened', {
-      opener_tab_id: openerSession.id,
-      tab_id: childSession.id,
-      url: childSession.url,
-      title: childSession.title,
-    } satisfies BrowserPopupOpenedEvent)
+    return this.options.viewFactory.createBrowserView()
+  }
 
-    return childSession.view.webContents
+  private abortPopupChildCreation(
+    openerSession: BrowserTabRecord,
+    normalizedUrl: string,
+    options: BrowserWindowCreateOptions,
+    childSession: BrowserTabRecord | null,
+    error: unknown,
+  ): void {
+    const reason = error instanceof Error ? error.message : String(error)
+
+    if (childSession) {
+      this.sessions.delete(childSession.id)
+      this.destroySessionView(childSession.view)
+    } else if (options.webContents) {
+      this.destroyPopupWebContents(options.webContents)
+    }
+
+    logger.warn(
+      `Aborted popup browser child creation from '${openerSession.id}' to '${normalizedUrl}': ${reason}`,
+    )
+  }
+
+  private destroyPopupWebContents(popupWebContents: WebContents): void {
+    if (popupWebContents.isDestroyed()) {
+      return
+    }
+
+    popupWebContents.close()
+
+    if (!popupWebContents.isDestroyed()) {
+      const destroyablePopupWebContents = popupWebContents as WebContents & {
+        destroy?: () => void
+      }
+      destroyablePopupWebContents.destroy?.()
+    }
   }
 
   private countActivePopupChildren(openerSessionId: string): number {
