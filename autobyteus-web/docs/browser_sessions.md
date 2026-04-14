@@ -38,6 +38,10 @@ Electron main is the authoritative owner for:
 
 Main-process owners:
 
+- `BrowserSessionProfile`
+  - dedicated persistent Browser partition ownership
+  - one-time Browser-session policy application
+  - popup `webContents` session validation
 - `BrowserTabManager`
   - session registry
   - session lifecycle
@@ -121,7 +125,9 @@ Browser now supports browser-like popup/new-window behavior inside the app.
 Rules:
 
 - `window.open()` from a browsered page becomes another in-app Browser tab/session instead of a separate OS window
-- popup-created sessions share the same default Electron browser profile as other Browser tabs
+- Browser tabs use one Browser-owned persistent Electron session instead of Electron's default app session
+- popup-created sessions are adopted only when Electron provides popup `webContents` from that same Browser-owned session
+- mismatched popup `webContents` are aborted and closed with no child Browser session or `popup-opened` event created
 - popup requests are accepted only when the opener session is currently leased into a shell
 - popup fan-out is bounded per opener session, so one page cannot create unlimited child tabs
 - unsupported protocols are still denied; `about:blank` is allowed because some popup flows bootstrap from it
@@ -247,6 +253,9 @@ MCP-prefixed raw tool names are normalized into canonical browser tool names at 
 ## OAuth / Social Login Limits
 
 Popup support removes the old in-app popup block, which is why popup-driven login flows such as X -> Google can now progress inside Browser tabs.
+
+Browser now keeps its own persistent Electron session, so auth stored in the old default app session does not migrate into Browser automatically.
+Users may need one-time re-login after rollout, but Browser auth should then persist across Browser tabs, popup flows, and app restarts.
 
 However, Browser is still an embedded Electron browser surface.
 Some providers may reject embedded OAuth/user-agent flows for policy reasons even when popup handling is correct.

@@ -1,0 +1,14 @@
+{
+  "phase": "mismatch_probe",
+  "openerId": "60f9a5",
+  "errorName": "BrowserTabError",
+  "errorCode": "browser_popup_session_mismatch",
+  "errorMessage": "Popup webContents does not belong to Browser session partition 'persist:autobyteus-browser'.",
+  "popupEventsLength": 0,
+  "sessionCount": 1,
+  "activeTabId": "60f9a5",
+  "attachedViewStillMatchesOpener": true,
+  "aliveWindowCount": 1,
+  "foreignWindowDestroyed": true,
+  "foreignWebContentsDestroyed": true
+}

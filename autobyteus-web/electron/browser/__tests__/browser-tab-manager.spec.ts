@@ -13,6 +13,10 @@ class FakeWebContents extends EventEmitter {
   private windowOpenHandler: ((details: any) => any) | null = null;
   private currentUrl = "";
 
+  constructor(readonly session: object = { id: "browser-session" }) {
+    super();
+  }
+
   async loadURL(url: string): Promise<void> {
     this.currentUrl = url;
     return new Promise((resolve, reject) => {
@@ -98,11 +102,15 @@ class FakeWebContents extends EventEmitter {
     this.emit("destroyed");
   }
 
+  destroy(): void {
+    this.close();
+  }
+
   setWindowOpenHandler(handler: (details: any) => any): void {
     this.windowOpenHandler = handler;
   }
 
-  openWindow(url: string): any {
+  openWindow(url: string, popupWebContents = new FakeWebContents(this.session)): any {
     if (!this.windowOpenHandler) {
       throw new Error("window open handler is not installed");
     }
@@ -120,7 +128,6 @@ class FakeWebContents extends EventEmitter {
       return response;
     }
 
-    const popupWebContents = new FakeWebContents();
     const createdWebContents = response.createWindow({ webContents: popupWebContents });
     if (createdWebContents !== popupWebContents) {
       throw new Error(
@@ -156,17 +163,45 @@ class FakeWebContentsView {
   }
 }
 
+const createViewFactory = (
+  views: FakeWebContentsView[],
+  browserSession: object = { id: "browser-session" },
+  overrides?: {
+    createBrowserView?: () => FakeWebContentsView;
+    adoptPopupWebContents?: (popupWebContents: FakeWebContents) => FakeWebContentsView;
+  },
+) => ({
+  createBrowserView: () => {
+    const view =
+      overrides?.createBrowserView?.() ?? new FakeWebContentsView(new FakeWebContents(browserSession));
+    views.push(view);
+    return view as any;
+  },
+  adoptPopupWebContents: (popupWebContents: FakeWebContents) => {
+    if (overrides?.adoptPopupWebContents) {
+      const view = overrides.adoptPopupWebContents(popupWebContents);
+      views.push(view);
+      return view as any;
+    }
+
+    if (popupWebContents.session !== browserSession) {
+      throw new BrowserTabError(
+        "browser_popup_session_mismatch",
+        "Popup webContents session does not match the Browser-owned session.",
+      );
+    }
+
+    const view = new FakeWebContentsView(popupWebContents);
+    views.push(view);
+    return view as any;
+  },
+});
+
 describe("BrowserTabManager", () => {
   it("waits for an opening session before reusing it", async () => {
     const views: FakeWebContentsView[] = [];
     const manager = new BrowserTabManager({
-      viewFactory: {
-        createBrowserView: (options?: { webContents?: FakeWebContents | null }) => {
-          const view = new FakeWebContentsView(options?.webContents ?? undefined);
-          views.push(view);
-          return view as any;
-        },
-      } as any,
+      viewFactory: createViewFactory(views) as any,
       screenshotWriter: {
         write: async () => "/tmp/browser.png",
       } as any,
@@ -199,9 +234,9 @@ describe("BrowserTabManager", () => {
 
   it("evicts the oldest closed-session tombstones once the retention cap is exceeded", async () => {
     const manager = new BrowserTabManager({
-      viewFactory: {
-        createBrowserView: (options?: { webContents?: FakeWebContents | null }) => {
-          const view = new FakeWebContentsView(options?.webContents ?? undefined);
+      viewFactory: createViewFactory([], { id: "browser-session" }, {
+        createBrowserView: () => {
+          const view = new FakeWebContentsView();
           const originalLoadURL = view.webContents.loadURL.bind(view.webContents);
           view.webContents.loadURL = async (url: string) => {
             const loadPromise = originalLoadURL(url);
@@ -210,7 +245,7 @@ describe("BrowserTabManager", () => {
           };
           return view as any;
         },
-      } as any,
+      }) as any,
       screenshotWriter: {
         write: async () => "/tmp/browser.png",
       } as any,
@@ -247,13 +282,7 @@ describe("BrowserTabManager", () => {
   it("does not reuse a session that is already leased to a shell", async () => {
     const views: FakeWebContentsView[] = [];
     const manager = new BrowserTabManager({
-      viewFactory: {
-        createBrowserView: (options?: { webContents?: FakeWebContents | null }) => {
-          const view = new FakeWebContentsView(options?.webContents ?? undefined);
-          views.push(view);
-          return view as any;
-        },
-      } as any,
+      viewFactory: createViewFactory(views) as any,
       screenshotWriter: {
         write: async () => "/tmp/browser.png",
       } as any,
@@ -286,13 +315,7 @@ describe("BrowserTabManager", () => {
   it("resolves navigateSession for a full document navigation at load", async () => {
     const views: FakeWebContentsView[] = [];
     const manager = new BrowserTabManager({
-      viewFactory: {
-        createBrowserView: (options?: { webContents?: FakeWebContents | null }) => {
-          const view = new FakeWebContentsView(options?.webContents ?? undefined);
-          views.push(view);
-          return view as any;
-        },
-      } as any,
+      viewFactory: createViewFactory(views) as any,
       screenshotWriter: {
         write: async () => "/tmp/browser.png",
       } as any,
@@ -337,13 +360,7 @@ describe("BrowserTabManager", () => {
   it("resolves navigateSession for same-document navigation without waiting for did-finish-load", async () => {
     const views: FakeWebContentsView[] = [];
     const manager = new BrowserTabManager({
-      viewFactory: {
-        createBrowserView: (options?: { webContents?: FakeWebContents | null }) => {
-          const view = new FakeWebContentsView(options?.webContents ?? undefined);
-          views.push(view);
-          return view as any;
-        },
-      } as any,
+      viewFactory: createViewFactory(views) as any,
       screenshotWriter: {
         write: async () => "/tmp/browser.png",
       } as any,
@@ -388,13 +405,7 @@ describe("BrowserTabManager", () => {
   it("resolves navigateSession at domcontentloaded without waiting for did-finish-load", async () => {
     const views: FakeWebContentsView[] = [];
     const manager = new BrowserTabManager({
-      viewFactory: {
-        createBrowserView: (options?: { webContents?: FakeWebContents | null }) => {
-          const view = new FakeWebContentsView(options?.webContents ?? undefined);
-          views.push(view);
-          return view as any;
-        },
-      } as any,
+      viewFactory: createViewFactory(views) as any,
       screenshotWriter: {
         write: async () => "/tmp/browser.png",
       } as any,
@@ -430,13 +441,7 @@ describe("BrowserTabManager", () => {
   it("rejects navigateSession when Electron reports a provisional main-frame failure", async () => {
     const views: FakeWebContentsView[] = [];
     const manager = new BrowserTabManager({
-      viewFactory: {
-        createBrowserView: (options?: { webContents?: FakeWebContents | null }) => {
-          const view = new FakeWebContentsView(options?.webContents ?? undefined);
-          views.push(view);
-          return view as any;
-        },
-      } as any,
+      viewFactory: createViewFactory(views) as any,
       screenshotWriter: {
         write: async () => "/tmp/browser.png",
       } as any,
@@ -467,8 +472,8 @@ describe("BrowserTabManager", () => {
   it("lists sessions and supports read-page plus dom-snapshot actions", async () => {
     const view = new FakeWebContentsView();
     const manager = new BrowserTabManager({
-      viewFactory: {
-        createBrowserView: (_options?: { webContents?: FakeWebContents | null }) => {
+      viewFactory: createViewFactory([], { id: "browser-session" }, {
+        createBrowserView: () => {
           const originalLoadURL = view.webContents.loadURL.bind(view.webContents);
           view.webContents.loadURL = async (url: string) => {
             const loadPromise = originalLoadURL(url);
@@ -477,7 +482,7 @@ describe("BrowserTabManager", () => {
           };
           return view as any;
         },
-      } as any,
+      }) as any,
       screenshotWriter: {
         write: async () => "/tmp/browser.png",
       } as any,
@@ -529,13 +534,7 @@ describe("BrowserTabManager", () => {
       title: string | null;
     }> = [];
     const manager = new BrowserTabManager({
-      viewFactory: {
-        createBrowserView: (options?: { webContents?: FakeWebContents | null }) => {
-          const view = new FakeWebContentsView(options?.webContents ?? undefined);
-          views.push(view);
-          return view as any;
-        },
-      } as any,
+      viewFactory: createViewFactory(views) as any,
       screenshotWriter: {
         write: async () => "/tmp/browser.png",
       } as any,
@@ -570,6 +569,7 @@ describe("BrowserTabManager", () => {
     expect(childSessions[0]!.tab_id).toHaveLength(6);
     expect(popupEvents[0]!.tab_id).toBe(childSessions[0]!.tab_id);
     expect(popupResponse.createdWebContents).toBe(views[1]!.webContents);
+    expect(views[1]!.webContents.session).toBe(views[0]!.webContents.session);
     await expect(
       manager.readPage({
         tab_id: childSessions[0]!.tab_id,
@@ -582,16 +582,62 @@ describe("BrowserTabManager", () => {
     });
   });
 
+  it("aborts popup adoption when Electron provides popup webContents from a foreign session", async () => {
+    const views: FakeWebContentsView[] = [];
+    const popupEvents: Array<{
+      opener_tab_id: string;
+      tab_id: string;
+      url: string;
+      title: string | null;
+    }> = [];
+    const manager = new BrowserTabManager({
+      viewFactory: createViewFactory(views) as any,
+      screenshotWriter: {
+        write: async () => "/tmp/browser.png",
+      } as any,
+    });
+    manager.onPopupOpened((event) => {
+      popupEvents.push(event);
+    });
+
+    const openPromise = manager.openSession({ url: "https://x.com", wait_until: "load" });
+    await Promise.resolve();
+    views[0]!.webContents.finishLoad("https://x.com/");
+    const opener = await openPromise;
+    manager.claimSessionLease(opener.tab_id, 41);
+
+    const foreignPopupWebContents = new FakeWebContents({ id: "foreign-session" });
+
+    let thrownError: unknown = null;
+    try {
+      views[0]!.webContents.openWindow(
+        "https://accounts.google.com/o/oauth2/v2/auth",
+        foreignPopupWebContents,
+      );
+    } catch (error) {
+      thrownError = error;
+    }
+
+    expect(thrownError).toBeInstanceOf(BrowserTabError);
+    expect((thrownError as BrowserTabError).code).toBe("browser_popup_session_mismatch");
+    expect(foreignPopupWebContents.isDestroyed()).toBe(true);
+    expect(views).toHaveLength(1);
+    expect(popupEvents).toHaveLength(0);
+    expect(manager.listSessions()).toEqual({
+      sessions: [
+        {
+          tab_id: opener.tab_id,
+          title: "https://x.com/",
+          url: "https://x.com/",
+        },
+      ],
+    });
+  });
+
   it("denies popup requests from sessions that are not attached to a shell", async () => {
     const views: FakeWebContentsView[] = [];
     const manager = new BrowserTabManager({
-      viewFactory: {
-        createBrowserView: (options?: { webContents?: FakeWebContents | null }) => {
-          const view = new FakeWebContentsView(options?.webContents ?? undefined);
-          views.push(view);
-          return view as any;
-        },
-      } as any,
+      viewFactory: createViewFactory(views) as any,
       screenshotWriter: {
         write: async () => "/tmp/browser.png",
       } as any,
@@ -621,13 +667,7 @@ describe("BrowserTabManager", () => {
   it("caps popup fan-out per opener session", async () => {
     const views: FakeWebContentsView[] = [];
     const manager = new BrowserTabManager({
-      viewFactory: {
-        createBrowserView: (options?: { webContents?: FakeWebContents | null }) => {
-          const view = new FakeWebContentsView(options?.webContents ?? undefined);
-          views.push(view);
-          return view as any;
-        },
-      } as any,
+      viewFactory: createViewFactory(views) as any,
       screenshotWriter: {
         write: async () => "/tmp/browser.png",
       } as any,

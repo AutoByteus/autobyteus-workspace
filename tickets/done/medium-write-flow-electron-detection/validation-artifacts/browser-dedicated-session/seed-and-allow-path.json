@@ -1,0 +1,25 @@
+{
+  "phase": "seed_and_allow_path",
+  "openerId": "083747",
+  "secondId": "9c7f5b",
+  "popupId": "3241cb",
+  "storageBefore": "",
+  "storageAfter": "1",
+  "secondStorage": "1",
+  "popupStorage": "1",
+  "popupOpened": true,
+  "popupEvents": [
+    {
+      "opener_tab_id": "083747",
+      "tab_id": "3241cb",
+      "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/medium-write-flow-electron-detection/tickets/done/medium-write-flow-electron-detection/validation-artifacts/browser-dedicated-session/fixtures/popup-child.html",
+      "title": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/medium-write-flow-electron-detection/tickets/done/medium-write-flow-electron-detection/validation-artifacts/browser-dedicated-session/fixtures/popup-child.html"
+    }
+  ],
+  "sessionCount": 3,
+  "sameSessionObject": true,
+  "partitionMatchesDedicatedBrowserSession": true,
+  "activeTabId": "3241cb",
+  "attachedViewMatchesPopup": true,
+  "persistedCookieValue": "persisted"
+}
