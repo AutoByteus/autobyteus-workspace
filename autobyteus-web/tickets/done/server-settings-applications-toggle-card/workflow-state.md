@@ -4,11 +4,11 @@
 
 - Ticket: `server-settings-applications-toggle-card`
 - Current Stage: `10`
-- Next Stage: `Repository Finalization`
+- Next Stage: `End`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-039`
+- Last Transition ID: `T-040`
 - Last Updated: `2026-04-14`
 
 ## Stage 0 Bootstrap Record
@@ -38,7 +38,7 @@
 | 7 API/E2E + Executable Validation | Pass | Repeat re-entry validation rerun on the final source state with focused tests plus Electron mac build | `api-e2e-testing.md`, `workflow-state.md` |
 | 8 Code Review | Pass | Fresh independent review passed after the remaining lifecycle findings were resolved and rerun validation was recorded | `code-review.md`, `workflow-state.md` |
 | 9 Docs Sync | Pass | `docs-sync.md` current + docs updated or no-impact rationale recorded | `docs-sync.md`, `autobyteus-web/docs/settings.md` |
-| 10 Handoff / Ticket State | In Progress | `handoff-summary.md` current + explicit user verification received + ticket archived before repository finalization | `handoff-summary.md`, `workflow-state.md` |
+| 10 Handoff / Ticket State | Pass | `handoff-summary.md` current + explicit user verification received + ticket archived + repository finalization complete without release work | `handoff-summary.md`, `workflow-state.md` |
 
 ## Pre-Edit Checklist (Stage 6 Source-Code Edits)
 
@@ -100,6 +100,7 @@
 | T-037 | 2026-04-14 | 8 | 9 | Final code-review pass promoted the ticket to docs sync; the settings documentation remained the only durable user-facing docs update required | N/A | Locked | `docs-sync.md`, `workflow-state.md` |
 | T-038 | 2026-04-14 | 9 | 10 | Docs sync confirmed the final user-facing contract and the refreshed handoff summary was prepared for explicit verification and closeout | N/A | Locked | `docs-sync.md`, `handoff-summary.md`, `workflow-state.md` |
 | T-039 | 2026-04-14 | 10 | 10 | User reconfirmed completion after the reopened regression fix; ticket archive moved to \`tickets/done\` and repository finalization began without a release step | N/A | Locked | `handoff-summary.md`, `workflow-state.md` |
+| T-040 | 2026-04-14 | 10 | 10 | Repository finalization completed on \`personal\`: ticket branch committed and pushed, target branch updated, no release performed, worktree removed, and local ticket branch deleted | N/A | Locked | `handoff-summary.md`, `workflow-state.md` |
 
 ## Audible Notification Log (Optional Tracking)
 

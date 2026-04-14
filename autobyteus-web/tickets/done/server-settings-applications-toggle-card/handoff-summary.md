@@ -88,16 +88,16 @@
 - Finalization target branch:
   - `personal`
 - Commit status:
-  - `Pending`
+  - `Completed`
 - Push status:
-  - `Pending`
+  - `Completed`
 - Merge status:
-  - `Pending`
+  - `Completed`
 - Release/publication/deployment status:
   - `Not required`
 - Worktree cleanup status:
-  - `Pending`
+  - `Completed`
 - Local branch cleanup status:
-  - `Pending`
+  - `Completed`
 - Blockers / notes:
-  - none at archive time
+  - remote ticket branch intentionally retained
