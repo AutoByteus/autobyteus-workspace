@@ -21,3 +21,4 @@
 - User verification received on `2026-04-14`.
 - Release notes: `not required`
 - Release / publication / deployment: `not required`
+- Repository finalization completed on `2026-04-14`: the ticket branch was pushed and merged into `personal`.
