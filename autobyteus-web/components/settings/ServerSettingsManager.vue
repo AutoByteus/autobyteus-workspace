@@ -130,9 +130,13 @@
                 </div>
               </div>
 
-              <div class="mt-4 border-t border-gray-100 pt-3 flex min-h-[1.25rem] items-center justify-end gap-2">
-                <p v-if="isQuickSettingChanged(field.key) && hasQuickSettingValidationErrors(field.key)" class="text-sm text-red-600">{{ $t('settings.components.settings.ServerSettingsManager.complete_host_and_use_a_valid') }}</p>
-                <p v-else-if="isQuickSettingChanged(field.key)" class="text-sm text-slate-500">{{ $t('settings.components.settings.ServerSettingsManager.unsaved_changes') }}</p>
+              <div
+                v-if="isQuickSettingChanged(field.key)"
+                class="mt-3"
+                :data-testid="`quick-setting-status-${field.key}`"
+              >
+                <p v-if="hasQuickSettingValidationErrors(field.key)" class="text-sm text-red-600">{{ $t('settings.components.settings.ServerSettingsManager.complete_host_and_use_a_valid') }}</p>
+                <p v-else class="text-sm text-slate-500">{{ $t('settings.components.settings.ServerSettingsManager.unsaved_changes') }}</p>
               </div>
 
               <input

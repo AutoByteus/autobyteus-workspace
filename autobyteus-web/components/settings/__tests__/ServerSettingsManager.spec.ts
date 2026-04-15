@@ -136,6 +136,27 @@ describe('ServerSettingsManager', () => {
     expect(wrapper.find('[data-testid="compaction-config-card-stub"]').exists()).toBe(true)
   })
 
+  it('only shows quick card status messaging after a field changes', async () => {
+    const { wrapper } = await mountComponent([
+      { key: 'LMSTUDIO_HOSTS', value: 'http://localhost:1234', description: 'desc' },
+    ])
+
+    await wrapper.vm.$nextTick()
+    await flushPromises()
+
+    expect(wrapper.find('[data-testid="quick-setting-status-LMSTUDIO_HOSTS"]').exists()).toBe(false)
+
+    const setupState = (wrapper.vm as any).$?.setupState
+    const firstRow = setupState.quickEndpointRows['LMSTUDIO_HOSTS'][0]
+    firstRow.host = '127.0.0.1'
+    setupState.onQuickEndpointRowChange('LMSTUDIO_HOSTS')
+
+    await wrapper.vm.$nextTick()
+    await flushPromises()
+
+    expect(wrapper.find('[data-testid="quick-setting-status-LMSTUDIO_HOSTS"]').text()).toContain('Unsaved changes')
+  })
+
   it('does not show a red search validation message before user interaction', async () => {
     const { wrapper } = await mountComponent()
 
