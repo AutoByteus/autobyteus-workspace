@@ -13,6 +13,57 @@ importers:
 
   .: {}
 
+  applications/brief-studio:
+    dependencies:
+      '@autobyteus/application-backend-sdk':
+        specifier: workspace:*
+        version: link:../../autobyteus-application-backend-sdk
+      '@autobyteus/application-frontend-sdk':
+        specifier: workspace:*
+        version: link:../../autobyteus-application-frontend-sdk
+    devDependencies:
+      '@types/node':
+        specifier: ^25.0.10
+        version: 25.3.0
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  autobyteus-application-backend-sdk:
+    dependencies:
+      '@autobyteus/application-sdk-contracts':
+        specifier: workspace:*
+        version: link:../autobyteus-application-sdk-contracts
+    devDependencies:
+      '@types/node':
+        specifier: ^25.0.10
+        version: 25.3.0
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  autobyteus-application-frontend-sdk:
+    dependencies:
+      '@autobyteus/application-sdk-contracts':
+        specifier: workspace:*
+        version: link:../autobyteus-application-sdk-contracts
+    devDependencies:
+      '@types/node':
+        specifier: ^25.0.10
+        version: 25.3.0
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  autobyteus-application-sdk-contracts:
+    devDependencies:
+      '@types/node':
+        specifier: ^25.0.10
+        version: 25.3.0
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   autobyteus-message-gateway:
     dependencies:
       '@fastify/cors':
@@ -43,6 +94,9 @@ importers:
       '@anthropic-ai/claude-agent-sdk':
         specifier: ^0.2.71
         version: 0.2.71(zod@4.3.6)
+      '@autobyteus/application-sdk-contracts':
+        specifier: workspace:*
+        version: link:../autobyteus-application-sdk-contracts
       '@fastify/cors':
         specifier: ^9.0.1
         version: 9.0.1

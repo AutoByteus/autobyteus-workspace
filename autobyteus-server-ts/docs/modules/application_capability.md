@@ -59,5 +59,5 @@ This keeps the migration away from the removed frontend build flag clean while p
 
 - [`applications.md`](./applications.md)
 - [`application_sessions.md`](./application_sessions.md)
-- `../../autobyteus-web/docs/applications.md`
-- `../../autobyteus-web/docs/settings.md`
+- `../../../autobyteus-web/docs/applications.md`
+- `../../../autobyteus-web/docs/settings.md`

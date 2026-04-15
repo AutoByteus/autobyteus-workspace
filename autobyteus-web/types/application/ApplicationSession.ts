@@ -1,9 +1,5 @@
 export type ApplicationRuntimeTargetKind = 'AGENT' | 'AGENT_TEAM'
 export type ApplicationProducerRuntimeKind = 'AGENT' | 'AGENT_TEAM_MEMBER'
-export type ApplicationSessionBootstrapState =
-  | 'waiting_for_ready'
-  | 'bootstrapped'
-  | 'bootstrap_failed'
 
 export type ApplicationSessionApplication = {
   applicationId: string
@@ -36,35 +32,14 @@ export type ApplicationProducerProvenance = {
   runtimeKind: ApplicationProducerRuntimeKind
 }
 
-export type ApplicationDeliveryStateProjection = {
-  publicationKey: string
-  deliveryState: 'waiting' | 'in_progress' | 'ready' | 'blocked'
+export type ApplicationArtifactProjection = {
+  artifactKey: string
+  artifactType: string
   title: string | null
   summary: string | null
-  artifactType: string | null
-  artifactRef: ApplicationArtifactRef | null
-  updatedAt: string
-  producer: ApplicationProducerProvenance
-}
-
-export type ApplicationMemberArtifactProjection = {
-  publicationKey: string
-  artifactType: string
-  state: 'draft' | 'ready' | 'blocked' | 'superseded'
-  title: string
-  summary: string | null
   artifactRef: ApplicationArtifactRef
+  metadata: Record<string, unknown> | null
   isFinal: boolean
-  updatedAt: string
-  producer: ApplicationProducerProvenance
-}
-
-export type ApplicationMemberProgressProjection = {
-  publicationKey: string
-  phaseLabel: string
-  state: 'queued' | 'working' | 'ready' | 'blocked'
-  percent: number | null
-  detailText: string | null
   updatedAt: string
   producer: ApplicationProducerProvenance
 }
@@ -77,10 +52,8 @@ export type ApplicationMemberProjection = {
     runId: string
     runtimeKind: ApplicationProducerRuntimeKind
   } | null
-  artifactsByKey: Record<string, ApplicationMemberArtifactProjection>
+  artifactsByKey: Record<string, ApplicationArtifactProjection>
   primaryArtifactKey: string | null
-  progressByKey: Record<string, ApplicationMemberProgressProjection>
-  primaryProgressKey: string | null
 }
 
 export type ApplicationSessionSnapshot = {
@@ -88,19 +61,13 @@ export type ApplicationSessionSnapshot = {
   application: ApplicationSessionApplication
   runtime: ApplicationSessionRuntime
   view: {
-    delivery: {
-      current: ApplicationDeliveryStateProjection | null
-    }
     members: ApplicationMemberProjection[]
   }
   createdAt: string
   terminatedAt: string | null
 }
 
-export type ApplicationSession = ApplicationSessionSnapshot & {
-  bootstrapState: ApplicationSessionBootstrapState
-  bootstrapError: string | null
-}
+export type ApplicationSession = ApplicationSessionSnapshot
 
 export type ApplicationSessionBindingResolution = 'requested_live' | 'application_active' | 'none'
 
@@ -117,6 +84,12 @@ export type ApplicationSessionTransport = {
   restBaseUrl: string
   websocketUrl: string
   sessionStreamUrl: string
+  backendStatusUrl: string | null
+  backendQueriesBaseUrl: string | null
+  backendCommandsBaseUrl: string | null
+  backendGraphqlUrl: string | null
+  backendRoutesBaseUrl: string | null
+  backendNotificationsUrl: string | null
 }
 
 export type ApplicationUserContextFile = {

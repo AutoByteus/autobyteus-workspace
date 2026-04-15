@@ -10,6 +10,7 @@ import { computed, onMounted, onBeforeUnmount, ref } from 'vue';
 import { useFileExplorerStore } from '~/stores/fileExplorer';
 import { useServerSettingsStore } from '~/stores/serverSettings';
 import { useWorkspaceStore } from '~/stores/workspace';
+import { useWorkspaceRouteSelection } from '~/composables/workspace/useWorkspaceRouteSelection';
 import WorkspaceDesktopLayout from '~/components/layout/WorkspaceDesktopLayout.vue';
 import WorkspaceMobileLayout from '~/components/layout/WorkspaceMobileLayout.vue';
 
@@ -18,6 +19,8 @@ const serverSettingsStore = useServerSettingsStore();
 const workspaceStore = useWorkspaceStore();
 const isDesktop = ref(true);
 let mediaQuery: MediaQueryList | null = null;
+
+useWorkspaceRouteSelection();
 
 // RESTORED: This is the original, correct implementation for this computed property.
 // RESTORED: This is the original, correct implementation for this computed property.

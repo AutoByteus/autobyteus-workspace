@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Brief Studio</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="hero card">
+        <div class="eyebrow">External teaching sample</div>
+        <h1>Brief Studio</h1>
+        <p class="lede">
+          A small imported application that teaches AutoByteus app authors how to combine the frontend SDK,
+          backend SDK, app-owned migrations, and durable event projection.
+        </p>
+      </header>
+
+      <section id="status-banner" class="status-banner">
+        Waiting for the host bootstrap payload…
+      </section>
+
+      <details class="card details-panel">
+        <summary class="details-summary">Teaching details</summary>
+        <p class="details-copy muted">
+          Hidden by default so the application stays focused on the brief list, detail view, and review workflow.
+        </p>
+        <div class="meta-grid">
+          <div>
+            <span class="label">Application</span>
+            <div id="application-name" class="value">Waiting for bootstrap…</div>
+            <div id="application-ids" class="muted">—</div>
+          </div>
+          <div>
+            <span class="label">Session</span>
+            <div id="session-id" class="value">—</div>
+            <div id="runtime-summary" class="muted">—</div>
+          </div>
+          <div>
+            <span class="label">Backend gateway</span>
+            <div id="backend-queries-url" class="value small">—</div>
+            <div id="backend-notifications-url" class="muted small">—</div>
+          </div>
+        </div>
+      </details>
+
+      <section class="content-grid">
+        <aside class="card list-panel">
+          <div class="panel-header">
+            <div>
+              <h2>Briefs</h2>
+              <p class="muted">Projected from researcher/writer runtime publications.</p>
+            </div>
+            <button id="refresh-button" class="ghost-button" type="button">Refresh</button>
+          </div>
+          <div id="brief-list" class="brief-list empty-state">
+            No brief rows yet. Launch the app and let the researcher/writer publish runtime events.
+          </div>
+        </aside>
+
+        <section class="card detail-panel">
+          <div class="panel-header">
+            <div>
+              <h2>Brief detail</h2>
+              <p class="muted">App-owned queries and commands run through the platform backend gateway.</p>
+            </div>
+          </div>
+          <div id="brief-detail" class="empty-state">
+            Select a brief to inspect its projected artifacts and review state.
+          </div>
+        </section>
+      </section>
+
+      <section class="card notification-panel">
+        <div class="panel-header">
+          <div>
+            <h2>Backend notifications</h2>
+            <p class="muted">Optional app notifications fan out through the platform-owned websocket stream.</p>
+          </div>
+        </div>
+        <div id="notification-list" class="notification-list empty-state">No notifications yet.</div>
+      </section>
+    </main>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

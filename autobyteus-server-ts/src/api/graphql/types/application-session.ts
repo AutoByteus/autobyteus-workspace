@@ -64,57 +64,6 @@ class ApplicationSessionApplicationGraph {
 }
 
 @ObjectType()
-class ApplicationProducerProvenanceGraph {
-  @Field(() => String)
-  memberRouteKey!: string;
-
-  @Field(() => String)
-  displayName!: string;
-
-  @Field(() => [String])
-  teamPath!: string[];
-
-  @Field(() => String)
-  runId!: string;
-
-  @Field(() => String)
-  runtimeKind!: string;
-}
-
-@ObjectType()
-class ApplicationDeliveryStateProjectionGraph {
-  @Field(() => String)
-  publicationKey!: string;
-
-  @Field(() => String)
-  deliveryState!: string;
-
-  @Field(() => String, { nullable: true })
-  title!: string | null;
-
-  @Field(() => String, { nullable: true })
-  summary!: string | null;
-
-  @Field(() => String, { nullable: true })
-  artifactType!: string | null;
-
-  @Field(() => GraphQLJSON, { nullable: true })
-  artifactRef!: unknown;
-
-  @Field(() => String)
-  updatedAt!: string;
-
-  @Field(() => ApplicationProducerProvenanceGraph)
-  producer!: ApplicationProducerProvenanceGraph;
-}
-
-@ObjectType()
-class ApplicationDeliveryProjectionGraph {
-  @Field(() => ApplicationDeliveryStateProjectionGraph, { nullable: true })
-  current!: ApplicationDeliveryStateProjectionGraph | null;
-}
-
-@ObjectType()
 class ApplicationRuntimeMemberTargetGraph {
   @Field(() => String)
   runId!: string;
@@ -142,19 +91,10 @@ class ApplicationMemberProjectionGraph {
 
   @Field(() => String, { nullable: true })
   primaryArtifactKey!: string | null;
-
-  @Field(() => GraphQLJSON)
-  progressByKey!: Record<string, unknown>;
-
-  @Field(() => String, { nullable: true })
-  primaryProgressKey!: string | null;
 }
 
 @ObjectType()
 class ApplicationSessionViewGraph {
-  @Field(() => ApplicationDeliveryProjectionGraph)
-  delivery!: ApplicationDeliveryProjectionGraph;
-
   @Field(() => [ApplicationMemberProjectionGraph])
   members!: ApplicationMemberProjectionGraph[];
 }
@@ -316,14 +256,6 @@ const toGraph = (session: ApplicationSessionSnapshot | null): ApplicationSession
     application: { ...session.application },
     runtime: { ...session.runtime },
     view: {
-      delivery: {
-        current: session.view.delivery.current
-          ? {
-              ...session.view.delivery.current,
-              producer: { ...session.view.delivery.current.producer },
-            }
-          : null,
-      },
       members: session.view.members.map((member) => ({
         memberRouteKey: member.memberRouteKey,
         displayName: member.displayName,
@@ -331,8 +263,6 @@ const toGraph = (session: ApplicationSessionSnapshot | null): ApplicationSession
         runtimeTarget: member.runtimeTarget ? { ...member.runtimeTarget } : null,
         artifactsByKey: member.artifactsByKey,
         primaryArtifactKey: member.primaryArtifactKey,
-        progressByKey: member.progressByKey,
-        primaryProgressKey: member.primaryProgressKey,
       })),
     },
     createdAt: session.createdAt,
@@ -356,7 +286,7 @@ export class ApplicationSessionResolver {
   async applicationSession(
     @Arg("id", () => String) id: string,
   ): Promise<ApplicationSessionGraph | null> {
-    return toGraph(this.service.getSessionById(id));
+    return toGraph(await this.service.getSessionById(id));
   }
 
   @Query(() => ApplicationSessionBindingGraph)

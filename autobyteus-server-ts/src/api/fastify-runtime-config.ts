@@ -1,0 +1,2 @@
+export const SERVER_ROUTE_PARAM_MAX_LENGTH = 4_096;
+

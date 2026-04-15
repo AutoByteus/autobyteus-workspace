@@ -28,7 +28,7 @@ export class ApplicationSessionStreamHandler {
     connection: ApplicationSessionStreamConnection,
     applicationSessionId: string,
   ): Promise<string> {
-    const snapshot = this.sessionService.getSessionById(applicationSessionId);
+    const snapshot = await this.sessionService.getSessionById(applicationSessionId);
     if (!snapshot) {
       connection.close(4004);
       throw new Error(`Application session '${applicationSessionId}' was not found.`);

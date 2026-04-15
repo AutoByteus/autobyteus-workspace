@@ -1,6 +1,11 @@
 import fs from "node:fs";
 import path from "node:path";
-import type { ApplicationRuntimeTargetKind } from "../domain/models.js";
+import {
+  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V1,
+  APPLICATION_MANIFEST_VERSION_V2,
+  type ApplicationManifestV2,
+} from "@autobyteus/application-sdk-contracts";
+import type { ApplicationRuntimeTargetKind } from "@autobyteus/application-sdk-contracts";
 
 export const APPLICATION_MANIFEST_FILE_NAME = "application.json";
 
@@ -10,6 +15,7 @@ type ParsedManifest = {
   description: string | null;
   iconRelativePath: string | null;
   entryHtmlRelativePath: string;
+  backendBundleManifestRelativePath: string;
   runtimeTarget: {
     kind: ApplicationRuntimeTargetKind;
     localId: string;
@@ -46,6 +52,9 @@ const normalizeBundleRelativePath = (
   bundleRootPath: string,
   rawPath: unknown,
   fieldName: string,
+  options: {
+    requiredPrefix: string;
+  },
 ): string => {
   const relativePath = normalizeRequiredString(rawPath, fieldName).replace(/\\/g, "/");
   if (relativePath.startsWith("/") || path.isAbsolute(relativePath)) {
@@ -62,8 +71,8 @@ const normalizeBundleRelativePath = (
   if (!normalizedRelative || normalizedRelative.startsWith("..")) {
     throw new ApplicationManifestParseError(`${fieldName} must stay inside the application bundle.`);
   }
-  if (!normalizedRelative.startsWith("ui/")) {
-    throw new ApplicationManifestParseError(`${fieldName} must point to a file under ui/.`);
+  if (!normalizedRelative.startsWith(options.requiredPrefix)) {
+    throw new ApplicationManifestParseError(`${fieldName} must point under ${options.requiredPrefix}.`);
   }
   return normalizedRelative;
 };
@@ -99,7 +108,7 @@ export const parseApplicationManifest = (
   let payload: unknown;
   try {
     payload = JSON.parse(rawContent);
-  } catch (error) {
+  } catch {
     throw new ApplicationManifestParseError(`Application manifest '${manifestPath}' is not valid JSON.`);
   }
 
@@ -107,7 +116,24 @@ export const parseApplicationManifest = (
     throw new ApplicationManifestParseError("Application manifest must be a JSON object.");
   }
 
-  const manifest = payload as Record<string, unknown>;
+  const manifest = payload as ApplicationManifestV2 & Record<string, unknown>;
+  const manifestVersion = normalizeRequiredString(manifest.manifestVersion, "manifestVersion");
+  if (manifestVersion !== APPLICATION_MANIFEST_VERSION_V2) {
+    throw new ApplicationManifestParseError(
+      `Unsupported application manifestVersion '${manifestVersion}'. Expected '${APPLICATION_MANIFEST_VERSION_V2}'.`,
+    );
+  }
+
+  const frontendSdkContractVersion = normalizeRequiredString(
+    (manifest.ui as Record<string, unknown> | undefined)?.frontendSdkContractVersion,
+    "ui.frontendSdkContractVersion",
+  );
+  if (frontendSdkContractVersion !== APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V1) {
+    throw new ApplicationManifestParseError(
+      `Unsupported ui.frontendSdkContractVersion '${frontendSdkContractVersion}'.`,
+    );
+  }
+
   return {
     id: normalizeRequiredString(manifest.id, "id"),
     name: normalizeRequiredString(manifest.name, "name"),
@@ -115,11 +141,20 @@ export const parseApplicationManifest = (
     iconRelativePath:
       manifest.icon === undefined || manifest.icon === null
         ? null
-        : normalizeBundleRelativePath(bundleRootPath, manifest.icon, "icon"),
+        : normalizeBundleRelativePath(bundleRootPath, manifest.icon, "icon", {
+            requiredPrefix: "ui/",
+          }),
     entryHtmlRelativePath: normalizeBundleRelativePath(
       bundleRootPath,
       (manifest.ui as Record<string, unknown> | undefined)?.entryHtml,
       "ui.entryHtml",
+      { requiredPrefix: "ui/" },
+    ),
+    backendBundleManifestRelativePath: normalizeBundleRelativePath(
+      bundleRootPath,
+      (manifest.backend as Record<string, unknown> | undefined)?.bundleManifest,
+      "backend.bundleManifest",
+      { requiredPrefix: "backend/" },
     ),
     runtimeTarget: normalizeRuntimeTarget(manifest.runtimeTarget),
   };

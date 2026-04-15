@@ -2,20 +2,18 @@ import { randomUUID } from "node:crypto";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { ContextFile } from "autobyteus-ts/agent/message/context-file.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
-import {
-  normalizeMemberRouteKey,
-} from "../../run-history/utils/team-member-run-id.js";
+import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import type { ContextFileType } from "autobyteus-ts/agent/message/context-file-type.js";
+import { normalizeMemberRouteKey } from "../../run-history/utils/team-member-run-id.js";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
 import { AgentRunService, getAgentRunService, type CreateAgentRunInput } from "../../agent-execution/services/agent-run-service.js";
 import { TeamRunService, getTeamRunService, type CreateTeamRunInput } from "../../agent-team-execution/services/team-run-service.js";
-import { ApplicationPublicationProjector } from "./application-publication-projector.js";
 import {
   ApplicationSessionLaunchBuilder,
   type CreateApplicationSessionMemberConfigInput,
 } from "./application-session-launch-builder.js";
-import { normalizeApplicationPublication } from "./application-publication-validator.js";
 import {
   getApplicationSessionStreamService,
   type ApplicationSessionStreamService,
@@ -24,11 +22,8 @@ import type {
   ApplicationSessionBinding,
   ApplicationSessionSnapshot,
 } from "../domain/models.js";
-import {
-  deriveApplicationProducerProvenance,
-} from "../utils/application-producer-provenance.js";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import type { ContextFileType } from "autobyteus-ts/agent/message/context-file-type.js";
+import { ApplicationSessionStateStore } from "../stores/application-session-state-store.js";
+import { ApplicationPublicationService } from "./application-publication-service.js";
 
 export type CreateApplicationSessionInput = {
   applicationId: string;
@@ -65,29 +60,7 @@ const requireNonEmptyString = (value: string | null | undefined, fieldName: stri
   return normalized;
 };
 
-const cloneSession = (snapshot: ApplicationSessionSnapshot): ApplicationSessionSnapshot => ({
-  ...snapshot,
-  application: { ...snapshot.application },
-  runtime: { ...snapshot.runtime },
-  view: {
-    delivery: {
-      current: snapshot.view.delivery.current
-        ? {
-            ...snapshot.view.delivery.current,
-            producer: { ...snapshot.view.delivery.current.producer, teamPath: [...snapshot.view.delivery.current.producer.teamPath] },
-            artifactRef: snapshot.view.delivery.current.artifactRef ?? null,
-          }
-        : null,
-    },
-    members: snapshot.view.members.map((member) => ({
-      ...member,
-      teamPath: [...member.teamPath],
-      runtimeTarget: member.runtimeTarget ? { ...member.runtimeTarget } : null,
-      artifactsByKey: { ...member.artifactsByKey },
-      progressByKey: { ...member.progressByKey },
-    })),
-  },
-});
+const cloneSession = (snapshot: ApplicationSessionSnapshot): ApplicationSessionSnapshot => structuredClone(snapshot);
 
 export class ApplicationSessionService {
   private static instance: ApplicationSessionService | null = null;
@@ -105,10 +78,6 @@ export class ApplicationSessionService {
     ApplicationSessionService.instance = null;
   }
 
-  private readonly sessionsById = new Map<string, ApplicationSessionSnapshot>();
-  private readonly activeSessionIdByApplicationId = new Map<string, string>();
-  private readonly projector = new ApplicationPublicationProjector();
-
   constructor(
     private readonly dependencies: {
       applicationBundleService?: ApplicationBundleService;
@@ -116,6 +85,8 @@ export class ApplicationSessionService {
       teamRunService?: TeamRunService;
       agentDefinitionService?: AgentDefinitionService;
       agentTeamDefinitionService?: AgentTeamDefinitionService;
+      sessionStateStore?: ApplicationSessionStateStore;
+      publicationService?: ApplicationPublicationService;
       streamService?: ApplicationSessionStreamService;
     } = {},
   ) {}
@@ -140,6 +111,14 @@ export class ApplicationSessionService {
     return this.dependencies.agentTeamDefinitionService ?? AgentTeamDefinitionService.getInstance();
   }
 
+  private get sessionStateStore(): ApplicationSessionStateStore {
+    return this.dependencies.sessionStateStore ?? new ApplicationSessionStateStore();
+  }
+
+  private get publicationService(): ApplicationPublicationService {
+    return this.dependencies.publicationService ?? new ApplicationPublicationService();
+  }
+
   private get streamService(): ApplicationSessionStreamService {
     return this.dependencies.streamService ?? getApplicationSessionStreamService();
   }
@@ -158,9 +137,9 @@ export class ApplicationSessionService {
       throw new Error(`Application '${applicationId}' was not found.`);
     }
 
-    const existingActiveSessionId = this.activeSessionIdByApplicationId.get(applicationId) ?? null;
-    if (existingActiveSessionId) {
-      await this.terminateSession(existingActiveSessionId);
+    const existingBinding = await this.sessionStateStore.applicationSessionBinding(applicationId, null);
+    if (existingBinding.resolvedSessionId) {
+      await this.terminateSession(existingBinding.resolvedSessionId);
     }
 
     const sessionId = randomUUID();
@@ -255,8 +234,9 @@ export class ApplicationSessionService {
     return this.persistLiveSession(snapshot);
   }
 
-  getSessionById(applicationSessionId: string): ApplicationSessionSnapshot | null {
-    const session = this.sessionsById.get(applicationSessionId) ?? null;
+  async getSessionById(applicationSessionId: string): Promise<ApplicationSessionSnapshot | null> {
+    const applicationIds = await this.listApplicationIds();
+    const session = await this.sessionStateStore.findSessionById(applicationIds, applicationSessionId);
     return session ? cloneSession(session) : null;
   }
 
@@ -265,50 +245,14 @@ export class ApplicationSessionService {
     requestedSessionId?: string | null,
   ): Promise<ApplicationSessionBinding> {
     const normalizedApplicationId = requireNonEmptyString(applicationId, "applicationId");
-    const normalizedRequestedSessionId = requestedSessionId?.trim() || null;
-
-    if (normalizedRequestedSessionId) {
-      const requestedSession = this.sessionsById.get(normalizedRequestedSessionId) ?? null;
-      if (
-        requestedSession &&
-        requestedSession.application.applicationId === normalizedApplicationId &&
-        requestedSession.terminatedAt === null
-      ) {
-        return {
-          applicationId: normalizedApplicationId,
-          requestedSessionId: normalizedRequestedSessionId,
-          resolvedSessionId: requestedSession.applicationSessionId,
-          resolution: "requested_live",
-          session: cloneSession(requestedSession),
-        };
-      }
-    }
-
-    const activeSessionId = this.activeSessionIdByApplicationId.get(normalizedApplicationId) ?? null;
-    if (activeSessionId) {
-      const activeSession = this.sessionsById.get(activeSessionId) ?? null;
-      if (activeSession && activeSession.terminatedAt === null) {
-        return {
-          applicationId: normalizedApplicationId,
-          requestedSessionId: normalizedRequestedSessionId,
-          resolvedSessionId: activeSession.applicationSessionId,
-          resolution: "application_active",
-          session: cloneSession(activeSession),
-        };
-      }
-    }
-
-    return {
-      applicationId: normalizedApplicationId,
-      requestedSessionId: normalizedRequestedSessionId,
-      resolvedSessionId: null,
-      resolution: "none",
-      session: null,
-    };
+    return this.sessionStateStore.applicationSessionBinding(
+      normalizedApplicationId,
+      requestedSessionId ?? null,
+    );
   }
 
   async terminateSession(applicationSessionId: string): Promise<ApplicationSessionSnapshot | null> {
-    const session = this.sessionsById.get(applicationSessionId) ?? null;
+    const session = await this.getSessionById(applicationSessionId);
     if (!session || session.terminatedAt) {
       return session ? cloneSession(session) : null;
     }
@@ -323,16 +267,14 @@ export class ApplicationSessionService {
       ...session,
       terminatedAt: new Date().toISOString(),
     } satisfies ApplicationSessionSnapshot;
-    this.sessionsById.set(applicationSessionId, terminated);
-    if (this.activeSessionIdByApplicationId.get(session.application.applicationId) === applicationSessionId) {
-      this.activeSessionIdByApplicationId.delete(session.application.applicationId);
-    }
-    this.streamService.publish(terminated);
-    return cloneSession(terminated);
+    const persisted = await this.sessionStateStore.persistSessionUpdate(terminated);
+    this.streamService.publish(persisted);
+    await this.publicationService.recordSessionTerminated(persisted);
+    return cloneSession(persisted);
   }
 
   async sendInput(input: SendApplicationInputInput): Promise<ApplicationSessionSnapshot> {
-    const session = this.requireLiveSession(input.applicationSessionId);
+    const session = await this.requireLiveSession(input.applicationSessionId);
     const message = new AgentInputUserMessage(
       requireNonEmptyString(input.text, "text"),
       SenderType.USER,
@@ -376,43 +318,28 @@ export class ApplicationSessionService {
     customData?: Record<string, unknown> | null;
     publication: unknown;
   }): Promise<ApplicationSessionSnapshot> {
-    const { applicationSessionId, applicationId, producer } = deriveApplicationProducerProvenance({
-      runId: input.runId,
-      customData: input.customData ?? {},
-    });
-    const publication = await normalizeApplicationPublication({
-      publication: input.publication,
-      applicationId,
-    });
-    const session = this.requireLiveSession(applicationSessionId);
-    const nextSnapshot = this.projector.project(
-      session,
-      publication,
-      producer,
-      new Date().toISOString(),
-    );
-    this.sessionsById.set(applicationSessionId, nextSnapshot);
-    this.streamService.publish(nextSnapshot);
-    return cloneSession(nextSnapshot);
+    return this.publicationService.appendRuntimePublication(input);
   }
 
-  private persistLiveSession(snapshot: ApplicationSessionSnapshot): ApplicationSessionSnapshot {
-    this.sessionsById.set(snapshot.applicationSessionId, snapshot);
-    this.activeSessionIdByApplicationId.set(
-      snapshot.application.applicationId,
-      snapshot.applicationSessionId,
-    );
-    this.streamService.publish(snapshot);
-    return cloneSession(snapshot);
+  private async persistLiveSession(snapshot: ApplicationSessionSnapshot): Promise<ApplicationSessionSnapshot> {
+    const persisted = await this.sessionStateStore.persistLiveSession(snapshot);
+    this.streamService.publish(persisted);
+    await this.publicationService.recordSessionStarted(persisted);
+    return cloneSession(persisted);
   }
 
-  private requireLiveSession(applicationSessionId: string): ApplicationSessionSnapshot {
+  private async requireLiveSession(applicationSessionId: string): Promise<ApplicationSessionSnapshot> {
     const normalized = requireNonEmptyString(applicationSessionId, "applicationSessionId");
-    const session = this.sessionsById.get(normalized) ?? null;
+    const session = await this.getSessionById(normalized);
     if (!session || session.terminatedAt !== null) {
       throw new Error(`Application session '${normalized}' is not live.`);
     }
     return session;
+  }
+
+  private async listApplicationIds(): Promise<string[]> {
+    const applications = await this.applicationBundleService.listApplications();
+    return applications.map((application) => application.id);
   }
 }
 

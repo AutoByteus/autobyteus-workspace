@@ -47,18 +47,18 @@ import { useLocalization } from '~/composables/useLocalization'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import type {
   ApplicationArtifactRef,
-  ApplicationMemberArtifactProjection,
+  ApplicationArtifactProjection,
 } from '~/types/application/ApplicationSession'
 import { resolveApplicationAssetUrl } from '~/utils/application/applicationAssetUrl'
 
 const props = defineProps<{
-  artifact: ApplicationMemberArtifactProjection
+  artifact: ApplicationArtifactProjection
 }>()
 
 const { t: $t } = useLocalization()
 const windowNodeContextStore = useWindowNodeContextStore()
 
-const title = computed(() => props.artifact.title.trim() || $t('applications.components.applications.renderers.HostArtifactRenderer.untitledArtifact'))
+const title = computed(() => props.artifact.title?.trim() || $t('applications.components.applications.renderers.HostArtifactRenderer.untitledArtifact'))
 const summary = computed(() => props.artifact.summary?.trim() || '')
 const artifactTypeLabel = computed(() => props.artifact.artifactType || $t('applications.components.applications.renderers.HostArtifactRenderer.artifact'))
 

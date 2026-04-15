@@ -13,6 +13,7 @@ const settingsMessages = {
   'settings.page.sections.language': '语言',
   'settings.page.sections.localTools': '本地工具',
   'settings.page.sections.mcpServers': 'MCP 服务器',
+  'settings.page.sections.applicationPackages': '应用包',
   'settings.page.sections.agentPackages': '智能体包',
   'settings.page.sections.serverSettings': '服务器设置',
   'settings.page.sections.extensions': '扩展',

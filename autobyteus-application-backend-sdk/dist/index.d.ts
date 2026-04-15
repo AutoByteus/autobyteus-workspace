@@ -1,0 +1,4 @@
+import type { ApplicationBackendDefinition } from "@autobyteus/application-sdk-contracts";
+export declare const defineApplication: <TDefinition extends ApplicationBackendDefinition>(definition: TDefinition) => TDefinition;
+export type { ApplicationBackendDefinition, ApplicationBackendExposureSummary, ApplicationCommandHandler, ApplicationEventDispatchEnvelope, ApplicationEventHandler, ApplicationEventHandlerKey, ApplicationGraphqlExecutor, ApplicationGraphqlRequest, ApplicationHandlerContext, ApplicationLifecycleHook, ApplicationNotificationMessage, ApplicationQueryHandler, ApplicationRequestContext, ApplicationRouteDefinition, ApplicationRouteMethod, ApplicationRouteRequest, ApplicationRouteResponse, ApplicationStorageContext, NormalizedPublicationEvent, NormalizedPublicationEventFamily, } from "@autobyteus/application-sdk-contracts";
+//# sourceMappingURL=index.d.ts.map

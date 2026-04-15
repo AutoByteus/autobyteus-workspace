@@ -1,0 +1,23 @@
+{
+  "contractVersion": "1",
+  "entryModule": "backend/dist/entry.mjs",
+  "moduleFormat": "esm",
+  "distribution": "self-contained",
+  "targetRuntime": {
+    "engine": "node",
+    "semver": ">=22 <23"
+  },
+  "sdkCompatibility": {
+    "backendDefinitionContractVersion": "1",
+    "frontendSdkContractVersion": "1"
+  },
+  "supportedExposures": {
+    "queries": true,
+    "commands": true,
+    "routes": false,
+    "graphql": false,
+    "notifications": true,
+    "eventHandlers": true
+  },
+  "migrationsDir": "backend/migrations"
+}

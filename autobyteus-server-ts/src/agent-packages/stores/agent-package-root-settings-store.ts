@@ -1,10 +1,12 @@
 import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { getServerSettingsService } from "../../services/server-settings-service.js";
+import { resolveBuiltInApplicationPackageRoot } from "../../application-bundles/utils/built-in-application-package-root.js";
 
 type AppConfigLike = {
   getAppDataDir(): string;
   getAdditionalAgentPackageRoots(): string[];
+  getAppRootDir?: () => string;
   get(key: string, defaultValue?: string): string | undefined;
 };
 
@@ -48,13 +50,25 @@ export class AgentPackageRootSettingsStore {
     return path.resolve(this.config.getAppDataDir());
   }
 
+  private getBuiltInApplicationRootPath(): string | null {
+    if (typeof this.config.getAppRootDir !== "function") {
+      return null;
+    }
+    return resolveBuiltInApplicationPackageRoot(this.config.getAppRootDir());
+  }
+
   listAdditionalRootPaths(): string[] {
     const seen = new Set<string>();
     const roots: string[] = [];
+    const builtInApplicationRootPath = this.getBuiltInApplicationRootPath();
 
     for (const rootPath of this.config.getAdditionalAgentPackageRoots()) {
       const resolved = path.resolve(rootPath);
-      if (resolved === this.getDefaultRootPath() || seen.has(resolved)) {
+      if (
+        resolved === this.getDefaultRootPath()
+        || resolved === builtInApplicationRootPath
+        || seen.has(resolved)
+      ) {
         continue;
       }
       seen.add(resolved);
@@ -66,6 +80,13 @@ export class AgentPackageRootSettingsStore {
 
   addAdditionalRootPath(rootPath: string): void {
     const resolved = path.resolve(rootPath);
+    const builtInApplicationRootPath = this.getBuiltInApplicationRootPath();
+    if (resolved === builtInApplicationRootPath) {
+      throw new Error(
+        "The built-in applications root cannot be registered as an additional agent package root.",
+      );
+    }
+
     const existingRoots = this.listAdditionalRootPaths();
     if (existingRoots.includes(resolved)) {
       throw new Error("Agent package already exists.");

@@ -181,8 +181,6 @@ describe('applicationSessionStore', () => {
     ;(store as any).sessions = {
       'app-session-old': {
         ...buildSessionSnapshot('app-session-old'),
-        bootstrapState: 'waiting_for_ready',
-        bootstrapError: null,
       },
     }
     ;(store as any).activeSessionIdByApplicationId = {

@@ -13,6 +13,7 @@ const ENV_KEYS = [
   "AUTOBYTEUS_MEMORY_DIR",
   "AUTOBYTEUS_SKILLS_PATHS",
   "AUTOBYTEUS_AGENT_PACKAGE_ROOTS",
+  "AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS",
   "AUTOBYTEUS_LOG_DIR",
   "AUTOBYTEUS_TEMP_WORKSPACE_DIR",
   "LOG_LEVEL",
@@ -189,6 +190,27 @@ describe("AppConfig", () => {
     const config = new AppConfig();
 
     expect(config.getAdditionalAgentPackageRoots()).toEqual([sourceA, sourceB]);
+
+    await fsPromises.rm(configDir, { recursive: true, force: true });
+  });
+
+  it("returns additional application package roots that are absolute, existing, and deduplicated", async () => {
+    const configDir = await createTempConfigDir("AUTOBYTEUS_SERVER_HOST=http://localhost:8000\n");
+    const packageRootA = path.join(configDir, "application-root-a");
+    const packageRootB = path.join(configDir, "application-root-b");
+    await fsPromises.mkdir(packageRootA, { recursive: true });
+    await fsPromises.mkdir(packageRootB, { recursive: true });
+
+    process.env.AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS = [
+      packageRootA,
+      "relative-root",
+      packageRootB,
+      "/nope",
+      packageRootA,
+    ].join(",");
+    const config = new AppConfig();
+
+    expect(config.getAdditionalApplicationPackageRoots()).toEqual([packageRootA, packageRootB]);
 
     await fsPromises.rm(configDir, { recursive: true, force: true });
   });

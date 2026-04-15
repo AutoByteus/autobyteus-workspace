@@ -14,11 +14,13 @@ import {
   getFastifyLoggerOptions,
   initializeRuntimeLoggerBootstrap,
 } from "./logging/runtime-logger-bootstrap.js";
+import { SERVER_ROUTE_PARAM_MAX_LENGTH } from "./api/fastify-runtime-config.js";
 import { runMigrations } from "./startup/migrations.js";
 import { scheduleBackgroundTasks } from "./startup/background-runner.js";
 import { registerRestRoutes } from "./api/rest/index.js";
 import { registerGraphql } from "./api/graphql/index.js";
 import { registerWebsocketRoutes } from "./api/websocket/index.js";
+import { getApplicationPublicationDispatchService } from "./application-sessions/services/application-publication-dispatch-service.js";
 import {
   startReceiptWorkflowRuntime,
   stopReceiptWorkflowRuntime,
@@ -42,6 +44,7 @@ export async function buildApp(options?: BuildAppOptions): Promise<FastifyInstan
   const app = fastify({
     logger: getFastifyLoggerOptions(loggingConfig),
     disableRequestLogging: true,
+    maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH,
   });
   registerHttpAccessLogPolicy(app, {
     mode: loggingConfig.httpAccessLogMode,
@@ -148,6 +151,12 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
   } catch (error) {
     logger.error(`Failed to create temp workspace: ${String(error)}`);
     process.exit(1);
+  }
+
+  try {
+    await getApplicationPublicationDispatchService().resumePendingDispatches();
+  } catch (error) {
+    logger.error(`Failed to resume durable application publication dispatch: ${String(error)}`);
   }
   await scheduleBackgroundTasks();
 }

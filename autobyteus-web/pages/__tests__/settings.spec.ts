@@ -16,6 +16,7 @@ const translationMap: Record<string, string> = {
   'settings.page.sections.language': 'Language',
   'settings.page.sections.localTools': 'Local Tools',
   'settings.page.sections.mcpServers': 'MCP Servers',
+  'settings.page.sections.applicationPackages': 'Application Packages',
   'settings.page.sections.agentPackages': 'Agent Packages',
   'settings.page.sections.serverSettings': 'Server Settings',
   'settings.page.sections.extensions': 'Extensions',
@@ -69,6 +70,7 @@ const mountSettings = () =>
         DisplaySettingsManager: { template: '<div data-testid="section-display" />' },
         LanguageSettingsManager: { template: '<div data-testid="section-language" />' },
         AboutSettingsManager: { template: '<div data-testid="section-updates" />' },
+        ApplicationPackagesManager: { template: '<div data-testid="section-application-packages" />' },
         AgentPackagesManager: { template: '<div data-testid="section-agent-packages" />' },
         ExtensionsManager: { template: '<div data-testid="section-extensions" />' },
         ToolsManagementWorkspace: { template: '<div data-testid="section-tools-management" />' },
@@ -103,6 +105,7 @@ describe('settings page', () => {
     expect(wrapper.text()).toContain('Updates')
     expect(wrapper.text()).toContain('Local Tools')
     expect(wrapper.text()).toContain('MCP Servers')
+    expect(wrapper.text()).toContain('Application Packages')
     expect(wrapper.text()).toContain('Agent Packages')
     expect(wrapper.text()).toContain('Server Settings')
     const sidebarText = wrapper.text()
@@ -202,6 +205,16 @@ describe('settings page', () => {
     const setupState = (wrapper.vm as any).$?.setupState
 
     expect(setupState.activeSection).toBe('mcp-servers')
+  })
+
+  it('supports application-packages section query and activates application-packages section', async () => {
+    routeMock.query = { section: 'application-packages' }
+    const wrapper = mountSettings()
+    await nextTick()
+    const setupState = (wrapper.vm as any).$?.setupState
+
+    expect(setupState.activeSection).toBe('application-packages')
+    expect(wrapper.find('[data-testid="section-application-packages"]').exists()).toBe(true)
   })
 
   it('supports agent-packages section query and activates agent-packages section', async () => {

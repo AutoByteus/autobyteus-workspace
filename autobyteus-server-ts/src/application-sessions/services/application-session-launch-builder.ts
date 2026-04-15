@@ -155,7 +155,6 @@ export class ApplicationSessionLaunchBuilder {
     members: Array<ApplicationSessionMemberDescriptor & { runId: string }>;
   }): ApplicationSessionSnapshot {
     const view: ApplicationSessionView = {
-      delivery: { current: null },
       members: sortMembers(
         input.members.map((member) => ({
           memberRouteKey: member.memberRouteKey,
@@ -167,8 +166,6 @@ export class ApplicationSessionLaunchBuilder {
           },
           artifactsByKey: {},
           primaryArtifactKey: null,
-          progressByKey: {},
-          primaryProgressKey: null,
         })),
       ),
     };

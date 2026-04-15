@@ -2,7 +2,7 @@
 
 ## Scope
 
-Shows Applications as a first-class top-level module, resolves whether the module is available from a backend-owned per-node runtime capability, prepares launch drafts from bound runtime definitions, binds `/applications/[id]` to backend-owned application sessions, hosts bundled application UIs inside the generic iframe shell, and renders a native Execution view from retained application/member projections.
+Shows Applications as a first-class top-level module, resolves whether the module is available from a backend-owned per-node runtime capability, prepares launch drafts from bound runtime definitions, binds `/applications/[id]` to backend-owned durable application sessions, hosts bundled application UIs inside the generic iframe shell, and renders a native Execution view from retained application/member projections.
 
 ## Main Files
 
@@ -20,11 +20,14 @@ Shows Applications as a first-class top-level module, resolves whether the modul
 - `components/applications/ApplicationIframeHost.vue`
 - `components/applications/execution/ApplicationExecutionWorkspace.vue`
 - `services/applicationStreaming/ApplicationSessionStreamingService.ts`
+- `services/workspace/workspaceNavigationService.ts`
+- `composables/workspace/useWorkspaceRouteSelection.ts`
 - `utils/application/applicationLaunch.ts`
 - `utils/application/applicationAssetUrl.ts`
 - `utils/application/applicationSessionTransport.ts`
 - `types/application/ApplicationSession.ts`
 - `types/application/ApplicationIframeContract.ts`
+- `types/workspace/WorkspaceExecutionLink.ts`
 - `docs/application-bundle-iframe-contract-v1.md`
 
 ## Runtime Availability And Gating
@@ -87,62 +90,95 @@ Backend binding outcomes are surfaced directly in the UI:
 4. `ApplicationLaunchConfigModal.vue` lets the user review/override the launch configuration before runtime creation.
 5. `applicationSessionStore.createApplicationSession()` calls the backend mutation, which creates the underlying run, persists one authoritative application session, and replaces any previous live session for the same application.
 6. The store caches the returned snapshot, updates the active-session index from backend truth only, and attaches the application-session WebSocket stream.
-7. `ApplicationSurface.vue` and `ApplicationExecutionWorkspace.vue` render from the bound session snapshot.
+7. `ApplicationShell.vue` becomes the page-shell owner for the live session: it keeps the default Application view app-first, switches between Application vs Execution modes, and hides operational metadata behind an explicit details surface.
+8. `ApplicationSurface.vue` and `ApplicationExecutionWorkspace.vue` render from the bound session snapshot.
+
+The frontend is a cache/orchestration owner over backend-authoritative session state; it no longer invents session ids or treats the browser cache as authoritative. Applications also follow the backend-owned one-live-session-per-application model explicitly: `Launch` / `Relaunch` / `Stop current session`, and relaunch replaces the current live session instead of creating a concurrent second launched copy in the page shell.
 
 ## Application And Execution Modes
 
-When a live session exists, the page exposes two surfaces:
+When a live session exists, the page exposes two intentionally different surfaces:
 
-- `Application` mode renders `ApplicationSurface.vue`, which hosts the bundled iframe UI through `ApplicationIframeHost.vue`.
-- `Execution` mode renders `ApplicationExecutionWorkspace.vue`, a host-native retained-state view.
+- `Application` mode is app-first. `ApplicationShell.vue` keeps only minimal host chrome (title, description, live status, launch/relaunch/stop actions, and the mode switch) and gives the bundled app UI the main near-full-screen canvas. Package ids, session ids, runtime ids, and similar metadata are hidden behind an explicit secondary details surface instead of occupying the default above-the-fold layout.
+- `Execution` mode renders `ApplicationExecutionWorkspace.vue`, a narrow host-native retained-state view for member and artifact inspection. It shows the member rail, the selected member’s retained primary artifact, and any additional retained artifacts for that member.
 
-The Execution view is intentionally artifact/status-first. It renders:
-
-- `view.delivery.current` as the current top-level delivery state,
-- the session member list from `view.members`,
-- retained `progressByKey` entries for the selected member, and
-- the selected member’s retained primary artifact from `artifactsByKey`.
-
-It does not reimplement the full runtime workspace UI inside Applications.
+Execution mode intentionally does **not** rebuild the full workspace monitor/chat/composer/grid inside Applications. Instead, it offers an explicit `Open full execution monitor` handoff back to `/workspace`. That handoff goes through one typed `WorkspaceExecutionLink` contract plus the workspace-owned `workspaceNavigationService.ts` / `useWorkspaceRouteSelection.ts` boundary rather than letting Applications components mutate workspace selection stores directly.
 
 ## Session Ownership And Streaming
 
-`applicationSessionStore` no longer creates session ids locally. It is a frontend cache/orchestration owner over backend-authoritative session state.
+`applicationSessionStore` is a frontend cache/orchestration owner over backend-authoritative session state.
 
 Key rules:
 
 - cached active sessions are derived from backend create/bind/query responses and session-stream snapshots,
 - only one live application session is tracked per application id,
-- terminated sessions disconnect their session-stream transport,
-- `sendApplicationInputMessage()` forwards user input through the backend application-session boundary, and
-- iframe bootstrap state remains a frontend-only concern: `waiting_for_ready`, `bootstrapped`, or `bootstrap_failed`.
+- terminated sessions disconnect their session-stream transport, and
+- `sendApplicationInputMessage()` forwards user input through the backend application-session boundary.
 
 `ApplicationSessionStreamingService` subscribes to `sessionStreamUrl` so retained projections update without a full route reload.
 
 ## Iframe Bootstrap Ownership
 
-`ApplicationIframeHost.vue` owns the host-side iframe lifecycle and failure UI.
+`ApplicationSurface.vue` is the authoritative host launch owner once route binding resolves a live session.
 
-The host:
+It owns:
+
+- the immutable `ApplicationIframeLaunchDescriptor` for the current launch instance,
+- ready timeout / retry / failed state for the host launch boundary,
+- acceptance of the matching child ready signal, and
+- the decision to deliver bootstrap and stop the host spinner at bootstrap delivery.
+
+`ApplicationIframeHost.vue` is now an internal bridge only. It:
+
+- renders the iframe for a supplied descriptor,
+- logs `iframe load` diagnostically,
+- validates the raw ready message against the current iframe window/origin/session/launch instance, and
+- posts the supplied bootstrap envelope back to the iframe.
+
+`applicationSessionStore` and `ApplicationSession` no longer track host bootstrap state; host launch waiting / failed / delivered state is now local to `ApplicationSurface.vue`.
+
+The host launch owner:
 
 - resolves `entryHtmlAssetPath` against the bound backend REST base,
+- derives one stable launch descriptor with `launchInstanceId`,
 - appends the required v1 launch hints,
-- waits for the exact child ready event,
-- posts the versioned bootstrap payload, and
-- marks the session bootstrap state in `applicationSessionStore`.
+- accepts only the matching child ready event, and
+- posts the versioned bootstrap payload through `ApplicationIframeHost.vue`.
 
-The bootstrap payload includes transport metadata for:
+The bootstrap payload now includes two transport layers:
 
-- GraphQL HTTP,
-- REST,
-- GraphQL WebSocket, and
-- application-session snapshot streaming (`sessionStreamUrl`).
+### Host/runtime transport
 
-`ApplicationIframeContract.ts` and `application-bundle-iframe-contract-v1.md` remain the public contract for bundled application authors.
+- GraphQL HTTP
+- REST base
+- GraphQL WebSocket
+- application-session snapshot streaming (`sessionStreamUrl`)
+
+### App-scoped backend transport
+
+- `backendStatusUrl`
+- `backendQueriesBaseUrl`
+- `backendCommandsBaseUrl`
+- `backendGraphqlUrl`
+- `backendRoutesBaseUrl`
+- `backendNotificationsUrl`
+
+Those backend URLs already embed the authoritative route `applicationId`. App UIs should treat them as the stable platform-owned boundary for app-owned backend logic instead of inventing alternate host paths.
+
+## SDK Boundary
+
+The iframe bootstrap contract is still the transport handoff from host to app UI, but app authors are no longer expected to live on raw postMessage payloads alone.
+
+The public author-facing v1 surface is now:
+
+- `@autobyteus/application-sdk-contracts` for shared manifest/backend/request/event types,
+- `@autobyteus/application-frontend-sdk` for app-UI query/command/GraphQL/notification helpers,
+- `@autobyteus/application-backend-sdk` for backend definition typing, and
+- `application-bundle-iframe-contract-v1.md` plus `ApplicationIframeContract.ts` for the host bootstrap envelope itself.
 
 ## Package Refresh Behavior
 
-`agentPackagesStore` invalidates and reloads Applications, Agents, and Agent Teams together after package import or removal so bundle-owned apps and definitions refresh in the same session without a manual reload.
+`applicationPackagesStore` invalidates and reloads Applications, Agents, and Agent Teams together after application-package import or removal so bundle-owned apps and definitions refresh in the same session without a manual reload.
 
 ## Related Docs
 
@@ -153,3 +189,9 @@ The bootstrap payload includes transport metadata for:
 - `../../autobyteus-server-ts/docs/modules/application_capability.md`
 - `../../autobyteus-server-ts/docs/modules/applications.md`
 - `../../autobyteus-server-ts/docs/modules/application_sessions.md`
+- `../../autobyteus-server-ts/docs/modules/application_backend_gateway.md`
+- `../../autobyteus-server-ts/docs/modules/application_engine.md`
+- `../../autobyteus-server-ts/docs/modules/application_storage.md`
+- `../../autobyteus-application-sdk-contracts/README.md`
+- `../../autobyteus-application-frontend-sdk/README.md`
+- `../../autobyteus-application-backend-sdk/README.md`
