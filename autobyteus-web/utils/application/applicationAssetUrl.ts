@@ -2,6 +2,7 @@ import {
   APPLICATION_IFRAME_QUERY_APPLICATION_SESSION_ID,
   APPLICATION_IFRAME_QUERY_CONTRACT_VERSION,
   APPLICATION_IFRAME_QUERY_HOST_ORIGIN,
+  APPLICATION_IFRAME_QUERY_LAUNCH_INSTANCE_ID,
   type ApplicationIframeLaunchHints,
 } from '~/types/application/ApplicationIframeContract'
 
@@ -57,6 +58,10 @@ export const appendApplicationIframeLaunchHints = (
   url.searchParams.set(
     APPLICATION_IFRAME_QUERY_APPLICATION_SESSION_ID,
     hints.applicationSessionId,
+  )
+  url.searchParams.set(
+    APPLICATION_IFRAME_QUERY_LAUNCH_INSTANCE_ID,
+    hints.launchInstanceId,
   )
   url.searchParams.set(
     APPLICATION_IFRAME_QUERY_HOST_ORIGIN,

@@ -12,6 +12,7 @@ import type {
 } from './nodeRegistryTypes';
 import { EMBEDDED_NODE_ID } from './nodeRegistryTypes';
 import { logger } from './logger';
+import { attachRendererConsoleDiagnostics } from './rendererConsoleDiagnostics';
 import {
   ensureEmbeddedNode,
   getNodeProfileById,
@@ -125,6 +126,7 @@ function createNodeBoundWindow(nodeId: string): WorkspaceShellWindow {
   browserRuntime?.registerShell(window);
 
   logger.info(`Creating node-bound window for nodeId=${nodeId}; url=${startURL}`);
+  attachRendererConsoleDiagnostics(window.browserWindow.webContents, { logger, nodeId });
   window.browserWindow.webContents.on('did-finish-load', () => {
     window.send('server-status', serverStatusManager.getStatus());
     window.send('node-registry-updated', nodeRegistrySnapshot);

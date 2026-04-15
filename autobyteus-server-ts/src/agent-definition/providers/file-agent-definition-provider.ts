@@ -15,7 +15,11 @@ import {
   parseCanonicalApplicationOwnedAgentId,
 } from "../../application-bundles/utils/application-bundle-identity.js";
 import { parseTeamLocalAgentDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-agent-definition-id.js";
-import { buildApplicationOwnedAgentSourcePaths, type ApplicationOwnedAgentSourcePaths } from "./application-owned-agent-source.js";
+import {
+  buildApplicationOwnedAgentSourcePaths,
+  type ApplicationOwnedAgentSourcePaths,
+  readApplicationOwnedAgentDefinitionFromSource,
+} from "./application-owned-agent-source.js";
 import {
   type AgentConfigRecord,
   buildAgentConfigRecord,
@@ -160,18 +164,7 @@ export class FileAgentDefinitionProvider {
     sourcePaths: ApplicationOwnedAgentSourcePaths,
     definitionId: string,
   ): Promise<AgentDefinition | null> {
-    return this.readAgentFromPaths(
-      sourcePaths.mdPath,
-      sourcePaths.configPath,
-      definitionId,
-      {
-        ownershipScope: "application_owned",
-        ownerApplicationId: sourcePaths.applicationId,
-        ownerApplicationName: sourcePaths.applicationName,
-        ownerPackageId: sourcePaths.packageId,
-        ownerLocalApplicationId: sourcePaths.localApplicationId,
-      },
-    );
+    return readApplicationOwnedAgentDefinitionFromSource(sourcePaths, definitionId);
   }
 
   async nextAgentId(name: string): Promise<string> {
@@ -282,21 +275,13 @@ export class FileAgentDefinitionProvider {
       if (seenIds.has(source.definitionId)) {
         continue;
       }
-      try {
-        const definition = await this.readApplicationOwnedAgent(
-          buildApplicationOwnedAgentSourcePaths(source),
-          source.definitionId,
-        );
-        if (definition) {
-          definitions.push(definition);
-          seenIds.add(source.definitionId);
-        }
-      } catch (error) {
-        if (error instanceof AgentMdParseError) {
-          logger.warn(`Skipping application-owned agent '${source.definitionId}' due to parse error: ${error.message}`);
-          continue;
-        }
-        throw error;
+      const definition = await this.readApplicationOwnedAgent(
+        buildApplicationOwnedAgentSourcePaths(source),
+        source.definitionId,
+      );
+      if (definition) {
+        definitions.push(definition);
+        seenIds.add(source.definitionId);
       }
     }
 

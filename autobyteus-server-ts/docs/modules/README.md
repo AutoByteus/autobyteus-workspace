@@ -14,8 +14,11 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 | Agent Team Definition | [agent_team_definition.md](./agent_team_definition.md) |
 | Agent Team Execution | [agent_team_execution.md](./agent_team_execution.md) |
 | Agent Tools | [agent_tools.md](./agent_tools.md) |
+| Application Backend Gateway | [application_backend_gateway.md](./application_backend_gateway.md) |
 | Application Capability | [application_capability.md](./application_capability.md) |
+| Application Engine | [application_engine.md](./application_engine.md) |
 | Application Sessions | [application_sessions.md](./application_sessions.md) |
+| Application Storage | [application_storage.md](./application_storage.md) |
 | Applications | [applications.md](./applications.md) |
 | Codex Integration | [codex_integration.md](./codex_integration.md) |
 | File Explorer | [file_explorer.md](./file_explorer.md) |
@@ -43,6 +46,7 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 - Token usage uses the SQL-backed `TokenUsageStore`, while agent definitions, team definitions, and MCP config continue to use their subsystem-native file providers.
 - GraphQL resolvers in `src/api/graphql/types` are thin adapters over services.
 - Startup registration and background initialization run through `src/startup`.
+- Application bundles, sessions, backend gateway, engine lifecycle, and app storage now have separate authoritative owners instead of one mixed application subsystem.
 
 ## Related Docs
 

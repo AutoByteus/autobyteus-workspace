@@ -229,6 +229,51 @@ describe("md-centric provider integration", () => {
     expect(imported?.skillNames).toEqual(["shared-skill"]);
   });
 
+  it("does not silently skip malformed application-owned agents during catalog reads", async () => {
+    const packageId = uniqueId("pkg");
+    const localApplicationId = "brief-studio";
+    const localAgentId = "researcher";
+    const definitionId = buildCanonicalApplicationOwnedAgentId(
+      packageId,
+      localApplicationId,
+      localAgentId,
+    );
+
+    const applicationRootPath = path.join(
+      path.dirname(appConfigProvider.config.getAppDataDir()),
+      uniqueId("application_owned_agent_source_bad_md"),
+    );
+    const packageRootPath = path.dirname(applicationRootPath);
+    const agentDir = path.join(applicationRootPath, "agents", localAgentId);
+    cleanupPaths.add(applicationRootPath);
+
+    await fs.mkdir(agentDir, { recursive: true });
+    await fs.writeFile(path.join(agentDir, "agent.md"), "# malformed\n", "utf-8");
+    await fs.writeFile(path.join(agentDir, "agent-config.json"), "{}\n", "utf-8");
+
+    const source = {
+      definitionId,
+      applicationId: `bundle-app-${localApplicationId}`,
+      applicationName: "Brief Studio",
+      packageId,
+      localApplicationId,
+      localDefinitionId: localAgentId,
+      applicationRootPath,
+      packageRootPath,
+      writable: true,
+    };
+
+    vi.spyOn(ApplicationBundleService, "getInstance").mockReturnValue({
+      listApplicationOwnedAgentSources: vi.fn(async () => [source]),
+      getApplicationOwnedAgentSourceById: vi.fn(async (requestedId: string) =>
+        requestedId === definitionId ? source : null
+      ),
+    } as unknown as ApplicationBundleService);
+
+    const provider = new FileAgentDefinitionProvider();
+    await expect(provider.getAll()).rejects.toBeInstanceOf(AgentMdParseError);
+  });
+
   it("updates application-owned agent defaultLaunchConfig in place", async () => {
     const packageId = uniqueId("pkg");
     const localApplicationId = "math-app";

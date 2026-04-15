@@ -1,4 +1,10 @@
-import type { ApplicationCatalogEntry, ApplicationRuntimeTargetKind } from "../../application-bundles/domain/models.js";
+import type {
+  ApplicationEventDispatchEnvelope,
+  NormalizedPublicationEvent,
+  NormalizedPublicationEventFamily,
+} from "@autobyteus/application-sdk-contracts";
+import type { ApplicationCatalogEntry } from "../../application-bundles/domain/models.js";
+import type { ApplicationRuntimeTargetKind } from "@autobyteus/application-sdk-contracts";
 
 export type ApplicationSessionApplication = Pick<
   ApplicationCatalogEntry,
@@ -34,43 +40,14 @@ export type ApplicationProducerProvenance = {
   runtimeKind: ApplicationProducerRuntimeKind;
 };
 
-export type ApplicationDeliveryState = "waiting" | "in_progress" | "ready" | "blocked";
-export type ApplicationMemberArtifactState = "draft" | "ready" | "blocked" | "superseded";
-export type ApplicationMemberProgressState = "queued" | "working" | "ready" | "blocked";
-
-export type ApplicationDeliveryStateProjection = {
-  publicationKey: string;
-  deliveryState: ApplicationDeliveryState;
+export type ApplicationArtifactProjection = {
+  artifactKey: string;
+  artifactType: string;
   title: string | null;
   summary: string | null;
-  artifactType: string | null;
-  artifactRef: ApplicationArtifactRef | null;
-  updatedAt: string;
-  producer: ApplicationProducerProvenance;
-};
-
-export type ApplicationDeliveryProjection = {
-  current: ApplicationDeliveryStateProjection | null;
-};
-
-export type ApplicationMemberArtifactProjection = {
-  publicationKey: string;
-  artifactType: string;
-  state: ApplicationMemberArtifactState;
-  title: string;
-  summary: string | null;
   artifactRef: ApplicationArtifactRef;
+  metadata: Record<string, unknown> | null;
   isFinal: boolean;
-  updatedAt: string;
-  producer: ApplicationProducerProvenance;
-};
-
-export type ApplicationMemberProgressProjection = {
-  publicationKey: string;
-  phaseLabel: string;
-  state: ApplicationMemberProgressState;
-  percent: number | null;
-  detailText: string | null;
   updatedAt: string;
   producer: ApplicationProducerProvenance;
 };
@@ -83,14 +60,11 @@ export type ApplicationMemberProjection = {
     runId: string;
     runtimeKind: ApplicationProducerRuntimeKind;
   } | null;
-  artifactsByKey: Record<string, ApplicationMemberArtifactProjection>;
+  artifactsByKey: Record<string, ApplicationArtifactProjection>;
   primaryArtifactKey: string | null;
-  progressByKey: Record<string, ApplicationMemberProgressProjection>;
-  primaryProgressKey: string | null;
 };
 
 export type ApplicationSessionView = {
-  delivery: ApplicationDeliveryProjection;
   members: ApplicationMemberProjection[];
 };
 
@@ -122,43 +96,16 @@ export type ApplicationSessionBinding = {
   session: ApplicationSessionSnapshot | null;
 };
 
-export type PublishMemberArtifactEventInputV1 = {
+export type PublishArtifactInputV1 = {
   contractVersion: "1";
-  publicationFamily: "MEMBER_ARTIFACT";
-  publicationKey: string;
+  artifactKey: string;
   artifactType: string;
-  state: ApplicationMemberArtifactState;
-  title: string;
-  summary?: string;
+  title?: string | null;
+  summary?: string | null;
   artifactRef: ApplicationArtifactRef;
-  isFinal?: boolean;
+  metadata?: Record<string, unknown> | null;
+  isFinal?: boolean | null;
 };
-
-export type PublishDeliveryStateEventInputV1 = {
-  contractVersion: "1";
-  publicationFamily: "DELIVERY_STATE";
-  publicationKey: string;
-  deliveryState: ApplicationDeliveryState;
-  title?: string;
-  summary?: string;
-  artifactType?: string;
-  artifactRef?: ApplicationArtifactRef;
-};
-
-export type PublishProgressEventInputV1 = {
-  contractVersion: "1";
-  publicationFamily: "PROGRESS";
-  publicationKey: string;
-  phaseLabel: string;
-  state: ApplicationMemberProgressState;
-  percent?: number;
-  detailText?: string;
-};
-
-export type PublishApplicationEventInputV1 =
-  | PublishMemberArtifactEventInputV1
-  | PublishDeliveryStateEventInputV1
-  | PublishProgressEventInputV1;
 
 export type ApplicationSessionLaunchMemberContext = {
   memberRouteKey: string;
@@ -172,3 +119,38 @@ export type ApplicationSessionLaunchContext = {
   applicationId: string;
   member: ApplicationSessionLaunchMemberContext;
 };
+
+export type ApplicationNormalizedPublicationPayload =
+  | PublishArtifactInputV1
+  | {
+      session: {
+        createdAt: string;
+        runtime: ApplicationSessionRuntime;
+      };
+    }
+  | {
+      session: {
+        terminatedAt: string;
+        runtime: ApplicationSessionRuntime;
+      };
+    };
+
+export type ApplicationPublicationJournalEvent = NormalizedPublicationEvent<ApplicationNormalizedPublicationPayload>;
+
+export type ApplicationPublicationJournalRecord = {
+  event: ApplicationPublicationJournalEvent;
+  ackedAt: string | null;
+  lastDispatchAttemptNumber: number;
+  lastDispatchedAt: string | null;
+  lastErrorKind: string | null;
+  lastErrorMessage: string | null;
+  nextAttemptAfter: string | null;
+};
+
+export type ApplicationPublicationDispatchEnvelope = ApplicationEventDispatchEnvelope<ApplicationNormalizedPublicationPayload>;
+
+export type ApplicationPublicationDispatchResult = {
+  status: "acknowledged" | "missing_handler";
+};
+
+export type ApplicationPublicationEventFamily = NormalizedPublicationEventFamily;

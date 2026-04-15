@@ -117,6 +117,19 @@
             </li>
             <li class="w-full">
               <button
+                @click="activeSection = 'application-packages'"
+                data-testid="settings-nav-application-packages"
+                class="flex w-full items-center justify-start px-4 py-2 rounded-md transition-colors duration-200 text-gray-700 hover:bg-gray-100 hover:text-gray-900 group"
+                :class="{ 'bg-gray-100 text-gray-900': activeSection === 'application-packages' }"
+              >
+                <div class="flex items-center min-w-[20px] mr-3">
+                  <span class="i-heroicons-squares-plus-20-solid w-5 h-5"></span>
+                </div>
+                <span class="text-left">{{ $t('settings.page.sections.applicationPackages') }}</span>
+              </button>
+            </li>
+            <li class="w-full">
+              <button
                 @click="activeSection = 'agent-packages'"
                 data-testid="settings-nav-agent-packages"
                 class="flex w-full items-center justify-start px-4 py-2 rounded-md transition-colors duration-200 text-gray-700 hover:bg-gray-100 hover:text-gray-900 group"
@@ -211,6 +224,7 @@
           v-if="activeSection === 'mcp-servers'"
           initial-root-section="mcp-servers"
         />
+        <ApplicationPackagesManager v-if="activeSection === 'application-packages'" />
         <AgentPackagesManager v-if="activeSection === 'agent-packages'" />
         <div
           v-if="activeSection === 'server-settings'"
@@ -239,6 +253,7 @@ import MessagingSetupManager from '~/components/settings/MessagingSetupManager.v
 import ExtensionsManager from '~/components/settings/ExtensionsManager.vue';
 import AboutSettingsManager from '~/components/settings/AboutSettingsManager.vue';
 import AgentPackagesManager from '~/components/settings/AgentPackagesManager.vue';
+import ApplicationPackagesManager from '~/components/settings/ApplicationPackagesManager.vue';
 import DisplaySettingsManager from '~/components/settings/DisplaySettingsManager.vue';
 import LanguageSettingsManager from '~/components/settings/LanguageSettingsManager.vue';
 import ToolsManagementWorkspace from '~/components/tools/ToolsManagementWorkspace.vue';
@@ -258,6 +273,7 @@ type SettingsSection =
   | 'updates'
   | 'local-tools'
   | 'mcp-servers'
+  | 'application-packages'
   | 'agent-packages'
   | 'server-settings';
 type ServerSettingsMode = 'quick' | 'advanced';
@@ -280,6 +296,7 @@ const validSections = new Set<SettingsSection>([
   'updates',
   'local-tools',
   'mcp-servers',
+  'application-packages',
   'agent-packages',
   'server-settings',
 ]);

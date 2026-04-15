@@ -1,31 +1,5 @@
 import { gql } from 'graphql-tag'
 
-export const ApplicationProducerFields = gql`
-  fragment ApplicationProducerFields on ApplicationProducerProvenanceGraph {
-    memberRouteKey
-    displayName
-    teamPath
-    runId
-    runtimeKind
-  }
-`
-
-export const ApplicationDeliveryStateFields = gql`
-  fragment ApplicationDeliveryStateFields on ApplicationDeliveryStateProjectionGraph {
-    publicationKey
-    deliveryState
-    title
-    summary
-    artifactType
-    artifactRef
-    updatedAt
-    producer {
-      ...ApplicationProducerFields
-    }
-  }
-  ${ApplicationProducerFields}
-`
-
 export const ApplicationMemberFields = gql`
   fragment ApplicationMemberFields on ApplicationMemberProjectionGraph {
     memberRouteKey
@@ -37,8 +11,6 @@ export const ApplicationMemberFields = gql`
     }
     artifactsByKey
     primaryArtifactKey
-    progressByKey
-    primaryProgressKey
   }
 `
 
@@ -61,11 +33,6 @@ export const ApplicationSessionFields = gql`
       definitionId
     }
     view {
-      delivery {
-        current {
-          ...ApplicationDeliveryStateFields
-        }
-      }
       members {
         ...ApplicationMemberFields
       }
@@ -73,7 +40,6 @@ export const ApplicationSessionFields = gql`
     createdAt
     terminatedAt
   }
-  ${ApplicationDeliveryStateFields}
   ${ApplicationMemberFields}
 `
 

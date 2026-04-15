@@ -2,6 +2,14 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import dotenv from "dotenv";
+import {
+  listExistingAbsoluteDirectoryPaths,
+  listExistingDirectoryPaths,
+  normalizeOptionalConfigString,
+  normalizeOptionalUrlBase,
+  parsePositiveNumberConfig,
+  resolveConfiguredDirectoryPath,
+} from "./config-value-parsers.js";
 
 export class AppConfigError extends Error {
   constructor(message: string) {
@@ -40,11 +48,8 @@ export class AppConfig {
     this.appRootDir = this.getAppRootDirInternal();
     console.info(`App root directory: ${this.appRootDir}`);
 
-    const configuredAppDataDir =
-      typeof options.appDataDir === "string" && options.appDataDir.trim().length > 0
-        ? path.resolve(options.appDataDir.trim())
-        : null;
-    this.dataDir = configuredAppDataDir ?? this.appRootDir;
+    const configuredAppDataDir = normalizeOptionalConfigString(options.appDataDir);
+    this.dataDir = configuredAppDataDir ? path.resolve(configuredAppDataDir) : this.appRootDir;
     console.info(`App data directory: ${this.dataDir}`);
 
     logger.debug("AppConfig instance created.");
@@ -275,13 +280,11 @@ export class AppConfig {
   }
 
   getLogsDir(): string {
-    const configuredPath = this.get("AUTOBYTEUS_LOG_DIR");
-    const logsDir =
-      typeof configuredPath === "string" && configuredPath.trim().length > 0
-        ? path.isAbsolute(configuredPath.trim())
-          ? path.resolve(configuredPath.trim())
-          : path.resolve(this.dataDir, configuredPath.trim())
-        : path.join(this.dataDir, "logs");
+    const logsDir = resolveConfiguredDirectoryPath({
+      configuredPath: this.get("AUTOBYTEUS_LOG_DIR"),
+      dataDir: this.dataDir,
+      defaultLeaf: "logs",
+    });
     fs.mkdirSync(logsDir, { recursive: true });
     return logsDir;
   }
@@ -305,13 +308,11 @@ export class AppConfig {
   }
 
   getTempWorkspaceDir(): string {
-    const configuredPath = this.get("AUTOBYTEUS_TEMP_WORKSPACE_DIR");
-    const tempWorkspaceDir =
-      typeof configuredPath === "string" && configuredPath.trim().length > 0
-        ? path.isAbsolute(configuredPath.trim())
-          ? path.resolve(configuredPath.trim())
-          : path.resolve(this.dataDir, configuredPath.trim())
-        : path.join(this.dataDir, "temp_workspace");
+    const tempWorkspaceDir = resolveConfiguredDirectoryPath({
+      configuredPath: this.get("AUTOBYTEUS_TEMP_WORKSPACE_DIR"),
+      dataDir: this.dataDir,
+      defaultLeaf: "temp_workspace",
+    });
     try {
       fs.mkdirSync(tempWorkspaceDir, { recursive: true });
     } catch (error) {
@@ -361,87 +362,49 @@ export class AppConfig {
   }
 
   getAdditionalSkillsDirs(): string[] {
-    const raw = this.get("AUTOBYTEUS_SKILLS_PATHS", "");
-    if (!raw || !raw.trim()) {
-      return [];
-    }
-
-    const paths: string[] = [];
-    for (const rawPath of raw.split(",")) {
-      const trimmed = rawPath.trim();
-      if (!trimmed) {
-        continue;
-      }
-      if (fs.existsSync(trimmed) && fs.statSync(trimmed).isDirectory()) {
-        paths.push(trimmed);
-      } else {
-        logger.warn(`Skill path does not exist or is not a directory: ${trimmed}`);
-      }
-    }
-
-    return paths;
+    return listExistingDirectoryPaths({
+      rawValue: this.get("AUTOBYTEUS_SKILLS_PATHS", ""),
+      label: "Skill",
+      onWarn: logger.warn,
+    });
   }
 
   getAdditionalAgentPackageRoots(): string[] {
-    const raw = this.get("AUTOBYTEUS_AGENT_PACKAGE_ROOTS", "");
-    if (!raw || !raw.trim()) {
-      return [];
-    }
+    return listExistingAbsoluteDirectoryPaths({
+      rawValue: this.get("AUTOBYTEUS_AGENT_PACKAGE_ROOTS", ""),
+      label: "Agent package root",
+      onWarn: logger.warn,
+    });
+  }
 
-    const seen = new Set<string>();
-    const roots: string[] = [];
-    for (const rawPath of raw.split(",")) {
-      const trimmed = rawPath.trim();
-      if (!trimmed) {
-        continue;
-      }
-      if (!path.isAbsolute(trimmed)) {
-        logger.warn(`Agent package root path must be absolute and will be ignored: ${trimmed}`);
-        continue;
-      }
-      const resolved = path.resolve(trimmed);
-      if (seen.has(resolved)) {
-        continue;
-      }
-      if (!fs.existsSync(resolved) || !fs.statSync(resolved).isDirectory()) {
-        logger.warn(`Agent package root path does not exist or is not a directory: ${resolved}`);
-        continue;
-      }
-      seen.add(resolved);
-      roots.push(resolved);
-    }
-
-    return roots;
+  getAdditionalApplicationPackageRoots(): string[] {
+    return listExistingAbsoluteDirectoryPaths({
+      rawValue: this.get("AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS", ""),
+      label: "Application package root",
+      onWarn: logger.warn,
+    });
   }
 
   getChannelCallbackBaseUrl(): string | null {
-    const raw = this.get("CHANNEL_CALLBACK_BASE_URL");
-    if (!raw) {
-      return null;
-    }
-    const normalized = raw.trim().replace(/\/+$/, "");
-    return normalized.length > 0 ? normalized : null;
+    return normalizeOptionalUrlBase(this.get("CHANNEL_CALLBACK_BASE_URL"));
   }
 
   getChannelCallbackSharedSecret(): string | null {
-    const raw = this.get("CHANNEL_CALLBACK_SHARED_SECRET");
-    if (!raw) {
-      return null;
-    }
-    const normalized = raw.trim();
-    return normalized.length > 0 ? normalized : null;
+    return normalizeOptionalConfigString(this.get("CHANNEL_CALLBACK_SHARED_SECRET"));
   }
 
   getChannelCallbackTimeoutMs(defaultValue = 5000): number {
-    const raw = this.get("CHANNEL_CALLBACK_TIMEOUT_MS");
-    if (!raw) {
-      return defaultValue;
+    try {
+      return parsePositiveNumberConfig({
+        rawValue: this.get("CHANNEL_CALLBACK_TIMEOUT_MS"),
+        envName: "CHANNEL_CALLBACK_TIMEOUT_MS",
+        defaultValue,
+      });
+    } catch (error) {
+      throw new AppConfigError(
+        error instanceof Error ? error.message : String(error),
+      );
     }
-    const parsed = Number(raw.trim());
-    if (!Number.isFinite(parsed) || parsed <= 0) {
-      throw new AppConfigError("CHANNEL_CALLBACK_TIMEOUT_MS must be a positive number.");
-    }
-    return parsed;
   }
 
   loadEnvironment(): boolean {

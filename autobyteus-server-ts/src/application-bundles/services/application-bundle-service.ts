@@ -1,13 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { ApplicationBundle, ApplicationCatalogEntry, ApplicationOwnedDefinitionSource } from "../domain/models.js";
-import { FileApplicationBundleProvider } from "../providers/file-application-bundle-provider.js";
-import { AgentPackageRootSettingsStore } from "../../agent-packages/stores/agent-package-root-settings-store.js";
-import { AgentPackageRegistryStore } from "../../agent-packages/stores/agent-package-registry-store.js";
-import {
-  BUILT_IN_AGENT_PACKAGE_ID,
-  buildLocalPackageId,
-} from "../../agent-packages/utils/package-root-summary.js";
+import { FileApplicationBundleProvider, BUILT_IN_APPLICATION_PACKAGE_ID } from "../providers/file-application-bundle-provider.js";
+import { ApplicationPackageRootSettingsStore } from "../../application-packages/stores/application-package-root-settings-store.js";
+import { ApplicationPackageRegistryStore } from "../../application-packages/stores/application-package-registry-store.js";
+import { buildLocalApplicationPackageId } from "../../application-packages/utils/application-package-root-summary.js";
 
 const APPLICATION_ASSET_ROUTE_PREFIX = "/application-bundles";
 
@@ -43,8 +40,8 @@ export class ApplicationBundleService {
   constructor(
     private readonly dependencies: {
       provider?: ApplicationBundleProvider;
-      rootSettingsStore?: AgentPackageRootSettingsStore;
-      registryStore?: AgentPackageRegistryStore;
+      rootSettingsStore?: ApplicationPackageRootSettingsStore;
+      registryStore?: ApplicationPackageRegistryStore;
     } = {},
   ) {}
 
@@ -52,12 +49,12 @@ export class ApplicationBundleService {
     return this.dependencies.provider ?? new FileApplicationBundleProvider();
   }
 
-  private get rootSettingsStore(): AgentPackageRootSettingsStore {
-    return this.dependencies.rootSettingsStore ?? new AgentPackageRootSettingsStore();
+  private get rootSettingsStore(): ApplicationPackageRootSettingsStore {
+    return this.dependencies.rootSettingsStore ?? new ApplicationPackageRootSettingsStore();
   }
 
-  private get registryStore(): AgentPackageRegistryStore {
-    return this.dependencies.registryStore ?? new AgentPackageRegistryStore();
+  private get registryStore(): ApplicationPackageRegistryStore {
+    return this.dependencies.registryStore ?? new ApplicationPackageRegistryStore();
   }
 
   private assetPath(applicationId: string, relativePath: string): string {
@@ -182,10 +179,10 @@ export class ApplicationBundleService {
 
   async validatePackageRoot(packageRootPath: string): Promise<void> {
     const resolvedRootPath = path.resolve(packageRootPath);
-    let packageId = buildLocalPackageId(resolvedRootPath);
+    let packageId = buildLocalApplicationPackageId(resolvedRootPath);
 
-    if (resolvedRootPath === this.rootSettingsStore.getDefaultRootPath()) {
-      packageId = BUILT_IN_AGENT_PACKAGE_ID;
+    if (resolvedRootPath === this.rootSettingsStore.getBuiltInRootPath()) {
+      packageId = BUILT_IN_APPLICATION_PACKAGE_ID;
     } else {
       const record = await this.registryStore.findPackageByRootPath(resolvedRootPath);
       if (record?.packageId) {

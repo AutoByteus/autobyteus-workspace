@@ -31,7 +31,6 @@ const buildSnapshot = (): ApplicationSessionSnapshot => ({
     definitionId: "bundle-team__pkg__requirements-app__requirements-team",
   },
   view: {
-    delivery: { current: null },
     members: [
       {
         memberRouteKey: "requirements_writer",
@@ -43,8 +42,6 @@ const buildSnapshot = (): ApplicationSessionSnapshot => ({
         },
         artifactsByKey: {},
         primaryArtifactKey: null,
-        progressByKey: {},
-        primaryProgressKey: null,
       },
     ],
   },
@@ -53,33 +50,16 @@ const buildSnapshot = (): ApplicationSessionSnapshot => ({
 });
 
 describe("ApplicationPublicationProjector", () => {
-  it("retains progress and artifact families independently while delivery stays separate", () => {
+  it("retains artifacts by artifactKey and advances the primary artifact to the newest publication", () => {
     const projector = new ApplicationPublicationProjector();
     const initial = buildSnapshot();
 
-    const withProgress = projector.project(
+    const withDraft = projector.project(
       initial,
       {
         contractVersion: "1",
-        publicationFamily: "PROGRESS",
-        publicationKey: "drafting",
-        phaseLabel: "Drafting requirements",
-        state: "working",
-        percent: 40,
-        detailText: "Synthesizing findings",
-      },
-      producer,
-      "2026-04-13T10:05:00.000Z",
-    );
-
-    const withArtifact = projector.project(
-      withProgress,
-      {
-        contractVersion: "1",
-        publicationFamily: "MEMBER_ARTIFACT",
-        publicationKey: "requirements_artifact",
+        artifactKey: "working-draft",
         artifactType: "markdown_document",
-        state: "ready",
         title: "Requirements Draft",
         summary: "First complete draft",
         artifactRef: {
@@ -87,54 +67,46 @@ describe("ApplicationPublicationProjector", () => {
           workspaceId: "workspace-1",
           path: "/workspace/requirements.md",
         },
-        isFinal: true,
+        metadata: {
+          revision: 1,
+        },
+        isFinal: false,
       },
       producer,
       "2026-04-13T10:10:00.000Z",
     );
 
-    const withDelivery = projector.project(
-      withArtifact,
+    const withFinal = projector.project(
+      withDraft,
       {
         contractVersion: "1",
-        publicationFamily: "DELIVERY_STATE",
-        publicationKey: "final_delivery",
-        deliveryState: "ready",
-        title: "Delivery ready",
-        summary: "Ready for review",
+        artifactKey: "review-package",
         artifactType: "markdown_document",
+        title: "Requirements Final",
+        summary: "Ready for review",
         artifactRef: {
           kind: "WORKSPACE_FILE",
           workspaceId: "workspace-1",
-          path: "/workspace/requirements.md",
+          path: "/workspace/requirements-final.md",
         },
+        isFinal: true,
       },
       producer,
       "2026-04-13T10:15:00.000Z",
     );
 
-    const member = withDelivery.view.members[0];
-    expect(member?.progressByKey.drafting).toMatchObject({
-      phaseLabel: "Drafting requirements",
-      state: "working",
-      percent: 40,
-    });
-    expect(member?.primaryProgressKey).toBe("drafting");
-
-    expect(member?.artifactsByKey.requirements_artifact).toMatchObject({
+    const member = withFinal.view.members[0];
+    expect(member?.artifactsByKey["working-draft"]).toMatchObject({
       artifactType: "markdown_document",
-      state: "ready",
       title: "Requirements Draft",
+      metadata: { revision: 1 },
+      isFinal: false,
+    });
+    expect(member?.artifactsByKey["review-package"]).toMatchObject({
+      artifactType: "markdown_document",
+      title: "Requirements Final",
       isFinal: true,
     });
-    expect(member?.primaryArtifactKey).toBe("requirements_artifact");
-
-    expect(withDelivery.view.delivery.current).toMatchObject({
-      publicationKey: "final_delivery",
-      deliveryState: "ready",
-      title: "Delivery ready",
-    });
-    expect(member?.progressByKey.drafting).toBeDefined();
-    expect(member?.artifactsByKey.requirements_artifact).toBeDefined();
+    expect(member?.primaryArtifactKey).toBe("review-package");
   });
 });

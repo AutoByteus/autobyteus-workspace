@@ -17,6 +17,12 @@ describe('buildApplicationSessionTransport', () => {
       restBaseUrl: 'http://127.0.0.1:43123/rest',
       websocketUrl: 'ws://127.0.0.1:43123/graphql',
       sessionStreamUrl: 'ws://127.0.0.1:43123/ws/application-session',
+      backendStatusUrl: null,
+      backendQueriesBaseUrl: null,
+      backendCommandsBaseUrl: null,
+      backendGraphqlUrl: null,
+      backendRoutesBaseUrl: null,
+      backendNotificationsUrl: null,
     })
   })
 })

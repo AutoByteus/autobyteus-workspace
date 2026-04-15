@@ -3,22 +3,21 @@ import fsPromises from "node:fs/promises";
 import path from "node:path";
 import type {
   ApplicationBundle,
-  ValidatedApplicationBundle,
   ApplicationOwnedDefinitionSource,
+  ValidatedApplicationBundle,
 } from "../domain/models.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
-import { AgentPackageRegistryStore } from "../../agent-packages/stores/agent-package-registry-store.js";
-import { AgentPackageRootSettingsStore } from "../../agent-packages/stores/agent-package-root-settings-store.js";
+import { ApplicationPackageRegistryStore } from "../../application-packages/stores/application-package-registry-store.js";
+import { ApplicationPackageRootSettingsStore } from "../../application-packages/stores/application-package-root-settings-store.js";
+import { buildLocalApplicationPackageId } from "../../application-packages/utils/application-package-root-summary.js";
 import {
-  BUILT_IN_AGENT_PACKAGE_ID,
-  buildLocalPackageId,
-} from "../../agent-packages/utils/package-root-summary.js";
-import {
-  APPLICATION_MANIFEST_FILE_NAME,
-  ApplicationManifestParseError,
   getApplicationManifestPath,
   parseApplicationManifest,
 } from "../utils/application-manifest.js";
+import {
+  parseApplicationBackendManifest,
+} from "../utils/application-backend-manifest.js";
+import { resolveBuiltInApplicationPackageRoot } from "../utils/built-in-application-package-root.js";
 import {
   buildCanonicalApplicationId,
   buildCanonicalApplicationOwnedAgentId,
@@ -26,14 +25,12 @@ import {
 } from "../utils/application-bundle-identity.js";
 import {
   readApplicationOwnedTeamDefinitionFromSource,
-  type ApplicationOwnedTeamConfigParseError,
 } from "../../agent-team-definition/providers/application-owned-team-source.js";
-import { TeamMdParseError } from "../../agent-team-definition/utils/team-md-parser.js";
 import { assertApplicationOwnedTeamIntegrity } from "../../agent-team-definition/utils/application-owned-team-integrity-validator.js";
-
-const logger = {
-  warn: (...args: unknown[]) => console.warn(...args),
-};
+import {
+  buildApplicationOwnedAgentSourcePaths,
+  readApplicationOwnedAgentDefinitionFromSource,
+} from "../../agent-definition/providers/application-owned-agent-source.js";
 
 export const BUILT_IN_APPLICATION_PACKAGE_ID = "built-in:applications";
 
@@ -85,6 +82,15 @@ const assertExistingFile = (bundleRootPath: string, relativePath: string, fieldN
   if (!fs.existsSync(absolutePath) || !fs.statSync(absolutePath).isFile()) {
     throw new Error(
       `Application bundle '${bundleRootPath}' is invalid: ${fieldName} file '${relativePath}' does not exist.`,
+    );
+  }
+};
+
+const assertExistingDirectory = (bundleRootPath: string, relativePath: string, fieldName: string): void => {
+  const absolutePath = path.join(bundleRootPath, relativePath);
+  if (!fs.existsSync(absolutePath) || !fs.statSync(absolutePath).isDirectory()) {
+    throw new Error(
+      `Application bundle '${bundleRootPath}' is invalid: ${fieldName} directory '${relativePath}' does not exist.`,
     );
   }
 };
@@ -141,13 +147,14 @@ const buildApplicationSource = (
 export class FileApplicationBundleProvider {
   constructor(
     private readonly config = appConfigProvider.config,
-    private readonly rootSettingsStore = new AgentPackageRootSettingsStore(),
-    private readonly registryStore = new AgentPackageRegistryStore(),
+    private readonly rootSettingsStore = new ApplicationPackageRootSettingsStore(),
+    private readonly registryStore = new ApplicationPackageRegistryStore(),
   ) {}
 
   private async listBundleRoots(): Promise<BundleRootDescriptor[]> {
     const seen = new Set<string>();
     const bundleRoots: BundleRootDescriptor[] = [];
+    const builtInApplicationRootPath = resolveBuiltInApplicationPackageRoot(this.config.getAppRootDir());
 
     const addRoot = (packageId: string, packageRootPath: string): void => {
       const resolvedPath = path.resolve(packageRootPath);
@@ -158,7 +165,7 @@ export class FileApplicationBundleProvider {
       bundleRoots.push({ packageId, packageRootPath: resolvedPath });
     };
 
-    addRoot(BUILT_IN_AGENT_PACKAGE_ID, this.rootSettingsStore.getDefaultRootPath());
+    addRoot(BUILT_IN_APPLICATION_PACKAGE_ID, builtInApplicationRootPath);
 
     const additionalRoots = this.rootSettingsStore.listAdditionalRootPaths();
     const registryRecords = await this.registryStore.listPackageRecords();
@@ -168,18 +175,17 @@ export class FileApplicationBundleProvider {
 
     for (const additionalRootPath of additionalRoots) {
       const resolvedRootPath = path.resolve(additionalRootPath);
+      if (resolvedRootPath === builtInApplicationRootPath) {
+        continue;
+      }
       const record = registryByRootPath.get(resolvedRootPath);
-      addRoot(record?.packageId ?? buildLocalPackageId(resolvedRootPath), resolvedRootPath);
+      addRoot(record?.packageId ?? buildLocalApplicationPackageId(resolvedRootPath), resolvedRootPath);
     }
-
-    addRoot(BUILT_IN_APPLICATION_PACKAGE_ID, this.config.getAppRootDir());
 
     return bundleRoots;
   }
 
-  private async scanBundleRoot(
-    root: BundleRootDescriptor,
-  ): Promise<ScannedBundleRecord[]> {
+  private async scanBundleRoot(root: BundleRootDescriptor): Promise<ScannedBundleRecord[]> {
     const applicationsDir = path.join(root.packageRootPath, "applications");
     let entries: fs.Dirent[] = [];
     try {
@@ -211,6 +217,19 @@ export class FileApplicationBundleProvider {
       if (manifest.iconRelativePath) {
         assertExistingFile(applicationRootPath, manifest.iconRelativePath, "icon");
       }
+      assertExistingFile(applicationRootPath, manifest.backendBundleManifestRelativePath, "backend.bundleManifest");
+
+      const backend = parseApplicationBackendManifest(
+        applicationRootPath,
+        path.join(applicationRootPath, manifest.backendBundleManifestRelativePath),
+      );
+      assertExistingFile(applicationRootPath, backend.entryModuleRelativePath, "backend.entryModule");
+      if (backend.migrationsDirRelativePath) {
+        assertExistingDirectory(applicationRootPath, backend.migrationsDirRelativePath, "backend.migrationsDir");
+      }
+      if (backend.assetsDirRelativePath) {
+        assertExistingDirectory(applicationRootPath, backend.assetsDirRelativePath, "backend.assetsDir");
+      }
 
       const localAgentIds = await listDefinitionIds(path.join(applicationRootPath, "agents"), "agent.md");
       const localTeamIds = await listDefinitionIds(path.join(applicationRootPath, "agent-teams"), "team.md");
@@ -235,6 +254,7 @@ export class FileApplicationBundleProvider {
           localAgentIds,
           localTeamIds,
           writable: await isWritablePath(applicationRootPath),
+          backend,
         },
       });
     }
@@ -249,6 +269,15 @@ export class FileApplicationBundleProvider {
     for (const record of records) {
       for (const localAgentId of record.bundle.localAgentIds) {
         const source = buildApplicationSource(record, localAgentId, "agent");
+        const definition = await readApplicationOwnedAgentDefinitionFromSource(
+          buildApplicationOwnedAgentSourcePaths(source),
+          source.definitionId,
+        );
+        if (!definition) {
+          throw new Error(
+            `Application bundle '${record.bundle.applicationRootPath}' application-owned agent '${localAgentId}' could not be read.`,
+          );
+        }
         applicationIdByAgentId.set(source.definitionId, source.applicationId);
       }
       for (const localTeamId of record.bundle.localTeamIds) {
@@ -323,18 +352,7 @@ export class FileApplicationBundleProvider {
       await Promise.all(bundleRoots.map((root) => this.scanBundleRoot(root)))
     ).flat();
 
-    try {
-      await this.validateApplicationOwnedTeams(scannedRecords);
-    } catch (error) {
-      if (
-        error instanceof ApplicationManifestParseError
-        || error instanceof TeamMdParseError
-        || (error as Error).name === "ApplicationOwnedTeamConfigParseError"
-      ) {
-        throw error;
-      }
-      throw error;
-    }
+    await this.validateApplicationOwnedTeams(scannedRecords);
 
     return scannedRecords.map((record) => {
       const applicationId = buildCanonicalApplicationId(
@@ -372,6 +390,7 @@ export class FileApplicationBundleProvider {
         localTeamIds: record.bundle.localTeamIds,
         entryHtmlRelativePath: record.bundle.entryHtmlRelativePath,
         iconRelativePath: record.bundle.iconRelativePath,
+        backend: record.bundle.backend,
       };
     });
   }
@@ -381,9 +400,7 @@ export class FileApplicationBundleProvider {
     await this.validateApplicationOwnedTeams(records);
   }
 
-  buildApplicationOwnedAgentSources(
-    bundle: ApplicationBundle,
-  ): ApplicationOwnedDefinitionSource[] {
+  buildApplicationOwnedAgentSources(bundle: ApplicationBundle): ApplicationOwnedDefinitionSource[] {
     return bundle.localAgentIds.map((localAgentId) => ({
       definitionId: buildCanonicalApplicationOwnedAgentId(
         bundle.packageId,
@@ -401,9 +418,7 @@ export class FileApplicationBundleProvider {
     }));
   }
 
-  buildApplicationOwnedTeamSources(
-    bundle: ApplicationBundle,
-  ): ApplicationOwnedDefinitionSource[] {
+  buildApplicationOwnedTeamSources(bundle: ApplicationBundle): ApplicationOwnedDefinitionSource[] {
     return bundle.localTeamIds.map((localTeamId) => ({
       definitionId: buildCanonicalApplicationOwnedTeamId(
         bundle.packageId,

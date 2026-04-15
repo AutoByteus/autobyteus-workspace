@@ -9,6 +9,7 @@ export const APPLICATION_IFRAME_READY_EVENT = 'autobyteus.application.ui.ready' 
 export const APPLICATION_IFRAME_BOOTSTRAP_EVENT = 'autobyteus.application.host.bootstrap' as const
 export const APPLICATION_IFRAME_QUERY_CONTRACT_VERSION = 'autobyteusContractVersion' as const
 export const APPLICATION_IFRAME_QUERY_APPLICATION_SESSION_ID = 'autobyteusApplicationSessionId' as const
+export const APPLICATION_IFRAME_QUERY_LAUNCH_INSTANCE_ID = 'autobyteusLaunchInstanceId' as const
 export const APPLICATION_IFRAME_QUERY_HOST_ORIGIN = 'autobyteusHostOrigin' as const
 export const APPLICATION_IFRAME_READY_TIMEOUT_MS = 10_000
 
@@ -17,6 +18,7 @@ type EmptyObject = Record<string, never>
 export type ApplicationIframeLaunchHints = {
   contractVersion: typeof APPLICATION_IFRAME_CONTRACT_VERSION_V1
   applicationSessionId: string
+  launchInstanceId: string
   hostOrigin: string
 }
 
@@ -31,6 +33,11 @@ export type ApplicationIframeEnvelopeV1<
 
 export type ApplicationUiReadyPayloadV1 = {
   applicationSessionId: string
+  launchInstanceId: string
+}
+
+export type ApplicationIframeReadySignal = ApplicationUiReadyPayloadV1 & {
+  iframeOrigin: string
 }
 
 export type ApplicationUiReadyEnvelopeV1 = ApplicationIframeEnvelopeV1<ApplicationUiReadyPayloadV1> & {
@@ -49,6 +56,7 @@ export type ApplicationBootstrapPayloadV1 = {
   }
   session: {
     applicationSessionId: string
+    launchInstanceId: string
   }
   runtime: {
     kind: ApplicationRuntimeTargetKind
@@ -65,15 +73,6 @@ export type ApplicationHostBootstrapEnvelopeV1 = ApplicationIframeEnvelopeV1<App
 const isObjectRecord = (value: unknown): value is Record<string, unknown> => (
   Boolean(value) && typeof value === 'object' && !Array.isArray(value)
 )
-
-export const serializeApplicationHostOrigin = (origin: string | null | undefined): string => {
-  const normalized = (origin ?? '').trim()
-  if (!normalized || normalized === 'null') {
-    return 'null'
-  }
-
-  return normalized
-}
 
 export const isApplicationIframeEnvelopeV1 = (
   value: unknown,
@@ -93,10 +92,13 @@ export const isApplicationIframeEnvelopeV1 = (
 const hasOnlyReadyPayloadKeys = (payload: Record<string, unknown>): payload is ApplicationUiReadyPayloadV1 => {
   const keys = Object.keys(payload)
   return (
-    keys.length === 1
-    && keys[0] === 'applicationSessionId'
+    keys.length === 2
+    && keys.includes('applicationSessionId')
+    && keys.includes('launchInstanceId')
     && typeof payload.applicationSessionId === 'string'
     && payload.applicationSessionId.trim().length > 0
+    && typeof payload.launchInstanceId === 'string'
+    && payload.launchInstanceId.trim().length > 0
   )
 }
 

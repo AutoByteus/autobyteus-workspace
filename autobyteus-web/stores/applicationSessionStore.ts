@@ -19,7 +19,6 @@ import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
 import {
   type ApplicationSession,
   type ApplicationSessionBinding,
-  type ApplicationSessionBootstrapState,
   type ApplicationSessionSnapshot,
   type ApplicationUserContextFile,
 } from '~/types/application/ApplicationSession'
@@ -55,12 +54,6 @@ interface GetApplicationSessionBindingResult {
   } | null
 }
 
-const toBootstrapState = (
-  session: ApplicationSession | null | undefined,
-): Pick<ApplicationSession, 'bootstrapState' | 'bootstrapError'> => ({
-  bootstrapState: session?.bootstrapState ?? 'waiting_for_ready',
-  bootstrapError: session?.bootstrapError ?? null,
-})
 
 const isLiveSession = (session: ApplicationSession | null | undefined): session is ApplicationSession =>
   session != null && session.terminatedAt === null
@@ -186,22 +179,16 @@ export const useApplicationSessionStore = defineStore('applicationSession', () =
   }
 
   const mergeSessionSnapshot = (snapshot: ApplicationSessionSnapshot): ApplicationSession => {
-    const existing = getSessionById(snapshot.applicationSessionId)
-    const nextSession: ApplicationSession = {
-      ...snapshot,
-      ...toBootstrapState(existing),
-    }
-
     sessions.value = {
       ...sessions.value,
-      [snapshot.applicationSessionId]: nextSession,
+      [snapshot.applicationSessionId]: snapshot,
     }
 
     syncActiveSessionIndex(snapshot)
     if (snapshot.terminatedAt !== null) {
       disconnectSessionStream(snapshot.applicationSessionId)
     }
-    return nextSession
+    return snapshot
   }
 
   const upsertCommandSession = (session: ApplicationSessionSnapshot | null | undefined): ApplicationSession | null => {
@@ -416,45 +403,6 @@ export const useApplicationSessionStore = defineStore('applicationSession', () =
     return upsertCommandSession(result.session)
   }
 
-  const updateBootstrapState = (
-    applicationSessionId: string,
-    state: ApplicationSessionBootstrapState,
-    errorMessage: string | null,
-  ): void => {
-    const session = getSessionById(applicationSessionId)
-    if (!session) {
-      return
-    }
-
-    sessions.value = {
-      ...sessions.value,
-      [applicationSessionId]: {
-        ...session,
-        bootstrapState: state,
-        bootstrapError: errorMessage,
-      },
-    }
-  }
-
-  const markSessionBootstrapWaiting = (applicationSessionId: string): void => {
-    updateBootstrapState(applicationSessionId, 'waiting_for_ready', null)
-  }
-
-  const markSessionBootstrapped = (applicationSessionId: string): void => {
-    updateBootstrapState(applicationSessionId, 'bootstrapped', null)
-  }
-
-  const markSessionBootstrapFailed = (
-    applicationSessionId: string,
-    errorMessage: string,
-  ): void => {
-    updateBootstrapState(applicationSessionId, 'bootstrap_failed', errorMessage)
-  }
-
-  const retryBootstrap = (applicationSessionId: string): void => {
-    markSessionBootstrapWaiting(applicationSessionId)
-  }
-
   const clearLaunchError = (): void => {
     launchError.value = null
   }
@@ -473,10 +421,6 @@ export const useApplicationSessionStore = defineStore('applicationSession', () =
     createApplicationSession,
     connectSessionStream,
     sendApplicationInputMessage,
-    markSessionBootstrapWaiting,
-    markSessionBootstrapped,
-    markSessionBootstrapFailed,
-    retryBootstrap,
     terminateSession,
     clearLaunchError,
   }

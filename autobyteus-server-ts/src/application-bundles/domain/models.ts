@@ -1,9 +1,29 @@
-export type ApplicationRuntimeTargetKind = "AGENT" | "AGENT_TEAM";
+import type {
+  ApplicationBackendBundleManifestV1,
+  ApplicationBackendSupportedExposures,
+  ApplicationRuntimeTargetKind,
+} from "@autobyteus/application-sdk-contracts";
 
 export type ApplicationRuntimeTarget = {
   kind: ApplicationRuntimeTargetKind;
   localId: string;
   definitionId: string;
+};
+
+export type ApplicationBackendBundle = {
+  manifestPath: string;
+  manifestRelativePath: string;
+  entryModulePath: string;
+  entryModuleRelativePath: string;
+  moduleFormat: ApplicationBackendBundleManifestV1["moduleFormat"];
+  distribution: ApplicationBackendBundleManifestV1["distribution"];
+  targetRuntime: ApplicationBackendBundleManifestV1["targetRuntime"];
+  sdkCompatibility: ApplicationBackendBundleManifestV1["sdkCompatibility"];
+  supportedExposures: ApplicationBackendSupportedExposures;
+  migrationsDirPath: string | null;
+  migrationsDirRelativePath: string | null;
+  assetsDirPath: string | null;
+  assetsDirRelativePath: string | null;
 };
 
 export type ApplicationCatalogEntry = {
@@ -25,6 +45,7 @@ export type ApplicationBundle = ApplicationCatalogEntry & {
   localTeamIds: string[];
   entryHtmlRelativePath: string;
   iconRelativePath: string | null;
+  backend: ApplicationBackendBundle;
 };
 
 export type ApplicationOwnedDefinitionSource = {
@@ -53,4 +74,5 @@ export type ValidatedApplicationBundle = {
   localAgentIds: string[];
   localTeamIds: string[];
   writable: boolean;
+  backend: ApplicationBackendBundle;
 };
