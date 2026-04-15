@@ -4,7 +4,7 @@
 
 - Ticket: `application-bundle-agent-architecture-analysis`
 - Date: `2026-04-15`
-- Current Status: `Verified; archival and git finalization in progress`
+- Current Status: `Verified`
 - Latest authoritative review result: `Pass`
 - Latest authoritative review round: `19`
 - Latest authoritative validation result: `Pass`
@@ -38,10 +38,10 @@
 ## Verification Summary
 
 - Review report:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-agent-architecture-analysis-implementation/tickets/done/application-bundle-agent-architecture-analysis/review-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-agent-architecture-analysis-finalization/tickets/done/application-bundle-agent-architecture-analysis/review-report.md`
   - latest authoritative result: `Pass` (round `19`)
 - Validation report:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-agent-architecture-analysis-implementation/tickets/done/application-bundle-agent-architecture-analysis/validation-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-agent-architecture-analysis-finalization/tickets/done/application-bundle-agent-architecture-analysis/validation-report.md`
   - latest authoritative result: `Pass` (round `11`)
 - Executable evidence that passed:
   - `pnpm --dir /Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-agent-architecture-analysis-implementation/autobyteus-web exec nuxi prepare`
@@ -58,7 +58,7 @@
 ## Documentation Sync Summary
 
 - Docs sync artifact:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-agent-architecture-analysis-implementation/tickets/done/application-bundle-agent-architecture-analysis/docs-sync.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-agent-architecture-analysis-finalization/tickets/done/application-bundle-agent-architecture-analysis/docs-sync.md`
 - Docs result: `Updated`
 - Docs updated:
   - `autobyteus-server-ts/docs/modules/applications.md`
@@ -89,14 +89,14 @@
 - Verification note:
   - `2026-04-15`: user confirmed the ticket is finished, approved finalization, and explicitly said no new release/version is needed
 - Notes:
-  - the ticket has been archived and git finalization is now in progress
-  - release/version/deployment work remains out of scope by explicit user instruction
-  - inferred finalization target from bootstrap/repo context: `origin/personal` unless the user explicitly overrides it
+  - the ticket has been archived and repository finalization completed successfully
+  - release/version/deployment work remained out of scope by explicit user instruction
+  - finalization used `origin/personal` as the target branch
 
 ## Finalization Record
 
 - Bootstrap / finalization target source:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-agent-architecture-analysis-implementation/tickets/done/application-bundle-agent-architecture-analysis/investigation-notes.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-agent-architecture-analysis-finalization/tickets/done/application-bundle-agent-architecture-analysis/investigation-notes.md`
   - bootstrap base recorded there: `origin/personal`
   - expected finalization target there: `not yet determined`
 - Canonical implementation workspace path:
@@ -108,22 +108,24 @@
 - Finalization target:
   - `origin/personal` (inferred from bootstrap base; pending user override if any)
 - Ticket branch commit:
-  - `Not started`
+  - `Committed on ticket branch as 48a66844 (`feat(applications): add hosted application platform architecture`).`
 - Ticket branch push:
-  - `Not started`
+  - `Pushed to origin/codex/application-bundle-agent-architecture-analysis-implementation.`
 - Merge into target:
-  - `Not started`
+  - `Merged into detached origin/personal finalization worktree as merge commit 06c34c83.`
 - Target branch push:
-  - `Not started`
+  - `Pushed the merged target state to origin/personal.`
 - Worktree cleanup:
-  - `Not started`
+  - `Dedicated ticket worktree was removed and worktree metadata was pruned after merge; the detached finalization worktree was retained intentionally because the local personal worktree had unrelated uncommitted changes.`
 - Local branch cleanup:
-  - `Not started`
+  - `Local branch codex/application-bundle-agent-architecture-analysis-implementation was deleted after merge.`
 - Remote branch cleanup:
-  - `Not started`
+  - `Remote ticket branch was retained.`
+- Local merged checkout retained at:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-agent-architecture-analysis-finalization`
 - Release/publication:
-  - `Not required unless the user later asks for one`
+  - `Not required by explicit user instruction.`
 - Ticket archived to:
   - `tickets/done/application-bundle-agent-architecture-analysis`
 - Delivery report artifact:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-agent-architecture-analysis-implementation/tickets/done/application-bundle-agent-architecture-analysis/release-deployment-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-agent-architecture-analysis-finalization/tickets/done/application-bundle-agent-architecture-analysis/release-deployment-report.md`
