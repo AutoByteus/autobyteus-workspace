@@ -8,11 +8,11 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 
 - Ticket: `context-attachment-draft-transfer-refactor`
 - Current Stage: `10`
-- Next Stage: `10`
+- Next Stage: `Completed`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-011`
+- Last Transition ID: `T-012`
 - Last Updated: `2026-04-16`
 
 ## Stage 0 Bootstrap Record
@@ -37,17 +37,17 @@ Note:
 
 | Stage | Gate Status (`Not Started`/`In Progress`/`Pass`/`Fail`/`Blocked`) | Gate Rule Summary | Evidence |
 | --- | --- | --- | --- |
-| 0 Bootstrap + Draft Requirement | Pass | Ticket bootstrap complete + if git repo: base branch resolved, remote freshness handled for new bootstrap, dedicated ticket worktree/branch created or reused + `requirements.md` Draft captured | `tickets/in-progress/context-attachment-draft-transfer-refactor/requirements.md`, `tickets/in-progress/context-attachment-draft-transfer-refactor/workflow-state.md` |
-| 1 Investigation + Triage | Pass | `investigation-notes.md` current + scope triage recorded | `tickets/in-progress/context-attachment-draft-transfer-refactor/investigation-notes.md` |
-| 2 Requirements | Pass | `requirements.md` is `Design-ready`/`Refined` | `tickets/in-progress/context-attachment-draft-transfer-refactor/requirements.md` |
-| 3 Design Basis | Pass | Design basis updated for scope (`implementation.md` solution sketch or `proposed-design.md`) | `tickets/in-progress/context-attachment-draft-transfer-refactor/implementation.md` |
-| 4 Future-State Runtime Call Stack | Pass | `future-state-runtime-call-stack.md` current | `tickets/in-progress/context-attachment-draft-transfer-refactor/future-state-runtime-call-stack.md` |
-| 5 Future-State Runtime Call Stack Review | Pass | Future-state runtime call stack review `Go Confirmed` (two clean rounds, no blockers/persisted updates/new use cases) | `tickets/in-progress/context-attachment-draft-transfer-refactor/future-state-runtime-call-stack-review.md` |
-| 6 Implementation | Pass | Plan/progress current + source + unit/integration verification complete + shared design-principles guidance reapplied during implementation + no backward-compat/legacy retention + dead/obsolete code cleanup complete in scope + ownership-driven dependencies preserved + touched-file placement preserved/corrected + proactive Stage 8 source-file size/delta-pressure handling complete for changed source implementation files | `tickets/in-progress/context-attachment-draft-transfer-refactor/implementation.md` |
-| 7 API/E2E + Executable Validation | Pass | executable validation implementation complete + acceptance-criteria and spine scenario gates complete | `tickets/in-progress/context-attachment-draft-transfer-refactor/api-e2e-testing.md` |
-| 8 Code Review | Pass | Code review gate `Pass`/`Fail` recorded + priority-ordered detailed review scorecard recorded (`Overall /10`, `Overall /100`, all ten category rows in canonical order with score + why + weakness + improvement, and no category below `9.0` for `Pass`) + all changed source files `<=500` effective non-empty lines + `>220` delta-gate assessments recorded + data-flow spine inventory/ownership/off-spine concern checks + existing-capability reuse + reusable-owned-structure extraction + shared-structure/data-model tightness + shared-base coherence + repeated-coordination ownership + empty-indirection + scope-appropriate separation of concerns + file placement within the correct subsystem and folder, with any optional module grouping justified + flat-vs-over-split layout judgment + interface/API/query/command/service-method boundary clarity + naming quality across files/folders/APIs/types/functions/parameters/variables + naming-to-responsibility alignment + no unjustified duplication of code/repeated structures in changed scope + patch-on-patch complexity control + dead/obsolete code cleanup completeness in changed scope + test quality + test maintainability + validation-evidence sufficiency + no-backward-compat/no-legacy checks satisfied for `Pass` | `tickets/in-progress/context-attachment-draft-transfer-refactor/code-review.md` |
-| 9 Docs Sync | Pass | `docs-sync.md` current + docs updated or no-impact rationale recorded | `tickets/in-progress/context-attachment-draft-transfer-refactor/docs-sync.md` |
-| 10 Handoff / Ticket State | In Progress | `handoff-summary.md` current + explicit user verification received + ticket moved to `done` + repository finalization into resolved target branch complete when git repo + any applicable release/publication/deployment step completed or explicitly recorded as not required + required post-finalization worktree/branch cleanup complete when applicable + ticket state decision recorded | Explicit user verification is recorded and Stage 10 archival plus repository finalization are now active; `handoff-summary.md` and `workflow-state.md` are current |
+| 0 Bootstrap + Draft Requirement | Pass | Ticket bootstrap complete + if git repo: base branch resolved, remote freshness handled for new bootstrap, dedicated ticket worktree/branch created or reused + `requirements.md` Draft captured | `tickets/done/context-attachment-draft-transfer-refactor/requirements.md`, `tickets/done/context-attachment-draft-transfer-refactor/workflow-state.md` |
+| 1 Investigation + Triage | Pass | `investigation-notes.md` current + scope triage recorded | `tickets/done/context-attachment-draft-transfer-refactor/investigation-notes.md` |
+| 2 Requirements | Pass | `requirements.md` is `Design-ready`/`Refined` | `tickets/done/context-attachment-draft-transfer-refactor/requirements.md` |
+| 3 Design Basis | Pass | Design basis updated for scope (`implementation.md` solution sketch or `proposed-design.md`) | `tickets/done/context-attachment-draft-transfer-refactor/implementation.md` |
+| 4 Future-State Runtime Call Stack | Pass | `future-state-runtime-call-stack.md` current | `tickets/done/context-attachment-draft-transfer-refactor/future-state-runtime-call-stack.md` |
+| 5 Future-State Runtime Call Stack Review | Pass | Future-state runtime call stack review `Go Confirmed` (two clean rounds, no blockers/persisted updates/new use cases) | `tickets/done/context-attachment-draft-transfer-refactor/future-state-runtime-call-stack-review.md` |
+| 6 Implementation | Pass | Plan/progress current + source + unit/integration verification complete + shared design-principles guidance reapplied during implementation + no backward-compat/legacy retention + dead/obsolete code cleanup complete in scope + ownership-driven dependencies preserved + touched-file placement preserved/corrected + proactive Stage 8 source-file size/delta-pressure handling complete for changed source implementation files | `tickets/done/context-attachment-draft-transfer-refactor/implementation.md` |
+| 7 API/E2E + Executable Validation | Pass | executable validation implementation complete + acceptance-criteria and spine scenario gates complete | `tickets/done/context-attachment-draft-transfer-refactor/api-e2e-testing.md` |
+| 8 Code Review | Pass | Code review gate `Pass`/`Fail` recorded + priority-ordered detailed review scorecard recorded (`Overall /10`, `Overall /100`, all ten category rows in canonical order with score + why + weakness + improvement, and no category below `9.0` for `Pass`) + all changed source files `<=500` effective non-empty lines + `>220` delta-gate assessments recorded + data-flow spine inventory/ownership/off-spine concern checks + existing-capability reuse + reusable-owned-structure extraction + shared-structure/data-model tightness + shared-base coherence + repeated-coordination ownership + empty-indirection + scope-appropriate separation of concerns + file placement within the correct subsystem and folder, with any optional module grouping justified + flat-vs-over-split layout judgment + interface/API/query/command/service-method boundary clarity + naming quality across files/folders/APIs/types/functions/parameters/variables + naming-to-responsibility alignment + no unjustified duplication of code/repeated structures in changed scope + patch-on-patch complexity control + dead/obsolete code cleanup completeness in changed scope + test quality + test maintainability + validation-evidence sufficiency + no-backward-compat/no-legacy checks satisfied for `Pass` | `tickets/done/context-attachment-draft-transfer-refactor/code-review.md` |
+| 9 Docs Sync | Pass | `docs-sync.md` current + docs updated or no-impact rationale recorded | `tickets/done/context-attachment-draft-transfer-refactor/docs-sync.md` |
+| 10 Handoff / Ticket State | Pass | `handoff-summary.md` current + explicit user verification received + ticket moved to `done` + repository finalization into resolved target branch complete when git repo + any applicable release/publication/deployment step completed or explicitly recorded as not required + required post-finalization worktree/branch cleanup complete when applicable + ticket state decision recorded | Explicit user verification is recorded, the ticket branch was pushed and merged into `personal`, release/version work was explicitly skipped per user instruction, and worktree plus local-branch cleanup are complete |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -96,8 +96,8 @@ Note:
 
 ## Pre-Edit Checklist (Stage 6 Source-Code Edits)
 
-- Current Stage is `6`: `Yes`
-- Code Edit Permission is `Unlocked`: `Yes`
+- Current Stage is `6`: `No`
+- Code Edit Permission is `Unlocked`: `No`
 - Stage 5 gate is `Go Confirmed`: `Yes`
 - Required upstream artifacts are current: `Yes`
 - Pre-Edit Checklist Result: `Pass`
@@ -109,7 +109,7 @@ Note:
 - Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
 - Required Return Path: `N/A`
 - Required Upstream Artifacts To Update Before Code Edits: `N/A`
-- Resume Condition: `No active re-entry. Explicit user verification has been recorded and Stage 10 archival plus repository finalization are now active.`
+- Resume Condition: `No active re-entry. Stage 10 repository finalization is complete and the ticket is archived under tickets/done.`
 
 Note:
 - Transition/Re-entry completion rule: recording the path is not enough; resume work immediately and treat re-entry as incomplete until work has actually resumed in the returned stage.
@@ -135,12 +135,14 @@ Note:
 | `T-009` | `2026-04-16` | `8` | `9` | Stage 8 passed and docs sync begins | `N/A` | `Locked` | `code-review.md`, `workflow-state.md` |
 | `T-010` | `2026-04-16` | `9` | `10` | Stage 9 passed; handoff is open and waiting for explicit user verification before any finalization work | `N/A` | `Locked` | `docs-sync.md`, `workflow-state.md` |
 | `T-011` | `2026-04-16` | `10` | `10` | Explicit user verification was received; the ticket is being archived to `tickets/done/context-attachment-draft-transfer-refactor` and Stage 10 repository finalization is starting with release/version work explicitly skipped per user instruction | `N/A` | `Locked` | `handoff-summary.md`, `workflow-state.md` |
+| `T-012` | `2026-04-16` | `10` | `10` | Stage 10 finalization completed. The ticket branch was pushed, merged into `personal`, release/version work was intentionally skipped, and required worktree plus local-branch cleanup finished. | `N/A` | `Locked` | `handoff-summary.md`, `workflow-state.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
 | Date | Trigger Type (`Transition`/`Gate`/`Re-entry`/`LockChange`) | Summary Spoken | Speak Tool Result (`Success`/`Failed`) | Fallback Text Logged |
 | --- | --- | --- | --- | --- |
 | `2026-04-16` | `Transition` | `Stage 10 verification received for context attachment draft transfer refactor. The ticket is being archived and repository finalization is starting. Code edits remain locked.` | `Success` | `N/A` |
+| `2026-04-16` | `Transition` | `Stage 10 finalization passed for context attachment draft transfer refactor. The ticket branch is merged into personal, no release or version bump was performed, and worktree cleanup is complete.` | `Success` | `N/A` |
 
 ## Process Violation Log
 
