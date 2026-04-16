@@ -1,13 +1,17 @@
 import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import { useContextFileUploadStore } from '~/stores/contextFileUploadStore';
-import type { ContextAttachment, ContextAttachmentType } from '~/types/conversation';
+import type { ContextAttachment, ContextAttachmentType, UploadedContextAttachment } from '~/types/conversation';
 import {
+  getDisplayNameFromStoredFilename,
   createWorkspaceContextAttachment,
+  hydrateContextAttachment,
   inferContextAttachmentType,
   isDraftUploadedContextAttachment,
+  parseDraftUploadedContextAttachmentLocator,
 } from '~/utils/contextFiles/contextAttachmentModel';
 import { contextAttachmentPresentation } from '~/utils/contextFiles/contextAttachmentPresentation';
 import type { DraftContextFileOwnerDescriptor } from '~/utils/contextFiles/contextFileOwner';
+import { getServerBaseUrl } from '~/utils/serverConfig';
 
 export type ContextAttachmentComposerTarget<TSubject> = {
   key: string;
@@ -41,6 +45,35 @@ const buildUploadKey = (): string =>
 
 const sameAttachment = (left: ContextAttachment, right: ContextAttachment): boolean =>
   contextAttachmentPresentation.getKey(left) === contextAttachmentPresentation.getKey(right);
+
+const sameDraftOwner = (
+  left: DraftContextFileOwnerDescriptor,
+  right: DraftContextFileOwnerDescriptor,
+): boolean => {
+  if (left.kind !== right.kind) {
+    return false;
+  }
+  if (left.kind === 'agent_draft' && right.kind === 'agent_draft') {
+    return left.draftRunId === right.draftRunId;
+  }
+  return (
+    left.draftTeamRunId === right.draftTeamRunId &&
+    left.memberRouteKey === right.memberRouteKey
+  );
+};
+
+const resolveAttachmentFetchUrl = (locator: string): string => {
+  if (/^[a-zA-Z][a-zA-Z\d+.-]*:/.test(locator)) {
+    return locator;
+  }
+
+  const baseUrl = getServerBaseUrl().replace(/\/$/, '');
+  if (locator.startsWith('/')) {
+    return `${baseUrl}${locator}`;
+  }
+
+  return `${baseUrl}/${locator}`;
+};
 
 export function useContextAttachmentComposer<TSubject>(options: {
   getCurrentTarget: () => ContextAttachmentComposerTarget<TSubject> | null;
@@ -110,24 +143,91 @@ export function useContextAttachmentComposer<TSubject>(options: {
     locators: string[],
     target: ContextAttachmentComposerTarget<TSubject> | null = options.getCurrentTarget(),
   ): void => {
-    if (!target) {
+    const nextAttachments = locators
+      .map((value) => value.trim())
+      .filter(Boolean)
+      .map((locator) => createWorkspaceContextAttachment(locator, inferContextAttachmentType(locator)));
+    appendAttachments(nextAttachments, target);
+  };
+
+  const appendAttachments = (
+    attachments: ContextAttachment[],
+    target: ContextAttachmentComposerTarget<TSubject> | null = options.getCurrentTarget(),
+  ): void => {
+    if (!target || attachments.length === 0) {
       return;
     }
 
     commitTargetAttachments(target, (current) => {
       const nextAttachments = [...current];
+      const existingKeys = new Set(nextAttachments.map((attachment) => contextAttachmentPresentation.getKey(attachment)));
       const existingLocators = new Set(nextAttachments.map((attachment) => attachment.locator));
 
-      for (const locator of locators.map((value) => value.trim()).filter(Boolean)) {
-        if (existingLocators.has(locator)) {
+      for (const attachment of attachments) {
+        if (
+          existingKeys.has(contextAttachmentPresentation.getKey(attachment)) ||
+          existingLocators.has(attachment.locator)
+        ) {
           continue;
         }
-        nextAttachments.push(createWorkspaceContextAttachment(locator, inferContextAttachmentType(locator)));
-        existingLocators.add(locator);
+        nextAttachments.push(attachment);
+        existingKeys.add(contextAttachmentPresentation.getKey(attachment));
+        existingLocators.add(attachment.locator);
       }
 
       return nextAttachments;
     });
+  };
+
+  const cloneDraftAttachmentToTarget = async (
+    attachment: UploadedContextAttachment,
+    draftOwner: DraftContextFileOwnerDescriptor,
+  ): Promise<UploadedContextAttachment> => {
+    const response = await fetch(resolveAttachmentFetchUrl(attachment.locator));
+    if (!response.ok) {
+      throw new Error(`Failed to fetch pasted draft attachment '${attachment.locator}' (${response.status}).`);
+    }
+
+    const blob = await response.blob();
+    const file = new File(
+      [blob],
+      attachment.displayName || getDisplayNameFromStoredFilename(attachment.storedFilename),
+      { type: blob.type || undefined },
+    );
+    return contextFileUploadStore.uploadAttachment({ owner: draftOwner, file });
+  };
+
+  const appendLocatorAttachments = async (
+    locators: string[],
+    target: ContextAttachmentComposerTarget<TSubject> | null = options.getCurrentTarget(),
+  ): Promise<void> => {
+    if (!target) {
+      return;
+    }
+
+    const attachmentsToAppend: ContextAttachment[] = [];
+    for (const locator of locators.map((value) => value.trim()).filter(Boolean)) {
+      const hydratedAttachment = hydrateContextAttachment({ locator });
+
+      if (isDraftUploadedContextAttachment(hydratedAttachment) && target.draftOwner) {
+        const parsedDraft = parseDraftUploadedContextAttachmentLocator(hydratedAttachment.locator);
+        if (parsedDraft && !sameDraftOwner(parsedDraft.owner, target.draftOwner)) {
+          try {
+            attachmentsToAppend.push(
+              await cloneDraftAttachmentToTarget(hydratedAttachment, target.draftOwner),
+            );
+            continue;
+          } catch (error) {
+            console.error('Failed to clone pasted draft context file:', error);
+            continue;
+          }
+        }
+      }
+
+      attachmentsToAppend.push(hydratedAttachment);
+    }
+
+    appendAttachments(attachmentsToAppend, target);
   };
 
   const revokePreviewUrl = (previewUrl: string | null): void => {
@@ -284,6 +384,8 @@ export function useContextAttachmentComposer<TSubject>(options: {
     displayedItems,
     thumbnailItems,
     regularItems,
+    appendAttachments,
+    appendLocatorAttachments,
     appendWorkspaceLocators,
     uploadFiles,
     openAttachment,

@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import apiService from '~/services/api';
 import type { ContextAttachment, UploadedContextAttachment } from '~/types/conversation';
 import {
+  coerceDraftUploadedContextAttachment,
   createUploadedContextAttachment,
   inferContextAttachmentType,
   isDraftUploadedContextAttachment,
@@ -98,7 +99,13 @@ export const useContextFileUploadStore = defineStore('contextFileUpload', {
       finalOwner: FinalContextFileOwnerDescriptor;
       attachments: ContextAttachment[];
     }): Promise<ContextAttachment[]> {
-      const draftUploadedAttachments = input.attachments.filter(isDraftUploadedContextAttachment);
+      const draftUploadedAttachments = input.attachments
+        .map((attachment) =>
+          isDraftUploadedContextAttachment(attachment)
+            ? attachment
+            : coerceDraftUploadedContextAttachment(attachment),
+        )
+        .filter((attachment): attachment is UploadedContextAttachment => attachment !== null);
       if (draftUploadedAttachments.length === 0) {
         return input.attachments;
       }
@@ -120,21 +127,24 @@ export const useContextFileUploadStore = defineStore('contextFileUpload', {
         );
 
         return input.attachments.map((attachment) => {
-          if (!isDraftUploadedContextAttachment(attachment)) {
+          const draftAttachment = isDraftUploadedContextAttachment(attachment)
+            ? attachment
+            : coerceDraftUploadedContextAttachment(attachment);
+          if (!draftAttachment) {
             return attachment;
           }
 
-          const finalized = finalizedByStoredFilename.get(attachment.storedFilename);
+          const finalized = finalizedByStoredFilename.get(draftAttachment.storedFilename);
           if (!finalized) {
-            throw new Error(`Finalized attachment '${attachment.storedFilename}' was not returned by the server.`);
+            throw new Error(`Finalized attachment '${draftAttachment.storedFilename}' was not returned by the server.`);
           }
 
           return createUploadedContextAttachment({
-            storedFilename: attachment.storedFilename,
+            storedFilename: draftAttachment.storedFilename,
             locator: finalized.locator,
-            displayName: finalized.displayName || attachment.displayName,
+            displayName: finalized.displayName || draftAttachment.displayName,
             phase: 'final',
-            type: attachment.type,
+            type: draftAttachment.type,
           });
         });
       } catch (error: any) {

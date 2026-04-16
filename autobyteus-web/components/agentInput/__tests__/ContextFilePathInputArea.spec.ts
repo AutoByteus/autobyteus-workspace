@@ -100,6 +100,7 @@ describe('ContextFilePathInputArea', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.unstubAllGlobals();
 
     activeContextStoreMock.addContextFilePathForContext.mockImplementation(
       (context: MockAgentContext | null, attachment: ContextAttachment) => {
@@ -241,5 +242,87 @@ describe('ContextFilePathInputArea', () => {
       attachment: draftAttachment,
     });
     expect(context.contextFilePaths).toEqual([]);
+  });
+
+  it('clones pasted draft URLs into the focused team member draft owner', async () => {
+    const solutionContext = createContext('team-1::solution_designer');
+    const implementationContext = createContext('team-1::implementation_engineer');
+    selectContext(solutionContext);
+    agentSelectionStoreMock.selectedType = 'team';
+    agentContextsStoreMock.activeRun = null;
+    agentTeamContextsStoreMock.activeTeamContext = {
+      teamRunId: 'team-1',
+      focusedMemberName: 'solution_designer',
+      members: new Map([
+        ['solution_designer', solutionContext],
+        ['implementation_engineer', implementationContext],
+      ]),
+    };
+
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(new Blob(['image-bytes'], { type: 'image/png' }), {
+        status: 200,
+      }),
+    );
+    vi.stubGlobal('fetch', fetchMock);
+
+    contextFileUploadStoreMock.uploadAttachment.mockResolvedValue(
+      createUploadedContextAttachment({
+        storedFilename: 'ctx_solutionclone__image.png',
+        locator: '/rest/drafts/team-runs/team-1/members/solution_designer/context-files/ctx_solutionclone__image.png',
+        displayName: 'image.png',
+        phase: 'draft',
+        type: 'Image',
+      }),
+    );
+
+    const wrapper = mount(ContextFilePathInputArea, {
+      global: {
+        stubs: {
+          FullScreenImageModal: true,
+        },
+      },
+    });
+
+    const pasteEvent = new Event('paste', { bubbles: true }) as Event & { clipboardData?: DataTransfer | null };
+    Object.defineProperty(pasteEvent, 'clipboardData', {
+      value: {
+        items: [],
+        getData: (type: string) =>
+          type === 'text/plain'
+            ? '/rest/drafts/team-runs/team-1/members/implementation_engineer/context-files/ctx_implcopy__image.png'
+            : '',
+      },
+      configurable: true,
+    });
+    pasteEvent.preventDefault = vi.fn();
+    wrapper.find('[data-file-drop-target="true"]').element.dispatchEvent(pasteEvent);
+    await nextTick();
+    await flushPromises();
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining(
+        '/rest/drafts/team-runs/team-1/members/implementation_engineer/context-files/ctx_implcopy__image.png',
+      ),
+    );
+    expect(contextFileUploadStoreMock.uploadAttachment).toHaveBeenCalledWith({
+      owner: {
+        kind: 'team_member_draft',
+        draftTeamRunId: 'team-1',
+        memberRouteKey: 'solution_designer',
+      },
+      file: expect.any(File),
+    });
+    const uploadedFile = contextFileUploadStoreMock.uploadAttachment.mock.calls[0]?.[0]?.file as File;
+    expect(uploadedFile.name).toBe('image.png');
+    expect(solutionContext.contextFilePaths).toEqual([
+      expect.objectContaining({
+        kind: 'uploaded',
+        locator:
+          '/rest/drafts/team-runs/team-1/members/solution_designer/context-files/ctx_solutionclone__image.png',
+      }),
+    ]);
+    expect(solutionContext.contextFilePaths[0]?.locator).not.toContain('/implementation_engineer/');
+    expect(implementationContext.contextFilePaths).toEqual([]);
   });
 });
