@@ -213,6 +213,15 @@
           @toggle-coordinator="toggleSelectedCoordinator"
         />
       </section>
+      <DefinitionLaunchPreferencesSection
+        :runtime-kind="launchPreferences.runtimeKind"
+        :llm-model-identifier="launchPreferences.llmModelIdentifier"
+        :llm-config="launchPreferences.llmConfig"
+        id-prefix="team-definition"
+        @update:runtime-kind="launchPreferences.runtimeKind = $event"
+        @update:llm-model-identifier="launchPreferences.llmModelIdentifier = $event"
+        @update:llm-config="launchPreferences.llmConfig = $event"
+      />
     </div>
 
     <div class="border-t border-slate-200 bg-slate-50 px-6 py-4">
@@ -248,6 +257,7 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, toRefs, watch } from 'vue';
 import { useLocalization } from '~/composables/useLocalization';
+import DefinitionLaunchPreferencesSection from '~/components/launch-config/DefinitionLaunchPreferencesSection.vue';
 import AgentTeamLibraryPanel from './form/AgentTeamLibraryPanel.vue';
 import AgentTeamMemberDetailsPanel from './form/AgentTeamMemberDetailsPanel.vue';
 import {
@@ -260,6 +270,10 @@ import {
 import { useFileUploadStore } from '~/stores/fileUploadStore';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
+import {
+  normalizeDefaultLaunchConfig,
+  toEditableDefaultLaunchConfig,
+} from '~/types/launch/defaultLaunchConfig';
 
 const props = defineProps<{
   initialData?: any;
@@ -281,6 +295,7 @@ const avatarPreviewBroken = ref(false);
 
 const formErrors = reactive<Record<string, string>>({});
 const formData = reactive(createInitialFormData());
+const launchPreferences = reactive(toEditableDefaultLaunchConfig(null));
 
 const avatarInitials = computed(() => {
   const raw = (formData.name || '').trim();
@@ -429,6 +444,7 @@ const handleSubmit = () => {
     coordinatorMemberName: formData.coordinatorMemberName,
     nodes: buildSubmitNodes(formData.nodes),
     avatarUrl: formData.avatarUrl,
+    defaultLaunchConfig: normalizeDefaultLaunchConfig(launchPreferences),
   };
 
   emit('submit', payload);
@@ -447,9 +463,11 @@ watch(
       formData.instructions = newData.instructions || '';
       formData.coordinatorMemberName = newData.coordinatorMemberName || '';
       formData.avatarUrl = newData.avatarUrl || newData.avatar_url || '';
+      Object.assign(launchPreferences, toEditableDefaultLaunchConfig(newData.defaultLaunchConfig));
       formData.nodes = mapInitialTeamNodes(newData.nodes || []);
       selectedNodeIndex.value = formData.nodes.length > 0 ? 0 : null;
     } else {
+      Object.assign(launchPreferences, toEditableDefaultLaunchConfig(null));
       selectedNodeIndex.value = null;
     }
   },

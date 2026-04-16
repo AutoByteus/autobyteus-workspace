@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { getApolloClient } from '~/utils/apolloClient'
 import {
+  GET_APPLICATION_PACKAGE_DETAILS,
   GET_APPLICATION_PACKAGES,
   IMPORT_APPLICATION_PACKAGE,
   REMOVE_APPLICATION_PACKAGE,
@@ -19,15 +20,21 @@ export type ApplicationPackageImportSourceKind =
   | 'LOCAL_PATH'
   | 'GITHUB_REPOSITORY'
 
-export interface ApplicationPackage {
+export interface ApplicationPackageListItem {
   packageId: string
   displayName: string
-  path: string
   sourceKind: ApplicationPackageSourceKind
-  source: string
+  sourceSummary?: string | null
   applicationCount: number
-  isDefault: boolean
+  isPlatformOwned: boolean
   isRemovable: boolean
+}
+
+export interface ApplicationPackageDetails extends ApplicationPackageListItem {
+  rootPath: string
+  source: string
+  managedInstallPath?: string | null
+  bundledSourceRootPath?: string | null
 }
 
 export interface ApplicationPackageImportInput {
@@ -36,7 +43,8 @@ export interface ApplicationPackageImportInput {
 }
 
 export const useApplicationPackagesStore = defineStore('applicationPackages', () => {
-  const applicationPackages = ref<ApplicationPackage[]>([])
+  const applicationPackages = ref<ApplicationPackageListItem[]>([])
+  const detailsByPackageId = ref<Record<string, ApplicationPackageDetails | null>>({})
   const loading = ref(false)
   const error = ref('')
 
@@ -56,6 +64,10 @@ export const useApplicationPackagesStore = defineStore('applicationPackages', ()
     ])
   }
 
+  const resetDetailsCache = (): void => {
+    detailsByPackageId.value = {}
+  }
+
   async function fetchApplicationPackages(): Promise<void> {
     loading.value = true
     error.value = ''
@@ -71,9 +83,44 @@ export const useApplicationPackagesStore = defineStore('applicationPackages', ()
         throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
       }
 
-      if (data?.applicationPackages) {
-        applicationPackages.value = data.applicationPackages
+      applicationPackages.value = (data?.applicationPackages || []) as ApplicationPackageListItem[]
+    } catch (err: any) {
+      error.value = err.message
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function fetchApplicationPackageDetails(
+    packageId: string,
+    force = false,
+  ): Promise<ApplicationPackageDetails | null> {
+    if (!force && Object.prototype.hasOwnProperty.call(detailsByPackageId.value, packageId)) {
+      return detailsByPackageId.value[packageId] ?? null
+    }
+
+    loading.value = true
+    error.value = ''
+
+    try {
+      const client = getApolloClient()
+      const { data, errors } = await client.query({
+        query: GET_APPLICATION_PACKAGE_DETAILS,
+        variables: { packageId },
+        fetchPolicy: 'network-only',
+      })
+
+      if (errors && errors.length > 0) {
+        throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
       }
+
+      const details = (data?.applicationPackageDetails || null) as ApplicationPackageDetails | null
+      detailsByPackageId.value = {
+        ...detailsByPackageId.value,
+        [packageId]: details,
+      }
+      return details
     } catch (err: any) {
       error.value = err.message
       throw err
@@ -97,10 +144,8 @@ export const useApplicationPackagesStore = defineStore('applicationPackages', ()
         throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
       }
 
-      if (data?.importApplicationPackage) {
-        applicationPackages.value = data.importApplicationPackage
-      }
-
+      applicationPackages.value = (data?.importApplicationPackage || []) as ApplicationPackageListItem[]
+      resetDetailsCache()
       await refreshDependentCatalogs()
     } catch (err: any) {
       error.value = err.message
@@ -125,10 +170,8 @@ export const useApplicationPackagesStore = defineStore('applicationPackages', ()
         throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
       }
 
-      if (data?.removeApplicationPackage) {
-        applicationPackages.value = data.removeApplicationPackage
-      }
-
+      applicationPackages.value = (data?.removeApplicationPackage || []) as ApplicationPackageListItem[]
+      resetDetailsCache()
       await refreshDependentCatalogs()
     } catch (err: any) {
       error.value = err.message
@@ -143,18 +186,24 @@ export const useApplicationPackagesStore = defineStore('applicationPackages', ()
   }
 
   const getApplicationPackages = computed(() => applicationPackages.value)
+  const getApplicationPackageDetails = computed(() => (
+    (packageId: string) => detailsByPackageId.value[packageId] ?? null
+  ))
   const getLoading = computed(() => loading.value)
   const getError = computed(() => error.value)
 
   return {
     applicationPackages,
+    detailsByPackageId,
     loading,
     error,
     fetchApplicationPackages,
+    fetchApplicationPackageDetails,
     importApplicationPackage,
     removeApplicationPackage,
     clearError,
     getApplicationPackages,
+    getApplicationPackageDetails,
     getLoading,
     getError,
   }

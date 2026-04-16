@@ -13,8 +13,9 @@ import {
   ApplicationPackageService,
 } from "../../../application-packages/services/application-package-service.js";
 import type {
-  ApplicationPackage as ApplicationPackageModel,
+  ApplicationPackageDebugDetails as ApplicationPackageDebugDetailsModel,
   ApplicationPackageImportInput as ApplicationPackageImportInputModel,
+  ApplicationPackageListItem as ApplicationPackageListItemModel,
 } from "../../../application-packages/types.js";
 
 enum ApplicationPackageSourceKindEnum {
@@ -43,20 +44,53 @@ export class ApplicationPackage {
   @Field(() => String)
   displayName!: string;
 
-  @Field(() => String)
-  path!: string;
-
   @Field(() => ApplicationPackageSourceKindEnum)
   sourceKind!: ApplicationPackageSourceKindEnum;
 
-  @Field(() => String)
-  source!: string;
+  @Field(() => String, { nullable: true })
+  sourceSummary!: string | null;
 
   @Field(() => Int)
   applicationCount!: number;
 
   @Field(() => Boolean)
-  isDefault!: boolean;
+  isPlatformOwned!: boolean;
+
+  @Field(() => Boolean)
+  isRemovable!: boolean;
+}
+
+@ObjectType()
+export class ApplicationPackageDetails {
+  @Field(() => String)
+  packageId!: string;
+
+  @Field(() => String)
+  displayName!: string;
+
+  @Field(() => ApplicationPackageSourceKindEnum)
+  sourceKind!: ApplicationPackageSourceKindEnum;
+
+  @Field(() => String, { nullable: true })
+  sourceSummary!: string | null;
+
+  @Field(() => String)
+  rootPath!: string;
+
+  @Field(() => String)
+  source!: string;
+
+  @Field(() => String, { nullable: true })
+  managedInstallPath!: string | null;
+
+  @Field(() => String, { nullable: true })
+  bundledSourceRootPath!: string | null;
+
+  @Field(() => Int)
+  applicationCount!: number;
+
+  @Field(() => Boolean)
+  isPlatformOwned!: boolean;
 
   @Field(() => Boolean)
   isRemovable!: boolean;
@@ -71,14 +105,29 @@ export class ImportApplicationPackageInput {
   source!: string;
 }
 
-const mapApplicationPackage = (pkg: ApplicationPackageModel): ApplicationPackage => ({
+const mapApplicationPackage = (pkg: ApplicationPackageListItemModel): ApplicationPackage => ({
   packageId: pkg.packageId,
   displayName: pkg.displayName,
-  path: pkg.path,
   sourceKind: pkg.sourceKind as ApplicationPackageSourceKindEnum,
-  source: pkg.source,
+  sourceSummary: pkg.sourceSummary ?? null,
   applicationCount: pkg.applicationCount,
-  isDefault: pkg.isDefault,
+  isPlatformOwned: pkg.isPlatformOwned,
+  isRemovable: pkg.isRemovable,
+});
+
+const mapApplicationPackageDetails = (
+  pkg: ApplicationPackageDebugDetailsModel,
+): ApplicationPackageDetails => ({
+  packageId: pkg.packageId,
+  displayName: pkg.displayName,
+  sourceKind: pkg.sourceKind as ApplicationPackageSourceKindEnum,
+  sourceSummary: pkg.sourceSummary ?? null,
+  rootPath: pkg.rootPath,
+  source: pkg.source,
+  managedInstallPath: pkg.managedInstallPath,
+  bundledSourceRootPath: pkg.bundledSourceRootPath,
+  applicationCount: pkg.applicationCount,
+  isPlatformOwned: pkg.isPlatformOwned,
   isRemovable: pkg.isRemovable,
 });
 
@@ -96,6 +145,15 @@ export class ApplicationPackageResolver {
     const service = ApplicationPackageService.getInstance();
     const packages = await service.listApplicationPackages();
     return packages.map(mapApplicationPackage);
+  }
+
+  @Query(() => ApplicationPackageDetails, { nullable: true })
+  async applicationPackageDetails(
+    @Arg("packageId", () => String) packageId: string,
+  ): Promise<ApplicationPackageDetails | null> {
+    const service = ApplicationPackageService.getInstance();
+    const packageDetails = await service.getApplicationPackageDetails(packageId);
+    return packageDetails ? mapApplicationPackageDetails(packageDetails) : null;
   }
 
   @Mutation(() => [ApplicationPackage])

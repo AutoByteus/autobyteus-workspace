@@ -15,6 +15,11 @@ const AgentTeamDefinitionMutationFields = gql`
     ownerApplicationName
     ownerPackageId
     ownerLocalApplicationId
+    defaultLaunchConfig {
+      llmModelIdentifier
+      runtimeKind
+      llmConfig
+    }
     nodes {
       __typename
       memberName

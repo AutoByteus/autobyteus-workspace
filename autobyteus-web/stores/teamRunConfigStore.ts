@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore';
-import { type TeamRunConfig, createDefaultTeamRunConfig } from '~/types/agent/TeamRunConfig';
+import { buildTeamRunTemplate } from '~/composables/useDefinitionLaunchDefaults';
+import { type TeamRunConfig } from '~/types/agent/TeamRunConfig';
 
 /**
  * State for workspace loading (eager loading feature).
@@ -68,7 +69,7 @@ export const useTeamRunConfigStore = defineStore('teamRunConfig', {
      * Set the config from an agent definition (new run template).
      */
     setTemplate(teamDefinition: AgentTeamDefinition) {
-      this.config = createDefaultTeamRunConfig(teamDefinition);
+      this.config = buildTeamRunTemplate(teamDefinition);
       this.isPanelExpanded = true;
       this.hasFirstMessageSent = false;
       this.clearWorkspaceState();

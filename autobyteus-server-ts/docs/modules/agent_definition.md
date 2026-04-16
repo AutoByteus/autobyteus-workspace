@@ -37,7 +37,9 @@ These defaults are consumed by:
 
 - the native agent create/edit/detail surfaces,
 - direct agent launch preparation, and
-- application launch preparation when an application binds to an embedded agent or to agents inside an embedded team.
+- application launch preparation when an application binds directly to an embedded agent.
+
+Team-targeted application launches use the team definition's own `defaultLaunchConfig` instead of aggregating leaf agent defaults upward.
 
 ## Notes
 

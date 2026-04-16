@@ -7,6 +7,7 @@ import { AgentTeamDefinitionPersistenceProvider } from "../providers/agent-team-
 import { CachedAgentTeamDefinitionProvider } from "../providers/cached-agent-team-definition-provider.js";
 import { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
 import { assertApplicationOwnedTeamIntegrity } from "../utils/application-owned-team-integrity-validator.js";
+import { normalizeDefaultLaunchConfigInput } from "../../launch-preferences/default-launch-config.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -140,6 +141,8 @@ export class AgentTeamDefinitionService {
     assertValidTeamMembers(definition.nodes);
     assertValidCoordinatorMember(definition.coordinatorMemberName, definition.nodes);
     definition.avatarUrl = normalizeOptionalString(definition.avatarUrl);
+    definition.defaultLaunchConfig =
+      normalizeDefaultLaunchConfigInput(definition.defaultLaunchConfig) ?? null;
     await this.assertApplicationOwnedMembership(definition);
     const created = await this.provider.create(definition);
     logger.info(`Agent Team Definition created successfully with ID: ${created.id}`);
@@ -194,6 +197,10 @@ export class AgentTeamDefinitionService {
     }
     if (updateData.avatarUrl !== null && updateData.avatarUrl !== undefined) {
       existing.avatarUrl = normalizeOptionalString(updateData.avatarUrl);
+    }
+    if (updateData.defaultLaunchConfig !== undefined) {
+      existing.defaultLaunchConfig =
+        normalizeDefaultLaunchConfigInput(updateData.defaultLaunchConfig) ?? null;
     }
 
     assertValidTeamMembers(existing.nodes);

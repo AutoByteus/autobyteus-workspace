@@ -1,10 +1,10 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { mount } from "@vue/test-utils";
-import AgentDefinitionForm from "../AgentDefinitionForm.vue";
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { mount } from '@vue/test-utils'
+import AgentDefinitionForm from '../AgentDefinitionForm.vue'
 
 const mockTranslations: Record<string, string> = {
-  "agents.components.agents.AgentDefinitionForm.instructionsPlaceholder": "Enter the agent's system instructions...",
-};
+  'agents.components.agents.AgentDefinitionForm.instructionsPlaceholder': "Enter the agent's system instructions...",
+}
 
 const {
   mockOptionsStore,
@@ -35,144 +35,130 @@ const {
   mockFileUploadStore: {
     isUploading: false,
     error: null as string | null,
-    uploadFile: vi.fn().mockResolvedValue(""),
+    uploadFile: vi.fn().mockResolvedValue(''),
   },
-}));
+}))
 
-vi.mock("~/stores/agentDefinitionOptionsStore", () => ({
+vi.mock('~/stores/agentDefinitionOptionsStore', () => ({
   useAgentDefinitionOptionsStore: () => mockOptionsStore,
-}));
+}))
 
-vi.mock("~/stores/toolManagementStore", () => ({
+vi.mock('~/stores/toolManagementStore', () => ({
   useToolManagementStore: () => mockToolStore,
-}));
+}))
 
-vi.mock("~/stores/skillStore", () => ({
+vi.mock('~/stores/skillStore', () => ({
   useSkillStore: () => mockSkillStore,
-}));
+}))
 
-vi.mock("~/stores/fileUploadStore", () => ({
+vi.mock('~/stores/fileUploadStore', () => ({
   useFileUploadStore: () => mockFileUploadStore,
-}));
+}))
 
-describe("AgentDefinitionForm", () => {
+vi.mock('~/composables/useLocalization', () => ({
+  useLocalization: () => ({
+    t: (key: string) => mockTranslations[key] ?? key,
+  }),
+}))
+
+const createWrapper = () => mount(AgentDefinitionForm, {
+  props: {
+    isSubmitting: false,
+    submitButtonText: 'Create Agent',
+    isCreateMode: true,
+  },
+  global: {
+    stubs: {
+      GroupableTagInput: true,
+      DefinitionLaunchPreferencesSection: {
+        template: `
+          <div>
+            <button id="set-launch-defaults" type="button" @click="emitDefaults">set defaults</button>
+            <button id="clear-launch-defaults" type="button" @click="emitClear">clear defaults</button>
+          </div>
+        `,
+        methods: {
+          emitDefaults() {
+            this.$emit('update:runtimeKind', 'autobyteus')
+            this.$emit('update:llmModelIdentifier', 'gpt-5.4-mini')
+            this.$emit('update:llmConfig', { reasoning_effort: 'medium' })
+          },
+          emitClear() {
+            this.$emit('update:runtimeKind', '')
+            this.$emit('update:llmModelIdentifier', '')
+            this.$emit('update:llmConfig', null)
+          },
+        },
+      },
+    },
+    mocks: {
+      $t: (key: string) => mockTranslations[key] ?? key,
+    },
+  },
+})
+
+describe('AgentDefinitionForm', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
-  });
+    vi.clearAllMocks()
+  })
 
-  it("renders required instructions input with expected placeholder", () => {
-    const wrapper = mount(AgentDefinitionForm, {
-      props: {
-        isSubmitting: false,
-        submitButtonText: "Create Agent",
-        isCreateMode: true,
-      },
-      global: {
-        stubs: {
-          GroupableTagInput: true,
-        },
-        mocks: {
-          $t: (key: string) => mockTranslations[key] ?? key,
-        },
-      },
-    });
+  it('renders required instructions input with expected placeholder', () => {
+    const wrapper = createWrapper()
 
-    const instructions = wrapper.get("textarea#instructions");
-    expect(instructions.attributes("required")).toBeDefined();
-    expect(instructions.attributes("placeholder")).toBe("Enter the agent's system instructions...");
-  });
+    const instructions = wrapper.get('textarea#instructions')
+    expect(instructions.attributes('required')).toBeDefined()
+    expect(instructions.attributes('placeholder')).toBe("Enter the agent's system instructions...")
+  })
 
-  it("emits submit payload containing instructions", async () => {
-    const wrapper = mount(AgentDefinitionForm, {
-      props: {
-        isSubmitting: false,
-        submitButtonText: "Create Agent",
-        isCreateMode: true,
-      },
-      global: {
-        stubs: {
-          GroupableTagInput: true,
-        },
-        mocks: {
-          $t: (key: string) => mockTranslations[key] ?? key,
-        },
-      },
-    });
+  it('emits submit payload containing instructions', async () => {
+    const wrapper = createWrapper()
 
-    await wrapper.get("input#name").setValue("Planner Agent");
-    await wrapper.get("textarea#description").setValue("Plans implementation work");
-    await wrapper.get("textarea#instructions").setValue("Always produce an executable plan.");
+    await wrapper.get('input#name').setValue('Planner Agent')
+    await wrapper.get('textarea#description').setValue('Plans implementation work')
+    await wrapper.get('textarea#instructions').setValue('Always produce an executable plan.')
 
-    await wrapper.get("form").trigger("submit.prevent");
+    await wrapper.get('form').trigger('submit.prevent')
 
-    const submitEvents = wrapper.emitted("submit") || [];
-    expect(submitEvents.length).toBe(1);
-    const payload = submitEvents[0]?.[0] as Record<string, unknown>;
-    expect(payload.instructions).toBe("Always produce an executable plan.");
-    expect(payload.name).toBe("Planner Agent");
-  });
+    const submitEvents = wrapper.emitted('submit') || []
+    expect(submitEvents.length).toBe(1)
+    const payload = submitEvents[0]?.[0] as Record<string, unknown>
+    expect(payload.instructions).toBe('Always produce an executable plan.')
+    expect(payload.name).toBe('Planner Agent')
+    expect(payload.defaultLaunchConfig).toBeNull()
+  })
 
-  it("emits defaultLaunchConfig when launch defaults are provided", async () => {
-    const wrapper = mount(AgentDefinitionForm, {
-      props: {
-        isSubmitting: false,
-        submitButtonText: "Create Agent",
-        isCreateMode: true,
-      },
-      global: {
-        stubs: {
-          GroupableTagInput: true,
-        },
-        mocks: {
-          $t: (key: string) => mockTranslations[key] ?? key,
-        },
-      },
-    });
+  it('emits defaultLaunchConfig when launch preferences are provided', async () => {
+    const wrapper = createWrapper()
 
-    await wrapper.get("input#name").setValue("Planner Agent");
-    await wrapper.get("textarea#description").setValue("Plans implementation work");
-    await wrapper.get("textarea#instructions").setValue("Always produce an executable plan.");
-    await wrapper.get("input#default-launch-runtime-kind").setValue("autobyteus");
-    await wrapper.get("input#default-launch-model").setValue("gpt-5.4-mini");
-    await wrapper.get("textarea#default-launch-llm-config").setValue('{"reasoning_effort":"medium"}');
+    await wrapper.get('input#name').setValue('Planner Agent')
+    await wrapper.get('textarea#description').setValue('Plans implementation work')
+    await wrapper.get('textarea#instructions').setValue('Always produce an executable plan.')
+    await wrapper.get('#set-launch-defaults').trigger('click')
 
-    await wrapper.get("form").trigger("submit.prevent");
+    await wrapper.get('form').trigger('submit.prevent')
 
-    const payload = (wrapper.emitted("submit") || [])[0]?.[0] as Record<string, any>;
+    const payload = (wrapper.emitted('submit') || [])[0]?.[0] as Record<string, any>
     expect(payload.defaultLaunchConfig).toEqual({
-      runtimeKind: "autobyteus",
-      llmModelIdentifier: "gpt-5.4-mini",
+      runtimeKind: 'autobyteus',
+      llmModelIdentifier: 'gpt-5.4-mini',
       llmConfig: {
-        reasoning_effort: "medium",
+        reasoning_effort: 'medium',
       },
-    });
-  });
+    })
+  })
 
-  it("does not emit submit when default launch config JSON is invalid", async () => {
-    const wrapper = mount(AgentDefinitionForm, {
-      props: {
-        isSubmitting: false,
-        submitButtonText: "Create Agent",
-        isCreateMode: true,
-      },
-      global: {
-        stubs: {
-          GroupableTagInput: true,
-        },
-        mocks: {
-          $t: (key: string) => mockTranslations[key] ?? key,
-        },
-      },
-    });
+  it('normalizes cleared launch preferences back to null', async () => {
+    const wrapper = createWrapper()
 
-    await wrapper.get("input#name").setValue("Planner Agent");
-    await wrapper.get("textarea#description").setValue("Plans implementation work");
-    await wrapper.get("textarea#instructions").setValue("Always produce an executable plan.");
-    await wrapper.get("textarea#default-launch-llm-config").setValue("{invalid json}");
+    await wrapper.get('input#name').setValue('Planner Agent')
+    await wrapper.get('textarea#description').setValue('Plans implementation work')
+    await wrapper.get('textarea#instructions').setValue('Always produce an executable plan.')
+    await wrapper.get('#set-launch-defaults').trigger('click')
+    await wrapper.get('#clear-launch-defaults').trigger('click')
 
-    await wrapper.get("form").trigger("submit.prevent");
+    await wrapper.get('form').trigger('submit.prevent')
 
-    expect(wrapper.emitted("submit")).toBeUndefined();
-    expect(wrapper.text()).toContain("LLM config JSON is invalid.");
-  });
-});
+    const payload = (wrapper.emitted('submit') || [])[0]?.[0] as Record<string, any>
+    expect(payload.defaultLaunchConfig).toBeNull()
+  })
+})

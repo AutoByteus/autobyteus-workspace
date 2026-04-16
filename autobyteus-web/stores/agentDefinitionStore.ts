@@ -9,14 +9,9 @@ import {
   UpdateAgentDefinition,
 } from '~/graphql/mutations/agentDefinitionMutations'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
+import type { DefaultLaunchConfig } from '~/types/launch/defaultLaunchConfig'
 
 export type AgentDefinitionOwnershipScope = 'SHARED' | 'TEAM_LOCAL' | 'APPLICATION_OWNED'
-
-export interface AgentDefinitionDefaultLaunchConfig {
-  llmModelIdentifier?: string | null
-  runtimeKind?: string | null
-  llmConfig?: Record<string, unknown> | null
-}
 
 export interface AgentDefinition {
   __typename?: 'AgentDefinition'
@@ -42,7 +37,7 @@ export interface AgentDefinition {
   ownerApplicationName?: string | null
   ownerPackageId?: string | null
   ownerLocalApplicationId?: string | null
-  defaultLaunchConfig?: AgentDefinitionDefaultLaunchConfig | null
+  defaultLaunchConfig?: DefaultLaunchConfig | null
 }
 
 export interface CreateAgentDefinitionInput {
@@ -60,7 +55,7 @@ export interface CreateAgentDefinitionInput {
   toolInvocationPreprocessorNames?: string[]
   lifecycleProcessorNames?: string[]
   skillNames?: string[]
-  defaultLaunchConfig?: AgentDefinitionDefaultLaunchConfig | null
+  defaultLaunchConfig?: DefaultLaunchConfig | null
 }
 
 export interface UpdateAgentDefinitionInput {
@@ -79,7 +74,7 @@ export interface UpdateAgentDefinitionInput {
   toolInvocationPreprocessorNames?: string[]
   lifecycleProcessorNames?: string[]
   skillNames?: string[]
-  defaultLaunchConfig?: AgentDefinitionDefaultLaunchConfig | null
+  defaultLaunchConfig?: DefaultLaunchConfig | null
 }
 
 interface DeleteResult {

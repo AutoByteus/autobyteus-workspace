@@ -1,3 +1,5 @@
+import type { DefaultLaunchConfig } from "../../launch-preferences/default-launch-config.js";
+
 export type TeamMemberRefScope = "shared" | "team_local" | "application_owned";
 export type AgentTeamDefinitionOwnershipScope = "shared" | "application_owned";
 
@@ -29,6 +31,7 @@ export class AgentTeamDefinition {
   nodes: TeamMember[];
   coordinatorMemberName: string;
   avatarUrl?: string | null;
+  defaultLaunchConfig: DefaultLaunchConfig | null;
   ownershipScope: AgentTeamDefinitionOwnershipScope;
   ownerApplicationId?: string | null;
   ownerApplicationName?: string | null;
@@ -44,6 +47,7 @@ export class AgentTeamDefinition {
     coordinatorMemberName: string;
     id?: string | null;
     avatarUrl?: string | null;
+    defaultLaunchConfig?: DefaultLaunchConfig | null;
     ownershipScope?: AgentTeamDefinitionOwnershipScope;
     ownerApplicationId?: string | null;
     ownerApplicationName?: string | null;
@@ -58,6 +62,7 @@ export class AgentTeamDefinition {
     this.coordinatorMemberName = options.coordinatorMemberName;
     this.id = options.id ?? null;
     this.avatarUrl = options.avatarUrl ?? null;
+    this.defaultLaunchConfig = options.defaultLaunchConfig ?? null;
     this.ownershipScope = options.ownershipScope ?? "shared";
     this.ownerApplicationId = options.ownerApplicationId ?? null;
     this.ownerApplicationName = options.ownerApplicationName ?? null;
@@ -74,6 +79,7 @@ export class AgentTeamDefinitionUpdate {
   nodes?: TeamMember[] | null;
   coordinatorMemberName?: string | null;
   avatarUrl?: string | null;
+  defaultLaunchConfig?: DefaultLaunchConfig | null;
 
   constructor(options: {
     name?: string | null;
@@ -83,6 +89,7 @@ export class AgentTeamDefinitionUpdate {
     nodes?: TeamMember[] | null;
     coordinatorMemberName?: string | null;
     avatarUrl?: string | null;
+    defaultLaunchConfig?: DefaultLaunchConfig | null;
   } = {}) {
     this.name = options.name ?? null;
     this.description = options.description ?? null;
@@ -91,5 +98,6 @@ export class AgentTeamDefinitionUpdate {
     this.nodes = options.nodes ?? null;
     this.coordinatorMemberName = options.coordinatorMemberName ?? null;
     this.avatarUrl = options.avatarUrl ?? null;
+    this.defaultLaunchConfig = options.defaultLaunchConfig;
   }
 }

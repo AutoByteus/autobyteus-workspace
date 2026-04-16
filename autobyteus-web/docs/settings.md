@@ -14,10 +14,11 @@ The Settings page is implemented in \`pages/settings.vue\` and serves as a conta
 6.  **Language**
 7.  **Local Tools**
 8.  **MCP Servers**
-9.  **Agent Packages**
-10. **Server Settings**
-11. **Extensions**
-12. **Updates**
+9.  **Application Packages**
+10. **Agent Packages**
+11. **Server Settings**
+12. **Extensions**
+13. **Updates**
 
 ## Sections Detail
 
@@ -136,7 +137,20 @@ For the full module behavior, see:
 
 - **[Tools and MCP](./tools_and_mcp.md)**
 
-### 9. Agent Packages
+### 9. Application Packages
+
+**Component:** `components/settings/ApplicationPackagesManager.vue`
+
+Manage application package sources used by the current node.
+
+- Platform-owned built-in applications appear as `Platform Applications` only when the managed built-in package currently contains at least one application.
+- The default list distinguishes platform-owned, linked local, and GitHub-imported sources instead of presenting every source as an equivalent filesystem root.
+- Raw internal built-in paths stay off the default list; `Show details` reveals root/source/managed-path metadata only on demand for support/debug work.
+- Linked local packages keep the user-chosen local path visible in the default list because that path is part of the operator's import choice.
+- GitHub-installed packages use repository identity in the default list while keeping the managed install path in the details panel.
+- Import and removal refresh Applications, Agents, and Agent Teams in the same session.
+
+### 10. Agent Packages
 
 **Component:** `components/settings/AgentPackagesManager.vue`
 
@@ -147,7 +161,7 @@ Manage agent package sources used by the app.
 - Review installed package inventory and source type.
 - Remove removable imported packages from app-managed storage.
 
-### 10. Server Settings
+### 11. Server Settings
 
 **Component:** \`components/settings/ServerSettingsManager.vue\`
 
@@ -171,7 +185,7 @@ A flexible key-value store for backend configurations.
 - **Custom Setting Cleanup:** Advanced table rows for custom keys include a remove action to delete obsolete entries.
 - **Workspace feedback:** Compaction activity is surfaced back in the active agent/team workspace as a status banner (`Compaction queued`, `Compacting memory…`, `Memory compacted`, or failure text) rather than only appearing as an unexplained pause.
 
-### 11. Extensions
+### 12. Extensions
 
 **Component:** `components/settings/ExtensionsManager.vue`
 
@@ -186,7 +200,7 @@ Managed optional capabilities that download their runtime assets on demand inste
   - Lifecycle states: not installed, installing, installed and disabled, installed and enabled, needs attention
   - The shared composer microphone appears only when Voice Input is installed, enabled, and not in an error state.
 
-### 12. Updates
+### 13. Updates
 
 **Component:** `components/settings/AboutSettingsManager.vue`
 

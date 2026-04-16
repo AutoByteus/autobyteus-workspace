@@ -23,15 +23,29 @@ export type ApplicationPackageSummary = {
   applicationCount: number;
 };
 
-export type ApplicationPackage = ApplicationPackageSummary & {
+export type ApplicationPackageListItem = ApplicationPackageSummary & {
   packageId: string;
   displayName: string;
-  path: string;
+  sourceKind: ApplicationPackageSourceKind;
+  sourceSummary: string | null;
+  isPlatformOwned: boolean;
+  isRemovable: boolean;
+};
+
+export type ApplicationPackageSourceRecord = ApplicationPackageSummary & {
+  packageId: string;
+  displayName: string;
+  rootPath: string;
   sourceKind: ApplicationPackageSourceKind;
   source: string;
-  isDefault: boolean;
+  isPlatformOwned: boolean;
   isRemovable: boolean;
   managedInstallPath: string | null;
+  bundledSourceRootPath: string | null;
+};
+
+export type ApplicationPackageDebugDetails = ApplicationPackageSourceRecord & {
+  sourceSummary: string | null;
 };
 
 export type ApplicationPackageRecord = {

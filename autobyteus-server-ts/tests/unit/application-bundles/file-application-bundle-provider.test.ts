@@ -6,7 +6,6 @@ import {
   BUILT_IN_APPLICATION_PACKAGE_ID,
   FileApplicationBundleProvider,
 } from "../../../src/application-bundles/providers/file-application-bundle-provider.js";
-import { resolveBuiltInApplicationPackageRoot } from "../../../src/application-bundles/utils/built-in-application-package-root.js";
 import {
   buildCanonicalApplicationId,
   buildCanonicalApplicationOwnedAgentId,
@@ -22,13 +21,15 @@ describe("FileApplicationBundleProvider", () => {
   let tempRoot: string;
   let appRoot: string;
   let appDataRoot: string;
+  let builtInRoot: string;
 
   beforeEach(async () => {
     tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-app-bundles-"));
     appRoot = path.join(tempRoot, "app-root");
     appDataRoot = path.join(tempRoot, "app-data");
+    builtInRoot = path.join(appDataRoot, "application-packages", "platform");
     await fs.mkdir(appRoot, { recursive: true });
-    await fs.mkdir(appDataRoot, { recursive: true });
+    await fs.mkdir(builtInRoot, { recursive: true });
   });
 
   afterEach(async () => {
@@ -36,16 +37,15 @@ describe("FileApplicationBundleProvider", () => {
   });
 
   const buildProvider = (options?: {
-    appRootDir?: string;
     additionalRootPaths?: string[];
     registryRecords?: Array<{ packageId: string; rootPath: string }>;
   }) =>
     new FileApplicationBundleProvider(
       {
-        getAppRootDir: () => options?.appRootDir ?? appRoot,
+        getAppRootDir: () => appRoot,
       } as never,
       {
-        getDefaultRootPath: () => appDataRoot,
+        getBuiltInRootPath: () => builtInRoot,
         listAdditionalRootPaths: () => options?.additionalRootPaths ?? [],
       } as never,
       {
@@ -54,11 +54,13 @@ describe("FileApplicationBundleProvider", () => {
     );
 
   const writeBundle = async (
-    packageRootPath: string = appRoot,
+    packageRootPath: string = builtInRoot,
     options?: {
-    localApplicationId?: string;
-    teamMemberRef?: string;
-  }): Promise<void> => {
+      localApplicationId?: string;
+      teamMemberRef?: string;
+      teamDefaultLaunchConfig?: Record<string, unknown> | null;
+    },
+  ): Promise<void> => {
     const localApplicationId = options?.localApplicationId ?? "sample-app";
     const teamMemberRef = options?.teamMemberRef ?? "sample-agent";
     const bundleRoot = path.join(packageRootPath, "applications", localApplicationId);
@@ -156,6 +158,7 @@ describe("FileApplicationBundleProvider", () => {
       JSON.stringify(
         {
           coordinatorMemberName: "lead",
+          defaultLaunchConfig: options?.teamDefaultLaunchConfig ?? { runtimeKind: "autobyteus" },
           members: [
             {
               memberName: "lead",
@@ -171,7 +174,7 @@ describe("FileApplicationBundleProvider", () => {
     );
   };
 
-  it("lists valid bundles from the built-in application root", async () => {
+  it("lists valid bundles from the managed built-in application root", async () => {
     await writeBundle();
     const provider = buildProvider();
 
@@ -210,18 +213,28 @@ describe("FileApplicationBundleProvider", () => {
         applicationId: bundle!.id,
       }),
     ]);
+    expect(provider.buildApplicationOwnedTeamSources(bundle!)).toEqual([
+      expect.objectContaining({
+        definitionId: buildCanonicalApplicationOwnedTeamId(
+          BUILT_IN_APPLICATION_PACKAGE_ID,
+          "sample-app",
+          "sample-team",
+        ),
+        applicationId: bundle!.id,
+      }),
+    ]);
   });
 
   it("fails package validation and refresh when an application-owned agent definition is malformed", async () => {
     await writeBundle();
     await writeFile(
-      path.join(appRoot, "applications", "sample-app", "agents", "sample-agent", "agent.md"),
+      path.join(builtInRoot, "applications", "sample-app", "agents", "sample-agent", "agent.md"),
       "# malformed agent definition\n",
     );
     const provider = buildProvider();
 
     await expect(
-      provider.validatePackageRoot(appRoot, BUILT_IN_APPLICATION_PACKAGE_ID),
+      provider.validatePackageRoot(builtInRoot, BUILT_IN_APPLICATION_PACKAGE_ID),
     ).rejects.toThrow("agent.md must start with '---' frontmatter delimiter");
     await expect(provider.listBundles()).rejects.toThrow(
       "agent.md must start with '---' frontmatter delimiter",
@@ -229,7 +242,7 @@ describe("FileApplicationBundleProvider", () => {
   });
 
   it("rejects bundles whose application-owned team references an agent outside the bundle", async () => {
-    await writeBundle(appRoot, { teamMemberRef: "missing-agent" });
+    await writeBundle(builtInRoot, { teamMemberRef: "missing-agent" });
     const provider = buildProvider();
 
     await expect(provider.listBundles()).rejects.toThrow(
@@ -237,10 +250,10 @@ describe("FileApplicationBundleProvider", () => {
     );
   });
 
-  it("ignores nested packaging mirrors under a discovered repo-local application root", async () => {
+  it("ignores nested packaging mirrors under a discovered package root", async () => {
     await writeBundle();
     const nestedMirrorRoot = path.join(
-      appRoot,
+      builtInRoot,
       "applications",
       "sample-app",
       "dist",
@@ -278,13 +291,12 @@ describe("FileApplicationBundleProvider", () => {
 
   it("preserves built-in application ids when the same root path is also configured as an additional package root", async () => {
     await writeBundle();
-    const builtInApplicationRoot = resolveBuiltInApplicationPackageRoot(appRoot);
     const provider = buildProvider({
-      additionalRootPaths: [builtInApplicationRoot],
+      additionalRootPaths: [builtInRoot],
       registryRecords: [
         {
           packageId: "github:example/override",
-          rootPath: builtInApplicationRoot,
+          rootPath: builtInRoot,
         },
       ],
     });
@@ -295,26 +307,7 @@ describe("FileApplicationBundleProvider", () => {
     expect(bundles[0]).toMatchObject({
       packageId: BUILT_IN_APPLICATION_PACKAGE_ID,
       id: buildCanonicalApplicationId(BUILT_IN_APPLICATION_PACKAGE_ID, "sample-app"),
-    });
-  });
-
-  it("discovers the built-in applications container by scanning upward from a deeper server root", async () => {
-    const repoRoot = path.join(tempRoot, "repo-root");
-    const serverRoot = path.join(repoRoot, "autobyteus-server-ts");
-    await fs.mkdir(serverRoot, { recursive: true });
-    await writeBundle(repoRoot);
-
-    const provider = buildProvider({
-      appRootDir: serverRoot,
-    });
-
-    const bundles = await provider.listBundles();
-
-    expect(resolveBuiltInApplicationPackageRoot(serverRoot)).toBe(repoRoot);
-    expect(bundles).toHaveLength(1);
-    expect(bundles[0]).toMatchObject({
-      packageId: BUILT_IN_APPLICATION_PACKAGE_ID,
-      applicationRootPath: path.join(repoRoot, "applications", "sample-app"),
+      applicationRootPath: path.join(builtInRoot, "applications", "sample-app"),
     });
   });
 });

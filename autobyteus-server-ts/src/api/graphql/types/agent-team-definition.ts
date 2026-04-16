@@ -20,6 +20,11 @@ import {
 } from "../../../agent-team-definition/domain/models.js";
 import { AgentTeamDefinitionService } from "../../../agent-team-definition/services/agent-team-definition-service.js";
 import { AgentTeamDefinitionConverter } from "../converters/agent-team-definition-converter.js";
+import {
+  GraphqlDefaultLaunchConfig,
+  GraphqlDefaultLaunchConfigInput,
+  toDomainDefaultLaunchConfig,
+} from "./default-launch-config.js";
 
 registerEnumType(NodeType, { name: "TeamMemberType" });
 registerEnumType(AgentMemberRefScope, { name: "AgentMemberRefScope" });
@@ -104,6 +109,9 @@ export class AgentTeamDefinition {
 
   @Field(() => String, { nullable: true })
   ownerLocalApplicationId?: string | null;
+
+  @Field(() => GraphqlDefaultLaunchConfig, { nullable: true })
+  defaultLaunchConfig?: GraphqlDefaultLaunchConfig | null;
 }
 
 @InputType()
@@ -143,6 +151,9 @@ export class CreateAgentTeamDefinitionInput {
 
   @Field(() => String, { nullable: true })
   avatarUrl?: string | null;
+
+  @Field(() => GraphqlDefaultLaunchConfigInput, { nullable: true })
+  defaultLaunchConfig?: GraphqlDefaultLaunchConfigInput | null;
 }
 
 @InputType()
@@ -170,6 +181,9 @@ export class UpdateAgentTeamDefinitionInput {
 
   @Field(() => String, { nullable: true })
   avatarUrl?: string | null;
+
+  @Field(() => GraphqlDefaultLaunchConfigInput, { nullable: true })
+  defaultLaunchConfig?: GraphqlDefaultLaunchConfigInput | null;
 }
 
 @ObjectType()
@@ -248,6 +262,7 @@ export class AgentTeamDefinitionResolver {
         avatarUrl: input.avatarUrl ?? null,
         nodes: domainNodes,
         coordinatorMemberName: input.coordinatorMemberName,
+        defaultLaunchConfig: toDomainDefaultLaunchConfig(input.defaultLaunchConfig),
       });
 
       const created = await service.createDefinition(domainDefinition);
@@ -285,6 +300,7 @@ export class AgentTeamDefinitionResolver {
         nodes: nodesUpdate,
         coordinatorMemberName: input.coordinatorMemberName ?? null,
         avatarUrl: input.avatarUrl ?? null,
+        defaultLaunchConfig: toDomainDefaultLaunchConfig(input.defaultLaunchConfig),
       });
 
       const updated = await service.updateDefinition(input.id, update);

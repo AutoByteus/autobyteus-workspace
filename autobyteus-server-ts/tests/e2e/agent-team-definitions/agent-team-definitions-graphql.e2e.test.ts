@@ -5,6 +5,8 @@ import { createRequire } from "node:module";
 import { afterEach, beforeAll, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
+import { ApplicationBundleService } from "../../../src/application-bundles/services/application-bundle-service.js";
+import { AgentTeamDefinitionService } from "../../../src/agent-team-definition/services/agent-team-definition-service.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 
 function uniqueId(prefix: string): string {
@@ -15,8 +17,22 @@ describe("Agent team definitions GraphQL e2e", () => {
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
   const cleanupPaths = new Set<string>();
+  const emptyApplicationBundleProvider = {
+    listBundles: async () => [],
+    validatePackageRoot: async () => undefined,
+    buildApplicationOwnedAgentSources: () => [],
+    buildApplicationOwnedTeamSources: () => [],
+  };
 
   beforeAll(async () => {
+    ApplicationBundleService.resetInstance();
+    ApplicationBundleService.getInstance({
+      provider: emptyApplicationBundleProvider,
+      builtInMaterializer: {
+        ensureMaterialized: async () => undefined,
+      },
+    });
+    (AgentTeamDefinitionService as unknown as { instance: AgentTeamDefinitionService | null }).instance = null;
     schema = await buildGraphqlSchema();
     const require = createRequire(import.meta.url);
     const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
@@ -30,6 +46,14 @@ describe("Agent team definitions GraphQL e2e", () => {
       await fs.rm(filePath, { recursive: true, force: true }).catch(() => undefined);
     }
     cleanupPaths.clear();
+    ApplicationBundleService.resetInstance();
+    ApplicationBundleService.getInstance({
+      provider: emptyApplicationBundleProvider,
+      builtInMaterializer: {
+        ensureMaterialized: async () => undefined,
+      },
+    });
+    (AgentTeamDefinitionService as unknown as { instance: AgentTeamDefinitionService | null }).instance = null;
   });
 
   const execGraphql = async <T>(
@@ -68,6 +92,11 @@ describe("Agent team definitions GraphQL e2e", () => {
           instructions
           avatarUrl
           coordinatorMemberName
+          defaultLaunchConfig {
+            llmModelIdentifier
+            runtimeKind
+            llmConfig
+          }
           nodes {
             memberName
             ref
@@ -87,6 +116,11 @@ describe("Agent team definitions GraphQL e2e", () => {
         instructions: string;
         avatarUrl: string | null;
         coordinatorMemberName: string;
+        defaultLaunchConfig: {
+          llmModelIdentifier: string | null;
+          runtimeKind: string | null;
+          llmConfig: Record<string, unknown> | null;
+        } | null;
         nodes: Array<{
           memberName: string;
           ref: string;
@@ -102,6 +136,13 @@ describe("Agent team definitions GraphQL e2e", () => {
         instructions: "You coordinate the md-centric team.",
         avatarUrl: "http://localhost:8000/rest/files/images/e2e-team-avatar.png",
         coordinatorMemberName: "leader",
+        defaultLaunchConfig: {
+          runtimeKind: "autobyteus",
+          llmModelIdentifier: "gpt-5.4-mini",
+          llmConfig: {
+            reasoning_effort: "medium",
+          },
+        },
         nodes: [
           {
             memberName: "leader",
@@ -122,6 +163,13 @@ describe("Agent team definitions GraphQL e2e", () => {
 
     expect(created.createAgentTeamDefinition.category).toBe("software-engineering");
     expect(created.createAgentTeamDefinition.instructions).toContain("md-centric team");
+    expect(created.createAgentTeamDefinition.defaultLaunchConfig).toEqual({
+      runtimeKind: "autobyteus",
+      llmModelIdentifier: "gpt-5.4-mini",
+      llmConfig: {
+        reasoning_effort: "medium",
+      },
+    });
     expect(created.createAgentTeamDefinition.nodes).toHaveLength(2);
     expect(created.createAgentTeamDefinition.nodes[0]?.ref).toBe("agent-1");
 
@@ -136,6 +184,13 @@ describe("Agent team definitions GraphQL e2e", () => {
     expect(teamMdRaw).toContain("You coordinate the md-centric team.");
     expect(JSON.parse(teamConfigRaw)).toMatchObject({
       coordinatorMemberName: "leader",
+      defaultLaunchConfig: {
+        runtimeKind: "autobyteus",
+        llmModelIdentifier: "gpt-5.4-mini",
+        llmConfig: {
+          reasoning_effort: "medium",
+        },
+      },
       members: [
         { memberName: "leader", ref: "agent-1", refType: "agent", refScope: "shared" },
         { memberName: "helper", ref: "team-2", refType: "agent_team" },
@@ -151,6 +206,11 @@ describe("Agent team definitions GraphQL e2e", () => {
           instructions
           avatarUrl
           coordinatorMemberName
+          defaultLaunchConfig {
+            llmModelIdentifier
+            runtimeKind
+            llmConfig
+          }
           nodes {
             memberName
             ref
@@ -168,6 +228,11 @@ describe("Agent team definitions GraphQL e2e", () => {
         instructions: string;
         avatarUrl: string | null;
         coordinatorMemberName: string;
+        defaultLaunchConfig: {
+          llmModelIdentifier: string | null;
+          runtimeKind: string | null;
+          llmConfig: Record<string, unknown> | null;
+        } | null;
         nodes: Array<{
           memberName: string;
           ref: string;
@@ -183,6 +248,13 @@ describe("Agent team definitions GraphQL e2e", () => {
         instructions: "You coordinate the updated md-centric team.",
         avatarUrl: "",
         coordinatorMemberName: "helper",
+        defaultLaunchConfig: {
+          runtimeKind: "codex",
+          llmModelIdentifier: "gpt-5.4",
+          llmConfig: {
+            reasoning_effort: "high",
+          },
+        },
         nodes: [
           {
             memberName: "helper",
@@ -203,7 +275,99 @@ describe("Agent team definitions GraphQL e2e", () => {
     expect(updated.updateAgentTeamDefinition.category).toBe("platform");
     expect(updated.updateAgentTeamDefinition.avatarUrl).toBeNull();
     expect(updated.updateAgentTeamDefinition.coordinatorMemberName).toBe("helper");
+    expect(updated.updateAgentTeamDefinition.defaultLaunchConfig).toEqual({
+      runtimeKind: "codex",
+      llmModelIdentifier: "gpt-5.4",
+      llmConfig: {
+        reasoning_effort: "high",
+      },
+    });
     expect(updated.updateAgentTeamDefinition.nodes[1]?.refType).toBe("AGENT_TEAM");
+
+    const updatedConfigAfterWrite = JSON.parse(
+      await fs.readFile(path.join(teamDir, "team-config.json"), "utf-8"),
+    ) as {
+      coordinatorMemberName: string;
+      defaultLaunchConfig: Record<string, unknown> | null;
+      members: Array<{
+        memberName: string;
+        ref: string;
+        refType: "agent" | "agent_team";
+        refScope?: "shared" | "team_local";
+      }>;
+    };
+
+    expect(updatedConfigAfterWrite.defaultLaunchConfig).toEqual({
+      runtimeKind: "codex",
+      llmModelIdentifier: "gpt-5.4",
+      llmConfig: {
+        reasoning_effort: "high",
+      },
+    });
+
+    const preserved = await execGraphql<{
+      updateAgentTeamDefinition: {
+        id: string;
+        description: string;
+        defaultLaunchConfig: {
+          llmModelIdentifier: string | null;
+          runtimeKind: string | null;
+          llmConfig: Record<string, unknown> | null;
+        } | null;
+      };
+    }>(updateMutation, {
+      input: {
+        id: created.createAgentTeamDefinition.id,
+        description: "Updated without clearing launch defaults",
+      },
+    });
+
+    expect(preserved.updateAgentTeamDefinition.description).toBe(
+      "Updated without clearing launch defaults",
+    );
+    expect(preserved.updateAgentTeamDefinition.defaultLaunchConfig).toEqual({
+      runtimeKind: "codex",
+      llmModelIdentifier: "gpt-5.4",
+      llmConfig: {
+        reasoning_effort: "high",
+      },
+    });
+    const preservedConfigAfterWrite = JSON.parse(
+      await fs.readFile(path.join(teamDir, "team-config.json"), "utf-8"),
+    ) as {
+      defaultLaunchConfig?: Record<string, unknown> | null;
+    };
+    expect(preservedConfigAfterWrite.defaultLaunchConfig).toEqual({
+      runtimeKind: "codex",
+      llmModelIdentifier: "gpt-5.4",
+      llmConfig: {
+        reasoning_effort: "high",
+      },
+    });
+
+    const cleared = await execGraphql<{
+      updateAgentTeamDefinition: {
+        id: string;
+        defaultLaunchConfig: {
+          llmModelIdentifier: string | null;
+          runtimeKind: string | null;
+          llmConfig: Record<string, unknown> | null;
+        } | null;
+      };
+    }>(updateMutation, {
+      input: {
+        id: created.createAgentTeamDefinition.id,
+        defaultLaunchConfig: null,
+      },
+    });
+
+    expect(cleared.updateAgentTeamDefinition.defaultLaunchConfig).toBeNull();
+    const clearedConfigAfterWrite = JSON.parse(
+      await fs.readFile(path.join(teamDir, "team-config.json"), "utf-8"),
+    ) as {
+      defaultLaunchConfig?: Record<string, unknown> | null;
+    };
+    expect(clearedConfigAfterWrite.defaultLaunchConfig).toBeNull();
 
     const templateId = `_template_${unique}`;
     const templateDir = path.join(dataDir, "agent-teams", templateId);

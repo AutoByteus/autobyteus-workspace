@@ -13,6 +13,7 @@ import {
 import { AgentDefinitionPersistenceProvider } from "../providers/agent-definition-persistence-provider.js";
 import { CachedAgentDefinitionProvider } from "../providers/cached-agent-definition-provider.js";
 import { filterOptionalProcessorNames } from "../utils/processor-defaults.js";
+import { normalizeDefaultLaunchConfigInput } from "../../launch-preferences/default-launch-config.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -54,43 +55,6 @@ const normalizeOptionalString = (value: unknown): string | null => {
   }
   const trimmed = value.trim();
   return trimmed.length > 0 ? trimmed : null;
-};
-
-const normalizeObjectRecord = (value: unknown): Record<string, unknown> | null => {
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    return null;
-  }
-  return value as Record<string, unknown>;
-};
-
-const normalizeDefaultLaunchConfigInput = (
-  value: unknown,
-): AgentDefinitionDefaultLaunchConfig | null | undefined => {
-  if (value === undefined) {
-    return undefined;
-  }
-  if (value === null) {
-    return null;
-  }
-
-  const candidate = normalizeObjectRecord(value);
-  if (!candidate) {
-    return null;
-  }
-
-  const llmModelIdentifier = normalizeOptionalString(candidate.llmModelIdentifier);
-  const runtimeKind = normalizeOptionalString(candidate.runtimeKind);
-  const llmConfig = normalizeObjectRecord(candidate.llmConfig);
-
-  if (!llmModelIdentifier && !runtimeKind && !llmConfig) {
-    return null;
-  }
-
-  return {
-    llmModelIdentifier,
-    runtimeKind,
-    llmConfig,
-  };
 };
 
 const slugify = (value: string): string => {

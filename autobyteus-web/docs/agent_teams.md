@@ -13,6 +13,8 @@ For runtime execution/streaming behavior, see `agent_execution_architecture.md`.
 - `components/agentTeams/AgentTeamCard.vue`
 - `components/agentTeams/AgentTeamDetail.vue`
 - `components/agentTeams/AgentTeamDefinitionForm.vue`
+- `components/launch-config/DefinitionLaunchPreferencesSection.vue`
+- `components/launch-config/RuntimeModelConfigFields.vue`
 - `components/agentTeams/form/useAgentTeamDefinitionFormState.ts`
 - `components/agentTeams/form/AgentTeamMemberDetailsPanel.vue`
 - `utils/definitionOwnership.ts`
@@ -23,6 +25,10 @@ Team definitions now include:
 
 - `ownershipScope` (`SHARED` or `APPLICATION_OWNED`),
 - owning application/package provenance, and
+- persisted launch defaults:
+  - `defaultLaunchConfig.llmModelIdentifier`
+  - `defaultLaunchConfig.runtimeKind`
+  - `defaultLaunchConfig.llmConfig`
 - per-member `refScope` for agent members (`SHARED`, `TEAM_LOCAL`, or `APPLICATION_OWNED`).
 
 Nested team members continue to use `refType: 'AGENT_TEAM'` without `refScope`.
@@ -35,6 +41,17 @@ Nested team members continue to use `refType: 'AGENT_TEAM'` without `refScope`.
 | `APPLICATION_OWNED` | Yes | Yes when backed by a writable source | Not allowed in the generic shared workflow |
 
 The list/detail/card surfaces show ownership badges and application/package provenance so embedded teams remain distinguishable from standalone shared teams.
+
+## Default Launch Preferences
+
+`AgentTeamDefinitionForm.vue` now round-trips `defaultLaunchConfig` through the shared `DefinitionLaunchPreferencesSection.vue` surface for both shared and application-owned teams.
+
+Those values are used in two places:
+
+- direct native team launches, and
+- application launch draft preparation when an application binds to an embedded team definition.
+
+Definition editors can leave runtime blank to mean “choose when launching”, while run-config forms resolve to an effective runtime immediately.
 
 ## Member Library Behavior
 

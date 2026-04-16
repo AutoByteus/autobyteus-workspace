@@ -20,7 +20,7 @@ import {
 import {
   buildTeamConfigRecord,
   defaultTeamConfig,
-  normalizeMembers,
+  normalizeTeamConfigRecord,
   type TeamConfigRecord,
   TeamConfigParseError,
 } from "./team-definition-config.js";
@@ -72,8 +72,9 @@ export class FileAgentTeamDefinitionProvider {
     try {
       const mdContent = await fs.readFile(mdPath, "utf-8");
       const parsed = parseTeamMd(mdContent, mdPath);
-      const config = await readJsonFile<TeamConfigRecord>(configPath, defaultTeamConfig());
-      const members = normalizeMembers(config.members);
+      const config = normalizeTeamConfigRecord(
+        await readJsonFile<TeamConfigRecord>(configPath, defaultTeamConfig()),
+      );
 
       return new AgentTeamDefinition({
         id: teamId,
@@ -82,9 +83,10 @@ export class FileAgentTeamDefinitionProvider {
         instructions: parsed.instructions,
         category: parsed.category,
         avatarUrl: config.avatarUrl ?? null,
+        defaultLaunchConfig: config.defaultLaunchConfig ?? null,
         coordinatorMemberName:
           typeof config.coordinatorMemberName === "string" ? config.coordinatorMemberName : "",
-        nodes: members.map(
+        nodes: config.members?.map(
           (member) =>
             new TeamMember({
               memberName: member.memberName,
@@ -92,7 +94,7 @@ export class FileAgentTeamDefinitionProvider {
               refType: member.refType,
               refScope: member.refScope ?? null,
             }),
-        ),
+        ) ?? [],
         ownershipScope: "shared",
       });
     } catch (error) {

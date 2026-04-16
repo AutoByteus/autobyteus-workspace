@@ -6,15 +6,17 @@ import { ApplicationPackageRootSettingsStore } from "../../../src/application-pa
 
 describe("ApplicationPackageRootSettingsStore", () => {
   let tempRoot: string;
-  let repoRoot: string;
-  let serverRoot: string;
+  let appDataRoot: string;
+  let builtInRoot: string;
+  let bundledSourceRoot: string;
 
   beforeEach(async () => {
     tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-application-root-settings-"));
-    repoRoot = path.join(tempRoot, "repo-root");
-    serverRoot = path.join(repoRoot, "autobyteus-server-ts");
-    await fs.mkdir(path.join(repoRoot, "applications"), { recursive: true });
-    await fs.mkdir(serverRoot, { recursive: true });
+    appDataRoot = path.join(tempRoot, "app-data");
+    builtInRoot = path.join(appDataRoot, "application-packages", "platform");
+    bundledSourceRoot = path.join(tempRoot, "bundled-source");
+    await fs.mkdir(builtInRoot, { recursive: true });
+    await fs.mkdir(path.join(bundledSourceRoot, "applications"), { recursive: true });
   });
 
   afterEach(async () => {
@@ -25,8 +27,9 @@ describe("ApplicationPackageRootSettingsStore", () => {
     const extraRoot = path.join(tempRoot, "external-applications-root");
     const store = new ApplicationPackageRootSettingsStore(
       {
-        getAdditionalApplicationPackageRoots: () => [repoRoot, extraRoot],
-        getAppRootDir: () => serverRoot,
+        getAppDataDir: () => appDataRoot,
+        getAdditionalApplicationPackageRoots: () => [builtInRoot, bundledSourceRoot, extraRoot],
+        getAppRootDir: () => path.join(bundledSourceRoot, "server"),
         get: (_key: string, defaultValue?: string) => defaultValue,
       },
       {
@@ -41,8 +44,9 @@ describe("ApplicationPackageRootSettingsStore", () => {
     const writes: Array<{ key: string; value: string }> = [];
     const store = new ApplicationPackageRootSettingsStore(
       {
+        getAppDataDir: () => appDataRoot,
         getAdditionalApplicationPackageRoots: () => [],
-        getAppRootDir: () => serverRoot,
+        getAppRootDir: () => path.join(bundledSourceRoot, "server"),
         get: (_key: string, defaultValue?: string) => defaultValue,
       },
       {
@@ -53,8 +57,31 @@ describe("ApplicationPackageRootSettingsStore", () => {
       },
     );
 
-    expect(() => store.addAdditionalRootPath(repoRoot)).toThrow(
+    expect(() => store.addAdditionalRootPath(builtInRoot)).toThrow(
       "built-in applications root cannot be registered",
+    );
+    expect(writes).toHaveLength(0);
+  });
+
+  it("rejects registering the bundled platform source root as an additional application package root", () => {
+    const writes: Array<{ key: string; value: string }> = [];
+    const store = new ApplicationPackageRootSettingsStore(
+      {
+        getAppDataDir: () => appDataRoot,
+        getAdditionalApplicationPackageRoots: () => [],
+        getAppRootDir: () => path.join(bundledSourceRoot, "server"),
+        get: (_key: string, defaultValue?: string) => defaultValue,
+      },
+      {
+        updateSetting: (key: string, value: string) => {
+          writes.push({ key, value });
+          return [true, "updated"];
+        },
+      },
+    );
+
+    expect(() => store.addAdditionalRootPath(bundledSourceRoot)).toThrow(
+      "bundled platform applications source root cannot be registered",
     );
     expect(writes).toHaveLength(0);
   });

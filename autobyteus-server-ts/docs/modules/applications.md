@@ -73,15 +73,23 @@ Repo-local discovery uses the direct child root under `applications/` and ignore
 ## Discovery And Catalog Notes
 
 - Repo-local applications and imported package applications use the same bundle-discovery path.
-- Discovery walks built-in roots plus registered additional package roots and produces one catalog entry per valid bundle.
-- The repo-local built-in applications container resolved by upward scan remains authoritative for built-in package identity.
+- Discovery walks the managed built-in package root plus registered additional package roots and produces one catalog entry per valid bundle.
+- Built-in applications are materialized from bundled application resources into `<app-data-dir>/application-packages/platform/applications/`; that managed root is the authoritative built-in package identity for discovery and settings.
+- The bundled resource root is a read-only materialization source and debug detail, not a user-imported package root.
 - If the same physical applications root is also presented as an additional package root, discovery skips the duplicate additional-root entry instead of minting a competing package identity.
-- The protected built-in applications root is not a valid user-configured additional package root.
+- The protected managed built-in applications root and the bundled source root are not valid user-configured additional package roots.
 - Bundle validation now checks UI asset paths, backend manifest integrity, runtime-target ownership, and application-owned team integrity before a bundle reaches the catalog.
 - GraphQL still exposes transport-neutral UI asset paths (`iconAssetPath`, `entryHtmlAssetPath`) rather than host-usable absolute URLs.
 - Backend exposures are not surfaced as raw public URLs in the catalog; they stay behind the platform-owned gateway and iframe bootstrap transport.
 - Runtime targets are surfaced with canonical ids so launches bind to the owning bundle’s embedded agent or team instead of relying on global name lookup.
 - Session snapshots reuse this catalog metadata so `/applications/[id]` can render bundle ownership and asset details without a second lookup model.
+
+## Package Source Presentation
+
+- `ApplicationPackageService` is the authoritative settings-facing owner for application-package source summaries and debug details.
+- Default list rows hide empty platform-owned built-in packages, show built-ins as `Platform Applications`, and keep raw internal built-in paths behind explicit details.
+- Linked local package rows may show the user-chosen root path directly.
+- GitHub-installed package rows use repository identity by default; managed install paths stay in details/debug-only surfaces.
 
 ## Runtime Availability Boundary
 

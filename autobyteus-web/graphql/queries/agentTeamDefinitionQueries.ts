@@ -16,6 +16,11 @@ export const GetAgentTeamDefinitions = gql`
       ownerApplicationName
       ownerPackageId
       ownerLocalApplicationId
+      defaultLaunchConfig {
+        llmModelIdentifier
+        runtimeKind
+        llmConfig
+      }
       nodes {
         __typename
         memberName

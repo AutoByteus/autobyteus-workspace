@@ -9,6 +9,7 @@ import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { ApplicationPackageService } from "../../../src/application-packages/services/application-package-service.js";
 import { ApplicationPackageRegistryStore } from "../../../src/application-packages/stores/application-package-registry-store.js";
 import { ApplicationPackageRootSettingsStore } from "../../../src/application-packages/stores/application-package-root-settings-store.js";
+import { BUILT_IN_APPLICATION_PACKAGE_ID } from "../../../src/application-bundles/providers/file-application-bundle-provider.js";
 
 const parseAdditionalRoots = (): string[] => {
   const raw = process.env.AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS ?? "";
@@ -34,11 +35,11 @@ const parseAdditionalRoots = (): string[] => {
   return roots;
 };
 
-const createTestRootSettingsStore = (serverRoot: string): ApplicationPackageRootSettingsStore =>
+const createTestRootSettingsStore = (appDataRoot: string): ApplicationPackageRootSettingsStore =>
   new ApplicationPackageRootSettingsStore(
     {
+      getAppDataDir: () => appDataRoot,
       getAdditionalApplicationPackageRoots: () => parseAdditionalRoots(),
-      getAppRootDir: () => serverRoot,
       get: (key: string, defaultValue?: string) =>
         process.env[key] ?? defaultValue,
     },
@@ -58,6 +59,11 @@ const createTestRegistryStore = (registryRoot: string): ApplicationPackageRegist
   new ApplicationPackageRegistryStore({
     getAppDataDir: () => registryRoot,
   });
+
+const createBuiltInMaterializer = (bundledSourceRootPath: string) => ({
+  ensureMaterialized: async () => undefined,
+  getBundledSourceRootPath: () => path.resolve(bundledSourceRootPath),
+});
 
 const writeApplicationBundle = async (packageRoot: string, applicationId: string): Promise<void> => {
   const bundleRoot = path.join(packageRoot, "applications", applicationId);
@@ -129,35 +135,50 @@ describe("Application packages GraphQL e2e", () => {
     return result.data as T;
   };
 
-  it("imports and removes a linked local application package", async () => {
+  it("imports, inspects, and removes a linked local application package", async () => {
     const unique = `${Date.now()}_${Math.random().toString(16).slice(2)}`;
     const repoRoot = await fs.mkdtemp(path.join(os.tmpdir(), `application-packages-repo-${unique}-`));
-    const serverRoot = path.join(repoRoot, "autobyteus-server-ts");
+    const appDataRoot = await fs.mkdtemp(path.join(os.tmpdir(), `application-packages-app-data-${unique}-`));
     const registryRoot = await fs.mkdtemp(path.join(os.tmpdir(), `application-packages-registry-${unique}-`));
     const externalRoot = await fs.mkdtemp(path.join(os.tmpdir(), `application-packages-local-${unique}-`));
 
     cleanupPaths.add(repoRoot);
+    cleanupPaths.add(appDataRoot);
     cleanupPaths.add(registryRoot);
     cleanupPaths.add(externalRoot);
 
-    await fs.mkdir(path.join(repoRoot, "applications"), { recursive: true });
-    await fs.mkdir(serverRoot, { recursive: true });
-    await writeApplicationBundle(repoRoot, `built-in-${unique}`);
+    const rootSettingsStore = createTestRootSettingsStore(appDataRoot);
+    await writeApplicationBundle(rootSettingsStore.getBuiltInRootPath(), `built-in-${unique}`);
     await writeApplicationBundle(externalRoot, `external-${unique}`);
 
     ApplicationPackageService.getInstance({
-      rootSettingsStore: createTestRootSettingsStore(serverRoot),
+      rootSettingsStore,
       registryStore: createTestRegistryStore(registryRoot),
       refreshApplicationBundles: async () => undefined,
       validateApplicationPackageContents: async () => undefined,
+      builtInMaterializer: createBuiltInMaterializer(repoRoot),
     });
 
-    const imported = await execGraphql<{ importApplicationPackage: Array<{ packageId: string; path: string; applicationCount: number }> }>(
+    const imported = await execGraphql<{
+      importApplicationPackage: Array<{
+        packageId: string;
+        displayName: string;
+        sourceKind: string;
+        sourceSummary: string | null;
+        applicationCount: number;
+        isPlatformOwned: boolean;
+        isRemovable: boolean;
+      }>;
+    }>(
       `mutation ImportApplicationPackage($input: ImportApplicationPackageInput!) {
         importApplicationPackage(input: $input) {
           packageId
-          path
+          displayName
+          sourceKind
+          sourceSummary
           applicationCount
+          isPlatformOwned
+          isRemovable
         }
       }`,
       {
@@ -168,28 +189,97 @@ describe("Application packages GraphQL e2e", () => {
       },
     );
 
-    expect(imported.importApplicationPackage.some((entry) => entry.path === externalRoot)).toBe(true);
-    expect(imported.importApplicationPackage[0]?.packageId).toBe("built-in:applications");
-
-    const listed = await execGraphql<{ applicationPackages: Array<{ packageId: string; path: string }> }>(
-      `query ApplicationPackages { applicationPackages { packageId path } }`,
+    const linkedPackage = imported.importApplicationPackage.find(
+      (entry) => entry.sourceSummary === path.resolve(externalRoot),
     );
-    const linked = listed.applicationPackages.find((entry) => entry.path === externalRoot);
-    expect(linked?.packageId.startsWith("application-local:")).toBe(true);
+    expect(linkedPackage).toMatchObject({
+      sourceKind: "LOCAL_PATH",
+      applicationCount: 1,
+      isPlatformOwned: false,
+      isRemovable: true,
+    });
+    expect(imported.importApplicationPackage[0]).toMatchObject({
+      packageId: BUILT_IN_APPLICATION_PACKAGE_ID,
+      sourceKind: "BUILT_IN",
+      sourceSummary: "Managed by AutoByteus",
+      isPlatformOwned: true,
+      isRemovable: false,
+    });
 
-    const removed = await execGraphql<{ removeApplicationPackage: Array<{ packageId: string; path: string }> }>(
-      `mutation RemoveApplicationPackage($packageId: String!) {
-        removeApplicationPackage(packageId: $packageId) {
+    const listed = await execGraphql<{
+      applicationPackages: Array<{
+        packageId: string;
+        sourceSummary: string | null;
+        isPlatformOwned: boolean;
+      }>;
+    }>(
+      `query ApplicationPackages {
+        applicationPackages {
           packageId
-          path
+          sourceSummary
+          isPlatformOwned
+        }
+      }`,
+    );
+    const listedLinked = listed.applicationPackages.find(
+      (entry) => entry.sourceSummary === path.resolve(externalRoot),
+    );
+    expect(listedLinked?.packageId.startsWith("application-local:")).toBe(true);
+
+    const details = await execGraphql<{
+      applicationPackageDetails: {
+        packageId: string;
+        rootPath: string;
+        source: string;
+        managedInstallPath: string | null;
+        bundledSourceRootPath: string | null;
+        isPlatformOwned: boolean;
+      } | null;
+    }>(
+      `query ApplicationPackageDetails($packageId: String!) {
+        applicationPackageDetails(packageId: $packageId) {
+          packageId
+          rootPath
+          source
+          managedInstallPath
+          bundledSourceRootPath
+          isPlatformOwned
         }
       }`,
       {
-        packageId: linked?.packageId,
+        packageId: linkedPackage?.packageId,
       },
     );
 
-    expect(removed.removeApplicationPackage.find((entry) => entry.path === externalRoot)).toBeUndefined();
-    expect(removed.removeApplicationPackage[0]?.packageId).toBe("built-in:applications");
+    expect(details.applicationPackageDetails).toMatchObject({
+      packageId: linkedPackage?.packageId,
+      rootPath: path.resolve(externalRoot),
+      source: path.resolve(externalRoot),
+      managedInstallPath: null,
+      bundledSourceRootPath: null,
+      isPlatformOwned: false,
+    });
+
+    const removed = await execGraphql<{
+      removeApplicationPackage: Array<{
+        packageId: string;
+        sourceSummary: string | null;
+      }>;
+    }>(
+      `mutation RemoveApplicationPackage($packageId: String!) {
+        removeApplicationPackage(packageId: $packageId) {
+          packageId
+          sourceSummary
+        }
+      }`,
+      {
+        packageId: linkedPackage?.packageId,
+      },
+    );
+
+    expect(
+      removed.removeApplicationPackage.find((entry) => entry.sourceSummary === path.resolve(externalRoot)),
+    ).toBeUndefined();
+    expect(removed.removeApplicationPackage[0]?.packageId).toBe(BUILT_IN_APPLICATION_PACKAGE_ID);
   });
 });

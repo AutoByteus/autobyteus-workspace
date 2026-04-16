@@ -1,12 +1,16 @@
 import fs from "node:fs";
 import fsPromises from "node:fs/promises";
 import path from "node:path";
+import { BUILT_IN_APPLICATION_PACKAGE_ID } from "../../application-bundles/providers/file-application-bundle-provider.js";
 import { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
+import { BuiltInApplicationPackageMaterializer } from "./built-in-application-package-materializer.js";
 import { GitHubApplicationPackageInstaller } from "../installers/github-application-package-installer.js";
 import {
-  ApplicationPackage,
+  ApplicationPackageDebugDetails,
   ApplicationPackageImportInput,
+  ApplicationPackageListItem,
   ApplicationPackageRecord,
+  ApplicationPackageSourceRecord,
 } from "../types.js";
 import { ApplicationPackageRegistryStore } from "../stores/application-package-registry-store.js";
 import { ApplicationPackageRootSettingsStore } from "../stores/application-package-root-settings-store.js";
@@ -17,12 +21,17 @@ import {
   buildLocalApplicationPackageId,
   validateApplicationPackageRoot,
 } from "../utils/application-package-root-summary.js";
-import { BUILT_IN_APPLICATION_PACKAGE_ID } from "../../application-bundles/providers/file-application-bundle-provider.js";
 
 type RefreshBundlesFn = () => Promise<void>;
 
+type BuiltInMaterializerLike = Pick<
+  BuiltInApplicationPackageMaterializer,
+  "ensureMaterialized" | "getBundledSourceRootPath"
+>;
+
 const LOCAL_PATH_SOURCE_KIND = "LOCAL_PATH";
 const GITHUB_SOURCE_KIND = "GITHUB_REPOSITORY";
+const PLATFORM_SOURCE_SUMMARY = "Managed by AutoByteus";
 
 const getLocalPackageDisplayName = (rootPath: string): string => {
   const baseName = path.basename(rootPath);
@@ -46,43 +55,85 @@ const getGitHubPackageDisplayName = (record: ApplicationPackageRecord): string =
   return record.normalizedSource;
 };
 
-const mapBuiltInPackage = (rootPath: string): ApplicationPackage => ({
+const mapBuiltInPackageRecord = (
+  rootPath: string,
+  bundledSourceRootPath: string,
+): ApplicationPackageSourceRecord => ({
   packageId: BUILT_IN_APPLICATION_PACKAGE_ID,
-  displayName: "Built-in Applications",
-  path: rootPath,
+  displayName: "Platform Applications",
+  rootPath,
   sourceKind: "BUILT_IN",
-  source: rootPath,
+  source: bundledSourceRootPath,
   ...buildApplicationPackageSummary(rootPath),
-  isDefault: true,
+  isPlatformOwned: true,
   isRemovable: false,
-  managedInstallPath: null,
+  managedInstallPath: rootPath,
+  bundledSourceRootPath,
 });
 
-const mapLocalPackage = (
+const mapLocalPackageRecord = (
   rootPath: string,
   record?: ApplicationPackageRecord | null,
-): ApplicationPackage => ({
+): ApplicationPackageSourceRecord => ({
   packageId: record?.packageId ?? buildLocalApplicationPackageId(rootPath),
   displayName: getLocalPackageDisplayName(rootPath),
-  path: rootPath,
+  rootPath,
   sourceKind: LOCAL_PATH_SOURCE_KIND,
   source: record?.source ?? rootPath,
   ...buildApplicationPackageSummary(rootPath),
-  isDefault: false,
+  isPlatformOwned: false,
   isRemovable: true,
   managedInstallPath: null,
+  bundledSourceRootPath: null,
 });
 
-const mapGitHubPackage = (record: ApplicationPackageRecord): ApplicationPackage => ({
+const mapGitHubPackageRecord = (
+  record: ApplicationPackageRecord,
+): ApplicationPackageSourceRecord => ({
   packageId: record.packageId,
   displayName: getGitHubPackageDisplayName(record),
-  path: record.rootPath,
+  rootPath: record.rootPath,
   sourceKind: GITHUB_SOURCE_KIND,
   source: record.source,
   ...buildApplicationPackageSummary(record.rootPath),
-  isDefault: false,
+  isPlatformOwned: false,
   isRemovable: true,
   managedInstallPath: record.managedInstallPath,
+  bundledSourceRootPath: null,
+});
+
+const buildSourceSummary = (
+  record: ApplicationPackageSourceRecord,
+): string | null => {
+  switch (record.sourceKind) {
+    case "BUILT_IN":
+      return PLATFORM_SOURCE_SUMMARY;
+    case "LOCAL_PATH":
+      return record.rootPath;
+    case "GITHUB_REPOSITORY":
+      return record.source;
+    default:
+      return null;
+  }
+};
+
+const toListItem = (
+  record: ApplicationPackageSourceRecord,
+): ApplicationPackageListItem => ({
+  packageId: record.packageId,
+  displayName: record.displayName,
+  sourceKind: record.sourceKind,
+  sourceSummary: buildSourceSummary(record),
+  applicationCount: record.applicationCount,
+  isPlatformOwned: record.isPlatformOwned,
+  isRemovable: record.isRemovable,
+});
+
+const toDebugDetails = (
+  record: ApplicationPackageSourceRecord,
+): ApplicationPackageDebugDetails => ({
+  ...record,
+  sourceSummary: buildSourceSummary(record),
 });
 
 export class ApplicationPackageService {
@@ -106,6 +157,7 @@ export class ApplicationPackageService {
   private readonly installer: GitHubApplicationPackageInstaller;
   private readonly refreshApplicationBundles: RefreshBundlesFn;
   private readonly validateApplicationPackageContents: (packageRoot: string) => Promise<void>;
+  private readonly injectedBuiltInMaterializer?: BuiltInMaterializerLike;
 
   constructor(dependencies: {
     rootSettingsStore?: ApplicationPackageRootSettingsStore;
@@ -113,6 +165,7 @@ export class ApplicationPackageService {
     installer?: GitHubApplicationPackageInstaller;
     refreshApplicationBundles?: RefreshBundlesFn;
     validateApplicationPackageContents?: (packageRoot: string) => Promise<void>;
+    builtInMaterializer?: BuiltInMaterializerLike;
   } = {}) {
     this.rootSettingsStore =
       dependencies.rootSettingsStore ?? new ApplicationPackageRootSettingsStore();
@@ -126,36 +179,31 @@ export class ApplicationPackageService {
     this.validateApplicationPackageContents =
       dependencies.validateApplicationPackageContents ??
       ((packageRoot) => ApplicationBundleService.getInstance().validatePackageRoot(packageRoot));
+    this.injectedBuiltInMaterializer = dependencies.builtInMaterializer;
   }
 
-  async listApplicationPackages(): Promise<ApplicationPackage[]> {
-    const builtInRootPath = this.rootSettingsStore.getBuiltInRootPath();
-    const additionalRootPaths = this.rootSettingsStore.listAdditionalRootPaths();
-    const records = await this.registryStore.listPackageRecords();
-
-    const recordByRootPath = new Map<string, ApplicationPackageRecord>();
-    for (const record of records) {
-      recordByRootPath.set(path.resolve(record.rootPath), record);
-    }
-
-    const packages: ApplicationPackage[] = [mapBuiltInPackage(builtInRootPath)];
-
-    for (const rootPath of additionalRootPaths) {
-      const resolvedRootPath = path.resolve(rootPath);
-      const record = recordByRootPath.get(resolvedRootPath);
-
-      if (record?.sourceKind === GITHUB_SOURCE_KIND) {
-        packages.push(mapGitHubPackage(record));
-        continue;
-      }
-
-      packages.push(mapLocalPackage(resolvedRootPath, record));
-    }
-
-    return this.sortPackageEntries(packages);
+  private get builtInMaterializer(): BuiltInMaterializerLike {
+    return this.injectedBuiltInMaterializer
+      ?? BuiltInApplicationPackageMaterializer.getInstance();
   }
 
-  async importApplicationPackage(input: ApplicationPackageImportInput): Promise<ApplicationPackage[]> {
+  async listApplicationPackages(): Promise<ApplicationPackageListItem[]> {
+    const records = await this.listSourceRecords();
+    return records
+      .filter((record) => !record.isPlatformOwned || record.applicationCount > 0)
+      .map(toListItem);
+  }
+
+  async getApplicationPackageDetails(
+    packageId: string,
+  ): Promise<ApplicationPackageDebugDetails | null> {
+    const targetPackage = await this.findSourceRecordById(packageId.trim());
+    return targetPackage ? toDebugDetails(targetPackage) : null;
+  }
+
+  async importApplicationPackage(
+    input: ApplicationPackageImportInput,
+  ): Promise<ApplicationPackageListItem[]> {
     const source = input.source.trim();
     if (!source) {
       throw new Error("Application package import source cannot be empty.");
@@ -171,13 +219,13 @@ export class ApplicationPackageService {
     throw new Error(`Unsupported application package source kind: ${input.sourceKind}`);
   }
 
-  async removeApplicationPackage(packageId: string): Promise<ApplicationPackage[]> {
+  async removeApplicationPackage(packageId: string): Promise<ApplicationPackageListItem[]> {
     const normalizedPackageId = packageId.trim();
     if (!normalizedPackageId) {
       throw new Error("Application package id cannot be empty.");
     }
 
-    const targetPackage = await this.findPackageById(normalizedPackageId);
+    const targetPackage = await this.findSourceRecordById(normalizedPackageId);
     if (!targetPackage) {
       throw new Error(`Application package not found: ${normalizedPackageId}`);
     }
@@ -187,7 +235,7 @@ export class ApplicationPackageService {
 
     const existingRecord = await this.registryStore.findPackageById(normalizedPackageId);
 
-    this.rootSettingsStore.removeAdditionalRootPath(targetPackage.path);
+    this.rootSettingsStore.removeAdditionalRootPath(targetPackage.rootPath);
 
     try {
       await this.registryStore.removePackageRecord(normalizedPackageId);
@@ -205,17 +253,52 @@ export class ApplicationPackageService {
 
       return this.listApplicationPackages();
     } catch (error) {
-      this.safeAddAdditionalRootPath(targetPackage.path);
+      this.safeAddAdditionalRootPath(targetPackage.rootPath);
       await this.restorePackageRecord(existingRecord);
       await this.refreshApplicationBundles().catch(() => undefined);
       throw error;
     }
   }
 
-  private async importLocalPathPackage(source: string): Promise<ApplicationPackage[]> {
+  private async listSourceRecords(): Promise<ApplicationPackageSourceRecord[]> {
+    await this.builtInMaterializer.ensureMaterialized();
+
+    const builtInRootPath = this.rootSettingsStore.getBuiltInRootPath();
+    const bundledSourceRootPath = this.builtInMaterializer.getBundledSourceRootPath();
+    const additionalRootPaths = this.rootSettingsStore.listAdditionalRootPaths();
+    const records = await this.registryStore.listPackageRecords();
+
+    const recordByRootPath = new Map<string, ApplicationPackageRecord>();
+    for (const record of records) {
+      recordByRootPath.set(path.resolve(record.rootPath), record);
+    }
+
+    const packages: ApplicationPackageSourceRecord[] = [
+      mapBuiltInPackageRecord(builtInRootPath, bundledSourceRootPath),
+    ];
+
+    for (const rootPath of additionalRootPaths) {
+      const resolvedRootPath = path.resolve(rootPath);
+      const record = recordByRootPath.get(resolvedRootPath);
+
+      if (record?.sourceKind === GITHUB_SOURCE_KIND) {
+        packages.push(mapGitHubPackageRecord(record));
+        continue;
+      }
+
+      packages.push(mapLocalPackageRecord(resolvedRootPath, record));
+    }
+
+    return this.sortSourceRecords(packages);
+  }
+
+  private async importLocalPathPackage(source: string): Promise<ApplicationPackageListItem[]> {
     const resolvedPath = validateApplicationPackageRoot(source);
     if (resolvedPath === this.rootSettingsStore.getBuiltInRootPath()) {
       throw new Error("Path is already the built-in application package root.");
+    }
+    if (resolvedPath === this.builtInMaterializer.getBundledSourceRootPath()) {
+      throw new Error("Path is already the bundled platform application source root.");
     }
 
     await this.validateApplicationPackageContents(resolvedPath);
@@ -235,7 +318,7 @@ export class ApplicationPackageService {
     }
   }
 
-  private async importGitHubPackage(source: string): Promise<ApplicationPackage[]> {
+  private async importGitHubPackage(source: string): Promise<ApplicationPackageListItem[]> {
     const repositorySource = normalizeGitHubRepositorySource(source);
     const existingPackage = await this.registryStore.findGitHubPackageBySource(
       repositorySource.normalizedRepository,
@@ -288,17 +371,21 @@ export class ApplicationPackageService {
     }
   }
 
-  private async findPackageById(packageId: string): Promise<ApplicationPackage | null> {
-    const packages = await this.listApplicationPackages();
+  private async findSourceRecordById(
+    packageId: string,
+  ): Promise<ApplicationPackageSourceRecord | null> {
+    const packages = await this.listSourceRecords();
     return packages.find((entry) => entry.packageId === packageId) ?? null;
   }
 
-  private sortPackageEntries(packages: ApplicationPackage[]): ApplicationPackage[] {
+  private sortSourceRecords(
+    packages: ApplicationPackageSourceRecord[],
+  ): ApplicationPackageSourceRecord[] {
     return [...packages].sort((left, right) => {
-      if (left.isDefault) {
+      if (left.isPlatformOwned) {
         return -1;
       }
-      if (right.isDefault) {
+      if (right.isPlatformOwned) {
         return 1;
       }
 
@@ -307,7 +394,7 @@ export class ApplicationPackageService {
         return displayCompare;
       }
 
-      return left.path.localeCompare(right.path);
+      return left.rootPath.localeCompare(right.rootPath);
     });
   }
 

@@ -1,11 +1,13 @@
 import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
+import { resolveBundledApplicationResourceRoot } from "../../application-bundles/utils/bundled-application-resource-root.js";
 import { getServerSettingsService } from "../../services/server-settings-service.js";
-import { resolveBuiltInApplicationPackageRoot } from "../../application-bundles/utils/built-in-application-package-root.js";
+import { getManagedBuiltInApplicationPackageRoot } from "../utils/managed-built-in-application-package-root.js";
 
 type AppConfigLike = {
+  getAppDataDir(): string;
   getAdditionalApplicationPackageRoots(): string[];
-  getAppRootDir(): string;
+  getAppRootDir?: () => string;
   get(key: string, defaultValue?: string): string | undefined;
 };
 
@@ -46,17 +48,30 @@ export class ApplicationPackageRootSettingsStore {
   ) {}
 
   getBuiltInRootPath(): string {
-    return resolveBuiltInApplicationPackageRoot(this.config.getAppRootDir());
+    return getManagedBuiltInApplicationPackageRoot(this.config.getAppDataDir());
+  }
+
+  private getBundledSourceRootPath(): string | null {
+    if (typeof this.config.getAppRootDir !== "function") {
+      return null;
+    }
+
+    return resolveBundledApplicationResourceRoot(this.config.getAppRootDir());
   }
 
   listAdditionalRootPaths(): string[] {
     const seen = new Set<string>();
     const roots: string[] = [];
     const builtInRootPath = this.getBuiltInRootPath();
+    const bundledSourceRootPath = this.getBundledSourceRootPath();
 
     for (const rootPath of this.config.getAdditionalApplicationPackageRoots()) {
       const resolved = path.resolve(rootPath);
-      if (resolved === builtInRootPath || seen.has(resolved)) {
+      if (
+        resolved === builtInRootPath
+        || resolved === bundledSourceRootPath
+        || seen.has(resolved)
+      ) {
         continue;
       }
       seen.add(resolved);
@@ -71,6 +86,11 @@ export class ApplicationPackageRootSettingsStore {
     if (resolved === this.getBuiltInRootPath()) {
       throw new Error(
         "The built-in applications root cannot be registered as an additional application package root.",
+      );
+    }
+    if (resolved === this.getBundledSourceRootPath()) {
+      throw new Error(
+        "The bundled platform applications source root cannot be registered as an additional application package root.",
       );
     }
 

@@ -17,7 +17,6 @@ import {
 import {
   parseApplicationBackendManifest,
 } from "../utils/application-backend-manifest.js";
-import { resolveBuiltInApplicationPackageRoot } from "../utils/built-in-application-package-root.js";
 import {
   buildCanonicalApplicationId,
   buildCanonicalApplicationOwnedAgentId,
@@ -154,7 +153,7 @@ export class FileApplicationBundleProvider {
   private async listBundleRoots(): Promise<BundleRootDescriptor[]> {
     const seen = new Set<string>();
     const bundleRoots: BundleRootDescriptor[] = [];
-    const builtInApplicationRootPath = resolveBuiltInApplicationPackageRoot(this.config.getAppRootDir());
+    const builtInApplicationRootPath = this.rootSettingsStore.getBuiltInRootPath();
 
     const addRoot = (packageId: string, packageRootPath: string): void => {
       const resolvedPath = path.resolve(packageRootPath);

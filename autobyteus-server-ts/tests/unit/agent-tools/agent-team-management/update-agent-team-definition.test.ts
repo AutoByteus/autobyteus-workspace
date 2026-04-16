@@ -36,6 +36,7 @@ describe("updateAgentTeamDefinitionTool", () => {
     expect(updateDataArg).toBeInstanceOf(AgentTeamDefinitionUpdate);
     expect(updateDataArg.description).toBe("New Description");
     expect(updateDataArg.name).toBeNull();
+    expect(updateDataArg.defaultLaunchConfig).toBeUndefined();
     expect(result).toContain("updated successfully");
   });
 

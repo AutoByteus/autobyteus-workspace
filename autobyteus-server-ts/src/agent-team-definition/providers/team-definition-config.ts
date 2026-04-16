@@ -1,4 +1,6 @@
 import type { AgentTeamDefinition, TeamMemberRefScope } from "../domain/models.js";
+import type { DefaultLaunchConfig } from "../../launch-preferences/default-launch-config.js";
+import { normalizeDefaultLaunchConfig } from "../../launch-preferences/default-launch-config.js";
 
 export type TeamConfigMember = {
   memberName: string;
@@ -11,6 +13,7 @@ export type TeamConfigRecord = {
   coordinatorMemberName?: string;
   members?: TeamConfigMember[];
   avatarUrl?: string | null;
+  defaultLaunchConfig?: DefaultLaunchConfig | null;
 };
 
 export class TeamConfigParseError extends Error {
@@ -70,11 +73,23 @@ export const defaultTeamConfig = (): TeamConfigRecord => ({
   coordinatorMemberName: "",
   members: [],
   avatarUrl: null,
+  defaultLaunchConfig: null,
+});
+
+export const normalizeTeamConfigRecord = (
+  value: TeamConfigRecord | Record<string, unknown> | null | undefined,
+): TeamConfigRecord => ({
+  coordinatorMemberName:
+    typeof value?.coordinatorMemberName === "string" ? value.coordinatorMemberName : "",
+  members: normalizeMembers(value?.members),
+  avatarUrl: typeof value?.avatarUrl === "string" ? value.avatarUrl : null,
+  defaultLaunchConfig: normalizeDefaultLaunchConfig(value?.defaultLaunchConfig),
 });
 
 export const buildTeamConfigRecord = (domainObj: AgentTeamDefinition): TeamConfigRecord => ({
   coordinatorMemberName: domainObj.coordinatorMemberName,
   avatarUrl: domainObj.avatarUrl ?? null,
+  defaultLaunchConfig: domainObj.defaultLaunchConfig ?? null,
   members: domainObj.nodes.map((member) => ({
     memberName: member.memberName,
     ref: member.ref,

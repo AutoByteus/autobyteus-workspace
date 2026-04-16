@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { FileApplicationBundleProvider } from "../../../src/application-bundles/providers/file-application-bundle-provider.js";
+import { BUILT_IN_APPLICATION_PACKAGE_ID, FileApplicationBundleProvider } from "../../../src/application-bundles/providers/file-application-bundle-provider.js";
 import { GitHubApplicationPackageInstaller } from "../../../src/application-packages/installers/github-application-package-installer.js";
 import { ApplicationPackageService } from "../../../src/application-packages/services/application-package-service.js";
 import { ApplicationPackageRegistryStore } from "../../../src/application-packages/stores/application-package-registry-store.js";
@@ -22,11 +22,11 @@ const parseAdditionalRoots = (): string[] => {
     .map((entry) => path.resolve(entry));
 };
 
-const createRootSettingsStore = (serverRoot: string): ApplicationPackageRootSettingsStore =>
+const createRootSettingsStore = (appDataRoot: string): ApplicationPackageRootSettingsStore =>
   new ApplicationPackageRootSettingsStore(
     {
+      getAppDataDir: () => appDataRoot,
       getAdditionalApplicationPackageRoots: () => parseAdditionalRoots(),
-      getAppRootDir: () => serverRoot,
       get: (key: string, defaultValue?: string) =>
         process.env[key] ?? defaultValue,
     },
@@ -41,6 +41,11 @@ const createRootSettingsStore = (serverRoot: string): ApplicationPackageRootSett
       },
     },
   );
+
+const createBuiltInMaterializer = (bundledSourceRootPath: string) => ({
+  ensureMaterialized: async () => undefined,
+  getBundledSourceRootPath: () => path.resolve(bundledSourceRootPath),
+});
 
 const writeApplicationBundle = async (packageRoot: string, applicationId: string): Promise<void> => {
   const bundleRoot = path.join(packageRoot, "applications", applicationId);
@@ -88,26 +93,29 @@ describe("ApplicationPackageService", () => {
     delete process.env.AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS;
   });
 
-  it("lists the built-in applications root and linked local application package roots", async () => {
+  it("lists safe package rows and exposes details through the debug details lookup", async () => {
     const repoRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-repo-"));
-    const serverRoot = path.join(repoRoot, "autobyteus-server-ts");
+    const appDataRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-app-data-"));
     const registryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-registry-"));
     const localRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-local-"));
 
     cleanupPaths.add(repoRoot);
+    cleanupPaths.add(appDataRoot);
     cleanupPaths.add(registryRoot);
     cleanupPaths.add(localRoot);
 
-    await fs.mkdir(path.join(repoRoot, "applications"), { recursive: true });
-    await fs.mkdir(serverRoot, { recursive: true });
-    await writeApplicationBundle(repoRoot, "built-in-app");
+    const rootSettingsStore = createRootSettingsStore(appDataRoot);
+    const builtInRoot = rootSettingsStore.getBuiltInRootPath();
+
+    await writeApplicationBundle(builtInRoot, "built-in-app");
     await writeApplicationBundle(localRoot, "linked-app");
 
     const service = new ApplicationPackageService({
-      rootSettingsStore: createRootSettingsStore(serverRoot),
+      rootSettingsStore,
       registryStore: new ApplicationPackageRegistryStore({ getAppDataDir: () => registryRoot }),
       refreshApplicationBundles: async () => undefined,
       validateApplicationPackageContents: async () => undefined,
+      builtInMaterializer: createBuiltInMaterializer(repoRoot),
     });
 
     await service.importApplicationPackage({
@@ -117,26 +125,66 @@ describe("ApplicationPackageService", () => {
 
     const packages = await service.listApplicationPackages();
     expect(packages[0]).toMatchObject({
-      packageId: "built-in:applications",
+      packageId: BUILT_IN_APPLICATION_PACKAGE_ID,
+      displayName: "Platform Applications",
       sourceKind: "BUILT_IN",
+      sourceSummary: "Managed by AutoByteus",
+      isPlatformOwned: true,
       isRemovable: false,
       applicationCount: 1,
     });
-    expect(packages.some((entry) => entry.path === localRoot)).toBe(true);
+
+    const linkedPackage = packages.find((entry) => (
+      entry.packageId !== BUILT_IN_APPLICATION_PACKAGE_ID
+      && entry.sourceSummary === path.resolve(localRoot)
+    ));
+    expect(linkedPackage).toMatchObject({
+      sourceKind: "LOCAL_PATH",
+      isPlatformOwned: false,
+      isRemovable: true,
+      applicationCount: 1,
+    });
+
+    const builtInDetails = await service.getApplicationPackageDetails(BUILT_IN_APPLICATION_PACKAGE_ID);
+    expect(builtInDetails).toMatchObject({
+      packageId: BUILT_IN_APPLICATION_PACKAGE_ID,
+      rootPath: path.resolve(builtInRoot),
+      source: path.resolve(repoRoot),
+      managedInstallPath: path.resolve(builtInRoot),
+      bundledSourceRootPath: path.resolve(repoRoot),
+      sourceSummary: "Managed by AutoByteus",
+      isPlatformOwned: true,
+      isRemovable: false,
+      applicationCount: 1,
+    });
+
+    const linkedDetails = await service.getApplicationPackageDetails(linkedPackage?.packageId ?? "");
+    expect(linkedDetails).toMatchObject({
+      packageId: linkedPackage?.packageId,
+      rootPath: path.resolve(localRoot),
+      source: path.resolve(localRoot),
+      managedInstallPath: null,
+      bundledSourceRootPath: null,
+      sourceSummary: path.resolve(localRoot),
+      isPlatformOwned: false,
+      isRemovable: true,
+      applicationCount: 1,
+    });
   });
 
   it("rejects duplicate GitHub imports before reinstalling", async () => {
     const repoRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-repo-"));
-    const serverRoot = path.join(repoRoot, "autobyteus-server-ts");
+    const appDataRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-app-data-"));
     const registryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-registry-"));
     const managedRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-managed-"));
 
     cleanupPaths.add(repoRoot);
+    cleanupPaths.add(appDataRoot);
     cleanupPaths.add(registryRoot);
     cleanupPaths.add(managedRoot);
 
-    await fs.mkdir(path.join(repoRoot, "applications"), { recursive: true });
-    await fs.mkdir(serverRoot, { recursive: true });
+    const rootSettingsStore = createRootSettingsStore(appDataRoot);
+    await writeApplicationBundle(rootSettingsStore.getBuiltInRootPath(), "built-in-app");
 
     class MockInstaller extends GitHubApplicationPackageInstaller {
       override getManagedInstallDir(installKey: string): string {
@@ -159,11 +207,12 @@ describe("ApplicationPackageService", () => {
     }
 
     const service = new ApplicationPackageService({
-      rootSettingsStore: createRootSettingsStore(serverRoot),
+      rootSettingsStore,
       registryStore: new ApplicationPackageRegistryStore({ getAppDataDir: () => registryRoot }),
       installer: new MockInstaller(),
       refreshApplicationBundles: async () => undefined,
       validateApplicationPackageContents: async () => undefined,
+      builtInMaterializer: createBuiltInMaterializer(repoRoot),
     });
 
     await service.importApplicationPackage({
@@ -181,16 +230,15 @@ describe("ApplicationPackageService", () => {
 
   it("fails local package import before registration when an application-owned agent definition is malformed", async () => {
     const repoRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-repo-"));
-    const serverRoot = path.join(repoRoot, "autobyteus-server-ts");
+    const appDataRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-app-data-"));
     const registryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-registry-"));
     const invalidRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-invalid-"));
 
     cleanupPaths.add(repoRoot);
+    cleanupPaths.add(appDataRoot);
     cleanupPaths.add(registryRoot);
     cleanupPaths.add(invalidRoot);
 
-    await fs.mkdir(path.join(repoRoot, "applications"), { recursive: true });
-    await fs.mkdir(serverRoot, { recursive: true });
     await writeApplicationBundle(invalidRoot, "broken-app");
     await fs.writeFile(
       path.join(invalidRoot, "applications", "broken-app", "agents", "sample-agent", "agent.md"),
@@ -198,11 +246,11 @@ describe("ApplicationPackageService", () => {
       "utf-8",
     );
 
-    const rootSettingsStore = createRootSettingsStore(serverRoot);
+    const rootSettingsStore = createRootSettingsStore(appDataRoot);
     const registryStore = new ApplicationPackageRegistryStore({ getAppDataDir: () => registryRoot });
     const validatingProvider = new FileApplicationBundleProvider(
       {
-        getAppRootDir: () => serverRoot,
+        getAppRootDir: () => repoRoot,
       } as never,
       rootSettingsStore as never,
       registryStore as never,
@@ -217,6 +265,7 @@ describe("ApplicationPackageService", () => {
           packageRoot,
           `local:${path.basename(packageRoot)}`,
         ),
+      builtInMaterializer: createBuiltInMaterializer(repoRoot),
     });
 
     await expect(
@@ -225,6 +274,39 @@ describe("ApplicationPackageService", () => {
         source: invalidRoot,
       }),
     ).rejects.toThrow("agent.md must start with '---' frontmatter delimiter");
+
+    expect(rootSettingsStore.listAdditionalRootPaths()).toEqual([]);
+    expect(await registryStore.listPackageRecords()).toEqual([]);
+  });
+
+  it("rejects importing the bundled platform source root as a linked local package", async () => {
+    const repoRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-repo-"));
+    const appDataRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-app-data-"));
+    const registryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-registry-"));
+
+    cleanupPaths.add(repoRoot);
+    cleanupPaths.add(appDataRoot);
+    cleanupPaths.add(registryRoot);
+    await fs.mkdir(path.join(repoRoot, "applications"), { recursive: true });
+
+    const rootSettingsStore = createRootSettingsStore(appDataRoot);
+    const registryStore = new ApplicationPackageRegistryStore({ getAppDataDir: () => registryRoot });
+    const builtInMaterializer = createBuiltInMaterializer(repoRoot);
+
+    const service = new ApplicationPackageService({
+      rootSettingsStore,
+      registryStore,
+      refreshApplicationBundles: async () => undefined,
+      validateApplicationPackageContents: async () => undefined,
+      builtInMaterializer,
+    });
+
+    await expect(
+      service.importApplicationPackage({
+        sourceKind: "LOCAL_PATH",
+        source: builtInMaterializer.getBundledSourceRootPath(),
+      }),
+    ).rejects.toThrow("bundled platform application source root");
 
     expect(rootSettingsStore.listAdditionalRootPaths()).toEqual([]);
     expect(await registryStore.listPackageRecords()).toEqual([]);

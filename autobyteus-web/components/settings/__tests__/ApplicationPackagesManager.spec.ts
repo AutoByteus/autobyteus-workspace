@@ -19,25 +19,38 @@ const mountComponent = async () => {
         applicationPackages: [
           {
             packageId: 'built-in:applications',
-            displayName: 'Built-in Applications',
-            path: '/repo/root',
+            displayName: 'Platform Applications',
             sourceKind: 'BUILT_IN',
-            source: '/repo/root',
+            sourceSummary: 'Managed by AutoByteus',
             applicationCount: 2,
-            isDefault: true,
+            isPlatformOwned: true,
             isRemovable: false,
           },
           {
             packageId: 'application-local:%2Fcustom%2Froot',
             displayName: 'custom',
-            path: '/custom/root',
             sourceKind: 'LOCAL_PATH',
-            source: '/custom/root',
+            sourceSummary: '/custom/root',
             applicationCount: 1,
-            isDefault: false,
+            isPlatformOwned: false,
             isRemovable: true,
           },
         ],
+        detailsByPackageId: {
+          'built-in:applications': {
+            packageId: 'built-in:applications',
+            displayName: 'Platform Applications',
+            sourceKind: 'BUILT_IN',
+            sourceSummary: 'Managed by AutoByteus',
+            applicationCount: 2,
+            isPlatformOwned: true,
+            isRemovable: false,
+            rootPath: '/managed/platform',
+            source: '/bundle/resources',
+            managedInstallPath: '/managed/platform',
+            bundledSourceRootPath: '/bundle/resources',
+          },
+        },
         loading: false,
         error: '',
       },
@@ -47,6 +60,7 @@ const mountComponent = async () => {
 
   const store = useApplicationPackagesStore()
   store.fetchApplicationPackages = vi.fn().mockResolvedValue(undefined)
+  store.fetchApplicationPackageDetails = vi.fn().mockResolvedValue(null)
   store.importApplicationPackage = vi.fn().mockResolvedValue(undefined)
   store.removeApplicationPackage = vi.fn().mockResolvedValue(undefined)
   store.clearError = vi.fn()
@@ -54,6 +68,33 @@ const mountComponent = async () => {
   const wrapper = mount(ApplicationPackagesManager, {
     global: {
       plugins: [pinia],
+      mocks: {
+        $t: (key: string, params?: Record<string, unknown>) => {
+          if (key === 'settings.components.settings.ApplicationPackagesManager.applicationsCount') {
+            return `Applications: ${String(params?.count ?? '')}`
+          }
+          const messages: Record<string, string> = {
+            'settings.components.settings.ApplicationPackagesManager.title': 'Application Packages',
+            'settings.components.settings.ApplicationPackagesManager.description': 'Description',
+            'settings.components.settings.ApplicationPackagesManager.platformOwned': 'Platform-owned',
+            'settings.components.settings.ApplicationPackagesManager.showDetails': 'Show details',
+            'settings.components.settings.ApplicationPackagesManager.hideDetails': 'Hide details',
+            'settings.components.settings.ApplicationPackagesManager.remove': 'Remove',
+            'settings.components.settings.ApplicationPackagesManager.loadingDetails': 'Loading details...',
+            'settings.components.settings.ApplicationPackagesManager.noDetails': 'No details',
+            'settings.components.settings.ApplicationPackagesManager.emptyState': 'Empty',
+            'settings.components.settings.ApplicationPackagesManager.packagePathOrGithubUrl': 'Package path or GitHub URL',
+            'settings.components.settings.ApplicationPackagesManager.importPlaceholder': '/path or url',
+            'settings.components.settings.ApplicationPackagesManager.working': 'Working...',
+            'settings.components.settings.ApplicationPackagesManager.importPackage': 'Import Package',
+            'settings.components.settings.ApplicationPackagesManager.details.rootPath': 'Root path',
+            'settings.components.settings.ApplicationPackagesManager.details.source': 'Source',
+            'settings.components.settings.ApplicationPackagesManager.details.managedInstallPath': 'Managed install path',
+            'settings.components.settings.ApplicationPackagesManager.details.bundledSourceRootPath': 'Bundled source root',
+          }
+          return messages[key] ?? key
+        },
+      },
     },
   })
   await flushPromises()
@@ -65,7 +106,7 @@ describe('ApplicationPackagesManager', () => {
     vi.clearAllMocks()
   })
 
-  it('loads sources on mount', async () => {
+  it('loads packages on mount', async () => {
     const { store } = await mountComponent()
     expect(store.fetchApplicationPackages).toHaveBeenCalledTimes(1)
   })
@@ -97,12 +138,24 @@ describe('ApplicationPackagesManager', () => {
     })
   })
 
+  it('loads details lazily for packages that are not cached yet', async () => {
+    const { wrapper, store } = await mountComponent()
+
+    const detailButtons = wrapper.findAll('button').filter((entry) => entry.text() === 'Show details')
+    expect(detailButtons.length).toBeGreaterThan(1)
+
+    await detailButtons[1]!.trigger('click')
+    await flushPromises()
+
+    expect(store.fetchApplicationPackageDetails).toHaveBeenCalledWith('application-local:%2Fcustom%2Froot')
+  })
+
   it('removes a custom package entry by package id', async () => {
     const { wrapper, store } = await mountComponent()
 
     const removeButtons = wrapper.findAll('button').filter((entry) => entry.text() === 'Remove')
     expect(removeButtons.length).toBeGreaterThan(0)
-    await removeButtons[0].trigger('click')
+    await removeButtons[0]!.trigger('click')
     await flushPromises()
 
     expect(store.removeApplicationPackage).toHaveBeenCalledWith('application-local:%2Fcustom%2Froot')

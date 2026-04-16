@@ -99,7 +99,7 @@
           <h2 class="text-lg font-semibold text-slate-900">{{ $t('agentTeams.components.agentTeams.AgentTeamDetail.descriptionHeading') }}</h2>
           <p class="mt-2 whitespace-pre-wrap text-sm text-slate-700">{{ teamDef.description }}</p>
 
-          <div class="mt-4 grid grid-cols-1 gap-4 border-t border-slate-200 pt-4 text-sm text-slate-700 sm:grid-cols-2">
+          <div class="mt-4 grid grid-cols-1 gap-4 border-t border-slate-200 pt-4 text-sm text-slate-700 sm:grid-cols-2 xl:grid-cols-4">
             <div>
               <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ $t('agentTeams.components.agentTeams.AgentTeamCard.coordinator') }}</p>
               <p class="mt-1">{{ teamDef.coordinatorMemberName || $t('agentTeams.components.agentTeams.AgentTeamDetail.notAssigned') }}</p>
@@ -107,6 +107,14 @@
             <div>
               <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ $t('agentTeams.components.agentTeams.AgentTeamDetail.composition_summary') }}</p>
               <p class="mt-1">{{ $t('agentTeams.components.agentTeams.AgentTeamDetail.compositionSummaryValue', { agents: agentCount, teams: nestedTeamCount }) }}</p>
+            </div>
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ $t('agents.components.agents.AgentDetail.defaultRuntime') }}</p>
+              <p class="mt-1">{{ teamDef.defaultLaunchConfig?.runtimeKind || $t('agents.components.agents.AgentDetail.notSet') }}</p>
+            </div>
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ $t('agents.components.agents.AgentDetail.defaultModel') }}</p>
+              <p class="mt-1 break-all">{{ teamDef.defaultLaunchConfig?.llmModelIdentifier || $t('agents.components.agents.AgentDetail.notSet') }}</p>
             </div>
           </div>
         </section>

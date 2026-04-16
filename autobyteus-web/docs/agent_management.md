@@ -14,7 +14,8 @@ For live execution/session behavior beyond definition management, see `agent_exe
 - `components/agents/AgentDetail.vue`
 - `components/agents/AgentEdit.vue`
 - `components/agents/AgentDefinitionForm.vue`
-- `components/agents/AgentDefaultLaunchConfigFields.vue`
+- `components/launch-config/DefinitionLaunchPreferencesSection.vue`
+- `components/launch-config/RuntimeModelConfigFields.vue`
 - `utils/definitionOwnership.ts`
 
 ## Agent Definition Model
@@ -46,14 +47,14 @@ The list/detail/card surfaces show provenance badges and owner labels so users c
 
 ## Default Launch Config
 
-`AgentDefinitionForm.vue` now round-trips `defaultLaunchConfig` during create and update.
+`AgentDefinitionForm.vue` now round-trips `defaultLaunchConfig` during create and update through the shared `DefinitionLaunchPreferencesSection.vue` surface.
 
 Those values are used in two places:
 
 - direct native agent launches, and
 - application launch draft preparation through `applicationSessionStore`.
 
-Invalid JSON in the raw `llmConfig` editor is blocked in the form before submit.
+Definition editors can leave runtime blank to mean “choose when launching”, while run-config forms resolve to an effective runtime immediately.
 
 ## Store Ownership
 
