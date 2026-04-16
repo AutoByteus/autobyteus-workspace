@@ -10,6 +10,10 @@ class StubLayout {
   getFinalFilePath(): string {
     return this.resolvedFilePath;
   }
+
+  getDraftFilePath(): string {
+    return this.resolvedFilePath;
+  }
 }
 
 describe('ContextFileLocalPathResolver', () => {
@@ -34,7 +38,7 @@ describe('ContextFileLocalPathResolver', () => {
     ).toBe(filePath);
   });
 
-  it('ignores draft locators and non-local external URLs', async () => {
+  it('resolves draft locators but ignores non-local external URLs', async () => {
     const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'context-file-resolver-'));
     tempDirs.push(tempDir);
     const filePath = path.join(tempDir, 'ctx_token__notes.txt');
@@ -42,7 +46,10 @@ describe('ContextFileLocalPathResolver', () => {
 
     const resolver = new ContextFileLocalPathResolver(new StubLayout(filePath) as any);
 
-    expect(resolver.resolve('/rest/drafts/agent-runs/temp-run/context-files/ctx_token__notes.txt')).toBeNull();
+    expect(resolver.resolve('/rest/drafts/agent-runs/temp-run/context-files/ctx_token__notes.txt')).toBe(filePath);
+    expect(
+      resolver.resolve('/rest/drafts/team-runs/team-1/members/solution_designer/context-files/ctx_token__notes.txt'),
+    ).toBe(filePath);
     expect(resolver.resolve('https://example.com/rest/runs/run-1/context-files/ctx_token__notes.txt')).toBeNull();
   });
 });

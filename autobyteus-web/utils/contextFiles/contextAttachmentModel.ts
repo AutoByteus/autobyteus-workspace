@@ -3,13 +3,14 @@ import type {
   ContextAttachmentType,
   UploadedContextAttachment,
 } from '~/types/conversation';
+import type { DraftContextFileOwnerDescriptor } from '~/utils/contextFiles/contextFileOwner';
 
-const UPLOADED_DRAFT_AGENT_ROUTE = /^\/rest\/drafts\/agent-runs\/[^/]+\/context-files\/([^/?#]+)$/;
+const UPLOADED_DRAFT_AGENT_ROUTE = /^\/rest\/drafts\/agent-runs\/([^/]+)\/context-files\/([^/?#]+)$/;
 const UPLOADED_DRAFT_TEAM_ROUTE =
-  /^\/rest\/drafts\/team-runs\/[^/]+\/members\/[^/]+\/context-files\/([^/?#]+)$/;
-const UPLOADED_FINAL_AGENT_ROUTE = /^\/rest\/runs\/[^/]+\/context-files\/([^/?#]+)$/;
+  /^\/rest\/drafts\/team-runs\/([^/]+)\/members\/([^/]+)\/context-files\/([^/?#]+)$/;
+const UPLOADED_FINAL_AGENT_ROUTE = /^\/rest\/runs\/([^/]+)\/context-files\/([^/?#]+)$/;
 const UPLOADED_FINAL_TEAM_ROUTE =
-  /^\/rest\/team-runs\/[^/]+\/members\/[^/]+\/context-files\/([^/?#]+)$/;
+  /^\/rest\/team-runs\/([^/]+)\/members\/([^/]+)\/context-files\/([^/?#]+)$/;
 
 const hasScheme = (value: string): boolean => /^[a-zA-Z][a-zA-Z\d+.-]*:/.test(value);
 
@@ -43,22 +44,59 @@ const decodeStoredFilename = (encoded: string): string => {
   }
 };
 
+const decodePathSegment = (encoded: string): string => {
+  try {
+    return decodeURIComponent(encoded);
+  } catch {
+    return encoded;
+  }
+};
+
 const parseUploadedLocator = (
   locator: string,
-): { storedFilename: string; phase: 'draft' | 'final' } | null => {
+): {
+  storedFilename: string;
+  phase: 'draft' | 'final';
+  draftOwner?: DraftContextFileOwnerDescriptor;
+} | null => {
   const pathname = toPathname(locator);
-  const draftMatch = pathname.match(UPLOADED_DRAFT_AGENT_ROUTE) || pathname.match(UPLOADED_DRAFT_TEAM_ROUTE);
-  if (draftMatch?.[1]) {
+  const draftAgentMatch = pathname.match(UPLOADED_DRAFT_AGENT_ROUTE);
+  if (draftAgentMatch?.[1] && draftAgentMatch?.[2]) {
     return {
-      storedFilename: decodeStoredFilename(draftMatch[1]),
+      storedFilename: decodeStoredFilename(draftAgentMatch[2]),
       phase: 'draft',
+      draftOwner: {
+        kind: 'agent_draft',
+        draftRunId: decodePathSegment(draftAgentMatch[1]),
+      },
     };
   }
 
-  const finalMatch = pathname.match(UPLOADED_FINAL_AGENT_ROUTE) || pathname.match(UPLOADED_FINAL_TEAM_ROUTE);
-  if (finalMatch?.[1]) {
+  const draftTeamMatch = pathname.match(UPLOADED_DRAFT_TEAM_ROUTE);
+  if (draftTeamMatch?.[1] && draftTeamMatch?.[2] && draftTeamMatch?.[3]) {
     return {
-      storedFilename: decodeStoredFilename(finalMatch[1]),
+      storedFilename: decodeStoredFilename(draftTeamMatch[3]),
+      phase: 'draft',
+      draftOwner: {
+        kind: 'team_member_draft',
+        draftTeamRunId: decodePathSegment(draftTeamMatch[1]),
+        memberRouteKey: decodePathSegment(draftTeamMatch[2]),
+      },
+    };
+  }
+
+  const finalAgentMatch = pathname.match(UPLOADED_FINAL_AGENT_ROUTE);
+  if (finalAgentMatch?.[1] && finalAgentMatch?.[2]) {
+    return {
+      storedFilename: decodeStoredFilename(finalAgentMatch[2]),
+      phase: 'final',
+    };
+  }
+
+  const finalTeamMatch = pathname.match(UPLOADED_FINAL_TEAM_ROUTE);
+  if (finalTeamMatch?.[1] && finalTeamMatch?.[2] && finalTeamMatch?.[3]) {
+    return {
+      storedFilename: decodeStoredFilename(finalTeamMatch[3]),
       phase: 'final',
     };
   }
@@ -173,6 +211,20 @@ export const hydrateContextAttachment = (input: {
   return createWorkspaceContextAttachment(locator, type);
 };
 
+export const parseDraftUploadedContextAttachmentLocator = (
+  locator: string,
+): { storedFilename: string; owner: DraftContextFileOwnerDescriptor } | null => {
+  const parsed = parseUploadedLocator(locator);
+  if (!parsed?.draftOwner || parsed.phase !== 'draft') {
+    return null;
+  }
+
+  return {
+    storedFilename: parsed.storedFilename,
+    owner: parsed.draftOwner,
+  };
+};
+
 export const isUploadedContextAttachment = (
   attachment: ContextAttachment,
 ): attachment is UploadedContextAttachment => attachment.kind === 'uploaded';
@@ -181,6 +233,25 @@ export const isDraftUploadedContextAttachment = (
   attachment: ContextAttachment,
 ): attachment is UploadedContextAttachment =>
   attachment.kind === 'uploaded' && attachment.phase === 'draft';
+
+export const coerceDraftUploadedContextAttachment = (
+  attachment: ContextAttachment,
+): UploadedContextAttachment | null => {
+  const hydrated = hydrateContextAttachment({
+    locator: attachment.locator,
+    type: attachment.type,
+    displayName: attachment.displayName,
+  });
+  if (hydrated.kind !== 'uploaded' || hydrated.phase !== 'draft') {
+    return null;
+  }
+
+  return {
+    ...hydrated,
+    displayName: attachment.displayName || hydrated.displayName,
+    type: attachment.type,
+  };
+};
 
 export const isImageContextAttachment = (attachment: ContextAttachment): boolean => attachment.type === 'Image';
 

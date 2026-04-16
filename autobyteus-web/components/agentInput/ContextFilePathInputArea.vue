@@ -169,7 +169,10 @@ import type { AgentContext } from '~/types/agent/AgentContext';
 import type { TreeNode } from '~/utils/fileExplorer/TreeNode';
 import { getFilePathsFromFolder } from '~/utils/fileExplorer/fileUtils';
 import { getContextAttachmentIcon } from '~/utils/contextFiles/contextAttachmentIcons';
-import { buildAgentDraftContextFileOwner, buildTeamMemberDraftContextFileOwner } from '~/utils/contextFiles/contextFileOwner';
+import {
+  buildAgentDraftContextFileOwner,
+  buildTeamMemberDraftContextFileOwner,
+} from '~/utils/contextFiles/contextFileOwner';
 import FullScreenImageModal from '~/components/common/FullScreenImageModal.vue';
 
 const activeContextStore = useActiveContextStore();
@@ -233,6 +236,7 @@ const {
   displayedItems,
   thumbnailItems,
   regularItems,
+  appendLocatorAttachments,
   appendWorkspaceLocators,
   uploadFiles,
   openAttachment,
@@ -374,7 +378,7 @@ const onPaste = async (event: ClipboardEvent): Promise<void> => {
   }
 
   event.preventDefault();
-  appendWorkspaceLocators(pastedText.split(/\r?\n/), target);
+  await appendLocatorAttachments(pastedText.split(/\r?\n/), target);
   isContextListExpanded.value = true;
 };
 
