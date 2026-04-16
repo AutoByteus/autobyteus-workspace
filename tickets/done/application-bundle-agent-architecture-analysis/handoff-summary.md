@@ -38,10 +38,10 @@
 ## Verification Summary
 
 - Review report:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-agent-architecture-analysis-finalization/tickets/done/application-bundle-agent-architecture-analysis/review-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/application-bundle-agent-architecture-analysis/review-report.md`
   - latest authoritative result: `Pass` (round `19`)
 - Validation report:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-agent-architecture-analysis-finalization/tickets/done/application-bundle-agent-architecture-analysis/validation-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/application-bundle-agent-architecture-analysis/validation-report.md`
   - latest authoritative result: `Pass` (round `11`)
 - Executable evidence that passed:
   - `pnpm --dir /Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-agent-architecture-analysis-implementation/autobyteus-web exec nuxi prepare`
@@ -58,7 +58,7 @@
 ## Documentation Sync Summary
 
 - Docs sync artifact:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-agent-architecture-analysis-finalization/tickets/done/application-bundle-agent-architecture-analysis/docs-sync.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/application-bundle-agent-architecture-analysis/docs-sync.md`
 - Docs result: `Updated`
 - Docs updated:
   - `autobyteus-server-ts/docs/modules/applications.md`
@@ -96,7 +96,7 @@
 ## Finalization Record
 
 - Bootstrap / finalization target source:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-agent-architecture-analysis-finalization/tickets/done/application-bundle-agent-architecture-analysis/investigation-notes.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/application-bundle-agent-architecture-analysis/investigation-notes.md`
   - bootstrap base recorded there: `origin/personal`
   - expected finalization target there: `not yet determined`
 - Canonical implementation workspace path:
@@ -116,16 +116,16 @@
 - Target branch push:
   - `Pushed the merged target state to origin/personal.`
 - Worktree cleanup:
-  - `Dedicated ticket worktree was removed and worktree metadata was pruned after merge; the detached finalization worktree was retained intentionally because the local personal worktree had unrelated uncommitted changes.`
+  - `Dedicated ticket worktree was removed and worktree metadata was pruned after merge; the temporary detached finalization worktree was removed on 2026-04-16 after local personal became clean.`
 - Local branch cleanup:
   - `Local branch codex/application-bundle-agent-architecture-analysis-implementation was deleted after merge.`
 - Remote branch cleanup:
-  - `Remote ticket branch was retained.`
+  - `Remote ticket branch codex/application-bundle-agent-architecture-analysis-implementation was deleted from origin on 2026-04-16.`
 - Local merged checkout retained at:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-agent-architecture-analysis-finalization`
+  - `N/A; the temporary detached finalization worktree was removed on 2026-04-16.`
 - Release/publication:
   - `Not required by explicit user instruction.`
 - Ticket archived to:
   - `tickets/done/application-bundle-agent-architecture-analysis`
 - Delivery report artifact:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-agent-architecture-analysis-finalization/tickets/done/application-bundle-agent-architecture-analysis/release-deployment-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/application-bundle-agent-architecture-analysis/release-deployment-report.md`
