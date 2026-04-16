@@ -29,6 +29,12 @@ Defines team blueprints, nested-team graph metadata, ownership provenance, and t
 - Nested team members do not carry `refScope`.
 - Application-owned teams use canonical ids for embedded agent and team references.
 
+## Default Launch Preferences
+
+- Team definitions persist optional `defaultLaunchConfig` at the team config layer.
+- Shared teams and application-owned teams both parse and write that field through the same shared normalizer.
+- Those defaults seed direct team launches and application launches that target the team runtime.
+
 ## Authoritative Integrity Rules
 
 - Import-time bundle validation rejects application-owned teams whose members point outside the same owning application bundle.
@@ -41,3 +47,4 @@ Defines team blueprints, nested-team graph metadata, ownership provenance, and t
 - Application-owned teams can be edited in place when the owning bundle source is writable.
 - Application-owned teams are not created or deleted through the shared standalone provider path.
 - The team-definition service is the authoritative backend boundary for persistence-time integrity checks.
+- Read-only versus writable application-owned update boundaries remain source-authoritative; this module does not bypass bundle writability checks.

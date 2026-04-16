@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import type { AgentDefinition } from '~/stores/agentDefinitionStore';
+import { buildAgentRunTemplate } from '~/composables/useDefinitionLaunchDefaults';
 import { DEFAULT_AGENT_RUNTIME_KIND, type AgentRunConfig } from '~/types/agent/AgentRunConfig';
 
 /**
@@ -69,17 +70,7 @@ export const useAgentRunConfigStore = defineStore('agentRunConfig', {
      * Set the config from an agent definition (new run template).
      */
     setTemplate(agentDefinition: AgentDefinition) {
-      this.config = {
-        agentDefinitionId: agentDefinition.id,
-        agentDefinitionName: agentDefinition.name,
-        agentAvatarUrl: agentDefinition.avatarUrl ?? null,
-        llmModelIdentifier: '',
-        runtimeKind: DEFAULT_AGENT_RUNTIME_KIND,
-        workspaceId: null,
-        autoExecuteTools: false,
-        skillAccessMode: 'PRELOADED_ONLY',
-        isLocked: false,
-      };
+      this.config = buildAgentRunTemplate(agentDefinition);
       this.isPanelExpanded = true;
       this.hasFirstMessageSent = false;
       this.clearWorkspaceState();

@@ -209,6 +209,13 @@ const importedTeamDefinition = {
   description: 'Brief Studio launch team',
   instructions: 'Coordinate the brief',
   coordinatorMemberName: 'writer',
+  defaultLaunchConfig: {
+    llmModelIdentifier: 'gpt-5.4',
+    runtimeKind: 'codex',
+    llmConfig: {
+      reasoning_effort: 'high',
+    },
+  },
   nodes: [
     {
       memberName: 'researcher',
@@ -358,8 +365,11 @@ describe('application launch preparation after importing an application package'
       config: {
         teamDefinitionId: importedTeamDefinitionId,
         teamDefinitionName: 'bundle-team',
-        llmModelIdentifier: 'gpt-5.4-mini',
-        runtimeKind: 'autobyteus',
+        llmModelIdentifier: 'gpt-5.4',
+        runtimeKind: 'codex',
+        llmConfig: {
+          reasoning_effort: 'high',
+        },
       },
     })
   })

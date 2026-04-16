@@ -6,7 +6,9 @@ const hasApplicationsDir = (candidateRoot: string): boolean => {
   return fs.existsSync(applicationsDir) && fs.statSync(applicationsDir).isDirectory();
 };
 
-export const resolveBuiltInApplicationPackageRoot = (serverAppRootDir: string): string => {
+export const resolveBundledApplicationResourceRoot = (
+  serverAppRootDir: string,
+): string => {
   let current = path.resolve(serverAppRootDir);
 
   while (true) {

@@ -144,6 +144,54 @@ describe("AgentTeamDefinitionService", () => {
     expect(updated.nodes[1].refType).toBe("agent_team");
   });
 
+  it("clears defaultLaunchConfig when the update explicitly sets null", async () => {
+    const service = buildService();
+    const existing = buildDefinition("def-123");
+    existing.defaultLaunchConfig = {
+      runtimeKind: "autobyteus",
+      llmModelIdentifier: "gpt-5.4-mini",
+      llmConfig: { reasoning_effort: "medium" },
+    };
+    provider.getById.mockResolvedValue(existing);
+    provider.update.mockImplementation(async (definition: AgentTeamDefinition) => definition);
+
+    const updated = await service.updateDefinition(
+      "def-123",
+      new AgentTeamDefinitionUpdate({
+        defaultLaunchConfig: null,
+      }),
+    );
+
+    expect(provider.update).toHaveBeenCalledOnce();
+    expect(updated.defaultLaunchConfig).toBeNull();
+  });
+
+  it("preserves defaultLaunchConfig when the update omits the field", async () => {
+    const service = buildService();
+    const existing = buildDefinition("def-123");
+    existing.defaultLaunchConfig = {
+      runtimeKind: "autobyteus",
+      llmModelIdentifier: "gpt-5.4-mini",
+      llmConfig: { reasoning_effort: "medium" },
+    };
+    provider.getById.mockResolvedValue(existing);
+    provider.update.mockImplementation(async (definition: AgentTeamDefinition) => definition);
+
+    const updateData = new AgentTeamDefinitionUpdate({
+      description: "Updated without changing launch defaults",
+    });
+
+    const updated = await service.updateDefinition("def-123", updateData);
+
+    expect(provider.update).toHaveBeenCalledOnce();
+    expect(updated.description).toBe("Updated without changing launch defaults");
+    expect(updated.defaultLaunchConfig).toEqual({
+      runtimeKind: "autobyteus",
+      llmModelIdentifier: "gpt-5.4-mini",
+      llmConfig: { reasoning_effort: "medium" },
+    });
+  });
+
   it("throws when updating missing definitions", async () => {
     const service = buildService();
     provider.getById.mockResolvedValue(null);

@@ -7,6 +7,8 @@ import {
   localizeApplicationOwnedTeamMembers,
 } from "../utils/application-owned-team-ref-normalizer.js";
 import { readJsonFile } from "../../persistence/file/store-utils.js";
+import type { DefaultLaunchConfig } from "../../launch-preferences/default-launch-config.js";
+import { normalizeDefaultLaunchConfig } from "../../launch-preferences/default-launch-config.js";
 
 export type ApplicationOwnedTeamSourcePaths = {
   definitionId: string;
@@ -25,6 +27,7 @@ type ApplicationOwnedTeamConfigRecord = {
   coordinatorMemberName?: string;
   members?: ApplicationOwnedTeamConfigMember[];
   avatarUrl?: string | null;
+  defaultLaunchConfig?: DefaultLaunchConfig | null;
 };
 
 export class ApplicationOwnedTeamConfigParseError extends Error {
@@ -92,6 +95,7 @@ export const readApplicationOwnedTeamConfigFile = async (
       typeof record.coordinatorMemberName === "string" ? record.coordinatorMemberName : "",
     avatarUrl: typeof record.avatarUrl === "string" ? record.avatarUrl : null,
     members: normalizeMembers(record.members),
+    defaultLaunchConfig: normalizeDefaultLaunchConfig(record.defaultLaunchConfig),
   };
 };
 
@@ -114,6 +118,7 @@ export const readApplicationOwnedTeamDefinitionFromSource = async (
       instructions: parsed.instructions,
       category: parsed.category,
       avatarUrl: config.avatarUrl ?? null,
+      defaultLaunchConfig: config.defaultLaunchConfig ?? null,
       coordinatorMemberName:
         typeof config.coordinatorMemberName === "string" ? config.coordinatorMemberName : "",
       nodes: canonicalizeApplicationOwnedTeamMembers(config.members ?? [], {
@@ -161,6 +166,7 @@ export const buildApplicationOwnedTeamWriteContent = (
   configRecord: {
     coordinatorMemberName: definition.coordinatorMemberName,
     avatarUrl: definition.avatarUrl ?? null,
+    defaultLaunchConfig: definition.defaultLaunchConfig ?? null,
     members: localizeApplicationOwnedTeamMembers(definition.nodes, {
       localizeAgentRef: options.localizeAgentRef,
       localizeTeamRef: options.localizeTeamRef,

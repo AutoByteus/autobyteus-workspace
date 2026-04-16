@@ -8,6 +8,7 @@ import {
   UpdateAgentTeamDefinition,
 } from '~/graphql/mutations/agentTeamDefinitionMutations'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
+import type { DefaultLaunchConfig } from '~/types/launch/defaultLaunchConfig'
 
 export type AgentTeamDefinitionOwnershipScope = 'SHARED' | 'APPLICATION_OWNED'
 export type AgentMemberRefScope = 'SHARED' | 'TEAM_LOCAL' | 'APPLICATION_OWNED' | null
@@ -36,6 +37,7 @@ export interface AgentTeamDefinition {
   ownerApplicationName?: string | null
   ownerPackageId?: string | null
   ownerLocalApplicationId?: string | null
+  defaultLaunchConfig?: DefaultLaunchConfig | null
 }
 
 export interface CreateAgentTeamDefinitionInput {
@@ -46,6 +48,7 @@ export interface CreateAgentTeamDefinitionInput {
   coordinatorMemberName: string
   avatarUrl?: string | null
   nodes: TeamMemberInput[]
+  defaultLaunchConfig?: DefaultLaunchConfig | null
 }
 
 export interface UpdateAgentTeamDefinitionInput {
@@ -57,6 +60,7 @@ export interface UpdateAgentTeamDefinitionInput {
   coordinatorMemberName?: string | null
   avatarUrl?: string | null
   nodes?: TeamMemberInput[] | null
+  defaultLaunchConfig?: DefaultLaunchConfig | null
 }
 
 const normalizeOwnershipScope = (

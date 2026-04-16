@@ -1,10 +1,8 @@
+import type { DefaultLaunchConfig } from "../../launch-preferences/default-launch-config.js";
+
 export type AgentDefinitionOwnershipScope = "shared" | "team_local" | "application_owned";
 
-export type AgentDefinitionDefaultLaunchConfig = {
-  llmModelIdentifier: string | null;
-  runtimeKind: string | null;
-  llmConfig: Record<string, unknown> | null;
-};
+export type AgentDefinitionDefaultLaunchConfig = DefaultLaunchConfig;
 
 export class AgentDefinition {
   id?: string | null;

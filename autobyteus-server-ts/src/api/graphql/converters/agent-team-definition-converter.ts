@@ -8,6 +8,7 @@ import {
   AgentTeamDefinition as GraphqlAgentTeamDefinition,
   TeamMember as GraphqlTeamMember,
 } from "../types/agent-team-definition.js";
+import { toGraphqlDefaultLaunchConfig } from "../types/default-launch-config.js";
 
 const logger = {
   error: (...args: unknown[]) => console.error(...args),
@@ -62,6 +63,7 @@ export class AgentTeamDefinitionConverter {
         ownerApplicationName: domainDefinition.ownerApplicationName ?? null,
         ownerPackageId: domainDefinition.ownerPackageId ?? null,
         ownerLocalApplicationId: domainDefinition.ownerLocalApplicationId ?? null,
+        defaultLaunchConfig: toGraphqlDefaultLaunchConfig(domainDefinition.defaultLaunchConfig),
       };
     } catch (error) {
       logger.error(

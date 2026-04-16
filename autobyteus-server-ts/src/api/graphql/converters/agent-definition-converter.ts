@@ -3,6 +3,7 @@ import {
   AgentDefinition as GraphqlAgentDefinition,
   AgentDefinitionOwnershipScope,
 } from "../types/agent-definition.js";
+import { toGraphqlDefaultLaunchConfig } from "../types/default-launch-config.js";
 
 const logger = {
   error: (...args: unknown[]) => console.error(...args),
@@ -50,13 +51,7 @@ export class AgentDefinitionConverter {
         ownerApplicationName: domainDefinition.ownerApplicationName ?? null,
         ownerPackageId: domainDefinition.ownerPackageId ?? null,
         ownerLocalApplicationId: domainDefinition.ownerLocalApplicationId ?? null,
-        defaultLaunchConfig: domainDefinition.defaultLaunchConfig
-          ? {
-              llmModelIdentifier: domainDefinition.defaultLaunchConfig.llmModelIdentifier ?? null,
-              runtimeKind: domainDefinition.defaultLaunchConfig.runtimeKind ?? null,
-              llmConfig: domainDefinition.defaultLaunchConfig.llmConfig ?? null,
-            }
-          : null,
+        defaultLaunchConfig: toGraphqlDefaultLaunchConfig(domainDefinition.defaultLaunchConfig),
       };
     } catch (error) {
       logger.error(

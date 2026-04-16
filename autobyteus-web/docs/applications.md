@@ -84,9 +84,9 @@ Backend binding outcomes are surfaced directly in the UI:
 
 1. `applicationStore` fetches catalog entries.
 2. `applicationSessionStore.prepareLaunchDraft()` loads the bound application plus the required agent/team definitions.
-3. Launch defaults come from agent definition `defaultLaunchConfig` values:
-   - single-agent apps seed directly from the bound agent,
-   - team apps derive global defaults plus per-member overrides from the resolved leaf agents.
+3. Launch defaults come from persisted definition `defaultLaunchConfig` values:
+   - single-agent apps seed directly from the bound agent definition, and
+   - team apps seed global defaults from the bound team definition itself.
 4. `ApplicationLaunchConfigModal.vue` lets the user review/override the launch configuration before runtime creation.
 5. `applicationSessionStore.createApplicationSession()` calls the backend mutation, which creates the underlying run, persists one authoritative application session, and replaces any previous live session for the same application.
 6. The store caches the returned snapshot, updates the active-session index from backend truth only, and attaches the application-session WebSocket stream.

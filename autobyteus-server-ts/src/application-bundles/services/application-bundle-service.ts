@@ -4,6 +4,7 @@ import type { ApplicationBundle, ApplicationCatalogEntry, ApplicationOwnedDefini
 import { FileApplicationBundleProvider, BUILT_IN_APPLICATION_PACKAGE_ID } from "../providers/file-application-bundle-provider.js";
 import { ApplicationPackageRootSettingsStore } from "../../application-packages/stores/application-package-root-settings-store.js";
 import { ApplicationPackageRegistryStore } from "../../application-packages/stores/application-package-registry-store.js";
+import { BuiltInApplicationPackageMaterializer } from "../../application-packages/services/built-in-application-package-materializer.js";
 import { buildLocalApplicationPackageId } from "../../application-packages/utils/application-package-root-summary.js";
 
 const APPLICATION_ASSET_ROUTE_PREFIX = "/application-bundles";
@@ -42,6 +43,7 @@ export class ApplicationBundleService {
       provider?: ApplicationBundleProvider;
       rootSettingsStore?: ApplicationPackageRootSettingsStore;
       registryStore?: ApplicationPackageRegistryStore;
+      builtInMaterializer?: Pick<BuiltInApplicationPackageMaterializer, "ensureMaterialized">;
     } = {},
   ) {}
 
@@ -57,6 +59,14 @@ export class ApplicationBundleService {
     return this.dependencies.registryStore ?? new ApplicationPackageRegistryStore();
   }
 
+  private get builtInMaterializer(): Pick<
+    BuiltInApplicationPackageMaterializer,
+    "ensureMaterialized"
+  > {
+    return this.dependencies.builtInMaterializer
+      ?? BuiltInApplicationPackageMaterializer.getInstance();
+  }
+
   private assetPath(applicationId: string, relativePath: string): string {
     return `${APPLICATION_ASSET_ROUTE_PREFIX}/${encodeURIComponent(applicationId)}/assets/${relativePath}`;
   }
@@ -70,6 +80,7 @@ export class ApplicationBundleService {
   }
 
   private async populateCache(): Promise<void> {
+    await this.builtInMaterializer.ensureMaterialized();
     const bundles = (await this.provider.listBundles()).map((bundle) => this.withAssetPaths(bundle));
 
     const nextBundleById = new Map<string, ApplicationBundle>();
@@ -182,6 +193,7 @@ export class ApplicationBundleService {
     let packageId = buildLocalApplicationPackageId(resolvedRootPath);
 
     if (resolvedRootPath === this.rootSettingsStore.getBuiltInRootPath()) {
+      await this.builtInMaterializer.ensureMaterialized();
       packageId = BUILT_IN_APPLICATION_PACKAGE_ID;
     } else {
       const record = await this.registryStore.findPackageByRootPath(resolvedRootPath);

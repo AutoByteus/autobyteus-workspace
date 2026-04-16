@@ -1,129 +1,89 @@
 <template>
   <div class="space-y-4">
-    <!-- Header: Team Name -->
     <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.team_definition') }}</label>
-        <div class="block w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-500 shadow-sm cursor-not-allowed select-none">
-            {{ teamDefinition.name }}
-        </div>
+      <label class="mb-1 block text-sm font-medium text-gray-700">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.team_definition') }}</label>
+      <div class="block w-full cursor-not-allowed select-none rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-500 shadow-sm">
+        {{ teamDefinition.name }}
+      </div>
     </div>
 
-    <div>
-        <label for="team-runtime-kind" class="block text-sm font-medium text-gray-700 mb-1">Runtime</label>
-        <select
-            id="team-runtime-kind"
-            :value="config.runtimeKind"
-            :disabled="runtimeSelectionLocked"
-            class="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
-            @change="updateRuntimeKind(($event.target as HTMLSelectElement).value)"
-        >
-            <option
-                v-for="option in runtimeOptions"
-                :key="option.value"
-                :value="option.value"
-                :disabled="!option.enabled"
-            >
-                {{ option.label }}
-            </option>
-        </select>
-        <p class="mt-1 text-xs text-gray-500">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.selects_the_runtime_backend_used_by') }}</p>
-        <p v-if="selectedRuntimeUnavailableReason" class="mt-1 text-xs text-amber-600">
-            {{ selectedRuntimeUnavailableReason }}
-        </p>
-    </div>
-
-    <!-- Default Model Selection -->
-    <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.default_llm_model_global') }}</label>
-        <SearchableGroupedSelect
-            :model-value="config.llmModelIdentifier"
-            @update:modelValue="updateModel"
-            :options="groupedModelOptions"
-            :disabled="config.isLocked || !llmStore.providersWithModels.length"
-            :placeholder="$t('workspace.components.workspace.config.TeamRunConfigForm.select_a_model')"
-            search-placeholder="Search models..."
-        />
-        <p class="mt-1 text-xs text-gray-500">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.this_model_will_be_used_by') }}</p>
-    </div>
-
-    <ModelConfigSection
-        :schema="modelConfigSchema"
-        :model-config="config.llmConfig"
-        :disabled="config.isLocked"
-        :apply-defaults="true"
-        :clear-on-empty-schema="true"
-        @update:config="updateModelConfig"
+    <RuntimeModelConfigFields
+      :runtime-kind="config.runtimeKind"
+      :llm-model-identifier="config.llmModelIdentifier"
+      :llm-config="config.llmConfig"
+      :disabled="config.isLocked"
+      :runtime-selection-locked="runtimeSelectionLocked"
+      :runtime-help-text="$t('workspace.components.workspace.config.TeamRunConfigForm.selects_the_runtime_backend_used_by')"
+      :model-label="$t('workspace.components.workspace.config.TeamRunConfigForm.default_llm_model_global')"
+      :model-help-text="$t('workspace.components.workspace.config.TeamRunConfigForm.this_model_will_be_used_by')"
+      id-prefix="team-run"
+      @update:runtime-kind="config.runtimeKind = $event"
+      @update:llm-model-identifier="config.llmModelIdentifier = $event"
+      @update:llm-config="config.llmConfig = $event"
     />
 
-    <!-- Workspace Selector -->
     <div class="mt-8">
-    <WorkspaceSelector
+      <WorkspaceSelector
         :workspace-id="config.workspaceId"
         :is-loading="workspaceLoadingState.isLoading"
         :error="workspaceLoadingState.error"
         :disabled="config.isLocked"
         @select-existing="handleSelectExisting"
         @load-new="handleLoadNew"
-    />
+      />
     </div>
 
-
-    <!-- Team Members Override Section (Collapsible) -->
     <div v-if="leafMembers.length > 0" class="mt-4">
-        <button
-            type="button"
-            @click="overridesExpanded = !overridesExpanded"
-            class="flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors w-full text-left"
-            :disabled="config.isLocked"
-        >
-            <span 
-                class="mr-1 transition-transform duration-200"
-                :class="overridesExpanded ? 'rotate-90' : ''"
-            >
-                <span class="i-heroicons-chevron-right-20-solid w-4 h-4"></span>
-            </span>
-            Team Members Override ({{ leafMembers.length }})
-        </button>
-        
-        <div v-show="overridesExpanded" class="mt-3 space-y-2">
-            <MemberOverrideItem
-                v-for="member in leafMembers"
-                :key="member.memberRouteKey"
-                :member-name="member.memberName"
-                :agent-definition-id="member.agentDefinitionId"
-                :override="config.memberOverrides[member.memberName]"
-                :global-llm-model="config.llmModelIdentifier"
-                :global-llm-config="config.llmConfig"
-                :options="groupedModelOptions"
-                :is-coordinator="member.memberName === teamDefinition.coordinatorMemberName"
-                :disabled="config.isLocked"
-                @update:override="handleOverrideUpdate"
-            />
-        </div>
+      <button
+        type="button"
+        @click="overridesExpanded = !overridesExpanded"
+        class="w-full text-left text-sm font-medium text-gray-700 transition-colors hover:text-gray-900"
+        :disabled="config.isLocked"
+      >
+        <span class="mr-1 inline-block transition-transform duration-200" :class="overridesExpanded ? 'rotate-90' : ''">
+          <span class="i-heroicons-chevron-right-20-solid h-4 w-4"></span>
+        </span>
+        Team Members Override ({{ leafMembers.length }})
+      </button>
+
+      <div v-show="overridesExpanded" class="mt-3 space-y-2">
+        <MemberOverrideItem
+          v-for="member in leafMembers"
+          :key="member.memberRouteKey"
+          :member-name="member.memberName"
+          :agent-definition-id="member.agentDefinitionId"
+          :override="config.memberOverrides[member.memberName]"
+          :global-llm-model="config.llmModelIdentifier"
+          :global-llm-config="config.llmConfig"
+          :options="groupedModelOptions"
+          :is-coordinator="member.memberName === teamDefinition.coordinatorMemberName"
+          :disabled="config.isLocked"
+          @update:override="handleOverrideUpdate"
+        />
+      </div>
     </div>
 
-    <!-- Auto Execute (moved to bottom) -->
-    <div class="flex items-center justify-between gap-4 py-2 mt-4">
-        <label for="team-auto-execute" class="block text-base text-gray-900 select-none" :class="{ 'text-gray-400': config.isLocked }">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools') }}</label>
-        <button 
-            id="team-auto-execute"
-            type="button" 
-            class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            :class="config.autoExecuteTools ? 'bg-blue-600' : 'bg-gray-200'"
-            @click="updateAutoExecute(!config.autoExecuteTools)"
-            :disabled="config.isLocked"
-        >
-            <span class="sr-only">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools') }}</span>
-            <span 
-                aria-hidden="true" 
-                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
-                :class="config.autoExecuteTools ? 'translate-x-5' : 'translate-x-0'"
-            />
-        </button>
+    <div class="mt-4 flex items-center justify-between gap-4 py-2">
+      <label for="team-auto-execute" class="block text-base text-gray-900 select-none" :class="{ 'text-gray-400': config.isLocked }">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools') }}</label>
+      <button
+        id="team-auto-execute"
+        type="button"
+        class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        :class="config.autoExecuteTools ? 'bg-blue-600' : 'bg-gray-200'"
+        @click="updateAutoExecute(!config.autoExecuteTools)"
+        :disabled="config.isLocked"
+      >
+        <span class="sr-only">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools') }}</span>
+        <span
+          aria-hidden="true"
+          class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+          :class="config.autoExecuteTools ? 'translate-x-5' : 'translate-x-0'"
+        />
+      </button>
     </div>
 
     <div>
-      <label for="team-skill-access-mode" class="block text-sm font-medium text-gray-700 mb-1">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.skill_access') }}</label>
+      <label for="team-skill-access-mode" class="mb-1 block text-sm font-medium text-gray-700">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.skill_access') }}</label>
       <select
         id="team-skill-access-mode"
         :value="config.skillAccessMode"
@@ -138,33 +98,27 @@
       <p class="mt-1 text-xs text-gray-500">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.controls_which_skills_team_members_are') }}</p>
     </div>
 
-    <div v-if="config.isLocked" class="flex items-center text-xs text-amber-600 bg-amber-50 p-2 rounded">
-        <span class="i-heroicons-lock-closed-20-solid w-4 h-4 mr-1"></span>
-        <span>{{ $t('workspace.components.workspace.config.TeamRunConfigForm.configuration_locked_because_execution_has_start') }}</span>
+    <div v-if="config.isLocked" class="flex items-center rounded bg-amber-50 p-2 text-xs text-amber-600">
+      <span class="i-heroicons-lock-closed-20-solid mr-1 h-4 w-4"></span>
+      <span>{{ $t('workspace.components.workspace.config.TeamRunConfigForm.configuration_locked_because_execution_has_start') }}</span>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
-import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig';
-import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore';
-import type { TeamRunConfig, MemberConfigOverride } from '~/types/agent/TeamRunConfig';
-import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore';
-import {
-  DEFAULT_AGENT_RUNTIME_KIND,
-  runtimeKindToLabel,
-  type AgentRuntimeKind,
-  type SkillAccessMode,
-} from '~/types/agent/AgentRunConfig';
-import WorkspaceSelector from './WorkspaceSelector.vue';
-import MemberOverrideItem from './MemberOverrideItem.vue';
-import SearchableGroupedSelect, { type GroupedOption } from '~/components/agentTeams/SearchableGroupedSelect.vue';
-import ModelConfigSection from './ModelConfigSection.vue';
-import { getModelSelectionLabel } from '~/utils/modelSelectionLabel';
-import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
-import { resolveLeafTeamMembers } from '~/utils/teamDefinitionMembers';
-import { hasMeaningfulMemberOverride } from '~/utils/teamRunConfigUtils';
+import { computed, ref, watch } from 'vue'
+import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
+import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore'
+import type { TeamRunConfig, MemberConfigOverride } from '~/types/agent/TeamRunConfig'
+import type { SkillAccessMode } from '~/types/agent/AgentRunConfig'
+import RuntimeModelConfigFields from '~/components/launch-config/RuntimeModelConfigFields.vue'
+import WorkspaceSelector from './WorkspaceSelector.vue'
+import MemberOverrideItem from './MemberOverrideItem.vue'
+import type { GroupedOption } from '~/components/agentTeams/SearchableGroupedSelect.vue'
+import { getModelSelectionLabel } from '~/utils/modelSelectionLabel'
+import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
+import { resolveLeafTeamMembers } from '~/utils/teamDefinitionMembers'
+import { hasMeaningfulMemberOverride } from '~/utils/teamRunConfigUtils'
 
 interface WorkspaceLoadingState {
   isLoading: boolean;
@@ -184,213 +138,79 @@ const emit = defineEmits<{
   (e: 'load-new', path: string): void;
 }>();
 
-const llmStore = useLLMProviderConfigStore();
-const runtimeAvailabilityStore = useRuntimeAvailabilityStore();
-const teamDefinitionStore = useAgentTeamDefinitionStore();
-const overridesExpanded = ref(true);
-const runtimeSelectionLocked = computed(() => props.config.isLocked);
+const llmStore = useLLMProviderConfigStore()
+const teamDefinitionStore = useAgentTeamDefinitionStore()
+const overridesExpanded = ref(true)
+const runtimeSelectionLocked = computed(() => props.config.isLocked)
 const leafMembers = computed(() =>
   resolveLeafTeamMembers(props.teamDefinition, {
     getTeamDefinitionById: (teamDefinitionId: string) =>
       teamDefinitionStore.getAgentTeamDefinitionById(teamDefinitionId),
   }),
-);
-
-void runtimeAvailabilityStore.fetchRuntimeAvailabilities().catch((error) => {
-  console.error('Failed to fetch runtime availabilities:', error);
-});
-
-const normalizeRuntimeKind = (runtimeKind: unknown): AgentRuntimeKind => {
-  if (typeof runtimeKind !== 'string') {
-    return DEFAULT_AGENT_RUNTIME_KIND;
-  }
-  const normalized = runtimeKind.trim();
-  return (normalized.length > 0 ? normalized : DEFAULT_AGENT_RUNTIME_KIND) as AgentRuntimeKind;
-};
+)
 
 const sanitizeMemberOverridesForRuntime = () => {
-  const modelSet = new Set(llmStore.models);
-  const overrides = props.config.memberOverrides || {};
+  const modelSet = new Set(llmStore.models)
+  const overrides = props.config.memberOverrides || {}
 
   for (const [memberName, override] of Object.entries(overrides)) {
     if (!override || typeof override !== 'object') {
-      delete overrides[memberName];
-      continue;
+      delete overrides[memberName]
+      continue
     }
 
     if (override.llmModelIdentifier && !modelSet.has(override.llmModelIdentifier)) {
-      override.llmModelIdentifier = undefined;
-      delete override.llmConfig;
+      override.llmModelIdentifier = undefined
+      delete override.llmConfig
     }
 
     if (!hasMeaningfulMemberOverride(override as MemberConfigOverride)) {
-      delete overrides[memberName];
+      delete overrides[memberName]
     }
   }
-};
-
-const ensureModelsForRuntime = async (runtimeKind: AgentRuntimeKind, validateSelectedModel = false) => {
-  await llmStore.fetchProvidersWithModels(runtimeKind);
-
-  if (
-    validateSelectedModel &&
-    props.config.llmModelIdentifier &&
-    !llmStore.models.includes(props.config.llmModelIdentifier)
-  ) {
-    props.config.llmModelIdentifier = '';
-    props.config.llmConfig = null;
-  }
-
-  sanitizeMemberOverridesForRuntime();
-};
-
-const runtimeOptions = computed<
-  Array<{ value: AgentRuntimeKind; label: string; enabled: boolean }>
->(() => {
-  const selectedRuntimeKind = normalizeRuntimeKind(props.config.runtimeKind);
-  const optionByKind = new Map<AgentRuntimeKind, { value: AgentRuntimeKind; label: string; enabled: boolean }>();
-
-  for (const availability of runtimeAvailabilityStore.availabilities) {
-    optionByKind.set(availability.runtimeKind, {
-      value: availability.runtimeKind,
-      label: runtimeKindToLabel(availability.runtimeKind),
-      enabled: availability.enabled,
-    });
-  }
-
-  if (!optionByKind.has(DEFAULT_AGENT_RUNTIME_KIND)) {
-    optionByKind.set(DEFAULT_AGENT_RUNTIME_KIND, {
-      value: DEFAULT_AGENT_RUNTIME_KIND,
-      label: runtimeKindToLabel(DEFAULT_AGENT_RUNTIME_KIND),
-      enabled: true,
-    });
-  }
-
-  if (!optionByKind.has(selectedRuntimeKind)) {
-    optionByKind.set(selectedRuntimeKind, {
-      value: selectedRuntimeKind,
-      label: runtimeKindToLabel(selectedRuntimeKind),
-      enabled: runtimeAvailabilityStore.isRuntimeEnabled(selectedRuntimeKind),
-    });
-  }
-
-  return Array.from(optionByKind.values()).filter(
-    (option) => option.enabled || selectedRuntimeKind === option.value,
-  );
-});
-
-const selectedRuntimeUnavailableReason = computed(() => {
-  const runtimeKind = normalizeRuntimeKind(props.config.runtimeKind);
-  const availability = runtimeAvailabilityStore.availabilityByKind(runtimeKind);
-  if (!availability) {
-    return runtimeKind === DEFAULT_AGENT_RUNTIME_KIND
-      ? null
-      : 'Runtime is not available in current capabilities.';
-  }
-  if (availability.enabled) {
-    return null;
-  }
-  return runtimeAvailabilityStore.runtimeReason(runtimeKind);
-});
+}
 
 watch(
-  () => props.config.runtimeKind,
-  (runtimeKind, previousRuntimeKind) => {
-    const normalizedRuntime = normalizeRuntimeKind(runtimeKind);
-    if (props.config.runtimeKind !== normalizedRuntime) {
-      props.config.runtimeKind = normalizedRuntime;
-      return;
-    }
-    const validateSelectedModel =
-      typeof previousRuntimeKind !== 'undefined' && previousRuntimeKind !== normalizedRuntime;
-    void ensureModelsForRuntime(normalizedRuntime, validateSelectedModel);
+  () => [props.config.runtimeKind, llmStore.models.join('|')],
+  () => {
+    sanitizeMemberOverridesForRuntime()
   },
   { immediate: true },
-);
-
-watch(
-  () => [runtimeAvailabilityStore.hasFetched, props.config.runtimeKind, runtimeSelectionLocked.value],
-  ([hasFetched, runtimeKind, runtimeLocked]) => {
-    if (!hasFetched || runtimeLocked) {
-      return;
-    }
-    const normalizedRuntime = normalizeRuntimeKind(runtimeKind);
-    const availability = runtimeAvailabilityStore.availabilityByKind(normalizedRuntime);
-    if (!availability) {
-      return;
-    }
-    if (availability.enabled) {
-      return;
-    }
-
-    props.config.runtimeKind = DEFAULT_AGENT_RUNTIME_KIND;
-    props.config.llmModelIdentifier = '';
-    props.config.llmConfig = null;
-    void ensureModelsForRuntime(DEFAULT_AGENT_RUNTIME_KIND, false);
-  },
-  { immediate: true },
-);
+)
 
 const groupedModelOptions = computed<GroupedOption[]>(() => {
-    return llmStore.providersWithModels.map(provider => ({
-        label: provider.provider,
-        items: provider.models.map(model => ({
-            id: model.modelIdentifier,
-            name: getModelSelectionLabel(model, props.config.runtimeKind),
-        }))
-    }));
-});
+  return llmStore.providersWithModels.map(provider => ({
+    label: provider.provider,
+    items: provider.models.map(model => ({
+      id: model.modelIdentifier,
+      name: getModelSelectionLabel(model, props.config.runtimeKind),
+    })),
+  }))
+})
 
-const modelConfigSchema = computed(() => {
-    if (!props.config.llmModelIdentifier) return null;
-    return llmStore.modelConfigSchemaByIdentifier(props.config.llmModelIdentifier);
-});
-
-const updateRuntimeKind = (value: string) => {
-    const runtimeKind = normalizeRuntimeKind(value);
-    if (!runtimeAvailabilityStore.isRuntimeEnabled(runtimeKind)) {
-      return;
-    }
-    if (props.config.runtimeKind === runtimeKind) {
-      return;
-    }
-    props.config.runtimeKind = runtimeKind;
-    props.config.llmModelIdentifier = '';
-    props.config.llmConfig = null;
-};
-
-const updateModel = (value: string) => {
-    props.config.llmModelIdentifier = value;
-};
-
-const updateModelConfig = (config: Record<string, unknown> | null) => {
-    props.config.llmConfig = config;
-};
+const handleOverrideUpdate = ({ memberName, override }: { memberName: string; override: MemberConfigOverride | null }) => {
+  const overrides = { ...(props.config.memberOverrides || {}) }
+  if (override && hasMeaningfulMemberOverride(override)) {
+    overrides[memberName] = override
+  } else {
+    delete overrides[memberName]
+  }
+  props.config.memberOverrides = overrides
+}
 
 const updateAutoExecute = (checked: boolean) => {
-    props.config.autoExecuteTools = checked;
-};
+  props.config.autoExecuteTools = checked
+}
 
 const updateSkillAccessMode = (value: string) => {
-    props.config.skillAccessMode = value as SkillAccessMode;
-};
+  props.config.skillAccessMode = value as SkillAccessMode
+}
 
 const handleSelectExisting = (workspaceId: string) => {
-    emit('select-existing', workspaceId);
-};
+  emit('select-existing', workspaceId)
+}
 
 const handleLoadNew = (path: string) => {
-    emit('load-new', path);
-};
-
-const handleOverrideUpdate = (memberName: string, override: MemberConfigOverride | null) => {
-  if (!props.config.memberOverrides) {
-    props.config.memberOverrides = {};
-  }
-  if (override) {
-    props.config.memberOverrides[memberName] = override;
-  } else {
-    delete props.config.memberOverrides[memberName];
-  }
-};
+  emit('load-new', path)
+}
 </script>

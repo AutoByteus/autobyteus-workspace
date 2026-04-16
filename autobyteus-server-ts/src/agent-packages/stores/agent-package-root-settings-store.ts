@@ -1,7 +1,7 @@
 import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { getServerSettingsService } from "../../services/server-settings-service.js";
-import { resolveBuiltInApplicationPackageRoot } from "../../application-bundles/utils/built-in-application-package-root.js";
+import { resolveBundledApplicationResourceRoot } from "../../application-bundles/utils/bundled-application-resource-root.js";
 
 type AppConfigLike = {
   getAppDataDir(): string;
@@ -54,7 +54,7 @@ export class AgentPackageRootSettingsStore {
     if (typeof this.config.getAppRootDir !== "function") {
       return null;
     }
-    return resolveBuiltInApplicationPackageRoot(this.config.getAppRootDir());
+    return resolveBundledApplicationResourceRoot(this.config.getAppRootDir());
   }
 
   listAdditionalRootPaths(): string[] {
