@@ -13,11 +13,15 @@ COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
 COPY patches ./patches
 COPY autobyteus-ts/package.json autobyteus-ts/tsconfig.build.json autobyteus-ts/tsconfig.json ./autobyteus-ts/
 COPY autobyteus-ts/scripts ./autobyteus-ts/scripts
+COPY autobyteus-application-sdk-contracts/package.json autobyteus-application-sdk-contracts/tsconfig.build.json autobyteus-application-sdk-contracts/tsconfig.json ./autobyteus-application-sdk-contracts/
+COPY autobyteus-application-backend-sdk/package.json autobyteus-application-backend-sdk/tsconfig.build.json autobyteus-application-backend-sdk/tsconfig.json ./autobyteus-application-backend-sdk/
 COPY autobyteus-server-ts/package.json autobyteus-server-ts/tsconfig.json ./autobyteus-server-ts/
 
 RUN pnpm install --no-frozen-lockfile
 
 COPY autobyteus-ts ./autobyteus-ts
+COPY autobyteus-application-sdk-contracts ./autobyteus-application-sdk-contracts
+COPY autobyteus-application-backend-sdk ./autobyteus-application-backend-sdk
 COPY autobyteus-server-ts ./autobyteus-server-ts
 
 RUN pnpm -C autobyteus-server-ts exec prisma generate --schema prisma/schema.prisma
@@ -43,6 +47,8 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/autobyteus-ts/node_modules ./autobyteus-ts/node_modules
 COPY --from=builder /app/autobyteus-ts/dist ./autobyteus-ts/dist
 COPY --from=builder /app/autobyteus-ts/package.json ./autobyteus-ts/package.json
+COPY --from=builder /app/autobyteus-application-sdk-contracts/dist ./autobyteus-application-sdk-contracts/dist
+COPY --from=builder /app/autobyteus-application-sdk-contracts/package.json ./autobyteus-application-sdk-contracts/package.json
 COPY --from=builder /app/autobyteus-server-ts/node_modules ./autobyteus-server-ts/node_modules
 COPY --from=builder /app/autobyteus-server-ts/dist ./autobyteus-server-ts/dist
 COPY --from=builder /app/autobyteus-server-ts/prisma ./autobyteus-server-ts/prisma
