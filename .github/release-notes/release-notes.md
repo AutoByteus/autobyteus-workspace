@@ -1,5 +1,3 @@
-# Release Notes
+# Release Notes - desktop-invalid-package-agent-definitions
 
-- Fixed release packaging so desktop and server build pipelines correctly resolve shared workspace packages used by bundled runtime components.
-- Fixed Windows desktop packaging for scoped workspace dependencies required by the bundled server.
-- Fixed server Docker packaging to include the shared application SDK artifacts required by the bundled server runtime.
+- Fixed a macOS desktop startup bug where AutoByteus could mistakenly treat the system Applications folder as built-in platform application packages, which prevented Agents and Agent Teams from loading.
