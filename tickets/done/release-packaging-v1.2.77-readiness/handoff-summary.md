@@ -50,4 +50,6 @@
 ## Residual / Rollout Notes
 
 - Direct Darwin-host execution of `autobyteus-web/scripts/prepare-server.mjs` still has the previously known unchanged `assertNoSymlinks()` residual after the changed packaging path succeeds. This remained non-blocking for the scoped fix and was preserved in the validation record.
-- At handoff time, the GitHub-hosted release publication is asynchronous; the `v1.2.78` workflows were in progress immediately after tag push.
+- At handoff time, GitHub release publication is partially complete:
+  - `Release Messaging Gateway` succeeded and created the `v1.2.78` GitHub release with gateway assets.
+  - `Desktop Release` and `Server Docker Release` were still running asynchronously.

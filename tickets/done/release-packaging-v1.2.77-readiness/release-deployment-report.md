@@ -57,7 +57,7 @@ Finalize the validated `release-packaging-v1.2.77-readiness` fix, archive the ti
 - Method reference / command: `pnpm release 1.2.78 -- --branch codex/personal-finalize-release-packaging-v1.2.77-readiness --release-notes tickets/done/release-packaging-v1.2.77-readiness/release-notes.md --no-push`; then `git push origin HEAD:personal`; `git push origin v1.2.78`
 - Release/publication/deployment result: `Completed`
 - Release notes handoff result: `Used`
-- Blocker (if applicable): `GitHub-hosted publication remains asynchronous; immediately after tag push the workflows were in progress and `gh release view v1.2.78` still returned `release not found`.`
+- Blocker (if applicable): `Desktop and server-Docker publication remained in progress asynchronously at handoff time; the GitHub release record itself was already created by the completed messaging-gateway workflow.`
 
 ## Post-Finalization Cleanup
 
@@ -93,13 +93,17 @@ Finalize the validated `release-packaging-v1.2.77-readiness` fix, archive the ti
 
 ## Verification Checks
 
-- `origin/personal` was updated with the merge commit and release commit before final handoff documentation.
+- `origin/personal` was updated with the merge commit, release commit, and final delivery commit before handoff completion.
 - Tag `v1.2.78` exists on origin and points to release commit `cd8da34377a12867009a7b80246ed3082674714b`.
-- GitHub Actions created the following runs for `v1.2.78` immediately after push:
+- GitHub Actions created the following runs for `v1.2.78`:
   - Desktop Release: `24545791975`
   - Server Docker Release: `24545791976`
   - Release Messaging Gateway: `24545791978`
-- At report time, those workflows were `in_progress` and `gh release view v1.2.78` still returned `release not found`, confirming publication was still underway asynchronously.
+- Current rollout snapshot at report update time:
+  - `Release Messaging Gateway` = `success`
+  - `Desktop Release` = `in_progress`
+  - `Server Docker Release` = `in_progress`
+  - `gh release view v1.2.78` succeeds and the GitHub release is published at `2026-04-17T03:16:05Z` with the gateway runtime assets attached.
 
 ## Rollback Criteria
 
@@ -109,4 +113,4 @@ Finalize the validated `release-packaging-v1.2.77-readiness` fix, archive the ti
 
 ## Final Status
 
-`Completed locally; GitHub release publication is in progress asynchronously for v1.2.78.`
+`Completed locally; v1.2.78 is published on GitHub and remaining desktop/server release lanes are still running asynchronously.`
