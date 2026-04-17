@@ -24,12 +24,18 @@ git push origin v1.2.0
 This workflow currently builds and publishes:
 
 - macOS Apple Silicon (ARM64) on `macos-14`
+- macOS Intel x64 on `macos-14`
 - Linux x64 AppImage on `ubuntu-22.04`
+- Windows x64 installer on `windows-2022`
 
 CI build behavior:
 
 - `AUTOBYTEUS_BUILD_FLAVOR=personal` is set in release build jobs.
-- macOS build runs with `--arm64` explicitly.
+- Release preparation validates:
+  - desktop package version matches the pushed tag
+  - messaging gateway package version matches the pushed tag
+  - bundled managed messaging release manifest matches the pushed tag
+- macOS builds run with `--arm64` and `--x64` explicitly.
 - `NO_TIMESTAMP=1` is enabled for macOS build stability.
 - Apple signing/notarization is enabled when required secrets are configured.
 
@@ -37,18 +43,25 @@ CI build behavior:
 
 On each matching tag, the workflow:
 
-1. Builds desktop files into `autobyteus-web/electron-dist`
-2. Uploads platform artifacts with `actions/upload-artifact`
-3. Downloads artifacts in `publish-release`
-4. Publishes final assets to the tag release using `softprops/action-gh-release`
+1. Resolves release metadata and validates release-tag/package consistency
+2. Builds desktop files into `autobyteus-web/electron-dist`
+3. Uploads per-platform artifacts with `actions/upload-artifact`
+4. Downloads artifacts in `publish-release`
+5. Merges ARM64 + x64 `latest-mac.yml` files into one canonical updater manifest
+6. Publishes final assets to the tag release using `softprops/action-gh-release`
 
 Published file patterns:
 
 - `**/*.dmg`
 - `**/*.dmg.blockmap`
+- `**/*.zip`
+- `**/*.zip.blockmap`
+- `**/*.exe`
 - `**/*.AppImage`
 - `**/*.AppImage.blockmap`
-- `**/latest-*.yml`
+- `release-artifacts/latest-mac.yml`
+- `**/latest-linux.yml`
+- `**/latest.yml`
 
 ## Optional Apple Signing/Notarization Secrets
 
@@ -66,5 +79,7 @@ If omitted, macOS build still runs but output is unsigned and not notarized.
 ```bash
 cd /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web
 pnpm build:electron:mac -- --arm64
+pnpm build:electron:mac -- --x64
 pnpm build:electron:linux
+pnpm build:electron:windows
 ```

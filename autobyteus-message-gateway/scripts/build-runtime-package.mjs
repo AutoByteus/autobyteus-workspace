@@ -5,6 +5,7 @@ import { spawn } from "node:child_process";
 import { mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { resolveWorkspacePackageRoot } from "../../scripts/workspace-package-roots.mjs";
 import {
   buildArchiveFileName,
   buildReleaseManifest,
@@ -226,9 +227,9 @@ async function packWorkspaceDependencies(sourceManifest) {
   const packed = {};
 
   for (const [packageName] of workspaceDependencies) {
-    const packageRoot = path.join(workspaceRoot, packageName);
-    if (!(await exists(packageRoot))) {
-      throw new Error(`Workspace package not found: ${packageRoot}`);
+    const packageRoot = await resolveWorkspacePackageRoot(workspaceRoot, packageName);
+    if (!packageRoot) {
+      throw new Error(`Workspace package not found for dependency: ${packageName}`);
     }
     const before = new Set((await readdir(localPackageDir)).filter((name) => name.endsWith(".tgz")));
     await runCommand("pnpm", ["pack", "--pack-destination", localPackageDir], { cwd: packageRoot });
