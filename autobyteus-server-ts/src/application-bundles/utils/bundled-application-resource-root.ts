@@ -2,8 +2,12 @@ import fs from "node:fs";
 import path from "node:path";
 
 const hasApplicationsDir = (candidateRoot: string): boolean => {
-  const applicationsDir = path.join(candidateRoot, "applications");
-  return fs.existsSync(applicationsDir) && fs.statSync(applicationsDir).isDirectory();
+  try {
+    const entries = fs.readdirSync(candidateRoot, { withFileTypes: true });
+    return entries.some((entry) => entry.isDirectory() && entry.name === "applications");
+  } catch {
+    return false;
+  }
 };
 
 export const resolveBundledApplicationResourceRoot = (
