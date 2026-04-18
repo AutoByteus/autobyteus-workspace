@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { BUILT_IN_APPLICATION_PACKAGE_ID, FileApplicationBundleProvider } from "../../../src/application-bundles/providers/file-application-bundle-provider.js";
 import { GitHubApplicationPackageInstaller } from "../../../src/application-packages/installers/github-application-package-installer.js";
 import { ApplicationPackageService } from "../../../src/application-packages/services/application-package-service.js";
@@ -113,6 +113,8 @@ describe("ApplicationPackageService", () => {
       rootSettingsStore,
       registryStore: new ApplicationPackageRegistryStore({ getAppDataDir: () => registryRoot }),
       refreshApplicationBundles: async () => undefined,
+      refreshAgentDefinitions: async () => undefined,
+      refreshAgentTeams: async () => undefined,
       validateApplicationPackageContents: async () => undefined,
       builtInMaterializer: createBuiltInMaterializer(repoRoot),
     });
@@ -210,6 +212,8 @@ describe("ApplicationPackageService", () => {
       registryStore: new ApplicationPackageRegistryStore({ getAppDataDir: () => registryRoot }),
       installer: new MockInstaller(),
       refreshApplicationBundles: async () => undefined,
+      refreshAgentDefinitions: async () => undefined,
+      refreshAgentTeams: async () => undefined,
       validateApplicationPackageContents: async () => undefined,
       builtInMaterializer: createBuiltInMaterializer(repoRoot),
     });
@@ -225,6 +229,203 @@ describe("ApplicationPackageService", () => {
         source: "https://github.com/autobyteus/autobyteus-apps",
       }),
     ).rejects.toThrow(/already exists/i);
+  });
+
+  it("refreshes application bundles and definition caches after local import and removal", async () => {
+    const repoRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-repo-"));
+    const appDataRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-app-data-"));
+    const registryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-registry-"));
+    const localRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-local-"));
+
+    cleanupPaths.add(repoRoot);
+    cleanupPaths.add(appDataRoot);
+    cleanupPaths.add(registryRoot);
+    cleanupPaths.add(localRoot);
+
+    const rootSettingsStore = createRootSettingsStore(appDataRoot);
+    await writeApplicationBundle(rootSettingsStore.getBuiltInRootPath(), "built-in-app");
+    await writeApplicationBundle(localRoot, "linked-app");
+
+    const refreshCalls: string[] = [];
+    const service = new ApplicationPackageService({
+      rootSettingsStore,
+      registryStore: new ApplicationPackageRegistryStore({ getAppDataDir: () => registryRoot }),
+      refreshApplicationBundles: async () => {
+        refreshCalls.push("bundles");
+      },
+      refreshAgentDefinitions: async () => {
+        refreshCalls.push("agent-definitions");
+      },
+      refreshAgentTeams: async () => {
+        refreshCalls.push("agent-teams");
+      },
+      validateApplicationPackageContents: async () => undefined,
+      builtInMaterializer: createBuiltInMaterializer(repoRoot),
+    });
+
+    const importedPackages = await service.importApplicationPackage({
+      sourceKind: "LOCAL_PATH",
+      source: localRoot,
+    });
+    const linkedPackage = importedPackages.find((entry) => entry.sourceSummary === path.resolve(localRoot));
+
+    await service.removeApplicationPackage(linkedPackage?.packageId ?? "");
+
+    expect(refreshCalls).toEqual([
+      "bundles",
+      "agent-definitions",
+      "agent-teams",
+      "bundles",
+      "agent-definitions",
+      "agent-teams",
+    ]);
+  });
+
+  it("rolls back a managed GitHub import when catalog refresh fails after package registration", async () => {
+    const repoRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-repo-"));
+    const appDataRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-app-data-"));
+    const registryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-registry-"));
+    const managedRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-managed-"));
+
+    cleanupPaths.add(repoRoot);
+    cleanupPaths.add(appDataRoot);
+    cleanupPaths.add(registryRoot);
+    cleanupPaths.add(managedRoot);
+
+    const rootSettingsStore = createRootSettingsStore(appDataRoot);
+    await writeApplicationBundle(rootSettingsStore.getBuiltInRootPath(), "built-in-app");
+
+    class MockInstaller extends GitHubApplicationPackageInstaller {
+      override getManagedInstallDir(installKey: string): string {
+        return path.join(managedRoot, installKey);
+      }
+
+      override async installPackage(source: GitHubRepositorySource): Promise<{
+        rootPath: string;
+        managedInstallPath: string;
+        canonicalSourceUrl: string;
+      }> {
+        const installDir = this.getManagedInstallDir(source.installKey);
+        await writeApplicationBundle(installDir, "github-app");
+        return {
+          rootPath: installDir,
+          managedInstallPath: installDir,
+          canonicalSourceUrl: source.canonicalUrl,
+        };
+      }
+    }
+
+    const service = new ApplicationPackageService({
+      rootSettingsStore,
+      registryStore: new ApplicationPackageRegistryStore({ getAppDataDir: () => registryRoot }),
+      installer: new MockInstaller(),
+      refreshApplicationBundles: vi.fn(async () => undefined),
+      refreshAgentDefinitions: vi.fn(async () => {
+        throw new Error("refresh failed");
+      }),
+      refreshAgentTeams: vi.fn(async () => undefined),
+      validateApplicationPackageContents: async () => undefined,
+      builtInMaterializer: createBuiltInMaterializer(repoRoot),
+    });
+
+    await expect(
+      service.importApplicationPackage({
+        sourceKind: "GITHUB_REPOSITORY",
+        source: "https://github.com/AutoByteus/autobyteus-apps",
+      }),
+    ).rejects.toThrow(/refresh failed/i);
+
+    expect(parseAdditionalRoots()).toEqual([]);
+
+    const registryStore = new ApplicationPackageRegistryStore({
+      getAppDataDir: () => registryRoot,
+    });
+    expect(
+      await registryStore.findGitHubPackageBySource("autobyteus/autobyteus-apps"),
+    ).toBeNull();
+
+    await expect(
+      fs.access(path.join(managedRoot, "autobyteus__autobyteus-apps")),
+    ).rejects.toBeDefined();
+  });
+
+  it("restores a managed GitHub package when removal refresh fails", async () => {
+    const repoRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-repo-"));
+    const appDataRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-app-data-"));
+    const registryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-registry-"));
+    const managedRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-managed-"));
+
+    cleanupPaths.add(repoRoot);
+    cleanupPaths.add(appDataRoot);
+    cleanupPaths.add(registryRoot);
+    cleanupPaths.add(managedRoot);
+
+    const rootSettingsStore = createRootSettingsStore(appDataRoot);
+    await writeApplicationBundle(rootSettingsStore.getBuiltInRootPath(), "built-in-app");
+
+    class MockInstaller extends GitHubApplicationPackageInstaller {
+      override getManagedInstallDir(installKey: string): string {
+        return path.join(managedRoot, installKey);
+      }
+
+      override async installPackage(source: GitHubRepositorySource): Promise<{
+        rootPath: string;
+        managedInstallPath: string;
+        canonicalSourceUrl: string;
+      }> {
+        const installDir = this.getManagedInstallDir(source.installKey);
+        await writeApplicationBundle(installDir, "github-app");
+        return {
+          rootPath: installDir,
+          managedInstallPath: installDir,
+          canonicalSourceUrl: source.canonicalUrl,
+        };
+      }
+    }
+
+    let shouldFailRefresh = false;
+
+    const service = new ApplicationPackageService({
+      rootSettingsStore,
+      registryStore: new ApplicationPackageRegistryStore({ getAppDataDir: () => registryRoot }),
+      installer: new MockInstaller(),
+      refreshApplicationBundles: vi.fn(async () => undefined),
+      refreshAgentDefinitions: vi.fn(async () => {
+        if (shouldFailRefresh) {
+          throw new Error("refresh failed");
+        }
+      }),
+      refreshAgentTeams: vi.fn(async () => undefined),
+      validateApplicationPackageContents: async () => undefined,
+      builtInMaterializer: createBuiltInMaterializer(repoRoot),
+    });
+
+    const importedPackages = await service.importApplicationPackage({
+      sourceKind: "GITHUB_REPOSITORY",
+      source: "https://github.com/AutoByteus/autobyteus-apps",
+    });
+    const managedPackage = importedPackages.find(
+      (entry) => entry.sourceKind === "GITHUB_REPOSITORY",
+    );
+    const managedInstallDir = path.join(managedRoot, "autobyteus__autobyteus-apps");
+
+    expect(managedPackage).toBeDefined();
+    shouldFailRefresh = true;
+
+    await expect(
+      service.removeApplicationPackage(managedPackage?.packageId ?? ""),
+    ).rejects.toThrow(/refresh failed/i);
+
+    expect(parseAdditionalRoots()).toContain(managedInstallDir);
+
+    const registryStore = new ApplicationPackageRegistryStore({
+      getAppDataDir: () => registryRoot,
+    });
+    expect(
+      await registryStore.findGitHubPackageBySource("autobyteus/autobyteus-apps"),
+    ).not.toBeNull();
+
+    await expect(fs.access(managedInstallDir)).resolves.toBeUndefined();
   });
 
   it("fails local package import before registration when an application-owned agent definition is malformed", async () => {
@@ -268,6 +469,8 @@ describe("ApplicationPackageService", () => {
       rootSettingsStore,
       registryStore,
       refreshApplicationBundles: async () => undefined,
+      refreshAgentDefinitions: async () => undefined,
+      refreshAgentTeams: async () => undefined,
       validateApplicationPackageContents: (packageRoot) =>
         validatingProvider.validatePackageRoot(
           packageRoot,
@@ -305,6 +508,8 @@ describe("ApplicationPackageService", () => {
       rootSettingsStore,
       registryStore,
       refreshApplicationBundles: async () => undefined,
+      refreshAgentDefinitions: async () => undefined,
+      refreshAgentTeams: async () => undefined,
       validateApplicationPackageContents: async () => undefined,
       builtInMaterializer,
     });

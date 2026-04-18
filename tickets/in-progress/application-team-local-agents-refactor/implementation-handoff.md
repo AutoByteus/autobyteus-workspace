@@ -17,6 +17,7 @@
 - Updated agent provenance rendering so TEAM_LOCAL agents owned by application bundles show both team and application/package provenance in card/detail/edit surfaces.
 - Refreshed targeted server/web tests and docs for the new app-team-local semantics.
 - Local Fix round: corrected the `application-package-service` malformed-fixture mutation path, made `AgentDetail.spec.ts` assert owner-label rendering without hardcoded untranslated strings, and added the replacement team-local sample fixture files into the tracked change set.
+- Post-delivery local fix: updated application-package import/remove to refresh application bundles plus agent-definition and team-definition caches together so newly imported application-owned teams and team-local members are immediately launchable without requiring a full app restart.
 
 ## Key Files Or Areas
 
@@ -32,6 +33,7 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-server-ts/src/agent-definition/providers/agent-definition-source-paths.ts`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-server-ts/src/agent-definition/providers/file-agent-definition-provider.ts`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-server-ts/src/application-bundles/providers/file-application-bundle-provider.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-server-ts/src/application-packages/services/application-package-service.ts`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-server-ts/src/application-sessions/services/application-session-launch-builder.ts`
 - Web implementation:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-web/components/agentTeams/AgentTeamDefinitionForm.vue`
@@ -43,6 +45,8 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-web/components/agents/AgentEdit.vue`
 - Targeted tests/docs:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-server-ts/tests/unit/application-bundles/file-application-bundle-provider.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-server-ts/tests/unit/application-packages/application-package-service.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-server-ts/tests/e2e/applications/application-packages-graphql.e2e.test.ts`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-web/components/agentTeams/__tests__/AgentTeamDefinitionForm.spec.ts`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-web/components/agents/__tests__/AgentCard.spec.ts`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-web/components/agents/__tests__/AgentDetail.spec.ts`
@@ -80,6 +84,14 @@
   - Result: `Pass`
   - `pnpm --dir /Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-web test:nuxt --run components/agentTeams/__tests__/AgentTeamDefinitionForm.spec.ts components/agents/__tests__/AgentCard.spec.ts components/agents/__tests__/AgentDetail.spec.ts stores/__tests__/agentDefinitionStore.spec.ts stores/__tests__/applicationLaunchPreparation.integration.spec.ts`
   - Result: `Pass` (`5` files, `18` tests)
+- Post-delivery cache-fix validation rerun on `2026-04-18` succeeded for the changed server scope:
+  - `pnpm exec vitest run tests/unit/application-packages/application-package-service.test.ts`
+  - Result: `Pass` (`5` tests)
+  - `pnpm exec vitest run tests/e2e/applications/application-packages-graphql.e2e.test.ts`
+  - Result: `Pass` (`1` test)
+- Repo-level typecheck remains noisy outside this fix scope:
+  - `pnpm exec tsc --noEmit`
+  - Result: existing `TS6059` `rootDir`/`tests` configuration failures unrelated to the touched cache-refresh change
 
 ## Validation Hints / Suggested Scenarios
 
@@ -94,9 +106,15 @@
   - verify TEAM_LOCAL agents owned by an application bundle show both owning team and owning application/package provenance in card/detail/edit surfaces
 - Package refresh behavior:
   - import/remove a package and confirm app-owned team-local agents appear/disappear in the Agents UI and under the owner-team getter path
+  - import Brief Studio from `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/applications/brief-studio/dist/importable-package` and confirm Launch Application succeeds immediately after import without restarting the app
 
 ## What Needs Validation
 
 - Broader server/web regression coverage beyond the targeted Local Fix suites if code review wants wider confidence
 - End-to-end import/edit/launch coverage for Brief Studio and Socratic Math Teacher with the migrated team-local sample fixtures
 - Optional follow-up on the known repo-level `autobyteus-server-ts typecheck` `TS6059` noise if that shared tsconfig issue is being addressed separately
+
+## Current Head / Delivery Context
+
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor`
+- Current HEAD at handoff update time: `cbe098e1`

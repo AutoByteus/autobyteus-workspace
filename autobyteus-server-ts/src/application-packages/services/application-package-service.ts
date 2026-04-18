@@ -1,6 +1,8 @@
 import fs from "node:fs";
 import fsPromises from "node:fs/promises";
 import path from "node:path";
+import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
+import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import { BUILT_IN_APPLICATION_PACKAGE_ID } from "../../application-bundles/providers/file-application-bundle-provider.js";
 import { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
 import { BuiltInApplicationPackageMaterializer } from "./built-in-application-package-materializer.js";
@@ -156,6 +158,8 @@ export class ApplicationPackageService {
   private readonly registryStore: ApplicationPackageRegistryStore;
   private readonly installer: GitHubApplicationPackageInstaller;
   private readonly refreshApplicationBundles: RefreshBundlesFn;
+  private readonly refreshAgentDefinitions: RefreshBundlesFn;
+  private readonly refreshAgentTeams: RefreshBundlesFn;
   private readonly validateApplicationPackageContents: (packageRoot: string) => Promise<void>;
   private readonly injectedBuiltInMaterializer?: BuiltInMaterializerLike;
 
@@ -164,6 +168,8 @@ export class ApplicationPackageService {
     registryStore?: ApplicationPackageRegistryStore;
     installer?: GitHubApplicationPackageInstaller;
     refreshApplicationBundles?: RefreshBundlesFn;
+    refreshAgentDefinitions?: RefreshBundlesFn;
+    refreshAgentTeams?: RefreshBundlesFn;
     validateApplicationPackageContents?: (packageRoot: string) => Promise<void>;
     builtInMaterializer?: BuiltInMaterializerLike;
   } = {}) {
@@ -176,6 +182,12 @@ export class ApplicationPackageService {
     this.refreshApplicationBundles =
       dependencies.refreshApplicationBundles ??
       (() => ApplicationBundleService.getInstance().refresh());
+    this.refreshAgentDefinitions =
+      dependencies.refreshAgentDefinitions ??
+      (() => AgentDefinitionService.getInstance().refreshCache());
+    this.refreshAgentTeams =
+      dependencies.refreshAgentTeams ??
+      (() => AgentTeamDefinitionService.getInstance().refreshCache());
     this.validateApplicationPackageContents =
       dependencies.validateApplicationPackageContents ??
       ((packageRoot) => ApplicationBundleService.getInstance().validatePackageRoot(packageRoot));
@@ -239,7 +251,7 @@ export class ApplicationPackageService {
 
     try {
       await this.registryStore.removePackageRecord(normalizedPackageId);
-      await this.refreshApplicationBundles();
+      await this.refreshCatalogCaches();
 
       if (
         targetPackage.sourceKind === GITHUB_SOURCE_KIND &&
@@ -255,7 +267,7 @@ export class ApplicationPackageService {
     } catch (error) {
       this.safeAddAdditionalRootPath(targetPackage.rootPath);
       await this.restorePackageRecord(existingRecord);
-      await this.refreshApplicationBundles().catch(() => undefined);
+      await this.refreshCatalogCaches().catch(() => undefined);
       throw error;
     }
   }
@@ -308,12 +320,12 @@ export class ApplicationPackageService {
 
     try {
       await this.registryStore.upsertLinkedLocalPackageRecord(resolvedPath);
-      await this.refreshApplicationBundles();
+      await this.refreshCatalogCaches();
       return this.listApplicationPackages();
     } catch (error) {
       this.safeRemoveAdditionalRootPath(resolvedPath);
       await this.registryStore.removePackageRecord(packageId).catch(() => undefined);
-      await this.refreshApplicationBundles().catch(() => undefined);
+      await this.refreshCatalogCaches().catch(() => undefined);
       throw error;
     }
   }
@@ -357,7 +369,7 @@ export class ApplicationPackageService {
         managedInstallPath: installedPackage.managedInstallPath,
       });
 
-      await this.refreshApplicationBundles();
+      await this.refreshCatalogCaches();
       return this.listApplicationPackages();
     } catch (error) {
       this.safeRemoveAdditionalRootPath(installedPackage.rootPath);
@@ -366,7 +378,7 @@ export class ApplicationPackageService {
         recursive: true,
         force: true,
       }).catch(() => undefined);
-      await this.refreshApplicationBundles().catch(() => undefined);
+      await this.refreshCatalogCaches().catch(() => undefined);
       throw error;
     }
   }
@@ -396,6 +408,12 @@ export class ApplicationPackageService {
 
       return left.rootPath.localeCompare(right.rootPath);
     });
+  }
+
+  private async refreshCatalogCaches(): Promise<void> {
+    await this.refreshApplicationBundles();
+    await this.refreshAgentDefinitions();
+    await this.refreshAgentTeams();
   }
 
   private safeRemoveAdditionalRootPath(rootPath: string): void {

@@ -13,10 +13,10 @@ The latest round is authoritative; earlier rounds remain history.
 ## Review Round Meta
 
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/tickets/in-progress/application-team-local-agents-refactor/requirements.md`
-- Current Review Round: `3`
-- Trigger: `API/E2E validation-code re-review after repository-resident durable validation was updated during validation round 1`
-- Prior Review Round Reviewed: `2`
-- Latest Authoritative Round: `3`
+- Current Review Round: `5`
+- Trigger: `API/E2E validation re-review after round-4 validation gaps CR-004 and CR-005 were closed with tracked durable tests`
+- Prior Review Round Reviewed: `4`
+- Latest Authoritative Round: `5`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/tickets/in-progress/application-team-local-agents-refactor/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/tickets/in-progress/application-team-local-agents-refactor/design-spec.md`
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/tickets/in-progress/application-team-local-agents-refactor/design-review-report.md`
@@ -34,38 +34,38 @@ Round rules:
 | --- | --- | --- | --- | --- | --- | --- |
 | `1` | Implementation review | `N/A` | `3` | `Fail` | `No` | Source shape was aligned, but changed durable validation was red and replacement fixture files were still untracked. |
 | `2` | Local Fix re-review | `CR-001`, `CR-002`, `CR-003` | `0` | `Pass` | `No` | Prior findings resolved; targeted server and web validation passed and the sample fixture cutover became tracked. |
-| `3` | API/E2E validation-code re-review | `None unresolved from round 2` | `0` | `Pass` | `Yes` | Reviewed the validation-only durable test update, independently reran the integration suite, and confirmed the cumulative package remains delivery-ready. |
+| `3` | API/E2E validation-code re-review | `None unresolved from round 2` | `0` | `Pass` | `No` | Reviewed the validation-only durable test update, independently reran the integration suite, and confirmed the cumulative package remained delivery-ready at that point in time. |
+| `4` | Post-delivery cache-refresh local fix review | `None unresolved from round 3` | `2` | `Fail` | `No` | Cache invalidation design looked sound, but the changed runtime behavior still lacked durable executable proof for immediate launchability and refresh-failure rollback. |
+| `5` | API/E2E re-review after CR-004 / CR-005 closure | `CR-004`, `CR-005` | `0` | `Pass` | `Yes` | The missing durable proof is now present in tracked tests, the focused server rerun is green, and the cumulative package is delivery-ready again. |
 
 ## Review Scope
 
-This round re-reviewed the cumulative package with focus on the repository-resident durable validation that changed after the earlier code review:
-- `autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts`
-- the authoritative validation artifact at `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/tickets/in-progress/application-team-local-agents-refactor/validation-report.md`
-- any directly related validation boundary usage in `FileApplicationBundleProvider` / application-package-root settings access
+This round re-reviewed the cumulative package with focus on the repository-resident durable validation added to close the round-`4` findings:
+- `autobyteus-server-ts/tests/e2e/applications/application-packages-graphql.e2e.test.ts`
+- `autobyteus-server-ts/tests/unit/application-packages/application-package-service.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/tickets/in-progress/application-team-local-agents-refactor/validation-report.md`
+- the already-reviewed runtime source owner `autobyteus-server-ts/src/application-packages/services/application-package-service.ts` as context for the now-closed validation gaps
 
 Executable review probes run in this round:
-- `git -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor diff -- autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts` — `Pass`; diff is a narrow validation-only stub fix from `getDefaultRootPath(...)` to `getBuiltInRootPath(...)`
-- `pnpm --dir autobyteus-server-ts test --run tests/integration/application-backend/brief-studio-imported-package.integration.test.ts` — `Pass` (`1` file, `2` tests)
-- validation-report evidence cross-check — `Pass`; report content, changed durable validation file, and claimed results align with the repo diff and rerun evidence
+- `git -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor diff -- autobyteus-server-ts/tests/e2e/applications/application-packages-graphql.e2e.test.ts autobyteus-server-ts/tests/unit/application-packages/application-package-service.test.ts tickets/in-progress/application-team-local-agents-refactor/validation-report.md` — `Pass`; the new repo delta is validation-only and directly targets the prior findings.
+- `pnpm --dir /Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-server-ts exec vitest run tests/unit/application-packages/application-package-service.test.ts tests/e2e/applications/application-packages-graphql.e2e.test.ts tests/integration/application-backend/brief-studio-imported-package.integration.test.ts` — `Pass` (`3` files, `11` tests).
+- validation-report evidence cross-check — `Pass`; the validation report, changed durable tests, and independent rerun results align.
 
-Carried-forward authoritative evidence from round `2` that still applies because round `3` changed only durable validation code:
-- `pnpm --dir autobyteus-server-ts build:full` — `Pass`
-- server targeted suite — `Pass` (`5` files, `24` tests)
-- `pnpm --dir autobyteus-web exec nuxi prepare` — `Pass`
-- web targeted suite — `Pass` (`5` files, `18` tests)
+Carried-forward authoritative source review from round `4` still applies because the runtime implementation owner was already reviewed and round `5` changed only durable validation code and artifacts.
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
 | Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `2` | `None` | `N/A` | `Still clean` | No unresolved code-review findings remained open after round `2`, and round `3` introduced no new review findings. | Round `3` is a validation-code re-review only. |
+| `4` | `CR-004` | `Medium` | `Resolved` | `autobyteus-server-ts/tests/e2e/applications/application-packages-graphql.e2e.test.ts:366-607` now uses real bundle/team/agent refresh callbacks, proves Brief Studio visibility immediately after import, launches immediately through `ApplicationSessionService`, verifies removal invalidation, and verifies re-import restoration. Independent rerun passed. | The runtime-visible bug boundary now has tracked durable proof. |
+| `4` | `CR-005` | `Medium` | `Resolved` | `autobyteus-server-ts/tests/unit/application-packages/application-package-service.test.ts:284-429` now covers managed GitHub import rollback and removal rollback when refresh fails. Independent rerun passed. | The expanded rollback surface is now executably covered in the application-package scope. |
 
 ## Source File Size And Structure Audit (If Applicable)
 
 Use this section for changed source implementation files only.
 Do not apply the source-file hard limit to unit, integration, API, or E2E test files.
 
-No changed source implementation files were introduced in round `3`; the only repo delta in this entry point is durable validation code.
+No new source implementation files changed in round `5`; the latest round adds only durable validation and validation artifacts.
 
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -90,29 +90,29 @@ Quick examples:
 
 | Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Data-flow spine inventory clarity and preservation under shared principles | `Pass` | The validation-only change restores the intended imported-package validation spine instead of altering it; the integration suite now reaches the Brief Studio imported-package product flow again. | None. |
-| Ownership boundary preservation and clarity | `Pass` | The test stub now matches the actual root-settings boundary expected by `FileApplicationBundleProvider` (`getBuiltInRootPath` + `listAdditionalRootPaths`) instead of inventing a stale method. | None. |
-| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | `Pass` | The update is tightly scoped to test harness setup and does not leak product policy into validation scaffolding. | None. |
-| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | `Pass` | No extra helper or workaround layer was added; the validation now directly uses the current provider contract. | None. |
-| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | `Pass` | No new repeated structure was introduced. | None. |
-| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | `Pass` | The test stub exposes only the settings surface actually used by the provider path under test. | None. |
-| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | `Pass` | The integration test now defers bundle-root semantics to the real provider contract instead of carrying stale parallel knowledge. | None. |
-| Empty indirection check (no pass-through-only boundary) | `Pass` | No extra indirection was introduced in the validation fix. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | `Pass` | The validation-only fix stays inside the durable integration test and does not modify production code. | None. |
-| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | `Pass` | The changed test now depends on the current root-settings API shape rather than a removed shortcut contract. | None. |
-| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | `Pass` | The test harness now targets the authoritative root-settings boundary consumed by `FileApplicationBundleProvider`; it no longer mixes old and new contract shapes. | None. |
-| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | `Pass` | The durable validation change lives in the appropriate integration-test file for imported-package backend behavior. | None. |
-| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | `Pass` | No new file or split was introduced. | None. |
-| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | `Pass` | The changed stub method exactly matches the current provider-facing root-settings API, improving boundary clarity. | None. |
-| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | `Pass` | `getBuiltInRootPath` is the correct contract name and aligns with the provider usage under test. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | `Pass` | The fix removes stale contract duplication rather than adding any. | None. |
-| Patch-on-patch complexity control | `Pass` | The validation-only fix is minimal and direct. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | `Pass` | The stale `getDefaultRootPath(...)` stub usage was removed from the changed validation file. | None. |
-| Test quality is acceptable for the changed behavior | `Pass` | The durable integration suite now exercises the imported-package product flow again and passes under independent rerun. | None. |
-| Test maintainability is acceptable for the changed behavior | `Pass` | The fix updates the harness to the current provider contract instead of relying on an obsolete stub shape. | None. |
-| Validation evidence sufficiency for the changed flow | `Pass` | The validation report’s added integration evidence matches the repo diff and independent rerun result (`1` file / `2` tests passed). | None. |
-| No backward-compatibility mechanisms (no compatibility wrappers/dual-path behavior) | `Pass` | The validation report and changed code do not introduce any compatibility or fallback path. | None. |
-| No legacy code retention for old behavior | `Pass` | The validation-only update removes stale test-harness contract usage rather than retaining it. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | `Pass` | The newly added e2e test now spans the full relevant spine: package import -> real bundle/team/agent refresh -> visible imported app/team/agents -> immediate session launch -> remove invalidation -> re-import restoration. | None. |
+| Ownership boundary preservation and clarity | `Pass` | The runtime proof uses the real `ApplicationBundleService`, `AgentDefinitionService`, `AgentTeamDefinitionService`, and `ApplicationSessionService` boundaries rather than reimplementing internals in test code. | None. |
+| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | `Pass` | The new validation stubs only non-goal runtime side effects such as publication and stream hooks while leaving the cache/launch boundaries real. | None. |
+| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | `Pass` | The durable proof extends the existing GraphQL e2e and package unit suites instead of creating a parallel validation harness. | None. |
+| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | `Pass` | The validation work is consolidated into the tracked durable test files named in the validation report. | None. |
+| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | `Pass` | The new in-test state store and runtime stubs are narrowly scoped to the launchability proof. | None. |
+| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | `Pass` | The tests now exercise the same authoritative refresh policy already centralized in `ApplicationPackageService.refreshCatalogCaches()`. | None. |
+| Empty indirection check (no pass-through-only boundary) | `Pass` | The added test helpers own concrete validation setup and are not empty wrappers. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | `Pass` | Rollback proof stays in the package-service unit file; runtime visibility/launch proof stays in the application-packages GraphQL e2e file. | None. |
+| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | `Pass` | The validation closes the prior gap without bypassing authoritative service boundaries. | None. |
+| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | `Pass` | The new proof depends on the public services and their refresh APIs, not on mixed-level provider/cache internals. | None. |
+| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | `Pass` | The new durability checks live in the correct e2e and unit test owners for package import/remove behavior. | None. |
+| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | `Pass` | The durable proof was folded into existing test owners instead of creating fragmented one-off files. | None. |
+| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | `Pass` | The launchability proof now checks the canonical team-local agent ids and session-launch boundary directly. | None. |
+| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | `Pass` | The new test names accurately describe the runtime and rollback behavior they guard. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | `Pass` | The validation update reuses existing suite helpers and keeps the added test setup localized. | None. |
+| Patch-on-patch complexity control | `Pass` | The validation additions close the specific round-`4` gaps without widening scope into unrelated surfaces. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | `Pass` | The validation report records removal of the temporary untracked experiment and keeps only tracked durable proof. | None. |
+| Test quality is acceptable for the changed behavior | `Pass` | `CR-004` and `CR-005` are now covered by behavior-level durable tests that hit the real refresh and launch boundaries or explicit rollback branches. | None. |
+| Test maintainability is acceptable for the changed behavior | `Pass` | The durable proof lives in tracked suites that match the owning behavior, reducing risk of future drift back to no-op validation. | None. |
+| Validation evidence sufficiency for the changed flow | `Pass` | The focused rerun passed `3` files / `11` tests, including immediate launchability proof and rollback coverage, and the Brief Studio imported-package backend integration still passed. | None. |
+| No backward-compatibility mechanisms (no compatibility wrappers/dual-path behavior) | `Pass` | The validation additions do not introduce compatibility behavior. | None. |
+| No legacy code retention for old behavior | `Pass` | The final proof verifies the clean-cut cache-refresh behavior directly. | None. |
 
 ## Review Scorecard (Mandatory)
 
@@ -122,20 +122,20 @@ Use the canonical priority order below. The order is the review reasoning order,
 
 - Overall score (`/10`): `9.5`
 - Overall score (`/100`): `95`
-- Score calculation note: The implementation package was already in a clean pass state in round `2`; round `3` adds a sound durable validation fix and stronger imported-package execution evidence without introducing new design or cleanup concerns.
+- Score calculation note: The runtime source change was already structurally sound in round `4`; round `5` closes the only remaining issue by adding durable proof at the exact launchability and rollback boundaries that were previously missing.
 
 | Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | `9.5` | The durable validation now covers the intended imported-package flow using the current boundary contract. | No active weakness remains in changed scope. | Keep future validation aligned with real product spines. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | `9.5` | The changed validation now targets the authoritative root-settings boundary expected by the provider. | No active weakness remains in changed scope. | Preserve boundary-accurate validation scaffolding. |
-| `3` | `API / Interface / Query / Command Clarity` | `9.4` | The validation change directly clarifies and honors the current provider-facing interface. | No active weakness remains in changed scope. | Keep durable tests synchronized with contract changes. |
-| `4` | `Separation of Concerns and File Placement` | `9.5` | The fix stays fully inside the correct integration-test owner file. | No active weakness remains in changed scope. | Maintain the same narrow validation-only repair style. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | `9.4` | The test stub is now tighter and no longer carries stale extra contract assumptions. | No active weakness remains in changed scope. | Continue pruning obsolete stub surface area when contracts evolve. |
-| `6` | `Naming Quality and Local Readability` | `9.4` | The changed method name now matches the real contract and improves readability. | No active weakness remains in changed scope. | Keep test harness naming aligned with product APIs. |
-| `7` | `Validation Strength` | `9.6` | The cumulative package now includes passing targeted server tests, passing targeted web tests, and a repaired passing imported-package integration suite. | Only broader repo-level unrelated drift remains outside ticket scope. | Delivery can proceed; future broader repo cleanup can address unrelated shared noise. |
-| `8` | `Runtime Correctness Under Edge Cases` | `9.4` | The imported-package integration rerun materially improves confidence in the Brief Studio product path. | The validation report correctly notes one unrelated broader built-in bundle-scan issue outside ticket scope. | Keep similar product-path integration coverage when adjacent application-bundle contracts change. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | `9.9` | No fallback or compatibility mechanism was introduced in either implementation or validation scaffolding. | No meaningful weakness remains here. | Keep future changes equally clean-cut. |
-| `10` | `Cleanup Completeness` | `9.5` | The stale validation stub contract usage was removed and no new cleanup debt was introduced. | Only normal ticket-artifact tracking noise remains outside product code. | Keep durable validation synchronized as APIs evolve. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | `9.5` | The tracked e2e test now covers the real import -> refresh -> visibility -> launch -> remove -> re-import spine. | No active weakness remains in the changed scope. | Keep future package lifecycle validation equally end-to-end at the real business boundary. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | `9.5` | The validation uses the correct service boundaries and confirms the package service refresh contract through those owners. | No active weakness remains in the changed scope. | Preserve the same authoritative-boundary discipline in future validation updates. |
+| `3` | `API / Interface / Query / Command Clarity` | `9.4` | The proof now checks the real launch-facing API and canonical team-local ids rather than just internal call order. | No active weakness remains in the changed scope. | Keep durable tests aligned with the user-visible contract. |
+| `4` | `Separation of Concerns and File Placement` | `9.5` | Runtime proof and rollback proof live in the correct durable suites. | No active weakness remains in the changed scope. | Maintain the same owner-aligned validation placement. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | `9.4` | The added validation helpers are narrow and do not broaden the underlying model. | No active weakness remains in the changed scope. | Continue keeping test-only scaffolding minimal and purpose-built. |
+| `6` | `Naming Quality and Local Readability` | `9.4` | The new test names and assertions make the guarded behavior obvious. | No active weakness remains in the changed scope. | Keep future regression names this explicit. |
+| `7` | `Validation Strength` | `9.7` | The prior gaps are now closed with tracked durable proof and an independent focused rerun of `11` tests. | Only broader repo-level unrelated noise remains outside ticket scope. | Delivery can proceed; broader repo cleanup can remain separate. |
+| `8` | `Runtime Correctness Under Edge Cases` | `9.5` | The application-package path now has explicit rollback and immediate-launchability proof, and imported-package backend integration still passes. | No active weakness remains in the changed scope. | Keep similar lifecycle coverage whenever package-triggered runtime behavior changes again. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | `9.9` | No fallback or dual-path behavior was introduced in either runtime code or validation. | No meaningful weakness remains here. | Keep future fixes equally clean-cut. |
+| `10` | `Cleanup Completeness` | `9.4` | Temporary validation experiments were removed and the durable proof was consolidated into tracked suites. | Only unrelated ticket-delivery artifact tracking remains outside code-review scope. | Keep validation cleanup equally disciplined. |
 
 Rules:
 - Do not record raw numbers without explanation.
@@ -146,24 +146,24 @@ Rules:
 
 ## Findings
 
-None. The validation-only durable test update is sound and no directly related implementation regressions were identified.
+None. `CR-004` and `CR-005` are resolved and no new review findings were identified.
 
 ## Validation And Test Quality Verdict
 
 | Area | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- |
-| Validation Evidence | Sufficient for changed behavior | `Pass` | The validation report and independent rerun agree: the imported-package integration suite passes and adds real product-flow evidence. |
-| Tests | Test quality is acceptable | `Pass` | The durable integration test now exercises the product path again instead of failing in harness setup. |
-| Tests | Test maintainability is acceptable | `Pass` | The fix removes stale contract drift from the test harness. |
-| Tests | Main issue is `Validation Gap` rather than source/design drift | `Pass` | No active gap remains in the changed validation scope. |
+| Validation Evidence | Sufficient for changed behavior | `Pass` | The focused validation package now proves immediate launchability, remove/re-import invalidation behavior, and refresh-failure rollback in tracked durable tests. |
+| Tests | Test quality is acceptable | `Pass` | The new durability checks hit the real runtime/rollback boundaries instead of only checking wiring. |
+| Tests | Test maintainability is acceptable | `Pass` | The proof lives in the appropriate long-lived unit/e2e suites and removed the earlier no-op gap. |
+| Tests | Main issue is `Validation Gap` rather than source/design drift | `Pass` | The prior validation gap is now closed. |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- |
 | No backward-compatibility mechanisms in changed scope | `Pass` | No compatibility wrapper or dual-path behavior was introduced. |
-| No legacy old-behavior retention in changed scope | `Pass` | The validation-only fix removes stale stub usage instead of retaining it. |
-| Dead/obsolete code cleanup completeness in changed scope | `Pass` | The obsolete test-harness method usage is gone. |
+| No legacy old-behavior retention in changed scope | `Pass` | The durable proof validates the clean-cut target behavior only. |
+| Dead/obsolete code cleanup completeness in changed scope | `Pass` | Temporary validation experiments were removed and tracked suites remain authoritative. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
 
@@ -172,8 +172,8 @@ None identified in the final changed scope.
 ## Docs-Impact Verdict
 
 - Docs impact: `No`
-- Why: Round `3` changed only durable validation code and the validation artifact; no product docs needed revision.
-- Files or areas likely affected: `None beyond validation artifact history`
+- Why: Round `5` changed durable validation and review artifacts only; no product docs need revision.
+- Files or areas likely affected: `None beyond review/validation artifact history`
 
 ## Classification
 
@@ -184,16 +184,16 @@ Not applicable — clean `Pass`.
 `delivery_engineer`
 
 Routing note:
-- This is the validation-code re-review pass after API/E2E. The cumulative package should now move to delivery.
+- The cumulative package is delivery-ready again after API/E2E closed the round-`4` validation gaps with tracked durable proof.
 
 ## Residual Risks
 
-- The validation report correctly records one broader built-in bundle-scan issue in the Socratic sample backend manifest pathing that predates this ticket; it is not part of this ticket’s authoritative review outcome.
 - Repo-level `autobyteus-server-ts typecheck` still has unrelated shared `TS6059` drift outside the ticket scope.
-- Future application-bundle contract changes should keep the imported-package integration test harness synchronized with the root-settings API to avoid silent validation coverage loss.
+- Remaining untracked ticket-delivery artifacts (`docs-sync.md`, `handoff-summary.md`, `release-deployment-report.md`) are outside code-review scope for this pass.
+- Future package lifecycle changes should keep the same level of durable proof at the real launch/rollback boundaries.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
 - Score Summary: `9.5/10` (`95/100`)
-- Notes: The API/E2E-added durable validation update is sound, independently reruns green, and strengthens the cumulative evidence without introducing new review issues. Proceed to delivery.
+- Notes: The prior validation gaps are resolved. Immediate post-import launchability, remove/re-import invalidation, and managed GitHub refresh-failure rollback now have tracked durable proof, and the independent focused rerun passed `3` files / `11` tests. Proceed to delivery.

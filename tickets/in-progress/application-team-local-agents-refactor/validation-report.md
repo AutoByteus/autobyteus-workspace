@@ -7,10 +7,10 @@
 - Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/tickets/in-progress/application-team-local-agents-refactor/design-spec.md`
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/tickets/in-progress/application-team-local-agents-refactor/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/tickets/in-progress/application-team-local-agents-refactor/implementation-handoff.md`
-- Current Validation Round: `1`
-- Trigger: `Implementation review round 2 passed; execute API/E2E and broader executable validation for application-team-local-agents-refactor.`
-- Prior Round Reviewed: `None`
-- Latest Authoritative Round: `1`
+- Current Validation Round: `2`
+- Trigger: `Focused code review round 4 reported validation gaps CR-004 and CR-005 after the post-delivery application-package cache-refresh fix.`
+- Prior Round Reviewed: `1`
+- Latest Authoritative Round: `2`
 
 Round rules:
 - Reuse the same scenario IDs across reruns for the same scenarios.
@@ -20,90 +20,77 @@ Round rules:
 
 | Round | Trigger | Prior Unresolved Failures Rechecked | New Failures Found | Result | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| `1` | Initial API/E2E validation after implementation review pass | `N/A` | `1` validation-only failure, repaired in-round | `Pass` | `Yes` | Updated one durable integration test stub, reran it green, and completed the in-scope validation matrix. |
+| `1` | Initial API/E2E validation after implementation review pass | `N/A` | `1` validation-only failure, repaired in-round | `Pass` | `No` | Broader server/web/sample validation passed after fixing a stale imported-package integration stub. |
+| `2` | Focused validation-gap closure after code review round `4` | `None from validation round 1`; rechecked `CR-004` and `CR-005` first | `0` | `Pass` | `Yes` | Added tracked durable proof for immediate post-import launchability plus rollback regression coverage, reran the affected server scope green. |
 
 ## Validation Basis
 
-Validation coverage was derived from `REQ-001` through `REQ-013`, `AC-001` through `AC-008`, the approved design spines `DS-001` through `DS-007`, the implementation handoff’s highlighted risk areas, and direct inspection of the changed server/web/sample/doc/test scope. The validation emphasized the clean-cut removal rule: no support for application-owned agent members inside application-owned teams, no fallback reads, and no lingering durable docs/tests that still teach the old model.
+Round `2` coverage was derived from the approved requirements/design package, the implementation handoff for the cache-refresh fix, and the authoritative review findings `CR-004` and `CR-005`. The validation target in this round was narrower than round `1`: prove that application-package import/remove now refreshes application bundles, agent-definition cache, and team-definition cache in a way that makes Brief Studio immediately launchable after import without restart, and prove that refresh-failure rollback restores package visibility/registry state coherently.
 
 ## Validation Surfaces / Modes
 
-- Server executable validation: TypeScript build, targeted unit/e2e suite, targeted integration suite on the real Brief Studio importable package root.
-- Web executable validation: Nuxt prepare plus targeted component/store/integration suite.
-- Sample/package executable probes: direct filesystem/config inspection for Brief Studio, the Brief Studio importable mirror, and Socratic Math Teacher; direct launch-descriptor probe against the migrated sample team definitions.
-- Validation-only hygiene probes: grep audit for stale `refScope: "application_owned"` assertions in the changed docs/tests/samples scope; git diff/status audit; compatibility/legacy-retention spot check in changed server boundaries.
+- Server unit regression coverage for refresh-failure rollback branches in `ApplicationPackageService`.
+- Server tracked e2e/runtime regression coverage in `application-packages-graphql.e2e.test.ts` using real `ApplicationBundleService`, `AgentDefinitionService`, `AgentTeamDefinitionService`, and `ApplicationSessionService` refresh boundaries.
+- Existing imported-package backend integration rerun over REST/WS for Brief Studio to confirm the imported package still executes end to end after the cache-refresh validation updates.
 
 ## Platform / Runtime Targets
 
 - Host environment: local macOS workspace under `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor`
 - Shell: `bash`
 - Node.js: `v22.21.1`
-- Server runtime exercised via Vitest + Prisma/SQLite test database reset flow
-- Web runtime exercised via Nuxt/Vitest component and store tests
+- Server runtime: Vitest + Prisma/SQLite reset flow
+- Validation date: `2026-04-18`
 
 ## Lifecycle / Upgrade / Restart / Migration Checks
 
-- No installer/updater/migration flow is in scope for this refactor.
-- Import/remove lifecycle coverage was exercised through `application-packages-graphql.e2e.test.ts` and the Brief Studio imported-package backend integration test.
-- Team-launch canonicalization lifecycle was exercised through `applicationLaunchPreparation.integration.spec.ts` and a direct launch-descriptor probe against the migrated sample team definitions.
+- Import lifecycle: verified Brief Studio is absent before import, becomes visible immediately after import, and can launch immediately without app restart.
+- Remove lifecycle: verified the imported application, imported application-owned team, and visible imported team-local agents disappear immediately after remove.
+- Re-import lifecycle: verified the same application id and imported team become visible and launchable again after re-import.
+- Rollback lifecycle: verified managed GitHub import/remove restore or remove roots/registry/install state correctly when refresh fails mid-operation.
 
 ## Coverage Matrix
 
 | Scenario ID | Requirements / ACs | Validation Method | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| `VAL-001` | `REQ-004`–`REQ-008`, `REQ-013`, `AC-002`–`AC-004` | Server targeted suite: application-owned team source/service/bundle/package GraphQL tests | `Pass` | `pnpm --dir .../autobyteus-server-ts test --run tests/unit/agent-team-definition/application-owned-team-source.test.ts tests/unit/agent-team-definition/agent-team-definition-service.test.ts tests/unit/application-bundles/file-application-bundle-provider.test.ts tests/unit/application-packages/application-package-service.test.ts tests/e2e/applications/application-packages-graphql.e2e.test.ts` → `5` files / `24` tests passed |
-| `VAL-002` | `REQ-002`–`REQ-003`, `REQ-008`, `AC-001`, `AC-004` | Server production build and bundle/provider regression rerun | `Pass` | `pnpm --dir .../autobyteus-server-ts build:full` passed; targeted suite above stayed green after build |
-| `VAL-003` | `REQ-008`–`REQ-011`, `AC-005`, `AC-007` | Durable integration test on the real Brief Studio importable package root through REST/WS | `Pass` | `pnpm --dir .../autobyteus-server-ts test --run tests/integration/application-backend/brief-studio-imported-package.integration.test.ts` → `1` file / `2` tests passed after updating the validation stub to use `getBuiltInRootPath(...)` |
-| `VAL-004` | `REQ-004`–`REQ-005`, `REQ-009`, `REQ-011`, `AC-005`, `AC-007` | Direct executable probe against migrated sample roots and importable mirror | `Pass` | Inline Node probe read the Brief Studio root, the Brief Studio importable mirror, and the Socratic Math Teacher team roots; all persisted agent members were `team_local`, all agent files existed under the owning team folder, and launch descriptors canonicalized to `team-local:<team-id>:<agent-id>` |
-| `VAL-005` | `REQ-009`–`REQ-010`, `AC-006`, `AC-007` | Web targeted suite: form/localization/store/launch-prep/provenance checks | `Pass` | `pnpm --dir .../autobyteus-web exec nuxi prepare` passed; `pnpm --dir .../autobyteus-web test:nuxt --run components/agentTeams/__tests__/AgentTeamDefinitionForm.spec.ts components/agents/__tests__/AgentCard.spec.ts components/agents/__tests__/AgentDetail.spec.ts stores/__tests__/agentDefinitionStore.spec.ts stores/__tests__/applicationLaunchPreparation.integration.spec.ts` → `5` files / `18` tests passed |
-| `VAL-006` | `REQ-011`–`REQ-013`, `AC-005`, `AC-008` | Sample/docs/tests grep and file-layout audit | `Pass` | No `refScope: "application_owned"` hits remained under `applications`, `autobyteus-server-ts/tests`, `autobyteus-server-ts/docs`, `autobyteus-web/docs`, `autobyteus-web/components`, or `autobyteus-web/stores`; migrated sample agent files were present only under team-owned `agents/` folders |
-| `VAL-007` | Legacy-removal constraint | Changed-code audit | `Pass` | Changed server/web boundaries removed service-level app-owned member validation, removed app-owned member canonicalization/localization for agent refs, and did not reintroduce fallback or dual-path support |
+| `VAL-003` | `REQ-008`–`REQ-011`, `AC-005`, `AC-007` | Rerun existing imported-package backend integration over REST/WS | `Pass` | `pnpm --dir .../autobyteus-server-ts exec vitest run tests/integration/application-backend/brief-studio-imported-package.integration.test.ts` was rerun inside the focused server command and passed `1` file / `2` tests |
+| `VAL-008` | `REQ-004`–`REQ-005`, `REQ-008`–`REQ-011`, `AC-003`–`AC-005`, `AC-007` | Tracked runtime regression in `tests/e2e/applications/application-packages-graphql.e2e.test.ts` using real refresh callbacks and `ApplicationSessionService` launch | `Pass` | `pnpm --dir .../autobyteus-server-ts exec vitest run tests/e2e/applications/application-packages-graphql.e2e.test.ts` (as part of the focused command) passed `1` file / `2` tests, including immediate import -> launch -> remove -> re-import proof |
+| `VAL-009` | `REQ-008`, `REQ-011`, failure-path correctness | Unit rollback regression in `tests/unit/application-packages/application-package-service.test.ts` for managed GitHub import/remove refresh failure | `Pass` | `pnpm --dir .../autobyteus-server-ts exec vitest run tests/unit/application-packages/application-package-service.test.ts` (as part of the focused command) passed `1` file / `7` tests, including import rollback and removal rollback assertions |
 
 ## Test Scope
 
-Executed in this round:
-- `autobyteus-server-ts` production build
-- `autobyteus-server-ts` targeted server suite (`24` tests)
-- `autobyteus-server-ts` targeted Brief Studio importable-package integration suite (`2` tests)
-- `autobyteus-web` Nuxt prepare
-- `autobyteus-web` targeted web suite (`18` tests)
-- direct shell/Node probes for sample roots, importable mirror shape, launch canonicalization, grep audits, and git working-tree evidence
+Executed in round `2`:
+- `autobyteus-server-ts/tests/unit/application-packages/application-package-service.test.ts`
+- `autobyteus-server-ts/tests/e2e/applications/application-packages-graphql.e2e.test.ts`
+- `autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts`
 
-Not executed in this round:
-- full server/web repo test matrices
-- Electron/native end-to-end automation
-- unrelated repo-level `autobyteus-server-ts typecheck` noise already called out by review (`TS6059` rootDir/tests drift outside this ticket scope)
+Not rerun in round `2`:
+- broader round-`1` server/web/sample coverage already recorded historically in this same report
+- repo-wide server/web suites
+- server `build:full`
+- unrelated repo-level `autobyteus-server-ts typecheck` noise already documented outside this ticket scope
 
 ## Validation Setup / Environment
 
 - Repo root: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor`
 - Server package: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-server-ts`
-- Web package: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-web`
-- Ticket artifact folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/tickets/in-progress/application-team-local-agents-refactor`
-- Test databases and temporary server integration artifacts were created by the existing Vitest/Prisma harnesses and removed by the harnesses or manual cleanup where needed.
+- Brief Studio importable package root under test: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/applications/brief-studio/dist/importable-package`
+- Temporary validation roots: per-test temp directories under macOS `/var/folders/...` and `/tmp`, cleaned after execution
+- Database: SQLite test database reset by Vitest/Prisma before the focused server run
 
 ## Tests Implemented Or Updated
 
-- Updated existing durable integration validation:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts`
-- Implementation-side durable validation already present and rerun in this round:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-server-ts/tests/unit/agent-team-definition/application-owned-team-source.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-server-ts/tests/unit/agent-team-definition/agent-team-definition-service.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-server-ts/tests/unit/application-bundles/file-application-bundle-provider.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-server-ts/tests/unit/application-packages/application-package-service.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-server-ts/tests/e2e/applications/application-packages-graphql.e2e.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-web/components/agentTeams/__tests__/AgentTeamDefinitionForm.spec.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-web/components/agents/__tests__/AgentCard.spec.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-web/components/agents/__tests__/AgentDetail.spec.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-web/stores/__tests__/agentDefinitionStore.spec.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-web/stores/__tests__/applicationLaunchPreparation.integration.spec.ts`
+- Updated `autobyteus-server-ts/tests/e2e/applications/application-packages-graphql.e2e.test.ts` to add a tracked durable runtime regression that:
+  - imports the real Brief Studio importable package,
+  - runs real bundle/team/agent refresh callbacks,
+  - proves imported application-owned team/team-local agent visibility without restart,
+  - launches the imported application immediately through `ApplicationSessionService`,
+  - verifies remove invalidation and re-import restoration.
+- Updated `autobyteus-server-ts/tests/unit/application-packages/application-package-service.test.ts` to add refresh-failure rollback regressions for managed GitHub import and removal.
 
 ## Durable Validation Added To The Codebase
 
-- Validation-only local fix after implementation review:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts`
-  - Change: the injected application-package-root settings stub now matches the current provider contract by exposing `getBuiltInRootPath: () => builtInAppRoot` instead of the stale `getDefaultRootPath(...)` method.
-  - Reason: without this fix, the durable Brief Studio imported-package integration test failed before exercising the refactor path.
+- `autobyteus-server-ts/tests/e2e/applications/application-packages-graphql.e2e.test.ts:366-607`
+- `autobyteus-server-ts/tests/unit/application-packages/application-package-service.test.ts:284-429`
 
 ## Other Validation Artifacts
 
@@ -111,101 +98,85 @@ Not executed in this round:
 
 ## Temporary Validation Methods / Scaffolding
 
-- Inline shell audits:
-  - `rg -n 'refScope\s*[:=]\s*"application_owned"|refScope\s*[:=]\s*"APPLICATION_OWNED"|refScope\":\s*"application_owned"|refScope\":\s*"APPLICATION_OWNED"' applications autobyteus-server-ts/tests autobyteus-server-ts/docs autobyteus-web/docs autobyteus-web/components autobyteus-web/stores`
-  - `find applications/.../agent-teams/.../agents -maxdepth 2 -type f`
-- Inline Node executable probe against built server artifacts to read migrated sample team definitions and verify launch canonicalization.
-- Temporary untracked test output directory `autobyteus-server-ts/application-packages/` created during validation was removed.
+- No standalone one-off probe files were left behind in round `2`.
+- Vitest-created temporary roots and the transient `autobyteus-server-ts/application-packages/` output directory were removed after validation.
 
 ## Dependencies Mocked Or Emulated
 
-- Existing Vitest suites used their normal mocked stores/services where already authored.
-- Server integration exercised Fastify REST/WS, Prisma/SQLite test DB setup, and an imported application package root.
-- The direct sample-root probe used stubbed `agentDefinitionService` / `agentTeamDefinitionService` only to drive `ApplicationSessionLaunchBuilder` over real migrated team definitions.
+- `VAL-008` used real application bundle/package/team/agent/session services but stubbed `teamRunService`, `agentRunService`, session-state persistence, publication hooks, and stream publication so the validation stayed focused on cache refresh and launch preparation rather than full runtime execution.
+- `VAL-009` used the existing unit-test installer/store harness with a mocked refresh throw to force the rollback branches deterministically.
+- `VAL-003` continued to use the real imported Brief Studio backend integration harness over Fastify REST/WS.
 
 ## Prior Failure Resolution Check (Mandatory On Round >1)
 
 | Prior Round | Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `N/A` | `N/A` | `N/A` | `N/A` | `N/A` | First validation round. |
+| `Review round 4` | `CR-004` immediate-launchability durable proof gap | `Validation Gap` | `Resolved` | `tests/e2e/applications/application-packages-graphql.e2e.test.ts:366-607` now exercises real refresh callbacks plus immediate `ApplicationSessionService.createApplicationSession(...)`; focused server rerun passed `11` tests total | The runtime boundary is now guarded in a tracked durable test instead of only by no-op refresh wiring. |
+| `Review round 4` | `CR-005` refresh-failure rollback proof gap | `Validation Gap` | `Resolved` | `tests/unit/application-packages/application-package-service.test.ts:284-429` adds managed GitHub import/remove rollback assertions; focused server rerun passed `7` unit tests in that file | The rollback surface is now executably covered in the application-package scope, analogous to the sibling agent-package precedent. |
 
 ## Scenarios Checked
 
 | Scenario ID | Scenario | Result |
 | --- | --- | --- |
-| `VAL-001` | Application-owned teams accept `team_local` member refs, reject old `application_owned` member refs, and fail on missing/malformed local members | `Pass` |
-| `VAL-002` | Application bundle/package import and GraphQL exposure honor the new team-local app-team shape | `Pass` |
-| `VAL-003` | Brief Studio importable package remains executable through REST/WS integration after the refactor | `Pass` |
-| `VAL-004` | Migrated sample roots and importable mirror store private agents under the owning team folder and launch them via canonical team-local ids | `Pass` |
-| `VAL-005` | Web app-owned team authoring localizes canonical visible ids back to persisted local refs | `Pass` |
-| `VAL-006` | Web provenance and store/launch-prep surfaces keep app-team-local agents independently visible with team + application provenance | `Pass` |
-| `VAL-007` | No compatibility wrapper or legacy app-team member behavior remains in the changed scope | `Pass` |
+| `VAL-008` | Import Brief Studio, observe imported application-owned team/team-local agent visibility immediately, launch immediately without restart, remove to invalidate visibility, then re-import and relaunch | `Pass` |
+| `VAL-009` | Force refresh failure during managed GitHub import/remove and verify additional roots, registry rows, and managed install directory roll back coherently | `Pass` |
+| `VAL-003` | Imported Brief Studio backend still serves REST/WS flow end to end after the validation updates | `Pass` |
 
 ## Passed
 
-- Server build completed successfully.
-- Server targeted suite passed: `5` files / `24` tests.
-- Brief Studio importable-package integration suite passed: `1` file / `2` tests.
-- Web Nuxt prepare passed.
-- Web targeted suite passed: `5` files / `18` tests.
-- Brief Studio repo-local sample, Brief Studio importable mirror, and Socratic Math Teacher sample all persisted app-team members as local ids with `refScope: "team_local"`, and their member agent files were present under the owning team folder.
-- Direct launch-descriptor probe confirmed the migrated sample team members canonicalize to `team-local:<team-id>:<agent-id>` at launch time.
-- Grep audit found no lingering `refScope: "application_owned"` durable docs/tests/sample assertions in the changed scope.
+- Focused server rerun passed: `3` files / `11` tests.
+- `application-packages-graphql.e2e.test.ts` passed: `1` file / `2` tests.
+- `application-package-service.test.ts` passed: `1` file / `7` tests.
+- `brief-studio-imported-package.integration.test.ts` passed: `1` file / `2` tests.
+- Immediate import -> launch -> remove -> re-import behavior for Brief Studio now has tracked durable proof against the real cache-refresh boundary.
+- Refresh-failure rollback for managed GitHub import/remove now has tracked regression coverage in the application-package scope.
+- No untracked validation test directory remains; the durable runtime proof was consolidated into the tracked GraphQL e2e file.
 
 ## Failed
 
-- None in the final authoritative round.
+- None in the latest authoritative round.
 
 ## Not Tested / Out Of Scope
 
-- Full repo-wide server/web regression suites.
-- Native Electron UI automation beyond the rerun web component/store coverage.
-- Shared repo-level `autobyteus-server-ts typecheck` `TS6059` drift already documented by review as outside this ticket’s changed scope.
+- Broader round-`1` web validation surfaces were not rerun because the round-`2` trigger was limited to server-side cache refresh and rollback proof.
+- Repo-wide full regression suites and `build:full` were not rerun in this focused validation round.
+- Unrelated untracked ticket docs artifacts (`docs-sync.md`, `handoff-summary.md`, `release-deployment-report.md`) remain outside API/E2E validation scope.
 
 ## Blocked
 
-- Broader repo-root `FileApplicationBundleProvider.listBundles()` validation across every built-in sample application was not used as authoritative evidence for this ticket because repo-local `applications/socratic-math-teacher/backend/bundle.json` still declares `backend/migrations` and `backend/assets` paths that are absent in both the task branch and `origin/personal`. The refactor-specific team-local semantics for Socratic were validated directly from its migrated team root instead.
+- None.
 
 ## Cleanup Performed
 
-- Removed temporary untracked validation output directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-server-ts/application-packages/`
-- Kept the updated durable integration test and this canonical validation report.
+- Removed the transient validation output directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-server-ts/application-packages/`
+- Removed the temporary untracked `tests/integration/application-packages/` experiment and kept the final durable runtime proof inside the tracked `tests/e2e/applications/application-packages-graphql.e2e.test.ts` file.
 
 ## Classification
 
-- `Local Fix`: the main issue is a bounded implementation correction.
-- `Design Impact`: the main issue is a weakness or mismatch in the reviewed design.
-- `Requirement Gap`: intended behavior or acceptance criteria are missing or ambiguous.
-- `Unclear`: the issue is cross-cutting, low-confidence, or cannot yet be classified cleanly.
-
-`None` — final validation result is a clean pass. The only issue found in-round was a validation-only durable test stub mismatch, which was corrected and rerun green.
+`None` — final validation result is a clean pass.
 
 ## Recommended Recipient
 
 `code_reviewer`
 
-Reason: repository-resident durable validation was updated after the earlier code review (`autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts`), so the cumulative package must return through code review before delivery.
+Reason: repository-resident durable validation changed again after code review round `4`, and the latest cumulative package now includes new tracked proof for `CR-004` and `CR-005`.
 
 ## Evidence / Notes
 
-- Build command:
-  - `pnpm --dir /Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-server-ts build:full`
-- Server targeted suite command:
-  - `pnpm --dir /Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-server-ts test --run tests/unit/agent-team-definition/application-owned-team-source.test.ts tests/unit/agent-team-definition/agent-team-definition-service.test.ts tests/unit/application-bundles/file-application-bundle-provider.test.ts tests/unit/application-packages/application-package-service.test.ts tests/e2e/applications/application-packages-graphql.e2e.test.ts`
-- Integration suite command:
-  - `pnpm --dir /Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-server-ts test --run tests/integration/application-backend/brief-studio-imported-package.integration.test.ts`
-- Web commands:
-  - `pnpm --dir /Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-web exec nuxi prepare`
-  - `pnpm --dir /Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-web test:nuxt --run components/agentTeams/__tests__/AgentTeamDefinitionForm.spec.ts components/agents/__tests__/AgentCard.spec.ts components/agents/__tests__/AgentDetail.spec.ts stores/__tests__/agentDefinitionStore.spec.ts stores/__tests__/applicationLaunchPreparation.integration.spec.ts`
-- In-round validation-only failure and fix:
-  - Initial run of `brief-studio-imported-package.integration.test.ts` failed before entering the product flow because the injected package-root settings stub exposed the stale method `getDefaultRootPath(...)` instead of `getBuiltInRootPath(...)`.
-  - Updated durable validation diff: `autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts:224-229`.
-- Unrelated broader probe note:
-  - `git show origin/personal:applications/socratic-math-teacher/backend/bundle.json` still declares `backend/migrations` and `backend/assets`.
-  - `git ls-tree -r --name-only origin/personal applications/socratic-math-teacher/backend` shows only `backend/bundle.json` and `backend/dist/entry.mjs`, confirming the missing directories predate this ticket.
+- Focused server validation command:
+  - `pnpm --dir /Users/normy/autobyteus_org/autobyteus-worktrees/application-team-local-agents-refactor/autobyteus-server-ts exec vitest run tests/unit/application-packages/application-package-service.test.ts tests/e2e/applications/application-packages-graphql.e2e.test.ts tests/integration/application-backend/brief-studio-imported-package.integration.test.ts`
+- Focused result:
+  - `3` files / `11` tests passed
+- Relevant durable validation locations:
+  - `autobyteus-server-ts/tests/e2e/applications/application-packages-graphql.e2e.test.ts:366-607`
+  - `autobyteus-server-ts/tests/unit/application-packages/application-package-service.test.ts:284-429`
+- Relevant source refresh owner:
+  - `autobyteus-server-ts/src/application-packages/services/application-package-service.ts`
+- Working-tree note:
+  - Validation code is present in tracked test files only. Remaining untracked files are ticket-delivery artifacts outside the server validation scope.
 
 ## Latest Authoritative Result
 
 - Result values: `Pass` / `Fail` / `Blocked`
 - Result: `Pass`
-- Notes: All in-scope refactor behaviors passed under executable validation. One durable validation file was updated during API/E2E to repair a stale integration-test stub, so the cumulative package must return to `code_reviewer` before delivery.
+- Notes: `CR-004` and `CR-005` are now backed by tracked durable executable proof. Brief Studio imports are immediately launchable without restart, remove/import invalidation behaves correctly, and managed GitHub refresh-failure rollback is covered. Route the cumulative package back to `code_reviewer`.
