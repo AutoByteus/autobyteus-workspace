@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-save-false-failure/tickets/in-progress/api-key-save-false-failure/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-save-false-failure/tickets/in-progress/api-key-save-false-failure/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-save-false-failure/tickets/in-progress/api-key-save-false-failure/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-save-false-failure/tickets/done/api-key-save-false-failure/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-save-false-failure/tickets/done/api-key-save-false-failure/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-save-false-failure/tickets/done/api-key-save-false-failure/design-spec.md`
 - Current Review Round: `1`
 - Trigger: `User requested architecture review of the design/implementation package for api-key-save-false-failure.`
 - Prior Review Round Reviewed: `None`

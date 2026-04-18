@@ -3,10 +3,10 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-save-false-failure/tickets/in-progress/api-key-save-false-failure/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-save-false-failure/tickets/in-progress/api-key-save-false-failure/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-save-false-failure/tickets/in-progress/api-key-save-false-failure/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-save-false-failure/tickets/in-progress/api-key-save-false-failure/design-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-save-false-failure/tickets/done/api-key-save-false-failure/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-save-false-failure/tickets/done/api-key-save-false-failure/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-save-false-failure/tickets/done/api-key-save-false-failure/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-save-false-failure/tickets/done/api-key-save-false-failure/design-review-report.md`
 
 ## What Changed
 

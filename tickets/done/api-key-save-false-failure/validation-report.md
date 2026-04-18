@@ -2,12 +2,12 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-save-false-failure/tickets/in-progress/api-key-save-false-failure/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-save-false-failure/tickets/in-progress/api-key-save-false-failure/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-save-false-failure/tickets/in-progress/api-key-save-false-failure/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-save-false-failure/tickets/in-progress/api-key-save-false-failure/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-save-false-failure/tickets/in-progress/api-key-save-false-failure/implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-save-false-failure/tickets/in-progress/api-key-save-false-failure/review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-save-false-failure/tickets/done/api-key-save-false-failure/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-save-false-failure/tickets/done/api-key-save-false-failure/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-save-false-failure/tickets/done/api-key-save-false-failure/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-save-false-failure/tickets/done/api-key-save-false-failure/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-save-false-failure/tickets/done/api-key-save-false-failure/implementation-handoff.md`
+- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-save-false-failure/tickets/done/api-key-save-false-failure/review-report.md`
 - Current Validation Round: `1`
 - Trigger: `Review-passed cumulative package handed off for downstream UI/API validation on 2026-04-18.`
 - Prior Round Reviewed: `None`
