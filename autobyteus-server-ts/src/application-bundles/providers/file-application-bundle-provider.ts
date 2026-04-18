@@ -27,9 +27,17 @@ import {
 } from "../../agent-team-definition/providers/application-owned-team-source.js";
 import { assertApplicationOwnedTeamIntegrity } from "../../agent-team-definition/utils/application-owned-team-integrity-validator.js";
 import {
+  type AgentConfigRecord,
+  defaultAgentConfig,
+  normalizeAgentConfigRecord,
+} from "../../agent-definition/providers/agent-definition-config.js";
+import {
   buildApplicationOwnedAgentSourcePaths,
   readApplicationOwnedAgentDefinitionFromSource,
 } from "../../agent-definition/providers/application-owned-agent-source.js";
+import { parseAgentMd } from "../../agent-definition/utils/agent-md-parser.js";
+import { readJsonFile } from "../../persistence/file/store-utils.js";
+import { buildTeamLocalAgentFilePaths } from "../../agent-definition/providers/team-local-agent-discovery.js";
 
 export const BUILT_IN_APPLICATION_PACKAGE_ID = "built-in:applications";
 
@@ -262,7 +270,6 @@ export class FileApplicationBundleProvider {
   }
 
   private async validateApplicationOwnedTeams(records: ScannedBundleRecord[]): Promise<void> {
-    const applicationIdByAgentId = new Map<string, string>();
     const applicationIdByTeamId = new Map<string, string>();
 
     for (const record of records) {
@@ -277,7 +284,6 @@ export class FileApplicationBundleProvider {
             `Application bundle '${record.bundle.applicationRootPath}' application-owned agent '${localAgentId}' could not be read.`,
           );
         }
-        applicationIdByAgentId.set(source.definitionId, source.applicationId);
       }
       for (const localTeamId of record.bundle.localTeamIds) {
         const source = buildApplicationSource(record, localTeamId, "team");
@@ -310,12 +316,6 @@ export class FileApplicationBundleProvider {
             localApplicationId: record.bundle.localApplicationId,
             localTeamId,
           },
-          canonicalizeAgentRef: (localAgentId) =>
-            buildCanonicalApplicationOwnedAgentId(
-              record.packageId,
-              record.bundle.localApplicationId,
-              localAgentId,
-            ),
           canonicalizeTeamRef: (localNestedTeamId) =>
             buildCanonicalApplicationOwnedTeamId(
               record.packageId,
@@ -328,15 +328,27 @@ export class FileApplicationBundleProvider {
           continue;
         }
 
-        assertApplicationOwnedTeamIntegrity({
+        await assertApplicationOwnedTeamIntegrity({
           owningApplicationId: applicationId,
           teamId: definition.id ?? localTeamId,
           nodes: definition.nodes,
-          resolveAgentRef: (ref) => ({
-            exists: applicationIdByAgentId.has(ref),
-            ownerApplicationId: applicationIdByAgentId.get(ref) ?? null,
-          }),
-          resolveTeamRef: (ref) => ({
+          resolveLocalAgentRef: async (localAgentId) => {
+            try {
+              const filePaths = buildTeamLocalAgentFilePaths(teamDir, localAgentId);
+              const mdContent = await fsPromises.readFile(filePaths.mdPath, "utf-8");
+              parseAgentMd(mdContent, filePaths.mdPath);
+              normalizeAgentConfigRecord(
+                await readJsonFile<AgentConfigRecord>(filePaths.configPath, defaultAgentConfig()),
+              );
+              return { exists: true };
+            } catch (error) {
+              if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+                return { exists: false };
+              }
+              throw error;
+            }
+          },
+          resolveNestedTeamRef: (ref) => ({
             exists: applicationIdByTeamId.has(ref),
             ownerApplicationId: applicationIdByTeamId.get(ref) ?? null,
           }),

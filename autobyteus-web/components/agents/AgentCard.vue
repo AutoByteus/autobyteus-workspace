@@ -134,7 +134,7 @@ const teamLabel = computed(() =>
     : '',
 );
 const applicationLabel = computed(() =>
-  isApplicationOwned.value
+  agentDef.value.ownerApplicationId || agentDef.value.ownerApplicationName
     ? formatApplicationOwnershipLabel(agentDef.value)
     : '',
 );
@@ -148,6 +148,9 @@ const ownershipBadge = computed(() => {
   return '';
 });
 const ownershipLabel = computed(() => {
+  if (teamLabel.value && applicationLabel.value) {
+    return `Team: ${teamLabel.value} · Application: ${applicationLabel.value}`;
+  }
   if (teamLabel.value) {
     return `Team: ${teamLabel.value}`;
   }

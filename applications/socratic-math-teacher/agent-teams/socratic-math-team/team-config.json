@@ -5,7 +5,7 @@
       "memberName": "tutor",
       "ref": "socratic-math-tutor",
       "refType": "agent",
-      "refScope": "application_owned"
+      "refScope": "team_local"
     }
   ]
 }

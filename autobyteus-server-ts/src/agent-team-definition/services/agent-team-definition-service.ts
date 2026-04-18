@@ -5,8 +5,6 @@ import {
 } from "../domain/models.js";
 import { AgentTeamDefinitionPersistenceProvider } from "../providers/agent-team-definition-persistence-provider.js";
 import { CachedAgentTeamDefinitionProvider } from "../providers/cached-agent-team-definition-provider.js";
-import { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
-import { assertApplicationOwnedTeamIntegrity } from "../utils/application-owned-team-integrity-validator.js";
 import { normalizeDefaultLaunchConfigInput } from "../../launch-preferences/default-launch-config.js";
 
 const logger = {
@@ -29,10 +27,6 @@ type AgentTeamDefinitionFreshProvider = Pick<AgentTeamDefinitionPersistenceProvi
 type AgentTeamDefinitionServiceOptions = {
   provider?: AgentTeamDefinitionProvider;
   persistenceProvider?: AgentTeamDefinitionPersistenceProvider;
-  applicationBundleService?: Pick<
-    ApplicationBundleService,
-    "listApplicationOwnedAgentSources" | "listApplicationOwnedTeamSources"
-  >;
 };
 
 const normalizeOptionalString = (value: unknown): string | null => {
@@ -80,57 +74,12 @@ export class AgentTeamDefinitionService {
 
   readonly provider: AgentTeamDefinitionProvider;
   private readonly freshProvider: AgentTeamDefinitionFreshProvider;
-  private readonly applicationBundleService: Pick<
-    ApplicationBundleService,
-    "listApplicationOwnedAgentSources" | "listApplicationOwnedTeamSources"
-  >;
 
   constructor(options: AgentTeamDefinitionServiceOptions = {}) {
     const persistenceProvider =
       options.persistenceProvider ?? new AgentTeamDefinitionPersistenceProvider();
     this.provider = options.provider ?? new CachedAgentTeamDefinitionProvider(persistenceProvider);
     this.freshProvider = options.persistenceProvider ?? persistenceProvider;
-    this.applicationBundleService =
-      options.applicationBundleService ?? ApplicationBundleService.getInstance();
-  }
-
-  private async assertApplicationOwnedMembership(definition: AgentTeamDefinition): Promise<void> {
-    if ((definition.ownershipScope ?? "shared") !== "application_owned") {
-      return;
-    }
-
-    const owningApplicationId = definition.ownerApplicationId?.trim();
-    if (!owningApplicationId) {
-      throw new Error(
-        `Application-owned team '${definition.id ?? definition.name}' is missing owning application provenance.`,
-      );
-    }
-
-    const [agentSources, teamSources] = await Promise.all([
-      this.applicationBundleService.listApplicationOwnedAgentSources(),
-      this.applicationBundleService.listApplicationOwnedTeamSources(),
-    ]);
-
-    const agentOwnerById = new Map(
-      agentSources.map((source) => [source.definitionId, source.applicationId]),
-    );
-    const teamOwnerById = new Map(
-      teamSources.map((source) => [source.definitionId, source.applicationId]),
-    );
-
-    assertApplicationOwnedTeamIntegrity({
-      owningApplicationId,
-      teamId: definition.id ?? definition.name,
-      nodes: definition.nodes,
-      resolveAgentRef: (ref) => ({
-        exists: agentOwnerById.has(ref),
-        ownerApplicationId: agentOwnerById.get(ref) ?? null,
-      }),
-      resolveTeamRef: (ref) => ({
-        exists: teamOwnerById.has(ref),
-        ownerApplicationId: teamOwnerById.get(ref) ?? null,
-      }),
-    });
   }
 
   async createDefinition(definition: AgentTeamDefinition): Promise<AgentTeamDefinition> {
@@ -143,7 +92,6 @@ export class AgentTeamDefinitionService {
     definition.avatarUrl = normalizeOptionalString(definition.avatarUrl);
     definition.defaultLaunchConfig =
       normalizeDefaultLaunchConfigInput(definition.defaultLaunchConfig) ?? null;
-    await this.assertApplicationOwnedMembership(definition);
     const created = await this.provider.create(definition);
     logger.info(`Agent Team Definition created successfully with ID: ${created.id}`);
     return created;
@@ -205,7 +153,6 @@ export class AgentTeamDefinitionService {
 
     assertValidTeamMembers(existing.nodes);
     assertValidCoordinatorMember(existing.coordinatorMemberName, existing.nodes);
-    await this.assertApplicationOwnedMembership(existing);
 
     const updated = await this.provider.update(existing);
     logger.info(`Agent Team Definition with ID ${definitionId} updated successfully.`);

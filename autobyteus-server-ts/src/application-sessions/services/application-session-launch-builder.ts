@@ -1,4 +1,5 @@
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import { buildTeamLocalAgentDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-agent-definition-id.js";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import type { ApplicationBundle } from "../../application-bundles/domain/models.js";
@@ -208,7 +209,9 @@ export class ApplicationSessionLaunchBuilder {
           memberRouteKey: normalizeMemberRouteKey(node.memberName),
           displayName: node.memberName,
           teamPath: [...teamPath],
-          agentDefinitionId: node.ref,
+          agentDefinitionId: node.refScope === "team_local"
+            ? buildTeamLocalAgentDefinitionId(teamDefinitionId, node.ref)
+            : node.ref,
           runtimeKind: "AGENT_TEAM_MEMBER",
         });
         continue;

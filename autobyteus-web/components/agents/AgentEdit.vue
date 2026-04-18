@@ -62,7 +62,7 @@ const teamLabel = computed(() => {
 });
 const applicationLabel = computed(() => {
   const definition = agentDef.value;
-  if ((definition?.ownershipScope ?? 'SHARED') !== 'APPLICATION_OWNED' || !definition) {
+  if (!definition || (!definition.ownerApplicationId && !definition.ownerApplicationName)) {
     return '';
   }
   return formatApplicationOwnershipLabel(definition);

@@ -6,6 +6,10 @@ import type {
   TeamMemberInput,
 } from '~/stores/agentTeamDefinitionStore'
 import type { AgentDefinitionOwnershipScope } from '~/stores/agentDefinitionStore'
+import {
+  buildTeamLocalAgentDefinitionId,
+  parseTeamLocalAgentDefinitionId,
+} from '~/utils/teamLocalAgentDefinitionId'
 
 type ReferenceType = 'AGENT' | 'AGENT_TEAM'
 type RefScope = AgentMemberRefScope
@@ -47,6 +51,7 @@ export interface LibraryItem {
   name: string
   refType: ReferenceType
   refScope?: Exclude<RefScope, null>
+  persistedRef?: string
 }
 
 export const createInitialFormData = (): TeamFormData => ({
@@ -77,9 +82,12 @@ export const buildSubmitNodes = (nodes: TeamMemberInput[]): TeamMemberInput[] =>
 
 const normalizeAgentLibraryScope = (
   value: AgentDefinitionOwnershipScope | null | undefined,
-): Exclude<RefScope, null> => (
-  value === 'APPLICATION_OWNED' ? 'APPLICATION_OWNED' : 'SHARED'
-)
+): Exclude<RefScope, null> => {
+  if (value === 'TEAM_LOCAL' || value === 'APPLICATION_OWNED') {
+    return value
+  }
+  return 'SHARED'
+}
 
 export const useAgentTeamDefinitionFormState = ({
   formData,
@@ -100,12 +108,16 @@ export const useAgentTeamDefinitionFormState = ({
   }
 
   const agentLibraryItems = computed<LibraryItem[]>(() =>
-    agentDefinitions.value.map((agent) => ({
-      id: agent.id,
-      name: agent.name,
-      refType: 'AGENT',
-      refScope: normalizeAgentLibraryScope(agent.ownershipScope),
-    })),
+    agentDefinitions.value.map((agent) => {
+      const parsedTeamLocalId = parseTeamLocalAgentDefinitionId(agent.id)
+      return {
+        id: agent.id,
+        name: agent.name,
+        refType: 'AGENT',
+        refScope: normalizeAgentLibraryScope(agent.ownershipScope),
+        persistedRef: parsedTeamLocalId?.agentId,
+      }
+    }),
   )
 
   const teamLibraryItems = computed<LibraryItem[]>(() =>
@@ -144,7 +156,15 @@ export const useAgentTeamDefinitionFormState = ({
   const getReferenceName = (node: TeamMemberInput): string => {
     if (node.refType === 'AGENT') {
       if (node.refScope === 'TEAM_LOCAL') {
-        return t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.localAgent', { id: node.ref })
+        const canonicalDefinitionId = currentTeamDefinitionId.value
+          ? buildTeamLocalAgentDefinitionId(currentTeamDefinitionId.value, node.ref)
+          : null
+        return (
+          (canonicalDefinitionId
+            ? getAgentDefinitionById(canonicalDefinitionId)?.name
+            : null)
+          || t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.localAgent', { id: node.ref })
+        )
       }
       return getAgentDefinitionById(node.ref)?.name || node.ref
     }
@@ -181,7 +201,7 @@ export const useAgentTeamDefinitionFormState = ({
     const newNode: TeamMemberInput = {
       memberName: buildUniqueMemberName(item.name),
       refType: item.refType,
-      ref: item.id,
+      ref: item.refType === 'AGENT' ? item.persistedRef ?? item.id : item.id,
       refScope: item.refType === 'AGENT' ? item.refScope ?? 'SHARED' : null,
     }
 

@@ -20,7 +20,7 @@ Defines agent blueprints for shared standalone agents, team-local agents, and ap
 | Ownership scope | Backing source shape | Notes |
 | --- | --- | --- |
 | `SHARED` | `agents/<agent-id>/` | normal standalone agent path |
-| `TEAM_LOCAL` | `agent-teams/<team-id>/agents/<agent-id>/` | surfaced in the generic Agents UI with owning-team provenance |
+| `TEAM_LOCAL` | `agent-teams/<team-id>/agents/<agent-id>/` or `applications/<application-id>/agent-teams/<team-id>/agents/<agent-id>/` | surfaced in the generic Agents UI with owning-team provenance and optional owning-application provenance |
 | `APPLICATION_OWNED` | `applications/<application-id>/agents/<agent-id>/` | surfaced in the generic Agents UI with owning-application / package provenance |
 
 ## Default Launch Config

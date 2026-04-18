@@ -8,7 +8,6 @@ import {
 } from "../../../src/application-bundles/providers/file-application-bundle-provider.js";
 import {
   buildCanonicalApplicationId,
-  buildCanonicalApplicationOwnedAgentId,
   buildCanonicalApplicationOwnedTeamId,
 } from "../../../src/application-bundles/utils/application-bundle-identity.js";
 
@@ -125,23 +124,6 @@ describe("FileApplicationBundleProvider", () => {
     await fs.mkdir(path.join(bundleRoot, "backend", "migrations"), { recursive: true });
     await fs.mkdir(path.join(bundleRoot, "backend", "assets"), { recursive: true });
     await writeFile(
-      path.join(bundleRoot, "agents", "sample-agent", "agent.md"),
-      [
-        "---",
-        "name: Sample Agent",
-        "description: Sample agent",
-        "category: Demo",
-        "role: Helper",
-        "---",
-        "",
-        "Help the bundled application.",
-      ].join("\n"),
-    );
-    await writeFile(
-      path.join(bundleRoot, "agents", "sample-agent", "agent-config.json"),
-      JSON.stringify({ defaultLaunchConfig: { runtimeKind: "autobyteus" } }, null, 2),
-    );
-    await writeFile(
       path.join(bundleRoot, "agent-teams", "sample-team", "team.md"),
       [
         "---",
@@ -154,6 +136,23 @@ describe("FileApplicationBundleProvider", () => {
       ].join("\n"),
     );
     await writeFile(
+      path.join(bundleRoot, "agent-teams", "sample-team", "agents", "sample-agent", "agent.md"),
+      [
+        "---",
+        "name: Sample Agent",
+        "description: Sample agent",
+        "category: Demo",
+        "role: Helper",
+        "---",
+        "",
+        "Help the bundled application.",
+      ].join("\n"),
+    );
+    await writeFile(
+      path.join(bundleRoot, "agent-teams", "sample-team", "agents", "sample-agent", "agent-config.json"),
+      JSON.stringify({ defaultLaunchConfig: { runtimeKind: "autobyteus" } }, null, 2),
+    );
+    await writeFile(
       path.join(bundleRoot, "agent-teams", "sample-team", "team-config.json"),
       JSON.stringify(
         {
@@ -164,7 +163,7 @@ describe("FileApplicationBundleProvider", () => {
               memberName: "lead",
               ref: teamMemberRef,
               refType: "agent",
-              refScope: "application_owned",
+              refScope: "team_local",
             },
           ],
         },
@@ -194,7 +193,7 @@ describe("FileApplicationBundleProvider", () => {
           "sample-team",
         ),
       },
-      localAgentIds: ["sample-agent"],
+      localAgentIds: [],
       localTeamIds: ["sample-team"],
       backend: {
         entryModuleRelativePath: "backend/dist/entry.mjs",
@@ -203,16 +202,7 @@ describe("FileApplicationBundleProvider", () => {
     });
 
     const [bundle] = bundles;
-    expect(provider.buildApplicationOwnedAgentSources(bundle!)).toEqual([
-      expect.objectContaining({
-        definitionId: buildCanonicalApplicationOwnedAgentId(
-          BUILT_IN_APPLICATION_PACKAGE_ID,
-          "sample-app",
-          "sample-agent",
-        ),
-        applicationId: bundle!.id,
-      }),
-    ]);
+    expect(provider.buildApplicationOwnedAgentSources(bundle!)).toEqual([]);
     expect(provider.buildApplicationOwnedTeamSources(bundle!)).toEqual([
       expect.objectContaining({
         definitionId: buildCanonicalApplicationOwnedTeamId(
@@ -241,12 +231,34 @@ describe("FileApplicationBundleProvider", () => {
     );
   });
 
-  it("rejects bundles whose application-owned team references an agent outside the bundle", async () => {
+  it("rejects bundles whose application-owned team references a missing local agent", async () => {
     await writeBundle(builtInRoot, { teamMemberRef: "missing-agent" });
     const provider = buildProvider();
 
     await expect(provider.listBundles()).rejects.toThrow(
-      "must reference an agent inside the same application bundle",
+      "must reference a local agent inside its own agents/ folder",
+    );
+  });
+
+  it("rejects bundles whose application-owned team local agent is malformed", async () => {
+    await writeBundle();
+    await writeFile(
+      path.join(
+        builtInRoot,
+        "applications",
+        "sample-app",
+        "agent-teams",
+        "sample-team",
+        "agents",
+        "sample-agent",
+        "agent.md",
+      ),
+      "# malformed local agent definition\n",
+    );
+    const provider = buildProvider();
+
+    await expect(provider.listBundles()).rejects.toThrow(
+      "agent.md must start with '---' frontmatter delimiter",
     );
   });
 

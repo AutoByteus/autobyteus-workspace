@@ -78,7 +78,7 @@ Repo-local discovery uses the direct child root under `applications/` and ignore
 - The bundled resource root is a read-only materialization source and debug detail, not a user-imported package root.
 - If the same physical applications root is also presented as an additional package root, discovery skips the duplicate additional-root entry instead of minting a competing package identity.
 - The protected managed built-in applications root and the bundled source root are not valid user-configured additional package roots.
-- Bundle validation now checks UI asset paths, backend manifest integrity, runtime-target ownership, and application-owned team integrity before a bundle reaches the catalog.
+- Bundle validation now checks UI asset paths, backend manifest integrity, runtime-target ownership, and application-owned team integrity including nested `agent-teams/<team-id>/agents/*` members before a bundle reaches the catalog.
 - GraphQL still exposes transport-neutral UI asset paths (`iconAssetPath`, `entryHtmlAssetPath`) rather than host-usable absolute URLs.
 - Backend exposures are not surfaced as raw public URLs in the catalog; they stay behind the platform-owned gateway and iframe bootstrap transport.
 - Runtime targets are surfaced with canonical ids so launches bind to the owning bundle’s embedded agent or team instead of relying on global name lookup.
@@ -108,7 +108,7 @@ Repo-local discovery uses the direct child root under `applications/` and ignore
 ## Integrity Rules
 
 - Missing `ui` assets, a missing backend bundle manifest, a missing backend entry module, or a missing runtime target make the bundle invalid.
-- Application-owned teams are validated during bundle scan/import so their members cannot point outside the same owning application bundle.
+- Application-owned teams are validated during bundle scan/import so their nested team-local members cannot escape the owning team folder and nested team refs cannot point outside the same owning application bundle.
 - UI and backend manifest paths must stay inside the resolved bundle root.
 - Backend paths declared from `application.json` or `backend.bundleManifest` must remain under `backend/`; UI paths must remain under `ui/`.
 - Built-in and imported bundles are both treated as package-owned application sources.

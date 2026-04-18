@@ -56,9 +56,9 @@ Definition editors can leave runtime blank to mean “choose when launching”, 
 ## Member Library Behavior
 
 - Shared team authoring uses the shared agent/team library.
-- When editing an application-owned team, the library is restricted to agent and team definitions from the same owning application as UI guidance.
+- When editing an application-owned team, the library is restricted to team-local agent definitions owned by the current team plus application-owned team definitions from the same owning application as UI guidance.
 - The backend remains authoritative; frontend filtering does not replace backend same-bundle validation.
-- Existing agent members preserve and submit their `refScope` values.
+- Existing agent members preserve and submit their `refScope` values; application-owned team edits localize visible canonical team-local ids back into persisted local `ref` values.
 
 ## Store Ownership
 
@@ -77,4 +77,4 @@ Package import/remove flows invalidate and reload Agent Teams together with Appl
 
 - The generic create flow still creates shared standalone teams.
 - Application-owned teams are surfaced for inspection/testing and in-place editing, not for shared-path deletion or sync.
-- Team detail cards surface application-owned member badges where relevant so embedded application references stay visible during inspection.
+- Team detail cards surface team-local member badges for embedded private agents, while agent cards/details show both team and application provenance when the owning team belongs to an application bundle.

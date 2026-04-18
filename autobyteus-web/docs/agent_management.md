@@ -45,6 +45,8 @@ The frontend agent definition shape now includes:
 
 The list/detail/card surfaces show provenance badges and owner labels so users can distinguish standalone agents from embedded team-local or application-owned definitions.
 
+For team-local agents whose owning team belongs to an application bundle, the UI now shows both the owning team and the owning application/package provenance together.
+
 ## Default Launch Config
 
 `AgentDefinitionForm.vue` now round-trips `defaultLaunchConfig` during create and update through the shared `DefinitionLaunchPreferencesSection.vue` surface.
@@ -62,7 +64,7 @@ Definition editors can leave runtime blank to mean “choose when launching”, 
 
 - fetch and reload of the full agent catalog,
 - create/update/delete/duplicate mutations,
-- ownership-aware getters such as `sharedAgentDefinitions` and `getApplicationOwnedAgentDefinitionsByOwnerApplicationId(...)`, and
+- ownership-aware getters such as `sharedAgentDefinitions`, `teamLocalAgentDefinitions`, `getTeamLocalAgentDefinitionsByOwnerTeamId(...)`, and `getApplicationOwnedAgentDefinitionsByOwnerApplicationId(...)`, and
 - cache invalidation via `invalidateAgentDefinitions()`.
 
 ## Package Refresh Behavior

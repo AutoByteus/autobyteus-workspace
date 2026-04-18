@@ -5,13 +5,13 @@
       "memberName": "researcher",
       "ref": "researcher",
       "refType": "agent",
-      "refScope": "application_owned"
+      "refScope": "team_local"
     },
     {
       "memberName": "writer",
       "ref": "writer",
       "refType": "agent",
-      "refScope": "application_owned"
+      "refScope": "team_local"
     }
   ]
 }

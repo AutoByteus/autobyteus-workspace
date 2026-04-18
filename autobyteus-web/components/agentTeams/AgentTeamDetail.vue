@@ -159,10 +159,10 @@
                     {{ node.refType === 'AGENT' ? $t('agentTeams.components.agentTeams.AgentTeamDetail.badgeAgent') : $t('agentTeams.components.agentTeams.AgentTeamDetail.badgeTeam') }}
                   </span>
                   <span
-                    v-if="node.refType === 'AGENT' && node.refScope === 'APPLICATION_OWNED'"
-                    class="rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-semibold text-blue-700"
+                    v-if="node.refType === 'AGENT' && node.refScope === 'TEAM_LOCAL'"
+                    class="rounded-full bg-violet-50 px-2 py-0.5 text-[10px] font-semibold text-violet-700"
                   >
-                    App-owned
+                    Team-local
                   </span>
                   <span
                     v-if="node.memberName === teamDef.coordinatorMemberName"
@@ -209,6 +209,7 @@ import { useRunActions } from '~/composables/useRunActions';
 import AgentDeleteConfirmDialog from '~/components/agents/AgentDeleteConfirmDialog.vue';
 import ExpandableInstructionCard from '~/components/common/ExpandableInstructionCard.vue';
 import { formatApplicationOwnershipLabel } from '~/utils/definitionOwnership';
+import { buildTeamLocalAgentDefinitionId } from '~/utils/teamLocalAgentDefinitionId';
 
 const props = defineProps<{ teamDefinitionId: string }>();
 const { teamDefinitionId } = toRefs(props);
@@ -296,7 +297,10 @@ const getMemberAvatarErrorKey = (node: TeamMemberNode): string =>
 const getMemberAvatarUrl = (node: TeamMemberNode): string => {
   if (node.refType === 'AGENT') {
     if (node.refScope === 'TEAM_LOCAL') {
-      return ''
+      const localDefinitionId = teamDef.value
+        ? buildTeamLocalAgentDefinitionId(teamDef.value.id, node.ref)
+        : ''
+      return (agentDefStore.getAgentDefinitionById(localDefinitionId)?.avatarUrl || '').trim()
     }
     return (agentDefStore.getAgentDefinitionById(node.ref)?.avatarUrl || '').trim();
   }
@@ -324,7 +328,13 @@ const getBlueprintName = (type: 'AGENT' | 'AGENT_TEAM', id: string): string => {
       (entry) => entry.refType === 'AGENT' && entry.ref === id && entry.refScope === 'TEAM_LOCAL',
     );
     if (localNode) {
-      return $t('agentTeams.components.agentTeams.AgentTeamDetail.localAgent', { id });
+      const localDefinitionId = teamDef.value
+        ? buildTeamLocalAgentDefinitionId(teamDef.value.id, id)
+        : ''
+      return (
+        agentDefStore.getAgentDefinitionById(localDefinitionId)?.name
+        || $t('agentTeams.components.agentTeams.AgentTeamDetail.localAgent', { id })
+      )
     }
     return agentDefStore.getAgentDefinitionById(id)?.name || $t('agentTeams.components.agentTeams.AgentTeamDetail.unknownAgent', { id });
   }

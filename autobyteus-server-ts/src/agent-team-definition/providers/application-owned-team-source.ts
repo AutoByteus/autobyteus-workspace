@@ -55,8 +55,8 @@ const normalizeMembers = (value: unknown): ApplicationOwnedTeamConfigMember[] =>
       : candidate.refType === "agent"
         ? "agent"
         : null;
-    const refScope = candidate.refScope === "application_owned"
-      ? "application_owned"
+    const refScope = candidate.refScope === "team_local"
+      ? "team_local"
       : candidate.refScope === undefined || candidate.refScope === null
         ? null
         : "invalid";
@@ -66,9 +66,9 @@ const normalizeMembers = (value: unknown): ApplicationOwnedTeamConfigMember[] =>
         `members[${index}] must include non-empty memberName, ref, and refType.`,
       );
     }
-    if (refType === "agent" && refScope !== "application_owned") {
+    if (refType === "agent" && refScope !== "team_local") {
       throw new ApplicationOwnedTeamConfigParseError(
-        `members[${index}] with refType 'agent' must include refScope 'application_owned'.`,
+        `members[${index}] with refType 'agent' must include refScope 'team_local'.`,
       );
     }
     if (refType === "agent_team" && refScope) {
@@ -81,7 +81,7 @@ const normalizeMembers = (value: unknown): ApplicationOwnedTeamConfigMember[] =>
       memberName,
       ref,
       refType,
-      refScope: refType === "agent" ? "application_owned" : null,
+      refScope: refType === "agent" ? "team_local" : null,
     };
   });
 };
@@ -102,7 +102,6 @@ export const readApplicationOwnedTeamConfigFile = async (
 export const readApplicationOwnedTeamDefinitionFromSource = async (
   options: {
     sourcePaths: ApplicationOwnedTeamSourcePaths;
-    canonicalizeAgentRef: (localAgentId: string) => string;
     canonicalizeTeamRef: (localTeamId: string) => string;
   },
 ): Promise<AgentTeamDefinition | null> => {
@@ -122,7 +121,6 @@ export const readApplicationOwnedTeamDefinitionFromSource = async (
       coordinatorMemberName:
         typeof config.coordinatorMemberName === "string" ? config.coordinatorMemberName : "",
       nodes: canonicalizeApplicationOwnedTeamMembers(config.members ?? [], {
-        canonicalizeAgentRef: options.canonicalizeAgentRef,
         canonicalizeTeamRef: options.canonicalizeTeamRef,
       }),
       ownershipScope: "application_owned",
@@ -148,7 +146,6 @@ export const readApplicationOwnedTeamDefinitionFromSource = async (
 export const buildApplicationOwnedTeamWriteContent = (
   definition: AgentTeamDefinition,
   options: {
-    localizeAgentRef: (canonicalAgentId: string) => string;
     localizeTeamRef: (canonicalTeamId: string) => string;
   },
 ): {
@@ -168,7 +165,6 @@ export const buildApplicationOwnedTeamWriteContent = (
     avatarUrl: definition.avatarUrl ?? null,
     defaultLaunchConfig: definition.defaultLaunchConfig ?? null,
     members: localizeApplicationOwnedTeamMembers(definition.nodes, {
-      localizeAgentRef: options.localizeAgentRef,
       localizeTeamRef: options.localizeTeamRef,
     }),
   },

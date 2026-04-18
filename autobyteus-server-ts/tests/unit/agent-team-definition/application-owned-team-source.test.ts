@@ -73,7 +73,7 @@ describe("application-owned-team-source", () => {
               memberName: "lead",
               ref: "researcher",
               refType: "agent",
-              refScope: "application_owned",
+              refScope: "team_local",
             },
           ],
         },
@@ -85,7 +85,6 @@ describe("application-owned-team-source", () => {
 
     const definition = await readApplicationOwnedTeamDefinitionFromSource({
       sourcePaths,
-      canonicalizeAgentRef: (localAgentId) => `canonical-agent:${localAgentId}`,
       canonicalizeTeamRef: (localTeamId) => `canonical-team:${localTeamId}`,
     });
 
@@ -105,9 +104,9 @@ describe("application-owned-team-source", () => {
       nodes: [
         {
           memberName: "lead",
-          ref: "canonical-agent:researcher",
+          ref: "researcher",
           refType: "agent",
-          refScope: "application_owned",
+          refScope: "team_local",
         },
       ],
     });
@@ -136,9 +135,9 @@ describe("application-owned-team-source", () => {
       nodes: [
         new TeamMember({
           memberName: "lead",
-          ref: "canonical-agent:researcher",
+          ref: "researcher",
           refType: "agent",
-          refScope: "application_owned",
+          refScope: "team_local",
         }),
         new TeamMember({
           memberName: "subteam",
@@ -149,7 +148,6 @@ describe("application-owned-team-source", () => {
     });
 
     const result = buildApplicationOwnedTeamWriteContent(definition, {
-      localizeAgentRef: (canonicalAgentId) => canonicalAgentId.replace("canonical-agent:", ""),
       localizeTeamRef: (canonicalTeamId) => canonicalTeamId.replace("canonical-team:", ""),
     });
 
@@ -170,7 +168,7 @@ describe("application-owned-team-source", () => {
           memberName: "lead",
           ref: "researcher",
           refType: "agent",
-          refScope: "application_owned",
+          refScope: "team_local",
         },
         {
           memberName: "subteam",

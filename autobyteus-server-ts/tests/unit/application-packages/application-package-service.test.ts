@@ -53,8 +53,7 @@ const writeApplicationBundle = async (packageRoot: string, applicationId: string
   await fs.mkdir(path.join(bundleRoot, "backend", "dist"), { recursive: true });
   await fs.mkdir(path.join(bundleRoot, "backend", "migrations"), { recursive: true });
   await fs.mkdir(path.join(bundleRoot, "backend", "assets"), { recursive: true });
-  await fs.mkdir(path.join(bundleRoot, "agents", "sample-agent"), { recursive: true });
-  await fs.mkdir(path.join(bundleRoot, "agent-teams", "sample-team"), { recursive: true });
+  await fs.mkdir(path.join(bundleRoot, "agent-teams", "sample-team", "agents", "sample-agent"), { recursive: true });
   await fs.writeFile(path.join(bundleRoot, "application.json"), JSON.stringify({
     manifestVersion: "2",
     id: applicationId,
@@ -76,10 +75,10 @@ const writeApplicationBundle = async (packageRoot: string, applicationId: string
     assetsDir: "backend/assets",
   }, null, 2));
   await fs.writeFile(path.join(bundleRoot, "backend", "dist", "entry.mjs"), "export default {}\n", "utf-8");
-  await fs.writeFile(path.join(bundleRoot, "agents", "sample-agent", "agent.md"), "---\nname: Sample Agent\ndescription: sample\n---\n", "utf-8");
-  await fs.writeFile(path.join(bundleRoot, "agents", "sample-agent", "agent-config.json"), JSON.stringify({ defaultLaunchConfig: { runtimeKind: "autobyteus" } }, null, 2));
+  await fs.writeFile(path.join(bundleRoot, "agent-teams", "sample-team", "agents", "sample-agent", "agent.md"), "---\nname: Sample Agent\ndescription: sample\n---\n", "utf-8");
+  await fs.writeFile(path.join(bundleRoot, "agent-teams", "sample-team", "agents", "sample-agent", "agent-config.json"), JSON.stringify({ defaultLaunchConfig: { runtimeKind: "autobyteus" } }, null, 2));
   await fs.writeFile(path.join(bundleRoot, "agent-teams", "sample-team", "team.md"), "---\nname: Sample Team\ndescription: sample\n---\n", "utf-8");
-  await fs.writeFile(path.join(bundleRoot, "agent-teams", "sample-team", "team-config.json"), JSON.stringify({ coordinatorMemberName: "lead", members: [{ memberName: "lead", ref: "sample-agent", refType: "agent", refScope: "application_owned" }] }, null, 2));
+  await fs.writeFile(path.join(bundleRoot, "agent-teams", "sample-team", "team-config.json"), JSON.stringify({ coordinatorMemberName: "lead", members: [{ memberName: "lead", ref: "sample-agent", refType: "agent", refScope: "team_local" }] }, null, 2));
 };
 
 describe("ApplicationPackageService", () => {
@@ -241,7 +240,16 @@ describe("ApplicationPackageService", () => {
 
     await writeApplicationBundle(invalidRoot, "broken-app");
     await fs.writeFile(
-      path.join(invalidRoot, "applications", "broken-app", "agents", "sample-agent", "agent.md"),
+      path.join(
+        invalidRoot,
+        "applications",
+        "broken-app",
+        "agent-teams",
+        "sample-team",
+        "agents",
+        "sample-agent",
+        "agent.md",
+      ),
       "# malformed agent definition\n",
       "utf-8",
     );

@@ -85,9 +85,9 @@ const importedApplicationId =
 const importedTeamDefinitionId =
   'bundle-team__importable-package__brief-studio__bundle-team'
 const importedResearcherId =
-  'bundle-agent__importable-package__brief-studio__researcher'
+  `team-local:${importedTeamDefinitionId}:researcher`
 const importedWriterId =
-  'bundle-agent__importable-package__brief-studio__writer'
+  `team-local:${importedTeamDefinitionId}:writer`
 
 const sharedAgentDefinition = {
   id: 'shared-agent',
@@ -163,7 +163,9 @@ const importedAgentDefinitions = [
     toolInvocationPreprocessorNames: [],
     lifecycleProcessorNames: [],
     skillNames: [],
-    ownershipScope: 'APPLICATION_OWNED' as const,
+    ownershipScope: 'TEAM_LOCAL' as const,
+    ownerTeamId: importedTeamDefinitionId,
+    ownerTeamName: 'bundle-team',
     ownerApplicationId: importedApplicationId,
     ownerApplicationName: 'Brief Studio',
     ownerPackageId: 'importable-package',
@@ -190,7 +192,9 @@ const importedAgentDefinitions = [
     toolInvocationPreprocessorNames: [],
     lifecycleProcessorNames: [],
     skillNames: [],
-    ownershipScope: 'APPLICATION_OWNED' as const,
+    ownershipScope: 'TEAM_LOCAL' as const,
+    ownerTeamId: importedTeamDefinitionId,
+    ownerTeamName: 'bundle-team',
     ownerApplicationId: importedApplicationId,
     ownerApplicationName: 'Brief Studio',
     ownerPackageId: 'importable-package',
@@ -219,15 +223,15 @@ const importedTeamDefinition = {
   nodes: [
     {
       memberName: 'researcher',
-      ref: importedResearcherId,
+      ref: 'researcher',
       refType: 'AGENT' as const,
-      refScope: 'APPLICATION_OWNED' as const,
+      refScope: 'TEAM_LOCAL' as const,
     },
     {
       memberName: 'writer',
-      ref: importedWriterId,
+      ref: 'writer',
       refType: 'AGENT' as const,
-      refScope: 'APPLICATION_OWNED' as const,
+      refScope: 'TEAM_LOCAL' as const,
     },
   ],
   ownershipScope: 'APPLICATION_OWNED' as const,

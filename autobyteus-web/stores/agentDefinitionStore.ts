@@ -322,9 +322,21 @@ export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
     )
   ))
 
+  const teamLocalAgentDefinitions = computed(() => (
+    agentDefinitions.value.filter(
+      (definition) => normalizeOwnershipScope(definition.ownershipScope) === 'TEAM_LOCAL',
+    )
+  ))
+
   const applicationOwnedAgentDefinitions = computed(() => (
     agentDefinitions.value.filter(
       (definition) => normalizeOwnershipScope(definition.ownershipScope) === 'APPLICATION_OWNED',
+    )
+  ))
+
+  const getTeamLocalAgentDefinitionsByOwnerTeamId = computed(() => (
+    (ownerTeamId: string): AgentDefinition[] => teamLocalAgentDefinitions.value.filter(
+      (definition) => (definition.ownerTeamId || '').trim() === ownerTeamId.trim(),
     )
   ))
 
@@ -339,6 +351,7 @@ export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
   return {
     agentDefinitions,
     sharedAgentDefinitions,
+    teamLocalAgentDefinitions,
     applicationOwnedAgentDefinitions,
     loading,
     error,
@@ -352,6 +365,7 @@ export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
     clearDeleteResult,
     invalidateAgentDefinitions,
     getAgentDefinitionById,
+    getTeamLocalAgentDefinitionsByOwnerTeamId,
     getApplicationOwnedAgentDefinitionsByOwnerApplicationId,
     getDeleteResult,
   }

@@ -5,6 +5,10 @@ export type ApplicationOwnedTeamIntegrityNode = {
   refScope?: "shared" | "team_local" | "application_owned" | null;
 };
 
+type ResolvedLocalAgentRef = {
+  exists: boolean;
+};
+
 type ResolvedOwnedRef = {
   exists: boolean;
   ownerApplicationId: string | null;
@@ -14,28 +18,28 @@ export type ApplicationOwnedTeamIntegrityValidationInput = {
   owningApplicationId: string;
   teamId: string;
   nodes: ApplicationOwnedTeamIntegrityNode[];
-  resolveAgentRef: (ref: string) => ResolvedOwnedRef;
-  resolveTeamRef: (ref: string) => ResolvedOwnedRef;
+  resolveLocalAgentRef: (ref: string) => Promise<ResolvedLocalAgentRef> | ResolvedLocalAgentRef;
+  resolveNestedTeamRef: (ref: string) => Promise<ResolvedOwnedRef> | ResolvedOwnedRef;
 };
 
-export const validateApplicationOwnedTeamIntegrity = (
+export const validateApplicationOwnedTeamIntegrity = async (
   input: ApplicationOwnedTeamIntegrityValidationInput,
-): string[] => {
+): Promise<string[]> => {
   const errors: string[] = [];
 
   for (const node of input.nodes) {
     if (node.refType === "agent") {
-      if (node.refScope !== "application_owned") {
+      if (node.refScope !== "team_local") {
         errors.push(
-          `Application-owned team '${input.teamId}' member '${node.memberName}' must use refScope 'application_owned'.`,
+          `Application-owned team '${input.teamId}' member '${node.memberName}' must use refScope 'team_local'.`,
         );
         continue;
       }
 
-      const resolved = input.resolveAgentRef(node.ref);
-      if (!resolved.exists || resolved.ownerApplicationId !== input.owningApplicationId) {
+      const resolved = await input.resolveLocalAgentRef(node.ref);
+      if (!resolved.exists) {
         errors.push(
-          `Application-owned team '${input.teamId}' member '${node.memberName}' must reference an agent inside the same application bundle.`,
+          `Application-owned team '${input.teamId}' member '${node.memberName}' must reference a local agent inside its own agents/ folder.`,
         );
       }
       continue;
@@ -55,7 +59,7 @@ export const validateApplicationOwnedTeamIntegrity = (
       continue;
     }
 
-    const resolved = input.resolveTeamRef(node.ref);
+    const resolved = await input.resolveNestedTeamRef(node.ref);
     if (!resolved.exists || resolved.ownerApplicationId !== input.owningApplicationId) {
       errors.push(
         `Application-owned team '${input.teamId}' member '${node.memberName}' must reference a team inside the same application bundle.`,
@@ -66,10 +70,10 @@ export const validateApplicationOwnedTeamIntegrity = (
   return errors;
 };
 
-export const assertApplicationOwnedTeamIntegrity = (
+export const assertApplicationOwnedTeamIntegrity = async (
   input: ApplicationOwnedTeamIntegrityValidationInput,
-): void => {
-  const errors = validateApplicationOwnedTeamIntegrity(input);
+): Promise<void> => {
+  const errors = await validateApplicationOwnedTeamIntegrity(input);
   if (errors.length > 0) {
     throw new Error(errors.join(" "));
   }
