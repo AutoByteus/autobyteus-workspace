@@ -131,6 +131,11 @@ describe('agentDefinitionStore', () => {
     expect(store.agentDefinitions).toHaveLength(2);
     expect(store.sharedAgentDefinitions).toHaveLength(1);
     expect(store.sharedAgentDefinitions[0].id).toBe('shared-agent');
+    expect(store.getTeamLocalAgentDefinitionsByOwnerTeamId('team-a')).toEqual([
+      expect.objectContaining({
+        id: 'team-local:team-a:local-agent',
+      }),
+    ]);
   });
 
   it('sends defaultLaunchConfig through create and update mutations', async () => {

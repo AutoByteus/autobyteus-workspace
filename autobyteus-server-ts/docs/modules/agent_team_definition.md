@@ -27,7 +27,8 @@ Defines team blueprints, nested-team graph metadata, ownership provenance, and t
 - Team members store `ref`, `refType`, and (for agent members) `refScope`.
 - Agent member `refScope` can distinguish shared, team-local, and application-owned agent references.
 - Nested team members do not carry `refScope`.
-- Application-owned teams use canonical ids for embedded agent and team references.
+- Application-owned teams persist their private agent members as `refScope = team_local` with local agent ids under `applications/<application-id>/agent-teams/<team-id>/agents/<agent-id>/`.
+- Application-owned teams keep nested team refs inside the same bundle, localized in file shape and canonicalized in the loaded domain model.
 
 ## Default Launch Preferences
 
@@ -39,12 +40,12 @@ Defines team blueprints, nested-team graph metadata, ownership provenance, and t
 
 - Import-time bundle validation rejects application-owned teams whose members point outside the same owning application bundle.
 - Update persistence rechecks the same invariant; frontend filtering is only UX guidance.
-- Application-owned team agent members must use application-owned refs from the same bundle.
+- Application-owned team agent members must use `team_local` refs that resolve inside the owning team folder.
 - Application-owned nested team refs must stay inside the same bundle and cannot self-reference.
 
 ## Notes
 
 - Application-owned teams can be edited in place when the owning bundle source is writable.
 - Application-owned teams are not created or deleted through the shared standalone provider path.
-- The team-definition service is the authoritative backend boundary for persistence-time integrity checks.
+- `FileAgentTeamDefinitionProvider.update(...)` is the authoritative backend boundary for persistence-time source-aware integrity checks.
 - Read-only versus writable application-owned update boundaries remain source-authoritative; this module does not bypass bundle writability checks.

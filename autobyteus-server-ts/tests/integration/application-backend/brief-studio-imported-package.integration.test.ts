@@ -224,7 +224,7 @@ describe("Brief Studio imported package integration", () => {
         getAppRootDir: () => builtInAppRoot,
       } as never,
       {
-        getDefaultRootPath: () => appDataRoot,
+        getBuiltInRootPath: () => builtInAppRoot,
         listAdditionalRootPaths: () => [IMPORTABLE_PACKAGE_ROOT],
       } as never,
       {

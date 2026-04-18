@@ -8,37 +8,67 @@ const mockTranslations: Record<string, string> = {
   'agentTeams.components.agentTeams.AgentTeamCard.teamBadge': 'Team-local',
 }
 
-const { mockFileUploadStore, mockAgentDefinitionStore, mockAgentTeamDefinitionStore } = vi.hoisted(() => ({
-  mockFileUploadStore: {
-    isUploading: false,
-    error: null as string | null,
-    uploadFile: vi.fn().mockResolvedValue(''),
-  },
-  mockAgentDefinitionStore: {
-    agentDefinitions: [
-      {
-        id: 'agent-1',
-        name: 'Agent One',
-      },
-    ],
-    sharedAgentDefinitions: [
-      {
-        id: 'agent-1',
-        name: 'Agent One',
-      },
-    ],
-    fetchAllAgentDefinitions: vi.fn().mockResolvedValue(undefined),
-    getAgentDefinitionById: vi.fn((id: string) => (id === 'agent-1' ? { id: 'agent-1', name: 'Agent One' } : null)),
-    getApplicationOwnedAgentDefinitionsByOwnerApplicationId: vi.fn(() => []),
-  },
-  mockAgentTeamDefinitionStore: {
-    agentTeamDefinitions: [],
-    sharedAgentTeamDefinitions: [],
-    fetchAllAgentTeamDefinitions: vi.fn().mockResolvedValue(undefined),
-    getAgentTeamDefinitionById: vi.fn(() => null),
-    getApplicationOwnedTeamDefinitionsByOwnerApplicationId: vi.fn(() => []),
-  },
-}))
+const {
+  applicationOwnedTeamId,
+  applicationOwnedTeamLocalAgent,
+  mockFileUploadStore,
+  mockAgentDefinitionStore,
+  mockAgentTeamDefinitionStore,
+} = vi.hoisted(() => {
+  const applicationOwnedTeamId = 'bundle-team__pkg-1__brief-studio__launch-team'
+  const applicationOwnedTeamLocalAgent = {
+    id: `team-local:${applicationOwnedTeamId}:reviewer`,
+    name: 'Bundled Reviewer',
+    ownershipScope: 'TEAM_LOCAL',
+  }
+
+  return {
+    applicationOwnedTeamId,
+    applicationOwnedTeamLocalAgent,
+    mockFileUploadStore: {
+      isUploading: false,
+      error: null as string | null,
+      uploadFile: vi.fn().mockResolvedValue(''),
+    },
+    mockAgentDefinitionStore: {
+      agentDefinitions: [
+        {
+          id: 'agent-1',
+          name: 'Agent One',
+        },
+        applicationOwnedTeamLocalAgent,
+      ],
+      sharedAgentDefinitions: [
+        {
+          id: 'agent-1',
+          name: 'Agent One',
+        },
+      ],
+      teamLocalAgentDefinitions: [applicationOwnedTeamLocalAgent],
+      fetchAllAgentDefinitions: vi.fn().mockResolvedValue(undefined),
+      getAgentDefinitionById: vi.fn((id: string) => {
+        if (id === 'agent-1') {
+          return { id: 'agent-1', name: 'Agent One' }
+        }
+        if (id === applicationOwnedTeamLocalAgent.id) {
+          return applicationOwnedTeamLocalAgent
+        }
+        return null
+      }),
+      getTeamLocalAgentDefinitionsByOwnerTeamId: vi.fn((ownerTeamId: string) => (
+        ownerTeamId === applicationOwnedTeamId ? [applicationOwnedTeamLocalAgent] : []
+      )),
+      getApplicationOwnedAgentDefinitionsByOwnerApplicationId: vi.fn(() => []),
+    },
+    mockAgentTeamDefinitionStore: {
+      agentTeamDefinitions: [],
+      sharedAgentTeamDefinitions: [],
+      fetchAllAgentTeamDefinitions: vi.fn().mockResolvedValue(undefined),
+      getAgentTeamDefinitionById: vi.fn(() => null),
+      getApplicationOwnedTeamDefinitionsByOwnerApplicationId: vi.fn(() => []),
+    },
+  }
+})
 
 vi.mock('~/stores/fileUploadStore', () => ({
   useFileUploadStore: () => mockFileUploadStore,
@@ -216,5 +246,37 @@ describe('AgentTeamDefinitionForm', () => {
         refScope: 'TEAM_LOCAL',
       },
     ])
+  })
+
+  it('localizes canonical TEAM_LOCAL application members back to persisted local refs', async () => {
+    const wrapper = createWrapper({
+      id: applicationOwnedTeamId,
+      name: 'Launch Team',
+      description: 'Coordinates the launch',
+      instructions: 'Coordinate local launch work.',
+      coordinatorMemberName: '',
+      ownershipScope: 'APPLICATION_OWNED',
+      ownerApplicationId: 'bundle-app__pkg-1__brief-studio',
+      nodes: [],
+    })
+
+    const localAgentButton = wrapper
+      .findAll('button')
+      .find((btn) => btn.text().includes('Bundled Reviewer'))
+    expect(localAgentButton).toBeDefined()
+
+    await localAgentButton!.trigger('click')
+    await wrapper.get('form').trigger('submit.prevent')
+
+    const payload = (wrapper.emitted('submit') || [])[0]?.[0] as any
+    expect(payload.nodes).toEqual([
+      {
+        memberName: 'bundled_reviewer',
+        refType: 'AGENT',
+        ref: 'reviewer',
+        refScope: 'TEAM_LOCAL',
+      },
+    ])
+    expect(payload.coordinatorMemberName).toBe('bundled_reviewer')
   })
 })

@@ -8,7 +8,7 @@ import { writeRawFile, writeJsonFile, readJsonFile } from "../../persistence/fil
 import { parseAgentMd, serializeAgentMd, AgentMdParseError } from "../utils/agent-md-parser.js";
 import {
   listTeamLocalAgentDefinitions,
-  readTeamLocalAgentFromRoots,
+  readTeamLocalAgentFromSourcePaths,
 } from "./team-local-agent-discovery.js";
 import { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
 import {
@@ -32,6 +32,7 @@ import {
   findAgentSourcePaths,
   pathExists,
 } from "./agent-definition-source-paths.js";
+import { findTeamSourcePaths } from "../../agent-team-definition/providers/team-definition-source-paths.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -150,10 +151,18 @@ export class FileAgentDefinitionProvider {
     agentId: string,
     resolvedAgentDefinitionId: string,
   ): Promise<AgentDefinition | null> {
-    return readTeamLocalAgentFromRoots({
-      teamRoots: this.getReadTeamRoots(),
+    const teamSourcePaths = await findTeamSourcePaths(
       teamId,
-      agentId,
+      this.getReadTeamRoots(),
+      this.applicationBundleService,
+    );
+    if (!teamSourcePaths) {
+      return null;
+    }
+
+    return readTeamLocalAgentFromSourcePaths({
+      teamSourcePaths,
+      localAgentId: agentId,
       resolvedAgentDefinitionId,
       readAgentFromPaths: this.readAgentFromPaths.bind(this),
       warn: logger.warn,
@@ -290,7 +299,8 @@ export class FileAgentDefinitionProvider {
 
   async getAllVisible(): Promise<AgentDefinition[]> {
     return listTeamLocalAgentDefinitions({
-      teamRoots: this.getReadTeamRoots(),
+      sharedTeamRoots: this.getReadTeamRoots(),
+      applicationOwnedTeamSources: await this.applicationBundleService.listApplicationOwnedTeamSources(),
       existingDefinitions: await this.getAll(),
       readAgentFromPaths: this.readAgentFromPaths.bind(this),
       warn: logger.warn,

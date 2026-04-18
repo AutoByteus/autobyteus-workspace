@@ -7,12 +7,12 @@ This directory is the **repo-local runnable application root**:
 - `application.json` anchors the app root
 - `ui/` contains the in-place frontend bundle assets
 - `backend/` contains the in-place runnable backend bundle assets refreshed by the build
-- `agents/` and `agent-teams/` contain the application-owned runtime definitions
+- `agent-teams/` contains the application-owned runtime team plus its team-local member agents under `agent-teams/brief-studio-team/agents/`
 - `backend-src/`, `scripts/`, `package.json`, and `tsconfig.backend.json` are authoring helpers beside the runnable payload
 
 ## What this sample teaches
 
-- a two-member application-owned team: `researcher` and `writer`
+- a two-member application-owned team with private team-local agents: `researcher` and `writer`
 - app-owned queries, commands, event handlers, repositories, and services
 - app-owned SQL migrations that run only against `app.sqlite`
 - artifact-centric `publish_artifact` runtime publishing with platform-owned provenance
@@ -90,7 +90,6 @@ then that directory must already be a **runnable app root** with the runtime pay
 - `backend/bundle.json`
 - `backend/dist/**`
 - `backend/migrations/**`
-- `agents/`
 - `agent-teams/`
 
 So:
@@ -147,7 +146,7 @@ If you want to understand how to build your own AutoByteus application, read the
 Recommended reading path:
 
 1. `application.json` — app identity, runtime target, UI, backend manifest
-2. `agents/` and `agent-teams/` — app-owned runtime definitions
+2. `agent-teams/brief-studio-team/` — app-owned team definition plus local member agents
 3. `backend-src/index.ts` — backend definition boundary
 4. `backend-src/services/brief-projection-service.ts` — artifact event projection + idempotency owner
 5. `backend-src/repositories/` — app-owned persistence boundary

@@ -320,8 +320,8 @@ const agentDefinitions = computed(() => {
   if (!isApplicationOwnedTeam.value || !currentOwnerApplicationId.value) {
     return agentDefStore.sharedAgentDefinitions || [];
   }
-  return agentDefStore.getApplicationOwnedAgentDefinitionsByOwnerApplicationId(
-    currentOwnerApplicationId.value,
+  return agentDefStore.getTeamLocalAgentDefinitionsByOwnerTeamId(
+    currentTeamDefinitionId.value ?? '',
   );
 });
 const teamDefinitions = computed(() => {

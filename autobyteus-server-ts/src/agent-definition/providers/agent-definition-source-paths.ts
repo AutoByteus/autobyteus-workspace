@@ -5,7 +5,11 @@ import type { AgentDefinitionOwnershipScope } from "../domain/models.js";
 import { parseTeamLocalAgentDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-agent-definition-id.js";
 import type { ApplicationOwnedDefinitionSource } from "../../application-bundles/domain/models.js";
 import { parseCanonicalApplicationOwnedAgentId } from "../../application-bundles/utils/application-bundle-identity.js";
-import { readTeamOwnership } from "./team-local-agent-discovery.js";
+import { findTeamSourcePaths } from "../../agent-team-definition/providers/team-definition-source-paths.js";
+import {
+  buildTeamLocalAgentFilePaths,
+  readTeamOwnership,
+} from "./team-local-agent-discovery.js";
 import { buildApplicationOwnedAgentSourcePaths } from "./application-owned-agent-source.js";
 
 export type AgentSourcePaths = {
@@ -24,6 +28,7 @@ export type AgentSourcePaths = {
 
 type ApplicationOwnedAgentSourceLookup = {
   getApplicationOwnedAgentSourceById: (definitionId: string) => Promise<ApplicationOwnedDefinitionSource | null>;
+  getApplicationOwnedTeamSourceById: (definitionId: string) => Promise<ApplicationOwnedDefinitionSource | null>;
 };
 
 type FindAgentSourcePathInput = {
@@ -79,33 +84,42 @@ const findSharedAgentSourcePaths = async (
 };
 
 const findTeamLocalAgentSourcePaths = async (
-  readTeamRoots: string[],
   teamId: string,
   agentId: string,
+  readTeamRoots: string[],
+  applicationBundleService: ApplicationOwnedAgentSourceLookup,
   warn: (...args: unknown[]) => void,
 ): Promise<AgentSourcePaths | null> => {
-  for (const teamRoot of readTeamRoots) {
-    const agentDir = path.join(teamRoot, teamId, "agents", agentId);
-    const mdPath = path.join(agentDir, "agent.md");
-    const configPath = path.join(agentDir, "agent-config.json");
-    try {
-      await fs.access(mdPath);
-    } catch {
-      continue;
-    }
-
-    const ownership = await readTeamOwnership(teamRoot, teamId, warn);
-    return {
-      agentDir,
-      mdPath,
-      configPath,
-      rootPath: path.join(teamRoot, teamId),
-      ownershipScope: "team_local",
-      ownerTeamId: ownership.ownerTeamId,
-      ownerTeamName: ownership.ownerTeamName,
-    };
+  const teamSourcePaths = await findTeamSourcePaths(
+    teamId,
+    readTeamRoots,
+    applicationBundleService,
+  );
+  if (!teamSourcePaths) {
+    return null;
   }
-  return null;
+
+  const filePaths = buildTeamLocalAgentFilePaths(teamSourcePaths.teamDir, agentId);
+  try {
+    await fs.access(filePaths.mdPath);
+  } catch {
+    return null;
+  }
+
+  const ownership = await readTeamOwnership(teamSourcePaths, warn);
+  return {
+    agentDir: filePaths.agentDir,
+    mdPath: filePaths.mdPath,
+    configPath: filePaths.configPath,
+    rootPath: teamSourcePaths.teamDir,
+    ownershipScope: "team_local",
+    ownerTeamId: ownership.ownerTeamId,
+    ownerTeamName: ownership.ownerTeamName,
+    ownerApplicationId: ownership.ownerApplicationId ?? null,
+    ownerApplicationName: ownership.ownerApplicationName ?? null,
+    ownerPackageId: ownership.ownerPackageId ?? null,
+    ownerLocalApplicationId: ownership.ownerLocalApplicationId ?? null,
+  };
 };
 
 const findApplicationOwnedAgentSourcePaths = async (
@@ -140,9 +154,10 @@ export const findAgentSourcePaths = async ({
   const parsedTeamLocalId = parseTeamLocalAgentDefinitionId(agentId);
   if (parsedTeamLocalId) {
     return findTeamLocalAgentSourcePaths(
-      readTeamRoots,
       parsedTeamLocalId.teamId,
       parsedTeamLocalId.agentId,
+      readTeamRoots,
+      applicationBundleService,
       warn,
     );
   }
