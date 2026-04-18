@@ -1,9 +1,9 @@
 <template>
   <div
     v-if="session"
-    class="h-[calc(100vh-11rem)] min-h-[38rem]"
+    :class="surfaceWrapperClasses"
   >
-    <div class="relative h-full min-h-[34rem] overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+    <div :class="surfaceFrameClasses">
       <ApplicationIframeHost
         v-if="launchDescriptor"
         :descriptor="launchDescriptor"
@@ -15,7 +15,7 @@
 
       <div
         v-if="launchState === 'failed'"
-        class="absolute inset-0 flex min-h-[34rem] flex-col items-center justify-center gap-4 bg-slate-50 px-6 text-center"
+        class="absolute inset-0 flex min-h-[20rem] flex-col items-center justify-center gap-4 bg-slate-50 px-6 text-center"
       >
         <div class="rounded-full bg-red-100 p-3 text-red-600">
           <span class="i-heroicons-exclamation-triangle-20-solid h-6 w-6"></span>
@@ -37,7 +37,7 @@
 
       <div
         v-else-if="launchDescriptor && launchState !== 'bootstrapped'"
-        class="pointer-events-none absolute inset-0 flex items-center justify-center bg-white/85 backdrop-blur-sm"
+        :class="loadingOverlayClasses"
       >
         <div class="flex flex-col items-center gap-3 text-slate-600">
           <div class="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
@@ -59,10 +59,11 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, ref, shallowRef, watch } from 'vue'
+import { computed, onBeforeUnmount, ref, shallowRef, watch } from 'vue'
 import ApplicationIframeHost from '~/components/applications/ApplicationIframeHost.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
+import type { ApplicationSurfacePresentation } from '~/types/application/ApplicationSurfacePresentation'
 import {
   APPLICATION_IFRAME_READY_TIMEOUT_MS,
   createApplicationHostBootstrapEnvelopeV1,
@@ -80,9 +81,12 @@ import {
 } from '~/utils/application/applicationLaunchDescriptor'
 import { buildApplicationSessionTransport } from '~/utils/application/applicationSessionTransport'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   session: ApplicationSession | null
-}>()
+  presentation?: ApplicationSurfacePresentation
+}>(), {
+  presentation: 'standard',
+})
 
 const { t: $t } = useLocalization()
 const windowNodeContextStore = useWindowNodeContextStore()
@@ -94,6 +98,24 @@ const launchState = ref<'waiting_for_ready' | 'bootstrapped' | 'failed'>('waitin
 const launchError = ref<string | null>(null)
 const readyTimeoutHandle = ref<number | null>(null)
 const launchGeneration = ref(0)
+
+const surfaceWrapperClasses = computed(() => (
+  props.presentation === 'immersive'
+    ? 'h-full min-h-0'
+    : 'h-full min-h-[28rem]'
+))
+
+const surfaceFrameClasses = computed(() => (
+  props.presentation === 'immersive'
+    ? 'relative h-full overflow-hidden bg-white'
+    : 'relative h-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm'
+))
+
+const loadingOverlayClasses = computed(() => (
+  props.presentation === 'immersive'
+    ? 'pointer-events-none absolute inset-0 flex items-center justify-center bg-white/75 backdrop-blur-sm'
+    : 'pointer-events-none absolute inset-0 flex items-center justify-center bg-white/85 backdrop-blur-sm'
+))
 
 const logApplicationSurface = (message: string): void => {
   console.info(`[ApplicationSurface] ${message}`)
@@ -258,9 +280,6 @@ const handleBootstrapDelivered = (payload: {
   launchState.value = 'bootstrapped'
   launchError.value = null
   pendingBootstrapEnvelope.value = null
-  logApplicationSurface(
-    `bootstrap delivered sessionId=${payload.applicationSessionId} launchInstanceId=${payload.launchInstanceId}`,
-  )
 }
 
 const handleBridgeError = (message: string): void => {
@@ -272,15 +291,11 @@ const retryLaunch = (): void => {
 }
 
 watch(
-  [
-    () => props.session?.applicationSessionId ?? '',
-    () => props.session?.application.entryHtmlAssetPath ?? '',
-    () => windowNodeContextStore.getBoundEndpoints().rest,
-  ],
+  () => props.session,
   () => {
     commitLaunchDescriptor(false)
   },
-  { immediate: true },
+  { immediate: true, deep: true },
 )
 
 onBeforeUnmount(() => {
