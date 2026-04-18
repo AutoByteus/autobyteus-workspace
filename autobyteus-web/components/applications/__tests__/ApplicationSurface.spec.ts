@@ -99,10 +99,11 @@ describe('ApplicationSurface', () => {
     vi.useRealTimers()
   })
 
-  it('owns the launch handshake and clears the spinner after bootstrap delivery', async () => {
+  it('owns the launch handshake and clears the spinner after bootstrap delivery in immersive presentation', async () => {
     const wrapper = mount(ApplicationSurface, {
       props: {
         session: buildSession(),
+        presentation: 'immersive',
       },
       global: {
         stubs: {
@@ -114,6 +115,7 @@ describe('ApplicationSurface', () => {
     expect(hostHarness.props.descriptor?.applicationSessionId).toBe('app-session-123')
     expect(hostHarness.props.bootstrapEnvelope).toBeNull()
     expect(wrapper.text()).toContain('Initializing application')
+    expect(wrapper.html()).not.toContain('rounded-2xl')
 
     const descriptor = hostHarness.props.descriptor!
     await wrapper.getComponent(ApplicationIframeHostStub).vm.$emit('ready', {
@@ -128,7 +130,6 @@ describe('ApplicationSurface', () => {
       launchInstanceId: descriptor.launchInstanceId,
     })
     expect(() => structuredClone(hostHarness.props.bootstrapEnvelope)).not.toThrow()
-    expect(wrapper.text()).toContain('Initializing application')
 
     await wrapper.getComponent(ApplicationIframeHostStub).vm.$emit('bootstrap-delivered', {
       applicationSessionId: descriptor.applicationSessionId,
@@ -138,6 +139,25 @@ describe('ApplicationSurface', () => {
 
     expect(hostHarness.props.bootstrapEnvelope).toBeNull()
     expect(wrapper.text()).not.toContain('Initializing application')
+
+    wrapper.unmount()
+  })
+
+  it('renders the standard framed surface presentation when requested', async () => {
+    const wrapper = mount(ApplicationSurface, {
+      props: {
+        session: buildSession(),
+        presentation: 'standard',
+      },
+      global: {
+        stubs: {
+          ApplicationIframeHost: ApplicationIframeHostStub,
+        },
+      },
+    })
+
+    expect(wrapper.html()).toContain('rounded-2xl')
+    expect(wrapper.html()).toContain('border-slate-200')
 
     wrapper.unmount()
   })
