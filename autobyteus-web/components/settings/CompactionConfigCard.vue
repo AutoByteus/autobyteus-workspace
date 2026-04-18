@@ -1,7 +1,7 @@
 <template>
   <section class="rounded-3xl border border-slate-200 bg-white px-6 py-5 shadow-sm" data-testid="compaction-config-card">
-    <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
-      <div>
+    <div class="mb-4 flex items-start justify-between gap-3">
+      <div class="min-w-0">
         <h3 class="text-2xl font-semibold leading-tight text-gray-900">
           {{ t('settings.components.settings.CompactionConfigCard.title') }}
         </h3>
@@ -9,16 +9,18 @@
           {{ t('settings.components.settings.CompactionConfigCard.description') }}
         </p>
       </div>
-      <button
-        type="button"
-        class="inline-flex items-center justify-center h-9 w-9 rounded-lg border border-slate-200 bg-white text-blue-700 hover:bg-blue-50 hover:border-blue-100 disabled:bg-slate-50 disabled:text-slate-400 disabled:border-slate-200 disabled:cursor-not-allowed transition-colors duration-150"
-        :disabled="isSaving"
-        data-testid="compaction-config-save"
-        @click="save"
-      >
-        <span v-if="isSaving" class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-700 inline-block"></span>
-        <Icon v-else icon="heroicons:check" class="w-4 h-4" />
-      </button>
+      <div class="shrink-0">
+        <button
+          type="button"
+          class="inline-flex items-center justify-center h-9 w-9 rounded-lg border border-slate-200 bg-white text-blue-700 hover:bg-blue-50 hover:border-blue-100 disabled:bg-slate-50 disabled:text-slate-400 disabled:border-slate-200 disabled:cursor-not-allowed transition-colors duration-150"
+          :disabled="isSaving"
+          data-testid="compaction-config-save"
+          @click="save"
+        >
+          <span v-if="isSaving" class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-700 inline-block"></span>
+          <Icon v-else icon="heroicons:check" class="w-4 h-4" />
+        </button>
+      </div>
     </div>
 
     <div class="space-y-4">
