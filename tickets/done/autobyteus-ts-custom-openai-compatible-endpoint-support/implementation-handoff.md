@@ -2,10 +2,10 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-custom-openai-compatible-endpoint-support/tickets/in-progress/autobyteus-ts-custom-openai-compatible-endpoint-support/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-custom-openai-compatible-endpoint-support/tickets/in-progress/autobyteus-ts-custom-openai-compatible-endpoint-support/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-custom-openai-compatible-endpoint-support/tickets/in-progress/autobyteus-ts-custom-openai-compatible-endpoint-support/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-custom-openai-compatible-endpoint-support/tickets/in-progress/autobyteus-ts-custom-openai-compatible-endpoint-support/design-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-custom-openai-compatible-endpoint-support/tickets/done/autobyteus-ts-custom-openai-compatible-endpoint-support/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-custom-openai-compatible-endpoint-support/tickets/done/autobyteus-ts-custom-openai-compatible-endpoint-support/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-custom-openai-compatible-endpoint-support/tickets/done/autobyteus-ts-custom-openai-compatible-endpoint-support/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-custom-openai-compatible-endpoint-support/tickets/done/autobyteus-ts-custom-openai-compatible-endpoint-support/design-review-report.md`
 
 ## What Changed
 

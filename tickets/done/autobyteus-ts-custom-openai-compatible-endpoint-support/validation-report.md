@@ -2,12 +2,12 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-custom-openai-compatible-endpoint-support/tickets/in-progress/autobyteus-ts-custom-openai-compatible-endpoint-support/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-custom-openai-compatible-endpoint-support/tickets/in-progress/autobyteus-ts-custom-openai-compatible-endpoint-support/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-custom-openai-compatible-endpoint-support/tickets/in-progress/autobyteus-ts-custom-openai-compatible-endpoint-support/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-custom-openai-compatible-endpoint-support/tickets/in-progress/autobyteus-ts-custom-openai-compatible-endpoint-support/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-custom-openai-compatible-endpoint-support/tickets/in-progress/autobyteus-ts-custom-openai-compatible-endpoint-support/implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-custom-openai-compatible-endpoint-support/tickets/in-progress/autobyteus-ts-custom-openai-compatible-endpoint-support/review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-custom-openai-compatible-endpoint-support/tickets/done/autobyteus-ts-custom-openai-compatible-endpoint-support/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-custom-openai-compatible-endpoint-support/tickets/done/autobyteus-ts-custom-openai-compatible-endpoint-support/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-custom-openai-compatible-endpoint-support/tickets/done/autobyteus-ts-custom-openai-compatible-endpoint-support/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-custom-openai-compatible-endpoint-support/tickets/done/autobyteus-ts-custom-openai-compatible-endpoint-support/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-custom-openai-compatible-endpoint-support/tickets/done/autobyteus-ts-custom-openai-compatible-endpoint-support/implementation-handoff.md`
+- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-custom-openai-compatible-endpoint-support/tickets/done/autobyteus-ts-custom-openai-compatible-endpoint-support/review-report.md`
 - Current Validation Round: `5`
 - Trigger: `API / E2E validation refresh after the round-7 local-fix review pass restoring the visible New Provider draft row`
 - Prior Round Reviewed: `4`
@@ -119,7 +119,7 @@ Round rules:
 
 ## Other Validation Artifacts
 
-- Canonical validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-custom-openai-compatible-endpoint-support/tickets/in-progress/autobyteus-ts-custom-openai-compatible-endpoint-support/validation-report.md`
+- Canonical validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-custom-openai-compatible-endpoint-support/tickets/done/autobyteus-ts-custom-openai-compatible-endpoint-support/validation-report.md`
 - Round-5 focused command logs:
   - `/tmp/autobyteus-provider-validation-round9-visible-draft-row-1776485502/autobyteus-web-vitest.log`
   - `/tmp/autobyteus-provider-validation-round9-visible-draft-row-1776485502/autobyteus-web-nuxi-prepare.log`

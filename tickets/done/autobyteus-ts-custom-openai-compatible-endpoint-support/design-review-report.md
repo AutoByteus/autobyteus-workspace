@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-custom-openai-compatible-endpoint-support/tickets/in-progress/autobyteus-ts-custom-openai-compatible-endpoint-support/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-custom-openai-compatible-endpoint-support/tickets/in-progress/autobyteus-ts-custom-openai-compatible-endpoint-support/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-custom-openai-compatible-endpoint-support/tickets/in-progress/autobyteus-ts-custom-openai-compatible-endpoint-support/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-custom-openai-compatible-endpoint-support/tickets/done/autobyteus-ts-custom-openai-compatible-endpoint-support/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-custom-openai-compatible-endpoint-support/tickets/done/autobyteus-ts-custom-openai-compatible-endpoint-support/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-custom-openai-compatible-endpoint-support/tickets/done/autobyteus-ts-custom-openai-compatible-endpoint-support/design-spec.md`
 - Current Review Round: `7`
 - Trigger: `Re-review after user-approved scope expansion to add end-to-end custom-provider delete lifecycle and custom-only friendly model-label correction on top of the provider-object direction`
 - Prior Review Round Reviewed: `6`
