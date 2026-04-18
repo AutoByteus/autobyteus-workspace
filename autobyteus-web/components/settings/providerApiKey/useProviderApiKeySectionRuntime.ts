@@ -318,10 +318,6 @@ export function useProviderApiKeySectionRuntime() {
     saving.value = true
     try {
       await store.setGeminiSetupConfig(input)
-      const providerRow = providersWithModels.value.find((provider) => provider.provider.id === 'GEMINI')
-      if (providerRow) {
-        providerRow.provider.apiKeyConfigured = isGeminiConfigured.value
-      }
       providerConfigs.value.GEMINI = { apiKeyConfigured: isGeminiConfigured.value }
       showNotification(t('settings.components.settings.ProviderAPIKeyManager.gemini_setup_saved_successfully'), 'success')
       return true

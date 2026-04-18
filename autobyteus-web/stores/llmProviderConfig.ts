@@ -115,6 +115,35 @@ const syncProviderConfiguredState = (
   return nextConfigs
 }
 
+const replaceProviderConfiguredState = (
+  rows: ProviderWithModels[],
+  providerId: string,
+  apiKeyConfigured: boolean,
+): ProviderWithModels[] =>
+  rows.map((row) =>
+    row.provider.id === providerId
+      ? {
+          ...row,
+          provider: {
+            ...row.provider,
+            apiKeyConfigured,
+          },
+        }
+      : row,
+  )
+
+const resolveGeminiProviderConfiguredState = (setup: GeminiSetupConfigState): boolean => {
+  if (setup.mode === 'VERTEX_EXPRESS') {
+    return setup.vertexApiKeyConfigured
+  }
+
+  if (setup.mode === 'VERTEX_PROJECT') {
+    return Boolean((setup.vertexProject ?? '').trim() && (setup.vertexLocation ?? '').trim())
+  }
+
+  return setup.geminiApiKeyConfigured
+}
+
 export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
   state: () => ({
     providersWithModels: [] as ProviderWithModels[],
@@ -367,10 +396,7 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
 
         if (responseMessage && responseMessage.includes('successfully')) {
           this.providerConfigs[providerId] = { apiKeyConfigured: true }
-          const providerRow = this.providersWithModels.find((row) => row.provider.id === providerId)
-          if (providerRow) {
-            providerRow.provider.apiKeyConfigured = true
-          }
+          this.providersWithModels = replaceProviderConfiguredState(this.providersWithModels, providerId, true)
 
           if (providerId === 'AUTOBYTEUS') {
             await this.reloadModels()
@@ -509,6 +535,9 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
         }
 
         await this.fetchGeminiSetupConfig()
+        const geminiConfigured = resolveGeminiProviderConfiguredState(this.geminiSetup)
+        this.providerConfigs.GEMINI = { apiKeyConfigured: geminiConfigured }
+        this.providersWithModels = replaceProviderConfiguredState(this.providersWithModels, 'GEMINI', geminiConfigured)
         return true
       } catch (error) {
         console.error('Failed to set Gemini setup config:', error)
