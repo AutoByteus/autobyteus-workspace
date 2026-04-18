@@ -18,6 +18,11 @@ const { localizationState } = vi.hoisted(() => ({
       'settings.components.settings.ProviderAPIKeyManager.gemini_setup_saved_successfully': 'Gemini setup saved successfully',
       'settings.components.settings.ProviderAPIKeyManager.api_key_saved_successfully': 'API key for {{provider}} saved successfully',
       'settings.components.settings.ProviderAPIKeyManager.failed_to_save_api_key': 'Failed to save API key for {{provider}}',
+      'settings.components.settings.ProviderAPIKeyManager.custom_provider_saved_successfully': 'Custom provider saved successfully',
+      'settings.components.settings.ProviderAPIKeyManager.failed_to_save_custom_provider': 'Failed to save custom provider',
+      'settings.components.settings.ProviderAPIKeyManager.custom_provider_deleted_successfully': 'Custom provider {{provider}} removed successfully',
+      'settings.components.settings.ProviderAPIKeyManager.failed_to_delete_custom_provider': 'Failed to remove custom provider {{provider}}',
+      'settings.components.settings.ProviderAPIKeyManager.new_custom_provider': 'New Provider',
     } as Record<string, string>,
   },
 }))
@@ -46,7 +51,49 @@ const RuntimeHarness = defineComponent({
   },
 })
 
-const mountRuntime = (storePatch: Record<string, any> = {}, keyLookup: (provider: string) => Promise<string> = async () => '') => {
+const openAiRow = {
+  provider: {
+    id: 'OPENAI',
+    name: 'OpenAI',
+    providerType: 'OPENAI',
+    isCustom: false,
+    baseUrl: null,
+    apiKeyConfigured: false,
+    status: 'NOT_APPLICABLE',
+    statusMessage: null,
+  },
+  models: [{ modelIdentifier: 'gpt-4o', name: 'GPT-4o', providerType: 'OPENAI' }],
+}
+
+const anthropicRow = {
+  provider: {
+    id: 'ANTHROPIC',
+    name: 'Anthropic',
+    providerType: 'ANTHROPIC',
+    isCustom: false,
+    baseUrl: null,
+    apiKeyConfigured: true,
+    status: 'NOT_APPLICABLE',
+    statusMessage: null,
+  },
+  models: [{ modelIdentifier: 'claude-3-7-sonnet', name: 'Claude 3.7 Sonnet', providerType: 'ANTHROPIC' }],
+}
+
+const customProviderRow = {
+  provider: {
+    id: 'provider_gateway',
+    name: 'Internal Gateway',
+    providerType: 'OPENAI_COMPATIBLE',
+    isCustom: true,
+    baseUrl: 'https://gateway.example.com/v1',
+    apiKeyConfigured: true,
+    status: 'READY',
+    statusMessage: null,
+  },
+  models: [{ modelIdentifier: 'openai-compatible:provider_gateway:model-a', name: 'Model A', providerType: 'OPENAI_COMPATIBLE' }],
+}
+
+const mountRuntime = (storePatch: Record<string, any> = {}) => {
   const pinia = createTestingPinia({
     createSpy: vi.fn,
     stubActions: true,
@@ -76,11 +123,33 @@ const mountRuntime = (storePatch: Record<string, any> = {}, keyLookup: (provider
   const store = useLLMProviderConfigStore()
   store.fetchProvidersWithModels = vi.fn().mockResolvedValue(store.providersWithModels)
   store.fetchGeminiSetupConfig = vi.fn().mockResolvedValue(store.geminiSetup)
-  store.getLLMProviderApiKey = vi.fn(keyLookup as any)
+  store.getLLMProviderApiKeyConfigured = vi.fn().mockResolvedValue(false)
   store.setLLMProviderApiKey = vi.fn().mockResolvedValue(true)
   store.setGeminiSetupConfig = vi.fn().mockResolvedValue(true)
   store.reloadModels = vi.fn().mockResolvedValue(true)
   store.reloadModelsForProvider = vi.fn().mockResolvedValue(true)
+  store.probeCustomProvider = vi.fn().mockResolvedValue({
+    name: 'Internal Gateway',
+    providerType: 'OPENAI_COMPATIBLE',
+    baseUrl: 'https://gateway.example.com/v1',
+    discoveredModels: [{ id: 'model-a', name: 'Model A' }],
+  })
+  store.createCustomProvider = vi.fn().mockResolvedValue({
+    id: 'provider_gateway',
+    name: 'Internal Gateway',
+    providerType: 'OPENAI_COMPATIBLE',
+    isCustom: true,
+    baseUrl: 'https://gateway.example.com/v1',
+    apiKeyConfigured: true,
+    status: 'READY',
+    statusMessage: null,
+  })
+  store.deleteCustomProvider = vi.fn().mockImplementation(async (providerId: string) => {
+    store.providersWithModels = store.providersWithModels.filter((row) => row.provider.id !== providerId)
+    store.audioProvidersWithModels = store.audioProvidersWithModels.filter((row) => row.provider.id !== providerId)
+    store.imageProvidersWithModels = store.imageProvidersWithModels.filter((row) => row.provider.id !== providerId)
+    return true
+  })
 
   const wrapper = mount(RuntimeHarness, { global: { plugins: [pinia] } })
   return { wrapper, store }
@@ -91,27 +160,22 @@ describe('useProviderApiKeySectionRuntime', () => {
     vi.clearAllMocks()
   })
 
-  it('hydrates provider masks and selects the first configured provider during initialize', async () => {
-    const { wrapper } = mountRuntime(
-      {
-        providersWithModels: [
-          { provider: 'OPENAI', models: [{ modelIdentifier: 'gpt-4o' }] },
-          { provider: 'ANTHROPIC', models: [{ modelIdentifier: 'claude-3-7-sonnet' }] },
-        ],
-      },
-      async (provider) => (provider === 'ANTHROPIC' ? 'configured-key' : ''),
-    )
+  it('hydrates configured state from provider objects and selects the first configured provider', async () => {
+    const { wrapper, store } = mountRuntime({
+      providersWithModels: [openAiRow, anthropicRow],
+    })
 
     await (wrapper.vm as any).initialize()
     await flushPromises()
 
-    expect((wrapper.vm as any).selectedModelProvider).toBe('ANTHROPIC')
-    expect((wrapper.vm as any).providerConfigs.ANTHROPIC.apiKey).toBe('********')
+    expect((wrapper.vm as any).selectedProviderId).toBe('ANTHROPIC')
+    expect((wrapper.vm as any).providerConfigs.ANTHROPIC.apiKeyConfigured).toBe(true)
+    expect(store.getLLMProviderApiKeyConfigured).not.toHaveBeenCalled()
   })
 
-  it('keeps save orchestration in the runtime and publishes localized notification state', async () => {
+  it('keeps built-in provider API-key save orchestration in the runtime', async () => {
     const { wrapper, store } = mountRuntime({
-      providersWithModels: [{ provider: 'OPENAI', models: [{ modelIdentifier: 'gpt-4o' }] }],
+      providersWithModels: [openAiRow],
     })
 
     await (wrapper.vm as any).initialize()
@@ -119,6 +183,56 @@ describe('useProviderApiKeySectionRuntime', () => {
     await flushPromises()
 
     expect(store.setLLMProviderApiKey).toHaveBeenCalledWith('OPENAI', 'runtime-key')
-    expect((wrapper.vm as any).notification.message).toBe('API key for OPENAI saved successfully')
+    expect((wrapper.vm as any).notification.message).toBe('API key for OpenAI saved successfully')
+  })
+
+  it('probes and saves custom providers through the provider-centered draft flow', async () => {
+    const { wrapper, store } = mountRuntime({
+      providersWithModels: [openAiRow],
+    })
+
+    await (wrapper.vm as any).initialize()
+    expect((wrapper.vm as any).allProvidersWithModels.at(-1)?.label).toBe('New Provider')
+    await (wrapper.vm as any).selectProvider('__new_custom_provider__')
+    ;(wrapper.vm as any).updateCustomProviderDraft({
+      name: 'Internal Gateway',
+      providerType: 'OPENAI_COMPATIBLE',
+      baseUrl: 'https://gateway.example.com/v1',
+      apiKey: 'secret',
+    })
+
+    await (wrapper.vm as any).probeCustomProviderDraft()
+    await (wrapper.vm as any).saveCustomProviderDraft()
+    await flushPromises()
+
+    expect(store.probeCustomProvider).toHaveBeenCalledWith({
+      name: 'Internal Gateway',
+      providerType: 'OPENAI_COMPATIBLE',
+      baseUrl: 'https://gateway.example.com/v1',
+      apiKey: 'secret',
+    })
+    expect(store.createCustomProvider).toHaveBeenCalledWith({
+      name: 'Internal Gateway',
+      providerType: 'OPENAI_COMPATIBLE',
+      baseUrl: 'https://gateway.example.com/v1',
+      apiKey: 'secret',
+    }, 'autobyteus')
+    expect((wrapper.vm as any).selectedProviderId).toBe('provider_gateway')
+    expect((wrapper.vm as any).notification.message).toBe('Custom provider saved successfully')
+  })
+
+  it('deletes saved custom providers and falls back to the next available provider', async () => {
+    const { wrapper, store } = mountRuntime({
+      providersWithModels: [openAiRow, customProviderRow],
+    })
+
+    await (wrapper.vm as any).initialize()
+    ;(wrapper.vm as any).selectedProviderId = 'provider_gateway'
+    await (wrapper.vm as any).deleteCustomProvider('provider_gateway')
+    await flushPromises()
+
+    expect(store.deleteCustomProvider).toHaveBeenCalledWith('provider_gateway', 'autobyteus')
+    expect((wrapper.vm as any).selectedProviderId).toBe('OPENAI')
+    expect((wrapper.vm as any).notification.message).toBe('Custom provider Internal Gateway removed successfully')
   })
 })

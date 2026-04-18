@@ -28,10 +28,45 @@ The Settings page is implemented in \`pages/settings.vue\` and serves as a conta
 
 This section allows users to manage connections to various LLM (Large Language Model) providers.
 
-- **Key Management:** Securely enter and update API keys for providers like OpenAI, Anthropic, Gemini, etc.
-- **Model Discovery:** Automatically lists available models (LLM, Audio, Image) for each configured provider.
-- **Reload Models:** Triggers a backend refresh to discover new models or apply API key changes.
-- **Reload Provider Models:** Triggers a targeted refresh for the selected provider to re-discover its models.
+- **Provider Browser:** Built-in providers and saved custom providers appear in
+  one provider-centered browser instead of separate management surfaces.
+- **Built-In Key Management:** Securely enter and update API keys for providers
+  like OpenAI, Anthropic, Gemini, etc. Built-in secret hydration stays
+  write-only in the product UI; the page reloads configured-status booleans, not
+  raw secret values.
+- **Custom OpenAI-Compatible Providers:** Use the visible `New Provider`
+  draft row in the provider browser sidebar to create a reusable
+  OpenAI-compatible provider by entering:
+  - provider name
+  - base URL
+  - API key
+- **Draft Provider Row:** The draft provider entry uses the same rectangular
+  sidebar row shape as the other providers, with the visible label `New
+  Provider`.
+- **Probe Before Save:** The custom-provider flow probes the remote `/models`
+  endpoint before save. Save stays disabled until a successful probe matches the
+  current draft.
+- **Duplicate-Name Protection:** Custom-provider names must be unique across
+  both built-in and already-saved providers.
+- **Saved Custom Provider Details:** Once saved, a custom provider shows a
+  details card with its base URL, model count, status, and a remove action.
+- **Custom Provider Delete:** Removing a saved custom provider deletes its
+  persisted record and then runs an authoritative refresh so the provider and
+  its models disappear from the browser. Selection falls back to the next
+  available provider row automatically.
+- **Model Discovery:** The selected provider panel lists available LLM, Audio,
+  and Image models grouped under the provider object returned by the backend.
+- **Custom-Only Friendly Labels:** Custom `OPENAI_COMPATIBLE` models display
+  friendly `provider.name / model.name` labels in shared selector consumers,
+  while built-in AutoByteus/runtime-backed models keep identifier-based labels.
+- **Reload Models:** Reload all models refreshes the full provider/model catalog.
+- **Reload Provider Models:** Reload selected provider refreshes just that
+  provider's catalog slice through the backend provider-targeted reload path.
+- **Custom Provider Status:** Saved custom providers show their base URL plus a
+  status summary:
+  - `READY`: latest probe/load succeeded
+  - `STALE_ERROR`: last refresh failed but the app kept last-known-good models
+  - `ERROR`: the provider currently has no successful load to serve from
 
 ### 2. Token Usage Statistics
 

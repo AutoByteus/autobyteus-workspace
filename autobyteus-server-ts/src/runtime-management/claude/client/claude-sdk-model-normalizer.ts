@@ -1,4 +1,5 @@
 import type { ModelInfo } from "autobyteus-ts/llm/models.js";
+import { getLlmProviderDisplayName } from "autobyteus-ts/llm/provider-display-names.js";
 import { LLMProvider } from "autobyteus-ts/llm/providers.js";
 import { LLMRuntime } from "autobyteus-ts/llm/runtimes.js";
 import { ParameterDefinition, ParameterSchema, ParameterType } from "autobyteus-ts";
@@ -73,7 +74,9 @@ export const toModelInfo = (descriptor: NormalizedModelDescriptor): ModelInfo =>
       : null) ?? descriptor.identifier,
   value: descriptor.identifier,
   canonical_name: descriptor.identifier,
-  provider: LLMProvider.ANTHROPIC,
+  provider_id: LLMProvider.ANTHROPIC,
+  provider_name: getLlmProviderDisplayName(LLMProvider.ANTHROPIC),
+  provider_type: LLMProvider.ANTHROPIC,
   runtime: LLMRuntime.API,
   config_schema: supportsClaudeThinking(descriptor)
     ? buildClaudeThinkingConfigSchema(descriptor.supportedEffortLevels)

@@ -11,7 +11,24 @@ const flushPromises = async () => {
   await new Promise<void>((resolve) => setTimeout(resolve, 0))
 }
 
-const mountComponent = async () => {
+const mountComponent = async (providersWithModels: any[] = [
+  {
+    provider: {
+      id: 'OPENAI',
+      name: 'OpenAI',
+      providerType: 'OPENAI',
+      isCustom: false,
+      baseUrl: null,
+      apiKeyConfigured: true,
+      status: 'NOT_APPLICABLE',
+      statusMessage: null,
+    },
+    models: [
+      { modelIdentifier: 'gpt-4.1', name: 'GPT-4.1', providerId: 'OPENAI', providerName: 'OpenAI', providerType: 'OPENAI' },
+      { modelIdentifier: 'gpt-5', name: 'GPT-5', providerId: 'OPENAI', providerName: 'OpenAI', providerType: 'OPENAI' },
+    ],
+  },
+]) => {
   const pinia = createTestingPinia({
     createSpy: vi.fn,
     stubActions: false,
@@ -49,15 +66,7 @@ const mountComponent = async () => {
         ],
       },
       llmProviderConfig: {
-        providersWithModels: [
-          {
-            provider: 'OPENAI',
-            models: [
-              { modelIdentifier: 'gpt-4.1', name: 'GPT-4.1', provider: 'OPENAI' },
-              { modelIdentifier: 'gpt-5', name: 'GPT-5', provider: 'OPENAI' },
-            ],
-          },
-        ],
+        providersWithModels,
       },
     },
   })
@@ -81,7 +90,7 @@ const mountComponent = async () => {
   })
 
   await flushPromises()
-  return { wrapper, serverSettingsStore, llmProviderConfigStore }
+  return { wrapper, serverSettingsStore }
 }
 
 describe('CompactionConfigCard', () => {
@@ -96,6 +105,45 @@ describe('CompactionConfigCard', () => {
     expect(wrapper.get('[data-testid="compaction-model-select"]').element).toHaveProperty('value', 'gpt-5')
     expect(wrapper.get('[data-testid="compaction-context-override-input"]').element).toHaveProperty('value', '4096')
     expect((wrapper.get('[data-testid="compaction-debug-logs-toggle"]').element as HTMLInputElement).checked).toBe(true)
+  })
+
+  it('uses custom friendly labels while keeping built-in compaction labels on identifiers', async () => {
+    const { wrapper } = await mountComponent([
+      {
+        provider: {
+          id: 'OPENAI',
+          name: 'OpenAI',
+          providerType: 'OPENAI',
+          isCustom: false,
+          baseUrl: null,
+          apiKeyConfigured: true,
+          status: 'NOT_APPLICABLE',
+          statusMessage: null,
+        },
+        models: [
+          { modelIdentifier: 'gpt-4.1', name: 'GPT-4.1', providerId: 'OPENAI', providerName: 'OpenAI', providerType: 'OPENAI' },
+        ],
+      },
+      {
+        provider: {
+          id: 'provider_gateway',
+          name: 'Internal Gateway',
+          providerType: 'OPENAI_COMPATIBLE',
+          isCustom: true,
+          baseUrl: 'https://gateway.example.com/v1',
+          apiKeyConfigured: true,
+          status: 'READY',
+          statusMessage: null,
+        },
+        models: [
+          { modelIdentifier: 'openai-compatible:provider_gateway:model-a', name: 'Model A', providerId: 'provider_gateway', providerName: 'Internal Gateway', providerType: 'OPENAI_COMPATIBLE' },
+        ],
+      },
+    ])
+
+    const options = wrapper.findAll('[data-testid="compaction-model-select"] option').map((option) => option.text())
+    expect(options).toContain('OpenAI / gpt-4.1')
+    expect(options).toContain('Internal Gateway / Model A')
   })
 
   it('saves typed compaction settings through the server settings store', async () => {

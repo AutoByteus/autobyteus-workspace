@@ -1,6 +1,5 @@
-import type { ModelInfo } from "autobyteus-ts/llm/models.js";
-import type { LLMProvider } from "autobyteus-ts/llm/providers.js";
-import { AutobyteusLlmModelProvider } from "./autobyteus-llm-model-provider.js";
+import type { ModelInfo } from 'autobyteus-ts/llm/models.js';
+import { AutobyteusLlmModelProvider } from './autobyteus-llm-model-provider.js';
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -15,7 +14,7 @@ export class CachedAutobyteusLlmModelProvider {
 
   constructor(modelProvider: AutobyteusLlmModelProvider) {
     this.modelProvider = modelProvider;
-    logger.info("CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.");
+    logger.info('CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.');
   }
 
   private async ensureCachePopulated(): Promise<void> {
@@ -25,7 +24,7 @@ export class CachedAutobyteusLlmModelProvider {
 
     if (!this.cachePromise) {
       this.cachePromise = (async () => {
-        logger.info("Populating LLM models cache for the first time...");
+        logger.info('Populating LLM models cache for the first time...');
         this.cache = await this.modelProvider.listModels();
         logger.info(`LLM models cache populated with ${this.cache.length} items.`);
       })().finally(() => {
@@ -42,15 +41,15 @@ export class CachedAutobyteusLlmModelProvider {
   }
 
   async refreshModels(): Promise<void> {
-    logger.info("Refreshing LLM models cache...");
+    logger.info('Refreshing LLM models cache...');
     await this.modelProvider.refreshModels();
     this.cache = await this.modelProvider.listModels();
     logger.info(`LLM models cache refreshed with ${this.cache.length} items.`);
   }
 
-  async refreshModelsForProvider(provider: LLMProvider): Promise<number> {
-    logger.info(`Refreshing LLM models cache for provider ${provider}...`);
-    const count = await this.modelProvider.refreshModelsForProvider(provider);
+  async refreshModelsForProvider(providerId: string): Promise<number> {
+    logger.info(`Refreshing LLM models cache for provider ${providerId}...`);
+    const count = await this.modelProvider.refreshModelsForProvider(providerId);
     this.cache = await this.modelProvider.listModels();
     logger.info(`LLM models cache refreshed with ${this.cache.length} items after provider reload.`);
     return count;

@@ -36,7 +36,7 @@
         :model-value="llmModelIdentifier || ''"
         @update:modelValue="updateModel"
         :options="groupedModelOptions"
-        :disabled="disabledComputed || !llmStore.providersWithModels.length"
+        :disabled="disabledComputed || !availableProviderGroups.length"
         :placeholder="modelPlaceholderText"
         search-placeholder="Search models..."
       />
@@ -68,7 +68,10 @@ import {
   runtimeKindToLabel,
   type AgentRuntimeKind,
 } from '~/types/agent/AgentRunConfig'
-import { getModelSelectionLabel } from '~/utils/modelSelectionLabel'
+import {
+  getModelSelectionOptionLabel,
+  getModelSelectionSelectedLabel,
+} from '~/utils/modelSelectionLabel'
 
 const props = defineProps<{
   runtimeKind?: string | null
@@ -132,6 +135,7 @@ const resolveEffectiveRuntimeKind = (runtimeKind: unknown): AgentRuntimeKind => 
 
 const normalizedStoredRuntimeKind = computed(() => normalizeStoredRuntimeKind(props.runtimeKind))
 const effectiveRuntimeKind = computed(() => resolveEffectiveRuntimeKind(props.runtimeKind))
+const availableProviderGroups = computed(() => llmStore.providersWithModelsForSelection ?? [])
 
 const ensureModelsForRuntime = async (
   runtimeKind: AgentRuntimeKind,
@@ -243,43 +247,32 @@ watch(
 )
 
 const groupedModelOptions = computed<GroupedOption[]>(() => {
-  if (!llmStore.providersWithModels.length) return []
-  return llmStore.providersWithModels.map(provider => ({
-    label: provider.provider,
-    items: provider.models.map(model => ({
+  if (!availableProviderGroups.value.length) return []
+  return availableProviderGroups.value.map((providerGroup) => ({
+    label: providerGroup.provider.name,
+    items: providerGroup.models.map((model) => ({
       id: model.modelIdentifier,
-      name: getModelSelectionLabel(model, effectiveRuntimeKind.value),
+      name: getModelSelectionOptionLabel(model, effectiveRuntimeKind.value),
+      selectedLabel: getModelSelectionSelectedLabel(providerGroup.provider.name, model, effectiveRuntimeKind.value),
     })),
   }))
 })
 
 const modelConfigSchema = computed(() => {
-  if (!props.llmModelIdentifier) return null
+  if (!props.llmModelIdentifier) {
+    return null
+  }
   return llmStore.modelConfigSchemaByIdentifier(props.llmModelIdentifier)
 })
 
 const updateRuntimeKind = (value: string) => {
-  if (runtimeSelectionLockedComputed.value) {
+  const normalizedRuntime = normalizeStoredRuntimeKind(value)
+  if (normalizedRuntime === normalizedStoredRuntimeKind.value) {
     return
   }
-
-  const nextStoredRuntime = normalizeStoredRuntimeKind(value)
-  const nextEffectiveRuntime = resolveEffectiveRuntimeKind(nextStoredRuntime)
-  if (nextStoredRuntime && !runtimeAvailabilityStore.isRuntimeEnabled(nextEffectiveRuntime)) {
-    return
-  }
-
-  if (nextStoredRuntime === normalizedStoredRuntimeKind.value) {
-    return
-  }
-
-  const runtimeChanged = nextEffectiveRuntime !== effectiveRuntimeKind.value
-  emit('update:runtimeKind', nextStoredRuntime)
-
-  if (runtimeChanged) {
-    emit('update:llmModelIdentifier', '')
-    emit('update:llmConfig', null)
-  }
+  emit('update:runtimeKind', normalizedRuntime)
+  emit('update:llmModelIdentifier', '')
+  emit('update:llmConfig', null)
 }
 
 const updateModel = (value: string) => {

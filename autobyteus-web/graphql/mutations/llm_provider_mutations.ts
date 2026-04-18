@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
 export const SET_LLM_PROVIDER_API_KEY = gql`
-  mutation SetLLMProviderApiKey($provider: String!, $apiKey: String!) {
-    setLlmProviderApiKey(provider: $provider, apiKey: $apiKey)
+  mutation SetLLMProviderApiKey($providerId: String!, $apiKey: String!) {
+    setLlmProviderApiKey(providerId: $providerId, apiKey: $apiKey)
   }
 `;
 
@@ -13,8 +13,43 @@ export const RELOAD_LLM_MODELS = gql`
 `;
 
 export const RELOAD_LLM_PROVIDER_MODELS = gql`
-  mutation ReloadLLMProviderModels($provider: String!) {
-    reloadLlmProviderModels(provider: $provider)
+  mutation ReloadLLMProviderModels($providerId: String!, $runtimeKind: String) {
+    reloadLlmProviderModels(providerId: $providerId, runtimeKind: $runtimeKind)
+  }
+`;
+
+export const PROBE_CUSTOM_LLM_PROVIDER = gql`
+  mutation ProbeCustomLlmProvider($input: CustomLlmProviderInputObject!) {
+    probeCustomLlmProvider(input: $input) {
+      name
+      providerType
+      baseUrl
+      discoveredModels {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const CREATE_CUSTOM_LLM_PROVIDER = gql`
+  mutation CreateCustomLlmProvider($input: CustomLlmProviderInputObject!, $runtimeKind: String) {
+    createCustomLlmProvider(input: $input, runtimeKind: $runtimeKind) {
+      id
+      name
+      providerType
+      isCustom
+      baseUrl
+      apiKeyConfigured
+      status
+      statusMessage
+    }
+  }
+`;
+
+export const DELETE_CUSTOM_LLM_PROVIDER = gql`
+  mutation DeleteCustomLlmProvider($providerId: String!, $runtimeKind: String) {
+    deleteCustomLlmProvider(providerId: $providerId, runtimeKind: $runtimeKind)
   }
 `;
 

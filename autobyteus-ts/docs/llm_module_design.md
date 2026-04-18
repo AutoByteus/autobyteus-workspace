@@ -2,7 +2,12 @@
 
 ## 1. Overview
 
-The `src/llm` module provides a unified, extensible interface for interacting with various Large Language Models (LLMs). It abstracts away the differences between providers (OpenAI, Anthropic, Mistral, etc.) and runtimes (Cloud APIs vs. Local Servers like Ollama/LM Studio), allowing the rest of the Autobyteus framework to treat all models uniformly.
+The `src/llm` module provides a unified, extensible interface for interacting
+with various Large Language Models (LLMs). It abstracts away the differences
+between providers (OpenAI, Anthropic, Mistral, etc.) and runtimes (cloud APIs,
+local servers like Ollama/LM Studio, and user-configured OpenAI-compatible
+endpoints), allowing the rest of the Autobyteus framework to treat all models
+uniformly.
 
 ## 2. Core Architecture
 
@@ -20,32 +25,51 @@ The architecture relies on a **Factory Pattern** combined with a **Registry** to
 
 - **`LLMModel`:**
   Represents the _metadata_ of a model, not the active instance. It contains:
-  - **Identifier:** A globally unique string (e.g., `gpt-4o`, `llama3:latest:ollama@localhost:11434`).
-  - **Provider:** The organization that created the model (e.g., `OPENAI`).
-  - **Runtime:** Where the model is hosted (e.g., `API`, `OLLAMA`).
+  - **Identifier:** A globally unique string (e.g., `gpt-4o`,
+    `llama3:latest:ollama@localhost:11434`,
+    `openai-compatible:provider_1234567890abcdef:deepseek-chat`).
+  - **Provider Identity:** `providerId`, `providerName`, and `providerType`.
+    Built-in providers use stable enum IDs (for example `OPENAI`), while custom
+    OpenAI-compatible providers keep their own generated provider IDs.
+  - **Runtime:** Where the model is hosted (e.g., `API`,
+    `OPENAI_COMPATIBLE`, `OLLAMA`).
   - **Config Schema:** A JSON schema defining model-specific configuration parameters (e.g., `thinking_level` for reasoning models).
   - **Factory Method:** `LLMFactory.createLLM(...)` instantiates the concrete `BaseLLM` for this model.
 
 - **`LLMFactory` (Singleton):**
   The central access point.
   - **Registry:** Maps unique identifiers to `LLMModel` instances.
-  - **Discovery:** Automatically discovers local models from runtimes like Ollama and registers them at startup.
-  - **Reloading:** Support for dynamic reloading of models via `reloadModels(provider)`.
+  - **Discovery:** Registers built-in API models at startup, discovers local
+    runtime models, and can later sync saved custom OpenAI-compatible
+    providers into the same registry.
+  - **Reloading:** Supports provider-scoped reloads for reloadable built-in
+    providers and custom-provider sync through
+    `syncOpenAICompatibleEndpointModels(...)`.
   - **Creation:** `createLLM(identifier)` is the standard way to get a usable LLM object.
 
-### 2.2 Provider vs. Runtime
+### 2.2 Provider Identity vs. Provider Type vs. Runtime
 
-A key architectural distinction is made between **Provider** and **Runtime**:
+A key architectural distinction is made between **provider identity**,
+**provider type**, and **runtime**:
 
-- **`LLMProvider`:** Who _made_ the model?
-  - Examples: `OPENAI`, `ANTHROPIC`, `MISTRAL`, `DEEPSEEK`.
+- **Provider Identity:** Which concrete provider record owns the model?
+  - Built-ins use fixed IDs such as `OPENAI`, `ANTHROPIC`, or `LMSTUDIO`.
+  - Custom OpenAI-compatible providers use generated stable IDs such as
+    `provider_<uuid>`.
+- **`LLMProvider`:** What kind of provider is it?
+  - Examples: `OPENAI`, `ANTHROPIC`, `MISTRAL`, `OPENAI_COMPATIBLE`.
 - **`LLMRuntime`:** Where is the model _running_?
   - `API`: Cloud-hosted (e.g., accessing GPT-4 via OpenAI's API).
+  - `OPENAI_COMPATIBLE`: A user-configured OpenAI-style endpoint reached by
+    base URL + API key and modeled as its own runtime.
   - `OLLAMA`: Locally hosted via `ollama serve`.
   - `LMSTUDIO`: Locally hosted via LM Studio.
   - `AUTOBYTEUS`: Internal or custom serving layer.
 
-This allows a model like `Llama 3` to exist as both an API model (via Groq or DeepInfra) and a local model (via Ollama), distinguished by their runtime.
+This allows a model like `Llama 3` to exist as both an API model (via a cloud
+provider) and a local model (via Ollama), while also allowing a user-configured
+OpenAI-compatible endpoint to keep its own provider identity without adding a
+new built-in enum value for every saved endpoint.
 
 ## 3. Usage Flow
 
@@ -53,6 +77,8 @@ This allows a model like `Llama 3` to exist as both an API model (via Groq or De
     `LLMFactory.ensureInitialized()` is called. It:
     - Registers hardcoded API models (GPT-4, Claude 3.5, etc.).
     - Probes local runtimes (Ollama, LM Studio) to discover available models.
+    - Leaves custom OpenAI-compatible provider sync to the caller that owns
+      persisted provider records.
 
 2.  **Instantiation:**
     The system requests a model by ID:
@@ -61,6 +87,8 @@ This allows a model like `Llama 3` to exist as both an API model (via Groq or De
     const llm = await LLMFactory.createLLM('gpt-4o');
     // or
     const llm = await LLMFactory.createLLM('llama3:latest:ollama@localhost:11434');
+    // or
+    const llm = await LLMFactory.createLLM('openai-compatible:provider_1234567890abcdef:deepseek-chat');
     ```
 
 3.  **Interaction:**
@@ -92,14 +120,21 @@ The `BaseLLM` supports extensions that hook into the request/response lifecycle.
 
 ```text
 src/llm/
-├── api/                # Concrete BaseLLM implementations (OpenAI, Claude, etc.)
-├── extensions/         # LLM extensions (Token usage, etc.)
-├── providers/          # Discovery logic for runtimes (Ollama, LM Studio)
-├── utils/              # Config, Message types, Pricing models
-├── base.ts             # Abstract base class
-├── llm-factory.ts      # Singleton registry and factory
-├── models.ts           # LLMModel metadata definition
-└── runtimes.ts         # Runtime Enum definition
+├── api/                                # Concrete BaseLLM implementations
+├── extensions/                         # LLM extensions (token usage, etc.)
+├── metadata/                           # Model metadata resolvers
+├── transport/                          # Shared transport helpers
+├── utils/                              # Config, message types, pricing models
+├── base.ts                             # Abstract base class
+├── custom-llm-provider-config.ts       # Persisted custom-provider schema
+├── llm-factory.ts                      # Singleton registry and factory
+├── models.ts                           # LLMModel metadata definition
+├── openai-compatible-endpoint-discovery.ts
+├── openai-compatible-endpoint-model.ts
+├── openai-compatible-endpoint-provider.ts
+├── provider-display-names.ts
+├── providers.ts                        # Provider enum
+└── runtimes.ts                         # Runtime enum
 ```
 
 ## 6. Configuration
@@ -135,15 +170,30 @@ large local request before the next agent LLM leg is allowed to continue.
 
 ## 7. Dynamic Model Reloading
 
-For local runtimes (Ollama, LM Studio, Autobyteus) where models can be added or removed while the application is running, `LLMFactory` provides a `reloadModels(provider)` method.
+For reloadable built-in runtimes (`OLLAMA`, `LMSTUDIO`, `AUTOBYTEUS`),
+`LLMFactory.reloadModels(provider)` performs a provider-scoped reload:
 
-This method follows a **Fail-Fast / Clear-Then-Discover** strategy:
+1.  **Fetch** the latest model list for that provider.
+2.  **Replace on success** so the provider's registry slice becomes the new
+    discovered set.
+3.  **Preserve on failure** so a failed fetch does not silently wipe the last
+    known provider models.
 
-1.  **Clear**: All existing models for the specified provider are immediately removed from the registry.
-2.  **Discover**: The factory attempts to fetch the current list of models from the provider.
-3.  **Register**: If successful, the new models are registered.
+Custom OpenAI-compatible providers use a different boundary:
+`LLMFactory.syncOpenAICompatibleEndpointModels(savedProviders)`.
 
-If the fetch fails (e.g., the local server is down), the registry for that provider remains empty, accurately reflecting that no models are currently available.
+- Each saved provider is probed independently through its `/models` endpoint.
+- Successful providers contribute fresh `OPENAI_COMPATIBLE` runtime models.
+- The synced model set is authoritative to the current saved-provider list, so
+  deleting a saved custom provider removes that provider's models from the next
+  sync and from future cold-start registry state.
+- A provider that previously loaded successfully can keep its last-known-good
+  models with a `STALE_ERROR` status when a later refresh fails.
+- A provider that has never loaded successfully reports an error without wiping
+  healthy providers.
+
+This isolation is important because one broken custom endpoint must not remove
+healthy custom providers or the built-in registry.
 
 ## 8. Provider Configuration Mapping
 

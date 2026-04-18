@@ -28,6 +28,7 @@ describe('ChannelBindingSetupCard', () => {
     const providerScopeStore = useMessagingProviderScopeStore();
     gatewayStore.gatewayStatus = 'UNKNOWN';
     providerScopeStore.initialize({
+      whatsappBusinessEnabled: false,
       wechatModes: [],
       defaultWeChatMode: null,
       wechatPersonalEnabled: false,
@@ -52,6 +53,7 @@ describe('ChannelBindingSetupCard', () => {
     gatewayStore.gatewayStatus = 'READY';
     gatewayStore.session = null;
     providerScopeStore.initialize({
+      whatsappBusinessEnabled: false,
       wechatModes: [],
       defaultWeChatMode: null,
       wechatPersonalEnabled: false,
@@ -83,6 +85,7 @@ describe('ChannelBindingSetupCard', () => {
     const providerScopeStore = useMessagingProviderScopeStore();
 
     providerScopeStore.initialize({
+      whatsappBusinessEnabled: false,
       wechatModes: [],
       defaultWeChatMode: null,
       wechatPersonalEnabled: false,
@@ -98,7 +101,7 @@ describe('ChannelBindingSetupCard', () => {
     await flushPromises();
 
     expect(wrapper.find('[data-testid="discord-identity-hint"]').exists()).toBe(true);
-    expect(wrapper.text()).toContain('Account ID should be');
+    expect(wrapper.text().toLowerCase()).toContain('account id should be');
     expect(wrapper.text()).toContain('discord-acct-1');
   });
 
@@ -108,6 +111,7 @@ describe('ChannelBindingSetupCard', () => {
 
     const providerScopeStore = useMessagingProviderScopeStore();
     providerScopeStore.initialize({
+      whatsappBusinessEnabled: false,
       wechatModes: [],
       defaultWeChatMode: null,
       wechatPersonalEnabled: false,
@@ -206,6 +210,7 @@ describe('ChannelBindingSetupCard', () => {
 
     const providerScopeStore = useMessagingProviderScopeStore();
     providerScopeStore.initialize({
+      whatsappBusinessEnabled: false,
       wechatModes: [],
       defaultWeChatMode: null,
       wechatPersonalEnabled: false,
@@ -236,6 +241,7 @@ describe('ChannelBindingSetupCard', () => {
 
     const providerScopeStore = useMessagingProviderScopeStore();
     providerScopeStore.initialize({
+      whatsappBusinessEnabled: false,
       wechatModes: [],
       defaultWeChatMode: null,
       wechatPersonalEnabled: false,
