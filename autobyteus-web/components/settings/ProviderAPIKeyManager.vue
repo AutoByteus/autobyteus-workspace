@@ -37,15 +37,11 @@
             </p>
           </div>
 
-          <div v-else-if="!hasAnyModels" class="bg-gray-50 rounded-lg p-6 text-center">
-            <span class="i-heroicons-cube-transparent-20-solid w-10 h-10 text-gray-400 mx-auto mb-3"></span>
-            <p class="text-gray-600">{{ $t('settings.components.settings.ProviderAPIKeyManager.no_models_available') }}</p>
-          </div>
-
           <div v-else class="flex-1 flex flex-col gap-4">
             <ProviderModelBrowser
               :providers="allProvidersWithModels"
-              :selected-provider="selectedModelProvider"
+              :selected-provider-id="selectedProviderId"
+              :selected-provider-label="selectedProviderLabel"
               :selected-provider-configured="selectedProviderConfigured"
               :llm-models="selectedProviderLlmModels"
               :audio-models="selectedProviderAudioModels"
@@ -53,23 +49,51 @@
               :is-loading-models="isLoadingModels"
               :is-reloading-models="isReloadingModels"
               :is-reloading-selected-provider="isReloadingSelectedProvider"
+              :can-reload-selected-provider="canReloadSelectedProvider"
               :is-provider-configured="isProviderConfigured"
               @select-provider="selectProvider"
               @reload-selected-provider="reloadSelectedProvider()"
             >
               <template #configuration>
+                <div v-if="selectedProviderSummary?.isDraft" class="grid grid-cols-1 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] gap-6">
+                  <CustomProviderEditor
+                    :draft="customProviderDraft"
+                    :probing="isProbingCustomProvider"
+                    :saving="isSavingCustomProvider"
+                    :can-probe="canProbeCustomProvider"
+                    :can-save="canSaveCustomProvider"
+                    :is-probe-stale="isCustomProviderProbeStale"
+                    @update:draft="updateCustomProviderDraft"
+                    @probe="probeCustomProviderDraft"
+                    @save="saveCustomProviderDraft"
+                  />
+
+                  <CustomProviderProbePreview
+                    :probe-result="customProviderProbeResult"
+                    :error="customProviderError"
+                    :is-probe-stale="isCustomProviderProbeStale"
+                  />
+                </div>
+
+                <CustomProviderDetailsCard
+                  v-else-if="selectedProviderSummary?.isCustom"
+                  :provider="selectedProviderSummary"
+                  :deleting="isDeletingCustomProvider"
+                  @delete="deleteCustomProvider(selectedProviderId)"
+                />
+
                 <GeminiSetupForm
-                  v-if="selectedModelProvider === 'GEMINI'"
+                  v-else-if="selectedProviderId === 'GEMINI'"
                   :gemini-setup="geminiSetup"
                   :saving="saving"
                   @save="saveGeminiSetup"
                 />
                 <ProviderApiKeyEditor
-                  v-else-if="selectedModelProvider"
+                  v-else-if="selectedProviderId"
                   :configured="selectedProviderConfigured"
                   :saving="saving"
                   :reset-version="providerEditorResetVersion"
-                  @save="saveProviderApiKey(selectedModelProvider, $event)"
+                  @save="saveProviderApiKey(selectedProviderId, $event)"
                 />
               </template>
             </ProviderModelBrowser>
@@ -93,6 +117,9 @@ import { onMounted } from 'vue'
 import GeminiSetupForm from '~/components/settings/providerApiKey/GeminiSetupForm.vue'
 import ProviderApiKeyEditor from '~/components/settings/providerApiKey/ProviderApiKeyEditor.vue'
 import ProviderModelBrowser from '~/components/settings/providerApiKey/ProviderModelBrowser.vue'
+import CustomProviderEditor from '~/components/settings/providerApiKey/customProvider/CustomProviderEditor.vue'
+import CustomProviderDetailsCard from '~/components/settings/providerApiKey/customProvider/CustomProviderDetailsCard.vue'
+import CustomProviderProbePreview from '~/components/settings/providerApiKey/customProvider/CustomProviderProbePreview.vue'
 import { useProviderApiKeySectionRuntime } from '~/components/settings/providerApiKey/useProviderApiKeySectionRuntime'
 
 const {
@@ -104,20 +131,35 @@ const {
   isReloadingModels,
   geminiSetup,
   allProvidersWithModels,
-  hasAnyModels,
-  selectedModelProvider,
+  selectedProviderId,
+  selectedProviderSummary,
+  selectedProviderLabel,
   selectedProviderLlmModels,
   selectedProviderAudioModels,
   selectedProviderImageModels,
   selectedProviderConfigured,
+  canReloadSelectedProvider,
   isReloadingSelectedProvider,
   isProviderConfigured,
+  customProviderDraft,
+  customProviderProbeResult,
+  customProviderError,
+  isProbingCustomProvider,
+  isSavingCustomProvider,
+  isDeletingCustomProvider,
+  isCustomProviderProbeStale,
+  canProbeCustomProvider,
+  canSaveCustomProvider,
   initialize,
   selectProvider,
   reloadAllModels,
   reloadSelectedProvider,
   saveGeminiSetup,
   saveProviderApiKey,
+  updateCustomProviderDraft,
+  probeCustomProviderDraft,
+  saveCustomProviderDraft,
+  deleteCustomProvider,
 } = useProviderApiKeySectionRuntime()
 
 onMounted(() => {

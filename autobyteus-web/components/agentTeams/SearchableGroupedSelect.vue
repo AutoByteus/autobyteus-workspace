@@ -1,7 +1,6 @@
 <template>
-  <div> <!-- Wrapper div to ensure single root element for attribute inheritance -->
+  <div>
     <div class="relative" ref="wrapperRef">
-      <!-- Display Button -->
       <button
         @click="toggleDropdown"
         :disabled="disabled || loading"
@@ -12,8 +11,8 @@
         <span v-if="loading" class="text-gray-500">{{ loadingLabel }}</span>
         <span v-else-if="modelValue" class="truncate">{{ selectedItemLabel }}</span>
         <span v-else class="text-gray-500">{{ effectivePlaceholder }}</span>
-        
-        <svg class="w-4 h-4 ml-2 text-gray-500 flex-shrink-0 transform transition-transform" 
+
+        <svg class="w-4 h-4 ml-2 text-gray-500 flex-shrink-0 transform transition-transform"
             :class="{ 'rotate-180': isOpen }"
             fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -21,7 +20,6 @@
       </button>
     </div>
 
-    <!-- Dropdown Popover (Teleported) -->
     <Teleport to="body">
       <div
         v-if="isOpen"
@@ -29,7 +27,6 @@
         :style="popoverStyle"
         class="max-w-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg max-h-[30rem] overflow-y-auto flex flex-col"
       >
-        <!-- Search Input -->
         <div class="p-2 sticky top-0 bg-white dark:bg-gray-800/95 z-10 backdrop-blur-sm">
           <input
             ref="searchInputRef"
@@ -40,7 +37,6 @@
           />
         </div>
 
-        <!-- Options List -->
         <div class="flex-grow overflow-y-auto">
           <div v-if="filteredOptions.length === 0" class="p-3 text-sm text-center text-gray-500">{{ $t('agentTeams.components.agentTeams.SearchableGroupedSelect.no_options_found') }}</div>
           <div v-for="group in filteredOptions" :key="group.label" class="py-1">
@@ -69,41 +65,40 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onUnmounted, nextTick, reactive } from 'vue';
-import { useLocalization } from '~/composables/useLocalization';
+import { ref, computed, watch, onMounted, onUnmounted, nextTick, reactive } from 'vue'
+import { useLocalization } from '~/composables/useLocalization'
 
-// Define the generic structure for an item
 export interface SelectItem {
-  id: string;
-  name: string;
+  id: string
+  name: string
+  selectedLabel?: string
 }
 
-// Define the generic structure for a group of options
 export interface GroupedOption {
-  label: string;
-  items: SelectItem[];
+  label: string
+  items: SelectItem[]
 }
 
 const props = withDefaults(defineProps<{
-  modelValue: string | null;
-  options: GroupedOption[];
-  placeholder?: string;
-  searchPlaceholder?: string;
-  loading?: boolean;
-  disabled?: boolean;
+  modelValue: string | null
+  options: GroupedOption[]
+  placeholder?: string
+  searchPlaceholder?: string
+  loading?: boolean
+  disabled?: boolean
 }>(), {
   loading: false,
   disabled: false,
-});
+})
 
-const emit = defineEmits(['update:modelValue']);
-const { t } = useLocalization();
+const emit = defineEmits(['update:modelValue'])
+const { t } = useLocalization()
 
-const isOpen = ref(false);
-const searchTerm = ref('');
-const wrapperRef = ref<HTMLDivElement | null>(null);
-const searchInputRef = ref<HTMLInputElement | null>(null);
-const popoverRef = ref<HTMLDivElement | null>(null);
+const isOpen = ref(false)
+const searchTerm = ref('')
+const wrapperRef = ref<HTMLDivElement | null>(null)
+const searchInputRef = ref<HTMLInputElement | null>(null)
+const popoverRef = ref<HTMLDivElement | null>(null)
 
 const popoverStyle = reactive({
   position: 'fixed',
@@ -111,85 +106,79 @@ const popoverStyle = reactive({
   bottom: 'auto',
   left: '0px',
   width: 'auto',
-  zIndex: 100, // High z-index to appear over modals
-});
+  zIndex: 100,
+})
 
 const effectivePlaceholder = computed(() => (
   props.placeholder || t('agentTeams.components.agentTeams.SearchableGroupedSelect.defaultPlaceholder')
-));
+))
 
 const effectiveSearchPlaceholder = computed(() => (
   props.searchPlaceholder || t('agentTeams.components.agentTeams.SearchableGroupedSelect.defaultSearchPlaceholder')
-));
+))
 
-const loadingLabel = computed(() => t('agentTeams.components.agentTeams.SearchableGroupedSelect.loading'));
+const loadingLabel = computed(() => t('agentTeams.components.agentTeams.SearchableGroupedSelect.loading'))
 
 const updatePopoverPosition = () => {
-  if (!isOpen.value || !wrapperRef.value) return;
-  const rect = wrapperRef.value.getBoundingClientRect();
+  if (!isOpen.value || !wrapperRef.value) return
+  const rect = wrapperRef.value.getBoundingClientRect()
+  const popoverMaxHeight = 480
+  const popoverHeight = Math.min(popoverRef.value?.scrollHeight || popoverMaxHeight, popoverMaxHeight)
+  const spaceBelow = window.innerHeight - rect.bottom
+  const spaceAbove = rect.top
 
-  // Estimate popover height. 30rem * 16px/rem = 480px
-  const popoverMaxHeight = 480;
-  // Use scrollHeight for more accurate content height, capped by max-height
-  const popoverHeight = Math.min(popoverRef.value?.scrollHeight || popoverMaxHeight, popoverMaxHeight);
+  popoverStyle.left = `${rect.left}px`
+  popoverStyle.width = `${rect.width}px`
+  popoverStyle.top = 'auto'
+  popoverStyle.bottom = 'auto'
 
-  const spaceBelow = window.innerHeight - rect.bottom;
-  const spaceAbove = rect.top;
-
-  popoverStyle.left = `${rect.left}px`;
-  popoverStyle.width = `${rect.width}px`;
-  
-  // Reset top/bottom before recalculating
-  popoverStyle.top = 'auto';
-  popoverStyle.bottom = 'auto';
-
-  // Flip if not enough space below and more space above. Add 8px buffer.
   if (spaceBelow < popoverHeight + 8 && spaceAbove > spaceBelow) {
-    popoverStyle.bottom = `${window.innerHeight - rect.top + 4}px`;
+    popoverStyle.bottom = `${window.innerHeight - rect.top + 4}px`
   } else {
-    popoverStyle.top = `${rect.bottom + 4}px`;
+    popoverStyle.top = `${rect.bottom + 4}px`
   }
-};
+}
 
 const filteredOptions = computed(() => {
   if (!searchTerm.value) {
-    return props.options;
+    return props.options
   }
-  const searchLower = searchTerm.value.toLowerCase();
+  const searchLower = searchTerm.value.toLowerCase()
   return props.options
-    .map(group => ({
+    .map((group) => ({
       ...group,
-      items: group.items.filter(item => 
+      items: group.items.filter((item) =>
         item.name.toLowerCase().includes(searchLower) ||
-        item.id.toLowerCase().includes(searchLower)
-      )
+        item.id.toLowerCase().includes(searchLower) ||
+        item.selectedLabel?.toLowerCase().includes(searchLower),
+      ),
     }))
-    .filter(group => group.items.length > 0);
-});
+    .filter((group) => group.items.length > 0)
+})
 
 const selectedItemLabel = computed(() => {
   if (!props.modelValue) {
-    return null;
+    return null
   }
   for (const group of props.options) {
-    const found = group.items.find(item => item.id === props.modelValue);
+    const found = group.items.find((item) => item.id === props.modelValue)
     if (found) {
-      return found.name;
+      return found.selectedLabel || found.name
     }
   }
-  return props.modelValue;
-});
+  return props.modelValue
+})
 
 const toggleDropdown = () => {
-  if (props.disabled || props.loading) return;
-  isOpen.value = !isOpen.value;
-};
+  if (props.disabled || props.loading) return
+  isOpen.value = !isOpen.value
+}
 
 const selectItem = (itemId: string) => {
-  emit('update:modelValue', itemId);
-  isOpen.value = false;
-  searchTerm.value = '';
-};
+  emit('update:modelValue', itemId)
+  isOpen.value = false
+  searchTerm.value = ''
+}
 
 const handleClickOutside = (event: MouseEvent) => {
   if (
@@ -197,29 +186,29 @@ const handleClickOutside = (event: MouseEvent) => {
     wrapperRef.value && !wrapperRef.value.contains(event.target as Node) &&
     popoverRef.value && !popoverRef.value.contains(event.target as Node)
   ) {
-    isOpen.value = false;
+    isOpen.value = false
   }
-};
+}
 
 watch(isOpen, (newValue) => {
   if (newValue) {
     nextTick(() => {
-      updatePopoverPosition();
-      searchInputRef.value?.focus();
-      window.addEventListener('scroll', updatePopoverPosition, true);
-      window.addEventListener('resize', updatePopoverPosition);
-    });
+      updatePopoverPosition()
+      searchInputRef.value?.focus()
+      window.addEventListener('scroll', updatePopoverPosition, true)
+      window.addEventListener('resize', updatePopoverPosition)
+    })
   } else {
-    window.removeEventListener('scroll', updatePopoverPosition, true);
-    window.removeEventListener('resize', updatePopoverPosition);
+    window.removeEventListener('scroll', updatePopoverPosition, true)
+    window.removeEventListener('resize', updatePopoverPosition)
   }
-});
+})
 
 onMounted(() => {
-  document.addEventListener('mousedown', handleClickOutside);
-});
+  document.addEventListener('mousedown', handleClickOutside)
+})
 
 onUnmounted(() => {
-  document.removeEventListener('mousedown', handleClickOutside);
-});
+  document.removeEventListener('mousedown', handleClickOutside)
+})
 </script>

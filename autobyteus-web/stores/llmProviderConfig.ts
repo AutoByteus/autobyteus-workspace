@@ -1,60 +1,96 @@
 import { defineStore } from 'pinia'
 import { getApolloClient } from '~/utils/apolloClient'
-import { 
-  GET_LLM_PROVIDER_API_KEY, 
+import {
+  GET_LLM_PROVIDER_API_KEY_CONFIGURED,
   GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS,
-  GET_GEMINI_SETUP_CONFIG
+  GET_GEMINI_SETUP_CONFIG,
 } from '~/graphql/queries/llm_provider_queries'
-import { 
+import {
+  CREATE_CUSTOM_LLM_PROVIDER,
+  DELETE_CUSTOM_LLM_PROVIDER,
+  PROBE_CUSTOM_LLM_PROVIDER,
   SET_LLM_PROVIDER_API_KEY,
   RELOAD_LLM_MODELS,
   RELOAD_LLM_PROVIDER_MODELS,
-  SET_GEMINI_SETUP_CONFIG
+  SET_GEMINI_SETUP_CONFIG,
 } from '~/graphql/mutations/llm_provider_mutations'
 import type { LLMProvider } from '~/types/llm'
-import { LLMProvider as LLMProviderEnum } from '~/types/llm'
-import { normalizeModelConfigSchema, type UiModelConfigSchema } from '~/utils/llmConfigSchema';
+import { normalizeModelConfigSchema, type UiModelConfigSchema } from '~/utils/llmConfigSchema'
 
 interface LLMProviderConfig {
-  apiKey?: string
+  apiKeyConfigured?: boolean
 }
 
-interface ModelInfo {
-  modelIdentifier: string;
-  name: string;
-  value: string;
-  canonicalName: string;
-  provider: string;
-  runtime: string;
-  hostUrl?: string | null;
-  configSchema?: Record<string, unknown> | null;  // ParameterSchema for model-specific config
-  maxContextTokens?: number | null;
-  activeContextTokens?: number | null;
-  maxInputTokens?: number | null;
-  maxOutputTokens?: number | null;
+export type LlmProviderStatus = 'READY' | 'STALE_ERROR' | 'ERROR' | 'NOT_APPLICABLE'
+
+export interface LlmProviderRecord {
+  id: string
+  name: string
+  providerType: LLMProvider
+  isCustom: boolean
+  baseUrl?: string | null
+  apiKeyConfigured: boolean
+  status: LlmProviderStatus
+  statusMessage?: string | null
 }
 
-interface ProviderWithModels {
-  provider: string;
-  models: ModelInfo[];
+export interface ModelInfo {
+  modelIdentifier: string
+  name: string
+  value: string
+  canonicalName: string
+  providerId: string
+  providerName: string
+  providerType: LLMProvider
+  runtime: string
+  hostUrl?: string | null
+  configSchema?: Record<string, unknown> | null
+  maxContextTokens?: number | null
+  activeContextTokens?: number | null
+  maxInputTokens?: number | null
+  maxOutputTokens?: number | null
 }
 
-export type GeminiSetupMode = 'AI_STUDIO' | 'VERTEX_EXPRESS' | 'VERTEX_PROJECT';
+export interface ProviderWithModels {
+  provider: LlmProviderRecord
+  models: ModelInfo[]
+}
+
+export interface CustomLlmProviderDraftInput {
+  name: string
+  providerType: LLMProvider | string
+  baseUrl: string
+  apiKey: string
+}
+
+export interface CustomLlmProviderProbeModel {
+  id: string
+  name: string
+}
+
+export interface CustomLlmProviderProbeResult {
+  name: string
+  providerType: LLMProvider
+  baseUrl: string
+  discoveredModels: CustomLlmProviderProbeModel[]
+}
+
+export type GeminiSetupMode = 'AI_STUDIO' | 'VERTEX_EXPRESS' | 'VERTEX_PROJECT'
 
 export interface GeminiSetupConfigState {
-  mode: GeminiSetupMode;
-  geminiApiKeyConfigured: boolean;
-  vertexApiKeyConfigured: boolean;
-  vertexProject: string | null;
-  vertexLocation: string | null;
+  mode: GeminiSetupMode
+  geminiApiKeyConfigured: boolean
+  vertexApiKeyConfigured: boolean
+  vertexProject: string | null
+  vertexLocation: string | null
 }
 
 export interface GeminiSetupConfigInput {
-  mode: GeminiSetupMode;
-  geminiApiKey?: string | null;
-  vertexApiKey?: string | null;
-  vertexProject?: string | null;
-  vertexLocation?: string | null;
+  mode: GeminiSetupMode
+  geminiApiKey?: string | null
+  vertexApiKey?: string | null
+  vertexProject?: string | null
+  vertexLocation?: string | null
 }
 
 const defaultGeminiSetup = (): GeminiSetupConfigState => ({
@@ -63,7 +99,21 @@ const defaultGeminiSetup = (): GeminiSetupConfigState => ({
   vertexApiKeyConfigured: false,
   vertexProject: null,
   vertexLocation: null,
-});
+})
+
+const syncProviderConfiguredState = (
+  rows: ProviderWithModels[],
+  providerConfigs: Record<string, LLMProviderConfig>,
+): Record<string, LLMProviderConfig> => {
+  const nextConfigs = { ...providerConfigs }
+  for (const row of rows) {
+    nextConfigs[row.provider.id] = {
+      ...(nextConfigs[row.provider.id] ?? {}),
+      apiKeyConfigured: row.provider.apiKeyConfigured,
+    }
+  }
+  return nextConfigs
+}
 
 export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
   state: () => ({
@@ -81,125 +131,125 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
   }),
   getters: {
     providers(state): string[] {
-      return state.providersWithModels.map(p => p.provider);
+      return state.providersWithModels.map((row) => row.provider.id)
     },
     models(state): string[] {
-      return state.providersWithModels.flatMap(p => p.models.map(m => m.modelIdentifier));
+      return state.providersWithModels.flatMap((row) => row.models.map((model) => model.modelIdentifier))
     },
     audioModels(state): string[] {
-      return state.audioProvidersWithModels.flatMap(p => p.models.map(m => m.modelIdentifier));
+      return state.audioProvidersWithModels.flatMap((row) => row.models.map((model) => model.modelIdentifier))
     },
     imageModels(state): string[] {
-      return state.imageProvidersWithModels.flatMap(p => p.models.map(m => m.modelIdentifier));
+      return state.imageProvidersWithModels.flatMap((row) => row.models.map((model) => model.modelIdentifier))
+    },
+    providerById(state): (providerId: string | null | undefined) => LlmProviderRecord | null {
+      return (providerId: string | null | undefined) => {
+        if (!providerId) return null
+        return state.providersWithModels.find((row) => row.provider.id === providerId)?.provider ?? null
+      }
     },
     providersWithModelsForSelection(state): ProviderWithModels[] {
-      return state.providersWithModels.filter(p => p.models && p.models.length > 0);
+      return state.providersWithModels.filter((row) => row.models && row.models.length > 0)
     },
     modelConfigSchemaByIdentifier(state): (modelIdentifier: string | null | undefined) => UiModelConfigSchema | null {
       return (modelIdentifier: string | null | undefined) => {
-        if (!modelIdentifier) return null;
+        if (!modelIdentifier) return null
         for (const provider of state.providersWithModels) {
-          const model = provider.models.find(m => m.modelIdentifier === modelIdentifier);
+          const model = provider.models.find((entry) => entry.modelIdentifier === modelIdentifier)
           if (model?.configSchema) {
-            const normalized = normalizeModelConfigSchema(model.configSchema);
+            const normalized = normalizeModelConfigSchema(model.configSchema)
             if (normalized && Object.keys(normalized).length > 0) {
-              return normalized;
+              return normalized
             }
           }
         }
-        return null;
-      };
+        return null
+      }
     },
-    /**
-     * Getter for a sorted list of unique canonical model names, with "default" as the first option.
-     */
     canonicalModels(state): string[] {
-      const canonicalSet = new Set<string>();
-      state.providersWithModels.forEach(provider => {
-        provider.models.forEach(model => {
+      const canonicalSet = new Set<string>()
+      state.providersWithModels.forEach((provider) => {
+        provider.models.forEach((model) => {
           if (model.canonicalName) {
-            canonicalSet.add(model.canonicalName);
+            canonicalSet.add(model.canonicalName)
           }
-        });
-      });
-      const models = Array.from(canonicalSet).sort();
-      // Add 'default' as a special option at the top of the list.
-      models.unshift('default');
-      return models;
+        })
+      })
+      const models = Array.from(canonicalSet).sort()
+      models.unshift('default')
+      return models
     },
   },
   actions: {
     getProviderForModel(modelIdentifier: string): LLMProvider | null {
       if (!modelIdentifier || !this.providersWithModels) {
-        return null;
+        return null
       }
-    
+
       for (const providerGroup of this.providersWithModels) {
-        if (providerGroup.models.some(m => m.modelIdentifier === modelIdentifier)) {
-          const providerKey = providerGroup.provider.toUpperCase() as keyof typeof LLMProviderEnum;
-          if (Object.values(LLMProviderEnum).includes(providerKey as LLMProvider)) {
-            return providerKey as LLMProvider;
-          }
+        const model = providerGroup.models.find((entry) => entry.modelIdentifier === modelIdentifier)
+        if (model) {
+          return model.providerType
         }
       }
-      
-      return null; // Model not found in any provider list
+
+      return null
     },
-    
+
     getModelValue(modelIdentifier: string): string | null {
       for (const providerGroup of this.providersWithModels) {
-        const model = providerGroup.models.find(m => m.modelIdentifier === modelIdentifier);
+        const model = providerGroup.models.find((entry) => entry.modelIdentifier === modelIdentifier)
         if (model) {
-          return model.value;
+          return model.value
         }
       }
-      return null;
+      return null
     },
-    
+
     getModelIdentifierByValue(value: string): string | null {
       for (const providerGroup of this.providersWithModels) {
-        const model = providerGroup.models.find(m => m.value === value);
+        const model = providerGroup.models.find((entry) => entry.value === value)
         if (model) {
-          return model.modelIdentifier;
+          return model.modelIdentifier
         }
       }
-      return null;
+      return null
     },
 
     async fetchProvidersWithModels(runtimeKind = 'autobyteus') {
-      if (this.hasFetchedProviders && this.modelRuntimeKind === runtimeKind) return;
-      this.isLoadingModels = true;
+      if (this.hasFetchedProviders && this.modelRuntimeKind === runtimeKind) return this.providersWithModels
+      this.isLoadingModels = true
       const client = getApolloClient()
 
       try {
         const { data } = await client.query({
           query: GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS,
           variables: { runtimeKind },
-          // Use default 'cache-first' policy
-        });
+        })
 
-        this.providersWithModels = data?.availableLlmProvidersWithModels ?? [];
-        this.audioProvidersWithModels = data?.availableAudioProvidersWithModels ?? [];
-        this.imageProvidersWithModels = data?.availableImageProvidersWithModels ?? [];
-        this.modelRuntimeKind = runtimeKind;
-        this.hasFetchedProviders = true;
-        return this.providersWithModels;
+        this.providersWithModels = data?.availableLlmProvidersWithModels ?? []
+        this.audioProvidersWithModels = data?.availableAudioProvidersWithModels ?? []
+        this.imageProvidersWithModels = data?.availableImageProvidersWithModels ?? []
+        this.providerConfigs = syncProviderConfiguredState(this.providersWithModels, this.providerConfigs)
+        this.modelRuntimeKind = runtimeKind
+        this.hasFetchedProviders = true
+        return this.providersWithModels
       } catch (error) {
-        console.error('Failed to fetch providers and models:', error);
-        this.providersWithModels = [];
-        this.audioProvidersWithModels = [];
-        this.imageProvidersWithModels = [];
-        throw error;
+        console.error('Failed to fetch providers and models:', error)
+        this.providersWithModels = []
+        this.audioProvidersWithModels = []
+        this.imageProvidersWithModels = []
+        throw error
       } finally {
-        this.isLoadingModels = false;
+        this.isLoadingModels = false
       }
     },
 
     async reloadProvidersWithModels(options: { showLoading?: boolean; runtimeKind?: string } = {}) {
-      const { showLoading = true } = options;
-      const runtimeKind = options.runtimeKind ?? this.modelRuntimeKind ?? 'autobyteus';
+      const { showLoading = true } = options
+      const runtimeKind = options.runtimeKind ?? this.modelRuntimeKind ?? 'autobyteus'
       if (showLoading) {
-        this.isReloadingModels = true;
+        this.isReloadingModels = true
       }
       const client = getApolloClient()
 
@@ -207,31 +257,32 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
         const { data } = await client.query({
           query: GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS,
           variables: { runtimeKind },
-          fetchPolicy: 'network-only' // Force network fetch, bypassing cache
-        });
+          fetchPolicy: 'network-only',
+        })
 
-        this.providersWithModels = data?.availableLlmProvidersWithModels ?? [];
-        this.audioProvidersWithModels = data?.availableAudioProvidersWithModels ?? [];
-        this.imageProvidersWithModels = data?.availableImageProvidersWithModels ?? [];
-        this.modelRuntimeKind = runtimeKind;
-        this.hasFetchedProviders = true;
-        return this.providersWithModels;
+        this.providersWithModels = data?.availableLlmProvidersWithModels ?? []
+        this.audioProvidersWithModels = data?.availableAudioProvidersWithModels ?? []
+        this.imageProvidersWithModels = data?.availableImageProvidersWithModels ?? []
+        this.providerConfigs = syncProviderConfiguredState(this.providersWithModels, this.providerConfigs)
+        this.modelRuntimeKind = runtimeKind
+        this.hasFetchedProviders = true
+        return this.providersWithModels
       } catch (error) {
-        console.error('Failed to reload providers and models:', error);
-        this.providersWithModels = [];
-        this.audioProvidersWithModels = [];
-        this.imageProvidersWithModels = [];
-        throw error;
+        console.error('Failed to reload providers and models:', error)
+        this.providersWithModels = []
+        this.audioProvidersWithModels = []
+        this.imageProvidersWithModels = []
+        throw error
       } finally {
         if (showLoading) {
-          this.isReloadingModels = false;
+          this.isReloadingModels = false
         }
       }
     },
 
     async reloadModels() {
-      this.isReloadingModels = true;
-      
+      this.isReloadingModels = true
+
       try {
         const client = getApolloClient()
         const { data, errors } = await client.mutate({
@@ -239,125 +290,180 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
           variables: {
             runtimeKind: this.modelRuntimeKind,
           },
-        });
+        })
 
         if (errors && errors.length > 0) {
-          throw new Error(errors.map(e => e.message).join(', '));
+          throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
         }
 
-        const responseMessage = data?.reloadLlmModels;
-        
-        if (responseMessage && responseMessage.includes("successfully")) {
-          // After successful reload, fetch the updated models
-          await this.reloadProvidersWithModels();
-          return true;
+        const responseMessage = data?.reloadLlmModels
+
+        if (responseMessage && responseMessage.includes('successfully')) {
+          await this.reloadProvidersWithModels()
+          return true
         }
-        
-        throw new Error(responseMessage || 'Failed to reload models');
+
+        throw new Error(responseMessage || 'Failed to reload models')
       } catch (error) {
-        console.error('Failed to reload models:', error);
-        throw error;
+        console.error('Failed to reload models:', error)
+        throw error
       } finally {
-        this.isReloadingModels = false;
+        this.isReloadingModels = false
       }
     },
 
-    async reloadModelsForProvider(provider: string) {
-      if (!provider) {
-        throw new Error('Provider is required to reload models.');
+    async reloadModelsForProvider(providerId: string) {
+      if (!providerId) {
+        throw new Error('Provider is required to reload models.')
       }
 
-      this.isReloadingProviderModels = true;
-      this.reloadingProvider = provider;
+      this.isReloadingProviderModels = true
+      this.reloadingProvider = providerId
 
       try {
         const client = getApolloClient()
         const { data, errors } = await client.mutate({
           mutation: RELOAD_LLM_PROVIDER_MODELS,
-          variables: { provider },
-        });
+          variables: {
+            providerId,
+            runtimeKind: this.modelRuntimeKind,
+          },
+        })
 
         if (errors && errors.length > 0) {
-          throw new Error(errors.map(e => e.message).join(', '));
+          throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
         }
 
-        const responseMessage = data?.reloadLlmProviderModels;
+        const responseMessage = data?.reloadLlmProviderModels
 
-        if (responseMessage && responseMessage.includes("successfully")) {
-          await this.reloadProvidersWithModels({ showLoading: false });
-          return true;
+        if (responseMessage && responseMessage.includes('successfully')) {
+          await this.reloadProvidersWithModels({ showLoading: false })
+          return true
         }
 
-        throw new Error(responseMessage || 'Failed to reload provider models');
+        throw new Error(responseMessage || 'Failed to reload provider models')
       } catch (error) {
-        console.error(`Failed to reload models for provider ${provider}:`, error);
-        throw error;
+        console.error(`Failed to reload models for provider ${providerId}:`, error)
+        throw error
       } finally {
-        this.isReloadingProviderModels = false;
-        this.reloadingProvider = null;
+        this.isReloadingProviderModels = false
+        this.reloadingProvider = null
       }
     },
 
-    async setLLMProviderApiKey(provider: string, apiKey: string) {
+    async setLLMProviderApiKey(providerId: string, apiKey: string) {
       try {
         const client = getApolloClient()
         const { data, errors } = await client.mutate({
           mutation: SET_LLM_PROVIDER_API_KEY,
-          variables: { provider, apiKey },
-        });
+          variables: { providerId, apiKey },
+        })
 
         if (errors && errors.length > 0) {
-          throw new Error(errors.map(e => e.message).join(', '));
+          throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
         }
-        
-        const responseMessage = data?.setLlmProviderApiKey;
-        
-        if (responseMessage && responseMessage.includes("successfully")) {
-          if (!this.providerConfigs[provider]) {
-            this.providerConfigs[provider] = {}
+
+        const responseMessage = data?.setLlmProviderApiKey
+
+        if (responseMessage && responseMessage.includes('successfully')) {
+          this.providerConfigs[providerId] = { apiKeyConfigured: true }
+          const providerRow = this.providersWithModels.find((row) => row.provider.id === providerId)
+          if (providerRow) {
+            providerRow.provider.apiKeyConfigured = true
           }
-          this.providerConfigs[provider].apiKey = apiKey
-          
-          // Only auto-reload for AUTOBYTEUS to discover internal service models
-          if (provider === 'AUTOBYTEUS') {
+
+          if (providerId === 'AUTOBYTEUS') {
             await this.reloadModels()
           }
           return true
         }
-        
-        throw new Error(responseMessage || 'Failed to set API key');
+
+        throw new Error(responseMessage || 'Failed to set API key')
       } catch (error) {
         console.error('Failed to set provider API key:', error)
         throw error
       }
     },
 
-    async getLLMProviderApiKey(provider: string) {
+    async getLLMProviderApiKeyConfigured(providerId: string) {
+      const currentValue = this.providersWithModels.find((row) => row.provider.id === providerId)?.provider.apiKeyConfigured
+      if (typeof currentValue === 'boolean') {
+        this.providerConfigs[providerId] = { apiKeyConfigured: currentValue }
+        return currentValue
+      }
+
       const client = getApolloClient()
-      
+
       try {
         const { data } = await client.query({
-          query: GET_LLM_PROVIDER_API_KEY,
-          variables: { provider },
-        });
+          query: GET_LLM_PROVIDER_API_KEY_CONFIGURED,
+          variables: { providerId },
+        })
 
-        if (data && data.getLlmProviderApiKey) {
-          const apiKey = data.getLlmProviderApiKey;
-          if (!this.providerConfigs[provider]) {
-            this.providerConfigs[provider] = {};
-          }
-          this.providerConfigs[provider].apiKey = apiKey;
-          return apiKey;
-        } else {
-          if (this.providerConfigs[provider]) {
-            delete this.providerConfigs[provider].apiKey;
-          }
-          return '';
-        }
+        const apiKeyConfigured = Boolean(data?.getLlmProviderApiKeyConfigured)
+        this.providerConfigs[providerId] = { apiKeyConfigured }
+        return apiKeyConfigured
       } catch (error) {
-        console.error(`Failed to get provider API key for ${provider}:`, error);
-        throw error;
+        console.error(`Failed to get provider API key configured status for ${providerId}:`, error)
+        throw error
       }
+    },
+
+    async probeCustomProvider(input: CustomLlmProviderDraftInput) {
+      const client = getApolloClient()
+      const { data, errors } = await client.mutate({
+        mutation: PROBE_CUSTOM_LLM_PROVIDER,
+        variables: { input },
+      })
+
+      if (errors && errors.length > 0) {
+        throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
+      }
+
+      return data?.probeCustomLlmProvider as CustomLlmProviderProbeResult
+    },
+
+    async createCustomProvider(input: CustomLlmProviderDraftInput, runtimeKind?: string) {
+      const resolvedRuntimeKind = runtimeKind ?? this.modelRuntimeKind
+      const client = getApolloClient()
+      const { data, errors } = await client.mutate({
+        mutation: CREATE_CUSTOM_LLM_PROVIDER,
+        variables: { input, runtimeKind: resolvedRuntimeKind },
+      })
+
+      if (errors && errors.length > 0) {
+        throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
+      }
+
+      const provider = data?.createCustomLlmProvider as LlmProviderRecord | undefined
+      if (!provider) {
+        throw new Error('Failed to create custom provider')
+      }
+
+      await this.reloadProvidersWithModels({ showLoading: false, runtimeKind: resolvedRuntimeKind })
+      return provider
+    },
+
+    async deleteCustomProvider(providerId: string, runtimeKind?: string) {
+      const resolvedRuntimeKind = runtimeKind ?? this.modelRuntimeKind
+      const client = getApolloClient()
+      const { data, errors } = await client.mutate({
+        mutation: DELETE_CUSTOM_LLM_PROVIDER,
+        variables: { providerId, runtimeKind: resolvedRuntimeKind },
+      })
+
+      if (errors && errors.length > 0) {
+        throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
+      }
+
+      const responseMessage = data?.deleteCustomLlmProvider as string | undefined
+      if (!responseMessage || !responseMessage.includes('successfully')) {
+        throw new Error(responseMessage || 'Failed to delete custom provider')
+      }
+
+      delete this.providerConfigs[providerId]
+      await this.reloadProvidersWithModels({ showLoading: false, runtimeKind: resolvedRuntimeKind })
+      return true
     },
 
     async fetchGeminiSetupConfig() {
@@ -367,14 +473,14 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
         const { data } = await client.query({
           query: GET_GEMINI_SETUP_CONFIG,
           fetchPolicy: 'network-only',
-        });
+        })
 
-        this.geminiSetup = data?.getGeminiSetupConfig ?? defaultGeminiSetup();
-        return this.geminiSetup;
+        this.geminiSetup = data?.getGeminiSetupConfig ?? defaultGeminiSetup()
+        return this.geminiSetup
       } catch (error) {
-        console.error('Failed to fetch Gemini setup config:', error);
-        this.geminiSetup = defaultGeminiSetup();
-        throw error;
+        console.error('Failed to fetch Gemini setup config:', error)
+        this.geminiSetup = defaultGeminiSetup()
+        throw error
       }
     },
 
@@ -391,23 +497,23 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
             vertexProject: input.vertexProject ?? null,
             vertexLocation: input.vertexLocation ?? null,
           },
-        });
+        })
 
         if (errors && errors.length > 0) {
-          throw new Error(errors.map(e => e.message).join(', '));
+          throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
         }
 
-        const responseMessage = data?.setGeminiSetupConfig;
+        const responseMessage = data?.setGeminiSetupConfig
         if (!responseMessage || !responseMessage.includes('successfully')) {
-          throw new Error(responseMessage || 'Failed to save Gemini setup');
+          throw new Error(responseMessage || 'Failed to save Gemini setup')
         }
 
-        await this.fetchGeminiSetupConfig();
-        return true;
+        await this.fetchGeminiSetupConfig()
+        return true
       } catch (error) {
-        console.error('Failed to set Gemini setup config:', error);
-        throw error;
+        console.error('Failed to set Gemini setup config:', error)
+        throw error
       }
-    }
-  }
+    },
+  },
 })

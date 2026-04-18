@@ -35,6 +35,7 @@ export class ToolFormattingRegistry extends Singleton {
 
     this.pairs = new Map<LLMProvider, ToolFormatterPair>([
       [LLMProvider.OPENAI, new ToolFormatterPair(new OpenAiJsonSchemaFormatter(), new OpenAiJsonExampleFormatter())],
+      [LLMProvider.OPENAI_COMPATIBLE, new ToolFormatterPair(new OpenAiJsonSchemaFormatter(), new OpenAiJsonExampleFormatter())],
       [LLMProvider.MISTRAL, new ToolFormatterPair(new OpenAiJsonSchemaFormatter(), new OpenAiJsonExampleFormatter())],
       [LLMProvider.DEEPSEEK, new ToolFormatterPair(new OpenAiJsonSchemaFormatter(), new OpenAiJsonExampleFormatter())],
       [LLMProvider.GROK, new ToolFormatterPair(new OpenAiJsonSchemaFormatter(), new OpenAiJsonExampleFormatter())],

@@ -1,31 +1,30 @@
-import type { ModelInfo } from "autobyteus-ts/llm/models.js";
-import type { LLMProvider } from "autobyteus-ts/llm/providers.js";
-import type { AudioModel } from "autobyteus-ts/multimedia/audio/audio-model.js";
-import type { ImageModel } from "autobyteus-ts/multimedia/image/image-model.js";
+import type { ModelInfo } from 'autobyteus-ts/llm/models.js';
+import type { AudioModel } from 'autobyteus-ts/multimedia/audio/audio-model.js';
+import type { ImageModel } from 'autobyteus-ts/multimedia/image/image-model.js';
 import {
   RuntimeKind,
   runtimeKindFromString,
-} from "../../runtime-management/runtime-kind-enum.js";
+} from '../../runtime-management/runtime-kind-enum.js';
 import {
   getClaudeModelCatalog,
   type ClaudeModelCatalog,
-} from "./claude-model-catalog.js";
+} from './claude-model-catalog.js';
 import {
   getCodexModelCatalog,
   type CodexModelCatalog,
-} from "./codex-model-catalog.js";
+} from './codex-model-catalog.js';
 import {
   getAudioModelService,
   type AudioModelService,
-} from "../../multimedia-management/services/audio-model-service.js";
+} from '../../multimedia-management/services/audio-model-service.js';
 import {
   getImageModelService,
   type ImageModelService,
-} from "../../multimedia-management/services/image-model-service.js";
+} from '../../multimedia-management/services/image-model-service.js';
 import {
   getAutobyteusModelCatalog,
   type AutobyteusModelCatalog,
-} from "./autobyteus-model-catalog.js";
+} from './autobyteus-model-catalog.js';
 
 const DEFAULT_RUNTIME_KIND = RuntimeKind.AUTOBYTEUS;
 
@@ -63,16 +62,16 @@ export class ModelCatalogService {
   }
 
   async reloadLlmModelsForProvider(
-    provider: LLMProvider,
+    providerId: string,
     runtimeKind?: string | null,
   ): Promise<number> {
     switch (this.resolveRuntimeKind(runtimeKind)) {
       case RuntimeKind.AUTOBYTEUS:
-        return this.autobyteusModelCatalog.reloadModelsForProvider(provider);
+        return this.autobyteusModelCatalog.reloadModelsForProvider(providerId);
       case RuntimeKind.CLAUDE_AGENT_SDK:
       case RuntimeKind.CODEX_APP_SERVER: {
         const models = await this.listLlmModels(runtimeKind);
-        return models.filter((model) => model.provider === provider).length;
+        return models.filter((model) => model.provider_id === providerId).length;
       }
       default:
         return 0;

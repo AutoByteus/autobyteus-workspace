@@ -1,16 +1,25 @@
-import { Arg, Field, Int, Mutation, ObjectType, Query, Resolver } from "type-graphql";
-import { GraphQLJSON } from "graphql-scalars";
-import { appConfigProvider } from "../../../config/app-config-provider.js";
-import type { ModelInfo } from "autobyteus-ts/llm/models.js";
-import { LLMProvider } from "autobyteus-ts/llm/providers.js";
-import type { AudioModel } from "autobyteus-ts/multimedia/audio/audio-model.js";
-import type { ImageModel } from "autobyteus-ts/multimedia/image/image-model.js";
-import { getModelCatalogService } from "../../../llm-management/services/model-catalog-service.js";
+import { Arg, Field, Int, Mutation, ObjectType, Query, Resolver, InputType } from 'type-graphql';
+import { GraphQLJSON } from 'graphql-scalars';
+import type { ModelInfo } from 'autobyteus-ts/llm/models.js';
+import { LLMProvider } from 'autobyteus-ts/llm/providers.js';
+import { getLlmProviderDisplayName } from 'autobyteus-ts/llm/provider-display-names.js';
+import type { AudioModel } from 'autobyteus-ts/multimedia/audio/audio-model.js';
+import type { ImageModel } from 'autobyteus-ts/multimedia/image/image-model.js';
+import { appConfigProvider } from '../../../config/app-config-provider.js';
+import {
+  getBuiltInLlmProviderCatalog,
+  type BuiltInLlmProviderCatalog,
+} from '../../../llm-management/llm-providers/builtins/built-in-llm-provider-catalog.js';
+import {
+  getLlmProviderService,
+  type LlmProviderService,
+} from '../../../llm-management/llm-providers/services/llm-provider-service.js';
+import { getModelCatalogService } from '../../../llm-management/services/model-catalog-service.js';
 
 const GEMINI_SETUP_MODES = {
-  AI_STUDIO: "AI_STUDIO",
-  VERTEX_EXPRESS: "VERTEX_EXPRESS",
-  VERTEX_PROJECT: "VERTEX_PROJECT",
+  AI_STUDIO: 'AI_STUDIO',
+  VERTEX_EXPRESS: 'VERTEX_EXPRESS',
+  VERTEX_PROJECT: 'VERTEX_PROJECT',
 } as const;
 
 type GeminiSetupMode = (typeof GEMINI_SETUP_MODES)[keyof typeof GEMINI_SETUP_MODES];
@@ -30,7 +39,13 @@ class ModelDetail {
   canonicalName!: string;
 
   @Field(() => String)
-  provider!: string;
+  providerId!: string;
+
+  @Field(() => String)
+  providerName!: string;
+
+  @Field(() => String)
+  providerType!: string;
 
   @Field(() => String)
   runtime!: string;
@@ -55,9 +70,36 @@ class ModelDetail {
 }
 
 @ObjectType()
-class ProviderWithModels {
+class LlmProviderObject {
   @Field(() => String)
-  provider!: string;
+  id!: string;
+
+  @Field(() => String)
+  name!: string;
+
+  @Field(() => String)
+  providerType!: string;
+
+  @Field(() => Boolean)
+  isCustom!: boolean;
+
+  @Field(() => String, { nullable: true })
+  baseUrl!: string | null;
+
+  @Field(() => Boolean)
+  apiKeyConfigured!: boolean;
+
+  @Field(() => String)
+  status!: string;
+
+  @Field(() => String, { nullable: true })
+  statusMessage!: string | null;
+}
+
+@ObjectType()
+class ProviderWithModels {
+  @Field(() => LlmProviderObject)
+  provider!: LlmProviderObject;
 
   @Field(() => [ModelDetail])
   models!: ModelDetail[];
@@ -81,64 +123,53 @@ class GeminiSetupConfig {
   vertexLocation!: string | null;
 }
 
-const mapLlmModel = (model: ModelInfo): ModelDetail => ({
-  modelIdentifier: model.model_identifier,
-  name: model.display_name,
-  value: model.value,
-  canonicalName: model.canonical_name,
-  provider: model.provider,
-  runtime: model.runtime,
-  hostUrl: model.host_url ?? null,
-  configSchema: model.config_schema ?? null,
-  maxContextTokens: model.max_context_tokens ?? null,
-  activeContextTokens: model.active_context_tokens ?? null,
-  maxInputTokens: model.max_input_tokens ?? null,
-  maxOutputTokens: model.max_output_tokens ?? null,
-});
+@ObjectType()
+class CustomLlmProviderProbeModelObject {
+  @Field(() => String)
+  id!: string;
 
-const mapAudioModel = (model: AudioModel): ModelDetail => ({
-  modelIdentifier: model.modelIdentifier,
-  name: model.name,
-  value: model.value,
-  canonicalName: model.name,
-  provider: String(model.provider),
-  runtime: String(model.runtime),
-  hostUrl: model.hostUrl ?? null,
-  configSchema: model.parameterSchema?.toJsonSchemaDict?.() ?? null,
-});
+  @Field(() => String)
+  name!: string;
+}
 
-const mapImageModel = (model: ImageModel): ModelDetail => ({
-  modelIdentifier: model.modelIdentifier,
-  name: model.name,
-  value: model.value,
-  canonicalName: model.name,
-  provider: String(model.provider),
-  runtime: String(model.runtime),
-  hostUrl: model.hostUrl ?? null,
-  configSchema: model.parameterSchema?.toJsonSchemaDict?.() ?? null,
-});
+@ObjectType()
+class CustomLlmProviderProbeResultObject {
+  @Field(() => String)
+  name!: string;
 
-const groupModelsByProvider = (models: ModelDetail[]): Map<string, ModelDetail[]> => {
-  const grouped = new Map<string, ModelDetail[]>();
-  for (const model of models) {
-    const list = grouped.get(model.provider) ?? [];
-    list.push(model);
-    grouped.set(model.provider, list);
-  }
-  return grouped;
-};
+  @Field(() => String)
+  providerType!: string;
 
-const sortModels = (models: ModelDetail[]): ModelDetail[] =>
-  models.slice().sort((a, b) => a.name.localeCompare(b.name));
+  @Field(() => String)
+  baseUrl!: string;
 
-const normalizeText = (value: string | null | undefined): string => value?.trim() ?? "";
+  @Field(() => [CustomLlmProviderProbeModelObject])
+  discoveredModels!: CustomLlmProviderProbeModelObject[];
+}
+
+@InputType()
+class CustomLlmProviderInputObject {
+  @Field(() => String)
+  name!: string;
+
+  @Field(() => String)
+  providerType!: string;
+
+  @Field(() => String)
+  baseUrl!: string;
+
+  @Field(() => String)
+  apiKey!: string;
+}
+
+const normalizeText = (value: string | null | undefined): string => value?.trim() ?? '';
 
 const getCurrentGeminiSetup = (): GeminiSetupConfig => {
   const config = appConfigProvider.config;
-  const geminiApiKey = normalizeText(config.get("GEMINI_API_KEY"));
-  const vertexApiKey = normalizeText(config.get("VERTEX_AI_API_KEY"));
-  const vertexProject = normalizeText(config.get("VERTEX_AI_PROJECT"));
-  const vertexLocation = normalizeText(config.get("VERTEX_AI_LOCATION"));
+  const geminiApiKey = normalizeText(config.get('GEMINI_API_KEY'));
+  const vertexApiKey = normalizeText(config.get('VERTEX_AI_API_KEY'));
+  const vertexProject = normalizeText(config.get('VERTEX_AI_PROJECT'));
+  const vertexLocation = normalizeText(config.get('VERTEX_AI_LOCATION'));
 
   let mode: GeminiSetupMode = GEMINI_SETUP_MODES.AI_STUDIO;
   if (vertexApiKey) {
@@ -159,15 +190,64 @@ const getCurrentGeminiSetup = (): GeminiSetupConfig => {
 const clearGeminiModeFields = (mode: GeminiSetupMode): void => {
   const config = appConfigProvider.config;
   if (mode !== GEMINI_SETUP_MODES.AI_STUDIO) {
-    config.set("GEMINI_API_KEY", "");
+    config.set('GEMINI_API_KEY', '');
   }
   if (mode !== GEMINI_SETUP_MODES.VERTEX_EXPRESS) {
-    config.set("VERTEX_AI_API_KEY", "");
+    config.set('VERTEX_AI_API_KEY', '');
   }
   if (mode !== GEMINI_SETUP_MODES.VERTEX_PROJECT) {
-    config.set("VERTEX_AI_PROJECT", "");
-    config.set("VERTEX_AI_LOCATION", "");
+    config.set('VERTEX_AI_PROJECT', '');
+    config.set('VERTEX_AI_LOCATION', '');
   }
+};
+
+const mapLlmModel = (model: ModelInfo): ModelDetail => ({
+  modelIdentifier: model.model_identifier,
+  name: model.display_name,
+  value: model.value,
+  canonicalName: model.canonical_name,
+  providerId: model.provider_id,
+  providerName: model.provider_name,
+  providerType: model.provider_type,
+  runtime: model.runtime,
+  hostUrl: model.host_url ?? null,
+  configSchema: model.config_schema ?? null,
+  maxContextTokens: model.max_context_tokens ?? null,
+  activeContextTokens: model.active_context_tokens ?? null,
+  maxInputTokens: model.max_input_tokens ?? null,
+  maxOutputTokens: model.max_output_tokens ?? null,
+});
+
+const mapMultimediaModel = (
+  model: AudioModel | ImageModel,
+): ModelDetail => ({
+  modelIdentifier: model.modelIdentifier,
+  name: model.name,
+  value: model.value,
+  canonicalName: model.name,
+  providerId: String(model.provider),
+  providerName: getLlmProviderDisplayName(String(model.provider) as LLMProvider),
+  providerType: String(model.provider),
+  runtime: String(model.runtime),
+  hostUrl: model.hostUrl ?? null,
+  configSchema: model.parameterSchema?.toJsonSchemaDict?.() ?? null,
+  maxContextTokens: null,
+  activeContextTokens: null,
+  maxInputTokens: null,
+  maxOutputTokens: null,
+});
+
+const sortModels = (models: ModelDetail[]): ModelDetail[] =>
+  models.slice().sort((a, b) => a.name.localeCompare(b.name));
+
+const groupModelsByProvider = (models: ModelDetail[]): Map<string, ModelDetail[]> => {
+  const grouped = new Map<string, ModelDetail[]>();
+  for (const model of models) {
+    const list = grouped.get(model.providerId) ?? [];
+    list.push(model);
+    grouped.set(model.providerId, list);
+  }
+  return grouped;
 };
 
 @Resolver()
@@ -176,14 +256,21 @@ export class LlmProviderResolver {
     return getModelCatalogService();
   }
 
-  @Query(() => String, { nullable: true })
-  getLlmProviderApiKey(@Arg("provider", () => String) provider: string): string | null {
+  private get llmProviderService(): LlmProviderService {
+    return getLlmProviderService();
+  }
+
+  private get builtInLlmProviderCatalog(): BuiltInLlmProviderCatalog {
+    return getBuiltInLlmProviderCatalog();
+  }
+
+  @Query(() => Boolean)
+  async getLlmProviderApiKeyConfigured(@Arg('providerId', () => String) providerId: string): Promise<boolean> {
     try {
-      const apiKey = appConfigProvider.config.getLlmApiKey(provider);
-      return apiKey ?? null;
+      return await this.llmProviderService.getProviderApiKeyConfigured(providerId);
     } catch (error) {
-      console.error(`Error retrieving API key: ${String(error)}`);
-      return null;
+      console.error(`Error retrieving API key configured status: ${String(error)}`);
+      return false;
     }
   }
 
@@ -194,79 +281,95 @@ export class LlmProviderResolver {
 
   @Query(() => [ProviderWithModels])
   async availableLlmProvidersWithModels(
-    @Arg("runtimeKind", () => String, { nullable: true }) runtimeKind?: string | null,
+    @Arg('runtimeKind', () => String, { nullable: true }) runtimeKind?: string | null,
   ): Promise<ProviderWithModels[]> {
-    const modelsInfo = await this.runtimeModelCatalogService.listLlmModels(runtimeKind);
-    const modelDetails = modelsInfo.map(mapLlmModel);
-    const grouped = groupModelsByProvider(modelDetails);
-
-    const providers: ProviderWithModels[] = Object.values(LLMProvider).map((provider) => ({
-      provider,
-      models: sortModels(grouped.get(provider) ?? []),
-    }));
-
-    return providers.sort((a, b) => a.provider.localeCompare(b.provider));
+    return this.llmProviderService.listProvidersWithModels(runtimeKind, mapLlmModel);
   }
 
   @Query(() => [ProviderWithModels])
   async availableAudioProvidersWithModels(
-    @Arg("runtimeKind", () => String, { nullable: true }) runtimeKind?: string | null,
+    @Arg('runtimeKind', () => String, { nullable: true }) runtimeKind?: string | null,
   ): Promise<ProviderWithModels[]> {
-    const models = (await this.runtimeModelCatalogService.listAudioModels(runtimeKind)).map(mapAudioModel);
+    const models = (await this.runtimeModelCatalogService.listAudioModels(runtimeKind)).map(mapMultimediaModel);
     const grouped = groupModelsByProvider(models);
 
-    const providers = Array.from(grouped.entries()).map(([provider, items]) => ({
-      provider,
-      models: sortModels(items),
-    }));
-
-    return providers.sort((a, b) => a.provider.localeCompare(b.provider));
+    return Array.from(grouped.entries())
+      .map(([providerId, items]) => ({
+        provider: this.builtInLlmProviderCatalog.getProvider(providerId as LLMProvider),
+        models: sortModels(items),
+      }))
+      .sort((a, b) => a.provider.name.localeCompare(b.provider.name));
   }
 
   @Query(() => [ProviderWithModels])
   async availableImageProvidersWithModels(
-    @Arg("runtimeKind", () => String, { nullable: true }) runtimeKind?: string | null,
+    @Arg('runtimeKind', () => String, { nullable: true }) runtimeKind?: string | null,
   ): Promise<ProviderWithModels[]> {
-    const models = (await this.runtimeModelCatalogService.listImageModels(runtimeKind)).map(mapImageModel);
+    const models = (await this.runtimeModelCatalogService.listImageModels(runtimeKind)).map(mapMultimediaModel);
     const grouped = groupModelsByProvider(models);
 
-    const providers = Array.from(grouped.entries()).map(([provider, items]) => ({
-      provider,
-      models: sortModels(items),
-    }));
-
-    return providers.sort((a, b) => a.provider.localeCompare(b.provider));
+    return Array.from(grouped.entries())
+      .map(([providerId, items]) => ({
+        provider: this.builtInLlmProviderCatalog.getProvider(providerId as LLMProvider),
+        models: sortModels(items),
+      }))
+      .sort((a, b) => a.provider.name.localeCompare(b.provider.name));
   }
 
   @Mutation(() => String)
-  setLlmProviderApiKey(
-    @Arg("provider", () => String) provider: string,
-    @Arg("apiKey", () => String) apiKey: string,
-  ): string {
+  async setLlmProviderApiKey(
+    @Arg('providerId', () => String) providerId: string,
+    @Arg('apiKey', () => String) apiKey: string,
+  ): Promise<string> {
     try {
-      if (!provider || !apiKey) {
-        throw new Error("Both provider and api_key must be provided.");
-      }
-      appConfigProvider.config.setLlmApiKey(provider, apiKey);
-      return `API key for provider ${provider} has been set successfully.`;
+      const provider = await this.llmProviderService.setProviderApiKey(providerId, apiKey);
+      return `API key for provider ${provider.name} has been set successfully.`;
     } catch (error) {
       return `Error setting API key: ${String(error)}`;
     }
   }
 
+  @Mutation(() => CustomLlmProviderProbeResultObject)
+  async probeCustomLlmProvider(
+    @Arg('input', () => CustomLlmProviderInputObject) input: CustomLlmProviderInputObject,
+  ): Promise<CustomLlmProviderProbeResultObject> {
+    return this.llmProviderService.probeCustomProvider(input);
+  }
+
+  @Mutation(() => LlmProviderObject)
+  async createCustomLlmProvider(
+    @Arg('input', () => CustomLlmProviderInputObject) input: CustomLlmProviderInputObject,
+    @Arg('runtimeKind', () => String, { nullable: true }) runtimeKind?: string | null,
+  ): Promise<LlmProviderObject> {
+    return this.llmProviderService.createCustomProvider(input, runtimeKind);
+  }
+
+  @Mutation(() => String)
+  async deleteCustomLlmProvider(
+    @Arg('providerId', () => String) providerId: string,
+    @Arg('runtimeKind', () => String, { nullable: true }) runtimeKind?: string | null,
+  ): Promise<string> {
+    try {
+      const providerName = await this.llmProviderService.deleteCustomProvider(providerId, runtimeKind);
+      return `Deleted custom provider ${providerName} successfully.`;
+    } catch (error) {
+      return `Error deleting custom provider ${providerId}: ${String(error)}`;
+    }
+  }
+
   @Mutation(() => String)
   setGeminiSetupConfig(
-    @Arg("mode", () => String) mode: string,
-    @Arg("geminiApiKey", () => String, { nullable: true }) geminiApiKey?: string | null,
-    @Arg("vertexApiKey", () => String, { nullable: true }) vertexApiKey?: string | null,
-    @Arg("vertexProject", () => String, { nullable: true }) vertexProject?: string | null,
-    @Arg("vertexLocation", () => String, { nullable: true }) vertexLocation?: string | null,
+    @Arg('mode', () => String) mode: string,
+    @Arg('geminiApiKey', () => String, { nullable: true }) geminiApiKey?: string | null,
+    @Arg('vertexApiKey', () => String, { nullable: true }) vertexApiKey?: string | null,
+    @Arg('vertexProject', () => String, { nullable: true }) vertexProject?: string | null,
+    @Arg('vertexLocation', () => String, { nullable: true }) vertexLocation?: string | null,
   ): string {
     try {
       const normalizedMode = normalizeText(mode).toUpperCase();
       if (!Object.values(GEMINI_SETUP_MODES).includes(normalizedMode as GeminiSetupMode)) {
         throw new Error(
-          `Invalid Gemini setup mode '${mode}'. Use one of: ${Object.values(GEMINI_SETUP_MODES).join(", ")}`,
+          `Invalid Gemini setup mode '${mode}'. Use one of: ${Object.values(GEMINI_SETUP_MODES).join(', ')}`,
         );
       }
 
@@ -279,22 +382,22 @@ export class LlmProviderResolver {
 
       if (selectedMode === GEMINI_SETUP_MODES.AI_STUDIO) {
         if (!normalizedGeminiApiKey) {
-          throw new Error("GEMINI_API_KEY is required for AI_STUDIO mode.");
+          throw new Error('GEMINI_API_KEY is required for AI_STUDIO mode.');
         }
-        config.set("GEMINI_API_KEY", normalizedGeminiApiKey);
+        config.set('GEMINI_API_KEY', normalizedGeminiApiKey);
       } else if (selectedMode === GEMINI_SETUP_MODES.VERTEX_EXPRESS) {
         if (!normalizedVertexApiKey) {
-          throw new Error("VERTEX_AI_API_KEY is required for VERTEX_EXPRESS mode.");
+          throw new Error('VERTEX_AI_API_KEY is required for VERTEX_EXPRESS mode.');
         }
-        config.set("VERTEX_AI_API_KEY", normalizedVertexApiKey);
+        config.set('VERTEX_AI_API_KEY', normalizedVertexApiKey);
       } else {
         if (!normalizedVertexProject || !normalizedVertexLocation) {
           throw new Error(
-            "Both VERTEX_AI_PROJECT and VERTEX_AI_LOCATION are required for VERTEX_PROJECT mode.",
+            'Both VERTEX_AI_PROJECT and VERTEX_AI_LOCATION are required for VERTEX_PROJECT mode.',
           );
         }
-        config.set("VERTEX_AI_PROJECT", normalizedVertexProject);
-        config.set("VERTEX_AI_LOCATION", normalizedVertexLocation);
+        config.set('VERTEX_AI_PROJECT', normalizedVertexProject);
+        config.set('VERTEX_AI_LOCATION', normalizedVertexLocation);
       }
 
       clearGeminiModeFields(selectedMode);
@@ -306,37 +409,32 @@ export class LlmProviderResolver {
 
   @Mutation(() => String)
   async reloadLlmModels(
-    @Arg("runtimeKind", () => String, { nullable: true }) runtimeKind?: string | null,
+    @Arg('runtimeKind', () => String, { nullable: true }) runtimeKind?: string | null,
   ): Promise<string> {
     try {
       await this.runtimeModelCatalogService.reloadLlmModels(runtimeKind);
       await this.runtimeModelCatalogService.reloadAudioModels(runtimeKind);
       await this.runtimeModelCatalogService.reloadImageModels(runtimeKind);
-      return "All models (LLM and Multimedia) reloaded successfully.";
+      return 'All models (LLM and Multimedia) reloaded successfully.';
     } catch (error) {
       return `Error reloading models: ${String(error)}`;
     }
   }
 
   @Mutation(() => String)
-  async reloadLlmProviderModels(@Arg("provider", () => String) provider: string): Promise<string> {
-    if (!provider) {
-      return "Error reloading provider models: provider must be specified.";
+  async reloadLlmProviderModels(
+    @Arg('providerId', () => String) providerId: string,
+    @Arg('runtimeKind', () => String, { nullable: true }) runtimeKind?: string | null,
+  ): Promise<string> {
+    if (!providerId) {
+      return 'Error reloading provider models: providerId must be specified.';
     }
 
     try {
-      const normalized = provider.trim().toUpperCase();
-      const providerEnum = (LLMProvider as Record<string, LLMProvider>)[normalized];
-      if (!providerEnum) {
-        return `Error reloading models for provider ${provider}: Unsupported provider.`;
-      }
-
-      const count = await this.runtimeModelCatalogService.reloadLlmModelsForProvider(
-        providerEnum,
-      );
-      return `Reloaded ${count} models for provider ${providerEnum} successfully.`;
+      const count = await this.llmProviderService.reloadProviderModels(providerId, runtimeKind);
+      return `Reloaded ${count} models for provider ${providerId} successfully.`;
     } catch (error) {
-      return `Error reloading models for provider ${provider}: ${String(error)}`;
+      return `Error reloading models for provider ${providerId}: ${String(error)}`;
     }
   }
 }
