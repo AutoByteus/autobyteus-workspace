@@ -8,6 +8,14 @@ import { LMStudioModelProvider } from './lmstudio-provider.js';
 import { AutobyteusModelProvider } from './autobyteus-provider.js';
 import { ModelMetadataResolver } from './metadata/model-metadata-resolver.js';
 import { supportedModelDefinitions, type SupportedModelDefinition } from './supported-model-definitions.js';
+import type { CustomLlmProviderRecord } from './custom-llm-provider-config.js';
+import {
+  OpenAICompatibleEndpointModel,
+} from './openai-compatible-endpoint-model.js';
+import {
+  OpenAICompatibleEndpointModelProvider,
+  type OpenAICompatibleEndpointReloadReport,
+} from './openai-compatible-endpoint-provider.js';
 
 const buildSupportedModels = async (): Promise<LLMModel[]> => {
   const metadataResolver = new ModelMetadataResolver();
@@ -18,21 +26,41 @@ const buildSupportedModels = async (): Promise<LLMModel[]> => {
         provider: definition.provider,
         name: definition.name,
         value: definition.value,
-        canonicalName: definition.canonicalName
+        canonicalName: definition.canonicalName,
       });
 
       return new LLMModel({
         ...definition,
-        ...metadata
+        ...metadata,
       });
-    })
+    }),
   );
+};
+
+const groupEndpointModelsByEndpoint = (
+  models: OpenAICompatibleEndpointModel[],
+): Map<string, OpenAICompatibleEndpointModel[]> => {
+  const grouped = new Map<string, OpenAICompatibleEndpointModel[]>();
+
+  for (const model of models) {
+    const endpointId = model.endpointId;
+    const existing = grouped.get(endpointId) ?? [];
+    existing.push(model);
+    grouped.set(endpointId, existing);
+  }
+
+  return grouped;
 };
 
 export class LLMFactory {
   private static modelsByProvider = new Map<LLMProvider, LLMModel[]>();
   private static modelsByIdentifier = new Map<string, LLMModel>();
   private static initialized = false;
+  private static openAICompatibleEndpointProvider = new OpenAICompatibleEndpointModelProvider();
+  private static lastKnownGoodOpenAICompatibleEndpointModelsByEndpoint = new Map<
+    string,
+    OpenAICompatibleEndpointModel[]
+  >();
 
   static async ensureInitialized(): Promise<void> {
     if (!LLMFactory.initialized) {
@@ -48,6 +76,13 @@ export class LLMFactory {
     await LLMFactory.ensureInitialized();
   }
 
+  static resetForTests(): void {
+    LLMFactory.initialized = false;
+    LLMFactory.modelsByProvider.clear();
+    LLMFactory.modelsByIdentifier.clear();
+    LLMFactory.lastKnownGoodOpenAICompatibleEndpointModelsByEndpoint.clear();
+  }
+
   private static async initializeRegistry(): Promise<void> {
     const supportedModels = await buildSupportedModels();
 
@@ -58,6 +93,19 @@ export class LLMFactory {
     await OllamaModelProvider.discoverAndRegister();
     await LMStudioModelProvider.discoverAndRegister();
     await AutobyteusModelProvider.discoverAndRegister();
+  }
+
+  private static replaceProviderModels(provider: LLMProvider, models: LLMModel[]): void {
+    const currentProviderModels = LLMFactory.modelsByProvider.get(provider) ?? [];
+    for (const model of currentProviderModels) {
+      LLMFactory.modelsByIdentifier.delete(model.modelIdentifier);
+    }
+
+    LLMFactory.modelsByProvider.set(provider, []);
+
+    for (const model of models) {
+      LLMFactory.registerModel(model);
+    }
   }
 
   static registerModel(model: LLMModel): void {
@@ -79,6 +127,23 @@ export class LLMFactory {
     LLMFactory.modelsByProvider.set(model.provider, providerModels);
   }
 
+  static async syncOpenAICompatibleEndpointModels(
+    savedEndpoints: CustomLlmProviderRecord[],
+  ): Promise<OpenAICompatibleEndpointReloadReport> {
+    await LLMFactory.ensureInitialized();
+
+    const report = await LLMFactory.openAICompatibleEndpointProvider.reloadSavedEndpoints(
+      savedEndpoints,
+      LLMFactory.lastKnownGoodOpenAICompatibleEndpointModelsByEndpoint,
+    );
+
+    LLMFactory.replaceProviderModels(LLMProvider.OPENAI_COMPATIBLE, report.models);
+    LLMFactory.lastKnownGoodOpenAICompatibleEndpointModelsByEndpoint =
+      groupEndpointModelsByEndpoint(report.models);
+
+    return report;
+  }
+
   static async createLLM(modelIdentifier: string, llmConfig?: LLMConfig): Promise<BaseLLM> {
     await LLMFactory.ensureInitialized();
 
@@ -96,12 +161,12 @@ export class LLMFactory {
     }
 
     const foundByName = Array.from(LLMFactory.modelsByIdentifier.values()).filter(
-      (entry) => entry.name === modelIdentifier
+      (entry) => entry.name === modelIdentifier,
     );
     if (foundByName.length > 1) {
       const identifiers = foundByName.map((entry) => entry.modelIdentifier);
       throw new Error(
-        `The model name '${modelIdentifier}' is ambiguous. Please use one of the unique model identifiers: ${identifiers}`
+        `The model name '${modelIdentifier}' is ambiguous. Please use one of the unique model identifiers: ${identifiers}`,
       );
     }
 
@@ -111,7 +176,7 @@ export class LLMFactory {
   static async listAvailableModels(): Promise<ModelInfo[]> {
     await LLMFactory.ensureInitialized();
     const models = Array.from(LLMFactory.modelsByIdentifier.values()).sort((a, b) =>
-      a.modelIdentifier.localeCompare(b.modelIdentifier)
+      a.modelIdentifier.localeCompare(b.modelIdentifier),
     );
     return models.map((model) => model.toModelInfo());
   }
@@ -152,7 +217,7 @@ export class LLMFactory {
     }
 
     const foundByName = Array.from(LLMFactory.modelsByIdentifier.values()).filter(
-      (entry) => entry.name === modelIdentifier
+      (entry) => entry.name === modelIdentifier,
     );
     if (foundByName.length === 1) {
       return foundByName[0]?.provider ?? null;
@@ -160,7 +225,7 @@ export class LLMFactory {
     if (foundByName.length > 1) {
       const identifiers = foundByName.map((entry) => entry.modelIdentifier);
       throw new Error(
-        `The model name '${modelIdentifier}' is ambiguous. Please use one of the unique model identifiers: ${identifiers}`
+        `The model name '${modelIdentifier}' is ambiguous. Please use one of the unique model identifiers: ${identifiers}`,
       );
     }
 
@@ -174,7 +239,7 @@ export class LLMFactory {
     const providerHandlers: Partial<Record<LLMProvider, { getModels: () => Promise<LLMModel[]> }>> = {
       [LLMProvider.LMSTUDIO]: LMStudioModelProvider,
       [LLMProvider.AUTOBYTEUS]: AutobyteusModelProvider,
-      [LLMProvider.OLLAMA]: OllamaModelProvider
+      [LLMProvider.OLLAMA]: OllamaModelProvider,
     };
 
     const handler = providerHandlers[provider];
@@ -184,29 +249,18 @@ export class LLMFactory {
       return currentCount;
     }
 
-    const currentProviderModels = LLMFactory.modelsByProvider.get(provider) ?? [];
-    const idsToRemove = currentProviderModels.map((model) => model.modelIdentifier);
-
-    console.log(`Clearing ${idsToRemove.length} models for provider ${provider} before discovery.`);
-
-    for (const id of idsToRemove) {
-      LLMFactory.modelsByIdentifier.delete(id);
-    }
-    LLMFactory.modelsByProvider.delete(provider);
-
     let newModels: LLMModel[] = [];
     try {
       newModels = await handler.getModels();
-    } catch (error: any) {
-      console.error(`Failed to fetch models for ${provider}. Registry for this provider is now empty.`, error?.message ?? error);
-      return 0;
+    } catch (error) {
+      console.error(
+        `Failed to fetch models for ${provider}. Registry for this provider is unchanged.`,
+        error instanceof Error ? error.message : error,
+      );
+      return LLMFactory.modelsByProvider.get(provider)?.length ?? 0;
     }
 
-    console.log(`Registering ${newModels.length} new models for provider ${provider}.`);
-    for (const model of newModels) {
-      LLMFactory.registerModel(model);
-    }
-
+    LLMFactory.replaceProviderModels(provider, newModels);
     return newModels.length;
   }
 }

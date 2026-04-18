@@ -9,26 +9,26 @@
       <div class="p-2 space-y-0.5 flex-1 overflow-y-auto">
         <button
           v-for="provider in providers"
-          :key="`sidebar-${provider.name}`"
+          :key="`sidebar-${provider.id}`"
           class="w-full text-left px-3 py-2.5 rounded-lg flex items-center justify-between group transition-all duration-200"
-          :class="selectedProvider === provider.name
+          :class="selectedProviderId === provider.id
             ? 'bg-white text-blue-700 shadow-sm ring-1 ring-gray-200'
             : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'"
-          @click="emit('select-provider', provider.name)"
+          @click="emit('select-provider', provider.id)"
         >
           <div class="flex items-center min-w-0">
             <span
               class="w-2 h-2 rounded-full mr-3 flex-shrink-0 transition-colors"
-              :class="isProviderConfigured(provider.name)
-                ? (selectedProvider === provider.name ? 'bg-green-500' : 'bg-green-400')
+              :class="isProviderConfigured(provider.id)
+                ? (selectedProviderId === provider.id ? 'bg-green-500' : 'bg-green-400')
                 : 'bg-gray-300'"
             ></span>
-            <span class="truncate font-medium text-sm">{{ provider.name }}</span>
+            <span class="truncate font-medium text-sm">{{ provider.label || provider.name }}</span>
           </div>
           <div class="flex items-center gap-1 flex-shrink-0 ml-2">
             <span
               class="text-xs py-0.5 px-2 rounded-full transition-colors font-medium border"
-              :class="selectedProvider === provider.name
+              :class="selectedProviderId === provider.id
                 ? 'bg-blue-50 text-blue-600 border-blue-100'
                 : 'bg-gray-100 text-gray-400 border-transparent group-hover:bg-white group-hover:border-gray-200'"
             >
@@ -42,7 +42,7 @@
     <div class="flex-1 bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm flex flex-col">
       <div class="px-5 py-4 border-b flex items-center justify-between bg-white">
         <div class="flex items-center gap-3">
-          <span class="text-lg font-semibold text-gray-900">{{ selectedProvider }}</span>
+          <span class="text-lg font-semibold text-gray-900">{{ selectedProviderLabelText }}</span>
           <span
             class="text-xs px-2.5 py-1 rounded-full border font-medium flex items-center gap-1.5"
             :class="selectedProviderConfigured
@@ -60,7 +60,7 @@
         </div>
         <button
           class="inline-flex items-center px-3 py-1.5 text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200 rounded-lg shadow-sm hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-          :disabled="!selectedProvider || isLoadingModels || isReloadingModels || isReloadingSelectedProvider"
+          :disabled="!canReloadSelectedProvider || isLoadingModels || isReloadingModels || isReloadingSelectedProvider"
           :title="$t('settings.components.settings.ProviderAPIKeyManager.reload_models_for_selected_provider')"
           @click="emit('reload-selected-provider')"
         >
@@ -86,8 +86,6 @@
           </div>
         </div>
 
-        <div v-if="hasModels" class="mb-2"></div>
-
         <div class="space-y-6">
           <div v-if="llmModels.length > 0">
             <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
@@ -99,7 +97,7 @@
                 :key="`panel-llm-${model.modelIdentifier}`"
                 class="py-2.5 px-3 bg-white border border-gray-100 hover:border-blue-200 hover:shadow-sm rounded-lg text-sm transition-all duration-200"
               >
-                <span class="break-all font-medium text-gray-900">{{ model.modelIdentifier }}</span>
+                <span class="break-all font-medium text-gray-900">{{ getDisplayedModelLabel(model) }}</span>
               </div>
             </div>
           </div>
@@ -114,7 +112,7 @@
                 :key="`panel-audio-${model.modelIdentifier}`"
                 class="py-2.5 px-3 bg-white border border-gray-100 hover:border-purple-200 hover:shadow-sm rounded-lg text-sm transition-all duration-200"
               >
-                <span class="break-all font-medium text-gray-900">{{ model.modelIdentifier }}</span>
+                <span class="break-all font-medium text-gray-900">{{ getDisplayedModelLabel(model) }}</span>
               </div>
             </div>
           </div>
@@ -129,7 +127,7 @@
                 :key="`panel-image-${model.modelIdentifier}`"
                 class="py-2.5 px-3 bg-white border border-gray-100 hover:border-amber-200 hover:shadow-sm rounded-lg text-sm transition-all duration-200"
               >
-                <span class="break-all font-medium text-gray-900">{{ model.modelIdentifier }}</span>
+                <span class="break-all font-medium text-gray-900">{{ getDisplayedModelLabel(model) }}</span>
               </div>
             </div>
           </div>
@@ -153,19 +151,27 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig'
+import { getModelSelectionOptionLabel } from '~/utils/modelSelectionLabel'
 
 interface ProviderSummary {
+  id: string
   name: string
+  label?: string
   totalModels: number
+  isDraft?: boolean
 }
 
 interface ModelInfo {
   modelIdentifier: string
+  name?: string | null
+  providerType?: string | null
 }
 
 const props = defineProps<{
   providers: ProviderSummary[]
-  selectedProvider: string
+  selectedProviderId: string
+  selectedProviderLabel?: string
   selectedProviderConfigured: boolean
   llmModels: ModelInfo[]
   audioModels: ModelInfo[]
@@ -173,15 +179,19 @@ const props = defineProps<{
   isLoadingModels: boolean
   isReloadingModels: boolean
   isReloadingSelectedProvider: boolean
-  isProviderConfigured: (provider: string) => boolean
+  canReloadSelectedProvider: boolean
+  isProviderConfigured: (providerId: string) => boolean
 }>()
 
 const emit = defineEmits<{
-  (event: 'select-provider', provider: string): void
+  (event: 'select-provider', providerId: string): void
   (event: 'reload-selected-provider'): void
 }>()
 
 const hasModels = computed(
   () => props.llmModels.length > 0 || props.audioModels.length > 0 || props.imageModels.length > 0,
 )
+const selectedProviderLabelText = computed(() => props.selectedProviderLabel || props.selectedProviderId)
+const getDisplayedModelLabel = (model: ModelInfo): string =>
+  getModelSelectionOptionLabel(model, DEFAULT_AGENT_RUNTIME_KIND)
 </script>

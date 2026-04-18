@@ -69,83 +69,86 @@
 </template>
 
 <script setup lang="ts">
-import { Icon } from '@iconify/vue';
-import { computed, onMounted, ref, watch } from 'vue';
-import { useLocalization } from '~/composables/useLocalization';
-import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig';
-import { useServerSettingsStore } from '~/stores/serverSettings';
+import { Icon } from '@iconify/vue'
+import { computed, onMounted, ref, watch } from 'vue'
+import { useLocalization } from '~/composables/useLocalization'
+import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
+import { useServerSettingsStore } from '~/stores/serverSettings'
+import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig'
+import { getModelSelectionSelectedLabel } from '~/utils/modelSelectionLabel'
 
-const COMPACTION_TRIGGER_RATIO_KEY = 'AUTOBYTEUS_COMPACTION_TRIGGER_RATIO';
-const COMPACTION_MODEL_IDENTIFIER_KEY = 'AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER';
-const ACTIVE_CONTEXT_TOKENS_OVERRIDE_KEY = 'AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE';
-const COMPACTION_DEBUG_LOGS_KEY = 'AUTOBYTEUS_COMPACTION_DEBUG_LOGS';
+const COMPACTION_TRIGGER_RATIO_KEY = 'AUTOBYTEUS_COMPACTION_TRIGGER_RATIO'
+const COMPACTION_MODEL_IDENTIFIER_KEY = 'AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER'
+const ACTIVE_CONTEXT_TOKENS_OVERRIDE_KEY = 'AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE'
+const COMPACTION_DEBUG_LOGS_KEY = 'AUTOBYTEUS_COMPACTION_DEBUG_LOGS'
 
-const store = useServerSettingsStore();
-const llmProviderConfigStore = useLLMProviderConfigStore();
-const { t } = useLocalization();
+const store = useServerSettingsStore()
+const llmProviderConfigStore = useLLMProviderConfigStore()
+const { t } = useLocalization()
 
-const triggerRatioPercent = ref('80');
-const compactionModelIdentifier = ref('');
-const activeContextTokensOverride = ref('');
-const detailedLogsEnabled = ref(false);
-const isSaving = ref(false);
+const triggerRatioPercent = ref('80')
+const compactionModelIdentifier = ref('')
+const activeContextTokensOverride = ref('')
+const detailedLogsEnabled = ref(false)
+const isSaving = ref(false)
+const availableProviderGroups = computed(() => llmProviderConfigStore.providersWithModelsForSelection ?? [])
 
 const modelOptions = computed(() => {
-  const seen = new Set<string>();
-  const options: Array<{ value: string; label: string }> = [];
+  const seen = new Set<string>()
+  const options: Array<{ value: string; label: string }> = []
 
-  for (const provider of llmProviderConfigStore.providersWithModels ?? []) {
-    for (const model of provider.models ?? []) {
-      const value = String(model.modelIdentifier ?? '').trim();
-      if (!value || seen.has(value)) {
-        continue;
-      }
-      seen.add(value);
-      const label = `${String(model.name ?? model.modelIdentifier)} (${String(provider.provider ?? model.provider ?? 'model')})`;
-      options.push({ value, label });
+  for (const providerGroup of availableProviderGroups.value) {
+    for (const model of providerGroup.models ?? []) {
+      const value = String(model.modelIdentifier ?? '').trim()
+      if (!value || seen.has(value)) continue
+      seen.add(value)
+      options.push({
+        value,
+        label: getModelSelectionSelectedLabel(providerGroup.provider.name, model, DEFAULT_AGENT_RUNTIME_KIND),
+      })
     }
   }
 
-  return options.sort((a, b) => a.label.localeCompare(b.label));
-});
+  return options.sort((a, b) => a.label.localeCompare(b.label))
+})
 
 const syncFromStore = (): void => {
-  const ratioRaw = store.getSettingByKey(COMPACTION_TRIGGER_RATIO_KEY)?.value?.trim() ?? '';
-  const ratio = Number(ratioRaw);
-  triggerRatioPercent.value = Number.isFinite(ratio) && ratio > 0 ? String(Math.round(ratio * 100)) : '80';
+  const ratioRaw = store.getSettingByKey(COMPACTION_TRIGGER_RATIO_KEY)?.value?.trim() ?? ''
+  const ratio = Number(ratioRaw)
+  triggerRatioPercent.value = Number.isFinite(ratio) && ratio > 0 ? String(Math.round(ratio * 100)) : '80'
 
-  compactionModelIdentifier.value = store.getSettingByKey(COMPACTION_MODEL_IDENTIFIER_KEY)?.value ?? '';
-  activeContextTokensOverride.value = store.getSettingByKey(ACTIVE_CONTEXT_TOKENS_OVERRIDE_KEY)?.value ?? '';
-  const debugValue = store.getSettingByKey(COMPACTION_DEBUG_LOGS_KEY)?.value?.trim().toLowerCase() ?? '';
-  detailedLogsEnabled.value = ['1', 'true', 'yes', 'on'].includes(debugValue);
-};
+  compactionModelIdentifier.value = store.getSettingByKey(COMPACTION_MODEL_IDENTIFIER_KEY)?.value ?? ''
+  activeContextTokensOverride.value = store.getSettingByKey(ACTIVE_CONTEXT_TOKENS_OVERRIDE_KEY)?.value ?? ''
+  const debugValue = store.getSettingByKey(COMPACTION_DEBUG_LOGS_KEY)?.value?.trim().toLowerCase() ?? ''
+  detailedLogsEnabled.value = ['1', 'true', 'yes', 'on'].includes(debugValue)
+}
 
-watch(() => store.settings, syncFromStore, { deep: true, immediate: true });
+watch(() => store.settings, syncFromStore, { deep: true, immediate: true })
 
 onMounted(async () => {
   if ((llmProviderConfigStore.providersWithModels?.length ?? 0) === 0) {
     try {
-      await llmProviderConfigStore.fetchProvidersWithModels('autobyteus');
+      await llmProviderConfigStore.fetchProvidersWithModels(DEFAULT_AGENT_RUNTIME_KIND)
     } catch (_error) {
       // Best effort only; keep the active-model fallback available.
     }
   }
-});
+})
 
 const save = async (): Promise<void> => {
-  isSaving.value = true;
+  isSaving.value = true
   try {
-    const ratioPercent = Number(triggerRatioPercent.value);
-    const normalizedRatio = Number.isFinite(ratioPercent) && ratioPercent > 0 ? String(Math.min(100, ratioPercent) / 100) : '0.8';
-    const normalizedModelIdentifier = String(compactionModelIdentifier.value ?? '').trim();
-    const normalizedActiveContextOverride = String(activeContextTokensOverride.value ?? '').trim();
+    const ratioPercent = Number(triggerRatioPercent.value)
+    const normalizedRatio = Number.isFinite(ratioPercent) && ratioPercent > 0 ? String(Math.min(100, ratioPercent) / 100) : '0.8'
+    const normalizedModelIdentifier = String(compactionModelIdentifier.value ?? '').trim()
+    const normalizedActiveContextOverride = String(activeContextTokensOverride.value ?? '').trim()
 
-    await store.updateServerSetting(COMPACTION_TRIGGER_RATIO_KEY, normalizedRatio);
-    await store.updateServerSetting(COMPACTION_MODEL_IDENTIFIER_KEY, normalizedModelIdentifier);
-    await store.updateServerSetting(ACTIVE_CONTEXT_TOKENS_OVERRIDE_KEY, normalizedActiveContextOverride);
-    await store.updateServerSetting(COMPACTION_DEBUG_LOGS_KEY, detailedLogsEnabled.value ? 'true' : 'false');
+    await store.updateServerSetting(COMPACTION_TRIGGER_RATIO_KEY, normalizedRatio)
+    await store.updateServerSetting(COMPACTION_MODEL_IDENTIFIER_KEY, normalizedModelIdentifier)
+    await store.updateServerSetting(ACTIVE_CONTEXT_TOKENS_OVERRIDE_KEY, normalizedActiveContextOverride)
+    await store.updateServerSetting(COMPACTION_DEBUG_LOGS_KEY, detailedLogsEnabled.value ? 'true' : 'false')
   } finally {
-    isSaving.value = false;
+    isSaving.value = false
   }
-};
+}
 </script>

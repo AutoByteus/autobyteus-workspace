@@ -45,6 +45,7 @@ export const DEFAULT_PROFILE = new JsonToolParsingProfile(
 
 export const OPENAI_LIKE_PROVIDERS = new Set<LLMProvider>([
   LLMProvider.OPENAI,
+  LLMProvider.OPENAI_COMPATIBLE,
   LLMProvider.MISTRAL,
   LLMProvider.DEEPSEEK,
   LLMProvider.GROK

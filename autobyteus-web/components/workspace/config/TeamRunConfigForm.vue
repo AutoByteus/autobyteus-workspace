@@ -115,7 +115,10 @@ import RuntimeModelConfigFields from '~/components/launch-config/RuntimeModelCon
 import WorkspaceSelector from './WorkspaceSelector.vue'
 import MemberOverrideItem from './MemberOverrideItem.vue'
 import type { GroupedOption } from '~/components/agentTeams/SearchableGroupedSelect.vue'
-import { getModelSelectionLabel } from '~/utils/modelSelectionLabel'
+import {
+  getModelSelectionOptionLabel,
+  getModelSelectionSelectedLabel,
+} from '~/utils/modelSelectionLabel'
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
 import { resolveLeafTeamMembers } from '~/utils/teamDefinitionMembers'
 import { hasMeaningfulMemberOverride } from '~/utils/teamRunConfigUtils'
@@ -127,7 +130,7 @@ interface WorkspaceLoadingState {
 }
 
 const props = defineProps<{
-  config: TeamRunConfig | any;
+  config: TeamRunConfig;
   teamDefinition: AgentTeamDefinition;
   workspaceLoadingState: WorkspaceLoadingState;
   initialPath?: string;
@@ -148,10 +151,12 @@ const leafMembers = computed(() =>
       teamDefinitionStore.getAgentTeamDefinitionById(teamDefinitionId),
   }),
 )
+const availableProviderGroups = computed(() => llmStore.providersWithModelsForSelection ?? [])
 
 const sanitizeMemberOverridesForRuntime = () => {
   const modelSet = new Set(llmStore.models)
-  const overrides = props.config.memberOverrides || {}
+  const overrides: Record<string, MemberConfigOverride | null | undefined> =
+    props.config.memberOverrides || {}
 
   for (const [memberName, override] of Object.entries(overrides)) {
     if (!override || typeof override !== 'object') {
@@ -179,16 +184,17 @@ watch(
 )
 
 const groupedModelOptions = computed<GroupedOption[]>(() => {
-  return llmStore.providersWithModels.map(provider => ({
-    label: provider.provider,
-    items: provider.models.map(model => ({
+  return availableProviderGroups.value.map((providerGroup) => ({
+    label: providerGroup.provider.name,
+    items: providerGroup.models.map((model) => ({
       id: model.modelIdentifier,
-      name: getModelSelectionLabel(model, props.config.runtimeKind),
+      name: getModelSelectionOptionLabel(model, props.config.runtimeKind),
+      selectedLabel: getModelSelectionSelectedLabel(providerGroup.provider.name, model, props.config.runtimeKind),
     })),
   }))
 })
 
-const handleOverrideUpdate = ({ memberName, override }: { memberName: string; override: MemberConfigOverride | null }) => {
+const handleOverrideUpdate = (memberName: string, override: MemberConfigOverride | null) => {
   const overrides = { ...(props.config.memberOverrides || {}) }
   if (override && hasMeaningfulMemberOverride(override)) {
     overrides[memberName] = override

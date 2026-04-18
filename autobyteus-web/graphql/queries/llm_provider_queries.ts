@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
-export const GET_LLM_PROVIDER_API_KEY = gql`
-  query GetLLMProviderApiKey($provider: String!) {
-    getLlmProviderApiKey(provider: $provider)
+export const GET_LLM_PROVIDER_API_KEY_CONFIGURED = gql`
+  query GetLLMProviderApiKeyConfigured($providerId: String!) {
+    getLlmProviderApiKeyConfigured(providerId: $providerId)
   }
 `;
 
@@ -10,14 +10,26 @@ export const GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS = gql`
   query GetAvailableLLMProvidersWithModels($runtimeKind: String) {
     availableLlmProvidersWithModels(runtimeKind: $runtimeKind) {
       __typename
-      provider
+      provider {
+        __typename
+        id
+        name
+        providerType
+        isCustom
+        baseUrl
+        apiKeyConfigured
+        status
+        statusMessage
+      }
       models {
         __typename
         modelIdentifier
         name
         value
         canonicalName
-        provider
+        providerId
+        providerName
+        providerType
         runtime
         hostUrl
         configSchema
@@ -29,28 +41,52 @@ export const GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS = gql`
     }
     availableAudioProvidersWithModels(runtimeKind: $runtimeKind) {
       __typename
-      provider
+      provider {
+        __typename
+        id
+        name
+        providerType
+        isCustom
+        baseUrl
+        apiKeyConfigured
+        status
+        statusMessage
+      }
       models {
         __typename
         modelIdentifier
         name
         value
         canonicalName
-        provider
+        providerId
+        providerName
+        providerType
         runtime
         hostUrl
       }
     }
     availableImageProvidersWithModels(runtimeKind: $runtimeKind) {
       __typename
-      provider
+      provider {
+        __typename
+        id
+        name
+        providerType
+        isCustom
+        baseUrl
+        apiKeyConfigured
+        status
+        statusMessage
+      }
       models {
         __typename
         modelIdentifier
         name
         value
         canonicalName
-        provider
+        providerId
+        providerName
+        providerType
         runtime
         hostUrl
       }

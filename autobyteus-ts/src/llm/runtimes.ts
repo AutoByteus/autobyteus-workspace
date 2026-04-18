@@ -4,6 +4,7 @@
  */
 export enum LLMRuntime {
   API = "api",
+  OPENAI_COMPATIBLE = "openai_compatible",
   OLLAMA = "ollama",
   LMSTUDIO = "lmstudio",
   AUTOBYTEUS = "autobyteus",

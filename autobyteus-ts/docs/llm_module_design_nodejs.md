@@ -5,76 +5,157 @@ Node.js/TypeScript implementation in `autobyteus-ts`.
 
 ## 1. Overview
 
-The Node.js LLM module mirrors the Python architecture (BaseLLM + LLMModel +
-LLMFactory) while adapting to official Node SDKs and streaming APIs. It maintains
-feature parity: tool call streaming, multimodal inputs, local runtime discovery,
-and usage tracking.
+The Node.js LLM module mirrors the Python architecture (`BaseLLM` +
+`LLMModel` + `LLMFactory`) while adapting to official Node SDKs and streaming
+APIs. In addition to built-in cloud and local providers, the TypeScript
+implementation now supports multiple saved custom OpenAI-compatible providers
+under the same provider-centered model contract.
 
 ## 2. Core Types
 
-- **`BaseLLM`** (`src/llm/base.ts`): message history, system prompt, extensions,
-  and the abstract `_sendUserMessageToLLM` / `_streamUserMessageToLLM` hooks.
-- **`LLMModel`** (`src/llm/models.ts`): model metadata + runtime/host identifier.
-- **`LLMFactory`** (`src/llm/llm-factory.ts`): registry, discovery, reload logic.
+- **`BaseLLM`** (`src/llm/base.ts`): message history, system prompt,
+  extensions, and the abstract `_sendUserMessageToLLM` /
+  `_streamUserMessageToLLM` hooks.
+- **`LLMModel`** (`src/llm/models.ts`): model metadata including:
+  - `model_identifier`
+  - `provider_id`
+  - `provider_name`
+  - `provider_type`
+  - `runtime`
+  - optional `host_url` and `config_schema`
+- **`LLMFactory`** (`src/llm/llm-factory.ts`): registry, discovery, reload
+  logic, and custom OpenAI-compatible provider sync.
 
-## 3. OpenAI Implementation (Responses API)
+## 3. OpenAI Paths
 
-Python uses `OpenAIResponsesLLM`, so the TS implementation does too:
+### 3.1 Official OpenAI
+
+Official OpenAI remains on the Responses API path:
 
 - **`OpenAIResponsesLLM`** (`src/llm/api/openai-responses-llm.ts`)
-  - Uses `client.responses.create(...)` (official Node SDK).
-  - Supports reasoning params (`reasoning_effort`, `reasoning_summary`).
-  - Normalizes tool definitions to `function` style.
-  - Streams tool calls + text deltas from Responses events.
-- **`OpenAILLM`** (`src/llm/api/openai-llm.ts`) extends `OpenAIResponsesLLM`.
+  - Uses `client.responses.create(...)` from the official Node SDK.
+  - Supports reasoning params such as `reasoning_effort`.
+  - Normalizes tool definitions to OpenAI function style.
+  - Streams text, reasoning-summary, and function-call events.
+- **`OpenAILLM`** (`src/llm/api/openai-llm.ts`) extends
+  `OpenAIResponsesLLM`.
 
-**Note:** `OpenAICompatibleLLM` remains for OpenAI‑compatible providers
-(DeepSeek, Grok, Kimi, Qwen, Zhipu, Minimax).
+This ticket did **not** move official OpenAI onto the generic
+OpenAI-compatible path.
+
+### 3.2 OpenAI-Compatible Providers
+
+Two OpenAI-style paths coexist:
+
+- **Built-in OpenAI-style providers** such as DeepSeek, Grok, Kimi, Qwen, GLM,
+  and MiniMax still use `OpenAICompatibleLLM`.
+- **Saved custom providers** use:
+  - `openai-compatible-endpoint-discovery.ts` for `/models` probing
+  - `OpenAICompatibleEndpointModel`
+  - `OpenAICompatibleEndpointLLM`
+  - `OpenAICompatibleEndpointModelProvider`
+
+Custom providers keep `provider_type = OPENAI_COMPATIBLE` while each saved
+provider gets its own `provider_id` and `provider_name`.
 
 ## 4. Provider Implementations
 
-Cloud providers (SDK-backed):
-- `AnthropicLLM` (`@anthropic-ai/sdk`)
-- `GeminiLLM` (`@google/genai`)
-- `MistralLLM` (`@mistralai/mistralai`)
-- `OpenAICompatibleLLM` (OpenAI-style APIs)
+Cloud providers (SDK-backed or API-backed):
+
+- `OpenAILLM`
+- `AnthropicLLM`
+- `GeminiLLM`
+- `MistralLLM`
+- `OpenAICompatibleLLM`
 
 Local runtimes:
+
 - **LM Studio**: `LMStudioLLM`, `LMStudioModelProvider`
 - **Ollama**: `OllamaLLM`, `OllamaModelProvider`
 - **Autobyteus**: `AutobyteusLLM`, `AutobyteusModelProvider`
 
-For local-runtime grouping, Ollama-discovered models stay under the `OLLAMA`
-provider bucket while keeping `runtime = ollama` and a host-qualified
-identifier such as `model:ollama@host:port`.
+Dynamic custom runtime:
+
+- **Custom OpenAI-compatible providers**:
+  `OPENAI_COMPATIBLE` runtime models backed by a saved provider record
+  (`id`, `name`, `baseUrl`, `apiKey`).
 
 ## 5. Model Identifiers
 
-- API runtimes use the model name directly (e.g., `gpt-5.2`).
-- Local runtimes include the host, e.g.
-  `model:runtime@host` (e.g., `qwen/qwen3-vl-30b:lmstudio@192.168.2.158:1234`).
+- API runtimes use the model name directly (for example `gpt-5.2`).
+- Local runtimes include the host, for example
+  `qwen/qwen3-vl-30b:lmstudio@192.168.2.158:1234`.
+- Saved custom OpenAI-compatible providers use the provider-owned identifier
+  shape:
 
-## 6. Streaming & Tool Calls
+  ```text
+  openai-compatible:<providerId>:<modelName>
+  ```
+
+  Example:
+
+  ```text
+  openai-compatible:provider_1234567890abcdef:deepseek-chat
+  ```
+
+This keeps model identity stable even when two providers expose the same model
+name.
+
+## 6. Discovery, Reload, and Failure Isolation
+
+- `LLMFactory.ensureInitialized()` registers built-in models and probes local
+  runtimes.
+- `LLMFactory.reloadModels(provider)` supports provider-scoped reload for
+  reloadable built-in providers such as LM Studio, Ollama, and Autobyteus.
+- Reload is **replace-on-success / preserve-on-failure**. Failed built-in
+  reloads do not wipe the existing provider slice.
+- Saved custom OpenAI-compatible providers are synced through
+  `LLMFactory.syncOpenAICompatibleEndpointModels(savedProviders)`.
+- That sync is authoritative to the current saved-provider set, so removing a
+  saved custom provider removes its `openai-compatible:<providerId>:<model>`
+  identifiers from the next sync and from future cold-start registry state.
+- Custom-provider sync probes each saved provider independently, returns
+  per-provider status, and preserves last-known-good models for providers that
+  fail after a previously successful load (`STALE_ERROR`).
+
+This prevents one broken custom endpoint from wiping healthy custom providers.
+
+## 7. Streaming & Tool Calls
 
 Tool call deltas are normalized into `ToolCallDelta` objects across providers:
+
 - `openai-tool-call-converter`
 - `anthropic-tool-call-converter`
 - `mistral-tool-call-converter`
 - `gemini-tool-call-converter`
 
-Responses streaming (OpenAI) emits:
+Responses streaming (official OpenAI) emits:
+
 - output text deltas
 - reasoning summary deltas
 - function call deltas
 - completed event with usage
 
-## 7. Testing
+Custom OpenAI-compatible providers stay on the existing OpenAI-style tool-call
+path rather than the Responses event format.
 
-Integration tests live in `tests/integration/llm/...`.
-They mirror Python tests one‑for‑one (model names preserved).
+## 8. Testing
 
-## 8. Where to Update
+Focused unit coverage for this contract lives in:
 
-- Add new models in `LLMFactory.initializeRegistry()`.
-- Add new providers under `src/llm/api` + update `LLMProvider`.
-- Add discovery for local runtimes under `src/llm/*-provider.ts`.
+- `tests/unit/llm/models.test.ts`
+- `tests/unit/llm/openai-compatible-endpoint-provider.test.ts`
+
+Broader integration tests remain under `tests/integration/llm/...`.
+
+## 9. Where to Update
+
+- Add built-in models in `LLMFactory.initializeRegistry()`.
+- Add provider display names in `src/llm/provider-display-names.ts`.
+- Update shared metadata shape in `src/llm/models.ts`.
+- Update saved custom-provider schema in
+  `src/llm/custom-llm-provider-config.ts`.
+- Update OpenAI-compatible custom-provider discovery/modeling in:
+  - `src/llm/openai-compatible-endpoint-discovery.ts`
+  - `src/llm/openai-compatible-endpoint-model.ts`
+  - `src/llm/openai-compatible-endpoint-provider.ts`

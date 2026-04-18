@@ -1,4 +1,5 @@
 import type { ModelInfo } from "autobyteus-ts/llm/models.js";
+import { getLlmProviderDisplayName } from "autobyteus-ts/llm/provider-display-names.js";
 import { LLMProvider } from "autobyteus-ts/llm/providers.js";
 import { asObject, asString, type JsonObject } from "./codex-app-server-json.js";
 
@@ -89,7 +90,9 @@ export const mapCodexModelListRowToModelInfo = (row: unknown): ModelInfo | null 
     display_name: toReasoningDisplayLabel(displayName, defaultReasoningEffort),
     value: modelName,
     canonical_name: modelName,
-    provider: LLMProvider.OPENAI,
+    provider_id: LLMProvider.OPENAI,
+    provider_name: getLlmProviderDisplayName(LLMProvider.OPENAI),
+    provider_type: LLMProvider.OPENAI,
     runtime: "api",
     config_schema: configSchema,
     max_context_tokens: null,

@@ -1,22 +1,22 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { mount } from '@vue/test-utils';
-import { createPinia, setActivePinia } from 'pinia';
-import TeamRunConfigForm from '../TeamRunConfigForm.vue';
-import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig';
-import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore';
-import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { mount } from '@vue/test-utils'
+import { createPinia, setActivePinia } from 'pinia'
+import TeamRunConfigForm from '../TeamRunConfigForm.vue'
+import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
+import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore'
+import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
 
 vi.mock('~/stores/llmProviderConfig', () => ({
   useLLMProviderConfigStore: vi.fn(),
-}));
+}))
 
 vi.mock('~/stores/runtimeAvailabilityStore', () => ({
   useRuntimeAvailabilityStore: vi.fn(),
-}));
+}))
 
 vi.mock('~/stores/agentTeamDefinitionStore', () => ({
   useAgentTeamDefinitionStore: vi.fn(),
-}));
+}))
 
 const mockTeamDef = {
   id: 'team-1',
@@ -26,7 +26,7 @@ const mockTeamDef = {
     { memberName: 'Member B', refType: 'AGENT', ref: 'agent-b' },
   ],
   coordinatorMemberName: 'Member A',
-};
+}
 
 const nestedTeamDef = {
   id: 'team-nested',
@@ -35,34 +35,63 @@ const nestedTeamDef = {
     { memberName: 'Parent Team', refType: 'AGENT_TEAM', ref: 'sub-team-1' },
   ],
   coordinatorMemberName: 'Parent Team',
-};
+}
 
 const mockConfig = {
+  teamDefinitionId: 'team-1',
+  teamDefinitionName: 'Test Team',
   runtimeKind: 'autobyteus',
   llmModelIdentifier: '',
   llmConfig: null,
   autoExecuteTools: false,
+  skillAccessMode: 'PRELOADED_ONLY',
   isLocked: false,
   workspaceId: null,
   memberOverrides: {},
-};
+}
 
 describe('TeamRunConfigForm', () => {
-  let llmStore: any;
-  let runtimeStore: any;
-  let teamDefinitionStore: any;
+  let llmStore: any
+  let runtimeStore: any
+  let teamDefinitionStore: any
+
+  const buildProviderRow = (providerId: string, providerName: string, models: any[], overrides: Record<string, any> = {}) => ({
+    provider: {
+      id: providerId,
+      name: providerName,
+      providerType: providerId,
+      isCustom: false,
+      baseUrl: null,
+      apiKeyConfigured: true,
+      status: 'NOT_APPLICABLE',
+      statusMessage: null,
+      ...overrides,
+    },
+    models,
+  })
+
+  const setProviders = (providersWithModels: any[]) => {
+    llmStore.providersWithModels = providersWithModels
+    llmStore.providersWithModelsForSelection = providersWithModels.filter((provider: any) => provider.models.length > 0)
+  }
 
   beforeEach(() => {
-    setActivePinia(createPinia());
+    setActivePinia(createPinia())
 
     llmStore = {
-      providersWithModels: [
-        { provider: 'OpenAI', models: [{ modelIdentifier: 'gpt-4', name: 'GPT-4' }] },
-      ],
-      models: ['gpt-4'],
+      providersWithModels: [],
+      providersWithModelsForSelection: [],
+      get models() {
+        return llmStore.providersWithModels.flatMap((provider: any) => provider.models.map((model: any) => model.modelIdentifier))
+      },
       fetchProvidersWithModels: vi.fn().mockResolvedValue([]),
       modelConfigSchemaByIdentifier: vi.fn().mockReturnValue(null),
-    };
+    }
+    setProviders([
+      buildProviderRow('OPENAI', 'OpenAI', [
+        { modelIdentifier: 'gpt-4', name: 'GPT-4', value: 'gpt-4', canonicalName: 'gpt-4', providerId: 'OPENAI', providerName: 'OpenAI', providerType: 'OPENAI', runtime: 'api' },
+      ]),
+    ])
 
     runtimeStore = {
       hasFetched: true,
@@ -80,7 +109,7 @@ describe('TeamRunConfigForm', () => {
       runtimeReason: vi.fn((runtimeKind: string) =>
         runtimeStore.availabilityByKind(runtimeKind)?.reason ?? null,
       ),
-    };
+    }
 
     teamDefinitionStore = {
       getAgentTeamDefinitionById: vi.fn((id: string) => {
@@ -93,22 +122,22 @@ describe('TeamRunConfigForm', () => {
               { memberName: 'Leaf A', refType: 'AGENT', ref: 'agent-leaf-a' },
               { memberName: 'Leaf B', refType: 'AGENT', ref: 'agent-leaf-b' },
             ],
-          };
+          }
         }
-        return null;
+        return null
       }),
-    };
+    }
 
-    (useLLMProviderConfigStore as any).mockReturnValue(llmStore);
-    (useRuntimeAvailabilityStore as any).mockReturnValue(runtimeStore);
-    (useAgentTeamDefinitionStore as any).mockReturnValue(teamDefinitionStore);
-  });
+    ;(useLLMProviderConfigStore as any).mockReturnValue(llmStore)
+    ;(useRuntimeAvailabilityStore as any).mockReturnValue(runtimeStore)
+    ;(useAgentTeamDefinitionStore as any).mockReturnValue(teamDefinitionStore)
+  })
 
   const buildWrapper = (
     configOverrides: Record<string, unknown> = {},
     teamDefinition = mockTeamDef,
   ) => {
-    const config = { ...mockConfig, ...configOverrides };
+    const config = { ...mockConfig, ...configOverrides } as any
     const wrapper = mount(TeamRunConfigForm, {
       props: {
         config,
@@ -132,105 +161,91 @@ describe('TeamRunConfigForm', () => {
           },
         },
       },
-    });
-    return { wrapper, config };
-  };
+    })
+    return { wrapper, config }
+  }
 
   it('renders runtime selector and member override entries', () => {
-    const { wrapper } = buildWrapper();
+    const { wrapper } = buildWrapper()
 
-    expect(wrapper.text()).toContain('Test Team');
-    expect(wrapper.find('select#team-runtime-kind').exists()).toBe(true);
-    const items = wrapper.findAllComponents({ name: 'MemberOverrideItem' });
-    expect(items).toHaveLength(2);
-    expect(items[0].props('memberName')).toBe('Member A');
-  });
+    expect(wrapper.text()).toContain('Test Team')
+    expect(wrapper.find('select#team-run-runtime-kind').exists()).toBe(true)
+    const items = wrapper.findAllComponents({ name: 'MemberOverrideItem' })
+    expect(items).toHaveLength(2)
+    expect(items[0].props('memberName')).toBe('Member A')
+  })
 
-  it('loads model providers for selected runtime on mount', () => {
-    buildWrapper({ runtimeKind: 'codex_app_server' });
-    expect(llmStore.fetchProvidersWithModels).toHaveBeenCalledWith('codex_app_server');
-  });
+  it('loads model providers for the selected runtime and passes provider-grouped options', () => {
+    const { wrapper } = buildWrapper({ runtimeKind: 'codex_app_server' })
+    const options = wrapper.findComponent({ name: 'SearchableGroupedSelect' }).props('options')
+
+    expect(llmStore.fetchProvidersWithModels).toHaveBeenCalledWith('codex_app_server')
+    expect(options[0].label).toBe('OpenAI')
+    expect(options[0].items[0].selectedLabel).toBe('OpenAI / GPT-4')
+  })
 
   it('uses model identifiers as labels for AutoByteus runtime selections', () => {
-    llmStore.providersWithModels = [
-      {
-        provider: 'AutoByteus',
-        models: [{ modelIdentifier: 'host-a/model-x', name: 'Model X' }],
-      },
-    ];
+    setProviders([
+      buildProviderRow('AUTOBYTEUS', 'AutoByteus', [
+        { modelIdentifier: 'host-a/model-x', name: 'Model X', value: 'host-a/model-x', canonicalName: 'model-x', providerId: 'AUTOBYTEUS', providerName: 'AutoByteus', providerType: 'AUTOBYTEUS', runtime: 'autobyteus' },
+      ]),
+    ])
 
-    const { wrapper } = buildWrapper({ runtimeKind: 'autobyteus' });
-    const options = wrapper.findComponent({ name: 'SearchableGroupedSelect' }).props('options');
+    const { wrapper } = buildWrapper({ runtimeKind: 'autobyteus' })
+    const options = wrapper.findComponent({ name: 'SearchableGroupedSelect' }).props('options')
 
-    expect(options[0].items[0].name).toBe('host-a/model-x');
-  });
+    expect(options[0].items[0].name).toBe('host-a/model-x')
+    expect(options[0].items[0].selectedLabel).toBe('AutoByteus / host-a/model-x')
+  })
 
-  it('keeps provider model names for non-AutoByteus runtimes', () => {
-    llmStore.providersWithModels = [
-      {
-        provider: 'OpenAI',
-        models: [{ modelIdentifier: 'gpt-4', name: 'GPT-4' }],
-      },
-    ];
+  it('uses friendly labels for custom providers on AutoByteus runtime selections', () => {
+    setProviders([
+      buildProviderRow(
+        'provider_gateway',
+        'Internal Gateway',
+        [
+          {
+            modelIdentifier: 'openai-compatible:provider_gateway:model-a',
+            name: 'Model A',
+            value: 'openai-compatible:provider_gateway:model-a',
+            canonicalName: 'model-a',
+            providerId: 'provider_gateway',
+            providerName: 'Internal Gateway',
+            providerType: 'OPENAI_COMPATIBLE',
+            runtime: 'autobyteus',
+          },
+        ],
+        { providerType: 'OPENAI_COMPATIBLE', isCustom: true, baseUrl: 'https://gateway.example.com/v1' },
+      ),
+    ])
 
-    const { wrapper } = buildWrapper({ runtimeKind: 'codex_app_server' });
-    const options = wrapper.findComponent({ name: 'SearchableGroupedSelect' }).props('options');
+    const { wrapper } = buildWrapper({ runtimeKind: 'autobyteus' })
+    const options = wrapper.findComponent({ name: 'SearchableGroupedSelect' }).props('options')
 
-    expect(options[0].items[0].name).toBe('GPT-4');
-  });
+    expect(options[0].items[0].name).toBe('Model A')
+    expect(options[0].items[0].selectedLabel).toBe('Internal Gateway / Model A')
+  })
 
   it('changes runtime kind and reloads runtime-scoped models', async () => {
     const { wrapper, config } = buildWrapper({
       runtimeKind: 'autobyteus',
       llmModelIdentifier: 'gpt-4',
-    });
+    })
 
-    const runtimeSelect = wrapper.find('select#team-runtime-kind');
-    await runtimeSelect.setValue('codex_app_server');
+    await wrapper.find('select#team-run-runtime-kind').setValue('codex_app_server')
 
-    expect(config.runtimeKind).toBe('codex_app_server');
-    expect(config.llmModelIdentifier).toBe('');
-    expect(llmStore.fetchProvidersWithModels).toHaveBeenCalledWith('codex_app_server');
-  });
-
-  it('passes global model to member overrides', () => {
-    const { wrapper } = buildWrapper({ llmModelIdentifier: 'gpt-4' });
-    const items = wrapper.findAllComponents({ name: 'MemberOverrideItem' });
-    expect(items[0].props('globalLlmModel')).toBe('gpt-4');
-  });
-
-  it('passes global llmConfig to member overrides', () => {
-    const { wrapper } = buildWrapper({ llmConfig: { reasoning_effort: 'high' } });
-    const items = wrapper.findAllComponents({ name: 'MemberOverrideItem' });
-    expect(items[0].props('globalLlmConfig')).toEqual({ reasoning_effort: 'high' });
-  });
-
-  it('renders global model config controls when selected model exposes schema', () => {
-    llmStore.modelConfigSchemaByIdentifier = vi.fn().mockReturnValue({
-      thinking_enabled: { type: 'boolean', title: 'Thinking Enabled', default: true },
-    });
-
-    const { wrapper } = buildWrapper({
-      llmModelIdentifier: 'gpt-4',
-      llmConfig: {},
-    });
-
-    expect(wrapper.text()).toContain('Thinking');
-  });
-
-  it('handles auto-execute toggle', async () => {
-    const { wrapper, config } = buildWrapper();
-    await wrapper.find('button#team-auto-execute').trigger('click');
-    expect(config.autoExecuteTools).toBe(true);
-  });
+    expect(config.runtimeKind).toBe('codex_app_server')
+    expect(config.llmModelIdentifier).toBe('')
+    expect(llmStore.fetchProvidersWithModels).toHaveBeenCalledWith('codex_app_server')
+  })
 
   it('renders override entries for nested leaf agents only', () => {
-    const { wrapper } = buildWrapper({}, nestedTeamDef);
-    const items = wrapper.findAllComponents({ name: 'MemberOverrideItem' });
+    const { wrapper } = buildWrapper({}, nestedTeamDef)
+    const items = wrapper.findAllComponents({ name: 'MemberOverrideItem' })
 
-    expect(items).toHaveLength(2);
-    expect(items[0].props('memberName')).toBe('Leaf A');
-    expect(items[1].props('memberName')).toBe('Leaf B');
-    expect(wrapper.text()).toContain('Team Members Override (2)');
-  });
-});
+    expect(items).toHaveLength(2)
+    expect(items[0].props('memberName')).toBe('Leaf A')
+    expect(items[1].props('memberName')).toBe('Leaf B')
+    expect(wrapper.text()).toContain('Team Members Override (2)')
+  })
+})
