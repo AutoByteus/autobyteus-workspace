@@ -38,6 +38,50 @@ const openAiRow = {
   ],
 }
 
+const geminiRow = {
+  provider: {
+    id: 'GEMINI',
+    name: 'Gemini',
+    providerType: 'GEMINI',
+    isCustom: false,
+    baseUrl: null,
+    apiKeyConfigured: false,
+    status: 'NOT_APPLICABLE',
+    statusMessage: null,
+  },
+  models: [
+    {
+      modelIdentifier: 'gemini-2.5-flash',
+      name: 'Gemini 2.5 Flash',
+      value: 'gemini-2.5-flash',
+      canonicalName: 'gemini-2.5-flash',
+      providerId: 'GEMINI',
+      providerName: 'Gemini',
+      providerType: 'GEMINI',
+      runtime: 'api',
+      hostUrl: null,
+      configSchema: null,
+      maxContextTokens: 1048576,
+      activeContextTokens: 32768,
+      maxInputTokens: null,
+      maxOutputTokens: null,
+    },
+  ],
+}
+
+const deepFreeze = <T>(value: T): T => {
+  if (value && typeof value === 'object') {
+    Object.freeze(value)
+    for (const nested of Object.values(value as Record<string, unknown>)) {
+      if (nested && typeof nested === 'object' && !Object.isFrozen(nested)) {
+        deepFreeze(nested)
+      }
+    }
+  }
+
+  return value
+}
+
 describe('llmProviderConfig store', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
@@ -142,6 +186,33 @@ describe('llmProviderConfig store', () => {
     }))
     expect(store.providerConfigs.OPENAI?.apiKeyConfigured).toBe(true)
     expect(store.providersWithModels[0]?.provider.apiKeyConfigured).toBe(true)
+  })
+
+  it('setLLMProviderApiKey replaces immutable provider rows instead of mutating Apollo query results in place', async () => {
+    const mutateMock = vi.fn().mockResolvedValue({
+      data: {
+        setLlmProviderApiKey: 'API key for provider OpenAI has been set successfully.',
+      },
+      errors: undefined,
+    })
+    vi.mocked(getApolloClient).mockReturnValue({ mutate: mutateMock } as any)
+
+    const store = useLLMProviderConfigStore()
+    const frozenRow = deepFreeze({
+      ...openAiRow,
+      provider: {
+        ...openAiRow.provider,
+        apiKeyConfigured: false,
+      },
+    }) as any
+    store.providersWithModels = [frozenRow]
+
+    const success = await store.setLLMProviderApiKey('OPENAI', 'runtime-key')
+
+    expect(success).toBe(true)
+    expect(store.providersWithModels[0]?.provider.apiKeyConfigured).toBe(true)
+    expect(store.providersWithModels[0]).not.toBe(frozenRow)
+    expect(store.providersWithModels[0]?.provider).not.toBe(frozenRow.provider)
   })
 
   it('createCustomProvider saves then refreshes the provider list', async () => {
@@ -282,5 +353,48 @@ describe('llmProviderConfig store', () => {
     expect(queryMock).toHaveBeenCalledTimes(1)
     expect(store.geminiSetup.mode).toBe('AI_STUDIO')
     expect(store.geminiSetup.geminiApiKeyConfigured).toBe(true)
+  })
+
+  it('setGeminiSetupConfig replaces immutable Gemini provider rows instead of mutating hydrated query results in place', async () => {
+    const mutateMock = vi.fn().mockResolvedValue({
+      data: {
+        setGeminiSetupConfig: 'Gemini setup for mode AI_STUDIO has been saved successfully.',
+      },
+      errors: undefined,
+    })
+    const queryMock = vi.fn().mockResolvedValue({
+      data: {
+        getGeminiSetupConfig: {
+          mode: 'AI_STUDIO',
+          geminiApiKeyConfigured: true,
+          vertexApiKeyConfigured: false,
+          vertexProject: null,
+          vertexLocation: null,
+        },
+      },
+    })
+
+    vi.mocked(getApolloClient).mockReturnValue({
+      mutate: mutateMock,
+      query: queryMock,
+    } as any)
+
+    const store = useLLMProviderConfigStore()
+    const frozenRow = deepFreeze(geminiRow) as any
+    store.providersWithModels = [frozenRow]
+
+    const success = await store.setGeminiSetupConfig({
+      mode: 'AI_STUDIO',
+      geminiApiKey: 'gemini-key',
+    })
+
+    expect(success).toBe(true)
+    expect(store.providerConfigs.GEMINI?.apiKeyConfigured).toBe(true)
+    expect(store.providersWithModels[0]?.provider.apiKeyConfigured).toBe(true)
+    expect(store.providersWithModels[0]).not.toBe(frozenRow)
+    expect(store.providersWithModels[0]?.provider).not.toBe(frozenRow.provider)
+    expect(queryMock).toHaveBeenCalledWith(expect.objectContaining({
+      fetchPolicy: 'network-only',
+    }))
   })
 })

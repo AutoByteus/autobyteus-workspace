@@ -93,6 +93,33 @@ const customProviderRow = {
   models: [{ modelIdentifier: 'openai-compatible:provider_gateway:model-a', name: 'Model A', providerType: 'OPENAI_COMPATIBLE' }],
 }
 
+const geminiRow = {
+  provider: {
+    id: 'GEMINI',
+    name: 'Gemini',
+    providerType: 'GEMINI',
+    isCustom: false,
+    baseUrl: null,
+    apiKeyConfigured: false,
+    status: 'NOT_APPLICABLE',
+    statusMessage: null,
+  },
+  models: [{ modelIdentifier: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash', providerType: 'GEMINI' }],
+}
+
+const deepFreeze = <T>(value: T): T => {
+  if (value && typeof value === 'object') {
+    Object.freeze(value)
+    for (const nested of Object.values(value as Record<string, unknown>)) {
+      if (nested && typeof nested === 'object' && !Object.isFrozen(nested)) {
+        deepFreeze(nested)
+      }
+    }
+  }
+
+  return value
+}
+
 const mountRuntime = (storePatch: Record<string, any> = {}) => {
   const pinia = createTestingPinia({
     createSpy: vi.fn,
@@ -184,6 +211,50 @@ describe('useProviderApiKeySectionRuntime', () => {
 
     expect(store.setLLMProviderApiKey).toHaveBeenCalledWith('OPENAI', 'runtime-key')
     expect((wrapper.vm as any).notification.message).toBe('API key for OpenAI saved successfully')
+  })
+
+  it('saves Gemini setup without mutating immutable provider query results in place', async () => {
+    const { wrapper, store } = mountRuntime({
+      providersWithModels: [deepFreeze(geminiRow)],
+      geminiSetup: {
+        mode: 'AI_STUDIO',
+        geminiApiKeyConfigured: false,
+        vertexApiKeyConfigured: false,
+        vertexProject: null,
+        vertexLocation: null,
+      },
+    })
+    store.setGeminiSetupConfig = vi.fn().mockImplementation(async () => {
+      store.geminiSetup = {
+        mode: 'AI_STUDIO',
+        geminiApiKeyConfigured: true,
+        vertexApiKeyConfigured: false,
+        vertexProject: null,
+        vertexLocation: null,
+      }
+      return true
+    })
+
+    await (wrapper.vm as any).initialize()
+    await (wrapper.vm as any).selectProvider('GEMINI')
+    const saved = await (wrapper.vm as any).saveGeminiSetup({
+      mode: 'AI_STUDIO',
+      geminiApiKey: 'gemini-key',
+      vertexApiKey: null,
+      vertexProject: null,
+      vertexLocation: null,
+    })
+    await flushPromises()
+
+    expect(saved).toBe(true)
+    expect(store.setGeminiSetupConfig).toHaveBeenCalledWith({
+      mode: 'AI_STUDIO',
+      geminiApiKey: 'gemini-key',
+      vertexApiKey: null,
+      vertexProject: null,
+      vertexLocation: null,
+    })
+    expect((wrapper.vm as any).notification.message).toBe('Gemini setup saved successfully')
   })
 
   it('probes and saves custom providers through the provider-centered draft flow', async () => {
