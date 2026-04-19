@@ -3,14 +3,14 @@
 ## Release / Publication / Deployment Scope
 
 - Ticket: `api-key-save-false-failure`
-- Current delivery stage: `User verified; repository finalization and release in progress`
-- Scope completed in this report: latest-base integration refresh, post-integration executable rerun, docs-sync decision, ticket archival, repository finalization preparation, and release preparation.
+- Current delivery stage: `Repository finalization and release completed`
+- Scope completed in this report: latest-base integration refresh, post-integration executable rerun, docs-sync decision, ticket archival, repository finalization, release execution, release verification, and cleanup.
 
 ## Handoff Summary
 
 - Handoff summary artifact: `tickets/done/api-key-save-false-failure/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Notes: The handoff summary reflects the integrated branch head `0ce20dd5`, the merged base `origin/personal @ 45a48b20`, and the post-integration focused rerun.
+- Notes: The archived handoff summary now reflects the completed archival, merge, release, and cleanup results.
 
 ## Initial Delivery Integration Refresh
 
@@ -50,52 +50,60 @@
 
 ## Version / Tag / Release Commit
 
-- Release version selection and documented release workflow execution are queued after repository finalization.
+- Release commit: `c6d0a296` (`chore(release): bump workspace release version to 1.2.81`)
+- Release tag: `v1.2.81`
+- GitHub release URL: `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.2.81`
 
 ## Repository Finalization
 
 - Bootstrap context source: `tickets/done/api-key-save-false-failure/investigation-notes.md`
 - Ticket branch: `codex/api-key-save-false-failure`
-- Ticket branch commit result: `Pending` — archival/finalization commit is being prepared after explicit user verification
-- Ticket branch push result: `Pending` — push will occur after the archival/finalization commit
+- Ticket branch commit result: `Completed` — archival commit `156096e3` (`chore(ticket): archive api-key-save-false-failure`)
+- Ticket branch push result: `Completed` — pushed `codex/api-key-save-false-failure` to `origin/codex/api-key-save-false-failure` before merge
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: `No`
 - Delivery-owned edits protected before re-integration: `Not needed`
 - Re-integration before final merge result: `Not needed`
-- Target branch update result: `Pending` — finalization has not started yet
-- Merge into target result: `Pending` — finalization has not started yet
-- Push target branch result: `Pending` — finalization has not started yet
-- Repository finalization status: `Pending`
+- Target branch update result: `Completed` — local `personal` matched `origin/personal` at `45a48b20` before merge
+- Merge into target result: `Completed` — merge commit `fc0e05d9` (`Merge remote-tracking branch 'origin/codex/api-key-save-false-failure' into personal`)
+- Push target branch result: `Completed` — pushed `personal` to `origin/personal` after merge and again after the release commit
+- Repository finalization status: `Completed`
 - Blocker (if applicable): `None`
 
 ## Release / Publication / Deployment
 
 - Applicable: `Yes`
-- Method: `Other`
-- Method reference / command: `pnpm release 1.2.81 -- --release-notes tickets/done/api-key-save-false-failure/release-notes.md` (planned documented workflow command after repository finalization)`
-- Release/publication/deployment result: `Pending`
-- Release notes handoff result: `Pending`
+- Method: `Documented Command`
+- Method reference / command: `pnpm release 1.2.81 -- --release-notes tickets/done/api-key-save-false-failure/release-notes.md`
+- Release/publication/deployment result: `Completed`
+- Release notes handoff result: `Used`
 - Blocker (if applicable): `N/A`
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/api-key-save-false-failure`
-- Worktree cleanup result: `Not required`
-- Worktree prune result: `Not required`
-- Local ticket branch cleanup result: `Not required`
-- Remote branch cleanup result: `Not required`
-- Blocker (if applicable): `Cleanup is intentionally deferred until after repository finalization.`
+- Worktree cleanup result: `Completed`
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed`
+- Remote branch cleanup result: `Completed`
+- Blocker (if applicable): `None`
 
 ## Release Notes Summary
 
 - Release notes artifact created before verification: `Yes`
-- Archived release notes artifact used for release/publication: `N/A`
+- Archived release notes artifact used for release/publication: `tickets/done/api-key-save-false-failure/release-notes.md`
 - Release notes status: `Updated`
 
 ## Deployment Steps
 
-- Pending finalization. Exact release/tag/deployment steps will be recorded after the documented workflow runs.
+- Pushed merge commit `fc0e05d9` to `personal`.
+- Ran documented release command `pnpm release 1.2.81 -- --release-notes tickets/done/api-key-save-false-failure/release-notes.md`.
+- GitHub tag push created release `v1.2.81` and completed all three release workflows successfully:
+  - `Desktop Release` run `24613381844` (`success`)
+  - `Release Messaging Gateway` run `24613381845` (`success`)
+  - `Server Docker Release` run `24613381847` (`success`)
+- Published GitHub release: `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.2.81`
 
 ## Environment Or Migration Notes
 
@@ -114,4 +122,4 @@
 
 ## Final Status
 
-- `User verification received on integrated ticket branch head 0ce20dd5. Ticket archived; repository finalization and release are now in progress.`
+- `Repository finalization complete on personal and release v1.2.81 published successfully. Ticket archived and cleanup completed.`

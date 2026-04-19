@@ -4,7 +4,7 @@
 
 - Ticket: `api-key-save-false-failure`
 - Last Updated: `2026-04-18`
-- Current Status: `User verified; archived pending repository finalization and release`
+- Current Status: `Finalized and released on personal`
 
 ## Delivered
 
@@ -38,16 +38,28 @@
 
 - Release notes artifact: `tickets/done/api-key-save-false-failure/release-notes.md`
 - Release notes status: `Updated`
-- Notes: Prepared in case a later finalization step also requests release/publication work.
+- Notes: The archived release notes were used for the `v1.2.81` release workflow.
 
 ## User Verification Hold
 
 - Waiting for explicit user verification: `No`
 - User verification received: `Yes`
-- Notes: Explicit user verification was received on 2026-04-18. The ticket is archived under `tickets/done/api-key-save-false-failure/` while repository finalization and release proceed.
+- Notes: Explicit user verification was received on 2026-04-18. The ticket was archived under `tickets/done/api-key-save-false-failure/`, then repository finalization, release, and cleanup all completed successfully.
 
-## Ticket State
+## Finalization Record
 
-- Technical workflow status: `User verified; repository finalization and release in progress`
-- Ticket archive state: `Archived under tickets/done/api-key-save-false-failure/ before final ticket commit`
+- Technical workflow status: `Finalized and released`
+- Ticket archive state: `Archived under tickets/done/api-key-save-false-failure/ on personal`
 - Bootstrap/finalization target record: `Dedicated worktree /Users/normy/autobyteus_org/autobyteus-worktrees/api-key-save-false-failure on branch codex/api-key-save-false-failure. Recorded bootstrap base/finalization target is origin/personal -> personal.`
+
+- Repository finalization status: `Completed`
+- Release/publication/deployment status: `Completed`
+- Cleanup status: `Completed`
+- Finalization evidence:
+  - ticket archival commit: `156096e3` (`chore(ticket): archive api-key-save-false-failure`)
+  - merge into `personal`: `fc0e05d9` (`Merge remote-tracking branch 'origin/codex/api-key-save-false-failure' into personal`)
+  - release commit: `c6d0a296` (`chore(release): bump workspace release version to 1.2.81`)
+  - release tag: `v1.2.81`
+  - GitHub release: `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.2.81`
+  - GitHub Actions: `Desktop Release` run `24613381844` `success`, `Release Messaging Gateway` run `24613381845` `success`, `Server Docker Release` run `24613381847` `success`
+  - ticket branch/worktree cleanup: completed locally and on `origin`
