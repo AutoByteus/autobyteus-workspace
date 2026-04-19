@@ -4,257 +4,111 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Socratic Math Teacher</title>
-    <style>
-      :root {
-        color-scheme: light;
-        font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        background: #f8fafc;
-        color: #0f172a;
-      }
-      * { box-sizing: border-box; }
-      body {
-        margin: 0;
-        min-height: 100vh;
-        background: linear-gradient(180deg, #eff6ff 0%, #f8fafc 55%, #ffffff 100%);
-      }
-      .shell {
-        max-width: 1080px;
-        margin: 0 auto;
-        padding: 32px 24px 48px;
-      }
-      .hero {
-        background: rgba(255, 255, 255, 0.92);
-        border: 1px solid rgba(148, 163, 184, 0.25);
-        border-radius: 24px;
-        padding: 28px;
-        box-shadow: 0 24px 80px rgba(15, 23, 42, 0.08);
-      }
-      .eyebrow {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: #1d4ed8;
-        background: #dbeafe;
-        border-radius: 999px;
-        padding: 8px 12px;
-      }
-      h1 {
-        margin: 16px 0 8px;
-        font-size: clamp(2rem, 5vw, 3rem);
-        line-height: 1.05;
-      }
-      p {
-        margin: 0;
-        line-height: 1.6;
-      }
-      .subtle { color: #475569; }
-      .grid {
-        display: grid;
-        gap: 16px;
-        margin-top: 24px;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      }
-      .card {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 18px;
-        padding: 18px;
-      }
-      .label {
-        color: #64748b;
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-      }
-      .value {
-        margin-top: 8px;
-        font-size: 14px;
-        font-weight: 600;
-        word-break: break-word;
-      }
-      .stack {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-      }
-      .muted-box {
-        margin-top: 24px;
-        border: 1px dashed #93c5fd;
-        background: #eff6ff;
-        color: #1e3a8a;
-        border-radius: 18px;
-        padding: 18px;
-      }
-      .status {
-        margin-top: 20px;
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        border-radius: 999px;
-        padding: 10px 14px;
-        background: #e0f2fe;
-        color: #075985;
-        font-size: 13px;
-        font-weight: 600;
-      }
-      .status-dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 999px;
-        background: #0ea5e9;
-      }
-      .hidden { display: none; }
-      code {
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-        background: rgba(148, 163, 184, 0.14);
-        border-radius: 6px;
-        padding: 2px 6px;
-      }
-    </style>
+    <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
     <main class="shell">
-      <section class="hero">
-        <div class="eyebrow">Built-in application bundle</div>
+      <header class="hero card">
+        <div class="eyebrow">Built-in teaching sample</div>
         <h1>Socratic Math Teacher</h1>
-        <p class="subtle">
-          This placeholder bundle demonstrates the v2 application iframe contract. The host launches the app shell
-          and prepares the backend first; the app backend can later decide whether to start bundled runs.
+        <p class="lede">
+          This built-in application teaches the long-lived conversational-binding pattern: one lesson business record,
+          one bound team run, and repeated follow-up input posted through the same runtime binding.
         </p>
+      </header>
 
-        <div id="waiting-status" class="status">
-          <span class="status-dot"></span>
-          Waiting for host bootstrap payload…
-        </div>
+      <section id="status-banner" class="status-banner">
+        Waiting for the host bootstrap payload…
+      </section>
 
-        <div id="bootstrapped" class="hidden">
-          <div class="grid">
-            <article class="card stack">
-              <span class="label">Application</span>
-              <div class="value" id="application-name">—</div>
-              <div class="subtle" id="application-ids">—</div>
-            </article>
-            <article class="card stack">
-              <span class="label">Launch instance</span>
-              <div class="value" id="launch-instance-id">—</div>
-              <div class="subtle" id="request-context">—</div>
-            </article>
-            <article class="card stack">
-              <span class="label">Backend gateway</span>
-              <div class="value" id="ensure-ready-url">—</div>
-              <div class="subtle" id="backend-summary">—</div>
-            </article>
+      <details class="card details-panel">
+        <summary class="details-summary">Teaching details</summary>
+        <p class="details-copy muted">
+          The platform hosts the backend mount and launch lifecycle, but the app owns the lesson GraphQL schema,
+          generated frontend client, tutor transcript projection, and repeated follow-up semantics.
+        </p>
+        <div class="meta-grid">
+          <div>
+            <span class="label">Application</span>
+            <div id="application-name" class="value">Waiting for bootstrap…</div>
+            <div id="application-ids" class="muted">—</div>
           </div>
-
-          <div class="muted-box">
-            <strong>Bootstrap complete.</strong>
-            <p style="margin-top: 8px;">
-              This minimal UI proves that built-in applications no longer require a platform-owned runtime target or
-              application session before the iframe becomes useful.
-            </p>
-            <p style="margin-top: 8px;">
-              Bundled runtime resource available to the backend later: <code>socratic-math-team</code>
-            </p>
+          <div>
+            <span class="label">Launch</span>
+            <div id="launch-instance-id" class="value">—</div>
+            <div id="request-context" class="muted">—</div>
+          </div>
+          <div>
+            <span class="label">Backend mount</span>
+            <div id="backend-base-url" class="value small">—</div>
+            <div id="backend-notifications-url" class="muted small">—</div>
           </div>
         </div>
+      </details>
+
+      <section class="card composer-panel">
+        <div class="panel-header">
+          <div>
+            <h2>Start lesson</h2>
+            <p class="muted">Create one lesson record and bind one tutor run to it. Later follow-ups reuse that same binding.</p>
+          </div>
+        </div>
+        <form id="start-lesson-form" class="brief-composer">
+          <div class="composer-grid">
+            <label class="field">
+              <span class="label">Math problem</span>
+              <input id="lesson-prompt-input" type="text" placeholder="Solve 3x + 5 = 20" />
+            </label>
+            <label class="field">
+              <span class="label">LLM model identifier</span>
+              <input id="model-identifier-input" type="text" value="gpt-5.4-mini" />
+            </label>
+          </div>
+          <div class="action-row">
+            <button class="primary-button" type="submit">Start lesson</button>
+            <span class="muted small">The tutor run is app-owned and receives later student messages through GraphQL mutations.</span>
+          </div>
+        </form>
+      </section>
+
+      <section class="content-grid">
+        <aside class="card list-panel">
+          <div class="panel-header">
+            <div>
+              <h2>Lessons</h2>
+              <p class="muted">Each lesson owns one long-lived conversational binding.</p>
+            </div>
+            <button id="refresh-button" class="ghost-button" type="button">Refresh</button>
+          </div>
+          <div id="lesson-list" class="brief-list empty-state">
+            No lessons yet. Start one lesson to create a long-lived conversational binding.
+          </div>
+        </aside>
+
+        <section class="card detail-panel">
+          <div class="panel-header">
+            <div>
+              <h2>Lesson detail</h2>
+              <p class="muted">Tutor transcript and lesson state are projected by the app from runtime events and artifacts.</p>
+            </div>
+          </div>
+          <div id="lesson-detail" class="empty-state">
+            Select a lesson to inspect its projected tutor transcript and binding state.
+          </div>
+        </section>
+      </section>
+
+      <section class="card notification-panel">
+        <div class="panel-header">
+          <div>
+            <h2>Backend notifications</h2>
+            <p class="muted">Optional app notifications fan out through the platform-owned application backend stream.</p>
+          </div>
+        </div>
+        <div id="notification-list" class="notification-list empty-state">No notifications yet.</div>
       </section>
     </main>
 
-    <script>
-      (function () {
-        const CHANNEL = 'autobyteus.application.host';
-        const CONTRACT_VERSION = '2';
-        const READY_EVENT = 'autobyteus.application.ui.ready';
-        const BOOTSTRAP_EVENT = 'autobyteus.application.host.bootstrap';
-        const QUERY_CONTRACT_VERSION = 'autobyteusContractVersion';
-        const QUERY_APPLICATION_ID = 'autobyteusApplicationId';
-        const QUERY_HOST_ORIGIN = 'autobyteusHostOrigin';
-        const QUERY_LAUNCH_INSTANCE_ID = 'autobyteusLaunchInstanceId';
-
-        const searchParams = new URLSearchParams(window.location.search);
-        const hintedContractVersion = searchParams.get(QUERY_CONTRACT_VERSION) || '';
-        const applicationId = searchParams.get(QUERY_APPLICATION_ID) || '';
-        const launchInstanceId = searchParams.get(QUERY_LAUNCH_INSTANCE_ID) || '';
-        const hostOrigin = searchParams.get(QUERY_HOST_ORIGIN) || '';
-
-        const waitingStatus = document.getElementById('waiting-status');
-        const bootstrapped = document.getElementById('bootstrapped');
-
-        const matchesHostOrigin = function (expectedOrigin, actualOrigin) {
-          if (expectedOrigin === 'file://') {
-            return actualOrigin === 'file://' || actualOrigin === 'null';
-          }
-          return actualOrigin === expectedOrigin;
-        };
-
-        const setText = function (id, value) {
-          const node = document.getElementById(id);
-          if (node) {
-            node.textContent = value;
-          }
-        };
-
-        const sendReady = function () {
-          if (hintedContractVersion !== CONTRACT_VERSION || !applicationId || !launchInstanceId) {
-            return;
-          }
-
-          window.parent.postMessage({
-            channel: CHANNEL,
-            contractVersion: CONTRACT_VERSION,
-            eventName: READY_EVENT,
-            payload: {
-              applicationId: applicationId,
-              launchInstanceId: launchInstanceId,
-            },
-          }, '*');
-        };
-
-        const handleBootstrap = function (event) {
-          if (event.source !== window.parent) return;
-          if (!matchesHostOrigin(hostOrigin, event.origin)) return;
-          const message = event.data;
-          if (!message || typeof message !== 'object') return;
-          if (message.channel !== CHANNEL) return;
-          if (message.contractVersion !== CONTRACT_VERSION) return;
-          if (message.eventName !== BOOTSTRAP_EVENT) return;
-          if (!message.payload || typeof message.payload !== 'object') return;
-
-          const bootstrap = message.payload;
-          const host = bootstrap.host || {};
-          const application = bootstrap.application || {};
-          const launch = bootstrap.launch || {};
-          const requestContext = bootstrap.requestContext || {};
-          const transport = bootstrap.transport || {};
-
-          if (application.applicationId !== applicationId) return;
-          if (launch.launchInstanceId !== launchInstanceId) return;
-          if (host.origin !== hostOrigin) return;
-
-          setText('application-name', application.name || 'Unknown application');
-          setText('application-ids', 'App ' + (application.applicationId || '—') + ' · local ' + (application.localApplicationId || '—') + ' · package ' + (application.packageId || '—'));
-          setText('launch-instance-id', launch.launchInstanceId || '—');
-          setText('request-context', 'applicationId ' + (requestContext.applicationId || '—') + ' · launchInstanceId ' + (requestContext.launchInstanceId || '—'));
-          setText('ensure-ready-url', transport.backendEnsureReadyUrl || '—');
-          setText('backend-summary', 'Queries ' + (transport.backendQueriesBaseUrl || '—') + ' · Commands ' + (transport.backendCommandsBaseUrl || '—'));
-
-          if (waitingStatus) waitingStatus.classList.add('hidden');
-          if (bootstrapped) bootstrapped.classList.remove('hidden');
-        };
-
-        window.addEventListener('message', handleBootstrap);
-
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', sendReady, { once: true });
-        } else {
-          sendReady();
-        }
-      })();
-    </script>
+    <script type="module" src="./app.js"></script>
   </body>
 </html>

@@ -174,6 +174,50 @@ const expectOkJson = async <T>(response: Response, label: string): Promise<T> =>
   return readJson<T>(response);
 };
 
+const postGraphql = async (
+  applicationId: string,
+  baseUrl: string,
+  requestContext: { applicationId: string; launchInstanceId: string },
+  request: {
+    query: string;
+    operationName?: string | null;
+    variables?: Record<string, unknown> | null;
+  },
+): Promise<Response> =>
+  fetch(`${baseUrl}/rest/applications/${encodeURIComponent(applicationId)}/backend/graphql`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      requestContext,
+      request,
+    }),
+  });
+
+const expectGraphqlField = async <T>(
+  response: Response,
+  label: string,
+  fieldName: string,
+): Promise<T> => {
+  const payload = await expectOkJson<{
+    result: {
+      data: Record<string, unknown> | null;
+      errors?: Array<{ message?: string }>;
+    };
+  }>(response, label);
+
+  if (Array.isArray(payload.result.errors) && payload.result.errors.length > 0) {
+    throw new Error(
+      `${label} returned GraphQL errors: ${payload.result.errors.map((error) => error.message || "unknown").join("; ")}`,
+    );
+  }
+
+  if (!payload.result.data || !(fieldName in payload.result.data)) {
+    throw new Error(`${label} did not return field '${fieldName}'.`);
+  }
+
+  return payload.result.data[fieldName] as T;
+};
+
 const buildArtifactPublication = (input: {
   artifactKey: string;
   artifactType: string;
@@ -264,6 +308,7 @@ describe("Brief Studio imported package integration", () => {
   let latestTeamRunId: string | null;
   let executionContextByRouteKey: Map<string, ApplicationExecutionContext>;
   let memberRunIdByRouteKey: Map<string, string>;
+  let teamRunById: Map<string, { postMessage: (message: unknown, targetMemberName: string | null) => Promise<{ accepted: boolean; message?: string | null }> }>;
   let lifecycleListenersByRunId: Map<string, (event: {
     runtimeSubject: "TEAM_RUN";
     runId: string;
@@ -328,6 +373,7 @@ describe("Brief Studio imported package integration", () => {
     latestTeamRunId = null;
     executionContextByRouteKey = new Map();
     memberRunIdByRouteKey = new Map();
+    teamRunById = new Map();
     lifecycleListenersByRunId = new Map();
 
     const fakeTeamDefinitionService = {
@@ -428,6 +474,9 @@ describe("Brief Studio imported package integration", () => {
             memberRunId,
           };
         });
+        teamRunById.set(latestTeamRunId, {
+          postMessage: async () => ({ accepted: true }),
+        });
         return {
           runId: latestTeamRunId,
           config: {
@@ -436,7 +485,10 @@ describe("Brief Studio imported package integration", () => {
         };
       }),
       terminateTeamRun: vi.fn(async () => undefined),
-      resolveTeamRun: vi.fn(async () => null),
+      resolveTeamRun: vi.fn(async (runId: string) => (
+        teamRunById.get(runId)
+        ?? null
+      )),
     };
 
     const resourceResolver = new ApplicationRuntimeResourceResolver({
@@ -539,7 +591,7 @@ describe("Brief Studio imported package integration", () => {
     appConfigProvider.resetForTests();
   });
 
-  it("discovers Brief Studio as an imported package, starts an app-owned run, and projects live execution events through REST/WS", async () => {
+  it("discovers Brief Studio as an imported package, drives the app-owned GraphQL API, and projects live execution events through REST/WS", async () => {
     const applications = await bundleService.listApplications();
     expect(applications).toHaveLength(1);
     expect(applications[0]).toMatchObject({
@@ -576,15 +628,14 @@ describe("Brief Studio imported package integration", () => {
       exposures: null,
     });
 
-    const emptyList = await expectOkJson<{ result: { briefs: unknown[] } }>(
-      await fetch(`${baseUrl}/rest/applications/${encodeURIComponent(applicationId)}/backend/queries/briefs.list`, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ requestContext, input: null }),
+    const emptyList = await expectGraphqlField<unknown[]>(
+      await postGraphql(applicationId, baseUrl, requestContext, {
+        query: "query BriefsQuery { briefs { briefId } }",
       }),
       "Brief Studio empty list query",
+      "briefs",
     );
-    expect(emptyList).toEqual({ result: { briefs: [] } });
+    expect(emptyList).toEqual([]);
 
     notificationSocket = new WebSocket(
       `${baseUrl.replace("http://", "ws://")}/ws/applications/${encodeURIComponent(applicationId)}/backend/notifications`,
@@ -600,30 +651,39 @@ describe("Brief Studio imported package integration", () => {
       "connected",
     );
 
-    const createBriefJson = await expectOkJson<{
-      result: {
-        briefId: string;
-        bindingId: string;
-        runId: string;
-      };
+    const createdBrief = await expectGraphqlField<{
+      briefId: string;
+      title: string;
+      status: string;
+      latestBindingId: string | null;
+      latestRunId: string | null;
+      latestBindingStatus: string | null;
     }>(
-      await fetch(`${baseUrl}/rest/applications/${encodeURIComponent(applicationId)}/backend/commands/createBrief`, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          requestContext,
+      await postGraphql(applicationId, baseUrl, requestContext, {
+        query: `mutation CreateBriefMutation($input: CreateBriefInput!) {
+          createBrief(input: $input) {
+            briefId
+            title
+            status
+            latestBindingId
+            latestRunId
+            latestBindingStatus
+          }
+        }`,
+        operationName: "CreateBriefMutation",
+        variables: {
           input: {
             title: "Market Entry Brief",
-            llmModelIdentifier: "gpt-test",
           },
-        }),
+        },
       }),
-      "Brief Studio createBrief command",
+      "Brief Studio createBrief mutation",
+      "createBrief",
     );
 
-    expect(createBriefJson.result.briefId).toMatch(/^brief-/);
-    expect(createBriefJson.result.bindingId).toEqual(expect.any(String));
-    expect(createBriefJson.result.runId).toBe(latestTeamRunId);
+    expect(createdBrief.briefId).toMatch(/^brief-/);
+    expect(createdBrief.latestBindingId).toBeNull();
+    expect(createdBrief.latestRunId).toBeNull();
 
     const createdNotification = await waitForMessage(
       notificationMessages,
@@ -631,7 +691,7 @@ describe("Brief Studio imported package integration", () => {
       (message) =>
         message.type === "notification"
         && message.notification.topic === "brief.created"
-        && (message.notification.payload as { briefId?: string }).briefId === createBriefJson.result.briefId,
+        && (message.notification.payload as { briefId?: string }).briefId === createdBrief.briefId,
       "brief.created",
     );
     expect(createdNotification).toMatchObject({
@@ -640,45 +700,123 @@ describe("Brief Studio imported package integration", () => {
         applicationId,
         topic: "brief.created",
         payload: {
-          briefId: createBriefJson.result.briefId,
-          bindingId: createBriefJson.result.bindingId,
-          runId: createBriefJson.result.runId,
+          briefId: createdBrief.briefId,
         },
       } as { applicationId: string; topic: string; payload: ApplicationNotificationMessage["payload"] },
     });
 
     await vi.waitFor(async () => {
-      const detailJson = await expectOkJson<{
-        result: {
-          brief: {
-            briefId: string;
-            status: string;
-            latestBindingId: string | null;
-            latestRunId: string | null;
-            latestBindingStatus: string | null;
-            artifacts: unknown[];
-          } | null;
-        };
-      }>(
-        await fetch(`${baseUrl}/rest/applications/${encodeURIComponent(applicationId)}/backend/queries/briefs.getDetail`, {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({
-            requestContext,
-            input: {
-              briefId: createBriefJson.result.briefId,
-            },
-          }),
+      const detail = await expectGraphqlField<{
+        briefId: string;
+        status: string;
+        latestBindingId: string | null;
+        latestRunId: string | null;
+        latestBindingStatus: string | null;
+        artifacts: unknown[];
+      } | null>(
+        await postGraphql(applicationId, baseUrl, requestContext, {
+          query: `query BriefQuery($briefId: ID!) {
+            brief(briefId: $briefId) {
+              briefId
+              status
+              latestBindingId
+              latestRunId
+              latestBindingStatus
+              artifacts { artifactKey }
+            }
+          }`,
+          operationName: "BriefQuery",
+          variables: {
+            briefId: createdBrief.briefId,
+          },
         }),
         "Brief Studio detail after createBrief",
+        "brief",
       );
-      expect(detailJson.result.brief).toMatchObject({
-        briefId: createBriefJson.result.briefId,
-        status: "researching",
-        latestBindingId: createBriefJson.result.bindingId,
-        latestRunId: createBriefJson.result.runId,
-        latestBindingStatus: "ATTACHED",
+      expect(detail).toMatchObject({
+        briefId: createdBrief.briefId,
+        status: "not_started",
+        latestBindingId: null,
+        latestRunId: null,
+        latestBindingStatus: null,
         artifacts: [],
+      });
+    });
+
+    const launchedRun = await expectGraphqlField<{
+      briefId: string;
+      bindingId: string;
+      runId: string;
+      status: string;
+    }>(
+      await postGraphql(applicationId, baseUrl, requestContext, {
+        query: `mutation LaunchDraftRunMutation($input: LaunchDraftRunInput!) {
+          launchDraftRun(input: $input) {
+            briefId
+            bindingId
+            runId
+            status
+          }
+        }`,
+        operationName: "LaunchDraftRunMutation",
+        variables: {
+          input: {
+            briefId: createdBrief.briefId,
+            llmModelIdentifier: "gpt-test",
+          },
+        },
+      }),
+      "Brief Studio launchDraftRun mutation",
+      "launchDraftRun",
+    );
+
+    expect(launchedRun.briefId).toBe(createdBrief.briefId);
+    expect(launchedRun.bindingId).toEqual(expect.any(String));
+    expect(launchedRun.runId).toBe(latestTeamRunId);
+
+    await waitForMessage(
+      notificationMessages,
+      notificationSocket,
+      (message) =>
+        message.type === "notification"
+        && message.notification.topic === "brief.draft_run_launched"
+        && (message.notification.payload as { bindingId?: string }).bindingId === launchedRun.bindingId,
+      "brief.draft_run_launched",
+    );
+
+    await vi.waitFor(async () => {
+      const detail = await expectGraphqlField<{
+        briefId: string;
+        status: string;
+        latestBindingId: string | null;
+        latestRunId: string | null;
+        latestBindingStatus: string | null;
+      } | null>(
+        await postGraphql(applicationId, baseUrl, requestContext, {
+          query: `query BriefQuery($briefId: ID!) {
+            brief(briefId: $briefId) {
+              briefId
+              status
+              latestBindingId
+              latestRunId
+              latestBindingStatus
+            }
+          }`,
+          operationName: "BriefQuery",
+          variables: {
+            briefId: createdBrief.briefId,
+          },
+        }),
+        "Brief Studio detail after launchDraftRun",
+        "brief",
+      );
+
+      expect(detail).toMatchObject({
+        briefId: createdBrief.briefId,
+        status: "researching",
+        latestBindingId: launchedRun.bindingId,
+        latestRunId: launchedRun.runId,
+        latestBindingStatus: "ATTACHED",
       });
     });
 
@@ -716,7 +854,7 @@ describe("Brief Studio imported package integration", () => {
       (message) =>
         message.type === "notification"
         && message.notification.topic === "brief.ready_for_review"
-        && (message.notification.payload as { bindingId?: string }).bindingId === createBriefJson.result.bindingId,
+        && (message.notification.payload as { bindingId?: string }).bindingId === launchedRun.bindingId,
       "brief.ready_for_review",
     );
     expect(readyForReviewNotification).toMatchObject({
@@ -727,52 +865,16 @@ describe("Brief Studio imported package integration", () => {
       },
     });
 
-    lifecycleListenersByRunId.get(createBriefJson.result.runId)?.({
+    lifecycleListenersByRunId.get(launchedRun.runId)?.({
       runtimeSubject: "TEAM_RUN",
-      runId: createBriefJson.result.runId,
+      runId: launchedRun.runId,
       phase: "TERMINATED",
       occurredAt: "2026-04-19T10:45:00.000Z",
     });
 
     await vi.waitFor(async () => {
-      const listJson = await expectOkJson<{
-        result: {
-          briefs: Array<{
-            briefId: string;
-            title: string;
-            status: string;
-            latestBindingId: string | null;
-            latestRunId: string | null;
-            latestBindingStatus: string | null;
-            lastErrorMessage: string | null;
-            updatedAt: string;
-          }>;
-        };
-      }>(
-        await fetch(`${baseUrl}/rest/applications/${encodeURIComponent(applicationId)}/backend/queries/briefs.list`, {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({ requestContext, input: null }),
-        }),
-        "Brief Studio list after artifact ingress",
-      );
-
-      expect(listJson.result.briefs).toEqual([
-        expect.objectContaining({
-          briefId: createBriefJson.result.briefId,
-          title: "Market Entry Brief",
-          status: "in_review",
-          latestBindingId: createBriefJson.result.bindingId,
-          latestRunId: createBriefJson.result.runId,
-          latestBindingStatus: "TERMINATED",
-          lastErrorMessage: null,
-        }),
-      ]);
-    });
-
-    const detailJson = await expectOkJson<{
-      result: {
-        brief: {
+      const briefs = await expectGraphqlField<
+        Array<{
           briefId: string;
           title: string;
           status: string;
@@ -780,38 +882,97 @@ describe("Brief Studio imported package integration", () => {
           latestRunId: string | null;
           latestBindingStatus: string | null;
           lastErrorMessage: string | null;
-          artifacts: Array<{
-            artifactKind: string;
-            artifactKey: string;
-            artifactType: string;
-            title: string;
-            summary: string | null;
-            producerMemberRouteKey: string;
-            isFinal: boolean;
-          }>;
-          reviewNotes: unknown[];
-        } | null;
-      };
-    }>(
-      await fetch(`${baseUrl}/rest/applications/${encodeURIComponent(applicationId)}/backend/queries/briefs.getDetail`, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          requestContext,
-          input: {
-            briefId: createBriefJson.result.briefId,
-          },
+          updatedAt: string;
+        }>
+      >(
+        await postGraphql(applicationId, baseUrl, requestContext, {
+          query: `query BriefsQuery {
+            briefs {
+              briefId
+              title
+              status
+              latestBindingId
+              latestRunId
+              latestBindingStatus
+              lastErrorMessage
+              updatedAt
+            }
+          }`,
+          operationName: "BriefsQuery",
         }),
+        "Brief Studio list after artifact ingress",
+        "briefs",
+      );
+
+      expect(briefs).toEqual([
+        expect.objectContaining({
+          briefId: createdBrief.briefId,
+          title: "Market Entry Brief",
+          status: "in_review",
+          latestBindingId: launchedRun.bindingId,
+          latestRunId: launchedRun.runId,
+          latestBindingStatus: "TERMINATED",
+          lastErrorMessage: null,
+        }),
+      ]);
+    });
+
+    const detail = await expectGraphqlField<{
+      briefId: string;
+      title: string;
+      status: string;
+      latestBindingId: string | null;
+      latestRunId: string | null;
+      latestBindingStatus: string | null;
+      lastErrorMessage: string | null;
+      artifacts: Array<{
+        artifactKind: string;
+        artifactKey: string;
+        artifactType: string;
+        title: string;
+        summary: string | null;
+        producerMemberRouteKey: string;
+        isFinal: boolean;
+      }>;
+      reviewNotes: unknown[];
+    } | null>(
+      await postGraphql(applicationId, baseUrl, requestContext, {
+        query: `query BriefQuery($briefId: ID!) {
+          brief(briefId: $briefId) {
+            briefId
+            title
+            status
+            latestBindingId
+            latestRunId
+            latestBindingStatus
+            lastErrorMessage
+            artifacts {
+              artifactKind
+              artifactKey
+              artifactType
+              title
+              summary
+              producerMemberRouteKey
+              isFinal
+            }
+            reviewNotes { noteId }
+          }
+        }`,
+        operationName: "BriefQuery",
+        variables: {
+          briefId: createdBrief.briefId,
+        },
       }),
       "Brief Studio detail after artifact ingress",
+      "brief",
     );
 
-    expect(detailJson.result.brief).toMatchObject({
-      briefId: createBriefJson.result.briefId,
+    expect(detail).toMatchObject({
+      briefId: createdBrief.briefId,
       title: "Market Entry Brief",
       status: "in_review",
-      latestBindingId: createBriefJson.result.bindingId,
-      latestRunId: createBriefJson.result.runId,
+      latestBindingId: launchedRun.bindingId,
+      latestRunId: launchedRun.runId,
       latestBindingStatus: "TERMINATED",
       lastErrorMessage: null,
       reviewNotes: [],
@@ -837,27 +998,61 @@ describe("Brief Studio imported package integration", () => {
       ],
     });
 
-    const addNoteJson = await expectOkJson<{
-      result: {
-        briefId: string;
-        noteId: string;
-      };
+    const executions = await expectGraphqlField<
+      Array<{
+        bindingId: string;
+        status: string;
+        runId: string;
+      }>
+    >(
+      await postGraphql(applicationId, baseUrl, requestContext, {
+        query: `query BriefExecutionsQuery($briefId: ID!) {
+          briefExecutions(briefId: $briefId) {
+            bindingId
+            status
+            runId
+          }
+        }`,
+        operationName: "BriefExecutionsQuery",
+        variables: {
+          briefId: createdBrief.briefId,
+        },
+      }),
+      "Brief Studio briefExecutions query",
+      "briefExecutions",
+    );
+    expect(executions).toEqual([
+      expect.objectContaining({
+        bindingId: launchedRun.bindingId,
+        status: "TERMINATED",
+        runId: launchedRun.runId,
+      }),
+    ]);
+
+    const addReviewNote = await expectGraphqlField<{
+      briefId: string;
+      noteId: string;
     }>(
-      await fetch(`${baseUrl}/rest/applications/${encodeURIComponent(applicationId)}/backend/commands/addReviewNote`, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          requestContext,
+      await postGraphql(applicationId, baseUrl, requestContext, {
+        query: `mutation AddReviewNoteMutation($input: AddReviewNoteInput!) {
+          addReviewNote(input: $input) {
+            briefId
+            noteId
+          }
+        }`,
+        operationName: "AddReviewNoteMutation",
+        variables: {
           input: {
-            briefId: createBriefJson.result.briefId,
+            briefId: createdBrief.briefId,
             body: "Please tighten the recommendation section.",
           },
-        }),
+        },
       }),
-      "Brief Studio addReviewNote command",
+      "Brief Studio addReviewNote mutation",
+      "addReviewNote",
     );
-    expect(addNoteJson.result.briefId).toBe(createBriefJson.result.briefId);
-    expect(addNoteJson.result.noteId).toEqual(expect.any(String));
+    expect(addReviewNote.briefId).toBe(createdBrief.briefId);
+    expect(addReviewNote.noteId).toEqual(expect.any(String));
 
     await waitForMessage(
       notificationMessages,
@@ -865,33 +1060,34 @@ describe("Brief Studio imported package integration", () => {
       (message) =>
         message.type === "notification"
         && message.notification.topic === "brief.note_added"
-        && (message.notification.payload as { noteId?: string }).noteId === addNoteJson.result.noteId,
+        && (message.notification.payload as { noteId?: string }).noteId === addReviewNote.noteId,
       "brief.note_added",
     );
 
-    const approveJson = await expectOkJson<{
-      result: {
-        briefId: string;
-        status: string;
-      };
+    const approveBrief = await expectGraphqlField<{
+      briefId: string;
+      status: string;
     }>(
-      await fetch(`${baseUrl}/rest/applications/${encodeURIComponent(applicationId)}/backend/commands/approveBrief`, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          requestContext,
+      await postGraphql(applicationId, baseUrl, requestContext, {
+        query: `mutation ApproveBriefMutation($input: ApproveBriefInput!) {
+          approveBrief(input: $input) {
+            briefId
+            status
+          }
+        }`,
+        operationName: "ApproveBriefMutation",
+        variables: {
           input: {
-            briefId: createBriefJson.result.briefId,
+            briefId: createdBrief.briefId,
           },
-        }),
+        },
       }),
-      "Brief Studio approveBrief command",
+      "Brief Studio approveBrief mutation",
+      "approveBrief",
     );
-    expect(approveJson).toEqual({
-      result: {
-        briefId: createBriefJson.result.briefId,
-        status: "approved",
-      },
+    expect(approveBrief).toEqual({
+      briefId: createdBrief.briefId,
+      status: "approved",
     });
 
     await waitForMessage(
@@ -904,38 +1100,42 @@ describe("Brief Studio imported package integration", () => {
       "brief.review_updated",
     );
 
-    const approvedDetailJson = await expectOkJson<{
-      result: {
-        brief: {
-          status: string;
-          approvedAt: string | null;
-          reviewNotes: Array<{
-            noteId: string;
-            briefId: string;
-            body: string;
-          }>;
-        } | null;
-      };
-    }>(
-      await fetch(`${baseUrl}/rest/applications/${encodeURIComponent(applicationId)}/backend/queries/briefs.getDetail`, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          requestContext,
-          input: {
-            briefId: createBriefJson.result.briefId,
-          },
-        }),
+    const approvedDetail = await expectGraphqlField<{
+      status: string;
+      approvedAt: string | null;
+      reviewNotes: Array<{
+        noteId: string;
+        briefId: string;
+        body: string;
+      }>;
+    } | null>(
+      await postGraphql(applicationId, baseUrl, requestContext, {
+        query: `query BriefQuery($briefId: ID!) {
+          brief(briefId: $briefId) {
+            status
+            approvedAt
+            reviewNotes {
+              noteId
+              briefId
+              body
+            }
+          }
+        }`,
+        operationName: "BriefQuery",
+        variables: {
+          briefId: createdBrief.briefId,
+        },
       }),
       "Brief Studio detail after approval",
+      "brief",
     );
-    expect(approvedDetailJson.result.brief).toMatchObject({
+    expect(approvedDetail).toMatchObject({
       status: "approved",
       approvedAt: expect.any(String),
       reviewNotes: [
         expect.objectContaining({
-          noteId: addNoteJson.result.noteId,
-          briefId: createBriefJson.result.briefId,
+          noteId: addReviewNote.noteId,
+          briefId: createdBrief.briefId,
           body: "Please tighten the recommendation section.",
         }),
       ],

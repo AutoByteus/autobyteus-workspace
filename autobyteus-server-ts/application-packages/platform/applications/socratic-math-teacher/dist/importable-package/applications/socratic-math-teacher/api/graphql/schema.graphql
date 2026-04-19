@@ -1,0 +1,66 @@
+scalar JSON
+
+type Query {
+  lessons: [LessonSummary!]!
+  lesson(lessonId: ID!): LessonDetail
+}
+
+type Mutation {
+  startLesson(input: StartLessonInput!): LessonDetail!
+  askFollowUp(input: AskFollowUpInput!): LessonDetail!
+  requestHint(input: RequestHintInput!): LessonDetail!
+  closeLesson(input: CloseLessonInput!): LessonDetail!
+}
+
+type LessonSummary {
+  lessonId: ID!
+  prompt: String!
+  status: String!
+  latestBindingId: String
+  latestRunId: String
+  latestBindingStatus: String
+  lastErrorMessage: String
+  updatedAt: String!
+}
+
+type LessonDetail {
+  lessonId: ID!
+  prompt: String!
+  status: String!
+  latestBindingId: String
+  latestRunId: String
+  latestBindingStatus: String
+  lastErrorMessage: String
+  updatedAt: String!
+  createdAt: String!
+  closedAt: String
+  messages: [LessonMessage!]!
+}
+
+type LessonMessage {
+  messageId: ID!
+  lessonId: ID!
+  role: String!
+  kind: String!
+  body: String!
+  createdAt: String!
+}
+
+input StartLessonInput {
+  prompt: String!
+  llmModelIdentifier: String!
+}
+
+input AskFollowUpInput {
+  lessonId: ID!
+  text: String!
+}
+
+input RequestHintInput {
+  lessonId: ID!
+  text: String
+}
+
+input CloseLessonInput {
+  lessonId: ID!
+}

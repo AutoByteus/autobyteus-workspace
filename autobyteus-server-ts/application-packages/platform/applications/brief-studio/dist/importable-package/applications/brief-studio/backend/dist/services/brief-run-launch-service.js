@@ -1,6 +1,8 @@
 import { randomUUID } from "node:crypto";
 import { withAppDatabase, withTransaction } from "../repositories/app-database.js";
+import { createArtifactRepository } from "../repositories/artifact-repository.js";
 import { createBriefRepository } from "../repositories/brief-repository.js";
+import { createReviewNoteRepository } from "../repositories/review-note-repository.js";
 const BRIEF_STUDIO_TEAM_RESOURCE = {
     owner: "bundle",
     kind: "AGENT_TEAM",
@@ -13,18 +15,49 @@ const requireNonEmptyString = (value, fieldName) => {
     }
     return normalized;
 };
+const buildInitialInputText = (input) => {
+    const sections = [
+        `Create or revise a reviewable brief titled "${input.title}".`,
+        "Use the bundled researcher and writer flow, and publish artifacts as you progress.",
+    ];
+    if (input.latestWriterSummary) {
+        sections.push(`Current projected writer summary: ${input.latestWriterSummary}`);
+    }
+    if (input.latestWriterBody) {
+        sections.push(`Current projected writer body: ${input.latestWriterBody}`);
+    }
+    if (input.reviewNotes.length > 0) {
+        sections.push(`Review notes to address:\n- ${input.reviewNotes.join("\n- ")}`);
+    }
+    return sections.join("\n\n");
+};
+const readLatestWriterBody = (artifactRef) => {
+    if (!artifactRef || typeof artifactRef !== "object" || Array.isArray(artifactRef)) {
+        return null;
+    }
+    const record = artifactRef;
+    if (record.kind !== "INLINE_JSON") {
+        return null;
+    }
+    const value = record.value;
+    if (!value || typeof value !== "object" || Array.isArray(value)) {
+        return null;
+    }
+    return typeof value.body === "string"
+        ? value.body
+        : null;
+};
 export const createBriefRunLaunchService = (context) => ({
     async createBrief(input) {
         const title = requireNonEmptyString(input.title, "title");
-        const llmModelIdentifier = requireNonEmptyString(input.llmModelIdentifier, "llmModelIdentifier");
         const briefId = `brief-${randomUUID()}`;
         const createdAt = new Date().toISOString();
-        withAppDatabase(context.storage.appDatabasePath, (db) => {
+        const brief = withAppDatabase(context.storage.appDatabasePath, (db) => {
             withTransaction(db, () => {
                 createBriefRepository(db).upsertProjectedBrief({
                     briefId,
                     title,
-                    status: "researching",
+                    status: "not_started",
                     updatedAt: createdAt,
                     latestBindingId: null,
                     latestRunId: null,
@@ -32,7 +65,43 @@ export const createBriefRunLaunchService = (context) => ({
                     lastErrorMessage: null,
                 });
             });
+            return createBriefRepository(db).getById(briefId);
         });
+        if (!brief) {
+            throw new Error(`Brief '${briefId}' was not created.`);
+        }
+        await context.publishNotification("brief.created", {
+            briefId,
+            createdAt,
+        });
+        return brief;
+    },
+    async launchDraftRun(input) {
+        const briefId = requireNonEmptyString(input.briefId, "briefId");
+        const llmModelIdentifier = requireNonEmptyString(input.llmModelIdentifier, "llmModelIdentifier");
+        const launchContext = withAppDatabase(context.storage.appDatabasePath, (db) => {
+            const briefRepository = createBriefRepository(db);
+            const artifactRepository = createArtifactRepository(db);
+            const reviewNoteRepository = createReviewNoteRepository(db);
+            const brief = briefRepository.getById(briefId);
+            if (!brief) {
+                throw new Error(`Brief '${briefId}' was not found.`);
+            }
+            const writerArtifact = artifactRepository
+                .listByBriefId(briefId)
+                .find((artifact) => artifact.artifactKind === "writer") ?? null;
+            const reviewNotes = reviewNoteRepository
+                .listByBriefId(briefId)
+                .map((note) => note.body.trim())
+                .filter(Boolean);
+            return {
+                brief,
+                latestWriterSummary: writerArtifact?.summary?.trim() || null,
+                latestWriterBody: writerArtifact ? readLatestWriterBody(writerArtifact.artifactRef)?.trim() || null : null,
+                reviewNotes,
+            };
+        });
+        const launchedAt = new Date().toISOString();
         try {
             const binding = await context.runtimeControl.startRun({
                 executionRef: briefId,
@@ -45,14 +114,28 @@ export const createBriefRunLaunchService = (context) => ({
                         llmModelIdentifier,
                     },
                 },
+                initialInput: {
+                    text: buildInitialInputText({
+                        title: launchContext.brief.title,
+                        latestWriterSummary: launchContext.latestWriterSummary,
+                        latestWriterBody: launchContext.latestWriterBody,
+                        reviewNotes: launchContext.reviewNotes,
+                    }),
+                    metadata: {
+                        briefId,
+                        title: launchContext.brief.title,
+                    },
+                },
             });
             withAppDatabase(context.storage.appDatabasePath, (db) => {
                 withTransaction(db, () => {
                     createBriefRepository(db).upsertProjectedBrief({
                         briefId,
-                        title,
-                        status: "researching",
-                        updatedAt: createdAt,
+                        title: launchContext.brief.title,
+                        status: launchContext.brief.status === "approved" || launchContext.brief.status === "rejected"
+                            ? launchContext.brief.status
+                            : "researching",
+                        updatedAt: launchedAt,
                         latestBindingId: binding.bindingId,
                         latestRunId: binding.runtime.runId,
                         latestBindingStatus: binding.status,
@@ -60,16 +143,17 @@ export const createBriefRunLaunchService = (context) => ({
                     });
                 });
             });
-            await context.publishNotification("brief.created", {
+            await context.publishNotification("brief.draft_run_launched", {
                 briefId,
                 bindingId: binding.bindingId,
                 runId: binding.runtime.runId,
-                createdAt,
+                launchedAt,
             });
             return {
                 briefId,
                 bindingId: binding.bindingId,
                 runId: binding.runtime.runId,
+                status: binding.status,
             };
         }
         catch (error) {
@@ -78,11 +162,11 @@ export const createBriefRunLaunchService = (context) => ({
                 withTransaction(db, () => {
                     createBriefRepository(db).upsertProjectedBrief({
                         briefId,
-                        title,
+                        title: launchContext.brief.title,
                         status: "blocked",
-                        updatedAt: createdAt,
-                        latestBindingId: null,
-                        latestRunId: null,
+                        updatedAt: launchedAt,
+                        latestBindingId: launchContext.brief.latestBindingId,
+                        latestRunId: launchContext.brief.latestRunId,
                         latestBindingStatus: "FAILED",
                         lastErrorMessage: message,
                     });

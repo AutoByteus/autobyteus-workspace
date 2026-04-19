@@ -2,7 +2,7 @@
   "manifestVersion": "3",
   "id": "socratic-math-teacher",
   "name": "Socratic Math Teacher",
-  "description": "Minimal built-in sample that demonstrates the application-owned runtime orchestration iframe contract.",
+  "description": "Built-in teaching sample with an app-owned GraphQL lesson API, one long-lived conversational binding, and repeated follow-up input.",
   "icon": "ui/icon.svg",
   "ui": {
     "entryHtml": "ui/index.html",

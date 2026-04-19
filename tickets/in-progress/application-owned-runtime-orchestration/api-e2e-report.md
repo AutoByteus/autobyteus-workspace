@@ -8,10 +8,10 @@
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/tickets/in-progress/application-owned-runtime-orchestration/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/tickets/in-progress/application-owned-runtime-orchestration/implementation-handoff.md`
 - Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/tickets/in-progress/application-owned-runtime-orchestration/review-report.md`
-- Current Validation Round: `1`
-- Trigger: `Implementation review passed on 2026-04-19 and moved to API/E2E for runtime launch, recovery/gating, artifact-ingress, and iframe-contract validation.`
-- Prior Round Reviewed: `N/A`
-- Latest Authoritative Round: `1`
+- Current Validation Round: `2`
+- Trigger: `Review round 6 passed on 2026-04-19 after AOR-LF-005 and AOR-LF-006 were fixed; API/E2E reran the cumulative package and rechecked the repaired backend-mount transport plus app-owned GraphQL contract paths alongside the earlier runtime/recovery/iframe scenarios.`
+- Prior Round Reviewed: `1`
+- Latest Authoritative Round: `2`
 
 Round rules:
 - Reuse the same scenario IDs across reruns for the same scenarios.
@@ -21,14 +21,15 @@ Round rules:
 
 | Round | Trigger | Prior Unresolved Failures Rechecked | New Failures Found | Result | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Implementation review passed and requested API/E2E validation | N/A | 0 | Pass | Yes | Added boundary-local durable validation for imported-package launch, live execution ingress, recovery/reattachment, startup-gated artifact ingress, and iframe v2 host contract behavior. |
+| 1 | Implementation review passed and requested API/E2E validation | N/A | 0 | Pass | No | Added boundary-local durable validation for imported-package launch, live execution ingress, recovery/reattachment, startup-gated artifact ingress, and iframe v2 host contract behavior. |
+| 2 | Review round 6 passed after AOR-LF-005 and AOR-LF-006 Local Fixes | 0 | 0 | Pass | Yes | Re-executed the prior runtime/recovery/iframe scenario set, added repaired backendBaseUrl route-transport and app-owned GraphQL contract checks to the coverage matrix, and required no new API/E2E-side repo validation changes. |
 
 ## Validation Basis
 
-- Requirements focus areas exercised: `R-001` through `R-005`, `R-010`, `R-014`, `R-021` through `R-026`.
-- Design focus areas exercised: `DS-001`, `DS-002`, `DS-003`, `DS-004`, `DS-007`.
-- Implementation handoff signals rechecked in validation: no compatibility wrapper, startup-gated runtime control/artifact ingress, imported-package parity, Brief Studio app-owned `executionRef`, and restart recovery/observer reattachment responsibilities.
-- Reviewer residual-risk list used as the explicit validation target set.
+- Requirements focus areas exercised: `R-001` through `R-005`, `R-010` through `R-014`, `R-021` through `R-025`, `R-031`, `R-032`, `R-037`, `R-038`.
+- Design focus areas exercised: `DS-001`, `DS-002`, `DS-003`, `DS-004`, `DS-007`, `DS-008`.
+- Implementation handoff signals rechecked in validation: no compatibility wrapper, startup-gated runtime control/artifact ingress, imported-package parity, Brief Studio app-owned `executionRef`, authoritative `backendBaseUrl` transport, and app-owned GraphQL schema/client flow.
+- Reviewer residual-risk list used as the explicit validation target set, including the round-6 repaired backend mount transport and app-owned GraphQL contract paths.
 
 ## Compatibility / Legacy Scope Check
 
@@ -41,10 +42,12 @@ Round rules:
 ## Validation Surfaces / Modes
 
 - Server integration validation with real Fastify REST + websocket routes, real application worker launch, real app storage, real event journal/dispatch, and emulated team-run execution resources.
+- Server integration validation for hosted backend-mount route transport semantics derived from `backendBaseUrl`.
 - Server unit validation for restart recovery / lookup rebuild / orphan classification.
 - Server unit validation for startup-gated live `publish_artifact` ingress.
+- Server unit validation for app-owned GraphQL single-operation executor fallback across the teaching applications.
 - Web component validation for iframe ready/bootstrap v2 contract and host-side launch ownership.
-- Package build validation for Brief Studio runnable/importable parity regeneration.
+- Package build validation for `autobyteus-application-frontend-sdk` and Brief Studio runnable/importable parity regeneration.
 
 ## Platform / Runtime Targets
 
@@ -52,6 +55,7 @@ Round rules:
 - `autobyteus-server-ts` worker-launched application backend.
 - `applications/brief-studio/dist/importable-package` imported package root.
 - `autobyteus-web` happy-dom component runtime for iframe host/launch-owner behavior.
+- `autobyteus-application-frontend-sdk` TypeScript build output for the shared backend-mount transport helper.
 
 ## Lifecycle / Upgrade / Restart / Migration Checks
 
@@ -59,7 +63,9 @@ Round rules:
 - Recovery owner marked unavailable bindings `ORPHANED` and appended the corresponding lifecycle event in durable validation.
 - Startup gate blocked live `publish_artifact` ingress until recovery release in durable validation.
 - Imported-package integration exercised live `RUN_STARTED`, artifact projection, and `RUN_TERMINATED` delivery against a real application worker.
-- Brief Studio package rebuild reran successfully after validation updates.
+- Hosted backend-mount route transport preserved application-owned JSON vs non-JSON request semantics under the shared `backendBaseUrl` descriptor.
+- App-owned GraphQL executors for Brief Studio and Socratic Math Teacher accepted omitted-`operationName` single-operation requests.
+- `autobyteus-application-frontend-sdk` and Brief Studio package rebuilds reran successfully against the cumulative package.
 
 ## Coverage Matrix
 
@@ -72,7 +78,9 @@ Round rules:
 | `AOR-E2E-005` | `R-014`, `DS-007` | Restart recovery / lookup rebuild / reattachment | Server unit (`application-orchestration-recovery-service.test.ts`) | Pass | Recovery rebuilt global `runId -> bindingId` lookups, reattached observers when available, and orphaned bindings when reattachment was unavailable. |
 | `AOR-E2E-006` | `R-014`, `DS-007` | Startup-gated live artifact ingress | Server unit (`publish-artifact-tool.test.ts`) | Pass | `publish_artifact` remained blocked until `ApplicationOrchestrationStartupGate.runStartupRecovery(...)` released readiness. |
 | `AOR-E2E-007` | `R-023`, `R-024`, `DS-001` | Iframe ready/bootstrap v2 contract | Web component (`ApplicationIframeHost.spec.ts`) | Pass | Host accepted only matching ready signals and posted the v2 bootstrap envelope with launch/request-context + backend transport URLs. |
-| `AOR-E2E-008` | `R-023`, `R-024`, `DS-001` | Host-side launch ownership | Web component (`ApplicationSurface.spec.ts`) | Pass | ApplicationSurface owned the ready/bootstrap handshake, emitted only v2 payloads, and ignored stale ready signals. |
+| `AOR-E2E-008` | `R-023`, `R-024`, `DS-001` | Host-side launch ownership | Web component (`ApplicationSurface.spec.ts`) | Pass | `ApplicationSurface` owned the ready/bootstrap handshake, emitted only v2 payloads, and ignored stale ready signals. |
+| `AOR-E2E-009` | `R-012`, `R-032`, `R-037`, `DS-008` | Hosted backend-mount route transport semantics | Server integration (`application-backend-mount-route-transport.integration.test.ts`) | Pass | The shared transport derived route URLs from `backendBaseUrl` and preserved application-owned JSON vs `text/plain` body semantics under the hosted route mount. |
+| `AOR-E2E-010` | `R-012`, `R-031`, `R-038`, `DS-008` | App-owned GraphQL single-operation dispatch contract | Server unit (`app-owned-graphql-executors.test.ts`) | Pass | Brief Studio and Socratic Math Teacher accepted omitted-`operationName` single-operation requests, matching the intended app-owned generated-client traffic shape. |
 
 ## Test Scope
 
@@ -84,6 +92,8 @@ Round rules:
   - recovery lookup rebuild / observer reattachment classification
   - startup gating for live artifact ingress
   - iframe v2 ready/bootstrap contract and host launch ownership
+  - hosted backend-mount route invocation semantics from the shared `backendBaseUrl` descriptor
+  - app-owned GraphQL single-operation request handling for the upgraded teaching apps
 - Explicitly not broadened:
   - provider-backed real LLM/team execution backend behavior
   - full rendered Nuxt page + live Fastify server browser automation beyond the host-side component contract
@@ -97,50 +107,57 @@ Round rules:
   - `src/api/rest/application-backends.ts`
   - `src/api/websocket/application-backend-notifications.ts`
 - Real application worker launch used `ApplicationEngineHostService`.
+- Backend-mount route validation used the production `createApplicationBackendMountTransport(...)` helper against the hosted application backend mount.
 - Execution-resource layer was intentionally emulated with a fake team runtime to isolate orchestration/app-boundary behavior from provider/runtime backends.
 
 ## Tests Implemented Or Updated
 
-- Updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts`
-- Added: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts/tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts`
-- Added: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts/tests/unit/application-orchestration/publish-artifact-tool.test.ts`
-- Updated / restored for v2 contract: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-web/components/applications/__tests__/ApplicationIframeHost.spec.ts`
-- Updated / restored for v2 contract: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-web/components/applications/__tests__/ApplicationSurface.spec.ts`
-
-## Durable Validation Added To The Codebase
-
-- Repository-resident durable validation added or updated this round: `Yes`
-- Paths added or updated:
+- No additional repository-resident tests were implemented or updated in validation round 2.
+- Prior API/E2E-owned durable validation re-executed unchanged this round:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts/tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts/tests/unit/application-orchestration/publish-artifact-tool.test.ts`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-web/components/applications/__tests__/ApplicationIframeHost.spec.ts`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-web/components/applications/__tests__/ApplicationSurface.spec.ts`
-- If `Yes`, returned through `code_reviewer` before delivery: `Yes`
-- Post-validation code review artifact: `Pending follow-up review by code_reviewer after this validation handoff.`
+- Implementation-owned regression coverage executed as received in this round:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts/tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts/tests/unit/application-backend/app-owned-graphql-executors.test.ts`
+
+## Durable Validation Added To The Codebase
+
+- Repository-resident durable validation added or updated this round: `No`
+- Prior API/E2E-added durable validation re-executed unchanged this round:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts/tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts/tests/unit/application-orchestration/publish-artifact-tool.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-web/components/applications/__tests__/ApplicationIframeHost.spec.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-web/components/applications/__tests__/ApplicationSurface.spec.ts`
+- If `Yes`, returned through `code_reviewer` before delivery: `N/A`
+- Post-validation code review artifact: `Not required in round 2 because API/E2E did not modify repository-resident validation.`
 
 ## Other Validation Artifacts
 
 - Brief Studio package output regenerated at `/Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/applications/brief-studio/dist/importable-package` during validation.
+- `autobyteus-application-frontend-sdk` build completed successfully at `/Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-application-frontend-sdk/dist` during validation.
 
 ## Temporary Validation Methods / Scaffolding
 
-- None retained. Validation stayed inside durable repo-resident tests plus normal package build execution.
+- None retained. Validation stayed inside existing durable repo-resident tests plus normal package/build execution.
 
 ## Dependencies Mocked Or Emulated
 
 - Emulated team runtime creation / lifecycle observation inside the imported-package integration test to keep the proof local to application-owned orchestration and backend projection boundaries.
-- Real backend worker, real REST/websocket routes, real app storage, and real execution-event journal/dispatch path remained in use.
+- Real backend worker, real REST/websocket routes, real app storage, real execution-event journal/dispatch path, and real backend-mount transport helper remained in use.
 
 ## Prior Failure Resolution Check (Mandatory On Round >1)
 
 | Prior Round | Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| N/A | N/A | N/A | N/A | N/A | First validation round. |
+| 1 | `No unresolved failures from round 1` | `Pass` | Maintained | `AOR-E2E-001` through `AOR-E2E-008` were re-executed by rerunning `brief-studio-imported-package.integration.test.ts`, `application-orchestration-recovery-service.test.ts`, `publish-artifact-tool.test.ts`, `ApplicationIframeHost.spec.ts`, and `ApplicationSurface.spec.ts` in round 2. | Round 1 had no open validation failures; the full previously passing scenario set was rerun before the new transport/GraphQL checks were included in the round-2 result. |
 
 ## Scenarios Checked
 
-- `AOR-E2E-001` through `AOR-E2E-008` in the coverage matrix above.
+- `AOR-E2E-001` through `AOR-E2E-010` in the coverage matrix above.
 
 ## Passed
 
@@ -151,8 +168,10 @@ Round rules:
 - Recovery lookup rebuild / observer reattachment / orphan classification.
 - Startup-gated live artifact ingress.
 - Iframe host v2 ready/bootstrap contract behavior.
-- ApplicationSurface launch-owner handshake behavior.
-- Brief Studio package rebuild after validation changes.
+- `ApplicationSurface` launch-owner handshake behavior.
+- Hosted backend-mount route transport preserved raw non-JSON request bodies and structured JSON request bodies under the shared `backendBaseUrl` contract.
+- App-owned GraphQL executors accepted omitted-`operationName` single-operation requests for both teaching apps.
+- `autobyteus-application-frontend-sdk` and Brief Studio package builds completed successfully.
 
 ## Failed
 
@@ -179,14 +198,15 @@ Round rules:
 
 ## Recommended Recipient
 
-- `code_reviewer`
+- `delivery_engineer`
 
 ## Evidence / Notes
 
 Executed successfully:
 
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-application-frontend-sdk build`
 - `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`
-- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts exec vitest run tests/integration/application-backend/brief-studio-imported-package.integration.test.ts tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts tests/unit/application-orchestration/publish-artifact-tool.test.ts tests/unit/application-orchestration/application-orchestration-host-service.test.ts`
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts exec vitest run tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts tests/unit/application-backend/app-owned-graphql-executors.test.ts tests/integration/application-backend/brief-studio-imported-package.integration.test.ts tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts tests/unit/application-orchestration/publish-artifact-tool.test.ts tests/unit/application-orchestration/application-orchestration-host-service.test.ts`
 - `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-web exec vitest run components/applications/__tests__/ApplicationIframeHost.spec.ts components/applications/__tests__/ApplicationSurface.spec.ts`
 - `pnpm --dir /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/applications/brief-studio build`
 
@@ -198,10 +218,12 @@ Key observed outcomes:
 - Lifecycle termination updated the bound projection state to `TERMINATED` without regressing brief review state.
 - Recovery rebuilt lookups and handled unavailable reattachment via `RUN_ORPHANED`.
 - `publish_artifact` stayed blocked until startup recovery released readiness.
+- The shared backend-mount transport preserved `text/plain` string bodies and JSON bodies with the correct hosted route semantics.
+- App-owned GraphQL executors for Brief Studio and Socratic Math Teacher honored omitted-`operationName` single-operation requests.
 - Host-side iframe tests confirmed the v2 envelope contains launch/request-context/transport data only and rejects stale ready signals.
 
 ## Latest Authoritative Result
 
 - Result values: `Pass` / `Fail` / `Blocked`
 - Result: `Pass`
-- Notes: `Residual API/E2E risks called out by review were covered with durable validation and targeted executable runs. Because repository-resident validation changed after implementation review, the package should return to code_reviewer for validation-code re-review before delivery resumes.`
+- Notes: `The cumulative implementation package passes round-2 API/E2E validation. Prior API/E2E-added durable validation remained stable, no additional repository-resident validation changed in this round, and the repaired backend-mount transport plus app-owned GraphQL contract flows passed alongside the earlier runtime/recovery/iframe scenarios, so the package may proceed directly to delivery.`

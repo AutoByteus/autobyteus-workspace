@@ -1,4 +1,5 @@
 export type BriefStatus =
+  | "not_started"
   | "researching"
   | "draft_ready"
   | "in_review"

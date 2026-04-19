@@ -2,33 +2,14 @@ import type {
   ApplicationGraphqlRequest,
   ApplicationNotificationMessage,
   ApplicationRequestContext,
+  ApplicationRouteRequest,
+  ApplicationRouteResponse,
 } from "@autobyteus/application-sdk-contracts";
-
-export type ApplicationClientTransport = {
-  invokeQuery: (args: {
-    applicationId: string;
-    queryName: string;
-    requestContext: ApplicationRequestContext | null;
-    input: unknown;
-  }) => Promise<unknown>;
-  invokeCommand: (args: {
-    applicationId: string;
-    commandName: string;
-    requestContext: ApplicationRequestContext | null;
-    input: unknown;
-  }) => Promise<unknown>;
-  executeGraphql: (args: {
-    applicationId: string;
-    requestContext: ApplicationRequestContext | null;
-    request: ApplicationGraphqlRequest;
-  }) => Promise<unknown>;
-  subscribeNotifications?: (
-    args: {
-      applicationId: string;
-      listener: (message: ApplicationNotificationMessage) => void;
-    },
-  ) => { close: () => void };
-};
+import type { ApplicationClientTransport } from "./application-client-transport.js";
+import {
+  createApplicationBackendMountTransport,
+  deriveApplicationBackendMountEndpoints,
+} from "./create-application-backend-mount-transport.js";
 
 export type ApplicationClientOptions = {
   applicationId: string;
@@ -65,6 +46,16 @@ export const createApplicationClient = (options: ApplicationClientOptions) => {
         requestContext: getRequestContext(),
         request,
       }),
+    route: (request: ApplicationRouteRequest): Promise<ApplicationRouteResponse | unknown> => {
+      if (!options.transport.invokeRoute) {
+        throw new Error("The application transport does not support route invocation.");
+      }
+      return options.transport.invokeRoute({
+        applicationId: options.applicationId,
+        requestContext: getRequestContext(),
+        request,
+      });
+    },
     subscribeNotifications: (
       listener: (message: ApplicationNotificationMessage) => void,
     ): { close: () => void } => {
@@ -79,8 +70,22 @@ export const createApplicationClient = (options: ApplicationClientOptions) => {
   };
 };
 
+export {
+  createApplicationBackendMountTransport,
+  deriveApplicationBackendMountEndpoints,
+};
+
+export type {
+  ApplicationBackendMountEndpoints,
+  ApplicationBackendMountTransport,
+  ApplicationBackendMountTransportOptions,
+  ApplicationBackendMountRouteRequest,
+} from "./create-application-backend-mount-transport.js";
+export type { ApplicationClientTransport } from "./application-client-transport.js";
 export type {
   ApplicationGraphqlRequest,
   ApplicationNotificationMessage,
   ApplicationRequestContext,
+  ApplicationRouteRequest,
+  ApplicationRouteResponse,
 } from "@autobyteus/application-sdk-contracts";

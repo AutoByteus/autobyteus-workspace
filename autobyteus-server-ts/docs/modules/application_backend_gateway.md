@@ -2,7 +2,7 @@
 
 ## Scope
 
-Owns the platform-facing transport boundary for application backends: engine status, queries, commands, GraphQL execution, arbitrary REST-style routes, and backend notification fan-out.
+Owns the platform-facing transport boundary for application backends: engine status, explicit backend `ensure-ready`, queries, commands, GraphQL execution, arbitrary REST-style routes, and backend notification fan-out.
 
 ## TS Source
 
@@ -21,9 +21,9 @@ Owns the platform-facing transport boundary for application backends: engine sta
 - The route `:applicationId` is authoritative for every backend surface.
 - Shared Fastify runtime config raises route-param length to `4096`, so long imported canonical application ids can still reach the gateway boundary unchanged.
 - `requestContext.applicationId` must match the route application id; mismatches are rejected.
-- `applicationSessionId` is optional context, not the primary backend routing key.
+- `requestContext.launchInstanceId` is optional source-correlation context from the iframe host. It is not business identity and it is not a run binding key.
 - The gateway always validates that the application exists before forwarding work to the app engine.
-- Callers do not talk to worker internals, storage internals, or publication internals directly.
+- Callers do not talk to worker internals, orchestration stores, or storage internals directly.
 
 ## Exposed Runtime Surfaces
 
@@ -31,15 +31,17 @@ Owns the platform-facing transport boundary for application backends: engine sta
 
 - `GET /rest/applications/:applicationId/backend/status`
   - reads current engine status without forcing startup.
+- `POST /rest/applications/:applicationId/backend/ensure-ready`
+  - ensures storage + worker startup and returns the resulting engine status.
 - `POST /rest/applications/:applicationId/backend/queries/:queryName`
 - `POST /rest/applications/:applicationId/backend/commands/:commandName`
 - `POST /rest/applications/:applicationId/backend/graphql`
 - `GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS /rest/applications/:applicationId/backend/routes/*`
 
-Queries, commands, and GraphQL accept request context in the POST body. All request surfaces can also carry `applicationSessionId` via:
+Queries, commands, and GraphQL accept request context in the POST body. All request surfaces can also carry `launchInstanceId` via:
 
-- `x-autobyteus-application-session-id` header, or
-- `applicationSessionId` query string.
+- `x-autobyteus-launch-instance-id` header, or
+- `launchInstanceId` query string.
 
 For custom routes, the gateway forwards normalized headers, query params, method, path, and body into the worker-owned route handler.
 
@@ -51,9 +53,9 @@ The gateway bridges worker-published notifications into a per-application websoc
 
 ## Engine Handoff
 
-- Query/command/route/GraphQL invocations wake the application engine on demand through `ApplicationEngineHostService.ensureApplicationEngine(...)`.
-- Engine status reads do not implicitly start the worker.
-- Worker notifications are subscribed once at the gateway layer and re-published through `ApplicationNotificationStreamService`.
+- `ensure-ready`, query, command, route, GraphQL, and event-handler dispatch invocations all rely on `ApplicationEngineHostService`.
+- Status reads do not implicitly start the worker.
+- Worker notifications are subscribed once at the gateway/engine boundary and re-published through `ApplicationNotificationStreamService`.
 
 ## Error Behavior
 
@@ -64,9 +66,9 @@ The gateway bridges worker-published notifications into a per-application websoc
 ## Related Docs
 
 - [`applications.md`](./applications.md)
+- [`application_orchestration.md`](./application_orchestration.md)
 - [`application_engine.md`](./application_engine.md)
 - [`application_storage.md`](./application_storage.md)
-- [`application_sessions.md`](./application_sessions.md)
 - `../../../autobyteus-web/docs/applications.md`
 - `../../../autobyteus-web/docs/application-bundle-iframe-contract-v1.md`
 - `../../../autobyteus-application-sdk-contracts/README.md`

@@ -1,29 +1,6 @@
-import type { ApplicationGraphqlRequest, ApplicationNotificationMessage, ApplicationRequestContext } from "@autobyteus/application-sdk-contracts";
-export type ApplicationClientTransport = {
-    invokeQuery: (args: {
-        applicationId: string;
-        queryName: string;
-        requestContext: ApplicationRequestContext | null;
-        input: unknown;
-    }) => Promise<unknown>;
-    invokeCommand: (args: {
-        applicationId: string;
-        commandName: string;
-        requestContext: ApplicationRequestContext | null;
-        input: unknown;
-    }) => Promise<unknown>;
-    executeGraphql: (args: {
-        applicationId: string;
-        requestContext: ApplicationRequestContext | null;
-        request: ApplicationGraphqlRequest;
-    }) => Promise<unknown>;
-    subscribeNotifications?: (args: {
-        applicationId: string;
-        listener: (message: ApplicationNotificationMessage) => void;
-    }) => {
-        close: () => void;
-    };
-};
+import type { ApplicationGraphqlRequest, ApplicationNotificationMessage, ApplicationRequestContext, ApplicationRouteRequest, ApplicationRouteResponse } from "@autobyteus/application-sdk-contracts";
+import type { ApplicationClientTransport } from "./application-client-transport.js";
+import { createApplicationBackendMountTransport, deriveApplicationBackendMountEndpoints } from "./create-application-backend-mount-transport.js";
 export type ApplicationClientOptions = {
     applicationId: string;
     requestContext?: ApplicationRequestContext | null;
@@ -37,9 +14,13 @@ export declare const createApplicationClient: (options: ApplicationClientOptions
     query: (queryName: string, input?: unknown) => Promise<unknown>;
     command: (commandName: string, input?: unknown) => Promise<unknown>;
     graphql: (request: ApplicationGraphqlRequest) => Promise<unknown>;
+    route: (request: ApplicationRouteRequest) => Promise<ApplicationRouteResponse | unknown>;
     subscribeNotifications: (listener: (message: ApplicationNotificationMessage) => void) => {
         close: () => void;
     };
 };
-export type { ApplicationGraphqlRequest, ApplicationNotificationMessage, ApplicationRequestContext, } from "@autobyteus/application-sdk-contracts";
+export { createApplicationBackendMountTransport, deriveApplicationBackendMountEndpoints, };
+export type { ApplicationBackendMountEndpoints, ApplicationBackendMountTransport, ApplicationBackendMountTransportOptions, ApplicationBackendMountRouteRequest, } from "./create-application-backend-mount-transport.js";
+export type { ApplicationClientTransport } from "./application-client-transport.js";
+export type { ApplicationGraphqlRequest, ApplicationNotificationMessage, ApplicationRequestContext, ApplicationRouteRequest, ApplicationRouteResponse, } from "@autobyteus/application-sdk-contracts";
 //# sourceMappingURL=index.d.ts.map

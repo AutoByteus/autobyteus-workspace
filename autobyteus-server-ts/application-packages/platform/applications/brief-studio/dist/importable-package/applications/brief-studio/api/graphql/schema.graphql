@@ -1,0 +1,114 @@
+scalar JSON
+
+type Query {
+  briefs: [BriefSummary!]!
+  brief(briefId: ID!): BriefDetail
+  briefExecutions(briefId: ID!): [BriefExecution!]!
+}
+
+type Mutation {
+  createBrief(input: CreateBriefInput!): BriefSummary!
+  launchDraftRun(input: LaunchDraftRunInput!): LaunchDraftRunPayload!
+  approveBrief(input: ApproveBriefInput!): BriefReviewPayload!
+  rejectBrief(input: RejectBriefInput!): BriefReviewPayload!
+  addReviewNote(input: AddReviewNoteInput!): AddReviewNotePayload!
+}
+
+type BriefSummary {
+  briefId: ID!
+  title: String!
+  status: String!
+  latestBindingId: String
+  latestRunId: String
+  latestBindingStatus: String
+  lastErrorMessage: String
+  updatedAt: String!
+}
+
+type BriefDetail {
+  briefId: ID!
+  title: String!
+  status: String!
+  latestBindingId: String
+  latestRunId: String
+  latestBindingStatus: String
+  lastErrorMessage: String
+  updatedAt: String!
+  createdAt: String!
+  approvedAt: String
+  rejectedAt: String
+  artifacts: [BriefArtifact!]!
+  reviewNotes: [ReviewNote!]!
+}
+
+type BriefArtifact {
+  briefId: ID!
+  artifactKind: String!
+  artifactKey: String!
+  artifactType: String!
+  title: String!
+  summary: String
+  artifactRef: JSON
+  metadata: JSON
+  isFinal: Boolean!
+  producerMemberRouteKey: String!
+  updatedAt: String!
+}
+
+type ReviewNote {
+  noteId: ID!
+  briefId: ID!
+  body: String!
+  createdAt: String!
+}
+
+type BriefExecution {
+  bindingId: ID!
+  status: String!
+  runId: String!
+  definitionId: String!
+  createdAt: String!
+  updatedAt: String!
+  terminatedAt: String
+  lastErrorMessage: String
+}
+
+type LaunchDraftRunPayload {
+  briefId: ID!
+  bindingId: ID!
+  runId: String!
+  status: String!
+}
+
+type BriefReviewPayload {
+  briefId: ID!
+  status: String!
+}
+
+type AddReviewNotePayload {
+  briefId: ID!
+  noteId: ID!
+}
+
+input CreateBriefInput {
+  title: String!
+}
+
+input LaunchDraftRunInput {
+  briefId: ID!
+  llmModelIdentifier: String!
+}
+
+input ApproveBriefInput {
+  briefId: ID!
+}
+
+input RejectBriefInput {
+  briefId: ID!
+  reason: String
+}
+
+input AddReviewNoteInput {
+  briefId: ID!
+  body: String!
+}

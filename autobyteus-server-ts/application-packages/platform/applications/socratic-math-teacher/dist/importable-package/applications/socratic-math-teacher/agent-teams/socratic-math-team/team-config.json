@@ -1,0 +1,11 @@
+{
+  "coordinatorMemberName": "tutor",
+  "members": [
+    {
+      "memberName": "tutor",
+      "ref": "socratic-math-tutor",
+      "refType": "agent",
+      "refScope": "team_local"
+    }
+  ]
+}

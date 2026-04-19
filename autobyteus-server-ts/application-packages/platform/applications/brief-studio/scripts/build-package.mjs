@@ -11,6 +11,7 @@ const applicationRoot = path.resolve(scriptDir, "..");
 const workspaceRoot = path.resolve(applicationRoot, "..", "..");
 const buildBackendRoot = path.join(applicationRoot, ".build", "backend");
 const runtimeBackendRoot = path.join(applicationRoot, "backend");
+const runtimeUiRoot = path.join(applicationRoot, "ui");
 const distPackageRoot = path.join(applicationRoot, "dist", "importable-package");
 const distApplicationRoot = path.join(distPackageRoot, "applications", "brief-studio");
 
@@ -49,11 +50,26 @@ const rewriteImports = (content, replacements) =>
   );
 
 const refreshRuntimeUiAssets = async () => {
-  const uiRoot = path.join(applicationRoot, "ui");
+  await ensureDirectory(path.join(runtimeUiRoot, "vendor"));
   await copyFile(
     path.join(workspaceRoot, "autobyteus-application-frontend-sdk", "dist", "index.js"),
-    path.join(uiRoot, "vendor", "application-frontend-sdk.js"),
+    path.join(runtimeUiRoot, "vendor", "application-frontend-sdk.js"),
   );
+
+  const sourceFrontendRoot = path.join(applicationRoot, "frontend-src");
+  const entries = await fs.readdir(sourceFrontendRoot, { withFileTypes: true });
+  for (const entry of entries) {
+    const sourcePath = path.join(sourceFrontendRoot, entry.name);
+    const targetPath = path.join(runtimeUiRoot, entry.name);
+    if (entry.isDirectory()) {
+      await fs.rm(targetPath, { recursive: true, force: true });
+      await copyTree(sourcePath, targetPath);
+      continue;
+    }
+    if (entry.isFile()) {
+      await copyFile(sourcePath, targetPath);
+    }
+  }
 };
 
 const copyCompiledBackend = async (sourceDir, targetRoot) => {
@@ -100,10 +116,10 @@ const writeBackendBundleManifest = async (targetApplicationRoot) => {
       frontendSdkContractVersion: "2",
     },
     supportedExposures: {
-      queries: true,
-      commands: true,
+      queries: false,
+      commands: false,
       routes: false,
-      graphql: false,
+      graphql: true,
       notifications: true,
       eventHandlers: true,
     },
@@ -112,7 +128,8 @@ const writeBackendBundleManifest = async (targetApplicationRoot) => {
 
   await writeTextFile(
     path.join(targetApplicationRoot, "backend", "bundle.json"),
-    `${JSON.stringify(manifest, null, 2)}\n`,
+    `${JSON.stringify(manifest, null, 2)}
+`,
   );
 };
 
@@ -149,8 +166,14 @@ const writeDistApplicationReadme = async () => {
 
 const copyRunnableRootToPackagingMirror = async () => {
   await copyFile(path.join(applicationRoot, "application.json"), path.join(distApplicationRoot, "application.json"));
+  await copyFile(path.join(applicationRoot, "package.json"), path.join(distApplicationRoot, "package.json"));
+  await copyFile(path.join(applicationRoot, "tsconfig.backend.json"), path.join(distApplicationRoot, "tsconfig.backend.json"));
   await copyTree(path.join(applicationRoot, "ui"), path.join(distApplicationRoot, "ui"));
   await copyTree(path.join(applicationRoot, "backend"), path.join(distApplicationRoot, "backend"));
+  await copyTreeIfExists(path.join(applicationRoot, "api"), path.join(distApplicationRoot, "api"));
+  await copyTreeIfExists(path.join(applicationRoot, "frontend-src"), path.join(distApplicationRoot, "frontend-src"));
+  await copyTreeIfExists(path.join(applicationRoot, "backend-src"), path.join(distApplicationRoot, "backend-src"));
+  await copyTreeIfExists(path.join(applicationRoot, "scripts"), path.join(distApplicationRoot, "scripts"));
   await copyTreeIfExists(path.join(applicationRoot, "agents"), path.join(distApplicationRoot, "agents"));
   await copyTreeIfExists(path.join(applicationRoot, "agent-teams"), path.join(distApplicationRoot, "agent-teams"));
   await writeDistApplicationReadme();

@@ -12,9 +12,8 @@
         <div class="eyebrow">External teaching sample</div>
         <h1>Brief Studio</h1>
         <p class="lede">
-          A small imported application that teaches AutoByteus app authors how to combine the frontend SDK,
-          backend SDK, app-owned migrations, app-owned runtime orchestration, and durable execution-event
-          projection.
+          A small imported application that teaches AutoByteus app authors how to keep business identity, GraphQL
+          schema/codegen, and orchestration policy inside the app while the platform hosts one backend mount.
         </p>
       </header>
 
@@ -25,8 +24,9 @@
       <details class="card details-panel">
         <summary class="details-summary">Teaching details</summary>
         <p class="details-copy muted">
-          The generic host only launches the application shell and prepares the backend. This app then chooses when
-          to create a brief, which bundled resource to run, and which app-owned <code>executionRef</code> to bind.
+          The generic host only launches the application shell and prepares the backend. This app then creates
+          business-owned <code>briefId</code> records, launches draft runs later through GraphQL, and binds each run to
+          <code>executionRef = briefId</code>.
         </p>
         <div class="meta-grid">
           <div>
@@ -40,9 +40,8 @@
             <div id="request-context" class="muted">—</div>
           </div>
           <div>
-            <span class="label">Backend gateway</span>
-            <div id="backend-queries-url" class="value small">—</div>
-            <div id="backend-commands-url" class="muted small">—</div>
+            <span class="label">Backend mount</span>
+            <div id="backend-base-url" class="value small">—</div>
             <div id="backend-notifications-url" class="muted small">—</div>
           </div>
         </div>
@@ -51,8 +50,8 @@
       <section class="card composer-panel">
         <div class="panel-header">
           <div>
-            <h2>Create a brief</h2>
-            <p class="muted">This command creates an app-owned <code>briefId</code> and starts one bundled team run with <code>executionRef = briefId</code>.</p>
+            <h2>Create a brief record</h2>
+            <p class="muted">First create the business record. Launch draft runs from the detail panel later so one brief can own many runs over time.</p>
           </div>
         </div>
         <form id="create-brief-form" class="brief-composer">
@@ -68,7 +67,7 @@
           </div>
           <div class="action-row">
             <button id="create-brief-button" class="primary-button" type="submit">Create brief</button>
-            <span class="muted small">The host does not preselect a runtime target or show a launch modal.</span>
+            <span class="muted small">GraphQL is the primary app business API; the platform only hosts the backend mount.</span>
           </div>
         </form>
       </section>
@@ -83,7 +82,7 @@
             <button id="refresh-button" class="ghost-button" type="button">Refresh</button>
           </div>
           <div id="brief-list" class="brief-list empty-state">
-            No briefs yet. Create one to start an app-owned runtime binding.
+            No briefs yet. Create a business record, then launch one or more draft runs from it.
           </div>
         </aside>
 
@@ -91,11 +90,11 @@
           <div class="panel-header">
             <div>
               <h2>Brief detail</h2>
-              <p class="muted">Queries and commands flow through the platform-owned backend gateway.</p>
+              <p class="muted">GraphQL queries keep the UI on one app-owned business API over the hosted backend mount.</p>
             </div>
           </div>
           <div id="brief-detail" class="empty-state">
-            Select a brief to inspect its projected artifacts, binding metadata, and review workflow.
+            Select a brief to inspect its projected artifacts, execution history, and review workflow.
           </div>
         </section>
       </section>

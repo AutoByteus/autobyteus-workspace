@@ -12,10 +12,10 @@
     "frontendSdkContractVersion": "2"
   },
   "supportedExposures": {
-    "queries": true,
-    "commands": true,
+    "queries": false,
+    "commands": false,
     "routes": false,
-    "graphql": false,
+    "graphql": true,
     "notifications": true,
     "eventHandlers": true
   },

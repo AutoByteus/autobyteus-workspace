@@ -2,7 +2,7 @@
   "manifestVersion": "3",
   "id": "brief-studio",
   "name": "Brief Studio",
-  "description": "External teaching sample with app-owned runtime orchestration, durable event projection, and frontend/backend SDK usage.",
+  "description": "External teaching sample with an app-owned GraphQL brief API, durable event projection, and many runs over one brief record.",
   "icon": "ui/icon.svg",
   "ui": {
     "entryHtml": "ui/index.html",

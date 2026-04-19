@@ -1,4 +1,8 @@
-import { renderApp, renderBriefDetail, renderNotifications } from "./brief-studio-renderer.js";
+import {
+  renderApp,
+  renderBriefDetail,
+  renderNotifications,
+} from "./brief-studio-renderer.js";
 
 const CHANNEL = "autobyteus.application.host";
 const CONTRACT_VERSION = "2";
@@ -20,29 +24,11 @@ const matchesHostOrigin = (expectedOrigin, actualOrigin) => {
   return actualOrigin === expectedOrigin;
 };
 
-const requireBootstrapUrl = (value, label) => {
-  if (!value) {
-    throw new Error(`${label} is unavailable in the host bootstrap payload.`);
-  }
-  return value;
-};
-
-const invokeJson = async (url, body) => {
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "content-type": "application/json",
-    },
-    body: JSON.stringify(body),
-  });
-  const payload = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    throw new Error(payload.error || `Request failed with status ${response.status}.`);
-  }
-  return payload.result;
-};
-
-export const createBriefStudioApp = ({ browserWindow, document, createApplicationClient }) => {
+export const createBriefStudioApp = ({
+  browserWindow,
+  document,
+  createBriefStudioGraphqlClient,
+}) => {
   const searchParams = new URLSearchParams(browserWindow.location.search);
   const hintedContractVersion = searchParams.get(QUERY_CONTRACT_VERSION) || "";
   const launchedApplicationId = searchParams.get(QUERY_APPLICATION_ID) || "";
@@ -55,6 +41,7 @@ export const createBriefStudioApp = ({ browserWindow, document, createApplicatio
     briefs: [],
     selectedBriefId: null,
     detail: null,
+    executions: [],
     notifications: [],
     statusText: "Waiting for the host bootstrap payload…",
     statusTone: "idle",
@@ -66,8 +53,7 @@ export const createBriefStudioApp = ({ browserWindow, document, createApplicatio
     applicationIds: document.getElementById("application-ids"),
     launchInstanceId: document.getElementById("launch-instance-id"),
     requestContext: document.getElementById("request-context"),
-    backendQueriesUrl: document.getElementById("backend-queries-url"),
-    backendCommandsUrl: document.getElementById("backend-commands-url"),
+    backendBaseUrl: document.getElementById("backend-base-url"),
     backendNotificationsUrl: document.getElementById("backend-notifications-url"),
     statusBanner: document.getElementById("status-banner"),
     briefList: document.getElementById("brief-list"),
@@ -100,6 +86,7 @@ export const createBriefStudioApp = ({ browserWindow, document, createApplicatio
         state.selectedBriefId = briefId;
         await refreshDetail();
       },
+      onLaunchDraftRun: launchDraftRun,
       onApprove: approveBrief,
       onReject: rejectBrief,
       onAddReviewNote: addReviewNote,
@@ -107,64 +94,14 @@ export const createBriefStudioApp = ({ browserWindow, document, createApplicatio
     });
   };
 
-  const createTransport = (bootstrap) => ({
-    invokeQuery: async ({ queryName, requestContext, input }) =>
-      invokeJson(
-        `${requireBootstrapUrl(bootstrap.transport.backendQueriesBaseUrl, "backendQueriesBaseUrl")}/${encodeURIComponent(queryName)}`,
-        { requestContext, input },
-      ),
-    invokeCommand: async ({ commandName, requestContext, input }) =>
-      invokeJson(
-        `${requireBootstrapUrl(bootstrap.transport.backendCommandsBaseUrl, "backendCommandsBaseUrl")}/${encodeURIComponent(commandName)}`,
-        { requestContext, input },
-      ),
-    executeGraphql: async ({ requestContext, request }) =>
-      invokeJson(requireBootstrapUrl(bootstrap.transport.backendGraphqlUrl, "backendGraphqlUrl"), {
-        requestContext,
-        request,
-      }),
-    subscribeNotifications: ({ listener }) => {
-      const url = bootstrap.transport.backendNotificationsUrl;
-      if (!url) {
-        return { close: () => undefined };
-      }
-      const socket = new WebSocket(url);
-      socket.addEventListener("message", (event) => {
-        try {
-          const message = JSON.parse(String(event.data));
-          if (message?.type === "notification" && message.notification) {
-            listener(message.notification);
-          }
-        } catch {
-          // ignore malformed notifications in the demo UI
-        }
-      });
-      return {
-        close: () => {
-          if (socket.readyState === WebSocket.OPEN || socket.readyState === WebSocket.CONNECTING) {
-            socket.close();
-          }
-        },
-      };
-    },
-  });
-
-  const createClient = (bootstrap) =>
-    createApplicationClient({
-      applicationId: bootstrap.application.applicationId,
-      requestContext: bootstrap.requestContext ?? {
-        applicationId: bootstrap.application.applicationId,
-        launchInstanceId: bootstrap.launch.launchInstanceId,
-      },
-      transport: createTransport(bootstrap),
-    });
-
   const refreshDetail = async () => {
     if (!state.client || !state.selectedBriefId) {
       state.detail = null;
+      state.executions = [];
       renderBriefDetail({
         state,
         elements,
+        onLaunchDraftRun: launchDraftRun,
         onApprove: approveBrief,
         onReject: rejectBrief,
         onAddReviewNote: addReviewNote,
@@ -173,11 +110,16 @@ export const createBriefStudioApp = ({ browserWindow, document, createApplicatio
       return;
     }
 
-    const result = await state.client.query("briefs.getDetail", { briefId: state.selectedBriefId });
-    state.detail = result?.brief || null;
+    const [brief, executions] = await Promise.all([
+      state.client.brief(state.selectedBriefId),
+      state.client.briefExecutions(state.selectedBriefId),
+    ]);
+    state.detail = brief || null;
+    state.executions = Array.isArray(executions) ? executions : [];
     renderBriefDetail({
       state,
       elements,
+      onLaunchDraftRun: launchDraftRun,
       onApprove: approveBrief,
       onReject: rejectBrief,
       onAddReviewNote: addReviewNote,
@@ -190,10 +132,12 @@ export const createBriefStudioApp = ({ browserWindow, document, createApplicatio
       return;
     }
 
-    logBriefStudio(`refresh start applicationId=${state.bootstrap?.application?.applicationId || "unknown"} launch=${state.bootstrap?.launch?.launchInstanceId || "unknown"}`);
-    setStatus("Loading projected briefs through the app backend gateway…");
-    const result = await state.client.query("briefs.list", null);
-    state.briefs = Array.isArray(result?.briefs) ? result.briefs : [];
+    logBriefStudio(
+      `refresh start applicationId=${state.bootstrap?.application?.applicationId || "unknown"} launch=${state.bootstrap?.launch?.launchInstanceId || "unknown"}`,
+    );
+    setStatus("Loading projected briefs through the hosted GraphQL backend mount…");
+    const briefs = await state.client.briefs();
+    state.briefs = Array.isArray(briefs) ? briefs : [];
 
     if (!state.selectedBriefId || !state.briefs.some((brief) => brief.briefId === state.selectedBriefId)) {
       state.selectedBriefId = state.briefs[0]?.briefId || null;
@@ -203,8 +147,8 @@ export const createBriefStudioApp = ({ browserWindow, document, createApplicatio
     render();
     setStatus(
       state.briefs.length === 0
-        ? "Brief Studio is ready. Create a brief to start app-owned orchestration."
-        : "Brief Studio is ready. Review projected brief state and notifications.",
+        ? "Brief Studio is ready. Create a brief record, then launch one or more draft runs from it."
+        : "Brief Studio is ready. GraphQL keeps the UI on one app-owned business API over the hosted backend mount.",
       "ready",
     );
   };
@@ -215,25 +159,37 @@ export const createBriefStudioApp = ({ browserWindow, document, createApplicatio
     }
 
     const title = elements.briefTitleInput?.value?.trim() || "";
-    const llmModelIdentifier = elements.modelIdentifierInput?.value?.trim() || "";
-
     if (!title) {
-      setStatus("Enter a brief title before creating a run.", "error");
-      return;
-    }
-    if (!llmModelIdentifier) {
-      setStatus("Enter an LLM model identifier before creating a run.", "error");
+      setStatus("Enter a brief title before creating a business record.", "error");
       return;
     }
 
-    setStatus("Creating brief and starting app-owned runtime orchestration…");
-    const result = await state.client.command("createBrief", { title, llmModelIdentifier });
-    if (typeof result?.briefId === "string" && result.briefId.trim()) {
-      state.selectedBriefId = result.briefId;
+    setStatus("Creating an app-owned brief record…");
+    const brief = await state.client.createBrief({ title });
+    if (typeof brief?.briefId === "string" && brief.briefId.trim()) {
+      state.selectedBriefId = brief.briefId;
     }
     if (elements.briefTitleInput) {
       elements.briefTitleInput.value = "";
     }
+    await refresh();
+  };
+
+  const launchDraftRun = async () => {
+    if (!state.client || !state.selectedBriefId) {
+      return;
+    }
+    const llmModelIdentifier = elements.modelIdentifierInput?.value?.trim() || "";
+    if (!llmModelIdentifier) {
+      setStatus("Enter an LLM model identifier before launching a draft run.", "error");
+      return;
+    }
+
+    setStatus("Launching a draft run bound to this briefId…");
+    await state.client.launchDraftRun({
+      briefId: state.selectedBriefId,
+      llmModelIdentifier,
+    });
     await refresh();
   };
 
@@ -242,7 +198,7 @@ export const createBriefStudioApp = ({ browserWindow, document, createApplicatio
       return;
     }
     setStatus("Approving brief…");
-    await state.client.command("approveBrief", { briefId: state.selectedBriefId });
+    await state.client.approveBrief({ briefId: state.selectedBriefId });
     await refresh();
   };
 
@@ -252,7 +208,7 @@ export const createBriefStudioApp = ({ browserWindow, document, createApplicatio
     }
     const reason = browserWindow.prompt("Optional rejection reason", "") || "";
     setStatus("Rejecting brief…");
-    await state.client.command("rejectBrief", {
+    await state.client.rejectBrief({
       briefId: state.selectedBriefId,
       reason: reason.trim() || null,
     });
@@ -270,7 +226,7 @@ export const createBriefStudioApp = ({ browserWindow, document, createApplicatio
       return;
     }
     setStatus("Adding review note…");
-    await state.client.command("addReviewNote", {
+    await state.client.addReviewNote({
       briefId: state.selectedBriefId,
       body,
     });
@@ -280,68 +236,17 @@ export const createBriefStudioApp = ({ browserWindow, document, createApplicatio
     await refresh();
   };
 
-  const handleNotification = async (notification) => {
-    state.notifications = [notification, ...state.notifications].slice(0, 6);
+  const pushNotification = (notification) => {
+    state.notifications = [notification, ...state.notifications].slice(0, 12);
     renderNotifications({ state, elements });
-    if (["brief.created", "brief.ready_for_review", "brief.review_updated", "brief.note_added"].includes(notification.topic)) {
-      try {
-        await refresh();
-      } catch {
-        // keep the notification even if the follow-up refresh fails
-      }
-    }
   };
 
-  const handleBootstrap = async (event) => {
-    if (event.source !== browserWindow.parent) {
-      return;
-    }
-    if (!matchesHostOrigin(hostOrigin, event.origin)) {
-      return;
-    }
-
-    const message = event.data;
-    if (!message || typeof message !== "object") {
-      return;
-    }
-    if (message.channel !== CHANNEL || message.contractVersion !== CONTRACT_VERSION || message.eventName !== BOOTSTRAP_EVENT) {
-      return;
-    }
-    if (!message.payload || typeof message.payload !== "object") {
-      return;
-    }
-
-    const payload = message.payload;
-    if (payload?.application?.applicationId !== launchedApplicationId) {
-      return;
-    }
-    if (payload?.launch?.launchInstanceId !== launchedLaunchInstanceId) {
-      return;
-    }
-    if (payload?.host?.origin !== hostOrigin) {
-      return;
-    }
-
-    logBriefStudio(
-      `bootstrap received applicationId=${payload.application.applicationId} launchInstanceId=${payload.launch.launchInstanceId} backendQueriesBaseUrl=${payload.transport.backendQueriesBaseUrl || "missing"}`,
-    );
-    state.bootstrap = payload;
-    state.client = createClient(payload);
-    render();
-
-    state.notificationHandle?.close();
-    state.notificationHandle = state.client.subscribeNotifications((notification) => {
-      void handleNotification(notification);
-    });
-
-    try {
-      await refresh();
-    } catch (error) {
-      console.warn(
-        `[BriefStudio] initial refresh failed applicationId=${payload.application.applicationId} message=${error instanceof Error ? error.message : String(error)}`,
-      );
-      setStatus(error instanceof Error ? error.message : String(error), "error");
-    }
+  const connectNotifications = () => {
+    state.notificationHandle?.close?.();
+    state.notificationHandle = state.client?.subscribeNotifications((notification) => {
+      pushNotification(notification);
+      refresh().catch(handleUiError);
+    }) || null;
   };
 
   const sendReady = () => {
@@ -361,25 +266,57 @@ export const createBriefStudioApp = ({ browserWindow, document, createApplicatio
       },
       "*",
     );
-    logBriefStudio(`ready event posted applicationId=${launchedApplicationId} launchInstanceId=${launchedLaunchInstanceId}`);
+  };
+
+  const handleBootstrap = (event) => {
+    if (event.source !== browserWindow.parent) {
+      return;
+    }
+    if (!matchesHostOrigin(hostOrigin, event.origin)) {
+      return;
+    }
+
+    const message = event.data;
+    if (!message || typeof message !== "object") {
+      return;
+    }
+    if (message.channel !== CHANNEL || message.contractVersion !== CONTRACT_VERSION || message.eventName !== BOOTSTRAP_EVENT) {
+      return;
+    }
+
+    const payload = message.payload;
+    if (!payload || typeof payload !== "object") {
+      return;
+    }
+    if (payload.application?.applicationId !== launchedApplicationId) {
+      return;
+    }
+    if (payload.launch?.launchInstanceId !== launchedLaunchInstanceId) {
+      return;
+    }
+    if (payload.host?.origin !== hostOrigin) {
+      return;
+    }
+
+    state.bootstrap = payload;
+    state.client = createBriefStudioGraphqlClient(payload);
+    connectNotifications();
+
+    logBriefStudio(
+      `bootstrap received applicationId=${payload.application.applicationId} launchInstanceId=${payload.launch.launchInstanceId} backendBaseUrl=${payload.transport.backendBaseUrl || "missing"}`,
+    );
+
+    refresh().catch(handleUiError);
   };
 
   const init = () => {
-    browserWindow.addEventListener("message", (event) => {
-      void handleBootstrap(event);
-    });
-
-    browserWindow.addEventListener("beforeunload", () => {
-      state.notificationHandle?.close();
-    });
-
+    browserWindow.addEventListener("message", handleBootstrap);
     elements.refreshButton?.addEventListener("click", () => {
-      void refresh().catch(handleUiError);
+      refresh().catch(handleUiError);
     });
-
     elements.createBriefForm?.addEventListener("submit", (event) => {
       event.preventDefault();
-      void createBrief().catch(handleUiError);
+      createBrief().catch(handleUiError);
     });
 
     if (document.readyState === "loading") {

@@ -21,9 +21,6 @@ const formatArtifactRef = (artifact) => {
   if (!artifact?.artifactRef) {
     return "No artifact payload";
   }
-  if (artifact.artifactRef.kind === "INLINE_JSON") {
-    return JSON.stringify(artifact.artifactRef.value, null, 2);
-  }
   return JSON.stringify(artifact.artifactRef, null, 2);
 };
 
@@ -61,7 +58,7 @@ export const renderBriefList = ({ state, elements, onSelectBrief, onError }) => 
 
   if (state.briefs.length === 0) {
     elements.briefList.className = "brief-list empty-state";
-    elements.briefList.textContent = "No briefs yet. Create one to start an app-owned runtime binding.";
+    elements.briefList.textContent = "No briefs yet. Create a business record, then launch one or more draft runs from it.";
     return;
   }
 
@@ -96,9 +93,41 @@ export const renderBriefList = ({ state, elements, onSelectBrief, onError }) => 
   }
 };
 
+const renderExecutionHistory = (executions) => {
+  if (!Array.isArray(executions) || executions.length === 0) {
+    return `<div class="empty-state">No draft runs yet for this brief.</div>`;
+  }
+
+  return `
+    <div class="note-list">
+      ${executions
+        .map(
+          (execution) => `
+            <article class="note-row">
+              <div class="brief-title-row">
+                <strong>${escapeHtml(execution.bindingId)}</strong>
+                <span class="badge">${escapeHtml(execution.status)}</span>
+              </div>
+              <div class="brief-meta-row muted small" style="margin-top: 10px;">
+                <span>Run ${escapeHtml(execution.runId)}</span>
+                <span>${escapeHtml(formatTime(execution.createdAt))}</span>
+              </div>
+              <div class="muted small" style="margin-top: 10px;">
+                Definition ${escapeHtml(execution.definitionId)} · Closed ${escapeHtml(formatTime(execution.terminatedAt))}
+              </div>
+              <div class="muted small" style="margin-top: 6px;">${escapeHtml(execution.lastErrorMessage || "No recorded runtime error")}</div>
+            </article>
+          `,
+        )
+        .join("")}
+    </div>
+  `;
+};
+
 export const renderBriefDetail = ({
   state,
   elements,
+  onLaunchDraftRun,
   onApprove,
   onReject,
   onAddReviewNote,
@@ -111,7 +140,7 @@ export const renderBriefDetail = ({
   const brief = state.detail;
   if (!brief) {
     elements.briefDetail.className = "empty-state";
-    elements.briefDetail.textContent = "Select a brief to inspect its projected artifacts, binding metadata, and review workflow.";
+    elements.briefDetail.textContent = "Select a brief to inspect its projected artifacts, execution history, and review workflow.";
     return;
   }
 
@@ -134,12 +163,12 @@ export const renderBriefDetail = ({
       </div>
       <div class="meta-grid compact-meta-grid">
         <div>
-          <span class="label">Binding</span>
+          <span class="label">Latest binding</span>
           <div class="value small">${escapeHtml(brief.latestBindingId || "—")}</div>
           <div class="muted small">Status ${escapeHtml(brief.latestBindingStatus || "—")}</div>
         </div>
         <div>
-          <span class="label">Run</span>
+          <span class="label">Latest run</span>
           <div class="value small">${escapeHtml(brief.latestRunId || "—")}</div>
           <div class="muted small">Approved ${escapeHtml(formatTime(brief.approvedAt))}</div>
         </div>
@@ -150,9 +179,18 @@ export const renderBriefDetail = ({
         </div>
       </div>
       <div class="action-row">
+        <button id="launch-draft-run" class="secondary-button" type="button">Launch draft run</button>
         <button id="approve-brief" class="primary-button" type="button">Approve</button>
         <button id="reject-brief" class="danger-button" type="button">Reject</button>
       </div>
+    </section>
+
+    <section class="detail-section">
+      <div>
+        <h3>Execution history</h3>
+        <p class="muted">One briefId can accumulate many bound runs over time.</p>
+      </div>
+      ${renderExecutionHistory(state.executions)}
     </section>
 
     <section class="detail-section">
@@ -184,7 +222,7 @@ export const renderBriefDetail = ({
     <section class="detail-section">
       <div>
         <h3>Review notes</h3>
-        <p class="muted">User-driven commands update app-owned review workflow state.</p>
+        <p class="muted">GraphQL mutations update the app-owned review workflow state.</p>
       </div>
       <div class="note-list">
         ${reviewNotes.length === 0
@@ -212,6 +250,9 @@ export const renderBriefDetail = ({
     </section>
   `;
 
+  document.getElementById("launch-draft-run")?.addEventListener("click", () => {
+    onLaunchDraftRun().catch(onError);
+  });
   document.getElementById("approve-brief")?.addEventListener("click", () => {
     onApprove().catch(onError);
   });
@@ -246,11 +287,8 @@ export const renderMetadata = ({ state, elements }) => {
   if (elements.requestContext) {
     elements.requestContext.textContent = `applicationId ${bootstrap.requestContext.applicationId} · launchInstanceId ${bootstrap.requestContext.launchInstanceId || "—"}`;
   }
-  if (elements.backendQueriesUrl) {
-    elements.backendQueriesUrl.textContent = bootstrap.transport.backendQueriesBaseUrl || "—";
-  }
-  if (elements.backendCommandsUrl) {
-    elements.backendCommandsUrl.textContent = bootstrap.transport.backendCommandsBaseUrl || "—";
+  if (elements.backendBaseUrl) {
+    elements.backendBaseUrl.textContent = bootstrap.transport.backendBaseUrl || "—";
   }
   if (elements.backendNotificationsUrl) {
     elements.backendNotificationsUrl.textContent = bootstrap.transport.backendNotificationsUrl || "—";

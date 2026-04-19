@@ -15,10 +15,9 @@
     "queries": false,
     "commands": false,
     "routes": false,
-    "graphql": false,
-    "notifications": false,
+    "graphql": true,
+    "notifications": true,
     "eventHandlers": true
   },
-  "migrationsDir": "backend/migrations",
-  "assetsDir": "backend/assets"
+  "migrationsDir": "backend/migrations"
 }
