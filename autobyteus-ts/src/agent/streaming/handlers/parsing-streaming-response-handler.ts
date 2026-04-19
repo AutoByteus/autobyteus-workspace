@@ -5,6 +5,7 @@ import { ToolInvocationAdapter } from '../adapters/invocation-adapter.js';
 import { ParserConfig } from '../parser/parser-context.js';
 import { ToolInvocation } from '../../tool-invocation.js';
 import { ChunkResponse } from '../../../llm/utils/response-types.js';
+import type { ParameterSchema } from '../../../utils/parameter-schema.js';
 
 export class ParsingStreamingResponseHandler extends StreamingResponseHandler {
   private parserNameValue: string;
@@ -14,6 +15,7 @@ export class ParsingStreamingResponseHandler extends StreamingResponseHandler {
   private adapter: ToolInvocationAdapter;
   private onSegmentEvent?: (event: SegmentEvent) => void;
   private onToolInvocation?: (invocation: ToolInvocation) => void;
+  private xmlArgumentSchemaResolver?: (toolName: string) => ParameterSchema | null | undefined;
   private isFinalized = false;
 
   private allEvents: SegmentEvent[] = [];
@@ -25,6 +27,7 @@ export class ParsingStreamingResponseHandler extends StreamingResponseHandler {
     config?: ParserConfig;
     parserName?: string;
     turnId?: string;
+    xmlArgumentSchemaResolver?: (toolName: string) => ParameterSchema | null | undefined;
   }) {
     super();
     const parserName = resolveParserName(options?.parserName);
@@ -32,7 +35,8 @@ export class ParsingStreamingResponseHandler extends StreamingResponseHandler {
     this.parserConfig = options?.config;
     this.turnIdValue = options?.config?.turnId ?? options?.turnId ?? (() => { throw new Error('ParsingStreamingResponseHandler requires turnId.'); })();
     this.parser = createStreamingParser({ config: options?.config, parserName: parserName, turnId: this.turnIdValue });
-    this.adapter = new ToolInvocationAdapter(this.parser.config.jsonToolParser);
+    this.xmlArgumentSchemaResolver = options?.xmlArgumentSchemaResolver;
+    this.adapter = new ToolInvocationAdapter(this.parser.config.jsonToolParser, this.xmlArgumentSchemaResolver);
     this.onSegmentEvent = options?.onSegmentEvent;
     this.onToolInvocation = options?.onToolInvocation;
   }
@@ -75,7 +79,7 @@ export class ParsingStreamingResponseHandler extends StreamingResponseHandler {
 
   reset(): void {
     this.parser = createStreamingParser({ config: this.parserConfig, parserName: this.parserNameValue, turnId: this.turnIdValue });
-    this.adapter = new ToolInvocationAdapter(this.parser.config.jsonToolParser);
+    this.adapter = new ToolInvocationAdapter(this.parser.config.jsonToolParser, this.xmlArgumentSchemaResolver);
     this.allEvents = [];
     this.allInvocations = [];
     this.isFinalized = false;

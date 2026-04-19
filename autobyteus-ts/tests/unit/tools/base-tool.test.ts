@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { BaseTool } from '../../../src/tools/base-tool.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../../../src/utils/parameter-schema.js';
+import { parseXmlArguments } from '../../../src/agent/streaming/adapters/tool-call-parsing.js';
 
 class RecordingTool extends BaseTool {
   public lastArgs: Record<string, unknown> | null = null;
@@ -137,5 +138,37 @@ describe('BaseTool', () => {
 
     const result = await tool.execute({ agentId: 'agent-1' }, { items: '' });
     expect(result).toEqual({ items: [] });
+  });
+
+  it('test_execute_accepts_array_args_parsed_from_xml', async () => {
+    const schema = new ParameterSchema();
+    schema.addParameter(new ParameterDefinition({
+      name: 'audio_paths',
+      type: ParameterType.ARRAY,
+      description: 'Audio paths',
+      required: true,
+      arrayItemSchema: ParameterType.STRING
+    }));
+    schema.addParameter(new ParameterDefinition({
+      name: 'output_audio_path',
+      type: ParameterType.STRING,
+      description: 'Output audio path',
+      required: true
+    }));
+    RecordingTool.schema = schema;
+    const tool = new RecordingTool();
+
+    const args = parseXmlArguments(
+      '<arguments>' +
+        '<arg name="audio_paths"><item>/tmp/1.wav</item><item>/tmp/2.wav</item></arg>' +
+        '<arg name="output_audio_path">/tmp/out.wav</arg>' +
+      '</arguments>'
+    );
+
+    const result = await tool.execute({ agentId: 'agent-1' }, args);
+    expect(result).toEqual({
+      audio_paths: ['/tmp/1.wav', '/tmp/2.wav'],
+      output_audio_path: '/tmp/out.wav'
+    });
   });
 });
