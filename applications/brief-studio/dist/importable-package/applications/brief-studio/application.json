@@ -1,16 +1,12 @@
 {
-  "manifestVersion": "2",
+  "manifestVersion": "3",
   "id": "brief-studio",
   "name": "Brief Studio",
-  "description": "External teaching sample with a two-member brief-creation team, app-owned migrations, and frontend/backend SDK usage.",
+  "description": "External teaching sample with app-owned runtime orchestration, durable event projection, and frontend/backend SDK usage.",
   "icon": "ui/icon.svg",
   "ui": {
     "entryHtml": "ui/index.html",
-    "frontendSdkContractVersion": "1"
-  },
-  "runtimeTarget": {
-    "kind": "AGENT_TEAM",
-    "localId": "brief-studio-team"
+    "frontendSdkContractVersion": "2"
   },
   "backend": {
     "bundleManifest": "backend/bundle.json"

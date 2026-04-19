@@ -2,7 +2,7 @@
 
 ## Scope
 
-Shows Applications as a first-class top-level module, resolves whether the module is available from a backend-owned per-node runtime capability, prepares launch drafts from bound runtime definitions, binds `/applications/[id]` to backend-owned durable application sessions, hosts bundled application UIs inside the generic iframe shell, and renders a native Execution view from retained application/member projections.
+Shows Applications as a first-class top-level module, resolves whether the module is available from a backend-owned per-node runtime capability, launches the generic application shell without creating a platform-owned execution, hosts bundled application UIs inside the iframe surface, and lets each application backend own its own runtime orchestration.
 
 ## Main Files
 
@@ -10,36 +10,27 @@ Shows Applications as a first-class top-level module, resolves whether the modul
 - `pages/applications/[id].vue`
 - `stores/applicationsCapabilityStore.ts`
 - `stores/applicationStore.ts`
-- `stores/applicationSessionStore.ts`
-- `stores/applicationPageStore.ts`
+- `stores/applicationHostStore.ts`
 - `middleware/feature-flags.global.ts`
 - `components/applications/ApplicationCard.vue`
-- `components/applications/ApplicationLaunchConfigModal.vue`
 - `components/applications/ApplicationShell.vue`
 - `components/applications/ApplicationSurface.vue`
 - `components/applications/ApplicationIframeHost.vue`
-- `components/applications/execution/ApplicationExecutionWorkspace.vue`
-- `services/applicationStreaming/ApplicationSessionStreamingService.ts`
-- `services/workspace/workspaceNavigationService.ts`
-- `composables/workspace/useWorkspaceRouteSelection.ts`
-- `utils/application/applicationLaunch.ts`
 - `utils/application/applicationAssetUrl.ts`
-- `utils/application/applicationSessionTransport.ts`
-- `types/application/ApplicationSession.ts`
+- `utils/application/applicationHostTransport.ts`
+- `utils/application/applicationLaunchDescriptor.ts`
+- `types/application/ApplicationHostTransport.ts`
 - `types/application/ApplicationIframeContract.ts`
-- `types/workspace/WorkspaceExecutionLink.ts`
 - `docs/application-bundle-iframe-contract-v1.md`
 
 ## Runtime Availability And Gating
 
-Applications availability is no longer controlled by a baked `runtimeConfig.public.enableApplications` flag.
+Applications availability is resolved from a backend-owned per-node capability.
 
-Instead:
-
-- `applicationsCapabilityStore` resolves the typed runtime Applications capability for the current bound node,
-- `AppLeftPanel.vue` and `LeftSidebarStrip.vue` show or hide the top-level Applications nav item from that store,
-- `middleware/feature-flags.global.ts` redirects away from `/applications` when the bound node says Applications is unavailable, and
-- `applicationStore` waits for capability resolution and clears cached catalog state when the capability is disabled, unresolved, or the bound node changes.
+- `applicationsCapabilityStore` resolves whether Applications are enabled for the currently bound node.
+- navigation surfaces show or hide the Applications module from that store.
+- `middleware/feature-flags.global.ts` redirects away from `/applications` when the bound node says Applications is unavailable.
+- `applicationStore` clears cached catalog state when capability resolution changes or the bound node changes.
 
 This means two windows bound to different nodes can legitimately show different Applications visibility at the same time.
 
@@ -49,132 +40,103 @@ This means two windows bound to different nodes can legitimately show different 
 
 Each application entry carries:
 
-- stable application id,
-- local application id,
-- owning `packageId`,
-- name and description,
-- transport-neutral `iconAssetPath` and `entryHtmlAssetPath`,
-- `writable` source metadata, and
-- a bound runtime target (`AGENT` or `AGENT_TEAM`) with a canonical `definitionId`.
+- stable application id
+- local application id
+- owning `packageId`
+- name and description
+- transport-neutral `iconAssetPath` and `entryHtmlAssetPath`
+- `writable` source metadata
+- bundled runtime resources exposed as `bundleResources[]`
 
-The frontend does not receive host-usable absolute URLs from the backend. It resolves asset paths against the currently bound REST base at render time.
+The generic host no longer treats one singular bundle resource as the required launch-time runtime target. The catalog exposes what the bundle contains; application backends decide if and when to use those resources.
 
 The store also owns stale-response protection for node switches: late catalog or detail responses from the old bound node are discarded instead of repopulating stale application state after `bindingRevision` changes.
 
-## Route Shell And Binding Flow
+## Host Launch Flow
 
-`pages/applications/[id].vue` is intentionally thin and delegates page behavior to `ApplicationShell.vue`.
+`pages/applications/[id].vue` stays intentionally thin and delegates page behavior to `ApplicationShell.vue`.
 
 On route load, the shell:
 
 1. fetches the application entry if needed,
-2. reads the optional `applicationSessionId` query,
-3. calls `applicationSessionStore.bindApplicationRoute(applicationId, requestedSessionId?)`, and
-4. canonicalizes the route query to the backend-resolved live session id.
+2. asks `applicationHostStore.startLaunch(applicationId)` to prepare the app backend,
+3. shows launch progress or launch failure state from that store, and
+4. renders `ApplicationSurface.vue` once the host launch reaches `ready`.
 
-Backend binding outcomes are surfaced directly in the UI:
+`applicationHostStore` is the authoritative owner for the generic host-side launch state:
 
-- `requested_live`: the requested session is still the live bound session.
-- `application_active`: the requested session is gone, so the page reattaches to the current live session for that application.
-- `none`: no live session exists for that application right now.
+- `idle`
+- `preparing`
+- `ready`
+- `failed`
 
-`applicationPageStore` keeps page-local UI state such as the current `application` vs `execution` mode and the selected member route key.
+The host launch is intentionally narrow. It does **not** create an agent run or team run. It only ensures the application backend is ready and produces one ephemeral `launchInstanceId` for iframe bootstrap correlation.
 
-## Launch And Session Flow
+## Application Surface Ownership
 
-1. `applicationStore` fetches catalog entries.
-2. `applicationSessionStore.prepareLaunchDraft()` loads the bound application plus the required agent/team definitions.
-3. Launch defaults come from persisted definition `defaultLaunchConfig` values:
-   - single-agent apps seed directly from the bound agent definition, and
-   - team apps seed global defaults from the bound team definition itself.
-4. `ApplicationLaunchConfigModal.vue` lets the user review/override the launch configuration before runtime creation.
-5. `applicationSessionStore.createApplicationSession()` calls the backend mutation, which creates the underlying run, persists one authoritative application session, and replaces any previous live session for the same application.
-6. The store caches the returned snapshot, updates the active-session index from backend truth only, and attaches the application-session WebSocket stream.
-7. `ApplicationShell.vue` becomes the page-shell owner for the live session: it keeps the default Application view app-first, switches between Application vs Execution modes, and hides operational metadata behind an explicit details surface.
-8. `ApplicationSurface.vue` and `ApplicationExecutionWorkspace.vue` render from the bound session snapshot.
-
-The frontend is a cache/orchestration owner over backend-authoritative session state; it no longer invents session ids or treats the browser cache as authoritative. Applications also follow the backend-owned one-live-session-per-application model explicitly: `Launch` / `Relaunch` / `Stop current session`, and relaunch replaces the current live session instead of creating a concurrent second launched copy in the page shell.
-
-## Application And Execution Modes
-
-When a live session exists, the page exposes two intentionally different surfaces:
-
-- `Application` mode is immersive and app-first by default. `ApplicationShell.vue` starts each newly bound live session in an immersive presentation, asks `appLayoutStore` for the outer shell to switch into `application_immersive`, and renders only a compact top-right controls trigger above the bundled app canvas. That trigger opens a clean right-side controls sheet instead of a floating dropdown, so host actions remain available without bringing back the old heavy host card. On desktop widths the live app canvas gently makes room for the sheet; on narrower widths the sheet overlays from the right. Exiting immersive mode restores a compact host toolbar while keeping the same bound session.
-- `Execution` mode renders `ApplicationExecutionWorkspace.vue`, a host-native retained-state view for member and artifact inspection. It shows the member rail, the selected member’s retained primary artifact, and any additional retained artifacts for that member. Switching to Execution always restores the standard host shell presentation so the workspace-style controls remain visible.
-
-Execution mode intentionally does **not** rebuild the full workspace monitor/chat/composer/grid inside Applications. Instead, it offers an explicit `Open full execution monitor` handoff back to `/workspace`. That handoff goes through one typed `WorkspaceExecutionLink` contract plus the workspace-owned `workspaceNavigationService.ts` / `useWorkspaceRouteSelection.ts` boundary rather than letting Applications components mutate workspace selection stores directly.
-
-## Session Ownership And Streaming
-
-`applicationSessionStore` is a frontend cache/orchestration owner over backend-authoritative session state.
-
-Key rules:
-
-- cached active sessions are derived from backend create/bind/query responses and session-stream snapshots,
-- only one live application session is tracked per application id,
-- terminated sessions disconnect their session-stream transport, and
-- `sendApplicationInputMessage()` forwards user input through the backend application-session boundary.
-
-`ApplicationSessionStreamingService` subscribes to `sessionStreamUrl` so retained projections update without a full route reload.
-
-## Iframe Bootstrap Ownership
-
-`ApplicationSurface.vue` is the authoritative host launch owner once route binding resolves a live session.
+`ApplicationSurface.vue` is the authoritative host launch owner once `applicationHostStore` returns a ready launch.
 
 It owns:
 
-- the immutable `ApplicationIframeLaunchDescriptor` for the current launch instance,
-- ready timeout / retry / failed state for the host launch boundary,
-- acceptance of the matching child ready signal, and
-- the decision to deliver bootstrap and stop the host spinner at bootstrap delivery.
+- the immutable iframe launch descriptor for the current app + launch instance
+- ready timeout / retry / remount logic
+- acceptance of the matching child ready signal
+- delivery of the bootstrap envelope into the iframe
 
-`ApplicationIframeHost.vue` is now an internal bridge only. It:
+`ApplicationIframeHost.vue` is an internal bridge only. It renders the iframe, validates the raw ready message against the current iframe window/origin/application/launch identity, and posts the supplied bootstrap envelope back to the iframe.
 
-- renders the iframe for a supplied descriptor,
-- logs `iframe load` diagnostically,
-- validates the raw ready message against the current iframe window/origin/session/launch instance, and
-- posts the supplied bootstrap envelope back to the iframe.
+## Iframe Bootstrap v2
 
-`applicationSessionStore` and `ApplicationSession` no longer track host bootstrap state; host launch waiting / failed / delivered state is now local to `ApplicationSurface.vue`.
+The host resolves `entryHtmlAssetPath` against the bound REST base, appends the versioned iframe launch hints, and bootstraps the child iframe only after it receives the matching ready event.
 
-The host launch owner:
+The v2 contract uses:
 
-- resolves `entryHtmlAssetPath` against the bound backend REST base,
-- derives one stable launch descriptor with `launchInstanceId`,
-- appends the required v1 launch hints,
-- accepts only the matching child ready event, and
-- posts the versioned bootstrap payload through `ApplicationIframeHost.vue`.
+- `autobyteusContractVersion`
+- `autobyteusApplicationId`
+- `autobyteusLaunchInstanceId`
+- `autobyteusHostOrigin`
 
-The bootstrap payload now includes two transport layers:
+The v2 bootstrap payload contains:
 
-### Host/runtime transport
+- `host.origin`
+- `application { applicationId, localApplicationId, packageId, name }`
+- `launch { launchInstanceId }`
+- `requestContext { applicationId, launchInstanceId }`
+- `transport` with host and app-backend gateway URLs
 
-- GraphQL HTTP
-- REST base
-- GraphQL WebSocket
-- application-session snapshot streaming (`sessionStreamUrl`)
+The payload intentionally does **not** contain a platform-owned execution id, session id, or prelaunched runtime summary.
 
-### App-scoped backend transport
+## Backend Gateway And SDK Boundary
 
-- `backendStatusUrl`
-- `backendQueriesBaseUrl`
-- `backendCommandsBaseUrl`
-- `backendGraphqlUrl`
-- `backendRoutesBaseUrl`
-- `backendNotificationsUrl`
+Bundled UIs should usually sit on top of `@autobyteus/application-frontend-sdk`, not on raw `postMessage` payloads alone.
 
-Those backend URLs already embed the authoritative route `applicationId`. App UIs should treat them as the stable platform-owned boundary for app-owned backend logic instead of inventing alternate host paths.
+The public author-facing surface is:
 
-## SDK Boundary
+- `@autobyteus/application-sdk-contracts` for shared manifest, request-context, storage, runtime-control, and execution-event types
+- `@autobyteus/application-frontend-sdk` for app UI query/command/GraphQL/notification helpers
+- `@autobyteus/application-backend-sdk` for backend definition typing
+- `application-bundle-iframe-contract-v1.md` plus `ApplicationIframeContract.ts` for the host bootstrap envelope itself
 
-The iframe bootstrap contract is still the transport handoff from host to app UI, but app authors are no longer expected to live on raw postMessage payloads alone.
+App UIs call their own backend through the platform-owned application backend gateway URLs delivered in `transport`.
 
-The public author-facing v1 surface is now:
+## Ownership Boundary
 
-- `@autobyteus/application-sdk-contracts` for shared manifest/backend/request/event types,
-- `@autobyteus/application-frontend-sdk` for app-UI query/command/GraphQL/notification helpers,
-- `@autobyteus/application-backend-sdk` for backend definition typing, and
-- `application-bundle-iframe-contract-v1.md` plus `ApplicationIframeContract.ts` for the host bootstrap envelope itself.
+The generic host owns:
+
+- catalog fetch
+- capability gating
+- app-backend ensure-ready
+- iframe bootstrap delivery
+- host launch retries
+
+The application backend owns:
+
+- business identifiers such as `executionRef`
+- when to start runs
+- which bundled resource ref to use
+- how runtime outputs project into app-owned state
+
+This separation is the core architectural change: the Applications page launches applications, not platform-owned application executions.
 
 ## Package Refresh Behavior
 
@@ -188,7 +150,6 @@ The public author-facing v1 surface is now:
 - `settings.md`
 - `../../autobyteus-server-ts/docs/modules/application_capability.md`
 - `../../autobyteus-server-ts/docs/modules/applications.md`
-- `../../autobyteus-server-ts/docs/modules/application_sessions.md`
 - `../../autobyteus-server-ts/docs/modules/application_backend_gateway.md`
 - `../../autobyteus-server-ts/docs/modules/application_engine.md`
 - `../../autobyteus-server-ts/docs/modules/application_storage.md`

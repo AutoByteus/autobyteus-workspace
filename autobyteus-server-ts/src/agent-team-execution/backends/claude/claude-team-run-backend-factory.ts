@@ -127,7 +127,7 @@ export class ClaudeTeamRunBackendFactory implements TeamRunBackendFactory {
         workspaceId: memberConfig.workspaceId ?? null,
         workspaceRootPath: memberConfig.workspaceRootPath ?? null,
         llmConfig: memberConfig.llmConfig ?? null,
-        applicationSessionContext: memberConfig.applicationSessionContext ?? null,
+        applicationExecutionContext: memberConfig.applicationExecutionContext ?? null,
       };
     });
   }

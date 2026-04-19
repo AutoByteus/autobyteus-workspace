@@ -102,28 +102,6 @@ const assertExistingDirectory = (bundleRootPath: string, relativePath: string, f
   }
 };
 
-const assertRuntimeTargetExists = (
-  bundleRootPath: string,
-  manifestRuntimeTarget: { kind: "AGENT" | "AGENT_TEAM"; localId: string },
-  localAgentIds: string[],
-  localTeamIds: string[],
-): void => {
-  if (manifestRuntimeTarget.kind === "AGENT") {
-    if (!localAgentIds.includes(manifestRuntimeTarget.localId)) {
-      throw new Error(
-        `Application bundle '${bundleRootPath}' runtime target agent '${manifestRuntimeTarget.localId}' was not found under agents/.`,
-      );
-    }
-    return;
-  }
-
-  if (!localTeamIds.includes(manifestRuntimeTarget.localId)) {
-    throw new Error(
-      `Application bundle '${bundleRootPath}' runtime target team '${manifestRuntimeTarget.localId}' was not found under agent-teams/.`,
-    );
-  }
-};
-
 const buildApplicationSource = (
   record: ScannedBundleRecord,
   localDefinitionId: string,
@@ -240,12 +218,6 @@ export class FileApplicationBundleProvider {
 
       const localAgentIds = await listDefinitionIds(path.join(applicationRootPath, "agents"), "agent.md");
       const localTeamIds = await listDefinitionIds(path.join(applicationRootPath, "agent-teams"), "team.md");
-      assertRuntimeTargetExists(
-        applicationRootPath,
-        manifest.runtimeTarget,
-        localAgentIds,
-        localTeamIds,
-      );
 
       records.push({
         packageId: root.packageId,
@@ -257,7 +229,6 @@ export class FileApplicationBundleProvider {
           description: manifest.description,
           iconRelativePath: manifest.iconRelativePath,
           entryHtmlRelativePath: manifest.entryHtmlRelativePath,
-          runtimeTarget: manifest.runtimeTarget,
           localAgentIds,
           localTeamIds,
           writable: await isWritablePath(applicationRootPath),
@@ -378,22 +349,26 @@ export class FileApplicationBundleProvider {
         description: record.bundle.description,
         iconAssetPath: null,
         entryHtmlAssetPath: "",
-        runtimeTarget: {
-          kind: record.bundle.runtimeTarget.kind,
-          localId: record.bundle.runtimeTarget.localId,
-          definitionId:
-            record.bundle.runtimeTarget.kind === "AGENT"
-              ? buildCanonicalApplicationOwnedAgentId(
-                  record.packageId,
-                  record.bundle.localApplicationId,
-                  record.bundle.runtimeTarget.localId,
-                )
-              : buildCanonicalApplicationOwnedTeamId(
-                  record.packageId,
-                  record.bundle.localApplicationId,
-                  record.bundle.runtimeTarget.localId,
-                ),
-        },
+        bundleResources: [
+          ...record.bundle.localAgentIds.map((localId) => ({
+            kind: "AGENT" as const,
+            localId,
+            definitionId: buildCanonicalApplicationOwnedAgentId(
+              record.packageId,
+              record.bundle.localApplicationId,
+              localId,
+            ),
+          })),
+          ...record.bundle.localTeamIds.map((localId) => ({
+            kind: "AGENT_TEAM" as const,
+            localId,
+            definitionId: buildCanonicalApplicationOwnedTeamId(
+              record.packageId,
+              record.bundle.localApplicationId,
+              localId,
+            ),
+          })),
+        ],
         writable: record.bundle.writable,
         applicationRootPath: record.bundle.applicationRootPath,
         packageRootPath: record.packageRootPath,

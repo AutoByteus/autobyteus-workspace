@@ -19,14 +19,14 @@ const normalizeRequestContext = (
   requestContext?: ApplicationRequestContext | null,
 ): ApplicationRequestContext | null => {
   if (!requestContext) {
-    return { applicationId, applicationSessionId: null };
+    return { applicationId, launchInstanceId: null };
   }
   if (requestContext.applicationId !== applicationId) {
     throw new Error("requestContext.applicationId must match the route applicationId.");
   }
   return {
     applicationId,
-    applicationSessionId: requestContext.applicationSessionId?.trim() ?? null,
+    launchInstanceId: requestContext.launchInstanceId?.trim() ?? null,
   };
 };
 
@@ -100,7 +100,7 @@ export class ApplicationBackendGatewayService {
     return this.engineHostService.getApplicationEngineStatus(applicationId);
   }
 
-  async ensureApplicationEngine(applicationId: string): Promise<ApplicationEngineStatus> {
+  async ensureApplicationReady(applicationId: string): Promise<ApplicationEngineStatus> {
     await this.requireApplication(applicationId);
     return this.engineHostService.ensureApplicationEngine(applicationId);
   }

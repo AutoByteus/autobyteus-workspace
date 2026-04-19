@@ -5,8 +5,8 @@ import {
   resolveApplicationAssetUrl,
 } from '../applicationAssetUrl'
 import {
-  APPLICATION_IFRAME_CONTRACT_VERSION_V1,
-  APPLICATION_IFRAME_QUERY_APPLICATION_SESSION_ID,
+  APPLICATION_IFRAME_CONTRACT_VERSION_V2,
+  APPLICATION_IFRAME_QUERY_APPLICATION_ID,
   APPLICATION_IFRAME_QUERY_CONTRACT_VERSION,
   APPLICATION_IFRAME_QUERY_HOST_ORIGIN,
   APPLICATION_IFRAME_QUERY_LAUNCH_INSTANCE_ID,
@@ -29,19 +29,19 @@ describe('applicationAssetUrl', () => {
     expect(resolveApplicationAssetOrigin(absoluteEntryHtmlUrl)).toBe('http://127.0.0.1:43123')
 
     const iframeSrc = appendApplicationIframeLaunchHints(absoluteEntryHtmlUrl, {
-      contractVersion: APPLICATION_IFRAME_CONTRACT_VERSION_V1,
-      applicationSessionId: 'app-session-123',
-      launchInstanceId: 'app-session-123::launch-1',
+      contractVersion: APPLICATION_IFRAME_CONTRACT_VERSION_V2,
+      applicationId: 'bundle-app__sample-package__sample-app',
+      launchInstanceId: 'bundle-app__sample-package__sample-app::launch-1',
       hostOrigin: normalizeApplicationHostOrigin('null', 'file:'),
     })
 
     const launchUrl = new URL(iframeSrc)
-    expect(launchUrl.searchParams.get(APPLICATION_IFRAME_QUERY_CONTRACT_VERSION)).toBe('1')
-    expect(launchUrl.searchParams.get(APPLICATION_IFRAME_QUERY_APPLICATION_SESSION_ID)).toBe(
-      'app-session-123',
+    expect(launchUrl.searchParams.get(APPLICATION_IFRAME_QUERY_CONTRACT_VERSION)).toBe('2')
+    expect(launchUrl.searchParams.get(APPLICATION_IFRAME_QUERY_APPLICATION_ID)).toBe(
+      'bundle-app__sample-package__sample-app',
     )
     expect(launchUrl.searchParams.get(APPLICATION_IFRAME_QUERY_LAUNCH_INSTANCE_ID)).toBe(
-      'app-session-123::launch-1',
+      'bundle-app__sample-package__sample-app::launch-1',
     )
     expect(launchUrl.searchParams.get(APPLICATION_IFRAME_QUERY_HOST_ORIGIN)).toBe('file://')
   })

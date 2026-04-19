@@ -20,13 +20,7 @@
         <div class="flex flex-wrap items-center gap-2">
           <h3 class="truncate text-lg font-semibold text-slate-900">{{ application.name }}</h3>
           <span class="rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-semibold text-blue-700">
-            {{ runtimeLabel }}
-          </span>
-          <span
-            v-if="activeSessionId"
-            class="rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700"
-          >
-            {{ $t('applications.shared.sessionActive') }}
+            {{ resourceLabel }}
           </span>
         </div>
         <p class="mt-2 line-clamp-3 text-sm text-slate-600">{{ descriptionText }}</p>
@@ -39,16 +33,18 @@
         <p class="mt-1 truncate text-sm text-slate-700">{{ application.packageId }}</p>
       </div>
       <div>
-        <p class="font-semibold uppercase tracking-wide text-slate-400">{{ $t('applications.shared.runtimeTarget') }}</p>
-        <p class="mt-1 truncate text-sm text-slate-700">{{ application.runtimeTarget.definitionId }}</p>
+        <p class="font-semibold uppercase tracking-wide text-slate-400">{{ $t('applications.shared.bundleResources') }}</p>
+        <p class="mt-1 text-sm text-slate-700">{{ resourceCountLabel }}</p>
       </div>
+    </div>
+
+    <div class="mt-4 rounded-lg bg-slate-50 px-3 py-3 text-xs text-slate-600">
+      {{ bundleResourceSummary }}
     </div>
 
     <div class="mt-5 flex items-center justify-between border-t border-slate-100 pt-4 text-sm">
       <span class="text-slate-500">
-        {{ activeSessionId
-          ? $t('applications.components.applications.ApplicationCard.resumeApplication')
-          : $t('applications.components.applications.ApplicationCard.openDetails') }}
+        {{ $t('applications.components.applications.ApplicationCard.openDetails') }}
       </span>
       <span class="font-semibold text-blue-700 transition-colors group-hover:text-blue-800">
         {{ $t('applications.components.applications.ApplicationCard.continue') }}
@@ -60,13 +56,12 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { useLocalization } from '~/composables/useLocalization'
-import type { ApplicationCatalogEntry } from '~/stores/applicationStore'
+import type { ApplicationCatalogEntry, ApplicationRuntimeResourceKind } from '~/stores/applicationStore'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { resolveApplicationAssetUrl } from '~/utils/application/applicationAssetUrl'
 
 const props = defineProps<{
   application: ApplicationCatalogEntry
-  activeSessionId?: string | null
 }>()
 
 defineEmits<{
@@ -101,11 +96,42 @@ watch(
 
 const showIcon = computed(() => Boolean(resolvedIconUrl.value) && !iconLoadFailed.value)
 const descriptionText = computed(() => props.application.description?.trim() || $t('applications.shared.noDescriptionProvided'))
-const runtimeLabel = computed(() => (
-  props.application.runtimeTarget.kind === 'AGENT'
+
+const formatKindLabel = (kind: ApplicationRuntimeResourceKind): string => (
+  kind === 'AGENT'
     ? $t('applications.shared.singleAgent')
     : $t('applications.shared.agentTeam')
-))
+)
+
+const resourceLabel = computed(() => {
+  const kinds = [...new Set(props.application.bundleResources.map((resource) => resource.kind))]
+  if (kinds.length === 0) {
+    return $t('applications.shared.noBundleResources')
+  }
+  if (kinds.length === 1) {
+    return formatKindLabel(kinds[0]!)
+  }
+  return $t('applications.shared.mixedResources')
+})
+
+const resourceCountLabel = computed(() => {
+  if (props.application.bundleResources.length === 0) {
+    return $t('applications.shared.noBundleResources')
+  }
+  return $t('applications.components.applications.ApplicationCard.resourceCount', {
+    count: props.application.bundleResources.length,
+  })
+})
+
+const bundleResourceSummary = computed(() => {
+  if (props.application.bundleResources.length === 0) {
+    return $t('applications.shared.noBundleResources')
+  }
+
+  return props.application.bundleResources
+    .map((resource) => `${resource.localId} → ${resource.definitionId}`)
+    .join(' · ')
+})
 
 const initials = computed(() => {
   const raw = props.application.name.trim()

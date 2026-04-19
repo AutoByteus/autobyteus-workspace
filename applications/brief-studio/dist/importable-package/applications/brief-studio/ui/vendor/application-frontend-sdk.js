@@ -1,5 +1,5 @@
 export const createApplicationClient = (options) => {
-    const getRequestContext = () => options.requestContext ?? { applicationId: options.applicationId, applicationSessionId: null };
+    const getRequestContext = () => options.requestContext ?? { applicationId: options.applicationId, launchInstanceId: null };
     return {
         getApplicationInfo: () => ({
             applicationId: options.applicationId,

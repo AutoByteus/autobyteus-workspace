@@ -2,7 +2,7 @@ import type { TranslationCatalog } from '../../runtime/types';
 
 const applicationMessages = {
   'applications.pages.applications.index.title': 'Applications',
-  'applications.pages.applications.index.description': 'Browse bundled applications, inspect their runtime targets, and launch them through the generic iframe host.',
+  'applications.pages.applications.index.description': 'Browse bundled applications and open their iframe hosts. Runtime orchestration now belongs to each application.',
   'applications.pages.applications.index.refreshCatalog': 'Refresh catalog',
   'applications.pages.applications.index.refreshingCatalog': 'Refreshing…',
   'applications.pages.applications.index.applicationsDisabled': 'Applications are disabled in the current runtime configuration.',
@@ -106,6 +106,20 @@ const applicationMessages = {
   'applications.components.applications.execution.ApplicationExecutionWorkspace.noRetainedMemberArtifactYet': 'No retained member artifact yet.',
   'applications.components.applications.execution.ApplicationExecutionWorkspace.selectMemberHint': 'Select a member to inspect retained artifacts.',
   'applications.components.applications.execution.ApplicationExecutionWorkspace.launchToInspectHint': 'Launch the application to inspect retained member artifacts.',
+
+  'applications.shared.bundleResources': 'Bundle resources',
+  'applications.shared.noBundleResources': 'No bundled runtime resources',
+  'applications.shared.mixedResources': 'Mixed resources',
+  'applications.components.applications.ApplicationCard.resourceCount': '{{count}} bundled resources',
+  'applications.components.applications.ApplicationShell.startingApplication': 'Starting application…',
+  'applications.components.applications.ApplicationShell.reloadApplication': 'Reload application',
+  'applications.components.applications.ApplicationShell.retryLaunch': 'Retry launch',
+  'applications.components.applications.ApplicationShell.applicationReadyNotice': 'The generic host now boots only the application backend and iframe. Runtime runs are created from inside the application through its own orchestration flows.',
+  'applications.components.applications.ApplicationShell.launchInstanceIdLabel': 'Launch instance id',
+  'applications.components.applications.ApplicationShell.engineStateLabel': 'Engine state',
+  'applications.components.applications.ApplicationShell.startedAtLabel': 'Engine started',
+  'applications.components.applications.ApplicationSurface.applicationUnavailable': 'Application launch is not ready',
+  'applications.components.applications.ApplicationSurface.applicationUnavailableHelp': 'Wait for the application host launch to complete or retry from the page shell.',
 } satisfies TranslationCatalog;
 
 export default applicationMessages;

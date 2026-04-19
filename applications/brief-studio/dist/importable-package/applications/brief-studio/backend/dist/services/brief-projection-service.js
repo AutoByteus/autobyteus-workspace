@@ -2,8 +2,7 @@ import { createArtifactRepository } from "../repositories/artifact-repository.js
 import { withAppDatabase, withTransaction } from "../repositories/app-database.js";
 import { createBriefRepository } from "../repositories/brief-repository.js";
 import { createProcessedEventRepository } from "../repositories/processed-event-repository.js";
-const deriveBriefId = (applicationSessionId) => `brief::${applicationSessionId}`;
-const deriveFallbackTitle = (applicationSessionId) => `Brief ${applicationSessionId.slice(0, 8)}`;
+const deriveFallbackTitle = (briefId) => `Brief ${briefId.slice(0, 8)}`;
 const preserveTerminalStatus = (nextStatus, currentStatus) => {
     if (currentStatus === "approved" || currentStatus === "rejected") {
         return currentStatus;
@@ -36,37 +35,56 @@ const resolveArtifactRule = (memberRouteKey, artifactType) => {
     }
     return rule;
 };
-export const projectArtifact = async (envelope, context) => {
-    if (envelope.event.family !== "ARTIFACT") {
-        return;
+const resolveLifecycleStatus = (family, currentStatus) => {
+    switch (family) {
+        case "RUN_STARTED":
+            return preserveTerminalStatus(currentStatus ?? "researching", currentStatus);
+        case "RUN_FAILED":
+        case "RUN_ORPHANED":
+            return preserveTerminalStatus("blocked", currentStatus);
+        case "RUN_TERMINATED":
+            return currentStatus ?? "blocked";
+        default:
+            return currentStatus ?? "researching";
     }
+};
+export const projectExecutionEvent = async (envelope, context) => {
     const event = envelope.event;
-    const payload = event.payload;
-    const briefId = deriveBriefId(event.applicationSessionId);
-    let readyNotification = null;
-    withAppDatabase(context.storage.appDatabasePath, (db) => {
-        withTransaction(db, () => {
-            const briefRepository = createBriefRepository(db);
-            const artifactRepository = createArtifactRepository(db);
-            const processedEventRepository = createProcessedEventRepository(db);
-            if (!processedEventRepository.claimEvent({
-                eventId: event.eventId,
-                briefId,
-                journalSequence: event.journalSequence,
-                processedAt: event.publishedAt,
-            })) {
-                return;
+    const briefId = event.executionRef.trim();
+    if (!briefId) {
+        throw new Error("Brief Studio received an execution event without executionRef.");
+    }
+    const readyNotification = withAppDatabase(context.storage.appDatabasePath, (db) => withTransaction(db, () => {
+        const briefRepository = createBriefRepository(db);
+        const artifactRepository = createArtifactRepository(db);
+        const processedEventRepository = createProcessedEventRepository(db);
+        if (!processedEventRepository.claimEvent({
+            eventId: event.eventId,
+            briefId,
+            journalSequence: event.journalSequence,
+            processedAt: event.publishedAt,
+        })) {
+            return null;
+        }
+        const currentBrief = briefRepository.getById(briefId);
+        const fallbackTitle = currentBrief?.title || deriveFallbackTitle(briefId);
+        if (event.family === "ARTIFACT") {
+            if (!event.producer?.memberRouteKey) {
+                throw new Error("Brief Studio artifact projection requires producer.memberRouteKey.");
             }
-            const currentBrief = briefRepository.getById(briefId);
+            const payload = event.payload;
             const artifactRule = resolveArtifactRule(event.producer.memberRouteKey, payload.artifactType);
-            const title = payload.title?.trim() || currentBrief?.title || deriveFallbackTitle(event.applicationSessionId);
+            const title = payload.title?.trim() || currentBrief?.title || fallbackTitle;
             const nextStatus = artifactRule.resolveStatus(payload.artifactType, currentBrief?.status ?? null);
             briefRepository.upsertProjectedBrief({
                 briefId,
-                applicationSessionId: event.applicationSessionId,
                 title,
                 status: nextStatus,
                 updatedAt: event.publishedAt,
+                latestBindingId: event.binding.bindingId,
+                latestRunId: event.binding.runtime.runId,
+                latestBindingStatus: event.binding.status,
+                lastErrorMessage: null,
             });
             artifactRepository.upsertArtifact({
                 briefId,
@@ -82,20 +100,31 @@ export const projectArtifact = async (envelope, context) => {
                 updatedAt: event.publishedAt,
             });
             if (artifactRule.artifactKind === "writer" && payload.artifactType === "final_brief") {
-                readyNotification = {
+                return {
                     topic: "brief.ready_for_review",
                     payload: {
                         briefId,
-                        applicationSessionId: event.applicationSessionId,
                         eventId: event.eventId,
                         journalSequence: event.journalSequence,
+                        bindingId: event.binding.bindingId,
                     },
                 };
             }
+            return null;
+        }
+        briefRepository.upsertProjectedBrief({
+            briefId,
+            title: fallbackTitle,
+            status: resolveLifecycleStatus(event.family, currentBrief?.status ?? null),
+            updatedAt: event.publishedAt,
+            latestBindingId: event.binding.bindingId,
+            latestRunId: event.binding.runtime.runId,
+            latestBindingStatus: event.binding.status,
+            lastErrorMessage: event.binding.lastErrorMessage ?? null,
         });
-    });
-    const notificationToPublish = readyNotification;
-    if (notificationToPublish) {
-        await context.publishNotification(notificationToPublish.topic, notificationToPublish.payload);
+        return null;
+    }));
+    if (readyNotification) {
+        await context.publishNotification(readyNotification.topic, readyNotification.payload);
     }
 };

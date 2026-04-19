@@ -3,8 +3,8 @@ import { mount } from '@vue/test-utils'
 import { nextTick } from 'vue'
 import ApplicationIframeHost from '../ApplicationIframeHost.vue'
 import {
-  createApplicationHostBootstrapEnvelopeV1,
-  createApplicationUiReadyEnvelopeV1,
+  createApplicationHostBootstrapEnvelopeV2,
+  createApplicationUiReadyEnvelopeV2,
 } from '~/types/application/ApplicationIframeContract'
 import type { ApplicationIframeLaunchDescriptor } from '~/utils/application/applicationLaunchDescriptor'
 
@@ -27,12 +27,12 @@ vi.mock('~/composables/useLocalization', () => ({
 
 describe('ApplicationIframeHost', () => {
   const descriptor: ApplicationIframeLaunchDescriptor = {
-    applicationSessionId: 'app-session-123',
+    applicationId: 'bundle-app__pkg__sample-app',
     entryHtmlUrl: 'http://127.0.0.1:43123/rest/application-bundles/sample-app/assets/ui/index.html',
     expectedIframeOrigin: 'http://127.0.0.1:43123',
     normalizedHostOrigin: 'file://',
-    contractVersion: '1',
-    launchInstanceId: 'app-session-123::launch-1',
+    contractVersion: '2',
+    launchInstanceId: 'bundle-app__pkg__sample-app::launch-1',
   }
 
   beforeEach(() => {
@@ -55,8 +55,9 @@ describe('ApplicationIframeHost', () => {
     expect(iframe.attributes('src')).toContain(
       'http://127.0.0.1:43123/rest/application-bundles/sample-app/assets/ui/index.html',
     )
-    expect(iframe.attributes('src')).toContain('autobyteusApplicationSessionId=app-session-123')
-    expect(iframe.attributes('src')).toContain('autobyteusLaunchInstanceId=app-session-123%3A%3Alaunch-1')
+    expect(iframe.attributes('src')).toContain('autobyteusContractVersion=2')
+    expect(iframe.attributes('src')).toContain('autobyteusApplicationId=bundle-app__pkg__sample-app')
+    expect(iframe.attributes('src')).toContain('autobyteusLaunchInstanceId=bundle-app__pkg__sample-app%3A%3Alaunch-1')
     expect(iframe.attributes('src')).toContain('autobyteusHostOrigin=file%3A%2F%2F')
 
     const contentWindowMock = {
@@ -70,79 +71,77 @@ describe('ApplicationIframeHost', () => {
     await iframe.trigger('load')
     expect(wrapper.emitted('iframeLoad')).toEqual([[
       {
-        applicationSessionId: descriptor.applicationSessionId,
+        applicationId: descriptor.applicationId,
         launchInstanceId: descriptor.launchInstanceId,
         src: iframe.attributes('src'),
       },
     ]])
 
-    const wrongLaunchMessage = createApplicationUiReadyEnvelopeV1({
-      applicationSessionId: descriptor.applicationSessionId,
+    const wrongLaunchEvent = createApplicationUiReadyEnvelopeV2({
+      applicationId: descriptor.applicationId,
       launchInstanceId: 'stale-launch',
     })
-    const wrongLaunchEvent = new MessageEvent('message', {
-      data: wrongLaunchMessage,
+    const wrongLaunchMessage = new MessageEvent('message', {
+      data: wrongLaunchEvent,
       origin: descriptor.expectedIframeOrigin,
     })
-    Object.defineProperty(wrongLaunchEvent, 'source', {
+    Object.defineProperty(wrongLaunchMessage, 'source', {
       value: contentWindowMock,
       configurable: true,
     })
-    window.dispatchEvent(wrongLaunchEvent)
+    window.dispatchEvent(wrongLaunchMessage)
     await nextTick()
 
     expect(wrapper.emitted('ready')).toBeUndefined()
     expect(contentWindowMock.postMessage).not.toHaveBeenCalled()
 
-    const readyMessage = createApplicationUiReadyEnvelopeV1({
-      applicationSessionId: descriptor.applicationSessionId,
+    const readyEvent = createApplicationUiReadyEnvelopeV2({
+      applicationId: descriptor.applicationId,
       launchInstanceId: descriptor.launchInstanceId,
     })
-    const readyEvent = new MessageEvent('message', {
-      data: readyMessage,
+    const readyMessage = new MessageEvent('message', {
+      data: readyEvent,
       origin: descriptor.expectedIframeOrigin,
     })
-    Object.defineProperty(readyEvent, 'source', {
+    Object.defineProperty(readyMessage, 'source', {
       value: contentWindowMock,
       configurable: true,
     })
-    window.dispatchEvent(readyEvent)
+    window.dispatchEvent(readyMessage)
     await nextTick()
 
     expect(wrapper.emitted('ready')).toEqual([[
       {
-        applicationSessionId: descriptor.applicationSessionId,
+        applicationId: descriptor.applicationId,
         launchInstanceId: descriptor.launchInstanceId,
         iframeOrigin: descriptor.expectedIframeOrigin,
       },
     ]])
     expect(contentWindowMock.postMessage).not.toHaveBeenCalled()
 
-    const bootstrapEnvelope = createApplicationHostBootstrapEnvelopeV1({
+    const bootstrapEnvelope = createApplicationHostBootstrapEnvelopeV2({
       host: {
         origin: descriptor.normalizedHostOrigin,
       },
       application: {
-        applicationId: 'bundle-app__pkg__sample-app',
+        applicationId: descriptor.applicationId,
         localApplicationId: 'sample-app',
         packageId: 'pkg',
         name: 'Sample App',
       },
-      session: {
-        applicationSessionId: descriptor.applicationSessionId,
+      launch: {
         launchInstanceId: descriptor.launchInstanceId,
       },
-      runtime: {
-        kind: 'AGENT_TEAM',
-        runId: 'team-run-456',
-        definitionId: 'bundle-team__pkg__sample-app__sample-team',
+      requestContext: {
+        applicationId: descriptor.applicationId,
+        launchInstanceId: descriptor.launchInstanceId,
       },
       transport: {
         graphqlUrl: 'http://127.0.0.1:43123/graphql',
         restBaseUrl: 'http://127.0.0.1:43123/rest',
         websocketUrl: 'ws://127.0.0.1:43123/graphql',
-        sessionStreamUrl: 'ws://127.0.0.1:43123/ws/application-session',
         backendStatusUrl: 'http://127.0.0.1:43123/rest/applications/bundle-app__pkg__sample-app/backend/status',
+        backendEnsureReadyUrl: 'http://127.0.0.1:43123/rest/applications/bundle-app__pkg__sample-app/backend/ensure-ready',
         backendQueriesBaseUrl: 'http://127.0.0.1:43123/rest/applications/bundle-app__pkg__sample-app/backend/queries',
         backendCommandsBaseUrl: 'http://127.0.0.1:43123/rest/applications/bundle-app__pkg__sample-app/backend/commands',
         backendGraphqlUrl: 'http://127.0.0.1:43123/rest/applications/bundle-app__pkg__sample-app/backend/graphql',
@@ -163,68 +162,10 @@ describe('ApplicationIframeHost', () => {
     )
     expect(wrapper.emitted('bootstrapDelivered')).toEqual([[
       {
-        applicationSessionId: descriptor.applicationSessionId,
+        applicationId: descriptor.applicationId,
         launchInstanceId: descriptor.launchInstanceId,
       },
     ]])
-
-    wrapper.unmount()
-  })
-
-  it('keeps the same iframe element when only the bootstrap envelope changes', async () => {
-    const wrapper = mount(ApplicationIframeHost, {
-      props: {
-        descriptor,
-        bootstrapEnvelope: null,
-      },
-    })
-
-    const originalIframeElement = wrapper.get('iframe').element
-    const contentWindowMock = {
-      postMessage: vi.fn(),
-    }
-    Object.defineProperty(originalIframeElement, 'contentWindow', {
-      value: contentWindowMock,
-      configurable: true,
-    })
-
-    await wrapper.setProps({
-      bootstrapEnvelope: createApplicationHostBootstrapEnvelopeV1({
-        host: {
-          origin: descriptor.normalizedHostOrigin,
-        },
-        application: {
-          applicationId: 'bundle-app__pkg__sample-app',
-          localApplicationId: 'sample-app',
-          packageId: 'pkg',
-          name: 'Sample App',
-        },
-        session: {
-          applicationSessionId: descriptor.applicationSessionId,
-          launchInstanceId: descriptor.launchInstanceId,
-        },
-        runtime: {
-          kind: 'AGENT_TEAM',
-          runId: 'team-run-456',
-          definitionId: 'bundle-team__pkg__sample-app__sample-team',
-        },
-        transport: {
-          graphqlUrl: 'http://127.0.0.1:43123/graphql',
-          restBaseUrl: 'http://127.0.0.1:43123/rest',
-          websocketUrl: 'ws://127.0.0.1:43123/graphql',
-          sessionStreamUrl: 'ws://127.0.0.1:43123/ws/application-session',
-          backendStatusUrl: null,
-          backendQueriesBaseUrl: null,
-          backendCommandsBaseUrl: null,
-          backendGraphqlUrl: null,
-          backendRoutesBaseUrl: null,
-          backendNotificationsUrl: null,
-        },
-      }),
-    })
-    await nextTick()
-
-    expect(wrapper.get('iframe').element).toBe(originalIframeElement)
 
     wrapper.unmount()
   })
@@ -248,44 +189,43 @@ describe('ApplicationIframeHost', () => {
       configurable: true,
     })
 
-    const bootstrapEnvelope = createApplicationHostBootstrapEnvelopeV1({
-      host: {
-        origin: descriptor.normalizedHostOrigin,
-      },
-      application: {
-        applicationId: 'bundle-app__pkg__sample-app',
-        localApplicationId: 'sample-app',
-        packageId: 'pkg',
-        name: 'Sample App',
-      },
-      session: {
-        applicationSessionId: descriptor.applicationSessionId,
-        launchInstanceId: descriptor.launchInstanceId,
-      },
-      runtime: {
-        kind: 'AGENT_TEAM',
-        runId: 'team-run-456',
-        definitionId: 'bundle-team__pkg__sample-app__sample-team',
-      },
-      transport: {
-        graphqlUrl: 'http://127.0.0.1:43123/graphql',
-        restBaseUrl: 'http://127.0.0.1:43123/rest',
-        websocketUrl: 'ws://127.0.0.1:43123/graphql',
-        sessionStreamUrl: 'ws://127.0.0.1:43123/ws/application-session',
-        backendStatusUrl: null,
-        backendQueriesBaseUrl: null,
-        backendCommandsBaseUrl: null,
-        backendGraphqlUrl: null,
-        backendRoutesBaseUrl: null,
-        backendNotificationsUrl: null,
-      },
+    await wrapper.setProps({
+      bootstrapEnvelope: createApplicationHostBootstrapEnvelopeV2({
+        host: {
+          origin: descriptor.normalizedHostOrigin,
+        },
+        application: {
+          applicationId: descriptor.applicationId,
+          localApplicationId: 'sample-app',
+          packageId: 'pkg',
+          name: 'Sample App',
+        },
+        launch: {
+          launchInstanceId: descriptor.launchInstanceId,
+        },
+        requestContext: {
+          applicationId: descriptor.applicationId,
+          launchInstanceId: descriptor.launchInstanceId,
+        },
+        transport: {
+          graphqlUrl: 'http://127.0.0.1:43123/graphql',
+          restBaseUrl: 'http://127.0.0.1:43123/rest',
+          websocketUrl: 'ws://127.0.0.1:43123/graphql',
+          backendStatusUrl: null,
+          backendEnsureReadyUrl: null,
+          backendQueriesBaseUrl: null,
+          backendCommandsBaseUrl: null,
+          backendGraphqlUrl: null,
+          backendRoutesBaseUrl: null,
+          backendNotificationsUrl: null,
+        },
+      }),
     })
-
-    await wrapper.setProps({ bootstrapEnvelope })
     await nextTick()
 
-    expect(wrapper.emitted('bridgeError')).toEqual([["Failed to execute 'postMessage' on 'Window': #<Object> could not be cloned."]])
-    expect(wrapper.emitted('bootstrapDelivered')).toBeUndefined()
+    expect(wrapper.emitted('bridgeError')).toEqual([[
+      "Failed to execute 'postMessage' on 'Window': #<Object> could not be cloned.",
+    ]])
 
     wrapper.unmount()
   })

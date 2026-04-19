@@ -11,8 +11,7 @@ export const ApplicationFields = gql`
     iconAssetPath
     entryHtmlAssetPath
     writable
-    runtimeTarget {
-      __typename
+    bundleResources {
       kind
       localId
       definitionId

@@ -13,7 +13,8 @@
         <h1>Brief Studio</h1>
         <p class="lede">
           A small imported application that teaches AutoByteus app authors how to combine the frontend SDK,
-          backend SDK, app-owned migrations, and durable event projection.
+          backend SDK, app-owned migrations, app-owned runtime orchestration, and durable execution-event
+          projection.
         </p>
       </header>
 
@@ -24,7 +25,8 @@
       <details class="card details-panel">
         <summary class="details-summary">Teaching details</summary>
         <p class="details-copy muted">
-          Hidden by default so the application stays focused on the brief list, detail view, and review workflow.
+          The generic host only launches the application shell and prepares the backend. This app then chooses when
+          to create a brief, which bundled resource to run, and which app-owned <code>executionRef</code> to bind.
         </p>
         <div class="meta-grid">
           <div>
@@ -33,29 +35,55 @@
             <div id="application-ids" class="muted">—</div>
           </div>
           <div>
-            <span class="label">Session</span>
-            <div id="session-id" class="value">—</div>
-            <div id="runtime-summary" class="muted">—</div>
+            <span class="label">Launch</span>
+            <div id="launch-instance-id" class="value">—</div>
+            <div id="request-context" class="muted">—</div>
           </div>
           <div>
             <span class="label">Backend gateway</span>
             <div id="backend-queries-url" class="value small">—</div>
+            <div id="backend-commands-url" class="muted small">—</div>
             <div id="backend-notifications-url" class="muted small">—</div>
           </div>
         </div>
       </details>
+
+      <section class="card composer-panel">
+        <div class="panel-header">
+          <div>
+            <h2>Create a brief</h2>
+            <p class="muted">This command creates an app-owned <code>briefId</code> and starts one bundled team run with <code>executionRef = briefId</code>.</p>
+          </div>
+        </div>
+        <form id="create-brief-form" class="brief-composer">
+          <div class="composer-grid">
+            <label class="field">
+              <span class="label">Brief title</span>
+              <input id="brief-title-input" type="text" placeholder="Launch messaging orchestration brief" />
+            </label>
+            <label class="field">
+              <span class="label">LLM model identifier</span>
+              <input id="model-identifier-input" type="text" value="gpt-5.4-mini" />
+            </label>
+          </div>
+          <div class="action-row">
+            <button id="create-brief-button" class="primary-button" type="submit">Create brief</button>
+            <span class="muted small">The host does not preselect a runtime target or show a launch modal.</span>
+          </div>
+        </form>
+      </section>
 
       <section class="content-grid">
         <aside class="card list-panel">
           <div class="panel-header">
             <div>
               <h2>Briefs</h2>
-              <p class="muted">Projected from researcher/writer runtime publications.</p>
+              <p class="muted">Projected from lifecycle and artifact events keyed by app-owned execution refs.</p>
             </div>
             <button id="refresh-button" class="ghost-button" type="button">Refresh</button>
           </div>
           <div id="brief-list" class="brief-list empty-state">
-            No brief rows yet. Launch the app and let the researcher/writer publish runtime events.
+            No briefs yet. Create one to start an app-owned runtime binding.
           </div>
         </aside>
 
@@ -63,11 +91,11 @@
           <div class="panel-header">
             <div>
               <h2>Brief detail</h2>
-              <p class="muted">App-owned queries and commands run through the platform backend gateway.</p>
+              <p class="muted">Queries and commands flow through the platform-owned backend gateway.</p>
             </div>
           </div>
           <div id="brief-detail" class="empty-state">
-            Select a brief to inspect its projected artifacts and review state.
+            Select a brief to inspect its projected artifacts, binding metadata, and review workflow.
           </div>
         </section>
       </section>
@@ -76,7 +104,7 @@
         <div class="panel-header">
           <div>
             <h2>Backend notifications</h2>
-            <p class="muted">Optional app notifications fan out through the platform-owned websocket stream.</p>
+            <p class="muted">Optional app notifications fan out through the platform-owned application backend stream.</p>
           </div>
         </div>
         <div id="notification-list" class="notification-list empty-state">No notifications yet.</div>

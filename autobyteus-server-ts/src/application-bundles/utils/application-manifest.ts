@@ -1,11 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
 import {
-  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V1,
-  APPLICATION_MANIFEST_VERSION_V2,
-  type ApplicationManifestV2,
+  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V2,
+  APPLICATION_MANIFEST_VERSION_V3,
+  type ApplicationManifestV3,
 } from "@autobyteus/application-sdk-contracts";
-import type { ApplicationRuntimeTargetKind } from "@autobyteus/application-sdk-contracts";
 
 export const APPLICATION_MANIFEST_FILE_NAME = "application.json";
 
@@ -16,10 +15,6 @@ type ParsedManifest = {
   iconRelativePath: string | null;
   entryHtmlRelativePath: string;
   backendBundleManifestRelativePath: string;
-  runtimeTarget: {
-    kind: ApplicationRuntimeTargetKind;
-    localId: string;
-  };
 };
 
 export class ApplicationManifestParseError extends Error {
@@ -77,23 +72,6 @@ const normalizeBundleRelativePath = (
   return normalizedRelative;
 };
 
-const normalizeRuntimeTarget = (value: unknown): ParsedManifest["runtimeTarget"] => {
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    throw new ApplicationManifestParseError("runtimeTarget must be an object.");
-  }
-
-  const candidate = value as Record<string, unknown>;
-  const kind = normalizeRequiredString(candidate.kind, "runtimeTarget.kind");
-  if (kind !== "AGENT" && kind !== "AGENT_TEAM") {
-    throw new ApplicationManifestParseError("runtimeTarget.kind must be 'AGENT' or 'AGENT_TEAM'.");
-  }
-
-  return {
-    kind,
-    localId: normalizeRequiredString(candidate.localId, "runtimeTarget.localId"),
-  };
-};
-
 export const parseApplicationManifest = (
   bundleRootPath: string,
   manifestPath: string,
@@ -116,11 +94,11 @@ export const parseApplicationManifest = (
     throw new ApplicationManifestParseError("Application manifest must be a JSON object.");
   }
 
-  const manifest = payload as ApplicationManifestV2 & Record<string, unknown>;
+  const manifest = payload as ApplicationManifestV3 & Record<string, unknown>;
   const manifestVersion = normalizeRequiredString(manifest.manifestVersion, "manifestVersion");
-  if (manifestVersion !== APPLICATION_MANIFEST_VERSION_V2) {
+  if (manifestVersion !== APPLICATION_MANIFEST_VERSION_V3) {
     throw new ApplicationManifestParseError(
-      `Unsupported application manifestVersion '${manifestVersion}'. Expected '${APPLICATION_MANIFEST_VERSION_V2}'.`,
+      `Unsupported application manifestVersion '${manifestVersion}'. Expected '${APPLICATION_MANIFEST_VERSION_V3}'.`,
     );
   }
 
@@ -128,7 +106,7 @@ export const parseApplicationManifest = (
     (manifest.ui as Record<string, unknown> | undefined)?.frontendSdkContractVersion,
     "ui.frontendSdkContractVersion",
   );
-  if (frontendSdkContractVersion !== APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V1) {
+  if (frontendSdkContractVersion !== APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V2) {
     throw new ApplicationManifestParseError(
       `Unsupported ui.frontendSdkContractVersion '${frontendSdkContractVersion}'.`,
     );
@@ -156,7 +134,6 @@ export const parseApplicationManifest = (
       "backend.bundleManifest",
       { requiredPrefix: "backend/" },
     ),
-    runtimeTarget: normalizeRuntimeTarget(manifest.runtimeTarget),
   };
 };
 

@@ -9,6 +9,7 @@ import { getApplicationBackendGatewayService } from "../../application-backend-g
 
 const gateway = () => getApplicationBackendGatewayService();
 const APPLICATION_BACKEND_ROUTE_BASE = "/applications/:applicationId/backend";
+const LAUNCH_INSTANCE_HEADER = "x-autobyteus-launch-instance-id";
 
 const readRequestContext = (
   applicationId: string,
@@ -18,32 +19,32 @@ const readRequestContext = (
   if (bodyRequestContext && typeof bodyRequestContext === "object" && !Array.isArray(bodyRequestContext)) {
     return {
       applicationId,
-      applicationSessionId:
-        typeof (bodyRequestContext as Record<string, unknown>).applicationSessionId === "string"
-          ? ((bodyRequestContext as Record<string, unknown>).applicationSessionId as string)
+      launchInstanceId:
+        typeof (bodyRequestContext as Record<string, unknown>).launchInstanceId === "string"
+          ? ((bodyRequestContext as Record<string, unknown>).launchInstanceId as string)
           : null,
     };
   }
 
-  const headerSessionId = request.headers["x-autobyteus-application-session-id"];
-  if (typeof headerSessionId === "string" && headerSessionId.trim().length > 0) {
+  const headerLaunchInstanceId = request.headers[LAUNCH_INSTANCE_HEADER];
+  if (typeof headerLaunchInstanceId === "string" && headerLaunchInstanceId.trim().length > 0) {
     return {
       applicationId,
-      applicationSessionId: headerSessionId.trim(),
+      launchInstanceId: headerLaunchInstanceId.trim(),
     };
   }
 
-  const querySessionId = (request.query as Record<string, unknown> | undefined)?.applicationSessionId;
-  if (typeof querySessionId === "string" && querySessionId.trim().length > 0) {
+  const queryLaunchInstanceId = (request.query as Record<string, unknown> | undefined)?.launchInstanceId;
+  if (typeof queryLaunchInstanceId === "string" && queryLaunchInstanceId.trim().length > 0) {
     return {
       applicationId,
-      applicationSessionId: querySessionId.trim(),
+      launchInstanceId: queryLaunchInstanceId.trim(),
     };
   }
 
   return {
     applicationId,
-    applicationSessionId: null,
+    launchInstanceId: null,
   };
 };
 
@@ -81,7 +82,6 @@ const sendGatewayError = (reply: { code: (statusCode: number) => { send: (payloa
   }
   if (
     message.includes("must match")
-    || message.includes("was not found")
     || message.includes("No application route matched")
   ) {
     return reply.code(400).send({ detail: message });
@@ -95,6 +95,18 @@ export async function registerApplicationBackendRoutes(app: FastifyInstance): Pr
     async (request, reply) => {
       try {
         const status = await gateway().getApplicationEngineStatus(request.params.applicationId);
+        return reply.send(status);
+      } catch (error) {
+        return sendGatewayError(reply, error);
+      }
+    },
+  );
+
+  app.post<{ Params: { applicationId: string } }>(
+    `${APPLICATION_BACKEND_ROUTE_BASE}/ensure-ready`,
+    async (request, reply) => {
+      try {
+        const status = await gateway().ensureApplicationReady(request.params.applicationId);
         return reply.send(status);
       } catch (error) {
         return sendGatewayError(reply, error);

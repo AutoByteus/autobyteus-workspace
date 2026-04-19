@@ -1,0 +1,17 @@
+{
+  "coordinatorMemberName": "writer",
+  "members": [
+    {
+      "memberName": "researcher",
+      "ref": "researcher",
+      "refType": "agent",
+      "refScope": "team_local"
+    },
+    {
+      "memberName": "writer",
+      "ref": "writer",
+      "refType": "agent",
+      "refScope": "team_local"
+    }
+  ]
+}

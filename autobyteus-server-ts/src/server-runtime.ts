@@ -20,7 +20,9 @@ import { scheduleBackgroundTasks } from "./startup/background-runner.js";
 import { registerRestRoutes } from "./api/rest/index.js";
 import { registerGraphql } from "./api/graphql/index.js";
 import { registerWebsocketRoutes } from "./api/websocket/index.js";
-import { getApplicationPublicationDispatchService } from "./application-sessions/services/application-publication-dispatch-service.js";
+import { getApplicationExecutionEventDispatchService } from "./application-orchestration/services/application-execution-event-dispatch-service.js";
+import { getApplicationOrchestrationRecoveryService } from "./application-orchestration/services/application-orchestration-recovery-service.js";
+import { getApplicationOrchestrationStartupGate } from "./application-orchestration/services/application-orchestration-startup-gate.js";
 import {
   startReceiptWorkflowRuntime,
   stopReceiptWorkflowRuntime,
@@ -154,9 +156,13 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
   }
 
   try {
-    await getApplicationPublicationDispatchService().resumePendingDispatches();
+    await getApplicationOrchestrationStartupGate().runStartupRecovery(async () => {
+      await getApplicationOrchestrationRecoveryService().resumeBindings();
+      await getApplicationExecutionEventDispatchService().resumePendingEvents();
+    });
   } catch (error) {
-    logger.error(`Failed to resume durable application publication dispatch: ${String(error)}`);
+    logger.error(`Failed to complete application orchestration startup recovery: ${String(error)}`);
+    process.exit(1);
   }
   await scheduleBackgroundTasks();
 }

@@ -1,6 +1,8 @@
-# Application Bundle Iframe Contract v1
+# Application Bundle Iframe Contract
 
-This document defines the exact v1 bootstrap contract between the host application page and a bundled application UI loaded inside an iframe.
+This document defines the current bundled-application iframe bootstrap contract between the host Applications module and a bundled application UI loaded inside an iframe.
+
+> Historical note: the filename is legacy, but the content below documents the current v2 contract.
 
 ## Contract ownership
 
@@ -16,9 +18,8 @@ Do not introduce alternate event names, duplicate schemas, or inline literals ou
 
 ## Version
 
-- `contractVersion`: `"1"`
-- v1 is the only supported version in this slice.
-- Incompatible changes require a new versioned contract instead of silently changing v1.
+- `contractVersion`: `"2"`
+- incompatible changes require a new versioned contract instead of silently changing v2
 
 ## Recommended layering
 
@@ -26,9 +27,9 @@ The raw iframe bootstrap is the lowest-level host handoff only.
 
 Recommended author-facing usage on top of that bootstrap:
 
-- use `@autobyteus/application-frontend-sdk` in the iframe app to call app backend queries, commands, GraphQL, and notifications through the host-provided transport URLs,
-- use `@autobyteus/application-backend-sdk` in `backend/dist/**` to export the typed backend definition, and
-- treat `@autobyteus/application-sdk-contracts` as the shared source of manifest, request-context, storage-context, notification, and event-dispatch types.
+- use `@autobyteus/application-frontend-sdk` in the iframe app to call app backend queries, commands, GraphQL, and notifications through the host-provided transport URLs
+- use `@autobyteus/application-backend-sdk` in the backend bundle to export the typed backend definition
+- treat `@autobyteus/application-sdk-contracts` as the shared source of manifest, request-context, storage-context, notification, runtime-control, and execution-event types
 
 ## Host-resolved iframe launch URL
 
@@ -38,12 +39,12 @@ The backend catalog returns transport-neutral asset paths such as:
 /application-bundles/<application-id>/assets/ui/index.html
 ```
 
-The host resolves that path against the currently bound backend REST base, then appends the required v1 launch hints.
+The host resolves that path against the currently bound backend REST base, then appends the required v2 launch hints.
 
 Exact query-hint names:
 
 - `autobyteusContractVersion`
-- `autobyteusApplicationSessionId`
+- `autobyteusApplicationId`
 - `autobyteusLaunchInstanceId`
 - `autobyteusHostOrigin`
 
@@ -54,12 +55,12 @@ Exact query-hint names:
 
 ## Shared envelope
 
-All v1 messages use this envelope:
+All v2 messages use this envelope:
 
 ```ts
 {
   channel: 'autobyteus.application.host'
-  contractVersion: '1'
+  contractVersion: '2'
   eventName: string
   payload: Record<string, unknown>
 }
@@ -72,11 +73,11 @@ Bundled iframe UIs must signal readiness by posting this exact message:
 ```json
 {
   "channel": "autobyteus.application.host",
-  "contractVersion": "1",
+  "contractVersion": "2",
   "eventName": "autobyteus.application.ui.ready",
   "payload": {
-    "applicationSessionId": "app-session-123",
-    "launchInstanceId": "app-session-123::launch-1"
+    "applicationId": "bundle-app__example-package__example-app",
+    "launchInstanceId": "bundle-app__example-package__example-app::launch-1"
   }
 }
 ```
@@ -93,19 +94,19 @@ The host accepts the ready event only when all of the following are true:
 - `event.origin === resolved iframe origin`
 - `event.source === iframe.contentWindow`
 - `channel === 'autobyteus.application.host'`
-- `contractVersion === '1'`
+- `contractVersion === '2'`
 - `eventName === 'autobyteus.application.ui.ready'`
-- `payload.applicationSessionId === launched application session id`
+- `payload.applicationId === launched application id`
 - `payload.launchInstanceId === launched launch instance id`
 
 ## Host → child bootstrap event
 
-After the host receives one valid ready event, it sends this exact bootstrap message to the iframe using target origin equal to the resolved iframe origin.
+After the host receives one valid ready event, it sends this bootstrap message to the iframe using target origin equal to the resolved iframe origin.
 
 ```json
 {
   "channel": "autobyteus.application.host",
-  "contractVersion": "1",
+  "contractVersion": "2",
   "eventName": "autobyteus.application.host.bootstrap",
   "payload": {
     "host": {
@@ -117,21 +118,19 @@ After the host receives one valid ready event, it sends this exact bootstrap mes
       "packageId": "example-package",
       "name": "Example App"
     },
-    "session": {
-      "applicationSessionId": "app-session-123",
-      "launchInstanceId": "app-session-123::launch-1"
+    "launch": {
+      "launchInstanceId": "bundle-app__example-package__example-app::launch-1"
     },
-    "runtime": {
-      "kind": "AGENT_TEAM",
-      "runId": "team-run-456",
-      "definitionId": "bundle-team__example-package__example-app__example-team"
+    "requestContext": {
+      "applicationId": "bundle-app__example-package__example-app",
+      "launchInstanceId": "bundle-app__example-package__example-app::launch-1"
     },
     "transport": {
       "graphqlUrl": "http://localhost:3000/graphql",
       "restBaseUrl": "http://localhost:3000/rest",
       "websocketUrl": "ws://localhost:3000/graphql",
-      "sessionStreamUrl": "ws://localhost:3000/ws/application-session",
       "backendStatusUrl": "http://localhost:3000/rest/applications/bundle-app__example-package__example-app/backend/status",
+      "backendEnsureReadyUrl": "http://localhost:3000/rest/applications/bundle-app__example-package__example-app/backend/ensure-ready",
       "backendQueriesBaseUrl": "http://localhost:3000/rest/applications/bundle-app__example-package__example-app/backend/queries",
       "backendCommandsBaseUrl": "http://localhost:3000/rest/applications/bundle-app__example-package__example-app/backend/commands",
       "backendGraphqlUrl": "http://localhost:3000/rest/applications/bundle-app__example-package__example-app/backend/graphql",
@@ -155,21 +154,19 @@ After the host receives one valid ready event, it sends this exact bootstrap mes
     packageId: string
     name: string
   }
-  session: {
-    applicationSessionId: string
+  launch: {
     launchInstanceId: string
   }
-  runtime: {
-    kind: 'AGENT' | 'AGENT_TEAM'
-    runId: string
-    definitionId: string
+  requestContext: {
+    applicationId: string
+    launchInstanceId: string
   }
   transport: {
     graphqlUrl: string
     restBaseUrl: string
     websocketUrl: string
-    sessionStreamUrl: string
     backendStatusUrl: string | null
+    backendEnsureReadyUrl: string | null
     backendQueriesBaseUrl: string | null
     backendCommandsBaseUrl: string | null
     backendGraphqlUrl: string | null
@@ -182,9 +179,8 @@ After the host receives one valid ready event, it sends this exact bootstrap mes
 ### Transport meaning
 
 - `graphqlUrl`, `restBaseUrl`, and `websocketUrl` remain host/runtime endpoints.
-- `sessionStreamUrl` remains the host-owned retained-session snapshot stream base.
-- `backend*` URLs are the application-scoped backend boundary for queries, commands, routes, GraphQL, engine status, and backend notifications.
-- In launched application pages the host currently populates the `backend*` URLs; the nullable type exists so the shared transport shape can still be reused before an application is bound.
+- `backend*` URLs are the application-scoped backend boundary for status, ensure-ready, queries, commands, routes, GraphQL, and notifications.
+- the route `applicationId` is already embedded in those backend URLs and remains authoritative.
 
 ### Child-side acceptance rules
 
@@ -193,10 +189,10 @@ Bundled UIs should read the launch hints from the iframe URL query and accept bo
 - `event.source === window.parent`
 - `event.origin` matches the normalized `autobyteusHostOrigin` rule (`file://` accepts packaged `null` events)
 - `channel === 'autobyteus.application.host'`
-- `contractVersion === '1'`
+- `contractVersion === '2'`
 - `eventName === 'autobyteus.application.host.bootstrap'`
-- `payload.session.applicationSessionId === autobyteusApplicationSessionId`
-- `payload.session.launchInstanceId === autobyteusLaunchInstanceId`
+- `payload.application.applicationId === autobyteusApplicationId`
+- `payload.launch.launchInstanceId === autobyteusLaunchInstanceId`
 - `payload.host.origin === autobyteusHostOrigin`
 
 ## Minimal bootstrap handling example
@@ -204,7 +200,7 @@ Bundled UIs should read the launch hints from the iframe URL query and accept bo
 ```html
 <script>
   const params = new URLSearchParams(window.location.search)
-  const applicationSessionId = params.get('autobyteusApplicationSessionId')
+  const applicationId = params.get('autobyteusApplicationId')
   const launchInstanceId = params.get('autobyteusLaunchInstanceId')
   const hostOrigin = params.get('autobyteusHostOrigin')
   const matchesHostOrigin = (expectedOrigin, actualOrigin) => (
@@ -216,9 +212,9 @@ Bundled UIs should read the launch hints from the iframe URL query and accept bo
   window.parent.postMessage(
     {
       channel: 'autobyteus.application.host',
-      contractVersion: '1',
+      contractVersion: '2',
       eventName: 'autobyteus.application.ui.ready',
-      payload: { applicationSessionId, launchInstanceId },
+      payload: { applicationId, launchInstanceId },
     },
     '*',
   )
@@ -228,10 +224,10 @@ Bundled UIs should read the launch hints from the iframe URL query and accept bo
     if (!matchesHostOrigin(hostOrigin, event.origin)) return
     const message = event.data
     if (!message || message.channel !== 'autobyteus.application.host') return
-    if (message.contractVersion !== '1') return
+    if (message.contractVersion !== '2') return
     if (message.eventName !== 'autobyteus.application.host.bootstrap') return
-    if (message.payload?.session?.applicationSessionId !== applicationSessionId) return
-    if (message.payload?.session?.launchInstanceId !== launchInstanceId) return
+    if (message.payload?.application?.applicationId !== applicationId) return
+    if (message.payload?.launch?.launchInstanceId !== launchInstanceId) return
     if (message.payload?.host?.origin !== hostOrigin) return
 
     console.log('Application bootstrap received:', message.payload)
@@ -247,8 +243,8 @@ import { createApplicationClient } from '@autobyteus/application-frontend-sdk'
 const client = createApplicationClient({
   applicationId: payload.application.applicationId,
   requestContext: {
-    applicationId: payload.application.applicationId,
-    applicationSessionId: payload.session.applicationSessionId,
+    applicationId: payload.requestContext.applicationId,
+    launchInstanceId: payload.requestContext.launchInstanceId,
   },
   transport: {
     invokeQuery: async ({ queryName, requestContext, input }) => {
@@ -278,20 +274,25 @@ const client = createApplicationClient({
       const json = await response.json()
       return json.result
     },
+    subscribeNotifications: ({ listener }) => {
+      const socket = new WebSocket(payload.transport.backendNotificationsUrl)
+      socket.addEventListener('message', (event) => {
+        const message = JSON.parse(String(event.data))
+        if (message?.type === 'notification' && message.notification) {
+          listener(message.notification)
+        }
+      })
+      return { close: () => socket.close() }
+    },
   },
 })
 ```
 
-## Failure behavior
+## Request-context meaning
 
-- The host waits `10_000` ms from iframe load for a valid ready event.
-- Invalid asset resolution or a missing bound REST base fails immediately.
-- Unsupported versions fail immediately.
-- Invalid origin, invalid source, wrong channel, wrong event name, malformed payloads, or mismatched session bindings are ignored.
-- If no valid ready event arrives before timeout, bootstrap fails.
-- On failure, the host keeps ownership of the error UI and does not send partial bootstrap payloads.
-- v1 defines no host-to-child error event.
+`requestContext` is about request source identity from the iframe host boundary:
 
-## Stability rule
+- `applicationId` is required
+- `launchInstanceId` is optional but normally preserved for browser-launch correlation
 
-`ApplicationIframeContract.ts`, `ApplicationIframeHost.vue`, the SDK packages, and this document together define the public v1 application bootstrap contract. Keep them aligned exactly.
+It is **not** a business identifier and should not replace app-owned concepts such as `executionRef`.

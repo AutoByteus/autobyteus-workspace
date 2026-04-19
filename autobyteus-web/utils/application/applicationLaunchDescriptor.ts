@@ -1,5 +1,5 @@
 import {
-  APPLICATION_IFRAME_CONTRACT_VERSION_V1,
+  APPLICATION_IFRAME_CONTRACT_VERSION_V2,
   type ApplicationIframeLaunchHints,
 } from '~/types/application/ApplicationIframeContract'
 import {
@@ -9,20 +9,20 @@ import {
 } from '~/utils/application/applicationAssetUrl'
 
 export type ApplicationIframeLaunchDescriptor = {
-  applicationSessionId: string
+  applicationId: string
   entryHtmlUrl: string
   expectedIframeOrigin: string
   normalizedHostOrigin: string
-  contractVersion: typeof APPLICATION_IFRAME_CONTRACT_VERSION_V1
+  contractVersion: typeof APPLICATION_IFRAME_CONTRACT_VERSION_V2
   launchInstanceId: string
 }
 
 export type ApplicationIframeLaunchDescriptorInputs = {
-  applicationSessionId: string
+  applicationId: string
   entryHtmlAssetPath: string
   restBaseUrl: string
   normalizedHostOrigin: string
-  contractVersion?: typeof APPLICATION_IFRAME_CONTRACT_VERSION_V1
+  contractVersion?: typeof APPLICATION_IFRAME_CONTRACT_VERSION_V2
 }
 
 const PACKAGED_HOST_ORIGIN = 'file://'
@@ -65,18 +65,18 @@ export const areApplicationIframeDescriptorInputsEqual = (
   left: ApplicationIframeLaunchDescriptorInputs | null,
   right: ApplicationIframeLaunchDescriptorInputs | null,
 ): boolean => (
-  left?.applicationSessionId === right?.applicationSessionId
+  left?.applicationId === right?.applicationId
   && left?.entryHtmlAssetPath === right?.entryHtmlAssetPath
   && left?.restBaseUrl === right?.restBaseUrl
   && left?.normalizedHostOrigin === right?.normalizedHostOrigin
-  && (left?.contractVersion ?? APPLICATION_IFRAME_CONTRACT_VERSION_V1)
-    === (right?.contractVersion ?? APPLICATION_IFRAME_CONTRACT_VERSION_V1)
+  && (left?.contractVersion ?? APPLICATION_IFRAME_CONTRACT_VERSION_V2)
+    === (right?.contractVersion ?? APPLICATION_IFRAME_CONTRACT_VERSION_V2)
 )
 
 export const createApplicationLaunchInstanceId = (
-  applicationSessionId: string,
+  applicationId: string,
   generation: number,
-): string => `${applicationSessionId}::launch-${generation}`
+): string => `${applicationId}::launch-${generation}`
 
 export const buildApplicationIframeLaunchDescriptor = (
   inputs: ApplicationIframeLaunchDescriptorInputs,
@@ -88,11 +88,11 @@ export const buildApplicationIframeLaunchDescriptor = (
   )
 
   return {
-    applicationSessionId: inputs.applicationSessionId,
+    applicationId: inputs.applicationId,
     entryHtmlUrl,
     expectedIframeOrigin: resolveApplicationAssetOrigin(entryHtmlUrl),
     normalizedHostOrigin: inputs.normalizedHostOrigin,
-    contractVersion: inputs.contractVersion ?? APPLICATION_IFRAME_CONTRACT_VERSION_V1,
+    contractVersion: inputs.contractVersion ?? APPLICATION_IFRAME_CONTRACT_VERSION_V2,
     launchInstanceId,
   }
 }
@@ -101,7 +101,7 @@ export const buildApplicationIframeLaunchHints = (
   descriptor: ApplicationIframeLaunchDescriptor,
 ): ApplicationIframeLaunchHints => ({
   contractVersion: descriptor.contractVersion,
-  applicationSessionId: descriptor.applicationSessionId,
+  applicationId: descriptor.applicationId,
   launchInstanceId: descriptor.launchInstanceId,
   hostOrigin: descriptor.normalizedHostOrigin,
 })

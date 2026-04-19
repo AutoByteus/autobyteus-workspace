@@ -2,7 +2,7 @@ import type { TranslationCatalog } from '../../runtime/types';
 
 const applicationMessages = {
   'applications.pages.applications.index.title': '应用程序',
-  'applications.pages.applications.index.description': '浏览打包应用程序，查看其运行时目标，并通过通用 iframe 宿主启动它们。',
+  'applications.pages.applications.index.description': '浏览打包应用程序并打开它们的 iframe 宿主。运行时编排现在由每个应用程序自行拥有。',
   'applications.pages.applications.index.refreshCatalog': '刷新目录',
   'applications.pages.applications.index.refreshingCatalog': '正在刷新…',
   'applications.pages.applications.index.applicationsDisabled': '当前运行时配置已禁用应用程序。',
@@ -105,6 +105,20 @@ const applicationMessages = {
   'applications.components.applications.execution.ApplicationExecutionWorkspace.noRetainedMemberArtifactYet': '尚无保留的成员产物。',
   'applications.components.applications.execution.ApplicationExecutionWorkspace.selectMemberHint': '选择一个成员以查看保留的产物。',
   'applications.components.applications.execution.ApplicationExecutionWorkspace.launchToInspectHint': '启动应用程序以查看保留的成员产物。',
+
+  'applications.shared.bundleResources': '打包资源',
+  'applications.shared.noBundleResources': '没有打包运行时资源',
+  'applications.shared.mixedResources': '混合资源',
+  'applications.components.applications.ApplicationCard.resourceCount': '{{count}} 个打包资源',
+  'applications.components.applications.ApplicationShell.startingApplication': '正在启动应用程序…',
+  'applications.components.applications.ApplicationShell.reloadApplication': '重新加载应用程序',
+  'applications.components.applications.ApplicationShell.retryLaunch': '重试启动',
+  'applications.components.applications.ApplicationShell.applicationReadyNotice': '通用宿主现在只负责启动应用程序后端和 iframe。具体运行由应用程序通过自己的编排流程自行创建。',
+  'applications.components.applications.ApplicationShell.launchInstanceIdLabel': '启动实例 ID',
+  'applications.components.applications.ApplicationShell.engineStateLabel': '引擎状态',
+  'applications.components.applications.ApplicationShell.startedAtLabel': '引擎启动时间',
+  'applications.components.applications.ApplicationSurface.applicationUnavailable': '应用程序启动尚未就绪',
+  'applications.components.applications.ApplicationSurface.applicationUnavailableHelp': '请等待应用宿主启动完成，或从页面外壳重试。',
 } satisfies TranslationCatalog;
 
 export default applicationMessages;

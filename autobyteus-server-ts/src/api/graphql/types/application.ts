@@ -1,19 +1,19 @@
 import { Arg, Field, ObjectType, Query, Resolver, registerEnumType } from "type-graphql";
 import { ApplicationBundleService } from "../../../application-bundles/services/application-bundle-service.js";
 
-export enum ApplicationRuntimeTargetKind {
+export enum ApplicationRuntimeResourceKindGraph {
   AGENT = "AGENT",
   AGENT_TEAM = "AGENT_TEAM",
 }
 
-registerEnumType(ApplicationRuntimeTargetKind, {
-  name: "ApplicationRuntimeTargetKind",
+registerEnumType(ApplicationRuntimeResourceKindGraph, {
+  name: "ApplicationRuntimeResourceKind",
 });
 
 @ObjectType()
-export class ApplicationRuntimeTarget {
-  @Field(() => ApplicationRuntimeTargetKind)
-  kind!: ApplicationRuntimeTargetKind;
+export class ApplicationRuntimeResource {
+  @Field(() => ApplicationRuntimeResourceKindGraph)
+  kind!: ApplicationRuntimeResourceKindGraph;
 
   @Field(() => String)
   localId!: string;
@@ -48,8 +48,8 @@ export class Application {
   @Field(() => Boolean)
   writable!: boolean;
 
-  @Field(() => ApplicationRuntimeTarget)
-  runtimeTarget!: ApplicationRuntimeTarget;
+  @Field(() => [ApplicationRuntimeResource])
+  bundleResources!: ApplicationRuntimeResource[];
 }
 
 @Resolver()
@@ -67,14 +67,14 @@ export class ApplicationResolver {
       iconAssetPath: application.iconAssetPath,
       entryHtmlAssetPath: application.entryHtmlAssetPath,
       writable: application.writable,
-      runtimeTarget: {
+      bundleResources: application.bundleResources.map((resource) => ({
         kind:
-          application.runtimeTarget.kind === "AGENT"
-            ? ApplicationRuntimeTargetKind.AGENT
-            : ApplicationRuntimeTargetKind.AGENT_TEAM,
-        localId: application.runtimeTarget.localId,
-        definitionId: application.runtimeTarget.definitionId,
-      },
+          resource.kind === "AGENT"
+            ? ApplicationRuntimeResourceKindGraph.AGENT
+            : ApplicationRuntimeResourceKindGraph.AGENT_TEAM,
+        localId: resource.localId,
+        definitionId: resource.definitionId,
+      })),
     }));
   }
 
@@ -94,14 +94,14 @@ export class ApplicationResolver {
       iconAssetPath: application.iconAssetPath,
       entryHtmlAssetPath: application.entryHtmlAssetPath,
       writable: application.writable,
-      runtimeTarget: {
+      bundleResources: application.bundleResources.map((resource) => ({
         kind:
-          application.runtimeTarget.kind === "AGENT"
-            ? ApplicationRuntimeTargetKind.AGENT
-            : ApplicationRuntimeTargetKind.AGENT_TEAM,
-        localId: application.runtimeTarget.localId,
-        definitionId: application.runtimeTarget.definitionId,
-      },
+          resource.kind === "AGENT"
+            ? ApplicationRuntimeResourceKindGraph.AGENT
+            : ApplicationRuntimeResourceKindGraph.AGENT_TEAM,
+        localId: resource.localId,
+        definitionId: resource.definitionId,
+      })),
     };
   }
 }

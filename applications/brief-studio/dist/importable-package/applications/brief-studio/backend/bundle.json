@@ -8,8 +8,8 @@
     "semver": ">=22 <23"
   },
   "sdkCompatibility": {
-    "backendDefinitionContractVersion": "1",
-    "frontendSdkContractVersion": "1"
+    "backendDefinitionContractVersion": "2",
+    "frontendSdkContractVersion": "2"
   },
   "supportedExposures": {
     "queries": true,

@@ -12,12 +12,15 @@ type PendingRequest = {
   timeoutHandle: NodeJS.Timeout;
 };
 
+type JsonRpcRequestHandler = (params: Record<string, unknown>) => Promise<unknown> | unknown;
+
 export type ApplicationEngineClientNotification = ApplicationWorkerNotificationParams;
 
 export class ApplicationEngineClient {
   private readonly pendingRequests = new Map<JsonRpcId, PendingRequest>();
   private readonly notificationListeners = new Set<(message: ApplicationEngineClientNotification) => void>();
   private readonly closeListeners = new Set<(error: Error | null) => void>();
+  private readonly requestHandlers = new Map<string, JsonRpcRequestHandler>();
   private process: ChildProcessWithoutNullStreams | null = null;
   private stdoutBuffer = "";
   private nextRequestId = 1;
@@ -79,6 +82,15 @@ export class ApplicationEngineClient {
     this.closeListeners.add(listener);
     return () => {
       this.closeListeners.delete(listener);
+    };
+  }
+
+  registerRequestHandler(method: string, handler: JsonRpcRequestHandler): () => void {
+    this.requestHandlers.set(method, handler);
+    return () => {
+      if (this.requestHandlers.get(method) === handler) {
+        this.requestHandlers.delete(method);
+      }
     };
   }
 
@@ -186,6 +198,11 @@ export class ApplicationEngineClient {
       return;
     }
 
+    if (method && id !== null) {
+      void this.handleWorkerRequest(id, method, (envelope.params ?? {}) as Record<string, unknown>);
+      return;
+    }
+
     if (id === null) {
       return;
     }
@@ -207,5 +224,32 @@ export class ApplicationEngineClient {
     }
 
     pending.resolve(envelope.result);
+  }
+
+  private async handleWorkerRequest(
+    id: JsonRpcId,
+    method: string,
+    params: Record<string, unknown>,
+  ): Promise<void> {
+    const handler = this.requestHandlers.get(method);
+    if (!handler) {
+      this.writeFrame({
+        jsonrpc: "2.0",
+        id,
+        error: { message: `Unsupported worker request '${method}'.` },
+      });
+      return;
+    }
+
+    try {
+      const result = await handler(params);
+      this.writeFrame({ jsonrpc: "2.0", id, result });
+    } catch (error) {
+      this.writeFrame({
+        jsonrpc: "2.0",
+        id,
+        error: { message: error instanceof Error ? error.message : String(error) },
+      });
+    }
   }
 }
