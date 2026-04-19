@@ -2,7 +2,7 @@
 
 ## Scope
 
-Owns application-authored runtime orchestration after an application backend is running: list available runtime resources, start bound runs, persist durable run bindings keyed by app-owned `executionRef`, route live input/termination to those bindings, append runtime lifecycle and artifact events to the durable journal, dispatch those events back into application event handlers with at-least-once semantics, rebuild run lookups on restart, and gate live traffic until startup recovery completes.
+Owns application-authored runtime orchestration after an application backend is running: list available runtime resources, start bound runs, persist durable run bindings keyed by app-owned opaque `bindingIntentId` handoff, route live input/termination to those bindings, append runtime lifecycle and artifact events to the durable journal, dispatch those events back into application event handlers with at-least-once semantics, rebuild run lookups on restart, and gate live traffic until startup recovery completes.
 
 ## TS Source
 
@@ -30,7 +30,7 @@ Owns application-authored runtime orchestration after an application backend is 
 
 - The generic Applications host no longer owns platform-level `applicationSession` creation, retained session snapshots, or execution-mode orchestration.
 - Application backends own the decision to start runtime work by calling `context.runtimeControl.*` from inside the application worker.
-- `executionRef` is application-owned business identity. It is not inferred from `launchInstanceId` and it is not a host-managed session id.
+- `bindingIntentId` is an opaque app-supplied correlation token for direct `startRun(...)` handoff. The platform persists and echoes it, but business identity stays in app-owned state.
 - Runtime-originated artifact publication enters only through the `publish_artifact` tool. Callers do not append directly to journals or mutate run-binding state tables.
 - Recovery and startup gating are first-class owners. Callers should not bypass them with ad hoc resume logic.
 
@@ -41,6 +41,7 @@ Owns application-authored runtime orchestration after an application backend is 
 - `listAvailableResources(...)`
 - `startRun(...)`
 - `getRunBinding(...)`
+- `getRunBindingByIntentId(...)`
 - `listRunBindings(...)`
 - `postRunInput(...)`
 - `terminateRunBinding(...)`
@@ -52,12 +53,12 @@ Owns application-authored runtime orchestration after an application backend is 
 
 `startRun(...)` requires:
 
-- app-owned `executionRef`,
+- app-owned opaque `bindingIntentId`,
 - a concrete `resourceRef` (`bundle` or `shared`, `AGENT` or `AGENT_TEAM`),
 - launch configuration for the matching runtime kind, and
 - optional `initialInput`.
 
-The orchestration host validates the resource choice, launches the underlying agent/team run, persists one durable binding, registers lifecycle observation, optionally forwards the initial input only after the synthetic `RUN_STARTED` event path is appended, and returns the binding summary.
+The orchestration host validates the resource choice, launches the underlying agent/team run, persists one durable binding together with `bindingIntentId`, registers lifecycle observation, optionally forwards the initial input only after the synthetic `RUN_STARTED` event path is appended, and returns the binding summary.
 
 ## Durable Binding And Lookup State
 

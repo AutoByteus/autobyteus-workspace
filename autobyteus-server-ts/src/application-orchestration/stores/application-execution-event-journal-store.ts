@@ -47,7 +47,6 @@ const hydrateJournalRecord = (row: Record<string, unknown>): ApplicationExecutio
     eventId: String(row.event_id),
     journalSequence: Number(row.journal_sequence),
     applicationId: String(row.application_id),
-    executionRef: String(row.execution_ref),
     family: row.family as ApplicationExecutionEventJournalEvent["family"],
     publishedAt: String(row.published_at),
     binding: JSON.parse(String(row.binding_json)) as ApplicationExecutionEventJournalEvent["binding"],
@@ -92,7 +91,7 @@ export class ApplicationExecutionEventJournalStore {
     ).run(
       event.eventId,
       event.applicationId,
-      event.executionRef,
+      event.binding.bindingIntentId,
       event.family,
       event.publishedAt,
       JSON.stringify(event.binding),

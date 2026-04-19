@@ -61,6 +61,14 @@ const requireLaunchKind = (
   }
 };
 
+const requireNonEmptyString = (value: string, fieldName: string): string => {
+  const normalized = value.trim();
+  if (!normalized) {
+    throw new Error(`${fieldName} is required.`);
+  }
+  return normalized;
+};
+
 export class ApplicationRunBindingLaunchService {
   constructor(
     private readonly dependencies: {
@@ -112,7 +120,7 @@ export class ApplicationRunBindingLaunchService {
     const bindingSeed = {
       applicationId,
       bindingId: randomUUID(),
-      executionRef: input.executionRef,
+      bindingIntentId: requireNonEmptyString(input.bindingIntentId, "bindingIntentId"),
     };
 
     if (input.launch.kind === "AGENT") {
@@ -123,7 +131,7 @@ export class ApplicationRunBindingLaunchService {
   }
 
   private async startAgentBinding(
-    bindingSeed: { applicationId: string; bindingId: string; executionRef: string },
+    bindingSeed: { applicationId: string; bindingId: string; bindingIntentId: string },
     resourceRef: ApplicationRuntimeResourceRef,
     resource: ResolvedApplicationRuntimeResource,
     launch: ApplicationAgentRunLaunch,
@@ -146,7 +154,7 @@ export class ApplicationRunBindingLaunchService {
     const binding: ApplicationRunBindingSummary = {
       bindingId: bindingSeed.bindingId,
       applicationId: bindingSeed.applicationId,
-      executionRef: bindingSeed.executionRef,
+      bindingIntentId: bindingSeed.bindingIntentId,
       status: "ATTACHED",
       resourceRef: structuredClone(resourceRef),
       runtime: {
@@ -166,7 +174,7 @@ export class ApplicationRunBindingLaunchService {
   }
 
   private async startTeamBinding(
-    bindingSeed: { applicationId: string; bindingId: string; executionRef: string },
+    bindingSeed: { applicationId: string; bindingId: string; bindingIntentId: string },
     resourceRef: ApplicationRuntimeResourceRef,
     resource: ResolvedApplicationRuntimeResource,
     launch: ApplicationTeamRunLaunch,
@@ -232,7 +240,7 @@ export class ApplicationRunBindingLaunchService {
     const binding: ApplicationRunBindingSummary = {
       bindingId: bindingSeed.bindingId,
       applicationId: bindingSeed.applicationId,
-      executionRef: bindingSeed.executionRef,
+      bindingIntentId: bindingSeed.bindingIntentId,
       status: "ATTACHED",
       resourceRef: structuredClone(resourceRef),
       runtime: {
@@ -281,13 +289,12 @@ export class ApplicationRunBindingLaunchService {
   }
 
   private buildExecutionContext(
-    bindingSeed: { applicationId: string; bindingId: string; executionRef: string },
+    bindingSeed: { applicationId: string; bindingId: string; bindingIntentId: string },
     member: ApplicationRunBindingMemberSummary,
   ): ApplicationExecutionContext {
     return {
       applicationId: bindingSeed.applicationId,
       bindingId: bindingSeed.bindingId,
-      executionRef: bindingSeed.executionRef,
       producer: {
         memberRouteKey: member.memberRouteKey,
         memberName: member.memberName,

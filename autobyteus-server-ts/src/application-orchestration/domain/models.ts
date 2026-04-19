@@ -11,7 +11,6 @@ export const APPLICATION_EXECUTION_CONTEXT_KEY = "application_execution_context"
 export type ApplicationExecutionContext = {
   applicationId: string;
   bindingId: string;
-  executionRef: string;
   producer: ApplicationExecutionProducer;
 };
 

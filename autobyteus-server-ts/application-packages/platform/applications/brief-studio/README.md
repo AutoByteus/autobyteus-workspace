@@ -6,7 +6,7 @@ It demonstrates:
 
 - one app-owned GraphQL brief API hosted under the platform backend mount
 - one app-owned `briefId` business identity
-- `executionRef = briefId` when launching draft runs
+- pending `bindingIntentId` handoff before each direct draft-run launch
 - many bound runs over time for one brief record
 - app-owned schema and generated frontend client artifacts that stay inside the application workspace
 - durable artifact and lifecycle projection back into `app.sqlite`

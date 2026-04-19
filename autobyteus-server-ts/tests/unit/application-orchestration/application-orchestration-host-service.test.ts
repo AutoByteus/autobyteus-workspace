@@ -26,7 +26,7 @@ const cloneBinding = (binding: ApplicationRunBindingSummary): ApplicationRunBind
 const buildBinding = (): ApplicationRunBindingSummary => ({
   bindingId,
   applicationId,
-  executionRef: "brief-1",
+  bindingIntentId: "binding-intent-1",
   status: "ATTACHED",
   resourceRef: {
     owner: "bundle",
@@ -185,7 +185,7 @@ describe("ApplicationOrchestrationHostService startRun", () => {
     });
 
     const startRunPromise = hostService.startRun(applicationId, {
-      executionRef: "brief-1",
+      bindingIntentId: "binding-intent-1",
       resourceRef: {
         owner: "bundle",
         kind: "AGENT",
@@ -214,5 +214,29 @@ describe("ApplicationOrchestrationHostService startRun", () => {
 
     expect(fakeRun.postUserMessage).toHaveBeenCalledTimes(1);
     expect(committedFamilies).toEqual(["RUN_STARTED", "ARTIFACT"]);
+  });
+
+  it("resolves bindings by bindingIntentId through the host boundary", async () => {
+    const binding = buildBinding();
+    const bindingStore = {
+      getBindingByIntentId: vi.fn(async (nextApplicationId: string, nextBindingIntentId: string) => {
+        if (nextApplicationId === applicationId && nextBindingIntentId === binding.bindingIntentId) {
+          return cloneBinding(binding);
+        }
+        return null;
+      }),
+    };
+
+    const hostService = new ApplicationOrchestrationHostService({
+      startupGate: {
+        awaitReady: vi.fn(async () => undefined),
+      } as never,
+      bindingStore: bindingStore as never,
+    });
+
+    await expect(
+      hostService.getRunBindingByIntentId(applicationId, binding.bindingIntentId),
+    ).resolves.toEqual(binding);
+    expect(bindingStore.getBindingByIntentId).toHaveBeenCalledWith(applicationId, binding.bindingIntentId);
   });
 });

@@ -10,6 +10,7 @@ const ensureTables = (db: DatabaseSync): void => {
   db.exec(`
     CREATE TABLE IF NOT EXISTS __autobyteus_run_bindings (
       binding_id TEXT PRIMARY KEY,
+      binding_intent_id TEXT,
       execution_ref TEXT NOT NULL,
       status TEXT NOT NULL,
       runtime_subject TEXT NOT NULL,
@@ -40,6 +41,17 @@ const ensureTables = (db: DatabaseSync): void => {
       runtime_kind TEXT NOT NULL,
       PRIMARY KEY (binding_id, member_route_key)
     );
+  `);
+
+  const bindingColumns = db
+    .prepare(`PRAGMA table_info(__autobyteus_run_bindings)`)
+    .all() as Array<{ name: string }>;
+  if (!bindingColumns.some((column) => column.name === "binding_intent_id")) {
+    db.exec(`ALTER TABLE __autobyteus_run_bindings ADD COLUMN binding_intent_id TEXT`);
+  }
+  db.exec(`
+    CREATE UNIQUE INDEX IF NOT EXISTS __autobyteus_run_bindings_by_binding_intent_id
+      ON __autobyteus_run_bindings (binding_intent_id);
   `);
 };
 
@@ -73,6 +85,7 @@ export class ApplicationRunBindingStore {
       db.prepare(
         `INSERT INTO __autobyteus_run_bindings (
            binding_id,
+           binding_intent_id,
            execution_ref,
            status,
            runtime_subject,
@@ -87,8 +100,9 @@ export class ApplicationRunBindingStore {
            terminated_at,
            last_error_message,
            summary_json
-         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
          ON CONFLICT(binding_id) DO UPDATE SET
+           binding_intent_id = excluded.binding_intent_id,
            execution_ref = excluded.execution_ref,
            status = excluded.status,
            runtime_subject = excluded.runtime_subject,
@@ -105,7 +119,8 @@ export class ApplicationRunBindingStore {
            summary_json = excluded.summary_json`,
       ).run(
         summary.bindingId,
-        summary.executionRef,
+        summary.bindingIntentId,
+        summary.bindingIntentId,
         summary.status,
         summary.runtime.subject,
         summary.runtime.runId,
@@ -161,6 +176,24 @@ export class ApplicationRunBindingStore {
     });
   }
 
+  async getBindingByIntentId(
+    applicationId: string,
+    bindingIntentId: string,
+  ): Promise<ApplicationRunBindingSummary | null> {
+    return this.platformStateStore.withDatabase(applicationId, (db) => {
+      ensureTables(db);
+      const row = db
+        .prepare(
+          `SELECT summary_json
+             FROM __autobyteus_run_bindings
+            WHERE binding_intent_id = ?
+            LIMIT 1`,
+        )
+        .get(bindingIntentId.trim()) as { summary_json: string } | undefined;
+      return row ? cloneSummary(hydrateSummary(row)) : null;
+    });
+  }
+
   async listBindings(
     applicationId: string,
     filter?: ApplicationRunBindingListFilter | null,
@@ -169,10 +202,6 @@ export class ApplicationRunBindingStore {
       ensureTables(db);
       const conditions = ["1 = 1"];
       const params: Array<string> = [];
-      if (filter?.executionRef?.trim()) {
-        conditions.push("execution_ref = ?");
-        params.push(filter.executionRef.trim());
-      }
       if (filter?.status?.trim()) {
         conditions.push("status = ?");
         params.push(filter.status.trim());

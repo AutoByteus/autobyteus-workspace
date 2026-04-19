@@ -19,6 +19,14 @@ export const createLessonRepository = (db) => ({
             .get(lessonId);
         return row ? mapRow(row) : null;
     },
+    getByBindingId(bindingId) {
+        const row = db
+            .prepare(`SELECT lesson_id, prompt, status, latest_binding_id, latest_run_id, latest_binding_status, last_error_message, created_at, updated_at, closed_at
+           FROM lessons
+          WHERE latest_binding_id = ?`)
+            .get(bindingId);
+        return row ? mapRow(row) : null;
+    },
     listSummaries() {
         const rows = db
             .prepare(`SELECT lesson_id, prompt, status, latest_binding_id, latest_run_id, latest_binding_status, last_error_message, created_at, updated_at, closed_at
@@ -49,5 +57,13 @@ export const createLessonRepository = (db) => ({
         last_error_message = excluded.last_error_message,
         updated_at = excluded.updated_at,
         closed_at = excluded.closed_at`).run(input.lessonId, input.prompt, input.status, input.latestBindingId ?? null, input.latestRunId ?? null, input.latestBindingStatus ?? null, input.lastErrorMessage ?? null, input.updatedAt, input.updatedAt, input.closedAt ?? null);
+    },
+    attachBinding(input) {
+        db.prepare(`UPDATE lessons
+          SET latest_binding_id = ?,
+              latest_run_id = ?,
+              latest_binding_status = ?,
+              updated_at = ?
+        WHERE lesson_id = ?`).run(input.bindingId, input.runId, input.bindingStatus, input.updatedAt, input.lessonId);
     },
 });

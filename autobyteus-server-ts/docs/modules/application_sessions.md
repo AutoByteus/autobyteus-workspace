@@ -8,7 +8,7 @@ The current implementation replaced the old session-owned model with application
 
 - the generic Applications host now ensures the backend is ready and boots the iframe, but it does not create a platform-owned application session,
 - application backends decide when to start runs by calling `context.runtimeControl.*`,
-- durable state is now expressed as run bindings keyed by app-owned `executionRef`, plus execution-event journals and global run lookups,
+- durable state is now expressed as run bindings plus app-owned pending-intent reconciliation, execution-event journals, and global run lookups,
 - host/bootstrap request context uses `{ applicationId, launchInstanceId? }`, not `applicationSessionId`, and
 - the old session GraphQL / websocket / retained-snapshot surfaces were removed from the live codepath.
 

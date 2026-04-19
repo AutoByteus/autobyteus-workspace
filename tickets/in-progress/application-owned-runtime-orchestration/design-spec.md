@@ -88,8 +88,8 @@ Replace the session-owned model with an **engine-first, application-owned orches
 - iframe bootstrap v2 exposes one authoritative hosted `backendBaseUrl` plus only the non-derivable transport channels,
 - no worker run is auto-created just because the application page was opened,
 - the application backend receives a new authoritative `runtimeControl` boundary in handler/lifecycle context,
-- the application backend creates runs explicitly and binds them to an opaque app-defined `executionRef`,
-- the platform persists those bindings as durable platform-owned records,
+- the application backend creates runs explicitly and receives durable platform-owned `bindingId` values,
+- the platform persists those bindings as durable platform-owned records, while any business-record-to-binding mapping stays app-owned,
 - the platform keeps GraphQL/routes/query/command transport generic under the hosted backend mount,
 - each application owns its own business API/schema and generated frontend/backend client story,
 - a dedicated recovery owner resumes those bindings on server restart,
@@ -106,8 +106,9 @@ The only thin launch-specific identity that remains is the browser/iframe `launc
 - `Module`: an optional intermediate grouping inside a subsystem when the codebase benefits from it. Do not use `module` as a synonym for one file or as the default ownership term.
 - `Folder` / `directory`: a physical grouping used to organize files and any optional module groupings.
 - `File`: one concrete source file and the primary unit where one concrete concern should land.
-- `executionRef`: opaque application-defined identifier for one business-owned orchestration context. The platform stores it but does not interpret its business meaning.
-- `run binding`: durable platform-owned record that binds one `executionRef` to one concrete run and one concrete runtime resource reference.
+- `bindingId`: durable platform-owned identifier for one application-to-run association. This is the primary cross-boundary correlation key.
+- `bindingIntentId`: opaque app-supplied token for one pending direct-`startRun(...)` establishment attempt. The platform stores and echoes it, but it does not interpret business meaning from it.
+- `run binding`: durable platform-owned record that binds one application to one concrete run and one concrete runtime resource reference.
 - `resource ref`: platform-neutral selector for a runtime resource, either bundle-owned/local or shared-platform.
 - `launchInstanceId`: ephemeral host/iframe bootstrap identity for one browser launch. Not a durable orchestration owner.
 - `execution event ingress`: the single authoritative platform boundary that accepts runtime-originated artifact events and platform-originated run lifecycle events, normalizes them, and appends them to the immutable app-event journal.
@@ -115,6 +116,8 @@ The only thin launch-specific identity that remains is the browser/iframe `launc
 - `virtual backend mount`: the application-scoped hosted backend namespace under `applicationId` that the platform routes and hosts, even though the application backend does not run its own standalone HTTP server.
 - `app-owned business API schema`: the application’s own GraphQL schema, route/OpenAPI contract, shared DTO package, or equivalent business-API contract. This belongs to the application, not to the platform.
 - `schema artifact`: one application-owned build artifact such as GraphQL SDL, introspection JSON, OpenAPI document, or generated frontend client/types used for app-owned code generation.
+- `pending binding intent`: application-owned durable record written before direct `startRun(...)`. It contains the app’s intended business target plus one `bindingIntentId` so the later created binding can be reconciled safely.
+- `app-owned binding mapping`: application-owned persistent state that maps business records such as `ticketId`, `briefId`, or `lessonId` to one or more platform `bindingId` values. The platform does not own this mapping.
 
 ## Design Reading Order
 
@@ -133,6 +136,7 @@ Read and write this design from abstract to concrete:
 | `AOR-DI-002` | Defined a shared orchestration-facing lifecycle event shape, service-level observation methods on both execution owners, exact manager/service extension points, and a single orchestration-side lifecycle gateway | `Lifecycle Observation Contract`, `Existing Capability / Subsystem Reuse Check`, `Draft File Responsibility Mapping`, `Final File Responsibility Mapping`, `Interface Boundary Mapping` |
 | `AOR-DI-003` | Collapsed artifact publication and lifecycle-event journaling behind one owner: `ApplicationExecutionEventIngressService`; removed split authority from the orchestration host | `Data-Flow Spine Inventory`, `Ownership Map`, `Thin Entry Facades`, `Execution Event Ingress Authority`, `Dependency Rules`, `Boundary Encapsulation Map` |
 | `AOR-DI-004` | Added an explicit startup-admission gate that serializes runtime-control and live artifact ingress against recovery-time lookup rebuild and observer reattachment, independent of raw `app.listen(...)` timing | `DS-007`, `Startup Coordination / Traffic Admission Contract`, `Boundary Encapsulation Map`, `Dependency Rules`, `Migration / Refactor Sequence`, `server-runtime.ts` ownership notes |
+| `AOR-DI-005` | Added one explicit direct-`startRun(...)` correlation-establishment contract based on app-owned pending binding intent plus opaque `bindingIntentId`, event-envelope echo, and reconciliation lookup by intent id | `Binding-Centric Correlation Principle`, `Direct startRun(...) Correlation Establishment Contract`, `DS-002`, `Execution Event Ingress Authority`, `Interface Boundary Mapping`, `Example App Implementation Shape`, `Migration / Refactor Sequence`, `Guidance For Implementation` |
 
 ## App-Owned Business API / Schema Principle
 
@@ -153,6 +157,53 @@ That means:
 
 Queries/commands may remain as convenient app-facing backend surfaces, but they are not the only “real application” story in the target architecture.
 GraphQL-backed and route-backed applications remain first-class.
+
+## Binding-Centric Correlation Principle
+
+The platform’s required durable correlation concept is **`bindingId`**, not a generic app-business reference field.
+
+That means:
+
+- `runtimeControl.startRun(...)` returns a durable binding summary that includes `bindingId`, `bindingIntentId`, and concrete run identity,
+- runtime-originated events route and recover by `bindingId` + `runId`,
+- direct `startRun(...)` handoff is guarded by an app-owned pending binding intent written before binding creation,
+- applications keep any `ticketId` / `briefId` / `lessonId` -> `bindingId` mapping in app-owned state, and
+- the platform does not need one universal business-reference column in its binding records to remain useful or restart-safe.
+
+This keeps platform routing/recovery durable while leaving business meaning where it belongs: inside the application backend.
+
+## Direct `startRun(...)` Correlation Establishment Contract
+
+The authoritative contract for direct run creation is:
+
+1. **App-owned pending intent first**
+   - Before calling `runtimeControl.startRun(...)`, the application backend persists one `pending binding intent` in app-owned state.
+   - That row contains:
+     - `bindingIntentId`,
+     - the app-owned business target (for example `briefId` or `lessonId`),
+     - intent status such as `PENDING_START`, and
+     - any local metadata the app needs for later reconciliation.
+
+2. **Platform binding creation keyed by `bindingIntentId`**
+   - The app calls `runtimeControl.startRun({ bindingIntentId, resourceRef, launch })`.
+   - `ApplicationOrchestrationHostService` persists the created binding row together with `bindingIntentId` **before** journaling explicit `runStarted`-style lifecycle events for that binding.
+
+3. **Immediate response + later events both echo the same intent token**
+   - The returned binding summary includes `bindingId`, `bindingIntentId`, and concrete run identity.
+   - Any explicit `runStarted` event or early runtime-originated artifact event for that binding also carries the same `bindingIntentId` in the immutable event envelope.
+
+4. **App-owned finalization after response**
+   - After `startRun(...)` returns, the application backend finalizes its own business-record-to-binding mapping in app-owned state by attaching the returned `bindingId` to the intended business record and marking the pending intent committed.
+
+5. **Crash/retry reconciliation**
+   - If the backend crashes after platform binding creation but before app-owned mapping commit completes, the pending intent row still exists.
+   - On restart or event retry, the application resolves `bindingIntentId -> binding summary` through one authoritative platform lookup and then finalizes the mapping.
+
+6. **No platform-side event deferral is required**
+   - The platform does **not** wait for app-owned mapping commit before journaling or dispatching `runStarted` / artifact events.
+   - Instead, app-owned pending intent + echoed `bindingIntentId` + at-least-once retry semantics make early delivery restart-safe and reconcilable.
+
+This contract keeps business meaning app-owned while making the cross-boundary handoff explicit, durable, and race-safe.
 
 ## Hosted Virtual Backend Mount Contract
 
@@ -203,8 +254,8 @@ The in-repo sample apps should teach two complementary “real app” patterns:
 
 | App | Business API Teaching Goal | Proposed Primary GraphQL Surface | Orchestration Teaching Pattern |
 | --- | --- | --- | --- |
-| `brief-studio` | GraphQL-backed business API over durable brief records plus review workflow | Queries: `briefs`, `brief(briefId)`, `briefExecutions(briefId)`; Mutations: `createBrief`, `launchDraftRun`, `approveBrief`, `rejectBrief`, `addReviewNote` | One `briefId` / `executionRef` may create many bindings over time; artifacts project back into the same brief record |
-| `socratic-math-teacher` | GraphQL-backed lesson/session API over repeated tutor interaction | Queries: `lessons`, `lesson(lessonId)`; Mutations: `startLesson`, `askFollowUp`, `requestHint`, `closeLesson` | One `lessonId` / `executionRef` typically owns one long-lived bound team run; later mutations reuse that binding via `runtimeControl.postRunInput(...)` |
+| `brief-studio` | GraphQL-backed business API over durable brief records plus review workflow | Queries: `briefs`, `brief(briefId)`, `briefExecutions(briefId)`; Mutations: `createBrief`, `launchDraftRun`, `approveBrief`, `rejectBrief`, `addReviewNote` | One `briefId` may own many bindings over time in app-owned state; each `launchDraftRun` writes a pending binding intent before `startRun(...)`; artifacts project back into the same brief record |
+| `socratic-math-teacher` | GraphQL-backed lesson/session API over repeated tutor interaction | Queries: `lessons`, `lesson(lessonId)`; Mutations: `startLesson`, `askFollowUp`, `requestHint`, `closeLesson` | One `lessonId` typically owns one long-lived binding in app-owned state; `startLesson` writes a pending binding intent before creation and later mutations reuse that binding via `runtimeControl.postRunInput(...)` |
 
 Rules for those samples:
 
@@ -225,7 +276,7 @@ Rules for those samples:
 | Spine ID | Scope (`Primary End-to-End`/`Return-Event`/`Bounded Local`) | Start | End | Governing Owner | Why It Matters |
 | --- | --- | --- | --- | --- | --- |
 | `DS-001` | `Primary End-to-End` | Browser application route | Iframe app bootstrap with ready backend engine plus hosted backend mount descriptor | `ApplicationHostLaunchOwner` | Separates application launch from worker-run creation and gives the iframe one authoritative backend mount |
-| `DS-002` | `Primary End-to-End` | Iframe app UI / app backend command | Concrete agent/team run creation plus durable binding | `ApplicationOrchestrationHostService` | Main application-owned run-creation path |
+| `DS-002` | `Primary End-to-End` | Iframe app UI / app backend command | Concrete agent/team run creation plus pending-intent-backed durable binding establishment | `ApplicationOrchestrationHostService` | Main application-owned run-creation path, including the explicit direct-start correlation handshake |
 | `DS-003` | `Return-Event` | Runtime-originated `publish_artifact` | App backend artifact event handler delivery | `ApplicationExecutionEventIngressService` | Routes runtime artifacts back to the correct app-owned context through one authoritative ingress boundary |
 | `DS-004` | `Return-Event` | Underlying run lifecycle change | App backend lifecycle event delivery | `ApplicationRunObserverService` | Keeps binding state and app event history correct when runs end, fail, or are superseded |
 | `DS-005` | `Bounded Local` | Per-application event journal | Event-handler ack / retry loop | `ApplicationExecutionEventDispatchService` | Preserves ordered at-least-once app-event delivery |
@@ -236,7 +287,7 @@ Rules for those samples:
 ## Primary Execution Spine(s)
 
 - `DS-001`: `Browser Route -> ApplicationShell / ApplicationHostStore -> ApplicationBackendGateway ensure-ready -> ApplicationEngineHost -> ApplicationSurface -> Iframe App with backend mount descriptor`
-- `DS-002`: `Iframe App UI -> App Backend Gateway -> ApplicationEngine Worker -> App Backend Handler -> runtimeControl Bridge -> ApplicationOrchestrationHostService -> AgentRunService / TeamRunService -> Concrete Run`
+- `DS-002`: `Iframe App UI -> App Backend Gateway -> ApplicationEngine Worker -> App Backend Handler -> Pending Binding Intent Commit -> runtimeControl Bridge -> ApplicationOrchestrationHostService -> AgentRunService / TeamRunService -> Binding Summary -> App Mapping Finalization`
 - `DS-007`: `Server Startup -> ApplicationOrchestrationStartupGate -> ApplicationOrchestrationRecoveryService -> ApplicationRunBindingStore -> ApplicationRunLookupStore rebuild -> ApplicationBoundRunLifecycleGateway -> ApplicationRunObserverService -> ApplicationExecutionEventDispatchService resume -> StartupGate READY`
 - `DS-008`: `Iframe App UI / generated client -> ApplicationBackendGateway virtual mount -> ApplicationEngineHost -> App Backend Handler -> App-Owned Business Result`
 
@@ -245,7 +296,7 @@ Rules for those samples:
 | Spine ID | Short Narrative | Main Domain Subject Nodes | Governing Owner | Key Off-Spine Concerns |
 | --- | --- | --- | --- | --- |
 | `DS-001` | Opening an application page starts the application backend worker and boots the iframe without creating a run. The browser launch is now “application available” rather than “run already created,” and the iframe receives one authoritative backend mount descriptor instead of session-owned runtime identity. | `ApplicationShell`, `ApplicationBackendGateway`, `ApplicationEngineHost`, `ApplicationSurface` | `ApplicationHostLaunchOwner` in the web host, backed by `ApplicationEngineHostService` | iframe launch descriptor, backend ensure-ready endpoint, bootstrap contract v2, backend mount transport descriptor |
-| `DS-002` | The app UI calls its own backend. The app backend decides to start work, chooses a resource ref plus `executionRef`, and calls the worker-side `runtimeControl`. The orchestration host resolves the resource, creates the run, persists the binding, indexes the run, attaches lifecycle observation, and then records the resulting runtime lifecycle event through the execution-event ingress boundary. | `App Backend Handler`, `ApplicationRuntimeControlBridge`, `ApplicationOrchestrationHostService`, `AgentRunService/TeamRunService`, `ApplicationRunObserverService` | `ApplicationOrchestrationHostService` | resource resolution, binding store, derived lookup index, lifecycle gateway, execution-event ingress |
+| `DS-002` | The app UI calls its own backend. The app backend first commits one pending binding intent with `bindingIntentId`, then calls the worker-side `runtimeControl`. The orchestration host resolves the resource, creates the run, persists the binding together with `bindingIntentId`, attaches lifecycle observation, and returns a binding summary. The app backend then finalizes business-record-to-binding mapping in app-owned state; if that finalization fails, later reconciliation uses `bindingIntentId` plus retry-safe event delivery to finish the handoff. | `App Backend Handler`, `Pending Binding Intent`, `ApplicationRuntimeControlBridge`, `ApplicationOrchestrationHostService`, `AgentRunService/TeamRunService`, `ApplicationRunObserverService` | `ApplicationOrchestrationHostService` for platform binding creation, plus `ApplicationBackend` for app-owned finalization | resource resolution, binding store, derived lookup index, lifecycle gateway, execution-event ingress, app-owned binding mapping, intent reconciliation |
 | `DS-003` | A bound runtime publishes an artifact. The platform uses injected execution context to resolve the binding, appends a normalized immutable event journal row through the execution-event ingress owner, and dispatches the event into the app backend. The application backend then projects that event into business state. | `publish_artifact`, `ApplicationExecutionEventIngressService`, `ApplicationExecutionEventDispatchService`, `ApplicationEngineHost`, `App Event Handler` | `ApplicationExecutionEventIngressService` | derived lookup index, binding store, retry policy, producer provenance extraction |
 | `DS-004` | When a run terminates, fails, or is superseded, the run observer receives a normalized lifecycle signal through the lifecycle gateway, updates the binding, records the lifecycle event through the execution-event ingress owner, and relies on the dispatch loop to deliver that event back into the app backend. | `ApplicationBoundRunLifecycleGateway`, `ApplicationRunObserverService`, `ApplicationRunBindingStore`, `ApplicationExecutionEventIngressService`, `Dispatch Service` | `ApplicationRunObserverService` | lifecycle gateway adapter, derived lookup index maintenance, immutable event ingress |
 | `DS-005` | For each application, the journal drains in order, calls the app event handler through the engine boundary, and retries with backoff until acknowledged. | `Event Journal`, `Dispatch Loop`, `ApplicationEngineHost` | `ApplicationExecutionEventDispatchService` | retry timer, ack cursor, startup resume hook |
@@ -291,7 +342,8 @@ Rules for those samples:
 
 - `ApplicationBackend`
   - owns domain logic, business-state projection, orchestration policy decisions, and the application’s business API schema/resolver contract
-  - decides which `executionRef` to use and when to start/stop work
+  - owns pending binding intent persistence plus business-record-to-`bindingId` mapping in app state
+  - decides when to start/stop work, which `bindingIntentId` to create, and which returned binding should attach to which business record
   - owns whether the app frontend talks through GraphQL, routes, queries/commands, or a mix of those surfaces
 
 - `ApplicationRuntimeControlBridge`
@@ -304,8 +356,8 @@ Rules for those samples:
   - does **not** own recovery logic, binding persistence, or event normalization
 
 - `ApplicationOrchestrationHostService`
-  - owns resource resolution, run binding persistence, control/query behavior, lifecycle-observer attachment on new bindings, and explicit runtime control operations
-  - does **not** own execution-event journaling or runtime publication ingress
+  - owns resource resolution, run binding persistence, control/query behavior, lifecycle-observer attachment on new bindings, explicit runtime control operations, and persistence of opaque `bindingIntentId` on newly created bindings
+  - does **not** own app business-record mapping, mapping finalization, or execution-event journaling
 
 - `ApplicationBoundRunLifecycleGateway`
   - is the thin adapter boundary that converts agent-run and team-run lifecycle notifications into one orchestration-facing lifecycle shape
@@ -356,7 +408,7 @@ If a public facade or entry wrapper exists, it is thin unless explicitly listed 
 | `ApplicationLaunchConfigModal.vue` and host launch-draft preparation | Generic host should not own low-level run launch configuration | app-owned UI/backend decides when and how runs are launched | `In This Change` | Major UX/product shift |
 | `ApplicationExecutionWorkspace.vue` host-retained artifact view | Platform should not remain the primary owner of app-visible runtime artifact projection | app UI + app backend projection + optional workspace handoff | `In This Change` | Deep-link capability remains via runtime identity |
 | `applicationSessionContext` injection key and session-based publication routing | Publications must route by execution/binding context | `applicationExecutionContext` / run binding context | `In This Change` | Tool entrypoint survives; context owner changes |
-| Brief Studio `briefId = brief::<applicationSessionId>` | Business identity must stop deriving from platform session identity | app-owned `briefId` + `executionRef = briefId` | `In This Change` | Teaching sample must teach target model |
+| Brief Studio `briefId = brief::<applicationSessionId>` | Business identity must stop deriving from platform session identity | app-owned `briefId` + app-owned `briefId -> bindingId[]` mapping | `In This Change` | Teaching sample must teach target model |
 | Brief Studio query/command-heavy canonical UI flow and Socratic Math Teacher minimal bootstrap-only positioning | They keep teaching an underpowered app-business-API model after the platform moves to app-owned schemas and virtual backend mounts | GraphQL-backed real sample apps with generated clients and app-owned resolver flows | `In This Change` | Sample docs/builds should teach the new model, not the historical one |
 
 ## Return Or Event Spine(s) (If Applicable)
@@ -565,6 +617,8 @@ It is the only owner allowed to append new immutable app-event journal rows.
 
 During startup recovery, the only caller allowed to reach the ingress owner before the startup gate opens is `ApplicationOrchestrationRecoveryService`.
 Live runtime-originated artifact publication must wait at the `publish_artifact` entry boundary until `ApplicationOrchestrationStartupGate` reaches `READY`.
+For bindings created through direct `startRun(...)`, the ingress owner copies persisted `bindingIntentId` from the authoritative binding row into the immutable event envelope before dispatch.
+The platform does not defer `runStarted` or early artifact delivery until app-owned mapping commit finishes; app-owned pending intent plus at-least-once retry semantics handle that crash/race window explicitly.
 
 ### Forbidden shapes
 
@@ -586,6 +640,8 @@ Those callers may decide *that* an event should exist, but only the ingress serv
 | `ApplicationOrchestrationStartupGate` | `DS-002`, `DS-003`, `DS-007` | `ServerRuntime`, `ApplicationOrchestrationHostService`, runtime artifact tool entry | Serialize live orchestration-sensitive traffic against startup recovery | Prevents live writes/ingress from racing with lookup rebuild and observer reattachment | Main line would otherwise rely on implicit listen ordering |
 | `ApplicationBoundRunLifecycleGateway` | `DS-004`, `DS-007` | `ApplicationRunObserverService`, `RecoveryService` | Unify agent/team lifecycle observation behind one orchestration-facing shape | Prevents orchestration from depending on two different execution-owner interfaces | Main line would be polluted with agent/team branching |
 | `App-Owned Schema Artifacts / Generated Client` | `DS-001`, `DS-008` | `ApplicationBackend` and iframe app authoring/build flow | Own GraphQL SDL/OpenAPI/shared DTO artifacts plus generated frontend client/types for one app | Keeps type safety and code generation app-owned instead of platform-owned | The platform would start owning app business semantics or frontends would guess payloads ad hoc |
+| `App-Owned Pending Binding Intent` | `DS-002` | `ApplicationBackend` | Persist one durable pending-intent row before direct `startRun(...)` and reconcile it later if mapping finalization crashes | Makes the direct-start handoff restart-safe without moving business meaning into the platform | The platform would need to guess business intent or defer events implicitly |
+| `App-Owned Business-Object-to-Binding Mapping` | `DS-002`, `DS-003`, `DS-004` | `ApplicationBackend` | Persist mappings from app business records to one or more `bindingId` values | Keeps business meaning inside the app while letting the platform route/recover by binding identity | The platform would start carrying unnatural generic business-reference fields |
 | `ApplicationLaunchDescriptorBuilder` | `DS-001` | `ApplicationHostLaunchOwner` | Build iframe URL, query hints, and bootstrap envelope v2 | Keeps launch bootstrap detail out of general page shell logic | Host launch path would become brittle and mixed with page UI state |
 | `WorkspaceExecutionLinkBuilder` (optional thin helper) | `DS-002`, `DS-003` | app backend / frontend consumers | Derive host-usable execution handoff identity from binding summary | Supports runtime handoff without making workspace routes the orchestration owner | App backend would start building host route strings ad hoc |
 
@@ -604,6 +660,7 @@ Those callers may decide *that* an event should exist, but only the ingress serv
 | Cross-app run lookup persistence | none | `Create New` | Current per-app scan approach is too tied to session identity and is not appropriate for many bound runs | Needs dedicated derived-index ownership |
 | Startup recovery / resume of bindings | none | `Create New` | Durable bindings without a startup recovery owner do not satisfy restart-safe ownership | Needs an explicit startup owner and hook |
 | Startup traffic admission / serialization for orchestration-sensitive paths | none | `Create New` | Raw `app.listen(...)` timing is not a sufficient correctness boundary once recovery rebuilds derived lookup state | Needs an explicit startup gate that live orchestration/event paths must honor |
+| Direct `startRun(...)` correlation establishment | none as an explicit contract | `Create New` | Binding-centric correlation needs one concrete pending-intent + reconciliation handshake once the generic business-reference field is removed | Neither pure app code nor pure platform code alone can make the cross-boundary crash/race contract explicit |
 | App-owned business API schema/codegen and generated clients | current frontend SDK + shared contracts | `Create New` | Platform packages are transport/infra owners, not the right owner for one app’s business schema or generated client output | App-owned GraphQL/OpenAPI/shared-contract artifacts must remain inside each application workspace |
 
 ## Subsystem / Capability-Area Allocation
@@ -618,6 +675,7 @@ Those callers may decide *that* an event should exist, but only the ingress serv
 | `autobyteus-web Applications host` | engine-first app launch and iframe bootstrap v2 | `DS-001` | Browser host | `Extend` | Remove session-centric host UI flow |
 | `application-sdk-contracts` + backend/frontend SDKs | author-facing contract shapes, backend mount transport helper, and runtime-control/context exposure | `DS-001`, `DS-002`, `DS-003`, `DS-004`, `DS-006`, `DS-008` | Bundle authors | `Extend` | Platform SDKs stay schema-agnostic while exposing the hosted backend mount cleanly |
 | `applications/<app>/api` + `frontend-src/generated` | app-owned schema artifacts and generated clients | `DS-001`, `DS-008` | App backend + iframe app | `Create New` | Not a platform subsystem; each app owns its own business API contract/codegen |
+| `applications/<app>/backend-src` pending-intent/correlation services | app-owned pending binding intent persistence and reconciliation | `DS-002`, `DS-003`, `DS-004` | App backend | `Create New` | App-owned because it carries business-record meaning even though it consumes platform `bindingIntentId` / `bindingId` |
 | `agent-execution` + `agent-team-execution` lifecycle observation extensions | service-level lifecycle notification boundaries | `DS-004`, `DS-007` | Run observer and recovery owners | `Extend` | Add a consistent orchestration-facing observation contract |
 
 ## Draft File Responsibility Mapping
@@ -641,6 +699,8 @@ Those callers may decide *that* an event should exist, but only the ingress serv
 | `autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts` | `agent-team-execution` | Manager extension | Add manager-level lifecycle subscription/dispatch | Keeps team lifecycle normalization inside team execution | Yes |
 | `autobyteus-server-ts/src/application-orchestration/tools/publish-artifact-tool.ts` | `application-orchestration` | Runtime artifact entry wrapper | Wait for startup admission, then forward live artifact publications to the ingress owner | One live-ingress entry concern | Yes |
 | `autobyteus-server-ts/src/server-runtime.ts` | server startup | Startup hook owner | Enter the startup gate, run recovery plus dispatch resume inside it, and fail fast if ready state cannot be released | One startup orchestration hook | No |
+| `applications/<app>/backend-src/services/run-binding-correlation-service.ts` | app-owned backend | App-owned correlation owner | Persist pending binding intent, finalize business-record mapping, and reconcile by `bindingIntentId` after crashes or early event delivery | One app-owned cross-boundary handoff concern | Yes |
+| `applications/<app>/backend-src/repositories/pending-binding-intent-repository.ts` | app-owned backend | App-owned persistence boundary | Store pending binding intent rows | One app-owned persistence concern | Yes |
 | `autobyteus-application-frontend-sdk/src/create-application-backend-mount-transport.ts` | frontend SDK | Generic transport-helper boundary | Build schema-agnostic GraphQL/query/command/route invokers from `backendBaseUrl` plus request-context v2 | Keeps mount-path derivation out of every app while avoiding ownership of app business schemas | Yes |
 | `applications/<app>/api/graphql/schema.graphql` | app-owned per-app authoring | App-owned business API contract | Authoritative GraphQL schema artifact for one application | One schema owner per app | No |
 | `applications/<app>/frontend-src/generated/graphql-client.ts` | app-owned per-app authoring | Generated client artifact | Frontend-usable GraphQL types/operations for one application | Generated output should remain app-owned | Yes |
@@ -650,7 +710,7 @@ Those callers may decide *that* an event should exist, but only the ingress serv
 | Repeated Structure / Logic | Candidate Shared File | Owning Subsystem | Why Shared | Redundant Attributes Removed? (`Yes`/`No`) | Overlapping Representations Removed? (`Yes`/`No`) | Must Not Become |
 | --- | --- | --- | --- | --- | --- | --- |
 | Resource reference shapes (bundle-local vs shared) | `autobyteus-application-sdk-contracts/src/runtime-resources.ts` | contracts package | Needed by server, backend SDK, and app authors | `Yes` | `Yes` | a vague generic selector with optional unrelated fields |
-| Binding summary used by runtime control + event envelope | `autobyteus-application-sdk-contracts/src/runtime-bindings.ts` | contracts package | One authoritative binding identity shape | `Yes` | `Yes` | a kitchen-sink “session/run/execution” shape |
+| Binding summary used by runtime control + event envelope | `autobyteus-application-sdk-contracts/src/runtime-bindings.ts` | contracts package | One authoritative binding identity shape including opaque `bindingIntentId` | `Yes` | `Yes` | a kitchen-sink “session/run/execution/business-ref” shape |
 | Execution event envelope | `autobyteus-application-sdk-contracts/src/runtime-events.ts` | contracts package | Shared immutable event shape for app event handlers | `Yes` | `Yes` | duplicated local event shapes per package |
 | Shared internal observed lifecycle event | `autobyteus-server-ts/src/runtime-management/domain/observed-run-lifecycle-event.ts` | shared internal runtime domain | Orchestration needs one shape above agent/team execution | `Yes` | `Yes` | two parallel agent-only/team-only lifecycle shapes |
 | Iframe bootstrap v2 payload + backend mount descriptor | `autobyteus-web/types/application/ApplicationIframeContract.ts` | web host | Shared browser host/iframe bootstrap shape including authoritative `backendBaseUrl` | `Yes` | `Yes` | browser-only ad hoc literals duplicated in components |
@@ -660,8 +720,8 @@ Those callers may decide *that* an event should exist, but only the ingress serv
 | Shared Structure / Type / Schema | One Clear Meaning Per Field? (`Yes`/`No`) | Redundant Attributes Removed? (`Yes`/`No`) | Parallel / Overlapping Representation Risk (`Low`/`Medium`/`High`) | Corrective Action |
 | --- | --- | --- | --- | --- |
 | `ApplicationRuntimeResourceRef` | `Yes` | `Yes` | `Low` | Keep `localId` only for bundle-local refs and canonical ids only where shared resolution requires them |
-| `ApplicationRunBindingSummary` | `Yes` | `Yes` | `Low` | Keep business identity only as `executionRef`; do not reintroduce session fields |
-| `ApplicationExecutionEventEnvelope` | `Yes` | `Yes` | `Low` | Reuse binding summary instead of parallel top-level binding/run fields |
+| `ApplicationRunBindingSummary` | `Yes` | `Yes` | `Low` | Keep only binding/run/resource/status plus opaque `bindingIntentId`; do not reintroduce session fields or a generic business-reference field |
+| `ApplicationExecutionEventEnvelope` | `Yes` | `Yes` | `Low` | Reuse binding summary including `bindingIntentId` instead of parallel top-level binding/run fields |
 | `ObservedRunLifecycleEvent` | `Yes` | `Yes` | `Low` | Keep it intentionally narrow for orchestration only; rich runtime events stay below this boundary |
 | Worker `ApplicationRequestContext` v2 | `Yes` | `Yes` | `Low` | Keep it about request source (`applicationId`, optional `launchInstanceId`), not business identity |
 | Iframe/backend mount transport descriptor v2 | `Yes` | `Yes` | `Low` | Keep `backendBaseUrl` authoritative; convenience GraphQL/query/command/route URLs derive from it instead of becoming parallel sources of truth |
@@ -692,6 +752,8 @@ Those callers may decide *that* an event should exist, but only the ingress serv
 | `autobyteus-web/stores/applicationHostStore.ts` | `autobyteus-web Applications host` | Browser launch owner | Engine ensure-ready + iframe bootstrap state | One page-launch owner | Yes |
 | `autobyteus-web/types/application/ApplicationIframeContract.ts` | `autobyteus-web Applications host` | Shared host type owner | v2 iframe bootstrap envelope and authoritative backend mount descriptor | One shared browser type owner | Yes |
 | `autobyteus-application-frontend-sdk/src/create-application-backend-mount-transport.ts` | frontend SDK | Generic transport-helper owner | Build schema-agnostic invokers from `backendBaseUrl` and request-context v2 | One optional transport helper owner | Yes |
+| `applications/<app>/backend-src/services/run-binding-correlation-service.ts` | app-owned per-app authoring | App-owned correlation owner | Persist pending binding intents, finalize mappings, and reconcile by `bindingIntentId` | One app-owned handoff/reconciliation owner | Yes |
+| `applications/<app>/backend-src/repositories/pending-binding-intent-repository.ts` | app-owned per-app authoring | App-owned persistence owner | Store pending binding intent rows | One app-owned persistence owner | Yes |
 | `autobyteus-application-sdk-contracts/src/{manifests,request-context.ts,runtime-*.ts,backend-definition.ts}` | contracts package | Shared contracts owner | Versioned bundle/backend/request/runtime/event/bootstrap transport types | Split by subject instead of one mixed file | Yes |
 | `applications/<app>/api/graphql/schema.graphql` | app-owned per-app authoring | App-owned schema artifact owner | Authoritative app GraphQL schema/introspection input | One schema owner per app | No |
 | `applications/<app>/backend-src/graphql/index.ts` | app-owned per-app authoring | App-owned GraphQL runtime boundary | Worker-side GraphQL executor/resolver composition for one app | One backend business API boundary per app | Yes |
@@ -754,8 +816,8 @@ Authority changes hands at these points:
   - schema-agnostic frontend SDK mount helpers,
   - iframe bootstrap/request-context types.
 - App frontend code must not depend on server internal routes outside the hosted backend mount or on worker internals.
-- App backend code may depend on `runtimeControl`, backend-definition contracts, and app-owned business schema/resolver code only; it must not depend on server internal services.
-- Platform contracts/SDK packages may define manifest/request/runtime/event/bootstrap transport shapes, but they must not import or publish app-specific GraphQL schemas, OpenAPI documents, or generated business clients.
+- App backend code may depend on `runtimeControl`, backend-definition contracts, app-owned pending-intent/correlation services, and app-owned business schema/resolver code only; it must not depend on server internal services.
+- Platform contracts/SDK packages may define manifest/request/runtime/event/bootstrap transport shapes, including opaque `bindingIntentId`, but they must not import or publish app-specific GraphQL schemas, OpenAPI documents, or generated business clients.
 - Generated app clients may depend on app-owned schema artifacts plus generic frontend SDK transport helpers; the dependency must not point back upward from platform packages into app-owned business artifacts.
 - `ApplicationBackendGatewayService` may depend on `ApplicationEngineHostService` and generic transport/request-context helpers, but not on app-specific business schemas or orchestration stores.
 - `ApplicationRuntimeControlBridge` may depend on `ApplicationOrchestrationHostService`, but not on lower-level stores and run services independently.
@@ -811,6 +873,7 @@ Forbidden shortcuts:
 - orchestration -> agent/team managers directly
 - backend gateway -> binding stores or run services directly
 - backend gateway -> app-specific business-schema interpretation
+- app backend -> `runtimeControl.startRun(...)` without first persisting one pending binding intent for direct start flows
 - app backend -> session-like request-context business identity
 
 ## Interface Boundary Mapping
@@ -827,16 +890,17 @@ Forbidden shortcuts:
 | `ApplicationOrchestrationStartupGate.runStartupRecovery(task)` | startup coordination | Execute the one exclusive orchestration startup window and release ready/failed state | startup callback | Internal authoritative startup-coordination boundary |
 | `ApplicationOrchestrationStartupGate.awaitReady()` | startup coordination | Block live orchestration-sensitive callers until steady-state startup is released | none | Used by runtime-control and live artifact-entry boundaries |
 | `runtimeControl.listAvailableResources(filter?)` | orchestration resource catalog | List bundle-local/shared accessible runtime resources | optional `{ owner?, kind? }` filter | Worker-side authoritative platform API |
-| `runtimeControl.startRun(input)` | run binding control | Start one run and persist one durable binding | `{ executionRef, resourceRef, launch }` | `launch` shape must match resource kind explicitly |
+| `runtimeControl.startRun(input)` | run binding control | Start one run and persist one durable binding | `{ bindingIntentId, resourceRef, launch }` | Returns a binding summary containing `bindingId`, `bindingIntentId`, and run identity; `launch` shape must match resource kind explicitly |
 | `runtimeControl.getRunBinding(bindingId)` | run binding query | Return one binding summary | `bindingId` | Authoritative binding lookup |
-| `runtimeControl.listRunBindings(filter)` | run binding query | List bindings for the current app | optional `{ executionRef?, status? }` | Used for recovery/inspection |
+| `runtimeControl.getRunBindingByIntentId(bindingIntentId)` | run binding query | Resolve one created binding from the original direct-start intent token | `bindingIntentId` | Authoritative reconciliation lookup for crash recovery and early-event correlation |
+| `runtimeControl.listRunBindings(filter)` | run binding query | List bindings for the current app | optional `{ status? }` | Used for recovery/inspection; intent-specific reconciliation uses `getRunBindingByIntentId(...)` |
 | `runtimeControl.postRunInput(input)` | run binding control | Deliver user/application input to one binding | `{ bindingId, text, targetMemberName?, contextFiles?, metadata? }` | Use binding identity, not raw run-service bypass |
 | `runtimeControl.terminateRunBinding(bindingId)` | run binding control | Terminate one bound run | `bindingId` | Returns updated binding summary |
 | `publish_artifact(...)` | execution-event ingress | Publish one runtime artifact for the current binding | runtime-injected execution context + artifact payload | Tool enters only through the ingress boundary |
 | `AgentRunService.observeAgentRunLifecycle(runId, listener)` | agent execution lifecycle | Observe one agent run through the shared lifecycle shape | `runId` | Authoritative service-level upward boundary |
 | `TeamRunService.observeTeamRunLifecycle(teamRunId, listener)` | team execution lifecycle | Observe one team run through the shared lifecycle shape | `teamRunId` | Authoritative service-level upward boundary |
 | `ApplicationBoundRunLifecycleGateway.observeBoundRun(bindingRuntime, listener)` | orchestration lifecycle adapter | Normalize agent/team observation to one orchestration-facing shape | `{ runtimeSubject, runId }` | Keeps orchestration free from manager/backend specifics |
-| App backend event handlers `runStarted`, `runTerminated`, `runFailed`, `runOrphaned`, `artifact` | application runtime events | Receive normalized runtime events | immutable event envelope with binding summary | Replaces session lifecycle handlers |
+| App backend event handlers `runStarted`, `runTerminated`, `runFailed`, `runOrphaned`, `artifact` | application runtime events | Receive normalized runtime events | immutable event envelope with binding summary (`bindingId` + `bindingIntentId`) + concrete run identity | Replaces session lifecycle handlers and supports early-event reconciliation |
 | Frontend SDK/request-context helper boundary | browser request source | Preserve app route identity and optional launch instance | `{ applicationId, launchInstanceId? }` | No session-owned business identity |
 
 Rule:
@@ -850,7 +914,8 @@ Rule:
 | `ApplicationIframeBootstrapV2.transport.backendBaseUrl` | `Yes` | `Yes` | `Low` | Keep one authoritative backend-mount base URL rather than parallel per-surface sources of truth |
 | `POST /rest/applications/:applicationId/backend/graphql` | `Yes` | `Yes` | `Low` | Keep route `applicationId` authoritative and leave GraphQL schema ownership with the app |
 | `ANY /rest/applications/:applicationId/backend/routes/*` | `Yes` | `Yes` | `Low` | Keep transport generic; do not reinterpret app route semantics inside the platform |
-| `runtimeControl.startRun(...)` | `Yes` | `Yes` | `Low` | Keep `resourceRef` + explicit launch union by resource kind |
+| `runtimeControl.startRun(...)` | `Yes` | `Yes` | `Low` | Require `bindingIntentId` for direct start flows and keep `resourceRef` + explicit launch union by resource kind |
+| `runtimeControl.getRunBindingByIntentId(...)` | `Yes` | `Yes` | `Low` | Keep intent-based reconciliation on its own explicit boundary |
 | `runtimeControl.postRunInput(...)` | `Yes` | `Yes` | `Low` | Keep `bindingId` authoritative |
 | `publish_artifact(...)` | `Yes` | `Yes` | `Low` | Identity comes only from injected execution context plus payload |
 | `AgentRunService.observeAgentRunLifecycle(...)` | `Yes` | `Yes` | `Low` | Keep run-subject-specific interface |
@@ -863,7 +928,7 @@ Rule:
 | Node / Subject | Current / Proposed Name | Name Is Natural And Self-Descriptive? (`Yes`/`No`) | Naming Drift Risk | Corrective Action |
 | --- | --- | --- | --- | --- |
 | Governing app-facing orchestration owner | `ApplicationOrchestrationHostService` | `Yes` | `Low` | Keep `orchestration` because it truly owns orchestration |
-| Opaque business-context key | `executionRef` | `Yes` | `Low` | Keep platform-neutral string identity |
+| Primary cross-boundary correlation key | `bindingId` | `Yes` | `Low` | Keep durable platform-owned binding identity as the main correlation handle |
 | Durable platform-owned run relationship | `run binding` / `ApplicationRunBindingSummary` | `Yes` | `Low` | Avoid renaming it back toward session |
 | Browser-only iframe launch id | `launchInstanceId` | `Yes` | `Low` | Keep it explicitly browser/bootstrap-scoped |
 | Single event-ingress owner | `ApplicationExecutionEventIngressService` | `Yes` | `Low` | Prefer this over `PublicationRouter` because it owns lifecycle events too |
@@ -918,6 +983,8 @@ Rule:
 | `applications/<app>/api/` | `Folder` | App-owned business API contract owner | App-local GraphQL/OpenAPI/shared-contract artifacts | Keeps business schema ownership inside the app | platform runtime internals |
 | `applications/<app>/api/graphql/schema.graphql` | `File` | App-owned schema artifact owner | Authoritative GraphQL schema/introspection input for one app | One schema owner per app | platform transport logic |
 | `applications/<app>/backend-src/graphql/` | `Folder` | App-owned GraphQL runtime boundary | Resolvers/executor composition for one app | Keeps backend GraphQL ownership inside the app | platform orchestration internals beyond `runtimeControl` |
+| `applications/<app>/backend-src/services/run-binding-correlation-service.ts` | `File` | App-owned correlation owner | Persist pending binding intent, finalize mapping, and reconcile early events by `bindingIntentId` | Makes the cross-boundary handoff concrete for real apps | platform-owned routing/recovery internals |
+| `applications/<app>/backend-src/repositories/pending-binding-intent-repository.ts` | `File` | App-owned persistence owner | Store pending binding intent rows | Gives the app one durable owner for pre-start intent state | platform-owned business schema packages |
 | `applications/<app>/frontend-src/generated/` | `Folder` | App-owned generated-client owner | Generated frontend types/clients for one app | Generated outputs stay with the app that owns the schema | platform-owned business schema packages |
 | `applications/brief-studio/` | `Folder` | Sample app | GraphQL-backed sample teaching many runs over one `briefId` business record | Must teach the target model | session-derived business IDs |
 | `applications/socratic-math-teacher/` | `Folder` | Sample app | GraphQL-backed sample teaching one long-lived `lessonId` conversational binding | Complements Brief Studio with a different app pattern | bootstrap-only placeholder behavior |
@@ -945,8 +1012,8 @@ Rules:
 
 | App | Current Teaching Gap | Target App-Owned API Shape | Why It Matters |
 | --- | --- | --- | --- |
-| `brief-studio` | Teaches session-derived `briefId` and query/command-heavy UI flow | GraphQL-first brief/workflow API with generated client; backend resolvers own `runtimeControl` and use `executionRef = briefId` | Teaches how one business record can accumulate many runs over time |
-| `socratic-math-teacher` | Teaches only a shallow runtime-target/bootstrap shape | GraphQL-first lesson/tutor API with generated client; backend resolvers start or reuse one lesson binding and project tutor turns into lesson state | Teaches how one business record can own one long-lived conversational binding |
+| `brief-studio` | Teaches session-derived `briefId` and query/command-heavy UI flow | GraphQL-first brief/workflow API with generated client; backend resolvers own `runtimeControl`, persist pending binding intents, and then persist `briefId -> bindingId[]` in app state | Teaches how one business record can accumulate many runs over time without losing early events |
+| `socratic-math-teacher` | Teaches only a shallow runtime-target/bootstrap shape | GraphQL-first lesson/tutor API with generated client; backend resolvers persist pending binding intent on `startLesson`, then start or reuse one lesson binding and project tutor turns into lesson state | Teaches how one business record can own one long-lived conversational binding |
 
 Both apps should keep runnable built payloads in `ui/` and `backend/`, while their richer authoring roots move into app-owned source folders such as `frontend-src/`, `backend-src/`, and `api/`.
 
@@ -955,12 +1022,13 @@ Both apps should keep runnable built payloads in `ui/` and `backend/`, while the
 | Topic | Good Example | Bad / Avoided Shape | Why The Example Matters |
 | --- | --- | --- | --- |
 | Application launch spine | `Browser -> ensure app engine -> iframe bootstrap with backendBaseUrl -> app decides later whether to create runs` | `Browser -> create application session -> auto-create one run -> iframe becomes usable only after run exists` | Shows the main product-model correction |
-| Hosted virtual backend mount | `iframe generated client -> /rest/applications/<appId>/backend/graphql` (or `/routes/...`) -> gateway -> worker` | `iframe -> per-app Express server on a separate port` | Shows how apps get real backend surfaces without per-app servers |
+| Hosted virtual backend mount | `iframe generated client -> /rest/applications/<appId>/backend/graphql (or /routes/...) -> gateway -> worker` | `iframe -> per-app Express server on a separate port` | Shows how apps get real backend surfaces without per-app servers |
 | App-owned GraphQL codegen | `app schema.graphql -> generated frontend client in frontend-src/generated -> iframe talks through backendBaseUrl` | `platform inspects app resolvers and emits one universal business-schema package` | Shows how type safety stays with each app |
-| App-owned business identity | `briefId` is created by Brief Studio and used as `executionRef`; one brief may create many bindings over time` | `briefId = brief::<applicationSessionId>` | Shows why business identity must stop deriving from platform session identity |
+| App-owned business identity | Brief Studio creates a real `briefId` and stores `briefId -> bindingId[]` in app state; one brief may create many bindings over time | `briefId = brief::<applicationSessionId>` | Shows why business identity must stop deriving from platform session identity |
 | Worker runtime-control boundary | `App backend resolver -> runtimeControl.startRun(...) -> ApplicationOrchestrationHostService` | `App backend resolver -> AgentRunService + TeamRunService + stores directly` | Demonstrates the authoritative-boundary rule |
-| Brief Studio target sample | `Mutation.launchDraftRun(briefId)` starts or restarts a drafting run while Query.brief(briefId) returns projected artifacts/review state` | `host launch modal picks the team and the app merely reads host-retained execution state` | Teaches the “many runs over one business record” pattern |
-| Socratic Math Teacher target sample | `Mutation.startLesson` creates the lesson/binding and later `askFollowUp` reuses that binding via postRunInput` | `every question requires host-side relaunch or a brand-new session identity` | Teaches the “long-lived conversational binding” pattern |
+| Direct start-run correlation establishment | `App persists pending binding intent(bindingIntentId) -> startRun(bindingIntentId, ...) -> platform persists binding + echoes bindingIntentId -> early event arrives with same bindingIntentId -> app finalizes or reconciles mapping` | `App calls startRun(...) first and hopes returned bindingId will always be committed to business state before any event arrives` | Shows the exact crash/race-safe handoff that replaces the removed generic business-reference field |
+| Brief Studio target sample | `Mutation.launchDraftRun(briefId)` starts or restarts a drafting run while `Query.brief(briefId)` returns projected artifacts/review state | `host launch modal picks the team and the app merely reads host-retained execution state` | Teaches the “many runs over one business record” pattern |
+| Socratic Math Teacher target sample | `Mutation.startLesson` creates the lesson/binding and later `askFollowUp` reuses that binding via `postRunInput` | `every question requires host-side relaunch or a brand-new session identity` | Teaches the “long-lived conversational binding” pattern |
 | Recovery / resume spine | `Server startup -> recovery service -> authoritative binding store -> rebuild lookup index -> restore active binding -> attach observer -> resume dispatch` | `Server startup -> resume event dispatch only -> wait for first user action to notice that bindings lost observers` | Shows why restart safety needs an explicit recovery owner rather than durable tables alone |
 | Event ingress authority | `publish_artifact` and run-observer lifecycle changes both call ApplicationExecutionEventIngressService, which alone writes journal rows` | `publish_artifact -> router` and separately `orchestration host -> journal store directly` | Shows the fix for the authoritative-boundary split |
 | Startup traffic / readiness coordination | `server-runtime enters ApplicationOrchestrationStartupGate -> recovery rebuilds state -> dispatch resume starts -> gate releases -> live runtimeControl/publish_artifact traffic proceeds` | `server listens -> live runtimeControl or artifact ingress mutates/lookups while recovery is clearing and rebuilding derived state` | Shows the concrete serialization rule that prevents recovery-time races |
@@ -999,7 +1067,7 @@ This layering is explanatory only. Ownership remains the primary design rule.
 
 1. **Contract-first branch change**
    - introduce manifest v3 + backend definition/runtime event/request-context v2 contracts,
-   - add shared runtime orchestration types (`executionRef`, resource refs, binding summary, event envelope),
+   - add shared runtime orchestration types (resource refs, binding summary including opaque `bindingIntentId`, event envelope, and intent-based reconciliation lookup),
    - add iframe/bootstrap transport descriptor changes with authoritative `backendBaseUrl`, and
    - keep platform SDK/contract types schema-agnostic.
 
@@ -1037,22 +1105,27 @@ This layering is explanatory only. Ownership remains the primary design rule.
    - migrate iframe bootstrap to v2 with authoritative `backendBaseUrl`,
    - remove session launch/binding GraphQL dependency from the web host.
 
-8. **App-owned API/schema authoring path**
+8. **Direct-start correlation establishment**
+   - add `bindingIntentId` to `runtimeControl.startRun(...)`, binding summaries, and event envelopes,
+   - add authoritative `getRunBindingByIntentId(...)` reconciliation lookup,
+   - document the required app-owned pending binding intent pattern.
+
+9. **App-owned API/schema authoring path**
    - add app-local folder guidance for schema artifacts and generated clients,
    - keep app-generated clients out of platform packages,
    - ensure GraphQL-backed and route-backed apps remain first-class.
 
-9. **Sample app upgrades**
+10. **Sample app upgrades**
    - migrate Brief Studio to an app-owned GraphQL schema plus generated frontend client,
-   - use real `briefId` business identity and `executionRef = briefId`,
+   - use real `briefId` business identity and app-owned `briefId -> bindingId[]` mapping,
    - migrate Socratic Math Teacher to an app-owned GraphQL lesson API plus generated frontend client,
    - teach long-lived lesson binding plus repeated `postRunInput(...)` follow-up flow.
 
-10. **Frontend host simplification**
+11. **Frontend host simplification**
    - remove session store, launch modal, retained execution workspace, and session query-param binding,
    - add `applicationHostStore` and engine-first iframe launch behavior.
 
-11. **Legacy deletion**
+12. **Legacy deletion**
    - remove `application-sessions` subsystem,
    - remove session GraphQL/WS/public types,
    - remove `runtimeTarget`-driven host UI and docs,
@@ -1087,6 +1160,14 @@ The shipped end state must not retain legacy dual-path behavior.
   - Chosen: explicit startup gate.
   - Why: correctness should not depend on raw socket-bind timing, and the current runtime may still need to bind/listen before some non-orchestration startup tasks complete.
 
+- **Binding-centric correlation vs platform-owned generic business-reference field**
+  - Chosen: binding-centric correlation.
+  - Why: the platform needs durable routing/recovery by binding identity, while business-record meaning belongs in app-owned state.
+
+- **Pending intent + reconciliation vs deferred app-visible event delivery**
+  - Chosen: pending intent + reconciliation.
+  - Why: it keeps the platform event model simple and durable while giving the app one explicit crash/race-safe handoff contract.
+
 - **App-owned business schema vs platform-owned universal business schema**
   - Chosen: app-owned business schema.
   - Why: the platform should host and route applications, not reinterpret their business meaning.
@@ -1120,11 +1201,13 @@ The shipped end state must not retain legacy dual-path behavior.
 - Start with shared contract/types design; the server, web host, and SDK migrations all depend on that vocabulary being correct.
 - Keep `backendBaseUrl` authoritative in iframe bootstrap v2; derive GraphQL/query/command/route URLs from it instead of creating parallel sources of truth.
 - Keep frontend SDK helpers schema-agnostic. They may help apps talk to the hosted backend mount, but they must not own app business DTOs or generated clients.
+- Implement `bindingIntentId` as an opaque intent token, not as a generic business-reference field. Its only job is to make the direct-start handoff durable and reconcilable.
 - Keep app-owned GraphQL/OpenAPI/shared-contract artifacts inside each application workspace and generate frontend clients there during the app build.
 - Implement execution-event ingress, lifecycle gateway, and recovery before removing session paths. Those owners define whether the new orchestration core is truly restart-safe.
+- Ensure `ApplicationOrchestrationHostService` persists `bindingIntentId` on the binding before journaling explicit `runStarted` events, and ensure ingress copies it into event envelopes.
 - Implement `ApplicationOrchestrationStartupGate` together with recovery and ingress wiring; startup safety is incomplete until live `runtimeControl` and live artifact ingress both honor the same gate.
 - Keep `runtimeControl` narrow and subject-owned. If an app asks for more power, add it to the orchestration boundary rather than bypassing it.
 - Reuse existing `AgentRunService` / `TeamRunService` as the execution-resource layer; do not push app-owned binding logic downward into them.
-- When migrating Brief Studio, use a real `briefId` as business identity, expose GraphQL as the primary app business API, and bind runs to `executionRef = briefId`.
-- When migrating Socratic Math Teacher, teach a lesson-centric GraphQL flow whose follow-up mutations reuse one binding via `runtimeControl.postRunInput(...)`.
+- When migrating Brief Studio, use a real `briefId` as business identity, expose GraphQL as the primary app business API, persist pending binding intent before `launchDraftRun`, and then persist app-owned `briefId -> bindingId[]` mapping.
+- When migrating Socratic Math Teacher, teach a lesson-centric GraphQL flow whose `startLesson` path persists pending binding intent before creation and whose follow-up mutations reuse one binding via `runtimeControl.postRunInput(...)`.
 - Remove legacy code aggressively once the new path is integrated; do not leave `applicationSession` or `runtimeTarget` as parallel long-term shapes.

@@ -88,6 +88,30 @@ const buildBaseUrl = (address: string | { port: number; address: string }): stri
   return `http://127.0.0.1:${address.port}`;
 };
 
+const buildHostedBackendBaseUrl = (applicationId: string, baseUrl: string): string =>
+  `${baseUrl}/rest/applications/${encodeURIComponent(applicationId)}/backend`;
+
+const buildHostedBackendNotificationsUrl = (applicationId: string, baseUrl: string): string =>
+  `${baseUrl.replace("http://", "ws://")}/ws/applications/${encodeURIComponent(applicationId)}/backend/notifications`;
+
+const createHostedBriefStudioClient = async (
+  applicationId: string,
+  baseUrl: string,
+  requestContext: { applicationId: string; launchInstanceId: string },
+) => {
+  const { createBriefStudioGraphqlClient } = await import(
+    "../../../../applications/brief-studio/dist/importable-package/applications/brief-studio/ui/generated/graphql-client.js"
+  );
+  return createBriefStudioGraphqlClient({
+    application: { applicationId },
+    requestContext,
+    transport: {
+      backendBaseUrl: buildHostedBackendBaseUrl(applicationId, baseUrl),
+      backendNotificationsUrl: buildHostedBackendNotificationsUrl(applicationId, baseUrl),
+    },
+  });
+};
+
 const waitForSocketOpen = async (socket: WebSocket): Promise<void> =>
   new Promise((resolve, reject) => {
     if (socket.readyState === WebSocket.OPEN) {
@@ -244,7 +268,6 @@ const cloneBinding = (binding: ApplicationRunBindingSummary): ApplicationRunBind
 
 const buildDirectArtifactEnvelope = (input: {
   applicationId: string;
-  executionRef: string;
   binding: ApplicationRunBindingSummary;
   eventId: string;
   journalSequence: number;
@@ -263,7 +286,6 @@ const buildDirectArtifactEnvelope = (input: {
       eventId: input.eventId,
       journalSequence: input.journalSequence,
       applicationId: input.applicationId,
-      executionRef: input.executionRef,
       family: "ARTIFACT",
       publishedAt: input.publishedAt,
       binding: cloneBinding(input.binding),
@@ -304,6 +326,7 @@ describe("Brief Studio imported package integration", () => {
   let notificationSocket: WebSocket | null;
   let notificationMessages: ApplicationNotificationStreamMessage[];
   let ingressService: ApplicationExecutionEventIngressService;
+  let lookupStore: ApplicationRunLookupStore;
   let latestBinding: ApplicationRunBindingSummary | null;
   let latestTeamRunId: string | null;
   let executionContextByRouteKey: Map<string, ApplicationExecutionContext>;
@@ -316,6 +339,7 @@ describe("Brief Studio imported package integration", () => {
     occurredAt: string;
     errorMessage?: string | null;
   }) => void>;
+  let onObserveBoundRun: ((descriptor: { runtimeSubject: "TEAM_RUN"; runId: string }) => Promise<void>) | null;
 
   beforeEach(async () => {
     tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-brief-studio-"));
@@ -366,7 +390,7 @@ describe("Brief Studio imported package integration", () => {
     });
     const bindingStore = new ApplicationRunBindingStore({ platformStateStore });
     const journalStore = new ApplicationExecutionEventJournalStore({ platformStateStore });
-    const lookupStore = new ApplicationRunLookupStore();
+    lookupStore = new ApplicationRunLookupStore();
 
     startupGate = ApplicationOrchestrationStartupGate.getInstance();
     latestBinding = null;
@@ -375,6 +399,7 @@ describe("Brief Studio imported package integration", () => {
     memberRunIdByRouteKey = new Map();
     teamRunById = new Map();
     lifecycleListenersByRunId = new Map();
+    onObserveBoundRun = null;
 
     const fakeTeamDefinitionService = {
       getAllDefinitions: vi.fn(async () => []),
@@ -425,6 +450,9 @@ describe("Brief Studio imported package integration", () => {
           phase: "ATTACHED",
           occurredAt: new Date().toISOString(),
         });
+        if (onObserveBoundRun) {
+          await onObserveBoundRun(descriptor);
+        }
         return () => {
           lifecycleListenersByRunId.delete(descriptor.runId);
         };
@@ -1144,11 +1172,21 @@ describe("Brief Studio imported package integration", () => {
     const layout = storageLifecycleService.getStorageLayout(applicationId);
     const appDb = new DatabaseSync(layout.appDatabasePath);
     try {
-      const counts = {
+    const counts = {
         processedEvents: Number(
           (appDb.prepare("SELECT COUNT(*) AS count FROM processed_events").get() as { count: number }).count,
         ),
         briefs: Number((appDb.prepare("SELECT COUNT(*) AS count FROM briefs").get() as { count: number }).count),
+        briefBindings: Number(
+          (appDb.prepare("SELECT COUNT(*) AS count FROM brief_bindings").get() as { count: number }).count,
+        ),
+        pendingBindingIntentsCommitted: Number(
+          (
+            appDb.prepare(
+              "SELECT COUNT(*) AS count FROM pending_binding_intents WHERE status = 'COMMITTED'",
+            ).get() as { count: number }
+          ).count,
+        ),
         artifacts: Number(
           (appDb.prepare("SELECT COUNT(*) AS count FROM brief_artifacts").get() as { count: number }).count,
         ),
@@ -1159,6 +1197,8 @@ describe("Brief Studio imported package integration", () => {
       expect(counts).toEqual({
         processedEvents: 4,
         briefs: 1,
+        briefBindings: 1,
+        pendingBindingIntentsCommitted: 1,
         artifacts: 2,
         reviewNotes: 1,
       });
@@ -1167,13 +1207,218 @@ describe("Brief Studio imported package integration", () => {
     }
   }, 20_000);
 
+  it("preserves same-binding early final projection when the packaged Brief Studio GraphQL client launches through the hosted backend mount", async () => {
+    expect(await bundleService.getApplicationById(applicationId)).not.toBeNull();
+
+    const launchInstanceId = `${applicationId}::launch-race`;
+    const requestContext = {
+      applicationId,
+      launchInstanceId,
+    };
+    const client = await createHostedBriefStudioClient(applicationId, baseUrl, requestContext);
+
+    notificationSocket = new WebSocket(buildHostedBackendNotificationsUrl(applicationId, baseUrl));
+    notificationSocket.on("message", (raw) => {
+      notificationMessages.push(JSON.parse(String(raw)) as ApplicationNotificationStreamMessage);
+    });
+    await waitForSocketOpen(notificationSocket);
+    await waitForMessage(
+      notificationMessages,
+      notificationSocket,
+      (message) => message.type === "connected" && message.applicationId === applicationId,
+      "connected",
+    );
+
+    expect(await client.briefs()).toEqual([]);
+
+    const createdBrief = await client.createBrief({
+      title: "Launch Race Brief",
+    });
+    expect(createdBrief).toMatchObject({
+      title: "Launch Race Brief",
+      status: "not_started",
+      latestBindingId: null,
+      latestRunId: null,
+      latestBindingStatus: null,
+    });
+
+    onObserveBoundRun = async ({ runId }) => {
+      const writerRunId = `${runId}::writer`;
+      await vi.waitFor(() => {
+        expect(lookupStore.getLookupByRunId(writerRunId)).toMatchObject({
+          applicationId,
+        });
+      });
+
+      await ingressService.appendRuntimeArtifactEvent({
+        runId: writerRunId,
+        customData: {
+          [APPLICATION_EXECUTION_CONTEXT_KEY]: executionContextByRouteKey.get("writer")!,
+        },
+        publication: buildArtifactPublication({
+          artifactKey: "launch-race-final-1",
+          artifactType: "final_brief",
+          title: "Launch Race Brief",
+          summary: "Projected before launch completion.",
+          isFinal: true,
+        }),
+      });
+
+      const layout = storageLifecycleService.getStorageLayout(applicationId);
+      await vi.waitFor(() => {
+        const appDb = new DatabaseSync(layout.appDatabasePath);
+        try {
+          const briefRow = appDb.prepare(
+            `SELECT status, latest_binding_status
+               FROM briefs
+              WHERE brief_id = ?`,
+          ).get(createdBrief.briefId) as {
+            status: string;
+            latest_binding_status: string | null;
+          };
+          expect(briefRow).toEqual({
+            status: "in_review",
+            latest_binding_status: "ATTACHED",
+          });
+        } finally {
+          appDb.close();
+        }
+      });
+    };
+
+    const launchedRun = await client.launchDraftRun({
+      briefId: createdBrief.briefId,
+      llmModelIdentifier: "gpt-test",
+    });
+    expect(launchedRun).toMatchObject({
+      briefId: createdBrief.briefId,
+      bindingId: expect.any(String),
+      runId: latestTeamRunId,
+      status: "ATTACHED",
+    });
+
+    await waitForMessage(
+      notificationMessages,
+      notificationSocket,
+      (message) =>
+        message.type === "notification"
+        && message.notification.topic === "brief.ready_for_review"
+        && (message.notification.payload as { bindingId?: string }).bindingId === launchedRun.bindingId,
+      "brief.ready_for_review",
+    );
+
+    const detail = await client.brief(createdBrief.briefId);
+    expect(detail).toMatchObject({
+      briefId: createdBrief.briefId,
+      title: "Launch Race Brief",
+      status: "in_review",
+      latestBindingId: launchedRun.bindingId,
+      latestRunId: launchedRun.runId,
+      latestBindingStatus: "ATTACHED",
+      lastErrorMessage: null,
+      artifacts: [
+        expect.objectContaining({
+          artifactKey: "launch-race-final-1",
+          artifactType: "final_brief",
+          title: "Launch Race Brief",
+          summary: "Projected before launch completion.",
+          producerMemberRouteKey: "writer",
+          isFinal: true,
+        }),
+      ],
+    });
+
+    expect(await client.briefs()).toEqual([
+      expect.objectContaining({
+        briefId: createdBrief.briefId,
+        title: "Launch Race Brief",
+        status: "in_review",
+        latestBindingId: launchedRun.bindingId,
+        latestRunId: launchedRun.runId,
+        latestBindingStatus: "ATTACHED",
+        lastErrorMessage: null,
+      }),
+    ]);
+
+    const layout = storageLifecycleService.getStorageLayout(applicationId);
+    const appDb = new DatabaseSync(layout.appDatabasePath);
+    try {
+      const counts = {
+        briefBindings: Number(
+          (appDb.prepare("SELECT COUNT(*) AS count FROM brief_bindings").get() as { count: number }).count,
+        ),
+        pendingBindingIntentsCommitted: Number(
+          (
+            appDb.prepare(
+              "SELECT COUNT(*) AS count FROM pending_binding_intents WHERE status = 'COMMITTED'",
+            ).get() as { count: number }
+          ).count,
+        ),
+        artifacts: Number(
+          (appDb.prepare("SELECT COUNT(*) AS count FROM brief_artifacts").get() as { count: number }).count,
+        ),
+      };
+      expect(counts).toEqual({
+        briefBindings: 1,
+        pendingBindingIntentsCommitted: 1,
+        artifacts: 1,
+      });
+    } finally {
+      appDb.close();
+    }
+  }, 20_000);
+
   it("rejects unexpected Brief Studio producers without committing projection state", async () => {
     expect(await bundleService.getApplicationById(applicationId)).not.toBeNull();
+    await storageLifecycleService.ensureStoragePrepared(applicationId);
+    const layout = storageLifecycleService.getStorageLayout(applicationId);
+    const seededDb = new DatabaseSync(layout.appDatabasePath);
+    try {
+      seededDb.prepare(
+        `INSERT INTO briefs (
+           brief_id,
+           title,
+           status,
+           latest_binding_id,
+           latest_run_id,
+           latest_binding_status,
+           last_error_message,
+           created_at,
+           updated_at,
+           approved_at,
+           rejected_at
+         ) VALUES (?, ?, ?, NULL, NULL, NULL, NULL, ?, ?, NULL, NULL)`,
+      ).run(
+        "brief-unexpected-1",
+        "Unexpected Brief",
+        "not_started",
+        "2026-04-19T10:49:00.000Z",
+        "2026-04-19T10:49:00.000Z",
+      );
+      seededDb.prepare(
+        `INSERT INTO pending_binding_intents (
+           binding_intent_id,
+           brief_id,
+           status,
+           binding_id,
+           created_at,
+           updated_at,
+           committed_at
+         ) VALUES (?, ?, 'PENDING_START', NULL, ?, ?, NULL)`,
+      ).run(
+        "binding-intent-unexpected-1",
+        "brief-unexpected-1",
+        "2026-04-19T10:49:30.000Z",
+        "2026-04-19T10:49:30.000Z",
+      );
+    } finally {
+      seededDb.close();
+    }
 
     const binding: ApplicationRunBindingSummary = {
       bindingId: "binding-unexpected-1",
       applicationId,
-      executionRef: "brief-unexpected-1",
+      bindingIntentId: "binding-intent-unexpected-1",
       status: "ATTACHED",
       resourceRef: {
         owner: "bundle",
@@ -1206,7 +1451,6 @@ describe("Brief Studio imported package integration", () => {
         applicationId,
         buildDirectArtifactEnvelope({
           applicationId,
-          executionRef: binding.executionRef,
           binding,
           eventId: "unexpected-producer-event",
           journalSequence: 1,
@@ -1223,7 +1467,6 @@ describe("Brief Studio imported package integration", () => {
       ),
     ).rejects.toThrow("Unexpected Brief Studio artifact producer 'unexpected-member'");
 
-    const layout = storageLifecycleService.getStorageLayout(applicationId);
     const db = new DatabaseSync(layout.appDatabasePath);
     try {
       const counts = {
@@ -1231,13 +1474,17 @@ describe("Brief Studio imported package integration", () => {
           (db.prepare("SELECT COUNT(*) AS count FROM processed_events").get() as { count: number }).count,
         ),
         briefs: Number((db.prepare("SELECT COUNT(*) AS count FROM briefs").get() as { count: number }).count),
+        briefBindings: Number(
+          (db.prepare("SELECT COUNT(*) AS count FROM brief_bindings").get() as { count: number }).count,
+        ),
         artifacts: Number(
           (db.prepare("SELECT COUNT(*) AS count FROM brief_artifacts").get() as { count: number }).count,
         ),
       };
       expect(counts).toEqual({
         processedEvents: 0,
-        briefs: 0,
+        briefs: 1,
+        briefBindings: 1,
         artifacts: 0,
       });
     } finally {

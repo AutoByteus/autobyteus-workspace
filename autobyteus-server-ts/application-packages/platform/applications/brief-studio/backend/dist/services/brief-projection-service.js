@@ -2,6 +2,7 @@ import { createArtifactRepository } from "../repositories/artifact-repository.js
 import { withAppDatabase, withTransaction } from "../repositories/app-database.js";
 import { createBriefRepository } from "../repositories/brief-repository.js";
 import { createProcessedEventRepository } from "../repositories/processed-event-repository.js";
+import { createRunBindingCorrelationService } from "./run-binding-correlation-service.js";
 const deriveFallbackTitle = (briefId) => `Brief ${briefId.slice(0, 8)}`;
 const preserveTerminalStatus = (nextStatus, currentStatus) => {
     if (currentStatus === "approved" || currentStatus === "rejected") {
@@ -50,10 +51,7 @@ const resolveLifecycleStatus = (family, currentStatus) => {
 };
 export const projectExecutionEvent = async (envelope, context) => {
     const event = envelope.event;
-    const briefId = event.executionRef.trim();
-    if (!briefId) {
-        throw new Error("Brief Studio received an execution event without executionRef.");
-    }
+    const briefId = createRunBindingCorrelationService(context).resolveBriefIdForBinding(event.binding);
     const readyNotification = withAppDatabase(context.storage.appDatabasePath, (db) => withTransaction(db, () => {
         const briefRepository = createBriefRepository(db);
         const artifactRepository = createArtifactRepository(db);

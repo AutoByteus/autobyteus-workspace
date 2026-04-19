@@ -3,11 +3,11 @@
 ## Investigation Status
 
 - Bootstrap Status: Completed
-- Current Status: Deep investigation completed; design reworked after architecture review round 2 and expanded for app-owned API/schema design
+- Current Status: Deep investigation completed; design reworked through architecture review round 5, including app-owned API/schema design, binding-centric correlation, and pending-binding intent correlation establishment
 - Investigation Goal: Define a clean-cut application-owned runtime orchestration model that removes the current one-app-to-one-run/session assumption
 - Scope Classification (`Small`/`Medium`/`Large`): Large
 - Scope Classification Rationale: The change crosses server runtime ownership, bundle contracts, backend SDK, frontend SDK, iframe bootstrap, frontend host flows, publication routing, and sample-application migration
-- Scope Summary: Replace session-owned application launches with engine-first application launch plus backend-owned orchestration over zero/one/many runs bound to opaque application-defined execution references, while also making app-owned business APIs/schemas first-class under one platform-hosted backend mount
+- Scope Summary: Replace session-owned application launches with engine-first application launch plus backend-owned orchestration over zero/one/many durable run bindings, while also making app-owned business APIs/schemas first-class under one platform-hosted backend mount
 - Primary Questions To Resolve:
   - Should `applicationSession` remain as a durable concept, or should it be removed from the target model?
   - How should the platform represent application-owned business context without hardcoding business semantics?
@@ -15,6 +15,7 @@
   - How should runtime publications route back to the correct application-owned context after the session model is removed?
   - Which current frontend/SDK/contracts surfaces are structurally coupled to the old session model?
   - How should application-owned business API schemas and frontend/backend code generation work without turning app business schemas into platform-owned contracts?
+  - Does the platform need one generic app-business reference field at all, or should `bindingId` be the primary cross-boundary correlation handle while business-record mapping stays app-owned?
 
 ## Request Context
 
@@ -67,6 +68,7 @@
 | 2026-04-19 | Code | `autobyteus-server-ts/src/api/rest/application-backends.ts` | Verify the exact current mounted backend path shapes and how much of the new virtual-backend-mount design already exists physically | Current backend surfaces already live under `/applications/:applicationId/backend/{status,queries,commands,graphql,routes/*}`; the target design should keep that mount and make one `backendBaseUrl` authoritative in iframe/bootstrap transport | No |
 | 2026-04-19 | Spec | `tickets/in-progress/application-owned-runtime-orchestration/design-review-report.md` | Fold architecture review round 1 findings back into the authoritative design package | Review accepted the requirements basis but blocked the design on three items: concrete restart recovery ownership, unified lifecycle observation boundary, and single publication-ingress authority | Yes |
 | 2026-04-19 | Spec | `tickets/in-progress/application-owned-runtime-orchestration/design-review-report.md` (round 2) | Fold architecture review round 2 findings back into the authoritative design package | Round 1 blockers were resolved; the remaining design gap is startup coordination: the design must explicitly serialize live `runtimeControl` / artifact ingress traffic against recovery-time lookup rebuild and observer reattachment | Yes |
+| 2026-04-19 | Spec | `tickets/in-progress/application-owned-runtime-orchestration/design-review-report.md` (round 5) | Fold architecture review round 5 finding back into the authoritative design package | The binding-centric model is cleaner, but direct `startRun(...)` still needs one explicit pending-intent / reconciliation contract so newly created bindings can be durably attached to app business records before early events rely on that mapping | Yes |
 
 ## Current Behavior / Current Flow
 
@@ -106,7 +108,7 @@
 | `autobyteus-application-sdk-contracts/src/index.ts` | Shared author-facing types | Contracts are still session-centric and runtimeTarget-centric | Clean-cut contract version upgrade is required |
 | `autobyteus-web/stores/applicationSessionStore.ts` | Frontend session cache + launch orchestration | Host UI owns launch draft/modal/session stream/runtime bootstrap | Replace with engine-first host launch; remove session-centric UI flow |
 | `autobyteus-web/types/application/ApplicationIframeContract.ts` | Iframe bootstrap contract | v1 requires `applicationSessionId` and runtime identity up front | New bootstrap version must detach app launch from worker-run creation |
-| `applications/brief-studio/backend-src/services/brief-projection-service.ts` | Sample app projection logic | `briefId` is derived from `applicationSessionId` | Sample app must be migrated to real app-owned business IDs / execution refs |
+| `applications/brief-studio/backend-src/services/brief-projection-service.ts` | Sample app projection logic | `briefId` is derived from `applicationSessionId` | Sample app must be migrated to real app-owned business IDs plus app-owned `briefId -> bindingId` mapping |
 
 ## Runtime / Probe Findings
 
@@ -150,8 +152,8 @@
   - app-visible runtime outputs are projected into platform-retained session views instead of staying app-owned
 - The cleanest target direction is to remove `applicationSession` as a durable authoritative concept and replace it with:
   - engine-first application launch,
-  - application-defined `executionRef`,
-  - platform-owned run bindings,
+  - platform-owned run bindings / `bindingId`,
+  - app-owned business-record-to-binding mapping,
   - backend-owned orchestration through a worker->host bridge,
   - publication/event routing by binding + execution context rather than session
 - The current platform already has a good app-scoped transport host in `application-backend-gateway`, but it still lacks one explicit design for app-owned business API/schema ownership:
@@ -159,6 +161,10 @@
   - the current mounted route family in `application-backends.ts` is already the right physical shape and should be formalized around one authoritative `backendBaseUrl`,
   - each app should own its own GraphQL/routes/DTO schema,
   - frontend type/code generation should come from app-owned schema artifacts or shared app-owned contracts during the app build, not from one platform-owned business-schema layer
+- The cross-boundary correlation model is cleaner when the platform centers `bindingId` rather than one platform-owned generic business-reference field:
+  - the platform needs durable `bindingId` + `runId` routing and recovery,
+  - the application keeps any `ticketId` / `briefId` / `lessonId` -> `bindingId` mapping in app-owned state, and
+  - normalized runtime events therefore need binding identity and run identity, not a platform-owned generic business reference
 - The two in-repo teaching applications should be strengthened as part of the target:
   - `brief-studio` should teach a richer real app business API rather than only query/command/event patterns,
   - `socratic-math-teacher` should stop being only a minimal runtime-target/bootstrap example and become a real app-owned API example as well
@@ -170,6 +176,10 @@
   - startup readiness cannot be inferred from raw `app.listen(...)`; the design needs one authoritative gate that prevents live orchestration-sensitive traffic from racing with recovery-time rebuild work
 - User direction after round 2 added one more product-design obligation:
   - the platform should host, not own, application business APIs/schemas, and the sample apps should teach that by exposing real app-owned GraphQL-backed APIs
+- User clarification after the app-owned API deepening added one more design obligation:
+  - the platform should not require one strange generic business-reference field in run bindings when `bindingId` plus app-owned mapping is the more natural correlation model
+- Architecture review round 5 added one more concrete design obligation:
+  - direct `startRun(...)` needs one explicit pending-intent / reconciliation contract so a newly created `bindingId` can be durably attached to the intended app business record before early lifecycle/artifact events rely on that mapping, including the crash window after binding creation but before app-owned mapping commit completes
 
 ## Constraints / Dependencies / Compatibility Facts
 
@@ -217,6 +227,20 @@
     - `ApplicationOrchestrationHostService` waits on `awaitReady()`
     - live `publish_artifact` traffic waits on `awaitReady()` before entering `ApplicationExecutionEventIngressService`
 
+## Architecture Review Round 5 Rework Summary
+
+- Review result: `Fail`
+- Prior finding status:
+  - round 1 blockers: resolved
+  - round 2 blocker: resolved
+  - round 5 introduced a new binding-establishment blocker
+- Rework focus:
+  - `AOR-DI-005`: define one authoritative pending-intent / reconciliation contract for direct `startRun(...)` flows so business-record-to-binding mapping is restart-safe and race-safe without restoring a generic business-reference field
+- Authoritative design response:
+  - requirements now add `R-040`..`R-043`, `AC-024`..`AC-026`, and `UC-020`
+  - the design now introduces an explicit direct `startRun(...)` correlation-establishment contract based on app-owned pending binding intent plus opaque `bindingIntentId`
+  - event envelopes and binding summaries are updated to carry `bindingIntentId`, and reconciliation lookup by `bindingIntentId` is added for crash recovery
+
 ## App-Owned API / Schema Deepening Summary
 
 - User direction: each application should own its own frontend/backend schema story “like a normal application,” while the platform should host one app-scoped backend mount instead of spinning up a separate per-app server
@@ -224,10 +248,14 @@
   - make the app-owned business API/schema model explicit in requirements and design,
   - define the hosted virtual backend mount under `applicationId` around one authoritative `backendBaseUrl`,
   - keep platform transport/runtime contracts separate from app-owned business schema contracts,
+  - make `bindingId` the primary cross-boundary correlation handle instead of a platform-owned generic business-reference field,
+  - add one direct-start correlation-establishment contract based on app-owned pending binding intent plus reconciliation, and
   - upgrade `brief-studio` and `socratic-math-teacher` from thin samples to real app-owned API teaching samples with GraphQL-backed examples and generated clients
 - Authoritative design direction:
   - app-owned GraphQL schemas should remain the application’s own schema and should not be translated into a platform-owned schema layer,
   - route-based application APIs should remain first-class for apps that choose that model,
+  - `bindingId` should be the primary platform/app correlation handle while app business-record mapping stays app-owned,
+  - direct `startRun(...)` should be guarded by an app-owned pending-binding intent plus opaque `bindingIntentId` and reconciliation lookup contract, and
   - query/command surfaces may remain as conveniences but should not be the only “real app” story
 
 ## Notes For Architect Reviewer
@@ -238,4 +266,4 @@
 - Major removals are likely necessary in: `application-sessions`, session streaming, session-bound iframe bootstrap, host launch modal, and `runtimeTarget`-based app catalog assumptions
 - Architecture review round 1 blockers have been incorporated into the revised design package
 - Architecture review round 2 blocker has now been incorporated as an explicit startup gate / traffic-admission contract; re-review should concentrate on whether the new startup coordination boundary is now concrete enough for implementation
-- This design pass also expands the ticket beyond orchestration-core mechanics so the resulting architecture clearly explains app-owned business API/schema ownership and stronger example-app teaching patterns
+- This design pass also expands the ticket beyond orchestration-core mechanics so the resulting architecture clearly explains app-owned business API/schema ownership, binding-centric cross-boundary correlation, pending-binding-intent establishment/reconciliation, and stronger example-app teaching patterns

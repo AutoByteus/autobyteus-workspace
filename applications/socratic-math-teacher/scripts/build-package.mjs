@@ -49,12 +49,23 @@ const rewriteImports = (content, replacements) =>
     content,
   );
 
-const refreshRuntimeUiAssets = async () => {
-  await ensureDirectory(path.join(runtimeUiRoot, "vendor"));
-  await copyFile(
-    path.join(workspaceRoot, "autobyteus-application-frontend-sdk", "dist", "index.js"),
-    path.join(runtimeUiRoot, "vendor", "application-frontend-sdk.js"),
+const syncFrontendSdkVendor = async (vendorRoot) => {
+  const frontendSdkDistRoot = path.join(
+    workspaceRoot,
+    "autobyteus-application-frontend-sdk",
+    "dist",
   );
+
+  await fs.rm(vendorRoot, { recursive: true, force: true });
+  await copyTree(frontendSdkDistRoot, vendorRoot);
+  await copyFile(
+    path.join(frontendSdkDistRoot, "index.js"),
+    path.join(vendorRoot, "application-frontend-sdk.js"),
+  );
+};
+
+const refreshRuntimeUiAssets = async () => {
+  await syncFrontendSdkVendor(path.join(runtimeUiRoot, "vendor"));
 
   const sourceFrontendRoot = path.join(applicationRoot, "frontend-src");
   const entries = await fs.readdir(sourceFrontendRoot, { withFileTypes: true });

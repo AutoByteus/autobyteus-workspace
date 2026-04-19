@@ -187,7 +187,7 @@ export type ApplicationTeamRunLaunch =
     };
 
 export type ApplicationStartRunInput = {
-  executionRef: string;
+  bindingIntentId: string;
   resourceRef: ApplicationRuntimeResourceRef;
   launch: ApplicationAgentRunLaunch | ApplicationTeamRunLaunch;
   initialInput?: ApplicationRuntimeInput | null;
@@ -215,7 +215,7 @@ export type ApplicationRunBindingMemberSummary = {
 export type ApplicationRunBindingSummary = {
   bindingId: string;
   applicationId: string;
-  executionRef: string;
+  bindingIntentId: string;
   status: ApplicationRunBindingStatus;
   resourceRef: ApplicationRuntimeResourceRef;
   runtime: {
@@ -231,7 +231,6 @@ export type ApplicationRunBindingSummary = {
 };
 
 export type ApplicationRunBindingListFilter = {
-  executionRef?: string | null;
   status?: ApplicationRunBindingStatus | null;
 };
 
@@ -254,7 +253,6 @@ export type ApplicationExecutionEvent<TPayload = unknown> = {
   eventId: string;
   journalSequence: number;
   applicationId: string;
-  executionRef: string;
   family: ApplicationExecutionEventFamily;
   publishedAt: string;
   binding: ApplicationRunBindingSummary;
@@ -278,6 +276,7 @@ export type ApplicationRuntimeControl = {
   } | null) => Promise<ApplicationRuntimeResourceSummary[]>;
   startRun: (input: ApplicationStartRunInput) => Promise<ApplicationRunBindingSummary>;
   getRunBinding: (bindingId: string) => Promise<ApplicationRunBindingSummary | null>;
+  getRunBindingByIntentId: (bindingIntentId: string) => Promise<ApplicationRunBindingSummary | null>;
   listRunBindings: (filter?: ApplicationRunBindingListFilter | null) => Promise<ApplicationRunBindingSummary[]>;
   postRunInput: (input: {
     bindingId: string;

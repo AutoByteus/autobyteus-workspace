@@ -2,6 +2,7 @@ import { withAppDatabase } from "../repositories/app-database.js";
 import { createArtifactRepository } from "../repositories/artifact-repository.js";
 import { createBriefRepository } from "../repositories/brief-repository.js";
 import { createReviewNoteRepository } from "../repositories/review-note-repository.js";
+import { createRunBindingCorrelationService } from "./run-binding-correlation-service.js";
 const requireBriefId = (briefId) => {
     const normalized = briefId.trim();
     if (!normalized) {
@@ -30,7 +31,8 @@ export const createBriefReadService = (context) => ({
     },
     async listBriefExecutions(briefId) {
         const normalizedBriefId = requireBriefId(briefId);
-        const bindings = await context.runtimeControl.listRunBindings({ executionRef: normalizedBriefId });
+        const bindingIds = createRunBindingCorrelationService(context).listBindingIdsByBriefId(normalizedBriefId);
+        const bindings = (await Promise.all(bindingIds.map((bindingId) => context.runtimeControl.getRunBinding(bindingId)))).filter((binding) => Boolean(binding));
         return bindings
             .map((binding) => ({
             bindingId: binding.bindingId,

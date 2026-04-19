@@ -15,13 +15,12 @@ const buildRecord = (journalSequence: number): ApplicationExecutionEventJournalR
     eventId: `event-${journalSequence}`,
     journalSequence,
     applicationId,
-    executionRef: `execution-${journalSequence}`,
     family: "RUN_STARTED",
     publishedAt: new Date("2026-04-19T09:00:00.000Z").toISOString(),
     binding: {
       bindingId: `binding-${journalSequence}`,
       applicationId,
-      executionRef: `execution-${journalSequence}`,
+      bindingIntentId: `binding-intent-${journalSequence}`,
       status: "ATTACHED",
       resourceRef: {
         owner: "bundle",

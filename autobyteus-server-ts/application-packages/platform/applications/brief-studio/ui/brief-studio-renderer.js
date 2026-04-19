@@ -153,7 +153,7 @@ export const renderBriefDetail = ({
       <div class="detail-header">
         <div>
           <h3>${escapeHtml(brief.title)}</h3>
-          <p class="muted small">executionRef ${escapeHtml(brief.briefId)}</p>
+          <p class="muted small">briefId ${escapeHtml(brief.briefId)}</p>
         </div>
         <span class="badge">${escapeHtml(brief.status)}</span>
       </div>

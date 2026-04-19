@@ -3,7 +3,9 @@ import type { ApplicationHandlerContext } from "@autobyteus/application-backend-
 import { withAppDatabase, withTransaction } from "../repositories/app-database.js";
 import { createLessonMessageRepository } from "../repositories/lesson-message-repository.js";
 import { createLessonRepository } from "../repositories/lesson-repository.js";
+import { createPendingBindingIntentRepository } from "../repositories/pending-binding-intent-repository.js";
 import { createLessonReadService } from "./lesson-read-service.js";
+import { createRunBindingCorrelationService } from "./run-binding-correlation-service.js";
 
 const SOCRATIC_TEAM_RESOURCE = {
   owner: "bundle",
@@ -50,12 +52,41 @@ const buildTutorPrompt = (studentPrompt: string): string => [
   `Student problem: ${studentPrompt}`,
 ].join("\n\n");
 
+const resolveStartLessonProjection = (input: {
+  currentLesson: {
+    status: "active" | "closed" | "blocked";
+    updatedAt: string;
+    latestBindingId: string | null;
+    latestBindingStatus: string | null;
+    lastErrorMessage: string | null;
+    closedAt: string | null;
+  } | null;
+  binding: {
+    bindingId: string;
+    status: string;
+  };
+  createdAt: string;
+}) => {
+  const currentBindingProjection = input.currentLesson?.latestBindingId === input.binding.bindingId
+    ? input.currentLesson
+    : null;
+
+  return {
+    status: currentBindingProjection?.status ?? "active",
+    updatedAt: currentBindingProjection?.updatedAt ?? input.createdAt,
+    latestBindingStatus: currentBindingProjection?.latestBindingStatus ?? input.binding.status,
+    lastErrorMessage: currentBindingProjection?.lastErrorMessage ?? null,
+    closedAt: currentBindingProjection?.closedAt ?? null,
+  };
+};
+
 export const createLessonRuntimeService = (context: ApplicationHandlerContext) => ({
   async startLesson(input: { prompt: string; llmModelIdentifier: string }) {
     const prompt = requireNonEmptyString(input.prompt, "prompt");
     const llmModelIdentifier = requireNonEmptyString(input.llmModelIdentifier, "llmModelIdentifier");
     const lessonId = `lesson-${randomUUID()}`;
     const createdAt = new Date().toISOString();
+    const correlationService = createRunBindingCorrelationService(context);
 
     withAppDatabase(context.storage.appDatabasePath, (db) => {
       withTransaction(db, () => {
@@ -80,10 +111,11 @@ export const createLessonRuntimeService = (context: ApplicationHandlerContext) =
         });
       });
     });
+    const pendingIntent = correlationService.createPendingBindingIntent(lessonId);
 
     try {
       const binding = await context.runtimeControl.startRun({
-        executionRef: lessonId,
+        bindingIntentId: pendingIntent.bindingIntentId,
         resourceRef: SOCRATIC_TEAM_RESOURCE,
         launch: {
           kind: "AGENT_TEAM",
@@ -101,16 +133,27 @@ export const createLessonRuntimeService = (context: ApplicationHandlerContext) =
 
       withAppDatabase(context.storage.appDatabasePath, (db) => {
         withTransaction(db, () => {
-          createLessonRepository(db).upsertLesson({
+          const lessonRepository = createLessonRepository(db);
+          createPendingBindingIntentRepository(db).markCommitted({
+            bindingIntentId: binding.bindingIntentId,
+            bindingId: binding.bindingId,
+            committedAt: createdAt,
+          });
+          const launchProjection = resolveStartLessonProjection({
+            currentLesson: lessonRepository.getById(lessonId),
+            binding,
+            createdAt,
+          });
+          lessonRepository.upsertLesson({
             lessonId,
             prompt,
-            status: "active",
-            updatedAt: createdAt,
+            status: launchProjection.status,
+            updatedAt: launchProjection.updatedAt,
             latestBindingId: binding.bindingId,
             latestRunId: binding.runtime.runId,
-            latestBindingStatus: binding.status,
-            lastErrorMessage: null,
-            closedAt: null,
+            latestBindingStatus: launchProjection.latestBindingStatus,
+            lastErrorMessage: launchProjection.lastErrorMessage,
+            closedAt: launchProjection.closedAt,
           });
         });
       });
@@ -125,6 +168,7 @@ export const createLessonRuntimeService = (context: ApplicationHandlerContext) =
       return createLessonReadService(context).getLesson(lessonId);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
+      const reconciled = await correlationService.reconcileBindingIntent(pendingIntent.bindingIntentId);
       withAppDatabase(context.storage.appDatabasePath, (db) => {
         withTransaction(db, () => {
           createLessonRepository(db).upsertLesson({
@@ -132,9 +176,9 @@ export const createLessonRuntimeService = (context: ApplicationHandlerContext) =
             prompt,
             status: "blocked",
             updatedAt: createdAt,
-            latestBindingId: null,
-            latestRunId: null,
-            latestBindingStatus: "FAILED",
+            latestBindingId: reconciled?.binding.bindingId ?? null,
+            latestRunId: reconciled?.binding.runtime.runId ?? null,
+            latestBindingStatus: reconciled?.binding.status ?? "FAILED",
             lastErrorMessage: message,
             closedAt: null,
           });

@@ -1,8 +1,11 @@
 import { randomUUID } from "node:crypto";
 import { withAppDatabase, withTransaction } from "../repositories/app-database.js";
 import { createArtifactRepository } from "../repositories/artifact-repository.js";
+import { createBriefBindingRepository } from "../repositories/brief-binding-repository.js";
 import { createBriefRepository } from "../repositories/brief-repository.js";
+import { createPendingBindingIntentRepository } from "../repositories/pending-binding-intent-repository.js";
 import { createReviewNoteRepository } from "../repositories/review-note-repository.js";
+import { createRunBindingCorrelationService } from "./run-binding-correlation-service.js";
 const BRIEF_STUDIO_TEAM_RESOURCE = {
     owner: "bundle",
     kind: "AGENT_TEAM",
@@ -47,6 +50,20 @@ const readLatestWriterBody = (artifactRef) => {
         ? value.body
         : null;
 };
+const resolveLaunchProjection = (input) => {
+    const currentBindingProjection = input.currentBrief?.latestBindingId === input.binding.bindingId
+        ? input.currentBrief
+        : null;
+    return {
+        title: currentBindingProjection?.title ?? input.brief.title,
+        status: currentBindingProjection?.status ?? (input.brief.status === "approved" || input.brief.status === "rejected"
+            ? input.brief.status
+            : "researching"),
+        updatedAt: currentBindingProjection?.updatedAt ?? input.launchedAt,
+        latestBindingStatus: currentBindingProjection?.latestBindingStatus ?? input.binding.status,
+        lastErrorMessage: currentBindingProjection?.lastErrorMessage ?? null,
+    };
+};
 export const createBriefRunLaunchService = (context) => ({
     async createBrief(input) {
         const title = requireNonEmptyString(input.title, "title");
@@ -79,6 +96,7 @@ export const createBriefRunLaunchService = (context) => ({
     async launchDraftRun(input) {
         const briefId = requireNonEmptyString(input.briefId, "briefId");
         const llmModelIdentifier = requireNonEmptyString(input.llmModelIdentifier, "llmModelIdentifier");
+        const correlationService = createRunBindingCorrelationService(context);
         const launchContext = withAppDatabase(context.storage.appDatabasePath, (db) => {
             const briefRepository = createBriefRepository(db);
             const artifactRepository = createArtifactRepository(db);
@@ -102,9 +120,10 @@ export const createBriefRunLaunchService = (context) => ({
             };
         });
         const launchedAt = new Date().toISOString();
+        const pendingIntent = correlationService.createPendingBindingIntent(briefId);
         try {
             const binding = await context.runtimeControl.startRun({
-                executionRef: briefId,
+                bindingIntentId: pendingIntent.bindingIntentId,
                 resourceRef: BRIEF_STUDIO_TEAM_RESOURCE,
                 launch: {
                     kind: "AGENT_TEAM",
@@ -129,17 +148,35 @@ export const createBriefRunLaunchService = (context) => ({
             });
             withAppDatabase(context.storage.appDatabasePath, (db) => {
                 withTransaction(db, () => {
-                    createBriefRepository(db).upsertProjectedBrief({
+                    const briefRepository = createBriefRepository(db);
+                    createPendingBindingIntentRepository(db).markCommitted({
+                        bindingIntentId: binding.bindingIntentId,
+                        bindingId: binding.bindingId,
+                        committedAt: launchedAt,
+                    });
+                    createBriefBindingRepository(db).upsertBinding({
                         briefId,
-                        title: launchContext.brief.title,
-                        status: launchContext.brief.status === "approved" || launchContext.brief.status === "rejected"
-                            ? launchContext.brief.status
-                            : "researching",
+                        bindingId: binding.bindingId,
+                        bindingIntentId: binding.bindingIntentId,
+                        runId: binding.runtime.runId,
+                        createdAt: binding.createdAt,
                         updatedAt: launchedAt,
+                    });
+                    const launchProjection = resolveLaunchProjection({
+                        brief: launchContext.brief,
+                        currentBrief: briefRepository.getById(briefId),
+                        binding,
+                        launchedAt,
+                    });
+                    briefRepository.upsertProjectedBrief({
+                        briefId,
+                        title: launchProjection.title,
+                        status: launchProjection.status,
+                        updatedAt: launchProjection.updatedAt,
                         latestBindingId: binding.bindingId,
                         latestRunId: binding.runtime.runId,
-                        latestBindingStatus: binding.status,
-                        lastErrorMessage: null,
+                        latestBindingStatus: launchProjection.latestBindingStatus,
+                        lastErrorMessage: launchProjection.lastErrorMessage,
                     });
                 });
             });
@@ -158,6 +195,7 @@ export const createBriefRunLaunchService = (context) => ({
         }
         catch (error) {
             const message = error instanceof Error ? error.message : String(error);
+            const reconciled = await correlationService.reconcileBindingIntent(pendingIntent.bindingIntentId);
             withAppDatabase(context.storage.appDatabasePath, (db) => {
                 withTransaction(db, () => {
                     createBriefRepository(db).upsertProjectedBrief({
@@ -165,9 +203,9 @@ export const createBriefRunLaunchService = (context) => ({
                         title: launchContext.brief.title,
                         status: "blocked",
                         updatedAt: launchedAt,
-                        latestBindingId: launchContext.brief.latestBindingId,
-                        latestRunId: launchContext.brief.latestRunId,
-                        latestBindingStatus: "FAILED",
+                        latestBindingId: reconciled?.binding.bindingId ?? launchContext.brief.latestBindingId,
+                        latestRunId: reconciled?.binding.runtime.runId ?? launchContext.brief.latestRunId,
+                        latestBindingStatus: reconciled?.binding.status ?? "FAILED",
                         lastErrorMessage: message,
                     });
                 });

@@ -28,7 +28,6 @@ const normalizeExecutionContext = (value: unknown): ApplicationExecutionContext 
   if (
     typeof record.applicationId !== "string"
     || typeof record.bindingId !== "string"
-    || typeof record.executionRef !== "string"
     || typeof producerRecord.memberRouteKey !== "string"
     || (producerRecord.memberName !== null && producerRecord.memberName !== undefined && typeof producerRecord.memberName !== "string")
     || (producerRecord.displayName !== null && producerRecord.displayName !== undefined && typeof producerRecord.displayName !== "string")
@@ -41,7 +40,6 @@ const normalizeExecutionContext = (value: unknown): ApplicationExecutionContext 
   return {
     applicationId: record.applicationId,
     bindingId: record.bindingId,
-    executionRef: record.executionRef,
     producer: {
       memberRouteKey: producerRecord.memberRouteKey,
       memberName: typeof producerRecord.memberName === "string" ? producerRecord.memberName : null,
@@ -103,7 +101,6 @@ export class ApplicationExecutionEventIngressService {
 
     await this.appendEvent({
       applicationId: binding.applicationId,
-      executionRef: binding.executionRef,
       family: "ARTIFACT",
       binding,
       producer: executionContext?.producer ?? null,
@@ -121,7 +118,6 @@ export class ApplicationExecutionEventIngressService {
   }): Promise<void> {
     await this.appendEvent({
       applicationId: input.binding.applicationId,
-      executionRef: input.binding.executionRef,
       family: input.family,
       binding: input.binding,
       producer: input.producer ?? null,
@@ -131,7 +127,6 @@ export class ApplicationExecutionEventIngressService {
 
   private async appendEvent(input: {
     applicationId: string;
-    executionRef: string;
     family: ApplicationExecutionEventFamily;
     binding: ApplicationRunBindingSummary;
     producer: ApplicationExecutionProducer | null;
@@ -141,7 +136,6 @@ export class ApplicationExecutionEventIngressService {
       .appendEventAwaitable(input.applicationId, {
         eventId: randomUUID(),
         applicationId: input.applicationId,
-        executionRef: input.executionRef,
         family: input.family,
         publishedAt: new Date().toISOString(),
         binding: structuredClone(input.binding),

@@ -7,6 +7,7 @@ import { withAppDatabase, withTransaction } from "../repositories/app-database.j
 import { createLessonMessageRepository } from "../repositories/lesson-message-repository.js";
 import { createLessonRepository } from "../repositories/lesson-repository.js";
 import { createProcessedEventRepository } from "../repositories/processed-event-repository.js";
+import { createRunBindingCorrelationService } from "./run-binding-correlation-service.js";
 
 const readArtifactBody = (payload: Record<string, unknown>): string => {
   const artifactRef = payload.artifactRef;
@@ -50,10 +51,7 @@ export const projectLessonExecutionEvent = async (
   context: ApplicationHandlerContext,
 ): Promise<void> => {
   const event = envelope.event;
-  const lessonId = event.executionRef.trim();
-  if (!lessonId) {
-    throw new Error("Socratic Math Teacher received an execution event without executionRef.");
-  }
+  const lessonId = createRunBindingCorrelationService(context).resolveLessonIdForBinding(event.binding);
 
   const notification = withAppDatabase(context.storage.appDatabasePath, (db) =>
     withTransaction(db, () => {

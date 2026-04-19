@@ -26,7 +26,7 @@
         <p class="details-copy muted">
           The generic host only launches the application shell and prepares the backend. This app then creates
           business-owned <code>briefId</code> records, launches draft runs later through GraphQL, and binds each run to
-          <code>executionRef = briefId</code>.
+          app-owned bindings through durable <code>bindingIntentId</code> handoff and reconciliation.
         </p>
         <div class="meta-grid">
           <div>
@@ -77,7 +77,7 @@
           <div class="panel-header">
             <div>
               <h2>Briefs</h2>
-              <p class="muted">Projected from lifecycle and artifact events keyed by app-owned execution refs.</p>
+              <p class="muted">Projected from lifecycle and artifact events reconciled through app-owned binding intents.</p>
             </div>
             <button id="refresh-button" class="ghost-button" type="button">Refresh</button>
           </div>

@@ -297,6 +297,11 @@ export class ApplicationEngineHostService {
           applicationId,
           (input.input as { bindingId?: string }).bindingId ?? "",
         );
+      case "getRunBindingByIntentId":
+        return this.orchestrationHostService.getRunBindingByIntentId(
+          applicationId,
+          (input.input as { bindingIntentId?: string }).bindingIntentId ?? "",
+        );
       case "listRunBindings":
         return this.orchestrationHostService.listRunBindings(applicationId, input.input as never);
       case "postRunInput":

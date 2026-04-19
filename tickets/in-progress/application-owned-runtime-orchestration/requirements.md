@@ -44,7 +44,7 @@ The platform should move to a clean-cut application-owned orchestration model wi
 2. The application backend should be the authoritative owner of runtime-orchestration decisions.
 3. Agents and agent teams should be treated as platform-managed execution resources rather than the identity of the application itself.
 4. The platform should remain domain-agnostic and should not hardcode business objects such as ticket, brief, case, work item, or task into the orchestration core.
-5. The platform should bind runs to an opaque application-defined `executionRef` rather than to a platform-owned business concept.
+5. The platform should make durable `run binding` / `bindingId` identity the primary cross-boundary correlation concept rather than introducing one platform-owned generic business-reference field.
 6. Runtime publications such as artifacts should route back through platform-owned run bindings plus injected execution context.
 7. The platform should support both bundle-owned application resources and shared platform resources.
 8. The generic host should stop owning low-level run launch forms and runtime-target assumptions for application launch.
@@ -56,7 +56,7 @@ The platform should move to a clean-cut application-owned orchestration model wi
 In short:
 
 - platform provides application hosting, runtime-control infrastructure, binding persistence, routing, and durable event delivery,
-- application backend provides domain logic, business identity, orchestration policy, business-state projection, and application-owned business API/schema.
+- application backend provides domain logic, business identity, business-object-to-binding mapping, orchestration policy, business-state projection, and application-owned business API/schema.
 
 ## Scope Classification (`Small`/`Medium`/`Large`)
 
@@ -69,7 +69,7 @@ Large
 - `UC-003`: One application creates multiple concurrent runs for different application-owned business contexts.
 - `UC-004`: One application creates multiple concurrent runs for the same business context when its own logic requires parallel work.
 - `UC-005`: An application sends user input to one selected run and, when needed, to one selected member inside a team run.
-- `UC-006`: A runtime publishes artifacts and the platform routes those publications back to the correct application-owned `executionRef`.
+- `UC-006`: A runtime publishes artifacts and the platform routes those publications back to the correct application-owned binding so the app backend can project them into its own business state.
 - `UC-007`: The application UI shows ongoing and completed business entities whose visible state is projected from application-owned storage plus runtime outputs.
 - `UC-008`: An application uses one bundled application-owned agent or team as a resource.
 - `UC-009`: An application uses one shared platform agent or shared platform team as a resource.
@@ -77,11 +77,13 @@ Large
 - `UC-011`: A simple application that only ever needs one run still works as a subset of the general model.
 - `UC-012`: After backend restart, the application can recover its domain state and its durable run bindings without losing ownership semantics.
 - `UC-013`: The generic host launches an application without a platform-owned agent/team launch modal or preselected `runtimeTarget`.
-- `UC-014`: The application backend receives normalized runtime lifecycle and artifact events that include `executionRef`, binding identity, and concrete run identity.
+- `UC-014`: The application backend receives normalized runtime lifecycle and artifact events that include binding identity and concrete run identity.
 - `UC-015`: An application frontend calls one application-owned business API through the platform-hosted backend mount and receives application-defined business data without the platform centralizing the app’s business schema.
 - `UC-016`: An application owns a GraphQL schema, generates frontend types/client code from that schema in its own build, and the platform hosts that GraphQL surface under the application’s backend mount without translating it into a platform-owned schema.
 - `UC-017`: An application chooses app-owned REST-style routes instead of GraphQL and still keeps its own schema/code-generation story without forcing the platform to define one universal business API model.
 - `UC-018`: Bundled teaching applications such as Brief Studio and Socratic Math Teacher demonstrate real app-owned business APIs instead of remaining only thin runtime-target/bootstrap samples.
+- `UC-019`: The application backend stores and reuses its own mapping between business records and platform `bindingId` values without the platform requiring a universal business-reference field.
+- `UC-020`: An application persists a pending binding-establishment intent before `startRun(...)`, crashes after platform binding creation but before mapping commit, and later reconciles the intended business record back to the created binding without losing early lifecycle/artifact events.
 
 ## Out of Scope
 
@@ -97,8 +99,8 @@ Large
 - `R-001`: Application launch shall start the application runtime independently from agent or team run creation.
 - `R-002`: The application backend shall be the authoritative owner of runtime-orchestration decisions for that application.
 - `R-003`: The platform shall provide an application-facing runtime-control capability that allows an application backend to create, control, inspect, and terminate runs.
-- `R-004`: The platform shall support binding runs to an opaque application-defined `executionRef` rather than to a platform-owned business concept.
-- `R-005`: The platform shall persist the relationship between `applicationId`, `executionRef`, runtime resource reference, platform binding identity, and concrete run identity.
+- `R-004`: The platform shall provide one durable platform-owned `bindingId` for each started run so cross-boundary correlation does not depend on a platform-owned generic business-reference field.
+- `R-005`: The platform shall persist the relationship between `applicationId`, runtime resource reference, platform binding identity, and concrete run identity.
 - `R-006`: The platform shall support multiple concurrent runs for one application.
 - `R-007`: The platform shall not enforce a permanent one-live-run-per-application rule for advanced applications.
 - `R-008`: The platform shall remain domain-agnostic and shall not impose business-specific semantics such as ticket, brief, case, or task on all applications.
@@ -111,14 +113,14 @@ Large
 - `R-015`: The platform shall expose enough runtime identity for applications to deep-link or hand off into lower-level execution monitoring when needed.
 - `R-016`: The platform shall allow applications to exist that create no runs at startup and only allocate runtime resources in response to application-domain events.
 - `R-017`: The application model shall support simple applications as a subset of the general model without making the simple case the governing platform assumption.
-- `R-018`: The platform shall support application-owned business flows in which one `executionRef` may create zero, one, or many runs over time.
+- `R-018`: The platform shall support application-owned business flows in which one app-owned business object may create zero, one, or many bindings/runs over time.
 - `R-019`: The platform shall keep application domain meaning outside platform-owned runtime infrastructure while still providing durable routing, recovery, and observability.
 - `R-020`: The platform shall treat the current singular `runtimeTarget` launch assumption as a limitation of the old model, not as a permanent architectural rule.
 - `R-021`: The application bundle contract shall not require one singular launch-time `runtimeTarget` for an application to be valid.
 - `R-022`: The application backend handler/lifecycle context shall expose runtime-control and runtime-resource access through one authoritative platform boundary rather than through direct access to lower-level run services.
 - `R-023`: Frontend iframe/bootstrap and request-context contracts shall not require `applicationSessionId` as the identity that makes an application usable.
 - `R-024`: The generic host shall launch an application without requiring a platform-owned low-level agent/team launch configuration flow before the application UI becomes available.
-- `R-025`: Normalized runtime lifecycle events delivered to application backends shall carry `executionRef`, platform binding identity, and concrete run identity in addition to producer provenance.
+- `R-025`: Normalized runtime lifecycle events delivered to application backends shall carry platform binding identity and concrete run identity in addition to producer provenance.
 - `R-026`: The target architecture shall allow coordinated clean-cut contract/version upgrades across server, contracts, frontend SDK, backend SDK, frontend host, and bundled applications rather than preserving replaced session-owned behavior via compatibility wrappers.
 - `R-027`: The platform shall provide one unified resource reference model that can address both bundle-local resources and shared platform resources.
 - `R-028`: The platform shall host application-owned backend APIs under one application-scoped virtual backend mount keyed by `applicationId` rather than by starting one separate HTTP server/socket endpoint per application.
@@ -132,6 +134,11 @@ Large
 - `R-036`: The in-repo teaching applications `brief-studio` and `socratic-math-teacher` shall be upgraded to teach real application-owned backend API patterns, including GraphQL-backed examples.
 - `R-037`: Iframe/bootstrap transport contracts shall expose one authoritative application-scoped backend base URL, plus only any non-derivable transport channels, so app-owned generated clients can target the hosted backend mount without discovering per-app servers.
 - `R-038`: The upgraded teaching applications shall demonstrate app-owned GraphQL schema artifacts and generated frontend clients as the primary business API path rather than relying only on handwritten query/command payload calls.
+- `R-039`: Any mapping between application business records and platform `bindingId` values shall remain app-owned state rather than becoming one universal platform-owned business-reference field.
+- `R-040`: Direct `runtimeControl.startRun(...)` flows shall support one opaque app-supplied `bindingIntentId` (or equivalently named start-run intent token) so an application can durably establish correlation before binding creation without turning business meaning into a platform-owned field.
+- `R-041`: The platform shall persist `bindingIntentId` with the created run binding and include it in the returned binding summary and app-visible runtime event envelope for that binding.
+- `R-042`: The platform shall expose one authoritative reconciliation lookup from `bindingIntentId` to run binding summary so an application can recover from crashes that occur after binding creation but before app-owned mapping commit completes.
+- `R-043`: The application/platform contract shall support restart-safe reconciliation when app-owned mapping finalization happens after binding creation, including the case where early `runStarted` or artifact events are already in flight.
 
 ## Acceptance Criteria
 
@@ -157,6 +164,10 @@ Large
 - `AC-020`: The requirements explicitly cover upgrading Brief Studio and Socratic Math Teacher into stronger app-owned API teaching samples.
 - `AC-021`: The requirements explicitly state that app frontends receive one authoritative backend mount/base URL for hosted business API calls rather than discovering per-app servers or parallel endpoint roots.
 - `AC-022`: The requirements explicitly state that the upgraded teaching apps should teach app-owned GraphQL schema artifacts plus generated frontend clients, not only handwritten payload calls.
+- `AC-023`: The requirements explicitly state that `bindingId` is the primary cross-boundary correlation handle and that any mapping from business records to bindings remains app-owned.
+- `AC-024`: The requirements explicitly define one opaque pending-binding/start-run intent token for direct `startRun(...)` flows so app-owned mapping can be established durably before binding creation races with event delivery.
+- `AC-025`: The requirements explicitly state that the platform persists and echoes that start-run intent token in binding summaries and runtime event delivery for reconciliation.
+- `AC-026`: The requirements explicitly cover restart-safe reconciliation when the backend crashes after platform binding creation but before app-owned mapping commit completes.
 
 ## Constraints / Dependencies
 
@@ -165,6 +176,7 @@ Large
 - Existing agent and team run services already exist and should remain the execution-resource layer behind a new orchestration boundary.
 - Existing artifact publication and ordered at-least-once event delivery semantics are valuable and should remain part of the target direction.
 - Existing sample apps such as Brief Studio currently encode the old model and therefore must be migrated if the target architecture is adopted cleanly.
+- The platform can route and recover by `bindingId`, but it cannot infer application business meaning from that binding alone; app-owned state must carry any mapping back to tickets, briefs, lessons, or other domain records.
 - The current frontend SDK is transport-oriented and does not yet provide one app-owned schema/codegen story for real applications, so the design must keep platform transport generic while allowing each application to own its own business API contracts.
 - The current mounted backend route structure already lives under `applicationId`, but iframe/bootstrap transport still needs one clearer authoritative backend-base descriptor in the target model.
 - Current bundled teaching apps do not yet teach app-owned GraphQL-backed business APIs, so example-app upgrades are part of making the target model concrete for application authors.
@@ -192,8 +204,8 @@ Large
 | `R-001` | `UC-001`, `UC-011`, `UC-013` |
 | `R-002` | `UC-002`, `UC-003`, `UC-004`, `UC-012`, `UC-014` |
 | `R-003` | `UC-002`, `UC-003`, `UC-004`, `UC-005`, `UC-009`, `UC-012` |
-| `R-004` | `UC-003`, `UC-004`, `UC-006`, `UC-010`, `UC-012`, `UC-014` |
-| `R-005` | `UC-003`, `UC-004`, `UC-006`, `UC-012`, `UC-014` |
+| `R-004` | `UC-003`, `UC-004`, `UC-006`, `UC-012`, `UC-014`, `UC-019` |
+| `R-005` | `UC-003`, `UC-004`, `UC-006`, `UC-012`, `UC-014`, `UC-019` |
 | `R-006` | `UC-003`, `UC-004`, `UC-007`, `UC-010` |
 | `R-007` | `UC-003`, `UC-004`, `UC-010` |
 | `R-008` | `UC-007`, `UC-010`, `UC-011` |
@@ -206,14 +218,14 @@ Large
 | `R-015` | `UC-007`, `UC-014` |
 | `R-016` | `UC-001`, `UC-002`, `UC-013` |
 | `R-017` | `UC-011` |
-| `R-018` | `UC-003`, `UC-004`, `UC-010`, `UC-012`, `UC-014` |
+| `R-018` | `UC-003`, `UC-004`, `UC-010`, `UC-012`, `UC-019` |
 | `R-019` | `UC-006`, `UC-007`, `UC-010`, `UC-012` |
 | `R-020` | `UC-001` through `UC-014` |
 | `R-021` | `UC-001`, `UC-008`, `UC-009`, `UC-013` |
 | `R-022` | `UC-002`, `UC-003`, `UC-004`, `UC-008`, `UC-009`, `UC-014` |
 | `R-023` | `UC-001`, `UC-013` |
 | `R-024` | `UC-001`, `UC-013` |
-| `R-025` | `UC-006`, `UC-012`, `UC-014` |
+| `R-025` | `UC-006`, `UC-012`, `UC-014`, `UC-019` |
 | `R-026` | `UC-001` through `UC-014` |
 | `R-027` | `UC-008`, `UC-009`, `UC-010` |
 | `R-028` | `UC-015`, `UC-016`, `UC-017`, `UC-018` |
@@ -227,6 +239,11 @@ Large
 | `R-036` | `UC-018` |
 | `R-037` | `UC-015`, `UC-016`, `UC-017` |
 | `R-038` | `UC-016`, `UC-018` |
+| `R-039` | `UC-003`, `UC-004`, `UC-007`, `UC-019` |
+| `R-040` | `UC-002`, `UC-003`, `UC-004`, `UC-019`, `UC-020` |
+| `R-041` | `UC-006`, `UC-014`, `UC-019`, `UC-020` |
+| `R-042` | `UC-012`, `UC-019`, `UC-020` |
+| `R-043` | `UC-006`, `UC-012`, `UC-014`, `UC-020` |
 
 ## Acceptance-Criteria-To-Scenario Intent
 
@@ -254,6 +271,10 @@ Large
 | `AC-020` | Forces the example apps to teach the target model rather than only bootstrap/runtime-target mechanics. |
 | `AC-021` | Forces one authoritative hosted backend-base descriptor for app-owned generated clients and frontend transport. |
 | `AC-022` | Forces the upgraded teaching apps to teach app-owned schema artifacts plus generated clients, not only handwritten payload calls. |
+| `AC-023` | Forces binding-centric cross-boundary correlation while keeping business-record mapping in app-owned state. |
+| `AC-024` | Forces one explicit pending-intent/start-run correlation contract instead of leaving the handoff implicit. |
+| `AC-025` | Forces the platform to echo/persist the intent token so early events and crash recovery can reconcile. |
+| `AC-026` | Forces restart-safe reconciliation for the crash window between binding creation and app-owned mapping commit. |
 
 ## Approval Status
 

@@ -152,6 +152,14 @@ export class ApplicationOrchestrationHostService {
     return this.bindingStore.getBinding(applicationId, bindingId);
   }
 
+  async getRunBindingByIntentId(
+    applicationId: string,
+    bindingIntentId: string,
+  ): Promise<ApplicationRunBindingSummary | null> {
+    await this.startupGate.awaitReady();
+    return this.bindingStore.getBindingByIntentId(applicationId, bindingIntentId);
+  }
+
   async listRunBindings(
     applicationId: string,
     filter?: ApplicationRunBindingListFilter | null,

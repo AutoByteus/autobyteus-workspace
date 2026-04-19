@@ -131,7 +131,7 @@ The generic host owns:
 
 The application backend owns:
 
-- business identifiers such as `executionRef`
+- business identifiers and pending binding intents
 - when to start runs
 - which bundled resource ref to use
 - how runtime outputs project into app-owned state

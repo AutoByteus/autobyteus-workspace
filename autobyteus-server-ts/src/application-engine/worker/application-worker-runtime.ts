@@ -160,6 +160,11 @@ const createRuntimeControl = (
     invokeRuntimeControl({ action: "startRun", input }) as Promise<ApplicationRunBindingSummary>,
   getRunBinding: async (bindingId) =>
     invokeRuntimeControl({ action: "getRunBinding", input: { bindingId } }) as Promise<ApplicationRunBindingSummary | null>,
+  getRunBindingByIntentId: async (bindingIntentId) =>
+    invokeRuntimeControl({
+      action: "getRunBindingByIntentId",
+      input: { bindingIntentId },
+    }) as Promise<ApplicationRunBindingSummary | null>,
   listRunBindings: async (filter) =>
     invokeRuntimeControl({ action: "listRunBindings", input: filter ?? null }) as Promise<ApplicationRunBindingSummary[]>,
   postRunInput: async (input) =>

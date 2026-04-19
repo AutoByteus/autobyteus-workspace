@@ -95,7 +95,7 @@ export async function publishArtifact(
   return JSON.stringify({
     success: true,
     bindingId: binding.bindingId,
-    executionRef: binding.executionRef,
+    bindingIntentId: binding.bindingIntentId,
     artifactKey,
   });
 }

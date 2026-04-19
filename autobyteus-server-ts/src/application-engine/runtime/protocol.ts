@@ -60,6 +60,7 @@ export type ApplicationWorkerRuntimeControlInput = {
     | "listAvailableResources"
     | "startRun"
     | "getRunBinding"
+    | "getRunBindingByIntentId"
     | "listRunBindings"
     | "postRunInput"
     | "terminateRunBinding";

@@ -7,7 +7,7 @@ import { publishArtifact } from "../../../src/application-orchestration/tools/pu
 const buildBinding = (): ApplicationRunBindingSummary => ({
   bindingId: "binding-1",
   applicationId: "bundle-app__pkg__brief-studio",
-  executionRef: "brief-1",
+  bindingIntentId: "binding-intent-1",
   status: "ATTACHED",
   resourceRef: {
     owner: "bundle",
@@ -64,7 +64,6 @@ describe("publishArtifact", () => {
           application_execution_context: {
             applicationId: binding.applicationId,
             bindingId: binding.bindingId,
-            executionRef: binding.executionRef,
             producer: {
               memberRouteKey: "writer",
               memberName: "writer",
@@ -98,7 +97,7 @@ describe("publishArtifact", () => {
     await expect(publishPromise).resolves.toBe(JSON.stringify({
       success: true,
       bindingId: binding.bindingId,
-      executionRef: binding.executionRef,
+      bindingIntentId: binding.bindingIntentId,
       artifactKey: "artifact-1",
     }));
 
@@ -108,7 +107,6 @@ describe("publishArtifact", () => {
         application_execution_context: {
           applicationId: binding.applicationId,
           bindingId: binding.bindingId,
-          executionRef: binding.executionRef,
           producer: {
             memberRouteKey: "writer",
             memberName: "writer",
