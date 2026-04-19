@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { SegmentEvent, SegmentEventType, SegmentType } from '../../../../../src/agent/streaming/parser/events.js';
 import { ToolInvocationAdapter } from '../../../../../src/agent/streaming/parser/invocation-adapter.js';
+import { ParameterDefinition, ParameterSchema, ParameterType } from '../../../../../src/utils/parameter-schema.js';
 
 const TURN_ID = 'turn_test';
 
@@ -31,6 +32,7 @@ describe('ToolInvocationAdapter basics', () => {
     const end = new SegmentEvent({
       event_type: SegmentEventType.END,
       segment_id: 'my-unique-id-123',
+      turn_id: TURN_ID,
       payload: { metadata: { tool_name: 'write_file' } }
     });
 
@@ -213,6 +215,79 @@ describe('ToolInvocationAdapter basics', () => {
     expect(invocations[1].id).toBe('seg_2');
     expect(invocations[1].name).toBe('tool_b');
     expect(invocations[1].arguments).toEqual({ y: '2' });
+  });
+
+  it('coerces XML arguments using the resolved tool schema', () => {
+    const schema = new ParameterSchema([
+      new ParameterDefinition({
+        name: 'audio_paths',
+        type: ParameterType.ARRAY,
+        description: 'Audio paths',
+        required: true,
+        arrayItemSchema: ParameterType.STRING
+      }),
+      new ParameterDefinition({
+        name: 'output_audio_path',
+        type: ParameterType.STRING,
+        description: 'Output path',
+        required: true
+      })
+    ]);
+
+    const adapter = new ToolInvocationAdapter(undefined, (toolName) =>
+      toolName === 'video_editing_concatenate_audios' ? schema : null
+    );
+    const events = [
+      SegmentEvent.start(TURN_ID, 'seg_schema_array', SegmentType.TOOL_CALL, {
+        tool_name: 'video_editing_concatenate_audios'
+      }),
+      SegmentEvent.content(
+        TURN_ID,
+        'seg_schema_array',
+        '<arguments><arg name="audio_paths"><item>/tmp/1.wav</item><item>/tmp/2.wav</item></arg>' +
+          '<arg name="output_audio_path">/tmp/out.wav</arg></arguments>'
+      ),
+      SegmentEvent.end(TURN_ID, 'seg_schema_array')
+    ];
+
+    const invocations = adapter.processEvents(events);
+    expect(invocations).toHaveLength(1);
+    expect(invocations[0].arguments).toEqual({
+      audio_paths: ['/tmp/1.wav', '/tmp/2.wav'],
+      output_audio_path: '/tmp/out.wav'
+    });
+  });
+
+  it('preserves nested XML for string fields when schema is available', () => {
+    const schema = new ParameterSchema([
+      new ParameterDefinition({
+        name: 'markup',
+        type: ParameterType.STRING,
+        description: 'Markup content',
+        required: true
+      })
+    ]);
+
+    const adapter = new ToolInvocationAdapter(undefined, (toolName) =>
+      toolName === 'write_markup_fixture' ? schema : null
+    );
+    const events = [
+      SegmentEvent.start(TURN_ID, 'seg_schema_string', SegmentType.TOOL_CALL, {
+        tool_name: 'write_markup_fixture'
+      }),
+      SegmentEvent.content(
+        TURN_ID,
+        'seg_schema_string',
+        '<arguments><arg name="markup"><root><item>1</item><item>2</item></root></arg></arguments>'
+      ),
+      SegmentEvent.end(TURN_ID, 'seg_schema_string')
+    ];
+
+    const invocations = adapter.processEvents(events);
+    expect(invocations).toHaveLength(1);
+    expect(invocations[0].arguments).toEqual({
+      markup: '<root><item>1</item><item>2</item></root>'
+    });
   });
 
   it('ignores write_file without path', () => {

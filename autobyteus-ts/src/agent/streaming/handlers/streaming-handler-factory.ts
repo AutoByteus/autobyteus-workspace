@@ -10,6 +10,7 @@ import { ToolInvocation } from '../../tool-invocation.js';
 import { LLMProvider } from '../../../llm/providers.js';
 import { resolveToolCallFormat } from '../../../utils/tool-call-format.js';
 import { ToolSchemaProvider } from '../../../tools/usage/providers/tool-schema-provider.js';
+import type { ParameterSchema } from '../../../utils/parameter-schema.js';
 
 export class StreamingHandlerResult {
   handler: StreamingResponseHandler;
@@ -30,6 +31,7 @@ export class StreamingResponseHandlerFactory {
     onSegmentEvent?: (event: SegmentEvent) => void;
     onToolInvocation?: (invocation: ToolInvocation) => void;
     agentId?: string | null;
+    xmlArgumentSchemaResolver?: (toolName: string) => ParameterSchema | null | undefined;
   }): StreamingHandlerResult {
     const formatOverride = resolveToolCallFormat();
     const parseToolCalls = options.toolNames.length > 0;
@@ -86,7 +88,8 @@ export class StreamingResponseHandlerFactory {
         onSegmentEvent: options.onSegmentEvent,
         onToolInvocation: options.onToolInvocation,
         config: parserConfig,
-        parserName: parserName
+        parserName: parserName,
+        xmlArgumentSchemaResolver: options.xmlArgumentSchemaResolver
       }),
       null
     );
