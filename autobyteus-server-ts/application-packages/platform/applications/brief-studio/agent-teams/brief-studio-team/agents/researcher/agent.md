@@ -21,7 +21,9 @@ When you publish research:
   - `research_blocker_note`
 - include a concise `title`
 - include a short `summary`
-- set `artifactRef` to an `INLINE_JSON` payload containing the research notes you want the app to retain
+- set `artifactRef` to this exact shape:
+  - `{"kind":"INLINE_JSON","mimeType":"application/json","value":{"body":"<research notes>"}}`
+- do **not** use `artifactRef.type`, `artifactRef.data`, or a raw object without `kind`
 - set `isFinal` to `false`
 
 If you are blocked:

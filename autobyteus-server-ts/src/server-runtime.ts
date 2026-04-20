@@ -23,6 +23,8 @@ import { registerWebsocketRoutes } from "./api/websocket/index.js";
 import { getApplicationExecutionEventDispatchService } from "./application-orchestration/services/application-execution-event-dispatch-service.js";
 import { getApplicationOrchestrationRecoveryService } from "./application-orchestration/services/application-orchestration-recovery-service.js";
 import { getApplicationOrchestrationStartupGate } from "./application-orchestration/services/application-orchestration-startup-gate.js";
+import { getApplicationAvailabilityService } from "./application-orchestration/services/application-availability-service.js";
+import { ApplicationBundleService } from "./application-bundles/services/application-bundle-service.js";
 import {
   startReceiptWorkflowRuntime,
   stopReceiptWorkflowRuntime,
@@ -156,8 +158,10 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
   }
 
   try {
+    const catalogSnapshot = await ApplicationBundleService.getInstance().getCatalogSnapshot();
+    getApplicationAvailabilityService().synchronizeWithCatalogSnapshot(catalogSnapshot);
     await getApplicationOrchestrationStartupGate().runStartupRecovery(async () => {
-      await getApplicationOrchestrationRecoveryService().resumeBindings();
+      await getApplicationOrchestrationRecoveryService().resumeBindings(catalogSnapshot);
       await getApplicationExecutionEventDispatchService().resumePendingEvents();
     });
   } catch (error) {

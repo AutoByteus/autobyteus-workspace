@@ -5,6 +5,10 @@ import {
 } from "../../application-engine/services/application-engine-host-service.js";
 import type { ApplicationExecutionEventJournalRecord } from "../domain/models.js";
 import { ApplicationExecutionEventJournalStore } from "../stores/application-execution-event-journal-store.js";
+import {
+  ApplicationAvailabilityService,
+  getApplicationAvailabilityService,
+} from "./application-availability-service.js";
 
 const MAX_BACKOFF_MS = 60_000;
 
@@ -46,6 +50,7 @@ export class ApplicationExecutionEventDispatchService {
   constructor(
     private readonly dependencies: {
       applicationBundleService?: ApplicationBundleService;
+      availabilityService?: ApplicationAvailabilityService;
       journalStore?: ApplicationExecutionEventJournalStore;
       engineHostService?: ApplicationEngineHostService;
     } = {},
@@ -53,6 +58,10 @@ export class ApplicationExecutionEventDispatchService {
 
   private get applicationBundleService(): ApplicationBundleService {
     return this.dependencies.applicationBundleService ?? ApplicationBundleService.getInstance();
+  }
+
+  private get availabilityService(): ApplicationAvailabilityService {
+    return this.dependencies.availabilityService ?? getApplicationAvailabilityService();
   }
 
   private get journalStore(): ApplicationExecutionEventJournalStore {
@@ -64,15 +73,35 @@ export class ApplicationExecutionEventDispatchService {
   }
 
   async resumePendingEvents(): Promise<void> {
-    const applications = await this.applicationBundleService.listApplications();
+    const candidateApplicationIds = new Set<string>([
+      ...(await this.journalStore.listKnownApplicationIds()),
+      ...(await this.applicationBundleService.listApplications()).map((application) => application.id),
+    ]);
     await Promise.all(
-      applications.map(async (application) => {
-        const nextRecord = await this.journalStore.getNextPendingRecordIfPresent(application.id);
-        if (nextRecord) {
-          this.schedulePendingRecord(application.id, nextRecord);
-        }
-      }),
+      Array.from(candidateApplicationIds).map((applicationId) =>
+        this.resumePendingEventsForApplication(applicationId),
+      ),
     );
+  }
+
+  async resumePendingEventsForApplication(applicationId: string): Promise<void> {
+    if (!await this.isApplicationActive(applicationId)) {
+      this.suspendApplication(applicationId);
+      return;
+    }
+    const nextRecord = await this.journalStore.getNextPendingRecordIfPresent(applicationId);
+    if (!nextRecord) {
+      return;
+    }
+    this.schedulePendingRecord(applicationId, nextRecord);
+  }
+
+  suspendApplication(applicationId: string): void {
+    const retryTimer = this.retryTimerByApplicationId.get(applicationId);
+    if (retryTimer) {
+      clearTimeout(retryTimer);
+      this.retryTimerByApplicationId.delete(applicationId);
+    }
   }
 
   schedule(applicationId: string): void {
@@ -84,10 +113,18 @@ export class ApplicationExecutionEventDispatchService {
       return;
     }
 
-    this.startDrain(applicationId);
+    void this.startDrain(applicationId);
   }
 
-  private startDrain(applicationId: string): void {
+  private async isApplicationActive(applicationId: string): Promise<boolean> {
+    return this.availabilityService.isApplicationActive(applicationId);
+  }
+
+  private async startDrain(applicationId: string): Promise<void> {
+    if (!await this.isApplicationActive(applicationId)) {
+      return;
+    }
+
     const retryTimer = this.retryTimerByApplicationId.get(applicationId);
     if (retryTimer) {
       clearTimeout(retryTimer);
@@ -102,6 +139,10 @@ export class ApplicationExecutionEventDispatchService {
 
   private async drainApplication(applicationId: string): Promise<void> {
     while (true) {
+      if (!await this.isApplicationActive(applicationId)) {
+        return;
+      }
+
       const nextRecord = await this.journalStore.getNextPendingRecord(applicationId);
       if (!nextRecord) {
         return;
@@ -148,6 +189,10 @@ export class ApplicationExecutionEventDispatchService {
   private async finishDrain(applicationId: string): Promise<void> {
     this.runningApplications.delete(applicationId);
 
+    if (!await this.isApplicationActive(applicationId)) {
+      return;
+    }
+
     const nextRecord = await this.journalStore.getNextPendingRecordIfPresent(applicationId);
     if (!nextRecord) {
       return;
@@ -156,20 +201,28 @@ export class ApplicationExecutionEventDispatchService {
     this.schedulePendingRecord(applicationId, nextRecord);
   }
 
-  private schedulePendingRecord(
+  private async schedulePendingRecord(
     applicationId: string,
     record: ApplicationExecutionEventJournalRecord,
-  ): void {
+  ): Promise<void> {
+    if (!await this.isApplicationActive(applicationId)) {
+      return;
+    }
+
     const retryDelayMs = computeRetryDelayMs(record);
     if (retryDelayMs !== null) {
       this.scheduleRetry(applicationId, retryDelayMs);
       return;
     }
 
-    this.startDrain(applicationId);
+    void this.startDrain(applicationId);
   }
 
-  private scheduleRetry(applicationId: string, delayMs: number): void {
+  private async scheduleRetry(applicationId: string, delayMs: number): Promise<void> {
+    if (!await this.isApplicationActive(applicationId)) {
+      return;
+    }
+
     const existing = this.retryTimerByApplicationId.get(applicationId);
     if (existing) {
       clearTimeout(existing);

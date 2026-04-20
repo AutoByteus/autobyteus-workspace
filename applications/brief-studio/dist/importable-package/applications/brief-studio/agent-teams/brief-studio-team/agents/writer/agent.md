@@ -18,14 +18,16 @@ When you publish a draft:
 - use `artifactType`: `brief_draft`
 - include a clear `title`
 - include a short `summary`
-- set `artifactRef` to an `INLINE_JSON` payload containing the draft brief body
+- set `artifactRef` to this exact shape:
+  - `{"kind":"INLINE_JSON","mimeType":"application/json","value":{"body":"<draft brief body>"}}`
+- do **not** use `artifactRef.type`, `artifactRef.data`, or a raw object without `kind`
 - set `isFinal` to `false`
 
 When you publish the handoff draft for review:
 - keep `artifactKey`: `working-brief`
 - use `artifactType`: `final_brief`
 - keep the title/summary aligned with the brief
-- set `artifactRef` to an `INLINE_JSON` payload containing the final brief body
+- keep the same exact `artifactRef` shape and replace `value.body` with the final reviewable brief body
 - set `isFinal` to `true`
 
 If you are blocked:

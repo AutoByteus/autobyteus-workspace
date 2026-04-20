@@ -58,6 +58,7 @@ describe("FileApplicationBundleProvider", () => {
       localApplicationId?: string;
       teamMemberRef?: string;
       teamDefaultLaunchConfig?: Record<string, unknown> | null;
+      manifestOverrides?: Record<string, unknown>;
     },
   ): Promise<void> => {
     const localApplicationId = options?.localApplicationId ?? "sample-app";
@@ -68,18 +69,35 @@ describe("FileApplicationBundleProvider", () => {
       path.join(bundleRoot, "application.json"),
       JSON.stringify(
         {
-          manifestVersion: "2",
+          manifestVersion: "3",
           id: localApplicationId,
           name: "Sample App",
           description: "Sample description",
           ui: {
             entryHtml: "ui/index.html",
-            frontendSdkContractVersion: "1",
+            frontendSdkContractVersion: "2",
           },
-          runtimeTarget: { kind: "AGENT_TEAM", localId: "sample-team" },
           backend: {
             bundleManifest: "backend/bundle.json",
           },
+          resourceSlots: [
+            {
+              slotKey: "draftingTeam",
+              name: "Drafting Team",
+              allowedResourceKinds: ["AGENT_TEAM"],
+              supportedLaunchDefaults: {
+                runtimeKind: true,
+                llmModelIdentifier: true,
+                workspaceRootPath: true,
+              },
+              defaultResourceRef: {
+                owner: "bundle",
+                kind: "AGENT_TEAM",
+                localId: "sample-team",
+              },
+            },
+          ],
+          ...(options?.manifestOverrides ?? {}),
         },
         null,
         2,
@@ -99,8 +117,8 @@ describe("FileApplicationBundleProvider", () => {
           distribution: "self-contained",
           targetRuntime: { engine: "node", semver: ">=22 <23" },
           sdkCompatibility: {
-            backendDefinitionContractVersion: "1",
-            frontendSdkContractVersion: "1",
+            backendDefinitionContractVersion: "2",
+            frontendSdkContractVersion: "2",
           },
           supportedExposures: {
             queries: true,
@@ -119,7 +137,7 @@ describe("FileApplicationBundleProvider", () => {
     );
     await writeFile(
       path.join(bundleRoot, "backend", "dist", "entry.mjs"),
-      "export default { definitionContractVersion: '1' }\n",
+      "export default { definitionContractVersion: '2' }\n",
     );
     await fs.mkdir(path.join(bundleRoot, "backend", "migrations"), { recursive: true });
     await fs.mkdir(path.join(bundleRoot, "backend", "assets"), { recursive: true });
@@ -173,7 +191,7 @@ describe("FileApplicationBundleProvider", () => {
     );
   };
 
-  it("lists valid bundles from the managed built-in application root", async () => {
+  it("lists valid bundles from the managed built-in application root with manifest resource slots", async () => {
     await writeBundle();
     const provider = buildProvider();
 
@@ -184,15 +202,23 @@ describe("FileApplicationBundleProvider", () => {
       id: buildCanonicalApplicationId(BUILT_IN_APPLICATION_PACKAGE_ID, "sample-app"),
       localApplicationId: "sample-app",
       packageId: BUILT_IN_APPLICATION_PACKAGE_ID,
-      runtimeTarget: {
-        kind: "AGENT_TEAM",
-        localId: "sample-team",
-        definitionId: buildCanonicalApplicationOwnedTeamId(
-          BUILT_IN_APPLICATION_PACKAGE_ID,
-          "sample-app",
-          "sample-team",
-        ),
-      },
+      resourceSlots: [
+        {
+          slotKey: "draftingTeam",
+          allowedResourceKinds: ["AGENT_TEAM"],
+          allowedResourceOwners: ["bundle", "shared"],
+          supportedLaunchDefaults: {
+            runtimeKind: true,
+            llmModelIdentifier: true,
+            workspaceRootPath: true,
+          },
+          defaultResourceRef: {
+            owner: "bundle",
+            kind: "AGENT_TEAM",
+            localId: "sample-team",
+          },
+        },
+      ],
       localAgentIds: [],
       localTeamIds: ["sample-team"],
       backend: {
@@ -215,50 +241,75 @@ describe("FileApplicationBundleProvider", () => {
     ]);
   });
 
-  it("fails package validation and refresh when an application-owned agent definition is malformed", async () => {
+  it("surfaces malformed manifests as diagnostics instead of crashing discovery", async () => {
     await writeBundle();
     await writeFile(
-      path.join(builtInRoot, "applications", "sample-app", "agents", "sample-agent", "agent.md"),
-      "# malformed agent definition\n",
+      path.join(builtInRoot, "applications", "broken-app", "application.json"),
+      JSON.stringify(
+        {
+          manifestVersion: "3",
+          id: "broken-app",
+          name: "Broken App",
+          ui: {
+            entryHtml: "ui/index.html",
+            frontendSdkContractVersion: "2",
+          },
+          backend: {
+            bundleManifest: "backend/bundle.json",
+          },
+          resourceSlots: [
+            {
+              slotKey: "broken slot key",
+              name: "Broken Slot",
+              allowedResourceKinds: ["AGENT_TEAM"],
+            },
+          ],
+        },
+        null,
+        2,
+      ),
     );
+
+    const snapshot = await buildProvider().getCatalogSnapshot();
+
+    expect(snapshot.applications).toHaveLength(1);
+    expect(snapshot.diagnostics).toHaveLength(1);
+    expect(snapshot.diagnostics[0]).toMatchObject({
+      localApplicationId: "broken-app",
+    });
+    expect(snapshot.diagnostics[0]?.message).toContain("slotKey");
+  });
+
+  it("fails package validation when a discovered resource-slot default does not resolve", async () => {
+    await writeBundle(builtInRoot, {
+      manifestOverrides: {
+        resourceSlots: [
+          {
+            slotKey: "draftingTeam",
+            name: "Drafting Team",
+            allowedResourceKinds: ["AGENT_TEAM"],
+            defaultResourceRef: {
+              owner: "bundle",
+              kind: "AGENT_TEAM",
+              localId: "missing-team",
+            },
+          },
+        ],
+      },
+    });
     const provider = buildProvider();
 
     await expect(
       provider.validatePackageRoot(builtInRoot, BUILT_IN_APPLICATION_PACKAGE_ID),
-    ).rejects.toThrow("agent.md must start with '---' frontmatter delimiter");
-    await expect(provider.listBundles()).rejects.toThrow(
-      "agent.md must start with '---' frontmatter delimiter",
-    );
+    ).rejects.toThrow("does not resolve to a discovered bundle-owned agent_team");
   });
 
   it("rejects bundles whose application-owned team references a missing local agent", async () => {
     await writeBundle(builtInRoot, { teamMemberRef: "missing-agent" });
     const provider = buildProvider();
 
-    await expect(provider.listBundles()).rejects.toThrow(
+    await expect(provider.validatePackageRoot(builtInRoot, BUILT_IN_APPLICATION_PACKAGE_ID)).rejects.toThrow(
       "must reference a local agent inside its own agents/ folder",
-    );
-  });
-
-  it("rejects bundles whose application-owned team local agent is malformed", async () => {
-    await writeBundle();
-    await writeFile(
-      path.join(
-        builtInRoot,
-        "applications",
-        "sample-app",
-        "agent-teams",
-        "sample-team",
-        "agents",
-        "sample-agent",
-        "agent.md",
-      ),
-      "# malformed local agent definition\n",
-    );
-    const provider = buildProvider();
-
-    await expect(provider.listBundles()).rejects.toThrow(
-      "agent.md must start with '---' frontmatter delimiter",
     );
   });
 
@@ -277,14 +328,13 @@ describe("FileApplicationBundleProvider", () => {
       path.join(nestedMirrorRoot, "application.json"),
       JSON.stringify(
         {
-          manifestVersion: "2",
+          manifestVersion: "3",
           id: "sample-app",
           name: "Nested Mirror",
           ui: {
             entryHtml: "ui/index.html",
-            frontendSdkContractVersion: "1",
+            frontendSdkContractVersion: "2",
           },
-          runtimeTarget: { kind: "AGENT", localId: "sample-agent" },
           backend: {
             bundleManifest: "backend/bundle.json",
           },

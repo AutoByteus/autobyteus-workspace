@@ -57,7 +57,6 @@ export const createSocraticMathTeacherApp = ({
     refreshButton: document.getElementById("refresh-button"),
     startLessonForm: document.getElementById("start-lesson-form"),
     lessonPromptInput: document.getElementById("lesson-prompt-input"),
-    modelIdentifierInput: document.getElementById("model-identifier-input"),
   };
 
   const setStatus = (text, tone = "idle") => {
@@ -138,18 +137,13 @@ export const createSocraticMathTeacherApp = ({
       return;
     }
     const prompt = elements.lessonPromptInput?.value?.trim() || "";
-    const llmModelIdentifier = elements.modelIdentifierInput?.value?.trim() || "";
     if (!prompt) {
       setStatus("Enter a math problem before starting a lesson.", "error");
       return;
     }
-    if (!llmModelIdentifier) {
-      setStatus("Enter an LLM model identifier before starting a lesson.", "error");
-      return;
-    }
 
     setStatus("Starting lesson and binding one long-lived tutor run…");
-    const lesson = await state.client.startLesson({ prompt, llmModelIdentifier });
+    const lesson = await state.client.startLesson({ prompt });
     state.selectedLessonId = lesson.lessonId;
     if (elements.lessonPromptInput) {
       elements.lessonPromptInput.value = "";

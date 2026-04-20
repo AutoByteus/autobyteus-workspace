@@ -12,9 +12,10 @@
 
         <div v-if="application" class="flex flex-wrap items-center gap-3">
           <button
+            v-if="launchState.launchInstanceId || hostLaunchLoading"
             type="button"
             class="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-300"
-            :disabled="hostLaunchLoading"
+            :disabled="hostLaunchLoading || !canLaunchFromSetupGate"
             @click="launchApplication"
           >
             {{ hostLaunchLoading
@@ -101,8 +102,40 @@
           </div>
         </section>
 
+        <ApplicationLaunchSetupPanel
+          class="mt-6"
+          :application-id="application.id"
+          @setup-state-change="updateSetupGateState"
+        />
+
         <div
-          v-if="hostLaunchLoading && !launchState.launchInstanceId"
+          v-if="!launchState.launchInstanceId && !hostLaunchLoading && !hostLaunchError"
+          data-testid="application-pre-entry-gate"
+          class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+        >
+          <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div class="space-y-2">
+              <h2 class="text-lg font-semibold text-slate-900">
+                {{ $t('applications.components.applications.ApplicationShell.preEntryGateTitle') }}
+              </h2>
+              <p class="max-w-3xl text-sm leading-6 text-slate-600">
+                {{ preEntryGateDescription }}
+              </p>
+            </div>
+
+            <button
+              type="button"
+              class="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-300"
+              :disabled="!canLaunchFromSetupGate"
+              @click="launchApplication"
+            >
+              {{ $t('applications.components.applications.ApplicationShell.enterApplication') }}
+            </button>
+          </div>
+        </div>
+
+        <div
+          v-else-if="hostLaunchLoading && !launchState.launchInstanceId"
           class="mt-6 rounded-2xl border border-slate-200 bg-white py-16 text-center shadow-sm"
         >
           <div class="mx-auto mb-4 h-9 w-9 animate-spin rounded-full border-b-2 border-blue-600"></div>
@@ -118,13 +151,14 @@
           <button
             type="button"
             class="mt-3 inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
+            :disabled="!canLaunchFromSetupGate"
             @click="launchApplication"
           >
             {{ $t('applications.components.applications.ApplicationShell.retryLaunch') }}
           </button>
         </div>
 
-        <div v-else class="mt-6">
+        <div v-else-if="launchState.launchInstanceId" class="mt-6">
           <ApplicationSurface
             :application="application"
             :launch-instance-id="launchState.launchInstanceId"
@@ -137,10 +171,12 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
+import ApplicationLaunchSetupPanel from '~/components/applications/ApplicationLaunchSetupPanel.vue'
 import ApplicationSurface from '~/components/applications/ApplicationSurface.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { useApplicationHostStore } from '~/stores/applicationHostStore'
 import { useApplicationStore, type ApplicationRuntimeResourceKind } from '~/stores/applicationStore'
+import type { ApplicationLaunchSetupGateState } from '~/utils/application/applicationLaunchSetup'
 
 interface ShellDetailItem {
   label: string
@@ -156,12 +192,22 @@ const loading = ref(false)
 const loadError = ref<string | null>(null)
 const detailsOpen = ref(false)
 const latestLoadRequestId = ref(0)
+const launchSetupGateState = ref<ApplicationLaunchSetupGateState>({
+  phase: 'loading',
+  isLaunchReady: false,
+  blockingReason: null,
+})
 
 const applicationId = computed(() => String(route.params.id || '').trim())
 const application = computed(() => applicationStore.getApplicationById(applicationId.value))
 const launchState = computed(() => applicationHostStore.getLaunchState(applicationId.value))
 const hostLaunchLoading = computed(() => launchState.value.status === 'preparing')
 const hostLaunchError = computed(() => launchState.value.lastError || launchState.value.lastFailure || null)
+const canLaunchFromSetupGate = computed(() => launchSetupGateState.value.isLaunchReady)
+const preEntryGateDescription = computed(() => (
+  launchSetupGateState.value.blockingReason
+  || $t('applications.components.applications.ApplicationShell.preEntryGateDescription')
+))
 
 const formatKindLabel = (kind: ApplicationRuntimeResourceKind): string => (
   kind === 'AGENT'
@@ -253,7 +299,6 @@ const loadShell = async (): Promise<void> => {
       return
     }
 
-    await applicationHostStore.startLaunch(applicationId.value)
   } catch (error) {
     if (latestLoadRequestId.value !== requestId) {
       return
@@ -267,7 +312,7 @@ const loadShell = async (): Promise<void> => {
 }
 
 const launchApplication = async (): Promise<void> => {
-  if (!applicationId.value) {
+  if (!applicationId.value || !canLaunchFromSetupGate.value) {
     return
   }
 
@@ -279,9 +324,18 @@ const launchApplication = async (): Promise<void> => {
   }
 }
 
+const updateSetupGateState = (value: ApplicationLaunchSetupGateState): void => {
+  launchSetupGateState.value = value
+}
+
 watch(
   () => applicationId.value,
   () => {
+    launchSetupGateState.value = {
+      phase: 'loading',
+      isLaunchReady: false,
+      blockingReason: null,
+    }
     void loadShell()
   },
   { immediate: true },

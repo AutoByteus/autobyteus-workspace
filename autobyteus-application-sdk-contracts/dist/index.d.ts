@@ -1,10 +1,10 @@
-export declare const APPLICATION_MANIFEST_VERSION_V3: "3";
+import type { ApplicationConfiguredResource, ApplicationRuntimeResourceKind, ApplicationRuntimeResourceOwner, ApplicationRuntimeResourceRef, ApplicationRuntimeResourceSummary } from "./runtime-resources.js";
+export * from "./manifests.js";
+export * from "./runtime-resources.js";
 export declare const APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1: "1";
 export declare const APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V2: "2";
 export declare const APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V2: "2";
 export declare const APPLICATION_EVENT_DELIVERY_SEMANTICS: "AT_LEAST_ONCE";
-export type ApplicationRuntimeResourceKind = "AGENT" | "AGENT_TEAM";
-export type ApplicationRuntimeResourceOwner = "bundle" | "shared";
 export type ApplicationRouteMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD" | "OPTIONS";
 export type ApplicationSkillAccessMode = "GLOBAL_DISCOVERY" | "PRELOADED_ONLY" | "NONE";
 export type ApplicationBackendSupportedExposures = {
@@ -14,20 +14,6 @@ export type ApplicationBackendSupportedExposures = {
     graphql: boolean;
     notifications: boolean;
     eventHandlers: boolean;
-};
-export type ApplicationManifestV3 = {
-    manifestVersion: typeof APPLICATION_MANIFEST_VERSION_V3;
-    id: string;
-    name: string;
-    description?: string | null;
-    icon?: string | null;
-    ui: {
-        entryHtml: string;
-        frontendSdkContractVersion: typeof APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V2;
-    };
-    backend: {
-        bundleManifest: string;
-    };
 };
 export type ApplicationBackendBundleManifestV1 = {
     contractVersion: typeof APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1;
@@ -88,31 +74,6 @@ export type PublishArtifactInputV1 = {
     artifactRef: ApplicationArtifactRef;
     metadata?: Record<string, unknown> | null;
     isFinal?: boolean | null;
-};
-export type ApplicationRuntimeResourceRef = {
-    owner: "bundle";
-    kind: "AGENT";
-    localId: string;
-} | {
-    owner: "bundle";
-    kind: "AGENT_TEAM";
-    localId: string;
-} | {
-    owner: "shared";
-    kind: "AGENT";
-    definitionId: string;
-} | {
-    owner: "shared";
-    kind: "AGENT_TEAM";
-    definitionId: string;
-};
-export type ApplicationRuntimeResourceSummary = {
-    owner: ApplicationRuntimeResourceOwner;
-    kind: ApplicationRuntimeResourceKind;
-    localId: string | null;
-    definitionId: string;
-    name: string;
-    applicationId: string | null;
 };
 export type ApplicationRuntimeInputContextFile = {
     uri: string;
@@ -233,6 +194,7 @@ export type ApplicationRuntimeControl = {
         owner?: ApplicationRuntimeResourceOwner | null;
         kind?: ApplicationRuntimeResourceKind | null;
     } | null) => Promise<ApplicationRuntimeResourceSummary[]>;
+    getConfiguredResource: (slotKey: string) => Promise<ApplicationConfiguredResource | null>;
     startRun: (input: ApplicationStartRunInput) => Promise<ApplicationRunBindingSummary>;
     getRunBinding: (bindingId: string) => Promise<ApplicationRunBindingSummary | null>;
     getRunBindingByIntentId: (bindingIntentId: string) => Promise<ApplicationRunBindingSummary | null>;

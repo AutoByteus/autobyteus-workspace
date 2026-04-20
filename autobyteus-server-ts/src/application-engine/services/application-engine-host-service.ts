@@ -290,6 +290,11 @@ export class ApplicationEngineHostService {
     switch (input.action) {
       case "listAvailableResources":
         return this.orchestrationHostService.listAvailableResources(applicationId, input.input as never);
+      case "getConfiguredResource":
+        return this.orchestrationHostService.getConfiguredResource(
+          applicationId,
+          (input.input as { slotKey?: string }).slotKey ?? "",
+        );
       case "startRun":
         return this.orchestrationHostService.startRun(applicationId, input.input as never);
       case "getRunBinding":

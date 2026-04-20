@@ -62,7 +62,6 @@ export const createBriefStudioApp = ({
     refreshButton: document.getElementById("refresh-button"),
     createBriefForm: document.getElementById("create-brief-form"),
     briefTitleInput: document.getElementById("brief-title-input"),
-    modelIdentifierInput: document.getElementById("model-identifier-input"),
   };
 
   const handleUiError = (error) => {
@@ -179,16 +178,10 @@ export const createBriefStudioApp = ({
     if (!state.client || !state.selectedBriefId) {
       return;
     }
-    const llmModelIdentifier = elements.modelIdentifierInput?.value?.trim() || "";
-    if (!llmModelIdentifier) {
-      setStatus("Enter an LLM model identifier before launching a draft run.", "error");
-      return;
-    }
 
     setStatus("Launching a draft run bound to this briefId…");
     await state.client.launchDraftRun({
       briefId: state.selectedBriefId,
-      llmModelIdentifier,
     });
     await refresh();
   };

@@ -5,6 +5,7 @@ import type {
   ApplicationRouteRequest,
 } from "@autobyteus/application-sdk-contracts";
 import { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
+import { ApplicationAvailabilityService, getApplicationAvailabilityService } from "../../application-orchestration/services/application-availability-service.js";
 import {
   ApplicationEngineHostService,
   getApplicationEngineHostService,
@@ -51,6 +52,7 @@ export class ApplicationBackendGatewayService {
   constructor(
     private readonly dependencies: {
       applicationBundleService?: ApplicationBundleService;
+      availabilityService?: ApplicationAvailabilityService;
       engineHostService?: ApplicationEngineHostService;
       notificationStreamService?: ApplicationNotificationStreamService;
     } = {},
@@ -60,6 +62,10 @@ export class ApplicationBackendGatewayService {
 
   private get applicationBundleService(): ApplicationBundleService {
     return this.dependencies.applicationBundleService ?? ApplicationBundleService.getInstance();
+  }
+
+  private get availabilityService(): ApplicationAvailabilityService {
+    return this.dependencies.availabilityService ?? getApplicationAvailabilityService();
   }
 
   private get engineHostService(): ApplicationEngineHostService {
@@ -89,6 +95,7 @@ export class ApplicationBackendGatewayService {
   }
 
   private async requireApplication(applicationId: string): Promise<void> {
+    await this.availabilityService.requireApplicationActive(applicationId);
     const application = await this.applicationBundleService.getApplicationById(applicationId);
     if (!application) {
       throw new Error(`Application '${applicationId}' was not found.`);

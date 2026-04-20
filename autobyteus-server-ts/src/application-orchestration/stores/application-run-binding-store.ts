@@ -1,4 +1,4 @@
-import type { DatabaseSync } from "node:sqlite";
+import { DatabaseSync } from "node:sqlite";
 import type {
   ApplicationRunBindingListFilter,
   ApplicationRunBindingSummary,
@@ -76,6 +76,28 @@ export class ApplicationRunBindingStore {
 
   private get platformStateStore(): ApplicationPlatformStateStore {
     return this.dependencies.platformStateStore ?? new ApplicationPlatformStateStore();
+  }
+
+  async listKnownApplicationIds(): Promise<string[]> {
+    const applicationIds = new Set<string>();
+    for (const databasePath of this.platformStateStore.listExistingPlatformDatabasePaths()) {
+      const db = new DatabaseSync(databasePath);
+      try {
+        const tables = db.prepare(`SELECT name FROM sqlite_master WHERE type = 'table'`).all() as Array<{ name: string }>;
+        if (!tables.some((table) => table.name === "__autobyteus_run_bindings")) {
+          continue;
+        }
+        const rows = db.prepare(`SELECT DISTINCT json_extract(summary_json, '$.applicationId') AS application_id FROM __autobyteus_run_bindings`).all() as Array<{ application_id: string | null }>;
+        for (const row of rows) {
+          if (typeof row.application_id === "string" && row.application_id.trim()) {
+            applicationIds.add(row.application_id.trim());
+          }
+        }
+      } finally {
+        db.close();
+      }
+    }
+    return Array.from(applicationIds).sort((left, right) => left.localeCompare(right));
   }
 
   async persistBinding(summary: ApplicationRunBindingSummary): Promise<ApplicationRunBindingSummary> {

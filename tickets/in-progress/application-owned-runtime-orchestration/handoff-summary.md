@@ -10,29 +10,28 @@
 
 - Replaced the old platform-owned `applicationSession` / singular `runtimeTarget` launch model with application-owned runtime orchestration.
 - The generic Applications host now ensures the application backend is ready and completes the iframe v2 bootstrap handshake without creating a run on behalf of the app.
-- Application backends now own runtime work through `context.runtimeControl.startRun(...)`, `postRunInput(...)`, durable run bindings, execution-event journals, recovery/orphan handling, and startup-gated live ingress.
-- Brief Studio now teaches the “many runs over one business record” pattern with app-owned GraphQL, `executionRef = briefId`, and durable projection.
+- Application backends now own runtime work through `context.runtimeControl.startRun(...)`, `postRunInput(...)`, durable run bindings, event journals, recovery/orphan handling, and startup-gated live ingress.
+- The direct-launch contract now uses opaque `bindingIntentId` plus `getRunBindingByIntentId(...)`; the platform persists correlation while business identity remains app-owned.
+- Brief Studio now teaches the “many runs over one business record” pattern with app-owned GraphQL, app-owned `briefId`, pending `bindingIntentId` handoff, and durable projection.
 - Socratic Math Teacher now teaches the “one long-lived conversational binding” pattern with app-owned GraphQL, `lessonId`, and follow-up input routed through the existing binding.
-- The shared backend-mount transport now preserves JSON vs non-JSON route semantics from `backendBaseUrl`, and the app-owned GraphQL executors accept omitted-`operationName` single-operation requests.
-- Delivery integration refresh completed before the refreshed handoff:
+- The shared backend-mount transport preserves JSON vs non-JSON route semantics from `backendBaseUrl`, the app-owned GraphQL executors accept omitted-`operationName` single-operation requests, and packaged generated GraphQL clients now import correctly from both app roots and built-in mirrors.
+- Delivery integration refresh completed before this handoff:
   - bootstrap base: `origin/personal`
-  - latest tracked remote base checked: `origin/personal @ 515ed72a82d552fefb6f1356a671bf213bec0cbe`
-  - local checkpoint commit: `Created locally to preserve the refreshed validated package before finalization`
-  - integration method: `Already current` (no new base merge/rebase required before delivery docs)
+  - local checkpoint commit before integration: `a7c19d4d` (`chore(checkpoint): preserve application-owned-runtime-orchestration round-4 validated package`)
+  - latest tracked remote base merged: `origin/personal @ ea1892dbbe6cb12118bdb6d91cfc63564f12c4e7`
+  - integration method: `Merge`
+  - integrated branch head after merge: `a0f0124b`
 
 ## Verification
 
-- Review artifact: `tickets/in-progress/application-owned-runtime-orchestration/review-report.md` is the authoritative `Pass` (`round 6`, score `9.4/10`).
-- Validation artifact: `tickets/in-progress/application-owned-runtime-orchestration/api-e2e-report.md` is the authoritative `Pass` (`round 2`).
-- Delivery-stage post-integration rerun: `Not needed` because the delivery refresh confirmed `origin/personal` had not advanced beyond the already reviewed + validated base commit `515ed72a`.
-- Latest authoritative executable checks recorded in the current artifact chain include:
-  - `pnpm -C .../autobyteus-application-frontend-sdk build`
-  - `pnpm -C .../autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`
-  - `pnpm -C .../autobyteus-server-ts exec vitest run tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts tests/unit/application-backend/app-owned-graphql-executors.test.ts tests/integration/application-backend/brief-studio-imported-package.integration.test.ts tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts tests/unit/application-orchestration/publish-artifact-tool.test.ts tests/unit/application-orchestration/application-orchestration-host-service.test.ts`
-  - `pnpm -C .../autobyteus-web exec vitest run components/applications/__tests__/ApplicationIframeHost.spec.ts components/applications/__tests__/ApplicationSurface.spec.ts`
-  - `pnpm --dir .../applications/brief-studio build`
-- Acceptance summary: imported-package Brief Studio integration, recovery/orphan handling, startup-gated `publish_artifact`, iframe v2 host/bootstrap validation, hosted backend-mount route transport semantics, and app-owned GraphQL omitted-`operationName` dispatch all passed with no open delivery blockers.
-- Residual risk: the synced importable-package and built-in mirror artifact pattern remains operationally sensitive; future source changes must keep regeneration discipline.
+- Review artifact: `tickets/in-progress/application-owned-runtime-orchestration/review-report.md` is the authoritative `Pass` (`round 9`, score `9.5/10`).
+- Validation artifact: `tickets/in-progress/application-owned-runtime-orchestration/api-e2e-report.md` is the authoritative `Pass` (`round 4`).
+- Delivery-stage post-integration rerun: `Passed`
+- Post-integration rerun command:
+  - `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts exec vitest run tests/integration/application-backend/brief-studio-imported-package.integration.test.ts tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts tests/unit/application-backend/app-owned-graphql-executors.test.ts tests/unit/application-backend/app-owned-binding-intent-correlation.test.ts tests/unit/application-orchestration/application-orchestration-host-service.test.ts tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts tests/unit/application-orchestration/publish-artifact-tool.test.ts`
+- Post-integration rerun result: `7` test files passed, `17` tests passed.
+- Acceptance summary: packaged generated GraphQL clients now import from both app roots and both built-in mirrors; the updated Brief Studio imported-package regression passes including the packaged-client same-binding early-final projection path; runtime, recovery, transport, GraphQL executor, binding-intent correlation, and iframe host validation all passed with no open delivery blockers.
+- Residual risk: vendored sourcemap warnings still appear during packaged-client validation, but they remained non-blocking packaging noise only; the mirror/importable-package sync pattern still requires disciplined regeneration.
 
 ## Documentation Sync
 
@@ -48,7 +47,7 @@
   - `autobyteus-application-backend-sdk/README.md`
   - `autobyteus-server-ts/docs/modules/application_orchestration.md`
   - `autobyteus-server-ts/docs/modules/application_sessions.md`
-  - related server/web module docs that referenced the removed session-owned model or the new `backendBaseUrl` transport contract
+  - related server/web module docs that referenced the removed session-owned model or the newer `bindingIntentId` / `backendBaseUrl` contract boundaries
 
 ## Release Notes
 

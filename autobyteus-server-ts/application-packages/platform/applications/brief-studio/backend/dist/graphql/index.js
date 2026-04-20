@@ -73,7 +73,7 @@ export const executeBriefStudioGraphql = async (request, context) => {
                 const input = requireObject(variables.input, "input");
                 return runLaunchService.launchDraftRun({
                     briefId: typeof input.briefId === "string" ? input.briefId : "",
-                    llmModelIdentifier: typeof input.llmModelIdentifier === "string" ? input.llmModelIdentifier : "",
+                    llmModelIdentifier: typeof input.llmModelIdentifier === "string" ? input.llmModelIdentifier : null,
                 });
             });
         case "ApproveBriefMutation":

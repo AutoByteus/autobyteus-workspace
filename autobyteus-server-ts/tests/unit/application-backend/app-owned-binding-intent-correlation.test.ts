@@ -38,6 +38,31 @@ const buildRuntimeControl = (
   overrides: Partial<ApplicationHandlerContext["runtimeControl"]> = {},
 ): ApplicationHandlerContext["runtimeControl"] => ({
   listAvailableResources: vi.fn(async () => []),
+  getConfiguredResource: vi.fn(async (slotKey: string) => {
+    if (slotKey === "lessonTutorTeam") {
+      return {
+        slotKey,
+        resourceRef: {
+          owner: "bundle",
+          kind: "AGENT_TEAM",
+          localId: "socratic-math-team",
+        },
+        launchDefaults: null,
+      };
+    }
+    if (slotKey === "draftingTeam") {
+      return {
+        slotKey,
+        resourceRef: {
+          owner: "bundle",
+          kind: "AGENT_TEAM",
+          localId: "brief-studio-team",
+        },
+        launchDefaults: null,
+      };
+    }
+    return null;
+  }),
   startRun: vi.fn(async () => {
     throw new Error("runtimeControl.startRun was not mocked for this test.");
   }),
@@ -304,6 +329,34 @@ afterEach(async () => {
 });
 
 describe("App-owned bindingIntentId correlation", () => {
+  it("fails Brief Studio launch before startRun when configured-resource readback rejects an invalid slot selection", async () => {
+    const appDatabasePath = await createTempDatabase("autobyteus-brief-invalid-slot-", BRIEF_MIGRATIONS_DIR);
+    const runtimeControl = buildRuntimeControl({
+      getConfiguredResource: vi.fn(async () => {
+        throw new Error(
+          "Application resource slot 'draftingTeam' has invalid persisted override: Application resource slot 'draftingTeam' does not allow resource kind 'AGENT'.",
+        );
+      }),
+      startRun: vi.fn(async () => buildBriefBinding("unused-binding-intent")),
+    });
+    const context = createHandlerContext({
+      appDatabasePath,
+      runtimeControl,
+    });
+
+    const service = createBriefRunLaunchService(context);
+    const createdBrief = await service.createBrief({ title: "Invalid Slot Brief" });
+
+    await expect(
+      service.launchDraftRun({
+        briefId: createdBrief.briefId,
+        llmModelIdentifier: "gpt-test",
+      }),
+    ).rejects.toThrow("Application resource slot 'draftingTeam' has invalid persisted override");
+
+    expect(runtimeControl.startRun).not.toHaveBeenCalled();
+  });
+
   it("reconciles Brief Studio launch failures through getRunBindingByIntentId", async () => {
     const appDatabasePath = await createTempDatabase("autobyteus-brief-binding-intent-", BRIEF_MIGRATIONS_DIR);
     const runtimeControl = buildRuntimeControl({
@@ -326,6 +379,17 @@ describe("App-owned bindingIntentId correlation", () => {
         llmModelIdentifier: "gpt-test",
       }),
     ).rejects.toThrow("startRun failed after binding creation");
+
+    expect(runtimeControl.startRun).toHaveBeenCalledWith(expect.objectContaining({
+      launch: expect.objectContaining({
+        kind: "AGENT_TEAM",
+        mode: "preset",
+        launchPreset: expect.objectContaining({
+          llmModelIdentifier: "gpt-test",
+          autoExecuteTools: true,
+        }),
+      }),
+    }));
 
     const db = new DatabaseSync(appDatabasePath);
     try {
@@ -368,6 +432,54 @@ describe("App-owned bindingIntentId correlation", () => {
     } finally {
       db.close();
     }
+  });
+
+  it("launches Brief Studio from host-saved slot defaults when no inline llmModelIdentifier is provided", async () => {
+    const appDatabasePath = await createTempDatabase("autobyteus-brief-launch-defaults-", BRIEF_MIGRATIONS_DIR);
+    const runtimeControl = buildRuntimeControl({
+      getConfiguredResource: vi.fn(async () => ({
+        slotKey: "draftingTeam",
+        resourceRef: {
+          owner: "shared",
+          kind: "AGENT_TEAM",
+          definitionId: "shared-writing-team",
+        },
+        launchDefaults: {
+          runtimeKind: "lmstudio",
+          llmModelIdentifier: "qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
+          workspaceRootPath: "/tmp/brief-studio",
+        },
+      })),
+      startRun: vi.fn(async (input: StartRunRequest) => buildBriefBinding(input.bindingIntentId)),
+    });
+    const context = createHandlerContext({
+      appDatabasePath,
+      runtimeControl,
+    });
+
+    const service = createBriefRunLaunchService(context);
+    const createdBrief = await service.createBrief({ title: "Saved Setup Brief" });
+    await service.launchDraftRun({
+      briefId: createdBrief.briefId,
+    });
+
+    expect(runtimeControl.startRun).toHaveBeenCalledWith(expect.objectContaining({
+      resourceRef: {
+        owner: "shared",
+        kind: "AGENT_TEAM",
+        definitionId: "shared-writing-team",
+      },
+      launch: expect.objectContaining({
+        kind: "AGENT_TEAM",
+        mode: "preset",
+        launchPreset: expect.objectContaining({
+          runtimeKind: "lmstudio",
+          llmModelIdentifier: "qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
+          workspaceRootPath: "/tmp/brief-studio",
+          autoExecuteTools: true,
+        }),
+      }),
+    }));
   });
 
   it("reconciles Brief Studio early events through bindingIntentId without event.executionRef", async () => {
@@ -510,6 +622,17 @@ describe("App-owned bindingIntentId correlation", () => {
       }),
     ).rejects.toThrow("lesson start failed after binding creation");
 
+    expect(runtimeControl.startRun).toHaveBeenCalledWith(expect.objectContaining({
+      launch: expect.objectContaining({
+        kind: "AGENT_TEAM",
+        mode: "preset",
+        launchPreset: expect.objectContaining({
+          llmModelIdentifier: "gpt-test",
+          autoExecuteTools: true,
+        }),
+      }),
+    }));
+
     const db = new DatabaseSync(appDatabasePath);
     try {
       const lessonRow = db.prepare(
@@ -543,6 +666,47 @@ describe("App-owned bindingIntentId correlation", () => {
     } finally {
       db.close();
     }
+  });
+
+  it("launches Socratic lessons from host-saved slot defaults when no inline llmModelIdentifier is provided", async () => {
+    const appDatabasePath = await createTempDatabase("autobyteus-lesson-launch-defaults-", SOCRATIC_MIGRATIONS_DIR);
+    const runtimeControl = buildRuntimeControl({
+      getConfiguredResource: vi.fn(async () => ({
+        slotKey: "lessonTutorTeam",
+        resourceRef: {
+          owner: "bundle",
+          kind: "AGENT_TEAM",
+          localId: "socratic-math-team",
+        },
+        launchDefaults: {
+          runtimeKind: "lmstudio",
+          llmModelIdentifier: "qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
+          workspaceRootPath: "/tmp/lessons",
+        },
+      })),
+      startRun: vi.fn(async (input: StartRunRequest) => buildLessonBinding(input.bindingIntentId)),
+    });
+    const context = createHandlerContext({
+      appDatabasePath,
+      runtimeControl,
+    });
+
+    await createLessonRuntimeService(context).startLesson({
+      prompt: "Solve 2x + 3 = 11",
+    });
+
+    expect(runtimeControl.startRun).toHaveBeenCalledWith(expect.objectContaining({
+      launch: expect.objectContaining({
+        kind: "AGENT_TEAM",
+        mode: "preset",
+        launchPreset: expect.objectContaining({
+          runtimeKind: "lmstudio",
+          llmModelIdentifier: "qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
+          workspaceRootPath: "/tmp/lessons",
+          autoExecuteTools: true,
+        }),
+      }),
+    }));
   });
 
   it("reconciles Socratic early tutor events through bindingIntentId without event.executionRef", async () => {
@@ -662,5 +826,30 @@ describe("App-owned bindingIntentId correlation", () => {
       lastErrorMessage: "Tutor session failed before launch completion.",
       closedAt: null,
     });
+  });
+
+  it("fails Socratic startLesson before startRun when configured-resource readback rejects an invalid slot selection", async () => {
+    const appDatabasePath = await createTempDatabase("autobyteus-lesson-invalid-slot-", SOCRATIC_MIGRATIONS_DIR);
+    const runtimeControl = buildRuntimeControl({
+      getConfiguredResource: vi.fn(async () => {
+        throw new Error(
+          "Application resource slot 'lessonTutorTeam' has invalid manifest default: Application runtime resource could not be resolved for application 'test-app'.",
+        );
+      }),
+      startRun: vi.fn(async () => buildLessonBinding("unused-binding-intent")),
+    });
+    const context = createHandlerContext({
+      appDatabasePath,
+      runtimeControl,
+    });
+
+    await expect(
+      createLessonRuntimeService(context).startLesson({
+        prompt: "Solve 2x + 3 = 11",
+        llmModelIdentifier: "gpt-test",
+      }),
+    ).rejects.toThrow("Application resource slot 'lessonTutorTeam' has invalid manifest default");
+
+    expect(runtimeControl.startRun).not.toHaveBeenCalled();
   });
 });

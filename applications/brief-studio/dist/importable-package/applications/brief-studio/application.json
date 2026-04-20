@@ -10,5 +10,25 @@
   },
   "backend": {
     "bundleManifest": "backend/bundle.json"
-  }
+  },
+  "resourceSlots": [
+    {
+      "slotKey": "draftingTeam",
+      "name": "Drafting Team",
+      "description": "Team resource used when Brief Studio launches a new drafting run.",
+      "allowedResourceKinds": ["AGENT_TEAM"],
+      "allowedResourceOwners": ["bundle", "shared"],
+      "required": true,
+      "supportedLaunchDefaults": {
+        "runtimeKind": true,
+        "llmModelIdentifier": true,
+        "workspaceRootPath": true
+      },
+      "defaultResourceRef": {
+        "owner": "bundle",
+        "kind": "AGENT_TEAM",
+        "localId": "brief-studio-team"
+      }
+    }
+  ]
 }

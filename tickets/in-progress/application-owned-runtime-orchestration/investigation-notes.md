@@ -3,11 +3,11 @@
 ## Investigation Status
 
 - Bootstrap Status: Completed
-- Current Status: Deep investigation completed; design reworked through architecture review round 5, including app-owned API/schema design, binding-centric correlation, and pending-binding intent correlation establishment
+- Current Status: Deep investigation completed; design reworked through architecture review round 5, and further deepened with startup isolation for invalid applications plus persisted application resource-configuration requirements
 - Investigation Goal: Define a clean-cut application-owned runtime orchestration model that removes the current one-app-to-one-run/session assumption
 - Scope Classification (`Small`/`Medium`/`Large`): Large
 - Scope Classification Rationale: The change crosses server runtime ownership, bundle contracts, backend SDK, frontend SDK, iframe bootstrap, frontend host flows, publication routing, and sample-application migration
-- Scope Summary: Replace session-owned application launches with engine-first application launch plus backend-owned orchestration over zero/one/many durable run bindings, while also making app-owned business APIs/schemas first-class under one platform-hosted backend mount
+- Scope Summary: Replace session-owned application launches with engine-first application launch plus backend-owned orchestration over zero/one/many durable run bindings, while also making app-owned business APIs/schemas first-class under one platform-hosted backend mount, isolating invalid application packages from core startup, and adding persisted host-managed resource configuration
 - Primary Questions To Resolve:
   - Should `applicationSession` remain as a durable concept, or should it be removed from the target model?
   - How should the platform represent application-owned business context without hardcoding business semantics?
@@ -16,11 +16,14 @@
   - Which current frontend/SDK/contracts surfaces are structurally coupled to the old session model?
   - How should application-owned business API schemas and frontend/backend code generation work without turning app business schemas into platform-owned contracts?
   - Does the platform need one generic app-business reference field at all, or should `bindingId` be the primary cross-boundary correlation handle while business-record mapping stays app-owned?
+  - How should invalid, stale, or incompatible imported applications be isolated so they never become fatal platform-startup dependencies?
+  - How should the old launch configuration form be repurposed into persisted runtime-resource configuration without preserving run-launch semantics?
 
 ## Request Context
 
 - User request: bootstrap the ticket properly, investigate deeply, and produce a strong design that is not constrained by the current architecture or current package/folder boundaries
 - Additional user direction: refactoring and reorganizing across the contracts project, backend SDK, frontend SDK, server, and web host is allowed when needed to reach a more natural and flexible model
+- Follow-up user clarification on `2026-04-20`: invalid or stale application packages must never crash AutoByteus startup, and the existing host launch-configuration form should be repurposed as persisted application resource configuration rather than deleted outright
 - Ticket folder: `tickets/in-progress/application-owned-runtime-orchestration`
 
 ## Environment Discovery / Bootstrap Context
@@ -69,6 +72,12 @@
 | 2026-04-19 | Spec | `tickets/in-progress/application-owned-runtime-orchestration/design-review-report.md` | Fold architecture review round 1 findings back into the authoritative design package | Review accepted the requirements basis but blocked the design on three items: concrete restart recovery ownership, unified lifecycle observation boundary, and single publication-ingress authority | Yes |
 | 2026-04-19 | Spec | `tickets/in-progress/application-owned-runtime-orchestration/design-review-report.md` (round 2) | Fold architecture review round 2 findings back into the authoritative design package | Round 1 blockers were resolved; the remaining design gap is startup coordination: the design must explicitly serialize live `runtimeControl` / artifact ingress traffic against recovery-time lookup rebuild and observer reattachment | Yes |
 | 2026-04-19 | Spec | `tickets/in-progress/application-owned-runtime-orchestration/design-review-report.md` (round 5) | Fold architecture review round 5 finding back into the authoritative design package | The binding-centric model is cleaner, but direct `startRun(...)` still needs one explicit pending-intent / reconciliation contract so newly created bindings can be durably attached to app business records before early events rely on that mapping | Yes |
+| 2026-04-20 | Code | `autobyteus-server-ts/src/application-bundles/services/application-bundle-service.ts`, `application-bundles/providers/file-application-bundle-provider.ts`, `application-bundles/utils/application-manifest.ts` | Verify whether application bundle validation failures are isolated or fatal | `ApplicationBundleService.populateCache()` still lets one manifest parse/validation failure throw across the whole cache population path; `parseApplicationManifest(...)` throws on unsupported manifest version, so one bad imported app can poison startup-time application discovery | Yes |
+| 2026-04-20 | Code | `autobyteus-server-ts/src/application-orchestration/services/application-orchestration-recovery-service.ts`, `application-execution-event-dispatch-service.ts` | Verify whether the new orchestration startup flow currently depends on globally valid application discovery | Recovery and pending-event resume currently enumerate applications through `ApplicationBundleService.listApplications()`, so invalid app discovery must be quarantined explicitly in the design or startup still fails too globally | Yes |
+| 2026-04-20 | Other | User-reported installed desktop behavior plus follow-up clarification in this ticket thread | Capture the new product/design requirement from observed desktop startup failure and UX feedback | User reported that stale or manifest-incompatible imported apps can crash startup after the server begins listening, and clarified that the old launch configuration form should survive as persisted resource configuration for app runtime resources rather than as a run-launch modal | Yes |
+| 2026-04-20 | Spec/Code | `tickets/in-progress/application-owned-runtime-orchestration/design-review-report.md` (round 7), `autobyteus-application-sdk-contracts/src/index.ts`, `autobyteus-server-ts/src/application-bundles/utils/application-manifest.ts`, `autobyteus-server-ts/docs/modules/applications.md` | Resolve the round-7 blockers around quarantined-app re-entry and app-declared resource-slot metadata | The review requires one authoritative repair/reload -> quarantine-exit -> recovery/dispatch re-entry contract, and the existing manifest v3 contract is already the natural host-readable place to declare and validate app-configurable `resourceSlots` before any backend worker boots | Yes |
+| 2026-04-20 | Code | `applications/brief-studio/frontend-src/brief-studio-runtime.js`, `applications/brief-studio/frontend-src/index.html`, `applications/brief-studio/backend-src/services/brief-run-launch-service.ts`, `applications/socratic-math-teacher/backend-src/services/lesson-runtime-service.ts` | Verify whether the teaching apps still leak runtime knobs into the primary app UI and whether application-mode tool execution is already auto-approved in sample backends | Brief Studio still asks for an LLM model identifier in the main app canvas, which dilutes the business-first teaching story; meanwhile both Brief Studio and Socratic Math Teacher backend launch services already hardcode `autoExecuteTools: true`, which matches the desired application-mode default and should be codified in the design | Yes |
+| 2026-04-20 | Visual review | User-provided screenshots in this ticket thread showing Brief Studio detail view and Applications catalog cards | Validate whether the latest UI still overexposes runtime concepts in surfaces that should now be business-first | Screenshot 1 shows valid business actions (`Approve` / `Reject`) but still exposes raw runtime wording and diagnostics too prominently (`Launch draft run`, latest binding/run, execution history). Screenshot 2 shows the Applications catalog still foregrounding `Agent team` and bundle-resource details on the main card. The design should keep business actions but demote runtime ids/labels to advanced surfaces and use the pre-entry config gate for runtime/model/workspace setup. | Yes |
 
 ## Current Behavior / Current Flow
 
@@ -88,6 +97,8 @@
 - Ownership or boundary observations:
   - `applicationSession` is overloaded: launch identity, live runtime identity, retained execution view, publication routing owner, and frontend route-binding owner all at once
   - application frontend host owns run launch configuration before the application backend gets a chance to apply domain logic
+  - current application bundle discovery can still fail too globally when one imported application path is stale or one manifest is incompatible
+  - the existing host launch configuration form is useful UX for resource setup, but today it is coupled to immediate run creation semantics
   - bundle manifest/catalog layer leaks singular runtime semantics into every downstream layer
   - backend gateway and engine are cleaner than the session model and are good foundations for the target design
 - Current behavior summary:
@@ -165,9 +176,52 @@
   - the platform needs durable `bindingId` + `runId` routing and recovery,
   - the application keeps any `ticketId` / `briefId` / `lessonId` -> `bindingId` mapping in app-owned state, and
   - normalized runtime events therefore need binding identity and run identity, not a platform-owned generic business reference
+- Application/package validation failures are a platform robustness problem when they sit on the global startup path:
+  - current bundle discovery still throws globally on one unsupported manifest or stale imported package path,
+  - startup recovery and event-dispatch resume currently depend on successful application enumeration, and
+  - the target design therefore must quarantine invalid applications as diagnostics rather than treating them as fatal startup prerequisites
+- The existing host launch form should be reused as a persisted resource-configuration surface rather than deleted outright:
+  - agent/team resource selection plus launch-default fields are still needed somewhere,
+  - the wrong part of the old model is the implicit run-start semantics, not the existence of a configuration UI, and
+  - the target design should separate persisted application resource setup from later app-owned `runtimeControl.startRun(...)` decisions
+- Application-mode tool approval should be automatic in this ticket's generic app flow:
+  - the sample backends already launch with `autoExecuteTools: true`,
+  - the generic host does not own a per-tool mid-run approval loop, and
+  - the design should therefore normalize application-mode launches to auto-approved tool execution instead of surfacing a dead approval toggle
+
+- Latest user clarification on `2026-04-20` further tightens the teaching-app direction:
+  - Brief Studio and Socratic Math Teacher should be redesigned as complete business-first apps rather than partial runtime demos,
+  - runtime/model/workspace setup belongs in the pre-entry host resource-configuration flow rather than in the app canvases, and
+  - the host should be able to collect required resource-slot configuration before those apps become actionable.
+
+- Latest user clarification after the business-first sample-app discussion further tightens the host UX choice:
+  - pre-entry configuration should happen before the app really opens,
+  - the simple first-cut behavior of showing that configuration form on every launch is acceptable, as long as saved values are reused/prefilled, and
+  - this reinforces that the app canvases themselves should not carry runtime/model/approval setup concerns.
+
+- The latest screenshot review adds one more concrete UI-design obligation:
+  - `Approve` / `Reject` in Brief Studio are acceptable because they are business review workflow,
+  - but wording like `Launch draft run` and sections dominated by `bindingId` / `runId` / `execution history` are still too platform-exposed for the main business canvas, and
+  - the Applications catalog should also stop foregrounding `Agent team` / bundle-resource labels on the primary card surface.
+- Brief Studio's main canvas currently leaks low-level runtime tuning (`llmModelIdentifier`) into the business UI:
+  - that field should move into host-managed resource configuration or an advanced/developer-only path,
+  - the host-managed configuration should be able to own platform launch defaults such as model/runtime/workspace when those are needed by the app's configured resource slot,
+  - missing required slot configuration should be collected before the teaching app becomes actionable, and
+  - business review actions such as `approveBrief` / `rejectBrief` stay in the app because they are domain workflow, not runtime approval
+- Quarantined-application repair/reload needs its own explicit owner and app-scoped availability contract:
+  - restart-only recovery is not sufficient once the platform promises that broken imported apps are repairable in place,
+  - the design therefore needs one owner for `repair/reload -> REENTERING -> per-app recovery slice -> dispatch resume -> ACTIVE`, and
+  - live backend/runtime-control/event-dispatch behavior must be explicit while that app-scoped re-entry is in flight
+- The cleanest authoritative resource-slot declaration home is the application manifest itself:
+  - host setup must be able to read slot metadata before any worker boots or any app backend code runs,
+  - bundle discovery is already the platform-owned validation point for application package metadata, and
+  - persisted configuration writes can then validate `slotKey`, allowed resource kind/owner, and optional bundle-local default resource references against the same manifest-declared source of truth
 - The two in-repo teaching applications should be strengthened as part of the target:
   - `brief-studio` should teach a richer real app business API rather than only query/command/event patterns,
-  - `socratic-math-teacher` should stop being only a minimal runtime-target/bootstrap example and become a real app-owned API example as well
+  - `socratic-math-teacher` should stop being only a minimal runtime-target/bootstrap example and become a real app-owned API example as well,
+  - their primary UIs should stay focused on briefs/lessons/business workflow rather than low-level runtime tuning,
+  - business actions such as drafting, approving, rejecting, or asking follow-up questions may stay in-app, but raw runtime ids/labels should move out of the main canvas, and
+  - application-mode tool execution should remain auto-approved in those teaching flows instead of surfacing a dead approval-step UX
 - Architecture review round 1 exposed three concrete design obligations that the final design must satisfy:
   - restart recovery needs a named startup owner, authoritative store choice, lookup-index rebuild strategy, and eager observer reattachment story,
   - orchestration needs one normalized lifecycle-observation boundary above both agent execution and team execution,
@@ -180,6 +234,9 @@
   - the platform should not require one strange generic business-reference field in run bindings when `bindingId` plus app-owned mapping is the more natural correlation model
 - Architecture review round 5 added one more concrete design obligation:
   - direct `startRun(...)` needs one explicit pending-intent / reconciliation contract so a newly created `bindingId` can be durably attached to the intended app business record before early lifecycle/artifact events rely on that mapping, including the crash window after binding creation but before app-owned mapping commit completes
+- User clarification on `2026-04-20` added two more concrete design obligations:
+  - invalid imported/bundled application content must be quarantined from core startup so one bad manifest or stale path never crashes AutoByteus itself, and
+  - the old host launch form should be repurposed into persisted application resource configuration for app-declared runtime resources instead of being deleted as if no such setup UI were needed
 
 ## Constraints / Dependencies / Compatibility Facts
 
@@ -187,6 +244,8 @@
 - Current backend gateway and engine lifecycle owners are good and should be reused rather than rewritten
 - Current agent/team run services are useful execution-resource owners and should stay behind a new orchestration boundary
 - Current per-app platform state is useful for app-scoped journaling, but publication routing by `runId` will need an efficient cross-app lookup strategy in the target design
+- Current application discovery/cache population and orchestration startup flow are still coupled enough that invalid application content must be explicitly isolated in the target design
+- The existing host launch configuration UI is a reusable asset, but its semantics must be rewritten around persisted resource setup rather than immediate run creation
 - Existing sample apps such as Brief Studio currently teach the old model and therefore must be migrated as part of any clean-cut target
 - The current frontend SDK intentionally stays transport-level, which means app-owned business API typing/code generation must be designed as an application-owned concern rather than as something inferred from platform transport types
 
@@ -196,6 +255,7 @@
 - The current host-native retained execution view may need to be removed before a richer app-owned replacement is available in every sample app
 - A contract upgrade that removes `runtimeTarget` and `applicationSessionId` is broad; migration sequencing must be explicit even though the target state rejects legacy dual-path behavior
 - The exact optional packaging/story for app-owned GraphQL schema artifacts, OpenAPI artifacts, or generated frontend clients should stay subordinate to the principle that business schemas belong to each application
+- Launch-default normalization for persisted resource configuration still needs careful implementation detail work, but the authoritative slot declaration home itself should no longer remain open: it belongs in application manifest metadata that bundle discovery validates before worker boot
 
 ## Architecture Review Round 1 Rework Summary
 
@@ -263,7 +323,25 @@
 - User explicitly asked for a design that is not constrained by the current architecture and that may reorganize server/contracts/frontend SDK/backend SDK structure when needed
 - The recommendation coming out of investigation is a clean-cut design that replaces `applicationSession` rather than trying to grow it into a multi-run abstraction
 - Reuse should focus on: `application-engine`, `application-backend-gateway`, `application-storage`, `agent-run-service`, and `team-run-service`
-- Major removals are likely necessary in: `application-sessions`, session streaming, session-bound iframe bootstrap, host launch modal, and `runtimeTarget`-based app catalog assumptions
+- Major removals are likely necessary in: `application-sessions`, session streaming, session-bound iframe bootstrap, host launch-now semantics, and `runtimeTarget`-based app catalog assumptions
+- The follow-up design pass should also make invalid-application startup isolation and persisted application resource configuration explicit so review does not infer that either concern remains out of scope
 - Architecture review round 1 blockers have been incorporated into the revised design package
 - Architecture review round 2 blocker has now been incorporated as an explicit startup gate / traffic-admission contract; re-review should concentrate on whether the new startup coordination boundary is now concrete enough for implementation
 - This design pass also expands the ticket beyond orchestration-core mechanics so the resulting architecture clearly explains app-owned business API/schema ownership, binding-centric cross-boundary correlation, pending-binding-intent establishment/reconciliation, and stronger example-app teaching patterns
+
+## Architecture Review Round 7 Rework Summary
+
+- Review result: `Fail`
+- Prior finding status:
+  - round 1 blockers: resolved
+  - round 2 blocker: resolved
+  - round 5 blocker: resolved
+  - round 7 introduced two new design-impact blockers
+- Rework focus:
+  - `AOR-DI-006`: define one authoritative repair/reload -> quarantine-exit -> recovery/dispatch re-entry contract for invalid applications
+  - `AOR-DI-007`: choose one authoritative resource-slot declaration home and validation contract for persisted application resource configuration
+- Authoritative design response direction:
+  - the design should add one app-scoped availability/re-entry owner that supports per-application hot re-entry (`QUARANTINED -> REENTERING -> ACTIVE`) without requiring full platform restart,
+  - bundle reload/validation should remain with `ApplicationBundleService`, but per-app recovery re-entry and dispatch resume should be coordinated through one orchestration-side owner,
+  - live backend/runtime-control/event-dispatch behavior must be explicit while one app is re-entering, and
+  - `ApplicationManifestV3.resourceSlots` should become the authoritative host-readable declaration contract for persisted slot setup, with manifest validation plus configuration-write validation both enforcing the same slot metadata rules.

@@ -1,13 +1,19 @@
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import type {
+  ApplicationConfiguredLaunchDefaults,
   ApplicationGraphqlRequest,
   ApplicationRequestContext,
   ApplicationRouteMethod,
   ApplicationRouteRequest,
 } from "@autobyteus/application-sdk-contracts";
 import { getApplicationBackendGatewayService } from "../../application-backend-gateway/services/application-backend-gateway-service.js";
+import { ApplicationUnavailableError, getApplicationAvailabilityService } from "../../application-orchestration/services/application-availability-service.js";
+import { ApplicationOrchestrationHostService } from "../../application-orchestration/services/application-orchestration-host-service.js";
+import { ApplicationResourceConfigurationService } from "../../application-orchestration/services/application-resource-configuration-service.js";
 
 const gateway = () => getApplicationBackendGatewayService();
+const orchestrationHost = () => ApplicationOrchestrationHostService.getInstance();
+const resourceConfigurations = () => new ApplicationResourceConfigurationService();
 const APPLICATION_BACKEND_ROUTE_BASE = "/applications/:applicationId/backend";
 const LAUNCH_INSTANCE_HEADER = "x-autobyteus-launch-instance-id";
 
@@ -76,6 +82,14 @@ const toHeaderRecord = (headers: FastifyRequest["headers"]): Record<string, stri
 };
 
 const sendGatewayError = (reply: { code: (statusCode: number) => { send: (payload: unknown) => unknown } }, error: unknown) => {
+  if (error instanceof ApplicationUnavailableError) {
+    return reply.code(503).send({
+      detail: error.message,
+      applicationId: error.applicationId,
+      availabilityState: error.state,
+      retryable: true,
+    });
+  }
   const message = error instanceof Error ? error.message : String(error);
   if (message.includes("was not found")) {
     return reply.code(404).send({ detail: message });
@@ -102,12 +116,69 @@ export async function registerApplicationBackendRoutes(app: FastifyInstance): Pr
     },
   );
 
+  app.get<{ Params: { applicationId: string } }>(
+    `/applications/:applicationId/resource-configurations`,
+    async (request, reply) => {
+      try {
+        return reply.send(await resourceConfigurations().listConfigurations(request.params.applicationId));
+      } catch (error) {
+        return sendGatewayError(reply, error);
+      }
+    },
+  );
+
+  app.get<{ Params: { applicationId: string } }>(
+    `/applications/:applicationId/available-resources`,
+    async (request, reply) => {
+      try {
+        return reply.send(await orchestrationHost().listAvailableResources(request.params.applicationId));
+      } catch (error) {
+        return sendGatewayError(reply, error);
+      }
+    },
+  );
+
+  app.put<{
+    Params: { applicationId: string; slotKey: string };
+    Body: { resourceRef?: unknown; launchDefaults?: ApplicationConfiguredLaunchDefaults | null };
+  }>(
+    `/applications/:applicationId/resource-configurations/:slotKey`,
+    async (request, reply) => {
+      try {
+        return reply.send(
+          await resourceConfigurations().upsertConfiguration(
+            request.params.applicationId,
+            request.params.slotKey,
+            {
+              resourceRef: request.body?.resourceRef as never,
+              launchDefaults: request.body?.launchDefaults ?? null,
+            },
+          ),
+        );
+      } catch (error) {
+        return sendGatewayError(reply, error);
+      }
+    },
+  );
+
   app.post<{ Params: { applicationId: string } }>(
     `${APPLICATION_BACKEND_ROUTE_BASE}/ensure-ready`,
     async (request, reply) => {
       try {
         const status = await gateway().ensureApplicationReady(request.params.applicationId);
         return reply.send(status);
+      } catch (error) {
+        return sendGatewayError(reply, error);
+      }
+    },
+  );
+
+  app.post<{ Params: { applicationId: string } }>(
+    `${APPLICATION_BACKEND_ROUTE_BASE}/reload`,
+    async (request, reply) => {
+      try {
+        const availability = await getApplicationAvailabilityService().reloadAndReenter(request.params.applicationId);
+        return reply.send(availability);
       } catch (error) {
         return sendGatewayError(reply, error);
       }

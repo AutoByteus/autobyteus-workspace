@@ -132,4 +132,83 @@ describe("publishArtifact", () => {
       },
     });
   });
+
+  it.each([
+    {
+      name: "normalizes INLINE_JSON type/data shorthand from live model tool calls",
+      artifactRef: {
+        type: "INLINE_JSON",
+        data: {
+          body: "Draft body from a provider-backed tool call.",
+        },
+      },
+      expectedArtifactRef: {
+        kind: "INLINE_JSON",
+        mimeType: "application/json",
+        value: {
+          body: "Draft body from a provider-backed tool call.",
+        },
+      },
+    },
+    {
+      name: "wraps a kindless object artifactRef as canonical INLINE_JSON",
+      artifactRef: {
+        briefTitle: "Live Browser Control Brief",
+        outline: ["Scope", "Risks", "Next steps"],
+      },
+      expectedArtifactRef: {
+        kind: "INLINE_JSON",
+        mimeType: "application/json",
+        value: {
+          briefTitle: "Live Browser Control Brief",
+          outline: ["Scope", "Risks", "Next steps"],
+        },
+      },
+    },
+  ])("$name", async ({ artifactRef, expectedArtifactRef }) => {
+    const binding = buildBinding();
+    const appendSpy = vi
+      .spyOn(ApplicationExecutionEventIngressService.prototype, "appendRuntimeArtifactEvent")
+      .mockResolvedValue(binding);
+
+    await expect(
+      publishArtifact(
+        {
+          agentId: binding.runtime.members[0]!.runId,
+          customData: {
+            application_execution_context: {
+              applicationId: binding.applicationId,
+              bindingId: binding.bindingId,
+              producer: {
+                memberRouteKey: "writer",
+                memberName: "writer",
+                displayName: "Writer",
+                teamPath: [],
+                runtimeKind: "AGENT_TEAM_MEMBER",
+              },
+            },
+          },
+        },
+        "1",
+        "artifact-2",
+        "brief_draft",
+        "Draft title",
+        "Draft summary",
+        artifactRef,
+        null,
+        false,
+      ),
+    ).resolves.toBe(JSON.stringify({
+      success: true,
+      bindingId: binding.bindingId,
+      bindingIntentId: binding.bindingIntentId,
+      artifactKey: "artifact-2",
+    }));
+
+    expect(appendSpy).toHaveBeenCalledWith(expect.objectContaining({
+      publication: expect.objectContaining({
+        artifactRef: expectedArtifactRef,
+      }),
+    }));
+  });
 });

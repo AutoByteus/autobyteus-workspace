@@ -177,6 +177,9 @@ describe("ApplicationOrchestrationHostService startRun", () => {
       startupGate: {
         awaitReady: vi.fn(async () => undefined),
       } as never,
+      availabilityService: {
+        requireApplicationActive: vi.fn(async () => undefined),
+      } as never,
       runBindingLaunchService: runBindingLaunchService as never,
       bindingStore: bindingStore as never,
       lookupStore: lookupStore as never,
@@ -230,6 +233,9 @@ describe("ApplicationOrchestrationHostService startRun", () => {
     const hostService = new ApplicationOrchestrationHostService({
       startupGate: {
         awaitReady: vi.fn(async () => undefined),
+      } as never,
+      availabilityService: {
+        requireApplicationActive: vi.fn(async () => undefined),
       } as never,
       bindingStore: bindingStore as never,
     });

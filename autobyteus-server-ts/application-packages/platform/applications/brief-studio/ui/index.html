@@ -51,7 +51,7 @@
         <div class="panel-header">
           <div>
             <h2>Create a brief record</h2>
-            <p class="muted">First create the business record. Launch draft runs from the detail panel later so one brief can own many runs over time.</p>
+            <p class="muted">First create the business record. Runtime resource, model, and auto-approved tool defaults now come from the host launch setup instead of this brief canvas.</p>
           </div>
         </div>
         <form id="create-brief-form" class="brief-composer">
@@ -60,14 +60,10 @@
               <span class="label">Brief title</span>
               <input id="brief-title-input" type="text" placeholder="Launch messaging orchestration brief" />
             </label>
-            <label class="field">
-              <span class="label">LLM model identifier</span>
-              <input id="model-identifier-input" type="text" value="gpt-5.4-mini" />
-            </label>
           </div>
           <div class="action-row">
             <button id="create-brief-button" class="primary-button" type="submit">Create brief</button>
-            <span class="muted small">GraphQL is the primary app business API; the platform only hosts the backend mount.</span>
+            <span class="muted small">GraphQL is the primary app business API; configure runtime/model defaults from the host-managed launch setup surface.</span>
           </div>
         </form>
       </section>

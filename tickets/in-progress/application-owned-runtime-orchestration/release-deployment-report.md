@@ -9,20 +9,22 @@
 
 - Handoff summary artifact: `tickets/in-progress/application-owned-runtime-orchestration/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Notes: The handoff summary now reflects the round-6 reviewed + round-2 validated package, the delivery-stage base refresh result, and the explicit verification hold.
+- Notes: The handoff summary now reflects the round-9 reviewed + round-4 validated package, the latest delivery-stage base merge, the post-integration smoke rerun, and the explicit verification hold.
 
 ## Initial Delivery Integration Refresh
 
 - Bootstrap base reference: `origin/personal`
-- Latest tracked remote base reference checked: `origin/personal @ 515ed72a82d552fefb6f1356a671bf213bec0cbe`
-- Base advanced since bootstrap or previous refresh: `No`
-- New base commits integrated into the ticket branch: `No`
-- Local checkpoint commit result: `Completed` — a local checkpoint commit now preserves the refreshed validated package
-- Integration method: `Already current`
-- Integration result: `Completed` — no merge/rebase was required because the tracked base still matched the reviewed + validated base commit.
-- Post-integration executable checks rerun: `No`
+- Latest tracked remote base reference checked: `origin/personal @ ea1892dbbe6cb12118bdb6d91cfc63564f12c4e7`
+- Base advanced since bootstrap or previous refresh: `Yes`
+- New base commits integrated into the ticket branch: `Yes`
+- Local checkpoint commit result: `Completed` — `a7c19d4d` (`chore(checkpoint): preserve application-owned-runtime-orchestration round-4 validated package`)
+- Integration method: `Merge`
+- Integration result: `Completed` — merged `origin/personal` into the ticket branch without conflicts, producing integrated head `a0f0124b`
+- Post-integration executable checks rerun: `Yes`
 - Post-integration verification result: `Passed`
-- No-rerun rationale (only if no new base commits were integrated): `The delivery refresh confirmed origin/personal had not advanced beyond the already reviewed + validated base commit 515ed72a before delivery docs were refreshed.`
+- Post-integration verification command:
+  - `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts exec vitest run tests/integration/application-backend/brief-studio-imported-package.integration.test.ts tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts tests/unit/application-backend/app-owned-graphql-executors.test.ts tests/unit/application-backend/app-owned-binding-intent-correlation.test.ts tests/unit/application-orchestration/application-orchestration-host-service.test.ts tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts tests/unit/application-orchestration/publish-artifact-tool.test.ts`
+- Post-integration verification notes: `7` test files passed and `17` tests passed on the integrated branch.
 - Delivery edits started only after integrated state was current: `Yes`
 - Handoff state current with latest tracked remote base: `Yes`
 - Blocker (if applicable): `None`
@@ -31,7 +33,7 @@
 
 - Initial explicit user completion/verification received: `No`
 - Initial verification reference: `Pending explicit user verification after refreshed delivery handoff on 2026-04-19.`
-- Renewed verification required after later re-integration: `No`
+- Renewed verification required after later re-integration: `No` — the latest base merge happened before any explicit user verification was received.
 - Renewed verification received: `Not needed`
 - Renewed verification reference: `N/A`
 
@@ -74,13 +76,13 @@
 
 - Bootstrap context source: `tickets/in-progress/application-owned-runtime-orchestration/investigation-notes.md`
 - Ticket branch: `codex/application-owned-runtime-orchestration`
-- Ticket branch commit result: `Not started` — only a local checkpoint commit was created before the verification hold.
+- Ticket branch commit result: `Not started` — only delivery-safety checkpoint commits plus the required base-into-ticket merge were performed before the verification hold.
 - Ticket branch push result: `Not started`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after user verification: `No`
-- Delivery-owned edits protected before re-integration: `Not needed`
-- Re-integration before final merge result: `Not needed`
+- Target advanced after user verification: `No` — explicit user verification has not yet been received.
+- Delivery-owned edits protected before re-integration: `Yes` — local checkpoint commit `a7c19d4d` preserved the validated candidate before the base merge.
+- Re-integration before final merge result: `Completed` — the ticket branch already reflects the latest tracked `origin/personal` base intended for user verification.
 - Target branch update result: `Not started`
 - Merge into target result: `Not started`
 - Push target branch result: `Not started`
@@ -117,19 +119,20 @@
 
 ## Environment Or Migration Notes
 
-- The delivery refresh confirmed the reviewed + validated candidate still sat on the current tracked `origin/personal` base before any new finalization work was attempted.
-- Canonical long-lived docs now teach the application-owned orchestration model, the `backendBaseUrl` transport contract, and the app-owned GraphQL teaching samples while explicitly demoting the removed `application_sessions` architecture to historical status.
-- No extra delivery-stage executable rerun was needed because no new base commits were integrated.
+- `origin/personal` advanced after the earlier pre-verification handoff because the unrelated `xml-tool-array-parser-fix` ticket finalized into `personal`; this delivery refresh merged that new base before updating the handoff artifacts.
+- Canonical long-lived docs now teach the application-owned orchestration model, the `bindingIntentId` direct-launch contract, the `backendBaseUrl` transport contract, and the app-owned GraphQL teaching samples while explicitly demoting the removed `application_sessions` architecture to historical status.
+- Vendored sourcemap warnings remain visible during packaged-client validation, but runtime imports and GraphQL execution succeeded; they remain non-blocking packaging noise only.
 
 ## Verification Checks
 
-- Review report status: `Pass` (round `6`)
-- Validation report status: `Pass` (round `2`)
-- Delivery base refresh check: `git fetch origin --prune` plus `git rev-parse HEAD origin/personal` confirmed the tracked base remained at `515ed72a` before docs sync was refreshed.
+- Review report status: `Pass` (round `9`)
+- Validation report status: `Pass` (round `4`)
+- Delivery base refresh check: `git fetch origin --prune` plus `git rev-parse HEAD origin/personal` confirmed the tracked base had advanced to `ea1892db`, so the ticket branch was refreshed before delivery docs were updated.
+- Delivery post-integration smoke rerun: the targeted server Vitest command listed above passed on the merged branch.
 
 ## Rollback Criteria
 
-- Before finalization, restart delivery from the local checkpoint commit created during this refreshed handoff if delivery-owned artifact edits need to be reset.
+- Before finalization, restart delivery from local checkpoint commit `a7c19d4d` if the post-merge delivery-owned artifact edits need to be reset.
 - After repository finalization later occurs, revert the eventual merge commit (or a containing follow-up commit) and reopen follow-up work from the archived ticket history if a regression is discovered.
 
 ## Final Status

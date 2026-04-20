@@ -64,6 +64,10 @@ describe("ApplicationOrchestrationRecoveryService", () => {
 
     const fakeBundleService = {
       listApplications: vi.fn(async () => [{ id: applicationId }]),
+      getCatalogSnapshot: vi.fn(async () => ({
+        applications: [{ id: applicationId }],
+        diagnostics: [],
+      })),
       getApplicationById: vi.fn(async (requestedApplicationId: string) => (
         requestedApplicationId === applicationId
           ? ({ id: applicationId, backend: { migrationsDirPath: null } } as never)
@@ -106,7 +110,10 @@ describe("ApplicationOrchestrationRecoveryService", () => {
 
     const recoveryService = new ApplicationOrchestrationRecoveryService({
       applicationBundleService: {
-        listApplications: async () => [{ id: applicationId }],
+        getCatalogSnapshot: async () => ({
+          applications: [{ id: applicationId }],
+          diagnostics: [],
+        }),
       } as never,
       bindingStore,
       lookupStore,
@@ -151,7 +158,10 @@ describe("ApplicationOrchestrationRecoveryService", () => {
 
     const recoveryService = new ApplicationOrchestrationRecoveryService({
       applicationBundleService: {
-        listApplications: async () => [{ id: applicationId }],
+        getCatalogSnapshot: async () => ({
+          applications: [{ id: applicationId }],
+          diagnostics: [],
+        }),
       } as never,
       bindingStore,
       lookupStore,

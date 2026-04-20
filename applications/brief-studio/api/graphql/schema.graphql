@@ -96,7 +96,7 @@ input CreateBriefInput {
 
 input LaunchDraftRunInput {
   briefId: ID!
-  llmModelIdentifier: String!
+  llmModelIdentifier: String
 }
 
 input ApproveBriefInput {

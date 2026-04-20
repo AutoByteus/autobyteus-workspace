@@ -10,12 +10,14 @@
 
 ## Current Status
 
-Implemented the round-6 authoritative design for application-owned runtime orchestration, including the direct `startRun(...)` handoff rework on top of the already-resolved round-1 through round-5 findings:
+Implemented the round-8 authoritative design for application-owned runtime orchestration, including the app-scoped availability/hot-reentry and authoritative `ApplicationManifestV3.resourceSlots` rework on top of the already-resolved round-1 through round-7 findings:
 
 - hosted app backends now expose one authoritative iframe/bootstrap transport base, `backendBaseUrl`, plus the non-derivable notifications URL,
 - platform SDK/web host ownership now stops at schema-agnostic transport helpers while app business schema/codegen artifacts stay app-local,
 - Brief Studio now teaches the “many runs over one business record” pattern with app-owned GraphQL plus app-owned pending binding intent and `briefId -> bindingId[]` correlation, and
-- Socratic Math Teacher now teaches the “one long-lived conversational binding with follow-up input” pattern with a real app-owned GraphQL API.
+- Socratic Math Teacher now teaches the “one long-lived conversational binding with follow-up input” pattern with a real app-owned GraphQL API,
+- application discovery now produces a diagnostic-aware catalog snapshot plus app-scoped availability state so broken imported packages can be quarantined and hot-reentered without broad platform downtime, and
+- application-owned backend launches now resolve runtime resources through authoritative manifest-declared `resourceSlots` plus `runtimeControl.getConfiguredResource(...)` instead of hardcoded bundle-local runtime targets.
 
 The previously blocked Local Fix findings remain resolved in this cumulative state:
 
@@ -26,7 +28,9 @@ The previously blocked Local Fix findings remain resolved in this cumulative sta
 - `AOR-LF-005` backend-mount route helper now preserves JSON route-body round-tripping by sending JSON bodies with a JSON content type
 - `AOR-LF-006` Brief Studio and Socratic Math Teacher GraphQL executors now accept valid single-operation requests that omit `operationName`
 - `AOR-LF-007` Brief Studio and Socratic Math Teacher now preserve already-projected same-binding state when `startRun(...)` succeeds after an early event has already reconciled that binding
+- `AOR-LF-008` `getConfiguredResource(...)` now revalidates effective selections on read and rejects stale persisted overrides or invalid manifest defaults before app launch code can consume them
 - round-3 API/E2E packaged-client Local Fix: Brief Studio and Socratic Math Teacher importable UI packages now ship the full frontend SDK ESM dependency set required by the generated GraphQL clients
+- round-5 API/E2E live-runtime Local Fix: app-owned teaching runs now launch with automatic tool execution, and `publish_artifact` normalizes the real provider shorthand `artifactRef` shapes observed in the live LM Studio run
 
 This cumulative package also implements the round-6 architecture rework for `AOR-DI-005`:
 
@@ -48,6 +52,30 @@ The latest API/E2E Local Fix closes the packaged-client delivery gap without cha
 - each packaged UI still exposes the stable `vendor/application-frontend-sdk.js` entry expected by the generated clients,
 - packaged generated-client import probes now succeed for both Brief Studio and Socratic Math Teacher, and
 - the Brief Studio imported-package integration test now passes its packaged-client launch path end to end.
+
+The latest API/E2E Local Fix closes the implementation-owned live Brief Studio blockers from the 2026-04-20 provider-backed run:
+
+- Brief Studio and Socratic teaching-team launches now set `autoExecuteTools: true`, removing the out-of-band manual approval requirement for application-owned tool calls,
+- the LLM-facing `publish_artifact` boundary now canonicalizes the exact live shorthand shapes observed in retained runtime traces (`artifactRef.type/data` and kindless object payloads) into `INLINE_JSON`,
+- the Brief Studio researcher/writer instructions now show the exact `artifactRef` payload shape expected by the runtime and explicitly forbid the live-invalid `type/data` / kindless-object forms, and
+- focused durable tests now cover both shorthand normalization and the app-owned launch preset auto-execute contract.
+
+The latest round-8 architecture implementation adds the app-scoped re-entry and resource-slot ownership contract:
+
+- `ApplicationBundleService` now exposes a diagnostic-aware `getCatalogSnapshot()` / `reloadApplication(applicationId)` boundary backed by provider-level manifest parsing and per-application discovery diagnostics instead of all-or-nothing discovery failure,
+- `ApplicationAvailabilityService` is now the authoritative application liveness owner for `ACTIVE`, `QUARANTINED`, and `REENTERING`, including app-scoped reload-and-reenter recovery that resumes bindings and pending event dispatch only for the repaired application,
+- startup recovery now synchronizes availability from the current catalog snapshot before rebinding live orchestration state, and hosted backend/runtime-control entrypoints reject quarantined applications with explicit availability detail,
+- `ApplicationManifestV3.resourceSlots` is now the authoritative declaration for app-consumable runtime resources, with manifest validation for slot identity, allowed owners/kinds, and bundle-local default resource existence,
+- runtime control now exposes `getConfiguredResource(slotKey)` and the platform persists per-application resource-slot overrides/launch defaults in platform state while falling back cleanly to manifest defaults, and
+- Brief Studio and Socratic Math Teacher now declare required team slots in their manifests and resolve team launches through those slots rather than hardcoded team refs.
+
+The latest Local Fix closes the authoritative slot-read gap identified in round-8 code review:
+
+- `ApplicationResourceConfigurationService` now validates the effective selection on read, not only on write,
+- both `getConfiguredResource(...)` and `listConfigurations(...)` reuse that effective-selection validation path,
+- stale persisted overrides now fail immediately at the configuration owner instead of leaking invalid resource refs to app launch code,
+- invalid or unresolved manifest defaults, including shared defaults, now fail immediately at the same authoritative boundary, and
+- Brief Studio and Socratic launch paths now have durable coverage proving `startRun(...)` is not attempted when configured-resource readback rejects the slot selection.
 
 This implementation is ready to return through code review before API/E2E starts.
 
@@ -133,11 +161,60 @@ This implementation is ready to return through code review before API/E2E starts
 - rebuilt both runnable roots and importable-package mirrors so packaged generated GraphQL clients can resolve sibling frontend-SDK ESM modules such as `create-application-backend-mount-transport.js`
 - fixed the new durable Brief Studio imported-package integration test harness so the packaged-client same-binding scenario uses the shared `lookupStore` created in `beforeEach`
 
+### 10) API/E2E live-runtime tool-execution + artifactRef fix
+
+- updated Brief Studio `launchDraftRun(...)` and Socratic `startLesson(...)` to launch app-owned team runs with `autoExecuteTools: true`
+- updated the orchestration `publish_artifact` tool schema/description to show the canonical inline JSON artifact shape expected by app-owned teaching runs
+- added tool-side normalization so the live provider shorthand payloads observed in retained traces are converted into canonical `INLINE_JSON` artifact refs before ingress validation
+- strengthened the Brief Studio researcher/writer agent instructions with exact `artifactRef` examples and an explicit prohibition on `artifactRef.type`, `artifactRef.data`, or raw kindless objects
+- updated the Brief Studio imported-package integration fake team-launch preset wiring to mirror the new auto-execute launch behavior
+- added durable regression coverage for:
+  - `publish_artifact` normalization of live shorthand inline-json payloads
+  - app-owned Brief Studio and Socratic launch presets carrying `autoExecuteTools: true`
+
+### 11) Round-8 application availability + manifest resource-slot rework
+
+- split manifest/runtime-resource contract ownership in `@autobyteus/application-sdk-contracts` so `ApplicationManifestV3.resourceSlots` and runtime resource configuration types live in authoritative dedicated files and flow through the backend SDK re-export surface
+- added diagnostic-aware application catalog snapshots, including valid discoverable bundles plus quarantined diagnostics for invalid imported packages instead of aborting discovery for the whole package root
+- validated manifest-declared resource slots during discovery:
+  - `slotKey` regex/uniqueness
+  - non-empty unique `allowedResourceKinds`
+  - defaulted `allowedResourceOwners` to `bundle/shared`
+  - bundle-local default resource refs must resolve against discovered bundle agents/teams
+- added `ApplicationAvailabilityService` plus app-scoped reload/reenter flow so repaired applications can transition `QUARANTINED -> REENTERING -> ACTIVE` without restarting unrelated applications
+- gated hosted backend access and live runtime-control paths on authoritative application availability and surfaced quarantined application reload through `/rest/applications/:applicationId/backend/reload`
+- added persisted application resource-slot configuration storage/service plus `runtimeControl.getConfiguredResource(slotKey)` through the worker bridge and orchestration host
+- updated startup recovery, dispatcher resume logic, and package-root refresh flows to synchronize availability from catalog snapshots and resume only the affected application when re-entering
+- updated Brief Studio and Socratic Math Teacher manifests to declare authoritative required team slots and updated their launch services to resolve team refs from configured resources
+- added focused unit coverage for:
+  - manifest/resource-slot discovery validation
+  - application availability quarantine/reentry behavior
+  - persisted resource-slot configuration validation and default resolution
+  - imported-package orchestration using the same bundle/storage/availability singletons exercised by hosted runtime control
+
+### 12) Round-8 Local Fix for authoritative resource-slot read validation
+
+- changed `ApplicationResourceConfigurationService` so readback no longer returns unchecked `buildEffectiveConfiguration(...)` output
+- introduced one shared effective-selection validation path used by:
+  - `getConfiguredResource(applicationId, slotKey)`
+  - `listConfigurations(applicationId)`
+- chose the strict branch of the approved design: stale persisted overrides or invalid defaults are rejected clearly rather than silently falling back
+- wrapped read-time validation failures with slot/source context (`persisted override` vs `manifest default`) so the repair surface is explicit
+- added durable regressions covering:
+  - stale persisted overrides that now violate the declared slot kind/owner contract
+  - unresolved shared manifest defaults during host/readback configuration listing
+  - Brief Studio launch aborting before `startRun(...)` when configured-resource readback rejects the slot selection
+  - Socratic `startLesson(...)` aborting before `startRun(...)` when configured-resource readback rejects the slot selection
+
 ## Key Files Or Areas
 
 - `autobyteus-application-frontend-sdk/src/index.ts`
 - `autobyteus-application-frontend-sdk/src/application-client-transport.ts`
 - `autobyteus-application-frontend-sdk/src/create-application-backend-mount-transport.ts`
+- `autobyteus-application-sdk-contracts/src/index.ts`
+- `autobyteus-application-sdk-contracts/src/manifests.ts`
+- `autobyteus-application-sdk-contracts/src/runtime-resources.ts`
+- `autobyteus-application-backend-sdk/src/index.ts`
 - `autobyteus-web/types/application/ApplicationHostTransport.ts`
 - `autobyteus-web/utils/application/applicationHostTransport.ts`
 - `autobyteus-web/components/applications/__tests__/ApplicationIframeHost.spec.ts`
@@ -149,6 +226,8 @@ This implementation is ready to return through code review before API/E2E starts
 - `applications/brief-studio/backend-src/services/brief-run-launch-service.ts`
 - `applications/brief-studio/backend-src/services/run-binding-correlation-service.ts`
 - `applications/brief-studio/backend-src/migrations/004_pending_binding_intents.sql`
+- `applications/brief-studio/agent-teams/brief-studio-team/agents/researcher/agent.md`
+- `applications/brief-studio/agent-teams/brief-studio-team/agents/writer/agent.md`
 - `applications/brief-studio/frontend-src/app.js`
 - `applications/brief-studio/frontend-src/brief-studio-runtime.js`
 - `applications/brief-studio/frontend-src/brief-studio-renderer.js`
@@ -168,12 +247,39 @@ This implementation is ready to return through code review before API/E2E starts
 - `applications/socratic-math-teacher/scripts/build-package.mjs`
 - `applications/brief-studio/ui/vendor/**`
 - `applications/socratic-math-teacher/ui/vendor/**`
+- `autobyteus-server-ts/src/application-bundles/domain/application-catalog-snapshot.ts`
+- `autobyteus-server-ts/src/application-bundles/domain/models.ts`
+- `autobyteus-server-ts/src/application-bundles/providers/file-application-bundle-provider.ts`
+- `autobyteus-server-ts/src/application-bundles/services/application-bundle-service.ts`
+- `autobyteus-server-ts/src/application-bundles/utils/application-manifest.ts`
+- `autobyteus-server-ts/src/api/rest/application-backends.ts`
+- `autobyteus-server-ts/src/application-backend-gateway/services/application-backend-gateway-service.ts`
+- `autobyteus-server-ts/src/application-engine/runtime/protocol.ts`
+- `autobyteus-server-ts/src/application-engine/services/application-engine-host-service.ts`
+- `autobyteus-server-ts/src/application-engine/worker/application-worker-runtime.ts`
+- `autobyteus-server-ts/src/application-orchestration/services/application-availability-service.ts`
+- `autobyteus-server-ts/src/application-orchestration/services/application-execution-event-dispatch-service.ts`
+- `autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts`
+- `autobyteus-server-ts/src/application-orchestration/services/application-orchestration-recovery-service.ts`
+- `autobyteus-server-ts/src/application-orchestration/services/application-resource-configuration-service.ts`
+- `autobyteus-server-ts/src/application-orchestration/stores/application-resource-configuration-store.ts`
+- `autobyteus-server-ts/src/application-orchestration/stores/application-execution-event-journal-store.ts`
+- `autobyteus-server-ts/src/application-orchestration/stores/application-run-binding-store.ts`
+- `autobyteus-server-ts/src/application-orchestration/tools/publish-artifact-tool.ts`
+- `autobyteus-server-ts/src/application-packages/services/application-package-service.ts`
+- `autobyteus-server-ts/src/application-storage/stores/application-platform-state-store.ts`
+- `autobyteus-server-ts/src/server-runtime.ts`
 - `autobyteus-server-ts/application-packages/platform/applications/brief-studio/**`
 - `autobyteus-server-ts/application-packages/platform/applications/socratic-math-teacher/**`
 - `autobyteus-server-ts/tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts`
 - `autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts`
+- `autobyteus-server-ts/tests/unit/application-orchestration/application-availability-service.test.ts`
+- `autobyteus-server-ts/tests/unit/application-orchestration/application-resource-configuration-service.test.ts`
 - `autobyteus-server-ts/tests/unit/application-backend/app-owned-binding-intent-correlation.test.ts`
 - `autobyteus-server-ts/tests/unit/application-backend/app-owned-graphql-executors.test.ts`
+- `autobyteus-server-ts/tests/unit/application-bundles/file-application-bundle-provider.test.ts`
+- `autobyteus-server-ts/tests/unit/application-backend-gateway/application-backend-gateway-service.test.ts`
+- `autobyteus-server-ts/tests/unit/application-orchestration/publish-artifact-tool.test.ts`
 
 ## Important Assumptions
 
@@ -183,6 +289,9 @@ This implementation is ready to return through code review before API/E2E starts
 - Platform SDKs stay business-schema agnostic; each application owns its own business schema, generated clients, and resolver/business behavior.
 - Brief Studio and Socratic Math Teacher are intentional teaching artifacts and should continue demonstrating distinct application-owned orchestration patterns.
 - Direct `startRun(...)` callers must persist pending binding intent state before launch; the platform does not delay early events while app-owned mapping commits.
+- App-owned teaching teams that rely on `publish_artifact` are expected to auto-execute that safe application tool; the implementation does not introduce a separate in-app tool-approval surface for those flows.
+- `ApplicationAvailabilityService` is the authoritative app-liveness owner for hosted backend/runtime-control entry, while bundle discovery remains the source of truth for whether an application is discoverable or quarantined.
+- `ApplicationManifestV3.resourceSlots` is the authoritative declaration of app-consumable runtime resources; app backends should resolve launch resources through `runtimeControl.getConfiguredResource(...)` instead of hardcoded bundle refs.
 
 ## Known Risks
 
@@ -193,6 +302,9 @@ This implementation is ready to return through code review before API/E2E starts
 - Existing runtime journals still use a legacy internal `execution_ref` SQLite column name for storage compatibility, but the public/shared runtime-control and event contracts now use only `bindingIntentId`.
 - API/E2E should still exercise the new monotonic launch-success behavior against live runs because the new regression coverage is local/unit-level rather than full-stack runtime validation.
 - packaged UI vendor copies now intentionally mirror the frontend SDK dist module set; future frontend-SDK surface growth must continue to ship the whole dist dependency set rather than a single copied entry file.
+- LM Studio / provider model availability remains an external runtime dependency; the retained `qwen3.6` `Model unloaded` failure from 2026-04-20 was not reproducible or fixable in repo-owned implementation code and must be revalidated in the next live API/E2E run.
+- API/E2E should still validate app-scoped hot re-entry against a genuinely broken then repaired imported package, because the new availability/resource-slot coverage is local and narrow rather than full live-browser/runtime validation.
+- No application-facing UI for configuring resource-slot overrides was added in this slice; downstream validation should use backend/runtime surfaces directly where needed.
 
 ## Legacy / Compatibility Removal Check
 
@@ -208,6 +320,7 @@ This implementation is ready to return through code review before API/E2E starts
   - Round-7 changed source files remain below the hard limit, including `backend-src/services/brief-run-launch-service.ts` (`244`) and `backend-src/services/lesson-runtime-service.ts` (`279`).
   - Socratic Math Teacher’s larger new modules stay below the hard limit, including `frontend-src/socratic-runtime.js` (`256`).
   - Round-3 API/E2E Local Fix changed source implementation files also stayed below the hard limit, including `applications/brief-studio/scripts/build-package.mjs` (`199`) and `applications/socratic-math-teacher/scripts/build-package.mjs` (`198`); the touched integration test file is exempt from the hard source-file limit.
+  - Round-5 API/E2E Local Fix changed source implementation files also stayed below the hard limit, including `autobyteus-server-ts/src/application-orchestration/tools/publish-artifact-tool.ts` (`249`), `applications/brief-studio/backend-src/services/brief-run-launch-service.ts` (`245`), and `applications/socratic-math-teacher/backend-src/services/lesson-runtime-service.ts` (`280`); touched test files remain outside the hard source-file limit.
 
 ## Environment Or Dependency Notes
 
@@ -216,6 +329,34 @@ This implementation is ready to return through code review before API/E2E starts
 - Root sample app build outputs and server built-in package mirrors were regenerated as part of this implementation.
 
 ## Local Implementation Checks Run
+
+### Latest rerun after the round-5 API/E2E live-runtime Local Fix finding
+
+- `pnpm --dir /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/applications/brief-studio build` ✅
+- `pnpm --dir /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/applications/socratic-math-teacher build` ✅
+- synced rebuilt root sample apps into `autobyteus-server-ts/application-packages/platform/applications/brief-studio/` and `autobyteus-server-ts/application-packages/platform/applications/socratic-math-teacher/` via `rsync -a --delete --exclude node_modules ...` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts build` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts exec vitest run tests/unit/application-orchestration/publish-artifact-tool.test.ts tests/unit/application-backend/app-owned-binding-intent-correlation.test.ts tests/integration/application-backend/brief-studio-imported-package.integration.test.ts` ✅
+
+### Latest rerun after the round-8 architecture pass
+
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-application-sdk-contracts build` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-application-backend-sdk build` ✅
+- `pnpm --dir /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/applications/brief-studio build` ✅
+- `pnpm --dir /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/applications/socratic-math-teacher build` ✅
+- synced rebuilt root sample apps into `autobyteus-server-ts/application-packages/platform/applications/brief-studio/` and `autobyteus-server-ts/application-packages/platform/applications/socratic-math-teacher/` via `rsync -a --delete --exclude node_modules ...` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts exec vitest run tests/unit/application-bundles/file-application-bundle-provider.test.ts tests/unit/application-backend-gateway/application-backend-gateway-service.test.ts tests/unit/application-orchestration/application-orchestration-host-service.test.ts tests/unit/application-orchestration/application-execution-event-dispatch-service.test.ts tests/unit/application-orchestration/application-resource-configuration-service.test.ts tests/unit/application-orchestration/application-availability-service.test.ts tests/unit/application-backend/app-owned-binding-intent-correlation.test.ts tests/integration/application-backend/brief-studio-imported-package.integration.test.ts` ✅
+
+### Latest rerun after Local Fix `AOR-LF-008`
+
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-application-sdk-contracts build` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-application-backend-sdk build` ✅
+- `pnpm --dir /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/applications/brief-studio build` ✅
+- `pnpm --dir /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/applications/socratic-math-teacher build` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts exec vitest run tests/unit/application-bundles/file-application-bundle-provider.test.ts tests/unit/application-backend-gateway/application-backend-gateway-service.test.ts tests/unit/application-orchestration/application-execution-event-dispatch-service.test.ts tests/unit/application-orchestration/application-orchestration-host-service.test.ts tests/unit/application-orchestration/application-availability-service.test.ts tests/unit/application-orchestration/application-resource-configuration-service.test.ts tests/unit/application-backend/app-owned-binding-intent-correlation.test.ts tests/integration/application-backend/brief-studio-imported-package.integration.test.ts` ✅
 
 ### Latest rerun after the round-3 API/E2E Local Fix finding
 
@@ -295,7 +436,11 @@ Do not report API, E2E, or broader executable validation as passed in this artif
 - Exercise a crash/retry style direct launch where binding creation succeeds but app-owned mapping commit is interrupted, then verify `getRunBindingByIntentId(...)` plus app-owned pending-intent state can finalize ownership without losing early events.
 - Exercise a successful direct launch where an early same-binding event lands before `startRun(...)` returns, and verify Brief Studio does not regress `final_brief` back to `researching` and Socratic does not regress early `RUN_FAILED` back to `active`.
 - Import both packaged generated GraphQL clients directly from their `dist/importable-package/.../ui/generated/graphql-client.js` paths and verify the vendored frontend SDK dependency set resolves without missing sibling ESM modules.
+- Re-run the 2026-04-20 live Brief Studio qwen3.5 scenario and verify `publish_artifact` no longer pauses for external approval and successfully projects a durable artifact when the model emits the previously observed shorthand `artifactRef` forms.
+- Re-run the live qwen3.6 scenario only as a provider/runtime recheck; if `Model unloaded` persists while qwen3.5 succeeds, treat that remaining issue as external LM Studio availability rather than an app-owned contract failure.
 - Open Socratic Math Teacher, start a lesson, send follow-up questions and hint requests, and verify they reuse the existing binding via `postRunInput(...)` instead of relaunching through the host.
+- Quarantine one imported application with an invalid manifest/resource-slot declaration, repair it in place, hit `POST /rest/applications/:applicationId/backend/reload`, and verify only that application re-enters to `ACTIVE` while other applications remain available.
+- Exercise `runtimeControl.getConfiguredResource(...)` with both manifest-default and persisted override resource selections and verify slot owner/kind validation rejects invalid overrides while valid bundle/shared team selections launch correctly.
 - Restart the server with live/nonterminal bindings and verify startup recovery rebuilds bindings, reattaches observers, and only then admits live runtime-control and artifact-ingress traffic.
 - Re-run the timing-sensitive cases already covered by unit tests: append during dispatch-drain shutdown, preserve future retry/backoff timers, and start a run with `initialInput` that immediately tries to publish an artifact.
 
@@ -306,3 +451,41 @@ Do not report API, E2E, or broader executable validation as passed in this artif
 - live artifact-ingress gating validation while startup recovery is still in progress
 - notification streaming validation under real application launches
 - UI/E2E validation of the updated Applications launch flow, Brief Studio review workflow, and Socratic Math Teacher lesson workflow
+- app-scoped reload/reenter validation for imported-package quarantine/repair flows
+- live validation of manifest-declared resource-slot defaults and overrides through the hosted backend/runtime-control path
+
+### Latest implementation update after the round-10 architecture pass and API/E2E round-6 Local Fix
+
+- Added an explicit host-managed pre-entry configuration gate to `autobyteus-web/components/applications/ApplicationShell.vue`; the app page now loads saved setup first and only launches the backend/iframe after the user enters the application.
+- Added `ApplicationLaunchSetupPanel.vue` plus `applicationLaunchSetup.ts` so `/applications/:id` can persist app-declared resource-slot configuration and bounded host-understood launch defaults without starting a run.
+- Extended the manifest contract to make `ApplicationManifestV3.resourceSlots.supportedLaunchDefaults` authoritative for host-visible defaults (`llmModelIdentifier`, `runtimeKind`, `workspaceRootPath`) and wired parser validation plus teaching-app declarations to that contract.
+- Tightened `ApplicationResourceConfigurationService` so writes reject unsupported launch-default keys, while readback strips stale unsupported persisted defaults and always normalizes `autoExecuteTools = true` for application-mode setup.
+- Updated Brief Studio and Socratic Math Teacher to read host-saved `runtimeKind` / `llmModelIdentifier` / `workspaceRootPath` from `runtimeControl.getConfiguredResource(...)`, removed inline model picking from their primary canvases, and kept application-mode launches auto-executing tools.
+- Added an LM Studio-specific chat renderer that flattens prior tool-call / tool-result history into plain text before sending follow-up turns, avoiding the retained qwen3.6 `safe`-filter chat-template failure path observed in the live run.
+
+### Latest rerun after the round-10 architecture pass and API/E2E round-6 Local Fix
+
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-ts exec vitest run tests/unit/llm/prompt-renderers/lmstudio-chat-renderer.test.ts tests/unit/llm/api/lmstudio-llm.test.ts` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts exec vitest run tests/unit/application-bundles/file-application-bundle-provider.test.ts tests/unit/application-orchestration/application-resource-configuration-service.test.ts tests/unit/application-backend/app-owned-binding-intent-correlation.test.ts tests/integration/application-backend/brief-studio-imported-package.integration.test.ts` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-web exec vitest run components/applications/__tests__/ApplicationIframeHost.spec.ts components/applications/__tests__/ApplicationSurface.spec.ts components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts components/applications/__tests__/ApplicationShell.spec.ts` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-application-sdk-contracts build` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-application-backend-sdk build` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-ts build` ✅
+- `pnpm --dir /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/applications/brief-studio build` ✅
+- `pnpm --dir /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/applications/socratic-math-teacher build` ✅
+- synced rebuilt root sample apps into `autobyteus-server-ts/application-packages/platform/applications/brief-studio/` and `autobyteus-server-ts/application-packages/platform/applications/socratic-math-teacher/` via `rsync -a --delete --exclude node_modules ...` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts build` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-web build` ✅
+
+### Latest implementation update after code-review Local Fix `AOR-LF-009`
+
+- Made the `/applications/:id` pre-entry gate authoritative in `autobyteus-web/components/applications/ApplicationShell.vue`; the shell now waits for launch-setup readiness before exposing any initial app-entry path and blocks retry/reload entry while setup is unresolved.
+- Extended `ApplicationLaunchSetupPanel.vue` to emit authoritative gate state upward (`loading` / `error` / `ready`) instead of keeping setup readiness private to the panel.
+- Centralized host-gate readiness rules in `autobyteus-web/utils/application/applicationLaunchSetup.ts`, including blocking on setup load failure, in-flight saves, unsaved draft changes, missing required resource selection, and missing required saved `llmModelIdentifier`.
+- Replaced the prior shell regression expectation with bounded coverage that incomplete setup and setup-load failure keep entry disabled, and added panel coverage for both not-ready and load-failure gate emissions.
+
+### Latest rerun after code-review Local Fix `AOR-LF-009`
+
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-web exec vitest run components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts components/applications/__tests__/ApplicationShell.spec.ts components/applications/__tests__/ApplicationIframeHost.spec.ts components/applications/__tests__/ApplicationSurface.spec.ts` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-web build` ✅

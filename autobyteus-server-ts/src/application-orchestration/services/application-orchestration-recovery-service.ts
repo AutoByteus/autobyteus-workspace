@@ -1,7 +1,9 @@
 import type { ApplicationRunBindingSummary } from "@autobyteus/application-sdk-contracts";
+import type { ApplicationCatalogSnapshot } from "../../application-bundles/domain/application-catalog-snapshot.js";
 import { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
 import { ApplicationExecutionEventIngressService } from "./application-execution-event-ingress-service.js";
 import { ApplicationRunObserverService, getApplicationRunObserverService } from "./application-run-observer-service.js";
+import { ApplicationExecutionEventJournalStore } from "../stores/application-execution-event-journal-store.js";
 import { ApplicationRunBindingStore } from "../stores/application-run-binding-store.js";
 import { ApplicationRunLookupStore } from "../stores/application-run-lookup-store.js";
 
@@ -34,6 +36,7 @@ export class ApplicationOrchestrationRecoveryService {
     private readonly dependencies: {
       applicationBundleService?: ApplicationBundleService;
       bindingStore?: ApplicationRunBindingStore;
+      journalStore?: ApplicationExecutionEventJournalStore;
       lookupStore?: ApplicationRunLookupStore;
       runObserverService?: ApplicationRunObserverService;
       ingressService?: ApplicationExecutionEventIngressService;
@@ -48,6 +51,10 @@ export class ApplicationOrchestrationRecoveryService {
     return this.dependencies.bindingStore ?? new ApplicationRunBindingStore();
   }
 
+  private get journalStore(): ApplicationExecutionEventJournalStore {
+    return this.dependencies.journalStore ?? new ApplicationExecutionEventJournalStore();
+  }
+
   private get lookupStore(): ApplicationRunLookupStore {
     return this.dependencies.lookupStore ?? new ApplicationRunLookupStore();
   }
@@ -60,14 +67,20 @@ export class ApplicationOrchestrationRecoveryService {
     return this.dependencies.ingressService ?? new ApplicationExecutionEventIngressService();
   }
 
-  async resumeBindings(): Promise<void> {
-    const applications = await this.applicationBundleService.listApplications();
-    for (const application of applications) {
-      await this.resumeApplicationBindings(application.id);
+  async resumeBindings(snapshot?: ApplicationCatalogSnapshot | null): Promise<void> {
+    const effectiveSnapshot = snapshot ?? await this.applicationBundleService.getCatalogSnapshot();
+    const applicationIds = new Set<string>([
+      ...effectiveSnapshot.applications.map((application) => application.id),
+      ...effectiveSnapshot.diagnostics.map((diagnostic) => diagnostic.applicationId),
+      ...(await this.bindingStore.listKnownApplicationIds()),
+      ...(await this.journalStore.listKnownApplicationIds()),
+    ]);
+    for (const applicationId of Array.from(applicationIds).sort((left, right) => left.localeCompare(right))) {
+      await this.resumeApplication(applicationId);
     }
   }
 
-  private async resumeApplicationBindings(applicationId: string): Promise<void> {
+  async resumeApplication(applicationId: string): Promise<void> {
     const bindings = await this.bindingStore.listNonterminalBindings(applicationId);
     this.lookupStore.clearApplication(applicationId);
 

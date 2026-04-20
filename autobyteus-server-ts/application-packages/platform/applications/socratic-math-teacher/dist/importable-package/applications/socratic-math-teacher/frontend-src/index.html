@@ -50,7 +50,7 @@
         <div class="panel-header">
           <div>
             <h2>Start lesson</h2>
-            <p class="muted">Create one lesson record and bind one tutor run to it. Later follow-ups reuse that same binding.</p>
+            <p class="muted">Create one lesson record and bind one tutor run to it. Runtime resource and model defaults now come from the host launch setup surface.</p>
           </div>
         </div>
         <form id="start-lesson-form" class="brief-composer">
@@ -59,14 +59,10 @@
               <span class="label">Math problem</span>
               <input id="lesson-prompt-input" type="text" placeholder="Solve 3x + 5 = 20" />
             </label>
-            <label class="field">
-              <span class="label">LLM model identifier</span>
-              <input id="model-identifier-input" type="text" value="gpt-5.4-mini" />
-            </label>
           </div>
           <div class="action-row">
             <button class="primary-button" type="submit">Start lesson</button>
-            <span class="muted small">The tutor run is app-owned and receives later student messages through GraphQL mutations.</span>
+            <span class="muted small">The tutor run is app-owned and receives later student messages through GraphQL mutations; host launch setup supplies runtime/model defaults.</span>
           </div>
         </form>
       </section>

@@ -5,6 +5,7 @@ import { AgentDefinitionService } from "../../agent-definition/services/agent-de
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import { BUILT_IN_APPLICATION_PACKAGE_ID } from "../../application-bundles/providers/file-application-bundle-provider.js";
 import { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
+import { getApplicationAvailabilityService } from "../../application-orchestration/services/application-availability-service.js";
 import { BuiltInApplicationPackageMaterializer } from "./built-in-application-package-materializer.js";
 import { GitHubApplicationPackageInstaller } from "../installers/github-application-package-installer.js";
 import {
@@ -412,6 +413,8 @@ export class ApplicationPackageService {
 
   private async refreshCatalogCaches(): Promise<void> {
     await this.refreshApplicationBundles();
+    const snapshot = await ApplicationBundleService.getInstance().getCatalogSnapshot();
+    getApplicationAvailabilityService().synchronizeWithCatalogSnapshot(snapshot);
     await this.refreshAgentDefinitions();
     await this.refreshAgentTeams();
   }

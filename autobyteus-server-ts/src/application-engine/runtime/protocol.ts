@@ -58,6 +58,7 @@ export type ApplicationWorkerInvokeEventHandlerInput = {
 export type ApplicationWorkerRuntimeControlInput = {
   action:
     | "listAvailableResources"
+    | "getConfiguredResource"
     | "startRun"
     | "getRunBinding"
     | "getRunBindingByIntentId"

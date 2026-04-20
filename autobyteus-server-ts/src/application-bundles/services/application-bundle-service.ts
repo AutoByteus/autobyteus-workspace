@@ -1,16 +1,21 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { ApplicationBundle, ApplicationCatalogEntry, ApplicationOwnedDefinitionSource } from "../domain/models.js";
+import type {
+  ApplicationCatalogDiagnostic,
+  ApplicationCatalogSnapshot,
+} from "../domain/application-catalog-snapshot.js";
 import { FileApplicationBundleProvider, BUILT_IN_APPLICATION_PACKAGE_ID } from "../providers/file-application-bundle-provider.js";
 import { ApplicationPackageRootSettingsStore } from "../../application-packages/stores/application-package-root-settings-store.js";
 import { ApplicationPackageRegistryStore } from "../../application-packages/stores/application-package-registry-store.js";
 import { BuiltInApplicationPackageMaterializer } from "../../application-packages/services/built-in-application-package-materializer.js";
 import { buildLocalApplicationPackageId } from "../../application-packages/utils/application-package-root-summary.js";
+import { parseCanonicalApplicationId } from "../utils/application-bundle-identity.js";
 
 const APPLICATION_ASSET_ROUTE_PREFIX = "/application-bundles";
 
 type ApplicationBundleProvider = {
-  listBundles: () => Promise<ApplicationBundle[]>;
+  getCatalogSnapshot: () => Promise<ApplicationCatalogSnapshot>;
   validatePackageRoot: (packageRootPath: string, packageId: string) => Promise<void>;
   buildApplicationOwnedAgentSources: (bundle: ApplicationBundle) => ApplicationOwnedDefinitionSource[];
   buildApplicationOwnedTeamSources: (bundle: ApplicationBundle) => ApplicationOwnedDefinitionSource[];
@@ -34,6 +39,11 @@ export class ApplicationBundleService {
 
   private cachePopulated = false;
   private populatePromise: Promise<void> | null = null;
+  private snapshot: ApplicationCatalogSnapshot = {
+    applications: [],
+    diagnostics: [],
+    refreshedAt: new Date(0).toISOString(),
+  };
   private bundleById = new Map<string, ApplicationBundle>();
   private applicationOwnedAgentSourceById = new Map<string, ApplicationOwnedDefinitionSource>();
   private applicationOwnedTeamSourceById = new Map<string, ApplicationOwnedDefinitionSource>();
@@ -79,15 +89,13 @@ export class ApplicationBundleService {
     };
   }
 
-  private async populateCache(): Promise<void> {
-    await this.builtInMaterializer.ensureMaterialized();
-    const bundles = (await this.provider.listBundles()).map((bundle) => this.withAssetPaths(bundle));
-
+  private populateFromSnapshot(snapshot: ApplicationCatalogSnapshot): void {
+    const applications = snapshot.applications.map((bundle) => this.withAssetPaths(bundle));
     const nextBundleById = new Map<string, ApplicationBundle>();
     const nextApplicationOwnedAgentSourceById = new Map<string, ApplicationOwnedDefinitionSource>();
     const nextApplicationOwnedTeamSourceById = new Map<string, ApplicationOwnedDefinitionSource>();
 
-    for (const bundle of bundles) {
+    for (const bundle of applications) {
       nextBundleById.set(bundle.id, bundle);
       for (const source of this.provider.buildApplicationOwnedAgentSources(bundle)) {
         nextApplicationOwnedAgentSourceById.set(source.definitionId, source);
@@ -97,9 +105,18 @@ export class ApplicationBundleService {
       }
     }
 
+    this.snapshot = {
+      ...snapshot,
+      applications,
+    };
     this.bundleById = nextBundleById;
     this.applicationOwnedAgentSourceById = nextApplicationOwnedAgentSourceById;
     this.applicationOwnedTeamSourceById = nextApplicationOwnedTeamSourceById;
+  }
+
+  private async populateCache(): Promise<void> {
+    await this.builtInMaterializer.ensureMaterialized();
+    this.populateFromSnapshot(await this.provider.getCatalogSnapshot());
     this.cachePopulated = true;
     this.populatePromise = null;
   }
@@ -114,10 +131,22 @@ export class ApplicationBundleService {
     await this.populatePromise;
   }
 
+  async getCatalogSnapshot(): Promise<ApplicationCatalogSnapshot> {
+    await this.ensureCache();
+    return structuredClone(this.snapshot);
+  }
+
   async listApplications(): Promise<ApplicationCatalogEntry[]> {
     await this.ensureCache();
     return Array.from(this.bundleById.values()).sort((left, right) =>
       left.name.localeCompare(right.name) || left.id.localeCompare(right.id),
+    );
+  }
+
+  async listDiagnostics(): Promise<ApplicationCatalogDiagnostic[]> {
+    await this.ensureCache();
+    return structuredClone(this.snapshot.diagnostics).sort((left, right) =>
+      left.localApplicationId.localeCompare(right.localApplicationId) || left.applicationId.localeCompare(right.applicationId),
     );
   }
 
@@ -129,6 +158,16 @@ export class ApplicationBundleService {
   async getApplicationById(applicationId: string): Promise<ApplicationBundle | null> {
     await this.ensureCache();
     return this.bundleById.get(applicationId) ?? null;
+  }
+
+  async getDiagnosticByApplicationId(applicationId: string): Promise<ApplicationCatalogDiagnostic | null> {
+    await this.ensureCache();
+    return this.snapshot.diagnostics.find((diagnostic) => diagnostic.applicationId === applicationId) ?? null;
+  }
+
+  async reloadApplication(applicationId: string): Promise<ApplicationBundle | null> {
+    await this.refresh();
+    return this.getApplicationById(applicationId);
   }
 
   async resolveUiAsset(

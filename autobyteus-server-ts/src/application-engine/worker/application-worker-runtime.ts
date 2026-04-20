@@ -2,6 +2,7 @@ import { pathToFileURL } from "node:url";
 import type {
   ApplicationBackendDefinition,
   ApplicationBackendExposureSummary,
+  ApplicationConfiguredResource,
   ApplicationExecutionEventFamily,
   ApplicationHandlerContext,
   ApplicationRunBindingSummary,
@@ -156,6 +157,8 @@ const createRuntimeControl = (
 ): ApplicationHandlerContext["runtimeControl"] => ({
   listAvailableResources: async (filter) =>
     invokeRuntimeControl({ action: "listAvailableResources", input: filter ?? null }) as Promise<ApplicationRuntimeResourceSummary[]>,
+  getConfiguredResource: async (slotKey) =>
+    invokeRuntimeControl({ action: "getConfiguredResource", input: { slotKey } }) as Promise<ApplicationConfiguredResource | null>,
   startRun: async (input) =>
     invokeRuntimeControl({ action: "startRun", input }) as Promise<ApplicationRunBindingSummary>,
   getRunBinding: async (bindingId) =>

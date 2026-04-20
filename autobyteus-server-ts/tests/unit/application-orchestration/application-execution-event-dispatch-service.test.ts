@@ -103,6 +103,9 @@ describe("ApplicationExecutionEventDispatchService", () => {
       applicationBundleService: {
         listApplications: vi.fn().mockResolvedValue([]),
       } as never,
+      availabilityService: {
+        isApplicationActive: vi.fn(async () => true),
+      } as never,
       journalStore: journalStore as never,
       engineHostService: engineHostService as never,
     });
@@ -179,6 +182,9 @@ describe("ApplicationExecutionEventDispatchService", () => {
       applicationBundleService: {
         listApplications: vi.fn().mockResolvedValue([]),
       } as never,
+      availabilityService: {
+        isApplicationActive: vi.fn(async () => true),
+      } as never,
       journalStore: journalStore as never,
       engineHostService: engineHostService as never,
     });
@@ -190,7 +196,6 @@ describe("ApplicationExecutionEventDispatchService", () => {
     expect(engineHostService.invokeApplicationEventHandler).toHaveBeenCalledTimes(1);
     expect(journalStore.recordDispatchFailure).toHaveBeenCalledTimes(1);
     expect(journalStore.getNextPendingRecord).toHaveBeenCalledTimes(1);
-    expect(journalStore.getNextPendingRecordIfPresent).toHaveBeenCalledTimes(1);
 
     await vi.advanceTimersByTimeAsync(999);
     expect(engineHostService.invokeApplicationEventHandler).toHaveBeenCalledTimes(1);

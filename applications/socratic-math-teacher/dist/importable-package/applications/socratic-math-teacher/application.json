@@ -10,5 +10,25 @@
   },
   "backend": {
     "bundleManifest": "backend/bundle.json"
-  }
+  },
+  "resourceSlots": [
+    {
+      "slotKey": "lessonTutorTeam",
+      "name": "Lesson Tutor Team",
+      "description": "Team resource used when the app starts a new long-lived lesson conversation.",
+      "allowedResourceKinds": ["AGENT_TEAM"],
+      "allowedResourceOwners": ["bundle", "shared"],
+      "required": true,
+      "supportedLaunchDefaults": {
+        "runtimeKind": true,
+        "llmModelIdentifier": true,
+        "workspaceRootPath": true
+      },
+      "defaultResourceRef": {
+        "owner": "bundle",
+        "kind": "AGENT_TEAM",
+        "localId": "socratic-math-team"
+      }
+    }
+  ]
 }

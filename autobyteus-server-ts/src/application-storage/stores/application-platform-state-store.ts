@@ -1,6 +1,8 @@
 import fs from "node:fs";
+import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import type { ApplicationStorageLayout } from "../domain/models.js";
+import { appConfigProvider } from "../../config/app-config-provider.js";
 import {
   ApplicationStorageLifecycleService,
   getApplicationStorageLifecycleService,
@@ -15,6 +17,22 @@ export class ApplicationPlatformStateStore {
 
   private get storageLifecycleService(): ApplicationStorageLifecycleService {
     return this.dependencies.storageLifecycleService ?? getApplicationStorageLifecycleService();
+  }
+
+  listExistingPlatformDatabasePaths(): string[] {
+    const applicationsRoot = path.join(appConfigProvider.config.getAppDataDir(), "applications");
+    let entries: fs.Dirent[] = [];
+    try {
+      entries = fs.readdirSync(applicationsRoot, { withFileTypes: true });
+    } catch {
+      return [];
+    }
+
+    return entries
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => path.join(applicationsRoot, entry.name, "db", "platform.sqlite"))
+      .filter((databasePath) => fs.existsSync(databasePath) && fs.statSync(databasePath).isFile())
+      .sort((left, right) => left.localeCompare(right));
   }
 
   async withDatabase<T>(

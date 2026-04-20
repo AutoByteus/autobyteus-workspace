@@ -57,7 +57,7 @@ export const executeSocraticMathGraphql = async (request, context) => {
                 const input = requireObject(variables.input, "input");
                 return runtimeService.startLesson({
                     prompt: typeof input.prompt === "string" ? input.prompt : "",
-                    llmModelIdentifier: typeof input.llmModelIdentifier === "string" ? input.llmModelIdentifier : "",
+                    llmModelIdentifier: typeof input.llmModelIdentifier === "string" ? input.llmModelIdentifier : null,
                 });
             });
         case "AskFollowUpMutation":

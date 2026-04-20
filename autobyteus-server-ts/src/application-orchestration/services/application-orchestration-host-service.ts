@@ -3,6 +3,7 @@ import type { ContextFileType } from "autobyteus-ts/agent/message/context-file-t
 import { ContextFile } from "autobyteus-ts/agent/message/context-file.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 import type {
+  ApplicationConfiguredResource,
   ApplicationRunBindingListFilter,
   ApplicationRunBindingSummary,
   ApplicationRuntimeInput,
@@ -19,6 +20,8 @@ import {
 } from "./application-orchestration-startup-gate.js";
 import { ApplicationRuntimeResourceResolver } from "./application-runtime-resource-resolver.js";
 import { ApplicationRunBindingLaunchService } from "./application-run-binding-launch-service.js";
+import { ApplicationAvailabilityService, getApplicationAvailabilityService } from "./application-availability-service.js";
+import { ApplicationResourceConfigurationService } from "./application-resource-configuration-service.js";
 import { ApplicationRunObserverService, getApplicationRunObserverService } from "./application-run-observer-service.js";
 import { ApplicationRunBindingStore } from "../stores/application-run-binding-store.js";
 import { ApplicationRunLookupStore } from "../stores/application-run-lookup-store.js";
@@ -66,7 +69,9 @@ export class ApplicationOrchestrationHostService {
   constructor(
     private readonly dependencies: {
       startupGate?: ApplicationOrchestrationStartupGate;
+      availabilityService?: ApplicationAvailabilityService;
       resourceResolver?: ApplicationRuntimeResourceResolver;
+      resourceConfigurationService?: ApplicationResourceConfigurationService;
       runBindingLaunchService?: ApplicationRunBindingLaunchService;
       bindingStore?: ApplicationRunBindingStore;
       lookupStore?: ApplicationRunLookupStore;
@@ -81,8 +86,18 @@ export class ApplicationOrchestrationHostService {
     return this.dependencies.startupGate ?? getApplicationOrchestrationStartupGate();
   }
 
+  private get availabilityService(): ApplicationAvailabilityService {
+    return this.dependencies.availabilityService ?? getApplicationAvailabilityService();
+  }
+
   private get resourceResolver(): ApplicationRuntimeResourceResolver {
     return this.dependencies.resourceResolver ?? new ApplicationRuntimeResourceResolver();
+  }
+
+  private get resourceConfigurationService(): ApplicationResourceConfigurationService {
+    return this.dependencies.resourceConfigurationService ?? new ApplicationResourceConfigurationService({
+      resourceResolver: this.resourceResolver,
+    });
   }
 
   private get runBindingLaunchService(): ApplicationRunBindingLaunchService {
@@ -119,12 +134,26 @@ export class ApplicationOrchestrationHostService {
     return this.dependencies.ingressService ?? new ApplicationExecutionEventIngressService();
   }
 
+  private async requireApplicationActive(applicationId: string): Promise<void> {
+    await this.availabilityService.requireApplicationActive(applicationId);
+  }
+
   async listAvailableResources(
     applicationId: string,
     filter?: { owner?: "bundle" | "shared" | null; kind?: "AGENT" | "AGENT_TEAM" | null } | null,
   ): Promise<ApplicationRuntimeResourceSummary[]> {
     await this.startupGate.awaitReady();
+    await this.requireApplicationActive(applicationId);
     return this.resourceResolver.listAvailableResources(applicationId, filter);
+  }
+
+  async getConfiguredResource(
+    applicationId: string,
+    slotKey: string,
+  ): Promise<ApplicationConfiguredResource | null> {
+    await this.startupGate.awaitReady();
+    await this.requireApplicationActive(applicationId);
+    return this.resourceConfigurationService.getConfiguredResource(applicationId, slotKey);
   }
 
   async startRun(
@@ -132,6 +161,7 @@ export class ApplicationOrchestrationHostService {
     input: ApplicationStartRunInput,
   ): Promise<ApplicationRunBindingSummary> {
     await this.startupGate.awaitReady();
+    await this.requireApplicationActive(applicationId);
 
     const binding = await this.runBindingLaunchService.startRunBinding(applicationId, input);
     const attached = await this.runObserverService.attachBinding(binding, { emitAttachedEvent: true });
@@ -149,6 +179,7 @@ export class ApplicationOrchestrationHostService {
     bindingId: string,
   ): Promise<ApplicationRunBindingSummary | null> {
     await this.startupGate.awaitReady();
+    await this.requireApplicationActive(applicationId);
     return this.bindingStore.getBinding(applicationId, bindingId);
   }
 
@@ -157,6 +188,7 @@ export class ApplicationOrchestrationHostService {
     bindingIntentId: string,
   ): Promise<ApplicationRunBindingSummary | null> {
     await this.startupGate.awaitReady();
+    await this.requireApplicationActive(applicationId);
     return this.bindingStore.getBindingByIntentId(applicationId, bindingIntentId);
   }
 
@@ -165,6 +197,7 @@ export class ApplicationOrchestrationHostService {
     filter?: ApplicationRunBindingListFilter | null,
   ): Promise<ApplicationRunBindingSummary[]> {
     await this.startupGate.awaitReady();
+    await this.requireApplicationActive(applicationId);
     return this.bindingStore.listBindings(applicationId, filter);
   }
 
@@ -179,6 +212,7 @@ export class ApplicationOrchestrationHostService {
     },
   ): Promise<ApplicationRunBindingSummary> {
     await this.startupGate.awaitReady();
+    await this.requireApplicationActive(applicationId);
     const binding = await this.requireBinding(applicationId, input.bindingId);
     await this.postRunInputInternal(binding, input);
     return cloneBinding(binding);
@@ -189,6 +223,7 @@ export class ApplicationOrchestrationHostService {
     bindingId: string,
   ): Promise<ApplicationRunBindingSummary | null> {
     await this.startupGate.awaitReady();
+    await this.requireApplicationActive(applicationId);
 
     const binding = await this.bindingStore.getBinding(applicationId, bindingId);
     if (!binding) {
