@@ -1,6 +1,6 @@
 # Brief Studio
 
-Brief Studio is the canonical imported teaching sample for the “many runs over one business record” application pattern.
+Brief Studio is the current in-repo teaching sample for the “many runs over one business record” application pattern. It lives only under `applications/brief-studio` until a future explicit promotion decision.
 
 It demonstrates:
 

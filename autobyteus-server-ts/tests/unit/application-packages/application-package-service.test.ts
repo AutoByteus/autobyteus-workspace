@@ -1,3 +1,4 @@
+import fsSync from "node:fs";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -132,6 +133,58 @@ describe("ApplicationPackageService", () => {
     }
     cleanupPaths.clear();
     delete process.env.AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS;
+  });
+
+  it("hides the built-in package row when the current built-in application set is empty", async () => {
+    const repoRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-repo-"));
+    const appDataRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-app-data-"));
+    const registryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-registry-"));
+    const localRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-local-"));
+
+    cleanupPaths.add(repoRoot);
+    cleanupPaths.add(appDataRoot);
+    cleanupPaths.add(registryRoot);
+    cleanupPaths.add(localRoot);
+
+    const rootSettingsStore = createRootSettingsStore(appDataRoot);
+    await writeApplicationBundle(localRoot, "linked-app");
+
+    const service = new ApplicationPackageService({
+      rootSettingsStore,
+      registryStore: new ApplicationPackageRegistryStore({ getAppDataDir: () => registryRoot }),
+      refreshApplicationBundles: async () => undefined,
+      refreshAgentDefinitions: async () => undefined,
+      refreshAgentTeams: async () => undefined,
+      validateApplicationPackageContents: async () => undefined,
+      builtInMaterializer: createBuiltInMaterializer(repoRoot),
+    });
+
+    await service.importApplicationPackage({
+      sourceKind: "LOCAL_PATH",
+      source: localRoot,
+    });
+
+    const packages = await service.listApplicationPackages();
+    expect(packages.find((entry) => entry.packageId === BUILT_IN_APPLICATION_PACKAGE_ID)).toBeUndefined();
+    expect(packages).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          sourceKind: "LOCAL_PATH",
+          sourceSummary: path.resolve(localRoot),
+          isPlatformOwned: false,
+          isRemovable: true,
+          applicationCount: 1,
+        }),
+      ]),
+    );
+
+    await expect(service.getApplicationPackageDetails(BUILT_IN_APPLICATION_PACKAGE_ID)).resolves.toMatchObject({
+      packageId: BUILT_IN_APPLICATION_PACKAGE_ID,
+      isPlatformOwned: true,
+      applicationCount: 0,
+      managedInstallPath: path.resolve(rootSettingsStore.getBuiltInRootPath()),
+      bundledSourceRootPath: path.resolve(repoRoot),
+    });
   });
 
   it("lists safe package rows and exposes details through the debug details lookup", async () => {
@@ -369,6 +422,125 @@ describe("ApplicationPackageService", () => {
       "agent-definitions",
       "agent-teams",
     ]);
+  });
+
+  it("removes a stale linked local package when the root is still in settings but the registry record is already missing", async () => {
+    const repoRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-repo-"));
+    const appDataRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-app-data-"));
+    const registryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-registry-"));
+    const localRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-local-"));
+
+    cleanupPaths.add(repoRoot);
+    cleanupPaths.add(appDataRoot);
+    cleanupPaths.add(registryRoot);
+    cleanupPaths.add(localRoot);
+
+    const rootSettingsStore = new ApplicationPackageRootSettingsStore(
+      {
+        getAppDataDir: () => appDataRoot,
+        getAdditionalApplicationPackageRoots: () => (
+          fsSync.existsSync(localRoot) ? [localRoot] : []
+        ),
+        get: (key: string, defaultValue?: string) =>
+          process.env[key] ?? defaultValue,
+      },
+      {
+        updateSetting: (key: string, value: string) => {
+          if (value) {
+            process.env[key] = value;
+          } else {
+            delete process.env[key];
+          }
+          return [true, "updated"];
+        },
+      },
+    );
+    const registryStore = new ApplicationPackageRegistryStore({ getAppDataDir: () => registryRoot });
+    await writeApplicationBundle(localRoot, "linked-app");
+
+    const service = new ApplicationPackageService({
+      rootSettingsStore,
+      registryStore,
+      refreshApplicationBundles: async () => undefined,
+      refreshAgentDefinitions: async () => undefined,
+      refreshAgentTeams: async () => undefined,
+      validateApplicationPackageContents: async () => undefined,
+      builtInMaterializer: createBuiltInMaterializer(repoRoot),
+    });
+
+    await service.importApplicationPackage({
+      sourceKind: "LOCAL_PATH",
+      source: localRoot,
+    });
+    const linkedPackageId = buildLocalApplicationPackageId(path.resolve(localRoot));
+
+    await registryStore.removePackageRecord(linkedPackageId);
+    await fs.rm(localRoot, { recursive: true, force: true });
+
+    await expect(service.listApplicationPackages()).resolves.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          packageId: linkedPackageId,
+          sourceKind: "LOCAL_PATH",
+        }),
+      ]),
+    );
+
+    const remainingPackages = await service.removeApplicationPackage(linkedPackageId);
+
+    expect(remainingPackages.find((entry) => entry.packageId === linkedPackageId)).toBeUndefined();
+    expect(rootSettingsStore.listAdditionalRootPaths()).toEqual([]);
+    await expect(registryStore.findPackageById(linkedPackageId)).resolves.toBeNull();
+  });
+
+  it("removes a stale linked local package when the registry record remains but the settings entry is already missing", async () => {
+    const repoRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-repo-"));
+    const appDataRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-app-data-"));
+    const registryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-registry-"));
+    const localRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-local-"));
+
+    cleanupPaths.add(repoRoot);
+    cleanupPaths.add(appDataRoot);
+    cleanupPaths.add(registryRoot);
+    cleanupPaths.add(localRoot);
+
+    const rootSettingsStore = createRootSettingsStore(appDataRoot);
+    const registryStore = new ApplicationPackageRegistryStore({ getAppDataDir: () => registryRoot });
+    await writeApplicationBundle(localRoot, "linked-app");
+
+    const service = new ApplicationPackageService({
+      rootSettingsStore,
+      registryStore,
+      refreshApplicationBundles: async () => undefined,
+      refreshAgentDefinitions: async () => undefined,
+      refreshAgentTeams: async () => undefined,
+      validateApplicationPackageContents: async () => undefined,
+      builtInMaterializer: createBuiltInMaterializer(repoRoot),
+    });
+
+    await service.importApplicationPackage({
+      sourceKind: "LOCAL_PATH",
+      source: localRoot,
+    });
+    const linkedPackageId = buildLocalApplicationPackageId(path.resolve(localRoot));
+
+    rootSettingsStore.removeAdditionalRootPath(localRoot);
+    await fs.rm(localRoot, { recursive: true, force: true });
+
+    await expect(service.listApplicationPackages()).resolves.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          packageId: linkedPackageId,
+          sourceKind: "LOCAL_PATH",
+        }),
+      ]),
+    );
+
+    const remainingPackages = await service.removeApplicationPackage(linkedPackageId);
+
+    expect(remainingPackages.find((entry) => entry.packageId === linkedPackageId)).toBeUndefined();
+    expect(rootSettingsStore.listAdditionalRootPaths()).toEqual([]);
+    await expect(registryStore.findPackageById(linkedPackageId)).resolves.toBeNull();
   });
 
   it("keeps removed long-id apps with persisted platform state under quarantined availability ownership", async () => {

@@ -242,11 +242,21 @@ export class ApplicationPackageRegistryService {
     }
 
     const existingRecord = await this.registryStore.findPackageById(normalizedPackageId);
+    const rootPresentInSettings = this.rootSettingsStore.listAdditionalRootPaths()
+      .includes(targetPackage.packageRootPath);
+    let removedFromSettings = false;
+    let removedFromRegistry = false;
 
-    this.rootSettingsStore.removeAdditionalRootPath(targetPackage.packageRootPath);
+    if (rootPresentInSettings) {
+      this.rootSettingsStore.removeAdditionalRootPath(targetPackage.packageRootPath);
+      removedFromSettings = true;
+    }
 
     try {
-      await this.registryStore.removePackageRecord(normalizedPackageId);
+      if (existingRecord) {
+        await this.registryStore.removePackageRecord(normalizedPackageId);
+        removedFromRegistry = true;
+      }
       await this.refreshCatalogCaches();
 
       if (
@@ -261,8 +271,12 @@ export class ApplicationPackageRegistryService {
 
       return this.listApplicationPackages();
     } catch (error) {
-      this.safeAddAdditionalRootPath(targetPackage.packageRootPath);
-      await this.restorePackageRecord(existingRecord);
+      if (removedFromSettings) {
+        this.safeAddAdditionalRootPath(targetPackage.packageRootPath);
+      }
+      if (removedFromRegistry) {
+        await this.restorePackageRecord(existingRecord);
+      }
       await this.refreshCatalogCaches().catch(() => undefined);
       throw error;
     }

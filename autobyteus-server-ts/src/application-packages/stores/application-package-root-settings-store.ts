@@ -51,6 +51,10 @@ export class ApplicationPackageRootSettingsStore {
     return getManagedBuiltInApplicationPackageRoot(this.config.getAppDataDir());
   }
 
+  private listConfiguredAdditionalRootPaths(): string[] {
+    return normalizePathList(this.config.get(APPLICATION_PACKAGE_ROOTS_ENV_KEY, ""));
+  }
+
   private getBundledSourceRootPath(): string | null {
     if (typeof this.config.getAppRootDir !== "function") {
       return null;
@@ -65,7 +69,7 @@ export class ApplicationPackageRootSettingsStore {
     const builtInRootPath = this.getBuiltInRootPath();
     const bundledSourceRootPath = this.getBundledSourceRootPath();
 
-    for (const rootPath of this.config.getAdditionalApplicationPackageRoots()) {
+    for (const rootPath of this.listConfiguredAdditionalRootPaths()) {
       const resolved = path.resolve(rootPath);
       if (
         resolved === builtInRootPath

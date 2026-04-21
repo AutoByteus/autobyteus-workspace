@@ -1,6 +1,6 @@
 # Socratic Math Teacher
 
-Socratic Math Teacher is the built-in teaching sample for the “one long-lived conversational binding” application pattern.
+Socratic Math Teacher is the current in-repo teaching sample for the “one long-lived conversational binding” application pattern. It lives only under `applications/socratic-math-teacher` until a future explicit promotion decision.
 
 It now demonstrates:
 
