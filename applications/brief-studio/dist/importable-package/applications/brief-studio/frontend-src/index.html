@@ -12,8 +12,8 @@
         <div class="eyebrow">External teaching sample</div>
         <h1>Brief Studio</h1>
         <p class="lede">
-          A small imported application that teaches AutoByteus app authors how to keep business identity, GraphQL
-          schema/codegen, and orchestration policy inside the app while the platform hosts one backend mount.
+          Create, review, and finalize briefs while the app keeps its own GraphQL schema, draft workflow, and
+          orchestration policy over one hosted backend mount.
         </p>
       </header>
 
@@ -22,11 +22,11 @@
       </section>
 
       <details class="card details-panel">
-        <summary class="details-summary">Teaching details</summary>
+        <summary class="details-summary">Advanced app details</summary>
         <p class="details-copy muted">
           The generic host only launches the application shell and prepares the backend. This app then creates
-          business-owned <code>briefId</code> records, launches draft runs later through GraphQL, and binds each run to
-          app-owned bindings through durable <code>bindingIntentId</code> handoff and reconciliation.
+          business-owned <code>briefId</code> records, generates drafts later through GraphQL, and reconciles runtime
+          ownership with durable <code>bindingIntentId</code> handoff.
         </p>
         <div class="meta-grid">
           <div>
@@ -51,7 +51,7 @@
         <div class="panel-header">
           <div>
             <h2>Create a brief record</h2>
-            <p class="muted">First create the business record. Runtime resource, model, and auto-approved tool defaults now come from the host launch setup instead of this brief canvas.</p>
+            <p class="muted">Start with the business record. Runtime resource, model, workspace, and tool-execution defaults now come from the host launch setup instead of this brief canvas.</p>
           </div>
         </div>
         <form id="create-brief-form" class="brief-composer">
@@ -63,7 +63,7 @@
           </div>
           <div class="action-row">
             <button id="create-brief-button" class="primary-button" type="submit">Create brief</button>
-            <span class="muted small">GraphQL is the primary app business API; configure runtime/model defaults from the host-managed launch setup surface.</span>
+            <span class="muted small">GraphQL stays the primary brief API; configure runtime and workspace defaults from the host-managed launch setup surface.</span>
           </div>
         </form>
       </section>
@@ -73,12 +73,12 @@
           <div class="panel-header">
             <div>
               <h2>Briefs</h2>
-              <p class="muted">Projected from lifecycle and artifact events reconciled through app-owned binding intents.</p>
+              <p class="muted">Track each brief record, its latest draft state, and its review outcome.</p>
             </div>
             <button id="refresh-button" class="ghost-button" type="button">Refresh</button>
           </div>
           <div id="brief-list" class="brief-list empty-state">
-            No briefs yet. Create a business record, then launch one or more draft runs from it.
+            No briefs yet. Create a brief, then generate a draft when it is ready for review.
           </div>
         </aside>
 
@@ -86,11 +86,11 @@
           <div class="panel-header">
             <div>
               <h2>Brief detail</h2>
-              <p class="muted">GraphQL queries keep the UI on one app-owned business API over the hosted backend mount.</p>
+              <p class="muted">Review generated drafts, notes, and approval state on the same brief record.</p>
             </div>
           </div>
           <div id="brief-detail" class="empty-state">
-            Select a brief to inspect its projected artifacts, execution history, and review workflow.
+            Select a brief to review generated drafts, notes, and approval status.
           </div>
         </section>
       </section>

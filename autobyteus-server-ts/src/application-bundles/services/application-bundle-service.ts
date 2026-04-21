@@ -5,17 +5,22 @@ import type {
   ApplicationCatalogDiagnostic,
   ApplicationCatalogSnapshot,
 } from "../domain/application-catalog-snapshot.js";
-import { FileApplicationBundleProvider, BUILT_IN_APPLICATION_PACKAGE_ID } from "../providers/file-application-bundle-provider.js";
-import { ApplicationPackageRootSettingsStore } from "../../application-packages/stores/application-package-root-settings-store.js";
-import { ApplicationPackageRegistryStore } from "../../application-packages/stores/application-package-registry-store.js";
-import { BuiltInApplicationPackageMaterializer } from "../../application-packages/services/built-in-application-package-materializer.js";
+import { FileApplicationBundleProvider } from "../providers/file-application-bundle-provider.js";
+import type { ApplicationPackageRegistrySnapshot } from "../../application-packages/domain/application-package-registry-snapshot.js";
+import { ApplicationPackageRegistryService } from "../../application-packages/services/application-package-registry-service.js";
 import { buildLocalApplicationPackageId } from "../../application-packages/utils/application-package-root-summary.js";
-import { parseCanonicalApplicationId } from "../utils/application-bundle-identity.js";
 
 const APPLICATION_ASSET_ROUTE_PREFIX = "/application-bundles";
 
 type ApplicationBundleProvider = {
-  getCatalogSnapshot: () => Promise<ApplicationCatalogSnapshot>;
+  getCatalogSnapshot: (registrySnapshot: ApplicationPackageRegistrySnapshot) => Promise<ApplicationCatalogSnapshot>;
+  validatePackageRoot: (packageRootPath: string, packageId: string) => Promise<void>;
+  buildApplicationOwnedAgentSources: (bundle: ApplicationBundle) => ApplicationOwnedDefinitionSource[];
+  buildApplicationOwnedTeamSources: (bundle: ApplicationBundle) => ApplicationOwnedDefinitionSource[];
+};
+
+type LegacyApplicationBundleProvider = {
+  listBundles: () => Promise<ApplicationBundle[]>;
   validatePackageRoot: (packageRootPath: string, packageId: string) => Promise<void>;
   buildApplicationOwnedAgentSources: (bundle: ApplicationBundle) => ApplicationOwnedDefinitionSource[];
   buildApplicationOwnedTeamSources: (bundle: ApplicationBundle) => ApplicationOwnedDefinitionSource[];
@@ -50,31 +55,48 @@ export class ApplicationBundleService {
 
   constructor(
     private readonly dependencies: {
-      provider?: ApplicationBundleProvider;
-      rootSettingsStore?: ApplicationPackageRootSettingsStore;
-      registryStore?: ApplicationPackageRegistryStore;
-      builtInMaterializer?: Pick<BuiltInApplicationPackageMaterializer, "ensureMaterialized">;
+      provider?: ApplicationBundleProvider | LegacyApplicationBundleProvider;
+      packageRegistryService?: Pick<ApplicationPackageRegistryService, "getRegistrySnapshot">;
+      rootSettingsStore?: unknown;
+      registryStore?: unknown;
+      builtInMaterializer?: unknown;
     } = {},
   ) {}
 
   private get provider(): ApplicationBundleProvider {
-    return this.dependencies.provider ?? new FileApplicationBundleProvider();
+    const provider = this.dependencies.provider ?? new FileApplicationBundleProvider();
+    if ("getCatalogSnapshot" in provider) {
+      return provider;
+    }
+
+    return {
+      getCatalogSnapshot: async () => ({
+        applications: await provider.listBundles(),
+        diagnostics: [],
+        refreshedAt: new Date().toISOString(),
+      }),
+      validatePackageRoot: provider.validatePackageRoot,
+      buildApplicationOwnedAgentSources: provider.buildApplicationOwnedAgentSources,
+      buildApplicationOwnedTeamSources: provider.buildApplicationOwnedTeamSources,
+    };
   }
 
-  private get rootSettingsStore(): ApplicationPackageRootSettingsStore {
-    return this.dependencies.rootSettingsStore ?? new ApplicationPackageRootSettingsStore();
-  }
-
-  private get registryStore(): ApplicationPackageRegistryStore {
-    return this.dependencies.registryStore ?? new ApplicationPackageRegistryStore();
-  }
-
-  private get builtInMaterializer(): Pick<
-    BuiltInApplicationPackageMaterializer,
-    "ensureMaterialized"
-  > {
-    return this.dependencies.builtInMaterializer
-      ?? BuiltInApplicationPackageMaterializer.getInstance();
+  private get packageRegistryService(): Pick<ApplicationPackageRegistryService, "getRegistrySnapshot"> {
+    if (this.dependencies.packageRegistryService) {
+      return this.dependencies.packageRegistryService;
+    }
+    if (
+      this.dependencies.rootSettingsStore
+      || this.dependencies.registryStore
+      || this.dependencies.builtInMaterializer
+    ) {
+      return new ApplicationPackageRegistryService({
+        rootSettingsStore: this.dependencies.rootSettingsStore as never,
+        registryStore: this.dependencies.registryStore as never,
+        builtInMaterializer: this.dependencies.builtInMaterializer as never,
+      });
+    }
+    return ApplicationPackageRegistryService.getInstance();
   }
 
   private assetPath(applicationId: string, relativePath: string): string {
@@ -114,11 +136,16 @@ export class ApplicationBundleService {
     this.applicationOwnedTeamSourceById = nextApplicationOwnedTeamSourceById;
   }
 
-  private async populateCache(): Promise<void> {
-    await this.builtInMaterializer.ensureMaterialized();
-    this.populateFromSnapshot(await this.provider.getCatalogSnapshot());
+  private async populateCacheFromRegistrySnapshot(
+    registrySnapshot: ApplicationPackageRegistrySnapshot,
+  ): Promise<void> {
+    this.populateFromSnapshot(await this.provider.getCatalogSnapshot(registrySnapshot));
     this.cachePopulated = true;
     this.populatePromise = null;
+  }
+
+  private async populateCache(): Promise<void> {
+    await this.populateCacheFromRegistrySnapshot(await this.packageRegistryService.getRegistrySnapshot());
   }
 
   private async ensureCache(): Promise<void> {
@@ -131,7 +158,13 @@ export class ApplicationBundleService {
     await this.populatePromise;
   }
 
-  async getCatalogSnapshot(): Promise<ApplicationCatalogSnapshot> {
+  async getCatalogSnapshot(
+    registrySnapshot?: ApplicationPackageRegistrySnapshot,
+  ): Promise<ApplicationCatalogSnapshot> {
+    if (registrySnapshot) {
+      await this.populateCacheFromRegistrySnapshot(registrySnapshot);
+      return structuredClone(this.snapshot);
+    }
     await this.ensureCache();
     return structuredClone(this.snapshot);
   }
@@ -227,21 +260,12 @@ export class ApplicationBundleService {
     return Array.from(this.applicationOwnedTeamSourceById.values());
   }
 
-  async validatePackageRoot(packageRootPath: string): Promise<void> {
+  async validatePackageRoot(packageRootPath: string, packageId?: string): Promise<void> {
     const resolvedRootPath = path.resolve(packageRootPath);
-    let packageId = buildLocalApplicationPackageId(resolvedRootPath);
-
-    if (resolvedRootPath === this.rootSettingsStore.getBuiltInRootPath()) {
-      await this.builtInMaterializer.ensureMaterialized();
-      packageId = BUILT_IN_APPLICATION_PACKAGE_ID;
-    } else {
-      const record = await this.registryStore.findPackageByRootPath(resolvedRootPath);
-      if (record?.packageId) {
-        packageId = record.packageId;
-      }
-    }
-
-    await this.provider.validatePackageRoot(resolvedRootPath, packageId);
+    await this.provider.validatePackageRoot(
+      resolvedRootPath,
+      packageId ?? buildLocalApplicationPackageId(resolvedRootPath),
+    );
   }
 
   async refresh(): Promise<void> {

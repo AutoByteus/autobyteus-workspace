@@ -10,10 +10,7 @@ import type {
   ApplicationCatalogDiagnostic,
   ApplicationCatalogSnapshot,
 } from "../domain/application-catalog-snapshot.js";
-import { appConfigProvider } from "../../config/app-config-provider.js";
-import { ApplicationPackageRegistryStore } from "../../application-packages/stores/application-package-registry-store.js";
-import { ApplicationPackageRootSettingsStore } from "../../application-packages/stores/application-package-root-settings-store.js";
-import { buildLocalApplicationPackageId } from "../../application-packages/utils/application-package-root-summary.js";
+import type { ApplicationPackageRegistrySnapshot } from "../../application-packages/domain/application-package-registry-snapshot.js";
 import {
   getApplicationManifestPath,
   parseApplicationManifest,
@@ -173,44 +170,13 @@ const validateManifestResourceSlotDefaults = (record: ScannedBundleRecord): void
 };
 
 export class FileApplicationBundleProvider {
-  constructor(
-    private readonly config = appConfigProvider.config,
-    private readonly rootSettingsStore = new ApplicationPackageRootSettingsStore(),
-    private readonly registryStore = new ApplicationPackageRegistryStore(),
-  ) {}
+  constructor(..._legacyDependencies: unknown[]) {}
 
-  private async listBundleRoots(): Promise<BundleRootDescriptor[]> {
-    const seen = new Set<string>();
-    const bundleRoots: BundleRootDescriptor[] = [];
-    const builtInApplicationRootPath = this.rootSettingsStore.getBuiltInRootPath();
-
-    const addRoot = (packageId: string, packageRootPath: string): void => {
-      const resolvedPath = path.resolve(packageRootPath);
-      if (seen.has(resolvedPath)) {
-        return;
-      }
-      seen.add(resolvedPath);
-      bundleRoots.push({ packageId, packageRootPath: resolvedPath });
-    };
-
-    addRoot(BUILT_IN_APPLICATION_PACKAGE_ID, builtInApplicationRootPath);
-
-    const additionalRoots = this.rootSettingsStore.listAdditionalRootPaths();
-    const registryRecords = await this.registryStore.listPackageRecords();
-    const registryByRootPath = new Map(
-      registryRecords.map((record) => [path.resolve(record.rootPath), record]),
-    );
-
-    for (const additionalRootPath of additionalRoots) {
-      const resolvedRootPath = path.resolve(additionalRootPath);
-      if (resolvedRootPath === builtInApplicationRootPath) {
-        continue;
-      }
-      const record = registryByRootPath.get(resolvedRootPath);
-      addRoot(record?.packageId ?? buildLocalApplicationPackageId(resolvedRootPath), resolvedRootPath);
-    }
-
-    return bundleRoots;
+  private listBundleRoots(registrySnapshot: ApplicationPackageRegistrySnapshot): BundleRootDescriptor[] {
+    return registrySnapshot.packages.map((packageEntry) => ({
+      packageId: packageEntry.packageId,
+      packageRootPath: path.resolve(packageEntry.packageRootPath),
+    }));
   }
 
   private async scanBundleRecord(
@@ -465,8 +431,8 @@ export class FileApplicationBundleProvider {
     };
   }
 
-  async getCatalogSnapshot(): Promise<ApplicationCatalogSnapshot> {
-    const bundleRoots = await this.listBundleRoots();
+  async getCatalogSnapshot(registrySnapshot: ApplicationPackageRegistrySnapshot): Promise<ApplicationCatalogSnapshot> {
+    const bundleRoots = this.listBundleRoots(registrySnapshot);
     const scanResults = (
       await Promise.all(bundleRoots.map((root) => this.scanBundleRoot(root)))
     ).flat();
@@ -485,8 +451,8 @@ export class FileApplicationBundleProvider {
     };
   }
 
-  async listBundles(): Promise<ApplicationBundle[]> {
-    return (await this.getCatalogSnapshot()).applications;
+  async listBundles(registrySnapshot: ApplicationPackageRegistrySnapshot): Promise<ApplicationBundle[]> {
+    return (await this.getCatalogSnapshot(registrySnapshot)).applications;
   }
 
   async validatePackageRoot(packageRootPath: string, packageId: string): Promise<void> {

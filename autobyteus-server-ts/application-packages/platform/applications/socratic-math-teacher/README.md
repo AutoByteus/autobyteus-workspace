@@ -6,7 +6,9 @@ It now demonstrates:
 
 - one app-owned GraphQL lesson API hosted under the platform backend mount
 - one app-owned `lessonId` business identity
+- one required manifest `resourceSlots[]` team slot resolved through the host-managed saved launch setup
 - one long-lived binding reused through `runtimeControl.postRunInput(...)`
+- host-managed saved launch defaults for runtime/model/workspace selection before entry
 - app-owned schema and generated frontend client artifacts that stay inside the application workspace
 
 Authoring roots:

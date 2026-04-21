@@ -11,6 +11,10 @@ export const ApplicationFields = gql`
     iconAssetPath
     entryHtmlAssetPath
     writable
+    resourceSlots {
+      slotKey
+      required
+    }
     bundleResources {
       kind
       localId

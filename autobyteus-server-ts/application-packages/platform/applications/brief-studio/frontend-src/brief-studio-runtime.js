@@ -146,8 +146,8 @@ export const createBriefStudioApp = ({
     render();
     setStatus(
       state.briefs.length === 0
-        ? "Brief Studio is ready. Create a brief record, then launch one or more draft runs from it."
-        : "Brief Studio is ready. GraphQL keeps the UI on one app-owned business API over the hosted backend mount.",
+        ? "Brief Studio is ready. Create a brief, then generate a draft when it is ready for review."
+        : "Brief Studio is ready. Open a brief to review drafts, notes, and approval state.",
       "ready",
     );
   };
@@ -179,7 +179,7 @@ export const createBriefStudioApp = ({
       return;
     }
 
-    setStatus("Launching a draft run bound to this briefId…");
+    setStatus("Generating a fresh draft for this brief…");
     await state.client.launchDraftRun({
       briefId: state.selectedBriefId,
     });

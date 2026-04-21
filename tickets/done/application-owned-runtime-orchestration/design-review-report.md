@@ -5,10 +5,10 @@
 - Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/tickets/in-progress/application-owned-runtime-orchestration/requirements.md`
 - Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/tickets/in-progress/application-owned-runtime-orchestration/investigation-notes.md`
 - Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/tickets/in-progress/application-owned-runtime-orchestration/design-spec.md`
-- Current Review Round: `11`
-- Trigger: `User requested follow-up architecture review on 2026-04-20 after refining business-first UI wording, advanced/details runtime surfaces, and pre-entry configuration UX mirroring`
-- Prior Review Round Reviewed: `10`
-- Latest Authoritative Round: `11`
+- Current Review Round: `14`
+- Trigger: `User requested follow-up architecture review on 2026-04-21 after reworking package-registry ownership and startup known-app inventory / NO_PERSISTED_STATE handling`
+- Prior Review Round Reviewed: `13`
+- Latest Authoritative Round: `14`
 - Current-State Evidence Basis: `requirements.md`, `investigation-notes.md`, `design-spec.md`, `design-review-report.md`
 
 ## Round History
@@ -26,19 +26,21 @@
 | 9 | User requested follow-up review after refining application-mode `autoExecuteTools` behavior and business-first teaching-app UI direction on 2026-04-20 | 0 | 0 | Pass | Yes | The generic host now chooses one actionable application-mode tool-approval behavior, and the teaching apps clarify business-first UI without reopening ownership gaps. |
 | 10 | User requested follow-up review after refining the pre-entry configuration gate and `supportedLaunchDefaults` behavior on 2026-04-20 | 0 | 0 | Pass | Yes | The host pre-entry configuration gate is now explicit, uses manifest-declared host-understood defaults, and keeps business-first app canvases free of low-level runtime tuning without reopening ownership gaps. |
 | 11 | User requested follow-up review after refining business-first UI wording, advanced/details runtime surfaces, and pre-entry configuration UX mirroring on 2026-04-20 | 0 | 0 | Pass | Yes | Legitimate business actions stay in-app, raw runtime vocabulary moves to advanced/details surfaces, and the pre-entry host gate now mirrors the familiar configuration form without reopening ownership gaps. |
+| 12 | User requested follow-up review on the latest authoritative package after consolidating business-first application UX, advanced/details runtime surfaces, and catalog/setup guidance on 2026-04-20 | 0 | 0 | Pass | Yes | The latest package keeps business actions in-app, demotes raw runtime vocabulary and resource details to advanced/details surfaces, and keeps the pre-entry host setup gate authoritative without reopening ownership gaps. |
+| 13 | User requested follow-up review after the desktop-startup robustness redesign on 2026-04-21 | 0 | 2 | Fail | Yes | The redesign correctly separates bundle-independent persisted-state access in principle, but the new package-registry boundary and startup known-app inventory/outcome contract are still underdesigned. |
+| 14 | User requested follow-up review after reworking package-registry ownership and startup known-app inventory / `NO_PERSISTED_STATE` handling on 2026-04-21 | 2 | 0 | Pass | Yes | The package registry is now a concrete authoritative boundary, and startup inventory plus outcome-to-availability mapping are now explicit enough for implementation. |
 
 ## Reviewed Design Spec
 
 The requirements basis remains sufficient and design-ready.
 
-This latest refinement also does not reopen any resolved blocker. It sharpens the product-facing presentation of the already-approved boundaries rather than changing ownership:
-- legitimate business actions remain in-app (for example `approveBrief` / `rejectBrief` style review workflow), which preserves app-owned business workflow ownership instead of pushing domain actions into the host.
-- raw runtime wording and identifiers such as `run`, `binding`, execution-history ids, resource-kind badges, and bundle-resource ids now move out of the main business canvas and main catalog cards into advanced/details surfaces, which reduces boundary leakage without hiding needed diagnostics.
-- the pre-entry configuration gate now more explicitly mirrors the familiar agent/team configuration form, including workspace root path, while still remaining a host-managed setup surface rather than a run-launch surface.
-- `autoExecuteTools` remains visible-but-locked to `true`, which preserves transparency without reintroducing a fake host-owned approval decision.
-- the teaching apps now prefer business-facing labels such as `Generate draft`, which makes the intended app-owned business API and canvas model easier to learn.
+The latest package resolves both round-13 blockers without reopening earlier ones:
+- the new `application-packages` boundary is now concrete. `ApplicationPackageRegistryService` owns imported package roots, package metadata, package-level diagnostics, and import/remove/reload flows; `ApplicationPackageRegistrySnapshot` gives the package-registry subject one shared authoritative shape; and `ApplicationBundleService` now explicitly consumes registry output instead of reading package-root stores directly.
+- the startup known-app inventory is now concrete and bundle-independent. `ApplicationPlatformStateStore.listKnownApplicationIds()` and `getExistingStatePresence(applicationId)` give recovery one authoritative inventory/presence boundary under `application-storage` rather than leaving inventory logic scattered across binding/journal callers.
+- `ApplicationAvailabilityService.applyStartupRecoveryOutcome(...)` now makes the `NO_PERSISTED_STATE` branch explicit, including the important steady-state rule that `CATALOG_ACTIVE + NO_PERSISTED_STATE -> ACTIVE` while quarantined or persisted-only cases remain non-admitted.
+- the package-registry spine (`DS-012`) and startup-recovery spine (`DS-007` / `DS-011`) now fit together cleanly: package import/remove/reload updates registry state and diagnostics, bundle discovery derives the app catalog from that registry boundary, and availability/recovery react to catalog plus persisted-state inputs without boundary bypass.
 
-These refinements strengthen the teaching story and UI boundary clarity rather than creating a new architecture gap. No new blocking design gaps were found in this round. The design remains implementation-ready.
+These reworks make the desktop-startup robustness redesign concrete enough for implementation. No new blocking design gaps were found in this round.
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
@@ -51,6 +53,8 @@ These refinements strengthen the teaching story and UI boundary clarity rather t
 | 5 | `AOR-DI-005` | High | Resolved | `Architecture Review Rework Coverage`, `Binding-Centric Correlation Principle`, `Direct startRun(...) Correlation Establishment Contract`, `DS-002`, `Execution Event Ingress Authority`, `Interface Boundary Mapping`, `Example App Implementation Shape`, `Migration / Refactor Sequence`, `Guidance For Implementation` | The direct-start handoff remains explicit through pending intent, echoed `bindingIntentId`, and authoritative reconciliation lookup. |
 | 7 | `AOR-DI-006` | High | Resolved | `Quarantined Application Repair / Reload Re-entry Principle`, `DS-010`, `Restart Recovery / Resume Contract`, `Interface Boundary Mapping`, `Migration / Refactor Sequence` | App repair/reload now has one authoritative owner, state machine, re-entry algorithm, and explicit live-traffic behavior. |
 | 7 | `AOR-DI-007` | Medium | Resolved | `Authoritative Resource-Slot Declaration / Validation Principle`, `ApplicationManifestV3.resourceSlots`, `Ownership Map`, `Interface Boundary Mapping`, `Migration / Refactor Sequence` | Slot declaration home, minimum schema, and validation split are now explicit enough for implementation. |
+| 13 | `AOR-DI-008` | High | Resolved | `Persisted Subject Separation Principle`, `DS-007`, `DS-012`, `Ownership Map`, `Draft File Responsibility Mapping`, `Target Subsystem / Folder / File Mapping`, `Interface Boundary Mapping` | The package registry now has one concrete owner, snapshot shape, file mapping, and interface boundary under `application-packages`. |
+| 13 | `AOR-DI-009` | High | Resolved | `Bundle-Independent Persisted Platform State Access Principle`, `Startup Known-Application Inventory Principle`, `DS-007`, `DS-011`, `Per-Application Startup Recovery Outcome Contract`, `Outcome-to-availability mapping`, `Ownership Map`, `Interface Boundary Mapping` | Startup inventory, existing-state presence probing, and `NO_PERSISTED_STATE` admission behavior are now explicit enough for implementation. |
 
 ## Spine Inventory Verdict
 
@@ -230,4 +234,4 @@ None.
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Notes: `The latest refinement keeps the package implementation-ready. Legitimate business actions remain app-owned, raw runtime wording and identifiers move to advanced/details surfaces, and the pre-entry host gate now mirrors the familiar config form while keeping autoExecuteTools visible-but-locked to true.`
+- Notes: `The updated package resolves the desktop-startup robustness blockers: package-registry ownership is now concrete under application-packages, and bundle-independent startup inventory plus explicit NO_PERSISTED_STATE availability mapping are now concrete enough for implementation.`

@@ -12,8 +12,8 @@
         <div class="eyebrow">Built-in teaching sample</div>
         <h1>Socratic Math Teacher</h1>
         <p class="lede">
-          This built-in application teaches the long-lived conversational-binding pattern: one lesson business record,
-          one bound team run, and repeated follow-up input posted through the same runtime binding.
+          Start lessons, ask follow-up questions, and request hints while the app keeps one lesson-centric
+          conversation flow over the hosted backend mount.
         </p>
       </header>
 
@@ -22,7 +22,7 @@
       </section>
 
       <details class="card details-panel">
-        <summary class="details-summary">Teaching details</summary>
+        <summary class="details-summary">Advanced app details</summary>
         <p class="details-copy muted">
           The platform hosts the backend mount and launch lifecycle, but the app owns the lesson GraphQL schema,
           generated frontend client, tutor transcript projection, and repeated follow-up semantics.
@@ -50,7 +50,7 @@
         <div class="panel-header">
           <div>
             <h2>Start lesson</h2>
-            <p class="muted">Create one lesson record and bind one tutor run to it. Runtime resource and model defaults now come from the host launch setup surface.</p>
+            <p class="muted">Create one lesson record and begin the tutoring conversation. Runtime, model, and workspace defaults now come from the host launch setup surface.</p>
           </div>
         </div>
         <form id="start-lesson-form" class="brief-composer">
@@ -62,7 +62,7 @@
           </div>
           <div class="action-row">
             <button class="primary-button" type="submit">Start lesson</button>
-            <span class="muted small">The tutor run is app-owned and receives later student messages through GraphQL mutations; host launch setup supplies runtime/model defaults.</span>
+            <span class="muted small">The app keeps later student questions on the same lesson record while host launch setup supplies runtime defaults.</span>
           </div>
         </form>
       </section>
@@ -72,12 +72,12 @@
           <div class="panel-header">
             <div>
               <h2>Lessons</h2>
-              <p class="muted">Each lesson owns one long-lived conversational binding.</p>
+              <p class="muted">Track each lesson, its current tutoring status, and the latest activity.</p>
             </div>
             <button id="refresh-button" class="ghost-button" type="button">Refresh</button>
           </div>
           <div id="lesson-list" class="brief-list empty-state">
-            No lessons yet. Start one lesson to create a long-lived conversational binding.
+            No lessons yet. Start one lesson to begin the tutoring conversation.
           </div>
         </aside>
 
@@ -85,11 +85,11 @@
           <div class="panel-header">
             <div>
               <h2>Lesson detail</h2>
-              <p class="muted">Tutor transcript and lesson state are projected by the app from runtime events and artifacts.</p>
+              <p class="muted">Review the tutoring conversation, current lesson status, and next student action.</p>
             </div>
           </div>
           <div id="lesson-detail" class="empty-state">
-            Select a lesson to inspect its projected tutor transcript and binding state.
+            Select a lesson to continue the tutoring conversation and review past guidance.
           </div>
         </section>
       </section>

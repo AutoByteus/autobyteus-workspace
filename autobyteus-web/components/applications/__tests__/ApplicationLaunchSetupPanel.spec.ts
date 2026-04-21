@@ -27,6 +27,7 @@ vi.mock('~/composables/useLocalization', () => ({
         'applications.components.applications.ApplicationLaunchSetupPanel.noResourceSelected': 'No resource selected',
         'applications.components.applications.ApplicationLaunchSetupPanel.toolExecutionLabel': 'Tool execution',
         'applications.components.applications.ApplicationLaunchSetupPanel.toolExecutionDescription': 'Auto execute tools is always on.',
+        'applications.components.applications.ApplicationLaunchSetupPanel.toolExecutionLockedOn': 'Locked on',
         'applications.components.applications.ApplicationLaunchSetupPanel.useApplicationDefaultRuntime': 'Use application default runtime',
         'applications.components.applications.ApplicationLaunchSetupPanel.runtimeLabel': 'Default runtime',
         'applications.components.applications.ApplicationLaunchSetupPanel.modelLabel': 'Default model',
@@ -228,6 +229,8 @@ describe('ApplicationLaunchSetupPanel', () => {
     )
     expect(wrapper.get('[data-testid="application-launch-setup-panel"]').exists()).toBe(true)
     expect(wrapper.text()).toContain('Tool execution')
+    const lockedToggle = wrapper.find('button[aria-checked="true"][disabled]')
+    expect(lockedToggle.exists()).toBe(true)
     expect(wrapper.emitted('setup-state-change')?.at(-1)?.[0]).toMatchObject({
       phase: 'ready',
       isLaunchReady: false,
@@ -237,7 +240,7 @@ describe('ApplicationLaunchSetupPanel', () => {
     await wrapper.get('[data-testid="runtime-fields"] button:nth-child(1)').trigger('click')
     await wrapper.get('[data-testid="runtime-fields"] button:nth-child(2)').trigger('click')
     await wrapper.get('input[type="text"]').setValue('/tmp/brief-studio')
-    await wrapper.get('button.bg-blue-600').trigger('click')
+    await wrapper.get('button.rounded-md.bg-blue-600').trigger('click')
     await flushPromises()
 
     expect(fetchMock).toHaveBeenCalledTimes(3)

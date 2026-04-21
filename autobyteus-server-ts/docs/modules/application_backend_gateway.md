@@ -33,12 +33,24 @@ Owns the platform-facing transport boundary for application backends: engine sta
   - reads current engine status without forcing startup.
 - `POST /rest/applications/:applicationId/backend/ensure-ready`
   - ensures storage + worker startup and returns the resulting engine status.
+- `POST /rest/applications/:applicationId/backend/reload`
+  - asks the application-availability owner to reload and re-enter one repaired application. During the `REENTERING` window, concurrent backend admission stays blocked with retryable availability detail; a successful reload returns the app to `ACTIVE` with the worker still stopped, and only a later `ensure-ready` boots a fresh worker.
 - `POST /rest/applications/:applicationId/backend/queries/:queryName`
 - `POST /rest/applications/:applicationId/backend/commands/:commandName`
 - `POST /rest/applications/:applicationId/backend/graphql`
 - `GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS /rest/applications/:applicationId/backend/routes/*`
 
-Queries, commands, and GraphQL accept request context in the POST body. All request surfaces can also carry `launchInstanceId` via:
+Queries, commands, and GraphQL accept request context in the POST body.
+
+The same REST module also exposes the host launch-setup surfaces outside the backend subpath:
+
+- `GET /rest/applications/:applicationId/available-resources`
+- `GET /rest/applications/:applicationId/resource-configurations`
+- `PUT /rest/applications/:applicationId/resource-configurations/:slotKey`
+
+Those setup routes feed the authoritative pre-entry setup gate on `/applications/:id` before the iframe host is allowed to enter the application.
+
+All request surfaces can also carry `launchInstanceId` via:
 
 - `x-autobyteus-launch-instance-id` header, or
 - `launchInstanceId` query string.
@@ -61,6 +73,7 @@ The gateway bridges worker-published notifications into a per-application websoc
 
 - unknown application id -> `404`
 - request-context identity mismatch or unmatched custom route -> `400`
+- application unavailable (`QUARANTINED` or `REENTERING`) -> `503` with availability detail; `REENTERING` responses are retryable and intentionally block concurrent backend admission during repaired-app re-entry, and `QUARANTINED` also covers removed or invalid-yet-persisted applications on their real canonical `applicationId` even when storage roots use compact hashed keys
 - worker/load/runtime failures -> `500`
 
 ## Related Docs

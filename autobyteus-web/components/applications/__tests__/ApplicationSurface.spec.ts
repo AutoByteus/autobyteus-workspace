@@ -77,6 +77,7 @@ const buildApplication = (): ApplicationCatalogEntry => ({
   iconAssetPath: null,
   entryHtmlAssetPath: '/application-bundles/sample-app/assets/ui/index.html',
   writable: true,
+  resourceSlots: [],
   bundleResources: [],
 })
 

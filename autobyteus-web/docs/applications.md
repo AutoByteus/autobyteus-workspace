@@ -47,8 +47,11 @@ Each application entry carries:
 - transport-neutral `iconAssetPath` and `entryHtmlAssetPath`
 - `writable` source metadata
 - bundled runtime resources exposed as `bundleResources[]`
+- manifest-declared setup requirements exposed as `resourceSlots[]`
 
 The generic host no longer treats one singular bundle resource as the required launch-time runtime target. The catalog exposes what the bundle contains; application backends decide if and when to use those resources.
+
+`ApplicationCard.vue` uses the same authoritative `resourceSlots[]` contract to summarize host-managed setup requirements on the primary `/applications` surface. The catalog should describe required setup work in business-facing language (for example, required setup-item counts) instead of leaking raw runtime-resource ids as the primary card message.
 
 The store also owns stale-response protection for node switches: late catalog or detail responses from the old bound node are discarded instead of repopulating stale application state after `bindingRevision` changes.
 
@@ -59,9 +62,10 @@ The store also owns stale-response protection for node switches: late catalog or
 On route load, the shell:
 
 1. fetches the application entry if needed,
-2. asks `applicationHostStore.startLaunch(applicationId)` to prepare the app backend,
-3. shows launch progress or launch failure state from that store, and
-4. renders `ApplicationSurface.vue` once the host launch reaches `ready`.
+2. renders the authoritative `ApplicationLaunchSetupPanel` when the application declares `resourceSlots[]`,
+3. blocks entry until the saved setup is launch-ready for every required slot,
+4. asks `applicationHostStore.startLaunch(applicationId)` to prepare the app backend only after that gate is satisfied, and
+5. renders `ApplicationSurface.vue` once the host launch reaches `ready`.
 
 `applicationHostStore` is the authoritative owner for the generic host-side launch state:
 
@@ -71,6 +75,28 @@ On route load, the shell:
 - `failed`
 
 The host launch is intentionally narrow. It does **not** create an agent run or team run. It only ensures the application backend is ready and produces one ephemeral `launchInstanceId` for iframe bootstrap correlation.
+
+## Pre-Entry Launch Setup Gate
+
+`ApplicationShell.vue` is also the owner for the pre-entry gate shown on `/applications/:id`.
+
+That gate:
+
+- loads the application's declared `resourceSlots[]` contract and current saved setup,
+- lets the user save required runtime-resource and launch-default selections before entry,
+- keeps `Enter application` disabled while setup is loading, saving, dirty, or missing required saved state, and
+- only allows host launch after the setup panel reports `launch-ready`.
+
+`ApplicationLaunchSetupPanel.vue` owns the actual setup UI. It surfaces:
+
+- required vs optional slots,
+- bundled vs shared runtime-resource choices,
+- saved launch defaults such as runtime kind, model identifier, and workspace root when the slot supports them, and
+- the host-managed note that automatic tool execution remains enabled for this application flow.
+
+This means the authoritative user journey is now:
+
+`Applications card -> launch setup save -> Enter application -> iframe bootstrap -> app-owned run creation`.
 
 ## Application Surface Ownership
 
@@ -133,7 +159,7 @@ The application backend owns:
 
 - business identifiers and pending binding intents
 - when to start runs
-- which bundled resource ref to use
+- which configured runtime resource slot to use after the host saves setup
 - how runtime outputs project into app-owned state
 
 This separation is the core architectural change: the Applications page launches applications, not platform-owned application executions.

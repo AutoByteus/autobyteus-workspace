@@ -9,6 +9,7 @@ Shared TypeScript contract package for AutoByteus application bundles.
 - backend definition contract v2 types
 - frontend SDK contract v2 constants
 - shared request/route/GraphQL/notification/storage context types
+- runtime-resource, resource-slot, and host-managed launch-default configuration types
 - runtime-control, run-binding, and execution-event envelope types
 - application engine status types
 
@@ -29,6 +30,7 @@ Shared TypeScript contract package for AutoByteus application bundles.
   - requires `manifestVersion: "3"`
   - requires `ui.frontendSdkContractVersion: "2"`
   - requires `backend.bundleManifest`
+  - may declare app-consumable `resourceSlots[]` for host-managed saved setup
   - does **not** declare a singular launch-time `runtimeTarget`
 - `ApplicationBackendBundleManifestV1`
   - bundle-owned backend manifest under `backend/`
@@ -51,6 +53,8 @@ Shared TypeScript contract package for AutoByteus application bundles.
 
 - `ApplicationRuntimeControl`
 - `ApplicationRuntimeResourceRef` / `ApplicationRuntimeResourceSummary`
+- `ApplicationResourceSlotDeclaration`
+- `ApplicationConfiguredResource` / `ApplicationConfiguredLaunchDefaults`
 - `ApplicationStartRunInput`
 - `ApplicationRunBindingSummary`
 - `ApplicationExecutionEventEnvelope`
@@ -77,9 +81,10 @@ It also emits a packaging-only import mirror under:
 It demonstrates:
 
 - manifest v3
+- manifest-declared `resourceSlots[]`
 - backend bundle manifest v1
 - request context `{ applicationId, launchInstanceId? }`
-- application-authored `runtimeControl.startRun(...)`
+- application-authored `runtimeControl.getConfiguredResource(...)` + `startRun(...)`
 - durable execution-event dispatch envelopes with stable `eventId` and `journalSequence`
 
 ## Related docs

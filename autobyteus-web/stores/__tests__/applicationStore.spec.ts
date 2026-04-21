@@ -60,6 +60,7 @@ const buildApplication = (
   localApplicationId: id,
   packageId: 'pkg',
   writable: true,
+  resourceSlots: [],
   bundleResources: [
     {
       kind: 'AGENT_TEAM',

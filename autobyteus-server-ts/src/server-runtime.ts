@@ -25,6 +25,8 @@ import { getApplicationOrchestrationRecoveryService } from "./application-orches
 import { getApplicationOrchestrationStartupGate } from "./application-orchestration/services/application-orchestration-startup-gate.js";
 import { getApplicationAvailabilityService } from "./application-orchestration/services/application-availability-service.js";
 import { ApplicationBundleService } from "./application-bundles/services/application-bundle-service.js";
+import { ApplicationPackageRegistryService } from "./application-packages/services/application-package-registry-service.js";
+import { ApplicationPlatformStateStore } from "./application-storage/stores/application-platform-state-store.js";
 import {
   startReceiptWorkflowRuntime,
   stopReceiptWorkflowRuntime,
@@ -158,10 +160,21 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
   }
 
   try {
-    const catalogSnapshot = await ApplicationBundleService.getInstance().getCatalogSnapshot();
-    getApplicationAvailabilityService().synchronizeWithCatalogSnapshot(catalogSnapshot);
+    const packageRegistrySnapshot = await ApplicationPackageRegistryService.getInstance().getRegistrySnapshot();
+    const catalogSnapshot = await ApplicationBundleService.getInstance().getCatalogSnapshot(packageRegistrySnapshot);
+    const persistedKnownApplicationIds = await new ApplicationPlatformStateStore().listKnownApplicationIds();
+    const availabilityService = getApplicationAvailabilityService();
     await getApplicationOrchestrationStartupGate().runStartupRecovery(async () => {
-      await getApplicationOrchestrationRecoveryService().resumeBindings(catalogSnapshot);
+      const recoveryOutcomes = await getApplicationOrchestrationRecoveryService().resumeBindings(
+        catalogSnapshot,
+        persistedKnownApplicationIds,
+      );
+      availabilityService.reconcileCatalogSnapshotWithKnownApplications(catalogSnapshot, {
+        persistedKnownApplicationIds,
+        recoveryOutcomesByApplicationId: new Map(
+          recoveryOutcomes.map((outcome) => [outcome.applicationId, outcome]),
+        ),
+      });
       await getApplicationExecutionEventDispatchService().resumePendingEvents();
     });
   } catch (error) {

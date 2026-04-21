@@ -2,12 +2,21 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { ApplicationBackendGatewayService } from "../../../src/application-backend-gateway/services/application-backend-gateway-service.js";
+import {
+  buildCanonicalApplicationId,
+} from "../../../src/application-bundles/utils/application-bundle-identity.js";
 import { BUILT_IN_APPLICATION_PACKAGE_ID, FileApplicationBundleProvider } from "../../../src/application-bundles/providers/file-application-bundle-provider.js";
+import { ApplicationAvailabilityService } from "../../../src/application-orchestration/services/application-availability-service.js";
+import { ApplicationStorageLifecycleService } from "../../../src/application-storage/services/application-storage-lifecycle-service.js";
+import { ApplicationPlatformStateStore } from "../../../src/application-storage/stores/application-platform-state-store.js";
+import { buildApplicationStorageKey } from "../../../src/application-storage/utils/application-storage-paths.js";
 import { GitHubApplicationPackageInstaller } from "../../../src/application-packages/installers/github-application-package-installer.js";
 import { ApplicationPackageService } from "../../../src/application-packages/services/application-package-service.js";
 import { ApplicationPackageRegistryStore } from "../../../src/application-packages/stores/application-package-registry-store.js";
 import { ApplicationPackageRootSettingsStore } from "../../../src/application-packages/stores/application-package-root-settings-store.js";
 import type { GitHubRepositorySource } from "../../../src/application-packages/types.js";
+import { buildLocalApplicationPackageId } from "../../../src/application-packages/utils/application-package-root-summary.js";
 
 const parseAdditionalRoots = (): string[] => {
   const raw = process.env.AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS ?? "";
@@ -47,6 +56,28 @@ const createBuiltInMaterializer = (bundledSourceRootPath: string) => ({
   getBundledSourceRootPath: () => path.resolve(bundledSourceRootPath),
 });
 
+const createLongImportedPackageRoot = async (
+  baseRoot: string,
+  localApplicationId: string,
+): Promise<string> => {
+  let currentRoot = path.join(baseRoot, "imported-package-root");
+  let depth = 0;
+
+  while (true) {
+    const candidate = path.join(currentRoot, "package-root");
+    const applicationId = buildCanonicalApplicationId(
+      buildLocalApplicationPackageId(path.resolve(candidate)),
+      localApplicationId,
+    );
+    if (applicationId.length > 240) {
+      await fs.mkdir(candidate, { recursive: true });
+      return candidate;
+    }
+    depth += 1;
+    currentRoot = path.join(currentRoot, `very-long-package-segment-${String(depth).padStart(2, "0")}`);
+  }
+};
+
 const writeApplicationBundle = async (packageRoot: string, applicationId: string): Promise<void> => {
   const bundleRoot = path.join(packageRoot, "applications", applicationId);
   await fs.mkdir(path.join(bundleRoot, "ui"), { recursive: true });
@@ -55,12 +86,23 @@ const writeApplicationBundle = async (packageRoot: string, applicationId: string
   await fs.mkdir(path.join(bundleRoot, "backend", "assets"), { recursive: true });
   await fs.mkdir(path.join(bundleRoot, "agent-teams", "sample-team", "agents", "sample-agent"), { recursive: true });
   await fs.writeFile(path.join(bundleRoot, "application.json"), JSON.stringify({
-    manifestVersion: "2",
+    manifestVersion: "3",
     id: applicationId,
     name: applicationId,
-    ui: { entryHtml: "ui/index.html", frontendSdkContractVersion: "1" },
-    runtimeTarget: { kind: "AGENT_TEAM", localId: "sample-team" },
+    ui: { entryHtml: "ui/index.html", frontendSdkContractVersion: "2" },
     backend: { bundleManifest: "backend/bundle.json" },
+    resourceSlots: [
+      {
+        slotKey: "draftingTeam",
+        name: "Drafting Team",
+        allowedResourceKinds: ["AGENT_TEAM"],
+        defaultResourceRef: {
+          owner: "bundle",
+          kind: "AGENT_TEAM",
+          localId: "sample-team",
+        },
+      },
+    ],
   }, null, 2));
   await fs.writeFile(path.join(bundleRoot, "ui", "index.html"), "<html></html>", "utf-8");
   await fs.writeFile(path.join(bundleRoot, "backend", "bundle.json"), JSON.stringify({
@@ -69,7 +111,7 @@ const writeApplicationBundle = async (packageRoot: string, applicationId: string
     moduleFormat: "esm",
     distribution: "self-contained",
     targetRuntime: { engine: "node", semver: ">=22 <23" },
-    sdkCompatibility: { backendDefinitionContractVersion: "1", frontendSdkContractVersion: "1" },
+    sdkCompatibility: { backendDefinitionContractVersion: "2", frontendSdkContractVersion: "2" },
     supportedExposures: { queries: true, commands: true, routes: true, graphql: true, notifications: true, eventHandlers: true },
     migrationsDir: "backend/migrations",
     assetsDir: "backend/assets",
@@ -171,6 +213,54 @@ describe("ApplicationPackageService", () => {
       isRemovable: true,
       applicationCount: 1,
     });
+  });
+
+  it("surfaces package-registry diagnostics for missing roots and registry/settings mismatches", async () => {
+    const repoRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-repo-"));
+    const appDataRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-app-data-"));
+    const registryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-registry-"));
+    const registryOnlyRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-registry-only-"));
+    const missingConfiguredRoot = path.join(appDataRoot, "missing-root");
+
+    cleanupPaths.add(repoRoot);
+    cleanupPaths.add(appDataRoot);
+    cleanupPaths.add(registryRoot);
+    cleanupPaths.add(registryOnlyRoot);
+
+    process.env.AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS = missingConfiguredRoot;
+
+    const rootSettingsStore = createRootSettingsStore(appDataRoot);
+    const registryStore = new ApplicationPackageRegistryStore({ getAppDataDir: () => registryRoot });
+    await registryStore.upsertLinkedLocalPackageRecord(registryOnlyRoot);
+
+    const service = new ApplicationPackageService({
+      rootSettingsStore,
+      registryStore,
+      refreshApplicationBundles: async () => undefined,
+      refreshAgentDefinitions: async () => undefined,
+      refreshAgentTeams: async () => undefined,
+      validateApplicationPackageContents: async () => undefined,
+      builtInMaterializer: createBuiltInMaterializer(repoRoot),
+    });
+
+    const snapshot = await service.getRegistrySnapshot();
+
+    expect(snapshot.diagnostics).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          packageRootPath: path.resolve(missingConfiguredRoot),
+          message: expect.stringContaining("configured but no registry record exists"),
+        }),
+        expect.objectContaining({
+          packageRootPath: path.resolve(missingConfiguredRoot),
+          message: expect.stringContaining("root is missing"),
+        }),
+        expect.objectContaining({
+          packageRootPath: path.resolve(registryOnlyRoot),
+          message: expect.stringContaining("registered in the registry but not present in configured roots"),
+        }),
+      ]),
+    );
   });
 
   it("rejects duplicate GitHub imports before reinstalling", async () => {
@@ -279,6 +369,192 @@ describe("ApplicationPackageService", () => {
       "agent-definitions",
       "agent-teams",
     ]);
+  });
+
+  it("keeps removed long-id apps with persisted platform state under quarantined availability ownership", async () => {
+    const repoRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-repo-"));
+    const appDataRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-app-data-"));
+    const registryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-registry-"));
+    const localRootBase = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-local-"));
+    const localRoot = await createLongImportedPackageRoot(localRootBase, "linked-app");
+
+    cleanupPaths.add(repoRoot);
+    cleanupPaths.add(appDataRoot);
+    cleanupPaths.add(registryRoot);
+    cleanupPaths.add(localRootBase);
+
+    const rootSettingsStore = createRootSettingsStore(appDataRoot);
+    await writeApplicationBundle(rootSettingsStore.getBuiltInRootPath(), "built-in-app");
+    await writeApplicationBundle(localRoot, "linked-app");
+
+    const linkedPackageId = buildLocalApplicationPackageId(path.resolve(localRoot));
+    const linkedApplicationId = buildCanonicalApplicationId(linkedPackageId, "linked-app");
+    let linkedAppDiscoverable = true;
+    const buildCatalogSnapshot = () => ({
+      refreshedAt: new Date().toISOString(),
+      applications: linkedAppDiscoverable
+        ? [{ id: linkedApplicationId }]
+        : [],
+      diagnostics: [],
+    });
+    const applicationBundleService = {
+      getCatalogSnapshot: vi.fn(async () => buildCatalogSnapshot()),
+      getApplicationById: vi.fn(async (applicationId: string) => (
+        buildCatalogSnapshot().applications.find((application) => application.id === applicationId) ?? null
+      )),
+      getDiagnosticByApplicationId: vi.fn(async () => null),
+    };
+    const availabilityService = new ApplicationAvailabilityService({
+      applicationBundleService: applicationBundleService as never,
+      dispatchService: {
+        suspendApplication: vi.fn(),
+      } as never,
+    });
+    const platformStateStore = new ApplicationPlatformStateStore({
+      appConfig: { getAppDataDir: () => appDataRoot },
+      storageLifecycleService: new ApplicationStorageLifecycleService({
+        appConfig: { getAppDataDir: () => appDataRoot },
+        applicationBundleService: {
+          getApplicationById: vi.fn(async (applicationId: string) => (
+            applicationId === linkedApplicationId && linkedAppDiscoverable ? { id: applicationId } : null
+          )),
+        } as never,
+      }),
+    });
+    const service = new ApplicationPackageService({
+      rootSettingsStore,
+      registryStore: new ApplicationPackageRegistryStore({ getAppDataDir: () => registryRoot }),
+      refreshApplicationBundles: async () => {
+        linkedAppDiscoverable = rootSettingsStore.listAdditionalRootPaths().includes(path.resolve(localRoot));
+      },
+      refreshAgentDefinitions: async () => undefined,
+      refreshAgentTeams: async () => undefined,
+      validateApplicationPackageContents: async () => undefined,
+      builtInMaterializer: createBuiltInMaterializer(repoRoot),
+      applicationBundleService: applicationBundleService as never,
+      availabilityService: availabilityService as never,
+      platformStateStore: platformStateStore as never,
+    });
+
+    expect(linkedApplicationId.length).toBeGreaterThan(240);
+    expect(buildApplicationStorageKey(linkedApplicationId)).not.toBe(encodeURIComponent(linkedApplicationId));
+
+    const importedPackages = await service.importApplicationPackage({
+      sourceKind: "LOCAL_PATH",
+      source: localRoot,
+    });
+    const linkedPackage = importedPackages.find((entry) => entry.packageId === linkedPackageId);
+    expect(linkedPackage).toBeDefined();
+
+    await platformStateStore.withDatabase(linkedApplicationId, () => undefined);
+    await expect(platformStateStore.listKnownApplicationIds()).resolves.toEqual([linkedApplicationId]);
+    await expect(availabilityService.getAvailability(linkedApplicationId)).resolves.toMatchObject({
+      state: "ACTIVE",
+    });
+
+    await service.removeApplicationPackage(linkedPackageId);
+
+    const availability = await availabilityService.getAvailability(linkedApplicationId);
+    expect(availability).toMatchObject({
+      state: "QUARANTINED",
+    });
+    expect(availability?.detail).toContain("Persisted platform state still exists");
+
+    const backendGatewayService = new ApplicationBackendGatewayService({
+      applicationBundleService: applicationBundleService as never,
+      availabilityService: availabilityService as never,
+      engineHostService: {
+        ensureApplicationEngine: vi.fn(),
+      } as never,
+      notificationStreamService: { publish: vi.fn() } as never,
+    });
+
+    await expect(
+      backendGatewayService.ensureApplicationReady(linkedApplicationId),
+    ).rejects.toThrow("currently quarantined");
+  });
+
+  it("keeps reloaded long-id packages without a valid catalog entry under persisted-only quarantined ownership", async () => {
+    const repoRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-repo-"));
+    const appDataRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-app-data-"));
+    const registryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-registry-"));
+    const localRootBase = await fs.mkdtemp(path.join(os.tmpdir(), "application-package-local-"));
+    const localRoot = await createLongImportedPackageRoot(localRootBase, "linked-app");
+
+    cleanupPaths.add(repoRoot);
+    cleanupPaths.add(appDataRoot);
+    cleanupPaths.add(registryRoot);
+    cleanupPaths.add(localRootBase);
+
+    const rootSettingsStore = createRootSettingsStore(appDataRoot);
+    await writeApplicationBundle(rootSettingsStore.getBuiltInRootPath(), "built-in-app");
+    await writeApplicationBundle(localRoot, "linked-app");
+
+    const linkedPackageId = buildLocalApplicationPackageId(path.resolve(localRoot));
+    const linkedApplicationId = buildCanonicalApplicationId(linkedPackageId, "linked-app");
+    let linkedAppDiscoverable = true;
+    const buildCatalogSnapshot = () => ({
+      refreshedAt: new Date().toISOString(),
+      applications: linkedAppDiscoverable
+        ? [{ id: linkedApplicationId }]
+        : [],
+      diagnostics: [],
+    });
+    const applicationBundleService = {
+      getCatalogSnapshot: vi.fn(async () => buildCatalogSnapshot()),
+      getApplicationById: vi.fn(async (applicationId: string) => (
+        buildCatalogSnapshot().applications.find((application) => application.id === applicationId) ?? null
+      )),
+      getDiagnosticByApplicationId: vi.fn(async () => null),
+    };
+    const availabilityService = new ApplicationAvailabilityService({
+      applicationBundleService: applicationBundleService as never,
+      dispatchService: {
+        suspendApplication: vi.fn(),
+      } as never,
+    });
+    const platformStateStore = new ApplicationPlatformStateStore({
+      appConfig: { getAppDataDir: () => appDataRoot },
+      storageLifecycleService: new ApplicationStorageLifecycleService({
+        appConfig: { getAppDataDir: () => appDataRoot },
+        applicationBundleService: {
+          getApplicationById: vi.fn(async (applicationId: string) => (
+            applicationId === linkedApplicationId && linkedAppDiscoverable ? { id: applicationId } : null
+          )),
+        } as never,
+      }),
+    });
+    const service = new ApplicationPackageService({
+      rootSettingsStore,
+      registryStore: new ApplicationPackageRegistryStore({ getAppDataDir: () => registryRoot }),
+      refreshApplicationBundles: async () => undefined,
+      refreshAgentDefinitions: async () => undefined,
+      refreshAgentTeams: async () => undefined,
+      validateApplicationPackageContents: async () => undefined,
+      builtInMaterializer: createBuiltInMaterializer(repoRoot),
+      applicationBundleService: applicationBundleService as never,
+      availabilityService: availabilityService as never,
+      platformStateStore: platformStateStore as never,
+    });
+
+    expect(linkedApplicationId.length).toBeGreaterThan(240);
+    expect(buildApplicationStorageKey(linkedApplicationId)).not.toBe(encodeURIComponent(linkedApplicationId));
+
+    await service.importApplicationPackage({
+      sourceKind: "LOCAL_PATH",
+      source: localRoot,
+    });
+    await platformStateStore.withDatabase(linkedApplicationId, () => undefined);
+    await expect(platformStateStore.listKnownApplicationIds()).resolves.toEqual([linkedApplicationId]);
+    linkedAppDiscoverable = false;
+
+    await service.reloadPackage(linkedPackageId);
+
+    const availability = await availabilityService.getAvailability(linkedApplicationId);
+    expect(availability).toMatchObject({
+      state: "QUARANTINED",
+    });
+    expect(availability?.detail).toContain("Persisted platform state still exists");
   });
 
   it("rolls back a managed GitHub import when catalog refresh fails after package registration", async () => {

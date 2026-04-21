@@ -31,6 +31,7 @@ Each application gets a platform-owned root under:
 - short application ids keep their readable encoded id as the storage key.
 - oversized canonical/imported ids compact to a deterministic hash-backed key so the per-app directory stays within filesystem segment limits while remaining stable across restarts.
 - only the internal storage-root key changes for oversized ids; transport boundaries and app-visible identity continue using the canonical `applicationId`.
+- platform-owned storage metadata persists that canonical `applicationId` so persisted-known inventory and availability reconciliation can recover the real app identity without depending on hashed directory names.
 
 Important children:
 
@@ -53,7 +54,7 @@ Global orchestration lookup state lives separately under:
 
 The active orchestration owners use reserved tables including:
 
-- `__autobyteus_storage_meta`
+- `__autobyteus_storage_meta` (including authoritative canonical `application_id` metadata for persisted-known inventory)
 - `__autobyteus_app_migrations`
 - `__autobyteus_run_bindings`
 - `__autobyteus_run_binding_members`
@@ -84,7 +85,8 @@ This is the authoritative `runId -> { applicationId, bindingId }` lookup used by
 
 - `ensurePlatformStatePrepared(applicationId)`
   - creates directories,
-  - materializes `platform.sqlite`, and
+  - materializes `platform.sqlite`,
+  - records authoritative canonical `application_id` metadata for the per-app storage root, and
   - bootstraps reserved platform tables without running app-authored migrations.
 - `ensureStoragePrepared(applicationId)`
   - runs the platform-state step,

@@ -38,8 +38,8 @@ describe("FileApplicationBundleProvider", () => {
   const buildProvider = (options?: {
     additionalRootPaths?: string[];
     registryRecords?: Array<{ packageId: string; rootPath: string }>;
-  }) =>
-    new FileApplicationBundleProvider(
+  }) => {
+    const provider = new FileApplicationBundleProvider(
       {
         getAppRootDir: () => appRoot,
       } as never,
@@ -51,6 +51,63 @@ describe("FileApplicationBundleProvider", () => {
         listPackageRecords: async () => options?.registryRecords ?? [],
       } as never,
     );
+    const registryByRootPath = new Map(
+      (options?.registryRecords ?? []).map((record) => [path.resolve(record.rootPath), record]),
+    );
+    const seenRootPaths = new Set<string>();
+    const packageEntries = [
+      {
+        packageId: BUILT_IN_APPLICATION_PACKAGE_ID,
+        displayName: 'Platform Applications',
+        packageRootPath: builtInRoot,
+        sourceKind: 'BUILT_IN' as const,
+        source: appRoot,
+        applicationCount: 0,
+        isPlatformOwned: true,
+        isRemovable: false,
+        managedInstallPath: builtInRoot,
+        bundledSourceRootPath: appRoot,
+      },
+    ];
+    seenRootPaths.add(path.resolve(builtInRoot));
+
+    for (const additionalRootPath of options?.additionalRootPaths ?? []) {
+      const resolvedRootPath = path.resolve(additionalRootPath);
+      if (seenRootPaths.has(resolvedRootPath)) {
+        continue;
+      }
+      seenRootPaths.add(resolvedRootPath);
+      const record = registryByRootPath.get(resolvedRootPath);
+      packageEntries.push({
+        packageId: record?.packageId ?? `application-local:${encodeURIComponent(resolvedRootPath)}`,
+        displayName: path.basename(resolvedRootPath) || resolvedRootPath,
+        packageRootPath: resolvedRootPath,
+        sourceKind: record ? 'GITHUB_REPOSITORY' as const : 'LOCAL_PATH' as const,
+        source: resolvedRootPath,
+        applicationCount: 0,
+        isPlatformOwned: false,
+        isRemovable: true,
+        managedInstallPath: null,
+        bundledSourceRootPath: null,
+      });
+    }
+
+    return {
+      listBundles: () => provider.listBundles({
+        packages: packageEntries,
+        diagnostics: [],
+        refreshedAt: new Date().toISOString(),
+      }),
+      getCatalogSnapshot: () => provider.getCatalogSnapshot({
+        packages: packageEntries,
+        diagnostics: [],
+        refreshedAt: new Date().toISOString(),
+      }),
+      validatePackageRoot: provider.validatePackageRoot.bind(provider),
+      buildApplicationOwnedAgentSources: provider.buildApplicationOwnedAgentSources.bind(provider),
+      buildApplicationOwnedTeamSources: provider.buildApplicationOwnedTeamSources.bind(provider),
+    };
+  };
 
   const writeBundle = async (
     packageRootPath: string = builtInRoot,

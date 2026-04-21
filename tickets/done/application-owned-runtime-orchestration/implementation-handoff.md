@@ -10,14 +10,16 @@
 
 ## Current Status
 
-Implemented the round-8 authoritative design for application-owned runtime orchestration, including the app-scoped availability/hot-reentry and authoritative `ApplicationManifestV3.resourceSlots` rework on top of the already-resolved round-1 through round-7 findings:
+Implemented the cumulative round-12 authoritative design for application-owned runtime orchestration, including the app-scoped availability/hot-reentry, authoritative `ApplicationManifestV3.resourceSlots`, authoritative host-managed pre-entry setup gate, and business-first teaching-app/catalog cleanup on top of the already-resolved round-1 through round-7 findings:
 
 - hosted app backends now expose one authoritative iframe/bootstrap transport base, `backendBaseUrl`, plus the non-derivable notifications URL,
 - platform SDK/web host ownership now stops at schema-agnostic transport helpers while app business schema/codegen artifacts stay app-local,
 - Brief Studio now teaches the “many runs over one business record” pattern with app-owned GraphQL plus app-owned pending binding intent and `briefId -> bindingId[]` correlation, and
 - Socratic Math Teacher now teaches the “one long-lived conversational binding with follow-up input” pattern with a real app-owned GraphQL API,
 - application discovery now produces a diagnostic-aware catalog snapshot plus app-scoped availability state so broken imported packages can be quarantined and hot-reentered without broad platform downtime, and
-- application-owned backend launches now resolve runtime resources through authoritative manifest-declared `resourceSlots` plus `runtimeControl.getConfiguredResource(...)` instead of hardcoded bundle-local runtime targets.
+- application-owned backend launches now resolve runtime resources through authoritative manifest-declared `resourceSlots` plus `runtimeControl.getConfiguredResource(...)` instead of hardcoded bundle-local runtime targets,
+- `/applications/:id` now blocks entry behind a host-managed saved-setup gate that mirrors the familiar team/agent config form, including required resource selection plus bounded runtime/model/workspace defaults, and
+- the Applications catalog plus Brief Studio / Socratic Math Teacher primary canvases now keep business/setup wording on the main surface while raw runtime/resource identifiers remain in advanced/details views only.
 
 The previously blocked Local Fix findings remain resolved in this cumulative state:
 
@@ -29,6 +31,11 @@ The previously blocked Local Fix findings remain resolved in this cumulative sta
 - `AOR-LF-006` Brief Studio and Socratic Math Teacher GraphQL executors now accept valid single-operation requests that omit `operationName`
 - `AOR-LF-007` Brief Studio and Socratic Math Teacher now preserve already-projected same-binding state when `startRun(...)` succeeds after an early event has already reconciled that binding
 - `AOR-LF-008` `getConfiguredResource(...)` now revalidates effective selections on read and rejects stale persisted overrides or invalid manifest defaults before app launch code can consume them
+- `AOR-LF-009` `/applications/:id` now keeps the pre-entry host setup gate authoritative and blocks entry until saved setup is launch-ready
+- `AOR-LF-010` successful repair/reload re-entry now invalidates any pre-existing app worker before returning the application to `ACTIVE`, so the next ready path cannot reuse stale backend code
+- `AOR-LF-011` repaired-app availability now preserves `REENTERING` until recovery and dispatch resume fully finish, so backend/runtime-control admission stays blocked for the whole re-entry window
+- `AOR-LF-012` live package remove/reload now reuses the persisted-known-application reconciliation path, so removed or temporarily undiscoverable apps with durable platform state remain under authoritative quarantined/persisted-only availability ownership until a valid catalog entry returns
+- API/E2E round-11 `AOR-E2E-018` long-canonical-id persisted-state reconciliation fix: persisted-known application inventory now resolves the real `applicationId` from platform-state metadata for hashed storage directories, so live imported-package remove/reload keeps the actual long canonical app id under authoritative persisted-only quarantine instead of quarantining the hashed storage key
 - round-3 API/E2E packaged-client Local Fix: Brief Studio and Socratic Math Teacher importable UI packages now ship the full frontend SDK ESM dependency set required by the generated GraphQL clients
 - round-5 API/E2E live-runtime Local Fix: app-owned teaching runs now launch with automatic tool execution, and `publish_artifact` normalizes the real provider shorthand `artifactRef` shapes observed in the live LM Studio run
 
@@ -76,6 +83,35 @@ The latest Local Fix closes the authoritative slot-read gap identified in round-
 - stale persisted overrides now fail immediately at the configuration owner instead of leaking invalid resource refs to app launch code,
 - invalid or unresolved manifest defaults, including shared defaults, now fail immediately at the same authoritative boundary, and
 - Brief Studio and Socratic launch paths now have durable coverage proving `startRun(...)` is not attempted when configured-resource readback rejects the slot selection.
+
+The latest Local Fix closes the repaired-worker re-entry gap identified in deep cumulative review round 15:
+
+- `ApplicationAvailabilityService.reloadAndReenter(...)` now marks the application `REENTERING` immediately, which suspends dispatch and blocks backend entry even when the app was previously `ACTIVE`,
+- successful re-entry now calls `ApplicationEngineHostService.stopApplicationEngine(applicationId)` before bundle reload/recovery resume, so any pre-existing ready worker is invalidated before the repaired app returns to `ACTIVE`,
+- reload/reentry failures while stopping/reloading/resuming now leave the application quarantined instead of reactivating it with a stale worker,
+- the next `/backend/ensure-ready` path must therefore rebuild from the revalidated bundle after a successful repair/re-entry, and
+- focused durable coverage now proves re-entry stops an already-ready worker before reactivating the repaired application.
+
+The latest Local Fix closes the premature-`ACTIVE` re-entry gap identified in the follow-up re-review:
+
+- `synchronizeWithCatalogSnapshot(...)` now preserves an existing `REENTERING` record for discovered applications instead of resetting it back to `ACTIVE` during the middle of repair/re-entry,
+- successful repair/re-entry therefore keeps backend/runtime-control admission blocked for the entire recovery window and only transitions back to `ACTIVE` after both binding recovery and pending-event dispatch resume succeed,
+- `ApplicationBackendGatewayService.ensureApplicationReady(...)` now remains blocked behind `ApplicationUnavailableError(... state = REENTERING ...)` while that window is in flight, and
+- focused durable coverage now proves both the availability owner and the backend gateway preserve the `REENTERING` admission block until re-entry is fully complete.
+
+The latest Local Fix closes the live package remove/reload persisted-state ownership gap identified in code review round 18:
+
+- `ApplicationPackageRegistryService.refreshCatalogCaches()` now reuses the same persisted-known-application reconciliation path that startup uses instead of synchronizing only the current discoverable catalog snapshot,
+- live package removal or reload that temporarily drops a persisted application out of the catalog now preserves authoritative quarantined ownership with the required persisted-only detail until a valid catalog entry returns,
+- backend/runtime-control admission therefore remains blocked for removed or invalid-yet-persisted applications instead of falling back to no availability record, and
+- focused durable coverage now proves both live package removal and live reload preserve quarantined/persisted-only ownership when platform state still exists.
+
+The latest API/E2E Local Fix closes the long-canonical-id persisted-state identity gap found in round 11:
+
+- `ApplicationStorageLifecycleService` now persists the authoritative `application_id` into per-app platform-state metadata whenever platform state is prepared,
+- `ApplicationPlatformStateStore.listKnownApplicationIds()` now resolves real application ids from that metadata (with safe fallback recovery from readable non-hashed storage keys and known in-database application-id tables),
+- live package remove/reload therefore reconciles persisted-known applications by the real long canonical `applicationId` instead of the hashed storage key used for compact storage paths, and
+- durable tests now prove both platform-state inventory and live package remove/reload preserve persisted-only quarantine for long canonical imported application ids.
 
 This implementation is ready to return through code review before API/E2E starts.
 
@@ -217,7 +253,18 @@ This implementation is ready to return through code review before API/E2E starts
 - `autobyteus-application-backend-sdk/src/index.ts`
 - `autobyteus-web/types/application/ApplicationHostTransport.ts`
 - `autobyteus-web/utils/application/applicationHostTransport.ts`
+- `autobyteus-web/graphql/queries/applicationQueries.ts`
+- `autobyteus-web/stores/applicationStore.ts`
+- `autobyteus-web/generated/graphql.ts`
+- `autobyteus-web/utils/application/applicationLaunchSetup.ts`
+- `autobyteus-web/components/applications/ApplicationCard.vue`
+- `autobyteus-web/components/applications/ApplicationLaunchSetupPanel.vue`
+- `autobyteus-web/components/applications/ApplicationShell.vue`
+- `autobyteus-web/components/applications/__tests__/ApplicationCard.spec.ts`
 - `autobyteus-web/components/applications/__tests__/ApplicationIframeHost.spec.ts`
+- `autobyteus-web/components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts`
+- `autobyteus-web/components/applications/__tests__/ApplicationShell.spec.ts`
+- `autobyteus-web/components/applications/__tests__/ApplicationSurface.spec.ts`
 - `applications/brief-studio/api/graphql/schema.graphql`
 - `applications/brief-studio/backend-src/graphql/index.ts`
 - `applications/brief-studio/backend-src/repositories/brief-binding-repository.ts`
@@ -304,7 +351,7 @@ This implementation is ready to return through code review before API/E2E starts
 - packaged UI vendor copies now intentionally mirror the frontend SDK dist module set; future frontend-SDK surface growth must continue to ship the whole dist dependency set rather than a single copied entry file.
 - LM Studio / provider model availability remains an external runtime dependency; the retained `qwen3.6` `Model unloaded` failure from 2026-04-20 was not reproducible or fixable in repo-owned implementation code and must be revalidated in the next live API/E2E run.
 - API/E2E should still validate app-scoped hot re-entry against a genuinely broken then repaired imported package, because the new availability/resource-slot coverage is local and narrow rather than full live-browser/runtime validation.
-- No application-facing UI for configuring resource-slot overrides was added in this slice; downstream validation should use backend/runtime surfaces directly where needed.
+- The web GraphQL codegen step still depends on a live local schema endpoint (`http://localhost:8000/graphql` in this worktree config); when that endpoint is unavailable, query/schema drift must be reconciled manually and then verified through focused web tests and build output.
 
 ## Legacy / Compatibility Removal Check
 
@@ -329,6 +376,18 @@ This implementation is ready to return through code review before API/E2E starts
 - Root sample app build outputs and server built-in package mirrors were regenerated as part of this implementation.
 
 ## Local Implementation Checks Run
+
+### Latest rerun after API/E2E round-11 Local Fix `AOR-E2E-018`
+
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts exec vitest run tests/unit/application-packages/application-package-service.test.ts tests/unit/application-bundles/file-application-bundle-provider.test.ts tests/unit/application-storage/application-platform-state-store.test.ts tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts tests/unit/application-orchestration/application-availability-service.test.ts tests/unit/application-backend-gateway/application-backend-gateway-service.test.ts tests/integration/application-backend/brief-studio-imported-package.integration.test.ts` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts build` ✅
+
+### Latest rerun after Local Fix `AOR-LF-012`
+
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts exec vitest run tests/unit/application-packages/application-package-service.test.ts tests/unit/application-bundles/file-application-bundle-provider.test.ts tests/unit/application-storage/application-platform-state-store.test.ts tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts tests/unit/application-orchestration/application-availability-service.test.ts tests/unit/application-backend-gateway/application-backend-gateway-service.test.ts tests/integration/application-backend/brief-studio-imported-package.integration.test.ts` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts build` ✅
 
 ### Latest rerun after the round-5 API/E2E live-runtime Local Fix finding
 
@@ -489,3 +548,70 @@ Do not report API, E2E, or broader executable validation as passed in this artif
 
 - `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-web exec vitest run components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts components/applications/__tests__/ApplicationShell.spec.ts components/applications/__tests__/ApplicationIframeHost.spec.ts components/applications/__tests__/ApplicationSurface.spec.ts` ✅
 - `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-web build` ✅
+
+### Latest rerun after Local Fix `AOR-LF-010`
+
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts exec vitest run tests/unit/application-orchestration/application-availability-service.test.ts tests/unit/application-backend-gateway/application-backend-gateway-service.test.ts tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts build` ✅
+
+### Latest rerun after Local Fix `AOR-LF-011`
+
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts exec vitest run tests/unit/application-orchestration/application-availability-service.test.ts tests/unit/application-backend-gateway/application-backend-gateway-service.test.ts tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts build` ✅
+
+### Latest implementation continuation after the round-12 architecture pass
+
+- Extended the application GraphQL surface to expose resource-slot summaries on catalog entries so the web catalog can describe setup readiness from declared slot metadata instead of leaking raw bundle-resource detail into the primary card surface.
+- Updated `ApplicationCard.vue` to keep the primary catalog card business/setup-first:
+  - required slots now show a required host-setup summary,
+  - optional-only slots show optional setup wording, and
+  - apps with no declared setup continue to show a business-flow entry summary.
+- Kept `/applications/:id` on the authoritative saved-setup gate path while preserving the already-implemented business-first canvas cleanup in Brief Studio and Socratic Math Teacher.
+- Rebuilt both teaching applications and re-synced the server built-in mirrors so the root runnable apps, importable packages, and server-bundled copies remain aligned after the catalog/business-surface cleanup.
+- Manually aligned `autobyteus-web/generated/graphql.ts` with the new `resourceSlots` query/schema addition because the configured codegen endpoint was unavailable in this environment.
+
+### Latest rerun after the round-12 implementation continuation
+
+- `pnpm --dir /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/applications/brief-studio build` ✅
+- `pnpm --dir /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/applications/socratic-math-teacher build` ✅
+- synced rebuilt root sample apps into `autobyteus-server-ts/application-packages/platform/applications/brief-studio/` and `autobyteus-server-ts/application-packages/platform/applications/socratic-math-teacher/` via `rsync -a --delete --exclude node_modules ...` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-web exec vitest run stores/__tests__/applicationStore.spec.ts components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts components/applications/__tests__/ApplicationShell.spec.ts components/applications/__tests__/ApplicationCard.spec.ts components/applications/__tests__/ApplicationIframeHost.spec.ts components/applications/__tests__/ApplicationSurface.spec.ts` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts build` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-web build` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-web codegen` ⚠️ blocked in this environment because `http://localhost:8000/graphql` was unavailable (`ECONNREFUSED`); `autobyteus-web/generated/graphql.ts` was updated manually to match the query/schema change and the focused web tests/build above passed against that aligned output.
+
+### Latest implementation update after the round-14 architecture pass
+
+- Added the concrete package-registry owner under `autobyteus-server-ts/src/application-packages/`:
+  - introduced `ApplicationPackageRegistryService`,
+  - introduced the shared `ApplicationPackageRegistrySnapshot` domain shape, and
+  - kept `ApplicationPackageService` as a compatibility alias while moving runtime ownership to the new registry boundary.
+- Moved imported-package root metadata and package-level diagnostics behind `ApplicationPackageRegistryService.getRegistrySnapshot()` so callers no longer need to read package-root settings/registry stores directly.
+- Refactored `ApplicationBundleService` to consume package-registry snapshots instead of reading `ApplicationPackageRootSettingsStore` / `ApplicationPackageRegistryStore` directly, while preserving legacy test-provider compatibility through the registry boundary.
+- Updated `FileApplicationBundleProvider` so catalog discovery now derives bundle roots from the authoritative package-registry snapshot.
+- Extended `ApplicationPlatformStateStore` with the authoritative startup inventory / presence APIs:
+  - `listKnownApplicationIds()` now enumerates persisted app ids from existing platform state,
+  - `getExistingStatePresence(applicationId)` now reports `PRESENT` / `ABSENT` without preparing new state.
+- Refactored startup recovery to use `ApplicationPlatformStateStore` as the known-app inventory owner and to return explicit per-app recovery outcomes (`RECOVERED`, `QUARANTINED`, `NO_PERSISTED_STATE`).
+- Added `ApplicationAvailabilityService.applyStartupRecoveryOutcome(...)` and updated `server-runtime.ts` so startup admission now explicitly maps:
+  - catalog-active + no persisted state -> `ACTIVE`,
+  - catalog-quarantined -> `QUARANTINED`,
+  - persisted-only recovered state -> `QUARANTINED` until a valid package returns.
+- Updated startup dispatch resume to enumerate candidate app ids through `ApplicationPlatformStateStore` instead of store-specific filesystem scans.
+- Added focused regression coverage for:
+  - package-registry diagnostics,
+  - bundle discovery from registry snapshots,
+  - startup `NO_PERSISTED_STATE` handling without preparing new state,
+  - persisted-state inventory/presence probing,
+  - startup availability mapping, and
+  - the imported-package Brief Studio path under the refactored registry/bootstrap flow.
+
+### Latest rerun after the round-14 implementation update
+
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts exec vitest run tests/unit/application-packages/application-package-service.test.ts tests/unit/application-bundles/file-application-bundle-provider.test.ts tests/unit/application-storage/application-platform-state-store.test.ts tests/unit/application-orchestration/application-orchestration-recovery-service.test.ts tests/unit/application-orchestration/application-availability-service.test.ts tests/unit/application-backend-gateway/application-backend-gateway-service.test.ts tests/integration/application-backend/brief-studio-imported-package.integration.test.ts` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts build` ✅
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/application-owned-runtime-orchestration/autobyteus-server-ts exec vitest run tests/e2e/applications/application-packages-graphql.e2e.test.ts` ⚠️ still blocked by a pre-existing stale import in the suite (`tests/e2e/applications/application-packages-graphql.e2e.test.ts` imports missing `src/application-sessions/services/application-session-service.js` before any of the refactored package-registry code executes).

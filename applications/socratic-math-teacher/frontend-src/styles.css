@@ -95,6 +95,14 @@ h2 {
   padding: 18px 20px;
 }
 
+.inline-details {
+  margin-top: 18px;
+  padding: 18px 20px;
+  border: 1px solid #d5ddec;
+  border-radius: 20px;
+  background: #f8fafc;
+}
+
 .details-summary {
   cursor: pointer;
   font-weight: 700;

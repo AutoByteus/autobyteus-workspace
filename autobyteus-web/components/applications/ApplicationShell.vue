@@ -64,31 +64,13 @@
         </div>
 
         <section class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-          <div class="flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between">
-            <div class="min-w-0 flex-1">
-              <div class="flex flex-wrap items-center gap-2">
-                <span class="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700">
-                  {{ resourceBadgeLabel }}
-                </span>
-              </div>
-              <h1 class="mt-4 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-                {{ application.name }}
-              </h1>
-              <p class="mt-3 max-w-3xl text-base leading-7 text-slate-600">
-                {{ application.description || $t('applications.shared.noDescriptionProvided') }}
-              </p>
-            </div>
-
-            <div class="grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 sm:grid-cols-2 xl:min-w-[22rem]">
-              <div>
-                <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ $t('applications.components.applications.ApplicationShell.engineStateLabel') }}</p>
-                <p class="mt-1 break-all">{{ launchState.engineState || '—' }}</p>
-              </div>
-              <div>
-                <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ $t('applications.components.applications.ApplicationShell.launchInstanceIdLabel') }}</p>
-                <p class="mt-1 break-all">{{ launchState.launchInstanceId || '—' }}</p>
-              </div>
-            </div>
+          <div class="min-w-0">
+            <h1 class="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+              {{ application.name }}
+            </h1>
+            <p class="mt-3 max-w-3xl text-base leading-7 text-slate-600">
+              {{ application.description || $t('applications.shared.noDescriptionProvided') }}
+            </p>
           </div>
 
           <div
@@ -175,7 +157,7 @@ import ApplicationLaunchSetupPanel from '~/components/applications/ApplicationLa
 import ApplicationSurface from '~/components/applications/ApplicationSurface.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { useApplicationHostStore } from '~/stores/applicationHostStore'
-import { useApplicationStore, type ApplicationRuntimeResourceKind } from '~/stores/applicationStore'
+import { useApplicationStore } from '~/stores/applicationStore'
 import type { ApplicationLaunchSetupGateState } from '~/utils/application/applicationLaunchSetup'
 
 interface ShellDetailItem {
@@ -208,25 +190,6 @@ const preEntryGateDescription = computed(() => (
   launchSetupGateState.value.blockingReason
   || $t('applications.components.applications.ApplicationShell.preEntryGateDescription')
 ))
-
-const formatKindLabel = (kind: ApplicationRuntimeResourceKind): string => (
-  kind === 'AGENT'
-    ? $t('applications.shared.singleAgent')
-    : $t('applications.shared.agentTeam')
-)
-
-const resourceBadgeLabel = computed(() => {
-  if (!application.value || application.value.bundleResources.length === 0) {
-    return $t('applications.shared.noBundleResources')
-  }
-
-  const kinds = [...new Set(application.value.bundleResources.map((resource) => resource.kind))]
-  if (kinds.length === 1) {
-    return formatKindLabel(kinds[0]!)
-  }
-
-  return $t('applications.shared.mixedResources')
-})
 
 const detailItems = computed<ShellDetailItem[]>(() => {
   if (!application.value) {

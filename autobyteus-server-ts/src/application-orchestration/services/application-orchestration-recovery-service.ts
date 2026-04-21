@@ -1,11 +1,19 @@
 import type { ApplicationRunBindingSummary } from "@autobyteus/application-sdk-contracts";
 import type { ApplicationCatalogSnapshot } from "../../application-bundles/domain/application-catalog-snapshot.js";
 import { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
+import { ApplicationPlatformStateStore } from "../../application-storage/stores/application-platform-state-store.js";
 import { ApplicationExecutionEventIngressService } from "./application-execution-event-ingress-service.js";
 import { ApplicationRunObserverService, getApplicationRunObserverService } from "./application-run-observer-service.js";
-import { ApplicationExecutionEventJournalStore } from "../stores/application-execution-event-journal-store.js";
 import { ApplicationRunBindingStore } from "../stores/application-run-binding-store.js";
 import { ApplicationRunLookupStore } from "../stores/application-run-lookup-store.js";
+
+export type ApplicationRecoveryOutcomeStatus = "RECOVERED" | "QUARANTINED" | "NO_PERSISTED_STATE";
+
+export type ApplicationRecoveryOutcome = {
+  applicationId: string;
+  status: ApplicationRecoveryOutcomeStatus;
+  detail: string | null;
+};
 
 const collectBindingRunIds = (binding: ApplicationRunBindingSummary): string[] =>
   Array.from(
@@ -35,8 +43,8 @@ export class ApplicationOrchestrationRecoveryService {
   constructor(
     private readonly dependencies: {
       applicationBundleService?: ApplicationBundleService;
+      platformStateStore?: ApplicationPlatformStateStore;
       bindingStore?: ApplicationRunBindingStore;
-      journalStore?: ApplicationExecutionEventJournalStore;
       lookupStore?: ApplicationRunLookupStore;
       runObserverService?: ApplicationRunObserverService;
       ingressService?: ApplicationExecutionEventIngressService;
@@ -47,12 +55,12 @@ export class ApplicationOrchestrationRecoveryService {
     return this.dependencies.applicationBundleService ?? ApplicationBundleService.getInstance();
   }
 
-  private get bindingStore(): ApplicationRunBindingStore {
-    return this.dependencies.bindingStore ?? new ApplicationRunBindingStore();
+  private get platformStateStore(): ApplicationPlatformStateStore {
+    return this.dependencies.platformStateStore ?? new ApplicationPlatformStateStore();
   }
 
-  private get journalStore(): ApplicationExecutionEventJournalStore {
-    return this.dependencies.journalStore ?? new ApplicationExecutionEventJournalStore();
+  private get bindingStore(): ApplicationRunBindingStore {
+    return this.dependencies.bindingStore ?? new ApplicationRunBindingStore();
   }
 
   private get lookupStore(): ApplicationRunLookupStore {
@@ -67,17 +75,25 @@ export class ApplicationOrchestrationRecoveryService {
     return this.dependencies.ingressService ?? new ApplicationExecutionEventIngressService();
   }
 
-  async resumeBindings(snapshot?: ApplicationCatalogSnapshot | null): Promise<void> {
+  async resumeBindings(
+    snapshot?: ApplicationCatalogSnapshot | null,
+    knownApplicationIds?: Iterable<string>,
+  ): Promise<ApplicationRecoveryOutcome[]> {
     const effectiveSnapshot = snapshot ?? await this.applicationBundleService.getCatalogSnapshot();
+    const persistedKnownApplicationIds = knownApplicationIds
+      ? Array.from(knownApplicationIds)
+      : await this.platformStateStore.listKnownApplicationIds();
     const applicationIds = new Set<string>([
       ...effectiveSnapshot.applications.map((application) => application.id),
       ...effectiveSnapshot.diagnostics.map((diagnostic) => diagnostic.applicationId),
-      ...(await this.bindingStore.listKnownApplicationIds()),
-      ...(await this.journalStore.listKnownApplicationIds()),
+      ...persistedKnownApplicationIds,
     ]);
+
+    const outcomes: ApplicationRecoveryOutcome[] = [];
     for (const applicationId of Array.from(applicationIds).sort((left, right) => left.localeCompare(right))) {
-      await this.resumeApplication(applicationId);
+      outcomes.push(await this.resumeStartupApplication(applicationId));
     }
+    return outcomes;
   }
 
   async resumeApplication(applicationId: string): Promise<void> {
@@ -125,6 +141,32 @@ export class ApplicationOrchestrationRecoveryService {
       },
     });
     return orphanedBinding;
+  }
+
+  private async resumeStartupApplication(applicationId: string): Promise<ApplicationRecoveryOutcome> {
+    const presence = await this.platformStateStore.getExistingStatePresence(applicationId);
+    if (presence === "ABSENT") {
+      return {
+        applicationId,
+        status: "NO_PERSISTED_STATE",
+        detail: null,
+      };
+    }
+
+    try {
+      await this.resumeApplication(applicationId);
+      return {
+        applicationId,
+        status: "RECOVERED",
+        detail: null,
+      };
+    } catch (error) {
+      return {
+        applicationId,
+        status: "QUARANTINED",
+        detail: error instanceof Error ? error.message : String(error),
+      };
+    }
   }
 }
 

@@ -126,8 +126,8 @@ export const createSocraticMathTeacherApp = ({
     render();
     setStatus(
       state.lessons.length === 0
-        ? "Socratic Math Teacher is ready. Start one lesson to create a long-lived conversational binding."
-        : "Socratic Math Teacher is ready. Follow-up inputs reuse the same lesson binding through runtimeControl.postRunInput(...).",
+        ? "Socratic Math Teacher is ready. Start a lesson to begin guided help on one math problem."
+        : "Socratic Math Teacher is ready. Open a lesson to continue the tutoring conversation.",
       "ready",
     );
   };
@@ -142,7 +142,7 @@ export const createSocraticMathTeacherApp = ({
       return;
     }
 
-    setStatus("Starting lesson and binding one long-lived tutor run…");
+    setStatus("Starting a new lesson…");
     const lesson = await state.client.startLesson({ prompt });
     state.selectedLessonId = lesson.lessonId;
     if (elements.lessonPromptInput) {
@@ -161,7 +161,7 @@ export const createSocraticMathTeacherApp = ({
       setStatus("Enter a follow-up message before sending.", "error");
       return;
     }
-    setStatus("Posting follow-up input into the existing lesson binding…");
+    setStatus("Sending your follow-up…");
     await state.client.askFollowUp({ lessonId: state.selectedLessonId, text });
     if (textarea) {
       textarea.value = "";
@@ -174,7 +174,7 @@ export const createSocraticMathTeacherApp = ({
       return;
     }
     const text = browserWindow.prompt("Optional hint request detail", "") || "";
-    setStatus("Requesting a hint through the existing lesson binding…");
+    setStatus("Requesting a hint…");
     await state.client.requestHint({
       lessonId: state.selectedLessonId,
       text: text.trim() || null,

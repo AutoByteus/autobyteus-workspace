@@ -16,11 +16,8 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
-  /** DateTime scalar supporting ISO strings and date-only YYYY-MM-DD values */
   DateTime: { input: any; output: any; }
-  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: { input: any; output: any; }
-  /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSONObject: { input: any; output: any; }
 };
 
@@ -136,6 +133,7 @@ export type Application = {
   localApplicationId: Scalars['String']['output'];
   name: Scalars['String']['output'];
   packageId: Scalars['String']['output'];
+  resourceSlots: Array<ApplicationResourceSlotSummary>;
   writable: Scalars['Boolean']['output'];
 };
 
@@ -175,6 +173,12 @@ export enum ApplicationPackageSourceKind {
   GithubRepository = 'GITHUB_REPOSITORY',
   LocalPath = 'LOCAL_PATH'
 }
+
+export type ApplicationResourceSlotSummary = {
+  __typename?: 'ApplicationResourceSlotSummary';
+  required: Scalars['Boolean']['output'];
+  slotKey: Scalars['String']['output'];
+};
 
 export type ApplicationRuntimeResource = {
   __typename?: 'ApplicationRuntimeResource';
@@ -2276,19 +2280,19 @@ export type GetApplicationsCapabilityQueryVariables = Exact<{ [key: string]: nev
 
 export type GetApplicationsCapabilityQuery = { __typename?: 'Query', applicationsCapability: { __typename?: 'ApplicationsCapability', enabled: boolean, scope: ApplicationsCapabilityScope, settingKey: string, source: ApplicationsCapabilitySource } };
 
-export type ApplicationFieldsFragment = { __typename: 'Application', id: string, localApplicationId: string, packageId: string, name: string, description?: string | null, iconAssetPath?: string | null, entryHtmlAssetPath: string, writable: boolean, bundleResources: Array<{ __typename?: 'ApplicationRuntimeResource', kind: ApplicationRuntimeResourceKind, localId: string, definitionId: string }> };
+export type ApplicationFieldsFragment = { __typename: 'Application', id: string, localApplicationId: string, packageId: string, name: string, description?: string | null, iconAssetPath?: string | null, entryHtmlAssetPath: string, writable: boolean, resourceSlots: Array<{ __typename?: 'ApplicationResourceSlotSummary', slotKey: string, required: boolean }>, bundleResources: Array<{ __typename?: 'ApplicationRuntimeResource', kind: ApplicationRuntimeResourceKind, localId: string, definitionId: string }> };
 
 export type ListApplicationsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ListApplicationsQuery = { __typename?: 'Query', listApplications: Array<{ __typename: 'Application', id: string, localApplicationId: string, packageId: string, name: string, description?: string | null, iconAssetPath?: string | null, entryHtmlAssetPath: string, writable: boolean, bundleResources: Array<{ __typename?: 'ApplicationRuntimeResource', kind: ApplicationRuntimeResourceKind, localId: string, definitionId: string }> }> };
+export type ListApplicationsQuery = { __typename?: 'Query', listApplications: Array<{ __typename: 'Application', id: string, localApplicationId: string, packageId: string, name: string, description?: string | null, iconAssetPath?: string | null, entryHtmlAssetPath: string, writable: boolean, resourceSlots: Array<{ __typename?: 'ApplicationResourceSlotSummary', slotKey: string, required: boolean }>, bundleResources: Array<{ __typename?: 'ApplicationRuntimeResource', kind: ApplicationRuntimeResourceKind, localId: string, definitionId: string }> }> };
 
 export type GetApplicationByIdQueryVariables = Exact<{
   id: Scalars['String']['input'];
 }>;
 
 
-export type GetApplicationByIdQuery = { __typename?: 'Query', application?: { __typename: 'Application', id: string, localApplicationId: string, packageId: string, name: string, description?: string | null, iconAssetPath?: string | null, entryHtmlAssetPath: string, writable: boolean, bundleResources: Array<{ __typename?: 'ApplicationRuntimeResource', kind: ApplicationRuntimeResourceKind, localId: string, definitionId: string }> } | null };
+export type GetApplicationByIdQuery = { __typename?: 'Query', application?: { __typename: 'Application', id: string, localApplicationId: string, packageId: string, name: string, description?: string | null, iconAssetPath?: string | null, entryHtmlAssetPath: string, writable: boolean, resourceSlots: Array<{ __typename?: 'ApplicationResourceSlotSummary', slotKey: string, required: boolean }>, bundleResources: Array<{ __typename?: 'ApplicationRuntimeResource', kind: ApplicationRuntimeResourceKind, localId: string, definitionId: string }> } | null };
 
 export type ExternalChannelCapabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2722,6 +2726,10 @@ export const ApplicationFieldsFragmentDoc = gql`
   iconAssetPath
   entryHtmlAssetPath
   writable
+  resourceSlots {
+    slotKey
+    required
+  }
   bundleResources {
     kind
     localId

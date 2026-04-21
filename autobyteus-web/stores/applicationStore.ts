@@ -13,6 +13,11 @@ export interface ApplicationBundleResource {
   definitionId: string
 }
 
+export interface ApplicationResourceSlotSummary {
+  slotKey: string
+  required: boolean
+}
+
 export interface ApplicationCatalogEntry {
   __typename?: 'Application'
   id: string
@@ -23,6 +28,7 @@ export interface ApplicationCatalogEntry {
   iconAssetPath?: string | null
   entryHtmlAssetPath: string
   writable: boolean
+  resourceSlots: ApplicationResourceSlotSummary[]
   bundleResources: ApplicationBundleResource[]
 }
 

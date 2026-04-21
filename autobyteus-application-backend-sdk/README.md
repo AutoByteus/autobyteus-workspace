@@ -5,7 +5,7 @@ Backend helper package for application bundle backends executed by the AutoByteu
 ## What it owns
 
 - `defineApplication(...)`
-- re-exported backend definition, handler, request, storage, notification, runtime-control, and execution-event types from `@autobyteus/application-sdk-contracts`
+- re-exported backend definition, handler, request, storage, notification, runtime-control, resource-slot, and execution-event types from `@autobyteus/application-sdk-contracts`
 
 ## Usage
 
@@ -49,6 +49,7 @@ export default defineApplication({
 - The exported definition contract version must be `"2"`.
 - Exposed handlers must not exceed the bundle manifest’s `supportedExposures` flags.
 - `backend/bundle.json` declares the backend entry module plus optional migrations/assets directories.
+- `application.json` may declare `resourceSlots[]`; app backends should resolve launch resources through `context.runtimeControl.getConfiguredResource(slotKey)` instead of hardcoded runtime targets.
 - App-authored migrations run only against `app.sqlite`; platform-owned `platform.sqlite` remains reserved.
 
 ## Teaching samples

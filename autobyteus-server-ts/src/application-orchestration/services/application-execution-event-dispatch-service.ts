@@ -1,4 +1,5 @@
 import { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
+import { ApplicationPlatformStateStore } from "../../application-storage/stores/application-platform-state-store.js";
 import {
   ApplicationEngineHostService,
   getApplicationEngineHostService,
@@ -51,6 +52,7 @@ export class ApplicationExecutionEventDispatchService {
     private readonly dependencies: {
       applicationBundleService?: ApplicationBundleService;
       availabilityService?: ApplicationAvailabilityService;
+      platformStateStore?: ApplicationPlatformStateStore;
       journalStore?: ApplicationExecutionEventJournalStore;
       engineHostService?: ApplicationEngineHostService;
     } = {},
@@ -64,6 +66,10 @@ export class ApplicationExecutionEventDispatchService {
     return this.dependencies.availabilityService ?? getApplicationAvailabilityService();
   }
 
+  private get platformStateStore(): ApplicationPlatformStateStore {
+    return this.dependencies.platformStateStore ?? new ApplicationPlatformStateStore();
+  }
+
   private get journalStore(): ApplicationExecutionEventJournalStore {
     return this.dependencies.journalStore ?? new ApplicationExecutionEventJournalStore();
   }
@@ -74,7 +80,7 @@ export class ApplicationExecutionEventDispatchService {
 
   async resumePendingEvents(): Promise<void> {
     const candidateApplicationIds = new Set<string>([
-      ...(await this.journalStore.listKnownApplicationIds()),
+      ...(await this.platformStateStore.listKnownApplicationIds()),
       ...(await this.applicationBundleService.listApplications()).map((application) => application.id),
     ]);
     await Promise.all(

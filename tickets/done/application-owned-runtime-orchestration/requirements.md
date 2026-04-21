@@ -93,6 +93,10 @@ Large
 - `UC-027`: Brief Studio and Socratic Math Teacher present business-first primary UIs focused on briefs/lessons and their domain workflow, while low-level runtime controls such as model selection or tool-approval behavior stay out of the main business canvas.
 - `UC-028`: A user launches Brief Studio or Socratic Math Teacher, the host first shows the pre-entry resource-configuration form (prefilled from any saved values), the user confirms or updates the required resource plus supported runtime defaults (such as model/runtime/workspace), and only then does the business app become actionable.
 - `UC-029`: A user views Brief Studio or Socratic Math Teacher and sees business actions such as drafting, approving, rejecting, or asking follow-up questions in the primary canvas, while binding/run ids and raw runtime labels are moved to optional advanced diagnostic surfaces.
+- `UC-030`: AutoByteus restarts while one application still has durable binding/journal state on disk but its current bundle/package source is missing; startup still completes, that application is quarantined, and the rest of the product remains usable.
+- `UC-031`: A quarantined application still has already-bound runs producing lifecycle or artifact events; the platform keeps journaling those events into existing persisted platform state while backend delivery stays suspended until the application is repaired or removed.
+- `UC-032`: A user imports, removes, or reloads one application package source and the platform persists that package-registry change, surfaces package-level diagnostics such as missing roots separately from application-level diagnostics, and refreshes affected application availability without a restart.
+- `UC-033`: On startup, the platform enumerates persisted known application ids through one bundle-independent platform-state inventory boundary, and an active catalog application with no persisted state still becomes immediately usable instead of being treated as a recovery failure.
 
 ## Out of Scope
 
@@ -170,6 +174,15 @@ Large
 - `R-062`: Business actions that trigger orchestration may remain in application UIs, but the primary business canvas shall use business wording and workflow framing rather than raw platform runtime wording such as `run`, `binding`, or `launch config`.
 - `R-063`: Raw runtime identifiers and execution diagnostics such as `bindingId`, `runId`, bundled resource ids, or resource-kind badges shall not dominate the primary app canvas or primary application catalog cards; they shall move to secondary details, advanced diagnostics, or developer-focused surfaces.
 - `R-064`: The pre-entry resource-configuration form shall intentionally mirror the existing agent-run / agent-team-run configuration UX for supported fields such as resource selection, model, runtime kind, and workspace root path, while keeping `autoExecuteTools` visible but locked to `true`.
+- `R-065`: Persisted per-application platform state needed for recovery, diagnostics, lookup rebuild, and already-bound event journaling shall be readable by `applicationId`-derived storage layout even when the current application bundle/package source is unavailable.
+- `R-066`: The platform shall distinguish bundle-dependent platform-state preparation for active applications from existing-platform-state access for already-known applications, and it shall not require live bundle discovery merely to read or append durable binding/journal state that already exists on disk.
+- `R-067`: Best-effort application discovery shall surface missing or unreadable imported package roots as authoritative package-level diagnostics instead of silently dropping those roots from discovery output.
+- `R-068`: Startup recovery shall reconcile current catalog output with persisted known-application ids and shall degrade per-application recovery failures into quarantined outcomes rather than global startup failure whenever the core authoritative stores remain usable.
+- `R-069`: While an application is quarantined, runtime-control admission and backend event delivery for that application shall stay suspended, but lifecycle/artifact journaling for already-bound runs shall continue through existing persisted platform state when the underlying runtime still emits events.
+- `R-070`: The platform shall maintain one authoritative persisted application package-registry boundary for imported package roots, package metadata, package-level diagnostics, and package import/remove/reload flows, rather than leaving those concerns split implicitly across bundle discovery internals.
+- `R-071`: Application bundle discovery shall consume package-root descriptors and package-level diagnostics from the authoritative package-registry boundary rather than reading package-root persistence stores directly.
+- `R-072`: The platform shall expose one authoritative bundle-independent persisted-state inventory boundary that enumerates known application ids and existing-state presence before startup recovery begins.
+- `R-073`: Startup recovery outcome handling shall map `NO_PERSISTED_STATE` explicitly: an application that is valid in the current catalog remains `ACTIVE` and admitted when no persisted state exists to recover, while an invalid/quarantined application with no persisted state remains `QUARANTINED` and not admitted.
 
 ## Acceptance Criteria
 
@@ -218,6 +231,14 @@ Large
 - `AC-043`: The requirements explicitly distinguish valid business actions in the app UI from invalid runtime-detail leakage in the primary app canvas.
 - `AC-044`: The requirements explicitly demote raw runtime ids/resource labels from the primary app canvas and primary catalog cards into secondary or advanced surfaces.
 - `AC-045`: The requirements explicitly state that the pre-entry form should reuse the familiar agent/team config form shape, including workspace root path, while showing `autoExecuteTools` as locked-on for transparency.
+- `AC-046`: The requirements explicitly state that persisted application platform state for recovery and journaling must remain accessible without requiring the current bundle/package source to be valid.
+- `AC-047`: The requirements explicitly state that missing imported package roots must surface as diagnostics rather than disappearing silently from discovery.
+- `AC-048`: The requirements explicitly state that per-application recovery failures become quarantined outcomes instead of crashing the whole platform when shared core stores are still healthy.
+- `AC-049`: The requirements explicitly state that quarantined applications still preserve already-bound lifecycle/artifact event history through durable journaling while backend delivery remains suspended.
+- `AC-050`: The requirements explicitly give imported package-root persistence, package-level diagnostics, and package reload/remove flows one authoritative package-registry boundary.
+- `AC-051`: The requirements explicitly state that bundle discovery consumes package-root descriptors from that package-registry boundary rather than reading persistence stores directly.
+- `AC-052`: The requirements explicitly require one bundle-independent persisted-state inventory boundary for startup known-application enumeration.
+- `AC-053`: The requirements explicitly define the steady-state admission behavior for `NO_PERSISTED_STATE` instead of leaving that branch ambiguous.
 
 ## Constraints / Dependencies
 
@@ -322,6 +343,15 @@ Large
 | `R-062` | `UC-018`, `UC-027`, `UC-029` |
 | `R-063` | `UC-018`, `UC-027`, `UC-029` |
 | `R-064` | `UC-022`, `UC-026`, `UC-028` |
+| `R-065` | `UC-012`, `UC-021`, `UC-030`, `UC-031` |
+| `R-066` | `UC-012`, `UC-021`, `UC-030`, `UC-031` |
+| `R-067` | `UC-021`, `UC-024`, `UC-030` |
+| `R-068` | `UC-012`, `UC-021`, `UC-024`, `UC-030` |
+| `R-069` | `UC-006`, `UC-012`, `UC-021`, `UC-024`, `UC-031` |
+| `R-070` | `UC-021`, `UC-024`, `UC-032` |
+| `R-071` | `UC-021`, `UC-024`, `UC-032` |
+| `R-072` | `UC-012`, `UC-021`, `UC-030`, `UC-033` |
+| `R-073` | `UC-021`, `UC-030`, `UC-033` |
 
 ## Acceptance-Criteria-To-Scenario Intent
 
@@ -372,6 +402,14 @@ Large
 | `AC-043` | Forces the design to separate legitimate business actions from illegitimate runtime-detail leakage in the main app UI. |
 | `AC-044` | Forces runtime ids/resource labels out of the main app canvas and main catalog cards. |
 | `AC-045` | Forces the pre-entry form to feel like the familiar agent/team configuration UX while keeping application-mode tool execution locked on. |
+| `AC-046` | Forces the design to separate existing persisted app state access from live bundle validation/preparation. |
+| `AC-047` | Forces missing imported package roots to become explicit diagnostics instead of silent discovery gaps. |
+| `AC-048` | Forces startup recovery to quarantine one broken app at a time instead of escalating every app-specific recovery problem into a process-fatal error. |
+| `AC-049` | Forces the design to preserve event history for already-bound quarantined apps instead of dropping runtime events while repair/reload is pending. |
+| `AC-050` | Forces the package registry to become one concrete owner instead of a conceptual split across stores and bundle discovery. |
+| `AC-051` | Forces bundle discovery to depend on the authoritative package-registry boundary rather than mixed-level persistence access. |
+| `AC-052` | Forces startup to use one concrete known-app inventory boundary instead of ad hoc binding/journal store scans. |
+| `AC-053` | Forces the design to make `NO_PERSISTED_STATE` a stable availability/admission outcome instead of an undefined branch. |
 
 ## Approval Status
 

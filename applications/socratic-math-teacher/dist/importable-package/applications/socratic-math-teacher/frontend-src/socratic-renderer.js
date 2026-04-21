@@ -49,7 +49,7 @@ export const renderLessonList = ({ state, elements, onSelectLesson, onError }) =
 
   if (state.lessons.length === 0) {
     elements.lessonList.className = "brief-list empty-state";
-    elements.lessonList.textContent = "No lessons yet. Start one lesson to create a long-lived conversational binding.";
+    elements.lessonList.textContent = "No lessons yet. Start one lesson to begin the tutoring conversation.";
     return;
   }
 
@@ -64,12 +64,8 @@ export const renderLessonList = ({ state, elements, onSelectLesson, onError }) =
               <span class="badge">${escapeHtml(lesson.status)}</span>
             </div>
             <div class="brief-meta-row muted small" style="margin-top: 10px;">
-              <span>${escapeHtml(lesson.lessonId)}</span>
-              <span>${escapeHtml(lesson.latestBindingStatus || "not attached")}</span>
-            </div>
-            <div class="brief-meta-row muted small" style="margin-top: 8px;">
-              <span>${escapeHtml(lesson.latestRunId || "no run yet")}</span>
-              <span>${escapeHtml(formatTime(lesson.updatedAt))}</span>
+              <span>Lesson ${escapeHtml(lesson.lessonId)}</span>
+              <span>Updated ${escapeHtml(formatTime(lesson.updatedAt))}</span>
             </div>
           </button>
         </article>
@@ -109,6 +105,31 @@ const renderTranscript = (messages) => {
   `;
 };
 
+const renderRuntimeDiagnostics = (lesson) => `
+  <details class="inline-details">
+    <summary class="details-summary">Advanced runtime details</summary>
+    <p class="details-copy muted">
+      Optional diagnostics for app authors. The main lesson view stays centered on the tutoring conversation.
+    </p>
+    <div class="meta-grid compact-meta-grid">
+      <div>
+        <span class="label">Latest binding</span>
+        <div class="value small">${escapeHtml(lesson.latestBindingId || "—")}</div>
+        <div class="muted small">Status ${escapeHtml(lesson.latestBindingStatus || "—")}</div>
+      </div>
+      <div>
+        <span class="label">Latest run</span>
+        <div class="value small">${escapeHtml(lesson.latestRunId || "—")}</div>
+        <div class="muted small">Updated ${escapeHtml(formatTime(lesson.updatedAt))}</div>
+      </div>
+      <div>
+        <span class="label">Runtime note</span>
+        <div class="muted small">${escapeHtml(lesson.lastErrorMessage || "No recorded runtime error")}</div>
+      </div>
+    </div>
+  </details>
+`;
+
 export const renderLessonDetail = ({
   state,
   elements,
@@ -124,7 +145,7 @@ export const renderLessonDetail = ({
   const lesson = state.detail;
   if (!lesson) {
     elements.lessonDetail.className = "empty-state";
-    elements.lessonDetail.textContent = "Select a lesson to inspect its projected tutor transcript and binding state.";
+    elements.lessonDetail.textContent = "Select a lesson to continue the tutoring conversation and review past guidance.";
     return;
   }
 
@@ -144,18 +165,18 @@ export const renderLessonDetail = ({
       </div>
       <div class="meta-grid compact-meta-grid">
         <div>
-          <span class="label">Binding</span>
-          <div class="value small">${escapeHtml(lesson.latestBindingId || "—")}</div>
-          <div class="muted small">Status ${escapeHtml(lesson.latestBindingStatus || "—")}</div>
+          <span class="label">Lesson record</span>
+          <div class="value small">${escapeHtml(lesson.lessonId)}</div>
+          <div class="muted small">Status ${escapeHtml(lesson.status)}</div>
         </div>
         <div>
-          <span class="label">Run</span>
-          <div class="value small">${escapeHtml(lesson.latestRunId || "—")}</div>
+          <span class="label">Conversation</span>
+          <div class="value small">${escapeHtml(String(Array.isArray(lesson.messages) ? lesson.messages.length : 0))} messages</div>
           <div class="muted small">Closed ${escapeHtml(formatTime(lesson.closedAt))}</div>
         </div>
         <div>
-          <span class="label">Errors</span>
-          <div class="muted small">${escapeHtml(lesson.lastErrorMessage || "No runtime error recorded")}</div>
+          <span class="label">Next step</span>
+          <div class="muted small">Ask a follow-up question or request a hint to continue this lesson.</div>
         </div>
       </div>
       <div class="action-row">
@@ -167,7 +188,7 @@ export const renderLessonDetail = ({
     <section class="detail-section">
       <div>
         <h3>Transcript</h3>
-        <p class="muted">Tutor turns are projected by the app from runtime artifacts, while student follow-ups reuse the same binding.</p>
+        <p class="muted">The lesson keeps the tutoring conversation and student follow-ups together in one record.</p>
       </div>
       ${renderTranscript(lesson.messages)}
       <form id="follow-up-form" class="note-composer">
@@ -176,6 +197,10 @@ export const renderLessonDetail = ({
           <button class="primary-button" type="submit">Send follow-up</button>
         </div>
       </form>
+    </section>
+
+    <section class="detail-section">
+      ${renderRuntimeDiagnostics(lesson)}
     </section>
   `;
 

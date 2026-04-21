@@ -23,6 +23,15 @@ export class ApplicationRuntimeResource {
 }
 
 @ObjectType()
+export class ApplicationResourceSlotSummary {
+  @Field(() => String)
+  slotKey!: string;
+
+  @Field(() => Boolean)
+  required!: boolean;
+}
+
+@ObjectType()
 export class Application {
   @Field(() => String)
   id!: string;
@@ -50,6 +59,9 @@ export class Application {
 
   @Field(() => [ApplicationRuntimeResource])
   bundleResources!: ApplicationRuntimeResource[];
+
+  @Field(() => [ApplicationResourceSlotSummary])
+  resourceSlots!: ApplicationResourceSlotSummary[];
 }
 
 @Resolver()
@@ -74,6 +86,10 @@ export class ApplicationResolver {
             : ApplicationRuntimeResourceKindGraph.AGENT_TEAM,
         localId: resource.localId,
         definitionId: resource.definitionId,
+      })),
+      resourceSlots: application.resourceSlots.map((slot) => ({
+        slotKey: slot.slotKey,
+        required: slot.required === true,
       })),
     }));
   }
@@ -101,6 +117,10 @@ export class ApplicationResolver {
             : ApplicationRuntimeResourceKindGraph.AGENT_TEAM,
         localId: resource.localId,
         definitionId: resource.definitionId,
+      })),
+      resourceSlots: application.resourceSlots.map((slot) => ({
+        slotKey: slot.slotKey,
+        required: slot.required === true,
       })),
     };
   }

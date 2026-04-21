@@ -144,6 +144,44 @@ describe("ApplicationOrchestrationRecoveryService", () => {
     expect(ingressService.appendBindingLifecycleEvent).not.toHaveBeenCalled();
   });
 
+  it("returns NO_PERSISTED_STATE without preparing a new platform database during startup recovery", async () => {
+    const runObserverService = {
+      attachBinding: vi.fn(async () => true),
+    };
+    const ingressService = {
+      appendBindingLifecycleEvent: vi.fn(),
+    };
+
+    const recoveryService = new ApplicationOrchestrationRecoveryService({
+      applicationBundleService: {
+        getCatalogSnapshot: async () => ({
+          applications: [{ id: applicationId }],
+          diagnostics: [],
+        }),
+      } as never,
+      platformStateStore: new ApplicationPlatformStateStore({
+        storageLifecycleService,
+      }),
+      bindingStore,
+      lookupStore,
+      runObserverService: runObserverService as never,
+      ingressService: ingressService as never,
+    });
+
+    const outcomes = await recoveryService.resumeBindings();
+
+    expect(outcomes).toContainEqual({
+      applicationId,
+      status: "NO_PERSISTED_STATE",
+      detail: null,
+    });
+    await expect(
+      new ApplicationPlatformStateStore({ storageLifecycleService }).getExistingStatePresence(applicationId),
+    ).resolves.toBe("ABSENT");
+    expect(runObserverService.attachBinding).not.toHaveBeenCalled();
+    expect(ingressService.appendBindingLifecycleEvent).not.toHaveBeenCalled();
+  });
+
   it("marks bindings orphaned and removes lookups when reattachment is unavailable", async () => {
     const binding = buildBinding();
     await bindingStore.persistBinding(binding);

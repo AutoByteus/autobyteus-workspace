@@ -204,6 +204,103 @@ That means:
 
 This makes “repairable invalid app” a real system behavior instead of a startup-only promise.
 
+## Package Registry / Catalog Snapshot / Persisted Platform State Separation Principle
+
+Application robustness depends on separating three different persisted subjects that the old implementation still blurs together, and each subject now gets one concrete owner.
+
+1. **Application package registry**
+   - concrete owner: `ApplicationPackageRegistryService` under `application-packages`,
+   - persists imported package roots plus package metadata that survive restart,
+   - owns package-level diagnostics such as `missing root`, `unreadable directory`, `managed install missing`, or registry/settings mismatch, and
+   - owns package import/remove/reload flows.
+
+2. **Application catalog snapshot**
+   - concrete owner: `ApplicationBundleService` under `application-bundles`,
+   - is one best-effort discovery result built *from* package-root descriptors supplied by the package-registry boundary,
+   - contains valid application entries plus **application-level** diagnostics only, and
+   - does **not** own package-root persistence, package-level diagnostics, or durable run/event state.
+
+3. **Persisted application platform state**
+   - concrete owner: `ApplicationPlatformStateStore` under `application-storage`,
+   - is per-application durable state on disk such as run bindings, event journals, and other recovery inputs,
+   - is keyed by `applicationId`-derived storage layout, and
+   - can outlive the current live package/catalog validity of that application.
+
+The authoritative package-registry contract is:
+
+```ts
+type ApplicationPackageRegistrySnapshot = {
+  packages: ApplicationPackageRegistryEntry[];
+  diagnostics: ApplicationPackageRegistryDiagnostic[];
+  refreshedAt: string;
+};
+```
+
+Rules:
+
+- `ApplicationPackageRegistryService.getRegistrySnapshot()` is the only authoritative boundary for imported package roots, package metadata, and package-level diagnostics,
+- `ApplicationBundleService` consumes that registry snapshot (or the root descriptors derived from it) instead of reading `ApplicationPackageRegistryStore` / `ApplicationPackageRootSettingsStore` directly,
+- missing imported package roots become package-registry diagnostics even when no application-level manifest can be parsed underneath them,
+- startup availability/recovery reconciles the current application catalog snapshot against both package-registry diagnostics and persisted known application ids instead of assuming catalog membership implies the only recoverable app set,
+- absence from the current catalog does **not** justify deleting persisted run/journal state or crashing startup, and
+- package removal flows operate against the package-registry owner explicitly; if persisted app state still exists afterward, the affected application becomes `PERSISTED_ONLY` / `QUARANTINED` rather than silently disappearing from recovery responsibility.
+
+## Bundle-Independent Persisted Platform State Access Principle
+
+Recovery and journaling for already-known application bindings must not depend on current bundle validity. The current implementation still routes too many reads/writes through bundle-dependent storage preparation, which is the wrong boundary for stale or removed apps.
+
+That means:
+
+- `ApplicationStorageLifecycleService.ensurePlatformStatePrepared(applicationId)` remains the bundle-dependent owner for **preparing new platform/app state** for an active application,
+- `ApplicationPlatformStateStore` becomes the authoritative owner for **existing platform-state access** by applicationId-derived storage layout when the caller needs to read or append durable state that already exists on disk,
+- that store should expose explicit methods with distinct semantics such as:
+
+```ts
+listKnownApplicationIds()
+getExistingStatePresence(applicationId)
+withPreparedPlatformState(applicationId, fn)
+withExistingPlatformState(applicationId, fn)
+withExistingPlatformStateIfPresent(applicationId, fn)
+```
+
+- `listKnownApplicationIds()` is the authoritative bundle-independent startup inventory boundary for persisted known applications,
+- `getExistingStatePresence(applicationId)` distinguishes `PRESENT` vs `ABSENT` without preparing new state or consulting bundle discovery,
+- recovery, diagnostics, binding lookup rebuild, and journaling for already-bound runs depend on the `existing` methods rather than on bundle-preparation methods,
+- missing DB/files on an `existing-if-present` path produce `null` / diagnostic outcomes rather than startup-fatal exceptions,
+- runtime-originated artifact/lifecycle events for a quarantined app may still append immutable journal rows through `existing` platform-state access while backend delivery stays suspended, and
+- only true shared-store failure (for example inability to enumerate existing app state at all or corruption of the authoritative shared lookup store) is allowed to escalate the startup gate to `FAILED`.
+
+This keeps the authoritative boundary clean: prepare new state through storage lifecycle; recover/read already-existing state through platform-state access.
+
+## Startup Known-Application Inventory Principle
+
+Startup recovery needs one authoritative inventory boundary and one authoritative availability-mapping owner.
+
+The chosen owners are:
+
+- `ApplicationPlatformStateStore` for **bundle-independent persisted known-application inventory**, and
+- `ApplicationAvailabilityService` for **startup presence classification plus final availability/admission mapping**.
+
+The authoritative startup-presence shape is:
+
+```ts
+type ApplicationStartupPresence = 'CATALOG_ACTIVE' | 'CATALOG_QUARANTINED' | 'PERSISTED_ONLY';
+```
+
+Rules:
+
+- `ApplicationPlatformStateStore.listKnownApplicationIds()` enumerates application ids from existing persisted platform state only; it does not consult the live bundle/catalog layer,
+- `ApplicationAvailabilityService` builds the startup candidate set as the union of:
+  - valid application ids from `ApplicationBundleService.getCatalogSnapshot()`,
+  - quarantined application ids from application-level diagnostics, and
+  - persisted known application ids from `ApplicationPlatformStateStore.listKnownApplicationIds()`,
+- startup presence is classified as:
+  - `CATALOG_ACTIVE` when the application is valid in the current catalog,
+  - `CATALOG_QUARANTINED` when the application currently exists only as an invalid/unavailable application diagnostic, and
+  - `PERSISTED_ONLY` when persisted state exists but the current catalog has no valid or invalid application entry for that application id,
+- only `ApplicationAvailabilityService` may map startup presence plus recovery outcomes into final steady-state availability/admission behavior, and
+- inventory-only applications remain outside ordinary app-launch admission until a later repair/reload recreates a valid catalog entry.
+
 ## Persisted Application Resource Configuration Principle
 
 The host may still provide a generic configuration surface for application runtime resources, but that surface is no longer a run-launch modal.
@@ -426,6 +523,8 @@ Rules for those samples:
 | `DS-008` | `Primary End-to-End` | Iframe app business request | App-owned business result returned through the hosted backend mount | `ApplicationBackendGatewayService` | Keeps platform transport generic while each application owns its own GraphQL/routes/query schema and generated clients |
 | `DS-009` | `Primary End-to-End` | Browser host launch/settings setup | Persisted application resource configuration collected before app entry and available for later app-owned runtime orchestration | `ApplicationResourceConfigurationService` | Preserves a strong user configuration surface without collapsing setup back into run launch or leaking runtime knobs into the app canvas |
 | `DS-010` | `Primary End-to-End` | Host repair/reload action for one quarantined app | App leaves quarantine through app-scoped re-entry, recovery slice rerun, and dispatch resume without full platform restart | `ApplicationAvailabilityService` | Makes invalid-app repairability actionable instead of startup-only |
+| `DS-011` | `Bounded Local` | Known `applicationId` from the current catalog or persisted state inventory | Existing platform DB opened/read/appended by storage-layout-derived identity without bundle preparation, or a null/diagnostic outcome when no persisted state exists | `ApplicationPlatformStateStore` | Decouples stale-app recovery/journaling from live bundle validity so one missing app package cannot poison global startup |
+| `DS-012` | `Primary End-to-End` | Host package import/remove/reload action | Package-registry snapshot refreshed, package-level diagnostics updated, bundle catalog rederived, and affected app availability refreshed without restart | `ApplicationPackageRegistryService` | Makes imported package roots and package-level diagnostics one concrete persisted subject instead of a conceptual split across stores and discovery internals |
 
 ## Primary Execution Spine(s)
 
@@ -435,6 +534,8 @@ Rules for those samples:
 - `DS-008`: `Iframe App UI / generated client -> ApplicationBackendGateway virtual mount -> ApplicationEngineHost -> App Backend Handler -> App-Owned Business Result`
 - `DS-009`: `Browser Host Launch / Settings -> ApplicationResourceConfigurationService -> ApplicationResourceConfigurationStore -> runtimeControl.getConfiguredResource(...) -> App Backend Handler -> Later startRun decision`
 - `DS-010`: `Host Repair/Reload Action -> ApplicationAvailabilityService -> ApplicationBundleService.reloadApplication(applicationId) -> ApplicationOrchestrationRecoveryService.resumeApplication(applicationId) -> ApplicationExecutionEventDispatchService.resumePendingEventsForApplication(applicationId) -> Availability ACTIVE`
+- `DS-011`: `Known Application ID -> ApplicationPlatformStateStore existing-state access -> Binding/Journal Store -> Recovery/Ingress/Dispatch Caller -> recovered rows or null/diagnostic outcome`
+- `DS-012`: `Host Package Action -> ApplicationPackageRegistryService -> Package Registry Snapshot -> ApplicationBundleService catalog refresh -> ApplicationAvailabilityService synchronization -> Updated package/app diagnostics surfaces`
 
 ## Spine Narratives (Mandatory)
 
@@ -446,20 +547,24 @@ Rules for those samples:
 | `DS-004` | When a run terminates, fails, or is superseded, the run observer receives a normalized lifecycle signal through the lifecycle gateway, updates the binding, records the lifecycle event through the execution-event ingress owner, and relies on the dispatch loop to deliver that event back into the app backend. | `ApplicationBoundRunLifecycleGateway`, `ApplicationRunObserverService`, `ApplicationRunBindingStore`, `ApplicationExecutionEventIngressService`, `Dispatch Service` | `ApplicationRunObserverService` | lifecycle gateway adapter, derived lookup index maintenance, immutable event ingress |
 | `DS-005` | For each application, the journal drains in order, calls the app event handler through the engine boundary, and retries with backoff until acknowledged. | `Event Journal`, `Dispatch Loop`, `ApplicationEngineHost` | `ApplicationExecutionEventDispatchService` | retry timer, ack cursor, startup resume hook |
 | `DS-006` | Inside the worker, app backend code sees one authoritative `runtimeControl` API instead of raw host services. Calls cross the worker/host bridge and land in the orchestration owner. | `ApplicationHandlerContext.runtimeControl`, `ApplicationRuntimeControlClient`, `ApplicationRuntimeControlHost`, `ApplicationOrchestrationHostService` | `ApplicationRuntimeControlBridge` | IPC protocol messages, request/response normalization |
-| `DS-007` | On server startup, `server-runtime` first asks `ApplicationBundleService` for one best-effort catalog snapshot that separates valid applications from invalid/unavailable diagnostics. It then enters the orchestration startup gate. While that gate remains closed, live runtime-control calls and runtime-originated artifact publications cannot proceed. Inside that exclusive startup window, orchestration recovery rebuilds lookup rows and reattaches observers for every recoverable binding, marks invalid apps as `QUARANTINED` instead of crashing the platform, keeps journaling available for known bindings, resumes backend event dispatch only for active apps, and only then releases the gate to steady-state ready. | `ServerRuntime`, `ApplicationBundleService`, `ApplicationOrchestrationStartupGate`, `ApplicationAvailabilityService`, `ApplicationOrchestrationRecoveryService`, `ApplicationRunBindingStore`, `ApplicationRunLookupStore`, `ApplicationBoundRunLifecycleGateway`, `ApplicationRunObserverService`, `ApplicationExecutionEventIngressService`, `ApplicationExecutionEventDispatchService` | `ApplicationOrchestrationStartupGate` | catalog snapshot, invalid-app diagnostics, app availability state, global storage bootstrap, observer registration, recovery failure marking |
+| `DS-007` | On server startup, `server-runtime` first asks `ApplicationPackageRegistryService` for one registry snapshot containing package-root descriptors plus package-level diagnostics. `ApplicationBundleService` then derives one best-effort application catalog snapshot from that registry snapshot. `ApplicationPlatformStateStore.listKnownApplicationIds()` provides the bundle-independent persisted known-app inventory, and `ApplicationAvailabilityService` reconciles those three inputs into startup presence. The orchestration startup gate opens one exclusive recovery window. While that gate remains closed, live runtime-control calls and runtime-originated artifact publications cannot proceed. Inside that window, orchestration recovery uses bundle-independent existing-platform-state access to rebuild lookup rows and reattach observers for every recoverable binding, quarantines per-app failures instead of crashing the platform, keeps journaling available for already-bound runs even when the app is quarantined, resumes backend event dispatch only for active apps, and only then releases the gate to steady-state ready. | `ServerRuntime`, `ApplicationPackageRegistryService`, `ApplicationBundleService`, `ApplicationPlatformStateStore`, `ApplicationAvailabilityService`, `ApplicationOrchestrationStartupGate`, `ApplicationOrchestrationRecoveryService`, `ApplicationRunBindingStore`, `ApplicationRunLookupStore`, `ApplicationBoundRunLifecycleGateway`, `ApplicationRunObserverService`, `ApplicationExecutionEventIngressService`, `ApplicationExecutionEventDispatchService` | `ApplicationOrchestrationStartupGate` | package-registry snapshot, application catalog snapshot, persisted known-app inventory, app availability state, bundle-independent existing-state access, observer registration, recovery failure marking |
 | `DS-008` | The iframe calls one application-owned business API surface through the hosted backend mount, typically through an app-generated GraphQL or route client. The backend gateway routes by `applicationId`, ensures the worker is ready, checks app availability, forwards the request into the app backend handler, and returns an application-defined result. The platform owns transport and hosting; the application owns the business schema of that request and response. | `Iframe App`, `ApplicationBackendGatewayService`, `ApplicationAvailabilityService`, `ApplicationEngineHostService`, `App Backend Handler` | `ApplicationBackendGatewayService` | app-owned schema artifacts, generated frontend client/types, backend mount transport descriptor, request-context normalization |
 | `DS-009` | The browser host opens an application resource-configuration surface, often reusing the old team/agent launch form shape, before the app becomes actionable. The simple first-cut behavior may show this gate on every launch, prefilled from saved values. The host reads manifest-declared `resource slot declarations`, lets the user choose a resource plus supported launch defaults such as model/runtime/workspace when declared, shows `autoExecuteTools` as locked-on `true` for transparency, persists that configuration without starting a run, and later the app backend reads the saved configuration through the authoritative platform boundary before deciding how to start or reuse work. | `Browser Host`, `ApplicationResourceConfigurationService`, `ApplicationBundleService`, `ApplicationResourceConfigurationStore`, `ApplicationBackend` | `ApplicationResourceConfigurationService` | manifest-declared slot metadata, pre-entry setup gate, persisted resource setup, runtimeControl readback, transparent locked-on tool approval |
-| `DS-010` | When a previously quarantined application is repaired or reloaded, the host triggers one app-scoped re-entry flow. `ApplicationAvailabilityService` asks `ApplicationBundleService` to reload and revalidate that app, transitions availability to `REENTERING` when the package becomes valid, reruns the app-scoped recovery slice to rebuild lookup rows and reassert observers, resumes pending journal delivery for that app, and finally returns the app to `ACTIVE`. If validation or re-entry fails, the app remains `QUARANTINED` with updated diagnostics. | `Browser Host`, `ApplicationAvailabilityService`, `ApplicationBundleService`, `ApplicationOrchestrationRecoveryService`, `ApplicationExecutionEventDispatchService`, `ApplicationRunLookupStore`, `ApplicationRunObserverService` | `ApplicationAvailabilityService` | app-scoped availability state, reload diagnostics, recovery-slice rerun, dispatch-resume gating |
+| `DS-010` | When a previously quarantined application is repaired or reloaded, the host triggers one app-scoped re-entry flow. `ApplicationAvailabilityService` asks `ApplicationBundleService` to reload and revalidate that app, clears any application-level diagnostics that no longer apply, transitions availability to `REENTERING` when the package becomes valid, reruns the app-scoped recovery slice using existing persisted platform state plus fresh catalog metadata, resumes pending journal delivery for that app, and finally returns the app to `ACTIVE`. If validation or re-entry fails, the app remains `QUARANTINED` with updated diagnostics instead of affecting other apps. Package-root repair/removal itself remains owned by `ApplicationPackageRegistryService`; app re-entry remains owned by `ApplicationAvailabilityService`. | `Browser Host`, `ApplicationAvailabilityService`, `ApplicationBundleService`, `ApplicationOrchestrationRecoveryService`, `ApplicationPlatformStateStore`, `ApplicationExecutionEventDispatchService`, `ApplicationRunLookupStore`, `ApplicationRunObserverService` | `ApplicationAvailabilityService` | app-scoped availability state, reload diagnostics, persisted-state reconciliation, recovery-slice rerun, dispatch-resume gating |
+| `DS-011` | Given one application id, `ApplicationPlatformStateStore` first exposes whether existing persisted platform state is present and whether that id belongs to the persisted known-app inventory. Callers then choose explicit semantics: prepare new state for active-app launch, open required existing state for already-bound recovery/journaling, or probe optional existing state for diagnostics. The owner never requires manifest/bundle revalidation just to read durable state that is already on disk. | `ApplicationPlatformStateStore`, `ApplicationStorageLifecycleService`, `ApplicationRunBindingStore`, `ApplicationExecutionEventJournalStore`, `ApplicationExecutionEventIngressService` | `ApplicationPlatformStateStore` | known-app inventory, storage-layout derivation, existing-db detection, prepared-vs-existing access semantics, null/diagnostic outcome normalization |
+| `DS-012` | When the host imports, reloads, or removes one application package source, the package-registry owner persists the root/metadata change, refreshes the registry snapshot, exposes package-level diagnostics, asks bundle discovery to rebuild the application catalog from the new registry snapshot, and then lets availability/orchestration owners react to the changed app set. Package-registry flows do not themselves rerun app-scoped orchestration recovery. | `Browser Host`, `ApplicationPackageRegistryService`, `ApplicationPackageRegistryStore`, `ApplicationPackageRootSettingsStore`, `ApplicationBundleService`, `ApplicationAvailabilityService` | `ApplicationPackageRegistryService` | package-root persistence, package diagnostics, package reload/remove semantics, downstream catalog refresh coordination |
 
 ## Spine Actors / Main-Line Nodes
 
 - `ApplicationHostLaunchOwner` (web host side)
+- `ApplicationPackageRegistryService`
 - `ApplicationBundleService`
 - `ApplicationBackendGatewayService`
 - `ApplicationEngineHostService`
 - `ApplicationBackend` (worker-side app definition handlers)
 - `ApplicationRuntimeControlBridge`
 - `ApplicationAvailabilityService`
+- `ApplicationPlatformStateStore`
 - `ApplicationOrchestrationStartupGate`
 - `ApplicationOrchestrationHostService`
 - `ApplicationBoundRunLifecycleGateway`
@@ -480,11 +585,17 @@ Rules for those samples:
   - owns iframe launch descriptor and `launchInstanceId`
   - does **not** own worker-run creation policy
 
+- `ApplicationPackageRegistryService`
+  - owns persisted imported package roots plus package metadata and package-level diagnostics
+  - owns package import/remove/reload flows and the authoritative package-registry snapshot
+  - is the only boundary allowed to coordinate `ApplicationPackageRegistryStore` plus `ApplicationPackageRootSettingsStore`
+  - does **not** own application manifest parsing, app-level catalog entries, or orchestration re-entry
+
 - `ApplicationBundleService`
-  - owns the authoritative application catalog snapshot, including both valid catalog entries and invalid/unavailable diagnostics
-  - owns manifest-level parsing/validation of `resourceSlots` and targeted app/package reload/revalidation hooks
-  - isolates per-application/package validation failures so they do not crash the rest of the platform
-  - does **not** own run bindings, runtime control, or post-validation orchestration re-entry
+  - owns the authoritative application catalog snapshot of valid apps plus application-level diagnostics
+  - consumes package-root descriptors from `ApplicationPackageRegistryService` instead of reading package-root stores directly
+  - owns manifest-level parsing/validation of `resourceSlots` and targeted app/application reload/revalidation hooks
+  - does **not** own package-root persistence, package-level diagnostics, run bindings, runtime control, or post-validation orchestration re-entry
 
 - `ApplicationBackendGatewayService`
   - owns the authoritative hosted backend mount under `applicationId`
@@ -512,6 +623,12 @@ Rules for those samples:
   - owns the app-scoped availability state machine (`ACTIVE`, `QUARANTINED`, `REENTERING`) after startup
   - owns the authoritative repair/reload re-entry flow that coordinates bundle reload success with app-scoped recovery rerun and dispatch resume
   - does **not** own manifest parsing, binding persistence, or app business projection
+
+- `ApplicationPlatformStateStore`
+  - owns bundle-independent access to already-existing per-app platform DB state by storage layout
+  - owns the authoritative persisted known-application inventory through `listKnownApplicationIds()` plus `getExistingStatePresence(applicationId)`
+  - distinguishes `prepared` active-app state creation from `existing` recovery/journaling access
+  - does **not** own package diagnostics, app availability policy, or run-binding orchestration
 
 - `ApplicationResourceConfigurationService`
   - owns persisted host-managed configuration for app-declared `resource slots`
@@ -767,6 +884,40 @@ At that point:
 - Gated live callers receive a startup-unavailable failure rather than racing with partial orchestration state.
 - `server-runtime.ts` treats only true orchestration-startup failure as fatal and must not terminate just because one application package is invalid or stale.
 
+## Per-Application Startup Recovery Outcome Contract
+
+`ApplicationOrchestrationRecoveryService` must produce explicit per-application outcomes instead of using thrown exceptions as its normal app-failure path. The authoritative shape is conceptually:
+
+```ts
+type ApplicationRecoveryOutcome = {
+  applicationId: string;
+  status: 'RECOVERED' | 'QUARANTINED' | 'NO_PERSISTED_STATE';
+  detail: string | null;
+};
+```
+
+Contract rules:
+
+- `resumeBindings()` iterates the reconciled known-application set and records one outcome per application,
+- a missing bundle/package root, missing optional existing DB, or one app-specific recovery failure downgrades that app to `QUARANTINED` or `NO_PERSISTED_STATE` instead of throwing out of the whole startup path,
+- `ApplicationAvailabilityService` is updated from those outcomes so the app's live admission state stays authoritative,
+- dispatch resumes only for applications whose availability is `ACTIVE`, while quarantined apps keep durable event history but no backend delivery, and
+- only global failures of the authoritative shared stores/owners (for example the startup gate itself, the global lookup store, or inability to enumerate persisted application ids at all) are allowed to escape as startup-fatal errors.
+
+### Outcome-to-availability mapping
+
+`ApplicationAvailabilityService.applyStartupRecoveryOutcome(...)` maps startup presence plus recovery outcome as follows:
+
+- `CATALOG_ACTIVE + RECOVERED -> ACTIVE`
+- `CATALOG_ACTIVE + NO_PERSISTED_STATE -> ACTIVE` (nothing to recover; app launch/backend admission proceed normally)
+- `CATALOG_ACTIVE + QUARANTINED -> QUARANTINED`
+- `CATALOG_QUARANTINED + RECOVERED -> QUARANTINED` (persisted state may still be observed/journaled, but backend/runtime-control admission stays suspended)
+- `CATALOG_QUARANTINED + NO_PERSISTED_STATE -> QUARANTINED`
+- `CATALOG_QUARANTINED + QUARANTINED -> QUARANTINED`
+- `PERSISTED_ONLY + RECOVERED -> QUARANTINED`
+- `PERSISTED_ONLY + QUARANTINED -> QUARANTINED`
+- `PERSISTED_ONLY + NO_PERSISTED_STATE` is impossible by construction because `PERSISTED_ONLY` candidates originate from `ApplicationPlatformStateStore.listKnownApplicationIds()`
+
 ### Traffic-admission note
 
 - `app.listen(...)` is **not** the authoritative readiness signal for application orchestration.
@@ -881,9 +1032,11 @@ Those callers may decide *that* an event should exist, but only the ingress serv
 | --- | --- | --- | --- | --- |
 | Application backend worker lifecycle | `application-engine` | `Reuse` | Already the correct owner for app backend runtime startup/stop/invocation | N/A |
 | Application-scoped transport boundary | `application-backend-gateway` | `Reuse` | Already keyed by `applicationId`; request-context semantics only need simplification | N/A |
+| Imported package-root persistence, package-level diagnostics, and package reload/remove flows | `application-packages` | `Extend` | Current package service and stores already own import/remove and root persistence; they should be tightened into one explicit package-registry boundary | No new top-level subsystem needed |
 | Bundle discovery and validation | `application-bundles` | `Extend` | Still the right owner, but the manifest/catalog contract must stop requiring `runtimeTarget` | No new subsystem needed |
 | Invalid-application diagnostics and startup quarantine | `application-bundles` | `Extend` | Discovery already belongs here; it now needs best-effort snapshot + diagnostics instead of fatal-on-first-invalid behavior | No new top-level discovery subsystem needed |
 | App storage roots and per-app platform/app DB lifecycle | `application-storage` | `Extend` | Already owns app-root layout; can also bootstrap a global orchestration DB for the derived lookup index | No new storage/path subsystem needed |
+| Bundle-independent persisted known-app inventory and existing-state presence | `application-storage` via `ApplicationPlatformStateStore` | `Extend` | Storage layout enumeration already belongs here; startup should not invent a separate ad hoc inventory helper | No new inventory subsystem needed |
 | Agent run execution | `agent-execution` | `Extend` | Already the correct concrete execution owner; must add an authoritative service-level lifecycle observation boundary | No new execution subsystem needed |
 | Team run execution | `agent-team-execution` | `Extend` | Already the correct concrete execution owner; must add the same authoritative lifecycle observation boundary | No new execution subsystem needed |
 | Application-owned orchestration state, binding control, recovery, event ingress, lifecycle observation | current `application-sessions` | `Create New` | Current subsystem is semantically wrong; it is built around session ownership and retained session projections | Extending it would preserve the wrong governing abstraction |
@@ -901,11 +1054,12 @@ Those callers may decide *that* an event should exist, but only the ingress serv
 
 | Subsystem / Capability Area | Owns Which Concerns | Related Spine ID(s) | Governing Owner(s) Served | Decision (`Reuse`/`Extend`/`Create New`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `application-bundles` | app catalog snapshot, invalid-application diagnostics, manifest validation, manifest-declared resource slots, bundle-local resource discovery, targeted app reload validation | `DS-001`, `DS-002`, `DS-007`, `DS-009`, `DS-010` | Host launch + orchestration resource resolution + startup isolation + slot declaration authority | `Extend` | Remove catalog/runtimeTarget coupling and fatal-on-first-invalid discovery behavior while making manifest metadata authoritative for host-visible slot declarations |
+| `application-packages` | persisted package registry, imported package metadata, package-level diagnostics, package import/remove/reload flows, package-root descriptors for bundle discovery | `DS-007`, `DS-010`, `DS-012` | Host package management + bundle discovery bootstrap | `Extend` | Tighten the current package service/stores into one authoritative package-registry owner |
+| `application-bundles` | app catalog snapshot, application-level invalid diagnostics, manifest validation, manifest-declared resource slots, bundle-local resource discovery, targeted app reload validation | `DS-001`, `DS-002`, `DS-007`, `DS-009`, `DS-010` | Host launch + orchestration resource resolution + startup isolation + slot declaration authority | `Extend` | Remove catalog/runtimeTarget coupling and fatal-on-first-invalid discovery behavior while making manifest metadata authoritative for host-visible slot declarations |
 | `application-engine` | app worker lifecycle, worker IPC, worker invocation | `DS-001`, `DS-002`, `DS-005`, `DS-006` | Backend gateway + worker runtime bridge | `Extend` | Add worker->host runtime-control IPC |
 | `application-backend-gateway` | app transport boundary and engine ensure-ready surface | `DS-001`, `DS-002` | Browser host + iframe app backend calls | `Extend` | Request context becomes launch-instance-aware, not session-aware |
 | `application-orchestration` | resource resolution, persisted application resource configuration, app availability/re-entry, runtime control, startup coordination, binding persistence, recovery, lifecycle observation, execution-event ingress, event journaling/dispatch | `DS-002`, `DS-003`, `DS-004`, `DS-005`, `DS-006`, `DS-007`, `DS-009`, `DS-010` | App backend runtime control boundary + host resource setup + repair/reload re-entry | `Create New` | Replaces `application-sessions` |
-| `application-storage` | per-app DB lifecycle plus global orchestration index DB bootstrap/path ownership | `DS-003`, `DS-004`, `DS-005`, `DS-007` | Orchestration stores | `Extend` | Storage/path concerns remain centralized here |
+| `application-storage` | per-app DB lifecycle, persisted known-app inventory, existing-state presence probing, and global orchestration index DB bootstrap/path ownership | `DS-003`, `DS-004`, `DS-005`, `DS-007`, `DS-011` | Orchestration stores + startup inventory | `Extend` | Storage/path concerns remain centralized here |
 | `autobyteus-web Applications host` | engine-first app launch, iframe bootstrap v2, and persisted application resource configuration UI | `DS-001`, `DS-009` | Browser host | `Extend` | Remove session-centric host UI flow while reusing the useful configuration form shape |
 | `application-sdk-contracts` + backend/frontend SDKs | author-facing contract shapes, backend mount transport helper, and runtime-control/context exposure | `DS-001`, `DS-002`, `DS-003`, `DS-004`, `DS-006`, `DS-008` | Bundle authors | `Extend` | Platform SDKs stay schema-agnostic while exposing the hosted backend mount cleanly |
 | `applications/<app>/api` + `frontend-src/generated` | app-owned schema artifacts and generated clients | `DS-001`, `DS-008` | App backend + iframe app | `Create New` | Not a platform subsystem; each app owns its own business API contract/codegen |
@@ -917,7 +1071,10 @@ Those callers may decide *that* an event should exist, but only the ingress serv
 | Candidate File | Owning Subsystem / Capability Area | Owner / Boundary | Concrete Concern | Why This Is One File | Reuses Shared Structure? |
 | --- | --- | --- | --- | --- | --- |
 | `autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts` | `application-orchestration` | Governing service boundary | Start/control/query/terminate/supersede bindings | One authoritative app-facing orchestration entrypoint | Yes |
-| `autobyteus-server-ts/src/application-bundles/domain/application-catalog-snapshot.ts` | `application-bundles` | Shared discovery result owner | Represent valid applications plus invalid/unavailable diagnostics in one best-effort snapshot | One shared discovery/quarantine shape | Yes |
+| `autobyteus-server-ts/src/application-packages/services/application-package-registry-service.ts` | `application-packages` | Governing package-registry boundary | Persist imported package roots/metadata, compute package-level diagnostics, and drive import/remove/reload flows | One authoritative package-registry owner | Yes |
+| `autobyteus-server-ts/src/application-packages/domain/application-package-registry-snapshot.ts` | `application-packages` | Shared registry snapshot owner | Represent package-root descriptors plus package-level diagnostics | One package-registry snapshot shape | Yes |
+| `autobyteus-server-ts/src/application-bundles/domain/application-catalog-snapshot.ts` | `application-bundles` | Shared discovery result owner | Represent valid applications plus application-level diagnostics in one best-effort snapshot | One shared discovery/quarantine shape | Yes |
+| `autobyteus-server-ts/src/application-storage/stores/application-platform-state-store.ts` | `application-storage` | Existing-state access boundary | Enumerate persisted known app ids and distinguish prepared active-app state from existing persisted state access by storage layout | One durable storage-access boundary for recovery/journaling semantics | Yes |
 | `autobyteus-server-ts/src/application-orchestration/services/application-orchestration-startup-gate.ts` | `application-orchestration` | Governing startup-readiness boundary | Serialize live orchestration-sensitive traffic against startup recovery | One startup-admission concern | Yes |
 | `.../services/application-execution-event-ingress-service.ts` | `application-orchestration` | Governing event-ingress owner | Normalize artifact/lifecycle events and append journal rows | One authoritative ingress boundary for execution events | Yes |
 | `.../services/application-run-observer-service.ts` | `application-orchestration` | Governing lifecycle observer owner | Attach observers and update bindings from observed lifecycle changes | One lifecycle-observer concern | Yes |
@@ -973,6 +1130,9 @@ Those callers may decide *that* an event should exist, but only the ingress serv
 | File | Owning Subsystem / Capability Area | Owner / Boundary | Concrete Concern | Why This Is One File | Reuses Shared Structure? |
 | --- | --- | --- | --- | --- | --- |
 | `autobyteus-server-ts/src/application-orchestration/domain/models.ts` | `application-orchestration` | Internal model owner | Internal binding rows, runtime execution context, recovery status enums | One internal orchestration model owner | Yes |
+| `autobyteus-server-ts/src/application-packages/services/application-package-registry-service.ts` | `application-packages` | Authoritative package-registry boundary | Persist imported package roots/metadata, emit package-level diagnostics, and coordinate package import/remove/reload flows | One authoritative package-registry owner | Yes |
+| `autobyteus-server-ts/src/application-packages/domain/application-package-registry-snapshot.ts` | `application-packages` | Registry snapshot owner | Represent package-root descriptors plus package-level diagnostics | One shared package-registry shape | Yes |
+| `autobyteus-server-ts/src/application-storage/stores/application-platform-state-store.ts` | `application-storage` | Existing-state inventory boundary | Enumerate persisted known application ids, probe existing-state presence, and open existing per-app platform state by storage layout | One authoritative startup-inventory plus existing-state access owner | Yes |
 | `autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts` | `application-orchestration` | Authoritative public boundary | Public host-side runtime control for app backends | One authoritative app-facing orchestration entrypoint | Yes |
 | `autobyteus-server-ts/src/application-orchestration/services/application-orchestration-startup-gate.ts` | `application-orchestration` | Authoritative startup-readiness boundary | Exclusive startup recovery window plus steady-state release for orchestration-sensitive live traffic | One startup-admission boundary | Yes |
 | `autobyteus-server-ts/src/application-orchestration/services/application-availability-service.ts` | `application-orchestration` | Governing re-entry owner | App-scoped availability state plus repair/reload re-entry coordination | One authoritative post-startup availability/re-entry owner | Yes |
@@ -998,7 +1158,7 @@ Those callers may decide *that* an event should exist, but only the ingress serv
 | `autobyteus-application-frontend-sdk/src/create-application-backend-mount-transport.ts` | frontend SDK | Generic transport-helper owner | Build schema-agnostic invokers from `backendBaseUrl` and request-context v2 | One optional transport helper owner | Yes |
 | `applications/<app>/backend-src/services/run-binding-correlation-service.ts` | app-owned per-app authoring | App-owned correlation owner | Persist pending binding intents, finalize mappings, and reconcile by `bindingIntentId` | One app-owned handoff/reconciliation owner | Yes |
 | `applications/<app>/backend-src/repositories/pending-binding-intent-repository.ts` | app-owned per-app authoring | App-owned persistence owner | Store pending binding intent rows | One app-owned persistence owner | Yes |
-| `autobyteus-server-ts/src/application-bundles/domain/application-catalog-snapshot.ts` | `application-bundles` | Discovery snapshot owner | Represent valid application entries plus invalid diagnostics without fatal global throws | One discovery/quarantine shape | Yes |
+| `autobyteus-server-ts/src/application-bundles/domain/application-catalog-snapshot.ts` | `application-bundles` | Discovery snapshot owner | Represent valid application entries plus application-level invalid diagnostics without fatal global throws | One discovery/quarantine shape | Yes |
 | `autobyteus-server-ts/src/application-orchestration/services/application-resource-configuration-service.ts` | `application-orchestration` | Resource-configuration owner | Read/write persisted application resource-slot setup, validate against manifest-declared slot declarations, and expose it to host/runtimeControl | One setup owner | Yes |
 | `autobyteus-server-ts/src/application-orchestration/stores/application-resource-configuration-store.ts` | `application-orchestration` | Resource-config persistence owner | Store selected `resourceRef` plus launch defaults per app+slot | One durable configuration store | Yes |
 | `autobyteus-application-sdk-contracts/src/{manifests,request-context.ts,runtime-*.ts,backend-definition.ts}` | contracts package | Shared contracts owner | Versioned bundle/backend/request/runtime/event/bootstrap transport types, including manifest-declared `resourceSlots` | Split by subject instead of one mixed file | Yes |
@@ -1054,7 +1214,9 @@ Authority changes hands at these points:
 | `ApplicationBackendGatewayService` | app-scoped mount routing, ensure-ready delegation, request-context normalization | browser host, iframe app frontends, optional frontend SDK helpers | browser/frontend code reaching directly into engine host or worker IPC | expand the gateway/mount helper surface, not the bypass |
 | `ApplicationEngineHostService` | worker supervisor, IPC client, worker status, notification bridge | backend gateway, dispatch service | gateway or orchestration reaching into worker runtime internals | add engine host methods |
 | `ApplicationHostLaunchOwner` | iframe launch descriptor builder, ready timeout, bootstrap postMessage | application page shell | page shell owning low-level postMessage contract or run creation | strengthen dedicated host-launch owner |
-| `ApplicationBundleService` | best-effort discovery, valid catalog entries, invalid diagnostics, manifest-declared slot metadata, targeted app reload validation | server startup, browser host catalog surfaces, availability re-entry owner, resource-configuration owner | callers assuming discovery must throw fatally on one bad app or inventing their own slot metadata source | enrich snapshot/declaration/reload APIs, not bypass it |
+| `ApplicationPackageRegistryService` | imported package roots, package metadata, package-level diagnostics, package import/remove/reload flows | browser host package-management surfaces, bundle discovery | callers reading/writing package stores directly or inventing their own package diagnostics | enrich registry APIs, not bypass them |
+| `ApplicationBundleService` | best-effort discovery, valid catalog entries, application-level invalid diagnostics, manifest-declared slot metadata, targeted app reload validation | server startup, browser host catalog surfaces, availability re-entry owner, resource-configuration owner | callers assuming discovery must throw fatally on one bad app or inventing their own slot metadata source | enrich snapshot/declaration/reload APIs, not bypass it |
+| `ApplicationPlatformStateStore` | prepared-vs-existing platform-state access by applicationId-derived storage layout | binding store, journal store, recovery service, event ingress | callers forcing recovery/journaling through bundle-preparation methods or ad hoc filesystem paths | add explicit existing/prepared access APIs, not bypass them |
 | `ApplicationResourceConfigurationService` | persisted slot configuration store, manifest-declared slot metadata readback, slot-validation rules | browser host setup surfaces, `runtimeControl` readback | host UI launching runs directly or app code reading host-only state ad hoc | enrich configuration/readback APIs, not bypass it |
 
 ## Dependency Rules
@@ -1069,6 +1231,9 @@ Authority changes hands at these points:
 - App backend code may depend on `runtimeControl`, backend-definition contracts, app-owned pending-intent/correlation services, and app-owned business schema/resolver code only; it must not depend on server internal services.
 - Platform contracts/SDK packages may define manifest/request/runtime/event/bootstrap transport shapes, including opaque `bindingIntentId`, but they must not import or publish app-specific GraphQL schemas, OpenAPI documents, or generated business clients.
 - Generated app clients may depend on app-owned schema artifacts plus generic frontend SDK transport helpers; the dependency must not point back upward from platform packages into app-owned business artifacts.
+- `ApplicationPackageRegistryService` may depend on `ApplicationPackageRegistryStore`, `ApplicationPackageRootSettingsStore`, and downstream refresh hooks, but package-management callers must not mutate those stores directly.
+- `ApplicationBundleService` may depend on `ApplicationPackageRegistryService` for authoritative package-root descriptors and package diagnostics, but must not read package-root stores directly.
+- `ApplicationPlatformStateStore` is the only boundary allowed to enumerate persisted known application ids or probe existing-state presence; recovery/availability callers must not re-implement filesystem scans.
 - `ApplicationBackendGatewayService` may depend on `ApplicationEngineHostService`, `ApplicationAvailabilityService`, and generic transport/request-context helpers, but not on app-specific business schemas or orchestration stores.
 - `ApplicationRuntimeControlBridge` may depend on `ApplicationOrchestrationHostService`, but not on lower-level stores and run services independently.
 - `ApplicationResourceConfigurationService` may depend on `ApplicationBundleService` for authoritative slot declarations, but must not parse manifests independently.
@@ -1144,9 +1309,16 @@ Forbidden shortcuts:
 | `POST /rest/applications/:applicationId/backend/commands/:commandName` | app convenience command transport | Forward one app-defined command into the current app worker | route `applicationId` + requestContext + app-defined input | Convenience surface; not the only real-app model |
 | `ApplicationOrchestrationStartupGate.runStartupRecovery(task)` | startup coordination | Execute the one exclusive orchestration startup window and release ready/failed state | startup callback | Internal authoritative startup-coordination boundary |
 | `ApplicationOrchestrationStartupGate.awaitReady()` | startup coordination | Block live orchestration-sensitive callers until steady-state startup is released | none | Used by runtime-control and live artifact-entry boundaries |
-| `ApplicationBundleService.getCatalogSnapshot()` | application discovery | Return valid application entries plus invalid/unavailable diagnostics | none | Internal authoritative snapshot for startup isolation and host diagnostics |
+| `ApplicationPackageRegistryService.getRegistrySnapshot()` | package registry | Return persisted package records, package-root descriptors, and package-level diagnostics | none | Authoritative startup/input for bundle discovery and host package-management surfaces |
+| `ApplicationPackageRegistryService.importPackage(input)` | package registry | Persist one imported package source and refresh downstream discovery state | `ApplicationPackageImportInput` | Governing package-import entrypoint |
+| `ApplicationPackageRegistryService.removePackage(packageId)` | package registry | Remove one imported package source from the registry and refresh downstream discovery state | `packageId` | If persisted app state still exists, affected apps become `PERSISTED_ONLY` / `QUARANTINED`; removal does not delete run/journal state implicitly |
+| `ApplicationPackageRegistryService.reloadPackage(packageId)` | package registry | Reprobe one registered package source and refresh package-level diagnostics/root descriptors | `packageId` | Governing package-reload entrypoint; does not itself rerun app-scoped orchestration recovery |
+| `ApplicationBundleService.getCatalogSnapshot()` | application discovery | Return valid application entries plus application-level invalid/unavailable diagnostics derived from the current package-registry snapshot | none | Internal authoritative app-catalog snapshot; package-level diagnostics stay in the package-registry boundary |
 | `ApplicationBundleService.reloadApplication(applicationId)` | application discovery | Revalidate one application/package and update its catalog entry or diagnostic | `applicationId` | Used by app repair/reload flows; does not itself rerun orchestration recovery |
 | `ApplicationAvailabilityService.reloadAndReenter(applicationId)` | app availability / re-entry | Leave quarantine through targeted reload, app-scoped recovery rerun, and dispatch resume | `applicationId` | Governing repair/reload entrypoint; returns updated availability state |
+| `ApplicationPlatformStateStore.listKnownApplicationIds()` | persisted-state inventory | Enumerate startup-known application ids without bundle dependence | none | Authoritative startup inventory boundary for persisted app state |
+| `ApplicationPlatformStateStore.getExistingStatePresence(applicationId)` | persisted-state inventory | Report whether existing per-app platform state is currently present | `applicationId` | Used to produce `NO_PERSISTED_STATE` without preparing new state |
+| `ApplicationAvailabilityService.applyStartupRecoveryOutcome(applicationId, startupPresence, outcome)` | startup availability mapping | Map startup presence plus recovery outcome into steady-state availability/admission | `{ applicationId, startupPresence, outcome }` | Governing owner for `NO_PERSISTED_STATE` handling and final startup admission state |
 | `ApplicationResourceConfigurationService.upsertConfiguration(applicationId, slotKey, input)` | persisted app resource setup | Save resource selection plus launch defaults for one declared slot | `{ applicationId, slotKey }` + configuration payload | Rejects unknown `slotKey` and resource refs that violate the manifest declaration; presents `autoExecuteTools` as visible but locked to `true`; does not start runs |
 | `ApplicationResourceConfigurationService.listConfigurations(applicationId)` | persisted app resource setup | Return declared slots plus saved configuration state | `applicationId` | Used by the pre-entry launch gate and host settings/setup; exposes manifest-declared slot metadata plus persisted state |
 | `runtimeControl.listAvailableResources(filter?)` | orchestration resource catalog | List bundle-local/shared accessible runtime resources | optional `{ owner?, kind? }` filter | Worker-side authoritative platform API |
@@ -1222,7 +1394,11 @@ Rule:
 | --- | --- | --- | --- | --- | --- |
 | `autobyteus-server-ts/src/application-orchestration/` | `Folder` | New subsystem | App-facing runtime orchestration core | Replaces mis-scoped `application-sessions` with the correct owner | bundle discovery, generic transport entrypoints |
 | `.../domain/models.ts` | `File` | Internal model owner | Internal orchestration model, binding state, execution context | Shared internal shapes for this subsystem | browser contract literals |
-| `autobyteus-server-ts/src/application-bundles/domain/application-catalog-snapshot.ts` | `File` | Discovery snapshot owner | Best-effort valid application entries plus invalid diagnostics | Startup isolation and host diagnostics need one explicit shape | orchestration policy or run bindings |
+| `autobyteus-server-ts/src/application-packages/` | `Folder` | Package-registry boundary | Persist imported package roots/metadata plus package-level diagnostics and package-management flows | Keeps the new package-registry subject concrete instead of spreading it across stores and bundle discovery | app-level catalog entries or orchestration recovery |
+| `autobyteus-server-ts/src/application-packages/services/application-package-registry-service.ts` | `File` | Governing package-registry boundary | Persist imported package roots/metadata, compute package-level diagnostics, and coordinate import/remove/reload flows | One authoritative owner for package-registry persistence and flows | app-level manifest parsing or orchestration recovery |
+| `autobyteus-server-ts/src/application-packages/domain/application-package-registry-snapshot.ts` | `File` | Shared registry snapshot owner | Represent package-root descriptors plus package-level diagnostics | One shared package-registry shape reused by startup and host package-management surfaces | app-level catalog entries or run bindings |
+| `autobyteus-server-ts/src/application-bundles/domain/application-catalog-snapshot.ts` | `File` | Discovery snapshot owner | Best-effort valid application entries plus application-level invalid diagnostics | Startup isolation and host app catalog surfaces need one explicit shape distinct from the package-registry snapshot | orchestration policy, package-root persistence, or run bindings |
+| `autobyteus-server-ts/src/application-storage/stores/application-platform-state-store.ts` | `File` | Existing-state access boundary | Open existing per-app platform state by storage layout and keep prepared-vs-existing semantics explicit | Recovery/journaling need bundle-independent persisted-state access | manifest parsing or app availability policy |
 | `.../services/application-resource-configuration-service.ts` | `File` | Resource-configuration owner | Persist/read app resource-slot setup, validate it against manifest-declared slot declarations, and expose it without creating runs | Host setup and backend readback need one authority | direct run launch policy |
 | `.../services/application-availability-service.ts` | `File` | App-availability / re-entry owner | Coordinate targeted app reload success with app-scoped recovery rerun and dispatch resume | Quarantine exit needs one explicit owner | manifest parsing or app business projection |
 | `.../stores/application-resource-configuration-store.ts` | `File` | Resource-config persistence boundary | Store selected resource plus launch defaults per app+slot | Durable setup state is one concern | app business-domain projection |
@@ -1371,35 +1547,48 @@ This layering is explanatory only. Ownership remains the primary design rule.
    - extend `server-runtime.ts` to run orchestration startup inside `ApplicationOrchestrationStartupGate.runStartupRecovery(...)`,
    - call `ApplicationOrchestrationRecoveryService.resumeBindings()` first inside that gate,
    - then call `ApplicationExecutionEventDispatchService.resumePendingEvents()`,
-   - release ready only after both succeed; treat failure as fatal.
+   - release ready only after both succeed, and
+   - treat only shared-store / startup-gate failure as fatal rather than one app-specific recovery problem.
 
 7. **Backend gateway / host launch**
    - add explicit ensure-ready surface,
    - migrate iframe bootstrap to v2 with authoritative `backendBaseUrl`,
    - remove session launch/binding GraphQL dependency from the web host.
 
-8. **Application discovery failure isolation**
-   - make bundle discovery/cache refresh produce a best-effort catalog snapshot plus diagnostics,
+8. **Concrete package-registry ownership**
+   - tighten the current package-management subsystem into `ApplicationPackageRegistryService`,
+   - route imported package persistence, package diagnostics, and package remove/reload flows through that boundary, and
+   - make bundle discovery consume package-root descriptors from the registry boundary instead of reading stores directly.
+
+9. **Application discovery failure isolation**
+   - make bundle discovery/cache refresh produce a best-effort application catalog snapshot plus separate package-registry diagnostics,
    - quarantine invalid/missing/incompatible applications instead of throwing fatally,
+   - surface missing package roots explicitly instead of letting them disappear from discovery, and
    - make recovery/dispatch iterate valid apps plus known durable app ids without crashing on invalid package content.
 
-9. **Quarantined-app repair/reload re-entry**
+10. **Bundle-independent persisted platform state access + startup inventory**
+   - split prepared active-app storage creation from existing persisted-state access,
+   - update binding/journal stores plus event ingress to use existing-state access where the app is already known,
+   - make `ApplicationPlatformStateStore` the authoritative `listKnownApplicationIds()` / `getExistingStatePresence(...)` boundary, and
+   - define `NO_PERSISTED_STATE` admission behavior through `ApplicationAvailabilityService`.
+
+11. **Quarantined-app repair/reload re-entry**
    - add `ApplicationAvailabilityService`,
    - add targeted `ApplicationBundleService.reloadApplication(applicationId)` behavior,
    - rerun one app-scoped recovery slice plus dispatch resume before leaving quarantine, and
    - make backend/runtime-control/event-dispatch behavior explicit while one app is `REENTERING`.
 
-10. **Direct-start correlation establishment**
+12. **Direct-start correlation establishment**
    - add `bindingIntentId` to `runtimeControl.startRun(...)`, binding summaries, and event envelopes,
    - add authoritative `getRunBindingByIntentId(...)` reconciliation lookup,
    - document the required app-owned pending binding intent pattern.
 
-11. **App-owned API/schema authoring path**
+13. **App-owned API/schema authoring path**
    - add app-local folder guidance for schema artifacts and generated clients,
    - keep app-generated clients out of platform packages,
    - ensure GraphQL-backed and route-backed apps remain first-class.
 
-12. **Sample app upgrades**
+14. **Sample app upgrades**
    - migrate Brief Studio to an app-owned GraphQL schema plus generated frontend client,
    - use real `briefId` business identity and app-owned `briefId -> bindingId[]` mapping,
    - move model/runtime/workspace concerns into the pre-entry host configuration gate,
@@ -1409,12 +1598,12 @@ This layering is explanatory only. Ownership remains the primary design rule.
    - normalize both sample apps' launches to `autoExecuteTools = true`,
    - let the simple first-cut host UX show the pre-entry config form on each launch with saved values prefilled.
 
-13. **Frontend host simplification + resource setup repurpose**
+15. **Frontend host simplification + resource setup repurpose**
    - remove session store, retained execution workspace, and session query-param binding,
    - add `applicationHostStore` and engine-first iframe launch behavior,
    - repurpose the old launch modal/form into persisted application resource configuration instead of deleting the useful setup UX.
 
-14. **Legacy deletion**
+16. **Legacy deletion**
    - remove `application-sessions` subsystem,
    - remove session GraphQL/WS/public types,
    - remove `runtimeTarget`-driven host UI and docs,

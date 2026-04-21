@@ -39,6 +39,7 @@ Owns application-authored runtime orchestration after an application backend is 
 `ApplicationHandlerContext.runtimeControl` exposes:
 
 - `listAvailableResources(...)`
+- `getConfiguredResource(...)`
 - `startRun(...)`
 - `getRunBinding(...)`
 - `getRunBindingByIntentId(...)`
@@ -51,6 +52,14 @@ Owns application-authored runtime orchestration after an application backend is 
 - bundled application resources discovered from the owning bundle (`owner = bundle`), and
 - shared agent / team definitions that remain visible to the application (`owner = shared`).
 
+`getConfiguredResource(slotKey)` resolves the effective resource selection for one manifest-declared slot after validating:
+
+- the slot exists for the application,
+- the persisted override (if any) still satisfies the slot's allowed owner/kind contract, and
+- the manifest default still resolves when no persisted override exists.
+
+This read-time validation is authoritative: stale persisted overrides or invalid manifest defaults fail here before app launch code can call `startRun(...)`.
+
 `startRun(...)` requires:
 
 - app-owned opaque `bindingIntentId`,
@@ -59,6 +68,27 @@ Owns application-authored runtime orchestration after an application backend is 
 - optional `initialInput`.
 
 The orchestration host validates the resource choice, launches the underlying agent/team run, persists one durable binding together with `bindingIntentId`, registers lifecycle observation, optionally forwards the initial input only after the synthetic `RUN_STARTED` event path is appended, and returns the binding summary.
+
+## Resource Configuration And Availability
+
+The orchestration boundary also owns persisted application launch setup for manifest-declared `resourceSlots[]`:
+
+- per-application saved resource selections and launch defaults are stored in platform-owned state,
+- saved defaults currently support runtime kind, model identifier, and workspace root path when the slot declares them, and
+- host-managed application flows keep `autoExecuteTools` enabled for the application-owned teaching workflows.
+
+`ApplicationAvailabilityService` owns app-scoped liveness for applications discovered by the bundle layer:
+
+- `ACTIVE` means the application can serve backend and orchestration traffic,
+- `QUARANTINED` means the bundle currently has diagnostics, or the application is persisted-only after package removal/temporary disappearance, and backend/orchestration entrypoints reject with availability detail, and
+- `REENTERING` means one repaired application is being resumed without restarting unrelated applications, while backend/runtime-control admission remains blocked behind retryable availability detail.
+
+`POST /rest/applications/:applicationId/backend/reload` triggers app-scoped reload-and-reenter. A successful repair path now:
+
+- marks the application `REENTERING` immediately,
+- stops any pre-existing application worker before the repaired bundle returns to service,
+- reruns binding recovery plus pending-event dispatch resume for that one application, and
+- only then restores `ACTIVE`, leaving the worker in `stopped` state so the next `ensure-ready` boots a fresh worker from the repaired bundle.
 
 ## Durable Binding And Lookup State
 

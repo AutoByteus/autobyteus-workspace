@@ -111,6 +111,12 @@ describe('ApplicationShell', () => {
       name: 'Brief Studio',
       description: 'Business-first brief workflow',
       writable: true,
+      resourceSlots: [
+        {
+          slotKey: 'draftingTeam',
+          required: true,
+        },
+      ],
       bundleResources: [
         {
           kind: 'AGENT_TEAM',

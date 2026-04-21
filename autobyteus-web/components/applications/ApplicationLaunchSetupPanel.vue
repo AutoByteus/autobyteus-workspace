@@ -131,13 +131,34 @@
               </select>
             </label>
 
-            <div class="rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-900">
-              <p class="font-semibold">
-                {{ $t('applications.components.applications.ApplicationLaunchSetupPanel.toolExecutionLabel') }}
-              </p>
-              <p class="mt-1 text-sm text-blue-800">
-                {{ $t('applications.components.applications.ApplicationLaunchSetupPanel.toolExecutionDescription') }}
-              </p>
+            <div class="rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3">
+              <div class="flex items-center justify-between gap-4">
+                <div>
+                  <p class="text-sm font-semibold text-blue-900">
+                    {{ $t('applications.components.applications.ApplicationLaunchSetupPanel.toolExecutionLabel') }}
+                  </p>
+                  <p class="mt-1 text-xs text-blue-800">
+                    {{ $t('applications.components.applications.ApplicationLaunchSetupPanel.toolExecutionDescription') }}
+                  </p>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-blue-700">
+                    {{ $t('applications.components.applications.ApplicationLaunchSetupPanel.toolExecutionLockedOn') }}
+                  </span>
+                  <button
+                    type="button"
+                    disabled
+                    aria-checked="true"
+                    class="relative inline-flex h-6 w-11 cursor-not-allowed rounded-full border-2 border-transparent bg-blue-600 opacity-80"
+                  >
+                    <span class="sr-only">{{ $t('applications.components.applications.ApplicationLaunchSetupPanel.toolExecutionLabel') }}</span>
+                    <span
+                      aria-hidden="true"
+                      class="pointer-events-none inline-block h-5 w-5 translate-x-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                    />
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 

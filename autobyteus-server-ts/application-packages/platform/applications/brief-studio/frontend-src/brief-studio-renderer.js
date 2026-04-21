@@ -58,7 +58,7 @@ export const renderBriefList = ({ state, elements, onSelectBrief, onError }) => 
 
   if (state.briefs.length === 0) {
     elements.briefList.className = "brief-list empty-state";
-    elements.briefList.textContent = "No briefs yet. Create a business record, then launch one or more draft runs from it.";
+    elements.briefList.textContent = "No briefs yet. Create a brief, then generate a draft when you are ready for review.";
     return;
   }
 
@@ -73,12 +73,8 @@ export const renderBriefList = ({ state, elements, onSelectBrief, onError }) => 
               <span class="badge">${escapeHtml(brief.status)}</span>
             </div>
             <div class="brief-meta-row muted small" style="margin-top: 10px;">
-              <span>${escapeHtml(brief.briefId)}</span>
-              <span>${escapeHtml(brief.latestBindingStatus || "not started")}</span>
-            </div>
-            <div class="brief-meta-row muted small" style="margin-top: 8px;">
-              <span>${escapeHtml(brief.latestRunId || "no run yet")}</span>
-              <span>${escapeHtml(formatTime(brief.updatedAt))}</span>
+              <span>Brief ${escapeHtml(brief.briefId)}</span>
+              <span>Updated ${escapeHtml(formatTime(brief.updatedAt))}</span>
             </div>
           </button>
         </article>
@@ -95,7 +91,7 @@ export const renderBriefList = ({ state, elements, onSelectBrief, onError }) => 
 
 const renderExecutionHistory = (executions) => {
   if (!Array.isArray(executions) || executions.length === 0) {
-    return `<div class="empty-state">No draft runs yet for this brief.</div>`;
+    return `<div class="empty-state">No draft generations yet for this brief.</div>`;
   }
 
   return `
@@ -124,6 +120,38 @@ const renderExecutionHistory = (executions) => {
   `;
 };
 
+const renderRuntimeDiagnostics = (brief, executions) => `
+  <details class="inline-details">
+    <summary class="details-summary">Advanced runtime details</summary>
+    <p class="details-copy muted">
+      Optional diagnostics for app authors. The main brief workflow stays focused on draft outputs and review state.
+    </p>
+    <div class="meta-grid compact-meta-grid">
+      <div>
+        <span class="label">Latest binding</span>
+        <div class="value small">${escapeHtml(brief.latestBindingId || "—")}</div>
+        <div class="muted small">Status ${escapeHtml(brief.latestBindingStatus || "—")}</div>
+      </div>
+      <div>
+        <span class="label">Latest run</span>
+        <div class="value small">${escapeHtml(brief.latestRunId || "—")}</div>
+        <div class="muted small">Last updated ${escapeHtml(formatTime(brief.updatedAt))}</div>
+      </div>
+      <div>
+        <span class="label">Runtime note</span>
+        <div class="muted small">${escapeHtml(brief.lastErrorMessage || "No recorded runtime error")}</div>
+      </div>
+    </div>
+    <div style="margin-top: 18px;">
+      <h3>Draft generation history</h3>
+      <p class="muted">One brief can accumulate many app-owned draft generations over time.</p>
+    </div>
+    <div style="margin-top: 18px;">
+      ${renderExecutionHistory(executions)}
+    </div>
+  </details>
+`;
+
 export const renderBriefDetail = ({
   state,
   elements,
@@ -140,12 +168,13 @@ export const renderBriefDetail = ({
   const brief = state.detail;
   if (!brief) {
     elements.briefDetail.className = "empty-state";
-    elements.briefDetail.textContent = "Select a brief to inspect its projected artifacts, execution history, and review workflow.";
+    elements.briefDetail.textContent = "Select a brief to review generated drafts, notes, and approval status.";
     return;
   }
 
   const artifacts = Array.isArray(brief.artifacts) ? brief.artifacts : [];
   const reviewNotes = Array.isArray(brief.reviewNotes) ? brief.reviewNotes : [];
+  const finalArtifactCount = artifacts.filter((artifact) => artifact.isFinal).length;
 
   elements.briefDetail.className = "detail-grid";
   elements.briefDetail.innerHTML = `
@@ -163,23 +192,23 @@ export const renderBriefDetail = ({
       </div>
       <div class="meta-grid compact-meta-grid">
         <div>
-          <span class="label">Latest binding</span>
-          <div class="value small">${escapeHtml(brief.latestBindingId || "—")}</div>
-          <div class="muted small">Status ${escapeHtml(brief.latestBindingStatus || "—")}</div>
+          <span class="label">Brief record</span>
+          <div class="value small">${escapeHtml(brief.briefId)}</div>
+          <div class="muted small">Status ${escapeHtml(brief.status)}</div>
         </div>
         <div>
-          <span class="label">Latest run</span>
-          <div class="value small">${escapeHtml(brief.latestRunId || "—")}</div>
-          <div class="muted small">Approved ${escapeHtml(formatTime(brief.approvedAt))}</div>
+          <span class="label">Draft outputs</span>
+          <div class="value small">${escapeHtml(String(artifacts.length))}</div>
+          <div class="muted small">${escapeHtml(String(finalArtifactCount))} final</div>
         </div>
         <div>
           <span class="label">Review</span>
-          <div class="value small">Rejected ${escapeHtml(formatTime(brief.rejectedAt))}</div>
-          <div class="muted small">${escapeHtml(brief.lastErrorMessage || "No runtime error recorded")}</div>
+          <div class="value small">${escapeHtml(String(reviewNotes.length))} notes</div>
+          <div class="muted small">Approved ${escapeHtml(formatTime(brief.approvedAt))} · Rejected ${escapeHtml(formatTime(brief.rejectedAt))}</div>
         </div>
       </div>
       <div class="action-row">
-        <button id="launch-draft-run" class="secondary-button" type="button">Launch draft run</button>
+        <button id="launch-draft-run" class="secondary-button" type="button">Generate draft</button>
         <button id="approve-brief" class="primary-button" type="button">Approve</button>
         <button id="reject-brief" class="danger-button" type="button">Reject</button>
       </div>
@@ -187,20 +216,12 @@ export const renderBriefDetail = ({
 
     <section class="detail-section">
       <div>
-        <h3>Execution history</h3>
-        <p class="muted">One briefId can accumulate many bound runs over time.</p>
-      </div>
-      ${renderExecutionHistory(state.executions)}
-    </section>
-
-    <section class="detail-section">
-      <div>
-        <h3>Projected artifacts</h3>
-        <p class="muted">Stored in app-owned tables after durable execution-event dispatch.</p>
+        <h3>Draft outputs</h3>
+        <p class="muted">Generated drafts stay attached to the same brief record for review.</p>
       </div>
       <div class="artifact-grid">
         ${artifacts.length === 0
-          ? `<div class="empty-state">No artifact projections yet.</div>`
+          ? `<div class="empty-state">No draft outputs yet.</div>`
           : artifacts
               .map(
                 (artifact) => `
@@ -222,7 +243,7 @@ export const renderBriefDetail = ({
     <section class="detail-section">
       <div>
         <h3>Review notes</h3>
-        <p class="muted">GraphQL mutations update the app-owned review workflow state.</p>
+        <p class="muted">Keep the approval conversation on the brief record itself.</p>
       </div>
       <div class="note-list">
         ${reviewNotes.length === 0
@@ -247,6 +268,10 @@ export const renderBriefDetail = ({
           <button class="secondary-button" type="submit">Add review note</button>
         </div>
       </form>
+    </section>
+
+    <section class="detail-section">
+      ${renderRuntimeDiagnostics(brief, state.executions)}
     </section>
   `;
 

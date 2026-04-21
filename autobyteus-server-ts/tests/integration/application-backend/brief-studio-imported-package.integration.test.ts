@@ -376,7 +376,41 @@ describe("Brief Studio imported package integration", () => {
       } as never,
     );
 
-    bundleService = ApplicationBundleService.getInstance({ provider });
+    bundleService = ApplicationBundleService.getInstance({
+      provider,
+      packageRegistryService: {
+        getRegistrySnapshot: async () => ({
+          packages: [
+            {
+              packageId: BUILT_IN_APPLICATION_PACKAGE_ID,
+              displayName: "Platform Applications",
+              packageRootPath: builtInAppRoot,
+              sourceKind: "BUILT_IN",
+              source: builtInAppRoot,
+              applicationCount: 0,
+              isPlatformOwned: true,
+              isRemovable: false,
+              managedInstallPath: builtInAppRoot,
+              bundledSourceRootPath: builtInAppRoot,
+            },
+            {
+              packageId: `application-local:${encodeURIComponent(IMPORTABLE_PACKAGE_ROOT)}`,
+              displayName: "brief-studio",
+              packageRootPath: IMPORTABLE_PACKAGE_ROOT,
+              sourceKind: "LOCAL_PATH",
+              source: IMPORTABLE_PACKAGE_ROOT,
+              applicationCount: 0,
+              isPlatformOwned: false,
+              isRemovable: true,
+              managedInstallPath: null,
+              bundledSourceRootPath: null,
+            },
+          ],
+          diagnostics: [],
+          refreshedAt: new Date().toISOString(),
+        }),
+      },
+    });
     const [bundle] = await bundleService.listApplications();
     if (!bundle) {
       throw new Error("Expected Brief Studio bundle to be discoverable from the importable package root.");
