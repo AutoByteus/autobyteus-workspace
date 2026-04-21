@@ -131,87 +131,18 @@
               </select>
             </label>
 
-            <div class="rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3">
-              <div class="flex items-center justify-between gap-4">
-                <div>
-                  <p class="text-sm font-semibold text-blue-900">
-                    {{ $t('applications.components.applications.ApplicationLaunchSetupPanel.toolExecutionLabel') }}
-                  </p>
-                  <p class="mt-1 text-xs text-blue-800">
-                    {{ $t('applications.components.applications.ApplicationLaunchSetupPanel.toolExecutionDescription') }}
-                  </p>
-                </div>
-                <div class="flex items-center gap-3">
-                  <span class="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-blue-700">
-                    {{ $t('applications.components.applications.ApplicationLaunchSetupPanel.toolExecutionLockedOn') }}
-                  </span>
-                  <button
-                    type="button"
-                    disabled
-                    aria-checked="true"
-                    class="relative inline-flex h-6 w-11 cursor-not-allowed rounded-full border-2 border-transparent bg-blue-600 opacity-80"
-                  >
-                    <span class="sr-only">{{ $t('applications.components.applications.ApplicationLaunchSetupPanel.toolExecutionLabel') }}</span>
-                    <span
-                      aria-hidden="true"
-                      class="pointer-events-none inline-block h-5 w-5 translate-x-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
-                    />
-                  </button>
-                </div>
-              </div>
-            </div>
           </div>
 
-          <div class="rounded-2xl border border-slate-200 bg-white p-4">
-            <div class="space-y-4">
-              <RuntimeModelConfigFields
-                v-if="slotSupportsRuntimeKind(view.slot) || slotSupportsModelIdentifier(view.slot)"
-                :runtime-kind="drafts[view.slot.slotKey]?.runtimeKind ?? ''"
-                :llm-model-identifier="drafts[view.slot.slotKey]?.llmModelIdentifier ?? ''"
-                :disabled="isSaving(view.slot.slotKey) || !hasEffectiveResource(view)"
-                :allow-blank-runtime="true"
-                :show-runtime-field="slotSupportsRuntimeKind(view.slot)"
-                :show-model-field="slotSupportsModelIdentifier(view.slot)"
-                :show-model-config-section="false"
-                :blank-runtime-label="$t('applications.components.applications.ApplicationLaunchSetupPanel.useApplicationDefaultRuntime')"
-                :runtime-label="$t('applications.components.applications.ApplicationLaunchSetupPanel.runtimeLabel')"
-                :model-label="$t('applications.components.applications.ApplicationLaunchSetupPanel.modelLabel')"
-                :runtime-help-text="slotSupportsRuntimeKind(view.slot) ? runtimeHelpText(view) : null"
-                :model-help-text="slotSupportsModelIdentifier(view.slot) ? $t('applications.components.applications.ApplicationLaunchSetupPanel.modelHelp') : null"
-                :model-placeholder="$t('applications.components.applications.ApplicationLaunchSetupPanel.modelPlaceholder')"
-                :id-prefix="`application-slot-${view.slot.slotKey}`"
-                @update:runtime-kind="updateRuntimeKind(view.slot.slotKey, $event)"
-                @update:llm-model-identifier="updateModelIdentifier(view.slot.slotKey, $event)"
-              />
-
-              <label
-                v-if="slotSupportsWorkspaceRootPath(view.slot)"
-                class="block"
-              >
-                <span class="mb-1 block text-sm font-medium text-slate-700">
-                  {{ $t('applications.components.applications.ApplicationLaunchSetupPanel.workspaceRootPathLabel') }}
-                </span>
-                <input
-                  :value="drafts[view.slot.slotKey]?.workspaceRootPath ?? ''"
-                  type="text"
-                  class="block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
-                  :disabled="isSaving(view.slot.slotKey) || !hasEffectiveResource(view)"
-                  :placeholder="$t('applications.components.applications.ApplicationLaunchSetupPanel.workspaceRootPathPlaceholder')"
-                  @input="updateWorkspaceRootPath(view.slot.slotKey, ($event.target as HTMLInputElement).value)"
-                >
-                <p class="mt-1 text-xs text-slate-500">
-                  {{ workspaceHelpText(view) }}
-                </p>
-              </label>
-
-              <p
-                v-if="!slotHasAdditionalDefaults(view.slot)"
-                class="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600"
-              >
-                {{ $t('applications.components.applications.ApplicationLaunchSetupPanel.noAdditionalDefaults') }}
-              </p>
-            </div>
-          </div>
+          <ApplicationLaunchDefaultsFields
+            v-if="drafts[view.slot.slotKey]"
+            :slot="view.slot"
+            :draft="drafts[view.slot.slotKey]"
+            :disabled="isSaving(view.slot.slotKey) || !hasEffectiveResource(view)"
+            :has-effective-resource="hasEffectiveResource(view)"
+            @update:runtime-kind="updateRuntimeKind(view.slot.slotKey, $event)"
+            @update:llm-model-identifier="updateModelIdentifier(view.slot.slotKey, $event)"
+            @update:workspace-root-path="updateWorkspaceRootPath(view.slot.slotKey, $event)"
+          />
         </div>
 
         <div class="mt-5 flex flex-wrap items-center gap-3">
@@ -253,7 +184,7 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import RuntimeModelConfigFields from '~/components/launch-config/RuntimeModelConfigFields.vue'
+import ApplicationLaunchDefaultsFields from '~/components/applications/ApplicationLaunchDefaultsFields.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import {
@@ -269,10 +200,6 @@ import {
   hasEffectiveResourceSelection,
   resolveSelectedResourceRef,
   resourcesForSlot,
-  slotHasAdditionalDefaults,
-  slotSupportsModelIdentifier,
-  slotSupportsRuntimeKind,
-  slotSupportsWorkspaceRootPath,
   summaryToResourceRef,
   type ApplicationLaunchSetupGateState,
   type ApplicationResourceConfigurationView,
@@ -507,18 +434,6 @@ const describeCurrentSelectionForView = (view: ApplicationResourceConfigurationV
 
 const formatUpdatedAtForView = (updatedAt: string | null): string => (
   formatUpdatedAt(updatedAt, $t)
-)
-
-const runtimeHelpText = (view: ApplicationResourceConfigurationView): string => (
-  hasEffectiveResource(view)
-    ? $t('applications.components.applications.ApplicationLaunchSetupPanel.runtimeHelp')
-    : $t('applications.components.applications.ApplicationLaunchSetupPanel.selectResourceFirst')
-)
-
-const workspaceHelpText = (view: ApplicationResourceConfigurationView): string => (
-  hasEffectiveResource(view)
-    ? $t('applications.components.applications.ApplicationLaunchSetupPanel.workspaceRootPathHelp')
-    : $t('applications.components.applications.ApplicationLaunchSetupPanel.selectResourceFirst')
 )
 
 watch(

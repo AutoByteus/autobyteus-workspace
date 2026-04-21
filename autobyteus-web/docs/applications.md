@@ -16,6 +16,7 @@ Shows Applications as a first-class top-level module, resolves whether the modul
 - `components/applications/ApplicationShell.vue`
 - `components/applications/ApplicationSurface.vue`
 - `components/applications/ApplicationIframeHost.vue`
+- `components/applications/ApplicationLaunchDefaultsFields.vue`
 - `utils/application/applicationAssetUrl.ts`
 - `utils/application/applicationHostTransport.ts`
 - `utils/application/applicationLaunchDescriptor.ts`
@@ -87,12 +88,17 @@ That gate:
 - keeps `Enter application` disabled while setup is loading, saving, dirty, or missing required saved state, and
 - only allows host launch after the setup panel reports `launch-ready`.
 
-`ApplicationLaunchSetupPanel.vue` owns the actual setup UI. It surfaces:
+`ApplicationLaunchSetupPanel.vue` owns the overall setup orchestration UI. It loads the saved slot state, owns refresh/save/reset actions, and surfaces:
 
-- required vs optional slots,
-- bundled vs shared runtime-resource choices,
-- saved launch defaults such as runtime kind, model identifier, and workspace root when the slot supports them, and
+- required vs optional slots, and
+- bundled vs shared runtime-resource choices.
+
+`ApplicationLaunchDefaultsFields.vue` owns the slot-specific launch-defaults boundary. It surfaces:
+
+- saved launch defaults such as runtime kind, model identifier, and workspace root only when the current slot supports them, and
 - the host-managed note that automatic tool execution remains enabled for this application flow.
+
+That split is intentional: application-specific field-presence policy now lives in the app-owned launch-defaults boundary instead of extending the shared run-config wrapper with app-specific visibility toggles. Native agent/team run configuration keeps its own stable runtime/model field semantics.
 
 This means the authoritative user journey is now:
 

@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-4">
-    <div v-if="showRuntimeFieldComputed">
+    <div>
       <label :for="runtimeFieldId" class="mb-1 block text-sm font-medium text-gray-700">{{ runtimeLabelText }}</label>
       <select
         :id="runtimeFieldId"
@@ -30,7 +30,7 @@
       </p>
     </div>
 
-    <div v-if="showModelFieldComputed">
+    <div>
       <label class="mb-1 block text-sm font-medium text-gray-700">{{ modelLabelText }}</label>
       <SearchableGroupedSelect
         :model-value="llmModelIdentifier || ''"
@@ -44,7 +44,6 @@
     </div>
 
     <ModelConfigSection
-      v-if="showModelConfigSectionComputed"
       :schema="modelConfigSchema"
       :model-config="llmConfig"
       :disabled="disabledComputed"
@@ -90,9 +89,6 @@ const props = defineProps<{
   thinkingLabel?: string
   thinkingDescription?: string
   idPrefix?: string
-  showRuntimeField?: boolean
-  showModelField?: boolean
-  showModelConfigSection?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -115,9 +111,6 @@ const runtimeSelectionLockedComputed = computed(
 const allowBlankRuntime = computed(() => props.allowBlankRuntime === true)
 const runtimeLabelText = computed(() => props.runtimeLabel ?? 'Runtime')
 const modelLabelText = computed(() => props.modelLabel ?? 'Model')
-const showRuntimeFieldComputed = computed(() => props.showRuntimeField !== false)
-const showModelFieldComputed = computed(() => props.showModelField !== false)
-const showModelConfigSectionComputed = computed(() => props.showModelConfigSection !== false)
 const blankRuntimeLabelText = computed(
   () => props.blankRuntimeLabel ?? 'Choose when launching',
 )
