@@ -3,6 +3,7 @@ import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LMStudioLLM } from '../../../../src/llm/api/lmstudio-llm.js';
+import { LMStudioChatRenderer } from '../../../../src/llm/prompt-renderers/lmstudio-chat-renderer.js';
 import {
   createLocalLongRunningFetch,
   LOCAL_PROVIDER_SDK_TIMEOUT_MS,
@@ -52,5 +53,6 @@ describe('LMStudioLLM', () => {
       fetch: createLocalLongRunningFetch(),
       timeout: LOCAL_PROVIDER_SDK_TIMEOUT_MS,
     });
+    expect((llm as unknown as { _renderer: unknown })._renderer).toBeInstanceOf(LMStudioChatRenderer);
   });
 });

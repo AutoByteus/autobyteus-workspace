@@ -27,9 +27,9 @@ const loaderSpecs: LoaderSpec[] = [
     exportName: "registerBrowserTools",
   },
   {
-    name: "Application Session Tools",
-    modulePath: "../application-sessions/tools/register-application-session-tools.js",
-    exportName: "registerApplicationSessionTools",
+    name: "Application Orchestration Tools",
+    modulePath: "../application-orchestration/tools/register-application-orchestration-tools.js",
+    exportName: "registerApplicationOrchestrationTools",
   },
 ];
 

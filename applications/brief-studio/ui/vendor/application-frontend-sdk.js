@@ -1,5 +1,6 @@
+import { createApplicationBackendMountTransport, deriveApplicationBackendMountEndpoints, } from "./create-application-backend-mount-transport.js";
 export const createApplicationClient = (options) => {
-    const getRequestContext = () => options.requestContext ?? { applicationId: options.applicationId, applicationSessionId: null };
+    const getRequestContext = () => options.requestContext ?? { applicationId: options.applicationId, launchInstanceId: null };
     return {
         getApplicationInfo: () => ({
             applicationId: options.applicationId,
@@ -22,6 +23,16 @@ export const createApplicationClient = (options) => {
             requestContext: getRequestContext(),
             request,
         }),
+        route: (request) => {
+            if (!options.transport.invokeRoute) {
+                throw new Error("The application transport does not support route invocation.");
+            }
+            return options.transport.invokeRoute({
+                applicationId: options.applicationId,
+                requestContext: getRequestContext(),
+                request,
+            });
+        },
         subscribeNotifications: (listener) => {
             if (!options.transport.subscribeNotifications) {
                 return { close: () => undefined };
@@ -33,4 +44,5 @@ export const createApplicationClient = (options) => {
         },
     };
 };
+export { createApplicationBackendMountTransport, deriveApplicationBackendMountEndpoints, };
 //# sourceMappingURL=index.js.map

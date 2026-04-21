@@ -17,18 +17,7 @@
       </div>
 
       <div class="min-w-0 flex-1">
-        <div class="flex flex-wrap items-center gap-2">
-          <h3 class="truncate text-lg font-semibold text-slate-900">{{ application.name }}</h3>
-          <span class="rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-semibold text-blue-700">
-            {{ runtimeLabel }}
-          </span>
-          <span
-            v-if="activeSessionId"
-            class="rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700"
-          >
-            {{ $t('applications.shared.sessionActive') }}
-          </span>
-        </div>
+        <h3 class="truncate text-lg font-semibold text-slate-900">{{ application.name }}</h3>
         <p class="mt-2 line-clamp-3 text-sm text-slate-600">{{ descriptionText }}</p>
       </div>
     </div>
@@ -39,16 +28,14 @@
         <p class="mt-1 truncate text-sm text-slate-700">{{ application.packageId }}</p>
       </div>
       <div>
-        <p class="font-semibold uppercase tracking-wide text-slate-400">{{ $t('applications.shared.runtimeTarget') }}</p>
-        <p class="mt-1 truncate text-sm text-slate-700">{{ application.runtimeTarget.definitionId }}</p>
+        <p class="font-semibold uppercase tracking-wide text-slate-400">{{ $t('applications.components.applications.ApplicationCard.launchSetupLabel') }}</p>
+        <p class="mt-1 text-sm text-slate-700">{{ launchSetupSummary }}</p>
       </div>
     </div>
 
     <div class="mt-5 flex items-center justify-between border-t border-slate-100 pt-4 text-sm">
       <span class="text-slate-500">
-        {{ activeSessionId
-          ? $t('applications.components.applications.ApplicationCard.resumeApplication')
-          : $t('applications.components.applications.ApplicationCard.openDetails') }}
+        {{ $t('applications.components.applications.ApplicationCard.openDetails') }}
       </span>
       <span class="font-semibold text-blue-700 transition-colors group-hover:text-blue-800">
         {{ $t('applications.components.applications.ApplicationCard.continue') }}
@@ -66,7 +53,6 @@ import { resolveApplicationAssetUrl } from '~/utils/application/applicationAsset
 
 const props = defineProps<{
   application: ApplicationCatalogEntry
-  activeSessionId?: string | null
 }>()
 
 defineEmits<{
@@ -101,10 +87,15 @@ watch(
 
 const showIcon = computed(() => Boolean(resolvedIconUrl.value) && !iconLoadFailed.value)
 const descriptionText = computed(() => props.application.description?.trim() || $t('applications.shared.noDescriptionProvided'))
-const runtimeLabel = computed(() => (
-  props.application.runtimeTarget.kind === 'AGENT'
-    ? $t('applications.shared.singleAgent')
-    : $t('applications.shared.agentTeam')
+const requiredSlotCount = computed(() => props.application.resourceSlots.filter((slot) => slot.required).length)
+const launchSetupSummary = computed(() => (
+  requiredSlotCount.value > 0
+    ? $t('applications.components.applications.ApplicationCard.requiredSetupSummary', {
+      count: requiredSlotCount.value,
+    })
+    : props.application.resourceSlots.length > 0
+      ? $t('applications.components.applications.ApplicationCard.optionalSetupSummary')
+      : $t('applications.components.applications.ApplicationCard.openBusinessView')
 ))
 
 const initials = computed(() => {

@@ -29,6 +29,22 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
+  applications/socratic-math-teacher:
+    dependencies:
+      '@autobyteus/application-backend-sdk':
+        specifier: workspace:*
+        version: link:../../autobyteus-application-backend-sdk
+      '@autobyteus/application-frontend-sdk':
+        specifier: workspace:*
+        version: link:../../autobyteus-application-frontend-sdk
+    devDependencies:
+      '@types/node':
+        specifier: ^25.0.10
+        version: 25.3.0
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   autobyteus-application-backend-sdk:
     dependencies:
       '@autobyteus/application-sdk-contracts':

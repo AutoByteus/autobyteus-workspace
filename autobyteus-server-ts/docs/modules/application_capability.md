@@ -58,6 +58,6 @@ This keeps the migration away from the removed frontend build flag clean while p
 ## Related Docs
 
 - [`applications.md`](./applications.md)
-- [`application_sessions.md`](./application_sessions.md)
+- [`application_orchestration.md`](./application_orchestration.md)
 - `../../../autobyteus-web/docs/applications.md`
 - `../../../autobyteus-web/docs/settings.md`

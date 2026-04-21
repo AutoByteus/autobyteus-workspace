@@ -5,6 +5,10 @@ import {
   ApplicationStorageLifecycleService,
   getApplicationStorageLifecycleService,
 } from "../../application-storage/services/application-storage-lifecycle-service.js";
+import {
+  ApplicationOrchestrationHostService,
+  getApplicationOrchestrationHostService,
+} from "../../application-orchestration/services/application-orchestration-host-service.js";
 import { ApplicationEngineClient, type ApplicationEngineClientNotification } from "../runtime/application-engine-client.js";
 import { ApplicationWorkerSupervisor } from "../runtime/application-worker-supervisor.js";
 import {
@@ -15,16 +19,17 @@ import {
   APPLICATION_ENGINE_METHOD_INVOKE_QUERY,
   APPLICATION_ENGINE_METHOD_LOAD_DEFINITION,
   APPLICATION_ENGINE_METHOD_ROUTE_REQUEST,
+  APPLICATION_ENGINE_METHOD_RUNTIME_CONTROL,
   APPLICATION_ENGINE_METHOD_STOP,
+  type ApplicationExecutionEventDispatchResult,
   type ApplicationWorkerExecuteGraphqlInput,
   type ApplicationWorkerInvokeCommandInput,
   type ApplicationWorkerInvokeEventHandlerInput,
   type ApplicationWorkerInvokeQueryInput,
   type ApplicationWorkerLoadDefinitionResult,
   type ApplicationWorkerRouteRequestInput,
-  type ApplicationWorkerStatusResult,
+  type ApplicationWorkerRuntimeControlInput,
 } from "../runtime/protocol.js";
-import type { ApplicationPublicationDispatchResult } from "../runtime/protocol.js";
 
 const createBaseStatus = (applicationId: string): ApplicationEngineStatus => ({
   applicationId,
@@ -67,6 +72,7 @@ export class ApplicationEngineHostService {
     private readonly dependencies: {
       applicationBundleService?: ApplicationBundleService;
       storageLifecycleService?: ApplicationStorageLifecycleService;
+      orchestrationHostService?: ApplicationOrchestrationHostService;
     } = {},
   ) {}
 
@@ -76,6 +82,10 @@ export class ApplicationEngineHostService {
 
   private get storageLifecycleService(): ApplicationStorageLifecycleService {
     return this.dependencies.storageLifecycleService ?? getApplicationStorageLifecycleService();
+  }
+
+  private get orchestrationHostService(): ApplicationOrchestrationHostService {
+    return this.dependencies.orchestrationHostService ?? getApplicationOrchestrationHostService();
   }
 
   onNotification(
@@ -112,35 +122,30 @@ export class ApplicationEngineHostService {
 
   async invokeApplicationQuery(applicationId: string, input: ApplicationWorkerInvokeQueryInput): Promise<unknown> {
     await this.ensureApplicationEngine(applicationId);
-    const client = this.requireRuntimeHandle(applicationId).client;
-    return client.request(APPLICATION_ENGINE_METHOD_INVOKE_QUERY, input as Record<string, unknown>);
+    return this.requireRuntimeHandle(applicationId).client.request(APPLICATION_ENGINE_METHOD_INVOKE_QUERY, input as Record<string, unknown>);
   }
 
   async invokeApplicationCommand(applicationId: string, input: ApplicationWorkerInvokeCommandInput): Promise<unknown> {
     await this.ensureApplicationEngine(applicationId);
-    const client = this.requireRuntimeHandle(applicationId).client;
-    return client.request(APPLICATION_ENGINE_METHOD_INVOKE_COMMAND, input as Record<string, unknown>);
+    return this.requireRuntimeHandle(applicationId).client.request(APPLICATION_ENGINE_METHOD_INVOKE_COMMAND, input as Record<string, unknown>);
   }
 
   async routeApplicationRequest(applicationId: string, input: ApplicationWorkerRouteRequestInput): Promise<unknown> {
     await this.ensureApplicationEngine(applicationId);
-    const client = this.requireRuntimeHandle(applicationId).client;
-    return client.request(APPLICATION_ENGINE_METHOD_ROUTE_REQUEST, input as Record<string, unknown>);
+    return this.requireRuntimeHandle(applicationId).client.request(APPLICATION_ENGINE_METHOD_ROUTE_REQUEST, input as Record<string, unknown>);
   }
 
   async executeApplicationGraphql(applicationId: string, input: ApplicationWorkerExecuteGraphqlInput): Promise<unknown> {
     await this.ensureApplicationEngine(applicationId);
-    const client = this.requireRuntimeHandle(applicationId).client;
-    return client.request(APPLICATION_ENGINE_METHOD_EXECUTE_GRAPHQL, input as Record<string, unknown>);
+    return this.requireRuntimeHandle(applicationId).client.request(APPLICATION_ENGINE_METHOD_EXECUTE_GRAPHQL, input as Record<string, unknown>);
   }
 
   async invokeApplicationEventHandler(
     applicationId: string,
     input: ApplicationWorkerInvokeEventHandlerInput,
-  ): Promise<ApplicationPublicationDispatchResult> {
+  ): Promise<ApplicationExecutionEventDispatchResult> {
     await this.ensureApplicationEngine(applicationId);
-    const client = this.requireRuntimeHandle(applicationId).client;
-    return client.request<ApplicationPublicationDispatchResult>(
+    return this.requireRuntimeHandle(applicationId).client.request<ApplicationExecutionEventDispatchResult>(
       APPLICATION_ENGINE_METHOD_INVOKE_EVENT_HANDLER,
       input as Record<string, unknown>,
     );
@@ -196,6 +201,10 @@ export class ApplicationEngineHostService {
     });
     const client = new ApplicationEngineClient();
     client.attach(childProcess);
+    client.registerRequestHandler(
+      APPLICATION_ENGINE_METHOD_RUNTIME_CONTROL,
+      async (params) => this.handleRuntimeControl(applicationId, params as ApplicationWorkerRuntimeControlInput),
+    );
 
     client.onNotification((message) => {
       for (const listener of this.notificationListeners) {
@@ -271,6 +280,44 @@ export class ApplicationEngineHostService {
       };
       this.updateStatus(applicationId, failureStatus, layout.engineStatusPath);
       throw error;
+    }
+  }
+
+  private async handleRuntimeControl(
+    applicationId: string,
+    input: ApplicationWorkerRuntimeControlInput,
+  ): Promise<unknown> {
+    switch (input.action) {
+      case "listAvailableResources":
+        return this.orchestrationHostService.listAvailableResources(applicationId, input.input as never);
+      case "getConfiguredResource":
+        return this.orchestrationHostService.getConfiguredResource(
+          applicationId,
+          (input.input as { slotKey?: string }).slotKey ?? "",
+        );
+      case "startRun":
+        return this.orchestrationHostService.startRun(applicationId, input.input as never);
+      case "getRunBinding":
+        return this.orchestrationHostService.getRunBinding(
+          applicationId,
+          (input.input as { bindingId?: string }).bindingId ?? "",
+        );
+      case "getRunBindingByIntentId":
+        return this.orchestrationHostService.getRunBindingByIntentId(
+          applicationId,
+          (input.input as { bindingIntentId?: string }).bindingIntentId ?? "",
+        );
+      case "listRunBindings":
+        return this.orchestrationHostService.listRunBindings(applicationId, input.input as never);
+      case "postRunInput":
+        return this.orchestrationHostService.postRunInput(applicationId, input.input as never);
+      case "terminateRunBinding":
+        return this.orchestrationHostService.terminateRunBinding(
+          applicationId,
+          (input.input as { bindingId?: string }).bindingId ?? "",
+        );
+      default:
+        throw new Error(`Unsupported application runtimeControl action '${String(input.action)}'.`);
     }
   }
 

@@ -1,4 +1,5 @@
 import type { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 
 export interface TeamRunMemberMetadata {
@@ -13,6 +14,7 @@ export interface TeamRunMemberMetadata {
   skillAccessMode: SkillAccessMode;
   llmConfig: Record<string, unknown> | null;
   workspaceRootPath: string | null;
+  applicationExecutionContext?: ApplicationExecutionContext | null;
 }
 
 export interface TeamRunMetadata {

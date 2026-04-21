@@ -38,8 +38,8 @@ describe("FileApplicationBundleProvider", () => {
   const buildProvider = (options?: {
     additionalRootPaths?: string[];
     registryRecords?: Array<{ packageId: string; rootPath: string }>;
-  }) =>
-    new FileApplicationBundleProvider(
+  }) => {
+    const provider = new FileApplicationBundleProvider(
       {
         getAppRootDir: () => appRoot,
       } as never,
@@ -51,6 +51,63 @@ describe("FileApplicationBundleProvider", () => {
         listPackageRecords: async () => options?.registryRecords ?? [],
       } as never,
     );
+    const registryByRootPath = new Map(
+      (options?.registryRecords ?? []).map((record) => [path.resolve(record.rootPath), record]),
+    );
+    const seenRootPaths = new Set<string>();
+    const packageEntries = [
+      {
+        packageId: BUILT_IN_APPLICATION_PACKAGE_ID,
+        displayName: 'Platform Applications',
+        packageRootPath: builtInRoot,
+        sourceKind: 'BUILT_IN' as const,
+        source: appRoot,
+        applicationCount: 0,
+        isPlatformOwned: true,
+        isRemovable: false,
+        managedInstallPath: builtInRoot,
+        bundledSourceRootPath: appRoot,
+      },
+    ];
+    seenRootPaths.add(path.resolve(builtInRoot));
+
+    for (const additionalRootPath of options?.additionalRootPaths ?? []) {
+      const resolvedRootPath = path.resolve(additionalRootPath);
+      if (seenRootPaths.has(resolvedRootPath)) {
+        continue;
+      }
+      seenRootPaths.add(resolvedRootPath);
+      const record = registryByRootPath.get(resolvedRootPath);
+      packageEntries.push({
+        packageId: record?.packageId ?? `application-local:${encodeURIComponent(resolvedRootPath)}`,
+        displayName: path.basename(resolvedRootPath) || resolvedRootPath,
+        packageRootPath: resolvedRootPath,
+        sourceKind: record ? 'GITHUB_REPOSITORY' as const : 'LOCAL_PATH' as const,
+        source: resolvedRootPath,
+        applicationCount: 0,
+        isPlatformOwned: false,
+        isRemovable: true,
+        managedInstallPath: null,
+        bundledSourceRootPath: null,
+      });
+    }
+
+    return {
+      listBundles: () => provider.listBundles({
+        packages: packageEntries,
+        diagnostics: [],
+        refreshedAt: new Date().toISOString(),
+      }),
+      getCatalogSnapshot: () => provider.getCatalogSnapshot({
+        packages: packageEntries,
+        diagnostics: [],
+        refreshedAt: new Date().toISOString(),
+      }),
+      validatePackageRoot: provider.validatePackageRoot.bind(provider),
+      buildApplicationOwnedAgentSources: provider.buildApplicationOwnedAgentSources.bind(provider),
+      buildApplicationOwnedTeamSources: provider.buildApplicationOwnedTeamSources.bind(provider),
+    };
+  };
 
   const writeBundle = async (
     packageRootPath: string = builtInRoot,
@@ -58,6 +115,7 @@ describe("FileApplicationBundleProvider", () => {
       localApplicationId?: string;
       teamMemberRef?: string;
       teamDefaultLaunchConfig?: Record<string, unknown> | null;
+      manifestOverrides?: Record<string, unknown>;
     },
   ): Promise<void> => {
     const localApplicationId = options?.localApplicationId ?? "sample-app";
@@ -68,18 +126,35 @@ describe("FileApplicationBundleProvider", () => {
       path.join(bundleRoot, "application.json"),
       JSON.stringify(
         {
-          manifestVersion: "2",
+          manifestVersion: "3",
           id: localApplicationId,
           name: "Sample App",
           description: "Sample description",
           ui: {
             entryHtml: "ui/index.html",
-            frontendSdkContractVersion: "1",
+            frontendSdkContractVersion: "2",
           },
-          runtimeTarget: { kind: "AGENT_TEAM", localId: "sample-team" },
           backend: {
             bundleManifest: "backend/bundle.json",
           },
+          resourceSlots: [
+            {
+              slotKey: "draftingTeam",
+              name: "Drafting Team",
+              allowedResourceKinds: ["AGENT_TEAM"],
+              supportedLaunchDefaults: {
+                runtimeKind: true,
+                llmModelIdentifier: true,
+                workspaceRootPath: true,
+              },
+              defaultResourceRef: {
+                owner: "bundle",
+                kind: "AGENT_TEAM",
+                localId: "sample-team",
+              },
+            },
+          ],
+          ...(options?.manifestOverrides ?? {}),
         },
         null,
         2,
@@ -99,8 +174,8 @@ describe("FileApplicationBundleProvider", () => {
           distribution: "self-contained",
           targetRuntime: { engine: "node", semver: ">=22 <23" },
           sdkCompatibility: {
-            backendDefinitionContractVersion: "1",
-            frontendSdkContractVersion: "1",
+            backendDefinitionContractVersion: "2",
+            frontendSdkContractVersion: "2",
           },
           supportedExposures: {
             queries: true,
@@ -119,7 +194,7 @@ describe("FileApplicationBundleProvider", () => {
     );
     await writeFile(
       path.join(bundleRoot, "backend", "dist", "entry.mjs"),
-      "export default { definitionContractVersion: '1' }\n",
+      "export default { definitionContractVersion: '2' }\n",
     );
     await fs.mkdir(path.join(bundleRoot, "backend", "migrations"), { recursive: true });
     await fs.mkdir(path.join(bundleRoot, "backend", "assets"), { recursive: true });
@@ -173,7 +248,7 @@ describe("FileApplicationBundleProvider", () => {
     );
   };
 
-  it("lists valid bundles from the managed built-in application root", async () => {
+  it("lists valid bundles from the managed built-in application root with manifest resource slots", async () => {
     await writeBundle();
     const provider = buildProvider();
 
@@ -184,15 +259,23 @@ describe("FileApplicationBundleProvider", () => {
       id: buildCanonicalApplicationId(BUILT_IN_APPLICATION_PACKAGE_ID, "sample-app"),
       localApplicationId: "sample-app",
       packageId: BUILT_IN_APPLICATION_PACKAGE_ID,
-      runtimeTarget: {
-        kind: "AGENT_TEAM",
-        localId: "sample-team",
-        definitionId: buildCanonicalApplicationOwnedTeamId(
-          BUILT_IN_APPLICATION_PACKAGE_ID,
-          "sample-app",
-          "sample-team",
-        ),
-      },
+      resourceSlots: [
+        {
+          slotKey: "draftingTeam",
+          allowedResourceKinds: ["AGENT_TEAM"],
+          allowedResourceOwners: ["bundle", "shared"],
+          supportedLaunchDefaults: {
+            runtimeKind: true,
+            llmModelIdentifier: true,
+            workspaceRootPath: true,
+          },
+          defaultResourceRef: {
+            owner: "bundle",
+            kind: "AGENT_TEAM",
+            localId: "sample-team",
+          },
+        },
+      ],
       localAgentIds: [],
       localTeamIds: ["sample-team"],
       backend: {
@@ -215,50 +298,75 @@ describe("FileApplicationBundleProvider", () => {
     ]);
   });
 
-  it("fails package validation and refresh when an application-owned agent definition is malformed", async () => {
+  it("surfaces malformed manifests as diagnostics instead of crashing discovery", async () => {
     await writeBundle();
     await writeFile(
-      path.join(builtInRoot, "applications", "sample-app", "agents", "sample-agent", "agent.md"),
-      "# malformed agent definition\n",
+      path.join(builtInRoot, "applications", "broken-app", "application.json"),
+      JSON.stringify(
+        {
+          manifestVersion: "3",
+          id: "broken-app",
+          name: "Broken App",
+          ui: {
+            entryHtml: "ui/index.html",
+            frontendSdkContractVersion: "2",
+          },
+          backend: {
+            bundleManifest: "backend/bundle.json",
+          },
+          resourceSlots: [
+            {
+              slotKey: "broken slot key",
+              name: "Broken Slot",
+              allowedResourceKinds: ["AGENT_TEAM"],
+            },
+          ],
+        },
+        null,
+        2,
+      ),
     );
+
+    const snapshot = await buildProvider().getCatalogSnapshot();
+
+    expect(snapshot.applications).toHaveLength(1);
+    expect(snapshot.diagnostics).toHaveLength(1);
+    expect(snapshot.diagnostics[0]).toMatchObject({
+      localApplicationId: "broken-app",
+    });
+    expect(snapshot.diagnostics[0]?.message).toContain("slotKey");
+  });
+
+  it("fails package validation when a discovered resource-slot default does not resolve", async () => {
+    await writeBundle(builtInRoot, {
+      manifestOverrides: {
+        resourceSlots: [
+          {
+            slotKey: "draftingTeam",
+            name: "Drafting Team",
+            allowedResourceKinds: ["AGENT_TEAM"],
+            defaultResourceRef: {
+              owner: "bundle",
+              kind: "AGENT_TEAM",
+              localId: "missing-team",
+            },
+          },
+        ],
+      },
+    });
     const provider = buildProvider();
 
     await expect(
       provider.validatePackageRoot(builtInRoot, BUILT_IN_APPLICATION_PACKAGE_ID),
-    ).rejects.toThrow("agent.md must start with '---' frontmatter delimiter");
-    await expect(provider.listBundles()).rejects.toThrow(
-      "agent.md must start with '---' frontmatter delimiter",
-    );
+    ).rejects.toThrow("does not resolve to a discovered bundle-owned agent_team");
   });
 
   it("rejects bundles whose application-owned team references a missing local agent", async () => {
     await writeBundle(builtInRoot, { teamMemberRef: "missing-agent" });
     const provider = buildProvider();
 
-    await expect(provider.listBundles()).rejects.toThrow(
+    await expect(provider.validatePackageRoot(builtInRoot, BUILT_IN_APPLICATION_PACKAGE_ID)).rejects.toThrow(
       "must reference a local agent inside its own agents/ folder",
-    );
-  });
-
-  it("rejects bundles whose application-owned team local agent is malformed", async () => {
-    await writeBundle();
-    await writeFile(
-      path.join(
-        builtInRoot,
-        "applications",
-        "sample-app",
-        "agent-teams",
-        "sample-team",
-        "agents",
-        "sample-agent",
-        "agent.md",
-      ),
-      "# malformed local agent definition\n",
-    );
-    const provider = buildProvider();
-
-    await expect(provider.listBundles()).rejects.toThrow(
-      "agent.md must start with '---' frontmatter delimiter",
     );
   });
 
@@ -277,14 +385,13 @@ describe("FileApplicationBundleProvider", () => {
       path.join(nestedMirrorRoot, "application.json"),
       JSON.stringify(
         {
-          manifestVersion: "2",
+          manifestVersion: "3",
           id: "sample-app",
           name: "Nested Mirror",
           ui: {
             entryHtml: "ui/index.html",
-            frontendSdkContractVersion: "1",
+            frontendSdkContractVersion: "2",
           },
-          runtimeTarget: { kind: "AGENT", localId: "sample-agent" },
           backend: {
             bundleManifest: "backend/bundle.json",
           },

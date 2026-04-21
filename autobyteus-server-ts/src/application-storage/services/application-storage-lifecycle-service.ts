@@ -93,7 +93,7 @@ export class ApplicationStorageLifecycleService {
 
     const platformDb = new DatabaseSync(layout.platformDatabasePath);
     try {
-      this.bootstrapPlatformTables(platformDb);
+      this.bootstrapPlatformTables(platformDb, applicationId);
     } finally {
       platformDb.close();
     }
@@ -129,7 +129,7 @@ export class ApplicationStorageLifecycleService {
     return bundle;
   }
 
-  private bootstrapPlatformTables(platformDb: DatabaseSync): void {
+  private bootstrapPlatformTables(platformDb: DatabaseSync, applicationId: string): void {
     platformDb.exec(`
       CREATE TABLE IF NOT EXISTS __autobyteus_storage_meta (
         meta_key TEXT PRIMARY KEY,
@@ -205,12 +205,22 @@ export class ApplicationStorageLifecycleService {
          ) VALUES (1, 0, ?)`,
       )
       .run(new Date().toISOString());
+    const now = new Date().toISOString();
     platformDb
       .prepare(
         `INSERT OR IGNORE INTO __autobyteus_storage_meta (meta_key, meta_value, updated_at)
          VALUES ('schema_version', '1', ?)`,
       )
-      .run(new Date().toISOString());
+      .run(now);
+    platformDb
+      .prepare(
+        `INSERT INTO __autobyteus_storage_meta (meta_key, meta_value, updated_at)
+         VALUES ('application_id', ?, ?)
+         ON CONFLICT(meta_key) DO UPDATE SET
+           meta_value = excluded.meta_value,
+           updated_at = excluded.updated_at`,
+      )
+      .run(applicationId, now);
   }
 }
 

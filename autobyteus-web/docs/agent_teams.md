@@ -49,7 +49,7 @@ The list/detail/card surfaces show ownership badges and application/package prov
 Those values are used in two places:
 
 - direct native team launches, and
-- application launch draft preparation when an application binds to an embedded team definition.
+- application-authored backend flows that may reuse persisted definition defaults when an application backend decides to start runtime work.
 
 Definition editors can leave runtime blank to mean “choose when launching”, while run-config forms resolve to an effective runtime immediately.
 

@@ -1,13 +1,27 @@
 import fs from "node:fs";
 import path from "node:path";
 import {
-  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V1,
-  APPLICATION_MANIFEST_VERSION_V2,
-  type ApplicationManifestV2,
+  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V2,
+  APPLICATION_MANIFEST_VERSION_V3,
+  type ApplicationManifestV3,
+  type ApplicationResourceSlotDeclaration,
+  type ApplicationSupportedLaunchDefaultsDeclaration,
+  type ApplicationRuntimeResourceKind,
+  type ApplicationRuntimeResourceOwner,
+  type ApplicationRuntimeResourceRef,
 } from "@autobyteus/application-sdk-contracts";
-import type { ApplicationRuntimeTargetKind } from "@autobyteus/application-sdk-contracts";
 
 export const APPLICATION_MANIFEST_FILE_NAME = "application.json";
+
+const SLOT_KEY_PATTERN = /^[A-Za-z][A-Za-z0-9_-]*$/;
+const RESOURCE_KINDS = new Set<ApplicationRuntimeResourceKind>(["AGENT", "AGENT_TEAM"]);
+const RESOURCE_OWNERS = new Set<ApplicationRuntimeResourceOwner>(["bundle", "shared"]);
+const DEFAULT_ALLOWED_RESOURCE_OWNERS: ApplicationRuntimeResourceOwner[] = ["bundle", "shared"];
+const SUPPORTED_LAUNCH_DEFAULT_KEYS = new Set<keyof ApplicationSupportedLaunchDefaultsDeclaration>([
+  "llmModelIdentifier",
+  "runtimeKind",
+  "workspaceRootPath",
+]);
 
 type ParsedManifest = {
   id: string;
@@ -16,10 +30,7 @@ type ParsedManifest = {
   iconRelativePath: string | null;
   entryHtmlRelativePath: string;
   backendBundleManifestRelativePath: string;
-  runtimeTarget: {
-    kind: ApplicationRuntimeTargetKind;
-    localId: string;
-  };
+  resourceSlots: ApplicationResourceSlotDeclaration[];
 };
 
 export class ApplicationManifestParseError extends Error {
@@ -77,21 +88,176 @@ const normalizeBundleRelativePath = (
   return normalizedRelative;
 };
 
-const normalizeRuntimeTarget = (value: unknown): ParsedManifest["runtimeTarget"] => {
+const normalizeUniqueStringList = <TValue extends string>(input: {
+  value: unknown;
+  fieldName: string;
+  allowedValues: ReadonlySet<TValue>;
+  defaultValue?: TValue[];
+}): TValue[] => {
+  if (input.value === undefined || input.value === null) {
+    return [...(input.defaultValue ?? [])];
+  }
+  if (!Array.isArray(input.value) || input.value.length === 0) {
+    throw new ApplicationManifestParseError(`${input.fieldName} must be a non-empty array.`);
+  }
+  const normalized: TValue[] = [];
+  const seen = new Set<string>();
+  for (const candidate of input.value) {
+    if (typeof candidate !== "string") {
+      throw new ApplicationManifestParseError(`${input.fieldName} entries must be strings.`);
+    }
+    const nextValue = candidate.trim() as TValue;
+    if (!input.allowedValues.has(nextValue)) {
+      throw new ApplicationManifestParseError(`${input.fieldName} contains unsupported value '${candidate}'.`);
+    }
+    if (seen.has(nextValue)) {
+      continue;
+    }
+    seen.add(nextValue);
+    normalized.push(nextValue);
+  }
+  if (normalized.length === 0) {
+    throw new ApplicationManifestParseError(`${input.fieldName} must contain at least one supported value.`);
+  }
+  return normalized;
+};
+
+const normalizeRuntimeResourceRef = (
+  value: unknown,
+  fieldName: string,
+): ApplicationRuntimeResourceRef => {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
-    throw new ApplicationManifestParseError("runtimeTarget must be an object.");
+    throw new ApplicationManifestParseError(`${fieldName} must be an object.`);
   }
-
-  const candidate = value as Record<string, unknown>;
-  const kind = normalizeRequiredString(candidate.kind, "runtimeTarget.kind");
-  if (kind !== "AGENT" && kind !== "AGENT_TEAM") {
-    throw new ApplicationManifestParseError("runtimeTarget.kind must be 'AGENT' or 'AGENT_TEAM'.");
+  const record = value as Record<string, unknown>;
+  const owner = normalizeRequiredString(record.owner, `${fieldName}.owner`) as ApplicationRuntimeResourceOwner;
+  if (!RESOURCE_OWNERS.has(owner)) {
+    throw new ApplicationManifestParseError(`${fieldName}.owner must be 'bundle' or 'shared'.`);
   }
-
+  const kind = normalizeRequiredString(record.kind, `${fieldName}.kind`) as ApplicationRuntimeResourceKind;
+  if (!RESOURCE_KINDS.has(kind)) {
+    throw new ApplicationManifestParseError(`${fieldName}.kind must be 'AGENT' or 'AGENT_TEAM'.`);
+  }
+  if (owner === "bundle") {
+    return {
+      owner,
+      kind,
+      localId: normalizeRequiredString(record.localId, `${fieldName}.localId`),
+    } as ApplicationRuntimeResourceRef;
+  }
   return {
+    owner,
     kind,
-    localId: normalizeRequiredString(candidate.localId, "runtimeTarget.localId"),
-  };
+    definitionId: normalizeRequiredString(record.definitionId, `${fieldName}.definitionId`),
+  } as ApplicationRuntimeResourceRef;
+};
+
+const normalizeSupportedLaunchDefaults = (
+  value: unknown,
+  fieldName: string,
+): ApplicationSupportedLaunchDefaultsDeclaration | null => {
+  if (value === undefined || value === null) {
+    return null;
+  }
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    throw new ApplicationManifestParseError(`${fieldName} must be an object when provided.`);
+  }
+
+  const record = value as Record<string, unknown>;
+  const unknownKeys = Object.keys(record).filter((key) => !SUPPORTED_LAUNCH_DEFAULT_KEYS.has(
+    key as keyof ApplicationSupportedLaunchDefaultsDeclaration,
+  ));
+  if (unknownKeys.length > 0) {
+    throw new ApplicationManifestParseError(
+      `${fieldName} contains unsupported key '${unknownKeys[0]}'.`,
+    );
+  }
+
+  const normalized: ApplicationSupportedLaunchDefaultsDeclaration = {};
+  for (const key of SUPPORTED_LAUNCH_DEFAULT_KEYS) {
+    const candidate = record[key];
+    if (candidate === undefined || candidate === null) {
+      continue;
+    }
+    if (typeof candidate !== "boolean") {
+      throw new ApplicationManifestParseError(`${fieldName}.${key} must be a boolean when provided.`);
+    }
+    if (candidate) {
+      normalized[key] = true;
+    }
+  }
+
+  return Object.keys(normalized).length > 0 ? normalized : null;
+};
+
+const normalizeResourceSlots = (value: unknown): ApplicationResourceSlotDeclaration[] => {
+  if (value === undefined || value === null) {
+    return [];
+  }
+  if (!Array.isArray(value)) {
+    throw new ApplicationManifestParseError("resourceSlots must be an array when provided.");
+  }
+
+  const seenSlotKeys = new Set<string>();
+  return value.map((entry, index) => {
+    const fieldName = `resourceSlots[${index}]`;
+    if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
+      throw new ApplicationManifestParseError(`${fieldName} must be an object.`);
+    }
+    const record = entry as Record<string, unknown>;
+    const slotKey = normalizeRequiredString(record.slotKey, `${fieldName}.slotKey`);
+    if (!SLOT_KEY_PATTERN.test(slotKey)) {
+      throw new ApplicationManifestParseError(
+        `${fieldName}.slotKey must match ${SLOT_KEY_PATTERN.source}.`,
+      );
+    }
+    if (seenSlotKeys.has(slotKey)) {
+      throw new ApplicationManifestParseError(`resourceSlots contains duplicate slotKey '${slotKey}'.`);
+    }
+    seenSlotKeys.add(slotKey);
+
+    const allowedResourceKinds = normalizeUniqueStringList<ApplicationRuntimeResourceKind>({
+      value: record.allowedResourceKinds,
+      fieldName: `${fieldName}.allowedResourceKinds`,
+      allowedValues: RESOURCE_KINDS,
+    });
+    const allowedResourceOwners = normalizeUniqueStringList<ApplicationRuntimeResourceOwner>({
+      value: record.allowedResourceOwners,
+      fieldName: `${fieldName}.allowedResourceOwners`,
+      allowedValues: RESOURCE_OWNERS,
+      defaultValue: DEFAULT_ALLOWED_RESOURCE_OWNERS,
+    });
+    const defaultResourceRef = record.defaultResourceRef === undefined || record.defaultResourceRef === null
+      ? null
+      : normalizeRuntimeResourceRef(record.defaultResourceRef, `${fieldName}.defaultResourceRef`);
+
+    if (defaultResourceRef) {
+      if (!allowedResourceKinds.includes(defaultResourceRef.kind)) {
+        throw new ApplicationManifestParseError(
+          `${fieldName}.defaultResourceRef.kind must be allowed by ${fieldName}.allowedResourceKinds.`,
+        );
+      }
+      if (!allowedResourceOwners.includes(defaultResourceRef.owner)) {
+        throw new ApplicationManifestParseError(
+          `${fieldName}.defaultResourceRef.owner must be allowed by ${fieldName}.allowedResourceOwners.`,
+        );
+      }
+    }
+
+    return {
+      slotKey,
+      name: normalizeRequiredString(record.name, `${fieldName}.name`),
+      description: normalizeOptionalString(record.description),
+      allowedResourceKinds,
+      allowedResourceOwners,
+      required: typeof record.required === "boolean" ? record.required : null,
+      supportedLaunchDefaults: normalizeSupportedLaunchDefaults(
+        record.supportedLaunchDefaults,
+        `${fieldName}.supportedLaunchDefaults`,
+      ),
+      defaultResourceRef,
+    } satisfies ApplicationResourceSlotDeclaration;
+  });
 };
 
 export const parseApplicationManifest = (
@@ -116,11 +282,11 @@ export const parseApplicationManifest = (
     throw new ApplicationManifestParseError("Application manifest must be a JSON object.");
   }
 
-  const manifest = payload as ApplicationManifestV2 & Record<string, unknown>;
+  const manifest = payload as ApplicationManifestV3 & Record<string, unknown>;
   const manifestVersion = normalizeRequiredString(manifest.manifestVersion, "manifestVersion");
-  if (manifestVersion !== APPLICATION_MANIFEST_VERSION_V2) {
+  if (manifestVersion !== APPLICATION_MANIFEST_VERSION_V3) {
     throw new ApplicationManifestParseError(
-      `Unsupported application manifestVersion '${manifestVersion}'. Expected '${APPLICATION_MANIFEST_VERSION_V2}'.`,
+      `Unsupported application manifestVersion '${manifestVersion}'. Expected '${APPLICATION_MANIFEST_VERSION_V3}'.`,
     );
   }
 
@@ -128,7 +294,7 @@ export const parseApplicationManifest = (
     (manifest.ui as Record<string, unknown> | undefined)?.frontendSdkContractVersion,
     "ui.frontendSdkContractVersion",
   );
-  if (frontendSdkContractVersion !== APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V1) {
+  if (frontendSdkContractVersion !== APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V2) {
     throw new ApplicationManifestParseError(
       `Unsupported ui.frontendSdkContractVersion '${frontendSdkContractVersion}'.`,
     );
@@ -156,7 +322,7 @@ export const parseApplicationManifest = (
       "backend.bundleManifest",
       { requiredPrefix: "backend/" },
     ),
-    runtimeTarget: normalizeRuntimeTarget(manifest.runtimeTarget),
+    resourceSlots: normalizeResourceSlots(manifest.resourceSlots),
   };
 };
 

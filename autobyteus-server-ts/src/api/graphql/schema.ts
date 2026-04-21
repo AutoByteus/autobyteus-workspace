@@ -3,7 +3,6 @@ import { HealthResolver } from './types/health.js';
 import { ServerSettingsResolver } from './types/server-settings.js';
 import { ApplicationResolver } from './types/application.js';
 import { ApplicationCapabilityResolver } from './types/application-capability.js';
-import { ApplicationSessionResolver } from './types/application-session.js';
 import { SkillResolver } from './types/skills.js';
 import { AgentRunResolver } from './types/agent-run.js';
 import { AgentTeamRunResolver } from './types/agent-team-run.js';
@@ -38,7 +37,6 @@ export async function buildGraphqlSchema() {
       ServerSettingsResolver,
       ApplicationResolver,
       ApplicationCapabilityResolver,
-      ApplicationSessionResolver,
       SkillResolver,
       AgentRunResolver,
       AgentTeamRunResolver,

@@ -34,7 +34,9 @@ Defines team blueprints, nested-team graph metadata, ownership provenance, and t
 
 - Team definitions persist optional `defaultLaunchConfig` at the team config layer.
 - Shared teams and application-owned teams both parse and write that field through the same shared normalizer.
-- Those defaults seed direct team launches and application launches that target the team runtime.
+- Those defaults seed direct team launches and application-authored backend orchestration flows that decide to start a team through `context.runtimeControl.startRun(...)`.
+
+The generic Applications host no longer treats one embedded team as the mandatory launch-time runtime target.
 
 ## Authoritative Integrity Rules
 

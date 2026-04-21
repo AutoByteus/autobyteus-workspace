@@ -2,17 +2,20 @@ import { pathToFileURL } from "node:url";
 import type {
   ApplicationBackendDefinition,
   ApplicationBackendExposureSummary,
+  ApplicationConfiguredResource,
+  ApplicationExecutionEventFamily,
   ApplicationHandlerContext,
+  ApplicationRunBindingSummary,
   ApplicationRouteDefinition,
-  ApplicationRouteRequest,
   ApplicationRouteResponse,
   ApplicationStorageContext,
-  NormalizedPublicationEventFamily,
+  ApplicationRuntimeResourceSummary,
 } from "@autobyteus/application-sdk-contracts";
 import {
-  APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V1,
+  APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V2,
 } from "@autobyteus/application-sdk-contracts";
 import type {
+  ApplicationExecutionEventDispatchResult,
   ApplicationWorkerExecuteGraphqlInput,
   ApplicationWorkerInvokeCommandInput,
   ApplicationWorkerInvokeEventHandlerInput,
@@ -21,11 +24,12 @@ import type {
   ApplicationWorkerLoadDefinitionResult,
   ApplicationWorkerNotificationParams,
   ApplicationWorkerRouteRequestInput,
+  ApplicationWorkerRuntimeControlInput,
   ApplicationWorkerStatusResult,
 } from "../runtime/protocol.js";
-import type { ApplicationPublicationDispatchResult } from "../runtime/protocol.js";
 
 type NotificationPublisher = (params: ApplicationWorkerNotificationParams) => Promise<void>;
+type RuntimeControlInvoker = (input: ApplicationWorkerRuntimeControlInput) => Promise<unknown>;
 
 type LoadedApplicationDefinition = {
   definition: ApplicationBackendDefinition;
@@ -34,19 +38,23 @@ type LoadedApplicationDefinition = {
 };
 
 const EVENT_HANDLER_KEY_BY_FAMILY: Record<
-  NormalizedPublicationEventFamily,
+  ApplicationExecutionEventFamily,
   keyof NonNullable<ApplicationBackendDefinition["eventHandlers"]>
 > = {
-  SESSION_STARTED: "sessionStarted",
-  SESSION_TERMINATED: "sessionTerminated",
+  RUN_STARTED: "runStarted",
+  RUN_TERMINATED: "runTerminated",
+  RUN_FAILED: "runFailed",
+  RUN_ORPHANED: "runOrphaned",
   ARTIFACT: "artifact",
 };
 
 const EVENT_FAMILY_BY_HANDLER_KEY = {
-  sessionStarted: "SESSION_STARTED",
-  sessionTerminated: "SESSION_TERMINATED",
+  runStarted: "RUN_STARTED",
+  runTerminated: "RUN_TERMINATED",
+  runFailed: "RUN_FAILED",
+  runOrphaned: "RUN_ORPHANED",
   artifact: "ARTIFACT",
-} as const satisfies Record<string, NormalizedPublicationEventFamily>;
+} as const satisfies Record<string, ApplicationExecutionEventFamily>;
 
 const isObjectRecord = (value: unknown): value is Record<string, unknown> =>
   Boolean(value) && typeof value === "object" && !Array.isArray(value);
@@ -68,7 +76,7 @@ const normalizePath = (value: string): string => {
 
 const matchRoute = (
   routes: ApplicationRouteDefinition[],
-  request: ApplicationRouteRequest,
+  request: ApplicationWorkerRouteRequestInput["request"],
 ): { route: ApplicationRouteDefinition; params: Record<string, string> } | null => {
   const requestPath = normalizePath(request.path).split("/").filter(Boolean);
   for (const route of routes) {
@@ -101,7 +109,7 @@ const matchRoute = (
 };
 
 const validateDefinitionContract = (definition: ApplicationBackendDefinition): void => {
-  if (definition.definitionContractVersion !== APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V1) {
+  if (definition.definitionContractVersion !== APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V2) {
     throw new Error(
       `Unsupported application backend definitionContractVersion '${String(definition.definitionContractVersion)}'.`,
     );
@@ -141,16 +149,42 @@ const buildExposureSummary = (
   notifications: supportedExposures.notifications,
   eventHandlers: Object.keys(definition.eventHandlers ?? {})
     .map((key) => EVENT_FAMILY_BY_HANDLER_KEY[key as keyof typeof EVENT_FAMILY_BY_HANDLER_KEY])
-    .filter((value): value is NormalizedPublicationEventFamily => Boolean(value)),
+    .filter((value): value is ApplicationExecutionEventFamily => Boolean(value)),
+});
+
+const createRuntimeControl = (
+  invokeRuntimeControl: RuntimeControlInvoker,
+): ApplicationHandlerContext["runtimeControl"] => ({
+  listAvailableResources: async (filter) =>
+    invokeRuntimeControl({ action: "listAvailableResources", input: filter ?? null }) as Promise<ApplicationRuntimeResourceSummary[]>,
+  getConfiguredResource: async (slotKey) =>
+    invokeRuntimeControl({ action: "getConfiguredResource", input: { slotKey } }) as Promise<ApplicationConfiguredResource | null>,
+  startRun: async (input) =>
+    invokeRuntimeControl({ action: "startRun", input }) as Promise<ApplicationRunBindingSummary>,
+  getRunBinding: async (bindingId) =>
+    invokeRuntimeControl({ action: "getRunBinding", input: { bindingId } }) as Promise<ApplicationRunBindingSummary | null>,
+  getRunBindingByIntentId: async (bindingIntentId) =>
+    invokeRuntimeControl({
+      action: "getRunBindingByIntentId",
+      input: { bindingIntentId },
+    }) as Promise<ApplicationRunBindingSummary | null>,
+  listRunBindings: async (filter) =>
+    invokeRuntimeControl({ action: "listRunBindings", input: filter ?? null }) as Promise<ApplicationRunBindingSummary[]>,
+  postRunInput: async (input) =>
+    invokeRuntimeControl({ action: "postRunInput", input }) as Promise<ApplicationRunBindingSummary>,
+  terminateRunBinding: async (bindingId) =>
+    invokeRuntimeControl({ action: "terminateRunBinding", input: { bindingId } }) as Promise<ApplicationRunBindingSummary | null>,
 });
 
 const createLifecycleContext = (
   storage: ApplicationStorageContext,
   supportedNotifications: boolean,
   publishNotification: NotificationPublisher,
+  invokeRuntimeControl: RuntimeControlInvoker,
 ): Omit<ApplicationHandlerContext, "requestContext"> & { requestContext: null } => ({
   requestContext: null,
   storage,
+  runtimeControl: createRuntimeControl(invokeRuntimeControl),
   publishNotification: async (topic, payload) => {
     if (!supportedNotifications) {
       throw new Error("Backend manifest disables notifications for this application.");
@@ -168,9 +202,11 @@ const createHandlerContext = (
   requestContext: ApplicationHandlerContext["requestContext"],
   supportedNotifications: boolean,
   publishNotification: NotificationPublisher,
+  invokeRuntimeControl: RuntimeControlInvoker,
 ): ApplicationHandlerContext => ({
   requestContext,
   storage,
+  runtimeControl: createRuntimeControl(invokeRuntimeControl),
   publishNotification: async (topic, payload) => {
     if (!supportedNotifications) {
       throw new Error("Backend manifest disables notifications for this application.");
@@ -194,7 +230,10 @@ const resolveDefinitionExport = (moduleNamespace: Record<string, unknown>): Appl
 export class ApplicationWorkerRuntime {
   private loaded: LoadedApplicationDefinition | null = null;
 
-  constructor(private readonly publishNotification: NotificationPublisher) {}
+  constructor(
+    private readonly publishNotification: NotificationPublisher,
+    private readonly invokeRuntimeControl: RuntimeControlInvoker,
+  ) {}
 
   async loadDefinition(input: ApplicationWorkerLoadDefinitionInput): Promise<ApplicationWorkerLoadDefinitionResult> {
     const moduleNamespace = await import(pathToFileURL(input.entryModulePath).href);
@@ -211,7 +250,12 @@ export class ApplicationWorkerRuntime {
 
     if (definition.lifecycle?.onStart) {
       await definition.lifecycle.onStart(
-        createLifecycleContext(input.storage, input.supportedExposures.notifications, this.publishNotification),
+        createLifecycleContext(
+          input.storage,
+          input.supportedExposures.notifications,
+          this.publishNotification,
+          this.invokeRuntimeControl,
+        ),
       );
     }
 
@@ -232,7 +276,13 @@ export class ApplicationWorkerRuntime {
     }
     return handler(
       input.input,
-      createHandlerContext(loaded.storage, input.requestContext, loaded.exposures.supportedExposures.notifications, this.publishNotification),
+      createHandlerContext(
+        loaded.storage,
+        input.requestContext,
+        loaded.exposures.supportedExposures.notifications,
+        this.publishNotification,
+        this.invokeRuntimeControl,
+      ),
     );
   }
 
@@ -244,7 +294,13 @@ export class ApplicationWorkerRuntime {
     }
     return handler(
       input.input,
-      createHandlerContext(loaded.storage, input.requestContext, loaded.exposures.supportedExposures.notifications, this.publishNotification),
+      createHandlerContext(
+        loaded.storage,
+        input.requestContext,
+        loaded.exposures.supportedExposures.notifications,
+        this.publishNotification,
+        this.invokeRuntimeControl,
+      ),
     );
   }
 
@@ -257,7 +313,13 @@ export class ApplicationWorkerRuntime {
 
     const response = await matched.route.handler(
       { ...input.request, params: matched.params },
-      createHandlerContext(loaded.storage, input.requestContext, loaded.exposures.supportedExposures.notifications, this.publishNotification),
+      createHandlerContext(
+        loaded.storage,
+        input.requestContext,
+        loaded.exposures.supportedExposures.notifications,
+        this.publishNotification,
+        this.invokeRuntimeControl,
+      ),
     );
     if (isRouteResponse(response)) {
       return {
@@ -281,13 +343,19 @@ export class ApplicationWorkerRuntime {
     }
     return executor(
       input.request,
-      createHandlerContext(loaded.storage, input.requestContext, loaded.exposures.supportedExposures.notifications, this.publishNotification),
+      createHandlerContext(
+        loaded.storage,
+        input.requestContext,
+        loaded.exposures.supportedExposures.notifications,
+        this.publishNotification,
+        this.invokeRuntimeControl,
+      ),
     );
   }
 
   async invokeEventHandler(
     input: ApplicationWorkerInvokeEventHandlerInput,
-  ): Promise<ApplicationPublicationDispatchResult> {
+  ): Promise<ApplicationExecutionEventDispatchResult> {
     const loaded = this.requireLoaded();
     const handlerKey = EVENT_HANDLER_KEY_BY_FAMILY[input.envelope.event.family];
     const handler = loaded.definition.eventHandlers?.[handlerKey];
@@ -300,10 +368,11 @@ export class ApplicationWorkerRuntime {
         loaded.storage,
         {
           applicationId: input.envelope.event.applicationId,
-          applicationSessionId: input.envelope.event.applicationSessionId,
+          launchInstanceId: null,
         },
         loaded.exposures.supportedExposures.notifications,
         this.publishNotification,
+        this.invokeRuntimeControl,
       ),
     );
     return { status: "acknowledged" };
@@ -316,6 +385,7 @@ export class ApplicationWorkerRuntime {
           this.loaded.storage,
           this.loaded.exposures.supportedExposures.notifications,
           this.publishNotification,
+          this.invokeRuntimeControl,
         ),
       );
     }

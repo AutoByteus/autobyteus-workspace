@@ -37,9 +37,9 @@ These defaults are consumed by:
 
 - the native agent create/edit/detail surfaces,
 - direct agent launch preparation, and
-- application launch preparation when an application binds directly to an embedded agent.
+- application-authored backend orchestration flows that choose to reuse persisted defaults when calling `context.runtimeControl.startRun(...)`.
 
-Team-targeted application launches use the team definition's own `defaultLaunchConfig` instead of aggregating leaf agent defaults upward.
+The generic Applications host no longer launches embedded agents directly at page-load time.
 
 ## Notes
 

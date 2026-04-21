@@ -49,6 +49,27 @@ const createDeferred = <T>() => {
   return { promise, resolve, reject }
 }
 
+const buildApplication = (
+  id: string,
+  name: string,
+  resourceLocalId = `${id}-team`,
+): ApplicationCatalogEntry => ({
+  id,
+  name,
+  entryHtmlAssetPath: `/application-bundles/${id}/assets/ui/index.html`,
+  localApplicationId: id,
+  packageId: 'pkg',
+  writable: true,
+  resourceSlots: [],
+  bundleResources: [
+    {
+      kind: 'AGENT_TEAM',
+      localId: resourceLocalId,
+      definitionId: resourceLocalId,
+    },
+  ],
+})
+
 describe('applicationStore', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
@@ -72,32 +93,8 @@ describe('applicationStore', () => {
         return {
           data: {
             listApplications: [
-              {
-                id: 'b',
-                name: 'Beta',
-                entryHtmlAssetPath: '/application-bundles/b/assets/ui/index.html',
-                localApplicationId: 'beta',
-                packageId: 'pkg',
-                writable: true,
-                runtimeTarget: {
-                  kind: 'AGENT_TEAM',
-                  localId: 'team-b',
-                  definitionId: 'team-b',
-                },
-              },
-              {
-                id: 'a',
-                name: 'Alpha',
-                entryHtmlAssetPath: '/application-bundles/a/assets/ui/index.html',
-                localApplicationId: 'alpha',
-                packageId: 'pkg',
-                writable: true,
-                runtimeTarget: {
-                  kind: 'AGENT_TEAM',
-                  localId: 'team-a',
-                  definitionId: 'team-a',
-                },
-              },
+              buildApplication('b', 'Beta', 'team-b'),
+              buildApplication('a', 'Alpha', 'team-a'),
             ],
           },
         }
@@ -122,21 +119,7 @@ describe('applicationStore', () => {
     capabilityStore.status = 'resolved'
 
     const store = useApplicationStore()
-    store.applications = [
-      {
-        id: 'app-1',
-        name: 'App 1',
-        entryHtmlAssetPath: '/application-bundles/app-1/assets/ui/index.html',
-        localApplicationId: 'app-1',
-        packageId: 'pkg',
-        writable: true,
-        runtimeTarget: {
-          kind: 'AGENT_TEAM',
-          localId: 'team-1',
-          definitionId: 'team-1',
-        },
-      },
-    ]
+    store.applications = [buildApplication('app-1', 'App 1', 'team-1')]
     store.hasFetched = true
 
     const result = await store.fetchApplications()
@@ -150,19 +133,7 @@ describe('applicationStore', () => {
       if (query === GetApplicationById) {
         return {
           data: {
-            application: {
-              id: 'app-2',
-              name: 'App 2',
-              entryHtmlAssetPath: '/application-bundles/app-2/assets/ui/index.html',
-              localApplicationId: 'app-2',
-              packageId: 'pkg',
-              writable: true,
-              runtimeTarget: {
-                kind: 'AGENT_TEAM',
-                localId: 'team-2',
-                definitionId: 'team-2',
-              },
-            },
+            application: buildApplication('app-2', 'App 2', 'team-2'),
           },
         }
       }
@@ -175,21 +146,7 @@ describe('applicationStore', () => {
     capabilityStore.status = 'resolved'
 
     const store = useApplicationStore()
-    store.applications = [
-      {
-        id: 'app-1',
-        name: 'App 1',
-        entryHtmlAssetPath: '/application-bundles/app-1/assets/ui/index.html',
-        localApplicationId: 'app-1',
-        packageId: 'pkg',
-        writable: true,
-        runtimeTarget: {
-          kind: 'AGENT_TEAM',
-          localId: 'team-1',
-          definitionId: 'team-1',
-        },
-      },
-    ]
+    store.applications = [buildApplication('app-1', 'App 1', 'team-1')]
 
     const result = await store.fetchApplicationById('app-2', true)
 
@@ -205,21 +162,7 @@ describe('applicationStore', () => {
     capabilityStore.status = 'resolved'
 
     const store = useApplicationStore()
-    store.applications = [
-      {
-        id: 'app-1',
-        name: 'App 1',
-        entryHtmlAssetPath: '/application-bundles/app-1/assets/ui/index.html',
-        localApplicationId: 'app-1',
-        packageId: 'pkg',
-        writable: true,
-        runtimeTarget: {
-          kind: 'AGENT_TEAM',
-          localId: 'team-1',
-          definitionId: 'team-1',
-        },
-      },
-    ]
+    store.applications = [buildApplication('app-1', 'App 1', 'team-1')]
     store.hasFetched = true
 
     const result = await store.fetchApplications()
@@ -236,21 +179,7 @@ describe('applicationStore', () => {
     capabilityStore.status = 'resolved'
 
     const store = useApplicationStore()
-    store.applications = [
-      {
-        id: 'app-1',
-        name: 'App 1',
-        entryHtmlAssetPath: '/application-bundles/app-1/assets/ui/index.html',
-        localApplicationId: 'app-1',
-        packageId: 'pkg',
-        writable: true,
-        runtimeTarget: {
-          kind: 'AGENT_TEAM',
-          localId: 'team-1',
-          definitionId: 'team-1',
-        },
-      },
-    ]
+    store.applications = [buildApplication('app-1', 'App 1', 'team-1')]
     store.hasFetched = true
 
     capabilityStore.capability = buildCapability(false, 'SERVER_SETTING')
@@ -267,21 +196,7 @@ describe('applicationStore', () => {
     })
 
     const store = useApplicationStore()
-    store.applications = [
-      {
-        id: 'app-1',
-        name: 'App 1',
-        entryHtmlAssetPath: '/application-bundles/app-1/assets/ui/index.html',
-        localApplicationId: 'app-1',
-        packageId: 'pkg',
-        writable: true,
-        runtimeTarget: {
-          kind: 'AGENT_TEAM',
-          localId: 'team-1',
-          definitionId: 'team-1',
-        },
-      },
-    ]
+    store.applications = [buildApplication('app-1', 'App 1', 'team-1')]
     store.hasFetched = true
 
     const windowNodeContextStore = useWindowNodeContextStore()
@@ -318,21 +233,7 @@ describe('applicationStore', () => {
 
     listApplicationsDeferred.resolve({
       data: {
-        listApplications: [
-          {
-            id: 'stale-app',
-            name: 'Stale App',
-            entryHtmlAssetPath: '/application-bundles/stale-app/assets/ui/index.html',
-            localApplicationId: 'stale-app',
-            packageId: 'pkg',
-            writable: true,
-            runtimeTarget: {
-              kind: 'AGENT_TEAM',
-              localId: 'team-stale',
-              definitionId: 'team-stale',
-            },
-          },
-        ],
+        listApplications: [buildApplication('stale-app', 'Stale App', 'team-stale')],
       },
     })
 
@@ -369,19 +270,7 @@ describe('applicationStore', () => {
 
     applicationDeferred.resolve({
       data: {
-        application: {
-          id: 'stale-app',
-          name: 'Stale App',
-          entryHtmlAssetPath: '/application-bundles/stale-app/assets/ui/index.html',
-          localApplicationId: 'stale-app',
-          packageId: 'pkg',
-          writable: true,
-          runtimeTarget: {
-            kind: 'AGENT_TEAM',
-            localId: 'team-stale',
-            definitionId: 'team-stale',
-          },
-        },
+        application: buildApplication('stale-app', 'Stale App', 'team-stale'),
       },
     })
 

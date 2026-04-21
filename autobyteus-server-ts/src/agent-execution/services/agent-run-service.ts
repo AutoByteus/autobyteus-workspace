@@ -29,7 +29,9 @@ import type { RunKnownStatus } from "../../run-history/domain/agent-run-history-
 import { AgentRunMemoryLayout } from "../../agent-memory/store/agent-run-memory-layout.js";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import { generateStandaloneAgentRunId } from "../../run-history/utils/agent-run-id-utils.js";
-import type { ApplicationSessionLaunchContext } from "../../application-sessions/domain/models.js";
+import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
+import type { ObservedRunLifecycleEvent } from "../../runtime-management/domain/observed-run-lifecycle-event.js";
+import { AgentRunEventType, isAgentRunEvent } from "../domain/agent-run-event.js";
 
 export interface CreateAgentRunInput {
   agentDefinitionId: string;
@@ -40,7 +42,7 @@ export interface CreateAgentRunInput {
   llmConfig?: Record<string, unknown> | null;
   skillAccessMode: SkillAccessMode;
   runtimeKind: string;
-  applicationSessionContext?: ApplicationSessionLaunchContext | null;
+  applicationExecutionContext?: ApplicationExecutionContext | null;
 }
 
 export interface CreateAgentRunResult {
@@ -141,6 +143,68 @@ export class AgentRunService {
     }
   }
 
+  async observeAgentRunLifecycle(
+    runId: string,
+    listener: (event: ObservedRunLifecycleEvent) => void,
+  ): Promise<(() => void) | null> {
+    const run = await this.resolveAgentRun(runId);
+    if (!run) {
+      return null;
+    }
+
+    listener({
+      runtimeSubject: "AGENT_RUN",
+      runId: run.runId,
+      phase: "ATTACHED",
+      occurredAt: new Date().toISOString(),
+    });
+
+    let terminalPhase: ObservedRunLifecycleEvent["phase"] | null = null;
+    const unsubscribe = run.subscribeToEvents((event) => {
+      if (!isAgentRunEvent(event)) {
+        return;
+      }
+      if (terminalPhase) {
+        return;
+      }
+      if (event.eventType !== AgentRunEventType.ERROR && event.statusHint !== "ERROR") {
+        return;
+      }
+      terminalPhase = "FAILED";
+      listener({
+        runtimeSubject: "AGENT_RUN",
+        runId: run.runId,
+        phase: "FAILED",
+        occurredAt: new Date().toISOString(),
+        errorMessage:
+          typeof event.payload.message === "string"
+            ? event.payload.message
+            : typeof event.payload.error === "string"
+              ? event.payload.error
+              : null,
+      });
+    });
+
+    const inactivePollHandle = setInterval(() => {
+      if (terminalPhase || run.isActive()) {
+        return;
+      }
+      terminalPhase = "TERMINATED";
+      listener({
+        runtimeSubject: "AGENT_RUN",
+        runId: run.runId,
+        phase: "TERMINATED",
+        occurredAt: new Date().toISOString(),
+      });
+    }, 1_000);
+    inactivePollHandle.unref?.();
+
+    return () => {
+      clearInterval(inactivePollHandle);
+      unsubscribe();
+    };
+  }
+
   async createAgentRun(
     input: CreateAgentRunInput,
   ): Promise<CreateAgentRunResult> {
@@ -175,7 +239,7 @@ export class AgentRunService {
       autoExecuteTools: input.autoExecuteTools,
       llmConfig: input.llmConfig ?? null,
       skillAccessMode,
-      applicationSessionContext: input.applicationSessionContext ?? null,
+      applicationExecutionContext: input.applicationExecutionContext ?? null,
     });
     const activeRun = await this.agentRunManager.createAgentRun(
       preparedRun.config,
@@ -205,6 +269,7 @@ export class AgentRunService {
       runtimeKind: activeRun.runtimeKind,
       platformAgentRunId: activeRun.getPlatformAgentRunId(),
       lastKnownStatus: "IDLE",
+      applicationExecutionContext: input.applicationExecutionContext ?? null,
     };
 
     await this.metadataService.writeMetadata(runId, metadata);
@@ -254,7 +319,7 @@ export class AgentRunService {
     autoExecuteTools: boolean;
     llmConfig: Record<string, unknown> | null;
     skillAccessMode: SkillAccessMode;
-    applicationSessionContext: ApplicationSessionLaunchContext | null;
+    applicationExecutionContext: ApplicationExecutionContext | null;
   }): Promise<{ runId: string; config: AgentRunConfig }> {
     const runId = await this.generateFreshRunId(input.runtimeKind, input.agentDefinitionId);
     const memoryDir = this.memoryLayout.getRunDirPath(runId);
@@ -269,7 +334,7 @@ export class AgentRunService {
         memoryDir,
         llmConfig: input.llmConfig,
         skillAccessMode: input.skillAccessMode,
-        applicationSessionContext: input.applicationSessionContext,
+        applicationExecutionContext: input.applicationExecutionContext,
       }),
     };
   }
@@ -356,6 +421,7 @@ export class AgentRunService {
           memoryDir: metadata.memoryDir,
           llmConfig: metadata.llmConfig,
           skillAccessMode: metadata.skillAccessMode ?? SkillAccessMode.PRELOADED_ONLY,
+          applicationExecutionContext: metadata.applicationExecutionContext ?? null,
         }),
         runtimeContext: this.buildRestoreRuntimeContext(metadata),
       }),

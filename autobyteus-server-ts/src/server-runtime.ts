@@ -20,7 +20,13 @@ import { scheduleBackgroundTasks } from "./startup/background-runner.js";
 import { registerRestRoutes } from "./api/rest/index.js";
 import { registerGraphql } from "./api/graphql/index.js";
 import { registerWebsocketRoutes } from "./api/websocket/index.js";
-import { getApplicationPublicationDispatchService } from "./application-sessions/services/application-publication-dispatch-service.js";
+import { getApplicationExecutionEventDispatchService } from "./application-orchestration/services/application-execution-event-dispatch-service.js";
+import { getApplicationOrchestrationRecoveryService } from "./application-orchestration/services/application-orchestration-recovery-service.js";
+import { getApplicationOrchestrationStartupGate } from "./application-orchestration/services/application-orchestration-startup-gate.js";
+import { getApplicationAvailabilityService } from "./application-orchestration/services/application-availability-service.js";
+import { ApplicationBundleService } from "./application-bundles/services/application-bundle-service.js";
+import { ApplicationPackageRegistryService } from "./application-packages/services/application-package-registry-service.js";
+import { ApplicationPlatformStateStore } from "./application-storage/stores/application-platform-state-store.js";
 import {
   startReceiptWorkflowRuntime,
   stopReceiptWorkflowRuntime,
@@ -154,9 +160,26 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
   }
 
   try {
-    await getApplicationPublicationDispatchService().resumePendingDispatches();
+    const packageRegistrySnapshot = await ApplicationPackageRegistryService.getInstance().getRegistrySnapshot();
+    const catalogSnapshot = await ApplicationBundleService.getInstance().getCatalogSnapshot(packageRegistrySnapshot);
+    const persistedKnownApplicationIds = await new ApplicationPlatformStateStore().listKnownApplicationIds();
+    const availabilityService = getApplicationAvailabilityService();
+    await getApplicationOrchestrationStartupGate().runStartupRecovery(async () => {
+      const recoveryOutcomes = await getApplicationOrchestrationRecoveryService().resumeBindings(
+        catalogSnapshot,
+        persistedKnownApplicationIds,
+      );
+      availabilityService.reconcileCatalogSnapshotWithKnownApplications(catalogSnapshot, {
+        persistedKnownApplicationIds,
+        recoveryOutcomesByApplicationId: new Map(
+          recoveryOutcomes.map((outcome) => [outcome.applicationId, outcome]),
+        ),
+      });
+      await getApplicationExecutionEventDispatchService().resumePendingEvents();
+    });
   } catch (error) {
-    logger.error(`Failed to resume durable application publication dispatch: ${String(error)}`);
+    logger.error(`Failed to complete application orchestration startup recovery: ${String(error)}`);
+    process.exit(1);
   }
   await scheduleBackgroundTasks();
 }
