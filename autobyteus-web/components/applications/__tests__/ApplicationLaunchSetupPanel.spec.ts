@@ -78,21 +78,11 @@ vi.mock('~/stores/windowNodeContextStore', () => ({
   }),
 }))
 
-const RuntimeModelConfigFieldsStub = defineComponent({
-  name: 'RuntimeModelConfigFields',
-  props: {
-    runtimeKind: {
-      type: String,
-      default: '',
-    },
-    llmModelIdentifier: {
-      type: String,
-      default: '',
-    },
-  },
-  emits: ['update:runtime-kind', 'update:llm-model-identifier', 'update:llm-config'],
+const ApplicationLaunchDefaultsFieldsStub = defineComponent({
+  name: 'ApplicationLaunchDefaultsFields',
+  emits: ['update:runtime-kind', 'update:llm-model-identifier', 'update:workspace-root-path'],
   setup(_props, { emit }) {
-    return () => h('div', { 'data-testid': 'runtime-fields' }, [
+    return () => h('div', { 'data-testid': 'application-launch-defaults-fields' }, [
       h('button', {
         type: 'button',
         onClick: () => emit('update:runtime-kind', 'lmstudio'),
@@ -101,6 +91,11 @@ const RuntimeModelConfigFieldsStub = defineComponent({
         type: 'button',
         onClick: () => emit('update:llm-model-identifier', 'qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234'),
       }, 'set-model'),
+      h('input', {
+        type: 'text',
+        value: '',
+        onInput: (event: Event) => emit('update:workspace-root-path', (event.target as HTMLInputElement).value),
+      }),
     ])
   },
 })
@@ -214,7 +209,7 @@ describe('ApplicationLaunchSetupPanel', () => {
       },
       global: {
         stubs: {
-          RuntimeModelConfigFields: RuntimeModelConfigFieldsStub,
+          ApplicationLaunchDefaultsFields: ApplicationLaunchDefaultsFieldsStub,
         },
       },
     })
@@ -228,17 +223,15 @@ describe('ApplicationLaunchSetupPanel', () => {
       'http://127.0.0.1:43123/rest/applications/bundle-app__pkg__brief-studio/available-resources',
     )
     expect(wrapper.get('[data-testid="application-launch-setup-panel"]').exists()).toBe(true)
-    expect(wrapper.text()).toContain('Tool execution')
-    const lockedToggle = wrapper.find('button[aria-checked="true"][disabled]')
-    expect(lockedToggle.exists()).toBe(true)
+    expect(wrapper.get('[data-testid="application-launch-defaults-fields"]').exists()).toBe(true)
     expect(wrapper.emitted('setup-state-change')?.at(-1)?.[0]).toMatchObject({
       phase: 'ready',
       isLaunchReady: false,
     })
 
     await wrapper.get('select').setValue('shared:AGENT_TEAM:shared-writing-team')
-    await wrapper.get('[data-testid="runtime-fields"] button:nth-child(1)').trigger('click')
-    await wrapper.get('[data-testid="runtime-fields"] button:nth-child(2)').trigger('click')
+    await wrapper.get('[data-testid="application-launch-defaults-fields"] button:nth-child(1)').trigger('click')
+    await wrapper.get('[data-testid="application-launch-defaults-fields"] button:nth-child(2)').trigger('click')
     await wrapper.get('input[type="text"]').setValue('/tmp/brief-studio')
     await wrapper.get('button.rounded-md.bg-blue-600').trigger('click')
     await flushPromises()
@@ -278,7 +271,7 @@ describe('ApplicationLaunchSetupPanel', () => {
       },
       global: {
         stubs: {
-          RuntimeModelConfigFields: RuntimeModelConfigFieldsStub,
+          ApplicationLaunchDefaultsFields: ApplicationLaunchDefaultsFieldsStub,
         },
       },
     })
