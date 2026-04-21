@@ -1,7 +1,0 @@
-{
-  "toolNames": ["publish_artifact"],
-  "skillNames": [],
-  "defaultLaunchConfig": {
-    "runtimeKind": "autobyteus"
-  }
-}

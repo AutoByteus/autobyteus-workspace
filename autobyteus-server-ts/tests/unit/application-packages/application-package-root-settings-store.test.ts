@@ -9,14 +9,17 @@ describe("ApplicationPackageRootSettingsStore", () => {
   let appDataRoot: string;
   let builtInRoot: string;
   let bundledSourceRoot: string;
+  let serverRoot: string;
 
   beforeEach(async () => {
     tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-application-root-settings-"));
     appDataRoot = path.join(tempRoot, "app-data");
     builtInRoot = path.join(appDataRoot, "application-packages", "platform");
-    bundledSourceRoot = path.join(tempRoot, "bundled-source");
+    bundledSourceRoot = path.join(tempRoot, "repo-root", "autobyteus-server-ts", "application-packages", "platform");
+    serverRoot = path.join(tempRoot, "repo-root", "autobyteus-server-ts", "server");
     await fs.mkdir(builtInRoot, { recursive: true });
     await fs.mkdir(path.join(bundledSourceRoot, "applications"), { recursive: true });
+    await fs.mkdir(serverRoot, { recursive: true });
   });
 
   afterEach(async () => {
@@ -25,12 +28,17 @@ describe("ApplicationPackageRootSettingsStore", () => {
 
   it("filters the built-in applications root out of configured additional roots", () => {
     const extraRoot = path.join(tempRoot, "external-applications-root");
+    const configuredRoots = [builtInRoot, bundledSourceRoot, extraRoot].join(",");
     const store = new ApplicationPackageRootSettingsStore(
       {
         getAppDataDir: () => appDataRoot,
-        getAdditionalApplicationPackageRoots: () => [builtInRoot, bundledSourceRoot, extraRoot],
-        getAppRootDir: () => path.join(bundledSourceRoot, "server"),
-        get: (_key: string, defaultValue?: string) => defaultValue,
+        getAdditionalApplicationPackageRoots: () => [extraRoot],
+        getAppRootDir: () => serverRoot,
+        get: (key: string, defaultValue?: string) => (
+          key === "AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS"
+            ? configuredRoots
+            : defaultValue
+        ),
       },
       {
         updateSetting: () => [true, "updated"],
@@ -46,7 +54,7 @@ describe("ApplicationPackageRootSettingsStore", () => {
       {
         getAppDataDir: () => appDataRoot,
         getAdditionalApplicationPackageRoots: () => [],
-        getAppRootDir: () => path.join(bundledSourceRoot, "server"),
+        getAppRootDir: () => serverRoot,
         get: (_key: string, defaultValue?: string) => defaultValue,
       },
       {
@@ -69,7 +77,7 @@ describe("ApplicationPackageRootSettingsStore", () => {
       {
         getAppDataDir: () => appDataRoot,
         getAdditionalApplicationPackageRoots: () => [],
-        getAppRootDir: () => path.join(bundledSourceRoot, "server"),
+        getAppRootDir: () => serverRoot,
         get: (_key: string, defaultValue?: string) => defaultValue,
       },
       {
@@ -84,5 +92,26 @@ describe("ApplicationPackageRootSettingsStore", () => {
       "bundled platform applications source root cannot be registered",
     );
     expect(writes).toHaveLength(0);
+  });
+
+  it("retains raw configured missing roots for reconciliation even when runtime config filters them out", () => {
+    const missingRoot = path.join(tempRoot, "missing-root");
+    const store = new ApplicationPackageRootSettingsStore(
+      {
+        getAppDataDir: () => appDataRoot,
+        getAdditionalApplicationPackageRoots: () => [],
+        getAppRootDir: () => serverRoot,
+        get: (key: string, defaultValue?: string) => (
+          key === "AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS"
+            ? missingRoot
+            : defaultValue
+        ),
+      },
+      {
+        updateSetting: () => [true, "updated"],
+      },
+    );
+
+    expect(store.listAdditionalRootPaths()).toEqual([path.resolve(missingRoot)]);
   });
 });

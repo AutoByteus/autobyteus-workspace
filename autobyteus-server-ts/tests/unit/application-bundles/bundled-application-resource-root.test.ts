@@ -15,17 +15,30 @@ describe("resolveBundledApplicationResourceRoot", () => {
     await fs.rm(tempRoot, { recursive: true, force: true });
   });
 
-  it("returns the nearest ancestor with an exact applications directory", async () => {
-    const bundledRoot = path.join(tempRoot, "bundle");
-    const serverRoot = path.join(bundledRoot, "server", "dist");
+  it("returns the nearest ancestor with a bundled application-packages/platform/applications directory", async () => {
+    const packageRoot = path.join(tempRoot, "bundle");
+    const bundledPlatformRoot = path.join(packageRoot, "application-packages", "platform");
+    const serverRoot = path.join(packageRoot, "server", "dist");
 
-    await fs.mkdir(path.join(bundledRoot, "applications"), { recursive: true });
+    await fs.mkdir(path.join(bundledPlatformRoot, "applications"), { recursive: true });
     await fs.mkdir(serverRoot, { recursive: true });
 
-    expect(resolveBundledApplicationResourceRoot(serverRoot)).toBe(path.resolve(bundledRoot));
+    expect(resolveBundledApplicationResourceRoot(serverRoot)).toBe(path.resolve(bundledPlatformRoot));
   });
 
-  it("does not match a differently cased Applications directory", async () => {
+  it("prefers the bundled platform applications root instead of a repo-level applications directory", async () => {
+    const repoRoot = path.join(tempRoot, "repo-root");
+    const serverRoot = path.join(repoRoot, "autobyteus-server-ts", "dist");
+    const bundledPlatformRoot = path.join(repoRoot, "autobyteus-server-ts", "application-packages", "platform");
+
+    await fs.mkdir(path.join(repoRoot, "applications"), { recursive: true });
+    await fs.mkdir(path.join(bundledPlatformRoot, "applications"), { recursive: true });
+    await fs.mkdir(serverRoot, { recursive: true });
+
+    expect(resolveBundledApplicationResourceRoot(serverRoot)).toBe(path.resolve(bundledPlatformRoot));
+  });
+
+  it("falls back to the provided server root when no bundled platform applications root exists", async () => {
     const packageRoot = path.join(tempRoot, "package-root");
     const serverRoot = path.join(packageRoot, "server", "dist");
 

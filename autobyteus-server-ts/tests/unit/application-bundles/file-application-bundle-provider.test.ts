@@ -248,6 +248,16 @@ describe("FileApplicationBundleProvider", () => {
     );
   };
 
+  it("treats an empty managed built-in application root as a valid steady state", async () => {
+    const provider = buildProvider();
+
+    await expect(provider.listBundles()).resolves.toEqual([]);
+    await expect(provider.getCatalogSnapshot()).resolves.toMatchObject({
+      applications: [],
+      diagnostics: [],
+    });
+  });
+
   it("lists valid bundles from the managed built-in application root with manifest resource slots", async () => {
     await writeBundle();
     const provider = buildProvider();

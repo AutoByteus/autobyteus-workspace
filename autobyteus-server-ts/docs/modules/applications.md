@@ -48,33 +48,32 @@ There is no longer a bundle-level `runtimeTarget`. Instead, bundle-owned agents 
 
 The platform does not install app dependencies or run app builds at import/start time. Imported application backends must ship the needed `backend/dist/**` artifacts inside the bundle.
 
-## Authoring Reference Sample
+## Current Authoring Samples
 
-The canonical teaching sample now lives under the shared repo-root applications container:
+The current in-repo teaching/sample applications live only under the shared repo-root `applications/` container:
 
 - `../../../applications/brief-studio/`
+- `../../../applications/socratic-math-teacher/`
 
 Important paths:
 
-- authoring source:
+- Brief Studio authoring source:
   - `../../../applications/brief-studio/`
-- generated importable package:
+- Brief Studio generated importable package:
   - `../../../applications/brief-studio/dist/importable-package/`
+- Socratic Math Teacher authoring source:
+  - `../../../applications/socratic-math-teacher/`
+- Socratic Math Teacher generated importable package:
+  - `../../../applications/socratic-math-teacher/dist/importable-package/`
 
-This sample teaches the shared root model directly:
-
-- repo-local runnable root:
-  - `../../../applications/brief-studio/`
-- packaging-only import mirror:
-  - `../../../applications/brief-studio/dist/importable-package/`
-
-Repo-local discovery uses the direct child root under `applications/` and ignores the nested packaging mirror unless that packaging root is explicitly provisioned/imported as a separate package source.
+These are authoring/sample roots, not current shipped built-ins. Future built-in applications should only appear through an explicit promotion/packaging decision, not by maintaining parallel editable source trees. Repo-local discovery uses the direct child roots under `applications/` and ignores nested packaging mirrors unless those packaging roots are explicitly provisioned/imported as separate package sources.
 
 ## Discovery And Catalog Notes
 
 - Repo-local applications and imported package applications use the same bundle-discovery path.
 - Discovery walks the managed built-in package root plus registered additional package roots and produces one catalog entry per valid bundle.
-- Built-in applications are materialized from bundled application resources into `<app-data-dir>/application-packages/platform/applications/`; that managed root is the authoritative built-in package identity for discovery and settings.
+- Built-in applications are materialized from the server-owned bundled payload under `autobyteus-server-ts/application-packages/platform/applications/` into `<app-data-dir>/application-packages/platform/applications/`; that managed root is the authoritative built-in package identity for discovery and settings, even when the current built-in application set is intentionally empty.
+- Repo-root `applications/` remains authoring-only and is not an implicit built-in materialization source.
 - The bundled resource root is a read-only materialization source and debug detail, not a user-imported package root.
 - If the same physical applications root is also presented as an additional package root, discovery skips the duplicate additional-root entry instead of minting a competing package identity.
 - The protected managed built-in applications root and the bundled source root are not valid user-configured additional package roots.
@@ -90,7 +89,7 @@ Repo-local discovery uses the direct child root under `applications/` and ignore
 ## Package Source Presentation
 
 - `ApplicationPackageService` is the authoritative settings-facing owner for application-package source summaries and debug details.
-- Default list rows hide empty platform-owned built-in packages, show built-ins as `Platform Applications`, and keep raw internal built-in paths behind explicit details.
+- Default list rows hide empty platform-owned built-in packages, show non-empty built-ins as `Platform Applications`, and keep raw internal built-in paths behind explicit details.
 - Linked local package rows may show the user-chosen root path directly.
 - GitHub-installed package rows use repository identity by default; managed install paths stay in details/debug-only surfaces.
 

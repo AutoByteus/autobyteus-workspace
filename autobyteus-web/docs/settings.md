@@ -178,7 +178,7 @@ For the full module behavior, see:
 
 Manage application package sources used by the current node.
 
-- Platform-owned built-in applications appear as `Platform Applications` only when the managed built-in package currently contains at least one application.
+- Platform-owned built-in applications appear as `Platform Applications` only when the managed built-in package currently contains at least one application. The current built-in application set may legitimately be empty.
 - The default list distinguishes platform-owned, linked local, and GitHub-imported sources instead of presenting every source as an equivalent filesystem root.
 - Raw internal built-in paths stay off the default list; `Show details` reveals root/source/managed-path metadata only on demand for support/debug work.
 - Linked local packages keep the user-chosen local path visible in the default list because that path is part of the operator's import choice.
