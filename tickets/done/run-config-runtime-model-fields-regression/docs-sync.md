@@ -3,15 +3,15 @@
 ## Scope
 
 - Ticket: `run-config-runtime-model-fields-regression`
-- Trigger: authoritative implementation review round `2` and API/E2E validation round `1` both passed on `2026-04-21`, so delivery rechecked the final integrated state for durable docs impact.
+- Trigger: authoritative review round `2` and API/E2E validation round `1` passed on `2026-04-21`; the user then verified the locally built Electron app on `2026-04-21` and requested finalization without a new release.
 - Bootstrap base reference: `origin/personal` (recorded in `requirements.md`)
 - Integrated base reference used for docs sync: `origin/personal @ a327c68c17bddcc9d58a2a974d8f6ea24eb0b75f`
-- Post-integration verification reference: no additional delivery-stage rerun was required because `git fetch origin personal` confirmed the tracked base had not advanced beyond the already-reviewed and already-validated branch base (`a327c68c17bddcc9d58a2a974d8f6ea24eb0b75f`).
+- Post-integration verification reference: no additional delivery-stage rerun was required because the finalization refresh on `2026-04-21` confirmed `origin/personal` had not advanced beyond `a327c68c17bddcc9d58a2a974d8f6ea24eb0b75f`, so the already-reviewed and already-validated state remained current for finalization.
 
 ## Why Docs Were Updated
 
 - Summary: the canonical Applications frontend doc now records that application-specific launch-default field presence is owned by `ApplicationLaunchDefaultsFields.vue`, while the shared `RuntimeModelConfigFields.vue` returns to stable native run/definition semantics.
-- Why this should live in long-lived project docs: this ownership split is the durable prevention mechanism for the regression. Future app-setup reuse should not reintroduce wrapper-level `show*` visibility toggles on the shared run-config surface.
+- Why this should live in long-lived project docs: this ownership split is the durable prevention mechanism for the regression. Future application setup reuse should not reintroduce wrapper-level `show*` visibility toggles on the shared run-config surface.
 
 ## Long-Lived Docs Reviewed
 
@@ -46,4 +46,4 @@
 
 - Result: `Pass`
 - Next owner: `delivery_engineer`
-- Notes: Docs sync is complete on the latest tracked-base state and the ticket is ready for user verification hold.
+- Notes: Docs sync is complete for the archived final state. Repository finalization completed into `origin/personal` on `2026-04-21` without a release/version bump.

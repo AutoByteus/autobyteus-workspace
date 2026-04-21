@@ -4,7 +4,7 @@
 
 - Ticket: `run-config-runtime-model-fields-regression`
 - Last Updated: `2026-04-21`
-- Current Status: `Ready for user verification`
+- Current Status: `Finalized`
 
 ## Delivered
 
@@ -18,8 +18,8 @@
 ## Integrated Base Refresh
 
 - Bootstrap base reference: `origin/personal`
-- Latest tracked remote base checked during delivery: `origin/personal @ a327c68c17bddcc9d58a2a974d8f6ea24eb0b75f`
-- Base advanced since the validated handoff: `No`
+- Latest tracked remote base checked during delivery/finalization: `origin/personal @ a327c68c17bddcc9d58a2a974d8f6ea24eb0b75f`
+- Base advanced after the validated handoff and before finalization: `No`
 - Integration method: `Already current`
 - Local checkpoint commit: `Not needed`
 - Additional delivery-stage rerun: `Not needed`
@@ -39,6 +39,9 @@
   - `pnpm exec nuxi prepare`: `PASS`
   - Targeted Vitest suite: `PASS` (`4` files, `17` tests)
   - `pnpm build`: `PASS` (existing non-blocking Vite chunk warnings only)
+- Local Electron verification:
+  - README-guided local macOS Electron build completed successfully on `2026-04-21`
+  - User verified the built app manually on `2026-04-21` and confirmed the ticket was done
 - Durable validation added during API/E2E validation: `No`
 
 ## Documentation Sync
@@ -51,18 +54,26 @@
   - `autobyteus-web/docs/agent_management.md`
   - `autobyteus-web/docs/agent_teams.md`
 
-## Suggested User Verification Focus
+## User Verification
 
-- Confirm **Agent Run** configuration again shows runtime selection and model selection under normal unlocked run semantics.
-- Confirm **Team Run** configuration again shows runtime selection and model selection under normal unlocked run semantics.
-- Confirm **Application Launch Setup** still behaves correctly for slots that are:
-  - runtime + model + workspace,
-  - model-only,
-  - workspace-only,
-  - no additional defaults.
+- Waiting for explicit user verification: `No`
+- User verification received: `Yes`
+- Verification reference: `User confirmed on 2026-04-21, after reading the README, building the Electron app locally, and manually testing it, that the ticket was working and should be finalized without a new release.`
 
-## Release / Finalization State
+## Release Notes
 
-- Ticket remains under `tickets/done/run-config-runtime-model-fields-regression/` pending explicit user verification.
-- Finalization target remains `origin/personal -> personal`.
-- No archival, ticket-branch commit/push, merge, release, deployment, or cleanup has been started yet.
+- Release notes required: `No`
+- Release notes artifact: `N/A`
+- Notes: The user explicitly requested finalization without a new version or release step.
+
+## Finalization Record
+
+- Technical workflow status: `Finalized`
+- Ticket archive state: `Archived under tickets/done/run-config-runtime-model-fields-regression/`
+- Dedicated ticket worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-config-runtime-model-fields-regression` → `Removed`
+- Ticket branch: `codex/run-config-runtime-model-fields-regression`
+- Ticket-branch final commit: `1217eaa4` (`fix(web): restore native runtime/model config fields`)
+- Ticket branch push status: `Completed`
+- Merge into `origin/personal`: `Completed` via merge commit `cc4ab865256c503bfa2275114e71377333bb252b`
+- Release/publication/deployment status: `Skipped by user request`
+- Cleanup status: `Completed` (worktree removed, local branch deleted, remote branch deleted)
