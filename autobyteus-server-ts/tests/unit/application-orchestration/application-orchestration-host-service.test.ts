@@ -55,7 +55,7 @@ const buildBinding = (): ApplicationRunBindingSummary => ({
 });
 
 describe("ApplicationOrchestrationHostService startRun", () => {
-  it("waits for RUN_STARTED journaling before initialInput can publish an artifact", async () => {
+  it("waits for RUN_STARTED journaling before initialInput is forwarded to the runtime", async () => {
     const bindings = new Map<string, ApplicationRunBindingSummary>();
     const lookups = new Map<string, ApplicationRunLookupRecord>();
     const committedFamilies: string[] = [];
@@ -140,24 +140,7 @@ describe("ApplicationOrchestrationHostService startRun", () => {
     });
 
     const fakeRun = {
-      postUserMessage: vi.fn(async () => {
-        await ingressService.appendRuntimeArtifactEvent({
-          runId,
-          customData: null,
-          publication: {
-            contractVersion: "1",
-            artifactKey: "draft",
-            artifactType: "brief_draft",
-            title: "Draft",
-            artifactRef: {
-              kind: "INLINE_JSON",
-              mimeType: "application/json",
-              value: { ok: true },
-            },
-          },
-        });
-        return { accepted: true };
-      }),
+      postUserMessage: vi.fn(async () => ({ accepted: true })),
     };
 
     const agentRunService = {
@@ -216,7 +199,7 @@ describe("ApplicationOrchestrationHostService startRun", () => {
     await startRunPromise;
 
     expect(fakeRun.postUserMessage).toHaveBeenCalledTimes(1);
-    expect(committedFamilies).toEqual(["RUN_STARTED", "ARTIFACT"]);
+    expect(committedFamilies).toEqual(["RUN_STARTED"]);
   });
 
   it("resolves bindings by bindingIntentId through the host boundary", async () => {

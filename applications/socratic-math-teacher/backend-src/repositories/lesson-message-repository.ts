@@ -28,10 +28,11 @@ export const createLessonMessageRepository = (db: DatabaseSync) => ({
     body: string;
     createdAt: string;
     sourceEventId?: string | null;
-  }): void {
-    db.prepare(
-      `INSERT INTO lesson_messages (message_id, lesson_id, role, kind, body, created_at, source_event_id)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    sourceRevisionId?: string | null;
+  }): boolean {
+    const result = db.prepare(
+      `INSERT OR IGNORE INTO lesson_messages (message_id, lesson_id, role, kind, body, created_at, source_event_id, source_revision_id)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
     ).run(
       input.messageId,
       input.lessonId,
@@ -40,7 +41,9 @@ export const createLessonMessageRepository = (db: DatabaseSync) => ({
       input.body,
       input.createdAt,
       input.sourceEventId ?? null,
+      input.sourceRevisionId ?? null,
     );
+    return Number(result.changes ?? 0) > 0;
   },
 
   listByLessonId(lessonId: string): LessonMessageRecord[] {

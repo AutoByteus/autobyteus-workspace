@@ -14,7 +14,7 @@ describe('SkillVersioningPanel', () => {
     loading: false
   }
 
-  it('renders "Enable Versioning" when not versioned (Default Mode)', () => {
+  it('renders enable versioning when not versioned (Default Mode)', () => {
     const wrapper = mount(SkillVersioningPanel, {
       props: {
         skill: mockSkill,
@@ -28,10 +28,10 @@ describe('SkillVersioningPanel', () => {
     })
     expect(wrapper.text()).toContain('Not versioned')
     expect(wrapper.find('button.btn-magic').exists()).toBe(true)
-    expect(wrapper.find('button.btn-magic').text()).toContain('Enable Versioning')
+    expect(wrapper.find('button.btn-magic').text()).toContain('Enable versioning')
   })
 
-  it('renders "Enable Versioning" when not versioned (Compact Mode)', () => {
+  it('renders enable versioning when not versioned (Compact Mode)', () => {
     const wrapper = mount(SkillVersioningPanel, {
       props: {
         skill: mockSkill,

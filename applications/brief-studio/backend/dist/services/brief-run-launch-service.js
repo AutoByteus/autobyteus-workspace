@@ -35,22 +35,6 @@ const buildInitialInputText = (input) => {
     }
     return sections.join("\n\n");
 };
-const readLatestWriterBody = (artifactRef) => {
-    if (!artifactRef || typeof artifactRef !== "object" || Array.isArray(artifactRef)) {
-        return null;
-    }
-    const record = artifactRef;
-    if (record.kind !== "INLINE_JSON") {
-        return null;
-    }
-    const value = record.value;
-    if (!value || typeof value !== "object" || Array.isArray(value)) {
-        return null;
-    }
-    return typeof value.body === "string"
-        ? value.body
-        : null;
-};
 const normalizeLaunchDefaults = (value) => {
     if (!value || typeof value !== "object" || Array.isArray(value)) {
         return {
@@ -152,8 +136,8 @@ export const createBriefRunLaunchService = (context) => ({
                 .filter(Boolean);
             return {
                 brief,
-                latestWriterSummary: writerArtifact?.summary?.trim() || null,
-                latestWriterBody: writerArtifact ? readLatestWriterBody(writerArtifact.artifactRef)?.trim() || null : null,
+                latestWriterSummary: writerArtifact?.description?.trim() || null,
+                latestWriterBody: writerArtifact?.body?.trim() || null,
                 reviewNotes,
             };
         });
@@ -204,6 +188,7 @@ export const createBriefRunLaunchService = (context) => ({
                         runId: binding.runtime.runId,
                         createdAt: binding.createdAt,
                         updatedAt: launchedAt,
+                        artifactCatchupCompletedAt: null,
                     });
                     const launchProjection = resolveLaunchProjection({
                         brief: launchContext.brief,
@@ -223,7 +208,7 @@ export const createBriefRunLaunchService = (context) => ({
                     });
                 });
             });
-            await context.publishNotification("brief.draft_run_launched", {
+            await context.publishNotification("brief.draft_run_started", {
                 briefId,
                 bindingId: binding.bindingId,
                 runId: binding.runtime.runId,
@@ -244,10 +229,12 @@ export const createBriefRunLaunchService = (context) => ({
                     createBriefRepository(db).upsertProjectedBrief({
                         briefId,
                         title: launchContext.brief.title,
-                        status: "blocked",
+                        status: launchContext.brief.status === "approved" || launchContext.brief.status === "rejected"
+                            ? launchContext.brief.status
+                            : "blocked",
                         updatedAt: launchedAt,
-                        latestBindingId: reconciled?.binding.bindingId ?? launchContext.brief.latestBindingId,
-                        latestRunId: reconciled?.binding.runtime.runId ?? launchContext.brief.latestRunId,
+                        latestBindingId: reconciled?.binding.bindingId ?? null,
+                        latestRunId: reconciled?.binding.runtime.runId ?? null,
                         latestBindingStatus: reconciled?.binding.status ?? "FAILED",
                         lastErrorMessage: message,
                     });

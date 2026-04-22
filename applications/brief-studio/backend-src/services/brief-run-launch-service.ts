@@ -15,6 +15,7 @@ const BRIEF_STUDIO_TEAM_RESOURCE = {
   localId: "brief-studio-team",
 } as const;
 const DRAFTING_TEAM_SLOT_KEY = "draftingTeam" as const;
+
 type ConfiguredTeamLaunchDefaults = {
   llmModelIdentifier: string | null;
   runtimeKind: string | null;
@@ -51,23 +52,6 @@ const buildInitialInputText = (input: {
   }
 
   return sections.join("\n\n");
-};
-
-const readLatestWriterBody = (artifactRef: unknown): string | null => {
-  if (!artifactRef || typeof artifactRef !== "object" || Array.isArray(artifactRef)) {
-    return null;
-  }
-  const record = artifactRef as Record<string, unknown>;
-  if (record.kind !== "INLINE_JSON") {
-    return null;
-  }
-  const value = record.value;
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    return null;
-  }
-  return typeof (value as Record<string, unknown>).body === "string"
-    ? ((value as Record<string, unknown>).body as string)
-    : null;
 };
 
 const normalizeLaunchDefaults = (value: unknown): ConfiguredTeamLaunchDefaults => {
@@ -215,8 +199,8 @@ export const createBriefRunLaunchService = (context: ApplicationHandlerContext) 
 
       return {
         brief,
-        latestWriterSummary: writerArtifact?.summary?.trim() || null,
-        latestWriterBody: writerArtifact ? readLatestWriterBody(writerArtifact.artifactRef)?.trim() || null : null,
+        latestWriterSummary: writerArtifact?.description?.trim() || null,
+        latestWriterBody: writerArtifact?.body?.trim() || null,
         reviewNotes,
       };
     });
@@ -270,6 +254,7 @@ export const createBriefRunLaunchService = (context: ApplicationHandlerContext) 
             runId: binding.runtime.runId,
             createdAt: binding.createdAt,
             updatedAt: launchedAt,
+            artifactCatchupCompletedAt: null,
           });
           const launchProjection = resolveLaunchProjection({
             brief: launchContext.brief,
@@ -290,7 +275,7 @@ export const createBriefRunLaunchService = (context: ApplicationHandlerContext) 
         });
       });
 
-      await context.publishNotification("brief.draft_run_launched", {
+      await context.publishNotification("brief.draft_run_started", {
         briefId,
         bindingId: binding.bindingId,
         runId: binding.runtime.runId,
@@ -306,22 +291,22 @@ export const createBriefRunLaunchService = (context: ApplicationHandlerContext) 
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       const reconciled = await correlationService.reconcileBindingIntent(pendingIntent.bindingIntentId);
-
       withAppDatabase(context.storage.appDatabasePath, (db) => {
         withTransaction(db, () => {
           createBriefRepository(db).upsertProjectedBrief({
             briefId,
             title: launchContext.brief.title,
-            status: "blocked",
+            status: launchContext.brief.status === "approved" || launchContext.brief.status === "rejected"
+              ? launchContext.brief.status
+              : "blocked",
             updatedAt: launchedAt,
-            latestBindingId: reconciled?.binding.bindingId ?? launchContext.brief.latestBindingId,
-            latestRunId: reconciled?.binding.runtime.runId ?? launchContext.brief.latestRunId,
+            latestBindingId: reconciled?.binding.bindingId ?? null,
+            latestRunId: reconciled?.binding.runtime.runId ?? null,
             latestBindingStatus: reconciled?.binding.status ?? "FAILED",
             lastErrorMessage: message,
           });
         });
       });
-
       throw error;
     }
   },

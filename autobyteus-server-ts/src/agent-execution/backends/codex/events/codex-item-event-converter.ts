@@ -111,24 +111,6 @@ const createTerminalToolExecutionEvent = (
   });
 };
 
-const createFileChangeArtifactPayload = (
-  context: CodexItemEventConverterContext,
-  payload: JsonObject,
-): Record<string, unknown> | null => {
-  const metadata = context.resolveSegmentMetadata(payload);
-  const pathValue = typeof metadata?.path === "string" ? metadata.path.trim() : "";
-  if (!pathValue) {
-    return null;
-  }
-
-  return {
-    ...serializePayload(payload),
-    id: context.resolveSegmentId(payload, "file-change"),
-    path: pathValue,
-    type: "file",
-  };
-};
-
 const createFileChangeSegmentStartEvent = (
   context: CodexItemEventConverterContext,
   codexEventName: string,
@@ -213,21 +195,10 @@ export const convertCodexItemEvent = (
         ];
       }
       if (itemType === "filechange") {
-        const events: AgentRunEvent[] = [
+        return [
           createFileChangeSegmentStartEvent(context, codexEventName, payload),
           createFileChangeLifecycleStartedEvent(context, codexEventName, payload),
         ];
-        const artifactPayload = createFileChangeArtifactPayload(context, payload);
-        if (artifactPayload) {
-          events.push(
-            context.createEvent(
-              codexEventName,
-              AgentRunEventType.ARTIFACT_UPDATED,
-              artifactPayload,
-            ),
-          );
-        }
-        return events;
       }
       const segmentType = context.resolveSegmentType(payload);
       const segmentMetadata = context.resolveSegmentMetadata(payload);
@@ -314,16 +285,6 @@ export const convertCodexItemEvent = (
               result: context.resolveToolResult(payload),
             }),
           );
-          const artifactPayload = createFileChangeArtifactPayload(context, payload);
-          if (artifactPayload) {
-            events.push(
-              context.createEvent(
-                codexEventName,
-                AgentRunEventType.ARTIFACT_PERSISTED,
-                artifactPayload,
-              ),
-            );
-          }
         }
 
         events.push(createFileChangeSegmentEndEvent(context, codexEventName, payload));

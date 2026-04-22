@@ -16,6 +16,7 @@ const toBindingRecord = (briefId, binding, updatedAt) => ({
     runId: binding.runtime.runId,
     createdAt: binding.createdAt,
     updatedAt,
+    artifactCatchupCompletedAt: null,
 });
 const ensureBindingConsistency = (pendingIntent, existingBinding, input) => {
     if (pendingIntent && pendingIntent.briefId !== input.briefId) {
@@ -59,7 +60,10 @@ export const createRunBindingCorrelationService = (context) => ({
                 const pendingIntent = pendingIntentRepository.getByBindingIntentId(bindingIntentId);
                 const existingBinding = briefBindingRepository.getByBindingId(input.binding.bindingId);
                 ensureBindingConsistency(pendingIntent, existingBinding, { briefId, binding: input.binding });
-                briefBindingRepository.upsertBinding(toBindingRecord(briefId, input.binding, committedAt));
+                briefBindingRepository.upsertBinding({
+                    ...toBindingRecord(briefId, input.binding, committedAt),
+                    artifactCatchupCompletedAt: existingBinding?.artifactCatchupCompletedAt ?? null,
+                });
                 if (pendingIntent) {
                     pendingIntentRepository.markCommitted({
                         bindingIntentId,

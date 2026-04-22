@@ -9,6 +9,7 @@ export type LessonSummary = {
   latestBindingStatus: string | null;
   lastErrorMessage: string | null;
   updatedAt: string;
+  artifactCatchupCompletedAt?: string | null;
 };
 
 export type LessonDetail = LessonSummary & {

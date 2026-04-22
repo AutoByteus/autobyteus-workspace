@@ -27,9 +27,9 @@ const loaderSpecs: LoaderSpec[] = [
     exportName: "registerBrowserTools",
   },
   {
-    name: "Application Orchestration Tools",
-    modulePath: "../application-orchestration/tools/register-application-orchestration-tools.js",
-    exportName: "registerApplicationOrchestrationTools",
+    name: "Published Artifact Tools",
+    modulePath: "../agent-tools/published-artifacts/register-published-artifact-tools.js",
+    exportName: "registerPublishedArtifactTools",
   },
 ];
 

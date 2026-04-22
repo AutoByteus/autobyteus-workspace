@@ -32,13 +32,11 @@ const BRIEF_QUERY = `query BriefQuery($briefId: ID!) {
     artifacts {
       briefId
       artifactKind
-      artifactKey
-      artifactType
-      title
-      summary
-      artifactRef
-      metadata
-      isFinal
+      publicationKind
+      revisionId
+      path
+      description
+      body
       producerMemberRouteKey
       updatedAt
     }

@@ -236,4 +236,18 @@ describe("CodexThreadBootstrapper", () => {
     expect(dynamicToolSpecs).not.toBeNull();
     expect(dynamicToolSpecs?.map((spec) => spec.name)).toEqual(["open_tab", "read_page"]);
   });
+
+  it("exposes publish_artifact as a Codex dynamic tool only when the agent config allows it", async () => {
+    const { bootstrapper } = createBootstrapper({
+      skills: [],
+      toolNames: ["publish_artifact"],
+      requestImplementation: async () => ({ data: [] }),
+    });
+
+    const runContext = await bootstrapper.bootstrapForCreate(createRunContext());
+    const dynamicToolSpecs = runContext.runtimeContext.codexThreadConfig.dynamicTools;
+
+    expect(dynamicToolSpecs).not.toBeNull();
+    expect(dynamicToolSpecs?.map((spec) => spec.name)).toEqual(["publish_artifact"]);
+  });
 });

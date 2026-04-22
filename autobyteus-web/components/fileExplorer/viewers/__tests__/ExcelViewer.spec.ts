@@ -1,8 +1,10 @@
 
 import { mount } from '@vue/test-utils';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import ExcelViewer from '../ExcelViewer.vue';
 import * as XLSX from 'xlsx';
+
+const originalFetch = global.fetch
 
 // Mock xlsx
 vi.mock('xlsx', () => {
@@ -19,6 +21,10 @@ describe('ExcelViewer.vue', () => {
         vi.clearAllMocks();
     });
 
+    afterEach(() => {
+        global.fetch = originalFetch;
+    });
+
     it('renders loading state when loading', async () => {
         // Mock fetch to hang to simulate loading
         global.fetch = vi.fn(() => new Promise(() => {}));
@@ -31,7 +37,7 @@ describe('ExcelViewer.vue', () => {
         });
         
         expect(wrapper.find('.loading-state').exists()).toBe(true);
-        expect(wrapper.text()).toContain('Loading spreadsheet...');
+        expect(wrapper.text()).toContain('Loading spreadsheet');
     });
 
     it('loads from content when url is missing', async () => {

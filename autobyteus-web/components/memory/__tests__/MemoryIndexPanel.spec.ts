@@ -72,7 +72,7 @@ describe('MemoryIndexPanel', () => {
       },
     });
 
-    const teamButton = wrapper.findAll('button').find((btn) => btn.text().includes('Team Runs'));
+    const teamButton = wrapper.findAll('button').find((btn) => /team runs/i.test(btn.text()));
     expect(teamButton).toBeTruthy();
     await teamButton!.trigger('click');
 

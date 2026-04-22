@@ -30,6 +30,8 @@ import { dispatchRuntimeEvent } from "../../shared/runtime-event-dispatch.js";
 import { CLAUDE_SEND_MESSAGE_MCP_TOOL_NAME, CLAUDE_SEND_MESSAGE_TOOL_NAME } from "../claude-send-message-tool-name.js";
 
 const CLAUDE_BROWSER_MCP_TOOL_PREFIX = "mcp__autobyteus_browser__";
+const CLAUDE_PUBLISHED_ARTIFACT_MCP_TOOL_NAME =
+  "mcp__autobyteus_published_artifacts__publish_artifact";
 
 const formatClaudeRuntimeError = (error: unknown): string =>
   error instanceof Error ? error.stack ?? error.message : String(error);
@@ -283,9 +285,11 @@ export class ClaudeSession {
     const sendMessageToToolingEnabled =
       this.isSendMessageToToolingEnabled();
     const enabledBrowserToolNames = this.resolveEnabledBrowserToolNames();
+    const publishArtifactToolingEnabled = this.isPublishArtifactToolingEnabled();
     const allowedTools = this.resolveAllowedToolNames({
       sendMessageToToolingEnabled,
       enabledBrowserToolNames,
+      publishArtifactToolingEnabled,
     });
     const turnInput = buildClaudeTurnInput({
       runContext: this.runContext,
@@ -295,6 +299,7 @@ export class ClaudeSession {
     const mcpServers = await this.buildSessionMcpServers({
       sendMessageToToolingEnabled,
       enabledBrowserToolNames,
+      publishArtifactToolingEnabled,
     });
     const query = await this.dependencies.sdkClient.startQueryTurn({
       prompt: turnInput,
@@ -414,11 +419,13 @@ export class ClaudeSession {
   private async buildSessionMcpServers(input: {
     sendMessageToToolingEnabled: boolean;
     enabledBrowserToolNames: string[];
+    publishArtifactToolingEnabled: boolean;
   },
   ): Promise<Record<string, unknown> | null> {
     return buildClaudeSessionMcpServers({
       sendMessageToToolingEnabled: input.sendMessageToToolingEnabled,
       enabledBrowserToolNames: input.enabledBrowserToolNames,
+      publishArtifactToolingEnabled: input.publishArtifactToolingEnabled,
       runContext: this.runContext,
       sdkClient: this.dependencies.sdkClient,
       requestToolApproval: input.sendMessageToToolingEnabled
@@ -448,9 +455,14 @@ export class ClaudeSession {
     return [...this.runContext.runtimeContext.configuredToolExposure.enabledBrowserToolNames];
   }
 
+  private isPublishArtifactToolingEnabled(): boolean {
+    return this.runContext.runtimeContext.configuredToolExposure.publishArtifactConfigured;
+  }
+
   private resolveAllowedToolNames(input: {
     sendMessageToToolingEnabled: boolean;
     enabledBrowserToolNames: string[];
+    publishArtifactToolingEnabled: boolean;
   }): string[] {
     const allowedTools = new Set<string>();
     if (input.sendMessageToToolingEnabled) {
@@ -463,6 +475,10 @@ export class ClaudeSession {
     for (const toolName of input.enabledBrowserToolNames) {
       allowedTools.add(toolName);
       allowedTools.add(`${CLAUDE_BROWSER_MCP_TOOL_PREFIX}${toolName}`);
+    }
+    if (input.publishArtifactToolingEnabled) {
+      allowedTools.add("publish_artifact");
+      allowedTools.add(CLAUDE_PUBLISHED_ARTIFACT_MCP_TOOL_NAME);
     }
     return [...allowedTools];
   }

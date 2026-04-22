@@ -110,7 +110,7 @@ const createSession = (configuredToolNames: string[] = []) => {
   };
 };
 
-describe("ClaudeSession browser/send_message_to gating", () => {
+describe("ClaudeSession browser/send_message_to/publish_artifact gating", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     buildClaudeSessionMcpServersMock.mockResolvedValue(null);
@@ -129,6 +129,7 @@ describe("ClaudeSession browser/send_message_to gating", () => {
       expect.objectContaining({
         sendMessageToToolingEnabled: false,
         enabledBrowserToolNames: ["read_page"],
+        publishArtifactToolingEnabled: false,
       }),
     );
     expect(startQueryTurn).toHaveBeenCalledWith(
@@ -158,6 +159,7 @@ describe("ClaudeSession browser/send_message_to gating", () => {
       expect.objectContaining({
         sendMessageToToolingEnabled: true,
         enabledBrowserToolNames: ["open_tab", "read_page"],
+        publishArtifactToolingEnabled: false,
       }),
     );
     expect(startQueryTurn).toHaveBeenCalledWith(
@@ -173,6 +175,32 @@ describe("ClaudeSession browser/send_message_to gating", () => {
           "mcp__autobyteus_browser__open_tab",
           "mcp__autobyteus_browser__read_page",
         ]),
+      }),
+    );
+  });
+
+  it("enables publish_artifact only when toolNames explicitly allow it", async () => {
+    const { session, startQueryTurn } = createSession(["publish_artifact"]);
+
+    await (session as any).executeTurn({
+      turnId: "turn-1",
+      content: new AgentInputUserMessage("hello").content,
+      signal: new AbortController().signal,
+    });
+
+    expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        sendMessageToToolingEnabled: false,
+        enabledBrowserToolNames: [],
+        publishArtifactToolingEnabled: true,
+      }),
+    );
+    expect(startQueryTurn).toHaveBeenCalledWith(
+      expect.objectContaining({
+        allowedTools: [
+          "publish_artifact",
+          "mcp__autobyteus_published_artifacts__publish_artifact",
+        ],
       }),
     );
   });

@@ -7,8 +7,8 @@ import websocket from "@fastify/websocket";
 import WebSocket from "ws";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type {
-  ApplicationExecutionEventEnvelope,
   ApplicationNotificationMessage,
+  ApplicationPublishedArtifactEvent,
   ApplicationRunBindingSummary,
 } from "@autobyteus/application-sdk-contracts";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
@@ -34,7 +34,7 @@ import { ApplicationResourceConfigurationService } from "../../../src/applicatio
 import { ApplicationRunBindingLaunchService } from "../../../src/application-orchestration/services/application-run-binding-launch-service.js";
 import { ApplicationRunObserverService } from "../../../src/application-orchestration/services/application-run-observer-service.js";
 import { ApplicationRuntimeResourceResolver } from "../../../src/application-orchestration/services/application-runtime-resource-resolver.js";
-import { ApplicationExecutionContext, APPLICATION_EXECUTION_CONTEXT_KEY } from "../../../src/application-orchestration/domain/models.js";
+import { ApplicationExecutionContext } from "../../../src/application-orchestration/domain/models.js";
 import { ApplicationExecutionEventJournalStore } from "../../../src/application-orchestration/stores/application-execution-event-journal-store.js";
 import { ApplicationResourceConfigurationStore } from "../../../src/application-orchestration/stores/application-resource-configuration-store.js";
 import { ApplicationRunBindingStore } from "../../../src/application-orchestration/stores/application-run-binding-store.js";
@@ -42,6 +42,11 @@ import { ApplicationRunLookupStore } from "../../../src/application-orchestratio
 import { SERVER_ROUTE_PARAM_MAX_LENGTH } from "../../../src/api/fastify-runtime-config.js";
 import { registerApplicationBackendRoutes } from "../../../src/api/rest/application-backends.js";
 import { registerApplicationBackendNotificationWebsocket } from "../../../src/api/websocket/application-backend-notifications.js";
+import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
+import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { PublishedArtifactProjectionStore } from "../../../src/services/published-artifacts/published-artifact-projection-store.js";
+import { PublishedArtifactSnapshotStore } from "../../../src/services/published-artifacts/published-artifact-snapshot-store.js";
+import { buildPublishedArtifactId } from "../../../src/services/published-artifacts/published-artifact-types.js";
 
 const applicationBackendState = vi.hoisted(() => ({
   gatewayService: null as ApplicationBackendGatewayService | null,
@@ -245,73 +250,130 @@ const expectGraphqlField = async <T>(
   return payload.result.data[fieldName] as T;
 };
 
-const buildArtifactPublication = (input: {
-  artifactKey: string;
-  artifactType: string;
-  title: string;
-  summary?: string;
-  isFinal: boolean;
-}): Record<string, unknown> => ({
-  contractVersion: "1",
-  artifactKey: input.artifactKey,
-  artifactType: input.artifactType,
-  title: input.title,
-  summary: input.summary ?? null,
-  artifactRef: {
-    kind: "INLINE_JSON",
-    mimeType: "application/json",
-    value: {
-      title: input.title,
-    },
-  },
-  isFinal: input.isFinal,
-});
-
 const cloneBinding = (binding: ApplicationRunBindingSummary): ApplicationRunBindingSummary => structuredClone(binding);
 
-const buildDirectArtifactEnvelope = (input: {
-  applicationId: string;
+const persistPublishedArtifactForRun = async (input: {
+  runId: string;
   binding: ApplicationRunBindingSummary;
-  eventId: string;
-  journalSequence: number;
+  producer: NonNullable<ApplicationPublishedArtifactEvent["producer"]>;
+  path: string;
+  body: string;
+  description?: string | null;
+  fileKind?: ApplicationPublishedArtifactEvent["fileKind"];
+  revisionId: string;
+  publishedAt: string;
+  fixtureRoot: string;
+}): Promise<ApplicationPublishedArtifactEvent> => {
+  const memoryRoot = appConfigProvider.config.getMemoryDir();
+  const memoryDir = path.join(memoryRoot, "runs", input.runId);
+  const metadataStore = new AgentRunMetadataStore(memoryRoot);
+  const projectionStore = new PublishedArtifactProjectionStore();
+  const snapshotStore = new PublishedArtifactSnapshotStore();
+
+  const sourceAbsolutePath = path.join(
+    input.fixtureRoot,
+    "published-artifact-fixtures",
+    input.revisionId,
+    path.basename(input.path),
+  );
+  await fs.mkdir(path.dirname(sourceAbsolutePath), { recursive: true });
+  await fs.writeFile(sourceAbsolutePath, input.body, "utf8");
+
+  const snapshot = await snapshotStore.snapshotArtifact({
+    memoryDir,
+    revisionId: input.revisionId,
+    sourceAbsolutePath,
+  });
+
+  const artifactId = buildPublishedArtifactId(input.runId, input.path);
+  const projection = await projectionStore.readProjection(memoryDir);
+  const existingSummary = projection.summaries.find((summary) => summary.id === artifactId) ?? null;
+  const nextSummary = {
+    id: artifactId,
+    runId: input.runId,
+    path: input.path,
+    type: input.fileKind ?? "file",
+    status: "available" as const,
+    description: input.description ?? null,
+    revisionId: input.revisionId,
+    createdAt: existingSummary?.createdAt ?? input.publishedAt,
+    updatedAt: input.publishedAt,
+  };
+  projection.summaries = [
+    ...projection.summaries.filter((summary) => summary.id !== artifactId),
+    nextSummary,
+  ];
+  projection.revisions.push({
+    revisionId: input.revisionId,
+    artifactId,
+    runId: input.runId,
+    path: input.path,
+    type: input.fileKind ?? "file",
+    description: input.description ?? null,
+    createdAt: input.publishedAt,
+    snapshotRelativePath: snapshot.snapshotRelativePath,
+    sourceFileName: snapshot.sourceFileName,
+  });
+  await projectionStore.writeProjection(memoryDir, projection);
+
+  await metadataStore.writeMetadata(input.runId, {
+    runId: input.runId,
+    agentDefinitionId: `test-${input.producer.memberRouteKey}`,
+    workspaceRootPath: path.join(input.fixtureRoot, "workspace"),
+    memoryDir,
+    llmModelIdentifier: "gpt-test",
+    llmConfig: null,
+    autoExecuteTools: true,
+    skillAccessMode: null,
+    runtimeKind: RuntimeKind.AUTOBYTEUS,
+    platformAgentRunId: null,
+    lastKnownStatus: "IDLE",
+    applicationExecutionContext: {
+      applicationId: input.binding.applicationId,
+      bindingId: input.binding.bindingId,
+      producer: input.producer,
+    },
+  });
+
+  return {
+    runId: input.runId,
+    artifactId,
+    revisionId: input.revisionId,
+    path: input.path,
+    description: input.description ?? null,
+    fileKind: input.fileKind ?? "file",
+    publishedAt: input.publishedAt,
+    binding: cloneBinding(input.binding),
+    producer: structuredClone(input.producer),
+  };
+};
+
+const buildDirectArtifactEvent = (input: {
+  binding: ApplicationRunBindingSummary;
+  runId: string;
   memberRouteKey: string;
   memberName: string;
   displayName: string;
-  artifactKey: string;
-  artifactType: string;
-  title: string;
-  summary?: string;
-  isFinal: boolean;
+  path: string;
+  revisionId: string;
   publishedAt: string;
-}): { envelope: ApplicationExecutionEventEnvelope } => ({
-  envelope: {
-    event: {
-      eventId: input.eventId,
-      journalSequence: input.journalSequence,
-      applicationId: input.applicationId,
-      family: "ARTIFACT",
-      publishedAt: input.publishedAt,
-      binding: cloneBinding(input.binding),
-      producer: {
-        memberRouteKey: input.memberRouteKey,
-        memberName: input.memberName,
-        displayName: input.displayName,
-        teamPath: [],
-        runtimeKind: "AGENT_TEAM_MEMBER",
-      },
-      payload: buildArtifactPublication({
-        artifactKey: input.artifactKey,
-        artifactType: input.artifactType,
-        title: input.title,
-        summary: input.summary,
-        isFinal: input.isFinal,
-      }),
-    },
-    delivery: {
-      semantics: "AT_LEAST_ONCE",
-      attemptNumber: 1,
-      dispatchedAt: input.publishedAt,
-    },
+  description?: string | null;
+}): ApplicationPublishedArtifactEvent => ({
+  runId: input.runId,
+  artifactId: buildPublishedArtifactId(input.runId, input.path),
+  revisionId: input.revisionId,
+  path: input.path,
+  description: input.description ?? null,
+  fileKind: "file",
+  publishedAt: input.publishedAt,
+  binding: cloneBinding(input.binding),
+  producer: {
+    runId: input.runId,
+    memberRouteKey: input.memberRouteKey,
+    memberName: input.memberName,
+    displayName: input.displayName,
+    runtimeKind: "AGENT_TEAM_MEMBER",
+    teamPath: [],
   },
 });
 
@@ -329,6 +391,7 @@ describe("Brief Studio imported package integration", () => {
   let notificationSocket: WebSocket | null;
   let notificationMessages: ApplicationNotificationStreamMessage[];
   let ingressService: ApplicationExecutionEventIngressService;
+  let bindingStore: ApplicationRunBindingStore;
   let lookupStore: ApplicationRunLookupStore;
   let latestBinding: ApplicationRunBindingSummary | null;
   let latestTeamRunId: string | null;
@@ -427,7 +490,7 @@ describe("Brief Studio imported package integration", () => {
     const platformStateStore = new ApplicationPlatformStateStore({
       storageLifecycleService,
     });
-    const bindingStore = new ApplicationRunBindingStore({ platformStateStore });
+    bindingStore = new ApplicationRunBindingStore({ platformStateStore });
     const journalStore = new ApplicationExecutionEventJournalStore({ platformStateStore });
     lookupStore = new ApplicationRunLookupStore();
 
@@ -806,7 +869,7 @@ describe("Brief Studio imported package integration", () => {
               latestBindingId
               latestRunId
               latestBindingStatus
-              artifacts { artifactKey }
+              artifacts { revisionId }
             }
           }`,
           operationName: "BriefQuery",
@@ -863,9 +926,9 @@ describe("Brief Studio imported package integration", () => {
       notificationSocket,
       (message) =>
         message.type === "notification"
-        && message.notification.topic === "brief.draft_run_launched"
+        && message.notification.topic === "brief.draft_run_started"
         && (message.notification.payload as { bindingId?: string }).bindingId === launchedRun.bindingId,
-      "brief.draft_run_launched",
+      "brief.draft_run_started",
     );
 
     await vi.waitFor(async () => {
@@ -904,32 +967,42 @@ describe("Brief Studio imported package integration", () => {
       });
     });
 
-    await ingressService.appendRuntimeArtifactEvent({
+    const launchedBinding = await bindingStore.getBinding(applicationId, launchedRun.bindingId);
+    expect(launchedBinding).not.toBeNull();
+
+    const researcherProducer = executionContextByRouteKey.get("researcher")?.producer ?? null;
+    const writerProducer = executionContextByRouteKey.get("writer")?.producer ?? null;
+    expect(researcherProducer).not.toBeNull();
+    expect(writerProducer).not.toBeNull();
+
+    const researcherArtifactEvent = await persistPublishedArtifactForRun({
       runId: memberRunIdByRouteKey.get("researcher")!,
-      customData: {
-        [APPLICATION_EXECUTION_CONTEXT_KEY]: executionContextByRouteKey.get("researcher")!,
-      },
-      publication: buildArtifactPublication({
-        artifactKey: "research-note-1",
-        artifactType: "research_note",
-        title: "Research Summary",
-        summary: "Audience and sources collected.",
-        isFinal: false,
-      }),
+      binding: launchedBinding!,
+      producer: researcherProducer!,
+      path: "brief-studio/research.md",
+      body: "Research summary",
+      description: "Audience and sources collected.",
+      revisionId: "research-note-1",
+      publishedAt: "2026-04-19T10:41:00.000Z",
+      fixtureRoot: tempRoot,
+    });
+    await engineHostService.invokeApplicationArtifactHandler(applicationId, {
+      event: researcherArtifactEvent,
     });
 
-    await ingressService.appendRuntimeArtifactEvent({
+    const writerArtifactEvent = await persistPublishedArtifactForRun({
       runId: memberRunIdByRouteKey.get("writer")!,
-      customData: {
-        [APPLICATION_EXECUTION_CONTEXT_KEY]: executionContextByRouteKey.get("writer")!,
-      },
-      publication: buildArtifactPublication({
-        artifactKey: "brief-draft-1",
-        artifactType: "final_brief",
-        title: "Market Entry Brief",
-        summary: "Draft ready for review.",
-        isFinal: true,
-      }),
+      binding: launchedBinding!,
+      producer: writerProducer!,
+      path: "brief-studio/final-brief.md",
+      body: "Final review-ready brief body.",
+      description: "Draft ready for review.",
+      revisionId: "brief-draft-1",
+      publishedAt: "2026-04-19T10:42:00.000Z",
+      fixtureRoot: tempRoot,
+    });
+    await engineHostService.invokeApplicationArtifactHandler(applicationId, {
+      event: writerArtifactEvent,
     });
 
     const readyForReviewNotification = await waitForMessage(
@@ -1011,12 +1084,13 @@ describe("Brief Studio imported package integration", () => {
       lastErrorMessage: string | null;
       artifacts: Array<{
         artifactKind: string;
-        artifactKey: string;
-        artifactType: string;
-        title: string;
-        summary: string | null;
+        publicationKind: string;
+        revisionId: string;
+        path: string;
+        description: string | null;
+        body: string;
         producerMemberRouteKey: string;
-        isFinal: boolean;
+        updatedAt: string;
       }>;
       reviewNotes: unknown[];
     } | null>(
@@ -1032,12 +1106,13 @@ describe("Brief Studio imported package integration", () => {
             lastErrorMessage
             artifacts {
               artifactKind
-              artifactKey
-              artifactType
-              title
-              summary
+              publicationKind
+              revisionId
+              path
+              description
+              body
               producerMemberRouteKey
-              isFinal
+              updatedAt
             }
             reviewNotes { noteId }
           }
@@ -1063,21 +1138,23 @@ describe("Brief Studio imported package integration", () => {
       artifacts: [
         expect.objectContaining({
           artifactKind: "researcher",
-          artifactKey: "research-note-1",
-          artifactType: "research_note",
-          title: "Research Summary",
-          summary: "Audience and sources collected.",
+          publicationKind: "research",
+          revisionId: "research-note-1",
+          path: "brief-studio/research.md",
+          description: "Audience and sources collected.",
+          body: "Research summary",
           producerMemberRouteKey: "researcher",
-          isFinal: false,
+          updatedAt: "2026-04-19T10:41:00.000Z",
         }),
         expect.objectContaining({
           artifactKind: "writer",
-          artifactKey: "brief-draft-1",
-          artifactType: "final_brief",
-          title: "Market Entry Brief",
-          summary: "Draft ready for review.",
+          publicationKind: "final",
+          revisionId: "brief-draft-1",
+          path: "brief-studio/final-brief.md",
+          description: "Draft ready for review.",
+          body: "Final review-ready brief body.",
           producerMemberRouteKey: "writer",
-          isFinal: true,
+          updatedAt: "2026-04-19T10:42:00.000Z",
         }),
       ],
     });
@@ -1251,7 +1328,7 @@ describe("Brief Studio imported package integration", () => {
         ),
       };
       expect(counts).toEqual({
-        processedEvents: 4,
+        processedEvents: 2,
         briefs: 1,
         briefBindings: 1,
         pendingBindingIntentsCommitted: 1,
@@ -1306,18 +1383,26 @@ describe("Brief Studio imported package integration", () => {
         });
       });
 
-      await ingressService.appendRuntimeArtifactEvent({
+      const bindingLookup = lookupStore.getLookupByRunId(writerRunId);
+      expect(bindingLookup).not.toBeNull();
+      const boundBinding = await bindingStore.getBinding(applicationId, bindingLookup!.bindingId);
+      expect(boundBinding).not.toBeNull();
+      const writerProducer = executionContextByRouteKey.get("writer")?.producer ?? null;
+      expect(writerProducer).not.toBeNull();
+
+      const writerArtifactEvent = await persistPublishedArtifactForRun({
         runId: writerRunId,
-        customData: {
-          [APPLICATION_EXECUTION_CONTEXT_KEY]: executionContextByRouteKey.get("writer")!,
-        },
-        publication: buildArtifactPublication({
-          artifactKey: "launch-race-final-1",
-          artifactType: "final_brief",
-          title: "Launch Race Brief",
-          summary: "Projected before launch completion.",
-          isFinal: true,
-        }),
+        binding: boundBinding!,
+        producer: writerProducer!,
+        path: "brief-studio/final-brief.md",
+        body: "Projected before launch completion.",
+        description: "Projected before launch completion.",
+        revisionId: "launch-race-final-1",
+        publishedAt: "2026-04-19T10:51:00.000Z",
+        fixtureRoot: tempRoot,
+      });
+      await engineHostService.invokeApplicationArtifactHandler(applicationId, {
+        event: writerArtifactEvent,
       });
 
       const layout = storageLifecycleService.getStorageLayout(applicationId);
@@ -1374,12 +1459,14 @@ describe("Brief Studio imported package integration", () => {
       lastErrorMessage: null,
       artifacts: [
         expect.objectContaining({
-          artifactKey: "launch-race-final-1",
-          artifactType: "final_brief",
-          title: "Launch Race Brief",
-          summary: "Projected before launch completion.",
+          artifactKind: "writer",
+          publicationKind: "final",
+          revisionId: "launch-race-final-1",
+          path: "brief-studio/final-brief.md",
+          description: "Projected before launch completion.",
+          body: "Projected before launch completion.",
           producerMemberRouteKey: "writer",
-          isFinal: true,
+          updatedAt: "2026-04-19T10:51:00.000Z",
         }),
       ],
     });
@@ -1503,23 +1590,21 @@ describe("Brief Studio imported package integration", () => {
     };
 
     await expect(
-      engineHostService.invokeApplicationEventHandler(
+      engineHostService.invokeApplicationArtifactHandler(
         applicationId,
-        buildDirectArtifactEnvelope({
-          applicationId,
-          binding,
-          eventId: "unexpected-producer-event",
-          journalSequence: 1,
-          memberRouteKey: "unexpected-member",
-          memberName: "unexpected-member",
-          displayName: "Unexpected Member",
-          artifactKey: "surprise-artifact",
-          artifactType: "research_note",
-          title: "Unexpected artifact",
-          summary: "Should reject",
-          isFinal: false,
-          publishedAt: "2026-04-19T10:51:00.000Z",
-        }),
+        {
+          event: buildDirectArtifactEvent({
+            binding,
+            runId: "team-run-unexpected-1::unexpected-member",
+            memberRouteKey: "unexpected-member",
+            memberName: "unexpected-member",
+            displayName: "Unexpected Member",
+            path: "brief-studio/research.md",
+            revisionId: "unexpected-producer-event",
+            publishedAt: "2026-04-19T10:51:00.000Z",
+            description: "Should reject",
+          }),
+        },
       ),
     ).rejects.toThrow("Unexpected Brief Studio artifact producer 'unexpected-member'");
 

@@ -27,7 +27,7 @@ The active Artifacts surface is backed by the run-file-changes subsystem, not by
 - persist metadata-only projection state to `<run-memory-dir>/file_changes.json`
 - hydrate active and historical rows through `RunFileChangeProjectionService` and `getRunFileChanges(runId)`
 - serve current file bytes by `runId + canonical path` through `/runs/:runId/file-change-content`
-- keep `ARTIFACT_PERSISTED` / `ARTIFACT_UPDATED` only as compatibility/off-spine transport noise where some runtimes still emit them; current clients do not depend on them
+- keep published-artifact transport separate from the Artifacts tab; the current clients depend on `FILE_CHANGE_UPDATED`, not on published-artifact events
 - keep assistant-message media URL transformation separate from the Artifacts path via `MediaUrlTransformerProcessor`
 
 ## Current Live Design
@@ -41,5 +41,5 @@ The active Artifacts surface is backed by the run-file-changes subsystem, not by
 
 ## Notes
 
-If `ARTIFACT_*` compatibility events are removed later, update the streaming protocol docs and runtime converters together.
+If published-artifact transport changes again later, update the streaming protocol docs and runtime converters together.
 History reconstruction should continue to come from run history and canonical file-change metadata rather than by reviving a second artifact-persistence subsystem.

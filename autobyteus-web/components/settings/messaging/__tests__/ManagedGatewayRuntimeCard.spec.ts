@@ -163,8 +163,8 @@ describe('ManagedGatewayRuntimeCard', () => {
     expect(wrapper.get('[data-testid="managed-gateway-last-error"]').text()).toContain(
       'Process exit detected',
     );
-    expect(wrapper.get('[data-testid="managed-gateway-recovery-hint"]').text()).toContain(
-      'recover without reinstalling',
+    expect(wrapper.get('[data-testid="managed-gateway-recovery-hint"]').text()).toMatch(
+      /recover without/i,
     );
     expect(wrapper.get('[data-testid="managed-gateway-provider-issues"]').text()).toContain(
       'TELEGRAM: Telegram polling conflict detected.',

@@ -32,11 +32,13 @@ export default defineApplication({
       }
     },
   },
-  eventHandlers: {
-    artifact: async (envelope, appContext) => {
+  artifactHandlers: {
+    persisted: async (artifact, appContext) => {
+      const published = await appContext.runtimeControl.getRunPublishedArtifacts(artifact.runId)
       await appContext.publishNotification('artifact-observed', {
-        eventId: envelope.event.eventId,
-        family: envelope.event.family,
+        artifactId: artifact.artifactId,
+        revisionId: artifact.revisionId,
+        publishedCount: published.length,
       })
     },
   },
@@ -50,6 +52,8 @@ export default defineApplication({
 - Exposed handlers must not exceed the bundle manifest’s `supportedExposures` flags.
 - `backend/bundle.json` declares the backend entry module plus optional migrations/assets directories.
 - `application.json` may declare `resourceSlots[]`; app backends should resolve launch resources through `context.runtimeControl.getConfiguredResource(slotKey)` instead of hardcoded runtime targets.
+- `artifactHandlers.persisted` is the live published-artifact callback. It is separate from lifecycle `eventHandlers`, which continue to receive only `RUN_*` journal envelopes.
+- Applications that need guaranteed artifact catch-up should use `runtimeControl.listRunBindings(...)`, `getRunPublishedArtifacts(...)`, and `getPublishedArtifactRevisionText(...)`, then apply their own idempotency keyed by `revisionId`.
 - App-authored migrations run only against `app.sqlite`; platform-owned `platform.sqlite` remains reserved.
 
 ## Teaching samples

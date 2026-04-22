@@ -1,15 +1,20 @@
 export type BriefArtifactKind = "researcher" | "writer";
 
+export type BriefArtifactPublicationKind =
+  | "research"
+  | "research_blocker"
+  | "draft"
+  | "final"
+  | "writer_blocker";
+
 export type BriefArtifactRecord = {
   briefId: string;
   artifactKind: BriefArtifactKind;
-  artifactKey: string;
-  artifactType: string;
-  title: string;
-  summary: string | null;
-  artifactRef: unknown;
-  metadata: Record<string, unknown> | null;
-  isFinal: boolean;
+  publicationKind: BriefArtifactPublicationKind;
+  revisionId: string;
+  path: string;
+  description: string | null;
+  body: string;
   producerMemberRouteKey: string;
   updatedAt: string;
 };

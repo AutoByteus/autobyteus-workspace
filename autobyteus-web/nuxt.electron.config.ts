@@ -1,5 +1,47 @@
 import type { NuxtConfig } from '@nuxt/schema'
-import { defu } from 'defu'
+
+const mergeElectronConfig = (baseConfig: NuxtConfig, electronConfig: NuxtConfig): NuxtConfig => ({
+  ...baseConfig,
+  ...electronConfig,
+  modules: electronConfig.modules ?? baseConfig.modules,
+  electron: electronConfig.electron ?? baseConfig.electron,
+  app: {
+    ...(baseConfig.app || {}),
+    ...(electronConfig.app || {}),
+  },
+  nitro: {
+    ...(baseConfig.nitro || {}),
+    ...(electronConfig.nitro || {}),
+    output: {
+      ...((baseConfig.nitro && 'output' in baseConfig.nitro ? baseConfig.nitro.output : {}) || {}),
+      ...((electronConfig.nitro && 'output' in electronConfig.nitro ? electronConfig.nitro.output : {}) || {}),
+    },
+  },
+  vite: {
+    ...(baseConfig.vite || {}),
+    ...(electronConfig.vite || {}),
+    build: {
+      ...((baseConfig.vite && typeof baseConfig.vite === 'object' && 'build' in baseConfig.vite ? baseConfig.vite.build : {}) || {}),
+      ...((electronConfig.vite && typeof electronConfig.vite === 'object' && 'build' in electronConfig.vite ? electronConfig.vite.build : {}) || {}),
+      rollupOptions: {
+        ...(((baseConfig.vite && typeof baseConfig.vite === 'object' && 'build' in baseConfig.vite && baseConfig.vite.build && 'rollupOptions' in baseConfig.vite.build)
+          ? baseConfig.vite.build.rollupOptions
+          : {}) || {}),
+        ...(((electronConfig.vite && typeof electronConfig.vite === 'object' && 'build' in electronConfig.vite && electronConfig.vite.build && 'rollupOptions' in electronConfig.vite.build)
+          ? electronConfig.vite.build.rollupOptions
+          : {}) || {}),
+        output: {
+          ...((((baseConfig.vite && typeof baseConfig.vite === 'object' && 'build' in baseConfig.vite && baseConfig.vite.build && 'rollupOptions' in baseConfig.vite.build && baseConfig.vite.build.rollupOptions && 'output' in baseConfig.vite.build.rollupOptions)
+            ? baseConfig.vite.build.rollupOptions.output
+            : {}) as Record<string, unknown>) || {}),
+          ...((((electronConfig.vite && typeof electronConfig.vite === 'object' && 'build' in electronConfig.vite && electronConfig.vite.build && 'rollupOptions' in electronConfig.vite.build && electronConfig.vite.build.rollupOptions && 'output' in electronConfig.vite.build.rollupOptions)
+            ? electronConfig.vite.build.rollupOptions.output
+            : {}) as Record<string, unknown>) || {}),
+        },
+      },
+    },
+  },
+})
 
 export function applyElectronConfig(baseConfig: NuxtConfig): NuxtConfig {
   // Return base config if not an electron build
@@ -77,5 +119,5 @@ export function applyElectronConfig(baseConfig: NuxtConfig): NuxtConfig {
   }
 
   // Merge configurations with electron config taking precedence
-  return defu(electronConfig, baseConfig)
+  return mergeElectronConfig(baseConfig, electronConfig)
 }

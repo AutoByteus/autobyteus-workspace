@@ -3,7 +3,6 @@ import type {
   ApplicationExecutionProducer,
   ApplicationRunBindingRuntimeSubject,
   ApplicationRunBindingSummary,
-  PublishArtifactInputV1,
 } from "@autobyteus/application-sdk-contracts";
 
 export const APPLICATION_EXECUTION_CONTEXT_KEY = "application_execution_context" as const;
@@ -15,8 +14,7 @@ export type ApplicationExecutionContext = {
 };
 
 export type ApplicationExecutionEventPayload =
-  | PublishArtifactInputV1
-  | { reason?: string | null; errorMessage?: string | null };
+  { reason?: string | null; errorMessage?: string | null };
 
 export type ApplicationExecutionEventJournalEvent = ApplicationExecutionEvent<ApplicationExecutionEventPayload>;
 

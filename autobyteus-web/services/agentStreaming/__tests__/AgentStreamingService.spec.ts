@@ -100,10 +100,12 @@ describe('AgentStreamingService', () => {
             type: 'user',
             text: 'hello from telegram',
             contextFilePaths: [
-                {
-                    path: 'https://example.com/voice.wav',
+                expect.objectContaining({
+                    kind: 'external_url',
+                    locator: 'https://example.com/voice.wav',
+                    displayName: 'voice.wav',
                     type: 'Audio',
-                },
+                }),
             ],
         });
         expect(mockConversation.messages[0].timestamp.toISOString()).toBe('2026-03-09T11:22:33.000Z');

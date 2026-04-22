@@ -73,23 +73,6 @@ export type ApplicationNotificationMessage = {
   publishedAt: string;
 };
 
-export type ApplicationArtifactRef =
-  | { kind: "WORKSPACE_FILE"; workspaceId?: string | null; path: string }
-  | { kind: "URL"; url: string }
-  | { kind: "BUNDLE_ASSET"; assetPath: string }
-  | { kind: "INLINE_JSON"; mimeType: string; value: unknown };
-
-export type PublishArtifactInputV1 = {
-  contractVersion: "1";
-  artifactKey: string;
-  artifactType: string;
-  title?: string | null;
-  summary?: string | null;
-  artifactRef: ApplicationArtifactRef;
-  metadata?: Record<string, unknown> | null;
-  isFinal?: boolean | null;
-};
-
 export type ApplicationRuntimeInputContextFile = {
   uri: string;
   fileType?: string | null;
@@ -198,6 +181,7 @@ export type ApplicationRunBindingListFilter = {
 };
 
 export type ApplicationExecutionProducer = {
+  runId: string;
   memberRouteKey: string;
   memberName: string | null;
   displayName: string | null;
@@ -205,12 +189,33 @@ export type ApplicationExecutionProducer = {
   teamPath: string[];
 };
 
+export type ApplicationPublishedArtifactFileKind =
+  | "file"
+  | "image"
+  | "audio"
+  | "video"
+  | "pdf"
+  | "csv"
+  | "excel"
+  | "other";
+
+export type ApplicationPublishedArtifactEvent = {
+  runId: string;
+  artifactId: string;
+  revisionId: string;
+  path: string;
+  description: string | null;
+  fileKind: ApplicationPublishedArtifactFileKind;
+  publishedAt: string;
+  binding: ApplicationRunBindingSummary;
+  producer: ApplicationExecutionProducer | null;
+};
+
 export type ApplicationExecutionEventFamily =
   | "RUN_STARTED"
   | "RUN_TERMINATED"
   | "RUN_FAILED"
-  | "RUN_ORPHANED"
-  | "ARTIFACT";
+  | "RUN_ORPHANED";
 
 export type ApplicationExecutionEvent<TPayload = unknown> = {
   eventId: string;
@@ -242,6 +247,21 @@ export type ApplicationRuntimeControl = {
   getRunBinding: (bindingId: string) => Promise<ApplicationRunBindingSummary | null>;
   getRunBindingByIntentId: (bindingIntentId: string) => Promise<ApplicationRunBindingSummary | null>;
   listRunBindings: (filter?: ApplicationRunBindingListFilter | null) => Promise<ApplicationRunBindingSummary[]>;
+  getRunPublishedArtifacts: (runId: string) => Promise<Array<{
+    id: string;
+    runId: string;
+    path: string;
+    type: ApplicationPublishedArtifactFileKind;
+    status: "available";
+    description: string | null;
+    revisionId: string;
+    createdAt: string;
+    updatedAt: string;
+  }>>;
+  getPublishedArtifactRevisionText: (input: {
+    runId: string;
+    revisionId: string;
+  }) => Promise<string | null>;
   postRunInput: (input: {
     bindingId: string;
     text: string;
@@ -305,12 +325,16 @@ export type ApplicationEventHandler = (
   context: ApplicationHandlerContext,
 ) => Promise<void> | void;
 
+export type ApplicationArtifactHandler = (
+  event: ApplicationPublishedArtifactEvent,
+  context: ApplicationHandlerContext,
+) => Promise<void> | void;
+
 export type ApplicationEventHandlerKey =
   | "runStarted"
   | "runTerminated"
   | "runFailed"
-  | "runOrphaned"
-  | "artifact";
+  | "runOrphaned";
 
 export type ApplicationLifecycleHook = (
   context: Omit<ApplicationHandlerContext, "requestContext"> & { requestContext: null },
@@ -335,6 +359,9 @@ export type ApplicationBackendDefinition = {
     execute: ApplicationGraphqlExecutor;
   };
   eventHandlers?: Partial<Record<ApplicationEventHandlerKey, ApplicationEventHandler>>;
+  artifactHandlers?: {
+    persisted?: ApplicationArtifactHandler;
+  };
 };
 
 export type ApplicationBackendExposureSummary = {

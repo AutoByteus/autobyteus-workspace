@@ -175,7 +175,7 @@ describe('AgentList', () => {
     });
 
     expect(readSetupRef<string | null>(wrapper, 'syncError')).toBe(
-      'Team-owned agents must be synced as part of their team.',
+      'Only shared agents can be synced individually.',
     );
   });
 

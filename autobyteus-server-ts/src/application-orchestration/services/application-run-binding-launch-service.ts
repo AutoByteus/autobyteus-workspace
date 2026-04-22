@@ -149,6 +149,7 @@ export class ApplicationRunBindingLaunchService {
       runtimeKind: launch.runtimeKind ?? RuntimeKind.AUTOBYTEUS,
       applicationExecutionContext,
     });
+    applicationExecutionContext.producer.runId = agentRun.runId;
 
     const now = new Date().toISOString();
     const binding: ApplicationRunBindingSummary = {
@@ -195,6 +196,7 @@ export class ApplicationRunBindingLaunchService {
       : this.buildExplicitMemberConfigs(resource.definitionId, memberDescriptors, launch.memberConfigs);
 
     const memberConfigByRouteKey = new Map<string, TeamMemberRunConfig>();
+    const applicationExecutionContextByRouteKey = new Map<string, ApplicationExecutionContext>();
     for (const memberConfig of memberConfigs) {
       const memberRouteKey = normalizeMemberRouteKey(
         memberConfig.memberRouteKey ?? memberConfig.memberName,
@@ -203,14 +205,16 @@ export class ApplicationRunBindingLaunchService {
       if (!descriptor) {
         throw new Error(`Team launch member '${memberConfig.memberName}' is not part of the bound team.`);
       }
+      const applicationExecutionContext = this.buildExecutionContext(
+        bindingSeed,
+        this.buildTeamMemberSummary(descriptor, ""),
+      );
+      applicationExecutionContextByRouteKey.set(memberRouteKey, applicationExecutionContext);
       memberConfigByRouteKey.set(memberRouteKey, {
         ...memberConfig,
         memberRouteKey,
         agentDefinitionId: descriptor.agentDefinitionId,
-        applicationExecutionContext: this.buildExecutionContext(
-          bindingSeed,
-          this.buildTeamMemberSummary(descriptor, ""),
-        ),
+        applicationExecutionContext,
       });
     }
 
@@ -230,9 +234,14 @@ export class ApplicationRunBindingLaunchService {
       const memberConfig = runtimeMemberConfigs.find(
         (entry) => normalizeMemberRouteKey(entry.memberRouteKey ?? entry.memberName) === descriptor.memberRouteKey,
       );
+      const memberRunId = memberConfig?.memberRunId?.trim() || teamRun.runId;
+      const applicationExecutionContext = applicationExecutionContextByRouteKey.get(descriptor.memberRouteKey);
+      if (applicationExecutionContext) {
+        applicationExecutionContext.producer.runId = memberRunId;
+      }
       return this.buildTeamMemberSummary(
         descriptor,
-        memberConfig?.memberRunId?.trim() || teamRun.runId,
+        memberRunId,
       );
     });
 
@@ -296,6 +305,7 @@ export class ApplicationRunBindingLaunchService {
       applicationId: bindingSeed.applicationId,
       bindingId: bindingSeed.bindingId,
       producer: {
+        runId: member.runId,
         memberRouteKey: member.memberRouteKey,
         memberName: member.memberName,
         displayName: member.displayName,

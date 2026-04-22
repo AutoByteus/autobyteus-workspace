@@ -11,6 +11,7 @@ describe("configured-agent-tool-exposure", () => {
       " open_tab ",
       "read_page",
       "send_message_to",
+      " publish_artifact ",
       "",
       "   ",
       null,
@@ -20,11 +21,13 @@ describe("configured-agent-tool-exposure", () => {
       "open_tab",
       "read_page",
       "send_message_to",
+      "publish_artifact",
     ]);
     expect(exposure.enabledBrowserToolNames).toEqual(["open_tab", "read_page"]);
     expect(exposure.sendMessageToConfigured).toBe(true);
+    expect(exposure.publishArtifactConfigured).toBe(true);
     expect(toConfiguredAgentToolNameSet(exposure)).toEqual(
-      new Set(["open_tab", "read_page", "send_message_to"]),
+      new Set(["open_tab", "read_page", "send_message_to", "publish_artifact"]),
     );
   });
 
@@ -33,6 +36,7 @@ describe("configured-agent-tool-exposure", () => {
       configuredToolNames: [],
       enabledBrowserToolNames: [],
       sendMessageToConfigured: false,
+      publishArtifactConfigured: false,
     });
   });
 });

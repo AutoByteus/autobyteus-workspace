@@ -8,8 +8,9 @@ const mapRow = (row) => ({
 });
 export const createLessonMessageRepository = (db) => ({
     insertMessage(input) {
-        db.prepare(`INSERT INTO lesson_messages (message_id, lesson_id, role, kind, body, created_at, source_event_id)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`).run(input.messageId, input.lessonId, input.role, input.kind, input.body, input.createdAt, input.sourceEventId ?? null);
+        const result = db.prepare(`INSERT OR IGNORE INTO lesson_messages (message_id, lesson_id, role, kind, body, created_at, source_event_id, source_revision_id)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`).run(input.messageId, input.lessonId, input.role, input.kind, input.body, input.createdAt, input.sourceEventId ?? null, input.sourceRevisionId ?? null);
+        return Number(result.changes ?? 0) > 0;
     },
     listByLessonId(lessonId) {
         const rows = db

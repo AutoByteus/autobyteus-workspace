@@ -12,6 +12,7 @@ type LessonRow = {
   created_at: string;
   updated_at: string;
   closed_at: string | null;
+  artifact_catchup_completed_at: string | null;
 };
 
 const mapRow = (row: LessonRow): LessonDetail => ({
@@ -25,13 +26,14 @@ const mapRow = (row: LessonRow): LessonDetail => ({
   createdAt: row.created_at,
   updatedAt: row.updated_at,
   closedAt: row.closed_at,
+  artifactCatchupCompletedAt: row.artifact_catchup_completed_at,
 });
 
 export const createLessonRepository = (db: DatabaseSync) => ({
   getById(lessonId: string): LessonDetail | null {
     const row = db
       .prepare(
-        `SELECT lesson_id, prompt, status, latest_binding_id, latest_run_id, latest_binding_status, last_error_message, created_at, updated_at, closed_at
+        `SELECT lesson_id, prompt, status, latest_binding_id, latest_run_id, latest_binding_status, last_error_message, created_at, updated_at, closed_at, artifact_catchup_completed_at
          FROM lessons
          WHERE lesson_id = ?`,
       )
@@ -42,7 +44,7 @@ export const createLessonRepository = (db: DatabaseSync) => ({
   getByBindingId(bindingId: string): LessonDetail | null {
     const row = db
       .prepare(
-        `SELECT lesson_id, prompt, status, latest_binding_id, latest_run_id, latest_binding_status, last_error_message, created_at, updated_at, closed_at
+        `SELECT lesson_id, prompt, status, latest_binding_id, latest_run_id, latest_binding_status, last_error_message, created_at, updated_at, closed_at, artifact_catchup_completed_at
            FROM lessons
           WHERE latest_binding_id = ?`,
       )
@@ -53,7 +55,7 @@ export const createLessonRepository = (db: DatabaseSync) => ({
   listSummaries(): LessonSummary[] {
     const rows = db
       .prepare(
-        `SELECT lesson_id, prompt, status, latest_binding_id, latest_run_id, latest_binding_status, last_error_message, created_at, updated_at, closed_at
+        `SELECT lesson_id, prompt, status, latest_binding_id, latest_run_id, latest_binding_status, last_error_message, created_at, updated_at, closed_at, artifact_catchup_completed_at
          FROM lessons
          ORDER BY datetime(updated_at) DESC, lesson_id DESC`,
       )
@@ -71,6 +73,7 @@ export const createLessonRepository = (db: DatabaseSync) => ({
     latestBindingStatus?: string | null;
     lastErrorMessage?: string | null;
     closedAt?: string | null;
+    artifactCatchupCompletedAt?: string | null;
   }): void {
     db.prepare(
       `INSERT INTO lessons (
@@ -83,8 +86,9 @@ export const createLessonRepository = (db: DatabaseSync) => ({
         last_error_message,
         created_at,
         updated_at,
-        closed_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        closed_at,
+        artifact_catchup_completed_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       ON CONFLICT(lesson_id) DO UPDATE SET
         prompt = excluded.prompt,
         status = excluded.status,
@@ -93,7 +97,8 @@ export const createLessonRepository = (db: DatabaseSync) => ({
         latest_binding_status = excluded.latest_binding_status,
         last_error_message = excluded.last_error_message,
         updated_at = excluded.updated_at,
-        closed_at = excluded.closed_at`,
+        closed_at = excluded.closed_at,
+        artifact_catchup_completed_at = COALESCE(excluded.artifact_catchup_completed_at, lessons.artifact_catchup_completed_at)`,
     ).run(
       input.lessonId,
       input.prompt,
@@ -105,6 +110,7 @@ export const createLessonRepository = (db: DatabaseSync) => ({
       input.updatedAt,
       input.updatedAt,
       input.closedAt ?? null,
+      input.artifactCatchupCompletedAt ?? null,
     );
   },
 
@@ -120,7 +126,8 @@ export const createLessonRepository = (db: DatabaseSync) => ({
           SET latest_binding_id = ?,
               latest_run_id = ?,
               latest_binding_status = ?,
-              updated_at = ?
+              updated_at = ?,
+              artifact_catchup_completed_at = NULL
         WHERE lesson_id = ?`,
     ).run(
       input.bindingId,
@@ -129,5 +136,25 @@ export const createLessonRepository = (db: DatabaseSync) => ({
       input.updatedAt,
       input.lessonId,
     );
+  },
+
+  markArtifactCatchupCompleted(lessonId: string, completedAt: string): void {
+    db.prepare(
+      `UPDATE lessons
+          SET artifact_catchup_completed_at = ?,
+              updated_at = CASE
+                WHEN datetime(updated_at) > datetime(?) THEN updated_at
+                ELSE ?
+              END
+        WHERE lesson_id = ?`,
+    ).run(completedAt, completedAt, completedAt, lessonId);
+  },
+
+  clearArtifactCatchupCompleted(lessonId: string): void {
+    db.prepare(
+      `UPDATE lessons
+          SET artifact_catchup_completed_at = NULL
+        WHERE lesson_id = ?`,
+    ).run(lessonId);
   },
 });

@@ -33,7 +33,6 @@ export type ServerMessageType =
   | 'INTER_AGENT_MESSAGE'
   | 'SYSTEM_TASK_NOTIFICATION'
   | 'ARTIFACT_PERSISTED'
-  | 'ARTIFACT_UPDATED'
   | 'FILE_CHANGE_UPDATED'
   | 'ERROR';
 
@@ -278,22 +277,17 @@ export interface SystemTaskNotificationPayload {
 }
 
 export interface ArtifactPersistedPayload {
-  artifact_id: string;
-  status?: string;
+  id: string;
+  runId: string;
   path: string;
-  agent_id: string;
-  type: string;
-  workspace_root?: string;
-  url?: string;  // URL for media artifacts (image, audio)
-}
-
-export interface ArtifactUpdatedPayload {
-  artifact_id?: string;
-  status?: string;
-  path: string;
-  agent_id: string;
-  type: string;
-  workspace_root?: string;
+  type: 'file' | 'image' | 'audio' | 'video' | 'pdf' | 'csv' | 'excel' | 'other';
+  status: 'available';
+  description?: string | null;
+  revisionId: string;
+  createdAt: string;
+  updatedAt: string;
+  agent_id?: string;
+  agent_name?: string;
 }
 
 export interface FileChangeUpdatedPayload {
@@ -342,7 +336,6 @@ export type ServerMessage =
   | { type: 'INTER_AGENT_MESSAGE'; payload: InterAgentMessagePayload }
   | { type: 'SYSTEM_TASK_NOTIFICATION'; payload: SystemTaskNotificationPayload }
   | { type: 'ARTIFACT_PERSISTED'; payload: ArtifactPersistedPayload }
-  | { type: 'ARTIFACT_UPDATED'; payload: ArtifactUpdatedPayload }
   | { type: 'FILE_CHANGE_UPDATED'; payload: FileChangeUpdatedPayload }
   | { type: 'ERROR'; payload: ErrorPayload };
 

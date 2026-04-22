@@ -6,7 +6,7 @@ export const defineApplication = <TDefinition extends ApplicationBackendDefiniti
 
 export type {
   ApplicationAgentRunLaunch,
-  ApplicationArtifactRef,
+  ApplicationArtifactHandler,
   ApplicationBackendDefinition,
   ApplicationConfiguredLaunchDefaults,
   ApplicationConfiguredResource,
@@ -17,6 +17,8 @@ export type {
   ApplicationExecutionEvent,
   ApplicationExecutionEventEnvelope,
   ApplicationExecutionEventFamily,
+  ApplicationExecutionProducer,
+  ApplicationPublishedArtifactEvent,
   ApplicationGraphqlExecutor,
   ApplicationGraphqlRequest,
   ApplicationHandlerContext,
@@ -41,5 +43,4 @@ export type {
   ApplicationTeamMemberLaunchConfig,
   ApplicationTeamRunLaunch,
   ApplicationTeamRunPreset,
-  PublishArtifactInputV1,
 } from "@autobyteus/application-sdk-contracts";

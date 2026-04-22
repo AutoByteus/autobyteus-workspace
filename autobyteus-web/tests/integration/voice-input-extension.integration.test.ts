@@ -12,8 +12,14 @@ const {
   addToastMock,
 } = vi.hoisted(() => ({
   activeContextStoreMock: {
+    activeAgentContext: {
+      contextId: 'ctx-1',
+      requirement: 'draft',
+      contextFilePaths: [],
+    },
     currentRequirement: 'draft',
     updateRequirement: vi.fn(),
+    updateRequirementForContext: vi.fn(),
   },
   addToastMock: vi.fn(),
 }))
@@ -94,8 +100,14 @@ describe('voice input extension integration', () => {
 
   beforeEach(async () => {
     setActivePinia(createPinia())
+    activeContextStoreMock.activeAgentContext = {
+      contextId: 'ctx-1',
+      requirement: 'draft',
+      contextFilePaths: [],
+    }
     activeContextStoreMock.currentRequirement = 'draft'
     activeContextStoreMock.updateRequirement.mockReset()
+    activeContextStoreMock.updateRequirementForContext.mockReset()
     addToastMock.mockReset()
 
     tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'voice-input-extension-integration-'))
@@ -230,10 +242,15 @@ describe('voice input extension integration', () => {
       close: vi.fn().mockResolvedValue(undefined),
     } as any
     voiceInputStore.isRecording = true
+    voiceInputStore.recordingSource = 'composer'
+    voiceInputStore.composerTargetContext = activeContextStoreMock.activeAgentContext
 
     await voiceInputStore.stopRecording()
 
-    expect(activeContextStoreMock.updateRequirement).toHaveBeenCalledWith('draft fixture transcript')
+    expect(activeContextStoreMock.updateRequirementForContext).toHaveBeenCalledWith(
+      activeContextStoreMock.activeAgentContext,
+      'draft fixture transcript',
+    )
     expect(addToastMock).not.toHaveBeenCalled()
   })
 })

@@ -17,11 +17,23 @@ const formatTime = (value) => {
   return timestamp.toLocaleString();
 };
 
-const formatArtifactRef = (artifact) => {
-  if (!artifact?.artifactRef) {
-    return "No artifact payload";
+const isFinalArtifact = (artifact) => artifact?.path === "brief-studio/final-brief.md";
+
+const formatArtifactLabel = (artifact) => {
+  switch (artifact?.publicationKind) {
+    case "research":
+      return "research";
+    case "research_blocker":
+      return "research blocker";
+    case "draft":
+      return "draft";
+    case "final":
+      return "final";
+    case "writer_blocker":
+      return "writer blocker";
+    default:
+      return artifact?.publicationKind || artifact?.artifactKind || "artifact";
   }
-  return JSON.stringify(artifact.artifactRef, null, 2);
 };
 
 export const renderNotifications = ({ state, elements }) => {
@@ -174,7 +186,7 @@ export const renderBriefDetail = ({
 
   const artifacts = Array.isArray(brief.artifacts) ? brief.artifacts : [];
   const reviewNotes = Array.isArray(brief.reviewNotes) ? brief.reviewNotes : [];
-  const finalArtifactCount = artifacts.filter((artifact) => artifact.isFinal).length;
+  const finalArtifactCount = artifacts.filter((artifact) => isFinalArtifact(artifact)).length;
 
   elements.briefDetail.className = "detail-grid";
   elements.briefDetail.innerHTML = `
@@ -228,11 +240,11 @@ export const renderBriefDetail = ({
                   <article class="artifact-card">
                     <div class="brief-title-row">
                       <strong>${escapeHtml(artifact.artifactKind)}</strong>
-                      <span class="badge">${escapeHtml(artifact.isFinal ? "final" : "draft")}</span>
+                      <span class="badge">${escapeHtml(formatArtifactLabel(artifact))}</span>
                     </div>
-                    <p class="muted small" style="margin-top: 8px;">${escapeHtml(artifact.title)}</p>
-                    <p class="muted small" style="margin-top: 6px;">${escapeHtml(artifact.summary || "No summary provided")}</p>
-                    <pre>${escapeHtml(formatArtifactRef(artifact))}</pre>
+                    <p class="muted small" style="margin-top: 8px;">${escapeHtml(artifact.path)}</p>
+                    <p class="muted small" style="margin-top: 6px;">${escapeHtml(artifact.description || "No description provided")}</p>
+                    <pre>${escapeHtml(artifact.body || "")}</pre>
                   </article>
                 `,
               )

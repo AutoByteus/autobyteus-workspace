@@ -5,6 +5,7 @@ import type {
   ApplicationConfiguredResource,
   ApplicationExecutionEventFamily,
   ApplicationHandlerContext,
+  ApplicationPublishedArtifactEvent,
   ApplicationRunBindingSummary,
   ApplicationRouteDefinition,
   ApplicationRouteResponse,
@@ -45,7 +46,6 @@ const EVENT_HANDLER_KEY_BY_FAMILY: Record<
   RUN_TERMINATED: "runTerminated",
   RUN_FAILED: "runFailed",
   RUN_ORPHANED: "runOrphaned",
-  ARTIFACT: "artifact",
 };
 
 const EVENT_FAMILY_BY_HANDLER_KEY = {
@@ -53,7 +53,6 @@ const EVENT_FAMILY_BY_HANDLER_KEY = {
   runTerminated: "RUN_TERMINATED",
   runFailed: "RUN_FAILED",
   runOrphaned: "RUN_ORPHANED",
-  artifact: "ARTIFACT",
 } as const satisfies Record<string, ApplicationExecutionEventFamily>;
 
 const isObjectRecord = (value: unknown): value is Record<string, unknown> =>
@@ -135,6 +134,9 @@ const validateExposureCompatibility = (
   if (!supportedExposures.eventHandlers && definition.eventHandlers && Object.keys(definition.eventHandlers).length > 0) {
     throw new Error("Backend manifest disables eventHandlers, but the app definition exposes eventHandlers.");
   }
+  if (!supportedExposures.eventHandlers && definition.artifactHandlers?.persisted) {
+    throw new Error("Backend manifest disables eventHandlers, but the app definition exposes artifactHandlers.");
+  }
 };
 
 const buildExposureSummary = (
@@ -170,6 +172,10 @@ const createRuntimeControl = (
     }) as Promise<ApplicationRunBindingSummary | null>,
   listRunBindings: async (filter) =>
     invokeRuntimeControl({ action: "listRunBindings", input: filter ?? null }) as Promise<ApplicationRunBindingSummary[]>,
+  getRunPublishedArtifacts: async (runId) =>
+    invokeRuntimeControl({ action: "getRunPublishedArtifacts", input: { runId } }) as Promise<ApplicationHandlerContext["runtimeControl"]["getRunPublishedArtifacts"] extends (...args: never[]) => Promise<infer TResult> ? TResult : never>,
+  getPublishedArtifactRevisionText: async (input) =>
+    invokeRuntimeControl({ action: "getPublishedArtifactRevisionText", input }) as Promise<string | null>,
   postRunInput: async (input) =>
     invokeRuntimeControl({ action: "postRunInput", input }) as Promise<ApplicationRunBindingSummary>,
   terminateRunBinding: async (bindingId) =>
@@ -368,6 +374,30 @@ export class ApplicationWorkerRuntime {
         loaded.storage,
         {
           applicationId: input.envelope.event.applicationId,
+          launchInstanceId: null,
+        },
+        loaded.exposures.supportedExposures.notifications,
+        this.publishNotification,
+        this.invokeRuntimeControl,
+      ),
+    );
+    return { status: "acknowledged" };
+  }
+
+  async invokeArtifactHandler(
+    input: { event: ApplicationPublishedArtifactEvent },
+  ): Promise<ApplicationExecutionEventDispatchResult> {
+    const loaded = this.requireLoaded();
+    const handler = loaded.definition.artifactHandlers?.persisted;
+    if (!handler) {
+      return { status: "missing_handler" };
+    }
+    await handler(
+      input.event,
+      createHandlerContext(
+        loaded.storage,
+        {
+          applicationId: input.event.binding.applicationId,
           launchInstanceId: null,
         },
         loaded.exposures.supportedExposures.notifications,

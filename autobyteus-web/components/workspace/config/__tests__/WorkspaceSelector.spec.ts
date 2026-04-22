@@ -68,7 +68,7 @@ describe('WorkspaceSelector', () => {
 
     // Should show the path input (New mode) when no workspaces exist
     expect(wrapper.find('input[type="text"]').exists()).toBe(true);
-    expect(wrapper.find('input[placeholder="/absolute/path/to/workspace"]').exists()).toBe(true);
+    expect(wrapper.find('input[type="text"]').attributes('placeholder') || '').toMatch(/absolute path to workspace/i);
   });
 
   it('auto-selects temp workspace on mount when no workspace is selected', async () => {

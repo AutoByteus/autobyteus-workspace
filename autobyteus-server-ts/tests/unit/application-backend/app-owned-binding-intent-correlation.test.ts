@@ -6,11 +6,13 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import type {
   ApplicationExecutionEventEnvelope,
   ApplicationHandlerContext,
+  ApplicationPublishedArtifactEvent,
   ApplicationRunBindingSummary,
 } from "@autobyteus/application-sdk-contracts";
 import { createBriefRunLaunchService } from "../../../../applications/brief-studio/backend-src/services/brief-run-launch-service.ts";
-import { projectExecutionEvent } from "../../../../applications/brief-studio/backend-src/services/brief-projection-service.ts";
+import { createBriefArtifactReconciliationService } from "../../../../applications/brief-studio/backend-src/services/brief-artifact-reconciliation-service.ts";
 import { createLessonRuntimeService } from "../../../../applications/socratic-math-teacher/backend-src/services/lesson-runtime-service.ts";
+import { createLessonArtifactReconciliationService } from "../../../../applications/socratic-math-teacher/backend-src/services/lesson-artifact-reconciliation-service.ts";
 import { projectLessonExecutionEvent } from "../../../../applications/socratic-math-teacher/backend-src/services/lesson-projection-service.ts";
 
 const tempRoots: string[] = [];
@@ -69,6 +71,8 @@ const buildRuntimeControl = (
   getRunBinding: vi.fn(async () => null),
   getRunBindingByIntentId: vi.fn(async () => null),
   listRunBindings: vi.fn(async () => []),
+  getRunPublishedArtifacts: vi.fn(async () => []),
+  getPublishedArtifactRevisionText: vi.fn(async () => null),
   postRunInput: vi.fn(async () => {
     throw new Error("runtimeControl.postRunInput was not mocked for this test.");
   }),
@@ -192,114 +196,71 @@ const buildLessonBinding = (
   lastErrorMessage: overrides.lastErrorMessage ?? null,
 });
 
-const buildBriefArtifactEnvelope = (
+const buildRevisionTextRuntimeControl = (entries: Record<string, string>) => ({
+  getPublishedArtifactRevisionText: vi.fn(async ({ revisionId }: { revisionId: string }) =>
+    entries[revisionId] ?? null),
+});
+
+const buildBriefArtifactEvent = (
   binding: ApplicationRunBindingSummary,
-): ApplicationExecutionEventEnvelope => ({
-  event: {
-    eventId: "brief-event-1",
-    journalSequence: 1,
-    applicationId: binding.applicationId,
-    family: "ARTIFACT",
-    publishedAt: "2026-04-19T12:15:00.000Z",
-    binding,
-    producer: {
-      memberRouteKey: "researcher",
-      memberName: "researcher",
-      displayName: "Researcher",
-      teamPath: [],
-      runtimeKind: "AGENT_TEAM_MEMBER",
-    },
-    payload: {
-      contractVersion: "1",
-      artifactKey: "research-note-1",
-      artifactType: "research_note",
-      title: "Research Summary",
-      summary: "Audience and sources collected.",
-      artifactRef: {
-        kind: "INLINE_JSON",
-        mimeType: "application/json",
-        value: { body: "Research summary" },
-      },
-      isFinal: false,
-    },
-  },
-  delivery: {
-    semantics: "AT_LEAST_ONCE",
-    attemptNumber: 1,
-    dispatchedAt: "2026-04-19T12:15:00.000Z",
+): ApplicationPublishedArtifactEvent => ({
+  runId: "team-run-brief-1::researcher",
+  artifactId: "team-run-brief-1::researcher:brief-studio/research.md",
+  revisionId: "brief-revision-1",
+  path: "brief-studio/research.md",
+  description: "Audience and sources collected.",
+  fileKind: "file",
+  publishedAt: "2026-04-19T12:15:00.000Z",
+  binding,
+  producer: {
+    memberRouteKey: "researcher",
+    memberName: "researcher",
+    displayName: "Researcher",
+    teamPath: [],
+    runId: "team-run-brief-1::researcher",
+    runtimeKind: "AGENT_TEAM_MEMBER",
   },
 });
 
-const buildBriefFinalArtifactEnvelope = (
+const buildBriefFinalArtifactEvent = (
   binding: ApplicationRunBindingSummary,
-): ApplicationExecutionEventEnvelope => ({
-  event: {
-    eventId: "brief-event-final-1",
-    journalSequence: 2,
-    applicationId: binding.applicationId,
-    family: "ARTIFACT",
-    publishedAt: "2026-04-19T12:16:00.000Z",
-    binding,
-    producer: {
-      memberRouteKey: "writer",
-      memberName: "writer",
-      displayName: "Writer",
-      teamPath: [],
-      runtimeKind: "AGENT_TEAM_MEMBER",
-    },
-    payload: {
-      contractVersion: "1",
-      artifactKey: "final-brief-1",
-      artifactType: "final_brief",
-      title: "Launch Race Final Brief",
-      summary: "Final draft ready for review.",
-      artifactRef: {
-        kind: "INLINE_JSON",
-        mimeType: "application/json",
-        value: { body: "Final review-ready brief body." },
-      },
-      isFinal: true,
-    },
-  },
-  delivery: {
-    semantics: "AT_LEAST_ONCE",
-    attemptNumber: 1,
-    dispatchedAt: "2026-04-19T12:16:00.000Z",
+): ApplicationPublishedArtifactEvent => ({
+  runId: "team-run-brief-1::writer",
+  artifactId: "team-run-brief-1::writer:brief-studio/final-brief.md",
+  revisionId: "brief-revision-final-1",
+  path: "brief-studio/final-brief.md",
+  description: "Final draft ready for review.",
+  fileKind: "file",
+  publishedAt: "2026-04-19T12:16:00.000Z",
+  binding,
+  producer: {
+    memberRouteKey: "writer",
+    memberName: "writer",
+    displayName: "Writer",
+    teamPath: [],
+    runId: "team-run-brief-1::writer",
+    runtimeKind: "AGENT_TEAM_MEMBER",
   },
 });
 
-const buildLessonArtifactEnvelope = (
+const buildLessonArtifactEvent = (
   binding: ApplicationRunBindingSummary,
-): ApplicationExecutionEventEnvelope => ({
-  event: {
-    eventId: "lesson-event-1",
-    journalSequence: 1,
-    applicationId: binding.applicationId,
-    family: "ARTIFACT",
-    publishedAt: "2026-04-19T12:25:00.000Z",
-    binding,
-    producer: {
-      memberRouteKey: "tutor",
-      memberName: "tutor",
-      displayName: "Tutor",
-      teamPath: [],
-      runtimeKind: "AGENT_TEAM_MEMBER",
-    },
-    payload: {
-      artifactType: "lesson_response",
-      title: "Tutor response",
-      summary: "Try isolating x first.",
-      artifactRef: {
-        kind: "INLINE_JSON",
-        mimeType: "application/json",
-        value: { body: "Try isolating x first." },
-      },
-    },
-  },
-  delivery: {
-    semantics: "AT_LEAST_ONCE",
-    attemptNumber: 1,
-    dispatchedAt: "2026-04-19T12:25:00.000Z",
+): ApplicationPublishedArtifactEvent => ({
+  runId: "team-run-lesson-1::tutor",
+  artifactId: "team-run-lesson-1::tutor:socratic-math/lesson-response.md",
+  revisionId: "lesson-revision-1",
+  path: "socratic-math/lesson-response.md",
+  description: "Try isolating x first.",
+  fileKind: "file",
+  publishedAt: "2026-04-19T12:25:00.000Z",
+  binding,
+  producer: {
+    memberRouteKey: "tutor",
+    memberName: "tutor",
+    displayName: "Tutor",
+    teamPath: [],
+    runId: "team-run-lesson-1::tutor",
+    runtimeKind: "AGENT_TEAM_MEMBER",
   },
 });
 
@@ -484,7 +445,13 @@ describe("App-owned bindingIntentId correlation", () => {
 
   it("reconciles Brief Studio early events through bindingIntentId without event.executionRef", async () => {
     const appDatabasePath = await createTempDatabase("autobyteus-brief-event-intent-", BRIEF_MIGRATIONS_DIR);
-    const context = createHandlerContext({ appDatabasePath });
+    const artifactEvent = buildBriefArtifactEvent(buildBriefBinding("brief-pending-intent-1"));
+    const context = createHandlerContext({
+      appDatabasePath,
+      runtimeControl: buildRevisionTextRuntimeControl({
+        [artifactEvent.revisionId]: "Research summary",
+      }),
+    });
     const launchService = createBriefRunLaunchService(context);
     const createdBrief = await launchService.createBrief({ title: "Strategy Brief" });
 
@@ -504,10 +471,7 @@ describe("App-owned bindingIntentId correlation", () => {
       db.close();
     }
 
-    await projectExecutionEvent(
-      buildBriefArtifactEnvelope(buildBriefBinding("brief-pending-intent-1")),
-      context,
-    );
+    await createBriefArtifactReconciliationService(context).handlePersistedArtifact(artifactEvent);
 
     const verifiedDb = new DatabaseSync(appDatabasePath);
     try {
@@ -551,11 +515,20 @@ describe("App-owned bindingIntentId correlation", () => {
   it("preserves Brief Studio early same-binding final artifacts when startRun succeeds after projection", async () => {
     const appDatabasePath = await createTempDatabase("autobyteus-brief-launch-race-", BRIEF_MIGRATIONS_DIR);
     let context!: ApplicationHandlerContext;
+    const artifactEvent = buildBriefFinalArtifactEvent(buildBriefBinding("brief-pending-intent-1"));
     const runtimeControl = buildRuntimeControl({
       startRun: vi.fn(async (startRunInput: StartRunRequest) => {
         const binding = buildBriefBinding(startRunInput.bindingIntentId);
-        await projectExecutionEvent(buildBriefFinalArtifactEnvelope(binding), context);
+        await createBriefArtifactReconciliationService(context).handlePersistedArtifact({
+          ...artifactEvent,
+          binding,
+          runId: "team-run-brief-1::writer",
+          artifactId: "team-run-brief-1::writer:brief-studio/final-brief.md",
+        });
         return binding;
+      }),
+      ...buildRevisionTextRuntimeControl({
+        [artifactEvent.revisionId]: "Final review-ready brief body.",
       }),
     });
     context = createHandlerContext({
@@ -591,7 +564,7 @@ describe("App-owned bindingIntentId correlation", () => {
       };
 
       expect(briefRow).toEqual({
-        title: "Launch Race Final Brief",
+        title: "Launch Race Draft",
         status: "in_review",
         latest_binding_id: "binding-brief-1",
         latest_binding_status: "ATTACHED",
@@ -711,7 +684,13 @@ describe("App-owned bindingIntentId correlation", () => {
 
   it("reconciles Socratic early tutor events through bindingIntentId without event.executionRef", async () => {
     const appDatabasePath = await createTempDatabase("autobyteus-lesson-event-intent-", SOCRATIC_MIGRATIONS_DIR);
-    const context = createHandlerContext({ appDatabasePath });
+    const artifactEvent = buildLessonArtifactEvent(buildLessonBinding("lesson-pending-intent-1"));
+    const context = createHandlerContext({
+      appDatabasePath,
+      runtimeControl: buildRevisionTextRuntimeControl({
+        [artifactEvent.revisionId]: "Try isolating x first.",
+      }),
+    });
 
     const db = new DatabaseSync(appDatabasePath);
     try {
@@ -749,10 +728,7 @@ describe("App-owned bindingIntentId correlation", () => {
       db.close();
     }
 
-    await projectLessonExecutionEvent(
-      buildLessonArtifactEnvelope(buildLessonBinding("lesson-pending-intent-1")),
-      context,
-    );
+    await createLessonArtifactReconciliationService(context).handlePersistedArtifact(artifactEvent);
 
     const verifiedDb = new DatabaseSync(appDatabasePath);
     try {

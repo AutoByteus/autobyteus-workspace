@@ -43,8 +43,8 @@ describe("ApplicationEngineHostService", () => {
       distribution: "self-contained",
       targetRuntime: { engine: "node", semver: ">=22 <23" },
       sdkCompatibility: {
-        backendDefinitionContractVersion: "1",
-        frontendSdkContractVersion: "1",
+        backendDefinitionContractVersion: "2",
+        frontendSdkContractVersion: "2",
       },
       supportedExposures: {
         queries: true,
@@ -68,7 +68,7 @@ describe("ApplicationEngineHostService", () => {
     await fs.writeFile(
       path.join(applicationRootPath, "backend", "dist", "entry.mjs"),
       `export default {
-        definitionContractVersion: '1',
+        definitionContractVersion: '2',
         queries: {
           'tickets.get': async (input, ctx) => {
             await ctx.publishNotification('query.called', { input })
@@ -98,8 +98,13 @@ describe("ApplicationEngineHostService", () => {
           },
         },
         eventHandlers: {
-          async artifact(event, ctx) {
+          async runStarted(event, ctx) {
             await ctx.publishNotification('event.called', { eventId: event.event.eventId })
+          },
+        },
+        artifactHandlers: {
+          async persisted(event, ctx) {
+            await ctx.publishNotification('artifact.called', { revisionId: event.revisionId, path: event.path })
           },
         },
       }\n`,
@@ -129,13 +134,13 @@ describe("ApplicationEngineHostService", () => {
     const status = await service.ensureApplicationEngine("built-in:applications__sample-app");
     expect(status.ready).toBe(true);
     expect(status.exposures?.queries).toContain("tickets.get");
-    expect(status.exposures?.eventHandlers).toContain("ARTIFACT");
+    expect(status.exposures?.eventHandlers).toContain("RUN_STARTED");
 
     const queryResult = await service.invokeApplicationQuery("built-in:applications__sample-app", {
       queryName: "tickets.get",
       requestContext: {
         applicationId: "built-in:applications__sample-app",
-        applicationSessionId: "session-1",
+        launchInstanceId: "launch-1",
       },
       input: { ticketId: "t-1" },
     });
@@ -143,14 +148,14 @@ describe("ApplicationEngineHostService", () => {
       input: { ticketId: "t-1" },
       requestContext: {
         applicationId: "built-in:applications__sample-app",
-        applicationSessionId: "session-1",
+        launchInstanceId: "launch-1",
       },
     });
 
     const routeResult = await service.routeApplicationRequest("built-in:applications__sample-app", {
       requestContext: {
         applicationId: "built-in:applications__sample-app",
-        applicationSessionId: "session-1",
+        launchInstanceId: "launch-1",
       },
       request: {
         method: "GET",
@@ -172,7 +177,7 @@ describe("ApplicationEngineHostService", () => {
     const graphqlResult = await service.executeApplicationGraphql("built-in:applications__sample-app", {
       requestContext: {
         applicationId: "built-in:applications__sample-app",
-        applicationSessionId: null,
+        launchInstanceId: null,
       },
       request: {
         query: "{ ping }",
@@ -182,7 +187,7 @@ describe("ApplicationEngineHostService", () => {
       query: "{ ping }",
       requestContext: {
         applicationId: "built-in:applications__sample-app",
-        applicationSessionId: null,
+        launchInstanceId: null,
       },
     });
 
@@ -192,25 +197,31 @@ describe("ApplicationEngineHostService", () => {
           eventId: "event-1",
           journalSequence: 7,
           applicationId: "built-in:applications__sample-app",
-          applicationSessionId: "session-1",
-          family: "ARTIFACT",
+          family: "RUN_STARTED",
           publishedAt: new Date().toISOString(),
-          producer: {
-            memberRouteKey: "sample-agent",
-            memberName: "Sample Agent",
-            role: "AGENT",
-          },
-          payload: {
-            contractVersion: "1",
-            artifactKey: "drafting",
-            artifactType: "markdown_document",
-            title: "Drafting",
-            artifactRef: {
-              kind: "INLINE_JSON",
-              mimeType: "application/json",
-              value: { percent: 12 },
+          binding: {
+            bindingId: "binding-1",
+            applicationId: "built-in:applications__sample-app",
+            bindingIntentId: "binding-intent-1",
+            status: "ATTACHED",
+            resourceRef: {
+              owner: "bundle",
+              kind: "AGENT",
+              localId: "sample-agent",
             },
+            runtime: {
+              subject: "AGENT_RUN",
+              runId: "run-1",
+              definitionId: "sample-agent-def",
+              members: [],
+            },
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            terminatedAt: null,
+            lastErrorMessage: null,
           },
+          producer: null,
+          payload: {},
         },
         delivery: {
           semantics: "AT_LEAST_ONCE",
@@ -220,6 +231,41 @@ describe("ApplicationEngineHostService", () => {
       },
     });
     expect(eventResult).toEqual({ status: "acknowledged" });
+
+    const artifactResult = await service.invokeApplicationArtifactHandler("built-in:applications__sample-app", {
+      event: {
+        runId: "run-1",
+        artifactId: "run-1:brief-studio/final-brief.md",
+        revisionId: "revision-1",
+        path: "brief-studio/final-brief.md",
+        description: "Ready for review",
+        fileKind: "file",
+        publishedAt: new Date().toISOString(),
+        binding: {
+          bindingId: "binding-1",
+          applicationId: "built-in:applications__sample-app",
+          bindingIntentId: "binding-intent-1",
+          status: "ATTACHED",
+          resourceRef: {
+            owner: "bundle",
+            kind: "AGENT",
+            localId: "sample-agent",
+          },
+          runtime: {
+            subject: "AGENT_RUN",
+            runId: "run-1",
+            definitionId: "sample-agent-def",
+            members: [],
+          },
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          terminatedAt: null,
+          lastErrorMessage: null,
+        },
+        producer: null,
+      },
+    });
+    expect(artifactResult).toEqual({ status: "acknowledged" });
 
     await new Promise((resolve) => setTimeout(resolve, 50));
     expect(notificationListener).toHaveBeenCalled();

@@ -214,8 +214,7 @@ export class CodexThreadEventConverter {
     payload: Record<string, unknown>,
   ): AgentRunEvent {
     const normalizedPayload =
-      eventType === AgentRunEventType.ARTIFACT_PERSISTED ||
-      eventType === AgentRunEventType.ARTIFACT_UPDATED
+      eventType === AgentRunEventType.ARTIFACT_PERSISTED
         ? {
             agent_id: this.runId,
             ...(this.workspaceRoot ? { workspace_root: this.workspaceRoot } : {}),

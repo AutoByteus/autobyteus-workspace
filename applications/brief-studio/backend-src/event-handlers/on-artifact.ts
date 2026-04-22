@@ -1,6 +1,6 @@
-import type { ApplicationEventHandler } from "@autobyteus/application-backend-sdk";
-import { projectExecutionEvent } from "../services/brief-projection-service.js";
+import type { ApplicationArtifactHandler } from "@autobyteus/application-backend-sdk";
+import { createBriefArtifactReconciliationService } from "../services/brief-artifact-reconciliation-service.js";
 
-export const onArtifact: ApplicationEventHandler = async (envelope, context) => {
-  await projectExecutionEvent(envelope, context);
+export const onArtifact: ApplicationArtifactHandler = async (event, context) => {
+  await createBriefArtifactReconciliationService(context).handlePersistedArtifact(event);
 };

@@ -18,13 +18,16 @@ vi.mock('fs', () => ({
 }))
 
 // Mock the logger
-vi.mock('../../../logger', () => ({
-  logger: {
+vi.mock('../../../logger', () => {
+  const logger = {
+    child: vi.fn(() => logger),
     info: vi.fn(),
     warn: vi.fn(),
     error: vi.fn(),
-  },
-}))
+  }
+
+  return { logger }
+})
 
 const mockedFs = vi.mocked(fs)
 

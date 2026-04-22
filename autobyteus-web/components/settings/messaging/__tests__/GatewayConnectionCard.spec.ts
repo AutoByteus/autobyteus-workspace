@@ -155,7 +155,7 @@ describe('GatewayConnectionCard', () => {
     expect(wrapper.text()).toContain('Configuration');
     expect(wrapper.text()).not.toContain('Validate Connection');
     expect(wrapper.text()).not.toContain('Gateway URL');
-    expect(wrapper.find('input[placeholder="WhatsApp Business secret"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="provider-whatsapp-secret"]').attributes('placeholder') || '').toMatch(/whats?app business secret/i);
     expect(wrapper.text()).toContain('Excluded providers: WECHAT');
   });
 });

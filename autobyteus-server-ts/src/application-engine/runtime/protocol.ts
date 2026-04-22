@@ -1,6 +1,7 @@
 import type {
   ApplicationBackendExposureSummary,
   ApplicationExecutionEventEnvelope,
+  ApplicationPublishedArtifactEvent,
   ApplicationGraphqlRequest,
   ApplicationRequestContext,
   ApplicationRouteRequest,
@@ -15,6 +16,7 @@ export const APPLICATION_ENGINE_METHOD_INVOKE_COMMAND = "invokeApplicationComman
 export const APPLICATION_ENGINE_METHOD_ROUTE_REQUEST = "routeApplicationRequest" as const;
 export const APPLICATION_ENGINE_METHOD_EXECUTE_GRAPHQL = "executeApplicationGraphql" as const;
 export const APPLICATION_ENGINE_METHOD_INVOKE_EVENT_HANDLER = "invokeApplicationEventHandler" as const;
+export const APPLICATION_ENGINE_METHOD_INVOKE_ARTIFACT_HANDLER = "invokeApplicationArtifactHandler" as const;
 export const APPLICATION_ENGINE_METHOD_RUNTIME_CONTROL = "invokeRuntimeControl" as const;
 export const APPLICATION_ENGINE_METHOD_STOP = "stopApplication" as const;
 
@@ -55,6 +57,10 @@ export type ApplicationWorkerInvokeEventHandlerInput = {
   envelope: ApplicationExecutionEventEnvelope;
 };
 
+export type ApplicationWorkerInvokeArtifactHandlerInput = {
+  event: ApplicationPublishedArtifactEvent;
+};
+
 export type ApplicationWorkerRuntimeControlInput = {
   action:
     | "listAvailableResources"
@@ -63,6 +69,8 @@ export type ApplicationWorkerRuntimeControlInput = {
     | "getRunBinding"
     | "getRunBindingByIntentId"
     | "listRunBindings"
+    | "getRunPublishedArtifacts"
+    | "getPublishedArtifactRevisionText"
     | "postRunInput"
     | "terminateRunBinding";
   input?: unknown;

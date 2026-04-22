@@ -4,6 +4,7 @@ import { ApplicationWorkerRuntime } from "./application-worker-runtime.js";
 import {
   APPLICATION_ENGINE_METHOD_EXECUTE_GRAPHQL,
   APPLICATION_ENGINE_METHOD_GET_STATUS,
+  APPLICATION_ENGINE_METHOD_INVOKE_ARTIFACT_HANDLER,
   APPLICATION_ENGINE_METHOD_INVOKE_COMMAND,
   APPLICATION_ENGINE_METHOD_INVOKE_EVENT_HANDLER,
   APPLICATION_ENGINE_METHOD_INVOKE_QUERY,
@@ -99,6 +100,9 @@ rl.on("line", async (line) => {
         break;
       case APPLICATION_ENGINE_METHOD_INVOKE_EVENT_HANDLER:
         respondSuccess(id, await runtime.invokeEventHandler(params as never));
+        break;
+      case APPLICATION_ENGINE_METHOD_INVOKE_ARTIFACT_HANDLER:
+        respondSuccess(id, await runtime.invokeArtifactHandler(params as never));
         break;
       case APPLICATION_ENGINE_METHOD_STOP:
         await runtime.stop();

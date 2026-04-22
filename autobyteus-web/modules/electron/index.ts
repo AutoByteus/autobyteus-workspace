@@ -1,7 +1,6 @@
 import { type AddressInfo } from 'net'
 import { access, mkdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import { precomputeDependencies } from 'vue-bundle-renderer'
 import { defineNuxtModule } from '@nuxt/kit'
 import type {
   ResolvedConfig,
@@ -191,6 +190,7 @@ export default defineNuxtModule<ElectronOptions>({
           const serverDist = join(nuxt.options.buildDir, 'dist/server')
           const precomputedPath = join(serverDist, 'client.precomputed.mjs')
           await mkdir(serverDist, { recursive: true })
+          const { precomputeDependencies } = await import('vue-bundle-renderer')
           const precomputed = precomputeDependencies(manifest)
           await writeFile(precomputedPath, `export default ${JSON.stringify(precomputed)}`, 'utf8')
           logger.warn('client.precomputed.mjs was missing; wrote computed fallback to keep prerenderer stable')

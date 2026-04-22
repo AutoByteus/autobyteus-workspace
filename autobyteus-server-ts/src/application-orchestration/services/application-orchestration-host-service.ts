@@ -25,6 +25,10 @@ import { ApplicationResourceConfigurationService } from "./application-resource-
 import { ApplicationRunObserverService, getApplicationRunObserverService } from "./application-run-observer-service.js";
 import { ApplicationRunBindingStore } from "../stores/application-run-binding-store.js";
 import { ApplicationRunLookupStore } from "../stores/application-run-lookup-store.js";
+import {
+  PublishedArtifactProjectionService,
+  getPublishedArtifactProjectionService,
+} from "../../run-history/services/published-artifact-projection-service.js";
 
 const cloneBinding = (binding: ApplicationRunBindingSummary): ApplicationRunBindingSummary => structuredClone(binding);
 
@@ -79,6 +83,7 @@ export class ApplicationOrchestrationHostService {
       agentRunService?: AgentRunService;
       teamRunService?: TeamRunService;
       ingressService?: ApplicationExecutionEventIngressService;
+      publishedArtifactProjectionService?: PublishedArtifactProjectionService;
     } = {},
   ) {}
 
@@ -132,6 +137,10 @@ export class ApplicationOrchestrationHostService {
 
   private get ingressService(): ApplicationExecutionEventIngressService {
     return this.dependencies.ingressService ?? new ApplicationExecutionEventIngressService();
+  }
+
+  private get publishedArtifactProjectionService(): PublishedArtifactProjectionService {
+    return this.dependencies.publishedArtifactProjectionService ?? getPublishedArtifactProjectionService();
   }
 
   private async requireApplicationActive(applicationId: string): Promise<void> {
@@ -201,6 +210,26 @@ export class ApplicationOrchestrationHostService {
     return this.bindingStore.listBindings(applicationId, filter);
   }
 
+  async getRunPublishedArtifacts(
+    applicationId: string,
+    runId: string,
+  ) {
+    await this.startupGate.awaitReady();
+    await this.requireApplicationActive(applicationId);
+    const binding = await this.requireBindingForRun(applicationId, runId);
+    return this.publishedArtifactProjectionService.getRunPublishedArtifacts(binding.runtime.members.some((member) => member.runId === runId) ? runId : binding.runtime.runId);
+  }
+
+  async getPublishedArtifactRevisionText(
+    applicationId: string,
+    input: { runId: string; revisionId: string },
+  ): Promise<string | null> {
+    await this.startupGate.awaitReady();
+    await this.requireApplicationActive(applicationId);
+    await this.requireBindingForRun(applicationId, input.runId);
+    return this.publishedArtifactProjectionService.getPublishedArtifactRevisionText(input);
+  }
+
   async postRunInput(
     applicationId: string,
     input: {
@@ -267,6 +296,20 @@ export class ApplicationOrchestrationHostService {
     }
     if (binding.status === "TERMINATED" || binding.status === "ORPHANED") {
       throw new Error(`Application run binding '${bindingId}' is not live.`);
+    }
+    return binding;
+  }
+
+  private async requireBindingForRun(
+    applicationId: string,
+    runId: string,
+  ): Promise<ApplicationRunBindingSummary> {
+    const bindings = await this.bindingStore.listBindings(applicationId, null);
+    const binding = bindings.find((candidate) =>
+      candidate.runtime.runId === runId || candidate.runtime.members.some((member) => member.runId === runId),
+    ) ?? null;
+    if (!binding) {
+      throw new Error(`Application runtime '${runId}' is not bound to application '${applicationId}'.`);
     }
     return binding;
   }

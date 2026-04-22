@@ -1,5 +1,3 @@
-scalar JSON
-
 type Query {
   briefs: [BriefSummary!]!
   brief(briefId: ID!): BriefDetail
@@ -44,13 +42,11 @@ type BriefDetail {
 type BriefArtifact {
   briefId: ID!
   artifactKind: String!
-  artifactKey: String!
-  artifactType: String!
-  title: String!
-  summary: String
-  artifactRef: JSON
-  metadata: JSON
-  isFinal: Boolean!
+  publicationKind: String!
+  revisionId: String!
+  path: String!
+  description: String
+  body: String!
   producerMemberRouteKey: String!
   updatedAt: String!
 }

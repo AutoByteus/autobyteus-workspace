@@ -13,6 +13,7 @@ const SOCRATIC_TEAM_RESOURCE = {
   localId: "socratic-math-team",
 } as const;
 const LESSON_TUTOR_TEAM_SLOT_KEY = "lessonTutorTeam" as const;
+
 type ConfiguredTeamLaunchDefaults = {
   llmModelIdentifier: string | null;
   runtimeKind: string | null;
@@ -54,7 +55,7 @@ const buildTutorPrompt = (studentPrompt: string): string => [
   "You are guiding one student through a math problem.",
   "Ask one focused question or give one concise hint at a time.",
   "After every tutor response, call publish_artifact so the application can project your turn into lesson history.",
-  "Use artifactType 'lesson_response' for normal Socratic turns and 'lesson_hint' when the student explicitly asks for a hint.",
+  "Publish normal turns to socratic-math/lesson-response.md and hint turns to socratic-math/lesson-hint.md.",
   `Student problem: ${studentPrompt}`,
 ].join("\n\n");
 
@@ -92,6 +93,7 @@ const resolveStartLessonProjection = (input: {
     latestBindingStatus: string | null;
     lastErrorMessage: string | null;
     closedAt: string | null;
+    artifactCatchupCompletedAt?: string | null;
   } | null;
   binding: {
     bindingId: string;
@@ -109,6 +111,7 @@ const resolveStartLessonProjection = (input: {
     latestBindingStatus: currentBindingProjection?.latestBindingStatus ?? input.binding.status,
     lastErrorMessage: currentBindingProjection?.lastErrorMessage ?? null,
     closedAt: currentBindingProjection?.closedAt ?? null,
+    artifactCatchupCompletedAt: null,
   };
 };
 
@@ -155,6 +158,7 @@ export const createLessonRuntimeService = (context: ApplicationHandlerContext) =
           latestBindingStatus: null,
           lastErrorMessage: null,
           closedAt: null,
+          artifactCatchupCompletedAt: null,
         });
         createLessonMessageRepository(db).insertMessage({
           messageId: randomUUID(),
@@ -214,6 +218,7 @@ export const createLessonRuntimeService = (context: ApplicationHandlerContext) =
             latestBindingStatus: launchProjection.latestBindingStatus,
             lastErrorMessage: launchProjection.lastErrorMessage,
             closedAt: launchProjection.closedAt,
+            artifactCatchupCompletedAt: launchProjection.artifactCatchupCompletedAt,
           });
         });
       });
@@ -241,6 +246,7 @@ export const createLessonRuntimeService = (context: ApplicationHandlerContext) =
             latestBindingStatus: reconciled?.binding.status ?? "FAILED",
             lastErrorMessage: message,
             closedAt: null,
+            artifactCatchupCompletedAt: null,
           });
         });
       });
@@ -275,6 +281,7 @@ export const createLessonRuntimeService = (context: ApplicationHandlerContext) =
           latestBindingStatus: lesson.latestBindingStatus,
           lastErrorMessage: null,
           closedAt: lesson.closedAt,
+          artifactCatchupCompletedAt: lesson.artifactCatchupCompletedAt ?? null,
         });
       });
     });
@@ -317,6 +324,7 @@ export const createLessonRuntimeService = (context: ApplicationHandlerContext) =
           latestBindingStatus: lesson.latestBindingStatus,
           lastErrorMessage: null,
           closedAt: lesson.closedAt,
+          artifactCatchupCompletedAt: lesson.artifactCatchupCompletedAt ?? null,
         });
       });
     });
@@ -351,6 +359,7 @@ export const createLessonRuntimeService = (context: ApplicationHandlerContext) =
           latestBindingStatus: lesson.latestBindingStatus,
           lastErrorMessage: null,
           closedAt,
+          artifactCatchupCompletedAt: lesson.artifactCatchupCompletedAt ?? null,
         });
       });
     });

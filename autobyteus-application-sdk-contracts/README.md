@@ -10,7 +10,7 @@ Shared TypeScript contract package for AutoByteus application bundles.
 - frontend SDK contract v2 constants
 - shared request/route/GraphQL/notification/storage context types
 - runtime-resource, resource-slot, and host-managed launch-default configuration types
-- runtime-control, run-binding, and execution-event envelope types
+- runtime-control, run-binding, execution-event envelope, and published-artifact callback/query types
 - application engine status types
 
 ## Key exported version constants
@@ -58,9 +58,11 @@ Shared TypeScript contract package for AutoByteus application bundles.
 - `ApplicationStartRunInput`
 - `ApplicationRunBindingSummary`
 - `ApplicationExecutionEventEnvelope`
-- `PublishArtifactInputV1`
+- `ApplicationPublishedArtifactEvent`
 
 `ApplicationExecutionEventEnvelope` carries stable `eventId` and `journalSequence` plus attempt-specific delivery metadata. App-owned side effects should therefore be idempotent by `eventId`.
+
+`ApplicationRuntimeControl` now also includes durable published-artifact reads through `getRunPublishedArtifacts(runId)` and `getPublishedArtifactRevisionText({ runId, revisionId })`, and `ApplicationBackendDefinition` exposes live published-artifact callbacks through `artifactHandlers.persisted`. These artifact callbacks are intentionally separate from lifecycle `eventHandlers`.
 
 ### Engine status
 
@@ -85,6 +87,7 @@ It demonstrates:
 - backend bundle manifest v1
 - request context `{ applicationId, launchInstanceId? }`
 - application-authored `runtimeControl.getConfiguredResource(...)` + `startRun(...)`
+- published-artifact reads via `runtimeControl.getRunPublishedArtifacts(...)`
 - durable execution-event dispatch envelopes with stable `eventId` and `journalSequence`
 
 ## Related docs

@@ -50,8 +50,14 @@ export async function ensureDir(dirPath: string): Promise<void> {
   await fs.mkdir(dirPath, { recursive: true })
 }
 
+const runtimeFetch: typeof fetch = globalThis.fetch
+  ? globalThis.fetch.bind(globalThis)
+  : (async () => {
+      throw new Error('Fetch API is unavailable in the Electron runtime process')
+    }) as typeof fetch
+
 export async function fetchJson<T>(url: string): Promise<T> {
-  const response = await fetch(url)
+  const response = await runtimeFetch(url)
   if (!response.ok) {
     throw new Error(`Failed to download JSON from ${url}: ${response.status} ${response.statusText}`)
   }
@@ -63,7 +69,7 @@ export async function downloadFile(
   targetPath: string,
   onProgress?: RuntimeInstallProgressCallback,
 ): Promise<void> {
-  const response = await fetch(url)
+  const response = await runtimeFetch(url)
   if (!response.ok) {
     throw new Error(`Failed to download file from ${url}: ${response.status} ${response.statusText}`)
   }

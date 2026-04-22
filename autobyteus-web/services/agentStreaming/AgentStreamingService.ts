@@ -296,7 +296,6 @@ export class AgentStreamingService {
         break;
 
       case 'ARTIFACT_PERSISTED':
-      case 'ARTIFACT_UPDATED':
         break;
 
       case 'FILE_CHANGE_UPDATED':

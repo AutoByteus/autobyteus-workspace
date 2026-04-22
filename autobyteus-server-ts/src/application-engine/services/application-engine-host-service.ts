@@ -1,5 +1,8 @@
 import fs from "node:fs";
-import type { ApplicationEngineStatus } from "@autobyteus/application-sdk-contracts";
+import type {
+  ApplicationEngineStatus,
+  ApplicationPublishedArtifactEvent,
+} from "@autobyteus/application-sdk-contracts";
 import { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
 import {
   ApplicationStorageLifecycleService,
@@ -14,6 +17,7 @@ import { ApplicationWorkerSupervisor } from "../runtime/application-worker-super
 import {
   APPLICATION_ENGINE_METHOD_EXECUTE_GRAPHQL,
   APPLICATION_ENGINE_METHOD_GET_STATUS,
+  APPLICATION_ENGINE_METHOD_INVOKE_ARTIFACT_HANDLER,
   APPLICATION_ENGINE_METHOD_INVOKE_COMMAND,
   APPLICATION_ENGINE_METHOD_INVOKE_EVENT_HANDLER,
   APPLICATION_ENGINE_METHOD_INVOKE_QUERY,
@@ -23,6 +27,7 @@ import {
   APPLICATION_ENGINE_METHOD_STOP,
   type ApplicationExecutionEventDispatchResult,
   type ApplicationWorkerExecuteGraphqlInput,
+  type ApplicationWorkerInvokeArtifactHandlerInput,
   type ApplicationWorkerInvokeCommandInput,
   type ApplicationWorkerInvokeEventHandlerInput,
   type ApplicationWorkerInvokeQueryInput,
@@ -148,6 +153,17 @@ export class ApplicationEngineHostService {
     return this.requireRuntimeHandle(applicationId).client.request<ApplicationExecutionEventDispatchResult>(
       APPLICATION_ENGINE_METHOD_INVOKE_EVENT_HANDLER,
       input as Record<string, unknown>,
+    );
+  }
+
+  async invokeApplicationArtifactHandler(
+    applicationId: string,
+    input: { event: ApplicationPublishedArtifactEvent },
+  ): Promise<ApplicationExecutionEventDispatchResult> {
+    await this.ensureApplicationEngine(applicationId);
+    return this.requireRuntimeHandle(applicationId).client.request<ApplicationExecutionEventDispatchResult>(
+      APPLICATION_ENGINE_METHOD_INVOKE_ARTIFACT_HANDLER,
+      input as ApplicationWorkerInvokeArtifactHandlerInput as Record<string, unknown>,
     );
   }
 
@@ -309,6 +325,16 @@ export class ApplicationEngineHostService {
         );
       case "listRunBindings":
         return this.orchestrationHostService.listRunBindings(applicationId, input.input as never);
+      case "getRunPublishedArtifacts":
+        return this.orchestrationHostService.getRunPublishedArtifacts(
+          applicationId,
+          (input.input as { runId?: string }).runId ?? "",
+        );
+      case "getPublishedArtifactRevisionText":
+        return this.orchestrationHostService.getPublishedArtifactRevisionText(
+          applicationId,
+          input.input as never,
+        );
       case "postRunInput":
         return this.orchestrationHostService.postRunInput(applicationId, input.input as never);
       case "terminateRunBinding":

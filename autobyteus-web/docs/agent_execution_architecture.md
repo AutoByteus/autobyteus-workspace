@@ -101,8 +101,7 @@ Incoming events are routed based on their `type`:
 | `TOOL_EXECUTION_SUCCEEDED`| `toolLifecycleHandler.handleToolExecutionSucceeded`| Sets terminal `success` + stores result payload.               |
 | `TOOL_EXECUTION_FAILED`   | `toolLifecycleHandler.handleToolExecutionFailed`   | Sets terminal `error` + stores failure details.                |
 | `TOOL_LOG`                | `toolLifecycleHandler.handleToolLog`               | Appends diagnostic execution logs only.                         |
-| `ARTIFACT_PERSISTED`      | inline no-op compatibility                         | Ignored by the current client; legacy transport noise while the unified file-change path remains authoritative. |
-| `ARTIFACT_UPDATED`        | inline no-op compatibility                         | Ignored by the current client; live artifact state now arrives through `FILE_CHANGE_UPDATED`. |
+| `ARTIFACT_PERSISTED`      | inline no-op compatibility                         | Ignored by the current client; published artifacts are not displayed in the current web UI. |
 | `FILE_CHANGE_UPDATED`     | `fileChangeHandler.handleFileChangeUpdated`        | Syncs touched files and generated outputs into the unified run-scoped store. |
 | `TODO_LIST_UPDATE`        | `todoHandler.handleTodoListUpdate`                 | Syncs the agent's internal todo list with the UI.               |
 

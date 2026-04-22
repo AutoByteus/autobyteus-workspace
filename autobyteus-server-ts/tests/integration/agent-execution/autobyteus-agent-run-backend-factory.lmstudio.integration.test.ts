@@ -2,19 +2,25 @@ import fs from "node:fs";
 import fsPromises from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import { randomUUID } from "node:crypto";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { AgentFactory, AgentInputUserMessage } from "autobyteus-ts";
 import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
 import { LLMRuntime } from "autobyteus-ts/llm/runtimes.js";
 import { registerWriteFileTool } from "autobyteus-ts/tools/file/write-file.js";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
+import { registerPublishArtifactTool } from "../../../src/agent-tools/published-artifacts/publish-artifact-tool.js";
 import { AutoByteusAgentRunBackendFactory } from "../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import {
   AgentRunEventType,
   type AgentRunEvent,
 } from "../../../src/agent-execution/domain/agent-run-event.js";
+import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { generateStandaloneAgentRunId } from "../../../src/run-history/utils/agent-run-id-utils.js";
+import { PublishedArtifactProjectionStore } from "../../../src/services/published-artifacts/published-artifact-projection-store.js";
+import { PublishedArtifactSnapshotStore } from "../../../src/services/published-artifacts/published-artifact-snapshot-store.js";
+import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 
 const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen/qwen3.5-35b-a3b";
 const LMSTUDIO_MODEL_ENV_VAR = "LMSTUDIO_MODEL_ID";
@@ -145,6 +151,8 @@ const createToolRequiredLlmFactory = () =>
 runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration", () => {
   let previousMemoryDir: string | undefined;
   let previousParserEnv: string | undefined;
+  let previousAgentRunManagerInstance: AgentRunManager | null | undefined;
+  let agentRunManagerOverridden = false;
   let memoryDir = "";
   let workspaceDir = "";
   let agentFactory: AgentFactory;
@@ -165,6 +173,8 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
   beforeEach(async () => {
     previousMemoryDir = process.env.AUTOBYTEUS_MEMORY_DIR;
     previousParserEnv = process.env.AUTOBYTEUS_STREAM_PARSER;
+    previousAgentRunManagerInstance = (AgentRunManager as any).instance;
+    agentRunManagerOverridden = false;
     process.env.AUTOBYTEUS_STREAM_PARSER = "api_tool_call";
 
     memoryDir = await fsPromises.mkdtemp(path.join(os.tmpdir(), "autobyteus-live-backend-memory-"));
@@ -174,6 +184,7 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
     process.env.AUTOBYTEUS_MEMORY_DIR = memoryDir;
 
     registerWriteFileTool();
+    registerPublishArtifactTool();
 
     agentFactory = new AgentFactory();
     const activeIds = agentFactory.listActiveAgentIds();
@@ -225,6 +236,11 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
       delete process.env.AUTOBYTEUS_STREAM_PARSER;
     } else {
       process.env.AUTOBYTEUS_STREAM_PARSER = previousParserEnv;
+    }
+
+    if (agentRunManagerOverridden) {
+      (AgentRunManager as any).instance = previousAgentRunManagerInstance ?? null;
+      agentRunManagerOverridden = false;
     }
   }, FLOW_TEST_TIMEOUT_MS);
 
@@ -434,6 +450,133 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
         unsubscribe();
         const terminateResult = await backend.terminate();
         expect(terminateResult.accepted).toBe(true);
+      }
+    },
+    FLOW_TEST_TIMEOUT_MS,
+  );
+
+  it(
+    "publishes an existing workspace file through the live AutoByteus publish_artifact tool path",
+    async () => {
+      const modelIdentifier = await resolveLmstudioModelIdentifier();
+      expect(modelIdentifier).toBeTruthy();
+
+      const workspace = await getWorkspaceManager().ensureWorkspaceByRootPath(workspaceDir);
+      const runId = generateStandaloneAgentRunId("LiveAutoByteusPublishArtifactAgent", "Tool User");
+      const artifactRelativePath = path.posix.join("reports", "live-artifact.md");
+      const artifactDescription = "Live AutoByteus publish artifact integration";
+      const artifactBody = `# Live artifact\n\nToken: ${randomUUID()}`;
+      const artifactAbsolutePath = path.join(workspaceDir, "reports", "live-artifact.md");
+      await fsPromises.mkdir(path.dirname(artifactAbsolutePath), { recursive: true });
+      await fsPromises.writeFile(artifactAbsolutePath, artifactBody, "utf8");
+
+      const publishBackendFactory = new AutoByteusAgentRunBackendFactory({
+        agentFactory: agentFactory as any,
+        agentDefinitionService: {
+          getAgentDefinitionById: async () =>
+            new AgentDefinition({
+              id: "def-live-autobyteus-publish-artifact",
+              name: "LiveAutoByteusPublishArtifactAgent",
+              role: "Tool User",
+              description: "Live AutoByteus publish_artifact integration test",
+              instructions:
+                "When the user asks you to publish an artifact, call the publish_artifact tool exactly once. " +
+                "Use the provided relative path and exact description. Do not answer with plain text.",
+              toolNames: ["publish_artifact"],
+            }),
+        } as any,
+        llmFactory: createToolRequiredLlmFactory(),
+        workspaceManager: getWorkspaceManager(),
+        skillService: {
+          getSkill: () => null,
+        } as any,
+      });
+
+      const runManager = new AgentRunManager({
+        autoByteusBackendFactory: publishBackendFactory,
+        runFileChangeService: {
+          attachToRun: () => () => undefined,
+        } as any,
+        publishedArtifactRelayService: {
+          attachToRun: () => () => undefined,
+        } as any,
+      });
+      (AgentRunManager as any).instance = runManager;
+      agentRunManagerOverridden = true;
+
+      const run = await runManager.createAgentRun(
+        new AgentRunConfig({
+          agentDefinitionId: "def-live-autobyteus-publish-artifact",
+          llmModelIdentifier: modelIdentifier as string,
+          autoExecuteTools: true,
+          runtimeKind: "autobyteus",
+          workspaceId: workspace.workspaceId,
+          memoryDir: path.join(memoryDir, "agents", runId),
+        } as any),
+        runId,
+      );
+
+      const events: AgentRunEvent[] = [];
+      const unsubscribe = run.subscribeToEvents((event) => {
+        if (event && typeof event === "object") {
+          events.push(event as AgentRunEvent);
+        }
+      });
+
+      try {
+        const sendResult = await run.postUserMessage(
+          new AgentInputUserMessage(
+            `The file ${artifactRelativePath} already exists in the workspace. ` +
+              `Call publish_artifact exactly once with path "${artifactRelativePath}" ` +
+              `and description "${artifactDescription}". Do not call any other tool. ` +
+              "Do not answer with plain text.",
+          ),
+        );
+        expect(sendResult.accepted).toBe(true);
+
+        await waitForEvent(
+          events,
+          (event) =>
+            event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED &&
+            event.payload.tool_name === "publish_artifact",
+        );
+        const persisted = await waitForEvent(
+          events,
+          (event) => event.eventType === AgentRunEventType.ARTIFACT_PERSISTED,
+        );
+        await waitForEvent(
+          events,
+          (event) => event.eventType === AgentRunEventType.ASSISTANT_COMPLETE,
+        );
+        await waitFor(() => (run.getStatus() ?? "").toLowerCase() === "idle");
+
+        expect(
+          events.some((event) => event.eventType === AgentRunEventType.TOOL_APPROVAL_REQUESTED),
+        ).toBe(false);
+
+        const projectionStore = new PublishedArtifactProjectionStore();
+        const snapshotStore = new PublishedArtifactSnapshotStore();
+        const projection = await projectionStore.readProjection(run.config.memoryDir as string);
+        expect(projection.summaries).toHaveLength(1);
+        expect(projection.revisions).toHaveLength(1);
+        expect(projection.summaries[0]).toMatchObject({
+          runId: run.runId,
+          path: artifactRelativePath,
+          type: "file",
+          status: "available",
+          description: artifactDescription,
+        });
+        expect(persisted.payload).toMatchObject(projection.summaries[0] as Record<string, unknown>);
+        await expect(
+          snapshotStore.readRevisionText(
+            run.config.memoryDir as string,
+            projection.revisions[0]!.snapshotRelativePath,
+          ),
+        ).resolves.toBe(artifactBody);
+      } finally {
+        unsubscribe();
+        const terminateResult = await runManager.terminateAgentRun(run.runId);
+        expect(terminateResult).toBe(true);
       }
     },
     FLOW_TEST_TIMEOUT_MS,
