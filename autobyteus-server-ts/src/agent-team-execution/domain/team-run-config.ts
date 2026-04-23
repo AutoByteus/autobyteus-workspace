@@ -1,6 +1,7 @@
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
+import type { TeamBackendKind } from "./team-backend-kind.js";
 
 export type TeamMemberRunConfig = {
   memberName: string;
@@ -20,18 +21,18 @@ export type TeamMemberRunConfig = {
 
 export class TeamRunConfig {
   readonly teamDefinitionId: string;
-  readonly runtimeKind: RuntimeKind;
+  readonly teamBackendKind: TeamBackendKind;
   readonly coordinatorMemberName: string | null;
   readonly memberConfigs: TeamMemberRunConfig[];
 
   constructor(input: {
     teamDefinitionId: string;
-    runtimeKind: RuntimeKind;
+    teamBackendKind: TeamBackendKind;
     coordinatorMemberName?: string | null;
     memberConfigs: TeamMemberRunConfig[];
   }) {
     this.teamDefinitionId = input.teamDefinitionId;
-    this.runtimeKind = input.runtimeKind;
+    this.teamBackendKind = input.teamBackendKind;
     this.coordinatorMemberName =
       typeof input.coordinatorMemberName === "string" && input.coordinatorMemberName.trim().length > 0
         ? input.coordinatorMemberName.trim()

@@ -5,6 +5,7 @@ import type {
 
 export interface MemberConfigOverride {
   agentDefinitionId: string
+  runtimeKind?: AgentRuntimeKind
   llmModelIdentifier?: string
   autoExecuteTools?: boolean
   llmConfig?: Record<string, unknown> | null

@@ -9,7 +9,7 @@ const {
 }));
 
 vi.mock(
-  "../../../../../../src/agent-team-execution/backends/claude/claude-team-mcp-server-builder.js",
+  "../../../../../../src/agent-execution/backends/claude/team-communication/claude-team-mcp-server-builder.js",
   () => ({
     buildClaudeTeamMcpServers: buildClaudeTeamMcpServersMock,
   }),

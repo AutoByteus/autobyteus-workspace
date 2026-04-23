@@ -7,6 +7,7 @@ import { AutoByteusTeamRunBackendFactory } from "../../../src/agent-team-executi
 import { TeamRunConfig, type TeamMemberRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { AgentTeamDefinition, TeamMember } from "../../../src/agent-team-definition/domain/models.js";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
 import { AgentTeamCreationError } from "../../../src/agent-team-execution/errors.js";
@@ -247,7 +248,7 @@ describe("AutoByteusTeamRunBackendFactory integration", () => {
     expect(waitForIdle).toHaveBeenCalledWith(createdTeam, 120.0);
 
     expect(backend.runId).toBe(createdTeam.teamId);
-    expect(backend.runtimeKind).toBe(RuntimeKind.AUTOBYTEUS);
+    expect(backend.teamBackendKind).toBe(TeamBackendKind.AUTOBYTEUS);
     expect(backend.isActive()).toBe(true);
     expect(backend.getRuntimeContext()).toEqual(
       expect.objectContaining({
@@ -314,7 +315,7 @@ describe("AutoByteusTeamRunBackendFactory integration", () => {
     const backend = await factory.createBackend(createSimpleConfig(llmConfig));
 
     expect(backend.runId).toMatch(/^team_researchteam_[a-f0-9]{8}$/);
-    expect(backend.runtimeKind).toBe(RuntimeKind.AUTOBYTEUS);
+    expect(backend.teamBackendKind).toBe(TeamBackendKind.AUTOBYTEUS);
     expect(backend.getRuntimeContext()).toEqual(
       expect.objectContaining({
         coordinatorMemberRouteKey: null,

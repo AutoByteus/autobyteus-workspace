@@ -16,9 +16,13 @@ import {
   getCodexTeamRunBackendFactory,
   type CodexTeamRunBackendFactory,
 } from "../backends/codex/codex-team-run-backend-factory.js";
+import {
+  getMixedTeamRunBackendFactory,
+  type MixedTeamRunBackendFactory,
+} from "../backends/mixed/mixed-team-run-backend-factory.js";
 import type { TeamRunBackendFactory } from "../backends/team-run-backend-factory.js";
-import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import { buildTeamMemberRunId, normalizeMemberRouteKey } from "../../run-history/utils/team-member-run-id.js";
+import { TeamBackendKind } from "../domain/team-backend-kind.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -30,6 +34,7 @@ type AgentTeamRunManagerOptions = {
   autoByteusTeamRunBackendFactory?: AutoByteusTeamRunBackendFactory;
   codexTeamRunBackendFactory?: CodexTeamRunBackendFactory;
   claudeTeamRunBackendFactory?: ClaudeTeamRunBackendFactory;
+  mixedTeamRunBackendFactory?: MixedTeamRunBackendFactory;
 };
 
 export class AgentTeamRunManager {
@@ -37,6 +42,7 @@ export class AgentTeamRunManager {
   private readonly autoByteusTeamRunBackendFactory: AutoByteusTeamRunBackendFactory;
   private readonly codexTeamRunBackendFactory: CodexTeamRunBackendFactory;
   private readonly claudeTeamRunBackendFactory: ClaudeTeamRunBackendFactory;
+  private readonly mixedTeamRunBackendFactory: MixedTeamRunBackendFactory;
   private activeRuns = new Map<string, TeamRun>();
 
   static getInstance(options: AgentTeamRunManagerOptions = {}): AgentTeamRunManager {
@@ -53,6 +59,8 @@ export class AgentTeamRunManager {
       options.codexTeamRunBackendFactory ?? getCodexTeamRunBackendFactory();
     this.claudeTeamRunBackendFactory =
       options.claudeTeamRunBackendFactory ?? getClaudeTeamRunBackendFactory();
+    this.mixedTeamRunBackendFactory =
+      options.mixedTeamRunBackendFactory ?? getMixedTeamRunBackendFactory();
     logger.info("AgentTeamRunManager initialized.");
   }
 
@@ -60,16 +68,16 @@ export class AgentTeamRunManager {
     input: TeamRunConfig,
   ): Promise<TeamRun> {
     const config = input;
-    const backendFactory = this.resolveBackendFactory(config.runtimeKind);
+    const backendFactory = this.resolveBackendFactory(config.teamBackendKind);
     if (!backendFactory) {
       throw new AgentTeamCreationError(
-        `Team runtime kind '${config.runtimeKind}' is not yet supported by AgentTeamRunManager.createTeamRun().`,
+        `Team backend kind '${config.teamBackendKind}' is not yet supported by AgentTeamRunManager.createTeamRun().`,
       );
     }
     const backend = await backendFactory.createBackend(config);
     const normalizedConfig = new TeamRunConfig({
       teamDefinitionId: config.teamDefinitionId,
-      runtimeKind: config.runtimeKind,
+      teamBackendKind: config.teamBackendKind,
       coordinatorMemberName: config.coordinatorMemberName,
       memberConfigs: config.memberConfigs.map((memberConfig) => {
         const memberRouteKey = normalizeMemberRouteKey(
@@ -87,7 +95,7 @@ export class AgentTeamRunManager {
     const activeRun = new TeamRun({
       context: new TeamRunContext({
         runId: backend.runId,
-        runtimeKind: backend.runtimeKind,
+        teamBackendKind: backend.teamBackendKind,
         coordinatorMemberName: normalizedConfig.coordinatorMemberName,
         config: normalizedConfig,
         runtimeContext: backend.getRuntimeContext(),
@@ -95,17 +103,17 @@ export class AgentTeamRunManager {
       backend,
     });
     this.registerActiveRun(activeRun);
-    logger.info(`Successfully created ${backend.runtimeKind} team run '${activeRun.runId}'.`);
+    logger.info(`Successfully created ${backend.teamBackendKind} team run '${activeRun.runId}'.`);
     return activeRun;
   }
 
   async restoreTeamRun(
     context: TeamRunContext<RuntimeTeamRunContext>,
   ): Promise<TeamRun> {
-    const backendFactory = this.resolveBackendFactory(context.runtimeKind);
+    const backendFactory = this.resolveBackendFactory(context.teamBackendKind);
     if (!backendFactory) {
       throw new AgentTeamCreationError(
-        `Team runtime kind '${context.runtimeKind}' is not yet supported by AgentTeamRunManager.restoreTeamRun().`,
+        `Team backend kind '${context.teamBackendKind}' is not yet supported by AgentTeamRunManager.restoreTeamRun().`,
       );
     }
     const backend = await backendFactory.restoreBackend(context);
@@ -114,7 +122,7 @@ export class AgentTeamRunManager {
       backend,
     });
     this.registerActiveRun(activeRun);
-    logger.info(`Successfully restored ${context.runtimeKind} team run '${activeRun.runId}'.`);
+    logger.info(`Successfully restored ${context.teamBackendKind} team run '${activeRun.runId}'.`);
     return activeRun;
   }
 
@@ -188,15 +196,18 @@ export class AgentTeamRunManager {
     return activeRun.subscribeToEvents(listener);
   }
 
-  private resolveBackendFactory(runtimeKind: RuntimeKind): TeamRunBackendFactory | null {
-    if (runtimeKind === RuntimeKind.AUTOBYTEUS) {
+  private resolveBackendFactory(teamBackendKind: TeamBackendKind): TeamRunBackendFactory | null {
+    if (teamBackendKind === TeamBackendKind.AUTOBYTEUS) {
       return this.autoByteusTeamRunBackendFactory;
     }
-    if (runtimeKind === RuntimeKind.CODEX_APP_SERVER) {
+    if (teamBackendKind === TeamBackendKind.CODEX_APP_SERVER) {
       return this.codexTeamRunBackendFactory;
     }
-    if (runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK) {
+    if (teamBackendKind === TeamBackendKind.CLAUDE_AGENT_SDK) {
       return this.claudeTeamRunBackendFactory;
+    }
+    if (teamBackendKind === TeamBackendKind.MIXED) {
+      return this.mixedTeamRunBackendFactory;
     }
     return null;
   }

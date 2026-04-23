@@ -16,6 +16,7 @@ import {
   type TeamRunEventListener,
 } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 
 const createMemberContext = (input: {
   memberName: string;
@@ -117,7 +118,7 @@ describe("ClaudeTeamRunBackend integration", () => {
     });
 
     expect(backend.runId).toBe("team-claude-1");
-    expect(backend.runtimeKind).toBe(RuntimeKind.CLAUDE_AGENT_SDK);
+    expect(backend.teamBackendKind).toBe(TeamBackendKind.CLAUDE_AGENT_SDK);
     expect(backend.isActive()).toBe(true);
     expect(backend.getStatus()).toBe("IDLE");
     expect(backend.getRuntimeContext()).toBe(context.runtimeContext);

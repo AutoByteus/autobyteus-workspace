@@ -1,33 +1,59 @@
 <template>
-  <div class="border border-gray-200 rounded-md p-3 bg-white">
-    <div class="flex items-center justify-between mb-3">
+  <div class="rounded-md border border-gray-200 bg-white p-3">
+    <div class="mb-3 flex items-center justify-between">
       <div class="flex items-center gap-2">
         <span class="text-sm font-medium text-gray-700">{{ memberName }}</span>
-        <span v-if="isCoordinator" class="text-xs text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-100">
-          Coordinator
+        <span v-if="isCoordinator" class="rounded-full border border-indigo-100 bg-indigo-50 px-2 py-0.5 text-xs text-indigo-600">
+          {{ $t('workspace.components.workspace.config.MemberOverrideItem.coordinator') }}
         </span>
       </div>
-      <span v-if="hasOverride" class="text-xs text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-100">
-        Overridden
+      <span v-if="hasOverride" class="rounded-full border border-amber-100 bg-amber-50 px-2 py-0.5 text-xs text-amber-600">
+        {{ $t('workspace.components.workspace.config.MemberOverrideItem.overridden') }}
       </span>
     </div>
 
-    <!-- LLM Model Override -->
     <div class="mb-3">
-      <label class="block text-xs text-gray-500 mb-1">{{ $t('workspace.components.workspace.config.MemberOverrideItem.llm_model_override') }}</label>
-      <SearchableGroupedSelect
-        :model-value="override?.llmModelIdentifier || ''"
-        @update:modelValue="handleModelChange"
-        :options="options"
+      <label class="mb-1 block text-xs text-gray-500">{{ $t('workspace.components.workspace.config.MemberOverrideItem.runtime_override') }}</label>
+      <select
+        :id="`override-runtime-${memberName}`"
+        :value="storedRuntimeOverrideValue"
         :disabled="disabled"
-        :placeholder="$t('workspace.components.workspace.config.MemberOverrideItem.use_global_model_default')"
-        search-placeholder="Search models..."
+        class="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
+        @change="handleRuntimeChange(($event.target as HTMLSelectElement).value)"
+      >
+        <option value="">{{ $t('workspace.components.workspace.config.MemberOverrideItem.use_global_runtime_default') }}</option>
+        <option
+          v-for="option in runtimeOptions"
+          :key="option.value"
+          :value="option.value"
+          :disabled="!option.enabled"
+        >
+          {{ option.label }}
+        </option>
+      </select>
+      <p v-if="selectedRuntimeUnavailableReason" class="mt-1 text-xs text-amber-600">
+        {{ selectedRuntimeUnavailableReason }}
+      </p>
+    </div>
+
+    <div v-if="isUnresolvedInheritedModel" class="mb-3 rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700" data-testid="member-override-warning">
+      {{ unresolvedInheritedModelMessage }}
+    </div>
+
+    <div class="mb-3">
+      <label class="mb-1 block text-xs text-gray-500">{{ $t('workspace.components.workspace.config.MemberOverrideItem.llm_model_override') }}</label>
+      <SearchableGroupedSelect
+        :model-value="explicitModelIdentifier"
+        @update:modelValue="handleModelChange"
+        :options="groupedModelOptions"
+        :disabled="disabled"
+        :placeholder="modelPlaceholder"
+        :search-placeholder="$t('workspace.components.workspace.config.MemberOverrideItem.search_models')"
         class="w-full"
       />
     </div>
 
-    <!-- Auto-execute Override -->
-    <div class="flex items-center">
+    <div class="mb-3 flex items-center">
       <input
         :id="`override-auto-${memberName}`"
         type="checkbox"
@@ -37,154 +63,274 @@
         :disabled="disabled"
         class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-50"
       />
-      <label :for="`override-auto-${memberName}`" class="ml-2 text-xs text-gray-600 select-none">
+      <label :for="`override-auto-${memberName}`" class="ml-2 select-none text-xs text-gray-600">
         {{ autoExecuteLabel }}
       </label>
     </div>
 
     <ModelConfigSection
-        :schema="modelConfigSchema"
-        :model-config="effectiveModelConfig"
-        :disabled="disabled"
-        :compact="true"
-        :id-prefix="`config-${memberName}`"
-        @update:config="emitOverrideWithConfig"
+      v-if="effectiveModelIdentifier"
+      :schema="modelConfigSchema"
+      :model-config="effectiveModelConfig"
+      :disabled="disabled"
+      :compact="true"
+      :id-prefix="`config-${memberName}`"
+      @update:config="emitOverrideWithConfig"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
-import type { MemberConfigOverride } from '~/types/agent/TeamRunConfig';
-import SearchableGroupedSelect, { type GroupedOption } from '~/components/agentTeams/SearchableGroupedSelect.vue';
-import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig';
-import ModelConfigSection from './ModelConfigSection.vue';
+import { computed, toRef, watch } from 'vue'
+import type { MemberConfigOverride } from '~/types/agent/TeamRunConfig'
+import SearchableGroupedSelect from '~/components/agentTeams/SearchableGroupedSelect.vue'
+import ModelConfigSection from './ModelConfigSection.vue'
+import { useLocalization } from '~/composables/useLocalization'
 import {
+  loadRuntimeProviderGroupsForSelection,
+  useRuntimeScopedModelSelection,
+} from '~/composables/useRuntimeScopedModelSelection'
+import {
+  buildUnavailableInheritedModelMessage,
   hasExplicitMemberLlmConfigOverride,
+  hasExplicitMemberLlmModelOverride,
   hasMeaningfulMemberOverride,
   modelConfigsEqual,
   resolveEffectiveMemberLlmConfig,
-} from '~/utils/teamRunConfigUtils';
+  resolveEffectiveMemberRuntimeKind,
+} from '~/utils/teamRunConfigUtils'
 
 const props = defineProps<{
-  memberName: string;
-  agentDefinitionId: string;
-  override: MemberConfigOverride | undefined;
-  globalLlmModel: string;
-  globalLlmConfig?: Record<string, unknown> | null;
-  options: GroupedOption[];
-  isCoordinator?: boolean;
-  disabled: boolean;
-}>();
+  memberName: string
+  agentDefinitionId: string
+  override: MemberConfigOverride | undefined
+  globalRuntimeKind: string
+  globalLlmModel: string
+  globalLlmConfig?: Record<string, unknown> | null
+  disabled: boolean
+  isCoordinator?: boolean
+}>()
 
 const emit = defineEmits<{
-  (e: 'update:override', memberName: string, override: MemberConfigOverride | null): void;
-}>();
+  (e: 'update:override', memberName: string, override: MemberConfigOverride | null): void
+}>()
+const { t: $t } = useLocalization()
 
-const llmStore = useLLMProviderConfigStore();
+const {
+  effectiveRuntimeKind,
+  groupedModelOptions,
+  hasModelIdentifier,
+  modelConfigSchemaByIdentifier,
+  runtimeOptions,
+  selectedRuntimeUnavailableReason,
+} = useRuntimeScopedModelSelection({
+  runtimeKind: computed(() => resolveEffectiveMemberRuntimeKind(props.override, props.globalRuntimeKind)),
+})
 
-const hasOverride = computed(() => {
-  return hasMeaningfulMemberOverride(props.override);
-});
+const storedRuntimeOverrideValue = computed(() => props.override?.runtimeKind || '')
+const explicitModelIdentifier = computed(() => props.override?.llmModelIdentifier || '')
+const hasOverride = computed(() => hasMeaningfulMemberOverride(props.override))
+const globalModelIdentifier = computed(() => props.globalLlmModel || '')
+const hasExplicitModelOverride = computed(() => hasExplicitMemberLlmModelOverride(props.override))
+const inheritedGlobalModelAvailable = computed(() => {
+  if (!globalModelIdentifier.value) {
+    return false
+  }
+  return hasModelIdentifier(globalModelIdentifier.value)
+})
+
+const isUnresolvedInheritedModel = computed(() =>
+  Boolean(
+    props.override?.runtimeKind &&
+      !hasExplicitModelOverride.value &&
+      globalModelIdentifier.value &&
+      !inheritedGlobalModelAvailable.value,
+  ),
+)
+
+const unresolvedInheritedModelMessage = computed(() =>
+  buildUnavailableInheritedModelMessage({
+    globalLlmModelIdentifier: globalModelIdentifier.value,
+    runtimeKind: effectiveRuntimeKind.value,
+    memberName: props.memberName,
+  }),
+)
+
+const effectiveModelIdentifier = computed(() => {
+  if (hasExplicitModelOverride.value) {
+    return explicitModelIdentifier.value
+  }
+  if (isUnresolvedInheritedModel.value) {
+    return ''
+  }
+  return globalModelIdentifier.value
+})
+
+const effectiveModelConfig = computed(() => {
+  if (isUnresolvedInheritedModel.value) {
+    return null
+  }
+  return resolveEffectiveMemberLlmConfig(props.override, props.globalLlmConfig)
+})
+
+const modelConfigSchema = computed(() =>
+  modelConfigSchemaByIdentifier(effectiveModelIdentifier.value),
+)
+
+const modelPlaceholder = computed(() =>
+  isUnresolvedInheritedModel.value
+    ? $t('workspace.components.workspace.config.MemberOverrideItem.choose_compatible_member_model')
+    : $t('workspace.components.workspace.config.MemberOverrideItem.use_global_model_default'),
+)
 
 const autoExecuteLabel = computed(() => {
   if (props.override?.autoExecuteTools === undefined) {
-    return 'Auto-execute: Use global';
+    return $t('workspace.components.workspace.config.MemberOverrideItem.auto_execute_use_global')
   }
-  return props.override.autoExecuteTools ? 'Auto-execute: ON' : 'Auto-execute: OFF';
-});
+  return props.override.autoExecuteTools
+    ? $t('workspace.components.workspace.config.MemberOverrideItem.auto_execute_on')
+    : $t('workspace.components.workspace.config.MemberOverrideItem.auto_execute_off')
+})
 
-const effectiveModelIdentifier = computed(() => {
-    // If override has specific model, use it. Otherwise use global.
-    // BUT if overrides are completely null, we still know the global model.
-    return props.override?.llmModelIdentifier || props.globalLlmModel;
-});
+const resolveRetainedExplicitConfig = (
+  nextExplicitModelIdentifier: string | undefined,
+): Record<string, unknown> | null | undefined => {
+  if (!nextExplicitModelIdentifier || !hasExplicitMemberLlmConfigOverride(props.override)) {
+    return undefined
+  }
 
-const effectiveModelConfig = computed(() =>
-  resolveEffectiveMemberLlmConfig(props.override, props.globalLlmConfig),
-);
-
-const modelConfigSchema = computed(() => {
-    if (!effectiveModelIdentifier.value) return null;
-    return llmStore.modelConfigSchemaByIdentifier(effectiveModelIdentifier.value);
-});
+  return props.override?.llmConfig ?? null
+}
 
 const buildOverride = (input: {
-  llmModelIdentifier?: string;
-  autoExecuteTools?: boolean;
-  llmConfig?: Record<string, unknown> | null;
+  runtimeKind?: string
+  llmModelIdentifier?: string
+  autoExecuteTools?: boolean
+  llmConfig?: Record<string, unknown> | null
 }): MemberConfigOverride | null => {
   const override: MemberConfigOverride = {
     agentDefinitionId: props.agentDefinitionId,
-  };
+  }
+
+  if (input.runtimeKind) {
+    override.runtimeKind = input.runtimeKind
+  }
 
   if (input.llmModelIdentifier) {
-    override.llmModelIdentifier = input.llmModelIdentifier;
+    override.llmModelIdentifier = input.llmModelIdentifier
   }
 
   if (input.autoExecuteTools !== undefined) {
-    override.autoExecuteTools = input.autoExecuteTools;
+    override.autoExecuteTools = input.autoExecuteTools
   }
 
   if (input.llmConfig !== undefined) {
-    override.llmConfig = input.llmConfig;
+    override.llmConfig = input.llmConfig
   }
 
-  return hasMeaningfulMemberOverride(override) ? override : null;
-};
+  return hasMeaningfulMemberOverride(override) ? override : null
+}
 
-const emitOverrideWithConfig = (nextConfig: Record<string, unknown> | null | undefined) => {
-    const explicitConfig = modelConfigsEqual(nextConfig ?? null, props.globalLlmConfig ?? null)
-      ? undefined
-      : (nextConfig ?? null);
+watch(
+  () => [effectiveRuntimeKind.value, explicitModelIdentifier.value],
+  async () => {
+    if (!hasExplicitModelOverride.value || !explicitModelIdentifier.value) {
+      return
+    }
+
+    if (hasModelIdentifier(explicitModelIdentifier.value)) {
+      return
+    }
+
     emit(
       'update:override',
       props.memberName,
       buildOverride({
-        llmModelIdentifier: props.override?.llmModelIdentifier,
+        runtimeKind: props.override?.runtimeKind,
         autoExecuteTools: props.override?.autoExecuteTools,
-        llmConfig: explicitConfig,
       }),
-    );
-};
+    )
+  },
+)
 
-const handleModelChange = (value: string) => {
+const handleRuntimeChange = async (value: string) => {
+  const nextRuntimeKind = value || undefined
+  const effectiveNextRuntimeKind = nextRuntimeKind || props.globalRuntimeKind
+  const nextRows = await loadRuntimeProviderGroupsForSelection(effectiveNextRuntimeKind)
+  const nextModelIdentifiers = nextRows.flatMap((row) => row.models.map((model) => model.modelIdentifier))
+  const retainedExplicitModel = explicitModelIdentifier.value && nextModelIdentifiers.includes(explicitModelIdentifier.value)
+    ? explicitModelIdentifier.value
+    : undefined
+
   emit(
     'update:override',
     props.memberName,
     buildOverride({
+      runtimeKind: nextRuntimeKind,
+      llmModelIdentifier: retainedExplicitModel,
+      autoExecuteTools: props.override?.autoExecuteTools,
+      llmConfig: resolveRetainedExplicitConfig(retainedExplicitModel),
+    }),
+  )
+}
+
+const emitOverrideWithConfig = (nextConfig: Record<string, unknown> | null | undefined) => {
+  const explicitConfig = modelConfigsEqual(nextConfig ?? null, props.globalLlmConfig ?? null)
+    ? undefined
+    : (nextConfig ?? null)
+
+  emit(
+    'update:override',
+    props.memberName,
+    buildOverride({
+      runtimeKind: props.override?.runtimeKind,
+      llmModelIdentifier: props.override?.llmModelIdentifier,
+      autoExecuteTools: props.override?.autoExecuteTools,
+      llmConfig: explicitConfig,
+    }),
+  )
+}
+
+const handleModelChange = (value: string) => {
+  const canKeepExplicitConfig = Boolean(
+    value
+      ? hasExplicitMemberLlmConfigOverride(props.override)
+      : hasExplicitMemberLlmConfigOverride(props.override) && inheritedGlobalModelAvailable.value,
+  )
+
+  emit(
+    'update:override',
+    props.memberName,
+    buildOverride({
+      runtimeKind: props.override?.runtimeKind,
       llmModelIdentifier: value || undefined,
       autoExecuteTools: props.override?.autoExecuteTools,
-      llmConfig: hasExplicitMemberLlmConfigOverride(props.override)
-        ? (props.override?.llmConfig ?? null)
-        : undefined,
+      llmConfig: canKeepExplicitConfig ? (props.override?.llmConfig ?? null) : undefined,
     }),
-  );
-};
+  )
+}
 
-const handleAutoExecuteChange = (event: Event) => {
-  // const checkbox = event.target as HTMLInputElement; // Not strictly needed for logic below
-  
-  // Cycle: indeterminate (global) → checked (ON) → unchecked (OFF) → indeterminate
-  let newValue: boolean | undefined;
+const handleAutoExecuteChange = () => {
+  let newValue: boolean | undefined
   if (props.override?.autoExecuteTools === undefined) {
-    newValue = true; // From global → ON
+    newValue = true
   } else if (props.override.autoExecuteTools === true) {
-    newValue = false; // From ON → OFF
+    newValue = false
   } else {
-    newValue = undefined; // From OFF → global
+    newValue = undefined
   }
 
   emit(
     'update:override',
     props.memberName,
     buildOverride({
+      runtimeKind: props.override?.runtimeKind,
       llmModelIdentifier: props.override?.llmModelIdentifier,
       autoExecuteTools: newValue,
       llmConfig: hasExplicitMemberLlmConfigOverride(props.override)
         ? (props.override?.llmConfig ?? null)
         : undefined,
     }),
-  );
-};
+  )
+}
 </script>

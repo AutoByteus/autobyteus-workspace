@@ -38,6 +38,8 @@ import {
   resolveConfiguredAgentToolExposure,
   type ConfiguredAgentToolExposure,
 } from "../../../agent-execution/shared/configured-agent-tool-exposure.js";
+import { getMemberTeamContextBuilder, type MemberTeamContextBuilder } from "../../services/member-team-context-builder.js";
+import { TeamBackendKind } from "../../domain/team-backend-kind.js";
 
 const buildRunNotFoundResult = (teamRunId: string): AgentOperationResult => ({
   accepted: false,
@@ -61,16 +63,27 @@ const buildPlaceholderSessionConfig = (memberContext: ClaudeTeamMemberContext) =
 export class ClaudeTeamManager implements TeamManager {
   private readonly agentRunManager: AgentRunManager;
   private readonly agentDefinitionService: AgentDefinitionService;
+  private readonly memberTeamContextBuilder: MemberTeamContextBuilder;
   private teamContext: TeamRunContext<ClaudeTeamRunContext> | null;
   private readonly memberRuns = new Map<string, AgentRun>();
   private readonly memberRunUnsubscribers = new Map<string, () => void>();
   private readonly eventListeners = new Set<TeamRunEventListener>();
   private lastTeamStatus: string | null = "INITIALIZING";
 
-  constructor(context: TeamRunContext<ClaudeTeamRunContext>) {
+  constructor(
+    context: TeamRunContext<ClaudeTeamRunContext>,
+    options: {
+      agentRunManager?: AgentRunManager;
+      agentDefinitionService?: AgentDefinitionService;
+      memberTeamContextBuilder?: MemberTeamContextBuilder;
+    } = {},
+  ) {
     this.teamContext = context;
-    this.agentRunManager = AgentRunManager.getInstance();
-    this.agentDefinitionService = AgentDefinitionService.getInstance();
+    this.agentRunManager = options.agentRunManager ?? AgentRunManager.getInstance();
+    this.agentDefinitionService =
+      options.agentDefinitionService ?? AgentDefinitionService.getInstance();
+    this.memberTeamContextBuilder =
+      options.memberTeamContextBuilder ?? getMemberTeamContextBuilder();
   }
 
   hasActiveMembers(): boolean {
@@ -197,7 +210,7 @@ export class ClaudeTeamManager implements TeamManager {
     if (activeMemberRun) {
       this.memberRuns.delete(memberRouteKey);
     }
-    const memberRunConfig = this.buildMemberRunConfig(memberContext);
+    const memberRunConfig = await this.buildMemberRunConfig(memberContext);
 
     const memberRun =
       typeof memberContext.sessionId === "string" && memberContext.sessionId.trim().length > 0
@@ -210,7 +223,7 @@ export class ClaudeTeamManager implements TeamManager {
                 configuredToolExposure:
                   await this.resolveConfiguredToolExposure(memberContext),
                 skillAccessMode: memberRunConfig.skillAccessMode,
-                teamContext: null,
+                memberTeamContext: memberRunConfig.memberTeamContext,
                 sessionId: memberContext.sessionId,
               }),
             }),
@@ -275,22 +288,44 @@ export class ClaudeTeamManager implements TeamManager {
   }
 
   private getRuntimeContext(): ClaudeTeamRunContext {
-    if (!this.teamContext || this.teamContext.runtimeKind !== RuntimeKind.CLAUDE_AGENT_SDK) {
+    if (!this.teamContext) {
       throw new Error("Claude team context is not initialized.");
     }
     return this.teamContext.runtimeContext;
   }
 
-  private buildMemberRunConfig(memberContext: ClaudeTeamMemberContext): AgentRunConfig {
+  private async buildMemberRunConfig(memberContext: ClaudeTeamMemberContext): Promise<AgentRunConfig> {
+    const teamContext = this.teamContext;
+    const config = teamContext?.config;
+    if (!teamContext || !config) {
+      throw new Error("Claude team context is not initialized.");
+    }
+    const memberTeamContext = await this.memberTeamContextBuilder.build({
+      teamRunId: teamContext.runId,
+      teamDefinitionId: config.teamDefinitionId,
+      teamBackendKind: TeamBackendKind.CLAUDE_AGENT_SDK,
+      currentMemberName: memberContext.memberName,
+      currentMemberRouteKey: memberContext.memberRouteKey,
+      currentMemberRunId: memberContext.memberRunId,
+      members: this.getRuntimeContext().memberContexts.map((member) => ({
+        memberName: member.memberName,
+        memberRouteKey: member.memberRouteKey,
+        memberRunId: member.memberRunId,
+        runtimeKind: member.agentRunConfig.runtimeKind,
+      })),
+      deliverInterAgentMessage: (request) => this.deliverInterAgentMessage(request),
+    });
+
     return new AgentRunConfig({
       agentDefinitionId: memberContext.agentRunConfig.agentDefinitionId,
       llmModelIdentifier: memberContext.agentRunConfig.llmModelIdentifier,
       autoExecuteTools: memberContext.agentRunConfig.autoExecuteTools,
       workspaceId: memberContext.agentRunConfig.workspaceId,
+      memoryDir: memberContext.agentRunConfig.memoryDir,
       llmConfig: memberContext.agentRunConfig.llmConfig,
       skillAccessMode: memberContext.agentRunConfig.skillAccessMode,
       runtimeKind: memberContext.agentRunConfig.runtimeKind,
-      teamContext: this.teamContext,
+      memberTeamContext,
       applicationExecutionContext: memberContext.agentRunConfig.applicationExecutionContext,
     });
   }

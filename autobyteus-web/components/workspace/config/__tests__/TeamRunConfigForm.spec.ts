@@ -5,6 +5,7 @@ import TeamRunConfigForm from '../TeamRunConfigForm.vue'
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
 import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore'
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
+import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore'
 
 vi.mock('~/stores/llmProviderConfig', () => ({
   useLLMProviderConfigStore: vi.fn(),
@@ -41,7 +42,7 @@ const mockConfig = {
   teamDefinitionId: 'team-1',
   teamDefinitionName: 'Test Team',
   runtimeKind: 'autobyteus',
-  llmModelIdentifier: '',
+  llmModelIdentifier: 'gpt-5.4',
   llmConfig: null,
   autoExecuteTools: false,
   skillAccessMode: 'PRELOADED_ONLY',
@@ -55,24 +56,58 @@ describe('TeamRunConfigForm', () => {
   let runtimeStore: any
   let teamDefinitionStore: any
 
-  const buildProviderRow = (providerId: string, providerName: string, models: any[], overrides: Record<string, any> = {}) => ({
-    provider: {
-      id: providerId,
-      name: providerName,
-      providerType: providerId,
-      isCustom: false,
-      baseUrl: null,
-      apiKeyConfigured: true,
-      status: 'NOT_APPLICABLE',
-      statusMessage: null,
-      ...overrides,
-    },
-    models,
-  })
-
-  const setProviders = (providersWithModels: any[]) => {
-    llmStore.providersWithModels = providersWithModels
-    llmStore.providersWithModelsForSelection = providersWithModels.filter((provider: any) => provider.models.length > 0)
+  const runtimeProviders: Record<string, any[]> = {
+    autobyteus: [
+      {
+        provider: {
+          id: 'OPENAI',
+          name: 'OpenAI',
+          providerType: 'OPENAI',
+          isCustom: false,
+          baseUrl: null,
+          apiKeyConfigured: true,
+          status: 'NOT_APPLICABLE',
+          statusMessage: null,
+        },
+        models: [
+          { modelIdentifier: 'gpt-5.4', name: 'GPT-5.4', value: 'gpt-5.4', canonicalName: 'gpt-5.4', providerId: 'OPENAI', providerName: 'OpenAI', providerType: 'OPENAI', runtime: 'autobyteus' },
+        ],
+      },
+    ],
+    codex_app_server: [
+      {
+        provider: {
+          id: 'OPENAI',
+          name: 'OpenAI',
+          providerType: 'OPENAI',
+          isCustom: false,
+          baseUrl: null,
+          apiKeyConfigured: true,
+          status: 'NOT_APPLICABLE',
+          statusMessage: null,
+        },
+        models: [
+          { modelIdentifier: 'gpt-5.3-codex', name: 'GPT-5.3 Codex', value: 'gpt-5.3-codex', canonicalName: 'gpt-5.3-codex', providerId: 'OPENAI', providerName: 'OpenAI', providerType: 'OPENAI', runtime: 'api' },
+        ],
+      },
+    ],
+    claude_agent_sdk: [
+      {
+        provider: {
+          id: 'ANTHROPIC',
+          name: 'Anthropic',
+          providerType: 'ANTHROPIC',
+          isCustom: false,
+          baseUrl: null,
+          apiKeyConfigured: true,
+          status: 'NOT_APPLICABLE',
+          statusMessage: null,
+        },
+        models: [
+          { modelIdentifier: 'claude-sonnet', name: 'Claude Sonnet', value: 'claude-sonnet', canonicalName: 'claude-sonnet', providerId: 'ANTHROPIC', providerName: 'Anthropic', providerType: 'ANTHROPIC', runtime: 'claude_agent_sdk' },
+        ],
+      },
+    ],
   }
 
   beforeEach(() => {
@@ -81,23 +116,19 @@ describe('TeamRunConfigForm', () => {
     llmStore = {
       providersWithModels: [],
       providersWithModelsForSelection: [],
-      get models() {
-        return llmStore.providersWithModels.flatMap((provider: any) => provider.models.map((model: any) => model.modelIdentifier))
-      },
-      fetchProvidersWithModels: vi.fn().mockResolvedValue([]),
-      modelConfigSchemaByIdentifier: vi.fn().mockReturnValue(null),
+      fetchProvidersWithModels: vi.fn(async (runtimeKind: string) => {
+        const rows = runtimeProviders[runtimeKind] ?? []
+        llmStore.providersWithModels = rows
+        llmStore.providersWithModelsForSelection = rows
+        return rows
+      }),
     }
-    setProviders([
-      buildProviderRow('OPENAI', 'OpenAI', [
-        { modelIdentifier: 'gpt-4', name: 'GPT-4', value: 'gpt-4', canonicalName: 'gpt-4', providerId: 'OPENAI', providerName: 'OpenAI', providerType: 'OPENAI', runtime: 'api' },
-      ]),
-    ])
 
     runtimeStore = {
-      hasFetched: true,
       availabilities: [
         { runtimeKind: 'autobyteus', enabled: true, reason: null },
         { runtimeKind: 'codex_app_server', enabled: true, reason: null },
+        { runtimeKind: 'claude_agent_sdk', enabled: true, reason: null },
       ],
       fetchRuntimeAvailabilities: vi.fn().mockResolvedValue([]),
       availabilityByKind: vi.fn((runtimeKind: string) =>
@@ -156,7 +187,7 @@ describe('TeamRunConfigForm', () => {
           MemberOverrideItem: {
             name: 'MemberOverrideItem',
             template: '<div class="member-override-item-stub"></div>',
-            props: ['memberName', 'override', 'isCoordinator', 'options', 'disabled', 'globalLlmModel', 'globalLlmConfig'],
+            props: ['memberName', 'override', 'isCoordinator', 'disabled', 'globalRuntimeKind', 'globalLlmModel', 'globalLlmConfig'],
             emits: ['update:override'],
           },
         },
@@ -173,79 +204,51 @@ describe('TeamRunConfigForm', () => {
     const items = wrapper.findAllComponents({ name: 'MemberOverrideItem' })
     expect(items).toHaveLength(2)
     expect(items[0].props('memberName')).toBe('Member A')
+    expect(items[0].props('globalRuntimeKind')).toBe('autobyteus')
+    expect(items[0].props('globalLlmModel')).toBe('gpt-5.4')
   })
 
-  it('loads model providers for the selected runtime and passes provider-grouped options', () => {
-    const { wrapper } = buildWrapper({ runtimeKind: 'codex_app_server' })
-    const options = wrapper.findComponent({ name: 'SearchableGroupedSelect' }).props('options')
+  it('loads models for the team runtime and syncs runtime catalogs for explicit member runtimes', async () => {
+    const { wrapper } = buildWrapper({
+      memberOverrides: {
+        'Member B': {
+          agentDefinitionId: 'agent-b',
+          runtimeKind: 'claude_agent_sdk',
+        },
+      },
+    })
 
-    expect(llmStore.fetchProvidersWithModels).toHaveBeenCalledWith('codex_app_server')
-    expect(options[0].label).toBe('OpenAI')
-    expect(options[0].items[0].selectedLabel).toBe('OpenAI / GPT-4')
-  })
+    await wrapper.vm.$nextTick()
+    await wrapper.vm.$nextTick()
 
-  it('uses model identifiers as labels for AutoByteus runtime selections', () => {
-    setProviders([
-      buildProviderRow('AUTOBYTEUS', 'AutoByteus', [
-        { modelIdentifier: 'host-a/model-x', name: 'Model X', value: 'host-a/model-x', canonicalName: 'model-x', providerId: 'AUTOBYTEUS', providerName: 'AutoByteus', providerType: 'AUTOBYTEUS', runtime: 'autobyteus' },
-      ]),
-    ])
+    expect(llmStore.fetchProvidersWithModels).toHaveBeenCalledWith('autobyteus')
+    expect(llmStore.fetchProvidersWithModels).toHaveBeenCalledWith('claude_agent_sdk')
 
-    const { wrapper } = buildWrapper({ runtimeKind: 'autobyteus' })
-    const options = wrapper.findComponent({ name: 'SearchableGroupedSelect' }).props('options')
-
-    expect(options[0].items[0].name).toBe('host-a/model-x')
-    expect(options[0].items[0].selectedLabel).toBe('AutoByteus / host-a/model-x')
-  })
-
-  it('uses friendly labels for custom providers on AutoByteus runtime selections', () => {
-    setProviders([
-      buildProviderRow(
-        'provider_gateway',
-        'Internal Gateway',
-        [
-          {
-            modelIdentifier: 'openai-compatible:provider_gateway:model-a',
-            name: 'Model A',
-            value: 'openai-compatible:provider_gateway:model-a',
-            canonicalName: 'model-a',
-            providerId: 'provider_gateway',
-            providerName: 'Internal Gateway',
-            providerType: 'OPENAI_COMPATIBLE',
-            runtime: 'autobyteus',
-          },
-        ],
-        { providerType: 'OPENAI_COMPATIBLE', isCustom: true, baseUrl: 'https://gateway.example.com/v1' },
-      ),
-    ])
-
-    const { wrapper } = buildWrapper({ runtimeKind: 'autobyteus' })
-    const options = wrapper.findComponent({ name: 'SearchableGroupedSelect' }).props('options')
-
-    expect(options[0].items[0].name).toBe('Model A')
-    expect(options[0].items[0].selectedLabel).toBe('Internal Gateway / Model A')
+    const store = useTeamRunConfigStore()
+    expect(store.runtimeModelCatalogs.autobyteus).toEqual(['gpt-5.4'])
+    expect(store.runtimeModelCatalogs.claude_agent_sdk).toEqual(['claude-sonnet'])
   })
 
   it('changes runtime kind and reloads runtime-scoped models', async () => {
     const { wrapper, config } = buildWrapper({
       runtimeKind: 'autobyteus',
-      llmModelIdentifier: 'gpt-4',
+      llmModelIdentifier: 'gpt-5.4',
     })
 
     await wrapper.find('select#team-run-runtime-kind').setValue('codex_app_server')
+    await wrapper.vm.$nextTick()
 
     expect(config.runtimeKind).toBe('codex_app_server')
     expect(config.llmModelIdentifier).toBe('')
     expect(llmStore.fetchProvidersWithModels).toHaveBeenCalledWith('codex_app_server')
   })
 
-  it('renders override entries for nested leaf agents only', () => {
+  it('flattens nested team definitions into leaf member rows', () => {
     const { wrapper } = buildWrapper({}, nestedTeamDef)
     const items = wrapper.findAllComponents({ name: 'MemberOverrideItem' })
 
     expect(items).toHaveLength(2)
     expect(items[0].props('memberName')).toBe('Leaf A')
     expect(items[1].props('memberName')).toBe('Leaf B')
-    expect(wrapper.text()).toContain('Team Members Override (2)')
   })
 })

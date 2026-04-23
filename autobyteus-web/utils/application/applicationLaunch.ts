@@ -18,9 +18,7 @@ import type {
 } from '~/stores/applicationStore'
 import type { useWorkspaceStore } from '~/stores/workspace'
 import { resolveLeafTeamMembers } from '~/utils/teamDefinitionMembers'
-import {
-  resolveEffectiveMemberLlmConfig,
-} from '~/utils/teamRunConfigUtils'
+import { buildTeamRunMemberConfigRecords } from '~/utils/teamRunMemberConfigBuilder'
 
 export type PreparedAgentApplicationLaunch = {
   kind: 'AGENT'
@@ -104,31 +102,8 @@ export const buildPreparedTeamLaunch = (
 export const buildTeamMemberConfigs = (
   preparedLaunch: PreparedTeamApplicationLaunch,
   workspaceRootPath: string | null,
-) => preparedLaunch.leafMembers.map((member) => {
-  const override = preparedLaunch.config.memberOverrides[member.memberName]
-  const llmModelIdentifier = normalizeModelIdentifier(
-    override?.llmModelIdentifier || preparedLaunch.config.llmModelIdentifier,
-  )
-
-  if (!llmModelIdentifier) {
-    throw new Error(
-      `A model is required for team member '${member.memberName}' before launching this application.`,
-    )
-  }
-
-  return {
-    memberName: member.memberName,
-    memberRouteKey: member.memberRouteKey,
-    agentDefinitionId: member.agentDefinitionId,
-    llmModelIdentifier,
-    autoExecuteTools: override?.autoExecuteTools ?? preparedLaunch.config.autoExecuteTools,
-    skillAccessMode: preparedLaunch.config.skillAccessMode,
-    workspaceId: preparedLaunch.config.workspaceId || undefined,
-    workspaceRootPath: workspaceRootPath || undefined,
-    llmConfig: resolveEffectiveMemberLlmConfig(
-      override,
-      preparedLaunch.config.llmConfig,
-    ),
-    runtimeKind: normalizeRuntimeKind(preparedLaunch.config.runtimeKind),
-  }
+) => buildTeamRunMemberConfigRecords({
+  config: preparedLaunch.config,
+  leafMembers: preparedLaunch.leafMembers,
+  workspaceRootPath,
 })

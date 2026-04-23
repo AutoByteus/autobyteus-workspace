@@ -1,7 +1,7 @@
-import { buildClaudeTeamMcpServers } from "../../../../agent-team-execution/backends/claude/claude-team-mcp-server-builder.js";
+import { buildClaudeTeamMcpServers } from "../team-communication/claude-team-mcp-server-builder.js";
 import type { ClaudeSdkClient } from "../../../../runtime-management/claude/client/claude-sdk-client.js";
 import type { ClaudeSessionEvent } from "../claude-runtime-shared.js";
-import type { ClaudeSendMessageToolApprovalHandler } from "../../../../agent-team-execution/backends/claude/claude-send-message-tool-call-handler.js";
+import type { ClaudeSendMessageToolApprovalHandler } from "../team-communication/claude-send-message-tool-call-handler.js";
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
 import { buildClaudeBrowserMcpServers } from "../browser/build-claude-browser-mcp-servers.js";
 import { buildClaudePublishArtifactMcpServer } from "../published-artifacts/build-claude-publish-artifact-mcp-server.js";

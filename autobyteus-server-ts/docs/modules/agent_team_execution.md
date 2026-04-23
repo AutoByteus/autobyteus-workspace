@@ -2,10 +2,51 @@
 
 ## Scope
 
-Manages running team runs and streaming of team activity.
+Manages running team runs, selecting the authoritative team backend, restoring persisted team activity, and streaming member/team events through one server-owned boundary.
+
+## Backend Selection Model
+
+- `RuntimeKind` is the **member execution runtime** subject.
+- `TeamBackendKind` is the **team orchestration** subject.
+- `TeamRunService` resolves `TeamBackendKind` from the requested or persisted member runtime mix:
+  - single-runtime teams stay on `AUTOBYTEUS`, `CODEX_APP_SERVER`, or `CLAUDE_AGENT_SDK`
+  - multi-runtime teams select `MIXED`
+- `AgentTeamRunManager` then delegates create/restore work to the matching backend factory.
+
+## Current Execution Paths
+
+| Path | Authoritative owner | Member execution primitive | Notes |
+| --- | --- | --- | --- |
+| Single-runtime AutoByteus team | Native AutoByteus team backend | Native team runtime | Preserves existing task-plan-aware team behavior. |
+| Single-runtime Codex team | `CodexTeamManager` | One standalone Codex `AgentRun` per member | Uses runtime-neutral member bootstrap for teammate instructions and `send_message_to`. |
+| Single-runtime Claude team | `ClaudeTeamManager` | One standalone Claude `AgentRun` per member | Uses the same runtime-neutral member bootstrap contract as Codex. |
+| Mixed-runtime team | `MixedTeamManager` | `AgentRunManager` over per-member `AgentRun`s | Server-owned communication-only v1 path; does not delegate through legacy runtime-specific team managers. |
+
+## Mixed-Team Communication Contract
+
+- `MemberTeamContextBuilder` creates the runtime-neutral per-member communication/bootstrap contract:
+  - current member identity
+  - teammate list and allowed recipients
+  - optional team instruction
+  - `send_message_to` delivery handler
+- `InterAgentMessageRouter` is the canonical mixed-team inter-agent delivery owner. It delivers through the shared `AgentRun.postUserMessage(...)` boundary while preserving sender identity in recipient-visible content.
+- AutoByteus standalone members participating in mixed teams receive a compatible `teamContext.communicationContext` payload through `initialCustomData`, so the shared `send_message_to` tool can work without native `AgentTeam` ownership.
+- Mixed AutoByteus standalone members explicitly strip `ToolCategory.TASK_MANAGEMENT` tools before exposure; mixed-team v1 is communication-only.
+
+## Restore / Persistence Notes
+
+- Restore uses persisted per-member runtime metadata plus `TeamBackendKind`; it does not collapse mixed teams back to one runtime owner.
+- Persisted member metadata still carries the member runtime kind and platform-native run/thread/session id needed for restore.
+- `applicationExecutionContext` stays member-local and flows through create/restore for both single-runtime and mixed team members.
 
 ## TS Source
 
+- `src/agent-team-execution/domain/team-backend-kind.ts`
+- `src/agent-team-execution/services/team-run-service.ts`
 - `src/agent-team-execution/services/agent-team-run-manager.ts` (`AgentTeamRunManager`)
+- `src/agent-team-execution/services/member-team-context-builder.ts`
+- `src/agent-team-execution/services/inter-agent-message-router.ts`
+- `src/agent-team-execution/backends/mixed/mixed-team-manager.ts`
+- `src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts`
 - `src/services/agent-streaming/agent-team-stream-handler.ts`
 - `src/api/graphql/types/agent-team-run.ts`

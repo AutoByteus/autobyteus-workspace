@@ -19,6 +19,7 @@ const {
   runHistoryStoreMock,
   teamDefinitionStoreMock,
   contextFileUploadStoreMock,
+  runtimeProviderLookup,
 } = vi.hoisted(() => ({
   mockConnect: vi.fn(),
   mockDisconnect: vi.fn(),
@@ -46,6 +47,11 @@ const {
   },
   contextFileUploadStoreMock: {
     finalizeDraftAttachments: vi.fn(async ({ attachments }: { attachments: any[] }) => attachments),
+  },
+  runtimeProviderLookup: {
+    autobyteus: [{ provider: { id: 'OPENAI', name: 'OpenAI' }, models: [{ modelIdentifier: 'gpt-5.4' }] }],
+    codex_app_server: [{ provider: { id: 'OPENAI', name: 'OpenAI' }, models: [{ modelIdentifier: 'gpt-5.3-codex' }, { modelIdentifier: 'gpt-5.4' }] }],
+    claude_agent_sdk: [{ provider: { id: 'ANTHROPIC', name: 'Anthropic' }, models: [{ modelIdentifier: 'claude-sonnet' }, { modelIdentifier: 'claude-opus' }] }],
   },
 }));
 
@@ -104,6 +110,10 @@ vi.mock('~/stores/agentTeamDefinitionStore', () => ({
 
 vi.mock('~/stores/contextFileUploadStore', () => ({
   useContextFileUploadStore: () => contextFileUploadStoreMock,
+}));
+
+vi.mock('~/composables/useRuntimeScopedModelSelection', () => ({
+  loadRuntimeProviderGroupsForSelection: vi.fn(async (runtimeKind: string) => runtimeProviderLookup[runtimeKind] ?? []),
 }));
 
 describe('agentTeamRunStore', () => {
@@ -418,7 +428,7 @@ describe('agentTeamRunStore', () => {
     expect(focusedMember.isSending).toBe(false);
   });
 
-  it('uses team runtime kind for all member configs when launching a temporary team', async () => {
+  it('fans out mixed member runtimes when launching a temporary team', async () => {
     const focusedMember = {
       isSending: false,
       state: {
@@ -446,6 +456,12 @@ describe('agentTeamRunStore', () => {
             agentDefinitionId: 'agent-a',
             llmModelIdentifier: 'gpt-5.3-codex',
             llmConfig: { reasoning_effort: 'medium' },
+          },
+          student: {
+            agentDefinitionId: 'agent-b',
+            runtimeKind: 'claude_agent_sdk',
+            llmModelIdentifier: 'claude-sonnet',
+            llmConfig: { thinking_enabled: true },
           },
         },
       },
@@ -496,9 +512,10 @@ describe('agentTeamRunStore', () => {
               expect.objectContaining({
                 memberName: 'student',
                 agentDefinitionId: 'agent-b',
-                runtimeKind: 'codex_app_server',
+                runtimeKind: 'claude_agent_sdk',
+                llmModelIdentifier: 'claude-sonnet',
                 skillAccessMode: 'GLOBAL_DISCOVERY',
-                llmConfig: { reasoning_effort: 'high' },
+                llmConfig: { thinking_enabled: true },
               }),
             ]),
           }),
@@ -513,7 +530,7 @@ describe('agentTeamRunStore', () => {
     expect(mockSendMessage).toHaveBeenCalledWith('launch', 'professor', [], []);
   });
 
-  it('flattens nested team definitions into leaf member configs when launching a temporary team', async () => {
+  it('flattens nested team definitions into mixed leaf member configs when launching a temporary team', async () => {
     const focusedMember = {
       isSending: false,
       state: {
@@ -539,8 +556,9 @@ describe('agentTeamRunStore', () => {
         memberOverrides: {
           'Leaf B': {
             agentDefinitionId: 'agent-leaf-b',
-            llmModelIdentifier: 'claude-opus',
-            llmConfig: { thinking_enabled: false },
+            runtimeKind: 'codex_app_server',
+            llmModelIdentifier: 'gpt-5.4',
+            llmConfig: { reasoning_effort: 'medium' },
           },
         },
       },
@@ -606,9 +624,9 @@ describe('agentTeamRunStore', () => {
                 memberName: 'Leaf B',
                 memberRouteKey: 'Leaf B',
                 agentDefinitionId: 'agent-leaf-b',
-                runtimeKind: 'claude_agent_sdk',
-                llmModelIdentifier: 'claude-opus',
-                llmConfig: { thinking_enabled: false },
+                runtimeKind: 'codex_app_server',
+                llmModelIdentifier: 'gpt-5.4',
+                llmConfig: { reasoning_effort: 'medium' },
               }),
             ],
           }),

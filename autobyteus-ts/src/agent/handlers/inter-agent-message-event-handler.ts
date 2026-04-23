@@ -4,20 +4,14 @@ import type { InterAgentMessage } from '../message/inter-agent-message.js';
 import { AgentInputUserMessage } from '../message/agent-input-user-message.js';
 import { SenderType } from '../sender-type.js';
 import type { AgentContext } from '../context/agent-context.js';
-
-type TeamContextLike = {
-  teamManager?: {
-    resolveMemberNameByAgentId?: (agentId: string) => string | null;
-  } | null;
-};
+import { resolveTeamCommunicationContext } from '../../agent-team/context/team-communication-context.js';
 
 const resolveSenderDisplayName = (context: AgentContext, senderAgentId: string): string | null => {
-  const teamContext = context.customData?.teamContext as TeamContextLike | undefined;
-  const teamManager = teamContext?.teamManager;
-  if (!teamManager || typeof teamManager.resolveMemberNameByAgentId !== 'function') {
+  const communicationContext = resolveTeamCommunicationContext(context.customData?.teamContext);
+  if (!communicationContext) {
     return null;
   }
-  const resolved = teamManager.resolveMemberNameByAgentId(senderAgentId);
+  const resolved = communicationContext.resolveMemberNameByAgentId(senderAgentId);
   if (typeof resolved !== 'string' || !resolved.trim()) {
     return null;
   }

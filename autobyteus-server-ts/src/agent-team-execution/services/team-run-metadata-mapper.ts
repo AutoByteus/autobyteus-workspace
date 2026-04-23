@@ -1,7 +1,6 @@
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import type { TeamRunMetadata, TeamRunMemberMetadata } from "../../run-history/store/team-run-metadata-types.js";
 import { buildTeamMemberRunId, normalizeMemberRouteKey } from "../../run-history/utils/team-member-run-id.js";
-import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
 import { TeamMemberMemoryLayout } from "../../agent-memory/store/team-member-memory-layout.js";
 import { TeamRunConfig, type TeamMemberRunConfig } from "../domain/team-run-config.js";
@@ -10,6 +9,7 @@ import { TeamRun } from "../domain/team-run.js";
 import {
   buildRestoreTeamRunRuntimeContext,
   getRuntimeMemberContexts,
+  resolveTeamBackendKindFromMemberRuntimeKinds,
 } from "./team-run-runtime-context-support.js";
 
 type TeamDefinitionLookup = Pick<AgentTeamDefinitionService, "getDefinitionById">;
@@ -26,7 +26,9 @@ export class TeamRunMetadataMapper {
   }) {}
 
   async buildRestoreContext(metadata: TeamRunMetadata): Promise<TeamRunContext> {
-    const runtimeKind = metadata.memberMetadata[0]?.runtimeKind ?? RuntimeKind.AUTOBYTEUS;
+    const teamBackendKind = resolveTeamBackendKindFromMemberRuntimeKinds(
+      metadata.memberMetadata.map((member) => member.runtimeKind),
+    );
     const memberConfigs = await Promise.all(
       metadata.memberMetadata.map(async (member) => {
         let workspaceId: string | null = null;
@@ -54,22 +56,22 @@ export class TeamRunMetadataMapper {
           memberRunId: member.memberRunId,
           workspaceRootPath: member.workspaceRootPath,
           applicationExecutionContext: member.applicationExecutionContext ?? null,
-        };
+        } satisfies TeamMemberRunConfig;
       }),
     );
     const coordinatorMemberName = this.resolveCoordinatorMemberNameFromMetadata(metadata);
 
     return new TeamRunContext({
       runId: metadata.teamRunId,
-      runtimeKind,
+      teamBackendKind,
       coordinatorMemberName,
       config: new TeamRunConfig({
         teamDefinitionId: metadata.teamDefinitionId,
-        runtimeKind,
+        teamBackendKind,
         coordinatorMemberName,
         memberConfigs,
       }),
-      runtimeContext: buildRestoreTeamRunRuntimeContext(metadata, runtimeKind),
+      runtimeContext: buildRestoreTeamRunRuntimeContext(metadata, teamBackendKind),
     });
   }
 

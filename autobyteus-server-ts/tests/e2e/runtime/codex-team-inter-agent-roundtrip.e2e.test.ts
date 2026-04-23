@@ -205,6 +205,7 @@ describeCodexRuntime("Codex team inter-agent roundtrip e2e (live transport)", ()
     }
 
     const preferredOrder = [
+      "gpt-5.4-mini",
       "gpt-5.3-codex",
       "gpt-5.3-codex-spark",
       "gpt-5.2-codex",

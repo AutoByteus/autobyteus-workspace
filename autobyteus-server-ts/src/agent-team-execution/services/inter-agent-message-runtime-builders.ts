@@ -13,10 +13,23 @@ const resolveMessageType = (value: string | null | undefined): string => {
   return value.trim();
 };
 
+export const buildRecipientVisibleInterAgentMessageContent = (
+  request: InterAgentMessageDeliveryRequest,
+): string => {
+  const senderName =
+    typeof request.senderMemberName === "string" && request.senderMemberName.trim().length > 0
+      ? request.senderMemberName.trim()
+      : request.senderRunId;
+  return (
+    `You received a message from sender name: ${senderName}, sender id: ${request.senderRunId}\n` +
+    `message:\n${request.content}`
+  );
+};
+
 export const buildInterAgentDeliveryInputMessage = (
   request: InterAgentMessageDeliveryRequest,
 ): AgentInputUserMessage =>
-  new AgentInputUserMessage(request.content, SenderType.AGENT, null, {
+  new AgentInputUserMessage(buildRecipientVisibleInterAgentMessageContent(request), SenderType.AGENT, null, {
     sender_agent_id: request.senderRunId,
     sender_agent_name: request.senderMemberName ?? null,
     original_message_type: resolveMessageType(request.messageType),

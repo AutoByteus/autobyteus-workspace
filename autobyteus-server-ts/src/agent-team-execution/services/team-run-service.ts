@@ -28,6 +28,7 @@ import type { ObservedRunLifecycleEvent } from "../../runtime-management/domain/
 import { TeamRunEventSourceType } from "../domain/team-run-event.js";
 import { TeamDefinitionTraversalService } from "./team-definition-traversal-service.js";
 import { TeamRunMetadataMapper } from "./team-run-metadata-mapper.js";
+import { resolveTeamBackendKindFromMemberRuntimeKinds } from "./team-run-runtime-context-support.js";
 
 export interface TeamRunPresetInput {
   workspaceRootPath: string;
@@ -179,7 +180,6 @@ export class TeamRunService {
   }
 
   async createTeamRun(input: CreateTeamRunInput): Promise<TeamRun> {
-    const runtimeKind = resolveTeamRuntimeKind(input.memberConfigs);
     const memberConfigs = await Promise.all(
       input.memberConfigs.map(async (memberConfig) => {
         let workspaceId = memberConfig.workspaceId ?? null;
@@ -192,7 +192,7 @@ export class TeamRunService {
 
         return {
           ...memberConfig,
-          runtimeKind,
+          runtimeKind: resolveRuntimeKind(memberConfig.runtimeKind),
           workspaceId,
           workspaceRootPath,
         };
@@ -202,9 +202,12 @@ export class TeamRunService {
       input.teamDefinitionId,
       memberConfigs,
     );
+    const teamBackendKind = resolveTeamBackendKindFromMemberRuntimeKinds(
+      memberConfigs.map((memberConfig) => memberConfig.runtimeKind),
+    );
     const config = new TeamRunConfig({
       teamDefinitionId: input.teamDefinitionId,
-      runtimeKind,
+      teamBackendKind,
       coordinatorMemberName,
       memberConfigs,
     });
@@ -374,25 +377,6 @@ const normalizeLaunchPreset = (
   llmConfig: value.llmConfig ?? null,
 });
 
-const resolveTeamRuntimeKind = (
-  memberConfigs: TeamRunMemberConfigInput[],
-): RuntimeKind => {
-  const runtimeKinds = new Set<RuntimeKind>();
-  for (const memberConfig of memberConfigs) {
-    const runtimeKind = resolveRuntimeKind(memberConfig.runtimeKind);
-    runtimeKinds.add(runtimeKind);
-  }
-  if (runtimeKinds.size === 0) {
-    return RuntimeKind.AUTOBYTEUS;
-  }
-  if (runtimeKinds.size > 1) {
-    throw new Error(
-      "[MIXED_TEAM_RUNTIME_UNSUPPORTED] Team members must use one runtime kind per team run.",
-    );
-  }
-  return Array.from(runtimeKinds)[0] ?? RuntimeKind.AUTOBYTEUS;
-};
-
 const resolveRuntimeKind = (
   value: RuntimeKind | string | null | undefined,
 ): RuntimeKind => {
@@ -401,7 +385,7 @@ const resolveRuntimeKind = (
   }
   const runtimeKind = runtimeKindFromString(value, null);
   if (!runtimeKind) {
-    throw new Error(`[INVALID_RUNTIME_KIND] Unsupported team runtime kind '${value}'.`);
+    throw new Error(`[INVALID_RUNTIME_KIND] Unsupported team member runtime kind '${value}'.`);
   }
   return runtimeKind;
 };
