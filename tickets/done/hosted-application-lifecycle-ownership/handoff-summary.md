@@ -4,7 +4,7 @@
 
 - Ticket: `hosted-application-lifecycle-ownership`
 - Date: `2026-04-23`
-- Current Status: `Verified and archived`
+- Current Status: `Finalized`
 
 ## Delivery Summary
 
@@ -112,7 +112,7 @@
   - `tickets/done/hosted-application-lifecycle-ownership/release-notes.md`
 - Notes:
   - Prepared before verification and retained in the archived ticket record.
-  - The user explicitly requested finalization without creating a new version, so no release/version publication is planned from this ticket.
+  - The user explicitly requested finalization without creating a new version, so no release/version publication was performed from this ticket.
 
 ## User Verification
 
@@ -131,26 +131,26 @@
 ## Finalization Target
 
 - Archived ticket path:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hosted-application-lifecycle-ownership/tickets/done/hosted-application-lifecycle-ownership`
-- Ticket worktree path:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hosted-application-lifecycle-ownership`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/hosted-application-lifecycle-ownership`
 - Ticket branch:
   - `codex/hosted-application-lifecycle-ownership`
 - Finalization target remote:
   - `origin`
 - Finalization target branch:
   - `personal`
-- Commit status:
-  - `Completed on ticket branch`
-- Push status:
-  - `Pending`
+- Ticket branch commit status:
+  - `Completed via 48de018398375f41b794f2b4b8c453eb4c1b1717, e36a5f2060c2b7a53afe7525f47d3bd5dae3fea8, and fea554b3d4571f1804f91a9e19f7c3cce6538e09`
+- Ticket branch push status:
+  - `Completed`
 - Merge status:
-  - `Pending`
+  - `Completed via 52a4c3b815c62d5d353d06f6b3ad5d345a25a3d2`
 - Release/publication/deployment status:
-  - `Not requested`
+  - `Skipped by user request`
 - Worktree cleanup status:
-  - `Pending`
+  - `Completed`
 - Local branch cleanup status:
-  - `Pending`
+  - `Completed`
+- Remote branch cleanup status:
+  - `Completed`
 - Blockers / notes:
-  - `No version/tag/release work will be performed because the user explicitly requested no new version creation.`
+  - `None`
