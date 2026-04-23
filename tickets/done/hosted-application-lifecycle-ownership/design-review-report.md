@@ -9,9 +9,9 @@ The latest round is authoritative; earlier rounds remain history.
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/hosted-application-lifecycle-ownership/tickets/in-progress/hosted-application-lifecycle-ownership/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/hosted-application-lifecycle-ownership/tickets/in-progress/hosted-application-lifecycle-ownership/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/hosted-application-lifecycle-ownership/tickets/in-progress/hosted-application-lifecycle-ownership/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/hosted-application-lifecycle-ownership/tickets/done/hosted-application-lifecycle-ownership/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/hosted-application-lifecycle-ownership/tickets/done/hosted-application-lifecycle-ownership/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/hosted-application-lifecycle-ownership/tickets/done/hosted-application-lifecycle-ownership/design-spec.md`
 - Current Review Round: `3`
 - Trigger: Rerun after investigation confirmed an adjacent runtime-authority mismatch for AutoByteus team-member `publish_artifact`, and the design spec added an explicit boundary/dependency note to prevent lifecycle implementation from normalizing the wrong authority.
 - Prior Review Round Reviewed: `2`

@@ -3,10 +3,13 @@
 ## Scope
 
 - Ticket: `hosted-application-lifecycle-ownership`
-- Trigger: `Delivery handoff refresh after API/E2E round 4 passed; round 4 revalidated the authoritative hosted qwen/autobyteus business path and resolved HALO-E2E-009 on the real /applications/:id route`
+- Trigger: `Final delivery archival after explicit user verification and the post-verification latest-base refresh against advanced origin/personal`
 - Bootstrap base reference: `origin/personal @ 76bbc1a033336288a53e251d9603a2486a60e55e`
-- Integrated base reference used for docs sync: `origin/personal @ 76bbc1a033336288a53e251d9603a2486a60e55e` (`git fetch origin personal --prune` on 2026-04-23 confirmed the ticket worktree was still already current; no checkpoint, merge, or rebase was needed)
-- Post-integration verification reference: `No new base commits were integrated during delivery, so no delivery-stage rerun was required. The authoritative executable validation now remains tickets/in-progress/hosted-application-lifecycle-ownership/api-e2e-report.md round 4, with rounds 1 and 2 retained as supporting evidence for the unchanged startup-boundary and immersive Host Controls/business-flow surfaces.`
+- Integrated base reference used for docs sync: `origin/personal @ e2667adcd4d64ef3205834a872a67627c013d12b` (`git fetch origin personal --prune` on 2026-04-23 showed the tracked base had advanced; checkpoint commit 48de018398375f41b794f2b4b8c453eb4c1b1717 preserved the reviewed candidate, and merge commit e36a5f2060c2b7a53afe7525f47d3bd5dae3fea8 integrated the latest base before archival`)
+- Post-integration verification reference:
+  - `pnpm --dir autobyteus-server-ts exec vitest run tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts tests/integration/agent-team-execution/team-run-service.integration.test.ts tests/integration/application-backend/brief-studio-team-config.integration.test.ts tests/unit/agent-team-execution/team-run-service.test.ts tests/unit/agent-team-execution/team-run-runtime-context-support.test.ts tests/unit/agent-team-execution/team-run.test.ts` — `Passed`
+  - `pnpm --dir autobyteus-web test:nuxt --run components/applications/__tests__/ApplicationIframeHost.spec.ts components/applications/__tests__/ApplicationSurface.spec.ts components/applications/__tests__/ApplicationImmersiveControlPanel.spec.ts components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts components/applications/__tests__/ApplicationLaunchDefaultsFields.spec.ts utils/application/__tests__/applicationAssetUrl.spec.ts` — `Passed`
+  - `pnpm --dir autobyteus-server-ts exec vitest run tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts tests/integration/agent-team-execution/team-run-service.integration.test.ts tests/integration/application-backend/brief-studio-team-config.integration.test.ts` — `Passed` after removing the duplicate `memoryDir` object key surfaced in `autobyteus-server-ts/src/agent-team-execution/backends/codex/codex-team-run-backend-factory.ts`
 
 ## Why Docs Were Updated
 
@@ -72,4 +75,4 @@
 - Notes:
   - Durable docs remain synchronized to the reviewed and validated hosted-application lifecycle ownership model.
   - API/E2E round 4 confirmed no additional long-lived doc edits were needed after the immersive Host Controls UX fix, the Brief Studio business-flow proof, and the final authoritative hosted qwen/autobyteus rerun.
-  - Delivery remains at explicit user-verification hold; archival/finalization/release are still intentionally deferred.
+  - Explicit user verification was received on 2026-04-23, the ticket was archived to `tickets/done/hosted-application-lifecycle-ownership/`, and no additional durable doc edits were needed after the latest-base integration refresh.

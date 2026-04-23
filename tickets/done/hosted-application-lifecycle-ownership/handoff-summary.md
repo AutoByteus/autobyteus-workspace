@@ -4,7 +4,7 @@
 
 - Ticket: `hosted-application-lifecycle-ownership`
 - Date: `2026-04-23`
-- Current Status: `Ready for user verification`
+- Current Status: `Verified and archived`
 
 ## Delivery Summary
 
@@ -18,12 +18,12 @@
   - Fixed the follow-up immersive Host Controls UX regression so Configure now stays panel-owned, keeps Reload / Exit pinned in the footer, and preserves readable resize / reclamp behavior in immersive mode.
   - Resolved `HALO-E2E-009` so the real `/applications/:id` hosted Brief Studio qwen/autobyteus path now reaches `brief.ready_for_review`, publishes researcher + writer artifacts, and persists approval.
 - Planned scope reference:
-  - `tickets/in-progress/hosted-application-lifecycle-ownership/requirements.md`
-  - `tickets/in-progress/hosted-application-lifecycle-ownership/design-spec.md`
-  - `tickets/in-progress/hosted-application-lifecycle-ownership/implementation-handoff.md`
+  - `tickets/done/hosted-application-lifecycle-ownership/requirements.md`
+  - `tickets/done/hosted-application-lifecycle-ownership/design-spec.md`
+  - `tickets/done/hosted-application-lifecycle-ownership/implementation-handoff.md`
 - Deferred / not delivered:
   - External/imported bundles still on the old manual startup pattern remain follow-up migration work outside this ticket.
-  - Ticket archival, commit/push/merge, release, and cleanup are intentionally deferred until explicit user verification.
+  - External release/version publication was explicitly skipped at the user's request.
 - Key architectural or ownership changes:
   - `ApplicationShell.vue` remains the supported pre-launch owner.
   - `ApplicationSurface.vue` remains the host-side reveal owner and still completes that reveal boundary on bootstrap delivery.
@@ -41,32 +41,33 @@
 - Bootstrap base reference:
   - `origin/personal @ 76bbc1a033336288a53e251d9603a2486a60e55e`
 - Latest tracked remote base checked during delivery:
-  - `origin/personal @ 76bbc1a033336288a53e251d9603a2486a60e55e`
+  - `origin/personal @ e2667adcd4d64ef3205834a872a67627c013d12b`
 - Base advanced since bootstrap or prior refresh:
-  - `No`
+  - `Yes`
 - New base commits integrated:
-  - `No`
+  - `Yes`
 - Local checkpoint commit:
-  - `Not needed`
+  - `48de018398375f41b794f2b4b8c453eb4c1b1717`
 - Integration method:
-  - `Already current`
+  - `Merged origin/personal into codex/hosted-application-lifecycle-ownership`
 - Post-integration executable rerun:
-  - `No`
+  - `Yes`
 - Notes:
-  - `git fetch origin personal --prune` on `2026-04-23` confirmed `HEAD`, `origin/personal`, and `merge-base` were all `76bbc1a033336288a53e251d9603a2486a60e55e`.
-  - Because no new base commits were integrated, the authoritative validation package in `api-e2e-report.md` round `4` remained current and no delivery-stage rerun was required before refreshing the delivery artifacts.
+  - `git fetch origin personal --prune` on `2026-04-23` showed the tracked base had advanced to `e2667adcd4d64ef3205834a872a67627c013d12b`.
+  - Merge commit `e36a5f2060c2b7a53afe7525f47d3bd5dae3fea8` brought the ticket branch current before archival.
+  - The integration refresh required conflict resolution in the team-runtime plumbing and surfaced one duplicate `memoryDir` object key in `autobyteus-server-ts/src/agent-team-execution/backends/codex/codex-team-run-backend-factory.ts`; that integration-local fix was applied and the affected server checks were rerun.
+  - No material user-facing change to the delivered hosted-application lifecycle behavior was observed after the latest-base refresh, so renewed manual user verification was not required.
 
 ## Verification Summary
 
 - Unit / integration verification:
   - Earlier implementation-level package validation from the cumulative package remains authoritative for the shared contract/startup owners and sample bundle builds.
-  - Follow-up focused review/validation reruns passed:
-    - `pnpm --dir autobyteus-web test:nuxt --run components/applications/__tests__/ApplicationImmersiveControlPanel.spec.ts components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts components/applications/__tests__/ApplicationLaunchDefaultsFields.spec.ts`
-    - `pnpm --dir autobyteus-web exec nuxi prepare`
-    - `pnpm --dir autobyteus-web test:nuxt --run components/applications/__tests__/ApplicationIframeHost.spec.ts components/applications/__tests__/ApplicationSurface.spec.ts utils/application/__tests__/applicationAssetUrl.spec.ts components/applications/__tests__/ApplicationImmersiveControlPanel.spec.ts components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts components/applications/__tests__/ApplicationLaunchDefaultsFields.spec.ts`
-    - `pnpm --dir autobyteus-server-ts build`
+  - Post-integration reruns passed:
+    - `pnpm --dir autobyteus-server-ts exec vitest run tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts tests/integration/agent-team-execution/team-run-service.integration.test.ts tests/integration/application-backend/brief-studio-team-config.integration.test.ts tests/unit/agent-team-execution/team-run-service.test.ts tests/unit/agent-team-execution/team-run-runtime-context-support.test.ts tests/unit/agent-team-execution/team-run.test.ts`
+    - `pnpm --dir autobyteus-web test:nuxt --run components/applications/__tests__/ApplicationIframeHost.spec.ts components/applications/__tests__/ApplicationSurface.spec.ts components/applications/__tests__/ApplicationImmersiveControlPanel.spec.ts components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts components/applications/__tests__/ApplicationLaunchDefaultsFields.spec.ts utils/application/__tests__/applicationAssetUrl.spec.ts`
+    - `pnpm --dir autobyteus-server-ts exec vitest run tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts tests/integration/agent-team-execution/team-run-service.integration.test.ts tests/integration/application-backend/brief-studio-team-config.integration.test.ts`
 - API / E2E verification:
-  - `tickets/in-progress/hosted-application-lifecycle-ownership/api-e2e-report.md` round `4` passed and is the latest authoritative validation report.
+  - `tickets/done/hosted-application-lifecycle-ownership/api-e2e-report.md` round `4` passed and remains the latest authoritative validation report.
   - Round `1` remains the supporting pass for unchanged startup-boundary scenarios.
   - Round `2` remains the supporting pass for the immersive Host Controls UX fix and the two-brief Brief Studio business-flow proof.
   - Round `4` is the authoritative real-user business-path rerun that resolved `HALO-E2E-009` on the real hosted qwen/autobyteus route.
@@ -88,7 +89,7 @@
 ## Documentation Sync Summary
 
 - Docs sync artifact:
-  - `tickets/in-progress/hosted-application-lifecycle-ownership/docs-sync.md`
+  - `tickets/done/hosted-application-lifecycle-ownership/docs-sync.md`
 - Docs result:
   - `Updated`
 - Docs updated:
@@ -101,31 +102,36 @@
 - Notes:
   - Durable docs now describe the shared contract owner, framework-owned startup boundary, unsupported direct raw entry, and the reviewed sample-app authoring pattern.
   - The later immersive Host Controls UX fix, Brief Studio business-flow proof, and authoritative round-4 host-route rerun did not require additional long-lived doc edits beyond those already-updated docs.
+  - The latest-base integration refresh against advanced `origin/personal` also did not require any further durable doc delta.
 
 ## Release Notes Status
 
 - Release notes required:
-  - `Yes`
+  - `Prepared for record only`
 - Release notes artifact:
-  - `tickets/in-progress/hosted-application-lifecycle-ownership/release-notes.md`
+  - `tickets/done/hosted-application-lifecycle-ownership/release-notes.md`
 - Notes:
-  - Prepared in the repo-root release-helper format before user verification and refreshed to include the final immersive Host Controls usability fix plus the resolved hosted Brief Studio draft/approval business path.
+  - Prepared before verification and retained in the archived ticket record.
+  - The user explicitly requested finalization without creating a new version, so no release/version publication is planned from this ticket.
 
-## User Verification Hold
+## User Verification
 
 - Waiting for explicit user verification:
-  - `Yes`
-- User verification received:
   - `No`
+- User verification received:
+  - `Yes`
+- Verification reference:
+  - `User stated on 2026-04-23: "i would say the ticket is done. lets finalize the ticket, and no need to create a new version"`
 - Notes:
-  - Manual verification should confirm the final hosted-application lifecycle UX is acceptable in the intended user environment.
-  - A local unsigned macOS verification build is available at:
+  - A local unsigned macOS verification build remained available during verification at:
     - `autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.81.dmg`
     - `autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.81.zip`
-  - Repository finalization, release publication, and cleanup remain intentionally deferred until that approval is received.
+  - Because the post-verification latest-base integration did not materially change the delivered hosted-application lifecycle behavior, renewed manual verification was not required.
 
 ## Finalization Target
 
+- Archived ticket path:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/hosted-application-lifecycle-ownership/tickets/done/hosted-application-lifecycle-ownership`
 - Ticket worktree path:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/hosted-application-lifecycle-ownership`
 - Ticket branch:
@@ -135,16 +141,16 @@
 - Finalization target branch:
   - `personal`
 - Commit status:
-  - `Not started`
+  - `Completed on ticket branch`
 - Push status:
-  - `Not started`
+  - `Pending`
 - Merge status:
-  - `Not started`
+  - `Pending`
 - Release/publication/deployment status:
-  - `Not started`
+  - `Not requested`
 - Worktree cleanup status:
-  - `Not started`
+  - `Pending`
 - Local branch cleanup status:
-  - `Not started`
+  - `Pending`
 - Blockers / notes:
-  - Explicit user verification is the only remaining gate before archival, repository finalization, release, and cleanup.
+  - `No version/tag/release work will be performed because the user explicitly requested no new version creation.`
