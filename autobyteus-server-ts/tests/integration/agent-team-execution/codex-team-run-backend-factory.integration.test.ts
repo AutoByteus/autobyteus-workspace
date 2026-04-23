@@ -7,6 +7,7 @@ import {
 } from "../../../src/agent-team-execution/backends/codex/codex-team-run-context.js";
 import { TeamRunConfig, type TeamMemberRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
+import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { buildTeamMemberRunId } from "../../../src/run-history/utils/team-member-run-id.js";
 
@@ -23,7 +24,7 @@ const createTeamManagerStub = () => ({
 const createConfig = () =>
   new TeamRunConfig({
     teamDefinitionId: "team-def-codex-1",
-    runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+    teamBackendKind: TeamBackendKind.CODEX_APP_SERVER,
     memberConfigs: [
       {
         memberName: "Coordinator",
@@ -74,7 +75,7 @@ describe("CodexTeamRunBackendFactory integration", () => {
 
     const context = createdContexts[0];
     expect(context.runId).toBeTruthy();
-    expect(context.runtimeKind).toBe(RuntimeKind.CODEX_APP_SERVER);
+    expect(context.teamBackendKind).toBe(TeamBackendKind.CODEX_APP_SERVER);
     expect(context.config?.teamDefinitionId).toBe("team-def-codex-1");
     expect(context.runtimeContext.coordinatorMemberRouteKey).toBeNull();
     expect(context.runtimeContext.memberContexts).toHaveLength(2);
@@ -86,6 +87,7 @@ describe("CodexTeamRunBackendFactory integration", () => {
     expect(coordinatorContext.memberRunId).toBe("coord-run");
     expect(coordinatorContext.threadId).toBeNull();
     expect(coordinatorContext.agentRunConfig.workspaceId).toBe("workspace-coordinator");
+    expect(coordinatorContext.agentRunConfig.memoryDir).toContain(context.runId);
     expect(coordinatorContext.agentRunConfig.llmConfig).toEqual({
       reasoning_effort: "medium",
     });
@@ -97,6 +99,7 @@ describe("CodexTeamRunBackendFactory integration", () => {
       buildTeamMemberRunId(context.runId, researcherContext.memberRouteKey),
     );
     expect(researcherContext.agentRunConfig.workspaceId).toBe("workspace-researcher");
+    expect(researcherContext.agentRunConfig.memoryDir).toContain(context.runId);
     expect(researcherContext.agentRunConfig.autoExecuteTools).toBe(true);
     expect(researcherContext.agentRunConfig.skillAccessMode).toBe(SkillAccessMode.WORKSPACE);
     expect(researcherContext.agentRunConfig.llmConfig).toEqual({
@@ -104,7 +107,7 @@ describe("CodexTeamRunBackendFactory integration", () => {
     });
 
     expect(backend.runId).toBe(context.runId);
-    expect(backend.runtimeKind).toBe(RuntimeKind.CODEX_APP_SERVER);
+    expect(backend.teamBackendKind).toBe(TeamBackendKind.CODEX_APP_SERVER);
     expect(backend.getRuntimeContext()).toBe(context.runtimeContext);
     expect(backend.isActive()).toBe(true);
   });
@@ -121,7 +124,7 @@ describe("CodexTeamRunBackendFactory integration", () => {
 
     const restoreContext = new TeamRunContext({
       runId: "team-codex-restore-1",
-      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      teamBackendKind: TeamBackendKind.CODEX_APP_SERVER,
       config: createConfig(),
       runtimeContext: new CodexTeamRunContext({
         coordinatorMemberRouteKey: "coord-route",
@@ -136,10 +139,11 @@ describe("CodexTeamRunBackendFactory integration", () => {
               llmModelIdentifier: "gpt-5.4-mini",
               autoExecuteTools: false,
               workspaceId: "workspace-coordinator",
+              memoryDir: "/tmp/codex-team-memory/coord-run",
               llmConfig: { reasoning_effort: "medium" },
               skillAccessMode: SkillAccessMode.NONE,
               runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-              teamContext: null,
+              memberTeamContext: null,
             } as any,
           }),
         ],

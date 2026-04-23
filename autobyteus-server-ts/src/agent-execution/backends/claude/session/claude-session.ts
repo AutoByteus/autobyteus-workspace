@@ -11,11 +11,7 @@ import { logRawClaudeSessionChunkDetails } from "../events/claude-session-event-
 import {
   buildClaudeSessionMcpServers,
 } from "./build-claude-session-mcp-servers.js";
-import {
-  getRuntimeMemberContexts,
-  resolveRuntimeMemberContext,
-  type TeamRunContext,
-} from "../../../../agent-team-execution/domain/team-run-context.js";
+import type { MemberTeamContext } from "../../../../agent-team-execution/domain/member-team-context.js";
 import type { ClaudeAgentRunContext, ClaudeRunContext } from "../backend/claude-agent-run-context.js";
 import { ClaudeSessionMessageCache } from "./claude-session-message-cache.js";
 import type { ClaudeSessionToolUseCoordinator } from "./claude-session-tool-use-coordinator.js";
@@ -25,7 +21,7 @@ import type {
   ClaudeSdkClient,
   ClaudeSdkQueryLike,
 } from "../../../../runtime-management/claude/client/claude-sdk-client.js";
-import type { ClaudeTeamRunContext } from "../../../../agent-team-execution/backends/claude/claude-team-run-context.js";
+
 import { dispatchRuntimeEvent } from "../../shared/runtime-event-dispatch.js";
 import { CLAUDE_SEND_MESSAGE_MCP_TOOL_NAME, CLAUDE_SEND_MESSAGE_TOOL_NAME } from "../claude-send-message-tool-name.js";
 
@@ -103,8 +99,8 @@ export class ClaudeSession {
     return this.runContext.runtimeContext.skillAccessMode;
   }
 
-  get teamContext(): TeamRunContext<ClaudeTeamRunContext> | null {
-    return this.runContext.runtimeContext.teamContext;
+  get memberTeamContext(): MemberTeamContext | null {
+    return this.runContext.runtimeContext.memberTeamContext;
   }
 
   get activeTurnId(): string | null {
@@ -445,8 +441,7 @@ export class ClaudeSession {
     const allowedRecipientNames = this.resolveAllowedRecipientNames();
     return (
       this.runContext.runtimeContext.configuredToolExposure.sendMessageToConfigured &&
-      Boolean(this.teamContext) &&
-      Boolean(this.teamContext?.runId) &&
+      Boolean(this.memberTeamContext?.sendMessageToEnabled) &&
       allowedRecipientNames.length > 0
     );
   }
@@ -483,15 +478,8 @@ export class ClaudeSession {
     return [...allowedTools];
   }
 
-  private resolveCurrentMemberContext() {
-    return resolveRuntimeMemberContext(this.teamContext, this.runId);
-  }
-
   private resolveAllowedRecipientNames(): string[] {
-    const currentMemberName = this.resolveCurrentMemberContext()?.memberName ?? null;
-    return getRuntimeMemberContexts(this.teamContext?.runtimeContext ?? null)
-      .map((memberContext) => memberContext.memberName)
-      .filter((memberName) => memberName !== currentMemberName);
+    return [...(this.memberTeamContext?.allowedRecipientNames ?? [])];
   }
 
   private resolveClaudeIncrementalDelta(options: {

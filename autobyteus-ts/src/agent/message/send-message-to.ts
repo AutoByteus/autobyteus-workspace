@@ -3,6 +3,7 @@ import { ToolCategory } from '../../tools/tool-category.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../../utils/parameter-schema.js';
 import { InterAgentMessageRequestEvent } from '../../agent-team/events/agent-team-events.js';
 import type { ToolConfig } from '../../tools/tool-config.js';
+import { resolveTeamCommunicationContext } from '../../agent-team/context/team-communication-context.js';
 
 type SendMessageContext = {
   agentId?: string;
@@ -10,11 +11,7 @@ type SendMessageContext = {
     name?: string;
   };
   customData?: {
-    teamContext?: {
-      teamManager?: {
-        dispatchInterAgentMessageRequest: (event: InterAgentMessageRequestEvent) => Promise<void>;
-      } | null;
-    };
+    teamContext?: unknown;
   };
 };
 
@@ -62,17 +59,12 @@ export class SendMessageTo extends BaseTool {
   }
 
   protected async _execute(context: SendMessageContext, kwargs: Record<string, unknown> = {}): Promise<string> {
-    const teamContext = context?.customData?.teamContext;
-    if (!teamContext) {
+    const communicationContext = resolveTeamCommunicationContext(context?.customData?.teamContext);
+    if (!communicationContext) {
       const errorMsg =
         `Critical error: ${this.getName()} tool is not configured for team communication. ` +
         'It can only be used within a managed AgentTeam.';
       return `Error: ${errorMsg}`;
-    }
-
-    const teamManager = teamContext.teamManager;
-    if (!teamManager) {
-      return 'Error: Internal Error: TeamManager not found in the provided team_context.';
     }
 
     const recipientName = (kwargs as { recipient_name?: string }).recipient_name;
@@ -99,7 +91,7 @@ export class SendMessageTo extends BaseTool {
       messageType
     );
 
-    await teamManager.dispatchInterAgentMessageRequest(event);
+    await communicationContext.dispatchInterAgentMessageRequest(event);
 
     return `Message dispatch for recipient '${recipientName}' has been successfully requested.`;
   }

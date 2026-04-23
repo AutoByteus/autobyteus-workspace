@@ -10,16 +10,16 @@
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { useLocalization } from '~/composables/useLocalization'
 import {
   APPLICATION_IFRAME_CHANNEL,
   APPLICATION_IFRAME_CONTRACT_VERSION_V2,
   APPLICATION_IFRAME_READY_EVENT,
-  type ApplicationHostBootstrapEnvelopeV2,
-  type ApplicationIframeReadySignal,
   isApplicationIframeEnvelopeV2,
   isApplicationUiReadyEnvelopeV2,
-} from '~/types/application/ApplicationIframeContract'
+  type ApplicationHostBootstrapEnvelopeV2,
+  type ApplicationIframeReadySignal,
+} from '@autobyteus/application-sdk-contracts'
+import { useLocalization } from '~/composables/useLocalization'
 import {
   buildApplicationIframeSrc,
   type ApplicationIframeLaunchDescriptor,

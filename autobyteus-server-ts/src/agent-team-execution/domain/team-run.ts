@@ -32,8 +32,8 @@ export class TeamRun {
     return this.context?.runId ?? this.backend.runId;
   }
 
-  get runtimeKind(): TeamRunBackend["runtimeKind"] {
-    return this.context?.runtimeKind ?? this.backend.runtimeKind;
+  get teamBackendKind(): TeamRunBackend["teamBackendKind"] {
+    return this.context?.teamBackendKind ?? this.backend.teamBackendKind;
   }
 
   get config(): TeamRunConfig | null {
@@ -103,6 +103,9 @@ export class TeamRun {
       typeof this.context?.coordinatorMemberName === "string" &&
       this.context.coordinatorMemberName.trim().length > 0
         ? this.context.coordinatorMemberName.trim()
+        : typeof this.configValue?.coordinatorMemberName === "string" &&
+            this.configValue.coordinatorMemberName.trim().length > 0
+          ? this.configValue.coordinatorMemberName.trim()
         : null;
     if (coordinatorMemberName) {
       return coordinatorMemberName;

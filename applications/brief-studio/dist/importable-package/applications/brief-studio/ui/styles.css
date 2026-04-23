@@ -158,7 +158,7 @@ h2 {
   box-shadow: 0 0 0 4px rgba(91, 63, 214, 0.12);
 }
 
-.status-banner {
+.workspace-status {
   margin-top: 18px;
   padding: 18px 20px;
   border-radius: 22px;
@@ -169,13 +169,13 @@ h2 {
   font-weight: 600;
 }
 
-.status-banner.error {
+.workspace-status.error {
   border-color: #fecaca;
   background: #fef2f2;
   color: #991b1b;
 }
 
-.status-banner.ready {
+.workspace-status.ready {
   border-color: #bfdbfe;
   background: #eff6ff;
   color: #1d4ed8;

@@ -72,16 +72,16 @@
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, shallowRef, watch } from 'vue'
+import {
+  APPLICATION_IFRAME_READY_EVENT,
+  createApplicationHostBootstrapEnvelopeV2,
+  type ApplicationHostBootstrapEnvelopeV2,
+  type ApplicationIframeReadySignal,
+} from '@autobyteus/application-sdk-contracts'
 import ApplicationIframeHost from '~/components/applications/ApplicationIframeHost.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import type { ApplicationCatalogEntry } from '~/stores/applicationStore'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
-import {
-  APPLICATION_IFRAME_READY_TIMEOUT_MS,
-  createApplicationHostBootstrapEnvelopeV2,
-  type ApplicationHostBootstrapEnvelopeV2,
-  type ApplicationIframeReadySignal,
-} from '~/types/application/ApplicationIframeContract'
 import {
   areApplicationIframeDescriptorInputsEqual,
   buildApplicationIframeLaunchDescriptor,
@@ -90,6 +90,8 @@ import {
   type ApplicationIframeLaunchDescriptorInputs,
 } from '~/utils/application/applicationLaunchDescriptor'
 import { buildApplicationHostTransport } from '~/utils/application/applicationHostTransport'
+
+const APPLICATION_IFRAME_READY_TIMEOUT_MS = 10_000
 
 const props = defineProps<{
   application: ApplicationCatalogEntry | null
@@ -161,7 +163,7 @@ const startWaitingForReady = (descriptor: ApplicationIframeLaunchDescriptor): vo
   readyTimeoutHandle.value = window.setTimeout(() => {
     failLaunch(
       $t('applications.components.applications.ApplicationIframeHost.readyTimeout', {
-        eventName: 'autobyteus.application.ui.ready',
+        eventName: APPLICATION_IFRAME_READY_EVENT,
         timeoutMs: APPLICATION_IFRAME_READY_TIMEOUT_MS,
       }),
     )

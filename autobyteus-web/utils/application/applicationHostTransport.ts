@@ -1,6 +1,6 @@
+import type { ApplicationHostTransport } from '@autobyteus/application-sdk-contracts'
 import type { NodeEndpoints } from '~/types/node'
 import { normalizeNodeBaseUrl } from '~/utils/nodeEndpoints'
-import type { ApplicationHostTransport } from '~/types/application/ApplicationHostTransport'
 
 const toWebsocketBase = (httpBaseUrl: string): string => {
   const normalized = (httpBaseUrl || '').trim().replace(/\/+$/, '')

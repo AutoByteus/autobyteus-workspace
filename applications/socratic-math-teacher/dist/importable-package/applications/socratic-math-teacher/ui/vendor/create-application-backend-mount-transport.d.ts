@@ -1,4 +1,4 @@
-import type { ApplicationRequestContext, ApplicationRouteMethod, ApplicationRouteRequest, ApplicationRouteResponse } from "@autobyteus/application-sdk-contracts";
+import type { ApplicationRequestContext, ApplicationRouteMethod, ApplicationRouteRequest, ApplicationRouteResponse } from "./application-sdk-contracts/index.js";
 import type { ApplicationClientTransport } from "./application-client-transport.js";
 type FetchHeaders = Record<string, string>;
 type FetchResponse = {

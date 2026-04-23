@@ -17,6 +17,7 @@ import { generateTeamRunId } from "../../../run-history/utils/team-run-id-utils.
 import { buildTeamMemberRunId, normalizeMemberRouteKey } from "../../../run-history/utils/team-member-run-id.js";
 import { AgentDefinitionService } from "../../../agent-definition/services/agent-definition-service.js";
 import { resolveConfiguredAgentToolExposure } from "../../../agent-execution/shared/configured-agent-tool-exposure.js";
+import { TeamBackendKind } from "../../domain/team-backend-kind.js";
 
 export type ClaudeTeamRunBackendFactoryOptions = {
   createTeamManager?: (context: TeamRunContext<ClaudeTeamRunContext>) => ClaudeTeamManager;
@@ -72,6 +73,7 @@ export class ClaudeTeamRunBackendFactory implements TeamRunBackendFactory {
             llmModelIdentifier: memberConfig.llmModelIdentifier,
             autoExecuteTools: memberConfig.autoExecuteTools,
             workspaceId: memberConfig.workspaceId ?? null,
+            memoryDir: memberConfig.memoryDir ?? null,
             llmConfig: memberConfig.llmConfig ?? null,
             skillAccessMode: memberConfig.skillAccessMode,
           }),
@@ -88,11 +90,11 @@ export class ClaudeTeamRunBackendFactory implements TeamRunBackendFactory {
 
     return new TeamRunContext({
       runId: teamRunId,
-      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+      teamBackendKind: TeamBackendKind.CLAUDE_AGENT_SDK,
       coordinatorMemberName: null,
       config: new TeamRunConfig({
         teamDefinitionId: config.teamDefinitionId,
-        runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+        teamBackendKind: TeamBackendKind.CLAUDE_AGENT_SDK,
         memberConfigs,
       }),
       runtimeContext,
@@ -103,7 +105,7 @@ export class ClaudeTeamRunBackendFactory implements TeamRunBackendFactory {
     context: TeamRunContext<ClaudeTeamRunContext>,
     teamManager: TeamManager,
   ): ClaudeTeamRunBackend {
-    return new ClaudeTeamRunBackend(context as TeamRunContext<ClaudeTeamRunContext>, {
+    return new ClaudeTeamRunBackend(context, {
       claudeTeamManager: teamManager,
     });
   }
@@ -126,6 +128,7 @@ export class ClaudeTeamRunBackendFactory implements TeamRunBackendFactory {
         skillAccessMode: memberConfig.skillAccessMode,
         workspaceId: memberConfig.workspaceId ?? null,
         workspaceRootPath: memberConfig.workspaceRootPath ?? null,
+        memoryDir: memberConfig.memoryDir ?? null,
         llmConfig: memberConfig.llmConfig ?? null,
         applicationExecutionContext: memberConfig.applicationExecutionContext ?? null,
       };

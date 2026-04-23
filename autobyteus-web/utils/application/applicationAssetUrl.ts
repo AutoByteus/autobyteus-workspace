@@ -4,7 +4,7 @@ import {
   APPLICATION_IFRAME_QUERY_HOST_ORIGIN,
   APPLICATION_IFRAME_QUERY_LAUNCH_INSTANCE_ID,
   type ApplicationIframeLaunchHints,
-} from '~/types/application/ApplicationIframeContract'
+} from '@autobyteus/application-sdk-contracts'
 
 const stripTrailingSlashes = (value: string): string => value.replace(/\/+$/, '')
 

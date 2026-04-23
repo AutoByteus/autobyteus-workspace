@@ -13,6 +13,8 @@ import type {
 } from "@autobyteus/application-sdk-contracts";
 import { AgentRunService, getAgentRunService } from "../../agent-execution/services/agent-run-service.js";
 import { TeamRunService, getTeamRunService } from "../../agent-team-execution/services/team-run-service.js";
+import { TeamMemberMemoryLayout } from "../../agent-memory/store/team-member-memory-layout.js";
+import { appConfigProvider } from "../../config/app-config-provider.js";
 import { ApplicationExecutionEventIngressService } from "./application-execution-event-ingress-service.js";
 import {
   ApplicationOrchestrationStartupGate,
@@ -29,6 +31,10 @@ import {
   PublishedArtifactProjectionService,
   getPublishedArtifactProjectionService,
 } from "../../run-history/services/published-artifact-projection-service.js";
+import {
+  TeamRunMetadataService,
+  getTeamRunMetadataService,
+} from "../../run-history/services/team-run-metadata-service.js";
 
 const cloneBinding = (binding: ApplicationRunBindingSummary): ApplicationRunBindingSummary => structuredClone(binding);
 
@@ -55,6 +61,7 @@ const buildRuntimeInputMessage = (input: ApplicationRuntimeInput): AgentInputUse
 
 export class ApplicationOrchestrationHostService {
   private static instance: ApplicationOrchestrationHostService | null = null;
+  private readonly teamMemberMemoryLayout: TeamMemberMemoryLayout;
 
   static getInstance(
     dependencies: ConstructorParameters<typeof ApplicationOrchestrationHostService>[0] = {},
@@ -82,10 +89,13 @@ export class ApplicationOrchestrationHostService {
       runObserverService?: ApplicationRunObserverService;
       agentRunService?: AgentRunService;
       teamRunService?: TeamRunService;
+      teamRunMetadataService?: TeamRunMetadataService;
       ingressService?: ApplicationExecutionEventIngressService;
       publishedArtifactProjectionService?: PublishedArtifactProjectionService;
     } = {},
-  ) {}
+  ) {
+    this.teamMemberMemoryLayout = new TeamMemberMemoryLayout(appConfigProvider.config.getMemoryDir());
+  }
 
   private get startupGate(): ApplicationOrchestrationStartupGate {
     return this.dependencies.startupGate ?? getApplicationOrchestrationStartupGate();
@@ -133,6 +143,10 @@ export class ApplicationOrchestrationHostService {
 
   private get teamRunService(): TeamRunService {
     return this.dependencies.teamRunService ?? getTeamRunService();
+  }
+
+  private get teamRunMetadataService(): TeamRunMetadataService {
+    return this.dependencies.teamRunMetadataService ?? getTeamRunMetadataService();
   }
 
   private get ingressService(): ApplicationExecutionEventIngressService {
@@ -217,7 +231,13 @@ export class ApplicationOrchestrationHostService {
     await this.startupGate.awaitReady();
     await this.requireApplicationActive(applicationId);
     const binding = await this.requireBindingForRun(applicationId, runId);
-    return this.publishedArtifactProjectionService.getRunPublishedArtifacts(binding.runtime.members.some((member) => member.runId === runId) ? runId : binding.runtime.runId);
+    const memberMemoryDir = await this.resolveBoundMemberMemoryDir(binding, runId);
+    if (memberMemoryDir) {
+      return this.publishedArtifactProjectionService.getPublishedArtifactsFromMemoryDir(memberMemoryDir);
+    }
+    return this.publishedArtifactProjectionService.getRunPublishedArtifacts(
+      binding.runtime.members.some((member) => member.runId === runId) ? runId : binding.runtime.runId,
+    );
   }
 
   async getPublishedArtifactRevisionText(
@@ -226,7 +246,14 @@ export class ApplicationOrchestrationHostService {
   ): Promise<string | null> {
     await this.startupGate.awaitReady();
     await this.requireApplicationActive(applicationId);
-    await this.requireBindingForRun(applicationId, input.runId);
+    const binding = await this.requireBindingForRun(applicationId, input.runId);
+    const memberMemoryDir = await this.resolveBoundMemberMemoryDir(binding, input.runId);
+    if (memberMemoryDir) {
+      return this.publishedArtifactProjectionService.getPublishedArtifactRevisionTextFromMemoryDir({
+        memoryDir: memberMemoryDir,
+        revisionId: input.revisionId,
+      });
+    }
     return this.publishedArtifactProjectionService.getPublishedArtifactRevisionText(input);
   }
 
@@ -314,6 +341,27 @@ export class ApplicationOrchestrationHostService {
     return binding;
   }
 
+  private async resolveBoundMemberMemoryDir(
+    binding: ApplicationRunBindingSummary,
+    runId: string,
+  ): Promise<string | null> {
+    if (!binding.runtime.members.some((member) => member.runId === runId)) {
+      return null;
+    }
+
+    const metadata = await this.teamRunMetadataService.readMetadata(binding.runtime.runId);
+    const memberMetadata =
+      metadata?.memberMetadata.find((member) => member.memberRunId === runId) ?? null;
+    if (!memberMetadata) {
+      return null;
+    }
+
+    return this.teamMemberMemoryLayout.getMemberDirPath(
+      binding.runtime.runId,
+      memberMetadata.memberRunId,
+    );
+  }
+
   private async postRunInputInternal(
     binding: ApplicationRunBindingSummary,
     input: ApplicationRuntimeInput,
@@ -335,7 +383,8 @@ export class ApplicationOrchestrationHostService {
     if (!run) {
       throw new Error(`Application runtime '${binding.runtime.runId}' is not available.`);
     }
-    const result = await run.postMessage(message, input.targetMemberName?.trim() || null);
+    const targetMemberName = input.targetMemberName?.trim() || null;
+    const result = await run.postMessage(message, targetMemberName);
     if (!result.accepted) {
       throw new Error(result.message ?? "Application runtime rejected the input.");
     }

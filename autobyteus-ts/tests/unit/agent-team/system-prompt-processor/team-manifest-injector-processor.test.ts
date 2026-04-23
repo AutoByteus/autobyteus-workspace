@@ -6,6 +6,7 @@ import { TeamNodeConfig } from '../../../../src/agent-team/context/team-node-con
 import { AgentTeamRuntimeState } from '../../../../src/agent-team/context/agent-team-runtime-state.js';
 import { AgentConfig } from '../../../../src/agent/context/agent-config.js';
 import { AgentContext } from '../../../../src/agent/context/agent-context.js';
+import { createScopedNativeTeamContext } from '../../../../src/agent-team/context/create-scoped-native-team-context.js';
 import { AgentRuntimeState } from '../../../../src/agent/context/agent-runtime-state.js';
 import { BaseLLM } from '../../../../src/llm/base.js';
 import { LLMModel } from '../../../../src/llm/models.js';
@@ -46,10 +47,10 @@ const buildTeamContext = (teamId: string, nodes: TeamNodeConfig[]): AgentTeamCon
   return new AgentTeamContext(teamId, config, state);
 };
 
-const buildAgentContext = (agentConfig: AgentConfig, teamContext?: AgentTeamContext): AgentContext => {
+const buildAgentContext = (agentConfig: AgentConfig, teamContextValue?: unknown): AgentContext => {
   const runtimeState = new AgentRuntimeState(`agent_${agentConfig.name}`);
-  if (teamContext) {
-    runtimeState.customData.teamContext = teamContext;
+  if (teamContextValue) {
+    runtimeState.customData.teamContext = teamContextValue;
   }
   return new AgentContext(runtimeState.agentId, agentConfig, runtimeState);
 };
@@ -77,7 +78,10 @@ describe('TeamManifestInjectorProcessor', () => {
       new TeamNodeConfig({ nodeDefinition: memberDef })
     ]);
 
-    const agentContext = buildAgentContext(coordinatorDef, teamContext);
+    const agentContext = buildAgentContext(
+      coordinatorDef,
+      createScopedNativeTeamContext(teamContext, coordinatorDef.name),
+    );
 
     const processor = new TeamManifestInjectorProcessor();
     const result = processor.process(coordinatorDef.systemPrompt ?? '', {}, agentContext.agentId, agentContext);
@@ -98,7 +102,10 @@ describe('TeamManifestInjectorProcessor', () => {
       new TeamNodeConfig({ nodeDefinition: memberDef })
     ]);
 
-    const agentContext = buildAgentContext(coordinatorDef, teamContext);
+    const agentContext = buildAgentContext(
+      coordinatorDef,
+      createScopedNativeTeamContext(teamContext, coordinatorDef.name),
+    );
 
     const processor = new TeamManifestInjectorProcessor();
     const result = processor.process(coordinatorDef.systemPrompt ?? '', {}, agentContext.agentId, agentContext);
@@ -114,7 +121,10 @@ describe('TeamManifestInjectorProcessor', () => {
     coordinatorDef.systemPrompt = 'Team: {{team}}';
 
     const teamContext = buildTeamContext('team_3', [new TeamNodeConfig({ nodeDefinition: coordinatorDef })]);
-    const agentContext = buildAgentContext(coordinatorDef, teamContext);
+    const agentContext = buildAgentContext(
+      coordinatorDef,
+      createScopedNativeTeamContext(teamContext, coordinatorDef.name),
+    );
 
     const processor = new TeamManifestInjectorProcessor();
     const result = processor.process(coordinatorDef.systemPrompt ?? '', {}, agentContext.agentId, agentContext);

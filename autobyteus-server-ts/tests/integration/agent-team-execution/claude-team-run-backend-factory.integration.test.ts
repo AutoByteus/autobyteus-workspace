@@ -7,6 +7,7 @@ import {
 } from "../../../src/agent-team-execution/backends/claude/claude-team-run-context.js";
 import { TeamRunConfig, type TeamMemberRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
+import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { buildTeamMemberRunId } from "../../../src/run-history/utils/team-member-run-id.js";
 
@@ -20,10 +21,16 @@ const createTeamManagerStub = () => ({
   subscribeToEvents: vi.fn(() => () => {}),
 });
 
+const createAgentDefinitionServiceStub = () => ({
+  getAgentDefinitionById: vi.fn().mockResolvedValue({
+    toolNames: [],
+  }),
+});
+
 const createConfig = () =>
   new TeamRunConfig({
     teamDefinitionId: "team-def-claude-1",
-    runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+    teamBackendKind: TeamBackendKind.CLAUDE_AGENT_SDK,
     memberConfigs: [
       {
         memberName: "Coordinator",
@@ -58,6 +65,7 @@ describe("ClaudeTeamRunBackendFactory integration", () => {
   it("creates a backend with hydrated member runtime context from TeamRunConfig", async () => {
     const createdContexts: Array<TeamRunContext<ClaudeTeamRunContext>> = [];
     const createdManagers: ReturnType<typeof createTeamManagerStub>[] = [];
+    const agentDefinitionService = createAgentDefinitionServiceStub();
     const factory = new ClaudeTeamRunBackendFactory({
       createTeamManager: ((context: TeamRunContext<ClaudeTeamRunContext>) => {
         createdContexts.push(context);
@@ -65,16 +73,18 @@ describe("ClaudeTeamRunBackendFactory integration", () => {
         createdManagers.push(manager);
         return manager as any;
       }) as any,
+      agentDefinitionService: agentDefinitionService as any,
     });
 
     const backend = await factory.createBackend(createConfig());
 
     expect(createdContexts).toHaveLength(1);
     expect(createdManagers).toHaveLength(1);
+    expect(agentDefinitionService.getAgentDefinitionById).toHaveBeenCalledTimes(2);
 
     const context = createdContexts[0];
     expect(context.runId).toBeTruthy();
-    expect(context.runtimeKind).toBe(RuntimeKind.CLAUDE_AGENT_SDK);
+    expect(context.teamBackendKind).toBe(TeamBackendKind.CLAUDE_AGENT_SDK);
     expect(context.config?.teamDefinitionId).toBe("team-def-claude-1");
     expect(context.runtimeContext.coordinatorMemberRouteKey).toBeNull();
     expect(context.runtimeContext.memberContexts).toHaveLength(2);
@@ -104,7 +114,7 @@ describe("ClaudeTeamRunBackendFactory integration", () => {
     });
 
     expect(backend.runId).toBe(context.runId);
-    expect(backend.runtimeKind).toBe(RuntimeKind.CLAUDE_AGENT_SDK);
+    expect(backend.teamBackendKind).toBe(TeamBackendKind.CLAUDE_AGENT_SDK);
     expect(backend.getRuntimeContext()).toBe(context.runtimeContext);
     expect(backend.isActive()).toBe(true);
   });
@@ -112,16 +122,18 @@ describe("ClaudeTeamRunBackendFactory integration", () => {
   it("restores a backend from the provided runtime context", async () => {
     const createdContexts: Array<TeamRunContext<ClaudeTeamRunContext>> = [];
     const manager = createTeamManagerStub();
+    const agentDefinitionService = createAgentDefinitionServiceStub();
     const factory = new ClaudeTeamRunBackendFactory({
       createTeamManager: ((context: TeamRunContext<ClaudeTeamRunContext>) => {
         createdContexts.push(context);
         return manager as any;
       }) as any,
+      agentDefinitionService: agentDefinitionService as any,
     });
 
     const restoreContext = new TeamRunContext({
       runId: "team-claude-restore-1",
-      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+      teamBackendKind: TeamBackendKind.CLAUDE_AGENT_SDK,
       config: createConfig(),
       runtimeContext: new ClaudeTeamRunContext({
         coordinatorMemberRouteKey: "coord-route",
@@ -139,7 +151,7 @@ describe("ClaudeTeamRunBackendFactory integration", () => {
               llmConfig: { reasoning_effort: "medium" },
               skillAccessMode: SkillAccessMode.NONE,
               runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-              teamContext: null,
+              memberTeamContext: null,
             } as any,
           }),
         ],

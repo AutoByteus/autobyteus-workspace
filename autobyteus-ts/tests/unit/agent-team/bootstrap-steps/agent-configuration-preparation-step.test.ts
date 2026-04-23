@@ -102,7 +102,15 @@ describe('AgentConfigurationPreparationStep', () => {
     expect(coordToolNames).toContain(SendMessageTo.getName());
     expect(coordToolNames.length).toBe(2);
     expect(coordConfig.systemPrompt).toBe(coordinatorDef.systemPrompt);
-    expect(coordConfig.initialCustomData?.teamContext).toBe(context);
+    expect(coordConfig.initialCustomData?.teamContext).not.toBe(context);
+    expect(coordConfig.initialCustomData?.teamContext?.teamId).toBe(context.teamId);
+    expect(coordConfig.initialCustomData?.teamContext?.state).toBe(context.state);
+    expect(coordConfig.initialCustomData?.teamContext?.teamManager).toBe(context.teamManager);
+    expect(coordConfig.initialCustomData?.teamContext?.communicationContext?.members).toEqual([
+      expect.objectContaining({ memberName: 'Coordinator' }),
+      expect.objectContaining({ memberName: 'Member' }),
+      expect.objectContaining({ memberName: 'SubTeam' }),
+    ]);
     expect(
       coordConfig.systemPromptProcessors.some((processor) => processor instanceof TeamManifestInjectorProcessor)
     ).toBe(true);
@@ -111,7 +119,13 @@ describe('AgentConfigurationPreparationStep', () => {
     expect(memberConfig).toBeInstanceOf(AgentConfig);
     expect(memberConfig.tools.length).toBe(0);
     expect(memberConfig.systemPrompt).toBe(memberDef.systemPrompt);
-    expect(memberConfig.initialCustomData?.teamContext).toBe(context);
+    expect(memberConfig.initialCustomData?.teamContext).not.toBe(context);
+    expect(memberConfig.initialCustomData?.teamContext?.currentMemberName).toBe('Member');
+    expect(memberConfig.initialCustomData?.teamContext?.communicationContext?.members).toEqual([
+      expect.objectContaining({ memberName: 'Coordinator' }),
+      expect.objectContaining({ memberName: 'Member' }),
+      expect.objectContaining({ memberName: 'SubTeam' }),
+    ]);
     expect(
       memberConfig.systemPromptProcessors.some((processor) => processor instanceof TeamManifestInjectorProcessor)
     ).toBe(true);

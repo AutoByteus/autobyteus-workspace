@@ -53,9 +53,9 @@
           :member-name="member.memberName"
           :agent-definition-id="member.agentDefinitionId"
           :override="config.memberOverrides[member.memberName]"
+          :global-runtime-kind="config.runtimeKind"
           :global-llm-model="config.llmModelIdentifier"
           :global-llm-config="config.llmConfig"
-          :options="groupedModelOptions"
           :is-coordinator="member.memberName === teamDefinition.coordinatorMemberName"
           :disabled="config.isLocked"
           @update:override="handleOverrideUpdate"
@@ -107,42 +107,41 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
 import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore'
 import type { TeamRunConfig, MemberConfigOverride } from '~/types/agent/TeamRunConfig'
 import type { SkillAccessMode } from '~/types/agent/AgentRunConfig'
 import RuntimeModelConfigFields from '~/components/launch-config/RuntimeModelConfigFields.vue'
 import WorkspaceSelector from './WorkspaceSelector.vue'
 import MemberOverrideItem from './MemberOverrideItem.vue'
-import type { GroupedOption } from '~/components/agentTeams/SearchableGroupedSelect.vue'
-import {
-  getModelSelectionOptionLabel,
-  getModelSelectionSelectedLabel,
-} from '~/utils/modelSelectionLabel'
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
+import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore'
+import { loadRuntimeProviderGroupsForSelection } from '~/composables/useRuntimeScopedModelSelection'
 import { resolveLeafTeamMembers } from '~/utils/teamDefinitionMembers'
-import { hasMeaningfulMemberOverride } from '~/utils/teamRunConfigUtils'
+import {
+  hasMeaningfulMemberOverride,
+  resolveEffectiveMemberRuntimeKind,
+} from '~/utils/teamRunConfigUtils'
 
 interface WorkspaceLoadingState {
-  isLoading: boolean;
-  error: string | null;
-  loadedPath: string | null;
+  isLoading: boolean
+  error: string | null
+  loadedPath: string | null
 }
 
 const props = defineProps<{
-  config: TeamRunConfig;
-  teamDefinition: AgentTeamDefinition;
-  workspaceLoadingState: WorkspaceLoadingState;
-  initialPath?: string;
-}>();
+  config: TeamRunConfig
+  teamDefinition: AgentTeamDefinition
+  workspaceLoadingState: WorkspaceLoadingState
+  initialPath?: string
+}>()
 
 const emit = defineEmits<{
-  (e: 'select-existing', workspaceId: string): void;
-  (e: 'load-new', path: string): void;
-}>();
+  (e: 'select-existing', workspaceId: string): void
+  (e: 'load-new', path: string): void
+}>()
 
-const llmStore = useLLMProviderConfigStore()
 const teamDefinitionStore = useAgentTeamDefinitionStore()
+const teamRunConfigStore = useTeamRunConfigStore()
 const overridesExpanded = ref(true)
 const runtimeSelectionLocked = computed(() => props.config.isLocked)
 const leafMembers = computed(() =>
@@ -151,48 +150,34 @@ const leafMembers = computed(() =>
       teamDefinitionStore.getAgentTeamDefinitionById(teamDefinitionId),
   }),
 )
-const availableProviderGroups = computed(() => llmStore.providersWithModelsForSelection ?? [])
-
-const sanitizeMemberOverridesForRuntime = () => {
-  const modelSet = new Set(llmStore.models)
-  const overrides: Record<string, MemberConfigOverride | null | undefined> =
-    props.config.memberOverrides || {}
-
-  for (const [memberName, override] of Object.entries(overrides)) {
-    if (!override || typeof override !== 'object') {
-      delete overrides[memberName]
-      continue
-    }
-
-    if (override.llmModelIdentifier && !modelSet.has(override.llmModelIdentifier)) {
-      override.llmModelIdentifier = undefined
-      delete override.llmConfig
-    }
-
-    if (!hasMeaningfulMemberOverride(override as MemberConfigOverride)) {
-      delete overrides[memberName]
-    }
-  }
-}
 
 watch(
-  () => [props.config.runtimeKind, llmStore.models.join('|')],
-  () => {
-    sanitizeMemberOverridesForRuntime()
+  () => [
+    props.config.runtimeKind,
+    ...Object.values(props.config.memberOverrides || {}).map((override) => override?.runtimeKind || ''),
+  ],
+  async () => {
+    const runtimeKinds = new Set<string>()
+    runtimeKinds.add(props.config.runtimeKind)
+
+    Object.values(props.config.memberOverrides || {}).forEach((override) => {
+      runtimeKinds.add(resolveEffectiveMemberRuntimeKind(override, props.config.runtimeKind))
+    })
+
+    await Promise.all(
+      Array.from(runtimeKinds)
+        .filter((runtimeKind) => runtimeKind.trim().length > 0)
+        .map(async (runtimeKind) => {
+          const rows = await loadRuntimeProviderGroupsForSelection(runtimeKind)
+          teamRunConfigStore.setRuntimeModelCatalog(
+            runtimeKind,
+            rows.flatMap((row) => row.models.map((model) => model.modelIdentifier)),
+          )
+        }),
+    )
   },
   { immediate: true },
 )
-
-const groupedModelOptions = computed<GroupedOption[]>(() => {
-  return availableProviderGroups.value.map((providerGroup) => ({
-    label: providerGroup.provider.name,
-    items: providerGroup.models.map((model) => ({
-      id: model.modelIdentifier,
-      name: getModelSelectionOptionLabel(model, props.config.runtimeKind),
-      selectedLabel: getModelSelectionSelectedLabel(providerGroup.provider.name, model, props.config.runtimeKind),
-    })),
-  }))
-})
 
 const handleOverrideUpdate = (memberName: string, override: MemberConfigOverride | null) => {
   const overrides = { ...(props.config.memberOverrides || {}) }

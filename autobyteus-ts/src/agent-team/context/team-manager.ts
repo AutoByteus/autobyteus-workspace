@@ -132,6 +132,17 @@ export class TeamManager {
     return Array.from(this.nodesCache.values()).filter((node) => node instanceof AgentTeam) as AgentTeam[];
   }
 
+  resolveMemberNameByAgentId(agentId: string): string | null {
+    if (typeof agentId !== 'string') {
+      return null;
+    }
+    const normalizedAgentId = agentId.trim();
+    if (!normalizedAgentId) {
+      return null;
+    }
+    return this.agentIdToNameMap.get(normalizedAgentId) ?? null;
+  }
+
   get coordinatorAgent(): Agent | null {
     return this.coordinatorAgentRef;
   }

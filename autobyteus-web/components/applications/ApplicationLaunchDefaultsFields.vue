@@ -1,20 +1,23 @@
 <template>
   <div
     data-testid="application-launch-defaults-fields"
-    class="rounded-2xl border border-slate-200 bg-white p-4"
+    class="min-w-0 rounded-2xl border border-slate-200 bg-white p-4"
   >
     <div class="space-y-4">
       <div class="rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3">
-        <div class="flex items-center justify-between gap-4">
-          <div>
+        <div
+          data-testid="application-launch-defaults-tool-execution-layout"
+          :class="toolExecutionLayoutClasses"
+        >
+          <div class="min-w-0">
             <p class="text-sm font-semibold text-blue-900">
               {{ $t('applications.components.applications.ApplicationLaunchSetupPanel.toolExecutionLabel') }}
             </p>
-            <p class="mt-1 text-xs text-blue-800">
+            <p class="mt-1 break-words text-xs text-blue-800">
               {{ $t('applications.components.applications.ApplicationLaunchSetupPanel.toolExecutionDescription') }}
             </p>
           </div>
-          <div class="flex items-center gap-3">
+          <div :class="toolExecutionStatusClasses">
             <span class="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-blue-700">
               {{ $t('applications.components.applications.ApplicationLaunchSetupPanel.toolExecutionLockedOn') }}
             </span>
@@ -142,6 +145,7 @@ import {
 const props = defineProps<{
   slot: ApplicationResourceSlotDeclaration
   draft: SlotDraft
+  presentation?: 'page' | 'panel'
   disabled?: boolean
   hasEffectiveResource?: boolean
 }>()
@@ -156,6 +160,7 @@ const { t: $t } = useLocalization()
 const llmStore = useLLMProviderConfigStore()
 const runtimeAvailabilityStore = useRuntimeAvailabilityStore()
 
+const isPanelPresentation = computed(() => props.presentation === 'panel')
 const disabledComputed = computed(() => props.disabled === true)
 const runtimeSelectionLockedComputed = computed(() => disabledComputed.value)
 const supportsRuntimeKind = computed(() => slotSupportsRuntimeKind(props.slot))
@@ -176,6 +181,16 @@ const workspaceHelpText = computed(() => (
     : $t('applications.components.applications.ApplicationLaunchSetupPanel.selectResourceFirst')
 ))
 const runtimeFieldId = computed(() => `application-slot-${props.slot.slotKey}-runtime-kind`)
+const toolExecutionLayoutClasses = computed(() => (
+  isPanelPresentation.value
+    ? 'flex flex-col items-start gap-3'
+    : 'flex items-center justify-between gap-4'
+))
+const toolExecutionStatusClasses = computed(() => (
+  isPanelPresentation.value
+    ? 'flex flex-wrap items-center gap-3'
+    : 'flex items-center gap-3'
+))
 
 const normalizeStoredRuntimeKind = (runtimeKind: unknown): string => {
   if (typeof runtimeKind !== 'string') {

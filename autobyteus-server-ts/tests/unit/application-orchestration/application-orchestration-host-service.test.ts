@@ -54,6 +54,37 @@ const buildBinding = (): ApplicationRunBindingSummary => ({
   lastErrorMessage: null,
 });
 
+const buildTeamBinding = (): ApplicationRunBindingSummary => ({
+  bindingId,
+  applicationId,
+  bindingIntentId: "binding-intent-1",
+  status: "ATTACHED",
+  resourceRef: {
+    owner: "bundle",
+    kind: "AGENT_TEAM",
+    localId: "brief-studio-team",
+  },
+  runtime: {
+    subject: "TEAM_RUN",
+    runId: "team-run-1",
+    definitionId: "team-def-1",
+    members: [
+      {
+        memberName: "Researcher",
+        memberRouteKey: "researcher",
+        displayName: "Researcher",
+        teamPath: [],
+        runId: "researcher-member-run-1",
+        runtimeKind: "AGENT_TEAM_MEMBER",
+      },
+    ],
+  },
+  createdAt: new Date("2026-04-19T09:10:00.000Z").toISOString(),
+  updatedAt: new Date("2026-04-19T09:10:00.000Z").toISOString(),
+  terminatedAt: null,
+  lastErrorMessage: null,
+});
+
 describe("ApplicationOrchestrationHostService startRun", () => {
   it("waits for RUN_STARTED journaling before initialInput is forwarded to the runtime", async () => {
     const bindings = new Map<string, ApplicationRunBindingSummary>();
@@ -227,5 +258,97 @@ describe("ApplicationOrchestrationHostService startRun", () => {
       hostService.getRunBindingByIntentId(applicationId, binding.bindingIntentId),
     ).resolves.toEqual(binding);
     expect(bindingStore.getBindingByIntentId).toHaveBeenCalledWith(applicationId, binding.bindingIntentId);
+  });
+
+  it("reads published artifacts for bound team-member runs through the binding-owned member runtime path", async () => {
+    const binding = buildTeamBinding();
+    const bindingStore = {
+      listBindings: vi.fn(async () => [cloneBinding(binding)]),
+    };
+    const teamRunMetadataService = {
+      readMetadata: vi.fn(async () => ({
+        teamRunId: "team-run-1",
+        teamDefinitionId: "team-def-1",
+        teamDefinitionName: "Brief Team",
+        coordinatorMemberRouteKey: "researcher",
+        runVersion: 1,
+        createdAt: "2026-04-19T09:10:00.000Z",
+        updatedAt: "2026-04-19T09:10:00.000Z",
+        memberMetadata: [
+          {
+            memberRouteKey: "researcher",
+            memberName: "Researcher",
+            memberRunId: "researcher-member-run-1",
+            runtimeKind: "AUTOBYTEUS",
+            platformAgentRunId: null,
+            agentDefinitionId: "agent-def-1",
+            llmModelIdentifier: "gpt-test",
+            autoExecuteTools: true,
+            skillAccessMode: "GLOBAL_DISCOVERY",
+            llmConfig: null,
+            workspaceRootPath: "/tmp/workspace",
+            applicationExecutionContext: null,
+          },
+        ],
+      })),
+    };
+    const publishedArtifactProjectionService = {
+      getPublishedArtifactsFromMemoryDir: vi.fn(async () => [
+        {
+          id: "researcher-member-run-1:brief-studio/research.md",
+          runId: "researcher-member-run-1",
+          path: "brief-studio/research.md",
+          type: "file",
+          status: "available",
+          description: null,
+          revisionId: "revision-1",
+          createdAt: "2026-04-19T09:15:00.000Z",
+          updatedAt: "2026-04-19T09:15:00.000Z",
+        },
+      ]),
+      getPublishedArtifactRevisionTextFromMemoryDir: vi.fn(async () => "# research"),
+      getRunPublishedArtifacts: vi.fn(),
+      getPublishedArtifactRevisionText: vi.fn(),
+    };
+
+    const hostService = new ApplicationOrchestrationHostService({
+      startupGate: {
+        awaitReady: vi.fn(async () => undefined),
+      } as never,
+      availabilityService: {
+        requireApplicationActive: vi.fn(async () => undefined),
+      } as never,
+      bindingStore: bindingStore as never,
+      teamRunMetadataService: teamRunMetadataService as never,
+      publishedArtifactProjectionService: publishedArtifactProjectionService as never,
+    });
+
+    await expect(
+      hostService.getRunPublishedArtifacts(applicationId, "researcher-member-run-1"),
+    ).resolves.toEqual([
+      expect.objectContaining({
+        runId: "researcher-member-run-1",
+        path: "brief-studio/research.md",
+      }),
+    ]);
+
+    await expect(
+      hostService.getPublishedArtifactRevisionText(applicationId, {
+        runId: "researcher-member-run-1",
+        revisionId: "revision-1",
+      }),
+    ).resolves.toBe("# research");
+
+    expect(publishedArtifactProjectionService.getPublishedArtifactsFromMemoryDir).toHaveBeenCalledWith(
+      expect.stringContaining("agent_teams/team-run-1/researcher-member-run-1"),
+    );
+    expect(
+      publishedArtifactProjectionService.getPublishedArtifactRevisionTextFromMemoryDir,
+    ).toHaveBeenCalledWith({
+      memoryDir: expect.stringContaining("agent_teams/team-run-1/researcher-member-run-1"),
+      revisionId: "revision-1",
+    });
+    expect(publishedArtifactProjectionService.getRunPublishedArtifacts).not.toHaveBeenCalled();
+    expect(publishedArtifactProjectionService.getPublishedArtifactRevisionText).not.toHaveBeenCalled();
   });
 });

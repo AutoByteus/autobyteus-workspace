@@ -1,9 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, nextTick } from 'vue'
 import { mount, type VueWrapper } from '@vue/test-utils'
+import type {
+  ApplicationHostBootstrapEnvelopeV2,
+  ApplicationIframeReadySignal,
+} from '@autobyteus/application-sdk-contracts'
 import ApplicationSurface from '../ApplicationSurface.vue'
 import type { ApplicationCatalogEntry } from '~/stores/applicationStore'
-import type { ApplicationHostBootstrapEnvelopeV2, ApplicationIframeReadySignal } from '~/types/application/ApplicationIframeContract'
 import type { ApplicationIframeLaunchDescriptor } from '~/utils/application/applicationLaunchDescriptor'
 
 const hostHarness = vi.hoisted(() => ({

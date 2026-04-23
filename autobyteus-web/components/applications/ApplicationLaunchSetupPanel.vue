@@ -4,8 +4,11 @@
     :data-presentation="presentation"
     :class="panelClasses"
   >
-    <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-      <div class="space-y-2">
+    <div
+      data-testid="application-launch-setup-header"
+      :class="headerClasses"
+    >
+      <div class="min-w-0 space-y-2">
         <div class="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
           <span class="i-heroicons-adjustments-horizontal-20-solid h-4 w-4"></span>
           <span>{{ $t('applications.components.applications.ApplicationLaunchSetupPanel.title') }}</span>
@@ -21,6 +24,7 @@
       <button
         type="button"
         class="inline-flex items-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400"
+        :class="secondaryActionButtonClasses"
         :disabled="loading"
         @click="loadSetup"
       >
@@ -66,9 +70,12 @@
       <article
         v-for="view in configurationViews"
         :key="view.slot.slotKey"
-        class="rounded-2xl border border-slate-200 bg-slate-50/60 p-5"
+        :class="slotArticleClasses"
       >
-        <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+        <div
+          data-testid="application-launch-setup-slot-header"
+          :class="slotHeaderClasses"
+        >
           <div class="min-w-0 flex-1">
             <div class="flex flex-wrap items-center gap-2">
               <h3 class="text-lg font-semibold text-slate-900">{{ view.slot.name }}</h3>
@@ -86,11 +93,14 @@
             </p>
           </div>
 
-          <div class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700">
+          <div
+            data-testid="application-launch-setup-slot-selection"
+            :class="slotSelectionCardClasses"
+          >
             <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">
               {{ $t('applications.components.applications.ApplicationLaunchSetupPanel.currentSelection') }}
             </p>
-            <p class="mt-1 max-w-xs break-words">
+            <p :class="currentSelectionTextClasses">
               {{ describeCurrentSelectionForView(view) }}
             </p>
             <p class="mt-2 text-xs text-slate-500">
@@ -99,8 +109,11 @@
           </div>
         </div>
 
-        <div class="mt-5 grid gap-5 xl:grid-cols-[minmax(0,18rem)_minmax(0,1fr)]">
-          <div class="space-y-4">
+        <div
+          data-testid="application-launch-setup-slot-body"
+          :class="slotEditorGridClasses"
+        >
+          <div class="min-w-0 space-y-4">
             <label class="block">
               <span class="mb-1 block text-sm font-medium text-slate-700">
                 {{ $t('applications.components.applications.ApplicationLaunchSetupPanel.resourceLabel') }}
@@ -141,6 +154,7 @@
             v-if="drafts[view.slot.slotKey]"
             :slot="view.slot"
             :draft="drafts[view.slot.slotKey]"
+            :presentation="presentation"
             :disabled="isSaving(view.slot.slotKey) || !hasEffectiveResource(view)"
             :has-effective-resource="hasEffectiveResource(view)"
             @update:runtime-kind="updateRuntimeKind(view.slot.slotKey, $event)"
@@ -149,10 +163,14 @@
           />
         </div>
 
-        <div class="mt-5 flex flex-wrap items-center gap-3">
+        <div
+          data-testid="application-launch-setup-slot-actions"
+          :class="slotActionRowClasses"
+        >
           <button
             type="button"
             class="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-300"
+            :class="primaryActionButtonClasses"
             :disabled="isSaving(view.slot.slotKey)"
             @click="saveConfiguration(view)"
           >
@@ -163,6 +181,7 @@
           <button
             type="button"
             class="inline-flex items-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400"
+            :class="secondaryActionButtonClasses"
             :disabled="isSaving(view.slot.slotKey)"
             @click="resetDraft(view.slot.slotKey)"
           >
@@ -225,10 +244,62 @@ const emit = defineEmits<{
 const { t: $t } = useLocalization()
 const windowNodeContextStore = useWindowNodeContextStore()
 
+const isPanelPresentation = computed(() => props.presentation === 'panel')
+
 const panelClasses = computed(() => (
-  props.presentation === 'panel'
+  isPanelPresentation.value
     ? 'rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5'
     : 'mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8'
+))
+
+const headerClasses = computed(() => (
+  isPanelPresentation.value
+    ? 'flex flex-col gap-3'
+    : 'flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between'
+))
+
+const slotArticleClasses = computed(() => (
+  isPanelPresentation.value
+    ? 'rounded-2xl border border-slate-200 bg-slate-50/60 p-4'
+    : 'rounded-2xl border border-slate-200 bg-slate-50/60 p-5'
+))
+
+const slotHeaderClasses = computed(() => (
+  isPanelPresentation.value
+    ? 'flex flex-col gap-3'
+    : 'flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between'
+))
+
+const slotSelectionCardClasses = computed(() => (
+  isPanelPresentation.value
+    ? 'w-full min-w-0 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700'
+    : 'rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700'
+))
+
+const currentSelectionTextClasses = computed(() => (
+  isPanelPresentation.value
+    ? 'mt-1 break-words'
+    : 'mt-1 max-w-xs break-words'
+))
+
+const slotEditorGridClasses = computed(() => (
+  isPanelPresentation.value
+    ? 'mt-5 grid gap-5'
+    : 'mt-5 grid gap-5 xl:grid-cols-[minmax(0,18rem)_minmax(0,1fr)]'
+))
+
+const slotActionRowClasses = computed(() => (
+  isPanelPresentation.value
+    ? 'mt-5 flex flex-col gap-3'
+    : 'mt-5 flex flex-wrap items-center gap-3'
+))
+
+const primaryActionButtonClasses = computed(() => (
+  isPanelPresentation.value ? 'w-full justify-center' : ''
+))
+
+const secondaryActionButtonClasses = computed(() => (
+  isPanelPresentation.value ? 'w-full justify-center' : ''
 ))
 
 const loading = ref(false)

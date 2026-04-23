@@ -8,7 +8,8 @@ import { buildClaudeSessionConfig } from "../../../../../../src/agent-execution/
 import { ClaudeSession } from "../../../../../../src/agent-execution/backends/claude/session/claude-session.js";
 import { buildConfiguredAgentToolExposure } from "../../../../../../src/agent-execution/shared/configured-agent-tool-exposure.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
-import { TeamRunContext } from "../../../../../../src/agent-team-execution/domain/team-run-context.js";
+import { MemberTeamContext } from "../../../../../../src/agent-team-execution/domain/member-team-context.js";
+import { TeamBackendKind } from "../../../../../../src/agent-team-execution/domain/team-backend-kind.js";
 
 const {
   buildClaudeSessionMcpServersMock,
@@ -31,27 +32,34 @@ const createResultQuery = async function* () {
   };
 };
 
-const createTeamContext = () =>
-  new TeamRunContext({
-    runId: "team-1",
-    runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-    config: null,
-    runtimeContext: {
-      memberContexts: [
-        {
-          memberName: "Professor",
-          memberRouteKey: "professor",
-          memberRunId: "run-1",
-          getPlatformAgentRunId: () => null,
-        },
-        {
-          memberName: "Student",
-          memberRouteKey: "student",
-          memberRunId: "run-2",
-          getPlatformAgentRunId: () => null,
-        },
-      ],
-    } as any,
+const createMemberTeamContext = () =>
+  new MemberTeamContext({
+    teamRunId: "team-1",
+    teamDefinitionId: "team-def-1",
+    teamBackendKind: TeamBackendKind.CLAUDE_AGENT_SDK,
+    memberName: "Professor",
+    memberRouteKey: "professor",
+    memberRunId: "run-1",
+    members: [
+      {
+        memberName: "Professor",
+        memberRouteKey: "professor",
+        memberRunId: "run-1",
+        runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+        role: null,
+        description: null,
+      },
+      {
+        memberName: "Student",
+        memberRouteKey: "student",
+        memberRunId: "run-2",
+        runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+        role: null,
+        description: null,
+      },
+    ],
+    allowedRecipientNames: ["Student"],
+    sendMessageToEnabled: true,
   });
 
 const createSession = (configuredToolNames: string[] = []) => {
@@ -66,7 +74,7 @@ const createSession = (configuredToolNames: string[] = []) => {
       autoExecuteTools: false,
       skillAccessMode: SkillAccessMode.NONE,
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-      teamContext: createTeamContext(),
+      memberTeamContext: createMemberTeamContext(),
     }),
     runtimeContext: new ClaudeAgentRunContext({
       sessionConfig: buildClaudeSessionConfig({
@@ -77,7 +85,7 @@ const createSession = (configuredToolNames: string[] = []) => {
       configuredToolExposure: buildConfiguredAgentToolExposure(configuredToolNames),
       sessionId: "run-1",
       activeTurnId: null,
-      teamContext: createTeamContext(),
+      memberTeamContext: createMemberTeamContext(),
     }),
   });
 

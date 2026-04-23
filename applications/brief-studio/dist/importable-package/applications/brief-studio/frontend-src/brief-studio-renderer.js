@@ -36,6 +36,110 @@ const formatArtifactLabel = (artifact) => {
   }
 };
 
+export const renderBriefStudioShell = (rootElement) => {
+  rootElement.innerHTML = `
+    <main class="shell">
+      <header class="hero card">
+        <div class="hero-layout">
+          <div class="hero-copy">
+            <div class="eyebrow">Brief workflow</div>
+            <h1>Brief Studio</h1>
+            <p class="lede">
+              Create, review, and finalize briefs from one business record. Generate drafts, keep review notes, and
+              approve outcomes without leaving the same brief workspace.
+            </p>
+          </div>
+
+          <section class="hero-focus" aria-label="Brief Studio homepage focus">
+            <p class="hero-focus-label">What you can do here</p>
+            <h2 class="hero-focus-title">Stay focused on the brief work itself.</h2>
+            <ul class="hero-checklist">
+              <li>Create the brief record that anchors the work.</li>
+              <li>Generate fresh drafts when the brief is ready.</li>
+              <li>Review outputs, notes, and approval state together.</li>
+            </ul>
+          </section>
+        </div>
+      </header>
+
+      <section id="workspace-status" class="workspace-status">
+        Brief Studio is ready to load workspace data.
+      </section>
+
+      <section class="workflow-strip" aria-label="Brief workflow steps">
+        <article class="workflow-step card">
+          <span class="step-kicker">Step 1</span>
+          <h2>Create</h2>
+          <p class="muted">Start with the business brief record and keep the work anchored to one brief.</p>
+        </article>
+        <article class="workflow-step card">
+          <span class="step-kicker">Step 2</span>
+          <h2>Generate</h2>
+          <p class="muted">Launch new drafting runs over time as the brief evolves and needs another pass.</p>
+        </article>
+        <article class="workflow-step card">
+          <span class="step-kicker">Step 3</span>
+          <h2>Review</h2>
+          <p class="muted">Keep draft outputs, review notes, and approval decisions together on the same record.</p>
+        </article>
+      </section>
+
+      <section class="card composer-panel">
+        <div class="panel-header">
+          <div>
+            <h2>Create a brief</h2>
+            <p class="muted">
+              Start the workflow with the business record. Runtime resource, model, workspace, and tool-execution
+              defaults come from the host-managed application launch setup.
+            </p>
+          </div>
+        </div>
+        <form id="create-brief-form" class="brief-composer">
+          <div class="composer-grid">
+            <label class="field">
+              <span class="label">Brief title</span>
+              <input id="brief-title-input" type="text" placeholder="Launch messaging orchestration brief" />
+            </label>
+          </div>
+          <div class="action-row">
+            <button id="create-brief-button" class="primary-button" type="submit">Create brief</button>
+            <span class="muted small">
+              GraphQL stays the primary brief API while the host supplies runtime and workspace defaults.
+            </span>
+          </div>
+        </form>
+      </section>
+
+      <section class="content-grid">
+        <aside class="card list-panel">
+          <div class="panel-header">
+            <div>
+              <h2>Briefs</h2>
+              <p class="muted">Track each brief, its latest draft state, and its review outcome.</p>
+            </div>
+            <button id="refresh-button" class="ghost-button" type="button">Refresh</button>
+          </div>
+          <div id="brief-list" class="brief-list empty-state">
+            No briefs yet. Create a brief, then generate a draft when it is ready for review.
+          </div>
+        </aside>
+
+        <section class="card detail-panel">
+          <div class="panel-header">
+            <div>
+              <h2>Brief detail</h2>
+              <p class="muted">Review generated drafts, notes, and approval state for the selected brief.</p>
+            </div>
+          </div>
+          <div id="brief-detail" class="empty-state">
+            Select a brief to review generated drafts, notes, and approval status.
+          </div>
+        </section>
+      </section>
+    </main>
+  `;
+};
+
 export const renderBriefList = ({ state, elements, onSelectBrief, onError }) => {
   if (!elements.briefList) {
     return;
