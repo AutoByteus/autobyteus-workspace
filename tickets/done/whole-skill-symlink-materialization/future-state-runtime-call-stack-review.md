@@ -18,10 +18,10 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 
 ## Review Basis
 
-- Requirements: `tickets/in-progress/whole-skill-symlink-materialization/requirements.md` (status `Design-ready`)
-- Runtime Call Stack Document: `tickets/in-progress/whole-skill-symlink-materialization/future-state-runtime-call-stack.md`
+- Requirements: `tickets/done/whole-skill-symlink-materialization/requirements.md` (status `Design-ready`)
+- Runtime Call Stack Document: `tickets/done/whole-skill-symlink-materialization/future-state-runtime-call-stack.md`
 - Source Design Basis:
-  - `tickets/in-progress/whole-skill-symlink-materialization/proposed-design.md`
+  - `tickets/done/whole-skill-symlink-materialization/proposed-design.md`
 - Shared Design Principles: `/Users/normy/.codex/skills/software-engineering-workflow-skill/shared/design-principles.md`
 - Artifact Versions In This Round:
   - Requirements Status: `Design-ready`

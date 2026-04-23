@@ -10,13 +10,13 @@
 
 ## Upstream Artifacts (Required)
 
-- Workflow state: `tickets/in-progress/whole-skill-symlink-materialization/workflow-state.md`
-- Investigation notes: `tickets/in-progress/whole-skill-symlink-materialization/investigation-notes.md`
-- Requirements: `tickets/in-progress/whole-skill-symlink-materialization/requirements.md`
+- Workflow state: `tickets/done/whole-skill-symlink-materialization/workflow-state.md`
+- Investigation notes: `tickets/done/whole-skill-symlink-materialization/investigation-notes.md`
+- Requirements: `tickets/done/whole-skill-symlink-materialization/requirements.md`
   - Current Status: `Design-ready`
-- Runtime call stacks: `tickets/in-progress/whole-skill-symlink-materialization/future-state-runtime-call-stack.md`
-- Future-state runtime call stack review: `tickets/in-progress/whole-skill-symlink-materialization/future-state-runtime-call-stack-review.md`
-- Proposed design (required for `Medium/Large`): `tickets/in-progress/whole-skill-symlink-materialization/proposed-design.md`
+- Runtime call stacks: `tickets/done/whole-skill-symlink-materialization/future-state-runtime-call-stack.md`
+- Future-state runtime call stack review: `tickets/done/whole-skill-symlink-materialization/future-state-runtime-call-stack-review.md`
+- Proposed design (required for `Medium/Large`): `tickets/done/whole-skill-symlink-materialization/proposed-design.md`
 
 ## Document Status
 
@@ -184,7 +184,7 @@
 
 ### Code Review Gate Plan (Stage 8)
 
-- Gate artifact path: `tickets/in-progress/whole-skill-symlink-materialization/code-review.md`
+- Gate artifact path: `tickets/done/whole-skill-symlink-materialization/code-review.md`
 - Scope (source + tests):
   - Codex and Claude materializers
   - touched runtime tests
@@ -205,7 +205,7 @@
   - Codex bootstrapper integration
   - best available Claude executable evidence, subject to auth constraints
 - Stage 7 handoff notes for API/E2E and executable validation:
-  - canonical artifact path: `tickets/in-progress/whole-skill-symlink-materialization/api-e2e-testing.md`
+  - canonical artifact path: `tickets/done/whole-skill-symlink-materialization/api-e2e-testing.md`
   - critical flows to validate:
     - Codex same-name skip
     - Codex missing-skill symlink discovery
@@ -234,14 +234,14 @@
 
 | Stage | Canonical Artifact | Current Status | Last Updated | Notes |
 | --- | --- | --- | --- | --- |
-| `7` API/E2E + Executable Validation | `tickets/in-progress/whole-skill-symlink-materialization/api-e2e-testing.md` | `Planned` | 2026-04-23 | executable-validation artifact not started yet |
-| `8` Code Review | `tickets/in-progress/whole-skill-symlink-materialization/code-review.md` | `Planned` | 2026-04-23 | review artifact not started yet |
-| `9` Docs Sync | `tickets/in-progress/whole-skill-symlink-materialization/docs-sync.md` | `Planned` | 2026-04-23 | docs impact to be assessed after implementation |
+| `7` API/E2E + Executable Validation | `tickets/done/whole-skill-symlink-materialization/api-e2e-testing.md` | `Planned` | 2026-04-23 | executable-validation artifact not started yet |
+| `8` Code Review | `tickets/done/whole-skill-symlink-materialization/code-review.md` | `Planned` | 2026-04-23 | review artifact not started yet |
+| `9` Docs Sync | `tickets/done/whole-skill-symlink-materialization/docs-sync.md` | `Planned` | 2026-04-23 | docs impact to be assessed after implementation |
 
 ### Completion Gate
 
 - Stage 6 implementation execution complete: `No`
 - Downstream stage authority stays in:
-  - `tickets/in-progress/whole-skill-symlink-materialization/api-e2e-testing.md`
-  - `tickets/in-progress/whole-skill-symlink-materialization/code-review.md`
-  - `tickets/in-progress/whole-skill-symlink-materialization/docs-sync.md`
+  - `tickets/done/whole-skill-symlink-materialization/api-e2e-testing.md`
+  - `tickets/done/whole-skill-symlink-materialization/code-review.md`
+  - `tickets/done/whole-skill-symlink-materialization/docs-sync.md`

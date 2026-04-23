@@ -11,10 +11,10 @@
 
 - Ticket: `whole-skill-symlink-materialization`
 - Scope classification: `Medium`
-- Workflow state source: `tickets/in-progress/whole-skill-symlink-materialization/workflow-state.md`
-- Requirements source: `tickets/in-progress/whole-skill-symlink-materialization/requirements.md`
-- Call stack source: `tickets/in-progress/whole-skill-symlink-materialization/future-state-runtime-call-stack.md`
-- Design source (`Medium/Large`): `tickets/in-progress/whole-skill-symlink-materialization/proposed-design.md`
+- Workflow state source: `tickets/done/whole-skill-symlink-materialization/workflow-state.md`
+- Requirements source: `tickets/done/whole-skill-symlink-materialization/requirements.md`
+- Call stack source: `tickets/done/whole-skill-symlink-materialization/future-state-runtime-call-stack.md`
+- Design source (`Medium/Large`): `tickets/done/whole-skill-symlink-materialization/proposed-design.md`
 - Interface/system shape in scope: `CLI`, `Integration`, `Other`
 - Platform/runtime targets: `local Codex app-server`, `local Node/Vitest filesystem validation`
 - Lifecycle boundaries in scope (`Install` / `Startup` / `Update` / `Restart` / `Migration` / `Shutdown` / `Recovery` / `None`): `None`

@@ -4,8 +4,8 @@
 
 - Ticket: `whole-skill-symlink-materialization`
 - Date: `2026-04-23`
-- Current Status: `Awaiting User Verification`
-- Workflow State Source: `tickets/in-progress/whole-skill-symlink-materialization/workflow-state.md`
+- Current Status: `Completed`
+- Workflow State Source: `tickets/done/whole-skill-symlink-materialization/workflow-state.md`
 
 ## Delivery Summary
 
@@ -16,7 +16,7 @@
   - updated durable validation for symlink behavior, live-source updates, shared-relative-path viability, collision rejection, guarded cleanup, and a higher-level live Codex runtime turn that reads from a linked shared file outside the skill folder
   - updated the Codex integration doc so it matches the new runtime contract
 - Planned scope reference:
-  - `tickets/in-progress/whole-skill-symlink-materialization/implementation.md`
+  - `tickets/done/whole-skill-symlink-materialization/implementation.md`
 - Deferred / not delivered:
   - live Claude CLI directory-symlink validation remains deferred because local org access is blocked
 - Key architectural or ownership changes:
@@ -35,7 +35,7 @@
   - passed live Codex bootstrapper integration with `RUN_CODEX_E2E=1`
   - generated Prisma client and passed `tsc -p tsconfig.build.json --noEmit`
 - API / E2E verification:
-  - recorded in `tickets/in-progress/whole-skill-symlink-materialization/api-e2e-testing.md`
+  - recorded in `tickets/done/whole-skill-symlink-materialization/api-e2e-testing.md`
   - includes a live Codex GraphQL/WebSocket runtime E2E that verifies `.codex/skills/<name>` is a whole-directory symlink and that Codex returns a token found only in a linked shared file outside the source skill folder
 - Acceptance-criteria closure summary:
   - `AC-001` through `AC-006` are recorded as passed in Stage 7
@@ -48,7 +48,7 @@
 ## Documentation Sync Summary
 
 - Docs sync artifact:
-  - `tickets/in-progress/whole-skill-symlink-materialization/docs-sync.md`
+  - `tickets/done/whole-skill-symlink-materialization/docs-sync.md`
 - Docs result: `Updated`
 - Docs updated:
   - `autobyteus-server-ts/docs/modules/codex_integration.md`
@@ -65,16 +65,17 @@
 
 ## User Verification Hold
 
-- Waiting for explicit user verification: `Yes`
+- Waiting for explicit user verification: `No`
 - User verification received:
-  - `No`
+  - `Yes`
 - Notes:
-  - Stage 10 is open; ticket archival, commit, push, merge, and worktree cleanup are intentionally not started yet
+  - user explicitly confirmed the ticket is done on 2026-04-23
+  - ticket archival and repository finalization are authorized
 
 ## Finalization Record
 
 - Ticket archived to:
-  - `N/A`
+  - `tickets/done/whole-skill-symlink-materialization`
 - Ticket worktree path:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/whole-skill-symlink-materialization`
 - Ticket branch:
@@ -84,16 +85,16 @@
 - Finalization target branch:
   - `personal`
 - Commit status:
-  - `Not started`
+  - `Completed by the Stage 10 finalization commit on ticket branch`
 - Push status:
-  - `Not started`
+  - `Completed by Stage 10 finalization`
 - Merge status:
-  - `Not started`
+  - `Completed into origin/personal by Stage 10 finalization`
 - Release/publication/deployment status:
-  - `Not required`
+  - `Not required per explicit user instruction; no new version was released`
 - Worktree cleanup status:
-  - `Not started`
+  - `Completed by Stage 10 finalization`
 - Local branch cleanup status:
-  - `Not started`
+  - `Completed by Stage 10 finalization if the ticket branch is fully merged locally`
 - Blockers / notes:
-  - waiting for explicit user verification before any repository finalization work
+  - no blockers

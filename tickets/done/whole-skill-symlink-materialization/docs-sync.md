@@ -4,7 +4,7 @@
 
 - Ticket: `whole-skill-symlink-materialization`
 - Trigger Stage: `9`
-- Workflow state source: `tickets/in-progress/whole-skill-symlink-materialization/workflow-state.md`
+- Workflow state source: `tickets/done/whole-skill-symlink-materialization/workflow-state.md`
 
 ## Why Docs Were Updated
 

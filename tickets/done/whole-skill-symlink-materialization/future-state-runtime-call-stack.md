@@ -22,9 +22,9 @@ Do not treat this document as an as-is trace of current code behavior.
 
 - Scope Classification: `Medium`
 - Call Stack Version: `v1`
-- Requirements: `tickets/in-progress/whole-skill-symlink-materialization/requirements.md` (status `Design-ready`)
+- Requirements: `tickets/done/whole-skill-symlink-materialization/requirements.md` (status `Design-ready`)
 - Source Artifact:
-  - `tickets/in-progress/whole-skill-symlink-materialization/proposed-design.md`
+  - `tickets/done/whole-skill-symlink-materialization/proposed-design.md`
 - Source Design Version: `v1`
 - Referenced Sections:
   - Spine inventory sections: `DS-001` through `DS-004`

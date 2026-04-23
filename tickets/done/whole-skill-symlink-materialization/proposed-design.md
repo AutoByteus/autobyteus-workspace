@@ -12,8 +12,8 @@
 
 ## Artifact Basis
 
-- Investigation Notes: `tickets/in-progress/whole-skill-symlink-materialization/investigation-notes.md`
-- Requirements: `tickets/in-progress/whole-skill-symlink-materialization/requirements.md`
+- Investigation Notes: `tickets/done/whole-skill-symlink-materialization/investigation-notes.md`
+- Requirements: `tickets/done/whole-skill-symlink-materialization/requirements.md`
 - Requirements Status: `Design-ready`
 - Shared Design Principles: `/Users/normy/.codex/skills/software-engineering-workflow-skill/shared/design-principles.md`
 
