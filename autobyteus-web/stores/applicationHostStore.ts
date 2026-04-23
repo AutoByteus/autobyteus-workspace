@@ -41,7 +41,9 @@ const readErrorMessage = async (response: Response): Promise<string> => {
 export const useApplicationHostStore = defineStore('applicationHost', () => {
   const launches = ref<Record<string, ApplicationHostLaunchState>>({})
   const launchGenerations = ref<Record<string, number>>({})
+  const activeLaunchRequestTokens = ref<Record<string, number>>({})
   let watcherRegistered = false
+  let nextLaunchRequestToken = 0
   const windowNodeContextStore = useWindowNodeContextStore()
 
   const getLaunchState = computed(
@@ -65,7 +67,22 @@ export const useApplicationHostStore = defineStore('applicationHost', () => {
   const resetLaunches = (): void => {
     launches.value = {}
     launchGenerations.value = {}
+    activeLaunchRequestTokens.value = {}
   }
+
+  const registerLaunchRequest = (applicationId: string): number => {
+    const requestToken = nextLaunchRequestToken + 1
+    nextLaunchRequestToken = requestToken
+    activeLaunchRequestTokens.value = {
+      ...activeLaunchRequestTokens.value,
+      [applicationId]: requestToken,
+    }
+    return requestToken
+  }
+
+  const isActiveLaunchRequest = (applicationId: string, requestToken: number): boolean => (
+    activeLaunchRequestTokens.value[applicationId] === requestToken
+  )
 
   const clearLaunchState = (applicationId: string): void => {
     const normalizedApplicationId = applicationId.trim()
@@ -79,10 +96,10 @@ export const useApplicationHostStore = defineStore('applicationHost', () => {
       launches.value = nextLaunches
     }
 
-    if (Object.prototype.hasOwnProperty.call(launchGenerations.value, normalizedApplicationId)) {
-      const nextGenerations = { ...launchGenerations.value }
-      delete nextGenerations[normalizedApplicationId]
-      launchGenerations.value = nextGenerations
+    if (Object.prototype.hasOwnProperty.call(activeLaunchRequestTokens.value, normalizedApplicationId)) {
+      const nextActiveRequestTokens = { ...activeLaunchRequestTokens.value }
+      delete nextActiveRequestTokens[normalizedApplicationId]
+      activeLaunchRequestTokens.value = nextActiveRequestTokens
     }
   }
 
@@ -118,6 +135,7 @@ export const useApplicationHostStore = defineStore('applicationHost', () => {
       throw new Error('applicationId is required.')
     }
 
+    const launchRequestToken = registerLaunchRequest(normalizedApplicationId)
     const bindingRevisionAtStart = windowNodeContextStore.bindingRevision
     const applicationsCapabilityStore = useApplicationsCapabilityStore()
     await applicationsCapabilityStore.ensureResolved()
@@ -130,6 +148,10 @@ export const useApplicationHostStore = defineStore('applicationHost', () => {
       throw new Error('Applications are disabled in the current runtime configuration.')
     }
 
+    if (!isActiveLaunchRequest(normalizedApplicationId, launchRequestToken)) {
+      return getLaunchState.value(normalizedApplicationId)
+    }
+
     setLaunchState({
       ...createIdleLaunchState(normalizedApplicationId),
       status: 'preparing',
@@ -138,13 +160,13 @@ export const useApplicationHostStore = defineStore('applicationHost', () => {
     try {
       await ensureBackendReady()
 
-      if (hasBindingRevisionChanged(bindingRevisionAtStart)) {
+      if (hasBindingRevisionChanged(bindingRevisionAtStart) || !isActiveLaunchRequest(normalizedApplicationId, launchRequestToken)) {
         throw new Error('Application host launch was interrupted by a backend rebinding.')
       }
 
       const engineStatus = await requestEnsureReady(normalizedApplicationId)
 
-      if (hasBindingRevisionChanged(bindingRevisionAtStart)) {
+      if (hasBindingRevisionChanged(bindingRevisionAtStart) || !isActiveLaunchRequest(normalizedApplicationId, launchRequestToken)) {
         throw new Error('Application host launch was interrupted by a backend rebinding.')
       }
 
@@ -152,6 +174,10 @@ export const useApplicationHostStore = defineStore('applicationHost', () => {
       launchGenerations.value = {
         ...launchGenerations.value,
         [normalizedApplicationId]: nextGeneration,
+      }
+
+      if (!isActiveLaunchRequest(normalizedApplicationId, launchRequestToken)) {
+        return getLaunchState.value(normalizedApplicationId)
       }
 
       return setLaunchState({
@@ -164,6 +190,10 @@ export const useApplicationHostStore = defineStore('applicationHost', () => {
         lastError: null,
       })
     } catch (cause) {
+      if (!isActiveLaunchRequest(normalizedApplicationId, launchRequestToken)) {
+        return getLaunchState.value(normalizedApplicationId)
+      }
+
       const message = cause instanceof Error ? cause.message : String(cause)
       setLaunchState({
         applicationId: normalizedApplicationId,

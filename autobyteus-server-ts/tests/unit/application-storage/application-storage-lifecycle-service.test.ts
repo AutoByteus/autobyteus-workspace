@@ -112,6 +112,58 @@ describe("ApplicationStorageLifecycleService", () => {
     }
   });
 
+  it("reapplies app migrations when app.sqlite is emptied after the platform migration ledger already exists", async () => {
+    await fs.writeFile(
+      path.join(migrationsDirPath, "001_create_briefs.sql"),
+      "CREATE TABLE briefs (brief_id TEXT PRIMARY KEY, title TEXT NOT NULL);\n",
+      "utf-8",
+    );
+
+    const service = new ApplicationStorageLifecycleService({
+      appConfig: createMockAppConfig(tempRoot) as never,
+      applicationBundleService: {
+        getApplicationById: async () => createBundle(applicationRootPath, migrationsDirPath),
+      } as never,
+    });
+
+    const initialLayout = await service.ensureStoragePrepared("built-in:applications__ticketing-app");
+    const initialPlatformDb = new DatabaseSync(initialLayout.platformDatabasePath);
+    try {
+      const initialLedgerCount = initialPlatformDb
+        .prepare("SELECT COUNT(*) AS migrationCount FROM __autobyteus_app_migrations")
+        .get() as { migrationCount?: number } | undefined;
+      expect(initialLedgerCount?.migrationCount).toBe(1);
+    } finally {
+      initialPlatformDb.close();
+    }
+    await fs.writeFile(initialLayout.appDatabasePath, "");
+
+    const repairedLayout = await service.ensureStoragePrepared("built-in:applications__ticketing-app");
+
+    const appDb = new DatabaseSync(repairedLayout.appDatabasePath);
+    const platformDb = new DatabaseSync(repairedLayout.platformDatabasePath);
+    try {
+      const briefsTable = appDb
+        .prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'briefs'")
+        .get() as { name: string } | undefined;
+      expect(briefsTable?.name).toBe("briefs");
+
+      const ledgerRow = platformDb
+        .prepare("SELECT migration_name, checksum FROM __autobyteus_app_migrations WHERE migration_name = ?")
+        .get("001_create_briefs.sql") as { migration_name?: string; checksum?: string } | undefined;
+      expect(ledgerRow?.migration_name).toBe("001_create_briefs.sql");
+      expect(ledgerRow?.checksum).toBeTruthy();
+
+      const repairedLedgerCount = platformDb
+        .prepare("SELECT COUNT(*) AS migrationCount FROM __autobyteus_app_migrations")
+        .get() as { migrationCount?: number } | undefined;
+      expect(repairedLedgerCount?.migrationCount).toBe(1);
+    } finally {
+      platformDb.close();
+      appDb.close();
+    }
+  });
+
   it("bootstraps hidden platform state without running app-authored migrations", async () => {
     await fs.writeFile(
       path.join(migrationsDirPath, "001_invalid.sql"),

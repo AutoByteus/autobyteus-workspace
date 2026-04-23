@@ -56,17 +56,24 @@ The generic host no longer treats one singular bundle resource as the required l
 
 The store also owns stale-response protection for node switches: late catalog or detail responses from the old bound node are discarded instead of repopulating stale application state after `bindingRevision` changes.
 
-## Host Launch Flow
+## Two-Phase Route Flow
 
 `pages/applications/[id].vue` stays intentionally thin and delegates page behavior to `ApplicationShell.vue`.
 
-On route load, the shell:
+On route load, the shell always starts in a setup-focused phase:
 
 1. fetches the application entry if needed,
-2. renders the authoritative `ApplicationLaunchSetupPanel` when the application declares `resourceSlots[]`,
-3. blocks entry until the saved setup is launch-ready for every required slot,
-4. asks `applicationHostStore.startLaunch(applicationId)` to prepare the app backend only after that gate is satisfied, and
-5. renders `ApplicationSurface.vue` once the host launch reaches `ready`.
+2. clears any stale host-launch state for that route visit,
+3. renders the authoritative `ApplicationLaunchSetupPanel`,
+4. blocks entry until the saved setup is launch-ready for every required slot, and
+5. only starts a fresh host launch when the user explicitly clicks `Enter application`.
+
+Once the user commits to entry, the route switches into an immersive phase:
+
+1. `ApplicationShell.vue` requests `appLayoutStore.setHostShellPresentation('application_immersive')`,
+2. `applicationHostStore.startLaunch(applicationId)` creates a fresh host launch generation for that route visit,
+3. the shell shows immersive loading/error canvas states until a `launchInstanceId` exists, and
+4. `ApplicationSurface.vue` owns the iframe/bootstrap lifecycle once the fresh `launchInstanceId` is ready.
 
 `applicationHostStore` is the authoritative owner for the generic host-side launch state:
 
@@ -76,6 +83,17 @@ On route load, the shell:
 - `failed`
 
 The host launch is intentionally narrow. It does **not** create an agent run or team run. It only ensures the application backend is ready and produces one ephemeral `launchInstanceId` for iframe bootstrap correlation.
+
+## Host Launch Lifetime Contract
+
+The application route now uses a route-visit-scoped, setup-agnostic host-launch contract:
+
+- `Enter application` always creates a fresh host launch for the current route visit.
+- `Reload application` is the only in-route action that intentionally replaces the current host launch with a fresh one.
+- `Exit application` and route leave both call `applicationHostStore.clearLaunchState(applicationId)` and restore the standard host shell presentation.
+- Post-entry setup saves do **not** relaunch and do **not** clear host-launch state. If the user wants a fresh iframe/app-shell bootstrap after saving setup, they must use explicit `Reload application`.
+
+This keeps host-launch identity tied to route visit and explicit reload/exit semantics instead of mixing setup fingerprints into `applicationHostStore`.
 
 ## Pre-Entry Launch Setup Gate
 
@@ -100,9 +118,23 @@ That gate:
 
 That split is intentional: application-specific field-presence policy now lives in the app-owned launch-defaults boundary instead of extending the shared run-config wrapper with app-specific visibility toggles. Native agent/team run configuration keeps its own stable runtime/model field semantics.
 
+## Immersive Control Panel
+
+After entry, the default visible state is immersive and app-first. The outer host shell is suppressed through the existing `appLayoutStore -> layouts/default.vue` boundary, while a light top-right in-app host trigger remains available.
+
+`ApplicationImmersiveControlPanel.vue` owns that focused immersive chrome. It:
+
+- exposes the light top-right trigger,
+- opens a resizable right-side panel that narrows the application canvas instead of restoring the old stacked host page,
+- keeps the embedded setup controls usable even at narrower panel widths,
+- expands `Details` and `Configure` inline inside that same panel, and
+- emits explicit route-level actions such as `Reload application` and `Exit application`.
+
+The configure disclosure reuses `ApplicationLaunchSetupPanel.vue` through a presentation variant, so setup semantics stay authoritative in one owner across both route phases.
+
 This means the authoritative user journey is now:
 
-`Applications card -> launch setup save -> Enter application -> iframe bootstrap -> app-owned run creation`.
+`Applications card -> setup-first route -> launch setup save -> Enter application -> immersive shell -> iframe bootstrap -> app-owned run creation`.
 
 ## Application Surface Ownership
 

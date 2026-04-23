@@ -1,7 +1,6 @@
 import {
   renderApp,
   renderBriefDetail,
-  renderNotifications,
 } from "./brief-studio-renderer.js";
 
 const CHANNEL = "autobyteus.application.host";
@@ -42,23 +41,15 @@ export const createBriefStudioApp = ({
     selectedBriefId: null,
     detail: null,
     executions: [],
-    notifications: [],
-    statusText: "Waiting for the host bootstrap payload…",
+    statusText: "Preparing brief workspace…",
     statusTone: "idle",
     notificationHandle: null,
   };
 
   const elements = {
-    applicationName: document.getElementById("application-name"),
-    applicationIds: document.getElementById("application-ids"),
-    launchInstanceId: document.getElementById("launch-instance-id"),
-    requestContext: document.getElementById("request-context"),
-    backendBaseUrl: document.getElementById("backend-base-url"),
-    backendNotificationsUrl: document.getElementById("backend-notifications-url"),
     statusBanner: document.getElementById("status-banner"),
     briefList: document.getElementById("brief-list"),
     briefDetail: document.getElementById("brief-detail"),
-    notificationList: document.getElementById("notification-list"),
     refreshButton: document.getElementById("refresh-button"),
     createBriefForm: document.getElementById("create-brief-form"),
     briefTitleInput: document.getElementById("brief-title-input"),
@@ -134,7 +125,7 @@ export const createBriefStudioApp = ({
     logBriefStudio(
       `refresh start applicationId=${state.bootstrap?.application?.applicationId || "unknown"} launch=${state.bootstrap?.launch?.launchInstanceId || "unknown"}`,
     );
-    setStatus("Loading projected briefs through the hosted GraphQL backend mount…");
+    setStatus("Loading briefs through the hosted GraphQL backend mount…");
     const briefs = await state.client.briefs();
     state.briefs = Array.isArray(briefs) ? briefs : [];
 
@@ -146,8 +137,8 @@ export const createBriefStudioApp = ({
     render();
     setStatus(
       state.briefs.length === 0
-        ? "Brief Studio is ready. Create a brief, then generate a draft when it is ready for review."
-        : "Brief Studio is ready. Open a brief to review drafts, notes, and approval state.",
+        ? "Start by creating a brief. Then generate a draft when it is ready for review."
+        : "Open a brief to review drafts, notes, and approval state.",
       "ready",
     );
   };
@@ -163,7 +154,7 @@ export const createBriefStudioApp = ({
       return;
     }
 
-    setStatus("Creating an app-owned brief record…");
+    setStatus("Creating a brief record…");
     const brief = await state.client.createBrief({ title });
     if (typeof brief?.briefId === "string" && brief.briefId.trim()) {
       state.selectedBriefId = brief.briefId;
@@ -229,15 +220,10 @@ export const createBriefStudioApp = ({
     await refresh();
   };
 
-  const pushNotification = (notification) => {
-    state.notifications = [notification, ...state.notifications].slice(0, 12);
-    renderNotifications({ state, elements });
-  };
-
   const connectNotifications = () => {
     state.notificationHandle?.close?.();
     state.notificationHandle = state.client?.subscribeNotifications((notification) => {
-      pushNotification(notification);
+      logBriefStudio(`notification received topic=${notification?.topic || "unknown"}`);
       refresh().catch(handleUiError);
     }) || null;
   };

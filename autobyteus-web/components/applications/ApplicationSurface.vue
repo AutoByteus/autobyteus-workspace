@@ -1,29 +1,37 @@
 <template>
   <div
     v-if="application && launchInstanceId"
-    class="h-full min-h-[32rem]"
+    class="h-full min-h-[32rem] w-full"
   >
-    <div class="relative h-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-      <ApplicationIframeHost
+    <div class="relative h-full min-h-0 overflow-hidden bg-slate-950">
+      <div
         v-if="launchDescriptor"
-        :key="iframeMountKey"
-        :descriptor="launchDescriptor"
-        :bootstrap-envelope="pendingBootstrapEnvelope"
-        @bridge-error="handleBridgeError"
-        @bootstrap-delivered="handleBootstrapDelivered"
-        @ready="handleReady"
-      />
+        class="h-full min-h-0 w-full transition-opacity duration-200"
+        :class="isCanvasRevealed ? 'opacity-100' : 'pointer-events-none select-none opacity-0'"
+        :aria-hidden="isCanvasRevealed ? 'false' : 'true'"
+        data-testid="application-surface-canvas"
+      >
+        <ApplicationIframeHost
+          :key="iframeMountKey"
+          :descriptor="launchDescriptor"
+          :bootstrap-envelope="pendingBootstrapEnvelope"
+          @bridge-error="handleBridgeError"
+          @bootstrap-delivered="handleBootstrapDelivered"
+          @ready="handleReady"
+        />
+      </div>
 
       <div
         v-if="launchState === 'failed'"
-        class="absolute inset-0 flex min-h-[20rem] flex-col items-center justify-center gap-4 bg-slate-50 px-6 text-center"
+        class="absolute inset-0 flex min-h-[20rem] flex-col items-center justify-center gap-4 bg-slate-950 px-6 text-center"
+        data-testid="application-surface-failure-overlay"
       >
-        <div class="rounded-full bg-red-100 p-3 text-red-600">
+        <div class="rounded-full bg-red-500/15 p-3 text-red-300">
           <span class="i-heroicons-exclamation-triangle-20-solid h-6 w-6"></span>
         </div>
         <div class="space-y-2">
-          <h3 class="text-lg font-semibold text-slate-900">{{ $t('applications.components.applications.ApplicationIframeHost.initializationFailed') }}</h3>
-          <p class="max-w-xl text-sm text-slate-600">
+          <h3 class="text-lg font-semibold text-white">{{ $t('applications.components.applications.ApplicationIframeHost.initializationFailed') }}</h3>
+          <p class="max-w-xl text-sm text-slate-300">
             {{ launchError || $t('applications.components.applications.ApplicationIframeHost.handshakeDidNotComplete') }}
           </p>
         </div>
@@ -38,11 +46,12 @@
 
       <div
         v-else-if="launchDescriptor && launchState !== 'bootstrapped'"
-        class="pointer-events-none absolute inset-0 flex items-center justify-center bg-white/85 backdrop-blur-sm"
+        class="pointer-events-none absolute inset-0 flex items-center justify-center bg-slate-950 px-6"
+        data-testid="application-surface-loading-overlay"
       >
-        <div class="flex flex-col items-center gap-3 text-slate-600">
-          <div class="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
-          <p class="text-sm font-medium">{{ $t('applications.components.applications.ApplicationIframeHost.initializingApplication') }}</p>
+        <div class="flex flex-col items-center gap-3 text-slate-300">
+          <div class="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-400"></div>
+          <p class="text-sm font-medium text-white">{{ $t('applications.components.applications.ApplicationIframeHost.initializingApplication') }}</p>
         </div>
       </div>
     </div>
@@ -50,12 +59,14 @@
 
   <div
     v-else
-    class="rounded-xl border border-dashed border-slate-300 bg-white p-10 text-center text-slate-600 shadow-sm"
+    class="flex h-full min-h-[20rem] items-center justify-center bg-slate-950 px-6 text-center text-slate-300"
   >
-    <h2 class="text-lg font-semibold text-slate-900">{{ $t('applications.components.applications.ApplicationSurface.applicationUnavailable') }}</h2>
-    <p class="mt-2 text-sm">
-      {{ $t('applications.components.applications.ApplicationSurface.applicationUnavailableHelp') }}
-    </p>
+    <div class="max-w-lg rounded-3xl border border-slate-800 bg-slate-900/90 p-8 shadow-xl shadow-slate-950/30">
+      <h2 class="text-lg font-semibold text-white">{{ $t('applications.components.applications.ApplicationSurface.applicationUnavailable') }}</h2>
+      <p class="mt-2 text-sm leading-6 text-slate-300">
+        {{ $t('applications.components.applications.ApplicationSurface.applicationUnavailableHelp') }}
+      </p>
+    </div>
   </div>
 </template>
 
@@ -103,6 +114,8 @@ const iframeMountKey = computed(() => {
   }
   return `${launchDescriptor.value.launchInstanceId}:${iframeMountRevision.value}`
 })
+
+const isCanvasRevealed = computed(() => launchState.value === 'bootstrapped')
 
 const logApplicationSurface = (message: string): void => {
   console.info(`[ApplicationSurface] ${message}`)

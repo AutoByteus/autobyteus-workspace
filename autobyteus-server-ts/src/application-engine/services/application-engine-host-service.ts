@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import { DatabaseSync } from "node:sqlite";
 import type {
   ApplicationEngineStatus,
   ApplicationPublishedArtifactEvent,
@@ -106,7 +107,10 @@ export class ApplicationEngineHostService {
     const runtimeHandle = this.runtimeHandleByApplicationId.get(applicationId);
     const status = this.getApplicationEngineStatus(applicationId);
     if (runtimeHandle && status.state === "ready") {
-      return status;
+      if (this.runtimeStorageNeedsRepair(applicationId)) {
+        await this.storageLifecycleService.ensureStoragePrepared(applicationId);
+      }
+      return this.getApplicationEngineStatus(applicationId);
     }
 
     const existingPromise = this.startupPromiseByApplicationId.get(applicationId);
@@ -353,6 +357,33 @@ export class ApplicationEngineHostService {
       throw new Error(`Application engine '${applicationId}' is not running.`);
     }
     return handle;
+  }
+
+  private runtimeStorageNeedsRepair(applicationId: string): boolean {
+    const layout = this.storageLifecycleService.getStorageLayout(applicationId);
+    try {
+      const stats = fs.statSync(layout.appDatabasePath);
+      if (stats.size <= 0) {
+        return true;
+      }
+
+      const db = new DatabaseSync(layout.appDatabasePath);
+      try {
+        const row = db
+          .prepare(
+            `SELECT COUNT(*) AS tableCount
+               FROM sqlite_master
+              WHERE type = 'table'
+                AND name NOT LIKE 'sqlite_%'`,
+          )
+          .get() as { tableCount?: number } | undefined;
+        return Number(row?.tableCount ?? 0) === 0;
+      } finally {
+        db.close();
+      }
+    } catch {
+      return true;
+    }
   }
 
   private updateStatus(applicationId: string, status: ApplicationEngineStatus, statusPath?: string): void {

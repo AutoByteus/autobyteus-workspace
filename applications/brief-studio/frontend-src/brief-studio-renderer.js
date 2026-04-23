@@ -36,33 +36,6 @@ const formatArtifactLabel = (artifact) => {
   }
 };
 
-export const renderNotifications = ({ state, elements }) => {
-  if (!elements.notificationList) {
-    return;
-  }
-
-  if (state.notifications.length === 0) {
-    elements.notificationList.className = "notification-list empty-state";
-    elements.notificationList.textContent = "No notifications yet.";
-    return;
-  }
-
-  elements.notificationList.className = "notification-list";
-  elements.notificationList.innerHTML = state.notifications
-    .map(
-      (notification) => `
-        <article class="notification-row" role="listitem">
-          <div class="brief-title-row">
-            <strong>${escapeHtml(notification.topic)}</strong>
-            <span class="muted small">${escapeHtml(formatTime(notification.publishedAt))}</span>
-          </div>
-          <pre>${escapeHtml(JSON.stringify(notification.payload, null, 2))}</pre>
-        </article>
-      `,
-    )
-    .join("");
-};
-
 export const renderBriefList = ({ state, elements, onSelectBrief, onError }) => {
   if (!elements.briefList) {
     return;
@@ -70,7 +43,7 @@ export const renderBriefList = ({ state, elements, onSelectBrief, onError }) => 
 
   if (state.briefs.length === 0) {
     elements.briefList.className = "brief-list empty-state";
-    elements.briefList.textContent = "No briefs yet. Create a brief, then generate a draft when you are ready for review.";
+    elements.briefList.textContent = "No briefs yet. Create your first brief to start the workflow.";
     return;
   }
 
@@ -134,9 +107,9 @@ const renderExecutionHistory = (executions) => {
 
 const renderRuntimeDiagnostics = (brief, executions) => `
   <details class="inline-details">
-    <summary class="details-summary">Advanced runtime details</summary>
+    <summary class="details-summary">Workflow diagnostics</summary>
     <p class="details-copy muted">
-      Optional diagnostics for app authors. The main brief workflow stays focused on draft outputs and review state.
+      Optional app-author diagnostics. The main brief workflow stays focused on drafts, notes, and approval state.
     </p>
     <div class="meta-grid compact-meta-grid">
       <div>
@@ -302,39 +275,7 @@ export const renderBriefDetail = ({
   });
 };
 
-export const renderMetadata = ({ state, elements }) => {
-  const bootstrap = state.bootstrap;
-  if (!bootstrap) {
-    return;
-  }
-
-  if (elements.applicationName) {
-    elements.applicationName.textContent = bootstrap.application.name;
-  }
-  if (elements.applicationIds) {
-    elements.applicationIds.textContent = [
-      `app ${bootstrap.application.applicationId}`,
-      `local ${bootstrap.application.localApplicationId}`,
-      `package ${bootstrap.application.packageId}`,
-    ].join(" · ");
-  }
-  if (elements.launchInstanceId) {
-    elements.launchInstanceId.textContent = bootstrap.launch.launchInstanceId;
-  }
-  if (elements.requestContext) {
-    elements.requestContext.textContent = `applicationId ${bootstrap.requestContext.applicationId} · launchInstanceId ${bootstrap.requestContext.launchInstanceId || "—"}`;
-  }
-  if (elements.backendBaseUrl) {
-    elements.backendBaseUrl.textContent = bootstrap.transport.backendBaseUrl || "—";
-  }
-  if (elements.backendNotificationsUrl) {
-    elements.backendNotificationsUrl.textContent = bootstrap.transport.backendNotificationsUrl || "—";
-  }
-};
-
 export const renderApp = (input) => {
-  renderMetadata(input);
   renderBriefList(input);
   renderBriefDetail(input);
-  renderNotifications(input);
 };

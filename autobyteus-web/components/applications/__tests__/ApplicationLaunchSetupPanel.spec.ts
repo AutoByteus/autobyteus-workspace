@@ -206,6 +206,7 @@ describe('ApplicationLaunchSetupPanel', () => {
     const wrapper = mount(ApplicationLaunchSetupPanel, {
       props: {
         applicationId: 'bundle-app__pkg__brief-studio',
+        presentation: 'panel',
       },
       global: {
         stubs: {
@@ -223,6 +224,7 @@ describe('ApplicationLaunchSetupPanel', () => {
       'http://127.0.0.1:43123/rest/applications/bundle-app__pkg__brief-studio/available-resources',
     )
     expect(wrapper.get('[data-testid="application-launch-setup-panel"]').exists()).toBe(true)
+    expect(wrapper.get('[data-testid="application-launch-setup-panel"]').attributes('data-presentation')).toBe('panel')
     expect(wrapper.get('[data-testid="application-launch-defaults-fields"]').exists()).toBe(true)
     expect(wrapper.emitted('setup-state-change')?.at(-1)?.[0]).toMatchObject({
       phase: 'ready',

@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import { DatabaseSync } from "node:sqlite";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ApplicationStorageLifecycleService } from "../../../src/application-storage/services/application-storage-lifecycle-service.js";
 import { ApplicationEngineHostService } from "../../../src/application-engine/services/application-engine-host-service.js";
@@ -9,12 +10,13 @@ import type { ApplicationBundle } from "../../../src/application-bundles/domain/
 describe("ApplicationEngineHostService", () => {
   let tempRoot: string;
   let applicationRootPath: string;
+  let migrationsDirPath: string;
 
   const createMockAppConfig = (rootDir: string) => ({
     getAppDataDir: () => rootDir,
   });
 
-  const createBundle = (): ApplicationBundle => ({
+  const createBundle = (migrationsDirPath: string | null = null): ApplicationBundle => ({
     id: "built-in:applications__sample-app",
     localApplicationId: "sample-app",
     packageId: "built-in:applications",
@@ -54,8 +56,8 @@ describe("ApplicationEngineHostService", () => {
         notifications: true,
         eventHandlers: true,
       },
-      migrationsDirPath: null,
-      migrationsDirRelativePath: null,
+      migrationsDirPath,
+      migrationsDirRelativePath: migrationsDirPath ? "backend/migrations" : null,
       assetsDirPath: null,
       assetsDirRelativePath: null,
     },
@@ -64,7 +66,9 @@ describe("ApplicationEngineHostService", () => {
   beforeEach(async () => {
     tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-engine-host-"));
     applicationRootPath = path.join(tempRoot, "bundle", "applications", "sample-app");
+    migrationsDirPath = path.join(applicationRootPath, "backend", "migrations");
     await fs.mkdir(path.join(applicationRootPath, "backend", "dist"), { recursive: true });
+    await fs.mkdir(migrationsDirPath, { recursive: true });
     await fs.writeFile(
       path.join(applicationRootPath, "backend", "dist", "entry.mjs"),
       `export default {
@@ -272,5 +276,113 @@ describe("ApplicationEngineHostService", () => {
 
     await service.stopApplicationEngine("built-in:applications__sample-app");
     expect(service.getApplicationEngineStatus("built-in:applications__sample-app").state).toBe("stopped");
+  });
+
+  it("repairs empty app storage before reusing an already-ready runtime handle", async () => {
+    await fs.writeFile(
+      path.join(migrationsDirPath, "001_create_briefs.sql"),
+      "CREATE TABLE briefs (brief_id TEXT PRIMARY KEY, title TEXT NOT NULL);\n",
+      "utf-8",
+    );
+    const bundleService = {
+      getApplicationById: vi.fn().mockResolvedValue(createBundle(migrationsDirPath)),
+    };
+    const storageLifecycleService = new ApplicationStorageLifecycleService({
+      appConfig: createMockAppConfig(tempRoot) as never,
+      applicationBundleService: bundleService as never,
+    });
+    const service = new ApplicationEngineHostService({
+      applicationBundleService: bundleService as never,
+      storageLifecycleService,
+    });
+    const initialLayout = await storageLifecycleService.ensureStoragePrepared("built-in:applications__sample-app");
+    const initialPlatformDb = new DatabaseSync(initialLayout.platformDatabasePath);
+    try {
+      const initialLedgerCount = initialPlatformDb
+        .prepare("SELECT COUNT(*) AS migrationCount FROM __autobyteus_app_migrations")
+        .get() as { migrationCount?: number } | undefined;
+      expect(initialLedgerCount?.migrationCount).toBe(1);
+    } finally {
+      initialPlatformDb.close();
+    }
+    await fs.writeFile(initialLayout.appDatabasePath, "");
+
+    const readyStatus = {
+      applicationId: "built-in:applications__sample-app",
+      state: "ready" as const,
+      ready: true,
+      startedAt: new Date().toISOString(),
+      lastFailure: null,
+      exposures: null,
+    };
+
+    ;(service as any).runtimeHandleByApplicationId.set("built-in:applications__sample-app", {
+      supervisor: {},
+      client: {},
+    });
+    ;(service as any).statusByApplicationId.set("built-in:applications__sample-app", readyStatus);
+
+    const result = await service.ensureApplicationEngine("built-in:applications__sample-app");
+
+    const repairedDb = new DatabaseSync(initialLayout.appDatabasePath);
+    const repairedPlatformDb = new DatabaseSync(initialLayout.platformDatabasePath);
+    try {
+      const briefsTable = repairedDb
+        .prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'briefs'")
+        .get() as { name?: string } | undefined;
+      expect(briefsTable?.name).toBe("briefs");
+
+      const repairedLedgerCount = repairedPlatformDb
+        .prepare("SELECT COUNT(*) AS migrationCount FROM __autobyteus_app_migrations")
+        .get() as { migrationCount?: number } | undefined;
+      expect(repairedLedgerCount?.migrationCount).toBe(1);
+    } finally {
+      repairedPlatformDb.close();
+      repairedDb.close();
+    }
+    expect(result).toEqual(readyStatus);
+  });
+
+  it("does not rerun storage repair when the ready runtime already has user tables", async () => {
+    const appDatabasePath = path.join(tempRoot, "applications", "sample-app", "db", "app.sqlite");
+    await fs.mkdir(path.dirname(appDatabasePath), { recursive: true });
+    const db = new DatabaseSync(appDatabasePath);
+    try {
+      db.exec("CREATE TABLE briefs (brief_id TEXT PRIMARY KEY)");
+    } finally {
+      db.close();
+    }
+
+    const ensureStoragePrepared = vi.fn().mockResolvedValue({
+      appDatabasePath,
+    });
+    const service = new ApplicationEngineHostService({
+      storageLifecycleService: {
+        ensureStoragePrepared,
+        getStorageLayout: () => ({
+          appDatabasePath,
+        }),
+      } as never,
+    });
+
+    const readyStatus = {
+      applicationId: "built-in:applications__sample-app",
+      state: "ready" as const,
+      ready: true,
+      startedAt: new Date().toISOString(),
+      lastFailure: null,
+      exposures: null,
+    };
+
+    ;(service as any).runtimeHandleByApplicationId.set("built-in:applications__sample-app", {
+      supervisor: {},
+      client: {},
+    });
+    ;(service as any).statusByApplicationId.set("built-in:applications__sample-app", readyStatus);
+
+    const result = await service.ensureApplicationEngine("built-in:applications__sample-app");
+
+    expect(ensureStoragePrepared).not.toHaveBeenCalled();
+    expect(result).toEqual(readyStatus);
   });
 });

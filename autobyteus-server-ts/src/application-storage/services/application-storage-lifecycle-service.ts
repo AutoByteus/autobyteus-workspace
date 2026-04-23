@@ -111,6 +111,8 @@ export class ApplicationStorageLifecycleService {
       appDb.close();
     }
 
+    this.resetAppliedMigrationLedgerWhenAppDatabaseEmpty(layout);
+
     await this.migrationService.applyPendingMigrations({
       applicationId,
       appDatabasePath: layout.appDatabasePath,
@@ -119,6 +121,40 @@ export class ApplicationStorageLifecycleService {
     });
 
     return layout;
+  }
+
+  private resetAppliedMigrationLedgerWhenAppDatabaseEmpty(layout: ApplicationStorageLayout): void {
+    const appDb = new DatabaseSync(layout.appDatabasePath);
+    const platformDb = new DatabaseSync(layout.platformDatabasePath);
+    try {
+      if (this.getUserTableCount(appDb) > 0) {
+        return;
+      }
+
+      const row = platformDb
+        .prepare(`SELECT COUNT(*) AS migrationCount FROM __autobyteus_app_migrations`)
+        .get() as { migrationCount?: number } | undefined;
+      if (Number(row?.migrationCount ?? 0) === 0) {
+        return;
+      }
+
+      platformDb.exec(`DELETE FROM __autobyteus_app_migrations`);
+    } finally {
+      platformDb.close();
+      appDb.close();
+    }
+  }
+
+  private getUserTableCount(db: DatabaseSync): number {
+    const row = db
+      .prepare(
+        `SELECT COUNT(*) AS tableCount
+           FROM sqlite_master
+          WHERE type = 'table'
+            AND name NOT LIKE 'sqlite_%'`,
+      )
+      .get() as { tableCount?: number } | undefined;
+    return Number(row?.tableCount ?? 0);
   }
 
   private async requireApplicationBundle(applicationId: string) {

@@ -1,5 +1,9 @@
 <template>
-  <section data-testid="application-launch-setup-panel" class="mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+  <section
+    data-testid="application-launch-setup-panel"
+    :data-presentation="presentation"
+    :class="panelClasses"
+  >
     <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
       <div class="space-y-2">
         <div class="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
@@ -208,15 +212,24 @@ import {
   type SlotDraft,
 } from '~/utils/application/applicationLaunchSetup'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   applicationId: string
-}>()
+  presentation?: 'page' | 'panel'
+}>(), {
+  presentation: 'page',
+})
 const emit = defineEmits<{
   (e: 'setup-state-change', value: ApplicationLaunchSetupGateState): void
 }>()
 
 const { t: $t } = useLocalization()
 const windowNodeContextStore = useWindowNodeContextStore()
+
+const panelClasses = computed(() => (
+  props.presentation === 'panel'
+    ? 'rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5'
+    : 'mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8'
+))
 
 const loading = ref(false)
 const loadError = ref<string | null>(null)

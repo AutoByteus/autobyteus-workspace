@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, nextTick } from 'vue'
-import { mount } from '@vue/test-utils'
+import { mount, type VueWrapper } from '@vue/test-utils'
 import ApplicationSurface from '../ApplicationSurface.vue'
 import type { ApplicationCatalogEntry } from '~/stores/applicationStore'
 import type { ApplicationHostBootstrapEnvelopeV2, ApplicationIframeReadySignal } from '~/types/application/ApplicationIframeContract'
@@ -81,6 +81,18 @@ const buildApplication = (): ApplicationCatalogEntry => ({
   bundleResources: [],
 })
 
+const mountSurface = (): VueWrapper => mount(ApplicationSurface, {
+  props: {
+    application: buildApplication(),
+    launchInstanceId: 'bundle-app__pkg__sample-app::launch-1',
+  },
+  global: {
+    stubs: {
+      ApplicationIframeHost: ApplicationIframeHostStub,
+    },
+  },
+})
+
 describe('ApplicationSurface', () => {
   beforeEach(() => {
     hostHarness.props.descriptor = null
@@ -93,22 +105,18 @@ describe('ApplicationSurface', () => {
     vi.useRealTimers()
   })
 
-  it('owns the v2 launch handshake and clears the spinner after bootstrap delivery', async () => {
-    const wrapper = mount(ApplicationSurface, {
-      props: {
-        application: buildApplication(),
-        launchInstanceId: 'bundle-app__pkg__sample-app::launch-1',
-      },
-      global: {
-        stubs: {
-          ApplicationIframeHost: ApplicationIframeHostStub,
-        },
-      },
-    })
+  it('keeps the iframe canvas hidden behind an opaque host reveal gate until bootstrap delivery succeeds', async () => {
+    const wrapper = mountSurface()
 
     expect(hostHarness.props.descriptor?.applicationId).toBe('bundle-app__pkg__sample-app')
     expect(hostHarness.props.descriptor?.launchInstanceId).toBe('bundle-app__pkg__sample-app::launch-1')
     expect(hostHarness.props.bootstrapEnvelope).toBeNull()
+
+    const canvas = wrapper.get('[data-testid="application-surface-canvas"]')
+    const loadingOverlay = wrapper.get('[data-testid="application-surface-loading-overlay"]')
+    expect(canvas.classes()).toContain('opacity-0')
+    expect(canvas.attributes('aria-hidden')).toBe('true')
+    expect(loadingOverlay.classes()).toContain('bg-slate-950')
     expect(wrapper.text()).toContain('Initializing application')
 
     const descriptor = hostHarness.props.descriptor!
@@ -136,23 +144,15 @@ describe('ApplicationSurface', () => {
     await nextTick()
 
     expect(hostHarness.props.bootstrapEnvelope).toBeNull()
-    expect(wrapper.text()).not.toContain('Initializing application')
+    expect(wrapper.find('[data-testid="application-surface-loading-overlay"]').exists()).toBe(false)
+    expect(wrapper.get('[data-testid="application-surface-canvas"]').classes()).toContain('opacity-100')
+    expect(wrapper.get('[data-testid="application-surface-canvas"]').attributes('aria-hidden')).toBe('false')
 
     wrapper.unmount()
   })
 
   it('ignores stale ready signals that do not match the active launch descriptor', async () => {
-    const wrapper = mount(ApplicationSurface, {
-      props: {
-        application: buildApplication(),
-        launchInstanceId: 'bundle-app__pkg__sample-app::launch-1',
-      },
-      global: {
-        stubs: {
-          ApplicationIframeHost: ApplicationIframeHostStub,
-        },
-      },
-    })
+    const wrapper = mountSurface()
 
     await wrapper.getComponent(ApplicationIframeHostStub).vm.$emit('ready', {
       applicationId: 'bundle-app__pkg__sample-app',
@@ -163,6 +163,27 @@ describe('ApplicationSurface', () => {
 
     expect(hostHarness.props.bootstrapEnvelope).toBeNull()
     expect(wrapper.text()).toContain('Initializing application')
+
+    wrapper.unmount()
+  })
+
+  it('keeps bootstrap failures inside the transition state and allows retry without revealing the canvas', async () => {
+    const wrapper = mountSurface()
+
+    await wrapper.getComponent(ApplicationIframeHostStub).vm.$emit('bridge-error', 'Bootstrap bridge failed')
+    await nextTick()
+
+    expect(wrapper.find('[data-testid="application-surface-loading-overlay"]').exists()).toBe(false)
+    expect(wrapper.get('[data-testid="application-surface-failure-overlay"]').classes()).toContain('bg-slate-950')
+    expect(wrapper.text()).toContain('Bootstrap bridge failed')
+    expect(wrapper.get('[data-testid="application-surface-canvas"]').classes()).toContain('opacity-0')
+
+    await wrapper.get('button').trigger('click')
+    await nextTick()
+
+    expect(wrapper.find('[data-testid="application-surface-failure-overlay"]').exists()).toBe(false)
+    expect(wrapper.get('[data-testid="application-surface-loading-overlay"]').exists()).toBe(true)
+    expect(wrapper.get('[data-testid="application-surface-canvas"]').classes()).toContain('opacity-0')
 
     wrapper.unmount()
   })

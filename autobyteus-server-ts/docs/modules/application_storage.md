@@ -90,10 +90,11 @@ This is the authoritative `runId -> { applicationId, bindingId }` lookup used by
   - bootstraps reserved platform tables without running app-authored migrations.
 - `ensureStoragePrepared(applicationId)`
   - runs the platform-state step,
-  - materializes `app.sqlite`, and
-  - applies pending app migrations before worker startup.
+  - materializes `app.sqlite`,
+  - clears stale `__autobyteus_app_migrations` rows only when `app.sqlite` has been destructively emptied while `platform.sqlite` still says migrations were applied, and
+  - deterministically reapplies pending app migrations before worker startup or ready-runtime reuse.
 
-This split lets platform-owned orchestration state exist without depending on app migration success.
+This split lets platform-owned orchestration state exist without depending on app migration success, while still repairing the empty-app-DB / preserved-ledger failure shape before a ready runtime is reused.
 
 ## Migration Contract
 
