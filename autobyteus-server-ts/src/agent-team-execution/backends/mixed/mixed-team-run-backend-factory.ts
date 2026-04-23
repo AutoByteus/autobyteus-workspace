@@ -1,5 +1,7 @@
 import { generateTeamRunId } from "../../../run-history/utils/team-run-id-utils.js";
 import { buildTeamMemberRunId, normalizeMemberRouteKey } from "../../../run-history/utils/team-member-run-id.js";
+import { TeamMemberMemoryLayout } from "../../../agent-memory/store/team-member-memory-layout.js";
+import { appConfigProvider } from "../../../config/app-config-provider.js";
 import { TeamRunConfig, type TeamMemberRunConfig } from "../../domain/team-run-config.js";
 import { TeamRunContext } from "../../domain/team-run-context.js";
 import { TeamBackendKind } from "../../domain/team-backend-kind.js";
@@ -14,14 +16,19 @@ import { MixedTeamRunBackend } from "./mixed-team-run-backend.js";
 
 export type MixedTeamRunBackendFactoryOptions = {
   createTeamManager?: (context: TeamRunContext<MixedTeamRunContext>) => MixedTeamManager;
+  memberLayout?: TeamMemberMemoryLayout;
 };
 
 export class MixedTeamRunBackendFactory implements TeamRunBackendFactory {
   private readonly createTeamManager: (context: TeamRunContext<MixedTeamRunContext>) => MixedTeamManager;
+  private readonly memberLayout: TeamMemberMemoryLayout;
 
   constructor(options: MixedTeamRunBackendFactoryOptions = {}) {
     this.createTeamManager =
       options.createTeamManager ?? ((context) => new MixedTeamManager(context));
+    this.memberLayout =
+      options.memberLayout ??
+      new TeamMemberMemoryLayout(appConfigProvider.config.getMemoryDir());
   }
 
   async createBackend(config: TeamRunConfig): Promise<MixedTeamRunBackend> {
@@ -86,6 +93,10 @@ export class MixedTeamRunBackendFactory implements TeamRunBackendFactory {
       );
       const memberRunId =
         memberConfig.memberRunId?.trim() || buildTeamMemberRunId(teamRunId, memberRouteKey);
+      const memoryDir =
+        typeof memberConfig.memoryDir === "string" && memberConfig.memoryDir.trim().length > 0
+          ? memberConfig.memoryDir.trim()
+          : this.memberLayout.getMemberDirPath(teamRunId, memberRunId);
       return {
         memberName: memberConfig.memberName,
         memberRouteKey,
@@ -97,7 +108,7 @@ export class MixedTeamRunBackendFactory implements TeamRunBackendFactory {
         skillAccessMode: memberConfig.skillAccessMode,
         workspaceId: memberConfig.workspaceId ?? null,
         workspaceRootPath: memberConfig.workspaceRootPath ?? null,
-        memoryDir: memberConfig.memoryDir ?? null,
+        memoryDir,
         llmConfig: memberConfig.llmConfig ?? null,
         applicationExecutionContext: memberConfig.applicationExecutionContext ?? null,
       };

@@ -1,259 +1,280 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { mount } from '@vue/test-utils';
-import { createPinia, setActivePinia } from 'pinia';
-import { reactive } from 'vue';
-import RunConfigPanel from '../RunConfigPanel.vue';
-import AgentRunConfigForm from '../AgentRunConfigForm.vue';
-import TeamRunConfigForm from '../TeamRunConfigForm.vue';
-import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { mount } from '@vue/test-utils'
+import { createPinia, setActivePinia } from 'pinia'
+import { reactive } from 'vue'
+import RunConfigPanel from '../RunConfigPanel.vue'
+import AgentRunConfigForm from '../AgentRunConfigForm.vue'
+import TeamRunConfigForm from '../TeamRunConfigForm.vue'
+import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
 
-// Hoisted state objects
 const { agentRunState, teamRunState, agentContextState, teamContextState } = vi.hoisted(() => ({
-    agentRunState: {
-        config: null,
-        workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
-        isConfigured: false,
-        setWorkspaceLoading: vi.fn(),
-        setWorkspaceLoaded: vi.fn(),
-        setWorkspaceError: vi.fn(),
-        clearConfig: vi.fn()
-    },
-    teamRunState: {
-        config: null,
-        workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
-        isConfigured: false,
-        setWorkspaceLoading: vi.fn(),
-        setWorkspaceLoaded: vi.fn(),
-        setWorkspaceError: vi.fn(),
-        clearConfig: vi.fn()
-    },
-    agentContextState: {
-        activeRun: null,
-        createRunFromTemplate: vi.fn()
-    },
-    teamContextState: {
-        activeTeamContext: null,
-        createRunFromTemplate: vi.fn()
-    }
-}));
+  agentRunState: {
+    config: null,
+    workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
+    isConfigured: false,
+    setWorkspaceLoading: vi.fn(),
+    setWorkspaceLoaded: vi.fn(),
+    setWorkspaceError: vi.fn(),
+    clearConfig: vi.fn(),
+  },
+  teamRunState: {
+    config: null,
+    workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
+    launchReadiness: { canLaunch: false, blockingIssues: [], unresolvedMembers: [] },
+    setWorkspaceLoading: vi.fn(),
+    setWorkspaceLoaded: vi.fn(),
+    setWorkspaceError: vi.fn(),
+    clearConfig: vi.fn(),
+  },
+  agentContextState: {
+    activeRun: null,
+    createRunFromTemplate: vi.fn(),
+  },
+  teamContextState: {
+    activeTeamContext: null,
+    createRunFromTemplate: vi.fn(),
+  },
+}))
 const { workspaceCenterViewStoreMock } = vi.hoisted(() => ({
-    workspaceCenterViewStoreMock: {
-        showChat: vi.fn(),
-    },
-}));
+  workspaceCenterViewStoreMock: {
+    showChat: vi.fn(),
+  },
+}))
 
-// Mocks
 vi.mock('~/stores/agentRunConfigStore', async () => {
-    const { reactive } = await import('vue');
-    return { useAgentRunConfigStore: () => reactive(agentRunState) };
-});
+  const { reactive } = await import('vue')
+  return { useAgentRunConfigStore: () => reactive(agentRunState) }
+})
 
 vi.mock('~/stores/teamRunConfigStore', async () => {
-    const { reactive } = await import('vue');
-    return { useTeamRunConfigStore: () => reactive(teamRunState) };
-});
+  const { reactive } = await import('vue')
+  return { useTeamRunConfigStore: () => reactive(teamRunState) }
+})
 
 vi.mock('~/stores/agentContextsStore', async () => {
-    const { reactive } = await import('vue');
-    return { useAgentContextsStore: () => reactive(agentContextState) };
-});
+  const { reactive } = await import('vue')
+  return { useAgentContextsStore: () => reactive(agentContextState) }
+})
 
 vi.mock('~/stores/agentTeamContextsStore', async () => {
-    const { reactive } = await import('vue');
-    return { useAgentTeamContextsStore: () => reactive(teamContextState) };
-});
+  const { reactive } = await import('vue')
+  return { useAgentTeamContextsStore: () => reactive(teamContextState) }
+})
 
 vi.mock('~/stores/workspace', () => ({
-    useWorkspaceStore: () => ({
-        createWorkspace: vi.fn(),
-        workspaces: {},
-        allWorkspaces: [],
-        tempWorkspaceId: null,
-        tempWorkspace: null,
-        fetchAllWorkspaces: vi.fn().mockResolvedValue([]),
-    })
-}));
+  useWorkspaceStore: () => ({
+    createWorkspace: vi.fn(),
+    workspaces: {},
+    allWorkspaces: [],
+    tempWorkspaceId: null,
+    tempWorkspace: null,
+    fetchAllWorkspaces: vi.fn().mockResolvedValue([]),
+  }),
+}))
 
 vi.mock('~/stores/agentDefinitionStore', () => ({
   useAgentDefinitionStore: () => ({
-    getAgentDefinitionById: (id: string) => ({ id, name: 'Agent ' + id })
-  })
-}));
+    getAgentDefinitionById: (id: string) => ({ id, name: 'Agent ' + id }),
+  }),
+}))
 
 vi.mock('~/stores/agentTeamDefinitionStore', () => ({
   useAgentTeamDefinitionStore: () => ({
-    getAgentTeamDefinitionById: (id: string) => ({ id, name: 'Team ' + id, nodes: [] })
-  })
-}));
+    getAgentTeamDefinitionById: (id: string) => ({ id, name: 'Team ' + id, nodes: [] }),
+  }),
+}))
 
 vi.mock('~/stores/workspaceCenterViewStore', () => ({
-    useWorkspaceCenterViewStore: () => workspaceCenterViewStoreMock,
-}));
+  useWorkspaceCenterViewStore: () => workspaceCenterViewStoreMock,
+}))
 
 describe('RunConfigPanel', () => {
-    beforeEach(() => {
-        setActivePinia(createPinia());
-        workspaceCenterViewStoreMock.showChat.mockReset();
-        // Reset manual states
-        agentRunState.config = null;
-        teamRunState.config = null;
-        agentContextState.activeRun = null;
-        teamContextState.activeTeamContext = null;
-    });
+  beforeEach(() => {
+    setActivePinia(createPinia())
+    workspaceCenterViewStoreMock.showChat.mockReset()
+    agentRunState.config = null
+    teamRunState.config = null
+    teamRunState.launchReadiness = { canLaunch: false, blockingIssues: [], unresolvedMembers: [] }
+    agentRunState.setWorkspaceError.mockReset()
+    agentRunState.clearConfig.mockReset()
+    teamRunState.setWorkspaceError.mockReset()
+    teamRunState.clearConfig.mockReset()
+    agentContextState.activeRun = null
+    agentContextState.createRunFromTemplate.mockReset()
+    teamContextState.activeTeamContext = null
+    teamContextState.createRunFromTemplate.mockReset()
+  })
 
-    it('renders placeholder when nothing selected', () => {
-        const wrapper = mount(RunConfigPanel, {
-            global: {
-                stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true }
-            }
-        });
-        expect(wrapper.text()).toContain('Select an agent or team');
-    });
+  it('renders placeholder when nothing selected', () => {
+    const wrapper = mount(RunConfigPanel, {
+      global: {
+        stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true },
+      },
+    })
+    expect(wrapper.text()).toContain('Select an agent or team')
+  })
 
-    it('renders Agent Form when Agent Template set', async () => {
-        const { useAgentRunConfigStore } = await import('~/stores/agentRunConfigStore');
-        const store = useAgentRunConfigStore();
-        store.config = { agentDefinitionId: 'def-1', workspaceId: null } as any;
-        store.isConfigured = true;
+  it('renders Agent Form when Agent Template set', async () => {
+    const { useAgentRunConfigStore } = await import('~/stores/agentRunConfigStore')
+    const store = useAgentRunConfigStore()
+    store.config = { agentDefinitionId: 'def-1', workspaceId: null } as any
+    store.isConfigured = true
 
-        const wrapper = mount(RunConfigPanel, {
-            global: {
-                stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true }
-            }
-        });
+    const wrapper = mount(RunConfigPanel, {
+      global: {
+        stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true },
+      },
+    })
 
-        expect(wrapper.findComponent(AgentRunConfigForm).exists()).toBe(true);
-    });
+    expect(wrapper.findComponent(AgentRunConfigForm).exists()).toBe(true)
+  })
 
-    it('renders Team Form when Team Template set', async () => {
-        const { useTeamRunConfigStore } = await import('~/stores/teamRunConfigStore');
-        const store = useTeamRunConfigStore();
-        store.config = { teamDefinitionId: 'team-def-1', workspaceId: null } as any;
-        store.isConfigured = true;
-        
-        const selectionStore = useAgentSelectionStore();
-        selectionStore.clearSelection();
+  it('renders Team Form when Team Template set', async () => {
+    const { useTeamRunConfigStore } = await import('~/stores/teamRunConfigStore')
+    const store = useTeamRunConfigStore()
+    store.config = { teamDefinitionId: 'team-def-1', workspaceId: null } as any
+    store.launchReadiness = { canLaunch: false, blockingIssues: [], unresolvedMembers: [] } as any
 
-        const wrapper = mount(RunConfigPanel, {
-            global: {
-                stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true }
-            }
-        });
+    const selectionStore = useAgentSelectionStore()
+    selectionStore.clearSelection()
 
-        expect(wrapper.findComponent(TeamRunConfigForm).exists()).toBe(true);
-    });
+    const wrapper = mount(RunConfigPanel, {
+      global: {
+        stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true },
+      },
+    })
 
-    it('renders Team Form when Team Instance selected', async () => {
-        const selectionStore = useAgentSelectionStore();
-        selectionStore.selectRun('team-1', 'team');
-        
-        const { useAgentTeamContextsStore } = await import('~/stores/agentTeamContextsStore');
-        const store = useAgentTeamContextsStore();
-        store.activeTeamContext = { config: { teamDefinitionId: 'team-def-1' }, teamRunId: 'team-1' } as any;
+    expect(wrapper.findComponent(TeamRunConfigForm).exists()).toBe(true)
+  })
 
-        const wrapper = mount(RunConfigPanel, {
-            global: {
-                stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true }
-            }
-        });
+  it('triggers team run on button click when launch readiness passes', async () => {
+    const { useTeamRunConfigStore } = await import('~/stores/teamRunConfigStore')
+    const teamStore = useTeamRunConfigStore()
+    teamStore.config = { teamDefinitionId: 'team-def-1', workspaceId: 'ws-1' } as any
+    teamStore.launchReadiness = { canLaunch: true, blockingIssues: [], unresolvedMembers: [] } as any
 
-        expect(wrapper.findComponent(TeamRunConfigForm).exists()).toBe(true);
-    });
+    const wrapper = mount(RunConfigPanel, {
+      global: {
+        stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true },
+      },
+    })
 
-    it('triggers team run on button click', async () => {
-         const { useTeamRunConfigStore } = await import('~/stores/teamRunConfigStore');
-         const teamStore = useTeamRunConfigStore();
-         teamStore.config = { teamDefinitionId: 'team-def-1', workspaceId: 'ws-1' } as any;
-         teamStore.isConfigured = true;
-         
-         const wrapper = mount(RunConfigPanel, {
-            global: {
-                stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true }
-            }
-        });
+    await wrapper.find('.run-btn').trigger('click')
 
-        await wrapper.find('.run-btn').trigger('click');
-        
-        // Check create call
-        const { useAgentTeamContextsStore } = await import('~/stores/agentTeamContextsStore');
-        const contextStore = useAgentTeamContextsStore();
-        expect(contextStore.createRunFromTemplate).toHaveBeenCalled();
-        expect(teamStore.clearConfig).toHaveBeenCalled();
-    });
+    const { useAgentTeamContextsStore } = await import('~/stores/agentTeamContextsStore')
+    const contextStore = useAgentTeamContextsStore()
+    expect(contextStore.createRunFromTemplate).toHaveBeenCalled()
+    expect(teamStore.clearConfig).toHaveBeenCalled()
+  })
 
-    it('blocks team run when workspace is missing (defensive path)', async () => {
-         const { useTeamRunConfigStore } = await import('~/stores/teamRunConfigStore');
-         const teamStore = useTeamRunConfigStore();
-         teamStore.config = { teamDefinitionId: 'team-def-1', workspaceId: null } as any;
-         teamStore.isConfigured = true;
-         const { useAgentTeamContextsStore } = await import('~/stores/agentTeamContextsStore');
-         const contextStore = useAgentTeamContextsStore();
-         const callsBefore = contextStore.createRunFromTemplate.mock.calls.length;
+  it('disables team run and shows the blocking message when mixed-runtime readiness fails', async () => {
+    const { useTeamRunConfigStore } = await import('~/stores/teamRunConfigStore')
+    const teamStore = useTeamRunConfigStore()
+    teamStore.config = { teamDefinitionId: 'team-def-1', workspaceId: 'ws-1' } as any
+    teamStore.launchReadiness = {
+      canLaunch: false,
+      blockingIssues: [
+        {
+          code: 'MEMBER_UNRESOLVED_INHERITED_MODEL',
+          message: 'Global model gpt-5.4 is unavailable for Claude Agent SDK; choose a compatible Reviewer model or clear the runtime override.',
+          memberName: 'Reviewer',
+          runtimeKind: 'claude_agent_sdk',
+        },
+      ],
+      unresolvedMembers: [
+        {
+          memberName: 'Reviewer',
+          runtimeKind: 'claude_agent_sdk',
+          message: 'Global model gpt-5.4 is unavailable for Claude Agent SDK; choose a compatible Reviewer model or clear the runtime override.',
+        },
+      ],
+    } as any
 
-         const wrapper = mount(RunConfigPanel, {
-            global: {
-                stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true }
-            }
-        });
+    const wrapper = mount(RunConfigPanel, {
+      global: {
+        stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true },
+      },
+    })
 
-        await wrapper.find('.run-btn').trigger('click');
+    const runButton = wrapper.find('.run-btn')
+    expect(runButton.attributes('disabled')).toBeDefined()
+    expect(wrapper.get('[data-test="team-run-blocking-issue"]').text()).toContain(
+      'Global model gpt-5.4 is unavailable for Claude Agent SDK',
+    )
+  })
 
-        expect(contextStore.createRunFromTemplate.mock.calls.length).toBe(callsBefore);
-        expect(teamStore.setWorkspaceError).toHaveBeenCalledWith('Workspace is required to run a team.');
-    });
+  it('disables team run when workspace is missing', async () => {
+    const { useTeamRunConfigStore } = await import('~/stores/teamRunConfigStore')
+    const teamStore = useTeamRunConfigStore()
+    teamStore.config = { teamDefinitionId: 'team-def-1', workspaceId: null } as any
+    teamStore.launchReadiness = {
+      canLaunch: false,
+      blockingIssues: [{ code: 'WORKSPACE_REQUIRED', message: 'Workspace is required to run a team.' }],
+      unresolvedMembers: [],
+    } as any
 
-    it('blocks agent run when workspace is missing (defensive path)', async () => {
-        const { useAgentRunConfigStore } = await import('~/stores/agentRunConfigStore');
-        const agentStore = useAgentRunConfigStore();
-        agentStore.config = {
-            agentDefinitionId: 'def-1',
-            agentDefinitionName: 'Agent def-1',
-            workspaceId: null,
-            isLocked: false,
-        } as any;
-        agentStore.isConfigured = true;
+    const wrapper = mount(RunConfigPanel, {
+      global: {
+        stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true },
+      },
+    })
 
-        const wrapper = mount(RunConfigPanel, {
-            global: {
-                stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true }
-            }
-        });
+    expect(wrapper.find('.run-btn').attributes('disabled')).toBeDefined()
+    expect(wrapper.get('[data-test="team-run-blocking-issue"]').text()).toContain('Workspace is required to run a team.')
+  })
 
-        await wrapper.find('.run-btn').trigger('click');
+  it('blocks agent run when workspace is missing (defensive path)', async () => {
+    const { useAgentRunConfigStore } = await import('~/stores/agentRunConfigStore')
+    const agentStore = useAgentRunConfigStore()
+    agentStore.config = {
+      agentDefinitionId: 'def-1',
+      agentDefinitionName: 'Agent def-1',
+      workspaceId: null,
+      isLocked: false,
+    } as any
+    agentStore.isConfigured = true
 
-        const { useAgentContextsStore } = await import('~/stores/agentContextsStore');
-        const contextStore = useAgentContextsStore();
-        expect(contextStore.createRunFromTemplate).not.toHaveBeenCalled();
-        expect(agentStore.setWorkspaceError).toHaveBeenCalledWith('Workspace is required to run an agent.');
-    });
+    const wrapper = mount(RunConfigPanel, {
+      global: {
+        stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true },
+      },
+    })
 
-    it('returns to event view from selection-mode config header action', async () => {
-        const selectionStore = useAgentSelectionStore();
-        selectionStore.selectRun('run-1', 'agent');
+    await wrapper.find('.run-btn').trigger('click')
 
-        const { useAgentContextsStore } = await import('~/stores/agentContextsStore');
-        const contextStore = useAgentContextsStore();
-        contextStore.activeRun = {
-          config: {
-            agentDefinitionId: 'def-1',
-            agentDefinitionName: 'Agent def-1',
-            workspaceId: 'ws-1',
-            isLocked: false,
-          },
-        } as any;
+    const { useAgentContextsStore } = await import('~/stores/agentContextsStore')
+    const contextStore = useAgentContextsStore()
+    expect(contextStore.createRunFromTemplate).not.toHaveBeenCalled()
+    expect(agentStore.setWorkspaceError).toHaveBeenCalledWith('Workspace is required to run an agent.')
+  })
 
-        const wrapper = mount(RunConfigPanel, {
-            global: {
-                stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true }
-            }
-        });
+  it('returns to event view from selection-mode config header action', async () => {
+    const selectionStore = useAgentSelectionStore()
+    selectionStore.selectRun('run-1', 'agent')
 
-        const backButton = wrapper.find('[data-test="run-config-back-to-events"]');
-        expect(backButton.exists()).toBe(true);
-        expect(backButton.attributes('aria-label')).toBe('Back to event view');
+    const { useAgentContextsStore } = await import('~/stores/agentContextsStore')
+    const contextStore = useAgentContextsStore()
+    contextStore.activeRun = {
+      config: {
+        agentDefinitionId: 'def-1',
+        agentDefinitionName: 'Agent def-1',
+        workspaceId: 'ws-1',
+        isLocked: false,
+      },
+    } as any
 
-        const beforeClickCalls = workspaceCenterViewStoreMock.showChat.mock.calls.length;
-        await backButton.trigger('click');
-        expect(workspaceCenterViewStoreMock.showChat).toHaveBeenCalledTimes(beforeClickCalls + 1);
-    });
-});
+    const wrapper = mount(RunConfigPanel, {
+      global: {
+        stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true },
+      },
+    })
+
+    const backButton = wrapper.find('[data-test="run-config-back-to-events"]')
+    expect(backButton.exists()).toBe(true)
+    expect(backButton.attributes('aria-label')).toBe('Back to event view')
+
+    const beforeClickCalls = workspaceCenterViewStoreMock.showChat.mock.calls.length
+    await backButton.trigger('click')
+    expect(workspaceCenterViewStoreMock.showChat).toHaveBeenCalledTimes(beforeClickCalls + 1)
+  })
+})

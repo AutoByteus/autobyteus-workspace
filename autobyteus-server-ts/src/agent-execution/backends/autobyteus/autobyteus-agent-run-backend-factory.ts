@@ -155,7 +155,6 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       runtimeKind: built.resolvedRunConfig.runtimeKind,
       memberTeamContext: built.resolvedRunConfig.memberTeamContext,
       applicationExecutionContext: built.resolvedRunConfig.applicationExecutionContext,
-      memberTeamContext: built.resolvedRunConfig.memberTeamContext,
     });
     const createAgentWithId = (
       this.agentFactory as AgentFactoryLike & {
@@ -213,7 +212,6 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
           runtimeKind: context.config.runtimeKind,
           memberTeamContext: context.config.memberTeamContext,
           applicationExecutionContext: context.config.applicationExecutionContext,
-          memberTeamContext: context.config.memberTeamContext,
         }),
         runtimeContext: (agent as AutoByteusRuntimeAgentLike).context ?? context.runtimeContext,
       }),
@@ -446,7 +444,6 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
           RuntimeKind.AUTOBYTEUS,
         memberTeamContext: options.memberTeamContext ?? null,
         applicationExecutionContext: options.applicationExecutionContext ?? null,
-        memberTeamContext: options.memberTeamContext ?? null,
       }),
       agentConfig: new AgentConfig(
         agentDef.name,

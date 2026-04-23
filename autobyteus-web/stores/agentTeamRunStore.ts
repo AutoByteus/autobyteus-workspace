@@ -24,8 +24,11 @@ import {
   buildTeamMemberDraftContextFileOwner,
   buildTeamMemberFinalContextFileOwner,
 } from '~/utils/contextFiles/contextFileOwner';
+import { loadRuntimeProviderGroupsForSelection } from '~/composables/useRuntimeScopedModelSelection';
 import { resolveLeafTeamMembers } from '~/utils/teamDefinitionMembers';
-import { hasExplicitMemberLlmConfigOverride } from '~/utils/teamRunConfigUtils';
+import { buildTeamRunMemberConfigRecords } from '~/utils/teamRunMemberConfigBuilder';
+import { evaluateTeamRunLaunchReadiness } from '~/utils/teamRunLaunchReadiness';
+import { resolveEffectiveMemberRuntimeKind } from '~/utils/teamRunConfigUtils';
 
 // Maintain a map of streaming services per team run
 const teamStreamingServices = new Map<string, TeamStreamingService>();
@@ -228,24 +231,34 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
               teamDefinitionStore.getAgentTeamDefinitionById(teamDefinitionId),
           });
 
-          const memberConfigs: TeamMemberConfigInput[] = leafMembers
-            .map((member) => {
-              const override = activeTeam.config.memberOverrides[member.memberName];
-              const teamRuntimeKind = activeTeam.config.runtimeKind || DEFAULT_AGENT_RUNTIME_KIND;
-              return {
-                memberName: member.memberName,
-                memberRouteKey: member.memberRouteKey,
-                agentDefinitionId: member.agentDefinitionId,
-                runtimeKind: teamRuntimeKind,
-                llmModelIdentifier: override?.llmModelIdentifier || activeTeam.config.llmModelIdentifier,
-                workspaceId: activeTeam.config.workspaceId,
-                autoExecuteTools: override?.autoExecuteTools ?? activeTeam.config.autoExecuteTools,
-                skillAccessMode: activeTeam.config.skillAccessMode,
-                llmConfig: hasExplicitMemberLlmConfigOverride(override)
-                  ? (override?.llmConfig ?? null)
-                  : (activeTeam.config.llmConfig ?? null),
-              };
-            });
+          const runtimeKinds = new Set<string>();
+          runtimeKinds.add(activeTeam.config.runtimeKind || DEFAULT_AGENT_RUNTIME_KIND);
+          Object.values(activeTeam.config.memberOverrides || {}).forEach((override) => {
+            runtimeKinds.add(resolveEffectiveMemberRuntimeKind(override, activeTeam.config.runtimeKind));
+          });
+
+          const runtimeModelCatalogs: Record<string, string[]> = {};
+          await Promise.all(
+            Array.from(runtimeKinds).map(async (runtimeKind) => {
+              const rows = await loadRuntimeProviderGroupsForSelection(runtimeKind);
+              runtimeModelCatalogs[runtimeKind] = rows.flatMap((row) =>
+                row.models.map((model) => model.modelIdentifier),
+              );
+            }),
+          );
+
+          const readiness = evaluateTeamRunLaunchReadiness(activeTeam.config, runtimeModelCatalogs);
+          if (!readiness.canLaunch) {
+            throw new Error(readiness.blockingIssues[0]?.message || 'Team configuration is not launch-ready.');
+          }
+
+          const memberConfigs: TeamMemberConfigInput[] = buildTeamRunMemberConfigRecords({
+            config: activeTeam.config,
+            leafMembers,
+          }).map((memberConfig) => ({
+            ...memberConfig,
+            skillAccessMode: memberConfig.skillAccessMode as TeamMemberConfigInput['skillAccessMode'],
+          }));
 
           const client = getApolloClient()
           const { data, errors } = await client.mutate<CreateAgentTeamRunMutationPayload>({

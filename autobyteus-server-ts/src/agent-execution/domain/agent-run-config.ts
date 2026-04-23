@@ -14,7 +14,6 @@ export class AgentRunConfig {
   readonly runtimeKind: RuntimeKind;
   readonly memberTeamContext: MemberTeamContext | null;
   readonly applicationExecutionContext: ApplicationExecutionContext | null;
-  readonly memberTeamContext: MemberTeamContext | null;
 
   constructor(input: {
     agentDefinitionId: string;
@@ -27,7 +26,6 @@ export class AgentRunConfig {
     runtimeKind: RuntimeKind;
     memberTeamContext?: MemberTeamContext | null;
     applicationExecutionContext?: ApplicationExecutionContext | null;
-    memberTeamContext?: MemberTeamContext | null;
   }) {
     this.agentDefinitionId = input.agentDefinitionId;
     this.llmModelIdentifier = input.llmModelIdentifier;
@@ -39,6 +37,5 @@ export class AgentRunConfig {
     this.runtimeKind = input.runtimeKind;
     this.memberTeamContext = input.memberTeamContext ?? null;
     this.applicationExecutionContext = input.applicationExecutionContext ?? null;
-    this.memberTeamContext = input.memberTeamContext ?? null;
   }
 }

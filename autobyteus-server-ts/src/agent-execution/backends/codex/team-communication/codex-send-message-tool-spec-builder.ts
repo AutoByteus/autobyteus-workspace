@@ -12,7 +12,7 @@ export const buildSendMessageToToolSpec = (options: {
   return {
     name: SEND_MESSAGE_TO_TOOL_NAME,
     description: "Send a message to another member in the same team run.",
-    input_schema: {
+    inputSchema: {
       type: "object",
       properties: {
         recipient_name: {

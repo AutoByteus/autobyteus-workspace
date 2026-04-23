@@ -386,3 +386,75 @@ Implication:
 - Introduce a runtime-neutral `MemberTeamContext` for standalone team members and route both mixed-team members and same-runtime Codex/Claude members through that bootstrap contract.
 - Retire the current team-owned Codex/Claude bootstrap strategy files in favor of runtime-owned team-member communication/bootstrap files under the respective runtime backend folders.
 - Make `AutoByteusAgentRunBackendFactory` plus a dedicated mixed-tool policy helper the named owner that strips `ToolCategory.TASK_MANAGEMENT` tools from mixed AutoByteus standalone members before exposure.
+
+
+## Follow-Up Evaluation (2026-04-23) — Frontend mixed-runtime launch UX requirement gap
+
+### Additional Source Log
+
+| Date | Source Type (`Code`/`Doc`/`Spec`/`Web`/`Repo`/`Issue`/`Command`/`Trace`/`Log`/`Data`/`Setup`/`Other`) | Exact Source / Query / Command | Why Consulted | Relevant Findings | Follow-Up Needed |
+| --- | --- | --- | --- | --- | --- |
+| 2026-04-23 | Code | `autobyteus-web/components/workspace/config/TeamRunConfigForm.vue`, `MemberOverrideItem.vue`, `types/agent/TeamRunConfig.ts`, `stores/agentTeamRunStore.ts`, `stores/__tests__/agentTeamRunStore.spec.ts` | Validate the user-reported requirement gap for frontend mixed-runtime launch UX | The workspace team form still exposes only one top-level runtime selector, member overrides have no runtime field, launch payload builder fans the team runtime out to every member, and tests assert same-runtime fanout | No |
+| 2026-04-23 | Code | `autobyteus-web/stores/agentTeamContextsStore.ts`, `utils/application/applicationLaunch.ts` | Check whether other launch materialization paths also collapse runtime to one team value | Temporary team contexts and application launch helpers also fan out the team runtime to all members | No |
+| 2026-04-23 | Code | `autobyteus-web/utils/teamRunConfigUtils.ts`, `services/runHydration/teamRunContextHydrationService.ts`, `services/runOpen/teamRunOpenCoordinator.ts`, `utils/__tests__/teamRunConfigUtils.spec.ts` | Check whether reopen/hydration can faithfully represent mixed runtime after launch | Frontend reconstruction currently picks one dominant runtime and does not persist per-member runtime overrides into reopened config state | No |
+| 2026-04-23 | Code | `autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue` | Check whether existing runtime/model selection UI logic can be reused for member-level runtime override UX | The shared runtime/model selector already owns runtime availability and runtime-scoped model loading, but it currently assumes one stored runtime value rather than an inherited-from-global override state | No |
+| 2026-04-23 | Code | `autobyteus-web/composables/useDefinitionLaunchDefaults.ts`, `stores/teamRunConfigStore.ts`, `components/workspace/config/__tests__/TeamRunConfigForm.spec.ts`, `types/agent/__tests__/TeamRunConfig.spec.ts` | Check template/clone/test surfaces impacted by a new member runtime override field | Team template/clone/test surfaces all currently assume member overrides only cover model/auto-execute/config and must be updated if `runtimeKind` is added | No |
+
+### Follow-Up Findings
+
+1. The new requirement gap is real: the current app cannot configure mixed-runtime team launch from the workspace team run form because the frontend state model, form components, and launch builder all still assume one team runtime.
+2. The problem is broader than one form field. The same single-runtime assumption currently appears in:
+   - `TeamRunConfig` / `MemberConfigOverride` typing,
+   - workspace form editing,
+   - temporary team-member context creation,
+   - GraphQL launch payload materialization,
+   - application launch helper materialization,
+   - reopen/hydration reconstruction,
+   - and existing unit tests.
+3. Keeping a **team-level default runtime** is still valuable. The clean frontend shape is therefore not “runtime per member only,” but “team default runtime + optional per-member runtime override.”
+4. Existing runtime/model selection UI logic already lives in `RuntimeModelConfigFields.vue`; however, member override UX needs an explicit inherit-global state, so either that component or a shared helper beneath it must be extended to support “stored override runtime” versus “effective runtime.”
+5. The frontend launch/materialization logic is duplicated across multiple files. A shared owner for “effective member launch config resolution” will reduce drift and make mixed-runtime launch safer.
+6. Reopen/hydration must be included in scope now. Otherwise the user could launch a mixed-runtime team from the app but immediately reopen it into a misleading single-runtime config.
+
+### Design Implication Summary
+
+- Extend the frontend data model to keep `TeamRunConfig.runtimeKind` as the default and add `MemberConfigOverride.runtimeKind` as the optional per-member override.
+- Add user-facing per-member runtime selection to the workspace team run form with a clear “use global runtime” fallback state.
+- Introduce one shared frontend owner for resolving **effective member launch config** so temp contexts, GraphQL launch payloads, and application launch helpers all use the same runtime resolution rule.
+- Update reopen/hydration reconstruction to preserve per-member runtime overrides for members that differ from the chosen team-level default.
+- Keep the backend mixed-team architecture direction unchanged, but treat frontend mixed-runtime launch UX as an equally required part of the ticket now.
+
+## Follow-Up Evaluation (2026-04-23) — Frontend invalid inherited-default behavior and launch-readiness gap
+
+### Additional Source Log
+
+| Date | Source Type (`Code`/`Doc`/`Spec`/`Web`/`Repo`/`Issue`/`Command`/`Trace`/`Log`/`Data`/`Setup`/`Other`) | Exact Source / Query / Command | Why Consulted | Relevant Findings | Follow-Up Needed |
+| --- | --- | --- | --- | --- | --- |
+| 2026-04-23 | Doc | `tickets/in-progress/agent-team-member-runtime-selection/design-review-report.md` | Read the round-3 architecture review finding `DAR-004` verbatim | The reopened frontend package still lacked explicit behavior and ownership for the case where a member runtime override invalidates the inherited team-default model/config | No |
+| 2026-04-23 | Code | `autobyteus-web/stores/teamRunConfigStore.ts` | Verify the current authoritative workspace launch-readiness boundary | `teamRunConfigStore.isConfigured` still only checks top-level `llmModelIdentifier` + `workspaceId`; it has no knowledge of per-member mixed-runtime incompatibility | No |
+| 2026-04-23 | Code | `autobyteus-web/components/workspace/config/RunConfigPanel.vue` | Verify how workspace Run-button gating currently works | `RunConfigPanel` still disables/enables Run from `teamRunConfigStore.isConfigured` and therefore inherits the global-only readiness assumption | No |
+| 2026-04-23 | Code | `autobyteus-web/components/workspace/config/TeamRunConfigForm.vue`, `MemberOverrideItem.vue`, `components/launch-config/RuntimeModelConfigFields.vue` | Verify what the current row-level UX can and cannot express for inherited-invalid defaults | Current team/member editors can clear invalid explicit models when runtime changes, but they do not define a blocking unresolved row state for “member runtime override present, inherited team-default model invalid” | No |
+| 2026-04-23 | Code | `autobyteus-web/stores/__tests__/teamRunConfigStore.spec.ts`, `autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts` | Verify current durable test expectations around readiness and Run-button gating | Existing tests assert the old global-only launch-readiness rule and must be replaced/expanded for mixed-runtime unresolved-row behavior | No |
+| 2026-04-23 | Code | `autobyteus-web/utils/application/applicationLaunch.ts`, `autobyteus-web/stores/agentTeamRunStore.ts`, `autobyteus-web/stores/agentTeamContextsStore.ts` | Confirm which launch entrypoints/materializers must share the corrected validity semantics | These paths already need the shared effective-member builder; they also need the same shared mixed-runtime validity rule so no path emits invalid inherited defaults | No |
+
+### Follow-Up Findings
+
+1. The reopened frontend design still had a real blind spot: a member runtime override can invalidate the inherited team-default model/config even when the team-level model and workspace remain populated.
+2. Current row-level code only handles **explicit** invalid values (for example a member-selected model no longer present in the runtime model list). It does **not** represent the state where the member is intentionally inheriting the team default but that inherited default is unavailable for the member’s effective runtime.
+3. That missing row state has to be blocking. If the app continues to treat “no member model override set” as automatically valid inheritance, the workspace can launch a team where one member has no valid model for its runtime.
+4. The current authoritative workspace launch gate is still `teamRunConfigStore.isConfigured`, with `RunConfigPanel` as the Run-button consumer. Therefore the clean correction is not to let each component or launch helper invent its own rule, but to strengthen that boundary with a structured mixed-runtime readiness result and retarget `RunConfigPanel` to it.
+5. The shared frontend materialization owner (`teamRunMemberConfigBuilder`) is still the right place for effective member config building, but it should not silently heal or guess through unresolved mixed-runtime member state. Launch validity must be checked before or alongside materialization through one shared rule.
+6. Existing durable tests reinforce the old rule and therefore must be explicitly rewritten or expanded; otherwise the implementation could regress back to global-only readiness even after the new row-level UX exists.
+
+### Design Implication Summary
+
+- Define a new **blocking unresolved member state** for the row case where `override.runtimeKind` changes the effective runtime and the inherited team-default model/config cannot be used there.
+- Row behavior for that state must be explicit:
+  - keep the chosen member runtime override,
+  - clear invalid explicit member model/config values,
+  - stop pretending the incompatible team-default model/config is the row’s effective selection,
+  - show a warning that the member needs a compatible model override or must switch back to the global runtime.
+- Introduce one shared frontend readiness rule for team launches and make `teamRunConfigStore` the authoritative workspace owner of that rule.
+- Retarget `RunConfigPanel` to consume the store’s structured readiness result rather than the current global-only `isConfigured` boolean.
+- Keep `teamRunMemberConfigBuilder` as the shared materialization owner, but require launch entrypoints to refuse unresolved mixed-runtime member state instead of silently inheriting invalid defaults.
+- Add durable tests at the row/UI level, store/readiness level, and Run-button level for this invalid-inherited-default scenario.

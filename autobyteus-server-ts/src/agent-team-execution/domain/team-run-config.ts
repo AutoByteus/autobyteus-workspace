@@ -1,6 +1,5 @@
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
-import type { TeamBackendKind } from "./team-backend-kind.js";
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
 import type { TeamBackendKind } from "./team-backend-kind.js";
 

@@ -327,7 +327,6 @@ export class ClaudeTeamManager implements TeamManager {
       runtimeKind: memberContext.agentRunConfig.runtimeKind,
       memberTeamContext,
       applicationExecutionContext: memberContext.agentRunConfig.applicationExecutionContext,
-      memberTeamContext,
     });
   }
 
