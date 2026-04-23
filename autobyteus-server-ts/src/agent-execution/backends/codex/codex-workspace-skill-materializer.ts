@@ -1,20 +1,9 @@
-import { createHash } from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type { Skill } from "../../../skills/domain/models.js";
 
 const WORKSPACE_SKILLS_ROOT_SEGMENTS = [".codex", "skills"] as const;
-const MATERIALIZED_SKILL_PREFIX = "autobyteus-";
-const OWNERSHIP_MARKER_FILE = ".autobyteus-runtime-skill.json";
-const MAX_CODEX_SKILL_DIRECTORY_NAME_LENGTH = 64;
-const MATERIALIZED_SKILL_HASH_LENGTH = 4;
-
-type WorkspaceSkillOwnershipMarker = {
-  version: 1;
-  skillName: string;
-  sourceRootPath: string;
-};
 
 export type MaterializedCodexWorkspaceSkill = {
   name: string;
@@ -35,29 +24,6 @@ const logger = {
 const collapseWhitespace = (value: string): string =>
   value.replace(/\s+/g, " ").trim();
 
-const toCodexDisplayName = (skillName: string): string => {
-  const normalized = collapseWhitespace(skillName.replace(/[-_]+/g, " "));
-  if (!normalized) {
-    return "Configured Skill";
-  }
-  return normalized.replace(/\b\w/g, (char) => char.toUpperCase());
-};
-
-export const renderCodexWorkspaceSkillOpenAiYaml = (
-  skill: Skill,
-): string => {
-  const shortDescription =
-    collapseWhitespace(skill.description) || "Agent-configured skill for this run.";
-  const defaultPrompt = `Use $${skill.name} when the request matches this skill. Follow the instructions in SKILL.md.`;
-
-  return [
-    "interface:",
-    `  display_name: ${JSON.stringify(toCodexDisplayName(skill.name))}`,
-    `  short_description: ${JSON.stringify(shortDescription)}`,
-    `  default_prompt: ${JSON.stringify(defaultPrompt)}`,
-  ].join("\n");
-};
-
 const sanitizeDirectorySegment = (value: string): string => {
   const normalized = collapseWhitespace(value)
     .toLowerCase()
@@ -66,25 +32,8 @@ const sanitizeDirectorySegment = (value: string): string => {
   return normalized || "skill";
 };
 
-const buildDirectoryHash = (skill: Skill): string =>
-  createHash("sha1")
-    .update(path.resolve(skill.rootPath))
-    .digest("hex")
-    .slice(0, MATERIALIZED_SKILL_HASH_LENGTH);
-
 const buildMaterializedDirectoryName = (skill: Skill): string =>
-  (() => {
-    const hash = buildDirectoryHash(skill);
-    const maxSkillSegmentLength = Math.max(
-      1,
-      MAX_CODEX_SKILL_DIRECTORY_NAME_LENGTH -
-        MATERIALIZED_SKILL_PREFIX.length -
-        1 -
-        hash.length,
-    );
-    const skillSegment = sanitizeDirectorySegment(skill.name).slice(0, maxSkillSegmentLength);
-    return `${MATERIALIZED_SKILL_PREFIX}${skillSegment}-${hash}`;
-  })();
+  sanitizeDirectorySegment(skill.name);
 
 const buildRegistryKey = (workingDirectory: string, skill: Skill): string =>
   `${path.resolve(workingDirectory)}::${path.resolve(skill.rootPath)}`;
@@ -92,60 +41,87 @@ const buildRegistryKey = (workingDirectory: string, skill: Skill): string =>
 const buildWorkspaceSkillsRoot = (workingDirectory: string): string =>
   path.join(workingDirectory, ...WORKSPACE_SKILLS_ROOT_SEGMENTS);
 
-const copySkillTree = async (sourceRootPath: string, targetRootPath: string): Promise<void> => {
-  await fs.cp(sourceRootPath, targetRootPath, {
-    recursive: true,
-    force: false,
-    errorOnExist: true,
-    dereference: true,
-    filter: (sourcePath) => isSourceSkillPath(sourcePath),
-  });
+type ExistingWorkspaceSkillPathState =
+  | { kind: "missing" }
+  | { kind: "same-source-symlink" }
+  | { kind: "collision"; message: string };
+
+const resolveSymlinkTargetPath = (linkPath: string, targetPath: string): string =>
+  path.resolve(path.dirname(linkPath), targetPath);
+
+const comparePaths = async (leftPath: string, rightPath: string): Promise<boolean> => {
+  const [leftRealPath, rightRealPath] = await Promise.all([
+    fs.realpath(leftPath).catch(() => null),
+    fs.realpath(rightPath).catch(() => null),
+  ]);
+  if (leftRealPath && rightRealPath) {
+    return leftRealPath === rightRealPath;
+  }
+  return path.resolve(leftPath) === path.resolve(rightPath);
 };
 
-const buildOwnershipMarker = (
-  skill: Skill,
-): WorkspaceSkillOwnershipMarker => ({
-  version: 1,
-  skillName: skill.name,
-  sourceRootPath: path.resolve(skill.rootPath),
-});
-
-const isSourceSkillPath = (sourcePath: string): boolean => {
-  const segments = sourcePath.split(path.sep);
-  return !segments.includes(".git");
-};
-
-const readOwnershipMarker = async (
-  markerPath: string,
-): Promise<WorkspaceSkillOwnershipMarker | null> => {
+const isExpectedWorkspaceSkillSymlink = async (
+  workspaceSkillPath: string,
+  sourceRootPath: string,
+): Promise<boolean> => {
   try {
-    const raw = await fs.readFile(markerPath, "utf-8");
-    const parsed = JSON.parse(raw);
-    if (
-      parsed &&
-      parsed.version === 1 &&
-      typeof parsed.skillName === "string" &&
-      typeof parsed.sourceRootPath === "string"
-    ) {
+    const stats = await fs.lstat(workspaceSkillPath);
+    if (!stats.isSymbolicLink()) {
+      return false;
+    }
+    const targetPath = await fs.readlink(workspaceSkillPath);
+    return comparePaths(
+      resolveSymlinkTargetPath(workspaceSkillPath, targetPath),
+      sourceRootPath,
+    );
+  } catch {
+    return false;
+  }
+};
+
+const inspectExistingWorkspaceSkillPath = async (
+  workspaceSkillPath: string,
+  sourceRootPath: string,
+): Promise<ExistingWorkspaceSkillPathState> => {
+  try {
+    const stats = await fs.lstat(workspaceSkillPath);
+    if (!stats.isSymbolicLink()) {
       return {
-        version: 1,
-        skillName: parsed.skillName,
-        sourceRootPath: parsed.sourceRootPath,
+        kind: "collision",
+        message: `workspace skill path '${workspaceSkillPath}' already exists and is not a symlink`,
       };
     }
-  } catch {
-    return null;
+
+    const targetPath = await fs.readlink(workspaceSkillPath);
+    const resolvedTargetPath = resolveSymlinkTargetPath(workspaceSkillPath, targetPath);
+    if (await comparePaths(resolvedTargetPath, sourceRootPath)) {
+      return { kind: "same-source-symlink" };
+    }
+
+    return {
+      kind: "collision",
+      message: `workspace skill path '${workspaceSkillPath}' already points to '${resolvedTargetPath}' instead of '${sourceRootPath}'`,
+    };
+  } catch (error) {
+    const code = (error as NodeJS.ErrnoException).code;
+    if (code === "ENOENT") {
+      return { kind: "missing" };
+    }
+    throw error;
   }
-  return null;
 };
 
-const markersMatch = (
-  marker: WorkspaceSkillOwnershipMarker | null,
-  expected: WorkspaceSkillOwnershipMarker,
-): boolean =>
-  marker?.version === expected.version &&
-  marker.skillName === expected.skillName &&
-  path.resolve(marker.sourceRootPath) === path.resolve(expected.sourceRootPath);
+const assertSourceSkillManifestExists = async (
+  skillName: string,
+  sourceRootPath: string,
+): Promise<void> => {
+  const skillManifestPath = path.join(sourceRootPath, "SKILL.md");
+  await fs.stat(skillManifestPath).catch(() => {
+    throw new Error(
+      `Configured Codex workspace skill '${skillName}' is missing SKILL.md at '${skillManifestPath}'.`,
+    );
+  });
+};
 
 export class CodexWorkspaceSkillMaterializer {
   private readonly registry = new Map<string, MaterializedSkillRegistryEntry>();
@@ -224,91 +200,47 @@ export class CodexWorkspaceSkillMaterializer {
     workingDirectory: string,
     skill: Skill,
   ): Promise<MaterializedCodexWorkspaceSkill> {
+    const sourceRootPath = path.resolve(skill.rootPath);
+    await assertSourceSkillManifestExists(skill.name, sourceRootPath);
+
     const workspaceSkillsRoot = buildWorkspaceSkillsRoot(workingDirectory);
     await fs.mkdir(workspaceSkillsRoot, { recursive: true });
 
     const directoryName = buildMaterializedDirectoryName(skill);
     const materializedRootPath = path.join(workspaceSkillsRoot, directoryName);
-    const markerPath = path.join(materializedRootPath, OWNERSHIP_MARKER_FILE);
-    const expectedMarker = buildOwnershipMarker(skill);
-
-    const targetExists = await fs
-      .stat(materializedRootPath)
-      .then(() => true)
-      .catch(() => false);
-    if (targetExists) {
-      const marker = await readOwnershipMarker(markerPath);
-      if (!markersMatch(marker, expectedMarker)) {
-        throw new Error(
-          `Materialized Codex workspace skill path '${materializedRootPath}' already exists but is not owned by AutoByteus for skill '${skill.name}'.`,
-        );
-      }
-      await fs.rm(materializedRootPath, {
-        recursive: true,
-        force: true,
-      });
-    }
-    await copySkillTree(skill.rootPath, materializedRootPath);
-
-    await fs.writeFile(
-      markerPath,
-      JSON.stringify(expectedMarker, null, 2),
-      "utf-8",
+    const existingPathState = await inspectExistingWorkspaceSkillPath(
+      materializedRootPath,
+      sourceRootPath,
     );
-    await this.ensureOpenAiAgentConfig(materializedRootPath, skill);
+    if (existingPathState.kind === "collision") {
+      throw new Error(
+        `Workspace skill path collision for Codex skill '${skill.name}': ${existingPathState.message}.`,
+      );
+    }
+    if (existingPathState.kind === "missing") {
+      await fs.symlink(sourceRootPath, materializedRootPath, "dir");
+    }
 
     return {
       name: skill.name,
-      sourceRootPath: path.resolve(skill.rootPath),
+      sourceRootPath,
       materializedRootPath,
       registryKey: buildRegistryKey(workingDirectory, skill),
     };
   }
 
-  private async ensureOpenAiAgentConfig(
-    materializedRootPath: string,
-    skill: Skill,
-  ): Promise<void> {
-    const agentsDirectory = path.join(materializedRootPath, "agents");
-    const openAiAgentConfigPath = path.join(agentsDirectory, "openai.yaml");
-    const openAiConfigExists = await fs
-      .stat(openAiAgentConfigPath)
-      .then(() => true)
-      .catch(() => false);
-    if (openAiConfigExists) {
-      return;
-    }
-
-    await fs.mkdir(agentsDirectory, { recursive: true });
-    await fs.writeFile(
-      openAiAgentConfigPath,
-      renderCodexWorkspaceSkillOpenAiYaml(skill),
-      "utf-8",
-    );
-  }
-
   private async removeOwnedMaterializedSkillBundle(
     materializedSkill: MaterializedCodexWorkspaceSkill,
   ): Promise<void> {
-    const markerPath = path.join(
-      materializedSkill.materializedRootPath,
-      OWNERSHIP_MARKER_FILE,
-    );
-    const marker = await readOwnershipMarker(markerPath);
     if (
-      !markersMatch(marker, {
-        version: 1,
-        skillName: materializedSkill.name,
-        sourceRootPath: materializedSkill.sourceRootPath,
-      })
+      !(await isExpectedWorkspaceSkillSymlink(
+        materializedSkill.materializedRootPath,
+        materializedSkill.sourceRootPath,
+      ))
     ) {
       return;
     }
-
-    await fs.rm(materializedSkill.materializedRootPath, {
-      recursive: true,
-      force: true,
-    });
+    await fs.unlink(materializedSkill.materializedRootPath);
   }
 }
 

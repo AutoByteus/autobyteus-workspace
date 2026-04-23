@@ -2,7 +2,16 @@ import "reflect-metadata";
 import path from "node:path";
 import os from "node:os";
 import { createRequire } from "node:module";
-import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import {
+  lstat,
+  mkdir,
+  mkdtemp,
+  readFile,
+  readlink,
+  rm,
+  symlink,
+  writeFile,
+} from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import fastify from "fastify";
@@ -567,6 +576,89 @@ const defineRuntimeSuite = (input: {
       }
 
       throw new Error(`Timed out waiting for ${input.runtimeKind} runtime bootstrap for ${runId}.`);
+    };
+
+    const waitForPathToExist = async (targetPath: string, timeoutMs = 90_000): Promise<void> => {
+      const deadline = Date.now() + timeoutMs;
+      while (Date.now() < deadline) {
+        try {
+          await lstat(targetPath);
+          return;
+        } catch {
+          await wait(500);
+        }
+      }
+
+      throw new Error(`Timed out waiting for path to exist: ${targetPath}`);
+    };
+
+    const createBundledTeamSkillWithSharedSymlink = async (inputFixture: {
+      skillName: string;
+      sharedFileName: string;
+      triggerToken: string;
+      responseToken: string;
+    }): Promise<{
+      teamRootPath: string;
+      skillRootPath: string;
+      sharedFilePath: string;
+      linkedFilePath: string;
+    }> => {
+      if (!testDataDir) {
+        throw new Error("Test data directory is not initialized.");
+      }
+
+      const teamRootPath = path.join(
+        testDataDir,
+        "agent-teams",
+        `runtime-skill-team-${randomUUID().replace(/-/g, "").slice(0, 8)}`,
+      );
+      const skillRootPath = path.join(teamRootPath, "agents", inputFixture.skillName);
+      const sharedRootPath = path.join(teamRootPath, "shared");
+      await mkdir(skillRootPath, { recursive: true });
+      await mkdir(sharedRootPath, { recursive: true });
+
+      const sharedFilePath = path.join(sharedRootPath, inputFixture.sharedFileName);
+      await writeFile(
+        sharedFilePath,
+        [
+          "# Linked Guidance",
+          "",
+          `When the user asks you to use $${inputFixture.skillName} and includes the token "${inputFixture.triggerToken}", respond with exactly "${inputFixture.responseToken}".`,
+          "Do not add any other words, punctuation, or explanation.",
+        ].join("\n"),
+        "utf-8",
+      );
+
+      const linkedFilePath = path.join(skillRootPath, "linked-guidance.md");
+      await symlink(
+        path.join("..", "..", "shared", inputFixture.sharedFileName),
+        linkedFilePath,
+      );
+
+      await writeFile(
+        path.join(skillRootPath, "SKILL.md"),
+        [
+          "---",
+          `name: ${inputFixture.skillName}`,
+          'description: "Bundled team skill fixture that reads a linked shared guidance file."',
+          "---",
+          "",
+          `# ${inputFixture.skillName}`,
+          "",
+          `Use this skill only when the user explicitly tells you to use $${inputFixture.skillName}.`,
+          "Start by reading [linked-guidance.md](linked-guidance.md).",
+          `If the user includes the token "${inputFixture.triggerToken}", follow the linked guidance exactly.`,
+          "Do not guess the response token without reading the linked guidance first.",
+        ].join("\n"),
+        "utf-8",
+      );
+
+      return {
+        teamRootPath,
+        skillRootPath,
+        sharedFilePath,
+        linkedFilePath,
+      };
     };
 
     const openAgentSocket = async (runId: string): Promise<{
@@ -1379,6 +1471,113 @@ const defineRuntimeSuite = (input: {
           await terminateAgentRun(runId).catch(() => undefined);
         }
       }, 180_000);
+    }
+
+    if (input.runtimeKind === "codex_app_server") {
+      it(
+        "uses a whole-directory materialized skill whose linked shared file sits outside the skill folder",
+        async () => {
+          const workspaceRootPath = await mkdtemp(
+            path.join(os.tmpdir(), `${input.runtimeKind}-runtime-linked-skill-workspace-`),
+          );
+          createdWorkspaceRoots.add(workspaceRootPath);
+          const llmModelIdentifier = await fetchModelIdentifier();
+          const skillName = `codex_symlink_${randomUUID().replace(/-/g, "").slice(0, 12)}`;
+          const triggerToken = `LINKED_SHARED_TRIGGER_${randomUUID().replace(/-/g, "_")}`;
+          const responseToken = `LINKED_SHARED_RESPONSE_${randomUUID().replace(/-/g, "_")}`;
+          const sharedFileName = "runtime-linked-guidance.md";
+          const fixture = await createBundledTeamSkillWithSharedSymlink({
+            skillName,
+            sharedFileName,
+            triggerToken,
+            responseToken,
+          });
+          const materializedSkillRootPath = path.join(
+            workspaceRootPath,
+            ".codex",
+            "skills",
+            skillName,
+          );
+          const materializedLinkedGuidancePath = path.join(
+            materializedSkillRootPath,
+            "linked-guidance.md",
+          );
+
+          expect(await readFile(path.join(fixture.skillRootPath, "SKILL.md"), "utf-8")).not.toContain(
+            responseToken,
+          );
+
+          const agentDefinitionId = await createAgentDefinitionWithSkills([], [skillName]);
+          const runId = await createAgentRun({
+            agentDefinitionId,
+            llmModelIdentifier,
+            workspaceRootPath,
+            autoExecuteTools: true,
+            skillAccessMode: "PRELOADED_ONLY",
+          });
+
+          const { app, socket, messages } = await openAgentSocket(runId);
+          try {
+            await waitForRuntimeBootstrap(runId);
+            await waitForPathToExist(materializedSkillRootPath);
+            await waitForPathToExist(materializedLinkedGuidancePath);
+
+            const materializedSkillStats = await lstat(materializedSkillRootPath);
+            expect(materializedSkillStats.isSymbolicLink()).toBe(true);
+            expect(
+              path.resolve(
+                path.dirname(materializedSkillRootPath),
+                await readlink(materializedSkillRootPath),
+              ),
+            ).toBe(fixture.skillRootPath);
+
+            const materializedLinkedGuidanceStats = await lstat(materializedLinkedGuidancePath);
+            expect(materializedLinkedGuidanceStats.isSymbolicLink()).toBe(true);
+            expect(await readFile(materializedLinkedGuidancePath, "utf-8")).toContain(responseToken);
+
+            const startIndex = messages.length;
+            socket.send(
+              JSON.stringify({
+                type: "SEND_MESSAGE",
+                payload: {
+                  content: [
+                    `Use the configured skill $${skillName} for this request.`,
+                    "Read the linked guidance before answering.",
+                    `The verification token is: ${triggerToken}`,
+                    "Reply with exactly the response required by the linked guidance and nothing else.",
+                  ].join("\n"),
+                },
+              }),
+            );
+
+            await waitForMessageAfter(
+              messages,
+              startIndex,
+              (message) =>
+                message.type === "AGENT_STATUS" && message.payload.new_status === "RUNNING",
+              "AGENT_STATUS RUNNING for linked shared skill turn",
+            );
+            await waitForMessageAfter(
+              messages,
+              startIndex,
+              (message) => assistantTextMatches(message, responseToken),
+              `assistant text containing ${responseToken}`,
+            );
+            await waitForMessageAfter(
+              messages,
+              startIndex,
+              (message) =>
+                message.type === "AGENT_STATUS" && message.payload.new_status === "IDLE",
+              "AGENT_STATUS IDLE for linked shared skill turn",
+            );
+          } finally {
+            socket.close();
+            await app.close();
+            await terminateAgentRun(runId).catch(() => undefined);
+          }
+        },
+        240_000,
+      );
     }
   });
 };

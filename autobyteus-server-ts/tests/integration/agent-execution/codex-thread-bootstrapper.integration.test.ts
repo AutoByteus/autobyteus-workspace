@@ -107,7 +107,7 @@ const createTeamSharedSymlinkConfiguredSkillFixture = async (
   const teamRoot = path.join(fixtureRoot, "software-engineering-team");
   const skillRoot = path.join(teamRoot, "agents", skillName);
   const sharedRoot = path.join(teamRoot, "shared");
-  await fs.mkdir(path.join(skillRoot, "agents"), { recursive: true });
+  await fs.mkdir(skillRoot, { recursive: true });
   await fs.mkdir(sharedRoot, { recursive: true });
   await fs.writeFile(
     path.join(skillRoot, "SKILL.md"),
@@ -120,17 +120,6 @@ const createTeamSharedSymlinkConfiguredSkillFixture = async (
       `# ${skillName}`,
       "",
       "This is a configured skill fixture.",
-      "",
-    ].join("\n"),
-    "utf8",
-  );
-  await fs.writeFile(
-    path.join(skillRoot, "agents", "openai.yaml"),
-    [
-      "interface:",
-      `  display_name: ${JSON.stringify(skillName)}`,
-      '  short_description: "Configured skill fixture"',
-      `  default_prompt: ${JSON.stringify(`Use $${skillName}.`)}`,
       "",
     ].join("\n"),
     "utf8",
@@ -335,9 +324,7 @@ describeCodexBootstrapperIntegration(
         const workspaceSkillEntries = await fs.readdir(
           path.join(workspaceRoot, ".codex", "skills"),
         );
-        expect(workspaceSkillEntries.some((entry) => entry.startsWith("autobyteus-"))).toBe(
-          false,
-        );
+        expect(workspaceSkillEntries).toEqual([folderName]);
       },
       60_000,
     );
@@ -374,12 +361,22 @@ describeCodexBootstrapperIntegration(
         expect(runContext.runtimeContext.materializedConfiguredSkills).toHaveLength(1);
         const [descriptor] = runContext.runtimeContext.materializedConfiguredSkills;
         expect(descriptor?.name).toBe(skillName);
-        expect(path.basename(descriptor?.materializedRootPath ?? "")).toMatch(/^autobyteus-/);
+        expect(descriptor?.materializedRootPath).toBe(
+          path.join(workspaceRoot, ".codex", "skills", skillName),
+        );
+        expect((await fs.lstat(descriptor.materializedRootPath)).isSymbolicLink()).toBe(true);
+        expect(await fs.readlink(descriptor.materializedRootPath)).toBe(
+          path.resolve(configuredSkill.rootPath),
+        );
         await expect(
           fs.stat(path.join(descriptor.materializedRootPath, "SKILL.md")),
         ).resolves.toBeTruthy();
-        await fs.rm(configuredSkillFixture.cleanupRoot, { recursive: true, force: true });
-        cleanupRoots.delete(configuredSkillFixture.cleanupRoot);
+        await expect(
+          fs.stat(path.join(descriptor.materializedRootPath, "agents", "openai.yaml")),
+        ).rejects.toThrow();
+        await expect(
+          fs.stat(path.join(configuredSkill.rootPath, "agents", "openai.yaml")),
+        ).rejects.toThrow();
 
         const designPrinciplesPath = path.join(
           descriptor.materializedRootPath,
@@ -389,9 +386,18 @@ describeCodexBootstrapperIntegration(
           descriptor.materializedRootPath,
           "common-design-practices.md",
         );
-        expect((await fs.lstat(designPrinciplesPath)).isSymbolicLink()).toBe(false);
-        expect((await fs.lstat(commonPracticesPath)).isSymbolicLink()).toBe(false);
-        expect(await fs.readFile(designPrinciplesPath, "utf8")).toBe("design rules\n");
+        const sharedRoot = path.join(
+          path.dirname(path.dirname(configuredSkill.rootPath)),
+          "shared",
+        );
+        await fs.writeFile(
+          path.join(sharedRoot, "design-principles.md"),
+          "updated design rules\n",
+          "utf8",
+        );
+        expect((await fs.lstat(designPrinciplesPath)).isSymbolicLink()).toBe(true);
+        expect((await fs.lstat(commonPracticesPath)).isSymbolicLink()).toBe(true);
+        expect(await fs.readFile(designPrinciplesPath, "utf8")).toBe("updated design rules\n");
         expect(await fs.readFile(commonPracticesPath, "utf8")).toBe("common rules\n");
         await expect(fs.stat(path.join(workspaceRoot, ".codex", "shared"))).rejects.toThrow();
 
@@ -404,7 +410,7 @@ describeCodexBootstrapperIntegration(
           enabled: true,
         });
         expect(discoveredSkill?.path).toBe(
-          await fs.realpath(path.join(descriptor.materializedRootPath, "SKILL.md")),
+          await fs.realpath(path.join(configuredSkill.rootPath, "SKILL.md")),
         );
 
         await clientManager.close();
@@ -413,6 +419,7 @@ describeCodexBootstrapperIntegration(
           runContext.runtimeContext.materializedConfiguredSkills,
         );
         await expect(fs.stat(descriptor.materializedRootPath)).rejects.toThrow();
+        await expect(fs.stat(configuredSkill.rootPath)).resolves.toBeTruthy();
       },
       60_000,
     );
