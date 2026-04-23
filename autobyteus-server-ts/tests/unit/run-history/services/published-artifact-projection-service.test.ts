@@ -101,5 +101,12 @@ describe("PublishedArtifactProjectionService", () => {
       }),
       absolutePath: snapshotStore.resolveSnapshotAbsolutePath(memoryDir, snapshot.snapshotRelativePath),
     });
+    await expect(service.getPublishedArtifactsFromMemoryDir(memoryDir)).resolves.toEqual([summary]);
+    await expect(
+      service.getPublishedArtifactRevisionTextFromMemoryDir({
+        memoryDir,
+        revisionId: "revision-1",
+      }),
+    ).resolves.toBe("historical brief body");
   });
 });

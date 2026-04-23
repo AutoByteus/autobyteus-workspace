@@ -21,15 +21,21 @@ export type TeamMemberRunConfig = {
 export class TeamRunConfig {
   readonly teamDefinitionId: string;
   readonly runtimeKind: RuntimeKind;
+  readonly coordinatorMemberName: string | null;
   readonly memberConfigs: TeamMemberRunConfig[];
 
   constructor(input: {
     teamDefinitionId: string;
     runtimeKind: RuntimeKind;
+    coordinatorMemberName?: string | null;
     memberConfigs: TeamMemberRunConfig[];
   }) {
     this.teamDefinitionId = input.teamDefinitionId;
     this.runtimeKind = input.runtimeKind;
+    this.coordinatorMemberName =
+      typeof input.coordinatorMemberName === "string" && input.coordinatorMemberName.trim().length > 0
+        ? input.coordinatorMemberName.trim()
+        : null;
     this.memberConfigs = input.memberConfigs.map((config) => ({ ...config }));
   }
 }

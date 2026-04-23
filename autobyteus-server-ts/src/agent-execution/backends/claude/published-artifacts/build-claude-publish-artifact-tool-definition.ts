@@ -25,7 +25,7 @@ export const buildClaudePublishArtifactToolDefinition = async (options: {
     description: PUBLISH_ARTIFACT_TOOL_DESCRIPTION,
     inputSchema: {
       path: z.string().min(1, "path is required").describe(
-        "Workspace-relative path to the file that should be published as an artifact.",
+        "Absolute path to the file that should be published as an artifact. Prefer the exact absolute path returned by write_file; the file must still be inside the current workspace.",
       ),
       description: z.string().min(1).optional().describe(
         "Optional short description for reviewers and application consumers.",

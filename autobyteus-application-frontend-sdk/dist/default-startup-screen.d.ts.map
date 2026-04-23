@@ -1,0 +1,1 @@
+{"version":3,"file":"default-startup-screen.d.ts","sourceRoot":"","sources":["../src/default-startup-screen.ts"],"names":[],"mappings":"AAAA,MAAM,MAAM,6BAA6B,GACrC,mBAAmB,GACnB,uBAAuB,GACvB,cAAc,GACd,gBAAgB,GAChB,kBAAkB,CAAC;AA6DvB,eAAO,MAAM,0BAA0B,GAAI,OAAO;IAChD,WAAW,EAAE,WAAW,CAAC;IACzB,KAAK,EAAE,6BAA6B,CAAC;IACrC,YAAY,CAAC,EAAE,MAAM,GAAG,IAAI,CAAC;CAC9B,KAAG,IAkCH,CAAC"}

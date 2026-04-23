@@ -112,6 +112,32 @@ describe("PublishedArtifactPublicationService", () => {
     });
   });
 
+  it("accepts the absolute file path returned by write_file and canonicalizes it to the workspace-relative artifact path", async () => {
+    const { run, workspaceRoot, localEvents } = await createRunHarness();
+    const service = createService({
+      run,
+      workspaceRoot,
+    });
+
+    const filePath = path.join(workspaceRoot, "docs", "brief.md");
+    await fs.mkdir(path.dirname(filePath), { recursive: true });
+    await fs.writeFile(filePath, "# Review-ready brief", "utf-8");
+
+    const artifact = await service.publishForRun({
+      runId: run.runId,
+      path: filePath,
+      description: "Ready for review",
+    });
+
+    expect(artifact.path).toBe("docs/brief.md");
+    expect(localEvents[0]).toMatchObject({
+      eventType: AgentRunEventType.ARTIFACT_PERSISTED,
+      payload: expect.objectContaining({
+        path: "docs/brief.md",
+      }),
+    });
+  });
+
   it("rejects workspace-relative symlink escapes that resolve outside the bound workspace", async () => {
     const { run, workspaceRoot, memoryDir, localEvents } = await createRunHarness();
     const projectionStore = new PublishedArtifactProjectionStore();
@@ -210,5 +236,103 @@ describe("PublishedArtifactPublicationService", () => {
 
     expect(await fs.readdir(snapshotStore.getSnapshotRootPath(memoryDir)).catch(() => [])).toEqual([]);
     expect(localEvents).toEqual([]);
+  });
+
+  it("publishes for a team-member runtime fallback without requiring AgentRunManager authority for the member run", async () => {
+    const workspaceRoot = await createTempDir();
+    const memoryDir = await createTempDir();
+    const projectionStore = new PublishedArtifactProjectionStore();
+    const snapshotStore = new PublishedArtifactSnapshotStore();
+    const emitArtifactPersisted = vi.fn();
+    const relayArtifactForExecutionContext = vi.fn().mockResolvedValue(undefined);
+    const service = new PublishedArtifactPublicationService({
+      agentRunManager: {
+        getActiveRun: vi.fn().mockReturnValue(null),
+      } as any,
+      publishedArtifactRelayService: {
+        relayArtifactForExecutionContext,
+      } as any,
+      projectionStore,
+      snapshotStore,
+    });
+
+    const filePath = path.join(workspaceRoot, "brief-studio", "research.md");
+    await fs.mkdir(path.dirname(filePath), { recursive: true });
+    await fs.writeFile(filePath, "# Research findings", "utf-8");
+
+    const applicationExecutionContext = {
+      applicationId: "app-1",
+      bindingId: "binding-1",
+      producer: {
+        runId: "team-run-1",
+        memberRouteKey: "researcher",
+        memberName: "Researcher",
+        displayName: "Researcher",
+        runtimeKind: "AGENT_TEAM_MEMBER",
+        teamPath: [],
+      },
+    } as const;
+
+    const artifact = await service.publishForRun({
+      runId: "researcher_member_run",
+      path: "brief-studio/research.md",
+      description: "Research checkpoint",
+      fallbackRuntimeContext: {
+        memoryDir,
+        workspaceRootPath: workspaceRoot,
+        applicationExecutionContext,
+        emitArtifactPersisted,
+      },
+    });
+
+    const projection = await projectionStore.readProjection(memoryDir);
+    expect(artifact).toMatchObject({
+      runId: "researcher_member_run",
+      path: "brief-studio/research.md",
+      type: "file",
+      status: "available",
+      description: "Research checkpoint",
+      revisionId: expect.any(String),
+    });
+    expect(projection.summaries).toEqual([artifact]);
+    expect(projection.revisions).toHaveLength(1);
+    expect(emitArtifactPersisted).toHaveBeenCalledWith(artifact);
+    expect(relayArtifactForExecutionContext).toHaveBeenCalledWith({
+      runId: "researcher_member_run",
+      applicationExecutionContext,
+      artifact,
+    });
+  });
+
+  it("rejects inactive runs before persisting when no team-member fallback authority is available", async () => {
+    const workspaceRoot = await createTempDir();
+    const memoryDir = await createTempDir();
+    const projectionStore = new PublishedArtifactProjectionStore();
+    const snapshotStore = new PublishedArtifactSnapshotStore();
+    const service = new PublishedArtifactPublicationService({
+      agentRunManager: {
+        getActiveRun: vi.fn().mockReturnValue(null),
+      } as any,
+      projectionStore,
+      snapshotStore,
+    });
+
+    const filePath = path.join(workspaceRoot, "brief-studio", "research.md");
+    await fs.mkdir(path.dirname(filePath), { recursive: true });
+    await fs.writeFile(filePath, "# Research findings", "utf-8");
+
+    await expect(
+      service.publishForRun({
+        runId: "researcher_member_run",
+        path: "brief-studio/research.md",
+        fallbackRuntimeContext: {
+          memoryDir,
+          workspaceRootPath: workspaceRoot,
+        },
+      }),
+    ).rejects.toThrow("Run 'researcher_member_run' is not active.");
+
+    expect(await projectionStore.readProjection(memoryDir)).toEqual(EMPTY_PUBLISHED_ARTIFACT_PROJECTION);
+    expect(await fs.readdir(snapshotStore.getSnapshotRootPath(memoryDir)).catch(() => [])).toEqual([]);
   });
 });

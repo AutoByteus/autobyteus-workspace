@@ -23,6 +23,9 @@ const buildInitialInputText = (input) => {
     const sections = [
         `Create or revise a reviewable brief titled "${input.title}".`,
         "Use the bundled researcher and writer flow, and publish artifacts as you progress.",
+        "Fresh-run workflow is research-first: the researcher starts, writes the research file, publishes it with publish_artifact using the exact absolute path returned by the write step, and then hands off to the writer before drafting begins.",
+        "Researcher: keep the research checkpoint concise and finish the required publication + handoff flow instead of replying with plain prose. Writer: wait for the researcher handoff, review that file, write the brief, and keep the final checkpoint concise.",
+        "publish_artifact is only for publishing a file after it has already been written, and it should receive the exact absolute file path returned by that write step.",
     ];
     if (input.latestWriterSummary) {
         sections.push(`Current projected writer summary: ${input.latestWriterSummary}`);

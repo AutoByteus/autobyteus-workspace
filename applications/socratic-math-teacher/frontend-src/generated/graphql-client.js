@@ -1,8 +1,3 @@
-import {
-  createApplicationBackendMountTransport,
-  createApplicationClient,
-} from "../vendor/application-frontend-sdk.js";
-
 const LESSONS_QUERY = `query LessonsQuery {
   lessons {
     lessonId
@@ -142,16 +137,7 @@ const readGraphqlField = async (promise, fieldName) => {
   return result.data[fieldName];
 };
 
-export const createSocraticMathGraphqlClient = (bootstrap) => {
-  const applicationClient = createApplicationClient({
-    applicationId: bootstrap.application.applicationId,
-    requestContext: bootstrap.requestContext,
-    transport: createApplicationBackendMountTransport({
-      backendBaseUrl: bootstrap.transport.backendBaseUrl,
-      backendNotificationsUrl: bootstrap.transport.backendNotificationsUrl,
-    }),
-  });
-
+export const createSocraticMathGraphqlClient = (applicationClient) => {
   const execute = (query, operationName, variables, fieldName) =>
     readGraphqlField(
       applicationClient.graphql({ query, operationName, variables }),

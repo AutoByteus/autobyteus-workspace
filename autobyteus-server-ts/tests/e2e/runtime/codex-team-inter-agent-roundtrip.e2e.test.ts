@@ -175,7 +175,6 @@ describeCodexRuntime("Codex team inter-agent roundtrip e2e (live transport)", ()
     const query = `
       query Models($runtimeKind: String) {
         availableLlmProvidersWithModels(runtimeKind: $runtimeKind) {
-          provider
           models {
             modelIdentifier
           }
@@ -185,7 +184,6 @@ describeCodexRuntime("Codex team inter-agent roundtrip e2e (live transport)", ()
 
     const result = await execGraphql<{
       availableLlmProvidersWithModels: Array<{
-        provider: string;
         models: Array<{ modelIdentifier: string }>;
       }>;
     }>(query, {

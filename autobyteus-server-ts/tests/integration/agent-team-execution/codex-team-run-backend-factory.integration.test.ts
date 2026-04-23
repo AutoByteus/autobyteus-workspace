@@ -86,6 +86,7 @@ describe("CodexTeamRunBackendFactory integration", () => {
     expect(coordinatorContext.memberRunId).toBe("coord-run");
     expect(coordinatorContext.threadId).toBeNull();
     expect(coordinatorContext.agentRunConfig.workspaceId).toBe("workspace-coordinator");
+    expect(coordinatorContext.agentRunConfig.memoryDir).toContain(context.runId);
     expect(coordinatorContext.agentRunConfig.llmConfig).toEqual({
       reasoning_effort: "medium",
     });
@@ -97,6 +98,7 @@ describe("CodexTeamRunBackendFactory integration", () => {
       buildTeamMemberRunId(context.runId, researcherContext.memberRouteKey),
     );
     expect(researcherContext.agentRunConfig.workspaceId).toBe("workspace-researcher");
+    expect(researcherContext.agentRunConfig.memoryDir).toContain(context.runId);
     expect(researcherContext.agentRunConfig.autoExecuteTools).toBe(true);
     expect(researcherContext.agentRunConfig.skillAccessMode).toBe(SkillAccessMode.WORKSPACE);
     expect(researcherContext.agentRunConfig.llmConfig).toEqual({
@@ -136,6 +138,7 @@ describe("CodexTeamRunBackendFactory integration", () => {
               llmModelIdentifier: "gpt-5.4-mini",
               autoExecuteTools: false,
               workspaceId: "workspace-coordinator",
+              memoryDir: "/tmp/codex-team-memory/coord-run",
               llmConfig: { reasoning_effort: "medium" },
               skillAccessMode: SkillAccessMode.NONE,
               runtimeKind: RuntimeKind.CODEX_APP_SERVER,

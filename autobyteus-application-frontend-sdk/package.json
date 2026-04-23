@@ -10,7 +10,8 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json"
+    "build": "tsc -p tsconfig.build.json",
+    "test": "pnpm build && node --test tests/hosted-application-startup.test.mjs && tsc -p tsconfig.type-tests.json --noEmit"
   },
   "dependencies": {
     "@autobyteus/application-sdk-contracts": "workspace:*"

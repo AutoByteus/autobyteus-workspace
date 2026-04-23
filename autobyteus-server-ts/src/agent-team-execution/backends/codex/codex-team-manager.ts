@@ -17,6 +17,7 @@ import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import {
   TeamRunContext,
 } from "../../domain/team-run-context.js";
+import type { TeamMemberRunConfig } from "../../domain/team-run-config.js";
 import type { InterAgentMessageDeliveryRequest } from "../../domain/inter-agent-message-delivery.js";
 import {
   TeamRunEventSourceType,
@@ -281,17 +282,38 @@ export class CodexTeamManager implements TeamManager {
     return this.teamContext.runtimeContext;
   }
 
+  private resolveConfiguredMemberRunConfig(
+    memberContext: CodexTeamMemberContext,
+  ): TeamMemberRunConfig | null {
+    const memberConfigs = this.teamContext?.config?.memberConfigs ?? [];
+    return memberConfigs.find((memberConfig) => {
+      const configuredRunId =
+        typeof memberConfig.memberRunId === "string" && memberConfig.memberRunId.trim().length > 0
+          ? memberConfig.memberRunId.trim()
+          : null;
+      if (configuredRunId) {
+        return configuredRunId === memberContext.memberRunId;
+      }
+      return (memberConfig.memberRouteKey ?? memberConfig.memberName) === memberContext.memberRouteKey;
+    }) ?? null;
+  }
+
   private buildMemberRunConfig(memberContext: CodexTeamMemberContext): AgentRunConfig {
+    const configuredMemberRunConfig = this.resolveConfiguredMemberRunConfig(memberContext);
     return new AgentRunConfig({
       agentDefinitionId: memberContext.agentRunConfig.agentDefinitionId,
       llmModelIdentifier: memberContext.agentRunConfig.llmModelIdentifier,
       autoExecuteTools: memberContext.agentRunConfig.autoExecuteTools,
-      workspaceId: memberContext.agentRunConfig.workspaceId,
+      workspaceId: memberContext.agentRunConfig.workspaceId ?? configuredMemberRunConfig?.workspaceId ?? null,
+      memoryDir: memberContext.agentRunConfig.memoryDir ?? configuredMemberRunConfig?.memoryDir ?? null,
       llmConfig: memberContext.agentRunConfig.llmConfig,
       skillAccessMode: memberContext.agentRunConfig.skillAccessMode,
       runtimeKind: memberContext.agentRunConfig.runtimeKind,
       teamContext: this.teamContext,
-      applicationExecutionContext: memberContext.agentRunConfig.applicationExecutionContext,
+      applicationExecutionContext:
+        memberContext.agentRunConfig.applicationExecutionContext
+        ?? configuredMemberRunConfig?.applicationExecutionContext
+        ?? null,
     });
   }
 

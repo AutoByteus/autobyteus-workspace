@@ -6,6 +6,8 @@ import {
   TeamRunContext,
 } from "../../domain/team-run-context.js";
 import { AgentRunConfig } from "../../../agent-execution/domain/agent-run-config.js";
+import { TeamMemberMemoryLayout } from "../../../agent-memory/store/team-member-memory-layout.js";
+import { appConfigProvider } from "../../../config/app-config-provider.js";
 import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import { CodexTeamManager } from "./codex-team-manager.js";
 import type { TeamManager } from "../team-manager.js";
@@ -20,14 +22,19 @@ import { buildTeamMemberRunId, normalizeMemberRouteKey } from "../../../run-hist
 
 export type CodexTeamRunBackendFactoryOptions = {
   createTeamManager?: (context: TeamRunContext<CodexTeamRunContext>) => CodexTeamManager;
+  memoryDir?: string;
 };
 
 export class CodexTeamRunBackendFactory implements TeamRunBackendFactory {
   private readonly createTeamManager: (context: TeamRunContext<CodexTeamRunContext>) => CodexTeamManager;
+  private readonly memberLayout: TeamMemberMemoryLayout;
 
   constructor(options: CodexTeamRunBackendFactoryOptions = {}) {
     this.createTeamManager =
       options.createTeamManager ?? ((context) => new CodexTeamManager(context));
+    this.memberLayout = new TeamMemberMemoryLayout(
+      options.memoryDir ?? appConfigProvider.config.getMemoryDir(),
+    );
   }
 
   async createBackend(config: TeamRunConfig): Promise<CodexTeamRunBackend> {
@@ -66,6 +73,7 @@ export class CodexTeamRunBackendFactory implements TeamRunBackendFactory {
               llmModelIdentifier: memberConfig.llmModelIdentifier,
               autoExecuteTools: memberConfig.autoExecuteTools,
               workspaceId: memberConfig.workspaceId ?? null,
+              memoryDir: memberConfig.memoryDir ?? null,
               llmConfig: memberConfig.llmConfig ?? null,
               skillAccessMode: memberConfig.skillAccessMode,
               applicationExecutionContext: memberConfig.applicationExecutionContext ?? null,
@@ -106,6 +114,10 @@ export class CodexTeamRunBackendFactory implements TeamRunBackendFactory {
         memberName: memberConfig.memberName,
         memberRouteKey,
         memberRunId,
+        memoryDir:
+          typeof memberConfig.memoryDir === "string" && memberConfig.memoryDir.trim().length > 0
+            ? memberConfig.memoryDir.trim()
+            : this.memberLayout.getMemberDirPath(teamRunId, memberRunId),
         runtimeKind: memberConfig.runtimeKind,
         agentDefinitionId: memberConfig.agentDefinitionId,
         llmModelIdentifier: memberConfig.llmModelIdentifier,

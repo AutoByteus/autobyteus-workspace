@@ -1,11 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { nextTick } from 'vue'
-import ApplicationIframeHost from '../ApplicationIframeHost.vue'
 import {
   createApplicationHostBootstrapEnvelopeV2,
   createApplicationUiReadyEnvelopeV2,
-} from '~/types/application/ApplicationIframeContract'
+} from '@autobyteus/application-sdk-contracts'
+import ApplicationIframeHost from '../ApplicationIframeHost.vue'
 import type { ApplicationIframeLaunchDescriptor } from '~/utils/application/applicationLaunchDescriptor'
 
 vi.mock('~/composables/useLocalization', () => ({

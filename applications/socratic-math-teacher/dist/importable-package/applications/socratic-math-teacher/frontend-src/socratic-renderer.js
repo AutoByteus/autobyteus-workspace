@@ -17,6 +17,108 @@ const formatTime = (value) => {
   return timestamp.toLocaleString();
 };
 
+export const renderSocraticMathTeacherShell = (rootElement) => {
+  rootElement.innerHTML = `
+    <main class="shell">
+      <header class="hero card">
+        <div class="eyebrow">Built-in teaching sample</div>
+        <h1>Socratic Math Teacher</h1>
+        <p class="lede">
+          Start lessons, ask follow-up questions, and request hints while the app keeps one lesson-centric
+          conversation flow over the hosted backend mount.
+        </p>
+      </header>
+
+      <section id="workspace-status" class="workspace-status">
+        Socratic Math Teacher is ready to load lesson data.
+      </section>
+
+      <details class="card details-panel">
+        <summary class="details-summary">Advanced app details</summary>
+        <p class="details-copy muted">
+          The platform hosts the backend mount and launch lifecycle, while the app owns the lesson GraphQL schema,
+          generated frontend client, tutor transcript projection, and repeated follow-up semantics.
+        </p>
+        <div class="meta-grid">
+          <div>
+            <span class="label">Application</span>
+            <div id="application-name" class="value">Waiting for hosted application context…</div>
+            <div id="application-ids" class="muted">—</div>
+          </div>
+          <div>
+            <span class="label">Launch</span>
+            <div id="launch-instance-id" class="value">—</div>
+            <div id="request-context" class="muted">—</div>
+          </div>
+          <div>
+            <span class="label">Backend mount</span>
+            <div id="backend-base-url" class="value small">—</div>
+            <div id="backend-notifications-url" class="muted small">—</div>
+          </div>
+        </div>
+      </details>
+
+      <section class="card composer-panel">
+        <div class="panel-header">
+          <div>
+            <h2>Start lesson</h2>
+            <p class="muted">Create one lesson record and begin the tutoring conversation. Runtime, model, and workspace defaults come from the host-managed launch setup surface.</p>
+          </div>
+        </div>
+        <form id="start-lesson-form" class="brief-composer">
+          <div class="composer-grid">
+            <label class="field">
+              <span class="label">Math problem</span>
+              <input id="lesson-prompt-input" type="text" placeholder="Solve 3x + 5 = 20" />
+            </label>
+          </div>
+          <div class="action-row">
+            <button class="primary-button" type="submit">Start lesson</button>
+            <span class="muted small">The app keeps later student questions on the same lesson record while the host supplies runtime defaults.</span>
+          </div>
+        </form>
+      </section>
+
+      <section class="content-grid">
+        <aside class="card list-panel">
+          <div class="panel-header">
+            <div>
+              <h2>Lessons</h2>
+              <p class="muted">Track each lesson, its current tutoring status, and the latest activity.</p>
+            </div>
+            <button id="refresh-button" class="ghost-button" type="button">Refresh</button>
+          </div>
+          <div id="lesson-list" class="brief-list empty-state">
+            No lessons yet. Start one lesson to begin the tutoring conversation.
+          </div>
+        </aside>
+
+        <section class="card detail-panel">
+          <div class="panel-header">
+            <div>
+              <h2>Lesson detail</h2>
+              <p class="muted">Review the tutoring conversation, current lesson status, and next student action.</p>
+            </div>
+          </div>
+          <div id="lesson-detail" class="empty-state">
+            Select a lesson to continue the tutoring conversation and review past guidance.
+          </div>
+        </section>
+      </section>
+
+      <section class="card notification-panel">
+        <div class="panel-header">
+          <div>
+            <h2>Backend notifications</h2>
+            <p class="muted">Optional app notifications fan out through the platform-owned application backend stream.</p>
+          </div>
+        </div>
+        <div id="notification-list" class="notification-list empty-state">No notifications yet.</div>
+      </section>
+    </main>
+  `;
+};
+
 export const renderNotifications = ({ state, elements }) => {
   if (!elements.notificationList) {
     return;

@@ -46,4 +46,4 @@ export const normalizePublishArtifactToolInput = (
 
 export const PUBLISH_ARTIFACT_TOOL_NAME = "publish_artifact" as const;
 export const PUBLISH_ARTIFACT_TOOL_DESCRIPTION =
-  "Publish one file from the current run workspace as a durable artifact. Provide a workspace-relative path and an optional short description.";
+  "Publish one file from the current run workspace as a durable artifact. Use the exact absolute file path returned by write_file when available; the path must still resolve inside the current workspace. An optional short description may also be provided.";

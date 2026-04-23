@@ -2,11 +2,16 @@
 
 This document describes the current iframe/bootstrap contract used by bundled applications.
 
+The authoritative code owner for the runtime contract now lives in:
+
+- `../../autobyteus-application-sdk-contracts/src/application-iframe-contract.ts`
+
 ## Key contract points
 
 - the browser host owns launch readiness and iframe bootstrap
 - the iframe app sends `autobyteus.application.ui.ready`
 - the host replies with `autobyteus.application.host.bootstrap`
+- bundle-side startup ownership belongs to `startHostedApplication(...)` in `@autobyteus/application-frontend-sdk`
 - the bootstrap payload carries one authoritative hosted backend-mount URL: `transport.backendBaseUrl`
 - app business APIs derive GraphQL, route, query, and command endpoints from `backendBaseUrl`
 - only non-derivable channels such as `backendNotificationsUrl` are carried alongside it
@@ -42,17 +47,18 @@ export type ApplicationBootstrapPayloadV2 = {
 
 ```ts
 import {
-  createApplicationBackendMountTransport,
-  createApplicationClient,
+  startHostedApplication,
 } from '@autobyteus/application-frontend-sdk'
 
-const client = createApplicationClient({
-  applicationId: bootstrap.application.applicationId,
-  requestContext: bootstrap.requestContext,
-  transport: createApplicationBackendMountTransport({
-    backendBaseUrl: bootstrap.transport.backendBaseUrl!,
-    backendNotificationsUrl: bootstrap.transport.backendNotificationsUrl,
-  }),
+startHostedApplication({
+  rootElement: document.getElementById('app-root'),
+  onBootstrapped: ({ bootstrap, applicationClient, rootElement }) => {
+    rootElement.textContent = `Started ${bootstrap.application.name}`
+    void applicationClient.graphql({
+      query: 'query HealthQuery { __typename }',
+      operationName: 'HealthQuery',
+    })
+  },
 })
 ```
 

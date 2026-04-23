@@ -1,12 +1,17 @@
 import {
   APPLICATION_IFRAME_CONTRACT_VERSION_V2,
   type ApplicationIframeLaunchHints,
-} from '~/types/application/ApplicationIframeContract'
+} from '@autobyteus/application-sdk-contracts'
 import {
   appendApplicationIframeLaunchHints,
   resolveApplicationAssetOrigin,
   resolveApplicationAssetUrl,
 } from '~/utils/application/applicationAssetUrl'
+
+export {
+  doesApplicationHostOriginMatch,
+  normalizeApplicationHostOrigin,
+} from '@autobyteus/application-sdk-contracts'
 
 export type ApplicationIframeLaunchDescriptor = {
   applicationId: string
@@ -23,42 +28,6 @@ export type ApplicationIframeLaunchDescriptorInputs = {
   restBaseUrl: string
   normalizedHostOrigin: string
   contractVersion?: typeof APPLICATION_IFRAME_CONTRACT_VERSION_V2
-}
-
-const PACKAGED_HOST_ORIGIN = 'file://'
-
-export const normalizeApplicationHostOrigin = (
-  origin: string | null | undefined,
-  protocol?: string | null,
-): string => {
-  const normalizedOrigin = (origin ?? '').trim()
-  const normalizedProtocol = (protocol ?? '').trim().toLowerCase()
-
-  if (
-    normalizedProtocol === 'file:'
-    || normalizedOrigin === PACKAGED_HOST_ORIGIN
-    || normalizedOrigin.startsWith('file://')
-  ) {
-    return PACKAGED_HOST_ORIGIN
-  }
-
-  if (!normalizedOrigin || normalizedOrigin === 'null') {
-    return 'null'
-  }
-
-  return normalizedOrigin
-}
-
-export const doesApplicationHostOriginMatch = (
-  expectedNormalizedHostOrigin: string,
-  actualOrigin: string | null | undefined,
-): boolean => {
-  const normalizedActualOrigin = (actualOrigin ?? '').trim()
-  if (expectedNormalizedHostOrigin === PACKAGED_HOST_ORIGIN) {
-    return normalizedActualOrigin === PACKAGED_HOST_ORIGIN || normalizedActualOrigin === 'null'
-  }
-
-  return normalizedActualOrigin === expectedNormalizedHostOrigin
 }
 
 export const areApplicationIframeDescriptorInputsEqual = (

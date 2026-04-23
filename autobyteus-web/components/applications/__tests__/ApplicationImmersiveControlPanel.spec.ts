@@ -118,7 +118,7 @@ describe('ApplicationImmersiveControlPanel', () => {
     await wrapper.get('[data-testid="application-immersive-trigger"]').trigger('click')
 
     const panel = wrapper.get('[data-testid="application-immersive-control-panel"]')
-    expect((panel.element as HTMLElement).style.width).toBe('440px')
+    expect((panel.element as HTMLElement).style.width).toBe('512px')
 
     await wrapper.get('[data-testid="application-immersive-reload"]').trigger('click')
     await wrapper.get('[data-testid="application-immersive-exit"]').trigger('click')
@@ -131,16 +131,69 @@ describe('ApplicationImmersiveControlPanel', () => {
     document.dispatchEvent(new MouseEvent('mousemove', { bubbles: true, clientX: 312 }))
     await nextTick()
 
-    expect((panel.element as HTMLElement).style.width).toBe('680px')
+    expect((panel.element as HTMLElement).style.width).toBe('512px')
 
     document.dispatchEvent(new MouseEvent('mousemove', { bubbles: true, clientX: 632 }))
     await nextTick()
 
-    expect((panel.element as HTMLElement).style.width).toBe('360px')
+    expect((panel.element as HTMLElement).style.width).toBe('420px')
 
     document.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }))
     expect(document.body.style.cursor).toBe('')
 
+    getBoundingClientRectSpy.mockRestore()
+  })
+
+  it('keeps the action footer visible and reclamps a widened panel when the viewport shrinks', async () => {
+    Object.defineProperty(window, 'innerWidth', {
+      configurable: true,
+      value: 1600,
+    })
+
+    const getBoundingClientRectSpy = vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(() => ({
+      x: 0,
+      y: 0,
+      top: 0,
+      left: 1040,
+      right: 1600,
+      bottom: 0,
+      width: 560,
+      height: 0,
+      toJSON: () => ({}),
+    }))
+
+    const wrapper = mount(ApplicationImmersiveControlPanel, {
+      props: {
+        applicationName: 'Brief Studio',
+      },
+      slots: {
+        configure: '<div style="height: 1200px">Long configure content</div>',
+      },
+    })
+
+    await wrapper.get('[data-testid="application-immersive-trigger"]').trigger('click')
+    await wrapper.get('[data-testid="application-immersive-configure-toggle"]').trigger('click')
+
+    const panel = wrapper.get('[data-testid="application-immersive-control-panel"]')
+    expect((panel.element as HTMLElement).style.width).toBe('560px')
+    expect(wrapper.get('[data-testid="application-immersive-actions"]').isVisible()).toBe(true)
+
+    await wrapper.get('[data-testid="application-immersive-resize-handle"]').trigger('mousedown', { clientX: 1032 })
+    document.dispatchEvent(new MouseEvent('mousemove', { bubbles: true, clientX: 120 }))
+    await nextTick()
+
+    expect((panel.element as HTMLElement).style.width).toBe('960px')
+
+    Object.defineProperty(window, 'innerWidth', {
+      configurable: true,
+      value: 1200,
+    })
+    window.dispatchEvent(new Event('resize'))
+    await nextTick()
+
+    expect((panel.element as HTMLElement).style.width).toBe('712px')
+
+    document.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }))
     getBoundingClientRectSpy.mockRestore()
   })
 

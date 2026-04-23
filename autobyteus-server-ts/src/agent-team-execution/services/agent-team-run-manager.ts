@@ -70,6 +70,7 @@ export class AgentTeamRunManager {
     const normalizedConfig = new TeamRunConfig({
       teamDefinitionId: config.teamDefinitionId,
       runtimeKind: config.runtimeKind,
+      coordinatorMemberName: config.coordinatorMemberName,
       memberConfigs: config.memberConfigs.map((memberConfig) => {
         const memberRouteKey = normalizeMemberRouteKey(
           memberConfig.memberRouteKey ?? memberConfig.memberName,
@@ -87,7 +88,7 @@ export class AgentTeamRunManager {
       context: new TeamRunContext({
         runId: backend.runId,
         runtimeKind: backend.runtimeKind,
-        coordinatorMemberName: null,
+        coordinatorMemberName: normalizedConfig.coordinatorMemberName,
         config: normalizedConfig,
         runtimeContext: backend.getRuntimeContext(),
       }),

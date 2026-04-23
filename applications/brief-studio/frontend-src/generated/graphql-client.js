@@ -1,8 +1,3 @@
-import {
-  createApplicationBackendMountTransport,
-  createApplicationClient,
-} from "../vendor/application-frontend-sdk.js";
-
 const BRIEFS_QUERY = `query BriefsQuery {
   briefs {
     briefId
@@ -116,16 +111,7 @@ const readGraphqlField = async (promise, fieldName) => {
   return result.data[fieldName];
 };
 
-export const createBriefStudioGraphqlClient = (bootstrap) => {
-  const applicationClient = createApplicationClient({
-    applicationId: bootstrap.application.applicationId,
-    requestContext: bootstrap.requestContext,
-    transport: createApplicationBackendMountTransport({
-      backendBaseUrl: bootstrap.transport.backendBaseUrl,
-      backendNotificationsUrl: bootstrap.transport.backendNotificationsUrl,
-    }),
-  });
-
+export const createBriefStudioGraphqlClient = (applicationClient) => {
   const execute = (query, operationName, variables, fieldName) =>
     readGraphqlField(
       applicationClient.graphql({ query, operationName, variables }),

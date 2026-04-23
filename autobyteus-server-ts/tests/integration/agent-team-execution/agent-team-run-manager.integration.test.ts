@@ -12,6 +12,7 @@ const createConfig = (runtimeKind: RuntimeKind): TeamRunConfig =>
   new TeamRunConfig({
     teamDefinitionId: `team-def-${runtimeKind}`,
     runtimeKind,
+    coordinatorMemberName: "Coordinator",
     memberConfigs: [
       {
         memberName: "Coordinator",
@@ -85,6 +86,7 @@ describe("AgentTeamRunManager integration", () => {
     const run = await manager.createTeamRun(createConfig(runtimeKind));
 
     expect(run.runtimeKind).toBe(runtimeKind);
+    expect(run.context?.coordinatorMemberName).toBe("Coordinator");
     expect(manager.getActiveRun(run.runId)?.runId).toBe(run.runId);
     expect(manager.listActiveRuns()).toContain(run.runId);
     expect(auto.createBackend).toHaveBeenCalledTimes(runtimeKind === RuntimeKind.AUTOBYTEUS ? 1 : 0);

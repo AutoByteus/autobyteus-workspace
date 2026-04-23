@@ -148,6 +148,31 @@ describe('ApplicationLaunchDefaultsFields', () => {
     expect(options[0].items[0].selectedLabel).toBe('OpenAI / gpt-4')
   })
 
+  it('stacks the locked tool-execution summary in panel presentation to avoid narrow row squeeze', () => {
+    const wrapper = mount(ApplicationLaunchDefaultsFields, {
+      props: {
+        slot: {
+          ...slotBase,
+          supportedLaunchDefaults: {
+            runtimeKind: true,
+          },
+        },
+        draft: {
+          selection: 'bundle:AGENT_TEAM:brief-studio-team',
+          runtimeKind: '',
+          llmModelIdentifier: '',
+          workspaceRootPath: '',
+        },
+        presentation: 'panel',
+        hasEffectiveResource: true,
+      },
+    })
+
+    const toolExecutionLayout = wrapper.get('[data-testid="application-launch-defaults-tool-execution-layout"]')
+    expect(toolExecutionLayout.classes()).toContain('flex-col')
+    expect(toolExecutionLayout.classes()).not.toContain('justify-between')
+  })
+
   it('keeps field-presence policy app-owned for model-only slots', () => {
     const wrapper = mount(ApplicationLaunchDefaultsFields, {
       props: {

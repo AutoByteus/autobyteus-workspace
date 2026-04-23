@@ -2,69 +2,52 @@ import {
   renderApp,
   renderLessonDetail,
   renderNotifications,
+  renderSocraticMathTeacherShell,
 } from "./socratic-renderer.js";
 
-const CHANNEL = "autobyteus.application.host";
-const CONTRACT_VERSION = "2";
-const READY_EVENT = "autobyteus.application.ui.ready";
-const BOOTSTRAP_EVENT = "autobyteus.application.host.bootstrap";
-const QUERY_CONTRACT_VERSION = "autobyteusContractVersion";
-const QUERY_APPLICATION_ID = "autobyteusApplicationId";
-const QUERY_HOST_ORIGIN = "autobyteusHostOrigin";
-const QUERY_LAUNCH_INSTANCE_ID = "autobyteusLaunchInstanceId";
-
-const matchesHostOrigin = (expectedOrigin, actualOrigin) => {
-  if (expectedOrigin === "file://") {
-    return actualOrigin === "file://" || actualOrigin === "null";
-  }
-  return actualOrigin === expectedOrigin;
-};
-
-export const createSocraticMathTeacherApp = ({
+export const mountSocraticMathTeacher = ({
+  applicationClient,
+  bootstrap,
   browserWindow,
-  document,
   createSocraticMathGraphqlClient,
+  rootElement,
 }) => {
-  const searchParams = new URLSearchParams(browserWindow.location.search);
-  const hintedContractVersion = searchParams.get(QUERY_CONTRACT_VERSION) || "";
-  const launchedApplicationId = searchParams.get(QUERY_APPLICATION_ID) || "";
-  const launchedLaunchInstanceId = searchParams.get(QUERY_LAUNCH_INSTANCE_ID) || "";
-  const hostOrigin = searchParams.get(QUERY_HOST_ORIGIN) || "";
+  renderSocraticMathTeacherShell(rootElement);
 
+  const client = createSocraticMathGraphqlClient(applicationClient);
   const state = {
-    bootstrap: null,
-    client: null,
-    lessons: [],
-    selectedLessonId: null,
+    bootstrap,
     detail: null,
-    notifications: [],
-    statusText: "Waiting for the host bootstrap payload…",
-    statusTone: "idle",
+    lessons: [],
     notificationHandle: null,
+    notifications: [],
+    selectedLessonId: null,
+    statusText: "Socratic Math Teacher is ready to load lesson data.",
+    statusTone: "idle",
   };
 
   const elements = {
-    applicationName: document.getElementById("application-name"),
-    applicationIds: document.getElementById("application-ids"),
-    launchInstanceId: document.getElementById("launch-instance-id"),
-    requestContext: document.getElementById("request-context"),
-    backendBaseUrl: document.getElementById("backend-base-url"),
-    backendNotificationsUrl: document.getElementById("backend-notifications-url"),
-    statusBanner: document.getElementById("status-banner"),
-    lessonList: document.getElementById("lesson-list"),
-    lessonDetail: document.getElementById("lesson-detail"),
-    notificationList: document.getElementById("notification-list"),
-    refreshButton: document.getElementById("refresh-button"),
-    startLessonForm: document.getElementById("start-lesson-form"),
-    lessonPromptInput: document.getElementById("lesson-prompt-input"),
+    applicationName: rootElement.querySelector("#application-name"),
+    applicationIds: rootElement.querySelector("#application-ids"),
+    launchInstanceId: rootElement.querySelector("#launch-instance-id"),
+    requestContext: rootElement.querySelector("#request-context"),
+    backendBaseUrl: rootElement.querySelector("#backend-base-url"),
+    backendNotificationsUrl: rootElement.querySelector("#backend-notifications-url"),
+    workspaceStatus: rootElement.querySelector("#workspace-status"),
+    lessonList: rootElement.querySelector("#lesson-list"),
+    lessonDetail: rootElement.querySelector("#lesson-detail"),
+    notificationList: rootElement.querySelector("#notification-list"),
+    refreshButton: rootElement.querySelector("#refresh-button"),
+    startLessonForm: rootElement.querySelector("#start-lesson-form"),
+    lessonPromptInput: rootElement.querySelector("#lesson-prompt-input"),
   };
 
   const setStatus = (text, tone = "idle") => {
     state.statusText = text;
     state.statusTone = tone;
-    if (elements.statusBanner) {
-      elements.statusBanner.textContent = text;
-      elements.statusBanner.className = `status-banner${tone === "ready" ? " ready" : tone === "error" ? " error" : ""}`;
+    if (elements.workspaceStatus) {
+      elements.workspaceStatus.textContent = text;
+      elements.workspaceStatus.className = `workspace-status${tone === "ready" ? " ready" : tone === "error" ? " error" : ""}`;
     }
   };
 
@@ -88,7 +71,7 @@ export const createSocraticMathTeacherApp = ({
   };
 
   const refreshDetail = async () => {
-    if (!state.client || !state.selectedLessonId) {
+    if (!state.selectedLessonId) {
       state.detail = null;
       renderLessonDetail({
         state,
@@ -101,7 +84,7 @@ export const createSocraticMathTeacherApp = ({
       return;
     }
 
-    state.detail = await state.client.lesson(state.selectedLessonId);
+    state.detail = await client.lesson(state.selectedLessonId);
     renderLessonDetail({
       state,
       elements,
@@ -113,11 +96,8 @@ export const createSocraticMathTeacherApp = ({
   };
 
   const refresh = async () => {
-    if (!state.client) {
-      return;
-    }
     setStatus("Loading lessons through the hosted GraphQL backend mount…");
-    const lessons = await state.client.lessons();
+    const lessons = await client.lessons();
     state.lessons = Array.isArray(lessons) ? lessons : [];
     if (!state.selectedLessonId || !state.lessons.some((lesson) => lesson.lessonId === state.selectedLessonId)) {
       state.selectedLessonId = state.lessons[0]?.lessonId || null;
@@ -133,9 +113,6 @@ export const createSocraticMathTeacherApp = ({
   };
 
   const startLesson = async () => {
-    if (!state.client) {
-      return;
-    }
     const prompt = elements.lessonPromptInput?.value?.trim() || "";
     if (!prompt) {
       setStatus("Enter a math problem before starting a lesson.", "error");
@@ -143,7 +120,7 @@ export const createSocraticMathTeacherApp = ({
     }
 
     setStatus("Starting a new lesson…");
-    const lesson = await state.client.startLesson({ prompt });
+    const lesson = await client.startLesson({ prompt });
     state.selectedLessonId = lesson.lessonId;
     if (elements.lessonPromptInput) {
       elements.lessonPromptInput.value = "";
@@ -152,7 +129,7 @@ export const createSocraticMathTeacherApp = ({
   };
 
   const askFollowUp = async () => {
-    if (!state.client || !state.selectedLessonId) {
+    if (!state.selectedLessonId) {
       return;
     }
     const textarea = document.getElementById("follow-up-input");
@@ -162,7 +139,7 @@ export const createSocraticMathTeacherApp = ({
       return;
     }
     setStatus("Sending your follow-up…");
-    await state.client.askFollowUp({ lessonId: state.selectedLessonId, text });
+    await client.askFollowUp({ lessonId: state.selectedLessonId, text });
     if (textarea) {
       textarea.value = "";
     }
@@ -170,12 +147,12 @@ export const createSocraticMathTeacherApp = ({
   };
 
   const requestHint = async () => {
-    if (!state.client || !state.selectedLessonId) {
+    if (!state.selectedLessonId) {
       return;
     }
     const text = browserWindow.prompt("Optional hint request detail", "") || "";
     setStatus("Requesting a hint…");
-    await state.client.requestHint({
+    await client.requestHint({
       lessonId: state.selectedLessonId,
       text: text.trim() || null,
     });
@@ -183,11 +160,11 @@ export const createSocraticMathTeacherApp = ({
   };
 
   const closeLesson = async () => {
-    if (!state.client || !state.selectedLessonId) {
+    if (!state.selectedLessonId) {
       return;
     }
     setStatus("Closing lesson…");
-    await state.client.closeLesson({ lessonId: state.selectedLessonId });
+    await client.closeLesson({ lessonId: state.selectedLessonId });
     await refresh();
   };
 
@@ -198,79 +175,22 @@ export const createSocraticMathTeacherApp = ({
 
   const connectNotifications = () => {
     state.notificationHandle?.close?.();
-    state.notificationHandle = state.client?.subscribeNotifications((notification) => {
+    state.notificationHandle = client.subscribeNotifications((notification) => {
       pushNotification(notification);
       refresh().catch(handleUiError);
-    }) || null;
+    });
   };
 
-  const sendReady = () => {
-    if (hintedContractVersion !== CONTRACT_VERSION || !launchedApplicationId || !launchedLaunchInstanceId) {
-      return;
-    }
+  connectNotifications();
+  render();
 
-    browserWindow.parent.postMessage({
-      channel: CHANNEL,
-      contractVersion: CONTRACT_VERSION,
-      eventName: READY_EVENT,
-      payload: {
-        applicationId: launchedApplicationId,
-        launchInstanceId: launchedLaunchInstanceId,
-      },
-    }, "*");
-  };
-
-  const handleBootstrap = (event) => {
-    if (event.source !== browserWindow.parent) {
-      return;
-    }
-    if (!matchesHostOrigin(hostOrigin, event.origin)) {
-      return;
-    }
-    const message = event.data;
-    if (!message || typeof message !== "object") {
-      return;
-    }
-    if (message.channel !== CHANNEL || message.contractVersion !== CONTRACT_VERSION || message.eventName !== BOOTSTRAP_EVENT) {
-      return;
-    }
-
-    const payload = message.payload;
-    if (!payload || typeof payload !== "object") {
-      return;
-    }
-    if (payload.application?.applicationId !== launchedApplicationId) {
-      return;
-    }
-    if (payload.launch?.launchInstanceId !== launchedLaunchInstanceId) {
-      return;
-    }
-    if (payload.host?.origin !== hostOrigin) {
-      return;
-    }
-
-    state.bootstrap = payload;
-    state.client = createSocraticMathGraphqlClient(payload);
-    connectNotifications();
+  elements.refreshButton?.addEventListener("click", () => {
     refresh().catch(handleUiError);
-  };
+  });
+  elements.startLessonForm?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    startLesson().catch(handleUiError);
+  });
 
-  const init = () => {
-    browserWindow.addEventListener("message", handleBootstrap);
-    elements.refreshButton?.addEventListener("click", () => {
-      refresh().catch(handleUiError);
-    });
-    elements.startLessonForm?.addEventListener("submit", (event) => {
-      event.preventDefault();
-      startLesson().catch(handleUiError);
-    });
-
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", sendReady, { once: true });
-    } else {
-      sendReady();
-    }
-  };
-
-  return { init };
+  void refresh().catch(handleUiError);
 };

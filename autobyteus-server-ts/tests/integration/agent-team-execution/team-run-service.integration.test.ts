@@ -383,6 +383,7 @@ describe("TeamRunService integration", () => {
     expect(agentTeamRunManager.createTeamRun).toHaveBeenCalledWith(
       expect.objectContaining({
         runtimeKind,
+        coordinatorMemberName: "Coordinator",
       }),
     );
     expect(metadataService.writeMetadata).toHaveBeenCalledWith(
