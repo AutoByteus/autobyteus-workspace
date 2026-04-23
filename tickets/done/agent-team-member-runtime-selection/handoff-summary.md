@@ -4,7 +4,7 @@
 
 - Ticket: `agent-team-member-runtime-selection`
 - Last Updated: `2026-04-23`
-- Current Status: `Verified by user; finalization in progress`
+- Current Status: `Finalized`
 
 ## Delivered
 
@@ -96,6 +96,6 @@
 
 ## Ticket State
 
-- Technical workflow status: `Delivery handoff prepared after latest-base integration refresh`
+- Technical workflow status: `Repository finalization completed on personal`
 - Ticket archive state: `Archived under tickets/done/agent-team-member-runtime-selection/ after explicit user verification on 2026-04-23.`
-- User verification hold: `Released by user verification on 2026-04-23.`
+- User verification hold: `Released by user verification on 2026-04-23; ticket finalized.`

@@ -9,13 +9,14 @@
   - reconciled latest-base integration conflicts in the runtime-selection path and rechecked the integrated state
   - synced long-lived docs, prepared release notes, and updated the handoff summary
   - refreshed the delivery artifacts again after the later evidence-expansion, round-5, round-7 / validation-round-3, and round-9 / validation-round-4 review/validation follow-ups
-  - stopped before any archive/push/merge/release work because explicit user verification is still required
+  - completed ticket archive, ticket-branch commit/push, merge into `personal`, and safe post-finalization cleanup after explicit user verification
+  - intentionally skipped release/version work because the user explicitly requested no new version
 
 ## Handoff Summary
 
 - Handoff summary artifact: `tickets/done/agent-team-member-runtime-selection/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Notes: The handoff summary reflects the cumulative review/validation package, the latest-base integration refresh, the post-integration reruns, the earlier evidence-expansion follow-up, the round-5 durable-validation / related-fix follow-up, the round-7 frontend close-condition package, the round-9 / validation-round-4 `CR-004` hydration/browser follow-up, the long-lived docs sync, and the active user-verification hold.
+- Notes: The handoff summary reflects the cumulative review/validation package, the latest-base integration refresh, the post-integration reruns, the earlier evidence-expansion follow-up, the round-5 durable-validation / related-fix follow-up, the round-7 frontend close-condition package, the round-9 / validation-round-4 `CR-004` hydration/browser follow-up, the long-lived docs sync, and the completed finalization after user verification.
 
 ## Initial Delivery Integration Refresh
 
@@ -31,7 +32,7 @@
 - No-rerun rationale (only if no new base commits were integrated): `N/A`
 - Delivery edits started only after integrated state was current: `Yes`
 - Handoff state current with latest tracked remote base: `Yes`
-- Blocker (if applicable): `None` — the merged and rechecked state is ready for user verification, but finalization remains on hold until that verification arrives.
+- Blocker (if applicable): `None`.
 - Follow-up base rechecks after the earlier evidence-expansion, round-5, round-7 / round-3, and round-9 / round-4 packages: `origin/personal` still `76bbc1a0` on `2026-04-23`; no additional integration refresh or delivery-owned executable rerun was required because the branch stayed current and the later code/test deltas were already covered by authoritative validation + re-review.
 
 ## User Verification
@@ -68,24 +69,24 @@
 
 - Bootstrap context source: `tickets/done/agent-team-member-runtime-selection/investigation-notes.md`
 - Ticket branch: `codex/agent-team-member-runtime-selection`
-- Ticket branch commit result: `Pending completion in this finalization step.`
-- Ticket branch push result: `Pending completion in this finalization step.`
+- Ticket branch commit result: `Completed` (`de48dfd3` - `feat(team-runtime): support mixed member runtime selection`)
+- Ticket branch push result: `Completed` (`origin/codex/agent-team-member-runtime-selection`, later deleted after merge)
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: `No`
 - Delivery-owned edits protected before re-integration: `Not needed`
 - Re-integration before final merge result: `Not needed`
-- Target branch update result: `Pending completion in this finalization step.`
-- Merge into target result: `Pending completion in this finalization step.`
-- Push target branch result: `Pending completion in this finalization step.`
-- Repository finalization status: `Pending completion in this finalization step.`
+- Target branch update result: `Completed` (`personal` was already current with `origin/personal @ 76bbc1a0` after the explicit verification-time refresh)
+- Merge into target result: `Completed` (`106012a4` - `Merge branch 'codex/agent-team-member-runtime-selection' into personal`)
+- Push target branch result: `Completed`
+- Repository finalization status: `Completed`
 - Blocker (if applicable): `None.`
 
 ## Release / Publication / Deployment
 
 - Applicable: `No`
 - Method: `Other`
-- Method reference / command: `No release/publication/deployment work starts before user verification and a later finalization instruction.`
+- Method reference / command: `User explicitly requested finalization without a new version release.`
 - Release/publication/deployment result: `Not required`
 - Release notes handoff result: `Not required`
 - Blocker (if applicable): `N/A`
@@ -93,27 +94,27 @@
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-member-runtime-selection`
-- Worktree cleanup result: `Not required`
-- Worktree prune result: `Not required`
-- Local ticket branch cleanup result: `Not required`
-- Remote branch cleanup result: `Not required`
-- Blocker (if applicable): `Cleanup cannot start before repository finalization.`
+- Worktree cleanup result: `Completed`
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed`
+- Remote branch cleanup result: `Completed`
+- Blocker (if applicable): `None.`
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
 - Classification: `N/A`
 - Recommended recipient: `N/A`
-- Why final handoff could not complete: `Finalization/release cannot complete yet because user verification is still pending; the delivery handoff itself is ready.`
+- Why final handoff could not complete: `N/A`
 
 ## Release Notes Summary
 
 - Release notes artifact created before verification: `Yes` — `tickets/done/agent-team-member-runtime-selection/release-notes.md`
-- Archived release notes artifact used for release/publication: `N/A`
+- Archived release notes artifact used for release/publication: `Not required`
 - Release notes status: `Updated`
 
 ## Deployment Steps
 
-- None before user verification.
+- None. No release or deployment was requested for this ticket finalization.
 
 ## Environment Or Migration Notes
 
@@ -146,4 +147,4 @@
 
 ## Final Status
 
-- `Ready for explicit user verification on the latest integrated state. No archive, push, merge, release, deployment, or cleanup work has been performed.`
+- `Completed: archived to tickets/done, merged into personal, pushed, and cleaned up. No version bump, release, or deployment was performed per user instruction.`
