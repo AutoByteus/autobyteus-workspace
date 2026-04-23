@@ -62,13 +62,14 @@ Team runtime:
 
 Configured runtime skills are preflighted against Codex `skills/list` for the run working directory.
 
-- If Codex already discovers an enabled skill with the same logical `name`, AutoByteus reuses it and does not copy it into the workspace.
-- If the configured skill name is not discoverable, AutoByteus materializes a runtime-owned copy into the run workspace under:
+- If Codex already discovers an enabled skill with the same logical `name`, AutoByteus reuses it and does not materialize it into the workspace.
+- If the configured skill name is not discoverable, AutoByteus materializes a runtime-owned whole-directory symlink into the run workspace under:
 
 - `.codex/skills/<skill>/...`
 
-- If the discovery probe fails, AutoByteus falls back to the runtime-owned workspace copy path instead of blocking bootstrap.
-- Runtime-owned skill copies are made self-contained on macOS/Linux by dereferencing source symlinks during materialization, so the copied bundle does not depend on the original source tree or a mirrored `.codex/shared/...` path.
+- If the discovery probe fails, AutoByteus falls back to the runtime-owned workspace symlink path instead of blocking bootstrap.
+- The runtime-owned workspace path is an intuitive `.codex/skills/<sanitized-skill-name>` directory symlink to the original source root. AutoByteus does not add the old hash suffix, does not generate `agents/openai.yaml`, and does not write ownership markers into the source tree.
+- Team-shared relative links continue to work because Codex resolves through the source root, so no mirrored `.codex/shared/...` path is created.
 
 Relevant owners:
 
