@@ -1,5 +1,5 @@
 import type { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import type { ApplicationSessionLaunchContext } from "../../application-sessions/domain/models.js";
+import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { MemberTeamContext } from "../../agent-team-execution/domain/member-team-context.js";
 
@@ -13,7 +13,8 @@ export class AgentRunConfig {
   readonly skillAccessMode: SkillAccessMode;
   readonly runtimeKind: RuntimeKind;
   readonly memberTeamContext: MemberTeamContext | null;
-  readonly applicationSessionContext: ApplicationSessionLaunchContext | null;
+  readonly applicationExecutionContext: ApplicationExecutionContext | null;
+  readonly memberTeamContext: MemberTeamContext | null;
 
   constructor(input: {
     agentDefinitionId: string;
@@ -25,7 +26,8 @@ export class AgentRunConfig {
     skillAccessMode: SkillAccessMode;
     runtimeKind: RuntimeKind;
     memberTeamContext?: MemberTeamContext | null;
-    applicationSessionContext?: ApplicationSessionLaunchContext | null;
+    applicationExecutionContext?: ApplicationExecutionContext | null;
+    memberTeamContext?: MemberTeamContext | null;
   }) {
     this.agentDefinitionId = input.agentDefinitionId;
     this.llmModelIdentifier = input.llmModelIdentifier;
@@ -36,6 +38,7 @@ export class AgentRunConfig {
     this.skillAccessMode = input.skillAccessMode;
     this.runtimeKind = input.runtimeKind;
     this.memberTeamContext = input.memberTeamContext ?? null;
-    this.applicationSessionContext = input.applicationSessionContext ?? null;
+    this.applicationExecutionContext = input.applicationExecutionContext ?? null;
+    this.memberTeamContext = input.memberTeamContext ?? null;
   }
 }

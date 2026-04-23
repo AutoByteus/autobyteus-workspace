@@ -50,7 +50,6 @@
           v-for="application in applications"
           :key="application.id"
           :application="application"
-          :active-session-id="applicationSessionStore.getCachedActiveSessionByApplicationId(application.id)?.applicationSessionId ?? null"
           @open="openApplication"
         />
       </div>
@@ -63,12 +62,10 @@ import { onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import ApplicationCard from '~/components/applications/ApplicationCard.vue'
 import { useLocalization } from '~/composables/useLocalization'
-import { useApplicationSessionStore } from '~/stores/applicationSessionStore'
 import { useApplicationStore } from '~/stores/applicationStore'
 
 const { t: $t } = useLocalization()
 const applicationStore = useApplicationStore()
-const applicationSessionStore = useApplicationSessionStore()
 const { applications, loading, error } = storeToRefs(applicationStore)
 
 onMounted(() => {

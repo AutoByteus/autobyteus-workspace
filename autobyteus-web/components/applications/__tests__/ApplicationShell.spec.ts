@@ -1,334 +1,422 @@
-import { mount, flushPromises } from '@vue/test-utils'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { defineComponent, h, nextTick } from 'vue'
+import { flushPromises, mount } from '@vue/test-utils'
 
 const {
   routeMock,
-  routerReplaceMock,
   navigateToMock,
   applicationStoreMock,
-  applicationSessionStoreMock,
-  applicationPageStoreState,
+  applicationHostStoreMock,
   appLayoutStoreMock,
-  setHostShellPresentationMock,
-  resetHostShellPresentationMock,
-} = vi.hoisted(() => {
-  const application = {
-    applicationId: 'app-1',
-    localApplicationId: 'brief-studio',
-    packageId: 'application-local:/packages/brief-studio',
-    name: 'Brief Studio',
-    description: 'Brief creation app',
-    iconAssetPath: null,
-    entryHtmlAssetPath: '/application-bundles/brief-studio/ui/index.html',
-    writable: true,
-    runtimeTarget: {
-      kind: 'AGENT_TEAM',
-      definitionId: 'brief-team',
+  hostHarness,
+} = vi.hoisted(() => ({
+  routeMock: {
+    params: {
+      id: 'bundle-app__pkg__brief-studio',
     },
-  }
+  },
+  navigateToMock: vi.fn(),
+  applicationStoreMock: {
+    fetchApplicationById: vi.fn(),
+    getApplicationById: vi.fn(),
+  },
+  applicationHostStoreMock: {
+    getLaunchState: vi.fn(),
+    startLaunch: vi.fn(),
+    clearLaunchState: vi.fn(),
+  },
+  appLayoutStoreMock: {
+    setHostShellPresentation: vi.fn(),
+    resetHostShellPresentation: vi.fn(),
+  },
+  hostHarness: {
+    launchState: {
+      status: 'idle',
+      launchInstanceId: null,
+      engineState: null,
+      startedAt: null,
+      lastError: null,
+      lastFailure: null,
+    },
+  },
+}))
 
-  const session = {
-    applicationSessionId: 'app-session-1',
-    application: {
-      ...application,
-    },
-    runtime: {
-      kind: 'AGENT_TEAM',
-      runId: 'team-run-1',
-      definitionId: 'brief-team',
-    },
-    view: {
-      members: [
-        {
-          memberRouteKey: 'writer',
-          displayName: 'Writer',
-          teamPath: ['writer'],
-          runtimeTarget: {
-            runId: 'member-run-1',
-            runtimeKind: 'AGENT_TEAM_MEMBER',
-          },
-          artifactsByKey: {},
-          primaryArtifactKey: null,
-        },
-      ],
-    },
-    createdAt: '2026-04-15T08:00:00.000Z',
-    terminatedAt: null,
-  }
+mockNuxtImport('useRoute', () => () => routeMock)
+mockNuxtImport('navigateTo', () => navigateToMock)
 
-  const storeState = {
-    hostShellPresentation: 'standard' as 'standard' | 'application_immersive',
-  }
-
-  const setHostShellPresentation = vi.fn((presentation: 'standard' | 'application_immersive') => {
-    storeState.hostShellPresentation = presentation
-  })
-  const resetHostShellPresentation = vi.fn(() => {
-    storeState.hostShellPresentation = 'standard'
-  })
-
-  return {
-    routeMock: {
-      params: { id: 'brief-studio' },
-      query: { applicationSessionId: 'app-session-1' } as Record<string, unknown>,
-      path: '/applications/brief-studio',
+vi.mock('~/composables/useLocalization', () => ({
+  useLocalization: () => ({
+    t: (key: string, params?: Record<string, string | number>) => {
+      const translations: Record<string, string> = {
+        'applications.components.applications.ApplicationLaunchSetupPanel.title': 'Launch setup',
+        'applications.components.applications.ApplicationShell.backToApplications': 'Back',
+        'applications.components.applications.ApplicationShell.loadingApplication': 'Loading application…',
+        'applications.components.applications.ApplicationShell.unableToLoadApplication': 'Unable to load application',
+        'applications.components.applications.ApplicationShell.applicationNotFound': 'Application not found',
+        'applications.components.applications.ApplicationShell.startingApplication': 'Starting application…',
+        'applications.components.applications.ApplicationShell.enterApplication': 'Enter application',
+        'applications.components.applications.ApplicationShell.retryLaunch': 'Retry launch',
+        'applications.components.applications.ApplicationShell.applicationReadyNotice': 'Application ready notice',
+        'applications.components.applications.ApplicationShell.preEntryGateTitle': 'Confirm launch setup before opening the app',
+        'applications.components.applications.ApplicationShell.preEntryGateDescription': 'Save setup first, then open the app.',
+        'applications.components.applications.ApplicationShell.launchInstanceIdLabel': 'Launch instance id',
+        'applications.components.applications.ApplicationShell.engineStateLabel': 'Engine state',
+        'applications.components.applications.ApplicationShell.startedAtLabel': 'Started at',
+        'applications.components.applications.ApplicationIframeHost.initializationFailed': 'Initialization failed',
+        'applications.components.applications.ApplicationImmersiveControlPanel.exitApplication': 'Exit application',
+        'applications.shared.noDescriptionProvided': 'No description',
+        'applications.shared.noBundleResources': 'No bundled runtime resources',
+        'applications.shared.package': 'Package',
+        'applications.shared.localApplicationId': 'Local application id',
+        'applications.shared.bundleResources': 'Bundle resources',
+        'applications.shared.writableSource': 'Writable',
+        'applications.shared.yes': 'Yes',
+        'applications.shared.no': 'No',
+      }
+      if (key === 'applications.components.applications.ApplicationShell.noApplicationExistsForId') {
+        return `No application exists for id ${params?.id}.`
+      }
+      return translations[key] ?? key
     },
-    routerReplaceMock: vi.fn(async () => undefined),
-    navigateToMock: vi.fn(async () => undefined),
-    applicationStoreMock: {
-      fetchApplicationById: vi.fn(async () => undefined),
-      getApplicationById: vi.fn(() => application),
-    },
-    applicationSessionStoreMock: {
-      bindApplicationRoute: vi.fn(async () => ({
-        applicationId: 'app-1',
-        requestedSessionId: 'app-session-1',
-        resolvedSessionId: 'app-session-1',
-        resolution: 'requested_live',
-        session,
-      })),
-      getSessionById: vi.fn(() => session),
-      terminateSession: vi.fn(async () => true),
-    },
-    applicationPageStoreState: {
-      mode: 'application' as 'application' | 'execution',
-      selectedMemberRouteKey: 'writer' as string | null,
-    },
-    appLayoutStoreMock: {
-      get hostShellPresentation() {
-        return storeState.hostShellPresentation
-      },
-      setHostShellPresentation,
-      resetHostShellPresentation,
-    },
-    setHostShellPresentationMock: setHostShellPresentation,
-    resetHostShellPresentationMock: resetHostShellPresentation,
-  }
-})
+  }),
+}))
 
 vi.mock('~/stores/applicationStore', () => ({
   useApplicationStore: () => applicationStoreMock,
 }))
 
-vi.mock('~/stores/applicationSessionStore', () => ({
-  useApplicationSessionStore: () => applicationSessionStoreMock,
-}))
-
-vi.mock('~/stores/applicationPageStore', () => ({
-  useApplicationPageStore: () => ({
-    getMode: () => applicationPageStoreState.mode,
-    setMode: (_applicationId: string, mode: 'application' | 'execution') => {
-      applicationPageStoreState.mode = mode
-    },
-    getSelectedMemberRouteKey: () => applicationPageStoreState.selectedMemberRouteKey,
-    setSelectedMemberRouteKey: (_applicationId: string, memberRouteKey: string | null) => {
-      applicationPageStoreState.selectedMemberRouteKey = memberRouteKey
-    },
-  }),
+vi.mock('~/stores/applicationHostStore', () => ({
+  useApplicationHostStore: () => applicationHostStoreMock,
 }))
 
 vi.mock('~/stores/appLayoutStore', () => ({
   useAppLayoutStore: () => appLayoutStoreMock,
 }))
 
-mockNuxtImport('useRoute', () => () => routeMock)
-mockNuxtImport('useRouter', () => () => ({ replace: routerReplaceMock }))
-mockNuxtImport('navigateTo', () => navigateToMock)
+const ApplicationLaunchSetupPanelStub = defineComponent({
+  name: 'ApplicationLaunchSetupPanel',
+  props: {
+    applicationId: {
+      type: String,
+      required: true,
+    },
+    presentation: {
+      type: String,
+      default: 'page',
+    },
+  },
+  setup(props) {
+    return () => h('div', { 'data-testid': 'launch-setup-panel' }, `${props.applicationId}:${props.presentation}`)
+  },
+})
 
-vi.mock('~/composables/useLocalization', () => ({
-  useLocalization: () => ({
-    t: (key: string, params?: Record<string, string>) => ({
-      'applications.components.applications.ApplicationShell.backToApplications': 'Back to applications',
-      'applications.components.applications.ApplicationShell.loadingApplication': 'Loading application…',
-      'applications.components.applications.ApplicationShell.unableToLoadApplication': 'Unable to load application',
-      'applications.components.applications.ApplicationShell.applicationNotFound': 'Application not found',
-      'applications.components.applications.ApplicationShell.noApplicationExistsForId': `No application exists for id ${params?.id ?? ''}.`,
-      'applications.components.applications.ApplicationShell.launchAgain': 'Relaunch',
-      'applications.components.applications.ApplicationShell.stopSession': 'Stop current session',
-      'applications.components.applications.ApplicationShell.showDetails': 'Details',
-      'applications.components.applications.ApplicationShell.hideDetails': 'Hide details',
-      'applications.components.applications.ApplicationShell.launchToOpenAppView': 'Launch to open app view.',
-      'applications.components.applications.ApplicationShell.singleLiveSessionNotice': 'Only one live session runs per application. Relaunch replaces the current live session.',
-      'applications.components.applications.ApplicationShell.tabApplication': 'Application',
-      'applications.components.applications.ApplicationShell.tabExecution': 'Execution',
-      'applications.components.applications.ApplicationShell.enterImmersive': 'Immersive view',
-      'applications.components.applications.ApplicationShell.requestedSessionReattachedNotice': 'Reattached notice',
-      'applications.components.applications.ApplicationShell.requestedSessionMissingNotice': 'Missing notice',
-      'applications.components.applications.ApplicationShell.applicationIdMissingFromRoute': 'Missing route id',
-      'applications.components.applications.ApplicationShell.sessionIdLabel': 'Session id',
-      'applications.components.applications.ApplicationShell.runtimeKindLabel': 'Runtime kind',
-      'applications.components.applications.ApplicationShell.runIdLabel': 'Run id',
-      'applications.components.applications.ApplicationShell.bindingResultLabel': 'Binding result',
-      'applications.components.applications.ApplicationImmersiveControls.exitImmersive': 'Show host controls',
-      'applications.components.applications.ApplicationImmersiveControls.actions': 'Actions',
-      'applications.shared.noDescriptionProvided': 'No description provided.',
-      'applications.shared.package': 'Package',
-      'applications.shared.localApplicationId': 'Local application id',
-      'applications.shared.runtimeTargetId': 'Runtime target id',
-      'applications.shared.writableSource': 'Writable source',
-      'applications.shared.yes': 'Yes',
-      'applications.shared.no': 'No',
-      'applications.shared.singleAgent': 'Single agent',
-      'applications.shared.agentTeam': 'Agent team',
-      'applications.shared.sessionActive': 'Session active',
-      'applications.components.applications.ApplicationLaunchConfigModal.launch_application': 'Launch Application',
-    } as Record<string, string>)[key] ?? key,
-  }),
-}))
+const ApplicationSurfaceStub = defineComponent({
+  name: 'ApplicationSurface',
+  setup() {
+    return () => h('div', { 'data-testid': 'application-surface' }, 'surface')
+  },
+})
 
-import ApplicationShell from '../ApplicationShell.vue'
+const ApplicationImmersiveControlPanelStub = defineComponent({
+  name: 'ApplicationImmersiveControlPanel',
+  props: {
+    applicationName: {
+      type: String,
+      required: true,
+    },
+    reloadDisabled: {
+      type: Boolean,
+      default: false,
+    },
+    reloadStatusMessage: {
+      type: String,
+      default: null,
+    },
+  },
+  emits: ['reload-application', 'exit-application'],
+  setup(props, { emit }) {
+    return () => h('div', { 'data-testid': 'immersive-control-panel' }, [
+      h('span', props.applicationName),
+      h('button', {
+        type: 'button',
+        'data-testid': 'immersive-reload',
+        disabled: props.reloadDisabled,
+        onClick: () => emit('reload-application'),
+      }, 'reload'),
+      h('button', {
+        type: 'button',
+        'data-testid': 'immersive-exit',
+        onClick: () => emit('exit-application'),
+      }, 'exit'),
+    ])
+  },
+})
 
 describe('ApplicationShell', () => {
   beforeEach(() => {
-    applicationPageStoreState.mode = 'application'
-    applicationPageStoreState.selectedMemberRouteKey = 'writer'
-    routerReplaceMock.mockClear()
+    routeMock.params.id = 'bundle-app__pkg__brief-studio'
+    navigateToMock.mockReset()
+    applicationStoreMock.fetchApplicationById.mockReset()
+    applicationStoreMock.getApplicationById.mockReset()
+    applicationHostStoreMock.getLaunchState.mockReset()
+    applicationHostStoreMock.startLaunch.mockReset()
+    applicationHostStoreMock.clearLaunchState.mockReset()
+    appLayoutStoreMock.setHostShellPresentation.mockReset()
+    appLayoutStoreMock.resetHostShellPresentation.mockReset()
+
+    hostHarness.launchState = {
+      status: 'idle',
+      launchInstanceId: null,
+      engineState: null,
+      startedAt: null,
+      lastError: null,
+      lastFailure: null,
+    }
+
+    applicationStoreMock.fetchApplicationById.mockResolvedValue({
+      id: 'bundle-app__pkg__brief-studio',
+    })
+    applicationStoreMock.getApplicationById.mockReturnValue({
+      id: 'bundle-app__pkg__brief-studio',
+      localApplicationId: 'brief-studio',
+      packageId: 'pkg',
+      name: 'Brief Studio',
+      description: 'Business-first brief workflow',
+      writable: true,
+      resourceSlots: [
+        {
+          slotKey: 'draftingTeam',
+          required: true,
+        },
+      ],
+      bundleResources: [
+        {
+          kind: 'AGENT_TEAM',
+          localId: 'brief-studio-team',
+          definitionId: 'brief-studio-team',
+        },
+      ],
+    })
+    applicationHostStoreMock.getLaunchState.mockImplementation(() => hostHarness.launchState)
+    applicationHostStoreMock.startLaunch.mockImplementation(async () => {
+      hostHarness.launchState = {
+        status: 'preparing',
+        launchInstanceId: null,
+        engineState: null,
+        startedAt: null,
+        lastError: null,
+        lastFailure: null,
+      }
+      return hostHarness.launchState
+    })
+    applicationHostStoreMock.clearLaunchState.mockImplementation(() => {
+      hostHarness.launchState = {
+        status: 'idle',
+        launchInstanceId: null,
+        engineState: null,
+        startedAt: null,
+        lastError: null,
+        lastFailure: null,
+      }
+    })
+  })
+
+  it('shows the setup-first route and does not auto-launch on initial load', async () => {
+    const { default: ApplicationShell } = await import('../ApplicationShell.vue')
+
+    const wrapper = mount(ApplicationShell, {
+      global: {
+        stubs: {
+          ApplicationLaunchSetupPanel: ApplicationLaunchSetupPanelStub,
+          ApplicationImmersiveControlPanel: ApplicationImmersiveControlPanelStub,
+          ApplicationSurface: ApplicationSurfaceStub,
+        },
+      },
+    })
+
+    await flushPromises()
+
+    expect(applicationStoreMock.fetchApplicationById).toHaveBeenCalledWith('bundle-app__pkg__brief-studio', true)
+    expect(applicationHostStoreMock.clearLaunchState).toHaveBeenCalledWith('bundle-app__pkg__brief-studio')
+    expect(applicationHostStoreMock.startLaunch).not.toHaveBeenCalled()
+    expect(wrapper.get('[data-testid="application-setup-phase"]').exists()).toBe(true)
+    expect(wrapper.get('[data-testid="application-pre-entry-gate"]').exists()).toBe(true)
+    expect(wrapper.get('[data-testid="launch-setup-panel"]').text()).toContain('bundle-app__pkg__brief-studio:page')
+
+    const enterButton = wrapper.findAll('button').find((candidate) => candidate.text() === 'Enter application')
+    expect(enterButton?.attributes('disabled')).toBeDefined()
+
+    await enterButton?.trigger('click')
+
+    expect(applicationHostStoreMock.startLaunch).not.toHaveBeenCalled()
+  })
+
+  it('starts a fresh immersive launch after the setup panel reports launch-ready state', async () => {
+    const { default: ApplicationShell } = await import('../ApplicationShell.vue')
+
+    const wrapper = mount(ApplicationShell, {
+      global: {
+        stubs: {
+          ApplicationLaunchSetupPanel: ApplicationLaunchSetupPanelStub,
+          ApplicationImmersiveControlPanel: ApplicationImmersiveControlPanelStub,
+          ApplicationSurface: ApplicationSurfaceStub,
+        },
+      },
+    })
+
+    await flushPromises()
+    await wrapper.getComponent(ApplicationLaunchSetupPanelStub).vm.$emit('setup-state-change', {
+      phase: 'ready',
+      isLaunchReady: true,
+      blockingReason: null,
+    })
+    await nextTick()
+
+    const enterButton = wrapper.findAll('button').find((candidate) => candidate.text() === 'Enter application')
+    expect(enterButton?.attributes('disabled')).toBeUndefined()
+
+    await enterButton?.trigger('click')
+    await flushPromises()
+
+    expect(applicationHostStoreMock.startLaunch).toHaveBeenCalledWith('bundle-app__pkg__brief-studio')
+    expect(appLayoutStoreMock.setHostShellPresentation).toHaveBeenCalledWith('application_immersive')
+    expect(wrapper.get('[data-testid="application-immersive-phase"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="launch-setup-panel"]').exists()).toBe(false)
+    expect(wrapper.get('[data-testid="application-immersive-loading-canvas"]').exists()).toBe(true)
+  })
+
+  it('owns immersive launch failure before a launch instance exists', async () => {
+    applicationHostStoreMock.startLaunch.mockImplementationOnce(async () => {
+      throw new Error('Host launch failed')
+    })
+
+    const { default: ApplicationShell } = await import('../ApplicationShell.vue')
+
+    const wrapper = mount(ApplicationShell, {
+      global: {
+        stubs: {
+          ApplicationLaunchSetupPanel: ApplicationLaunchSetupPanelStub,
+          ApplicationImmersiveControlPanel: ApplicationImmersiveControlPanelStub,
+          ApplicationSurface: ApplicationSurfaceStub,
+        },
+      },
+    })
+
+    await flushPromises()
+    await wrapper.getComponent(ApplicationLaunchSetupPanelStub).vm.$emit('setup-state-change', {
+      phase: 'ready',
+      isLaunchReady: true,
+      blockingReason: null,
+    })
+    await nextTick()
+    await wrapper.findAll('button').find((candidate) => candidate.text() === 'Enter application')?.trigger('click')
+    await flushPromises()
+
+    expect(wrapper.get('[data-testid="application-immersive-error-canvas"]').exists()).toBe(true)
+    expect(wrapper.text()).toContain('Host launch failed')
+    expect(wrapper.find('[data-testid="application-surface"]').exists()).toBe(false)
+  })
+
+  it('routes immersive reload and exit intents through the shell owner', async () => {
+    const { default: ApplicationShell } = await import('../ApplicationShell.vue')
+
+    const wrapper = mount(ApplicationShell, {
+      global: {
+        stubs: {
+          ApplicationLaunchSetupPanel: ApplicationLaunchSetupPanelStub,
+          ApplicationImmersiveControlPanel: ApplicationImmersiveControlPanelStub,
+          ApplicationSurface: ApplicationSurfaceStub,
+        },
+      },
+    })
+
+    await flushPromises()
+    await wrapper.getComponent(ApplicationLaunchSetupPanelStub).vm.$emit('setup-state-change', {
+      phase: 'ready',
+      isLaunchReady: true,
+      blockingReason: null,
+    })
+    await nextTick()
+    await wrapper.findAll('button').find((candidate) => candidate.text() === 'Enter application')?.trigger('click')
+    await flushPromises()
+
+    await wrapper.get('[data-testid="immersive-reload"]').trigger('click')
+    await flushPromises()
+
+    expect(applicationHostStoreMock.startLaunch).toHaveBeenCalledTimes(2)
+
+    applicationHostStoreMock.clearLaunchState.mockClear()
+    appLayoutStoreMock.resetHostShellPresentation.mockClear()
     navigateToMock.mockClear()
-    applicationStoreMock.fetchApplicationById.mockClear()
-    applicationSessionStoreMock.bindApplicationRoute.mockClear()
-    applicationSessionStoreMock.terminateSession.mockClear()
-    setHostShellPresentationMock.mockClear()
-    resetHostShellPresentationMock.mockClear()
+
+    await wrapper.get('[data-testid="immersive-exit"]').trigger('click')
+    await flushPromises()
+
+    expect(applicationHostStoreMock.clearLaunchState).toHaveBeenCalledWith('bundle-app__pkg__brief-studio')
+    expect(appLayoutStoreMock.resetHostShellPresentation).toHaveBeenCalled()
+    expect(navigateToMock).toHaveBeenCalledWith('/applications')
   })
 
-  afterEach(() => {
-    routeMock.params.id = 'brief-studio'
-    routeMock.query = { applicationSessionId: 'app-session-1' }
-    routeMock.path = '/applications/brief-studio'
-  })
+  it('keeps entry blocked when the setup panel reports a load failure', async () => {
+    const { default: ApplicationShell } = await import('../ApplicationShell.vue')
 
-  it('defaults live application mode to immersive, keeps metadata secondary, and can return to standard host controls', async () => {
     const wrapper = mount(ApplicationShell, {
       global: {
         stubs: {
-          ApplicationSurface: {
-            props: ['presentation'],
-            template: '<div class="surface-stub">Surface {{ presentation }}</div>',
-          },
-          ApplicationImmersiveControls: {
-            emits: ['exit-immersive', 'switch-execution', 'toggle-details', 'relaunch', 'stop-session', 'sheet-open-change'],
-            template: `
-              <div class="immersive-controls-stub">
-                <button class="open-sheet" @click="$emit('sheet-open-change', true)">Open sheet</button>
-                <button class="close-sheet" @click="$emit('sheet-open-change', false)">Close sheet</button>
-                <button class="toggle-details" @click="$emit('toggle-details')">Toggle details</button>
-                <button class="exit-immersive" @click="$emit('exit-immersive')">Exit immersive</button>
-                <button class="switch-execution" @click="$emit('switch-execution')">Execution</button>
-              </div>
-            `,
-          },
-          ApplicationLiveSessionToolbar: {
-            props: ['applicationName', 'pageMode', 'applicationPresentation', 'detailsOpen', 'bindingNotice', 'detailItems'],
-            emits: ['back', 'set-mode', 'enter-immersive', 'toggle-details', 'relaunch', 'stop-session'],
-            template: `
-              <div class="live-toolbar-stub">
-                <span>{{ applicationName }}</span>
-                <button
-                  v-if="pageMode === 'application' && applicationPresentation === 'standard'"
-                  data-testid="application-enter-immersive"
-                  @click="$emit('enter-immersive')"
-                >
-                  Enter immersive
-                </button>
-                <button data-testid="application-details-toggle" @click="$emit('toggle-details')">
-                  Toggle details
-                </button>
-                <div v-if="detailsOpen">
-                  <div v-if="bindingNotice">{{ bindingNotice }}</div>
-                  <div v-for="item in detailItems" :key="item.label">{{ item.value }}</div>
-                </div>
-              </div>
-            `,
-          },
-          ApplicationLaunchConfigModal: true,
-          ApplicationExecutionWorkspace: true,
+          ApplicationLaunchSetupPanel: ApplicationLaunchSetupPanelStub,
+          ApplicationImmersiveControlPanel: ApplicationImmersiveControlPanelStub,
+          ApplicationSurface: ApplicationSurfaceStub,
         },
       },
     })
 
     await flushPromises()
+    await wrapper.getComponent(ApplicationLaunchSetupPanelStub).vm.$emit('setup-state-change', {
+      phase: 'error',
+      isLaunchReady: false,
+      blockingReason: 'Unable to load application setup',
+    })
+    await nextTick()
 
-    expect(setHostShellPresentationMock).toHaveBeenLastCalledWith('application_immersive')
-    expect(wrapper.text()).toContain('Surface immersive')
-    expect(wrapper.text()).not.toContain('application-local:/packages/brief-studio')
-    expect(wrapper.text()).not.toContain('team-run-1')
-    expect(wrapper.get('[data-testid="application-immersive-surface-container"]').classes()).not.toContain('lg:pr-80')
+    expect(wrapper.text()).toContain('Unable to load application setup')
+    const enterButton = wrapper.findAll('button').find((candidate) => candidate.text() === 'Enter application')
+    expect(enterButton?.attributes('disabled')).toBeDefined()
 
-    await wrapper.get('.open-sheet').trigger('click')
-    expect(wrapper.get('[data-testid="application-immersive-surface-container"]').classes()).toContain('lg:pr-80')
+    await enterButton?.trigger('click')
 
-    await wrapper.get('.toggle-details').trigger('click')
-    expect(wrapper.text()).toContain('application-local:/packages/brief-studio')
-    expect(wrapper.text()).toContain('team-run-1')
-
-    await wrapper.get('.close-sheet').trigger('click')
-    expect(wrapper.get('[data-testid="application-immersive-surface-container"]').classes()).not.toContain('lg:pr-80')
-
-    await wrapper.get('.exit-immersive').trigger('click')
-    await flushPromises()
-
-    expect(setHostShellPresentationMock).toHaveBeenLastCalledWith('standard')
-    expect(wrapper.text()).toContain('Surface standard')
-    expect(wrapper.find('[data-testid="application-enter-immersive"]').exists()).toBe(true)
-
-    await wrapper.get('[data-testid="application-enter-immersive"]').trigger('click')
-    await flushPromises()
-
-    expect(setHostShellPresentationMock).toHaveBeenLastCalledWith('application_immersive')
-    expect(wrapper.text()).toContain('Surface immersive')
+    expect(applicationHostStoreMock.startLaunch).not.toHaveBeenCalled()
   })
 
-  it('keeps execution mode host-native and opens the full execution monitor through the workspace route boundary', async () => {
-    applicationPageStoreState.mode = 'execution'
+  it('clears launch state and restores standard presentation on route unmount', async () => {
+    const { default: ApplicationShell } = await import('../ApplicationShell.vue')
 
     const wrapper = mount(ApplicationShell, {
       global: {
         stubs: {
-          ApplicationSurface: true,
-          ApplicationImmersiveControls: true,
-          ApplicationLiveSessionToolbar: {
-            props: ['applicationName', 'detailsOpen', 'detailItems'],
-            emits: ['back', 'set-mode', 'enter-immersive', 'toggle-details', 'relaunch', 'stop-session'],
-            template: `
-              <div class="live-toolbar-stub">
-                <span>{{ applicationName }}</span>
-                <button data-testid="application-details-toggle" @click="$emit('toggle-details')">
-                  Toggle details
-                </button>
-                <div v-if="detailsOpen">
-                  <div v-for="item in detailItems" :key="item.label">{{ item.value }}</div>
-                </div>
-              </div>
-            `,
-          },
-          ApplicationLaunchConfigModal: true,
-          ApplicationExecutionWorkspace: {
-            emits: ['openFullExecutionMonitor', 'update:selectedMemberRouteKey'],
-            template: '<button class="exec-monitor-trigger" @click="$emit(\'openFullExecutionMonitor\')">Open execution</button>',
-          },
+          ApplicationLaunchSetupPanel: ApplicationLaunchSetupPanelStub,
+          ApplicationImmersiveControlPanel: ApplicationImmersiveControlPanelStub,
+          ApplicationSurface: ApplicationSurfaceStub,
         },
       },
     })
 
     await flushPromises()
-
-    expect(setHostShellPresentationMock).toHaveBeenLastCalledWith('standard')
-    expect(wrapper.text()).toContain('Brief Studio')
-    expect(wrapper.text()).not.toContain('application-local:/packages/brief-studio')
-
-    await wrapper.get('[data-testid="application-details-toggle"]').trigger('click')
-    expect(wrapper.text()).toContain('application-local:/packages/brief-studio')
-    expect(wrapper.text()).toContain('team-run-1')
-
-    await wrapper.get('.exec-monitor-trigger').trigger('click')
-    expect(navigateToMock).toHaveBeenCalledWith({
-      path: '/workspace',
-      query: {
-        workspaceExecutionKind: 'team',
-        workspaceExecutionRunId: 'team-run-1',
-        workspaceExecutionMemberRouteKey: 'writer',
-      },
+    await wrapper.getComponent(ApplicationLaunchSetupPanelStub).vm.$emit('setup-state-change', {
+      phase: 'ready',
+      isLaunchReady: true,
+      blockingReason: null,
     })
+    await nextTick()
+    await wrapper.findAll('button').find((candidate) => candidate.text() === 'Enter application')?.trigger('click')
+    await flushPromises()
+
+    applicationHostStoreMock.clearLaunchState.mockClear()
+    appLayoutStoreMock.resetHostShellPresentation.mockClear()
+
+    wrapper.unmount()
+
+    expect(applicationHostStoreMock.clearLaunchState).toHaveBeenCalledWith('bundle-app__pkg__brief-studio')
+    expect(appLayoutStoreMock.resetHostShellPresentation).toHaveBeenCalled()
   })
 })

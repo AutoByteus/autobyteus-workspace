@@ -70,7 +70,7 @@ export class CodexTeamRunBackendFactory implements TeamRunBackendFactory {
               memoryDir: memberConfig.memoryDir ?? null,
               llmConfig: memberConfig.llmConfig ?? null,
               skillAccessMode: memberConfig.skillAccessMode,
-              applicationSessionContext: memberConfig.applicationSessionContext ?? null,
+              applicationExecutionContext: memberConfig.applicationExecutionContext ?? null,
             }),
             threadId: null,
           });
@@ -117,7 +117,7 @@ export class CodexTeamRunBackendFactory implements TeamRunBackendFactory {
         workspaceRootPath: memberConfig.workspaceRootPath ?? null,
         memoryDir: memberConfig.memoryDir ?? null,
         llmConfig: memberConfig.llmConfig ?? null,
-        applicationSessionContext: memberConfig.applicationSessionContext ?? null,
+        applicationExecutionContext: memberConfig.applicationExecutionContext ?? null,
       };
     });
   }

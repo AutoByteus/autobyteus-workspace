@@ -16,11 +16,8 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
-  /** DateTime scalar supporting ISO strings and date-only YYYY-MM-DD values */
   DateTime: { input: any; output: any; }
-  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: { input: any; output: any; }
-  /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSONObject: { input: any; output: any; }
 };
 
@@ -128,6 +125,7 @@ export enum AgentTeamDefinitionOwnershipScope {
 
 export type Application = {
   __typename?: 'Application';
+  bundleResources: Array<ApplicationRuntimeResource>;
   description?: Maybe<Scalars['String']['output']>;
   entryHtmlAssetPath: Scalars['String']['output'];
   iconAssetPath?: Maybe<Scalars['String']['output']>;
@@ -135,18 +133,8 @@ export type Application = {
   localApplicationId: Scalars['String']['output'];
   name: Scalars['String']['output'];
   packageId: Scalars['String']['output'];
-  runtimeTarget: ApplicationRuntimeTarget;
+  resourceSlots: Array<ApplicationResourceSlotSummary>;
   writable: Scalars['Boolean']['output'];
-};
-
-export type ApplicationMemberProjectionGraph = {
-  __typename?: 'ApplicationMemberProjectionGraph';
-  artifactsByKey: Scalars['JSON']['output'];
-  displayName: Scalars['String']['output'];
-  memberRouteKey: Scalars['String']['output'];
-  primaryArtifactKey?: Maybe<Scalars['String']['output']>;
-  runtimeTarget?: Maybe<ApplicationRuntimeMemberTargetGraph>;
-  teamPath: Array<Scalars['String']['output']>;
 };
 
 export type ApplicationPackage = {
@@ -186,80 +174,23 @@ export enum ApplicationPackageSourceKind {
   LocalPath = 'LOCAL_PATH'
 }
 
-export type ApplicationRuntimeMemberTargetGraph = {
-  __typename?: 'ApplicationRuntimeMemberTargetGraph';
-  runId: Scalars['String']['output'];
-  runtimeKind: Scalars['String']['output'];
+export type ApplicationResourceSlotSummary = {
+  __typename?: 'ApplicationResourceSlotSummary';
+  required: Scalars['Boolean']['output'];
+  slotKey: Scalars['String']['output'];
 };
 
-export type ApplicationRuntimeTarget = {
-  __typename?: 'ApplicationRuntimeTarget';
+export type ApplicationRuntimeResource = {
+  __typename?: 'ApplicationRuntimeResource';
   definitionId: Scalars['String']['output'];
-  kind: ApplicationRuntimeTargetKind;
+  kind: ApplicationRuntimeResourceKind;
   localId: Scalars['String']['output'];
 };
 
-export type ApplicationRuntimeTargetGraph = {
-  __typename?: 'ApplicationRuntimeTargetGraph';
-  definitionId: Scalars['String']['output'];
-  kind: Scalars['String']['output'];
-  runId: Scalars['String']['output'];
-};
-
-export enum ApplicationRuntimeTargetKind {
+export enum ApplicationRuntimeResourceKind {
   Agent = 'AGENT',
   AgentTeam = 'AGENT_TEAM'
 }
-
-export type ApplicationSessionApplicationGraph = {
-  __typename?: 'ApplicationSessionApplicationGraph';
-  applicationId: Scalars['String']['output'];
-  description?: Maybe<Scalars['String']['output']>;
-  entryHtmlAssetPath: Scalars['String']['output'];
-  iconAssetPath?: Maybe<Scalars['String']['output']>;
-  localApplicationId: Scalars['String']['output'];
-  name: Scalars['String']['output'];
-  packageId: Scalars['String']['output'];
-  writable: Scalars['Boolean']['output'];
-};
-
-export type ApplicationSessionBindingGraph = {
-  __typename?: 'ApplicationSessionBindingGraph';
-  applicationId: Scalars['String']['output'];
-  requestedSessionId?: Maybe<Scalars['String']['output']>;
-  resolution: Scalars['String']['output'];
-  resolvedSessionId?: Maybe<Scalars['String']['output']>;
-  session?: Maybe<ApplicationSessionGraph>;
-};
-
-export type ApplicationSessionCommandResult = {
-  __typename?: 'ApplicationSessionCommandResult';
-  message: Scalars['String']['output'];
-  session?: Maybe<ApplicationSessionGraph>;
-  success: Scalars['Boolean']['output'];
-};
-
-export type ApplicationSessionGraph = {
-  __typename?: 'ApplicationSessionGraph';
-  application: ApplicationSessionApplicationGraph;
-  applicationSessionId: Scalars['String']['output'];
-  createdAt: Scalars['String']['output'];
-  runtime: ApplicationRuntimeTargetGraph;
-  terminatedAt?: Maybe<Scalars['String']['output']>;
-  view: ApplicationSessionViewGraph;
-};
-
-export type ApplicationSessionViewGraph = {
-  __typename?: 'ApplicationSessionViewGraph';
-  members: Array<ApplicationMemberProjectionGraph>;
-};
-
-export type ApplicationUserContextFileInput = {
-  fileName?: InputMaybe<Scalars['String']['input']>;
-  fileType?: InputMaybe<ContextFileTypeEnum>;
-  metadata?: InputMaybe<Scalars['JSON']['input']>;
-  uri: Scalars['String']['input'];
-};
 
 export type ApplicationsCapability = {
   __typename?: 'ApplicationsCapability';
@@ -296,27 +227,6 @@ export type ConfigureMcpServerResult = {
   __typename?: 'ConfigureMcpServerResult';
   savedConfig: McpServerConfigUnion;
 };
-
-export enum ContextFileTypeEnum {
-  Audio = 'AUDIO',
-  Csv = 'CSV',
-  Docx = 'DOCX',
-  Html = 'HTML',
-  Image = 'IMAGE',
-  Javascript = 'JAVASCRIPT',
-  Json = 'JSON',
-  Markdown = 'MARKDOWN',
-  Pdf = 'PDF',
-  Pptx = 'PPTX',
-  Python = 'PYTHON',
-  Text = 'TEXT',
-  Unknown = 'UNKNOWN',
-  Video = 'VIDEO',
-  Xlsx = 'XLSX',
-  Xml = 'XML',
-  FromPath = 'fromPath',
-  GetReadableTextTypes = 'getReadableTextTypes'
-}
 
 export type CreateAgentDefinitionInput = {
   avatarUrl?: InputMaybe<Scalars['String']['input']>;
@@ -375,31 +285,6 @@ export type CreateAgentTeamRunResult = {
   message: Scalars['String']['output'];
   success: Scalars['Boolean']['output'];
   teamRunId?: Maybe<Scalars['String']['output']>;
-};
-
-export type CreateApplicationSessionInput = {
-  applicationId: Scalars['String']['input'];
-  autoExecuteTools?: InputMaybe<Scalars['Boolean']['input']>;
-  llmConfig?: InputMaybe<Scalars['JSON']['input']>;
-  llmModelIdentifier?: InputMaybe<Scalars['String']['input']>;
-  memberConfigs?: InputMaybe<Array<CreateApplicationSessionMemberConfigInput>>;
-  runtimeKind?: InputMaybe<Scalars['String']['input']>;
-  skillAccessMode?: InputMaybe<ExternalChannelSkillAccessModeEnum>;
-  workspaceId?: InputMaybe<Scalars['String']['input']>;
-  workspaceRootPath?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type CreateApplicationSessionMemberConfigInput = {
-  agentDefinitionId: Scalars['String']['input'];
-  autoExecuteTools: Scalars['Boolean']['input'];
-  llmConfig?: InputMaybe<Scalars['JSON']['input']>;
-  llmModelIdentifier: Scalars['String']['input'];
-  memberName: Scalars['String']['input'];
-  memberRouteKey?: InputMaybe<Scalars['String']['input']>;
-  runtimeKind?: InputMaybe<Scalars['String']['input']>;
-  skillAccessMode: ExternalChannelSkillAccessModeEnum;
-  workspaceId?: InputMaybe<Scalars['String']['input']>;
-  workspaceRootPath?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CreateSkillInput = {
@@ -806,7 +691,6 @@ export type Mutation = {
   createAgentRun: CreateAgentRunResult;
   createAgentTeamDefinition: AgentTeamDefinition;
   createAgentTeamRun: CreateAgentTeamRunResult;
-  createApplicationSession: ApplicationSessionCommandResult;
   createCustomLlmProvider: LlmProviderObject;
   createFileOrFolder: Scalars['String']['output'];
   createSkill: Skill;
@@ -847,14 +731,12 @@ export type Mutation = {
   restoreAgentTeamRun: RestoreAgentTeamRunResult;
   runNodeSync: RunNodeSyncResult;
   saveManagedMessagingGatewayProviderConfig: ManagedMessagingGatewayStatusObject;
-  sendApplicationInput: ApplicationSessionCommandResult;
   setApplicationsEnabled: ApplicationsCapability;
   setGeminiSetupConfig: Scalars['String']['output'];
   setLlmProviderApiKey: Scalars['String']['output'];
   setSearchConfig: Scalars['String']['output'];
   terminateAgentRun: TerminateAgentRunResult;
   terminateAgentTeamRun: TerminateAgentTeamRunResult;
-  terminateApplicationSession: ApplicationSessionCommandResult;
   updateAgentDefinition: AgentDefinition;
   updateAgentTeamDefinition: AgentTeamDefinition;
   updateManagedMessagingGateway: ManagedMessagingGatewayStatusObject;
@@ -903,11 +785,6 @@ export type MutationCreateAgentTeamDefinitionArgs = {
 
 export type MutationCreateAgentTeamRunArgs = {
   input: CreateAgentTeamRunInput;
-};
-
-
-export type MutationCreateApplicationSessionArgs = {
-  input: CreateApplicationSessionInput;
 };
 
 
@@ -1112,11 +989,6 @@ export type MutationSaveManagedMessagingGatewayProviderConfigArgs = {
 };
 
 
-export type MutationSendApplicationInputArgs = {
-  input: SendApplicationInputInput;
-};
-
-
 export type MutationSetApplicationsEnabledArgs = {
   enabled: Scalars['Boolean']['input'];
 };
@@ -1155,11 +1027,6 @@ export type MutationTerminateAgentRunArgs = {
 
 export type MutationTerminateAgentTeamRunArgs = {
   teamRunId: Scalars['String']['input'];
-};
-
-
-export type MutationTerminateApplicationSessionArgs = {
-  applicationSessionId: Scalars['String']['input'];
 };
 
 
@@ -1267,8 +1134,6 @@ export type Query = {
   application?: Maybe<Application>;
   applicationPackageDetails?: Maybe<ApplicationPackageDetails>;
   applicationPackages: Array<ApplicationPackage>;
-  applicationSession?: Maybe<ApplicationSessionGraph>;
-  applicationSessionBinding: ApplicationSessionBindingGraph;
   applicationsCapability: ApplicationsCapability;
   availableAudioProvidersWithModels: Array<ProviderWithModels>;
   availableImageProvidersWithModels: Array<ProviderWithModels>;
@@ -1341,17 +1206,6 @@ export type QueryApplicationArgs = {
 
 export type QueryApplicationPackageDetailsArgs = {
   packageId: Scalars['String']['input'];
-};
-
-
-export type QueryApplicationSessionArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type QueryApplicationSessionBindingArgs = {
-  applicationId: Scalars['String']['input'];
-  requestedSessionId?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -1672,14 +1526,6 @@ export type SearchConfig = {
   serperApiKeyConfigured: Scalars['Boolean']['output'];
   vertexAiSearchApiKeyConfigured: Scalars['Boolean']['output'];
   vertexAiSearchServingConfig?: Maybe<Scalars['String']['output']>;
-};
-
-export type SendApplicationInputInput = {
-  applicationSessionId: Scalars['String']['input'];
-  contextFiles?: InputMaybe<Array<ApplicationUserContextFileInput>>;
-  metadata?: InputMaybe<Scalars['JSON']['input']>;
-  targetMemberName?: InputMaybe<Scalars['String']['input']>;
-  text: Scalars['String']['input'];
 };
 
 export type ServerSetting = {
@@ -2184,27 +2030,6 @@ export type SetApplicationsEnabledMutationVariables = Exact<{
 
 export type SetApplicationsEnabledMutation = { __typename?: 'Mutation', setApplicationsEnabled: { __typename?: 'ApplicationsCapability', enabled: boolean, scope: ApplicationsCapabilityScope, settingKey: string, source: ApplicationsCapabilitySource } };
 
-export type CreateApplicationSessionMutationVariables = Exact<{
-  input: CreateApplicationSessionInput;
-}>;
-
-
-export type CreateApplicationSessionMutation = { __typename?: 'Mutation', createApplicationSession: { __typename?: 'ApplicationSessionCommandResult', success: boolean, message: string, session?: { __typename?: 'ApplicationSessionGraph', applicationSessionId: string, createdAt: string, terminatedAt?: string | null, application: { __typename?: 'ApplicationSessionApplicationGraph', applicationId: string, localApplicationId: string, packageId: string, name: string, description?: string | null, iconAssetPath?: string | null, entryHtmlAssetPath: string, writable: boolean }, runtime: { __typename?: 'ApplicationRuntimeTargetGraph', kind: string, runId: string, definitionId: string }, view: { __typename?: 'ApplicationSessionViewGraph', members: Array<{ __typename?: 'ApplicationMemberProjectionGraph', memberRouteKey: string, displayName: string, teamPath: Array<string>, artifactsByKey: any, primaryArtifactKey?: string | null, runtimeTarget?: { __typename?: 'ApplicationRuntimeMemberTargetGraph', runId: string, runtimeKind: string } | null }> } } | null } };
-
-export type TerminateApplicationSessionMutationVariables = Exact<{
-  applicationSessionId: Scalars['String']['input'];
-}>;
-
-
-export type TerminateApplicationSessionMutation = { __typename?: 'Mutation', terminateApplicationSession: { __typename?: 'ApplicationSessionCommandResult', success: boolean, message: string, session?: { __typename?: 'ApplicationSessionGraph', applicationSessionId: string, createdAt: string, terminatedAt?: string | null, application: { __typename?: 'ApplicationSessionApplicationGraph', applicationId: string, localApplicationId: string, packageId: string, name: string, description?: string | null, iconAssetPath?: string | null, entryHtmlAssetPath: string, writable: boolean }, runtime: { __typename?: 'ApplicationRuntimeTargetGraph', kind: string, runId: string, definitionId: string }, view: { __typename?: 'ApplicationSessionViewGraph', members: Array<{ __typename?: 'ApplicationMemberProjectionGraph', memberRouteKey: string, displayName: string, teamPath: Array<string>, artifactsByKey: any, primaryArtifactKey?: string | null, runtimeTarget?: { __typename?: 'ApplicationRuntimeMemberTargetGraph', runId: string, runtimeKind: string } | null }> } } | null } };
-
-export type SendApplicationInputMutationVariables = Exact<{
-  input: SendApplicationInputInput;
-}>;
-
-
-export type SendApplicationInputMutation = { __typename?: 'Mutation', sendApplicationInput: { __typename?: 'ApplicationSessionCommandResult', success: boolean, message: string, session?: { __typename?: 'ApplicationSessionGraph', applicationSessionId: string, createdAt: string, terminatedAt?: string | null, application: { __typename?: 'ApplicationSessionApplicationGraph', applicationId: string, localApplicationId: string, packageId: string, name: string, description?: string | null, iconAssetPath?: string | null, entryHtmlAssetPath: string, writable: boolean }, runtime: { __typename?: 'ApplicationRuntimeTargetGraph', kind: string, runId: string, definitionId: string }, view: { __typename?: 'ApplicationSessionViewGraph', members: Array<{ __typename?: 'ApplicationMemberProjectionGraph', memberRouteKey: string, displayName: string, teamPath: Array<string>, artifactsByKey: any, primaryArtifactKey?: string | null, runtimeTarget?: { __typename?: 'ApplicationRuntimeMemberTargetGraph', runId: string, runtimeKind: string } | null }> } } | null } };
-
 export type UpsertExternalChannelBindingMutationVariables = Exact<{
   input: UpsertExternalChannelBindingInput;
 }>;
@@ -2455,40 +2280,19 @@ export type GetApplicationsCapabilityQueryVariables = Exact<{ [key: string]: nev
 
 export type GetApplicationsCapabilityQuery = { __typename?: 'Query', applicationsCapability: { __typename?: 'ApplicationsCapability', enabled: boolean, scope: ApplicationsCapabilityScope, settingKey: string, source: ApplicationsCapabilitySource } };
 
-export type ApplicationFieldsFragment = { __typename: 'Application', id: string, localApplicationId: string, packageId: string, name: string, description?: string | null, iconAssetPath?: string | null, entryHtmlAssetPath: string, writable: boolean, runtimeTarget: { __typename: 'ApplicationRuntimeTarget', kind: ApplicationRuntimeTargetKind, localId: string, definitionId: string } };
+export type ApplicationFieldsFragment = { __typename: 'Application', id: string, localApplicationId: string, packageId: string, name: string, description?: string | null, iconAssetPath?: string | null, entryHtmlAssetPath: string, writable: boolean, resourceSlots: Array<{ __typename?: 'ApplicationResourceSlotSummary', slotKey: string, required: boolean }>, bundleResources: Array<{ __typename?: 'ApplicationRuntimeResource', kind: ApplicationRuntimeResourceKind, localId: string, definitionId: string }> };
 
 export type ListApplicationsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ListApplicationsQuery = { __typename?: 'Query', listApplications: Array<{ __typename: 'Application', id: string, localApplicationId: string, packageId: string, name: string, description?: string | null, iconAssetPath?: string | null, entryHtmlAssetPath: string, writable: boolean, runtimeTarget: { __typename: 'ApplicationRuntimeTarget', kind: ApplicationRuntimeTargetKind, localId: string, definitionId: string } }> };
+export type ListApplicationsQuery = { __typename?: 'Query', listApplications: Array<{ __typename: 'Application', id: string, localApplicationId: string, packageId: string, name: string, description?: string | null, iconAssetPath?: string | null, entryHtmlAssetPath: string, writable: boolean, resourceSlots: Array<{ __typename?: 'ApplicationResourceSlotSummary', slotKey: string, required: boolean }>, bundleResources: Array<{ __typename?: 'ApplicationRuntimeResource', kind: ApplicationRuntimeResourceKind, localId: string, definitionId: string }> }> };
 
 export type GetApplicationByIdQueryVariables = Exact<{
   id: Scalars['String']['input'];
 }>;
 
 
-export type GetApplicationByIdQuery = { __typename?: 'Query', application?: { __typename: 'Application', id: string, localApplicationId: string, packageId: string, name: string, description?: string | null, iconAssetPath?: string | null, entryHtmlAssetPath: string, writable: boolean, runtimeTarget: { __typename: 'ApplicationRuntimeTarget', kind: ApplicationRuntimeTargetKind, localId: string, definitionId: string } } | null };
-
-export type ApplicationMemberFieldsFragment = { __typename?: 'ApplicationMemberProjectionGraph', memberRouteKey: string, displayName: string, teamPath: Array<string>, artifactsByKey: any, primaryArtifactKey?: string | null, runtimeTarget?: { __typename?: 'ApplicationRuntimeMemberTargetGraph', runId: string, runtimeKind: string } | null };
-
-export type ApplicationSessionFieldsFragment = { __typename?: 'ApplicationSessionGraph', applicationSessionId: string, createdAt: string, terminatedAt?: string | null, application: { __typename?: 'ApplicationSessionApplicationGraph', applicationId: string, localApplicationId: string, packageId: string, name: string, description?: string | null, iconAssetPath?: string | null, entryHtmlAssetPath: string, writable: boolean }, runtime: { __typename?: 'ApplicationRuntimeTargetGraph', kind: string, runId: string, definitionId: string }, view: { __typename?: 'ApplicationSessionViewGraph', members: Array<{ __typename?: 'ApplicationMemberProjectionGraph', memberRouteKey: string, displayName: string, teamPath: Array<string>, artifactsByKey: any, primaryArtifactKey?: string | null, runtimeTarget?: { __typename?: 'ApplicationRuntimeMemberTargetGraph', runId: string, runtimeKind: string } | null }> } };
-
-export type ApplicationSessionBindingFieldsFragment = { __typename?: 'ApplicationSessionBindingGraph', applicationId: string, requestedSessionId?: string | null, resolvedSessionId?: string | null, resolution: string, session?: { __typename?: 'ApplicationSessionGraph', applicationSessionId: string, createdAt: string, terminatedAt?: string | null, application: { __typename?: 'ApplicationSessionApplicationGraph', applicationId: string, localApplicationId: string, packageId: string, name: string, description?: string | null, iconAssetPath?: string | null, entryHtmlAssetPath: string, writable: boolean }, runtime: { __typename?: 'ApplicationRuntimeTargetGraph', kind: string, runId: string, definitionId: string }, view: { __typename?: 'ApplicationSessionViewGraph', members: Array<{ __typename?: 'ApplicationMemberProjectionGraph', memberRouteKey: string, displayName: string, teamPath: Array<string>, artifactsByKey: any, primaryArtifactKey?: string | null, runtimeTarget?: { __typename?: 'ApplicationRuntimeMemberTargetGraph', runId: string, runtimeKind: string } | null }> } } | null };
-
-export type GetApplicationSessionQueryVariables = Exact<{
-  id: Scalars['String']['input'];
-}>;
-
-
-export type GetApplicationSessionQuery = { __typename?: 'Query', applicationSession?: { __typename?: 'ApplicationSessionGraph', applicationSessionId: string, createdAt: string, terminatedAt?: string | null, application: { __typename?: 'ApplicationSessionApplicationGraph', applicationId: string, localApplicationId: string, packageId: string, name: string, description?: string | null, iconAssetPath?: string | null, entryHtmlAssetPath: string, writable: boolean }, runtime: { __typename?: 'ApplicationRuntimeTargetGraph', kind: string, runId: string, definitionId: string }, view: { __typename?: 'ApplicationSessionViewGraph', members: Array<{ __typename?: 'ApplicationMemberProjectionGraph', memberRouteKey: string, displayName: string, teamPath: Array<string>, artifactsByKey: any, primaryArtifactKey?: string | null, runtimeTarget?: { __typename?: 'ApplicationRuntimeMemberTargetGraph', runId: string, runtimeKind: string } | null }> } } | null };
-
-export type GetApplicationSessionBindingQueryVariables = Exact<{
-  applicationId: Scalars['String']['input'];
-  requestedSessionId?: InputMaybe<Scalars['String']['input']>;
-}>;
-
-
-export type GetApplicationSessionBindingQuery = { __typename?: 'Query', applicationSessionBinding: { __typename?: 'ApplicationSessionBindingGraph', applicationId: string, requestedSessionId?: string | null, resolvedSessionId?: string | null, resolution: string, session?: { __typename?: 'ApplicationSessionGraph', applicationSessionId: string, createdAt: string, terminatedAt?: string | null, application: { __typename?: 'ApplicationSessionApplicationGraph', applicationId: string, localApplicationId: string, packageId: string, name: string, description?: string | null, iconAssetPath?: string | null, entryHtmlAssetPath: string, writable: boolean }, runtime: { __typename?: 'ApplicationRuntimeTargetGraph', kind: string, runId: string, definitionId: string }, view: { __typename?: 'ApplicationSessionViewGraph', members: Array<{ __typename?: 'ApplicationMemberProjectionGraph', memberRouteKey: string, displayName: string, teamPath: Array<string>, artifactsByKey: any, primaryArtifactKey?: string | null, runtimeTarget?: { __typename?: 'ApplicationRuntimeMemberTargetGraph', runId: string, runtimeKind: string } | null }> } } | null } };
+export type GetApplicationByIdQuery = { __typename?: 'Query', application?: { __typename: 'Application', id: string, localApplicationId: string, packageId: string, name: string, description?: string | null, iconAssetPath?: string | null, entryHtmlAssetPath: string, writable: boolean, resourceSlots: Array<{ __typename?: 'ApplicationResourceSlotSummary', slotKey: string, required: boolean }>, bundleResources: Array<{ __typename?: 'ApplicationRuntimeResource', kind: ApplicationRuntimeResourceKind, localId: string, definitionId: string }> } | null };
 
 export type ExternalChannelCapabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2922,65 +2726,17 @@ export const ApplicationFieldsFragmentDoc = gql`
   iconAssetPath
   entryHtmlAssetPath
   writable
-  runtimeTarget {
-    __typename
+  resourceSlots {
+    slotKey
+    required
+  }
+  bundleResources {
     kind
     localId
     definitionId
   }
 }
     `;
-export const ApplicationMemberFieldsFragmentDoc = gql`
-    fragment ApplicationMemberFields on ApplicationMemberProjectionGraph {
-  memberRouteKey
-  displayName
-  teamPath
-  runtimeTarget {
-    runId
-    runtimeKind
-  }
-  artifactsByKey
-  primaryArtifactKey
-}
-    `;
-export const ApplicationSessionFieldsFragmentDoc = gql`
-    fragment ApplicationSessionFields on ApplicationSessionGraph {
-  applicationSessionId
-  application {
-    applicationId
-    localApplicationId
-    packageId
-    name
-    description
-    iconAssetPath
-    entryHtmlAssetPath
-    writable
-  }
-  runtime {
-    kind
-    runId
-    definitionId
-  }
-  view {
-    members {
-      ...ApplicationMemberFields
-    }
-  }
-  createdAt
-  terminatedAt
-}
-    ${ApplicationMemberFieldsFragmentDoc}`;
-export const ApplicationSessionBindingFieldsFragmentDoc = gql`
-    fragment ApplicationSessionBindingFields on ApplicationSessionBindingGraph {
-  applicationId
-  requestedSessionId
-  resolvedSessionId
-  resolution
-  session {
-    ...ApplicationSessionFields
-  }
-}
-    ${ApplicationSessionFieldsFragmentDoc}`;
 export const GetAgentPackagesDocument = gql`
     query GetAgentPackages {
   agentPackages {
@@ -3664,105 +3420,6 @@ export function useSetApplicationsEnabledMutation(options: VueApolloComposable.U
   return VueApolloComposable.useMutation<SetApplicationsEnabledMutation, SetApplicationsEnabledMutationVariables>(SetApplicationsEnabledDocument, options);
 }
 export type SetApplicationsEnabledMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SetApplicationsEnabledMutation, SetApplicationsEnabledMutationVariables>;
-export const CreateApplicationSessionDocument = gql`
-    mutation CreateApplicationSession($input: CreateApplicationSessionInput!) {
-  createApplicationSession(input: $input) {
-    success
-    message
-    session {
-      ...ApplicationSessionFields
-    }
-  }
-}
-    ${ApplicationSessionFieldsFragmentDoc}`;
-
-/**
- * __useCreateApplicationSessionMutation__
- *
- * To run a mutation, you first call `useCreateApplicationSessionMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useCreateApplicationSessionMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useCreateApplicationSessionMutation({
- *   variables: {
- *     input: // value for 'input'
- *   },
- * });
- */
-export function useCreateApplicationSessionMutation(options: VueApolloComposable.UseMutationOptions<CreateApplicationSessionMutation, CreateApplicationSessionMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<CreateApplicationSessionMutation, CreateApplicationSessionMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<CreateApplicationSessionMutation, CreateApplicationSessionMutationVariables>(CreateApplicationSessionDocument, options);
-}
-export type CreateApplicationSessionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreateApplicationSessionMutation, CreateApplicationSessionMutationVariables>;
-export const TerminateApplicationSessionDocument = gql`
-    mutation TerminateApplicationSession($applicationSessionId: String!) {
-  terminateApplicationSession(applicationSessionId: $applicationSessionId) {
-    success
-    message
-    session {
-      ...ApplicationSessionFields
-    }
-  }
-}
-    ${ApplicationSessionFieldsFragmentDoc}`;
-
-/**
- * __useTerminateApplicationSessionMutation__
- *
- * To run a mutation, you first call `useTerminateApplicationSessionMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useTerminateApplicationSessionMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useTerminateApplicationSessionMutation({
- *   variables: {
- *     applicationSessionId: // value for 'applicationSessionId'
- *   },
- * });
- */
-export function useTerminateApplicationSessionMutation(options: VueApolloComposable.UseMutationOptions<TerminateApplicationSessionMutation, TerminateApplicationSessionMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<TerminateApplicationSessionMutation, TerminateApplicationSessionMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<TerminateApplicationSessionMutation, TerminateApplicationSessionMutationVariables>(TerminateApplicationSessionDocument, options);
-}
-export type TerminateApplicationSessionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<TerminateApplicationSessionMutation, TerminateApplicationSessionMutationVariables>;
-export const SendApplicationInputDocument = gql`
-    mutation SendApplicationInput($input: SendApplicationInputInput!) {
-  sendApplicationInput(input: $input) {
-    success
-    message
-    session {
-      ...ApplicationSessionFields
-    }
-  }
-}
-    ${ApplicationSessionFieldsFragmentDoc}`;
-
-/**
- * __useSendApplicationInputMutation__
- *
- * To run a mutation, you first call `useSendApplicationInputMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useSendApplicationInputMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useSendApplicationInputMutation({
- *   variables: {
- *     input: // value for 'input'
- *   },
- * });
- */
-export function useSendApplicationInputMutation(options: VueApolloComposable.UseMutationOptions<SendApplicationInputMutation, SendApplicationInputMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<SendApplicationInputMutation, SendApplicationInputMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<SendApplicationInputMutation, SendApplicationInputMutationVariables>(SendApplicationInputDocument, options);
-}
-export type SendApplicationInputMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SendApplicationInputMutation, SendApplicationInputMutationVariables>;
 export const UpsertExternalChannelBindingDocument = gql`
     mutation UpsertExternalChannelBinding($input: UpsertExternalChannelBindingInput!) {
   upsertExternalChannelBinding(input: $input) {
@@ -5026,70 +4683,6 @@ export function useGetApplicationByIdLazyQuery(variables?: GetApplicationByIdQue
   return VueApolloComposable.useLazyQuery<GetApplicationByIdQuery, GetApplicationByIdQueryVariables>(GetApplicationByIdDocument, variables, options);
 }
 export type GetApplicationByIdQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetApplicationByIdQuery, GetApplicationByIdQueryVariables>;
-export const GetApplicationSessionDocument = gql`
-    query GetApplicationSession($id: String!) {
-  applicationSession(id: $id) {
-    ...ApplicationSessionFields
-  }
-}
-    ${ApplicationSessionFieldsFragmentDoc}`;
-
-/**
- * __useGetApplicationSessionQuery__
- *
- * To run a query within a Vue component, call `useGetApplicationSessionQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetApplicationSessionQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param variables that will be passed into the query
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useGetApplicationSessionQuery({
- *   id: // value for 'id'
- * });
- */
-export function useGetApplicationSessionQuery(variables: GetApplicationSessionQueryVariables | VueCompositionApi.Ref<GetApplicationSessionQueryVariables> | ReactiveFunction<GetApplicationSessionQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetApplicationSessionQuery, GetApplicationSessionQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetApplicationSessionQuery, GetApplicationSessionQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetApplicationSessionQuery, GetApplicationSessionQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetApplicationSessionQuery, GetApplicationSessionQueryVariables>(GetApplicationSessionDocument, variables, options);
-}
-export function useGetApplicationSessionLazyQuery(variables?: GetApplicationSessionQueryVariables | VueCompositionApi.Ref<GetApplicationSessionQueryVariables> | ReactiveFunction<GetApplicationSessionQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetApplicationSessionQuery, GetApplicationSessionQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetApplicationSessionQuery, GetApplicationSessionQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetApplicationSessionQuery, GetApplicationSessionQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetApplicationSessionQuery, GetApplicationSessionQueryVariables>(GetApplicationSessionDocument, variables, options);
-}
-export type GetApplicationSessionQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetApplicationSessionQuery, GetApplicationSessionQueryVariables>;
-export const GetApplicationSessionBindingDocument = gql`
-    query GetApplicationSessionBinding($applicationId: String!, $requestedSessionId: String) {
-  applicationSessionBinding(
-    applicationId: $applicationId
-    requestedSessionId: $requestedSessionId
-  ) {
-    ...ApplicationSessionBindingFields
-  }
-}
-    ${ApplicationSessionBindingFieldsFragmentDoc}`;
-
-/**
- * __useGetApplicationSessionBindingQuery__
- *
- * To run a query within a Vue component, call `useGetApplicationSessionBindingQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetApplicationSessionBindingQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param variables that will be passed into the query
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useGetApplicationSessionBindingQuery({
- *   applicationId: // value for 'applicationId'
- *   requestedSessionId: // value for 'requestedSessionId'
- * });
- */
-export function useGetApplicationSessionBindingQuery(variables: GetApplicationSessionBindingQueryVariables | VueCompositionApi.Ref<GetApplicationSessionBindingQueryVariables> | ReactiveFunction<GetApplicationSessionBindingQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetApplicationSessionBindingQuery, GetApplicationSessionBindingQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetApplicationSessionBindingQuery, GetApplicationSessionBindingQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetApplicationSessionBindingQuery, GetApplicationSessionBindingQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetApplicationSessionBindingQuery, GetApplicationSessionBindingQueryVariables>(GetApplicationSessionBindingDocument, variables, options);
-}
-export function useGetApplicationSessionBindingLazyQuery(variables?: GetApplicationSessionBindingQueryVariables | VueCompositionApi.Ref<GetApplicationSessionBindingQueryVariables> | ReactiveFunction<GetApplicationSessionBindingQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetApplicationSessionBindingQuery, GetApplicationSessionBindingQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetApplicationSessionBindingQuery, GetApplicationSessionBindingQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetApplicationSessionBindingQuery, GetApplicationSessionBindingQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetApplicationSessionBindingQuery, GetApplicationSessionBindingQueryVariables>(GetApplicationSessionBindingDocument, variables, options);
-}
-export type GetApplicationSessionBindingQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetApplicationSessionBindingQuery, GetApplicationSessionBindingQueryVariables>;
 export const ExternalChannelCapabilitiesDocument = gql`
     query ExternalChannelCapabilities {
   externalChannelCapabilities {

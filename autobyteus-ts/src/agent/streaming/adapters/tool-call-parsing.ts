@@ -1,43 +1,32 @@
+import { decodeXmlEntitiesOnce, parseXmlArgumentsWithSchema } from './xml-schema-coercion.js';
+import type { ParameterSchema } from '../../../utils/parameter-schema.js';
+
+export { decodeXmlEntitiesOnce };
+
 export type JsonToolParsingStrategy = {
   parse: (jsonStr: string) => Array<{ name?: string; arguments?: any }>;
 };
 
 const ARGS_OPEN = '<arguments>';
 const ARGS_CLOSE = '</arguments>';
-const XML_ENTITY_PATTERN = /&(#x[0-9a-fA-F]+|#\d+|amp|lt|gt|quot|apos);/g;
-const XML_NAMED_ENTITIES: Record<string, string> = {
-  amp: '&',
-  lt: '<',
-  gt: '>',
-  quot: '"',
-  apos: "'"
+
+const extractArgsContent = (content: string): string => {
+  const match = new RegExp(`${ARGS_OPEN}([\\s\\S]*?)${ARGS_CLOSE}`, 'i').exec(content);
+  return match ? match[1] : content.trim();
 };
 
-export const decodeXmlEntitiesOnce = (value: string): string =>
-  value.replace(XML_ENTITY_PATTERN, (fullMatch, entity) => {
-    if (entity in XML_NAMED_ENTITIES) {
-      return XML_NAMED_ENTITIES[entity];
-    }
-
-    if (entity.startsWith('#x')) {
-      const parsed = Number.parseInt(entity.slice(2), 16);
-      return Number.isFinite(parsed) ? String.fromCodePoint(parsed) : fullMatch;
-    }
-
-    if (entity.startsWith('#')) {
-      const parsed = Number.parseInt(entity.slice(1), 10);
-      return Number.isFinite(parsed) ? String.fromCodePoint(parsed) : fullMatch;
-    }
-
-    return fullMatch;
-  });
-
-export const parseXmlArguments = (content: string): Record<string, any> => {
-  const match = new RegExp(`${ARGS_OPEN}([\\s\\S]*?)${ARGS_CLOSE}`, 'i').exec(content);
-  const argsContent = match ? match[1] : content.trim();
+export const parseXmlArguments = (content: string, schema?: ParameterSchema | null): Record<string, any> => {
+  const argsContent = extractArgsContent(content);
 
   if (!argsContent) {
     return {};
+  }
+
+  if (schema) {
+    const coerced = parseXmlArgumentsWithSchema(argsContent, schema);
+    if (coerced) {
+      return coerced;
+    }
   }
 
   const parsed = parseXmlFragment(argsContent);
@@ -82,6 +71,7 @@ export const parseJsonToolCall = (
           // leave as string
         }
       }
+
       return { name, arguments: argumentsValue };
     }
   } catch {
@@ -91,10 +81,35 @@ export const parseJsonToolCall = (
   return null;
 };
 
+const assignXmlValue = (target: Record<string, any>, name: string, value: unknown): void => {
+  if (!(name in target)) {
+    target[name] = value;
+    return;
+  }
+
+  const existing = target[name];
+  if (Array.isArray(existing)) {
+    existing.push(value);
+    return;
+  }
+
+  target[name] = [existing, value];
+};
+
+const normalizeNestedXmlValue = (value: Record<string, any>): unknown => {
+  const keys = Object.keys(value);
+  if (keys.length === 1 && keys[0] === 'item') {
+    return Array.isArray(value.item) ? value.item : [value.item];
+  }
+
+  return value;
+};
+
 const parseXmlFragment = (fragment: string): Record<string, any> => {
   const argumentsMap: Record<string, any> = {};
   const tagPattern = /<([A-Za-z0-9_]+)([^>]*)>([\s\S]*?)<\/\1>/g;
   let match: RegExpExecArray | null;
+
   while ((match = tagPattern.exec(fragment)) !== null) {
     const tagName = match[1];
     const attrText = match[2] || '';
@@ -107,17 +122,19 @@ const parseXmlFragment = (fragment: string): Record<string, any> => {
         name = nameMatch[1];
       }
     }
+
     if (!name) {
       continue;
     }
 
     const trimmedInner = inner.trim();
     if (/<[A-Za-z0-9_]+/.test(trimmedInner)) {
-      argumentsMap[name] = parseXmlFragment(trimmedInner);
+      assignXmlValue(argumentsMap, name, normalizeNestedXmlValue(parseXmlFragment(trimmedInner)));
     } else {
-      argumentsMap[name] = decodeXmlEntitiesOnce(trimmedInner);
+      assignXmlValue(argumentsMap, name, decodeXmlEntitiesOnce(trimmedInner));
     }
   }
+
   return argumentsMap;
 };
 
@@ -125,10 +142,12 @@ const parseLegacyArguments = (argsContent: string): Record<string, any> => {
   const argumentsMap: Record<string, any> = {};
   const argPattern = /<(\w+)>([\s\S]*?)<\/\1>/g;
   let match: RegExpExecArray | null;
+
   while ((match = argPattern.exec(argsContent)) !== null) {
     const argName = match[1];
     const argValue = decodeXmlEntitiesOnce((match[2] ?? '').trim());
-    argumentsMap[argName] = argValue;
+    assignXmlValue(argumentsMap, argName, argValue);
   }
+
   return argumentsMap;
 };

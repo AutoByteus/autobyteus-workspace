@@ -10,6 +10,7 @@ import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-co
 import type { AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { CodexAgentRunBackendFactory } from "../../../src/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.js";
+import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { CodexAppServerClient } from "../../../src/runtime-management/codex/client/codex-app-server-client.js";
 import { CodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import { CodexThreadBootstrapper } from "../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
@@ -23,6 +24,9 @@ import {
   BROWSER_BRIDGE_BASE_URL_ENV,
   BROWSER_BRIDGE_TOKEN_ENV,
 } from "../../../src/agent-tools/browser/browser-tool-contract.js";
+import { PublishedArtifactProjectionStore } from "../../../src/services/published-artifacts/published-artifact-projection-store.js";
+import { PublishedArtifactSnapshotStore } from "../../../src/services/published-artifacts/published-artifact-snapshot-store.js";
+import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 import {
   BrowserBridgeLiveTestServer,
   buildOpenBrowserToolPrompt,
@@ -214,6 +218,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
   let clientManager: CodexAppServerClientManager | null = null;
   let threadManager: CodexThreadManager | null = null;
   let browserBridgeServer: BrowserBridgeLiveTestServer | null = null;
+  let previousAgentRunManagerInstance: AgentRunManager | null | undefined;
   const createdRunIds = new Set<string>();
   const originalBrowserBridgeBaseUrl = process.env[BROWSER_BRIDGE_BASE_URL_ENV];
   const originalBrowserBridgeToken = process.env[BROWSER_BRIDGE_TOKEN_ENV];
@@ -247,6 +252,10 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
       process.env[BROWSER_BRIDGE_TOKEN_ENV] = originalBrowserBridgeToken;
     } else {
       delete process.env[BROWSER_BRIDGE_TOKEN_ENV];
+    }
+    if (previousAgentRunManagerInstance !== undefined) {
+      (AgentRunManager as any).instance = previousAgentRunManagerInstance ?? null;
+      previousAgentRunManagerInstance = undefined;
     }
   });
 
@@ -1090,13 +1099,6 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
       await waitForEvent(
         events,
         (event) =>
-          event.eventType === AgentRunEventType.ARTIFACT_UPDATED &&
-          event.payload.path === metadata.path &&
-          event.payload.type === "file",
-      );
-      await waitForEvent(
-        events,
-        (event) =>
           event.eventType === AgentRunEventType.TOOL_LOG &&
           resolveInvocationId(event.payload) === invocationId &&
           event.payload.tool_name === "edit_file",
@@ -1107,13 +1109,6 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
           event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED &&
           resolveInvocationId(event.payload) === invocationId &&
           event.payload.tool_name === "edit_file",
-      );
-      await waitForEvent(
-        events,
-        (event) =>
-          event.eventType === AgentRunEventType.ARTIFACT_PERSISTED &&
-          event.payload.path === metadata.path &&
-          event.payload.type === "file",
       );
       await waitForEvent(
         events,
@@ -1242,6 +1237,166 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     } finally {
       unsubscribe();
       await writeBackendEventLog("codex-backend-browser-tool", events);
+    }
+  }, FLOW_TEST_TIMEOUT_MS);
+
+  it("publishes an existing workspace file through the live Codex publish_artifact dynamic tool path", async () => {
+    const workspaceRoot = await createWorkspace("codex-backend-publish-artifact");
+    const workspace = await getWorkspaceManager().ensureWorkspaceByRootPath(workspaceRoot);
+    clientManager = new CodexAppServerClientManager({
+      createClient: (cwd) =>
+        new CodexAppServerClient({
+          command: "codex",
+          args: ["app-server"],
+          cwd,
+          requestTimeoutMs: 45_000,
+        }),
+    });
+    threadManager = new CodexThreadManager(
+      clientManager,
+      undefined,
+      new CodexClientThreadRouter(),
+    );
+    const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
+    const runId = `run-codex-backend-publish-artifact-${randomUUID()}`;
+    const factory = createFactory({
+      clientManager,
+      threadManager,
+      workspaceRoot,
+      runId,
+      toolNames: ["publish_artifact"],
+      instructions:
+        "If the user explicitly instructs you to call publish_artifact with a JSON argument object, call publish_artifact exactly once with those exact arguments and do not call any other tool.",
+    });
+
+    const runManager = new AgentRunManager({
+      autoByteusBackendFactory: {} as any,
+      codexBackendFactory: factory,
+      claudeBackendFactory: {} as any,
+      runFileChangeService: {
+        attachToRun: () => () => undefined,
+      } as any,
+      publishedArtifactRelayService: {
+        attachToRun: () => () => undefined,
+      } as any,
+    });
+    previousAgentRunManagerInstance = (AgentRunManager as any).instance;
+    (AgentRunManager as any).instance = runManager;
+
+    const run = await runManager.createAgentRun(
+      new AgentRunConfig({
+        runtimeKind: "codex_app_server",
+        agentDefinitionId: "agent-def-codex-publish-artifact-live",
+        llmModelIdentifier: modelIdentifier,
+        autoExecuteTools: true,
+        workspaceId: workspace.workspaceId,
+        memoryDir: path.join(workspaceRoot, ".memory", runId),
+        llmConfig: { reasoning_effort: "medium" },
+      } as any),
+      runId,
+    );
+    createdRunIds.add(run.runId);
+
+    const thread = threadManager.getThread(run.runId);
+    expect(thread).toBeTruthy();
+    await waitForStartupReady(thread!.startup.waitForReady);
+
+    const artifactRelativePath = path.posix.join("reports", "live-artifact.md");
+    const artifactDescription = "Live Codex publish artifact integration";
+    const artifactBody = `# Codex live artifact\n\nToken: ${randomUUID()}`;
+    const artifactAbsolutePath = path.join(workspaceRoot, "reports", "live-artifact.md");
+    await fsPromises.mkdir(path.dirname(artifactAbsolutePath), { recursive: true });
+    await fsPromises.writeFile(artifactAbsolutePath, artifactBody, "utf8");
+
+    const events: AgentRunEvent[] = [];
+    const unsubscribe = run.subscribeToEvents((event) => {
+      if (event && typeof event === "object") {
+        events.push(event as AgentRunEvent);
+      }
+    });
+
+    try {
+      const sendResult = await run.postUserMessage(
+        new AgentInputUserMessage(
+          `You must call the publish_artifact tool exactly once in this turn. ` +
+            `Do not call any other tool. Use exactly these arguments: ` +
+            `{\"path\":\"${artifactRelativePath}\",\"description\":\"${artifactDescription}\"}. ` +
+            "The file already exists in the workspace. After the tool call succeeds, reply with DONE only.",
+        ),
+      );
+      expect(sendResult.accepted).toBe(true);
+
+      const publishSegmentStart = await waitForEvent(
+        events,
+        (event) =>
+          event.eventType === AgentRunEventType.SEGMENT_START &&
+          event.payload.segment_type === "tool_call" &&
+          event.payload.metadata &&
+          typeof event.payload.metadata === "object" &&
+          !Array.isArray(event.payload.metadata) &&
+          (event.payload.metadata as Record<string, unknown>).tool_name === "publish_artifact",
+      );
+      expect(
+        (publishSegmentStart.payload.metadata as Record<string, unknown>).arguments,
+      ).toMatchObject({
+        path: artifactRelativePath,
+        description: artifactDescription,
+      });
+      const publishInvocationId = resolveInvocationId(publishSegmentStart.payload);
+      expect(publishInvocationId).toBeTruthy();
+
+      const toolLog = await waitForEvent(
+        events,
+        (event) =>
+          event.eventType === AgentRunEventType.TOOL_LOG &&
+          resolveInvocationId(event.payload) === publishInvocationId,
+      );
+      expect(typeof toolLog.payload.log_entry).toBe("string");
+      expect(String(toolLog.payload.log_entry)).toContain(`"path":"${artifactRelativePath}"`);
+      await waitForEvent(
+        events,
+        (event) =>
+          event.eventType === AgentRunEventType.SEGMENT_END &&
+          resolveInvocationId(event.payload) === publishInvocationId,
+      );
+      const persisted = await waitForEvent(
+        events,
+        (event) => event.eventType === AgentRunEventType.ARTIFACT_PERSISTED,
+      );
+      await waitForEvent(
+        events,
+        (event) =>
+          event.eventType === AgentRunEventType.AGENT_STATUS &&
+          event.payload.new_status === "IDLE",
+      );
+
+      expect(
+        events.some((event) => event.eventType === AgentRunEventType.TOOL_APPROVAL_REQUESTED),
+      ).toBe(false);
+
+      const projectionStore = new PublishedArtifactProjectionStore();
+      const snapshotStore = new PublishedArtifactSnapshotStore();
+      const projection = await projectionStore.readProjection(run.config.memoryDir as string);
+      expect(projection.summaries).toHaveLength(1);
+      expect(projection.revisions).toHaveLength(1);
+      expect(projection.summaries[0]).toMatchObject({
+        runId: run.runId,
+        path: artifactRelativePath,
+        type: "file",
+        status: "available",
+        description: artifactDescription,
+      });
+      expect(persisted.payload).toMatchObject(projection.summaries[0] as Record<string, unknown>);
+      await expect(
+        snapshotStore.readRevisionText(
+          run.config.memoryDir as string,
+          projection.revisions[0]!.snapshotRelativePath,
+        ),
+      ).resolves.toBe(artifactBody);
+    } finally {
+      unsubscribe();
+      await runManager.terminateAgentRun(run.runId);
+      createdRunIds.delete(run.runId);
     }
   }, FLOW_TEST_TIMEOUT_MS);
 

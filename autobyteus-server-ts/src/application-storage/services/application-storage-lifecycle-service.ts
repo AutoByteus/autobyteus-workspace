@@ -93,7 +93,7 @@ export class ApplicationStorageLifecycleService {
 
     const platformDb = new DatabaseSync(layout.platformDatabasePath);
     try {
-      this.bootstrapPlatformTables(platformDb);
+      this.bootstrapPlatformTables(platformDb, applicationId);
     } finally {
       platformDb.close();
     }
@@ -111,6 +111,8 @@ export class ApplicationStorageLifecycleService {
       appDb.close();
     }
 
+    this.resetAppliedMigrationLedgerWhenAppDatabaseEmpty(layout);
+
     await this.migrationService.applyPendingMigrations({
       applicationId,
       appDatabasePath: layout.appDatabasePath,
@@ -121,6 +123,40 @@ export class ApplicationStorageLifecycleService {
     return layout;
   }
 
+  private resetAppliedMigrationLedgerWhenAppDatabaseEmpty(layout: ApplicationStorageLayout): void {
+    const appDb = new DatabaseSync(layout.appDatabasePath);
+    const platformDb = new DatabaseSync(layout.platformDatabasePath);
+    try {
+      if (this.getUserTableCount(appDb) > 0) {
+        return;
+      }
+
+      const row = platformDb
+        .prepare(`SELECT COUNT(*) AS migrationCount FROM __autobyteus_app_migrations`)
+        .get() as { migrationCount?: number } | undefined;
+      if (Number(row?.migrationCount ?? 0) === 0) {
+        return;
+      }
+
+      platformDb.exec(`DELETE FROM __autobyteus_app_migrations`);
+    } finally {
+      platformDb.close();
+      appDb.close();
+    }
+  }
+
+  private getUserTableCount(db: DatabaseSync): number {
+    const row = db
+      .prepare(
+        `SELECT COUNT(*) AS tableCount
+           FROM sqlite_master
+          WHERE type = 'table'
+            AND name NOT LIKE 'sqlite_%'`,
+      )
+      .get() as { tableCount?: number } | undefined;
+    return Number(row?.tableCount ?? 0);
+  }
+
   private async requireApplicationBundle(applicationId: string) {
     const bundle = await this.applicationBundleService.getApplicationById(applicationId);
     if (!bundle) {
@@ -129,7 +165,7 @@ export class ApplicationStorageLifecycleService {
     return bundle;
   }
 
-  private bootstrapPlatformTables(platformDb: DatabaseSync): void {
+  private bootstrapPlatformTables(platformDb: DatabaseSync, applicationId: string): void {
     platformDb.exec(`
       CREATE TABLE IF NOT EXISTS __autobyteus_storage_meta (
         meta_key TEXT PRIMARY KEY,
@@ -205,12 +241,22 @@ export class ApplicationStorageLifecycleService {
          ) VALUES (1, 0, ?)`,
       )
       .run(new Date().toISOString());
+    const now = new Date().toISOString();
     platformDb
       .prepare(
         `INSERT OR IGNORE INTO __autobyteus_storage_meta (meta_key, meta_value, updated_at)
          VALUES ('schema_version', '1', ?)`,
       )
-      .run(new Date().toISOString());
+      .run(now);
+    platformDb
+      .prepare(
+        `INSERT INTO __autobyteus_storage_meta (meta_key, meta_value, updated_at)
+         VALUES ('application_id', ?, ?)
+         ON CONFLICT(meta_key) DO UPDATE SET
+           meta_value = excluded.meta_value,
+           updated_at = excluded.updated_at`,
+      )
+      .run(applicationId, now);
   }
 }
 

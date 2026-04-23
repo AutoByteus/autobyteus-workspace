@@ -268,7 +268,7 @@ describe("CodexThreadEventConverter", () => {
     });
   });
 
-  it("fans out fileChange start into segment, lifecycle, and artifact events", () => {
+  it("fans out fileChange start into segment and lifecycle events", () => {
     const converter = new CodexThreadEventConverter("run-1", "/tmp/workspace");
 
     const converted = converter.convert({
@@ -291,7 +291,6 @@ describe("CodexThreadEventConverter", () => {
     expect(converted.map((event) => event.eventType)).toEqual([
       AgentRunEventType.SEGMENT_START,
       AgentRunEventType.TOOL_EXECUTION_STARTED,
-      AgentRunEventType.ARTIFACT_UPDATED,
     ]);
     expect(converted[0]?.payload).toMatchObject({
       id: "call_1",
@@ -310,15 +309,9 @@ describe("CodexThreadEventConverter", () => {
         patch: "print('hi')\n",
       },
     });
-    expect(converted[2]?.payload).toMatchObject({
-      agent_id: "run-1",
-      workspace_root: "/tmp/workspace",
-      path: "/tmp/workspace/demo.py",
-      type: "file",
-    });
   });
 
-  it("fans out fileChange completion into success, persisted artifact, and segment end", () => {
+  it("fans out fileChange completion into success and segment end", () => {
     const converter = new CodexThreadEventConverter("run-1", "/tmp/workspace");
 
     const converted = converter.convert({
@@ -340,7 +333,6 @@ describe("CodexThreadEventConverter", () => {
 
     expect(converted.map((event) => event.eventType)).toEqual([
       AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
-      AgentRunEventType.ARTIFACT_PERSISTED,
       AgentRunEventType.SEGMENT_END,
     ]);
     expect(converted[0]?.payload).toMatchObject({
@@ -348,12 +340,6 @@ describe("CodexThreadEventConverter", () => {
       tool_name: "edit_file",
     });
     expect(converted[1]?.payload).toMatchObject({
-      agent_id: "run-1",
-      workspace_root: "/tmp/workspace",
-      path: "/tmp/workspace/demo.py",
-      type: "file",
-    });
-    expect(converted[2]?.payload).toMatchObject({
       id: "call_1",
       metadata: {
         path: "/tmp/workspace/demo.py",

@@ -5,7 +5,7 @@ Backend helper package for application bundle backends executed by the AutoByteu
 ## What it owns
 
 - `defineApplication(...)`
-- re-exported backend definition, handler, request, storage, notification, and event-dispatch types from `@autobyteus/application-sdk-contracts`
+- re-exported backend definition, handler, request, storage, notification, runtime-control, resource-slot, and execution-event types from `@autobyteus/application-sdk-contracts`
 
 ## Usage
 
@@ -13,34 +13,32 @@ Backend helper package for application bundle backends executed by the AutoByteu
 import { defineApplication } from '@autobyteus/application-backend-sdk'
 
 export default defineApplication({
-  definitionContractVersion: '1',
-  queries: {
-    status: async (_input, context) => ({
-      applicationId: context.requestContext?.applicationId ?? null,
-      appDatabasePath: context.storage.appDatabasePath,
-    }),
-  },
-  commands: {
-    ping: async (input) => ({ ok: true, input }),
-  },
-  routes: [
-    {
-      method: 'GET',
-      path: '/hello/:name',
-      handler: async (request) => ({
-        message: `hello ${request.params.name}`,
-      }),
-    },
-  ],
+  definitionContractVersion: '2',
   graphql: {
-    execute: async ({ query }) => ({ queryLength: query.length }),
+    execute: async (request, context) => {
+      if (request.operationName === 'StatusQuery') {
+        return {
+          data: {
+            status: {
+              applicationId: context.requestContext?.applicationId ?? null,
+              launchInstanceId: context.requestContext?.launchInstanceId ?? null,
+            },
+          },
+        }
+      }
+      return {
+        data: null,
+        errors: [{ message: `Unsupported operation ${request.operationName}` }],
+      }
+    },
   },
-  eventHandlers: {
-    progress: async (envelope, context) => {
-      // app-owned side effects should be idempotent by envelope.event.eventId
-      await context.publishNotification('progress-observed', {
-        eventId: envelope.event.eventId,
-        family: envelope.event.family,
+  artifactHandlers: {
+    persisted: async (artifact, appContext) => {
+      const published = await appContext.runtimeControl.getRunPublishedArtifacts(artifact.runId)
+      await appContext.publishNotification('artifact-observed', {
+        artifactId: artifact.artifactId,
+        revisionId: artifact.revisionId,
+        publishedCount: published.length,
       })
     },
   },
@@ -50,41 +48,15 @@ export default defineApplication({
 ## Bundle expectations
 
 - The worker loads a self-contained ESM backend module.
-- The exported definition contract version must be `"1"`.
+- The exported definition contract version must be `"2"`.
 - Exposed handlers must not exceed the bundle manifest’s `supportedExposures` flags.
 - `backend/bundle.json` declares the backend entry module plus optional migrations/assets directories.
+- `application.json` may declare `resourceSlots[]`; app backends should resolve launch resources through `context.runtimeControl.getConfiguredResource(slotKey)` instead of hardcoded runtime targets.
+- `artifactHandlers.persisted` is the live published-artifact callback. It is separate from lifecycle `eventHandlers`, which continue to receive only `RUN_*` journal envelopes.
+- Applications that need guaranteed artifact catch-up should use `runtimeControl.listRunBindings(...)`, `getRunPublishedArtifacts(...)`, and `getPublishedArtifactRevisionText(...)`, then apply their own idempotency keyed by `revisionId`.
 - App-authored migrations run only against `app.sqlite`; platform-owned `platform.sqlite` remains reserved.
 
-## Handler context reminders
-
-- `context.requestContext` is `null` only for lifecycle hooks.
-- `context.storage` exposes the platform-created storage layout for the current app.
-- `context.publishNotification(...)` throws if the backend manifest disabled notifications.
-- Event handlers receive `AT_LEAST_ONCE` delivery envelopes. Use stable `eventId` for idempotency.
-
-## Teaching sample
-
-The canonical authoring example for this package lives at:
+## Teaching samples
 
 - `../applications/brief-studio/README.md`
-
-Key sample entrypoints:
-
-- authoring backend source:
-  - `../applications/brief-studio/backend-src/index.ts`
-- projection owner:
-  - `../applications/brief-studio/backend-src/services/brief-projection-service.ts`
-- repo-local runnable backend bundle:
-  - `../applications/brief-studio/backend/`
-- generated importable backend bundle:
-  - `../applications/brief-studio/dist/importable-package/applications/brief-studio/backend/`
-
-## Related docs
-
-- `../autobyteus-server-ts/docs/modules/application_backend_gateway.md`
-- `../autobyteus-server-ts/docs/modules/application_engine.md`
-- `../autobyteus-server-ts/docs/modules/application_storage.md`
-- `../autobyteus-server-ts/docs/modules/application_sessions.md`
-- `../autobyteus-web/docs/application-bundle-iframe-contract-v1.md`
-- `../autobyteus-application-sdk-contracts/README.md`
-- `../autobyteus-application-frontend-sdk/README.md`
+- `../applications/socratic-math-teacher/README.md`

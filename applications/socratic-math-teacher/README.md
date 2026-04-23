@@ -1,16 +1,24 @@
 # Socratic Math Teacher
 
-Socratic Math Teacher is the lightweight repo-local sample app that stays on the same application-bundle contract as every other app.
+Socratic Math Teacher is the current in-repo teaching sample for the “one long-lived conversational binding” application pattern. It lives only under `applications/socratic-math-teacher` until a future explicit promotion decision.
 
-This root is intentionally shallow:
+It now demonstrates:
 
-- `application.json`
+- one app-owned GraphQL lesson API hosted under the platform backend mount
+- one app-owned `lessonId` business identity
+- one required manifest `resourceSlots[]` team slot resolved through the host-managed saved launch setup
+- one long-lived binding reused through `runtimeControl.postRunInput(...)`
+- host-managed saved launch defaults for runtime/model/workspace selection before entry
+- app-owned schema and generated frontend client artifacts that stay inside the application workspace
+
+Authoring roots:
+
+- `api/graphql/schema.graphql`
+- `backend-src/`
+- `frontend-src/`
+- `agent-teams/socratic-math-team/`
+
+Runnable bundle roots remain:
+
 - `ui/`
 - `backend/`
-- `agent-teams/`
-
-The sample runtime target is an application-owned team whose private team-local tutor agent now lives under:
-
-- `agent-teams/socratic-math-team/agents/socratic-math-tutor/`
-
-Unlike Brief Studio, this sample is mainly a minimal bootstrap/runtime-target example. It does not teach the deeper app-owned repository/service/migration/event-projection flow.

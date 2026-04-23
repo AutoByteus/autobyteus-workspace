@@ -62,7 +62,7 @@ describe('ServerMonitor', () => {
     await flushPromises();
     expect(wrapper.find('.server-monitor').exists()).toBe(true);
     expect(serverStoreMock.checkServerHealth).toHaveBeenCalled();
-    expect(wrapper.text()).toContain('Server Status');
+    expect(wrapper.text()).toMatch(/server status/i);
     expect(wrapper.find('[data-testid="server-monitor-restart-button"]').exists()).toBe(true);
   });
 

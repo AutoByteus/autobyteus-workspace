@@ -16,6 +16,10 @@ import {
   RunFileChangeService,
   getRunFileChangeService,
 } from "../../services/run-file-changes/run-file-change-service.js";
+import {
+  ApplicationPublishedArtifactRelayService,
+  getApplicationPublishedArtifactRelayService,
+} from "../../application-orchestration/services/application-published-artifact-relay-service.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -28,6 +32,7 @@ type AgentRunManagerOptions = {
   codexBackendFactory?: AgentRunBackendFactory;
   claudeBackendFactory?: AgentRunBackendFactory;
   runFileChangeService?: RunFileChangeService;
+  publishedArtifactRelayService?: ApplicationPublishedArtifactRelayService;
 };
 
 export class AgentRunManager {
@@ -36,8 +41,10 @@ export class AgentRunManager {
   private readonly codexBackendFactory: AgentRunBackendFactory;
   private readonly claudeBackendFactory: AgentRunBackendFactory;
   private readonly runFileChangeService: RunFileChangeService;
+  private readonly publishedArtifactRelayService: ApplicationPublishedArtifactRelayService;
   private activeRuns = new Map<string, AgentRun>();
   private readonly runFileChangeUnsubscribers = new Map<string, () => void>();
+  private readonly publishedArtifactRelayUnsubscribers = new Map<string, () => void>();
 
   static getInstance(options: AgentRunManagerOptions = {}): AgentRunManager {
     if (!AgentRunManager.instance) {
@@ -55,6 +62,8 @@ export class AgentRunManager {
       options.claudeBackendFactory ?? getClaudeAgentRunBackendFactory();
     this.runFileChangeService =
       options.runFileChangeService ?? getRunFileChangeService();
+    this.publishedArtifactRelayService =
+      options.publishedArtifactRelayService ?? getApplicationPublishedArtifactRelayService();
     logger.info("AgentRunManager initialized.");
   }
 
@@ -160,16 +169,22 @@ export class AgentRunManager {
 
   private registerActiveRun(activeRun: AgentRun): void {
     this.unregisterRunFileChanges(activeRun.runId);
+    this.unregisterPublishedArtifactRelay(activeRun.runId);
     this.activeRuns.set(activeRun.runId, activeRun);
     this.runFileChangeUnsubscribers.set(
       activeRun.runId,
       this.runFileChangeService.attachToRun(activeRun),
+    );
+    this.publishedArtifactRelayUnsubscribers.set(
+      activeRun.runId,
+      this.publishedArtifactRelayService.attachToRun(activeRun),
     );
   }
 
   private unregisterActiveRun(runId: string): void {
     this.activeRuns.delete(runId);
     this.unregisterRunFileChanges(runId);
+    this.unregisterPublishedArtifactRelay(runId);
   }
 
   private unregisterRunFileChanges(runId: string): void {
@@ -178,6 +193,15 @@ export class AgentRunManager {
       return;
     }
     this.runFileChangeUnsubscribers.delete(runId);
+    unsubscribe();
+  }
+
+  private unregisterPublishedArtifactRelay(runId: string): void {
+    const unsubscribe = this.publishedArtifactRelayUnsubscribers.get(runId);
+    if (!unsubscribe) {
+      return;
+    }
+    this.publishedArtifactRelayUnsubscribers.delete(runId);
     unsubscribe();
   }
 }

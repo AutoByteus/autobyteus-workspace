@@ -25,12 +25,13 @@ export class AgentRunMetadataService {
 }
 
 let cachedAgentRunMetadataService: AgentRunMetadataService | null = null;
+let cachedAgentRunMetadataMemoryDir: string | null = null;
 
 export const getAgentRunMetadataService = (): AgentRunMetadataService => {
-  if (!cachedAgentRunMetadataService) {
-    cachedAgentRunMetadataService = new AgentRunMetadataService(
-      appConfigProvider.config.getMemoryDir(),
-    );
+  const memoryDir = appConfigProvider.config.getMemoryDir();
+  if (!cachedAgentRunMetadataService || cachedAgentRunMetadataMemoryDir !== memoryDir) {
+    cachedAgentRunMetadataService = new AgentRunMetadataService(memoryDir);
+    cachedAgentRunMetadataMemoryDir = memoryDir;
   }
   return cachedAgentRunMetadataService;
 };

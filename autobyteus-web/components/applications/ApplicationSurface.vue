@@ -1,28 +1,37 @@
 <template>
   <div
-    v-if="session"
-    :class="surfaceWrapperClasses"
+    v-if="application && launchInstanceId"
+    class="h-full min-h-[32rem] w-full"
   >
-    <div :class="surfaceFrameClasses">
-      <ApplicationIframeHost
+    <div class="relative h-full min-h-0 overflow-hidden bg-slate-950">
+      <div
         v-if="launchDescriptor"
-        :descriptor="launchDescriptor"
-        :bootstrap-envelope="pendingBootstrapEnvelope"
-        @bridge-error="handleBridgeError"
-        @bootstrap-delivered="handleBootstrapDelivered"
-        @ready="handleReady"
-      />
+        class="h-full min-h-0 w-full transition-opacity duration-200"
+        :class="isCanvasRevealed ? 'opacity-100' : 'pointer-events-none select-none opacity-0'"
+        :aria-hidden="isCanvasRevealed ? 'false' : 'true'"
+        data-testid="application-surface-canvas"
+      >
+        <ApplicationIframeHost
+          :key="iframeMountKey"
+          :descriptor="launchDescriptor"
+          :bootstrap-envelope="pendingBootstrapEnvelope"
+          @bridge-error="handleBridgeError"
+          @bootstrap-delivered="handleBootstrapDelivered"
+          @ready="handleReady"
+        />
+      </div>
 
       <div
         v-if="launchState === 'failed'"
-        class="absolute inset-0 flex min-h-[20rem] flex-col items-center justify-center gap-4 bg-slate-50 px-6 text-center"
+        class="absolute inset-0 flex min-h-[20rem] flex-col items-center justify-center gap-4 bg-slate-950 px-6 text-center"
+        data-testid="application-surface-failure-overlay"
       >
-        <div class="rounded-full bg-red-100 p-3 text-red-600">
+        <div class="rounded-full bg-red-500/15 p-3 text-red-300">
           <span class="i-heroicons-exclamation-triangle-20-solid h-6 w-6"></span>
         </div>
         <div class="space-y-2">
-          <h3 class="text-lg font-semibold text-slate-900">{{ $t('applications.components.applications.ApplicationIframeHost.initializationFailed') }}</h3>
-          <p class="max-w-xl text-sm text-slate-600">
+          <h3 class="text-lg font-semibold text-white">{{ $t('applications.components.applications.ApplicationIframeHost.initializationFailed') }}</h3>
+          <p class="max-w-xl text-sm text-slate-300">
             {{ launchError || $t('applications.components.applications.ApplicationIframeHost.handshakeDidNotComplete') }}
           </p>
         </div>
@@ -37,11 +46,12 @@
 
       <div
         v-else-if="launchDescriptor && launchState !== 'bootstrapped'"
-        :class="loadingOverlayClasses"
+        class="pointer-events-none absolute inset-0 flex items-center justify-center bg-slate-950 px-6"
+        data-testid="application-surface-loading-overlay"
       >
-        <div class="flex flex-col items-center gap-3 text-slate-600">
-          <div class="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
-          <p class="text-sm font-medium">{{ $t('applications.components.applications.ApplicationIframeHost.initializingApplication') }}</p>
+        <div class="flex flex-col items-center gap-3 text-slate-300">
+          <div class="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-400"></div>
+          <p class="text-sm font-medium text-white">{{ $t('applications.components.applications.ApplicationIframeHost.initializingApplication') }}</p>
         </div>
       </div>
     </div>
@@ -49,12 +59,14 @@
 
   <div
     v-else
-    class="rounded-xl border border-dashed border-slate-300 bg-white p-10 text-center text-slate-600 shadow-sm"
+    class="flex h-full min-h-[20rem] items-center justify-center bg-slate-950 px-6 text-center text-slate-300"
   >
-    <h2 class="text-lg font-semibold text-slate-900">{{ $t('applications.components.applications.ApplicationSurface.noActiveSession') }}</h2>
-    <p class="mt-2 text-sm">
-      {{ $t('applications.components.applications.ApplicationSurface.noActiveSessionHelp') }}
-    </p>
+    <div class="max-w-lg rounded-3xl border border-slate-800 bg-slate-900/90 p-8 shadow-xl shadow-slate-950/30">
+      <h2 class="text-lg font-semibold text-white">{{ $t('applications.components.applications.ApplicationSurface.applicationUnavailable') }}</h2>
+      <p class="mt-2 text-sm leading-6 text-slate-300">
+        {{ $t('applications.components.applications.ApplicationSurface.applicationUnavailableHelp') }}
+      </p>
+    </div>
   </div>
 </template>
 
@@ -62,60 +74,48 @@
 import { computed, onBeforeUnmount, ref, shallowRef, watch } from 'vue'
 import ApplicationIframeHost from '~/components/applications/ApplicationIframeHost.vue'
 import { useLocalization } from '~/composables/useLocalization'
+import type { ApplicationCatalogEntry } from '~/stores/applicationStore'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
-import type { ApplicationSurfacePresentation } from '~/types/application/ApplicationSurfacePresentation'
 import {
   APPLICATION_IFRAME_READY_TIMEOUT_MS,
-  createApplicationHostBootstrapEnvelopeV1,
-  type ApplicationHostBootstrapEnvelopeV1,
+  createApplicationHostBootstrapEnvelopeV2,
+  type ApplicationHostBootstrapEnvelopeV2,
   type ApplicationIframeReadySignal,
 } from '~/types/application/ApplicationIframeContract'
-import type { ApplicationSession } from '~/types/application/ApplicationSession'
 import {
   areApplicationIframeDescriptorInputsEqual,
   buildApplicationIframeLaunchDescriptor,
-  createApplicationLaunchInstanceId,
   normalizeApplicationHostOrigin,
   type ApplicationIframeLaunchDescriptor,
   type ApplicationIframeLaunchDescriptorInputs,
 } from '~/utils/application/applicationLaunchDescriptor'
-import { buildApplicationSessionTransport } from '~/utils/application/applicationSessionTransport'
+import { buildApplicationHostTransport } from '~/utils/application/applicationHostTransport'
 
-const props = withDefaults(defineProps<{
-  session: ApplicationSession | null
-  presentation?: ApplicationSurfacePresentation
-}>(), {
-  presentation: 'standard',
-})
+const props = defineProps<{
+  application: ApplicationCatalogEntry | null
+  launchInstanceId: string | null
+}>()
 
 const { t: $t } = useLocalization()
 const windowNodeContextStore = useWindowNodeContextStore()
 
 const launchDescriptor = shallowRef<ApplicationIframeLaunchDescriptor | null>(null)
 const committedLaunchInputs = shallowRef<ApplicationIframeLaunchDescriptorInputs | null>(null)
-const pendingBootstrapEnvelope = shallowRef<ApplicationHostBootstrapEnvelopeV1 | null>(null)
+const committedLaunchInstanceId = ref<string | null>(null)
+const pendingBootstrapEnvelope = shallowRef<ApplicationHostBootstrapEnvelopeV2 | null>(null)
 const launchState = ref<'waiting_for_ready' | 'bootstrapped' | 'failed'>('waiting_for_ready')
 const launchError = ref<string | null>(null)
 const readyTimeoutHandle = ref<number | null>(null)
-const launchGeneration = ref(0)
+const iframeMountRevision = ref(0)
 
-const surfaceWrapperClasses = computed(() => (
-  props.presentation === 'immersive'
-    ? 'h-full min-h-0'
-    : 'h-full min-h-[28rem]'
-))
+const iframeMountKey = computed(() => {
+  if (!launchDescriptor.value) {
+    return 'unmounted'
+  }
+  return `${launchDescriptor.value.launchInstanceId}:${iframeMountRevision.value}`
+})
 
-const surfaceFrameClasses = computed(() => (
-  props.presentation === 'immersive'
-    ? 'relative h-full overflow-hidden bg-white'
-    : 'relative h-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm'
-))
-
-const loadingOverlayClasses = computed(() => (
-  props.presentation === 'immersive'
-    ? 'pointer-events-none absolute inset-0 flex items-center justify-center bg-white/75 backdrop-blur-sm'
-    : 'pointer-events-none absolute inset-0 flex items-center justify-center bg-white/85 backdrop-blur-sm'
-))
+const isCanvasRevealed = computed(() => launchState.value === 'bootstrapped')
 
 const logApplicationSurface = (message: string): void => {
   console.info(`[ApplicationSurface] ${message}`)
@@ -132,6 +132,7 @@ const resetLaunchState = (): void => {
   clearReadyTimeout()
   launchDescriptor.value = null
   committedLaunchInputs.value = null
+  committedLaunchInstanceId.value = null
   pendingBootstrapEnvelope.value = null
   launchError.value = null
   launchState.value = 'waiting_for_ready'
@@ -144,7 +145,7 @@ const failLaunch = (message: string): void => {
   launchError.value = message
   if (launchDescriptor.value) {
     console.warn(
-      `[ApplicationSurface] launch failed sessionId=${launchDescriptor.value.applicationSessionId} launchInstanceId=${launchDescriptor.value.launchInstanceId} message=${message}`,
+      `[ApplicationSurface] launch failed applicationId=${launchDescriptor.value.applicationId} launchInstanceId=${launchDescriptor.value.launchInstanceId} message=${message}`,
     )
   }
 }
@@ -155,7 +156,7 @@ const startWaitingForReady = (descriptor: ApplicationIframeLaunchDescriptor): vo
   launchError.value = null
   launchState.value = 'waiting_for_ready'
   logApplicationSurface(
-    `committed launch descriptor sessionId=${descriptor.applicationSessionId} launchInstanceId=${descriptor.launchInstanceId} entryHtmlUrl=${descriptor.entryHtmlUrl}`,
+    `committed launch descriptor applicationId=${descriptor.applicationId} launchInstanceId=${descriptor.launchInstanceId} entryHtmlUrl=${descriptor.entryHtmlUrl}`,
   )
   readyTimeoutHandle.value = window.setTimeout(() => {
     failLaunch(
@@ -167,9 +168,9 @@ const startWaitingForReady = (descriptor: ApplicationIframeLaunchDescriptor): vo
   }, APPLICATION_IFRAME_READY_TIMEOUT_MS)
 }
 
-const buildLaunchInputs = (session: ApplicationSession): ApplicationIframeLaunchDescriptorInputs => ({
-  applicationSessionId: session.applicationSessionId,
-  entryHtmlAssetPath: session.application.entryHtmlAssetPath,
+const buildLaunchInputs = (application: ApplicationCatalogEntry): ApplicationIframeLaunchDescriptorInputs => ({
+  applicationId: application.id,
+  entryHtmlAssetPath: application.entryHtmlAssetPath,
   restBaseUrl: windowNodeContextStore.getBoundEndpoints().rest,
   normalizedHostOrigin: normalizeApplicationHostOrigin(
     window.location.origin,
@@ -177,51 +178,49 @@ const buildLaunchInputs = (session: ApplicationSession): ApplicationIframeLaunch
   ),
 })
 
-const commitLaunchDescriptor = (forceNewLaunchInstance: boolean): void => {
-  const currentSession = props.session
-  if (!currentSession) {
+const commitLaunchDescriptor = (forceRemount: boolean): void => {
+  const currentApplication = props.application
+  const currentLaunchInstanceId = props.launchInstanceId?.trim() || ''
+  if (!currentApplication || !currentLaunchInstanceId) {
     resetLaunchState()
     return
   }
 
   try {
-    const nextInputs = buildLaunchInputs(currentSession)
+    const nextInputs = buildLaunchInputs(currentApplication)
     const inputsChanged = !areApplicationIframeDescriptorInputsEqual(
       committedLaunchInputs.value,
       nextInputs,
     )
+    const launchChanged = committedLaunchInstanceId.value !== currentLaunchInstanceId
 
-    if (!forceNewLaunchInstance && !inputsChanged && launchDescriptor.value) {
+    if (!forceRemount && !inputsChanged && !launchChanged && launchDescriptor.value) {
       return
     }
 
-    launchGeneration.value += 1
-    const nextDescriptor = buildApplicationIframeLaunchDescriptor(
-      nextInputs,
-      createApplicationLaunchInstanceId(
-        currentSession.applicationSessionId,
-        launchGeneration.value,
-      ),
-    )
-
+    iframeMountRevision.value += 1
     committedLaunchInputs.value = nextInputs
-    launchDescriptor.value = nextDescriptor
-    startWaitingForReady(nextDescriptor)
+    committedLaunchInstanceId.value = currentLaunchInstanceId
+    launchDescriptor.value = buildApplicationIframeLaunchDescriptor(
+      nextInputs,
+      currentLaunchInstanceId,
+    )
+    startWaitingForReady(launchDescriptor.value)
   } catch (error) {
     failLaunch(error instanceof Error ? error.message : String(error))
   }
 }
 
 const handleReady = (signal: ApplicationIframeReadySignal): void => {
-  const currentSession = props.session
+  const currentApplication = props.application
   const descriptor = launchDescriptor.value
-  if (!currentSession || !descriptor) {
+  if (!currentApplication || !descriptor) {
     return
   }
   if (launchState.value !== 'waiting_for_ready' || pendingBootstrapEnvelope.value) {
     return
   }
-  if (signal.applicationSessionId !== descriptor.applicationSessionId) {
+  if (signal.applicationId !== descriptor.applicationId) {
     return
   }
   if (signal.launchInstanceId !== descriptor.launchInstanceId) {
@@ -232,44 +231,42 @@ const handleReady = (signal: ApplicationIframeReadySignal): void => {
   }
 
   logApplicationSurface(
-    `accepted ready event sessionId=${signal.applicationSessionId} launchInstanceId=${signal.launchInstanceId} origin=${signal.iframeOrigin}`,
+    `accepted ready event applicationId=${signal.applicationId} launchInstanceId=${signal.launchInstanceId} origin=${signal.iframeOrigin}`,
   )
 
-  pendingBootstrapEnvelope.value = createApplicationHostBootstrapEnvelopeV1({
+  pendingBootstrapEnvelope.value = createApplicationHostBootstrapEnvelopeV2({
     host: {
       origin: descriptor.normalizedHostOrigin,
     },
     application: {
-      applicationId: currentSession.application.applicationId,
-      localApplicationId: currentSession.application.localApplicationId,
-      packageId: currentSession.application.packageId,
-      name: currentSession.application.name,
+      applicationId: currentApplication.id,
+      localApplicationId: currentApplication.localApplicationId,
+      packageId: currentApplication.packageId,
+      name: currentApplication.name,
     },
-    session: {
-      applicationSessionId: currentSession.applicationSessionId,
+    launch: {
       launchInstanceId: descriptor.launchInstanceId,
     },
-    runtime: {
-      kind: currentSession.runtime.kind,
-      runId: currentSession.runtime.runId,
-      definitionId: currentSession.runtime.definitionId,
+    requestContext: {
+      applicationId: currentApplication.id,
+      launchInstanceId: descriptor.launchInstanceId,
     },
-    transport: buildApplicationSessionTransport(
+    transport: buildApplicationHostTransport(
       windowNodeContextStore.getBoundEndpoints(),
-      currentSession.application.applicationId,
+      currentApplication.id,
     ),
   })
 }
 
 const handleBootstrapDelivered = (payload: {
-  applicationSessionId: string
+  applicationId: string
   launchInstanceId: string
 }): void => {
   const descriptor = launchDescriptor.value
   if (!descriptor) {
     return
   }
-  if (payload.applicationSessionId !== descriptor.applicationSessionId) {
+  if (payload.applicationId !== descriptor.applicationId) {
     return
   }
   if (payload.launchInstanceId !== descriptor.launchInstanceId) {
@@ -291,11 +288,16 @@ const retryLaunch = (): void => {
 }
 
 watch(
-  () => props.session,
+  () => [
+    props.application?.id ?? '',
+    props.application?.entryHtmlAssetPath ?? '',
+    props.launchInstanceId ?? '',
+    windowNodeContextStore.bindingRevision,
+  ] as const,
   () => {
     commitLaunchDescriptor(false)
   },
-  { immediate: true, deep: true },
+  { immediate: true },
 )
 
 onBeforeUnmount(() => {

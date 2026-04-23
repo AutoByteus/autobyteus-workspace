@@ -17,7 +17,7 @@ describe('GroupableTagInput', () => {
     });
 
     // Find the button with text "Clear All"
-    const clearAllBtn = wrapper.findAll('button').find(b => b.text() === 'Clear All');
+    const clearAllBtn = wrapper.findAll('button').find((b) => /clear all/i.test(b.text()));
     expect(clearAllBtn?.exists()).toBe(true);
   });
 
@@ -29,7 +29,7 @@ describe('GroupableTagInput', () => {
       }
     });
 
-    const clearAllBtn = wrapper.findAll('button').find(b => b.text() === 'Clear All');
+    const clearAllBtn = wrapper.findAll('button').find((b) => /clear all/i.test(b.text()));
     await clearAllBtn?.trigger('click');
 
     expect(wrapper.emitted('update:modelValue')).toBeTruthy();
@@ -47,7 +47,7 @@ describe('GroupableTagInput', () => {
     
     // Check structure: The button should be a sibling of the input
     const input = wrapper.find('input[type="text"]');
-    const clearAllBtn = wrapper.findAll('button').find(b => b.text() === 'Clear All');
+    const clearAllBtn = wrapper.findAll('button').find((b) => /clear all/i.test(b.text()));
     
     expect(input.exists()).toBe(true);
     expect(clearAllBtn?.exists()).toBe(true);

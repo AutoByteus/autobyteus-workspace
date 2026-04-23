@@ -23,7 +23,6 @@ describe("AutoByteusStreamEventConverter", () => {
     [StreamEventType.INTER_AGENT_MESSAGE, AgentRunEventType.INTER_AGENT_MESSAGE],
     [StreamEventType.AGENT_TODO_LIST_UPDATE, AgentRunEventType.TODO_LIST_UPDATE],
     [StreamEventType.ARTIFACT_PERSISTED, AgentRunEventType.ARTIFACT_PERSISTED],
-    [StreamEventType.ARTIFACT_UPDATED, AgentRunEventType.ARTIFACT_UPDATED],
     [StreamEventType.ERROR_EVENT, AgentRunEventType.ERROR],
   ])("maps %s to %s", (streamEventType, agentRunEventType) => {
     const event = converter.convert({
@@ -66,6 +65,15 @@ describe("AutoByteusStreamEventConverter", () => {
       eventType: AgentRunEventType.AGENT_STATUS,
       statusHint: "ERROR",
     });
+  });
+
+  it("ignores deprecated artifact_updated stream events", () => {
+    expect(
+      converter.convert({
+        event_type: StreamEventType.ARTIFACT_UPDATED,
+        data: { path: "notes.md" },
+      } as any),
+    ).toBeNull();
   });
 
   it("maps segment events into start, content, and end events", () => {

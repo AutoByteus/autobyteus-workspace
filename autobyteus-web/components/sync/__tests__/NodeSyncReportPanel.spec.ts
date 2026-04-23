@@ -74,8 +74,8 @@ describe('NodeSyncReportPanel', () => {
       },
     });
 
-    expect(wrapper.text()).toContain('Key sample truncated.');
-    expect(wrapper.text()).toContain('Failure sample truncated.');
+    expect(wrapper.text()).toContain('Key sample truncated');
+    expect(wrapper.text()).toContain('Failure sample truncated');
     expect(wrapper.text()).not.toContain('[Agents] agent-1: conflict');
 
     expect(wrapper.text()).toContain('Show failure samples (1)');

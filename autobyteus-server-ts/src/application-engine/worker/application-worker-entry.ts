@@ -1,8 +1,10 @@
 import readline from "node:readline";
+import { ApplicationWorkerHostBridgeClient } from "./application-worker-host-bridge-client.js";
 import { ApplicationWorkerRuntime } from "./application-worker-runtime.js";
 import {
   APPLICATION_ENGINE_METHOD_EXECUTE_GRAPHQL,
   APPLICATION_ENGINE_METHOD_GET_STATUS,
+  APPLICATION_ENGINE_METHOD_INVOKE_ARTIFACT_HANDLER,
   APPLICATION_ENGINE_METHOD_INVOKE_COMMAND,
   APPLICATION_ENGINE_METHOD_INVOKE_EVENT_HANDLER,
   APPLICATION_ENGINE_METHOD_INVOKE_QUERY,
@@ -18,30 +20,36 @@ type JsonRpcRequest = {
   id?: string | number | null;
   method?: string;
   params?: Record<string, unknown>;
+  result?: unknown;
+  error?: { message?: string };
 };
 
-const runtime = new ApplicationWorkerRuntime(async (params: ApplicationWorkerNotificationParams) => {
-  process.stdout.write(
-    `${JSON.stringify({
+const writeFrame = (frame: Record<string, unknown>): void => {
+  process.stdout.write(`${JSON.stringify(frame)}\n`);
+};
+
+const hostBridgeClient = new ApplicationWorkerHostBridgeClient(writeFrame);
+const runtime = new ApplicationWorkerRuntime(
+  async (params: ApplicationWorkerNotificationParams) => {
+    writeFrame({
       jsonrpc: "2.0",
       method: APPLICATION_ENGINE_NOTIFICATION_METHOD,
       params,
-    })}\n`,
-  );
-});
+    });
+  },
+  async (input) => hostBridgeClient.invokeRuntimeControl(input),
+);
 
 const respondSuccess = (id: string | number | null, result: unknown): void => {
-  process.stdout.write(`${JSON.stringify({ jsonrpc: "2.0", id, result })}\n`);
+  writeFrame({ jsonrpc: "2.0", id, result });
 };
 
 const respondError = (id: string | number | null, message: string): void => {
-  process.stdout.write(
-    `${JSON.stringify({
-      jsonrpc: "2.0",
-      id,
-      error: { message },
-    })}\n`,
-  );
+  writeFrame({
+    jsonrpc: "2.0",
+    id,
+    error: { message },
+  });
 };
 
 const rl = readline.createInterface({
@@ -59,6 +67,10 @@ rl.on("line", async (line) => {
     request = JSON.parse(line) as JsonRpcRequest;
   } catch (error) {
     respondError(null, `Invalid JSON request: ${String(error)}`);
+    return;
+  }
+
+  if (!request.method && hostBridgeClient.handleResponse(request as Record<string, unknown>)) {
     return;
   }
 
@@ -88,6 +100,9 @@ rl.on("line", async (line) => {
         break;
       case APPLICATION_ENGINE_METHOD_INVOKE_EVENT_HANDLER:
         respondSuccess(id, await runtime.invokeEventHandler(params as never));
+        break;
+      case APPLICATION_ENGINE_METHOD_INVOKE_ARTIFACT_HANDLER:
+        respondSuccess(id, await runtime.invokeArtifactHandler(params as never));
         break;
       case APPLICATION_ENGINE_METHOD_STOP:
         await runtime.stop();

@@ -1,4 +1,4 @@
-import { projectArtifact } from "../services/brief-projection-service.js";
-export const onArtifact = async (envelope, context) => {
-    await projectArtifact(envelope, context);
+import { createBriefArtifactReconciliationService } from "../services/brief-artifact-reconciliation-service.js";
+export const onArtifact = async (event, context) => {
+    await createBriefArtifactReconciliationService(context).handlePersistedArtifact(event);
 };

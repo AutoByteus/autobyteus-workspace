@@ -307,7 +307,7 @@ export class MixedTeamManager implements TeamManager {
       skillAccessMode: baseMemberConfig.skillAccessMode,
       runtimeKind: baseMemberConfig.runtimeKind,
       memberTeamContext,
-      applicationSessionContext: baseMemberConfig.applicationSessionContext ?? null,
+      applicationExecutionContext: baseMemberConfig.applicationExecutionContext ?? null,
     });
   }
 

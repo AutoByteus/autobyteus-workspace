@@ -1,10 +1,20 @@
-export const APPLICATION_MANIFEST_VERSION_V2 = "2" as const;
+import type {
+  ApplicationConfiguredResource,
+  ApplicationRuntimeResourceKind,
+  ApplicationRuntimeResourceOwner,
+  ApplicationRuntimeResourceRef,
+  ApplicationRuntimeResourceSummary,
+} from "./runtime-resources.js";
+import type { ApplicationManifestV3 } from "./manifests.js";
+
+export * from "./manifests.js";
+export * from "./runtime-resources.js";
+
 export const APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1 = "1" as const;
-export const APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V1 = "1" as const;
-export const APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V1 = "1" as const;
+export const APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V2 = "2" as const;
+export const APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V2 = "2" as const;
 export const APPLICATION_EVENT_DELIVERY_SEMANTICS = "AT_LEAST_ONCE" as const;
 
-export type ApplicationRuntimeTargetKind = "AGENT" | "AGENT_TEAM";
 export type ApplicationRouteMethod =
   | "GET"
   | "POST"
@@ -13,6 +23,7 @@ export type ApplicationRouteMethod =
   | "DELETE"
   | "HEAD"
   | "OPTIONS";
+export type ApplicationSkillAccessMode = "GLOBAL_DISCOVERY" | "PRELOADED_ONLY" | "NONE";
 
 export type ApplicationBackendSupportedExposures = {
   queries: boolean;
@@ -21,25 +32,6 @@ export type ApplicationBackendSupportedExposures = {
   graphql: boolean;
   notifications: boolean;
   eventHandlers: boolean;
-};
-
-export type ApplicationManifestV2 = {
-  manifestVersion: typeof APPLICATION_MANIFEST_VERSION_V2;
-  id: string;
-  name: string;
-  description?: string | null;
-  icon?: string | null;
-  ui: {
-    entryHtml: string;
-    frontendSdkContractVersion: typeof APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V1;
-  };
-  runtimeTarget: {
-    kind: ApplicationRuntimeTargetKind;
-    localId: string;
-  };
-  backend: {
-    bundleManifest: string;
-  };
 };
 
 export type ApplicationBackendBundleManifestV1 = {
@@ -52,8 +44,8 @@ export type ApplicationBackendBundleManifestV1 = {
     semver: string;
   };
   sdkCompatibility: {
-    backendDefinitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V1;
-    frontendSdkContractVersion: typeof APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V1;
+    backendDefinitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V2;
+    frontendSdkContractVersion: typeof APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V2;
   };
   supportedExposures: ApplicationBackendSupportedExposures;
   migrationsDir?: string | null;
@@ -62,7 +54,7 @@ export type ApplicationBackendBundleManifestV1 = {
 
 export type ApplicationRequestContext = {
   applicationId: string;
-  applicationSessionId?: string | null;
+  launchInstanceId?: string | null;
 };
 
 export type ApplicationStorageContext = {
@@ -81,10 +73,210 @@ export type ApplicationNotificationMessage = {
   publishedAt: string;
 };
 
+export type ApplicationRuntimeInputContextFile = {
+  uri: string;
+  fileType?: string | null;
+  fileName?: string | null;
+  metadata?: Record<string, unknown> | null;
+};
+
+export type ApplicationRuntimeInput = {
+  text: string;
+  targetMemberName?: string | null;
+  contextFiles?: ApplicationRuntimeInputContextFile[] | null;
+  metadata?: Record<string, unknown> | null;
+};
+
+export type ApplicationAgentRunLaunch = {
+  kind: "AGENT";
+  workspaceRootPath: string;
+  workspaceId?: string | null;
+  llmModelIdentifier: string;
+  autoExecuteTools?: boolean | null;
+  llmConfig?: Record<string, unknown> | null;
+  skillAccessMode?: ApplicationSkillAccessMode | null;
+  runtimeKind?: string | null;
+};
+
+export type ApplicationTeamRunPreset = {
+  workspaceRootPath: string;
+  llmModelIdentifier: string;
+  autoExecuteTools?: boolean | null;
+  skillAccessMode?: ApplicationSkillAccessMode | null;
+  runtimeKind?: string | null;
+  llmConfig?: Record<string, unknown> | null;
+};
+
+export type ApplicationTeamMemberLaunchConfig = {
+  memberName: string;
+  memberRouteKey?: string | null;
+  agentDefinitionId?: string | null;
+  llmModelIdentifier: string;
+  autoExecuteTools: boolean;
+  skillAccessMode: ApplicationSkillAccessMode;
+  workspaceId?: string | null;
+  workspaceRootPath?: string | null;
+  llmConfig?: Record<string, unknown> | null;
+  runtimeKind?: string | null;
+};
+
+export type ApplicationTeamRunLaunch =
+  | {
+      kind: "AGENT_TEAM";
+      mode: "preset";
+      launchPreset: ApplicationTeamRunPreset;
+    }
+  | {
+      kind: "AGENT_TEAM";
+      mode: "memberConfigs";
+      memberConfigs: ApplicationTeamMemberLaunchConfig[];
+    };
+
+export type ApplicationStartRunInput = {
+  bindingIntentId: string;
+  resourceRef: ApplicationRuntimeResourceRef;
+  launch: ApplicationAgentRunLaunch | ApplicationTeamRunLaunch;
+  initialInput?: ApplicationRuntimeInput | null;
+};
+
+export type ApplicationRunBindingStatus =
+  | "ATTACHED"
+  | "TERMINATING"
+  | "TERMINATED"
+  | "FAILED"
+  | "ORPHANED";
+
+export type ApplicationRunBindingRuntimeSubject = "AGENT_RUN" | "TEAM_RUN";
+export type ApplicationExecutionProducerRuntimeKind = "AGENT" | "AGENT_TEAM_MEMBER";
+
+export type ApplicationRunBindingMemberSummary = {
+  memberName: string;
+  memberRouteKey: string;
+  displayName: string;
+  teamPath: string[];
+  runId: string;
+  runtimeKind: ApplicationExecutionProducerRuntimeKind;
+};
+
+export type ApplicationRunBindingSummary = {
+  bindingId: string;
+  applicationId: string;
+  bindingIntentId: string;
+  status: ApplicationRunBindingStatus;
+  resourceRef: ApplicationRuntimeResourceRef;
+  runtime: {
+    subject: ApplicationRunBindingRuntimeSubject;
+    runId: string;
+    definitionId: string;
+    members: ApplicationRunBindingMemberSummary[];
+  };
+  createdAt: string;
+  updatedAt: string;
+  terminatedAt: string | null;
+  lastErrorMessage: string | null;
+};
+
+export type ApplicationRunBindingListFilter = {
+  status?: ApplicationRunBindingStatus | null;
+};
+
+export type ApplicationExecutionProducer = {
+  runId: string;
+  memberRouteKey: string;
+  memberName: string | null;
+  displayName: string | null;
+  runtimeKind: ApplicationExecutionProducerRuntimeKind;
+  teamPath: string[];
+};
+
+export type ApplicationPublishedArtifactFileKind =
+  | "file"
+  | "image"
+  | "audio"
+  | "video"
+  | "pdf"
+  | "csv"
+  | "excel"
+  | "other";
+
+export type ApplicationPublishedArtifactEvent = {
+  runId: string;
+  artifactId: string;
+  revisionId: string;
+  path: string;
+  description: string | null;
+  fileKind: ApplicationPublishedArtifactFileKind;
+  publishedAt: string;
+  binding: ApplicationRunBindingSummary;
+  producer: ApplicationExecutionProducer | null;
+};
+
+export type ApplicationExecutionEventFamily =
+  | "RUN_STARTED"
+  | "RUN_TERMINATED"
+  | "RUN_FAILED"
+  | "RUN_ORPHANED";
+
+export type ApplicationExecutionEvent<TPayload = unknown> = {
+  eventId: string;
+  journalSequence: number;
+  applicationId: string;
+  family: ApplicationExecutionEventFamily;
+  publishedAt: string;
+  binding: ApplicationRunBindingSummary;
+  producer: ApplicationExecutionProducer | null;
+  payload: TPayload;
+};
+
+export type ApplicationExecutionEventEnvelope<TPayload = unknown> = {
+  event: ApplicationExecutionEvent<TPayload>;
+  delivery: {
+    semantics: typeof APPLICATION_EVENT_DELIVERY_SEMANTICS;
+    attemptNumber: number;
+    dispatchedAt: string;
+  };
+};
+
+export type ApplicationRuntimeControl = {
+  listAvailableResources: (filter?: {
+    owner?: ApplicationRuntimeResourceOwner | null;
+    kind?: ApplicationRuntimeResourceKind | null;
+  } | null) => Promise<ApplicationRuntimeResourceSummary[]>;
+  getConfiguredResource: (slotKey: string) => Promise<ApplicationConfiguredResource | null>;
+  startRun: (input: ApplicationStartRunInput) => Promise<ApplicationRunBindingSummary>;
+  getRunBinding: (bindingId: string) => Promise<ApplicationRunBindingSummary | null>;
+  getRunBindingByIntentId: (bindingIntentId: string) => Promise<ApplicationRunBindingSummary | null>;
+  listRunBindings: (filter?: ApplicationRunBindingListFilter | null) => Promise<ApplicationRunBindingSummary[]>;
+  getRunPublishedArtifacts: (runId: string) => Promise<Array<{
+    id: string;
+    runId: string;
+    path: string;
+    type: ApplicationPublishedArtifactFileKind;
+    status: "available";
+    description: string | null;
+    revisionId: string;
+    createdAt: string;
+    updatedAt: string;
+  }>>;
+  getPublishedArtifactRevisionText: (input: {
+    runId: string;
+    revisionId: string;
+  }) => Promise<string | null>;
+  postRunInput: (input: {
+    bindingId: string;
+    text: string;
+    targetMemberName?: string | null;
+    contextFiles?: ApplicationRuntimeInputContextFile[] | null;
+    metadata?: Record<string, unknown> | null;
+  }) => Promise<ApplicationRunBindingSummary>;
+  terminateRunBinding: (bindingId: string) => Promise<ApplicationRunBindingSummary | null>;
+};
+
 export type ApplicationHandlerContext = {
   requestContext: ApplicationRequestContext | null;
   storage: ApplicationStorageContext;
   publishNotification: (topic: string, payload: unknown) => Promise<void>;
+  runtimeControl: ApplicationRuntimeControl;
 };
 
 export type ApplicationRouteRequest = {
@@ -128,44 +320,21 @@ export type ApplicationGraphqlExecutor = (
   context: ApplicationHandlerContext,
 ) => Promise<unknown> | unknown;
 
-export type NormalizedPublicationEventFamily =
-  | "SESSION_STARTED"
-  | "SESSION_TERMINATED"
-  | "ARTIFACT";
-
-export type NormalizedPublicationEvent<TPayload = unknown> = {
-  eventId: string;
-  journalSequence: number;
-  applicationId: string;
-  applicationSessionId: string;
-  family: NormalizedPublicationEventFamily;
-  publishedAt: string;
-  producer: {
-    memberRouteKey: string;
-    memberName?: string | null;
-    role?: string | null;
-  };
-  payload: TPayload;
-};
-
-export type ApplicationEventDispatchEnvelope<TPayload = unknown> = {
-  event: NormalizedPublicationEvent<TPayload>;
-  delivery: {
-    semantics: typeof APPLICATION_EVENT_DELIVERY_SEMANTICS;
-    attemptNumber: number;
-    dispatchedAt: string;
-  };
-};
-
 export type ApplicationEventHandler = (
-  event: ApplicationEventDispatchEnvelope,
+  event: ApplicationExecutionEventEnvelope,
+  context: ApplicationHandlerContext,
+) => Promise<void> | void;
+
+export type ApplicationArtifactHandler = (
+  event: ApplicationPublishedArtifactEvent,
   context: ApplicationHandlerContext,
 ) => Promise<void> | void;
 
 export type ApplicationEventHandlerKey =
-  | "sessionStarted"
-  | "sessionTerminated"
-  | "artifact";
+  | "runStarted"
+  | "runTerminated"
+  | "runFailed"
+  | "runOrphaned";
 
 export type ApplicationLifecycleHook = (
   context: Omit<ApplicationHandlerContext, "requestContext"> & { requestContext: null },
@@ -178,7 +347,7 @@ export type ApplicationRouteDefinition = {
 };
 
 export type ApplicationBackendDefinition = {
-  definitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V1;
+  definitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V2;
   lifecycle?: {
     onStart?: ApplicationLifecycleHook;
     onStop?: ApplicationLifecycleHook;
@@ -190,6 +359,9 @@ export type ApplicationBackendDefinition = {
     execute: ApplicationGraphqlExecutor;
   };
   eventHandlers?: Partial<Record<ApplicationEventHandlerKey, ApplicationEventHandler>>;
+  artifactHandlers?: {
+    persisted?: ApplicationArtifactHandler;
+  };
 };
 
 export type ApplicationBackendExposureSummary = {
@@ -199,7 +371,7 @@ export type ApplicationBackendExposureSummary = {
   routes: Array<Pick<ApplicationRouteDefinition, "method" | "path">>;
   graphql: boolean;
   notifications: boolean;
-  eventHandlers: NormalizedPublicationEventFamily[];
+  eventHandlers: ApplicationExecutionEventFamily[];
 };
 
 export type ApplicationEngineState =

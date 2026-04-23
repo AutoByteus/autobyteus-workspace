@@ -16,6 +16,8 @@ type ClientSessionLike = {
 
 type CleanupCallback = () => Promise<void> | void;
 
+export const DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS = 6 * 60 * 1000;
+
 export abstract class BaseManagedMcpServer {
   protected config: BaseMcpConfig;
   protected state: ServerState = ServerState.DISCONNECTED;
@@ -122,10 +124,14 @@ export abstract class BaseManagedMcpServer {
 
     const callTool = this.clientSession.callTool.bind(this.clientSession);
     if (callTool.length >= 2) {
-      return await callTool(toolName, argumentsPayload);
+      return await callTool(toolName, argumentsPayload, { timeout: DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS });
     }
 
-    return await callTool({ name: toolName, arguments: argumentsPayload });
+    return await callTool(
+      { name: toolName, arguments: argumentsPayload },
+      undefined,
+      { timeout: DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS }
+    );
   }
 
   private async runCleanup(): Promise<void> {

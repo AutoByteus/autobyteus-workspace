@@ -17,6 +17,8 @@ import { CompactionRuntimeReporter } from '../compaction/compaction-runtime-repo
 import { applyCompactionPolicy, resolveTokenBudget } from '../token-budget.js';
 import { CompactionRuntimeSettingsResolver } from '../../memory/compaction/compaction-runtime-settings.js';
 import { PendingCompactionExecutor } from '../../memory/compaction/pending-compaction-executor.js';
+import { defaultToolRegistry } from '../../tools/registry/tool-registry.js';
+import type { ParameterSchema } from '../../utils/parameter-schema.js';
 import type { AgentContext } from '../context/agent-context.js';
 import type { TokenUsage } from '../../llm/utils/token-usage.js';
 
@@ -95,6 +97,27 @@ export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
 
     const toolNames: string[] = [];
     const toolInstances = context.state.toolInstances;
+    const toolArgumentSchemaResolver = (toolName: string): ParameterSchema | null => {
+      const toolInstance = toolInstances?.[toolName];
+      if (toolInstance) {
+        try {
+          if (toolInstance.definition?.argumentSchema) {
+            return toolInstance.definition.argumentSchema;
+          }
+          const toolClass = toolInstance.constructor as {
+            getArgumentSchema?: () => ParameterSchema | null;
+          };
+          if (typeof toolClass.getArgumentSchema === 'function') {
+            return toolClass.getArgumentSchema();
+          }
+        } catch (error) {
+          console.warn(`Agent '${agentId}': Failed to resolve XML argument schema for tool '${toolName}': ${error}`);
+        }
+      }
+
+      return defaultToolRegistry.getToolDefinition(toolName)?.argumentSchema ?? null;
+    };
+
     if (toolInstances && Object.keys(toolInstances).length > 0) {
       toolNames.push(...Object.keys(toolInstances));
     } else if (context.config.tools) {
@@ -119,7 +142,8 @@ export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
       provider,
       onSegmentEvent: emitSegmentEvent,
       turnId: activeTurnId,
-      agentId
+      agentId,
+      xmlArgumentSchemaResolver: toolArgumentSchemaResolver
     });
     const streamingHandler = handlerResult.handler;
 

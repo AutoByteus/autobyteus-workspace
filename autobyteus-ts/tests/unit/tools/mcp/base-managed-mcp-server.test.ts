@@ -1,5 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { BaseManagedMcpServer, ServerState } from '../../../../src/tools/mcp/server/base-managed-mcp-server.js';
+import {
+  BaseManagedMcpServer,
+  DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS,
+  ServerState
+} from '../../../../src/tools/mcp/server/base-managed-mcp-server.js';
 import { StdioMcpServerConfig } from '../../../../src/tools/mcp/types.js';
 
 class TestManagedServer extends BaseManagedMcpServer {
@@ -53,8 +57,29 @@ describe('BaseManagedMcpServer', () => {
     server.createSessionMock.mockResolvedValue({ listTools, callTool });
 
     const result = await server.callTool('tool-x', { value: 1 });
-    expect(callTool).toHaveBeenCalledWith({ name: 'tool-x', arguments: { value: 1 } });
+    expect(callTool).toHaveBeenCalledWith(
+      { name: 'tool-x', arguments: { value: 1 } },
+      undefined,
+      { timeout: DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS }
+    );
     expect(result).toEqual({ result: 'done' });
+  });
+
+  it('passes the extended timeout to legacy callTool signatures', async () => {
+    const listTools = vi.fn().mockResolvedValue({ tools: [] });
+    const calls: unknown[][] = [];
+    async function callTool(toolName: string, args: Record<string, unknown>, options?: Record<string, unknown>) {
+      calls.push([toolName, args, options]);
+      return { result: 'legacy-done' };
+    }
+
+    server.createSessionMock.mockResolvedValue({ listTools, callTool });
+
+    const result = await server.callTool('tool-legacy', { value: 2 });
+    expect(calls).toEqual([
+      ['tool-legacy', { value: 2 }, { timeout: DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS }]
+    ]);
+    expect(result).toEqual({ result: 'legacy-done' });
   });
 
   it('runs cleanup on close', async () => {

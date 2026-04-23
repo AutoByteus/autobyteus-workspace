@@ -326,7 +326,8 @@ export class ClaudeTeamManager implements TeamManager {
       skillAccessMode: memberContext.agentRunConfig.skillAccessMode,
       runtimeKind: memberContext.agentRunConfig.runtimeKind,
       memberTeamContext,
-      applicationSessionContext: memberContext.agentRunConfig.applicationSessionContext,
+      applicationExecutionContext: memberContext.agentRunConfig.applicationExecutionContext,
+      memberTeamContext,
     });
   }
 

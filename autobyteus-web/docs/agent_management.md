@@ -54,7 +54,7 @@ For team-local agents whose owning team belongs to an application bundle, the UI
 Those values are used in two places:
 
 - direct native agent launches, and
-- application launch draft preparation through `applicationSessionStore`.
+- application-authored backend flows that may reuse persisted definition defaults when an application backend decides to start runtime work.
 
 Definition editors can leave runtime blank to mean “choose when launching”, while run-config forms resolve to an effective runtime immediately.
 

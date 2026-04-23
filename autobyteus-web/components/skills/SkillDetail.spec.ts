@@ -56,7 +56,7 @@ describe('SkillDetail', () => {
     await flushPromises()
 
     expect(wrapper.text()).toContain('Skill not found. It may have been removed from its source.')
-    expect(wrapper.text()).toContain('Back to Skills')
+    expect(wrapper.text()).toContain('Back to skills')
   })
 
   it('emits back from the recoverable state', async () => {

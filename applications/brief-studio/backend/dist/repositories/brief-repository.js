@@ -1,8 +1,11 @@
 const mapRow = (row) => ({
     briefId: row.brief_id,
-    applicationSessionId: row.application_session_id,
     title: row.title,
     status: row.status,
+    latestBindingId: row.latest_binding_id,
+    latestRunId: row.latest_run_id,
+    latestBindingStatus: row.latest_binding_status,
+    lastErrorMessage: row.last_error_message,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
     approvedAt: row.approved_at,
@@ -11,7 +14,7 @@ const mapRow = (row) => ({
 export const createBriefRepository = (db) => ({
     getById(briefId) {
         const row = db
-            .prepare(`SELECT brief_id, application_session_id, title, status, created_at, updated_at, approved_at, rejected_at
+            .prepare(`SELECT brief_id, title, status, latest_binding_id, latest_run_id, latest_binding_status, last_error_message, created_at, updated_at, approved_at, rejected_at
          FROM briefs
          WHERE brief_id = ?`)
             .get(briefId);
@@ -19,7 +22,7 @@ export const createBriefRepository = (db) => ({
     },
     listSummaries() {
         const rows = db
-            .prepare(`SELECT brief_id, application_session_id, title, status, created_at, updated_at, approved_at, rejected_at
+            .prepare(`SELECT brief_id, title, status, latest_binding_id, latest_run_id, latest_binding_status, last_error_message, created_at, updated_at, approved_at, rejected_at
          FROM briefs
          ORDER BY datetime(updated_at) DESC, brief_id DESC`)
             .all();
@@ -28,26 +31,33 @@ export const createBriefRepository = (db) => ({
     upsertProjectedBrief(input) {
         db.prepare(`INSERT INTO briefs (
         brief_id,
-        application_session_id,
         title,
         status,
+        latest_binding_id,
+        latest_run_id,
+        latest_binding_status,
+        last_error_message,
         created_at,
         updated_at,
         approved_at,
         rejected_at
-      ) VALUES (?, ?, ?, ?, ?, ?, NULL, NULL)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, NULL)
       ON CONFLICT(brief_id) DO UPDATE SET
-        application_session_id = excluded.application_session_id,
         title = excluded.title,
         status = excluded.status,
-        updated_at = excluded.updated_at`).run(input.briefId, input.applicationSessionId, input.title, input.status, input.updatedAt, input.updatedAt);
+        latest_binding_id = excluded.latest_binding_id,
+        latest_run_id = excluded.latest_run_id,
+        latest_binding_status = excluded.latest_binding_status,
+        last_error_message = excluded.last_error_message,
+        updated_at = excluded.updated_at`).run(input.briefId, input.title, input.status, input.latestBindingId ?? null, input.latestRunId ?? null, input.latestBindingStatus ?? null, input.lastErrorMessage ?? null, input.updatedAt, input.updatedAt);
     },
     setStatus(input) {
         db.prepare(`UPDATE briefs
        SET status = ?,
            updated_at = ?,
            approved_at = ?,
-           rejected_at = ?
+           rejected_at = ?,
+           last_error_message = NULL
        WHERE brief_id = ?`).run(input.status, input.updatedAt, input.approvedAt ?? null, input.rejectedAt ?? null, input.briefId);
     },
 });

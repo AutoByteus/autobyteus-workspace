@@ -6,10 +6,11 @@ import type {
   ApplicationOwnedDefinitionSource,
   ValidatedApplicationBundle,
 } from "../domain/models.js";
-import { appConfigProvider } from "../../config/app-config-provider.js";
-import { ApplicationPackageRegistryStore } from "../../application-packages/stores/application-package-registry-store.js";
-import { ApplicationPackageRootSettingsStore } from "../../application-packages/stores/application-package-root-settings-store.js";
-import { buildLocalApplicationPackageId } from "../../application-packages/utils/application-package-root-summary.js";
+import type {
+  ApplicationCatalogDiagnostic,
+  ApplicationCatalogSnapshot,
+} from "../domain/application-catalog-snapshot.js";
+import type { ApplicationPackageRegistrySnapshot } from "../../application-packages/domain/application-package-registry-snapshot.js";
 import {
   getApplicationManifestPath,
   parseApplicationManifest,
@@ -50,6 +51,11 @@ type ScannedBundleRecord = {
   packageId: string;
   packageRootPath: string;
   bundle: ValidatedApplicationBundle;
+};
+
+type ScanBundleRecordResult = {
+  record: ScannedBundleRecord | null;
+  diagnostic: ApplicationCatalogDiagnostic | null;
 };
 
 const isWritablePath = async (targetPath: string): Promise<boolean> => {
@@ -102,28 +108,6 @@ const assertExistingDirectory = (bundleRootPath: string, relativePath: string, f
   }
 };
 
-const assertRuntimeTargetExists = (
-  bundleRootPath: string,
-  manifestRuntimeTarget: { kind: "AGENT" | "AGENT_TEAM"; localId: string },
-  localAgentIds: string[],
-  localTeamIds: string[],
-): void => {
-  if (manifestRuntimeTarget.kind === "AGENT") {
-    if (!localAgentIds.includes(manifestRuntimeTarget.localId)) {
-      throw new Error(
-        `Application bundle '${bundleRootPath}' runtime target agent '${manifestRuntimeTarget.localId}' was not found under agents/.`,
-      );
-    }
-    return;
-  }
-
-  if (!localTeamIds.includes(manifestRuntimeTarget.localId)) {
-    throw new Error(
-      `Application bundle '${bundleRootPath}' runtime target team '${manifestRuntimeTarget.localId}' was not found under agent-teams/.`,
-    );
-  }
-};
-
 const buildApplicationSource = (
   record: ScannedBundleRecord,
   localDefinitionId: string,
@@ -151,70 +135,59 @@ const buildApplicationSource = (
   writable: record.bundle.writable,
 });
 
-export class FileApplicationBundleProvider {
-  constructor(
-    private readonly config = appConfigProvider.config,
-    private readonly rootSettingsStore = new ApplicationPackageRootSettingsStore(),
-    private readonly registryStore = new ApplicationPackageRegistryStore(),
-  ) {}
+const createDiagnostic = (
+  root: BundleRootDescriptor,
+  localApplicationId: string,
+  applicationRootPath: string,
+  message: string,
+): ApplicationCatalogDiagnostic => ({
+  applicationId: buildCanonicalApplicationId(root.packageId, localApplicationId),
+  localApplicationId,
+  packageId: root.packageId,
+  packageRootPath: root.packageRootPath,
+  applicationRootPath,
+  message,
+  discoveredAt: new Date().toISOString(),
+});
 
-  private async listBundleRoots(): Promise<BundleRootDescriptor[]> {
-    const seen = new Set<string>();
-    const bundleRoots: BundleRootDescriptor[] = [];
-    const builtInApplicationRootPath = this.rootSettingsStore.getBuiltInRootPath();
-
-    const addRoot = (packageId: string, packageRootPath: string): void => {
-      const resolvedPath = path.resolve(packageRootPath);
-      if (seen.has(resolvedPath)) {
-        return;
-      }
-      seen.add(resolvedPath);
-      bundleRoots.push({ packageId, packageRootPath: resolvedPath });
-    };
-
-    addRoot(BUILT_IN_APPLICATION_PACKAGE_ID, builtInApplicationRootPath);
-
-    const additionalRoots = this.rootSettingsStore.listAdditionalRootPaths();
-    const registryRecords = await this.registryStore.listPackageRecords();
-    const registryByRootPath = new Map(
-      registryRecords.map((record) => [path.resolve(record.rootPath), record]),
-    );
-
-    for (const additionalRootPath of additionalRoots) {
-      const resolvedRootPath = path.resolve(additionalRootPath);
-      if (resolvedRootPath === builtInApplicationRootPath) {
-        continue;
-      }
-      const record = registryByRootPath.get(resolvedRootPath);
-      addRoot(record?.packageId ?? buildLocalApplicationPackageId(resolvedRootPath), resolvedRootPath);
+const validateManifestResourceSlotDefaults = (record: ScannedBundleRecord): void => {
+  const bundleAgentIds = new Set(record.bundle.localAgentIds);
+  const bundleTeamIds = new Set(record.bundle.localTeamIds);
+  for (const slot of record.bundle.resourceSlots) {
+    const defaultResourceRef = slot.defaultResourceRef;
+    if (!defaultResourceRef || defaultResourceRef.owner !== "bundle") {
+      continue;
     }
+    if (
+      (defaultResourceRef.kind === "AGENT" && !bundleAgentIds.has(defaultResourceRef.localId))
+      || (defaultResourceRef.kind === "AGENT_TEAM" && !bundleTeamIds.has(defaultResourceRef.localId))
+    ) {
+      throw new Error(
+        `Application bundle '${record.bundle.applicationRootPath}' resource slot '${slot.slotKey}' defaultResourceRef.localId '${defaultResourceRef.localId}' does not resolve to a discovered bundle-owned ${defaultResourceRef.kind.toLowerCase()}.`,
+      );
+    }
+  }
+};
 
-    return bundleRoots;
+export class FileApplicationBundleProvider {
+  constructor(..._legacyDependencies: unknown[]) {}
+
+  private listBundleRoots(registrySnapshot: ApplicationPackageRegistrySnapshot): BundleRootDescriptor[] {
+    return registrySnapshot.packages.map((packageEntry) => ({
+      packageId: packageEntry.packageId,
+      packageRootPath: path.resolve(packageEntry.packageRootPath),
+    }));
   }
 
-  private async scanBundleRoot(root: BundleRootDescriptor): Promise<ScannedBundleRecord[]> {
-    const applicationsDir = path.join(root.packageRootPath, "applications");
-    let entries: fs.Dirent[] = [];
+  private async scanBundleRecord(
+    root: BundleRootDescriptor,
+    localApplicationId: string,
+  ): Promise<ScanBundleRecordResult> {
+    const applicationRootPath = path.join(root.packageRootPath, "applications", localApplicationId);
+    const manifestPath = getApplicationManifestPath(applicationRootPath);
     try {
-      entries = await fsPromises.readdir(applicationsDir, { withFileTypes: true });
-    } catch {
-      return [];
-    }
-
-    const records: ScannedBundleRecord[] = [];
-    for (const entry of entries) {
-      if (!entry.isDirectory() || entry.name.startsWith("_")) {
-        continue;
-      }
-
-      const applicationRootPath = path.join(applicationsDir, entry.name);
-      const manifestPath = getApplicationManifestPath(applicationRootPath);
-      if (!fs.existsSync(manifestPath)) {
-        continue;
-      }
-
       const manifest = parseApplicationManifest(applicationRootPath, manifestPath);
-      if (manifest.id !== entry.name) {
+      if (manifest.id !== localApplicationId) {
         throw new Error(
           `Application bundle folder '${applicationRootPath}' must match manifest id '${manifest.id}'.`,
         );
@@ -240,14 +213,8 @@ export class FileApplicationBundleProvider {
 
       const localAgentIds = await listDefinitionIds(path.join(applicationRootPath, "agents"), "agent.md");
       const localTeamIds = await listDefinitionIds(path.join(applicationRootPath, "agent-teams"), "team.md");
-      assertRuntimeTargetExists(
-        applicationRootPath,
-        manifest.runtimeTarget,
-        localAgentIds,
-        localTeamIds,
-      );
 
-      records.push({
+      const record: ScannedBundleRecord = {
         packageId: root.packageId,
         packageRootPath: root.packageRootPath,
         bundle: {
@@ -257,158 +224,250 @@ export class FileApplicationBundleProvider {
           description: manifest.description,
           iconRelativePath: manifest.iconRelativePath,
           entryHtmlRelativePath: manifest.entryHtmlRelativePath,
-          runtimeTarget: manifest.runtimeTarget,
+          resourceSlots: manifest.resourceSlots,
           localAgentIds,
           localTeamIds,
           writable: await isWritablePath(applicationRootPath),
           backend,
         },
-      });
+      };
+      validateManifestResourceSlotDefaults(record);
+      return { record, diagnostic: null };
+    } catch (error) {
+      return {
+        record: null,
+        diagnostic: createDiagnostic(
+          root,
+          localApplicationId,
+          applicationRootPath,
+          error instanceof Error ? error.message : String(error),
+        ),
+      };
     }
-
-    return records;
   }
 
-  private async validateApplicationOwnedTeams(records: ScannedBundleRecord[]): Promise<void> {
-    const applicationIdByTeamId = new Map<string, string>();
+  private async scanBundleRoot(root: BundleRootDescriptor): Promise<ScanBundleRecordResult[]> {
+    const applicationsDir = path.join(root.packageRootPath, "applications");
+    let entries: fs.Dirent[] = [];
+    try {
+      entries = await fsPromises.readdir(applicationsDir, { withFileTypes: true });
+    } catch {
+      return [];
+    }
 
-    for (const record of records) {
-      for (const localAgentId of record.bundle.localAgentIds) {
-        const source = buildApplicationSource(record, localAgentId, "agent");
-        const definition = await readApplicationOwnedAgentDefinitionFromSource(
-          buildApplicationOwnedAgentSourcePaths(source),
-          source.definitionId,
-        );
-        if (!definition) {
-          throw new Error(
-            `Application bundle '${record.bundle.applicationRootPath}' application-owned agent '${localAgentId}' could not be read.`,
-          );
-        }
+    const results: ScanBundleRecordResult[] = [];
+    for (const entry of entries) {
+      if (!entry.isDirectory() || entry.name.startsWith("_")) {
+        continue;
       }
+
+      const applicationRootPath = path.join(applicationsDir, entry.name);
+      const manifestPath = getApplicationManifestPath(applicationRootPath);
+      if (!fs.existsSync(manifestPath)) {
+        continue;
+      }
+
+      results.push(await this.scanBundleRecord(root, entry.name));
+    }
+
+    return results;
+  }
+
+  private async validateApplicationOwnedRecord(
+    record: ScannedBundleRecord,
+    applicationIdByTeamId: Map<string, string>,
+  ): Promise<void> {
+    for (const localAgentId of record.bundle.localAgentIds) {
+      const source = buildApplicationSource(record, localAgentId, "agent");
+      const definition = await readApplicationOwnedAgentDefinitionFromSource(
+        buildApplicationOwnedAgentSourcePaths(source),
+        source.definitionId,
+      );
+      if (!definition) {
+        throw new Error(
+          `Application bundle '${record.bundle.applicationRootPath}' application-owned agent '${localAgentId}' could not be read.`,
+        );
+      }
+    }
+
+    const applicationId = buildCanonicalApplicationId(
+      record.packageId,
+      record.bundle.localApplicationId,
+    );
+
+    for (const localTeamId of record.bundle.localTeamIds) {
+      const teamDir = path.join(record.bundle.applicationRootPath, "agent-teams", localTeamId);
+      const definition = await readApplicationOwnedTeamDefinitionFromSource({
+        sourcePaths: {
+          teamDir,
+          mdPath: path.join(teamDir, "team.md"),
+          configPath: path.join(teamDir, "team-config.json"),
+          rootPath: record.bundle.applicationRootPath,
+          definitionId: buildCanonicalApplicationOwnedTeamId(
+            record.packageId,
+            record.bundle.localApplicationId,
+            localTeamId,
+          ),
+          applicationId,
+          applicationName: record.bundle.name,
+          packageId: record.packageId,
+          localApplicationId: record.bundle.localApplicationId,
+          localTeamId,
+        },
+        canonicalizeTeamRef: (localNestedTeamId) =>
+          buildCanonicalApplicationOwnedTeamId(
+            record.packageId,
+            record.bundle.localApplicationId,
+            localNestedTeamId,
+          ),
+      });
+
+      if (!definition) {
+        continue;
+      }
+
+      await assertApplicationOwnedTeamIntegrity({
+        owningApplicationId: applicationId,
+        teamId: definition.id ?? localTeamId,
+        nodes: definition.nodes,
+        resolveLocalAgentRef: async (localAgentId) => {
+          try {
+            const filePaths = buildTeamLocalAgentFilePaths(teamDir, localAgentId);
+            const mdContent = await fsPromises.readFile(filePaths.mdPath, "utf-8");
+            parseAgentMd(mdContent, filePaths.mdPath);
+            normalizeAgentConfigRecord(
+              await readJsonFile<AgentConfigRecord>(filePaths.configPath, defaultAgentConfig()),
+            );
+            return { exists: true };
+          } catch (error) {
+            if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+              return { exists: false };
+            }
+            throw error;
+          }
+        },
+        resolveNestedTeamRef: (ref) => ({
+          exists: applicationIdByTeamId.has(ref),
+          ownerApplicationId: applicationIdByTeamId.get(ref) ?? null,
+        }),
+      });
+    }
+  }
+
+  private async finalizeValidRecords(
+    scannedRecords: ScannedBundleRecord[],
+  ): Promise<{ validRecords: ScannedBundleRecord[]; diagnostics: ApplicationCatalogDiagnostic[] }> {
+    const applicationIdByTeamId = new Map<string, string>();
+    for (const record of scannedRecords) {
       for (const localTeamId of record.bundle.localTeamIds) {
         const source = buildApplicationSource(record, localTeamId, "team");
         applicationIdByTeamId.set(source.definitionId, source.applicationId);
       }
     }
 
-    for (const record of records) {
-      const applicationId = buildCanonicalApplicationId(
-        record.packageId,
-        record.bundle.localApplicationId,
-      );
-
-      for (const localTeamId of record.bundle.localTeamIds) {
-        const teamDir = path.join(record.bundle.applicationRootPath, "agent-teams", localTeamId);
-        const definition = await readApplicationOwnedTeamDefinitionFromSource({
-          sourcePaths: {
-            teamDir,
-            mdPath: path.join(teamDir, "team.md"),
-            configPath: path.join(teamDir, "team-config.json"),
-            rootPath: record.bundle.applicationRootPath,
-            definitionId: buildCanonicalApplicationOwnedTeamId(
-              record.packageId,
-              record.bundle.localApplicationId,
-              localTeamId,
-            ),
-            applicationId,
-            applicationName: record.bundle.name,
-            packageId: record.packageId,
-            localApplicationId: record.bundle.localApplicationId,
-            localTeamId,
-          },
-          canonicalizeTeamRef: (localNestedTeamId) =>
-            buildCanonicalApplicationOwnedTeamId(
-              record.packageId,
-              record.bundle.localApplicationId,
-              localNestedTeamId,
-            ),
-        });
-
-        if (!definition) {
-          continue;
-        }
-
-        await assertApplicationOwnedTeamIntegrity({
-          owningApplicationId: applicationId,
-          teamId: definition.id ?? localTeamId,
-          nodes: definition.nodes,
-          resolveLocalAgentRef: async (localAgentId) => {
-            try {
-              const filePaths = buildTeamLocalAgentFilePaths(teamDir, localAgentId);
-              const mdContent = await fsPromises.readFile(filePaths.mdPath, "utf-8");
-              parseAgentMd(mdContent, filePaths.mdPath);
-              normalizeAgentConfigRecord(
-                await readJsonFile<AgentConfigRecord>(filePaths.configPath, defaultAgentConfig()),
-              );
-              return { exists: true };
-            } catch (error) {
-              if ((error as NodeJS.ErrnoException).code === "ENOENT") {
-                return { exists: false };
-              }
-              throw error;
-            }
-          },
-          resolveNestedTeamRef: (ref) => ({
-            exists: applicationIdByTeamId.has(ref),
-            ownerApplicationId: applicationIdByTeamId.get(ref) ?? null,
-          }),
-        });
+    const validRecords: ScannedBundleRecord[] = [];
+    const diagnostics: ApplicationCatalogDiagnostic[] = [];
+    for (const record of scannedRecords) {
+      try {
+        await this.validateApplicationOwnedRecord(record, applicationIdByTeamId);
+        validRecords.push(record);
+      } catch (error) {
+        diagnostics.push(
+          createDiagnostic(
+            { packageId: record.packageId, packageRootPath: record.packageRootPath },
+            record.bundle.localApplicationId,
+            record.bundle.applicationRootPath,
+            error instanceof Error ? error.message : String(error),
+          ),
+        );
       }
     }
+
+    return { validRecords, diagnostics };
   }
 
-  async listBundles(): Promise<ApplicationBundle[]> {
-    const bundleRoots = await this.listBundleRoots();
-    const scannedRecords = (
+  private mapRecordToBundle(record: ScannedBundleRecord): ApplicationBundle {
+    const applicationId = buildCanonicalApplicationId(
+      record.packageId,
+      record.bundle.localApplicationId,
+    );
+    return {
+      id: applicationId,
+      localApplicationId: record.bundle.localApplicationId,
+      packageId: record.packageId,
+      name: record.bundle.name,
+      description: record.bundle.description,
+      iconAssetPath: null,
+      entryHtmlAssetPath: "",
+      bundleResources: [
+        ...record.bundle.localAgentIds.map((localId) => ({
+          kind: "AGENT" as const,
+          localId,
+          definitionId: buildCanonicalApplicationOwnedAgentId(
+            record.packageId,
+            record.bundle.localApplicationId,
+            localId,
+          ),
+        })),
+        ...record.bundle.localTeamIds.map((localId) => ({
+          kind: "AGENT_TEAM" as const,
+          localId,
+          definitionId: buildCanonicalApplicationOwnedTeamId(
+            record.packageId,
+            record.bundle.localApplicationId,
+            localId,
+          ),
+        })),
+      ],
+      resourceSlots: record.bundle.resourceSlots,
+      writable: record.bundle.writable,
+      applicationRootPath: record.bundle.applicationRootPath,
+      packageRootPath: record.packageRootPath,
+      localAgentIds: record.bundle.localAgentIds,
+      localTeamIds: record.bundle.localTeamIds,
+      entryHtmlRelativePath: record.bundle.entryHtmlRelativePath,
+      iconRelativePath: record.bundle.iconRelativePath,
+      backend: record.bundle.backend,
+    };
+  }
+
+  async getCatalogSnapshot(registrySnapshot: ApplicationPackageRegistrySnapshot): Promise<ApplicationCatalogSnapshot> {
+    const bundleRoots = this.listBundleRoots(registrySnapshot);
+    const scanResults = (
       await Promise.all(bundleRoots.map((root) => this.scanBundleRoot(root)))
     ).flat();
+    const scannedRecords = scanResults
+      .map((result) => result.record)
+      .filter((value): value is ScannedBundleRecord => Boolean(value));
+    const scanDiagnostics = scanResults
+      .map((result) => result.diagnostic)
+      .filter((value): value is ApplicationCatalogDiagnostic => Boolean(value));
 
-    await this.validateApplicationOwnedTeams(scannedRecords);
+    const { validRecords, diagnostics: validationDiagnostics } = await this.finalizeValidRecords(scannedRecords);
+    return {
+      applications: validRecords.map((record) => this.mapRecordToBundle(record)),
+      diagnostics: [...scanDiagnostics, ...validationDiagnostics],
+      refreshedAt: new Date().toISOString(),
+    };
+  }
 
-    return scannedRecords.map((record) => {
-      const applicationId = buildCanonicalApplicationId(
-        record.packageId,
-        record.bundle.localApplicationId,
-      );
-      return {
-        id: applicationId,
-        localApplicationId: record.bundle.localApplicationId,
-        packageId: record.packageId,
-        name: record.bundle.name,
-        description: record.bundle.description,
-        iconAssetPath: null,
-        entryHtmlAssetPath: "",
-        runtimeTarget: {
-          kind: record.bundle.runtimeTarget.kind,
-          localId: record.bundle.runtimeTarget.localId,
-          definitionId:
-            record.bundle.runtimeTarget.kind === "AGENT"
-              ? buildCanonicalApplicationOwnedAgentId(
-                  record.packageId,
-                  record.bundle.localApplicationId,
-                  record.bundle.runtimeTarget.localId,
-                )
-              : buildCanonicalApplicationOwnedTeamId(
-                  record.packageId,
-                  record.bundle.localApplicationId,
-                  record.bundle.runtimeTarget.localId,
-                ),
-        },
-        writable: record.bundle.writable,
-        applicationRootPath: record.bundle.applicationRootPath,
-        packageRootPath: record.packageRootPath,
-        localAgentIds: record.bundle.localAgentIds,
-        localTeamIds: record.bundle.localTeamIds,
-        entryHtmlRelativePath: record.bundle.entryHtmlRelativePath,
-        iconRelativePath: record.bundle.iconRelativePath,
-        backend: record.bundle.backend,
-      };
-    });
+  async listBundles(registrySnapshot: ApplicationPackageRegistrySnapshot): Promise<ApplicationBundle[]> {
+    return (await this.getCatalogSnapshot(registrySnapshot)).applications;
   }
 
   async validatePackageRoot(packageRootPath: string, packageId: string): Promise<void> {
-    const records = await this.scanBundleRoot({ packageId, packageRootPath });
-    await this.validateApplicationOwnedTeams(records);
+    const scanResults = await this.scanBundleRoot({ packageId, packageRootPath });
+    const scannedRecords = scanResults
+      .map((result) => result.record)
+      .filter((value): value is ScannedBundleRecord => Boolean(value));
+    const diagnostics = scanResults
+      .map((result) => result.diagnostic)
+      .filter((value): value is ApplicationCatalogDiagnostic => Boolean(value));
+    const { diagnostics: validationDiagnostics } = await this.finalizeValidRecords(scannedRecords);
+    const firstDiagnostic = [...diagnostics, ...validationDiagnostics][0];
+    if (firstDiagnostic) {
+      throw new Error(firstDiagnostic.message);
+    }
   }
 
   buildApplicationOwnedAgentSources(bundle: ApplicationBundle): ApplicationOwnedDefinitionSource[] {

@@ -35,10 +35,10 @@ The active runtime uses the run-file-changes subsystem as the only supported ser
 This is the authoritative Artifacts-area event.
 It carries the canonical path, type, status, source tool, timestamps, and optional transient `content` for live `write_file` preview.
 
-### `ARTIFACT_PERSISTED` / `ARTIFACT_UPDATED`
+### Published-artifact transport
 
-Some runtimes still emit these as compatibility transport noise.
-The current Artifacts tab does not depend on them and they should not be treated as the authoritative serving path.
+Published-artifact events may still exist for application/runtime consumers, but the current Artifacts tab does not depend on them.
+They are not the authoritative serving path for changed files.
 
 ## Source Of Truth
 

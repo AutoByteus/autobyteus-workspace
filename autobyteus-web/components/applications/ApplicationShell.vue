@@ -1,291 +1,329 @@
 <template>
-  <div :class="shellRootClasses">
-    <div v-if="!hasLiveSessionShell" :class="pageContainerClasses">
-      <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <button
-          type="button"
-          class="inline-flex items-center rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100"
-          @click="goBack"
-        >
-          {{ $t('applications.components.applications.ApplicationShell.backToApplications') }}
-        </button>
-      </div>
-
-      <div
-        v-if="loading"
-        class="rounded-xl border border-slate-200 bg-white py-20 text-center shadow-sm"
-      >
-        <div class="mx-auto mb-4 h-9 w-9 animate-spin rounded-full border-b-2 border-blue-600"></div>
-        <p class="text-slate-600">{{ $t('applications.components.applications.ApplicationShell.loadingApplication') }}</p>
-      </div>
-
-      <div
-        v-else-if="loadError"
-        class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"
-      >
-        <p class="font-semibold">{{ $t('applications.components.applications.ApplicationShell.unableToLoadApplication') }}</p>
-        <p class="mt-1">{{ loadError }}</p>
-      </div>
-
-      <div
-        v-else-if="!application"
-        class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"
-      >
-        <p class="font-semibold">{{ $t('applications.components.applications.ApplicationShell.applicationNotFound') }}</p>
-        <p class="mt-1">{{ $t('applications.components.applications.ApplicationShell.noApplicationExistsForId', { id: applicationId }) }}</p>
-      </div>
-
-      <template v-else>
-        <div
-          v-if="bindingNotice"
-          class="mb-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800"
-        >
-          {{ bindingNotice }}
+  <div class="flex h-full min-h-0 flex-1 flex-col">
+    <div
+      v-if="phase === 'setup'"
+      class="h-full flex-1 overflow-auto bg-slate-50"
+      data-testid="application-setup-phase"
+    >
+      <div class="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
+        <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <button
+            type="button"
+            class="inline-flex items-center rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100"
+            @click="goBack"
+          >
+            {{ $t('applications.components.applications.ApplicationShell.backToApplications') }}
+          </button>
         </div>
 
-        <section class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-          <div class="flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between">
-            <div class="min-w-0 flex-1">
-              <div class="flex flex-wrap items-center gap-2">
-                <span class="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700">
-                  {{ runtimeTargetLabel }}
-                </span>
-              </div>
-              <h1 class="mt-4 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-                {{ application.name }}
-              </h1>
-              <p class="mt-3 max-w-3xl text-base leading-7 text-slate-600">
-                {{ application.description || $t('applications.shared.noDescriptionProvided') }}
-              </p>
-              <p class="mt-4 text-sm text-slate-500">
-                {{ $t('applications.components.applications.ApplicationShell.launchToOpenAppView') }}
-              </p>
+        <div
+          v-if="loading"
+          class="rounded-xl border border-slate-200 bg-white py-20 text-center shadow-sm"
+        >
+          <div class="mx-auto mb-4 h-9 w-9 animate-spin rounded-full border-b-2 border-blue-600"></div>
+          <p class="text-slate-600">{{ $t('applications.components.applications.ApplicationShell.loadingApplication') }}</p>
+        </div>
+
+        <div
+          v-else-if="loadError"
+          class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"
+        >
+          <p class="font-semibold">{{ $t('applications.components.applications.ApplicationShell.unableToLoadApplication') }}</p>
+          <p class="mt-1">{{ loadError }}</p>
+        </div>
+
+        <div
+          v-else-if="!application"
+          class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"
+        >
+          <p class="font-semibold">{{ $t('applications.components.applications.ApplicationShell.applicationNotFound') }}</p>
+          <p class="mt-1">{{ $t('applications.components.applications.ApplicationShell.noApplicationExistsForId', { id: applicationId }) }}</p>
+        </div>
+
+        <template v-else>
+          <section class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+            <div class="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
+              <span class="i-heroicons-adjustments-horizontal-20-solid h-4 w-4"></span>
+              <span>{{ $t('applications.components.applications.ApplicationLaunchSetupPanel.title') }}</span>
             </div>
 
-            <div class="flex shrink-0 flex-wrap items-center gap-3">
+            <div class="mt-5 grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(18rem,1fr)]">
+              <div class="min-w-0">
+                <h1 class="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+                  {{ application.name }}
+                </h1>
+                <p class="mt-3 max-w-3xl text-base leading-7 text-slate-600">
+                  {{ application.description || $t('applications.shared.noDescriptionProvided') }}
+                </p>
+                <div class="mt-6 rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm leading-6 text-blue-800">
+                  {{ $t('applications.components.applications.ApplicationShell.applicationReadyNotice') }}
+                </div>
+              </div>
+
+              <div class="grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
+                <div v-for="item in detailItems" :key="item.label">
+                  <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ item.label }}</p>
+                  <p class="mt-1 break-all text-slate-900">{{ item.value }}</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <ApplicationLaunchSetupPanel
+            class="mt-6"
+            :application-id="application.id"
+            presentation="page"
+            @setup-state-change="updateSetupGateState"
+          />
+
+          <div
+            data-testid="application-pre-entry-gate"
+            class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+          >
+            <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <div class="space-y-2">
+                <h2 class="text-lg font-semibold text-slate-900">
+                  {{ $t('applications.components.applications.ApplicationShell.preEntryGateTitle') }}
+                </h2>
+                <p class="max-w-3xl text-sm leading-6 text-slate-600">
+                  {{ preEntryGateDescription }}
+                </p>
+              </div>
+
               <button
                 type="button"
-                class="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
-                @click="launchModalOpen = true"
+                class="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-300"
+                :disabled="!canLaunchFromSetupGate"
+                @click="enterApplication"
               >
-                {{ $t('applications.components.applications.ApplicationLaunchConfigModal.launch_application') }}
+                {{ $t('applications.components.applications.ApplicationShell.enterApplication') }}
               </button>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+
+    <div
+      v-else
+      class="h-full min-h-0 flex-1 bg-slate-950"
+      data-testid="application-immersive-phase"
+    >
+      <div class="relative flex h-full min-h-0 w-full">
+        <ApplicationImmersiveControlPanel
+          v-if="application"
+          :application-name="application.name"
+          :reload-disabled="isReloadDisabled"
+          :reload-status-message="immersiveReloadHint"
+          @reload-application="reloadApplication"
+          @exit-application="exitApplication"
+        >
+          <template #details>
+            <div class="space-y-4 text-sm text-slate-700">
+              <div>
+                <h3 class="text-base font-semibold text-slate-900">{{ application.name }}</h3>
+                <p class="mt-2 leading-6 text-slate-600">
+                  {{ application.description || $t('applications.shared.noDescriptionProvided') }}
+                </p>
+              </div>
+
+              <div class="space-y-3">
+                <div
+                  v-for="item in detailItems"
+                  :key="item.label"
+                  class="rounded-xl border border-slate-200 bg-white px-3 py-3 shadow-sm"
+                >
+                  <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ item.label }}</p>
+                  <p class="mt-1 break-all text-sm text-slate-800">{{ item.value }}</p>
+                </div>
+              </div>
+            </div>
+          </template>
+
+          <template #configure>
+            <ApplicationLaunchSetupPanel
+              :application-id="application.id"
+              presentation="panel"
+              @setup-state-change="updateSetupGateState"
+            />
+          </template>
+        </ApplicationImmersiveControlPanel>
+
+        <div class="flex min-h-0 flex-1">
+          <div
+            v-if="loading"
+            class="flex min-h-0 flex-1 items-center justify-center px-6"
+          >
+            <div class="flex flex-col items-center gap-3 text-center text-slate-300">
+              <div class="h-10 w-10 animate-spin rounded-full border-b-2 border-blue-400"></div>
+              <p class="text-sm font-medium">{{ $t('applications.components.applications.ApplicationShell.loadingApplication') }}</p>
+            </div>
+          </div>
+
+          <div
+            v-else-if="loadError"
+            class="flex min-h-0 flex-1 items-center justify-center px-6"
+          >
+            <div class="w-full max-w-xl rounded-3xl border border-red-500/30 bg-red-500/10 p-6 text-sm text-red-100 shadow-xl shadow-slate-950/30">
+              <p class="text-lg font-semibold">{{ $t('applications.components.applications.ApplicationShell.unableToLoadApplication') }}</p>
+              <p class="mt-3 leading-6">{{ loadError }}</p>
               <button
                 type="button"
-                class="inline-flex items-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100"
-                data-testid="application-details-toggle"
-                @click="detailsOpen = !detailsOpen"
+                class="mt-5 inline-flex items-center rounded-md border border-red-300/40 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-50 transition-colors hover:bg-red-500/20"
+                @click="exitApplication"
               >
-                {{ detailsOpen
-                  ? $t('applications.components.applications.ApplicationShell.hideDetails')
-                  : $t('applications.components.applications.ApplicationShell.showDetails') }}
+                {{ $t('applications.components.applications.ApplicationImmersiveControlPanel.exitApplication') }}
               </button>
             </div>
           </div>
 
           <div
-            v-if="detailsOpen"
-            class="mt-6 grid gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700 sm:grid-cols-2"
+            v-else-if="!application"
+            class="flex min-h-0 flex-1 items-center justify-center px-6"
           >
-            <div v-for="item in detailItems" :key="item.label">
-              <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ item.label }}</p>
-              <p class="mt-1 break-all">{{ item.value }}</p>
+            <div class="w-full max-w-xl rounded-3xl border border-red-500/30 bg-red-500/10 p-6 text-sm text-red-100 shadow-xl shadow-slate-950/30">
+              <p class="text-lg font-semibold">{{ $t('applications.components.applications.ApplicationShell.applicationNotFound') }}</p>
+              <p class="mt-3 leading-6">{{ $t('applications.components.applications.ApplicationShell.noApplicationExistsForId', { id: applicationId }) }}</p>
+              <button
+                type="button"
+                class="mt-5 inline-flex items-center rounded-md border border-red-300/40 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-50 transition-colors hover:bg-red-500/20"
+                @click="exitApplication"
+              >
+                {{ $t('applications.components.applications.ApplicationImmersiveControlPanel.exitApplication') }}
+              </button>
             </div>
           </div>
-        </section>
-      </template>
-    </div>
 
-    <template v-else>
-      <div v-if="isImmersiveApplicationView" class="relative flex-1 min-h-0 overflow-hidden">
-        <div
-          data-testid="application-immersive-surface-container"
-          :class="immersiveSurfaceContainerClasses"
-        >
-          <ApplicationSurface
-            :session="activeSession"
-            presentation="immersive"
-          />
-        </div>
-
-        <ApplicationImmersiveControls
-          :application-name="application?.name || ''"
-          :details-open="detailsOpen"
-          @sheet-open-change="handleImmersiveControlsSheetOpenChange"
-          @exit-immersive="exitImmersive"
-          @switch-execution="switchToExecution"
-          @toggle-details="detailsOpen = !detailsOpen"
-          @relaunch="launchModalOpen = true"
-          @stop-session="terminateActiveSession"
-        />
-
-        <div
-          v-if="bindingNotice"
-          class="pointer-events-none absolute inset-x-0 top-20 z-20 flex justify-center px-4"
-        >
-          <div class="pointer-events-auto max-w-3xl rounded-full border border-amber-300 bg-amber-50/95 px-4 py-2 text-sm text-amber-900 shadow-lg backdrop-blur">
-            {{ bindingNotice }}
-          </div>
-        </div>
-
-        <div
-          v-if="detailsOpen"
-          class="pointer-events-none absolute inset-x-0 top-20 z-20 flex justify-end px-4 sm:px-6 lg:px-8"
-        >
-          <div class="pointer-events-auto w-full max-w-md rounded-2xl border border-white/15 bg-slate-950/85 p-4 text-sm text-slate-100 shadow-2xl backdrop-blur-md">
-            <div class="grid gap-4 sm:grid-cols-2">
-              <div v-for="item in detailItems" :key="item.label">
-                <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">{{ item.label }}</p>
-                <p class="mt-1 break-all text-slate-100">{{ item.value }}</p>
+          <div
+            v-else-if="hostLaunchLoading && !launchState.launchInstanceId"
+            class="flex min-h-0 flex-1 items-center justify-center px-6"
+            data-testid="application-immersive-loading-canvas"
+          >
+            <div class="flex flex-col items-center gap-4 text-center text-slate-300">
+              <div class="h-10 w-10 animate-spin rounded-full border-b-2 border-blue-400"></div>
+              <div class="space-y-2">
+                <p class="text-lg font-semibold text-white">{{ $t('applications.components.applications.ApplicationShell.startingApplication') }}</p>
+                <p class="max-w-xl text-sm leading-6 text-slate-400">
+                  {{ $t('applications.components.applications.ApplicationShell.preEntryGateDescription') }}
+                </p>
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div v-else class="flex flex-1 min-h-0 flex-col">
-        <ApplicationLiveSessionToolbar
-          :application-name="application?.name || ''"
-          :page-mode="pageMode"
-          :application-presentation="applicationPresentation"
-          :details-open="detailsOpen"
-          :binding-notice="bindingNotice"
-          :detail-items="detailItems"
-          @back="goBack"
-          @set-mode="pageMode = $event"
-          @enter-immersive="enterImmersive"
-          @toggle-details="detailsOpen = !detailsOpen"
-          @relaunch="launchModalOpen = true"
-          @stop-session="terminateActiveSession"
-        />
+          <div
+            v-else-if="hostLaunchError && !launchState.launchInstanceId"
+            class="flex min-h-0 flex-1 items-center justify-center px-6"
+            data-testid="application-immersive-error-canvas"
+          >
+            <div class="w-full max-w-2xl rounded-3xl border border-red-500/30 bg-red-500/10 p-6 text-sm text-red-100 shadow-xl shadow-slate-950/30">
+              <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                  <p class="text-lg font-semibold text-white">{{ $t('applications.components.applications.ApplicationIframeHost.initializationFailed') }}</p>
+                  <p class="mt-3 leading-6 text-red-100">{{ hostLaunchError }}</p>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                  <button
+                    type="button"
+                    class="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-300"
+                    :disabled="isReloadDisabled"
+                    @click="reloadApplication"
+                  >
+                    {{ $t('applications.components.applications.ApplicationShell.retryLaunch') }}
+                  </button>
+                  <button
+                    type="button"
+                    class="inline-flex items-center rounded-md border border-slate-600 bg-slate-900/80 px-4 py-2 text-sm font-medium text-slate-100 transition-colors hover:border-slate-400 hover:bg-slate-900"
+                    @click="exitApplication"
+                  >
+                    {{ $t('applications.components.applications.ApplicationImmersiveControlPanel.exitApplication') }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
 
-        <div
-          v-if="pageMode === 'application'"
-          class="flex-1 min-h-0 px-4 py-4 sm:px-6 lg:px-8"
-        >
           <ApplicationSurface
-            :session="activeSession"
-            presentation="standard"
+            v-else-if="launchState.launchInstanceId"
+            class="flex-1"
+            :application="application"
+            :launch-instance-id="launchState.launchInstanceId"
           />
+
+          <div
+            v-else
+            class="flex min-h-0 flex-1 items-center justify-center px-6"
+            data-testid="application-immersive-loading-canvas"
+          >
+            <div class="flex flex-col items-center gap-4 text-center text-slate-300">
+              <div class="h-10 w-10 animate-spin rounded-full border-b-2 border-blue-400"></div>
+              <p class="text-lg font-semibold text-white">{{ $t('applications.components.applications.ApplicationShell.startingApplication') }}</p>
+            </div>
+          </div>
         </div>
-
-        <ApplicationExecutionWorkspace
-          v-else
-          :session="activeSession"
-          :selected-member-route-key="selectedMemberRouteKey"
-          @update:selected-member-route-key="selectedMemberRouteKey = $event"
-          @open-full-execution-monitor="openFullExecutionMonitor"
-        />
       </div>
-    </template>
-
-    <ApplicationLaunchConfigModal
-      :show="launchModalOpen"
-      :application="application"
-      @close="launchModalOpen = false"
-      @launched="handleLaunched"
-    />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
-import ApplicationImmersiveControls from '~/components/applications/ApplicationImmersiveControls.vue'
-import ApplicationLaunchConfigModal from '~/components/applications/ApplicationLaunchConfigModal.vue'
-import ApplicationLiveSessionToolbar from '~/components/applications/ApplicationLiveSessionToolbar.vue'
+import ApplicationImmersiveControlPanel from '~/components/applications/ApplicationImmersiveControlPanel.vue'
+import ApplicationLaunchSetupPanel from '~/components/applications/ApplicationLaunchSetupPanel.vue'
 import ApplicationSurface from '~/components/applications/ApplicationSurface.vue'
-import ApplicationExecutionWorkspace from '~/components/applications/execution/ApplicationExecutionWorkspace.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { useAppLayoutStore } from '~/stores/appLayoutStore'
-import { useApplicationPageStore } from '~/stores/applicationPageStore'
-import { useApplicationSessionStore } from '~/stores/applicationSessionStore'
+import { useApplicationHostStore } from '~/stores/applicationHostStore'
 import { useApplicationStore } from '~/stores/applicationStore'
-import type { ApplicationSurfacePresentation } from '~/types/application/ApplicationSurfacePresentation'
-import type { ApplicationSessionBinding } from '~/types/application/ApplicationSession'
-import type { WorkspaceExecutionLink } from '~/types/workspace/WorkspaceExecutionLink'
-import { buildWorkspaceExecutionRoute } from '~/services/workspace/workspaceNavigationService'
+import type { ApplicationLaunchSetupGateState } from '~/utils/application/applicationLaunchSetup'
 
 interface ShellDetailItem {
   label: string
   value: string
 }
 
+type ApplicationShellPhase = 'setup' | 'immersive'
+
+const createDefaultSetupGateState = (): ApplicationLaunchSetupGateState => ({
+  phase: 'loading',
+  isLaunchReady: false,
+  blockingReason: null,
+})
+
 const route = useRoute()
-const router = useRouter()
 const applicationStore = useApplicationStore()
-const applicationSessionStore = useApplicationSessionStore()
-const applicationPageStore = useApplicationPageStore()
+const applicationHostStore = useApplicationHostStore()
 const appLayoutStore = useAppLayoutStore()
 const { t: $t } = useLocalization()
 
+const phase = ref<ApplicationShellPhase>('setup')
 const loading = ref(false)
 const loadError = ref<string | null>(null)
-const launchModalOpen = ref(false)
-const detailsOpen = ref(false)
-const immersiveControlsSheetOpen = ref(false)
-const routeBinding = ref<ApplicationSessionBinding | null>(null)
 const latestLoadRequestId = ref(0)
-const applicationPresentation = ref<ApplicationSurfacePresentation>('immersive')
+const launchSetupGateState = ref<ApplicationLaunchSetupGateState>(createDefaultSetupGateState())
+const launchRequestPending = ref(false)
+const launchActionError = ref<string | null>(null)
 
 const applicationId = computed(() => String(route.params.id || '').trim())
 const application = computed(() => applicationStore.getApplicationById(applicationId.value))
-const requestedSessionId = computed(() => {
-  const raw = route.query.applicationSessionId
-  return typeof raw === 'string' ? raw.trim() : ''
-})
-
-const activeSession = computed(() => {
-  const resolvedSessionId = routeBinding.value?.resolvedSessionId?.trim() || ''
-  return resolvedSessionId
-    ? applicationSessionStore.getSessionById(resolvedSessionId)
-    : null
-})
-
-const hasLiveSessionShell = computed(() => Boolean(application.value && activeSession.value))
-
-const pageContainerClasses = 'mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 lg:px-8'
-
-const pageMode = computed({
-  get: () => applicationPageStore.getMode(applicationId.value),
-  set: (mode: 'application' | 'execution') => {
-    if (!applicationId.value) {
-      return
-    }
-    applicationPageStore.setMode(applicationId.value, mode)
-  },
-})
-
-const selectedMemberRouteKey = computed({
-  get: () => applicationPageStore.getSelectedMemberRouteKey(applicationId.value),
-  set: (memberRouteKey: string | null) => {
-    if (!applicationId.value) {
-      return
-    }
-    applicationPageStore.setSelectedMemberRouteKey(applicationId.value, memberRouteKey)
-  },
-})
-
-const runtimeTargetLabel = computed(() => (
-  application.value?.runtimeTarget.kind === 'AGENT'
-    ? $t('applications.shared.singleAgent')
-    : $t('applications.shared.agentTeam')
+const launchState = computed(() => applicationHostStore.getLaunchState(applicationId.value))
+const hostLaunchLoading = computed(() => launchRequestPending.value || launchState.value.status === 'preparing')
+const hostLaunchError = computed(() => (
+  launchState.value.lastError
+  || launchState.value.lastFailure
+  || launchActionError.value
+  || null
 ))
-
-const bindingNotice = computed(() => {
-  if (!requestedSessionId.value || !routeBinding.value) {
-    return null
-  }
-
-  if (routeBinding.value.resolution === 'application_active') {
-    return $t('applications.components.applications.ApplicationShell.requestedSessionReattachedNotice')
-  }
-
-  if (routeBinding.value.resolution === 'none') {
-    return $t('applications.components.applications.ApplicationShell.requestedSessionMissingNotice')
-  }
-
-  return null
-})
+const canLaunchFromSetupGate = computed(() => launchSetupGateState.value.isLaunchReady)
+const isReloadDisabled = computed(() => hostLaunchLoading.value || !canLaunchFromSetupGate.value)
+const preEntryGateDescription = computed(() => (
+  launchSetupGateState.value.blockingReason
+  || $t('applications.components.applications.ApplicationShell.preEntryGateDescription')
+))
+const immersiveReloadHint = computed(() => (
+  isReloadDisabled.value && launchSetupGateState.value.blockingReason
+    ? launchSetupGateState.value.blockingReason
+    : null
+))
 
 const detailItems = computed<ShellDetailItem[]>(() => {
   if (!application.value) {
@@ -302,8 +340,10 @@ const detailItems = computed<ShellDetailItem[]>(() => {
       value: application.value.localApplicationId,
     },
     {
-      label: $t('applications.shared.runtimeTargetId'),
-      value: application.value.runtimeTarget.definitionId,
+      label: $t('applications.shared.bundleResources'),
+      value: application.value.bundleResources.length > 0
+        ? application.value.bundleResources.map((resource) => `${resource.localId} → ${resource.definitionId}`).join(' · ')
+        : $t('applications.shared.noBundleResources'),
     },
     {
       label: $t('applications.shared.writableSource'),
@@ -311,124 +351,52 @@ const detailItems = computed<ShellDetailItem[]>(() => {
     },
   ]
 
-  if (!activeSession.value) {
-    return items
+  if (launchState.value.engineState) {
+    items.push({
+      label: $t('applications.components.applications.ApplicationShell.engineStateLabel'),
+      value: launchState.value.engineState,
+    })
   }
 
-  return [
-    ...items,
-    {
-      label: $t('applications.components.applications.ApplicationShell.sessionIdLabel'),
-      value: activeSession.value.applicationSessionId,
-    },
-    {
-      label: $t('applications.components.applications.ApplicationShell.runtimeKindLabel'),
-      value: activeSession.value.runtime.kind,
-    },
-    {
-      label: $t('applications.components.applications.ApplicationShell.runIdLabel'),
-      value: activeSession.value.runtime.runId,
-    },
-    {
-      label: $t('applications.components.applications.ApplicationShell.bindingResultLabel'),
-      value: routeBinding.value?.resolution || 'requested_live',
-    },
-  ]
+  if (launchState.value.launchInstanceId) {
+    items.push({
+      label: $t('applications.components.applications.ApplicationShell.launchInstanceIdLabel'),
+      value: launchState.value.launchInstanceId,
+    })
+  }
+
+  if (launchState.value.startedAt) {
+    items.push({
+      label: $t('applications.components.applications.ApplicationShell.startedAtLabel'),
+      value: launchState.value.startedAt,
+    })
+  }
+
+  return items
 })
 
-const isImmersiveApplicationView = computed(() => (
-  Boolean(activeSession.value)
-  && pageMode.value === 'application'
-  && applicationPresentation.value === 'immersive'
-))
-
-const shellRootClasses = computed(() => {
-  if (isImmersiveApplicationView.value) {
-    return 'relative flex h-full min-h-0 flex-1 overflow-hidden bg-slate-950'
-  }
-
-  if (hasLiveSessionShell.value) {
-    return 'flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-slate-50'
-  }
-
-  return 'h-full flex-1 overflow-auto bg-slate-50'
-})
-
-const immersiveSurfaceContainerClasses = computed(() => (
-  immersiveControlsSheetOpen.value
-    ? 'h-full min-h-0 transition-all duration-300 ease-out lg:pr-80'
-    : 'h-full min-h-0 transition-all duration-300 ease-out'
-))
-
-const activeExecutionLink = computed<WorkspaceExecutionLink | null>(() => {
-  const session = activeSession.value
-  if (!session) {
-    return null
-  }
-
-  if (session.runtime.kind === 'AGENT') {
-    return {
-      kind: 'agent',
-      runId: session.runtime.runId,
-    }
-  }
-
-  const availableMembers = session.view.members
-  const focusedMemberRouteKey = selectedMemberRouteKey.value
-    && availableMembers.some((member) => member.memberRouteKey === selectedMemberRouteKey.value)
-    ? selectedMemberRouteKey.value
-    : availableMembers[0]?.memberRouteKey ?? null
-
-  return {
-    kind: 'team',
-    teamRunId: session.runtime.runId,
-    memberRouteKey: focusedMemberRouteKey,
-  }
-})
-
-const syncRouteToResolvedSession = async (
-  resolvedSessionId: string | null | undefined,
-): Promise<void> => {
-  const nextSessionId = resolvedSessionId?.trim() || undefined
-  const currentSessionId = requestedSessionId.value || undefined
-  if (nextSessionId === currentSessionId) {
-    return
-  }
-
-  const nextQuery = { ...route.query }
-  if (nextSessionId) {
-    nextQuery.applicationSessionId = nextSessionId
-  } else {
-    delete nextQuery.applicationSessionId
-  }
-
-  await router.replace({
-    path: route.path,
-    query: nextQuery,
-  })
+const resetSetupGateState = (): void => {
+  launchSetupGateState.value = createDefaultSetupGateState()
 }
 
-const ensureSelectedMember = (): void => {
-  const members = activeSession.value?.view.members ?? []
-  if (members.length === 0) {
-    selectedMemberRouteKey.value = null
-    return
-  }
+const resetVisitPresentationState = (): void => {
+  phase.value = 'setup'
+  launchRequestPending.value = false
+  launchActionError.value = null
+  resetSetupGateState()
+}
 
-  if (
-    selectedMemberRouteKey.value
-    && members.some((member) => member.memberRouteKey === selectedMemberRouteKey.value)
-  ) {
-    return
+const cleanupRouteVisit = (targetApplicationId: string): void => {
+  const normalizedApplicationId = targetApplicationId.trim()
+  if (normalizedApplicationId) {
+    applicationHostStore.clearLaunchState(normalizedApplicationId)
   }
-
-  selectedMemberRouteKey.value = members[0]?.memberRouteKey ?? null
+  appLayoutStore.resetHostShellPresentation()
 }
 
 const loadShell = async (): Promise<void> => {
   if (!applicationId.value) {
     loadError.value = $t('applications.components.applications.ApplicationShell.applicationIdMissingFromRoute')
-    routeBinding.value = null
     return
   }
 
@@ -439,23 +407,13 @@ const loadShell = async (): Promise<void> => {
 
   try {
     await applicationStore.fetchApplicationById(applicationId.value, true)
-    const binding = await applicationSessionStore.bindApplicationRoute(
-      applicationId.value,
-      requestedSessionId.value || null,
-    )
-
     if (latestLoadRequestId.value !== requestId) {
       return
     }
-
-    routeBinding.value = binding
-    ensureSelectedMember()
-    await syncRouteToResolvedSession(binding.resolvedSessionId)
   } catch (error) {
     if (latestLoadRequestId.value !== requestId) {
       return
     }
-    routeBinding.value = null
     loadError.value = error instanceof Error ? error.message : String(error)
   } finally {
     if (latestLoadRequestId.value === requestId) {
@@ -464,92 +422,84 @@ const loadShell = async (): Promise<void> => {
   }
 }
 
-const resetImmersivePresentation = (): void => {
-  applicationPresentation.value = 'immersive'
-  immersiveControlsSheetOpen.value = false
-  detailsOpen.value = false
+const startFreshHostLaunch = async (): Promise<void> => {
+  if (!applicationId.value || !canLaunchFromSetupGate.value) {
+    return
+  }
+
+  launchActionError.value = null
+  launchRequestPending.value = true
+
+  try {
+    await applicationHostStore.startLaunch(applicationId.value)
+  } catch (error) {
+    launchActionError.value = error instanceof Error ? error.message : String(error)
+  } finally {
+    launchRequestPending.value = false
+  }
 }
 
-const enterImmersive = (): void => { applicationPresentation.value = 'immersive'; immersiveControlsSheetOpen.value = false }
-const exitImmersive = (): void => { applicationPresentation.value = 'standard'; immersiveControlsSheetOpen.value = false }
-const switchToExecution = (): void => { immersiveControlsSheetOpen.value = false; pageMode.value = 'execution' }
-const handleImmersiveControlsSheetOpenChange = (open: boolean): void => { immersiveControlsSheetOpen.value = open; if (open) detailsOpen.value = false }
+const enterApplication = async (): Promise<void> => {
+  if (!application.value || !canLaunchFromSetupGate.value) {
+    return
+  }
+
+  phase.value = 'immersive'
+  await startFreshHostLaunch()
+}
+
+const reloadApplication = async (): Promise<void> => {
+  if (!application.value || isReloadDisabled.value) {
+    return
+  }
+
+  phase.value = 'immersive'
+  await startFreshHostLaunch()
+}
+
+const updateSetupGateState = (value: ApplicationLaunchSetupGateState): void => {
+  launchSetupGateState.value = value
+}
 
 watch(
-  () => [applicationId.value, requestedSessionId.value] as const,
-  () => {
+  () => phase.value,
+  (nextPhase) => {
+    if (nextPhase === 'immersive') {
+      appLayoutStore.setHostShellPresentation('application_immersive')
+      return
+    }
+
+    appLayoutStore.resetHostShellPresentation()
+  },
+  { immediate: true },
+)
+
+watch(
+  () => applicationId.value,
+  (nextApplicationId, previousApplicationId) => {
+    if (previousApplicationId && previousApplicationId !== nextApplicationId) {
+      cleanupRouteVisit(previousApplicationId)
+    }
+
+    cleanupRouteVisit(nextApplicationId)
+    resetVisitPresentationState()
     void loadShell()
   },
   { immediate: true },
 )
 
-watch(
-  () => activeSession.value?.view.members.map((member) => member.memberRouteKey).join('|') ?? '',
-  () => {
-    ensureSelectedMember()
-  },
-)
-
-watch(
-  () => activeSession.value?.applicationSessionId ?? '',
-  (sessionId, previousSessionId) => {
-    if (sessionId && sessionId !== previousSessionId) {
-      resetImmersivePresentation()
-    }
-  },
-  { immediate: true },
-)
-
-watch(
-  isImmersiveApplicationView,
-  (immersive) => {
-    appLayoutStore.setHostShellPresentation(
-      immersive ? 'application_immersive' : 'standard',
-    )
-  },
-  { immediate: true },
-)
-
-onBeforeUnmount(() => {
-  appLayoutStore.resetHostShellPresentation()
-})
-
-const handleLaunched = async (payload: {
-  applicationId: string
-  applicationSessionId: string
-}): Promise<void> => {
-  launchModalOpen.value = false
-  pageMode.value = 'application'
-  resetImmersivePresentation()
-  await router.replace({
-    path: `/applications/${encodeURIComponent(payload.applicationId)}`,
-    query: {
-      ...route.query,
-      applicationSessionId: payload.applicationSessionId,
-    },
-  })
-}
-
-const terminateActiveSession = async (): Promise<void> => {
-  if (!activeSession.value) {
-    return
-  }
-
-  await applicationSessionStore.terminateSession(activeSession.value.applicationSessionId)
-  pageMode.value = 'application'
-  detailsOpen.value = false
-  await loadShell()
-}
-
-const openFullExecutionMonitor = async (): Promise<void> => {
-  const executionLink = activeExecutionLink.value
-  if (!executionLink) {
-    return
-  }
-  await navigateTo(buildWorkspaceExecutionRoute(executionLink))
+const exitApplication = async (): Promise<void> => {
+  const currentApplicationId = applicationId.value
+  cleanupRouteVisit(currentApplicationId)
+  resetVisitPresentationState()
+  await navigateTo('/applications')
 }
 
 const goBack = async (): Promise<void> => {
   await navigateTo('/applications')
 }
+
+onBeforeUnmount(() => {
+  cleanupRouteVisit(applicationId.value)
+})
 </script>

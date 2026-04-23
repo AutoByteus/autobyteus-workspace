@@ -59,7 +59,7 @@ describe('BrowserPanel', () => {
     const wrapper = mount(BrowserPanel)
     await nextTick()
 
-    expect(wrapper.text()).toContain('Open a URL to start browsing')
+    expect(wrapper.text()).toMatch(/open a url to start browsing/i)
   })
 
   it('opens a browser tab from the Browser chrome', async () => {
@@ -250,7 +250,7 @@ describe('BrowserPanel', () => {
     await flushPromises()
 
     expect(window.electronAPI?.closeBrowserShellSession).toHaveBeenCalledWith('tab-1')
-    expect(wrapper.text()).toContain('Open a URL to start browsing')
+    expect(wrapper.text()).toMatch(/open a url to start browsing/i)
   })
 
   it('toggles Browser full-view mode from the Browser chrome', async () => {

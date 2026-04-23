@@ -1,0 +1,17 @@
+{
+  "name": "@autobyteus-example/socratic-math-teacher-authoring",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node ./scripts/build-package.mjs",
+    "typecheck:backend": "tsc -p tsconfig.backend.json --noEmit"
+  },
+  "dependencies": {
+    "@autobyteus/application-backend-sdk": "workspace:*",
+    "@autobyteus/application-frontend-sdk": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.10",
+    "typescript": "^5.9.3"
+  }
+}

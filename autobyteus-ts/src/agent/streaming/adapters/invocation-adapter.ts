@@ -2,13 +2,23 @@ import { SegmentEvent, SegmentEventType, SegmentType } from '../segments/segment
 import { getToolSyntaxSpec } from './tool-syntax-registry.js';
 import { parseJsonToolCall, parseXmlArguments, type JsonToolParsingStrategy } from './tool-call-parsing.js';
 import { ToolInvocation } from '../../tool-invocation.js';
+import { defaultToolRegistry } from '../../../tools/registry/tool-registry.js';
+import type { ParameterSchema } from '../../../utils/parameter-schema.js';
 
 export class ToolInvocationAdapter {
   private activeSegments: Map<string, Record<string, any>> = new Map();
   private jsonToolParser?: JsonToolParsingStrategy;
+  private xmlArgumentSchemaResolver: (toolName: string) => ParameterSchema | null;
 
-  constructor(jsonToolParser?: JsonToolParsingStrategy) {
+  constructor(
+    jsonToolParser?: JsonToolParsingStrategy,
+    xmlArgumentSchemaResolver?: (toolName: string) => ParameterSchema | null | undefined
+  ) {
     this.jsonToolParser = jsonToolParser;
+    this.xmlArgumentSchemaResolver = (toolName: string) =>
+      xmlArgumentSchemaResolver?.(toolName) ??
+      defaultToolRegistry.getToolDefinition(toolName)?.argumentSchema ??
+      null;
   }
 
   processEvent(event: SegmentEvent): ToolInvocation | null {
@@ -113,7 +123,8 @@ export class ToolInvocationAdapter {
       } else if (stripped.startsWith('{') || stripped.startsWith('[')) {
         parsedCall = parseJsonToolCall(stripped, this.jsonToolParser);
       } else {
-        argumentsValue = parseXmlArguments(content);
+        const argumentSchema = toolName ? this.xmlArgumentSchemaResolver(toolName) : null;
+        argumentsValue = parseXmlArguments(content, argumentSchema);
       }
 
       if (parsedCall) {

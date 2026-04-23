@@ -77,7 +77,6 @@ const eventTypeByStreamEvent = new Map<StreamEventType, AgentRunEventType>([
   [StreamEventType.INTER_AGENT_MESSAGE, AgentRunEventType.INTER_AGENT_MESSAGE],
   [StreamEventType.AGENT_TODO_LIST_UPDATE, AgentRunEventType.TODO_LIST_UPDATE],
   [StreamEventType.ARTIFACT_PERSISTED, AgentRunEventType.ARTIFACT_PERSISTED],
-  [StreamEventType.ARTIFACT_UPDATED, AgentRunEventType.ARTIFACT_UPDATED],
   [StreamEventType.ERROR_EVENT, AgentRunEventType.ERROR],
 ]);
 

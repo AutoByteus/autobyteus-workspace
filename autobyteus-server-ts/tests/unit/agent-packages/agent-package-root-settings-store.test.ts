@@ -7,16 +7,16 @@ import { AgentPackageRootSettingsStore } from "../../../src/agent-packages/store
 describe("AgentPackageRootSettingsStore", () => {
   let tempRoot: string;
   let appDataRoot: string;
-  let repoRoot: string;
+  let builtInSourceRoot: string;
   let serverRoot: string;
 
   beforeEach(async () => {
     tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-root-settings-"));
     appDataRoot = path.join(tempRoot, "app-data");
-    repoRoot = path.join(tempRoot, "repo-root");
-    serverRoot = path.join(repoRoot, "autobyteus-server-ts");
+    builtInSourceRoot = path.join(tempRoot, "repo-root", "autobyteus-server-ts", "application-packages", "platform");
+    serverRoot = path.join(tempRoot, "repo-root", "autobyteus-server-ts");
     await fs.mkdir(appDataRoot, { recursive: true });
-    await fs.mkdir(path.join(repoRoot, "applications"), { recursive: true });
+    await fs.mkdir(path.join(builtInSourceRoot, "applications"), { recursive: true });
     await fs.mkdir(serverRoot, { recursive: true });
   });
 
@@ -30,7 +30,7 @@ describe("AgentPackageRootSettingsStore", () => {
       {
         getAppDataDir: () => appDataRoot,
         getAppRootDir: () => serverRoot,
-        getAdditionalAgentPackageRoots: () => [repoRoot, extraRoot],
+        getAdditionalAgentPackageRoots: () => [builtInSourceRoot, extraRoot],
         get: (_key: string, defaultValue?: string) => defaultValue,
       },
       {
@@ -58,7 +58,7 @@ describe("AgentPackageRootSettingsStore", () => {
       },
     );
 
-    expect(() => store.addAdditionalRootPath(repoRoot)).toThrow(
+    expect(() => store.addAdditionalRootPath(builtInSourceRoot)).toThrow(
       "built-in applications root cannot be registered",
     );
     expect(writes).toHaveLength(0);

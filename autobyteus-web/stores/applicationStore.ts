@@ -5,13 +5,17 @@ import { GetApplicationById, ListApplications } from '~/graphql/queries/applicat
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { useApplicationsCapabilityStore } from '~/stores/applicationsCapabilityStore'
 
-export type ApplicationRuntimeTargetKind = 'AGENT' | 'AGENT_TEAM'
+export type ApplicationRuntimeResourceKind = 'AGENT' | 'AGENT_TEAM'
 
-export interface ApplicationRuntimeTarget {
-  __typename?: 'ApplicationRuntimeTarget'
-  kind: ApplicationRuntimeTargetKind
+export interface ApplicationBundleResource {
+  kind: ApplicationRuntimeResourceKind
   localId: string
   definitionId: string
+}
+
+export interface ApplicationResourceSlotSummary {
+  slotKey: string
+  required: boolean
 }
 
 export interface ApplicationCatalogEntry {
@@ -24,7 +28,8 @@ export interface ApplicationCatalogEntry {
   iconAssetPath?: string | null
   entryHtmlAssetPath: string
   writable: boolean
-  runtimeTarget: ApplicationRuntimeTarget
+  resourceSlots: ApplicationResourceSlotSummary[]
+  bundleResources: ApplicationBundleResource[]
 }
 
 interface ListApplicationsQueryResult {

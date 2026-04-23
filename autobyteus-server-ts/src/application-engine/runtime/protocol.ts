@@ -1,11 +1,12 @@
 import type {
   ApplicationBackendExposureSummary,
+  ApplicationExecutionEventEnvelope,
+  ApplicationPublishedArtifactEvent,
   ApplicationGraphqlRequest,
   ApplicationRequestContext,
   ApplicationRouteRequest,
   ApplicationStorageContext,
 } from "@autobyteus/application-sdk-contracts";
-import type { ApplicationPublicationDispatchEnvelope, ApplicationPublicationDispatchResult } from "../../application-sessions/domain/models.js";
 
 export const APPLICATION_ENGINE_NOTIFICATION_METHOD = "application.notification" as const;
 export const APPLICATION_ENGINE_METHOD_LOAD_DEFINITION = "loadApplicationDefinition" as const;
@@ -15,6 +16,8 @@ export const APPLICATION_ENGINE_METHOD_INVOKE_COMMAND = "invokeApplicationComman
 export const APPLICATION_ENGINE_METHOD_ROUTE_REQUEST = "routeApplicationRequest" as const;
 export const APPLICATION_ENGINE_METHOD_EXECUTE_GRAPHQL = "executeApplicationGraphql" as const;
 export const APPLICATION_ENGINE_METHOD_INVOKE_EVENT_HANDLER = "invokeApplicationEventHandler" as const;
+export const APPLICATION_ENGINE_METHOD_INVOKE_ARTIFACT_HANDLER = "invokeApplicationArtifactHandler" as const;
+export const APPLICATION_ENGINE_METHOD_RUNTIME_CONTROL = "invokeRuntimeControl" as const;
 export const APPLICATION_ENGINE_METHOD_STOP = "stopApplication" as const;
 
 export type ApplicationWorkerLoadDefinitionInput = {
@@ -51,7 +54,26 @@ export type ApplicationWorkerExecuteGraphqlInput = {
 };
 
 export type ApplicationWorkerInvokeEventHandlerInput = {
-  envelope: ApplicationPublicationDispatchEnvelope;
+  envelope: ApplicationExecutionEventEnvelope;
+};
+
+export type ApplicationWorkerInvokeArtifactHandlerInput = {
+  event: ApplicationPublishedArtifactEvent;
+};
+
+export type ApplicationWorkerRuntimeControlInput = {
+  action:
+    | "listAvailableResources"
+    | "getConfiguredResource"
+    | "startRun"
+    | "getRunBinding"
+    | "getRunBindingByIntentId"
+    | "listRunBindings"
+    | "getRunPublishedArtifacts"
+    | "getPublishedArtifactRevisionText"
+    | "postRunInput"
+    | "terminateRunBinding";
+  input?: unknown;
 };
 
 export type ApplicationWorkerNotificationParams = {
@@ -64,4 +86,6 @@ export type ApplicationWorkerStatusResult = {
   exposures: ApplicationBackendExposureSummary | null;
 };
 
-export type { ApplicationPublicationDispatchResult };
+export type ApplicationExecutionEventDispatchResult = {
+  status: "acknowledged" | "missing_handler";
+};

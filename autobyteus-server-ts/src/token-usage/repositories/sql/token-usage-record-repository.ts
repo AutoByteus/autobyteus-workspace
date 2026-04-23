@@ -1,6 +1,5 @@
-import { Prisma, type TokenUsageRecord as PrismaTokenUsageRecord } from "@prisma/client";
+import { PrismaClient, type Prisma, type TokenUsageRecord as PrismaTokenUsageRecord } from "@prisma/client";
 import { randomUUID } from "node:crypto";
-import { BaseRepository } from "repository_prisma";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -8,9 +7,9 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-export class SqlTokenUsageRecordRepository extends BaseRepository.forModel(
-  Prisma.ModelName.TokenUsageRecord,
-) {
+const prisma = new PrismaClient();
+
+export class SqlTokenUsageRecordRepository {
   async createUsageRecord(options: {
     runId: string;
     role: string;
@@ -19,7 +18,7 @@ export class SqlTokenUsageRecordRepository extends BaseRepository.forModel(
     llmModel?: string | null;
   }): Promise<PrismaTokenUsageRecord> {
     try {
-      const created = await this.create({
+      return await prisma.tokenUsageRecord.create({
         data: {
           usageRecordId: randomUUID(),
           runId: options.runId,
@@ -29,7 +28,6 @@ export class SqlTokenUsageRecordRepository extends BaseRepository.forModel(
           llmModel: options.llmModel ?? undefined,
         },
       });
-      return created;
     } catch (error) {
       logger.error(`Error creating usage record: ${String(error)}`);
       throw error;
@@ -38,7 +36,7 @@ export class SqlTokenUsageRecordRepository extends BaseRepository.forModel(
 
   async getUsageRecordsByRunId(runId: string): Promise<PrismaTokenUsageRecord[]> {
     try {
-      return await this.findMany({
+      return await prisma.tokenUsageRecord.findMany({
         where: { runId },
         orderBy: { createdAt: "asc" },
       });
@@ -50,7 +48,7 @@ export class SqlTokenUsageRecordRepository extends BaseRepository.forModel(
 
   async getTotalCostInPeriod(startDate: Date, endDate: Date): Promise<number> {
     try {
-      const records = await this.findMany({
+      const records = await prisma.tokenUsageRecord.findMany({
         where: {
           createdAt: {
             gte: startDate,
@@ -58,7 +56,7 @@ export class SqlTokenUsageRecordRepository extends BaseRepository.forModel(
           },
         },
       });
-      return records.reduce((total, record) => total + record.cost, 0);
+      return records.reduce((total: number, record: PrismaTokenUsageRecord) => total + record.cost, 0);
     } catch (error) {
       logger.error(`Error calculating total cost in period: ${String(error)}`);
       throw error;
@@ -82,7 +80,7 @@ export class SqlTokenUsageRecordRepository extends BaseRepository.forModel(
         where.llmModel = options.llmModel;
       }
 
-      return await this.findMany({
+      return await prisma.tokenUsageRecord.findMany({
         where,
         orderBy: { createdAt: "asc" },
       });

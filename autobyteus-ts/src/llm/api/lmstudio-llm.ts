@@ -1,6 +1,7 @@
 import { OpenAICompatibleLLM } from './openai-compatible-llm.js';
 import { LLMModel } from '../models.js';
 import { LLMConfig } from '../utils/llm-config.js';
+import { LMStudioChatRenderer } from '../prompt-renderers/lmstudio-chat-renderer.js';
 import {
   createLocalLongRunningFetch,
   LOCAL_PROVIDER_SDK_TIMEOUT_MS,
@@ -26,5 +27,7 @@ export class LMStudioLLM extends OpenAICompatibleLLM {
         timeout: LOCAL_PROVIDER_SDK_TIMEOUT_MS,
       },
     );
+
+    this._renderer = new LMStudioChatRenderer();
   }
 }

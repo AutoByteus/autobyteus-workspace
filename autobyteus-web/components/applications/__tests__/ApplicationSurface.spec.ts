@@ -1,24 +1,25 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, nextTick } from 'vue'
-import { mount } from '@vue/test-utils'
+import { mount, type VueWrapper } from '@vue/test-utils'
 import ApplicationSurface from '../ApplicationSurface.vue'
-import type { ApplicationSession } from '~/types/application/ApplicationSession'
-import type { ApplicationHostBootstrapEnvelopeV1, ApplicationIframeReadySignal } from '~/types/application/ApplicationIframeContract'
+import type { ApplicationCatalogEntry } from '~/stores/applicationStore'
+import type { ApplicationHostBootstrapEnvelopeV2, ApplicationIframeReadySignal } from '~/types/application/ApplicationIframeContract'
 import type { ApplicationIframeLaunchDescriptor } from '~/utils/application/applicationLaunchDescriptor'
 
 const hostHarness = vi.hoisted(() => ({
   props: {
     descriptor: null as ApplicationIframeLaunchDescriptor | null,
-    bootstrapEnvelope: null as ApplicationHostBootstrapEnvelopeV1 | null,
+    bootstrapEnvelope: null as ApplicationHostBootstrapEnvelopeV2 | null,
   },
+  bindingRevision: 0,
 }))
 
 vi.mock('~/composables/useLocalization', () => ({
   useLocalization: () => ({
     t: (key: string, params?: Record<string, string | number>) => {
       const translations: Record<string, string> = {
-        'applications.components.applications.ApplicationSurface.noActiveSession': 'No active application session',
-        'applications.components.applications.ApplicationSurface.noActiveSessionHelp': 'Launch this application to create the backend-owned session and bootstrap the bundled application UI.',
+        'applications.components.applications.ApplicationSurface.applicationUnavailable': 'Application unavailable',
+        'applications.components.applications.ApplicationSurface.applicationUnavailableHelp': 'Launch this application to bootstrap the bundled UI.',
         'applications.components.applications.ApplicationIframeHost.initializationFailed': 'Application initialization failed',
         'applications.components.applications.ApplicationIframeHost.handshakeDidNotComplete': 'The bundled application did not complete the required iframe handshake.',
         'applications.components.applications.ApplicationIframeHost.retryBootstrap': 'Retry bootstrap',
@@ -39,6 +40,9 @@ vi.mock('~/stores/windowNodeContextStore', () => ({
       graphqlWs: 'ws://127.0.0.1:43123/graphql',
       rest: 'http://127.0.0.1:43123/rest',
     }),
+    get bindingRevision() {
+      return hostHarness.bindingRevision
+    },
   }),
 }))
 
@@ -58,40 +62,42 @@ const ApplicationIframeHostStub = defineComponent({
   setup(props) {
     return () => {
       hostHarness.props.descriptor = props.descriptor as ApplicationIframeLaunchDescriptor
-      hostHarness.props.bootstrapEnvelope = props.bootstrapEnvelope as ApplicationHostBootstrapEnvelopeV1 | null
+      hostHarness.props.bootstrapEnvelope = props.bootstrapEnvelope as ApplicationHostBootstrapEnvelopeV2 | null
       return h('div', { 'data-testid': 'iframe-host' })
     }
   },
 })
 
-const buildSession = (): ApplicationSession => ({
-  applicationSessionId: 'app-session-123',
-  application: {
-    applicationId: 'bundle-app__pkg__sample-app',
-    localApplicationId: 'sample-app',
-    packageId: 'pkg',
-    name: 'Sample App',
-    description: 'Sample description',
-    iconAssetPath: null,
-    entryHtmlAssetPath: '/application-bundles/sample-app/assets/ui/index.html',
-    writable: true,
+const buildApplication = (): ApplicationCatalogEntry => ({
+  id: 'bundle-app__pkg__sample-app',
+  localApplicationId: 'sample-app',
+  packageId: 'pkg',
+  name: 'Sample App',
+  description: 'Sample description',
+  iconAssetPath: null,
+  entryHtmlAssetPath: '/application-bundles/sample-app/assets/ui/index.html',
+  writable: true,
+  resourceSlots: [],
+  bundleResources: [],
+})
+
+const mountSurface = (): VueWrapper => mount(ApplicationSurface, {
+  props: {
+    application: buildApplication(),
+    launchInstanceId: 'bundle-app__pkg__sample-app::launch-1',
   },
-  runtime: {
-    kind: 'AGENT_TEAM',
-    runId: 'team-run-456',
-    definitionId: 'bundle-team__pkg__sample-app__sample-team',
+  global: {
+    stubs: {
+      ApplicationIframeHost: ApplicationIframeHostStub,
+    },
   },
-  view: {
-    members: [],
-  },
-  createdAt: '2026-04-15T08:00:00.000Z',
-  terminatedAt: null,
 })
 
 describe('ApplicationSurface', () => {
   beforeEach(() => {
     hostHarness.props.descriptor = null
     hostHarness.props.bootstrapEnvelope = null
+    hostHarness.bindingRevision = 0
     vi.clearAllMocks()
   })
 
@@ -99,133 +105,85 @@ describe('ApplicationSurface', () => {
     vi.useRealTimers()
   })
 
-  it('owns the launch handshake and clears the spinner after bootstrap delivery in immersive presentation', async () => {
-    const wrapper = mount(ApplicationSurface, {
-      props: {
-        session: buildSession(),
-        presentation: 'immersive',
-      },
-      global: {
-        stubs: {
-          ApplicationIframeHost: ApplicationIframeHostStub,
-        },
-      },
-    })
+  it('keeps the iframe canvas hidden behind an opaque host reveal gate until bootstrap delivery succeeds', async () => {
+    const wrapper = mountSurface()
 
-    expect(hostHarness.props.descriptor?.applicationSessionId).toBe('app-session-123')
+    expect(hostHarness.props.descriptor?.applicationId).toBe('bundle-app__pkg__sample-app')
+    expect(hostHarness.props.descriptor?.launchInstanceId).toBe('bundle-app__pkg__sample-app::launch-1')
     expect(hostHarness.props.bootstrapEnvelope).toBeNull()
+
+    const canvas = wrapper.get('[data-testid="application-surface-canvas"]')
+    const loadingOverlay = wrapper.get('[data-testid="application-surface-loading-overlay"]')
+    expect(canvas.classes()).toContain('opacity-0')
+    expect(canvas.attributes('aria-hidden')).toBe('true')
+    expect(loadingOverlay.classes()).toContain('bg-slate-950')
     expect(wrapper.text()).toContain('Initializing application')
-    expect(wrapper.html()).not.toContain('rounded-2xl')
 
     const descriptor = hostHarness.props.descriptor!
     await wrapper.getComponent(ApplicationIframeHostStub).vm.$emit('ready', {
-      applicationSessionId: descriptor.applicationSessionId,
+      applicationId: descriptor.applicationId,
       launchInstanceId: descriptor.launchInstanceId,
       iframeOrigin: descriptor.expectedIframeOrigin,
     } satisfies ApplicationIframeReadySignal)
     await nextTick()
 
-    expect(hostHarness.props.bootstrapEnvelope?.payload.session).toEqual({
-      applicationSessionId: descriptor.applicationSessionId,
+    expect(hostHarness.props.bootstrapEnvelope?.payload.requestContext).toEqual({
+      applicationId: descriptor.applicationId,
       launchInstanceId: descriptor.launchInstanceId,
     })
-    expect(() => structuredClone(hostHarness.props.bootstrapEnvelope)).not.toThrow()
+    expect(hostHarness.props.bootstrapEnvelope?.payload.launch).toEqual({
+      launchInstanceId: descriptor.launchInstanceId,
+    })
+    expect(hostHarness.props.bootstrapEnvelope?.payload).not.toHaveProperty('session')
+    expect(hostHarness.props.bootstrapEnvelope?.payload).not.toHaveProperty('runtime')
 
     await wrapper.getComponent(ApplicationIframeHostStub).vm.$emit('bootstrap-delivered', {
-      applicationSessionId: descriptor.applicationSessionId,
+      applicationId: descriptor.applicationId,
       launchInstanceId: descriptor.launchInstanceId,
     })
     await nextTick()
 
     expect(hostHarness.props.bootstrapEnvelope).toBeNull()
-    expect(wrapper.text()).not.toContain('Initializing application')
+    expect(wrapper.find('[data-testid="application-surface-loading-overlay"]').exists()).toBe(false)
+    expect(wrapper.get('[data-testid="application-surface-canvas"]').classes()).toContain('opacity-100')
+    expect(wrapper.get('[data-testid="application-surface-canvas"]').attributes('aria-hidden')).toBe('false')
 
     wrapper.unmount()
   })
 
-  it('renders the standard framed surface presentation when requested', async () => {
-    const wrapper = mount(ApplicationSurface, {
-      props: {
-        session: buildSession(),
-        presentation: 'standard',
-      },
-      global: {
-        stubs: {
-          ApplicationIframeHost: ApplicationIframeHostStub,
-        },
-      },
-    })
+  it('ignores stale ready signals that do not match the active launch descriptor', async () => {
+    const wrapper = mountSurface()
 
-    expect(wrapper.html()).toContain('rounded-2xl')
-    expect(wrapper.html()).toContain('border-slate-200')
-
-    wrapper.unmount()
-  })
-
-  it('creates a new launch instance when retry is requested after a ready timeout', async () => {
-    vi.useFakeTimers()
-
-    const wrapper = mount(ApplicationSurface, {
-      props: {
-        session: buildSession(),
-      },
-      global: {
-        stubs: {
-          ApplicationIframeHost: ApplicationIframeHostStub,
-        },
-      },
-    })
-
-    const firstLaunchInstanceId = hostHarness.props.descriptor?.launchInstanceId
-    vi.advanceTimersByTime(10_001)
+    await wrapper.getComponent(ApplicationIframeHostStub).vm.$emit('ready', {
+      applicationId: 'bundle-app__pkg__sample-app',
+      launchInstanceId: 'stale-launch',
+      iframeOrigin: hostHarness.props.descriptor!.expectedIframeOrigin,
+    } satisfies ApplicationIframeReadySignal)
     await nextTick()
 
-    expect(wrapper.text()).toContain('Initialization failed')
-    await wrapper.get('button').trigger('click')
-    await nextTick()
-
-    expect(hostHarness.props.descriptor?.launchInstanceId).not.toBe(firstLaunchInstanceId)
+    expect(hostHarness.props.bootstrapEnvelope).toBeNull()
     expect(wrapper.text()).toContain('Initializing application')
 
     wrapper.unmount()
   })
 
-  it('keeps the same launch descriptor when only retained session view data changes', async () => {
-    const wrapper = mount(ApplicationSurface, {
-      props: {
-        session: buildSession(),
-      },
-      global: {
-        stubs: {
-          ApplicationIframeHost: ApplicationIframeHostStub,
-        },
-      },
-    })
+  it('keeps bootstrap failures inside the transition state and allows retry without revealing the canvas', async () => {
+    const wrapper = mountSurface()
 
-    const firstLaunchInstanceId = hostHarness.props.descriptor?.launchInstanceId
-    await wrapper.setProps({
-      session: {
-        ...buildSession(),
-        view: {
-          members: [
-            {
-              memberRouteKey: 'writer',
-              displayName: 'Writer',
-              teamPath: ['writer'],
-              runtimeTarget: {
-                runId: 'member-run-1',
-                runtimeKind: 'AGENT_TEAM_MEMBER',
-              },
-              artifactsByKey: {},
-              primaryArtifactKey: null,
-            },
-          ],
-        },
-      },
-    })
+    await wrapper.getComponent(ApplicationIframeHostStub).vm.$emit('bridge-error', 'Bootstrap bridge failed')
     await nextTick()
 
-    expect(hostHarness.props.descriptor?.launchInstanceId).toBe(firstLaunchInstanceId)
+    expect(wrapper.find('[data-testid="application-surface-loading-overlay"]').exists()).toBe(false)
+    expect(wrapper.get('[data-testid="application-surface-failure-overlay"]').classes()).toContain('bg-slate-950')
+    expect(wrapper.text()).toContain('Bootstrap bridge failed')
+    expect(wrapper.get('[data-testid="application-surface-canvas"]').classes()).toContain('opacity-0')
+
+    await wrapper.get('button').trigger('click')
+    await nextTick()
+
+    expect(wrapper.find('[data-testid="application-surface-failure-overlay"]').exists()).toBe(false)
+    expect(wrapper.get('[data-testid="application-surface-loading-overlay"]').exists()).toBe(true)
+    expect(wrapper.get('[data-testid="application-surface-canvas"]').classes()).toContain('opacity-0')
 
     wrapper.unmount()
   })

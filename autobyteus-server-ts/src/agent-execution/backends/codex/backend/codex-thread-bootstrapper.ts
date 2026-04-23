@@ -41,6 +41,7 @@ import {
   type CodexAppServerClientManager,
 } from "../../../../runtime-management/codex/client/codex-app-server-client-manager.js";
 import { buildBrowserDynamicToolRegistrationsForEnabledToolNames } from "../browser/build-browser-dynamic-tool-registrations.js";
+import { buildCodexPublishArtifactDynamicToolRegistration } from "../published-artifacts/build-codex-publish-artifact-dynamic-tool-registration.js";
 import {
   filterDynamicToolRegistrationsByToolNames,
 } from "./codex-configured-tool-gating.js";
@@ -184,9 +185,16 @@ export class CodexThreadBootstrapper {
       agentInstruction,
       configuredToolExposure,
     );
+    const publishedArtifactToolRegistrations =
+      configuredToolExposure.publishArtifactConfigured
+        ? buildCodexPublishArtifactDynamicToolRegistration()
+        : null;
     const dynamicToolRegistrations = mergeDynamicToolRegistrations(
       filterDynamicToolRegistrationsByToolNames(
-        threadConfigInput.dynamicToolRegistrations,
+        mergeDynamicToolRegistrations(
+          threadConfigInput.dynamicToolRegistrations,
+          publishedArtifactToolRegistrations,
+        ),
         toConfiguredAgentToolNameSet(configuredToolExposure),
       ),
       buildBrowserDynamicToolRegistrationsForEnabledToolNames(

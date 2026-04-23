@@ -1,11 +1,12 @@
 import type {
   ApplicationBackendBundleManifestV1,
   ApplicationBackendSupportedExposures,
-  ApplicationRuntimeTargetKind,
+  ApplicationResourceSlotDeclaration,
+  ApplicationRuntimeResourceKind,
 } from "@autobyteus/application-sdk-contracts";
 
-export type ApplicationRuntimeTarget = {
-  kind: ApplicationRuntimeTargetKind;
+export type ApplicationBundleRuntimeResource = {
+  kind: ApplicationRuntimeResourceKind;
   localId: string;
   definitionId: string;
 };
@@ -34,7 +35,8 @@ export type ApplicationCatalogEntry = {
   description: string | null;
   iconAssetPath: string | null;
   entryHtmlAssetPath: string;
-  runtimeTarget: ApplicationRuntimeTarget;
+  bundleResources: ApplicationBundleRuntimeResource[];
+  resourceSlots: ApplicationResourceSlotDeclaration[];
   writable: boolean;
 };
 
@@ -67,10 +69,7 @@ export type ValidatedApplicationBundle = {
   description: string | null;
   iconRelativePath: string | null;
   entryHtmlRelativePath: string;
-  runtimeTarget: {
-    kind: ApplicationRuntimeTargetKind;
-    localId: string;
-  };
+  resourceSlots: ApplicationResourceSlotDeclaration[];
   localAgentIds: string[];
   localTeamIds: string[];
   writable: boolean;

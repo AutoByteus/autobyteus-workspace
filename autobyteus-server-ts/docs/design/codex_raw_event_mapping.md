@@ -49,10 +49,10 @@ custom tool output"]
 
 Normalized result:
 
-- `item/started(fileChange)` -> `SEGMENT_START(edit_file)` + `TOOL_EXECUTION_STARTED(edit_file)` + optional `ARTIFACT_UPDATED(path,type=file)`
+- `item/started(fileChange)` -> `SEGMENT_START(edit_file)` + `TOOL_EXECUTION_STARTED(edit_file)`
 - `item/fileChange/outputDelta` -> `TOOL_LOG(edit_file)`
-- `item/completed(fileChange)` -> terminal lifecycle (`TOOL_DENIED` / `TOOL_EXECUTION_FAILED` / `TOOL_EXECUTION_SUCCEEDED`) + success-only `ARTIFACT_PERSISTED(path,type=file)` + `SEGMENT_END(edit_file)`
-- `turn/diff/updated` -> intentionally ignored for normalized state because it is supplemental diff data, not the owner of lifecycle or artifact availability
+- `item/completed(fileChange)` -> terminal lifecycle (`TOOL_DENIED` / `TOOL_EXECUTION_FAILED` / `TOOL_EXECUTION_SUCCEEDED`) + `SEGMENT_END(edit_file)`
+- `turn/diff/updated` -> intentionally ignored for normalized state because it is supplemental diff data, not the owner of lifecycle or changed-file availability
 
 ## Raw Event Audit Table
 
@@ -64,8 +64,8 @@ Normalized result:
 | `turn/taskProgressUpdated` | task progress payload | `TODO_LIST_UPDATE` | `codex-turn-event-converter.ts` | Keep |
 | `item/started` | `item.type = commandExecution` | `TOOL_EXECUTION_STARTED` | `codex-item-event-converter.ts` | Keep |
 | `item/completed` | `item.type = commandExecution` | `TOOL_DENIED` or `TOOL_EXECUTION_FAILED` or `TOOL_EXECUTION_SUCCEEDED` | `codex-item-event-converter.ts` | Keep |
-| `item/started` | `item.type = fileChange` | `SEGMENT_START(edit_file)`, `TOOL_EXECUTION_STARTED(edit_file)`, optional `ARTIFACT_UPDATED(path,type=file)` | `codex-item-event-converter.ts` | Keep |
-| `item/completed` | `item.type = fileChange` | `TOOL_DENIED` or `TOOL_EXECUTION_FAILED` or `TOOL_EXECUTION_SUCCEEDED(edit_file)`; success also emits `ARTIFACT_PERSISTED(path,type=file)`; always ends with `SEGMENT_END(edit_file)` | `codex-item-event-converter.ts` | Keep |
+| `item/started` | `item.type = fileChange` | `SEGMENT_START(edit_file)`, `TOOL_EXECUTION_STARTED(edit_file)` | `codex-item-event-converter.ts` | Keep |
+| `item/completed` | `item.type = fileChange` | `TOOL_DENIED` or `TOOL_EXECUTION_FAILED` or `TOOL_EXECUTION_SUCCEEDED(edit_file)`; always ends with `SEGMENT_END(edit_file)` | `codex-item-event-converter.ts` | Keep |
 | `item/agentMessage/delta` | agent visible text delta | `SEGMENT_CONTENT(text)` | `codex-item-event-converter.ts` | Keep |
 | `item/reasoning/delta` | reasoning delta | `SEGMENT_CONTENT(reasoning)` | `codex-item-event-converter.ts` | Keep |
 | `item/reasoning/summaryPartAdded` | reasoning summary delta | `SEGMENT_CONTENT(reasoning)` | `codex-item-event-converter.ts` | Keep |
@@ -121,8 +121,8 @@ Output shape:
 
 ## Operational Rules
 
-- Treat `fileChange` item lifecycle as the authoritative owner for Codex `edit_file` lifecycle and artifact availability.
+- Treat `fileChange` item lifecycle as the authoritative owner for Codex `edit_file` lifecycle and changed-file availability.
 - Treat `thread/tokenUsage/updated` as a `CodexThread` state update. Persist ready per-turn usage from the thread boundary instead of parsing raw token payloads in higher runtime layers.
-- Do not infer `edit_file` success from artifact events on the frontend.
+- Do not infer `edit_file` success from published-artifact transport on the frontend.
 - Do not promote `turn/diff/updated` into lifecycle or artifact ownership without a new explicit design decision.
 - When new raw Codex event names appear, update this audit table before extending the converter boundary.

@@ -12,6 +12,8 @@ interface AgentContextsStoreState {
   runs: Map<string, AgentContext>;
 }
 
+let temporaryRunSequence = 0
+
 /**
  * @store agentContexts
  * @description Central repository for active agent context state.
@@ -83,7 +85,7 @@ export const useAgentContextsStore = defineStore('agentContexts', {
         isLocked: false,
       };
 
-      const tempId = `temp-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+      const tempId = `temp-${Date.now()}-${++temporaryRunSequence}`;
       const conversation: Conversation = {
         id: tempId,
         messages: [],

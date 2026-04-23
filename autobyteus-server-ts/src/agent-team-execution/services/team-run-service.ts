@@ -28,6 +28,8 @@ import type { TeamRunKnownStatus } from "../../run-history/domain/team-run-histo
 import {
   SkillAccessMode,
 } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import type { ObservedRunLifecycleEvent } from "../../runtime-management/domain/observed-run-lifecycle-event.js";
+import { TeamRunEventSourceType } from "../domain/team-run-event.js";
 import {
   buildRestoreTeamRunRuntimeContext,
   getRuntimeMemberContexts,
@@ -101,6 +103,84 @@ export class TeamRunService {
       llmConfig: launchPreset.llmConfig ?? null,
       runtimeKind: launchPreset.runtimeKind,
     }));
+  }
+
+  async observeTeamRunLifecycle(
+    teamRunId: string,
+    listener: (event: ObservedRunLifecycleEvent) => void,
+  ): Promise<(() => void) | null> {
+    const run = await this.resolveTeamRun(teamRunId);
+    if (!run) {
+      return null;
+    }
+
+    listener({
+      runtimeSubject: "TEAM_RUN",
+      runId: run.runId,
+      phase: "ATTACHED",
+      occurredAt: new Date().toISOString(),
+    });
+
+    let terminalPhase: ObservedRunLifecycleEvent["phase"] | null = null;
+    const unsubscribe = run.subscribeToEvents((event) => {
+      if (terminalPhase) {
+        return;
+      }
+
+      if (event.eventSourceType === TeamRunEventSourceType.TEAM) {
+        const payload = event.data as Record<string, unknown>;
+        const newStatus = typeof payload.new_status === "string" ? payload.new_status.trim().toUpperCase() : "";
+        if (newStatus === "ERROR" || newStatus === "FAILED") {
+          terminalPhase = "FAILED";
+          listener({
+            runtimeSubject: "TEAM_RUN",
+            runId: run.runId,
+            phase: "FAILED",
+            occurredAt: new Date().toISOString(),
+            errorMessage: typeof payload.error_message === "string" ? payload.error_message : null,
+          });
+        }
+        return;
+      }
+
+      if (event.eventSourceType === TeamRunEventSourceType.AGENT) {
+        const payload = event.data as { agentEvent?: { statusHint?: string | null; payload?: Record<string, unknown> } };
+        if (payload.agentEvent?.statusHint === "ERROR") {
+          terminalPhase = "FAILED";
+          listener({
+            runtimeSubject: "TEAM_RUN",
+            runId: run.runId,
+            phase: "FAILED",
+            occurredAt: new Date().toISOString(),
+            errorMessage:
+              typeof payload.agentEvent.payload?.message === "string"
+                ? payload.agentEvent.payload.message
+                : typeof payload.agentEvent.payload?.error === "string"
+                  ? payload.agentEvent.payload.error
+                  : null,
+          });
+        }
+      }
+    });
+
+    const inactivePollHandle = setInterval(() => {
+      if (terminalPhase || run.isActive()) {
+        return;
+      }
+      terminalPhase = "TERMINATED";
+      listener({
+        runtimeSubject: "TEAM_RUN",
+        runId: run.runId,
+        phase: "TERMINATED",
+        occurredAt: new Date().toISOString(),
+      });
+    }, 1_000);
+    inactivePollHandle.unref?.();
+
+    return () => {
+      clearInterval(inactivePollHandle);
+      unsubscribe();
+    };
   }
 
   async createTeamRun(input: CreateTeamRunInput): Promise<TeamRun> {
@@ -269,6 +349,7 @@ export class TeamRunService {
           memberRouteKey: member.memberRouteKey,
           memberRunId: member.memberRunId,
           workspaceRootPath: member.workspaceRootPath,
+          applicationExecutionContext: member.applicationExecutionContext ?? null,
         };
       }),
     );
@@ -328,6 +409,7 @@ export class TeamRunService {
           skillAccessMode: memberConfig.skillAccessMode,
           llmConfig: memberConfig.llmConfig ?? null,
           workspaceRootPath: await this.resolveMemberWorkspaceRootPath(memberConfig),
+          applicationExecutionContext: memberConfig.applicationExecutionContext ?? null,
         };
       }),
     );
