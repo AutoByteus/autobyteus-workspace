@@ -587,6 +587,7 @@ describe("TeamRunService integration", () => {
     expect(agentTeamRunManager.createTeamRun).toHaveBeenCalledWith(
       expect.objectContaining({
         teamBackendKind: TeamBackendKind.MIXED,
+        coordinatorMemberName: "Coordinator",
       }),
     );
     expect(metadataService.writeMetadata).toHaveBeenCalledWith(

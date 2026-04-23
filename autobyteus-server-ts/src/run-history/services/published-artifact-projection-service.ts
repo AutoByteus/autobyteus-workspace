@@ -49,6 +49,11 @@ export class PublishedArtifactProjectionService {
     return structuredClone(context.projection.summaries);
   }
 
+  async getPublishedArtifactsFromMemoryDir(memoryDir: string): Promise<PublishedArtifactSummary[]> {
+    const projection = await this.projectionStore.readProjection(memoryDir);
+    return structuredClone(projection.summaries);
+  }
+
   async getRevision(runId: string, revisionId: string): Promise<PublishedArtifactRevision | null> {
     const context = await this.readProjectionContext(runId);
     return (
@@ -67,6 +72,19 @@ export class PublishedArtifactProjectionService {
       return null;
     }
     return this.snapshotStore.readRevisionText(resolved.memoryDir, resolved.revision.snapshotRelativePath);
+  }
+
+  async getPublishedArtifactRevisionTextFromMemoryDir(input: {
+    memoryDir: string;
+    revisionId: string;
+  }): Promise<string | null> {
+    const projection = await this.projectionStore.readProjection(input.memoryDir);
+    const revision =
+      projection.revisions.find((candidate) => candidate.revisionId === input.revisionId) ?? null;
+    if (!revision) {
+      return null;
+    }
+    return this.snapshotStore.readRevisionText(input.memoryDir, revision.snapshotRelativePath);
   }
 
   async resolveRevision(runId: string, revisionId: string): Promise<{

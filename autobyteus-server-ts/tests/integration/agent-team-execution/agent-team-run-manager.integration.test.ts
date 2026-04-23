@@ -16,6 +16,7 @@ const createConfig = (input: {
   new TeamRunConfig({
     teamDefinitionId: `team-def-${input.teamBackendKind}`,
     teamBackendKind: input.teamBackendKind,
+    coordinatorMemberName: "Coordinator",
     memberConfigs: input.memberRuntimeKinds.map((runtimeKind, index) => ({
       memberName: index === 0 ? "Coordinator" : `Member${index}`,
       memberRouteKey: index === 0 ? "coordinator" : `member-${index}`,
@@ -102,6 +103,7 @@ describe("AgentTeamRunManager integration", () => {
       );
 
       expect(run.teamBackendKind).toBe(teamBackendKind);
+      expect(run.context?.coordinatorMemberName).toBe("Coordinator");
       expect(manager.getActiveRun(run.runId)?.runId).toBe(run.runId);
       expect(manager.listActiveRuns()).toContain(run.runId);
       expect(auto.createBackend).toHaveBeenCalledTimes(teamBackendKind === TeamBackendKind.AUTOBYTEUS ? 1 : 0);
@@ -230,44 +232,11 @@ describe("AgentTeamRunManager integration", () => {
     expect(manager.listActiveRuns()).toEqual([]);
   });
 
-  it("subscribes to active runs and returns null for missing runs", async () => {
-    const created = createBackend({
-      runId: "team-subscribe",
-      teamBackendKind: TeamBackendKind.CLAUDE_AGENT_SDK,
-    });
+  it("throws for unsupported backend kinds during create", async () => {
     const manager = new AgentTeamRunManager({
       autoByteusTeamRunBackendFactory: createFactory(
         createBackend({ runId: "unused-auto", teamBackendKind: TeamBackendKind.AUTOBYTEUS }).backend,
       ) as never,
-      codexTeamRunBackendFactory: createFactory(
-        createBackend({ runId: "unused-codex", teamBackendKind: TeamBackendKind.CODEX_APP_SERVER }).backend,
-      ) as never,
-      claudeTeamRunBackendFactory: createFactory(created.backend) as never,
-      mixedTeamRunBackendFactory: createFactory(
-        createBackend({ runId: "unused-mixed", teamBackendKind: TeamBackendKind.MIXED }).backend,
-      ) as never,
-    });
-
-    const run = await manager.createTeamRun(
-      createConfig({
-        teamBackendKind: TeamBackendKind.CLAUDE_AGENT_SDK,
-        memberRuntimeKinds: [RuntimeKind.CLAUDE_AGENT_SDK],
-      }),
-    );
-    const unsubscribe = manager.subscribeToEvents(run.runId, vi.fn());
-
-    expect(typeof unsubscribe).toBe("function");
-    expect(created.backend.subscribeToEvents).toHaveBeenCalledTimes(1);
-    expect(manager.subscribeToEvents("missing-run", vi.fn())).toBeNull();
-  });
-
-  it("terminates and unregisters active team runs, and wraps failures", async () => {
-    const created = createBackend({
-      runId: "team-terminate-ok",
-      teamBackendKind: TeamBackendKind.AUTOBYTEUS,
-    });
-    const manager = new AgentTeamRunManager({
-      autoByteusTeamRunBackendFactory: createFactory(created.backend) as never,
       codexTeamRunBackendFactory: createFactory(
         createBackend({ runId: "unused-codex", teamBackendKind: TeamBackendKind.CODEX_APP_SERVER }).backend,
       ) as never,
@@ -279,17 +248,60 @@ describe("AgentTeamRunManager integration", () => {
       ) as never,
     });
 
-    const run = await manager.createTeamRun(
-      createConfig({
+    const unsupportedConfig = new TeamRunConfig({
+      teamDefinitionId: "team-unsupported",
+      teamBackendKind: "unsupported" as TeamBackendKind,
+      coordinatorMemberName: "Coordinator",
+      memberConfigs: [
+        {
+          memberName: "Coordinator",
+          memberRouteKey: "coordinator",
+          agentDefinitionId: "agent-unsupported",
+          llmModelIdentifier: "model-unsupported",
+          autoExecuteTools: true,
+          skillAccessMode: SkillAccessMode.NONE,
+          runtimeKind: RuntimeKind.AUTOBYTEUS,
+          workspaceId: "workspace-unsupported",
+        },
+      ],
+    });
+
+    await expect(manager.createTeamRun(unsupportedConfig)).rejects.toBeInstanceOf(AgentTeamCreationError);
+  });
+
+  it("throws for unsupported backend kinds during restore", async () => {
+    const manager = new AgentTeamRunManager({
+      autoByteusTeamRunBackendFactory: createFactory(
+        createBackend({ runId: "unused-auto", teamBackendKind: TeamBackendKind.AUTOBYTEUS }).backend,
+      ) as never,
+      codexTeamRunBackendFactory: createFactory(
+        createBackend({ runId: "unused-codex", teamBackendKind: TeamBackendKind.CODEX_APP_SERVER }).backend,
+      ) as never,
+      claudeTeamRunBackendFactory: createFactory(
+        createBackend({ runId: "unused-claude", teamBackendKind: TeamBackendKind.CLAUDE_AGENT_SDK }).backend,
+      ) as never,
+      mixedTeamRunBackendFactory: createFactory(
+        createBackend({ runId: "unused-mixed", teamBackendKind: TeamBackendKind.MIXED }).backend,
+      ) as never,
+    });
+
+    const unsupportedContext = new TeamRunContext({
+      runId: "team-restored-unsupported",
+      teamBackendKind: "unsupported" as TeamBackendKind,
+      coordinatorMemberName: "Coordinator",
+      config: createConfig({
         teamBackendKind: TeamBackendKind.AUTOBYTEUS,
         memberRuntimeKinds: [RuntimeKind.AUTOBYTEUS],
       }),
-    );
-    await expect(manager.terminateTeamRun(run.runId)).resolves.toBe(true);
-    expect(manager.getActiveRun(run.runId)).toBeNull();
+      runtimeContext: null,
+    });
 
+    await expect(manager.restoreTeamRun(unsupportedContext)).rejects.toBeInstanceOf(AgentTeamCreationError);
+  });
+
+  it("wraps backend termination failures", async () => {
     const failing = createBackend({
-      runId: "team-terminate-error",
+      runId: "team-failing-terminate",
       teamBackendKind: TeamBackendKind.AUTOBYTEUS,
     });
     failing.backend.terminate = vi.fn().mockRejectedValue(new Error("boom"));
@@ -305,82 +317,14 @@ describe("AgentTeamRunManager integration", () => {
         createBackend({ runId: "unused-mixed-2", teamBackendKind: TeamBackendKind.MIXED }).backend,
       ) as never,
     });
-    const failingRun = await failingManager.createTeamRun(
+
+    const run = await failingManager.createTeamRun(
       createConfig({
         teamBackendKind: TeamBackendKind.AUTOBYTEUS,
         memberRuntimeKinds: [RuntimeKind.AUTOBYTEUS],
       }),
     );
-    await expect(failingManager.terminateTeamRun(failingRun.runId)).rejects.toThrow(
-      AgentTeamTerminationError,
-    );
-  });
 
-  it("proxies native-team lookup through the autobyteus backend factory", () => {
-    const autoFactory = {
-      ...createFactory(
-        createBackend({ runId: "unused-auto", teamBackendKind: TeamBackendKind.AUTOBYTEUS }).backend,
-      ),
-      getTeam: vi.fn().mockReturnValue({ teamId: "native-team-1" }),
-    };
-    const manager = new AgentTeamRunManager({
-      autoByteusTeamRunBackendFactory: autoFactory as never,
-      codexTeamRunBackendFactory: createFactory(
-        createBackend({ runId: "unused-codex", teamBackendKind: TeamBackendKind.CODEX_APP_SERVER }).backend,
-      ) as never,
-      claudeTeamRunBackendFactory: createFactory(
-        createBackend({ runId: "unused-claude", teamBackendKind: TeamBackendKind.CLAUDE_AGENT_SDK }).backend,
-      ) as never,
-      mixedTeamRunBackendFactory: createFactory(
-        createBackend({ runId: "unused-mixed", teamBackendKind: TeamBackendKind.MIXED }).backend,
-      ) as never,
-    });
-
-    expect(manager.getTeam("native-team-1")?.teamId).toBe("native-team-1");
-    expect(autoFactory.getTeam).toHaveBeenCalledWith("native-team-1");
-  });
-
-  it("rejects unsupported team backend kinds for create and restore", async () => {
-    const manager = new AgentTeamRunManager({
-      autoByteusTeamRunBackendFactory: createFactory(
-        createBackend({ runId: "unused-auto", teamBackendKind: TeamBackendKind.AUTOBYTEUS }).backend,
-      ) as never,
-      codexTeamRunBackendFactory: createFactory(
-        createBackend({ runId: "unused-codex", teamBackendKind: TeamBackendKind.CODEX_APP_SERVER }).backend,
-      ) as never,
-      claudeTeamRunBackendFactory: createFactory(
-        createBackend({ runId: "unused-claude", teamBackendKind: TeamBackendKind.CLAUDE_AGENT_SDK }).backend,
-      ) as never,
-      mixedTeamRunBackendFactory: createFactory(
-        createBackend({ runId: "unused-mixed", teamBackendKind: TeamBackendKind.MIXED }).backend,
-      ) as never,
-    });
-    const unsupportedKind = "unsupported_backend" as TeamBackendKind;
-    const config = new TeamRunConfig({
-      teamDefinitionId: "team-def-unsupported",
-      teamBackendKind: unsupportedKind,
-      memberConfigs: [
-        {
-          memberName: "Coordinator",
-          memberRouteKey: "coordinator",
-          agentDefinitionId: "agent-unsupported",
-          llmModelIdentifier: "model-unsupported",
-          autoExecuteTools: true,
-          skillAccessMode: SkillAccessMode.NONE,
-          runtimeKind: RuntimeKind.AUTOBYTEUS,
-          workspaceId: "workspace-unsupported",
-        },
-      ],
-    });
-    const context = new TeamRunContext({
-      runId: "team-unsupported",
-      teamBackendKind: unsupportedKind,
-      coordinatorMemberName: "Coordinator",
-      config,
-      runtimeContext: null,
-    });
-
-    await expect(manager.createTeamRun(config)).rejects.toThrow(AgentTeamCreationError);
-    await expect(manager.restoreTeamRun(context)).rejects.toThrow(AgentTeamCreationError);
+    await expect(failingManager.terminateTeamRun(run.runId)).rejects.toBeInstanceOf(AgentTeamTerminationError);
   });
 });

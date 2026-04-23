@@ -103,6 +103,9 @@ export class TeamRun {
       typeof this.context?.coordinatorMemberName === "string" &&
       this.context.coordinatorMemberName.trim().length > 0
         ? this.context.coordinatorMemberName.trim()
+        : typeof this.configValue?.coordinatorMemberName === "string" &&
+            this.configValue.coordinatorMemberName.trim().length > 0
+          ? this.configValue.coordinatorMemberName.trim()
         : null;
     if (coordinatorMemberName) {
       return coordinatorMemberName;

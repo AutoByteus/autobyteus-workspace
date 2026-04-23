@@ -20,9 +20,8 @@ Shows Applications as a first-class top-level module, resolves whether the modul
 - `utils/application/applicationAssetUrl.ts`
 - `utils/application/applicationHostTransport.ts`
 - `utils/application/applicationLaunchDescriptor.ts`
-- `types/application/ApplicationHostTransport.ts`
-- `types/application/ApplicationIframeContract.ts`
 - `docs/application-bundle-iframe-contract-v1.md`
+- `../../autobyteus-application-sdk-contracts/src/application-iframe-contract.ts`
 
 ## Runtime Availability And Gating
 
@@ -146,12 +145,26 @@ It owns:
 - ready timeout / retry / remount logic
 - acceptance of the matching child ready signal
 - delivery of the bootstrap envelope into the iframe
+- the host-side reveal boundary, which still completes on bootstrap delivery
 
 `ApplicationIframeHost.vue` is an internal bridge only. It renders the iframe, validates the raw ready message against the current iframe window/origin/application/launch identity, and posts the supplied bootstrap envelope back to the iframe.
+
+Inside the bundle, `startHostedApplication(...)` from `@autobyteus/application-frontend-sdk` becomes the authoritative bundle-local startup owner. It owns:
+
+- launch-hint parsing
+- unsupported raw-entry behavior
+- ready emission
+- bootstrap payload validation
+- local startup while runtime context is created
+- startup failure containment until the business mount callback completes successfully
+
+Direct/raw bundle entry without valid host launch context is intentionally unsupported by that startup boundary rather than left to app-authored placeholder UI.
 
 ## Iframe Bootstrap v2
 
 The host resolves `entryHtmlAssetPath` against the bound REST base, appends the versioned iframe launch hints, and bootstraps the child iframe only after it receives the matching ready event.
+
+The shared contract definitions now live in `@autobyteus/application-sdk-contracts` instead of a host-local web type file.
 
 The v2 contract uses:
 
@@ -177,9 +190,9 @@ Bundled UIs should usually sit on top of `@autobyteus/application-frontend-sdk`,
 The public author-facing surface is:
 
 - `@autobyteus/application-sdk-contracts` for shared manifest, request-context, storage, runtime-control, and execution-event types
-- `@autobyteus/application-frontend-sdk` for app UI query/command/GraphQL/notification helpers
+- `@autobyteus/application-frontend-sdk` for framework-owned startup plus app UI query/command/GraphQL/notification helpers
 - `@autobyteus/application-backend-sdk` for backend definition typing
-- `application-bundle-iframe-contract-v1.md` plus `ApplicationIframeContract.ts` for the host bootstrap envelope itself
+- `application-bundle-iframe-contract-v1.md` plus the shared `application-iframe-contract.ts` contract owner for the host bootstrap envelope itself
 
 App UIs call their own backend through the platform-owned application backend gateway URLs delivered in `transport`.
 

@@ -1,16 +1,16 @@
 import { describe, expect, it } from 'vitest'
 import {
-  appendApplicationIframeLaunchHints,
-  resolveApplicationAssetOrigin,
-  resolveApplicationAssetUrl,
-} from '../applicationAssetUrl'
-import {
   APPLICATION_IFRAME_CONTRACT_VERSION_V2,
   APPLICATION_IFRAME_QUERY_APPLICATION_ID,
   APPLICATION_IFRAME_QUERY_CONTRACT_VERSION,
   APPLICATION_IFRAME_QUERY_HOST_ORIGIN,
   APPLICATION_IFRAME_QUERY_LAUNCH_INSTANCE_ID,
-} from '~/types/application/ApplicationIframeContract'
+} from '@autobyteus/application-sdk-contracts'
+import {
+  appendApplicationIframeLaunchHints,
+  resolveApplicationAssetOrigin,
+  resolveApplicationAssetUrl,
+} from '../applicationAssetUrl'
 import {
   doesApplicationHostOriginMatch,
   normalizeApplicationHostOrigin,

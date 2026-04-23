@@ -49,19 +49,101 @@ const rewriteImports = (content, replacements) =>
     content,
   );
 
+const collectFiles = async (rootPath) => {
+  const entries = await fs.readdir(rootPath, { withFileTypes: true });
+  const files = [];
+  for (const entry of entries) {
+    const entryPath = path.join(rootPath, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...await collectFiles(entryPath));
+      continue;
+    }
+    if (entry.isFile()) {
+      files.push(entryPath);
+    }
+  }
+  return files;
+};
+
+const rewriteBrowserVendorImports = async (vendorRoot) => {
+  const files = await collectFiles(vendorRoot);
+  for (const filePath of files) {
+    if (!filePath.endsWith(".js") && !filePath.endsWith(".d.ts")) {
+      continue;
+    }
+    const content = await fs.readFile(filePath, "utf8");
+    const rewrittenContent = rewriteImports(content, [
+      [
+        /@autobyteus\/application-sdk-contracts/g,
+        "./application-sdk-contracts/index.js",
+      ],
+    ]);
+    if (rewrittenContent !== content) {
+      await fs.writeFile(filePath, rewrittenContent, "utf8");
+    }
+  }
+};
+
+const readBrowserModuleSpecifiers = (content) => {
+  const specifiers = [];
+  const moduleSpecifierPattern = /(?:import|export)\s+(?:[^"'`]*?\s+from\s+)?["']([^"']+)["']/g;
+  for (const match of content.matchAll(moduleSpecifierPattern)) {
+    specifiers.push(match[1]);
+  }
+  return specifiers;
+};
+
+const isBareBrowserSpecifier = (specifier) => {
+  const normalized = specifier.trim();
+  return (
+    normalized.length > 0
+    && !normalized.startsWith(".")
+    && !normalized.startsWith("/")
+    && !normalized.startsWith("http://")
+    && !normalized.startsWith("https://")
+    && !normalized.startsWith("data:")
+  );
+};
+
+const assertBrowserModulesSelfContained = async (uiRoot) => {
+  const files = await collectFiles(uiRoot);
+  for (const filePath of files) {
+    if (!filePath.endsWith(".js")) {
+      continue;
+    }
+    const content = await fs.readFile(filePath, "utf8");
+    const bareSpecifiers = readBrowserModuleSpecifiers(content).filter(isBareBrowserSpecifier);
+    if (bareSpecifiers.length > 0) {
+      throw new Error(
+        `Browser UI module '${path.relative(uiRoot, filePath)}' contains unsupported bare module specifiers: ${bareSpecifiers.join(", ")}`,
+      );
+    }
+  }
+};
+
 const syncFrontendSdkVendor = async (vendorRoot) => {
   const frontendSdkDistRoot = path.join(
     workspaceRoot,
     "autobyteus-application-frontend-sdk",
     "dist",
   );
+  const contractsDistRoot = path.join(
+    workspaceRoot,
+    "autobyteus-application-sdk-contracts",
+    "dist",
+  );
 
   await fs.rm(vendorRoot, { recursive: true, force: true });
   await copyTree(frontendSdkDistRoot, vendorRoot);
+  await copyTree(
+    contractsDistRoot,
+    path.join(vendorRoot, "application-sdk-contracts"),
+  );
   await copyFile(
     path.join(frontendSdkDistRoot, "index.js"),
     path.join(vendorRoot, "application-frontend-sdk.js"),
   );
+  await rewriteBrowserVendorImports(vendorRoot);
 };
 
 const refreshRuntimeUiAssets = async () => {
@@ -81,6 +163,8 @@ const refreshRuntimeUiAssets = async () => {
       await copyFile(sourcePath, targetPath);
     }
   }
+
+  await assertBrowserModulesSelfContained(runtimeUiRoot);
 };
 
 const copyCompiledBackend = async (sourceDir, targetRoot) => {

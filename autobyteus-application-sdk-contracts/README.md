@@ -8,6 +8,7 @@ Shared TypeScript contract package for AutoByteus application bundles.
 - backend bundle manifest v1 types and version constants
 - backend definition contract v2 types
 - frontend SDK contract v2 constants
+- iframe/bootstrap contract v2 constants, query hints, payload types, transport shape, and validators/builders
 - shared request/route/GraphQL/notification/storage context types
 - runtime-resource, resource-slot, and host-managed launch-default configuration types
 - runtime-control, run-binding, execution-event envelope, and published-artifact callback/query types
@@ -49,6 +50,24 @@ Shared TypeScript contract package for AutoByteus application bundles.
 - `ApplicationRouteRequest` / `ApplicationRouteResponse`
 - `ApplicationGraphqlRequest`
 
+### Iframe / bootstrap contract
+
+- `APPLICATION_IFRAME_CHANNEL`
+- `APPLICATION_IFRAME_CONTRACT_VERSION_V2`
+- `APPLICATION_IFRAME_READY_EVENT`
+- `APPLICATION_IFRAME_BOOTSTRAP_EVENT`
+- `ApplicationIframeLaunchHints`
+- `ApplicationHostTransport`
+- `ApplicationUiReadyEnvelopeV2`
+- `ApplicationHostBootstrapEnvelopeV2`
+- `createApplicationUiReadyEnvelopeV2(...)`
+- `createApplicationHostBootstrapEnvelopeV2(...)`
+- `isApplicationUiReadyEnvelopeV2(...)`
+- `isApplicationHostBootstrapEnvelopeV2(...)`
+- `readApplicationIframeLaunchHints(...)`
+- `normalizeApplicationHostOrigin(...)`
+- `doesApplicationHostOriginMatch(...)`
+
 ### Runtime-orchestration contracts
 
 - `ApplicationRuntimeControl`
@@ -85,6 +104,7 @@ It demonstrates:
 - manifest v3
 - manifest-declared `resourceSlots[]`
 - backend bundle manifest v1
+- shared iframe/bootstrap contract v2
 - request context `{ applicationId, launchInstanceId? }`
 - application-authored `runtimeControl.getConfiguredResource(...)` + `startRun(...)`
 - published-artifact reads via `runtimeControl.getRunPublishedArtifacts(...)`

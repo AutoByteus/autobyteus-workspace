@@ -1,4 +1,4 @@
-import type { ApplicationGraphqlRequest, ApplicationNotificationMessage, ApplicationRequestContext, ApplicationRouteRequest, ApplicationRouteResponse } from "@autobyteus/application-sdk-contracts";
+import type { ApplicationGraphqlRequest, ApplicationNotificationMessage, ApplicationRequestContext, ApplicationRouteRequest, ApplicationRouteResponse } from "./application-sdk-contracts/index.js";
 export type ApplicationClientTransport = {
     invokeQuery: (args: {
         applicationId: string;

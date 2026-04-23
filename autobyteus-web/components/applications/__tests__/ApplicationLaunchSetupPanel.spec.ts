@@ -225,6 +225,13 @@ describe('ApplicationLaunchSetupPanel', () => {
     )
     expect(wrapper.get('[data-testid="application-launch-setup-panel"]').exists()).toBe(true)
     expect(wrapper.get('[data-testid="application-launch-setup-panel"]').attributes('data-presentation')).toBe('panel')
+    expect(wrapper.get('[data-testid="application-launch-setup-header"]').classes()).toContain('flex-col')
+    expect(wrapper.get('[data-testid="application-launch-setup-header"]').classes()).not.toContain('sm:flex-row')
+    expect(wrapper.get('[data-testid="application-launch-setup-slot-header"]').classes()).toContain('flex-col')
+    expect(wrapper.get('[data-testid="application-launch-setup-slot-header"]').classes()).not.toContain('lg:flex-row')
+    expect(wrapper.get('[data-testid="application-launch-setup-slot-selection"]').classes()).toContain('w-full')
+    expect(wrapper.get('[data-testid="application-launch-setup-slot-body"]').classes()).not.toContain('xl:grid-cols-[minmax(0,18rem)_minmax(0,1fr)]')
+    expect(wrapper.get('[data-testid="application-launch-setup-slot-actions"]').classes()).toContain('flex-col')
     expect(wrapper.get('[data-testid="application-launch-defaults-fields"]').exists()).toBe(true)
     expect(wrapper.emitted('setup-state-change')?.at(-1)?.[0]).toMatchObject({
       phase: 'ready',
@@ -255,6 +262,8 @@ describe('ApplicationLaunchSetupPanel', () => {
       },
     })
     expect(wrapper.text()).toContain('Setup saved.')
+    expect(wrapper.get('button.rounded-md.bg-blue-600').classes()).toContain('w-full')
+    expect(wrapper.get('button.rounded-md.border.border-slate-300').classes()).toContain('w-full')
     expect(wrapper.emitted('setup-state-change')?.at(-1)?.[0]).toMatchObject({
       phase: 'ready',
       isLaunchReady: true,

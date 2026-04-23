@@ -163,7 +163,7 @@ details[open] .details-summary::before {
   font-size: 13px;
 }
 
-.status-banner {
+.workspace-status {
   margin-top: 18px;
   padding: 14px 16px;
   border-radius: 18px;
@@ -174,13 +174,13 @@ details[open] .details-summary::before {
   font-weight: 600;
 }
 
-.status-banner.error {
+.workspace-status.error {
   border-color: #fecaca;
   background: #fef2f2;
   color: #991b1b;
 }
 
-.status-banner.ready {
+.workspace-status.ready {
   border-color: #bfdbfe;
   background: #eff6ff;
   color: #1d4ed8;

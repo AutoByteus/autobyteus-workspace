@@ -13,7 +13,9 @@ import {
   buildCodexThreadConfig,
 } from "../../../agent-execution/backends/codex/thread/codex-thread-config.js";
 import { resolveApprovalPolicyForAutoExecuteTools } from "../../../agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
+import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import { TeamRunContext } from "../../domain/team-run-context.js";
+import type { TeamMemberRunConfig } from "../../domain/team-run-config.js";
 import type { InterAgentMessageDeliveryRequest } from "../../domain/inter-agent-message-delivery.js";
 import {
   TeamRunEventSourceType,
@@ -33,7 +35,6 @@ import {
 } from "../../services/inter-agent-message-runtime-builders.js";
 import { getMemberTeamContextBuilder, type MemberTeamContextBuilder } from "../../services/member-team-context-builder.js";
 import { TeamBackendKind } from "../../domain/team-backend-kind.js";
-import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 
 const buildRunNotFoundResult = (teamRunId: string): AgentOperationResult => ({
   accepted: false,
@@ -290,12 +291,29 @@ export class CodexTeamManager implements TeamManager {
     return this.teamContext.runtimeContext;
   }
 
+  private resolveConfiguredMemberRunConfig(
+    memberContext: CodexTeamMemberContext,
+  ): TeamMemberRunConfig | null {
+    const memberConfigs = this.teamContext?.config?.memberConfigs ?? [];
+    return memberConfigs.find((memberConfig) => {
+      const configuredRunId =
+        typeof memberConfig.memberRunId === "string" && memberConfig.memberRunId.trim().length > 0
+          ? memberConfig.memberRunId.trim()
+          : null;
+      if (configuredRunId) {
+        return configuredRunId === memberContext.memberRunId;
+      }
+      return (memberConfig.memberRouteKey ?? memberConfig.memberName) === memberContext.memberRouteKey;
+    }) ?? null;
+  }
+
   private async buildMemberRunConfig(memberContext: CodexTeamMemberContext): Promise<AgentRunConfig> {
     const teamContext = this.teamContext;
     const config = teamContext?.config;
     if (!teamContext || !config) {
       throw new Error("Codex team context is not initialized.");
     }
+    const configuredMemberRunConfig = this.resolveConfiguredMemberRunConfig(memberContext);
     const memberTeamContext = await this.memberTeamContextBuilder.build({
       teamRunId: teamContext.runId,
       teamDefinitionId: config.teamDefinitionId,
@@ -316,13 +334,16 @@ export class CodexTeamManager implements TeamManager {
       agentDefinitionId: memberContext.agentRunConfig.agentDefinitionId,
       llmModelIdentifier: memberContext.agentRunConfig.llmModelIdentifier,
       autoExecuteTools: memberContext.agentRunConfig.autoExecuteTools,
-      workspaceId: memberContext.agentRunConfig.workspaceId,
-      memoryDir: memberContext.agentRunConfig.memoryDir,
+      workspaceId: memberContext.agentRunConfig.workspaceId ?? configuredMemberRunConfig?.workspaceId ?? null,
+      memoryDir: memberContext.agentRunConfig.memoryDir ?? configuredMemberRunConfig?.memoryDir ?? null,
       llmConfig: memberContext.agentRunConfig.llmConfig,
       skillAccessMode: memberContext.agentRunConfig.skillAccessMode,
       runtimeKind: memberContext.agentRunConfig.runtimeKind,
       memberTeamContext,
-      applicationExecutionContext: memberContext.agentRunConfig.applicationExecutionContext,
+      applicationExecutionContext:
+        memberContext.agentRunConfig.applicationExecutionContext
+        ?? configuredMemberRunConfig?.applicationExecutionContext
+        ?? null,
     });
   }
 

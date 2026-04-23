@@ -266,6 +266,9 @@ importers:
 
   autobyteus-web:
     dependencies:
+      '@autobyteus/application-sdk-contracts':
+        specifier: workspace:*
+        version: link:../autobyteus-application-sdk-contracts
       '@fortawesome/fontawesome-svg-core':
         specifier: ^6.7.2
         version: 6.7.2

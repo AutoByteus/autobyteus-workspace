@@ -2,6 +2,11 @@ import fs from "node:fs/promises";
 import { randomUUID } from "node:crypto";
 import { AgentRunEventType } from "../../agent-execution/domain/agent-run-event.js";
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
+import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
+import {
+  ApplicationPublishedArtifactRelayService,
+  getApplicationPublishedArtifactRelayService,
+} from "../../application-orchestration/services/application-published-artifact-relay-service.js";
 import { getWorkspaceManager, type WorkspaceManager } from "../../workspaces/workspace-manager.js";
 import { inferArtifactType } from "../../utils/artifact-utils.js";
 import {
@@ -38,11 +43,27 @@ const cloneProjection = (
   projection: PublishedArtifactProjection,
 ): PublishedArtifactProjection => structuredClone(projection);
 
+const normalizeOptionalNonEmptyString = (value: string | null | undefined): string | null => {
+  if (typeof value !== "string") {
+    return null;
+  }
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : null;
+};
+
+type FallbackPublicationRuntimeContext = {
+  memoryDir?: string | null;
+  workspaceRootPath?: string | null;
+  applicationExecutionContext?: ApplicationExecutionContext | null;
+  emitArtifactPersisted?: ((artifact: PublishedArtifactSummary) => void | Promise<void>) | null;
+};
+
 export class PublishedArtifactPublicationService {
   constructor(
     private readonly dependencies: {
       agentRunManager?: AgentRunManager;
       workspaceManager?: WorkspaceManager;
+      publishedArtifactRelayService?: ApplicationPublishedArtifactRelayService;
       projectionStore?: PublishedArtifactProjectionStore;
       snapshotStore?: PublishedArtifactSnapshotStore;
     } = {},
@@ -54,6 +75,10 @@ export class PublishedArtifactPublicationService {
 
   private get workspaceManager(): WorkspaceManager {
     return this.dependencies.workspaceManager ?? getWorkspaceManager();
+  }
+
+  private get publishedArtifactRelayService(): ApplicationPublishedArtifactRelayService {
+    return this.dependencies.publishedArtifactRelayService ?? getApplicationPublishedArtifactRelayService();
   }
 
   private get projectionStore(): PublishedArtifactProjectionStore {
@@ -68,20 +93,33 @@ export class PublishedArtifactPublicationService {
     runId: string;
     path: string;
     description?: string | null;
+    fallbackRuntimeContext?: FallbackPublicationRuntimeContext | null;
   }): Promise<PublishedArtifactSummary> {
     const run = this.agentRunManager.getActiveRun(input.runId);
-    if (!run) {
+    const fallbackRuntimeContext = input.fallbackRuntimeContext ?? null;
+    const emitArtifactPersisted = fallbackRuntimeContext?.emitArtifactPersisted ?? null;
+    if (!run && !emitArtifactPersisted) {
       throw new Error(`Run '${input.runId}' is not active.`);
     }
-    if (!run.config.memoryDir?.trim()) {
+
+    const memoryDir = run?.config.memoryDir?.trim()
+      || normalizeOptionalNonEmptyString(fallbackRuntimeContext?.memoryDir)
+      || null;
+    if (!memoryDir) {
       throw new Error(`Run '${input.runId}' is missing a durable memory directory.`);
     }
-    if (!run.config.workspaceId?.trim()) {
+
+    const workspaceRootPath = run?.config.workspaceId?.trim()
+      ? (await this.workspaceManager.getOrCreateWorkspace(run.config.workspaceId)).getBasePath()
+      : normalizeOptionalNonEmptyString(fallbackRuntimeContext?.workspaceRootPath);
+    if (!workspaceRootPath) {
       throw new Error(`Run '${input.runId}' is missing a workspace binding.`);
     }
 
-    const workspace = await this.workspaceManager.getOrCreateWorkspace(run.config.workspaceId);
-    const workspaceRootPath = workspace.getBasePath();
+    const applicationExecutionContext = run?.config.applicationExecutionContext
+      ?? fallbackRuntimeContext?.applicationExecutionContext
+      ?? null;
+
     const canonicalPath = canonicalizePublishedArtifactPath(input.path, workspaceRootPath);
     if (!canonicalPath) {
       throw new Error("publish_artifact path must resolve to a file inside the current workspace.");
@@ -107,17 +145,15 @@ export class PublishedArtifactPublicationService {
       throw new Error("publish_artifact path must resolve to a file inside the current workspace.");
     }
 
-    const projection = run.config.memoryDir
-      ? await this.projectionStore.readProjection(run.config.memoryDir)
-      : cloneProjection(EMPTY_PUBLISHED_ARTIFACT_PROJECTION);
+    const projection = await this.projectionStore.readProjection(memoryDir);
     const publishedAt = new Date().toISOString();
     const revisionId = randomUUID();
-    const { artifactId } = buildPublishedArtifactIdentity(run.runId, canonicalPath);
+    const { artifactId } = buildPublishedArtifactIdentity(input.runId, canonicalPath);
     const description = normalizeOptionalDescription(input.description);
     const artifactType = normalizePublishedArtifactType(inferArtifactType(canonicalPath));
 
     const snapshot = await this.snapshotStore.snapshotArtifact({
-      memoryDir: run.config.memoryDir,
+      memoryDir,
       revisionId,
       sourceAbsolutePath: realAbsolutePath,
     });
@@ -126,7 +162,7 @@ export class PublishedArtifactPublicationService {
       const nextProjection = this.buildNextProjection({
         projection,
         artifactId,
-        runId: run.runId,
+        runId: input.runId,
         canonicalPath,
         description,
         artifactType,
@@ -135,21 +171,37 @@ export class PublishedArtifactPublicationService {
         snapshotRelativePath: snapshot.snapshotRelativePath,
         sourceFileName: snapshot.sourceFileName,
       });
-      await this.projectionStore.writeProjection(run.config.memoryDir, nextProjection);
+      await this.projectionStore.writeProjection(memoryDir, nextProjection);
       const summary = nextProjection.summaries.find((candidate) => candidate.id === artifactId);
       if (!summary) {
         throw new Error(`Published artifact '${artifactId}' was not persisted.`);
       }
 
-      run.emitLocalEvent({
-        eventType: AgentRunEventType.ARTIFACT_PERSISTED,
-        runId: run.runId,
-        statusHint: null,
-        payload: structuredClone(summary) as Record<string, unknown>,
-      });
-      return structuredClone(summary);
+      const clonedSummary = structuredClone(summary);
+      if (run) {
+        run.emitLocalEvent({
+          eventType: AgentRunEventType.ARTIFACT_PERSISTED,
+          runId: run.runId,
+          statusHint: null,
+          payload: structuredClone(clonedSummary) as Record<string, unknown>,
+        });
+      } else if (emitArtifactPersisted) {
+        await emitArtifactPersisted(structuredClone(clonedSummary));
+      } else {
+        throw new Error(`Run '${input.runId}' is not active.`);
+      }
+
+      if (!run && applicationExecutionContext) {
+        await this.publishedArtifactRelayService.relayArtifactForExecutionContext({
+          runId: input.runId,
+          applicationExecutionContext,
+          artifact: structuredClone(clonedSummary),
+        });
+      }
+
+      return clonedSummary;
     } catch (error) {
-      await this.snapshotStore.deleteRevisionSnapshot(run.config.memoryDir, snapshot.snapshotRelativePath).catch(() => undefined);
+      await this.snapshotStore.deleteRevisionSnapshot(memoryDir, snapshot.snapshotRelativePath).catch(() => undefined);
       throw error;
     }
   }

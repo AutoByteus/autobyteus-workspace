@@ -9,6 +9,7 @@ import {
   type AgentRunEvent,
 } from "../../agent-execution/domain/agent-run-event.js";
 import { ApplicationEngineHostService, getApplicationEngineHostService } from "../../application-engine/services/application-engine-host-service.js";
+import type { ApplicationExecutionContext } from "../domain/models.js";
 import { ApplicationRunBindingStore } from "../stores/application-run-binding-store.js";
 import type { PublishedArtifactSummary } from "../../services/published-artifacts/published-artifact-types.js";
 
@@ -69,17 +70,6 @@ export class ApplicationPublishedArtifactRelayService {
       return;
     }
 
-    const binding = await this.bindingStore.getBinding(
-      applicationExecutionContext.applicationId,
-      applicationExecutionContext.bindingId,
-    );
-    if (!binding) {
-      logger.warn(
-        `ApplicationPublishedArtifactRelayService: binding '${applicationExecutionContext.bindingId}' was not found for run '${run.runId}'.`,
-      );
-      return;
-    }
-
     if (!isPublishedArtifactSummary(event.payload)) {
       logger.warn(
         `ApplicationPublishedArtifactRelayService: run '${run.runId}' emitted a malformed ARTIFACT_PERSISTED payload.`,
@@ -87,7 +77,34 @@ export class ApplicationPublishedArtifactRelayService {
       return;
     }
 
-    const artifactEvent = this.buildArtifactEvent(binding, applicationExecutionContext.producer, event.payload);
+    await this.relayArtifactForExecutionContext({
+      runId: run.runId,
+      applicationExecutionContext,
+      artifact: event.payload,
+    });
+  }
+
+  async relayArtifactForExecutionContext(input: {
+    runId: string;
+    applicationExecutionContext: ApplicationExecutionContext;
+    artifact: PublishedArtifactSummary;
+  }): Promise<void> {
+    const binding = await this.bindingStore.getBinding(
+      input.applicationExecutionContext.applicationId,
+      input.applicationExecutionContext.bindingId,
+    );
+    if (!binding) {
+      logger.warn(
+        `ApplicationPublishedArtifactRelayService: binding '${input.applicationExecutionContext.bindingId}' was not found for run '${input.runId}'.`,
+      );
+      return;
+    }
+
+    const artifactEvent = this.buildArtifactEvent(
+      binding,
+      input.applicationExecutionContext.producer,
+      input.artifact,
+    );
 
     try {
       await this.engineHostService.invokeApplicationArtifactHandler(binding.applicationId, {

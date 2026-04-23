@@ -1,4 +1,6 @@
 import { AgentRunConfig } from "../../agent-execution/domain/agent-run-config.js";
+import { TeamMemberMemoryLayout } from "../../agent-memory/store/team-member-memory-layout.js";
+import { appConfigProvider } from "../../config/app-config-provider.js";
 import {
   AutoByteusTeamMemberContext,
   AutoByteusTeamRunContext,
@@ -38,6 +40,8 @@ export const resolveTeamBackendKindFromMemberRuntimeKinds = (
   return TeamBackendKind.MIXED;
 };
 
+const teamMemberMemoryLayout = new TeamMemberMemoryLayout(appConfigProvider.config.getMemoryDir());
+
 export const buildRestoreTeamRunRuntimeContext = (
   metadata: TeamRunMetadata,
   teamBackendKind: TeamBackendKind,
@@ -57,6 +61,7 @@ export const buildRestoreTeamRunRuntimeContext = (
               llmModelIdentifier: member.llmModelIdentifier,
               autoExecuteTools: member.autoExecuteTools,
               workspaceId: null,
+              memoryDir: teamMemberMemoryLayout.getMemberDirPath(metadata.teamRunId, member.memberRunId),
               llmConfig: member.llmConfig ?? null,
               skillAccessMode: member.skillAccessMode,
               applicationExecutionContext: member.applicationExecutionContext ?? null,

@@ -1,8 +1,16 @@
+import { startHostedApplication } from "./vendor/application-frontend-sdk.js";
 import { createBriefStudioGraphqlClient } from "./generated/graphql-client.js";
-import { createBriefStudioApp } from "./brief-studio-runtime.js";
+import { mountBriefStudio } from "./brief-studio-runtime.js";
 
-createBriefStudioApp({
-  browserWindow: window,
-  document,
-  createBriefStudioGraphqlClient,
-}).init();
+startHostedApplication({
+  rootElement: document.getElementById("app-root"),
+  onBootstrapped: ({ bootstrap, applicationClient, rootElement }) => {
+    mountBriefStudio({
+      applicationClient,
+      bootstrap,
+      browserWindow: window,
+      createBriefStudioGraphqlClient,
+      rootElement,
+    });
+  },
+});

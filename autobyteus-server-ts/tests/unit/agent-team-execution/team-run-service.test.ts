@@ -263,6 +263,11 @@ describe("TeamRunService", () => {
     });
 
     expect(result).toBe(createdRun);
+    expect(mocks.agentTeamRunManager.createTeamRun).toHaveBeenCalledWith(
+      expect.objectContaining({
+        coordinatorMemberName: "Coordinator",
+      }),
+    );
     expect(mocks.teamRunHistoryIndexService.recordRunCreated).toHaveBeenCalledWith(
       expect.objectContaining({
         teamRunId: "team-1",
@@ -367,5 +372,62 @@ describe("TeamRunService", () => {
         agentDefinitionId: buildTeamLocalAgentDefinitionId("sub-team", "reviewer"),
       }),
     ]);
+  });
+
+  it("resolves a nested team coordinator to the leaf member before creating the run", async () => {
+    const { service, mocks } = createSubject();
+    const createdRun = {
+      runId: "team-1",
+      config: {
+        teamDefinitionId: "root-team",
+        coordinatorMemberName: "Specialist",
+        memberConfigs: [],
+      } as TeamRunConfig,
+      getRuntimeContext: vi.fn().mockReturnValue({ memberContexts: [] }),
+    } as any;
+    mocks.agentTeamRunManager.createTeamRun.mockResolvedValue(createdRun);
+
+    (service as unknown as { teamDefinitionService: { getDefinitionById: (id: string) => Promise<unknown> } }).teamDefinitionService = {
+      getDefinitionById: vi.fn(async (id: string) => {
+        if (id === "root-team") {
+          return {
+            name: "Root Team",
+            coordinatorMemberName: "SubTeam",
+            nodes: [{ memberName: "SubTeam", refType: "agent_team", ref: "sub-team" }],
+          };
+        }
+        if (id === "sub-team") {
+          return {
+            name: "Sub Team",
+            coordinatorMemberName: "Specialist",
+            nodes: [{ memberName: "Specialist", refType: "agent", ref: "agent-specialist" }],
+          };
+        }
+        return null;
+      }),
+    } as any;
+
+    await service.createTeamRun({
+      teamDefinitionId: "root-team",
+      memberConfigs: [
+        {
+          memberName: "Specialist",
+          memberRouteKey: "specialist",
+          agentDefinitionId: "agent-specialist",
+          llmModelIdentifier: "gpt-test",
+          autoExecuteTools: false,
+          skillAccessMode: "PRELOADED_ONLY" as any,
+          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+          workspaceRootPath: "/tmp/workspace",
+          llmConfig: null,
+        },
+      ],
+    });
+
+    expect(mocks.agentTeamRunManager.createTeamRun).toHaveBeenCalledWith(
+      expect.objectContaining({
+        coordinatorMemberName: "Specialist",
+      }),
+    );
   });
 });
