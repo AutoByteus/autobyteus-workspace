@@ -29,6 +29,7 @@ import {
 } from "../../../runtime-management/runtime-kind-enum.js";
 import { SkillService } from "../../../skills/services/skill-service.js";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import { TeamManifestInjectorProcessor } from "autobyteus-ts/agent-team/system-prompt-processor/team-manifest-injector-processor.js";
 import { TempWorkspace } from "../../../workspaces/temp-workspace.js";
 import { getWorkspaceManager, type WorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import { AgentCreationError } from "../../errors.js";
@@ -40,6 +41,8 @@ import {
   type AutoByteusAgentLike,
 } from "./autobyteus-agent-run-backend.js";
 import type { AgentRunBackendFactory } from "../agent-run-backend-factory.js";
+import { resolveAutoByteusStandaloneToolNames } from "./autobyteus-mixed-tool-exposure.js";
+import { buildAutoByteusStandaloneTeamContext } from "./autobyteus-team-communication-context-builder.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -150,7 +153,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       llmConfig: built.resolvedRunConfig.llmConfig,
       skillAccessMode: built.resolvedRunConfig.skillAccessMode,
       runtimeKind: built.resolvedRunConfig.runtimeKind,
-      teamContext: built.resolvedRunConfig.teamContext,
+      memberTeamContext: built.resolvedRunConfig.memberTeamContext,
       applicationExecutionContext: built.resolvedRunConfig.applicationExecutionContext,
     });
     const createAgentWithId = (
@@ -207,7 +210,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
           llmConfig: context.config.llmConfig,
           skillAccessMode: context.config.skillAccessMode,
           runtimeKind: context.config.runtimeKind,
-          teamContext: context.config.teamContext,
+          memberTeamContext: context.config.memberTeamContext,
           applicationExecutionContext: context.config.applicationExecutionContext,
         }),
         runtimeContext: (agent as AutoByteusRuntimeAgentLike).context ?? context.runtimeContext,
@@ -263,22 +266,24 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       );
     }
 
+    const resolvedToolNames = resolveAutoByteusStandaloneToolNames({
+      toolNames: agentDef.toolNames,
+      memberTeamContext: options.memberTeamContext,
+    });
     const tools = [];
-    if (agentDef.toolNames?.length) {
-      for (const name of agentDef.toolNames) {
-        if (!defaultToolRegistry.getToolDefinition(name)) {
-          logger.warn(
-            `Tool '${name}' defined in agent definition '${agentDef.name}' not found in registry. Skipping.`,
-          );
-          continue;
-        }
-        try {
-          tools.push(defaultToolRegistry.createTool(name));
-        } catch (error) {
-          logger.error(
-            `Failed to create tool instance for '${name}' from agent definition '${agentDef.name}': ${String(error)}`,
-          );
-        }
+    for (const name of resolvedToolNames) {
+      if (!defaultToolRegistry.getToolDefinition(name)) {
+        logger.warn(
+          `Tool '${name}' defined in agent definition '${agentDef.name}' not found in registry. Skipping.`,
+        );
+        continue;
+      }
+      try {
+        tools.push(defaultToolRegistry.createTool(name));
+      } catch (error) {
+        logger.error(
+          `Failed to create tool instance for '${name}' from agent definition '${agentDef.name}': ${String(error)}`,
+        );
       }
     }
 
@@ -322,6 +327,14 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
           `System prompt processor '${name}' defined in agent definition '${agentDef.name}' not found in registry. Skipping.`,
         );
       }
+    }
+    if (
+      options.memberTeamContext &&
+      !systemPromptProcessors.some(
+        (processor) => processor instanceof TeamManifestInjectorProcessor,
+      )
+    ) {
+      systemPromptProcessors.push(new TeamManifestInjectorProcessor());
     }
 
     const toolExecutionResultProcessors: BaseToolExecutionResultProcessor[] = [];
@@ -409,6 +422,9 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       workspace_name: workspaceInstance?.getName?.() ?? workspaceInstance?.workspaceId ?? null,
       workspace_is_temp:
         workspaceInstance?.workspaceId === TempWorkspace.TEMP_WORKSPACE_ID,
+      ...(options.memberTeamContext
+        ? { teamContext: buildAutoByteusStandaloneTeamContext(options.memberTeamContext) }
+        : {}),
       ...(options.applicationExecutionContext
         ? { [APPLICATION_EXECUTION_CONTEXT_KEY]: options.applicationExecutionContext }
         : {}),
@@ -426,6 +442,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
         runtimeKind:
           runtimeKindFromString(options.runtimeKind, RuntimeKind.AUTOBYTEUS) ??
           RuntimeKind.AUTOBYTEUS,
+        memberTeamContext: options.memberTeamContext ?? null,
         applicationExecutionContext: options.applicationExecutionContext ?? null,
       }),
       agentConfig: new AgentConfig(

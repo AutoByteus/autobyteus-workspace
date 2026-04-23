@@ -32,8 +32,8 @@ export class TeamRun {
     return this.context?.runId ?? this.backend.runId;
   }
 
-  get runtimeKind(): TeamRunBackend["runtimeKind"] {
-    return this.context?.runtimeKind ?? this.backend.runtimeKind;
+  get teamBackendKind(): TeamRunBackend["teamBackendKind"] {
+    return this.context?.teamBackendKind ?? this.backend.teamBackendKind;
   }
 
   get config(): TeamRunConfig | null {

@@ -23,8 +23,8 @@ import {
   type ClaudeSessionBootstrapStrategy,
 } from "./claude-session-bootstrap-strategy.js";
 import {
-  getTeamClaudeSessionBootstrapStrategy,
-} from "../../../../agent-team-execution/backends/claude/claude-team-session-bootstrap-strategy.js";
+  getTeamMemberClaudeSessionBootstrapStrategy,
+} from "../team-communication/team-member-claude-session-bootstrap-strategy.js";
 import { resolveConfiguredAgentToolExposure } from "../../../shared/configured-agent-tool-exposure.js";
 
 const asTrimmedString = (value: unknown): string | null =>
@@ -44,7 +44,7 @@ export class ClaudeSessionBootstrapper {
     agentDefinitionService: AgentDefinitionService = AgentDefinitionService.getInstance(),
     skillService: SkillService = SkillService.getInstance(),
     defaultBootstrapStrategy: ClaudeSessionBootstrapStrategy = new DefaultClaudeSessionBootstrapStrategy(),
-    teamBootstrapStrategy: ClaudeSessionBootstrapStrategy = getTeamClaudeSessionBootstrapStrategy(),
+    teamBootstrapStrategy: ClaudeSessionBootstrapStrategy = getTeamMemberClaudeSessionBootstrapStrategy(),
   ) {
     this.workspaceResolver = workspaceResolver;
     this.workspaceSkillMaterializer = workspaceSkillMaterializer;
@@ -110,7 +110,7 @@ export class ClaudeSessionBootstrapper {
         configuredSkills: exposedConfiguredSkills,
         materializedConfiguredSkills,
         skillAccessMode,
-        teamContext: runtimeContextInput.teamContext,
+        memberTeamContext: runtimeContextInput.memberTeamContext,
         sessionId: existingRuntimeContext?.sessionId ?? null,
         hasCompletedTurn: existingRuntimeContext?.hasCompletedTurn ?? false,
         activeTurnId: existingRuntimeContext?.activeTurnId ?? null,

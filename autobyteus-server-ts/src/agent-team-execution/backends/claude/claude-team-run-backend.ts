@@ -5,6 +5,7 @@ import type { TeamRunEventListener, TeamRunEventUnsubscribe } from "../../domain
 import type { TeamRunBackend } from "../team-run-backend.js";
 import type { TeamManager } from "../team-manager.js";
 import type { ClaudeTeamRunContextEnvelope } from "./claude-team-run-context.js";
+import { TeamBackendKind } from "../../domain/team-backend-kind.js";
 
 export type ClaudeTeamRunBackendOptions = {
   claudeTeamManager: TeamManager;
@@ -59,8 +60,8 @@ export class ClaudeTeamRunBackend implements TeamRunBackend {
     return this.context.runId;
   }
 
-  get runtimeKind() {
-    return this.context.runtimeKind;
+  get teamBackendKind() {
+    return TeamBackendKind.CLAUDE_AGENT_SDK;
   }
 
   subscribeToEvents(listener: TeamRunEventListener): TeamRunEventUnsubscribe {

@@ -12,7 +12,7 @@ import { AgentRunState } from '~/types/agent/AgentRunState';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { Conversation } from '~/types/conversation';
 import { normalizeMemberRouteKey, resolveLeafTeamMembers } from '~/utils/teamDefinitionMembers';
-import { hasExplicitMemberLlmConfigOverride } from '~/utils/teamRunConfigUtils';
+import { buildTeamRunMemberConfigRecords } from '~/utils/teamRunMemberConfigBuilder';
 import {
   ensureHistoricalTeamMemberHydrated,
   ensureHistoricalTeamMembersHydrated,
@@ -85,6 +85,11 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
         throw new Error(`Team definition ${template.teamDefinitionId} not found.`);
       }
 
+      const readiness = runConfigStore.launchReadiness;
+      if (!readiness.canLaunch) {
+        throw new Error(readiness.blockingIssues[0]?.message || 'Team configuration is not launch-ready.');
+      }
+
       const teamRunId = `temp-team-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 
       // Create members
@@ -95,31 +100,33 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
           teamDefinitionStore.getAgentTeamDefinitionById(teamDefinitionId),
       });
 
-      for (const member of leafMembers) {
-        const agentDef = agentDefinitionStore.getAgentDefinitionById(member.agentDefinitionId);
-        const defName = agentDef?.name || member.memberName;
-        const override = template.memberOverrides[member.memberName];
+      const memberConfigRecords = buildTeamRunMemberConfigRecords({
+        config: template,
+        leafMembers,
+      });
+
+      for (const memberRecord of memberConfigRecords) {
+        const agentDef = agentDefinitionStore.getAgentDefinitionById(memberRecord.agentDefinitionId);
+        const defName = agentDef?.name || memberRecord.memberName;
 
         const memberConfig: AgentRunConfig = {
-          agentDefinitionId: member.agentDefinitionId,
+          agentDefinitionId: memberRecord.agentDefinitionId,
           agentDefinitionName: defName,
-          llmModelIdentifier: override?.llmModelIdentifier || template.llmModelIdentifier,
-          runtimeKind: template.runtimeKind || DEFAULT_AGENT_RUNTIME_KIND,
-          workspaceId: template.workspaceId,
-          autoExecuteTools: override?.autoExecuteTools ?? template.autoExecuteTools,
-          skillAccessMode: template.skillAccessMode,
-          llmConfig: hasExplicitMemberLlmConfigOverride(override)
-            ? (override?.llmConfig ?? null)
-            : (template.llmConfig ?? null),
+          llmModelIdentifier: memberRecord.llmModelIdentifier,
+          runtimeKind: memberRecord.runtimeKind || DEFAULT_AGENT_RUNTIME_KIND,
+          workspaceId: memberRecord.workspaceId ?? null,
+          autoExecuteTools: memberRecord.autoExecuteTools,
+          skillAccessMode: memberRecord.skillAccessMode,
+          llmConfig: memberRecord.llmConfig,
           isLocked: false,
         };
 
         const conversation: Conversation = {
-          id: `${teamRunId}::${member.memberRouteKey}`,
+          id: `${teamRunId}::${memberRecord.memberRouteKey}`,
           messages: [],
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
-          agentDefinitionId: member.agentDefinitionId,
+          agentDefinitionId: memberRecord.agentDefinitionId,
           agentName: defName,
         };
 
@@ -128,7 +135,7 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
           new AgentRunState(conversation.id, conversation)
         );
 
-        members.set(member.memberRouteKey, memberContext);
+        members.set(memberRecord.memberRouteKey, memberContext);
       }
 
       const configCopy = JSON.parse(JSON.stringify(template)) as TeamRunConfig;

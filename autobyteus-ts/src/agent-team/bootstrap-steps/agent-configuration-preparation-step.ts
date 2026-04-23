@@ -3,6 +3,7 @@ import { AgentConfig } from '../../agent/context/agent-config.js';
 import { TeamManifestInjectorProcessor } from '../system-prompt-processor/team-manifest-injector-processor.js';
 import type { AgentTeamContext } from '../context/agent-team-context.js';
 import type { TeamManager } from '../context/team-manager.js';
+import { createScopedNativeTeamContext } from '../context/create-scoped-native-team-context.js';
 
 export class AgentConfigurationPreparationStep extends BaseAgentTeamBootstrapStep {
   async execute(context: AgentTeamContext): Promise<boolean> {
@@ -39,9 +40,9 @@ export class AgentConfigurationPreparationStep extends BaseAgentTeamBootstrapSte
         if (!finalConfig.initialCustomData) {
           finalConfig.initialCustomData = {};
         }
-        finalConfig.initialCustomData.teamContext = context;
+        finalConfig.initialCustomData.teamContext = createScopedNativeTeamContext(context, uniqueName);
         console.debug(
-          `Team '${teamId}': Injected shared teamContext into initialCustomData for agent '${uniqueName}'.`
+          `Team '${teamId}': Injected scoped teamContext into initialCustomData for agent '${uniqueName}'.`
         );
 
         if (!finalConfig.systemPromptProcessors) {

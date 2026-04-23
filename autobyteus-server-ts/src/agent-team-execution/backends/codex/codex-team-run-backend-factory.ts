@@ -17,6 +17,7 @@ import {
 } from "./codex-team-run-context.js";
 import { generateTeamRunId } from "../../../run-history/utils/team-run-id-utils.js";
 import { buildTeamMemberRunId, normalizeMemberRouteKey } from "../../../run-history/utils/team-member-run-id.js";
+import { TeamBackendKind } from "../../domain/team-backend-kind.js";
 
 export type CodexTeamRunBackendFactoryOptions = {
   createTeamManager?: (context: TeamRunContext<CodexTeamRunContext>) => CodexTeamManager;
@@ -66,6 +67,7 @@ export class CodexTeamRunBackendFactory implements TeamRunBackendFactory {
               llmModelIdentifier: memberConfig.llmModelIdentifier,
               autoExecuteTools: memberConfig.autoExecuteTools,
               workspaceId: memberConfig.workspaceId ?? null,
+              memoryDir: memberConfig.memoryDir ?? null,
               llmConfig: memberConfig.llmConfig ?? null,
               skillAccessMode: memberConfig.skillAccessMode,
               applicationExecutionContext: memberConfig.applicationExecutionContext ?? null,
@@ -77,11 +79,11 @@ export class CodexTeamRunBackendFactory implements TeamRunBackendFactory {
     });
     return new TeamRunContext({
       runId: teamRunId,
-      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      teamBackendKind: TeamBackendKind.CODEX_APP_SERVER,
       coordinatorMemberName: null,
       config: new TeamRunConfig({
         teamDefinitionId: config.teamDefinitionId,
-        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        teamBackendKind: TeamBackendKind.CODEX_APP_SERVER,
         memberConfigs,
       }),
       runtimeContext,
@@ -92,7 +94,7 @@ export class CodexTeamRunBackendFactory implements TeamRunBackendFactory {
     context: TeamRunContext<CodexTeamRunContext>,
     teamManager: TeamManager,
   ): CodexTeamRunBackend {
-    return new CodexTeamRunBackend(context as TeamRunContext<CodexTeamRunContext>, teamManager);
+    return new CodexTeamRunBackend(context, teamManager);
   }
 
   private toTeamMemberRunConfigs(config: TeamRunConfig, teamRunId: string): TeamMemberRunConfig[] {
@@ -113,6 +115,7 @@ export class CodexTeamRunBackendFactory implements TeamRunBackendFactory {
         skillAccessMode: memberConfig.skillAccessMode,
         workspaceId: memberConfig.workspaceId ?? null,
         workspaceRootPath: memberConfig.workspaceRootPath ?? null,
+        memoryDir: memberConfig.memoryDir ?? null,
         llmConfig: memberConfig.llmConfig ?? null,
         applicationExecutionContext: memberConfig.applicationExecutionContext ?? null,
       };

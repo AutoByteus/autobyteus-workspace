@@ -16,6 +16,7 @@ import {
   type TeamRunEventListener,
 } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 
 const createMemberContext = (input: {
   memberName: string;
@@ -109,7 +110,7 @@ describe("CodexTeamRunBackend integration", () => {
     const backend = new CodexTeamRunBackend(context, manager as any);
 
     expect(backend.runId).toBe("team-codex-1");
-    expect(backend.runtimeKind).toBe(RuntimeKind.CODEX_APP_SERVER);
+    expect(backend.teamBackendKind).toBe(TeamBackendKind.CODEX_APP_SERVER);
     expect(backend.isActive()).toBe(true);
     expect(backend.getStatus()).toBe("IDLE");
     expect(backend.getRuntimeContext()).toBe(context.runtimeContext);

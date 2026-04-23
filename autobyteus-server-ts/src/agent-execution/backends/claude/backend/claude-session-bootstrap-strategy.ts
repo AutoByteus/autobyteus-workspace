@@ -1,10 +1,9 @@
 import type { AgentRunContext } from "../../../domain/agent-run-context.js";
-import type { TeamRunContext } from "../../../../agent-team-execution/domain/team-run-context.js";
-import type { ClaudeTeamRunContext } from "../../../../agent-team-execution/backends/claude/claude-team-run-context.js";
 import type { ClaudeAgentRunContext } from "./claude-agent-run-context.js";
+import type { MemberTeamContext } from "../../../../agent-team-execution/domain/member-team-context.js";
 
 export type ClaudeSessionBootstrapPreparation = {
-  teamContext: TeamRunContext<ClaudeTeamRunContext> | null;
+  memberTeamContext: MemberTeamContext | null;
 };
 
 export interface ClaudeSessionBootstrapStrategy {
@@ -23,7 +22,7 @@ export class DefaultClaudeSessionBootstrapStrategy implements ClaudeSessionBoots
 
   prepare(): ClaudeSessionBootstrapPreparation {
     return {
-      teamContext: null,
+      memberTeamContext: null,
     };
   }
 }

@@ -13,6 +13,7 @@ import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import type { TeamRunBackend } from "../team-run-backend.js";
 import type { RuntimeTeamRunContext } from "../../domain/team-run-context.js";
 import type { InterAgentMessageDeliveryRequest } from "../../domain/inter-agent-message-delivery.js";
+import { TeamBackendKind } from "../../domain/team-backend-kind.js";
 import {
   TeamRunEventSourceType,
   type TeamRunAgentEventPayload,
@@ -97,7 +98,7 @@ const extractMemberRunId = (
 
 export class AutoByteusTeamRunBackend implements TeamRunBackend {
   readonly runId: string;
-  readonly runtimeKind = RuntimeKind.AUTOBYTEUS;
+  readonly teamBackendKind = TeamBackendKind.AUTOBYTEUS;
 
   constructor(
     private readonly team: AutoByteusTeamLike,

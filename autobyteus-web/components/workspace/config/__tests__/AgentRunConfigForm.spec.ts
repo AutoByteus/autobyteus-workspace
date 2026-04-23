@@ -31,6 +31,11 @@ vi.mock('~/stores/runtimeAvailabilityStore', () => ({
   useRuntimeAvailabilityStore: vi.fn(),
 }))
 
+const flushPromises = async () => {
+  await Promise.resolve()
+  await new Promise<void>((resolve) => setTimeout(resolve, 0))
+}
+
 describe('AgentRunConfigForm', () => {
   let llmStore: any
   let runtimeAvailabilityStore: any
@@ -150,6 +155,7 @@ describe('AgentRunConfigForm', () => {
     })
 
     await wrapper.vm.$nextTick()
+    await flushPromises()
 
     const options = wrapper.findComponent({ name: 'SearchableGroupedSelect' }).props('options')
     expect(options).toHaveLength(1)
@@ -174,6 +180,7 @@ describe('AgentRunConfigForm', () => {
     })
 
     await wrapper.vm.$nextTick()
+    await flushPromises()
 
     const options = wrapper.findComponent({ name: 'SearchableGroupedSelect' }).props('options')
     expect(options[0].items[0].name).toBe('openai/gpt-oss-20b')
@@ -210,6 +217,7 @@ describe('AgentRunConfigForm', () => {
     })
 
     await wrapper.vm.$nextTick()
+    await flushPromises()
 
     const options = wrapper.findComponent({ name: 'SearchableGroupedSelect' }).props('options')
     expect(options[0].items[0].name).toBe('Model A')

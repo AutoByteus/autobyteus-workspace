@@ -34,8 +34,8 @@ import {
   type CodexThreadBootstrapStrategy,
 } from "./codex-thread-bootstrap-strategy.js";
 import {
-  getTeamCodexThreadBootstrapStrategy,
-} from "../../../../agent-team-execution/backends/codex/codex-team-thread-bootstrap-strategy.js";
+  getTeamMemberCodexThreadBootstrapStrategy,
+} from "../team-communication/team-member-codex-thread-bootstrap-strategy.js";
 import {
   getCodexAppServerClientManager,
   type CodexAppServerClientManager,
@@ -137,7 +137,7 @@ export class CodexThreadBootstrapper {
     agentDefinitionService: AgentDefinitionService = AgentDefinitionService.getInstance(),
     skillService: SkillService = SkillService.getInstance(),
     defaultBootstrapStrategy: CodexThreadBootstrapStrategy = new DefaultCodexThreadBootstrapStrategy(),
-    teamBootstrapStrategy: CodexThreadBootstrapStrategy = getTeamCodexThreadBootstrapStrategy(),
+    teamBootstrapStrategy: CodexThreadBootstrapStrategy = getTeamMemberCodexThreadBootstrapStrategy(),
     clientManager: CodexAppServerClientManager = getCodexAppServerClientManager(),
   ) {
     this.workspaceSkillMaterializer = workspaceSkillMaterializer;

@@ -5,6 +5,7 @@ import type { TeamRunEventListener, TeamRunEventUnsubscribe } from "../../domain
 import type { TeamRunBackend } from "../team-run-backend.js";
 import type { TeamManager } from "../team-manager.js";
 import type { CodexTeamRunContextEnvelope } from "./codex-team-run-context.js";
+import { TeamBackendKind } from "../../domain/team-backend-kind.js";
 
 const buildRunNotFoundResult = (runId: string): AgentOperationResult => ({
   accepted: false,
@@ -53,8 +54,8 @@ export class CodexTeamRunBackend implements TeamRunBackend {
     return this.context.runId;
   }
 
-  get runtimeKind() {
-    return this.context.runtimeKind;
+  get teamBackendKind() {
+    return TeamBackendKind.CODEX_APP_SERVER;
   }
 
   subscribeToEvents(listener: TeamRunEventListener): TeamRunEventUnsubscribe {

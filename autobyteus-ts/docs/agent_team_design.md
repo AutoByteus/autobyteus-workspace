@@ -118,6 +118,8 @@ When a message targets a node, `ensure_node_is_ready()`:
 
 This guarantees a consistent path for all intra-team communication.
 
+For native AutoByteus teams, `TeamManager` remains the authoritative owner of task-plan-aware routing. Communication-only adapters may provide a narrower `TeamCommunicationContext` without exposing the full native team runtime.
+
 ---
 
 ## 6. Bootstrap Process (Team Lifecycle)
@@ -159,11 +161,11 @@ This mode allows _fully automated_ task distribution with minimal coordinator ov
 
 `send_message_to` is implemented as a tool. It:
 
-- retrieves `team_context` injected into agent configs,
-- uses `TeamManager` to dispatch `InterAgentMessageRequestEvent`,
-- triggers on-demand startup for the recipient if needed.
+- resolves the injected `TeamCommunicationContext` from `team_context`,
+- dispatches an `InterAgentMessageRequestEvent` through that communication context,
+- relies on the communication-context owner to start or wake the recipient if needed.
 
-This avoids direct agent-to-agent calls and keeps routing consistent.
+In native teams, `createScopedNativeTeamContext(...)` supplies a communication context that still delegates to `TeamManager`. Server-owned mixed-team adapters can provide the same communication contract without exposing the whole native `AgentTeamContext`. Task-plan tools remain native-team concerns and are not covered by this narrower communication seam.
 
 ---
 

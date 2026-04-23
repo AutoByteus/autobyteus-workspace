@@ -23,11 +23,11 @@ Standalone runs:
 
 Team runs:
 
-1. Team services create a team run with deterministic `memberRunId` values.
-2. `codex-team-run-backend-factory.ts` provisions team member runtime contexts.
-3. `codex-team-manager.ts` creates/restores one Codex member run per team member.
-4. Inter-agent messaging is carried through the Codex `send_message_to` tool contract.
-5. Team websocket streaming preserves the member domain identity while forwarding member runtime events.
+1. Team services create a team run with deterministic `memberRunId` values and resolve the governing `TeamBackendKind`.
+2. Single-runtime Codex teams use `codex-team-run-backend-factory.ts` + `codex-team-manager.ts` to create/restore one standalone Codex `AgentRun` per team member.
+3. Mixed-runtime teams still run Codex members as standalone Codex `AgentRun`s, but the governing team owner is `MixedTeamManager`, not `codex-team-manager.ts`.
+4. Codex member bootstrap now consumes a runtime-neutral `MemberTeamContext` for teammate instructions, allowed recipients, and `send_message_to` delivery wiring.
+5. Team websocket streaming preserves the member domain identity while forwarding member runtime events regardless of whether the governing team backend is single-runtime Codex or mixed.
 
 ## Key Backend Components
 
@@ -57,6 +57,9 @@ Team runtime:
 - `src/agent-team-execution/backends/codex/codex-team-run-backend-factory.ts`
 - `src/agent-team-execution/backends/codex/codex-team-run-backend.ts`
 - `src/agent-team-execution/backends/codex/codex-team-manager.ts`
+- `src/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.ts`
+- `src/agent-execution/backends/codex/team-communication/codex-send-message-dynamic-tool-registration.ts`
+- `src/agent-team-execution/backends/mixed/mixed-team-manager.ts`
 
 ## Skills
 

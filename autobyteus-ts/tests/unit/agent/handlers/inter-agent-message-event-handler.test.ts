@@ -43,7 +43,9 @@ const makeContext = (senderNameByAgentId: Record<string, string> = {}) => {
   state.inputEventQueues = inputQueues;
   state.customData = {
     teamContext: {
-      teamManager: {
+      communicationContext: {
+        members: [],
+        dispatchInterAgentMessageRequest: vi.fn(async () => undefined),
         resolveMemberNameByAgentId: (agentId: string) => senderNameByAgentId[agentId] ?? null,
       },
     },
@@ -144,10 +146,12 @@ describe('InterAgentMessageReceivedEventHandler', () => {
     const { context, inputQueues } = makeContext();
     const senderId = 'member_sender_1';
 
-    const teamManagerWithState = {
+    const communicationContextWithState = {
       senderById: {
         [senderId]: 'Professor',
       } as Record<string, string>,
+      members: [],
+      dispatchInterAgentMessageRequest: vi.fn(async () => undefined),
       resolveMemberNameByAgentId(agentId: string): string | null {
         return this.senderById[agentId] ?? null;
       },
@@ -155,7 +159,7 @@ describe('InterAgentMessageReceivedEventHandler', () => {
     context.state.customData = {
       ...(context.customData ?? {}),
       teamContext: {
-        teamManager: teamManagerWithState,
+        communicationContext: communicationContextWithState,
       },
     };
 

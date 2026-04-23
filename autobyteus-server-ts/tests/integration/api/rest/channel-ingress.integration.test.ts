@@ -277,7 +277,7 @@ const createAgentBackendFactory = (input: {
       llmConfig: config.llmConfig,
       skillAccessMode: config.skillAccessMode,
       runtimeKind: config.runtimeKind,
-      teamContext: config.teamContext,
+      memberTeamContext: config.memberTeamContext,
     });
     const resolvedContext =
       context ??

@@ -3,12 +3,14 @@ import { SendMessageTo } from '../../../../src/agent/message/send-message-to.js'
 import { InterAgentMessageRequestEvent } from '../../../../src/agent-team/events/agent-team-events.js';
 import { ParameterSchema } from '../../../../src/utils/parameter-schema.js';
 
-const makeTeamManager = () => ({
-  dispatchInterAgentMessageRequest: vi.fn().mockResolvedValue(undefined)
+const makeCommunicationContext = () => ({
+  members: [],
+  dispatchInterAgentMessageRequest: vi.fn().mockResolvedValue(undefined),
+  resolveMemberNameByAgentId: vi.fn().mockReturnValue(null)
 });
 
-const makeTeamContext = (teamManager: any) => ({
-  teamManager: teamManager
+const makeTeamContext = (communicationContext: any) => ({
+  communicationContext
 });
 
 const makeAgentContext = (teamContext: any) => ({
@@ -36,8 +38,8 @@ describe('SendMessageTo tool', () => {
 
   it('dispatches inter-agent message requests with default message type', async () => {
     const tool = new SendMessageTo();
-    const teamManager = makeTeamManager();
-    const context = makeAgentContext(makeTeamContext(teamManager));
+    const communicationContext = makeCommunicationContext();
+    const context = makeAgentContext(makeTeamContext(communicationContext));
 
     const result = await (tool as any)._execute(context, {
       recipient_name: 'Researcher',
@@ -45,9 +47,9 @@ describe('SendMessageTo tool', () => {
     });
 
     expect(result).toContain("Message dispatch for recipient 'Researcher' has been successfully requested.");
-    expect(teamManager.dispatchInterAgentMessageRequest).toHaveBeenCalledOnce();
+    expect(communicationContext.dispatchInterAgentMessageRequest).toHaveBeenCalledOnce();
 
-    const [event] = teamManager.dispatchInterAgentMessageRequest.mock.calls[0];
+    const [event] = communicationContext.dispatchInterAgentMessageRequest.mock.calls[0];
     expect(event).toBeInstanceOf(InterAgentMessageRequestEvent);
     expect(event.senderAgentId).toBe('sender_agent_001');
     expect(event.recipientName).toBe('Researcher');
@@ -57,8 +59,8 @@ describe('SendMessageTo tool', () => {
 
   it('uses provided message_type when supplied', async () => {
     const tool = new SendMessageTo();
-    const teamManager = makeTeamManager();
-    const context = makeAgentContext(makeTeamContext(teamManager));
+    const communicationContext = makeCommunicationContext();
+    const context = makeAgentContext(makeTeamContext(communicationContext));
 
     await (tool as any)._execute(context, {
       recipient_name: 'Researcher',
@@ -66,8 +68,24 @@ describe('SendMessageTo tool', () => {
       message_type: 'TASK_ASSIGNMENT'
     });
 
-    const [event] = teamManager.dispatchInterAgentMessageRequest.mock.calls[0];
+    const [event] = communicationContext.dispatchInterAgentMessageRequest.mock.calls[0];
     expect(event.messageType).toBe('TASK_ASSIGNMENT');
+  });
+
+  it('rejects when team delivery fails instead of claiming success', async () => {
+    const tool = new SendMessageTo();
+    const communicationContext = makeCommunicationContext();
+    communicationContext.dispatchInterAgentMessageRequest.mockRejectedValue(
+      new Error('Recipient is unavailable.')
+    );
+    const context = makeAgentContext(makeTeamContext(communicationContext));
+
+    await expect(
+      (tool as any)._execute(context, {
+        recipient_name: 'Researcher',
+        content: 'Please investigate.',
+      })
+    ).rejects.toThrow('Recipient is unavailable.');
   });
 
   it('returns an error without team context', async () => {
@@ -84,8 +102,8 @@ describe('SendMessageTo tool', () => {
 
   it('validates empty inputs', async () => {
     const tool = new SendMessageTo();
-    const teamManager = makeTeamManager();
-    const context = makeAgentContext(makeTeamContext(teamManager));
+    const communicationContext = makeCommunicationContext();
+    const context = makeAgentContext(makeTeamContext(communicationContext));
 
     const invalidSets = [
       { recipient_name: '', content: 'valid' },

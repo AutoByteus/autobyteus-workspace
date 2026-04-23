@@ -1,10 +1,7 @@
 import { BaseSystemPromptProcessor } from '../../agent/system-prompt-processor/base-processor.js';
-import { AgentConfig } from '../../agent/context/agent-config.js';
-import { AgentTeamConfig } from '../context/agent-team-config.js';
-import type { AgentTeamContext } from '../context/agent-team-context.js';
-import type { TeamNodeConfig } from '../context/team-node-config.js';
 import type { BaseTool } from '../../tools/base-tool.js';
 import type { AgentContextLike } from '../../agent/context/agent-context-like.js';
+import { resolveTeamCommunicationContext, type TeamCommunicationMember } from '../context/team-communication-context.js';
 
 type TeamContextCarrier = AgentContextLike & {
   customData?: Record<string, any>;
@@ -25,14 +22,14 @@ export class TeamManifestInjectorProcessor extends BaseSystemPromptProcessor {
     agentId: string,
     context: AgentContextLike
   ): string {
-    const teamContext = (context as TeamContextCarrier).customData?.teamContext as AgentTeamContext | undefined;
-    if (!teamContext) {
-      console.debug(`Agent '${agentId}': No teamContext found; skipping team manifest injection.`);
+    const communicationContext = resolveTeamCommunicationContext((context as TeamContextCarrier).customData?.teamContext);
+    if (!communicationContext) {
+      console.debug(`Agent '${agentId}': No team communication context found; skipping team manifest injection.`);
       return systemPrompt;
     }
 
     const excludeName = context?.config?.name ?? '';
-    const manifest = this.generateTeamManifest(teamContext, excludeName);
+    const manifest = this.generateTeamManifest(communicationContext.members, excludeName);
 
     if (systemPrompt.includes('{{team}}')) {
       console.info(`Agent '${agentId}': Replacing {{team}} placeholder with team manifest.`);
@@ -43,29 +40,16 @@ export class TeamManifestInjectorProcessor extends BaseSystemPromptProcessor {
     return `${systemPrompt}\n\n## Team Manifest\n\n${manifest}`;
   }
 
-  private generateTeamManifest(context: AgentTeamContext, excludeName: string): string {
+  private generateTeamManifest(members: TeamCommunicationMember[], excludeName: string): string {
     const promptParts: string[] = [];
-    const sortedNodes = [...context.config.nodes].sort((a: TeamNodeConfig, b: TeamNodeConfig) =>
-      a.name.localeCompare(b.name)
-    );
+    const sortedMembers = [...members].sort((a, b) => a.memberName.localeCompare(b.memberName));
 
-    for (const node of sortedNodes) {
-      if (node.name === excludeName) {
+    for (const member of sortedMembers) {
+      if (member.memberName === excludeName) {
         continue;
       }
-
-      const nodeDef = node.nodeDefinition;
-      let description = 'No description available.';
-
-      if (nodeDef instanceof AgentConfig) {
-        if (typeof nodeDef.description === 'string') {
-          description = nodeDef.description;
-        }
-      } else if (nodeDef instanceof AgentTeamConfig) {
-        description = nodeDef.role ?? nodeDef.description;
-      }
-
-      promptParts.push(`- name: ${node.name}\n  description: ${description}`);
+      const description = member.description?.trim() || 'No description available.';
+      promptParts.push(`- name: ${member.memberName}\n  description: ${description}`);
     }
 
     if (!promptParts.length) {

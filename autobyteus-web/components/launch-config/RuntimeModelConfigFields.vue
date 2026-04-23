@@ -58,20 +58,18 @@
 </template>
 
 <script setup lang="ts">
-import { computed, watch } from 'vue'
-import SearchableGroupedSelect, { type GroupedOption } from '~/components/agentTeams/SearchableGroupedSelect.vue'
+import { computed, toRef, watch } from 'vue'
+import SearchableGroupedSelect from '~/components/agentTeams/SearchableGroupedSelect.vue'
 import ModelConfigSection from '~/components/workspace/config/ModelConfigSection.vue'
-import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
-import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore'
 import {
   DEFAULT_AGENT_RUNTIME_KIND,
-  runtimeKindToLabel,
   type AgentRuntimeKind,
 } from '~/types/agent/AgentRunConfig'
 import {
-  getModelSelectionOptionLabel,
-  getModelSelectionSelectedLabel,
-} from '~/utils/modelSelectionLabel'
+  normalizeScopedRuntimeKind,
+  resolveEffectiveScopedRuntimeKind,
+  useRuntimeScopedModelSelection,
+} from '~/composables/useRuntimeScopedModelSelection'
 
 const props = defineProps<{
   runtimeKind?: string | null
@@ -97,13 +95,6 @@ const emit = defineEmits<{
   (e: 'update:llmConfig', value: Record<string, unknown> | null): void
 }>()
 
-const llmStore = useLLMProviderConfigStore()
-const runtimeAvailabilityStore = useRuntimeAvailabilityStore()
-
-void runtimeAvailabilityStore.fetchRuntimeAvailabilities().catch((error) => {
-  console.error('Failed to fetch runtime availabilities:', error)
-})
-
 const disabledComputed = computed(() => props.disabled === true)
 const runtimeSelectionLockedComputed = computed(
   () => disabledComputed.value || props.runtimeSelectionLocked === true,
@@ -117,95 +108,25 @@ const blankRuntimeLabelText = computed(
 const modelPlaceholderText = computed(() => props.modelPlaceholder ?? 'Select a model')
 const runtimeFieldId = computed(() => `${props.idPrefix ?? 'launch'}-runtime-kind`)
 
-const normalizeStoredRuntimeKind = (runtimeKind: unknown): string => {
-  if (typeof runtimeKind !== 'string') {
-    return allowBlankRuntime.value ? '' : DEFAULT_AGENT_RUNTIME_KIND
-  }
-  const normalized = runtimeKind.trim()
-  if (!normalized) {
-    return allowBlankRuntime.value ? '' : DEFAULT_AGENT_RUNTIME_KIND
-  }
-  return normalized
-}
-
-const resolveEffectiveRuntimeKind = (runtimeKind: unknown): AgentRuntimeKind => {
-  const normalized = typeof runtimeKind === 'string' ? runtimeKind.trim() : ''
-  return (normalized || DEFAULT_AGENT_RUNTIME_KIND) as AgentRuntimeKind
-}
-
-const normalizedStoredRuntimeKind = computed(() => normalizeStoredRuntimeKind(props.runtimeKind))
-const effectiveRuntimeKind = computed(() => resolveEffectiveRuntimeKind(props.runtimeKind))
-const availableProviderGroups = computed(() => llmStore.providersWithModelsForSelection ?? [])
-
-const ensureModelsForRuntime = async (
-  runtimeKind: AgentRuntimeKind,
-  validateSelectedModel = false,
-) => {
-  await llmStore.fetchProvidersWithModels(runtimeKind)
-  if (
-    validateSelectedModel &&
-    props.llmModelIdentifier &&
-    !llmStore.models.includes(props.llmModelIdentifier)
-  ) {
-    emit('update:llmModelIdentifier', '')
-    emit('update:llmConfig', null)
-  }
-}
-
-const runtimeOptions = computed<Array<{
-  value: string
-  label: string
-  enabled: boolean
-}>>(() => {
-  const selectedRuntimeKind = effectiveRuntimeKind.value
-  const optionByKind = new Map<string, { value: string; label: string; enabled: boolean }>()
-
-  for (const availability of runtimeAvailabilityStore.availabilities) {
-    optionByKind.set(availability.runtimeKind, {
-      value: availability.runtimeKind,
-      label: runtimeKindToLabel(availability.runtimeKind),
-      enabled: availability.enabled,
-    })
-  }
-
-  if (!optionByKind.has(DEFAULT_AGENT_RUNTIME_KIND)) {
-    optionByKind.set(DEFAULT_AGENT_RUNTIME_KIND, {
-      value: DEFAULT_AGENT_RUNTIME_KIND,
-      label: runtimeKindToLabel(DEFAULT_AGENT_RUNTIME_KIND),
-      enabled: true,
-    })
-  }
-
-  if (!optionByKind.has(selectedRuntimeKind)) {
-    optionByKind.set(selectedRuntimeKind, {
-      value: selectedRuntimeKind,
-      label: runtimeKindToLabel(selectedRuntimeKind),
-      enabled: runtimeAvailabilityStore.isRuntimeEnabled(selectedRuntimeKind),
-    })
-  }
-
-  return Array.from(optionByKind.values()).filter(
-    (option) => option.enabled || selectedRuntimeKind === option.value,
-  )
-})
-
-const selectedRuntimeUnavailableReason = computed(() => {
-  const availability = runtimeAvailabilityStore.availabilityByKind(effectiveRuntimeKind.value)
-  if (!availability) {
-    return effectiveRuntimeKind.value === DEFAULT_AGENT_RUNTIME_KIND
-      ? null
-      : 'Runtime is not available in current capabilities.'
-  }
-  if (availability.enabled) {
-    return null
-  }
-  return runtimeAvailabilityStore.runtimeReason(effectiveRuntimeKind.value)
+const {
+  availableProviderGroups,
+  effectiveRuntimeKind,
+  ensureModelsForRuntime,
+  groupedModelOptions,
+  hasModelIdentifier,
+  modelConfigSchemaByIdentifier,
+  normalizedStoredRuntimeKind,
+  runtimeOptions,
+  selectedRuntimeUnavailableReason,
+} = useRuntimeScopedModelSelection({
+  runtimeKind: toRef(props, 'runtimeKind'),
+  allowBlankRuntime: props.allowBlankRuntime,
 })
 
 watch(
   () => props.runtimeKind,
-  (runtimeKind, previousRuntimeKind) => {
-    const normalizedStoredRuntime = normalizeStoredRuntimeKind(runtimeKind)
+  async (runtimeKind, previousRuntimeKind) => {
+    const normalizedStoredRuntime = normalizeScopedRuntimeKind(runtimeKind, allowBlankRuntime.value)
     if ((props.runtimeKind ?? '') !== normalizedStoredRuntime) {
       emit('update:runtimeKind', normalizedStoredRuntime)
       return
@@ -213,27 +134,36 @@ watch(
 
     const validateSelectedModel =
       typeof previousRuntimeKind !== 'undefined' &&
-      resolveEffectiveRuntimeKind(previousRuntimeKind) !== effectiveRuntimeKind.value
+      resolveEffectiveScopedRuntimeKind(previousRuntimeKind) !== effectiveRuntimeKind.value
 
-    void ensureModelsForRuntime(effectiveRuntimeKind.value, validateSelectedModel)
+    await ensureModelsForRuntime(effectiveRuntimeKind.value)
+
+    if (
+      validateSelectedModel &&
+      props.llmModelIdentifier &&
+      !hasModelIdentifier(props.llmModelIdentifier)
+    ) {
+      emit('update:llmModelIdentifier', '')
+      emit('update:llmConfig', null)
+    }
   },
   { immediate: true },
 )
 
 watch(
-  () => [
-    runtimeAvailabilityStore.hasFetched,
-    props.runtimeKind,
-    runtimeSelectionLockedComputed.value,
+  [
+    () => runtimeOptions.value,
+    () => props.runtimeKind,
+    () => runtimeSelectionLockedComputed.value,
   ],
-  ([hasFetched, runtimeKind, runtimeLocked]) => {
-    if (!hasFetched || runtimeLocked) {
+  ([, runtimeKind, runtimeLocked]) => {
+    if (runtimeLocked) {
       return
     }
 
-    const effectiveRuntime = resolveEffectiveRuntimeKind(runtimeKind)
-    const availability = runtimeAvailabilityStore.availabilityByKind(effectiveRuntime)
-    if (!availability || availability.enabled) {
+    const effectiveRuntime = resolveEffectiveScopedRuntimeKind(runtimeKind)
+    const selectedOption = runtimeOptions.value.find((option) => option.value === effectiveRuntime)
+    if (selectedOption?.enabled !== false) {
       return
     }
 
@@ -246,27 +176,12 @@ watch(
   },
 )
 
-const groupedModelOptions = computed<GroupedOption[]>(() => {
-  if (!availableProviderGroups.value.length) return []
-  return availableProviderGroups.value.map((providerGroup) => ({
-    label: providerGroup.provider.name,
-    items: providerGroup.models.map((model) => ({
-      id: model.modelIdentifier,
-      name: getModelSelectionOptionLabel(model, effectiveRuntimeKind.value),
-      selectedLabel: getModelSelectionSelectedLabel(providerGroup.provider.name, model, effectiveRuntimeKind.value),
-    })),
-  }))
-})
-
-const modelConfigSchema = computed(() => {
-  if (!props.llmModelIdentifier) {
-    return null
-  }
-  return llmStore.modelConfigSchemaByIdentifier(props.llmModelIdentifier)
-})
+const modelConfigSchema = computed(() =>
+  modelConfigSchemaByIdentifier(props.llmModelIdentifier),
+)
 
 const updateRuntimeKind = (value: string) => {
-  const normalizedRuntime = normalizeStoredRuntimeKind(value)
+  const normalizedRuntime = normalizeScopedRuntimeKind(value, allowBlankRuntime.value)
   if (normalizedRuntime === normalizedStoredRuntimeKind.value) {
     return
   }
