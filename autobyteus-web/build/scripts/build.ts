@@ -1,7 +1,6 @@
 import { build, Configuration, Platform, Arch } from 'electron-builder'
 import { generateIcons } from './generateIcons'
 import * as dotenv from 'dotenv'
-import * as fs from 'fs'
 import * as path from 'path'
 import { execSync } from 'child_process'
 
@@ -22,12 +21,6 @@ interface BuildConfig {
   config: Configuration,
   targets?: Map<Platform, Map<Arch, string[]>>,
   publish?: 'always' | 'never' | 'onTag' | 'onTagOrDraft'
-}
-
-interface MaterializedWorkspaceDependency {
-  packageName: string,
-  packagePath: string,
-  linkTarget: string
 }
 
 const cliArgs: string[] = process.argv.slice(2)
@@ -206,127 +199,6 @@ const buildFlavor: BuildFlavor = resolveBuildFlavor()
 const artifactBaseName = resolveArtifactBaseName(buildFlavor)
 const updaterPublishConfig = resolveUpdaterPublishConfig()
 
-function readJsonFile(filePath: string): Record<string, any> {
-  return JSON.parse(fs.readFileSync(filePath, 'utf8'))
-}
-
-function isWorkspaceDependency(version: unknown): boolean {
-  return typeof version === 'string' && version.startsWith('workspace:')
-}
-
-function isPathInside(parentPath: string, childPath: string): boolean {
-  const relativePath = path.relative(parentPath, childPath)
-  return relativePath === '' || (!relativePath.startsWith('..') && !path.isAbsolute(relativePath))
-}
-
-function getNodeModulePackagePath(packageName: string): string {
-  return path.join(process.cwd(), 'node_modules', ...packageName.split('/'))
-}
-
-function copyWorkspacePackageEntry(sourceRoot: string, targetRoot: string, packageEntry: string): void {
-  const normalizedEntry = packageEntry.replace(/^\.\/+/u, '')
-  if (!normalizedEntry) return
-  if (normalizedEntry.includes('*')) {
-    throw new Error(
-      `Unsupported workspace package files glob '${packageEntry}' in ${path.join(sourceRoot, 'package.json')}`
-    )
-  }
-
-  const sourcePath = path.join(sourceRoot, normalizedEntry)
-  if (!fs.existsSync(sourcePath)) return
-
-  const targetPath = path.join(targetRoot, normalizedEntry)
-  fs.mkdirSync(path.dirname(targetPath), { recursive: true })
-  fs.cpSync(sourcePath, targetPath, { recursive: true, dereference: true })
-}
-
-function copyWorkspacePackageForPackaging(sourceRoot: string, targetRoot: string): void {
-  const manifestPath = path.join(sourceRoot, 'package.json')
-  const manifest = readJsonFile(manifestPath)
-  fs.mkdirSync(targetRoot, { recursive: true })
-  fs.copyFileSync(manifestPath, path.join(targetRoot, 'package.json'))
-
-  const packageFiles = Array.isArray(manifest.files)
-    ? manifest.files.filter((entry: unknown): entry is string => typeof entry === 'string')
-    : []
-
-  for (const packageEntry of packageFiles) {
-    copyWorkspacePackageEntry(sourceRoot, targetRoot, packageEntry)
-  }
-}
-
-function materializeWorkspaceDependencySymlink(packageName: string): MaterializedWorkspaceDependency | null {
-  const packagePath = getNodeModulePackagePath(packageName)
-  if (!fs.existsSync(packagePath)) return null
-
-  const packageStat = fs.lstatSync(packagePath)
-  if (!packageStat.isSymbolicLink()) return null
-
-  const realPackagePath = fs.realpathSync(packagePath)
-  if (isPathInside(process.cwd(), realPackagePath)) return null
-
-  const linkTarget = fs.readlinkSync(packagePath)
-  const stagingPath = `${packagePath}.electron-build-${process.pid}`
-  let removedOriginalLink = false
-
-  fs.rmSync(stagingPath, { recursive: true, force: true })
-
-  try {
-    copyWorkspacePackageForPackaging(realPackagePath, stagingPath)
-    fs.rmSync(packagePath, { recursive: true, force: true })
-    removedOriginalLink = true
-    fs.renameSync(stagingPath, packagePath)
-  } catch (error) {
-    fs.rmSync(stagingPath, { recursive: true, force: true })
-    if (removedOriginalLink && !fs.existsSync(packagePath)) {
-      fs.symlinkSync(linkTarget, packagePath, process.platform === 'win32' ? 'junction' : 'dir')
-    }
-    throw error
-  }
-
-  console.log(`Materialized workspace dependency for Electron packaging: ${packageName}`)
-  return { packageName, packagePath, linkTarget }
-}
-
-function materializeWorkspaceDependencySymlinks(): MaterializedWorkspaceDependency[] {
-  const manifest = readJsonFile(path.join(process.cwd(), 'package.json'))
-  const dependencyNames = new Set<string>()
-
-  for (const dependencyBlockName of ['dependencies', 'optionalDependencies']) {
-    const dependencyBlock = manifest[dependencyBlockName]
-    if (!dependencyBlock || typeof dependencyBlock !== 'object') continue
-
-    for (const [packageName, version] of Object.entries(dependencyBlock)) {
-      if (isWorkspaceDependency(version)) {
-        dependencyNames.add(packageName)
-      }
-    }
-  }
-
-  const materialized: MaterializedWorkspaceDependency[] = []
-  for (const packageName of dependencyNames) {
-    const materializedDependency = materializeWorkspaceDependencySymlink(packageName)
-    if (materializedDependency) {
-      materialized.push(materializedDependency)
-    }
-  }
-
-  return materialized
-}
-
-function restoreWorkspaceDependencySymlinks(materializedDependencies: MaterializedWorkspaceDependency[]): void {
-  for (const dependency of [...materializedDependencies].reverse()) {
-    fs.rmSync(dependency.packagePath, { recursive: true, force: true })
-    fs.mkdirSync(path.dirname(dependency.packagePath), { recursive: true })
-    fs.symlinkSync(
-      dependency.linkTarget,
-      dependency.packagePath,
-      process.platform === 'win32' ? 'junction' : 'dir'
-    )
-    console.log(`Restored workspace dependency symlink: ${dependency.packageName}`)
-  }
-}
-
 // Log environment information
 console.log('Building with environment:', process.env.NODE_ENV)
 console.log('Using environment file:', process.env.NODE_ENV === 'production' ? '.env.production' : '.env')
@@ -484,12 +356,7 @@ function getArchName(arch: Arch): string {
 }
 
 async function main(): Promise<void> {
-  const materializedWorkspaceDependencies: MaterializedWorkspaceDependency[] = []
   try {
-    // electron-builder follows pnpm workspace symlinks outside appDir and rejects them.
-    // Temporarily copy publishable package files inside node_modules, then restore links.
-    materializedWorkspaceDependencies.push(...materializeWorkspaceDependencySymlinks())
-
     // Generate icons first
     await generateIcons()
 
@@ -565,14 +432,7 @@ async function main(): Promise<void> {
     }
   } catch (error) {
     console.error('Build process failed:', error)
-    process.exitCode = 1
-  } finally {
-    try {
-      restoreWorkspaceDependencySymlinks(materializedWorkspaceDependencies)
-    } catch (restoreError) {
-      console.error('Failed to restore workspace dependency symlinks:', restoreError)
-      process.exitCode = 1
-    }
+    process.exit(1)
   }
 }
 
