@@ -1,10 +1,6 @@
 import {
   composeMemberRunInstructions,
 } from "../../../../agent-team-execution/services/member-run-instruction-composer.js";
-import {
-  getRuntimeMemberContexts,
-  resolveRuntimeMemberContext,
-} from "../../../../agent-team-execution/domain/team-run-context.js";
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
 
 export const buildClaudeTurnInput = (options: {
@@ -12,23 +8,13 @@ export const buildClaudeTurnInput = (options: {
   content: string;
   sendMessageToEnabled: boolean;
 }): string => {
-  const currentMemberContext = resolveRuntimeMemberContext(
-    options.runContext.runtimeContext.teamContext,
-    options.runContext.runId,
-  );
-  const teammates = getRuntimeMemberContexts(
-    options.runContext.runtimeContext.teamContext?.runtimeContext ?? null,
-  ).map((memberContext) => ({
-    memberName: memberContext.memberName,
-    role: null,
-    description: null,
-  }));
+  const memberTeamContext = options.runContext.runtimeContext.memberTeamContext;
   const instructionComposition = composeMemberRunInstructions({
-    teamInstruction: null,
+    teamInstruction: memberTeamContext?.teamInstruction ?? null,
     agentInstruction: options.runContext.runtimeContext.agentInstruction,
-    currentMemberName: currentMemberContext?.memberName ?? null,
+    currentMemberName: memberTeamContext?.memberName ?? null,
     sendMessageToEnabled: options.sendMessageToEnabled,
-    teammates,
+    teammates: memberTeamContext?.members ?? [],
   });
   if (
     !instructionComposition.teamInstruction &&

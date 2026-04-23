@@ -1,13 +1,13 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
-import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { InterAgentMessageDeliveryRequest } from "../domain/inter-agent-message-delivery.js";
 import type { RuntimeTeamRunContext } from "../domain/team-run-context.js";
 import type { TeamRunEventListener, TeamRunEventUnsubscribe } from "../domain/team-run-event.js";
+import type { TeamBackendKind } from "../domain/team-backend-kind.js";
 
 export interface TeamRunBackend {
   readonly runId: string;
-  readonly runtimeKind: RuntimeKind;
+  readonly teamBackendKind: TeamBackendKind;
 
   getRuntimeContext(): RuntimeTeamRunContext | null;
   isActive(): boolean;

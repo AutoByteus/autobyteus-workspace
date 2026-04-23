@@ -1,31 +1,19 @@
-import type { ClaudeRunContext } from "../../../agent-execution/backends/claude/backend/claude-agent-run-context.js";
-import {
-  getRuntimeMemberContexts,
-  resolveRuntimeMemberContext,
-} from "../../domain/team-run-context.js";
-import type { ClaudeSdkClient } from "../../../runtime-management/claude/client/claude-sdk-client.js";
+import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
+import type { ClaudeSdkClient } from "../../../../runtime-management/claude/client/claude-sdk-client.js";
 import { z } from "zod";
 import {
   ClaudeSendMessageToolCallHandler,
 } from "./claude-send-message-tool-call-handler.js";
-import { CLAUDE_SEND_MESSAGE_TOOL_NAME } from "../../../agent-execution/backends/claude/claude-send-message-tool-name.js";
+import { CLAUDE_SEND_MESSAGE_TOOL_NAME } from "../claude-send-message-tool-name.js";
 
 export const buildClaudeSendMessageToolDefinition = async (options: {
   runContext: ClaudeRunContext;
   sdkClient: ClaudeSdkClient;
   handler: ClaudeSendMessageToolCallHandler;
 }): Promise<Record<string, unknown> | null> => {
-  const teamContext = options.runContext.runtimeContext.teamContext;
-  const currentMemberName =
-    resolveRuntimeMemberContext(teamContext, options.runContext.runId)?.memberName ?? null;
-  const allowedRecipientNames = getRuntimeMemberContexts(teamContext?.runtimeContext ?? null)
-    .map((memberContext) => memberContext.memberName)
-    .filter((memberName) => memberName !== currentMemberName);
-  if (
-    !teamContext ||
-    !teamContext.runId ||
-    allowedRecipientNames.length === 0
-  ) {
+  const memberTeamContext = options.runContext.runtimeContext.memberTeamContext;
+  const allowedRecipientNames = memberTeamContext?.allowedRecipientNames ?? [];
+  if (!memberTeamContext?.teamRunId || allowedRecipientNames.length === 0) {
     return null;
   }
 

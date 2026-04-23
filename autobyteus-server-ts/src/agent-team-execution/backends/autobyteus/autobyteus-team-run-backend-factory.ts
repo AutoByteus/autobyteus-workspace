@@ -219,7 +219,7 @@ export class AutoByteusTeamRunBackendFactory implements TeamRunBackendFactory {
   ): TeamRunConfig {
     return new TeamRunConfig({
       teamDefinitionId: config.teamDefinitionId,
-      runtimeKind: config.runtimeKind,
+      teamBackendKind: config.teamBackendKind,
       memberConfigs: config.memberConfigs.map((memberConfig) => {
         const memberRouteKey = normalizeMemberRouteKey(
           memberConfig.memberRouteKey ?? memberConfig.memberName,

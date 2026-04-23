@@ -11,15 +11,38 @@ import {
   CodexTeamMemberContext,
   CodexTeamRunContext,
 } from "../backends/codex/codex-team-run-context.js";
+import {
+  MixedTeamMemberContext,
+  MixedTeamRunContext,
+} from "../backends/mixed/mixed-team-run-context.js";
 import type { TeamMemberRuntimeContext } from "../domain/team-run-context.js";
 import type { TeamRunMetadata } from "../../run-history/store/team-run-metadata-types.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import {
+  TeamBackendKind,
+  resolveSingleRuntimeTeamBackendKind,
+} from "../domain/team-backend-kind.js";
+
+export const resolveTeamBackendKindFromMemberRuntimeKinds = (
+  runtimeKinds: Iterable<RuntimeKind | null | undefined>,
+): TeamBackendKind => {
+  const normalizedRuntimeKinds = new Set<RuntimeKind>();
+  for (const runtimeKind of runtimeKinds) {
+    normalizedRuntimeKinds.add(runtimeKind ?? RuntimeKind.AUTOBYTEUS);
+  }
+  if (normalizedRuntimeKinds.size <= 1) {
+    return resolveSingleRuntimeTeamBackendKind(
+      normalizedRuntimeKinds.values().next().value ?? RuntimeKind.AUTOBYTEUS,
+    );
+  }
+  return TeamBackendKind.MIXED;
+};
 
 export const buildRestoreTeamRunRuntimeContext = (
   metadata: TeamRunMetadata,
-  runtimeKind: RuntimeKind,
+  teamBackendKind: TeamBackendKind,
 ) => {
-  if (runtimeKind === RuntimeKind.CODEX_APP_SERVER) {
+  if (teamBackendKind === TeamBackendKind.CODEX_APP_SERVER) {
     return new CodexTeamRunContext({
       coordinatorMemberRouteKey: metadata.coordinatorMemberRouteKey,
       memberContexts: metadata.memberMetadata.map(
@@ -29,7 +52,7 @@ export const buildRestoreTeamRunRuntimeContext = (
             memberRouteKey: member.memberRouteKey,
             memberRunId: member.memberRunId,
             agentRunConfig: new AgentRunConfig({
-              runtimeKind,
+              runtimeKind: member.runtimeKind,
               agentDefinitionId: member.agentDefinitionId,
               llmModelIdentifier: member.llmModelIdentifier,
               autoExecuteTools: member.autoExecuteTools,
@@ -43,7 +66,7 @@ export const buildRestoreTeamRunRuntimeContext = (
     });
   }
 
-  if (runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK) {
+  if (teamBackendKind === TeamBackendKind.CLAUDE_AGENT_SDK) {
     return new ClaudeTeamRunContext({
       coordinatorMemberRouteKey: metadata.coordinatorMemberRouteKey,
       memberContexts: metadata.memberMetadata.map(
@@ -53,7 +76,7 @@ export const buildRestoreTeamRunRuntimeContext = (
             memberRouteKey: member.memberRouteKey,
             memberRunId: member.memberRunId,
             agentRunConfig: new AgentRunConfig({
-              runtimeKind,
+              runtimeKind: member.runtimeKind,
               agentDefinitionId: member.agentDefinitionId,
               llmModelIdentifier: member.llmModelIdentifier,
               autoExecuteTools: member.autoExecuteTools,
@@ -62,6 +85,22 @@ export const buildRestoreTeamRunRuntimeContext = (
               skillAccessMode: member.skillAccessMode,
             }),
             sessionId: member.platformAgentRunId,
+          }),
+      ),
+    });
+  }
+
+  if (teamBackendKind === TeamBackendKind.MIXED) {
+    return new MixedTeamRunContext({
+      coordinatorMemberRouteKey: metadata.coordinatorMemberRouteKey,
+      memberContexts: metadata.memberMetadata.map(
+        (member) =>
+          new MixedTeamMemberContext({
+            memberName: member.memberName,
+            memberRouteKey: member.memberRouteKey,
+            memberRunId: member.memberRunId,
+            runtimeKind: member.runtimeKind,
+            platformAgentRunId: member.platformAgentRunId,
           }),
       ),
     });

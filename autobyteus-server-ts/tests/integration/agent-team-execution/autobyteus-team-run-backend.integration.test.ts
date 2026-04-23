@@ -11,6 +11,7 @@ import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { EventType } from "autobyteus-ts/events/event-types.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { AutoByteusTeamRunBackend } from "../../../src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend.js";
 import { TeamRunEventSourceType } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
@@ -90,7 +91,7 @@ describe("AutoByteusTeamRunBackend integration", () => {
     const { backend, team } = createBackend();
 
     expect(backend.runId).toBe("team-auto-1");
-    expect(backend.runtimeKind).toBe(RuntimeKind.AUTOBYTEUS);
+    expect(backend.teamBackendKind).toBe(TeamBackendKind.AUTOBYTEUS);
     expect(backend.getRuntimeContext()).toBeNull();
     expect(backend.getStatus()).toBe("IDLE");
 
@@ -115,7 +116,9 @@ describe("AutoByteusTeamRunBackend integration", () => {
 
     const deliveredMessage = team.postMessage.mock.calls[1]?.[0] as AgentInputUserMessage;
     expect(deliveredMessage).toBeInstanceOf(AgentInputUserMessage);
-    expect(deliveredMessage.content).toBe("Please investigate.");
+    expect(deliveredMessage.content).toBe(
+      "You received a message from sender name: Coordinator, sender id: member-sender-1\nmessage:\nPlease investigate.",
+    );
     expect(deliveredMessage.senderType).toBe(SenderType.AGENT);
     expect(deliveredMessage.metadata).toMatchObject({
       sender_agent_id: "member-sender-1",

@@ -31,6 +31,7 @@ import {
 import {
   buildRestoreTeamRunRuntimeContext,
   getRuntimeMemberContexts,
+  resolveTeamBackendKindFromMemberRuntimeKinds,
 } from "./team-run-runtime-context-support.js";
 
 export interface TeamRunPresetInput {
@@ -103,7 +104,6 @@ export class TeamRunService {
   }
 
   async createTeamRun(input: CreateTeamRunInput): Promise<TeamRun> {
-    const runtimeKind = resolveTeamRuntimeKind(input.memberConfigs);
     const memberConfigs = await Promise.all(
       input.memberConfigs.map(async (memberConfig) => {
         let workspaceId = memberConfig.workspaceId ?? null;
@@ -116,15 +116,18 @@ export class TeamRunService {
 
         return {
           ...memberConfig,
-          runtimeKind,
+          runtimeKind: resolveRuntimeKind(memberConfig.runtimeKind),
           workspaceId,
           workspaceRootPath,
         };
       }),
     );
+    const teamBackendKind = resolveTeamBackendKindFromMemberRuntimeKinds(
+      memberConfigs.map((memberConfig) => memberConfig.runtimeKind),
+    );
     const config = new TeamRunConfig({
       teamDefinitionId: input.teamDefinitionId,
-      runtimeKind,
+      teamBackendKind,
       memberConfigs,
     });
     const run = await this.agentTeamRunManager.createTeamRun(config);
@@ -241,7 +244,9 @@ export class TeamRunService {
   private async buildRestoreTeamRunContext(
     metadata: TeamRunMetadata,
   ): Promise<TeamRunContext> {
-    const runtimeKind = metadata.memberMetadata[0]?.runtimeKind ?? RuntimeKind.AUTOBYTEUS;
+    const teamBackendKind = resolveTeamBackendKindFromMemberRuntimeKinds(
+      metadata.memberMetadata.map((member) => member.runtimeKind),
+    );
     const memberConfigs = await Promise.all(
       metadata.memberMetadata.map(async (member) => {
         let workspaceId: string | null = null;
@@ -270,17 +275,17 @@ export class TeamRunService {
 
     return new TeamRunContext({
       runId: metadata.teamRunId,
-      runtimeKind,
+      teamBackendKind,
       coordinatorMemberName:
         metadata.memberMetadata.find(
           (member) => member.memberRouteKey === metadata.coordinatorMemberRouteKey,
         )?.memberName ?? null,
       config: new TeamRunConfig({
         teamDefinitionId: metadata.teamDefinitionId,
-        runtimeKind,
+        teamBackendKind,
         memberConfigs,
       }),
-      runtimeContext: buildRestoreTeamRunRuntimeContext(metadata, runtimeKind),
+      runtimeContext: buildRestoreTeamRunRuntimeContext(metadata, teamBackendKind),
     });
   }
 
@@ -446,25 +451,6 @@ const normalizeLaunchPreset = (
   llmConfig: value.llmConfig ?? null,
 });
 
-const resolveTeamRuntimeKind = (
-  memberConfigs: TeamRunMemberConfigInput[],
-): RuntimeKind => {
-  const runtimeKinds = new Set<RuntimeKind>();
-  for (const memberConfig of memberConfigs) {
-    const runtimeKind = resolveRuntimeKind(memberConfig.runtimeKind);
-    runtimeKinds.add(runtimeKind);
-  }
-  if (runtimeKinds.size === 0) {
-    return RuntimeKind.AUTOBYTEUS;
-  }
-  if (runtimeKinds.size > 1) {
-    throw new Error(
-      "[MIXED_TEAM_RUNTIME_UNSUPPORTED] Team members must use one runtime kind per team run.",
-    );
-  }
-  return Array.from(runtimeKinds)[0] ?? RuntimeKind.AUTOBYTEUS;
-};
-
 const resolveRuntimeKind = (
   value: RuntimeKind | string | null | undefined,
 ): RuntimeKind => {
@@ -473,7 +459,7 @@ const resolveRuntimeKind = (
   }
   const runtimeKind = runtimeKindFromString(value, null);
   if (!runtimeKind) {
-    throw new Error(`[INVALID_RUNTIME_KIND] Unsupported team runtime kind '${value}'.`);
+    throw new Error(`[INVALID_RUNTIME_KIND] Unsupported team member runtime kind '${value}'.`);
   }
   return runtimeKind;
 };

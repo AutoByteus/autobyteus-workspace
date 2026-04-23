@@ -1,18 +1,18 @@
 import {
   asObject,
   type ClaudeSessionEvent,
-} from "../../../agent-execution/backends/claude/claude-runtime-shared.js";
-import type { ClaudeRunContext } from "../../../agent-execution/backends/claude/backend/claude-agent-run-context.js";
-import { CLAUDE_SEND_MESSAGE_TOOL_NAME } from "../../../agent-execution/backends/claude/claude-send-message-tool-name.js";
+} from "../claude-runtime-shared.js";
+import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
+import { CLAUDE_SEND_MESSAGE_TOOL_NAME } from "../claude-send-message-tool-name.js";
 import type {
   InterAgentMessageDeliveryHandler,
-} from "../../domain/inter-agent-message-delivery.js";
-import { ClaudeSessionEventName } from "../../../agent-execution/backends/claude/events/claude-session-event-name.js";
-import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
+} from "../../../../agent-team-execution/domain/inter-agent-message-delivery.js";
+import { ClaudeSessionEventName } from "../events/claude-session-event-name.js";
+import type { AgentOperationResult } from "../../../domain/agent-operation-result.js";
 import {
   parseSendMessageToToolArguments,
   validateParsedSendMessageToToolArguments,
-} from "../../services/send-message-to-tool-argument-parser.js";
+} from "../../../../agent-team-execution/services/send-message-to-tool-argument-parser.js";
 
 export type ClaudeSendMessageToolApprovalDecision = {
   approved: boolean;
@@ -150,8 +150,8 @@ export class ClaudeSendMessageToolCallHandler {
       });
     }
 
-    const teamContext = options.runContext.runtimeContext.teamContext;
-    if (!this.deliverInterAgentMessage || !teamContext?.runId) {
+    const memberTeamContext = options.runContext.runtimeContext.memberTeamContext;
+    if (!this.deliverInterAgentMessage || !memberTeamContext?.teamRunId) {
       return this.buildRejectedResult({
         runContext: options.runContext,
         invocationId,
@@ -202,7 +202,7 @@ export class ClaudeSendMessageToolCallHandler {
     const content = parsed.content.trim();
     const sendMessageToResult = await this.deliverInterAgentMessage({
       senderRunId: options.runContext.runId,
-      teamRunId: teamContext.runId,
+      teamRunId: memberTeamContext.teamRunId,
       recipientMemberName,
       content,
       messageType: parsed.messageType,
@@ -218,20 +218,16 @@ export class ClaudeSendMessageToolCallHandler {
 
     if (!sendMessageToResult.accepted) {
       return {
-        content: [
-          {
-            type: "text",
-            text:
-              sendMessageToResult.message ??
-              `Failed delivering message to teammate '${recipientMemberName}'.`,
-          },
-        ],
-        isError: true,
+        accepted: false,
+        code: sendMessageToResult.code ?? null,
+        message: sendMessageToResult.message ?? "Failed delivering message to teammate.",
       };
     }
 
     return {
-      content: [{ type: "text", text: `Delivered message to '${recipientMemberName}'.` }],
+      accepted: true,
+      code: sendMessageToResult.code ?? null,
+      message: sendMessageToResult.message ?? null,
     };
   }
 
@@ -254,9 +250,6 @@ export class ClaudeSendMessageToolCallHandler {
       toolArguments: options.toolArguments,
       result,
     });
-    return {
-      content: [{ type: "text", text: options.message }],
-      isError: true,
-    };
+    return result;
   }
 }

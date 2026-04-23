@@ -13,10 +13,7 @@ import {
   buildCodexThreadConfig,
 } from "../../../agent-execution/backends/codex/thread/codex-thread-config.js";
 import { resolveApprovalPolicyForAutoExecuteTools } from "../../../agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
-import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
-import {
-  TeamRunContext,
-} from "../../domain/team-run-context.js";
+import { TeamRunContext } from "../../domain/team-run-context.js";
 import type { InterAgentMessageDeliveryRequest } from "../../domain/inter-agent-message-delivery.js";
 import {
   TeamRunEventSourceType,
@@ -34,6 +31,9 @@ import {
   buildInterAgentDeliveryInputMessage,
   buildInterAgentMessageAgentRunEvent,
 } from "../../services/inter-agent-message-runtime-builders.js";
+import { getMemberTeamContextBuilder, type MemberTeamContextBuilder } from "../../services/member-team-context-builder.js";
+import { TeamBackendKind } from "../../domain/team-backend-kind.js";
+import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 
 const buildRunNotFoundResult = (teamRunId: string): AgentOperationResult => ({
   accepted: false,
@@ -61,15 +61,24 @@ const buildPlaceholderThreadConfig = (memberContext: CodexTeamMemberContext) =>
 
 export class CodexTeamManager implements TeamManager {
   private readonly agentRunManager: AgentRunManager;
+  private readonly memberTeamContextBuilder: MemberTeamContextBuilder;
   private teamContext: TeamRunContext<CodexTeamRunContext> | null;
   private readonly memberRuns = new Map<string, AgentRun>();
   private readonly memberRunUnsubscribers = new Map<string, () => void>();
   private readonly eventListeners = new Set<TeamRunEventListener>();
   private lastTeamStatus: string | null = "INITIALIZING";
 
-  constructor(context: TeamRunContext<CodexTeamRunContext>) {
+  constructor(
+    context: TeamRunContext<CodexTeamRunContext>,
+    options: {
+      agentRunManager?: AgentRunManager;
+      memberTeamContextBuilder?: MemberTeamContextBuilder;
+    } = {},
+  ) {
     this.teamContext = context;
-    this.agentRunManager = AgentRunManager.getInstance();
+    this.agentRunManager = options.agentRunManager ?? AgentRunManager.getInstance();
+    this.memberTeamContextBuilder =
+      options.memberTeamContextBuilder ?? getMemberTeamContextBuilder();
   }
 
   hasActiveMembers(): boolean {
@@ -198,7 +207,7 @@ export class CodexTeamManager implements TeamManager {
     if (activeMemberRun) {
       this.memberRuns.delete(memberRouteKey);
     }
-    const memberRunConfig = this.buildMemberRunConfig(memberContext);
+    const memberRunConfig = await this.buildMemberRunConfig(memberContext);
 
     const memberRun =
       typeof memberContext.threadId === "string" && memberContext.threadId.trim().length > 0
@@ -275,22 +284,44 @@ export class CodexTeamManager implements TeamManager {
   }
 
   private getRuntimeContext(): CodexTeamRunContext {
-    if (!this.teamContext || this.teamContext.runtimeKind !== RuntimeKind.CODEX_APP_SERVER) {
+    if (!this.teamContext) {
       throw new Error("Codex team context is not initialized.");
     }
     return this.teamContext.runtimeContext;
   }
 
-  private buildMemberRunConfig(memberContext: CodexTeamMemberContext): AgentRunConfig {
+  private async buildMemberRunConfig(memberContext: CodexTeamMemberContext): Promise<AgentRunConfig> {
+    const teamContext = this.teamContext;
+    const config = teamContext?.config;
+    if (!teamContext || !config) {
+      throw new Error("Codex team context is not initialized.");
+    }
+    const memberTeamContext = await this.memberTeamContextBuilder.build({
+      teamRunId: teamContext.runId,
+      teamDefinitionId: config.teamDefinitionId,
+      teamBackendKind: TeamBackendKind.CODEX_APP_SERVER,
+      currentMemberName: memberContext.memberName,
+      currentMemberRouteKey: memberContext.memberRouteKey,
+      currentMemberRunId: memberContext.memberRunId,
+      members: this.getRuntimeContext().memberContexts.map((member) => ({
+        memberName: member.memberName,
+        memberRouteKey: member.memberRouteKey,
+        memberRunId: member.memberRunId,
+        runtimeKind: member.agentRunConfig.runtimeKind,
+      })),
+      deliverInterAgentMessage: (request) => this.deliverInterAgentMessage(request),
+    });
+
     return new AgentRunConfig({
       agentDefinitionId: memberContext.agentRunConfig.agentDefinitionId,
       llmModelIdentifier: memberContext.agentRunConfig.llmModelIdentifier,
       autoExecuteTools: memberContext.agentRunConfig.autoExecuteTools,
       workspaceId: memberContext.agentRunConfig.workspaceId,
+      memoryDir: memberContext.agentRunConfig.memoryDir,
       llmConfig: memberContext.agentRunConfig.llmConfig,
       skillAccessMode: memberContext.agentRunConfig.skillAccessMode,
       runtimeKind: memberContext.agentRunConfig.runtimeKind,
-      teamContext: this.teamContext,
+      memberTeamContext,
       applicationSessionContext: memberContext.agentRunConfig.applicationSessionContext,
     });
   }

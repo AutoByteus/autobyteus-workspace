@@ -1,15 +1,15 @@
 import {
   createCodexDynamicToolTextResult,
   type CodexDynamicToolRegistration,
-} from "../../../agent-execution/backends/codex/codex-dynamic-tool.js";
+} from "../codex-dynamic-tool.js";
 import {
   buildSendMessageToToolSpec,
 } from "./codex-send-message-tool-spec-builder.js";
 import {
   parseSendMessageToToolArguments,
   validateParsedSendMessageToToolArguments,
-} from "../../services/send-message-to-tool-argument-parser.js";
-import type { InterAgentMessageDeliveryHandler } from "../../domain/inter-agent-message-delivery.js";
+} from "../../../../agent-team-execution/services/send-message-to-tool-argument-parser.js";
+import type { InterAgentMessageDeliveryHandler } from "../../../../agent-team-execution/domain/inter-agent-message-delivery.js";
 
 export const buildSendMessageToDynamicToolRegistrations = (input: {
   deliverInterAgentMessage: InterAgentMessageDeliveryHandler | null;
