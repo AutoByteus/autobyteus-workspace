@@ -92,10 +92,12 @@
 - Merge status:
   - `Completed into origin/personal by Stage 10 finalization`
 - Release/publication/deployment status:
-  - `Requested after initial ticket finalization; preparing v1.2.82 through the documented release helper`
+  - `Completed: v1.2.82 was published through the documented release helper`
+  - `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.2.82`
 - Worktree cleanup status:
   - `Completed by Stage 10 finalization`
 - Local branch cleanup status:
   - `Completed by Stage 10 finalization if the ticket branch is fully merged locally`
 - Blockers / notes:
   - no blockers
+  - Desktop Release, Release Messaging Gateway, and Server Docker Release all completed successfully for `v1.2.82`
