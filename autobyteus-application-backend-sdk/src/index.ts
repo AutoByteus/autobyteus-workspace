@@ -4,14 +4,19 @@ export const defineApplication = <TDefinition extends ApplicationBackendDefiniti
   definition: TDefinition,
 ): TDefinition => definition;
 
+export * from "./launch-profile.js";
+
 export type {
   ApplicationAgentRunLaunch,
   ApplicationArtifactHandler,
   ApplicationBackendDefinition,
-  ApplicationConfiguredLaunchDefaults,
-  ApplicationConfiguredResource,
   ApplicationBackendExposureSummary,
   ApplicationCommandHandler,
+  ApplicationConfiguredAgentLaunchProfile,
+  ApplicationConfiguredLaunchProfile,
+  ApplicationConfiguredResource,
+  ApplicationConfiguredTeamLaunchProfile,
+  ApplicationConfiguredTeamMemberProfile,
   ApplicationEventHandler,
   ApplicationEventHandlerKey,
   ApplicationExecutionEvent,
@@ -26,6 +31,7 @@ export type {
   ApplicationNotificationMessage,
   ApplicationQueryHandler,
   ApplicationRequestContext,
+  ApplicationResourceConfigurationView,
   ApplicationResourceSlotDeclaration,
   ApplicationRouteDefinition,
   ApplicationRouteMethod,

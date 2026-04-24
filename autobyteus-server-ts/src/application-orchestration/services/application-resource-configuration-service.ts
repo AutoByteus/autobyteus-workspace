@@ -1,105 +1,36 @@
 import type {
-  ApplicationConfiguredLaunchDefaults,
+  ApplicationConfiguredLaunchProfile,
   ApplicationConfiguredResource,
+  ApplicationResourceConfigurationView,
   ApplicationResourceSlotDeclaration,
   ApplicationRuntimeResourceRef,
 } from "@autobyteus/application-sdk-contracts";
 import { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
+import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+import {
+  TeamDefinitionTraversalService,
+  type TeamLeafAgentMember,
+} from "../../agent-team-execution/services/team-definition-traversal-service.js";
 import { ApplicationRuntimeResourceResolver } from "./application-runtime-resource-resolver.js";
 import {
   ApplicationPersistedResourceConfiguration,
   ApplicationResourceConfigurationStore,
 } from "../stores/application-resource-configuration-store.js";
-
-export type ApplicationResourceConfigurationView = {
-  slot: ApplicationResourceSlotDeclaration;
-  configuration: ApplicationConfiguredResource | null;
-  updatedAt: string | null;
-};
+import {
+  buildConfiguredResource,
+  buildIssue,
+  buildLegacyLaunchProfile,
+  LaunchProfileValidationError,
+  normalizeConfiguredLaunchProfile,
+} from "./application-resource-configuration-launch-profile.js";
 
 type EffectiveResourceSelection = {
   resourceRef: ApplicationRuntimeResourceRef;
-  launchDefaults: ApplicationConfiguredLaunchDefaults | null;
+  resolvedResource: Awaited<ReturnType<ApplicationRuntimeResourceResolver["resolveResource"]>>;
   source: "persisted_override" | "manifest_default";
 };
 
 const cloneSlot = (slot: ApplicationResourceSlotDeclaration): ApplicationResourceSlotDeclaration => structuredClone(slot);
-
-const normalizeOptionalString = (value: unknown): string | null => {
-  if (typeof value !== "string") {
-    return null;
-  }
-  const normalized = value.trim();
-  return normalized.length > 0 ? normalized : null;
-};
-
-const slotSupportsLaunchDefault = (
-  slot: ApplicationResourceSlotDeclaration,
-  key: keyof Omit<ApplicationConfiguredLaunchDefaults, "autoExecuteTools">,
-): boolean => slot.supportedLaunchDefaults?.[key] === true;
-
-const normalizeLaunchDefaults = (
-  slot: ApplicationResourceSlotDeclaration,
-  value: unknown,
-  options: {
-    rejectUnsupportedKeys: boolean;
-  } = {
-    rejectUnsupportedKeys: true,
-  },
-): ApplicationConfiguredLaunchDefaults | null => {
-  if (value === undefined || value === null) {
-    return null;
-  }
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    if (!options.rejectUnsupportedKeys) {
-      return null;
-    }
-    throw new Error("launchDefaults must be an object when provided.");
-  }
-
-  const record = structuredClone(value) as Record<string, unknown>;
-  const supportedKeys = new Set<string>(["llmModelIdentifier", "runtimeKind", "workspaceRootPath", "autoExecuteTools"]);
-
-  for (const key of Object.keys(record)) {
-    if (!supportedKeys.has(key)) {
-      if (options.rejectUnsupportedKeys) {
-        throw new Error(`launchDefaults.${key} is not supported by the host-managed application launch contract.`);
-      }
-      delete record[key];
-      continue;
-    }
-
-    if (key === "autoExecuteTools") {
-      delete record[key];
-      continue;
-    }
-
-    if (!slotSupportsLaunchDefault(
-      slot,
-      key as keyof Omit<ApplicationConfiguredLaunchDefaults, "autoExecuteTools">,
-    )) {
-      if (options.rejectUnsupportedKeys) {
-        throw new Error(`Application resource slot '${slot.slotKey}' does not support launchDefaults.${key}.`);
-      }
-      delete record[key];
-    }
-  }
-
-  const llmModelIdentifier = normalizeOptionalString(record.llmModelIdentifier);
-  const runtimeKind = normalizeOptionalString(record.runtimeKind);
-  const workspaceRootPath = normalizeOptionalString(record.workspaceRootPath);
-
-  if (!llmModelIdentifier && !runtimeKind && !workspaceRootPath) {
-    return null;
-  }
-
-  return {
-    ...(llmModelIdentifier ? { llmModelIdentifier } : {}),
-    ...(runtimeKind ? { runtimeKind } : {}),
-    ...(workspaceRootPath ? { workspaceRootPath } : {}),
-    autoExecuteTools: true,
-  };
-};
 
 export class ApplicationResourceConfigurationService {
   constructor(
@@ -107,6 +38,8 @@ export class ApplicationResourceConfigurationService {
       applicationBundleService?: ApplicationBundleService;
       resourceResolver?: ApplicationRuntimeResourceResolver;
       configurationStore?: ApplicationResourceConfigurationStore;
+      agentTeamDefinitionService?: AgentTeamDefinitionService;
+      teamDefinitionTraversalService?: TeamDefinitionTraversalService;
     } = {},
   ) {}
 
@@ -122,6 +55,15 @@ export class ApplicationResourceConfigurationService {
     return this.dependencies.configurationStore ?? new ApplicationResourceConfigurationStore();
   }
 
+  private get agentTeamDefinitionService(): AgentTeamDefinitionService {
+    return this.dependencies.agentTeamDefinitionService ?? AgentTeamDefinitionService.getInstance();
+  }
+
+  private get teamDefinitionTraversalService(): TeamDefinitionTraversalService {
+    return this.dependencies.teamDefinitionTraversalService
+      ?? new TeamDefinitionTraversalService(this.agentTeamDefinitionService);
+  }
+
   async listConfigurations(applicationId: string): Promise<ApplicationResourceConfigurationView[]> {
     const slots = await this.getDeclaredSlots(applicationId);
     const storedConfigurations = await this.configurationStore.listConfigurations(applicationId);
@@ -135,7 +77,8 @@ export class ApplicationResourceConfigurationService {
   async getConfiguredResource(applicationId: string, slotKey: string): Promise<ApplicationConfiguredResource | null> {
     const slot = await this.requireDeclaredSlot(applicationId, slotKey);
     const stored = await this.configurationStore.getConfiguration(applicationId, slot.slotKey);
-    return this.resolveEffectiveConfiguration(applicationId, slot, stored);
+    const view = await this.buildConfigurationView(applicationId, slot, stored);
+    return view.status === "READY" ? view.configuration : null;
   }
 
   async upsertConfiguration(
@@ -143,13 +86,10 @@ export class ApplicationResourceConfigurationService {
     slotKey: string,
     input: {
       resourceRef?: ApplicationRuntimeResourceRef | null;
-      launchDefaults?: ApplicationConfiguredLaunchDefaults | null;
+      launchProfile?: ApplicationConfiguredLaunchProfile | null;
     },
   ): Promise<ApplicationResourceConfigurationView> {
     const slot = await this.requireDeclaredSlot(applicationId, slotKey);
-    const launchDefaults = normalizeLaunchDefaults(slot, input.launchDefaults, {
-      rejectUnsupportedKeys: true,
-    });
     const persistedResourceRef = input.resourceRef ? structuredClone(input.resourceRef) : null;
     const effectiveResourceRef = persistedResourceRef ?? slot.defaultResourceRef ?? null;
 
@@ -157,20 +97,23 @@ export class ApplicationResourceConfigurationService {
       if (slot.required) {
         throw new Error(`Application resource slot '${slot.slotKey}' requires a resource selection.`);
       }
-      if (!launchDefaults) {
+      if (!input.launchProfile) {
         await this.configurationStore.removeConfiguration(applicationId, slot.slotKey);
         return this.buildConfigurationView(applicationId, slot, null);
       }
       throw new Error(
-        `Application resource slot '${slot.slotKey}' cannot persist launchDefaults without a selected or default resource.`,
+        `Application resource slot '${slot.slotKey}' cannot persist launchProfile without a selected or default resource.`,
       );
     }
 
-    await this.validateResourceRef(applicationId, slot, effectiveResourceRef);
+    const selection = await this.validateResourceSelection(applicationId, slot, effectiveResourceRef, persistedResourceRef ? "persisted_override" : "manifest_default");
+    const launchProfile = await this.normalizeLaunchProfileForWrite(slot, selection, input.launchProfile ?? null);
+
     const persisted: ApplicationPersistedResourceConfiguration = {
       slotKey: slot.slotKey,
       resourceRef: persistedResourceRef,
-      launchDefaults,
+      launchProfile,
+      legacyLaunchDefaults: null,
       updatedAt: new Date().toISOString(),
     };
     const saved = await this.configurationStore.upsertConfiguration(applicationId, persisted);
@@ -200,11 +143,12 @@ export class ApplicationResourceConfigurationService {
     return slot;
   }
 
-  private async validateResourceRef(
+  private async validateResourceSelection(
     applicationId: string,
     slot: ApplicationResourceSlotDeclaration,
     resourceRef: ApplicationRuntimeResourceRef,
-  ): Promise<void> {
+    source: EffectiveResourceSelection["source"],
+  ): Promise<EffectiveResourceSelection> {
     if (!slot.allowedResourceKinds.includes(resourceRef.kind)) {
       throw new Error(
         `Application resource slot '${slot.slotKey}' does not allow resource kind '${resourceRef.kind}'.`,
@@ -216,53 +160,30 @@ export class ApplicationResourceConfigurationService {
         `Application resource slot '${slot.slotKey}' does not allow resource owner '${resourceRef.owner}'.`,
       );
     }
-    await this.resourceResolver.resolveResource(applicationId, resourceRef);
-  }
-
-  private getEffectiveSelection(
-    slot: ApplicationResourceSlotDeclaration,
-    persisted: ApplicationPersistedResourceConfiguration | null,
-  ): EffectiveResourceSelection | null {
-    const resourceRef = persisted?.resourceRef ?? slot.defaultResourceRef ?? null;
-    if (!resourceRef) {
-      return null;
-    }
     return {
       resourceRef: structuredClone(resourceRef),
-      launchDefaults: normalizeLaunchDefaults(slot, persisted?.launchDefaults ?? null, {
-        rejectUnsupportedKeys: false,
-      }),
-      source: persisted?.resourceRef ? "persisted_override" : "manifest_default",
+      resolvedResource: await this.resourceResolver.resolveResource(applicationId, resourceRef),
+      source,
     };
   }
 
-  private async resolveEffectiveConfiguration(
-    applicationId: string,
+  private async collectCurrentTeamMembers(resourceDefinitionId: string): Promise<TeamLeafAgentMember[]> {
+    return this.teamDefinitionTraversalService.collectLeafAgentMembers(resourceDefinitionId);
+  }
+
+  private async normalizeLaunchProfileForWrite(
     slot: ApplicationResourceSlotDeclaration,
-    persisted: ApplicationPersistedResourceConfiguration | null,
-  ): Promise<ApplicationConfiguredResource | null> {
-    const selection = this.getEffectiveSelection(slot, persisted);
-    if (!selection) {
-      return null;
-    }
-
-    try {
-      await this.validateResourceRef(applicationId, slot, selection.resourceRef);
-    } catch (error) {
-      const sourceLabel = selection.source === "persisted_override"
-        ? "persisted override"
-        : "manifest default";
-      const detail = error instanceof Error ? error.message : String(error);
-      throw new Error(
-        `Application resource slot '${slot.slotKey}' has invalid ${sourceLabel}: ${detail}`,
-      );
-    }
-
-    return {
-      slotKey: slot.slotKey,
-      resourceRef: selection.resourceRef,
-      launchDefaults: selection.launchDefaults,
-    };
+    selection: EffectiveResourceSelection,
+    launchProfile: ApplicationConfiguredLaunchProfile | null,
+  ): Promise<ApplicationConfiguredLaunchProfile | null> {
+    return normalizeConfiguredLaunchProfile({
+      slot,
+      resourceKind: selection.resourceRef.kind,
+      launchProfile,
+      currentTeamMembers: selection.resourceRef.kind === "AGENT_TEAM"
+        ? await this.collectCurrentTeamMembers(selection.resolvedResource.definitionId)
+        : undefined,
+    });
   }
 
   private async buildConfigurationView(
@@ -270,10 +191,146 @@ export class ApplicationResourceConfigurationService {
     slot: ApplicationResourceSlotDeclaration,
     persisted: ApplicationPersistedResourceConfiguration | null,
   ): Promise<ApplicationResourceConfigurationView> {
-    return {
-      slot: cloneSlot(slot),
-      configuration: await this.resolveEffectiveConfiguration(applicationId, slot, persisted),
-      updatedAt: persisted?.updatedAt ?? null,
-    };
+    const slotViewBase = { slot: cloneSlot(slot), updatedAt: persisted?.updatedAt ?? null };
+    const effectiveResourceRef = persisted?.resourceRef ?? slot.defaultResourceRef ?? null;
+
+    if (!effectiveResourceRef) {
+      return {
+        ...slotViewBase,
+        status: "NOT_CONFIGURED",
+        configuration: null,
+        invalidSavedConfiguration: null,
+        issue: null,
+      };
+    }
+
+    let selection: EffectiveResourceSelection;
+    try {
+      selection = await this.validateResourceSelection(
+        applicationId,
+        slot,
+        effectiveResourceRef,
+        persisted?.resourceRef ? "persisted_override" : "manifest_default",
+      );
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      if (persisted) {
+        return {
+          ...slotViewBase,
+          status: "INVALID_SAVED_CONFIGURATION",
+          configuration: null,
+          invalidSavedConfiguration: buildConfiguredResource(
+            slot.slotKey,
+            effectiveResourceRef,
+            buildLegacyLaunchProfile({
+              resourceRef: effectiveResourceRef,
+              launchDefaults: persisted.legacyLaunchDefaults,
+            }) ?? persisted.launchProfile ?? null,
+          ),
+          issue: buildIssue(
+            "INVALID_RESOURCE_SELECTION",
+            `Application resource slot '${slot.slotKey}' has a saved runtime resource selection that is no longer valid: ${message}`,
+          ),
+        };
+      }
+
+      return {
+        ...slotViewBase,
+        status: "NOT_CONFIGURED",
+        configuration: null,
+        invalidSavedConfiguration: null,
+        issue: buildIssue(
+          "INVALID_RESOURCE_SELECTION",
+          `Application resource slot '${slot.slotKey}' default runtime resource is no longer valid: ${message}`,
+        ),
+      };
+    }
+
+    let nextPersisted = persisted;
+    let candidateLaunchProfile = persisted?.launchProfile ?? null;
+    if (!candidateLaunchProfile && persisted?.legacyLaunchDefaults) {
+      try {
+        candidateLaunchProfile = buildLegacyLaunchProfile({
+          resourceRef: selection.resourceRef,
+          launchDefaults: persisted.legacyLaunchDefaults,
+          currentTeamMembers: selection.resourceRef.kind === "AGENT_TEAM"
+            ? await this.collectCurrentTeamMembers(selection.resolvedResource.definitionId)
+            : undefined,
+        });
+      } catch (error) {
+        return {
+          ...slotViewBase,
+          status: "INVALID_SAVED_CONFIGURATION",
+          configuration: null,
+          invalidSavedConfiguration: buildConfiguredResource(slot.slotKey, selection.resourceRef, null),
+          issue: buildIssue(
+            "PROFILE_MALFORMED",
+            error instanceof Error ? error.message : String(error),
+          ),
+        };
+      }
+      nextPersisted = await this.configurationStore.upsertConfiguration(applicationId, {
+        slotKey: persisted.slotKey,
+        resourceRef: persisted.resourceRef,
+        launchProfile: candidateLaunchProfile,
+        legacyLaunchDefaults: null,
+        updatedAt: persisted.updatedAt,
+      });
+    }
+
+    if (!candidateLaunchProfile) {
+      return {
+        ...slotViewBase,
+        updatedAt: nextPersisted?.updatedAt ?? slotViewBase.updatedAt,
+        status: "READY",
+        configuration: buildConfiguredResource(slot.slotKey, selection.resourceRef, null),
+        invalidSavedConfiguration: null,
+        issue: null,
+      };
+    }
+
+    try {
+      const normalizedLaunchProfile = await this.normalizeLaunchProfileForWrite(slot, selection, candidateLaunchProfile);
+      if (nextPersisted && JSON.stringify(nextPersisted.launchProfile ?? null) !== JSON.stringify(normalizedLaunchProfile ?? null)) {
+        nextPersisted = await this.configurationStore.upsertConfiguration(applicationId, {
+          slotKey: nextPersisted.slotKey,
+          resourceRef: nextPersisted.resourceRef,
+          launchProfile: normalizedLaunchProfile,
+          legacyLaunchDefaults: null,
+          updatedAt: nextPersisted.updatedAt,
+        });
+      }
+
+      return {
+        ...slotViewBase,
+        updatedAt: nextPersisted?.updatedAt ?? slotViewBase.updatedAt,
+        status: "READY",
+        configuration: buildConfiguredResource(slot.slotKey, selection.resourceRef, normalizedLaunchProfile),
+        invalidSavedConfiguration: null,
+        issue: null,
+      };
+    } catch (error) {
+      if (persisted) {
+        const validationError = error instanceof LaunchProfileValidationError
+          ? error
+          : new LaunchProfileValidationError(
+              "PROFILE_MALFORMED",
+              error instanceof Error ? error.message : String(error),
+            );
+        return {
+          ...slotViewBase,
+          updatedAt: nextPersisted?.updatedAt ?? slotViewBase.updatedAt,
+          status: "INVALID_SAVED_CONFIGURATION",
+          configuration: null,
+          invalidSavedConfiguration: buildConfiguredResource(slot.slotKey, selection.resourceRef, candidateLaunchProfile),
+          issue: buildIssue(
+            validationError.issueCode,
+            validationError.message,
+            validationError.staleMembers ?? null,
+          ),
+        };
+      }
+      throw error;
+    }
   }
 }

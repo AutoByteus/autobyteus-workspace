@@ -6,10 +6,27 @@ import type {
 
 export const APPLICATION_MANIFEST_VERSION_V3 = "3" as const;
 
-export type ApplicationSupportedLaunchDefaultsDeclaration = {
+export type ApplicationSupportedAgentLaunchConfigDeclaration = {
   llmModelIdentifier?: boolean | null;
   runtimeKind?: boolean | null;
   workspaceRootPath?: boolean | null;
+};
+
+export type ApplicationSupportedTeamMemberOverrideDeclaration = {
+  llmModelIdentifier?: boolean | null;
+  runtimeKind?: boolean | null;
+};
+
+export type ApplicationSupportedTeamLaunchConfigDeclaration = {
+  llmModelIdentifier?: boolean | null;
+  runtimeKind?: boolean | null;
+  workspaceRootPath?: boolean | null;
+  memberOverrides?: ApplicationSupportedTeamMemberOverrideDeclaration | null;
+};
+
+export type ApplicationSupportedLaunchConfigDeclaration = {
+  AGENT?: ApplicationSupportedAgentLaunchConfigDeclaration | null;
+  AGENT_TEAM?: ApplicationSupportedTeamLaunchConfigDeclaration | null;
 };
 
 export type ApplicationResourceSlotDeclaration = {
@@ -19,7 +36,7 @@ export type ApplicationResourceSlotDeclaration = {
   allowedResourceKinds: ApplicationRuntimeResourceKind[];
   allowedResourceOwners?: ApplicationRuntimeResourceOwner[] | null;
   required?: boolean | null;
-  supportedLaunchDefaults?: ApplicationSupportedLaunchDefaultsDeclaration | null;
+  supportedLaunchConfig?: ApplicationSupportedLaunchConfigDeclaration | null;
   defaultResourceRef?: ApplicationRuntimeResourceRef | null;
 };
 

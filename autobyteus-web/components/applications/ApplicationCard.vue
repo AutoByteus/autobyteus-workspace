@@ -22,21 +22,7 @@
       </div>
     </div>
 
-    <div class="mt-4 grid grid-cols-1 gap-3 text-xs text-slate-500 sm:grid-cols-2">
-      <div>
-        <p class="font-semibold uppercase tracking-wide text-slate-400">{{ $t('applications.shared.package') }}</p>
-        <p class="mt-1 truncate text-sm text-slate-700">{{ application.packageId }}</p>
-      </div>
-      <div>
-        <p class="font-semibold uppercase tracking-wide text-slate-400">{{ $t('applications.components.applications.ApplicationCard.launchSetupLabel') }}</p>
-        <p class="mt-1 text-sm text-slate-700">{{ launchSetupSummary }}</p>
-      </div>
-    </div>
-
-    <div class="mt-5 flex items-center justify-between border-t border-slate-100 pt-4 text-sm">
-      <span class="text-slate-500">
-        {{ $t('applications.components.applications.ApplicationCard.openDetails') }}
-      </span>
+    <div class="mt-5 flex items-center justify-end border-t border-slate-100 pt-4 text-sm">
       <span class="font-semibold text-blue-700 transition-colors group-hover:text-blue-800">
         {{ $t('applications.components.applications.ApplicationCard.continue') }}
       </span>
@@ -87,16 +73,6 @@ watch(
 
 const showIcon = computed(() => Boolean(resolvedIconUrl.value) && !iconLoadFailed.value)
 const descriptionText = computed(() => props.application.description?.trim() || $t('applications.shared.noDescriptionProvided'))
-const requiredSlotCount = computed(() => props.application.resourceSlots.filter((slot) => slot.required).length)
-const launchSetupSummary = computed(() => (
-  requiredSlotCount.value > 0
-    ? $t('applications.components.applications.ApplicationCard.requiredSetupSummary', {
-      count: requiredSlotCount.value,
-    })
-    : props.application.resourceSlots.length > 0
-      ? $t('applications.components.applications.ApplicationCard.optionalSetupSummary')
-      : $t('applications.components.applications.ApplicationCard.openBusinessView')
-))
 
 const initials = computed(() => {
   const raw = props.application.name.trim()

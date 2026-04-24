@@ -80,7 +80,7 @@ import {
 } from '@autobyteus/application-sdk-contracts'
 import ApplicationIframeHost from '~/components/applications/ApplicationIframeHost.vue'
 import { useLocalization } from '~/composables/useLocalization'
-import type { ApplicationCatalogEntry } from '~/stores/applicationStore'
+import type { ApplicationDetailRecord } from '~/stores/applicationStore'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import {
   areApplicationIframeDescriptorInputsEqual,
@@ -94,7 +94,7 @@ import { buildApplicationHostTransport } from '~/utils/application/applicationHo
 const APPLICATION_IFRAME_READY_TIMEOUT_MS = 10_000
 
 const props = defineProps<{
-  application: ApplicationCatalogEntry | null
+  application: ApplicationDetailRecord | null
   launchInstanceId: string | null
 }>()
 
@@ -170,7 +170,7 @@ const startWaitingForReady = (descriptor: ApplicationIframeLaunchDescriptor): vo
   }, APPLICATION_IFRAME_READY_TIMEOUT_MS)
 }
 
-const buildLaunchInputs = (application: ApplicationCatalogEntry): ApplicationIframeLaunchDescriptorInputs => ({
+const buildLaunchInputs = (application: ApplicationDetailRecord): ApplicationIframeLaunchDescriptorInputs => ({
   applicationId: application.id,
   entryHtmlAssetPath: application.entryHtmlAssetPath,
   restBaseUrl: windowNodeContextStore.getBoundEndpoints().rest,
@@ -240,12 +240,12 @@ const handleReady = (signal: ApplicationIframeReadySignal): void => {
     host: {
       origin: descriptor.normalizedHostOrigin,
     },
-    application: {
-      applicationId: currentApplication.id,
-      localApplicationId: currentApplication.localApplicationId,
-      packageId: currentApplication.packageId,
-      name: currentApplication.name,
-    },
+      application: {
+        applicationId: currentApplication.id,
+        localApplicationId: currentApplication.technicalDetails.localApplicationId,
+        packageId: currentApplication.technicalDetails.packageId,
+        name: currentApplication.name,
+      },
     launch: {
       launchInstanceId: descriptor.launchInstanceId,
     },

@@ -9,6 +9,14 @@ import { ApplicationBundleService } from "../../application-bundles/services/app
 
 export type ResolvedApplicationRuntimeResource = ApplicationRuntimeResourceSummary;
 
+const normalizeFriendlyName = (
+  explicitName: string | null | undefined,
+  fallbackIdentifier: string,
+): string => {
+  const normalized = explicitName?.trim();
+  return normalized && normalized.length > 0 ? normalized : fallbackIdentifier;
+};
+
 export class ApplicationRuntimeResourceResolver {
   constructor(
     private readonly dependencies: {
@@ -39,13 +47,18 @@ export class ApplicationRuntimeResourceResolver {
       throw new Error(`Application '${applicationId}' was not found.`);
     }
 
-    const bundleResources = bundle.bundleResources.map((resource) => ({
-      owner: "bundle" as const,
-      kind: resource.kind,
-      localId: resource.localId,
-      definitionId: resource.definitionId,
-      name: resource.localId,
-      applicationId,
+    const bundleResources = await Promise.all(bundle.bundleResources.map(async (resource) => {
+      const definitionName = resource.kind === "AGENT"
+        ? (await this.agentDefinitionService.getAgentDefinitionById(resource.definitionId))?.name ?? null
+        : (await this.agentTeamDefinitionService.getDefinitionById(resource.definitionId))?.name ?? null;
+      return {
+        owner: "bundle" as const,
+        kind: resource.kind,
+        localId: resource.localId,
+        definitionId: resource.definitionId,
+        name: normalizeFriendlyName(definitionName, resource.localId || resource.definitionId),
+        applicationId,
+      };
     }));
 
     const sharedAgents = (await this.agentDefinitionService.getVisibleAgentDefinitions())
@@ -55,7 +68,7 @@ export class ApplicationRuntimeResourceResolver {
         kind: "AGENT" as const,
         localId: null,
         definitionId: definition.id as string,
-        name: definition.name,
+        name: normalizeFriendlyName(definition.name, definition.id as string),
         applicationId: null,
       }));
 
@@ -66,7 +79,7 @@ export class ApplicationRuntimeResourceResolver {
         kind: "AGENT_TEAM" as const,
         localId: null,
         definitionId: definition.id as string,
-        name: definition.name,
+        name: normalizeFriendlyName(definition.name, definition.id as string),
         applicationId: null,
       }));
 

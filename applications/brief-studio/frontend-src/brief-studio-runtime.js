@@ -24,7 +24,7 @@ export const mountBriefStudio = ({
     executions: [],
     notificationHandle: null,
     selectedBriefId: null,
-    statusText: "Brief Studio is ready to load workspace data.",
+    statusText: "",
     statusTone: "idle",
   };
 
@@ -41,9 +41,19 @@ export const mountBriefStudio = ({
     state.statusText = text;
     state.statusTone = tone;
     if (elements.workspaceStatus) {
+      const normalizedText = typeof text === "string" ? text.trim() : "";
+      if (!normalizedText) {
+        elements.workspaceStatus.textContent = "";
+        elements.workspaceStatus.className = "workspace-status is-hidden";
+        return;
+      }
       elements.workspaceStatus.textContent = text;
       elements.workspaceStatus.className = `workspace-status${tone === "ready" ? " ready" : tone === "error" ? " error" : ""}`;
     }
+  };
+
+  const clearStatus = () => {
+    setStatus("", "idle");
   };
 
   const handleUiError = (error) => {
@@ -113,12 +123,7 @@ export const mountBriefStudio = ({
 
     await refreshDetail();
     render();
-    setStatus(
-      state.briefs.length === 0
-        ? "Start by creating a brief. Then generate a draft when it is ready for review."
-        : "Open a brief to review drafts, notes, and approval state.",
-      "ready",
-    );
+    clearStatus();
   };
 
   const createBrief = async () => {

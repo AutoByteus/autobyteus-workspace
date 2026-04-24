@@ -14,6 +14,8 @@ Owns application-authored runtime orchestration after an application backend is 
 
 - `src/application-orchestration/services/application-orchestration-host-service.ts`
 - `src/application-orchestration/services/application-run-binding-launch-service.ts`
+- `src/application-orchestration/services/application-resource-configuration-service.ts`
+- `src/application-orchestration/services/application-resource-configuration-launch-profile.ts`
 - `src/application-orchestration/services/application-runtime-resource-resolver.ts`
 - `src/application-orchestration/services/application-run-observer-service.ts`
 - `src/application-orchestration/services/application-bound-run-lifecycle-gateway.ts`
@@ -22,6 +24,7 @@ Owns application-authored runtime orchestration after an application backend is 
 - `src/application-orchestration/services/application-orchestration-recovery-service.ts`
 - `src/application-orchestration/services/application-orchestration-startup-gate.ts`
 - `src/application-orchestration/services/application-published-artifact-relay-service.ts`
+- `src/application-orchestration/stores/application-resource-configuration-store.ts`
 - `src/application-orchestration/stores/application-run-binding-store.ts`
 - `src/application-orchestration/stores/application-run-lookup-store.ts`
 - `src/application-orchestration/stores/application-execution-event-journal-store.ts`
@@ -78,9 +81,16 @@ The orchestration host validates the resource choice, launches the underlying ag
 
 The orchestration boundary also owns persisted application launch setup for manifest-declared `resourceSlots[]`:
 
-- per-application saved resource selections and launch defaults are stored in platform-owned state,
-- saved defaults currently support runtime kind, model identifier, and workspace root path when the slot declares them, and
+- per-application saved resource selections and kind-aware `launchProfile` records are stored in platform-owned state,
+- agent-backed selections can persist `runtimeKind`, `llmModelIdentifier`, and `workspaceRootPath` only when the slot declares those fields,
+- agent-team-backed selections can persist shared defaults plus current member runtime/model overrides, with `workspaceRootPath` stored on the shared defaults record,
+- legacy `launch_defaults_json` rows are migrated forward through the normal read/write path so preexisting saved application setup survives the contract rename,
+- read-time validation is authoritative: malformed profiles, kind mismatches, unsupported fields, or stale team topology are surfaced as `INVALID_SAVED_CONFIGURATION` together with `invalidSavedConfiguration` and issue detail instead of silently launching stale state, and
 - host-managed application flows keep `autoExecuteTools` enabled for the application-owned teaching workflows.
+
+`ApplicationResourceConfigurationService` is the semantic owner for `GET /applications/:applicationId/resource-configurations` and `PUT /applications/:applicationId/resource-configurations/:slotKey`. It normalizes writes, rewrites legacy rows when needed, maps invalid write attempts to HTTP 400, and returns `READY`, `NOT_CONFIGURED`, or `INVALID_SAVED_CONFIGURATION` views for the frontend setup gate.
+
+Application backends still keep business launch timing app-owned. They consume the saved `launchProfile` through the shared helpers in `@autobyteus/application-backend-sdk` to expand the persisted selection into the concrete runtime launch input each app needs.
 
 `ApplicationAvailabilityService` owns app-scoped liveness for applications discovered by the bundle layer:
 

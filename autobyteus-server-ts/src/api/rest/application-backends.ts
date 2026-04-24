@@ -1,6 +1,6 @@
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import type {
-  ApplicationConfiguredLaunchDefaults,
+  ApplicationConfiguredLaunchProfile,
   ApplicationGraphqlRequest,
   ApplicationRequestContext,
   ApplicationRouteMethod,
@@ -9,6 +9,7 @@ import type {
 import { getApplicationBackendGatewayService } from "../../application-backend-gateway/services/application-backend-gateway-service.js";
 import { ApplicationUnavailableError, getApplicationAvailabilityService } from "../../application-orchestration/services/application-availability-service.js";
 import { ApplicationOrchestrationHostService } from "../../application-orchestration/services/application-orchestration-host-service.js";
+import { LaunchProfileValidationError } from "../../application-orchestration/services/application-resource-configuration-launch-profile.js";
 import { ApplicationResourceConfigurationService } from "../../application-orchestration/services/application-resource-configuration-service.js";
 
 const gateway = () => getApplicationBackendGatewayService();
@@ -90,12 +91,20 @@ const sendGatewayError = (reply: { code: (statusCode: number) => { send: (payloa
       retryable: true,
     });
   }
+  if (error instanceof LaunchProfileValidationError) {
+    return reply.code(400).send({ detail: error.message });
+  }
   const message = error instanceof Error ? error.message : String(error);
   if (message.includes("was not found")) {
     return reply.code(404).send({ detail: message });
   }
   if (
     message.includes("must match")
+    || message.includes("does not support")
+    || message.includes("requires a resource selection")
+    || message.includes("cannot persist launchProfile")
+    || message.includes("no longer supports")
+    || message.includes("malformed")
     || message.includes("No application route matched")
   ) {
     return reply.code(400).send({ detail: message });
@@ -140,7 +149,7 @@ export async function registerApplicationBackendRoutes(app: FastifyInstance): Pr
 
   app.put<{
     Params: { applicationId: string; slotKey: string };
-    Body: { resourceRef?: unknown; launchDefaults?: ApplicationConfiguredLaunchDefaults | null };
+    Body: { resourceRef?: unknown; launchProfile?: ApplicationConfiguredLaunchProfile | null };
   }>(
     `/applications/:applicationId/resource-configurations/:slotKey`,
     async (request, reply) => {
@@ -151,7 +160,7 @@ export async function registerApplicationBackendRoutes(app: FastifyInstance): Pr
             request.params.slotKey,
             {
               resourceRef: request.body?.resourceRef as never,
-              launchDefaults: request.body?.launchDefaults ?? null,
+              launchProfile: request.body?.launchProfile ?? null,
             },
           ),
         );

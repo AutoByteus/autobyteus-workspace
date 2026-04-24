@@ -60,10 +60,26 @@
                 </div>
               </div>
 
-              <div class="grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
-                <div v-for="item in detailItems" :key="item.label">
-                  <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ item.label }}</p>
-                  <p class="mt-1 break-all text-slate-900">{{ item.value }}</p>
+              <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
+                <p class="text-sm leading-6 text-slate-600">
+                  {{ $t('applications.components.applications.ApplicationShell.businessOverviewHelp') }}
+                </p>
+                <button
+                  v-if="technicalDetailsAvailable"
+                  type="button"
+                  class="mt-4 inline-flex items-center rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100"
+                  @click="showTechnicalDetails = !showTechnicalDetails"
+                >
+                  {{ showTechnicalDetails
+                    ? $t('applications.components.applications.ApplicationShell.hideTechnicalDetails')
+                    : $t('applications.components.applications.ApplicationShell.showTechnicalDetails') }}
+                </button>
+
+                <div v-if="showTechnicalDetails" class="mt-4 grid gap-3">
+                  <div v-for="item in detailItems" :key="item.label">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ item.label }}</p>
+                    <p class="mt-1 break-all text-slate-900">{{ item.value }}</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -127,7 +143,18 @@
                 </p>
               </div>
 
-              <div class="space-y-3">
+              <button
+                v-if="technicalDetailsAvailable"
+                type="button"
+                class="inline-flex items-center rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100"
+                @click="showTechnicalDetails = !showTechnicalDetails"
+              >
+                {{ showTechnicalDetails
+                  ? $t('applications.components.applications.ApplicationShell.hideTechnicalDetails')
+                  : $t('applications.components.applications.ApplicationShell.showTechnicalDetails') }}
+              </button>
+
+              <div v-if="showTechnicalDetails" class="space-y-3">
                 <div
                   v-for="item in detailItems"
                   :key="item.label"
@@ -274,7 +301,7 @@ import { useLocalization } from '~/composables/useLocalization'
 import { useAppLayoutStore } from '~/stores/appLayoutStore'
 import { useApplicationHostStore } from '~/stores/applicationHostStore'
 import { useApplicationStore } from '~/stores/applicationStore'
-import type { ApplicationLaunchSetupGateState } from '~/utils/application/applicationLaunchSetup'
+import type { ApplicationLaunchSetupGateState } from '~/utils/application/applicationSetupGate'
 
 interface ShellDetailItem {
   label: string
@@ -302,6 +329,7 @@ const latestLoadRequestId = ref(0)
 const launchSetupGateState = ref<ApplicationLaunchSetupGateState>(createDefaultSetupGateState())
 const launchRequestPending = ref(false)
 const launchActionError = ref<string | null>(null)
+const showTechnicalDetails = ref(false)
 
 const applicationId = computed(() => String(route.params.id || '').trim())
 const application = computed(() => applicationStore.getApplicationById(applicationId.value))
@@ -324,30 +352,31 @@ const immersiveReloadHint = computed(() => (
     ? launchSetupGateState.value.blockingReason
     : null
 ))
+const technicalDetailsAvailable = computed(() => detailItems.value.length > 0)
 
 const detailItems = computed<ShellDetailItem[]>(() => {
-  if (!application.value) {
+  if (!application.value?.technicalDetails) {
     return []
   }
 
   const items: ShellDetailItem[] = [
     {
       label: $t('applications.shared.package'),
-      value: application.value.packageId,
+      value: application.value.technicalDetails.packageId,
     },
     {
       label: $t('applications.shared.localApplicationId'),
-      value: application.value.localApplicationId,
+      value: application.value.technicalDetails.localApplicationId,
     },
     {
       label: $t('applications.shared.bundleResources'),
-      value: application.value.bundleResources.length > 0
-        ? application.value.bundleResources.map((resource) => `${resource.localId} → ${resource.definitionId}`).join(' · ')
+      value: application.value.technicalDetails.bundleResources.length > 0
+        ? application.value.technicalDetails.bundleResources.map((resource) => `${resource.localId} → ${resource.definitionId}`).join(' · ')
         : $t('applications.shared.noBundleResources'),
     },
     {
       label: $t('applications.shared.writableSource'),
-      value: application.value.writable ? $t('applications.shared.yes') : $t('applications.shared.no'),
+      value: application.value.technicalDetails.writable ? $t('applications.shared.yes') : $t('applications.shared.no'),
     },
   ]
 
@@ -383,6 +412,7 @@ const resetVisitPresentationState = (): void => {
   phase.value = 'setup'
   launchRequestPending.value = false
   launchActionError.value = null
+  showTechnicalDetails.value = false
   resetSetupGateState()
 }
 

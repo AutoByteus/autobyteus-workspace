@@ -1,9 +1,23 @@
 import type { ApplicationRuntimeResourceKind, ApplicationRuntimeResourceOwner, ApplicationRuntimeResourceRef } from "./runtime-resources.js";
 export declare const APPLICATION_MANIFEST_VERSION_V3: "3";
-export type ApplicationSupportedLaunchDefaultsDeclaration = {
+export type ApplicationSupportedAgentLaunchConfigDeclaration = {
     llmModelIdentifier?: boolean | null;
     runtimeKind?: boolean | null;
     workspaceRootPath?: boolean | null;
+};
+export type ApplicationSupportedTeamMemberOverrideDeclaration = {
+    llmModelIdentifier?: boolean | null;
+    runtimeKind?: boolean | null;
+};
+export type ApplicationSupportedTeamLaunchConfigDeclaration = {
+    llmModelIdentifier?: boolean | null;
+    runtimeKind?: boolean | null;
+    workspaceRootPath?: boolean | null;
+    memberOverrides?: ApplicationSupportedTeamMemberOverrideDeclaration | null;
+};
+export type ApplicationSupportedLaunchConfigDeclaration = {
+    AGENT?: ApplicationSupportedAgentLaunchConfigDeclaration | null;
+    AGENT_TEAM?: ApplicationSupportedTeamLaunchConfigDeclaration | null;
 };
 export type ApplicationResourceSlotDeclaration = {
     slotKey: string;
@@ -12,7 +26,7 @@ export type ApplicationResourceSlotDeclaration = {
     allowedResourceKinds: ApplicationRuntimeResourceKind[];
     allowedResourceOwners?: ApplicationRuntimeResourceOwner[] | null;
     required?: boolean | null;
-    supportedLaunchDefaults?: ApplicationSupportedLaunchDefaultsDeclaration | null;
+    supportedLaunchConfig?: ApplicationSupportedLaunchConfigDeclaration | null;
     defaultResourceRef?: ApplicationRuntimeResourceRef | null;
 };
 export type ApplicationManifestV3 = {

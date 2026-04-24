@@ -62,9 +62,7 @@ export const renderBriefStudioShell = (rootElement) => {
         </div>
       </header>
 
-      <section id="workspace-status" class="workspace-status">
-        Brief Studio is ready to load workspace data.
-      </section>
+      <div id="workspace-status" class="workspace-status is-hidden"></div>
 
       <section class="workflow-strip" aria-label="Brief workflow steps">
         <article class="workflow-step card">

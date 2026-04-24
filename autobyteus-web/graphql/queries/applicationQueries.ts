@@ -1,20 +1,26 @@
 import { gql } from 'graphql-tag'
 
-export const ApplicationFields = gql`
-  fragment ApplicationFields on Application {
+export const ApplicationCatalogFields = gql`
+  fragment ApplicationCatalogFields on Application {
     __typename
     id
-    localApplicationId
-    packageId
     name
     description
     iconAssetPath
     entryHtmlAssetPath
-    writable
     resourceSlots {
       slotKey
       required
     }
+  }
+`
+
+export const ApplicationTechnicalDetailsFields = gql`
+  fragment ApplicationTechnicalDetailsFields on Application {
+    __typename
+    localApplicationId
+    packageId
+    writable
     bundleResources {
       kind
       localId
@@ -23,20 +29,29 @@ export const ApplicationFields = gql`
   }
 `
 
+export const ApplicationDetailFields = gql`
+  fragment ApplicationDetailFields on Application {
+    ...ApplicationCatalogFields
+    ...ApplicationTechnicalDetailsFields
+  }
+  ${ApplicationCatalogFields}
+  ${ApplicationTechnicalDetailsFields}
+`
+
 export const ListApplications = gql`
   query ListApplications {
     listApplications {
-      ...ApplicationFields
+      ...ApplicationCatalogFields
     }
   }
-  ${ApplicationFields}
+  ${ApplicationCatalogFields}
 `
 
 export const GetApplicationById = gql`
   query GetApplicationById($id: String!) {
     application(id: $id) {
-      ...ApplicationFields
+      ...ApplicationDetailFields
     }
   }
-  ${ApplicationFields}
+  ${ApplicationDetailFields}
 `

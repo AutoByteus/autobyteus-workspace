@@ -49,6 +49,12 @@ const rewriteImports = (content, replacements) =>
     content,
   );
 
+const toPosixRelativeImportPath = (fromRelativePath, toRelativePath) => {
+  const fromDirectory = path.posix.dirname(fromRelativePath);
+  const relativePath = path.posix.relative(fromDirectory, toRelativePath);
+  return relativePath.startsWith(".") ? relativePath : `./${relativePath}`;
+};
+
 const collectFiles = async (rootPath) => {
   const entries = await fs.readdir(rootPath, { withFileTypes: true });
   const files = [];
@@ -84,7 +90,7 @@ const rewriteBrowserVendorImports = async (vendorRoot) => {
   }
 };
 
-const readBrowserModuleSpecifiers = (content) => {
+const readModuleSpecifiers = (content) => {
   const specifiers = [];
   const moduleSpecifierPattern = /(?:import|export)\s+(?:[^"'`]*?\s+from\s+)?["']([^"']+)["']/g;
   for (const match of content.matchAll(moduleSpecifierPattern)) {
@@ -112,13 +118,67 @@ const assertBrowserModulesSelfContained = async (uiRoot) => {
       continue;
     }
     const content = await fs.readFile(filePath, "utf8");
-    const bareSpecifiers = readBrowserModuleSpecifiers(content).filter(isBareBrowserSpecifier);
+    const bareSpecifiers = readModuleSpecifiers(content).filter(isBareBrowserSpecifier);
     if (bareSpecifiers.length > 0) {
       throw new Error(
         `Browser UI module '${path.relative(uiRoot, filePath)}' contains unsupported bare module specifiers: ${bareSpecifiers.join(", ")}`,
       );
     }
   }
+};
+
+const assertRelativeModuleSpecifiersExist = async (entryFilePath) => {
+  const content = await fs.readFile(entryFilePath, "utf8");
+  const relativeSpecifiers = readModuleSpecifiers(content).filter((specifier) => specifier.startsWith("."));
+
+  for (const specifier of relativeSpecifiers) {
+    const resolvedPath = path.resolve(path.dirname(entryFilePath), specifier);
+    try {
+      await fs.access(resolvedPath);
+    } catch {
+      throw new Error(
+        `Backend vendor entry '${path.basename(entryFilePath)}' is missing required relative dependency '${specifier}'.`,
+      );
+    }
+  }
+};
+
+const assertBackendModulesSelfContained = async (backendDistRoot) => {
+  const files = await collectFiles(backendDistRoot);
+  for (const filePath of files) {
+    if (!filePath.endsWith(".js") && !filePath.endsWith(".mjs")) {
+      continue;
+    }
+    await assertRelativeModuleSpecifiersExist(filePath);
+  }
+};
+
+const syncBackendSdkVendor = async (vendorRoot) => {
+  const backendSdkDistRoot = path.join(
+    workspaceRoot,
+    "autobyteus-application-backend-sdk",
+    "dist",
+  );
+
+  await ensureDirectory(vendorRoot);
+  const entries = await fs.readdir(backendSdkDistRoot, { withFileTypes: true });
+  for (const entry of entries) {
+    if (!entry.isFile()) {
+      continue;
+    }
+    if (!entry.name.endsWith(".js") && !entry.name.endsWith(".js.map")) {
+      continue;
+    }
+    await copyFile(
+      path.join(backendSdkDistRoot, entry.name),
+      path.join(vendorRoot, entry.name),
+    );
+  }
+  await copyFile(
+    path.join(backendSdkDistRoot, "index.js"),
+    path.join(vendorRoot, "application-backend-sdk.js"),
+  );
+  await assertRelativeModuleSpecifiersExist(path.join(vendorRoot, "application-backend-sdk.js"));
 };
 
 const syncFrontendSdkVendor = async (vendorRoot) => {
@@ -183,13 +243,20 @@ const copyCompiledBackend = async (sourceDir, targetRoot) => {
     const targetPath = relativePath === "index.js"
       ? path.join(targetRoot, "entry.mjs")
       : path.join(targetRoot, relativePath);
+    const targetRelativePath = relativePath === "index.js"
+      ? "entry.mjs"
+      : relativePath.split(path.sep).join(path.posix.sep);
+    const backendSdkImportPath = toPosixRelativeImportPath(
+      targetRelativePath,
+      "vendor/application-backend-sdk.js",
+    );
     const content = await fs.readFile(sourcePath, "utf8");
     await writeTextFile(
       targetPath,
       rewriteImports(content, [
         [
           /from ["']@autobyteus\/application-backend-sdk["']/g,
-          'from "./vendor/application-backend-sdk.js"',
+          `from "${backendSdkImportPath}"`,
         ],
       ]),
     );
@@ -288,10 +355,8 @@ const main = async () => {
     path.join(runtimeBackendRoot, "migrations"),
   );
   await copyCompiledBackend(buildBackendRoot, path.join(runtimeBackendRoot, "dist"));
-  await copyFile(
-    path.join(workspaceRoot, "autobyteus-application-backend-sdk", "dist", "index.js"),
-    path.join(runtimeBackendRoot, "dist", "vendor", "application-backend-sdk.js"),
-  );
+  await syncBackendSdkVendor(path.join(runtimeBackendRoot, "dist", "vendor"));
+  await assertBackendModulesSelfContained(path.join(runtimeBackendRoot, "dist"));
   await writeBackendBundleManifest(applicationRoot);
   await copyRunnableRootToPackagingMirror();
   await writePackageReadme();

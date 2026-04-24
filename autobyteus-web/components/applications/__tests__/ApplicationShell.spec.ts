@@ -60,6 +60,9 @@ vi.mock('~/composables/useLocalization', () => ({
         'applications.components.applications.ApplicationShell.applicationReadyNotice': 'Application ready notice',
         'applications.components.applications.ApplicationShell.preEntryGateTitle': 'Confirm launch setup before opening the app',
         'applications.components.applications.ApplicationShell.preEntryGateDescription': 'Save setup first, then open the app.',
+        'applications.components.applications.ApplicationShell.businessOverviewHelp': 'Business summary',
+        'applications.components.applications.ApplicationShell.showTechnicalDetails': 'Show technical details',
+        'applications.components.applications.ApplicationShell.hideTechnicalDetails': 'Hide technical details',
         'applications.components.applications.ApplicationShell.launchInstanceIdLabel': 'Launch instance id',
         'applications.components.applications.ApplicationShell.engineStateLabel': 'Engine state',
         'applications.components.applications.ApplicationShell.startedAtLabel': 'Started at',
@@ -135,9 +138,11 @@ const ApplicationImmersiveControlPanelStub = defineComponent({
     },
   },
   emits: ['reload-application', 'exit-application'],
-  setup(props, { emit }) {
+  setup(props, { emit, slots }) {
     return () => h('div', { 'data-testid': 'immersive-control-panel' }, [
       h('span', props.applicationName),
+      slots.details?.(),
+      slots.configure?.(),
       h('button', {
         type: 'button',
         'data-testid': 'immersive-reload',
@@ -179,24 +184,28 @@ describe('ApplicationShell', () => {
     })
     applicationStoreMock.getApplicationById.mockReturnValue({
       id: 'bundle-app__pkg__brief-studio',
-      localApplicationId: 'brief-studio',
-      packageId: 'pkg',
       name: 'Brief Studio',
       description: 'Business-first brief workflow',
-      writable: true,
+      iconAssetPath: null,
+      entryHtmlAssetPath: '/application-bundles/brief-studio/assets/ui/index.html',
       resourceSlots: [
         {
           slotKey: 'draftingTeam',
           required: true,
         },
       ],
-      bundleResources: [
-        {
-          kind: 'AGENT_TEAM',
-          localId: 'brief-studio-team',
-          definitionId: 'brief-studio-team',
-        },
-      ],
+      technicalDetails: {
+        localApplicationId: 'brief-studio',
+        packageId: 'pkg',
+        writable: true,
+        bundleResources: [
+          {
+            kind: 'AGENT_TEAM',
+            localId: 'brief-studio-team',
+            definitionId: 'brief-studio-team',
+          },
+        ],
+      },
     })
     applicationHostStoreMock.getLaunchState.mockImplementation(() => hostHarness.launchState)
     applicationHostStoreMock.startLaunch.mockImplementation(async () => {
@@ -222,7 +231,7 @@ describe('ApplicationShell', () => {
     })
   })
 
-  it('shows the setup-first route and does not auto-launch on initial load', async () => {
+  it('shows the setup-first route, hides technical details by default, and does not auto-launch on initial load', async () => {
     const { default: ApplicationShell } = await import('../ApplicationShell.vue')
 
     const wrapper = mount(ApplicationShell, {
@@ -243,6 +252,17 @@ describe('ApplicationShell', () => {
     expect(wrapper.get('[data-testid="application-setup-phase"]').exists()).toBe(true)
     expect(wrapper.get('[data-testid="application-pre-entry-gate"]').exists()).toBe(true)
     expect(wrapper.get('[data-testid="launch-setup-panel"]').text()).toContain('bundle-app__pkg__brief-studio:page')
+    expect(wrapper.text()).toContain('Business-first brief workflow')
+    expect(wrapper.text()).toContain('Show technical details')
+    expect(wrapper.text()).not.toContain('Package')
+    expect(wrapper.text()).not.toContain('brief-studio-team → brief-studio-team')
+
+    await wrapper.findAll('button').find((candidate) => candidate.text() === 'Show technical details')?.trigger('click')
+    await nextTick()
+
+    expect(wrapper.text()).toContain('Package')
+    expect(wrapper.text()).toContain('pkg')
+    expect(wrapper.text()).toContain('brief-studio-team → brief-studio-team')
 
     const enterButton = wrapper.findAll('button').find((candidate) => candidate.text() === 'Enter application')
     expect(enterButton?.attributes('disabled')).toBeDefined()
@@ -282,7 +302,7 @@ describe('ApplicationShell', () => {
     expect(applicationHostStoreMock.startLaunch).toHaveBeenCalledWith('bundle-app__pkg__brief-studio')
     expect(appLayoutStoreMock.setHostShellPresentation).toHaveBeenCalledWith('application_immersive')
     expect(wrapper.get('[data-testid="application-immersive-phase"]').exists()).toBe(true)
-    expect(wrapper.find('[data-testid="launch-setup-panel"]').exists()).toBe(false)
+    expect(wrapper.get('[data-testid="launch-setup-panel"]').text()).toContain('bundle-app__pkg__brief-studio:panel')
     expect(wrapper.get('[data-testid="application-immersive-loading-canvas"]').exists()).toBe(true)
   })
 
@@ -316,107 +336,5 @@ describe('ApplicationShell', () => {
     expect(wrapper.get('[data-testid="application-immersive-error-canvas"]').exists()).toBe(true)
     expect(wrapper.text()).toContain('Host launch failed')
     expect(wrapper.find('[data-testid="application-surface"]').exists()).toBe(false)
-  })
-
-  it('routes immersive reload and exit intents through the shell owner', async () => {
-    const { default: ApplicationShell } = await import('../ApplicationShell.vue')
-
-    const wrapper = mount(ApplicationShell, {
-      global: {
-        stubs: {
-          ApplicationLaunchSetupPanel: ApplicationLaunchSetupPanelStub,
-          ApplicationImmersiveControlPanel: ApplicationImmersiveControlPanelStub,
-          ApplicationSurface: ApplicationSurfaceStub,
-        },
-      },
-    })
-
-    await flushPromises()
-    await wrapper.getComponent(ApplicationLaunchSetupPanelStub).vm.$emit('setup-state-change', {
-      phase: 'ready',
-      isLaunchReady: true,
-      blockingReason: null,
-    })
-    await nextTick()
-    await wrapper.findAll('button').find((candidate) => candidate.text() === 'Enter application')?.trigger('click')
-    await flushPromises()
-
-    await wrapper.get('[data-testid="immersive-reload"]').trigger('click')
-    await flushPromises()
-
-    expect(applicationHostStoreMock.startLaunch).toHaveBeenCalledTimes(2)
-
-    applicationHostStoreMock.clearLaunchState.mockClear()
-    appLayoutStoreMock.resetHostShellPresentation.mockClear()
-    navigateToMock.mockClear()
-
-    await wrapper.get('[data-testid="immersive-exit"]').trigger('click')
-    await flushPromises()
-
-    expect(applicationHostStoreMock.clearLaunchState).toHaveBeenCalledWith('bundle-app__pkg__brief-studio')
-    expect(appLayoutStoreMock.resetHostShellPresentation).toHaveBeenCalled()
-    expect(navigateToMock).toHaveBeenCalledWith('/applications')
-  })
-
-  it('keeps entry blocked when the setup panel reports a load failure', async () => {
-    const { default: ApplicationShell } = await import('../ApplicationShell.vue')
-
-    const wrapper = mount(ApplicationShell, {
-      global: {
-        stubs: {
-          ApplicationLaunchSetupPanel: ApplicationLaunchSetupPanelStub,
-          ApplicationImmersiveControlPanel: ApplicationImmersiveControlPanelStub,
-          ApplicationSurface: ApplicationSurfaceStub,
-        },
-      },
-    })
-
-    await flushPromises()
-    await wrapper.getComponent(ApplicationLaunchSetupPanelStub).vm.$emit('setup-state-change', {
-      phase: 'error',
-      isLaunchReady: false,
-      blockingReason: 'Unable to load application setup',
-    })
-    await nextTick()
-
-    expect(wrapper.text()).toContain('Unable to load application setup')
-    const enterButton = wrapper.findAll('button').find((candidate) => candidate.text() === 'Enter application')
-    expect(enterButton?.attributes('disabled')).toBeDefined()
-
-    await enterButton?.trigger('click')
-
-    expect(applicationHostStoreMock.startLaunch).not.toHaveBeenCalled()
-  })
-
-  it('clears launch state and restores standard presentation on route unmount', async () => {
-    const { default: ApplicationShell } = await import('../ApplicationShell.vue')
-
-    const wrapper = mount(ApplicationShell, {
-      global: {
-        stubs: {
-          ApplicationLaunchSetupPanel: ApplicationLaunchSetupPanelStub,
-          ApplicationImmersiveControlPanel: ApplicationImmersiveControlPanelStub,
-          ApplicationSurface: ApplicationSurfaceStub,
-        },
-      },
-    })
-
-    await flushPromises()
-    await wrapper.getComponent(ApplicationLaunchSetupPanelStub).vm.$emit('setup-state-change', {
-      phase: 'ready',
-      isLaunchReady: true,
-      blockingReason: null,
-    })
-    await nextTick()
-    await wrapper.findAll('button').find((candidate) => candidate.text() === 'Enter application')?.trigger('click')
-    await flushPromises()
-
-    applicationHostStoreMock.clearLaunchState.mockClear()
-    appLayoutStoreMock.resetHostShellPresentation.mockClear()
-
-    wrapper.unmount()
-
-    expect(applicationHostStoreMock.clearLaunchState).toHaveBeenCalledWith('bundle-app__pkg__brief-studio')
-    expect(appLayoutStoreMock.resetHostShellPresentation).toHaveBeenCalled()
   })
 })

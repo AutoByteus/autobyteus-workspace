@@ -16,10 +16,17 @@ Shows Applications as a first-class top-level module, resolves whether the modul
 - `components/applications/ApplicationShell.vue`
 - `components/applications/ApplicationSurface.vue`
 - `components/applications/ApplicationIframeHost.vue`
-- `components/applications/ApplicationLaunchDefaultsFields.vue`
+- `components/applications/ApplicationImmersiveControlPanel.vue`
+- `components/applications/setup/ApplicationResourceSlotEditor.vue`
+- `components/applications/setup/ApplicationAgentLaunchProfileEditor.vue`
+- `components/applications/setup/ApplicationTeamLaunchProfileEditor.vue`
+- `components/applications/setup/ApplicationWorkspaceRootSelector.vue`
 - `utils/application/applicationAssetUrl.ts`
 - `utils/application/applicationHostTransport.ts`
 - `utils/application/applicationLaunchDescriptor.ts`
+- `utils/application/applicationLaunchProfile.ts`
+- `utils/application/applicationSetupGate.ts`
+- `utils/teamLaunchReadinessCore.ts`
 - `docs/application-bundle-iframe-contract-v1.md`
 - `../../autobyteus-application-sdk-contracts/src/application-iframe-contract.ts`
 
@@ -36,18 +43,23 @@ This means two windows bound to different nodes can legitimately show different 
 
 ## Catalog Model
 
-`applicationStore` owns the fetched application catalog.
+`applicationStore` owns the fetched application catalog and keeps the default catalog projection intentionally presentation-safe.
 
-Each application entry carries:
+Each catalog entry carries only:
 
 - stable application id
-- local application id
-- owning `packageId`
 - name and description
 - transport-neutral `iconAssetPath` and `entryHtmlAssetPath`
+- manifest-declared setup requirements exposed as `resourceSlots[]`
+
+The detail fetch extends that catalog record with `technicalDetails`, which contains:
+
+- local application id
+- owning `packageId`
 - `writable` source metadata
 - bundled runtime resources exposed as `bundleResources[]`
-- manifest-declared setup requirements exposed as `resourceSlots[]`
+
+That split is intentional: internal bootstrap/package identifiers remain available for iframe bootstrap and diagnostics, but the normal catalog/setup path should not casually render them.
 
 The generic host no longer treats one singular bundle resource as the required launch-time runtime target. The catalog exposes what the bundle contains; application backends decide if and when to use those resources.
 
@@ -101,21 +113,25 @@ This keeps host-launch identity tied to route visit and explicit reload/exit sem
 That gate:
 
 - loads the application's declared `resourceSlots[]` contract and current saved setup,
-- lets the user save required runtime-resource and launch-default selections before entry,
+- keeps technical metadata hidden behind an explicit toggle by default,
+- lets the user save required runtime-resource and launch-profile selections before entry,
 - keeps `Enter application` disabled while setup is loading, saving, dirty, or missing required saved state, and
 - only allows host launch after the setup panel reports `launch-ready`.
 
 `ApplicationLaunchSetupPanel.vue` owns the overall setup orchestration UI. It loads the saved slot state, owns refresh/save/reset actions, and surfaces:
 
 - required vs optional slots, and
-- bundled vs shared runtime-resource choices.
-
-`ApplicationLaunchDefaultsFields.vue` owns the slot-specific launch-defaults boundary. It surfaces:
-
-- saved launch defaults such as runtime kind, model identifier, and workspace root only when the current slot supports them, and
+- bundled vs shared runtime-resource choices,
+- configuration-view issues such as invalid saved topology or unsupported persisted profile fields, and
 - the host-managed note that automatic tool execution remains enabled for this application flow.
 
-That split is intentional: application-specific field-presence policy now lives in the app-owned launch-defaults boundary instead of extending the shared run-config wrapper with app-specific visibility toggles. Native agent/team run configuration keeps its own stable runtime/model field semantics.
+`ApplicationResourceSlotEditor.vue` owns the slot-local editor choice:
+
+- `ApplicationAgentLaunchProfileEditor.vue` saves the agent-shaped `launchProfile` fields (`runtimeKind`, `llmModelIdentifier`, `workspaceRootPath`) only when the selected slot declares them under `supportedLaunchConfig.AGENT`.
+- `ApplicationTeamLaunchProfileEditor.vue` saves the team-shaped `launchProfile`: shared defaults plus the current member override rows for runtime/model when the slot declares them under `supportedLaunchConfig.AGENT_TEAM`.
+- `ApplicationWorkspaceRootSelector.vue` keeps workspace-root path selection consistent across the agent and team editors.
+
+The persisted contract is now `launchProfile`, not the older flat `launchDefaults` record. The frontend draft helpers in `applicationLaunchProfile.ts` and `applicationSetupGate.ts` keep the route gate aligned with that kind-aware contract while the server handles legacy row migration.
 
 ## Immersive Control Panel
 
@@ -126,7 +142,7 @@ After entry, the default visible state is immersive and app-first. The outer hos
 - exposes the light top-right trigger,
 - opens a resizable right-side panel that narrows the application canvas instead of restoring the old stacked host page,
 - keeps the embedded setup controls usable even at narrower panel widths,
-- expands `Details` and `Configure` inline inside that same panel, and
+- expands `Details` and `Configure` inline inside that same panel, with technical details still hidden until explicitly opened, and
 - emits explicit route-level actions such as `Reload application` and `Exit application`.
 
 The configure disclosure reuses `ApplicationLaunchSetupPanel.vue` through a presentation variant, so setup semantics stay authoritative in one owner across both route phases.

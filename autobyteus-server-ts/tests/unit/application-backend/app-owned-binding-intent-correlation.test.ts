@@ -49,7 +49,7 @@ const buildRuntimeControl = (
           kind: "AGENT_TEAM",
           localId: "socratic-math-team",
         },
-        launchDefaults: null,
+        launchProfile: null,
       };
     }
     if (slotKey === "draftingTeam") {
@@ -60,7 +60,7 @@ const buildRuntimeControl = (
           kind: "AGENT_TEAM",
           localId: "brief-studio-team",
         },
-        launchDefaults: null,
+        launchProfile: null,
       };
     }
     return null;
@@ -395,7 +395,7 @@ describe("App-owned bindingIntentId correlation", () => {
     }
   });
 
-  it("launches Brief Studio from host-saved slot defaults when no inline llmModelIdentifier is provided", async () => {
+  it("launches Brief Studio from host-saved launch profiles when no inline llmModelIdentifier is provided", async () => {
     const appDatabasePath = await createTempDatabase("autobyteus-brief-launch-defaults-", BRIEF_MIGRATIONS_DIR);
     const runtimeControl = buildRuntimeControl({
       getConfiguredResource: vi.fn(async () => ({
@@ -405,10 +405,27 @@ describe("App-owned bindingIntentId correlation", () => {
           kind: "AGENT_TEAM",
           definitionId: "shared-writing-team",
         },
-        launchDefaults: {
-          runtimeKind: "lmstudio",
-          llmModelIdentifier: "qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
-          workspaceRootPath: "/tmp/brief-studio",
+        launchProfile: {
+          kind: "AGENT_TEAM",
+          defaults: {
+            runtimeKind: "lmstudio",
+            llmModelIdentifier: "qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
+            workspaceRootPath: "/tmp/brief-studio",
+          },
+          memberProfiles: [
+            {
+              memberRouteKey: "researcher",
+              memberName: "researcher",
+              agentDefinitionId: "bundle-agent__researcher",
+            },
+            {
+              memberRouteKey: "writer",
+              memberName: "writer",
+              agentDefinitionId: "bundle-agent__writer",
+              runtimeKind: "lmstudio",
+              llmModelIdentifier: "qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
+            },
+          ],
         },
       })),
       startRun: vi.fn(async (input: StartRunRequest) => buildBriefBinding(input.bindingIntentId)),
@@ -432,13 +449,96 @@ describe("App-owned bindingIntentId correlation", () => {
       },
       launch: expect.objectContaining({
         kind: "AGENT_TEAM",
-        mode: "preset",
-        launchPreset: expect.objectContaining({
-          runtimeKind: "lmstudio",
-          llmModelIdentifier: "qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
-          workspaceRootPath: "/tmp/brief-studio",
-          autoExecuteTools: true,
-        }),
+        mode: "memberConfigs",
+        memberConfigs: expect.arrayContaining([
+          expect.objectContaining({
+            memberRouteKey: "researcher",
+            runtimeKind: "lmstudio",
+            llmModelIdentifier: "qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
+            workspaceRootPath: "/tmp/brief-studio",
+            autoExecuteTools: true,
+          }),
+          expect.objectContaining({
+            memberRouteKey: "writer",
+            runtimeKind: "lmstudio",
+            llmModelIdentifier: "qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
+            workspaceRootPath: "/tmp/brief-studio",
+            autoExecuteTools: true,
+          }),
+        ]),
+      }),
+    }));
+  });
+
+  it("launches Brief Studio from explicit per-member team profiles when defaults are null", async () => {
+    const appDatabasePath = await createTempDatabase("autobyteus-brief-member-launch-configs-", BRIEF_MIGRATIONS_DIR);
+    const runtimeControl = buildRuntimeControl({
+      getConfiguredResource: vi.fn(async () => ({
+        slotKey: "draftingTeam",
+        resourceRef: {
+          owner: "shared",
+          kind: "AGENT_TEAM",
+          definitionId: "shared-writing-team",
+        },
+        launchProfile: {
+          kind: "AGENT_TEAM",
+          defaults: null,
+          memberProfiles: [
+            {
+              memberRouteKey: "researcher",
+              memberName: "researcher",
+              agentDefinitionId: "bundle-agent__researcher",
+              runtimeKind: "autobyteus",
+              llmModelIdentifier: "openai/gpt-5",
+            },
+            {
+              memberRouteKey: "writer",
+              memberName: "writer",
+              agentDefinitionId: "bundle-agent__writer",
+              runtimeKind: "lmstudio",
+              llmModelIdentifier: "qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
+            },
+          ],
+        },
+      })),
+      startRun: vi.fn(async (input: StartRunRequest) => buildBriefBinding(input.bindingIntentId)),
+    });
+    const context = createHandlerContext({
+      appDatabasePath,
+      runtimeControl,
+    });
+
+    const service = createBriefRunLaunchService(context);
+    const createdBrief = await service.createBrief({ title: "Explicit Member Setup Brief" });
+    await service.launchDraftRun({
+      briefId: createdBrief.briefId,
+    });
+
+    expect(runtimeControl.startRun).toHaveBeenCalledWith(expect.objectContaining({
+      resourceRef: {
+        owner: "shared",
+        kind: "AGENT_TEAM",
+        definitionId: "shared-writing-team",
+      },
+      launch: expect.objectContaining({
+        kind: "AGENT_TEAM",
+        mode: "memberConfigs",
+        memberConfigs: [
+          expect.objectContaining({
+            memberRouteKey: "researcher",
+            runtimeKind: "autobyteus",
+            llmModelIdentifier: "openai/gpt-5",
+            workspaceRootPath: context.storage.runtimePath,
+            autoExecuteTools: true,
+          }),
+          expect.objectContaining({
+            memberRouteKey: "writer",
+            runtimeKind: "lmstudio",
+            llmModelIdentifier: "qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
+            workspaceRootPath: context.storage.runtimePath,
+            autoExecuteTools: true,
+          }),
+        ],
       }),
     }));
   });
@@ -641,7 +741,7 @@ describe("App-owned bindingIntentId correlation", () => {
     }
   });
 
-  it("launches Socratic lessons from host-saved slot defaults when no inline llmModelIdentifier is provided", async () => {
+  it("launches Socratic lessons from host-saved launch profiles when no inline llmModelIdentifier is provided", async () => {
     const appDatabasePath = await createTempDatabase("autobyteus-lesson-launch-defaults-", SOCRATIC_MIGRATIONS_DIR);
     const runtimeControl = buildRuntimeControl({
       getConfiguredResource: vi.fn(async () => ({
@@ -651,10 +751,20 @@ describe("App-owned bindingIntentId correlation", () => {
           kind: "AGENT_TEAM",
           localId: "socratic-math-team",
         },
-        launchDefaults: {
-          runtimeKind: "lmstudio",
-          llmModelIdentifier: "qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
-          workspaceRootPath: "/tmp/lessons",
+        launchProfile: {
+          kind: "AGENT_TEAM",
+          defaults: {
+            runtimeKind: "lmstudio",
+            llmModelIdentifier: "qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
+            workspaceRootPath: "/tmp/lessons",
+          },
+          memberProfiles: [
+            {
+              memberRouteKey: "tutor",
+              memberName: "tutor",
+              agentDefinitionId: "bundle-agent__tutor",
+            },
+          ],
         },
       })),
       startRun: vi.fn(async (input: StartRunRequest) => buildLessonBinding(input.bindingIntentId)),
@@ -671,13 +781,68 @@ describe("App-owned bindingIntentId correlation", () => {
     expect(runtimeControl.startRun).toHaveBeenCalledWith(expect.objectContaining({
       launch: expect.objectContaining({
         kind: "AGENT_TEAM",
-        mode: "preset",
-        launchPreset: expect.objectContaining({
-          runtimeKind: "lmstudio",
-          llmModelIdentifier: "qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
-          workspaceRootPath: "/tmp/lessons",
-          autoExecuteTools: true,
-        }),
+        mode: "memberConfigs",
+        memberConfigs: [
+          expect.objectContaining({
+            memberRouteKey: "tutor",
+            runtimeKind: "lmstudio",
+            llmModelIdentifier: "qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
+            workspaceRootPath: "/tmp/lessons",
+            autoExecuteTools: true,
+          }),
+        ],
+      }),
+    }));
+  });
+
+  it("launches Socratic lessons from explicit per-member team profiles when defaults are null", async () => {
+    const appDatabasePath = await createTempDatabase("autobyteus-lesson-member-launch-configs-", SOCRATIC_MIGRATIONS_DIR);
+    const runtimeControl = buildRuntimeControl({
+      getConfiguredResource: vi.fn(async () => ({
+        slotKey: "lessonTutorTeam",
+        resourceRef: {
+          owner: "bundle",
+          kind: "AGENT_TEAM",
+          localId: "socratic-math-team",
+        },
+        launchProfile: {
+          kind: "AGENT_TEAM",
+          defaults: null,
+          memberProfiles: [
+            {
+              memberRouteKey: "tutor",
+              memberName: "tutor",
+              agentDefinitionId: "bundle-agent__tutor",
+              runtimeKind: "autobyteus",
+              llmModelIdentifier: "openai/gpt-5",
+            },
+          ],
+        },
+      })),
+      startRun: vi.fn(async (input: StartRunRequest) => buildLessonBinding(input.bindingIntentId)),
+    });
+    const context = createHandlerContext({
+      appDatabasePath,
+      runtimeControl,
+    });
+
+    await createLessonRuntimeService(context).startLesson({
+      prompt: "Solve 2x + 3 = 11",
+    });
+
+    expect(runtimeControl.startRun).toHaveBeenCalledWith(expect.objectContaining({
+      launch: expect.objectContaining({
+        kind: "AGENT_TEAM",
+        mode: "memberConfigs",
+        memberConfigs: [
+          expect.objectContaining({
+            memberRouteKey: "tutor",
+            runtimeKind: "autobyteus",
+            llmModelIdentifier: "openai/gpt-5",
+            workspaceRootPath: context.storage.runtimePath,
+            autoExecuteTools: true,
+          }),
+        ],
       }),
     }));
   });
