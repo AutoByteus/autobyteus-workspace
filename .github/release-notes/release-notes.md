@@ -1,6 +1,10 @@
-# Release Notes
+## What's New
+- Codex and Claude workspace skills now materialize as direct directory symlinks, so runtime skills stay aligned with their source files instead of stale copied bundles.
+- Materialized skill folders now use clean skill names instead of generated hash-suffix names.
+
+## Improvements
+- Skill references to shared team files continue to resolve through the original source tree.
+- Added stronger Codex runtime validation for symlinked skills and linked shared files.
 
 ## Fixes
-- Built-in provider API-key saves (for example OpenAI) no longer show a false failure toast after a successful backend save.
-- Gemini setup saves no longer flip from success into a failure toast after the save succeeds.
-- Provider configured-state refresh now stays compatible with immutable hydrated provider rows, preserving the correct success path for built-in and Gemini providers.
+- Removed copied skill materialization behavior that could leave runtime workspaces using outdated skill content after the source skill changed.
