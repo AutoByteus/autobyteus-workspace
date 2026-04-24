@@ -57,11 +57,12 @@
 
 ## Release Notes Status
 
-- Release notes required: `No`
+- Release notes required: `Yes`
 - Release notes artifact:
-  - `N/A`
+  - `tickets/done/whole-skill-symlink-materialization/release-notes.md`
 - Notes:
-  - internal runtime refactor and validation update only; no user-facing app release note is required
+  - user requested a new version after initial Stage 10 closure
+  - release notes are now required because the release helper publishes curated GitHub Release notes from the tagged revision
 
 ## User Verification Hold
 
@@ -91,7 +92,7 @@
 - Merge status:
   - `Completed into origin/personal by Stage 10 finalization`
 - Release/publication/deployment status:
-  - `Not required per explicit user instruction; no new version was released`
+  - `Requested after initial ticket finalization; preparing v1.2.82 through the documented release helper`
 - Worktree cleanup status:
   - `Completed by Stage 10 finalization`
 - Local branch cleanup status:

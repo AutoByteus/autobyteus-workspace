@@ -12,7 +12,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-015`
+- Last Transition ID: `T-016`
 - Last Updated: `2026-04-23`
 
 ## Stage 0 Bootstrap Record
@@ -130,6 +130,7 @@ Note:
 | T-013 | 2026-04-23 | 8 | 9 | Stage 8 re-review passed after the stronger Codex runtime E2E was added, so the workflow moved to docs sync | N/A | Locked | `tickets/done/whole-skill-symlink-materialization/code-review.md`, `tickets/done/whole-skill-symlink-materialization/workflow-state.md` |
 | T-014 | 2026-04-23 | 9 | 10 | Docs sync remained truthful after the stronger Codex runtime proof was added, and the handoff summary now reflects that proof while the ticket returns to awaiting user verification | N/A | Locked | `tickets/done/whole-skill-symlink-materialization/docs-sync.md`, `tickets/done/whole-skill-symlink-materialization/handoff-summary.md`, `tickets/done/whole-skill-symlink-materialization/workflow-state.md` |
 | T-015 | 2026-04-23 | 10 | 10 | User explicitly confirmed the ticket is done; ticket archived to `tickets/done`, repository finalization authorized, and release/publication/deployment marked not required per user instruction | N/A | Locked | `tickets/done/whole-skill-symlink-materialization/workflow-state.md`, `tickets/done/whole-skill-symlink-materialization/handoff-summary.md` |
+| T-016 | 2026-04-24 | 10 | 10 | User requested a new release after initial ticket closure; release notes were added and v1.2.82 release preparation is authorized through the documented release helper | N/A | Locked | `tickets/done/whole-skill-symlink-materialization/release-notes.md`, `tickets/done/whole-skill-symlink-materialization/handoff-summary.md`, `tickets/done/whole-skill-symlink-materialization/workflow-state.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -147,6 +148,7 @@ Note:
 | 2026-04-23 | Transition | Stage 8 re-review passed after the stronger Codex runtime E2E was added. The workflow moved to Stage 9 docs sync. | Success | N/A |
 | 2026-04-23 | Transition | Stage 9 docs sync remained truthful after the stronger Codex runtime proof was added. The workflow returned to Stage 10 awaiting user verification. | Success | N/A |
 | 2026-04-23 | Transition | Stage 10 completion confirmed by the user. The ticket is archived and repository finalization is proceeding with release skipped. | Success | N/A |
+| 2026-04-24 | Transition | Stage 10 release requested after ticket closure. Release notes are added and v1.2.82 release preparation is authorized. | Success | N/A |
 
 ## Process Violation Log
 
