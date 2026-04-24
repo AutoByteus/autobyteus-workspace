@@ -142,10 +142,12 @@ describe("FileApplicationBundleProvider", () => {
               slotKey: "draftingTeam",
               name: "Drafting Team",
               allowedResourceKinds: ["AGENT_TEAM"],
-              supportedLaunchDefaults: {
-                runtimeKind: true,
-                llmModelIdentifier: true,
-                workspaceRootPath: true,
+              supportedLaunchConfig: {
+                AGENT_TEAM: {
+                  runtimeKind: true,
+                  llmModelIdentifier: true,
+                  workspaceRootPath: true,
+                },
               },
               defaultResourceRef: {
                 owner: "bundle",
@@ -274,10 +276,12 @@ describe("FileApplicationBundleProvider", () => {
           slotKey: "draftingTeam",
           allowedResourceKinds: ["AGENT_TEAM"],
           allowedResourceOwners: ["bundle", "shared"],
-          supportedLaunchDefaults: {
-            runtimeKind: true,
-            llmModelIdentifier: true,
-            workspaceRootPath: true,
+          supportedLaunchConfig: {
+            AGENT_TEAM: {
+              runtimeKind: true,
+              llmModelIdentifier: true,
+              workspaceRootPath: true,
+            },
           },
           defaultResourceRef: {
             owner: "bundle",

@@ -21,26 +21,73 @@ export interface ApplicationResourceSlotSummary {
 export interface ApplicationCatalogEntry {
   __typename?: 'Application'
   id: string
-  localApplicationId: string
-  packageId: string
   name: string
   description?: string | null
   iconAssetPath?: string | null
   entryHtmlAssetPath: string
-  writable: boolean
   resourceSlots: ApplicationResourceSlotSummary[]
+}
+
+export interface ApplicationTechnicalDetails {
+  localApplicationId: string
+  packageId: string
+  writable: boolean
+  bundleResources: ApplicationBundleResource[]
+}
+
+export interface ApplicationDetailRecord extends ApplicationCatalogEntry {
+  technicalDetails: ApplicationTechnicalDetails
+}
+
+type ApplicationCatalogQueryRecord = ApplicationCatalogEntry
+
+type ApplicationDetailQueryRecord = ApplicationCatalogQueryRecord & {
+  localApplicationId: string
+  packageId: string
+  writable: boolean
   bundleResources: ApplicationBundleResource[]
 }
 
 interface ListApplicationsQueryResult {
-  listApplications?: ApplicationCatalogEntry[] | null
+  listApplications?: ApplicationCatalogQueryRecord[] | null
 }
 
 interface GetApplicationByIdQueryResult {
-  application?: ApplicationCatalogEntry | null
+  application?: ApplicationDetailQueryRecord | null
 }
 
-const upsertApplication = (
+const toCatalogEntry = (
+  application: ApplicationCatalogQueryRecord,
+): ApplicationCatalogEntry => ({
+  __typename: application.__typename,
+  id: application.id,
+  name: application.name,
+  description: application.description ?? null,
+  iconAssetPath: application.iconAssetPath ?? null,
+  entryHtmlAssetPath: application.entryHtmlAssetPath,
+  resourceSlots: [...(application.resourceSlots ?? [])].map((slot) => ({
+    slotKey: slot.slotKey,
+    required: slot.required,
+  })),
+})
+
+const toDetailRecord = (
+  application: ApplicationDetailQueryRecord,
+): ApplicationDetailRecord => ({
+  ...toCatalogEntry(application),
+  technicalDetails: {
+    localApplicationId: application.localApplicationId,
+    packageId: application.packageId,
+    writable: application.writable,
+    bundleResources: [...(application.bundleResources ?? [])].map((resource) => ({
+      kind: resource.kind,
+      localId: resource.localId,
+      definitionId: resource.definitionId,
+    })),
+  },
+})
+
+const upsertApplicationSummary = (
   applications: ApplicationCatalogEntry[],
   application: ApplicationCatalogEntry,
 ): ApplicationCatalogEntry[] => {
@@ -55,6 +102,7 @@ const upsertApplication = (
 
 export const useApplicationStore = defineStore('application', () => {
   const applications = ref<ApplicationCatalogEntry[]>([])
+  const applicationDetails = ref<Record<string, ApplicationDetailRecord>>({})
   const loading = ref(false)
   const error = ref<Error | null>(null)
   const hasFetched = ref(false)
@@ -62,8 +110,8 @@ export const useApplicationStore = defineStore('application', () => {
   const windowNodeContextStore = useWindowNodeContextStore()
 
   const getApplicationById = computed(
-    () => (applicationId: string): ApplicationCatalogEntry | null =>
-      applications.value.find((application) => application.id === applicationId) ?? null,
+    () => (applicationId: string): ApplicationDetailRecord | null =>
+      applicationDetails.value[applicationId] ?? null,
   )
 
   const isApplicationsEnabled = (): boolean => {
@@ -92,6 +140,7 @@ export const useApplicationStore = defineStore('application', () => {
 
     if (!applicationsCapabilityStore.isEnabled) {
       applications.value = []
+      applicationDetails.value = {}
       loading.value = false
       error.value = null
       hasFetched.value = false
@@ -126,9 +175,9 @@ export const useApplicationStore = defineStore('application', () => {
         throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
       }
 
-      const nextApplications = [...(data.listApplications ?? [])].sort(
-        (left, right) => left.name.localeCompare(right.name) || left.id.localeCompare(right.id),
-      )
+      const nextApplications = [...(data.listApplications ?? [])]
+        .map((application) => toCatalogEntry(application))
+        .sort((left, right) => left.name.localeCompare(right.name) || left.id.localeCompare(right.id))
       applications.value = nextApplications
       hasFetched.value = true
       return nextApplications
@@ -151,7 +200,7 @@ export const useApplicationStore = defineStore('application', () => {
   const fetchApplicationById = async (
     applicationId: string,
     force = false,
-  ): Promise<ApplicationCatalogEntry | null> => {
+  ): Promise<ApplicationDetailRecord | null> => {
     const normalizedApplicationId = applicationId.trim()
     if (!normalizedApplicationId) {
       return null
@@ -202,9 +251,13 @@ export const useApplicationStore = defineStore('application', () => {
         throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
       }
 
-      const application = data.application ?? null
+      const application = data.application ? toDetailRecord(data.application) : null
       if (application) {
-        applications.value = upsertApplication(applications.value, application).sort(
+        applicationDetails.value = {
+          ...applicationDetails.value,
+          [application.id]: application,
+        }
+        applications.value = upsertApplicationSummary(applications.value, toCatalogEntry(application)).sort(
           (left, right) => left.name.localeCompare(right.name) || left.id.localeCompare(right.id),
         )
       }
@@ -231,6 +284,7 @@ export const useApplicationStore = defineStore('application', () => {
 
   const invalidateApplications = (): void => {
     applications.value = []
+    applicationDetails.value = {}
     loading.value = false
     error.value = null
     hasFetched.value = false
@@ -268,6 +322,7 @@ export const useApplicationStore = defineStore('application', () => {
 
   return {
     applications,
+    applicationDetails,
     loading,
     error,
     hasFetched,

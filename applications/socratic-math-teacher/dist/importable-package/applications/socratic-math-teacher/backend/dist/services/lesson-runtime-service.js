@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { buildConfiguredTeamRunLaunch, resolveConfiguredTeamLaunchProfile, } from "../vendor/application-backend-sdk.js";
 import { withAppDatabase, withTransaction } from "../repositories/app-database.js";
 import { createLessonMessageRepository } from "../repositories/lesson-message-repository.js";
 import { createLessonRepository } from "../repositories/lesson-repository.js";
@@ -41,27 +42,6 @@ const buildTutorPrompt = (studentPrompt) => [
     "Publish normal turns to socratic-math/lesson-response.md and hint turns to socratic-math/lesson-hint.md.",
     `Student problem: ${studentPrompt}`,
 ].join("\n\n");
-const normalizeLaunchDefaults = (value) => {
-    if (!value || typeof value !== "object" || Array.isArray(value)) {
-        return {
-            llmModelIdentifier: null,
-            runtimeKind: null,
-            workspaceRootPath: null,
-        };
-    }
-    const record = value;
-    return {
-        llmModelIdentifier: typeof record.llmModelIdentifier === "string" && record.llmModelIdentifier.trim().length > 0
-            ? record.llmModelIdentifier.trim()
-            : null,
-        runtimeKind: typeof record.runtimeKind === "string" && record.runtimeKind.trim().length > 0
-            ? record.runtimeKind.trim()
-            : null,
-        workspaceRootPath: typeof record.workspaceRootPath === "string" && record.workspaceRootPath.trim().length > 0
-            ? record.workspaceRootPath.trim()
-            : null,
-    };
-};
 const resolveStartLessonProjection = (input) => {
     const currentBindingProjection = input.currentLesson?.latestBindingId === input.binding.bindingId
         ? input.currentLesson
@@ -76,21 +56,10 @@ const resolveStartLessonProjection = (input) => {
     };
 };
 const resolveLessonTutorTeamConfiguration = async (context) => {
-    const configuredResource = await context.runtimeControl.getConfiguredResource(LESSON_TUTOR_TEAM_SLOT_KEY);
-    return {
-        resourceRef: configuredResource?.resourceRef ?? SOCRATIC_TEAM_RESOURCE,
-        launchDefaults: normalizeLaunchDefaults(configuredResource?.launchDefaults ?? null),
-    };
-};
-const resolveLlmModelIdentifier = (explicitValue, launchDefaults) => {
-    const explicitModel = typeof explicitValue === "string" ? explicitValue.trim() : "";
-    if (explicitModel) {
-        return explicitModel;
-    }
-    if (launchDefaults.llmModelIdentifier) {
-        return launchDefaults.llmModelIdentifier;
-    }
-    throw new Error("llmModelIdentifier is required. Configure a default in the host launch setup or provide one explicitly.");
+    return resolveConfiguredTeamLaunchProfile({
+        configuredResource: await context.runtimeControl.getConfiguredResource(LESSON_TUTOR_TEAM_SLOT_KEY),
+        fallbackResourceRef: SOCRATIC_TEAM_RESOURCE,
+    });
 };
 export const createLessonRuntimeService = (context) => ({
     async startLesson(input) {
@@ -124,22 +93,16 @@ export const createLessonRuntimeService = (context) => ({
         });
         const pendingIntent = correlationService.createPendingBindingIntent(lessonId);
         const tutorTeam = await resolveLessonTutorTeamConfiguration(context);
-        const llmModelIdentifier = resolveLlmModelIdentifier(input.llmModelIdentifier, tutorTeam.launchDefaults);
-        const workspaceRootPath = tutorTeam.launchDefaults.workspaceRootPath ?? context.storage.runtimePath;
+        const workspaceRootPath = tutorTeam.launchProfile?.defaults?.workspaceRootPath ?? context.storage.runtimePath;
         try {
             const binding = await context.runtimeControl.startRun({
                 bindingIntentId: pendingIntent.bindingIntentId,
                 resourceRef: tutorTeam.resourceRef,
-                launch: {
-                    kind: "AGENT_TEAM",
-                    mode: "preset",
-                    launchPreset: {
-                        workspaceRootPath,
-                        llmModelIdentifier,
-                        autoExecuteTools: true,
-                        runtimeKind: tutorTeam.launchDefaults.runtimeKind,
-                    },
-                },
+                launch: buildConfiguredTeamRunLaunch({
+                    launchProfile: tutorTeam.launchProfile,
+                    workspaceRootPath,
+                    llmModelIdentifier: input.llmModelIdentifier,
+                }),
                 initialInput: {
                     text: buildTutorPrompt(prompt),
                     metadata: { lessonId },

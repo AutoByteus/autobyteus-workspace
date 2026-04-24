@@ -1,5 +1,9 @@
 import { randomUUID } from "node:crypto";
-import type { ApplicationHandlerContext } from "@autobyteus/application-backend-sdk";
+import {
+  buildConfiguredTeamRunLaunch,
+  resolveConfiguredTeamLaunchProfile,
+  type ApplicationHandlerContext,
+} from "@autobyteus/application-backend-sdk";
 import type { BriefDetail, BriefStatus } from "../domain/brief-model.js";
 import { withAppDatabase, withTransaction } from "../repositories/app-database.js";
 import { createArtifactRepository } from "../repositories/artifact-repository.js";
@@ -15,12 +19,6 @@ const BRIEF_STUDIO_TEAM_RESOURCE = {
   localId: "brief-studio-team",
 } as const;
 const DRAFTING_TEAM_SLOT_KEY = "draftingTeam" as const;
-
-type ConfiguredTeamLaunchDefaults = {
-  llmModelIdentifier: string | null;
-  runtimeKind: string | null;
-  workspaceRootPath: string | null;
-};
 
 const requireNonEmptyString = (value: string | null | undefined, fieldName: string): string => {
   const normalized = typeof value === "string" ? value.trim() : "";
@@ -55,32 +53,6 @@ const buildInitialInputText = (input: {
   }
 
   return sections.join("\n\n");
-};
-
-const normalizeLaunchDefaults = (value: unknown): ConfiguredTeamLaunchDefaults => {
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    return {
-      llmModelIdentifier: null,
-      runtimeKind: null,
-      workspaceRootPath: null,
-    };
-  }
-
-  const record = value as Record<string, unknown>;
-  return {
-    llmModelIdentifier:
-      typeof record.llmModelIdentifier === "string" && record.llmModelIdentifier.trim().length > 0
-        ? record.llmModelIdentifier.trim()
-        : null,
-    runtimeKind:
-      typeof record.runtimeKind === "string" && record.runtimeKind.trim().length > 0
-        ? record.runtimeKind.trim()
-        : null,
-    workspaceRootPath:
-      typeof record.workspaceRootPath === "string" && record.workspaceRootPath.trim().length > 0
-        ? record.workspaceRootPath.trim()
-        : null,
-  };
 };
 
 const resolveLaunchProjection = (input: {
@@ -122,27 +94,10 @@ const resolveLaunchProjection = (input: {
 };
 
 const resolveDraftingTeamConfiguration = async (context: ApplicationHandlerContext) => {
-  const configuredResource = await context.runtimeControl.getConfiguredResource(DRAFTING_TEAM_SLOT_KEY);
-  return {
-    resourceRef: configuredResource?.resourceRef ?? BRIEF_STUDIO_TEAM_RESOURCE,
-    launchDefaults: normalizeLaunchDefaults(configuredResource?.launchDefaults ?? null),
-  };
-};
-
-const resolveLlmModelIdentifier = (
-  explicitValue: string | null | undefined,
-  launchDefaults: ConfiguredTeamLaunchDefaults,
-): string => {
-  const explicitModel = typeof explicitValue === "string" ? explicitValue.trim() : "";
-  if (explicitModel) {
-    return explicitModel;
-  }
-  if (launchDefaults.llmModelIdentifier) {
-    return launchDefaults.llmModelIdentifier;
-  }
-  throw new Error(
-    "llmModelIdentifier is required. Configure a default in the host launch setup or provide one explicitly.",
-  );
+  return resolveConfiguredTeamLaunchProfile({
+    configuredResource: await context.runtimeControl.getConfiguredResource(DRAFTING_TEAM_SLOT_KEY),
+    fallbackResourceRef: BRIEF_STUDIO_TEAM_RESOURCE,
+  });
 };
 
 export const createBriefRunLaunchService = (context: ApplicationHandlerContext) => ({
@@ -211,23 +166,17 @@ export const createBriefRunLaunchService = (context: ApplicationHandlerContext) 
     const launchedAt = new Date().toISOString();
     const pendingIntent = correlationService.createPendingBindingIntent(briefId);
     const draftingTeam = await resolveDraftingTeamConfiguration(context);
-    const llmModelIdentifier = resolveLlmModelIdentifier(input.llmModelIdentifier, draftingTeam.launchDefaults);
-    const workspaceRootPath = draftingTeam.launchDefaults.workspaceRootPath ?? context.storage.runtimePath;
+    const workspaceRootPath = draftingTeam.launchProfile?.defaults?.workspaceRootPath ?? context.storage.runtimePath;
 
     try {
       const binding = await context.runtimeControl.startRun({
         bindingIntentId: pendingIntent.bindingIntentId,
         resourceRef: draftingTeam.resourceRef,
-        launch: {
-          kind: "AGENT_TEAM",
-          mode: "preset",
-          launchPreset: {
-            workspaceRootPath,
-            llmModelIdentifier,
-            autoExecuteTools: true,
-            runtimeKind: draftingTeam.launchDefaults.runtimeKind,
-          },
-        },
+        launch: buildConfiguredTeamRunLaunch({
+          launchProfile: draftingTeam.launchProfile,
+          workspaceRootPath,
+          llmModelIdentifier: input.llmModelIdentifier,
+        }),
         initialInput: {
           text: buildInitialInputText({
             title: launchContext.brief.title,

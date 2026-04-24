@@ -5,10 +5,13 @@ import {
   APPLICATION_MANIFEST_VERSION_V3,
   type ApplicationManifestV3,
   type ApplicationResourceSlotDeclaration,
-  type ApplicationSupportedLaunchDefaultsDeclaration,
   type ApplicationRuntimeResourceKind,
   type ApplicationRuntimeResourceOwner,
   type ApplicationRuntimeResourceRef,
+  type ApplicationSupportedAgentLaunchConfigDeclaration,
+  type ApplicationSupportedLaunchConfigDeclaration,
+  type ApplicationSupportedTeamLaunchConfigDeclaration,
+  type ApplicationSupportedTeamMemberOverrideDeclaration,
 } from "@autobyteus/application-sdk-contracts";
 
 export const APPLICATION_MANIFEST_FILE_NAME = "application.json";
@@ -17,11 +20,59 @@ const SLOT_KEY_PATTERN = /^[A-Za-z][A-Za-z0-9_-]*$/;
 const RESOURCE_KINDS = new Set<ApplicationRuntimeResourceKind>(["AGENT", "AGENT_TEAM"]);
 const RESOURCE_OWNERS = new Set<ApplicationRuntimeResourceOwner>(["bundle", "shared"]);
 const DEFAULT_ALLOWED_RESOURCE_OWNERS: ApplicationRuntimeResourceOwner[] = ["bundle", "shared"];
-const SUPPORTED_LAUNCH_DEFAULT_KEYS = new Set<keyof ApplicationSupportedLaunchDefaultsDeclaration>([
+const SUPPORTED_AGENT_LAUNCH_KEYS = new Set<keyof ApplicationSupportedAgentLaunchConfigDeclaration>([
   "llmModelIdentifier",
   "runtimeKind",
   "workspaceRootPath",
 ]);
+const SUPPORTED_TEAM_MEMBER_OVERRIDE_KEYS =
+  new Set<keyof ApplicationSupportedTeamMemberOverrideDeclaration>([
+    "llmModelIdentifier",
+    "runtimeKind",
+  ]);
+const SUPPORTED_TEAM_LAUNCH_KEYS = new Set<keyof ApplicationSupportedTeamLaunchConfigDeclaration>([
+  "llmModelIdentifier",
+  "runtimeKind",
+  "workspaceRootPath",
+  "memberOverrides",
+]);
+
+const normalizeFlagMap = <TKey extends string>(input: {
+  value: unknown;
+  fieldName: string;
+  allowedKeys: ReadonlySet<TKey>;
+}): Partial<Record<TKey, true>> | null => {
+  if (input.value === undefined || input.value === null) {
+    return null;
+  }
+  if (!input.value || typeof input.value !== "object" || Array.isArray(input.value)) {
+    throw new ApplicationManifestParseError(`${input.fieldName} must be an object when provided.`);
+  }
+
+  const record = input.value as Record<string, unknown>;
+  const unknownKeys = Object.keys(record).filter((key) => !input.allowedKeys.has(key as TKey));
+  if (unknownKeys.length > 0) {
+    throw new ApplicationManifestParseError(
+      `${input.fieldName} contains unsupported key '${unknownKeys[0]}'.`,
+    );
+  }
+
+  const normalized: Partial<Record<TKey, true>> = {};
+  for (const key of input.allowedKeys) {
+    const candidate = record[key];
+    if (candidate === undefined || candidate === null) {
+      continue;
+    }
+    if (typeof candidate !== "boolean") {
+      throw new ApplicationManifestParseError(`${input.fieldName}.${key} must be a boolean when provided.`);
+    }
+    if (candidate) {
+      normalized[key] = true;
+    }
+  }
+
+  return Object.keys(normalized).length > 0 ? normalized : null;
+};
 
 type ParsedManifest = {
   id: string;
@@ -152,10 +203,11 @@ const normalizeRuntimeResourceRef = (
   } as ApplicationRuntimeResourceRef;
 };
 
-const normalizeSupportedLaunchDefaults = (
+const normalizeSupportedLaunchConfig = (
   value: unknown,
   fieldName: string,
-): ApplicationSupportedLaunchDefaultsDeclaration | null => {
+  allowedResourceKinds: ApplicationRuntimeResourceKind[],
+): ApplicationSupportedLaunchConfigDeclaration | null => {
   if (value === undefined || value === null) {
     return null;
   }
@@ -164,27 +216,63 @@ const normalizeSupportedLaunchDefaults = (
   }
 
   const record = value as Record<string, unknown>;
-  const unknownKeys = Object.keys(record).filter((key) => !SUPPORTED_LAUNCH_DEFAULT_KEYS.has(
-    key as keyof ApplicationSupportedLaunchDefaultsDeclaration,
-  ));
-  if (unknownKeys.length > 0) {
-    throw new ApplicationManifestParseError(
-      `${fieldName} contains unsupported key '${unknownKeys[0]}'.`,
-    );
+  const normalized: ApplicationSupportedLaunchConfigDeclaration = {};
+  const unknownKinds = Object.keys(record).filter((key) => !RESOURCE_KINDS.has(key as ApplicationRuntimeResourceKind));
+  if (unknownKinds.length > 0) {
+    throw new ApplicationManifestParseError(`${fieldName} contains unsupported key '${unknownKinds[0]}'.`);
   }
 
-  const normalized: ApplicationSupportedLaunchDefaultsDeclaration = {};
-  for (const key of SUPPORTED_LAUNCH_DEFAULT_KEYS) {
-    const candidate = record[key];
-    if (candidate === undefined || candidate === null) {
-      continue;
+  if (record.AGENT !== undefined) {
+    if (!allowedResourceKinds.includes("AGENT")) {
+      throw new ApplicationManifestParseError(
+        `${fieldName}.AGENT is not allowed when ${fieldName.replace(/\.supportedLaunchConfig$/, ".allowedResourceKinds")} does not include 'AGENT'.`,
+      );
     }
-    if (typeof candidate !== "boolean") {
-      throw new ApplicationManifestParseError(`${fieldName}.${key} must be a boolean when provided.`);
+    normalized.AGENT = normalizeFlagMap({
+      value: record.AGENT,
+      fieldName: `${fieldName}.AGENT`,
+      allowedKeys: SUPPORTED_AGENT_LAUNCH_KEYS,
+    }) as ApplicationSupportedAgentLaunchConfigDeclaration | null;
+  }
+
+  if (record.AGENT_TEAM !== undefined) {
+    if (!allowedResourceKinds.includes("AGENT_TEAM")) {
+      throw new ApplicationManifestParseError(
+        `${fieldName}.AGENT_TEAM is not allowed when ${fieldName.replace(/\.supportedLaunchConfig$/, ".allowedResourceKinds")} does not include 'AGENT_TEAM'.`,
+      );
     }
-    if (candidate) {
-      normalized[key] = true;
+    if (!record.AGENT_TEAM || typeof record.AGENT_TEAM !== "object" || Array.isArray(record.AGENT_TEAM)) {
+      throw new ApplicationManifestParseError(`${fieldName}.AGENT_TEAM must be an object when provided.`);
     }
+    const teamRecord = record.AGENT_TEAM as Record<string, unknown>;
+    const unknownKeys = Object.keys(teamRecord).filter((key) => !SUPPORTED_TEAM_LAUNCH_KEYS.has(
+      key as keyof ApplicationSupportedTeamLaunchConfigDeclaration,
+    ));
+    if (unknownKeys.length > 0) {
+      throw new ApplicationManifestParseError(
+        `${fieldName}.AGENT_TEAM contains unsupported key '${unknownKeys[0]}'.`,
+      );
+    }
+
+    const teamBase = normalizeFlagMap({
+      value: Object.fromEntries(
+        Object.entries(teamRecord).filter(([key]) => key !== "memberOverrides"),
+      ),
+      fieldName: `${fieldName}.AGENT_TEAM`,
+      allowedKeys: SUPPORTED_AGENT_LAUNCH_KEYS,
+    }) as ApplicationSupportedTeamLaunchConfigDeclaration | null;
+
+    const memberOverrides = normalizeFlagMap({
+      value: teamRecord.memberOverrides,
+      fieldName: `${fieldName}.AGENT_TEAM.memberOverrides`,
+      allowedKeys: SUPPORTED_TEAM_MEMBER_OVERRIDE_KEYS,
+    }) as ApplicationSupportedTeamMemberOverrideDeclaration | null;
+
+    const normalizedTeam: ApplicationSupportedTeamLaunchConfigDeclaration = {
+      ...(teamBase ?? {}),
+      ...(memberOverrides ? { memberOverrides } : {}),
+    };
+    normalized.AGENT_TEAM = Object.keys(normalizedTeam).length > 0 ? normalizedTeam : null;
   }
 
   return Object.keys(normalized).length > 0 ? normalized : null;
@@ -251,9 +339,10 @@ const normalizeResourceSlots = (value: unknown): ApplicationResourceSlotDeclarat
       allowedResourceKinds,
       allowedResourceOwners,
       required: typeof record.required === "boolean" ? record.required : null,
-      supportedLaunchDefaults: normalizeSupportedLaunchDefaults(
-        record.supportedLaunchDefaults,
-        `${fieldName}.supportedLaunchDefaults`,
+      supportedLaunchConfig: normalizeSupportedLaunchConfig(
+        record.supportedLaunchConfig,
+        `${fieldName}.supportedLaunchConfig`,
+        allowedResourceKinds,
       ),
       defaultResourceRef,
     } satisfies ApplicationResourceSlotDeclaration;

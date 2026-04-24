@@ -169,6 +169,10 @@ h2 {
   font-weight: 600;
 }
 
+.workspace-status.is-hidden {
+  display: none;
+}
+
 .workspace-status.error {
   border-color: #fecaca;
   background: #fef2f2;

@@ -113,53 +113,15 @@
           data-testid="application-launch-setup-slot-body"
           :class="slotEditorGridClasses"
         >
-          <div class="min-w-0 space-y-4">
-            <label class="block">
-              <span class="mb-1 block text-sm font-medium text-slate-700">
-                {{ $t('applications.components.applications.ApplicationLaunchSetupPanel.resourceLabel') }}
-              </span>
-              <select
-                :value="drafts[view.slot.slotKey]?.selection ?? ''"
-                class="block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                :disabled="isSaving(view.slot.slotKey)"
-                @change="updateSelection(view.slot.slotKey, ($event.target as HTMLSelectElement).value)"
-              >
-                <option
-                  v-if="view.slot.defaultResourceRef"
-                  :value="MANIFEST_DEFAULT_SELECTION"
-                >
-                  {{ $t('applications.components.applications.ApplicationLaunchSetupPanel.useManifestDefault', {
-                    resource: describeResourceRefForView(view.slot.defaultResourceRef),
-                  }) }}
-                </option>
-                <option
-                  v-if="!view.slot.required"
-                  value=""
-                >
-                  {{ $t('applications.components.applications.ApplicationLaunchSetupPanel.noResourceSelected') }}
-                </option>
-                <option
-                  v-for="resource in resourcesForSlot(view.slot, availableResources)"
-                  :key="buildResourceRefKey(summaryToResourceRef(resource))"
-                  :value="buildResourceRefKey(summaryToResourceRef(resource))"
-                >
-                  {{ describeResourceSummaryForView(resource) }}
-                </option>
-              </select>
-            </label>
-
-          </div>
-
-          <ApplicationLaunchDefaultsFields
+          <ApplicationResourceSlotEditor
             v-if="drafts[view.slot.slotKey]"
-            :slot="view.slot"
+            :view="view"
             :draft="drafts[view.slot.slotKey]"
-            :presentation="presentation"
-            :disabled="isSaving(view.slot.slotKey) || !hasEffectiveResource(view)"
-            :has-effective-resource="hasEffectiveResource(view)"
-            @update:runtime-kind="updateRuntimeKind(view.slot.slotKey, $event)"
-            @update:llm-model-identifier="updateModelIdentifier(view.slot.slotKey, $event)"
-            @update:workspace-root-path="updateWorkspaceRootPath(view.slot.slotKey, $event)"
+            :available-resources="availableResources"
+            :disabled="isSaving(view.slot.slotKey)"
+            @update:selection="updateSelection(view.slot.slotKey, $event)"
+            @update:launch-profile="updateLaunchProfile(view.slot.slotKey, $event)"
+            @readiness-change="updateSlotReadiness(view.slot.slotKey, $event)"
           />
         </div>
 
@@ -169,9 +131,10 @@
         >
           <button
             type="button"
+            :data-testid="`application-launch-setup-save-${view.slot.slotKey}`"
             class="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-300"
             :class="primaryActionButtonClasses"
-            :disabled="isSaving(view.slot.slotKey)"
+            :disabled="isSaving(view.slot.slotKey) || !slotReadinessByKey[view.slot.slotKey]?.isReady"
             @click="saveConfiguration(view)"
           >
             {{ isSaving(view.slot.slotKey)
@@ -180,6 +143,7 @@
           </button>
           <button
             type="button"
+            :data-testid="`application-launch-setup-reset-${view.slot.slotKey}`"
             class="inline-flex items-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400"
             :class="secondaryActionButtonClasses"
             :disabled="isSaving(view.slot.slotKey)"
@@ -207,29 +171,27 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import ApplicationLaunchDefaultsFields from '~/components/applications/ApplicationLaunchDefaultsFields.vue'
+import type {
+  ApplicationResourceConfigurationView,
+  ApplicationRuntimeResourceSummary,
+} from '@autobyteus/application-sdk-contracts'
+import ApplicationResourceSlotEditor from '~/components/applications/setup/ApplicationResourceSlotEditor.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import {
   MANIFEST_DEFAULT_SELECTION,
   buildDraftFromView,
-  buildLaunchSetupGateState,
-  buildLaunchDefaults,
-  buildResourceRefKey,
+  buildLaunchProfile,
   describeCurrentSelection,
-  describeResourceRef,
-  describeResourceSummary,
   formatUpdatedAt,
-  hasEffectiveResourceSelection,
   resolveSelectedResourceRef,
-  resourcesForSlot,
-  summaryToResourceRef,
+  type ApplicationSlotDraft,
+  type ApplicationSlotEditorReadiness,
+} from '~/utils/application/applicationLaunchProfile'
+import {
+  buildLaunchSetupGateState,
   type ApplicationLaunchSetupGateState,
-  type ApplicationResourceConfigurationView,
-  type ApplicationRuntimeResourceRef,
-  type ApplicationRuntimeResourceSummary,
-  type SlotDraft,
-} from '~/utils/application/applicationLaunchSetup'
+} from '~/utils/application/applicationSetupGate'
 
 const props = withDefaults(defineProps<{
   applicationId: string
@@ -282,11 +244,7 @@ const currentSelectionTextClasses = computed(() => (
     : 'mt-1 max-w-xs break-words'
 ))
 
-const slotEditorGridClasses = computed(() => (
-  isPanelPresentation.value
-    ? 'mt-5 grid gap-5'
-    : 'mt-5 grid gap-5 xl:grid-cols-[minmax(0,18rem)_minmax(0,1fr)]'
-))
+const slotEditorGridClasses = computed(() => 'mt-5 grid gap-5')
 
 const slotActionRowClasses = computed(() => (
   isPanelPresentation.value
@@ -306,7 +264,8 @@ const loading = ref(false)
 const loadError = ref<string | null>(null)
 const configurationViews = ref<ApplicationResourceConfigurationView[]>([])
 const availableResources = ref<ApplicationRuntimeResourceSummary[]>([])
-const drafts = ref<Record<string, SlotDraft>>({})
+const drafts = ref<Record<string, ApplicationSlotDraft>>({})
+const slotReadinessByKey = ref<Record<string, ApplicationSlotEditorReadiness>>({})
 const savingSlotKeys = ref<string[]>([])
 const saveMessages = ref<Record<string, string | null>>({})
 const saveErrors = ref<Record<string, string | null>>({})
@@ -331,17 +290,16 @@ const resetTransientMessages = (): void => {
   saveErrors.value = {}
 }
 
-const gateState = computed<ApplicationLaunchSetupGateState>(() => {
-  return buildLaunchSetupGateState({
-    loading: loading.value,
-    loadError: loadError.value,
-    configurationViews: configurationViews.value,
-    drafts: drafts.value,
-    savingSlotKeys: savingSlotKeys.value,
-    saveErrors: saveErrors.value,
-    t: $t,
-  })
-})
+const gateState = computed<ApplicationLaunchSetupGateState>(() => buildLaunchSetupGateState({
+  loading: loading.value,
+  loadError: loadError.value,
+  configurationViews: configurationViews.value,
+  drafts: drafts.value,
+  slotReadinessByKey: slotReadinessByKey.value,
+  savingSlotKeys: savingSlotKeys.value,
+  saveErrors: saveErrors.value,
+  t: $t,
+}))
 
 const loadSetup = async (): Promise<void> => {
   const normalizedApplicationId = props.applicationId.trim()
@@ -350,6 +308,7 @@ const loadSetup = async (): Promise<void> => {
     configurationViews.value = []
     availableResources.value = []
     drafts.value = {}
+    slotReadinessByKey.value = {}
     return
   }
 
@@ -372,6 +331,13 @@ const loadSetup = async (): Promise<void> => {
     drafts.value = Object.fromEntries(
       views.map((view) => [view.slot.slotKey, buildDraftFromView(view)]),
     )
+    slotReadinessByKey.value = Object.fromEntries(
+      views.map((view) => [view.slot.slotKey, {
+        isReady: false,
+        blockingReason: null,
+        hasEffectiveResource: false,
+      }]),
+    )
   } catch (error) {
     loadError.value = error instanceof Error ? error.message : String(error)
   } finally {
@@ -379,7 +345,7 @@ const loadSetup = async (): Promise<void> => {
   }
 }
 
-const updateDraft = (slotKey: string, updater: (draft: SlotDraft) => SlotDraft): void => {
+const updateDraft = (slotKey: string, updater: (draft: ApplicationSlotDraft) => ApplicationSlotDraft): void => {
   const currentDraft = drafts.value[slotKey]
   if (!currentDraft) {
     return
@@ -405,25 +371,21 @@ const updateSelection = (slotKey: string, selection: string): void => {
   }))
 }
 
-const updateRuntimeKind = (slotKey: string, runtimeKind: string): void => {
+const updateLaunchProfile = (
+  slotKey: string,
+  launchProfile: ApplicationSlotDraft['launchProfile'],
+): void => {
   updateDraft(slotKey, (draft) => ({
     ...draft,
-    runtimeKind,
+    launchProfile,
   }))
 }
 
-const updateModelIdentifier = (slotKey: string, llmModelIdentifier: string): void => {
-  updateDraft(slotKey, (draft) => ({
-    ...draft,
-    llmModelIdentifier,
-  }))
-}
-
-const updateWorkspaceRootPath = (slotKey: string, workspaceRootPath: string): void => {
-  updateDraft(slotKey, (draft) => ({
-    ...draft,
-    workspaceRootPath,
-  }))
+const updateSlotReadiness = (slotKey: string, readiness: ApplicationSlotEditorReadiness): void => {
+  slotReadinessByKey.value = {
+    ...slotReadinessByKey.value,
+    [slotKey]: readiness,
+  }
 }
 
 const saveConfiguration = async (view: ApplicationResourceConfigurationView): Promise<void> => {
@@ -452,8 +414,12 @@ const saveConfiguration = async (view: ApplicationResourceConfigurationView): Pr
           accept: 'application/json',
         },
         body: JSON.stringify({
-          resourceRef: resolveSelectedResourceRef(draft.selection, availableResources.value),
-          launchDefaults: buildLaunchDefaults(draft, view.slot),
+          resourceRef: draft.selection === ''
+            ? null
+            : draft.selection === MANIFEST_DEFAULT_SELECTION
+              ? null
+              : resolveSelectedResourceRef(draft.selection, availableResources.value),
+          launchProfile: buildLaunchProfile(draft.launchProfile),
         }),
       },
     )
@@ -499,18 +465,6 @@ const resetDraft = (slotKey: string): void => {
 }
 
 const isSaving = (slotKey: string): boolean => savingSlotKeys.value.includes(slotKey)
-
-const hasEffectiveResource = (view: ApplicationResourceConfigurationView): boolean => {
-  return hasEffectiveResourceSelection(view, drafts.value[view.slot.slotKey], availableResources.value)
-}
-
-const describeResourceRefForView = (resourceRef: ApplicationRuntimeResourceRef): string => (
-  describeResourceRef(resourceRef, availableResources.value, $t)
-)
-
-const describeResourceSummaryForView = (resource: ApplicationRuntimeResourceSummary): string => (
-  describeResourceSummary(resource, $t)
-)
 
 const describeCurrentSelectionForView = (view: ApplicationResourceConfigurationView): string => (
   describeCurrentSelection(view, availableResources.value, $t)

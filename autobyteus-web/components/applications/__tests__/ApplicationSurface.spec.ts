@@ -6,7 +6,7 @@ import type {
   ApplicationIframeReadySignal,
 } from '@autobyteus/application-sdk-contracts'
 import ApplicationSurface from '../ApplicationSurface.vue'
-import type { ApplicationCatalogEntry } from '~/stores/applicationStore'
+import type { ApplicationDetailRecord } from '~/stores/applicationStore'
 import type { ApplicationIframeLaunchDescriptor } from '~/utils/application/applicationLaunchDescriptor'
 
 const hostHarness = vi.hoisted(() => ({
@@ -71,17 +71,19 @@ const ApplicationIframeHostStub = defineComponent({
   },
 })
 
-const buildApplication = (): ApplicationCatalogEntry => ({
+const buildApplication = (): ApplicationDetailRecord => ({
   id: 'bundle-app__pkg__sample-app',
-  localApplicationId: 'sample-app',
-  packageId: 'pkg',
   name: 'Sample App',
   description: 'Sample description',
   iconAssetPath: null,
   entryHtmlAssetPath: '/application-bundles/sample-app/assets/ui/index.html',
-  writable: true,
   resourceSlots: [],
-  bundleResources: [],
+  technicalDetails: {
+    localApplicationId: 'sample-app',
+    packageId: 'pkg',
+    writable: true,
+    bundleResources: [],
+  },
 })
 
 const mountSurface = (): VueWrapper => mount(ApplicationSurface, {
@@ -130,6 +132,12 @@ describe('ApplicationSurface', () => {
     } satisfies ApplicationIframeReadySignal)
     await nextTick()
 
+    expect(hostHarness.props.bootstrapEnvelope?.payload.application).toEqual({
+      applicationId: descriptor.applicationId,
+      localApplicationId: 'sample-app',
+      packageId: 'pkg',
+      name: 'Sample App',
+    })
     expect(hostHarness.props.bootstrapEnvelope?.payload.requestContext).toEqual({
       applicationId: descriptor.applicationId,
       launchInstanceId: descriptor.launchInstanceId,

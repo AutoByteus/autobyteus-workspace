@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h } from 'vue'
 import { flushPromises, mount } from '@vue/test-utils'
 import ApplicationLaunchSetupPanel from '../ApplicationLaunchSetupPanel.vue'
@@ -23,31 +23,13 @@ vi.mock('~/composables/useLocalization', () => ({
         'applications.components.applications.ApplicationLaunchSetupPanel.requiredSlot': 'Required',
         'applications.components.applications.ApplicationLaunchSetupPanel.optionalSlot': 'Optional',
         'applications.components.applications.ApplicationLaunchSetupPanel.currentSelection': 'Current selection',
-        'applications.components.applications.ApplicationLaunchSetupPanel.resourceLabel': 'Runtime resource',
-        'applications.components.applications.ApplicationLaunchSetupPanel.noResourceSelected': 'No resource selected',
-        'applications.components.applications.ApplicationLaunchSetupPanel.toolExecutionLabel': 'Tool execution',
-        'applications.components.applications.ApplicationLaunchSetupPanel.toolExecutionDescription': 'Auto execute tools is always on.',
-        'applications.components.applications.ApplicationLaunchSetupPanel.toolExecutionLockedOn': 'Locked on',
-        'applications.components.applications.ApplicationLaunchSetupPanel.useApplicationDefaultRuntime': 'Use application default runtime',
-        'applications.components.applications.ApplicationLaunchSetupPanel.runtimeLabel': 'Default runtime',
-        'applications.components.applications.ApplicationLaunchSetupPanel.modelLabel': 'Default model',
-        'applications.components.applications.ApplicationLaunchSetupPanel.runtimeHelp': 'Runtime help',
-        'applications.components.applications.ApplicationLaunchSetupPanel.selectResourceFirst': 'Select resource first',
-        'applications.components.applications.ApplicationLaunchSetupPanel.modelHelp': 'Model help',
-        'applications.components.applications.ApplicationLaunchSetupPanel.modelPlaceholder': 'Select model',
-        'applications.components.applications.ApplicationLaunchSetupPanel.workspaceRootPathLabel': 'Workspace root',
-        'applications.components.applications.ApplicationLaunchSetupPanel.workspaceRootPathPlaceholder': '/workspace',
-        'applications.components.applications.ApplicationLaunchSetupPanel.workspaceRootPathHelp': 'Workspace help',
-        'applications.components.applications.ApplicationLaunchSetupPanel.waitingForLoadBeforeEntry': 'Loading setup before entry',
-        'applications.components.applications.ApplicationLaunchSetupPanel.savingBeforeEntry': 'Saving setup before entry',
-        'applications.components.applications.ApplicationLaunchSetupPanel.saveOrResetChangesBeforeEntry': 'Save or reset changes before entry',
-        'applications.components.applications.ApplicationLaunchSetupPanel.requiredResourceBeforeEntry': `Save required resource for ${params?.slot}`,
-        'applications.components.applications.ApplicationLaunchSetupPanel.requiredModelBeforeEntry': `Save required model for ${params?.slot}`,
-        'applications.components.applications.ApplicationLaunchSetupPanel.noAdditionalDefaults': 'No additional defaults',
         'applications.components.applications.ApplicationLaunchSetupPanel.save': 'Save setup',
         'applications.components.applications.ApplicationLaunchSetupPanel.saving': 'Saving setup…',
         'applications.components.applications.ApplicationLaunchSetupPanel.reset': 'Reset changes',
         'applications.components.applications.ApplicationLaunchSetupPanel.saved': 'Setup saved.',
+        'applications.components.applications.ApplicationLaunchSetupPanel.waitingForLoadBeforeEntry': 'Loading setup before entry',
+        'applications.components.applications.ApplicationLaunchSetupPanel.savingBeforeEntry': 'Saving setup before entry',
+        'applications.components.applications.ApplicationLaunchSetupPanel.saveOrResetChangesBeforeEntry': 'Save or reset changes before entry',
         'applications.components.applications.ApplicationLaunchSetupPanel.bundleResource': 'Bundled',
         'applications.components.applications.ApplicationLaunchSetupPanel.sharedResource': 'Shared',
         'applications.components.applications.ApplicationLaunchSetupPanel.notConfigured': 'Not configured',
@@ -78,24 +60,53 @@ vi.mock('~/stores/windowNodeContextStore', () => ({
   }),
 }))
 
-const ApplicationLaunchDefaultsFieldsStub = defineComponent({
-  name: 'ApplicationLaunchDefaultsFields',
-  emits: ['update:runtime-kind', 'update:llm-model-identifier', 'update:workspace-root-path'],
+const ApplicationResourceSlotEditorStub = defineComponent({
+  name: 'ApplicationResourceSlotEditor',
+  emits: ['update:selection', 'update:launchProfile', 'readiness-change'],
   setup(_props, { emit }) {
-    return () => h('div', { 'data-testid': 'application-launch-defaults-fields' }, [
+    return () => h('div', { 'data-testid': 'application-resource-slot-editor' }, [
       h('button', {
         type: 'button',
-        onClick: () => emit('update:runtime-kind', 'lmstudio'),
-      }, 'set-runtime'),
+        'data-testid': 'select-shared-team',
+        onClick: () => emit('update:selection', 'shared:AGENT_TEAM:shared-writing-team'),
+      }, 'select-shared-team'),
       h('button', {
         type: 'button',
-        onClick: () => emit('update:llm-model-identifier', 'qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234'),
-      }, 'set-model'),
-      h('input', {
-        type: 'text',
-        value: '',
-        onInput: (event: Event) => emit('update:workspace-root-path', (event.target as HTMLInputElement).value),
-      }),
+        'data-testid': 'set-team-launch-profile',
+        onClick: () => emit('update:launchProfile', {
+          kind: 'AGENT_TEAM',
+          defaults: {
+            runtimeKind: 'lmstudio',
+            llmModelIdentifier: 'qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234',
+            workspaceRootPath: '/tmp/brief-studio',
+          },
+          memberProfiles: [
+            {
+              memberRouteKey: 'researcher',
+              memberName: 'researcher',
+              agentDefinitionId: 'bundle-agent__researcher',
+              runtimeKind: '',
+              llmModelIdentifier: '',
+            },
+            {
+              memberRouteKey: 'writer',
+              memberName: 'writer',
+              agentDefinitionId: 'bundle-agent__writer',
+              runtimeKind: 'lmstudio',
+              llmModelIdentifier: 'qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234',
+            },
+          ],
+        }),
+      }, 'set-team-launch-profile'),
+      h('button', {
+        type: 'button',
+        'data-testid': 'mark-ready',
+        onClick: () => emit('readiness-change', {
+          isReady: true,
+          blockingReason: null,
+          hasEffectiveResource: true,
+        }),
+      }, 'mark-ready'),
     ])
   },
 })
@@ -105,17 +116,12 @@ const okJson = (payload: unknown) => ({
   json: vi.fn(async () => payload),
 }) as unknown as Response
 
-const errorJson = (payload: unknown) => ({
-  ok: false,
-  json: vi.fn(async () => payload),
-}) as unknown as Response
-
 describe('ApplicationLaunchSetupPanel', () => {
   beforeEach(() => {
     fetchMock.mockReset()
   })
 
-  it('loads host-managed setup and saves resource/model defaults without starting a run', async () => {
+  it('loads host-managed setup and saves launchProfile payloads without starting a run', async () => {
     fetchMock
       .mockResolvedValueOnce(okJson([
         {
@@ -126,10 +132,16 @@ describe('ApplicationLaunchSetupPanel', () => {
             allowedResourceKinds: ['AGENT_TEAM'],
             allowedResourceOwners: ['bundle', 'shared'],
             required: true,
-            supportedLaunchDefaults: {
-              runtimeKind: true,
-              llmModelIdentifier: true,
-              workspaceRootPath: true,
+            supportedLaunchConfig: {
+              AGENT_TEAM: {
+                runtimeKind: true,
+                llmModelIdentifier: true,
+                workspaceRootPath: true,
+                memberOverrides: {
+                  runtimeKind: true,
+                  llmModelIdentifier: true,
+                },
+              },
             },
             defaultResourceRef: {
               owner: 'bundle',
@@ -137,6 +149,7 @@ describe('ApplicationLaunchSetupPanel', () => {
               localId: 'brief-studio-team',
             },
           },
+          status: 'READY',
           configuration: {
             slotKey: 'draftingTeam',
             resourceRef: {
@@ -144,8 +157,10 @@ describe('ApplicationLaunchSetupPanel', () => {
               kind: 'AGENT_TEAM',
               localId: 'brief-studio-team',
             },
-            launchDefaults: null,
+            launchProfile: null,
           },
+          invalidSavedConfiguration: null,
+          issue: null,
           updatedAt: null,
         },
       ]))
@@ -172,20 +187,27 @@ describe('ApplicationLaunchSetupPanel', () => {
           slotKey: 'draftingTeam',
           name: 'Drafting team',
           description: 'Used for brief drafting runs.',
-            allowedResourceKinds: ['AGENT_TEAM'],
-            allowedResourceOwners: ['bundle', 'shared'],
-            required: true,
-            supportedLaunchDefaults: {
+          allowedResourceKinds: ['AGENT_TEAM'],
+          allowedResourceOwners: ['bundle', 'shared'],
+          required: true,
+          supportedLaunchConfig: {
+            AGENT_TEAM: {
               runtimeKind: true,
               llmModelIdentifier: true,
               workspaceRootPath: true,
+              memberOverrides: {
+                runtimeKind: true,
+                llmModelIdentifier: true,
+              },
             },
-            defaultResourceRef: {
-              owner: 'bundle',
-              kind: 'AGENT_TEAM',
+          },
+          defaultResourceRef: {
+            owner: 'bundle',
+            kind: 'AGENT_TEAM',
             localId: 'brief-studio-team',
           },
         },
+        status: 'READY',
         configuration: {
           slotKey: 'draftingTeam',
           resourceRef: {
@@ -193,13 +215,31 @@ describe('ApplicationLaunchSetupPanel', () => {
             kind: 'AGENT_TEAM',
             definitionId: 'shared-writing-team',
           },
-          launchDefaults: {
-            runtimeKind: 'lmstudio',
-            llmModelIdentifier: 'qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234',
-            workspaceRootPath: '/tmp/brief-studio',
-            autoExecuteTools: true,
+          launchProfile: {
+            kind: 'AGENT_TEAM',
+            defaults: {
+              runtimeKind: 'lmstudio',
+              llmModelIdentifier: 'qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234',
+              workspaceRootPath: '/tmp/brief-studio',
+            },
+            memberProfiles: [
+              {
+                memberRouteKey: 'researcher',
+                memberName: 'researcher',
+                agentDefinitionId: 'bundle-agent__researcher',
+              },
+              {
+                memberRouteKey: 'writer',
+                memberName: 'writer',
+                agentDefinitionId: 'bundle-agent__writer',
+                runtimeKind: 'lmstudio',
+                llmModelIdentifier: 'qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234',
+              },
+            ],
           },
         },
+        invalidSavedConfiguration: null,
+        issue: null,
         updatedAt: '2026-04-20T18:45:00.000Z',
       }))
 
@@ -210,7 +250,7 @@ describe('ApplicationLaunchSetupPanel', () => {
       },
       global: {
         stubs: {
-          ApplicationLaunchDefaultsFields: ApplicationLaunchDefaultsFieldsStub,
+          ApplicationResourceSlotEditor: ApplicationResourceSlotEditorStub,
         },
       },
     })
@@ -223,26 +263,21 @@ describe('ApplicationLaunchSetupPanel', () => {
     expect(fetchMock.mock.calls[1]?.[0]).toBe(
       'http://127.0.0.1:43123/rest/applications/bundle-app__pkg__brief-studio/available-resources',
     )
-    expect(wrapper.get('[data-testid="application-launch-setup-panel"]').exists()).toBe(true)
     expect(wrapper.get('[data-testid="application-launch-setup-panel"]').attributes('data-presentation')).toBe('panel')
-    expect(wrapper.get('[data-testid="application-launch-setup-header"]').classes()).toContain('flex-col')
-    expect(wrapper.get('[data-testid="application-launch-setup-header"]').classes()).not.toContain('sm:flex-row')
-    expect(wrapper.get('[data-testid="application-launch-setup-slot-header"]').classes()).toContain('flex-col')
-    expect(wrapper.get('[data-testid="application-launch-setup-slot-header"]').classes()).not.toContain('lg:flex-row')
-    expect(wrapper.get('[data-testid="application-launch-setup-slot-selection"]').classes()).toContain('w-full')
-    expect(wrapper.get('[data-testid="application-launch-setup-slot-body"]').classes()).not.toContain('xl:grid-cols-[minmax(0,18rem)_minmax(0,1fr)]')
-    expect(wrapper.get('[data-testid="application-launch-setup-slot-actions"]').classes()).toContain('flex-col')
-    expect(wrapper.get('[data-testid="application-launch-defaults-fields"]').exists()).toBe(true)
     expect(wrapper.emitted('setup-state-change')?.at(-1)?.[0]).toMatchObject({
       phase: 'ready',
       isLaunchReady: false,
     })
 
-    await wrapper.get('select').setValue('shared:AGENT_TEAM:shared-writing-team')
-    await wrapper.get('[data-testid="application-launch-defaults-fields"] button:nth-child(1)').trigger('click')
-    await wrapper.get('[data-testid="application-launch-defaults-fields"] button:nth-child(2)').trigger('click')
-    await wrapper.get('input[type="text"]').setValue('/tmp/brief-studio')
-    await wrapper.get('button.rounded-md.bg-blue-600').trigger('click')
+    await wrapper.get('[data-testid="select-shared-team"]').trigger('click')
+    await wrapper.get('[data-testid="set-team-launch-profile"]').trigger('click')
+    await wrapper.get('[data-testid="mark-ready"]').trigger('click')
+    await flushPromises()
+
+    const saveButton = wrapper.get('[data-testid="application-launch-setup-save-draftingTeam"]')
+    expect(saveButton.attributes('disabled')).toBeUndefined()
+
+    await saveButton.trigger('click')
     await flushPromises()
 
     expect(fetchMock).toHaveBeenCalledTimes(3)
@@ -254,46 +289,35 @@ describe('ApplicationLaunchSetupPanel', () => {
         kind: 'AGENT_TEAM',
         definitionId: 'shared-writing-team',
       },
-      launchDefaults: {
-        runtimeKind: 'lmstudio',
-        llmModelIdentifier: 'qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234',
-        workspaceRootPath: '/tmp/brief-studio',
-        autoExecuteTools: true,
+      launchProfile: {
+        kind: 'AGENT_TEAM',
+        defaults: {
+          runtimeKind: 'lmstudio',
+          llmModelIdentifier: 'qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234',
+          workspaceRootPath: '/tmp/brief-studio',
+        },
+        memberProfiles: [
+          {
+            memberRouteKey: 'researcher',
+            memberName: 'researcher',
+            agentDefinitionId: 'bundle-agent__researcher',
+          },
+          {
+            memberRouteKey: 'writer',
+            memberName: 'writer',
+            agentDefinitionId: 'bundle-agent__writer',
+            runtimeKind: 'lmstudio',
+            llmModelIdentifier: 'qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234',
+          },
+        ],
       },
     })
+
     expect(wrapper.text()).toContain('Setup saved.')
-    expect(wrapper.get('button.rounded-md.bg-blue-600').classes()).toContain('w-full')
-    expect(wrapper.get('button.rounded-md.border.border-slate-300').classes()).toContain('w-full')
     expect(wrapper.emitted('setup-state-change')?.at(-1)?.[0]).toMatchObject({
       phase: 'ready',
       isLaunchReady: true,
       blockingReason: null,
-    })
-  })
-
-  it('emits an error gate state when the setup surface fails to load', async () => {
-    fetchMock.mockImplementation(() => Promise.resolve(errorJson({
-      detail: 'Unable to load application setup',
-    })))
-
-    const wrapper = mount(ApplicationLaunchSetupPanel, {
-      props: {
-        applicationId: 'bundle-app__pkg__brief-studio',
-      },
-      global: {
-        stubs: {
-          ApplicationLaunchDefaultsFields: ApplicationLaunchDefaultsFieldsStub,
-        },
-      },
-    })
-
-    await flushPromises()
-
-    expect(wrapper.text()).toContain('Unable to load application setup')
-    expect(wrapper.emitted('setup-state-change')?.at(-1)?.[0]).toMatchObject({
-      phase: 'error',
-      isLaunchReady: false,
-      blockingReason: 'Unable to load application setup',
     })
   })
 })

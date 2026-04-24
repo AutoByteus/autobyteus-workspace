@@ -29,10 +29,13 @@ vi.mock('~/graphql/mutations/applicationCapabilityMutations', () => ({
 import { GetApplicationById, ListApplications } from '~/graphql/queries/applicationQueries'
 import { GetApplicationsCapability } from '~/graphql/queries/applicationCapabilityQueries'
 import { useApplicationsCapabilityStore } from '../applicationsCapabilityStore'
-import { useApplicationStore, type ApplicationCatalogEntry } from '../applicationStore'
+import { useApplicationStore } from '../applicationStore'
 import { useWindowNodeContextStore } from '../windowNodeContextStore'
 
-const buildCapability = (enabled: boolean, source: 'SERVER_SETTING' | 'INITIALIZED_FROM_DISCOVERED_APPLICATIONS' | 'INITIALIZED_EMPTY_CATALOG' = 'SERVER_SETTING') => ({
+const buildCapability = (
+  enabled: boolean,
+  source: 'SERVER_SETTING' | 'INITIALIZED_FROM_DISCOVERED_APPLICATIONS' | 'INITIALIZED_EMPTY_CATALOG' = 'SERVER_SETTING',
+) => ({
   enabled,
   scope: 'BOUND_NODE' as const,
   settingKey: 'ENABLE_APPLICATIONS' as const,
@@ -49,18 +52,32 @@ const createDeferred = <T>() => {
   return { promise, resolve, reject }
 }
 
-const buildApplication = (
+const buildCatalogQueryRecord = (
+  id: string,
+  name: string,
+) => ({
+  id,
+  name,
+  description: `${name} description`,
+  iconAssetPath: null,
+  entryHtmlAssetPath: `/application-bundles/${id}/assets/ui/index.html`,
+  resourceSlots: [
+    {
+      slotKey: `${id}-team`,
+      required: true,
+    },
+  ],
+})
+
+const buildDetailQueryRecord = (
   id: string,
   name: string,
   resourceLocalId = `${id}-team`,
-): ApplicationCatalogEntry => ({
-  id,
-  name,
-  entryHtmlAssetPath: `/application-bundles/${id}/assets/ui/index.html`,
+) => ({
+  ...buildCatalogQueryRecord(id, name),
   localApplicationId: id,
   packageId: 'pkg',
   writable: true,
-  resourceSlots: [],
   bundleResources: [
     {
       kind: 'AGENT_TEAM',
@@ -83,7 +100,7 @@ describe('applicationStore', () => {
     )
   })
 
-  it('fetches and sorts applications from the API', async () => {
+  it('fetches and sorts application catalog records from the API', async () => {
     apolloClientMock.query.mockImplementation(async ({ query }: { query: unknown }) => {
       if (query === GetApplicationsCapability) {
         return { data: { applicationsCapability: buildCapability(true) } }
@@ -93,8 +110,8 @@ describe('applicationStore', () => {
         return {
           data: {
             listApplications: [
-              buildApplication('b', 'Beta', 'team-b'),
-              buildApplication('a', 'Alpha', 'team-a'),
+              buildCatalogQueryRecord('b', 'Beta'),
+              buildCatalogQueryRecord('a', 'Alpha'),
             ],
           },
         }
@@ -109,6 +126,7 @@ describe('applicationStore', () => {
     expect(apolloClientMock.query).toHaveBeenCalledTimes(2)
     expect(result.map((entry) => entry.id)).toEqual(['a', 'b'])
     expect(store.applications.map((entry) => entry.id)).toEqual(['a', 'b'])
+    expect(store.applicationDetails).toEqual({})
     expect(store.hasFetched).toBe(true)
     expect(store.loading).toBe(false)
   })
@@ -119,7 +137,16 @@ describe('applicationStore', () => {
     capabilityStore.status = 'resolved'
 
     const store = useApplicationStore()
-    store.applications = [buildApplication('app-1', 'App 1', 'team-1')]
+    store.applications = [
+      {
+        id: 'app-1',
+        name: 'App 1',
+        description: 'App 1 description',
+        iconAssetPath: null,
+        entryHtmlAssetPath: '/application-bundles/app-1/assets/ui/index.html',
+        resourceSlots: [],
+      },
+    ]
     store.hasFetched = true
 
     const result = await store.fetchApplications()
@@ -128,12 +155,12 @@ describe('applicationStore', () => {
     expect(apolloClientMock.query).not.toHaveBeenCalled()
   })
 
-  it('fetches one application by id and upserts it into the catalog', async () => {
+  it('fetches one application by id, stores nested technical details, and upserts the catalog summary', async () => {
     apolloClientMock.query.mockImplementation(async ({ query }: { query: unknown }) => {
       if (query === GetApplicationById) {
         return {
           data: {
-            application: buildApplication('app-2', 'App 2', 'team-2'),
+            application: buildDetailQueryRecord('app-2', 'App 2', 'team-2'),
           },
         }
       }
@@ -146,14 +173,35 @@ describe('applicationStore', () => {
     capabilityStore.status = 'resolved'
 
     const store = useApplicationStore()
-    store.applications = [buildApplication('app-1', 'App 1', 'team-1')]
+    store.applications = [
+      {
+        id: 'app-1',
+        name: 'App 1',
+        description: 'App 1 description',
+        iconAssetPath: null,
+        entryHtmlAssetPath: '/application-bundles/app-1/assets/ui/index.html',
+        resourceSlots: [],
+      },
+    ]
 
     const result = await store.fetchApplicationById('app-2', true)
 
     expect(apolloClientMock.query).toHaveBeenCalledTimes(1)
     expect(result?.id).toBe('app-2')
-    expect(store.getApplicationById('app-2')?.name).toBe('App 2')
+    expect(result?.technicalDetails.packageId).toBe('pkg')
+    expect(result?.technicalDetails.localApplicationId).toBe('app-2')
+    expect(store.getApplicationById('app-2')?.technicalDetails.bundleResources).toEqual([
+      {
+        kind: 'AGENT_TEAM',
+        localId: 'team-2',
+        definitionId: 'team-2',
+      },
+    ])
     expect(store.applications.map((entry) => entry.id)).toEqual(['app-1', 'app-2'])
+    expect(store.applications.find((entry) => entry.id === 'app-2')).toMatchObject({
+      id: 'app-2',
+      name: 'App 2',
+    })
   })
 
   it('clears catalog state when applications capability is disabled before fetch', async () => {
@@ -162,13 +210,37 @@ describe('applicationStore', () => {
     capabilityStore.status = 'resolved'
 
     const store = useApplicationStore()
-    store.applications = [buildApplication('app-1', 'App 1', 'team-1')]
+    store.applications = [{
+      id: 'app-1',
+      name: 'App 1',
+      description: null,
+      iconAssetPath: null,
+      entryHtmlAssetPath: '/application-bundles/app-1/assets/ui/index.html',
+      resourceSlots: [],
+    }]
+    store.applicationDetails = {
+      'app-1': {
+        id: 'app-1',
+        name: 'App 1',
+        description: null,
+        iconAssetPath: null,
+        entryHtmlAssetPath: '/application-bundles/app-1/assets/ui/index.html',
+        resourceSlots: [],
+        technicalDetails: {
+          localApplicationId: 'app-1',
+          packageId: 'pkg',
+          writable: true,
+          bundleResources: [],
+        },
+      },
+    }
     store.hasFetched = true
 
     const result = await store.fetchApplications()
 
     expect(result).toEqual([])
     expect(store.applications).toEqual([])
+    expect(store.applicationDetails).toEqual({})
     expect(store.hasFetched).toBe(false)
     expect(apolloClientMock.query).not.toHaveBeenCalled()
   })
@@ -179,7 +251,30 @@ describe('applicationStore', () => {
     capabilityStore.status = 'resolved'
 
     const store = useApplicationStore()
-    store.applications = [buildApplication('app-1', 'App 1', 'team-1')]
+    store.applications = [{
+      id: 'app-1',
+      name: 'App 1',
+      description: null,
+      iconAssetPath: null,
+      entryHtmlAssetPath: '/application-bundles/app-1/assets/ui/index.html',
+      resourceSlots: [],
+    }]
+    store.applicationDetails = {
+      'app-1': {
+        id: 'app-1',
+        name: 'App 1',
+        description: null,
+        iconAssetPath: null,
+        entryHtmlAssetPath: '/application-bundles/app-1/assets/ui/index.html',
+        resourceSlots: [],
+        technicalDetails: {
+          localApplicationId: 'app-1',
+          packageId: 'pkg',
+          writable: true,
+          bundleResources: [],
+        },
+      },
+    }
     store.hasFetched = true
 
     capabilityStore.capability = buildCapability(false, 'SERVER_SETTING')
@@ -187,6 +282,7 @@ describe('applicationStore', () => {
     await nextTick()
 
     expect(store.applications).toEqual([])
+    expect(store.applicationDetails).toEqual({})
     expect(store.hasFetched).toBe(false)
   })
 
@@ -196,7 +292,30 @@ describe('applicationStore', () => {
     })
 
     const store = useApplicationStore()
-    store.applications = [buildApplication('app-1', 'App 1', 'team-1')]
+    store.applications = [{
+      id: 'app-1',
+      name: 'App 1',
+      description: null,
+      iconAssetPath: null,
+      entryHtmlAssetPath: '/application-bundles/app-1/assets/ui/index.html',
+      resourceSlots: [],
+    }]
+    store.applicationDetails = {
+      'app-1': {
+        id: 'app-1',
+        name: 'App 1',
+        description: null,
+        iconAssetPath: null,
+        entryHtmlAssetPath: '/application-bundles/app-1/assets/ui/index.html',
+        resourceSlots: [],
+        technicalDetails: {
+          localApplicationId: 'app-1',
+          packageId: 'pkg',
+          writable: true,
+          bundleResources: [],
+        },
+      },
+    }
     store.hasFetched = true
 
     const windowNodeContextStore = useWindowNodeContextStore()
@@ -204,11 +323,12 @@ describe('applicationStore', () => {
     await nextTick()
 
     expect(store.applications).toEqual([])
+    expect(store.applicationDetails).toEqual({})
     expect(store.hasFetched).toBe(false)
   })
 
   it('discards a late catalog response after the bound node changes during fetch', async () => {
-    const listApplicationsDeferred = createDeferred<{ data: { listApplications: ApplicationCatalogEntry[] } }>()
+    const listApplicationsDeferred = createDeferred<{ data: { listApplications: Array<ReturnType<typeof buildCatalogQueryRecord>> } }>()
     apolloClientMock.query.mockImplementation(async ({ query }: { query: unknown }) => {
       if (query === ListApplications) {
         return listApplicationsDeferred.promise
@@ -233,19 +353,20 @@ describe('applicationStore', () => {
 
     listApplicationsDeferred.resolve({
       data: {
-        listApplications: [buildApplication('stale-app', 'Stale App', 'team-stale')],
+        listApplications: [buildCatalogQueryRecord('stale-app', 'Stale App')],
       },
     })
 
     await expect(pendingFetch).resolves.toEqual([])
     expect(store.applications).toEqual([])
+    expect(store.applicationDetails).toEqual({})
     expect(store.hasFetched).toBe(false)
     expect(store.loading).toBe(false)
     expect(store.error).toBeNull()
   })
 
   it('discards a late detail response after the bound node changes during fetch', async () => {
-    const applicationDeferred = createDeferred<{ data: { application: ApplicationCatalogEntry } }>()
+    const applicationDeferred = createDeferred<{ data: { application: ReturnType<typeof buildDetailQueryRecord> } }>()
     apolloClientMock.query.mockImplementation(async ({ query }: { query: unknown }) => {
       if (query === GetApplicationById) {
         return applicationDeferred.promise
@@ -270,7 +391,7 @@ describe('applicationStore', () => {
 
     applicationDeferred.resolve({
       data: {
-        application: buildApplication('stale-app', 'Stale App', 'team-stale'),
+        application: buildDetailQueryRecord('stale-app', 'Stale App', 'team-stale'),
       },
     })
 

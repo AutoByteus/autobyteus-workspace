@@ -19,10 +19,16 @@
       "allowedResourceKinds": ["AGENT_TEAM"],
       "allowedResourceOwners": ["bundle", "shared"],
       "required": true,
-      "supportedLaunchDefaults": {
-        "runtimeKind": true,
-        "llmModelIdentifier": true,
-        "workspaceRootPath": true
+      "supportedLaunchConfig": {
+        "AGENT_TEAM": {
+          "runtimeKind": true,
+          "llmModelIdentifier": true,
+          "workspaceRootPath": true,
+          "memberOverrides": {
+            "runtimeKind": true,
+            "llmModelIdentifier": true
+          }
+        }
       },
       "defaultResourceRef": {
         "owner": "bundle",
