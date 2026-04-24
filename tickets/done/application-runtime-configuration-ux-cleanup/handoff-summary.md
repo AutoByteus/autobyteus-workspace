@@ -4,7 +4,7 @@
 
 - Ticket: `application-runtime-configuration-ux-cleanup`
 - Last Updated: `2026-04-24`
-- Current Status: `Archived pending repository finalization`
+- Current Status: `Finalized`
 
 ## Delivered
 
@@ -14,12 +14,12 @@
 - Added the server-owned launch-profile normalization/migration boundary, including one-time `launch_defaults_json` migration, invalid saved-configuration surfacing, and HTTP `400` validation mapping for malformed or unresolved save attempts.
 - Repaired packaged bundled-app backend bootstrap for Brief Studio and Socratic Math Teacher by vendoring the full backend SDK payload, fixing nested packaged imports, and adding build-time packaged-backend integrity checks.
 - Updated the durable frontend/server/sample-app docs to reflect the implemented `launchProfile` contract and setup-first UX.
-- Rebuilt Brief Studio’s importable package immediately before the latest Electron packaging pass so the user-test artifact reflects the current Brief Studio UI simplifications and the latest application card cleanup state from this worktree.
-- Produced a fresh local macOS Electron test build from this ticket worktree for user verification, including `.dmg`, `.zip`, blockmaps, and unpacked app outputs under `autobyteus-web/electron-dist/`.
+- Rebuilt Brief Studio’s importable package immediately before the final user-test packaging pass so the Electron artifact reflected the latest Brief Studio UI simplifications and application-card cleanup state from this worktree.
+- Produced and validated a fresh local macOS Electron test build for user verification, then finalized the archived ticket into `personal` with no new release/version.
 - Latest delivery base refresh state:
   - bootstrap base: `origin/personal`
-  - latest tracked remote base rechecked after user verification: `origin/personal @ c6bcd55ccb56651748bcb8752b08b65ab23a79bc`
-  - no merge/rebase was required because the ticket branch already reflected that base
+  - latest tracked remote base rechecked after user verification and before merge: `origin/personal @ c6bcd55ccb56651748bcb8752b08b65ab23a79bc`
+  - no merge/rebase from base into the ticket branch was required because the ticket branch already reflected that base
   - no delivery safety checkpoint commit was required because no base integration occurred in this delivery cycle
 
 ## Verification
@@ -39,11 +39,10 @@
   - Live immersive validation now passes for Brief Studio and Socratic Math Teacher: entry succeeds, the configure drawer shows the setup panel, reload rotates `autobyteusLaunchInstanceId` from `launch-1` to `launch-2`, and exit returns to `/applications`.
   - The packaged-backend build/package fix now rebuilds both touched apps successfully and fails the build if a packaged backend still references a missing relative dependency.
   - A refreshed Brief Studio package build completed successfully from this worktree via `pnpm -C applications/brief-studio build`; the rebuild log was recorded at `/tmp/autobyteus-brief-build-application-runtime-configuration-ux-cleanup-20260424-143157.log`.
-  - A fresh local personal macOS Electron rebuild completed successfully from this worktree via `AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm -C autobyteus-web build:electron:mac`; artifacts were rewritten under `autobyteus-web/electron-dist/` and the current rebuild log was recorded at `/tmp/autobyteus-electron-build-application-runtime-configuration-ux-cleanup-rebuild-20260424-143157.log`.
-  - Current user-test artifact set timestamps:
-    - `AutoByteus_personal_macos-arm64-1.2.82.dmg` → `2026-04-24 14:34:02`
-    - `AutoByteus_personal_macos-arm64-1.2.82.zip` → `2026-04-24 14:35:18`
-    - `mac-arm64/AutoByteus.app` → `2026-04-24 14:33:00`
+  - A fresh local personal macOS Electron rebuild completed successfully from this worktree via `AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm -C autobyteus-web build:electron:mac`; artifacts were rewritten under `autobyteus-web/electron-dist/` and the rebuild log was recorded at `/tmp/autobyteus-electron-build-application-runtime-configuration-ux-cleanup-rebuild-20260424-143157.log`.
+  - Final user-test artifact set:
+    - `AutoByteus_personal_macos-arm64-1.2.82.dmg` → SHA-256 `86e387966e7b0211eb0f976516f0f73d4192aa0f106143f8056b3bc9edb9e962`
+    - `AutoByteus_personal_macos-arm64-1.2.82.zip` → SHA-256 `8f049329828031b170d360cc71b2df0636dedd8dd634a1eb774c60f05d9f86f6`
 - Residual risk / known unchanged baseline:
   - `pnpm -C autobyteus-server-ts typecheck` still hits the pre-existing `TS6059` `rootDir/tests` issue documented upstream; this ticket did not change that baseline.
 
@@ -70,10 +69,12 @@
 
 - Waiting for explicit user verification: `No`
 - User verification received: `Yes`
-- Notes: The user verification gate is satisfied; the ticket is archived and repository finalization into `personal` is the remaining step.
+- Notes: Verification was received before repository finalization, so the ticket was archived under `tickets/done/` and finalized into `personal` without any release step.
 
 ## Finalization Record
 
-- Technical workflow status: `Ticket archived; repository finalization pending target-branch merge/push`
+- Technical workflow status: `Repository finalization complete`
 - Ticket archive state: `Archived under tickets/done/application-runtime-configuration-ux-cleanup/`
 - Bootstrap/finalization target record: `Dedicated worktree /Users/normy/autobyteus_org/autobyteus-worktrees/application-runtime-configuration-ux-cleanup on branch codex/application-runtime-configuration-ux-cleanup targeting origin/personal`
+- Ticket branch delivery commit: `b01d43a91f0c20bfda6824a9ef12923bb38f8a41`
+- Finalized target merge commit: `c505e0bc2cdb0ed1e91e2d08de1c56468d0e3168`

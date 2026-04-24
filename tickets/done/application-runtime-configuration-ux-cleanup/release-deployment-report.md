@@ -3,14 +3,13 @@
 ## Release / Publication / Deployment Scope
 
 - Ticket: `application-runtime-configuration-ux-cleanup`
-- Current delivery scope completed: refreshed the ticket branch against the latest tracked `origin/personal`, synchronized long-lived docs to the integrated state, prepared the user-verification handoff, received explicit user verification, and archived the ticket under `tickets/done/`.
-- Remaining step before handoff completion: repository finalization into `personal` plus safe cleanup.
+- Final delivery scope completed: refreshed and verified against the tracked base, synchronized long-lived docs, rebuilt the latest user-test Electron artifact, archived the ticket, finalized it into `personal`, and skipped release/version work per user request.
 
 ## Handoff Summary
 
 - Handoff summary artifact: `tickets/done/application-runtime-configuration-ux-cleanup/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Notes: The handoff summary now records the explicit user verification quote, archived ticket state, and the remaining repository-finalization step.
+- Notes: The handoff summary reflects authoritative review/API-E2E passes, explicit user verification, final archival, repository finalization into `personal`, and cleanup completion.
 
 ## Initial Delivery Integration Refresh
 
@@ -54,30 +53,30 @@
 
 ## Version / Tag / Release Commit
 
-- Result: `Not started` — the user explicitly requested no new release/version.
+- Result: `Not started` — the user explicitly requested no new release/version bump.
 
 ## Repository Finalization
 
 - Bootstrap context source: `tickets/done/application-runtime-configuration-ux-cleanup/investigation-notes.md`
 - Ticket branch: `codex/application-runtime-configuration-ux-cleanup`
-- Ticket branch commit result: `Not started`
-- Ticket branch push result: `Not started`
+- Ticket branch commit result: `Completed` — `b01d43a91f0c20bfda6824a9ef12923bb38f8a41`
+- Ticket branch push result: `Completed`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: `No`
 - Delivery-owned edits protected before re-integration: `Not needed`
 - Re-integration before final merge result: `Not needed`
-- Target branch update result: `Not started`
-- Merge into target result: `Not started`
-- Push target branch result: `Not started`
-- Repository finalization status: `In progress`
+- Target branch update result: `Completed` — local `personal` matched `origin/personal` at `c6bcd55ccb56651748bcb8752b08b65ab23a79bc` before merge.
+- Merge into target result: `Completed` — merge commit `c505e0bc2cdb0ed1e91e2d08de1c56468d0e3168`
+- Push target branch result: `Completed`
+- Repository finalization status: `Completed`
 - Blocker (if applicable): `None`
 
 ## Release / Publication / Deployment
 
 - Applicable: `No`
 - Method: `Other`
-- Method reference / command: `The user explicitly requested ticket finalization without any new release/publication/deployment step.`
+- Method reference / command: `User requested finalization only; no release/publication/deployment work was started.`
 - Release/publication/deployment result: `Not required`
 - Release notes handoff result: `Not required`
 - Blocker (if applicable): `N/A`
@@ -85,11 +84,11 @@
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-runtime-configuration-ux-cleanup`
-- Worktree cleanup result: `Not started`
-- Worktree prune result: `Not started`
-- Local ticket branch cleanup result: `Not started`
-- Remote branch cleanup result: `Not started`
-- Blocker (if applicable): `Cleanup is deferred until repository finalization completes.`
+- Worktree cleanup result: `Completed`
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed`
+- Remote branch cleanup result: `Completed`
+- Blocker (if applicable): `None`
 
 ## Release Notes Summary
 
@@ -104,8 +103,10 @@
 3. Reviewed long-lived docs against the final integrated implementation and updated the frontend applications doc, server orchestration doc, and both touched sample-app READMEs.
 4. Recorded the docs sync and updated the ticket-local handoff summary for the explicit user-verification hold.
 5. Rebuilt `applications/brief-studio` with `pnpm -C applications/brief-studio build` so the current importable package reflects the latest Brief Studio UI cleanup state; log: `/tmp/autobyteus-brief-build-application-runtime-configuration-ux-cleanup-20260424-143157.log`.
-6. Built a fresh local personal macOS Electron artifact set for user testing with `AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm -C autobyteus-web build:electron:mac`; outputs landed in `autobyteus-web/electron-dist/` and the current rebuild log was captured at `/tmp/autobyteus-electron-build-application-runtime-configuration-ux-cleanup-rebuild-20260424-143157.log`.
+6. Built a fresh local personal macOS Electron artifact set for user testing with `AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm -C autobyteus-web build:electron:mac`; outputs landed in `autobyteus-web/electron-dist/` and the rebuild log was captured at `/tmp/autobyteus-electron-build-application-runtime-configuration-ux-cleanup-rebuild-20260424-143157.log`.
 7. Refreshed `origin/personal` again after user verification, confirmed the base still matched `c6bcd55ccb56651748bcb8752b08b65ab23a79bc`, received explicit user verification, and archived the ticket under `tickets/done/application-runtime-configuration-ux-cleanup/` before repository finalization.
+8. Committed the ticket branch as `b01d43a91f0c20bfda6824a9ef12923bb38f8a41`, pushed `origin/codex/application-runtime-configuration-ux-cleanup`, merged it into `personal` as `c505e0bc2cdb0ed1e91e2d08de1c56468d0e3168`, and pushed the updated target branch.
+9. Cleaned up the dedicated ticket worktree, pruned stale worktree metadata, deleted the local ticket branch, and deleted the remote ticket branch.
 
 ## Environment Or Migration Notes
 
@@ -126,11 +127,10 @@
 
 ## Rollback Criteria
 
-- Before repository finalization completes, rollback is still possible by pausing before merge/push; no release or deployment work is in scope.
-- If finalization fails after branch push but before target push, keep the archived ticket state and record the blocker explicitly rather than reopening a stale in-progress copy.
+- Repository finalization is complete. If follow-up correction is needed, handle it through a new fix ticket or a standard revert/follow-up workflow against `personal`; do not reopen this archived ticket in place.
 
 ## Final Status
 
-- Result: `Repository finalization in progress`
-- Recommended recipient / next actor: `delivery_engineer`
-- Notes: `The user-verification gate is satisfied, the ticket is archived, and the remaining step is commit/push/merge finalization into personal with no new version release.`
+- Result: `Completed`
+- Recommended recipient / next actor: `User`
+- Notes: `The ticket is finalized into personal, no new release/version was created, and the dedicated worktree/branch cleanup completed successfully.`
