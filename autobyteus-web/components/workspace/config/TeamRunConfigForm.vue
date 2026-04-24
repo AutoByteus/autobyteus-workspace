@@ -11,15 +11,18 @@
       :runtime-kind="config.runtimeKind"
       :llm-model-identifier="config.llmModelIdentifier"
       :llm-config="config.llmConfig"
-      :disabled="config.isLocked"
+      :disabled="isFormReadOnly"
+      :read-only="isFormReadOnly"
       :runtime-selection-locked="runtimeSelectionLocked"
       :runtime-help-text="$t('workspace.components.workspace.config.TeamRunConfigForm.selects_the_runtime_backend_used_by')"
       :model-label="$t('workspace.components.workspace.config.TeamRunConfigForm.default_llm_model_global')"
       :model-help-text="$t('workspace.components.workspace.config.TeamRunConfigForm.this_model_will_be_used_by')"
+      :advanced-initially-expanded="readOnlyMode"
+      :missing-historical-config="missingHistoricalGlobalConfig"
       id-prefix="team-run"
-      @update:runtime-kind="config.runtimeKind = $event"
-      @update:llm-model-identifier="config.llmModelIdentifier = $event"
-      @update:llm-config="config.llmConfig = $event"
+      @update:runtime-kind="updateRuntimeKind"
+      @update:llm-model-identifier="updateLlmModelIdentifier"
+      @update:llm-config="updateLlmConfig"
     />
 
     <div class="mt-8">
@@ -27,7 +30,7 @@
         :workspace-id="config.workspaceId"
         :is-loading="workspaceLoadingState.isLoading"
         :error="workspaceLoadingState.error"
-        :disabled="config.isLocked"
+        :disabled="isFormReadOnly"
         @select-existing="handleSelectExisting"
         @load-new="handleLoadNew"
       />
@@ -38,7 +41,6 @@
         type="button"
         @click="overridesExpanded = !overridesExpanded"
         class="w-full text-left text-sm font-medium text-gray-700 transition-colors hover:text-gray-900"
-        :disabled="config.isLocked"
       >
         <span class="mr-1 inline-block transition-transform duration-200" :class="overridesExpanded ? 'rotate-90' : ''">
           <span class="i-heroicons-chevron-right-20-solid h-4 w-4"></span>
@@ -57,21 +59,23 @@
           :global-llm-model="config.llmModelIdentifier"
           :global-llm-config="config.llmConfig"
           :is-coordinator="member.memberName === teamDefinition.coordinatorMemberName"
-          :disabled="config.isLocked"
+          :disabled="isFormReadOnly"
+          :advanced-initially-expanded="readOnlyMode"
+          :missing-historical-config="memberMissingHistoricalConfig(member.memberName)"
           @update:override="handleOverrideUpdate"
         />
       </div>
     </div>
 
     <div class="mt-4 flex items-center justify-between gap-4 py-2">
-      <label for="team-auto-execute" class="block text-base text-gray-900 select-none" :class="{ 'text-gray-400': config.isLocked }">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools') }}</label>
+      <label for="team-auto-execute" class="block text-base text-gray-900 select-none" :class="{ 'text-gray-400': isFormReadOnly }">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools') }}</label>
       <button
         id="team-auto-execute"
         type="button"
         class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
         :class="config.autoExecuteTools ? 'bg-blue-600' : 'bg-gray-200'"
         @click="updateAutoExecute(!config.autoExecuteTools)"
-        :disabled="config.isLocked"
+        :disabled="isFormReadOnly"
       >
         <span class="sr-only">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools') }}</span>
         <span
@@ -87,7 +91,7 @@
       <select
         id="team-skill-access-mode"
         :value="config.skillAccessMode"
-        :disabled="config.isLocked"
+        :disabled="isFormReadOnly"
         class="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
         @change="updateSkillAccessMode(($event.target as HTMLSelectElement).value)"
       >
@@ -98,7 +102,12 @@
       <p class="mt-1 text-xs text-gray-500">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.controls_which_skills_team_members_are') }}</p>
     </div>
 
-    <div v-if="config.isLocked" class="flex items-center rounded bg-amber-50 p-2 text-xs text-amber-600">
+    <div v-if="readOnlyMode" class="flex items-center rounded bg-slate-50 p-2 text-xs text-slate-600">
+      <span class="i-heroicons-eye-20-solid mr-1 h-4 w-4"></span>
+      <span>{{ $t('workspace.components.workspace.config.TeamRunConfigForm.selected_team_run_configuration_read_only') }}</span>
+    </div>
+
+    <div v-else-if="config.isLocked" class="flex items-center rounded bg-amber-50 p-2 text-xs text-amber-600">
       <span class="i-heroicons-lock-closed-20-solid mr-1 h-4 w-4"></span>
       <span>{{ $t('workspace.components.workspace.config.TeamRunConfigForm.configuration_locked_because_execution_has_start') }}</span>
     </div>
@@ -118,6 +127,7 @@ import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore'
 import { loadRuntimeProviderGroupsForSelection } from '~/composables/useRuntimeScopedModelSelection'
 import { resolveLeafTeamMembers } from '~/utils/teamDefinitionMembers'
 import {
+  hasExplicitMemberLlmConfigOverride,
   hasMeaningfulMemberOverride,
   resolveEffectiveMemberRuntimeKind,
 } from '~/utils/teamRunConfigUtils'
@@ -133,6 +143,7 @@ const props = defineProps<{
   teamDefinition: AgentTeamDefinition
   workspaceLoadingState: WorkspaceLoadingState
   initialPath?: string
+  readOnly?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -143,7 +154,13 @@ const emit = defineEmits<{
 const teamDefinitionStore = useAgentTeamDefinitionStore()
 const teamRunConfigStore = useTeamRunConfigStore()
 const overridesExpanded = ref(true)
-const runtimeSelectionLocked = computed(() => props.config.isLocked)
+const readOnlyMode = computed(() => props.readOnly === true)
+const isFormReadOnly = computed(() => props.config.isLocked || readOnlyMode.value)
+const missingHistoricalGlobalConfig = computed(() =>
+  readOnlyMode.value &&
+  props.config.llmConfig == null,
+)
+const runtimeSelectionLocked = computed(() => isFormReadOnly.value)
 const leafMembers = computed(() =>
   resolveLeafTeamMembers(props.teamDefinition, {
     getTeamDefinitionById: (teamDefinitionId: string) =>
@@ -180,6 +197,7 @@ watch(
 )
 
 const handleOverrideUpdate = (memberName: string, override: MemberConfigOverride | null) => {
+  if (isFormReadOnly.value) return
   const overrides = { ...(props.config.memberOverrides || {}) }
   if (override && hasMeaningfulMemberOverride(override)) {
     overrides[memberName] = override
@@ -189,19 +207,47 @@ const handleOverrideUpdate = (memberName: string, override: MemberConfigOverride
   props.config.memberOverrides = overrides
 }
 
+const memberMissingHistoricalConfig = (memberName: string) => {
+  if (!readOnlyMode.value) return false
+  const override = props.config.memberOverrides[memberName]
+  if (hasExplicitMemberLlmConfigOverride(override)) {
+    return override?.llmConfig == null
+  }
+  return props.config.llmConfig == null
+}
+
 const updateAutoExecute = (checked: boolean) => {
+  if (isFormReadOnly.value) return
   props.config.autoExecuteTools = checked
 }
 
 const updateSkillAccessMode = (value: string) => {
+  if (isFormReadOnly.value) return
   props.config.skillAccessMode = value as SkillAccessMode
 }
 
+const updateRuntimeKind = (value: string) => {
+  if (isFormReadOnly.value) return
+  props.config.runtimeKind = value
+}
+
+const updateLlmModelIdentifier = (value: string) => {
+  if (isFormReadOnly.value) return
+  props.config.llmModelIdentifier = value
+}
+
+const updateLlmConfig = (value: Record<string, unknown> | null) => {
+  if (isFormReadOnly.value) return
+  props.config.llmConfig = value
+}
+
 const handleSelectExisting = (workspaceId: string) => {
+  if (isFormReadOnly.value) return
   emit('select-existing', workspaceId)
 }
 
 const handleLoadNew = (path: string) => {
+  if (isFormReadOnly.value) return
   emit('load-new', path)
 }
 </script>

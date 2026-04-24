@@ -65,6 +65,34 @@ Browser-uploaded composer files now follow the same high-level orchestration pat
 
 This separation keeps draft attachment transport concerns out of UI components and keeps runtime consumers dependent only on finalized run-scoped attachment locators.
 
+### Existing Run Configuration Inspection
+
+`components/workspace/config/RunConfigPanel.vue` is the frontend boundary between
+editable new-run launch configuration and inspect-only configuration for an
+already selected run. When `selectionStore.selectedRunId` is present, the panel
+passes read-only mode to the agent/team configuration forms instead of treating
+the selected run's config as a launch buffer.
+
+Selected existing single-agent and team run configuration is intentionally
+inspect-only:
+
+- runtime, model, workspace, auto-approve, skill-access, and team-member
+  override controls render disabled;
+- form update handlers and shared runtime/model normalization emissions no-op in
+  read-only mode so historical context is not locally mutated;
+- the launch/run button is absent while an existing run is selected;
+- localized read-only notices explain that the selected run can be inspected but
+  not edited; and
+- advanced model/thinking controls remain visible or expandable so persisted
+  values such as backend-provided `reasoning_effort: "xhigh"` can be inspected.
+
+The frontend consumes historical model configuration exactly as provided by the
+backend. If the backend-provided `llmConfig` is missing/null, the model config UI
+may show a localized `Not recorded for this historical run` state, but it must
+not infer a current default, recover a runtime value, or materialize metadata.
+Backend/runtime/history recovery or persistence semantics belong to a separate
+backend ticket, not this frontend inspection boundary.
+
 ---
 
 ## Level 2: Service Layer (Event Routing)

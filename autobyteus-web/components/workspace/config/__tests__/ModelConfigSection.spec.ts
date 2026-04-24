@@ -180,4 +180,63 @@ describe('ModelConfigSection', () => {
     );
     expect(hasSanitizedUpdate).toBe(true);
   });
+
+  it('expands advanced params initially when requested, even while inputs are disabled', () => {
+    const wrapper = mount(ModelConfigSection, {
+      props: {
+        modelConfig: { reasoning_effort: 'high' },
+        disabled: true,
+        advancedInitiallyExpanded: true,
+        schema: {
+          reasoning_effort: { type: 'string', enum: ['none', 'low', 'medium', 'high'] },
+        },
+      },
+    });
+
+    const toggle = wrapper.get('[data-testid="advanced-params-toggle"]');
+    expect(toggle.attributes('aria-expanded')).toBe('true');
+    expect(toggle.attributes('disabled')).toBeUndefined();
+    expect(wrapper.get('select').element.disabled).toBe(true);
+  });
+
+  it('does not emit config normalization updates while read-only', async () => {
+    const wrapper = mount(ModelConfigSection, {
+      props: {
+        modelConfig: {
+          reasoning_effort: 'ultra',
+          temperature: 0.2,
+        },
+        disabled: true,
+        readOnly: true,
+        schema: {
+          reasoning_effort: { type: 'string', enum: ['low', 'medium', 'high'] },
+          temperature: { type: 'number', minimum: 0, maximum: 1 },
+        },
+      },
+    });
+
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.emitted('update:config')).toBeUndefined();
+  });
+
+  it('renders not-recorded state for missing historical model config instead of blank controls', () => {
+    const wrapper = mount(ModelConfigSection, {
+      props: {
+        modelConfig: null,
+        disabled: true,
+        readOnly: true,
+        missingHistoricalConfig: true,
+        advancedInitiallyExpanded: true,
+        schema: {
+          reasoning_effort: { type: 'string', enum: ['none', 'low', 'medium', 'high'] },
+        },
+      },
+    });
+
+    expect(wrapper.get('[data-testid="missing-historical-config-basic"]').text()).toContain('Not recorded for this historical run');
+    expect(wrapper.get('[data-testid="missing-historical-config-value"]').text()).toContain('Not recorded for this historical run');
+    expect(wrapper.find('select').exists()).toBe(false);
+    expect(wrapper.emitted('update:config')).toBeUndefined();
+  });
 });

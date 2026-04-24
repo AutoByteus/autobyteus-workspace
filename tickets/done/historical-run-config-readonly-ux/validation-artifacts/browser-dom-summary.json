@@ -1,0 +1,35 @@
+{
+  "agentNullFixture": {
+    "runId": "round6_frontend_null_llm_config_probe",
+    "notice": "Selected run configuration is read-only. Start a new run to use different runtime or model settings.",
+    "hasRunButton": false,
+    "disabledControlsObserved": ["agent-run-runtime-kind", "model button", "workspace Existing/New", "workspace selector", "auto approve tools", "skill-access-mode"],
+    "notRecordedLinesObserved": ["Thinking: Not recorded for this historical run", "Reasoning Effort: Not recorded for this historical run"]
+  },
+  "team847": {
+    "teamRunId": "team_software-engineering-team_847ac0a1",
+    "notice": "Selected team run configuration is read-only. Start a new team run to use different runtime or model settings.",
+    "hasRunButton": false,
+    "disabledSelectValues": {
+      "team-run-runtime-kind": "codex_app_server",
+      "team-run-reasoning_effort": "xhigh",
+      "config-solution_designer-reasoning_effort": "xhigh",
+      "config-architecture_reviewer-reasoning_effort": "xhigh",
+      "config-implementation_engineer-reasoning_effort": "xhigh",
+      "config-code_reviewer-reasoning_effort": "xhigh",
+      "config-api_e2e_engineer-reasoning_effort": "xhigh",
+      "config-delivery_engineer-reasoning_effort": "xhigh",
+      "team-skill-access-mode": "PRELOADED_ONLY"
+    }
+  },
+  "draftTeamAfterNewAgentButton": {
+    "hasReadOnlyNotice": false,
+    "hasRunTeamButton": true,
+    "editableSelectsObserved": ["team-run-runtime-kind", "team-run-reasoning_effort", "override-runtime-*", "config-*-reasoning_effort", "team-skill-access-mode"]
+  },
+  "workspaceRegistry": {
+    "beforeBrowserOpenFromApiProbe": ["temp_ws_default"],
+    "afterDisabledSelectedConfigInteractions": ["agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c", "temp_ws_default"],
+    "note": "Opening the historical team context caused the backend runtime to register its workspace; disabled selected-config controls did not add further workspaces. Component tests cover selected-mode workspace update handlers as no-ops."
+  }
+}

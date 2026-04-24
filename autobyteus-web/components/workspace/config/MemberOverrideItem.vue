@@ -73,8 +73,11 @@
       :schema="modelConfigSchema"
       :model-config="effectiveModelConfig"
       :disabled="disabled"
+      :read-only="disabled"
       :compact="true"
       :id-prefix="`config-${memberName}`"
+      :advanced-initially-expanded="advancedInitiallyExpanded"
+      :missing-historical-config="missingHistoricalConfig"
       @update:config="emitOverrideWithConfig"
     />
   </div>
@@ -109,6 +112,8 @@ const props = defineProps<{
   globalLlmConfig?: Record<string, unknown> | null
   disabled: boolean
   isCoordinator?: boolean
+  advancedInitiallyExpanded?: boolean
+  missingHistoricalConfig?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -234,6 +239,10 @@ const buildOverride = (input: {
 watch(
   () => [effectiveRuntimeKind.value, explicitModelIdentifier.value],
   async () => {
+    if (props.disabled) {
+      return
+    }
+
     if (!hasExplicitModelOverride.value || !explicitModelIdentifier.value) {
       return
     }
@@ -254,6 +263,7 @@ watch(
 )
 
 const handleRuntimeChange = async (value: string) => {
+  if (props.disabled) return
   const nextRuntimeKind = value || undefined
   const effectiveNextRuntimeKind = nextRuntimeKind || props.globalRuntimeKind
   const nextRows = await loadRuntimeProviderGroupsForSelection(effectiveNextRuntimeKind)
@@ -275,6 +285,7 @@ const handleRuntimeChange = async (value: string) => {
 }
 
 const emitOverrideWithConfig = (nextConfig: Record<string, unknown> | null | undefined) => {
+  if (props.disabled) return
   const explicitConfig = modelConfigsEqual(nextConfig ?? null, props.globalLlmConfig ?? null)
     ? undefined
     : (nextConfig ?? null)
@@ -292,6 +303,7 @@ const emitOverrideWithConfig = (nextConfig: Record<string, unknown> | null | und
 }
 
 const handleModelChange = (value: string) => {
+  if (props.disabled) return
   const canKeepExplicitConfig = Boolean(
     value
       ? hasExplicitMemberLlmConfigOverride(props.override)
@@ -311,6 +323,7 @@ const handleModelChange = (value: string) => {
 }
 
 const handleAutoExecuteChange = () => {
+  if (props.disabled) return
   let newValue: boolean | undefined
   if (props.override?.autoExecuteTools === undefined) {
     newValue = true

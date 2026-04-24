@@ -1,0 +1,61 @@
+{
+  "endpoint": "http://127.0.0.1:38001/graphql",
+  "fixture": {
+    "runId": "round6_frontend_null_llm_config_probe",
+    "metadataPath": "/Users/normy/.autobyteus/server-data/memory/agents/round6_frontend_null_llm_config_probe/run_metadata.json",
+    "indexPath": "/Users/normy/.autobyteus/server-data/memory/run_history_index.json"
+  },
+  "workspaceCount": 1,
+  "workspaceIds": [
+    "temp_ws_default"
+  ],
+  "team847": {
+    "durationMs": 6,
+    "isActive": false,
+    "teamDefinitionName": "Software Engineering Team",
+    "memberConfigs": {
+      "solution_designer": {
+        "reasoning_effort": "xhigh"
+      },
+      "architecture_reviewer": {
+        "reasoning_effort": "xhigh"
+      },
+      "implementation_engineer": {
+        "reasoning_effort": "xhigh"
+      },
+      "code_reviewer": {
+        "reasoning_effort": "xhigh"
+      },
+      "api_e2e_engineer": {
+        "reasoning_effort": "xhigh"
+      },
+      "delivery_engineer": {
+        "reasoning_effort": "xhigh"
+      }
+    }
+  },
+  "agentNullFixture": {
+    "durationMs": 5,
+    "isActive": false,
+    "metadataConfig": {
+      "agentDefinitionId": "codex",
+      "workspaceRootPath": "/Users/normy/.autobyteus/server-data/temp_workspace",
+      "llmModelIdentifier": "gpt-5.4",
+      "llmConfig": null,
+      "autoExecuteTools": false,
+      "skillAccessMode": "PRELOADED_ONLY",
+      "runtimeKind": "codex_app_server",
+      "runtimeReference": {
+        "threadId": "00000000-0000-0000-0000-000000000006"
+      }
+    },
+    "editableFields": {
+      "llmModelIdentifier": true,
+      "llmConfig": true,
+      "autoExecuteTools": true,
+      "skillAccessMode": true,
+      "workspaceRootPath": false,
+      "runtimeKind": false
+    }
+  }
+}

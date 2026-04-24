@@ -2,7 +2,19 @@
   <div v-if="hasSchema" class="mt-4">
     <!-- Thinking Toggle Row -->
     <template v-if="thinkingSupported">
+      <div
+        v-if="showMissingHistoricalConfig"
+        class="flex items-center justify-between gap-4 rounded-md border border-dashed border-gray-200 bg-gray-50 px-3 py-2"
+        data-testid="missing-historical-config-basic"
+      >
+        <div>
+          <label :class="compact ? 'block text-sm text-gray-900' : 'block text-base text-gray-900'">{{ thinkingLabel }}</label>
+          <p v-if="thinkingDescription" :class="compact ? 'text-[0.625rem] text-gray-500' : 'text-xs text-gray-500'">{{ thinkingDescription }}</p>
+        </div>
+        <span class="text-sm text-gray-500">{{ $t('workspace.components.workspace.config.ModelConfigSection.not_recorded_for_this_historical_run') }}</span>
+      </div>
       <ModelConfigBasic
+        v-else
         v-model:enabled="thinkingEnabled"
         :disabled="disabled"
         :label="thinkingLabel"
@@ -16,7 +28,6 @@
           type="button"
           data-testid="advanced-params-toggle"
           @click="showAdvancedParams = !showAdvancedParams"
-          :disabled="disabled"
           class="inline-flex items-center gap-1 text-sm text-gray-700 hover:text-gray-900 transition-colors focus:outline-none"
           :aria-expanded="showAdvancedParams"
         >
@@ -37,6 +48,8 @@
           :disabled="disabled"
           :compact="compact"
           :id-prefix="idPrefix"
+          :missing-historical-config="showMissingHistoricalConfig"
+          :missing-historical-config-label="$t('workspace.components.workspace.config.ModelConfigSection.not_recorded_for_this_historical_run')"
           @update:config="emitConfig"
         />
       </div>
@@ -61,19 +74,22 @@ const props = defineProps<{
   schema: UiModelConfigSchema | null;
   modelConfig: Record<string, unknown> | null | undefined;
   disabled?: boolean;
+  readOnly?: boolean;
   applyDefaults?: boolean;
   clearOnEmptySchema?: boolean;
   compact?: boolean;
   idPrefix?: string;
   thinkingLabel?: string;
   thinkingDescription?: string;
+  advancedInitiallyExpanded?: boolean;
+  missingHistoricalConfig?: boolean;
 }>();
 
 const emit = defineEmits<{
   (e: 'update:config', value: Record<string, unknown> | null): void;
 }>();
 
-const showAdvancedParams = ref(false);
+const showAdvancedParams = ref(props.advancedInitiallyExpanded === true);
 
 const hasSchema = computed(() => !!props.schema && Object.keys(props.schema).length > 0);
 
@@ -82,8 +98,14 @@ const thinkingSupported = computed(() => hasThinkingSupport(props.schema ?? null
 const thinkingLabel = computed(() => props.thinkingLabel ?? 'Thinking');
 // Simpler default description
 const thinkingDescription = computed(() => props.thinkingDescription ?? '');
+const showMissingHistoricalConfig = computed(() =>
+  props.readOnly === true &&
+  props.missingHistoricalConfig === true &&
+  props.modelConfig == null,
+);
 
 const emitConfig = (nextConfig: Record<string, unknown> | null) => {
+  if (props.readOnly) return;
   emit('update:config', nextConfig ?? null);
 };
 
@@ -167,7 +189,16 @@ watch(
 watch(
   () => props.schema,
   () => {
-    showAdvancedParams.value = false;
+    showAdvancedParams.value = props.advancedInitiallyExpanded === true;
+  },
+);
+
+watch(
+  () => props.advancedInitiallyExpanded,
+  (advancedInitiallyExpanded) => {
+    if (advancedInitiallyExpanded) {
+      showAdvancedParams.value = true;
+    }
   },
 );
 

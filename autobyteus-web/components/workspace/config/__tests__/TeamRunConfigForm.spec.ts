@@ -167,6 +167,7 @@ describe('TeamRunConfigForm', () => {
   const buildWrapper = (
     configOverrides: Record<string, unknown> = {},
     teamDefinition = mockTeamDef,
+    propOverrides: Record<string, unknown> = {},
   ) => {
     const config = { ...mockConfig, ...configOverrides } as any
     const wrapper = mount(TeamRunConfigForm, {
@@ -174,6 +175,7 @@ describe('TeamRunConfigForm', () => {
         config,
         teamDefinition: teamDefinition as any,
         workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
+        ...propOverrides,
       },
       global: {
         stubs: {
@@ -187,7 +189,7 @@ describe('TeamRunConfigForm', () => {
           MemberOverrideItem: {
             name: 'MemberOverrideItem',
             template: '<div class="member-override-item-stub"></div>',
-            props: ['memberName', 'override', 'isCoordinator', 'disabled', 'globalRuntimeKind', 'globalLlmModel', 'globalLlmConfig'],
+            props: ['memberName', 'override', 'isCoordinator', 'disabled', 'advancedInitiallyExpanded', 'missingHistoricalConfig', 'globalRuntimeKind', 'globalLlmModel', 'globalLlmConfig'],
             emits: ['update:override'],
           },
         },
@@ -250,5 +252,49 @@ describe('TeamRunConfigForm', () => {
     expect(items).toHaveLength(2)
     expect(items[0].props('memberName')).toBe('Leaf A')
     expect(items[1].props('memberName')).toBe('Leaf B')
+  })
+
+  it('renders selected existing team run configuration as read-only while keeping member overrides inspectable', async () => {
+    const { wrapper, config } = buildWrapper({
+      llmConfig: { reasoning_effort: 'high' },
+    }, mockTeamDef, { readOnly: true })
+
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.find('select#team-run-runtime-kind').element.disabled).toBe(true)
+    expect(wrapper.find('button#team-auto-execute').element.disabled).toBe(true)
+    expect(wrapper.find('select#team-skill-access-mode').element.disabled).toBe(true)
+    expect(wrapper.findComponent({ name: 'WorkspaceSelector' }).props('disabled')).toBe(true)
+
+    const overrideDisclosure = wrapper.find('button.w-full')
+    expect(overrideDisclosure.attributes('disabled')).toBeUndefined()
+
+    const items = wrapper.findAllComponents({ name: 'MemberOverrideItem' })
+    expect(items).toHaveLength(2)
+    expect(items[0].props('disabled')).toBe(true)
+    expect(items[0].props('advancedInitiallyExpanded')).toBe(true)
+    expect(items[0].props('missingHistoricalConfig')).toBe(false)
+    expect(wrapper.text()).toContain('Selected team run configuration read only')
+
+    items[0].vm.$emit('update:override', 'Member A', {
+      agentDefinitionId: 'agent-a',
+      llmModelIdentifier: 'changed-model',
+    })
+    expect(config.memberOverrides).toEqual({})
+  })
+
+  it('marks historical team member config as missing when read-only metadata has null llmConfig', async () => {
+    const { wrapper } = buildWrapper({
+      llmConfig: null,
+      isLocked: true,
+    })
+
+    await wrapper.setProps({ readOnly: true })
+    await wrapper.vm.$nextTick()
+
+    const items = wrapper.findAllComponents({ name: 'MemberOverrideItem' })
+    expect(items).toHaveLength(2)
+    expect(items[0].props('missingHistoricalConfig')).toBe(true)
+    expect(items[1].props('missingHistoricalConfig')).toBe(true)
   })
 })

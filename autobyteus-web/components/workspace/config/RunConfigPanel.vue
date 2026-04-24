@@ -31,6 +31,7 @@
         :initial-path="initialWorkspacePath"
         :workspace-locked="isWorkspaceLockedForSelectedAgentRun"
         :runtime-locked="isRuntimeLockedForSelectedAgentRun"
+        :read-only="isSelectionMode"
         @select-existing="handleSelectExisting"
         @load-new="handleLoadNew"
       />
@@ -41,6 +42,7 @@
         :team-definition="activeTeamDefinition"
         :workspace-loading-state="effectiveWorkspaceLoadingState"
         :initial-path="initialWorkspacePath"
+        :read-only="isSelectionMode"
         @select-existing="handleSelectExisting"
         @load-new="handleLoadNew"
       />
@@ -208,21 +210,6 @@ const initialWorkspacePath = computed(() => {
 
 const handleSelectExisting = (workspaceId: string) => {
   if (isSelectionMode.value) {
-    if (selectionStore.isTeamSelected) {
-      const teamContext = teamContextsStore.activeTeamContext
-      if (!teamContext || teamContext.config?.isLocked) return
-      teamContext.config.workspaceId = workspaceId
-      teamContext.members?.forEach((member) => {
-        if (!member.config?.isLocked) {
-          member.config.workspaceId = workspaceId
-        }
-      })
-    } else if (selectionStore.isAgentSelected) {
-      const agentContext = contextsStore.activeRun
-      if (!agentContext || agentContext.config?.isLocked) return
-      agentContext.config.workspaceId = workspaceId
-    }
-    setActiveTab('files')
     return
   }
 
@@ -237,36 +224,7 @@ const handleSelectExisting = (workspaceId: string) => {
 
 const handleLoadNew = async (path: string) => {
   if (isSelectionMode.value) {
-    if (selectionStore.isTeamSelected) {
-      const teamContext = teamContextsStore.activeTeamContext
-      if (!teamContext || teamContext.config?.isLocked) return
-      try {
-        const workspaceId = await workspaceStore.createWorkspace({ root_path: path })
-        teamContext.config.workspaceId = workspaceId
-        teamContext.members?.forEach((member) => {
-          if (!member.config?.isLocked) {
-            member.config.workspaceId = workspaceId
-          }
-        })
-        setActiveTab('files')
-      } catch (error: any) {
-        console.error('Failed to load workspace for team:', error)
-      }
-      return
-    }
-
-    if (selectionStore.isAgentSelected) {
-      const agentContext = contextsStore.activeRun
-      if (!agentContext || agentContext.config?.isLocked) return
-      try {
-        const workspaceId = await workspaceStore.createWorkspace({ root_path: path })
-        agentContext.config.workspaceId = workspaceId
-        setActiveTab('files')
-      } catch (error: any) {
-        console.error('Failed to load workspace for agent:', error)
-      }
-      return
-    }
+    return
   }
 
   if (effectiveTeamConfig.value) {

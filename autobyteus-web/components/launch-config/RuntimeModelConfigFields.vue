@@ -47,11 +47,14 @@
       :schema="modelConfigSchema"
       :model-config="llmConfig"
       :disabled="disabledComputed"
+      :read-only="readOnlyComputed"
       :apply-defaults="true"
       :clear-on-empty-schema="true"
       :thinking-label="thinkingLabel"
       :thinking-description="thinkingDescription"
       :id-prefix="idPrefix"
+      :advanced-initially-expanded="advancedInitiallyExpanded"
+      :missing-historical-config="missingHistoricalConfig"
       @update:config="updateModelConfig"
     />
   </div>
@@ -76,6 +79,7 @@ const props = defineProps<{
   llmModelIdentifier?: string | null
   llmConfig?: Record<string, unknown> | null
   disabled?: boolean
+  readOnly?: boolean
   runtimeSelectionLocked?: boolean
   allowBlankRuntime?: boolean
   blankRuntimeLabel?: string
@@ -87,6 +91,8 @@ const props = defineProps<{
   thinkingLabel?: string
   thinkingDescription?: string
   idPrefix?: string
+  advancedInitiallyExpanded?: boolean
+  missingHistoricalConfig?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -96,6 +102,7 @@ const emit = defineEmits<{
 }>()
 
 const disabledComputed = computed(() => props.disabled === true)
+const readOnlyComputed = computed(() => props.readOnly === true)
 const runtimeSelectionLockedComputed = computed(
   () => disabledComputed.value || props.runtimeSelectionLocked === true,
 )
@@ -128,6 +135,9 @@ watch(
   async (runtimeKind, previousRuntimeKind) => {
     const normalizedStoredRuntime = normalizeScopedRuntimeKind(runtimeKind, allowBlankRuntime.value)
     if ((props.runtimeKind ?? '') !== normalizedStoredRuntime) {
+      if (readOnlyComputed.value) {
+        return
+      }
       emit('update:runtimeKind', normalizedStoredRuntime)
       return
     }
@@ -143,6 +153,9 @@ watch(
       props.llmModelIdentifier &&
       !hasModelIdentifier(props.llmModelIdentifier)
     ) {
+      if (readOnlyComputed.value) {
+        return
+      }
       emit('update:llmModelIdentifier', '')
       emit('update:llmConfig', null)
     }
@@ -158,6 +171,10 @@ watch(
   ],
   ([, runtimeKind, runtimeLocked]) => {
     if (runtimeLocked) {
+      return
+    }
+
+    if (readOnlyComputed.value) {
       return
     }
 
@@ -181,6 +198,7 @@ const modelConfigSchema = computed(() =>
 )
 
 const updateRuntimeKind = (value: string) => {
+  if (readOnlyComputed.value) return
   const normalizedRuntime = normalizeScopedRuntimeKind(value, allowBlankRuntime.value)
   if (normalizedRuntime === normalizedStoredRuntimeKind.value) {
     return
@@ -191,10 +209,12 @@ const updateRuntimeKind = (value: string) => {
 }
 
 const updateModel = (value: string) => {
+  if (readOnlyComputed.value) return
   emit('update:llmModelIdentifier', value)
 }
 
 const updateModelConfig = (config: Record<string, unknown> | null) => {
+  if (readOnlyComputed.value) return
   emit('update:llmConfig', config)
 }
 </script>

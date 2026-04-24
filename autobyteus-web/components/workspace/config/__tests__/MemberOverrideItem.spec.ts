@@ -9,6 +9,11 @@ import type { MemberConfigOverride } from '~/types/agent/TeamRunConfig'
 import { evaluateTeamRunLaunchReadiness } from '~/utils/teamRunLaunchReadiness'
 import { buildTeamRunMemberConfigRecords } from '~/utils/teamRunMemberConfigBuilder'
 
+const flushPromises = async () => {
+  await Promise.resolve()
+  await new Promise<void>((resolve) => setTimeout(resolve, 0))
+}
+
 vi.mock('~/stores/llmProviderConfig', () => ({
   useLLMProviderConfigStore: vi.fn(),
 }))
@@ -41,7 +46,10 @@ const runtimeProviders: Record<string, any[]> = {
           providerType: 'OPENAI',
           runtime: 'autobyteus',
           configSchema: {
-            thinking_level: { type: 'integer', description: 'Thinking Level' },
+            type: 'object',
+            properties: {
+              thinking_level: { type: 'integer', description: 'Thinking Level' },
+            },
           },
         },
       ],
@@ -70,7 +78,10 @@ const runtimeProviders: Record<string, any[]> = {
           providerType: 'OPENAI',
           runtime: 'codex_app_server',
           configSchema: {
-            reasoning_effort: { type: 'string', description: 'Reasoning Effort' },
+            type: 'object',
+            properties: {
+              reasoning_effort: { type: 'string', description: 'Reasoning Effort' },
+            },
           },
         },
         {
@@ -83,7 +94,10 @@ const runtimeProviders: Record<string, any[]> = {
           providerType: 'OPENAI',
           runtime: 'codex_app_server',
           configSchema: {
-            reasoning_effort: { type: 'string', description: 'Reasoning Effort' },
+            type: 'object',
+            properties: {
+              reasoning_effort: { type: 'string', description: 'Reasoning Effort' },
+            },
           },
         },
       ],
@@ -112,7 +126,10 @@ const runtimeProviders: Record<string, any[]> = {
           providerType: 'ANTHROPIC',
           runtime: 'claude_agent_sdk',
           configSchema: {
-            thinking_enabled: { type: 'boolean', description: 'Enable Thinking' },
+            type: 'object',
+            properties: {
+              thinking_enabled: { type: 'boolean', description: 'Enable Thinking' },
+            },
           },
         },
       ],
@@ -387,6 +404,28 @@ describe('MemberOverrideItem', () => {
         workspaceRootPath: undefined,
       },
     ])
+  })
+
+  it('passes missing historical config state into member model config display', async () => {
+    const wrapper = mount(MemberOverrideItem, {
+      props: {
+        ...defaultProps,
+        globalRuntimeKind: 'codex_app_server',
+        globalLlmModel: 'gpt-5.4',
+        globalLlmConfig: null,
+        disabled: true,
+        advancedInitiallyExpanded: true,
+        missingHistoricalConfig: true,
+      },
+    })
+
+    await nextTick()
+    await flushPromises()
+    await nextTick()
+
+    expect(wrapper.text()).toContain('Not recorded for this historical run')
+    expect(wrapper.find('[data-testid="missing-historical-config-value"]').exists()).toBe(true)
+    expect(wrapper.find('select[id^="config-Reviewer"]').exists()).toBe(false)
   })
 
 })

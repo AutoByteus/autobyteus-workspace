@@ -83,6 +83,21 @@ That surface owns:
 
 When the runtime override changes, the row clears incompatible explicit model/config state instead of leaking stale member-only configuration into the next launch.
 
+When `RunConfigPanel.vue` is showing a selected existing team run rather than a
+new team launch buffer, `TeamRunConfigForm.vue` receives read-only mode. In that
+mode the team-level runtime/model/workspace/auto-approve/skill controls and all
+`MemberOverrideItem.vue` rows render as disabled, direct update handlers no-op,
+and the **Run Team** action is not shown. Member override rows remain
+inspectable, and advanced model/thinking sections are expanded or available so
+persisted backend values such as `reasoning_effort: "xhigh"` are visible for the
+global team config and per-member overrides.
+
+Read-only selected-team config is display-only. It does not save edited
+historical settings, recover missing `llmConfig`, materialize runtime history, or
+infer current defaults. If backend metadata has no recorded model-thinking
+config, the frontend can show the localized `Not recorded for this historical
+run` state to make the absence explicit.
+
 ## Mixed-Runtime Launch Readiness
 
 `teamRunLaunchReadiness.ts` is the frontend owner for mixed-runtime launch gating.
@@ -120,6 +135,11 @@ It rebuilds one dominant team-level default from persisted member metadata, then
 - explicit member `llmConfig` differences, including explicit `null` cleanup cases.
 
 This keeps reopened mixed-runtime teams truthful in the run-config surface instead of flattening them back to one runtime/model pair.
+
+Reopen/hydration supplies the values that selected read-only team config
+displays. The frontend treats non-null metadata from the backend as authoritative
+for inspection and treats null metadata as not recorded; backend recovery,
+materialization, or backfill is outside the Agent Teams frontend module.
 
 ## Store Ownership
 

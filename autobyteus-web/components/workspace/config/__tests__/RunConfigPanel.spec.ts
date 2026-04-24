@@ -12,6 +12,9 @@ const { agentRunState, teamRunState, agentContextState, teamContextState } = vi.
     config: null,
     workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
     isConfigured: false,
+    updateAgentConfig: vi.fn((patch: Record<string, unknown>) => {
+      agentRunState.config = { ...(agentRunState.config || {}), ...patch } as any
+    }),
     setWorkspaceLoading: vi.fn(),
     setWorkspaceLoaded: vi.fn(),
     setWorkspaceError: vi.fn(),
@@ -21,6 +24,9 @@ const { agentRunState, teamRunState, agentContextState, teamContextState } = vi.
     config: null,
     workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
     launchReadiness: { canLaunch: false, blockingIssues: [], unresolvedMembers: [] },
+    updateConfig: vi.fn((patch: Record<string, unknown>) => {
+      teamRunState.config = { ...(teamRunState.config || {}), ...patch } as any
+    }),
     setWorkspaceLoading: vi.fn(),
     setWorkspaceLoaded: vi.fn(),
     setWorkspaceError: vi.fn(),
@@ -95,8 +101,10 @@ describe('RunConfigPanel', () => {
     agentRunState.config = null
     teamRunState.config = null
     teamRunState.launchReadiness = { canLaunch: false, blockingIssues: [], unresolvedMembers: [] }
+    agentRunState.updateAgentConfig.mockClear()
     agentRunState.setWorkspaceError.mockReset()
     agentRunState.clearConfig.mockReset()
+    teamRunState.updateConfig.mockClear()
     teamRunState.setWorkspaceError.mockReset()
     teamRunState.clearConfig.mockReset()
     agentContextState.activeRun = null
@@ -248,6 +256,57 @@ describe('RunConfigPanel', () => {
     expect(agentStore.setWorkspaceError).toHaveBeenCalledWith('Workspace is required to run an agent.')
   })
 
+  it('keeps draft agent configuration editable for workspace selection events', async () => {
+    const { useAgentRunConfigStore } = await import('~/stores/agentRunConfigStore')
+    const agentStore = useAgentRunConfigStore()
+    agentStore.config = {
+      agentDefinitionId: 'def-1',
+      agentDefinitionName: 'Agent def-1',
+      workspaceId: 'ws-original',
+      isLocked: false,
+    } as any
+    agentStore.isConfigured = true
+
+    const wrapper = mount(RunConfigPanel, {
+      global: {
+        stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true },
+      },
+    })
+
+    const form = wrapper.findComponent(AgentRunConfigForm)
+    expect(form.props('readOnly')).toBe(false)
+
+    form.vm.$emit('select-existing', 'ws-draft-new')
+
+    expect(agentStore.updateAgentConfig).toHaveBeenCalledWith({ workspaceId: 'ws-draft-new' })
+    expect(agentStore.config?.workspaceId).toBe('ws-draft-new')
+  })
+
+  it('keeps draft team configuration editable for workspace selection events', async () => {
+    const { useTeamRunConfigStore } = await import('~/stores/teamRunConfigStore')
+    const teamStore = useTeamRunConfigStore()
+    teamStore.config = {
+      teamDefinitionId: 'team-def-1',
+      teamDefinitionName: 'Team team-def-1',
+      workspaceId: 'ws-original',
+      isLocked: false,
+    } as any
+
+    const wrapper = mount(RunConfigPanel, {
+      global: {
+        stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true },
+      },
+    })
+
+    const form = wrapper.findComponent(TeamRunConfigForm)
+    expect(form.props('readOnly')).toBe(false)
+
+    form.vm.$emit('select-existing', 'ws-draft-new')
+
+    expect(teamStore.updateConfig).toHaveBeenCalledWith({ workspaceId: 'ws-draft-new' })
+    expect(teamStore.config?.workspaceId).toBe('ws-draft-new')
+  })
+
   it('returns to event view from selection-mode config header action', async () => {
     const selectionStore = useAgentSelectionStore()
     selectionStore.selectRun('run-1', 'agent')
@@ -276,5 +335,61 @@ describe('RunConfigPanel', () => {
     const beforeClickCalls = workspaceCenterViewStoreMock.showChat.mock.calls.length
     await backButton.trigger('click')
     expect(workspaceCenterViewStoreMock.showChat).toHaveBeenCalledTimes(beforeClickCalls + 1)
+  })
+
+  it('passes read-only mode to selected existing run configuration and ignores workspace edit events', async () => {
+    const selectionStore = useAgentSelectionStore()
+    selectionStore.selectRun('run-1', 'agent')
+
+    const { useAgentContextsStore } = await import('~/stores/agentContextsStore')
+    const contextStore = useAgentContextsStore()
+    contextStore.activeRun = {
+      config: {
+        agentDefinitionId: 'def-1',
+        agentDefinitionName: 'Agent def-1',
+        workspaceId: 'ws-original',
+        isLocked: false,
+      },
+    } as any
+
+    const wrapper = mount(RunConfigPanel, {
+      global: {
+        stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true },
+      },
+    })
+
+    const form = wrapper.findComponent(AgentRunConfigForm)
+    expect(form.props('readOnly')).toBe(true)
+
+    form.vm.$emit('select-existing', 'ws-new')
+    expect(contextStore.activeRun?.config.workspaceId).toBe('ws-original')
+  })
+
+  it('passes read-only mode to selected existing team configuration and ignores workspace edit events', async () => {
+    const selectionStore = useAgentSelectionStore()
+    selectionStore.selectRun('team-run-1', 'team')
+
+    const { useAgentTeamContextsStore } = await import('~/stores/agentTeamContextsStore')
+    const contextStore = useAgentTeamContextsStore()
+    contextStore.activeTeamContext = {
+      config: {
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team team-def-1',
+        workspaceId: 'ws-original',
+        isLocked: false,
+      },
+    } as any
+
+    const wrapper = mount(RunConfigPanel, {
+      global: {
+        stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true },
+      },
+    })
+
+    const form = wrapper.findComponent(TeamRunConfigForm)
+    expect(form.props('readOnly')).toBe(true)
+
+    form.vm.$emit('select-existing', 'ws-new')
+    expect(contextStore.activeTeamContext?.config.workspaceId).toBe('ws-original')
   })
 })

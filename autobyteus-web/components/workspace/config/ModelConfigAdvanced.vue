@@ -8,8 +8,15 @@
       </label>
 
       <div>
+        <div
+          v-if="missingHistoricalConfig"
+          class="rounded-md border border-dashed border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-500"
+          data-testid="missing-historical-config-value"
+        >
+          {{ missingHistoricalConfigLabel }}
+        </div>
         <select
-          v-if="paramSchema.enum"
+          v-else-if="paramSchema.enum"
           :id="inputId(key)"
           :value="selectValue(key, paramSchema.enum)"
           :disabled="disabled"
@@ -75,6 +82,8 @@ const props = defineProps<{
   disabled?: boolean;
   compact?: boolean;
   idPrefix?: string;
+  missingHistoricalConfig?: boolean;
+  missingHistoricalConfigLabel?: string;
 }>();
 
 const emit = defineEmits<{
@@ -82,6 +91,9 @@ const emit = defineEmits<{
 }>();
 
 const normalizedConfig = computed(() => props.config ?? {});
+const missingHistoricalConfigLabel = computed(() =>
+  props.missingHistoricalConfigLabel ?? '',
+);
 
 const formatLabel = (key: string): string => {
   return key
