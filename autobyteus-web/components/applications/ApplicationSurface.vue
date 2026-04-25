@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="application && launchInstanceId"
+    v-if="application && iframeLaunchId"
     class="h-full min-h-[32rem] w-full"
   >
     <div class="relative h-full min-h-0 overflow-hidden bg-slate-950">
@@ -74,8 +74,8 @@
 import { computed, onBeforeUnmount, ref, shallowRef, watch } from 'vue'
 import {
   APPLICATION_IFRAME_READY_EVENT,
-  createApplicationHostBootstrapEnvelopeV2,
-  type ApplicationHostBootstrapEnvelopeV2,
+  createApplicationHostBootstrapEnvelopeV3,
+  type ApplicationHostBootstrapEnvelopeV3,
   type ApplicationIframeReadySignal,
 } from '@autobyteus/application-sdk-contracts'
 import ApplicationIframeHost from '~/components/applications/ApplicationIframeHost.vue'
@@ -95,7 +95,7 @@ const APPLICATION_IFRAME_READY_TIMEOUT_MS = 10_000
 
 const props = defineProps<{
   application: ApplicationDetailRecord | null
-  launchInstanceId: string | null
+  iframeLaunchId: string | null
 }>()
 
 const { t: $t } = useLocalization()
@@ -103,8 +103,8 @@ const windowNodeContextStore = useWindowNodeContextStore()
 
 const launchDescriptor = shallowRef<ApplicationIframeLaunchDescriptor | null>(null)
 const committedLaunchInputs = shallowRef<ApplicationIframeLaunchDescriptorInputs | null>(null)
-const committedLaunchInstanceId = ref<string | null>(null)
-const pendingBootstrapEnvelope = shallowRef<ApplicationHostBootstrapEnvelopeV2 | null>(null)
+const committedIframeLaunchId = ref<string | null>(null)
+const pendingBootstrapEnvelope = shallowRef<ApplicationHostBootstrapEnvelopeV3 | null>(null)
 const launchState = ref<'waiting_for_ready' | 'bootstrapped' | 'failed'>('waiting_for_ready')
 const launchError = ref<string | null>(null)
 const readyTimeoutHandle = ref<number | null>(null)
@@ -114,7 +114,7 @@ const iframeMountKey = computed(() => {
   if (!launchDescriptor.value) {
     return 'unmounted'
   }
-  return `${launchDescriptor.value.launchInstanceId}:${iframeMountRevision.value}`
+  return `${launchDescriptor.value.iframeLaunchId}:${iframeMountRevision.value}`
 })
 
 const isCanvasRevealed = computed(() => launchState.value === 'bootstrapped')
@@ -134,7 +134,7 @@ const resetLaunchState = (): void => {
   clearReadyTimeout()
   launchDescriptor.value = null
   committedLaunchInputs.value = null
-  committedLaunchInstanceId.value = null
+  committedIframeLaunchId.value = null
   pendingBootstrapEnvelope.value = null
   launchError.value = null
   launchState.value = 'waiting_for_ready'
@@ -147,7 +147,7 @@ const failLaunch = (message: string): void => {
   launchError.value = message
   if (launchDescriptor.value) {
     console.warn(
-      `[ApplicationSurface] launch failed applicationId=${launchDescriptor.value.applicationId} launchInstanceId=${launchDescriptor.value.launchInstanceId} message=${message}`,
+      `[ApplicationSurface] launch failed applicationId=${launchDescriptor.value.applicationId} iframeLaunchId=${launchDescriptor.value.iframeLaunchId} message=${message}`,
     )
   }
 }
@@ -158,7 +158,7 @@ const startWaitingForReady = (descriptor: ApplicationIframeLaunchDescriptor): vo
   launchError.value = null
   launchState.value = 'waiting_for_ready'
   logApplicationSurface(
-    `committed launch descriptor applicationId=${descriptor.applicationId} launchInstanceId=${descriptor.launchInstanceId} entryHtmlUrl=${descriptor.entryHtmlUrl}`,
+    `committed launch descriptor applicationId=${descriptor.applicationId} iframeLaunchId=${descriptor.iframeLaunchId} entryHtmlUrl=${descriptor.entryHtmlUrl}`,
   )
   readyTimeoutHandle.value = window.setTimeout(() => {
     failLaunch(
@@ -182,8 +182,8 @@ const buildLaunchInputs = (application: ApplicationDetailRecord): ApplicationIfr
 
 const commitLaunchDescriptor = (forceRemount: boolean): void => {
   const currentApplication = props.application
-  const currentLaunchInstanceId = props.launchInstanceId?.trim() || ''
-  if (!currentApplication || !currentLaunchInstanceId) {
+  const currentIframeLaunchId = props.iframeLaunchId?.trim() || ''
+  if (!currentApplication || !currentIframeLaunchId) {
     resetLaunchState()
     return
   }
@@ -194,7 +194,7 @@ const commitLaunchDescriptor = (forceRemount: boolean): void => {
       committedLaunchInputs.value,
       nextInputs,
     )
-    const launchChanged = committedLaunchInstanceId.value !== currentLaunchInstanceId
+    const launchChanged = committedIframeLaunchId.value !== currentIframeLaunchId
 
     if (!forceRemount && !inputsChanged && !launchChanged && launchDescriptor.value) {
       return
@@ -202,10 +202,10 @@ const commitLaunchDescriptor = (forceRemount: boolean): void => {
 
     iframeMountRevision.value += 1
     committedLaunchInputs.value = nextInputs
-    committedLaunchInstanceId.value = currentLaunchInstanceId
+    committedIframeLaunchId.value = currentIframeLaunchId
     launchDescriptor.value = buildApplicationIframeLaunchDescriptor(
       nextInputs,
-      currentLaunchInstanceId,
+      currentIframeLaunchId,
     )
     startWaitingForReady(launchDescriptor.value)
   } catch (error) {
@@ -225,7 +225,7 @@ const handleReady = (signal: ApplicationIframeReadySignal): void => {
   if (signal.applicationId !== descriptor.applicationId) {
     return
   }
-  if (signal.launchInstanceId !== descriptor.launchInstanceId) {
+  if (signal.iframeLaunchId !== descriptor.iframeLaunchId) {
     return
   }
   if (signal.iframeOrigin !== descriptor.expectedIframeOrigin) {
@@ -233,25 +233,22 @@ const handleReady = (signal: ApplicationIframeReadySignal): void => {
   }
 
   logApplicationSurface(
-    `accepted ready event applicationId=${signal.applicationId} launchInstanceId=${signal.launchInstanceId} origin=${signal.iframeOrigin}`,
+    `accepted ready event applicationId=${signal.applicationId} iframeLaunchId=${signal.iframeLaunchId} origin=${signal.iframeOrigin}`,
   )
 
-  pendingBootstrapEnvelope.value = createApplicationHostBootstrapEnvelopeV2({
+  pendingBootstrapEnvelope.value = createApplicationHostBootstrapEnvelopeV3({
     host: {
       origin: descriptor.normalizedHostOrigin,
     },
-      application: {
-        applicationId: currentApplication.id,
-        localApplicationId: currentApplication.technicalDetails.localApplicationId,
-        packageId: currentApplication.technicalDetails.packageId,
-        name: currentApplication.name,
-      },
-    launch: {
-      launchInstanceId: descriptor.launchInstanceId,
+    application: {
+      applicationId: currentApplication.id,
+      localApplicationId: currentApplication.technicalDetails.localApplicationId,
+      packageId: currentApplication.technicalDetails.packageId,
+      name: currentApplication.name,
     },
+    iframeLaunchId: descriptor.iframeLaunchId,
     requestContext: {
       applicationId: currentApplication.id,
-      launchInstanceId: descriptor.launchInstanceId,
     },
     transport: buildApplicationHostTransport(
       windowNodeContextStore.getBoundEndpoints(),
@@ -262,7 +259,7 @@ const handleReady = (signal: ApplicationIframeReadySignal): void => {
 
 const handleBootstrapDelivered = (payload: {
   applicationId: string
-  launchInstanceId: string
+  iframeLaunchId: string
 }): void => {
   const descriptor = launchDescriptor.value
   if (!descriptor) {
@@ -271,7 +268,7 @@ const handleBootstrapDelivered = (payload: {
   if (payload.applicationId !== descriptor.applicationId) {
     return
   }
-  if (payload.launchInstanceId !== descriptor.launchInstanceId) {
+  if (payload.iframeLaunchId !== descriptor.iframeLaunchId) {
     return
   }
 
@@ -293,7 +290,7 @@ watch(
   () => [
     props.application?.id ?? '',
     props.application?.entryHtmlAssetPath ?? '',
-    props.launchInstanceId ?? '',
+    props.iframeLaunchId ?? '',
     windowNodeContextStore.bindingRevision,
   ] as const,
   () => {

@@ -190,9 +190,6 @@ const toRouteHeaders = (
       nextHeaders[key] = value;
     }
   }
-  if (requestContext?.launchInstanceId?.trim()) {
-    nextHeaders["x-autobyteus-launch-instance-id"] = requestContext.launchInstanceId.trim();
-  }
   if (requestContext && requestContext.applicationId.trim()) {
     nextHeaders["x-autobyteus-application-id"] = requestContext.applicationId.trim();
   }

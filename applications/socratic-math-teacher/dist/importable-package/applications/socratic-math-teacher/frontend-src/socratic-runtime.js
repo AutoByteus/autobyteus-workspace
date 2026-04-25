@@ -29,7 +29,7 @@ export const mountSocraticMathTeacher = ({
   const elements = {
     applicationName: rootElement.querySelector("#application-name"),
     applicationIds: rootElement.querySelector("#application-ids"),
-    launchInstanceId: rootElement.querySelector("#launch-instance-id"),
+    iframeLaunchId: rootElement.querySelector("#iframe-launch-id"),
     requestContext: rootElement.querySelector("#request-context"),
     backendBaseUrl: rootElement.querySelector("#backend-base-url"),
     backendNotificationsUrl: rootElement.querySelector("#backend-notifications-url"),

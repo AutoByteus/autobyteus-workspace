@@ -47,7 +47,7 @@ export const renderSocraticMathTeacherShell = (rootElement) => {
           </div>
           <div>
             <span class="label">Launch</span>
-            <div id="launch-instance-id" class="value">—</div>
+            <div id="iframe-launch-id" class="value">—</div>
             <div id="request-context" class="muted">—</div>
           </div>
           <div>
@@ -333,11 +333,11 @@ export const renderMetadata = ({ state, elements }) => {
       `package ${bootstrap.application.packageId}`,
     ].join(" · ");
   }
-  if (elements.launchInstanceId) {
-    elements.launchInstanceId.textContent = bootstrap.launch.launchInstanceId;
+  if (elements.iframeLaunchId) {
+    elements.iframeLaunchId.textContent = bootstrap.iframeLaunchId;
   }
   if (elements.requestContext) {
-    elements.requestContext.textContent = `applicationId ${bootstrap.requestContext.applicationId} · launchInstanceId ${bootstrap.requestContext.launchInstanceId || "—"}`;
+    elements.requestContext.textContent = `applicationId ${bootstrap.requestContext.applicationId}`;
   }
   if (elements.backendBaseUrl) {
     elements.backendBaseUrl.textContent = bootstrap.transport.backendBaseUrl || "—";

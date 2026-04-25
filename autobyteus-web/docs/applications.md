@@ -27,7 +27,7 @@ Shows Applications as a first-class top-level module, resolves whether the modul
 - `utils/application/applicationLaunchProfile.ts`
 - `utils/application/applicationSetupGate.ts`
 - `utils/teamLaunchReadinessCore.ts`
-- `docs/application-bundle-iframe-contract-v1.md`
+- `docs/application-bundle-iframe-contract-v3.md`
 - `../../autobyteus-application-sdk-contracts/src/application-iframe-contract.ts`
 
 ## Runtime Availability And Gating
@@ -83,8 +83,8 @@ Once the user commits to entry, the route switches into an immersive phase:
 
 1. `ApplicationShell.vue` requests `appLayoutStore.setHostShellPresentation('application_immersive')`,
 2. `applicationHostStore.startLaunch(applicationId)` creates a fresh host launch generation for that route visit,
-3. the shell shows immersive loading/error canvas states until a `launchInstanceId` exists, and
-4. `ApplicationSurface.vue` owns the iframe/bootstrap lifecycle once the fresh `launchInstanceId` is ready.
+3. the shell shows immersive loading/error canvas states until an `iframeLaunchId` exists, and
+4. `ApplicationSurface.vue` owns the iframe/bootstrap lifecycle once the fresh `iframeLaunchId` is ready.
 
 `applicationHostStore` is the authoritative owner for the generic host-side launch state:
 
@@ -93,7 +93,7 @@ Once the user commits to entry, the route switches into an immersive phase:
 - `ready`
 - `failed`
 
-The host launch is intentionally narrow. It does **not** create an agent run or team run. It only ensures the application backend is ready and produces one ephemeral `launchInstanceId` for iframe bootstrap correlation.
+The host launch is intentionally narrow. It does **not** create an agent run or team run. It only ensures the application backend is ready and produces one ephemeral `iframeLaunchId` for iframe bootstrap correlation.
 
 ## Host Launch Lifetime Contract
 
@@ -157,13 +157,13 @@ This means the authoritative user journey is now:
 
 It owns:
 
-- the immutable iframe launch descriptor for the current app + launch instance
+- the immutable iframe launch descriptor for the current app + iframe bootstrap id
 - ready timeout / retry / remount logic
 - acceptance of the matching child ready signal
 - delivery of the bootstrap envelope into the iframe
 - the host-side reveal boundary, which still completes on bootstrap delivery
 
-`ApplicationIframeHost.vue` is an internal bridge only. It renders the iframe, validates the raw ready message against the current iframe window/origin/application/launch identity, and posts the supplied bootstrap envelope back to the iframe.
+`ApplicationIframeHost.vue` is an internal bridge only. It renders the iframe, validates the raw ready message against the current iframe window/origin/application/iframe launch identity, and posts the supplied bootstrap envelope back to the iframe.
 
 Inside the bundle, `startHostedApplication(...)` from `@autobyteus/application-frontend-sdk` becomes the authoritative bundle-local startup owner. It owns:
 
@@ -176,28 +176,28 @@ Inside the bundle, `startHostedApplication(...)` from `@autobyteus/application-f
 
 Direct/raw bundle entry without valid host launch context is intentionally unsupported by that startup boundary rather than left to app-authored placeholder UI.
 
-## Iframe Bootstrap v2
+## Iframe Bootstrap v3
 
 The host resolves `entryHtmlAssetPath` against the bound REST base, appends the versioned iframe launch hints, and bootstraps the child iframe only after it receives the matching ready event.
 
-The shared contract definitions now live in `@autobyteus/application-sdk-contracts` instead of a host-local web type file.
+The shared contract definitions live in `@autobyteus/application-sdk-contracts`.
 
-The v2 contract uses:
+The v3 query contract uses:
 
-- `autobyteusContractVersion`
+- `autobyteusContractVersion=3`
 - `autobyteusApplicationId`
-- `autobyteusLaunchInstanceId`
+- `autobyteusIframeLaunchId`
 - `autobyteusHostOrigin`
 
-The v2 bootstrap payload contains:
+The v3 bootstrap payload contains:
 
 - `host.origin`
 - `application { applicationId, localApplicationId, packageId, name }`
-- `launch { launchInstanceId }`
-- `requestContext { applicationId, launchInstanceId }`
+- top-level `iframeLaunchId`
+- `requestContext { applicationId }`
 - `transport` with host and app-backend gateway URLs
 
-The payload intentionally does **not** contain a platform-owned execution id, session id, or prelaunched runtime summary.
+The payload intentionally does **not** contain a platform-owned execution id, session id, app instance id, or prelaunched runtime summary. The iframe launch id is only an ephemeral bootstrap correlation id.
 
 ## Backend Gateway And SDK Boundary
 
@@ -208,7 +208,7 @@ The public author-facing surface is:
 - `@autobyteus/application-sdk-contracts` for shared manifest, request-context, storage, runtime-control, and execution-event types
 - `@autobyteus/application-frontend-sdk` for framework-owned startup plus app UI query/command/GraphQL/notification helpers
 - `@autobyteus/application-backend-sdk` for backend definition typing
-- `application-bundle-iframe-contract-v1.md` plus the shared `application-iframe-contract.ts` contract owner for the host bootstrap envelope itself
+- `application-bundle-iframe-contract-v3.md` plus the shared `application-iframe-contract.ts` contract owner for the host bootstrap envelope itself
 
 App UIs call their own backend through the platform-owned application backend gateway URLs delivered in `transport`.
 
@@ -237,7 +237,7 @@ This separation is the core architectural change: the Applications page launches
 
 ## Related Docs
 
-- `application-bundle-iframe-contract-v1.md`
+- `application-bundle-iframe-contract-v3.md`
 - `agent_management.md`
 - `agent_teams.md`
 - `settings.md`

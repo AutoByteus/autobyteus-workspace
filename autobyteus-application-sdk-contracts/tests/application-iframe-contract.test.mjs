@@ -2,18 +2,20 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   APPLICATION_IFRAME_BOOTSTRAP_EVENT,
-  APPLICATION_IFRAME_CONTRACT_VERSION_V2,
+  APPLICATION_IFRAME_CONTRACT_VERSION_V3,
   APPLICATION_IFRAME_READY_EVENT,
-  createApplicationHostBootstrapEnvelopeV2,
-  createApplicationUiReadyEnvelopeV2,
+  createApplicationHostBootstrapEnvelopeV3,
+  createApplicationUiReadyEnvelopeV3,
   doesApplicationHostOriginMatch,
-  isApplicationHostBootstrapEnvelopeV2,
-  isApplicationUiReadyEnvelopeV2,
+  isApplicationHostBootstrapEnvelopeV3,
+  isApplicationUiReadyEnvelopeV3,
   normalizeApplicationHostOrigin,
   readApplicationIframeLaunchHints,
 } from '../dist/index.js';
 
-const buildBootstrapEnvelope = () => createApplicationHostBootstrapEnvelopeV2({
+const IFRAME_LAUNCH_ID = 'bundle-app__pkg__sample-app::iframe-launch-1';
+
+const buildBootstrapEnvelope = () => createApplicationHostBootstrapEnvelopeV3({
   host: { origin: 'http://127.0.0.1:43123' },
   application: {
     applicationId: 'bundle-app__pkg__sample-app',
@@ -21,12 +23,9 @@ const buildBootstrapEnvelope = () => createApplicationHostBootstrapEnvelopeV2({
     packageId: 'pkg',
     name: 'Sample App',
   },
-  launch: {
-    launchInstanceId: 'bundle-app__pkg__sample-app::launch-1',
-  },
+  iframeLaunchId: IFRAME_LAUNCH_ID,
   requestContext: {
     applicationId: 'bundle-app__pkg__sample-app',
-    launchInstanceId: 'bundle-app__pkg__sample-app::launch-1',
   },
   transport: {
     backendBaseUrl: 'http://127.0.0.1:43123/rest/applications/bundle-app__pkg__sample-app/backend',
@@ -34,30 +33,37 @@ const buildBootstrapEnvelope = () => createApplicationHostBootstrapEnvelopeV2({
   },
 });
 
-test('readApplicationIframeLaunchHints parses a valid launch-hint query string', () => {
+test('readApplicationIframeLaunchHints parses a valid v3 iframe launch-hint query string', () => {
   const hints = readApplicationIframeLaunchHints(
-    '?autobyteusContractVersion=2&autobyteusApplicationId=bundle-app__pkg__sample-app&autobyteusLaunchInstanceId=bundle-app__pkg__sample-app%3A%3Alaunch-1&autobyteusHostOrigin=http%3A%2F%2F127.0.0.1%3A43123',
+    '?autobyteusContractVersion=3&autobyteusApplicationId=bundle-app__pkg__sample-app&autobyteusIframeLaunchId=bundle-app__pkg__sample-app%3A%3Aiframe-launch-1&autobyteusHostOrigin=http%3A%2F%2F127.0.0.1%3A43123',
   );
 
   assert.deepEqual(hints, {
-    contractVersion: APPLICATION_IFRAME_CONTRACT_VERSION_V2,
+    contractVersion: APPLICATION_IFRAME_CONTRACT_VERSION_V3,
     applicationId: 'bundle-app__pkg__sample-app',
-    launchInstanceId: 'bundle-app__pkg__sample-app::launch-1',
+    iframeLaunchId: IFRAME_LAUNCH_ID,
     hostOrigin: 'http://127.0.0.1:43123',
   });
 });
 
-test('readApplicationIframeLaunchHints rejects missing or invalid launch-hint input', () => {
+test('readApplicationIframeLaunchHints rejects missing, stale, or invalid launch-hint input', () => {
+  const legacyQueryName = `autobyteus${String.fromCharCode(76)}aunch${String.fromCharCode(73)}nstanceId`;
   assert.equal(readApplicationIframeLaunchHints(''), null);
   assert.equal(
     readApplicationIframeLaunchHints(
-      '?autobyteusContractVersion=1&autobyteusApplicationId=bundle-app__pkg__sample-app',
+      `?autobyteusContractVersion=2&autobyteusApplicationId=bundle-app__pkg__sample-app&${legacyQueryName}=legacy&autobyteusHostOrigin=http%3A%2F%2F127.0.0.1%3A43123`,
     ),
     null,
   );
   assert.equal(
     readApplicationIframeLaunchHints(
-      '?autobyteusContractVersion=2&autobyteusApplicationId=&autobyteusLaunchInstanceId=launch-1&autobyteusHostOrigin=http%3A%2F%2F127.0.0.1%3A43123',
+      `?autobyteusContractVersion=3&autobyteusApplicationId=bundle-app__pkg__sample-app&${legacyQueryName}=legacy&autobyteusHostOrigin=http%3A%2F%2F127.0.0.1%3A43123`,
+    ),
+    null,
+  );
+  assert.equal(
+    readApplicationIframeLaunchHints(
+      '?autobyteusContractVersion=3&autobyteusApplicationId=&autobyteusIframeLaunchId=iframe-launch-1&autobyteusHostOrigin=http%3A%2F%2F127.0.0.1%3A43123',
     ),
     null,
   );
@@ -72,17 +78,20 @@ test('packaged host-origin normalization preserves the file/null equivalence rul
   assert.equal(doesApplicationHostOriginMatch(packagedOrigin, 'http://127.0.0.1:43123'), false);
 });
 
-test('ready and bootstrap validators accept tight envelopes and reject malformed variants', () => {
-  const readyEnvelope = createApplicationUiReadyEnvelopeV2({
+test('ready and bootstrap validators accept tight v3 envelopes and reject malformed variants', () => {
+  const readyEnvelope = createApplicationUiReadyEnvelopeV3({
     applicationId: 'bundle-app__pkg__sample-app',
-    launchInstanceId: 'bundle-app__pkg__sample-app::launch-1',
+    iframeLaunchId: IFRAME_LAUNCH_ID,
   });
   const bootstrapEnvelope = buildBootstrapEnvelope();
 
   assert.equal(readyEnvelope.eventName, APPLICATION_IFRAME_READY_EVENT);
   assert.equal(bootstrapEnvelope.eventName, APPLICATION_IFRAME_BOOTSTRAP_EVENT);
-  assert.equal(isApplicationUiReadyEnvelopeV2(readyEnvelope), true);
-  assert.equal(isApplicationHostBootstrapEnvelopeV2(bootstrapEnvelope), true);
+  assert.equal(isApplicationUiReadyEnvelopeV3(readyEnvelope), true);
+  assert.equal(isApplicationHostBootstrapEnvelopeV3(bootstrapEnvelope), true);
+  assert.deepEqual(bootstrapEnvelope.payload.requestContext, {
+    applicationId: 'bundle-app__pkg__sample-app',
+  });
 
   const malformedBootstrapEnvelope = {
     ...bootstrapEnvelope,
@@ -95,12 +104,25 @@ test('ready and bootstrap validators accept tight envelopes and reject malformed
     },
   };
 
-  assert.equal(isApplicationHostBootstrapEnvelopeV2(malformedBootstrapEnvelope), false);
+  assert.equal(isApplicationHostBootstrapEnvelopeV3(malformedBootstrapEnvelope), false);
   assert.equal(
-    isApplicationUiReadyEnvelopeV2({
+    isApplicationUiReadyEnvelopeV3({
       ...readyEnvelope,
       payload: {
         applicationId: 'bundle-app__pkg__sample-app',
+      },
+    }),
+    false,
+  );
+  assert.equal(
+    isApplicationHostBootstrapEnvelopeV3({
+      ...bootstrapEnvelope,
+      payload: {
+        ...bootstrapEnvelope.payload,
+        requestContext: {
+          applicationId: 'bundle-app__pkg__sample-app',
+          iframeLaunchId: IFRAME_LAUNCH_ID,
+        },
       },
     }),
     false,

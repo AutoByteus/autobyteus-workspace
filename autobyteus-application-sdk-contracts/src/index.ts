@@ -13,7 +13,7 @@ export * from "./application-iframe-contract.js";
 
 export const APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1 = "1" as const;
 export const APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V2 = "2" as const;
-export const APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V2 = "2" as const;
+export const APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V3 = "3" as const;
 export const APPLICATION_EVENT_DELIVERY_SEMANTICS = "AT_LEAST_ONCE" as const;
 
 export type ApplicationRouteMethod =
@@ -46,7 +46,7 @@ export type ApplicationBackendBundleManifestV1 = {
   };
   sdkCompatibility: {
     backendDefinitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V2;
-    frontendSdkContractVersion: typeof APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V2;
+    frontendSdkContractVersion: typeof APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V3;
   };
   supportedExposures: ApplicationBackendSupportedExposures;
   migrationsDir?: string | null;
@@ -55,7 +55,6 @@ export type ApplicationBackendBundleManifestV1 = {
 
 export type ApplicationRequestContext = {
   applicationId: string;
-  launchInstanceId?: string | null;
 };
 
 export type ApplicationStorageContext = {

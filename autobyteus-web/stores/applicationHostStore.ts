@@ -2,14 +2,14 @@ import { defineStore } from 'pinia'
 import { computed, ref, watch } from 'vue'
 import { useApplicationsCapabilityStore } from '~/stores/applicationsCapabilityStore'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
-import { createApplicationLaunchInstanceId } from '~/utils/application/applicationLaunchDescriptor'
+import { createApplicationIframeLaunchId } from '~/utils/application/applicationLaunchDescriptor'
 
 export type ApplicationHostLaunchStatus = 'idle' | 'preparing' | 'ready' | 'failed'
 
 export type ApplicationHostLaunchState = {
   applicationId: string
   status: ApplicationHostLaunchStatus
-  launchInstanceId: string | null
+  iframeLaunchId: string | null
   engineState: string | null
   startedAt: string | null
   lastFailure: string | null
@@ -26,7 +26,7 @@ type EnsureReadyResponse = {
 const createIdleLaunchState = (applicationId: string): ApplicationHostLaunchState => ({
   applicationId,
   status: 'idle',
-  launchInstanceId: null,
+  iframeLaunchId: null,
   engineState: null,
   startedAt: null,
   lastFailure: null,
@@ -183,7 +183,7 @@ export const useApplicationHostStore = defineStore('applicationHost', () => {
       return setLaunchState({
         applicationId: normalizedApplicationId,
         status: 'ready',
-        launchInstanceId: createApplicationLaunchInstanceId(normalizedApplicationId, nextGeneration),
+        iframeLaunchId: createApplicationIframeLaunchId(normalizedApplicationId, nextGeneration),
         engineState: typeof engineStatus.state === 'string' ? engineStatus.state : null,
         startedAt: typeof engineStatus.startedAt === 'string' ? engineStatus.startedAt : null,
         lastFailure: typeof engineStatus.lastFailure === 'string' ? engineStatus.lastFailure : null,
@@ -198,7 +198,7 @@ export const useApplicationHostStore = defineStore('applicationHost', () => {
       setLaunchState({
         applicationId: normalizedApplicationId,
         status: 'failed',
-        launchInstanceId: null,
+        iframeLaunchId: null,
         engineState: null,
         startedAt: null,
         lastFailure: null,

@@ -105,19 +105,27 @@ const buildHostedBackendNotificationsUrl = (applicationId: string, baseUrl: stri
 const createHostedBriefStudioClient = async (
   applicationId: string,
   baseUrl: string,
-  requestContext: { applicationId: string; launchInstanceId: string },
+  requestContext: { applicationId: string },
 ) => {
   const { createBriefStudioGraphqlClient } = await import(
     "../../../../applications/brief-studio/dist/importable-package/applications/brief-studio/ui/generated/graphql-client.js"
   );
-  return createBriefStudioGraphqlClient({
-    application: { applicationId },
+  const {
+    createApplicationBackendMountTransport,
+    createApplicationClient,
+  } = await import(
+    "../../../../applications/brief-studio/dist/importable-package/applications/brief-studio/ui/vendor/application-frontend-sdk.js"
+  );
+
+  const applicationClient = createApplicationClient({
+    applicationId,
     requestContext,
-    transport: {
+    transport: createApplicationBackendMountTransport({
       backendBaseUrl: buildHostedBackendBaseUrl(applicationId, baseUrl),
       backendNotificationsUrl: buildHostedBackendNotificationsUrl(applicationId, baseUrl),
-    },
+    }),
   });
+  return createBriefStudioGraphqlClient(applicationClient);
 };
 
 const waitForSocketOpen = async (socket: WebSocket): Promise<void> =>
@@ -209,7 +217,7 @@ const expectOkJson = async <T>(response: Response, label: string): Promise<T> =>
 const postGraphql = async (
   applicationId: string,
   baseUrl: string,
-  requestContext: { applicationId: string; launchInstanceId: string },
+  requestContext: { applicationId: string },
   request: {
     query: string;
     operationName?: string | null;
@@ -749,10 +757,8 @@ describe("Brief Studio imported package integration", () => {
     expect(applications[0]!.packageId).not.toBe(BUILT_IN_APPLICATION_PACKAGE_ID);
     expect(await bundleService.getApplicationById(applicationId)).not.toBeNull();
 
-    const launchInstanceId = `${applicationId}::launch-1`;
     const requestContext = {
       applicationId,
-      launchInstanceId,
     };
 
     const stoppedStatus = await expectOkJson<{
@@ -1343,10 +1349,8 @@ describe("Brief Studio imported package integration", () => {
   it("preserves same-binding early final projection when the packaged Brief Studio GraphQL client launches through the hosted backend mount", async () => {
     expect(await bundleService.getApplicationById(applicationId)).not.toBeNull();
 
-    const launchInstanceId = `${applicationId}::launch-race`;
     const requestContext = {
       applicationId,
-      launchInstanceId,
     };
     const client = await createHostedBriefStudioClient(applicationId, baseUrl, requestContext);
 

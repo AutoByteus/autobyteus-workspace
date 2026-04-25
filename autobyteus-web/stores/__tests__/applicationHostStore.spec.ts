@@ -88,14 +88,14 @@ describe('applicationHostStore', () => {
 
     await expect(pendingLaunch).resolves.toMatchObject({
       status: 'idle',
-      launchInstanceId: null,
+      iframeLaunchId: null,
     })
 
     expect(store.getLaunchState('bundle-app__pkg__brief-studio').status).toBe('idle')
-    expect(store.getLaunchState('bundle-app__pkg__brief-studio').launchInstanceId).toBeNull()
+    expect(store.getLaunchState('bundle-app__pkg__brief-studio').iframeLaunchId).toBeNull()
   })
 
-  it('creates a fresh launchInstanceId after clearLaunchState and later route re-entry', async () => {
+  it('creates a fresh iframeLaunchId after clearLaunchState and later route re-entry', async () => {
     fetchMock
       .mockResolvedValueOnce(okJson({
         state: 'ready',
@@ -111,14 +111,14 @@ describe('applicationHostStore', () => {
     const store = useApplicationHostStore()
 
     const firstLaunch = await store.startLaunch('bundle-app__pkg__brief-studio')
-    expect(firstLaunch.launchInstanceId).toBe('bundle-app__pkg__brief-studio::launch-1')
+    expect(firstLaunch.iframeLaunchId).toBe('bundle-app__pkg__brief-studio::iframe-launch-1')
 
     store.clearLaunchState('bundle-app__pkg__brief-studio')
     expect(store.getLaunchState('bundle-app__pkg__brief-studio').status).toBe('idle')
 
     const secondLaunch = await store.startLaunch('bundle-app__pkg__brief-studio')
 
-    expect(secondLaunch.launchInstanceId).toBe('bundle-app__pkg__brief-studio::launch-2')
-    expect(secondLaunch.launchInstanceId).not.toBe(firstLaunch.launchInstanceId)
+    expect(secondLaunch.iframeLaunchId).toBe('bundle-app__pkg__brief-studio::iframe-launch-2')
+    expect(secondLaunch.iframeLaunchId).not.toBe(firstLaunch.iframeLaunchId)
   })
 })

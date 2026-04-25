@@ -222,7 +222,7 @@
           </div>
 
           <div
-            v-else-if="hostLaunchLoading && !launchState.launchInstanceId"
+            v-else-if="hostLaunchLoading && !launchState.iframeLaunchId"
             class="flex min-h-0 flex-1 items-center justify-center px-6"
             data-testid="application-immersive-loading-canvas"
           >
@@ -238,7 +238,7 @@
           </div>
 
           <div
-            v-else-if="hostLaunchError && !launchState.launchInstanceId"
+            v-else-if="hostLaunchError && !launchState.iframeLaunchId"
             class="flex min-h-0 flex-1 items-center justify-center px-6"
             data-testid="application-immersive-error-canvas"
           >
@@ -270,10 +270,10 @@
           </div>
 
           <ApplicationSurface
-            v-else-if="launchState.launchInstanceId"
+            v-else-if="launchState.iframeLaunchId"
             class="flex-1"
             :application="application"
-            :launch-instance-id="launchState.launchInstanceId"
+            :iframe-launch-id="launchState.iframeLaunchId"
           />
 
           <div
@@ -387,12 +387,6 @@ const detailItems = computed<ShellDetailItem[]>(() => {
     })
   }
 
-  if (launchState.value.launchInstanceId) {
-    items.push({
-      label: $t('applications.components.applications.ApplicationShell.launchInstanceIdLabel'),
-      value: launchState.value.launchInstanceId,
-    })
-  }
 
   if (launchState.value.startedAt) {
     items.push({

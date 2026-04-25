@@ -41,7 +41,7 @@ startHostedApplication({
 - `applicationClient` is the generic hosted backend-mount client created after bootstrap validation succeeds.
 - `bootstrap.transport.backendBaseUrl` is the one authoritative hosted backend-mount URL for app business APIs.
 - GraphQL, routes, query, and command URLs derive from that base instead of becoming parallel sources of truth.
-- `requestContext.launchInstanceId` is optional browser-launch correlation context. It is not business identity.
+- `bootstrap.iframeLaunchId` is iframe-bootstrap correlation context only; `applicationClient.getApplicationInfo().requestContext` contains `{ applicationId }`.
 - `subscribeNotifications` is optional; omit it if the app UI does not use backend notifications.
 - The SDK does not own app business schemas or generated clients. Those stay inside each application workspace.
 

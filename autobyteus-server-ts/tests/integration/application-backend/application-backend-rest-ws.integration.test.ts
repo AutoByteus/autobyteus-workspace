@@ -84,8 +84,8 @@ const createBundle = (applicationRootPath: string): ApplicationBundle => ({
     distribution: "self-contained",
     targetRuntime: { engine: "node", semver: ">=22 <23" },
     sdkCompatibility: {
-      backendDefinitionContractVersion: "1",
-      frontendSdkContractVersion: "1",
+      backendDefinitionContractVersion: "2",
+      frontendSdkContractVersion: "3",
     },
     supportedExposures: {
       queries: true,
@@ -218,7 +218,7 @@ const ensureTables = (storage) => {
 }
 
 export default {
-  definitionContractVersion: '1',
+  definitionContractVersion: '2',
   lifecycle: {
     onStart(ctx) {
       ensureTables(ctx.storage)
@@ -409,7 +409,6 @@ export default {
         body: JSON.stringify({
           requestContext: {
             applicationId: APPLICATION_ID,
-            applicationSessionId: "session-query",
           },
           input: {
             ticketId: "t-1",
@@ -421,7 +420,7 @@ export default {
     const queryJson = await queryResponse.json() as {
       result: {
         input: { ticketId: string };
-        requestContext: { applicationId: string; applicationSessionId: string };
+        requestContext: { applicationId: string };
         appDatabasePath: string;
         handledEvents: unknown[];
       };
@@ -430,7 +429,6 @@ export default {
       input: { ticketId: "t-1" },
       requestContext: {
         applicationId: APPLICATION_ID,
-        applicationSessionId: "session-query",
       },
       handledEvents: [],
     });
@@ -442,8 +440,8 @@ export default {
       (message) =>
         message.type === "notification"
         && message.notification.topic === "query.called"
-        && (message.notification.payload as { requestContext?: { applicationSessionId?: string } }).requestContext
-          ?.applicationSessionId === "session-query",
+        && (message.notification.payload as { requestContext?: { applicationId?: string } }).requestContext
+          ?.applicationId === APPLICATION_ID,
       "query.called",
     );
     expect(queryNotification).toMatchObject({
@@ -460,7 +458,6 @@ export default {
         method: "POST",
         headers: {
           "content-type": "application/json",
-          "x-autobyteus-application-session-id": "session-header",
         },
         body: JSON.stringify({
           input: {
@@ -478,7 +475,6 @@ export default {
         },
         requestContext: {
           applicationId: APPLICATION_ID,
-          applicationSessionId: "session-header",
         },
       },
     });
@@ -489,25 +485,23 @@ export default {
       (message) =>
         message.type === "notification"
         && message.notification.topic === "command.called"
-        && (message.notification.payload as { requestContext?: { applicationSessionId?: string } }).requestContext
-          ?.applicationSessionId === "session-header",
+        && (message.notification.payload as { requestContext?: { applicationId?: string } }).requestContext
+          ?.applicationId === APPLICATION_ID,
       "command.called",
     );
 
     const routeResponse = await fetch(
-      `${baseUrl}/rest/applications/${APPLICATION_ID}/backend/routes/tickets/t-9?applicationSessionId=session-route&draft=true`,
+      `${baseUrl}/rest/applications/${APPLICATION_ID}/backend/routes/tickets/t-9?draft=true`,
     );
     expect(routeResponse.status).toBe(200);
     expect(routeResponse.headers.get("x-ticket-id")).toBe("t-9");
     expect(await routeResponse.json()).toEqual({
       params: { id: "t-9" },
       query: {
-        applicationSessionId: "session-route",
         draft: "true",
       },
       requestContext: {
         applicationId: APPLICATION_ID,
-        applicationSessionId: "session-route",
       },
     });
 
@@ -517,8 +511,8 @@ export default {
       (message) =>
         message.type === "notification"
         && message.notification.topic === "route.called"
-        && (message.notification.payload as { requestContext?: { applicationSessionId?: string } }).requestContext
-          ?.applicationSessionId === "session-route",
+        && (message.notification.payload as { requestContext?: { applicationId?: string } }).requestContext
+          ?.applicationId === APPLICATION_ID,
       "route.called",
     );
 
@@ -532,7 +526,6 @@ export default {
         body: JSON.stringify({
           requestContext: {
             applicationId: APPLICATION_ID,
-            applicationSessionId: "session-graphql",
           },
           request: {
             query: "query Ping($id: ID!) { ping(id: $id) }",
@@ -553,7 +546,6 @@ export default {
         },
         requestContext: {
           applicationId: APPLICATION_ID,
-          applicationSessionId: "session-graphql",
         },
       },
     });
@@ -564,8 +556,8 @@ export default {
       (message) =>
         message.type === "notification"
         && message.notification.topic === "graphql.called"
-        && (message.notification.payload as { requestContext?: { applicationSessionId?: string } }).requestContext
-          ?.applicationSessionId === "session-graphql",
+        && (message.notification.payload as { requestContext?: { applicationId?: string } }).requestContext
+          ?.applicationId === APPLICATION_ID,
       "graphql.called",
     );
 
@@ -591,7 +583,7 @@ export default {
         routes: [{ method: "GET", path: "/tickets/:id" }],
         graphql: true,
         notifications: true,
-        eventHandlers: ["ARTIFACT"],
+        eventHandlers: [],
       },
     });
   }, 20_000);
@@ -607,7 +599,6 @@ export default {
         body: JSON.stringify({
           requestContext: {
             applicationId: "other-app",
-            applicationSessionId: "session-1",
           },
           input: {
             title: "Hello",
@@ -625,7 +616,6 @@ export default {
         },
         requestContext: {
           applicationId: APPLICATION_ID,
-          applicationSessionId: "session-1",
         },
       },
     });

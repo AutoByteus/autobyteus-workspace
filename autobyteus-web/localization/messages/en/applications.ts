@@ -120,7 +120,6 @@ const applicationMessages = {
   'applications.components.applications.ApplicationShell.businessOverviewHelp': 'Enter the app when setup is ready. Technical metadata stays hidden unless you explicitly open it.',
   'applications.components.applications.ApplicationShell.showTechnicalDetails': 'Show technical details',
   'applications.components.applications.ApplicationShell.hideTechnicalDetails': 'Hide technical details',
-  'applications.components.applications.ApplicationShell.launchInstanceIdLabel': 'Launch instance id',
   'applications.components.applications.ApplicationShell.engineStateLabel': 'Engine state',
   'applications.components.applications.ApplicationShell.startedAtLabel': 'Engine started',
   'applications.components.applications.ApplicationSurface.applicationUnavailable': 'Application launch is not ready',

@@ -1,12 +1,12 @@
 import {
   APPLICATION_IFRAME_BOOTSTRAP_EVENT,
-  APPLICATION_IFRAME_CONTRACT_VERSION_V2,
-  createApplicationUiReadyEnvelopeV2,
+  APPLICATION_IFRAME_CONTRACT_VERSION_V3,
+  createApplicationUiReadyEnvelopeV3,
   doesApplicationHostOriginMatch,
-  isApplicationHostBootstrapEnvelopeV2,
-  isApplicationIframeEnvelopeV2,
+  isApplicationHostBootstrapEnvelopeV3,
+  isApplicationIframeEnvelopeV3,
   readApplicationIframeLaunchHints,
-  type ApplicationBootstrapPayloadV2,
+  type ApplicationBootstrapPayloadV3,
 } from "@autobyteus/application-sdk-contracts";
 import type { ApplicationClient } from "./application-client.js";
 import { createApplicationClient } from "./application-client.js";
@@ -42,7 +42,7 @@ type HostedApplicationWindowLike = {
 };
 
 export type HostedApplicationBootstrappedContext = {
-  bootstrap: ApplicationBootstrapPayloadV2;
+  bootstrap: ApplicationBootstrapPayloadV3;
   applicationClient: ApplicationClient;
   rootElement: HostedApplicationRootElement;
 };
@@ -128,7 +128,7 @@ export const startHostedApplication = (
     setState("startup_failed", message);
   };
 
-  const beginStartup = async (bootstrap: ApplicationBootstrapPayloadV2): Promise<void> => {
+  const beginStartup = async (bootstrap: ApplicationBootstrapPayloadV3): Promise<void> => {
     cleanup();
     setState("starting_app");
 
@@ -177,20 +177,20 @@ export const startHostedApplication = (
     }
 
     const message = event.data;
-    if (!isApplicationIframeEnvelopeV2(message)) {
+    if (!isApplicationIframeEnvelopeV3(message)) {
       return;
     }
     if (message.eventName !== APPLICATION_IFRAME_BOOTSTRAP_EVENT) {
       return;
     }
-    if (message.contractVersion !== APPLICATION_IFRAME_CONTRACT_VERSION_V2) {
+    if (message.contractVersion !== APPLICATION_IFRAME_CONTRACT_VERSION_V3) {
       bootstrapHandled = true;
       failStartup(
-        `Unsupported hosted application bootstrap contract version \"${message.contractVersion}\". Expected \"${APPLICATION_IFRAME_CONTRACT_VERSION_V2}\".`,
+        `Unsupported hosted application bootstrap contract version \"${message.contractVersion}\". Expected \"${APPLICATION_IFRAME_CONTRACT_VERSION_V3}\".`,
       );
       return;
     }
-    if (!isApplicationHostBootstrapEnvelopeV2(message)) {
+    if (!isApplicationHostBootstrapEnvelopeV3(message)) {
       bootstrapHandled = true;
       failStartup("The hosted application received an invalid bootstrap payload.");
       return;
@@ -199,13 +199,12 @@ export const startHostedApplication = (
     const bootstrap = message.payload;
     if (
       bootstrap.application.applicationId !== launchHints.applicationId
-      || bootstrap.launch.launchInstanceId !== launchHints.launchInstanceId
+      || bootstrap.iframeLaunchId !== launchHints.iframeLaunchId
       || bootstrap.requestContext.applicationId !== launchHints.applicationId
-      || bootstrap.requestContext.launchInstanceId !== launchHints.launchInstanceId
       || bootstrap.host.origin !== launchHints.hostOrigin
     ) {
       bootstrapHandled = true;
-      failStartup("The hosted application received bootstrap data for a different launch instance.");
+      failStartup("The hosted application received bootstrap data for a different iframe launch.");
       return;
     }
 
@@ -219,9 +218,9 @@ export const startHostedApplication = (
     startupWindow.addEventListener("message", handleMessage);
     try {
       startupWindow.parent.postMessage(
-        createApplicationUiReadyEnvelopeV2({
+        createApplicationUiReadyEnvelopeV3({
           applicationId: launchHints.applicationId,
-          launchInstanceId: launchHints.launchInstanceId,
+          iframeLaunchId: launchHints.iframeLaunchId,
         }),
         "*",
       );

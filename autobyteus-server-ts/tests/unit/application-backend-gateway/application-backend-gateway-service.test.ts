@@ -16,7 +16,7 @@ describe("ApplicationBackendGatewayService", () => {
     return { promise, resolve, reject };
   };
 
-  it("keeps the backend gateway app-scoped and forwards optional launch context explicitly", async () => {
+  it("keeps the backend gateway app-scoped and forwards app request context explicitly", async () => {
     const bundleService = {
       getApplicationById: vi.fn().mockResolvedValue({ id: "app-1" }),
     };
@@ -37,7 +37,6 @@ describe("ApplicationBackendGatewayService", () => {
       "tickets.get",
       {
         applicationId: "app-1",
-        launchInstanceId: "launch-123",
       },
       { ticketId: "t-1" },
     );
@@ -47,7 +46,6 @@ describe("ApplicationBackendGatewayService", () => {
       queryName: "tickets.get",
       requestContext: {
         applicationId: "app-1",
-        launchInstanceId: "launch-123",
       },
       input: { ticketId: "t-1" },
     });
@@ -72,7 +70,6 @@ describe("ApplicationBackendGatewayService", () => {
       "tickets.create",
       {
         applicationId: "other-app",
-        launchInstanceId: null,
       },
       { title: "Hello" },
     )).rejects.toThrow("requestContext.applicationId must match the route applicationId");
@@ -130,7 +127,7 @@ describe("ApplicationBackendGatewayService", () => {
             targetRuntime: { engine: "node", semver: ">=22 <23" },
             sdkCompatibility: {
               backendDefinitionContractVersion: "2",
-              frontendSdkContractVersion: "2",
+              frontendSdkContractVersion: "3",
             },
             supportedExposures: {
               queries: true,
@@ -178,7 +175,7 @@ describe("ApplicationBackendGatewayService", () => {
                 targetRuntime: { engine: "node", semver: ">=22 <23" },
                 sdkCompatibility: {
                   backendDefinitionContractVersion: "2",
-                  frontendSdkContractVersion: "2",
+                  frontendSdkContractVersion: "3",
                 },
                 supportedExposures: {
                   queries: true,

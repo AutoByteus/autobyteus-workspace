@@ -21,7 +21,6 @@ export default defineApplication({
           data: {
             status: {
               applicationId: context.requestContext?.applicationId ?? null,
-              launchInstanceId: context.requestContext?.launchInstanceId ?? null,
             },
           },
         }

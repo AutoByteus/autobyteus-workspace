@@ -24,14 +24,14 @@ describe('attachRendererConsoleDiagnostics', () => {
       'console-message',
       {},
       1,
-      '[ApplicationSurface] committed launch descriptor sessionId=session-1 launchInstanceId=session-1::launch-1',
+      '[ApplicationSurface] committed launch descriptor sessionId=session-1 iframeLaunchId=session-1::iframe-launch-1',
       21,
       'file:///Applications/AutoByteus.app/Contents/Resources/app/index.html',
     );
 
     expect(logger.child).toHaveBeenCalledWith('renderer.console');
     expect(childLogger.info).toHaveBeenCalledWith(
-      '[ApplicationSurface] committed launch descriptor sessionId=session-1 launchInstanceId=session-1::launch-1 (nodeId=embedded, source=file:///Applications/AutoByteus.app/Contents/Resources/app/index.html, line=21)',
+      '[ApplicationSurface] committed launch descriptor sessionId=session-1 iframeLaunchId=session-1::iframe-launch-1 (nodeId=embedded, source=file:///Applications/AutoByteus.app/Contents/Resources/app/index.html, line=21)',
     );
   });
 

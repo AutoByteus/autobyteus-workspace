@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import {
-  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V2,
+  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V3,
   APPLICATION_MANIFEST_VERSION_V3,
   type ApplicationManifestV3,
   type ApplicationResourceSlotDeclaration,
@@ -383,7 +383,7 @@ export const parseApplicationManifest = (
     (manifest.ui as Record<string, unknown> | undefined)?.frontendSdkContractVersion,
     "ui.frontendSdkContractVersion",
   );
-  if (frontendSdkContractVersion !== APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V2) {
+  if (frontendSdkContractVersion !== APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V3) {
     throw new ApplicationManifestParseError(
       `Unsupported ui.frontendSdkContractVersion '${frontendSdkContractVersion}'.`,
     );

@@ -90,7 +90,7 @@ const writeApplicationBundle = async (packageRoot: string, applicationId: string
     manifestVersion: "3",
     id: applicationId,
     name: applicationId,
-    ui: { entryHtml: "ui/index.html", frontendSdkContractVersion: "2" },
+    ui: { entryHtml: "ui/index.html", frontendSdkContractVersion: "3" },
     backend: { bundleManifest: "backend/bundle.json" },
     resourceSlots: [
       {
@@ -112,7 +112,7 @@ const writeApplicationBundle = async (packageRoot: string, applicationId: string
     moduleFormat: "esm",
     distribution: "self-contained",
     targetRuntime: { engine: "node", semver: ">=22 <23" },
-    sdkCompatibility: { backendDefinitionContractVersion: "2", frontendSdkContractVersion: "2" },
+    sdkCompatibility: { backendDefinitionContractVersion: "2", frontendSdkContractVersion: "3" },
     supportedExposures: { queries: true, commands: true, routes: true, graphql: true, notifications: true, eventHandlers: true },
     migrationsDir: "backend/migrations",
     assetsDir: "backend/assets",

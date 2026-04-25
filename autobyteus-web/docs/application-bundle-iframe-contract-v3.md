@@ -1,25 +1,35 @@
-# Application bundle iframe contract
+# Application bundle iframe contract v3
 
 This document describes the current iframe/bootstrap contract used by bundled applications.
 
-The authoritative code owner for the runtime contract now lives in:
+The authoritative runtime contract lives in:
 
 - `../../autobyteus-application-sdk-contracts/src/application-iframe-contract.ts`
 
 ## Key contract points
 
 - the browser host owns launch readiness and iframe bootstrap
+- each route entry/reload gets one ephemeral `iframeLaunchId` for iframe bootstrap correlation only
 - the iframe app sends `autobyteus.application.ui.ready`
 - the host replies with `autobyteus.application.host.bootstrap`
 - bundle-side startup ownership belongs to `startHostedApplication(...)` in `@autobyteus/application-frontend-sdk`
 - the bootstrap payload carries one authoritative hosted backend-mount URL: `transport.backendBaseUrl`
 - app business APIs derive GraphQL, route, query, and command endpoints from `backendBaseUrl`
-- only non-derivable channels such as `backendNotificationsUrl` are carried alongside it
+- normal app backend request context contains only the durable `applicationId`
+
+## URL launch hints
+
+The host appends these query hints to the bundle entry HTML URL:
+
+- `autobyteusContractVersion=3`
+- `autobyteusApplicationId=<application id>`
+- `autobyteusIframeLaunchId=<ephemeral iframe bootstrap id>`
+- `autobyteusHostOrigin=<normalized host origin>`
 
 ## Bootstrap payload shape
 
 ```ts
-export type ApplicationBootstrapPayloadV2 = {
+export type ApplicationBootstrapPayloadV3 = {
   host: {
     origin: string
   }
@@ -29,12 +39,9 @@ export type ApplicationBootstrapPayloadV2 = {
     packageId: string
     name: string
   }
-  launch: {
-    launchInstanceId: string
-  }
+  iframeLaunchId: string
   requestContext: {
     applicationId: string
-    launchInstanceId: string
   }
   transport: {
     backendBaseUrl: string | null
@@ -42,6 +49,8 @@ export type ApplicationBootstrapPayloadV2 = {
   }
 }
 ```
+
+The payload intentionally does **not** contain a platform-owned execution id, app session id, or prelaunched runtime summary. `iframeLaunchId` is not a durable app instance, run, or business identity.
 
 ## Frontend usage pattern
 

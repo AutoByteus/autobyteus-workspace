@@ -28,7 +28,7 @@ Each application bundle lives under `applications/<application-id>/` and must sa
 - `manifestVersion` must be `"3"`.
 - `id` must match the bundle folder name.
 - `ui.entryHtml` is required and must point to a file under `ui/`.
-- `ui.frontendSdkContractVersion` must be `"2"`.
+- `ui.frontendSdkContractVersion` must be `"3"`.
 - `icon` is optional and must also stay under `ui/`.
 - `backend.bundleManifest` is required and must point to a file under `backend/`.
 
@@ -42,7 +42,7 @@ There is no longer a bundle-level `runtimeTarget`. Instead, bundle-owned agents 
 - `distribution` must be `"self-contained"`.
 - `targetRuntime.engine` must be `"node"` and `targetRuntime.semver` declares the supported Node range.
 - `sdkCompatibility.backendDefinitionContractVersion` must be `"2"`.
-- `sdkCompatibility.frontendSdkContractVersion` must be `"2"`.
+- `sdkCompatibility.frontendSdkContractVersion` must be `"3"`.
 - `supportedExposures` declares which backend surfaces are allowed (`queries`, `commands`, `routes`, `graphql`, `notifications`, `eventHandlers`).
 - `migrationsDir` and `assetsDir` are optional, but when present they must also stay under `backend/`.
 
@@ -123,7 +123,7 @@ These are authoring/sample roots, not current shipped built-ins. Future built-in
 - [`application_engine.md`](./application_engine.md)
 - [`application_storage.md`](./application_storage.md)
 - `../../../autobyteus-web/docs/applications.md`
-- `../../../autobyteus-web/docs/application-bundle-iframe-contract-v1.md`
+- `../../../autobyteus-web/docs/application-bundle-iframe-contract-v3.md`
 - `../../../autobyteus-application-sdk-contracts/README.md`
 - `../../../autobyteus-application-frontend-sdk/README.md`
 - `../../../autobyteus-application-backend-sdk/README.md`
