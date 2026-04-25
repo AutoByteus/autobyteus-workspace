@@ -39,6 +39,7 @@ const {
   },
   runHistoryStoreMock: {
     markTeamAsActive: vi.fn(),
+    markTeamAsInactive: vi.fn(),
     refreshTreeQuietly: vi.fn().mockResolvedValue(undefined),
     teamResumeConfigByTeamRunId: {} as Record<string, { isActive: boolean }>,
   },
@@ -165,12 +166,21 @@ describe('agentTeamRunStore', () => {
       ]),
     };
     teamContextsStoreMock.getTeamContextById.mockReturnValue(teamContext);
-    mockMutate.mockResolvedValue({});
+    mockMutate.mockResolvedValue({
+      data: {
+        terminateAgentTeamRun: {
+          success: true,
+          message: 'terminated',
+        },
+      },
+      errors: [],
+    });
 
     const store = useAgentTeamRunStore();
     store.connectToTeamStream('team-1');
-    await store.terminateTeamRun('team-1');
+    const result = await store.terminateTeamRun('team-1');
 
+    expect(result).toBe(true);
     expect(mockDisconnect).toHaveBeenCalledTimes(1);
     expect(teamContext.unsubscribe).toBeUndefined();
     expect(teamContext.isSubscribed).toBe(false);
@@ -181,6 +191,40 @@ describe('agentTeamRunStore', () => {
     expect(mockClearActivities).toHaveBeenCalledWith('agent-b');
     expect(teamContextsStoreMock.removeTeamContext).not.toHaveBeenCalled();
     expect(mockMutate).toHaveBeenCalledTimes(1);
+    expect(runHistoryStoreMock.markTeamAsInactive).toHaveBeenCalledWith('team-1');
+    expect(runHistoryStoreMock.refreshTreeQuietly).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not mark a persisted team inactive when backend termination fails', async () => {
+    const teamContext = {
+      teamRunId: 'team-terminate-fails-1',
+      isSubscribed: true,
+      currentStatus: AgentTeamStatus.Processing,
+      unsubscribe: undefined as undefined | (() => void),
+      members: new Map([
+        ['member-a', { state: { runId: 'agent-a', currentStatus: AgentStatus.ProcessingUserInput } }],
+      ]),
+    };
+    teamContextsStoreMock.getTeamContextById.mockReturnValue(teamContext);
+    mockMutate.mockResolvedValue({
+      data: {
+        terminateAgentTeamRun: {
+          success: false,
+          message: 'not found',
+        },
+      },
+      errors: [],
+    });
+
+    const store = useAgentTeamRunStore();
+    store.connectToTeamStream('team-terminate-fails-1');
+    const result = await store.terminateTeamRun('team-terminate-fails-1');
+
+    expect(result).toBe(false);
+    expect(mockDisconnect).not.toHaveBeenCalled();
+    expect(teamContext.isSubscribed).toBe(true);
+    expect(runHistoryStoreMock.markTeamAsInactive).not.toHaveBeenCalled();
+    expect(runHistoryStoreMock.refreshTreeQuietly).not.toHaveBeenCalled();
   });
 
   it('discardDraftTeamRun removes a temporary team locally without backend termination', () => {

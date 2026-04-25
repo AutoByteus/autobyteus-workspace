@@ -123,6 +123,17 @@ The frontend still creates a local temporary team context first, but mixed-runti
 
 This is the frontend contract that makes the backend `TeamBackendKind.MIXED` path reachable from the actual app UX rather than only from backend/API-only proof.
 
+## Stopped Team Follow-Up And Termination State
+
+`agentTeamRunStore.sendMessageToFocusedMember()` supports follow-up chat against existing team runs after local stop/termination:
+
+- temporary teams still create and promote a permanent backend `teamRunId` before first send;
+- persisted teams with cached inactive resume config call `RestoreAgentTeamRun` before send;
+- the backend team WebSocket connect and `SEND_MESSAGE` paths also resolve through `TeamRunService.resolveTeamRun(...)`, so the server can restore and rebind the stream session even when the frontend's resume cache is stale or absent; and
+- after a successful follow-up send, the run history cache is marked active and refreshed.
+
+`agentTeamRunStore.terminateTeamRun()` treats backend termination as the authority for persisted teams. It tears down local stream/member state and marks the team resume config inactive only after `TerminateAgentTeamRun` succeeds. If backend termination fails, the store returns `false` and leaves the current local stream/member state and run-history activity cache unchanged. Local temporary teams are the exception: they have no persisted backend runtime and are torn down locally.
+
 ## Reopen / Hydration Behavior
 
 `reconstructTeamRunConfigFromMetadata()` is the authoritative frontend reopen/hydration rule for existing team runs.
