@@ -4,7 +4,7 @@
 
 - Ticket: `restore-stopped-run-chat`
 - Date: `2026-04-25`
-- Current Status: `Finalized into personal without release/version bump`
+- Current Status: `Finalized into personal and released as v1.2.83`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-stopped-run-chat` (cleaned up after finalization)
 - Ticket branch: `codex/restore-stopped-run-chat`
 - Finalization target: `origin/personal` / local `personal`
@@ -166,9 +166,9 @@ Delivery-stage checks:
 
 ## Release Notes
 
-- Release notes required: `No`
-- Release notes artifact: `N/A`
-- Notes: User explicitly requested finalization without a new release/version. No release, version bump, tag, deployment, or publication work was performed.
+- Release notes required: `Yes` after later user release request
+- Release notes artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-stopped-run-chat/release-notes.md`
+- Notes: Release notes were committed, synced to `.github/release-notes/release-notes.md`, and used by the `v1.2.83` release helper command.
 
 ## User Verification
 
@@ -188,7 +188,17 @@ Delivery-stage checks:
 - Ticket branch push: `Completed`
 - Merge into target: `Completed`
 - Target push: `Completed`
-- Release/publication/deployment: `Not required — explicitly skipped per user request`
+- Release/publication/deployment: `Completed later via v1.2.83 after separate user release request`
 - Worktree cleanup: `Completed after target push`
 - Local ticket branch cleanup: `Completed`
 - Remote ticket branch cleanup: `Completed`
+
+## Release Record
+
+- Later release request: user tested latest `personal` and asked to release a new version on 2026-04-25.
+- Release notes commit: `53798881532f3fb2d807cf7605993241cc78d906`
+- Release/version commit: `5f7a4e505776a2f27328ed8b20f02cb2d755c60b`
+- Tag: `v1.2.83` (tag object `d98dd56f6782665d2c4e40ed53c6dfc4c43ef17d`)
+- Command: `pnpm release 1.2.83 -- --release-notes tickets/done/restore-stopped-run-chat/release-notes.md`
+- Result: `Completed`; `personal` and `v1.2.83` pushed to `origin`.
+- Release log: `/tmp/autobyteus-release-v1.2.83-20260425-183845.log`

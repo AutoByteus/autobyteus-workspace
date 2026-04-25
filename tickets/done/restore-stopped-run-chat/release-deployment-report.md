@@ -2,13 +2,13 @@
 
 ## Release / Publication / Deployment Scope
 
-Finalization scope completed after explicit user verification: refreshed `origin/personal`, confirmed no base advancement, archived the ticket under `tickets/done/restore-stopped-run-chat/`, committed and pushed the ticket branch, merged it into `personal`, pushed `personal`, and cleaned up the ticket worktree/branches. Release, tagging, publication, deployment, and version bump were explicitly skipped per user request.
+Finalization scope completed after explicit user verification, then a later explicit user request released the latest `personal` as `v1.2.83`. Repository finalization, ticket archival, docs sync, user-test Electron build, release notes preparation, workspace version bump, managed messaging manifest sync, release commit, annotated tag, and branch/tag push are complete. No separate manual deployment command was run; GitHub release workflows are triggered by the pushed `v1.2.83` tag.
 
 ## Handoff Summary
 
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-stopped-run-chat/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Notes: Handoff summary records delivered behavior, cumulative artifacts, base refresh state, docs sync, user-test Electron build evidence, explicit user verification, no-release instruction, finalization, and cleanup.
+- Notes: Handoff summary records delivered behavior, cumulative artifacts, base refresh state, docs sync, user-test Electron build evidence, explicit user verification, finalization, cleanup, and the later v1.2.83 release request.
 
 ## Initial Delivery Integration Refresh
 
@@ -74,12 +74,12 @@ Finalization scope completed after explicit user verification: refreshed `origin
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/<ticket-name>`: `No`
-- Archived ticket path: `N/A — remains at /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-stopped-run-chat/ until explicit user verification.`
+- Ticket moved to `tickets/done/<ticket-name>`: `Yes`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-stopped-run-chat/`
 
 ## Version / Tag / Release Commit
 
-No version bump, tag, release commit, publication, or deployment work was performed. User explicitly requested finalization without a new release/version.
+User later requested a new release after testing. Release notes commit: `53798881532f3fb2d807cf7605993241cc78d906`. Release/version commit: `5f7a4e505776a2f27328ed8b20f02cb2d755c60b`. Annotated tag: `v1.2.83` (tag object `d98dd56f6782665d2c4e40ed53c6dfc4c43ef17d`), pointing to `5f7a4e505776a2f27328ed8b20f02cb2d755c60b`. Package versions were bumped from `1.2.82` to `1.2.83` for `autobyteus-web` and `autobyteus-message-gateway`; managed messaging release manifest was synced to `v1.2.83`.
 
 ## Repository Finalization
 
@@ -100,12 +100,12 @@ No version bump, tag, release commit, publication, or deployment work was perfor
 
 ## Release / Publication / Deployment
 
-- Applicable: `No`
-- Method: `Other`
-- Method reference / command: `User requested no new release/version; no release/deployment command was run.`
-- Release/publication/deployment result: `Not required`
-- Release notes handoff result: `Not required`
-- Blocker (if applicable): `N/A`
+- Applicable: `Yes`
+- Method: `Documented Command`
+- Method reference / command: `pnpm release 1.2.83 -- --release-notes tickets/done/restore-stopped-run-chat/release-notes.md`
+- Release/publication/deployment result: `Completed` — pushed `personal` and `v1.2.83`.
+- Release notes handoff result: `Used` — `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-stopped-run-chat/release-notes.md` was copied to `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/.github/release-notes/release-notes.md` by the release helper.
+- Blocker (if applicable): `None`
 
 ## Post-Finalization Cleanup
 
@@ -120,13 +120,13 @@ No version bump, tag, release commit, publication, or deployment work was perfor
 
 - Classification: `N/A`
 - Recommended recipient: `N/A`
-- Why final handoff could not complete: `N/A for pre-verification delivery; handoff preparation completed and is waiting on user verification.`
+- Why final handoff could not complete: `N/A - finalization and later release completed.`
 
 ## Release Notes Summary
 
 - Release notes artifact created before verification: `No`
-- Archived release notes artifact used for release/publication: `N/A`
-- Release notes status: `Not required`
+- Archived release notes artifact used for release/publication: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-stopped-run-chat/release-notes.md`
+- Release notes status: `Updated` — curated notes synced to `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/.github/release-notes/release-notes.md` for `v1.2.83`.
 
 ## Deployment Steps
 
@@ -140,6 +140,8 @@ No version bump, tag, release commit, publication, or deployment work was perfor
 8. Captured artifact paths/checksums.
 9. Received explicit user verification and no-release instruction.
 10. Refreshed `origin/personal` again, confirmed no target advancement, archived the ticket, committed/pushed the ticket branch, merged into `personal`, pushed `personal`, and cleaned up the ticket worktree/branches.
+11. After the user later requested a release, created `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-stopped-run-chat/release-notes.md` and committed it as `53798881532f3fb2d807cf7605993241cc78d906`.
+12. Ran `pnpm release 1.2.83 -- --release-notes tickets/done/restore-stopped-run-chat/release-notes.md`, which bumped package versions to `1.2.83`, synced curated release notes, updated `autobyteus-server-ts/src/managed-capabilities/messaging-gateway/release-manifest.json`, committed `5f7a4e505776a2f27328ed8b20f02cb2d755c60b`, created annotated tag `v1.2.83`, and pushed `personal` plus `v1.2.83`.
 
 ## Environment Or Migration Notes
 
@@ -174,10 +176,19 @@ Authoritative upstream verification inherited from API/E2E and review:
 - API/E2E validation passed backend unit suites, WebSocket integration suites, frontend store suite, `autobyteus-server-ts` build, `autobyteus-web` prepare, and `autobyteus-web` build.
 - Known unrelated `pnpm -C autobyteus-server-ts typecheck` `TS6059` failure remains documented upstream.
 
+Release helper verification:
+
+- `pnpm release 1.2.83 -- --release-notes tickets/done/restore-stopped-run-chat/release-notes.md` — passed.
+- Release log: `/tmp/autobyteus-release-v1.2.83-20260425-183845.log`.
+- Release notes commit: `53798881532f3fb2d807cf7605993241cc78d906`.
+- Release commit: `5f7a4e505776a2f27328ed8b20f02cb2d755c60b`.
+- Annotated tag: `v1.2.83` / `d98dd56f6782665d2c4e40ed53c6dfc4c43ef17d`; `git rev-parse v1.2.83^{}` resolves to `5f7a4e505776a2f27328ed8b20f02cb2d755c60b`.
+- `git status --short --branch` after release returned clean `personal...origin/personal`.
+
 ## Rollback Criteria
 
-After finalization, use a standard follow-up or revert workflow against `personal` if stopped single-agent/team follow-up chat regresses, team follow-up messages do not reach the focused/target member after stop, missing-run WebSocket cases do not close with the expected not-found behavior, stop/tool-approval commands unexpectedly restore stopped runs, or team termination marks history inactive after a failed backend terminate.
+After release `v1.2.83`, use a standard follow-up or revert workflow against `personal` if stopped single-agent/team follow-up chat regresses, team follow-up messages do not reach the focused/target member after stop, missing-run WebSocket cases do not close with the expected not-found behavior, stop/tool-approval commands unexpectedly restore stopped runs, team termination marks history inactive after a failed backend terminate, or the release workflows fail and need a separate CI remediation path.
 
 ## Final Status
 
-`Completed — finalized into personal and pushed; no release/version bump performed per user request.`
+`Completed — finalized into personal, then released v1.2.83 after later user request; branch and tag pushed.`

@@ -3,7 +3,7 @@
 - Ticket: `iframe-launch-id-contract-refactor`
 - Last Updated: `2026-04-25T11:40:42+02:00`
 - Stage: Finalized
-- Current Status: Finalized into `personal`; no release/version bump performed
+- Current Status: Finalized into `personal`; later included in `v1.2.83`
 - User Verification Status: Completed
 - Ticket Branch: `codex/iframe-launch-id-contract-refactor`
 - Finalization Target: `origin/personal`
@@ -106,3 +106,12 @@ Result: all passed; the targeted Vitest run reported 1 file / 3 tests passed.
 - Native installer/updater/restart lifecycle was not in scope.
 - External third-party application packages outside this repository were not validated.
 - Generated-output sourcemap warnings appeared in the targeted server integration test but did not fail execution and were accepted as non-blocking by code review.
+
+
+## Later Release Inclusion
+
+- Later release request date: 2026-04-25
+- Release version/tag: `v1.2.83`
+- Release notes artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-stopped-run-chat/release-notes.md`
+- Release commit: `5f7a4e505776a2f27328ed8b20f02cb2d755c60b`
+- Result: `Completed`; `personal` and `v1.2.83` pushed to `origin`.

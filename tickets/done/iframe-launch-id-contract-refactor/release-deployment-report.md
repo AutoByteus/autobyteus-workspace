@@ -2,7 +2,7 @@
 
 ## Release / Publication / Deployment Scope
 
-Finalization scope completed after explicit user verification: refreshed `origin/personal`, confirmed no new target advancement beyond the integrated handoff state, archived the ticket under `tickets/done/iframe-launch-id-contract-refactor/`, committed and pushed the ticket branch, merged it into `personal`, pushed `personal`, and cleaned up the dedicated ticket worktree/branch. Release, tagging, publication, deployment, and version bump were explicitly skipped per user request.
+Finalization scope completed after explicit user verification. Release/version work was initially skipped per that ticket finalization request, then the latest `personal` including this ticket was later released as `v1.2.83` after a separate user release request.
 
 ## Handoff Summary
 
@@ -69,7 +69,7 @@ Result: no diff-check issues, no legacy public-contract scan hits, and targeted 
 
 ## Version / Tag / Release Commit
 
-No version bump, release commit, tag, publication, or deployment work was performed. User explicitly requested finalization without a new release/version.
+Initially skipped during ticket finalization. Later included in `v1.2.83`. Release/version commit: `5f7a4e505776a2f27328ed8b20f02cb2d755c60b`. Annotated tag object: `d98dd56f6782665d2c4e40ed53c6dfc4c43ef17d`. Curated release notes source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-stopped-run-chat/release-notes.md`.
 
 ## Repository Finalization
 
@@ -90,12 +90,12 @@ No version bump, release commit, tag, publication, or deployment work was perfor
 
 ## Release / Publication / Deployment
 
-- Applicable: `No`
-- Method: `Other`
-- Method reference / command: `User requested no new release/version; no release/deployment command was run.`
-- Release/publication/deployment result: `Not required`
-- Release notes handoff result: `Not required`
-- Blocker (if applicable): `N/A`
+- Applicable: `Yes` — later included in `v1.2.83` after a separate release request.
+- Method: `Documented Command`
+- Method reference / command: `pnpm release 1.2.83 -- --release-notes tickets/done/restore-stopped-run-chat/release-notes.md`
+- Release/publication/deployment result: `Completed` — pushed `personal` and `v1.2.83`.
+- Release notes handoff result: `Used` — `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-stopped-run-chat/release-notes.md` included iframe contract notes and was synced to `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/.github/release-notes/release-notes.md`.
+- Blocker (if applicable): `None`
 
 ## Post-Finalization Cleanup
 
@@ -115,8 +115,8 @@ No version bump, release commit, tag, publication, or deployment work was perfor
 ## Release Notes Summary
 
 - Release notes artifact created before verification: `No`
-- Archived release notes artifact used for release/publication: `N/A`
-- Release notes status: `Not required`
+- Archived release notes artifact used for release/publication: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-stopped-run-chat/release-notes.md`
+- Release notes status: `Updated` — iframe launch contract changes were included in `v1.2.83` release notes.
 
 ## Deployment Steps
 
@@ -161,4 +161,15 @@ After finalization, use a standard follow-up or revert workflow against `persona
 
 ## Final Status
 
-`Completed — finalized into personal and pushed; no release/version bump performed per user request.`
+`Completed — finalized into personal and later included in v1.2.83; branch and tag pushed.`
+
+
+## Later Release Inclusion
+
+- Later release request date: 2026-04-25
+- Release version/tag: `v1.2.83`
+- Release notes artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-stopped-run-chat/release-notes.md`
+- Release commit: `5f7a4e505776a2f27328ed8b20f02cb2d755c60b`
+- Tag object: `d98dd56f6782665d2c4e40ed53c6dfc4c43ef17d`
+- Release command: `pnpm release 1.2.83 -- --release-notes tickets/done/restore-stopped-run-chat/release-notes.md`
+- Result: `Completed`; `personal` and `v1.2.83` pushed to `origin`.
