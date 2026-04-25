@@ -172,4 +172,4 @@ After finalization, use a standard follow-up or revert workflow against `persona
 - Release commit: `5f7a4e505776a2f27328ed8b20f02cb2d755c60b`
 - Tag object: `d98dd56f6782665d2c4e40ed53c6dfc4c43ef17d`
 - Release command: `pnpm release 1.2.83 -- --release-notes tickets/done/restore-stopped-run-chat/release-notes.md`
-- Result: `Completed`; `personal` and `v1.2.83` pushed to `origin`.
+- Result: `Completed`; `personal` and `v1.2.83` pushed to `origin`, and release workflows completed successfully (`Release Messaging Gateway` run `24935562762`, `Server Docker Release` run `24935562753`, `Desktop Release` run `24935562754`).

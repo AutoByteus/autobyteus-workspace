@@ -185,10 +185,16 @@ Release helper verification:
 - Annotated tag: `v1.2.83` / `d98dd56f6782665d2c4e40ed53c6dfc4c43ef17d`; `git rev-parse v1.2.83^{}` resolves to `5f7a4e505776a2f27328ed8b20f02cb2d755c60b`.
 - `git status --short --branch` after release returned clean `personal...origin/personal`.
 
+GitHub release workflow verification:
+
+- `Release Messaging Gateway` — run `24935562762`, completed `success`.
+- `Server Docker Release` — run `24935562753`, completed `success`.
+- `Desktop Release` — run `24935562754`, completed `success`.
+
 ## Rollback Criteria
 
-After release `v1.2.83`, use a standard follow-up or revert workflow against `personal` if stopped single-agent/team follow-up chat regresses, team follow-up messages do not reach the focused/target member after stop, missing-run WebSocket cases do not close with the expected not-found behavior, stop/tool-approval commands unexpectedly restore stopped runs, team termination marks history inactive after a failed backend terminate, or the release workflows fail and need a separate CI remediation path.
+After release `v1.2.83`, use a standard follow-up or revert workflow against `personal` if stopped single-agent/team follow-up chat regresses, team follow-up messages do not reach the focused/target member after stop, missing-run WebSocket cases do not close with the expected not-found behavior, stop/tool-approval commands unexpectedly restore stopped runs, team termination marks history inactive after a failed backend terminate, or follow-up release artifact verification exposes a regression.
 
 ## Final Status
 
-`Completed — finalized into personal, then released v1.2.83 after later user request; branch and tag pushed.`
+`Completed — finalized into personal, then released v1.2.83 after later user request; branch, tag, and release workflows succeeded.`

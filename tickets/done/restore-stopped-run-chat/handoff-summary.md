@@ -201,4 +201,5 @@ Delivery-stage checks:
 - Tag: `v1.2.83` (tag object `d98dd56f6782665d2c4e40ed53c6dfc4c43ef17d`)
 - Command: `pnpm release 1.2.83 -- --release-notes tickets/done/restore-stopped-run-chat/release-notes.md`
 - Result: `Completed`; `personal` and `v1.2.83` pushed to `origin`.
+- GitHub release workflows: `Release Messaging Gateway` run `24935562762`, `Server Docker Release` run `24935562753`, and `Desktop Release` run `24935562754` all completed successfully.
 - Release log: `/tmp/autobyteus-release-v1.2.83-20260425-183845.log`
