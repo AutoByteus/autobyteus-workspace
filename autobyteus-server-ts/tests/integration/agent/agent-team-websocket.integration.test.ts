@@ -131,7 +131,7 @@ class FakeTeamRun {
     return "ACTIVE";
   }
 
-  subscribeToEvents(listener: (event: AgentTeamStreamEvent) => void): () => void {
+  subscribeToEvents(listener: (event: TeamRunEvent) => void): () => void {
     void (async () => {
       for await (const event of this.stream.allEvents()) {
         listener(event);
@@ -181,6 +181,10 @@ class FakeTeamRunService {
     return teamRunId === this.team.teamRunId ? this.teamRun : null;
   }
 
+  async resolveTeamRun(teamRunId: string): Promise<FakeTeamRun | null> {
+    return this.getTeamRun(teamRunId);
+  }
+
   async recordRunActivity(): Promise<void> {
     return;
   }
@@ -196,6 +200,28 @@ const waitForMessage = (socket: WebSocket, timeoutMs: number = 2000): Promise<st
     socket.once("message", (data) => {
       clearTimeout(timer);
       resolve(data.toString());
+    });
+  });
+
+const waitForClose = (socket: WebSocket, timeoutMs: number = 2000): Promise<number> =>
+  new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error("Timed out waiting for websocket close")), timeoutMs);
+    socket.once("close", (code) => {
+      clearTimeout(timer);
+      resolve(code);
+    });
+  });
+
+const waitForOpen = (socket: WebSocket, timeoutMs: number = 2000): Promise<void> =>
+  new Promise<void>((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error("Timed out waiting for websocket open")), timeoutMs);
+    socket.once("open", () => {
+      clearTimeout(timer);
+      resolve();
+    });
+    socket.once("error", (error) => {
+      clearTimeout(timer);
+      reject(error);
     });
   });
 
@@ -237,17 +263,7 @@ describe("Agent team websocket integration", () => {
     const socket = new WebSocket(`${baseUrl}/ws/agent-team/${team.teamRunId}`);
     const connectedPromise = waitForMessage(socket);
 
-    await new Promise<void>((resolve, reject) => {
-      const timer = setTimeout(() => reject(new Error("Timed out waiting for websocket open")), 2000);
-      socket.once("open", () => {
-        clearTimeout(timer);
-        resolve();
-      });
-      socket.once("error", (error) => {
-        clearTimeout(timer);
-        reject(error);
-      });
-    });
+    await waitForOpen(socket);
 
     const connectedMessage = JSON.parse(await connectedPromise) as {
       type: string;
@@ -324,6 +340,265 @@ describe("Agent team websocket integration", () => {
     await app.close();
   });
 
+  it("restores a stopped team on websocket connect and rebinds before member follow-up SEND_MESSAGE", async () => {
+    const initialTeam = new FakeTeam("team-recover");
+    const restoredTeam = new FakeTeam("team-recover");
+    const initialStream = new FakeTeamStream();
+    const restoredStream = new FakeTeamStream();
+    const initialRun = new FakeTeamRun(initialTeam, initialStream);
+    const restoredRun = new FakeTeamRun(restoredTeam, restoredStream);
+    const resolvedRuns = [initialRun, restoredRun];
+    let resolveCalls = 0;
+    const recordActivities: Array<{ runId: string; summary?: string }> = [];
+    const teamRunService = {
+      getTeamRun: () => null,
+      resolveTeamRun: async () => resolvedRuns[resolveCalls++] ?? null,
+      recordRunActivity: async (run: { runId: string }, activity: { summary?: string }) => {
+        recordActivities.push({ runId: run.runId, summary: activity.summary });
+      },
+      refreshRunMetadata: async () => {},
+    };
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      teamRunService as unknown as any,
+    );
+
+    const app = fastify();
+    await app.register(websocket);
+    await registerAgentWebsocket(
+      app,
+      {
+        connect: async () => null,
+        handleMessage: async () => {},
+        disconnect: async () => {},
+      } as unknown as Parameters<typeof registerAgentWebsocket>[1],
+      handler,
+    );
+    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+    const url = new URL(address);
+    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent-team/team-recover`);
+    const connectedPromise = waitForMessage(socket);
+
+    await waitForOpen(socket);
+    const connectedMessage = JSON.parse(await connectedPromise) as {
+      type: string;
+      payload: { team_id: string };
+    };
+    expect(connectedMessage.type).toBe("CONNECTED");
+    expect(connectedMessage.payload.team_id).toBe("team-recover");
+
+    socket.send(
+      JSON.stringify({
+        type: "SEND_MESSAGE",
+        payload: {
+          content: "resume team member after stop",
+          target_member_name: "alpha",
+        },
+      }),
+    );
+
+    await waitForCondition(() => restoredTeam.messages.length === 1);
+    expect(initialTeam.messages).toHaveLength(0);
+    expect(restoredTeam.messages[0].content).toBe("resume team member after stop");
+    expect(restoredTeam.lastTarget).toBe("alpha");
+    expect(resolveCalls).toBe(2);
+    expect(recordActivities).toContainEqual({
+      runId: "team-recover",
+      summary: "resume team member after stop",
+    });
+
+    const segmentPromise = waitForMessage(socket);
+    restoredStream.push({
+      teamRunId: "team-recover",
+      eventSourceType: TeamRunEventSourceType.AGENT,
+      data: {
+        runtimeKind: RuntimeKind.AUTOBYTEUS,
+        memberName: "alpha",
+        memberRunId: "member-42",
+        agentEvent: {
+          runId: "member-42",
+          eventType: AgentRunEventType.SEGMENT_CONTENT,
+          payload: {
+            id: "team-restored-seg-1",
+            segment_type: "text",
+            delta: "restored team",
+          },
+          statusHint: null,
+        },
+      },
+    });
+    const restoredMessage = JSON.parse(await segmentPromise) as {
+      type: string;
+      payload: { id?: string; delta?: string; agent_name?: string; agent_id?: string };
+    };
+    expect(restoredMessage.type).toBe("SEGMENT_CONTENT");
+    expect(restoredMessage.payload).toMatchObject({
+      id: "team-restored-seg-1",
+      delta: "restored team",
+      agent_name: "alpha",
+      agent_id: "member-42",
+    });
+
+    socket.close();
+    await app.close();
+  });
+
+  it("closes with TEAM_NOT_FOUND when a websocket connect cannot resolve a missing team run", async () => {
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      {
+        getTeamRun: () => null,
+        resolveTeamRun: async () => null,
+        recordRunActivity: async () => {},
+        refreshRunMetadata: async () => {},
+      } as unknown as any,
+    );
+
+    const app = fastify();
+    await app.register(websocket);
+    await registerAgentWebsocket(
+      app,
+      {
+        connect: async () => null,
+        handleMessage: async () => {},
+        disconnect: async () => {},
+      } as unknown as Parameters<typeof registerAgentWebsocket>[1],
+      handler,
+    );
+    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+    const url = new URL(address);
+    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent-team/missing-team`);
+    const errorPromise = waitForMessage(socket);
+    const closePromise = waitForClose(socket);
+
+    await waitForOpen(socket);
+    const errorMessage = JSON.parse(await errorPromise) as {
+      type: string;
+      payload: { code?: string; message?: string };
+    };
+    expect(errorMessage).toMatchObject({
+      type: "ERROR",
+      payload: {
+        code: "TEAM_NOT_FOUND",
+        message: "Team run 'missing-team' not found",
+      },
+    });
+    await expect(closePromise).resolves.toBe(4004);
+
+    await app.close();
+  });
+
+  it("closes with TEAM_NOT_FOUND when follow-up SEND_MESSAGE cannot restore the team run", async () => {
+    const team = new FakeTeam("team-send-missing");
+    const stream = new FakeTeamStream();
+    const initialRun = new FakeTeamRun(team, stream);
+    let resolveCalls = 0;
+    const teamRunService = {
+      getTeamRun: () => null,
+      resolveTeamRun: async () => {
+        resolveCalls += 1;
+        return resolveCalls === 1 ? initialRun : null;
+      },
+      recordRunActivity: async () => {},
+      refreshRunMetadata: async () => {},
+    };
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      teamRunService as unknown as any,
+    );
+
+    const app = fastify();
+    await app.register(websocket);
+    await registerAgentWebsocket(
+      app,
+      {
+        connect: async () => null,
+        handleMessage: async () => {},
+        disconnect: async () => {},
+      } as unknown as Parameters<typeof registerAgentWebsocket>[1],
+      handler,
+    );
+    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+    const url = new URL(address);
+    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent-team/team-send-missing`);
+    const connectedPromise = waitForMessage(socket);
+
+    await waitForOpen(socket);
+    await connectedPromise;
+
+    const errorPromise = waitForMessage(socket);
+    const closePromise = waitForClose(socket);
+    socket.send(
+      JSON.stringify({
+        type: "SEND_MESSAGE",
+        payload: { content: "still there?", target_member_name: "alpha" },
+      }),
+    );
+
+    const errorMessage = JSON.parse(await errorPromise) as {
+      type: string;
+      payload: { code?: string; message?: string };
+    };
+    expect(errorMessage).toMatchObject({
+      type: "ERROR",
+      payload: {
+        code: "TEAM_NOT_FOUND",
+        message: "Team run 'team-send-missing' not found",
+      },
+    });
+    await expect(closePromise).resolves.toBe(4004);
+    expect(team.messages).toHaveLength(0);
+
+    await app.close();
+  });
+
+  it("keeps STOP_GENERATION active-only and does not restore a stopped team run", async () => {
+    const team = new FakeTeam("team-stop-active-only");
+    const stream = new FakeTeamStream();
+    const teamRun = new FakeTeamRun(team, stream);
+    let resolveCalls = 0;
+    const teamRunService = {
+      getTeamRun: () => null,
+      resolveTeamRun: async () => {
+        resolveCalls += 1;
+        return teamRun;
+      },
+      recordRunActivity: async () => {},
+      refreshRunMetadata: async () => {},
+    };
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      teamRunService as unknown as any,
+    );
+
+    const app = fastify();
+    await app.register(websocket);
+    await registerAgentWebsocket(
+      app,
+      {
+        connect: async () => null,
+        handleMessage: async () => {},
+        disconnect: async () => {},
+      } as unknown as Parameters<typeof registerAgentWebsocket>[1],
+      handler,
+    );
+    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+    const url = new URL(address);
+    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent-team/team-stop-active-only`);
+    const connectedPromise = waitForMessage(socket);
+
+    await waitForOpen(socket);
+    await connectedPromise;
+
+    socket.send(JSON.stringify({ type: "STOP_GENERATION" }));
+    await new Promise((resolve) => setTimeout(resolve, 80));
+    expect(team.stopCalls).toBe(0);
+    expect(resolveCalls).toBe(1);
+
+    socket.close();
+    await app.close();
+  });
+
   it("forwards team-scoped live external user messages over the team websocket", async () => {
     const team = new FakeTeam("team-live-1");
     const stream = new FakeTeamStream();
@@ -352,17 +627,7 @@ describe("Agent team websocket integration", () => {
     const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent-team/${team.teamRunId}`);
     const connectedPromise = waitForMessage(socket);
 
-    await new Promise<void>((resolve, reject) => {
-      const timer = setTimeout(() => reject(new Error("Timed out waiting for websocket open")), 2000);
-      socket.once("open", () => {
-        clearTimeout(timer);
-        resolve();
-      });
-      socket.once("error", (error) => {
-        clearTimeout(timer);
-        reject(error);
-      });
-    });
+    await waitForOpen(socket);
 
     await connectedPromise;
 
@@ -430,17 +695,7 @@ describe("Agent team websocket integration", () => {
     const url = new URL(address);
     const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent-team/any-team`);
 
-    await new Promise<void>((resolve, reject) => {
-      const timer = setTimeout(() => reject(new Error("Timed out waiting for websocket open")), 2000);
-      socket.once("open", () => {
-        clearTimeout(timer);
-        resolve();
-      });
-      socket.once("error", (error) => {
-        clearTimeout(timer);
-        reject(error);
-      });
-    });
+    await waitForOpen(socket);
 
     socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: { content: "too early" } }));
     const earlyResponse = JSON.parse(await waitForMessage(socket)) as {
@@ -481,17 +736,7 @@ describe("Agent team websocket integration", () => {
     const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent-team/${team.teamRunId}`);
     const connectedPromise = waitForMessage(socket);
 
-    await new Promise<void>((resolve, reject) => {
-      const timer = setTimeout(() => reject(new Error("Timed out waiting for websocket open")), 2000);
-      socket.once("open", () => {
-        clearTimeout(timer);
-        resolve();
-      });
-      socket.once("error", (error) => {
-        clearTimeout(timer);
-        reject(error);
-      });
-    });
+    await waitForOpen(socket);
 
     await connectedPromise; // CONNECTED
 

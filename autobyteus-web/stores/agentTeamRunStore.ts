@@ -49,6 +49,13 @@ interface RestoreAgentTeamRunMutationPayload {
   } | null;
 }
 
+interface TerminateAgentTeamRunMutationPayload {
+  terminateAgentTeamRun?: {
+    success?: boolean;
+    message?: string;
+  } | null;
+}
+
 export const useAgentTeamRunStore = defineStore('agentTeamRun', {
   state: () => ({
     isLaunching: false,
@@ -138,33 +145,54 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       }
     },
 
-    async terminateTeamRun(teamRunId: string) {
+    async terminateTeamRun(teamRunId: string): Promise<boolean> {
       const teamContextsStore = useAgentTeamContextsStore();
+      const runHistoryStore = useRunHistoryStore();
       const teamContext = teamContextsStore.getTeamContextById(teamRunId);
 
-      if (teamContext?.isSubscribed || teamStreamingServices.has(teamRunId)) {
-        this.disconnectTeamStream(teamRunId);
-      }
+      const teardownLocalRuntime = () => {
+        if (teamContext?.isSubscribed || teamStreamingServices.has(teamRunId)) {
+          this.disconnectTeamStream(teamRunId);
+        }
 
-      if (teamContext) {
-        teamContext.isSubscribed = false;
-        teamContext.currentStatus = AgentTeamStatus.ShutdownComplete;
-        teamContext.members.forEach((member) => {
-          member.state.currentStatus = AgentStatus.ShutdownComplete;
-          useAgentActivityStore().clearActivities(member.state.runId);
-        });
-      }
+        if (teamContext) {
+          teamContext.isSubscribed = false;
+          teamContext.currentStatus = AgentTeamStatus.ShutdownComplete;
+          teamContext.members.forEach((member) => {
+            member.state.currentStatus = AgentStatus.ShutdownComplete;
+            useAgentActivityStore().clearActivities(member.state.runId);
+          });
+        }
+      };
 
-      if (teamRunId.startsWith('temp-')) return;
+      if (teamRunId.startsWith('temp-')) {
+        teardownLocalRuntime();
+        return true;
+      }
 
       try {
         const client = getApolloClient()
-        await client.mutate({
+        const { data, errors } = await client.mutate<TerminateAgentTeamRunMutationPayload>({
           mutation: TerminateAgentTeamRun,
           variables: { teamRunId },
         });
+
+        if (errors && errors.length > 0) {
+          throw new Error(errors.map((e: { message: string }) => e.message).join(', '));
+        }
+
+        const result = data?.terminateAgentTeamRun;
+        if (!result?.success) {
+          throw new Error(result?.message || `Failed to terminate team run '${teamRunId}'.`);
+        }
+
+        teardownLocalRuntime();
+        runHistoryStore.markTeamAsInactive(teamRunId);
+        void runHistoryStore.refreshTreeQuietly();
+        return true;
       } catch (error) {
         console.error(`Error terminating team ${teamRunId} on backend:`, error);
+        return false;
       }
     },
 

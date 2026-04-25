@@ -11,6 +11,7 @@
 - Expose resume configuration for stored runs:
   - agent: `agent-run-resume-config-service.ts`
   - team: `team-run-history-service.ts#getTeamRunResumeConfig(...)`
+- Keep resume configuration truthful about active vs inactive state. Frontend follow-up send flows may use that flag to call explicit restore mutations, while backend WebSocket connection and `SEND_MESSAGE` remain authoritative restore-aware boundaries when the local resume-config cache is stale or absent.
 - Normalize runtime-native historical replay inputs into the canonical run-history replay bundle:
   - agent: `agent-run-view-projection-service.ts`
   - team member: `team-member-run-view-projection-service.ts`
@@ -119,3 +120,5 @@ For team runs:
 6. Team-member reopen uses the same replay bundle shape as standalone reopen, including both `conversation` and `activities`.
 
 This keeps create, restore, and projection aligned on the same persisted team/member contract instead of inferring storage or identity later.
+
+Team termination should update run-history activity state only after the backend confirms termination. The frontend then marks the team resume config inactive and refreshes the workspace history tree; failed backend termination should leave the local team runtime and active/inactive cache untouched.
