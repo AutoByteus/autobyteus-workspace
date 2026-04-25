@@ -36,8 +36,12 @@ Manages running team runs, selecting the authoritative team backend, restoring p
 ## Restore / Persistence Notes
 
 - Restore uses persisted per-member runtime metadata plus `TeamBackendKind`; it does not collapse mixed teams back to one runtime owner.
+- `TeamRunService.resolveTeamRun(teamRunId)` is the canonical restore-aware lookup boundary for callers that are allowed to resume a stopped persisted team run. It returns the active team runtime when present and otherwise attempts persisted restore before returning `null`.
+- Team WebSocket connection and `SEND_MESSAGE` dispatch use `resolveTeamRun(...)`, so a follow-up message to a stopped-but-persisted team can restore the team runtime, rebind stream subscription to the restored `TeamRun`, and post to the requested member route.
+- Active-only team controls still use the active lookup path. `STOP_GENERATION` and tool approval/denial commands must not restore a stopped team run as a side effect.
 - Persisted member metadata still carries the member runtime kind and platform-native run/thread/session id needed for restore.
 - `applicationExecutionContext` stays member-local and flows through create/restore for both single-runtime and mixed team members.
+- Accepted restored follow-up messages call `TeamRunService.recordRunActivity(...)`, refreshing team metadata/history with an active status and the latest activity summary.
 
 ## TS Source
 
