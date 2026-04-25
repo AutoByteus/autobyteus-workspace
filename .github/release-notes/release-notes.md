@@ -1,10 +1,11 @@
 ## What's New
-- Codex and Claude workspace skills now materialize as direct directory symlinks, so runtime skills stay aligned with their source files instead of stale copied bundles.
-- Materialized skill folders now use clean skill names instead of generated hash-suffix names.
+- Updated hosted application iframe startup to the v3 launch contract, using a clearer iframe launch identity for embedded app sessions.
 
 ## Improvements
-- Skill references to shared team files continue to resolve through the original source tree.
-- Added stronger Codex runtime validation for symlinked skills and linked shared files.
+- Refreshed built-in application packages so Brief Studio and Socratic Math Teacher use the current iframe launch contract.
+- Improved team run stop handling so run history is marked inactive only after the backend confirms termination.
 
 ## Fixes
-- Removed copied skill materialization behavior that could leave runtime workspaces using outdated skill content after the source skill changed.
+- Fixed follow-up chat after stopping or reopening single-agent runs by restoring persisted runs before delivering the next message.
+- Fixed follow-up chat after stopping or reopening team runs, including member-targeted messages and restored stream updates.
+- Fixed failed team termination attempts so they no longer tear down the active local team state or mark the team inactive incorrectly.
