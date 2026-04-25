@@ -119,7 +119,6 @@ const applicationMessages = {
   'applications.components.applications.ApplicationShell.businessOverviewHelp': '设置准备好后即可进入应用。技术元数据默认隐藏，只有在你主动展开时才会显示。',
   'applications.components.applications.ApplicationShell.showTechnicalDetails': '显示技术详情',
   'applications.components.applications.ApplicationShell.hideTechnicalDetails': '隐藏技术详情',
-  'applications.components.applications.ApplicationShell.launchInstanceIdLabel': '启动实例 ID',
   'applications.components.applications.ApplicationShell.engineStateLabel': '引擎状态',
   'applications.components.applications.ApplicationShell.startedAtLabel': '引擎启动时间',
   'applications.components.applications.ApplicationSurface.applicationUnavailable': '应用程序启动尚未就绪',

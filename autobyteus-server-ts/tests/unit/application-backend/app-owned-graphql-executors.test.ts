@@ -75,7 +75,6 @@ import { executeSocraticMathGraphql } from "../../../../applications/socratic-ma
 const handlerContext: ApplicationHandlerContext = {
   requestContext: {
     applicationId: "sample-app",
-    launchInstanceId: "launch-1",
   },
   storage: {} as never,
   publishNotification: vi.fn(async () => undefined),

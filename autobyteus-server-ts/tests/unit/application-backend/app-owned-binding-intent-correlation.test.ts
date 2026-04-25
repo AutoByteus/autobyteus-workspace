@@ -87,7 +87,6 @@ const createHandlerContext = (input: {
 }): ApplicationHandlerContext => ({
   requestContext: {
     applicationId: "test-app",
-    launchInstanceId: "launch-1",
   },
   storage: {
     rootPath: path.dirname(input.appDatabasePath),

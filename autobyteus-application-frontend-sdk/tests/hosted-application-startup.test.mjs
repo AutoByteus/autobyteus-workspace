@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { startHostedApplication } from '../dist/index.js';
-import { createApplicationHostBootstrapEnvelopeV2 } from '../../autobyteus-application-sdk-contracts/dist/index.js';
+import { createApplicationHostBootstrapEnvelopeV3 } from '../../autobyteus-application-sdk-contracts/dist/index.js';
 
-const LAUNCH_SEARCH = '?autobyteusContractVersion=2&autobyteusApplicationId=bundle-app__pkg__sample-app&autobyteusLaunchInstanceId=bundle-app__pkg__sample-app%3A%3Alaunch-1&autobyteusHostOrigin=http%3A%2F%2F127.0.0.1%3A43123';
-const LAUNCH_INSTANCE_ID = 'bundle-app__pkg__sample-app::launch-1';
+const IFRAME_LAUNCH_SEARCH = '?autobyteusContractVersion=3&autobyteusApplicationId=bundle-app__pkg__sample-app&autobyteusIframeLaunchId=bundle-app__pkg__sample-app%3A%3Aiframe-launch-1&autobyteusHostOrigin=http%3A%2F%2F127.0.0.1%3A43123';
+const IFRAME_LAUNCH_ID = 'bundle-app__pkg__sample-app::iframe-launch-1';
 const APPLICATION_ID = 'bundle-app__pkg__sample-app';
 const HOST_ORIGIN = 'http://127.0.0.1:43123';
 
@@ -13,7 +13,7 @@ const flushMicrotasks = async () => {
 };
 
 const createBootstrapEnvelope = (overrides = {}) => {
-  const envelope = createApplicationHostBootstrapEnvelopeV2({
+  const envelope = createApplicationHostBootstrapEnvelopeV3({
     host: { origin: HOST_ORIGIN },
     application: {
       applicationId: APPLICATION_ID,
@@ -21,10 +21,9 @@ const createBootstrapEnvelope = (overrides = {}) => {
       packageId: 'pkg',
       name: 'Sample App',
     },
-    launch: { launchInstanceId: LAUNCH_INSTANCE_ID },
+    iframeLaunchId: IFRAME_LAUNCH_ID,
     requestContext: {
       applicationId: APPLICATION_ID,
-      launchInstanceId: LAUNCH_INSTANCE_ID,
     },
     transport: {
       backendBaseUrl: `http://127.0.0.1:43123/rest/applications/${APPLICATION_ID}/backend`,
@@ -45,10 +44,6 @@ const createBootstrapEnvelope = (overrides = {}) => {
       application: {
         ...envelope.payload.application,
         ...overrides.payload?.application,
-      },
-      launch: {
-        ...envelope.payload.launch,
-        ...overrides.payload?.launch,
       },
       requestContext: {
         ...envelope.payload.requestContext,
@@ -112,7 +107,7 @@ test('startHostedApplication exposes framework-owned unsupported-entry behavior 
 });
 
 test('startHostedApplication emits ready, accepts bootstrap, and reaches handoff_complete on success', async () => {
-  const harness = createStartupHarness({ search: LAUNCH_SEARCH });
+  const harness = createStartupHarness({ search: IFRAME_LAUNCH_SEARCH });
   let bootstrappedContext = null;
 
   const handle = startHostedApplication({
@@ -131,7 +126,7 @@ test('startHostedApplication emits ready, accepts bootstrap, and reaches handoff
   assert.equal(harness.postedMessages.length, 1);
   assert.equal(harness.postedMessages[0].message.eventName, 'autobyteus.application.ui.ready');
   assert.equal(harness.postedMessages[0].message.payload.applicationId, APPLICATION_ID);
-  assert.equal(harness.postedMessages[0].message.payload.launchInstanceId, LAUNCH_INSTANCE_ID);
+  assert.equal(harness.postedMessages[0].message.payload.iframeLaunchId, IFRAME_LAUNCH_ID);
 
   harness.dispatchMessage({
     source: harness.startupWindow.parent,
@@ -145,15 +140,15 @@ test('startHostedApplication emits ready, accepts bootstrap, and reaches handoff
     applicationId: APPLICATION_ID,
     requestContext: {
       applicationId: APPLICATION_ID,
-      launchInstanceId: LAUNCH_INSTANCE_ID,
     },
   });
   assert.equal(bootstrappedContext?.bootstrap.application.applicationId, APPLICATION_ID);
+  assert.equal(bootstrappedContext?.bootstrap.iframeLaunchId, IFRAME_LAUNCH_ID);
   assert.match(harness.rootElement.innerHTML, /mounted/);
 });
 
 test('startHostedApplication keeps post-delivery mount failures inside startup_failed', async () => {
-  const harness = createStartupHarness({ search: LAUNCH_SEARCH });
+  const harness = createStartupHarness({ search: IFRAME_LAUNCH_SEARCH });
 
   const handle = startHostedApplication({
     rootElement: harness.rootElement,
@@ -176,7 +171,7 @@ test('startHostedApplication keeps post-delivery mount failures inside startup_f
 });
 
 test('startHostedApplication rejects mismatched bootstrap payloads before business handoff', async () => {
-  const harness = createStartupHarness({ search: LAUNCH_SEARCH });
+  const harness = createStartupHarness({ search: IFRAME_LAUNCH_SEARCH });
   let bootstrapped = false;
 
   const handle = startHostedApplication({
@@ -192,8 +187,7 @@ test('startHostedApplication rejects mismatched bootstrap payloads before busine
     origin: HOST_ORIGIN,
     data: createBootstrapEnvelope({
       payload: {
-        launch: { launchInstanceId: 'stale-launch' },
-        requestContext: { launchInstanceId: 'stale-launch' },
+        iframeLaunchId: 'stale-iframe-launch',
       },
     }),
   });
@@ -201,5 +195,5 @@ test('startHostedApplication rejects mismatched bootstrap payloads before busine
 
   assert.equal(bootstrapped, false);
   assert.equal(handle.getState(), 'startup_failed');
-  assert.match(harness.rootElement.innerHTML, /different launch instance/);
+  assert.match(harness.rootElement.innerHTML, /different iframe launch/);
 });

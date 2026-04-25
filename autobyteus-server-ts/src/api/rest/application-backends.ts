@@ -16,44 +16,13 @@ const gateway = () => getApplicationBackendGatewayService();
 const orchestrationHost = () => ApplicationOrchestrationHostService.getInstance();
 const resourceConfigurations = () => new ApplicationResourceConfigurationService();
 const APPLICATION_BACKEND_ROUTE_BASE = "/applications/:applicationId/backend";
-const LAUNCH_INSTANCE_HEADER = "x-autobyteus-launch-instance-id";
-
 const readRequestContext = (
   applicationId: string,
-  request: FastifyRequest,
-  bodyRequestContext?: unknown,
-): ApplicationRequestContext | null => {
-  if (bodyRequestContext && typeof bodyRequestContext === "object" && !Array.isArray(bodyRequestContext)) {
-    return {
-      applicationId,
-      launchInstanceId:
-        typeof (bodyRequestContext as Record<string, unknown>).launchInstanceId === "string"
-          ? ((bodyRequestContext as Record<string, unknown>).launchInstanceId as string)
-          : null,
-    };
-  }
-
-  const headerLaunchInstanceId = request.headers[LAUNCH_INSTANCE_HEADER];
-  if (typeof headerLaunchInstanceId === "string" && headerLaunchInstanceId.trim().length > 0) {
-    return {
-      applicationId,
-      launchInstanceId: headerLaunchInstanceId.trim(),
-    };
-  }
-
-  const queryLaunchInstanceId = (request.query as Record<string, unknown> | undefined)?.launchInstanceId;
-  if (typeof queryLaunchInstanceId === "string" && queryLaunchInstanceId.trim().length > 0) {
-    return {
-      applicationId,
-      launchInstanceId: queryLaunchInstanceId.trim(),
-    };
-  }
-
-  return {
-    applicationId,
-    launchInstanceId: null,
-  };
-};
+  _request: FastifyRequest,
+  _bodyRequestContext?: unknown,
+): ApplicationRequestContext => ({
+  applicationId,
+});
 
 const toQueryRecord = (value: unknown): Record<string, string | string[]> => {
   if (!value || typeof value !== "object" || Array.isArray(value)) {

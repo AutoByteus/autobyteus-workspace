@@ -64,7 +64,7 @@ const createBundle = (applicationRootPath: string): ApplicationBundle => ({
     targetRuntime: { engine: "node", semver: ">=22 <23" },
     sdkCompatibility: {
       backendDefinitionContractVersion: "2",
-      frontendSdkContractVersion: "2",
+      frontendSdkContractVersion: "3",
     },
     supportedExposures: {
       queries: false,
@@ -111,7 +111,7 @@ describe("Application backend mount route transport integration", () => {
         targetRuntime: { engine: "node", semver: ">=22 <23" },
         sdkCompatibility: {
           backendDefinitionContractVersion: "2",
-          frontendSdkContractVersion: "2",
+          frontendSdkContractVersion: "3",
         },
         supportedExposures: {
           queries: false,
@@ -193,7 +193,6 @@ describe("Application backend mount route transport integration", () => {
     const response = await transport.invokeRoute({
       requestContext: {
         applicationId: APPLICATION_ID,
-        launchInstanceId: "launch-route-1",
       },
       request: {
         method: "POST",
@@ -218,7 +217,6 @@ describe("Application backend mount route transport integration", () => {
         bodyType: "object",
         requestContext: {
           applicationId: APPLICATION_ID,
-          launchInstanceId: "launch-route-1",
         },
       },
     });

@@ -374,7 +374,6 @@ export class ApplicationWorkerRuntime {
         loaded.storage,
         {
           applicationId: input.envelope.event.applicationId,
-          launchInstanceId: null,
         },
         loaded.exposures.supportedExposures.notifications,
         this.publishNotification,
@@ -398,7 +397,6 @@ export class ApplicationWorkerRuntime {
         loaded.storage,
         {
           applicationId: input.event.binding.applicationId,
-          launchInstanceId: null,
         },
         loaded.exposures.supportedExposures.notifications,
         this.publishNotification,

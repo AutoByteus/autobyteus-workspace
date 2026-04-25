@@ -4,7 +4,7 @@ export * from "./runtime-resources.js";
 export * from "./application-iframe-contract.js";
 export declare const APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1: "1";
 export declare const APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V2: "2";
-export declare const APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V2: "2";
+export declare const APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V3: "3";
 export declare const APPLICATION_EVENT_DELIVERY_SEMANTICS: "AT_LEAST_ONCE";
 export type ApplicationRouteMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD" | "OPTIONS";
 export type ApplicationSkillAccessMode = "GLOBAL_DISCOVERY" | "PRELOADED_ONLY" | "NONE";
@@ -27,7 +27,7 @@ export type ApplicationBackendBundleManifestV1 = {
     };
     sdkCompatibility: {
         backendDefinitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V2;
-        frontendSdkContractVersion: typeof APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V2;
+        frontendSdkContractVersion: typeof APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V3;
     };
     supportedExposures: ApplicationBackendSupportedExposures;
     migrationsDir?: string | null;
@@ -35,7 +35,6 @@ export type ApplicationBackendBundleManifestV1 = {
 };
 export type ApplicationRequestContext = {
     applicationId: string;
-    launchInstanceId?: string | null;
 };
 export type ApplicationStorageContext = {
     rootPath: string;

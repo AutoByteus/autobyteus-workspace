@@ -45,7 +45,7 @@ const buildSnapshot = (): ApplicationCatalogSnapshot => ({
         targetRuntime: { engine: "node", semver: ">=22 <23" },
         sdkCompatibility: {
           backendDefinitionContractVersion: "2",
-          frontendSdkContractVersion: "2",
+          frontendSdkContractVersion: "3",
         },
         supportedExposures: {
           queries: true,

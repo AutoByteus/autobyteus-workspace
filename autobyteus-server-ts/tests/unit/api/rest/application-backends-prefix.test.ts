@@ -62,7 +62,6 @@ describe("application backend REST routes under /rest prefix", () => {
       payload: {
         requestContext: {
           applicationId: LONG_APPLICATION_ID,
-          launchInstanceId: "launch-1",
         },
         input: { includeArchived: false },
       },
@@ -79,7 +78,6 @@ describe("application backend REST routes under /rest prefix", () => {
       "briefs.list",
       {
         applicationId: LONG_APPLICATION_ID,
-        launchInstanceId: "launch-1",
       },
       { includeArchived: false },
     );

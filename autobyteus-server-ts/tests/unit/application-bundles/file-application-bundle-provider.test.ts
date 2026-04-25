@@ -132,7 +132,7 @@ describe("FileApplicationBundleProvider", () => {
           description: "Sample description",
           ui: {
             entryHtml: "ui/index.html",
-            frontendSdkContractVersion: "2",
+            frontendSdkContractVersion: "3",
           },
           backend: {
             bundleManifest: "backend/bundle.json",
@@ -177,7 +177,7 @@ describe("FileApplicationBundleProvider", () => {
           targetRuntime: { engine: "node", semver: ">=22 <23" },
           sdkCompatibility: {
             backendDefinitionContractVersion: "2",
-            frontendSdkContractVersion: "2",
+            frontendSdkContractVersion: "3",
           },
           supportedExposures: {
             queries: true,
@@ -312,6 +312,65 @@ describe("FileApplicationBundleProvider", () => {
     ]);
   });
 
+  it("surfaces retired frontend SDK compatibility versions as diagnostics", async () => {
+    const retiredFrontendSdkVersion = String(Number("1") + 1);
+    await writeBundle(builtInRoot, {
+      manifestOverrides: {
+        ui: {
+          entryHtml: "ui/index.html",
+          frontendSdkContractVersion: retiredFrontendSdkVersion,
+        },
+      },
+    });
+
+    const snapshot = await buildProvider().getCatalogSnapshot();
+
+    expect(snapshot.applications).toHaveLength(0);
+    expect(snapshot.diagnostics).toHaveLength(1);
+    expect(snapshot.diagnostics[0]?.message).toContain(
+      `Unsupported ui.frontendSdkContractVersion '${retiredFrontendSdkVersion}'.`,
+    );
+  });
+
+  it("surfaces retired backend bundle frontend SDK compatibility versions as diagnostics", async () => {
+    const retiredFrontendSdkVersion = String(Number("1") + 1);
+    await writeBundle();
+    await writeFile(
+      path.join(builtInRoot, "applications", "sample-app", "backend", "bundle.json"),
+      JSON.stringify(
+        {
+          contractVersion: "1",
+          entryModule: "backend/dist/entry.mjs",
+          moduleFormat: "esm",
+          distribution: "self-contained",
+          targetRuntime: { engine: "node", semver: ">=22 <23" },
+          sdkCompatibility: {
+            backendDefinitionContractVersion: "2",
+            frontendSdkContractVersion: retiredFrontendSdkVersion,
+          },
+          supportedExposures: {
+            queries: true,
+            commands: true,
+            routes: true,
+            graphql: true,
+            notifications: true,
+            eventHandlers: true,
+          },
+        },
+        null,
+        2,
+      ),
+    );
+
+    const snapshot = await buildProvider().getCatalogSnapshot();
+
+    expect(snapshot.applications).toHaveLength(0);
+    expect(snapshot.diagnostics).toHaveLength(1);
+    expect(snapshot.diagnostics[0]?.message).toContain(
+      `Unsupported frontendSdkContractVersion '${retiredFrontendSdkVersion}'.`,
+    );
+  });
+
   it("surfaces malformed manifests as diagnostics instead of crashing discovery", async () => {
     await writeBundle();
     await writeFile(
@@ -323,7 +382,7 @@ describe("FileApplicationBundleProvider", () => {
           name: "Broken App",
           ui: {
             entryHtml: "ui/index.html",
-            frontendSdkContractVersion: "2",
+            frontendSdkContractVersion: "3",
           },
           backend: {
             bundleManifest: "backend/bundle.json",
@@ -404,7 +463,7 @@ describe("FileApplicationBundleProvider", () => {
           name: "Nested Mirror",
           ui: {
             entryHtml: "ui/index.html",
-            frontendSdkContractVersion: "2",
+            frontendSdkContractVersion: "3",
           },
           backend: {
             bundleManifest: "backend/bundle.json",

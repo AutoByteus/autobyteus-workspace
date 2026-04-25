@@ -179,6 +179,6 @@ See [`application_sessions.md`](./application_sessions.md) only for the historic
 - [`application_sessions.md`](./application_sessions.md)
 - [`agent_artifacts.md`](./agent_artifacts.md)
 - `../../../autobyteus-web/docs/applications.md`
-- `../../../autobyteus-web/docs/application-bundle-iframe-contract-v1.md`
+- `../../../autobyteus-web/docs/application-bundle-iframe-contract-v3.md`
 - `../../../autobyteus-application-sdk-contracts/README.md`
 - `../../../autobyteus-application-backend-sdk/README.md`

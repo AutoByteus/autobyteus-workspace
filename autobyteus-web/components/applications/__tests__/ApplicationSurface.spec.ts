@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, nextTick } from 'vue'
 import { mount, type VueWrapper } from '@vue/test-utils'
 import type {
-  ApplicationHostBootstrapEnvelopeV2,
+  ApplicationHostBootstrapEnvelopeV3,
   ApplicationIframeReadySignal,
 } from '@autobyteus/application-sdk-contracts'
 import ApplicationSurface from '../ApplicationSurface.vue'
@@ -12,7 +12,7 @@ import type { ApplicationIframeLaunchDescriptor } from '~/utils/application/appl
 const hostHarness = vi.hoisted(() => ({
   props: {
     descriptor: null as ApplicationIframeLaunchDescriptor | null,
-    bootstrapEnvelope: null as ApplicationHostBootstrapEnvelopeV2 | null,
+    bootstrapEnvelope: null as ApplicationHostBootstrapEnvelopeV3 | null,
   },
   bindingRevision: 0,
 }))
@@ -65,7 +65,7 @@ const ApplicationIframeHostStub = defineComponent({
   setup(props) {
     return () => {
       hostHarness.props.descriptor = props.descriptor as ApplicationIframeLaunchDescriptor
-      hostHarness.props.bootstrapEnvelope = props.bootstrapEnvelope as ApplicationHostBootstrapEnvelopeV2 | null
+      hostHarness.props.bootstrapEnvelope = props.bootstrapEnvelope as ApplicationHostBootstrapEnvelopeV3 | null
       return h('div', { 'data-testid': 'iframe-host' })
     }
   },
@@ -89,7 +89,7 @@ const buildApplication = (): ApplicationDetailRecord => ({
 const mountSurface = (): VueWrapper => mount(ApplicationSurface, {
   props: {
     application: buildApplication(),
-    launchInstanceId: 'bundle-app__pkg__sample-app::launch-1',
+    iframeLaunchId: 'bundle-app__pkg__sample-app::iframe-launch-1',
   },
   global: {
     stubs: {
@@ -114,7 +114,7 @@ describe('ApplicationSurface', () => {
     const wrapper = mountSurface()
 
     expect(hostHarness.props.descriptor?.applicationId).toBe('bundle-app__pkg__sample-app')
-    expect(hostHarness.props.descriptor?.launchInstanceId).toBe('bundle-app__pkg__sample-app::launch-1')
+    expect(hostHarness.props.descriptor?.iframeLaunchId).toBe('bundle-app__pkg__sample-app::iframe-launch-1')
     expect(hostHarness.props.bootstrapEnvelope).toBeNull()
 
     const canvas = wrapper.get('[data-testid="application-surface-canvas"]')
@@ -127,7 +127,7 @@ describe('ApplicationSurface', () => {
     const descriptor = hostHarness.props.descriptor!
     await wrapper.getComponent(ApplicationIframeHostStub).vm.$emit('ready', {
       applicationId: descriptor.applicationId,
-      launchInstanceId: descriptor.launchInstanceId,
+      iframeLaunchId: descriptor.iframeLaunchId,
       iframeOrigin: descriptor.expectedIframeOrigin,
     } satisfies ApplicationIframeReadySignal)
     await nextTick()
@@ -140,17 +140,14 @@ describe('ApplicationSurface', () => {
     })
     expect(hostHarness.props.bootstrapEnvelope?.payload.requestContext).toEqual({
       applicationId: descriptor.applicationId,
-      launchInstanceId: descriptor.launchInstanceId,
     })
-    expect(hostHarness.props.bootstrapEnvelope?.payload.launch).toEqual({
-      launchInstanceId: descriptor.launchInstanceId,
-    })
+    expect(hostHarness.props.bootstrapEnvelope?.payload.iframeLaunchId).toBe(descriptor.iframeLaunchId)
     expect(hostHarness.props.bootstrapEnvelope?.payload).not.toHaveProperty('session')
     expect(hostHarness.props.bootstrapEnvelope?.payload).not.toHaveProperty('runtime')
 
     await wrapper.getComponent(ApplicationIframeHostStub).vm.$emit('bootstrap-delivered', {
       applicationId: descriptor.applicationId,
-      launchInstanceId: descriptor.launchInstanceId,
+      iframeLaunchId: descriptor.iframeLaunchId,
     })
     await nextTick()
 
@@ -167,7 +164,7 @@ describe('ApplicationSurface', () => {
 
     await wrapper.getComponent(ApplicationIframeHostStub).vm.$emit('ready', {
       applicationId: 'bundle-app__pkg__sample-app',
-      launchInstanceId: 'stale-launch',
+      iframeLaunchId: 'stale-iframe-launch',
       iframeOrigin: hostHarness.props.descriptor!.expectedIframeOrigin,
     } satisfies ApplicationIframeReadySignal)
     await nextTick()

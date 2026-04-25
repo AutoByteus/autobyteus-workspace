@@ -21,7 +21,7 @@ Owns the platform-facing transport boundary for application backends: engine sta
 - The route `:applicationId` is authoritative for every backend surface.
 - Shared Fastify runtime config raises route-param length to `4096`, so long imported canonical application ids can still reach the gateway boundary unchanged.
 - `requestContext.applicationId` must match the route application id; mismatches are rejected.
-- `requestContext.launchInstanceId` is optional source-correlation context from the iframe host. It is not business identity and it is not a run binding key.
+- The gateway forwards normal app request context as `{ applicationId }`; iframe bootstrap correlation ids stay at the host/frontend iframe boundary.
 - The gateway always validates that the application exists before forwarding work to the app engine.
 - Callers do not talk to worker internals, orchestration stores, or storage internals directly.
 
@@ -40,7 +40,7 @@ Owns the platform-facing transport boundary for application backends: engine sta
 - `POST /rest/applications/:applicationId/backend/graphql`
 - `GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS /rest/applications/:applicationId/backend/routes/*`
 
-Queries, commands, and GraphQL accept request context in the POST body.
+Queries, commands, and GraphQL accept `{ applicationId }` request context in the POST body. Custom routes derive backend request context from the authoritative route application id while still forwarding normalized headers, query params, method, path, and body into the worker-owned route handler.
 
 The same REST module also exposes the host launch-setup surfaces outside the backend subpath:
 
@@ -49,13 +49,6 @@ The same REST module also exposes the host launch-setup surfaces outside the bac
 - `PUT /rest/applications/:applicationId/resource-configurations/:slotKey`
 
 Those setup routes feed the authoritative pre-entry setup gate on `/applications/:id` before the iframe host is allowed to enter the application.
-
-All request surfaces can also carry `launchInstanceId` via:
-
-- `x-autobyteus-launch-instance-id` header, or
-- `launchInstanceId` query string.
-
-For custom routes, the gateway forwards normalized headers, query params, method, path, and body into the worker-owned route handler.
 
 ### WebSocket notifications
 
@@ -83,6 +76,6 @@ The gateway bridges worker-published notifications into a per-application websoc
 - [`application_engine.md`](./application_engine.md)
 - [`application_storage.md`](./application_storage.md)
 - `../../../autobyteus-web/docs/applications.md`
-- `../../../autobyteus-web/docs/application-bundle-iframe-contract-v1.md`
+- `../../../autobyteus-web/docs/application-bundle-iframe-contract-v3.md`
 - `../../../autobyteus-application-sdk-contracts/README.md`
 - `../../../autobyteus-application-frontend-sdk/README.md`

@@ -2,8 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { nextTick } from 'vue'
 import {
-  createApplicationHostBootstrapEnvelopeV2,
-  createApplicationUiReadyEnvelopeV2,
+  createApplicationHostBootstrapEnvelopeV3,
+  createApplicationUiReadyEnvelopeV3,
 } from '@autobyteus/application-sdk-contracts'
 import ApplicationIframeHost from '../ApplicationIframeHost.vue'
 import type { ApplicationIframeLaunchDescriptor } from '~/utils/application/applicationLaunchDescriptor'
@@ -31,8 +31,8 @@ describe('ApplicationIframeHost', () => {
     entryHtmlUrl: 'http://127.0.0.1:43123/rest/application-bundles/sample-app/assets/ui/index.html',
     expectedIframeOrigin: 'http://127.0.0.1:43123',
     normalizedHostOrigin: 'file://',
-    contractVersion: '2',
-    launchInstanceId: 'bundle-app__pkg__sample-app::launch-1',
+    contractVersion: '3',
+    iframeLaunchId: 'bundle-app__pkg__sample-app::iframe-launch-1',
   }
 
   beforeEach(() => {
@@ -55,9 +55,9 @@ describe('ApplicationIframeHost', () => {
     expect(iframe.attributes('src')).toContain(
       'http://127.0.0.1:43123/rest/application-bundles/sample-app/assets/ui/index.html',
     )
-    expect(iframe.attributes('src')).toContain('autobyteusContractVersion=2')
+    expect(iframe.attributes('src')).toContain('autobyteusContractVersion=3')
     expect(iframe.attributes('src')).toContain('autobyteusApplicationId=bundle-app__pkg__sample-app')
-    expect(iframe.attributes('src')).toContain('autobyteusLaunchInstanceId=bundle-app__pkg__sample-app%3A%3Alaunch-1')
+    expect(iframe.attributes('src')).toContain('autobyteusIframeLaunchId=bundle-app__pkg__sample-app%3A%3Aiframe-launch-1')
     expect(iframe.attributes('src')).toContain('autobyteusHostOrigin=file%3A%2F%2F')
 
     const contentWindowMock = {
@@ -72,32 +72,32 @@ describe('ApplicationIframeHost', () => {
     expect(wrapper.emitted('iframeLoad')).toEqual([[
       {
         applicationId: descriptor.applicationId,
-        launchInstanceId: descriptor.launchInstanceId,
+        iframeLaunchId: descriptor.iframeLaunchId,
         src: iframe.attributes('src'),
       },
     ]])
 
-    const wrongLaunchEvent = createApplicationUiReadyEnvelopeV2({
+    const wrongIframeLaunchEvent = createApplicationUiReadyEnvelopeV3({
       applicationId: descriptor.applicationId,
-      launchInstanceId: 'stale-launch',
+      iframeLaunchId: 'stale-iframe-launch',
     })
-    const wrongLaunchMessage = new MessageEvent('message', {
-      data: wrongLaunchEvent,
+    const wrongIframeLaunchMessage = new MessageEvent('message', {
+      data: wrongIframeLaunchEvent,
       origin: descriptor.expectedIframeOrigin,
     })
-    Object.defineProperty(wrongLaunchMessage, 'source', {
+    Object.defineProperty(wrongIframeLaunchMessage, 'source', {
       value: contentWindowMock,
       configurable: true,
     })
-    window.dispatchEvent(wrongLaunchMessage)
+    window.dispatchEvent(wrongIframeLaunchMessage)
     await nextTick()
 
     expect(wrapper.emitted('ready')).toBeUndefined()
     expect(contentWindowMock.postMessage).not.toHaveBeenCalled()
 
-    const readyEvent = createApplicationUiReadyEnvelopeV2({
+    const readyEvent = createApplicationUiReadyEnvelopeV3({
       applicationId: descriptor.applicationId,
-      launchInstanceId: descriptor.launchInstanceId,
+      iframeLaunchId: descriptor.iframeLaunchId,
     })
     const readyMessage = new MessageEvent('message', {
       data: readyEvent,
@@ -113,13 +113,13 @@ describe('ApplicationIframeHost', () => {
     expect(wrapper.emitted('ready')).toEqual([[
       {
         applicationId: descriptor.applicationId,
-        launchInstanceId: descriptor.launchInstanceId,
+        iframeLaunchId: descriptor.iframeLaunchId,
         iframeOrigin: descriptor.expectedIframeOrigin,
       },
     ]])
     expect(contentWindowMock.postMessage).not.toHaveBeenCalled()
 
-    const bootstrapEnvelope = createApplicationHostBootstrapEnvelopeV2({
+    const bootstrapEnvelope = createApplicationHostBootstrapEnvelopeV3({
       host: {
         origin: descriptor.normalizedHostOrigin,
       },
@@ -129,12 +129,9 @@ describe('ApplicationIframeHost', () => {
         packageId: 'pkg',
         name: 'Sample App',
       },
-      launch: {
-        launchInstanceId: descriptor.launchInstanceId,
-      },
+      iframeLaunchId: descriptor.iframeLaunchId,
       requestContext: {
         applicationId: descriptor.applicationId,
-        launchInstanceId: descriptor.launchInstanceId,
       },
       transport: {
         backendBaseUrl: 'http://127.0.0.1:43123/rest/applications/bundle-app__pkg__sample-app/backend',
@@ -155,7 +152,7 @@ describe('ApplicationIframeHost', () => {
     expect(wrapper.emitted('bootstrapDelivered')).toEqual([[
       {
         applicationId: descriptor.applicationId,
-        launchInstanceId: descriptor.launchInstanceId,
+        iframeLaunchId: descriptor.iframeLaunchId,
       },
     ]])
 
@@ -182,7 +179,7 @@ describe('ApplicationIframeHost', () => {
     })
 
     await wrapper.setProps({
-      bootstrapEnvelope: createApplicationHostBootstrapEnvelopeV2({
+      bootstrapEnvelope: createApplicationHostBootstrapEnvelopeV3({
         host: {
           origin: descriptor.normalizedHostOrigin,
         },
@@ -192,12 +189,9 @@ describe('ApplicationIframeHost', () => {
           packageId: 'pkg',
           name: 'Sample App',
         },
-        launch: {
-          launchInstanceId: descriptor.launchInstanceId,
-        },
+        iframeLaunchId: descriptor.iframeLaunchId,
         requestContext: {
           applicationId: descriptor.applicationId,
-          launchInstanceId: descriptor.launchInstanceId,
         },
         transport: {
           backendBaseUrl: null,

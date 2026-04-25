@@ -12,11 +12,11 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import {
   APPLICATION_IFRAME_CHANNEL,
-  APPLICATION_IFRAME_CONTRACT_VERSION_V2,
+  APPLICATION_IFRAME_CONTRACT_VERSION_V3,
   APPLICATION_IFRAME_READY_EVENT,
-  isApplicationIframeEnvelopeV2,
-  isApplicationUiReadyEnvelopeV2,
-  type ApplicationHostBootstrapEnvelopeV2,
+  isApplicationIframeEnvelopeV3,
+  isApplicationUiReadyEnvelopeV3,
+  type ApplicationHostBootstrapEnvelopeV3,
   type ApplicationIframeReadySignal,
 } from '@autobyteus/application-sdk-contracts'
 import { useLocalization } from '~/composables/useLocalization'
@@ -27,13 +27,13 @@ import {
 
 const props = defineProps<{
   descriptor: ApplicationIframeLaunchDescriptor
-  bootstrapEnvelope: ApplicationHostBootstrapEnvelopeV2 | null
+  bootstrapEnvelope: ApplicationHostBootstrapEnvelopeV3 | null
 }>()
 
 const emit = defineEmits<{
-  iframeLoad: [{ applicationId: string; launchInstanceId: string; src: string }]
+  iframeLoad: [{ applicationId: string; iframeLaunchId: string; src: string }]
   ready: [signal: ApplicationIframeReadySignal]
-  bootstrapDelivered: [{ applicationId: string; launchInstanceId: string }]
+  bootstrapDelivered: [{ applicationId: string; iframeLaunchId: string }]
   bridgeError: [message: string]
 }>()
 
@@ -49,13 +49,13 @@ const iframeSrc = computed(() => buildApplicationIframeSrc(props.descriptor))
 
 const emitBridgeError = (message: string): void => {
   console.warn(
-    `[ApplicationIframeHost] bridge error applicationId=${props.descriptor.applicationId} launchInstanceId=${props.descriptor.launchInstanceId} message=${message}`,
+    `[ApplicationIframeHost] bridge error applicationId=${props.descriptor.applicationId} iframeLaunchId=${props.descriptor.iframeLaunchId} message=${message}`,
   )
   emit('bridgeError', message)
 }
 
-const postBootstrapEnvelope = (envelope: ApplicationHostBootstrapEnvelopeV2): void => {
-  const bootstrapKey = `${envelope.payload.application.applicationId}::${envelope.payload.launch.launchInstanceId}`
+const postBootstrapEnvelope = (envelope: ApplicationHostBootstrapEnvelopeV3): void => {
+  const bootstrapKey = `${envelope.payload.application.applicationId}::${envelope.payload.iframeLaunchId}`
   if (deliveredBootstrapKey.value === bootstrapKey) {
     return
   }
@@ -78,11 +78,11 @@ const postBootstrapEnvelope = (envelope: ApplicationHostBootstrapEnvelopeV2): vo
 
   deliveredBootstrapKey.value = bootstrapKey
   logIframeHost(
-    `posted bootstrap payload applicationId=${envelope.payload.application.applicationId} launchInstanceId=${envelope.payload.launch.launchInstanceId}`,
+    `posted bootstrap payload applicationId=${envelope.payload.application.applicationId} iframeLaunchId=${envelope.payload.iframeLaunchId}`,
   )
   emit('bootstrapDelivered', {
     applicationId: envelope.payload.application.applicationId,
-    launchInstanceId: envelope.payload.launch.launchInstanceId,
+    iframeLaunchId: envelope.payload.iframeLaunchId,
   })
 }
 
@@ -96,7 +96,7 @@ const handleIframeMessage = (event: MessageEvent): void => {
   }
 
   const payload = event.data
-  if (!isApplicationIframeEnvelopeV2(payload)) {
+  if (!isApplicationIframeEnvelopeV3(payload)) {
     return
   }
   if (payload.channel !== APPLICATION_IFRAME_CHANNEL) {
@@ -105,48 +105,48 @@ const handleIframeMessage = (event: MessageEvent): void => {
   if (payload.eventName !== APPLICATION_IFRAME_READY_EVENT) {
     return
   }
-  if (payload.contractVersion !== APPLICATION_IFRAME_CONTRACT_VERSION_V2) {
+  if (payload.contractVersion !== APPLICATION_IFRAME_CONTRACT_VERSION_V3) {
     emitBridgeError(
       $t('applications.components.applications.ApplicationIframeHost.unsupportedContractVersion', {
         actual: payload.contractVersion,
-        expected: APPLICATION_IFRAME_CONTRACT_VERSION_V2,
+        expected: APPLICATION_IFRAME_CONTRACT_VERSION_V3,
       }),
     )
     return
   }
-  if (!isApplicationUiReadyEnvelopeV2(payload)) {
+  if (!isApplicationUiReadyEnvelopeV3(payload)) {
     return
   }
   if (payload.payload.applicationId !== props.descriptor.applicationId) {
     return
   }
-  if (payload.payload.launchInstanceId !== props.descriptor.launchInstanceId) {
+  if (payload.payload.iframeLaunchId !== props.descriptor.iframeLaunchId) {
     return
   }
 
   logIframeHost(
-    `received ready event applicationId=${payload.payload.applicationId} launchInstanceId=${payload.payload.launchInstanceId} origin=${event.origin}`,
+    `received ready event applicationId=${payload.payload.applicationId} iframeLaunchId=${payload.payload.iframeLaunchId} origin=${event.origin}`,
   )
   emit('ready', {
     applicationId: payload.payload.applicationId,
-    launchInstanceId: payload.payload.launchInstanceId,
+    iframeLaunchId: payload.payload.iframeLaunchId,
     iframeOrigin: event.origin,
   })
 }
 
 const handleIframeLoad = (): void => {
   logIframeHost(
-    `iframe loaded applicationId=${props.descriptor.applicationId} launchInstanceId=${props.descriptor.launchInstanceId} src=${iframeSrc.value}`,
+    `iframe loaded applicationId=${props.descriptor.applicationId} iframeLaunchId=${props.descriptor.iframeLaunchId} src=${iframeSrc.value}`,
   )
   emit('iframeLoad', {
     applicationId: props.descriptor.applicationId,
-    launchInstanceId: props.descriptor.launchInstanceId,
+    iframeLaunchId: props.descriptor.iframeLaunchId,
     src: iframeSrc.value,
   })
 }
 
 watch(
-  () => `${props.descriptor.applicationId}:${props.descriptor.launchInstanceId}`,
+  () => `${props.descriptor.applicationId}:${props.descriptor.iframeLaunchId}`,
   () => {
     deliveredBootstrapKey.value = null
   },
@@ -161,7 +161,7 @@ watch(
     if (envelope.payload.application.applicationId !== props.descriptor.applicationId) {
       return
     }
-    if (envelope.payload.launch.launchInstanceId !== props.descriptor.launchInstanceId) {
+    if (envelope.payload.iframeLaunchId !== props.descriptor.iframeLaunchId) {
       return
     }
 

@@ -1,10 +1,10 @@
 export const APPLICATION_IFRAME_CHANNEL = "autobyteus.application.host" as const;
-export const APPLICATION_IFRAME_CONTRACT_VERSION_V2 = "2" as const;
+export const APPLICATION_IFRAME_CONTRACT_VERSION_V3 = "3" as const;
 export const APPLICATION_IFRAME_READY_EVENT = "autobyteus.application.ui.ready" as const;
 export const APPLICATION_IFRAME_BOOTSTRAP_EVENT = "autobyteus.application.host.bootstrap" as const;
 export const APPLICATION_IFRAME_QUERY_CONTRACT_VERSION = "autobyteusContractVersion" as const;
 export const APPLICATION_IFRAME_QUERY_APPLICATION_ID = "autobyteusApplicationId" as const;
-export const APPLICATION_IFRAME_QUERY_LAUNCH_INSTANCE_ID = "autobyteusLaunchInstanceId" as const;
+export const APPLICATION_IFRAME_QUERY_IFRAME_LAUNCH_ID = "autobyteusIframeLaunchId" as const;
 export const APPLICATION_IFRAME_QUERY_HOST_ORIGIN = "autobyteusHostOrigin" as const;
 
 const PACKAGED_HOST_ORIGIN = "file://" as const;
@@ -17,36 +17,36 @@ export type ApplicationHostTransport = {
 };
 
 export type ApplicationIframeLaunchHints = {
-  contractVersion: typeof APPLICATION_IFRAME_CONTRACT_VERSION_V2;
+  contractVersion: typeof APPLICATION_IFRAME_CONTRACT_VERSION_V3;
   applicationId: string;
-  launchInstanceId: string;
+  iframeLaunchId: string;
   hostOrigin: string;
 };
 
-export type ApplicationIframeEnvelopeV2<
+export type ApplicationIframeEnvelopeV3<
   TPayload extends UnknownRecord = UnknownRecord,
 > = {
   channel: typeof APPLICATION_IFRAME_CHANNEL;
-  contractVersion: typeof APPLICATION_IFRAME_CONTRACT_VERSION_V2;
+  contractVersion: typeof APPLICATION_IFRAME_CONTRACT_VERSION_V3;
   eventName: string;
   payload: TPayload;
 };
 
-export type ApplicationUiReadyPayloadV2 = {
+export type ApplicationUiReadyPayloadV3 = {
   applicationId: string;
-  launchInstanceId: string;
+  iframeLaunchId: string;
 };
 
-export type ApplicationIframeReadySignal = ApplicationUiReadyPayloadV2 & {
+export type ApplicationIframeReadySignal = ApplicationUiReadyPayloadV3 & {
   iframeOrigin: string;
 };
 
-export type ApplicationUiReadyEnvelopeV2 =
-  ApplicationIframeEnvelopeV2<ApplicationUiReadyPayloadV2> & {
+export type ApplicationUiReadyEnvelopeV3 =
+  ApplicationIframeEnvelopeV3<ApplicationUiReadyPayloadV3> & {
     eventName: typeof APPLICATION_IFRAME_READY_EVENT;
   };
 
-export type ApplicationBootstrapPayloadV2 = {
+export type ApplicationBootstrapPayloadV3 = {
   host: {
     origin: string;
   };
@@ -56,18 +56,15 @@ export type ApplicationBootstrapPayloadV2 = {
     packageId: string;
     name: string;
   };
-  launch: {
-    launchInstanceId: string;
-  };
+  iframeLaunchId: string;
   requestContext: {
     applicationId: string;
-    launchInstanceId: string;
   };
   transport: ApplicationHostTransport;
 };
 
-export type ApplicationHostBootstrapEnvelopeV2 =
-  ApplicationIframeEnvelopeV2<ApplicationBootstrapPayloadV2> & {
+export type ApplicationHostBootstrapEnvelopeV3 =
+  ApplicationIframeEnvelopeV3<ApplicationBootstrapPayloadV3> & {
     eventName: typeof APPLICATION_IFRAME_BOOTSTRAP_EVENT;
   };
 
@@ -120,9 +117,9 @@ export const doesApplicationHostOriginMatch = (
   return normalizedActualOrigin === expectedNormalizedHostOrigin;
 };
 
-export const isApplicationIframeEnvelopeV2 = (
+export const isApplicationIframeEnvelopeV3 = (
   value: unknown,
-): value is ApplicationIframeEnvelopeV2<UnknownRecord> => {
+): value is ApplicationIframeEnvelopeV3<UnknownRecord> => {
   if (!isObjectRecord(value)) {
     return false;
   }
@@ -135,27 +132,27 @@ export const isApplicationIframeEnvelopeV2 = (
   );
 };
 
-export const isApplicationUiReadyPayloadV2 = (
+export const isApplicationUiReadyPayloadV3 = (
   value: unknown,
-): value is ApplicationUiReadyPayloadV2 => {
+): value is ApplicationUiReadyPayloadV3 => {
   if (!isObjectRecord(value)) {
     return false;
   }
 
   return (
-    hasOnlyKeys(value, ["applicationId", "launchInstanceId"])
+    hasOnlyKeys(value, ["applicationId", "iframeLaunchId"])
     && isNonEmptyString(value.applicationId)
-    && isNonEmptyString(value.launchInstanceId)
+    && isNonEmptyString(value.iframeLaunchId)
   );
 };
 
-export const isApplicationUiReadyEnvelopeV2 = (
+export const isApplicationUiReadyEnvelopeV3 = (
   value: unknown,
-): value is ApplicationUiReadyEnvelopeV2 => (
-  isApplicationIframeEnvelopeV2(value)
-  && value.contractVersion === APPLICATION_IFRAME_CONTRACT_VERSION_V2
+): value is ApplicationUiReadyEnvelopeV3 => (
+  isApplicationIframeEnvelopeV3(value)
+  && value.contractVersion === APPLICATION_IFRAME_CONTRACT_VERSION_V3
   && value.eventName === APPLICATION_IFRAME_READY_EVENT
-  && isApplicationUiReadyPayloadV2(value.payload)
+  && isApplicationUiReadyPayloadV3(value.payload)
 );
 
 const isApplicationHostTransport = (
@@ -172,21 +169,20 @@ const isApplicationHostTransport = (
   );
 };
 
-export const isApplicationBootstrapPayloadV2 = (
+export const isApplicationBootstrapPayloadV3 = (
   value: unknown,
-): value is ApplicationBootstrapPayloadV2 => {
+): value is ApplicationBootstrapPayloadV3 => {
   if (!isObjectRecord(value)) {
     return false;
   }
 
   const host = value.host;
   const application = value.application;
-  const launch = value.launch;
   const requestContext = value.requestContext;
   const transport = value.transport;
 
   return (
-    hasOnlyKeys(value, ["host", "application", "launch", "requestContext", "transport"])
+    hasOnlyKeys(value, ["host", "application", "iframeLaunchId", "requestContext", "transport"])
     && isObjectRecord(host)
     && hasOnlyKeys(host, ["origin"])
     && isNonEmptyString(host.origin)
@@ -196,40 +192,37 @@ export const isApplicationBootstrapPayloadV2 = (
     && isNonEmptyString(application.localApplicationId)
     && isNonEmptyString(application.packageId)
     && isNonEmptyString(application.name)
-    && isObjectRecord(launch)
-    && hasOnlyKeys(launch, ["launchInstanceId"])
-    && isNonEmptyString(launch.launchInstanceId)
+    && isNonEmptyString(value.iframeLaunchId)
     && isObjectRecord(requestContext)
-    && hasOnlyKeys(requestContext, ["applicationId", "launchInstanceId"])
+    && hasOnlyKeys(requestContext, ["applicationId"])
     && isNonEmptyString(requestContext.applicationId)
-    && isNonEmptyString(requestContext.launchInstanceId)
     && isApplicationHostTransport(transport)
   );
 };
 
-export const isApplicationHostBootstrapEnvelopeV2 = (
+export const isApplicationHostBootstrapEnvelopeV3 = (
   value: unknown,
-): value is ApplicationHostBootstrapEnvelopeV2 => (
-  isApplicationIframeEnvelopeV2(value)
-  && value.contractVersion === APPLICATION_IFRAME_CONTRACT_VERSION_V2
+): value is ApplicationHostBootstrapEnvelopeV3 => (
+  isApplicationIframeEnvelopeV3(value)
+  && value.contractVersion === APPLICATION_IFRAME_CONTRACT_VERSION_V3
   && value.eventName === APPLICATION_IFRAME_BOOTSTRAP_EVENT
-  && isApplicationBootstrapPayloadV2(value.payload)
+  && isApplicationBootstrapPayloadV3(value.payload)
 );
 
-export const createApplicationUiReadyEnvelopeV2 = (
-  payload: ApplicationUiReadyPayloadV2,
-): ApplicationUiReadyEnvelopeV2 => ({
+export const createApplicationUiReadyEnvelopeV3 = (
+  payload: ApplicationUiReadyPayloadV3,
+): ApplicationUiReadyEnvelopeV3 => ({
   channel: APPLICATION_IFRAME_CHANNEL,
-  contractVersion: APPLICATION_IFRAME_CONTRACT_VERSION_V2,
+  contractVersion: APPLICATION_IFRAME_CONTRACT_VERSION_V3,
   eventName: APPLICATION_IFRAME_READY_EVENT,
   payload,
 });
 
-export const createApplicationHostBootstrapEnvelopeV2 = (
-  payload: ApplicationBootstrapPayloadV2,
-): ApplicationHostBootstrapEnvelopeV2 => ({
+export const createApplicationHostBootstrapEnvelopeV3 = (
+  payload: ApplicationBootstrapPayloadV3,
+): ApplicationHostBootstrapEnvelopeV3 => ({
   channel: APPLICATION_IFRAME_CHANNEL,
-  contractVersion: APPLICATION_IFRAME_CONTRACT_VERSION_V2,
+  contractVersion: APPLICATION_IFRAME_CONTRACT_VERSION_V3,
   eventName: APPLICATION_IFRAME_BOOTSTRAP_EVENT,
   payload,
 });
@@ -240,22 +233,22 @@ export const readApplicationIframeLaunchHints = (
   const searchParams = new URLSearchParams(search);
   const contractVersion = searchParams.get(APPLICATION_IFRAME_QUERY_CONTRACT_VERSION)?.trim() ?? "";
   const applicationId = searchParams.get(APPLICATION_IFRAME_QUERY_APPLICATION_ID)?.trim() ?? "";
-  const launchInstanceId = searchParams.get(APPLICATION_IFRAME_QUERY_LAUNCH_INSTANCE_ID)?.trim() ?? "";
+  const iframeLaunchId = searchParams.get(APPLICATION_IFRAME_QUERY_IFRAME_LAUNCH_ID)?.trim() ?? "";
   const hostOrigin = searchParams.get(APPLICATION_IFRAME_QUERY_HOST_ORIGIN)?.trim() ?? "";
 
   if (
-    contractVersion !== APPLICATION_IFRAME_CONTRACT_VERSION_V2
+    contractVersion !== APPLICATION_IFRAME_CONTRACT_VERSION_V3
     || !applicationId
-    || !launchInstanceId
+    || !iframeLaunchId
     || !hostOrigin
   ) {
     return null;
   }
 
   return {
-    contractVersion: APPLICATION_IFRAME_CONTRACT_VERSION_V2,
+    contractVersion: APPLICATION_IFRAME_CONTRACT_VERSION_V3,
     applicationId,
-    launchInstanceId,
+    iframeLaunchId,
     hostOrigin,
   };
 };
