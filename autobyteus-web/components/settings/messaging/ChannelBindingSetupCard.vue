@@ -360,7 +360,6 @@
             :model-config="selectedLaunchPreset.llmConfig"
             :disabled="!selectedLaunchPreset.llmModelIdentifier"
             :apply-defaults="true"
-            :clear-on-empty-schema="true"
             @update:config="updateModelConfig"
           />
         </div>

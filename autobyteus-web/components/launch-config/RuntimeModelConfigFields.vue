@@ -49,7 +49,6 @@
       :disabled="disabledComputed"
       :read-only="readOnlyComputed"
       :apply-defaults="true"
-      :clear-on-empty-schema="true"
       :thinking-label="thinkingLabel"
       :thinking-description="thinkingDescription"
       :id-prefix="idPrefix"
@@ -210,7 +209,11 @@ const updateRuntimeKind = (value: string) => {
 
 const updateModel = (value: string) => {
   if (readOnlyComputed.value) return
+  if (value === (props.llmModelIdentifier ?? '')) {
+    return
+  }
   emit('update:llmModelIdentifier', value)
+  emit('update:llmConfig', null)
 }
 
 const updateModelConfig = (config: Record<string, unknown> | null) => {

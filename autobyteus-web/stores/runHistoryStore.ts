@@ -10,9 +10,8 @@ import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig';
 import { DeleteStoredRun, DeleteStoredTeamRun } from '~/graphql/mutations/runHistoryMutations';
-import {
-  DEFAULT_AGENT_RUNTIME_KIND,
-} from '~/types/agent/AgentRunConfig';
+import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
+import { buildEditableAgentRunSeed } from '~/composables/useDefinitionLaunchDefaults';
 import type {
   DeleteStoredRunMutationData,
   DeleteStoredTeamRunMutationData,
@@ -134,10 +133,15 @@ export const useRunHistoryStore = defineStore('runHistory', {
       const selectionStore = useAgentSelectionStore();
       const agentContextsStore = useAgentContextsStore();
 
+      const selectedTemplate = selectionStore.selectedType === 'agent' && selectionStore.selectedRunId
+        ? agentContextsStore.runs.get(selectionStore.selectedRunId) ?? null : null;
+      const selectedSameDefinitionTemplate = selectedTemplate?.config.agentDefinitionId === options.agentDefinitionId
+        ? selectedTemplate
+        : null;
       const templateCandidates = Array.from(agentContextsStore.runs.values()).filter(
         (context) => context.config.agentDefinitionId === options.agentDefinitionId,
       );
-      const preferredTemplate = pickPreferredRunTemplate(templateCandidates, workspaceId);
+      const preferredTemplate = selectedSameDefinitionTemplate ?? pickPreferredRunTemplate(templateCandidates, workspaceId);
 
       const bufferedModelCandidate =
         agentRunConfigStore.config?.agentDefinitionId === options.agentDefinitionId
@@ -162,13 +166,17 @@ export const useRunHistoryStore = defineStore('runHistory', {
 
       teamRunConfigStore.clearConfig();
       if (preferredTemplate) {
+        const seed = buildEditableAgentRunSeed(preferredTemplate.config);
+        const preserveSeedLlmConfig =
+          (seed.llmModelIdentifier || '').trim() === (resolvedModelIdentifier || '').trim();
         agentRunConfigStore.setAgentConfig({
-          ...preferredTemplate.config,
+          ...seed,
           agentDefinitionId: definition.id,
           agentDefinitionName: definition.name,
-          agentAvatarUrl: definition.avatarUrl ?? preferredTemplate.config.agentAvatarUrl ?? null,
+          agentAvatarUrl: definition.avatarUrl ?? seed.agentAvatarUrl ?? null,
           workspaceId,
           llmModelIdentifier: resolvedModelIdentifier,
+          llmConfig: preserveSeedLlmConfig ? (seed.llmConfig ?? null) : null,
           isLocked: false,
         });
       } else {

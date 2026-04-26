@@ -245,6 +245,69 @@ describe('TeamRunConfigForm', () => {
     expect(llmStore.fetchProvidersWithModels).toHaveBeenCalledWith('codex_app_server')
   })
 
+  it('prunes inherited member-only llmConfig overrides when the global model changes', async () => {
+    const { wrapper, config } = buildWrapper({
+      runtimeKind: 'codex_app_server',
+      llmModelIdentifier: 'gpt-5.4',
+      llmConfig: { reasoning_effort: 'high' },
+      memberOverrides: {
+        'Member A': {
+          agentDefinitionId: 'agent-a',
+          llmConfig: { reasoning_effort: 'xhigh' },
+        },
+        'Member B': {
+          agentDefinitionId: 'agent-b',
+          autoExecuteTools: true,
+          llmConfig: { reasoning_effort: 'medium' },
+        },
+      },
+    })
+
+    await wrapper.findComponent({ name: 'SearchableGroupedSelect' }).vm.$emit('update:modelValue', 'gpt-5.3-codex')
+    await wrapper.vm.$nextTick()
+
+    expect(config.llmModelIdentifier).toBe('gpt-5.3-codex')
+    expect(config.llmConfig).toBeNull()
+    expect(config.memberOverrides).toEqual({
+      'Member B': {
+        agentDefinitionId: 'agent-b',
+        autoExecuteTools: true,
+      },
+    })
+  })
+
+  it('prunes inherited member llmConfig overrides when the global runtime changes', async () => {
+    const { wrapper, config } = buildWrapper({
+      runtimeKind: 'autobyteus',
+      llmModelIdentifier: 'gpt-5.4',
+      llmConfig: { thinking_level: 5 },
+      memberOverrides: {
+        'Member A': {
+          agentDefinitionId: 'agent-a',
+          llmConfig: { thinking_level: 3 },
+        },
+        'Member B': {
+          agentDefinitionId: 'agent-b',
+          llmModelIdentifier: 'gpt-5.4',
+          llmConfig: { thinking_level: 4 },
+        },
+      },
+    })
+
+    await wrapper.find('select#team-run-runtime-kind').setValue('codex_app_server')
+    await wrapper.vm.$nextTick()
+
+    expect(config.runtimeKind).toBe('codex_app_server')
+    expect(config.llmModelIdentifier).toBe('')
+    expect(config.llmConfig).toBeNull()
+    expect(config.memberOverrides).toEqual({
+      'Member B': {
+        agentDefinitionId: 'agent-b',
+        llmModelIdentifier: 'gpt-5.4',
+      },
+    })
+  })
+
   it('flattens nested team definitions into leaf member rows', () => {
     const { wrapper } = buildWrapper({}, nestedTeamDef)
     const items = wrapper.findAllComponents({ name: 'MemberOverrideItem' })

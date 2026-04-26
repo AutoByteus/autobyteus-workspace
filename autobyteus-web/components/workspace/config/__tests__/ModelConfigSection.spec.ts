@@ -66,28 +66,44 @@ describe('ModelConfigSection', () => {
     await new Promise<void>((resolve) => setTimeout(resolve, 0))
   }
 
-  it('resets configuration when schema changes', async () => {
-    const config = { thinking_enabled: true, thinking_level: 5 }
+  it('preserves configuration while schema metadata is absent', async () => {
     const wrapper = mount(ModelConfigSection, {
       props: {
-        modelId: 'claude-3-5-sonnet',
+        modelConfig: { reasoning_effort: 'xhigh' },
+        schema: null,
+        applyDefaults: true,
+      },
+    });
+
+    await flushPromises();
+
+    expect(wrapper.emitted('update:config')).toBeUndefined();
+
+    await wrapper.setProps({
+      schema: {
+        reasoning_effort: { type: 'string', enum: ['none', 'low', 'medium', 'high', 'xhigh'] },
+      },
+    });
+    await flushPromises();
+
+    expect(wrapper.emitted('update:config')).toBeUndefined();
+  });
+
+  it('does not reset configuration merely because schema changes', async () => {
+    const config = { reasoning_effort: 'high' }
+    const wrapper = mount(ModelConfigSection, {
+      props: {
         modelConfig: config,
         schema: {
-          thinking_enabled: { type: 'boolean', title: 'Thinking Enabled', default: true },
-          thinking_level: { type: 'integer', title: 'Thinking Level', default: 5 }
+          reasoning_effort: { type: 'string', enum: ['none', 'low', 'medium', 'high'] },
         }
       }
     });
 
-    // Initial state check
-    expect(wrapper.props('modelConfig')).toEqual({ thinking_enabled: true, thinking_level: 5 });
-
-    // Change schema (simulate model switch)
     await wrapper.setProps({
-      modelId: 'gpt-4',
       modelConfig: config,
       schema: {
-        temperature: { type: 'number', title: 'Temperature', default: 0.7 }
+        reasoning_effort: { type: 'string', enum: ['none', 'low', 'medium', 'high', 'xhigh'] },
       }
     });
     await wrapper.vm.$nextTick();
@@ -95,7 +111,7 @@ describe('ModelConfigSection', () => {
 
     const updates = wrapper.emitted('update:config') || [];
     const hasNullReset = updates.some(args => args[0] === null);
-    expect(hasNullReset || updates.length === 0).toBe(true);
+    expect(hasNullReset).toBe(false);
   });
 
   it('does NOT reset configuration when switching agents (context switch)', async () => {
