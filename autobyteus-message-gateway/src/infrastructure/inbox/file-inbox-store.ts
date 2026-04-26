@@ -258,7 +258,7 @@ const parseStatus = (value: unknown): InboundInboxStatus => {
   if (
     value === "RECEIVED" ||
     value === "FORWARDING" ||
-    value === "COMPLETED_ROUTED" ||
+    value === "COMPLETED_ACCEPTED" ||
     value === "COMPLETED_UNBOUND" ||
     value === "COMPLETED_DUPLICATE" ||
     value === "BLOCKED" ||

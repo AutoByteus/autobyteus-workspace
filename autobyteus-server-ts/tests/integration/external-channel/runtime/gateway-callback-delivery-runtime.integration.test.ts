@@ -10,7 +10,6 @@ import { appConfigProvider } from "../../../../src/config/app-config-provider.js
 import { getProviderProxySet, resetProviderProxySetForTests } from "../../../../src/external-channel/providers/provider-proxy-set.js";
 import { DeliveryEventService } from "../../../../src/external-channel/services/delivery-event-service.js";
 import { ChannelBindingService } from "../../../../src/external-channel/services/channel-binding-service.js";
-import { ChannelMessageReceiptService } from "../../../../src/external-channel/services/channel-message-receipt-service.js";
 import {
   buildDefaultReplyCallbackService,
   startGatewayCallbackDeliveryRuntime,
@@ -131,25 +130,22 @@ describe("Gateway callback delivery runtime integration", () => {
   });
 
   it("retries queued callbacks until the callback target becomes available", async () => {
-    const { providerSet, bindingService, messageReceiptService, callbackOutboxService } =
+    const { providerSet, bindingService, callbackOutboxService } =
       createRuntimeHarness();
     const callbackService = buildDefaultReplyCallbackService();
     const callbackIdempotencyKey = `callback-${randomUUID()}`;
 
     await seedReplyContext({
       bindingService,
-      messageReceiptService,
     });
 
     startGatewayCallbackDeliveryRuntime();
 
-    const publishResult = await callbackService.publishAssistantReplyByTurn({
-      agentRunId: "agent-run-1",
-      turnId: "turn-1",
+    const publishResult = await callbackService.publishRunOutputReply(createPublishInput({
       replyText: "Hello after retry",
       callbackIdempotencyKey,
       metadata: { source: "integration-test" },
-    });
+    }));
 
     expect(publishResult).toMatchObject({
       published: true,
@@ -215,23 +211,20 @@ describe("Gateway callback delivery runtime integration", () => {
   it("re-dispatches an expired in-flight lease after worker restart semantics", async () => {
     acceptingCallbacks = true;
 
-    const { providerSet, bindingService, messageReceiptService, callbackOutboxService } =
+    const { providerSet, bindingService, callbackOutboxService } =
       createRuntimeHarness();
     const callbackService = buildDefaultReplyCallbackService();
     const callbackIdempotencyKey = `callback-${randomUUID()}`;
 
     await seedReplyContext({
       bindingService,
-      messageReceiptService,
     });
 
-    const publishResult = await callbackService.publishAssistantReplyByTurn({
-      agentRunId: "agent-run-1",
-      turnId: "turn-1",
+    const publishResult = await callbackService.publishRunOutputReply(createPublishInput({
       replyText: "Recovered after lease expiry",
       callbackIdempotencyKey,
       metadata: { source: "lease-recovery-test" },
-    });
+    }));
     expect(publishResult.published).toBe(true);
 
     const leased = await callbackOutboxService.leaseBatch({
@@ -267,23 +260,20 @@ describe("Gateway callback delivery runtime integration", () => {
   });
 
   it("dead-letters exhausted retries while preserving terminal error state", async () => {
-    const { providerSet, bindingService, messageReceiptService, callbackOutboxService } =
+    const { providerSet, bindingService, callbackOutboxService } =
       createRuntimeHarness();
     const callbackService = buildDefaultReplyCallbackService();
     const callbackIdempotencyKey = `callback-${randomUUID()}`;
 
     await seedReplyContext({
       bindingService,
-      messageReceiptService,
     });
 
-    const publishResult = await callbackService.publishAssistantReplyByTurn({
-      agentRunId: "agent-run-1",
-      turnId: "turn-1",
+    const publishResult = await callbackService.publishRunOutputReply(createPublishInput({
       replyText: "This will dead-letter",
       callbackIdempotencyKey,
       metadata: { source: "dead-letter-test" },
-    });
+    }));
     expect(publishResult.published).toBe(true);
 
     const worker = createDispatchWorker(callbackOutboxService, providerSet.deliveryEventProvider, {
@@ -335,30 +325,25 @@ describe("Gateway callback delivery runtime integration", () => {
   it("suppresses duplicate callback keys without creating duplicate durable work", async () => {
     acceptingCallbacks = true;
 
-    const { providerSet, bindingService, messageReceiptService, callbackOutboxService } =
+    const { providerSet, bindingService, callbackOutboxService } =
       createRuntimeHarness();
     const callbackService = buildDefaultReplyCallbackService();
     const callbackIdempotencyKey = `callback-${randomUUID()}`;
 
     await seedReplyContext({
       bindingService,
-      messageReceiptService,
     });
 
-    const firstResult = await callbackService.publishAssistantReplyByTurn({
-      agentRunId: "agent-run-1",
-      turnId: "turn-1",
+    const firstResult = await callbackService.publishRunOutputReply(createPublishInput({
       replyText: "First publish wins",
       callbackIdempotencyKey,
       metadata: { source: "duplicate-test" },
-    });
-    const secondResult = await callbackService.publishAssistantReplyByTurn({
-      agentRunId: "agent-run-1",
-      turnId: "turn-1",
+    }));
+    const secondResult = await callbackService.publishRunOutputReply(createPublishInput({
       replyText: "Second publish should be ignored",
       callbackIdempotencyKey,
       metadata: { source: "duplicate-test" },
-    });
+    }));
 
     expect(firstResult).toMatchObject({
       published: true,
@@ -401,9 +386,6 @@ const createRuntimeHarness = () => {
   return {
     providerSet,
     bindingService: new ChannelBindingService(providerSet.bindingProvider),
-    messageReceiptService: new ChannelMessageReceiptService(
-      providerSet.messageReceiptProvider,
-    ),
     callbackOutboxService: new GatewayCallbackOutboxService(
       new FileGatewayCallbackOutboxStore(),
     ),
@@ -412,7 +394,6 @@ const createRuntimeHarness = () => {
 
 const seedReplyContext = async (deps: {
   bindingService: ChannelBindingService;
-  messageReceiptService: ChannelMessageReceiptService;
 }): Promise<void> => {
   await deps.bindingService.upsertBinding({
     provider: ExternalChannelProvider.WHATSAPP,
@@ -426,40 +407,30 @@ const seedReplyContext = async (deps: {
     targetNodeName: null,
     allowTransportFallback: false,
   });
-  await deps.messageReceiptService.createPendingIngressReceipt({
-    provider: ExternalChannelProvider.WHATSAPP,
-    transport: ExternalChannelTransport.BUSINESS_API,
-    accountId: "acct-1",
-    peerId: "peer-1",
-    threadId: "thread-1",
-    externalMessageId: "ext-msg-1",
-    receivedAt: new Date("2026-03-10T12:00:00.000Z"),
-  });
-  const claimed = await deps.messageReceiptService.claimIngressDispatch({
-    provider: ExternalChannelProvider.WHATSAPP,
-    transport: ExternalChannelTransport.BUSINESS_API,
-    accountId: "acct-1",
-    peerId: "peer-1",
-    threadId: "thread-1",
-    externalMessageId: "ext-msg-1",
-    receivedAt: new Date("2026-03-10T12:00:00.000Z"),
-    claimedAt: new Date("2026-03-10T12:00:01.000Z"),
-    leaseDurationMs: 30_000,
-  });
-  await deps.messageReceiptService.recordAcceptedDispatch({
-    provider: ExternalChannelProvider.WHATSAPP,
-    transport: ExternalChannelTransport.BUSINESS_API,
-    accountId: "acct-1",
-    peerId: "peer-1",
-    threadId: "thread-1",
-    externalMessageId: "ext-msg-1",
-    turnId: "turn-1",
-    agentRunId: "agent-run-1",
-    teamRunId: null,
-    receivedAt: new Date("2026-03-10T12:00:00.000Z"),
-    dispatchLeaseToken: claimed.dispatchLeaseToken ?? "",
-  });
 };
+
+const createPublishInput = (input: {
+  replyText: string;
+  callbackIdempotencyKey: string;
+  metadata?: Record<string, unknown>;
+}) => ({
+  route: {
+    provider: ExternalChannelProvider.WHATSAPP,
+    transport: ExternalChannelTransport.BUSINESS_API,
+    accountId: "acct-1",
+    peerId: "peer-1",
+    threadId: "thread-1",
+  },
+  target: {
+    targetType: "AGENT" as const,
+    agentRunId: "agent-run-1",
+  },
+  turnId: "turn-1",
+  correlationMessageId: "ext-msg-1",
+  replyText: input.replyText,
+  callbackIdempotencyKey: input.callbackIdempotencyKey,
+  metadata: input.metadata,
+});
 
 const expectPersistenceArtifactsUnderAppDataDir = async (
   appDataDir: string,
@@ -467,7 +438,6 @@ const expectPersistenceArtifactsUnderAppDataDir = async (
   const persistenceRoot = path.join(appDataDir, "external-channel");
   await Promise.all([
     fs.access(path.join(persistenceRoot, "bindings.json")),
-    fs.access(path.join(persistenceRoot, "message-receipts.json")),
     fs.access(path.join(persistenceRoot, "delivery-events.json")),
     fs.access(path.join(persistenceRoot, "gateway-callback-outbox.json")),
   ]);

@@ -1,8 +1,8 @@
 import { AgentRunEventType } from "../../agent-execution/domain/agent-run-event.js";
 import {
-  parseDirectAgentRunEvent,
-  parseTeamAgentRunEvent,
-} from "./channel-reply-bridge-support.js";
+  parseDirectChannelOutputEvent,
+  parseTeamChannelOutputEvent,
+} from "./channel-output-event-parser.js";
 export type RuntimeEventSubscription = (
   listener: (event: unknown) => void,
 ) => () => void;
@@ -20,7 +20,7 @@ export const startDirectDispatchTurnCapture = (
   dispose: () => void;
 } =>
   createScopedCapture(subscribeToEvents, (event) => {
-    const parsed = parseDirectAgentRunEvent(event);
+    const parsed = parseDirectChannelOutputEvent(event);
     if (!parsed || !parsed.turnId || parsed.eventType !== AgentRunEventType.TURN_STARTED) {
       return null;
     }
@@ -36,7 +36,7 @@ export const startTeamDispatchTurnCapture = (
 } => {
   const normalizedTargetMemberName = normalizeOptionalString(targetMemberName);
   return createScopedCapture(subscribeToEvents, (event) => {
-    const parsed = parseTeamAgentRunEvent(event);
+    const parsed = parseTeamChannelOutputEvent(event);
     if (!parsed || !parsed.turnId || parsed.eventType !== AgentRunEventType.TURN_STARTED) {
       return null;
     }

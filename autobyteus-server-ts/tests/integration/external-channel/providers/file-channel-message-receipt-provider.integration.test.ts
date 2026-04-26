@@ -83,7 +83,7 @@ describe("FileChannelMessageReceiptProvider", () => {
     expect(secondClaim.receivedAt.toISOString()).toBe("2026-02-08T00:05:00.000Z");
   });
 
-  it("records accepted-turn correlation and resolves source by (agentRunId, turnId)", async () => {
+  it("records accepted-turn correlation and resolves latest source by route", async () => {
     const provider = createProvider();
     const agentRunId = unique("agent");
     const accountId = unique("acct");
@@ -113,11 +113,17 @@ describe("FileChannelMessageReceiptProvider", () => {
       teamRunId: null,
       receivedAt: new Date("2026-02-09T00:00:00.000Z"),
       dispatchLeaseToken: claimed.dispatchLeaseToken ?? "",
+      dispatchAcceptedAt: new Date("2026-02-09T00:00:02.000Z"),
     });
 
-    const source = await provider.getSourceByAgentRunTurn(agentRunId, "turn-1");
+    const source = await provider.findLatestAcceptedSourceForRoute({
+      provider: ExternalChannelProvider.WHATSAPP,
+      transport: ExternalChannelTransport.PERSONAL_SESSION,
+      accountId,
+      peerId,
+      threadId: null,
+    });
     expect(source).not.toBeNull();
     expect(source?.externalMessageId).toBe("ext-turn-1");
-    expect(source?.turnId).toBe("turn-1");
   });
 });

@@ -1,8 +1,8 @@
 import type { ExternalMessageEnvelope } from "autobyteus-ts/external-channel/external-message-envelope.js";
-import type { ChannelBinding } from "../domain/models.js";
+import type { ChannelBinding, ChannelMessageReceipt, ChannelRunOutputTarget } from "../domain/models.js";
 import type { ChannelRunDispatchResult } from "../runtime/channel-run-dispatch-result.js";
-import type { ReceiptWorkflowRuntime } from "../runtime/receipt-workflow-runtime.js";
-import { getReceiptWorkflowRuntime } from "../runtime/receipt-workflow-runtime-singleton.js";
+import type { ChannelRunOutputDeliveryRuntime } from "../runtime/channel-run-output-delivery-runtime.js";
+import { getChannelRunOutputDeliveryRuntime } from "../runtime/channel-run-output-runtime-singleton.js";
 import { ChannelRunFacade } from "../runtime/channel-run-facade.js";
 import { ChannelBindingService } from "./channel-binding-service.js";
 import { ChannelMessageReceiptService } from "./channel-message-receipt-service.js";
@@ -15,7 +15,7 @@ export type ChannelIngressServiceDependencies = {
   threadLockService?: ChannelThreadLockService;
   runFacade?: ChannelRunFacade;
   messageReceiptService?: ChannelMessageReceiptService;
-  receiptWorkflowRuntime?: ReceiptWorkflowRuntime;
+  outputDeliveryRuntime?: ChannelRunOutputDeliveryRuntime;
 };
 
 export type ChannelIngressServiceOptions = {
@@ -37,7 +37,7 @@ export class ChannelIngressService {
   private readonly threadLockService: ChannelThreadLockService;
   private readonly runFacade: ChannelRunFacade;
   private readonly messageReceiptService: ChannelMessageReceiptService;
-  private readonly receiptWorkflowRuntime: ReceiptWorkflowRuntime;
+  private readonly outputDeliveryRuntime: ChannelRunOutputDeliveryRuntime;
   private readonly dispatchLeaseDurationMs: number;
 
   constructor(
@@ -49,8 +49,8 @@ export class ChannelIngressService {
     this.runFacade = deps.runFacade ?? new ChannelRunFacade();
     this.messageReceiptService =
       deps.messageReceiptService ?? new ChannelMessageReceiptService();
-    this.receiptWorkflowRuntime =
-      deps.receiptWorkflowRuntime ?? getReceiptWorkflowRuntime();
+    this.outputDeliveryRuntime =
+      deps.outputDeliveryRuntime ?? getChannelRunOutputDeliveryRuntime();
     this.dispatchLeaseDurationMs = normalizeDispatchLeaseDurationMs(
       options.dispatchLeaseDurationMs ?? 30_000,
     );
@@ -72,7 +72,7 @@ export class ChannelIngressService {
           externalMessageId: envelope.externalMessageId,
         });
         if (existing?.ingressState === "ACCEPTED") {
-          await this.receiptWorkflowRuntime.registerAcceptedReceipt(existing);
+          await this.attachExistingAcceptedReceipt(existing);
           return {
             duplicate: true,
             idempotencyKey,
@@ -86,8 +86,7 @@ export class ChannelIngressService {
 
         if (
           existing &&
-          (existing.ingressState === "ROUTED" ||
-            existing.ingressState === "UNBOUND" ||
+          (existing.ingressState === "UNBOUND" ||
             (existing.ingressState === "DISPATCHING" &&
               !this.messageReceiptService.isDispatchLeaseExpired(existing)))
         ) {
@@ -159,7 +158,7 @@ export class ChannelIngressService {
         );
 
         const normalizedDispatch = normalizeDispatchTarget(dispatch);
-        const acceptedReceipt = await this.messageReceiptService.recordAcceptedDispatch({
+        await this.messageReceiptService.recordAcceptedDispatch({
           provider: envelope.provider,
           transport: envelope.transport,
           accountId: envelope.accountId,
@@ -173,7 +172,19 @@ export class ChannelIngressService {
           turnId: normalizedDispatch.dispatch.turnId,
           dispatchAcceptedAt: normalizedDispatch.dispatch.dispatchedAt,
         });
-        await this.receiptWorkflowRuntime.registerAcceptedReceipt(acceptedReceipt);
+        await this.outputDeliveryRuntime.attachAcceptedDispatch({
+          binding: resolved.binding,
+          route: {
+            provider: envelope.provider,
+            transport: envelope.transport,
+            accountId: envelope.accountId,
+            peerId: envelope.peerId,
+            threadId: envelope.threadId,
+          },
+          latestCorrelationMessageId: envelope.externalMessageId,
+          target: toRunOutputTarget(resolved.binding, normalizedDispatch.dispatch),
+          turnId: normalizedDispatch.dispatch.turnId,
+        });
 
         return {
           duplicate: false,
@@ -186,6 +197,41 @@ export class ChannelIngressService {
         };
       },
     );
+  }
+
+  private async attachExistingAcceptedReceipt(
+    receipt: ChannelMessageReceipt,
+  ): Promise<void> {
+    if (!receipt.turnId) {
+      return;
+    }
+    const resolved = await this.bindingService.resolveBinding({
+      provider: receipt.provider,
+      transport: receipt.transport,
+      accountId: receipt.accountId,
+      peerId: receipt.peerId,
+      threadId: receipt.threadId,
+    });
+    if (!resolved) {
+      return;
+    }
+    const target = toRunOutputTargetFromReceipt(resolved.binding, receipt);
+    if (!target) {
+      return;
+    }
+    await this.outputDeliveryRuntime.attachAcceptedDispatch({
+      binding: resolved.binding,
+      route: {
+        provider: receipt.provider,
+        transport: receipt.transport,
+        accountId: receipt.accountId,
+        peerId: receipt.peerId,
+        threadId: receipt.threadId,
+      },
+      latestCorrelationMessageId: receipt.externalMessageId,
+      target,
+      turnId: receipt.turnId,
+    });
   }
 }
 
@@ -230,6 +276,43 @@ const normalizeDispatchTarget = (
     },
     persistedAgentRunId: memberRunId,
     persistedTeamRunId: teamRunId,
+  };
+};
+
+const toRunOutputTarget = (
+  binding: ChannelBinding,
+  dispatch: ChannelRunDispatchResult,
+): ChannelRunOutputTarget => {
+  if (dispatch.dispatchTargetType === "AGENT") {
+    return { targetType: "AGENT", agentRunId: dispatch.agentRunId };
+  }
+  return {
+    targetType: "TEAM",
+    teamRunId: dispatch.teamRunId,
+    entryMemberRunId: normalizeNullableString(dispatch.memberRunId ?? null),
+    entryMemberName:
+      normalizeNullableString(dispatch.memberName ?? null) ??
+      normalizeNullableString(binding.targetNodeName ?? null),
+  };
+};
+
+const toRunOutputTargetFromReceipt = (
+  binding: ChannelBinding,
+  receipt: ChannelMessageReceipt,
+): ChannelRunOutputTarget | null => {
+  if (binding.targetType === "AGENT") {
+    const agentRunId = normalizeNullableString(receipt.agentRunId);
+    return agentRunId ? { targetType: "AGENT", agentRunId } : null;
+  }
+  const teamRunId = normalizeNullableString(receipt.teamRunId);
+  if (!teamRunId) {
+    return null;
+  }
+  return {
+    targetType: "TEAM",
+    teamRunId,
+    entryMemberRunId: normalizeNullableString(receipt.agentRunId),
+    entryMemberName: normalizeNullableString(binding.targetNodeName ?? null),
   };
 };
 

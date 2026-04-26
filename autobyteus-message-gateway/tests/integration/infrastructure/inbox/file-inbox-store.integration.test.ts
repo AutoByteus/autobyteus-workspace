@@ -29,12 +29,12 @@ describe("FileInboxStore integration", () => {
         payload: buildEnvelope("m-1") as any,
       });
       await firstStore.updateStatus(created.record.id, {
-        status: "COMPLETED_ROUTED",
+        status: "COMPLETED_ACCEPTED",
       });
 
       const restartedStore = new FileInboxStore(root);
       const loaded = await restartedStore.getById(created.record.id);
-      expect(loaded?.status).toBe("COMPLETED_ROUTED");
+      expect(loaded?.status).toBe("COMPLETED_ACCEPTED");
     } finally {
       await rm(root, { recursive: true, force: true });
     }

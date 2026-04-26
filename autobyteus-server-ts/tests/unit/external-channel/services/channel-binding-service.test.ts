@@ -21,6 +21,33 @@ const createBinding = (transport: ExternalChannelTransport): ChannelBinding => (
   updatedAt: new Date("2026-02-08T00:00:00.000Z"),
 });
 
+const createTeamBinding = (targetNodeName: string | null): ChannelBinding => ({
+  ...createBinding(ExternalChannelTransport.PERSONAL_SESSION),
+  id: `binding-team-${targetNodeName ?? "default"}`,
+  targetType: "TEAM",
+  agentRunId: null,
+  teamRunId: "team-1",
+  targetNodeName,
+});
+
+const createTeamRun = () => {
+  const runtimeContext = {
+    memberContexts: [
+      { memberName: "coordinator", memberRunId: "run-coordinator" },
+      { memberName: "worker", memberRunId: "run-worker" },
+    ],
+  };
+  return {
+    runId: "team-1",
+    context: { coordinatorMemberName: "coordinator", runtimeContext },
+    config: {
+      coordinatorMemberName: "coordinator",
+      memberConfigs: [{ memberName: "coordinator" }, { memberName: "worker" }],
+    },
+    getRuntimeContext: () => runtimeContext,
+  };
+};
+
 describe("ChannelBindingService", () => {
   it("resolves exact transport binding", async () => {
     const provider: ChannelBindingProvider = {
@@ -31,6 +58,7 @@ describe("ChannelBindingService", () => {
       listBindings: vi.fn(),
       upsertBinding: vi.fn(),
       upsertBindingAgentRunId: vi.fn(),
+      upsertBindingTeamRunId: vi.fn(),
       deleteBinding: vi.fn(),
     };
     const service = new ChannelBindingService(provider);
@@ -57,6 +85,7 @@ describe("ChannelBindingService", () => {
       listBindings: vi.fn(),
       upsertBinding: vi.fn(),
       upsertBindingAgentRunId: vi.fn(),
+      upsertBindingTeamRunId: vi.fn(),
       deleteBinding: vi.fn(),
     };
     const service = new ChannelBindingService(provider, { allowTransportFallback: false });
@@ -83,6 +112,7 @@ describe("ChannelBindingService", () => {
       listBindings: vi.fn(),
       upsertBinding: vi.fn(),
       upsertBindingAgentRunId: vi.fn(),
+      upsertBindingTeamRunId: vi.fn(),
       deleteBinding: vi.fn(),
     };
     const service = new ChannelBindingService(provider, { allowTransportFallback: true });
@@ -148,6 +178,7 @@ describe("ChannelBindingService", () => {
       listBindings: vi.fn(),
       upsertBinding: vi.fn(),
       upsertBindingAgentRunId: vi.fn(),
+      upsertBindingTeamRunId: vi.fn(),
       deleteBinding: vi.fn(),
     };
     const service = new ChannelBindingService(provider);
@@ -173,6 +204,7 @@ describe("ChannelBindingService", () => {
       listBindings: vi.fn(),
       upsertBinding: vi.fn(),
       upsertBindingAgentRunId: vi.fn(),
+      upsertBindingTeamRunId: vi.fn(),
       deleteBinding: vi.fn(),
     };
     const service = new ChannelBindingService(provider);
@@ -188,15 +220,16 @@ describe("ChannelBindingService", () => {
     expect(provider.findBindingByDispatchTarget).not.toHaveBeenCalled();
   });
 
-  it("delegates route-target active binding checks", async () => {
+  it("checks active route bindings with output target identity", async () => {
     const provider: ChannelBindingProvider = {
-      findBinding: vi.fn(),
+      findBinding: vi.fn().mockResolvedValue(createBinding(ExternalChannelTransport.PERSONAL_SESSION)),
       findProviderDefaultBinding: vi.fn(),
       findBindingByDispatchTarget: vi.fn(),
-      isRouteBoundToTarget: vi.fn().mockResolvedValue(true),
+      isRouteBoundToTarget: vi.fn(),
       listBindings: vi.fn(),
       upsertBinding: vi.fn(),
       upsertBindingAgentRunId: vi.fn(),
+      upsertBindingTeamRunId: vi.fn(),
       deleteBinding: vi.fn(),
     };
     const service = new ChannelBindingService(provider);
@@ -210,13 +243,13 @@ describe("ChannelBindingService", () => {
         threadId: " ",
       },
       {
+        targetType: "AGENT",
         agentRunId: " agent-1 ",
-        teamRunId: null,
       },
     );
 
     expect(result).toBe(true);
-    expect(provider.isRouteBoundToTarget).toHaveBeenCalledWith(
+    expect(provider.findBinding).toHaveBeenCalledWith(
       {
         provider: ExternalChannelProvider.WHATSAPP,
         transport: ExternalChannelTransport.PERSONAL_SESSION,
@@ -224,10 +257,58 @@ describe("ChannelBindingService", () => {
         peerId: "peer-1",
         threadId: null,
       },
-      {
-        agentRunId: "agent-1",
-        teamRunId: null,
-      },
     );
+    expect(provider.isRouteBoundToTarget).not.toHaveBeenCalled();
+  });
+
+  it("checks explicit and default team route bindings against member identity", async () => {
+    const provider: ChannelBindingProvider = {
+      findBinding: vi.fn(),
+      findProviderDefaultBinding: vi.fn(),
+      findBindingByDispatchTarget: vi.fn(),
+      isRouteBoundToTarget: vi.fn(),
+      listBindings: vi.fn(),
+      upsertBinding: vi.fn(),
+      upsertBindingAgentRunId: vi.fn(),
+      upsertBindingTeamRunId: vi.fn(),
+      deleteBinding: vi.fn(),
+    };
+    const service = new ChannelBindingService(provider, {}, {
+      teamRunService: { resolveTeamRun: vi.fn().mockResolvedValue(createTeamRun()) } as any,
+    });
+    const route = {
+      provider: ExternalChannelProvider.WHATSAPP,
+      transport: ExternalChannelTransport.PERSONAL_SESSION,
+      accountId: "acct-1",
+      peerId: "peer-1",
+      threadId: null,
+    };
+    const coordinatorTarget = {
+      targetType: "TEAM" as const,
+      teamRunId: "team-1",
+      entryMemberRunId: "run-coordinator",
+      entryMemberName: "coordinator",
+    };
+    const workerTarget = {
+      targetType: "TEAM" as const,
+      teamRunId: "team-1",
+      entryMemberRunId: "run-worker",
+      entryMemberName: "worker",
+    };
+    const workerRunIdOnlyTarget = {
+      targetType: "TEAM" as const,
+      teamRunId: "team-1",
+      entryMemberRunId: "run-worker",
+      entryMemberName: null,
+    };
+
+    vi.mocked(provider.findBinding).mockResolvedValue(createTeamBinding("worker"));
+    await expect(service.isRouteBoundToTarget(route, workerTarget)).resolves.toBe(true);
+    await expect(service.isRouteBoundToTarget(route, workerRunIdOnlyTarget)).resolves.toBe(true);
+    await expect(service.isRouteBoundToTarget(route, coordinatorTarget)).resolves.toBe(false);
+
+    vi.mocked(provider.findBinding).mockResolvedValue(createTeamBinding(null));
+    await expect(service.isRouteBoundToTarget(route, coordinatorTarget)).resolves.toBe(true);
+    await expect(service.isRouteBoundToTarget(route, workerTarget)).resolves.toBe(false);
   });
 });
