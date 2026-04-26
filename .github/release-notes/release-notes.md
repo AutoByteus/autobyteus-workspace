@@ -1,11 +1,7 @@
-## What's New
-- Updated hosted application iframe startup to the v3 launch contract, using a clearer iframe launch identity for embedded app sessions.
+# Release Notes — External Channel Open Session Delivery
 
-## Improvements
-- Refreshed built-in application packages so Brief Studio and Socratic Math Teacher use the current iframe launch contract.
-- Improved team run stop handling so run history is marked inactive only after the backend confirms termination.
-
-## Fixes
-- Fixed follow-up chat after stopping or reopening single-agent runs by restoring persisted runs before delivering the next message.
-- Fixed follow-up chat after stopping or reopening team runs, including member-targeted messages and restored stream updates.
-- Fixed failed team termination attempts so they no longer tear down the active local team state or mark the team inactive incorrectly.
+- External messaging channels now keep delivering eligible output from the active bound run instead of stopping after the first inbound-message reply.
+- Team bindings now deliver coordinator or entry-node follow-up responses back to Telegram/external channels even when the follow-up was triggered by an internal team-member handoff and the user did not send another message.
+- Worker-only/internal team coordination messages remain private and are not sent to the external peer.
+- External-channel delivery records are durable and once-only per route/run/turn, improving restart recovery and duplicate protection.
+- Message gateway ingress handling now recognizes server `ACCEPTED` responses as completed accepted work, avoiding stale retry behavior from the old routed-status contract.
