@@ -14,6 +14,11 @@ Shared TypeScript contract package for AutoByteus application bundles.
 - runtime-control, run-binding, execution-event envelope, and published-artifact callback/query types
 - application engine status types
 
+
+## External custom application guide
+
+New external custom applications should start with `@autobyteus/application-devkit` and the canonical `src/` to `dist/importable-package` layout described in `../docs/custom-application-development.md`. Existing in-repo teaching samples remain internal examples and are not the external default folder model.
+
 ## Key exported version constants
 
 - `APPLICATION_MANIFEST_VERSION_V3`

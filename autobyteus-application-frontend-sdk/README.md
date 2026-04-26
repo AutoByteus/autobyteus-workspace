@@ -11,6 +11,11 @@ Frontend helper package for application bundle UIs running inside the AutoByteus
 - schema-agnostic transport helpers for GraphQL, routes, queries, commands, and notifications
 - re-exported request/notification/context types from `@autobyteus/application-sdk-contracts`
 
+
+## External custom application guide
+
+For new external applications, use `@autobyteus/application-devkit` and the guide in `../docs/custom-application-development.md`. The starter template keeps app-authored startup on `startHostedApplication(...)` in both production and dev bootstrap modes.
+
 ## Usage
 
 ```ts

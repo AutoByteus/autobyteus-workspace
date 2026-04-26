@@ -58,7 +58,7 @@ const applicationMessages = {
   'applications.components.applications.ApplicationLaunchConfigModal.unableToPrepareLaunch': '无法准备应用程序启动',
   'applications.components.applications.ApplicationLaunchConfigModal.runtimeKind': '运行时类型',
   'applications.components.applications.ApplicationLaunchConfigModal.boundRuntimeTarget': '绑定的运行时目标',
-  'applications.components.applications.ApplicationLaunchConfigModal.handshakeNote': '只有在精确的 v1 ready/bootstrap 握手成功后，打包 iframe 界面才会完成引导。',
+  'applications.components.applications.ApplicationLaunchConfigModal.handshakeNote': '只有在精确的 iframe contract v3 ready/bootstrap 握手成功后，打包 iframe 界面才会完成引导。',
   'applications.components.applications.ApplicationLaunchConfigModal.applicationMetadataUnavailable': '应用程序元数据不可用。',
   'applications.components.applications.ApplicationLaunchConfigModal.selectWorkspaceBeforeLaunch': '请先选择工作区，再启动此应用程序。',
   'applications.components.applications.ApplicationLaunchConfigModal.selectModelBeforeLaunch': '请先选择模型，再启动此应用程序。',

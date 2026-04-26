@@ -58,7 +58,7 @@ const applicationMessages = {
   'applications.components.applications.ApplicationLaunchConfigModal.unableToPrepareLaunch': 'Unable to prepare application launch',
   'applications.components.applications.ApplicationLaunchConfigModal.runtimeKind': 'Runtime kind',
   'applications.components.applications.ApplicationLaunchConfigModal.boundRuntimeTarget': 'Bound runtime target',
-  'applications.components.applications.ApplicationLaunchConfigModal.handshakeNote': 'The bundled iframe UI will not bootstrap until the exact v1 ready/bootstrap handshake succeeds.',
+  'applications.components.applications.ApplicationLaunchConfigModal.handshakeNote': 'The bundled iframe UI will not bootstrap until the exact iframe contract v3 ready/bootstrap handshake succeeds.',
   'applications.components.applications.ApplicationLaunchConfigModal.applicationMetadataUnavailable': 'Application metadata is not available.',
   'applications.components.applications.ApplicationLaunchConfigModal.selectWorkspaceBeforeLaunch': 'Select a workspace before launching this application.',
   'applications.components.applications.ApplicationLaunchConfigModal.selectModelBeforeLaunch': 'Select a model before launching this application.',

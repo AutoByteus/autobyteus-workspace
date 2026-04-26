@@ -52,6 +52,20 @@ export type ApplicationBootstrapPayloadV3 = {
 
 The payload intentionally does **not** contain a platform-owned execution id, app session id, or prelaunched runtime summary. `iframeLaunchId` is not a durable app instance, run, or business identity.
 
+## Local dev bootstrap
+
+External app authors can test this same v3 startup path through
+`@autobyteus/application-devkit`:
+
+```bash
+autobyteus-app dev
+```
+
+The dev host appends the same v3 query hints, waits for
+`autobyteus.application.ui.ready`, and posts
+`autobyteus.application.host.bootstrap` so app-authored frontend code can keep
+using `startHostedApplication(...)` unchanged in local dev and production.
+
 ## Frontend usage pattern
 
 ```ts
@@ -75,3 +89,7 @@ startHostedApplication({
 
 - `applications/brief-studio/`
 - `applications/socratic-math-teacher/`
+
+## Related docs
+
+- [`../../docs/custom-application-development.md`](../../docs/custom-application-development.md)
