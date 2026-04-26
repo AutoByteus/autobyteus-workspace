@@ -111,11 +111,18 @@ pnpm -C autobyteus-web test
 
 ## Runtime Sandbox Overrides
 
-If you want the native coding runtimes to run without sandbox restrictions, use these environment variables:
+Codex full filesystem access can be toggled from the UI at **Settings -> Server
+Settings -> Basics -> Codex full access**. The toggle is backed by the
+`CODEX_APP_SERVER_SANDBOX` server setting / environment variable for scripted or
+headless runs.
 
 - Codex runtime: `CODEX_APP_SERVER_SANDBOX=danger-full-access`
-  - Supported values: `read-only`, `workspace-write`, `danger-full-access`
+  - Basic UI toggle on: saves `danger-full-access`
+  - Basic UI toggle off: saves `workspace-write`
+  - Advanced/API supported values: `read-only`, `workspace-write`, `danger-full-access`
   - Default: `workspace-write`
+  - UI and server-setting changes apply to new/future Codex sessions, not already-active sessions.
+  - `danger-full-access` disables filesystem sandboxing; use only for trusted tasks and environments.
 - Claude Agent SDK runtime: `CLAUDE_AGENT_SDK_PERMISSION_MODE=bypassPermissions`
   - Supported values: `default`, `plan`, `acceptEdits`, `bypassPermissions`
   - Default: `default`

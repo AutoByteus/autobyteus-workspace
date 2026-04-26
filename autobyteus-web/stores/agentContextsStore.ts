@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
+import { buildEditableAgentRunSeed } from '~/composables/useDefinitionLaunchDefaults';
 import { AgentContext } from '~/types/agent/AgentContext';
 import { AgentRunState } from '~/types/agent/AgentRunState';
 import { DEFAULT_AGENT_RUNTIME_KIND, type AgentRunConfig } from '~/types/agent/AgentRunConfig';
@@ -73,16 +74,9 @@ export const useAgentContextsStore = defineStore('agentContexts', {
       }
 
       const config: AgentRunConfig = {
-        agentDefinitionId: template.agentDefinitionId,
-        agentDefinitionName: template.agentDefinitionName,
+        ...buildEditableAgentRunSeed(template),
         agentAvatarUrl: template.agentAvatarUrl ?? null,
-        llmModelIdentifier: template.llmModelIdentifier,
         runtimeKind: template.runtimeKind ?? DEFAULT_AGENT_RUNTIME_KIND,
-        workspaceId: template.workspaceId,
-        autoExecuteTools: template.autoExecuteTools,
-        skillAccessMode: template.skillAccessMode,
-        llmConfig: template.llmConfig ?? null,
-        isLocked: false,
       };
 
       const tempId = `temp-${Date.now()}-${++temporaryRunSequence}`;

@@ -18,6 +18,22 @@ const normalizeOptionalString = (value: unknown): string | null => {
   return trimmed.length > 0 ? trimmed : null
 }
 
+const cloneModelConfigValue = (value: unknown): unknown => {
+  if (Array.isArray(value)) {
+    return value.map((entry) => cloneModelConfigValue(entry))
+  }
+
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value as Record<string, unknown>)
+        .sort(([left], [right]) => left.localeCompare(right))
+        .map(([key, nestedValue]) => [key, cloneModelConfigValue(nestedValue)]),
+    )
+  }
+
+  return value
+}
+
 export const normalizeModelConfigRecord = (
   value: Record<string, unknown> | null | undefined,
 ): Record<string, unknown> | null => {
@@ -26,7 +42,9 @@ export const normalizeModelConfigRecord = (
   }
 
   return Object.fromEntries(
-    Object.entries(value).sort(([left], [right]) => left.localeCompare(right)),
+    Object.entries(value)
+      .sort(([left], [right]) => left.localeCompare(right))
+      .map(([key, nestedValue]) => [key, cloneModelConfigValue(nestedValue)]),
   )
 }
 

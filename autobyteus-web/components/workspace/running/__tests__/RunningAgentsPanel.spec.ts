@@ -14,7 +14,7 @@ vi.mock('~/utils/apolloClient', () => ({
 }));
 
 describe('RunningAgentsPanel', () => {
-  const mountComponent = () => {
+  const mountComponent = (initialStateOverrides: Record<string, unknown> = {}) => {
     return mount(RunningAgentsPanel, {
       global: {
         plugins: [
@@ -31,7 +31,8 @@ describe('RunningAgentsPanel', () => {
                     state: { runId: 'inst-1' }
                   }]
                 ])
-              }
+              },
+              ...initialStateOverrides,
             }
           })
         ],
@@ -74,5 +75,61 @@ describe('RunningAgentsPanel', () => {
     expect(configStore.setAgentConfig).toHaveBeenCalled();
     expect(selectionStore.clearSelection).toHaveBeenCalled();
     expect(contextsStore.createRunFromTemplate).not.toHaveBeenCalled();
+  });
+
+  it('prefers the selected same-definition run when preparing a new agent run config', async () => {
+    const wrapper = mountComponent({
+      agentSelection: {
+        selectedType: 'agent',
+        selectedRunId: 'inst-selected',
+      },
+      agentContexts: {
+        runs: new Map([
+          ['inst-first', {
+            config: {
+              agentDefinitionId: 'def-1',
+              agentDefinitionName: 'Test Agent',
+              llmModelIdentifier: 'model-first',
+              llmConfig: { reasoning_effort: 'low' },
+              isLocked: true,
+            },
+            state: {
+              runId: 'inst-first',
+              conversation: { updatedAt: '2026-01-02T00:00:00.000Z' },
+            },
+          }],
+          ['inst-selected', {
+            config: {
+              agentDefinitionId: 'def-1',
+              agentDefinitionName: 'Test Agent',
+              llmModelIdentifier: 'model-selected',
+              llmConfig: {
+                reasoning_effort: 'xhigh',
+                nested: { values: ['xhigh'] },
+              },
+              isLocked: true,
+            },
+            state: {
+              runId: 'inst-selected',
+              conversation: { updatedAt: '2026-01-01T00:00:00.000Z' },
+            },
+          }],
+        ]),
+      },
+    });
+    const configStore = useAgentRunConfigStore();
+    const group = wrapper.findComponent({ name: 'RunningAgentGroup' });
+
+    await group.vm.$emit('create', 'def-1');
+
+    const seed = (configStore.setAgentConfig as any).mock.calls.at(-1)?.[0];
+    expect(seed).toEqual(expect.objectContaining({
+      llmModelIdentifier: 'model-selected',
+      isLocked: false,
+      llmConfig: {
+        reasoning_effort: 'xhigh',
+        nested: { values: ['xhigh'] },
+      },
+    }));
   });
 });

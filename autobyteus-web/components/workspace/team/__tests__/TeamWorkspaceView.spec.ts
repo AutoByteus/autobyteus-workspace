@@ -209,6 +209,63 @@ describe('TeamWorkspaceView', () => {
     expect(workspaceCenterViewStoreMock.showConfig).toHaveBeenCalledTimes(1);
   });
 
+  it('seeds a new team config from the selected run without sharing nested global or member llmConfig', async () => {
+    state.activeTeamContext = buildTeamContext({
+      config: {
+        teamDefinitionName: 'Class Room Simulation',
+        teamDefinitionId: 'team-def-1',
+        llmModelIdentifier: 'gpt-5.4',
+        runtimeKind: 'codex_app_server',
+        workspaceId: 'ws-1',
+        autoExecuteTools: true,
+        skillAccessMode: 'GLOBAL_DISCOVERY',
+        isLocked: true,
+        llmConfig: {
+          reasoning_effort: 'xhigh',
+          nested: { values: ['xhigh'] },
+        },
+        memberOverrides: {
+          professor: {
+            agentDefinitionId: 'agent-professor-def',
+            llmModelIdentifier: 'gpt-5.3-codex',
+            llmConfig: {
+              reasoning_effort: 'medium',
+              nested: { values: ['medium'] },
+            },
+          },
+        },
+      },
+    });
+
+    const sourceConfig = state.activeTeamContext.config;
+    const wrapper = mountComponent();
+    await wrapper.get('[data-test="new-agent"]').trigger('click');
+
+    const seed = teamRunConfigStoreMock.setConfig.mock.calls[0]?.[0];
+    expect(seed).toEqual(expect.objectContaining({
+      isLocked: false,
+      llmConfig: {
+        reasoning_effort: 'xhigh',
+        nested: { values: ['xhigh'] },
+      },
+      memberOverrides: expect.objectContaining({
+        professor: expect.objectContaining({
+          llmConfig: {
+            reasoning_effort: 'medium',
+            nested: { values: ['medium'] },
+          },
+        }),
+      }),
+    }));
+
+    (seed.llmConfig.nested.values as string[]).push('mutated');
+    (seed.memberOverrides.professor.llmConfig.nested.values as string[]).push('mutated');
+    expect(sourceConfig.llmConfig.nested.values).toEqual(['xhigh']);
+    expect(sourceConfig.memberOverrides.professor.llmConfig.nested.values).toEqual(['medium']);
+    expect(agentRunConfigStoreMock.clearConfig).toHaveBeenCalledTimes(1);
+    expect(selectionStoreMock.clearSelection).toHaveBeenCalledTimes(1);
+  });
+
   it('renders the focused monitor in focus mode by default', () => {
     const wrapper = mountComponent();
     expect(wrapper.find('[data-test="team-event-monitor"]').exists()).toBe(true);

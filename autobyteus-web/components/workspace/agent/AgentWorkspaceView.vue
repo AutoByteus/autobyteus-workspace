@@ -62,6 +62,7 @@ import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore';
+import { buildEditableAgentRunSeed } from '~/composables/useDefinitionLaunchDefaults';
 
 const agentContextsStore = useAgentContextsStore();
 const agentDefinitionStore = useAgentDefinitionStore();
@@ -138,8 +139,7 @@ const conversationText = computed(() => {
 const createNewAgent = () => {
   if (!selectedAgent.value) return;
 
-  const template = { ...selectedAgent.value.config, isLocked: false };
-  runConfigStore.setAgentConfig(template);
+  runConfigStore.setAgentConfig(buildEditableAgentRunSeed(selectedAgent.value.config));
   teamRunConfigStore.clearConfig();
   selectionStore.clearSelection();
 };

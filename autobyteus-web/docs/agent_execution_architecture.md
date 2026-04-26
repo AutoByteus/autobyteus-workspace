@@ -103,6 +103,26 @@ not infer a current default, recover a runtime value, or materialize metadata.
 Backend/runtime/history recovery or persistence semantics belong to a separate
 backend ticket, not this frontend inspection boundary.
 
+### New Run From Existing Run
+
+When the user clicks the workspace header add/new-run action while an existing
+single-agent or team run is selected, the frontend treats that selected run as a
+launch template for the new editable draft. The selected run itself remains
+inspect-only, but the editable launch buffer is seeded from a deep-cloned copy of
+the selected run config, including runtime kind, model identifier, workspace,
+auto-approve/skill-access settings, `llmConfig`, and team member overrides.
+
+That source-copy path must preserve backend-provided model-thinking fields such
+as `reasoning_effort: "xhigh"` even when the runtime model catalog is still
+loading. Schema arrival may sanitize invalid model-config keys after a real
+schema is available, but an empty/loading schema must not clear the copied
+`llmConfig`. Explicit user runtime/model changes remain the owner for stale
+model-config cleanup.
+
+If there is no selected same-definition source run, workspace add/new-run flows
+fall back to the existing definition/default launch preferences instead of
+inventing historical config.
+
 ---
 
 ## Level 2: Service Layer (Event Routing)

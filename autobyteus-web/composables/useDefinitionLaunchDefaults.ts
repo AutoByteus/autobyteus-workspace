@@ -31,6 +31,11 @@ export const cloneAgentConfig = (config: AgentRunConfig): AgentRunConfig => ({
   llmConfig: normalizeModelConfig(config.llmConfig),
 })
 
+export const buildEditableAgentRunSeed = (config: AgentRunConfig): AgentRunConfig => ({
+  ...cloneAgentConfig(config),
+  isLocked: false,
+})
+
 export const cloneTeamConfig = (config: TeamRunConfig): TeamRunConfig => ({
   ...config,
   llmConfig: normalizeModelConfig(config.llmConfig),
@@ -43,6 +48,11 @@ export const cloneTeamConfig = (config: TeamRunConfig): TeamRunConfig => ({
       } satisfies MemberConfigOverride,
     ]),
   ),
+})
+
+export const buildEditableTeamRunSeed = (config: TeamRunConfig): TeamRunConfig => ({
+  ...cloneTeamConfig(config),
+  isLocked: false,
 })
 
 export const buildAgentRunTemplate = (

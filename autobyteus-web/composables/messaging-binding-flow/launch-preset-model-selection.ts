@@ -174,7 +174,11 @@ export function useBindingLaunchPresetModelSelection(input: {
   };
 
   const updateModel = (value: string) => {
+    if (activeLaunchPreset.value.llmModelIdentifier === value) {
+      return;
+    }
     activeLaunchPreset.value.llmModelIdentifier = value;
+    activeLaunchPreset.value.llmConfig = null;
   };
 
   const updateModelConfig = (config: Record<string, unknown> | null) => {

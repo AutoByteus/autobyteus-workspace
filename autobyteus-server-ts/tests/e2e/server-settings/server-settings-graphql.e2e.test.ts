@@ -7,12 +7,18 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { normalizeSandboxMode } from "../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
+import {
+  CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
+  CODEX_SANDBOX_MODES,
+} from "../../../src/runtime-management/codex/codex-sandbox-mode-setting.js";
 
 describe("Server settings GraphQL e2e", () => {
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
   let tempDir: string;
   let originalServerHostEnv: string | undefined;
+  let originalCodexSandboxEnv: string | undefined;
 
   beforeAll(async () => {
     schema = await buildGraphqlSchema();
@@ -24,7 +30,9 @@ describe("Server settings GraphQL e2e", () => {
   });
 
   beforeEach(() => {
+    appConfigProvider.resetForTests();
     originalServerHostEnv = process.env.AUTOBYTEUS_SERVER_HOST;
+    originalCodexSandboxEnv = process.env[CODEX_APP_SERVER_SANDBOX_SETTING_KEY];
     tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "autobyteus-server-settings-graphql-"));
     fs.writeFileSync(
       path.join(tempDir, ".env"),
@@ -32,14 +40,21 @@ describe("Server settings GraphQL e2e", () => {
       "utf-8",
     );
     process.env.AUTOBYTEUS_SERVER_HOST = "http://localhost:8000";
+    delete process.env[CODEX_APP_SERVER_SANDBOX_SETTING_KEY];
     appConfigProvider.config.setCustomAppDataDir(tempDir);
   });
 
   afterEach(() => {
+    appConfigProvider.resetForTests();
     if (originalServerHostEnv === undefined) {
       delete process.env.AUTOBYTEUS_SERVER_HOST;
     } else {
       process.env.AUTOBYTEUS_SERVER_HOST = originalServerHostEnv;
+    }
+    if (originalCodexSandboxEnv === undefined) {
+      delete process.env[CODEX_APP_SERVER_SANDBOX_SETTING_KEY];
+    } else {
+      process.env[CODEX_APP_SERVER_SANDBOX_SETTING_KEY] = originalCodexSandboxEnv;
     }
     fs.rmSync(tempDir, { recursive: true, force: true });
   });
@@ -129,5 +144,115 @@ describe("Server settings GraphQL e2e", () => {
     }>(listQuery);
 
     expect(listedAfterDelete.getServerSettings.find((entry) => entry.key === key)).toBeUndefined();
+  });
+
+  it("validates and exposes Codex sandbox mode through the GraphQL settings boundary", async () => {
+    const updateMutation = `
+      mutation UpdateServerSetting($key: String!, $value: String!) {
+        updateServerSetting(key: $key, value: $value)
+      }
+    `;
+    const listQuery = `
+      query GetServerSettings {
+        getServerSettings {
+          key
+          value
+          description
+          isEditable
+          isDeletable
+        }
+      }
+    `;
+
+    for (const mode of CODEX_SANDBOX_MODES) {
+      const updated = await execGraphql<{ updateServerSetting: string }>(updateMutation, {
+        key: CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
+        value: mode,
+      });
+      expect(updated.updateServerSetting).toContain("updated successfully");
+      expect(process.env[CODEX_APP_SERVER_SANDBOX_SETTING_KEY]).toBe(mode);
+      expect(normalizeSandboxMode()).toBe(mode);
+
+      const listed = await execGraphql<{
+        getServerSettings: Array<{
+          key: string;
+          value: string;
+          description: string;
+          isEditable: boolean;
+          isDeletable: boolean;
+        }>;
+      }>(listQuery);
+      const codexSandboxSetting = listed.getServerSettings.find(
+        (entry) => entry.key === CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
+      );
+      expect(codexSandboxSetting).toMatchObject({
+        value: mode,
+        isEditable: true,
+        isDeletable: false,
+      });
+      expect(codexSandboxSetting?.description).toContain(
+        "Codex app server filesystem sandbox mode",
+      );
+      expect(codexSandboxSetting?.description).not.toBe("Custom user-defined setting");
+    }
+
+    const invalidUpdate = await execGraphql<{ updateServerSetting: string }>(updateMutation, {
+      key: CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
+      value: "danger_full_access",
+    });
+    expect(invalidUpdate.updateServerSetting).toContain(
+      "read-only, workspace-write, danger-full-access",
+    );
+    expect(process.env[CODEX_APP_SERVER_SANDBOX_SETTING_KEY]).toBe("danger-full-access");
+    expect(normalizeSandboxMode()).toBe("danger-full-access");
+
+    const envFileContents = fs.readFileSync(path.join(tempDir, ".env"), "utf-8");
+    expect(envFileContents).toContain(
+      `${CODEX_APP_SERVER_SANDBOX_SETTING_KEY}=danger-full-access`,
+    );
+    expect(envFileContents).not.toContain(
+      `${CODEX_APP_SERVER_SANDBOX_SETTING_KEY}=danger_full_access`,
+    );
+  });
+
+  it("lists effective Codex sandbox values with predefined metadata even when not persisted", async () => {
+    process.env[CODEX_APP_SERVER_SANDBOX_SETTING_KEY] = "read-only";
+    const listQuery = `
+      query GetServerSettings {
+        getServerSettings {
+          key
+          value
+          description
+          isEditable
+          isDeletable
+        }
+      }
+    `;
+
+    const listed = await execGraphql<{
+      getServerSettings: Array<{
+        key: string;
+        value: string;
+        description: string;
+        isEditable: boolean;
+        isDeletable: boolean;
+      }>;
+    }>(listQuery);
+
+    const codexSandboxSetting = listed.getServerSettings.find(
+      (entry) => entry.key === CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
+    );
+    expect(codexSandboxSetting).toMatchObject({
+      value: "read-only",
+      isEditable: true,
+      isDeletable: false,
+    });
+    expect(codexSandboxSetting?.description).toContain(
+      "future sessions",
+    );
+    expect(codexSandboxSetting?.description).not.toBe("Custom user-defined setting");
+    expect(fs.readFileSync(path.join(tempDir, ".env"), "utf-8")).not.toContain(
+      CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
+    );
   });
 });
