@@ -1,4 +1,3 @@
-import type { ExternalMessageEnvelope } from "autobyteus-ts/external-channel/external-message-envelope.js";
 import {
   AgentRunEventType,
   isAgentRunEvent,
@@ -7,104 +6,54 @@ import {
   TeamRunEventSourceType,
   type TeamRunEvent,
 } from "../../agent-team-execution/domain/team-run-event.js";
-import type { ChannelSourceContext } from "../domain/models.js";
-import {
-  ChannelTurnReplyRecoveryService,
-  getChannelTurnReplyRecoveryService,
-} from "../services/channel-turn-reply-recovery-service.js";
 
-export const logger = {
-  info: (...args: unknown[]) => console.info(...args),
-  warn: (...args: unknown[]) => console.warn(...args),
-  error: (...args: unknown[]) => console.error(...args),
-};
-
-export const PENDING_TURN_TTL_MS = 10 * 60 * 1000;
-
-export type ChannelReplyBridgeDependencies = {
-  turnReplyRecoveryService?: ChannelTurnReplyRecoveryService;
-};
-
-export const resolveChannelReplyBridgeDependencies = (
-  deps: ChannelReplyBridgeDependencies,
-): {
-  turnReplyRecoveryService: ChannelTurnReplyRecoveryService;
-} => ({
-  turnReplyRecoveryService:
-    deps.turnReplyRecoveryService ?? getChannelTurnReplyRecoveryService(),
-});
-
-export type ChannelTurnObservationClosedReason =
-  | "EMPTY_REPLY"
-  | "ERROR"
-  | "TIMEOUT";
-
-export type ChannelReplyReadyObservation = {
-  agentRunId: string;
-  teamRunId: string | null;
-  turnId: string;
-  source: ChannelSourceContext;
-  replyText: string;
-};
-
-export type ChannelTurnObservationResult =
-  | {
-      status: "REPLY_READY";
-      reply: ChannelReplyReadyObservation;
-    }
-  | {
-      status: "CLOSED";
-      reason: ChannelTurnObservationClosedReason;
-    };
-
-export type ParsedAgentRuntimeEvent = {
+export type ParsedChannelOutputEvent = {
   eventType: AgentRunEventType;
   statusHint: string | null;
+  agentRunId: string;
+  teamRunId: string | null;
+  memberName: string | null;
+  memberRunId: string | null;
   turnId: string | null;
   text: string | null;
 };
 
-export type ParsedTeamAgentRuntimeEvent = ParsedAgentRuntimeEvent & {
-  memberName: string | null;
-  memberRunId: string | null;
-};
-
-export const parseDirectAgentRunEvent = (
+export const parseDirectChannelOutputEvent = (
   event: unknown,
-): ParsedAgentRuntimeEvent | null => {
+): ParsedChannelOutputEvent | null => {
   if (!isAgentRunEvent(event)) {
     return null;
   }
   return {
     eventType: event.eventType,
     statusHint: event.statusHint ?? null,
+    agentRunId: event.runId,
+    teamRunId: null,
+    memberName: null,
+    memberRunId: null,
     turnId: resolveTurnIdFromPayload(event.payload),
     text: resolveAgentRunEventText(event.eventType, event.payload),
   };
 };
 
-export const parseTeamAgentRunEvent = (
+export const parseTeamChannelOutputEvent = (
   event: unknown,
-): ParsedTeamAgentRuntimeEvent | null => {
+): ParsedChannelOutputEvent | null => {
   if (!isTeamAgentEvent(event)) {
     return null;
   }
-  const parsedAgentEvent = parseDirectAgentRunEvent(event.data.agentEvent);
+  const parsedAgentEvent = parseDirectChannelOutputEvent(event.data.agentEvent);
   if (!parsedAgentEvent) {
     return null;
   }
   return {
     ...parsedAgentEvent,
+    agentRunId: asNonEmptyString(event.data.memberRunId) ?? parsedAgentEvent.agentRunId,
+    teamRunId: asNonEmptyString(event.teamRunId),
     memberName: asNonEmptyString(event.data.memberName),
     memberRunId: asNonEmptyString(event.data.memberRunId),
   };
 };
-
-export const buildPendingTurnKey = (runId: string, turnId: string): string =>
-  `${runId}:${turnId}`;
-
-export const buildCallbackIdempotencyKey = (runId: string, turnId: string): string =>
-  `external-reply:${runId}:${turnId}`;
 
 export const mergeAssistantText = (current: string, incoming: string): string => {
   const normalizedIncoming = normalizeOptionalRawString(incoming);
@@ -125,43 +74,6 @@ export const mergeAssistantText = (current: string, incoming: string): string =>
   }
   return `${current}${normalizedIncoming}`;
 };
-
-export const normalizeOptionalString = (
-  value: string | null | undefined,
-): string | null => {
-  if (value === undefined || value === null) {
-    return null;
-  }
-  const normalized = value.trim();
-  return normalized.length > 0 ? normalized : null;
-};
-
-export const toSourceContext = (
-  envelope: ExternalMessageEnvelope,
-): ChannelSourceContext => ({
-  provider: envelope.provider,
-  transport: envelope.transport,
-  accountId: envelope.accountId,
-  peerId: envelope.peerId,
-  threadId: envelope.threadId,
-  externalMessageId: envelope.externalMessageId,
-  receivedAt: normalizeDateOrNow(envelope.receivedAt),
-  turnId: null,
-});
-
-export const resolveReplyTextFromTurnRecovery = async (
-  turnReplyRecoveryService: ChannelTurnReplyRecoveryService,
-  input: {
-    agentRunId: string;
-    turnId: string;
-    teamRunId?: string | null;
-  },
-): Promise<string | null> =>
-  turnReplyRecoveryService.resolveReplyText({
-    agentRunId: input.agentRunId,
-    turnId: input.turnId,
-    teamRunId: input.teamRunId ?? null,
-  });
 
 const isTeamAgentEvent = (
   event: unknown,
@@ -297,12 +209,4 @@ const normalizeOptionalRawString = (
     return null;
   }
   return value.trim().length > 0 ? value : null;
-};
-
-const normalizeDateOrNow = (value: string): Date => {
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) {
-    return new Date();
-  }
-  return parsed;
 };

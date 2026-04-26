@@ -85,17 +85,6 @@ export type ChannelDispatchTarget = {
   teamRunId: string | null;
 };
 
-export type ChannelSourceContext = {
-  provider: ExternalChannelProvider;
-  transport: ExternalChannelTransport;
-  accountId: string;
-  peerId: string;
-  threadId: string | null;
-  externalMessageId: string;
-  receivedAt: Date;
-  turnId?: string | null;
-};
-
 export type ChannelSourceRoute = {
   provider: ExternalChannelProvider;
   transport: ExternalChannelTransport;
@@ -104,25 +93,18 @@ export type ChannelSourceRoute = {
   threadId: string | null;
 };
 
+export type ChannelOutputRoute = ChannelSourceRoute;
+
+export type ChannelSourceContext = ChannelSourceRoute & {
+  externalMessageId: string;
+  receivedAt: Date;
+};
+
 export type ChannelIngressReceiptState =
   | "PENDING"
   | "DISPATCHING"
   | "ACCEPTED"
-  | "ROUTED"
   | "UNBOUND";
-
-export type ChannelReceiptWorkflowState =
-  | "RECEIVED"
-  | "DISPATCHING"
-  | "TURN_BOUND"
-  | "COLLECTING_REPLY"
-  | "TURN_COMPLETED"
-  | "REPLY_FINALIZED"
-  | "PUBLISH_PENDING"
-  | "PUBLISHED"
-  | "UNBOUND"
-  | "FAILED"
-  | "EXPIRED";
 
 export type ChannelIngressReceiptKey = ChannelSourceRoute & {
   externalMessageId: string;
@@ -131,10 +113,8 @@ export type ChannelIngressReceiptKey = ChannelSourceRoute & {
 export type ChannelMessageReceipt = ChannelSourceContext &
   ChannelDispatchTarget & {
     ingressState: ChannelIngressReceiptState;
-    workflowState: ChannelReceiptWorkflowState;
     dispatchAcceptedAt: Date | null;
-    replyTextFinal: string | null;
-    lastError: string | null;
+    turnId: string | null;
     dispatchLeaseToken: string | null;
     dispatchLeaseExpiresAt: Date | null;
     createdAt: Date;
@@ -163,21 +143,82 @@ export type ChannelUnboundIngressReceiptInput = ChannelIngressReceiptKey & {
   receivedAt: Date;
 };
 
-export type ChannelReplyPublishedReceiptInput = ChannelSourceRoute &
-  ChannelDispatchTarget & {
-    externalMessageId: string;
-    turnId: string;
-    receivedAt: Date;
-  };
+export type ChannelStandaloneRunOutputTarget = {
+  targetType: "AGENT";
+  agentRunId: string;
+};
 
-export type ChannelReceiptWorkflowProgressInput = ChannelIngressReceiptKey &
-  Partial<ChannelDispatchTarget> & {
-    receivedAt: Date;
-    workflowState: ChannelReceiptWorkflowState;
-    turnId?: string | null;
-    replyTextFinal?: string | null;
-    lastError?: string | null;
-  };
+export type ChannelTeamRunOutputTarget = {
+  targetType: "TEAM";
+  teamRunId: string;
+  entryMemberRunId: string | null;
+  entryMemberName: string | null;
+};
+
+export type ChannelRunOutputTarget =
+  | ChannelStandaloneRunOutputTarget
+  | ChannelTeamRunOutputTarget;
+
+export type ChannelRunOutputDeliveryStatus =
+  | "OBSERVING"
+  | "REPLY_FINALIZED"
+  | "PUBLISH_PENDING"
+  | "PUBLISHED"
+  | "UNBOUND"
+  | "FAILED";
+
+export type ChannelRunOutputDeliveryRecord = {
+  deliveryKey: string;
+  bindingId: string;
+  route: ChannelOutputRoute;
+  target: ChannelRunOutputTarget;
+  turnId: string;
+  correlationMessageId: string | null;
+  callbackIdempotencyKey: string | null;
+  status: ChannelRunOutputDeliveryStatus;
+  replyTextFinal: string | null;
+  lastError: string | null;
+  observedAt: Date;
+  finalizedAt: Date | null;
+  publishRequestedAt: Date | null;
+  publishedAt: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type ChannelRunOutputObservedTurnInput = {
+  deliveryKey: string;
+  bindingId: string;
+  route: ChannelOutputRoute;
+  target: ChannelRunOutputTarget;
+  turnId: string;
+  correlationMessageId: string | null;
+  observedAt: Date;
+};
+
+export type ChannelRunOutputReplyFinalizedInput = {
+  deliveryKey: string;
+  replyTextFinal: string;
+  finalizedAt: Date;
+};
+
+export type ChannelRunOutputPublishPendingInput = {
+  deliveryKey: string;
+  callbackIdempotencyKey: string;
+  publishRequestedAt: Date;
+};
+
+export type ChannelRunOutputPublishedInput = {
+  deliveryKey: string;
+  publishedAt: Date;
+};
+
+export type ChannelRunOutputTerminalInput = {
+  deliveryKey: string;
+  status: "UNBOUND" | "FAILED";
+  lastError: string | null;
+  updatedAt: Date;
+};
 
 export type ChannelDeliveryStatus =
   | "PENDING"

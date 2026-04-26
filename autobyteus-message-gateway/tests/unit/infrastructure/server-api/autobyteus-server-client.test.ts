@@ -9,7 +9,7 @@ describe("AutobyteusServerClient", () => {
         JSON.stringify({
           accepted: true,
           duplicate: false,
-          disposition: "ROUTED",
+          disposition: "ACCEPTED",
           bindingResolved: true,
         }),
         {
@@ -42,7 +42,7 @@ describe("AutobyteusServerClient", () => {
     expect(result).toEqual({
       accepted: true,
       duplicate: false,
-      disposition: "ROUTED",
+      disposition: "ACCEPTED",
       bindingResolved: true,
     });
     expect(fetchImpl).toHaveBeenCalledOnce();
@@ -62,7 +62,7 @@ describe("AutobyteusServerClient", () => {
           JSON.stringify({
             accepted: true,
             duplicate: false,
-            disposition: "ROUTED",
+            disposition: "ACCEPTED",
             bindingResolved: true,
           }),
           {

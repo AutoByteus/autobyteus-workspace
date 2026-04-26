@@ -10,9 +10,13 @@ import type {
   ChannelIngressReceiptState,
   ChannelMessageReceipt,
   ChannelPendingIngressReceiptInput,
-  ChannelReplyPublishedReceiptInput,
-  ChannelReceiptWorkflowProgressInput,
-  ChannelReceiptWorkflowState,
+  ChannelRunOutputDeliveryRecord,
+  ChannelRunOutputDeliveryStatus,
+  ChannelRunOutputObservedTurnInput,
+  ChannelRunOutputPublishedInput,
+  ChannelRunOutputPublishPendingInput,
+  ChannelRunOutputReplyFinalizedInput,
+  ChannelRunOutputTerminalInput,
   ChannelSourceContext,
   ChannelSourceRoute,
   ChannelUnboundIngressReceiptInput,
@@ -21,11 +25,13 @@ import type {
 } from "../domain/models.js";
 import type { ChannelBindingProvider } from "./channel-binding-provider.js";
 import type { ChannelMessageReceiptProvider } from "./channel-message-receipt-provider.js";
+import type { ChannelRunOutputDeliveryProvider } from "./channel-run-output-delivery-provider.js";
 import type { DeliveryEventProvider } from "./delivery-event-provider.js";
 
 type ChannelProviderSet = {
   bindingProvider: ChannelBindingProvider;
   messageReceiptProvider: ChannelMessageReceiptProvider;
+  runOutputDeliveryProvider: ChannelRunOutputDeliveryProvider;
   deliveryEventProvider: DeliveryEventProvider;
 };
 
@@ -42,11 +48,14 @@ const loadBindingProvider = async (): Promise<ChannelBindingProvider> => {
 };
 
 const loadFileProviderSet = async (): Promise<ChannelProviderSet> => {
-  const [bindingProvider, receipt, delivery] = await Promise.all([
+  const [bindingProvider, receipt, runOutput, delivery] = await Promise.all([
     loadBindingProvider(),
     importChannelProviderModule<{
       FileChannelMessageReceiptProvider: new () => ChannelMessageReceiptProvider;
     }>("file-channel-message-receipt-provider.js"),
+    importChannelProviderModule<{
+      FileChannelRunOutputDeliveryProvider: new () => ChannelRunOutputDeliveryProvider;
+    }>("file-channel-run-output-delivery-provider.js"),
     importChannelProviderModule<{
       FileDeliveryEventProvider: new () => DeliveryEventProvider;
     }>("file-delivery-event-provider.js"),
@@ -55,6 +64,7 @@ const loadFileProviderSet = async (): Promise<ChannelProviderSet> => {
   return {
     bindingProvider,
     messageReceiptProvider: new receipt.FileChannelMessageReceiptProvider(),
+    runOutputDeliveryProvider: new runOutput.FileChannelRunOutputDeliveryProvider(),
     deliveryEventProvider: new delivery.FileDeliveryEventProvider(),
   };
 };
@@ -142,35 +152,66 @@ class DeferredChannelMessageReceiptProvider implements ChannelMessageReceiptProv
     return (await getProviderSet()).messageReceiptProvider.markIngressUnbound(input);
   }
 
-  async updateReceiptWorkflowProgress(
-    input: ChannelReceiptWorkflowProgressInput,
-  ): Promise<ChannelMessageReceipt> {
-    return (await getProviderSet()).messageReceiptProvider.updateReceiptWorkflowProgress(input);
-  }
-
-  async markReplyPublished(
-    input: ChannelReplyPublishedReceiptInput,
-  ): Promise<ChannelMessageReceipt> {
-    return (await getProviderSet()).messageReceiptProvider.markReplyPublished(input);
-  }
-
   async listReceiptsByIngressState(
     state: ChannelIngressReceiptState,
   ): Promise<ChannelMessageReceipt[]> {
     return (await getProviderSet()).messageReceiptProvider.listReceiptsByIngressState(state);
   }
 
-  async listReceiptsByWorkflowStates(
-    states: ChannelReceiptWorkflowState[],
-  ): Promise<ChannelMessageReceipt[]> {
-    return (await getProviderSet()).messageReceiptProvider.listReceiptsByWorkflowStates(states);
+  async findLatestAcceptedSourceForRoute(
+    route: ChannelSourceRoute,
+  ): Promise<ChannelSourceContext | null> {
+    return (await getProviderSet()).messageReceiptProvider.findLatestAcceptedSourceForRoute(route);
+  }
+}
+
+class DeferredChannelRunOutputDeliveryProvider
+  implements ChannelRunOutputDeliveryProvider
+{
+  async getByDeliveryKey(
+    deliveryKey: string,
+  ): Promise<ChannelRunOutputDeliveryRecord | null> {
+    return (await getProviderSet()).runOutputDeliveryProvider.getByDeliveryKey(deliveryKey);
   }
 
-  async getSourceByAgentRunTurn(
-    agentRunId: string,
-    turnId: string,
-  ): Promise<ChannelSourceContext | null> {
-    return (await getProviderSet()).messageReceiptProvider.getSourceByAgentRunTurn(agentRunId, turnId);
+  async upsertObservedTurn(
+    input: ChannelRunOutputObservedTurnInput,
+  ): Promise<ChannelRunOutputDeliveryRecord> {
+    return (await getProviderSet()).runOutputDeliveryProvider.upsertObservedTurn(input);
+  }
+
+  async markReplyFinalized(
+    input: ChannelRunOutputReplyFinalizedInput,
+  ): Promise<ChannelRunOutputDeliveryRecord> {
+    return (await getProviderSet()).runOutputDeliveryProvider.markReplyFinalized(input);
+  }
+
+  async markPublishPending(
+    input: ChannelRunOutputPublishPendingInput,
+  ): Promise<ChannelRunOutputDeliveryRecord> {
+    return (await getProviderSet()).runOutputDeliveryProvider.markPublishPending(input);
+  }
+
+  async markPublished(
+    input: ChannelRunOutputPublishedInput,
+  ): Promise<ChannelRunOutputDeliveryRecord> {
+    return (await getProviderSet()).runOutputDeliveryProvider.markPublished(input);
+  }
+
+  async markTerminal(
+    input: ChannelRunOutputTerminalInput,
+  ): Promise<ChannelRunOutputDeliveryRecord> {
+    return (await getProviderSet()).runOutputDeliveryProvider.markTerminal(input);
+  }
+
+  async listByStatuses(
+    statuses: ChannelRunOutputDeliveryStatus[],
+  ): Promise<ChannelRunOutputDeliveryRecord[]> {
+    return (await getProviderSet()).runOutputDeliveryProvider.listByStatuses(statuses);
+  }
+
+  async listByBindingId(bindingId: string): Promise<ChannelRunOutputDeliveryRecord[]> {
+    return (await getProviderSet()).runOutputDeliveryProvider.listByBindingId(bindingId);
   }
 }
 
@@ -192,6 +233,7 @@ let deferredProviders:
   | {
       bindingProvider: ChannelBindingProvider;
       messageReceiptProvider: ChannelMessageReceiptProvider;
+      runOutputDeliveryProvider: ChannelRunOutputDeliveryProvider;
       deliveryEventProvider: DeliveryEventProvider;
     }
   | null = null;
@@ -201,6 +243,7 @@ export const getProviderProxySet = () => {
     deferredProviders = {
       bindingProvider: new DeferredChannelBindingProvider(),
       messageReceiptProvider: new DeferredChannelMessageReceiptProvider(),
+      runOutputDeliveryProvider: new DeferredChannelRunOutputDeliveryProvider(),
       deliveryEventProvider: new DeferredDeliveryEventProvider(),
     };
   }

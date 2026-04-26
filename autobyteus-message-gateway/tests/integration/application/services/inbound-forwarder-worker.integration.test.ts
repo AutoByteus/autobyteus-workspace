@@ -33,7 +33,7 @@ describe("InboundForwarderWorker integration", () => {
       const forwardInbound = vi.fn(async () => ({
         accepted: true,
         duplicate: false,
-        disposition: "ROUTED" as const,
+        disposition: "ACCEPTED" as const,
         bindingResolved: true,
       }));
       const worker = new InboundForwarderWorker({
@@ -58,7 +58,7 @@ describe("InboundForwarderWorker integration", () => {
 
       const updated = await inboxService.getById(queued.record.id);
       expect(forwardInbound).toHaveBeenCalledOnce();
-      expect(updated?.status).toBe("COMPLETED_ROUTED");
+      expect(updated?.status).toBe("COMPLETED_ACCEPTED");
     } finally {
       await rm(root, { recursive: true, force: true });
     }

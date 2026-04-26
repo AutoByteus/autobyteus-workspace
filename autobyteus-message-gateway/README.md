@@ -11,6 +11,7 @@ Implemented:
 - Discord bot ingress (Gateway API/WebSocket) + outbound send (REST API)
 - Telegram bot ingress (Polling or Webhook) + outbound send (Bot API)
 - signed forwarding to `autobyteus-server-ts`
+- ingress completion for current server dispositions `ACCEPTED | UNBOUND | DUPLICATE` (`ACCEPTED` persists as `COMPLETED_ACCEPTED` in the inbound inbox)
 - callback outbound delivery with retry + dead-letter + idempotency
 
 Detailed design/runtime docs:

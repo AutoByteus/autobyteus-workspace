@@ -59,9 +59,7 @@ const createEnvelope = () => ({
   }),
 });
 
-const createReceipt = (
-  overrides: Partial<ChannelMessageReceipt> = {},
-): ChannelMessageReceipt => ({
+const createReceipt = (overrides: Partial<ChannelMessageReceipt> = {}): ChannelMessageReceipt => ({
   provider: ExternalChannelProvider.WHATSAPP,
   transport: ExternalChannelTransport.BUSINESS_API,
   accountId: "acct-1",
@@ -69,14 +67,11 @@ const createReceipt = (
   threadId: null,
   externalMessageId: "msg-1",
   receivedAt: new Date("2026-02-08T00:00:00.000Z"),
-  ingressState: "ROUTED",
-  workflowState: "PUBLISHED",
+  ingressState: "ACCEPTED",
   dispatchAcceptedAt: new Date("2026-02-08T00:00:10.000Z"),
-  turnId: null,
+  turnId: "turn-1",
   agentRunId: "agent-1",
   teamRunId: null,
-  replyTextFinal: null,
-  lastError: null,
   dispatchLeaseToken: null,
   dispatchLeaseExpiresAt: null,
   createdAt: new Date("2026-02-08T00:00:00.000Z"),
@@ -85,134 +80,86 @@ const createReceipt = (
 });
 
 describe("ChannelIngressService", () => {
-  it("short-circuits duplicate routed ingress events", async () => {
-    const bindingService = {
-      resolveBinding: vi.fn(),
-    };
-    const threadLockService = {
-      withThreadLock: vi.fn(async (_key: string, work: () => Promise<unknown>) => work()),
-    };
-    const runFacade = {
-      dispatchToBinding: vi.fn(),
-    };
+  it("short-circuits duplicate active dispatch leases", async () => {
+    const bindingService = { resolveBinding: vi.fn() };
+    const runFacade = { dispatchToBinding: vi.fn() };
     const messageReceiptService = {
-      getReceiptByExternalMessage: vi
-        .fn()
-        .mockResolvedValue(createReceipt({ ingressState: "ROUTED" })),
+      getReceiptByExternalMessage: vi.fn().mockResolvedValue(createReceipt({ ingressState: "DISPATCHING" })),
       createPendingIngressReceipt: vi.fn(),
-      claimIngressDispatch: vi.fn(),
-      recordAcceptedDispatch: vi.fn(),
-      markIngressUnbound: vi.fn(),
-      isDispatchLeaseExpired: vi.fn(),
+      isDispatchLeaseExpired: vi.fn().mockReturnValue(false),
     };
     const service = new ChannelIngressService({
-      bindingService,
-      threadLockService,
-      runFacade,
+      bindingService: bindingService as any,
+      threadLockService: { withThreadLock: vi.fn(async (_key, work) => work()) } as any,
+      runFacade: runFacade as any,
       messageReceiptService: messageReceiptService as any,
+      outputDeliveryRuntime: { attachAcceptedDispatch: vi.fn() } as any,
     });
 
     const result = await service.handleInboundMessage(createEnvelope());
 
-    expect(result).toMatchObject({
-      duplicate: true,
-      disposition: "DUPLICATE",
-    });
+    expect(result).toMatchObject({ duplicate: true, disposition: "DUPLICATE" });
     expect(bindingService.resolveBinding).not.toHaveBeenCalled();
     expect(runFacade.dispatchToBinding).not.toHaveBeenCalled();
     expect(messageReceiptService.createPendingIngressReceipt).not.toHaveBeenCalled();
   });
 
-  it("re-registers unfinished accepted receipts with the receipt workflow runtime", async () => {
-    const existingAccepted = createReceipt({
-      ingressState: "ACCEPTED",
-      workflowState: "TURN_BOUND",
-      turnId: "turn-1",
-    });
-    const receiptWorkflowRuntime = {
-      registerAcceptedReceipt: vi.fn().mockResolvedValue(undefined),
-    };
+  it("reattaches unfinished accepted receipts with the output delivery runtime", async () => {
+    const binding = createBinding();
+    const existingAccepted = createReceipt({ ingressState: "ACCEPTED", turnId: "turn-1" });
+    const outputDeliveryRuntime = { attachAcceptedDispatch: vi.fn().mockResolvedValue(undefined) };
     const service = new ChannelIngressService({
-      bindingService: {
-        resolveBinding: vi.fn(),
-      } as any,
-      threadLockService: {
-        withThreadLock: vi.fn(async (_key: string, work: () => Promise<unknown>) => work()),
-      } as any,
-      runFacade: {
-        dispatchToBinding: vi.fn(),
-      } as any,
+      bindingService: { resolveBinding: vi.fn().mockResolvedValue({ binding, usedTransportFallback: false }) } as any,
+      threadLockService: { withThreadLock: vi.fn(async (_key, work) => work()) } as any,
+      runFacade: { dispatchToBinding: vi.fn() } as any,
       messageReceiptService: {
         getReceiptByExternalMessage: vi.fn().mockResolvedValue(existingAccepted),
         isDispatchLeaseExpired: vi.fn(),
       } as any,
-      receiptWorkflowRuntime: receiptWorkflowRuntime as any,
+      outputDeliveryRuntime: outputDeliveryRuntime as any,
     });
 
     const result = await service.handleInboundMessage(createEnvelope());
 
-    expect(result).toMatchObject({
-      duplicate: true,
-      disposition: "ACCEPTED",
-      dispatch: null,
+    expect(result).toMatchObject({ duplicate: true, disposition: "ACCEPTED", dispatch: null });
+    expect(outputDeliveryRuntime.attachAcceptedDispatch).toHaveBeenCalledWith({
+      binding,
+      route: {
+        provider: ExternalChannelProvider.WHATSAPP,
+        transport: ExternalChannelTransport.BUSINESS_API,
+        accountId: "acct-1",
+        peerId: "peer-1",
+        threadId: null,
+      },
+      latestCorrelationMessageId: "msg-1",
+      target: { targetType: "AGENT", agentRunId: "agent-1" },
+      turnId: "turn-1",
     });
-    expect(receiptWorkflowRuntime.registerAcceptedReceipt).toHaveBeenCalledWith(
-      existingAccepted,
-    );
   });
 
   it("returns UNBOUND disposition when no binding can be resolved", async () => {
-    const bindingService = {
-      resolveBinding: vi.fn().mockResolvedValue(null),
-    };
     const messageReceiptService = {
       getReceiptByExternalMessage: vi.fn().mockResolvedValue(null),
-      createPendingIngressReceipt: vi.fn().mockResolvedValue(
-        createReceipt({
-          ingressState: "PENDING",
-          workflowState: "RECEIVED",
-          agentRunId: null,
-          dispatchAcceptedAt: null,
-        }),
-      ),
-      claimIngressDispatch: vi.fn(),
-      recordAcceptedDispatch: vi.fn(),
-      markIngressUnbound: vi.fn().mockResolvedValue(
-        createReceipt({
-          ingressState: "UNBOUND",
-          workflowState: "UNBOUND",
-          agentRunId: null,
-          dispatchAcceptedAt: null,
-        }),
-      ),
+      createPendingIngressReceipt: vi.fn().mockResolvedValue(createReceipt({ ingressState: "PENDING" })),
+      markIngressUnbound: vi.fn().mockResolvedValue(createReceipt({ ingressState: "UNBOUND", agentRunId: null, dispatchAcceptedAt: null })),
     };
     const service = new ChannelIngressService({
-      bindingService,
-      threadLockService: {
-        withThreadLock: vi.fn(async (_key: string, work: () => Promise<unknown>) => work()),
-      } as any,
-      runFacade: {
-        dispatchToBinding: vi.fn(),
-      } as any,
+      bindingService: { resolveBinding: vi.fn().mockResolvedValue(null) } as any,
+      threadLockService: { withThreadLock: vi.fn(async (_key, work) => work()) } as any,
+      runFacade: { dispatchToBinding: vi.fn() } as any,
       messageReceiptService: messageReceiptService as any,
+      outputDeliveryRuntime: { attachAcceptedDispatch: vi.fn() } as any,
     });
 
     const result = await service.handleInboundMessage(createEnvelope());
 
-    expect(result).toMatchObject({
-      duplicate: false,
-      disposition: "UNBOUND",
-      bindingResolved: false,
-    });
+    expect(result).toMatchObject({ duplicate: false, disposition: "UNBOUND", bindingResolved: false });
     expect(messageReceiptService.markIngressUnbound).toHaveBeenCalledOnce();
   });
 
-  it("records accepted dispatch with explicit dispatchAcceptedAt and registers the accepted receipt", async () => {
+  it("records accepted dispatch and attaches output delivery", async () => {
     const binding = createBinding();
-    const resolvedBinding: ResolvedBinding = {
-      binding,
-      usedTransportFallback: false,
-    };
+    const resolvedBinding: ResolvedBinding = { binding, usedTransportFallback: false };
     const dispatchResult: ChannelRunDispatchResult = {
       dispatchTargetType: "AGENT",
       agentRunId: "agent-1",
@@ -221,63 +168,22 @@ describe("ChannelIngressService", () => {
     };
     const messageReceiptService = {
       getReceiptByExternalMessage: vi.fn().mockResolvedValue(null),
-      createPendingIngressReceipt: vi.fn().mockResolvedValue(
-        createReceipt({
-          ingressState: "PENDING",
-          workflowState: "RECEIVED",
-          agentRunId: null,
-          dispatchAcceptedAt: null,
-        }),
-      ),
-      claimIngressDispatch: vi.fn().mockResolvedValue(
-        createReceipt({
-          ingressState: "DISPATCHING",
-          workflowState: "DISPATCHING",
-          agentRunId: null,
-          dispatchLeaseToken: "lease-1",
-          dispatchLeaseExpiresAt: new Date("2026-02-08T00:00:30.000Z"),
-          dispatchAcceptedAt: null,
-        }),
-      ),
-      recordAcceptedDispatch: vi.fn().mockResolvedValue(
-        createReceipt({
-          ingressState: "ACCEPTED",
-          workflowState: "TURN_BOUND",
-          agentRunId: "agent-1",
-          turnId: "turn-1",
-          dispatchAcceptedAt: new Date("2026-02-08T00:00:10.000Z"),
-        }),
-      ),
+      createPendingIngressReceipt: vi.fn().mockResolvedValue(createReceipt({ ingressState: "PENDING", agentRunId: null, dispatchAcceptedAt: null })),
+      claimIngressDispatch: vi.fn().mockResolvedValue(createReceipt({ ingressState: "DISPATCHING", agentRunId: null, dispatchLeaseToken: "lease-1", dispatchLeaseExpiresAt: new Date("2026-02-08T00:00:30.000Z"), dispatchAcceptedAt: null })),
+      recordAcceptedDispatch: vi.fn().mockResolvedValue(createReceipt({ ingressState: "ACCEPTED" })),
     };
-    const receiptWorkflowRuntime = {
-      registerAcceptedReceipt: vi.fn().mockResolvedValue(undefined),
-    };
+    const outputDeliveryRuntime = { attachAcceptedDispatch: vi.fn().mockResolvedValue(undefined) };
     const service = new ChannelIngressService({
-      bindingService: {
-        resolveBinding: vi.fn().mockResolvedValue(resolvedBinding),
-      } as any,
-      threadLockService: {
-        withThreadLock: vi.fn(async (_key: string, work: () => Promise<unknown>) => work()),
-      } as any,
-      runFacade: {
-        dispatchToBinding: vi
-          .fn()
-          .mockImplementation(async (_binding: ChannelBinding, inboundEnvelope: ReturnType<typeof createEnvelope>) => {
-            expect(inboundEnvelope.metadata).toEqual({});
-            return dispatchResult;
-          }),
-      } as any,
+      bindingService: { resolveBinding: vi.fn().mockResolvedValue(resolvedBinding) } as any,
+      threadLockService: { withThreadLock: vi.fn(async (_key, work) => work()) } as any,
+      runFacade: { dispatchToBinding: vi.fn().mockResolvedValue(dispatchResult) } as any,
       messageReceiptService: messageReceiptService as any,
-      receiptWorkflowRuntime: receiptWorkflowRuntime as any,
+      outputDeliveryRuntime: outputDeliveryRuntime as any,
     });
 
     const result = await service.handleInboundMessage(createEnvelope());
 
-    expect(result).toMatchObject({
-      duplicate: false,
-      disposition: "ACCEPTED",
-      dispatch: dispatchResult,
-    });
+    expect(result).toMatchObject({ duplicate: false, disposition: "ACCEPTED", dispatch: dispatchResult });
     expect(messageReceiptService.recordAcceptedDispatch).toHaveBeenCalledWith({
       provider: ExternalChannelProvider.WHATSAPP,
       transport: ExternalChannelTransport.BUSINESS_API,
@@ -292,6 +198,18 @@ describe("ChannelIngressService", () => {
       turnId: "turn-1",
       dispatchAcceptedAt: new Date("2026-02-08T00:00:10.000Z"),
     });
-    expect(receiptWorkflowRuntime.registerAcceptedReceipt).toHaveBeenCalledOnce();
+    expect(outputDeliveryRuntime.attachAcceptedDispatch).toHaveBeenCalledWith({
+      binding,
+      route: {
+        provider: ExternalChannelProvider.WHATSAPP,
+        transport: ExternalChannelTransport.BUSINESS_API,
+        accountId: "acct-1",
+        peerId: "peer-1",
+        threadId: null,
+      },
+      latestCorrelationMessageId: "msg-1",
+      target: { targetType: "AGENT", agentRunId: "agent-1" },
+      turnId: "turn-1",
+    });
   });
 });

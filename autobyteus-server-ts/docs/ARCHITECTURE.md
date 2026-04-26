@@ -69,12 +69,12 @@ External-channel persistence has one deliberate exception:
 - file-backed external-channel artifacts live under `<appDataDir>/external-channel/`
 - channel route bindings are always file-backed and stored at `<appDataDir>/external-channel/bindings.json`
 - the callback outbox is stored at `<appDataDir>/external-channel/gateway-callback-outbox.json`
-- external-channel receipts and delivery events are file-backed and live in that same folder regardless of the global persistence profile
-- each inbound external message creates one durable `ChannelMessageReceipt` that remains unfinished work until callback publication completes or the route resolves terminally
-- successful external dispatch is accepted only after the external-channel run facade has an authoritative `turnId` (and `memberRunId` for team dispatches)
-- startup restores unfinished accepted receipts by starting the receipt workflow runtime after the server begins listening
-- post-accept reply routing is turn-scoped and depends on the persisted receipt already owning that authoritative `turnId`
-- no chronology-based turn binding or legacy accepted-receipt recovery runtime remains in the active business path
+- external-channel receipts, run-output delivery records, and delivery events are file-backed and live in that same folder regardless of the global persistence profile
+- each inbound external message creates one durable `ChannelMessageReceipt` for ingress idempotency, binding resolution, and accepted-dispatch audit
+- accepted dispatches open or refresh a route/run output link after the external-channel run facade has an authoritative `turnId`
+- startup restores open route/run links and unfinished run-output delivery records by starting `ChannelRunOutputDeliveryRuntime` after the server begins listening
+- post-accept outbound delivery is route/run scoped: eligible agent or team coordinator/entry-node outputs are published through `ReplyCallbackService` and the gateway callback outbox even when no new inbound external message exists
+- the legacy receipt workflow runtime and exact-turn reply bridges are not active outbound-delivery owners
 
 Build/package notes:
 
@@ -94,8 +94,9 @@ Each major business area is isolated under `src/<module>` and usually contains:
 
 ## External-Channel Messaging Runtime
 
-The external-channel subsystem is receipt-owned at the durable workflow layer and
-event-driven at the runtime edges.
+The external-channel subsystem is receipt-owned for inbound ingress and
+run-output-owned for outbound delivery. Inbound receipts are durable audit and
+idempotency records; they do not own external reply publication.
 
 Primary spine:
 
@@ -105,13 +106,19 @@ Primary spine:
    bound run, serializes same-run dispatches, posts the user message, and waits
    for the authoritative `TURN_STARTED` event when the dispatch call does not
    return a `turnId` directly.
-3. Only after that exact turn identity exists does the server persist the
-   receipt as `ACCEPTED` with workflow state `TURN_BOUND`.
-4. `ReceiptWorkflowRuntime` becomes the sole durable owner for the post-accept
-   lifecycle: live observation, known-turn recovery, final reply readiness, and
-   callback publication.
-5. `ReplyCallbackService` and the gateway callback outbox own outbound
-   publication durability.
+3. Only after that turn identity exists does the server persist the receipt as
+   `ACCEPTED` and attach the accepted dispatch to `ChannelRunOutputDeliveryRuntime`.
+4. `ChannelRunOutputDeliveryRuntime` subscribes to the authoritative agent/team
+   event stream for the active route/run link. It observes eligible output turns,
+   finalizes reply text, and stores one `ChannelRunOutputDeliveryRecord` per
+   binding/route, target run/member, and turn.
+5. `ChannelRunOutputPublisher` publishes finalized records through
+   `ReplyCallbackService`; `ReplyCallbackService` enqueues the outbound envelope
+   into the existing gateway callback outbox and treats enqueue or callback-key
+   duplicate as the server-side publish boundary.
+6. The message gateway treats server ingress dispositions
+   `ACCEPTED | UNBOUND | DUPLICATE` as terminal inbox results, with accepted
+   ingress stored as `COMPLETED_ACCEPTED`.
 
 Important ownership rules:
 
@@ -119,10 +126,16 @@ Important ownership rules:
   to the agent-runtime core
 - runtime events remain generic; clients and adapters listen to them without
   adding external-channel-specific payloads to the core event schema
-- live reply bridges and persisted recovery are subordinate to the receipt
-  workflow and operate only on already-known turns
+- run-output delivery is the only active external-channel outbound owner for
+  both direct replies and later follow-up outputs
+- team output eligibility is restricted to the bound coordinator/entry member;
+  worker-only and internal coordination turns are not sent to the external peer
+- binding lifecycle events reconcile output subscriptions when a route is
+  rebound or cached run identity changes; stale recovered output records become
+  terminal instead of publishing to an outdated binding
 - a second inbound message on the same thread creates a new receipt and a new
-  turn, while the binding may reuse or restore the same underlying run
+  turn, while the binding may reuse or restore the same underlying run; eligible
+  later outputs from the active linked run do not require another inbound message
 
 ## Testing Layers
 
