@@ -21,7 +21,6 @@ import type { Skill } from "../../../../skills/domain/models.js";
 import {
   buildCodexThreadConfig,
   CodexApprovalPolicy,
-  type CodexSandboxMode,
   type CodexThreadConfig,
 } from "../thread/codex-thread-config.js";
 import {
@@ -41,6 +40,13 @@ import {
   type CodexAppServerClientManager,
 } from "../../../../runtime-management/codex/client/codex-app-server-client-manager.js";
 import { buildBrowserDynamicToolRegistrationsForEnabledToolNames } from "../browser/build-browser-dynamic-tool-registrations.js";
+import {
+  CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
+  DEFAULT_CODEX_SANDBOX_MODE,
+  isCodexSandboxMode,
+  normalizeCodexSandboxMode,
+  type CodexSandboxMode,
+} from "../../../../runtime-management/codex/codex-sandbox-mode-setting.js";
 import { buildCodexPublishArtifactDynamicToolRegistration } from "../published-artifacts/build-codex-publish-artifact-dynamic-tool-registration.js";
 import {
   filterDynamicToolRegistrationsByToolNames,
@@ -49,13 +55,6 @@ import {
   resolveConfiguredAgentToolExposure,
   toConfiguredAgentToolNameSet,
 } from "../../../shared/configured-agent-tool-exposure.js";
-
-const DEFAULT_SANDBOX_MODE: CodexSandboxMode = "workspace-write";
-const VALID_SANDBOX_MODES = new Set<CodexSandboxMode>([
-  "read-only",
-  "workspace-write",
-  "danger-full-access",
-]);
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -103,14 +102,17 @@ export const resolveApprovalPolicyForAutoExecuteTools = (
   autoExecuteTools ? CodexApprovalPolicy.NEVER : CodexApprovalPolicy.ON_REQUEST;
 
 export const normalizeSandboxMode = (): CodexSandboxMode => {
-  const sandbox = process.env.CODEX_APP_SERVER_SANDBOX?.trim() ?? DEFAULT_SANDBOX_MODE;
-  if (VALID_SANDBOX_MODES.has(sandbox as CodexSandboxMode)) {
-    return sandbox as CodexSandboxMode;
+  const rawSandbox = process.env[CODEX_APP_SERVER_SANDBOX_SETTING_KEY];
+  const sandbox = normalizeCodexSandboxMode(rawSandbox);
+  const submittedSandbox = typeof rawSandbox === "string" ? rawSandbox.trim() : "";
+
+  if (submittedSandbox.length > 0 && !isCodexSandboxMode(submittedSandbox)) {
+    logger.warn(
+      `Invalid ${CODEX_APP_SERVER_SANDBOX_SETTING_KEY} '${submittedSandbox}', falling back to '${DEFAULT_CODEX_SANDBOX_MODE}'.`,
+    );
   }
-  logger.warn(
-    `Invalid CODEX_APP_SERVER_SANDBOX '${sandbox}', falling back to '${DEFAULT_SANDBOX_MODE}'.`,
-  );
-  return DEFAULT_SANDBOX_MODE;
+
+  return sandbox;
 };
 
 export const resolveDefaultModel = (): string | null => {

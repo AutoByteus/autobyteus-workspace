@@ -1,5 +1,9 @@
 import { appConfigProvider } from "../config/app-config-provider.js";
 import { APPLICATIONS_CAPABILITY_SETTING_KEY } from "../application-capability/domain/models.js";
+import {
+  CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
+  CODEX_SANDBOX_MODES,
+} from "../runtime-management/codex/codex-sandbox-mode-setting.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -12,8 +16,14 @@ export class ServerSettingDescription {
     public readonly description: string,
     public readonly isEditable: boolean = true,
     public readonly isDeletable: boolean = false,
+    public readonly valueValidation: ServerSettingValueValidation | null = null,
   ) {}
 }
+
+type ServerSettingValueValidation = {
+  readonly allowedValues: readonly string[];
+  readonly trimBeforePersist?: boolean;
+};
 
 const CUSTOM_SETTING_DESCRIPTION = "Custom user-defined setting";
 
@@ -76,13 +86,31 @@ export class ServerSettingsService {
       "Controls whether the Applications module is available for this node at runtime.",
     );
 
+    this.registerPredefinedSetting(
+      CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
+      "Codex app server filesystem sandbox mode for future sessions. Allowed values: read-only, workspace-write, danger-full-access. danger-full-access disables filesystem sandboxing.",
+      true,
+      {
+        allowedValues: CODEX_SANDBOX_MODES,
+        trimBeforePersist: true,
+      },
+    );
+
     logger.info(
       `Initialized server settings service with ${this.settingsInfo.size} predefined settings`,
     );
   }
 
-  private registerPredefinedSetting(key: string, description: string, isEditable = true): void {
-    this.settingsInfo.set(key, new ServerSettingDescription(key, description, isEditable, false));
+  private registerPredefinedSetting(
+    key: string,
+    description: string,
+    isEditable = true,
+    valueValidation: ServerSettingValueValidation | null = null,
+  ): void {
+    this.settingsInfo.set(
+      key,
+      new ServerSettingDescription(key, description, isEditable, false, valueValidation),
+    );
   }
 
   private getSettingDescription(key: string): ServerSettingDescription {
@@ -155,8 +183,17 @@ export class ServerSettingsService {
         return [false, `Server setting '${key}' is managed by the system and cannot be updated here.`];
       }
 
+      const [isValueValid, normalizedValueOrError] = this.normalizeSettingValueForPersistence(
+        key,
+        value,
+        metadata,
+      );
+      if (!isValueValid) {
+        return [false, normalizedValueOrError];
+      }
+
       const config = appConfigProvider.config;
-      config.set(key, value);
+      config.set(key, normalizedValueOrError);
 
       if (!this.settingsInfo.has(key)) {
         this.settingsInfo.set(
@@ -166,12 +203,33 @@ export class ServerSettingsService {
         logger.info(`Added new custom server setting: ${key}`);
       }
 
-      logger.info(`Server setting '${key}' updated to '${value}'`);
+      logger.info(`Server setting '${key}' updated to '${normalizedValueOrError}'`);
       return [true, `Server setting '${key}' has been updated successfully.`];
     } catch (error) {
       logger.error(`Error updating server setting '${key}': ${String(error)}`);
       return [false, `Error updating server setting: ${String(error)}`];
     }
+  }
+
+  private normalizeSettingValueForPersistence(
+    key: string,
+    value: string,
+    metadata: ServerSettingDescription | undefined,
+  ): [true, string] | [false, string] {
+    const validation = metadata?.valueValidation;
+    if (!validation) {
+      return [true, value];
+    }
+
+    const normalizedValue = validation.trimBeforePersist === false ? value : value.trim();
+    if (!validation.allowedValues.includes(normalizedValue)) {
+      return [
+        false,
+        `Server setting '${key}' must be one of: ${validation.allowedValues.join(", ")}.`,
+      ];
+    }
+
+    return [true, normalizedValue];
   }
 
   deleteSetting(key: string): [boolean, string] {

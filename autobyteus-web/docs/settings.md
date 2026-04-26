@@ -203,6 +203,12 @@ Manage agent package sources used by the app.
 A flexible key-value store for backend configurations.
 
 - **Quick setup cards:** The quick server-settings surface now includes both `Web Search Configuration` and a dedicated `Compaction config` card.
+- **Codex full access:** `components/settings/CodexFullAccessCard.vue` appears in the Server Settings Basics grid and provides one toggle for the common Codex filesystem-access decision without requiring operators to edit the raw `CODEX_APP_SERVER_SANDBOX` key.
+  - Toggle on saves `danger-full-access`.
+  - Toggle off saves `workspace-write`, the default/recommended mode.
+  - The Advanced/API path still accepts all runtime-valid values: `read-only`, `workspace-write`, and `danger-full-access`.
+  - `danger-full-access` disables filesystem sandboxing and should only be used for trusted tasks and environments.
+  - Changes apply to new/future Codex sessions. Existing active Codex sessions keep the sandbox mode they were started with.
 - **Compaction config:** The typed compaction card saves the main memory-compaction controls without requiring operators to remember raw env keys:
   - **Compaction model:** optional dedicated internal summarizer model; blank falls back to the active run model.
   - **Compaction trigger ratio (%):** saved to `AUTOBYTEUS_COMPACTION_TRIGGER_RATIO`; defaults to `80%`.
@@ -210,7 +216,7 @@ A flexible key-value store for backend configurations.
   - **Enable detailed compaction logs:** saved to `AUTOBYTEUS_COMPACTION_DEBUG_LOGS`; turns on verbose budget/execution/result diagnostics in server logs.
 - **Live runtime effect:** Compaction settings are env-backed server settings, but changes apply to subsequent compaction budget checks and compaction-model dispatches without restarting the server.
 - **Local provider note:** LM Studio and Ollama long-running requests are now hardened internally for delayed first-token / long prompt-processing cases; there is no separate timeout setting in the UI. If local runs still fail before the practical context ceiling, lower **Effective context override** instead.
-- **Advanced raw table:** The full key-value table remains available for precise control over server-side flags and parameters, including custom settings.
+- **Advanced raw table:** The full key-value table remains available for precise control over server-side flags and parameters, including custom settings. `CODEX_APP_SERVER_SANDBOX` is a predefined editable, non-deletable Codex runtime setting there, so invalid aliases or arbitrary values are rejected instead of being persisted as opaque custom settings.
 - **Applications feature toggle:** `components/settings/ApplicationsFeatureToggleCard.vue` now appears as a normal card inside the Server Settings Basics grid and is the first-class control for the bound node’s runtime Applications capability.
 - **Typed runtime authority:** The Applications card reads/writes the typed `applicationsCapability` / `setApplicationsEnabled(...)` boundary instead of treating the generic key-value table as the primary product-facing owner.
 - **Immediate runtime effect:** Enabling or disabling Applications refreshes the same window’s sidebar visibility, `/applications` route access, and catalog behavior without rebuilding the packaged frontend.
