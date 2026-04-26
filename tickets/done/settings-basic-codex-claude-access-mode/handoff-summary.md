@@ -4,8 +4,9 @@
 
 - Ticket: `settings-basic-codex-claude-access-mode`
 - Date: `2026-04-26`
-- Current Status: `Ready for user verification; not archived, pushed, merged, released, deployed, or cleaned up`
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-basic-codex-claude-access-mode`
+- Current Status: `Finalized into personal; no release requested`
+- Original ticket worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-basic-codex-claude-access-mode` (removed after finalization)
+- Final archived artifact root: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/settings-basic-codex-claude-access-mode`
 - Ticket branch: `codex/settings-basic-codex-claude-access-mode`
 - Tracked base/finalization target: `origin/personal` / local `personal`
 - Bootstrap base reference from investigation: `origin/personal @ 81f6c823a16f54de77f426b1bc3a7be50e6c843d`
@@ -18,17 +19,17 @@
 
 ## Cumulative Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-basic-codex-claude-access-mode/tickets/done/settings-basic-codex-claude-access-mode/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-basic-codex-claude-access-mode/tickets/done/settings-basic-codex-claude-access-mode/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-basic-codex-claude-access-mode/tickets/done/settings-basic-codex-claude-access-mode/design-spec.md`
-- Upstream rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-basic-codex-claude-access-mode/tickets/done/settings-basic-codex-claude-access-mode/upstream-rework-note.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-basic-codex-claude-access-mode/tickets/done/settings-basic-codex-claude-access-mode/design-review-report.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-basic-codex-claude-access-mode/tickets/done/settings-basic-codex-claude-access-mode/implementation-handoff.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-basic-codex-claude-access-mode/tickets/done/settings-basic-codex-claude-access-mode/review-report.md`
-- Fresh API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-basic-codex-claude-access-mode/tickets/done/settings-basic-codex-claude-access-mode/validation-report.md`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-basic-codex-claude-access-mode/tickets/done/settings-basic-codex-claude-access-mode/docs-sync-report.md`
-- Delivery/release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-basic-codex-claude-access-mode/tickets/done/settings-basic-codex-claude-access-mode/release-deployment-report.md`
-- This handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-basic-codex-claude-access-mode/tickets/done/settings-basic-codex-claude-access-mode/handoff-summary.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/settings-basic-codex-claude-access-mode/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/settings-basic-codex-claude-access-mode/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/settings-basic-codex-claude-access-mode/design-spec.md`
+- Upstream rework note: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/settings-basic-codex-claude-access-mode/upstream-rework-note.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/settings-basic-codex-claude-access-mode/design-review-report.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/settings-basic-codex-claude-access-mode/implementation-handoff.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/settings-basic-codex-claude-access-mode/review-report.md`
+- Fresh API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/settings-basic-codex-claude-access-mode/validation-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/settings-basic-codex-claude-access-mode/docs-sync-report.md`
+- Delivery/release/deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/settings-basic-codex-claude-access-mode/release-deployment-report.md`
+- This handoff summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/settings-basic-codex-claude-access-mode/handoff-summary.md`
 
 ## Delivered Change
 
@@ -135,7 +136,7 @@ Known validation context:
 
 ## Documentation Sync Summary
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-basic-codex-claude-access-mode/tickets/done/settings-basic-codex-claude-access-mode/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/settings-basic-codex-claude-access-mode/docs-sync-report.md`
 - Docs result: `Updated`
 - Docs updated:
   - `README.md`
@@ -172,12 +173,16 @@ Known validation context:
 ## Finalization Status
 
 - Ticket archived to `tickets/done`: `Yes`
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-basic-codex-claude-access-mode/tickets/done/settings-basic-codex-claude-access-mode`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/settings-basic-codex-claude-access-mode`
 - Post-verification target refresh: `Completed`; `origin/personal` remained `376f431b7d7945feff385493d7a55bcbfcc5a469`, with `HEAD..origin/personal = 0`.
 - Renewed verification required after target refresh: `No`
-- Ticket branch commit/push for finalization: `In progress`
-- Merge into `personal`: `In progress`
-- Target push: `In progress`
+- Ticket branch final commit: `f0561fcc feat(settings): add codex full access toggle`
+- Ticket branch push: `Completed` (`origin/codex/settings-basic-codex-claude-access-mode`, later deleted after merge)
+- Merge into `personal`: `Completed` (`1c66e68e Merge branch 'codex/settings-basic-codex-claude-access-mode' into personal`)
+- Target push: `Completed` (`origin/personal` updated through `1c66e68e`)
 - Release/publication/deployment: `Not required — user explicitly requested no new version`
-- Worktree/branch cleanup: `Pending after merge/push`
-- Final note: This archived handoff is being committed as part of repository finalization. The final user-facing response records the actual push/merge/cleanup outcomes.
+- Worktree cleanup: `Completed`
+- Worktree prune: `Completed`
+- Local ticket branch cleanup: `Completed`
+- Remote ticket branch cleanup: `Completed`
+- Finalization report update: `Completed` in this final documentation commit on `personal`.

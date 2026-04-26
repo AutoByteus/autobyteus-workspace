@@ -6,7 +6,7 @@ No release, publication, deployment, version bump, or tag is currently in scope.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-basic-codex-claude-access-mode/tickets/done/settings-basic-codex-claude-access-mode/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/settings-basic-codex-claude-access-mode/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Notes: The handoff records the current toggle-flow behavior, latest-base refresh, no-rerun rationale, fresh validation evidence, docs sync, residual limits, and user verification instructions.
 
@@ -45,7 +45,7 @@ Refresh evidence:
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-basic-codex-claude-access-mode/tickets/done/settings-basic-codex-claude-access-mode/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/settings-basic-codex-claude-access-mode/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated:
   - `README.md`
@@ -57,7 +57,7 @@ Refresh evidence:
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/<ticket-name>`: `Yes`
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-basic-codex-claude-access-mode/tickets/done/settings-basic-codex-claude-access-mode`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/settings-basic-codex-claude-access-mode`
 
 ## Version / Tag / Release Commit
 
@@ -67,17 +67,17 @@ No version bump, tag, or release commit is required. User explicitly requested f
 
 - Bootstrap context source: `tickets/done/settings-basic-codex-claude-access-mode/investigation-notes.md` records bootstrap base branch `origin/personal`, task branch `codex/settings-basic-codex-claude-access-mode`, expected finalization target `personal`, and worktree creation from `origin/personal @ 81f6c823a16f54de77f426b1bc3a7be50e6c843d`.
 - Ticket branch: `codex/settings-basic-codex-claude-access-mode`
-- Ticket branch commit result: `In progress`
-- Ticket branch push result: `In progress`
+- Ticket branch commit result: `Completed` (`f0561fcc feat(settings): add codex full access toggle`)
+- Ticket branch push result: `Completed`; remote ticket branch was pushed, then deleted after target merge.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: `No` (`git fetch origin personal`; `HEAD..origin/personal = 0`)
 - Delivery-owned edits protected before re-integration: `Not needed`; target did not advance after verification.
 - Re-integration before final merge result: `Not needed`
-- Target branch update result: `In progress`
-- Merge into target result: `In progress`
-- Push target branch result: `In progress`
-- Repository finalization status: `In progress`
+- Target branch update result: `Completed` (`personal` was current with `origin/personal` before merge).
+- Merge into target result: `Completed` (`1c66e68e Merge branch 'codex/settings-basic-codex-claude-access-mode' into personal`).
+- Push target branch result: `Completed` (`origin/personal` updated through `1c66e68e`).
+- Repository finalization status: `Completed`
 - Blocker (if applicable): `None; finalization is proceeding after explicit user verification.`
 
 ## Release / Publication / Deployment
@@ -91,12 +91,12 @@ No version bump, tag, or release commit is required. User explicitly requested f
 
 ## Post-Finalization Cleanup
 
-- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-basic-codex-claude-access-mode`
-- Worktree cleanup result: `Pending after repository finalization`
-- Worktree prune result: `Pending after repository finalization`
-- Local ticket branch cleanup result: `Pending after repository finalization`
-- Remote branch cleanup result: `Not required` at this stage.
-- Blocker (if applicable): `None; cleanup is deferred until after merge/push completes.`
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-basic-codex-claude-access-mode` (removed after finalization)
+- Worktree cleanup result: `Completed`
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed`
+- Remote branch cleanup result: `Completed` (`origin/codex/settings-basic-codex-claude-access-mode` deleted).
+- Blocker (if applicable): `None`
 
 ## Release Notes Summary
 
@@ -145,4 +145,4 @@ Rollback after finalization, if ever needed: revert the final merge/commit that 
 
 ## Final Status
 
-Finalization in progress after explicit user verification. No release/deployment will be performed per user instruction.
+Completed. Ticket finalized into `personal`, pushed to `origin/personal`, no release/deployment performed per user instruction, and dedicated ticket worktree/branches cleaned up.
