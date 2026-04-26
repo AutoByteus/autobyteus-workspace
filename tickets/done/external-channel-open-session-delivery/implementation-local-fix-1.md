@@ -4,7 +4,7 @@
 
 API/E2E validation round 1 routed a bounded `Local Fix` back to implementation.
 
-- API/E2E report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/in-progress/external-channel-open-session-delivery/api-e2e-report.md`
+- API/E2E report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/done/external-channel-open-session-delivery/api-e2e-report.md`
 - Failing scenario: same external route rebound from team `targetNodeName: coordinator` to `targetNodeName: worker` on the same `teamRunId`; a finalized stale coordinator output record was recovered and incorrectly published.
 - Failing command: `pnpm -C autobyteus-server-ts exec vitest run tests/unit/external-channel/runtime/channel-run-output-delivery-runtime.test.ts --passWithNoTests`
 

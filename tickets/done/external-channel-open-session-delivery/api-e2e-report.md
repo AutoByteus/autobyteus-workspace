@@ -2,12 +2,12 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/in-progress/external-channel-open-session-delivery/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/in-progress/external-channel-open-session-delivery/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/in-progress/external-channel-open-session-delivery/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/in-progress/external-channel-open-session-delivery/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/in-progress/external-channel-open-session-delivery/implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/in-progress/external-channel-open-session-delivery/review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/done/external-channel-open-session-delivery/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/done/external-channel-open-session-delivery/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/done/external-channel-open-session-delivery/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/done/external-channel-open-session-delivery/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/done/external-channel-open-session-delivery/implementation-handoff.md`
+- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/done/external-channel-open-session-delivery/review-report.md`
 - Current Validation Round: 4
 - Trigger: Code review Round 4 failed the newly added one-TeamRun E2E as racy (`CR-004-001`) and requested a validation-code local fix.
 - Prior Round Reviewed: 3
@@ -26,8 +26,8 @@
 
 Validation was derived from the approved requirements, reviewed design, implementation handoff, code review reports, prior failed validation report state, and the local-fix artifacts:
 
-- Local fix 1 artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/in-progress/external-channel-open-session-delivery/implementation-local-fix-1.md`
-- Local fix 2 artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/in-progress/external-channel-open-session-delivery/implementation-local-fix-2.md`
+- Local fix 1 artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/done/external-channel-open-session-delivery/implementation-local-fix-1.md`
+- Local fix 2 artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/done/external-channel-open-session-delivery/implementation-local-fix-2.md`
 
 The user-requested durable E2E exercises:
 
@@ -164,11 +164,11 @@ Repository-resident durable validation from Round 1 and implementation local fix
 - Paths added or updated this round:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/autobyteus-server-ts/tests/e2e/external-channel/external-channel-team-open-delivery.e2e.test.ts`
 - If `Yes`, returned through `code_reviewer` before delivery: `Yes` — this report and package are being routed to `code_reviewer`; delivery should remain paused until validation-code re-review passes.
-- Post-validation code review artifact: latest failed Round 4 re-review is `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/in-progress/external-channel-open-session-delivery/review-report.md`; pass re-review pending after this fix.
+- Post-validation code review artifact: latest failed Round 4 re-review is `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/done/external-channel-open-session-delivery/review-report.md`; pass re-review pending after this fix.
 
 ## Other Validation Artifacts
 
-- Validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/in-progress/external-channel-open-session-delivery/api-e2e-report.md`
+- Validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/done/external-channel-open-session-delivery/api-e2e-report.md`
 
 ## Temporary Validation Methods / Scaffolding
 

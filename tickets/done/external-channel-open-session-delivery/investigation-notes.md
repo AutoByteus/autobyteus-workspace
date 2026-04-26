@@ -22,7 +22,7 @@ The user reports that when they send a message to a coordinator agent from Teleg
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/in-progress/external-channel-open-session-delivery`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/done/external-channel-open-session-delivery`
 - Current Branch: `codex/external-channel-open-session-delivery`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery`
 - Bootstrap Base Branch: `origin/personal`
@@ -31,7 +31,7 @@ The user reports that when they send a message to a coordinator agent from Teleg
 - Expected Base Branch (if known): `origin/personal`
 - Expected Finalization Target (if known): `personal`
 - Bootstrap Blockers: None.
-- Notes For Downstream Agents: Artifacts are repository-resident under `tickets/in-progress/external-channel-open-session-delivery` in the dedicated worktree. Requirements were approved by the user on 2026-04-26; design spec is available in this task folder.
+- Notes For Downstream Agents: Artifacts are repository-resident under `tickets/done/external-channel-open-session-delivery` in the dedicated worktree. Requirements were approved by the user on 2026-04-26; design spec is available in this task folder.
 
 ## Source Log
 
@@ -57,7 +57,7 @@ The user reports that when they send a message to a coordinator agent from Teleg
 | 2026-04-26 | Command | `pnpm -C autobyteus-server-ts exec vitest run tests/unit/external-channel/runtime/channel-team-run-reply-bridge.test.ts tests/unit/external-channel/runtime/receipt-workflow-runtime.test.ts` | Attempt a focused test sanity check. | Command failed before running tests: `Command "vitest" not found`; no `node_modules` is installed in this worktree. | Downstream implementation/validation should install dependencies or use prepared workspace before running tests. |
 | 2026-04-26 | Command | `ls -d node_modules autobyteus-server-ts/node_modules 2>/dev/null || true` | Verify why `vitest` was unavailable. | No root or server `node_modules` directory exists in the dedicated worktree. | Validation setup required later. |
 | 2026-04-26 | Doc | `/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-engineering-team/agents/solution-designer/references/design-examples.md` | Consult event-driven runtime and team-run design examples before writing the spec. | Relevant guidance: make return/event spines and bounded local event-loop spines explicit; keep team-level and member-level identities distinct. | No |
-| 2026-04-26 | Other | `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/in-progress/external-channel-open-session-delivery/design-spec.md` | Record produced target design artifact. | Design introduces `ChannelRunOutputDeliveryRuntime` as the open route/run output owner and decommissions receipt-owned outbound reply workflow. | Architecture review needed |
+| 2026-04-26 | Other | `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/done/external-channel-open-session-delivery/design-spec.md` | Record produced target design artifact. | Design introduces `ChannelRunOutputDeliveryRuntime` as the open route/run output owner and decommissions receipt-owned outbound reply workflow. | Architecture review needed |
 
 ## Current Behavior / Current Flow
 

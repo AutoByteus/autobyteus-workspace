@@ -2,10 +2,10 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/in-progress/external-channel-open-session-delivery/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/in-progress/external-channel-open-session-delivery/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/in-progress/external-channel-open-session-delivery/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/in-progress/external-channel-open-session-delivery/design-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/done/external-channel-open-session-delivery/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/done/external-channel-open-session-delivery/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/done/external-channel-open-session-delivery/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/done/external-channel-open-session-delivery/design-review-report.md`
 
 ## What Changed
 
@@ -127,7 +127,7 @@ Do not report API, E2E, or broader executable validation as passed in this artif
 
 - Trigger: API/E2E validation found a stale same-route/same-team target-node recovery bug where a finalized coordinator output record was marked `PUBLISHED` after the route was rebound to `targetNodeName: worker` on the same `teamRunId`.
 - Fix: `ChannelBindingService.isRouteBoundToTarget()` now validates against the current exact route binding and compares `ChannelRunOutputTarget` identity directly. Explicit current team `targetNodeName` must match the output record's `entryMemberName`; stale mismatches return `BINDING_NOT_FOUND` to `ReplyCallbackService`, and the runtime marks the output record `UNBOUND` without callback outbox enqueue.
-- Local fix artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/in-progress/external-channel-open-session-delivery/implementation-local-fix-1.md`
+- Local fix artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/done/external-channel-open-session-delivery/implementation-local-fix-1.md`
 - Post-fix checks:
   - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed.
   - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/external-channel/runtime/channel-run-output-delivery-runtime.test.ts --passWithNoTests` — passed, 1 file / 4 tests.
@@ -146,7 +146,7 @@ Do not report API, E2E, or broader executable validation as passed in this artif
 - Durable validation added/updated:
   - `autobyteus-server-ts/tests/unit/external-channel/runtime/channel-run-output-delivery-runtime.test.ts` now covers stale explicit worker output after rebinding to the default/null team target, expecting `UNBOUND` and no callback outbox enqueue.
   - `autobyteus-server-ts/tests/unit/external-channel/services/channel-binding-service.test.ts` now covers explicit current team target matching, default/null current target matching, and member-run-id-only explicit matching.
-- Local fix artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/in-progress/external-channel-open-session-delivery/implementation-local-fix-2.md`
+- Local fix artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/done/external-channel-open-session-delivery/implementation-local-fix-2.md`
 - Post-fix checks:
   - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed.
   - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/external-channel/runtime/channel-run-output-delivery-runtime.test.ts tests/unit/external-channel/services/channel-binding-service.test.ts tests/unit/external-channel/services/reply-callback-service.test.ts --passWithNoTests` — passed, 3 files / 22 tests.

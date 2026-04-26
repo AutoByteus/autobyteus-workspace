@@ -1,20 +1,20 @@
 # Review Report — external-channel-open-session-delivery
 
-Canonical review artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/in-progress/external-channel-open-session-delivery/review-report.md`
+Canonical review artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/done/external-channel-open-session-delivery/review-report.md`
 
 ## Review Round Meta
 
 - Review Entry Point: `Post-Validation Durable-Validation Re-Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/in-progress/external-channel-open-session-delivery/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/done/external-channel-open-session-delivery/requirements.md`
 - Current Review Round: 5
 - Trigger: `api_e2e_engineer` fixed `CR-004-001` in repository-resident durable E2E validation and returned for mandatory re-review before delivery resumes.
 - Prior Review Round Reviewed: 4
 - Latest Authoritative Round: 5
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/in-progress/external-channel-open-session-delivery/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/in-progress/external-channel-open-session-delivery/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/in-progress/external-channel-open-session-delivery/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/in-progress/external-channel-open-session-delivery/implementation-handoff.md`
-- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/in-progress/external-channel-open-session-delivery/api-e2e-report.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/done/external-channel-open-session-delivery/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/done/external-channel-open-session-delivery/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/done/external-channel-open-session-delivery/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/done/external-channel-open-session-delivery/implementation-handoff.md`
+- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/done/external-channel-open-session-delivery/api-e2e-report.md`
 - API / E2E Validation Started Yet: `Yes`
 - Repository-Resident Durable Validation Added Or Updated After Prior Review: `Yes`
 
@@ -33,7 +33,7 @@ Canonical review artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/ext
 Narrow post-validation re-review scope requested by API/E2E:
 
 - Updated durable validation: `autobyteus-server-ts/tests/e2e/external-channel/external-channel-team-open-delivery.e2e.test.ts`
-- Updated validation report: `tickets/in-progress/external-channel-open-session-delivery/api-e2e-report.md`
+- Updated validation report: `tickets/done/external-channel-open-session-delivery/api-e2e-report.md`
 - Directly related validation-code concerns and execution evidence.
 
 No implementation source change was re-reviewed in this round beyond confirming that the durable E2E still exercises the intended production boundaries.
@@ -52,7 +52,7 @@ No implementation source change was re-reviewed in this round beyond confirming 
 - `git diff --check` — passed.
 - Direct trailing-whitespace check on:
   - `autobyteus-server-ts/tests/e2e/external-channel/external-channel-team-open-delivery.e2e.test.ts` — passed.
-  - `tickets/in-progress/external-channel-open-session-delivery/api-e2e-report.md` — passed.
+  - `tickets/done/external-channel-open-session-delivery/api-e2e-report.md` — passed.
 
 ## Source File Size And Structure Audit (If Applicable)
 

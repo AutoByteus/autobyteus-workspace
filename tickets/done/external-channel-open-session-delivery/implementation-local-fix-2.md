@@ -4,7 +4,7 @@
 
 Code review round 2 routed a bounded `Local Fix` back to implementation.
 
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/in-progress/external-channel-open-session-delivery/review-report.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-open-session-delivery/tickets/done/external-channel-open-session-delivery/review-report.md`
 - Finding: `CR-002-001` — same-team stale target validation still accepted stale explicit-member output after the same route was rebound to the default/null team target on the same `teamRunId`.
 - Required behavior: a recovered explicit worker/coordinator output must be compared against the current default team entry/coordinator identity; it must not publish merely because the route is still bound to the same `teamRunId`.
 
