@@ -48,6 +48,17 @@ There is no longer a bundle-level `runtimeTarget`. Instead, bundle-owned agents 
 
 The platform does not install app dependencies or run app builds at import/start time. Imported application backends must ship the needed `backend/dist/**` artifacts inside the bundle.
 
+## External Authoring Flow
+
+New external custom applications should use the repo-level
+[`custom application development guide`](../../../docs/custom-application-development.md)
+and the `@autobyteus/application-devkit` CLI instead of copying the older
+repo-local sample layout. That flow keeps editable source under `src/**` and
+generates the importable package under `dist/importable-package/applications/<application-id>/`.
+The generated package still uses this module's production bundle contract:
+`application.json`, runtime `ui/` assets, and runtime `backend/` bundle files
+inside each `applications/<application-id>/` package root.
+
 ## Current Authoring Samples
 
 The current in-repo teaching/sample applications live only under the shared repo-root `applications/` container:
@@ -127,3 +138,4 @@ These are authoring/sample roots, not current shipped built-ins. Future built-in
 - `../../../autobyteus-application-sdk-contracts/README.md`
 - `../../../autobyteus-application-frontend-sdk/README.md`
 - `../../../autobyteus-application-backend-sdk/README.md`
+- `../../../docs/custom-application-development.md`

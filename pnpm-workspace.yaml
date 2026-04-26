@@ -6,4 +6,5 @@ packages:
   - "autobyteus-application-sdk-contracts"
   - "autobyteus-application-backend-sdk"
   - "autobyteus-application-frontend-sdk"
+  - "autobyteus-application-devkit"
   - "applications/*"
