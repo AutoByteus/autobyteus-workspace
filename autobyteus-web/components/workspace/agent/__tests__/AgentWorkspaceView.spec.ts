@@ -166,6 +166,44 @@ describe('AgentWorkspaceView', () => {
     expect(workspaceCenterViewStoreMock.showConfig).toHaveBeenCalledTimes(1);
   });
 
+  it('seeds a new agent config from the selected run without sharing nested llmConfig', async () => {
+    state.activeRun = buildAgentContext({
+      config: {
+        agentDefinitionId: 'agent-def-1',
+        agentDefinitionName: 'Story Agent',
+        agentAvatarUrl: 'https://example.com/from-context.png',
+        llmModelIdentifier: 'gpt-5.4',
+        runtimeKind: 'codex_app_server',
+        workspaceId: 'ws-1',
+        autoExecuteTools: true,
+        skillAccessMode: 'GLOBAL_DISCOVERY',
+        isLocked: true,
+        llmConfig: {
+          reasoning_effort: 'xhigh',
+          nested: { values: ['xhigh'] },
+        },
+      },
+    });
+
+    const sourceConfig = state.activeRun.config;
+    const wrapper = mountComponent();
+    await wrapper.get('[data-test="new-agent"]').trigger('click');
+
+    const seed = runConfigStoreMock.setAgentConfig.mock.calls[0]?.[0];
+    expect(seed).toEqual(expect.objectContaining({
+      isLocked: false,
+      llmConfig: {
+        reasoning_effort: 'xhigh',
+        nested: { values: ['xhigh'] },
+      },
+    }));
+
+    (seed.llmConfig.nested.values as string[]).push('mutated');
+    expect(sourceConfig.llmConfig.nested.values).toEqual(['xhigh']);
+    expect(teamRunConfigStoreMock.clearConfig).toHaveBeenCalledTimes(1);
+    expect(selectionStoreMock.clearSelection).toHaveBeenCalledTimes(1);
+  });
+
   it('passes compaction status through to AgentEventMonitor', () => {
     const wrapper = mountComponent();
     const monitor = wrapper.findComponent({ name: 'AgentEventMonitor' });

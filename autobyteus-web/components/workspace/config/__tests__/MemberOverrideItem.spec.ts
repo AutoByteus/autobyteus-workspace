@@ -236,6 +236,36 @@ describe('MemberOverrideItem', () => {
     ])
   })
 
+  it('clears stale explicit member llmConfig when the explicit model changes', async () => {
+    const wrapper = mount(MemberOverrideItem, {
+      props: {
+        ...defaultProps,
+        globalRuntimeKind: 'codex_app_server',
+        globalLlmConfig: { reasoning_effort: 'high' },
+        override: {
+          agentDefinitionId: 'agent-reviewer',
+          llmModelIdentifier: 'gpt-5.4',
+          llmConfig: { reasoning_effort: 'medium' },
+        },
+      },
+    })
+
+    await nextTick()
+    await nextTick()
+
+    wrapper.findComponent({ name: 'SearchableGroupedSelect' }).vm.$emit('update:modelValue', 'gpt-5.3-codex')
+    await nextTick()
+
+    const events = wrapper.emitted('update:override') || []
+    expect(events.at(-1)).toEqual([
+      'Reviewer',
+      {
+        agentDefinitionId: 'agent-reviewer',
+        llmModelIdentifier: 'gpt-5.3-codex',
+      },
+    ])
+  })
+
   it('drops an incompatible explicit model when the runtime override changes', async () => {
     const wrapper = mount(MemberOverrideItem, {
       props: {
