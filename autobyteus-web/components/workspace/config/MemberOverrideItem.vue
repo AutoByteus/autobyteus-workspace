@@ -197,16 +197,6 @@ const autoExecuteLabel = computed(() => {
     : $t('workspace.components.workspace.config.MemberOverrideItem.auto_execute_off')
 })
 
-const resolveRetainedExplicitConfig = (
-  nextExplicitModelIdentifier: string | undefined,
-): Record<string, unknown> | null | undefined => {
-  if (!nextExplicitModelIdentifier || !hasExplicitMemberLlmConfigOverride(props.override)) {
-    return undefined
-  }
-
-  return props.override?.llmConfig ?? null
-}
-
 const buildOverride = (input: {
   runtimeKind?: string
   llmModelIdentifier?: string
@@ -265,6 +255,7 @@ watch(
 const handleRuntimeChange = async (value: string) => {
   if (props.disabled) return
   const nextRuntimeKind = value || undefined
+  const runtimeChanged = nextRuntimeKind !== (props.override?.runtimeKind || undefined)
   const effectiveNextRuntimeKind = nextRuntimeKind || props.globalRuntimeKind
   const nextRows = await loadRuntimeProviderGroupsForSelection(effectiveNextRuntimeKind)
   const nextModelIdentifiers = nextRows.flatMap((row) => row.models.map((model) => model.modelIdentifier))
@@ -279,7 +270,10 @@ const handleRuntimeChange = async (value: string) => {
       runtimeKind: nextRuntimeKind,
       llmModelIdentifier: retainedExplicitModel,
       autoExecuteTools: props.override?.autoExecuteTools,
-      llmConfig: resolveRetainedExplicitConfig(retainedExplicitModel),
+      llmConfig:
+        !runtimeChanged && retainedExplicitModel && hasExplicitMemberLlmConfigOverride(props.override)
+          ? (props.override?.llmConfig ?? null)
+          : undefined,
     }),
   )
 }
@@ -304,11 +298,7 @@ const emitOverrideWithConfig = (nextConfig: Record<string, unknown> | null | und
 
 const handleModelChange = (value: string) => {
   if (props.disabled) return
-  const canKeepExplicitConfig = Boolean(
-    value
-      ? hasExplicitMemberLlmConfigOverride(props.override)
-      : hasExplicitMemberLlmConfigOverride(props.override) && inheritedGlobalModelAvailable.value,
-  )
+  const modelChanged = value !== explicitModelIdentifier.value
 
   emit(
     'update:override',
@@ -317,7 +307,10 @@ const handleModelChange = (value: string) => {
       runtimeKind: props.override?.runtimeKind,
       llmModelIdentifier: value || undefined,
       autoExecuteTools: props.override?.autoExecuteTools,
-      llmConfig: canKeepExplicitConfig ? (props.override?.llmConfig ?? null) : undefined,
+      llmConfig:
+        !modelChanged && hasExplicitMemberLlmConfigOverride(props.override)
+          ? (props.override?.llmConfig ?? null)
+          : undefined,
     }),
   )
 }

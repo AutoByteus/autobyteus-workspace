@@ -83,6 +83,11 @@ That surface owns:
 
 When the runtime override changes, the row clears incompatible explicit model/config state instead of leaking stale member-only configuration into the next launch.
 
+When the team-level runtime or model changes, `TeamRunConfigForm.vue` also clears
+member `llmConfig` values that were only meaningful because the member inherited
+the previous team-level runtime/model. Explicit member runtime/model overrides
+and unrelated member fields such as auto-execute are preserved.
+
 When `RunConfigPanel.vue` is showing a selected existing team run rather than a
 new team launch buffer, `TeamRunConfigForm.vue` receives read-only mode. In that
 mode the team-level runtime/model/workspace/auto-approve/skill controls and all
@@ -97,6 +102,13 @@ historical settings, recover missing `llmConfig`, materialize runtime history, o
 infer current defaults. If backend metadata has no recorded model-thinking
 config, the frontend can show the localized `Not recorded for this historical
 run` state to make the absence explicit.
+
+The workspace header add/new-run action can use a selected existing team run as
+the template for a new editable team launch. That draft is a deep-cloned copy of
+the selected team's config, including team-level `llmConfig` and member override
+`llmConfig`, so editing the draft cannot mutate the selected historical/live run.
+Runtime model catalog loading must not clear copied thinking/reasoning fields;
+only explicit user runtime/model changes own stale config cleanup.
 
 ## Mixed-Runtime Launch Readiness
 

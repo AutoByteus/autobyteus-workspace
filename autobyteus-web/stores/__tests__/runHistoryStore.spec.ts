@@ -974,6 +974,120 @@ describe('runHistoryStore', () => {
     expect(agentContextsStoreMock.createRunFromTemplate).not.toHaveBeenCalled();
   });
 
+  it('prefers the selected same-definition context and deep-clones its llmConfig when creating a draft run', async () => {
+    workspaceStoreMock.allWorkspaces = [
+      { workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'a' },
+    ];
+    workspaceStoreMock.workspacesFetched = true;
+    selectionStoreMock.selectedType = 'agent';
+    selectionStoreMock.selectedRunId = 'run-selected';
+
+    agentContextsStoreMock.runs.set('run-newer', {
+      config: {
+        agentDefinitionId: 'agent-def-1',
+        agentDefinitionName: 'SuperAgent',
+        workspaceId: 'ws-1',
+        llmModelIdentifier: 'model-newer',
+        runtimeKind: 'codex_app_server',
+        autoExecuteTools: false,
+        skillAccessMode: 'PRELOADED_ONLY',
+        isLocked: true,
+        llmConfig: { reasoning_effort: 'low' },
+      },
+      state: {
+        conversation: {
+          updatedAt: '2026-01-02T00:00:00.000Z',
+        },
+      },
+    });
+    agentContextsStoreMock.runs.set('run-selected', {
+      config: {
+        agentDefinitionId: 'agent-def-1',
+        agentDefinitionName: 'SuperAgent',
+        workspaceId: 'ws-1',
+        llmModelIdentifier: 'model-selected',
+        runtimeKind: 'codex_app_server',
+        autoExecuteTools: true,
+        skillAccessMode: 'GLOBAL_DISCOVERY',
+        isLocked: true,
+        llmConfig: {
+          reasoning_effort: 'xhigh',
+          nested: { values: ['xhigh'] },
+        },
+      },
+      state: {
+        conversation: {
+          updatedAt: '2026-01-01T00:00:00.000Z',
+        },
+      },
+    });
+
+    const store = useRunHistoryStore();
+    await store.createDraftRun({
+      workspaceRootPath: '/ws/a',
+      agentDefinitionId: 'agent-def-1',
+    });
+
+    const seed = agentRunConfigStoreMock.setAgentConfig.mock.calls.at(-1)?.[0];
+    expect(seed).toEqual(expect.objectContaining({
+      llmModelIdentifier: 'model-selected',
+      autoExecuteTools: true,
+      skillAccessMode: 'GLOBAL_DISCOVERY',
+      isLocked: false,
+      llmConfig: {
+        reasoning_effort: 'xhigh',
+        nested: { values: ['xhigh'] },
+      },
+    }));
+
+    (seed.llmConfig.nested.values as string[]).push('mutated');
+    expect(
+      agentContextsStoreMock.runs.get('run-selected')?.config.llmConfig.nested.values,
+    ).toEqual(['xhigh']);
+  });
+
+  it('clears copied llmConfig when model resolution changes the source model for a draft run', async () => {
+    workspaceStoreMock.allWorkspaces = [
+      { workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'a' },
+    ];
+    workspaceStoreMock.workspacesFetched = true;
+    selectionStoreMock.selectedType = 'agent';
+    selectionStoreMock.selectedRunId = 'run-selected';
+    llmProviderConfigStoreMock.models = ['model-default'];
+
+    agentContextsStoreMock.runs.set('run-selected', {
+      config: {
+        agentDefinitionId: 'agent-def-1',
+        agentDefinitionName: 'SuperAgent',
+        workspaceId: 'ws-1',
+        llmModelIdentifier: '',
+        runtimeKind: 'codex_app_server',
+        autoExecuteTools: false,
+        skillAccessMode: 'PRELOADED_ONLY',
+        isLocked: true,
+        llmConfig: { reasoning_effort: 'xhigh' },
+      },
+      state: {
+        conversation: {
+          updatedAt: '2026-01-01T00:00:00.000Z',
+        },
+      },
+    });
+
+    const store = useRunHistoryStore();
+    await store.createDraftRun({
+      workspaceRootPath: '/ws/a',
+      agentDefinitionId: 'agent-def-1',
+    });
+
+    expect(agentRunConfigStoreMock.setAgentConfig).toHaveBeenCalledWith(
+      expect.objectContaining({
+        llmModelIdentifier: 'model-default',
+        llmConfig: null,
+      }),
+    );
+  });
+
   it('reuses an existing workspace id when local cache has matching root path', async () => {
     workspaceStoreMock.workspacesFetched = true;
     workspaceStoreMock.allWorkspaces = [

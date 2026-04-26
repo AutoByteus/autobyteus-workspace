@@ -4,6 +4,7 @@ import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { useTeamWorkspaceViewStore, type TeamWorkspaceViewMode } from '~/stores/teamWorkspaceViewStore';
+import { buildEditableTeamRunSeed } from '~/composables/useDefinitionLaunchDefaults';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { TeamRunConfig } from '~/types/agent/TeamRunConfig';
 import { AgentContext } from '~/types/agent/AgentContext';
@@ -138,8 +139,7 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
         members.set(memberRecord.memberRouteKey, memberContext);
       }
 
-      const configCopy = JSON.parse(JSON.stringify(template)) as TeamRunConfig;
-      configCopy.isLocked = false;
+      const configCopy = buildEditableTeamRunSeed(template) as TeamRunConfig;
 
       const coordinatorMemberRouteKey = normalizeMemberRouteKey(teamDef.coordinatorMemberName);
       let focusedMemberName = coordinatorMemberRouteKey;
