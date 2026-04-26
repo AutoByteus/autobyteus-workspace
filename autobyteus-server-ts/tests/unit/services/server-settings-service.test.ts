@@ -154,17 +154,21 @@ describe("ServerSettingsService", () => {
     expect(mockConfig.set).toHaveBeenCalledWith("CUSTOM_SETTING", "next");
   });
 
-  it("trims and saves valid predefined Codex sandbox values", () => {
+  it.each([
+    "read-only",
+    "workspace-write",
+    "danger-full-access",
+  ])("trims and saves valid predefined Codex sandbox value %s", (mode) => {
     mockConfig.set.mockImplementation(() => undefined);
 
     const service = new ServerSettingsService();
-    const [ok, message] = service.updateSetting("CODEX_APP_SERVER_SANDBOX", " danger-full-access ");
+    const [ok, message] = service.updateSetting("CODEX_APP_SERVER_SANDBOX", ` ${mode} `);
 
     expect(ok).toBe(true);
     expect(message).toMatch(/updated successfully/i);
     expect(mockConfig.set).toHaveBeenCalledWith(
       "CODEX_APP_SERVER_SANDBOX",
-      "danger-full-access",
+      mode,
     );
   });
 

@@ -29,6 +29,23 @@ Team runs:
 4. Codex member bootstrap now consumes a runtime-neutral `MemberTeamContext` for teammate instructions, allowed recipients, and `send_message_to` delivery wiring.
 5. Team websocket streaming preserves the member domain identity while forwarding member runtime events regardless of whether the governing team backend is single-runtime Codex or mixed.
 
+## Sandbox Mode Configuration
+
+Codex filesystem sandbox behavior is controlled by the Codex-specific server setting
+`CODEX_APP_SERVER_SANDBOX`.
+
+- Supported canonical values are `read-only`, `workspace-write`, and `danger-full-access`.
+- `workspace-write` is the default when the setting is absent or invalid.
+- `danger-full-access` disables filesystem sandboxing and should only be used for trusted tasks and environments.
+- The Settings page exposes the common user decision through **Server Settings -> Basics -> Codex full access**: toggle on saves `danger-full-access`, and toggle off saves `workspace-write`. The Advanced Settings raw table also treats `CODEX_APP_SERVER_SANDBOX` as a predefined editable, non-deletable setting and rejects values outside the canonical set.
+- Saved changes flow through the existing server-settings persistence path and are read by future/new Codex thread bootstrap or restore paths. Already-active Codex sessions are not mutated in place.
+- `autoExecuteTools` remains separate: it controls approval behavior, not filesystem sandbox mode.
+
+Server-side semantics are owned by
+`src/runtime-management/codex/codex-sandbox-mode-setting.ts` so the settings
+service, create-session bootstrap, and restore-session history path share one
+key/default/value-list/normalization source.
+
 ## Key Backend Components
 
 Agent runtime:
@@ -39,6 +56,7 @@ Agent runtime:
 
 Thread/runtime bridge:
 
+- `src/runtime-management/codex/codex-sandbox-mode-setting.ts`
 - `src/agent-execution/backends/codex/thread/codex-thread.ts`
 - `src/agent-execution/backends/codex/thread/codex-client-thread-router.ts`
 - `src/runtime-management/codex/client/codex-app-server-client.ts`

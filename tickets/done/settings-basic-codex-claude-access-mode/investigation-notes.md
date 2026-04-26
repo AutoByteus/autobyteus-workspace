@@ -3,11 +3,11 @@
 ## Investigation Status
 
 - Bootstrap Status: Complete; dedicated worktree and draft artifacts created.
-- Current Status: Requirements are user-approved and design-ready for Codex-only scope.
+- Current Status: Requirements are user-approved and design-ready for Codex-only scope, with latest user update simplifying the Basic UI to a single full-access toggle.
 - Investigation Goal: Determine how Codex and Claude access/sandbox settings are currently modeled, surfaced, and persisted, then define the approved Codex-only Basic Settings change without inventing unsupported Claude controls.
 - Scope Classification (`Small`/`Medium`/`Large`): Medium
 - Scope Classification Rationale: The visible request is a settings UI improvement, but correct implementation crosses frontend settings UI, server settings metadata/validation, and Codex runtime normalization.
-- Scope Summary: Add a discoverable Basic Settings card for Codex sandbox mode, backed by validated predefined server setting metadata and the existing Codex runtime env setting. Leave Claude unchanged.
+- Scope Summary: Add a discoverable Basic Settings card with a single Codex full-access toggle, backed by validated predefined server setting metadata and the existing Codex runtime env setting. Toggle on saves `danger-full-access`; toggle off saves `workspace-write`. Leave Claude unchanged.
 - Primary Questions Resolved:
   - Where does Server Settings -> Basics define its blocks/cards?
   - Why does `CODEX_APP_SERVER_SANDBOX` show as `Custom user-defined setting`?
@@ -19,13 +19,13 @@
 
 User supplied a screenshot of an Advanced Settings row for `CODEX_APP_SERVER_SANDBOX` with value `danger-full-access` and generic description `Custom user-defined setting`. User described the UX problem: end users cannot reasonably know which advanced key to use. User initially suggested adding one extra Basic Settings block/toggle for Codex and maybe Claude, then clarified after analysis that the current scope should be Codex only because Claude permission/sandbox semantics are unclear.
 
-Final user-approved direction: **only add Codex for the current scope; keep Claude unchanged**.
+Final user-approved direction: **only add Codex for the current scope; keep Claude unchanged**. Latest simplification: expose only one Basic toggle for enabling Codex `danger-full-access`; users do not need to understand or choose the other modes in Basics.
 
 ## Environment Discovery / Bootstrap Context
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-basic-codex-claude-access-mode`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-basic-codex-claude-access-mode/tickets/in-progress/settings-basic-codex-claude-access-mode`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-basic-codex-claude-access-mode/tickets/done/settings-basic-codex-claude-access-mode`
 - Current Branch: `codex/settings-basic-codex-claude-access-mode`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/settings-basic-codex-claude-access-mode`
 - Bootstrap Base Branch: `origin/personal`
@@ -63,6 +63,7 @@ Final user-approved direction: **only add Codex for the current scope; keep Clau
 | 2026-04-26 | Web | Anthropic Agent SDK permissions docs: `https://platform.claude.com/docs/en/agent-sdk/permissions` | Verify what Claude permission mode semantically means | Official docs describe permission modes as control over tool-use permission behavior. This is not equivalent to Codex filesystem sandbox mode. | No; used only to decide Claude out of current scope. |
 | 2026-04-26 | Web | Claude Code settings docs: `https://code.claude.com/docs/en/settings` and sandboxing docs: `https://code.claude.com/docs/en/sandboxing` | Check whether Claude has separate sandbox concepts | Claude has sandbox settings separate from permission defaults. The app does not currently expose a clear Claude sandbox setting. | No; separate future requirement if product wants Claude sandbox UI. |
 | 2026-04-26 | Command | `sed`/`rg` reads of current artifacts and relevant files during final Codex-only scope update | Refresh current code/artifact state before design | Confirmed only ticket artifacts are currently untracked; no source edits made by solution design stage. | No |
+| 2026-04-26 | User clarification | “danger-full-access just one is enough… one toggle to enable danger-full-access would be enough” | Resolve Basic UI complexity | User explicitly prefers a single full-access toggle instead of exposing all Codex sandbox modes in Basics. | Yes: revise requirements/design and re-notify architecture reviewer. |
 
 ## Current Behavior / Current Flow
 
@@ -78,6 +79,10 @@ Final user-approved direction: **only add Codex for the current scope; keep Clau
   2. Codex bootstrap/history code calls `normalizeSandboxMode()`.
   3. `normalizeSandboxMode()` reads `process.env.CODEX_APP_SERVER_SANDBOX`, accepts `read-only`, `workspace-write`, or `danger-full-access`, and falls back to `workspace-write` on missing/invalid value.
   4. `CodexThreadManager` sends the resolved sandbox value to the Codex app server `thread/start` or `thread/resume` request.
+- Basic UI simplification decision:
+  - Basic Settings should expose only one full-access toggle.
+  - Checked means `danger-full-access`; unchecked means the default `workspace-write`.
+  - `read-only` remains a runtime-valid/Advanced/API value but is not part of the Basic user journey.
 - Ownership or boundary observations:
   - Existing settings persistence owner is `ServerSettingsService` + `AppConfig`; frontend should not bypass it.
   - Basic user-friendly cards are presentation/adaptation owners that map friendly inputs to server setting writes through `serverSettingsStore`.
@@ -90,7 +95,7 @@ Final user-approved direction: **only add Codex for the current scope; keep Clau
 | Path / Component | Current Responsibility | Finding / Observation | Design / Ownership Implication |
 | --- | --- | --- | --- |
 | `autobyteus-web/components/settings/ServerSettingsManager.vue` | Server Settings page Basics/Advanced composition | Basics card layout already exists; Advanced raw table shows all server settings. | Add a new Codex card to Basics; keep Advanced raw table unchanged except through better backend metadata. |
-| `autobyteus-web/components/settings/CompactionConfigCard.vue` | Friendly card for env-backed runtime compaction settings | Saves canonical values through `serverSettingsStore.updateServerSetting`. | Use as the pattern for a new Codex sandbox card. |
+| `autobyteus-web/components/settings/CompactionConfigCard.vue` | Friendly card for env-backed runtime compaction settings | Saves canonical values through `serverSettingsStore.updateServerSetting`. | Use as the pattern for a new Codex full-access toggle card. |
 | `autobyteus-web/stores/serverSettings.ts` | Frontend authoritative server settings fetch/update/reload store | Existing `updateServerSetting` handles persistence and reload. | Reuse this store; no new frontend persistence path. |
 | `autobyteus-web/localization/messages/en/settings.ts`, `autobyteus-web/localization/messages/zh-CN/settings.ts`, generated catalogs | Settings UI copy catalogs | Compaction card uses localization messages; generated catalogs are committed. | Add localized copy for the new Codex card if the component follows current localized-card pattern. |
 | `autobyteus-server-ts/src/services/server-settings-service.ts` | Server settings list/update/delete metadata owner | Codex sandbox key is not predefined; unknown rows use generic custom description; no value validation. | Extend this owner to register and validate `CODEX_APP_SERVER_SANDBOX`. |
@@ -126,7 +131,7 @@ Final user-approved direction: **only add Codex for the current scope; keep Clau
 
 1. `autoExecuteTools` is already used as an auto-approval intent. It is separate from Codex sandbox mode and must remain unchanged.
 2. Codex already has runtime support for the requested sandbox setting but lacks product-facing Basic UI and predefined server setting metadata/validation.
-3. `CODEX_APP_SERVER_SANDBOX` valid canonical values are `read-only`, `workspace-write`, and `danger-full-access`; default is `workspace-write`.
+3. `CODEX_APP_SERVER_SANDBOX` valid canonical values are `read-only`, `workspace-write`, and `danger-full-access`; default is `workspace-write`. For Basic UI, product now wants only the full-access decision exposed: on = `danger-full-access`, off = `workspace-write`.
 4. Persisting through current settings APIs updates `process.env`, so future Codex sessions can pick up changes without server restart.
 5. Existing Basic cards provide a clear implementation pattern: local user-friendly state, canonical value serialization, `serverSettingsStore.updateServerSetting`, and refresh.
 6. Claude permission mode is not the same as Codex sandboxing and is not a target for this ticket after user clarification.
@@ -142,9 +147,9 @@ Final user-approved direction: **only add Codex for the current scope; keep Clau
 ## Open Unknowns / Risks
 
 - Product copy for `danger-full-access` must be direct enough to warn that it disables filesystem sandboxing.
-- If product later asks for a binary toggle instead of a three-mode selector, a follow-up requirement/design change will be needed.
+- If product later asks to expose `read-only`, a follow-up requirement/design change will be needed because the Basic UI is intentionally simplified.
 - Future runtime-decoupling work may have an alternate location for Codex sandbox settings; implementation should reconcile before final delivery if such changes are present.
 
 ## Notes For Architect Reviewer
 
-Architecture review should focus on the Codex sandbox-mode ownership boundary. The target should have one server-side source for Codex sandbox key/default/valid-value validation used by both server settings metadata and Codex runtime normalization, while the frontend card remains a thin friendly adapter over the existing server settings store. Avoid a design where the UI hardcodes accepted values that the backend does not validate, and avoid adding Claude controls in this approved Codex-only scope.
+Architecture review should focus on the Codex sandbox-mode ownership boundary. The target should have one server-side source for Codex sandbox key/default/valid-value validation used by both server settings metadata and Codex runtime normalization, while the frontend card remains a thin friendly adapter over the existing server settings store. The Basic card should intentionally be a single full-access toggle, not a full mode selector. Avoid a design where the UI hardcodes values that the backend cannot validate, and avoid adding Claude controls in this approved Codex-only scope.

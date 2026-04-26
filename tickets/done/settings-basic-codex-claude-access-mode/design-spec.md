@@ -9,7 +9,9 @@ Server Settings currently has two visible surfaces in `autobyteus-web/components
 
 `CODEX_APP_SERVER_SANDBOX` is a real Codex runtime setting, but it is not registered in `ServerSettingsService`. When present in config data, it is therefore returned with `Custom user-defined setting`, editable/deletable custom metadata, and no value validation. That is why the user sees a low-level key in Advanced Settings instead of a guided Basic control.
 
-The Codex runtime already consumes the setting in `autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts` through `normalizeSandboxMode()`. Valid values are `read-only`, `workspace-write`, and `danger-full-access`; the current default is `workspace-write`. The history/resume path also relies on `normalizeSandboxMode()`, and `CodexThreadManager` passes the resolved sandbox into `thread/start` and `thread/resume` requests.
+The Codex runtime already consumes the setting in `autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts` through `normalizeSandboxMode()`. Runtime-valid values are `read-only`, `workspace-write`, and `danger-full-access`; the current default is `workspace-write`. The history/resume path also relies on `normalizeSandboxMode()`, and `CodexThreadManager` passes the resolved sandbox into `thread/start` and `thread/resume` requests.
+
+The latest product direction is to avoid exposing all runtime modes in Basics because most users only understand the practical decision: whether Codex should run with full filesystem access. Therefore the Basic UI should be a single full-access toggle. Toggle on maps to `danger-full-access`; toggle off maps to the default `workspace-write`. `read-only` remains runtime-valid for Advanced/API use but is intentionally not part of the Basic user journey.
 
 The main fragmentation problem is that Codex sandbox semantics are local constants inside the runtime bootstrapper while server settings metadata has no predefined descriptor/validator for the same key. A UI-only fix would improve discoverability but still allow invalid values through Advanced Settings. A server-only fix would improve metadata but not solve the end-user discoverability problem. The target must align both without introducing a parallel persistence path.
 
@@ -17,12 +19,12 @@ Claude remains out of scope by user decision. Current Claude code maps `autoExec
 
 ## Intended Change
 
-Add a Codex-only Basic Settings card for `Codex Sandbox Mode` that:
+Add a Codex-only Basic Settings card for `Codex Full Access` that:
 
-1. Displays the three supported Codex sandbox modes with friendly labels and descriptions.
-2. Initializes from the server settings store's valid persisted/effective value, or `workspace-write` when absent/invalid.
-3. Saves the canonical value through `serverSettingsStore.updateServerSetting('CODEX_APP_SERVER_SANDBOX', value)`.
-4. Communicates that changes apply to new/future Codex sessions.
+1. Displays one toggle for enabling Codex full filesystem access.
+2. Initializes checked only when the server settings store's persisted/effective value is `danger-full-access`; otherwise initializes unchecked.
+3. Saves `danger-full-access` when toggled on and `workspace-write` when toggled off through `serverSettingsStore.updateServerSetting('CODEX_APP_SERVER_SANDBOX', value)`.
+4. Communicates that changes apply to new/future Codex sessions and that full access disables filesystem sandboxing.
 
 On the server side:
 
@@ -39,7 +41,8 @@ No Claude selector, Claude resolver change, or Claude sandbox setting is part of
 - `Module`: an optional intermediate grouping inside a subsystem when the codebase benefits from it. Do not use `module` as a synonym for one file or as the default ownership term.
 - `Folder` / `directory`: a physical grouping used to organize files and any optional module groupings.
 - `File`: one concrete source file and the primary unit where one concrete concern should land.
-- `Codex sandbox mode`: the canonical Codex runtime filesystem sandbox setting sent to the Codex app server; values are `read-only`, `workspace-write`, and `danger-full-access`.
+- `Codex sandbox mode`: the canonical Codex runtime filesystem sandbox setting sent to the Codex app server; runtime-valid values are `read-only`, `workspace-write`, and `danger-full-access`.
+- `Codex full access`: the Basic UI's simplified on/off abstraction over Codex sandbox mode. On = `danger-full-access`; off = `workspace-write`.
 - `Auto-approve Tools`: existing app-level tool approval shortcut. It maps to Codex approval policy but is not sandbox mode.
 
 ## Design Reading Order
@@ -55,21 +58,21 @@ Read and write this design from abstract to concrete:
 
 - Policy: `No backward compatibility; remove legacy code paths.`
 - Required action: remove/decommission duplicated Codex sandbox constants from the bootstrapper once the shared Codex sandbox setting owner exists.
-- No compatibility wrapper, alias path, or parallel setting key is introduced. The only supported key remains `CODEX_APP_SERVER_SANDBOX` and the Basic UI saves canonical values only.
+- No compatibility wrapper, alias path, or parallel setting key is introduced. The only supported key remains `CODEX_APP_SERVER_SANDBOX`. The Basic UI saves canonical values only: `danger-full-access` when on and `workspace-write` when off.
 
 ## Data-Flow Spine Inventory
 
 | Spine ID | Scope (`Primary End-to-End`/`Return-Event`/`Bounded Local`) | Start | End | Governing Owner | Why It Matters |
 | --- | --- | --- | --- | --- | --- |
-| DS-001 | Primary End-to-End | User opens Server Settings -> Basics | Codex Sandbox Mode card renders selected canonical mode | `ServerSettingsManager` page composition plus `CodexSandboxModeCard` presentation owner | Solves the discoverability problem in the Basic area. |
-| DS-002 | Primary End-to-End | User saves Codex sandbox mode in Basics | `AppConfig` persists/updates `process.env.CODEX_APP_SERVER_SANDBOX` | `ServerSettingsService` validation/persistence boundary | Ensures friendly UI uses the existing authoritative settings write path. |
+| DS-001 | Primary End-to-End | User opens Server Settings -> Basics | Codex Full Access card renders one checked/unchecked toggle | `ServerSettingsManager` page composition plus `CodexFullAccessCard` presentation owner | Solves the discoverability problem while keeping the Basic journey simple. |
+| DS-002 | Primary End-to-End | User saves Codex full-access toggle in Basics | `AppConfig` persists/updates `process.env.CODEX_APP_SERVER_SANDBOX` with `danger-full-access` or `workspace-write` | `ServerSettingsService` validation/persistence boundary | Ensures friendly UI uses the existing authoritative settings write path. |
 | DS-003 | Primary End-to-End | New/resumed Codex runtime session bootstraps | Codex app server receives resolved `sandbox` value | Codex runtime bootstrap/history owners using shared Codex sandbox setting owner | Ensures saved mode affects future Codex sessions. |
 | DS-004 | Return-Event | Server settings query returns settings | Advanced table shows predefined Codex metadata instead of custom metadata | `ServerSettingsService.getAvailableSettings()` | Ensures raw Advanced view no longer mislabels the Codex setting. |
 
 ## Primary Execution Spine(s)
 
-- DS-001: `User -> ServerSettingsManager Basics -> serverSettingsStore settings state -> CodexSandboxModeCard -> rendered Codex mode options`
-- DS-002: `User -> CodexSandboxModeCard -> serverSettingsStore.updateServerSetting -> GraphQL updateServerSetting -> ServerSettingsService.updateSetting -> AppConfig.set`
+- DS-001: `User -> ServerSettingsManager Basics -> serverSettingsStore settings state -> CodexFullAccessCard -> rendered full-access toggle`
+- DS-002: `User -> CodexFullAccessCard -> serverSettingsStore.updateServerSetting -> GraphQL updateServerSetting -> ServerSettingsService.updateSetting -> AppConfig.set`
 - DS-003: `Codex run create/restore -> CodexThreadBootstrapper or CodexThreadHistoryReader -> Codex sandbox setting resolver -> CodexThreadConfig.sandbox / resume request -> CodexThreadManager -> Codex app server`
 - DS-004: `serverSettingsStore.fetchServerSettings -> GraphQL getServerSettings -> ServerSettingsService.getAvailableSettings -> predefined Codex setting metadata -> Advanced raw table`
 
@@ -77,15 +80,15 @@ Read and write this design from abstract to concrete:
 
 | Spine ID | Short Narrative | Main Domain Subject Nodes | Governing Owner | Key Off-Spine Concerns |
 | --- | --- | --- | --- | --- |
-| DS-001 | The settings page loads server settings through the existing store. The new Codex card reads the current `CODEX_APP_SERVER_SANDBOX` setting from the store and presents a user-friendly selector in Basics. | Settings page, settings store state, Codex card | `ServerSettingsManager` for page composition; `CodexSandboxModeCard` for local presentation state | Localization/copy, option labels, dirty-state protection |
-| DS-002 | When the user saves a selected mode, the card sends the canonical value to the existing server settings store. GraphQL delegates to `ServerSettingsService`, which validates the predefined key and persists through `AppConfig`. | Codex card, settings store, GraphQL resolver, server settings service, app config | `ServerSettingsService` for validation and write authority | Notification/error display, canonical value normalization |
+| DS-001 | The settings page loads server settings through the existing store. The new Codex card reads `CODEX_APP_SERVER_SANDBOX` from the store and presents one full-access toggle in Basics. The toggle is checked only for `danger-full-access`. | Settings page, settings store state, Codex card | `ServerSettingsManager` for page composition; `CodexFullAccessCard` for local presentation state | Localization/copy, warning text, dirty-state protection |
+| DS-002 | When the user saves the toggle, the card sends the canonical on/off value to the existing server settings store. GraphQL delegates to `ServerSettingsService`, which validates the predefined key and persists through `AppConfig`. | Codex card, settings store, GraphQL resolver, server settings service, app config | `ServerSettingsService` for validation and write authority | Notification/error display, canonical on/off mapping |
 | DS-003 | Future Codex bootstraps resolve sandbox mode from the same shared Codex sandbox setting owner. The resolved value enters `CodexThreadConfig` and is sent to the Codex app server. | Codex bootstrap/history, Codex sandbox setting owner, Codex thread config, Codex thread manager | Codex runtime bootstrap/history path, with shared setting owner for valid values/default | Invalid env fallback warning, existing approval-policy mapping remains separate |
 | DS-004 | Advanced Settings asks for all settings. Because the Codex key is predefined, `ServerSettingsService` returns a Codex-specific description and non-deletable metadata instead of custom metadata. | Settings store, server settings service, Advanced table | `ServerSettingsService.getAvailableSettings()` | Sorting, hiding API keys, preserving custom rows |
 
 ## Spine Actors / Main-Line Nodes
 
 - User-facing Settings page (`ServerSettingsManager.vue`)
-- Codex Sandbox Mode card (`CodexSandboxModeCard.vue`)
+- Codex Full Access card (`CodexFullAccessCard.vue`)
 - Frontend server settings store (`serverSettingsStore`)
 - GraphQL server settings query/mutation boundary
 - `ServerSettingsService`
@@ -98,7 +101,7 @@ Read and write this design from abstract to concrete:
 ## Ownership Map
 
 - `ServerSettingsManager.vue` owns page layout/composition and places the new card in Basics. It must not own Codex sandbox mode semantics.
-- `CodexSandboxModeCard.vue` owns user-facing presentation, local selected value, dirty-state behavior, and save action dispatch. It must not persist outside `serverSettingsStore`.
+- `CodexFullAccessCard.vue` owns user-facing presentation, local toggle state, dirty-state behavior, and save action dispatch. It must not persist outside `serverSettingsStore`.
 - `serverSettingsStore` owns frontend settings fetch/update/reload state. It is the only frontend write path.
 - GraphQL resolver is a thin transport boundary over the server settings service.
 - `ServerSettingsService` owns predefined setting metadata, edit/delete policy, and value validation before persistence.
@@ -123,6 +126,7 @@ Read and write this design from abstract to concrete:
 | Local `DEFAULT_SANDBOX_MODE` constant in `codex-thread-bootstrapper.ts` | Duplicates shared setting default | New Codex sandbox setting file | In This Change | Bootstrapper should import default/normalizer. |
 | Local `VALID_SANDBOX_MODES` set in `codex-thread-bootstrapper.ts` | Duplicates server validation list | New Codex sandbox setting file | In This Change | Avoid UI/server/runtime drift. |
 | Any implicit custom-row treatment for `CODEX_APP_SERVER_SANDBOX` | Mislabels a known runtime setting | `ServerSettingsService` predefined descriptor | In This Change | Advanced table will naturally change through metadata. |
+| Basic three-mode selector idea from earlier design draft | User explicitly simplified Basic UI to one full-access toggle | `CodexFullAccessCard` toggle | In This Change | Runtime can still accept `read-only` through Advanced/API. |
 | Claude Basic Settings work from earlier exploratory idea | User explicitly deferred Claude | Separate future requirements/design if needed | In This Change | Do not add hidden Claude stubs. |
 
 ## Return Or Event Spine(s) (If Applicable)
@@ -132,9 +136,12 @@ Read and write this design from abstract to concrete:
 
 ## Bounded Local / Internal Spines (If Applicable)
 
-- Parent owner: `CodexSandboxModeCard.vue`
-  - Chain: `store.settings change -> derive valid current mode/default -> if not dirty, update selected/original -> render mode state`
+- Parent owner: `CodexFullAccessCard.vue`
+  - Chain: `store.settings change -> derive checked state (value === danger-full-access) -> if not dirty, update checked/original -> render toggle state`
   - Why it matters: settings reloads happen after saves and node binding changes; unsaved local edits should not be overwritten unexpectedly.
+- Parent owner: `CodexFullAccessCard.vue`
+  - Chain: `toggle checked state -> canonical value mapper -> danger-full-access or workspace-write -> save through store`
+  - Why it matters: the Basic UI is intentionally simpler than the underlying runtime mode set.
 - Parent owner: `ServerSettingsService.updateSetting`
   - Chain: `lookup predefined descriptor -> normalize/validate value -> reject or AppConfig.set -> return mutation result`
   - Why it matters: invalid predefined values must be blocked at the authoritative server boundary even if Advanced Settings or another client sends them.
@@ -143,11 +150,11 @@ Read and write this design from abstract to concrete:
 
 | Off-Spine Concern | Related Spine ID(s) | Serves Which Owner | Responsibility | Why It Exists | Risk If Misplaced On Main Line |
 | --- | --- | --- | --- | --- | --- |
-| Localization/copy | DS-001, DS-002 | Codex card | User-facing labels, warnings, new-session copy | Keeps presentation text out of runtime/server owners | Runtime files become mixed with UI copy |
+| Localization/copy | DS-001, DS-002 | Codex card | User-facing title, toggle label, full-access warning, new-session copy | Keeps presentation text out of runtime/server owners | Runtime files become mixed with UI copy |
 | Invalid-value fallback logging | DS-003 | Codex runtime bootstrap/history | Warn when env/config value is invalid and fallback is used | Maintains current runtime observability | Server settings service becomes responsible for runtime logging context |
 | Advanced custom setting preservation | DS-004 | Server settings service | Keep unrelated unknown keys editable/deletable custom rows | Prevents regression outside Codex key | Generic custom behavior gets overfit to Codex |
-| Frontend dirty-state handling | DS-001, DS-002 | Codex card | Avoid overwriting unsaved selection on store refresh | Matches existing quick settings UX | Page-level manager accumulates per-card state |
-| Tests | all | Implementation/review | Lock backend validation, frontend card behavior, and page integration | Prevents UI-only or server-only partial fix | Tests become broad E2E-only and miss ownership boundaries |
+| Frontend dirty-state handling | DS-001, DS-002 | Codex card | Avoid overwriting unsaved toggle state on store refresh | Matches existing quick settings UX | Page-level manager accumulates per-card state |
+| Tests | all | Implementation/review | Lock backend validation, frontend toggle behavior, and page integration | Prevents UI-only or server-only partial fix | Tests become broad E2E-only and miss ownership boundaries |
 
 ## Existing Capability / Subsystem Reuse Check
 
@@ -164,7 +171,7 @@ Read and write this design from abstract to concrete:
 
 | Subsystem / Capability Area | Owns Which Concerns | Related Spine ID(s) | Governing Owner(s) Served | Decision (`Reuse`/`Extend`/`Create New`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Web Settings UI | Basic card layout, Codex card component, card tests | DS-001, DS-002 | `ServerSettingsManager`, `CodexSandboxModeCard` | Extend | Keep card self-contained. |
+| Web Settings UI | Basic card layout, Codex full-access card component, card tests | DS-001, DS-002 | `ServerSettingsManager`, `CodexFullAccessCard` | Extend | Keep card self-contained. |
 | Web Settings Store | Existing fetch/update/reload action | DS-001, DS-002, DS-004 | `serverSettingsStore` | Reuse | No new store needed. |
 | Server Settings Service | Predefined descriptor, validation, custom-row preservation | DS-002, DS-004 | `ServerSettingsService` | Extend | Add validation capability for predefined keys. |
 | Config Persistence | `AppConfig.set` process/.env persistence | DS-002 | `AppConfig` | Reuse | No direct frontend use. |
@@ -180,12 +187,12 @@ Read and write this design from abstract to concrete:
 | `autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts` | Codex Execution Backend | Bootstrap owner | Resolve env sandbox using shared normalizer; remove duplicate constants | Existing runtime bootstrap point | Yes, Codex setting normalizer |
 | `autobyteus-server-ts/src/agent-execution/backends/codex/history/codex-thread-history-reader.ts` | Codex Execution Backend | History resume owner | Continue using bootstrapper wrapper or import shared resolver directly | Existing resume path | Yes |
 | `autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-config.ts` | Codex Execution Backend | Thread config type owner | Use imported `CodexSandboxMode` type if type moves | Existing config shape owner | Yes |
-| `autobyteus-web/components/settings/CodexSandboxModeCard.vue` | Web Settings UI | Card presentation owner | Render options, sync selected value, save canonical value, show new-session copy | One card = one friendly setting block | Frontend option constants mirror backend canonical values but backend validates |
+| `autobyteus-web/components/settings/CodexFullAccessCard.vue` | Web Settings UI | Card presentation owner | Render one toggle, sync checked state, save `danger-full-access`/`workspace-write`, show new-session copy | One card = one friendly setting block | Backend validates runtime-valid values |
 | `autobyteus-web/components/settings/ServerSettingsManager.vue` | Web Settings UI | Page composition owner | Import/render card in Basics grid | Existing page composition point | N/A |
-| `autobyteus-web/localization/messages/en/settings.ts` and `zh-CN/settings.ts` (+ generated catalogs if required) | Localization | Message catalog owner | Card title, descriptions, option labels/warnings | Existing localized settings-copy home | N/A |
+| `autobyteus-web/localization/messages/en/settings.ts` and `zh-CN/settings.ts` (+ generated catalogs if required) | Localization | Message catalog owner | Card title, warning, toggle label, new-session copy | Existing localized settings-copy home | N/A |
 | `autobyteus-server-ts/tests/unit/services/server-settings-service.test.js` | Backend tests | Service test suite | Assert predefined metadata and validation | Existing service tests | Yes |
 | `autobyteus-server-ts/tests/unit/agent-execution/backends/codex/...` or existing suitable Codex tests | Backend tests | Runtime normalization tests | Assert shared normalizer/default/fallback behavior | Keeps runtime behavior locked | Yes |
-| `autobyteus-web/components/settings/__tests__/CodexSandboxModeCard.spec.ts` | Frontend tests | Card test suite | Assert rendering, defaults, dirty sync, save value | Focused component behavior | N/A |
+| `autobyteus-web/components/settings/__tests__/CodexFullAccessCard.spec.ts` | Frontend tests | Card test suite | Assert rendering, checked/unchecked defaults, dirty sync, save values | Focused component behavior | N/A |
 | `autobyteus-web/components/settings/__tests__/ServerSettingsManager.spec.ts` | Frontend tests | Page integration test | Assert Codex card renders in Basics | Existing page suite | N/A |
 
 ## Reusable Owned Structures Check
@@ -193,7 +200,8 @@ Read and write this design from abstract to concrete:
 | Repeated Structure / Logic | Candidate Shared File | Owning Subsystem | Why Shared | Redundant Attributes Removed? (`Yes`/`No`) | Overlapping Representations Removed? (`Yes`/`No`) | Must Not Become |
 | --- | --- | --- | --- | --- | --- | --- |
 | Codex sandbox setting key/default/valid modes/type guard/normalizer | `autobyteus-server-ts/src/runtime-management/codex/codex-sandbox-mode-setting.ts` | Codex Runtime Management | Needed by runtime normalization and server settings validation | Yes | Yes | Generic multi-runtime access-mode abstraction that accidentally includes Claude |
-| Frontend option labels/descriptions | Keep local to `CodexSandboxModeCard.vue` plus localization catalogs | Web Settings UI | Labels are presentation copy, not runtime authority | Yes | Yes | Backend validation source or separate duplicated runtime owner |
+| Basic toggle-to-canonical-value mapper | Keep local to `CodexFullAccessCard.vue` | Web Settings UI | The on/off simplification is presentation behavior, not runtime semantics | Yes | Yes | Backend/runtime mode normalizer |
+| Frontend toggle label/warning copy | Keep local to `CodexFullAccessCard.vue` plus localization catalogs | Web Settings UI | Labels are presentation copy, not runtime authority | Yes | Yes | Backend validation source or separate duplicated runtime owner |
 
 ## Shared Structure / Data Model Tightness Check
 
@@ -201,6 +209,7 @@ Read and write this design from abstract to concrete:
 | --- | --- | --- | --- | --- |
 | `CodexSandboxMode` | Yes | Yes | Low after extraction | Define from readonly mode list or export one type source; import wherever needed. |
 | `CODEX_APP_SERVER_SANDBOX_SETTING_KEY` | Yes | Yes | Low | Use in server settings service and runtime resolver; avoid raw repeated key strings except tests. |
+| Basic full-access checked state | Yes | Yes | Low | Treat as UI-derived boolean, not a persisted setting. Persist only canonical sandbox values. |
 | `ServerSettingDescription` validation fields | Yes if limited to predefined-value normalization/validation | Yes | Medium | Add narrowly-scoped allowed-values/normalization support; do not turn service into runtime config owner. |
 
 ## Final File Responsibility Mapping
@@ -212,14 +221,14 @@ Read and write this design from abstract to concrete:
 | `autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts` | Codex Execution Backend | Bootstrap owner | Read env key, delegate mode normalization to shared owner, keep/adjust exported `normalizeSandboxMode()` for current imports, log invalid fallback | Existing create path and exported helper | Yes |
 | `autobyteus-server-ts/src/agent-execution/backends/codex/history/codex-thread-history-reader.ts` | Codex Execution Backend | History resume owner | Continue using normalized Codex sandbox value for resume | Existing restore path | Yes |
 | `autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-config.ts` | Codex Execution Backend | Thread config owner | Import/use shared `CodexSandboxMode` type if moved | Maintains runtime config shape | Yes |
-| `autobyteus-web/components/settings/CodexSandboxModeCard.vue` | Web Settings UI | Card presentation owner | User-friendly Codex mode selector/card, dirty-state sync, save action, future-session copy | One card owns one Basic block | Backend validation via store/API |
-| `autobyteus-web/components/settings/ServerSettingsManager.vue` | Web Settings UI | Page composition owner | Import/render `CodexSandboxModeCard` in the second Basics grid near existing runtime/config cards | Keeps page composition centralized | N/A |
-| `autobyteus-web/localization/messages/en/settings.ts`, `autobyteus-web/localization/messages/zh-CN/settings.ts`, generated settings catalogs if required by repo workflow | Localization | Settings message catalogs | Add card/option copy | Existing catalog ownership | N/A |
-| Tests listed in Draft Mapping | Validation | Test suites | Cover backend validation/runtime normalization/frontend card/page integration | Existing test ownership | Yes where relevant |
+| `autobyteus-web/components/settings/CodexFullAccessCard.vue` | Web Settings UI | Card presentation owner | User-friendly full-access toggle card, dirty-state sync, save canonical on/off values, future-session warning copy | One card owns one Basic block | Backend validation via store/API |
+| `autobyteus-web/components/settings/ServerSettingsManager.vue` | Web Settings UI | Page composition owner | Import/render `CodexFullAccessCard` in the second Basics grid near existing runtime/config cards | Keeps page composition centralized | N/A |
+| `autobyteus-web/localization/messages/en/settings.ts`, `autobyteus-web/localization/messages/zh-CN/settings.ts`, generated settings catalogs if required by repo workflow | Localization | Settings message catalogs | Add card/toggle/warning copy | Existing catalog ownership | N/A |
+| Tests listed in Draft Mapping | Validation | Test suites | Cover backend validation/runtime normalization/frontend toggle/page integration | Existing test ownership | Yes where relevant |
 
 ## Ownership Boundaries
 
-- Frontend card boundary: may present labels and choose canonical values, but backend validation remains authoritative. The card cannot assume a save succeeded until `serverSettingsStore.updateServerSetting` resolves.
+- Frontend card boundary: may present one toggle and map checked state to canonical values, but backend validation remains authoritative. The card cannot assume a save succeeded until `serverSettingsStore.updateServerSetting` resolves.
 - Store/GraphQL boundary: transports settings updates. It must not special-case Codex sandbox mode beyond normal update behavior.
 - Server settings boundary: the only place that decides whether `CODEX_APP_SERVER_SANDBOX` is editable/deletable and whether a submitted value is allowed.
 - Codex sandbox setting owner boundary: the only server-side source for Codex sandbox key/default/valid values/type guard. Both `ServerSettingsService` and Codex runtime consume it.
@@ -236,7 +245,7 @@ Read and write this design from abstract to concrete:
 
 ## Dependency Rules
 
-- `CodexSandboxModeCard.vue` may depend on `serverSettingsStore` and localization; it must not depend on GraphQL documents, `AppConfig`, or runtime files.
+- `CodexFullAccessCard.vue` may depend on `serverSettingsStore` and localization; it must not depend on GraphQL documents, `AppConfig`, or runtime files.
 - `ServerSettingsManager.vue` may import the Codex card for page layout; it must not duplicate card local state.
 - `ServerSettingsService` may import Codex sandbox setting constants/validators from the shared Codex runtime-management file; it must not import Codex bootstrapper internals.
 - Codex bootstrap/history may import the shared Codex sandbox setting owner; they must not duplicate valid values/defaults.
@@ -251,6 +260,7 @@ Read and write this design from abstract to concrete:
 | GraphQL `updateServerSetting` | Server settings mutation transport | Delegate update to service | Setting key/value strings | Thin boundary only. |
 | `ServerSettingsService.updateSetting(key, value)` | Server-side setting update | Validate predefined values and persist | Setting key string; raw submitted value string | Must reject invalid Codex sandbox value before `AppConfig.set`. |
 | `ServerSettingsService.getAvailableSettings()` | Server-side setting list | Return setting value/description/edit/delete metadata | No caller-supplied identity | Must return predefined metadata for Codex key when present/effective. |
+| `toCodexFullAccessSandboxValue(checked)` or local equivalent | Basic UI simplification | Map one toggle into canonical Codex sandbox values | `checked: boolean` | Local to card: true -> `danger-full-access`, false -> `workspace-write`. |
 | `normalizeCodexSandboxMode(rawValue)` or equivalent | Codex sandbox semantic normalization | Return a valid `CodexSandboxMode` from raw config/env input | `string | null | undefined` | Pure; logging can remain in bootstrapper wrapper. |
 | `buildCodexThreadConfig({ sandbox })` | Codex thread config | Carry resolved sandbox to thread manager | `CodexSandboxMode` | Should use shared type. |
 
@@ -265,14 +275,14 @@ Rule:
 | `serverSettingsStore.updateServerSetting` | Yes | Yes | Low | Reuse as-is. |
 | `ServerSettingsService.updateSetting` | Yes | Yes | Medium currently because all predefined/custom values are accepted | Add descriptor-based validation for predefined Codex key. |
 | Codex sandbox normalizer | Yes | Yes | Low | Keep Codex-specific; do not generalize to Claude. |
-| `CodexSandboxModeCard` save action | Yes | Yes | Low | Only sends `CODEX_APP_SERVER_SANDBOX`. |
+| `CodexFullAccessCard` save action | Yes | Yes | Low | Only sends `CODEX_APP_SERVER_SANDBOX` with the two Basic UI canonical values. |
 
 ## Main Domain Subject Naming Check
 
 | Node / Subject | Current / Proposed Name | Name Is Natural And Self-Descriptive? (`Yes`/`No`) | Naming Drift Risk | Corrective Action |
 | --- | --- | --- | --- | --- |
-| Basic UI card | `CodexSandboxModeCard` | Yes | Low | Avoid vague `AccessModeCard` because Claude is out of scope. |
-| Shared server-side semantics file | `codex-sandbox-mode-setting.ts` | Yes | Low | Name Codex-specific; avoid generic multi-runtime access-mode naming. |
+| Basic UI card | `CodexFullAccessCard` | Yes | Low | Name the user-facing decision. Avoid `CodexSandboxModeCard` if implementation exposes only a toggle. |
+| Shared server-side semantics file | `codex-sandbox-mode-setting.ts` | Yes | Low | Name the actual runtime setting semantics. |
 | Setting key constant | `CODEX_APP_SERVER_SANDBOX_SETTING_KEY` | Yes | Low | Use in service/runtime. |
 | Mode type | `CodexSandboxMode` | Yes | Low | Single source imported by thread config. |
 
@@ -291,10 +301,10 @@ Rule:
 | `autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts` | File | Codex create bootstrap | Consume shared normalizer and remove duplicate constants | Existing create-session runtime owner | Server settings metadata |
 | `autobyteus-server-ts/src/agent-execution/backends/codex/history/codex-thread-history-reader.ts` | File | Codex resume/history | Keep sandbox normalization in resume path | Existing resume-session runtime owner | Setting validation/persistence |
 | `autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-config.ts` | File | Codex config type | Use shared `CodexSandboxMode` type | Existing config data contract | Env reads |
-| `autobyteus-web/components/settings/CodexSandboxModeCard.vue` | File | Web settings card | Render/select/save Codex mode | Existing settings component folder | Claude selector, direct API/env writes |
+| `autobyteus-web/components/settings/CodexFullAccessCard.vue` | File | Web settings card | Render/save one Codex full-access toggle | Existing settings component folder | Claude selector, direct API/env writes, three-mode Basic selector |
 | `autobyteus-web/components/settings/ServerSettingsManager.vue` | File | Settings page composition | Place Codex card in Basics | Existing page component | Codex mode validation lists beyond child import/render |
 | `autobyteus-web/localization/messages/en/settings.ts` and `zh-CN/settings.ts` plus generated settings catalogs if required | Files | Localization | User-facing card copy | Existing settings message catalogs | Runtime/server constants |
-| `autobyteus-web/components/settings/__tests__/CodexSandboxModeCard.spec.ts` | File | Frontend component tests | Card sync/save/render behavior | Existing test folder | Backend validation tests |
+| `autobyteus-web/components/settings/__tests__/CodexFullAccessCard.spec.ts` | File | Frontend component tests | Card sync/save/render behavior | Existing test folder | Backend validation tests |
 | `autobyteus-server-ts/tests/unit/services/server-settings-service.test.js` | File | Backend service tests | Predefined metadata/value validation | Existing service test suite | Frontend rendering tests |
 
 ## Folder Boundary Check
@@ -311,8 +321,9 @@ Rule:
 
 | Topic | Good Example | Bad / Avoided Shape | Why The Example Matters |
 | --- | --- | --- | --- |
-| Codex-only UI | `CodexSandboxModeCard` with options `Read only`, `Workspace write`, `Full access` | Generic `RuntimeAccessModeCard` containing a hidden/empty Claude section | Keeps approved scope clear and avoids misleading Claude semantics. |
-| Shared mode owner | `CODEX_SANDBOX_MODES` imported by service and runtime normalizer | Separate `VALID_SANDBOX_MODES` in service and bootstrapper | Prevents drift between UI/server validation and runtime behavior. |
+| Codex-only Basic UI | `CodexFullAccessCard` with one toggle labeled “Allow Codex full filesystem access” | Three-mode Basic selector or generic `RuntimeAccessModeCard` containing a hidden/empty Claude section | Keeps approved scope clear and simplifies end-user decision. |
+| Toggle mapping | checked -> `danger-full-access`; unchecked -> `workspace-write` | unchecked -> empty string or `read-only` without product approval | Makes off state equal the current safe default. |
+| Shared mode owner | `CODEX_SANDBOX_MODES` imported by service and runtime normalizer | Separate `VALID_SANDBOX_MODES` in service and bootstrapper | Prevents drift between server validation and runtime behavior. |
 | Save path | Card -> `serverSettingsStore.updateServerSetting` -> GraphQL -> `ServerSettingsService` | Card writes directly to Apollo mutation or local env | Preserves existing authoritative boundary. |
 | Future-session copy | “Applies to new Codex sessions.” | “Changes current Codex permissions immediately.” | Avoids false runtime expectation. |
 
@@ -320,8 +331,9 @@ Rule:
 
 | Candidate Compatibility Mechanism | Why It Was Considered | Rejection Decision (`Rejected`/`N/A`) | Clean-Cut Replacement / Removal Plan |
 | --- | --- | --- | --- |
-| Accepting arbitrary `CODEX_APP_SERVER_SANDBOX` values as before | Advanced Settings currently accepts any custom key/value | Rejected | Once predefined, reject invalid values and persist only valid canonical modes. |
-| Supporting Basic UI aliases such as `full access` or `danger_full_access` | Could make manual input forgiving | Rejected | Basic UI is a selector saving canonical values; no text input aliases. |
+| Accepting arbitrary `CODEX_APP_SERVER_SANDBOX` values as before | Advanced Settings currently accepts any custom key/value | Rejected | Once predefined, reject invalid values and persist only runtime-valid canonical modes. |
+| Supporting Basic UI aliases such as `full access` or `danger_full_access` | Could make manual input forgiving | Rejected | Basic UI is a toggle saving canonical values; no text input aliases. |
+| Exposing all runtime modes in Basic Settings | Original design draft used a selector | Rejected | User requested one simple `danger-full-access` toggle. Advanced/API can still use `read-only` if needed. |
 | Keeping duplicate bootstrapper constants for compatibility | Minimizes edits | Rejected | Move/import shared constants so service and runtime use one value list. |
 | Adding Claude selector now but disabling or hiding it behind unclear copy | Initial user wondered about Claude parity | Rejected | User approved Codex-only scope; Claude requires separate requirements/design. |
 | Legacy setting key migration | Not needed because key remains `CODEX_APP_SERVER_SANDBOX` | N/A | Reuse same key. |
@@ -330,7 +342,7 @@ Rule:
 
 Layering is intentionally simple:
 
-- Presentation: `CodexSandboxModeCard.vue` and localized copy.
+- Presentation: `CodexFullAccessCard.vue` and localized copy.
 - Frontend settings boundary: `serverSettingsStore`.
 - Transport: GraphQL settings resolver/mutation.
 - Server settings authority: `ServerSettingsService` with descriptor validation.
@@ -346,7 +358,7 @@ The critical rule is that runtime semantics are not owned by the UI, and persist
 2. Update `CodexThreadConfig` and Codex bootstrap/history imports so Codex runtime consumes the shared type/normalizer and bootstrapper-local duplicate constants are removed.
 3. Extend `ServerSettingDescription`/`ServerSettingsService` with narrowly scoped predefined value validation and register `CODEX_APP_SERVER_SANDBOX` using the shared key/modes.
 4. Add backend tests for valid/invalid Codex setting values and predefined metadata.
-5. Add `CodexSandboxModeCard.vue` with localized user-facing option copy, dirty-state sync, default behavior, and save through `serverSettingsStore.updateServerSetting`.
+5. Add `CodexFullAccessCard.vue` with localized user-facing toggle copy, dirty-state sync, default unchecked behavior, checked-state mapping, and save through `serverSettingsStore.updateServerSetting`.
 6. Render the card from `ServerSettingsManager.vue` in the Basics area.
 7. Add frontend component and manager integration tests.
 8. Run targeted backend/frontend tests; then let downstream validation decide broader E2E coverage and docs updates.
@@ -355,7 +367,7 @@ No temporary dual path should remain after step 2; the old bootstrapper-local co
 
 ## Key Tradeoffs
 
-- Selector vs toggle: a selector is chosen because Codex has three valid modes, and a binary toggle would hide `read-only` or require unclear mapping.
+- Toggle vs selector: a toggle is chosen because product explicitly wants the simple decision users understand: enable full access or stay on the default. This hides `read-only` from Basic Settings while preserving it as a runtime-valid Advanced/API value.
 - Shared Codex-specific setting file vs generic access-mode abstraction: Codex-specific is chosen because Claude semantics are different and explicitly out of scope.
 - Backend validation vs UI-only guard: backend validation is required because Advanced Settings and future clients can still submit raw setting values.
 - Local card state vs page-level state: card state is chosen to avoid further bloating `ServerSettingsManager.vue` and to match specialized-card patterns.
@@ -363,18 +375,23 @@ No temporary dual path should remain after step 2; the old bootstrapper-local co
 ## Risks
 
 - Product copy for `danger-full-access` could be too soft; implementation should explicitly warn that it disables filesystem sandboxing.
-- If invalid `CODEX_APP_SERVER_SANDBOX` already exists in `.env`, the card should show default `workspace-write` until a valid value is saved, while server/runtime fallback continues to protect Codex sessions.
+- If persisted value is `read-only`, the Basic toggle will appear unchecked because Basic only represents whether full access is enabled. If the user saves while unchecked, it will normalize the Basic state to `workspace-write`.
+- If invalid `CODEX_APP_SERVER_SANDBOX` already exists in `.env`, the card should show unchecked/default until a valid value is saved, while server/runtime fallback continues to protect Codex sessions.
 - If localization generated files are expected to be regenerated rather than edited manually, implementation must follow the repository's localization workflow.
 - If concurrent runtime refactors move Codex configuration ownership, implementation must preserve this design's single-source-of-truth requirement.
 
 ## Guidance For Implementation
 
 - Keep the UI card Codex-specific. Do not include Claude copy, placeholders, disabled controls, or hidden feature flags.
-- Use clear option copy. Suggested English labels:
-  - `Read only` -> canonical `read-only`; “Codex can inspect files but cannot write to the workspace.”
-  - `Workspace write` -> canonical `workspace-write`; “Codex can edit files inside the workspace. Recommended default.”
-  - `Full access` -> canonical `danger-full-access`; “No filesystem sandboxing. Use only when you trust the task and environment.”
-- Include a short note: “Applies to new Codex sessions.”
+- Use one toggle. Suggested English copy:
+  - Title: `Codex full access`
+  - Toggle label: `Allow Codex to run with full filesystem access`
+  - Description/warning: `When enabled, Codex uses danger-full-access with no filesystem sandboxing. Use only when you trust the task and environment.`
+  - New-session note: `Applies to new Codex sessions.`
+- Toggle mapping must be exact:
+  - checked/on -> save `danger-full-access`
+  - unchecked/off -> save `workspace-write`
+  - initial checked state -> `store.getSettingByKey('CODEX_APP_SERVER_SANDBOX')?.value === 'danger-full-access'`
 - Preserve current `autoExecuteTools` behavior and terminology. Do not couple it to this card.
 - In `ServerSettingsService`, reject invalid values before calling `AppConfig.set`; error message should include the allowed canonical values.
 - Prefer trimming submitted predefined values before validation/persistence for `CODEX_APP_SERVER_SANDBOX`. Do not alter custom setting value preservation globally unless tests are updated intentionally.
