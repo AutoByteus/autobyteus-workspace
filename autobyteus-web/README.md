@@ -79,6 +79,7 @@ pnpm dev
 6. Use `Channel Binding Setup` to bind provider accounts or discovered peers to AutoByteus targets.
    - Discord and Telegram peer discovery are available through the managed server boundary.
    - WhatsApp and WeCom use the configured business-mode account information.
+   - Bound team channels deliver eligible coordinator or entry-node outputs while the linked run remains active, including follow-up outputs triggered by internal team handoffs.
 
 7. If troubleshooting is needed, use the managed gateway diagnostics shown in the UI.
    - The port, bind address, active version, and lifecycle message are read-only diagnostics.
@@ -94,8 +95,9 @@ For most users, Telegram setup should stay close to a fully in-app flow:
 4. Select `Telegram Bot`.
 5. Paste the bot token and enter a stable account label.
 6. Save configuration, send a real Telegram message to the bot, then use `Refresh Peers`.
-7. Create a channel binding by selecting the target agent definition and launch preset.
-8. Run setup verification.
+7. Create a channel binding by selecting the target agent or team definition and launch preset.
+8. Team bindings deliver eligible coordinator or entry-node outputs back to Telegram while the linked run remains active.
+9. Run setup verification.
 
 The main thing users still do outside AutoByteus is the initial Telegram bot creation. The gateway install, runtime lifecycle, provider configuration, binding flow, runtime preset selection, and verification are handled from the app.
 
