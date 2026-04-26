@@ -124,6 +124,25 @@ describe("ServerSettingsService", () => {
     });
   });
 
+  it("exposes Codex sandbox mode as predefined editable metadata", () => {
+    mockConfig.getConfigData.mockReturnValue({
+      CODEX_APP_SERVER_SANDBOX: "workspace-write",
+    });
+
+    const service = new ServerSettingsService();
+    const settings = service.getAvailableSettings();
+
+    expect(settings.find((item) => item.key === "CODEX_APP_SERVER_SANDBOX")).toMatchObject({
+      value: "workspace-write",
+      description: expect.stringContaining("Codex app server filesystem sandbox mode"),
+      isEditable: true,
+      isDeletable: false,
+    });
+    expect(
+      settings.find((item) => item.key === "CODEX_APP_SERVER_SANDBOX")?.description,
+    ).toContain("danger-full-access disables filesystem sandboxing");
+  });
+
   it("updates settings successfully", () => {
     mockConfig.set.mockImplementation(() => undefined);
 
@@ -133,6 +152,39 @@ describe("ServerSettingsService", () => {
     expect(ok).toBe(true);
     expect(message).toMatch(/updated successfully/i);
     expect(mockConfig.set).toHaveBeenCalledWith("CUSTOM_SETTING", "next");
+  });
+
+  it("trims and saves valid predefined Codex sandbox values", () => {
+    mockConfig.set.mockImplementation(() => undefined);
+
+    const service = new ServerSettingsService();
+    const [ok, message] = service.updateSetting("CODEX_APP_SERVER_SANDBOX", " danger-full-access ");
+
+    expect(ok).toBe(true);
+    expect(message).toMatch(/updated successfully/i);
+    expect(mockConfig.set).toHaveBeenCalledWith(
+      "CODEX_APP_SERVER_SANDBOX",
+      "danger-full-access",
+    );
+  });
+
+  it("rejects invalid predefined Codex sandbox values before persistence", () => {
+    const service = new ServerSettingsService();
+    const [ok, message] = service.updateSetting("CODEX_APP_SERVER_SANDBOX", "full-access");
+
+    expect(ok).toBe(false);
+    expect(message).toContain("read-only, workspace-write, danger-full-access");
+    expect(mockConfig.set).not.toHaveBeenCalled();
+  });
+
+  it("preserves custom setting values without predefined normalization", () => {
+    mockConfig.set.mockImplementation(() => undefined);
+
+    const service = new ServerSettingsService();
+    const [ok] = service.updateSetting("CUSTOM_SETTING", "  raw value  ");
+
+    expect(ok).toBe(true);
+    expect(mockConfig.set).toHaveBeenCalledWith("CUSTOM_SETTING", "  raw value  ");
   });
 
   it("returns error when update fails", () => {

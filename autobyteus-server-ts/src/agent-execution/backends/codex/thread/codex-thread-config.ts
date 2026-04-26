@@ -1,9 +1,8 @@
 import type { JsonObject } from "../codex-app-server-json.js";
+import type { CodexSandboxMode } from "../../../../runtime-management/codex/codex-sandbox-mode-setting.js";
 
 const asTrimmedString = (value: unknown): string | null =>
   typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
-
-export type CodexSandboxMode = "read-only" | "workspace-write" | "danger-full-access";
 
 export enum CodexApprovalPolicy {
   NEVER = "never",

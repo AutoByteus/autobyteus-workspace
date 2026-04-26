@@ -4,7 +4,10 @@ import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.j
 import { AgentRunConfig } from "../../../../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../../../../src/agent-execution/domain/agent-run-context.js";
 import { DefaultCodexThreadBootstrapStrategy } from "../../../../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrap-strategy.js";
-import { CodexThreadBootstrapper } from "../../../../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
+import {
+  CodexThreadBootstrapper,
+  normalizeSandboxMode,
+} from "../../../../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
 import {
   BROWSER_BRIDGE_BASE_URL_ENV,
   BROWSER_BRIDGE_TOKEN_ENV,
@@ -110,10 +113,12 @@ const createBootstrapper = (input: {
 describe("CodexThreadBootstrapper", () => {
   const originalBrowserBridgeBaseUrl = process.env[BROWSER_BRIDGE_BASE_URL_ENV];
   const originalBrowserBridgeToken = process.env[BROWSER_BRIDGE_TOKEN_ENV];
+  const originalCodexSandboxMode = process.env.CODEX_APP_SERVER_SANDBOX;
 
   beforeEach(() => {
     delete process.env[BROWSER_BRIDGE_BASE_URL_ENV];
     delete process.env[BROWSER_BRIDGE_TOKEN_ENV];
+    delete process.env.CODEX_APP_SERVER_SANDBOX;
   });
 
   afterEach(() => {
@@ -127,6 +132,26 @@ describe("CodexThreadBootstrapper", () => {
     } else {
       delete process.env[BROWSER_BRIDGE_TOKEN_ENV];
     }
+    if (typeof originalCodexSandboxMode === "string") {
+      process.env.CODEX_APP_SERVER_SANDBOX = originalCodexSandboxMode;
+    } else {
+      delete process.env.CODEX_APP_SERVER_SANDBOX;
+    }
+  });
+
+  it("resolves Codex sandbox mode from the shared setting normalizer", () => {
+    process.env.CODEX_APP_SERVER_SANDBOX = " read-only ";
+    expect(normalizeSandboxMode()).toBe("read-only");
+
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    process.env.CODEX_APP_SERVER_SANDBOX = "invalid-mode";
+
+    expect(normalizeSandboxMode()).toBe("workspace-write");
+    expect(warnSpy).toHaveBeenCalledWith(
+      "Invalid CODEX_APP_SERVER_SANDBOX 'invalid-mode', falling back to 'workspace-write'.",
+    );
+
+    warnSpy.mockRestore();
   });
 
   it("filters out configured skills that Codex already discovers by name", async () => {
