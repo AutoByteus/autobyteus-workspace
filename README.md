@@ -8,6 +8,11 @@ Monorepo workspace for the AutoByteus TypeScript platform.
 - `autobyteus-server-ts`
 - `autobyteus-ts`
 - `autobyteus-message-gateway`
+- `autobyteus-application-sdk-contracts`
+- `autobyteus-application-frontend-sdk`
+- `autobyteus-application-backend-sdk`
+- `autobyteus-application-devkit`
+- `applications/*` sample application source projects
 
 ## Setup
 
@@ -16,6 +21,20 @@ git clone https://github.com/AutoByteus/autobyteus-workspace.git
 cd autobyteus-workspace
 pnpm install
 ```
+
+## Custom application development
+
+New external custom applications should start with the reusable
+`@autobyteus/application-devkit` CLI and the canonical source/output layout:
+
+- editable source under `src/frontend`, `src/backend`, optional `src/agents`,
+  and optional `src/agent-teams`;
+- generated importable packages under `dist/importable-package/applications/<app-id>/`;
+- runtime package folders named `ui/` and `backend/` only inside the generated
+  package root expected by AutoByteus import.
+
+Full guide:
+- [`docs/custom-application-development.md`](docs/custom-application-development.md)
 
 ## Run The Published Server Docker
 

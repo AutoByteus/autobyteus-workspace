@@ -1,0 +1,19 @@
+{
+  "name": "__PACKAGE_NAME__",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "autobyteus-app pack",
+    "validate": "autobyteus-app validate --package-root dist/importable-package",
+    "dev": "autobyteus-app dev"
+  },
+  "dependencies": {
+    "@autobyteus/application-backend-sdk": "^0.1.0",
+    "@autobyteus/application-frontend-sdk": "^0.1.0"
+  },
+  "devDependencies": {
+    "@autobyteus/application-devkit": "^0.1.0",
+    "typescript": "^5.9.3"
+  }
+}

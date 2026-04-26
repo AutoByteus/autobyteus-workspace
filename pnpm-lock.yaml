@@ -58,6 +58,28 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
+  autobyteus-application-devkit:
+    dependencies:
+      '@autobyteus/application-sdk-contracts':
+        specifier: workspace:*
+        version: link:../autobyteus-application-sdk-contracts
+      esbuild:
+        specifier: ^0.27.3
+        version: 0.27.3
+    devDependencies:
+      '@autobyteus/application-backend-sdk':
+        specifier: workspace:*
+        version: link:../autobyteus-application-backend-sdk
+      '@autobyteus/application-frontend-sdk':
+        specifier: workspace:*
+        version: link:../autobyteus-application-frontend-sdk
+      '@types/node':
+        specifier: ^25.0.10
+        version: 25.3.0
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   autobyteus-application-frontend-sdk:
     dependencies:
       '@autobyteus/application-sdk-contracts':
