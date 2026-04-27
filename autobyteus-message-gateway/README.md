@@ -122,6 +122,26 @@ Notes:
 - `GATEWAY_ADMIN_TOKEN` (optional; when set, channel-admin endpoints require `Authorization: Bearer <token>`)
 - `GATEWAY_PORT` (default: `8010`)
 - `GATEWAY_HOST` (default: `0.0.0.0`)
+- `GATEWAY_RUNTIME_DATA_ROOT` (default: `<gateway-cwd>/memory`)
+
+### Reliability queue runtime state
+
+The gateway stores internal delivery reliability data under
+`<GATEWAY_RUNTIME_DATA_ROOT>/reliability-queue/{inbox,outbox}` and queue owner
+locks under `<GATEWAY_RUNTIME_DATA_ROOT>/reliability-queue/locks`.
+
+The inbox/outbox queue files are transient runtime state, not user-authored
+configuration. On first queue access, if an active queue data file is invalid or
+incompatible with the current gateway (for example an unsupported version,
+unsupported status, invalid JSON, or invalid record shape), the gateway renames
+only that offending queue file beside the original path as
+`<filename>.quarantined-*`, logs the queue name, reason, original path, and
+quarantine path, and creates a fresh empty current-version queue file.
+
+This recovery does not delete gateway config, channel bindings, provider
+secrets, personal-session auth/state, or queue owner lock files. It also does
+not migrate or salvage old queue records back into active processing; the
+quarantined file remains on disk for diagnostics.
 
 ### WhatsApp Business webhook mode
 
