@@ -56,7 +56,7 @@ Small
 
 ## Constraints / Dependencies
 
-- Branch/worktree: `codex/external-channel-stream-output-dedupe` in `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe`.
+- Branch/worktree: `codex/external-channel-stream-output-dedupe` in `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`.
 - Base: `origin/personal` at release bump `1.2.84`.
 - Server source is under `autobyteus-server-ts/src/external-channel/runtime`.
 

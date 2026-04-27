@@ -2,23 +2,23 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/design-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/design-review-report.md`
 
 ## Background Artifact Package
 
-- Original requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-open-session-delivery/requirements.md`
-- Original investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-open-session-delivery/investigation-notes.md`
-- Original design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-open-session-delivery/design-spec.md`
-- Original design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-open-session-delivery/design-review-report.md`
-- Original implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-open-session-delivery/implementation-handoff.md`
-- Original code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-open-session-delivery/review-report.md`
-- Original API/E2E report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-open-session-delivery/api-e2e-report.md`
-- Original docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-open-session-delivery/docs-sync-report.md`
-- Original handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-open-session-delivery/handoff-summary.md`
-- Original release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-open-session-delivery/release-deployment-report.md`
+- Original requirements: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-open-session-delivery/requirements.md`
+- Original investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-open-session-delivery/investigation-notes.md`
+- Original design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-open-session-delivery/design-spec.md`
+- Original design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-open-session-delivery/design-review-report.md`
+- Original implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-open-session-delivery/implementation-handoff.md`
+- Original code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-open-session-delivery/review-report.md`
+- Original API/E2E report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-open-session-delivery/api-e2e-report.md`
+- Original docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-open-session-delivery/docs-sync-report.md`
+- Original handoff summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-open-session-delivery/handoff-summary.md`
+- Original release/deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-open-session-delivery/release-deployment-report.md`
 
 ## What Changed
 
@@ -39,13 +39,13 @@
 ## Key Files Or Areas
 
 - Source:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/autobyteus-server-ts/src/external-channel/runtime/channel-output-event-parser.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/autobyteus-server-ts/src/external-channel/runtime/channel-output-text-assembler.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/autobyteus-server-ts/src/external-channel/runtime/channel-run-output-event-collector.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/external-channel/runtime/channel-output-event-parser.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/external-channel/runtime/channel-output-text-assembler.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/external-channel/runtime/channel-run-output-event-collector.ts`
 - Tests:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/autobyteus-server-ts/tests/unit/external-channel/runtime/channel-output-event-parser.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/autobyteus-server-ts/tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/autobyteus-server-ts/tests/unit/external-channel/runtime/channel-run-output-delivery-runtime.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/external-channel/runtime/channel-output-event-parser.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/external-channel/runtime/channel-run-output-delivery-runtime.test.ts`
 
 ## Important Assumptions
 
@@ -75,7 +75,7 @@
 
 ## Environment Or Dependency Notes
 
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe`
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Branch: `codex/external-channel-stream-output-dedupe`
 - Base/finalization target: `origin/personal` / `personal`
 - Release background: v1.2.84 open-session delivery is already present on this base.

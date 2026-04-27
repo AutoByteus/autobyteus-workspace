@@ -3,37 +3,37 @@
 ## Ticket
 
 - Ticket: `external-channel-stream-output-dedupe`
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe`
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Ticket branch: `codex/external-channel-stream-output-dedupe`
 - Finalization target: `origin/personal` / local `personal`
-- Current delivery status: `User verified; finalization in progress; no release requested.`
+- Current delivery status: `Finalized on personal; no release run per user request.`
 
 ## Cumulative Artifact Package
 
 Scoped ticket artifacts:
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/design-review-report.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/implementation-handoff.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/review-report.md`
-- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/api-e2e-report.md`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/docs-sync-report.md`
-- Delivery / release / deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/release-deployment-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/design-review-report.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/implementation-handoff.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/review-report.md`
+- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/api-e2e-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/docs-sync-report.md`
+- Delivery / release / deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/release-deployment-report.md`
 
 Relevant background artifacts from the original open-session delivery work:
 
-- Original requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-open-session-delivery/requirements.md`
-- Original investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-open-session-delivery/investigation-notes.md`
-- Original design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-open-session-delivery/design-spec.md`
-- Original design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-open-session-delivery/design-review-report.md`
-- Original implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-open-session-delivery/implementation-handoff.md`
-- Original code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-open-session-delivery/review-report.md`
-- Original API/E2E report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-open-session-delivery/api-e2e-report.md`
-- Original docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-open-session-delivery/docs-sync-report.md`
-- Original handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-open-session-delivery/handoff-summary.md`
-- Original release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-open-session-delivery/release-deployment-report.md`
+- Original requirements: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-open-session-delivery/requirements.md`
+- Original investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-open-session-delivery/investigation-notes.md`
+- Original design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-open-session-delivery/design-spec.md`
+- Original design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-open-session-delivery/design-review-report.md`
+- Original implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-open-session-delivery/implementation-handoff.md`
+- Original code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-open-session-delivery/review-report.md`
+- Original API/E2E report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-open-session-delivery/api-e2e-report.md`
+- Original docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-open-session-delivery/docs-sync-report.md`
+- Original handoff summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-open-session-delivery/handoff-summary.md`
+- Original release/deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-open-session-delivery/release-deployment-report.md`
 
 ## Delivered Behavior
 
@@ -46,21 +46,21 @@ Relevant background artifacts from the original open-session delivery work:
 
 ## Key Source/Test Changes
 
-- Added overlap/final precedence assembler: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/autobyteus-server-ts/src/external-channel/runtime/channel-output-text-assembler.ts`
-- Updated parser text classification: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/autobyteus-server-ts/src/external-channel/runtime/channel-output-event-parser.ts`
-- Updated collector to use stream-fragment append and final-text precedence: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/autobyteus-server-ts/src/external-channel/runtime/channel-run-output-event-collector.ts`
-- Updated one-TeamRun E2E: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/autobyteus-server-ts/tests/e2e/external-channel/external-channel-team-open-delivery.e2e.test.ts`
+- Added overlap/final precedence assembler: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/external-channel/runtime/channel-output-text-assembler.ts`
+- Updated parser text classification: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/external-channel/runtime/channel-output-event-parser.ts`
+- Updated collector to use stream-fragment append and final-text precedence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/external-channel/runtime/channel-run-output-event-collector.ts`
+- Updated one-TeamRun E2E: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/external-channel/external-channel-team-open-delivery.e2e.test.ts`
 - Added/updated unit coverage:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/autobyteus-server-ts/tests/unit/external-channel/runtime/channel-output-event-parser.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/autobyteus-server-ts/tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/autobyteus-server-ts/tests/unit/external-channel/runtime/channel-run-output-delivery-runtime.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/external-channel/runtime/channel-output-event-parser.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/external-channel/runtime/channel-run-output-delivery-runtime.test.ts`
 
 ## Latest Review / Validation Status
 
 - Code review decision: `Pass`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/review-report.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/review-report.md`
 - API/E2E validation result: `Pass`
-- API/E2E report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/api-e2e-report.md`
+- API/E2E report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/api-e2e-report.md`
 - Durable validation added after API/E2E was re-reviewed by code review and passed.
 
 ## Delivery Integration Refresh
@@ -90,7 +90,7 @@ Docs sync result: `No impact`
 
 Docs sync report:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/docs-sync-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/docs-sync-report.md`
 
 Long-lived docs reviewed and left unchanged:
 
@@ -107,9 +107,9 @@ Long-lived docs reviewed and left unchanged:
 - README reference: `autobyteus-web/README.md` desktop build section, including the macOS no-notarization logging command.
 - Command: `CI=true AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm -C autobyteus-web build:electron:mac`
 - Build log: `/tmp/autobyteus-electron-build-stream-output-dedupe-20260427-050439.log`
-- DMG artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.84.dmg`
-- ZIP artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.84.zip`
-- Blockmaps:
+- DMG artifact: `Temporary; removed with ticket worktree cleanup after user verification` — `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.84.dmg`
+- ZIP artifact: `Temporary; removed with ticket worktree cleanup after user verification` — `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.84.zip`
+- Blockmaps: `Temporary; removed with ticket worktree cleanup after user verification`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.84.dmg.blockmap`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.84.zip.blockmap`
 - Signing/notarization: `Unsigned / not notarized local build` (`APPLE_TEAM_ID=` and `NO_TIMESTAMP=1`).
@@ -128,6 +128,12 @@ Long-lived docs reviewed and left unchanged:
 - Gateway stale inbox cleanup/reset behavior remains explicitly out of scope.
 - Release/version bump/tag is intentionally skipped per user request.
 
-## Finalization Plan
+## Finalization Result
 
-User verification is complete. Delivery will commit and push the ticket branch, merge it into `personal`, push `personal`, and clean up the dedicated ticket worktree/branches. Release/deployment remains skipped per user request.
+- Ticket branch commit: `48677b360fac9bc096eb463b0854c34ef55bb4fd` (`fix(server): dedupe external channel streamed output`)
+- Ticket branch push: `Completed`
+- Target branch merge: `24e9f39addd739c3dea2729bd595298b20926339` (`Merge branch 'codex/external-channel-stream-output-dedupe' into personal`)
+- Target branch push: `Completed` (`personal` advanced from `d76c532c` to `24e9f39a`)
+- Release/deployment: `Skipped` per user request.
+- Dedicated worktree cleanup: `Completed`; temporary local Electron artifacts in the ticket worktree were removed with the worktree.
+- Local and remote ticket branch cleanup: `Completed`

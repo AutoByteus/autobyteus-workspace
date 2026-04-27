@@ -1,24 +1,24 @@
 # Review Report — external-channel-stream-output-dedupe
 
-Canonical review artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/review-report.md`
+Canonical review artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/review-report.md`
 
 ## Review Round Meta
 
 - Review Entry Point: `Post-Validation Durable-Validation Re-Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/requirements.md`
 - Current Review Round: 2
 - Trigger: `api_e2e_engineer` completed API/E2E validation and updated repository-resident durable E2E validation after code-review Round 1.
 - Prior Review Round Reviewed: 1
 - Latest Authoritative Round: 2
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/implementation-handoff.md`
-- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/api-e2e-report.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/implementation-handoff.md`
+- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/api-e2e-report.md`
 - API / E2E Validation Started Yet: `Yes`
 - Repository-Resident Durable Validation Added Or Updated After Prior Review: `Yes`
 
-Background open-session delivery artifacts under `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-open-session-delivery/` remain background context only.
+Background open-session delivery artifacts under `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-open-session-delivery/` remain background context only.
 
 ## Round History
 

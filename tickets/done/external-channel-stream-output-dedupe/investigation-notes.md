@@ -22,10 +22,10 @@ On 2026-04-26 the user requested narrowing the work: treat gateway inbox cleanup
 ## Environment Discovery / Bootstrap Context
 
 - Project Type (`Git`/`Non-Git`): Git
-- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe`
+- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe`
 - Current Branch: `codex/external-channel-stream-output-dedupe`
-- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe`
+- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Bootstrap Base Branch: `origin/personal`
 - Remote Refresh Result: `git fetch origin --prune` succeeded on 2026-04-26.
 - Task Branch: `codex/external-channel-stream-output-dedupe`
@@ -38,7 +38,7 @@ On 2026-04-26 the user requested narrowing the work: treat gateway inbox cleanup
 
 | Date | Source Type (`Code`/`Doc`/`Spec`/`Web`/`Repo`/`Issue`/`Command`/`Trace`/`Log`/`Data`/`Setup`/`Other`) | Exact Source / Query / Command | Why Consulted | Relevant Findings | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- |
-| 2026-04-26 | Command | `git fetch origin --prune`; `git worktree add -b codex/external-channel-stream-output-dedupe /Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe origin/personal` | Bootstrap dedicated ticket workspace | Created clean scoped worktree from current tracked base `origin/personal` at v1.2.84 release bump. | No |
+| 2026-04-26 | Command | `git fetch origin --prune`; `git worktree add -b codex/external-channel-stream-output-dedupe /Users/normy/autobyteus_org/autobyteus-workspace-superrepo origin/personal` | Bootstrap dedicated ticket workspace | Created clean scoped worktree from current tracked base `origin/personal` at v1.2.84 release bump. | No |
 | 2026-04-26 | Log/Data | Runtime files under `$HOME/.autobyteus/server-data/extensions/messaging-gateway/runtime-data` and external-channel persisted delivery records from the user's live test | Determine whether transport/gateway failed or text was already bad before transport | New Telegram update was accepted; server delivery/callback records were sent; persisted server `replyTextFinal` already contained duplicated text. | No |
 | 2026-04-26 | Code | `autobyteus-server-ts/src/external-channel/runtime/channel-run-output-event-collector.ts` | Inspect final reply assembly owner | Collector stores `assistantText` for `SEGMENT_CONTENT`, `finalText` for `SEGMENT_END`, and returns final text on `TURN_COMPLETED`. It delegates string merging to `mergeAssistantText`. | Design collector-owned text assembly fix. |
 | 2026-04-26 | Code | `autobyteus-server-ts/src/external-channel/runtime/channel-output-event-parser.ts` | Inspect parsed text extraction and merge helper | Parser collapses text into one `text` field and exports `mergeAssistantText`. Merge handles exact and prefix/cumulative cases but not suffix/prefix overlap. | Add text source semantics and move/replace merge policy. |

@@ -2,12 +2,12 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/implementation-handoff.md`
+- Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/review-report.md`
 - Current Validation Round: 1
 - Trigger: Code review passed for scoped external-channel streamed output dedupe and requested API/E2E validation.
 - Prior Round Reviewed: N/A
@@ -25,11 +25,11 @@ Validation was derived from the scoped requirements, investigation notes, review
 
 Relevant background artifacts from original open-session delivery:
 
-- Original requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-open-session-delivery/requirements.md`
-- Original investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-open-session-delivery/investigation-notes.md`
-- Original design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-open-session-delivery/design-spec.md`
-- Original implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-open-session-delivery/implementation-handoff.md`
-- Original API/E2E report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-open-session-delivery/api-e2e-report.md`
+- Original requirements: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-open-session-delivery/requirements.md`
+- Original investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-open-session-delivery/investigation-notes.md`
+- Original design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-open-session-delivery/design-spec.md`
+- Original implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-open-session-delivery/implementation-handoff.md`
+- Original API/E2E report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-open-session-delivery/api-e2e-report.md`
 
 Primary acceptance areas covered:
 
@@ -60,7 +60,7 @@ Scope-control checks:
 
 ## Platform / Runtime Targets
 
-- Host worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe`
+- Host worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Branch: `codex/external-channel-stream-output-dedupe`
 - Base/finalization target: `origin/personal` / `personal`
 - Release background: v1.2.84 open-session delivery is already present on this base.
@@ -112,7 +112,7 @@ Not included:
 
 ## Validation Setup / Environment
 
-Commands were run from `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe`.
+Commands were run from `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`.
 
 Validation used local temp-file storage under `/tmp` or package test temp folders, Fastify injected requests, deterministic run/team event streams, and a live local HTTP server for gateway callback runtime integration. No external provider credentials were used.
 
@@ -120,7 +120,7 @@ Validation used local temp-file storage under `/tmp` or package test temp folder
 
 Round 1 API/E2E updated repository-resident durable validation after code review:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/autobyteus-server-ts/tests/e2e/external-channel/external-channel-team-open-delivery.e2e.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/external-channel/external-channel-team-open-delivery.e2e.test.ts`
 
 The updated E2E now validates streamed output dedupe at the external-channel delivery boundary:
 
@@ -133,21 +133,21 @@ The updated E2E now validates streamed output dedupe at the external-channel del
 
 Implementation-provided durable validation also remains in:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/autobyteus-server-ts/tests/unit/external-channel/runtime/channel-output-event-parser.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/autobyteus-server-ts/tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/autobyteus-server-ts/tests/unit/external-channel/runtime/channel-run-output-delivery-runtime.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/external-channel/runtime/channel-output-event-parser.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/external-channel/runtime/channel-run-output-event-collector.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/external-channel/runtime/channel-run-output-delivery-runtime.test.ts`
 
 ## Durable Validation Added To The Codebase
 
 - Repository-resident durable validation added or updated this round: `Yes`
 - Paths added or updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/autobyteus-server-ts/tests/e2e/external-channel/external-channel-team-open-delivery.e2e.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/external-channel/external-channel-team-open-delivery.e2e.test.ts`
 - If `Yes`, returned through `code_reviewer` before delivery: `Yes` — this report and package are being routed to `code_reviewer`; delivery should not start until validation-code re-review passes.
 - Post-validation code review artifact: Pending re-review.
 
 ## Other Validation Artifacts
 
-- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/api-e2e-report.md`
+- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/api-e2e-report.md`
 
 ## Temporary Validation Methods / Scaffolding
 

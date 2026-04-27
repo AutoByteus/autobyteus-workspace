@@ -2,14 +2,14 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/design-spec.md`
 - Current Review Round: 1
 - Trigger: Scoped rework architecture review requested by `solution_designer` for external-channel streamed output dedupe.
 - Prior Review Round Reviewed: N/A
 - Latest Authoritative Round: 1
-- Current-State Evidence Basis: Scoped artifacts plus source spot-checks in `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/autobyteus-server-ts/src/external-channel/runtime/channel-output-event-parser.ts`, `channel-run-output-event-collector.ts`, `channel-run-output-delivery-runtime.ts`, existing runtime unit tests, and agent backend stream event converters. The current `replyTextFinal` corruption is upstream of gateway callback transport.
+- Current-State Evidence Basis: Scoped artifacts plus source spot-checks in `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/external-channel/runtime/channel-output-event-parser.ts`, `channel-run-output-event-collector.ts`, `channel-run-output-delivery-runtime.ts`, existing runtime unit tests, and agent backend stream event converters. The current `replyTextFinal` corruption is upstream of gateway callback transport.
 
 ## Round History
 
@@ -19,7 +19,7 @@
 
 ## Reviewed Design Spec
 
-`/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe/tickets/done/external-channel-stream-output-dedupe/design-spec.md`
+`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-channel-stream-output-dedupe/design-spec.md`
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 

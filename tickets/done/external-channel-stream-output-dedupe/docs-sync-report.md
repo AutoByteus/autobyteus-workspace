@@ -4,7 +4,7 @@
 
 - Ticket: `external-channel-stream-output-dedupe`
 - Trigger: Delivery began after code review passed the post-validation durable E2E update.
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-stream-output-dedupe`
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Ticket branch: `codex/external-channel-stream-output-dedupe`
 - Finalization target: `origin/personal` / local `personal`
 - Integrated base reference used for docs decision: `origin/personal @ d76c532c205d9210ad22331b8b7355f64d3eebf5`
