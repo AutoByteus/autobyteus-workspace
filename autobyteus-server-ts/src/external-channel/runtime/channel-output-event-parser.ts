@@ -16,7 +16,10 @@ export type ParsedChannelOutputEvent = {
   memberRunId: string | null;
   turnId: string | null;
   text: string | null;
+  textKind: ChannelOutputEventTextKind | null;
 };
+
+export type ChannelOutputEventTextKind = "STREAM_FRAGMENT" | "FINAL_TEXT";
 
 export const parseDirectChannelOutputEvent = (
   event: unknown,
@@ -24,6 +27,7 @@ export const parseDirectChannelOutputEvent = (
   if (!isAgentRunEvent(event)) {
     return null;
   }
+  const text = resolveAgentRunEventText(event.eventType, event.payload);
   return {
     eventType: event.eventType,
     statusHint: event.statusHint ?? null,
@@ -32,7 +36,8 @@ export const parseDirectChannelOutputEvent = (
     memberName: null,
     memberRunId: null,
     turnId: resolveTurnIdFromPayload(event.payload),
-    text: resolveAgentRunEventText(event.eventType, event.payload),
+    text: text.text,
+    textKind: text.kind,
   };
 };
 
@@ -53,26 +58,6 @@ export const parseTeamChannelOutputEvent = (
     memberName: asNonEmptyString(event.data.memberName),
     memberRunId: asNonEmptyString(event.data.memberRunId),
   };
-};
-
-export const mergeAssistantText = (current: string, incoming: string): string => {
-  const normalizedIncoming = normalizeOptionalRawString(incoming);
-  if (!normalizedIncoming) {
-    return current;
-  }
-  if (!current) {
-    return normalizedIncoming;
-  }
-  if (normalizedIncoming === current) {
-    return current;
-  }
-  if (normalizedIncoming.startsWith(current)) {
-    return normalizedIncoming;
-  }
-  if (current.startsWith(normalizedIncoming)) {
-    return current;
-  }
-  return `${current}${normalizedIncoming}`;
 };
 
 const isTeamAgentEvent = (
@@ -115,21 +100,48 @@ const resolveTurnIdFromPayload = (
 const resolveAgentRunEventText = (
   eventType: AgentRunEventType,
   payload: Record<string, unknown>,
-): string | null => {
+): { text: string | null; kind: ChannelOutputEventTextKind | null } => {
   const segmentType = asNonEmptyString(payload.segment_type);
-  if (
-    (eventType === AgentRunEventType.SEGMENT_CONTENT ||
-      eventType === AgentRunEventType.SEGMENT_END) &&
-    segmentType === "text"
-  ) {
-    return normalizeOptionalRawString(
+  if (eventType === AgentRunEventType.SEGMENT_CONTENT) {
+    if (segmentType !== "text") {
+      return noText();
+    }
+    return parsedText(
       asNonEmptyRawString(payload.delta) ??
         asNonEmptyRawString(payload.text) ??
         extractAssistantText(payload),
+      "STREAM_FRAGMENT",
     );
   }
-  return null;
+
+  if (eventType === AgentRunEventType.SEGMENT_END) {
+    if (segmentType && segmentType !== "text") {
+      return noText();
+    }
+    const assistantText = extractAssistantText(payload);
+    return parsedText(
+      (segmentType === "text" ? asNonEmptyRawString(payload.text) : null) ??
+        assistantText ??
+        (segmentType === "text" ? asNonEmptyRawString(payload.delta) : null),
+      "FINAL_TEXT",
+    );
+  }
+
+  return noText();
 };
+
+const parsedText = (
+  text: string | null,
+  kind: ChannelOutputEventTextKind,
+): { text: string | null; kind: ChannelOutputEventTextKind | null } => {
+  const normalized = normalizeOptionalRawString(text);
+  return {
+    text: normalized,
+    kind: normalized ? kind : null,
+  };
+};
+
+const noText = (): { text: null; kind: null } => ({ text: null, kind: null });
 
 const extractAssistantText = (
   params: Record<string, unknown>,

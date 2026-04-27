@@ -144,6 +144,19 @@ const emitTextTurn = (emit: (event: unknown) => void, input: {
   emit(teamAgentEvent({ ...input, eventType: AgentRunEventType.TURN_COMPLETED }));
 };
 
+const emitOverlappingTextTurn = (emit: (event: unknown) => void, input: {
+  memberName: string;
+  memberRunId: string;
+  turnId: string;
+  fragments: string[];
+}) => {
+  emit(teamAgentEvent({ ...input, eventType: AgentRunEventType.TURN_STARTED }));
+  for (const text of input.fragments) {
+    emit(teamAgentEvent({ ...input, eventType: AgentRunEventType.SEGMENT_CONTENT, text }));
+  }
+  emit(teamAgentEvent({ ...input, eventType: AgentRunEventType.TURN_COMPLETED }));
+};
+
 describe("ChannelRunOutputDeliveryRuntime", () => {
   it("recovers and publishes an accepted direct reply when stream events arrived before attach", async () => {
     const filePath = `/tmp/channel-output-deliveries-${randomUUID()}.json`;
@@ -273,6 +286,79 @@ describe("ChannelRunOutputDeliveryRuntime", () => {
     });
 
     await runtime.stop();
+  });
+
+  it("publishes clean callback text from overlapping coordinator stream fragments", async () => {
+    const filePath = `/tmp/channel-output-deliveries-${randomUUID()}.json`;
+    tempFiles.add(filePath);
+    const deliveryService = new ChannelRunOutputDeliveryService(
+      new FileChannelRunOutputDeliveryProvider(filePath),
+    );
+    const teamRun = createTeamRun();
+    const publishRunOutputReply = vi.fn().mockResolvedValue({
+      published: true,
+      duplicate: false,
+      reason: null,
+      envelope: {},
+    });
+    const runtime = new ChannelRunOutputDeliveryRuntime({
+      bindingService: { listBindings: vi.fn().mockResolvedValue([]) } as any,
+      messageReceiptService: { findLatestAcceptedSourceForRoute: vi.fn() } as any,
+      deliveryService,
+      agentRunService: {} as any,
+      teamRunService: { resolveTeamRun: vi.fn().mockResolvedValue(teamRun.run) } as any,
+      turnReplyRecoveryService: { resolveReplyText: vi.fn().mockResolvedValue(null) } as any,
+      replyCallbackServiceFactory: () => ({ publishRunOutputReply } as any),
+    });
+    const binding = createBinding();
+
+    await runtime.attachAcceptedDispatch({
+      binding,
+      route: {
+        provider: binding.provider,
+        transport: binding.transport,
+        accountId: binding.accountId,
+        peerId: binding.peerId,
+        threadId: binding.threadId,
+      },
+      latestCorrelationMessageId: "telegram-message-1",
+      target: {
+        targetType: "TEAM",
+        teamRunId: "team-1",
+        entryMemberRunId: "run-coordinator",
+        entryMemberName: "coordinator",
+      },
+      turnId: "initial-turn",
+    });
+
+    try {
+      emitOverlappingTextTurn(teamRun.emit, {
+        memberName: "coordinator",
+        memberRunId: "run-coordinator",
+        turnId: "overlap-turn",
+        fragments: [
+          "Sent the",
+          " the student",
+          " student a",
+          " a hard",
+          " hard cyclic",
+          " cyclic inequality",
+          " inequality problem",
+          " problem to",
+          " to solve",
+          " solve.",
+        ],
+      });
+
+      await waitFor(() => publishRunOutputReply.mock.calls.length === 1);
+      expect(publishRunOutputReply).toHaveBeenCalledWith(expect.objectContaining({
+        replyText: "Sent the student a hard cyclic inequality problem to solve.",
+        correlationMessageId: "telegram-message-1",
+        turnId: "overlap-turn",
+      }));
+    } finally {
+      await runtime.stop();
+    }
   });
 
   it("restores durable output records after restart and skips records already published", async () => {

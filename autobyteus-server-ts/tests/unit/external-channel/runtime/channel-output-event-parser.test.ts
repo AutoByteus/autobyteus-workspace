@@ -25,6 +25,43 @@ describe("channel output event parsing and eligibility", () => {
       agentRunId: "agent-run-1",
       turnId: "turn-1",
       text: "hello",
+      textKind: "STREAM_FRAGMENT",
+    });
+  });
+
+  it("classifies segment end text as final text", () => {
+    const parsed = parseDirectChannelOutputEvent({
+      eventType: AgentRunEventType.SEGMENT_END,
+      runId: "agent-run-1",
+      statusHint: "ACTIVE",
+      payload: {
+        turnId: "turn-1",
+        segment_type: "text",
+        text: "complete reply",
+      },
+    });
+
+    expect(parsed).toMatchObject({
+      text: "complete reply",
+      textKind: "FINAL_TEXT",
+    });
+  });
+
+  it("ignores non-text segment end payloads", () => {
+    const parsed = parseDirectChannelOutputEvent({
+      eventType: AgentRunEventType.SEGMENT_END,
+      runId: "agent-run-1",
+      statusHint: "ACTIVE",
+      payload: {
+        turnId: "turn-1",
+        segment_type: "tool_call",
+        text: "tool output should not publish",
+      },
+    });
+
+    expect(parsed).toMatchObject({
+      text: null,
+      textKind: null,
     });
   });
 
@@ -57,6 +94,7 @@ describe("channel output event parsing and eligibility", () => {
       memberName: "worker",
       memberRunId: "worker-run-1",
       text: "internal",
+      textKind: "STREAM_FRAGMENT",
     });
     expect(policy.evaluate({
       linkTarget: {
