@@ -1,5 +1,9 @@
 import { AgentRunEventType } from "../../agent-execution/domain/agent-run-event.js";
-import { mergeAssistantText, type ParsedChannelOutputEvent } from "./channel-output-event-parser.js";
+import type { ParsedChannelOutputEvent } from "./channel-output-event-parser.js";
+import {
+  appendOutputTextFragment,
+  chooseFinalOutputText,
+} from "./channel-output-text-assembler.js";
 
 export type ChannelRunOutputCollectedFinal = {
   deliveryKey: string;
@@ -33,13 +37,27 @@ export class ChannelRunOutputEventCollector {
 
     const pending = this.getOrCreatePending(input.deliveryKey, turnId);
 
-    if (input.event.eventType === AgentRunEventType.SEGMENT_CONTENT && input.event.text) {
-      pending.assistantText = mergeAssistantText(pending.assistantText, input.event.text);
+    if (
+      input.event.eventType === AgentRunEventType.SEGMENT_CONTENT &&
+      input.event.textKind === "STREAM_FRAGMENT" &&
+      input.event.text
+    ) {
+      pending.assistantText = appendOutputTextFragment(
+        pending.assistantText,
+        input.event.text,
+      );
       return null;
     }
 
-    if (input.event.eventType === AgentRunEventType.SEGMENT_END && input.event.text) {
-      pending.finalText = mergeAssistantText(pending.finalText ?? "", input.event.text);
+    if (
+      input.event.eventType === AgentRunEventType.SEGMENT_END &&
+      input.event.textKind === "FINAL_TEXT" &&
+      input.event.text
+    ) {
+      pending.finalText = chooseFinalOutputText(
+        pending.finalText,
+        input.event.text,
+      );
       return null;
     }
 

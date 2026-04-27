@@ -32,6 +32,9 @@ import { ChannelRunOutputDeliveryService } from "../../../src/external-channel/s
 import { ReplyCallbackService } from "../../../src/external-channel/services/reply-callback-service.js";
 
 const tempFiles = new Set<string>();
+const cleanOverlapReply = "Sent the student a hard cyclic inequality problem to solve.";
+const cleanFinalFollowUp = "clean final coordinator follow-up";
+const secondFollowUp = "coordinator follow-up two";
 
 afterEach(async () => {
   await Promise.all([...tempFiles].map((file) => rm(file, { force: true })));
@@ -39,7 +42,7 @@ afterEach(async () => {
 });
 
 describe("external channel team open delivery e2e", () => {
-  it("delivers direct and no-new-inbound coordinator outputs from one team run without leaking worker output", async () => {
+  it("delivers deduped direct and no-new-inbound coordinator outputs from one team run without leaking worker output", async () => {
     const bindingFilePath = tempJsonPath("channel-bindings");
     const receiptFilePath = tempJsonPath("channel-receipts");
     const outputDeliveryFilePath = tempJsonPath("channel-output-deliveries");
@@ -159,7 +162,7 @@ describe("external channel team open delivery e2e", () => {
         accountId: route.accountId,
         peerId: route.peerId,
         correlationMessageId: "telegram-message-1",
-        replyText: "coordinator direct reply",
+        replyText: cleanOverlapReply,
       });
 
       await teamRun.deliverInterAgentMessage({
@@ -173,9 +176,9 @@ describe("external channel team open delivery e2e", () => {
 
       await waitFor(() => enqueuedOutbounds.length === 3);
       expect(enqueuedOutbounds.map((envelope) => envelope.replyText)).toEqual([
-        "coordinator direct reply",
-        "coordinator follow-up one",
-        "coordinator follow-up two",
+        cleanOverlapReply,
+        cleanFinalFollowUp,
+        secondFollowUp,
       ]);
       expect(enqueuedOutbounds.some((envelope) => envelope.replyText.includes("worker internal only"))).toBe(false);
       expect(new Set(enqueuedOutbounds.map((envelope) => envelope.callbackIdempotencyKey)).size).toBe(3);
@@ -189,9 +192,9 @@ describe("external channel team open delivery e2e", () => {
       const publishedRecords = records.filter((record) => record.status === "PUBLISHED");
       expect(publishedRecords).toHaveLength(3);
       expect(publishedRecords.map((record) => record.replyTextFinal).sort()).toEqual([
-        "coordinator direct reply",
-        "coordinator follow-up one",
-        "coordinator follow-up two",
+        cleanOverlapReply,
+        cleanFinalFollowUp,
+        secondFollowUp,
       ].sort());
       expect(records.some((record) => record.replyTextFinal?.includes("worker internal only"))).toBe(false);
       expect(teamRunService.recordRunActivity).toHaveBeenCalledOnce();
@@ -228,7 +231,20 @@ class DeterministicTeamRunBackend implements TeamRunBackend {
 
   async postMessage(_message: AgentInputUserMessage, targetMemberName?: string | null): Promise<AgentOperationResult> {
     expect(targetMemberName).toBe("coordinator");
-    setTimeout(() => this.emitTextTurn("coordinator", "run-coordinator", "turn-direct", "coordinator direct reply"), 5).unref?.();
+    setTimeout(() => {
+      this.emitOverlappingStreamTurn("coordinator", "run-coordinator", "turn-direct", [
+        "Sent the",
+        " the student",
+        " student a",
+        " a hard",
+        " hard cyclic",
+        " cyclic inequality",
+        " inequality problem",
+        " problem to",
+        " to solve",
+        " solve.",
+      ]);
+    }, 5).unref?.();
     return { accepted: true, turnId: "turn-direct", memberRunId: "run-coordinator", memberName: "coordinator" };
   }
 
@@ -237,8 +253,14 @@ class DeterministicTeamRunBackend implements TeamRunBackend {
     expect(request.recipientMemberName).toBe("coordinator");
     setTimeout(() => {
       this.emitTextTurn("worker", "run-worker", "turn-worker-internal", "worker internal only");
-      this.emitTextTurn("coordinator", "run-coordinator", "turn-follow-up-1", "coordinator follow-up one");
-      this.emitTextTurn("coordinator", "run-coordinator", "turn-follow-up-2", "coordinator follow-up two");
+      this.emitFinalPrecedenceTurn(
+        "coordinator",
+        "run-coordinator",
+        "turn-follow-up-1",
+        ["noisy partial", " partial duplicate"],
+        cleanFinalFollowUp,
+      );
+      this.emitTextTurn("coordinator", "run-coordinator", "turn-follow-up-2", secondFollowUp);
     }, 5).unref?.();
     return { accepted: true };
   }
@@ -248,12 +270,45 @@ class DeterministicTeamRunBackend implements TeamRunBackend {
   async terminate(): Promise<AgentOperationResult> { this.active = false; return { accepted: true }; }
 
   private emitTextTurn(memberName: string, memberRunId: string, turnId: string, text: string): void {
+    this.emitFinalPrecedenceTurn(memberName, memberRunId, turnId, [text], text);
+  }
+
+  private emitOverlappingStreamTurn(memberName: string, memberRunId: string, turnId: string, fragments: string[]): void {
     const events = [
       { eventType: AgentRunEventType.TURN_STARTED, payload: { turnId } },
-      { eventType: AgentRunEventType.SEGMENT_CONTENT, payload: { turnId, segment_type: "text", delta: text } },
-      { eventType: AgentRunEventType.SEGMENT_END, payload: { turnId, segment_type: "text", text } },
+      ...fragments.map((fragment) => ({
+        eventType: AgentRunEventType.SEGMENT_CONTENT,
+        payload: { turnId, segment_type: "text", delta: fragment },
+      })),
       { eventType: AgentRunEventType.TURN_COMPLETED, payload: { turnId } },
     ];
+    this.emitEvents(memberName, memberRunId, events);
+  }
+
+  private emitFinalPrecedenceTurn(
+    memberName: string,
+    memberRunId: string,
+    turnId: string,
+    fragments: string[],
+    finalText: string,
+  ): void {
+    const events = [
+      { eventType: AgentRunEventType.TURN_STARTED, payload: { turnId } },
+      ...fragments.map((fragment) => ({
+        eventType: AgentRunEventType.SEGMENT_CONTENT,
+        payload: { turnId, segment_type: "text", delta: fragment },
+      })),
+      { eventType: AgentRunEventType.SEGMENT_END, payload: { turnId, segment_type: "text", text: finalText } },
+      { eventType: AgentRunEventType.TURN_COMPLETED, payload: { turnId } },
+    ];
+    this.emitEvents(memberName, memberRunId, events);
+  }
+
+  private emitEvents(
+    memberName: string,
+    memberRunId: string,
+    events: Array<{ eventType: AgentRunEventType; payload: Record<string, unknown> }>,
+  ): void {
     for (const event of events) {
       for (const listener of this.listeners) {
         listener({
