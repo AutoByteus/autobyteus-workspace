@@ -1,7 +1,6 @@
-# Release Notes — External Channel Open Session Delivery
+## Improvements
+- Improved managed messaging gateway upgrade recovery by automatically quarantining incompatible inbox/outbox reliability queue files and creating fresh queues so new messages can continue.
+- Preserved gateway configuration, channel bindings, provider secrets, personal session state, and queue owner locks during queue-file recovery.
 
-- External messaging channels now keep delivering eligible output from the active bound run instead of stopping after the first inbound-message reply.
-- Team bindings now deliver coordinator or entry-node follow-up responses back to Telegram/external channels even when the follow-up was triggered by an internal team-member handoff and the user did not send another message.
-- Worker-only/internal team coordination messages remain private and are not sent to the external peer.
-- External-channel delivery records are durable and once-only per route/run/turn, improving restart recovery and duplicate protection.
-- Message gateway ingress handling now recognizes server `ACCEPTED` responses as completed accepted work, avoiding stale retry behavior from the old routed-status contract.
+## Fixes
+- Fixed an upgrade path where stale gateway queue data containing legacy inbound statuses such as `COMPLETED_ROUTED` could stop Telegram and other messaging deliveries until runtime queue files were manually deleted.
