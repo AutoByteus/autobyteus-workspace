@@ -1,8 +1,8 @@
-import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { parseExternalChannelProvider } from "autobyteus-ts/external-channel/provider.js";
 import { parseExternalChannelTransport } from "autobyteus-ts/external-channel/channel-transport.js";
+import { FileQueueStateStore } from "../queue/file-queue-state-store.js";
 import type {
   InboxStore,
   InboundInboxCreateInput,
@@ -20,22 +20,27 @@ type InboundInboxFileState = {
 const DEFAULT_FILENAME = "inbound-inbox.json";
 
 export class FileInboxStore implements InboxStore {
-  private readonly storePath: string;
-  private state: InboundInboxFileState | null = null;
-  private mutationQueue: Promise<void> = Promise.resolve();
+  private readonly stateStore: FileQueueStateStore<InboundInboxFileState>;
 
   constructor(rootDir: string, fileName: string = DEFAULT_FILENAME) {
-    this.storePath = path.join(rootDir, fileName);
+    this.stateStore = new FileQueueStateStore({
+      queueName: "inbound inbox",
+      filePath: path.join(rootDir, fileName),
+      createEmptyState,
+      parseState,
+    });
   }
 
   async upsertByIngressKey(input: InboundInboxCreateInput): Promise<InboundInboxUpsertResult> {
-    return this.withMutation(async () => {
-      const state = await this.loadState();
+    return this.stateStore.withMutation<InboundInboxUpsertResult>((state) => {
       const existing = state.records.find((record) => record.ingressKey === input.ingressKey);
       if (existing) {
         return {
-          record: existing,
-          duplicate: true,
+          result: {
+            record: existing,
+            duplicate: true,
+          },
+          persist: false,
         };
       }
 
@@ -59,16 +64,18 @@ export class FileInboxStore implements InboxStore {
       };
 
       state.records.push(next);
-      await this.persistState(state);
       return {
-        record: next,
-        duplicate: false,
+        result: {
+          record: next,
+          duplicate: false,
+        },
+        persist: true,
       };
     });
   }
 
   async getById(recordId: string): Promise<InboundInboxRecord | null> {
-    const state = await this.loadState();
+    const state = await this.stateStore.load();
     return state.records.find((record) => record.id === recordId) ?? null;
   }
 
@@ -78,7 +85,7 @@ export class FileInboxStore implements InboxStore {
       return [];
     }
 
-    const state = await this.loadState();
+    const state = await this.stateStore.load();
     const nowEpoch = toEpochMs(nowIso, "nowIso");
     const leaseStatuses: InboundInboxStatus[] = ["RECEIVED", "FAILED_RETRY"];
 
@@ -98,8 +105,7 @@ export class FileInboxStore implements InboxStore {
     recordId: string,
     update: InboundInboxStatusUpdate,
   ): Promise<InboundInboxRecord> {
-    return this.withMutation(async () => {
-      const state = await this.loadState();
+    return this.stateStore.withMutation((state) => {
       const index = state.records.findIndex((record) => record.id === recordId);
       if (index < 0) {
         throw new Error(`Inbox record not found: ${recordId}`);
@@ -125,8 +131,10 @@ export class FileInboxStore implements InboxStore {
       };
 
       state.records[index] = next;
-      await this.persistState(state);
-      return next;
+      return {
+        result: next,
+        persist: true,
+      };
     });
   }
 
@@ -135,58 +143,15 @@ export class FileInboxStore implements InboxStore {
     if (filter.size === 0) {
       return [];
     }
-    const state = await this.loadState();
+    const state = await this.stateStore.load();
     return state.records.filter((record) => filter.has(record.status));
   }
-
-  private async withMutation<T>(mutation: () => Promise<T>): Promise<T> {
-    let resolveResult: (value: T) => void = () => undefined;
-    let rejectResult: (error: unknown) => void = () => undefined;
-    const result = new Promise<T>((resolve, reject) => {
-      resolveResult = resolve;
-      rejectResult = reject;
-    });
-
-    this.mutationQueue = this.mutationQueue.then(async () => {
-      try {
-        resolveResult(await mutation());
-      } catch (error) {
-        rejectResult(error);
-      }
-    });
-
-    await this.mutationQueue;
-    return result;
-  }
-
-  private async loadState(): Promise<InboundInboxFileState> {
-    if (this.state) {
-      return this.state;
-    }
-
-    try {
-      const raw = await readFile(this.storePath, "utf8");
-      this.state = parseState(JSON.parse(raw));
-      return this.state;
-    } catch (error) {
-      if (!isNotFoundError(error)) {
-        throw error;
-      }
-      this.state = {
-        version: 1,
-        records: [],
-      };
-      return this.state;
-    }
-  }
-
-  private async persistState(state: InboundInboxFileState): Promise<void> {
-    await mkdir(path.dirname(this.storePath), { recursive: true });
-    const tempPath = `${this.storePath}.tmp`;
-    await writeFile(tempPath, JSON.stringify(state, null, 2), "utf8");
-    await rename(tempPath, this.storePath);
-  }
 }
+
+const createEmptyState = (): InboundInboxFileState => ({
+  version: 1,
+  records: [],
+});
 
 const parseState = (value: unknown): InboundInboxFileState => {
   if (!isRecord(value)) {
@@ -327,9 +292,3 @@ const normalizeNonNegativeInteger = (value: unknown, key: string): number => {
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
-
-const isNotFoundError = (error: unknown): boolean =>
-  typeof error === "object" &&
-  error !== null &&
-  "code" in error &&
-  (error as { code?: string }).code === "ENOENT";

@@ -106,6 +106,10 @@ Managed messaging does not rely only on an HTTP health check. The gateway keeps 
 - workers retry transient failures with backoff
 - terminal failures move into dead-letter storage instead of disappearing
 - queue owner locks publish heartbeats so lock loss is detectable
+- if an upgraded gateway first encounters incompatible inbox/outbox queue data,
+  it quarantines the offending queue file beside the active file and creates a
+  fresh empty queue so new messages can continue without manual runtime-file
+  deletion
 
 The top runtime card exposes that state through:
 
@@ -116,6 +120,12 @@ The top runtime card exposes that state through:
 - outbound dead-letter count
 
 If the reliability state turns `CRITICAL_LOCK_LOST`, restart the managed gateway before trusting new deliveries.
+
+Queue-file quarantine is limited to transient inbox/outbox data. It does not
+delete channel bindings, provider configuration, provider secrets, personal
+session auth/state, or queue owner lock files. Old incompatible queue records
+are preserved in the quarantine file for diagnostics, but they are not migrated
+back into active retry processing.
 
 ## How To Prove Telegram Works
 
