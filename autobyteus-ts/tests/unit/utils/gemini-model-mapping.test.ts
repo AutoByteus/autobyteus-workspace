@@ -14,6 +14,22 @@ describe('resolveModelForRuntime', () => {
     expect(resolveModelForRuntime('gemini-2.5-flash-preview-tts', 'tts', 'api_key')).toBe('gemini-2.5-flash-preview-tts');
   });
 
+  it('maps Gemini 3.1 Flash TTS preview for api_key and vertex runtimes', () => {
+    expect(resolveModelForRuntime('gemini-3.1-flash-tts-preview', 'tts', 'api_key')).toBe(
+      'gemini-3.1-flash-tts-preview'
+    );
+    expect(resolveModelForRuntime('gemini-3.1-flash-tts-preview', 'tts', 'vertex')).toBe(
+      'gemini-3.1-flash-tts-preview'
+    );
+  });
+
+  it('maps Gemini 2.5 Pro preview TTS for api_key and vertex runtimes', () => {
+    expect(resolveModelForRuntime('gemini-2.5-pro-preview-tts', 'tts', 'api_key')).toBe(
+      'gemini-2.5-pro-preview-tts'
+    );
+    expect(resolveModelForRuntime('gemini-2.5-pro-preview-tts', 'tts', 'vertex')).toBe('gemini-2.5-pro-tts');
+  });
+
   it('maps Gemini text models for the LLM modality', () => {
     expect(resolveModelForRuntime('gemini-3.1-pro-preview', 'llm', 'vertex')).toBe('gemini-3.1-pro-preview');
     expect(resolveModelForRuntime('gemini-3-flash-preview', 'llm', 'api_key')).toBe('gemini-3-flash-preview');

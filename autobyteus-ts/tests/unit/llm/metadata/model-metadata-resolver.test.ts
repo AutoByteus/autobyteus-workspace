@@ -35,12 +35,12 @@ describe('ModelMetadataResolver', () => {
 
     const metadata = await resolver.resolve({
       provider: LLMProvider.OPENAI,
-      name: 'gpt-5.4',
-      value: 'gpt-5.4',
-      canonicalName: 'gpt-5.4'
+      name: 'gpt-5.5',
+      value: 'gpt-5.5',
+      canonicalName: 'gpt-5.5'
     });
 
-    expect(metadata.maxContextTokens).toBe(1000000);
+    expect(metadata.maxContextTokens).toBe(1050000);
     expect(metadata.maxOutputTokens).toBe(128000);
     expect(mockFetch).not.toHaveBeenCalled();
   });
@@ -64,15 +64,16 @@ describe('ModelMetadataResolver', () => {
     });
     const curatedFallback = await resolver.resolve({
       provider: LLMProvider.ANTHROPIC,
-      name: 'claude-opus-4.6',
-      value: 'claude-opus-4-6',
-      canonicalName: 'claude-opus-4.6'
+      name: 'claude-opus-4.7',
+      value: 'claude-opus-4-7',
+      canonicalName: 'claude-opus-4.7'
     });
 
     expect(liveMetadata.maxContextTokens).toBe(1200000);
     expect(liveMetadata.maxInputTokens).toBe(1200000);
     expect(liveMetadata.maxOutputTokens).toBe(64000);
     expect(curatedFallback.maxContextTokens).toBe(1000000);
+    expect(curatedFallback.maxOutputTokens).toBe(128000);
     expect(mockFetch).toHaveBeenCalledTimes(1);
   });
 
@@ -95,14 +96,37 @@ describe('ModelMetadataResolver', () => {
     });
     const curatedFallback = await resolver.resolve({
       provider: LLMProvider.KIMI,
-      name: 'kimi-k2-thinking',
-      value: 'kimi-k2-thinking',
-      canonicalName: 'kimi-k2-thinking'
+      name: 'kimi-k2.6',
+      value: 'kimi-k2.6',
+      canonicalName: 'kimi-k2.6'
     });
 
     expect(liveMetadata.maxContextTokens).toBe(262144);
     expect(curatedFallback.maxContextTokens).toBe(256000);
     expect(mockFetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('returns curated metadata for DeepSeek V4 models without live requests', async () => {
+    const resolver = new ModelMetadataResolver();
+
+    const flashMetadata = await resolver.resolve({
+      provider: LLMProvider.DEEPSEEK,
+      name: 'deepseek-v4-flash',
+      value: 'deepseek-v4-flash',
+      canonicalName: 'deepseek-v4-flash'
+    });
+    const proMetadata = await resolver.resolve({
+      provider: LLMProvider.DEEPSEEK,
+      name: 'deepseek-v4-pro',
+      value: 'deepseek-v4-pro',
+      canonicalName: 'deepseek-v4-pro'
+    });
+
+    expect(flashMetadata.maxContextTokens).toBe(1000000);
+    expect(flashMetadata.maxOutputTokens).toBe(384000);
+    expect(proMetadata.maxContextTokens).toBe(1000000);
+    expect(proMetadata.maxOutputTokens).toBe(384000);
+    expect(mockFetch).not.toHaveBeenCalled();
   });
 
   it('parses Mistral model-list metadata from the official models endpoint', async () => {

@@ -6,6 +6,7 @@ import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMUserMessage } from '../../../../src/llm/user-message.js';
 import { CompleteResponse, ChunkResponse } from '../../../../src/llm/utils/response-types.js';
 import { Message, MessageRole, ToolCallPayload, ToolResultPayload } from '../../../../src/llm/utils/messages.js';
+import { skipIfProviderAccessError } from '../../helpers/provider-access.js';
 
 const apiKey = process.env.DEEPSEEK_API_KEY;
 const runIntegration = apiKey ? describe : describe.skip;
@@ -14,9 +15,9 @@ const TURN_ID = 'turn_test';
 
 const buildModel = () =>
   new LLMModel({
-    name: 'deepseek-chat',
-    value: 'deepseek-chat',
-    canonicalName: 'deepseek-chat',
+    name: 'deepseek-v4-flash',
+    value: 'deepseek-v4-flash',
+    canonicalName: 'deepseek-v4-flash',
     provider: LLMProvider.DEEPSEEK
   });
 
@@ -93,6 +94,11 @@ runIntegration('DeepSeekLLM Integration', () => {
       expect(response).toBeInstanceOf(CompleteResponse);
       expect(typeof response.content).toBe('string');
       expect(response.content.length).toBeGreaterThan(0);
+    } catch (error) {
+      if (skipIfProviderAccessError('DeepSeek', 'deepseek-v4-flash', error)) {
+        return;
+      }
+      throw error;
     } finally {
       await llm.cleanup();
     }
@@ -115,6 +121,11 @@ runIntegration('DeepSeekLLM Integration', () => {
 
       expect(receivedTokens.length).toBeGreaterThan(0);
       expect(completeResponse.length).toBeGreaterThan(0);
+    } catch (error) {
+      if (skipIfProviderAccessError('DeepSeek', 'deepseek-v4-flash', error)) {
+        return;
+      }
+      throw error;
     } finally {
       await llm.cleanup();
     }
@@ -130,6 +141,11 @@ runIntegration('DeepSeekLLM Integration', () => {
       expect(response).toBeInstanceOf(CompleteResponse);
       expect(typeof response.content).toBe('string');
       expect(response.content.length).toBeGreaterThan(0);
+    } catch (error) {
+      if (skipIfProviderAccessError('DeepSeek', 'deepseek-v4-flash', error)) {
+        return;
+      }
+      throw error;
     } finally {
       await llm.cleanup();
     }
@@ -153,6 +169,11 @@ runIntegration('DeepSeekLLM Integration', () => {
 
       expect(receivedTokens.length).toBeGreaterThan(0);
       expect(completeResponse.length).toBeGreaterThan(0);
+    } catch (error) {
+      if (skipIfProviderAccessError('DeepSeek', 'deepseek-v4-flash', error)) {
+        return;
+      }
+      throw error;
     } finally {
       await llm.cleanup();
     }
@@ -162,6 +183,11 @@ runIntegration('DeepSeekLLM Integration', () => {
     const llm = new DeepSeekLLM(buildModel());
     try {
       await runToolCallContinuation(llm);
+    } catch (error) {
+      if (skipIfProviderAccessError('DeepSeek', 'deepseek-v4-flash', error)) {
+        return;
+      }
+      throw error;
     } finally {
       await llm.cleanup();
     }

@@ -5,7 +5,7 @@ import { LLMProvider } from '../providers.js';
 import { Message, MessageRole } from '../utils/messages.js';
 import { ChunkResponse, CompleteResponse } from '../utils/response-types.js';
 
-const KIMI_TOOL_SAFE_NON_THINKING_MODELS = new Set(['kimi-k2.5']);
+const KIMI_TOOL_SAFE_NON_THINKING_MODELS = new Set(['kimi-k2.5', 'kimi-k2.6']);
 
 function requestUsesToolWorkflow(messages: Message[], kwargs: Record<string, unknown>): boolean {
   if (Array.isArray(kwargs.tools) && kwargs.tools.length > 0) {

@@ -62,6 +62,40 @@ export class ImageClientFactory extends Singleton {
       })
     ]);
 
+    const gptImage2Schema = new ParameterSchema([
+      new ParameterDefinition({
+        name: 'n',
+        type: ParameterType.INTEGER,
+        defaultValue: 1,
+        minValue: 1,
+        maxValue: 1,
+        description: 'The number of images to generate.'
+      }),
+      new ParameterDefinition({
+        name: 'size',
+        type: ParameterType.ENUM,
+        defaultValue: 'auto',
+        enumValues: [
+          'auto',
+          '1024x1024',
+          '1536x1024',
+          '1024x1536',
+          '2048x2048',
+          '2048x1152',
+          '3840x2160',
+          '2160x3840'
+        ],
+        description: 'The size of the generated image. GPT Image 2 also accepts custom valid multiples of 16.'
+      }),
+      new ParameterDefinition({
+        name: 'quality',
+        type: ParameterType.ENUM,
+        defaultValue: 'auto',
+        enumValues: ['auto', 'low', 'medium', 'high'],
+        description: 'The quality of the image that will be generated.'
+      })
+    ]);
+
     const gptImageModel = new ImageModel({
       name: 'gpt-image-1.5',
       value: 'gpt-image-1.5',
@@ -69,7 +103,17 @@ export class ImageClientFactory extends Singleton {
       clientClass: OpenAIImageClient,
       parameterSchema: gptImageSchema,
       description:
-        "OpenAI's latest stateless image model with faster renders, improved text rendering, and higher fidelity edits."
+        "OpenAI's stateless image model with fast renders, improved text rendering, and higher fidelity edits."
+    });
+
+    const gptImage2Model = new ImageModel({
+      name: 'gpt-image-2',
+      value: 'gpt-image-2',
+      provider: MultimediaProvider.OPENAI,
+      clientClass: OpenAIImageClient,
+      parameterSchema: gptImage2Schema,
+      description:
+        "OpenAI's state-of-the-art image generation and editing model with flexible image sizes."
     });
 
     const imagenModel = new ImageModel({
@@ -99,7 +143,7 @@ export class ImageClientFactory extends Singleton {
       description: 'High-quality conversational image model for complex edits.'
     });
 
-    const modelsToRegister = [gptImageModel, imagenModel, geminiFlashImageModel, geminiProImageModel];
+    const modelsToRegister = [gptImageModel, gptImage2Model, imagenModel, geminiFlashImageModel, geminiProImageModel];
     for (const model of modelsToRegister) {
       ImageClientFactory.registerModel(model);
     }

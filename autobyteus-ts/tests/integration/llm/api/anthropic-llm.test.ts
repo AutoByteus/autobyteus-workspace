@@ -4,6 +4,7 @@ import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMUserMessage } from '../../../../src/llm/user-message.js';
 import { CompleteResponse, ChunkResponse } from '../../../../src/llm/utils/response-types.js';
+import { skipIfProviderAccessError } from '../../helpers/provider-access.js';
 
 const apiKey = process.env.ANTHROPIC_API_KEY;
 const runIntegration = apiKey ? describe : describe.skip;
@@ -11,9 +12,9 @@ const runIntegration = apiKey ? describe : describe.skip;
 runIntegration('AnthropicLLM Integration', () => {
   const buildModel = () =>
     new LLMModel({
-      name: 'claude-sonnet-4.6',
-      value: 'claude-sonnet-4-6',
-      canonicalName: 'claude-sonnet-4.6',
+      name: 'claude-opus-4.7',
+      value: 'claude-opus-4-7',
+      canonicalName: 'claude-opus-4.7',
       provider: LLMProvider.ANTHROPIC
     });
 
@@ -26,9 +27,7 @@ runIntegration('AnthropicLLM Integration', () => {
       expect(typeof response.content).toBe('string');
       expect(response.content.length).toBeGreaterThan(0);
     } catch (error: any) {
-      const message = String(error?.message || error);
-      if (message.includes('not_found_error') || message.includes('claude-sonnet-4-6')) {
-        // Skip if model is not available for this API key.
+      if (skipIfProviderAccessError('Anthropic', 'claude-opus-4-7', error)) {
         return;
       }
       throw error;
@@ -55,8 +54,7 @@ runIntegration('AnthropicLLM Integration', () => {
       expect(receivedTokens.length).toBeGreaterThan(0);
       expect(completeResponse.length).toBeGreaterThan(0);
     } catch (error: any) {
-      const message = String(error?.message || error);
-      if (message.includes('not_found_error') || message.includes('claude-sonnet-4-6')) {
+      if (skipIfProviderAccessError('Anthropic', 'claude-opus-4-7', error)) {
         return;
       }
       throw error;
@@ -76,8 +74,7 @@ runIntegration('AnthropicLLM Integration', () => {
       expect(typeof response.content).toBe('string');
       expect(response.content.length).toBeGreaterThan(0);
     } catch (error: any) {
-      const message = String(error?.message || error);
-      if (message.includes('not_found_error') || message.includes('claude-sonnet-4-6')) {
+      if (skipIfProviderAccessError('Anthropic', 'claude-opus-4-7', error)) {
         return;
       }
       throw error;
@@ -105,8 +102,7 @@ runIntegration('AnthropicLLM Integration', () => {
       expect(receivedTokens.length).toBeGreaterThan(0);
       expect(completeResponse.length).toBeGreaterThan(0);
     } catch (error: any) {
-      const message = String(error?.message || error);
-      if (message.includes('not_found_error') || message.includes('claude-sonnet-4-6')) {
+      if (skipIfProviderAccessError('Anthropic', 'claude-opus-4-7', error)) {
         return;
       }
       throw error;

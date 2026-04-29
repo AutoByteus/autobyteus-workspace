@@ -59,6 +59,50 @@ const claudeSchema = new ParameterSchema([
   })
 ]);
 
+const claudeAdaptiveThinkingSchema = new ParameterSchema([
+  new ParameterDefinition({
+    name: 'thinking_enabled',
+    type: ParameterType.BOOLEAN,
+    description: 'Enable Claude Opus 4.7 adaptive thinking. No fixed budget is sent.',
+    required: false,
+    defaultValue: false
+  }),
+  new ParameterDefinition({
+    name: 'thinking_display',
+    type: ParameterType.ENUM,
+    description: 'Controls whether adaptive thinking content is omitted or summarized when adaptive thinking is enabled.',
+    required: false,
+    defaultValue: 'omitted',
+    enumValues: ['omitted', 'summarized']
+  })
+]);
+
+const deepseekV4Schema = new ParameterSchema([
+  new ParameterDefinition({
+    name: 'reasoning_effort',
+    type: ParameterType.ENUM,
+    description: 'Controls DeepSeek V4 thinking effort when thinking mode is enabled.',
+    required: false,
+    defaultValue: 'high',
+    enumValues: ['high', 'max']
+  }),
+  new ParameterDefinition({
+    name: 'thinking',
+    type: ParameterType.OBJECT,
+    description: 'DeepSeek V4 thinking mode switch in the provider API shape.',
+    required: false,
+    objectSchema: new ParameterSchema([
+      new ParameterDefinition({
+        name: 'type',
+        type: ParameterType.ENUM,
+        description: 'Enable or disable DeepSeek V4 thinking mode.',
+        required: true,
+        enumValues: ['enabled', 'disabled']
+      })
+    ])
+  })
+]);
+
 const geminiSchema = new ParameterSchema([
   new ParameterDefinition({
     name: 'thinking_level',
@@ -89,6 +133,15 @@ const glmSchema = new ParameterSchema([
 ]);
 
 export const supportedModelDefinitions: SupportedModelDefinition[] = [
+  {
+    name: 'gpt-5.5',
+    value: 'gpt-5.5',
+    provider: LLMProvider.OPENAI,
+    llmClass: OpenAILLM,
+    canonicalName: 'gpt-5.5',
+    defaultConfig: new LLMConfig({ pricingConfig: pricing(5.0, 30.0) }),
+    configSchema: openaiReasoningSchema
+  },
   {
     name: 'gpt-5.4',
     value: 'gpt-5.4',
@@ -140,6 +193,15 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     defaultConfig: new LLMConfig({ pricingConfig: pricing(0.2, 1.5) })
   },
   {
+    name: 'claude-opus-4.7',
+    value: 'claude-opus-4-7',
+    provider: LLMProvider.ANTHROPIC,
+    llmClass: AnthropicLLM,
+    canonicalName: 'claude-opus-4.7',
+    defaultConfig: new LLMConfig({ pricingConfig: pricing(5.0, 25.0) }),
+    configSchema: claudeAdaptiveThinkingSchema
+  },
+  {
     name: 'claude-opus-4.6',
     value: 'claude-opus-4-6',
     provider: LLMProvider.ANTHROPIC,
@@ -165,6 +227,30 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     canonicalName: 'claude-haiku-4.5',
     defaultConfig: new LLMConfig({ pricingConfig: pricing(1.0, 5.0) }),
     configSchema: claudeSchema
+  },
+  {
+    name: 'deepseek-v4-flash',
+    value: 'deepseek-v4-flash',
+    provider: LLMProvider.DEEPSEEK,
+    llmClass: DeepSeekLLM,
+    canonicalName: 'deepseek-v4-flash',
+    defaultConfig: new LLMConfig({
+      rateLimit: 60,
+      pricingConfig: pricing(0.14, 0.28)
+    }),
+    configSchema: deepseekV4Schema
+  },
+  {
+    name: 'deepseek-v4-pro',
+    value: 'deepseek-v4-pro',
+    provider: LLMProvider.DEEPSEEK,
+    llmClass: DeepSeekLLM,
+    canonicalName: 'deepseek-v4-pro',
+    defaultConfig: new LLMConfig({
+      rateLimit: 60,
+      pricingConfig: pricing(1.74, 3.48)
+    }),
+    configSchema: deepseekV4Schema
   },
   {
     name: 'deepseek-chat',
@@ -205,6 +291,13 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     canonicalName: 'gemini-3-flash-preview',
     defaultConfig: new LLMConfig({ pricingConfig: pricing(0.5, 3.0) }),
     configSchema: geminiSchema
+  },
+  {
+    name: 'kimi-k2.6',
+    value: 'kimi-k2.6',
+    provider: LLMProvider.KIMI,
+    llmClass: KimiLLM,
+    canonicalName: 'kimi-k2.6'
   },
   {
     name: 'kimi-k2.5',

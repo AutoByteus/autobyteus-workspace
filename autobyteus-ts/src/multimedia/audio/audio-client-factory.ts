@@ -135,13 +135,20 @@ export class AudioClientFactory extends Singleton {
       })
     ]);
 
-    const geminiTtsModel = new AudioModel({
-      name: 'gemini-2.5-flash-tts',
-      value: 'gemini-2.5-flash-preview-tts',
-      provider: MultimediaProvider.GEMINI,
-      clientClass: GeminiAudioClient,
-      parameterSchema: geminiTtsSchema
-    });
+    const createGeminiTtsModel = (name: string, value: string): AudioModel =>
+      new AudioModel({
+        name,
+        value,
+        provider: MultimediaProvider.GEMINI,
+        clientClass: GeminiAudioClient,
+        parameterSchema: geminiTtsSchema
+      });
+
+    const geminiTtsModels = [
+      createGeminiTtsModel('gemini-3.1-flash-tts-preview', 'gemini-3.1-flash-tts-preview'),
+      createGeminiTtsModel('gemini-2.5-flash-tts', 'gemini-2.5-flash-preview-tts'),
+      createGeminiTtsModel('gemini-2.5-pro-tts', 'gemini-2.5-pro-preview-tts')
+    ];
 
     const openaiTtsSchema = new ParameterSchema([
       new ParameterDefinition({
@@ -173,7 +180,7 @@ export class AudioClientFactory extends Singleton {
       parameterSchema: openaiTtsSchema
     });
 
-    const modelsToRegister = [openaiTtsModel, geminiTtsModel];
+    const modelsToRegister = [openaiTtsModel, ...geminiTtsModels];
     for (const model of modelsToRegister) {
       AudioClientFactory.registerModel(model);
     }

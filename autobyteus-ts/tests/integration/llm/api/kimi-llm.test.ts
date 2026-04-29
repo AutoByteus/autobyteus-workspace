@@ -6,6 +6,7 @@ import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMUserMessage } from '../../../../src/llm/user-message.js';
 import { CompleteResponse, ChunkResponse } from '../../../../src/llm/utils/response-types.js';
 import { Message, MessageRole, ToolCallPayload, ToolResultPayload } from '../../../../src/llm/utils/messages.js';
+import { skipIfProviderAccessError } from '../../helpers/provider-access.js';
 
 const apiKey = process.env.KIMI_API_KEY;
 const runIntegration = apiKey ? describe : describe.skip;
@@ -14,9 +15,9 @@ const TURN_ID = 'turn_test';
 
 const buildModel = () =>
   new LLMModel({
-    name: 'kimi-k2.5',
-    value: 'kimi-k2.5',
-    canonicalName: 'kimi-k2.5',
+    name: 'kimi-k2.6',
+    value: 'kimi-k2.6',
+    canonicalName: 'kimi-k2.6',
     provider: LLMProvider.KIMI
   });
 
@@ -94,6 +95,11 @@ runIntegration('KimiLLM Integration', () => {
       expect(typeof response.content).toBe('string');
       expect(response.content.toLowerCase()).toContain('pong');
       expect(response.usage).toBeTruthy();
+    } catch (error) {
+      if (skipIfProviderAccessError('Kimi', 'kimi-k2.6', error)) {
+        return;
+      }
+      throw error;
     } finally {
       await llm.cleanup();
     }
@@ -120,6 +126,11 @@ runIntegration('KimiLLM Integration', () => {
 
       expect(receivedTokens.length).toBeGreaterThan(1);
       expect(completeResponse.length).toBeGreaterThan(10);
+    } catch (error) {
+      if (skipIfProviderAccessError('Kimi', 'kimi-k2.6', error)) {
+        return;
+      }
+      throw error;
     } finally {
       await llm.cleanup();
     }
@@ -135,6 +146,11 @@ runIntegration('KimiLLM Integration', () => {
       expect(response).toBeInstanceOf(CompleteResponse);
       expect(typeof response.content).toBe('string');
       expect(response.content.toLowerCase()).toContain('guido van rossum');
+    } catch (error) {
+      if (skipIfProviderAccessError('Kimi', 'kimi-k2.6', error)) {
+        return;
+      }
+      throw error;
     } finally {
       await llm.cleanup();
     }
@@ -159,6 +175,11 @@ runIntegration('KimiLLM Integration', () => {
       expect(receivedTokens.length).toBeGreaterThan(1);
       expect(completeResponse.toLowerCase()).toContain('django');
       expect(completeResponse.toLowerCase()).toContain('flask');
+    } catch (error) {
+      if (skipIfProviderAccessError('Kimi', 'kimi-k2.6', error)) {
+        return;
+      }
+      throw error;
     } finally {
       await llm.cleanup();
     }
@@ -168,6 +189,11 @@ runIntegration('KimiLLM Integration', () => {
     const llm = new KimiLLM(buildModel());
     try {
       await runToolCallContinuation(llm);
+    } catch (error) {
+      if (skipIfProviderAccessError('Kimi', 'kimi-k2.6', error)) {
+        return;
+      }
+      throw error;
     } finally {
       await llm.cleanup();
     }

@@ -11,6 +11,7 @@ import { OpenAiJsonSchemaFormatter } from '../../../../src/tools/usage/formatter
 import { defaultToolRegistry, ToolRegistry } from '../../../../src/tools/registry/tool-registry.js';
 import { ToolDefinition } from '../../../../src/tools/registry/tool-definition.js';
 import { registerWriteFileTool } from '../../../../src/tools/file/write-file.js';
+import { skipIfProviderAccessError } from '../../helpers/provider-access.js';
 
 // Skip if no API key (integration test pattern)
 const apiKey = process.env.OPENAI_API_KEY;
@@ -20,9 +21,9 @@ const runIntegration = apiKey ? describe : describe.skip;
 runIntegration('OpenAILLM Integration', () => {
   const buildModel = () =>
     new LLMModel({
-      name: 'gpt-5.4',
-      value: 'gpt-5.4',
-      canonicalName: 'gpt-5.4',
+      name: 'gpt-5.5',
+      value: 'gpt-5.5',
+      canonicalName: 'gpt-5.5',
       provider: LLMProvider.OPENAI
     });
 
@@ -46,9 +47,7 @@ runIntegration('OpenAILLM Integration', () => {
       expect(typeof response.content).toBe('string');
       expect(response.content.length).toBeGreaterThan(0);
     } catch (error: any) {
-      const message = String(error?.message || error);
-      if (message.includes('model') || message.includes('not_found')) {
-        // Skip if model is not available for this API key.
+      if (skipIfProviderAccessError('OpenAI', 'gpt-5.5', error)) {
         return;
       }
       throw error;
@@ -75,8 +74,7 @@ runIntegration('OpenAILLM Integration', () => {
       expect(response.content.length).toBeGreaterThan(0);
       expect(response.content.split(/\s+/).length).toBeLessThan(5);
     } catch (error: any) {
-      const message = String(error?.message || error);
-      if (message.includes('model') || message.includes('not_found')) {
+      if (skipIfProviderAccessError('OpenAI', 'gpt-5.5', error)) {
         return;
       }
       throw error;
@@ -105,8 +103,7 @@ runIntegration('OpenAILLM Integration', () => {
       const message = String(error?.message || error).toLowerCase();
       // Some OpenAI models in this repo's defaults may not support audio input.
       if (
-        message.includes('model') ||
-        message.includes('not_found') ||
+        skipIfProviderAccessError('OpenAI', 'gpt-5.5', error) ||
         message.includes('audio') ||
         message.includes('unsupported') ||
         message.includes('invalid')
@@ -140,8 +137,7 @@ runIntegration('OpenAILLM Integration', () => {
       expect(receivedTokens.length).toBeGreaterThan(0);
       expect(completeResponse.length).toBeGreaterThan(0);
     } catch (error: any) {
-      const message = String(error?.message || error);
-      if (message.includes('model') || message.includes('not_found')) {
+      if (skipIfProviderAccessError('OpenAI', 'gpt-5.5', error)) {
         return;
       }
       throw error;
@@ -161,8 +157,7 @@ runIntegration('OpenAILLM Integration', () => {
       expect(typeof response.content).toBe('string');
       expect(response.content.length).toBeGreaterThan(0);
     } catch (error: any) {
-      const message = String(error?.message || error);
-      if (message.includes('model') || message.includes('not_found')) {
+      if (skipIfProviderAccessError('OpenAI', 'gpt-5.5', error)) {
         return;
       }
       throw error;
@@ -190,8 +185,7 @@ runIntegration('OpenAILLM Integration', () => {
       expect(receivedTokens.length).toBeGreaterThan(0);
       expect(completeResponse.length).toBeGreaterThan(0);
     } catch (error: any) {
-      const message = String(error?.message || error);
-      if (message.includes('model') || message.includes('not_found')) {
+      if (skipIfProviderAccessError('OpenAI', 'gpt-5.5', error)) {
         return;
       }
       throw error;
@@ -233,8 +227,7 @@ runIntegration('OpenAILLM Integration', () => {
       expect(firstCall).toHaveProperty('index');
       // Name might be in first or later chunk
     } catch (error: any) {
-      const message = String(error?.message || error);
-      if (message.includes('model') || message.includes('not_found')) {
+      if (skipIfProviderAccessError('OpenAI', 'gpt-5.5', error)) {
         return;
       }
       throw error;

@@ -16,12 +16,14 @@ vi.mock('../../../../src/multimedia/utils/api-utils.js', () => ({
 describe('ImageClientFactory', () => {
   beforeEach(() => {
     process.env.OPENAI_API_KEY = 'test-key';
+    ImageClientFactory.reinitialize();
   });
 
   it('lists available models', () => {
     const models = ImageClientFactory.listModels();
     const identifiers = models.map((model) => model.modelIdentifier);
     expect(identifiers).toContain('gpt-image-1.5');
+    expect(identifiers).toContain('gpt-image-2');
     expect(identifiers).toContain('gemini-2.5-flash-image');
   });
 
@@ -29,6 +31,19 @@ describe('ImageClientFactory', () => {
     const client = ImageClientFactory.createImageClient('gpt-image-1.5');
     expect(client).toBeInstanceOf(BaseImageClient);
     expect(client.model.modelIdentifier).toBe('gpt-image-1.5');
+  });
+
+  it('creates OpenAI gpt-image-2 client with flexible image defaults', () => {
+    const client = ImageClientFactory.createImageClient('gpt-image-2');
+
+    expect(client).toBeInstanceOf(BaseImageClient);
+    expect(client.model.modelIdentifier).toBe('gpt-image-2');
+    expect(client.model.value).toBe('gpt-image-2');
+    expect(client.model.defaultConfig.toDict()).toMatchObject({
+      n: 1,
+      size: 'auto',
+      quality: 'auto'
+    });
   });
 
   it('throws for invalid identifier', () => {

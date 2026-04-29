@@ -79,6 +79,41 @@ describe('KimiLLM', () => {
     });
   });
 
+  it('disables thinking for kimi-k2.6 tool requests when no explicit thinking override is provided', async () => {
+    const llm = new KimiLLM(buildModel('kimi-k2.6'));
+
+    await llm.sendMessages(
+      [
+        new Message(MessageRole.SYSTEM, { content: 'You are a tool-using assistant.' }),
+        new Message(MessageRole.USER, { content: 'Call echo_number with 42.' })
+      ],
+      null,
+      {
+        tools: [
+          {
+            type: 'function',
+            function: {
+              name: 'echo_number',
+              parameters: {
+                type: 'object',
+                properties: { number: { type: 'number' } },
+                required: ['number']
+              }
+            }
+          }
+        ],
+        tool_choice: 'required'
+      }
+    );
+
+    expect(mockCreate).toHaveBeenCalledTimes(1);
+    expect(mockCreate.mock.calls[0]?.[0]).toMatchObject({
+      model: 'kimi-k2.6',
+      tool_choice: 'required',
+      thinking: { type: 'disabled' }
+    });
+  });
+
   it('disables thinking for kimi-k2.5 continuation turns that include tool messages', async () => {
     const llm = new KimiLLM(buildModel('kimi-k2.5'));
 
@@ -148,6 +183,40 @@ describe('KimiLLM', () => {
     expect(mockCreate).toHaveBeenCalledTimes(1);
     expect(mockCreate.mock.calls[0]?.[0]).toMatchObject({
       model: 'kimi-k2.5',
+      thinking: { type: 'enabled' }
+    });
+  });
+
+  it('preserves explicit thinking kwargs on kimi-k2.6 tool requests', async () => {
+    const llm = new KimiLLM(buildModel('kimi-k2.6'));
+
+    await llm.sendMessages(
+      [
+        new Message(MessageRole.SYSTEM, { content: 'You are a tool-using assistant.' }),
+        new Message(MessageRole.USER, { content: 'Call echo_number with 42.' })
+      ],
+      null,
+      {
+        tools: [
+          {
+            type: 'function',
+            function: {
+              name: 'echo_number',
+              parameters: {
+                type: 'object',
+                properties: { number: { type: 'number' } },
+                required: ['number']
+              }
+            }
+          }
+        ],
+        thinking: { type: 'enabled' }
+      }
+    );
+
+    expect(mockCreate).toHaveBeenCalledTimes(1);
+    expect(mockCreate.mock.calls[0]?.[0]).toMatchObject({
+      model: 'kimi-k2.6',
       thinking: { type: 'enabled' }
     });
   });
