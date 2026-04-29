@@ -89,7 +89,7 @@ describe("ServerSettingsService", () => {
     mockConfig.get.mockImplementation((key: string) =>
       ({
         AUTOBYTEUS_COMPACTION_TRIGGER_RATIO: "0.8",
-        AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER: "compaction-model",
+        AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID: "memory-compactor",
         AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE: "4096",
         AUTOBYTEUS_COMPACTION_DEBUG_LOGS: "true",
       })[key],
@@ -104,9 +104,9 @@ describe("ServerSettingsService", () => {
       isEditable: true,
       isDeletable: false,
     });
-    expect(settings.find((item) => item.key === "AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER")).toMatchObject({
-      value: "compaction-model",
-      description: expect.stringContaining("model identifier override"),
+    expect(settings.find((item) => item.key === "AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID")).toMatchObject({
+      value: "memory-compactor",
+      description: expect.stringContaining("Agent definition id"),
       isEditable: true,
       isDeletable: false,
     });
@@ -276,5 +276,15 @@ describe("ServerSettingsService", () => {
 
     expect(mockConfig.set).toHaveBeenNthCalledWith(1, 'ENABLE_APPLICATIONS', 'true');
     expect(mockConfig.set).toHaveBeenNthCalledWith(2, 'ENABLE_APPLICATIONS', 'false');
+  });
+
+  it("reads the typed compactor agent definition id setting", () => {
+    const service = new ServerSettingsService();
+
+    mockConfig.get.mockReturnValueOnce(' memory-compactor ');
+    expect(service.getCompactionAgentDefinitionId()).toBe('memory-compactor');
+
+    mockConfig.get.mockReturnValueOnce('   ');
+    expect(service.getCompactionAgentDefinitionId()).toBeNull();
   });
 });

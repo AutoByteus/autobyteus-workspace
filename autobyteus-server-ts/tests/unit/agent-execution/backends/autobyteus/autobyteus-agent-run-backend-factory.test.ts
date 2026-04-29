@@ -322,4 +322,62 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       }),
     );
   });
+  it("injects a server-backed compaction runner using the parent workspace context", async () => {
+    const compactionRunner = { runCompactionTask: vi.fn() };
+    const compactionAgentRunnerFactory = vi.fn(() => compactionRunner);
+    const factory = new AutoByteusAgentRunBackendFactory({
+      agentDefinitionService: {
+        getAgentDefinitionById: vi.fn(async () =>
+          new AgentDefinition({
+            id: "agent-1",
+            name: "Professor",
+            description: "Coordinates work.",
+            instructions: "Coordinate.",
+          }),
+        ),
+      } as any,
+      llmFactory: {
+        createLLM: vi.fn(async () =>
+          new DummyLLM(
+            new LLMModel({
+              name: "dummy-model",
+              value: "dummy-model",
+              canonicalName: "dummy-model",
+              provider: LLMProvider.OPENAI,
+            }),
+            new LLMConfig(),
+          ),
+        ),
+      } as any,
+      workspaceManager: {
+        getWorkspaceById: () => null,
+        getOrCreateTempWorkspace: async () => ({
+          workspaceId: "workspace-1",
+          getName: () => "Workspace",
+          getBasePath: () => path.join("/tmp", "workspace-1"),
+        }),
+      } as any,
+      skillService: {
+        getSkill: () => null,
+      } as any,
+      compactionAgentRunnerFactory,
+    });
+
+    const built = await (factory as any).buildAgentConfig(
+      new AgentRunConfig({
+        agentDefinitionId: "agent-1",
+        llmModelIdentifier: "dummy-model",
+        autoExecuteTools: false,
+        skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+        runtimeKind: RuntimeKind.AUTOBYTEUS,
+      }),
+    );
+
+    expect(compactionAgentRunnerFactory).toHaveBeenCalledWith({
+      agentDefinitionId: "agent-1",
+      workspaceRootPath: path.join("/tmp", "workspace-1"),
+    });
+    expect(built.agentConfig.compactionAgentRunner).toBe(compactionRunner);
+  });
+
 });

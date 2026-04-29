@@ -4,11 +4,11 @@ import type { MemoryManager } from '../memory-manager.js';
 import { CompactionSnapshotBuilder } from '../compaction-snapshot-builder.js';
 import { CompactionRuntimeSettingsResolver } from './compaction-runtime-settings.js';
 import { CompactionWindowPlanner } from './compaction-window-planner.js';
+import type { CompactionAgentExecutionMetadata } from './compaction-agent-runner.js';
 
 export type PendingCompactionExecutionInput = {
   turnId?: string | null;
   systemPrompt: string;
-  activeModelIdentifier?: string | null;
 };
 
 export type PendingCompactionExecutorOptions = {
@@ -16,7 +16,6 @@ export type PendingCompactionExecutorOptions = {
   planner?: CompactionWindowPlanner;
   reporter?: CompactionRuntimeReporter | null;
   runtimeSettingsResolver?: CompactionRuntimeSettingsResolver;
-  fallbackCompactionModelIdentifier?: string | null;
   maxEpisodic?: number;
   maxSemantic?: number;
 };
@@ -26,7 +25,6 @@ export class PendingCompactionExecutor {
   private readonly planner: CompactionWindowPlanner;
   private readonly reporter: CompactionRuntimeReporter | null;
   private readonly runtimeSettingsResolver: CompactionRuntimeSettingsResolver;
-  private readonly fallbackCompactionModelIdentifier: string | null;
   private readonly maxEpisodic: number;
   private readonly maxSemantic: number;
 
@@ -38,24 +36,31 @@ export class PendingCompactionExecutor {
     this.planner = options.planner ?? new CompactionWindowPlanner(undefined, undefined, this.memoryManager.compactionPolicy.maxItemChars);
     this.reporter = options.reporter ?? null;
     this.runtimeSettingsResolver = options.runtimeSettingsResolver ?? new CompactionRuntimeSettingsResolver();
-    this.fallbackCompactionModelIdentifier =
-      typeof options.fallbackCompactionModelIdentifier === 'string' && options.fallbackCompactionModelIdentifier.trim().length > 0
-        ? options.fallbackCompactionModelIdentifier.trim()
-        : null;
     this.maxEpisodic = options.maxEpisodic ?? 3;
     this.maxSemantic = options.maxSemantic ?? 20;
   }
 
   async executeIfRequired(input: PendingCompactionExecutionInput): Promise<boolean> {
-    if (!this.memoryManager.compactionRequired || !this.memoryManager.compactor) {
+    if (!this.memoryManager.compactionRequired) {
       return false;
     }
 
     const runtimeSettings = this.runtimeSettingsResolver.resolve();
-    const resolvedCompactionModelIdentifier =
-      runtimeSettings.compactionModelIdentifier
-      ?? input.activeModelIdentifier
-      ?? this.fallbackCompactionModelIdentifier;
+    if (!this.memoryManager.compactor) {
+      const errorMessage = [
+        'Memory compaction failed before dispatch: no compactor agent is configured.',
+        'Set AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID in Server Settings -> Basics -> Compaction.'
+      ].join(' ');
+      this.reporter?.emitStatus({
+        phase: 'failed',
+        turn_id: input.turnId ?? null,
+        selected_block_count: null,
+        compacted_block_count: null,
+        error_message: errorMessage,
+      });
+      throw new CompactionPreparationError(errorMessage);
+    }
+
     const rawTraces = this.memoryManager.listRawTracesOrdered();
     const plan = this.planner.plan(rawTraces, input.turnId ?? null);
 
@@ -65,7 +70,6 @@ export class PendingCompactionExecutor {
       selected_block_count: plan.selectedBlockCount,
       frontier_block_count: plan.frontierBlocks.length,
       raw_trace_count: rawTraces.length,
-      compaction_model_identifier: resolvedCompactionModelIdentifier,
     }, runtimeSettings.detailedLogsEnabled);
 
     if (!plan.selectedBlockCount) {
@@ -75,7 +79,6 @@ export class PendingCompactionExecutor {
         turn_id: input.turnId ?? null,
         selected_block_count: 0,
         compacted_block_count: 0,
-        compaction_model_identifier: resolvedCompactionModelIdentifier,
         error_message: errorMessage,
       });
       throw new CompactionPreparationError(errorMessage);
@@ -86,7 +89,6 @@ export class PendingCompactionExecutor {
       turn_id: input.turnId ?? null,
       selected_block_count: plan.selectedBlockCount,
       compacted_block_count: null,
-      compaction_model_identifier: resolvedCompactionModelIdentifier,
     });
 
     try {
@@ -105,7 +107,7 @@ export class PendingCompactionExecutor {
         compacted_block_count: outcome?.compactedBlockCount ?? plan.compactedBlockCount,
         raw_trace_count: outcome?.rawTraceCount ?? 0,
         semantic_fact_count: outcome?.semanticFactCount ?? 0,
-        compaction_model_identifier: resolvedCompactionModelIdentifier,
+        ...toStatusMetadata(outcome?.compactionMetadata ?? null),
       });
       this.reporter?.logResultSummary({
         turn_id: input.turnId ?? null,
@@ -113,6 +115,7 @@ export class PendingCompactionExecutor {
         compacted_block_count: outcome?.compactedBlockCount ?? plan.compactedBlockCount,
         episodic_summary_length: outcome?.result.episodicSummary.length ?? 0,
         semantic_fact_count: outcome?.semanticFactCount ?? 0,
+        ...toStatusMetadata(outcome?.compactionMetadata ?? null),
       }, runtimeSettings.detailedLogsEnabled);
       return true;
     } catch (error) {
@@ -126,10 +129,26 @@ export class PendingCompactionExecutor {
         turn_id: input.turnId ?? null,
         selected_block_count: plan.selectedBlockCount,
         compacted_block_count: null,
-        compaction_model_identifier: resolvedCompactionModelIdentifier,
+        ...toStatusMetadata(this.memoryManager.compactor.getLastCompactionExecutionMetadata()),
         error_message: errorMessage,
       });
       throw new CompactionPreparationError(errorMessage, error);
     }
   }
 }
+
+const toStatusMetadata = (
+  metadata: CompactionAgentExecutionMetadata | null | undefined,
+): Record<string, string | null> => {
+  if (!metadata) {
+    return {};
+  }
+  return {
+    compaction_agent_definition_id: metadata.compactionAgentDefinitionId ?? null,
+    compaction_agent_name: metadata.compactionAgentName ?? null,
+    compaction_runtime_kind: metadata.runtimeKind ?? null,
+    compaction_model_identifier: metadata.modelIdentifier ?? null,
+    compaction_run_id: metadata.compactionRunId ?? null,
+    compaction_task_id: metadata.taskId ?? null,
+  };
+};

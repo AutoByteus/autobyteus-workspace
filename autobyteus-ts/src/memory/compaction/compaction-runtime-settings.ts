@@ -1,14 +1,12 @@
 export type CompactionRuntimeSettings = {
   triggerRatioOverride: number | null;
   activeContextTokensOverride: number | null;
-  compactionModelIdentifier: string | null;
   detailedLogsEnabled: boolean;
 };
 
 const TRUE_VALUES = new Set(['1', 'true', 'yes', 'on']);
 
 export const AUTOBYTEUS_COMPACTION_TRIGGER_RATIO = 'AUTOBYTEUS_COMPACTION_TRIGGER_RATIO';
-export const AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER = 'AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER';
 export const AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE = 'AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE';
 export const AUTOBYTEUS_COMPACTION_DEBUG_LOGS = 'AUTOBYTEUS_COMPACTION_DEBUG_LOGS';
 
@@ -46,14 +44,6 @@ const parsePositiveInteger = (value: string | undefined): number | null => {
   return Math.floor(parsed);
 };
 
-const parseString = (value: string | undefined): string | null => {
-  if (typeof value !== 'string') {
-    return null;
-  }
-  const normalized = value.trim();
-  return normalized.length > 0 ? normalized : null;
-};
-
 const parseBoolean = (value: string | undefined): boolean => {
   if (typeof value !== 'string') {
     return false;
@@ -66,7 +56,6 @@ export class CompactionRuntimeSettingsResolver {
     return {
       triggerRatioOverride: parseRatio(env[AUTOBYTEUS_COMPACTION_TRIGGER_RATIO]),
       activeContextTokensOverride: parsePositiveInteger(env[AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE]),
-      compactionModelIdentifier: parseString(env[AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER]),
       detailedLogsEnabled: parseBoolean(env[AUTOBYTEUS_COMPACTION_DEBUG_LOGS])
     };
   }

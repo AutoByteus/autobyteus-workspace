@@ -2,34 +2,73 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 const rootDir = path.resolve(import.meta.dirname, "..");
-const sourceManifest = path.join(
-  rootDir,
-  "src",
-  "managed-capabilities",
-  "messaging-gateway",
-  "release-manifest.json",
-);
 
-const targetDirs = [
-  path.join(rootDir, "dist", "managed-capabilities", "messaging-gateway"),
+const fileAssets = [
+  {
+    source: path.join(
+      rootDir,
+      "src",
+      "managed-capabilities",
+      "messaging-gateway",
+      "release-manifest.json",
+    ),
+    target: path.join(
+      rootDir,
+      "dist",
+      "managed-capabilities",
+      "messaging-gateway",
+      "release-manifest.json",
+    ),
+  },
+  {
+    source: path.join(
+      rootDir,
+      "src",
+      "agent-execution",
+      "compaction",
+      "default-compactor-agent",
+      "agent.md",
+    ),
+    target: path.join(
+      rootDir,
+      "dist",
+      "agent-execution",
+      "compaction",
+      "default-compactor-agent",
+      "agent.md",
+    ),
+  },
+  {
+    source: path.join(
+      rootDir,
+      "src",
+      "agent-execution",
+      "compaction",
+      "default-compactor-agent",
+      "agent-config.json",
+    ),
+    target: path.join(
+      rootDir,
+      "dist",
+      "agent-execution",
+      "compaction",
+      "default-compactor-agent",
+      "agent-config.json",
+    ),
+  },
 ];
 
-const main = async () => {
-  const manifest = await fs.readFile(sourceManifest, "utf8");
+const copyFileAsset = async ({ source, target }) => {
+  const content = await fs.readFile(source, "utf8");
+  await fs.mkdir(path.dirname(target), { recursive: true });
+  await fs.writeFile(target, content, "utf8");
+};
 
-  await Promise.all(
-    targetDirs.map(async (targetDir) => {
-      await fs.mkdir(targetDir, { recursive: true });
-      await fs.writeFile(
-        path.join(targetDir, "release-manifest.json"),
-        manifest,
-        "utf8",
-      );
-    }),
-  );
+const main = async () => {
+  await Promise.all(fileAssets.map(copyFileAsset));
 };
 
 main().catch((error) => {
-  console.error("Failed to copy managed messaging assets.", error);
+  console.error("Failed to copy server runtime assets.", error);
   process.exitCode = 1;
 });

@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
 import { setActivePinia } from 'pinia'
 import CompactionConfigCard from '../CompactionConfigCard.vue'
-import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
+import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import { useServerSettingsStore } from '~/stores/serverSettings'
 
 const flushPromises = async () => {
@@ -11,24 +11,50 @@ const flushPromises = async () => {
   await new Promise<void>((resolve) => setTimeout(resolve, 0))
 }
 
-const mountComponent = async (providersWithModels: any[] = [
+const agentDefinitions = [
   {
-    provider: {
-      id: 'OPENAI',
-      name: 'OpenAI',
-      providerType: 'OPENAI',
-      isCustom: false,
-      baseUrl: null,
-      apiKeyConfigured: true,
-      status: 'NOT_APPLICABLE',
-      statusMessage: null,
+    id: 'helper-agent',
+    name: 'Helper',
+    role: 'assistant',
+    description: 'Helps.',
+    instructions: '',
+    toolNames: [],
+    inputProcessorNames: [],
+    llmResponseProcessorNames: [],
+    systemPromptProcessorNames: [],
+    toolExecutionResultProcessorNames: [],
+    toolInvocationPreprocessorNames: [],
+    lifecycleProcessorNames: [],
+    skillNames: [],
+    defaultLaunchConfig: {
+      runtimeKind: 'autobyteus',
+      llmModelIdentifier: 'helper-model',
+      llmConfig: null,
     },
-    models: [
-      { modelIdentifier: 'gpt-4.1', name: 'GPT-4.1', providerId: 'OPENAI', providerName: 'OpenAI', providerType: 'OPENAI' },
-      { modelIdentifier: 'gpt-5', name: 'GPT-5', providerId: 'OPENAI', providerName: 'OpenAI', providerType: 'OPENAI' },
-    ],
   },
-]) => {
+  {
+    id: 'memory-compactor',
+    name: 'Memory Compactor',
+    role: 'summarizer',
+    description: 'Compacts memory.',
+    instructions: '',
+    toolNames: [],
+    inputProcessorNames: [],
+    llmResponseProcessorNames: [],
+    systemPromptProcessorNames: [],
+    toolExecutionResultProcessorNames: [],
+    toolInvocationPreprocessorNames: [],
+    lifecycleProcessorNames: [],
+    skillNames: [],
+    defaultLaunchConfig: {
+      runtimeKind: 'codex_app_server',
+      llmModelIdentifier: 'codex:gpt-5',
+      llmConfig: null,
+    },
+  },
+]
+
+const mountComponent = async () => {
   const pinia = createTestingPinia({
     createSpy: vi.fn,
     stubActions: false,
@@ -43,9 +69,9 @@ const mountComponent = async (providersWithModels: any[] = [
             isDeletable: false,
           },
           {
-            key: 'AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER',
-            value: 'gpt-5',
-            description: 'model',
+            key: 'AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID',
+            value: 'memory-compactor',
+            description: 'compactor agent',
             isEditable: true,
             isDeletable: false,
           },
@@ -65,8 +91,8 @@ const mountComponent = async (providersWithModels: any[] = [
           },
         ],
       },
-      llmProviderConfig: {
-        providersWithModels,
+      agentDefinition: {
+        agentDefinitions,
       },
     },
   })
@@ -75,10 +101,8 @@ const mountComponent = async (providersWithModels: any[] = [
   const serverSettingsStore = useServerSettingsStore()
   serverSettingsStore.updateServerSetting = vi.fn().mockResolvedValue(true)
 
-  const llmProviderConfigStore = useLLMProviderConfigStore()
-  llmProviderConfigStore.fetchProvidersWithModels = vi.fn().mockResolvedValue(
-    llmProviderConfigStore.providersWithModels,
-  )
+  const agentDefinitionStore = useAgentDefinitionStore()
+  agentDefinitionStore.fetchAllAgentDefinitions = vi.fn().mockResolvedValue(undefined)
 
   const wrapper = mount(CompactionConfigCard, {
     global: {
@@ -90,7 +114,7 @@ const mountComponent = async (providersWithModels: any[] = [
   })
 
   await flushPromises()
-  return { wrapper, serverSettingsStore }
+  return { wrapper, serverSettingsStore, agentDefinitionStore }
 }
 
 describe('CompactionConfigCard', () => {
@@ -99,58 +123,29 @@ describe('CompactionConfigCard', () => {
   })
 
   it('syncs typed inputs from the server settings store', async () => {
-    const { wrapper } = await mountComponent()
+    const { wrapper, agentDefinitionStore } = await mountComponent()
 
     expect(wrapper.get('[data-testid="compaction-ratio-input"]').element).toHaveProperty('value', '75')
-    expect(wrapper.get('[data-testid="compaction-model-select"]').element).toHaveProperty('value', 'gpt-5')
+    expect(wrapper.get('[data-testid="compaction-agent-select"]').element).toHaveProperty('value', 'memory-compactor')
     expect(wrapper.get('[data-testid="compaction-context-override-input"]').element).toHaveProperty('value', '4096')
     expect((wrapper.get('[data-testid="compaction-debug-logs-toggle"]').element as HTMLInputElement).checked).toBe(true)
+    expect(agentDefinitionStore.fetchAllAgentDefinitions).toHaveBeenCalledTimes(1)
   })
 
-  it('uses custom friendly labels while keeping built-in compaction labels on identifiers', async () => {
-    const { wrapper } = await mountComponent([
-      {
-        provider: {
-          id: 'OPENAI',
-          name: 'OpenAI',
-          providerType: 'OPENAI',
-          isCustom: false,
-          baseUrl: null,
-          apiKeyConfigured: true,
-          status: 'NOT_APPLICABLE',
-          statusMessage: null,
-        },
-        models: [
-          { modelIdentifier: 'gpt-4.1', name: 'GPT-4.1', providerId: 'OPENAI', providerName: 'OpenAI', providerType: 'OPENAI' },
-        ],
-      },
-      {
-        provider: {
-          id: 'provider_gateway',
-          name: 'Internal Gateway',
-          providerType: 'OPENAI_COMPATIBLE',
-          isCustom: true,
-          baseUrl: 'https://gateway.example.com/v1',
-          apiKeyConfigured: true,
-          status: 'READY',
-          statusMessage: null,
-        },
-        models: [
-          { modelIdentifier: 'openai-compatible:provider_gateway:model-a', name: 'Model A', providerId: 'provider_gateway', providerName: 'Internal Gateway', providerType: 'OPENAI_COMPATIBLE' },
-        ],
-      },
-    ])
+  it('lists compactor agent definitions with friendly labels and selected launch summary', async () => {
+    const { wrapper } = await mountComponent()
 
-    const options = wrapper.findAll('[data-testid="compaction-model-select"] option').map((option) => option.text())
-    expect(options).toContain('OpenAI / gpt-4.1')
-    expect(options).toContain('Internal Gateway / Model A')
+    const options = wrapper.findAll('[data-testid="compaction-agent-select"] option').map((option) => option.text())
+    expect(options).toContain('Memory Compactor (summarizer)')
+    expect(options).toContain('Helper (assistant)')
+    expect(wrapper.get('[data-testid="compaction-agent-summary"]').text()).toContain('codex_app_server / codex:gpt-5')
   })
 
   it('saves typed compaction settings through the server settings store', async () => {
     const { wrapper, serverSettingsStore } = await mountComponent()
 
     await wrapper.get('[data-testid="compaction-ratio-input"]').setValue('60')
-    await wrapper.get('[data-testid="compaction-model-select"]').setValue('gpt-4.1')
+    await wrapper.get('[data-testid="compaction-agent-select"]').setValue('helper-agent')
     await wrapper.get('[data-testid="compaction-context-override-input"]').setValue('2048')
     await wrapper.get('[data-testid="compaction-debug-logs-toggle"]').setValue(false)
     await wrapper.get('[data-testid="compaction-config-save"]').trigger('click')
@@ -163,8 +158,8 @@ describe('CompactionConfigCard', () => {
     )
     expect(serverSettingsStore.updateServerSetting).toHaveBeenNthCalledWith(
       2,
-      'AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER',
-      'gpt-4.1',
+      'AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID',
+      'helper-agent',
     )
     expect(serverSettingsStore.updateServerSetting).toHaveBeenNthCalledWith(
       3,

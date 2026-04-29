@@ -166,7 +166,6 @@ export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
     const pendingCompactionExecutor = new PendingCompactionExecutor(memoryManager, {
       reporter: compactionReporter,
       runtimeSettingsResolver,
-      fallbackCompactionModelIdentifier: llmInstance.model.modelIdentifier,
       maxEpisodic: 3,
       maxSemantic: 20,
     });
@@ -178,8 +177,7 @@ export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
       request = await assembler.prepareRequest(
         llmUserMessage,
         activeTurnId,
-        systemPrompt ?? undefined,
-        llmInstance.model.modelIdentifier
+        systemPrompt ?? undefined
       );
     } catch (error) {
       if (error instanceof CompactionPreparationError) {
@@ -304,7 +302,7 @@ export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
       if (budget) {
         applyCompactionPolicy(memoryManager.compactionPolicy, budget);
         const compactionRequired = Boolean(
-          memoryManager.compactor && memoryManager.compactionPolicy.shouldCompact(
+          memoryManager.compactionPolicy.shouldCompact(
             tokenUsage.prompt_tokens,
             budget.inputBudget
           )
@@ -334,7 +332,6 @@ export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
             compacted_block_count: null,
             raw_trace_count: null,
             semantic_fact_count: null,
-            compaction_model_identifier: runtimeSettings.compactionModelIdentifier ?? llmInstance.model.modelIdentifier
           });
         }
       }
