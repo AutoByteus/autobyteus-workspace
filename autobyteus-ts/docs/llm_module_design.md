@@ -4,10 +4,10 @@
 
 The `src/llm` module provides a unified, extensible interface for interacting
 with various Large Language Models (LLMs). It abstracts away the differences
-between providers (OpenAI, Anthropic, Mistral, etc.) and runtimes (cloud APIs,
-local servers like Ollama/LM Studio, and user-configured OpenAI-compatible
-endpoints), allowing the rest of the Autobyteus framework to treat all models
-uniformly.
+between providers (OpenAI, Anthropic, Mistral, DeepSeek, Kimi/Moonshot,
+Gemini, etc.) and runtimes (cloud APIs, local servers like Ollama/LM Studio,
+and user-configured OpenAI-compatible endpoints), allowing the rest of the
+Autobyteus framework to treat all models uniformly.
 
 ## 2. Core Architecture
 
@@ -75,7 +75,9 @@ new built-in enum value for every saved endpoint.
 
 1.  **Initialization:**
     `LLMFactory.ensureInitialized()` is called. It:
-    - Registers hardcoded API models (GPT-4, Claude 3.5, etc.).
+    - Registers supported built-in API models from
+      `src/llm/supported-model-definitions.ts` (for example `gpt-5.5`,
+      `claude-opus-4.7`, `deepseek-v4-flash`, and `kimi-k2.6`).
     - Probes local runtimes (Ollama, LM Studio) to discover available models.
     - Leaves custom OpenAI-compatible provider sync to the caller that owns
       persisted provider records.
@@ -84,7 +86,7 @@ new built-in enum value for every saved endpoint.
     The system requests a model by ID:
 
     ```ts
-    const llm = await LLMFactory.createLLM('gpt-4o');
+    const llm = await LLMFactory.createLLM('gpt-5.5');
     // or
     const llm = await LLMFactory.createLLM('llama3:latest:ollama@localhost:11434');
     // or
@@ -103,13 +105,36 @@ new built-in enum value for every saved endpoint.
 
 ## 4. Extensibility
 
-### 4.1 Adding a New Cloud Provider
+### 4.1 Adding a New Built-In Cloud Model
+
+Add built-in cloud models in `src/llm/supported-model-definitions.ts`, not by
+editing `LLMFactory.initializeRegistry()` directly. Add docs-backed metadata in
+`src/llm/metadata/curated-model-metadata.ts` when the model has known context,
+output, or pricing details. Provider-specific request-shape rules belong in the
+provider adapter under `src/llm/api/`.
+
+Current examples of provider-specific model rules:
+
+- `claude-opus-4.7` uses Anthropic adaptive thinking rather than fixed-budget
+  extended thinking, and the adapter does not inject a default `temperature`
+  for that model.
+- `deepseek-v4-flash` and `deepseek-v4-pro` use the existing DeepSeek
+  OpenAI-compatible adapter with their V4 thinking schema.
+- `kimi-k2.6` disables thinking automatically for tool workflows when the
+  caller has not supplied an explicit thinking override.
+
+See `docs/provider_model_catalogs.md` for the catalog ownership map across LLM,
+audio/TTS, and image models.
+
+### 4.2 Adding a New Cloud Provider
 
 1.  **Create concrete LLM class:** Subclass `BaseLLM` (e.g., `NewProviderLLM`) in `src/llm/api/`. Implement `_send...` and `_stream...` methods.
 2.  **Update Enums:** Add the provider to `LLMProvider`.
-3.  **Register Models:** Add `LLMModel` entries to `LLMFactory.initializeRegistry()`.
+3.  **Register Models:** Add supported model definitions and metadata so
+    `LLMFactory.initializeRegistry()` can build and register `LLMModel`
+    entries.
 
-### 4.2 Extensions System
+### 4.3 Extensions System
 
 The `BaseLLM` supports extensions that hook into the request/response lifecycle.
 
@@ -199,8 +224,10 @@ healthy custom providers or the built-in registry.
 
 | Provider   | Param Name         | Type    | UI Control | Sent to Backend              |
 | ---------- | ------------------ | ------- | ---------- | ---------------------------- |
-| GPT-5.2    | `reasoning_effort` | ENUM    | Dropdown   | `{reasoning_effort: "high"}` |
-| Gemini 3   | `thinking_level`   | ENUM    | Dropdown   | `{thinking_level: "high"}`   |
-| Claude 4.5 | `budget_tokens`    | INTEGER | Slider     | `{budget_tokens: 10000}`     |
-| DeepSeek   | `thinking_enabled` | BOOLEAN | Toggle     | `{thinking_enabled: true}`   |
-| Zhipu GLM  | `thinking_enabled` | BOOLEAN | Toggle     | `{thinking_enabled: true}`   |
+| GPT-5.5          | `reasoning_effort` | ENUM    | Dropdown   | `{reasoning_effort: "high"}` |
+| Gemini 3         | `thinking_level`   | ENUM    | Dropdown   | `{thinking_level: "high"}`   |
+| Claude Opus 4.7  | `thinking_enabled` | BOOLEAN | Toggle     | `{thinking: {type: "adaptive"}}` |
+| Claude Opus 4.7  | `thinking_display` | ENUM    | Dropdown   | `{thinking: {type: "adaptive", display: "summarized"}}` |
+| DeepSeek V4      | `thinking.type`    | ENUM    | Dropdown   | `{thinking: {type: "enabled"}}` |
+| DeepSeek V4      | `reasoning_effort` | ENUM    | Dropdown   | `{reasoning_effort: "max"}` |
+| Zhipu GLM        | `thinking_enabled` | BOOLEAN | Toggle     | `{thinking_enabled: true}`   |

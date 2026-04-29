@@ -1,4 +1,4 @@
-import OpenAI from 'openai';
+import OpenAI, { toFile, type Uploadable } from 'openai';
 import fs from 'node:fs';
 import fsPromises from 'node:fs/promises';
 import path from 'node:path';
@@ -20,6 +20,31 @@ function mimeTypeFromFormat(outputFormat: string | null | undefined): string {
     return 'image/webp';
   }
   return 'image/png';
+}
+
+function mimeTypeFromFilePath(filePath: string): string {
+  const extension = path.extname(filePath).toLowerCase();
+  if (extension === '.jpg' || extension === '.jpeg') {
+    return 'image/jpeg';
+  }
+  if (extension === '.webp') {
+    return 'image/webp';
+  }
+  return 'image/png';
+}
+
+function usesGptImageEditPayload(modelValue: string): boolean {
+  return modelValue.startsWith('gpt-image-') || modelValue === 'chatgpt-image-latest';
+}
+
+function isSupportedGptImageEditQuality(value: unknown): value is string {
+  return typeof value === 'string' && ['auto', 'low', 'medium', 'high'].includes(value);
+}
+
+async function toOpenAIFileUpload(filePath: string): Promise<Uploadable> {
+  return toFile(await fsPromises.readFile(filePath), path.basename(filePath), {
+    type: mimeTypeFromFilePath(filePath)
+  });
 }
 
 async function makeTempFile(extension = 'png'): Promise<string> {
@@ -148,9 +173,11 @@ export class OpenAIImageClient extends BaseImageClient {
 
       const size = typeof finalConfig.size === 'string' ? finalConfig.size : '1024x1024';
       const n = typeof finalConfig.n === 'number' ? finalConfig.n : 1;
+      const imageUpload = await toOpenAIFileUpload(sourcePath);
+      const isGptImageEditRequest = usesGptImageEditPayload(this.model.value);
 
       const request: Record<string, unknown> = {
-        image: fs.createReadStream(sourcePath),
+        image: isGptImageEditRequest ? [imageUpload] : imageUpload,
         prompt,
         model: this.model.value,
         n,
@@ -158,13 +185,18 @@ export class OpenAIImageClient extends BaseImageClient {
       };
 
       if (maskPath) {
-        request.mask = fs.createReadStream(maskPath);
+        request.mask = await toOpenAIFileUpload(maskPath);
       }
-      if (typeof finalConfig.output_format === 'string') {
-        request.output_format = finalConfig.output_format;
-      }
-      if (typeof finalConfig.output_compression === 'string') {
-        request.output_compression = finalConfig.output_compression;
+      if (isGptImageEditRequest) {
+        if (isSupportedGptImageEditQuality(finalConfig.quality)) {
+          request.quality = finalConfig.quality;
+        }
+        if (typeof finalConfig.output_format === 'string') {
+          request.output_format = finalConfig.output_format;
+        }
+        if (typeof finalConfig.output_compression === 'string') {
+          request.output_compression = finalConfig.output_compression;
+        }
       }
 
       const response = await this.client.images.edit(

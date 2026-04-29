@@ -11,6 +11,12 @@ interface CuratedModelMetadataEntry extends PartialResolvedModelMetadata {
 
 const curatedModelMetadata: Partial<Record<LLMProvider, Record<string, CuratedModelMetadataEntry>>> = {
   [LLMProvider.OPENAI]: {
+    'gpt-5.5': {
+      maxContextTokens: 1050000,
+      maxOutputTokens: 128000,
+      sourceUrl: 'https://developers.openai.com/api/docs/models/gpt-5.5',
+      verifiedAt: '2026-04-25'
+    },
     'gpt-5.4': {
       maxContextTokens: 1000000,
       maxOutputTokens: 128000,
@@ -25,6 +31,13 @@ const curatedModelMetadata: Partial<Record<LLMProvider, Record<string, CuratedMo
     }
   },
   [LLMProvider.ANTHROPIC]: {
+    'claude-opus-4-7': {
+      maxContextTokens: 1000000,
+      maxInputTokens: 1000000,
+      maxOutputTokens: 128000,
+      sourceUrl: 'https://platform.claude.com/docs/en/about-claude/models/overview',
+      verifiedAt: '2026-04-25'
+    },
     'claude-opus-4-6': {
       maxContextTokens: 1000000,
       maxInputTokens: 1000000,
@@ -48,6 +61,18 @@ const curatedModelMetadata: Partial<Record<LLMProvider, Record<string, CuratedMo
     }
   },
   [LLMProvider.DEEPSEEK]: {
+    'deepseek-v4-flash': {
+      maxContextTokens: 1000000,
+      maxOutputTokens: 384000,
+      sourceUrl: 'https://api-docs.deepseek.com/quick_start/pricing',
+      verifiedAt: '2026-04-25'
+    },
+    'deepseek-v4-pro': {
+      maxContextTokens: 1000000,
+      maxOutputTokens: 384000,
+      sourceUrl: 'https://api-docs.deepseek.com/quick_start/pricing',
+      verifiedAt: '2026-04-25'
+    },
     'deepseek-chat': {
       maxContextTokens: 128000,
       maxOutputTokens: 8000,
@@ -90,6 +115,11 @@ const curatedModelMetadata: Partial<Record<LLMProvider, Record<string, CuratedMo
     }
   },
   [LLMProvider.KIMI]: {
+    'kimi-k2.6': {
+      maxContextTokens: 256000,
+      sourceUrl: 'https://platform.kimi.ai/docs/models',
+      verifiedAt: '2026-04-25'
+    },
     'kimi-k2.5': {
       maxContextTokens: 256000,
       sourceUrl: 'https://platform.moonshot.ai/docs/guide/auto-reconnect',

@@ -26,13 +26,75 @@ const splitSystemMessages = (messages: Message[]): { systemPrompt: string | null
   return { systemPrompt, remaining };
 };
 
-const buildThinkingParam = (extraParams: Record<string, unknown> | null | undefined): Record<string, unknown> | null => {
+const ANTHROPIC_INTERNAL_EXTRA_PARAM_KEYS = new Set([
+  'thinking_enabled',
+  'thinking_budget_tokens',
+  'thinking_display'
+]);
+
+const isClaudeOpus47 = (modelValue: string): boolean => modelValue === 'claude-opus-4-7' || modelValue.startsWith('claude-opus-4-7-');
+
+const filterInternalExtraParams = (
+  extraParams: Record<string, unknown> | null | undefined
+): Record<string, unknown> => {
+  const filtered: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(extraParams ?? {})) {
+    if (!ANTHROPIC_INTERNAL_EXTRA_PARAM_KEYS.has(key)) {
+      filtered[key] = value;
+    }
+  }
+  return filtered;
+};
+
+const buildThinkingParam = (
+  modelValue: string,
+  extraParams: Record<string, unknown> | null | undefined
+): Record<string, unknown> | null => {
   if (!extraParams) return null;
   const enabled = extraParams.thinking_enabled;
   if (enabled !== true) return null;
+  if (isClaudeOpus47(modelValue)) {
+    const thinking: Record<string, unknown> = { type: 'adaptive' };
+    if (extraParams.thinking_display === 'summarized') {
+      thinking.display = 'summarized';
+    }
+    return thinking;
+  }
   const budgetRaw = extraParams.thinking_budget_tokens;
   const budget = typeof budgetRaw === 'number' ? budgetRaw : Number(budgetRaw ?? 1024);
   return { type: 'enabled', budget_tokens: Number.isFinite(budget) ? budget : 1024 };
+};
+
+const applyAnthropicRequestParams = (
+  params: MessageCreateParamsNonStreaming | MessageCreateParamsStreaming,
+  modelValue: string,
+  configExtraParams: Record<string, unknown> | null | undefined,
+  kwargs: Record<string, unknown>
+): void => {
+  const request = params as unknown as Record<string, unknown>;
+  const providerExtraParams = filterInternalExtraParams(configExtraParams);
+
+  Object.assign(request, providerExtraParams);
+
+  const paramOverrides = { ...kwargs } as Record<string, unknown>;
+  delete paramOverrides.stream;
+  Object.assign(request, paramOverrides);
+
+  if (Array.isArray(kwargs.tools)) {
+    request.tools = kwargs.tools as ToolUnion[];
+  }
+
+  const explicitThinking = providerExtraParams.thinking !== undefined || kwargs.thinking !== undefined;
+  if (!explicitThinking) {
+    const thinkingParam = buildThinkingParam(modelValue, configExtraParams);
+    if (thinkingParam) {
+      request.thinking = thinkingParam;
+    }
+  }
+
+  if (request.thinking === undefined && !isClaudeOpus47(modelValue) && request.temperature === undefined) {
+    request.temperature = 0;
+  }
 };
 
 const splitClaudeContentBlocks = (blocks: ContentBlock[] | null | undefined): { content: string; thinking: string } => {
@@ -78,7 +140,6 @@ export class AnthropicLLM extends BaseLLM {
   protected async _sendMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>): Promise<CompleteResponse> {
     const { systemPrompt, remaining } = splitSystemMessages(messages);
     const formattedMessages = await this._renderer.render(remaining) as MessageParam[];
-    const thinkingParam = buildThinkingParam(this.config.extraParams ?? null);
 
     const params: MessageCreateParamsNonStreaming = {
       model: this.model.value,
@@ -90,21 +151,7 @@ export class AnthropicLLM extends BaseLLM {
       params.system = systemPrompt;
     }
 
-    if (this.config.extraParams) {
-       Object.assign(params, this.config.extraParams);
-    }
-    const paramOverrides = { ...kwargs } as Partial<MessageCreateParamsNonStreaming>;
-    delete (paramOverrides as { stream?: unknown }).stream;
-    Object.assign(params, paramOverrides);
-    if (Array.isArray(kwargs.tools)) {
-      params.tools = kwargs.tools as ToolUnion[];
-    }
-
-    if (thinkingParam) {
-      params.thinking = thinkingParam as any;
-    } else if (!params.temperature) {
-      params.temperature = 0 as any;
-    }
+    applyAnthropicRequestParams(params, this.model.value, this.config.extraParams ?? null, kwargs);
 
     try {
       const response = await this.client.messages.create(params);
@@ -134,7 +181,6 @@ export class AnthropicLLM extends BaseLLM {
   protected async *_streamMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>): AsyncGenerator<ChunkResponse, void, unknown> {
     const { systemPrompt, remaining } = splitSystemMessages(messages);
     const formattedMessages = await this._renderer.render(remaining) as MessageParam[];
-    const thinkingParam = buildThinkingParam(this.config.extraParams ?? null);
 
     const params: MessageCreateParamsStreaming = {
       model: this.model.value,
@@ -146,19 +192,9 @@ export class AnthropicLLM extends BaseLLM {
     if (systemPrompt) {
       params.system = systemPrompt;
     }
-    
-    if (Array.isArray(kwargs.tools)) params.tools = kwargs.tools as ToolUnion[];
-    if (thinkingParam) {
-      params.thinking = thinkingParam as any;
-    } else if (!params.temperature) {
-      params.temperature = 0 as any;
-    }
-    if (this.config.extraParams) {
-      Object.assign(params, this.config.extraParams);
-    }
-    const streamOverrides = { ...kwargs } as Partial<MessageCreateParamsStreaming>;
-    delete (streamOverrides as { stream?: unknown }).stream;
-    Object.assign(params, streamOverrides);
+
+    applyAnthropicRequestParams(params, this.model.value, this.config.extraParams ?? null, kwargs);
+    params.stream = true;
 
     try {
       const stream = await this.client.messages.create(params);

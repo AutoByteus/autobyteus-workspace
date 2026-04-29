@@ -57,10 +57,43 @@ describe('LLMFactory metadata resolution', () => {
 
   it('uses curated metadata for supported models and leaves unknown providers truthful', async () => {
     const openaiModels = await LLMFactory.listModelsByProvider(LLMProvider.OPENAI);
+    const anthropicModels = await LLMFactory.listModelsByProvider(LLMProvider.ANTHROPIC);
+    const deepseekModels = await LLMFactory.listModelsByProvider(LLMProvider.DEEPSEEK);
+    const kimiModels = await LLMFactory.listModelsByProvider(LLMProvider.KIMI);
     const qwenModels = await LLMFactory.listModelsByProvider(LLMProvider.QWEN);
 
+    const gpt55 = openaiModels.find((model) => model.model_identifier === 'gpt-5.5');
+    expect(gpt55).toMatchObject({
+      provider_type: LLMProvider.OPENAI,
+      value: 'gpt-5.5',
+      max_context_tokens: 1050000,
+      max_output_tokens: 128000
+    });
     expect(openaiModels.find((model) => model.model_identifier === 'gpt-5.4')?.max_context_tokens).toBe(1000000);
     expect(openaiModels.find((model) => model.model_identifier === 'gpt-5.4-mini')?.max_output_tokens).toBe(128000);
+    expect(anthropicModels.find((model) => model.model_identifier === 'claude-opus-4.7')).toMatchObject({
+      provider_type: LLMProvider.ANTHROPIC,
+      value: 'claude-opus-4-7',
+      max_context_tokens: 1000000,
+      max_output_tokens: 128000
+    });
+    expect(deepseekModels.find((model) => model.model_identifier === 'deepseek-v4-flash')).toMatchObject({
+      provider_type: LLMProvider.DEEPSEEK,
+      value: 'deepseek-v4-flash',
+      max_context_tokens: 1000000,
+      max_output_tokens: 384000
+    });
+    expect(deepseekModels.find((model) => model.model_identifier === 'deepseek-v4-pro')).toMatchObject({
+      provider_type: LLMProvider.DEEPSEEK,
+      value: 'deepseek-v4-pro',
+      max_context_tokens: 1000000,
+      max_output_tokens: 384000
+    });
+    expect(kimiModels.find((model) => model.model_identifier === 'kimi-k2.6')).toMatchObject({
+      provider_type: LLMProvider.KIMI,
+      value: 'kimi-k2.6',
+      max_context_tokens: 256000
+    });
     expect(qwenModels.find((model) => model.model_identifier === 'qwen3-max')?.max_context_tokens).toBe(262144);
     expect(mockFetch).not.toHaveBeenCalled();
   });
@@ -80,6 +113,7 @@ describe('LLMFactory metadata resolution', () => {
           json: async () => ({
             data: [
               { id: 'claude-sonnet-4-6', max_input_tokens: 1200000, max_tokens: 64000 },
+              { id: 'claude-opus-4-7', max_input_tokens: 1000000, max_tokens: 128000 },
               { id: 'claude-opus-4-6', max_input_tokens: 1000000, max_tokens: 128000 }
             ]
           })
@@ -91,6 +125,7 @@ describe('LLMFactory metadata resolution', () => {
           ok: true,
           json: async () => ({
             data: [
+              { id: 'kimi-k2.6', context_length: 256000 },
               { id: 'kimi-k2.5', context_length: 262144 },
               { id: 'kimi-k2-thinking', context_length: 131072 }
             ]
@@ -142,6 +177,9 @@ describe('LLMFactory metadata resolution', () => {
 
     expect(anthropicModels.find((model) => model.model_identifier === 'claude-sonnet-4.6')?.max_context_tokens).toBe(1200000);
     expect(anthropicModels.find((model) => model.model_identifier === 'claude-sonnet-4.6')?.max_output_tokens).toBe(64000);
+    expect(anthropicModels.find((model) => model.model_identifier === 'claude-opus-4.7')?.max_output_tokens).toBe(128000);
+    expect(anthropicModels.find((model) => model.model_identifier === 'claude-opus-4.7')?.value).toBe('claude-opus-4-7');
+    expect(kimiModels.find((model) => model.model_identifier === 'kimi-k2.6')?.max_context_tokens).toBe(256000);
     expect(kimiModels.find((model) => model.model_identifier === 'kimi-k2.5')?.max_context_tokens).toBe(262144);
     expect(kimiModels.find((model) => model.model_identifier === 'kimi-k2-thinking')?.max_context_tokens).toBe(131072);
     expect(mistralModels.find((model) => model.model_identifier === 'mistral-large-3')?.max_context_tokens).toBe(300000);
