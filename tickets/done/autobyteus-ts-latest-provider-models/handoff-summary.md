@@ -136,3 +136,22 @@ After the local Electron build, `origin/personal` was observed at `88bd4da5c296c
 - User verification received: `Yes`
 - Verification reference: User reported testing succeeded and requested ticket finalization plus a new release on 2026-04-29.
 - Finalization authorization: Proceed with archive, latest-base integration, repository finalization, and release.
+
+## Latest-Base Integration Before Final Merge
+
+- Latest tracked base integrated after user verification: `origin/personal` at `c570c57d7d503ad2c37f5916d2dd536b17ebe859` (`v1.2.85`).
+- Integration method: merge into ticket branch.
+- Integration commit: `3a7f4b52`.
+- Conflicts: none.
+- Material change to ticket behavior: `No`; latest base merged cleanly and focused checks passed.
+- Renewed verification required: `No`; no ticket-scope behavior or handoff state changed materially after integration.
+
+Post-integration checks run on the merged ticket branch:
+
+```bash
+pnpm -C autobyteus-ts run build
+pnpm -C autobyteus-ts exec vitest run tests/unit/llm/metadata/model-metadata-resolver.test.ts tests/unit/llm/api/anthropic-llm.test.ts tests/unit/llm/api/kimi-llm.test.ts tests/unit/multimedia/audio/audio-client-factory.test.ts tests/unit/multimedia/image/image-client-factory.test.ts tests/unit/multimedia/image/api/openai-image-client.test.ts tests/unit/utils/gemini-model-mapping.test.ts --reporter verbose
+git diff --check
+```
+
+Result: passed; Vitest reported 7 files / 40 tests passed.

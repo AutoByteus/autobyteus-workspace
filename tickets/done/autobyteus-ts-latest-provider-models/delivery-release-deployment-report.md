@@ -164,3 +164,23 @@ pnpm -C autobyteus-web build:electron:mac
 - Initial explicit user completion/verification received: `Yes`
 - Initial verification reference: User reported testing succeeded and requested ticket finalization plus a new release on 2026-04-29.
 - Authorized next steps: archive ticket, integrate latest `origin/personal`, run required checks, finalize into `personal`, and release a new version.
+
+## Finalization Re-Integration Result
+
+- Latest tracked base integrated after user verification: `origin/personal` at `c570c57d7d503ad2c37f5916d2dd536b17ebe859` (`v1.2.85`).
+- Integration method: merge into ticket branch.
+- Integration commit: `3a7f4b52`.
+- Integration result: `Completed`
+- Conflicts: `None`
+- Ticket-scope behavior materially changed by re-integration: `No`
+- Renewed user verification required: `No`
+
+Post-integration checks:
+
+```bash
+pnpm -C autobyteus-ts run build
+pnpm -C autobyteus-ts exec vitest run tests/unit/llm/metadata/model-metadata-resolver.test.ts tests/unit/llm/api/anthropic-llm.test.ts tests/unit/llm/api/kimi-llm.test.ts tests/unit/multimedia/audio/audio-client-factory.test.ts tests/unit/multimedia/image/image-client-factory.test.ts tests/unit/multimedia/image/api/openai-image-client.test.ts tests/unit/utils/gemini-model-mapping.test.ts --reporter verbose
+git diff --check
+```
+
+Post-integration verification result: `Passed` (build OK, focused unit tests 7 files / 40 tests passed, diff check OK).
