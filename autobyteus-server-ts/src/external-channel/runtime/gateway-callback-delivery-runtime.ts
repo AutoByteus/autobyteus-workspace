@@ -1,6 +1,5 @@
 import { getProviderProxySet } from "../providers/provider-proxy-set.js";
 import { ChannelBindingService } from "../services/channel-binding-service.js";
-import { ChannelMessageReceiptService } from "../services/channel-message-receipt-service.js";
 import { DeliveryEventService } from "../services/delivery-event-service.js";
 import { ReplyCallbackService } from "../services/reply-callback-service.js";
 import { GatewayCallbackDispatchWorker } from "./gateway-callback-dispatch-worker.js";
@@ -54,17 +53,14 @@ export class GatewayCallbackDeliveryRuntime {
 
   buildReplyCallbackService(): ReplyCallbackService {
     const providerSet = getProviderProxySet();
-    return new ReplyCallbackService(
-      new ChannelMessageReceiptService(providerSet.messageReceiptProvider),
-      {
-        deliveryEventService: this.deliveryEventService,
-        bindingService: new ChannelBindingService(providerSet.bindingProvider),
-        callbackOutboxService: this.outboxService,
-        callbackTargetResolver: {
-          resolveGatewayCallbackDispatchTarget,
-        },
+    return new ReplyCallbackService({
+      deliveryEventService: this.deliveryEventService,
+      bindingService: new ChannelBindingService(providerSet.bindingProvider),
+      callbackOutboxService: this.outboxService,
+      callbackTargetResolver: {
+        resolveGatewayCallbackDispatchTarget,
       },
-    );
+    });
   }
 }
 

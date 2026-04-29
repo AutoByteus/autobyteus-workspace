@@ -231,7 +231,10 @@ describe('AgentRunConfigForm', () => {
       ]),
     ])
 
-    const localConfig = { ...mockConfig }
+    const localConfig = {
+      ...mockConfig,
+      llmConfig: { reasoning_effort: 'high' },
+    }
     const wrapper = mount(AgentRunConfigForm, {
       props: {
         config: localConfig,
@@ -253,6 +256,7 @@ describe('AgentRunConfigForm', () => {
 
     await wrapper.findComponent({ name: 'SearchableGroupedSelect' }).vm.$emit('update:modelValue', 'gpt-3.5')
     expect(localConfig.llmModelIdentifier).toBe('gpt-3.5')
+    expect(localConfig.llmConfig).toBeNull()
   })
 
   it('renders selected existing run configuration as read-only and expands advanced model settings', async () => {

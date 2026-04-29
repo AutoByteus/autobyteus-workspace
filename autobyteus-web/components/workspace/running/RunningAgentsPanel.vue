@@ -52,6 +52,8 @@ import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentRunStore } from '~/stores/agentRunStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
+import { buildEditableAgentRunSeed, buildEditableTeamRunSeed } from '~/composables/useDefinitionLaunchDefaults';
+import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import RunningAgentGroup from './RunningAgentGroup.vue';
 import RunningTeamGroup from './RunningTeamGroup.vue';
@@ -107,14 +109,67 @@ onMounted(() => {
   }
 });
 
+const toTimestamp = (isoTime: string | null | undefined): number => {
+  if (!isoTime) {
+    return 0;
+  }
+
+  const timestamp = Date.parse(isoTime);
+  return Number.isFinite(timestamp) ? timestamp : 0;
+};
+
+const pickMostRecentRun = <T>(runs: T[], getUpdatedAt: (run: T) => string | null | undefined): T | null => {
+  return runs
+    .map((run, index) => ({
+      run,
+      index,
+      timestamp: toTimestamp(getUpdatedAt(run)),
+    }))
+    .sort((left, right) =>
+      right.timestamp - left.timestamp || left.index - right.index,
+    )[0]?.run ?? null;
+};
+
+const getSelectedAgentSourceForDefinition = (definitionId: string): AgentContext | null => {
+  if (selectionStore.selectedType !== 'agent' || !selectionStore.selectedRunId) {
+    return null;
+  }
+
+  const selectedRun = agentContextsStore.runs.get(selectionStore.selectedRunId);
+  return selectedRun?.config.agentDefinitionId === definitionId ? selectedRun : null;
+};
+
+const getSelectedTeamSourceForDefinition = (definitionId: string): AgentTeamContext | null => {
+  if (selectionStore.selectedType !== 'team' || !selectionStore.selectedRunId) {
+    return null;
+  }
+
+  const selectedTeam = teamContextsStore.getTeamContextById(selectionStore.selectedRunId);
+  return selectedTeam?.config.teamDefinitionId === definitionId ? selectedTeam : null;
+};
+
+const getTeamUpdatedAt = (team: AgentTeamContext): string | null | undefined => {
+  if (team.historicalHydration?.updatedAt) {
+    return team.historicalHydration.updatedAt;
+  }
+
+  return Array.from(team.members.values())
+    .map((member) => member.state.conversation?.updatedAt)
+    .sort((left, right) => toTimestamp(right) - toTimestamp(left))[0] ?? null;
+};
+
 const createAgentRun = (definitionId: string) => {
   const definition = agentDefinitionStore.getAgentDefinitionById(definitionId);
   if (!definition) return;
 
   const group = agentGroups.value.find(g => g.definitionId === definitionId);
-  if (group?.runs.length) {
-    const template = { ...group.runs[0].config, isLocked: false };
-    agentRunConfigStore.setAgentConfig(template);
+  const sourceRun = getSelectedAgentSourceForDefinition(definitionId)
+    ?? (group?.runs.length
+      ? pickMostRecentRun(group.runs, (run) => run.state.conversation?.updatedAt)
+      : null);
+
+  if (sourceRun) {
+    agentRunConfigStore.setAgentConfig(buildEditableAgentRunSeed(sourceRun.config));
   } else {
     agentRunConfigStore.setTemplate(definition);
   }
@@ -129,10 +184,13 @@ const createTeamRun = (definitionId: string) => {
   if (!definition) return;
 
   const group = teamGroups.value.find(g => g.definitionId === definitionId);
-  if (group?.runs.length) {
-    const template = JSON.parse(JSON.stringify(group.runs[0].config));
-    template.isLocked = false;
-    teamRunConfigStore.setConfig(template);
+  const sourceTeam = getSelectedTeamSourceForDefinition(definitionId)
+    ?? (group?.runs.length
+      ? pickMostRecentRun(group.runs, getTeamUpdatedAt)
+      : null);
+
+  if (sourceTeam) {
+    teamRunConfigStore.setConfig(buildEditableTeamRunSeed(sourceTeam.config));
   } else {
     teamRunConfigStore.setTemplate(definition);
   }

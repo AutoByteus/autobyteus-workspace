@@ -1,45 +1,31 @@
 import type { ExternalAttachment } from "autobyteus-ts/external-channel/external-attachment.js";
 import type { ExternalOutboundEnvelope } from "autobyteus-ts/external-channel/external-outbound-envelope.js";
 import type {
-  ChannelDispatchTarget,
-  ChannelSourceContext,
+  ChannelOutputRoute,
+  ChannelRunOutputTarget,
 } from "../domain/models.js";
-import type { ChannelMessageReceiptService } from "./channel-message-receipt-service.js";
 import type { DeliveryEventService } from "./delivery-event-service.js";
 import type { ChannelBindingService } from "./channel-binding-service.js";
 
-export type PublishAssistantReplyByTurnInput = {
-  agentRunId: string;
-  turnId: string | null;
+export type PublishRunOutputReplyInput = {
+  route: ChannelOutputRoute;
+  target: ChannelRunOutputTarget;
+  turnId: string;
   replyText: string | null;
   callbackIdempotencyKey: string;
-  teamRunId?: string | null;
-  correlationMessageId?: string | null;
+  correlationMessageId: string | null;
   attachments?: ExternalAttachment[];
   metadata?: Record<string, unknown>;
 };
 
-export type PublishAssistantReplyToSourceInput = {
-  source: ChannelSourceContext;
-  agentRunId: string;
-  turnId: string | null;
-  replyText: string | null;
-  callbackIdempotencyKey: string;
-  teamRunId?: string | null;
-  correlationMessageId?: string | null;
-  attachments?: ExternalAttachment[];
-  metadata?: Record<string, unknown>;
-};
-
-export type PublishAssistantReplyReason =
+export type PublishRunOutputReplyReason =
   | "DUPLICATE"
   | "TURN_ID_MISSING"
-  | "SOURCE_NOT_FOUND"
   | "BINDING_NOT_FOUND"
   | "EMPTY_REPLY"
   | "CALLBACK_NOT_CONFIGURED";
 
-export type PublishAssistantReplyByTurnResult =
+export type PublishRunOutputReplyResult =
   | {
       published: true;
       duplicate: false;
@@ -49,7 +35,7 @@ export type PublishAssistantReplyByTurnResult =
   | {
       published: false;
       duplicate: boolean;
-      reason: PublishAssistantReplyReason;
+      reason: PublishRunOutputReplyReason;
       envelope: null;
     };
 
@@ -78,26 +64,20 @@ export type ReplyCallbackServiceDependencies = {
 
 export class ReplyCallbackService {
   private readonly deliveryEventService?: DeliveryEventService;
-
   private readonly bindingService?: ChannelBindingService;
-
   private readonly callbackOutboxService?: CallbackOutboxPort;
-
   private readonly callbackTargetResolver?: CallbackTargetResolverPort;
 
-  constructor(
-    private readonly messageReceiptService: ChannelMessageReceiptService,
-    deps: ReplyCallbackServiceDependencies = {},
-  ) {
+  constructor(deps: ReplyCallbackServiceDependencies = {}) {
     this.deliveryEventService = deps.deliveryEventService;
     this.bindingService = deps.bindingService;
     this.callbackOutboxService = deps.callbackOutboxService;
     this.callbackTargetResolver = deps.callbackTargetResolver;
   }
 
-  async publishAssistantReplyByTurn(
-    input: PublishAssistantReplyByTurnInput,
-  ): Promise<PublishAssistantReplyByTurnResult> {
+  async publishRunOutputReply(
+    input: PublishRunOutputReplyInput,
+  ): Promise<PublishRunOutputReplyResult> {
     const turnId = normalizeOptionalString(input.turnId);
     if (!turnId) {
       return skip("TURN_ID_MISSING");
@@ -125,78 +105,16 @@ export class ReplyCallbackService {
       return skip("CALLBACK_NOT_CONFIGURED");
     }
 
-    const agentRunId = normalizeRequiredString(input.agentRunId, "agentRunId");
-    const teamRunId = normalizeOptionalString(input.teamRunId ?? null);
     const callbackIdempotencyKey = normalizeRequiredString(
       input.callbackIdempotencyKey,
       "callbackIdempotencyKey",
     );
+    const route = normalizeRoute(input.route);
+    const target = normalizeTarget(input.target);
 
-    const source = await this.messageReceiptService.getSourceByAgentRunTurn(agentRunId, turnId);
-    if (!source) {
-      return skip("SOURCE_NOT_FOUND");
-    }
-
-    return this.publishAssistantReplyToSource({
-      source,
-      agentRunId,
-      teamRunId,
-      turnId,
-      replyText,
-      callbackIdempotencyKey,
-      correlationMessageId: input.correlationMessageId,
-      attachments: input.attachments,
-      metadata: input.metadata,
-    });
-  }
-
-  async publishAssistantReplyToSource(
-    input: PublishAssistantReplyToSourceInput,
-  ): Promise<PublishAssistantReplyByTurnResult> {
-    const turnId = normalizeOptionalString(input.turnId);
-    if (!turnId) {
-      return skip("TURN_ID_MISSING");
-    }
-
-    const replyText = normalizeOptionalString(input.replyText);
-    if (!replyText) {
-      return skip("EMPTY_REPLY");
-    }
-
-    const deliveryEventService = this.deliveryEventService;
-    const callbackOutboxService = this.callbackOutboxService;
-    const callbackTargetResolver = this.callbackTargetResolver;
-    if (
-      !deliveryEventService ||
-      !callbackOutboxService ||
-      !callbackTargetResolver
-    ) {
-      return skip("CALLBACK_NOT_CONFIGURED");
-    }
-
-    const callbackTarget =
-      await callbackTargetResolver.resolveGatewayCallbackDispatchTarget();
-    if (callbackTarget.state === "DISABLED") {
-      return skip("CALLBACK_NOT_CONFIGURED");
-    }
-
-    const agentRunId = normalizeRequiredString(input.agentRunId, "agentRunId");
-    const teamRunId = normalizeOptionalString(input.teamRunId ?? null);
-    const callbackIdempotencyKey = normalizeRequiredString(
-      input.callbackIdempotencyKey,
-      "callbackIdempotencyKey",
-    );
-
-    const target: ChannelDispatchTarget = { agentRunId, teamRunId };
     if (this.bindingService) {
       const stillBound = await this.bindingService.isRouteBoundToTarget(
-        {
-          provider: input.source.provider,
-          transport: input.source.transport,
-          accountId: input.source.accountId,
-          peerId: input.source.peerId,
-          threadId: input.source.threadId,
-        },
+        route,
         target,
       );
       if (!stillBound) {
@@ -205,15 +123,15 @@ export class ReplyCallbackService {
     }
 
     const envelope = this.buildEnvelope({
-      source: input.source,
+      route,
       callbackIdempotencyKey,
       replyText,
       correlationMessageId:
-        normalizeOptionalString(input.correlationMessageId) ??
-        input.source.externalMessageId,
+        normalizeOptionalString(input.correlationMessageId) ?? callbackIdempotencyKey,
       attachments: input.attachments ?? [],
       metadata: {
         turnId,
+        ...targetMetadata(target),
         ...normalizeMetadata(input.metadata),
       },
     });
@@ -259,14 +177,7 @@ export class ReplyCallbackService {
   }
 
   private buildEnvelope(input: {
-    source: {
-      provider: ExternalOutboundEnvelope["provider"];
-      transport: ExternalOutboundEnvelope["transport"];
-      accountId: string;
-      peerId: string;
-      threadId: string | null;
-      externalMessageId: string;
-    };
+    route: ChannelOutputRoute;
     callbackIdempotencyKey: string;
     correlationMessageId: string;
     replyText: string;
@@ -274,11 +185,11 @@ export class ReplyCallbackService {
     metadata: Record<string, unknown>;
   }): ExternalOutboundEnvelope {
     return {
-      provider: input.source.provider,
-      transport: input.source.transport,
-      accountId: input.source.accountId,
-      peerId: input.source.peerId,
-      threadId: input.source.threadId,
+      provider: input.route.provider,
+      transport: input.route.transport,
+      accountId: input.route.accountId,
+      peerId: input.route.peerId,
+      threadId: input.route.threadId,
       correlationMessageId: input.correlationMessageId,
       callbackIdempotencyKey: input.callbackIdempotencyKey,
       replyText: input.replyText,
@@ -289,12 +200,50 @@ export class ReplyCallbackService {
   }
 }
 
-const skip = (reason: PublishAssistantReplyReason): PublishAssistantReplyByTurnResult => ({
+const skip = (reason: PublishRunOutputReplyReason): PublishRunOutputReplyResult => ({
   published: false,
   duplicate: false,
   reason,
   envelope: null,
 });
+
+const normalizeTarget = (target: ChannelRunOutputTarget): ChannelRunOutputTarget => {
+  if (target.targetType === "AGENT") {
+    return {
+      targetType: "AGENT",
+      agentRunId: normalizeRequiredString(target.agentRunId, "target.agentRunId"),
+    };
+  }
+  return {
+    targetType: "TEAM",
+    teamRunId: normalizeRequiredString(target.teamRunId, "target.teamRunId"),
+    entryMemberRunId: normalizeOptionalString(target.entryMemberRunId),
+    entryMemberName: normalizeOptionalString(target.entryMemberName),
+  };
+};
+
+const normalizeRoute = (route: ChannelOutputRoute): ChannelOutputRoute => ({
+  provider: route.provider,
+  transport: route.transport,
+  accountId: normalizeRequiredString(route.accountId, "route.accountId"),
+  peerId: normalizeRequiredString(route.peerId, "route.peerId"),
+  threadId: normalizeOptionalString(route.threadId),
+});
+
+const targetMetadata = (target: ChannelRunOutputTarget): Record<string, unknown> => {
+  if (target.targetType === "AGENT") {
+    return {
+      targetType: target.targetType,
+      agentRunId: target.agentRunId,
+    };
+  }
+  return {
+    targetType: target.targetType,
+    teamRunId: target.teamRunId,
+    memberRunId: target.entryMemberRunId,
+    memberName: target.entryMemberName,
+  };
+};
 
 const normalizeRequiredString = (value: string, field: string): string => {
   const normalized = value.trim();

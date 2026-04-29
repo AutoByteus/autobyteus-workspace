@@ -84,6 +84,7 @@ import TeamGridView from '~/components/workspace/team/TeamGridView.vue';
 import TeamSpotlightView from '~/components/workspace/team/TeamSpotlightView.vue';
 import TeamWorkspaceModeSwitch from '~/components/workspace/team/TeamWorkspaceModeSwitch.vue';
 import WorkspaceHeaderActions from '~/components/workspace/common/WorkspaceHeaderActions.vue';
+import { buildEditableTeamRunSeed } from '~/composables/useDefinitionLaunchDefaults';
 
 const teamContextsStore = useAgentTeamContextsStore();
 const agentDefinitionStore = useAgentDefinitionStore();
@@ -168,9 +169,7 @@ const setFocusedMember = async (memberName: string) => {
 const createNewTeamRun = () => {
   if (!activeTeamContext.value) return;
 
-  const template = JSON.parse(JSON.stringify(activeTeamContext.value.config));
-  template.isLocked = false;
-  teamRunConfigStore.setConfig(template);
+  teamRunConfigStore.setConfig(buildEditableTeamRunSeed(activeTeamContext.value.config));
   agentRunConfigStore.clearConfig();
   selectionStore.clearSelection();
 };

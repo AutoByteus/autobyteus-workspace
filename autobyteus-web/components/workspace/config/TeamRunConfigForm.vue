@@ -128,6 +128,8 @@ import { loadRuntimeProviderGroupsForSelection } from '~/composables/useRuntimeS
 import { resolveLeafTeamMembers } from '~/utils/teamDefinitionMembers'
 import {
   hasExplicitMemberLlmConfigOverride,
+  hasExplicitMemberLlmModelOverride,
+  hasExplicitMemberRuntimeOverride,
   hasMeaningfulMemberOverride,
   resolveEffectiveMemberRuntimeKind,
 } from '~/utils/teamRunConfigUtils'
@@ -226,13 +228,48 @@ const updateSkillAccessMode = (value: string) => {
   props.config.skillAccessMode = value as SkillAccessMode
 }
 
+const pruneInheritedMemberLlmConfigs = (changedGlobal: { runtime: boolean; model: boolean }) => {
+  if (!changedGlobal.runtime && !changedGlobal.model) return
+
+  const currentOverrides = props.config.memberOverrides || {}
+  const nextOverrides: Record<string, MemberConfigOverride> = {}
+  let pruned = false
+
+  for (const [memberName, override] of Object.entries(currentOverrides)) {
+    const shouldPruneConfig = hasExplicitMemberLlmConfigOverride(override) && (
+      (changedGlobal.runtime && !hasExplicitMemberRuntimeOverride(override)) ||
+      (changedGlobal.model && !hasExplicitMemberLlmModelOverride(override))
+    )
+
+    if (!shouldPruneConfig) {
+      nextOverrides[memberName] = override
+      continue
+    }
+
+    const prunedOverride = { ...override }
+    delete prunedOverride.llmConfig
+    if (hasMeaningfulMemberOverride(prunedOverride)) {
+      nextOverrides[memberName] = prunedOverride
+    }
+    pruned = true
+  }
+
+  if (pruned) {
+    props.config.memberOverrides = nextOverrides
+  }
+}
+
 const updateRuntimeKind = (value: string) => {
   if (isFormReadOnly.value) return
+  const runtimeChanged = value !== props.config.runtimeKind
+  pruneInheritedMemberLlmConfigs({ runtime: runtimeChanged, model: false })
   props.config.runtimeKind = value
 }
 
 const updateLlmModelIdentifier = (value: string) => {
   if (isFormReadOnly.value) return
+  const modelChanged = value !== props.config.llmModelIdentifier
+  pruneInheritedMemberLlmConfigs({ runtime: false, model: modelChanged })
   props.config.llmModelIdentifier = value
 }
 

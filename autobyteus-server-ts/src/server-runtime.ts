@@ -28,9 +28,9 @@ import { ApplicationBundleService } from "./application-bundles/services/applica
 import { ApplicationPackageRegistryService } from "./application-packages/services/application-package-registry-service.js";
 import { ApplicationPlatformStateStore } from "./application-storage/stores/application-platform-state-store.js";
 import {
-  startReceiptWorkflowRuntime,
-  stopReceiptWorkflowRuntime,
-} from "./external-channel/runtime/receipt-workflow-runtime-singleton.js";
+  startChannelRunOutputDeliveryRuntime,
+  stopChannelRunOutputDeliveryRuntime,
+} from "./external-channel/runtime/channel-run-output-runtime-singleton.js";
 import {
   startGatewayCallbackDeliveryRuntime,
   stopGatewayCallbackDeliveryRuntime,
@@ -73,7 +73,7 @@ export async function buildApp(options?: BuildAppOptions): Promise<FastifyInstan
   await registerWebsocketRoutes(app);
   await registerGraphql(app);
   app.addHook("onClose", async () => {
-    await stopReceiptWorkflowRuntime();
+    await stopChannelRunOutputDeliveryRuntime();
     await stopGatewayCallbackDeliveryRuntime();
     await getManagedMessagingGatewayService().close();
   });
@@ -130,7 +130,7 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
   registerShutdownHandlers(app);
   await app.listen({ host: options.host, port: options.port });
   logger.info(`Server listening on ${options.host}:${options.port}`);
-  startReceiptWorkflowRuntime();
+  startChannelRunOutputDeliveryRuntime();
   startGatewayCallbackDeliveryRuntime();
 
   try {

@@ -63,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch, toRaw } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { Icon } from '@iconify/vue';
 import { sanitizeModelConfigAgainstSchema, type UiModelConfigSchema } from '~/utils/llmConfigSchema';
 import { applyThinkingToggle, getThinkingParamKeys, getThinkingToggleState, hasThinkingSupport } from '~/utils/llmThinkingConfigAdapter';
@@ -76,7 +76,6 @@ const props = defineProps<{
   disabled?: boolean;
   readOnly?: boolean;
   applyDefaults?: boolean;
-  clearOnEmptySchema?: boolean;
   compact?: boolean;
   idPrefix?: string;
   thinkingLabel?: string;
@@ -166,13 +165,6 @@ const sanitizeConfigIfNeeded = (): boolean => {
   return true;
 };
 
-const clearConfigIfEmptySchema = () => {
-  if (hasSchema.value) return;
-  if (!props.clearOnEmptySchema) return;
-  if (props.modelConfig == null) return;
-  emitConfig(null);
-};
-
 watch(
   () => [props.schema, props.modelConfig, props.applyDefaults],
   () => {
@@ -180,7 +172,6 @@ watch(
       return;
     }
     applyDefaultsIfNeeded();
-    clearConfigIfEmptySchema();
   },
   { immediate: true },
 );
@@ -200,45 +191,5 @@ watch(
       showAdvancedParams.value = true;
     }
   },
-);
-
-// Reset config when schema changes (switching between different providers/models)
-// This prevents old provider-specific params (e.g. Claude's thinking_enabled) from
-// persisting when switching to a different provider (e.g. GPT)
-let previousSchemaJson: string | null = null;
-let previousModelConfig: Record<string, unknown> | null | undefined = props.modelConfig;
-
-watch(
-  () => [props.schema, props.modelConfig],
-  ([newSchema, newModelConfig]) => {
-    const newSchemaJson = JSON.stringify(newSchema ?? null);
-    
-    // On first run, just store the state
-    if (previousSchemaJson === null) {
-      previousSchemaJson = newSchemaJson;
-      previousModelConfig = newModelConfig;
-      return;
-    }
-    
-    // If schema changed
-    if (newSchemaJson !== previousSchemaJson) {
-      previousSchemaJson = newSchemaJson;
-      // Only reset if the modelConfig object reference has NOT changed.
-      // - If modelConfig changed, it means we switched agents (context switch) -> Don't reset.
-      // - If modelConfig is same, it means we changed model dropdown for same agent -> Reset.
-      const sameConfigRef =
-        toRaw(newModelConfig ?? null) === toRaw(previousModelConfig ?? null);
-
-      if (sameConfigRef) {
-        if (props.modelConfig != null) {
-          emitConfig(null);
-        }
-      }
-    }
-    
-    // Always update previous config ref
-    previousModelConfig = newModelConfig;
-  },
-  { immediate: true },
 );
 </script>

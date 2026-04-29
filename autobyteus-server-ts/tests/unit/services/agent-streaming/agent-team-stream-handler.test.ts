@@ -42,8 +42,19 @@ describe("AgentTeamStreamHandler", () => {
     ...overrides,
   });
 
-  const createTeamRunService = (teamRun: ReturnType<typeof createTeamRun> | null) => ({
-    getTeamRun: vi.fn().mockReturnValue(teamRun),
+  const createTeamRunService = (
+    teamRun: ReturnType<typeof createTeamRun> | null,
+    options: {
+      activeTeamRun?: ReturnType<typeof createTeamRun> | null;
+      resolvedTeamRun?: ReturnType<typeof createTeamRun> | null;
+    } = {},
+  ) => ({
+    getTeamRun: vi.fn().mockReturnValue(
+      "activeTeamRun" in options ? options.activeTeamRun : teamRun,
+    ),
+    resolveTeamRun: vi.fn().mockResolvedValue(
+      "resolvedTeamRun" in options ? options.resolvedTeamRun : teamRun,
+    ),
     recordRunActivity: vi.fn().mockResolvedValue(undefined),
     refreshRunMetadata: vi.fn().mockResolvedValue(undefined),
   });
@@ -81,9 +92,12 @@ describe("AgentTeamStreamHandler", () => {
     expect(message.payload.agent_id).toBe("agent-xyz");
   });
 
-  it("connects through TeamRunService and sends CONNECTED plus initial status", async () => {
+  it("connects through TeamRunService.resolveTeamRun and sends CONNECTED plus initial status", async () => {
     const teamRun = createTeamRun();
-    const teamRunService = createTeamRunService(teamRun);
+    const teamRunService = createTeamRunService(null, {
+      activeTeamRun: null,
+      resolvedTeamRun: teamRun,
+    });
     const handler = new AgentTeamStreamHandler(
       new AgentSessionManager(),
       teamRunService as any,
@@ -96,7 +110,8 @@ describe("AgentTeamStreamHandler", () => {
     const sessionId = await handler.connect(connection, "team-1");
 
     expect(sessionId).toBeTruthy();
-    expect(teamRunService.getTeamRun).toHaveBeenCalledWith("team-1");
+    expect(teamRunService.resolveTeamRun).toHaveBeenCalledWith("team-1");
+    expect(teamRunService.getTeamRun).not.toHaveBeenCalled();
     expect(teamRun.subscribeToEvents).toHaveBeenCalledWith(expect.any(Function));
     expect(JSON.parse(connection.send.mock.calls[0][0])).toMatchObject({
       type: ServerMessageType.CONNECTED,
@@ -114,9 +129,10 @@ describe("AgentTeamStreamHandler", () => {
   });
 
   it("closes with 4004 when the team run is missing", async () => {
+    const teamRunService = createTeamRunService(null);
     const handler = new AgentTeamStreamHandler(
       new AgentSessionManager(),
-      createTeamRunService(null) as any,
+      teamRunService as any,
     );
     const connection = {
       send: vi.fn(),
@@ -126,6 +142,7 @@ describe("AgentTeamStreamHandler", () => {
     const sessionId = await handler.connect(connection, "missing-team");
 
     expect(sessionId).toBeNull();
+    expect(teamRunService.resolveTeamRun).toHaveBeenCalledWith("missing-team");
     expect(connection.close).toHaveBeenCalledWith(4004);
     expect(JSON.parse(connection.send.mock.calls[0][0])).toMatchObject({
       type: ServerMessageType.ERROR,
@@ -170,6 +187,81 @@ describe("AgentTeamStreamHandler", () => {
         lastKnownStatus: "ACTIVE",
       }),
     );
+  });
+
+  it("restores and rebinds a team run before SEND_MESSAGE when the active subject was removed", async () => {
+    const initialRun = createTeamRun({
+      subscribeToEvents: vi.fn().mockReturnValue(vi.fn()),
+    });
+    const restoredRun = createTeamRun({
+      postMessage: vi.fn().mockResolvedValue({ accepted: true }),
+      subscribeToEvents: vi.fn().mockReturnValue(vi.fn()),
+    });
+    const teamRunService = createTeamRunService(null, {
+      activeTeamRun: null,
+      resolvedTeamRun: initialRun,
+    });
+    teamRunService.resolveTeamRun
+      .mockResolvedValueOnce(initialRun)
+      .mockResolvedValueOnce(restoredRun);
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      teamRunService as any,
+    );
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    const sessionId = await handler.connect(connection, "team-1");
+    await handler.handleMessage(
+      sessionId as string,
+      JSON.stringify({
+        type: ClientMessageType.SEND_MESSAGE,
+        payload: {
+          content: "resume team",
+          target_member_name: "worker-a",
+        },
+      }),
+    );
+
+    expect(teamRunService.resolveTeamRun).toHaveBeenCalledTimes(2);
+    expect(restoredRun.postMessage).toHaveBeenCalledTimes(1);
+    expect(initialRun.postMessage).not.toHaveBeenCalled();
+    expect(restoredRun.subscribeToEvents).toHaveBeenCalledWith(expect.any(Function));
+    expect(teamRunService.recordRunActivity).toHaveBeenCalledWith(
+      restoredRun,
+      expect.objectContaining({
+        summary: "resume team",
+      }),
+    );
+  });
+
+  it("keeps stop-generation active-only and does not restore a stopped team run", async () => {
+    const teamRun = createTeamRun();
+    const teamRunService = createTeamRunService(teamRun);
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      teamRunService as any,
+    );
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    const sessionId = await handler.connect(connection, "team-1");
+    teamRunService.getTeamRun.mockReturnValue(null);
+    teamRunService.resolveTeamRun.mockClear();
+
+    await handler.handleMessage(
+      sessionId as string,
+      JSON.stringify({
+        type: ClientMessageType.STOP_GENERATION,
+      }),
+    );
+
+    expect(teamRunService.resolveTeamRun).not.toHaveBeenCalled();
+    expect(teamRun.interrupt).not.toHaveBeenCalled();
   });
 
   it("resolves approval target names from TeamRun member context instead of manager state", async () => {

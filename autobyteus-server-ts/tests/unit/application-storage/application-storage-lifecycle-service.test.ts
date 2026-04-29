@@ -39,8 +39,8 @@ const createBundle = (applicationRootPath: string, migrationsDirPath: string | n
     distribution: "self-contained",
     targetRuntime: { engine: "node", semver: ">=22 <23" },
     sdkCompatibility: {
-      backendDefinitionContractVersion: "1",
-      frontendSdkContractVersion: "1",
+      backendDefinitionContractVersion: "2",
+      frontendSdkContractVersion: "3",
     },
     supportedExposures: {
       queries: true,

@@ -10,8 +10,8 @@ import type {
   ChannelIngressReceiptKey,
   ChannelIngressReceiptState,
   ChannelMessageReceipt,
-  ChannelReceiptWorkflowState,
   ChannelSourceContext,
+  ChannelSourceRoute,
 } from "../domain/models.js";
 import {
   normalizeNullableString,
@@ -26,13 +26,10 @@ export type ChannelMessageReceiptRow = {
   threadId: string;
   externalMessageId: string;
   ingressState: ChannelIngressReceiptState;
-  workflowState?: ChannelReceiptWorkflowState;
   dispatchAcceptedAt?: string | null;
   turnId: string | null;
   agentRunId: string | null;
   teamRunId: string | null;
-  replyTextFinal?: string | null;
-  lastError?: string | null;
   dispatchLeaseToken: string | null;
   dispatchLeaseExpiresAt: string | null;
   receivedAt: string;
@@ -68,7 +65,6 @@ export const toSourceContext = (
   threadId: fromThreadStorage(row.threadId),
   externalMessageId: row.externalMessageId,
   receivedAt: parseDate(row.receivedAt),
-  turnId: normalizeNullableString(row.turnId),
 });
 
 export const toReceipt = (
@@ -76,14 +72,12 @@ export const toReceipt = (
 ): ChannelMessageReceipt => ({
   ...toSourceContext(row),
   ingressState: row.ingressState,
-  workflowState: normalizeWorkflowState(row.workflowState),
   dispatchAcceptedAt: row.dispatchAcceptedAt
     ? parseDate(row.dispatchAcceptedAt)
     : null,
+  turnId: normalizeNullableString(row.turnId),
   agentRunId: normalizeNullableString(row.agentRunId),
   teamRunId: normalizeNullableString(row.teamRunId),
-  replyTextFinal: normalizeNullableString(row.replyTextFinal ?? null),
-  lastError: normalizeNullableString(row.lastError ?? null),
   dispatchLeaseToken: normalizeNullableString(row.dispatchLeaseToken),
   dispatchLeaseExpiresAt: row.dispatchLeaseExpiresAt
     ? parseDate(row.dispatchLeaseExpiresAt)
@@ -103,24 +97,14 @@ export const matchesKey = (
   row.threadId === toThreadStorage(input.threadId) &&
   row.externalMessageId === input.externalMessageId;
 
-export const isSourceLookupState = (
-  state: ChannelIngressReceiptState,
-  workflowState: ChannelReceiptWorkflowState,
+export const matchesRoute = (
+  row: ChannelMessageReceiptRow,
+  route: ChannelSourceRoute,
 ): boolean =>
-  (state === "ACCEPTED" || state === "ROUTED") &&
-  workflowState !== "FAILED" &&
-  workflowState !== "EXPIRED" &&
-  workflowState !== "UNBOUND";
-
-export const normalizeWorkflowState = (
-  value: ChannelReceiptWorkflowState | undefined,
-): ChannelReceiptWorkflowState => {
-  if (!value) {
-    throw new Error(
-      "Channel message receipt row is missing workflowState. Legacy runtime fallback is not supported.",
-    );
-  }
-  return value;
-};
+  row.provider === route.provider &&
+  row.transport === route.transport &&
+  row.accountId === route.accountId &&
+  row.peerId === route.peerId &&
+  row.threadId === toThreadStorage(route.threadId);
 
 export type { ExternalChannelProvider, ExternalChannelTransport };

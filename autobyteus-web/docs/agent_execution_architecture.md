@@ -39,8 +39,8 @@ The Pinia stores act as the primary interface for the UI components to interact 
 
 - **Role**: Manages the execution lifecycle of individual agents.
 - **Key Actions**:
-  - `sendUserInputAndSubscribe()`: Sends user messages via mutation and ensures an agent WebSocket stream is connected. Before the send, it finalizes any staged browser uploads so optimistic history and runtime payloads both point at final run-scoped attachment locators.
-  - `connectToAgentStream(runId)`: Listens for real-time events specific to an agent run via WebSocket.
+  - `sendUserInputAndSubscribe()`: Sends user messages via mutation and ensures an agent WebSocket stream is connected. For persisted inactive runs, it uses resume config to call `RestoreAgentRun` before finalizing attachments and sending. Before the send, it finalizes any staged browser uploads so optimistic history and runtime payloads both point at final run-scoped attachment locators.
+  - `connectToAgentStream(runId)`: Listens for real-time events specific to an agent run via WebSocket. The backend WebSocket boundary is also restore-aware for connect and `SEND_MESSAGE`, so a stale/missing frontend resume cache does not have to be the only recovery path.
   - `postToolExecutionApproval()`: Sends user decisions (Approve/Deny) for "Awaiting Approval" tool calls.
   - `closeAgent()`: Cleans up local state and unsubscribes.
 
@@ -51,7 +51,17 @@ The Pinia stores act as the primary interface for the UI components to interact 
   - `createAndLaunchTeam()`: Orchestrates the creation of a new team run configuration and starts the session.
   - `launchExistingTeam()`: Resumes or starts a session from an existing team instance.
   - `connectToTeamStream(teamRunId)`: Listens for team-level events (e.g., task updates, status changes) via WebSocket.
-  - `sendMessageToFocusedMember()`: Routes user input to a specific agent within the team context, finalizing that member's staged uploaded attachments after the authoritative team/member identity is known.
+  - `sendMessageToFocusedMember()`: Routes user input to a specific agent within the team context, restoring an inactive persisted team when resume config says it is inactive, then finalizing that member's staged uploaded attachments after the authoritative team/member identity is known. Backend WebSocket `SEND_MESSAGE` provides the authoritative final recovery boundary when the local resume cache is stale or absent.
+  - `terminateTeamRun()`: Calls backend termination before local teardown for persisted teams. On success it disconnects the team stream, marks members shut down, marks run-history resume config inactive, and refreshes the history tree; on failure it leaves the active local team state intact.
+
+### Stopped-Run Follow-Up Recovery
+
+Single-agent and team follow-up chat share the same recovery model:
+
+- frontend stores use cached resume config to eagerly call explicit restore mutations when they know a selected run/team is inactive;
+- WebSocket connect and `SEND_MESSAGE` are restore-aware on the backend, so follow-up chat can still recover stopped-but-persisted runs when the frontend cache is stale, missing, or was updated after a local stop;
+- accepted follow-up messages mark the run/team active in run history and refresh the history tree; and
+- stop/tool-approval control messages are active-only and should not be used as implicit restore operations.
 
 ### Uploaded Context Attachment Orchestration
 
@@ -92,6 +102,26 @@ may show a localized `Not recorded for this historical run` state, but it must
 not infer a current default, recover a runtime value, or materialize metadata.
 Backend/runtime/history recovery or persistence semantics belong to a separate
 backend ticket, not this frontend inspection boundary.
+
+### New Run From Existing Run
+
+When the user clicks the workspace header add/new-run action while an existing
+single-agent or team run is selected, the frontend treats that selected run as a
+launch template for the new editable draft. The selected run itself remains
+inspect-only, but the editable launch buffer is seeded from a deep-cloned copy of
+the selected run config, including runtime kind, model identifier, workspace,
+auto-approve/skill-access settings, `llmConfig`, and team member overrides.
+
+That source-copy path must preserve backend-provided model-thinking fields such
+as `reasoning_effort: "xhigh"` even when the runtime model catalog is still
+loading. Schema arrival may sanitize invalid model-config keys after a real
+schema is available, but an empty/loading schema must not clear the copied
+`llmConfig`. Explicit user runtime/model changes remain the owner for stale
+model-config cleanup.
+
+If there is no selected same-definition source run, workspace add/new-run flows
+fall back to the existing definition/default launch preferences instead of
+inventing historical config.
 
 ---
 

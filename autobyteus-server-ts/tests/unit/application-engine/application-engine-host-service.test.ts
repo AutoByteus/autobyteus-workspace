@@ -46,7 +46,7 @@ describe("ApplicationEngineHostService", () => {
       targetRuntime: { engine: "node", semver: ">=22 <23" },
       sdkCompatibility: {
         backendDefinitionContractVersion: "2",
-        frontendSdkContractVersion: "2",
+        frontendSdkContractVersion: "3",
       },
       supportedExposures: {
         queries: true,
@@ -144,7 +144,6 @@ describe("ApplicationEngineHostService", () => {
       queryName: "tickets.get",
       requestContext: {
         applicationId: "built-in:applications__sample-app",
-        launchInstanceId: "launch-1",
       },
       input: { ticketId: "t-1" },
     });
@@ -152,14 +151,12 @@ describe("ApplicationEngineHostService", () => {
       input: { ticketId: "t-1" },
       requestContext: {
         applicationId: "built-in:applications__sample-app",
-        launchInstanceId: "launch-1",
       },
     });
 
     const routeResult = await service.routeApplicationRequest("built-in:applications__sample-app", {
       requestContext: {
         applicationId: "built-in:applications__sample-app",
-        launchInstanceId: "launch-1",
       },
       request: {
         method: "GET",
@@ -181,7 +178,6 @@ describe("ApplicationEngineHostService", () => {
     const graphqlResult = await service.executeApplicationGraphql("built-in:applications__sample-app", {
       requestContext: {
         applicationId: "built-in:applications__sample-app",
-        launchInstanceId: null,
       },
       request: {
         query: "{ ping }",
@@ -191,7 +187,6 @@ describe("ApplicationEngineHostService", () => {
       query: "{ ping }",
       requestContext: {
         applicationId: "built-in:applications__sample-app",
-        launchInstanceId: null,
       },
     });
 

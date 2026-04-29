@@ -275,7 +275,7 @@ const writeBackendBundleManifest = async (targetApplicationRoot) => {
     },
     sdkCompatibility: {
       backendDefinitionContractVersion: "2",
-      frontendSdkContractVersion: "2",
+      frontendSdkContractVersion: "3",
     },
     supportedExposures: {
       queries: false,

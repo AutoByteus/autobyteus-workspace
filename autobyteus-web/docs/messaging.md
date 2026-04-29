@@ -64,7 +64,8 @@ Outside AutoByteus, create a Telegram bot with BotFather and copy the bot token.
 12. If you select `Agent Definition`, complete the launch preset and save the binding.
 13. If you select `Agent Team`, choose a team definition, complete the team launch preset, and save the binding.
 14. Team bindings send replies back through the coordinator or entry node only, not every member.
-15. Open `Verify` and run setup verification.
+15. While the binding remains attached to the active run, later eligible coordinator or entry-node outputs are delivered back to Telegram even if they were triggered by internal team-member handoffs and the Telegram user has not sent a second message.
+16. Open `Verify` and run setup verification.
 
 ### What `Telegram account label` Means
 
@@ -92,19 +93,23 @@ The low-level standalone gateway still supports webhook mode for operator-manage
 ## Telegram Limitations And Notes
 
 - Telegram peer discovery becomes useful only after at least one real inbound message reaches the bot.
-- TEAM bindings target a team definition plus saved launch preset. The first inbound message creates the team run automatically, and later messages reuse the cached run only while that bot-owned run is still live in the current server session. After a restart or inactive cached run, the next inbound message starts a fresh team run for the binding.
-- TEAM replies are emitted through the coordinator or entry node only.
+- TEAM bindings target a team definition plus saved launch preset. The first inbound message creates the team run automatically, and later messages reuse the cached run only while that bot-owned run is still live in the current server session. While that route/run link is active, eligible coordinator or entry-node outputs from the run are delivered to Telegram without requiring another inbound Telegram message. After a restart or inactive cached run, the next inbound message starts a fresh team run for the binding.
+- TEAM replies are emitted through the coordinator or entry node only; worker-only/internal coordination messages are not sent to the external peer.
 - If `Refresh Peers` shows nothing, send another message to the bot and refresh again.
 
 ## Delivery Reliability And Heartbeat
 
 Managed messaging does not rely only on an HTTP health check. The gateway keeps a file-backed reliability model:
 
-- inbound messages are written into an inbox queue before forwarding to the server
+- inbound messages are written into an inbox queue before forwarding to the server; server `ACCEPTED` ingress responses complete those records as accepted work rather than retrying them
 - outbound messages are written into an outbox queue before provider delivery
 - workers retry transient failures with backoff
 - terminal failures move into dead-letter storage instead of disappearing
 - queue owner locks publish heartbeats so lock loss is detectable
+- if an upgraded gateway first encounters incompatible inbox/outbox queue data,
+  it quarantines the offending queue file beside the active file and creates a
+  fresh empty queue so new messages can continue without manual runtime-file
+  deletion
 
 The top runtime card exposes that state through:
 
@@ -116,6 +121,12 @@ The top runtime card exposes that state through:
 
 If the reliability state turns `CRITICAL_LOCK_LOST`, restart the managed gateway before trusting new deliveries.
 
+Queue-file quarantine is limited to transient inbox/outbox data. It does not
+delete channel bindings, provider configuration, provider secrets, personal
+session auth/state, or queue owner lock files. Old incompatible queue records
+are preserved in the quarantine file for diagnostics, but they are not migrated
+back into active retry processing.
+
 ## How To Prove Telegram Works
 
 Use this acceptance checklist:
@@ -126,6 +137,7 @@ Use this acceptance checklist:
 4. A binding can be created for that peer by selecting either an agent definition plus launch preset or a team definition plus team launch preset.
 5. `Run Verification` reports the setup as ready or shows actionable blockers only.
 6. A follow-up Telegram message from the bound peer auto-starts or reuses the expected agent runtime while it stays live, or reuses the cached team run created from the selected team definition while that bot-owned run is still live in the current server session.
+7. For team bindings, a coordinator response emitted after an internal member-to-coordinator handoff is delivered to Telegram without asking the Telegram user to send another message.
 
 If you need engineering-level Telegram runtime details, see the gateway README:
 

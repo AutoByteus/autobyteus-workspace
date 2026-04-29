@@ -7,6 +7,11 @@ Backend helper package for application bundle backends executed by the AutoByteu
 - `defineApplication(...)`
 - re-exported backend definition, handler, request, storage, notification, runtime-control, resource-slot, and execution-event types from `@autobyteus/application-sdk-contracts`
 
+
+## External custom application guide
+
+For new external applications, use `@autobyteus/application-devkit` and the guide in `../docs/custom-application-development.md`. The starter template writes backend source under `src/backend` and packages the generated runtime backend under `dist/importable-package/applications/<app-id>/backend`.
+
 ## Usage
 
 ```ts
@@ -21,7 +26,6 @@ export default defineApplication({
           data: {
             status: {
               applicationId: context.requestContext?.applicationId ?? null,
-              launchInstanceId: context.requestContext?.launchInstanceId ?? null,
             },
           },
         }

@@ -1,15 +1,12 @@
 import type {
   ChannelAcceptedIngressReceiptInput,
   ChannelClaimIngressDispatchInput,
-  ChannelDispatchTarget,
   ChannelIngressReceiptKey,
   ChannelIngressReceiptState,
   ChannelMessageReceipt,
   ChannelPendingIngressReceiptInput,
-  ChannelReplyPublishedReceiptInput,
-  ChannelReceiptWorkflowProgressInput,
-  ChannelReceiptWorkflowState,
   ChannelSourceContext,
+  ChannelSourceRoute,
   ChannelUnboundIngressReceiptInput,
 } from "../domain/models.js";
 import type { ChannelMessageReceiptProvider } from "../providers/channel-message-receipt-provider.js";
@@ -55,39 +52,16 @@ export class ChannelMessageReceiptService {
     return this.provider.markIngressUnbound(normalized);
   }
 
-  async updateReceiptWorkflowProgress(
-    input: ChannelReceiptWorkflowProgressInput,
-  ): Promise<ChannelMessageReceipt> {
-    const normalized = this.normalizeWorkflowProgressInput(input);
-    return this.provider.updateReceiptWorkflowProgress(normalized);
-  }
-
-  async markReplyPublished(
-    input: ChannelReplyPublishedReceiptInput,
-  ): Promise<ChannelMessageReceipt> {
-    const normalized = this.normalizeReplyPublishedReceiptInput(input);
-    return this.provider.markReplyPublished(normalized);
-  }
-
   async listReceiptsByIngressState(
     state: ChannelIngressReceiptState,
   ): Promise<ChannelMessageReceipt[]> {
     return this.provider.listReceiptsByIngressState(state);
   }
 
-  async listReceiptsByWorkflowStates(
-    states: ChannelReceiptWorkflowState[],
-  ): Promise<ChannelMessageReceipt[]> {
-    return this.provider.listReceiptsByWorkflowStates(states);
-  }
-
-  async getSourceByAgentRunTurn(
-    agentRunId: string,
-    turnId: string,
+  async findLatestAcceptedSourceForRoute(
+    route: ChannelSourceRoute,
   ): Promise<ChannelSourceContext | null> {
-    const normalizedAgentRunId = normalizeRequiredString(agentRunId, "agentRunId");
-    const normalizedTurnId = normalizeRequiredString(turnId, "turnId");
-    return this.provider.getSourceByAgentRunTurn(normalizedAgentRunId, normalizedTurnId);
+    return this.provider.findLatestAcceptedSourceForRoute(this.normalizeRoute(route));
   }
 
   isDispatchLeaseExpired(
@@ -106,14 +80,21 @@ export class ChannelMessageReceiptService {
     input: ChannelIngressReceiptKey,
   ): ChannelIngressReceiptKey {
     return {
-      ...input,
-      accountId: normalizeRequiredString(input.accountId, "accountId"),
-      peerId: normalizeRequiredString(input.peerId, "peerId"),
-      threadId: normalizeNullableString(input.threadId, "threadId"),
+      ...this.normalizeRoute(input),
       externalMessageId: normalizeRequiredString(
         input.externalMessageId,
         "externalMessageId",
       ),
+    };
+  }
+
+  private normalizeRoute(input: ChannelSourceRoute): ChannelSourceRoute {
+    return {
+      provider: input.provider,
+      transport: input.transport,
+      accountId: normalizeRequiredString(input.accountId, "accountId"),
+      peerId: normalizeRequiredString(input.peerId, "peerId"),
+      threadId: normalizeNullableString(input.threadId, "threadId"),
     };
   }
 
@@ -167,67 +148,6 @@ export class ChannelMessageReceiptService {
     };
   }
 
-  private normalizeReplyPublishedReceiptInput(
-    input: ChannelReplyPublishedReceiptInput,
-  ): ChannelReplyPublishedReceiptInput {
-    const normalized = {
-      ...this.normalizeReceiptKey(input),
-      receivedAt: normalizeDate(input.receivedAt, "receivedAt"),
-      turnId: normalizeRequiredString(input.turnId, "turnId"),
-      ...this.normalizeDispatchTarget(input),
-    };
-    return {
-      ...normalized,
-      turnId: normalized.turnId,
-    };
-  }
-
-  private normalizeWorkflowProgressInput(
-    input: ChannelReceiptWorkflowProgressInput,
-  ): ChannelReceiptWorkflowProgressInput {
-    const normalizedKey = this.normalizeReceiptKey(input);
-    return {
-      ...normalizedKey,
-      workflowState: input.workflowState,
-      receivedAt: normalizeDate(input.receivedAt, "receivedAt"),
-      turnId:
-        input.turnId === undefined
-          ? undefined
-          : normalizeNullableString(input.turnId ?? null, "turnId"),
-      agentRunId:
-        input.agentRunId === undefined
-          ? undefined
-          : normalizeNullableString(input.agentRunId ?? null, "agentRunId"),
-      teamRunId:
-        input.teamRunId === undefined
-          ? undefined
-          : normalizeNullableString(input.teamRunId ?? null, "teamRunId"),
-      replyTextFinal:
-        input.replyTextFinal === undefined
-          ? undefined
-          : normalizeNullableString(input.replyTextFinal ?? null, "replyTextFinal"),
-      lastError:
-        input.lastError === undefined
-          ? undefined
-          : normalizeNullableString(input.lastError ?? null, "lastError"),
-    };
-  }
-
-  private normalizeDispatchTarget(
-    input: ChannelDispatchTarget,
-  ): ChannelDispatchTarget {
-    const agentRunId = normalizeNullableString(input.agentRunId, "agentRunId");
-    const teamRunId = normalizeNullableString(input.teamRunId, "teamRunId");
-    if (!agentRunId && !teamRunId) {
-      throw new Error(
-        "Dispatch target requires at least one target reference (agentRunId or teamRunId).",
-      );
-    }
-    return {
-      agentRunId,
-      teamRunId,
-    };
-  }
 }
 
 const normalizeRequiredString = (value: string, field: string): string => {

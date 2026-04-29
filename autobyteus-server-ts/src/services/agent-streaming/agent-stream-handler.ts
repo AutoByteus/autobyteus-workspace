@@ -85,11 +85,9 @@ export class AgentStreamHandler {
   }
 
   async connect(connection: WebSocketConnection, agentRunId: string): Promise<string | null> {
-    const activeRun = this.getActiveRun(agentRunId);
+    const activeRun = await this.resolveAgentRun(agentRunId);
     if (!activeRun) {
-      const errorMsg = createErrorMessage("AGENT_NOT_FOUND", `Agent run '${agentRunId}' not found`);
-      connection.send(errorMsg.toJson());
-      connection.close(4004);
+      this.closeWithAgentNotFound(connection, agentRunId);
       return null;
     }
 
@@ -119,7 +117,7 @@ export class AgentStreamHandler {
       );
     }
 
-    if (!this.bindSessionToRun(sessionId, agentRunId, connection)) {
+    if (!this.bindSessionToRun(sessionId, activeRun, connection)) {
       this.sessionConnections.delete(sessionId);
       this.broadcaster.unregisterConnection(sessionId);
       this.sessionManager.closeSession(sessionId);
@@ -148,16 +146,24 @@ export class AgentStreamHandler {
       const msgType = data.type;
       const payload = data.payload ?? {};
       const agentRunId = session.runId;
-      if (!this.ensureSessionSubscription(sessionId, agentRunId)) {
+
+      if (msgType === ClientMessageType.SEND_MESSAGE) {
+        const activeRun = await this.resolveSessionRun(sessionId, agentRunId);
+        if (!activeRun) {
+          return;
+        }
+        await this.handleSendMessage(activeRun, payload);
+        return;
+      }
+
+      if (!this.ensureActiveSessionSubscription(sessionId, agentRunId)) {
         logger.warn(
-          `Agent websocket session '${sessionId}' lost its run subscription for run '${agentRunId}'.`,
+          `Agent websocket session '${sessionId}' lost its active run subscription for run '${agentRunId}'.`,
         );
         return;
       }
 
-      if (msgType === ClientMessageType.SEND_MESSAGE) {
-        await this.handleSendMessage(agentRunId, payload);
-      } else if (msgType === ClientMessageType.STOP_GENERATION) {
+      if (msgType === ClientMessageType.STOP_GENERATION) {
         await this.handleStopGeneration(agentRunId);
       } else if (msgType === ClientMessageType.APPROVE_TOOL) {
         await this.handleToolApproval(agentRunId, payload, true);
@@ -187,24 +193,49 @@ export class AgentStreamHandler {
     logger.info(`Agent WebSocket disconnected: ${sessionId}`);
   }
 
-  private ensureSessionSubscription(sessionId: string, runId: string): boolean {
+  private ensureActiveSessionSubscription(sessionId: string, runId: string): boolean {
     const connection = this.sessionConnections.get(sessionId);
     if (!connection) {
       return false;
     }
-    return this.bindSessionToRun(sessionId, runId, connection);
+    const activeRun = this.getActiveRun(runId);
+    return !!activeRun && this.bindSessionToRun(sessionId, activeRun, connection);
+  }
+
+  private async resolveSessionRun(
+    sessionId: string,
+    runId: string,
+  ): Promise<AgentRun | null> {
+    const connection = this.sessionConnections.get(sessionId);
+    if (!connection) {
+      return null;
+    }
+
+    const activeRun = await this.resolveAgentRun(runId);
+    if (!activeRun) {
+      logger.warn(`Agent websocket session '${sessionId}' could not resolve run '${runId}'.`);
+      this.closeWithAgentNotFound(connection, runId);
+      return null;
+    }
+
+    if (!this.bindSessionToRun(sessionId, activeRun, connection)) {
+      const errorMsg = createErrorMessage(
+        "AGENT_STREAM_UNAVAILABLE",
+        `Agent run '${runId}' stream not available`,
+      );
+      connection.send(errorMsg.toJson());
+      connection.close(1011);
+      return null;
+    }
+
+    return activeRun;
   }
 
   private bindSessionToRun(
     sessionId: string,
-    runId: string,
+    activeRun: AgentRun,
     connection: WebSocketConnection,
   ): boolean {
-    const activeRun = this.getActiveRun(runId);
-    if (!activeRun) {
-      return false;
-    }
-
     const subscribedRun = this.subscribedRunsBySessionId.get(sessionId);
     if (subscribedRun === activeRun) {
       return true;
@@ -273,7 +304,8 @@ export class AgentStreamHandler {
     }
   }
 
-  private async handleSendMessage(agentRunId: string, payload: Record<string, unknown>): Promise<void> {
+  private async handleSendMessage(activeRun: AgentRun, payload: Record<string, unknown>): Promise<void> {
+    const agentRunId = activeRun.runId;
     const content = typeof payload.content === "string" ? payload.content : "";
     const contextFilePaths =
       (payload.context_file_paths as unknown[]) ?? (payload.contextFilePaths as unknown[]) ?? [];
@@ -297,11 +329,6 @@ export class AgentStreamHandler {
       context_files: contextPayload.length > 0 ? contextPayload : null,
     });
 
-    const activeRun = this.getActiveRun(agentRunId);
-    if (!activeRun) {
-      logger.warn(`SEND_MESSAGE rejected for missing agent run ${agentRunId}.`);
-      return;
-    }
     const result = await activeRun.postUserMessage(userMessage);
     if (!result.accepted) {
       logger.warn(
@@ -357,6 +384,16 @@ export class AgentStreamHandler {
 
   private getActiveRun(runId: string): AgentRun | null {
     return this.agentRunService.getAgentRun(runId);
+  }
+
+  private resolveAgentRun(runId: string): Promise<AgentRun | null> {
+    return this.agentRunService.resolveAgentRun(runId);
+  }
+
+  private closeWithAgentNotFound(connection: WebSocketConnection, runId: string): void {
+    const errorMsg = createErrorMessage("AGENT_NOT_FOUND", `Agent run '${runId}' not found`);
+    connection.send(errorMsg.toJson());
+    connection.close(4004);
   }
 
   static parseMessage(raw: string): ClientMessage {

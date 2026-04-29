@@ -7,19 +7,24 @@ Shared TypeScript contract package for AutoByteus application bundles.
 - application manifest v3 types and version constants
 - backend bundle manifest v1 types and version constants
 - backend definition contract v2 types
-- frontend SDK contract v2 constants
-- iframe/bootstrap contract v2 constants, query hints, payload types, transport shape, and validators/builders
+- frontend SDK contract v3 constants
+- iframe/bootstrap contract v3 constants, query hints, payload types, transport shape, and validators/builders
 - shared request/route/GraphQL/notification/storage context types
 - runtime-resource, resource-slot, and host-managed launch-default configuration types
 - runtime-control, run-binding, execution-event envelope, and published-artifact callback/query types
 - application engine status types
+
+
+## External custom application guide
+
+New external custom applications should start with `@autobyteus/application-devkit` and the canonical `src/` to `dist/importable-package` layout described in `../docs/custom-application-development.md`. Existing in-repo teaching samples remain internal examples and are not the external default folder model.
 
 ## Key exported version constants
 
 - `APPLICATION_MANIFEST_VERSION_V3`
 - `APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1`
 - `APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V2`
-- `APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V2`
+- `APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V3`
 - `APPLICATION_EVENT_DELIVERY_SEMANTICS` (`AT_LEAST_ONCE`)
 
 ## Main shared contracts
@@ -29,7 +34,7 @@ Shared TypeScript contract package for AutoByteus application bundles.
 - `ApplicationManifestV3`
   - `application.json`
   - requires `manifestVersion: "3"`
-  - requires `ui.frontendSdkContractVersion: "2"`
+  - requires `ui.frontendSdkContractVersion: "3"`
   - requires `backend.bundleManifest`
   - may declare app-consumable `resourceSlots[]` for host-managed saved setup
   - does **not** declare a singular launch-time `runtimeTarget`
@@ -41,7 +46,6 @@ Shared TypeScript contract package for AutoByteus application bundles.
 
 - `ApplicationRequestContext`
   - authoritative `applicationId`
-  - optional `launchInstanceId`
 - `ApplicationHandlerContext`
   - request context (or `null` for lifecycle hooks)
   - storage context
@@ -53,20 +57,22 @@ Shared TypeScript contract package for AutoByteus application bundles.
 ### Iframe / bootstrap contract
 
 - `APPLICATION_IFRAME_CHANNEL`
-- `APPLICATION_IFRAME_CONTRACT_VERSION_V2`
+- `APPLICATION_IFRAME_CONTRACT_VERSION_V3`
 - `APPLICATION_IFRAME_READY_EVENT`
 - `APPLICATION_IFRAME_BOOTSTRAP_EVENT`
 - `ApplicationIframeLaunchHints`
 - `ApplicationHostTransport`
-- `ApplicationUiReadyEnvelopeV2`
-- `ApplicationHostBootstrapEnvelopeV2`
-- `createApplicationUiReadyEnvelopeV2(...)`
-- `createApplicationHostBootstrapEnvelopeV2(...)`
-- `isApplicationUiReadyEnvelopeV2(...)`
-- `isApplicationHostBootstrapEnvelopeV2(...)`
+- `ApplicationUiReadyEnvelopeV3`
+- `ApplicationHostBootstrapEnvelopeV3`
+- `createApplicationUiReadyEnvelopeV3(...)`
+- `createApplicationHostBootstrapEnvelopeV3(...)`
+- `isApplicationUiReadyEnvelopeV3(...)`
+- `isApplicationHostBootstrapEnvelopeV3(...)`
 - `readApplicationIframeLaunchHints(...)`
 - `normalizeApplicationHostOrigin(...)`
 - `doesApplicationHostOriginMatch(...)`
+
+`iframeLaunchId` is an ephemeral iframe bootstrap correlation id only. It is not app business identity and is not included in normal backend request context.
 
 ### Runtime-orchestration contracts
 
@@ -81,7 +87,7 @@ Shared TypeScript contract package for AutoByteus application bundles.
 
 `ApplicationExecutionEventEnvelope` carries stable `eventId` and `journalSequence` plus attempt-specific delivery metadata. App-owned side effects should therefore be idempotent by `eventId`.
 
-`ApplicationRuntimeControl` now also includes durable published-artifact reads through `getRunPublishedArtifacts(runId)` and `getPublishedArtifactRevisionText({ runId, revisionId })`, and `ApplicationBackendDefinition` exposes live published-artifact callbacks through `artifactHandlers.persisted`. These artifact callbacks are intentionally separate from lifecycle `eventHandlers`.
+`ApplicationRuntimeControl` includes durable published-artifact reads through `getRunPublishedArtifacts(runId)` and `getPublishedArtifactRevisionText({ runId, revisionId })`, and `ApplicationBackendDefinition` exposes live published-artifact callbacks through `artifactHandlers.persisted`. These artifact callbacks are intentionally separate from lifecycle `eventHandlers`.
 
 ### Engine status
 
@@ -104,8 +110,8 @@ It demonstrates:
 - manifest v3
 - manifest-declared `resourceSlots[]`
 - backend bundle manifest v1
-- shared iframe/bootstrap contract v2
-- request context `{ applicationId, launchInstanceId? }`
+- shared iframe/bootstrap contract v3
+- request context `{ applicationId }`
 - application-authored `runtimeControl.getConfiguredResource(...)` + `startRun(...)`
 - published-artifact reads via `runtimeControl.getRunPublishedArtifacts(...)`
 - durable execution-event dispatch envelopes with stable `eventId` and `journalSequence`
@@ -117,6 +123,6 @@ It demonstrates:
 - `../autobyteus-server-ts/docs/modules/application_backend_gateway.md`
 - `../autobyteus-server-ts/docs/modules/application_engine.md`
 - `../autobyteus-server-ts/docs/modules/application_storage.md`
-- `../autobyteus-web/docs/application-bundle-iframe-contract-v1.md`
+- `../autobyteus-web/docs/application-bundle-iframe-contract-v3.md`
 - `../autobyteus-application-frontend-sdk/README.md`
 - `../autobyteus-application-backend-sdk/README.md`

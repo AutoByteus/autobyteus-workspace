@@ -28,7 +28,7 @@ Each application bundle lives under `applications/<application-id>/` and must sa
 - `manifestVersion` must be `"3"`.
 - `id` must match the bundle folder name.
 - `ui.entryHtml` is required and must point to a file under `ui/`.
-- `ui.frontendSdkContractVersion` must be `"2"`.
+- `ui.frontendSdkContractVersion` must be `"3"`.
 - `icon` is optional and must also stay under `ui/`.
 - `backend.bundleManifest` is required and must point to a file under `backend/`.
 
@@ -42,11 +42,22 @@ There is no longer a bundle-level `runtimeTarget`. Instead, bundle-owned agents 
 - `distribution` must be `"self-contained"`.
 - `targetRuntime.engine` must be `"node"` and `targetRuntime.semver` declares the supported Node range.
 - `sdkCompatibility.backendDefinitionContractVersion` must be `"2"`.
-- `sdkCompatibility.frontendSdkContractVersion` must be `"2"`.
+- `sdkCompatibility.frontendSdkContractVersion` must be `"3"`.
 - `supportedExposures` declares which backend surfaces are allowed (`queries`, `commands`, `routes`, `graphql`, `notifications`, `eventHandlers`).
 - `migrationsDir` and `assetsDir` are optional, but when present they must also stay under `backend/`.
 
 The platform does not install app dependencies or run app builds at import/start time. Imported application backends must ship the needed `backend/dist/**` artifacts inside the bundle.
+
+## External Authoring Flow
+
+New external custom applications should use the repo-level
+[`custom application development guide`](../../../docs/custom-application-development.md)
+and the `@autobyteus/application-devkit` CLI instead of copying the older
+repo-local sample layout. That flow keeps editable source under `src/**` and
+generates the importable package under `dist/importable-package/applications/<application-id>/`.
+The generated package still uses this module's production bundle contract:
+`application.json`, runtime `ui/` assets, and runtime `backend/` bundle files
+inside each `applications/<application-id>/` package root.
 
 ## Current Authoring Samples
 
@@ -123,7 +134,8 @@ These are authoring/sample roots, not current shipped built-ins. Future built-in
 - [`application_engine.md`](./application_engine.md)
 - [`application_storage.md`](./application_storage.md)
 - `../../../autobyteus-web/docs/applications.md`
-- `../../../autobyteus-web/docs/application-bundle-iframe-contract-v1.md`
+- `../../../autobyteus-web/docs/application-bundle-iframe-contract-v3.md`
 - `../../../autobyteus-application-sdk-contracts/README.md`
 - `../../../autobyteus-application-frontend-sdk/README.md`
 - `../../../autobyteus-application-backend-sdk/README.md`
+- `../../../docs/custom-application-development.md`

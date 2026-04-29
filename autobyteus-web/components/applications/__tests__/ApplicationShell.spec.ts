@@ -33,7 +33,7 @@ const {
   hostHarness: {
     launchState: {
       status: 'idle',
-      launchInstanceId: null,
+      iframeLaunchId: null,
       engineState: null,
       startedAt: null,
       lastError: null,
@@ -63,7 +63,6 @@ vi.mock('~/composables/useLocalization', () => ({
         'applications.components.applications.ApplicationShell.businessOverviewHelp': 'Business summary',
         'applications.components.applications.ApplicationShell.showTechnicalDetails': 'Show technical details',
         'applications.components.applications.ApplicationShell.hideTechnicalDetails': 'Hide technical details',
-        'applications.components.applications.ApplicationShell.launchInstanceIdLabel': 'Launch instance id',
         'applications.components.applications.ApplicationShell.engineStateLabel': 'Engine state',
         'applications.components.applications.ApplicationShell.startedAtLabel': 'Started at',
         'applications.components.applications.ApplicationIframeHost.initializationFailed': 'Initialization failed',
@@ -172,7 +171,7 @@ describe('ApplicationShell', () => {
 
     hostHarness.launchState = {
       status: 'idle',
-      launchInstanceId: null,
+      iframeLaunchId: null,
       engineState: null,
       startedAt: null,
       lastError: null,
@@ -211,7 +210,7 @@ describe('ApplicationShell', () => {
     applicationHostStoreMock.startLaunch.mockImplementation(async () => {
       hostHarness.launchState = {
         status: 'preparing',
-        launchInstanceId: null,
+        iframeLaunchId: null,
         engineState: null,
         startedAt: null,
         lastError: null,
@@ -222,7 +221,7 @@ describe('ApplicationShell', () => {
     applicationHostStoreMock.clearLaunchState.mockImplementation(() => {
       hostHarness.launchState = {
         status: 'idle',
-        launchInstanceId: null,
+        iframeLaunchId: null,
         engineState: null,
         startedAt: null,
         lastError: null,
@@ -306,7 +305,7 @@ describe('ApplicationShell', () => {
     expect(wrapper.get('[data-testid="application-immersive-loading-canvas"]').exists()).toBe(true)
   })
 
-  it('owns immersive launch failure before a launch instance exists', async () => {
+  it('owns immersive launch failure before an iframe launch exists', async () => {
     applicationHostStoreMock.startLaunch.mockImplementationOnce(async () => {
       throw new Error('Host launch failed')
     })

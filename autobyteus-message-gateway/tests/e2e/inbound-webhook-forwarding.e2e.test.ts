@@ -38,7 +38,7 @@ describe("gateway inbound forwarding e2e", () => {
         return reply.code(202).send({
           accepted: true,
           duplicate: false,
-          disposition: "ROUTED",
+          disposition: "ACCEPTED",
           bindingResolved: true,
         });
       });
@@ -97,7 +97,7 @@ describe("gateway inbound forwarding e2e", () => {
       await waitForCondition(async () => {
         const inboxStore = new FileInboxStore(inboxRoot);
         const inboxService = new InboundInboxService(inboxStore);
-        const completed = await inboxService.listByStatus(["COMPLETED_ROUTED"]);
+        const completed = await inboxService.listByStatus(["COMPLETED_ACCEPTED"]);
         return completed.some((record) => record.externalMessageId === externalMessageId);
       });
     } finally {

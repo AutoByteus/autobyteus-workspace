@@ -5,7 +5,7 @@ import { createServerSignature } from "./server-signature.js";
 export type ServerIngressResult = {
   accepted: boolean;
   duplicate: boolean;
-  disposition: "ROUTED" | "UNBOUND" | "DUPLICATE";
+  disposition: "ACCEPTED" | "UNBOUND" | "DUPLICATE";
   bindingResolved: boolean;
 };
 
@@ -37,7 +37,7 @@ export class AutobyteusServerClient {
     const bindingResolved =
       typeof body.bindingResolved === "boolean"
         ? body.bindingResolved
-        : disposition === "ROUTED";
+        : disposition === "ACCEPTED";
 
     return {
       accepted: Boolean(body.accepted),
@@ -86,7 +86,7 @@ export class AutobyteusServerClient {
 const parseIngressDisposition = (
   value: unknown,
 ): ServerIngressResult["disposition"] => {
-  if (value === "ROUTED" || value === "UNBOUND" || value === "DUPLICATE") {
+  if (value === "ACCEPTED" || value === "UNBOUND" || value === "DUPLICATE") {
     return value;
   }
   throw new Error(

@@ -2,7 +2,7 @@ import {
   APPLICATION_IFRAME_QUERY_APPLICATION_ID,
   APPLICATION_IFRAME_QUERY_CONTRACT_VERSION,
   APPLICATION_IFRAME_QUERY_HOST_ORIGIN,
-  APPLICATION_IFRAME_QUERY_LAUNCH_INSTANCE_ID,
+  APPLICATION_IFRAME_QUERY_IFRAME_LAUNCH_ID,
   type ApplicationIframeLaunchHints,
 } from '@autobyteus/application-sdk-contracts'
 
@@ -60,8 +60,8 @@ export const appendApplicationIframeLaunchHints = (
     hints.applicationId,
   )
   url.searchParams.set(
-    APPLICATION_IFRAME_QUERY_LAUNCH_INSTANCE_ID,
-    hints.launchInstanceId,
+    APPLICATION_IFRAME_QUERY_IFRAME_LAUNCH_ID,
+    hints.iframeLaunchId,
   )
   url.searchParams.set(
     APPLICATION_IFRAME_QUERY_HOST_ORIGIN,

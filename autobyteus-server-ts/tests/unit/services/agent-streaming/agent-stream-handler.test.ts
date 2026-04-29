@@ -55,8 +55,19 @@ describe("AgentStreamHandler", () => {
     ...overrides,
   });
 
-  const createAgentRunService = (activeRun: ReturnType<typeof createActiveRun> | null) => ({
-    getAgentRun: vi.fn().mockReturnValue(activeRun),
+  const createAgentRunService = (
+    activeRun: ReturnType<typeof createActiveRun> | null,
+    options: {
+      activeRun?: ReturnType<typeof createActiveRun> | null;
+      resolvedRun?: ReturnType<typeof createActiveRun> | null;
+    } = {},
+  ) => ({
+    getAgentRun: vi.fn().mockReturnValue(
+      "activeRun" in options ? options.activeRun : activeRun,
+    ),
+    resolveAgentRun: vi.fn().mockResolvedValue(
+      "resolvedRun" in options ? options.resolvedRun : activeRun,
+    ),
     recordRunActivity: vi.fn().mockResolvedValue(undefined),
   });
 
@@ -82,7 +93,10 @@ describe("AgentStreamHandler", () => {
   it("connects and sends CONNECTED message", async () => {
     const sessionManager = new AgentSessionManager();
     const activeRun = createActiveRun();
-    const agentRunService = createAgentRunService(activeRun);
+    const agentRunService = createAgentRunService(null, {
+      activeRun: null,
+      resolvedRun: activeRun,
+    });
     const handler = new AgentStreamHandler(sessionManager, agentRunService as any);
     const connection = {
       send: vi.fn(),
@@ -93,6 +107,8 @@ describe("AgentStreamHandler", () => {
 
     expect(sessionId).toBeTruthy();
     expect(sessionManager.getSession(sessionId as string)).toBeDefined();
+    expect(agentRunService.resolveAgentRun).toHaveBeenCalledWith("agent-123");
+    expect(agentRunService.getAgentRun).not.toHaveBeenCalled();
 
     const payload = JSON.parse(connection.send.mock.calls[0][0]);
     expect(payload.type).toBe(ServerMessageType.CONNECTED);
@@ -115,6 +131,7 @@ describe("AgentStreamHandler", () => {
     const sessionId = await handler.connect(connection, "missing-agent");
 
     expect(sessionId).toBeNull();
+    expect(agentRunService.resolveAgentRun).toHaveBeenCalledWith("missing-agent");
     expect(connection.close).toHaveBeenCalledWith(4004);
 
     const payload = JSON.parse(connection.send.mock.calls[0][0]);
@@ -308,6 +325,74 @@ describe("AgentStreamHandler", () => {
         lastKnownStatus: "ACTIVE",
       }),
     );
+  });
+
+  it("restores and rebinds an agent run before SEND_MESSAGE when the active subject was removed", async () => {
+    const initialRun = createActiveRun({
+      subscribeToEvents: vi.fn().mockReturnValue(vi.fn()),
+    });
+    const restoredRun = createActiveRun({
+      postUserMessage: vi.fn().mockResolvedValue({ accepted: true, runtimeKind: "autobyteus" }),
+      subscribeToEvents: vi.fn().mockReturnValue(vi.fn()),
+    });
+    const agentRunService = createAgentRunService(null, {
+      activeRun: null,
+      resolvedRun: initialRun,
+    });
+    agentRunService.resolveAgentRun
+      .mockResolvedValueOnce(initialRun)
+      .mockResolvedValueOnce(restoredRun);
+    const handler = new AgentStreamHandler(new AgentSessionManager(), agentRunService as any);
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    const sessionId = await handler.connect(connection, "agent-123");
+    await handler.handleMessage(
+      sessionId as string,
+      JSON.stringify({
+        type: ClientMessageType.SEND_MESSAGE,
+        payload: {
+          content: "resume agent",
+        },
+      }),
+    );
+
+    expect(agentRunService.resolveAgentRun).toHaveBeenCalledTimes(2);
+    expect(restoredRun.postUserMessage).toHaveBeenCalledTimes(1);
+    expect(initialRun.postUserMessage).not.toHaveBeenCalled();
+    expect(restoredRun.subscribeToEvents).toHaveBeenCalledWith(expect.any(Function));
+    expect(agentRunService.recordRunActivity).toHaveBeenCalledWith(
+      restoredRun,
+      expect.objectContaining({
+        summary: "resume agent",
+      }),
+    );
+  });
+
+  it("keeps stop-generation active-only and does not restore a stopped agent run", async () => {
+    const activeRun = createActiveRun();
+    const agentRunService = createAgentRunService(activeRun);
+    const handler = new AgentStreamHandler(new AgentSessionManager(), agentRunService as any);
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    const sessionId = await handler.connect(connection, "agent-123");
+    agentRunService.getAgentRun.mockReturnValue(null);
+    agentRunService.resolveAgentRun.mockClear();
+
+    await handler.handleMessage(
+      sessionId as string,
+      JSON.stringify({
+        type: ClientMessageType.STOP_GENERATION,
+      }),
+    );
+
+    expect(agentRunService.resolveAgentRun).not.toHaveBeenCalled();
+    expect(activeRun.interrupt).not.toHaveBeenCalled();
   });
 
   it("handles tool approvals", async () => {

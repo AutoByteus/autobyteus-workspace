@@ -5,14 +5,14 @@ import type { ExternalMessageEnvelope } from "autobyteus-ts/external-channel/ext
 export type InboundInboxStatus =
   | "RECEIVED"
   | "FORWARDING"
-  | "COMPLETED_ROUTED"
+  | "COMPLETED_ACCEPTED"
   | "COMPLETED_UNBOUND"
   | "COMPLETED_DUPLICATE"
   | "BLOCKED"
   | "FAILED_RETRY"
   | "DEAD_LETTER";
 
-export type InboundInboxDisposition = "ROUTED" | "UNBOUND" | "DUPLICATE";
+export type InboundInboxDisposition = "ACCEPTED" | "UNBOUND" | "DUPLICATE";
 
 export type InboundInboxRecord = {
   id: string;

@@ -111,8 +111,8 @@ export class InboundInboxService {
 }
 
 const dispositionToStatus = (disposition: InboundInboxDisposition): InboundInboxStatus => {
-  if (disposition === "ROUTED") {
-    return "COMPLETED_ROUTED";
+  if (disposition === "ACCEPTED") {
+    return "COMPLETED_ACCEPTED";
   }
   if (disposition === "UNBOUND") {
     return "COMPLETED_UNBOUND";

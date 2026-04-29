@@ -18,17 +18,14 @@ import {
 const normalizeRequestContext = (
   applicationId: string,
   requestContext?: ApplicationRequestContext | null,
-): ApplicationRequestContext | null => {
+): ApplicationRequestContext => {
   if (!requestContext) {
-    return { applicationId, launchInstanceId: null };
+    return { applicationId };
   }
   if (requestContext.applicationId !== applicationId) {
     throw new Error("requestContext.applicationId must match the route applicationId.");
   }
-  return {
-    applicationId,
-    launchInstanceId: requestContext.launchInstanceId?.trim() ?? null,
-  };
+  return { applicationId };
 };
 
 export class ApplicationBackendGatewayService {
