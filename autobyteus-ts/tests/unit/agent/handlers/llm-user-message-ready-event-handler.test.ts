@@ -235,12 +235,12 @@ describe('LLMUserMessageReadyEventHandler', () => {
 
     const schemaSpy = vi.spyOn(ToolSchemaProvider.prototype, 'buildSchema').mockReturnValue(toolsSchema);
 
-    const toolsPassed: { value: any } = { value: null };
+    const kwargsPassed: { value: any } = { value: null };
     const mockLLM = {
       model: { provider: LLMProvider.OPENAI },
       config: { systemMessage: 'system' },
       streamMessages: async function* (_messages: any[], _rendered: unknown, kwargs: Record<string, any>) {
-        toolsPassed.value = kwargs.tools;
+        kwargsPassed.value = kwargs;
         yield new ChunkResponse({ content: 'Hello', is_complete: true });
       }
     };
@@ -250,7 +250,8 @@ describe('LLMUserMessageReadyEventHandler', () => {
     await handler.handle(event, context);
 
     expect(schemaSpy).toHaveBeenCalledOnce();
-    expect(toolsPassed.value).toEqual(toolsSchema);
+    expect(kwargsPassed.value.tools).toEqual(toolsSchema);
+    expect(kwargsPassed.value.logicalConversationId).toBe('agent-1');
   });
 
   it('propagates active turn id on error completion events', async () => {

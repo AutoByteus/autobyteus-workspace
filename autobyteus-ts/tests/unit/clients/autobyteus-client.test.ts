@@ -96,19 +96,42 @@ describe('AutobyteusClient', () => {
     const postMock = vi.fn().mockResolvedValue({ data: { ok: true } });
     (client.asyncClient.post as any) = postMock;
 
-    await client.sendMessage(
-      'conversation-1',
-      'model-1',
-      'hello',
-      ['/tmp/image.png'],
-      ['https://example.com/audio.mp3'],
-      ['data:image/png;base64,abc']
-    );
+    await client.sendMessage({
+      conversationId: 'conversation-1',
+      modelName: 'model-1',
+      payload: {
+        current_message_index: 1,
+        messages: [
+          {
+            role: 'user',
+            content: '<tool name="search"><arguments><arg name="query">autobyteus</arg></arguments></tool>',
+            image_urls: ['/tmp/historical.png'],
+            audio_urls: [],
+            video_urls: []
+          },
+          {
+            role: 'user',
+            content: 'hello',
+            image_urls: ['/tmp/image.png'],
+            audio_urls: ['https://example.com/audio.mp3'],
+            video_urls: ['data:image/png;base64,abc']
+          }
+        ]
+      }
+    });
 
     const payload = postMock.mock.calls[0][1];
-    expect(payload.image_urls).toEqual(['data:mock/type;base64,/tmp/image.png']);
-    expect(payload.audio_urls).toEqual(['data:mock/type;base64,https://example.com/audio.mp3']);
-    expect(payload.video_urls).toEqual(['data:mock/type;base64,data:image/png;base64,abc']);
+    expect(payload).toMatchObject({
+      conversation_id: 'conversation-1',
+      model_name: 'model-1',
+      current_message_index: 1
+    });
+    expect(payload.messages[0].image_urls).toEqual([]);
+    expect(payload.messages[0].content).toContain('<tool name="search">');
+    expect(payload.messages[0]).not.toHaveProperty('tool_payload');
+    expect(payload.messages[1].image_urls).toEqual(['data:mock/type;base64,/tmp/image.png']);
+    expect(payload.messages[1].audio_urls).toEqual(['data:mock/type;base64,https://example.com/audio.mp3']);
+    expect(payload.messages[1].video_urls).toEqual(['data:mock/type;base64,data:image/png;base64,abc']);
   });
 
   it('normalizes media to data URIs for streamMessage', async () => {
@@ -117,11 +140,78 @@ describe('AutobyteusClient', () => {
     const postMock = vi.fn().mockResolvedValue({ data: stream });
     (client.asyncClient.post as any) = postMock;
 
-    const iterator = client.streamMessage('conversation-1', 'model-1', 'hello', ['/tmp/image.png']);
+    const iterator = client.streamMessage({
+      conversationId: 'conversation-1',
+      modelName: 'model-1',
+      payload: {
+        current_message_index: 0,
+        messages: [
+          {
+            role: 'user',
+            content: 'hello',
+            image_urls: ['/tmp/image.png'],
+            audio_urls: [],
+            video_urls: []
+          }
+        ]
+      }
+    });
     await iterator.next();
 
     const payload = postMock.mock.calls[0][1];
-    expect(payload.image_urls).toEqual(['data:mock/type;base64,/tmp/image.png']);
+    expect(payload.messages[0].image_urls).toEqual(['data:mock/type;base64,/tmp/image.png']);
+    expect(payload).not.toHaveProperty('user_message');
+  });
+
+  it('posts rendered tool transcript content without structured tool payload fields', async () => {
+    const client = new AutobyteusClient();
+    const postMock = vi.fn().mockResolvedValue({ data: { ok: true } });
+    (client.asyncClient.post as any) = postMock;
+
+    await client.sendMessage({
+      conversationId: 'conversation-tools',
+      modelName: 'model-1',
+      payload: {
+        current_message_index: 2,
+        messages: [
+          {
+            role: 'assistant',
+            content: `<tool name="write_file">
+  <arguments>
+    <arg name="path">/tmp/out.txt</arg>
+  </arguments>
+</tool>`,
+            image_urls: [],
+            audio_urls: [],
+            video_urls: []
+          },
+          {
+            role: 'tool',
+            content: `Tool result:
+tool_call_id: call-1
+tool_name: write_file
+tool_result: {"ok":true}
+tool_error: null`,
+            image_urls: [],
+            audio_urls: [],
+            video_urls: []
+          },
+          {
+            role: 'user',
+            content: 'continue',
+            image_urls: [],
+            audio_urls: [],
+            video_urls: []
+          }
+        ]
+      }
+    });
+
+    const payload = postMock.mock.calls[0][1];
+    expect(payload.messages[0].content).toContain('<tool name="write_file">');
+    expect(payload.messages[1].content).toContain('tool_call_id: call-1');
+    expect(payload.messages[0]).not.toHaveProperty('tool_payload');
+    expect(payload.messages[1]).not.toHaveProperty('tool_payload');
   });
 
   it('normalizes media to data URIs for generateImage including mask', async () => {

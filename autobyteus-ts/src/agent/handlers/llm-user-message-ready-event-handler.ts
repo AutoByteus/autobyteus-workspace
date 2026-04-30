@@ -151,7 +151,9 @@ export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
       `Agent '${agentId}': Streaming handler selected: ${streamingHandler.constructor.name}`
     );
 
-    const streamKwargs: Record<string, any> = {};
+    const streamKwargs: Record<string, any> = {
+      logicalConversationId: agentId
+    };
     if (handlerResult.toolSchemas) {
       streamKwargs.tools = handlerResult.toolSchemas;
       console.info(

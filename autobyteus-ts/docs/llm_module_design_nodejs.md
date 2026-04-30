@@ -165,16 +165,111 @@ Responses streaming (official OpenAI) emits:
 Custom OpenAI-compatible providers stay on the existing OpenAI-style tool-call
 path rather than the Responses event format.
 
-## 9. Testing
+## 9. Autobyteus RPA Runtime Conversation Contract
+
+`AutobyteusLLM` is the TypeScript adapter for browser-backed RPA LLM models
+served by the AutoByteus RPA LLM server. Unlike stateless API providers, this
+runtime has a remote browser/UI conversation cache, so the adapter must send
+enough conversation context for the server to resume semantically when the
+server-side cache is absent.
+
+Every AutoByteus RPA text request must provide a stable logical id through
+`logicalConversationId`. Agent-driven requests pass the restored agent/run id;
+direct `AutobyteusLLM` callers must provide their own stable id. Missing,
+empty, or non-string ids are rejected before any HTTP request is sent.
+`AutobyteusLLM.cleanup()` tracks and cleans every explicit remote conversation
+id used by the instance.
+
+`AutobyteusClient.sendMessage(...)` and `AutobyteusClient.streamMessage(...)`
+use the same request object:
+
+```ts
+let responseText = '';
+
+for await (const chunk of client.streamMessage({
+  conversationId: 'stable-agent-or-run-id',
+  modelName: 'gpt-5-instant-rpa',
+  payload: {
+    messages: [
+      {
+        role: 'system',
+        content: 'You are helpful.',
+        image_urls: [],
+        audio_urls: [],
+        video_urls: []
+      },
+      {
+        role: 'user',
+        content: 'Previous question',
+        image_urls: [],
+        audio_urls: [],
+        video_urls: []
+      },
+      {
+        role: 'assistant',
+        content: 'Previous answer',
+        image_urls: [],
+        audio_urls: [],
+        video_urls: []
+      },
+      {
+        role: 'user',
+        content: 'Current question',
+        image_urls: ['data:image/png;base64,...'],
+        audio_urls: [],
+        video_urls: []
+      }
+    ],
+    current_message_index: 3
+  }
+})) {
+  responseText += chunk.content ?? '';
+  if (chunk.is_complete) {
+    break;
+  }
+}
+```
+
+The payload invariants are:
+
+- `messages` is the rendered conversation transcript and must be non-empty.
+- `current_message_index` must point to the current user message.
+- HTTP transcript messages carry only `role`, rendered `content`, and media URL
+  arrays. There is no `tool_payload` field in the RPA HTTP DTO, and the server
+  request schema rejects stale extra fields.
+- Before transport, `AutobyteusPromptRenderer` reads working-context
+  `ToolCallPayload` and `ToolResultPayload` objects and renders them into
+  message `content`: assistant tool calls become canonical AutoByteus XML, and
+  tool results become deterministic records containing id, tool name, result,
+  and error information.
+- Current-turn media stays attached to the current user message.
+- Historical media is represented textually by the renderer and is not
+  re-uploaded in prior transcript entries.
+- The older single-field text body shape is not supported by this contract.
+
+On the RPA server, an existing cached session sends only the current user
+message to the remote UI. A cache miss creates a new browser-backed LLM
+instance and sends one synthesized user message by flattening the already
+rendered role/content transcript through `messages[current_message_index]`.
+That flattened prompt uses role headers (`System:`, `User:`, `Assistant:`,
+`Tool:`), ends with the current `User:` block, and does not add a separate
+current-request section. The server does not parse tool payloads and
+does not generate tool XML.
+
+## 10. Testing
 
 Focused unit coverage for this contract lives in:
 
 - `tests/unit/llm/models.test.ts`
 - `tests/unit/llm/openai-compatible-endpoint-provider.test.ts`
+- `tests/unit/llm/api/autobyteus-llm.test.ts`
+- `tests/unit/llm/prompt-renderers/autobyteus-prompt-renderer.test.ts`
+- `tests/unit/clients/autobyteus-client.test.ts`
+- `tests/unit/agent/handlers/llm-user-message-ready-event-handler.test.ts`
 
 Broader integration tests remain under `tests/integration/llm/...`.
 
-## 10. Where to Update
+## 11. Where to Update
 
 - Add built-in LLM API models in `src/llm/supported-model-definitions.ts`.
 - Add docs-backed LLM context/output/pricing metadata in

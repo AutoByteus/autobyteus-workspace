@@ -1,4 +1,3 @@
-import { randomUUID } from 'node:crypto';
 import { BaseLLM } from '../base.js';
 import { LLMModel } from '../models.js';
 import { LLMConfig } from '../utils/llm-config.js';
@@ -7,6 +6,7 @@ import { CompleteResponse, ChunkResponse } from '../utils/response-types.js';
 import { TokenUsage } from '../utils/token-usage.js';
 import { AutobyteusClient } from '../../clients/autobyteus-client.js';
 import { AutobyteusPromptRenderer } from '../prompt-renderers/autobyteus-prompt-renderer.js';
+import { AutobyteusConversationPayload } from './autobyteus-conversation-payload.js';
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -27,7 +27,7 @@ const toTokenUsage = (value: unknown): TokenUsage => {
 
 export class AutobyteusLLM extends BaseLLM {
   private client: AutobyteusClient;
-  private conversationId: string;
+  private usedConversationIds: Set<string>;
   private _renderer: AutobyteusPromptRenderer;
 
   constructor(model: LLMModel, llmConfig: LLMConfig) {
@@ -38,28 +38,31 @@ export class AutobyteusLLM extends BaseLLM {
     super(model, llmConfig);
 
     this.client = new AutobyteusClient(model.hostUrl);
-    this.conversationId = randomUUID();
+    this.usedConversationIds = new Set();
     this._renderer = new AutobyteusPromptRenderer();
+  }
+
+  resolveConversationId(kwargs: Record<string, unknown>): string {
+    const logicalConversationId = asString(kwargs.logicalConversationId)?.trim();
+    if (!logicalConversationId) {
+      throw new Error('AutobyteusLLM requires kwargs.logicalConversationId as a non-empty string.');
+    }
+    return logicalConversationId;
   }
 
   protected async _sendMessagesToLLM(
     messages: Message[],
-    _kwargs: Record<string, unknown>
+    kwargs: Record<string, unknown>
   ): Promise<CompleteResponse> {
-    const rendered = await this._renderer.render(messages);
-    if (!rendered.length) {
-      throw new Error('AutobyteusLLM requires at least one user message.');
-    }
+    const conversationId = this.resolveConversationId(kwargs);
+    const payload = await this.renderPayload(messages);
+    this.usedConversationIds.add(conversationId);
 
-    const payload = rendered[0];
-    const response = await this.client.sendMessage(
-      this.conversationId,
-      this.model.name,
-      String(payload.content ?? ''),
-      Array.isArray(payload.image_urls) ? payload.image_urls : [],
-      Array.isArray(payload.audio_urls) ? payload.audio_urls : [],
-      Array.isArray(payload.video_urls) ? payload.video_urls : []
-    );
+    const response = await this.client.sendMessage({
+      conversationId,
+      modelName: this.model.name,
+      payload
+    });
 
     const responseRecord = isRecord(response) ? response : {};
     const assistantMessage =
@@ -77,23 +80,17 @@ export class AutobyteusLLM extends BaseLLM {
 
   protected async *_streamMessagesToLLM(
     messages: Message[],
-    _kwargs: Record<string, unknown>
+    kwargs: Record<string, unknown>
   ): AsyncGenerator<ChunkResponse, void, unknown> {
-    const rendered = await this._renderer.render(messages);
-    if (!rendered.length) {
-      throw new Error('AutobyteusLLM requires at least one user message.');
-    }
+    const conversationId = this.resolveConversationId(kwargs);
+    const payload = await this.renderPayload(messages);
+    this.usedConversationIds.add(conversationId);
 
-    const payload = rendered[0];
-
-    for await (const chunk of this.client.streamMessage(
-      this.conversationId,
-      this.model.name,
-      String(payload.content ?? ''),
-      Array.isArray(payload.image_urls) ? payload.image_urls : [],
-      Array.isArray(payload.audio_urls) ? payload.audio_urls : [],
-      Array.isArray(payload.video_urls) ? payload.video_urls : []
-    )) {
+    for await (const chunk of this.client.streamMessage({
+      conversationId,
+      modelName: this.model.name,
+      payload
+    })) {
       if (chunk?.error) {
         throw new Error(String(chunk.error));
       }
@@ -120,8 +117,22 @@ export class AutobyteusLLM extends BaseLLM {
     }
   }
 
+  private async renderPayload(messages: Message[]): Promise<AutobyteusConversationPayload> {
+    return this._renderer.render(messages);
+  }
+
   async cleanup(): Promise<void> {
-    await this.client.cleanup(this.conversationId);
+    let cleanupError: unknown = null;
+    for (const conversationId of this.usedConversationIds) {
+      try {
+        await this.client.cleanup(conversationId);
+      } catch (error) {
+        cleanupError ??= error;
+      }
+    }
     await super.cleanup();
+    if (cleanupError) {
+      throw cleanupError;
+    }
   }
 }
