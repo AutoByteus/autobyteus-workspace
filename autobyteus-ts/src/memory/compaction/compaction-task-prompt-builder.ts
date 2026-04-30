@@ -11,11 +11,11 @@ export const COMPACTION_OUTPUT_CONTRACT = [
   'Return JSON only with this shape:',
   '{',
   '  "episodic_summary": "string",',
-  '  "critical_issues": [{ "fact": "string", "reference": "optional string", "tags": ["string"] }],',
-  '  "unresolved_work": [{ "fact": "string", "reference": "optional string", "tags": ["string"] }],',
-  '  "durable_facts": [{ "fact": "string", "reference": "optional string", "tags": ["string"] }],',
-  '  "user_preferences": [{ "fact": "string", "reference": "optional string", "tags": ["string"] }],',
-  '  "important_artifacts": [{ "fact": "string", "reference": "optional string", "tags": ["string"] }]',
+  '  "critical_issues": [{ "fact": "string" }],',
+  '  "unresolved_work": [{ "fact": "string" }],',
+  '  "durable_facts": [{ "fact": "string" }],',
+  '  "user_preferences": [{ "fact": "string" }],',
+  '  "important_artifacts": [{ "fact": "string" }]',
   '}',
   'The output contract is mandatory. Do not return prose outside the JSON object.'
 ].join('\n');
@@ -40,11 +40,10 @@ const formatRawTrace = (trace: RawTraceItem, maxItemChars?: number | null): stri
 export class CompactionTaskPromptBuilder {
   buildTaskPrompt(blocks: InteractionBlock[], options: CompactionTaskPromptBuildOptions = {}): string {
     return [
-      'Compact the following settled interaction blocks into episodic summary plus typed semantic memory.',
-      'Keep the result concise, durable, and future-useful.',
-      'Preserve key decisions, plans, constraints, created or modified files, important tool outcomes or failures, unresolved work, critical validation findings, and durable user preferences.',
-      'Drop repeated chatter, low-value operational noise, process-count/status clutter, and verbose raw payloads that are not future-relevant.',
+      'Compact the settled blocks below into durable AutoByteus memory.',
+      'Use the current output contract exactly.',
       '',
+      '[OUTPUT_CONTRACT]',
       COMPACTION_OUTPUT_CONTRACT,
       '',
       '[SETTLED_BLOCKS]',

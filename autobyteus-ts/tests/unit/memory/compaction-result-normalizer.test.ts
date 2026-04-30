@@ -13,7 +13,7 @@ describe('CompactionResultNormalizer', () => {
         { fact: 'Team uses pnpm exec vitest' },
       ],
       userPreferences: [{ fact: 'User prefers concise answers' }],
-      importantArtifacts: [{ fact: 'design-spec.md', reference: '/tmp/design-spec.md' }],
+      importantArtifacts: [{ fact: 'Important artifact path remains in fact text: /tmp/design-spec.md' }],
     });
 
     const normalized = normalizer.normalize(result);
@@ -27,6 +27,11 @@ describe('CompactionResultNormalizer', () => {
     ]);
     expect(normalized.semanticEntries[0]?.salience).toBeGreaterThan(normalized.semanticEntries[3]?.salience ?? 0);
     expect(normalized.semanticEntries.filter((entry) => entry.fact.includes('Pinia getter'))).toHaveLength(1);
+    expect(normalized.semanticEntries.find((entry) => entry.category === 'important_artifact')).toMatchObject({
+      fact: 'Important artifact path remains in fact text: /tmp/design-spec.md',
+      reference: null,
+      tags: [],
+    });
   });
 
   it('drops low-value operational noise outside critical/unresolved categories', () => {

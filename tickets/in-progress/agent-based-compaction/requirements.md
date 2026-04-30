@@ -2,7 +2,7 @@
 
 ## Status (`Draft`/`Design-ready`/`Refined`)
 
-Refined after built-in default compactor and E2E clarification (pending architecture re-review)
+Refined after minimal compactor schema clarification (pending architecture re-review)
 
 ## Goal / Problem Statement
 
@@ -10,7 +10,7 @@ Refactor compaction from a direct internal model call into an agent-owned compac
 
 The target is an agent-based compaction architecture with a simple user-facing binding: the platform seeds a normal visible/editable default **Memory Compactor** agent definition into the existing app-data agents home, auto-selects it in **Server Settings -> Basics -> Compaction** when no compactor has been selected, and users can then edit that normal agent's instructions/default runtime/model in the existing agent editor. When compaction is needed, server creates a **normal visible compactor agent run** through the existing top-level run service/manager, sends one compaction task, collects the final output, terminates the run to avoid leaks, and leaves the run visible in history for inspection.
 
-The parent runtime still owns when compaction is required, which raw traces are compacted, persistence, and snapshot rebuild; the compactor agent only owns producing the structured compacted-memory output for the selected settled blocks.
+The parent runtime still owns when compaction is required, which raw traces are compacted, persistence, and snapshot rebuild; the compactor agent owns the stable summarization behavior for producing compacted memory. The memory subsystem remains the authoritative owner of the exact parser-required JSON output contract and includes that current contract in each automated compaction task so user-edited or stale compactor instructions cannot silently break memory persistence. The default compactor `agent.md` must still be self-explanatory enough for manual testing with arbitrary conversation/history content. The compactor output contract should stay minimal and should ask the model only for the facts inside typed category arrays; free-form `tags` and optional model-generated `reference` strings are removed from this ticket's compactor-facing schema.
 
 ## Investigation Findings
 
@@ -23,6 +23,9 @@ The parent runtime still owns when compaction is required, which raw traces are 
 - The existing frontend already places `CompactionConfigCard` in the Server Settings basic area, and the agent edit form already exposes launch preferences through `DefinitionLaunchPreferencesSection`. Therefore the best UX is to replace the compaction model selector in the compaction card with a compactor-agent selector, while runtime/model/instructions remain configured on the selected agent.
 - Implementation feedback showed that forcing hidden/internal child-run semantics would invade mature backend bootstrap/thread/session code. User prefers or accepts visible normal compactor runs so compaction quality can be inspected in run history.
 - Agent definitions already support the existing app-data agents home (`getAgentsDir()`), read/write `agent.md` plus `agent-config.json`, and normal visibility/editability. This is the right place to seed a default platform-provided compactor agent definition without adding a new definition system.
+- Implementation feedback showed the default compactor prompt needs stronger ownership in `agent.md`: users should be able to open the compactor as a normal agent, send arbitrary settled conversation/history content, and see how it compacts without reverse-engineering a hidden per-task prompt.
+- Follow-up schema inspection showed compactor-generated `tags` are free-form labels that are parsed/stored but not used by the current snapshot rendering path. Since each semantic array already carries the category, `tags` add prompt/API complexity without a present consumer.
+- Follow-up user clarification challenged optional `reference` as another potentially difficult field for weaker LLMs. `reference` currently means a source pointer such as a turn id, file path, artifact id, or tool result note, but because it is model-generated and optional, it is not essential to the first compactor contract.
 
 ## Recommendations
 
@@ -36,6 +39,8 @@ The parent runtime still owns when compaction is required, which raw traces are 
 - Remove the active-run-model fallback and the global `AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER` steady-state path. Missing/invalid compactor agent configuration must fail explicitly when compaction is required.
 - Treat legacy direct-model compaction behavior as invalid target-state behavior, not as a compatibility mode; production code must remove these paths rather than hide them behind flags.
 - Do **not** add hidden/internal-run framework semantics, internal task flags, or backend-specific bootstrap/thread changes for compaction. Use the top-level normal run API (`AgentRunService.createAgentRun` plus normal `AgentRun` operations) and keep framework changes minimal.
+- Use a two-layer prompt ownership split: strengthen the default compactor `agent.md` so stable behavior, category guidance, preservation/drop rules, and manual-test guidance live with the editable compactor agent; keep the exact current JSON schema/output contract in each automated task envelope as the authoritative parser contract owned by memory compaction.
+- Simplify the compactor output contract by removing free-form `tags` and optional model-generated `reference` from semantic entries. If tag/facet/source-pointer retrieval is needed later, design it as a controlled memory-indexing feature rather than extra free-form fields in this compactor contract.
 
 ## Scope Classification (`Small`/`Medium`/`Large`)
 
@@ -54,6 +59,7 @@ Large
 - UC-009: The compactor run is a separate run with its own run id and memory directory, so it does not pollute the parent run's memory.
 - UC-010: On a fresh server install, a default Memory Compactor agent definition exists in the normal app-data agents home, is selected by default for compaction, and is visible/editable like a normal shared agent.
 - UC-011: API/E2E validation can configure an AutoByteus parent run to trigger compaction while the selected compactor agent uses Codex runtime, and can verify visible compactor run/history/status correlation.
+- UC-012: A user can manually run the default Memory Compactor as a normal agent, paste arbitrary conversation/history content, and understand/test the compaction behavior from the agent's own `agent.md` instructions.
 
 ## Out of Scope
 
@@ -89,6 +95,8 @@ Large
 - REQ-018 `default_compactor_agent_selection`: If `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` is blank at startup, the server must persistently set it to the seeded default compactor agent id. If the setting already points to a user-selected agent, startup must not overwrite it.
 - REQ-019 `default_compactor_agent_editability`: The seeded default compactor must be a normal shared visible/editable agent definition. Startup must not overwrite an existing agent directory with the same id, so user edits are preserved.
 - REQ-020 `codex_compactor_e2e_required`: API/E2E validation for this ticket must include a scenario where a normal AutoByteus parent run triggers compaction and the selected compactor agent uses Codex runtime. If the required local Codex/AutoByteus/LM Studio environment is unavailable, validation must record an explicit environment blocker rather than claiming the scenario passed.
+- REQ-021 `prompt_ownership_split`: The default compactor `agent.md` must own stable compaction behavior guidance and be manually testable as a normal agent, while automated compaction tasks must still include the exact current parser-required JSON contract in the per-task user message. The per-task prompt should avoid duplicating long behavioral prose and should primarily contain a short task envelope, current output contract, and settled blocks.
+- REQ-022 `minimal_compaction_semantic_entry`: The compactor output contract must not require or request free-form `tags` or optional model-generated `reference` strings on semantic entries. Each semantic entry should be a minimal `{ "fact": "string" }` object inside the already typed output category array. Existing internal memory item `tags`/`reference` support may remain for other memory sources, but compactor-generated tags/references are out of scope for this contract.
 
 ## Acceptance Criteria
 
@@ -110,6 +118,8 @@ Large
 - AC-016: A startup/bootstrap test verifies an existing non-default compactor-agent setting is not overwritten by default seeding.
 - AC-017: The seeded default compactor agent is returned by normal agent-definition listing/query paths and can be edited through normal shared-agent update paths.
 - AC-018: API/E2E validation includes the AutoByteus-parent + Codex-compactor compaction scenario, verifies parent compaction status includes `compaction_run_id`, and verifies the compactor run is visible in history.
+- AC-019: The seeded default compactor `agent.md` contains enough behavior/category/preservation/drop guidance for manual testing, and a task-builder test verifies automated compaction user messages include the exact JSON contract plus settled blocks without reintroducing a long duplicate behavior manual.
+- AC-020: The default compactor `agent.md`, automated task contract, parser/normalizer tests, and docs no longer require model-generated `tags` or `reference` in compaction semantic entries; generated semantic memory remains categorized by the surrounding output array and stores only the fact text for each semantic item.
 
 ## Constraints / Dependencies
 
@@ -126,7 +136,8 @@ Large
 - The server can seed a default shared agent definition into the existing app-data agents directory during startup without creating a new definition-storage mechanism.
 - Server-managed runtime backends can be driven through the existing normal run service/manager path, and their normal event streams are sufficient to collect final output.
 - A first implementation does not need special backend tool suppression. The safest default launch behavior is non-auto-executing tools plus visible failure if the compactor asks for tool approval instead of returning JSON.
-- Existing compaction output schema remains acceptable and should not be broadened during this refactor.
+- Existing compaction output categories remain acceptable and should not be broadened during this refactor; free-form `tags` and optional model-generated `reference` are removed from the compactor-facing schema to reduce weak-model output burden.
+- Manual compactor testing is expected to be best-effort human inspection; production compatibility is enforced by the automated task envelope plus parser, not by trusting editable `agent.md` alone.
 
 ## Risks / Open Questions
 
@@ -135,6 +146,8 @@ Large
 - OQ-003: Should visible compactor runs remain terminated after one compaction or be left active? Recommendation: terminate after final output/failure/timeout to avoid leaks; terminated runs remain visible in history.
 - OQ-004: How strict should JSON output enforcement be for Codex/Claude? Recommendation: one parser attempt plus current fence/balanced-object extraction; failure remains a compaction failure, not a repair loop.
 - OQ-005: Should compactor runs support auto-executed tools? Recommendation: future explicit compactor launch-policy setting if needed; first implementation should avoid backend-specific tool suppression and use normal conservative launch defaults.
+- DQ-002: Compactor prompt ownership decision: use the two-layer split. Default `agent.md` owns stable behavior and manual-test guidance; the automated per-task user message owns the current exact JSON contract and payload envelope. Do not move the parser-required schema exclusively into editable agent instructions.
+- DQ-003: Minimal compactor schema decision: remove free-form `tags` and optional model-generated `reference` from the compactor output contract for this ticket. Categories already classify entries, and preserving the fact text is the core value. Source pointers can be reintroduced later only with a clear deterministic/controlled design.
 
 ## Requirement-To-Use-Case Coverage
 
@@ -160,6 +173,8 @@ Large
 | REQ-018 | UC-010 |
 | REQ-019 | UC-010 |
 | REQ-020 | UC-011 |
+| REQ-021 | UC-003, UC-005, UC-012 |
+| REQ-022 | UC-005, UC-012 |
 
 ## Acceptance-Criteria-To-Scenario Intent
 
@@ -183,7 +198,9 @@ Large
 | AC-016 | Confirms user-selected compactor setting is preserved. |
 | AC-017 | Confirms the built-in/default compactor is still a normal visible/editable agent definition. |
 | AC-018 | Confirms real end-to-end AutoByteus parent plus Codex compactor behavior. |
+| AC-019 | Confirms the prompt ownership split: manually testable default agent instructions plus authoritative automated schema envelope. |
+| AC-020 | Confirms compaction output schema simplification by removing nonessential tags/reference fields from the compactor-facing contract. |
 
 ## Approval Status
 
-Refined after user/implementation design-impact feedback on 2026-04-28. The current direction uses visible normal compactor runs through existing top-level run APIs, adds a normal seeded default compactor agent definition, requires Codex-compactor API/E2E validation, and preserves clean-cut removal of direct-model compaction.
+Refined after user/implementation design-impact feedback on 2026-04-30. The current direction uses visible normal compactor runs through existing top-level run APIs, adds a normal seeded default compactor agent definition, requires Codex-compactor API/E2E validation, preserves clean-cut removal of direct-model compaction, clarifies prompt ownership with strengthened default `agent.md` behavior plus an authoritative per-task JSON schema envelope, and simplifies the compactor output contract to facts-only semantic entries by removing free-form `tags` and optional model-generated `reference`.

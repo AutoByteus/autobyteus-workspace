@@ -3,7 +3,7 @@
 ## Investigation Status
 
 - Bootstrap Status: Complete.
-- Current Status: Current-state architecture investigation complete; design impact received during implementation; requirements/design refined to use visible normal compactor runs through existing top-level agent-run APIs, avoid Codex/Claude/backend-framework internal changes, seed a default normal compactor agent, and require Codex-compactor API/E2E validation.
+- Current Status: Current-state architecture investigation complete; code review blocked on artifact-chain mismatch after schema simplification; requirements/design now explicitly keep minimal facts-only compactor output in scope and need architecture re-review before implementation resumes. Current target also uses visible normal compactor runs through existing top-level agent-run APIs, avoids Codex/Claude/backend-framework internal changes, seeds a default normal compactor agent, requires Codex-compactor API/E2E validation, and clarifies two-layer compactor prompt ownership.
 - Investigation Goal: Understand `autobyteus-ts` compaction flow and design a refactor where compaction is executed through a configurable compactor agent instead of direct configured-model invocation.
 - Scope Classification (`Small`/`Medium`/`Large`): Large
 - Scope Classification Rationale: The desired capability crosses `autobyteus-ts` memory/agent runtime boundaries, `autobyteus-server-ts` runtime-kind/agent-definition execution, and `autobyteus-web` server settings UX.
@@ -20,12 +20,17 @@
   - Should default runtime/model be Codex or LM Studio/Qwen? Resolved: no environment-specific default. The seeded agent should not assume runtime/model availability; users or E2E setup configure default launch preferences.
   - What old model-direct behavior must be removed? Proposed: `LLMCompactionSummarizer` production wiring, `AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER`, and active-model fallback behavior.
   - Is AutoByteus-parent + Codex-compactor E2E required? Resolved: yes for API/E2E validation; if environment is unavailable, record an explicit blocker rather than claim pass.
+  - Should compactor behavior/schema live in `agent.md` or each per-task user message? Resolved: two-layer split. Strengthen default `agent.md` for stable behavior/manual testing; keep exact current JSON schema in every automated task envelope as memory-owned parser contract.
+  - Should compactor semantic entries include free-form `tags`? Resolved: no for this ticket. Categories are enough; current tag output has no required consumer and makes weak models produce more structure than necessary.
+  - Should compactor semantic entries include optional model-generated `reference`? Resolved: no for this ticket. A reference is a source pointer such as a turn/file/artifact/tool-result note, but asking the LLM to produce it adds optional structure; if needed later, design deterministic/controlled source pointers separately.
 
 ## Request Context
 
 User reports that `autobyteus-ts` supports compaction but compaction currently uses the configured model. User wants a more flexible architecture where compaction uses a configurable compactor agent with independently configurable instructions, runtime, and model/provider selection, including runtimes such as Codex or other supported agent runtimes. User clarified that the frontend should use the existing Server Settings -> Basics compaction area to select the compactor agent id, while agent instructions/runtime/model should continue to be configured on the normal agent editing page.
 
 During implementation, the user challenged the reviewed hidden/internal-run design. The user clarified that compaction is just another agent use case, should use the mature existing `AgentRunService`/`AgentRunManager`/frontend run-history framework, and should not force changes into Codex or Claude internals. The user also stated that visible frontend history is desirable because it lets users inspect whether compaction quality is good or bad.
+
+Later implementation feedback clarified prompt ownership: the default compactor should be independently understandable and manually testable as a normal agent. Users should be able to paste arbitrary conversation/history content into the compactor run and observe compaction behavior from `agent.md`, while automated compaction still needs a parser-compatible current schema envelope. The user then challenged the `tags` field as strange and emphasized the schema should be as simple as possible because weaker LLMs struggle with highly structured output. The user also questioned optional `reference`; the resulting design removes both nonessential fields from the compactor-facing contract.
 
 ## Environment Discovery / Bootstrap Context
 
@@ -71,6 +76,12 @@ During implementation, the user challenged the reviewed hidden/internal-run desi
 | 2026-04-28 | Other | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/implementation-design-impact-note.md` plus user clarification | Re-evaluate hidden/internal run design | Implementation attempted internal task changes across AgentRunManager and Codex/Claude bootstrap/thread paths; user objected and prefers visible normal agent runs. | Design rework required |
 | 2026-04-28 | Command | `git status --short`, `git diff --stat`, `rg -n "internalTask|InternalAgentTask|hidden|toolsEnabled" ...` | Inspect partial implementation impact | Partial changes include `internalTask` in generic run config/manager, new `internal-tasks` folder, Codex/Claude/CodexThread modifications, and tool suppression branches. These conflict with revised design. | Implementation should revert/avoid these changes |
 | 2026-04-28 | Doc | `tickets/done/llm-runtime-real-compaction/{requirements.md,proposed-design.md,design-review-report.md}` | Understand prior compaction design | Prior scope intentionally excluded a public compaction agent and implemented direct internal LLM summarizer. New user request is a direct architectural reversal of that earlier out-of-scope point. | Use as current-state context |
+| 2026-04-30 | Code | `autobyteus-server-ts/src/agent-execution/compaction/default-compactor-agent/agent.md` | Inspect implemented default compactor prompt | Current default prompt has useful high-level rules but is still concise and points users to the per-task output contract. User feedback asks for a stronger self-contained prompt for manual testing. | Strengthen default `agent.md` |
+| 2026-04-30 | Code | `autobyteus-ts/src/memory/compaction/compaction-task-prompt-builder.ts` | Inspect implemented automated task prompt | Current builder includes several behavior lines plus exact JSON contract and `[SETTLED_BLOCKS]`. Exact contract is needed for parser compatibility, but behavior prose can be trimmed once default `agent.md` owns stable behavior. | Keep exact schema in task; reduce duplicate prose |
+| 2026-04-30 | Doc | `tickets/in-progress/agent-based-compaction/implementation-design-impact-note-prompt-ownership.md` | Review implementation design-impact prompt ownership note | Implementation recommends strengthened default `agent.md` plus exact schema in each user message, avoiding schema-only-in-editable-agent risk. | Adopt two-layer split |
+| 2026-04-30 | Command | `rg -n "tags" autobyteus-ts/src/memory autobyteus-ts/tests autobyteus-server-ts/src autobyteus-web -S`; read `semantic-item.ts`, `compactor.ts`, `compaction-response-parser.ts`, `compaction-snapshot-builder.ts` | Inspect compactor-generated tag usage | Tags are parsed from compaction output and stored on `SemanticItem`, but the current compaction snapshot renders by category and does not use tags. Categories already classify entries. | Remove tags from compactor-facing schema |
+| 2026-04-30 | Code | `autobyteus-ts/src/memory/compaction-snapshot-builder.ts`, `semantic-item.ts`, `compaction-response-parser.ts` | Inspect compactor-generated reference usage | `reference` is an optional source pointer rendered as `(ref: ...)` when present. It can help traceability, but it is model-generated and optional; no core compaction behavior requires it. | Remove reference from compactor-facing schema for first implementation |
+| 2026-04-30 | Other | code reviewer message plus `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/review-report.md` | Review code-review block | Code review is blocked because tagless schema requirements were added without completed architecture review/implementation alignment. | Reconcile scope, keep minimal schema in-scope, route back to architecture review |
 
 ## Current Behavior / Current Flow
 
@@ -145,12 +156,18 @@ During implementation, the user challenged the reviewed hidden/internal-run desi
 9. Partial implementation changes that add internal-task semantics to Codex/Claude/AgentRunManager conflict with the revised design and should be reverted or avoided.
 10. A system-provided compactor agent should be a normal shared agent definition seeded into app-data, not a hidden/internal run type and not application-owned read-only content, because users need to configure runtime/model and inspect/edit behavior.
 11. Default launch config must not assume Codex, LM Studio, Qwen, or any model; availability is environment-specific.
+12. Stable compactor behavior should be visible in the compactor agent's `agent.md` so the default compactor is independently testable as a normal agent.
+13. The exact output schema should remain memory-owned and included in automated task messages because parser/normalizer/persistence consume that shape and selected compactor definitions are editable/custom/stale.
+14. Compactor-generated tags should be removed from the schema: they are free-form, increase output burden for weaker models, and are not required by current rendering/retrieval behavior.
+15. Compactor-generated references should also be removed from the schema for this ticket: they can help traceability, but optional source-pointer generation adds model burden and is not essential to preserve durable memory facts.
+16. Code review correctly blocked because schema-simplification requirements must be either fully reviewed/implemented or explicitly deferred. The chosen resolution is to keep the minimal facts-only schema in scope and send the updated artifact chain back through architecture review.
 
 ## Constraints / Dependencies / Compatibility Facts
 
 - No backward-compatible direct model fallback should remain for replaced compaction behavior.
 - `autobyteus-ts` must remain lower-level than `autobyteus-server-ts`; do not introduce reverse imports.
-- Existing memory output schema should remain stable to contain implementation risk.
+- Existing memory output categories should remain stable to contain implementation risk; free-form tags and optional model-generated references are removed from the compactor-facing schema.
+- Editable `agent.md` instructions are not a safe sole owner for parser compatibility; automated tasks must carry the exact current contract.
 - Visible compactor runs need cleanup/termination after one compaction attempt.
 - Cross-runtime compaction will depend on server runtime availability for the selected runtime kind.
 - Server settings can carry the selected compactor agent id, but runtime/model/config should come from the selected agent's existing `defaultLaunchConfig`.
@@ -164,9 +181,15 @@ During implementation, the user challenged the reviewed hidden/internal-run desi
 - Strict JSON compliance may be weaker in Codex/Claude than direct API calls; parser failures should remain explicit compaction failures rather than triggering repair loops in the first implementation.
 - API/E2E must cover AutoByteus parent plus Codex compactor with real configured runtimes where available; otherwise the validation report must record the missing environment as a blocker.
 - If a compactor agent requests tools and no approval path is available for the automated compaction attempt, compaction should fail clearly while leaving the visible run for inspection.
+- If default `agent.md` repeats a human-readable output shape for manual testing, future schema changes may make old user-edited prompts stale; automated task envelopes mitigate production compatibility, and future template migrations must still avoid silent overwrites.
+- If future retrieval needs tags/facets/source pointers, it should be designed with a controlled vocabulary or deterministic source mapping and consumer path rather than reintroducing arbitrary model-generated optional fields.
 
 ## Notes For Architect Reviewer
 
 This design was revised after implementation feedback and direct user clarification. The key change is replacing hidden/internal child-run semantics with visible normal compactor runs through existing `AgentRunService`/`AgentRunManager` APIs. The runner boundary and clean removal of direct-model compaction remain, but implementation should revert/avoid internal-task fields, Codex/Claude bootstrap/thread changes, and backend-specific tool suppression. The user explicitly prefers using the existing mature run framework and visible frontend/history inspection.
 
 A second design-impact clarification adds a system-provided default compactor agent definition. This is a normal shared visible/editable definition seeded into the app-data agents home and selected only when `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` is blank; it is not a hidden/internal run. The seeded definition must not assume Codex, LM Studio, Qwen, or any specific model. Real AutoByteus-parent plus Codex-compactor validation is required in API/E2E, with explicit blocker reporting if the required local runtimes are unavailable.
+
+A third design-impact clarification resolves compactor prompt ownership. The selected compactor's `agent.md` owns stable behavior and must make the default compactor manually testable, but the memory package still owns the exact parser-required JSON output contract and includes it in each automated per-task user message. The task prompt should become a short envelope plus current schema plus settled blocks, not a long duplicate behavior manual.
+
+A fourth clarification removes free-form `tags` and optional model-generated `reference` from the compactor-facing schema. Tags are optional labels with no current consumer, and references are optional source pointers that are useful but not core. The design now keeps semantic entries to facts only within the existing typed category arrays. This scope remains in-ticket and must pass architecture review before implementation/API-E2E resume.

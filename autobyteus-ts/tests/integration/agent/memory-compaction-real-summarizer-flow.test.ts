@@ -23,7 +23,7 @@ class DeterministicSummarizer extends Summarizer {
     const traces = blocks.flatMap((block) => block.traces ?? []);
     const summary = traces.map((trace) => trace.content).filter(Boolean).join(' | ');
     return new CompactionResult(summary || 'summary', {
-      importantArtifacts: [{ fact: 'hello.py created', reference: 'hello.py' }],
+      importantArtifacts: [{ fact: 'hello.py created' }],
     });
   }
 }
@@ -84,7 +84,8 @@ describe('Memory compaction summarizer flow', () => {
       expect(episodicItems.length).toBeGreaterThan(0);
       expect(semanticItems.length).toBeGreaterThan(0);
       expect(episodicItems[0].summary.trim().length).toBeGreaterThan(10);
-      expect(semanticItems.some((item) => item.reference === 'hello.py')).toBe(true);
+      expect(semanticItems.some((item) => item.fact === 'hello.py created')).toBe(true);
+      expect(semanticItems.every((item) => item.reference === null && item.tags.length === 0)).toBe(true);
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }

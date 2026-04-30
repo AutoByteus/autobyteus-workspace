@@ -3,10 +3,10 @@
 ## Scope
 
 - Ticket: `agent-based-compaction`
-- Trigger: Delivery-stage docs synchronization after Round-4 code-review pass and Round-2 API/E2E validation pass for default editable compactor-agent seeding/selection plus real AutoByteus-parent + Codex-compactor validation.
+- Trigger: Delivery-stage docs synchronization after Round-4 code-review pass and Round-2 API/E2E validation pass, then user-requested latest `origin/personal` merge and local Electron build verification on 2026-04-29.
 - Bootstrap base reference: `origin/personal` at `c570c57d7d503ad2c37f5916d2dd536b17ebe859` (`v1.2.85`).
-- Integrated base reference used for docs sync: latest fetched `origin/personal` at `c570c57d7d503ad2c37f5916d2dd536b17ebe859` on 2026-04-28; ticket branch remained already current, so no merge/rebase was needed.
-- Post-integration verification reference: no new base commits were integrated; delivery ran `git diff --check` after docs sync and it passed. Round-2 API/E2E validation had already passed the targeted server/core/web suites, builds, static greps, and temporary live parent/default Codex harness recorded in the validation report.
+- Integrated base reference used for docs sync: latest fetched/merged `origin/personal` at `b7a4e146` on 2026-04-29; integrated via merge commit `5c92590a` after local checkpoint commit `480d8b3d`.
+- Post-integration verification reference: `git diff --check` passed after merging latest `origin/personal`; stale direct-model compaction doc grep found no hits; local macOS ARM64 Electron build passed with `NO_TIMESTAMP=1 APPLE_TEAM_ID= AUTOBYTEUS_BUILD_FLAVOR=personal pnpm build:electron:mac -- --arm64`.
 
 ## Why Docs Were Updated
 
@@ -59,4 +59,4 @@
 
 - Result: `Pass`
 - Next owner: `delivery_engineer`
-- Notes: Docs sync completed against latest fetched `origin/personal` (`c570c57d7d503ad2c37f5916d2dd536b17ebe859`). Repository finalization remains on hold pending explicit user verification, per delivery workflow.
+- Notes: Docs sync remains valid after latest `origin/personal` merge (`b7a4e146`) and local Electron build verification. Repository finalization remains on hold pending explicit user approval, per delivery workflow.

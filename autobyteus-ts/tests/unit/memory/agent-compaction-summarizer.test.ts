@@ -36,7 +36,7 @@ class FakeRunner implements CompactionAgentRunner {
   calls: CompactionAgentTask[] = [];
   outputText = [
     '```json',
-    '{"episodic_summary":"Durable summary","critical_issues":[{"fact":"Keep this","tags":["decision"]}],"unresolved_work":[],"durable_facts":[],"user_preferences":[],"important_artifacts":[]}',
+    '{"episodic_summary":"Durable summary","critical_issues":[{"fact":"Keep this"}],"unresolved_work":[],"durable_facts":[],"user_preferences":[],"important_artifacts":[]}',
     '```',
   ].join('\n');
 
@@ -69,7 +69,7 @@ describe('AgentCompactionSummarizer', () => {
 
     expect(result.episodicSummary).toBe('Durable summary');
     expect(result.criticalIssues).toEqual([
-      { fact: 'Keep this', reference: null, tags: ['decision'] },
+      { fact: 'Keep this' },
     ]);
     expect(runner.calls).toHaveLength(1);
     expect(runner.calls[0]).toMatchObject({

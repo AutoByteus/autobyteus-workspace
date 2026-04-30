@@ -58,10 +58,9 @@ Key change summary:
 
 1. Add a `CompactionAgentRunner` interface in `autobyteus-ts`.
 2. Replace direct `LLMCompactionSummarizer` production wiring with `AgentCompactionSummarizer`.
-3. Split the compaction prompt into:
-   - fixed output contract owned by memory compaction;
-   - block/task user payload owned by memory compaction;
-   - compaction behavior instructions owned by the selected compactor agent definition.
+3. Split compactor prompt ownership into two layers:
+   - stable behavior/category/preservation/drop guidance owned by the selected compactor agent definition, with the seeded default `agent.md` strong enough for manual testing;
+   - the exact current parser-required JSON output contract and block/task payload owned by memory compaction and included in every automated task envelope.
 4. Replace `AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER` with `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` as the production selection setting.
 5. Update `CompactionConfigCard.vue` to select an existing agent definition as the compactor agent. The selected agent's existing edit page remains the place to configure instructions/runtime/model.
 6. Add server-side `ServerCompactionAgentRunner` that creates a **normal visible run** through `AgentRunService`, collects final output from normal events, and terminates the run after completion/failure/timeout.
@@ -74,7 +73,7 @@ Key change summary:
 - `Compactor agent` / `compaction agent`: the selected agent definition/runtime/model used only to produce structured compaction output.
 - `Parent agent`: the user-facing agent run whose memory is being compacted.
 - `Visible compactor run`: the normal `AgentRun` created for a single compaction attempt. It has its own run id, memory dir, metadata/history, and frontend visibility.
-- `Compaction task`: the one-shot invocation payload sent to the compactor agent, including settled block content and the required JSON output contract.
+- `Compaction task`: the one-shot invocation payload sent to the compactor agent. It should be mostly a short task envelope, the current required JSON output contract, and settled block content; long stable behavior guidance belongs in the compactor agent instructions.
 
 ## Legacy Removal Policy (Mandatory)
 
@@ -106,6 +105,27 @@ Key change summary:
 - Selection behavior: if `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` is blank at startup and the default compactor was created or already resolves successfully, persistently set the setting to `autobyteus-memory-compactor`. If the setting already points to another agent, do not change it. If existing default files are invalid and the default cannot resolve, do not force-select it.
 - Default launch config: the seeded `agent-config.json` must not assume Codex, LM Studio, Qwen, or any specific model. Runtime/model availability is node-specific. The seeded default may have `defaultLaunchConfig: null`; users or E2E setup configure runtime/model through the normal agent editor/API.
 - Failure mode: if the default compactor is selected but has no valid runtime/model, compaction fails with an actionable “configure the compactor agent runtime/model” error. Do not fall back to the parent active model.
+
+## Compactor Prompt Ownership Policy (Mandatory)
+
+- Decision: use a two-layer prompt contract.
+- The selected compactor agent definition (`agent.md`) owns stable compaction behavior: purpose, category meanings, preservation rules, drop rules, JSON-only discipline, and manual-test guidance.
+- The seeded default `autobyteus-memory-compactor/agent.md` must be self-explanatory enough that a user can run it as a normal visible agent, paste arbitrary conversation/history content, and see a useful compaction attempt without knowing the hidden implementation prompt.
+- The memory compaction subsystem owns the exact parser-required JSON schema/output contract because `CompactionResponseParser`, `CompactionResultNormalizer`, and memory persistence consume that shape. That compactor-facing contract must be minimal: semantic entries use only `fact`; do not request LLM-generated free-form `tags` or optional `reference` strings.
+- Every automated compaction task must include the current exact JSON contract in the per-task user message. This is the authoritative runtime contract for parser compatibility, especially when the selected agent is user-edited, stale, or custom.
+- The per-task user message should not duplicate a long behavior manual. It should be mostly:
+  1. a short task/context envelope,
+  2. the current exact JSON contract,
+  3. `[SETTLED_BLOCKS]` content.
+- The default `agent.md` may include a human-readable current output shape for manual testing, but that copy is not the parser source of truth. Automated tasks still override with the current exact contract. That human-readable shape should also omit free-form `tags` and optional `reference`.
+- Do not move the parser-required schema exclusively into editable `agent.md` in this change. That would make user-edited/custom/stale agent definitions responsible for memory parser compatibility and would blur the memory subsystem's output-contract ownership.
+
+## Minimal Compactor Output Schema Policy (Mandatory)
+
+- Decision: remove free-form `tags` and optional model-generated `reference` from the compactor-facing output contract.
+- Rationale: the surrounding output arrays already provide the semantic category (`critical_issues`, `unresolved_work`, `durable_facts`, `user_preferences`, `important_artifacts`). Asking weaker/local models for extra optional labels or source pointers adds structure burden without enough current value.
+- Existing internal memory models may keep optional `tags`/`reference` for other memory sources or future indexing. This decision only removes LLM-generated tags/references from the compactor output schema and prompt contract.
+- If future retrieval needs facets/source pointers, design that as an explicit controlled indexing feature with clear consumers and vocabulary, not as ungoverned free-form LLM output in this refactor.
 
 ## Data-Flow Spine Inventory
 
@@ -174,7 +194,8 @@ Key change summary:
 | `LLMCompactionSummarizer` production wiring | Direct model execution is the limited design being replaced | `AgentCompactionSummarizer` + `CompactionAgentRunner` | In This Change | File may be deleted or moved to tests only; do not keep as fallback. |
 | `AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER` production setting | Encodes model override rather than agent/runtime selection | `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` | In This Change | Remove from settings resolver/server settings/UI docs. |
 | Active run model fallback for compaction | Silently preserves old behavior and prevents config errors from surfacing | Missing-config failure through `CompactionPreparationError` | In This Change | No `settings.compactionModelIdentifier ?? activeModel` path. |
-| Built-in system prompt as sole compaction behavior owner | User wants editable compactor agent instructions | compactor agent definition instructions + fixed output contract | In This Change | Keep non-negotiable JSON output contract in memory package. |
+| Built-in system prompt or per-task user message as sole compaction behavior owner | User wants editable/testable compactor agent instructions, but parser compatibility needs a memory-owned contract | two-layer prompt split: strengthened compactor `agent.md` + per-task exact JSON contract envelope | In This Change | Stable behavior belongs in the compactor agent; exact schema remains memory-owned. |
+| Free-form `tags` and optional model-generated `reference` in compactor output entries | No current essential consumer; category arrays already classify entries | facts-only semantic entries under typed category arrays | In This Change | Keep internal memory tag/reference support only where independently needed; do not request them from compactor agent. |
 | `compaction_model_identifier` as sole status identity | Too narrow for agent/runtime selection | `compaction_agent_definition_id`, `compaction_agent_name`, `compaction_runtime_kind`, `compaction_model_identifier`, `compaction_run_id` | In This Change | Keep model field only as resolved identity, not a setting. |
 | UI option “Use active run model” | Old fallback concept | Compactor agent selector / no configured agent warning | In This Change | Must not remain after UI update. |
 | Hidden/internal compactor run infrastructure attempted during implementation | User rejected framework invasion; normal run path is sufficient | `ServerCompactionAgentRunner -> AgentRunService` | In This Change | Revert/avoid `internalTask` fields, internal-tasks folder, Codex/Claude/thread changes. |
@@ -218,7 +239,7 @@ The compactor run event spine is visible through the existing run framework/hist
 | Agent definition lookup | DS-002 | `CompactionAgentSettingsResolver` | Load selected compactor agent definition | Separates config resolution from runtime execution | Putting it in memory code would create server dependency |
 | Launch config read | DS-002 | `CompactionAgentSettingsResolver` | Use selected compactor agent `defaultLaunchConfig` | Reuses existing launch preference semantics | Duplicating in server settings creates drift with agent editor |
 | Visible run metadata/history | DS-004 | `AgentRunService` | Create run id/memory dir, write metadata, record history | User wants inspectable compactor runs | Hiding this in a custom runner bypasses mature framework |
-| Output contract text/schema | DS-003, DS-006 | `AgentCompactionSummarizer` / prompt contract file | Tell agent required JSON shape | Required even with editable instructions | If owned by agent definition only, users can accidentally break parser contract |
+| Output contract text/schema | DS-003, DS-006 | `AgentCompactionSummarizer` / prompt contract file | Tell agent the current exact parser-required JSON shape in each automated task, with facts-only semantic entries | Required even with editable or stale instructions | If owned by agent definition only, users can accidentally break parser contract; if bloated with optional fields, prompt/API clarity degrades |
 | Event-to-output collection | DS-004 | `CompactionRunOutputCollector` | Normalize AutoByteus/Codex/Claude output events | Backend event formats differ | If duplicated in runner branches, runtime-specific bugs multiply |
 | Tool request handling | DS-004 | `CompactionRunOutputCollector` / runner timeout policy | Fail clearly if compactor waits on tool approval instead of final JSON | First implementation avoids backend tool suppression | Backend-specific suppression would invade mature runtime internals |
 | Observability payload mapping | DS-005 | `CompactionRuntimeReporter` | Add agent/runtime/model/run identity | Users need to see configured compactor agent and inspect run | If omitted, visible run is hard to correlate with parent compaction |
@@ -231,7 +252,7 @@ The compactor run event spine is visible through the existing run framework/hist
 | Persistence commit | `Compactor` | Reuse | Has clean `Summarizer` seam | N/A |
 | Output parsing/normalization | parser/normalizer | Reuse | Existing typed memory contract remains desired | N/A |
 | Cross-runtime visible run execution | `AgentRunService`, `AgentRunManager`, `AgentRunBackend` | Reuse/Extend | Existing server-owned runtime and history abstraction | N/A |
-| Agent instructions/config | `AgentDefinition`, `agent.md`, `DefaultLaunchConfig`, agent edit page | Reuse/Extend | Existing durable/editable agent abstraction | N/A |
+| Agent instructions/config | `AgentDefinition`, `agent.md`, `DefaultLaunchConfig`, agent edit page | Reuse/Extend | Existing durable/editable agent abstraction; default compactor instructions must be strong enough for manual compaction tests | N/A |
 | Global compactor selection | `ServerSettingsService`, `CompactionConfigCard.vue` | Extend | Existing server-basics compaction card is the requested UX | N/A |
 | Runtime event output aggregation | No exact owner | Create New | Need normalized final text across normal runtime events | Existing event converters provide events but not final-output collection |
 | Hidden/internal task lifecycle | Not needed | Reject/Create None | User does not want framework invasion; normal run path is enough | N/A |
@@ -255,7 +276,7 @@ The compactor run event spine is visible through the existing run framework/hist
 | --- | --- | --- | --- | --- | --- |
 | `autobyteus-ts/src/memory/compaction/compaction-agent-runner.ts` | memory compaction | public internal boundary | Defines `CompactionAgentRunner`, `CompactionAgentTask`, `CompactionAgentRunnerResult`, `CompactionAgentExecutionMetadata` | Stable injection contract | Yes |
 | `autobyteus-ts/src/memory/compaction/agent-compaction-summarizer.ts` | memory compaction | `Summarizer` implementation | Calls runner, parses output, wraps failures | Direct replacement for LLM summarizer | Yes |
-| `autobyteus-ts/src/memory/compaction/compaction-task-prompt-builder.ts` | memory compaction | task builder | Builds settled-block task and required JSON contract | Keeps output schema memory-owned | Yes |
+| `autobyteus-ts/src/memory/compaction/compaction-task-prompt-builder.ts` | memory compaction | task builder | Builds short task envelope, required JSON contract, and settled-block payload; schema uses facts-only semantic entries | Keeps output schema memory-owned without duplicating long behavior prose | Yes |
 | `autobyteus-ts/src/memory/compaction/llm-compaction-summarizer.ts` | memory compaction | removed/decommissioned | Old direct LLM summarizer | Obsolete | N/A |
 | `autobyteus-ts/src/memory/compaction/compaction-runtime-settings.ts` | memory compaction | runtime settings resolver | Ratio, context override, debug logs only | Remove model selection | Yes |
 | `autobyteus-ts/src/memory/compaction/pending-compaction-executor.ts` | memory compaction | pending cycle owner | Include compactor agent/run metadata in status; do not resolve model fallback | Existing owner remains | Yes |
@@ -263,7 +284,7 @@ The compactor run event spine is visible through the existing run framework/hist
 | `autobyteus-ts/src/agent/factory/agent-factory.ts` | native runtime construction | factory | Wire `AgentCompactionSummarizer` when a runner exists | Runtime construction owner | Yes |
 | `autobyteus-server-ts/src/services/server-settings-service.ts` | server settings | setting registry | Replace `AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER` with `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` | Existing setting owner | Yes |
 | `autobyteus-server-ts/src/agent-execution/compaction/default-compactor-agent-bootstrapper.ts` | server compaction setup | startup bootstrapper | Seed `autobyteus-memory-compactor` into app-data agents and set default compactor setting if blank | Keeps default setup in compaction capability area | Yes |
-| `autobyteus-server-ts/src/agent-execution/compaction/default-compactor-agent/agent.md` | server compaction setup | default template | Source template for default compactor instructions | File-shaped template matches normal agent definitions | Yes |
+| `autobyteus-server-ts/src/agent-execution/compaction/default-compactor-agent/agent.md` | server compaction setup | default template | Source template for stable compactor behavior, category guidance, preservation/drop rules, JSON-only discipline, and manual-test guidance | File-shaped template matches normal agent definitions | Yes |
 | `autobyteus-server-ts/src/agent-execution/compaction/default-compactor-agent/agent-config.json` | server compaction setup | default template config | Source template for default compactor config, with no environment-specific runtime/model | Avoids hardcoding unavailable runtimes/models | Yes |
 | `autobyteus-server-ts/src/agent-execution/compaction/compaction-agent-settings-resolver.ts` | server execution/settings bridge | config resolver | Resolve selected compactor agent definition and default launch config | Avoids placing config lookup in runner or TS memory | Yes |
 | `autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts` | server execution | runner adapter | Implements TS `CompactionAgentRunner` by using `AgentRunService` visible runs | Server-owned cross-runtime bridge | Yes |
@@ -289,7 +310,8 @@ Files/areas implementation should revert or avoid for this design:
 - `autobyteus-ts` memory compaction owns compaction **inputs and outputs**, not runtime-specific execution.
 - `CompactionAgentRunner` is the authoritative boundary from memory compaction into agent execution.
 - `autobyteus-server-ts` owns runtime-kind resolution and execution through normal run services. It must not leak Codex/Claude classes into `autobyteus-ts`.
-- The selected compactor agent definition owns behavior instructions and default launch preferences. The memory subsystem owns the JSON output contract and block payload.
+- The selected compactor agent definition owns stable behavior instructions and default launch preferences. The default compactor `agent.md` must be useful as a manually testable normal agent.
+- The memory subsystem owns the exact JSON output contract and block payload for automated compaction. The per-task prompt carries that current contract as a compatibility envelope, not as the primary behavior manual. The contract should ask for facts only inside category arrays.
 - The server setting owns only **which** compactor agent is active globally, not how that agent runs internally.
 - The compactor run is a normal visible run. The parent compaction status links to it by run id.
 
@@ -389,7 +411,8 @@ Forbidden:
 | Settings shape | `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID=memory-compactor` | `AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER=gpt-5.4-codex` | Agent id gives editable instructions plus runtime/model through the selected agent. |
 | Compactor visibility | visible run id `memory-compactor-2026...` recorded in history and linked from parent compaction status | hidden child run filtered from history | User can inspect compaction quality. |
 | Compactor agent launch config | selected `memory-compactor` agent has `defaultLaunchConfig: { runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.4-codex', llmConfig: {...} }` | Put runtime/model fields directly in `CompactionConfigCard.vue` | Avoids duplicate config and uses existing agent editor. |
-| Output contract | Agent instructions are editable, but task still appends “Return JSON with episodic_summary, critical_issues, ...” | Let the compactor agent invent any output format | Parser/store require a stable contract. |
+| Prompt ownership | Default `agent.md` explains compaction categories and preservation/drop rules; automated task appends the current exact JSON contract plus settled blocks | Put all behavior/schema only in the per-task message, or only in editable `agent.md` | Users can manually test/tune the agent while parser/store compatibility remains stable. |
+| Semantic entry shape | `{ "fact": "..." }` inside `critical_issues` etc. | `{ "fact": "...", "reference": "optional", "tags": ["decision"] }` | Category arrays already classify the fact; optional source pointers/labels make the schema harder for weaker models. |
 | Missing config | Threshold crossed -> emit failed status `No compactor agent configured` -> keep compaction pending | Fall back to active parent model | Makes configuration errors visible and avoids old behavior. |
 | Tool behavior | normal run launched conservatively; if tool approval is requested, compaction fails clearly and visible run shows why | backend-specific stripping of tools in Codex/Claude bootstrap | Avoids invading backend internals. |
 
@@ -418,13 +441,38 @@ Suggested `memory-compactor/agent.md` intent:
 ```md
 ---
 name: Memory Compactor
-description: Produces durable compacted memory from settled agent traces.
-role: compaction
+description: Produces durable compacted memory from settled AutoByteus history.
+role: memory compaction specialist
 ---
 
-You are the memory compaction agent. Preserve decisions, unresolved work,
-critical failures, user preferences, and important artifacts. Drop low-value
-runtime chatter. Be concise and obey the supplied JSON output contract exactly.
+You are the AutoByteus Memory Compactor. Turn settled conversation, tool,
+validation, file, and planning history into compact memory for future runs.
+
+When manually tested, accept pasted conversation/history content and produce
+the same categories used by automated compaction: episodic summary, critical
+issues, unresolved work, durable facts, user preferences, and important
+artifacts.
+
+Preserve decisions, constraints, user preferences, open work, critical failures,
+validation results, tool outcomes, file paths, created/modified artifacts, and
+other facts future work may need. Drop repeated chatter, transient progress
+messages, verbose raw payloads, and low-value operational noise.
+
+Return JSON only. Do not invent facts. Obey the exact JSON output contract
+supplied in automated compaction tasks when present.
+```
+
+Suggested automated task envelope shape:
+
+```text
+Compact the settled blocks below into durable AutoByteus memory.
+Use the current output contract exactly.
+
+[OUTPUT_CONTRACT]
+{ current exact JSON schema from memory compaction, facts-only semantic entries }
+
+[SETTLED_BLOCKS]
+...rendered settled blocks...
 ```
 
 Injection shape to avoid reverse dependency:
@@ -476,6 +524,9 @@ try {
 | Fall back to active parent model when runner/config is missing | Preserves current behavior | Rejected | Emit failed compaction status and keep pending gate. |
 | Keep `LLMCompactionSummarizer` as a fallback implementation | Reduces implementation work | Rejected | Replace with agent runner-backed summarizer; fakes can be used in tests. |
 | Let compactor agent define arbitrary output | Maximizes flexibility | Rejected | Agent instructions are flexible, output schema remains fixed. |
+| Move the exact parser-required schema exclusively into editable `agent.md` | Makes manual messages nearly content-only | Rejected for this change | Strengthen default `agent.md` for manual testing, but keep the current exact schema in each automated task envelope. |
+| Keep free-form `tags` in compactor output entries | SemanticItem supports optional tags and existing tests used sample tags | Rejected for this change | Remove tags from compactor-facing schema; use category arrays. |
+| Keep optional model-generated `reference` in compactor output entries | Can provide traceability to source turns/files | Rejected for this change | Remove from compactor-facing schema; if source pointers are needed later, design deterministic/controlled references. |
 | Put runtime/model selectors in Server Basics compaction card | Convenient one-screen config | Rejected for first design | Server Basics selects the agent; selected agent editor owns runtime/model/config. |
 
 ## Framework-Invasion Rejection Log (Mandatory)
@@ -508,8 +559,11 @@ The important rule is dependency direction: server may implement the `autobyteus
    - Codex/Claude bootstrap/thread/session/tool-suppression changes.
 2. Keep or add the core `autobyteus-ts` `CompactionAgentRunner` contract and task/result metadata types.
 3. Split prompt construction:
-   - keep block rendering and output schema in memory compaction;
-   - stop using a hard-coded system prompt as the only behavior source.
+   - strengthen the default compactor `agent.md` so stable behavior/category guidance and manual-test instructions live with the agent;
+   - keep block rendering and exact output schema in memory compaction;
+   - remove free-form `tags` and optional model-generated `reference` from the compactor-facing output schema;
+   - make automated user messages mostly a short task envelope, current JSON contract, and settled blocks;
+   - stop using a hard-coded per-task behavior manual as the only behavior source.
 4. Add `AgentCompactionSummarizer` implementing `Summarizer` through the runner and existing parser.
 5. Update `CompactionRuntimeReporter`/status payload types to include compactor agent/runtime/model/run metadata.
 6. Update `PendingCompactionExecutor` to report runner metadata and stop resolving model fallback.
@@ -518,7 +572,7 @@ The important rule is dependency direction: server may implement the `autobyteus
    - remove `LLMCompactionSummarizer` production wiring;
    - wire `AgentCompactionSummarizer` only when a runner is configured.
 9. In server settings, add `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` and remove/deprecate `AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER` from predefined production settings.
-10. Add `DefaultCompactorAgentBootstrapper` and default compactor template. Run it during server startup before agent-definition cache preloading/normal run use. It must seed `autobyteus-memory-compactor` if missing, preserve existing edits, set the compactor setting only if blank, and refresh agent-definition cache after seeding.
+10. Add `DefaultCompactorAgentBootstrapper` and a strengthened default compactor template. Run it during server startup before agent-definition cache preloading/normal run use. It must seed `autobyteus-memory-compactor` if missing, preserve existing edits, set the compactor setting only if blank, and refresh agent-definition cache after seeding.
 11. Add `CompactionAgentSettingsResolver` to read the selected agent id, load the selected agent definition, and resolve launch config from the selected agent's `defaultLaunchConfig`.
 12. Add `CompactionRunOutputCollector` under `agent-execution/compaction` for normal run event aggregation.
 13. Add/update `ServerCompactionAgentRunner` implementing the `autobyteus-ts` runner contract by:
@@ -542,6 +596,8 @@ The important rule is dependency direction: server may implement the `autobyteus
     - integration test showing primary runtime/model A and compactor runtime/model B;
     - visible history/metadata correlation test;
     - default compactor bootstrap/selection/edit-preservation tests;
+    - default compactor prompt/manual-test guidance test and task-envelope contract test;
+    - compactor schema simplification test proving prompts/docs require only facts in semantic entries;
     - AutoByteus parent + Codex compactor API/E2E scenario owned by API/E2E validation;
     - missing config failure test;
     - `CompactionConfigCard` selector/save test;
@@ -557,6 +613,8 @@ Temporary seams:
 ## Key Tradeoffs
 
 - **Agent flexibility vs deterministic output:** The design allows configurable instructions/runtime/model but keeps the output schema fixed. This gives flexibility without destabilizing memory persistence.
+- **Manual testability vs parser ownership:** Strengthening `agent.md` makes the default compactor understandable and testable as a normal agent, while repeating the exact current schema in automated task envelopes protects parser compatibility when agent instructions are edited, stale, or custom.
+- **Optional metadata vs schema simplicity:** Free-form tags and model-generated references could someday help retrieval/traceability, but they are not core to this refactor. Removing them from the compactor contract makes the prompt easier for weaker models and keeps the output focused on durable facts.
 - **Visible normal runs vs hidden internal runs:** Visible normal runs reuse the mature framework and let users inspect quality. They may add history entries, but the user explicitly accepts/prefers this.
 - **Server runner vs TS-only runner:** Cross-runtime selection must live in server to avoid circular dependencies. `autobyteus-ts` owns only the abstraction.
 - **Global compactor setting vs per-agent override:** Global Server Basics selection is simpler and matches user feedback. Per-primary-agent overrides can be added later if needed.
@@ -596,3 +654,5 @@ Temporary seams:
   - `compaction_run_id`
   - `compaction_task_id`
 - Avoid naming anything “helper” for core policy. Use explicit owner names: settings resolver, runner, output collector, summarizer.
+- Keep `CompactionTaskPromptBuilder` as the memory-owned task envelope/schema builder, but remove duplicated long behavioral prose from automated user messages once the default `agent.md` carries that stable behavior.
+- Remove `tags` and `reference` from the compactor-facing schema in `CompactionTaskPromptBuilder`, default `agent.md`, docs, and tests. If compaction result/internal types still carry optional tags/reference for other memory paths, default compactor output should leave them empty/not present.

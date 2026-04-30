@@ -74,11 +74,14 @@ The memory system is defined by its implemented operations:
 
 **EPISODIC (EpisodicItem)**
 
-- `id`, `ts`, `turn_ids`, `summary`, `tags`, `salience`
+- `id`, `ts`, `turn_ids`, `summary`, `salience`
+- Optional internal metadata: `tags`
 
 **SEMANTIC (SemanticItem)**
 
-- `id`, `ts`, `category`, `fact`, optional `reference`, `tags`, `salience`
+- `id`, `ts`, `category`, `fact`, `salience`
+- Optional internal metadata for non-compactor/future controlled sources: `reference`, `tags`
+- Agent-based compactor output is facts-only and does not ask the model to generate `reference` or `tags`.
 - `category` enum: `critical_issue | unresolved_work | user_preference | durable_fact | important_artifact`
 
 **ToolInteraction (derived view)**
@@ -293,8 +296,9 @@ Compaction produces **structured memory artifacts** and a new working context sn
    - `durable_facts[]`
    - `user_preferences[]`
    - `important_artifacts[]`
+   Semantic array entries are facts-only objects: `{ "fact": "..." }`.
 8. Parse and validate the structured response, then run deterministic
-   normalization (dedupe, low-value filtering, category caps, reference
+   normalization (dedupe, low-value filtering, category caps, fact
    cleanup, and salience assignment) before persisting EPISODIC + SEMANTIC
    items.
 9. `MemoryStore.pruneRawTracesById(plan.eligibleTraceIds, true)` archives and
@@ -328,6 +332,12 @@ Compaction produces **structured memory artifacts** and a new working context sn
 | `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` | Selects the memory compactor agent definition. The selected agent's normal default launch config selects runtime/model/config. | Server startup seeds and selects `autobyteus-memory-compactor` when blank. If the selected/default agent lacks valid runtime/model launch defaults, required compaction fails clearly; there is no active-model fallback. |
 | `AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE` | Lowers the effective context ceiling for safer budgeting (for example when a provider fails before its advertised maximum). | Blank disables the override; positive values are floored to an integer token ceiling. |
 | `AUTOBYTEUS_COMPACTION_DEBUG_LOGS` | Enables verbose compaction diagnostics. | Disabled by default; truthy values such as `1`, `true`, `yes`, `on` enable detailed logs. |
+
+### Compactor Prompt Ownership
+
+The selected compactor agent's `agent.md` owns stable behavior: category meanings, preservation/drop rules, JSON-only discipline, and manual-test guidance. The seeded `autobyteus-memory-compactor` is intentionally written so a user can run it as a normal visible agent, paste conversation/history content, and inspect the compaction behavior.
+
+Automated compaction still includes the current exact JSON output contract in every task envelope before `[SETTLED_BLOCKS]`. That contract is owned by memory compaction/parser code, not solely by editable agent instructions, so user-edited or stale compactor agents cannot silently become the only parser-compatibility source. The compactor-facing semantic entries are facts-only: the model returns `fact` objects inside the typed category arrays and does not generate optional `reference` strings or free-form `tags`.
 
 ### Snapshot Cache / Schema-3 Bootstrap
 
@@ -1512,7 +1522,6 @@ Turns are created when a processed non-tool user message is ready.
   "ts": 1738100500.0,
   "turn_ids": ["turn_0001","turn_0002"],
   "summary": "...",
-  "tags": ["project", "decision"],
   "salience": 0.7
 }
 ```
@@ -1525,7 +1534,6 @@ Turns are created when a processed non-tool user message is ready.
   "ts": 1738100501.0,
   "category": "user_preference",
   "fact": "Use vitest with pnpm exec vitest --run.",
-  "tags": ["preference","testing"],
   "salience": 300
 }
 ```

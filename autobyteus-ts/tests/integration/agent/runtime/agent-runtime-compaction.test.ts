@@ -147,8 +147,7 @@ describe('Agent runtime compaction integration', () => {
       unresolved_work: [],
       durable_facts: [
         {
-          fact: 'The user asked the agent to remember the first turn.',
-          tags: ['memory']
+          fact: 'The user asked the agent to remember the first turn.'
         }
       ],
       user_preferences: [],

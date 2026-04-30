@@ -4,17 +4,23 @@
 
 - Review Entry Point: `Implementation Review`
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/requirements.md`
-- Current Review Round: 3
-- Trigger: Round-4 implementation handoff for visible normal-run compactor execution plus default editable `autobyteus-memory-compactor` seeding/selection rework.
-- Prior Review Round Reviewed: 2
-- Latest Authoritative Round: 3
+- Current Review Round: 5
+- Trigger: Round-7 implementation handoff for facts-only compactor schema rework after prior code review finding `CR-004-001`.
+- Prior Review Round Reviewed: 4
+- Latest Authoritative Round: 5
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/design-spec.md`
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/design-review-report.md`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/implementation-handoff.md`
-- Validation Report Reviewed As Context: `N/A for this round-4 implementation review; prior validation report is superseded by new implementation scope.`
-- API / E2E Validation Started Yet: `No, not for the round-4 default compactor implementation.`
-- Repository-Resident Durable Validation Added Or Updated After Prior Review: `No post-API/E2E durable validation in this round; implementation itself added/updated unit/E2E test coverage.`
+- Validation Report Reviewed As Context: `N/A for this implementation-review round.`
+- Additional Design-Impact Notes Reviewed As Context:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/design-impact-resolution-visible-compactor-runs.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/design-impact-resolution-default-compactor-agent-and-e2e.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/design-impact-resolution-compactor-prompt-ownership.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/design-impact-resolution-compactor-output-tags.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/design-impact-resolution-minimal-compactor-schema.md`
+- API / E2E Validation Started Yet: `No, not for the round-7 facts-only schema scope.`
+- Repository-Resident Durable Validation Added Or Updated After Prior Review: `No post-API/E2E durable validation in this round; implementation itself added/updated unit/integration tests for prompt, parser, normalizer, and template behavior.`
 
 ## Round History
 
@@ -22,28 +28,31 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | Implementation handoff for visible normal compactor runs | N/A | None | Pass | No | Passed to API/E2E validation. |
 | 2 | API/E2E added/updated durable validation after round 1 | No unresolved findings from round 1 | None | Pass | No | Passed to delivery for then-current scope. |
-| 3 | Round-4 implementation handoff for default editable compactor seeding/selection plus Codex E2E requirement | No unresolved findings from round 2 | None | Pass | Yes | Ready for API/E2E validation of the new round-4 scope. |
+| 3 | Round-4 implementation handoff for default editable compactor seeding/selection plus Codex E2E requirement | No unresolved findings from round 2 | None | Pass | No | Passed to API/E2E for the round-4 scope. |
+| 4 | Round-5 prompt-ownership implementation handoff plus current artifacts with compactor tag/schema clarification | No unresolved findings from round 3 | `CR-004-001` | Blocked / Rework Required | No | Routed to solution design because the active artifact chain required schema simplification but source still requested `tags`. |
+| 5 | Round-7 facts-only compactor schema rework after `CR-004-001` | `CR-004-001` | None | Pass | Yes | Ready for API/E2E validation of visible AutoByteus-parent + Codex-compactor flow and facts-only output behavior. |
 
 ## Review Scope
 
-Round 3 reviewed the full round-4 implementation delta against the updated requirements/design, with emphasis on:
+Round 5 reviewed the implementation after round-7 design/implementation rework, focused on resolving `CR-004-001` and preserving the earlier visible normal-run/default-compactor architecture:
 
-- Default compactor agent bootstrap and template:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/autobyteus-server-ts/src/agent-execution/compaction/default-compactor-agent-bootstrapper.ts`
+- Facts-only automated compactor output contract:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/autobyteus-ts/src/memory/compaction/compaction-task-prompt-builder.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/autobyteus-ts/tests/unit/memory/compaction-task-prompt-builder.test.ts`
+- Facts-only parsing/result/normalization behavior:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/autobyteus-ts/src/memory/compaction/compaction-response-parser.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/autobyteus-ts/src/memory/compaction/compaction-result.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/autobyteus-ts/src/memory/compaction/compaction-result-normalizer.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/autobyteus-ts/tests/unit/memory/compaction-response-parser.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/autobyteus-ts/tests/unit/memory/compaction-result-normalizer.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/autobyteus-ts/tests/unit/memory/agent-compaction-summarizer.test.ts`
+- Default compactor `agent.md` prompt ownership/manual-test guidance and facts-only schema:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/autobyteus-server-ts/src/agent-execution/compaction/default-compactor-agent/agent.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/autobyteus-server-ts/src/agent-execution/compaction/default-compactor-agent/agent-config.json`
-- Startup/build asset wiring:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/autobyteus-server-ts/src/server-runtime.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/autobyteus-server-ts/scripts/copy-managed-messaging-assets.mjs`
-- Compactor-agent selection/runtime resolution and server-backed visible-run execution:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/autobyteus-server-ts/src/agent-execution/compaction/compaction-agent-settings-resolver.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/autobyteus-server-ts/src/agent-execution/compaction/compaction-run-output-collector.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts`
-- Core `autobyteus-ts` compaction runner seam and parent status metadata propagation.
-- Web settings UI migration from direct model selection to normal compactor-agent selection.
-- Durable tests covering bootstrap, settings metadata, visible-run runner failure paths, core compaction, and web status/settings behavior.
-- Static cleanup of the old direct-model setting and hidden/internal-run approach.
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/autobyteus-server-ts/tests/unit/agent-execution/compaction/default-compactor-agent-template.test.ts`
+- Related docs updates:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/autobyteus-ts/docs/agent_memory_design.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/autobyteus-ts/docs/agent_memory_design_nodejs.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/autobyteus-web/docs/settings.md`
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
@@ -51,48 +60,46 @@ Round 3 reviewed the full round-4 implementation delta against the updated requi
 | --- | --- | --- | --- | --- | --- |
 | 1 | None | N/A | No unresolved findings to recheck. | Round 1 passed with no findings. | N/A |
 | 2 | None | N/A | No unresolved findings to recheck. | Round 2 passed with no findings. | N/A |
+| 3 | None | N/A | No unresolved findings to recheck. | Round 3 passed with no findings. | N/A |
+| 4 | `CR-004-001` | Blocking | Resolved. | `CompactionTaskPromptBuilder` output contract now uses `{ "fact": "string" }` entries only; default compactor `agent.md` manual schema uses facts-only entries; `CompactionResponseParser` ignores stale `reference`/`tags`; `CompactionResultNormalizer` persists compactor semantic entries with `reference: null` and `tags: []`; tests assert absence of `"tags"` and `"reference"` from prompt/template contracts. | The round-7 design review now explicitly passes the minimal facts-only schema design. |
 
 ## Source File Size And Structure Audit (If Applicable)
 
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | ---: | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/agent-execution/compaction/default-compactor-agent-bootstrapper.ts` | 160 | Pass | Pass | Single startup bootstrapper responsibility. | Server compaction capability area. | Accept | None. |
-| `autobyteus-server-ts/src/agent-execution/compaction/compaction-agent-settings-resolver.ts` | 69 | Pass | Pass | Owns selected compactor id and launch config resolution only. | Server compaction capability area. | Accept | None. |
-| `autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts` | 179 | Pass | Pass | Owns server normal-run compactor execution lifecycle. | Server compaction capability area. | Accept | None. |
-| `autobyteus-server-ts/src/agent-execution/compaction/compaction-run-output-collector.ts` | 205 | Pass | Pass | Owns normal-run event-to-output collection. | Server compaction capability area. | Accept | None. |
-| `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts` | 484 | Pass | Existing large source; round-4 adds a small injection seam only. | Existing AutoByteus backend construction owner remains appropriate. | Existing backend factory path. | Accept with monitor | Avoid future unrelated growth in this file. |
-| `autobyteus-ts/src/memory/compaction/agent-compaction-summarizer.ts` | 85 | Pass | Pass | Core summarizer delegates execution through the runner interface only. | Core memory compaction area. | Accept | None. |
-| `autobyteus-ts/src/memory/compaction/compaction-task-prompt-builder.ts` | 65 | Pass | Pass | Owns compaction task prompt/output contract. | Core memory compaction area. | Accept | None. |
-| `autobyteus-ts/src/memory/compaction/pending-compaction-executor.ts` | 141 | Pass | Pass | Owns pre-dispatch compaction orchestration/status. | Core memory compaction area. | Accept | None. |
-| `autobyteus-web/components/settings/CompactionConfigCard.vue` | 141 | Pass | Pass | Owns typed compaction settings card. | Existing web settings component path. | Accept | None. |
+| `autobyteus-server-ts/src/agent-execution/compaction/default-compactor-agent/agent.md` | 47 | Pass | Pass | Owns stable default compactor behavior/manual-test guidance. | Server compaction default-agent template. | Accept | None. |
+| `autobyteus-ts/src/memory/compaction/compaction-task-prompt-builder.ts` | 64 | Pass | Pass | Owns memory compaction task envelope, exact output contract, and settled-block rendering. | Core memory compaction package. | Accept | None. |
+| `autobyteus-ts/src/memory/compaction/compaction-response-parser.ts` | 130 | Pass | Pass | Owns parser validation/extraction from compactor output text to facts-only `CompactionResult`. | Core memory compaction package. | Accept | None. |
+| `autobyteus-ts/src/memory/compaction/compaction-result.ts` | 26 | Pass | Pass | Owns the parser-facing facts-only compaction result shape. | Core memory compaction package. | Accept | None. |
+| `autobyteus-ts/src/memory/compaction/compaction-result-normalizer.ts` | 122 | Pass | Pass | Owns normalization from facts-only compaction result to internal semantic items with deterministic empty metadata. | Core memory compaction package. | Accept | None. |
 
 ## Structural / Design Checks
 
 | Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Data-flow spine inventory clarity and preservation under shared principles | Pass | Current spine matches design: startup seeds default shared agent, settings selects `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID`, resolver reads selected definition `defaultLaunchConfig`, runner uses `AgentRunService.createAgentRun` / normal `postUserMessage` / normal event subscription / termination. | None. |
-| Ownership boundary preservation and clarity | Pass | `autobyteus-ts` only knows the `CompactionAgentRunner` abstraction; server runtime-specific work stays in `autobyteus-server-ts`; web selects a normal agent definition. | None. |
-| Off-spine concern clarity | Pass | Build asset copying, settings GraphQL metadata, and web summaries are bounded supporting concerns. | None. |
-| Existing capability/subsystem reuse check | Pass | Reuses normal file-backed agent definitions, server settings, agent definition service/cache, `AgentRunService`, backend factory seam, and existing web stores. | None. |
-| Reusable owned structures check | Pass | New compaction runner/output/status metadata types are owned by compaction modules rather than copied into backend-specific branches. | None. |
-| Shared-structure/data-model tightness check | Pass | Selected compactor id is one setting; runtime/model remain on `AgentDefinition.defaultLaunchConfig`; no duplicate runtime/model settings were added. | None. |
-| Repeated coordination ownership check | Pass | Bootstrap owns default file seeding/selection/cache refresh once; runner owns visible compactor run lifecycle once. | None. |
-| Empty indirection check | Pass | New interfaces have real substitution boundaries: core summarizer runner abstraction, server settings resolver, visible-run output collector. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Startup, settings, compaction execution, core memory compaction, and web UI responsibilities are separated. | None. |
-| Ownership-driven dependency check | Pass | No reverse dependency from core `autobyteus-ts` into server code; server imports core runner types only. | None. |
-| Authoritative Boundary Rule check | Pass | Compactor execution uses `AgentRunService`/`AgentRun` public boundaries, not `AgentRunManager` or backend internals. | None. |
-| File placement check | Pass | Default compactor template and bootstrapper are in the server compaction capability folder; tests are in matching unit/E2E areas. | None. |
-| Flat-vs-over-split layout judgment | Pass | New compaction server files are focused without over-splitting; existing large AutoByteus factory only receives the injection seam. | None. |
-| Interface/API/query/command/service-method boundary clarity | Pass | `CompactionAgentSettingsResolver`, `ServerCompactionAgentRunner`, and bootstrap result shapes are explicit and task-specific. | None. |
-| Naming quality and naming-to-responsibility alignment check | Pass | `DEFAULT_COMPACTOR_AGENT_DEFINITION_ID`, `DefaultCompactorAgentBootstrapper`, and `CompactionRunOutputCollector` names match responsibilities. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | No duplicate runtime/model setting path; no duplicated backend-specific compactor launch branches. | None. |
-| Patch-on-patch complexity control | Pass | Round-4 changes integrate into previous visible-run design without reintroducing hidden/internal run infrastructure. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | Active code no longer references `AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER`, `LLMCompactionSummarizer`, or the old prompt builder; static grep only found unrelated/historical doc text for “hidden”. | None. |
-| Test quality is acceptable for changed behavior | Pass | Unit/E2E tests cover default bootstrap selection/preservation/invalid-file behavior, settings metadata, runner output/error/timeout paths, core summarizer, and web settings/status handling. | None. |
-| Test maintainability is acceptable for changed behavior | Pass | Tests use deterministic fakes for runner/agent services and targeted GraphQL/component boundaries. | None. |
-| Validation or delivery readiness for next workflow stage | Pass | Reviewer-rerun targeted tests/builds passed; real AutoByteus-parent + Codex-compactor scenario remains API/E2E-owned. | Proceed to API/E2E. |
-| No backward-compatibility mechanisms | Pass | No active parent-model fallback or compatibility wrapper for the old direct model setting remains. | None. |
-| No legacy code retention for old behavior | Pass | Old direct summarizer/prompt builder files and tests are deleted; settings/UI/docs use selected compactor agent. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | Round-7 facts-only schema rework preserves the existing spine: parent compaction -> `AgentCompactionSummarizer` -> `CompactionAgentRunner` -> visible server run -> parser/normalizer/store. | None. |
+| Ownership boundary preservation and clarity | Pass | Stable compaction behavior/manual-test guidance lives in the editable default agent; parser-required facts-only JSON contract remains memory-owned in `CompactionTaskPromptBuilder`. | None. |
+| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Parser/normalizer changes are bounded to compaction output handling; docs/tests support the same owners. | None. |
+| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | Reuses existing parser/normalizer/result files; no new generic schema framework or helper was introduced. | None. |
+| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | The output contract remains one exported constant in the prompt builder; tests verify the constant rather than duplicating production contract logic. | None. |
+| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | `CompactionSemanticEntry` is now facts-only; internal `SemanticItem` reference/tags support remains below the compactor-facing contract for other memory sources. | None. |
+| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Facts-only policy is enforced centrally by parser/result/normalizer and template tests, not repeated across runner/backends. | None. |
+| Empty indirection check (no pass-through-only boundary) | Pass | No new pass-through layer was added; existing summarizer/runner/parser boundaries still own distinct work. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Prompt, parsing, normalization, default template, and docs stay in their existing owning files. | None. |
+| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | `autobyteus-ts` remains independent of server runtime code; server visible-run adapter remains outside core memory. | None. |
+| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | Round-7 source does not bypass `AgentRunService` or add parser/normalizer bypasses; compactor output handling enters through `CompactionResponseParser`. | None. |
+| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Changed source lives under memory compaction or server compaction default-agent template. | None. |
+| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | Rework removes fields in existing focused files instead of adding needless wrappers. | None. |
+| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | `CompactionResult` now expresses the facts-only compactor output shape; internal normalized entries explicitly set metadata to null/empty. | None. |
+| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | Existing names remain responsibility-aligned; no misleading reference/tag-facing naming remains in the compactor result contract. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | No duplicate output schema branches or dual old/new compactor contracts remain. | None. |
+| Patch-on-patch complexity control | Pass | Rework is a simplifying patch: removes generated metadata fields and associated normalizer/parser logic. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Free-form generated `tags` and generated `reference` were removed from compactor-facing schema/template/result/parser/normalizer paths. | None. |
+| Test quality is acceptable for the changed behavior | Pass | Tests cover facts-only prompt contract, stale metadata tolerance/ignore, normalized null/empty metadata, default template no `tags`/`reference`, and summarizer facts-only parsing. | None. |
+| Test maintainability is acceptable for the changed behavior | Pass | Tests remain targeted unit/integration coverage using existing fixtures and boundaries. | None. |
+| Validation or delivery readiness for the next workflow stage | Pass | Reviewer-rerun targeted suites, builds, web guards, server-settings E2E, and `git diff --check` passed; live runtime API/E2E remains the next owner. | Proceed to API/E2E. |
+| No backward-compatibility mechanisms (no compatibility wrappers/dual-path behavior) | Pass | Parser tolerates stale metadata by ignoring it, but there is no dual active schema or persistence of generated metadata. | None. |
+| No legacy code retention for old behavior | Pass | Direct-model compaction remains absent; facts-only schema no longer requests old `tags`/`reference` metadata. | None. |
 
 ## Review Scorecard (Mandatory)
 
@@ -102,48 +109,52 @@ Round 3 reviewed the full round-4 implementation delta against the updated requi
 
 | Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 9.5 | The implemented startup/settings/resolver/normal-run compaction spine is clear and matches the reviewed design. | Real cross-runtime spine still needs API/E2E exercise. | API/E2E must run or concretely block the AutoByteus-parent + Codex-compactor scenario. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.6 | Core/server/web boundaries are clean; no server runtime classes leak into `autobyteus-ts`. | AutoByteus factory remains a large file, though this patch only adds a seam. | Avoid adding more unrelated responsibility to that factory. |
-| `3` | `API / Interface / Query / Command Clarity` | 9.4 | Runner, resolver, bootstrap, and settings interfaces are explicit. | Missing runtime/model failures are unit-covered at resolver level but need live validation for operator experience. | API/E2E should verify actionable missing-launch-config failure and no active-model fallback. |
-| `4` | `Separation of Concerns and File Placement` | 9.5 | New files live under the owning compaction/settings areas and do not split trivial code. | Existing backend factory size is near the file-size watch threshold. | Keep future construction changes small or split deliberately. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.5 | Runtime/model remain in the selected agent definition's existing `defaultLaunchConfig`; no duplicate settings model. | Default template intentionally has `defaultLaunchConfig: null`, so runtime validity is not guaranteed at seed time. | API/E2E should configure launch prefs through normal agent definition APIs. |
-| `6` | `Naming Quality and Local Readability` | 9.4 | Naming is direct and domain-aligned across server/core/web. | Some test fixtures are verbose due normal agent definition shapes. | Keep fixtures local and avoid shared over-abstraction unless repeated. |
-| `7` | `Validation Readiness` | 9.2 | Reviewer reran targeted server/core/web tests and builds; build asset copy verified. | Repository-wide server typecheck is still blocked by pre-existing TS6059 rootDir issue. | Track TS6059 separately; API/E2E must perform live scenario validation. |
-| `8` | `Runtime Correctness Under Edge Cases` | 9.3 | Bootstrap invalid-file/no-overwrite behavior, runner tool-approval/error/no-output/timeout paths, and core invalid JSON path are covered. | Valid live runtime event streams still need API/E2E for Codex/AutoByteus and any environment-blocked providers. | API/E2E should inspect visible run history/status correlation. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.6 | Direct-model fallback and hidden/internal run approach are absent from active code. | Historical docs naturally mention old terms in design context; active operator docs are updated. | Delivery can add explicit migration note if needed. |
-| `10` | `Cleanup Completeness` | 9.3 | Old direct summarizer/prompt builder files are deleted and settings/web references are migrated. | Existing `.env` files with old custom keys may still appear in generic raw settings by design, but are not used by the new flow. | Delivery docs should call `AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER` obsolete/ignored. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.4 | Facts-only schema rework is localized and keeps the visible-run compaction spine clear. | Real cross-runtime execution is still API/E2E-owned. | API/E2E must run the AutoByteus-parent + Codex-compactor scenario or record a concrete blocker. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.6 | Behavior instructions, exact task contract, parser, and normalizer each have clear owners. | Requirements status line still says pending architecture re-review, though design review round 7 passes; this is artifact hygiene rather than code ambiguity. | Delivery/solution artifacts can clean that label later if desired. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.4 | `CompactionResult` now exposes only facts; normalized internal entries explicitly fill metadata with null/empty values. | Parser still tolerates extra stale fields to be robust, which must remain ignore-only. | API/E2E should verify generated output/persisted items stay facts-only. |
+| `4` | `Separation of Concerns and File Placement` | 9.5 | Rework uses existing memory compaction files and server template location without new wrappers. | None material. | Continue avoiding schema logic in server/backends. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.6 | Compactor-facing shape is tight: `{ fact }` under typed arrays; internal metadata support stays separate. | Future traceability/facets are deliberately deferred. | Future metadata should be deterministic/controlled with a clear consumer. |
+| `6` | `Naming Quality and Local Readability` | 9.4 | Existing names remain direct and the facts-only contract is easy to read. | Template prose is necessarily longer for manual testability. | Keep future prompt edits focused and tested. |
+| `7` | `Validation Readiness` | 9.2 | Targeted tests/builds/web guards/server-settings E2E pass; code is ready for live API/E2E. | Repository-wide server typecheck is still blocked by the pre-existing TS6059 tests-outside-`rootDir` issue. | Track TS6059 separately; do live API/E2E next. |
+| `8` | `Runtime Correctness Under Edge Cases` | 9.3 | Parser handles fenced/balanced JSON and stale metadata by ignoring it; normalizer dedupes/limits/noise-filters facts. | Live provider event streams and weak-model schema adherence require API/E2E evidence. | Validate real AutoByteus/Codex compactor output and history correlation. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.5 | No old direct-model fallback; no active old tag/reference contract remains. | Parser's stale-field tolerance could be misread as compatibility if not documented as ignore-only. | Keep docs/tests clear that facts-only is the active contract. |
+| `10` | `Cleanup Completeness` | 9.3 | Obsolete generated metadata parsing/extraction was removed and tests were updated. | Some generated/electron resource copies contain old test references from prior builds but are not tracked source. | Avoid checking generated app bundles into review scope. |
 
 ## Findings
 
-No findings requiring rework were found in round 3.
+No findings requiring rework were found in round 5. Prior finding `CR-004-001` is resolved.
 
 ## Test Quality And Validation-Readiness Verdict
 
 | Area | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- |
-| Validation Readiness | Ready for the next workflow stage (`API / E2E` or `Delivery`) | Pass | Ready for API/E2E validation of the round-4 default compactor and Codex-compactor scenario. |
-| Tests | Test quality is acceptable | Pass | Tests cover default bootstrap, settings metadata, visible-run failure paths, core runner seam, and web status/settings behavior. |
-| Tests | Test maintainability is acceptable | Pass | Uses existing suite structure and deterministic fakes; no one-off harness sprawl found. |
-| Tests | Review findings are clear enough for the next owner before API / E2E or delivery resumes | Pass | No findings; required API/E2E scope is explicit below. |
+| Validation Readiness | Ready for the next workflow stage (`API / E2E` or `Delivery`) | Pass | Ready for API/E2E validation of the visible AutoByteus-parent + Codex-compactor flow and facts-only output behavior. |
+| Tests | Test quality is acceptable | Pass | Tests cover facts-only prompt/template/parser/normalizer behavior and prior compaction runner/settings boundaries. |
+| Tests | Test maintainability is acceptable | Pass | Tests are focused and use existing unit/integration/E2E boundaries. |
+| Tests | Review findings are clear enough for the next owner before API / E2E or delivery resumes | Pass | No open findings; API/E2E scope is listed below. |
 
-Reviewer rerun evidence for round 3:
+Reviewer rerun evidence for round 5:
 
-- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/compaction/default-compactor-agent-bootstrapper.test.ts tests/unit/agent-execution/compaction/compaction-agent-settings-resolver.test.ts tests/unit/agent-execution/compaction/server-compaction-agent-runner.test.ts tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts tests/unit/services/server-settings-service.test.ts tests/e2e/server-settings/server-settings-graphql.e2e.test.ts` — passed, 7 files / 46 tests.
-- `pnpm -C autobyteus-ts exec vitest run tests/unit/memory/agent-compaction-summarizer.test.ts tests/unit/memory/compaction-runtime-settings.test.ts tests/unit/agent/llm-request-assembler.test.ts tests/integration/agent/runtime/agent-runtime-compaction.test.ts` — passed, 4 files / 10 tests.
-- `pnpm -C autobyteus-web exec vitest run components/settings/__tests__/CompactionConfigCard.spec.ts services/agentStreaming/__tests__/AgentStreamingService.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts` — passed, 4 files / 24 tests.
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/memory/compaction-task-prompt-builder.test.ts tests/unit/memory/compaction-response-parser.test.ts tests/unit/memory/agent-compaction-summarizer.test.ts tests/unit/memory/compaction-result-normalizer.test.ts tests/unit/memory/compaction-runtime-settings.test.ts tests/unit/agent/llm-request-assembler.test.ts tests/integration/agent/runtime/agent-runtime-compaction.test.ts tests/integration/agent/memory-compaction-real-summarizer-flow.test.ts` — passed, 8 files / 17 tests.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/compaction/default-compactor-agent-template.test.ts tests/unit/agent-execution/compaction/default-compactor-agent-bootstrapper.test.ts tests/unit/agent-execution/compaction/compaction-agent-settings-resolver.test.ts tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts tests/unit/agent-execution/compaction/server-compaction-agent-runner.test.ts tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts tests/unit/services/server-settings-service.test.ts` — passed, 7 files / 43 tests.
 - `pnpm -C autobyteus-ts build` — passed.
 - `pnpm -C autobyteus-server-ts build` — passed.
-- Verified build output contains `autobyteus-server-ts/dist/agent-execution/compaction/default-compactor-agent/{agent.md,agent-config.json}` and the copied config has `defaultLaunchConfig: null`.
+- `pnpm -C autobyteus-web guard:web-boundary` — passed.
+- `pnpm -C autobyteus-web guard:localization-boundary` — passed.
+- `pnpm -C autobyteus-web audit:localization-literals` — passed with zero unresolved findings; Node emitted the existing module-type warning for `autobyteus-web/localization/audit/migrationScopes.ts`.
 - `git diff --check` — passed.
-- `pnpm -C autobyteus-server-ts typecheck` — failed with the known pre-existing TS6059 tests-outside-`rootDir` configuration issue before implementation-specific signal.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/server-settings/server-settings-graphql.e2e.test.ts` — passed, 1 file / 4 tests.
+- `pnpm -C autobyteus-web exec vitest run components/settings/__tests__/CompactionConfigCard.spec.ts services/agentStreaming/__tests__/AgentStreamingService.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts` — passed, 4 files / 24 tests.
+- Focused static grep: no `"tags"`/`"reference"` JSON fields in the active compactor output contract/default template; no parser/normalizer usage of `entryRecord.reference`, `entryRecord.tags`, `candidate.reference`, `candidate.tags`, `extractReferenceFromText`, `normalizeReference`, or `maxReferenceChars`; no active production references to old direct-model compaction setting/summarizer files outside tests asserting absence.
+- `pnpm -C autobyteus-server-ts typecheck` — not rerun; implementation handoff records the known pre-existing TS6059 tests-outside-`rootDir` config issue, while source builds pass via `tsconfig.build.json`.
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | No active direct-model fallback or compatibility wrapper remains. |
-| No legacy old-behavior retention in changed scope | Pass | Old direct summarizer and prompt builder files/tests are deleted; active settings/UI paths use the selected compactor agent id. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | Static grep found no active production references to `AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER`, `LLMCompactionSummarizer`, or old direct prompt builder. |
+| No backward-compatibility mechanisms in changed scope | Pass | Stale metadata fields are ignored, not persisted or supported as an active alternate output contract. |
+| No legacy old-behavior retention in changed scope | Pass | Old direct-model compaction path remains removed; facts-only schema removes generated `tags`/`reference`. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Parser/normalizer/result/template/prompt tests no longer carry generated metadata requirements. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
 
@@ -156,14 +167,12 @@ No dead/obsolete/legacy implementation items require removal before API/E2E.
 ## Docs-Impact Verdict
 
 - Docs impact: `Yes`
-- Why: The production behavior changed from internal direct-model compaction to selected normal compactor-agent execution, and the round-4 default compactor bootstrap adds operator setup expectations.
-- Files or areas likely affected:
-  - `autobyteus-server-ts/docker/README.md`
-  - `autobyteus-ts/docs/agent_memory_design.md`
-  - `autobyteus-ts/docs/agent_memory_design_nodejs.md`
-  - `autobyteus-ts/docs/llm_module_design.md`
-  - `autobyteus-web/docs/settings.md`
-  - Final delivery/operator notes should mark `AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER` obsolete/ignored and explain configuring runtime/model on the selected/default compactor agent.
+- Why: The compactor schema, prompt ownership split, default compactor behavior, visible runs, and runtime/model setup are operator- and validator-visible.
+- Files or areas affected:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/autobyteus-ts/docs/agent_memory_design.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/autobyteus-ts/docs/agent_memory_design_nodejs.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/autobyteus-web/docs/settings.md`
+- Verdict: Docs were updated in the implementation scope and pass reviewer checks; delivery can do final docs sync against integrated state.
 
 ## Classification
 
@@ -175,13 +184,14 @@ No dead/obsolete/legacy implementation items require removal before API/E2E.
 
 ## Residual Risks
 
-- Required round-4 API/E2E is still pending: a normal AutoByteus parent run must trigger compaction while the selected/default compactor agent uses Codex runtime, or an explicit environment blocker must be recorded.
-- The seeded default compactor intentionally has `defaultLaunchConfig: null`; API/E2E should verify both the configured Codex path and the missing-runtime/model actionable failure/no-active-model-fallback path.
-- Repository-wide `pnpm -C autobyteus-server-ts typecheck` remains blocked by the pre-existing TS6059 tests-outside-`rootDir` config issue.
-- Live provider availability may still block some real-runtime probes; API/E2E must distinguish implementation failures from environment access limits.
+- Required API/E2E remains pending: configure a real AutoByteus parent run so compaction triggers while the selected/default compactor uses Codex runtime, then verify parent status includes `compaction_run_id`, the compactor run is visible in history, and the parent continues or fails clearly.
+- API/E2E should verify real generated compactor output is accepted with facts-only semantic entries and persisted semantic items have no model-generated `reference`/`tags` metadata.
+- API/E2E should verify the seeded/default compactor is manually runnable as a normal visible agent and its `agent.md` guidance is sufficient for manual facts-only output.
+- Fresh installs still seed/select a default compactor without runtime/model; API/E2E must configure runtime/model through normal agent launch preferences and verify missing configuration fails actionably with no parent-model fallback.
+- Repository-wide `pnpm -C autobyteus-server-ts typecheck` remains blocked by the known pre-existing TS6059 tests-outside-`rootDir` project config issue.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
 - Score Summary: 9.4/10 (94/100); all mandatory categories are at or above pass target.
-- Notes: Round-4 implementation review passed. Route to API/E2E for the mandatory AutoByteus-parent + Codex-compactor visible-run validation and related executable coverage.
+- Notes: Round-7 facts-only implementation review passed. Route to API/E2E for mandatory real AutoByteus-parent + Codex-compactor validation and facts-only visible-run evidence.
