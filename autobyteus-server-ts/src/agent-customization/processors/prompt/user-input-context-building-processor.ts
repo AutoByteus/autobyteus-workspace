@@ -9,8 +9,6 @@ import type { UserMessageReceivedEvent } from "autobyteus-ts/agent/events/agent-
 import { ContextFileType } from "autobyteus-ts/agent/message/context-file-type.js";
 import type { ContextFile } from "autobyteus-ts/agent/message/context-file.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
-import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
-import { LLMProvider } from "autobyteus-ts/llm/providers.js";
 import { PromptContextBuilder } from "./prompt-context-builder.js";
 import { resolveAgentRunIdFromRuntimeContext } from "../../utils/core-boundary-id-normalizer.js";
 import { ContextFileLocalPathResolver } from "../../../context-files/services/context-file-local-path-resolver.js";
@@ -49,47 +47,6 @@ export class UserInputContextBuildingProcessor extends BaseAgentUserInputMessage
     } catch {
       return false;
     }
-  }
-
-  private isAutobyteusProvider(provider?: unknown): boolean {
-    if (provider === null || provider === undefined) {
-      return false;
-    }
-    const providerValue =
-      typeof provider === "object" && provider && "value" in provider
-        ? String((provider as { value: unknown }).value)
-        : String(provider);
-    return providerValue.toUpperCase() === LLMProvider.AUTOBYTEUS;
-  }
-
-  private async resolveLlmProvider(context: AgentContext): Promise<unknown | null> {
-    const llmModel = context?.llmInstance?.model as
-      | { modelIdentifier?: string; provider?: unknown }
-      | undefined;
-    if (!llmModel) {
-      return null;
-    }
-
-    const modelIdentifier = llmModel.modelIdentifier;
-    if (typeof modelIdentifier === "string" && modelIdentifier.trim().length > 0) {
-      try {
-        const provider = await LLMFactory.getProvider(modelIdentifier);
-        if (provider) {
-          return provider;
-        }
-      } catch (error) {
-        logger.debug(
-          `Failed to resolve provider from LLMFactory for model '${modelIdentifier}': ${String(error)}`,
-        );
-      }
-    }
-
-    return llmModel.provider ?? null;
-  }
-
-  private async modelProviderIsAutobyteus(context: AgentContext): Promise<boolean> {
-    const provider = await this.resolveLlmProvider(context);
-    return this.isAutobyteusProvider(provider);
   }
 
   private async unifyAndTransformPaths(
@@ -227,34 +184,15 @@ export class UserInputContextBuildingProcessor extends BaseAgentUserInputMessage
       contextString = builder.buildContextString();
     }
 
-    const formattedMessage = this.formatUserMessageContent(
+    const finalContent = this.formatUserMessageContent(
       rawRequirement,
       contextString,
       message.senderType,
     );
 
-    let finalContent = formattedMessage;
-    const isAutobyteusModel = await this.modelProviderIsAutobyteus(context);
-    const llmModelName = context.llmInstance?.model?.name ?? "";
-
-    if (isFirstUserTurn && isAutobyteusModel) {
-      logger.debug(
-        `Agent run '${agentRunId}': First turn for AUTOBYTEUS model '${llmModelName}'. Prepending system prompt.`,
-      );
-      const systemPrompt =
-        context.llmInstance?.systemMessage ?? context.config?.systemPrompt ?? "";
-      if (systemPrompt) {
-        finalContent = `${systemPrompt}\n\n${formattedMessage}`;
-      } else {
-        logger.warn(
-          `Agent run '${agentRunId}': AUTOBYTEUS model's first turn, but system prompt is empty. Not prepending.`,
-        );
-      }
-    } else {
-      logger.debug(
-        `Agent run '${agentRunId}': Standard prompt processing. isFirstUserTurn=${isFirstUserTurn}, isAutobyteusModel=${isAutobyteusModel}.`,
-      );
-    }
+    logger.debug(
+      `Agent run '${agentRunId}': Standard prompt processing. isFirstUserTurn=${isFirstUserTurn}.`,
+    );
 
     if (isFirstUserTurn && context.customData) {
       context.customData.is_first_user_turn = false;
