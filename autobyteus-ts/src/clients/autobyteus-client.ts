@@ -4,6 +4,12 @@ import https from 'node:https';
 import { URL } from 'node:url';
 import axios, { AxiosError, AxiosInstance } from 'axios';
 import { mediaSourceToDataUri } from '../llm/utils/media-payload-formatter.js';
+import {
+  assertValidAutobyteusConversationPayload,
+  AutobyteusConversationMessage,
+  AutobyteusConversationPayload,
+  AutobyteusSendMessageRequest
+} from '../llm/api/autobyteus-conversation-payload.js';
 
 export class CertificateError extends Error {}
 
@@ -186,25 +192,14 @@ export class AutobyteusClient {
     }
   }
 
-  async sendMessage(
-    conversationId: string,
-    modelName: string,
-    userMessage: string,
-    imageUrls?: string[] | null,
-    audioUrls?: string[] | null,
-    videoUrls?: string[] | null
-  ): Promise<JsonRecord> {
+  async sendMessage(request: AutobyteusSendMessageRequest): Promise<JsonRecord> {
     try {
-      const normalizedImageUrls = await this.normalizeMediaSources(imageUrls);
-      const normalizedAudioUrls = await this.normalizeMediaSources(audioUrls);
-      const normalizedVideoUrls = await this.normalizeMediaSources(videoUrls);
+      const normalizedPayload = await this.normalizeConversationPayload(request.payload);
       const payload = {
-        conversation_id: conversationId,
-        model_name: modelName,
-        user_message: userMessage,
-        image_urls: normalizedImageUrls,
-        audio_urls: normalizedAudioUrls,
-        video_urls: normalizedVideoUrls
+        conversation_id: request.conversationId,
+        model_name: request.modelName,
+        messages: normalizedPayload.messages,
+        current_message_index: normalizedPayload.current_message_index
       };
       const response = await this.asyncClient.post(joinUrl(this.serverUrl, '/send-message'), payload);
       return response.data;
@@ -213,24 +208,13 @@ export class AutobyteusClient {
     }
   }
 
-  async *streamMessage(
-    conversationId: string,
-    modelName: string,
-    userMessage: string,
-    imageUrls?: string[] | null,
-    audioUrls?: string[] | null,
-    videoUrls?: string[] | null
-  ): AsyncGenerator<JsonRecord, void, void> {
-    const normalizedImageUrls = await this.normalizeMediaSources(imageUrls);
-    const normalizedAudioUrls = await this.normalizeMediaSources(audioUrls);
-    const normalizedVideoUrls = await this.normalizeMediaSources(videoUrls);
+  async *streamMessage(request: AutobyteusSendMessageRequest): AsyncGenerator<JsonRecord, void, void> {
+    const normalizedPayload = await this.normalizeConversationPayload(request.payload);
     const payload = {
-      conversation_id: conversationId,
-      model_name: modelName,
-      user_message: userMessage,
-      image_urls: normalizedImageUrls,
-      audio_urls: normalizedAudioUrls,
-      video_urls: normalizedVideoUrls
+      conversation_id: request.conversationId,
+      model_name: request.modelName,
+      messages: normalizedPayload.messages,
+      current_message_index: normalizedPayload.current_message_index
     };
 
     try {
@@ -383,6 +367,31 @@ export class AutobyteusClient {
       normalized.push(await mediaSourceToDataUri(trimmed));
     }
     return normalized;
+  }
+
+  private async normalizeConversationPayload(
+    payload: AutobyteusConversationPayload
+  ): Promise<AutobyteusConversationPayload> {
+    assertValidAutobyteusConversationPayload(payload);
+
+    const messages: AutobyteusConversationMessage[] = [];
+    for (let index = 0; index < payload.messages.length; index += 1) {
+      const message = payload.messages[index];
+      const isCurrentMessage = index === payload.current_message_index;
+
+      messages.push({
+        role: message.role,
+        content: message.content ?? '',
+        image_urls: isCurrentMessage ? await this.normalizeMediaSources(message.image_urls) : [],
+        audio_urls: isCurrentMessage ? await this.normalizeMediaSources(message.audio_urls) : [],
+        video_urls: isCurrentMessage ? await this.normalizeMediaSources(message.video_urls) : []
+      });
+    }
+
+    return {
+      messages,
+      current_message_index: payload.current_message_index
+    };
   }
 
   private async normalizeSingleMediaSource(mediaSource?: string | null): Promise<string | null> {
