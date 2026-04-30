@@ -110,11 +110,11 @@ Delivery note: API/E2E live browser validation ran before delivery merged the la
 - RPA ticket branch pushed: `origin/codex/rpa-visible-resume-prompt-cleanup@8857a49e91543a53c53c9562ea7715cc79440b3d`.
 - RPA finalization target updated: `origin/main@8857a49e91543a53c53c9562ea7715cc79440b3d`.
 - RPA release: `v1.0.4` pushed at `8857a49e91543a53c53c9562ea7715cc79440b3d` via the README-documented Git-tag release path.
-- Release workflows observed queued or running after tag push:
-  - Superrepo Desktop Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/25171043670
-  - Superrepo Release Messaging Gateway: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/25171043621
-  - Superrepo Server Docker Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/25171043612
-  - RPA Release LLM Server Docker: https://github.com/AutoByteus/autobyteus_rpa_llm_workspace/actions/runs/25171023996
+- Release workflows observed running or partially complete after tag push:
+  - Superrepo Desktop Release: in_progress — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/25171043670
+  - Superrepo Release Messaging Gateway: completed/success — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/25171043621
+  - Superrepo Server Docker Release: in_progress — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/25171043612
+  - RPA Release LLM Server Docker: in_progress — https://github.com/AutoByteus/autobyteus_rpa_llm_workspace/actions/runs/25171023996
 - Cleanup deferred: task worktrees and local/remote ticket branches were left in place because local validation services remain running for optional inspection and the main RPA worktree has unrelated pre-existing local modifications.
 
 ## Suggested Next Step

@@ -7,7 +7,7 @@ User-approved repository finalization and release dispatch for `rpa-visible-resu
 - AutoByteus workspace superrepo: finalization to `origin/personal` plus documented workspace release helper for `v1.2.88`.
 - RPA server workspace: finalization to `origin/main` plus the documented Git-tag-driven RPA server Docker release for `v1.0.4`.
 
-Release tags were pushed. GitHub Actions publication workflows are asynchronous and were observed queued or running after tag pushes.
+Release tags were pushed. GitHub Actions publication workflows are asynchronous and were observed running or partially complete after tag pushes.
 
 ## Handoff Summary
 
@@ -92,16 +92,16 @@ Release tags were pushed. GitHub Actions publication workflows are asynchronous 
 - Method reference / command:
   - Superrepo: `pnpm release 1.2.88 -- --release-notes tickets/done/rpa-visible-resume-prompt-cleanup/release-notes.md`
   - RPA server: per RPA README, push a `v*` Git tag from a commit already merged to `origin/main`; used `git tag -a v1.0.4 -m "Release v1.0.4"` and `git push origin v1.0.4`.
-- Release/publication/deployment result: `Completed for branch/tag dispatch; GitHub Actions publication workflows queued or in progress at last check.`
+- Release/publication/deployment result: `Completed for branch/tag dispatch; GitHub Actions publication workflows running or partially complete at last check.`
 - Release notes handoff result: `Used` for superrepo release helper; RPA Docker release is tag-driven and does not consume ticket-local release notes.
 - Blocker (if applicable): `None at dispatch time`
 
 ### GitHub Actions Release Workflow Evidence
 
 - Superrepo `v1.2.88` / commit `87d66fb23b27efe4bfde8758a9d55dff96334764`:
-  - `Desktop Release`: `queued` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/25171043670
-  - `Release Messaging Gateway`: `in_progress` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/25171043621
-  - `Server Docker Release`: `queued` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/25171043612
+  - `Desktop Release`: `in_progress` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/25171043670
+  - `Release Messaging Gateway`: `completed/success` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/25171043621
+  - `Server Docker Release`: `in_progress` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/25171043612
 - RPA server `v1.0.4` / commit `8857a49e91543a53c53c9562ea7715cc79440b3d`:
   - `Release LLM Server Docker`: `in_progress` — https://github.com/AutoByteus/autobyteus_rpa_llm_workspace/actions/runs/25171023996
 
@@ -155,7 +155,7 @@ Release tags were pushed. GitHub Actions publication workflows are asynchronous 
 - `uv run --project autobyteus_rpa_llm_server python -m py_compile autobyteus_rpa_llm_server/autobyteus_rpa_llm_server/services/llm_conversation_payload.py autobyteus_rpa_llm_server/autobyteus_rpa_llm_server/services/llm_service.py autobyteus_rpa_llm_server/tests/services/test_llm_service.py autobyteus_rpa_llm_server/tests/e2e/test_text_conversation_contract.py` in `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus_rpa_llm_workspace-rpa-visible-resume-prompt-cleanup` — passed.
 - Superrepo release helper completed: `pnpm release 1.2.88 -- --release-notes tickets/done/rpa-visible-resume-prompt-cleanup/release-notes.md`.
 - RPA documented release tag push completed: `git push origin v1.0.4`.
-- GitHub workflow trigger check with `gh run list` confirmed expected release workflows were queued or in progress after tag pushes.
+- GitHub workflow trigger check with `gh run list` confirmed expected release workflows were running or partially complete after tag pushes.
 
 ## Rollback Criteria
 
@@ -163,4 +163,4 @@ If release workflows fail, inspect the linked workflow run logs first. If the fa
 
 ## Final Status
 
-`Repository finalization and release dispatch completed; asynchronous GitHub publication workflows queued or in progress`. Superrepo `origin/personal` contains the final implementation and release commit, `v1.2.88` is pushed, RPA `origin/main` contains the server implementation, and RPA `v1.0.4` is pushed. Cleanup is deferred as noted above.
+`Repository finalization and release dispatch completed; asynchronous GitHub publication workflows running or partially complete`. Superrepo `origin/personal` contains the final implementation and release commit, `v1.2.88` is pushed, RPA `origin/main` contains the server implementation, and RPA `v1.0.4` is pushed. Cleanup is deferred as noted above.
