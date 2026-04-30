@@ -26,8 +26,14 @@ export class MemoryMessage {
 
 @ObjectType()
 export class MemoryTraceEvent {
+  @Field(() => String, { nullable: true })
+  id?: string | null;
+
   @Field(() => String)
   traceType!: string;
+
+  @Field(() => String, { nullable: true })
+  sourceEvent?: string | null;
 
   @Field(() => String, { nullable: true })
   content?: string | null;

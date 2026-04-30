@@ -1,4 +1,11 @@
 import { TeamRunMetadataStore } from "../../run-history/store/team-run-metadata-store.js";
+import {
+  EPISODIC_MEMORY_FILE_NAME,
+  RAW_TRACES_ARCHIVE_MEMORY_FILE_NAME,
+  RAW_TRACES_MEMORY_FILE_NAME,
+  SEMANTIC_MEMORY_FILE_NAME,
+  WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
+} from "autobyteus-ts/memory/store/memory-file-names.js";
 import { MemoryFileStore } from "../store/memory-file-store.js";
 
 export type TeamMemberMemorySnapshotSummary = {
@@ -151,11 +158,11 @@ export class TeamMemoryIndexService {
     },
   ): { summary: TeamMemberMemorySnapshotSummary; mtime: number } {
     const runDir = memoryStore.getRunDir(member.memberRunId);
-    const workingContextInfo = memoryStore.getFileInfo(`${runDir}/working_context_snapshot.json`);
-    const episodicInfo = memoryStore.getFileInfo(`${runDir}/episodic.jsonl`);
-    const semanticInfo = memoryStore.getFileInfo(`${runDir}/semantic.jsonl`);
-    const rawTracesInfo = memoryStore.getFileInfo(`${runDir}/raw_traces.jsonl`);
-    const rawArchiveInfo = memoryStore.getFileInfo(`${runDir}/raw_traces_archive.jsonl`);
+    const workingContextInfo = memoryStore.getFileInfo(`${runDir}/${WORKING_CONTEXT_SNAPSHOT_FILE_NAME}`);
+    const episodicInfo = memoryStore.getFileInfo(`${runDir}/${EPISODIC_MEMORY_FILE_NAME}`);
+    const semanticInfo = memoryStore.getFileInfo(`${runDir}/${SEMANTIC_MEMORY_FILE_NAME}`);
+    const rawTracesInfo = memoryStore.getFileInfo(`${runDir}/${RAW_TRACES_MEMORY_FILE_NAME}`);
+    const rawArchiveInfo = memoryStore.getFileInfo(`${runDir}/${RAW_TRACES_ARCHIVE_MEMORY_FILE_NAME}`);
 
     const mtimes = [
       workingContextInfo,

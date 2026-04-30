@@ -7,7 +7,9 @@ export type MemoryMessage = {
 };
 
 export type MemoryTraceEvent = {
+  id?: string | null;
   traceType: string;
+  sourceEvent?: string | null;
   content?: string | null;
   toolName?: string | null;
   toolCallId?: string | null;

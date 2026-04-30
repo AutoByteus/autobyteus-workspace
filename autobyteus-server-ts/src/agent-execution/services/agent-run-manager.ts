@@ -20,6 +20,10 @@ import {
   ApplicationPublishedArtifactRelayService,
   getApplicationPublishedArtifactRelayService,
 } from "../../application-orchestration/services/application-published-artifact-relay-service.js";
+import {
+  AgentRunMemoryRecorder,
+  getAgentRunMemoryRecorder,
+} from "../../agent-memory/services/agent-run-memory-recorder.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -33,6 +37,7 @@ type AgentRunManagerOptions = {
   claudeBackendFactory?: AgentRunBackendFactory;
   runFileChangeService?: RunFileChangeService;
   publishedArtifactRelayService?: ApplicationPublishedArtifactRelayService;
+  memoryRecorder?: AgentRunMemoryRecorder;
 };
 
 export class AgentRunManager {
@@ -42,9 +47,11 @@ export class AgentRunManager {
   private readonly claudeBackendFactory: AgentRunBackendFactory;
   private readonly runFileChangeService: RunFileChangeService;
   private readonly publishedArtifactRelayService: ApplicationPublishedArtifactRelayService;
+  private readonly memoryRecorder: AgentRunMemoryRecorder;
   private activeRuns = new Map<string, AgentRun>();
   private readonly runFileChangeUnsubscribers = new Map<string, () => void>();
   private readonly publishedArtifactRelayUnsubscribers = new Map<string, () => void>();
+  private readonly memoryRecorderUnsubscribers = new Map<string, () => void>();
 
   static getInstance(options: AgentRunManagerOptions = {}): AgentRunManager {
     if (!AgentRunManager.instance) {
@@ -64,6 +71,7 @@ export class AgentRunManager {
       options.runFileChangeService ?? getRunFileChangeService();
     this.publishedArtifactRelayService =
       options.publishedArtifactRelayService ?? getApplicationPublishedArtifactRelayService();
+    this.memoryRecorder = options.memoryRecorder ?? getAgentRunMemoryRecorder();
     logger.info("AgentRunManager initialized.");
   }
 
@@ -79,6 +87,7 @@ export class AgentRunManager {
     const activeRun = new AgentRun({
       context: backend.getContext(),
       backend,
+      commandObservers: [this.memoryRecorder],
     });
     this.registerActiveRun(activeRun);
     logger.info(`Successfully created ${runtimeKind} agent run '${activeRun.runId}'.`);
@@ -100,6 +109,7 @@ export class AgentRunManager {
     const activeRun = new AgentRun({
       context: backend.getContext(),
       backend,
+      commandObservers: [this.memoryRecorder],
     });
     this.registerActiveRun(activeRun);
     logger.info(
@@ -170,6 +180,7 @@ export class AgentRunManager {
   private registerActiveRun(activeRun: AgentRun): void {
     this.unregisterRunFileChanges(activeRun.runId);
     this.unregisterPublishedArtifactRelay(activeRun.runId);
+    this.unregisterMemoryRecorder(activeRun.runId);
     this.activeRuns.set(activeRun.runId, activeRun);
     this.runFileChangeUnsubscribers.set(
       activeRun.runId,
@@ -179,12 +190,17 @@ export class AgentRunManager {
       activeRun.runId,
       this.publishedArtifactRelayService.attachToRun(activeRun),
     );
+    this.memoryRecorderUnsubscribers.set(
+      activeRun.runId,
+      this.memoryRecorder.attachToRun(activeRun),
+    );
   }
 
   private unregisterActiveRun(runId: string): void {
     this.activeRuns.delete(runId);
     this.unregisterRunFileChanges(runId);
     this.unregisterPublishedArtifactRelay(runId);
+    this.unregisterMemoryRecorder(runId);
   }
 
   private unregisterRunFileChanges(runId: string): void {
@@ -202,6 +218,15 @@ export class AgentRunManager {
       return;
     }
     this.publishedArtifactRelayUnsubscribers.delete(runId);
+    unsubscribe();
+  }
+
+  private unregisterMemoryRecorder(runId: string): void {
+    const unsubscribe = this.memoryRecorderUnsubscribers.get(runId);
+    if (!unsubscribe) {
+      return;
+    }
+    this.memoryRecorderUnsubscribers.delete(runId);
     unsubscribe();
   }
 }

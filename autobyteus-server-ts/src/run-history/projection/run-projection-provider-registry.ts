@@ -1,8 +1,8 @@
 import { RuntimeKind, runtimeKindFromString } from "../../runtime-management/runtime-kind-enum.js";
 import type { RunProjectionProvider } from "./run-projection-types.js";
 import {
-  getAutoByteusRunViewProjectionProvider,
-} from "./providers/autobyteus-run-view-projection-provider.js";
+  getLocalMemoryRunViewProjectionProvider,
+} from "./providers/local-memory-run-view-projection-provider.js";
 import {
   getClaudeRunViewProjectionProvider,
 } from "./providers/claude-run-view-projection-provider.js";
@@ -44,7 +44,7 @@ let cachedRunProjectionProviderRegistry: RunProjectionProviderRegistry | null = 
 
 export const getRunProjectionProviderRegistry = (): RunProjectionProviderRegistry => {
   if (!cachedRunProjectionProviderRegistry) {
-    const fallbackProvider = getAutoByteusRunViewProjectionProvider();
+    const fallbackProvider = getLocalMemoryRunViewProjectionProvider();
     cachedRunProjectionProviderRegistry = new RunProjectionProviderRegistry(
       fallbackProvider,
       [

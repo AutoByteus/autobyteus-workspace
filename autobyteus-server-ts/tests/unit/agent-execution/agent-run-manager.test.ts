@@ -224,8 +224,9 @@ describe("AgentRunManager", () => {
     ).toBeTruthy();
   });
 
-  it("attaches and detaches the run file-change service with the active run lifecycle", async () => {
+  it("attaches and detaches always-on sidecars with the active run lifecycle", async () => {
     const unsubscribe = vi.fn();
+    const unsubscribeMemory = vi.fn();
     const codexBackendFactory = {
       createBackend: vi.fn().mockResolvedValue(
         createBackend({
@@ -238,9 +239,14 @@ describe("AgentRunManager", () => {
     const runFileChangeService = {
       attachToRun: vi.fn().mockReturnValue(unsubscribe),
     };
+    const memoryRecorder = {
+      attachToRun: vi.fn().mockReturnValue(unsubscribeMemory),
+      onUserMessageAccepted: vi.fn(),
+    };
     const manager = new AgentRunManager({
       codexBackendFactory: codexBackendFactory as any,
       runFileChangeService: runFileChangeService as any,
+      memoryRecorder: memoryRecorder as any,
     });
 
     await manager.createAgentRun(
@@ -258,9 +264,13 @@ describe("AgentRunManager", () => {
     expect(runFileChangeService.attachToRun).toHaveBeenCalledWith(
       expect.objectContaining({ runId: "run-codex" }),
     );
+    expect(memoryRecorder.attachToRun).toHaveBeenCalledWith(
+      expect.objectContaining({ runId: "run-codex" }),
+    );
 
     await manager.terminateAgentRun("run-codex");
 
     expect(unsubscribe).toHaveBeenCalledTimes(1);
+    expect(unsubscribeMemory).toHaveBeenCalledTimes(1);
   });
 });

@@ -1,7 +1,13 @@
-import { describe, expect, it, vi } from "vitest";
-import { AutoByteusRunViewProjectionProvider } from "../../../../src/run-history/projection/providers/autobyteus-run-view-projection-provider.js";
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { LocalMemoryRunViewProjectionProvider } from "../../../../src/run-history/projection/providers/local-memory-run-view-projection-provider.js";
+import { RAW_TRACES_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 import type { AgentRunMetadata } from "../../../../src/run-history/store/agent-run-metadata-types.js";
+
+const tempDirs = new Set<string>();
 
 const createMetadata = (
   overrides: Partial<AgentRunMetadata> = {},
@@ -9,6 +15,7 @@ const createMetadata = (
   runId: "server-run-1",
   agentDefinitionId: "agent-def-1",
   workspaceRootPath: "/tmp/workspace",
+  memoryDir: null,
   llmModelIdentifier: "model-1",
   llmConfig: null,
   autoExecuteTools: true,
@@ -19,8 +26,13 @@ const createMetadata = (
   ...overrides,
 });
 
-describe("AutoByteusRunViewProjectionProvider", () => {
-  it("uses platformAgentRunId as the runtime memory directory when available", async () => {
+afterEach(async () => {
+  await Promise.all([...tempDirs].map((dir) => fs.rm(dir, { recursive: true, force: true })));
+  tempDirs.clear();
+});
+
+describe("LocalMemoryRunViewProjectionProvider", () => {
+  it("uses the server run id for default local memory reads", async () => {
     const getRunMemoryView = vi.fn().mockReturnValue({
       rawTraces: [
         { traceType: "user", content: "hello", turnId: "t1", seq: 1, ts: 1 },
@@ -43,7 +55,7 @@ describe("AutoByteusRunViewProjectionProvider", () => {
         },
       ],
     });
-    const provider = new AutoByteusRunViewProjectionProvider("/tmp/memory", {
+    const provider = new LocalMemoryRunViewProjectionProvider("/tmp/memory", {
       getRunMemoryView,
     } as never);
 
@@ -58,7 +70,7 @@ describe("AutoByteusRunViewProjectionProvider", () => {
       },
     });
 
-    expect(getRunMemoryView).toHaveBeenCalledWith("native-agent-abc", {
+    expect(getRunMemoryView).toHaveBeenCalledWith("server-run-1", {
       includeWorkingContext: false,
       includeEpisodic: false,
       includeSemantic: false,
@@ -76,31 +88,43 @@ describe("AutoByteusRunViewProjectionProvider", () => {
     ]);
   });
 
-  it("falls back to the server runId when platformAgentRunId is missing", async () => {
-    const getRunMemoryView = vi.fn().mockReturnValue({
-      rawTraces: [],
-    });
-    const provider = new AutoByteusRunViewProjectionProvider("/tmp/memory", {
-      getRunMemoryView,
-    } as never);
+  it("uses explicit memoryDir basename instead of platform run id", async () => {
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), "local-memory-provider-"));
+    tempDirs.add(root);
+    const explicitMemoryDir = path.join(root, "local-run-id");
+    await fs.mkdir(explicitMemoryDir, { recursive: true });
+    await fs.writeFile(
+      path.join(explicitMemoryDir, RAW_TRACES_MEMORY_FILE_NAME),
+      JSON.stringify({
+        id: "rt-1",
+        trace_type: "user",
+        content: "from local memory",
+        turn_id: "t1",
+        seq: 1,
+        ts: 1,
+        source_event: "test",
+      }) + "\n",
+      "utf-8",
+    );
+    const provider = new LocalMemoryRunViewProjectionProvider("/unused");
 
-    await provider.buildProjection({
+    const projection = await provider.buildProjection({
       source: {
-        runId: "server-run-2",
-        runtimeKind: RuntimeKind.AUTOBYTEUS,
+        runId: "server-run-1",
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
         workspaceRootPath: "/tmp/workspace",
-        memoryDir: null,
-        platformRunId: null,
-        metadata: createMetadata({ platformAgentRunId: null }),
+        memoryDir: explicitMemoryDir,
+        platformRunId: "platform-thread-id",
+        metadata: createMetadata({
+          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+          memoryDir: explicitMemoryDir,
+          platformAgentRunId: "platform-thread-id",
+        }),
       },
     });
 
-    expect(getRunMemoryView).toHaveBeenCalledWith("server-run-2", {
-      includeWorkingContext: false,
-      includeEpisodic: false,
-      includeSemantic: false,
-      includeRawTraces: true,
-      includeArchive: true,
-    });
+    expect(projection.conversation).toEqual([
+      expect.objectContaining({ content: "from local memory", role: "user" }),
+    ]);
   });
 });

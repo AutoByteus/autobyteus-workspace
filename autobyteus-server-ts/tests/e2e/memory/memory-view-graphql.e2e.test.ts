@@ -81,13 +81,13 @@ describe("Memory view GraphQL e2e", () => {
     writeJsonl(path.join(agentDir, "semantic.jsonl"), [{ fact: "fact" }]);
 
     writeJsonl(path.join(agentDir, "raw_traces.jsonl"), [
-      { trace_type: "user", content: "hello", ts: 1, turn_id: "t1", seq: 1 },
-      { trace_type: "tool_call", tool_call_id: "1", tool_name: "search", tool_args: { q: "x" }, ts: 2, turn_id: "t1", seq: 2 },
-      { trace_type: "tool_result", tool_call_id: "1", tool_result: { ok: true }, ts: 3, turn_id: "t1", seq: 3 },
+      { id: "rt-user", trace_type: "user", source_event: "AgentRun.postUserMessage", content: "hello", ts: 1, turn_id: "t1", seq: 1 },
+      { id: "rt-tool-call", trace_type: "tool_call", source_event: "TOOL_EXECUTION_STARTED", tool_call_id: "1", tool_name: "search", tool_args: { q: "x" }, ts: 2, turn_id: "t1", seq: 2 },
+      { id: "rt-tool-result", trace_type: "tool_result", source_event: "TOOL_EXECUTION_SUCCEEDED", tool_call_id: "1", tool_result: { ok: true }, ts: 3, turn_id: "t1", seq: 3 },
     ]);
 
     writeJsonl(path.join(agentDir, "raw_traces_archive.jsonl"), [
-      { trace_type: "assistant", content: "old", ts: 0, turn_id: "t0", seq: 1 },
+      { id: "rt-archive", trace_type: "assistant", source_event: "SEGMENT_END", content: "old", ts: 0, turn_id: "t0", seq: 1 },
     ]);
 
     const query = `
@@ -97,20 +97,24 @@ describe("Memory view GraphQL e2e", () => {
           workingContext { role content reasoning }
           episodic
           semantic
-          conversation { kind toolName toolResult }
-          rawTraces { traceType content }
+          rawTraces { id traceType sourceEvent content }
         }
       }
     `;
 
-    const data = await execGraphql<{ getRunMemoryView: { runId: string; workingContext: Array<{ role: string }>; conversation: Array<{ kind: string }>; rawTraces: Array<{ traceType: string }> } }>(
+    const data = await execGraphql<{ getRunMemoryView: { runId: string; workingContext: Array<{ role: string }>; rawTraces: Array<{ id: string | null; traceType: string; sourceEvent: string | null }> } }>(
       query,
       { runId: agentId },
     );
 
     expect(data.getRunMemoryView.runId).toBe(agentId);
     expect(data.getRunMemoryView.workingContext[0]?.role).toBe("user");
-    expect(data.getRunMemoryView.conversation[0]?.kind).toBe("message");
     expect(data.getRunMemoryView.rawTraces.length).toBeGreaterThan(0);
+    expect(data.getRunMemoryView.rawTraces.map((trace) => [trace.id, trace.traceType, trace.sourceEvent])).toEqual([
+      ["rt-archive", "assistant", "SEGMENT_END"],
+      ["rt-user", "user", "AgentRun.postUserMessage"],
+      ["rt-tool-call", "tool_call", "TOOL_EXECUTION_STARTED"],
+      ["rt-tool-result", "tool_result", "TOOL_EXECUTION_SUCCEEDED"],
+    ]);
   });
 });

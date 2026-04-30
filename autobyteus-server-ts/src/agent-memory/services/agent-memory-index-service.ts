@@ -1,4 +1,11 @@
 import type { MemorySnapshotPage, MemorySnapshotSummary } from "../domain/models.js";
+import {
+  EPISODIC_MEMORY_FILE_NAME,
+  RAW_TRACES_ARCHIVE_MEMORY_FILE_NAME,
+  RAW_TRACES_MEMORY_FILE_NAME,
+  SEMANTIC_MEMORY_FILE_NAME,
+  WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
+} from "autobyteus-ts/memory/store/memory-file-names.js";
 import type { MemoryFileStore } from "../store/memory-file-store.js";
 
 export class AgentMemoryIndexService {
@@ -48,11 +55,11 @@ export class AgentMemoryIndexService {
 
   private buildSummary(runId: string): { summary: MemorySnapshotSummary; lastMtime?: number | null } {
     const runDir = this.store.getRunDir(runId);
-    const workingContextInfo = this.store.getFileInfo(`${runDir}/working_context_snapshot.json`);
-    const episodicInfo = this.store.getFileInfo(`${runDir}/episodic.jsonl`);
-    const semanticInfo = this.store.getFileInfo(`${runDir}/semantic.jsonl`);
-    const rawTracesInfo = this.store.getFileInfo(`${runDir}/raw_traces.jsonl`);
-    const rawArchiveInfo = this.store.getFileInfo(`${runDir}/raw_traces_archive.jsonl`);
+    const workingContextInfo = this.store.getFileInfo(`${runDir}/${WORKING_CONTEXT_SNAPSHOT_FILE_NAME}`);
+    const episodicInfo = this.store.getFileInfo(`${runDir}/${EPISODIC_MEMORY_FILE_NAME}`);
+    const semanticInfo = this.store.getFileInfo(`${runDir}/${SEMANTIC_MEMORY_FILE_NAME}`);
+    const rawTracesInfo = this.store.getFileInfo(`${runDir}/${RAW_TRACES_MEMORY_FILE_NAME}`);
+    const rawArchiveInfo = this.store.getFileInfo(`${runDir}/${RAW_TRACES_ARCHIVE_MEMORY_FILE_NAME}`);
 
     const mtimes = [
       workingContextInfo,

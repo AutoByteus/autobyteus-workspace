@@ -1,6 +1,6 @@
+import path from "node:path";
 import { AgentMemoryService } from "../../../agent-memory/services/agent-memory-service.js";
 import { MemoryFileStore } from "../../../agent-memory/store/memory-file-store.js";
-import path from "node:path";
 import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import type {
   RunProjectionProvider,
@@ -14,7 +14,7 @@ import { buildHistoricalReplayEvents } from "../transformers/raw-trace-to-histor
 const asString = (value: unknown): string | null =>
   typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
 
-export class AutoByteusRunViewProjectionProvider implements RunProjectionProvider {
+export class LocalMemoryRunViewProjectionProvider implements RunProjectionProvider {
   readonly runtimeKind = RuntimeKind.AUTOBYTEUS;
   private readonly defaultMemoryService: AgentMemoryService;
 
@@ -27,14 +27,14 @@ export class AutoByteusRunViewProjectionProvider implements RunProjectionProvide
   }
 
   async buildProjection(input: RunProjectionProviderInput): Promise<RunProjection> {
-    const runtimeRunId = asString(input.source.platformRunId) ?? input.source.runId;
     const explicitMemoryDir = asString(input.source.memoryDir);
+    const localRunId = explicitMemoryDir ? path.basename(explicitMemoryDir) : input.source.runId;
     const memoryService = explicitMemoryDir
       ? new AgentMemoryService(
           new MemoryFileStore(path.dirname(explicitMemoryDir), { runRootSubdir: "" }),
         )
       : this.defaultMemoryService;
-    const view = memoryService.getRunMemoryView(runtimeRunId, {
+    const view = memoryService.getRunMemoryView(localRunId, {
       includeWorkingContext: false,
       includeEpisodic: false,
       includeSemantic: false,
@@ -48,13 +48,13 @@ export class AutoByteusRunViewProjectionProvider implements RunProjectionProvide
   }
 }
 
-let cachedAutoByteusRunViewProjectionProvider: AutoByteusRunViewProjectionProvider | null = null;
+let cachedLocalMemoryRunViewProjectionProvider: LocalMemoryRunViewProjectionProvider | null = null;
 
-export const getAutoByteusRunViewProjectionProvider = (): AutoByteusRunViewProjectionProvider => {
-  if (!cachedAutoByteusRunViewProjectionProvider) {
-    cachedAutoByteusRunViewProjectionProvider = new AutoByteusRunViewProjectionProvider(
+export const getLocalMemoryRunViewProjectionProvider = (): LocalMemoryRunViewProjectionProvider => {
+  if (!cachedLocalMemoryRunViewProjectionProvider) {
+    cachedLocalMemoryRunViewProjectionProvider = new LocalMemoryRunViewProjectionProvider(
       appConfigProvider.config.getMemoryDir(),
     );
   }
-  return cachedAutoByteusRunViewProjectionProvider;
+  return cachedLocalMemoryRunViewProjectionProvider;
 };

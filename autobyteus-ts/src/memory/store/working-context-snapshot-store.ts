@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { WORKING_CONTEXT_SNAPSHOT_FILE_NAME } from './memory-file-names.js';
 
 export class WorkingContextSnapshotStore {
   baseDir: string;
@@ -44,8 +45,8 @@ export class WorkingContextSnapshotStore {
 
   private getPath(agentId: string): string {
     if (!this.agentRootSubdir) {
-      return path.join(this.baseDir, 'working_context_snapshot.json');
+      return path.join(this.baseDir, WORKING_CONTEXT_SNAPSHOT_FILE_NAME);
     }
-    return path.join(this.baseDir, this.agentRootSubdir, agentId, 'working_context_snapshot.json');
+    return path.join(this.baseDir, this.agentRootSubdir, agentId, WORKING_CONTEXT_SNAPSHOT_FILE_NAME);
   }
 }

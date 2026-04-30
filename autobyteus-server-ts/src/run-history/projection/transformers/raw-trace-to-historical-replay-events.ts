@@ -108,6 +108,16 @@ export const buildHistoricalReplayEvents = (
       continue;
     }
 
+    if (trace.traceType === "reasoning") {
+      events.push({
+        kind: "reasoning",
+        content: trace.content ?? null,
+        media: trace.media ?? null,
+        ts: trace.ts ?? null,
+      });
+      continue;
+    }
+
     if (trace.traceType === "tool_call") {
       const toolEvent = createToolEvent(trace);
       events.push(toolEvent);

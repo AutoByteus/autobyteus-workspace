@@ -7,7 +7,7 @@ import { AgentRunService } from "../../../src/agent-execution/services/agent-run
 import { AgentRunMetadataService } from "../../../src/run-history/services/agent-run-metadata-service.js";
 import { AgentRunHistoryIndexService } from "../../../src/run-history/services/agent-run-history-index-service.js";
 import { AgentRunViewProjectionService } from "../../../src/run-history/services/agent-run-view-projection-service.js";
-import { AutoByteusRunViewProjectionProvider } from "../../../src/run-history/projection/providers/autobyteus-run-view-projection-provider.js";
+import { LocalMemoryRunViewProjectionProvider } from "../../../src/run-history/projection/providers/local-memory-run-view-projection-provider.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { TeamRunService } from "../../../src/agent-team-execution/services/team-run-service.js";
 import { TeamRunMetadataService } from "../../../src/run-history/services/team-run-metadata-service.js";
@@ -35,7 +35,7 @@ const readJson = async (filePath: string): Promise<Record<string, unknown>> =>
   JSON.parse(await fs.readFile(filePath, "utf-8")) as Record<string, unknown>;
 
 const createLocalProjectionRegistry = (memoryDir: string) => {
-  const provider = new AutoByteusRunViewProjectionProvider(memoryDir);
+  const provider = new LocalMemoryRunViewProjectionProvider(memoryDir);
   return {
     resolveProvider: () => provider,
     resolveFallbackProvider: () => provider,

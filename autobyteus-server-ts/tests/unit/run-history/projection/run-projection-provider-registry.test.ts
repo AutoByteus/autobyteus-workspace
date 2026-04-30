@@ -2,9 +2,9 @@ import { describe, expect, it, vi } from "vitest";
 import type { RunProjectionProvider } from "../../../../src/run-history/projection/run-projection-types.js";
 
 vi.mock(
-  "../../../../src/run-history/projection/providers/autobyteus-run-view-projection-provider.js",
+  "../../../../src/run-history/projection/providers/local-memory-run-view-projection-provider.js",
   () => ({
-    getAutoByteusRunViewProjectionProvider: vi.fn(() => ({
+    getLocalMemoryRunViewProjectionProvider: vi.fn(() => ({
       runtimeKind: "autobyteus",
       buildProjection: vi.fn(async () => null),
     })),

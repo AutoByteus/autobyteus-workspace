@@ -87,6 +87,7 @@ export const buildRestoreTeamRunRuntimeContext = (
               llmModelIdentifier: member.llmModelIdentifier,
               autoExecuteTools: member.autoExecuteTools,
               workspaceId: null,
+              memoryDir: teamMemberMemoryLayout.getMemberDirPath(metadata.teamRunId, member.memberRunId),
               llmConfig: member.llmConfig ?? null,
               skillAccessMode: member.skillAccessMode,
               applicationExecutionContext: member.applicationExecutionContext ?? null,

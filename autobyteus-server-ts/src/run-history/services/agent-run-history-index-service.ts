@@ -1,5 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
+import {
+  RAW_TRACES_ARCHIVE_MEMORY_FILE_NAME,
+  RAW_TRACES_MEMORY_FILE_NAME,
+  WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
+} from "autobyteus-ts/memory/store/memory-file-names.js";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import { MemoryFileStore } from "../../agent-memory/store/memory-file-store.js";
@@ -93,7 +98,7 @@ export class AgentRunHistoryIndexService {
     metadata?: AgentRunMetadata | null;
     summary?: string | null;
     lastKnownStatus?: RunKnownStatus;
-  lastActivityAt?: string;
+    lastActivityAt?: string;
   }): Promise<void> {
     const lastActivityAt = input.lastActivityAt ?? nowIso();
     const lastKnownStatus = input.lastKnownStatus ?? "ACTIVE";
@@ -196,9 +201,9 @@ export class AgentRunHistoryIndexService {
   private inferLastActivityAt(runId: string): string {
     const runDir = this.memoryStore.getRunDir(runId);
     const candidateFiles = [
-      path.join(runDir, "raw_traces.jsonl"),
-      path.join(runDir, "raw_traces_archive.jsonl"),
-      path.join(runDir, "working_context_snapshot.json"),
+      path.join(runDir, RAW_TRACES_MEMORY_FILE_NAME),
+      path.join(runDir, RAW_TRACES_ARCHIVE_MEMORY_FILE_NAME),
+      path.join(runDir, WORKING_CONTEXT_SNAPSHOT_FILE_NAME),
       path.join(runDir, "run_metadata.json"),
     ];
     let latest = 0;

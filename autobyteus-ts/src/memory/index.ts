@@ -40,6 +40,16 @@ export { Retriever } from './retrieval/retriever.js';
 
 export { MemoryStore } from './store/base-store.js';
 export { FileMemoryStore } from './store/file-store.js';
+export { RunMemoryFileStore } from './store/run-memory-file-store.js';
+export {
+  COMPACTED_MEMORY_MANIFEST_FILE_NAME,
+  EPISODIC_MEMORY_FILE_NAME,
+  MEMORY_FILE_NAMES,
+  RAW_TRACES_ARCHIVE_MEMORY_FILE_NAME,
+  RAW_TRACES_MEMORY_FILE_NAME,
+  SEMANTIC_MEMORY_FILE_NAME,
+  WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
+} from './store/memory-file-names.js';
 export { WorkingContextSnapshotStore } from './store/working-context-snapshot-store.js';
 export { COMPACTED_MEMORY_SCHEMA_VERSION } from './store/compacted-memory-manifest.js';
 export type { CompactedMemoryManifest } from './store/compacted-memory-manifest.js';

@@ -117,7 +117,9 @@ export class AgentMemoryService {
 
   private toTraceEvent(trace: RawTrace): MemoryTraceEvent {
     return {
+      id: (trace.id as string | undefined) ?? null,
       traceType: (trace.trace_type as string | undefined) ?? "",
+      sourceEvent: (trace.source_event as string | undefined) ?? null,
       content: (trace.content as string | undefined) ?? null,
       toolName: (trace.tool_name as string | undefined) ?? null,
       toolCallId: (trace.tool_call_id as string | undefined) ?? null,
