@@ -55,7 +55,10 @@ runIntegration('AutobyteusLLM Integration', () => {
 
     const llm = await LLMFactory.createLLM(modelInfo.model_identifier);
     try {
-      const response = await llm.sendUserMessage(new LLMUserMessage({ content: "Hello, please respond with 'pong'" }));
+      const response = await llm.sendUserMessage(
+        new LLMUserMessage({ content: "Hello, please respond with 'pong'" }),
+        { logicalConversationId: 'integration-basic-completion' }
+      );
       expect(response).toBeInstanceOf(CompleteResponse);
       expect(typeof response.content).toBe('string');
       expect(response.content.toLowerCase()).toContain('pong');
@@ -71,7 +74,10 @@ runIntegration('AutobyteusLLM Integration', () => {
 
     const llm = await LLMFactory.createLLM(modelInfo.model_identifier);
     try {
-      const stream = llm.streamUserMessage(new LLMUserMessage({ content: 'Hello, write a short poem' }));
+      const stream = llm.streamUserMessage(
+        new LLMUserMessage({ content: 'Hello, write a short poem' }),
+        { logicalConversationId: 'integration-stream-text' }
+      );
       let fullResponse = '';
       let finalChunkReceived = false;
 
@@ -98,7 +104,8 @@ runIntegration('AutobyteusLLM Integration', () => {
     const llm = await LLMFactory.createLLM(modelInfo.model_identifier);
     try {
       const stream = llm.streamUserMessage(
-        new LLMUserMessage({ content: 'Generate an image of a cat programming on a laptop.' })
+        new LLMUserMessage({ content: 'Generate an image of a cat programming on a laptop.' }),
+        { logicalConversationId: 'integration-stream-image' }
       );
 
       let fullResponse = '';
@@ -137,7 +144,7 @@ runIntegration('AutobyteusLLM Integration', () => {
     try {
       await expect(async () => {
         const userMessage = new LLMUserMessage({ content: '' });
-        await llm.sendUserMessage(userMessage);
+        await llm.sendUserMessage(userMessage, { logicalConversationId: 'integration-empty-request' });
       }).rejects.toThrow();
     } finally {
       await llm.cleanup();
