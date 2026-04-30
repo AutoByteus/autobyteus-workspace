@@ -1,44 +1,24 @@
-# Release Notes: AutoByteus RPA LLM Session Resume
+# Release Notes: RPA Visible Resume Prompt Cleanup
 
 ## Summary
 
-AutoByteus RPA-backed text LLM conversations now use a caller-supplied stable logical conversation id plus a rendered transcript payload so restored AutoByteus agents can continue semantically after the AutoByteus server/agent process restarts.
+RPA-backed text conversations now show cleaner browser-visible input during cache-miss resume. AutoByteus keeps system prompt content as a structured `system` message instead of prepending it into the first user message, and the RPA server owns the neutral browser-visible cache-miss shape.
 
-## Breaking API Contract Change
+## Behavior Change
 
-The RPA LLM text endpoints `/send-message` and `/stream-message` no longer accept the old single-message `user_message` body shape. Clients must send:
+- The server-ts `UserInputContextBuildingProcessor` no longer mutates the first AutoByteus/RPA user input by prepending the system prompt.
+- Active cached RPA conversations still send only the selected current user message to the browser.
+- Cache misses still reconstruct enough already-rendered transcript content for semantic continuity, but the visible browser input no longer contains resume/session/cache wrapper wording.
+- First-call cache misses render as either `<system content>\n\n<current user content>` or exactly `<current user content>` without visible role headers.
+- Multi-turn cache misses render an unlabeled system preface, then ordered `User:`, `Assistant:`, and `Tool:` blocks, ending with the current `User:` block.
+- Tool XML and tool-result text remain TypeScript-rendered transcript content and are preserved unchanged by the RPA server.
 
-- `conversation_id`: stable logical conversation id
-- `model_name`: RPA LLM model name
-- `messages`: rendered transcript entries with `role`, `content`, `image_urls`, `audio_urls`, and `video_urls`
-- `current_message_index`: index of the current user message inside `messages`
+## Removed Visible Wording
 
-The RPA text request schema rejects stale extra fields, including per-message `tool_payload`. TypeScript callers of `AutobyteusClient.sendMessage(...)` and `AutobyteusClient.streamMessage(...)` must pass the request object shape `{ conversationId, modelName, payload }`, where `payload` contains `messages` and `current_message_index`.
-
-## TypeScript Identity Contract
-
-Direct `AutobyteusLLM` RPA use now requires `kwargs.logicalConversationId` as a non-empty string for every text send/stream call. The adapter no longer generates a fallback UUID conversation id. Agent-driven calls supply the restored agent/run id through `LLMUserMessageReadyEventHandler`.
-
-## Runtime Behavior
-
-- Existing active RPA server sessions receive only the selected current user message.
-- Missing server-side sessions are recreated with one synthesized user message built by flattening the already-rendered role/content transcript through `messages[current_message_index]`.
-- Cache-miss resume prompts use role headers (`System:`, `User:`, `Assistant:`, `Tool:`), end with the final current `User:` block, and do not add old `Prior transcript:` or `Current user request:` headings.
-- TypeScript owns tool-history rendering: `ToolCallPayload` is rendered into canonical AutoByteus XML and `ToolResultPayload` into deterministic result records before HTTP transport. The RPA server stays flatten-only and does not parse tool payloads or generate tool XML.
-- Historical media is represented textually in the transcript; only current-turn media is materialized and attached.
-- Cleanup tracks and removes every explicit remote conversation id used by an `AutobyteusLLM` instance.
+The RPA server no longer emits visible wrapper text such as `You are continuing...`, `remote browser-backed LLM session`, `Do not replay`, `Prior transcript:`, `Current user request:`, or a visible `System:` header.
 
 ## Validation
 
-Latest authoritative API/E2E validation is Pass after Round-10 code review. Deterministic TypeScript unit/build checks, Python service/ASGI endpoint checks, fallback/stale-field/prompt-order guards, `git diff --check`, and live browser-backed validation passed.
+Latest authoritative API/E2E validation is `Pass`. Deterministic server-ts/RPA tests, server-ts build, RPA service and endpoint contract checks, py_compile, obsolete-string guards, and live browser-visible validation with `gemini-3-pro-app-rpa` all passed.
 
-Live validation used `gemini-3-pro-app-rpa` against the running RPA server and covered:
-
-- non-stream cache miss/hit/model-mismatch/cleanup;
-- stream cache miss/hit/cleanup;
-- stale `user_message` rejection for send/stream and stale per-message `tool_payload` rejection;
-- live TypeScript `AutobyteusLLM -> AutobyteusClient -> RPA server -> browser` behavior with explicit `logicalConversationId`.
-
-## Migration Notes
-
-Update any direct RPA LLM endpoint, `AutobyteusClient`, or direct `AutobyteusLLM` callers before release. Replace `user_message` request bodies with the transcript payload, remove any `tool_payload` HTTP fields, render tool calls/results into `content` before transport, and provide a stable `logicalConversationId` / `conversation_id` for resumable conversations.
+Known repository note: `pnpm run typecheck` in `autobyteus-server-ts` still fails with pre-existing TS6059 `rootDir`/`include` configuration errors for tests; this ticket did not change `tsconfig.json`, and targeted vitest plus build passed.
