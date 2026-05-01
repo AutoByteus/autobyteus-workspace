@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/docs/tasks/claude-agent-sdk-custom-settings/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/docs/tasks/claude-agent-sdk-custom-settings/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/docs/tasks/claude-agent-sdk-custom-settings/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/tickets/done/claude-agent-sdk-custom-settings/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/tickets/done/claude-agent-sdk-custom-settings/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/tickets/done/claude-agent-sdk-custom-settings/design-spec.md`
 - Current Review Round: 2
 - Trigger: User clarification superseded Round 1: no Server Settings selector/card; automatic Claude Code filesystem settings inheritance.
 - Prior Review Round Reviewed: Round 1 report at this same path, now superseded for context only.

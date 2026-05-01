@@ -2,12 +2,12 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/docs/tasks/claude-agent-sdk-custom-settings/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/docs/tasks/claude-agent-sdk-custom-settings/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/docs/tasks/claude-agent-sdk-custom-settings/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/docs/tasks/claude-agent-sdk-custom-settings/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/docs/tasks/claude-agent-sdk-custom-settings/implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/docs/tasks/claude-agent-sdk-custom-settings/review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/tickets/done/claude-agent-sdk-custom-settings/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/tickets/done/claude-agent-sdk-custom-settings/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/tickets/done/claude-agent-sdk-custom-settings/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/tickets/done/claude-agent-sdk-custom-settings/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/tickets/done/claude-agent-sdk-custom-settings/implementation-handoff.md`
+- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/tickets/done/claude-agent-sdk-custom-settings/review-report.md`
 - Current Validation Round: 4
 - Trigger: Independent full code review Round 4 passed and requested a fresh authoritative broad `RUN_CLAUDE_E2E=1` Claude validation rerun.
 - Prior Round Reviewed: Round 3 from this same canonical report path.
@@ -143,11 +143,11 @@ The Local Fix previously updated repository-resident durable validation before c
 - Repository-resident durable validation added or updated this round: `No` during API/E2E Round 4.
 - Paths added or updated: N/A for API/E2E Round 4.
 - If `Yes`, returned through `code_reviewer` before delivery: N/A for API/E2E Round 4; the prior Local Fix durable validation updates were already returned through and passed by code review Rounds 3 and 4.
-- Post-validation code review artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/docs/tasks/claude-agent-sdk-custom-settings/review-report.md`
+- Post-validation code review artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/tickets/done/claude-agent-sdk-custom-settings/review-report.md`
 
 ## Other Validation Artifacts
 
-- This report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/docs/tasks/claude-agent-sdk-custom-settings/api-e2e-validation-report.md`
+- This report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/tickets/done/claude-agent-sdk-custom-settings/api-e2e-validation-report.md`
 - Temporary raw command log: `/tmp/claude-round4-broad-e2e.log` (not a repository artifact).
 
 ## Temporary Validation Methods / Scaffolding

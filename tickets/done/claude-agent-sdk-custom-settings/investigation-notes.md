@@ -25,7 +25,7 @@ The user then clarified that investigation should include active probes/tests, s
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/docs/tasks/claude-agent-sdk-custom-settings`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/tickets/done/claude-agent-sdk-custom-settings`
 - Current Branch: `codex/claude-agent-sdk-custom-settings`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings`
 - Bootstrap Base Branch: `origin/personal`

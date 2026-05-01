@@ -2,12 +2,12 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/docs/tasks/claude-agent-sdk-custom-settings/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/docs/tasks/claude-agent-sdk-custom-settings/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/docs/tasks/claude-agent-sdk-custom-settings/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/docs/tasks/claude-agent-sdk-custom-settings/design-review-report.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/docs/tasks/claude-agent-sdk-custom-settings/review-report.md`
-- API/E2E validation report that triggered this Local Fix round: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/docs/tasks/claude-agent-sdk-custom-settings/api-e2e-validation-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/tickets/done/claude-agent-sdk-custom-settings/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/tickets/done/claude-agent-sdk-custom-settings/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/tickets/done/claude-agent-sdk-custom-settings/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/tickets/done/claude-agent-sdk-custom-settings/design-review-report.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/tickets/done/claude-agent-sdk-custom-settings/review-report.md`
+- API/E2E validation report that triggered this Local Fix round: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/tickets/done/claude-agent-sdk-custom-settings/api-e2e-validation-report.md`
 
 ## What Changed
 

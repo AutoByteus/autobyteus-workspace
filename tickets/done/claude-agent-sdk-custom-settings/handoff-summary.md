@@ -4,7 +4,7 @@
 
 - Ticket: `claude-agent-sdk-custom-settings`
 - Current owner: `delivery_engineer`
-- Status: Local checkpoint committed, latest `origin/personal` merged into ticket branch, macOS Electron build produced for user testing. Repository finalization is still held pending explicit user verification.
+- Status: User verified the Electron build; task is being finalized with no release/version bump.
 - Timestamp: 2026-05-01 14:19 CEST (+0200)
 
 ## Integrated-State Summary
@@ -64,15 +64,15 @@ Build notes:
 
 ## Artifacts
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/docs/tasks/claude-agent-sdk-custom-settings/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/docs/tasks/claude-agent-sdk-custom-settings/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/docs/tasks/claude-agent-sdk-custom-settings/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/docs/tasks/claude-agent-sdk-custom-settings/design-review-report.md`
-- Updated implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/docs/tasks/claude-agent-sdk-custom-settings/implementation-handoff.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/docs/tasks/claude-agent-sdk-custom-settings/review-report.md`
-- Updated API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/docs/tasks/claude-agent-sdk-custom-settings/api-e2e-validation-report.md`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/docs/tasks/claude-agent-sdk-custom-settings/docs-sync-report.md`
-- Delivery / release / deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/docs/tasks/claude-agent-sdk-custom-settings/delivery-release-deployment-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/tickets/done/claude-agent-sdk-custom-settings/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/tickets/done/claude-agent-sdk-custom-settings/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/tickets/done/claude-agent-sdk-custom-settings/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/tickets/done/claude-agent-sdk-custom-settings/design-review-report.md`
+- Updated implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/tickets/done/claude-agent-sdk-custom-settings/implementation-handoff.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/tickets/done/claude-agent-sdk-custom-settings/review-report.md`
+- Updated API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/tickets/done/claude-agent-sdk-custom-settings/api-e2e-validation-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/tickets/done/claude-agent-sdk-custom-settings/docs-sync-report.md`
+- Delivery / release / deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/tickets/done/claude-agent-sdk-custom-settings/delivery-release-deployment-report.md`
 
 ## Validation Evidence
 
@@ -95,13 +95,13 @@ Known unrelated broad repo issue remains: full `pnpm --dir autobyteus-server-ts 
 
 ## User Verification Needed
 
-Please test the built Electron app from the DMG/ZIP above. If it is good, reply with explicit approval such as `verified, proceed with finalization`.
+User verified the built Electron app works and requested finalization with no new release/version bump.
 
 ## Finalization Hold
 
 Per delivery workflow, the following are intentionally not done yet:
 
-- No ticket folder was archived/moved to `tickets/done` for this ticket.
-- No ticket branch push was performed.
-- No merge into `personal` was performed.
-- No release, publication, or deployment was performed.
+- Ticket artifacts have been archived under `tickets/done/claude-agent-sdk-custom-settings/`.
+- Ticket branch push is pending final archive commit.
+- Merge into `personal` is pending final archive commit.
+- No release, publication, or deployment will be performed per user request.
