@@ -26,6 +26,7 @@ type ServerSettingValueValidation = {
 };
 
 const CUSTOM_SETTING_DESCRIPTION = "Custom user-defined setting";
+export const AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID = "AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID";
 
 export class ServerSettingsService {
   private settingsInfo = new Map<string, ServerSettingDescription>();
@@ -67,8 +68,8 @@ export class ServerSettingsService {
     );
 
     this.registerPredefinedSetting(
-      "AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER",
-      "Optional model identifier override for the internal compaction summarizer",
+      AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID,
+      "Agent definition id for the memory compactor agent. Configure that agent's runtime and model on the selected agent definition.",
     );
 
     this.registerPredefinedSetting(
@@ -273,6 +274,19 @@ export class ServerSettingsService {
       APPLICATIONS_CAPABILITY_SETTING_KEY,
       enabled ? "true" : "false",
     );
+  }
+
+  getSettingValue(key: string): string | null {
+    const rawValue = appConfigProvider.config.get(key);
+    if (typeof rawValue !== "string") {
+      return null;
+    }
+    const normalized = rawValue.trim();
+    return normalized.length > 0 ? normalized : null;
+  }
+
+  getCompactionAgentDefinitionId(): string | null {
+    return this.getSettingValue(AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID);
   }
 }
 

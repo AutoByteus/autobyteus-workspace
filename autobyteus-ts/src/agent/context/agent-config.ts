@@ -8,6 +8,7 @@ import type { BaseToolInvocationPreprocessor } from '../tool-invocation-preproce
 import type { BaseToolExecutionResultProcessor } from '../tool-execution-result-processor/base-processor.js';
 import type { BaseLLMResponseProcessor } from '../llm-response-processor/base-processor.js';
 import type { BaseLifecycleEventProcessor } from '../lifecycle/base-processor.js';
+import type { CompactionAgentRunner } from '../../memory/compaction/compaction-agent-runner.js';
 
 function deepClone<T>(value: T): T {
   if (value === null || value === undefined) {
@@ -44,6 +45,7 @@ export class AgentConfig {
   skills: string[];
   skillAccessMode: SkillAccessMode;
   memoryDir?: string | null;
+  compactionAgentRunner: CompactionAgentRunner | null;
 
   constructor(
     name: string,
@@ -63,7 +65,8 @@ export class AgentConfig {
     initialCustomData: Record<string, any> | null = null,
     skills: string[] | null = null,
     memoryDir: string | null = null,
-    skillAccessMode: SkillAccessMode | null = null
+    skillAccessMode: SkillAccessMode | null = null,
+    compactionAgentRunner: CompactionAgentRunner | null = null
   ) {
     this.name = name;
     this.role = role;
@@ -92,6 +95,7 @@ export class AgentConfig {
     this.skills = skills ?? [];
     this.skillAccessMode = resolveSkillAccessMode(skillAccessMode, this.skills.length);
     this.memoryDir = memoryDir ?? undefined;
+    this.compactionAgentRunner = compactionAgentRunner ?? null;
 
     const toolCallFormat = resolveToolCallFormat();
     if (toolCallFormat === 'api_tool_call') {
@@ -126,7 +130,8 @@ export class AgentConfig {
       deepClone(this.initialCustomData ?? null),
       this.skills.slice(),
       this.memoryDir ?? null,
-      this.skillAccessMode
+      this.skillAccessMode,
+      this.compactionAgentRunner
     );
   }
 

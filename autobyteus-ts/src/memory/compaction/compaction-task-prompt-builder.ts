@@ -1,26 +1,23 @@
-import { Message, MessageRole } from '../../llm/utils/messages.js';
 import { formatToCleanString } from '../../utils/llm-output-formatter.js';
 import { clampRenderedLine } from '../compaction-snapshot-recent-turn-formatter.js';
 import type { RawTraceItem } from '../models/raw-trace-item.js';
 import type { InteractionBlock } from './interaction-block.js';
 
-export type CompactionPromptBuildOptions = {
+export type CompactionTaskPromptBuildOptions = {
   maxItemChars?: number | null;
 };
 
-const SYSTEM_PROMPT = [
-  'You compact prior agent traces into durable memory.',
+export const COMPACTION_OUTPUT_CONTRACT = [
   'Return JSON only with this shape:',
   '{',
   '  "episodic_summary": "string",',
-  '  "critical_issues": [{ "fact": "string", "reference": "optional string", "tags": ["string"] }],',
-  '  "unresolved_work": [{ "fact": "string", "reference": "optional string", "tags": ["string"] }],',
-  '  "durable_facts": [{ "fact": "string", "reference": "optional string", "tags": ["string"] }],',
-  '  "user_preferences": [{ "fact": "string", "reference": "optional string", "tags": ["string"] }],',
-  '  "important_artifacts": [{ "fact": "string", "reference": "optional string", "tags": ["string"] }]',
+  '  "critical_issues": [{ "fact": "string" }],',
+  '  "unresolved_work": [{ "fact": "string" }],',
+  '  "durable_facts": [{ "fact": "string" }],',
+  '  "user_preferences": [{ "fact": "string" }],',
+  '  "important_artifacts": [{ "fact": "string" }]',
   '}',
-  'Preserve key decisions, plans, constraints, created or modified files, important tool outcomes or failures, unresolved work, critical validation findings, and durable user preferences.',
-  'Drop repeated chatter, low-value operational noise, process-count/status clutter, and verbose raw payloads that are not future-relevant.'
+  'The output contract is mandatory. Do not return prose outside the JSON object.'
 ].join('\n');
 
 const safeStringify = (value: unknown): string => formatToCleanString(value);
@@ -40,23 +37,18 @@ const formatRawTrace = (trace: RawTraceItem, maxItemChars?: number | null): stri
   return clampRenderedLine(line, maxItemChars);
 };
 
-export class CompactionPromptBuilder {
-  buildMessages(blocks: InteractionBlock[], options: CompactionPromptBuildOptions = {}): Message[] {
-    const blockLines = this.renderBlocks(blocks, options.maxItemChars);
-    const userPrompt = [
-      'Compact the following settled interaction blocks into episodic summary plus typed semantic memory.',
-      'Keep the result concise, durable, and future-useful.',
+export class CompactionTaskPromptBuilder {
+  buildTaskPrompt(blocks: InteractionBlock[], options: CompactionTaskPromptBuildOptions = {}): string {
+    return [
+      'Compact the settled blocks below into durable AutoByteus memory.',
+      'Use the current output contract exactly.',
+      '',
+      '[OUTPUT_CONTRACT]',
+      COMPACTION_OUTPUT_CONTRACT,
       '',
       '[SETTLED_BLOCKS]',
-      ...blockLines,
-      '',
-      'Return valid JSON only.'
+      ...this.renderBlocks(blocks, options.maxItemChars),
     ].join('\n');
-
-    return [
-      new Message(MessageRole.SYSTEM, { content: SYSTEM_PROMPT }),
-      new Message(MessageRole.USER, { content: userPrompt })
-    ];
   }
 
   private renderBlocks(blocks: InteractionBlock[], maxItemChars?: number | null): string[] {

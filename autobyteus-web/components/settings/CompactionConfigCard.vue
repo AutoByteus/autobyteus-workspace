@@ -26,12 +26,15 @@
     <div class="space-y-4">
       <div>
         <label class="block text-sm font-medium text-gray-900 mb-1">
-          {{ t('settings.components.settings.CompactionConfigCard.compactionModel') }}
+          {{ t('settings.components.settings.CompactionConfigCard.compactorAgent') }}
         </label>
-        <select v-model="compactionModelIdentifier" class="w-full h-11 px-3 border border-gray-300 rounded-lg bg-white" data-testid="compaction-model-select">
-          <option value="">{{ t('settings.components.settings.CompactionConfigCard.useActiveRunModel') }}</option>
-          <option v-for="option in modelOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
+        <select v-model="compactionAgentDefinitionId" class="w-full h-11 px-3 border border-gray-300 rounded-lg bg-white" data-testid="compaction-agent-select">
+          <option value="">{{ t('settings.components.settings.CompactionConfigCard.selectCompactorAgent') }}</option>
+          <option v-for="option in agentOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
         </select>
+        <p class="mt-1 text-xs text-gray-500" data-testid="compaction-agent-summary">
+          {{ selectedAgentSummary }}
+        </p>
       </div>
 
       <div>
@@ -74,44 +77,45 @@
 import { Icon } from '@iconify/vue'
 import { computed, onMounted, ref, watch } from 'vue'
 import { useLocalization } from '~/composables/useLocalization'
-import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
+import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import { useServerSettingsStore } from '~/stores/serverSettings'
-import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig'
-import { getModelSelectionSelectedLabel } from '~/utils/modelSelectionLabel'
 
 const COMPACTION_TRIGGER_RATIO_KEY = 'AUTOBYTEUS_COMPACTION_TRIGGER_RATIO'
-const COMPACTION_MODEL_IDENTIFIER_KEY = 'AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER'
+const COMPACTION_AGENT_DEFINITION_ID_KEY = 'AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID'
 const ACTIVE_CONTEXT_TOKENS_OVERRIDE_KEY = 'AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE'
 const COMPACTION_DEBUG_LOGS_KEY = 'AUTOBYTEUS_COMPACTION_DEBUG_LOGS'
 
 const store = useServerSettingsStore()
-const llmProviderConfigStore = useLLMProviderConfigStore()
+const agentDefinitionStore = useAgentDefinitionStore()
 const { t } = useLocalization()
 
 const triggerRatioPercent = ref('80')
-const compactionModelIdentifier = ref('')
+const compactionAgentDefinitionId = ref('')
 const activeContextTokensOverride = ref('')
 const detailedLogsEnabled = ref(false)
 const isSaving = ref(false)
-const availableProviderGroups = computed(() => llmProviderConfigStore.providersWithModelsForSelection ?? [])
 
-const modelOptions = computed(() => {
-  const seen = new Set<string>()
-  const options: Array<{ value: string; label: string }> = []
+const agentOptions = computed(() => agentDefinitionStore.agentDefinitions
+  .map((definition) => ({
+    value: definition.id,
+    label: `${definition.name}${definition.role ? ` (${definition.role})` : ''}`,
+  }))
+  .sort((a, b) => a.label.localeCompare(b.label)))
 
-  for (const providerGroup of availableProviderGroups.value) {
-    for (const model of providerGroup.models ?? []) {
-      const value = String(model.modelIdentifier ?? '').trim()
-      if (!value || seen.has(value)) continue
-      seen.add(value)
-      options.push({
-        value,
-        label: getModelSelectionSelectedLabel(providerGroup.provider.name, model, DEFAULT_AGENT_RUNTIME_KIND),
-      })
-    }
+const selectedAgentDefinition = computed(() => {
+  const selectedId = compactionAgentDefinitionId.value.trim()
+  if (!selectedId) return null
+  return agentDefinitionStore.agentDefinitions.find((definition) => definition.id === selectedId) ?? null
+})
+
+const selectedAgentSummary = computed(() => {
+  const definition = selectedAgentDefinition.value
+  if (!definition) {
+    return t('settings.components.settings.CompactionConfigCard.noCompactorAgentWarning')
   }
-
-  return options.sort((a, b) => a.label.localeCompare(b.label))
+  const runtime = definition.defaultLaunchConfig?.runtimeKind || t('settings.components.settings.CompactionConfigCard.runtimeNotConfigured')
+  const model = definition.defaultLaunchConfig?.llmModelIdentifier || t('settings.components.settings.CompactionConfigCard.modelNotConfigured')
+  return `${t('settings.components.settings.CompactionConfigCard.selectedLaunchConfig')}: ${runtime} / ${model}`
 })
 
 const syncFromStore = (): void => {
@@ -119,7 +123,7 @@ const syncFromStore = (): void => {
   const ratio = Number(ratioRaw)
   triggerRatioPercent.value = Number.isFinite(ratio) && ratio > 0 ? String(Math.round(ratio * 100)) : '80'
 
-  compactionModelIdentifier.value = store.getSettingByKey(COMPACTION_MODEL_IDENTIFIER_KEY)?.value ?? ''
+  compactionAgentDefinitionId.value = store.getSettingByKey(COMPACTION_AGENT_DEFINITION_ID_KEY)?.value ?? ''
   activeContextTokensOverride.value = store.getSettingByKey(ACTIVE_CONTEXT_TOKENS_OVERRIDE_KEY)?.value ?? ''
   const debugValue = store.getSettingByKey(COMPACTION_DEBUG_LOGS_KEY)?.value?.trim().toLowerCase() ?? ''
   detailedLogsEnabled.value = ['1', 'true', 'yes', 'on'].includes(debugValue)
@@ -128,12 +132,10 @@ const syncFromStore = (): void => {
 watch(() => store.settings, syncFromStore, { deep: true, immediate: true })
 
 onMounted(async () => {
-  if ((llmProviderConfigStore.providersWithModels?.length ?? 0) === 0) {
-    try {
-      await llmProviderConfigStore.fetchProvidersWithModels(DEFAULT_AGENT_RUNTIME_KIND)
-    } catch (_error) {
-      // Best effort only; keep the active-model fallback available.
-    }
+  try {
+    await agentDefinitionStore.fetchAllAgentDefinitions()
+  } catch (_error) {
+    // Best effort only; the existing selected id remains editable when definitions cannot load.
   }
 })
 
@@ -142,11 +144,11 @@ const save = async (): Promise<void> => {
   try {
     const ratioPercent = Number(triggerRatioPercent.value)
     const normalizedRatio = Number.isFinite(ratioPercent) && ratioPercent > 0 ? String(Math.min(100, ratioPercent) / 100) : '0.8'
-    const normalizedModelIdentifier = String(compactionModelIdentifier.value ?? '').trim()
+    const normalizedAgentDefinitionId = String(compactionAgentDefinitionId.value ?? '').trim()
     const normalizedActiveContextOverride = String(activeContextTokensOverride.value ?? '').trim()
 
     await store.updateServerSetting(COMPACTION_TRIGGER_RATIO_KEY, normalizedRatio)
-    await store.updateServerSetting(COMPACTION_MODEL_IDENTIFIER_KEY, normalizedModelIdentifier)
+    await store.updateServerSetting(COMPACTION_AGENT_DEFINITION_ID_KEY, normalizedAgentDefinitionId)
     await store.updateServerSetting(ACTIVE_CONTEXT_TOKENS_OVERRIDE_KEY, normalizedActiveContextOverride)
     await store.updateServerSetting(COMPACTION_DEBUG_LOGS_KEY, detailedLogsEnabled.value ? 'true' : 'false')
   } finally {

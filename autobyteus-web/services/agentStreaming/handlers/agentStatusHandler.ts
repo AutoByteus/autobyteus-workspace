@@ -97,7 +97,12 @@ export function handleCompactionStatus(
     compactedBlockCount: payload.compacted_block_count ?? null,
     rawTraceCount: payload.raw_trace_count ?? null,
     semanticFactCount: payload.semantic_fact_count ?? null,
+    compactionAgentDefinitionId: payload.compaction_agent_definition_id ?? null,
+    compactionAgentName: payload.compaction_agent_name ?? null,
+    compactionRuntimeKind: payload.compaction_runtime_kind ?? null,
     compactionModelIdentifier: payload.compaction_model_identifier ?? null,
+    compactionRunId: payload.compaction_run_id ?? null,
+    compactionTaskId: payload.compaction_task_id ?? null,
     errorMessage: payload.error_message ?? null,
   };
 }

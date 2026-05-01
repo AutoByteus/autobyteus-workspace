@@ -1,7 +1,5 @@
 export type CompactionSemanticEntry = {
   fact: string;
-  reference?: string | null;
-  tags?: string[];
 };
 
 export type CompactionResultInit = {

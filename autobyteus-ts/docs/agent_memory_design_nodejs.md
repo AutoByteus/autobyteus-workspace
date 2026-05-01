@@ -74,11 +74,14 @@ The memory system is defined by its implemented operations:
 
 **EPISODIC (EpisodicItem)**
 
-- `id`, `ts`, `turn_ids`, `summary`, `tags`, `salience`
+- `id`, `ts`, `turn_ids`, `summary`, `salience`
+- Optional internal metadata: `tags`
 
 **SEMANTIC (SemanticItem)**
 
-- `id`, `ts`, `category`, `fact`, optional `reference`, `tags`, `salience`
+- `id`, `ts`, `category`, `fact`, `salience`
+- Optional internal metadata for non-compactor/future controlled sources: `reference`, `tags`
+- Agent-based compactor output is facts-only and does not ask the model to generate `reference` or `tags`.
 - `category` enum: `critical_issue | unresolved_work | user_preference | durable_fact | important_artifact`
 
 **ToolInteraction (derived view)**
@@ -303,10 +306,11 @@ Compaction produces **structured memory artifacts** and a new working context sn
 4. **Eligible RAW_TRACE entries pruned/archived by trace ID**
 5. **Compaction Snapshot** (new base for the Working Context Snapshot)
 
-### Compaction Flow (LLM-driven)
+### Compaction Flow (Agent-driven)
 
-1. Default `AgentFactory` runtime composition wires a production
-   `LLMCompactionSummarizer`; no separate public compaction agent is used.
+1. Default server-backed `AgentFactory` runtime composition injects a
+   `CompactionAgentRunner`; `AgentCompactionSummarizer` delegates selected
+   settled blocks to the configured visible compactor agent.
 2. `PendingCompactionExecutor` runs before the next provider dispatch whenever
    `memoryManager.compactionRequired` is set.
 3. `CompactionWindowPlanner` reads ordered `RAW_TRACE` and builds
@@ -321,19 +325,24 @@ Compaction produces **structured memory artifacts** and a new working context sn
      final block frontier
 5. Eligible settled blocks receive tool-result digests for summarization;
    frontier blocks intentionally keep full raw traces.
-6. Resolve the compaction model from
-   `AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER`, otherwise reuse the active run
-   model, then fall back to the configured runtime model if needed.
-7. Execute one internal LLM call with a built-in compaction prompt that asks
-   for JSON-only output:
+6. Resolve the configured compactor agent from
+   `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID`; server startup seeds and
+   selects `autobyteus-memory-compactor` when the setting is blank. The
+   selected agent's default launch config supplies runtime, model, and model
+   config. Missing or invalid launch configuration fails at the compaction
+   gate; there is no active-model fallback.
+7. Create a normal visible compactor agent run, post one compaction task, collect
+   the final JSON-only assistant output, terminate the run, and leave the run in
+   history for inspection. The task output contract remains:
    - `episodic_summary`
    - `critical_issues[]`
    - `unresolved_work[]`
    - `durable_facts[]`
    - `user_preferences[]`
    - `important_artifacts[]`
+   Semantic array entries are facts-only objects: `{ "fact": "..." }`.
 8. Parse and validate the structured response, then run deterministic
-   normalization (dedupe, low-value filtering, category caps, reference
+   normalization (dedupe, low-value filtering, category caps, fact
    cleanup, and salience assignment) before persisting EPISODIC + SEMANTIC
    items.
 9. `MemoryStore.pruneRawTracesById(plan.eligibleTraceIds, true)` archives and
@@ -364,9 +373,15 @@ Compaction produces **structured memory artifacts** and a new working context sn
 | Setting | Purpose | Default / Behavior |
 | --- | --- | --- |
 | `AUTOBYTEUS_COMPACTION_TRIGGER_RATIO` | Overrides the post-response trigger ratio used for subsequent budget checks. | Defaults to `0.8`; parsed as a positive decimal and clamped to `<= 1`. |
-| `AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER` | Selects a dedicated internal compaction model. | Blank falls back to the active run model. |
+| `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` | Selects the memory compactor agent definition. The selected agent's normal default launch config selects runtime/model/config. | Server startup seeds and selects `autobyteus-memory-compactor` when blank. If the selected/default agent lacks valid runtime/model launch defaults, required compaction fails clearly; there is no active-model fallback. |
 | `AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE` | Lowers the effective context ceiling for safer budgeting (for example when a provider fails before its advertised maximum). | Blank disables the override; positive values are floored to an integer token ceiling. |
 | `AUTOBYTEUS_COMPACTION_DEBUG_LOGS` | Enables verbose compaction diagnostics. | Disabled by default; truthy values such as `1`, `true`, `yes`, `on` enable detailed logs. |
+
+### Compactor Prompt Ownership
+
+The selected compactor agent's `agent.md` owns stable behavior: category meanings, preservation/drop rules, JSON-only discipline, and manual-test guidance. The seeded `autobyteus-memory-compactor` is intentionally written so a user can run it as a normal visible agent, paste conversation/history content, and inspect the compaction behavior.
+
+Automated compaction still includes the current exact JSON output contract in every task envelope before `[SETTLED_BLOCKS]`. That contract is owned by memory compaction/parser code, not solely by editable agent instructions, so user-edited or stale compactor agents cannot silently become the only parser-compatibility source. The compactor-facing semantic entries are facts-only: the model returns `fact` objects inside the typed category arrays and does not generate optional `reference` strings or free-form `tags`.
 
 ### Snapshot Cache / Schema-3 Bootstrap
 
@@ -612,7 +627,9 @@ src/memory/
 │   └── working-context-snapshot-bootstrapper.ts
 ├── compaction/
 │   ├── compaction-plan.ts
-│   ├── compaction-prompt-builder.ts
+│   ├── agent-compaction-summarizer.ts
+│   ├── compaction-agent-runner.ts
+│   ├── compaction-task-prompt-builder.ts
 │   ├── compaction-response-parser.ts
 │   ├── compaction-result.ts
 │   ├── compaction-result-normalizer.ts
@@ -622,7 +639,6 @@ src/memory/
 │   ├── frontier-formatter.ts
 │   ├── interaction-block.ts
 │   ├── interaction-block-builder.ts
-│   ├── llm-compaction-summarizer.ts
 │   ├── pending-compaction-executor.ts
 │   ├── summarizer.ts
 │   ├── tool-result-digest.ts
@@ -675,12 +691,21 @@ src/agent/
 
 ## 11. Integration Points (Autobyteus)
 
-**Suggested integration**
+**Implemented integration shape**
 
-- Add `MemoryManager` to `AgentRuntimeState`
-- Keep ingest processors (user/tool/assistant) to append to Working Context Snapshot
-- Add a pre-LLM hook to request a working context snapshot render + compaction check
-- Route tool results and messages into memory ingest
+- Server startup runs `DefaultCompactorAgentBootstrapper` before normal
+  agent-run use: it seeds the editable shared `autobyteus-memory-compactor`
+  files if missing, preserves existing user edits, refreshes agent-definition
+  cache, and selects it only when `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID`
+  is blank and the definition resolves.
+- Agent runtime composition creates `MemoryManager` with an optional
+  `CompactionAgentRunner` supplied by server-backed `AgentFactory` wiring.
+- Ingest processors (user/tool/assistant) append to the Working Context Snapshot.
+- The pre-LLM request assembler requests a working context snapshot render and
+  runs pending compaction before the next provider dispatch.
+- Tool results and messages flow into memory ingest; compaction summarization
+  delegates through the selected visible compactor agent instead of a direct
+  model call.
 
 **Migration path**
 
@@ -695,7 +720,6 @@ src/agent/
 
 - Should memory be per-agent only, or allow shared/team scope?
 - How should future semantic categories evolve if the typed compaction schema expands beyond the current five buckets?
-- Should compaction be LLM-based or rule-based in MVP?
 
 ---
 
@@ -712,7 +736,8 @@ User/Event
 MemoryManager (ingest)
    │
    ├─► Compactor (if compaction_required)
-   │      └─► Summarizer (LLM)
+   │      └─► AgentCompactionSummarizer
+   │             └─► visible compactor-agent run
    │
    ├─► Working Context Snapshot (append or reset)
    │      └─► Compaction Snapshot (if needed)
@@ -727,7 +752,9 @@ MemoryManager (ingest response)
 ```
 
 Key idea: **the LLM is a stateless generator**, and memory constructs the
-prompt each call.
+prompt each call. Compaction summarization follows the same boundary: memory
+asks the configured visible compactor agent to produce structured JSON instead
+of selecting a hidden/direct compaction model itself.
 
 ---
 
@@ -785,7 +812,7 @@ Legacy `conversation_history` has been removed. LLM providers are stateless.
 Earlier plans kept `BaseLLM.messages` between compactions for cache reuse.
 This path has been removed in favor of fully stateless LLM execution.
 
-### 15.3 Memory-centric integration (recommended)
+### 15.3 Memory-centric integration (implemented)
 
 Refactor the LLM call site to delegate prompt construction to memory:
 
@@ -827,10 +854,13 @@ LLM providers now accept explicit message lists via:
 This keeps memory as the single source of truth and removes hidden prompt
 mutation.
 
-### 15.6 Model-driven compaction defaults
+### 15.6 Token-budget compaction defaults
 
-Set compaction defaults on the model registry so each model can define its
-own context budget behavior. Allow per-agent overrides in config.
+Use model registry defaults and per-agent config overrides to decide **when**
+the parent run should compact based on context budget behavior. These settings
+do not choose the compaction summarization model; the selected compactor
+agent's default launch config owns runtime, model, and model config through
+`AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID`.
 
 **Model defaults (LLMModel)**
 
@@ -1197,9 +1227,10 @@ Use this “debug-trace simulation” as a review checklist:
 
 ---
 
-### Phase E — Token Budget & Model Defaults
+### Phase E — Token Budget & Parent Model Defaults
 
-**Goal:** Use model-level token budgets for compaction thresholds.
+**Goal:** Use parent-run model-level token budgets for compaction thresholds
+without reintroducing direct-model compaction summarization.
 
 - Add to `LLMModel`:
   - `max_context_tokens`
@@ -1282,17 +1313,49 @@ Use this “debug-trace simulation” as a review checklist:
 - `src/memory/compaction/compactor.ts`
   - Summarizes eligible blocks, stores outputs, and requests prune/archive by ID
 
-- `src/memory/compaction/llm-compaction-summarizer.ts`
-  - Production internal LLM-backed summarizer owner
+- `src/memory/compaction/agent-compaction-summarizer.ts`
+  - Builds a compaction task, delegates to the configured compactor-agent runner,
+    and parses the returned JSON output
 
-- `src/memory/compaction/compaction-prompt-builder.ts`
-  - Builds the internal JSON-only compaction prompt
+- `src/memory/compaction/compaction-agent-runner.ts`
+  - Defines the boundary between memory compaction and server/runtime-specific
+    visible compactor-agent execution
+
+- `src/memory/compaction/compaction-task-prompt-builder.ts`
+  - Builds the JSON-only compactor-agent task prompt
 
 - `src/memory/compaction/compaction-response-parser.ts`
   - Parses and validates summarizer output
 
 - `src/memory/policies/compaction-policy.ts`
   - Trigger ratio, rendered line cap, and safety margin defaults
+
+### Server Runtime Adapter / Default Agent Setup
+
+- `autobyteus-server-ts/src/agent-execution/compaction/default-compactor-agent-bootstrapper.ts`
+  - Seeds the normal shared `autobyteus-memory-compactor` definition into the
+    configured agents directory, preserves existing files/user edits, refreshes
+    the definition cache, and selects it only when the compactor setting is blank
+    and the definition resolves successfully.
+
+- `autobyteus-server-ts/src/agent-execution/compaction/default-compactor-agent/`
+  - File-backed default agent template. `agent-config.json` intentionally keeps
+    `defaultLaunchConfig: null`; operators configure runtime/model through the
+    normal agent editor before required compaction can use that default.
+
+- `autobyteus-server-ts/src/agent-execution/compaction/compaction-agent-settings-resolver.ts`
+  - Resolves `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` to the selected normal
+    `AgentDefinition.defaultLaunchConfig` and fails actionably when launch
+    defaults are missing or invalid.
+
+- `autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts`
+  - Creates the visible normal compactor run, posts one task, collects output,
+    records run activity, and terminates the run without adding compaction
+    branches to backend bootstrap/session/thread internals.
+
+- `autobyteus-server-ts/src/agent-execution/compaction/compaction-run-output-collector.ts`
+  - Normalizes backend run events into the final text output consumed by the
+    core compaction response parser.
 
 ### Retrieval / Snapshot
 
@@ -1503,7 +1566,6 @@ Turns are created when a processed non-tool user message is ready.
   "ts": 1738100500.0,
   "turn_ids": ["turn_0001","turn_0002"],
   "summary": "...",
-  "tags": ["project", "decision"],
   "salience": 0.7
 }
 ```
@@ -1516,7 +1578,6 @@ Turns are created when a processed non-tool user message is ready.
   "ts": 1738100501.0,
   "category": "user_preference",
   "fact": "Use vitest with pnpm exec vitest --run.",
-  "tags": ["preference","testing"],
   "salience": 300
 }
 ```

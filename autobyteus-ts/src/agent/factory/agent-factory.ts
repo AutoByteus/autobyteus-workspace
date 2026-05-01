@@ -43,7 +43,7 @@ import {
   CompactionPolicy,
   Compactor,
   FileMemoryStore,
-  LLMCompactionSummarizer,
+  AgentCompactionSummarizer,
   MemoryManager,
   resolveMemoryBaseDir
 } from '../../memory/index.js';
@@ -180,11 +180,13 @@ export class AgentFactory extends Singleton {
     const memoryStore = new FileMemoryStore(memoryDir, agentId, memoryLayoutOptions);
     const snapshotStore = new WorkingContextSnapshotStore(memoryDir, agentId, memoryLayoutOptions);
     const compactionPolicy = new CompactionPolicy();
-    const compactionSummarizer = new LLMCompactionSummarizer({
-      fallbackModelIdentifierProvider: () => config.llmInstance.model.modelIdentifier,
-      maxItemChars: compactionPolicy.maxItemChars
-    });
-    const compactor = new Compactor(memoryStore, compactionSummarizer);
+    const compactor = config.compactionAgentRunner
+      ? new Compactor(memoryStore, new AgentCompactionSummarizer({
+          runner: config.compactionAgentRunner,
+          parentAgentId: agentId,
+          maxItemChars: compactionPolicy.maxItemChars
+        }))
+      : null;
     runtimeState.memoryManager = new MemoryManager({
       store: memoryStore,
       compactionPolicy,

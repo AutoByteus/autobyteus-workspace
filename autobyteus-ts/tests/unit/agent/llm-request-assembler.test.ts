@@ -46,14 +46,13 @@ describe('LLMRequestAssembler', () => {
     };
 
     const assembler = new LLMRequestAssembler(memoryManager as any, new FakeRenderer(), executor as any);
-    const request = await assembler.prepareRequest('new input', 'turn_0002', 'System prompt', 'main-model');
+    const request = await assembler.prepareRequest('new input', 'turn_0002', 'System prompt');
 
     expect(request.didCompact).toBe(true);
     expect(executorCalls).toEqual([
       {
         turnId: 'turn_0002',
         systemPrompt: 'System prompt',
-        activeModelIdentifier: 'main-model',
       }
     ]);
     expect(request.messages.map((message) => message.role)).toEqual([

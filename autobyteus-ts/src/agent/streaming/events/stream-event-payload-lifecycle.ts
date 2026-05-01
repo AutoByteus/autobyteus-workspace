@@ -56,7 +56,12 @@ export class CompactionStatusData extends BaseStreamPayload {
   compacted_block_count?: number | null;
   raw_trace_count?: number | null;
   semantic_fact_count?: number | null;
+  compaction_agent_definition_id?: string | null;
+  compaction_agent_name?: string | null;
+  compaction_runtime_kind?: string | null;
   compaction_model_identifier?: string | null;
+  compaction_run_id?: string | null;
+  compaction_task_id?: string | null;
   error_message?: string | null;
 
   constructor(data: Record<string, any>) {
@@ -68,7 +73,12 @@ export class CompactionStatusData extends BaseStreamPayload {
     this.compacted_block_count = typeof data.compacted_block_count === 'number' ? data.compacted_block_count : data.compacted_block_count ?? undefined;
     this.raw_trace_count = typeof data.raw_trace_count === 'number' ? data.raw_trace_count : data.raw_trace_count ?? undefined;
     this.semantic_fact_count = typeof data.semantic_fact_count === 'number' ? data.semantic_fact_count : data.semantic_fact_count ?? undefined;
+    this.compaction_agent_definition_id = typeof data.compaction_agent_definition_id === 'string' ? data.compaction_agent_definition_id : data.compaction_agent_definition_id ?? undefined;
+    this.compaction_agent_name = typeof data.compaction_agent_name === 'string' ? data.compaction_agent_name : data.compaction_agent_name ?? undefined;
+    this.compaction_runtime_kind = typeof data.compaction_runtime_kind === 'string' ? data.compaction_runtime_kind : data.compaction_runtime_kind ?? undefined;
     this.compaction_model_identifier = typeof data.compaction_model_identifier === 'string' ? data.compaction_model_identifier : data.compaction_model_identifier ?? undefined;
+    this.compaction_run_id = typeof data.compaction_run_id === 'string' ? data.compaction_run_id : data.compaction_run_id ?? undefined;
+    this.compaction_task_id = typeof data.compaction_task_id === 'string' ? data.compaction_task_id : data.compaction_task_id ?? undefined;
     this.error_message = typeof data.error_message === 'string' ? data.error_message : data.error_message ?? undefined;
   }
 }

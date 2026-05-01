@@ -21,7 +21,6 @@ export class LLMRequestAssembler {
     processedUserInput: string | LLMUserMessage,
     turnId?: string | null,
     systemPrompt?: string | null,
-    activeModelIdentifier?: string | null,
   ): Promise<RequestPackage> {
     const userMessage = this.buildUserMessage(processedUserInput);
     this.ensureSystemPrompt(systemPrompt ?? undefined);
@@ -30,7 +29,6 @@ export class LLMRequestAssembler {
       ? await this.pendingCompactionExecutor.executeIfRequired({
           turnId,
           systemPrompt: systemPrompt ?? '',
-          activeModelIdentifier,
         })
       : false;
 

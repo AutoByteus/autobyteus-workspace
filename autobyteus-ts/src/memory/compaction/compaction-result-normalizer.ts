@@ -8,8 +8,6 @@ import { CompactionResult, type CompactionSemanticEntry } from './compaction-res
 export type CompactedMemoryEntryCandidate = {
   category: CompactedMemoryCategory;
   fact: string;
-  reference?: string | null;
-  tags?: string[];
   id?: string | null;
   ts?: number | null;
 };
@@ -51,24 +49,6 @@ const LOW_VALUE_NOISE_PATTERNS = [
 ];
 
 const collapseWhitespace = (value: string): string => value.replace(/\s+/g, ' ').trim();
-
-const normalizeReference = (value: string | null | undefined): string | null => {
-  if (typeof value !== 'string') {
-    return null;
-  }
-  const normalized = collapseWhitespace(value);
-  return normalized ? normalized : null;
-};
-
-const extractReferenceFromText = (text: string): string | null => {
-  const explicitMatch = text.match(/\bref\s*=\s*([^\s)]+)/i);
-  if (explicitMatch?.[1]) {
-    return explicitMatch[1];
-  }
-
-  const pathMatch = text.match(/(?:\/[\w./-]+|\b[\w.-]+\.(?:ts|tsx|js|jsx|vue|md|json|txt|py|ya?ml)\b)/);
-  return pathMatch?.[0] ?? null;
-};
 
 const isLowValueOperationalNoise = (fact: string): boolean => LOW_VALUE_NOISE_PATTERNS.some((pattern) => pattern.test(fact));
 
@@ -128,8 +108,8 @@ export class CompactionResultNormalizer {
       normalized.push({
         category: candidate.category,
         fact: candidate.fact,
-        reference: candidate.reference ?? null,
-        tags: candidate.tags ?? [],
+        reference: null,
+        tags: [],
         salience: COMPACTED_MEMORY_CATEGORY_BASE_SALIENCE[candidate.category] - currentCount,
         id: candidate.id ?? null,
         ts: candidate.ts ?? null,
@@ -143,8 +123,6 @@ export class CompactionResultNormalizer {
     return entries.map((entry) => ({
       category,
       fact: entry.fact,
-      reference: entry.reference,
-      tags: entry.tags,
     }));
   }
 
@@ -154,21 +132,9 @@ export class CompactionResultNormalizer {
       return null;
     }
 
-    const tags = Array.isArray(candidate.tags)
-      ? candidate.tags
-          .filter((tag): tag is string => typeof tag === 'string')
-          .map((tag) => collapseWhitespace(tag))
-          .filter(Boolean)
-      : [];
-
-    const reference = normalizeReference(candidate.reference) ??
-      (candidate.category === 'important_artifact' ? extractReferenceFromText(fact) : null);
-
     return {
       category: candidate.category,
       fact,
-      reference,
-      tags,
       id: candidate.id ?? null,
       ts: typeof candidate.ts === 'number' && Number.isFinite(candidate.ts) ? candidate.ts : null,
     };

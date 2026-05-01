@@ -190,8 +190,9 @@ OpenAI-compatible caller:
 - Non-local / cloud OpenAI-compatible providers keep default SDK transport
   behavior unless a separate review explicitly widens that policy.
 
-This hardening matters to compaction because the internal summarizer may send a
-large local request before the next agent LLM leg is allowed to continue.
+This hardening still matters to compaction when the selected visible compactor
+agent uses a local model and sends a large request before the next parent-agent
+LLM leg is allowed to continue.
 
 ## 7. Dynamic Model Reloading
 

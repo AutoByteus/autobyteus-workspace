@@ -18,6 +18,7 @@ import {
   waitForAgentToBeIdle,
 } from "autobyteus-ts";
 import type { Agent } from "autobyteus-ts/agent/agent.js";
+import type { CompactionAgentRunner } from "autobyteus-ts/memory/compaction/compaction-agent-runner.js";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import { LLMConfig } from "autobyteus-ts/llm/utils/llm-config.js";
 import { AgentDefinition } from "../../../agent-definition/domain/models.js";
@@ -81,6 +82,22 @@ type AgentLike = {
 
 type AutoByteusRuntimeAgentLike = AgentLike & AutoByteusAgentLike;
 
+export type CompactionAgentRunnerFactoryInput = {
+  agentDefinitionId: string;
+  workspaceRootPath: string | null;
+};
+
+export type CompactionAgentRunnerFactory = (
+  input: CompactionAgentRunnerFactoryInput,
+) => Promise<CompactionAgentRunner | null> | CompactionAgentRunner | null;
+
+const createDefaultCompactionAgentRunner: CompactionAgentRunnerFactory = async ({
+  workspaceRootPath,
+}) => {
+  const module = await import("../../compaction/server-compaction-agent-runner.js");
+  return new module.ServerCompactionAgentRunner({ workspaceRootPath });
+};
+
 export type AutoByteusAgentRunBackendFactoryOptions = {
   agentFactory?: AgentFactoryLike;
   agentDefinitionService?: AgentDefinitionService;
@@ -89,6 +106,7 @@ export type AutoByteusAgentRunBackendFactoryOptions = {
   skillService?: SkillService;
   registries?: Partial<ProcessorRegistries>;
   waitForIdle?: (agent: Agent, timeout?: number) => Promise<void>;
+  compactionAgentRunnerFactory?: CompactionAgentRunnerFactory;
 };
 
 const asTrimmedString = (value: unknown): string | null =>
@@ -102,6 +120,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
   private readonly skillService: SkillService;
   private readonly registries: ProcessorRegistries;
   private readonly waitForIdle: (agent: Agent, timeout?: number) => Promise<void>;
+  private readonly compactionAgentRunnerFactory: CompactionAgentRunnerFactory;
 
   constructor(options: AutoByteusAgentRunBackendFactoryOptions = {}) {
     this.agentFactory = options.agentFactory ?? defaultAgentFactory;
@@ -123,6 +142,8 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       lifecycle: options.registries?.lifecycle ?? defaultLifecycleEventProcessorRegistry,
     };
     this.waitForIdle = options.waitForIdle ?? waitForAgentToBeIdle;
+    this.compactionAgentRunnerFactory =
+      options.compactionAgentRunnerFactory ?? createDefaultCompactionAgentRunner;
   }
 
   async createBackend(
@@ -430,6 +451,11 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
         : {}),
     };
 
+    const compactionAgentRunner = await this.compactionAgentRunnerFactory({
+      agentDefinitionId,
+      workspaceRootPath,
+    });
+
     return {
       resolvedRunConfig: new AgentRunConfig({
         agentDefinitionId,
@@ -464,6 +490,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
         skillPaths,
         null,
         skillAccessMode ?? SkillAccessMode.PRELOADED_ONLY,
+        compactionAgentRunner,
       ),
     };
   }

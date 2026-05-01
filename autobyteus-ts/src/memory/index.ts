@@ -12,11 +12,18 @@ export { CompactionResult } from './compaction/compaction-result.js';
 export { CompactionResultNormalizer } from './compaction/compaction-result-normalizer.js';
 export type { NormalizedCompactionResult, NormalizedCompactedMemoryEntry } from './compaction/compaction-result-normalizer.js';
 export { Summarizer } from './compaction/summarizer.js';
-export { CompactionPromptBuilder } from './compaction/compaction-prompt-builder.js';
+export { AgentCompactionSummarizer } from './compaction/agent-compaction-summarizer.js';
+export { CompactionTaskPromptBuilder, COMPACTION_OUTPUT_CONTRACT } from './compaction/compaction-task-prompt-builder.js';
+export { CompactionAgentRunnerError, getCompactionAgentRunnerErrorMetadata } from './compaction/compaction-agent-runner.js';
+export type {
+  CompactionAgentExecutionMetadata,
+  CompactionAgentRunner,
+  CompactionAgentRunnerResult,
+  CompactionAgentTask,
+} from './compaction/compaction-agent-runner.js';
 export { CompactionResponseParser, CompactionResponseParseError } from './compaction/compaction-response-parser.js';
 export { CompactionRuntimeSettingsResolver } from './compaction/compaction-runtime-settings.js';
 export type { CompactionRuntimeSettings } from './compaction/compaction-runtime-settings.js';
-export { LLMCompactionSummarizer } from './compaction/llm-compaction-summarizer.js';
 export { PendingCompactionExecutor } from './compaction/pending-compaction-executor.js';
 export { CompactionWindowPlanner } from './compaction/compaction-window-planner.js';
 export { FrontierFormatter } from './compaction/frontier-formatter.js';

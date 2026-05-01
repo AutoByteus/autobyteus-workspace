@@ -9,6 +9,9 @@ import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { normalizeSandboxMode } from "../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
 import {
+  AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID,
+} from "../../../src/services/server-settings-service.js";
+import {
   CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
   CODEX_SANDBOX_MODES,
 } from "../../../src/runtime-management/codex/codex-sandbox-mode-setting.js";
@@ -19,6 +22,7 @@ describe("Server settings GraphQL e2e", () => {
   let tempDir: string;
   let originalServerHostEnv: string | undefined;
   let originalCodexSandboxEnv: string | undefined;
+  let originalCompactionAgentEnv: string | undefined;
 
   beforeAll(async () => {
     schema = await buildGraphqlSchema();
@@ -33,6 +37,7 @@ describe("Server settings GraphQL e2e", () => {
     appConfigProvider.resetForTests();
     originalServerHostEnv = process.env.AUTOBYTEUS_SERVER_HOST;
     originalCodexSandboxEnv = process.env[CODEX_APP_SERVER_SANDBOX_SETTING_KEY];
+    originalCompactionAgentEnv = process.env[AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID];
     tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "autobyteus-server-settings-graphql-"));
     fs.writeFileSync(
       path.join(tempDir, ".env"),
@@ -41,6 +46,7 @@ describe("Server settings GraphQL e2e", () => {
     );
     process.env.AUTOBYTEUS_SERVER_HOST = "http://localhost:8000";
     delete process.env[CODEX_APP_SERVER_SANDBOX_SETTING_KEY];
+    delete process.env[AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID];
     appConfigProvider.config.setCustomAppDataDir(tempDir);
   });
 
@@ -55,6 +61,11 @@ describe("Server settings GraphQL e2e", () => {
       delete process.env[CODEX_APP_SERVER_SANDBOX_SETTING_KEY];
     } else {
       process.env[CODEX_APP_SERVER_SANDBOX_SETTING_KEY] = originalCodexSandboxEnv;
+    }
+    if (originalCompactionAgentEnv === undefined) {
+      delete process.env[AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID];
+    } else {
+      process.env[AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID] = originalCompactionAgentEnv;
     }
     fs.rmSync(tempDir, { recursive: true, force: true });
   });
@@ -213,6 +224,65 @@ describe("Server settings GraphQL e2e", () => {
     expect(envFileContents).not.toContain(
       `${CODEX_APP_SERVER_SANDBOX_SETTING_KEY}=danger_full_access`,
     );
+  });
+
+  it("persists the selected compactor agent definition id as a predefined GraphQL setting", async () => {
+    const updateMutation = `
+      mutation UpdateServerSetting($key: String!, $value: String!) {
+        updateServerSetting(key: $key, value: $value)
+      }
+    `;
+    const listQuery = `
+      query GetServerSettings {
+        getServerSettings {
+          key
+          value
+          description
+          isEditable
+          isDeletable
+        }
+      }
+    `;
+
+    const selectedDefinitionId = "memory-compactor-agent";
+    const updated = await execGraphql<{ updateServerSetting: string }>(updateMutation, {
+      key: AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID,
+      value: selectedDefinitionId,
+    });
+    expect(updated.updateServerSetting).toContain("updated successfully");
+    expect(process.env[AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID]).toBe(selectedDefinitionId);
+
+    const listed = await execGraphql<{
+      getServerSettings: Array<{
+        key: string;
+        value: string;
+        description: string;
+        isEditable: boolean;
+        isDeletable: boolean;
+      }>;
+    }>(listQuery);
+
+    const compactorSetting = listed.getServerSettings.find(
+      (entry) => entry.key === AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID,
+    );
+    expect(compactorSetting).toMatchObject({
+      value: selectedDefinitionId,
+      isEditable: true,
+      isDeletable: false,
+    });
+    expect(compactorSetting?.description).toContain("memory compactor agent");
+    expect(compactorSetting?.description).not.toBe("Custom user-defined setting");
+    expect(
+      listed.getServerSettings.find(
+        (entry) => entry.key === "AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER",
+      ),
+    ).toBeUndefined();
+
+    const envFileContents = fs.readFileSync(path.join(tempDir, ".env"), "utf-8");
+    expect(envFileContents).toContain(
+      `${AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID}=${selectedDefinitionId}`,
+    );
+    expect(envFileContents).not.toContain("AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER=");
   });
 
   it("lists effective Codex sandbox values with predefined metadata even when not persisted", async () => {

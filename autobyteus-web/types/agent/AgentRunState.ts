@@ -12,7 +12,12 @@ export interface AgentCompactionStatus {
   compactedBlockCount?: number | null;
   rawTraceCount?: number | null;
   semanticFactCount?: number | null;
+  compactionAgentDefinitionId?: string | null;
+  compactionAgentName?: string | null;
+  compactionRuntimeKind?: string | null;
   compactionModelIdentifier?: string | null;
+  compactionRunId?: string | null;
+  compactionTaskId?: string | null;
   errorMessage?: string | null;
 }
 

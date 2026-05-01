@@ -4,13 +4,11 @@ export type CompactionResponseParserOptions = {
   maxSummaryChars?: number;
   maxFactChars?: number;
   maxFactCount?: number;
-  maxReferenceChars?: number;
 };
 
 const DEFAULT_MAX_SUMMARY_CHARS = 4000;
 const DEFAULT_MAX_FACT_CHARS = 500;
 const DEFAULT_MAX_FACT_COUNT = 20;
-const DEFAULT_MAX_REFERENCE_CHARS = 400;
 
 const clampText = (value: string, limit: number): string => value.length <= limit ? value : value.slice(0, limit).trim();
 
@@ -83,13 +81,11 @@ export class CompactionResponseParser {
   private readonly maxSummaryChars: number;
   private readonly maxFactChars: number;
   private readonly maxFactCount: number;
-  private readonly maxReferenceChars: number;
 
   constructor(options: CompactionResponseParserOptions = {}) {
     this.maxSummaryChars = options.maxSummaryChars ?? DEFAULT_MAX_SUMMARY_CHARS;
     this.maxFactChars = options.maxFactChars ?? DEFAULT_MAX_FACT_CHARS;
     this.maxFactCount = options.maxFactCount ?? DEFAULT_MAX_FACT_COUNT;
-    this.maxReferenceChars = options.maxReferenceChars ?? DEFAULT_MAX_REFERENCE_CHARS;
   }
 
   parse(text: string): CompactionResult {
@@ -126,20 +122,8 @@ export class CompactionResponseParser {
         continue;
       }
 
-      const reference = typeof entryRecord.reference === 'string'
-        ? clampText(entryRecord.reference.trim(), this.maxReferenceChars)
-        : null;
-      const tags = Array.isArray(entryRecord.tags)
-        ? entryRecord.tags
-            .filter((tag): tag is string => typeof tag === 'string')
-            .map((tag) => tag.trim())
-            .filter(Boolean)
-        : [];
-
       entries.push({
         fact,
-        reference,
-        tags,
       });
 
       if (entries.length >= this.maxFactCount) {

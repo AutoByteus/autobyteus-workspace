@@ -3,6 +3,7 @@ import { SemanticItem } from '../models/semantic-item.js';
 import { CompactionPlan } from './compaction-plan.js';
 import { CompactionResultNormalizer } from './compaction-result-normalizer.js';
 import type { NormalizedCompactionResult } from './compaction-result-normalizer.js';
+import type { CompactionAgentExecutionMetadata } from './compaction-agent-runner.js';
 import { Summarizer } from './summarizer.js';
 import { MemoryStore } from '../store/base-store.js';
 
@@ -12,6 +13,7 @@ export type CompactionExecutionOutcome = {
   compactedBlockCount: number;
   rawTraceCount: number;
   semanticFactCount: number;
+  compactionMetadata: CompactionAgentExecutionMetadata | null;
 };
 
 export class Compactor {
@@ -70,6 +72,11 @@ export class Compactor {
       compactedBlockCount: plan.compactedBlockCount,
       rawTraceCount: plan.eligibleTraceIds.length,
       semanticFactCount: semanticItems.length,
+      compactionMetadata: this.getLastCompactionExecutionMetadata(),
     };
+  }
+
+  getLastCompactionExecutionMetadata(): CompactionAgentExecutionMetadata | null {
+    return this.summarizer.getLastCompactionExecutionMetadata();
   }
 }

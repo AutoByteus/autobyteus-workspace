@@ -123,7 +123,12 @@ describe('agentStatusHandler', () => {
         compacted_block_count: 2,
         raw_trace_count: 4,
         semantic_fact_count: 1,
+        compaction_agent_definition_id: 'memory-compactor',
+        compaction_agent_name: 'Memory Compactor',
+        compaction_runtime_kind: 'codex_app_server',
         compaction_model_identifier: 'compaction-model',
+        compaction_run_id: 'compaction-run-1',
+        compaction_task_id: 'compaction-task-1',
       };
 
       handleCompactionStatus(payload, mockContext);
@@ -136,7 +141,12 @@ describe('agentStatusHandler', () => {
         compactedBlockCount: 2,
         rawTraceCount: 4,
         semanticFactCount: 1,
+        compactionAgentDefinitionId: 'memory-compactor',
+        compactionAgentName: 'Memory Compactor',
+        compactionRuntimeKind: 'codex_app_server',
         compactionModelIdentifier: 'compaction-model',
+        compactionRunId: 'compaction-run-1',
+        compactionTaskId: 'compaction-task-1',
         errorMessage: null,
       });
     });

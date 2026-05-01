@@ -342,7 +342,12 @@ describe('TeamStreamingService', () => {
       compactedBlockCount: 2,
       rawTraceCount: null,
       semanticFactCount: null,
+      compactionAgentDefinitionId: null,
+      compactionAgentName: null,
+      compactionRuntimeKind: null,
       compactionModelIdentifier: null,
+      compactionRunId: null,
+      compactionTaskId: null,
       errorMessage: null,
     });
     expect(studentContext.state.compactionStatus).toBeNull();
