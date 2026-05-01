@@ -1581,7 +1581,7 @@ Turns are created when a processed non-tool user message is ready.
 
 ```
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "last_reset_ts": 1738100501123
 }
 ```
