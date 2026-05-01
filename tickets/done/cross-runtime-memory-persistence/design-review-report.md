@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- **Upstream Requirements Doc**: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-memory-persistence/tickets/in-progress/cross-runtime-memory-persistence/requirements.md`
-- **Upstream Investigation Notes**: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-memory-persistence/tickets/in-progress/cross-runtime-memory-persistence/investigation-notes.md`
-- **Reviewed Design Spec**: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-memory-persistence/tickets/in-progress/cross-runtime-memory-persistence/design-spec.md`
+- **Upstream Requirements Doc**: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-memory-persistence/tickets/done/cross-runtime-memory-persistence/requirements.md`
+- **Upstream Investigation Notes**: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-memory-persistence/tickets/done/cross-runtime-memory-persistence/investigation-notes.md`
+- **Reviewed Design Spec**: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-memory-persistence/tickets/done/cross-runtime-memory-persistence/design-spec.md`
 - **Current Review Round**: 9
 - **Trigger**: Re-review after design-principles pass refined the segmented raw-trace archive architecture into an authoritative `RunMemoryFileStore` facade with internal `RawTraceArchiveManager` archive-lifecycle owner.
 - **Prior Review Round Reviewed**: 8

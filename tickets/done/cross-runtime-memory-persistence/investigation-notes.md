@@ -25,7 +25,7 @@ User reports that the server supports multiple runtimes, but only the native Aut
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-memory-persistence`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-memory-persistence/tickets/in-progress/cross-runtime-memory-persistence`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-memory-persistence/tickets/done/cross-runtime-memory-persistence`
 - Current Branch: `codex/cross-runtime-memory-persistence`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-memory-persistence`
 - Bootstrap Base Branch: `origin/personal`

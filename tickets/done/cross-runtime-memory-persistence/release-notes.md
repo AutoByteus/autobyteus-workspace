@@ -35,6 +35,7 @@ Codex `thread/compacted` / raw Responses `type = "compaction"` and Claude `compa
 - Codex duplicate `thread/compacted` plus raw `type = "compaction"` surfaces are de-duped even when stable ids differ, as long as they represent the same thread/turn boundary window.
 - Claude same-uuid `status_compacting` provenance remains distinct from rotation-eligible `compact_boundary`, and rotation occurs at the completed boundary marker.
 - Generated `autobyteus-server-ts/workspaces.json` runtime state remains ignored and absent from repository status.
+- Restore validation fixtures now explicitly create direct-write legacy memory directories, preserving CR-005 no-mutation behavior while keeping restore coverage current.
 
 ## Operational Notes
 
@@ -49,4 +50,4 @@ Latest focused validation and delivery integrated-state checks passed after merg
 - `pnpm -C autobyteus-ts exec tsc -p tsconfig.build.json --noEmit`.
 - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`.
 
-API/E2E Round 6 also passed the live Codex no-WebSocket memory persistence smoke (`1` file, `1` test). A fresh local unsigned macOS Electron test build was produced as `AutoByteus_enterprise_macos-arm64-1.2.88.dmg`.
+API/E2E Round 6 also passed the live Codex no-WebSocket memory persistence smoke (`1` file, `1` test). Round 7 explicit restore validation passed after the stale fixture setup fix: `pnpm -C autobyteus-ts exec vitest run tests/integration/memory/working-context-snapshot-restore.test.ts tests/integration/agent/working-context-snapshot-restore-flow.test.ts tests/unit/agent/bootstrap-steps/working-context-snapshot-restore-step.test.ts tests/unit/agent/factory/agent-factory.test.ts --reporter=dot` (`4` files, `15` tests). A fresh local unsigned macOS personal Electron test build was produced as `AutoByteus_personal_macos-arm64-1.2.88.dmg`.

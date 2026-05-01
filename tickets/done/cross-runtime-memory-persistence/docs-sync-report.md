@@ -52,7 +52,7 @@
 | `autobyteus-ts/docs/agent_memory_design.md` | Shared-store update | Added `RunMemoryFileStore`, `RawTraceArchiveManager`, segmented file layout, read-only complete-corpus semantics, and external-runtime provider-boundary rotation behavior. | Shared memory/archive primitives are now intentionally consumed by native memory and server recorder paths. |
 | `autobyteus-ts/docs/agent_memory_design_nodejs.md` | Shared-store update | Same as sibling memory design doc. | Keeps TypeScript-specific memory design aligned. |
 | `autobyteus-web/docs/memory.md` | API/frontend docs update | Documented complete segmented archive plus active raw traces, provider-boundary markers, and GraphQL provenance fields. | Memory page consumers need to understand raw trace `id`, `sourceEvent`, and archive-visible rows. |
-| `tickets/in-progress/cross-runtime-memory-persistence/release-notes.md` | Release notes | Updated functional release notes for segmented archives, provider-boundary behavior, CR-005/CR-006/CR-007 fixes, and latest delivery validation evidence. | Required input for the project release helper after user verification/finalization. |
+| `tickets/done/cross-runtime-memory-persistence/release-notes.md` | Release notes | Updated functional release notes for segmented archives, provider-boundary behavior, CR-005/CR-006/CR-007 fixes, and latest delivery validation evidence. | Required input for the project release helper after user verification/finalization. |
 
 ## Durable Design / Runtime Knowledge Promoted
 
@@ -86,13 +86,13 @@
 
 ## No-Impact Decision (Use Only If Truly No Docs Changes Are Needed)
 
-N/A — docs impact was confirmed and long-lived docs were updated.
+N/A for the feature — docs impact was confirmed and long-lived docs were updated. Round 7/Round 12 restore-validation fixture changes had no additional product-doc impact.
 
 ## Delivery Continuation
 
 - Result: `Pass`
 - Next owner: `delivery_engineer`
-- Notes: Docs sync is current on the latest integrated branch state after Round 11 source review, Round 6 validation, and the latest `origin/personal` merge. Proceed to handoff-summary and delivery report update, then hold for explicit user verification before ticket archive/finalization/release.
+- Notes: Docs sync is current on the latest integrated branch state after Round 12 restore-validation re-review and latest `origin/personal` refresh. Round 7/Round 12 fixture-only restore validation changes had no additional long-lived product-doc impact beyond already documented CR-005 no-mutation semantics. Proceed with archive/finalization.
 
 ## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
 

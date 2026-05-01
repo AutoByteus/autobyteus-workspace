@@ -98,6 +98,7 @@ describe('WorkingContextSnapshot restore integration', () => {
       const store = new FileMemoryStore(tempDir, 'agent_schema_reset');
       const snapshotStore = new WorkingContextSnapshotStore(tempDir, 'agent_schema_reset');
       const semanticPath = path.join(tempDir, 'agents', 'agent_schema_reset', 'semantic.jsonl');
+      fs.mkdirSync(path.dirname(semanticPath), { recursive: true });
       fs.writeFileSync(
         semanticPath,
         `${JSON.stringify({ id: 'legacy_1', ts: 100, fact: 'legacy flat semantic memory', confidence: 0.9 })}\n`,

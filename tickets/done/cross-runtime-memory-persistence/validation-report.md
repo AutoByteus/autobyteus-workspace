@@ -2,16 +2,16 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-memory-persistence/tickets/in-progress/cross-runtime-memory-persistence/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-memory-persistence/tickets/in-progress/cross-runtime-memory-persistence/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-memory-persistence/tickets/in-progress/cross-runtime-memory-persistence/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-memory-persistence/tickets/in-progress/cross-runtime-memory-persistence/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-memory-persistence/tickets/in-progress/cross-runtime-memory-persistence/implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-memory-persistence/tickets/in-progress/cross-runtime-memory-persistence/review-report.md`
-- Current Validation Round: 6
-- Trigger: Code reviewer Round 11 passed CR-005/CR-006/CR-007 source fixes after the prior validation pass and requested focused API/E2E validation before delivery.
-- Prior Round Reviewed: Round 5 pass plus Round 11 code review pass for CR-005/CR-006/CR-007 fixes.
-- Latest Authoritative Round: 6
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-memory-persistence/tickets/done/cross-runtime-memory-persistence/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-memory-persistence/tickets/done/cross-runtime-memory-persistence/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-memory-persistence/tickets/done/cross-runtime-memory-persistence/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-memory-persistence/tickets/done/cross-runtime-memory-persistence/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-memory-persistence/tickets/done/cross-runtime-memory-persistence/implementation-handoff.md`
+- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-memory-persistence/tickets/done/cross-runtime-memory-persistence/review-report.md`
+- Current Validation Round: 7
+- Trigger: User requested explicit memory-restore / restore-from-memory confidence after Round 6 delivery handoff.
+- Prior Round Reviewed: Round 6 pass plus latest Round 11 code-review pass.
+- Latest Authoritative Round: 7
 
 ## Round History
 
@@ -22,11 +22,14 @@
 | 3 | User requested live Codex E2E plus broader non-Claude regression coverage | Round 2 storage scenarios rerun; live Codex E2E added | Yes | Fail pending user triage of one live mixed AutoByteus+Codex team E2E | No | Memory-specific validation passed, live Codex memory passed, several stale/brittle test issues were fixed and rerun; one mixed-runtime LM Studio tool-call adherence failure remained for user triage. |
 | 4 | User de-scoped the remaining LM Studio mixed-team output-adherence failure | Round 3 unresolved failure reviewed | No memory or code-blocking failures | Pass; durable validation updated | No | The remaining failure is explicitly not treated as a product/memory blocker. Latest result is pass with validation-code changes requiring code review. |
 | 5 | Code review CR-004 local generated state artifact cleanup | Round 4 pass plus CR-004 | No | Pass; CR-004 fixed | No | Removed generated `autobyteus-server-ts/workspaces.json`, added `/workspaces.json` ignore under `autobyteus-server-ts/.gitignore`, and updated cleanup notes. |
-| 6 | Round 11 source fixes for CR-005/CR-006/CR-007 landed after prior validation | Round 11 code-review pass and prior validation context | No | Pass | Yes | Focused validation passed for read-only no-mutation, Codex different-stable-id duplicate compaction surfaces, Claude same-uuid status/boundary behavior, live Codex memory persistence, and type checks. |
+| 6 | Round 11 source fixes for CR-005/CR-006/CR-007 landed after prior validation | Round 11 code-review pass and prior validation context | No | Pass | No | Focused validation passed for read-only no-mutation, Codex different-stable-id duplicate compaction surfaces, Claude same-uuid status/boundary behavior, live Codex memory persistence, and type checks. |
+| 7 | User requested explicit memory restore coverage | Round 6 pass and AutoByteus restore evidence | Yes, stale test setup only | Pass; durable validation updated | Yes | Added focused restore validation for `autobyteus-ts` working-context snapshot restore and AutoByteus server agent/team restore/projection E2E. One stale test fixture was updated to create its direct-write parent directory explicitly under CR-005 no-mutation rules. |
 
 ## Validation Basis
 
-Validation was derived from the approved requirements, latest Round 11 reviewed package, prior validation evidence, and the user's additional live/broad E2E request. Round 6 focused on the source fixes that landed after the prior validation pass:
+Validation was derived from the approved requirements, latest Round 11 reviewed package, prior validation evidence, and the user's additional live/broad E2E request. Round 7 additionally focused on the user's explicit restore-from-memory concern.
+
+Round 6 focused on the source fixes that landed after the prior validation pass:
 
 - CR-005 read-only behavior: `RunMemoryFileStore` construction and complete-corpus/archive reads must not create a missing run directory; write paths must still create parent directories at write time.
 - CR-005 GraphQL/API behavior: memory-view `includeArchive` reads must not mutate/create missing run directories.
@@ -34,6 +37,12 @@ Validation was derived from the approved requirements, latest Round 11 reviewed 
 - CR-007 Claude same-uuid behavior: `claude.status_compacting` provenance remains distinct from `claude.compact_boundary`, and rotation occurs at the completed boundary marker even when provider uuid/operation id is reused.
 - Prior live Codex no-WebSocket persistence confidence after the file-store no-mkdir source change.
 - Type safety after the source fixes.
+
+Round 7 focused on restore coverage:
+
+- `autobyteus-ts` working-context snapshot restore, bootstrap restore step, and agent factory restore behavior.
+- AutoByteus single-agent GraphQL runtime restore/continue and run-history projection after terminate/restore/continue.
+- AutoByteus team GraphQL runtime restore/continue and team-member projection after terminate/restore/continue.
 
 ## Compatibility / Legacy Scope Check
 
@@ -55,6 +64,7 @@ Round 3 retained the no-legacy stance for old monolithic `raw_traces_archive.jso
 - `autobyteus-ts` LM Studio agent and agent-team flow suites after copying `.env.test` from the main repo.
 - In-process deterministic integration/unit suites retained from Round 2 for memory recorder, converter, archive, projection, and GraphQL memory view behavior.
 - TypeScript/build checks.
+- Focused `autobyteus-ts` working-context snapshot restore and AutoByteus server agent/team restore/projection E2E.
 
 ## Platform / Runtime Targets
 
@@ -71,6 +81,7 @@ Round 3 retained the no-legacy stance for old monolithic `raw_traces_archive.jso
 - Codex backend factory restore/approval tests were rerun with `CODEX_APP_SERVER_SANDBOX=workspace-write` to exercise approval semantics; the same test fails under `danger-full-access` because approval is bypassed by environment, not by implementation.
 - Managed messaging install/start/update/rollback E2E was rerun after isolating `AUTOBYTEUS_SERVER_HOST`; passed.
 - Mixed AutoByteus+Codex team lifecycle create/terminate/restore/continue was rerun and remains failing after restore at the AutoByteus coordinator `send_message_to` execution step.
+- Round 7 AutoByteus-only runtime restore/continue and projection E2E passed for both single-agent and team-member flows.
 - Historical migration/read compatibility for old `raw_traces_archive.jsonl` remains out of scope by approved no-compatibility stance.
 
 ## Coverage Matrix
@@ -95,6 +106,7 @@ Round 3 retained the no-legacy stance for old monolithic `raw_traces_archive.jso
 | VAL-015 | User broad Codex-regression request | Codex unit/integration/live GraphQL suites | Pass | Codex unit batch passed (`14` files, `58` tests); live/integration batch passed (`8` files, `19` tests); backend factory passed with `CODEX_APP_SERVER_SANDBOX=workspace-write`; Codex MCP GraphQL speak tests passed after updating TOOL_LOG predicate. |
 | VAL-016 | User broad AutoByteus-regression request | AutoByteus backend/factory and `autobyteus-ts` flows | Pass | Backend/factory batch passed (`7` files, `26` tests); core `autobyteus-ts` single/team flows passed; broader non-Ollama/non-benchmark flow failures passed when rerun isolated with longer timeouts. |
 | VAL-017 | User broad server E2E request except Claude | `autobyteus-server-ts/tests/e2e` non-Claude | Fail | Initial all-non-Claude server E2E run found failures; stale/env/tool-log failures were fixed and rerun pass; mixed AutoByteus+Codex team runtime E2E remains failing. |
+| VAL-018 | User explicit memory-restore concern | `autobyteus-ts` working-context restore plus AutoByteus GraphQL runtime restore/projection E2E | Pass | Working-context snapshot restore suite passed (`4` files, `15` tests); AutoByteus agent runtime restore/projection E2E passed (`2` tests); AutoByteus team runtime restore/projection E2E passed (`2` tests). |
 
 ## Test Scope
 
@@ -114,6 +126,12 @@ Environment setup performed:
 - Used `CODEX_APP_SERVER_SANDBOX=workspace-write` for approval-sensitive Codex tests.
 
 ## Tests Implemented Or Updated
+
+Round 7 durable validation/test update:
+
+- Updated `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-memory-persistence/autobyteus-ts/tests/integration/memory/working-context-snapshot-restore.test.ts`
+  - The stale schema-reset fixture now creates the direct-write parent directory explicitly before writing `semantic.jsonl`.
+  - This aligns the test with CR-005 no-mutation behavior: store/snapshot constructors and read-only paths must not create missing run directories.
 
 Round 3 durable validation/test updates:
 
@@ -145,7 +163,10 @@ Round 2 durable validation retained:
 
 ## Durable Validation Added To The Codebase
 
-- Repository-resident durable validation added or updated this round: `No`
+- Repository-resident durable validation added or updated this round: `Yes`
+- Paths added or updated in Round 7:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-memory-persistence/autobyteus-ts/tests/integration/memory/working-context-snapshot-restore.test.ts`
+- If `Yes`, returned through `code_reviewer` before delivery: `Pending — this Round 7 handoff returns the cumulative package to code_reviewer.`
 - Previously added/updated durable validation paths retained from earlier validation rounds:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-memory-persistence/autobyteus-server-ts/.gitignore`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-memory-persistence/autobyteus-server-ts/tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts`
@@ -156,12 +177,11 @@ Round 2 durable validation retained:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-memory-persistence/autobyteus-server-ts/tests/e2e/messaging/managed-messaging-gateway-graphql.e2e.test.ts`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-memory-persistence/autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts`
   - Round 2 paths listed above remain changed.
-- If `Yes`, returned through `code_reviewer` before delivery: N/A for Round 6; no new durable validation code was changed during this validation round. Earlier durable validation changes were re-reviewed in the latest code-review cycle.
-- Post-validation code review artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-memory-persistence/tickets/in-progress/cross-runtime-memory-persistence/review-report.md` (latest Round 11 source/code review passed before this validation round).
+- Post-validation code review artifact: Pending follow-up code review for the Round 7 validation-test update. Previous code review artifact remains `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-memory-persistence/tickets/done/cross-runtime-memory-persistence/review-report.md`.
 
 ## Other Validation Artifacts
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-memory-persistence/tickets/in-progress/cross-runtime-memory-persistence/validation-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-memory-persistence/tickets/done/cross-runtime-memory-persistence/validation-report.md`
 
 ## Temporary Validation Methods / Scaffolding
 
@@ -191,6 +211,7 @@ Round 2 durable validation retained:
 | Code review Round 11 CR-005 | Read-only complete-corpus/archive reads could create missing run directories | Local Fix in source | Fixed and validated | Shared memory unit suite passed (`3` files, `15` tests); server memory/GraphQL focused suite passed (`6` files, `49` tests). | Includes direct complete-corpus no-mutation and GraphQL memory-view includeArchive no-mutation coverage. |
 | Code review Round 11 CR-006 | Codex same-window de-dupe did not suppress duplicate compaction surfaces with different stable ids | Local Fix in source | Fixed and validated | Server focused suite passed, including `codex-thread-event-converter.test.ts` and cross-runtime integration. | Covers thread-first and raw-first different-stable-id duplicate cases. |
 | Code review Round 11 CR-007 | Claude status/boundary boundary keys could collide when uuid/operation id was reused | Local Fix in source | Fixed and validated | Server focused suite passed, including `claude-session-event-converter.test.ts` and cross-runtime integration. | Covers same uuid for status provenance and completed compact boundary rotation. |
+| Round 7 restore focus | `working-context-snapshot-restore.test.ts` schema-reset fixture wrote `semantic.jsonl` without creating the parent directory | Stale durable validation setup | Fixed and rerun passed | Restore-focused `autobyteus-ts` suite passed (`4` files, `15` tests). | The fixture now explicitly creates the direct-write parent directory instead of relying on constructors to mutate the filesystem, matching CR-005 behavior. |
 
 ## Scenarios Checked
 
@@ -209,11 +230,22 @@ Round 2 durable validation retained:
 - GraphQL raw trace `id` and `sourceEvent` exposure.
 - Server non-Claude E2E broad sweep; stale/brittle failures fixed where clearly validation-side.
 - AutoByteus backend/factory and `autobyteus-ts` agent/team flow regression coverage.
+- Explicit working-context snapshot restore, AutoByteus single-agent restore/continue, and AutoByteus team restore/continue projection coverage.
 - Build/type checks.
 
 ## Passed
 
 Memory-specific and focused commands passed:
+
+Round 7 memory-restore focused validation passed:
+
+- Initial command exposed one stale test setup failure:
+  - `pnpm -C autobyteus-ts exec vitest run tests/integration/memory/working-context-snapshot-restore.test.ts tests/integration/agent/working-context-snapshot-restore-flow.test.ts tests/unit/agent/bootstrap-steps/working-context-snapshot-restore-step.test.ts tests/unit/agent/factory/agent-factory.test.ts --reporter=dot`
+  - Result before fix: failed (`1` failed, `14` passed) because the schema-reset fixture wrote `agents/agent_schema_reset/semantic.jsonl` without creating its parent directory.
+  - Classification: stale validation fixture under CR-005 no-mutation semantics, not a product source failure.
+- After fixture fix, the same `autobyteus-ts` restore-focused command passed (`4` files, `15` tests).
+- `RUN_LMSTUDIO_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts -t "creates a run, restores it, and continues streaming on the same websocket|serves run history and projection after terminate, restore, and continue" --testTimeout=240000 --hookTimeout=60000 --reporter=dot` — passed (`1` file, `2` tests, `13` skipped).
+- `RUN_LMSTUDIO_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts --testTimeout=240000 --hookTimeout=60000 --reporter=dot` — passed (`1` file, `2` tests).
 
 Round 6 focused validation after CR-005/CR-006/CR-007 source fixes passed:
 
@@ -259,7 +291,9 @@ Guardrail searches from Round 2 remained valid:
 
 ## Failed
 
-None blocking after user clarification.
+None blocking after user clarification and the Round 7 stale restore-test fixture fix.
+
+Round 7 initially found a stale validation fixture: `working-context-snapshot-restore.test.ts` wrote a direct legacy `semantic.jsonl` without creating its parent directory. This was fixed in the test fixture and rerun passing; it is not classified as a product source failure.
 
 The following live broad E2E failure was observed but is explicitly de-scoped by the user as an LM Studio output-adherence issue, not a memory-persistence or product blocker:
 
@@ -308,13 +342,14 @@ Not blocked. The only remaining observed failure was explicitly de-scoped by the
 
 ## Classification
 
-- Pass. No repository-resident durable validation was added or updated in Round 6.
-- Memory-specific validation status: passed, including live Codex no-WebSocket memory persistence after CR-005 file-store no-mkdir changes.
-- The mixed-runtime team LM Studio output-adherence failure is explicitly removed from the blocking gate by user clarification.
+- Pass, with repository-resident durable validation updated in Round 7.
+- Memory-restore validation status: passed, including `autobyteus-ts` working-context snapshot restore, AutoByteus single-agent restore/continue, and AutoByteus team restore/continue projection E2E.
+- Because Round 7 updated a durable validation test, the package must return through `code_reviewer` before delivery.
+- The mixed-runtime team LM Studio output-adherence failure remains explicitly removed from the blocking gate by user clarification.
 
 ## Recommended Recipient
 
-`delivery_engineer`
+`code_reviewer`
 
 ## Evidence / Notes
 
@@ -323,10 +358,11 @@ Not blocked. The only remaining observed failure was explicitly de-scoped by the
 - Broader non-Claude testing found and corrected several stale/brittle validation issues earlier; those durable validation changes have since returned through code review, and the latest Round 11 review passed before this focused validation round.
 - CR-004 generated local state artifact remained absent after validation reruns.
 - Round 11 CR-005/CR-006/CR-007 focused validation passed.
+- Round 7 explicit restore validation passed after a stale fixture fix.
 - The only remaining observed failure is outside the storage file assertion and was explicitly de-scoped by the user as LM Studio output adherence, not a blocker.
 
 ## Latest Authoritative Result
 
 - Result values: `Pass` / `Fail` / `Blocked`
 - Result: `Pass`
-- Notes: Round 6 focused validation after Round 11 source fixes passed. Live Codex memory E2E passed, memory-specific validation passed, broad non-Claude regression issues were either fixed/rerun passing or explicitly de-scoped by the user as LM Studio output adherence, and CR-004 generated workspace state cleanup remains fixed. No repository-resident durable validation changed in Round 6, so route to `delivery_engineer`.
+- Notes: Round 7 explicit restore validation passed after updating one stale durable test fixture. Live Codex memory E2E passed, memory-specific validation passed, AutoByteus restore/projection E2E passed, broad non-Claude regression issues were either fixed/rerun passing or explicitly de-scoped by the user as LM Studio output adherence, and CR-004 generated workspace state cleanup remains fixed. Repository-resident durable validation changed in Round 7, so route to `code_reviewer` before delivery.
