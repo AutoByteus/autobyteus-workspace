@@ -43,6 +43,17 @@ describe('toolLifecycleState', () => {
     expect(segment.status).toBe('executing');
   });
 
+  it('allows a late approval request after execution started', () => {
+    const segment = buildSegment();
+    applyExecutionStartedState(segment);
+
+    expect(applyApprovalRequestedState(segment)).toBe(true);
+    expect(segment.status).toBe('awaiting-approval');
+
+    expect(applyApprovedState(segment)).toBe(true);
+    expect(segment.status).toBe('approved');
+  });
+
   it('does not allow non-terminal transitions from terminal states', () => {
     const segment = buildSegment();
     applyExecutionSucceededState(segment, { ok: true });

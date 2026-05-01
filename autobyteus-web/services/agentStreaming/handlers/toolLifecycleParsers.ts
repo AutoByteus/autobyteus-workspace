@@ -23,6 +23,7 @@ export interface ParsedToolApprovedPayload extends ParsedToolLifecycleBase {
 }
 
 export interface ParsedToolDeniedPayload extends ParsedToolLifecycleBase {
+  arguments: Record<string, any>;
   reason: string | null;
   error: string | null;
 }
@@ -143,6 +144,7 @@ export const parseToolDeniedPayload = (
 
   return {
     ...base,
+    arguments: normalizeArguments(payload.arguments),
     reason,
     error,
   };

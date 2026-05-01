@@ -2,21 +2,28 @@
 
 ## Status (`Draft`/`Design-ready`/`Refined`)
 
-Design-ready
+Refined
 
 ## Goal / Problem Statement
 
-When an agent is run through the Claude Agent SDK runtime, tool-call cards in the UI Activity panel can show only `Result` and omit `Arguments`. The same Activity panel shows arguments for Codex runtime tool calls. Investigation must determine whether this is upstream Claude SDK behavior or our runtime/event/UI handling, then define a fix so Claude SDK tool calls expose invocation arguments consistently.
+Claude Agent SDK tool calls must be normalized into the same runtime-neutral event contract as Codex tool calls. The original user-visible bug was that Claude Activity cards showed only `Result` and omitted `Arguments`; investigation proved Claude raw SDK events already contain `tool_use.input`, so the missing arguments were lost in our event normalization path. During implementation we found a broader design asymmetry: Codex normal tool calls generally emit both transcript segment events and tool lifecycle events, while Claude normal tool calls only emitted lifecycle events after the narrow fix. This ticket now intentionally includes the refactor to align Claude with the same two-lane contract:
+
+1. **Segment lane**: `SEGMENT_START` / `SEGMENT_END` owns conversation/transcript structure for the tool call.
+2. **Lifecycle lane**: `TOOL_APPROVAL_*` and `TOOL_EXECUTION_*` owns Activity status, approval state, arguments, result/error, memory/tool traces, and executable state.
+
+The target outcome is not a Claude-specific frontend workaround. Claude should issue both segment and lifecycle events for normal tools so the frontend can handle transcript and Activity consistently across providers.
 
 ## Investigation Findings
 
-The issue is from our side, not from missing Claude SDK data.
+The original missing-arguments issue is from our side, not from missing Claude SDK data.
 
-- The local Claude Agent SDK package is `@anthropic-ai/claude-agent-sdk@0.2.71`; its emitted assistant messages include `tool_use` blocks whose `input` contains the tool arguments.
+- The local Claude Agent SDK package is `@anthropic-ai/claude-agent-sdk@0.2.71`; emitted assistant messages include `tool_use` blocks whose `input` contains tool arguments.
 - A Claude runtime e2e run with raw-event logging captured non-empty arguments in raw SDK events, e.g. a `Bash` tool_use block with `input.command` and a `Write` tool_use block with `input.file_path`/`input.content`.
-- Our `ClaudeSessionToolUseCoordinator.processToolLifecycleChunk` currently tracks assistant `tool_use` arguments internally but does not emit `ITEM_COMMAND_EXECUTION_STARTED` for those observed tool_use blocks. It emits `ITEM_COMMAND_EXECUTION_COMPLETED` on the later `tool_result` without including the tracked arguments.
-- When the SDK permission callback runs, `handleToolPermissionCheck` emits started/approval events with `arguments`, so those tool calls can show arguments. When a tool is executed without that permission callback path (safe built-in call, auto-allowed call, or result-only observed path), the frontend first sees only `TOOL_EXECUTION_SUCCEEDED`; `handleToolExecutionSucceeded` creates a synthetic activity with `{}` arguments and the Activity item hides the Arguments section.
-- The current Claude e2e test also has a fragility: it picks the first `TOOL_EXECUTION_SUCCEEDED`, which can be an unapproved preliminary tool such as `Bash pwd`, then waits for `TOOL_APPROVED` for that unrelated invocation. The test command therefore failed after producing useful evidence; the failure is not the user-facing root cause.
+- The initial bug path was in `ClaudeSessionToolUseCoordinator.processToolLifecycleChunk`: it tracked assistant `tool_use` arguments internally but did not emit `ITEM_COMMAND_EXECUTION_STARTED` for raw-observed tool_use blocks, and completion payloads omitted tracked arguments.
+- The narrow implementation already fixed that lifecycle bug by emitting `TOOL_EXECUTION_STARTED.arguments` and preserving tracked arguments on completion.
+- Broader analysis shows the lifecycle-only Claude shape remains asymmetric with Codex: `codex-item-event-converter.ts` emits both `SEGMENT_START` and `TOOL_EXECUTION_STARTED` for dynamic tool calls and file changes, while Claude normal `tool_use` / `tool_result` currently does not synthesize `ITEM_ADDED` / `ITEM_COMPLETED` segment events.
+- The frontend currently has two potential Activity creation paths: `segmentHandler.ts` creates Activity entries from executable segment starts, and `toolLifecycleHandler.ts` also creates Activity entries from lifecycle starts with dedupe. That dual ownership is why provider asymmetry easily turns into frontend special cases or ordering-sensitive fixes.
+- Claude `send_message_to` is a special team-communication path: it already synthesizes segment events for conversation/team display and suppresses generic lifecycle noise through the converter. That special-case behavior should be preserved unless a separate team-communication Activity lane is intentionally designed.
 
 Evidence files:
 
@@ -25,91 +32,129 @@ Evidence files:
 
 ## Design Health Assessment (Mandatory)
 
-- Change posture (`Feature`/`Bug Fix`/`Behavior Change`/`Refactor`/`Cleanup`/`Performance`/`Larger Requirement`): Bug Fix
+- Change posture (`Feature`/`Bug Fix`/`Behavior Change`/`Refactor`/`Cleanup`/`Performance`/`Larger Requirement`): Bug Fix + Behavior Change + Refactor
 - Initial design issue signal (`Yes`/`No`/`Unclear`): Yes
-- Root cause classification (`Local Implementation Defect`/`Missing Invariant`/`Boundary Or Ownership Issue`/`Duplicated Policy Or Coordination`/`File Placement Or Responsibility Drift`/`Shared Structure Looseness`/`Legacy Or Compatibility Pressure`/`No Design Issue Found`/`Unclear`): Missing Invariant
-- Refactor posture (`Likely Needed`/`Likely Not Needed`/`Deferred`/`Unclear`): Likely Not Needed
-- Evidence basis: Raw Claude SDK `tool_use.input` contains arguments; our coordinator records but does not emit a started event for observed tool_use blocks, and completion payloads omit tracked args. Frontend already renders arguments when a started/approval event carries them.
-- Requirement or scope impact: Fix the Claude runtime tool lifecycle normalization boundary; keep frontend changes minimal and only add regression coverage where needed.
+- Root cause classification (`Local Implementation Defect`/`Missing Invariant`/`Boundary Or Ownership Issue`/`Duplicated Policy Or Coordination`/`File Placement Or Responsibility Drift`/`Shared Structure Looseness`/`Legacy Or Compatibility Pressure`/`No Design Issue Found`/`Unclear`): Missing Invariant + Boundary Or Ownership Issue + Duplicated Policy Or Coordination
+- Refactor posture (`Likely Needed`/`Likely Not Needed`/`Deferred`/`Unclear`): Needed Now
+- Evidence basis: Raw Claude `tool_use.input` contains arguments; Codex converter already emits both segment and lifecycle events for normal tools; Claude normal tool observation currently emits lifecycle only; frontend segment and lifecycle handlers can both create Activity entries.
+- Requirement or scope impact: The ticket expands from a narrow lifecycle argument fix to a runtime-neutral two-lane tool event contract and frontend Activity ownership cleanup.
 
 ## Recommendations
 
-- Make `ClaudeSessionToolUseCoordinator` the single owner of observed Claude tool invocation lifecycle state: when it observes an assistant `tool_use`, it should emit a normalized started event with arguments unless that invocation has already emitted a started event via `handleToolPermissionCheck`.
-- Preserve/send the tracked arguments on completion/failure events as a defensive fallback so result-first consumers, memory persistence, and history projection can recover the arguments even if a started event is missed or arrives out of order.
-- Keep the existing frontend Activity rendering model; it should not need a Claude-specific side channel.
-- Add unit regression coverage for the observed `tool_use -> tool_result` path and update the Claude e2e test to assert arguments on both started/approval and Activity-producing websocket messages without picking an unrelated preliminary success.
+- Yes: Claude normal tool calls should emit both segment and lifecycle events. The reason is semantic separation, not just argument visibility:
+  - Segment events tell the transcript that the assistant invoked a tool.
+  - Lifecycle events tell Activity/memory/history what is executing, awaiting approval, succeeded, failed, or denied.
+- Keep the provider adapter responsible for provider-specific raw-event interpretation. Claude raw `tool_use.input` should be normalized once in the Claude runtime boundary, not recovered in the Vue Activity component.
+- Make `ClaudeSessionToolUseCoordinator` the owner of Claude normal tool invocation state: it should upsert observed tool calls, emit a synthetic segment start once, emit lifecycle started once, preserve arguments for approval/completion, and emit segment end on `tool_result`.
+- Tighten frontend ownership: lifecycle handlers should be the authoritative creator/updater of Activity entries; segment handlers should own conversation segments and may only enrich an existing Activity if needed, not create tool Activity cards directly.
+- Preserve `send_message_to` semantics: continue segment-based conversation/team display and continue suppressing generic `TOOL_*` lifecycle noise for that tool unless a dedicated team-communication lane is explicitly introduced later.
+- Keep existing Codex behavior stable while adding regression coverage proving Claude and Codex both project a consistent segment+lifecycle shape without duplicate Activity cards.
 
 ## Scope Classification (`Small`/`Medium`/`Large`)
 
-Medium
+Large
 
 ## In-Scope Use Cases
 
-- Claude SDK emits an assistant `tool_use` block followed by a user `tool_result`, without the permission callback being invoked for that tool call.
-- Claude SDK permission callback path emits started/approval events with arguments and must not create duplicate started/activity records for the same invocation.
-- Frontend Activity panel receives Claude runtime tool lifecycle websocket messages and shows `Arguments` for tool calls with non-empty arguments.
-- Historical/memory projection should retain arguments for Claude tool calls when it receives normalized lifecycle events.
-- Existing Codex runtime tool-call argument rendering must continue to work.
+- Claude SDK emits assistant `tool_use` followed by user `tool_result` for a normal tool; the runtime emits both `SEGMENT_START`/`SEGMENT_END` and `TOOL_EXECUTION_STARTED`/terminal lifecycle events for the same invocation ID.
+- Claude SDK permission callback path observes the same invocation as the raw `tool_use`; it must not duplicate segment starts or lifecycle starts.
+- Claude SDK safe/auto-allowed tools that do not require approval still produce segment and lifecycle starts with arguments.
+- Frontend conversation rendering receives Claude tool segments and displays them like other provider tool segments.
+- Frontend Activity rendering receives lifecycle events and shows `Arguments`, status, result/error, and approval state without depending on segment-created Activity cards.
+- Existing Codex runtime tool-call argument rendering and transcript rendering continue to work.
+- Historical/memory projection retains tool-call arguments from lifecycle events and does not duplicate tool traces because of the added Claude tool segments.
+- Opening a historical run from the run history UI still hydrates Activity cards from `projection.activities`; this must work for Codex, Claude, and team-member runs independently of live streaming handlers.
+- Claude standalone historical projection must not lose local-memory tool activities just because the Claude session provider returns conversation-only session messages.
+- Claude `send_message_to` keeps current team-communication segment display while generic lifecycle Activity noise remains suppressed.
 
 ## Out of Scope
 
-- Changing Claude model/tool-selection behavior.
+- Changing Claude model/tool-selection behavior or upstream SDK behavior.
 - Redesigning the Activity panel visual layout.
-- Replacing the runtime event model or adding a Claude-only frontend side channel.
+- Adding a Claude-only frontend side channel or Claude-specific `input` parsing in UI components.
+- Backfilling or migrating already-recorded historical runs that lacked segment events.
+- Introducing a separate team-communication Activity lane for `send_message_to`; this can be designed later if product needs it.
 - Making empty-object arguments visually prominent; empty arguments can remain hidden if the payload is truly empty.
 
 ## Functional Requirements
 
-- REQ-001: Every Claude SDK tool invocation with arguments available in a raw `tool_use.input`/`tool_use.arguments` block must produce a normalized tool lifecycle event containing those arguments before or no later than completion.
-- REQ-002: The Claude runtime must avoid duplicate `TOOL_EXECUTION_STARTED`/activity creation for the same invocation when both raw `tool_use` observation and the SDK permission callback observe the same call.
-- REQ-003: `TOOL_EXECUTION_SUCCEEDED` and `TOOL_EXECUTION_FAILED` emitted by the Claude runtime should include tracked arguments when available as a defensive recovery path.
-- REQ-004: The frontend Activity detail panel must show the existing `Arguments` section for Claude SDK tool calls with non-empty argument payloads using the runtime-agnostic `arguments` field.
-- REQ-005: Existing Codex runtime Activity argument rendering must remain unchanged.
-- REQ-006: Executable validation must include a Claude SDK fixture or e2e-derived raw event path proving `tool_use.input` maps to normalized lifecycle `arguments`.
+- REQ-001: Every Claude SDK normal tool invocation with raw `tool_use.input` / `tool_use.arguments` must emit a normalized lifecycle start with `arguments`.
+- REQ-002: Every Claude SDK normal tool invocation must emit a normalized segment start for a `tool_call` segment using the same invocation identity as the lifecycle lane.
+- REQ-003: Every Claude SDK normal tool result must emit a normalized segment end for the same invocation identity and a terminal lifecycle event (`TOOL_EXECUTION_SUCCEEDED` or `TOOL_EXECUTION_FAILED`) with result/error.
+- REQ-004: Claude runtime must avoid duplicate segment starts and duplicate lifecycle starts when both raw `tool_use` observation and permission callback observe the same invocation.
+- REQ-005: `TOOL_EXECUTION_SUCCEEDED` and `TOOL_EXECUTION_FAILED` emitted by Claude should include tracked arguments when available as a defensive recovery path for downstream projection.
+- REQ-006: Frontend Activity creation and status/result updates must be lifecycle-owned; executable segment handling must not be an independent Activity creation owner.
+- REQ-007: Frontend segment handling must continue to own transcript/conversation segment creation and metadata enrichment for `tool_call`, `run_bash`, `write_file`, and `edit_file` segments.
+- REQ-008: Segment and lifecycle processing must not produce duplicate Activity cards for one invocation when both lanes arrive in either order.
+- REQ-009: Claude `send_message_to` must preserve current segment display and generic lifecycle suppression semantics.
+- REQ-010: Existing Codex segment+lifecycle behavior must remain compatible with the tightened frontend ownership model.
+- REQ-011: Memory/history/run-file projection must continue to derive tool call/result state from lifecycle events and must not duplicate tool traces because tool segments are now present.
+- REQ-012: Executable validation must include backend fixture coverage, frontend handler/store coverage, and gated Claude e2e/raw-log evidence for the two-lane event shape.
+- REQ-013: Historical run opening must continue to hydrate Activity cards from server `projection.activities` through `hydrateActivitiesFromProjection`; live segment-handler Activity creation must not be required for history display.
+- REQ-014: Runtime-specific history projection must preserve complementary local-memory activities. In particular, a Claude session projection that returns conversation but no activities must be merged with or fallback to local memory activities when available.
 
 ## Acceptance Criteria
 
-- AC-001: A Claude SDK raw assistant `tool_use` fixture for `Bash` with `{ command: "pwd" }` produces a normalized `TOOL_EXECUTION_STARTED` event with `payload.arguments.command === "pwd"` even when no permission callback is involved.
-- AC-002: A Claude SDK raw assistant `tool_use` fixture for `Write` followed by permission callback handling does not emit duplicate started events for the same `invocation_id`, and the activity store has one activity with arguments.
-- AC-003: A Claude SDK `tool_result` completion event includes the previously tracked arguments on the normalized success/failure payload when available.
-- AC-004: A frontend handler/store regression test shows that a Claude `TOOL_EXECUTION_STARTED` followed by success creates an Activity item whose `arguments` include the expected non-empty payload.
-- AC-005: The Claude e2e tool-lifecycle test, when enabled with `RUN_CLAUDE_E2E=1`, asserts that the approved target invocation's `TOOL_EXECUTION_STARTED`/`TOOL_APPROVAL_REQUESTED` payloads contain non-empty arguments and no longer fails by selecting an unrelated preliminary success.
-- AC-006: Existing Codex tool lifecycle/unit tests still pass.
+- AC-001: A Claude SDK raw assistant `tool_use` fixture for `Bash` with `{ command: "pwd" }` produces both a `SEGMENT_START` payload with `segment_type === "tool_call"`/metadata arguments and a `TOOL_EXECUTION_STARTED` payload with `arguments.command === "pwd"`.
+- AC-002: A Claude SDK raw `tool_result` fixture for that invocation produces both `SEGMENT_END` for the same ID and `TOOL_EXECUTION_SUCCEEDED` carrying the tracked arguments and result.
+- AC-003: A Claude permission callback path for the same invocation does not emit duplicate segment-start or lifecycle-start events.
+- AC-004: A frontend test for `SEGMENT_START(tool_call)` verifies conversation segment creation but no direct Activity creation from the segment handler.
+- AC-005: A frontend lifecycle test verifies `TOOL_EXECUTION_STARTED` creates exactly one Activity card with non-empty arguments, and subsequent segment events do not create a duplicate.
+- AC-006: An ordering test covers segment-before-lifecycle and lifecycle-before-segment arrival; both orders end with one conversation segment and one Activity card for the invocation.
+- AC-007: A `send_message_to` regression test verifies segment display remains available and generic `TOOL_*` lifecycle events for that tool remain suppressed.
+- AC-008: Codex regression tests continue to pass for dynamic tool calls/file changes with both segment and lifecycle events.
+- AC-009: Memory/history projection tests show a tool call/result is recorded once from lifecycle events despite a matching tool segment being present.
+- AC-010: The gated Claude e2e test (`RUN_CLAUDE_E2E=1`) asserts the approved target invocation's raw `tool_use.input` appears in normalized segment metadata and lifecycle arguments, and it does not select unrelated preliminary successes.
+- AC-011: A frontend run-open/history regression test proves opening a historical run calls `hydrateActivitiesFromProjection` and the Activity store shows the projected tool card even though no live segment handler runs.
+- AC-012: A server projection regression test proves a Claude runtime projection with conversation-only session data and local-memory tool traces returns activities from the local memory projection rather than an empty Activity list.
+- AC-013: Codex live-regression tests prove command execution, dynamic tool calls, and file changes still create exactly one Activity card from lifecycle events after segment-created Activity behavior is removed.
 
 ## Constraints / Dependencies
 
-- Runtime boundary must stay provider-normalized: frontend should consume `TOOL_EXECUTION_*`/`TOOL_APPROVAL_*` with `arguments`, not Claude SDK raw messages.
+- Runtime boundary must stay provider-normalized: frontend should consume `SEGMENT_*` and `TOOL_*` payloads, not Claude SDK raw messages.
+- `ClaudeSessionEventConverter` already maps `ITEM_ADDED`/`ITEM_COMPLETED` to `SEGMENT_START`/`SEGMENT_END`; the Claude coordinator can reuse those existing session event names.
 - Debug logging must remain opt-in through existing env vars (`CLAUDE_SESSION_RAW_EVENT_LOG_DIR`, `CLAUDE_SESSION_RAW_EVENT_DEBUG`, `RUNTIME_RAW_EVENT_DEBUG`) and must not enable broad raw-event logging by default.
-- Do not introduce backward-compatible dual event shapes; use the existing `arguments` field.
+- Do not introduce backward-compatible dual event shapes; use existing `metadata.arguments` on segments and existing lifecycle `arguments`.
 - Tests may require `pnpm install --frozen-lockfile --offline` and `pnpm -C autobyteus-server-ts exec prisma generate --schema ./prisma/schema.prisma` in a fresh worktree before e2e execution.
 
 ## Assumptions
 
-- The screenshots are from the same Activity component; the UI can already render arguments when normalized runtime messages provide non-empty `arguments`.
+- The screenshots are from the same Activity component; the UI already renders arguments when normalized runtime messages provide non-empty `arguments`.
 - Claude SDK safe/auto-allowed tool calls may not invoke our `canUseTool` permission callback, so raw assistant `tool_use` observation must be treated as an authoritative invocation source.
+- Normal tools and `send_message_to` have different product semantics; preserving `send_message_to` segment-only display is intentional, not a failure to apply the generic normal-tool lifecycle contract.
 
 ## Risks / Open Questions
 
-- Need to confirm exact duplicate-suppression state shape during implementation; a simple per-run/per-invocation `startedEmitted` flag attached to observed invocation state should be sufficient.
-- Claude session cleanup should clear any new emitted-start tracking state with the existing per-run observed invocation state.
-- If Claude SDK emits partial stream events in a future mode, this design should still rely on complete assistant messages unless partial event support is intentionally enabled later.
+- Frontend segment handler tests currently assert Activity creation from segments; those tests must be rewritten around transcript ownership rather than simply deleted.
+- If any non-Codex/non-Claude runtime currently sends executable segments without lifecycle events and expects Activity cards, that provider must be aligned to emit lifecycle events or explicitly exempted with a documented product decision.
+- Lifecycle-before-segment ordering may still require transient synthetic conversation segment support; if kept, it must be treated as lifecycle-owned transcript fallback and later reconciled by segment events, not as an Activity ownership bypass.
+- Need to verify run-history hydration does not rely on live segment-created Activity entries. Hydration has its own projection path and should remain lifecycle/projection-owned.
 
 ## Requirement-To-Use-Case Coverage
 
-- Raw `tool_use -> tool_result` without permission callback: REQ-001, REQ-003, REQ-006
-- Permission callback duplicate avoidance: REQ-002
-- Frontend Activity rendering: REQ-004
-- Codex no-regression: REQ-005
+- Claude raw `tool_use -> tool_result` normal tools: REQ-001, REQ-002, REQ-003, REQ-005, REQ-012
+- Permission callback duplicate avoidance: REQ-004
+- Frontend Activity ownership and no duplicates: REQ-006, REQ-008
+- Frontend transcript rendering: REQ-007
+- `send_message_to` preservation: REQ-009
+- Codex no-regression: REQ-010
+- Memory/history no-duplicate trace: REQ-011
+- Historical Activity hydration: REQ-013, REQ-014
 
 ## Acceptance-Criteria-To-Scenario Intent
 
-- AC-001 validates the root cause path found in raw logs.
-- AC-002 validates duplicate suppression across raw observation and permission callback paths.
-- AC-003 validates defensive argument preservation on completion.
-- AC-004 validates user-visible Activity data state.
-- AC-005 validates live/e2e behavior and fixes the current e2e matcher fragility.
-- AC-006 validates cross-runtime parity.
+- AC-001 and AC-002 validate the two-lane Claude normal-tool contract.
+- AC-003 validates duplicate suppression across raw observation and permission callback paths.
+- AC-004 and AC-005 validate the cleaned frontend ownership split.
+- AC-006 validates ordering resilience without duplicate Activity cards.
+- AC-007 validates the team-communication exception.
+- AC-008 validates cross-runtime parity with Codex.
+- AC-009 validates historical/memory projection invariants.
+- AC-010 validates live/e2e behavior and fixes the current e2e matcher fragility.
+- AC-011 validates click/open historical run Activity hydration.
+- AC-012 validates the Claude standalone history projection merge risk.
+- AC-013 validates Codex live Activity non-regression.
 
 ## Approval Status
 
-Proceeding from direct user instruction to investigate and start work on this issue; no open user clarification is required for design.
+The user explicitly decided on 2026-05-01 to continue the broader refactor in this same ticket rather than creating a follow-up ticket. This refined requirements basis supersedes the previous narrow bug-fix-only scope.

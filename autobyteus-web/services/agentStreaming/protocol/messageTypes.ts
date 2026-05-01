@@ -158,6 +158,7 @@ export interface ToolDeniedPayload {
   invocation_id: string;
   tool_name: string;
   turn_id: string | null;
+  arguments?: Record<string, any>;
   reason?: string | null;
   error?: string | null;
   agent_name?: string;

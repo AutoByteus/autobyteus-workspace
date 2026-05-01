@@ -234,6 +234,14 @@ const expectNonEmptyArgumentsPayload = (payload: Record<string, unknown>): void 
   expect(Object.keys(argumentsPayload as Record<string, unknown>).length).toBeGreaterThan(0);
 };
 
+const expectNonEmptySegmentMetadataArguments = (payload: Record<string, unknown>): void => {
+  const metadata = payload.metadata;
+  expect(metadata && typeof metadata === "object" && !Array.isArray(metadata)).toBe(true);
+  const argumentsPayload = (metadata as Record<string, unknown>).arguments;
+  expect(argumentsPayload && typeof argumentsPayload === "object" && !Array.isArray(argumentsPayload)).toBe(true);
+  expect(Object.keys(argumentsPayload as Record<string, unknown>).length).toBeGreaterThan(0);
+};
+
 const getMessageItem = (message: WsMessage): Record<string, unknown> | null =>
   message.payload.item && typeof message.payload.item === "object"
     ? (message.payload.item as Record<string, unknown>)
@@ -1101,6 +1109,29 @@ const defineRuntimeSuite = (input: {
         if (input.runtimeKind === "claude_agent_sdk" || input.runtimeKind === "codex_app_server") {
           expectNonEmptyArgumentsPayload(targetApprovalRequested.payload);
           expectNonEmptyArgumentsPayload(startedMessage.payload);
+        }
+        if (input.runtimeKind === "claude_agent_sdk") {
+          const segmentStartMessage = await waitForMessageAfter(
+            messages,
+            startIndex,
+            (message) =>
+              message.type === "SEGMENT_START" &&
+              message.payload.segment_type === "tool_call" &&
+              resolveInvocationId(message.payload) === successfulInvocationId,
+            "Claude tool SEGMENT_START",
+          );
+          const segmentEndMessage = await waitForMessageAfter(
+            messages,
+            startIndex,
+            (message) =>
+              message.type === "SEGMENT_END" &&
+              message.payload.segment_type === "tool_call" &&
+              resolveInvocationId(message.payload) === successfulInvocationId,
+            "Claude tool SEGMENT_END",
+          );
+          expectNonEmptySegmentMetadataArguments(segmentStartMessage.payload);
+          expectNonEmptySegmentMetadataArguments(segmentEndMessage.payload);
+          expectNonEmptyArgumentsPayload(succeededMessage.payload);
         }
         await waitForMessageAfter(
           messages,

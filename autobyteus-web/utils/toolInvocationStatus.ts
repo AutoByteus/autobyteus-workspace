@@ -31,5 +31,11 @@ export const canTransitionToolInvocationStatus = (
     return true;
   }
 
+  if (currentStatus === 'executing' && nextStatus === 'awaiting-approval') {
+    // Claude can report a concrete tool invocation before its permission gate.
+    // Treat the late approval request as the active UI state so approval controls remain visible.
+    return true;
+  }
+
   return STATUS_RANK[nextStatus] >= STATUS_RANK[currentStatus];
 };

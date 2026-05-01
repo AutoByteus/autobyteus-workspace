@@ -137,6 +137,62 @@ describe("RuntimeMemoryEventAccumulator", () => {
     expect(traces[1]).toMatchObject({ toolCallId: "tool-1", toolResult: { stdout: "/tmp" } });
   });
 
+  it("records tool traces once from lifecycle events when matching tool segments are present", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = new RuntimeMemoryEventAccumulator({
+      runId: "run-1",
+      writer: new RunMemoryWriter({ memoryDir }),
+    });
+
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-tool-segment" }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_START, {
+      id: "tool-claude-1",
+      turn_id: "turn-tool-segment",
+      segment_type: "tool_call",
+      metadata: {
+        tool_name: "Bash",
+        arguments: { command: "pwd" },
+      },
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+      invocation_id: "tool-claude-1",
+      turn_id: "turn-tool-segment",
+      tool_name: "Bash",
+      arguments: { command: "pwd" },
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
+      id: "tool-claude-1",
+      turn_id: "turn-tool-segment",
+      segment_type: "tool_call",
+      metadata: {
+        tool_name: "Bash",
+        arguments: { command: "pwd" },
+        result: "workspace\n",
+      },
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+      invocation_id: "tool-claude-1",
+      turn_id: "turn-tool-segment",
+      tool_name: "Bash",
+      arguments: { command: "pwd" },
+      result: "workspace\n",
+    }));
+
+    const traces = readView(memoryDir).rawTraces ?? [];
+    expect(traces.map((trace) => trace.traceType)).toEqual(["tool_call", "tool_result"]);
+    expect(traces[0]).toMatchObject({
+      sourceEvent: AgentRunEventType.TOOL_EXECUTION_STARTED,
+      toolCallId: "tool-claude-1",
+      toolName: "Bash",
+      toolArgs: { command: "pwd" },
+    });
+    expect(traces[1]).toMatchObject({
+      sourceEvent: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      toolCallId: "tool-claude-1",
+      toolResult: "workspace\n",
+    });
+  });
+
   it("creates deterministic fallback turns when no turn id is active", async () => {
     const memoryDir = await mkTempDir();
     const accumulator = new RuntimeMemoryEventAccumulator({

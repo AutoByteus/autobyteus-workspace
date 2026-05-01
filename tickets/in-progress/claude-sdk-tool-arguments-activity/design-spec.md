@@ -2,320 +2,492 @@
 
 ## Current-State Read
 
-Claude SDK tool-call data enters the system through `ClaudeSession.executeTurn`, which iterates SDK chunks and passes each chunk to `ClaudeSessionToolUseCoordinator.processToolLifecycleChunk`. Existing raw logging proves SDK assistant chunks contain complete `tool_use.input` arguments. The current coordinator extracts those arguments and stores them in `observedToolInvocationsByRunId`, but for this raw-observed path it does not emit a normalized started event. When the later SDK user `tool_result` chunk arrives, it emits `ITEM_COMMAND_EXECUTION_COMPLETED` with only `invocation_id`, `tool_name`, and result/error.
+This design supersedes the earlier narrow bug-fix-only design for the same ticket. The current worktree already contains a partial implementation that fixes the immediate Claude Activity `Arguments` symptom through the lifecycle lane, but the user has explicitly asked to continue the broader refactor in this ticket.
 
-The separate SDK permission callback path (`handleToolPermissionCheck`) does emit `ITEM_COMMAND_EXECUTION_STARTED` with `arguments`, and approval/denial events include arguments. Therefore Claude tool calls that pass through permission callback can show arguments; Claude tool calls that are safe/auto-allowed/result-first produce result-only normalized events.
+Current state after the narrow implementation:
 
-`ClaudeSessionEventConverter` already maps started/request events to normalized `TOOL_*` events with the runtime-neutral `arguments` field. The websocket mapper forwards payloads unchanged. The frontend `handleToolExecutionStarted` merges arguments into Activity state, while `handleToolExecutionSucceeded` creates a synthetic segment/activity with `{}` args when success arrives first. `ActivityItem.vue` renders `Arguments` only when the argument object is non-empty. This makes the user-visible gap a runtime lifecycle invariant bug, not a pure UI rendering bug and not an upstream SDK omission.
+- `ClaudeSessionToolUseCoordinator` observes raw Claude SDK `tool_use` blocks, stores arguments, emits `ITEM_COMMAND_EXECUTION_STARTED` once, and includes tracked arguments on completion.
+- `ClaudeSessionEventConverter` maps Claude command execution session events to normalized `TOOL_*` events and can preserve optional completion arguments.
+- Frontend lifecycle handling can create/update Activity entries from `TOOL_*` events.
+- Claude normal tools still do **not** synthesize `ITEM_ADDED` / `ITEM_COMPLETED` session segment events from raw `tool_use` / `tool_result`.
+- Codex normal dynamic tool/file-change events generally emit both a segment event and a lifecycle event.
+- Frontend Activity can currently be created by both `segmentHandler.ts` and `toolLifecycleHandler.ts`, so Activity ownership is implicit and dedupe-based rather than explicit.
+
+The broader design problem is that Claude lacks the same normalized two-lane contract as Codex. Lifecycle-only Claude tool handling can show arguments, but it keeps transcript rendering, Activity creation, and history/memory projection pressure coupled to provider-specific event gaps.
 
 ## Intended Change
 
-Normalize every Claude SDK observed tool invocation into a complete argument-bearing lifecycle sequence:
+Normalize Claude normal tool calls into the same two-lane runtime-neutral contract expected for normal tool invocations:
 
-- On assistant `tool_use`, record the invocation and emit exactly one `ITEM_COMMAND_EXECUTION_STARTED` event with `arguments` unless that invocation already emitted started through `handleToolPermissionCheck`.
-- On user `tool_result`, emit completion/failure with the tracked `arguments` included as defensive context.
-- Preserve existing `send_message_to` lifecycle suppression.
-- Add backend unit tests and update the gated Claude e2e test so it proves raw SDK `tool_use.input` reaches `TOOL_EXECUTION_STARTED.payload.arguments` and does not regress the Activity data path.
-- Optionally extend frontend success/failure parsing to merge completion `arguments` when present, so result-first replay remains robust; this is a defensive runtime-neutral enhancement, not a Claude-only UI path.
+1. **Segment lane**: `SEGMENT_START` / `SEGMENT_END` represents the assistant conversation/transcript structure for a tool call.
+2. **Lifecycle lane**: `TOOL_APPROVAL_*` and `TOOL_EXECUTION_*` represents execution state, approval state, Activity state, arguments, result/error, logs, and durable tool traces.
+
+For Claude normal tools, raw SDK events should map as follows:
+
+```text
+assistant message content tool_use(input)
+  -> ClaudeSessionEventName.ITEM_ADDED(segment_type="tool_call", metadata.arguments=input)
+  -> ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_STARTED(arguments=input)
+  -> normalized SEGMENT_START + TOOL_EXECUTION_STARTED
+
+user message content tool_result
+  -> ClaudeSessionEventName.ITEM_COMPLETED(segment_type="tool_call", metadata.arguments=input, metadata.result/error=...)
+  -> ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED(arguments=input, result/error=...)
+  -> normalized SEGMENT_END + TOOL_EXECUTION_SUCCEEDED/FAILED
+```
+
+Frontend ownership should be tightened at the same time:
+
+- `segmentHandler.ts` owns conversation segment creation/finalization and metadata merging.
+- `toolLifecycleHandler.ts` owns Activity creation, Activity status, Activity result/error, and Activity arguments.
+- Segment processing must not independently create tool Activity cards.
+
+## Non-Regression Safety Assessment
+
+The refactor is safe only if it does **not** make Activity display depend on one live-stream path everywhere. The current system has two distinct Activity sources that must remain intact:
+
+1. **Live Activity source**: normalized lifecycle websocket events handled by `toolLifecycleHandler.ts`.
+2. **Historical Activity source**: server `projection.activities` loaded on run open and hydrated by `hydrateActivitiesFromProjection`.
+
+Design conclusions from the safety check:
+
+- Removing Activity creation from `segmentHandler.ts` should not break Codex live Activity because Codex command execution, dynamic tool calls, and file changes have lifecycle start events that `toolLifecycleHandler.ts` can use to create cards.
+- Historical Activity display when clicking/opening a run should not depend on `segmentHandler.ts` or live websocket replay. It must continue to hydrate from `projection.activities`.
+- Server projection must be protected: provider-specific projections and local-memory projections can be complementary. A runtime provider that returns conversation-only data must not suppress local-memory activities. This is especially relevant for standalone Claude history because the current Claude projection provider maps session messages to conversation entries but not tool activities.
+
+Implementation must therefore include non-regression tests for:
+
+- Codex live command execution / dynamic tool / file-change Activity cards after segment-created Activity is removed.
+- Frontend historical run open hydrating projected activities.
+- Server projection merging local-memory activities with Claude conversation-only runtime projection.
 
 ## Task Design Health Assessment (Mandatory)
 
-- Change posture (`Feature`/`Bug Fix`/`Behavior Change`/`Refactor`/`Cleanup`/`Performance`/`Larger Requirement`): Bug Fix
-- Current design issue found (`Yes`/`No`/`Unclear`): Yes
-- Root cause classification (`Local Implementation Defect`/`Missing Invariant`/`Boundary Or Ownership Issue`/`Duplicated Policy Or Coordination`/`File Placement Or Responsibility Drift`/`Shared Structure Looseness`/`Legacy Or Compatibility Pressure`/`No Design Issue Found`/`Unclear`): Missing Invariant
-- Refactor needed now (`Yes`/`No`/`Deferred`/`Unclear`): No broad refactor; local invariant tightening required.
-- Evidence: Raw Claude SDK logs include `tool_use.input`, runtime logs show result-only normalized `Bash` event without args, and code shows `processToolLifecycleChunk` tracks args without emitting started for raw-observed tool_use.
-- Design response: Strengthen `ClaudeSessionToolUseCoordinator` as the owner of complete Claude tool invocation lifecycle normalization.
-- Refactor rationale: Existing ownership is correct; the missing invariant is local to one coordinator and its tests. No folder/module reshaping is needed.
-- Intentional deferrals and residual risk, if any: Historical Claude projection from `getSessionMessages` still has limited reconstruction for old sessions if memory lacks tool-call traces. This task fixes new live/memory-captured runs; backfilling old history from raw Claude transcript is outside scope.
+- Change posture: Bug fix + behavior alignment + refactor.
+- Root cause classification: Missing invariant + boundary/ownership issue + duplicated policy/coordination.
+- Refactor needed now: Yes.
+- Why: The original missing arguments bug exposed a provider-normalization invariant gap. The implementation follow-up exposed a second invariant: a normal tool invocation should have both transcript segment projection and execution lifecycle projection. The frontend currently compensates with mixed Activity ownership, which makes provider asymmetry easy to leak into UI logic.
+- Design response: Make Claude's runtime adapter emit both lanes for normal tools, and make lifecycle the one authoritative Activity owner in frontend streaming.
 
 ## Terminology
 
-- `Observed Claude tool invocation`: a tool call discovered from SDK assistant `tool_use` content blocks.
-- `Permission callback path`: a tool call observed through SDK `canUseTool`, currently used for approval decisions and already emitting started events.
-- `Normalized tool lifecycle event`: provider-neutral `TOOL_EXECUTION_STARTED`, `TOOL_APPROVAL_REQUESTED`, `TOOL_APPROVED`, `TOOL_EXECUTION_SUCCEEDED`, or `TOOL_EXECUTION_FAILED` event with shared fields such as `invocation_id`, `tool_name`, and `arguments`.
+- **Normal tool**: Any Claude tool invocation except the special `send_message_to` team-communication tool path.
+- **Segment lane**: Runtime-neutral transcript/conversation event stream (`SEGMENT_START`, `SEGMENT_CONTENT`, `SEGMENT_END`).
+- **Lifecycle lane**: Runtime-neutral tool execution event stream (`TOOL_APPROVAL_REQUESTED`, `TOOL_APPROVED`, `TOOL_DENIED`, `TOOL_EXECUTION_STARTED`, `TOOL_EXECUTION_SUCCEEDED`, `TOOL_EXECUTION_FAILED`, `TOOL_LOG`).
+- **Invocation identity**: The stable ID from Claude `tool_use.id` / `tool_result.tool_use_id`, reused as both segment ID and lifecycle `invocation_id` for normal tools.
+- **Activity**: Frontend right-panel execution card, owned by lifecycle events.
 
 ## Design Reading Order
 
-1. Follow the Claude SDK tool event spine.
-2. Locate the authoritative lifecycle owner (`ClaudeSessionToolUseCoordinator`).
-3. Apply duplicate-safe started emission and completion argument preservation.
-4. Update tests/e2e and only adjust frontend handlers if completion-argument fallback is implemented.
+1. Read the current-state and health sections to understand why this is no longer only an arguments bug.
+2. Read the data-flow spine inventory and ownership map to understand the two-lane target.
+3. Read the file responsibility mapping and migration sequence for implementation guidance.
+4. Read the compatibility rejection and risks before changing frontend fallback behavior.
 
 ## Legacy Removal Policy (Mandatory)
 
-- Policy: `No backward compatibility; remove legacy code paths.`
-- Required action: no legacy API shape is being retained. Replace result-only Claude raw-observed tool lifecycle behavior with complete argument-bearing lifecycle events.
-- Obsolete behavior: raw-observed `tool_use` only updates `observedToolInvocationsByRunId` without emitting a started event.
+Do not add a Claude-specific frontend field, Claude-specific Activity side channel, or result-only UI workaround. The clean target is to normalize Claude raw events at the Claude runtime boundary and remove duplicated Activity creation responsibility from segment handling.
 
 ## Data-Flow Spine Inventory
 
-| Spine ID | Scope (`Primary End-to-End`/`Return-Event`/`Bounded Local`) | Start | End | Governing Owner | Why It Matters |
+| Spine ID | Scope | Start | End | Governing Owner | Why It Matters |
 | --- | --- | --- | --- | --- | --- |
-| DS-001 | Primary End-to-End | Claude SDK assistant `tool_use` chunk | Frontend Activity item with `Arguments` and `Result` | `ClaudeSessionToolUseCoordinator` for lifecycle normalization | This is the user-visible path where arguments currently disappear. |
-| DS-002 | Return-Event | Claude SDK user `tool_result` chunk | Normalized success/failure event and Activity result | `ClaudeSessionToolUseCoordinator` | Completion must carry result and preserve invocation identity/arguments. |
-| DS-003 | Bounded Local | Per-run observed invocation tracking | Duplicate-safe event emission | `ClaudeSessionToolUseCoordinator` | Prevents duplicate started events across raw observation and permission callback. |
+| DS-001 | Claude normal tool start | Claude SDK `tool_use` / permission callback | Normalized `SEGMENT_START` and `TOOL_EXECUTION_STARTED` websocket messages | `ClaudeSessionToolUseCoordinator` | Establishes the two-lane start invariant and argument preservation. |
+| DS-002 | Claude normal tool completion | Claude SDK `tool_result` | Normalized `SEGMENT_END` and terminal `TOOL_EXECUTION_*` websocket messages | `ClaudeSessionToolUseCoordinator` | Closes transcript segment and execution lifecycle with same invocation identity. |
+| DS-003 | Frontend live rendering | Normalized websocket events | Conversation segment + one Activity card | Frontend streaming handlers | Keeps transcript and Activity responsibilities separate. |
+| DS-004 | Durable projection | Normalized runtime events and run-history provider data | Memory/history/run-file projections and `projection.activities` | Memory/history/projection services | Ensures added tool segments do not duplicate lifecycle-owned tool traces and historical runs still show Activity cards. |
+| DS-005 | Team communication exception | Claude `send_message_to` tool | Team/conversation segment display, no generic Activity noise | Claude send-message handler + converter suppression | Preserves existing team UX while normal tools are aligned. |
 
 ## Primary Execution Spine(s)
 
-`Claude SDK chunk -> ClaudeSession -> ClaudeSessionToolUseCoordinator -> ClaudeSessionEventConverter -> AgentRunEventMessageMapper/WebSocket -> Frontend toolLifecycleHandler -> AgentActivityStore -> ActivityItem`
+### DS-001 Claude normal tool start
+
+```text
+Claude SDK raw assistant tool_use / canUseTool callback
+  -> ClaudeSessionToolUseCoordinator invocation projection state
+  -> Claude session events: ITEM_ADDED + ITEM_COMMAND_EXECUTION_STARTED
+  -> ClaudeSessionEventConverter normalized events: SEGMENT_START + TOOL_EXECUTION_STARTED
+  -> Agent run websocket mapper
+  -> Frontend segment handler + lifecycle handler
+```
+
+### DS-002 Claude normal tool completion
+
+```text
+Claude SDK raw user tool_result
+  -> ClaudeSessionToolUseCoordinator tracked invocation state
+  -> Claude session events: ITEM_COMPLETED + ITEM_COMMAND_EXECUTION_COMPLETED
+  -> ClaudeSessionEventConverter normalized events: SEGMENT_END + TOOL_EXECUTION_SUCCEEDED/FAILED
+  -> Agent run websocket mapper
+  -> Frontend segment finalization + Activity result/status update
+```
+
+### DS-003 Frontend live rendering
+
+```text
+Normalized SEGMENT_* / TOOL_* websocket messages
+  -> Segment handler owns conversation segment state
+  -> Tool lifecycle handler owns lifecycle segment state and Activity state
+  -> AgentActivityStore has one card per invocation
+  -> ActivityItem renders Arguments/Result from lifecycle-owned Activity state
+```
 
 ## Spine Narratives (Mandatory)
 
-| Spine ID | Short Narrative | Main Domain Subject Nodes | Governing Owner | Key Off-Spine Concerns |
-| --- | --- | --- | --- | --- |
-| DS-001 | When Claude emits an assistant `tool_use`, the session loop passes the chunk to the coordinator. The coordinator extracts `id`, `name`, and input arguments, records invocation state, and emits a started session event exactly once. The converter and websocket mapper preserve the shared `arguments` field. The frontend started handler merges args into Activity state, so Activity details can render `Arguments`. | SDK chunk, session loop, coordinator, converter, websocket, frontend handler, activity store | `ClaudeSessionToolUseCoordinator` | Raw debug logging, send_message_to suppression, duplicate-start tracking |
-| DS-002 | When Claude emits a user `tool_result`, the coordinator matches it to the observed invocation, emits success/failure with result/error, and includes tracked arguments. Frontend success/failure updates result while retaining arguments. | SDK result chunk, coordinator, converter, websocket, frontend handler | `ClaudeSessionToolUseCoordinator` | Result serialization, file-change sidecar, memory recorder |
-| DS-003 | The coordinator keeps per-run invocation state with tool name, tool input, and whether started was emitted. Both raw observation and permission callback consult/update this state so only one started event is emitted per invocation. | Invocation map, raw observer, permission callback | `ClaudeSessionToolUseCoordinator` | Cleanup on session termination |
+- Claude raw `tool_use.input` is already the authoritative provider data for arguments. The coordinator should normalize it once and fan it into both lanes.
+- The segment lane's job is to make the transcript look like a tool call happened. It should not own approval, executing/success/error status, or Activity creation.
+- The lifecycle lane's job is to make execution observable and durable. It should own Activity creation and memory/tool traces.
+- Using the same invocation ID for segment `id` and lifecycle `invocation_id` lets frontend handlers reconcile both lanes without fuzzy matching.
+- `send_message_to` is intentionally not a normal tool for Activity purposes. It uses segment display for team communication and converter-level lifecycle suppression for generic tool noise.
 
 ## Spine Actors / Main-Line Nodes
 
-- Claude SDK async query stream
-- `ClaudeSession.executeTurn`
-- `ClaudeSessionToolUseCoordinator`
-- `ClaudeSessionEventConverter`
-- `AgentRunEventMessageMapper` / websocket stream
-- Frontend tool lifecycle handlers
-- `AgentActivityStore`
-- `ActivityItem.vue`
+| Node | Owns | Notes |
+| --- | --- | --- |
+| Claude SDK raw event stream | Provider raw `tool_use` / `tool_result` data | External input only; not consumed by frontend. |
+| `ClaudeSessionToolUseCoordinator` | Claude invocation state and emission sequencing | Authoritative owner for normal-tool segment+lifecycle synthesis. |
+| `ClaudeSessionEventConverter` | Session event to runtime-neutral `AgentRunEvent` mapping | Should stay a field normalizer, not a state owner. |
+| Websocket message mapper | Runtime-neutral transport serialization | Should not know provider raw shapes. |
+| Frontend segment handler | Conversation segment creation/merge/finalization | No Activity creation for executable segments. |
+| Frontend lifecycle handler | Tool execution state and Activity state | May reconcile with existing segment by invocation alias. |
+| Memory/history projection | Durable tool traces from lifecycle | Should ignore tool segment events for tool-trace creation. |
 
 ## Ownership Map
 
-- Claude SDK owns provider-specific raw message format.
-- `ClaudeSession` owns turn execution and dispatching raw chunks to runtime subsystems.
-- `ClaudeSessionToolUseCoordinator` owns Claude tool invocation state, permission decisions, observed invocation/result pairing, and lifecycle event completeness.
-- `ClaudeSessionEventConverter` owns session-event-to-agent-event mapping and provider-neutral field names.
-- Websocket mapper owns transport serialization only.
-- Frontend lifecycle handlers own projection of normalized messages into conversation segments and Activity state.
-- `ActivityItem.vue` owns display of already-normalized Activity fields.
+| Concern | Authoritative Owner | Non-Owner Responsibilities |
+| --- | --- | --- |
+| Extract Claude tool arguments | `ClaudeSessionToolUseCoordinator` | Converter serializes already-normalized payloads; frontend consumes `arguments`. |
+| Normal tool segment start/end synthesis | `ClaudeSessionToolUseCoordinator` | Converter maps `ITEM_ADDED`/`ITEM_COMPLETED`; frontend renders segments. |
+| Normal tool lifecycle start/terminal events | `ClaudeSessionToolUseCoordinator` | Converter maps to `TOOL_*`; frontend updates Activity. |
+| Activity creation/status/result | `toolLifecycleHandler.ts` + `AgentActivityStore` | Segment handler may not create Activity cards. |
+| Conversation transcript structure | `segmentHandler.ts` | Lifecycle handler may create/reconcile a synthetic segment only as an ordering backstop. |
+| Team communication display | `ClaudeSendMessageToolCallHandler` | Generic lifecycle path stays suppressed by converter for `send_message_to`. |
 
 ## Thin Entry Facades / Public Wrappers (If Applicable)
 
-| Facade / Entry Wrapper | Governing Owner Behind It | Why It Exists | Must Not Secretly Own |
-| --- | --- | --- | --- |
-| `AgentRunEventMessageMapper` | Runtime backend/coordinator event owners | Transport-level mapping to websocket messages | Runtime-specific recovery of Claude tool args |
-| `ActivityItem.vue` | `AgentActivityStore` and runtime lifecycle handlers | Presentation of normalized Activity fields | Claude SDK event interpretation |
+- `ClaudeSession` remains the entrypoint that passes raw SDK chunks and permission callbacks into the coordinator.
+- `AgentRunEventMessageMapper` remains a transport mapper only.
+- Vue components such as `ActivityItem.vue` remain presentation-only and do not recover missing provider data.
 
 ## Removal / Decommission Plan (Mandatory)
 
-| Item To Remove / Decommission | Why It Becomes Unnecessary | Replaced By Which Owner / File / Structure | Scope (`In This Change`/`Follow-up`) | Notes |
-| --- | --- | --- | --- | --- |
-| Result-only raw-observed Claude tool lifecycle behavior | It loses arguments despite raw SDK data being available | Duplicate-safe started emission in `ClaudeSessionToolUseCoordinator` | In This Change | Not a file removal; remove the behavior by changing the branch. |
-| E2E matcher that picks first success regardless of approved invocation | It fails when Claude performs preliminary safe tools | Approved-invocation-specific matcher/assertions | In This Change | Update test logic, not production behavior. |
+| Current Behavior / Code | Removal / Replacement |
+| --- | --- |
+| Segment handler creates Activity cards from `tool_call`, `write_file`, `run_bash`, and `edit_file` segment starts. | Remove Activity creation from segment starts. Lifecycle handler creates Activity from `TOOL_EXECUTION_STARTED` / approval events. |
+| Segment handler updates Activity status/arguments on segment end. | Remove status/result/argument Activity updates from segment end; lifecycle terminal events update Activity. Segment end only finalizes conversation segment. |
+| Claude normal tool lifecycle-only projection. | Add segment start/end synthesis from `tool_use`/`tool_result`. |
+| Frontend tests that assert segment-created Activity cards. | Rewrite to assert transcript-only segment handling and lifecycle-owned Activity creation. |
+| Any Claude-specific frontend completion-arguments workaround as primary behavior. | Keep normalized lifecycle start as the primary argument source; completion arguments remain backend defensive data only. |
 
 ## Return Or Event Spine(s) (If Applicable)
 
-`Claude SDK user tool_result -> ClaudeSessionToolUseCoordinator.consumeObservedToolInvocation -> ITEM_COMMAND_EXECUTION_COMPLETED(params include invocation_id/tool_name/arguments/result or error) -> ClaudeSessionEventConverter -> TOOL_EXECUTION_SUCCEEDED/FAILED -> WebSocket -> frontend result update`
+| Spine ID | Scope | Start | End | Owner | Notes |
+| --- | --- | --- | --- | --- |
+| ES-001 | Approval result | Frontend approval action | Claude permission promise resolution | Existing approval request/response path | Must keep same invocation ID as segment/lifecycle. |
+| ES-002 | Terminal result | Claude `tool_result` | Activity result/error + memory tool result | Lifecycle lane | Segment end carries transcript closure only. |
 
 ## Bounded Local / Internal Spines (If Applicable)
 
-- Parent owner: `ClaudeSessionToolUseCoordinator`
-- Chain: `observe tool_use -> upsert invocation state -> emitStartedIfNeeded -> observe tool_result -> consume state -> emit completion with arguments -> cleanup empty run map`
-- Why it matters: the same invocation can be seen first by raw assistant chunk and/or by permission callback; the coordinator must be idempotent.
+### Claude coordinator per-invocation state
+
+```text
+upsert invocation -> emit segment start if needed -> emit lifecycle start if needed -> optional approval state -> emit segment end if needed -> emit lifecycle terminal -> consume/cleanup
+```
+
+The local state should include enough flags to prevent duplicate emission when raw observation and permission callback both see the same invocation.
+
+Suggested shape:
+
+```ts
+type ObservedClaudeToolInvocation = {
+  toolName: string | null;
+  toolInput: Record<string, unknown>;
+  segmentStartedEmitted: boolean;
+  lifecycleStartedEmitted: boolean;
+  segmentEndedEmitted: boolean;
+};
+```
 
 ## Off-Spine Concerns Around The Spine
 
-| Off-Spine Concern | Related Spine ID(s) | Serves Which Owner | Responsibility | Why It Exists | Risk If Misplaced On Main Line |
-| --- | --- | --- | --- | --- | --- |
-| Raw Claude event logging | DS-001, DS-002 | `ClaudeSession` / investigation | Opt-in JSONL capture of SDK chunks | Debug/e2e evidence | Logging must not govern runtime behavior. |
-| `send_message_to` lifecycle suppression | DS-001, DS-002 | `ClaudeSessionToolUseCoordinator` and converter | Avoid duplicate team-communication tool noise | Existing team messaging UX | If removed accidentally, team communication Activity becomes noisy/duplicated. |
-| File-change sidecar | DS-002 | Run file-change projection | Reacts to file-changing tool events | Artifact/file tracking | Should consume normalized lifecycle; should not own argument recovery. |
-| Runtime memory recorder | DS-001, DS-002 | Run memory/history | Persists tool call/result traces | Historical replay/projection | Missing started args causes historical Activity gaps. |
+| Concern | Serves Which Owner | Responsibility | Constraint |
+| --- | --- | --- | --- |
+| Raw event logging | Investigation/e2e | Capture Claude SDK events for evidence | Opt-in only. |
+| Converter normalization helpers | `ClaudeSessionEventConverter` | Normalize tool names, arguments, segment metadata | No private coordinator state reads. |
+| Activity store dedupe | Frontend lifecycle owner | Prevent accidental duplicate card insertion | Dedupe is a guardrail, not the ownership model. |
+| Memory accumulator | Durable projection | Record tool traces from lifecycle events | Ignore tool segments for trace creation. |
+| Run-file-change projection | Durable file projection | May consume segment and lifecycle events idempotently | Must not depend on segment-created Activity. |
 
 ## Existing Capability / Subsystem Reuse Check
 
-| Need / Concern | Existing Capability Area / Subsystem | Decision (`Reuse`/`Extend`/`Create New`) | Why | If New, Why Existing Areas Are Not Right |
-| --- | --- | --- | --- | --- |
-| Complete Claude tool lifecycle normalization | Claude runtime `session` subsystem | Extend | Existing coordinator already tracks invocations and handles permission decisions. | N/A |
-| Provider-neutral transport | Agent streaming service | Reuse | It already forwards `TOOL_*` payloads. | N/A |
-| Activity rendering | Frontend agent streaming/activity store | Reuse | Existing handlers render arguments when provided. | N/A |
-| E2E raw evidence | Existing Claude raw logging env vars | Reuse | Existing logging captured enough. | N/A |
+| Need / Concern | Existing Capability Area / Subsystem | Decision | Why |
+| --- | --- | --- | --- |
+| Claude raw tool normalization | Claude runtime session subsystem | Extend | The coordinator already owns permission/tool observation state. |
+| Segment conversion | Claude session event converter | Reuse | `ITEM_ADDED`/`ITEM_COMPLETED` already map to `SEGMENT_*`. |
+| Lifecycle conversion | Claude session event converter | Reuse/Minor Extend | `ITEM_COMMAND_EXECUTION_*` already map to `TOOL_*`. |
+| Frontend transcript handling | Agent streaming segment handler | Refactor | Keep segment state, remove Activity ownership. |
+| Frontend Activity handling | Agent streaming lifecycle handler + Activity store | Refactor/Strengthen | Make lifecycle the explicit owner. |
+| Validation | Existing unit/e2e suites | Extend | Add cross-runtime and ordering coverage. |
 
 ## Subsystem / Capability-Area Allocation
 
-| Subsystem / Capability Area | Owns Which Concerns | Related Spine ID(s) | Governing Owner(s) Served | Decision (`Reuse`/`Extend`/`Create New`) | Notes |
-| --- | --- | --- | --- | --- | --- |
-| Claude runtime session subsystem | Raw chunk tool lifecycle observation, permission callback coordination, duplicate suppression | DS-001, DS-002, DS-003 | `ClaudeSessionToolUseCoordinator` | Extend | Primary production change. |
-| Agent run event conversion | Session event to normalized event mapping | DS-001, DS-002 | `ClaudeSessionEventConverter` | Reuse/Minor Extend | Verify completion args preserve through converter. |
-| Frontend streaming handlers/activity | Convert normalized websocket messages to Activity state | DS-001, DS-002 | `toolLifecycleHandler`, `AgentActivityStore` | Reuse/Minor Extend | Only merge completion args if backend includes them. |
-| Validation | Unit/e2e coverage | All | Tests | Extend | Add targeted fixtures and fix e2e matcher. |
+| Subsystem / Capability Area | Owns Which Concerns | Related Spine ID(s) | Decision | Notes |
+| --- | --- | --- | --- | --- |
+| Claude runtime session | Raw tool observation, permission callback coordination, two-lane event emission | DS-001, DS-002, DS-005 | Extend | Primary backend production change. |
+| Agent run event conversion | Session-to-normalized mapping | DS-001, DS-002 | Reuse | Existing segment mapping is sufficient if payload shape is correct. |
+| Frontend streaming handlers | Segment/lifecycle state mutation | DS-003 | Refactor | Split Activity ownership from segment handling. |
+| Memory/history/run-file projection | Durable tool/file state and historical Activity payloads | DS-004 | Validate/Adjust | Confirm no duplicate tool traces and preserve local-memory activities when runtime-specific projections are conversation-only. |
+| E2E/unit validation | Regression protection | All | Extend | Include raw Claude fixtures and frontend ordering tests. |
 
 ## Draft File Responsibility Mapping
 
-| Candidate File | Owning Subsystem / Capability Area | Owner / Boundary | Concrete Concern | Why This Is One File | Reuses Shared Structure? |
-| --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.ts` | Claude runtime session | `ClaudeSessionToolUseCoordinator` | Emit duplicate-safe started events and completion events with tracked args | Existing owner of observed invocation maps and permission callback | Existing `ObservedClaudeToolInvocation` type, extended |
-| `autobyteus-server-ts/src/agent-execution/backends/claude/events/claude-session-event-converter.ts` | Agent event conversion | `ClaudeSessionEventConverter` | Preserve `arguments` on completion if present; no special recovery | Existing provider mapping file | Existing `resolveToolArguments` helper |
-| `autobyteus-web/services/agentStreaming/handlers/toolLifecycleParsers.ts` | Frontend streaming | Tool lifecycle parsers | Optionally parse completion `arguments` | Existing payload parser owner | Existing `normalizeArguments` helper |
-| `autobyteus-web/services/agentStreaming/handlers/toolLifecycleHandler.ts` | Frontend streaming | Tool lifecycle handler | Optionally merge completion args before/while setting result | Existing handler owner | Existing `mergeArguments`, `updateActivityArguments` |
-| `autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.test.ts` | Validation | Backend unit tests | Fixture tests for raw `tool_use -> tool_result`, duplicate started suppression, completion args | New focused test around owner | Test-local fixtures |
-| `autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts` | Validation | Runtime e2e | Fix Claude matcher and assert arguments | Existing e2e owner | Existing helpers |
-| `autobyteus-web/services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts` | Validation | Frontend unit tests | Assert started args and optional completion-args fallback | Existing handler tests | Existing test setup |
+| Candidate File | Owner / Boundary | Concrete Concern | Change Type |
+| --- | --- | --- | --- |
+| `autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.ts` | Claude tool invocation owner | Emit segment start/end plus lifecycle start/completion with duplicate suppression | Modify |
+| `autobyteus-server-ts/src/agent-execution/backends/claude/events/claude-session-event-converter.ts` | Claude event adapter | Preserve/verify segment metadata and lifecycle arguments | Test/Minor Modify if needed |
+| `autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-send-message-tool-call-handler.ts` | Team communication tool path | Preserve `send_message_to` segment semantics | Test/No production change expected |
+| `autobyteus-web/services/agentStreaming/handlers/segmentHandler.ts` | Frontend transcript owner | Remove Activity creation/update side effects; keep segment metadata merging | Modify |
+| `autobyteus-web/services/agentStreaming/handlers/toolLifecycleHandler.ts` | Frontend lifecycle/Activity owner | Ensure lifecycle creates one Activity and reconciles with existing/later segments | Modify |
+| `autobyteus-web/stores/agentActivityStore.ts` | Activity state store | Optional alias-aware guard if needed by tests | Modify only if required |
+| `autobyteus-server-ts/src/agent-memory/services/runtime-memory-event-accumulator.ts` | Memory tool trace owner | Validate no duplicate traces; likely no production change | Test/No production change expected |
+| `autobyteus-server-ts/src/run-history/services/agent-run-view-projection-service.ts` | Run-history projection owner | Preserve/merge local-memory activities when primary runtime projection is conversation-only | Modify/Test if needed |
+| `autobyteus-server-ts/src/run-history/projection/providers/claude-run-view-projection-provider.ts` | Claude history provider | Current session-message projection may be conversation-only; must not suppress local-memory activities | Test/Modify via provider or projection service |
+| `autobyteus-web/services/runOpen/agentRunOpenCoordinator.ts` | Historical run open flow | Must continue calling `hydrateActivitiesFromProjection` for opened history runs | Test/No production change expected |
+| `autobyteus-web/services/runHydration/runProjectionActivityHydration.ts` | Historical Activity hydration | Converts `projection.activities` directly to Activity store rows | Test/No production change expected |
+| Targeted backend/frontend/e2e tests | Validation | Assert two-lane contract and no duplicate Activity | Modify/Add |
 
 ## Reusable Owned Structures Check
 
-| Repeated Structure / Logic | Candidate Shared File | Owning Subsystem | Why Shared | Redundant Attributes Removed? (`Yes`/`No`) | Overlapping Representations Removed? (`Yes`/`No`) | Must Not Become |
-| --- | --- | --- | --- | --- | --- | --- |
-| Invocation state with tool name/input/started flag | Keep local type in `claude-session-tool-use-coordinator.ts` | Claude runtime session | Used only inside coordinator | Yes | Yes | A generic cross-runtime tool state abstraction |
-| Argument normalization | Existing `resolveToolArguments` / frontend `normalizeArguments` | Converter/frontend parser | Already local to their boundaries | Yes | Yes | A new Claude-only frontend field mapper |
+| Structure / Logic | Candidate Location | Decision | Rationale |
+| --- | --- | --- | --- |
+| Claude invocation projection state | Local type in `claude-session-tool-use-coordinator.ts` | Keep local | Provider-specific sequencing state; not a cross-runtime abstraction. |
+| Segment start/end payload builder for Claude normal tools | Private helpers in coordinator | Add | Avoid duplicate payload shape between raw and permission branches. |
+| Activity ownership helpers | Existing `toolLifecycleHandler.ts` helpers | Reuse/Strengthen | Lifecycle handler already creates/updates Activity. |
+| Argument normalization | Existing backend/frontend helpers | Reuse | Do not add `input`/`tool_input` parallel field. |
 
 ## Shared Structure / Data Model Tightness Check
 
-| Shared Structure / Type / Schema | One Clear Meaning Per Field? (`Yes`/`No`) | Redundant Attributes Removed? (`Yes`/`No`) | Parallel / Overlapping Representation Risk (`Low`/`Medium`/`High`) | Corrective Action |
-| --- | --- | --- | --- | --- |
-| Normalized lifecycle `arguments` | Yes | Yes | Low | Continue using only `arguments` as runtime-neutral field. |
-| Extended `ObservedClaudeToolInvocation` | Yes | Yes | Low | Add `startedEmitted: boolean` or equivalent; do not add separate duplicate maps unless clearer in implementation. |
+| Shared Structure | Tightness Assessment | Corrective Action |
+| --- | --- | --- |
+| Segment payload metadata | `metadata.arguments` has one clear meaning: transcript metadata for a tool invocation. | Use this for Claude normal tool segments. |
+| Lifecycle payload `arguments` | One clear meaning: execution arguments for a tool invocation. | Continue using existing field. |
+| Invocation identity | Segment `id` and lifecycle `invocation_id` should be same stable provider tool-use ID. | Do not create separate segment-only IDs for Claude normal tools. |
+| Activity state | One card per invocation ID. | Creation from lifecycle only; segment updates do not create cards. |
 
 ## Final File Responsibility Mapping
 
-| File | Owning Subsystem / Capability Area | Owner / Boundary | Concrete Concern | Why This Is One File | Reuses Shared Structure? |
-| --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.ts` | Claude runtime session | `ClaudeSessionToolUseCoordinator` | Authoritative Claude tool invocation lifecycle state and emission | Correct existing owner | Local invocation state |
-| `autobyteus-server-ts/src/agent-execution/backends/claude/events/claude-session-event-converter.ts` | Agent event conversion | `ClaudeSessionEventConverter` | Provider-to-normalized event field mapping | Existing converter | `resolveToolArguments` |
-| `autobyteus-web/services/agentStreaming/handlers/toolLifecycleParsers.ts` | Frontend streaming | Tool lifecycle parser | Parse optional completion args if implemented | Existing parser | `normalizeArguments` |
-| `autobyteus-web/services/agentStreaming/handlers/toolLifecycleHandler.ts` | Frontend streaming | Tool lifecycle handler | Merge optional completion args and preserve started args | Existing handler | Existing activity helpers |
-| `autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.test.ts` | Validation | Backend unit tests | New tests for the fixed coordinator invariant | Focused owner test | Fixtures |
-| `autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts` | Validation | Runtime e2e | Correct matcher and add assertions | Existing gated e2e | Existing helpers |
-| `autobyteus-web/services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts` | Validation | Frontend validation | Activity args regression | Existing test suite | Existing mocks |
+| File | Owning Subsystem / Capability Area | Concrete Responsibility |
+| --- | --- | --- |
+| `autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.ts` | Claude runtime session | Authoritative normal-tool two-lane emission and duplicate suppression. |
+| `autobyteus-server-ts/src/agent-execution/backends/claude/events/claude-session-event-converter.ts` | Claude event conversion | Runtime-neutral mapping for segment/lifecycle payloads; no state ownership. |
+| `autobyteus-web/services/agentStreaming/handlers/segmentHandler.ts` | Frontend transcript handling | Create/merge/finalize conversation segments only. |
+| `autobyteus-web/services/agentStreaming/handlers/toolLifecycleHandler.ts` | Frontend lifecycle/Activity handling | Create/update Activity and reconcile lifecycle state with segment state. |
+| `autobyteus-web/stores/agentActivityStore.ts` | Frontend Activity state | Store/dedupe/update one Activity per invocation. |
+| `autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.test.ts` | Backend validation | Claude raw fixture and duplicate-suppression tests. |
+| `autobyteus-server-ts/tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts` | Backend validation | Segment metadata and lifecycle argument conversion tests. |
+| `autobyteus-web/services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts` | Frontend validation | Transcript-only segment behavior. |
+| `autobyteus-web/services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts` and ordering tests | Frontend validation | Lifecycle-owned Activity and no duplicates across event ordering. |
+| `autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts` | E2E validation | Gated Claude two-lane assertion and Codex no-regression where applicable. |
 
 ## Ownership Boundaries
 
-The authoritative boundary for Claude tool invocation lifecycle is `ClaudeSessionToolUseCoordinator`. Callers/consumers should not read raw Claude SDK message content directly to recover arguments. The converter should only normalize fields from coordinator session events. The frontend should trust normalized `arguments`, not know about Claude's `tool_use.input` shape.
+- The Claude runtime boundary owns interpretation of Claude SDK raw event shape.
+- The converter boundary owns event-name and field normalization only.
+- Frontend segment handling owns transcript structure only.
+- Frontend lifecycle handling owns Activity lifecycle and execution state.
+- Durable memory/history tool traces are lifecycle-owned, not segment-owned.
 
 ## Boundary Encapsulation Map
 
-| Authoritative Boundary | Internal Owned Mechanism(s) It Encapsulates | Upstream Callers That Must Use The Boundary | Forbidden Bypass Shape | If Boundary API Is Too Thin, Fix By |
+| Authoritative Boundary | Encapsulates | Upstream Callers Must Use | Forbidden Bypass | If API Too Thin, Fix By |
 | --- | --- | --- | --- | --- |
-| `ClaudeSessionToolUseCoordinator` | Observed invocation map, permission callback, duplicate-start tracking | `ClaudeSession`, `ClaudeAgentRunBackend` event listeners indirectly | Frontend parsing Claude raw `tool_use.input`; converter consulting coordinator internals | Emit complete session events from coordinator |
-| `ClaudeSessionEventConverter` | Provider event name and field normalization | Backend event stream subscribers | Websocket mapper adding provider-specific fields | Add/normalize fields in converter/session event payload |
-| Frontend `toolLifecycleHandler` | Segment/activity mutation rules | Websocket streaming services | Activity component reconstructing missing args from results | Add parser/handler support for normalized fields |
+| `ClaudeSessionToolUseCoordinator` | Raw Claude tool_use/tool_result state, duplicate flags, segment+lifecycle emission sequencing | `ClaudeSession` | Frontend or converter reading raw Claude SDK `input` | Emit complete session events. |
+| `ClaudeSessionEventConverter` | Session event to `AgentRunEvent` mapping | Agent run backend/event stream | Websocket mapper adding Claude-specific fields | Add normalized payload fields in session event/converter. |
+| `toolLifecycleHandler.ts` | Activity creation/status/result/arguments | Agent streaming service | `segmentHandler.ts` independently creating Activity cards | Move lifecycle state mutation into lifecycle handler. |
+| `segmentHandler.ts` | Conversation segment state | Agent streaming service | Activity component reconstructing transcript from Activity | Emit/process segment events. |
 
 ## Dependency Rules
 
-- `ClaudeSession` may pass raw SDK chunks to `ClaudeSessionToolUseCoordinator` but must not interpret tool args itself.
-- `ClaudeSessionToolUseCoordinator` may emit `ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_*` events with normalized param names.
-- `ClaudeSessionEventConverter` may depend on event payloads but must not depend on coordinator private maps.
-- Frontend may depend on normalized websocket `arguments`; it must not depend on Claude SDK-specific `input` or `tool_use` fields.
-- Tests may use raw Claude fixtures to validate the coordinator boundary.
+- `ClaudeSession` may pass raw SDK chunks and permission callbacks to the coordinator; it should not emit normal-tool segment/lifecycle events itself.
+- `ClaudeSessionToolUseCoordinator` may emit `ITEM_ADDED`, `ITEM_COMPLETED`, and `ITEM_COMMAND_EXECUTION_*` session events for normal tools.
+- `ClaudeSessionEventConverter` must not depend on coordinator private maps.
+- Frontend code must not depend on Claude SDK fields such as raw `tool_use.input`.
+- `segmentHandler.ts` must not import/use `AgentActivityStore` for executable segment Activity creation after this refactor.
+- `toolLifecycleHandler.ts` may use segment lookup/creation helpers to reconcile conversation state, but Activity creation remains inside lifecycle handling.
 
 ## Interface Boundary Mapping
 
-| Interface / API / Query / Command / Method | Subject Owned | Responsibility | Accepted Identity Shape(s) | Notes |
-| --- | --- | --- | --- | --- |
-| `processToolLifecycleChunk(runContext, chunk)` | Claude SDK tool lifecycle observation | Extract raw `tool_use`/`tool_result` and emit normalized lifecycle events | `runContext.runId`, `block.id`/`tool_use_id` | Add started emission and completion args. |
-| `handleToolPermissionCheck(runContext, toolName, toolInput, options)` | Permission-mediated tool invocation | Emit started and approval/denial decisions | `options.toolUseID` or generated invocation ID | Mark started emitted in shared state. |
-| `AgentRunEventMessageMapper.map(event)` | Websocket transport message | Serialize normalized events | `AgentRunEvent.eventType` | No Claude-specific changes. |
-| `handleToolExecutionStarted(payload, context)` | Frontend Activity lifecycle | Create/update activity with arguments | `payload.invocation_id` | Existing behavior should work after backend fix. |
-| `handleToolExecutionSucceeded/Failed(payload, context)` | Frontend result lifecycle | Update result/error and optionally merge completion args | `payload.invocation_id` | Defensive enhancement if completion args are added. |
+| Interface / Method | Subject Owned | Accepted Identity Shape | Target Behavior |
+| --- | --- | --- | --- |
+| `processToolLifecycleChunk(runContext, chunk)` | Claude raw tool observation | `block.id` / `block.tool_use_id` | Upsert invocation; for normal `tool_use`, emit segment start and lifecycle start once; for `tool_result`, emit segment end and terminal lifecycle. |
+| `handleToolPermissionCheck(runContext, toolName, toolInput, options)` | Permission-mediated tool observation | `options.toolUseID` | Upsert same invocation; emit segment/lifecycle start once if raw chunk has not already done so; request approval. |
+| `ClaudeSessionEventConverter.convert(event)` | Provider session event conversion | Session event `id` / `invocation_id` | Map `ITEM_ADDED`/`ITEM_COMPLETED` to `SEGMENT_*`; map command execution to `TOOL_*`. |
+| `handleSegmentStart/End(payload, context)` | Frontend transcript | Segment `id` | Create/merge/finalize segment only; no Activity creation. |
+| `handleToolExecutionStarted/Succeeded/Failed/...` | Frontend Activity lifecycle | Lifecycle `invocation_id` | Create/update one Activity and update matching segment lifecycle state. |
 
 ## Interface Boundary Check
 
-| Interface | Responsibility Is Singular? (`Yes`/`No`) | Identity Shape Is Explicit? (`Yes`/`No`) | Ambiguous Selector Risk (`Low`/`Medium`/`High`) | Corrective Action |
+| Interface | Responsibility Singular? | Identity Explicit? | Risk | Corrective Action |
 | --- | --- | --- | --- | --- |
-| `processToolLifecycleChunk` | Yes | Yes | Low | Use invocation ID from `id`/`tool_use_id`. |
-| `handleToolPermissionCheck` | Yes | Yes | Low | Reuse same invocation state/upsert helper. |
-| `TOOL_*` websocket payloads | Yes | Yes | Low | Keep `invocation_id`, `tool_name`, `arguments`. |
+| `processToolLifecycleChunk` | Yes | Yes | Medium because it now emits both lanes | Keep helpers private and state-driven. |
+| `handleToolPermissionCheck` | Yes | Yes | Medium due duplicate observation with raw event | Share same upsert/emit-if-needed helpers. |
+| `SEGMENT_*` payloads | Yes | Yes | Low if metadata shape is normalized | Use `metadata.arguments`, `metadata.tool_name`. |
+| `TOOL_*` payloads | Yes | Yes | Low | Use existing `arguments`, `result`, `error`. |
+| Frontend segment handler | Yes after refactor | Yes | Current risk high due Activity side effects | Remove Activity side effects. |
 
 ## Main Domain Subject Naming Check
 
-| Node / Subject | Current / Proposed Name | Name Is Natural And Self-Descriptive? (`Yes`/`No`) | Naming Drift Risk | Corrective Action |
-| --- | --- | --- | --- | --- |
-| Claude tool lifecycle owner | `ClaudeSessionToolUseCoordinator` | Yes | Low | Keep. |
-| Invocation state | `ObservedClaudeToolInvocation` | Yes | Low | Extend with started-emission state. |
-| Normalized args | `arguments` | Yes | Low | Keep runtime-neutral field. |
+| Subject | Name | Assessment |
+| --- | --- | --- |
+| Claude tool lifecycle owner | `ClaudeSessionToolUseCoordinator` | Keep; name remains accurate if it owns both lanes for tool use. |
+| Invocation state | `ObservedClaudeToolInvocation` or `ClaudeToolInvocationProjectionState` | Consider renaming if flags expand beyond observation. |
+| Lifecycle handler | `toolLifecycleHandler.ts` | Keep; it should own Activity lifecycle. |
+| Segment handler | `segmentHandler.ts` | Keep; it should return to segment-only responsibility. |
 
 ## Applied Patterns (If Any)
 
-- State machine/lightweight lifecycle state inside `ClaudeSessionToolUseCoordinator`: tracks observed invocation -> started emitted -> completed/consumed.
-- Adapter pattern in `ClaudeSessionEventConverter`: converts Claude session event names/payloads to runtime-neutral `AgentRunEvent`s.
+- **Adapter**: Claude event converter maps provider session events to runtime-neutral event types.
+- **Local state machine**: Coordinator tracks per-invocation emission flags to prevent duplicate segment/lifecycle start/end.
+- **Event-sourced projection**: Frontend Activity and memory/history project state from normalized lifecycle events.
 
 ## Target Subsystem / Folder / File Mapping
 
-| Path | Kind (`Folder`/`Module`/`File`) | Owner / Boundary | Responsibility | Why It Belongs Here | Must Not Contain |
-| --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.ts` | File | Claude runtime session | Complete lifecycle emission for Claude tool invocations | Existing coordinator for tool permissions and raw result matching | Frontend display logic |
-| `autobyteus-server-ts/src/agent-execution/backends/claude/events/claude-session-event-converter.ts` | File | Claude event converter | Preserve normalized `arguments` where present | Existing provider event adapter | Private coordinator state |
-| `autobyteus-web/services/agentStreaming/handlers/toolLifecycleParsers.ts` | File | Frontend streaming parser | Optional completion-args parse | Existing tool payload parser | Claude raw SDK parsing |
-| `autobyteus-web/services/agentStreaming/handlers/toolLifecycleHandler.ts` | File | Frontend streaming handler | Activity state updates | Existing Activity mutation owner | Provider-specific SDK interpretation |
-| `autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.test.ts` | File | Backend validation | Coordinator invariant tests | Mirrors production file ownership | Live Claude dependencies |
-| `autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts` | File | Runtime e2e validation | Gated live Claude arg assertions | Existing cross-runtime e2e | Unit fixture coverage duplication beyond necessary |
+| Path | Kind | Owner / Boundary | Responsibility | Must Not Contain |
+| --- | --- | --- | --- | --- |
+| `backends/claude/session/claude-session-tool-use-coordinator.ts` | File | Claude session tool owner | Raw-event and permission-path normal-tool projection | Frontend display logic. |
+| `backends/claude/events/claude-session-event-converter.ts` | File | Event adapter | Provider-neutral field mapping | Private invocation state. |
+| `backends/claude/team-communication/claude-send-message-tool-call-handler.ts` | File | Team communication path | Segment display for `send_message_to` | Generic normal-tool lifecycle alignment. |
+| `autobyteus-web/services/agentStreaming/handlers/segmentHandler.ts` | File | Transcript owner | Segment state only | Activity creation/status/result logic. |
+| `autobyteus-web/services/agentStreaming/handlers/toolLifecycleHandler.ts` | File | Lifecycle/Activity owner | Tool execution and Activity state | Provider raw parsing. |
+| `autobyteus-web/stores/agentActivityStore.ts` | File | Activity store | Store mutations and dedupe | Transcript segment parsing. |
 
 ## Folder Boundary Check
 
-| Path / Folder | Intended Structural Depth (`Transport`/`Main-Line Domain-Control`/`Persistence-Provider`/`Off-Spine Concern`/`Mixed Justified`) | Ownership Boundary Is Clear? (`Yes`/`No`) | Mixed-Layer Or Over-Split Risk (`Low`/`Medium`/`High`) | Justification / Corrective Action |
-| --- | --- | --- | --- | --- |
-| `backends/claude/session` | Main-Line Domain-Control | Yes | Low | Owns Claude session runtime behavior. |
-| `backends/claude/events` | Adapter/Off-Spine Concern | Yes | Low | Converts event contracts only. |
-| `services/agentStreaming/handlers` | Transport/UI state adapter | Yes | Low | Runtime-neutral frontend event handling. |
-| `components/progress` | Presentation | Yes | Low | No production change expected. |
+| Folder | Intended Structural Depth | Ownership Clear? | Action |
+| --- | --- | --- | --- |
+| `autobyteus-server-ts/src/agent-execution/backends/claude/session` | Main-line runtime control | Yes | Extend coordinator; do not create a parallel normalizer. |
+| `autobyteus-server-ts/src/agent-execution/backends/claude/events` | Adapter | Yes | Reuse converter. |
+| `autobyteus-web/services/agentStreaming/handlers` | Frontend event projection | Mixed today but correctable | Separate segment and lifecycle responsibilities within existing files. |
+| `autobyteus-web/stores` | UI state store | Yes | Activity store remains simple state holder. |
 
 ## Concrete Examples / Shape Guidance (Mandatory When Needed)
 
-| Topic | Good Example | Bad / Avoided Shape | Why The Example Matters |
+| Topic | Good Example | Bad / Avoided Shape | Why |
 | --- | --- | --- | --- |
-| Raw observed tool_use handling | `tool_use(input) -> emit ITEM_COMMAND_EXECUTION_STARTED({ arguments: input }) -> tool_result -> emit completed({ arguments: input, result })` | `tool_use(input) -> store only -> tool_result -> emit completed({ result })` | Shows the missing invariant directly. |
-| Duplicate suppression | `emitStartedIfNeeded(invocationId)` used by both raw observer and permission callback | Two independent started emissions from raw observer and permission callback | Prevents duplicate Activity cards. |
-| Frontend boundary | `handleToolExecutionStarted` consumes normalized `arguments` | `ActivityItem` reads Claude `tool_use.input` | Keeps provider-specific logic in backend runtime. |
+| Claude raw start | `tool_use(input) -> ITEM_ADDED(metadata.arguments=input) + ITEM_COMMAND_EXECUTION_STARTED(arguments=input)` | `tool_use(input) -> lifecycle only` | Transcript and Activity both need normalized provider data. |
+| Frontend Activity owner | `TOOL_EXECUTION_STARTED -> addActivity(...)`; `SEGMENT_START -> add segment only` | Both segment and lifecycle call `addActivity(...)` | One owner avoids duplicate/order bugs. |
+| Completion | `tool_result -> ITEM_COMPLETED + ITEM_COMMAND_EXECUTION_COMPLETED(arguments, result)` | completion result only | Keeps segment closed and lifecycle projection recoverable. |
+| `send_message_to` | `send_message_to -> segment display, generic lifecycle suppressed` | Treat as normal tool Activity noise | Preserves team communication UX. |
 
 ## Backward-Compatibility Rejection Log (Mandatory)
 
-| Candidate Compatibility Mechanism | Why It Was Considered | Rejection Decision (`Rejected`/`N/A`) | Clean-Cut Replacement / Removal Plan |
+| Candidate Compatibility Mechanism | Why Considered | Decision | Clean Replacement |
 | --- | --- | --- | --- |
-| Add Claude-specific `input` support in `ActivityItem.vue` | Raw SDK field is named `input` | Rejected | Backend emits existing normalized `arguments`. |
-| Keep result-only Claude behavior and show placeholder args in UI | Minimal UI-only workaround | Rejected | Emit real arguments from the runtime owner. |
-| Add parallel `tool_input` event field | Could mirror SDK naming | Rejected | Use existing `arguments` field across runtimes. |
+| Add Claude-specific `input` support to Activity UI | Raw SDK field is named `input` | Rejected | Backend emits normalized segment metadata and lifecycle `arguments`. |
+| Keep Claude lifecycle-only and let frontend synthesize everything | Smaller than two-lane alignment | Rejected | Claude emits both lanes like Codex. |
+| Let both segment and lifecycle handlers create Activity cards forever | Current behavior mostly works with dedupe | Rejected | Lifecycle owns Activity; segment owns transcript. |
+| Add a parallel `tool_input`/`tool_arguments` field | Could preserve raw naming | Rejected | Existing `arguments` field remains canonical. |
+| Backfill old runs with synthetic segments | Could make old history uniform | Out of scope | New runs use corrected event stream; historical migration is separate. |
 
 ## Derived Layering (If Useful)
 
-Provider adapter layer: Claude SDK chunks -> Claude session events -> normalized agent run events -> websocket messages -> frontend Activity state. Each layer should preserve the normalized `arguments` field once it is created by the Claude lifecycle owner.
+```text
+Provider raw events
+  -> Provider runtime coordinator/adapters
+  -> Runtime-neutral AgentRunEvent stream
+  -> Transport websocket messages
+  -> Frontend event projection handlers
+  -> UI stores/components
+```
+
+The ownership split must be preserved across layers: provider raw interpretation happens before runtime-neutral events; UI components consume projected state only.
 
 ## Migration / Refactor Sequence
 
-1. Extend `ObservedClaudeToolInvocation` with started-emission state, or introduce an equivalent local helper structure.
-2. Add helper methods in `ClaudeSessionToolUseCoordinator`:
+1. Extend `ObservedClaudeToolInvocation` (or rename to a projection-state type) with `segmentStartedEmitted`, `lifecycleStartedEmitted`, and `segmentEndedEmitted` flags.
+2. Add private coordinator helpers:
    - `upsertObservedToolInvocation(runId, invocationId, { toolName, toolInput })`
+   - `emitToolSegmentStartIfNeeded(runContext, invocationId)`
    - `emitToolExecutionStartedIfNeeded(runContext, invocationId)`
-   - `resolveTrackedArguments(runId, invocationId)` or consume helper returning state.
-3. In `processToolLifecycleChunk` assistant `tool_use` branch:
-   - ignore/suppress `send_message_to` lifecycle as today where appropriate;
-   - upsert invocation with args;
-   - emit started once with `arguments`.
+   - `emitToolSegmentEndIfNeeded(runContext, invocationId, completionMetadata)`
+   - `consumeObservedToolInvocation(runId, invocationId)` after terminal lifecycle emission.
+3. In Claude raw assistant `tool_use` handling:
+   - skip/delegate `send_message_to` to its special handler;
+   - upsert invocation with normalized args;
+   - emit segment start once;
+   - emit lifecycle started once.
 4. In `handleToolPermissionCheck`:
-   - upsert/merge invocation state;
-   - use the same started-once helper instead of direct unconditional started emission.
-5. In `processToolLifecycleChunk` `tool_result` branch:
-   - consume tracked state;
-   - emit completed with `arguments: tracked.toolInput` when available.
-6. Verify `ClaudeSessionEventConverter` preserves completion `arguments`; add/adjust tests if needed.
-7. If completion args are added, extend frontend success/failure parsers/handlers to merge optional `arguments` as fallback before updating result/error.
-8. Add backend coordinator unit tests and frontend handler tests.
-9. Update Claude e2e matcher:
-   - after `TOOL_APPROVAL_REQUESTED`, store that invocation ID;
-   - wait for started/approved/succeeded for that invocation only;
-   - assert started/request payloads include expected non-empty arguments;
-   - avoid selecting preliminary successes from safe tools.
-10. Run targeted unit tests and, where credentials are available, gated Claude e2e with raw logging.
+   - upsert the same invocation ID and args;
+   - emit segment start once if raw observation has not already done so;
+   - emit lifecycle started once;
+   - proceed with approval request/decision as today.
+5. In Claude raw user `tool_result` handling:
+   - resolve tracked invocation;
+   - skip/delegate `send_message_to` as today;
+   - defensively emit segment start first if a terminal result arrives without a start;
+   - emit segment end once with metadata including arguments and result/error summary;
+   - emit terminal lifecycle event with arguments and result/error;
+   - consume/cleanup invocation state.
+6. Verify/adjust `ClaudeSessionEventConverter` tests for `ITEM_ADDED`/`ITEM_COMPLETED` metadata and command completion arguments.
+7. Refactor `segmentHandler.ts`:
+   - remove Activity creation from segment start;
+   - remove Activity status/argument updates from segment end;
+   - keep segment metadata merging and tool name/argument fields on conversation segments.
+8. Refactor `toolLifecycleHandler.ts` as needed:
+   - keep/create Activity from lifecycle events only;
+   - reconcile with an existing segment by invocation alias;
+   - if lifecycle arrives before segment, create a synthetic segment as an ordering backstop and let later segment events merge metadata rather than duplicate.
+9. Update frontend tests:
+   - segment handler tests assert conversation state only;
+   - lifecycle handler and ordering tests assert one Activity across segment-before-lifecycle and lifecycle-before-segment orders.
+10. Update backend tests:
+   - Claude raw normal-tool start emits both session event lanes;
+   - result emits both completion lanes;
+   - permission callback/raw duplicate suppression works;
+   - `send_message_to` suppression/display stays intact.
+11. Update memory/history/projection validation:
+   - add/adjust a test showing tool traces come from lifecycle once even when matching tool segments exist;
+   - add server projection coverage proving local-memory activities survive when a Claude runtime/session projection is conversation-only;
+   - add frontend run-open coverage proving historical `projection.activities` are hydrated into `AgentActivityStore` without live streaming.
+12. Update Codex live non-regression validation:
+   - command execution, dynamic tool call, and file-change lifecycle events each create exactly one Activity after segment-created Activity is removed.
+13. Update gated Claude e2e:
+   - capture raw events;
+   - match the intended invocation by approval/request target or tool name/args;
+   - assert raw `tool_use.input` appears in normalized segment metadata and lifecycle arguments;
+   - avoid selecting unrelated preliminary successes.
+13. Run targeted backend, frontend, and e2e/gated validation, then update downstream handoff artifacts.
 
 ## Key Tradeoffs
 
-- Emitting started on raw `tool_use` may show Activity cards earlier for safe tools, which is desired and matches user expectations.
-- Including arguments on completion is redundant when started already arrived, but improves resilience for result-first consumers and memory projection.
-- Fixing this in frontend only would be smaller but wrong: memory/history and API/e2e payloads would still lack arguments.
+- Emitting both lanes for Claude normal tools is larger than the narrow lifecycle fix, but it removes provider asymmetry and avoids frontend special cases.
+- Removing segment-created Activity changes frontend test expectations, but it makes ownership explicit and reduces duplicate/order risk.
+- Keeping a lifecycle-created synthetic segment as an ordering backstop is acceptable only if Activity still remains lifecycle-owned and later segment events reconcile by ID.
+- Completion arguments are somewhat redundant when starts are correct, but they are useful for durable projection recovery and do not create a second frontend field.
 
 ## Risks
 
-- Duplicate started events if raw observation and permission callback both emit for the same invocation without shared state.
-- Accidentally reintroducing `send_message_to` lifecycle noise for Claude team communication.
-- Gated live Claude e2e can be slow/flaky/costly; rely on unit fixtures for deterministic coverage and keep e2e focused.
+- Accidentally dropping Activity cards for any provider that sends executable segments without lifecycle events. Implementation should identify such providers or tests before removing segment-created Activity behavior.
+- Accidentally dropping historical Activity cards by assuming live segment/lifecycle handlers run during history hydration. History must remain projection-hydrated.
+- Accidentally keeping standalone Claude history conversation while losing local-memory activities because the Claude provider is considered usable before fallback/merge.
+- Accidentally reintroducing generic Activity noise for Claude `send_message_to`.
+- Event ordering may expose existing alias/dedupe assumptions in frontend tests.
+- Live Claude e2e can be slow/flaky/costly; deterministic unit fixtures must carry the core correctness burden.
 
 ## Guidance For Implementation
 
-- Keep the change local and invariant-driven; do not introduce a new runtime event type.
-- Prefer a small helper in `ClaudeSessionToolUseCoordinator` over duplicated emission logic in multiple branches.
-- Treat `arguments: {}` as a valid empty payload, but only render non-empty args in UI as currently done.
-- Make tests assert exact payload shape for `Bash` raw-observed tool_use and duplicate suppression for `Write`/permission path.
-- Re-run at minimum:
+- Treat this as a refactor of event ownership, not a UI patch.
+- Prefer coordinator-local helpers over duplicating segment/lifecycle emission logic between raw and permission branches.
+- Use the same invocation ID for Claude segment `id` and lifecycle `invocation_id`.
+- Keep payload fields runtime-neutral: `metadata.arguments` for segments and `arguments` for lifecycle.
+- Do not change `ActivityItem.vue` to understand Claude raw SDK fields.
+- Preserve `send_message_to` as a special team-communication path.
+- Run at minimum:
+  - backend run-history projection tests that cover Claude local-memory activity merge and no duplicate tool traces
+  - frontend run-open/history hydration tests that cover projected Activity display
+  - frontend Codex/live lifecycle tests for command execution, dynamic tool calls, and file changes
+  - `pnpm -C autobyteus-server-ts test tests/unit/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.test.ts --run`
   - `pnpm -C autobyteus-server-ts test tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts --run`
-  - new coordinator unit test file
-  - relevant frontend `toolLifecycleHandler` tests
-  - optional gated e2e: `RUN_CLAUDE_E2E=1 ... pnpm -C autobyteus-server-ts test tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts --run -t "routes tool approval over websocket and streams the normalized tool lifecycle"`
+  - relevant frontend `segmentHandler`, `toolLifecycleHandler`, and ordering tests
+  - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`
+  - gated Claude e2e with raw logging when credentials/environment are available

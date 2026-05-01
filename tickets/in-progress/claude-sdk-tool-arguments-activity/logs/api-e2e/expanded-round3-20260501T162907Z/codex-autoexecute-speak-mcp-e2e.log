@@ -1,0 +1,1069 @@
+
+> autobyteus-server-ts@0.1.1 pretest /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/autobyteus-server-ts
+> pnpm prepare:shared
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 11 workspace projects
+autobyteus-ts build$ tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+
+> autobyteus-server-ts@0.1.1 test /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/autobyteus-server-ts
+> vitest tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts --run -t 'auto-executes the Codex speak MCP tool without approval requests'
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+Registered 6 image models from Autobyteus host https://localhost:51739.
+Autobyteus image models from https://localhost:51739: gpt-image-1-rpa@localhost:51739, nano-banana-pro-app-rpa@localhost:51739, imagen-4-rpa@localhost:51739, imagen-4-ultra-rpa@localhost:51739, imagen-4-fast-rpa@localhost:51739, qwen-image-rpa@localhost:51739
+Autobyteus image discovery summary for https://localhost:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=29
+
+stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+Registered 6 image models from Autobyteus host https://localhost:51740.
+Autobyteus image models from https://localhost:51740: gpt-image-1-rpa@localhost:51740, nano-banana-pro-app-rpa@localhost:51740, imagen-4-rpa@localhost:51740, imagen-4-ultra-rpa@localhost:51740, imagen-4-fast-rpa@localhost:51740, qwen-image-rpa@localhost:51740
+Autobyteus image discovery summary for https://localhost:51740: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=10
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+Finished Autobyteus image model discovery. Total models registered: 12
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:56647) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/autobyteus-server-ts
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-app-server-runtime-api-e2e-LV9M1G
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-app-server-runtime-api-e2e-LV9M1G/.env
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Agent Definition created successfully with ID: codex-app-server-api-e2e-26e1b68c-4cea-4522-9f47-caa4a5d61801
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-mcp-autoexec-workspace-eogUCS
+Initialized FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-mcp-autoexec-workspace-eogUCS. Call initialize() to build file tree.
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-mcp-autoexec-workspace-eogUCS' with max_depth=1
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-mcp-autoexec-workspace-eogUCS' completed in 0.0000 seconds.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Initialized FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-mcp-autoexec-workspace-eogUCS (Shallow). Starting background full scan...
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-mcp-autoexec-workspace-eogUCS' with max_depth=null
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-mcp-autoexec-workspace-eogUCS' completed in 0.0000 seconds.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+FileNameIndexer starting...
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Created and registered workspace ID: agent_ws_6ee2fa186ec171df8796264dff219d0ce6ed14f1fe147418a22c2f20d5d816e1
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Initialized server settings service with 11 predefined settings
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-mcp-autoexec-workspace-eogUCS' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-mcp-autoexec-workspace-eogUCS
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+FileNameIndexer started monitoring
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Background full initialization for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-mcp-autoexec-workspace-eogUCS completed.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Agent definition cache populated with 46 items.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Successfully created codex_app_server agent run '27bf3f92-cb40-48eb-97a9-257f32e4d1d1'.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'thread/started',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: null,
+  threadCount: 1,
+  paramKeys: [ 'thread' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'thread/started',
+  listenerCount: 1,
+  paramKeys: [ 'thread' ]
+}
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: null,
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: null,
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: null,
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: null,
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: null,
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: null,
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Agent websocket attached for run 27bf3f92-cb40-48eb-97a9-257f32e4d1d1
+Created agent session 7de7c03c-0e2a-4ea3-9422-b3f7ce4395e8 for run 27bf3f92-cb40-48eb-97a9-257f32e4d1d1
+Agent WebSocket connected: session=7de7c03c-0e2a-4ea3-9422-b3f7ce4395e8, run=27bf3f92-cb40-48eb-97a9-257f32e4d1d1
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+[CodexSendTurnStart] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: null,
+  startupStatus: 'ready',
+  contentPreview: 'Please call the speak tool exactly once right now. Use the TTS/speak MCP tool, not the terminal tool. Speak the exact text: codex auto speak ac34913f f889 4413 '
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+[CodexSendTurnResponse] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  turnId: '019de461-57a2-75e3-8bc9-dd9d9ba236b0',
+  payloadType: 'object',
+  payloadKeys: [ 'turn' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'thread/status/changed',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: '019de461-57a2-75e3-8bc9-dd9d9ba236b0',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'status' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'thread/status/changed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'status' ]
+}
+[RuntimeEvent] {
+  sequence: 1,
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  eventType: 'AGENT_STATUS',
+  statusHint: null,
+  payloadKeys: [ 'threadId', 'status' ],
+  rawEventJson: '{"eventType":"AGENT_STATUS","runId":"27bf3f92-cb40-48eb-97a9-257f32e4d1d1","payload":{"threadId":"019de461-577d-78f0-9fbc-d512dc1af7df","status":{"type":"active","activeFlags":[]}},"statusHint":null}'
+}
+[RuntimeMappedMessage] {
+  sequence: 1,
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  messageType: 'AGENT_STATUS',
+  payloadId: null,
+  segmentType: null,
+  eventType: 'AGENT_STATUS'
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'turn/started',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: '019de461-57a2-75e3-8bc9-dd9d9ba236b0',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turn' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'turn/started',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turn' ]
+}
+[RuntimeEvent] {
+  sequence: 2,
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  eventType: 'TURN_STARTED',
+  statusHint: 'ACTIVE',
+  payloadKeys: [ 'turnId' ],
+  rawEventJson: '{"eventType":"TURN_STARTED","runId":"27bf3f92-cb40-48eb-97a9-257f32e4d1d1","payload":{"turnId":"019de461-57a2-75e3-8bc9-dd9d9ba236b0"},"statusHint":"ACTIVE"}'
+}
+[RuntimeMappedMessage] {
+  sequence: 2,
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  messageType: 'TURN_STARTED',
+  payloadId: null,
+  segmentType: null,
+  eventType: 'TURN_STARTED'
+}
+[RuntimeEvent] {
+  sequence: 3,
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  eventType: 'AGENT_STATUS',
+  statusHint: 'ACTIVE',
+  payloadKeys: [ 'new_status', 'old_status', 'turnId' ],
+  rawEventJson: '{"eventType":"AGENT_STATUS","runId":"27bf3f92-cb40-48eb-97a9-257f32e4d1d1","payload":{"new_status":"RUNNING","old_status":null,"turnId":"019de461-57a2-75e3-8bc9-dd9d9ba236b0"},"statusHint":"ACTIVE"}'
+}
+[RuntimeMappedMessage] {
+  sequence: 3,
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  messageType: 'AGENT_STATUS',
+  payloadId: null,
+  segmentType: null,
+  eventType: 'AGENT_STATUS'
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: '019de461-57a2-75e3-8bc9-dd9d9ba236b0',
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: '019de461-57a2-75e3-8bc9-dd9d9ba236b0',
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: '019de461-57a2-75e3-8bc9-dd9d9ba236b0',
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: '019de461-57a2-75e3-8bc9-dd9d9ba236b0',
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: '019de461-57a2-75e3-8bc9-dd9d9ba236b0',
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: '019de461-57a2-75e3-8bc9-dd9d9ba236b0',
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'rawResponseItem/completed',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: '019de461-57a2-75e3-8bc9-dd9d9ba236b0',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'rawResponseItem/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'rawResponseItem/completed',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: '019de461-57a2-75e3-8bc9-dd9d9ba236b0',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'rawResponseItem/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'rawResponseItem/completed',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: '019de461-57a2-75e3-8bc9-dd9d9ba236b0',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'rawResponseItem/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'item/started',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: '019de461-57a2-75e3-8bc9-dd9d9ba236b0',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'item/started',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'item/completed',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: '019de461-57a2-75e3-8bc9-dd9d9ba236b0',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'item/completed',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'account/rateLimits/updated',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: '019de461-57a2-75e3-8bc9-dd9d9ba236b0',
+  threadCount: 1,
+  paramKeys: [ 'rateLimits' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'account/rateLimits/updated',
+  listenerCount: 1,
+  paramKeys: [ 'rateLimits' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'item/started',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: '019de461-57a2-75e3-8bc9-dd9d9ba236b0',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'item/started',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'item/completed',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: '019de461-57a2-75e3-8bc9-dd9d9ba236b0',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'item/completed',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'rawResponseItem/completed',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: '019de461-57a2-75e3-8bc9-dd9d9ba236b0',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'rawResponseItem/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'rawResponseItem/completed',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: '019de461-57a2-75e3-8bc9-dd9d9ba236b0',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'rawResponseItem/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'item/started',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: '019de461-57a2-75e3-8bc9-dd9d9ba236b0',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'item/started',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId' ]
+}
+[RuntimeEvent] {
+  sequence: 4,
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  eventType: 'SEGMENT_START',
+  statusHint: null,
+  payloadKeys: [ 'item', 'threadId', 'turnId', 'id', 'segment_type', 'metadata' ],
+  rawEventJson: '{"eventType":"SEGMENT_START","runId":"27bf3f92-cb40-48eb-97a9-257f32e4d1d1","payload":{"item":{"type":"mcpToolCall","id":"call_QMxUsB9muASGNqumd8wZw7mc","server":"tts","tool":"speak","status":"inProgress","arguments":{"text":"codex auto speak ac34913f f889 4413 9732 15741a8c9f54"},"result":null,"error":null,"durationMs":null},"threadId":"019de461-577d-78f0-9fbc-d512dc1af7df","turnId":"019de461-57a2-75e3-8bc9-dd9d9ba236b0","id":"call_QMxUsB9muASGNqumd8wZw7mc","segment_type":"tool_call","metadata":{"tool_name":"speak","arguments":{"text":"codex auto speak ac34913f f889 4413 9732 15741a8c9f54"}}},"statusHint":null}'
+}
+[RuntimeMappedMessage] {
+  sequence: 4,
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  messageType: 'SEGMENT_START',
+  payloadId: 'call_QMxUsB9muASGNqumd8wZw7mc',
+  segmentType: 'tool_call',
+  eventType: 'SEGMENT_START'
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'thread/tokenUsage/updated',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: '019de461-57a2-75e3-8bc9-dd9d9ba236b0',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'tokenUsage' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'thread/tokenUsage/updated',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'tokenUsage' ]
+}
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'account/rateLimits/updated',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: '019de461-57a2-75e3-8bc9-dd9d9ba236b0',
+  threadCount: 1,
+  paramKeys: [ 'rateLimits' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'account/rateLimits/updated',
+  listenerCount: 1,
+  paramKeys: [ 'rateLimits' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'item/completed',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: '019de461-57a2-75e3-8bc9-dd9d9ba236b0',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'codex/local/mcpToolExecutionCompleted',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'invocation_id', 'tool_name' ]
+}
+[RuntimeEvent] {
+  sequence: 5,
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  eventType: 'TOOL_EXECUTION_SUCCEEDED',
+  statusHint: null,
+  payloadKeys: [
+    'item',
+    'threadId',
+    'turnId',
+    'invocation_id',
+    'tool_name',
+    'result'
+  ],
+  rawEventJson: '{"eventType":"TOOL_EXECUTION_SUCCEEDED","runId":"27bf3f92-cb40-48eb-97a9-257f32e4d1d1","payload":{"item":{"type":"mcpToolCall","id":"call_QMxUsB9muASGNqumd8wZw7mc","server":"tts","tool":"speak","status":"completed","arguments":{"text":"codex auto speak ac34913f f889 4413 9732 15741a8c9f54"},"result":{"content":[{"type":"text","text":"{\\n  \\"ok\\": true\\n}"}],"structuredContent":{"ok":true},"_meta":null},"error":null,"durationMs":19440},"threadId":"019de461-577d-78f0-9fbc-d512dc1af7df","turnId":"019de461-57a2-75e3-8bc9-dd9d9ba236b0","invocation_id":"call_QMxUsB9muASGNqumd8wZw7mc","tool_name":"speak","result":{"content":[{"type":"text","text":"{\\n  \\"ok\\": true\\n}"}],"structuredContent":{"ok":true},"_meta":null}},"statusHint":null}'
+}
+[RuntimeMappedMessage] {
+  sequence: 5,
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  messageType: 'TOOL_EXECUTION_SUCCEEDED',
+  payloadId: null,
+  segmentType: null,
+  eventType: 'TOOL_EXECUTION_SUCCEEDED'
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'item/completed',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId' ]
+}
+[RuntimeEvent] {
+  sequence: 6,
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  eventType: 'SEGMENT_END',
+  statusHint: null,
+  payloadKeys: [ 'item', 'threadId', 'turnId', 'id', 'metadata' ],
+  rawEventJson: '{"eventType":"SEGMENT_END","runId":"27bf3f92-cb40-48eb-97a9-257f32e4d1d1","payload":{"item":{"type":"mcpToolCall","id":"call_QMxUsB9muASGNqumd8wZw7mc","server":"tts","tool":"speak","status":"completed","arguments":{"text":"codex auto speak ac34913f f889 4413 9732 15741a8c9f54"},"result":{"content":[{"type":"text","text":"{\\n  \\"ok\\": true\\n}"}],"structuredContent":{"ok":true},"_meta":null},"error":null,"durationMs":19440},"threadId":"019de461-577d-78f0-9fbc-d512dc1af7df","turnId":"019de461-57a2-75e3-8bc9-dd9d9ba236b0","id":"call_QMxUsB9muASGNqumd8wZw7mc","metadata":{"tool_name":"speak","arguments":{"text":"codex auto speak ac34913f f889 4413 9732 15741a8c9f54"}}},"statusHint":null}'
+}
+[RuntimeMappedMessage] {
+  sequence: 6,
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  messageType: 'SEGMENT_END',
+  payloadId: 'call_QMxUsB9muASGNqumd8wZw7mc',
+  segmentType: null,
+  eventType: 'SEGMENT_END'
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'rawResponseItem/completed',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: '019de461-57a2-75e3-8bc9-dd9d9ba236b0',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'rawResponseItem/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[RuntimeEvent] {
+  sequence: 7,
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  eventType: 'TOOL_LOG',
+  statusHint: null,
+  payloadKeys: [ 'threadId', 'turnId', 'item', 'tool_invocation_id', 'log_entry' ],
+  rawEventJson: '{"eventType":"TOOL_LOG","runId":"27bf3f92-cb40-48eb-97a9-257f32e4d1d1","payload":{"threadId":"019de461-577d-78f0-9fbc-d512dc1af7df","turnId":"019de461-57a2-75e3-8bc9-dd9d9ba236b0","item":{"type":"function_call_output","call_id":"call_QMxUsB9muASGNqumd8wZw7mc","output":"Wall time: 19.4413 seconds\\nOutput:\\n{\\"ok\\":true}"},"tool_invocation_id":"call_QMxUsB9muASGNqumd8wZw7mc","log_entry":"Wall time: 19.4413 seconds\\nOutput:\\n{\\"ok\\":true}"},"statusHint":null}'
+}
+[RuntimeMappedMessage] {
+  sequence: 7,
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  messageType: 'TOOL_LOG',
+  payloadId: null,
+  segmentType: null,
+  eventType: 'TOOL_LOG'
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'item/started',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: '019de461-57a2-75e3-8bc9-dd9d9ba236b0',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'item/started',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId' ]
+}
+[RuntimeEvent] {
+  sequence: 8,
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  eventType: 'SEGMENT_START',
+  statusHint: null,
+  payloadKeys: [ 'item', 'threadId', 'turnId', 'id', 'segment_type' ],
+  rawEventJson: '{"eventType":"SEGMENT_START","runId":"27bf3f92-cb40-48eb-97a9-257f32e4d1d1","payload":{"item":{"type":"agentMessage","id":"msg_0dd9288c4247d8ba0169f4d57297c0819198c75e974a621149","text":"","phase":"final_answer","memoryCitation":null},"threadId":"019de461-577d-78f0-9fbc-d512dc1af7df","turnId":"019de461-57a2-75e3-8bc9-dd9d9ba236b0","id":"msg_0dd9288c4247d8ba0169f4d57297c0819198c75e974a621149","segment_type":"text"},"statusHint":null}'
+}
+[RuntimeMappedMessage] {
+  sequence: 8,
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  messageType: 'SEGMENT_START',
+  payloadId: 'msg_0dd9288c4247d8ba0169f4d57297c0819198c75e974a621149',
+  segmentType: 'text',
+  eventType: 'SEGMENT_START'
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'item/completed',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: '019de461-57a2-75e3-8bc9-dd9d9ba236b0',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'item/completed',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId' ]
+}
+[RuntimeEvent] {
+  sequence: 9,
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  eventType: 'SEGMENT_END',
+  statusHint: null,
+  payloadKeys: [ 'item', 'threadId', 'turnId', 'id' ],
+  rawEventJson: '{"eventType":"SEGMENT_END","runId":"27bf3f92-cb40-48eb-97a9-257f32e4d1d1","payload":{"item":{"type":"agentMessage","id":"msg_0dd9288c4247d8ba0169f4d57297c0819198c75e974a621149","text":"","phase":"final_answer","memoryCitation":null},"threadId":"019de461-577d-78f0-9fbc-d512dc1af7df","turnId":"019de461-57a2-75e3-8bc9-dd9d9ba236b0","id":"msg_0dd9288c4247d8ba0169f4d57297c0819198c75e974a621149"},"statusHint":null}'
+}
+[RuntimeMappedMessage] {
+  sequence: 9,
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  messageType: 'SEGMENT_END',
+  payloadId: 'msg_0dd9288c4247d8ba0169f4d57297c0819198c75e974a621149',
+  segmentType: null,
+  eventType: 'SEGMENT_END'
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'rawResponseItem/completed',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: '019de461-57a2-75e3-8bc9-dd9d9ba236b0',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'rawResponseItem/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'thread/tokenUsage/updated',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: '019de461-57a2-75e3-8bc9-dd9d9ba236b0',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'tokenUsage' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'thread/tokenUsage/updated',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'tokenUsage' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'account/rateLimits/updated',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: '019de461-57a2-75e3-8bc9-dd9d9ba236b0',
+  threadCount: 1,
+  paramKeys: [ 'rateLimits' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'account/rateLimits/updated',
+  listenerCount: 1,
+  paramKeys: [ 'rateLimits' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'thread/status/changed',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: '019de461-57a2-75e3-8bc9-dd9d9ba236b0',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'status' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'thread/status/changed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'status' ]
+}
+[RuntimeEvent] {
+  sequence: 10,
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  eventType: 'AGENT_STATUS',
+  statusHint: null,
+  payloadKeys: [ 'threadId', 'status' ],
+  rawEventJson: '{"eventType":"AGENT_STATUS","runId":"27bf3f92-cb40-48eb-97a9-257f32e4d1d1","payload":{"threadId":"019de461-577d-78f0-9fbc-d512dc1af7df","status":{"type":"idle"}},"statusHint":null}'
+}
+[RuntimeMappedMessage] {
+  sequence: 10,
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  messageType: 'AGENT_STATUS',
+  payloadId: null,
+  segmentType: null,
+  eventType: 'AGENT_STATUS'
+}
+[CodexAppServerNotification] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'turn/completed',
+  matchesThread: true,
+  threadId: '019de461-577d-78f0-9fbc-d512dc1af7df',
+  activeTurnId: '019de461-57a2-75e3-8bc9-dd9d9ba236b0',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turn' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  method: 'turn/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turn' ]
+}
+[RuntimeEvent] {
+  sequence: 11,
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  eventType: 'TURN_COMPLETED',
+  statusHint: 'IDLE',
+  payloadKeys: [ 'turnId' ],
+  rawEventJson: '{"eventType":"TURN_COMPLETED","runId":"27bf3f92-cb40-48eb-97a9-257f32e4d1d1","payload":{"turnId":"019de461-57a2-75e3-8bc9-dd9d9ba236b0"},"statusHint":"IDLE"}'
+}
+[RuntimeMappedMessage] {
+  sequence: 11,
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  messageType: 'TURN_COMPLETED',
+  payloadId: null,
+  segmentType: null,
+  eventType: 'TURN_COMPLETED'
+}
+[RuntimeEvent] {
+  sequence: 12,
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  eventType: 'AGENT_STATUS',
+  statusHint: 'IDLE',
+  payloadKeys: [ 'new_status', 'old_status', 'turnId' ],
+  rawEventJson: '{"eventType":"AGENT_STATUS","runId":"27bf3f92-cb40-48eb-97a9-257f32e4d1d1","payload":{"new_status":"IDLE","old_status":"RUNNING","turnId":"019de461-57a2-75e3-8bc9-dd9d9ba236b0"},"statusHint":"IDLE"}'
+}
+[RuntimeMappedMessage] {
+  sequence: 12,
+  runId: '27bf3f92-cb40-48eb-97a9-257f32e4d1d1',
+  messageType: 'AGENT_STATUS',
+  payloadId: null,
+  segmentType: null,
+  eventType: 'AGENT_STATUS'
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Closed agent session 7de7c03c-0e2a-4ea3-9422-b3f7ce4395e8
+Agent WebSocket disconnected: 7de7c03c-0e2a-4ea3-9422-b3f7ce4395e8
+
+ ❯ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts (15 tests | 1 failed | 14 skipped) 128215ms
+     ↓ creates a run, restores it, and continues streaming on the same websocket
+     ↓ serves run history and projection after terminate, restore, and continue
+     ↓ routes tool approval over websocket and streams the normalized tool lifecycle
+     ↓ creates a run, restores it, and continues streaming on the same websocket
+     ↓ serves run history and projection after terminate, restore, and continue
+     ↓ routes tool approval over websocket and streams the normalized tool lifecycle
+     ↓ auto-executes Codex tool calls over websocket without approval requests
+     ↓ routes Codex MCP tool approval over websocket for the speak tool
+     × auto-executes the Codex speak MCP tool without approval requests 128172ms
+     ↓ applies configured runtime skills over the current websocket API contract
+     ↓ uses a whole-directory materialized skill whose linked shared file sits outside the skill folder
+     ↓ creates a run, restores it, and continues streaming on the same websocket
+     ↓ serves run history and projection after terminate, restore, and continue
+     ↓ routes tool approval over websocket and streams the normalized tool lifecycle
+     ↓ applies configured runtime skills over the current websocket API contract
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Error: Timed out waiting for websocket message 'TOOL_APPROVED for auto-executed speak'. preview='CONNECTED:{"agent_id":"27bf3f92-cb40-48eb-97a9-257f32e4d1d1","session_id":"7de7c03c-0e2a-4ea3-9422-b3f7ce4395e8"} | AGENT_STATUS:{"new_status":"IDLE","old_status":null} | AGENT_STATUS:{"threadId":"019de461-577d-78f0-9fbc-d512dc1af7df","status":{"type":"active","activeFlags":[]}} | TURN_STARTED:{"turnId":"019de461-57a2-75e3-8bc9-dd9d9ba236b0","turn_id":"019de461-57a2-75e3-8bc9-dd9d9ba236b0"} | AGENT_STATUS:{"new_status":"RUNNING","old_status":null,"turnId":"019de461-57a2-75e3-8bc9-dd9d9ba236b0","turn_id":"019de461-57a2-75e3-8bc9-dd9d9ba236b0"} | SEGMENT_START:{"item":{"type":"mcpToolCall","id":"call_QMxUsB9muASGNqumd8wZw7mc","server":"tts","tool":"speak","status":"inProgress","arguments":{"text":"codex auto speak ac34913f f889 4413 9732 | TOOL_EXECUTION_SUCCEEDED:{"item":{"type":"mcpToolCall","id":"call_QMxUsB9muASGNqumd8wZw7mc","server":"tts","tool":"speak","status":"completed","arguments":{"text":"codex auto speak ac34913f f889 4413 9732  | SEGMENT_END:{"item":{"type":"mcpToolCall","id":"call_QMxUsB9muASGNqumd8wZw7mc","server":"tts","tool":"speak","status":"completed","arguments":{"text":"codex auto speak ac34913f f889 4413 9732  | TOOL_LOG:{"threadId":"019de461-577d-78f0-9fbc-d512dc1af7df","turnId":"019de461-57a2-75e3-8bc9-dd9d9ba236b0","item":{"type":"function_call_output","call_id":"call_QMxUsB9muASGNqumd8wZw7mc"," | SEGMENT_START:{"item":{"type":"agentMessage","id":"msg_0dd9288c4247d8ba0169f4d57297c0819198c75e974a621149","text":"","phase":"final_answer","memoryCitation":null},"threadId":"019de461-577d-78f0- | SEGMENT_END:{"item":{"type":"agentMessage","id":"msg_0dd9288c4247d8ba0169f4d57297c0819198c75e974a621149","text":"","phase":"final_answer","memoryCitation":null},"threadId":"019de461-577d-78f0- | AGENT_STATUS:{"threadId":"019de461-577d-78f0-9fbc-d512dc1af7df","status":{"type":"idle"}} | TURN_COMPLETED:{"turnId":"019de461-57a2-75e3-8bc9-dd9d9ba236b0","turn_id":"019de461-57a2-75e3-8bc9-dd9d9ba236b0"} | AGENT_STATUS:{"new_status":"IDLE","old_status":"RUNNING","turnId":"019de461-57a2-75e3-8bc9-dd9d9ba236b0","turn_id":"019de461-57a2-75e3-8bc9-dd9d9ba236b0"}'
+ ❯ waitForMessage tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts:127:9
+    125|     .map((message) => `${message.type}:${JSON.stringify(message.payloa…
+    126|     .join(" | ");
+    127|   throw new Error(`Timed out waiting for websocket message '${label}'.…
+       |         ^
+    128| };
+    129| 
+ ❯ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts:1407:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 14 skipped (15)
+   Start at  18:31:13
+   Duration  132.60s (transform 2.60s, setup 17ms, import 3.93s, tests 128.21s, environment 0ms)
+
+ ELIFECYCLE  Test failed. See above for more details.

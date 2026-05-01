@@ -130,7 +130,17 @@ export class AgentRunViewProjectionService {
     const fallbackProvider = this.providerRegistry.resolveFallbackProvider();
 
     const primaryProjection = await this.tryBuildProjection(primaryProvider, providerInput, "primary");
-    const localProjection = input.localProjection ?? null;
+    const shouldLoadComplementaryLocalProjection =
+      input.localProjection === undefined &&
+      input.allowFallbackProvider !== false &&
+      primaryProvider !== fallbackProvider &&
+      primaryProjection !== null &&
+      primaryProjection.conversation.length > 0 &&
+      primaryProjection.activities.length === 0;
+    const complementaryLocalProjection = shouldLoadComplementaryLocalProjection
+      ? await this.tryBuildProjection(fallbackProvider, providerInput, "fallback")
+      : null;
+    const localProjection = input.localProjection ?? complementaryLocalProjection;
     const bestResolvedProjection = mergeProjectionBundles(
       runId,
       localProjection,

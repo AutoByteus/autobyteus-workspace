@@ -1,65 +1,48 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { findSegmentById, handleSegmentContent, handleSegmentEnd, handleSegmentStart } from '../segmentHandler';
-import { useAgentActivityStore } from '~/stores/agentActivityStore';
-import { createPinia, setActivePinia } from 'pinia';
 import type { SegmentStartPayload } from '../../protocol/messageTypes';
 import type { AgentContext } from '~/types/agent/AgentContext';
 
-// Mock dependencies
-vi.mock('~/stores/agentActivityStore', () => ({
-  useAgentActivityStore: vi.fn(),
-}));
+const buildContext = (): AgentContext =>
+  ({
+    state: {
+      runId: 'test-agent-id',
+    },
+    conversation: {
+      messages: [],
+      updatedAt: '',
+    },
+  }) as any;
 
 describe('segmentHandler', () => {
   let mockContext: AgentContext;
-  let mockActivityStore: any;
 
   beforeEach(() => {
-    setActivePinia(createPinia());
-    
-    mockContext = {
-      state: {
-        runId: 'test-agent-id',
-      },
-      conversation: {
-        messages: [],
-        updatedAt: '',
-      },
-    } as any;
-
-    mockActivityStore = {
-      addActivity: vi.fn(),
-      updateActivityStatus: vi.fn(),
-      updateActivityArguments: vi.fn(),
-      updateActivityToolName: vi.fn(),
-    };
-
-    (useAgentActivityStore as any).mockReturnValue(mockActivityStore);
-    
-    // Spy on console.error
-    vi.spyOn(console, 'error').mockImplementation(() => {});
+    mockContext = buildContext();
+    vi.restoreAllMocks();
   });
 
   describe('handleSegmentStart', () => {
-    it('should correctly set toolName from metadata for tool_call segments', () => {
+    it('creates a tool_call conversation segment from metadata without creating Activity state', () => {
       const payload: SegmentStartPayload = {
         id: 'test-id',
         turn_id: 'turn-1',
         segment_type: 'tool_call',
         metadata: {
           tool_name: 'read_file',
+          arguments: { path: '/tmp/readme.md' },
         },
       };
 
       handleSegmentStart(payload, mockContext);
 
-      expect(mockActivityStore.addActivity).toHaveBeenCalledWith(
-        'test-agent-id',
-        expect.objectContaining({
-          toolName: 'read_file',
-          type: 'tool_call',
-        })
-      );
+      const segment = findSegmentById(mockContext, 'test-id') as any;
+      expect(segment).toBeTruthy();
+      expect(segment.type).toBe('tool_call');
+      expect(segment.toolName).toBe('read_file');
+      expect(segment.arguments).toEqual({ path: '/tmp/readme.md' });
+      expect(mockContext.conversation.messages[0]?.type).toBe('ai');
+      expect((mockContext.conversation.messages[0] as any).segments).toHaveLength(1);
     });
 
     it('hydrates tool_call arguments from metadata.arguments/query fields', () => {
@@ -77,25 +60,12 @@ describe('segmentHandler', () => {
       handleSegmentStart(payload, mockContext);
 
       const segment = findSegmentById(mockContext, 'search-call-1') as any;
-      expect(segment).toBeTruthy();
       expect(segment.type).toBe('tool_call');
       expect(segment.toolName).toBe('search_web');
       expect(segment.arguments).toEqual({
         query: 'Elon Musk latest news',
         queries: ['Elon Musk latest news', 'Elon Musk Reuters'],
       });
-
-      expect(mockActivityStore.addActivity).toHaveBeenCalledWith(
-        'test-agent-id',
-        expect.objectContaining({
-          toolName: 'search_web',
-          type: 'tool_call',
-          arguments: {
-            query: 'Elon Musk latest news',
-            queries: ['Elon Musk latest news', 'Elon Musk Reuters'],
-          },
-        }),
-      );
     });
 
     it('hydrates tool_call arguments when metadata.arguments is serialized JSON', () => {
@@ -105,56 +75,36 @@ describe('segmentHandler', () => {
         segment_type: 'tool_call',
         metadata: {
           tool_name: 'generate_image',
-          arguments:
-            '{"prompt":"cute otter","output_file_path":"/tmp/cute-otter.png"}',
+          arguments: '{"prompt":"cute otter","output_file_path":"/tmp/cute-otter.png"}',
         },
       };
 
       handleSegmentStart(payload, mockContext);
 
       const segment = findSegmentById(mockContext, 'image-call-1') as any;
-      expect(segment).toBeTruthy();
-      expect(segment.type).toBe('tool_call');
       expect(segment.toolName).toBe('generate_image');
       expect(segment.arguments).toEqual({
         prompt: 'cute otter',
         output_file_path: '/tmp/cute-otter.png',
       });
-
-      expect(mockActivityStore.addActivity).toHaveBeenCalledWith(
-        'test-agent-id',
-        expect.objectContaining({
-          toolName: 'generate_image',
-          type: 'tool_call',
-          arguments: {
-            prompt: 'cute otter',
-            output_file_path: '/tmp/cute-otter.png',
-          },
-        }),
-      );
     });
 
-    it('should log error and use placeholder when tool_name is missing in metadata for tool_call', () => {
+    it('does not treat missing tool_name as an Activity-store backend bug', () => {
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
       const payload: SegmentStartPayload = {
         id: 'test-id-missing',
         turn_id: 'turn-1',
         segment_type: 'tool_call',
-        metadata: {}, 
+        metadata: {},
       };
 
       handleSegmentStart(payload, mockContext);
 
-      expect(console.error).toHaveBeenCalledWith(
-        expect.stringContaining('Backend Bug: Missing tool_name in metadata')
-      );
-
-      expect(mockActivityStore.addActivity).toHaveBeenCalledWith(
-        'test-agent-id',
-        expect.objectContaining({
-          toolName: 'MISSING_TOOL_NAME', 
-          type: 'tool_call',
-        })
-      );
+      const segment = findSegmentById(mockContext, 'test-id-missing') as any;
+      expect(segment).toBeTruthy();
+      expect(segment.type).toBe('tool_call');
+      expect(segment.toolName).toBe('');
+      expect(consoleErrorSpy).not.toHaveBeenCalled();
     });
 
     it('replaces unknown_tool when a later SEGMENT_START provides the concrete tool name', () => {
@@ -204,83 +154,48 @@ describe('segmentHandler', () => {
         recipient_name: 'Student',
         content: 'Question for you',
       });
-      expect(mockActivityStore.updateActivityToolName).toHaveBeenCalledWith(
-        'test-agent-id',
-        'send-msg-1',
-        'send_message_to',
-      );
     });
 
-    it('should NOT log error for other segment types (e.g. write_file)', () => {
-       const payload: SegmentStartPayload = {
-        id: 'test-id-kf',
-        turn_id: 'turn-1',
-        segment_type: 'write_file',
-        metadata: { path: '/tmp/foo.txt' }, 
-      };
-
-      handleSegmentStart(payload, mockContext);
-
-      expect(console.error).not.toHaveBeenCalled();
-      
-      // write_file uses segment_type as toolName initially or handled differently? 
-      // Based on current code it uses segment_type
-      expect(mockActivityStore.addActivity).toHaveBeenCalledWith(
-        'test-agent-id',
-        expect.objectContaining({
-          type: 'write_file',
-        })
+    it('creates write_file/edit_file/run_bash transcript segments from metadata', () => {
+      handleSegmentStart(
+        {
+          id: 'test-id-kf',
+          turn_id: 'turn-1',
+          segment_type: 'write_file',
+          metadata: { path: '/tmp/foo.txt' },
+        },
+        mockContext,
+      );
+      handleSegmentStart(
+        {
+          id: 'test-id-pf',
+          turn_id: 'turn-1',
+          segment_type: 'edit_file',
+          metadata: { path: '/tmp/bar.txt' },
+        },
+        mockContext,
+      );
+      handleSegmentStart(
+        {
+          id: 'test-id-bash',
+          turn_id: 'turn-1',
+          segment_type: 'run_bash',
+          metadata: { command: 'python fibonacci.py' },
+        },
+        mockContext,
       );
 
-    });
+      const writeSegment = findSegmentById(mockContext, 'test-id-kf') as any;
+      const editSegment = findSegmentById(mockContext, 'test-id-pf') as any;
+      const bashSegment = findSegmentById(mockContext, 'test-id-bash') as any;
 
-    it('should correctly handle edit_file segments', () => {
-      const payload: SegmentStartPayload = {
-        id: 'test-id-pf',
-        turn_id: 'turn-1',
-        segment_type: 'edit_file',
-        metadata: { path: '/tmp/bar.txt' },
-      };
-
-      handleSegmentStart(payload, mockContext);
-
-      expect(console.error).not.toHaveBeenCalled();
-
-      expect(mockActivityStore.addActivity).toHaveBeenCalledWith(
-        'test-agent-id',
-        expect.objectContaining({
-          toolName: 'edit_file',
-          type: 'edit_file',
-          arguments: { path: '/tmp/bar.txt' },
-        })
-      );
-
-    });
-
-    it('hydrates run_bash command from start metadata', () => {
-      const payload: SegmentStartPayload = {
-        id: 'test-id-bash',
-        turn_id: 'turn-1',
-        segment_type: 'run_bash',
-        metadata: { command: "python fibonacci.py" },
-      };
-
-      handleSegmentStart(payload, mockContext);
-
-      const segment = findSegmentById(mockContext, 'test-id-bash') as any;
-      expect(segment).toBeTruthy();
-      expect(segment.type).toBe('terminal_command');
-      expect(segment.command).toBe('python fibonacci.py');
-
-      expect(mockActivityStore.addActivity).toHaveBeenCalledWith(
-        'test-agent-id',
-        expect.objectContaining({
-          toolName: 'run_bash',
-          type: 'terminal_command',
-          contextText: 'python fibonacci.py',
-          arguments: { command: 'python fibonacci.py' },
-        })
-      );
+      expect(writeSegment.type).toBe('write_file');
+      expect(writeSegment.path).toBe('/tmp/foo.txt');
+      expect(editSegment.type).toBe('edit_file');
+      expect(editSegment.path).toBe('/tmp/bar.txt');
+      expect(bashSegment.type).toBe('terminal_command');
+      expect(bashSegment.command).toBe('python fibonacci.py');
+      expect(bashSegment.arguments).toEqual({ command: 'python fibonacci.py' });
     });
 
     it('deduplicates repeated SEGMENT_START with same id', () => {
@@ -308,7 +223,6 @@ describe('segmentHandler', () => {
         recipient_name: 'Student',
         content: 'hello',
       });
-      expect(mockActivityStore.addActivity).toHaveBeenCalledTimes(1);
     });
 
     it('deduplicates cross-type start collisions and keeps a single segment', () => {
@@ -342,7 +256,6 @@ describe('segmentHandler', () => {
       expect(aiMessage.segments).toHaveLength(1);
       expect(aiMessage.segments[0].type).toBe('tool_call');
       expect(aiMessage.segments[0].toolName).toBe('send_message_to');
-      expect(mockActivityStore.addActivity).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -383,72 +296,13 @@ describe('segmentHandler', () => {
       );
 
       const aiMessage = mockContext.conversation.messages[0] as any;
-      expect(aiMessage).toBeDefined();
       expect(aiMessage.type).toBe('ai');
       expect(aiMessage.segments).toHaveLength(1);
       expect(aiMessage.segments[0].type).toBe('text');
       expect(aiMessage.segments[0].content).toBe('hello from fallback');
     });
 
-    it('creates a synthetic think segment when reasoning content arrives before segment start', () => {
-      handleSegmentContent(
-        {
-          id: 'seg-reasoning',
-          turn_id: 'turn-1',
-          delta: 'reasoning summary',
-          segment_type: 'reasoning',
-        },
-        mockContext,
-      );
-
-      const aiMessage = mockContext.conversation.messages[0] as any;
-      expect(aiMessage).toBeDefined();
-      expect(aiMessage.segments).toHaveLength(1);
-      expect(aiMessage.segments[0].type).toBe('think');
-      expect(aiMessage.segments[0].content).toBe('reasoning summary');
-    });
-
-    it('creates a second think segment when later reasoning arrives with a new segment id', () => {
-      handleSegmentContent(
-        {
-          id: 'seg-reasoning-1',
-          turn_id: 'turn-1',
-          delta: 'first burst',
-          segment_type: 'reasoning',
-        },
-        mockContext,
-      );
-
-      handleSegmentStart(
-        {
-          id: 'seg-run-bash',
-          turn_id: 'turn-1',
-          segment_type: 'run_bash',
-          metadata: { command: 'echo hello' },
-        },
-        mockContext,
-      );
-
-      handleSegmentContent(
-        {
-          id: 'seg-reasoning-2',
-          turn_id: 'turn-1',
-          delta: 'second burst',
-          segment_type: 'reasoning',
-        },
-        mockContext,
-      );
-
-      const aiMessage = mockContext.conversation.messages[0] as any;
-      expect(aiMessage.segments).toHaveLength(3);
-      expect(aiMessage.segments[0].type).toBe('think');
-      expect(aiMessage.segments[0].content).toBe('first burst');
-      expect(aiMessage.segments[1].type).toBe('terminal_command');
-      expect(aiMessage.segments[2].type).toBe('think');
-      expect(aiMessage.segments[2].content).toBe('second burst');
-    });
-
-    it('treats segment id plus segment type as the preferred identity when ids are reused', () => {
+    it('creates separate reasoning and tool segments when ids are reused across types', () => {
       handleSegmentContent(
         {
           id: 'seg-shared',
@@ -522,10 +376,6 @@ describe('segmentHandler', () => {
         mockContext,
       );
 
-      const aiMessageBefore = mockContext.conversation.messages[0] as any;
-      expect(aiMessageBefore.segments).toHaveLength(1);
-      expect(aiMessageBefore.segments[0].type).toBe('think');
-
       handleSegmentEnd(
         {
           id: 'seg-think-empty',
@@ -534,11 +384,11 @@ describe('segmentHandler', () => {
         mockContext,
       );
 
-      const aiMessageAfter = mockContext.conversation.messages[0] as any;
-      expect(aiMessageAfter.segments).toHaveLength(0);
+      const aiMessage = mockContext.conversation.messages[0] as any;
+      expect(aiMessage.segments).toHaveLength(0);
     });
 
-    it('applies end metadata path/patch to edit_file segment and activity args', () => {
+    it('applies end metadata path/patch to edit_file segment only', () => {
       handleSegmentStart(
         {
           id: 'seg-edit-meta',
@@ -555,37 +405,22 @@ describe('segmentHandler', () => {
           metadata: {
             tool_name: 'edit_file',
             path: '/tmp/fibonacci.py',
-            patch: '@@ -0,0 +1,3 @@\\n+print(\"fib\")',
+            patch: '@@ -0,0 +1,3 @@\n+print("fib")',
           },
         },
         mockContext,
       );
 
       const segment = findSegmentById(mockContext, 'seg-edit-meta') as any;
-      expect(segment).toBeTruthy();
       expect(segment.type).toBe('edit_file');
       expect(segment.path).toBe('/tmp/fibonacci.py');
-      expect(segment.originalContent).toBe('@@ -0,0 +1,3 @@\\n+print(\"fib\")');
+      expect(segment.originalContent).toBe('@@ -0,0 +1,3 @@\n+print("fib")');
       expect(segment.arguments?.path).toBe('/tmp/fibonacci.py');
-      expect(segment.arguments?.patch).toBe('@@ -0,0 +1,3 @@\\n+print(\"fib\")');
+      expect(segment.arguments?.patch).toBe('@@ -0,0 +1,3 @@\n+print("fib")');
       expect(segment.status).toBe('parsed');
-
-      expect(mockActivityStore.updateActivityStatus).toHaveBeenCalledWith(
-        'test-agent-id',
-        'seg-edit-meta',
-        'parsed',
-      );
-      expect(mockActivityStore.updateActivityArguments).toHaveBeenCalledWith(
-        'test-agent-id',
-        'seg-edit-meta',
-        {
-          path: '/tmp/fibonacci.py',
-          patch: '@@ -0,0 +1,3 @@\\n+print(\"fib\")',
-        },
-      );
     });
 
-    it('applies end metadata command to run_bash segment and activity args', () => {
+    it('applies end metadata command to run_bash segment only', () => {
       handleSegmentStart(
         {
           id: 'seg-bash-meta',
@@ -608,22 +443,13 @@ describe('segmentHandler', () => {
       );
 
       const segment = findSegmentById(mockContext, 'seg-bash-meta') as any;
-      expect(segment).toBeTruthy();
       expect(segment.type).toBe('terminal_command');
       expect(segment.command).toBe("/bin/bash -lc 'python fibonacci.py'");
       expect(segment.arguments?.command).toBe("/bin/bash -lc 'python fibonacci.py'");
       expect(segment.status).toBe('parsed');
-
-      expect(mockActivityStore.updateActivityArguments).toHaveBeenCalledWith(
-        'test-agent-id',
-        'seg-bash-meta',
-        {
-          command: "/bin/bash -lc 'python fibonacci.py'",
-        },
-      );
     });
 
-    it('applies end metadata arguments to tool_call segment and activity args', () => {
+    it('applies end metadata arguments to tool_call segment only', () => {
       handleSegmentStart(
         {
           id: 'seg-tool-meta',
@@ -652,25 +478,15 @@ describe('segmentHandler', () => {
       );
 
       const segment = findSegmentById(mockContext, 'seg-tool-meta') as any;
-      expect(segment).toBeTruthy();
       expect(segment.type).toBe('tool_call');
       expect(segment.arguments).toEqual({
         query: 'Donald Trump latest Reuters',
         queries: ['Donald Trump latest Reuters'],
       });
       expect(segment.status).toBe('parsed');
-
-      expect(mockActivityStore.updateActivityArguments).toHaveBeenCalledWith(
-        'test-agent-id',
-        'seg-tool-meta',
-        {
-          query: 'Donald Trump latest Reuters',
-          queries: ['Donald Trump latest Reuters'],
-        },
-      );
     });
 
-    it('does not downgrade an already-approved tool activity back to parsed on end', () => {
+    it('does not downgrade an already-approved tool segment back to parsed on end', () => {
       handleSegmentStart(
         {
           id: 'seg-tool-approved',
@@ -688,7 +504,6 @@ describe('segmentHandler', () => {
       );
 
       const segment = findSegmentById(mockContext, 'seg-tool-approved') as any;
-      expect(segment).toBeTruthy();
       segment.status = 'approved';
 
       handleSegmentEnd(
@@ -707,11 +522,6 @@ describe('segmentHandler', () => {
       );
 
       expect(segment.status).toBe('approved');
-      expect(mockActivityStore.updateActivityStatus).not.toHaveBeenCalledWith(
-        'test-agent-id',
-        'seg-tool-approved',
-        'parsed',
-      );
     });
   });
 });

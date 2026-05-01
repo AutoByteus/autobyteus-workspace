@@ -5,30 +5,34 @@
 - Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/requirements.md`
 - Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/investigation-notes.md`
 - Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/design-spec.md`
+- Design Impact Rework Note: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/design-impact-rework.md`
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/review-report.md`
-- Current Validation Round: 1
-- Trigger: Code review passed and requested API/E2E validation for the Claude Agent SDK Activity Arguments bug.
-- Prior Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/review-report.md`
+- Current Validation Round: 3
+- Trigger: Code reviewer Round 5 passed the expanded Claude Agent SDK Activity Arguments / two-lane refactor implementation and asked API/E2E to validate the live Claude argument path plus Codex/history non-regression.
+- Prior Round Reviewed: Round 2 validation report, Round 5 code-review report, and retained raw/runtime logs.
+- Latest Authoritative Round: 3
+- Latest Authoritative Result: `Pass`, with one non-blocking out-of-scope Codex MCP auto-execute harness observation documented below.
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Failures Rechecked | New Failures Found | Result | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Code review passed; validate Claude tool lifecycle arguments and cross-runtime no-regression | N/A | No scoped failures | Pass | Yes | Live gated Claude runtime e2e passed with raw logging; deterministic backend/frontend coverage passed. One exploratory Codex manual-approval run exposed an unrelated approval-policy mismatch, recorded below as non-blocking/out of scope for this Claude arguments fix. |
+| 1 | Initial post-code-review API/E2E validation for Claude Activity arguments | N/A | No scoped failures | Pass | No | Live Claude logs showed non-empty arguments, but the backend E2E did not yet explicitly assert the success payload arguments were non-empty. |
+| 2 | User correctly challenged that backend E2E must assert non-empty arguments, not only mention them | Round 1 backend E2E assertion gap | No scoped failures | Pass | No | Added durable backend E2E assertions for non-empty Claude success arguments; routed through code review before Round 5. |
+| 3 | Round 5 code review passed expanded two-lane implementation | Round 2 validation-code review state; CR-001 and CR-002 fixes | No scoped failures | Pass | Yes | Re-ran expanded deterministic coverage and live Claude backend E2E with raw/event logs. Extra Codex MCP speak auto-execute probe exposed an existing harness/runtime mismatch and is classified non-blocking/out of current ticket scope. |
 
 ## Validation Basis
 
-Validation was derived from the approved requirements/design, implementation handoff, and code-review focus:
+Validation was derived from the approved requirements/design, design-impact rework, implementation handoff, latest code-review focus, and the user clarification that backend E2E should assert non-empty arguments:
 
-- Claude SDK raw `tool_use.input`/`tool_use.arguments` must map to normalized lifecycle `arguments` before or no later than completion.
-- Permission callback and raw-observed paths must not duplicate started/activity records for the same invocation.
-- Completion/failure events should preserve tracked arguments as a result-first recovery path.
-- Frontend Activity state must receive non-empty runtime-neutral `arguments`; `ActivityItem.vue` renders the `Arguments` section whenever `Object.keys(activity.arguments).length > 0`.
-- `send_message_to` lifecycle noise must remain suppressed.
-- Codex lifecycle argument rendering must remain unaffected.
+- Claude raw SDK `tool_use.input` must flow into normalized event payloads.
+- Claude `SEGMENT_START.metadata.arguments`, `SEGMENT_END.metadata.arguments`, `TOOL_EXECUTION_STARTED.arguments`, `TOOL_APPROVAL_REQUESTED.arguments`, and terminal success/failure arguments must be non-empty for the selected approved invocation.
+- The observed Claude event order `TOOL_EXECUTION_STARTED -> TOOL_APPROVAL_REQUESTED -> TOOL_APPROVED -> TOOL_EXECUTION_SUCCEEDED` must still leave frontend state in the correct approval/control states.
+- Generic `send_message_to` tool lifecycle noise must remain suppressed while intended team-communication segments remain renderable.
+- Codex command, dynamic-tool, and file-change Activity cards must remain lifecycle-owned and non-duplicated after segment-created Activity behavior was removed.
+- Historical run opening/hydration must still use `projection.activities`, including the Claude conversation-only projection plus local-memory activity merge from CR-001.
 
 ## Compatibility / Legacy Scope Check
 
@@ -40,41 +44,47 @@ Validation was derived from the approved requirements/design, implementation han
 
 ## Validation Surfaces / Modes
 
-- Deterministic backend unit validation for Claude coordinator and event converter.
-- Deterministic frontend Nuxt/Vitest validation for lifecycle parser/handler state, including result-first argument hydration.
-- Live gated Claude GraphQL/WebSocket runtime e2e using the real Claude CLI/Agent SDK path and raw SDK JSONL logging.
-- Optional live gated Codex GraphQL/WebSocket runtime smoke checks for lifecycle argument no-regression.
-- Static source verification of Activity rendering condition and Activity store argument merge behavior.
-- Build-scoped TypeScript check and whitespace diff check.
+- Deterministic frontend expanded lifecycle/hydration tests for segment-only transcript handling, lifecycle-owned Activities, Codex non-regression, late-approval ordering, and run-opening hydration.
+- Deterministic backend expanded tests for Claude coordinator/converter two-lane behavior, memory trace de-duplication, CR-001 projection merge, and Codex converter non-regression.
+- Live gated Claude GraphQL/WebSocket runtime E2E using the installed Claude CLI/Agent SDK path with raw SDK JSONL and normalized runtime event logging.
+- Live gated Codex GraphQL/WebSocket command/file-change smoke for current Codex auto-execution behavior.
+- Build and whitespace checks.
 
 ## Platform / Runtime Targets
 
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity`
-- Branch: `codex/claude-sdk-tool-arguments-activity` (`git status` reports `[behind 1]` relative to `origin/personal`; delivery owns final refresh)
-- OS: macOS 26.2 (`Darwin MacBookPro 25.2.0 ... RELEASE_ARM64_T6000 arm64`)
+- Branch: `codex/claude-sdk-tool-arguments-activity`
+- `git status --short --branch` at validation close: `## codex/claude-sdk-tool-arguments-activity...origin/personal [ahead 2]`
 - Node: `v22.21.1`
 - pnpm: `10.28.2`
 - Claude CLI: `/Users/normy/.local/bin/claude`, `2.1.126 (Claude Code)`
 - Codex CLI: `/Users/normy/.nvm/versions/node/v22.21.1/bin/codex`, `codex-cli 0.125.0`
-- Test database: SQLite test DB reset by Vitest setup.
 
-## Lifecycle / Upgrade / Restart / Migration Checks
+## Validation Setup / Environment
 
-- No installer, upgrade, migration, or restart lifecycle was in scope.
-- Runtime lifecycle exercised through GraphQL/WebSocket run creation, tool execution, `AGENT_STATUS` transition back to `IDLE`, and cleanup/termination paths.
+- Main log directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z`
+- Claude raw SDK JSONL directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/claude-raw-events/api-e2e/expanded-round3-20260501T162907Z`
+- Environment reference file: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/latest-expanded-validation-env.txt`
+- Log scan summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/log-scan-summary.txt`
+
+Setup commands:
+
+1. `pnpm -C autobyteus-server-ts exec prisma generate --schema ./prisma/schema.prisma` — passed.
+2. `pnpm -C autobyteus-web exec nuxi prepare` — passed.
 
 ## Coverage Matrix
 
 | Scenario ID | Requirement / Acceptance Link | Surface | Evidence | Result |
 | --- | --- | --- | --- | --- |
-| VAL-001 | AC-001 / REQ-001: raw Claude `tool_use.input` emits started args | Backend coordinator unit | `backend-coordinator-unit.log`; `claude-session-tool-use-coordinator.test.ts` asserts raw `Bash`/tool_use started args and completion args | Pass |
-| VAL-002 | AC-002 / REQ-002: permission path does not duplicate started events | Backend coordinator unit | `backend-coordinator-unit.log`; duplicate suppression tests in both raw-first and permission-first orders | Pass |
-| VAL-003 | AC-003: completion preserves tracked arguments | Backend converter + frontend parser/handler | `backend-converter-unit.log`; `frontend-lifecycle-unit.log` | Pass |
-| VAL-004 | AC-004: Activity state receives non-empty Claude/result-first args | Frontend handler/store state + static render condition | `frontend-lifecycle-unit.log`; static check of `ActivityItem.vue` non-empty argument condition | Pass |
-| VAL-005 | AC-005: live Claude approved invocation has non-empty started/approval arguments and completion args | Live Claude GraphQL/WebSocket e2e with raw logging | `claude-gated-tool-lifecycle-e2e.log`; raw JSONL under `logs/claude-raw-events/api-e2e/20260501T143427Z/` | Pass |
-| VAL-006 | `send_message_to` lifecycle suppression | Backend coordinator unit + runtime log scan | Coordinator test expects no events for `mcp__autobyteus_team__send_message_to`; runtime log scan found `runtime_send_message_to_rawEventJson_count=0` | Pass |
-| VAL-007 | AC-006: Codex lifecycle rendering no-regression | Frontend lifecycle tests + optional Codex autoexecute e2e | `frontend-lifecycle-unit.log`; `codex-gated-autoexecute-e2e.log` shows `TOOL_EXECUTION_STARTED` with `arguments.command` and test passes | Pass |
-| VAL-008 | Build/diff hygiene | TypeScript build config + diff check | `server-build-typecheck.log` exit 0; `git-diff-check.log` exit 0 | Pass |
+| VAL-001 | Claude raw SDK arguments preserved | Live Claude backend E2E + raw JSONL | `claude-run-91aade48-7b78-417f-ad66-5121fb22f890.jsonl` contains `tool_use` id `call_00_emOG9DhOJJpF5q8VM30o0EvM`, tool `Write`, input keys `file_path`, `content` | Pass |
+| VAL-002 | Claude segment lane carries arguments | Live Claude backend E2E | `claude-gated-tool-lifecycle-e2e.log` line 286 `SEGMENT_START` and line 379 `SEGMENT_END` both have non-empty payload `arguments` and `metadata.arguments`; backend E2E asserts this via `expectNonEmptySegmentMetadataArguments` | Pass |
+| VAL-003 | Claude lifecycle lane carries non-empty start/approval/terminal arguments | Live Claude backend E2E | Same log lines 302, 320, 338, 395 show non-empty `arguments`; backend E2E asserts non-empty approval-requested, started, and success payloads via `expectNonEmptyArgumentsPayload` | Pass |
+| VAL-004 | Observed late-approval order preserves approval state/controls | Live Claude order + frontend deterministic tests | Live order was `SEGMENT_START -> TOOL_EXECUTION_STARTED -> TOOL_APPROVAL_REQUESTED -> TOOL_APPROVED -> SEGMENT_END -> TOOL_EXECUTION_SUCCEEDED`; frontend `toolLifecycleOrdering`/`toolLifecycleState` tests passed | Pass |
+| VAL-005 | `send_message_to` lifecycle noise suppressed | Backend coordinator tests + log scan | Backend expanded validation passed; Round 3 log scan found no Claude generic `TOOL_*` `send_message_to` events | Pass |
+| VAL-006 | Codex command Activity no-regression | Live Codex command E2E + frontend deterministic tests | `codex-autoexecute-command-e2e.log` passed; runtime emitted `TOOL_EXECUTION_STARTED` with non-empty command arguments, `TOOL_EXECUTION_SUCCEEDED`, `TOOL_LOG`, and target file content check passed | Pass |
+| VAL-007 | Codex dynamic-tool/file-change Activity no-regression | Frontend deterministic tests + backend converter tests | `frontend-expanded-validation.log` passed 7 files/48 tests, including one Activity each for Codex command, dynamic tool, and file change; `backend-expanded-validation.log` passed Codex converter tests | Pass |
+| VAL-008 | Historical run opening/hydration still uses projected activities | Frontend hydration tests + backend projection service tests | `agentRunOpenCoordinator.spec.ts`, `runProjectionActivityHydration.spec.ts`, and `agent-run-view-projection-service.test.ts` passed; CR-001 local-memory merge covered | Pass |
+| VAL-009 | Build/diff hygiene | TypeScript + git diff | `server-build-typecheck.log` exit 0; `git-diff-check.log` exit 0 | Pass |
 
 ## Test Scope
 
@@ -82,120 +92,129 @@ Commands run from `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-t
 
 1. `pnpm -C autobyteus-server-ts exec prisma generate --schema ./prisma/schema.prisma`
 2. `pnpm -C autobyteus-web exec nuxi prepare`
-3. `pnpm -C autobyteus-server-ts test tests/unit/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.test.ts --run`
-4. `pnpm -C autobyteus-server-ts test tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts --run`
-5. `pnpm -C autobyteus-web test:nuxt services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleParsers.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleOrdering.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleState.spec.ts --run`
-6. `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`
-7. `git diff --check`
-8. `RUN_CLAUDE_E2E=1 CLAUDE_SESSION_EVENT_DEBUG=1 CLAUDE_SESSION_RAW_EVENT_DEBUG=1 CLAUDE_SESSION_RAW_EVENT_LOG_DIR=... RUNTIME_RAW_EVENT_DEBUG=1 RUNTIME_RAW_EVENT_MAX_CHARS=50000 CLAUDE_SESSION_RAW_EVENT_MAX_CHARS=50000 pnpm -C autobyteus-server-ts test tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts --run -t "routes tool approval over websocket and streams the normalized tool lifecycle"`
-9. Optional Codex smoke: `RUN_CODEX_E2E=1 RUNTIME_RAW_EVENT_DEBUG=1 RUNTIME_RAW_EVENT_MAX_CHARS=50000 pnpm -C autobyteus-server-ts test tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts --run -t "auto-executes Codex tool calls over websocket without approval requests"`
-10. Optional exploratory Codex manual-approval attempt recorded separately below.
+3. `pnpm -C autobyteus-web exec vitest run services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleParsers.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleOrdering.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleState.spec.ts services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts services/runHydration/__tests__/runProjectionActivityHydration.spec.ts`
+4. `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.test.ts tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts tests/unit/run-history/services/agent-run-view-projection-service.test.ts tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts`
+5. `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`
+6. `git diff --check`
+7. `RUN_CLAUDE_E2E=1 CLAUDE_SESSION_EVENT_DEBUG=1 CLAUDE_SESSION_RAW_EVENT_DEBUG=1 CLAUDE_SESSION_RAW_EVENT_LOG_DIR=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/claude-raw-events/api-e2e/expanded-round3-20260501T162907Z RUNTIME_RAW_EVENT_DEBUG=1 RUNTIME_RAW_EVENT_MAX_CHARS=80000 CLAUDE_SESSION_RAW_EVENT_MAX_CHARS=80000 pnpm -C autobyteus-server-ts test tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts --run -t "routes tool approval over websocket and streams the normalized tool lifecycle"`
+8. `RUN_CODEX_E2E=1 RUNTIME_RAW_EVENT_DEBUG=1 RUNTIME_RAW_EVENT_MAX_CHARS=80000 pnpm -C autobyteus-server-ts test tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts --run -t "auto-executes Codex tool calls over websocket without approval requests"`
+9. Extra exploratory probe: `RUN_CODEX_E2E=1 RUNTIME_RAW_EVENT_DEBUG=1 RUNTIME_RAW_EVENT_MAX_CHARS=80000 pnpm -C autobyteus-server-ts test tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts --run -t "auto-executes the Codex speak MCP tool without approval requests"`
 
-## Validation Setup / Environment
+## Passed
 
-- Fresh Prisma client generation was run before e2e.
-- Nuxt test types were prepared before frontend tests.
-- Live Claude raw logging wrote to `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/claude-raw-events/api-e2e/20260501T143427Z`.
-- Runtime debug logging was enabled only for validation command output and retained under the ticket logs folder.
+- Frontend expanded validation: 7 files, 48 tests passed. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/frontend-expanded-validation.log`
+- Backend expanded validation: 5 files, 53 tests passed. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/backend-expanded-validation.log`
+- Server build typecheck: passed. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/server-build-typecheck.log`
+- `git diff --check`: passed. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/git-diff-check.log`
+- Live Claude gated backend E2E: 1 test passed, 14 skipped. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/claude-gated-tool-lifecycle-e2e.log`
+- Live Codex command auto-execute E2E: 1 test passed, 14 skipped. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/codex-autoexecute-command-e2e.log`
+
+## Failed / Non-Blocking Observations
+
+No scoped validation scenario failed.
+
+One extra exploratory Codex MCP auto-execute probe failed:
+
+- Command: `RUN_CODEX_E2E=1 ... -t "auto-executes the Codex speak MCP tool without approval requests"`
+- Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/codex-autoexecute-speak-mcp-e2e.log`
+- Observed behavior: the runtime auto-executed `tts/speak` and emitted `SEGMENT_START`, `TOOL_EXECUTION_SUCCEEDED`, `SEGMENT_END`, and `TOOL_LOG`, with no `TOOL_APPROVAL_REQUESTED`.
+- Test failure reason: the existing test timed out waiting for `TOOL_APPROVED for auto-executed speak`, despite the test name saying it should run without approval requests.
+- Classification: non-blocking, out of current Claude Activity Arguments scope, and not treated as a regression from this implementation. The scoped Codex requirements in this ticket cover command, dynamic-tool, and file-change Activity ownership; those passed via live command E2E and deterministic frontend/backend coverage. This MCP-specific expectation mismatch should be considered for a future Codex MCP validation cleanup ticket if desired.
+
+## Backend E2E Argument Assertion Confirmation
+
+The backend E2E now validates non-empty arguments, not just their presence in logs:
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts`
+  - `expectNonEmptyArgumentsPayload(targetApprovalRequested.payload)`
+  - `expectNonEmptyArgumentsPayload(startedMessage.payload)`
+  - `expectNonEmptySegmentMetadataArguments(segmentStartMessage.payload)`
+  - `expectNonEmptySegmentMetadataArguments(segmentEndMessage.payload)`
+  - `expectNonEmptyArgumentsPayload(succeededMessage.payload)`
+
+The live Round 3 Claude E2E ran these assertions successfully against invocation `call_00_emOG9DhOJJpF5q8VM30o0EvM`.
+
+## Raw / Runtime Evidence Summary
+
+Round 3 raw Claude evidence:
+
+- Raw SDK JSONL: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/claude-raw-events/api-e2e/expanded-round3-20260501T162907Z/claude-run-91aade48-7b78-417f-ad66-5121fb22f890.jsonl`
+- Raw `tool_use`: id `call_00_emOG9DhOJJpF5q8VM30o0EvM`, name `Write`, `input_non_empty=True`, keys `file_path`, `content`.
+
+Round 3 normalized Claude runtime evidence:
+
+| Runtime event | Evidence line in `claude-gated-tool-lifecycle-e2e.log` | Argument evidence |
+| --- | --- | --- |
+| `SEGMENT_START` | line 286 | payload `arguments` non-empty; `metadata.arguments` non-empty |
+| `TOOL_EXECUTION_STARTED` | line 302 | payload `arguments` non-empty |
+| `TOOL_APPROVAL_REQUESTED` | line 320 | payload `arguments` non-empty |
+| `TOOL_APPROVED` | line 338 | payload `arguments` non-empty |
+| `SEGMENT_END` | line 379 | payload `arguments` non-empty; `metadata.arguments` non-empty |
+| `TOOL_EXECUTION_SUCCEEDED` | line 395 | payload `arguments` non-empty; result present |
+
+The approved invocation event order was:
+
+`SEGMENT_START -> TOOL_EXECUTION_STARTED -> TOOL_APPROVAL_REQUESTED -> TOOL_APPROVED -> SEGMENT_END -> TOOL_EXECUTION_SUCCEEDED`
 
 ## Tests Implemented Or Updated
 
-No source tests were implemented or updated during API/E2E validation. Existing implementation-stage durable validation was exercised after code review.
+- Repository-resident durable validation added or updated in Round 3: `No`
+- Round 2 durable validation update in `autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts` had already been routed through and passed code review in Round 5.
 
 ## Durable Validation Added To The Codebase
 
-- Repository-resident durable validation added or updated this round: `No`
-- Paths added or updated: N/A
-- If `Yes`, returned through `code_reviewer` before delivery: N/A
-- Post-validation code review artifact: N/A
+- Repository-resident durable validation added or updated this API/E2E round: `No`
+- If `Yes`, return through code reviewer before delivery: N/A
+- Because Round 3 did not add or modify repository-resident durable validation, the next recipient is `delivery_engineer`.
 
 ## Other Validation Artifacts
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/prisma-generate.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/nuxi-prepare.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/backend-coordinator-unit.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/backend-converter-unit.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/frontend-lifecycle-unit.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/server-build-typecheck.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/git-diff-check.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/claude-gated-tool-lifecycle-e2e.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/claude-gated-e2e.raw-log-dir.txt`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/log-scan-summary.txt`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/claude-raw-events/api-e2e/20260501T143427Z/claude-run-a8ce4f88-5704-46fd-afcd-a1d21ba62b8a.jsonl`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/codex-gated-autoexecute-e2e.log`
-- Exploratory non-blocking failure log: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/codex-gated-tool-lifecycle-e2e.log`
+Current Round 3 artifacts:
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/prisma-generate.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/nuxi-prepare.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/frontend-expanded-validation.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/backend-expanded-validation.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/server-build-typecheck.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/git-diff-check.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/claude-gated-tool-lifecycle-e2e.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/codex-autoexecute-command-e2e.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/codex-autoexecute-speak-mcp-e2e.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/log-scan-summary.txt`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/claude-raw-events/api-e2e/expanded-round3-20260501T162907Z/claude-run-91aade48-7b78-417f-ad66-5121fb22f890.jsonl`
+
+Retained prior artifacts remain under:
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/claude-gated-tool-lifecycle-e2e-round2.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/log-scan-summary-round2.txt`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/claude-raw-events/api-e2e/round2-20260501T145315Z/claude-run-0f327fb6-081e-41fa-9707-a270bec24e73.jsonl`
 
 ## Temporary Validation Methods / Scaffolding
 
 - No temporary source scripts or repository validation harnesses were added.
-- Shell one-liners were used to scan retained logs for raw `tool_use` and `send_message_to` lifecycle evidence.
+- Shell/Python one-liners were used only to scan retained logs and produce `log-scan-summary.txt`.
 - Ticket log files were intentionally retained as validation evidence.
 
 ## Dependencies Mocked Or Emulated
 
 - SQLite test database and in-process GraphQL/WebSocket app setup were used by the existing test harness.
-- No mocks were used for the live Claude e2e; it exercised the installed Claude CLI/Agent SDK path.
-- Optional Codex e2e used the installed Codex CLI path.
+- Live Claude E2E used the installed Claude CLI/Agent SDK path; no Claude runtime mock was used.
+- Live Codex command E2E used the installed Codex app-server CLI path; no Codex runtime mock was used.
 
-## Prior Failure Resolution Check (Mandatory On Round >1)
+## Prior Failure Resolution Check
 
-| Prior Round | Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence | Notes |
+| Prior Round / Review Finding | Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| N/A | N/A | N/A | N/A | N/A | First validation round. |
-
-## Scenarios Checked
-
-### Live Claude raw SDK and normalized lifecycle evidence
-
-The live Claude e2e passed (`1 passed | 14 skipped`) and produced both raw SDK JSONL and runtime/WebSocket evidence:
-
-- Raw SDK JSONL contains one `Write` `tool_use` with non-empty `input`: `file_path=api-tool-f189afad_ac8d_44cb_ad2a_e675b5660b35.txt`, `content=TOOL_OK_d75e32ca_7d57_44bb_8460_42b8a847a9f5`.
-- Runtime sequence 3 emitted `TOOL_EXECUTION_STARTED` with payload keys `invocation_id`, `tool_name`, `arguments` for the same invocation `call_00_LddpnoR1ovoW6OjiBgSb8ssV`.
-- Runtime sequence 4 emitted `TOOL_APPROVAL_REQUESTED` with non-empty `arguments` for the same invocation.
-- Runtime sequence 6 emitted `TOOL_EXECUTION_SUCCEEDED` with payload keys `invocation_id`, `tool_name`, `arguments`, `result`.
-- The e2e assertion selected the successful approved invocation and passed, proving the previous first-success matcher fragility is fixed for this run.
-- The generated target file was read by the test and contained the expected content.
-
-### Frontend Activity / result-first recovery evidence
-
-- Frontend handler tests passed 22 tests across lifecycle handler/parser/ordering/state.
-- The result-first regression test in `toolLifecycleHandler.spec.ts` hydrates arguments from a `TOOL_EXECUTION_SUCCEEDED` payload and verifies both the segment and `updateActivityArguments` receive `{ command: 'pwd' }`.
-- Static source check confirms `ActivityItem.vue` renders `Arguments` whenever the stored `activity.arguments` object is non-empty.
-
-### `send_message_to` lifecycle noise
-
-- Coordinator unit test `keeps send_message_to raw tool_use lifecycle suppressed` passed and expects zero lifecycle events for the raw `mcp__autobyteus_team__send_message_to` fixture.
-- Live Claude runtime log scan found no runtime `rawEventJson` entries with `send_message_to`; only tool registration mentions the name.
-
-### Codex no-regression
-
-- Frontend lifecycle tests still passed against runtime-neutral handler/parser behavior.
-- Optional Codex autoexecute e2e passed and showed `TOOL_EXECUTION_STARTED` with `tool_name: run_bash` and non-empty `arguments.command`; the command created the target file and returned to `IDLE`.
-
-## Passed
-
-- `pnpm -C autobyteus-server-ts exec prisma generate --schema ./prisma/schema.prisma` — passed.
-- `pnpm -C autobyteus-web exec nuxi prepare` — passed.
-- `pnpm -C autobyteus-server-ts test tests/unit/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.test.ts --run` — 4 tests passed.
-- `pnpm -C autobyteus-server-ts test tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts --run` — 9 tests passed.
-- `pnpm -C autobyteus-web test:nuxt ...toolLifecycleHandler... ...toolLifecycleParsers... ...toolLifecycleOrdering... ...toolLifecycleState... --run` — 22 tests passed.
-- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — passed.
-- `git diff --check` — passed.
-- `RUN_CLAUDE_E2E=1 ... routes tool approval over websocket and streams the normalized tool lifecycle` — 1 Claude test passed, 14 skipped.
-- `RUN_CODEX_E2E=1 ... auto-executes Codex tool calls over websocket without approval requests` — 1 Codex test passed, 14 skipped.
-
-## Failed
-
-No scoped validation scenario failed.
-
-Non-blocking exploratory observation: an optional Codex manual-approval e2e run of `routes tool approval over websocket and streams the normalized tool lifecycle` under `RUN_CODEX_E2E=1` timed out waiting for `TOOL_APPROVAL_REQUESTED` because the installed Codex runtime auto-executed the command and emitted `TOOL_EXECUTION_STARTED` / `TOOL_EXECUTION_SUCCEEDED` directly. That run still showed non-empty `arguments.command` on the Codex started event, so it did not indicate a regression in the lifecycle argument rendering path changed by this ticket. I did not classify or reroute this as part of the Claude SDK arguments fix.
+| Round 1 -> Round 2 | Backend E2E did not explicitly assert `TOOL_EXECUTION_SUCCEEDED.payload.arguments` was non-empty | Validation coverage gap | Fixed and re-reviewed before Round 5 | E2E source assertions; Round 3 live Claude E2E passed | User challenge was correct. |
+| CR-001 | Claude conversation-only runtime projection dropped local-memory Activities in public `getProjection(runId)` | Code-review finding | Resolved before Round 5 | Backend `agent-run-view-projection-service.test.ts` passed | Validates history/hydration merge path. |
+| CR-002 | Late Claude approval order could hide approval state/controls after `TOOL_EXECUTION_STARTED` | Code-review finding | Resolved before Round 5 | Frontend lifecycle ordering/state tests passed; live Claude order observed | Validates `executing -> awaiting-approval` handling. |
 
 ## Not Tested / Out Of Scope
 
-- Full browser visual screenshot of the Activity panel was not run. The Activity component was not changed in this ticket; the state path feeding it was tested, and the component condition for rendering `Arguments` on non-empty args was statically rechecked.
-- Historical Claude runs already persisted without arguments were not backfilled; this was explicitly out of scope upstream.
-- Delivery-owned final base refresh/integration against the currently advanced `origin/personal` was not performed.
-- Codex manual-approval policy semantics are outside this Claude SDK Activity Arguments bug; see the non-blocking exploratory note above.
+- Full browser visual screenshot of the Activity panel was not run. The Activity data path and render precondition are covered by frontend state tests, and backend E2E now asserts non-empty payloads.
+- Historical Claude runs already persisted without arguments were not backfilled; upstream explicitly scoped this out.
+- Delivery-owned final base refresh/integration was not performed by API/E2E.
+- Codex MCP auto-execute `TOOL_APPROVED` semantics are outside this Claude SDK Activity Arguments / two-lane refactor ticket and were documented as a non-blocking future cleanup candidate.
 
 ## Blocked
 
@@ -203,27 +222,23 @@ None.
 
 ## Cleanup Performed
 
-- Existing test harness cleanup removed temporary e2e workspaces and app data directories.
+- Existing test harness cleanup removed temporary E2E workspaces and app data directories.
 - No temporary source scaffolding was added.
-- Ignored/generated local outputs such as `node_modules`, `.nuxt`, and `autobyteus-server-ts/tests/.tmp` remain local setup artifacts as previously recorded.
+- Generated setup artifacts such as `.nuxt` and test database files remain local setup artifacts.
 - Validation logs are retained intentionally under the ticket artifact folder.
 
 ## Classification
 
-- Pass. No `Local Fix`, `Design Impact`, `Requirement Gap`, or `Unclear` failure classification is required for the scoped Claude SDK Activity Arguments validation.
+- Scoped validation classification: `Pass`.
+- No product `Local Fix`, `Design Impact`, `Requirement Gap`, or `Unclear` failure classification is required for the Claude SDK Activity Arguments implementation.
+- Non-blocking observation: Codex MCP auto-execute test-harness/runtime expectation mismatch, future cleanup candidate, not a blocker for this ticket.
 
 ## Recommended Recipient
 
 `delivery_engineer`
 
-## Evidence / Notes
-
-- Branch still reports `[behind 1]` relative to `origin/personal`; this is a delivery-stage integrated-state concern already noted by code review.
-- API/E2E did not add or update repository-resident durable validation after code review, so no return to `code_reviewer` is required before delivery.
-- The live Claude evidence directly confirms the core fix: raw SDK `tool_use.input` and normalized started/approval/success lifecycle payloads all carried non-empty arguments for the same invocation.
-
 ## Latest Authoritative Result
 
 - Result values: `Pass` / `Fail` / `Blocked`
 - Result: `Pass`
-- Notes: Scoped validation passed. Proceed to delivery with the cumulative artifact package and this validation report.
+- Notes: Backend E2E now explicitly validates non-empty Claude arguments on approval-requested, execution-started, segment metadata, and terminal success payloads. Round 3 did not add or update repository-resident durable validation, so delivery may proceed.

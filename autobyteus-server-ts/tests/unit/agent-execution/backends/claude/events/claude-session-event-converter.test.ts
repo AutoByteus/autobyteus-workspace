@@ -4,6 +4,72 @@ import { ClaudeSessionEventConverter } from "../../../../../../src/agent-executi
 import { ClaudeSessionEventName } from "../../../../../../src/agent-execution/backends/claude/events/claude-session-event-name.js";
 
 describe("ClaudeSessionEventConverter", () => {
+  it("converts normal Claude tool segment lane metadata with arguments", () => {
+    const converter = new ClaudeSessionEventConverter("run-claude-converter");
+
+    const [segmentStart] = converter.convert({
+      method: ClaudeSessionEventName.ITEM_ADDED,
+      params: {
+        id: "invoke-bash",
+        turn_id: "turn-1",
+        segment_type: "tool_call",
+        tool_name: "Bash",
+        arguments: {
+          command: "pwd",
+        },
+      },
+    });
+    expect(segmentStart).toMatchObject({
+      eventType: AgentRunEventType.SEGMENT_START,
+      payload: {
+        id: "invoke-bash",
+        turn_id: "turn-1",
+        segment_type: "tool_call",
+        metadata: {
+          tool_name: "Bash",
+          arguments: {
+            command: "pwd",
+          },
+        },
+      },
+    });
+
+    const [segmentEnd] = converter.convert({
+      method: ClaudeSessionEventName.ITEM_COMPLETED,
+      params: {
+        id: "invoke-bash",
+        turn_id: "turn-1",
+        segment_type: "tool_call",
+        tool_name: "Bash",
+        arguments: {
+          command: "pwd",
+        },
+        metadata: {
+          tool_name: "Bash",
+          arguments: {
+            command: "pwd",
+          },
+          result: "workspace\n",
+        },
+      },
+    });
+    expect(segmentEnd).toMatchObject({
+      eventType: AgentRunEventType.SEGMENT_END,
+      payload: {
+        id: "invoke-bash",
+        turn_id: "turn-1",
+        segment_type: "tool_call",
+        metadata: {
+          tool_name: "Bash",
+          arguments: {
+            command: "pwd",
+          },
+          result: "workspace\n",
+        },
+      },
+    });
+  });
+
   it("converts a normal Claude tool lifecycle into TOOL_* events", () => {
     const converter = new ClaudeSessionEventConverter("run-claude-converter");
 
@@ -189,6 +255,35 @@ describe("ClaudeSessionEventConverter", () => {
           command: "cat missing.txt",
         },
         error: "No such file or directory",
+      },
+    });
+  });
+
+  it("preserves arguments on denied Claude tool lifecycle events", () => {
+    const converter = new ClaudeSessionEventConverter("run-claude-converter");
+
+    const [denied] = converter.convert({
+      method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_DENIED,
+      params: {
+        invocation_id: "invoke-bash-denied",
+        tool_name: "Bash",
+        arguments: {
+          command: "rm -rf /tmp/nope",
+        },
+        reason: "Denied by policy",
+      },
+    });
+
+    expect(denied).toMatchObject({
+      eventType: AgentRunEventType.TOOL_DENIED,
+      payload: {
+        invocation_id: "invoke-bash-denied",
+        tool_name: "Bash",
+        arguments: {
+          command: "rm -rf /tmp/nope",
+        },
+        reason: "Denied by policy",
+        error: "Denied by policy",
       },
     });
   });

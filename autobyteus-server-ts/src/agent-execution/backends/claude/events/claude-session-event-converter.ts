@@ -226,6 +226,7 @@ export class ClaudeSessionEventConverter {
           ...serializePayload(payload),
           ...(invocationId ? { invocation_id: invocationId } : {}),
           ...(toolName ? { tool_name: toolName } : {}),
+          arguments: resolveToolArguments(payload),
           reason,
           error: asString(payload.error) ?? reason,
         })];

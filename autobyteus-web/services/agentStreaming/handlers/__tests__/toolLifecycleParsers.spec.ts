@@ -72,6 +72,20 @@ describe('toolLifecycleParsers', () => {
     });
 
     expect(
+      parseToolDeniedPayload({
+        invocation_id: 'inv-1',
+        tool_name: 'read_file',
+        turn_id: null,
+        arguments: { path: '/tmp/a.txt' },
+        reason: 'denied',
+      } as any),
+    )?.toMatchObject({
+      invocationId: 'inv-1',
+      arguments: { path: '/tmp/a.txt' },
+      reason: 'denied',
+    });
+
+    expect(
       parseToolLogPayload({
         tool_invocation_id: 'inv-1',
         tool_name: 'read_file',

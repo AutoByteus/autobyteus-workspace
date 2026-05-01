@@ -372,13 +372,20 @@ describe('toolLifecycleHandler', () => {
       invocation_id: invocationId,
       tool_name: 'delete_file',
       turn_id: 'turn-1',
+      arguments: { path: '/tmp/important.txt' },
       reason: 'Denied by user',
     };
 
     handleToolDenied(payload, context);
     expect(segment.status).toBe('denied');
     expect(segment.error).toBe('Denied by user');
+    expect(segment.arguments).toEqual({ path: '/tmp/important.txt' });
     expect(mockActivityStore.updateActivityStatus).toHaveBeenCalledWith(runId, invocationId, 'denied');
+    expect(mockActivityStore.updateActivityArguments).toHaveBeenCalledWith(
+      runId,
+      invocationId,
+      { path: '/tmp/important.txt' },
+    );
   });
 
   it('drops malformed denied payload without state mutation', () => {
