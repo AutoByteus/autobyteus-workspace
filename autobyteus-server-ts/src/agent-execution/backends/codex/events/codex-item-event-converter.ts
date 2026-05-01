@@ -1,6 +1,5 @@
 import type { AgentRunEvent } from "../../../domain/agent-run-event.js";
 import { AgentRunEventType } from "../../../domain/agent-run-event.js";
-import { isBrowserToolName } from "../../../../agent-tools/browser/browser-tool-contract.js";
 import { serializePayload } from "../../../../services/agent-streaming/payload-serialization.js";
 import type { JsonObject } from "../codex-app-server-json.js";
 import { CodexThreadEventName } from "./codex-thread-event-name.js";
@@ -20,18 +19,6 @@ const normalizeToolNameForEvent = (value: string | null): string | null => {
     return "send_message_to";
   }
   return value;
-};
-
-const isBrowserToolExecutionPayload = (
-  context: CodexItemEventConverterContext,
-  payload: JsonObject,
-): boolean => {
-  const segmentType = context.resolveSegmentType(payload);
-  if (segmentType !== "tool_call") {
-    return false;
-  }
-  const toolName = normalizeToolNameForEvent(context.resolveToolName(payload));
-  return isBrowserToolName(toolName);
 };
 
 export type CodexItemEventConverterContext = {
@@ -67,6 +54,7 @@ export type CodexItemEventConverterContext = {
     payload: JsonObject,
     fallbackToolName: "run_bash" | "edit_file",
   ) => Record<string, unknown>;
+  resolveDynamicToolArguments: (payload: JsonObject) => Record<string, unknown>;
   resolveLogEntry: (payload: JsonObject) => string;
   isExecutionFailure: (payload: JsonObject) => boolean;
   resolveToolError: (payload: JsonObject) => string;
@@ -82,7 +70,7 @@ const createTerminalToolExecutionEvent = (
   context: CodexItemEventConverterContext,
   codexEventName: string,
   payload: JsonObject,
-  fallbackToolName: "run_bash" | "edit_file" = "run_bash",
+  fallbackToolName?: "run_bash" | "edit_file",
 ): AgentRunEvent => {
   const invocationId = context.resolveInvocationId(payload);
   const toolName = normalizeToolNameForEvent(context.resolveToolName(payload, fallbackToolName));
@@ -108,6 +96,48 @@ const createTerminalToolExecutionEvent = (
     ...(context.isExecutionFailure(payload)
       ? { error: context.resolveToolError(payload) }
       : { result: context.resolveToolResult(payload) }),
+  });
+};
+
+const createDynamicToolSegmentStartEvent = (
+  context: CodexItemEventConverterContext,
+  codexEventName: string,
+  payload: JsonObject,
+): AgentRunEvent => {
+  const metadata = context.resolveSegmentMetadata(payload);
+  return context.createEvent(codexEventName, AgentRunEventType.SEGMENT_START, {
+    ...serializePayload(payload),
+    id: context.resolveSegmentStartId(payload, "tool_call"),
+    segment_type: "tool_call",
+    ...(metadata ? { metadata } : {}),
+  });
+};
+
+const createDynamicToolLifecycleStartedEvent = (
+  context: CodexItemEventConverterContext,
+  codexEventName: string,
+  payload: JsonObject,
+): AgentRunEvent => {
+  const invocationId = context.resolveInvocationId(payload);
+  const toolName = normalizeToolNameForEvent(context.resolveToolName(payload));
+  return context.createEvent(codexEventName, AgentRunEventType.TOOL_EXECUTION_STARTED, {
+    ...serializePayload(payload),
+    ...(invocationId ? { invocation_id: invocationId } : {}),
+    ...(toolName ? { tool_name: toolName } : {}),
+    arguments: context.resolveDynamicToolArguments(payload),
+  });
+};
+
+const createSegmentEndEvent = (
+  context: CodexItemEventConverterContext,
+  codexEventName: string,
+  payload: JsonObject,
+): AgentRunEvent => {
+  const metadata = context.resolveSegmentMetadata(payload);
+  return context.createEvent(codexEventName, AgentRunEventType.SEGMENT_END, {
+    ...serializePayload(payload),
+    id: context.resolveSegmentId(payload),
+    ...(metadata ? { metadata } : {}),
   });
 };
 
@@ -200,6 +230,12 @@ export const convertCodexItemEvent = (
           createFileChangeLifecycleStartedEvent(context, codexEventName, payload),
         ];
       }
+      if (itemType === "dynamictoolcall") {
+        return [
+          createDynamicToolSegmentStartEvent(context, codexEventName, payload),
+          createDynamicToolLifecycleStartedEvent(context, codexEventName, payload),
+        ];
+      }
       const segmentType = context.resolveSegmentType(payload);
       const segmentMetadata = context.resolveSegmentMetadata(payload);
       return [
@@ -290,6 +326,12 @@ export const convertCodexItemEvent = (
         events.push(createFileChangeSegmentEndEvent(context, codexEventName, payload));
         return events;
       }
+      if (itemType === "dynamictoolcall") {
+        return [
+          createTerminalToolExecutionEvent(context, codexEventName, payload),
+          createSegmentEndEvent(context, codexEventName, payload),
+        ];
+      }
       if (context.isWebSearchItem(itemType)) {
         return [
           context.createEvent(codexEventName, AgentRunEventType.SEGMENT_END, {
@@ -299,17 +341,8 @@ export const convertCodexItemEvent = (
           }),
         ];
       }
-      if (isBrowserToolExecutionPayload(context, payload)) {
-        return [createTerminalToolExecutionEvent(context, codexEventName, payload, "run_bash")];
-      }
       return [
-        context.createEvent(codexEventName, AgentRunEventType.SEGMENT_END, {
-          ...serializePayload(payload),
-          id: context.resolveSegmentId(payload),
-          ...(context.resolveSegmentMetadata(payload)
-            ? { metadata: context.resolveSegmentMetadata(payload) }
-            : {}),
-        }),
+        createSegmentEndEvent(context, codexEventName, payload),
       ];
     }
     case CodexThreadEventName.ITEM_REASONING_DELTA:

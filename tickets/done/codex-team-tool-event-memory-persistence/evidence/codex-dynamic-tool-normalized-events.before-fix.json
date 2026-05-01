@@ -1,0 +1,117 @@
+[
+  {
+    "eventType": "SEGMENT_START",
+    "id": "call_NxWePbHukldj9bB75NdI09oX",
+    "segment_type": "tool_call",
+    "invocation_id": null,
+    "tool_name": "echo_dynamic",
+    "metadata": {
+      "tool_name": "echo_dynamic",
+      "arguments": {
+        "value": "HELLO_DYNAMIC"
+      }
+    },
+    "result": null,
+    "error": null,
+    "log_entry": null,
+    "item": {
+      "type": "dynamicToolCall",
+      "id": "call_NxWePbHukldj9bB75NdI09oX",
+      "namespace": null,
+      "tool": "echo_dynamic",
+      "arguments": {
+        "value": "HELLO_DYNAMIC"
+      },
+      "status": "inProgress",
+      "contentItems": null,
+      "success": null,
+      "durationMs": null
+    }
+  },
+  {
+    "eventType": "SEGMENT_END",
+    "id": "call_NxWePbHukldj9bB75NdI09oX",
+    "segment_type": null,
+    "invocation_id": null,
+    "tool_name": "echo_dynamic",
+    "metadata": {
+      "tool_name": "echo_dynamic",
+      "arguments": {
+        "value": "HELLO_DYNAMIC"
+      }
+    },
+    "result": null,
+    "error": null,
+    "log_entry": null,
+    "item": {
+      "type": "dynamicToolCall",
+      "id": "call_NxWePbHukldj9bB75NdI09oX",
+      "namespace": null,
+      "tool": "echo_dynamic",
+      "arguments": {
+        "value": "HELLO_DYNAMIC"
+      },
+      "status": "completed",
+      "contentItems": [
+        {
+          "type": "inputText",
+          "text": "HELLO_DYNAMIC"
+        }
+      ],
+      "success": true,
+      "durationMs": 1
+    }
+  },
+  {
+    "eventType": "TOOL_LOG",
+    "id": null,
+    "segment_type": null,
+    "invocation_id": "call_NxWePbHukldj9bB75NdI09oX",
+    "tool_name": null,
+    "metadata": null,
+    "result": null,
+    "error": null,
+    "log_entry": "HELLO_DYNAMIC",
+    "item": {
+      "type": "function_call_output",
+      "call_id": "call_NxWePbHukldj9bB75NdI09oX",
+      "output": "HELLO_DYNAMIC"
+    }
+  },
+  {
+    "eventType": "SEGMENT_START",
+    "id": "msg_04632a5afd9a34390169f4505b006c819193b67ee70410a136",
+    "segment_type": "text",
+    "invocation_id": null,
+    "tool_name": null,
+    "metadata": null,
+    "result": null,
+    "error": null,
+    "log_entry": null,
+    "item": {
+      "type": "agentMessage",
+      "id": "msg_04632a5afd9a34390169f4505b006c819193b67ee70410a136",
+      "text": "",
+      "phase": "final_answer",
+      "memoryCitation": null
+    }
+  },
+  {
+    "eventType": "SEGMENT_END",
+    "id": "msg_04632a5afd9a34390169f4505b006c819193b67ee70410a136",
+    "segment_type": null,
+    "invocation_id": null,
+    "tool_name": null,
+    "metadata": null,
+    "result": null,
+    "error": null,
+    "log_entry": null,
+    "item": {
+      "type": "agentMessage",
+      "id": "msg_04632a5afd9a34390169f4505b006c819193b67ee70410a136",
+      "text": "DONE",
+      "phase": "final_answer",
+      "memoryCitation": null
+    }
+  }
+]

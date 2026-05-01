@@ -356,6 +356,52 @@ Rules:
       const teamRunId = createTeamRunResult.createAgentTeamRun.teamRunId as string;
       createdTeamRunIds.add(teamRunId);
 
+      const teamResumeQuery = `
+        query TeamResume($teamRunId: String!) {
+          getTeamRunResumeConfig(teamRunId: $teamRunId) {
+            metadata
+          }
+        }
+      `;
+      const memoryViewQuery = `
+        query TeamMemberMemory($teamRunId: String!, $memberRunId: String!) {
+          getTeamMemberRunMemoryView(
+            teamRunId: $teamRunId,
+            memberRunId: $memberRunId,
+            includeWorkingContext: false,
+            includeEpisodic: false,
+            includeSemantic: false,
+            includeRawTraces: true,
+            rawTraceLimit: 200
+          ) {
+            rawTraces {
+              traceType
+              sourceEvent
+              toolName
+              toolCallId
+              toolArgs
+              toolResult
+              toolError
+            }
+          }
+        }
+      `;
+      const resumeResult = await execGraphql<{
+        getTeamRunResumeConfig: {
+          metadata: {
+            memberMetadata: Array<{ memberName: string; memberRunId: string }>;
+          };
+        };
+      }>(teamResumeQuery, { teamRunId });
+      const memberRunIdByName = new Map(
+        resumeResult.getTeamRunResumeConfig.metadata.memberMetadata.map((member) => [
+          member.memberName,
+          member.memberRunId,
+        ]),
+      );
+      expect(memberRunIdByName.get("ping")).toBeTruthy();
+      expect(memberRunIdByName.get("pong")).toBeTruthy();
+
       const pingToken = `ROUNDTRIP_PING:${unique}`;
       const pongToken = `ROUNDTRIP_PONG:${unique}`;
       const streamApp = fastify();
@@ -427,6 +473,72 @@ Rules:
         throw new Error(`Timed out waiting for team websocket event '${label}'. preview='${preview}'`);
       };
 
+      const waitForSendMessageMemoryTrace = async (input: {
+        senderMemberName: "ping" | "pong";
+        recipientMemberName: "ping" | "pong";
+        content: string;
+        invocationId: string;
+      }): Promise<void> => {
+        const memberRunId = memberRunIdByName.get(input.senderMemberName);
+        expect(memberRunId).toBeTruthy();
+        let lastRawTraces: Array<{
+          traceType: string;
+          sourceEvent: string | null;
+          toolName: string | null;
+          toolCallId: string | null;
+          toolArgs: Record<string, unknown> | null;
+          toolResult: unknown | null;
+          toolError: string | null;
+        }> = [];
+        const deadline = Date.now() + 120_000;
+        while (Date.now() < deadline) {
+          const memoryResult = await execGraphql<{
+            getTeamMemberRunMemoryView: {
+              rawTraces: Array<{
+                traceType: string;
+                sourceEvent: string | null;
+                toolName: string | null;
+                toolCallId: string | null;
+                toolArgs: Record<string, unknown> | null;
+                toolResult: unknown | null;
+                toolError: string | null;
+              }> | null;
+            };
+          }>(memoryViewQuery, { teamRunId, memberRunId });
+          lastRawTraces = memoryResult.getTeamMemberRunMemoryView.rawTraces ?? [];
+          const matchingToolCalls = lastRawTraces.filter(
+            (trace) =>
+              trace.traceType === "tool_call" &&
+              trace.toolName === "send_message_to" &&
+              trace.toolCallId === input.invocationId,
+          );
+          const matchingToolResults = lastRawTraces.filter(
+            (trace) =>
+              trace.traceType === "tool_result" &&
+              trace.toolName === "send_message_to" &&
+              trace.toolCallId === input.invocationId,
+          );
+          if (matchingToolCalls.length === 1 && matchingToolResults.length === 1) {
+            expect(matchingToolCalls[0]?.sourceEvent).toBe("TOOL_EXECUTION_STARTED");
+            expect(matchingToolCalls[0]?.toolArgs).toMatchObject({
+              recipient_name: input.recipientMemberName,
+              content: input.content,
+            });
+            expect(matchingToolResults[0]?.sourceEvent).toBe("TOOL_EXECUTION_SUCCEEDED");
+            expect(matchingToolResults[0]?.toolError).toBeNull();
+            expect(String(matchingToolResults[0]?.toolResult ?? "").trim().length).toBeGreaterThan(
+              0,
+            );
+            return;
+          }
+          await wait(1_000);
+        }
+        throw new Error(
+          `Timed out waiting for ${input.senderMemberName} send_message_to memory traces for invocation ${input.invocationId}. ` +
+            `Observed traces: ${JSON.stringify(lastRawTraces)}`,
+        );
+      };
+
       const waitForSendMessageLifecycleAndReceipt = async (input: {
         senderMemberName: "ping" | "pong";
         recipientMemberName: "ping" | "pong";
@@ -463,9 +575,46 @@ Rules:
           return args.recipient_name === input.recipientMemberName && args.content === input.content;
         };
 
+        const isMatchingSendMessageLifecycle = (
+          message: { type: string; payload: Record<string, unknown> },
+          eventType: "TOOL_EXECUTION_STARTED" | "TOOL_EXECUTION_SUCCEEDED" | "TOOL_EXECUTION_FAILED",
+          invocationId: string,
+        ): boolean => {
+          if (message.type !== eventType) {
+            return false;
+          }
+          if (message.payload.agent_name !== input.senderMemberName) {
+            return false;
+          }
+          if (message.payload.invocation_id !== invocationId) {
+            return false;
+          }
+          const toolName =
+            typeof message.payload.tool_name === "string"
+              ? message.payload.tool_name.toLowerCase()
+              : "";
+          return toolName === "send_message_to";
+        };
+
         await waitForTeamStreamEvent(
           (message) => isMatchingSendMessageSegmentStart(message),
           `${input.senderMemberName} send_message_to SEGMENT_START`,
+        );
+
+        const firstMatchingSegmentStart = streamMessages.find((message) =>
+          isMatchingSendMessageSegmentStart(message),
+        );
+        const invocationId = firstMatchingSegmentStart?.payload.id;
+        expect(typeof invocationId).toBe("string");
+
+        await waitForTeamStreamEvent(
+          (message) =>
+            isMatchingSendMessageLifecycle(
+              message,
+              "TOOL_EXECUTION_STARTED",
+              invocationId as string,
+            ),
+          `${input.senderMemberName} send_message_to TOOL_EXECUTION_STARTED`,
         );
 
         await waitForTeamStreamEvent(
@@ -482,6 +631,16 @@ Rules:
 
         await waitForTeamStreamEvent(
           (message) =>
+            isMatchingSendMessageLifecycle(
+              message,
+              "TOOL_EXECUTION_SUCCEEDED",
+              invocationId as string,
+            ),
+          `${input.senderMemberName} send_message_to TOOL_EXECUTION_SUCCEEDED`,
+        );
+
+        await waitForTeamStreamEvent(
+          (message) =>
             message.type === "SEGMENT_END" &&
             message.payload.agent_name === input.recipientMemberName,
           `${input.recipientMemberName} response SEGMENT_END`,
@@ -492,27 +651,35 @@ Rules:
         );
         expect(matchingSegmentStarts).toHaveLength(1);
 
-        const sendMessageLifecycleNoise = streamMessages.filter((message) => {
-          if (
-            ![
-              "TOOL_APPROVAL_REQUESTED",
-              "TOOL_APPROVED",
-              "TOOL_DENIED",
-              "TOOL_EXECUTION_STARTED",
-              "TOOL_EXECUTION_SUCCEEDED",
-              "TOOL_EXECUTION_FAILED",
-            ].includes(message.type)
-          ) {
-            return false;
-          }
-          if (message.payload.agent_name !== input.senderMemberName) {
-            return false;
-          }
-          const toolName =
-            typeof message.payload.tool_name === "string" ? message.payload.tool_name.toLowerCase() : "";
-          return toolName === "send_message_to";
+        const sendMessageStartedEvents = streamMessages.filter((message) =>
+          isMatchingSendMessageLifecycle(
+            message,
+            "TOOL_EXECUTION_STARTED",
+            invocationId as string,
+          ),
+        );
+        const sendMessageSucceededEvents = streamMessages.filter((message) =>
+          isMatchingSendMessageLifecycle(
+            message,
+            "TOOL_EXECUTION_SUCCEEDED",
+            invocationId as string,
+          ),
+        );
+        const sendMessageFailedEvents = streamMessages.filter((message) =>
+          isMatchingSendMessageLifecycle(
+            message,
+            "TOOL_EXECUTION_FAILED",
+            invocationId as string,
+          ),
+        );
+        expect(sendMessageStartedEvents).toHaveLength(1);
+        expect(sendMessageSucceededEvents).toHaveLength(1);
+        expect(sendMessageFailedEvents).toHaveLength(0);
+
+        await waitForSendMessageMemoryTrace({
+          ...input,
+          invocationId: invocationId as string,
         });
-        expect(sendMessageLifecycleNoise).toHaveLength(0);
       };
 
       try {

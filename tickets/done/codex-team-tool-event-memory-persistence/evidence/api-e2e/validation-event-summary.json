@@ -1,0 +1,182 @@
+{
+  "generic_dynamic_current": {
+    "success": {
+      "counts": {
+        "SEGMENT_START": 1,
+        "TOOL_EXECUTION_STARTED": 1,
+        "TOOL_EXECUTION_SUCCEEDED": 1,
+        "SEGMENT_END": 1
+      },
+      "invocation_ids": [
+        "call_tBnQw1iLJK3lreIjaBv77JlK"
+      ],
+      "events": [
+        {
+          "eventType": "SEGMENT_START",
+          "id": "call_tBnQw1iLJK3lreIjaBv77JlK",
+          "invocation_id": null,
+          "tool_name": "echo_dynamic",
+          "error": null,
+          "result": null
+        },
+        {
+          "eventType": "TOOL_EXECUTION_STARTED",
+          "id": null,
+          "invocation_id": "call_tBnQw1iLJK3lreIjaBv77JlK",
+          "tool_name": "echo_dynamic",
+          "error": null,
+          "result": null
+        },
+        {
+          "eventType": "TOOL_EXECUTION_SUCCEEDED",
+          "id": null,
+          "invocation_id": "call_tBnQw1iLJK3lreIjaBv77JlK",
+          "tool_name": "echo_dynamic",
+          "error": null,
+          "result": "HELLO_DYNAMIC"
+        },
+        {
+          "eventType": "SEGMENT_END",
+          "id": "call_tBnQw1iLJK3lreIjaBv77JlK",
+          "invocation_id": null,
+          "tool_name": "echo_dynamic",
+          "error": null,
+          "result": null
+        }
+      ]
+    },
+    "failure": {
+      "counts": {
+        "SEGMENT_START": 1,
+        "TOOL_EXECUTION_STARTED": 1,
+        "TOOL_EXECUTION_FAILED": 1,
+        "SEGMENT_END": 1
+      },
+      "invocation_ids": [
+        "call_vRTKb0DqG0Cc81iEZ2XMKjtE"
+      ],
+      "events": [
+        {
+          "eventType": "SEGMENT_START",
+          "id": "call_vRTKb0DqG0Cc81iEZ2XMKjtE",
+          "invocation_id": null,
+          "tool_name": "fail_dynamic",
+          "error": null,
+          "result": null
+        },
+        {
+          "eventType": "TOOL_EXECUTION_STARTED",
+          "id": null,
+          "invocation_id": "call_vRTKb0DqG0Cc81iEZ2XMKjtE",
+          "tool_name": "fail_dynamic",
+          "error": null,
+          "result": null
+        },
+        {
+          "eventType": "TOOL_EXECUTION_FAILED",
+          "id": null,
+          "invocation_id": "call_vRTKb0DqG0Cc81iEZ2XMKjtE",
+          "tool_name": "fail_dynamic",
+          "error": "DYNAMIC_FAILURE_c09339b1-ea51-483b-b6ff-1465d6af461a",
+          "result": null
+        },
+        {
+          "eventType": "SEGMENT_END",
+          "id": "call_vRTKb0DqG0Cc81iEZ2XMKjtE",
+          "invocation_id": null,
+          "tool_name": "fail_dynamic",
+          "error": null,
+          "result": null
+        }
+      ]
+    }
+  },
+  "browser_open_tab": {
+    "counts": {
+      "SEGMENT_START": 1,
+      "TOOL_EXECUTION_STARTED": 1,
+      "TOOL_EXECUTION_SUCCEEDED": 1,
+      "SEGMENT_END": 1
+    },
+    "invocation_ids": [
+      "call_3ccpCp3N58ObeMXs8XNtgABS"
+    ],
+    "events": [
+      {
+        "eventType": "SEGMENT_START",
+        "id": "call_3ccpCp3N58ObeMXs8XNtgABS",
+        "invocation_id": null,
+        "tool_name": "open_tab",
+        "error": null,
+        "result": null
+      },
+      {
+        "eventType": "TOOL_EXECUTION_STARTED",
+        "id": null,
+        "invocation_id": "call_3ccpCp3N58ObeMXs8XNtgABS",
+        "tool_name": "open_tab",
+        "error": null,
+        "result": null
+      },
+      {
+        "eventType": "TOOL_EXECUTION_SUCCEEDED",
+        "id": null,
+        "invocation_id": "call_3ccpCp3N58ObeMXs8XNtgABS",
+        "tool_name": "open_tab",
+        "error": null,
+        "result": {
+          "tab_id": "browser-session-1",
+          "status": "opened",
+          "url": "http://127.0.0.1:4173/browser-776acca6-6951-4458-953a-695b08e18554",
+          "title": "Browser 790c8c31-5e66-4596-b6a2-d91cf3ceef04"
+        }
+      },
+      {
+        "eventType": "SEGMENT_END",
+        "id": "call_3ccpCp3N58ObeMXs8XNtgABS",
+        "invocation_id": null,
+        "tool_name": "open_tab",
+        "error": null,
+        "result": null
+      }
+    ]
+  },
+  "team_roundtrip_raw_dynamic_events": {
+    "codex-run-ping_280b6bb31d142d92.jsonl": [
+      {
+        "sequence": 25,
+        "eventName": "item/started",
+        "itemId": "call_GUs286DLZvNLtw7A1x14jjny",
+        "tool": "send_message_to",
+        "status": "inProgress",
+        "success": null
+      },
+      {
+        "sequence": 27,
+        "eventName": "item/completed",
+        "itemId": "call_GUs286DLZvNLtw7A1x14jjny",
+        "tool": "send_message_to",
+        "status": "completed",
+        "success": true
+      }
+    ],
+    "codex-run-pong_4c3ec8e75c5003af.jsonl": [
+      {
+        "sequence": 571,
+        "eventName": "item/started",
+        "itemId": "call_9fONe3PhFXVVAye5p8LpRyWb",
+        "tool": "send_message_to",
+        "status": "inProgress",
+        "success": null
+      },
+      {
+        "sequence": 572,
+        "eventName": "item/completed",
+        "itemId": "call_9fONe3PhFXVVAye5p8LpRyWb",
+        "tool": "send_message_to",
+        "status": "completed",
+        "success": true
+      }
+    ]
+  }
+}
