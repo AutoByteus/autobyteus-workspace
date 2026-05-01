@@ -2,12 +2,12 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/history-run-archive/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/history-run-archive/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/history-run-archive/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/history-run-archive/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/history-run-archive/implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/history-run-archive/review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive/implementation-handoff.md`
+- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive/review-report.md`
 - Current Validation Round: `1`
 - Trigger: Source/architecture review pass from `code_reviewer` for `archive-run-history`.
 - Prior Round Reviewed: `N/A`
@@ -96,13 +96,13 @@ Notes: existing records without `archivedAt` remain visible by default as the ap
 - Paths added or updated:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-server-ts/tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/generated/graphql.ts` (regenerated during validation against live updated backend; includes archive mutations plus pre-existing generated drift for application fragments/memory trace fields from current GraphQL docs/schema)
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/history-run-archive/api-e2e-validation-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive/api-e2e-validation-report.md`
 - If `Yes`, returned through `code_reviewer` before delivery: `Yes` (this handoff routes back to code review)
 - Post-validation code review artifact: pending code-review recheck
 
 ## Other Validation Artifacts
 
-- Canonical validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/history-run-archive/api-e2e-validation-report.md`
+- Canonical validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive/api-e2e-validation-report.md`
 
 ## Temporary Validation Methods / Scaffolding
 

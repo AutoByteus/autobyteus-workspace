@@ -7,11 +7,11 @@
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history`
 - Ticket branch: `codex/archive-run-history`
 - Finalization target: `origin/personal` / `personal`
-- Current status: `Blocked pending explicit user verification before repository finalization; macOS Electron test build prepared`
+- Current status: `User verified; repository finalization and release in progress`
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/history-run-archive/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Notes: Handoff captures delivered archive behavior, deferred archived-list/unarchive scope, integrated-base state, validation evidence, docs sync, and verification hold.
 
@@ -33,15 +33,15 @@
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `No`
-- Initial verification reference: `Pending user verification/completion signal`
+- Initial explicit user completion/verification received: `Yes`
+- Initial verification reference: user confirmed the rebuilt Electron app is working on 2026-05-01 and requested finalization plus a new release version.
 - Renewed verification required after later re-integration: `No`
 - Renewed verification received: `Not needed`
 - Renewed verification reference: `N/A`
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/history-run-archive/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated:
   - `autobyteus-server-ts/docs/modules/run_history.md`
@@ -50,45 +50,45 @@
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/<ticket-name>`: `No`
-- Archived ticket path: `Pending explicit user verification`
+- Ticket moved to `tickets/done/<ticket-name>`: `Yes`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive`
 
 ## Version / Tag / Release Commit
 
-- Not required before user verification. No version bump, tag, or release-specific commit has been requested for this feature handoff.
+- Release requested after user verification. Planned version: `1.2.89`; release notes artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive/release-notes.md`.
 
 ## Repository Finalization
 
-- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/history-run-archive/investigation-notes.md`
+- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive/investigation-notes.md`
 - Ticket branch: `codex/archive-run-history`
-- Ticket branch commit result: `Local checkpoint completed (392669a3); final push remains blocked pending explicit user verification`
-- Ticket branch push result: `Blocked pending explicit user verification`
+- Ticket branch commit result: `Local checkpoint completed (392669a3); delivery/test-build artifact commit completed (04150841); final archive/release-notes commit pending in this finalization pass`
+- Ticket branch push result: `Pending final archive/release-notes commit`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: `N/A - user verification not yet received`
 - Delivery-owned edits protected before re-integration: `Not needed`
 - Re-integration before final merge result: `Completed before user test build; final pre-merge refresh still required after explicit verification`
-- Target branch update result: `Blocked pending explicit user verification`
-- Merge into target result: `Blocked pending explicit user verification`
-- Push target branch result: `Blocked pending explicit user verification`
-- Repository finalization status: `Blocked`
-- Blocker (if applicable): explicit user verification/completion is required before ticket archival, commit/push, merge, release/deployment, and cleanup.
+- Target branch update result: `Pending`
+- Merge into target result: `Pending`
+- Push target branch result: `Pending`
+- Repository finalization status: `In progress`
+- Blocker (if applicable): `None`
 
 ## Release / Publication / Deployment
 
-- Applicable: `No`
-- Method: `Other`
-- Method reference / command: `Not required for this internal archive-history feature handoff unless the user later requests a release/deployment.`
-- Release/publication/deployment result: `Not required`
-- Release notes handoff result: `Not required`
-- Blocker (if applicable): `None beyond repository finalization hold`
+- Applicable: `Yes`
+- Method: `Documented Command`
+- Method reference / command: `pnpm release 1.2.89 -- --release-notes autobyteus-web/tickets/done/history-run-archive/release-notes.md`
+- Release/publication/deployment result: `Pending`
+- Release notes handoff result: `Prepared`
+- Blocker (if applicable): `None`
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history`
-- Worktree cleanup result: `Blocked pending finalization`
-- Worktree prune result: `Blocked pending finalization`
-- Local ticket branch cleanup result: `Blocked pending finalization`
+- Worktree cleanup result: `Pending finalization/release`
+- Worktree prune result: `Pending finalization/release`
+- Local ticket branch cleanup result: `Pending finalization/release`
 - Remote branch cleanup result: `Not required`
 - Blocker (if applicable): cleanup must wait until user verification and repository finalization make removal safe.
 
@@ -100,9 +100,9 @@
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification: `Not required`
-- Archived release notes artifact used for release/publication: `Not required`
-- Release notes status: `Not required`
+- Release notes artifact created before verification: `Created after explicit release request`
+- Archived release notes artifact used for release/publication: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive/release-notes.md`
+- Release notes status: `Updated`
 
 ## Deployment Steps
 
@@ -111,7 +111,7 @@
   - Executed with local no-notarization/no-signing environment: `NO_TIMESTAMP=1 APPLE_TEAM_ID= APPLE_ID= APPLE_APP_SPECIFIC_PASSWORD= APPLE_SIGNING_IDENTITY= AUTOBYTEUS_BUILD_FLAVOR=personal pnpm build:electron:mac`
   - Output directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/electron-dist`
   - Test artifacts: `AutoByteus_personal_macos-arm64-1.2.88.dmg` and `AutoByteus_personal_macos-arm64-1.2.88.zip`.
-- No publication, release upload, tag, or deployment path has been run.
+- Release publication is pending repository finalization; no release tag has been pushed yet in this artifact update.
 
 ## Environment Or Migration Notes
 
@@ -126,8 +126,8 @@
 - Delivery docs/artifact whitespace check: `git diff --check`.
 - Local Electron test build: `NO_TIMESTAMP=1 APPLE_TEAM_ID= APPLE_ID= APPLE_APP_SPECIFIC_PASSWORD= APPLE_SIGNING_IDENTITY= AUTOBYTEUS_BUILD_FLAVOR=personal pnpm build:electron:mac`.
 - Upstream reviewer/API/E2E pass evidence is recorded in:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/history-run-archive/review-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/history-run-archive/api-e2e-validation-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive/review-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive/api-e2e-validation-report.md`
 
 ## Rollback Criteria
 
@@ -137,4 +137,4 @@
 
 ## Final Status
 
-- `Blocked pending user verification` — docs sync, latest-base merge, post-integration GraphQL e2e, whitespace check, and local macOS Electron test build are complete; repository finalization/release/cleanup are intentionally held until explicit user verification/completion is received.
+- `In progress` — user verification is complete; ticket archive/release notes are prepared and repository finalization plus release execution are next.

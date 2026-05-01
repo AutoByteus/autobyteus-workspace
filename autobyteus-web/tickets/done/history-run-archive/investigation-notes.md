@@ -25,7 +25,7 @@ Screenshots show Teams sidebar/history rows under "Software Engineering Team (36
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/history-run-archive`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive`
 - Current Branch: `codex/archive-run-history`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history`
 - Bootstrap Base Branch: `origin/personal`
@@ -59,7 +59,7 @@ Screenshots show Teams sidebar/history rows under "Software Engineering Team (36
 | 2026-05-01 | Code | `autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts`, regressions spec, `autobyteus-web/stores/__tests__/runHistoryStore.spec.ts` | Identify frontend test coverage and expected additions | Tests cover delete visibility, delete confirmation, draft removal, terminate behavior, and run store delete cleanup. | Add archive visibility/action/store cleanup/failure tests. |
 | 2026-05-01 | Code | `autobyteus-server-ts/tests/unit/run-history/services/*`, `store/*` | Identify backend test coverage and expected additions | Existing tests cover list grouping, delete behavior, metadata store roundtrip/defaults, team summary backfill. | Add metadata archive/default tests and service archive/filter tests. |
 | 2026-05-01 | Command | `cat autobyteus-web/package.json | jq '.scripts'` and `cat autobyteus-server-ts/package.json | jq '.scripts'` | Find likely verification commands | Web: `pnpm test:nuxt`, `pnpm codegen`; Server: `pnpm typecheck`, `pnpm test`. | Implementation should run targeted vitest first, broader checks as time allows. |
-| 2026-05-01 | Doc | `autobyteus-web/tickets/history-run-archive/design-review-report.md` | Architecture review feedback | Review failed with `AR-ARCH-001`: archive commands must reject invalid/path-unsafe IDs before metadata read/write; policy belongs in history services and tests must prove no out-of-root metadata write. | Apply design rework. |
+| 2026-05-01 | Doc | `autobyteus-web/tickets/done/history-run-archive/design-review-report.md` | Architecture review feedback | Review failed with `AR-ARCH-001`: archive commands must reject invalid/path-unsafe IDs before metadata read/write; policy belongs in history services and tests must prove no out-of-root metadata write. | Apply design rework. |
 | 2026-05-01 | Code | `autobyteus-server-ts/src/run-history/services/agent-run-history-service.ts`, `team-run-history-service.ts` | Recheck existing delete safety pattern for archive adaptation | Existing destructive delete paths use private safe-directory resolution before recursive remove. Archive should adapt this service-level containment/base-name validation before calling metadata stores. | Add to design spec and tests. |
 | 2026-05-01 | Code | `autobyteus-server-ts/src/run-history/store/agent-run-metadata-store.ts`, `team-run-metadata-store.ts` | Recheck metadata path derivation risk | Metadata paths are derived from supplied run/team IDs, so unsafe direct archive IDs could otherwise influence filesystem paths. | Enforce safety in history services before metadata access. |
 

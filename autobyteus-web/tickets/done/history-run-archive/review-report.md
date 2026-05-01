@@ -3,16 +3,16 @@
 ## Review Round Meta
 
 - Review Entry Point: `Post-Validation Durable-Validation Re-Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/history-run-archive/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive/requirements.md`
 - Current Review Round: `2`
 - Trigger: API/E2E validation pass returned because repository-resident durable validation/generated artifacts were updated after round 1.
 - Prior Review Round Reviewed: `1`
 - Latest Authoritative Round: `2`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/history-run-archive/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/history-run-archive/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/history-run-archive/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/history-run-archive/implementation-handoff.md`
-- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/history-run-archive/api-e2e-validation-report.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive/implementation-handoff.md`
+- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive/api-e2e-validation-report.md`
 - API / E2E Validation Started Yet: `Yes`
 - Repository-Resident Durable Validation Added Or Updated After Prior Review: `Yes`
 
@@ -36,7 +36,7 @@ Round 2 reviewed the post-validation repository-resident changes and validation 
 - Regenerated live-backend GraphQL artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/generated/graphql.ts`
   - Archive mutation generated types/documents are present.
   - Pre-existing generated drift for application fragments and memory trace schema fields is aligned with current GraphQL documents/schema.
-- Added validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/history-run-archive/api-e2e-validation-report.md`
+- Added validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive/api-e2e-validation-report.md`
 - Related source surfaces were spot-checked only where needed to judge generated output and validation fidelity.
 
 Round 1 source/architecture review remains passed with no findings. Round 2 supersedes the final decision for workflow routing.
@@ -55,7 +55,7 @@ Round 2 changed repository-resident durable validation and generated artifacts o
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `autobyteus-server-ts/tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts` | N/A - e2e test | Excluded | Excluded | Pass: owns GraphQL e2e validation for archive-history behavior. | Pass: placed with workspace e2e tests. | Pass | None. |
 | `autobyteus-web/generated/graphql.ts` | N/A - generated | Excluded | Excluded | Pass: generated artifact only; verified by live-backend codegen idempotency. | Pass: existing generated GraphQL output location. | Pass | None. |
-| `autobyteus-web/tickets/history-run-archive/api-e2e-validation-report.md` | N/A - artifact | Excluded | Excluded | Pass: validation evidence/reporting artifact. | Pass: task ticket artifact directory. | Pass | None. |
+| `autobyteus-web/tickets/done/history-run-archive/api-e2e-validation-report.md` | N/A - artifact | Excluded | Excluded | Pass: validation evidence/reporting artifact. | Pass: task ticket artifact directory. | Pass | None. |
 
 ## Structural / Design Checks
 
@@ -137,7 +137,7 @@ Round 2 reviewer-run checks passed:
 - `pnpm -C autobyteus-web exec vitest --run stores/__tests__/applicationStore.spec.ts`
 - `git diff --check`
 
-API/E2E engineer validation checks are recorded in `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/history-run-archive/api-e2e-validation-report.md` and include live-backend codegen idempotency.
+API/E2E engineer validation checks are recorded in `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive/api-e2e-validation-report.md` and include live-backend codegen idempotency.
 
 ## Legacy / Backward-Compatibility Verdict
 

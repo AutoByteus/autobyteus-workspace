@@ -3,16 +3,16 @@
 ## Rework Round 1 — AR-ARCH-001
 
 - Date: 2026-05-01
-- Trigger: Architecture review report at `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/history-run-archive/design-review-report.md`
+- Trigger: Architecture review report at `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive/design-review-report.md`
 - Finding: Direct archive mutations must reject invalid/path-unsafe IDs before metadata read/write. The policy must live in `AgentRunHistoryService` and `TeamRunHistoryService`, not resolvers, UI, or metadata stores.
 
 ## Changes Applied
 
 Updated artifacts:
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/history-run-archive/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/history-run-archive/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/history-run-archive/design-spec.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive/design-spec.md`
 
 Specific updates:
 

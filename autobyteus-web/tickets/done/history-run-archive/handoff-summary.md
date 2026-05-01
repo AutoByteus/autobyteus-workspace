@@ -4,7 +4,7 @@
 
 - Ticket: `history-run-archive`
 - Date: `2026-05-01`
-- Current Status: `Ready for user verification; integrated Electron test build prepared`
+- Current Status: `Verified; ready for release finalization`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history`
 - Ticket branch: `codex/archive-run-history`
 - Finalization target: `origin/personal` / `personal`
@@ -24,8 +24,8 @@
   - added durable GraphQL e2e coverage for archive/list/filesystem behavior; and
   - promoted archive/delete/default-list behavior into long-lived docs.
 - Planned scope reference:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/history-run-archive/requirements.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/history-run-archive/design-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive/requirements.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive/design-spec.md`
 - Deferred / not delivered:
   - archived-history browser/list/filter UI;
   - unarchive/restore-from-archive UI;
@@ -78,7 +78,7 @@
 ## Documentation Sync Summary
 
 - Docs sync artifact:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/history-run-archive/docs-sync-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive/docs-sync-report.md`
 - Docs result: `Updated`
 - Docs updated:
   - `autobyteus-server-ts/docs/modules/run_history.md`
@@ -89,20 +89,20 @@
 
 ## Release Notes Status
 
-- Release notes required: `No`
-- Release notes artifact: `N/A`
-- Notes: no version bump, release tag, publication, or deployment step has been requested for this internal feature branch handoff. A local unsigned macOS arm64 Electron build was produced for user testing under `autobyteus-web/electron-dist/`.
+- Release notes required: `Yes`
+- Release notes artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive/release-notes.md`
+- Notes: user verified the local unsigned macOS arm64 Electron build and requested finalization plus a new release version.
 
 ## User Verification Hold
 
-- Waiting for explicit user verification: `Yes`
-- User verification received: `No`
+- Waiting for explicit user verification: `No`
+- User verification received: `Yes` — user confirmed the rebuilt Electron app is working on 2026-05-01 and requested ticket finalization plus a new release.
 - Notes:
-  - per delivery workflow, ticket archival to `tickets/done/`, commit/push, merge to `personal`, release/deployment, and worktree cleanup are intentionally blocked until explicit user completion/verification is received.
+  - ticket artifacts are archived under `autobyteus-web/tickets/done/history-run-archive`; final repository merge and release are proceeding from this verified state.
 
 ## Finalization Record
 
-- Ticket archived to: `Not yet; pending explicit user verification`
+- Ticket archived to: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history/autobyteus-web/tickets/done/history-run-archive`
 - Ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history`
 - Ticket branch: `codex/archive-run-history`
 - Finalization target remote: `origin`
@@ -110,8 +110,8 @@
 - Commit status: `Local checkpoint completed (392669a3) and latest-base merge completed (a5e9d7b9); final ticket-branch push remains blocked pending explicit user verification`
 - Push status: `Blocked pending explicit user verification`
 - Merge status: `Blocked pending explicit user verification`
-- Release/publication/deployment status: `Not required at this stage`
+- Release/publication/deployment status: `Requested; pending release helper execution after repository finalization`
 - Worktree cleanup status: `Blocked pending finalization`
 - Local branch cleanup status: `Blocked pending finalization`
 - Blockers / notes:
-  - no technical blocker; awaiting user verification/completion signal.
+  - no technical blocker; user verification received, finalization/release in progress.
