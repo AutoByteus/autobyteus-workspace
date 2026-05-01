@@ -11,28 +11,7 @@ import type { AIResponseSegment, ToolCallSegment, WriteFileSegment, TerminalComm
 import type { SegmentStartPayload, SegmentContentPayload, SegmentEndPayload } from '../protocol/messageTypes';
 import { createSegmentFromPayload } from '../protocol/segmentTypes';
 import { hasStreamSegmentId, matchesStreamSegmentIdentity, setStreamSegmentIdentity } from './segmentIdentity';
-
-import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
-
-/**
- * Extract context text for the activity store (e.g. filename, command, or partial tool name).
- */
-function extractContextText(payload: SegmentStartPayload): string {
-  if (payload.segment_type === 'write_file') {
-    return payload.metadata?.path || 'new file';
-  }
-  if (payload.segment_type === 'run_bash') {
-    return payload.metadata?.command || 'terminal';
-  }
-  if (payload.segment_type === 'tool_call') {
-    return payload.metadata?.tool_name || 'tool';
-  }
-  if (payload.segment_type === 'edit_file') {
-    return payload.metadata?.path || 'edit file';
-  }
-  return '';
-}
 
 function extractToolCallArgumentsFromMetadata(metadata?: Record<string, any>): Record<string, any> {
   const parseArgumentsCandidate = (value: unknown): Record<string, any> => {
@@ -82,18 +61,6 @@ export function handleSegmentStart(
   const existingSegment = findSegmentById(context, payload.id, payload.segment_type);
   if (existingSegment) {
     mergeSegmentStartMetadata(existingSegment, payload);
-    if (
-      ['tool_call', 'write_file', 'terminal_command', 'edit_file'].includes(existingSegment.type) &&
-      typeof payload.metadata?.tool_name === 'string' &&
-      payload.metadata.tool_name.trim().length > 0
-    ) {
-      const activityStore = useAgentActivityStore();
-      activityStore.updateActivityToolName(
-        context.state.runId,
-        payload.id,
-        payload.metadata.tool_name,
-      );
-    }
     return;
   }
   const aiMessage = findOrCreateAIMessage(context);
@@ -105,57 +72,15 @@ export function handleSegmentStart(
     typeof payload.metadata?.command === 'string' &&
     payload.metadata.command.trim().length > 0
   ) {
-    (segment as TerminalCommandSegment).command = payload.metadata.command;
+    const terminalSegment = segment as TerminalCommandSegment;
+    terminalSegment.command = payload.metadata.command;
+    terminalSegment.arguments = {
+      ...terminalSegment.arguments,
+      command: payload.metadata.command,
+    };
   }
 
   aiMessage.segments.push(segment);
-  if (
-    ['tool_call', 'write_file', 'run_bash', 'edit_file'].includes(payload.segment_type)
-  ) {
-    const activityStore = useAgentActivityStore();
-    const contextText = extractContextText(payload);
-    let storeType: 'tool_call' | 'write_file' | 'terminal_command' | 'edit_file' = 'tool_call';
-    let toolName: string = payload.segment_type;
-
-    if (payload.segment_type === 'write_file') {
-      storeType = 'write_file';
-    } else if (payload.segment_type === 'run_bash') {
-      storeType = 'terminal_command';
-    } else if (payload.segment_type === 'edit_file') {
-      storeType = 'edit_file';
-    } else if (payload.segment_type === 'tool_call') {
-      if (payload.metadata?.tool_name) {
-        toolName = payload.metadata.tool_name;
-      } else {
-        console.error(`[SegmentHandler] Backend Bug: Missing tool_name in metadata for tool_call segment ${payload.id}`);
-        toolName = 'MISSING_TOOL_NAME';
-      }
-    }
-
-    const args: Record<string, any> = {};
-    if (payload.segment_type === 'write_file') {
-      args.path = payload.metadata?.path;
-    } else if (payload.segment_type === 'edit_file') {
-      args.path = payload.metadata?.path;
-    } else if (payload.segment_type === 'run_bash') {
-      args.command = payload.metadata?.command || '';
-    } else if (payload.segment_type === 'tool_call') {
-      Object.assign(args, extractToolCallArgumentsFromMetadata(payload.metadata));
-    }
-
-    activityStore.addActivity(context.state.runId, {
-      invocationId: payload.id,
-      toolName: toolName, 
-      type: storeType,
-      status: 'parsing',
-      contextText,
-      arguments: args,
-      logs: [],
-      result: null,
-      error: null,
-      timestamp: new Date(),
-    });
-  }
 }
 
 function mergeSegmentStartMetadata(
@@ -293,42 +218,6 @@ export function handleSegmentEnd(
   }
 
   finalizeSegment(segment, payload.metadata);
-  if (['tool_call', 'write_file', 'terminal_command', 'edit_file'].includes(segment.type)) {
-    const activityStore = useAgentActivityStore();
-    const toolSegment = segment as ToolInvocationLifecycle;
-    if (toolSegment.status === 'parsed') {
-      activityStore.updateActivityStatus(context.state.runId, payload.id, 'parsed');
-    }
-    if (!isPlaceholderToolName(toolSegment.toolName)) {
-      activityStore.updateActivityToolName(context.state.runId, payload.id, toolSegment.toolName);
-    }
-    if (segment.type === 'write_file') {
-      const wfSegment = segment as WriteFileSegment;
-      activityStore.updateActivityArguments(context.state.runId, payload.id, { 
-        path: wfSegment.path,
-        content: wfSegment.originalContent 
-      });
-    }
-    if (segment.type === 'terminal_command') {
-      const tcSegment = segment as TerminalCommandSegment;
-      activityStore.updateActivityArguments(context.state.runId, payload.id, { 
-        command: tcSegment.command 
-      });
-    }
-    if (segment.type === 'edit_file') {
-      const pfSegment = segment as EditFileSegment;
-      activityStore.updateActivityArguments(context.state.runId, payload.id, {
-        path: pfSegment.path,
-        patch: pfSegment.originalContent
-      });
-    }
-    if (segment.type === 'tool_call') {
-      const toolSegment = segment as ToolCallSegment;
-      activityStore.updateActivityArguments(context.state.runId, payload.id, {
-        ...toolSegment.arguments,
-      });
-    }
-  }
 }
 
 /**
@@ -371,7 +260,10 @@ export function findSegmentById(
         if (matchesStreamSegmentIdentity(segment, segmentId, segmentType)) {
           return segment;
         }
-        if (segment.type === 'tool_call' && segment.invocationId === segmentId) {
+        if (
+          ['tool_call', 'write_file', 'terminal_command', 'edit_file'].includes(segment.type) &&
+          (segment as ToolInvocationLifecycle).invocationId === segmentId
+        ) {
           return segment;
         }
       }

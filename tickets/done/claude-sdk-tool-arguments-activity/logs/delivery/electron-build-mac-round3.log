@@ -1,0 +1,16 @@
+$ AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:*,app-builder-lib*,builder-util* pnpm build:electron:mac
+
+Result: passed
+Date: 2026-05-01
+Context: Round 3 validated candidate for claude-sdk-tool-arguments-activity.
+Notes: Full verbose electron-builder output was intentionally summarized for durable ticket archival; the local command completed with electron-builder reporting the artifacts below.
+
+Build completed:
+- /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.89.dmg.blockmap
+- /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.89.dmg
+- /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.89.zip.blockmap
+- /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.89.zip
+
+SHA-256:
+- AutoByteus_personal_macos-arm64-1.2.89.dmg: 7d26ac18b9ac52dab4f9b75be5ce9d41f96f37c53050e9ec289b29594a8300ac
+- AutoByteus_personal_macos-arm64-1.2.89.zip: 6ba29c321802b4234ea061aa17db45701d691ddb0ed10beadacffa5f99abb9c3

@@ -310,6 +310,41 @@ describe('toolLifecycleHandler', () => {
     expect(mockActivityStore.updateActivityStatus).toHaveBeenCalledWith(runId, invocationId, 'success');
   });
 
+  it('hydrates arguments from a result-first TOOL_EXECUTION_SUCCEEDED payload', () => {
+    const invocationId = 'claude-bash-result-first';
+    const context = buildEmptyContext();
+    const payload: ToolExecutionSucceededPayload = {
+      invocation_id: invocationId,
+      tool_name: 'Bash',
+      turn_id: 'turn-1',
+      arguments: { command: 'pwd' },
+      result: 'workspace\n',
+    };
+
+    handleToolExecutionSucceeded(payload, context);
+
+    const aiMessage = context.conversation.messages[0] as any;
+    expect(aiMessage.segments).toHaveLength(1);
+    expect(aiMessage.segments[0].type).toBe('terminal_command');
+    expect(aiMessage.segments[0].command).toBe('pwd');
+    expect(aiMessage.segments[0].arguments).toEqual({ command: 'pwd' });
+    expect(aiMessage.segments[0].status).toBe('success');
+    expect(mockActivityStore.addActivity).toHaveBeenCalledWith(
+      runId,
+      expect.objectContaining({
+        invocationId,
+        toolName: 'Bash',
+        type: 'terminal_command',
+        arguments: { command: 'pwd' },
+      }),
+    );
+    expect(mockActivityStore.updateActivityArguments).toHaveBeenCalledWith(
+      runId,
+      invocationId,
+      { command: 'pwd' },
+    );
+  });
+
   it('applies failed terminal state and updates activity result', () => {
     const invocationId = 'tool-2';
     const segment = buildToolCallSegment(invocationId);
@@ -337,13 +372,20 @@ describe('toolLifecycleHandler', () => {
       invocation_id: invocationId,
       tool_name: 'delete_file',
       turn_id: 'turn-1',
+      arguments: { path: '/tmp/important.txt' },
       reason: 'Denied by user',
     };
 
     handleToolDenied(payload, context);
     expect(segment.status).toBe('denied');
     expect(segment.error).toBe('Denied by user');
+    expect(segment.arguments).toEqual({ path: '/tmp/important.txt' });
     expect(mockActivityStore.updateActivityStatus).toHaveBeenCalledWith(runId, invocationId, 'denied');
+    expect(mockActivityStore.updateActivityArguments).toHaveBeenCalledWith(
+      runId,
+      invocationId,
+      { path: '/tmp/important.txt' },
+    );
   });
 
   it('drops malformed denied payload without state mutation', () => {

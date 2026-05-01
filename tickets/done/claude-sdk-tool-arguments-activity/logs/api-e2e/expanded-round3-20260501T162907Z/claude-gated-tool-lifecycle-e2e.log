@@ -1,0 +1,589 @@
+
+> autobyteus-server-ts@0.1.1 pretest /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/autobyteus-server-ts
+> pnpm prepare:shared
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 11 workspace projects
+autobyteus-ts build$ tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+
+> autobyteus-server-ts@0.1.1 test /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/autobyteus-server-ts
+> vitest tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts --run -t 'routes tool approval over websocket and streams the normalized tool lifecycle'
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+Registered 6 image models from Autobyteus host https://localhost:51739.
+Autobyteus image models from https://localhost:51739: gpt-image-1-rpa@localhost:51739, nano-banana-pro-app-rpa@localhost:51739, imagen-4-rpa@localhost:51739, imagen-4-ultra-rpa@localhost:51739, imagen-4-fast-rpa@localhost:51739, qwen-image-rpa@localhost:51739
+Autobyteus image discovery summary for https://localhost:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=35
+
+stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+Registered 6 image models from Autobyteus host https://localhost:51740.
+Autobyteus image models from https://localhost:51740: gpt-image-1-rpa@localhost:51740, nano-banana-pro-app-rpa@localhost:51740, imagen-4-rpa@localhost:51740, imagen-4-ultra-rpa@localhost:51740, imagen-4-fast-rpa@localhost:51740, qwen-image-rpa@localhost:51740
+Autobyteus image discovery summary for https://localhost:51740: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=14
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+Finished Autobyteus image model discovery. Total models registered: 12
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:54885) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/autobyteus-server-ts
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-agent-sdk-runtime-api-e2e-OXYCNv
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-agent-sdk-runtime-api-e2e-OXYCNv/.env
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Agent Definition created successfully with ID: claude-agent-sdk-api-e2e-fbf9a973-d378-4883-bc9e-d0f930b8c179
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude_agent_sdk-runtime-tool-workspace-gk81ck
+Initialized FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude_agent_sdk-runtime-tool-workspace-gk81ck. Call initialize() to build file tree.
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude_agent_sdk-runtime-tool-workspace-gk81ck' with max_depth=1
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude_agent_sdk-runtime-tool-workspace-gk81ck' completed in 0.0080 seconds.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Initialized FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude_agent_sdk-runtime-tool-workspace-gk81ck (Shallow). Starting background full scan...
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude_agent_sdk-runtime-tool-workspace-gk81ck' with max_depth=null
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude_agent_sdk-runtime-tool-workspace-gk81ck' completed in 0.0090 seconds.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+FileNameIndexer starting...
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Created and registered workspace ID: agent_ws_b4bebcf9d5be11ba858413459a79672d07401b73b700f1712b5d1ea040cc0620
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude_agent_sdk-runtime-tool-workspace-gk81ck' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude_agent_sdk-runtime-tool-workspace-gk81ck
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+FileNameIndexer started monitoring
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Background full initialization for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude_agent_sdk-runtime-tool-workspace-gk81ck completed.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Initialized server settings service with 11 predefined settings
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Agent definition cache populated with 46 items.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Successfully created claude_agent_sdk agent run '91aade48-7b78-417f-ad66-5121fb22f890'.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Agent websocket attached for run 91aade48-7b78-417f-ad66-5121fb22f890
+Created agent session 4dab68a0-a56b-44cf-b6d3-92ba8efd5152 for run 91aade48-7b78-417f-ad66-5121fb22f890
+Agent WebSocket connected: session=4dab68a0-a56b-44cf-b6d3-92ba8efd5152, run=91aade48-7b78-417f-ad66-5121fb22f890
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[RuntimeEvent] {
+  sequence: 1,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  eventType: 'TURN_STARTED',
+  statusHint: 'ACTIVE',
+  payloadKeys: [ 'turnId' ],
+  rawEventJson: '{"eventType":"TURN_STARTED","runId":"91aade48-7b78-417f-ad66-5121fb22f890","payload":{"turnId":"91aade48-7b78-417f-ad66-5121fb22f890:turn:1777653023437"},"statusHint":"ACTIVE"}'
+}
+[RuntimeMappedMessage] {
+  sequence: 1,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  messageType: 'TURN_STARTED',
+  payloadId: null,
+  segmentType: null,
+  eventType: 'TURN_STARTED'
+}
+[RuntimeEvent] {
+  sequence: 2,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  eventType: 'AGENT_STATUS',
+  statusHint: 'ACTIVE',
+  payloadKeys: [ 'new_status', 'old_status', 'turnId' ],
+  rawEventJson: '{"eventType":"AGENT_STATUS","runId":"91aade48-7b78-417f-ad66-5121fb22f890","payload":{"new_status":"RUNNING","old_status":null,"turnId":"91aade48-7b78-417f-ad66-5121fb22f890:turn:1777653023437"},"statusHint":"ACTIVE"}'
+}
+[RuntimeMappedMessage] {
+  sequence: 2,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  messageType: 'AGENT_STATUS',
+  payloadId: null,
+  segmentType: null,
+  eventType: 'AGENT_STATUS'
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[ClaudeSessionEvent] Raw Claude chunk {
+  sequence: 1,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  sessionId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  eventName: 'system',
+  payloadKeys: [
+    'type',                'subtype',
+    'cwd',                 'session_id',
+    'tools',               'mcp_servers',
+    'model',               'permissionMode',
+    'slash_commands',      'apiKeySource',
+    'claude_code_version', 'output_style',
+    'agents',              'skills',
+    'plugins',             'analytics_disabled',
+    'uuid',                'memory_paths',
+    'fast_mode_state'
+  ],
+  rawChunkJson: '{"type":"system","subtype":"init","cwd":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude_agent_sdk-runtime-tool-workspace-gk81ck","session_id":"39f38bde-d5c7-4795-b652-81940dd0f8a6","tools":["Task","AskUserQuestion","Bash","CronCreate","CronDelete","CronList","Edit","EnterPlanMode","EnterWorktree","ExitPlanMode","ExitWorktree","Glob","Grep","Monitor","NotebookEdit","PushNotification","Read","RemoteTrigger","ScheduleWakeup","Skill","TaskOutput","TaskStop","TodoWrite","WebFetch","WebSearch","Write"],"mcp_servers":[],"model":"deepseek-v4-flash","permissionMode":"default","slash_commands":["update-config","debug","simplify","batch","fewer-permission-prompts","loop","schedule","claude-api","software-engineering-workflow-skill","commit","clear","compact","context","heapdump","init","review","security-review","usage","insights","team-onboarding"],"apiKeySource":"none","claude_code_version":"2.1.126","output_style":"default","agents":["Explore","general-purpose","Plan","statusline-setup"],"skills":["update-config","debug","simplify","batch","fewer-permission-prompts","loop","schedule","claude-api"],"plugins":[],"analytics_disabled":false,"uuid":"ec160cae-d434-4578-a8c9-2c0bcfb686c0","memory_paths":{"auto":"/Users/normy/.claude/projects/-private-var-folders-7w-9r4-s1-s42z3f7c136bpjf0r0000gn-T-claude-agent-sdk-runtime-tool-workspace-gk81ck/memory/"},"fast_mode_state":"off"}'
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[ClaudeSessionEvent] Raw Claude chunk {
+  sequence: 2,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  sessionId: '39f38bde-d5c7-4795-b652-81940dd0f8a6',
+  eventName: 'assistant',
+  payloadKeys: [ 'type', 'message', 'parent_tool_use_id', 'session_id', 'uuid' ],
+  rawChunkJson: '{"type":"assistant","message":{"id":"ea38e2bb-3e84-4bda-a383-be8f3daf8cd6","type":"message","role":"assistant","model":"deepseek-v4-flash","content":[{"type":"thinking","thinking":"The user wants me to create a file with specific content using a relative path. Let me do this with the Write tool.","signature":"ea38e2bb-3e84-4bda-a383-be8f3daf8cd6"}],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":151,"cache_creation_input_tokens":0,"cache_read_input_tokens":20352,"output_tokens":0,"service_tier":"standard"},"context_management":null},"parent_tool_use_id":null,"session_id":"39f38bde-d5c7-4795-b652-81940dd0f8a6","uuid":"7ac5ba10-ea4f-4253-9b53-21f56349ef32"}'
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[ClaudeSessionEvent] Raw Claude chunk {
+  sequence: 3,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  sessionId: '39f38bde-d5c7-4795-b652-81940dd0f8a6',
+  eventName: 'assistant',
+  payloadKeys: [ 'type', 'message', 'parent_tool_use_id', 'session_id', 'uuid' ],
+  rawChunkJson: '{"type":"assistant","message":{"id":"ea38e2bb-3e84-4bda-a383-be8f3daf8cd6","type":"message","role":"assistant","model":"deepseek-v4-flash","content":[{"type":"tool_use","id":"call_00_emOG9DhOJJpF5q8VM30o0EvM","name":"Write","input":{"file_path":"api-tool-679e0ae2_eb0e_4d0d_a6cf_1bf8d4d0ebaf.txt","content":"TOOL_OK_05cfa55e_8047_4645_bdc0_37950c06e2fb"}}],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":151,"cache_creation_input_tokens":0,"cache_read_input_tokens":20352,"output_tokens":0,"service_tier":"standard"},"context_management":null},"parent_tool_use_id":null,"session_id":"39f38bde-d5c7-4795-b652-81940dd0f8a6","uuid":"007cb458-acba-437c-ba05-9f267414d281"}'
+}
+[RuntimeEvent] {
+  sequence: 3,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  eventType: 'SEGMENT_START',
+  statusHint: null,
+  payloadKeys: [
+    'id',
+    'turn_id',
+    'segment_type',
+    'tool_name',
+    'arguments',
+    'metadata'
+  ],
+  rawEventJson: '{"eventType":"SEGMENT_START","runId":"91aade48-7b78-417f-ad66-5121fb22f890","payload":{"id":"call_00_emOG9DhOJJpF5q8VM30o0EvM","turn_id":"91aade48-7b78-417f-ad66-5121fb22f890:turn:1777653023437","segment_type":"tool_call","tool_name":"Write","arguments":{"file_path":"api-tool-679e0ae2_eb0e_4d0d_a6cf_1bf8d4d0ebaf.txt","content":"TOOL_OK_05cfa55e_8047_4645_bdc0_37950c06e2fb"},"metadata":{"tool_name":"Write","arguments":{"file_path":"api-tool-679e0ae2_eb0e_4d0d_a6cf_1bf8d4d0ebaf.txt","content":"TOOL_OK_05cfa55e_8047_4645_bdc0_37950c06e2fb"}}},"statusHint":null}'
+}
+[RuntimeMappedMessage] {
+  sequence: 3,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  messageType: 'SEGMENT_START',
+  payloadId: 'call_00_emOG9DhOJJpF5q8VM30o0EvM',
+  segmentType: 'tool_call',
+  eventType: 'SEGMENT_START'
+}
+[RuntimeEvent] {
+  sequence: 4,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  eventType: 'TOOL_EXECUTION_STARTED',
+  statusHint: null,
+  payloadKeys: [ 'invocation_id', 'tool_name', 'turn_id', 'arguments' ],
+  rawEventJson: '{"eventType":"TOOL_EXECUTION_STARTED","runId":"91aade48-7b78-417f-ad66-5121fb22f890","payload":{"invocation_id":"call_00_emOG9DhOJJpF5q8VM30o0EvM","tool_name":"Write","turn_id":"91aade48-7b78-417f-ad66-5121fb22f890:turn:1777653023437","arguments":{"file_path":"api-tool-679e0ae2_eb0e_4d0d_a6cf_1bf8d4d0ebaf.txt","content":"TOOL_OK_05cfa55e_8047_4645_bdc0_37950c06e2fb"}},"statusHint":null}'
+}
+[RuntimeMappedMessage] {
+  sequence: 4,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  messageType: 'TOOL_EXECUTION_STARTED',
+  payloadId: null,
+  segmentType: null,
+  eventType: 'TOOL_EXECUTION_STARTED'
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[RuntimeEvent] {
+  sequence: 5,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  eventType: 'TOOL_APPROVAL_REQUESTED',
+  statusHint: null,
+  payloadKeys: [ 'invocation_id', 'tool_name', 'turn_id', 'arguments' ],
+  rawEventJson: '{"eventType":"TOOL_APPROVAL_REQUESTED","runId":"91aade48-7b78-417f-ad66-5121fb22f890","payload":{"invocation_id":"call_00_emOG9DhOJJpF5q8VM30o0EvM","tool_name":"Write","turn_id":"91aade48-7b78-417f-ad66-5121fb22f890:turn:1777653023437","arguments":{"file_path":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude_agent_sdk-runtime-tool-workspace-gk81ck/api-tool-679e0ae2_eb0e_4d0d_a6cf_1bf8d4d0ebaf.txt","content":"TOOL_OK_05cfa55e_8047_4645_bdc0_37950c06e2fb"}},"statusHint":null}'
+}
+[RuntimeMappedMessage] {
+  sequence: 5,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  messageType: 'TOOL_APPROVAL_REQUESTED',
+  payloadId: null,
+  segmentType: null,
+  eventType: 'TOOL_APPROVAL_REQUESTED'
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[RuntimeEvent] {
+  sequence: 6,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  eventType: 'TOOL_APPROVED',
+  statusHint: null,
+  payloadKeys: [ 'invocation_id', 'tool_name', 'turn_id', 'arguments', 'reason' ],
+  rawEventJson: '{"eventType":"TOOL_APPROVED","runId":"91aade48-7b78-417f-ad66-5121fb22f890","payload":{"invocation_id":"call_00_emOG9DhOJJpF5q8VM30o0EvM","tool_name":"Write","turn_id":"91aade48-7b78-417f-ad66-5121fb22f890:turn:1777653023437","arguments":{"file_path":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude_agent_sdk-runtime-tool-workspace-gk81ck/api-tool-679e0ae2_eb0e_4d0d_a6cf_1bf8d4d0ebaf.txt","content":"TOOL_OK_05cfa55e_8047_4645_bdc0_37950c06e2fb"},"reason":"approved by current API runtime e2e"},"statusHint":null}'
+}
+[RuntimeMappedMessage] {
+  sequence: 6,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  messageType: 'TOOL_APPROVED',
+  payloadId: null,
+  segmentType: null,
+  eventType: 'TOOL_APPROVED'
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[ClaudeSessionEvent] Raw Claude chunk {
+  sequence: 4,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  sessionId: '39f38bde-d5c7-4795-b652-81940dd0f8a6',
+  eventName: 'user',
+  payloadKeys: [
+    'type',
+    'message',
+    'parent_tool_use_id',
+    'session_id',
+    'uuid',
+    'timestamp',
+    'tool_use_result'
+  ],
+  rawChunkJson: '{"type":"user","message":{"role":"user","content":[{"tool_use_id":"call_00_emOG9DhOJJpF5q8VM30o0EvM","type":"tool_result","content":"File created successfully at: api-tool-679e0ae2_eb0e_4d0d_a6cf_1bf8d4d0ebaf.txt"}]},"parent_tool_use_id":null,"session_id":"39f38bde-d5c7-4795-b652-81940dd0f8a6","uuid":"085e8783-9282-42af-a4bb-8073d6646b9a","timestamp":"2026-05-01T16:30:26.965Z","tool_use_result":{"type":"create","filePath":"api-tool-679e0ae2_eb0e_4d0d_a6cf_1bf8d4d0ebaf.txt","content":"TOOL_OK_05cfa55e_8047_4645_bdc0_37950c06e2fb","structuredPatch":[],"originalFile":null,"userModified":false}}'
+}
+[RuntimeEvent] {
+  sequence: 7,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  eventType: 'SEGMENT_END',
+  statusHint: null,
+  payloadKeys: [
+    'id',
+    'turn_id',
+    'segment_type',
+    'tool_name',
+    'arguments',
+    'metadata'
+  ],
+  rawEventJson: '{"eventType":"SEGMENT_END","runId":"91aade48-7b78-417f-ad66-5121fb22f890","payload":{"id":"call_00_emOG9DhOJJpF5q8VM30o0EvM","turn_id":"91aade48-7b78-417f-ad66-5121fb22f890:turn:1777653023437","segment_type":"tool_call","tool_name":"Write","arguments":{"file_path":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude_agent_sdk-runtime-tool-workspace-gk81ck/api-tool-679e0ae2_eb0e_4d0d_a6cf_1bf8d4d0ebaf.txt","content":"TOOL_OK_05cfa55e_8047_4645_bdc0_37950c06e2fb"},"metadata":{"tool_name":"Write","arguments":{"file_path":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude_agent_sdk-runtime-tool-workspace-gk81ck/api-tool-679e0ae2_eb0e_4d0d_a6cf_1bf8d4d0ebaf.txt","content":"TOOL_OK_05cfa55e_8047_4645_bdc0_37950c06e2fb"},"result":"File created successfully at: api-tool-679e0ae2_eb0e_4d0d_a6cf_1bf8d4d0ebaf.txt"}},"statusHint":null}'
+}
+[RuntimeMappedMessage] {
+  sequence: 7,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  messageType: 'SEGMENT_END',
+  payloadId: 'call_00_emOG9DhOJJpF5q8VM30o0EvM',
+  segmentType: 'tool_call',
+  eventType: 'SEGMENT_END'
+}
+[RuntimeEvent] {
+  sequence: 8,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  eventType: 'TOOL_EXECUTION_SUCCEEDED',
+  statusHint: null,
+  payloadKeys: [ 'invocation_id', 'tool_name', 'turn_id', 'arguments', 'result' ],
+  rawEventJson: '{"eventType":"TOOL_EXECUTION_SUCCEEDED","runId":"91aade48-7b78-417f-ad66-5121fb22f890","payload":{"invocation_id":"call_00_emOG9DhOJJpF5q8VM30o0EvM","tool_name":"Write","turn_id":"91aade48-7b78-417f-ad66-5121fb22f890:turn:1777653023437","arguments":{"file_path":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude_agent_sdk-runtime-tool-workspace-gk81ck/api-tool-679e0ae2_eb0e_4d0d_a6cf_1bf8d4d0ebaf.txt","content":"TOOL_OK_05cfa55e_8047_4645_bdc0_37950c06e2fb"},"result":"File created successfully at: api-tool-679e0ae2_eb0e_4d0d_a6cf_1bf8d4d0ebaf.txt"},"statusHint":null}'
+}
+[RuntimeMappedMessage] {
+  sequence: 8,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  messageType: 'TOOL_EXECUTION_SUCCEEDED',
+  payloadId: null,
+  segmentType: null,
+  eventType: 'TOOL_EXECUTION_SUCCEEDED'
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[RuntimeEvent] {
+  sequence: 9,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  eventType: 'FILE_CHANGE_UPDATED',
+  statusHint: null,
+  payloadKeys: [
+    'id',
+    'runId',
+    'path',
+    'type',
+    'status',
+    'sourceTool',
+    'sourceInvocationId',
+    'content',
+    'createdAt',
+    'updatedAt'
+  ],
+  rawEventJson: '{"eventType":"FILE_CHANGE_UPDATED","runId":"91aade48-7b78-417f-ad66-5121fb22f890","statusHint":null,"payload":{"id":"91aade48-7b78-417f-ad66-5121fb22f890:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude_agent_sdk-runtime-tool-workspace-gk81ck/api-tool-679e0ae2_eb0e_4d0d_a6cf_1bf8d4d0ebaf.txt","runId":"91aade48-7b78-417f-ad66-5121fb22f890","path":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude_agent_sdk-runtime-tool-workspace-gk81ck/api-tool-679e0ae2_eb0e_4d0d_a6cf_1bf8d4d0ebaf.txt","type":"file","status":"available","sourceTool":"generated_output","sourceInvocationId":"call_00_emOG9DhOJJpF5q8VM30o0EvM","createdAt":"2026-05-01T16:30:26.968Z","updatedAt":"2026-05-01T16:30:26.968Z"}}'
+}
+[RuntimeMappedMessage] {
+  sequence: 9,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  messageType: 'FILE_CHANGE_UPDATED',
+  payloadId: '91aade48-7b78-417f-ad66-5121fb22f890:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude_agent_sdk-runtime-tool-workspace-gk81ck/api-tool-679e0ae2_eb0e_4d0d_a6cf_1bf8d4d0ebaf.txt',
+  segmentType: null,
+  eventType: 'FILE_CHANGE_UPDATED'
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Watcher detected creation: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude_agent_sdk-runtime-tool-workspace-gk81ck/api-tool-679e0ae2_eb0e_4d0d_a6cf_1bf8d4d0ebaf.txt
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[ClaudeSessionEvent] Raw Claude chunk {
+  sequence: 5,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  sessionId: '39f38bde-d5c7-4795-b652-81940dd0f8a6',
+  eventName: 'assistant',
+  payloadKeys: [ 'type', 'message', 'parent_tool_use_id', 'session_id', 'uuid' ],
+  rawChunkJson: `{"type":"assistant","message":{"id":"71eb1cd7-3789-493c-aec8-604f68e1fa66","type":"message","role":"assistant","model":"deepseek-v4-flash","content":[{"type":"thinking","thinking":"The file has been created successfully with the requested content. The user asked me not to answer with plain text, so I'll just confirm succinctly.","signature":"71eb1cd7-3789-493c-aec8-604f68e1fa66"}],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":85,"cache_creation_input_tokens":0,"cache_read_input_tokens":20608,"output_tokens":0,"service_tier":"standard"},"context_management":null},"parent_tool_use_id":null,"session_id":"39f38bde-d5c7-4795-b652-81940dd0f8a6","uuid":"2b5005dd-5b06-49fd-b7d8-bf1f3de3b70c"}`
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[ClaudeSessionEvent] Raw Claude chunk {
+  sequence: 6,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  sessionId: '39f38bde-d5c7-4795-b652-81940dd0f8a6',
+  eventName: 'assistant',
+  payloadKeys: [ 'type', 'message', 'parent_tool_use_id', 'session_id', 'uuid' ],
+  rawChunkJson: '{"type":"assistant","message":{"id":"71eb1cd7-3789-493c-aec8-604f68e1fa66","type":"message","role":"assistant","model":"deepseek-v4-flash","content":[{"type":"text","text":"File created: `api-tool-679e0ae2_eb0e_4d0d_a6cf_1bf8d4d0ebaf.txt` with the specified content."}],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":85,"cache_creation_input_tokens":0,"cache_read_input_tokens":20608,"output_tokens":0,"service_tier":"standard"},"context_management":null},"parent_tool_use_id":null,"session_id":"39f38bde-d5c7-4795-b652-81940dd0f8a6","uuid":"cc9c5fc1-2325-4b67-a3a2-8ee2f5f4614d"}'
+}
+[RuntimeEvent] {
+  sequence: 10,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  eventType: 'SEGMENT_CONTENT',
+  statusHint: null,
+  payloadKeys: [ 'id', 'turnId', 'sessionId', 'delta', 'segment_type' ],
+  rawEventJson: '{"eventType":"SEGMENT_CONTENT","runId":"91aade48-7b78-417f-ad66-5121fb22f890","payload":{"id":"91aade48-7b78-417f-ad66-5121fb22f890:turn:1777653023437","turnId":"91aade48-7b78-417f-ad66-5121fb22f890:turn:1777653023437","sessionId":"39f38bde-d5c7-4795-b652-81940dd0f8a6","delta":"File created: `api-tool-679e0ae2_eb0e_4d0d_a6cf_1bf8d4d0ebaf.txt` with the specified content.","segment_type":"text"},"statusHint":null}'
+}
+[RuntimeMappedMessage] {
+  sequence: 10,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  messageType: 'SEGMENT_CONTENT',
+  payloadId: '91aade48-7b78-417f-ad66-5121fb22f890:turn:1777653023437',
+  segmentType: 'text',
+  eventType: 'SEGMENT_CONTENT'
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[ClaudeSessionEvent] Raw Claude chunk {
+  sequence: 7,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  sessionId: '39f38bde-d5c7-4795-b652-81940dd0f8a6',
+  eventName: 'result',
+  payloadKeys: [
+    'type',            'subtype',
+    'is_error',        'api_error_status',
+    'duration_ms',     'duration_api_ms',
+    'num_turns',       'result',
+    'stop_reason',     'session_id',
+    'total_cost_usd',  'usage',
+    'modelUsage',      'permission_denials',
+    'terminal_reason', 'fast_mode_state',
+    'uuid'
+  ],
+  rawChunkJson: '{"type":"result","subtype":"success","is_error":false,"api_error_status":null,"duration_ms":4993,"duration_api_ms":8121,"num_turns":2,"result":"File created: `api-tool-679e0ae2_eb0e_4d0d_a6cf_1bf8d4d0ebaf.txt` with the specified content.","stop_reason":"end_turn","session_id":"39f38bde-d5c7-4795-b652-81940dd0f8a6","total_cost_usd":0.032858,"usage":{"input_tokens":236,"cache_creation_input_tokens":0,"cache_read_input_tokens":40960,"output_tokens":214,"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":0,"ephemeral_5m_input_tokens":0},"inference_geo":"","iterations":[],"speed":"standard"},"modelUsage":{"deepseek-v4-flash":{"inputTokens":390,"outputTokens":412,"cacheReadInputTokens":41216,"cacheCreationInputTokens":0,"webSearchRequests":0,"costUSD":0.032858,"contextWindow":200000,"maxOutputTokens":32000}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","uuid":"f25e44ba-71af-4131-b280-b7a864df6371"}'
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[RuntimeEvent] {
+  sequence: 11,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  eventType: 'SEGMENT_END',
+  statusHint: null,
+  payloadKeys: [ 'id', 'turnId', 'sessionId', 'text', 'segment_type' ],
+  rawEventJson: '{"eventType":"SEGMENT_END","runId":"91aade48-7b78-417f-ad66-5121fb22f890","payload":{"id":"91aade48-7b78-417f-ad66-5121fb22f890:turn:1777653023437","turnId":"91aade48-7b78-417f-ad66-5121fb22f890:turn:1777653023437","sessionId":"39f38bde-d5c7-4795-b652-81940dd0f8a6","text":"File created: `api-tool-679e0ae2_eb0e_4d0d_a6cf_1bf8d4d0ebaf.txt` with the specified content.","segment_type":"text"},"statusHint":null}'
+}
+[RuntimeMappedMessage] {
+  sequence: 11,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  messageType: 'SEGMENT_END',
+  payloadId: '91aade48-7b78-417f-ad66-5121fb22f890:turn:1777653023437',
+  segmentType: 'text',
+  eventType: 'SEGMENT_END'
+}
+[RuntimeEvent] {
+  sequence: 12,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  eventType: 'TURN_COMPLETED',
+  statusHint: 'IDLE',
+  payloadKeys: [ 'turnId' ],
+  rawEventJson: '{"eventType":"TURN_COMPLETED","runId":"91aade48-7b78-417f-ad66-5121fb22f890","payload":{"turnId":"91aade48-7b78-417f-ad66-5121fb22f890:turn:1777653023437"},"statusHint":"IDLE"}'
+}
+[RuntimeMappedMessage] {
+  sequence: 12,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  messageType: 'TURN_COMPLETED',
+  payloadId: null,
+  segmentType: null,
+  eventType: 'TURN_COMPLETED'
+}
+[RuntimeEvent] {
+  sequence: 13,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  eventType: 'AGENT_STATUS',
+  statusHint: 'IDLE',
+  payloadKeys: [ 'new_status', 'old_status', 'turnId' ],
+  rawEventJson: '{"eventType":"AGENT_STATUS","runId":"91aade48-7b78-417f-ad66-5121fb22f890","payload":{"new_status":"IDLE","old_status":"RUNNING","turnId":"91aade48-7b78-417f-ad66-5121fb22f890:turn:1777653023437"},"statusHint":"IDLE"}'
+}
+[RuntimeMappedMessage] {
+  sequence: 13,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  messageType: 'AGENT_STATUS',
+  payloadId: null,
+  segmentType: null,
+  eventType: 'AGENT_STATUS'
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[RuntimeEvent] {
+  sequence: 14,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  eventType: 'TURN_COMPLETED',
+  statusHint: 'IDLE',
+  payloadKeys: [],
+  rawEventJson: '{"eventType":"TURN_COMPLETED","runId":"91aade48-7b78-417f-ad66-5121fb22f890","payload":{},"statusHint":"IDLE"}'
+}
+[RuntimeMappedMessage] {
+  sequence: 14,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  messageType: 'TURN_COMPLETED',
+  payloadId: null,
+  segmentType: null,
+  eventType: 'TURN_COMPLETED'
+}
+[RuntimeEvent] {
+  sequence: 15,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  eventType: 'AGENT_STATUS',
+  statusHint: 'IDLE',
+  payloadKeys: [ 'new_status', 'old_status' ],
+  rawEventJson: '{"eventType":"AGENT_STATUS","runId":"91aade48-7b78-417f-ad66-5121fb22f890","payload":{"new_status":"IDLE","old_status":"RUNNING"},"statusHint":"IDLE"}'
+}
+[RuntimeMappedMessage] {
+  sequence: 15,
+  runId: '91aade48-7b78-417f-ad66-5121fb22f890',
+  messageType: 'AGENT_STATUS',
+  payloadId: null,
+  segmentType: null,
+  eventType: 'AGENT_STATUS'
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Closed agent session 4dab68a0-a56b-44cf-b6d3-92ba8efd5152
+Agent WebSocket disconnected: 4dab68a0-a56b-44cf-b6d3-92ba8efd5152
+
+ ✓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts (15 tests | 14 skipped) 6825ms
+     ✓ routes tool approval over websocket and streams the normalized tool lifecycle  6782ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 14 skipped (15)
+   Start at  18:30:17
+   Duration  12.02s (transform 2.58s, setup 17ms, import 4.75s, tests 6.83s, environment 0ms)
+

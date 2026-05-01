@@ -20,6 +20,16 @@ type PendingClaudeToolApproval = {
 type ObservedClaudeToolInvocation = {
   toolName: string | null;
   toolInput: Record<string, unknown>;
+  segmentStartedEmitted: boolean;
+  lifecycleStartedEmitted: boolean;
+  segmentEndedEmitted: boolean;
+  terminalLifecycleEmitted: boolean;
+};
+
+type ClaudeToolCompletionMetadata = {
+  result?: unknown;
+  error?: string;
+  reason?: string;
 };
 
 const CLAUDE_TOOL_APPROVAL_TIMEOUT_MS = 120_000;
@@ -86,18 +96,12 @@ export class ClaudeSessionToolUseCoordinator {
         ? { ...toolInputRaw }
         : {};
 
-    this.trackObservedToolInvocation(runContext.runId, invocationId, {
+    this.upsertObservedToolInvocation(runContext.runId, invocationId, {
       toolName,
       toolInput,
     });
-    this.emitEvent(runContext, {
-      method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_STARTED,
-      params: {
-        invocation_id: invocationId,
-        tool_name: toolName,
-        arguments: toolInput,
-      },
-    });
+    this.emitToolSegmentStartIfNeeded(runContext, invocationId);
+    this.emitToolExecutionStartedIfNeeded(runContext, invocationId);
 
     const decision = await this.resolveToolApprovalDecision({
       runContext,
@@ -175,10 +179,12 @@ export class ClaudeSessionToolUseCoordinator {
             ? (block.arguments as Record<string, unknown>)
             : null) ??
           {};
-        this.trackObservedToolInvocation(runContext.runId, invocationId, {
+        this.upsertObservedToolInvocation(runContext.runId, invocationId, {
           toolName,
           toolInput,
         });
+        this.emitToolSegmentStartIfNeeded(runContext, invocationId);
+        this.emitToolExecutionStartedIfNeeded(runContext, invocationId);
         continue;
       }
 
@@ -191,38 +197,39 @@ export class ClaudeSessionToolUseCoordinator {
         continue;
       }
 
-      const tracked = this.consumeObservedToolInvocation(runContext.runId, invocationId);
+      const tracked = this.observedToolInvocationsByRunId.get(runContext.runId)?.get(invocationId) ?? null;
       const toolName = tracked?.toolName ?? asString(block.tool_name) ?? asString(block.name);
       if (!toolName) {
         continue;
       }
       if (isClaudeSendMessageToolName(toolName)) {
+        this.consumeObservedToolInvocation(runContext.runId, invocationId);
         continue;
       }
+      this.upsertObservedToolInvocation(runContext.runId, invocationId, {
+        toolName,
+        toolInput: tracked?.toolInput ?? {},
+      });
       const blockResult = block.content;
       const isError = block.is_error === true;
 
       if (isError) {
         const errorMessage = typeof blockResult === "string" ? blockResult : JSON.stringify(blockResult);
-        this.emitEvent(runContext, {
-          method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED,
-          params: {
-            invocation_id: invocationId,
-            tool_name: toolName,
-            error: errorMessage,
-          },
+        this.emitToolSegmentStartIfNeeded(runContext, invocationId);
+        this.emitToolSegmentEndIfNeeded(runContext, invocationId, { error: errorMessage });
+        this.emitToolExecutionCompletedIfNeeded(runContext, invocationId, {
+          error: errorMessage,
         });
+        this.consumeObservedToolInvocation(runContext.runId, invocationId);
         continue;
       }
 
-      this.emitEvent(runContext, {
-        method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED,
-        params: {
-          invocation_id: invocationId,
-          tool_name: toolName,
-          result: blockResult,
-        },
+      this.emitToolSegmentStartIfNeeded(runContext, invocationId);
+      this.emitToolSegmentEndIfNeeded(runContext, invocationId, { result: blockResult });
+      this.emitToolExecutionCompletedIfNeeded(runContext, invocationId, {
+        result: blockResult,
       });
+      this.consumeObservedToolInvocation(runContext.runId, invocationId);
     }
   }
 
@@ -239,6 +246,7 @@ export class ClaudeSessionToolUseCoordinator {
         params: {
           invocation_id: input.invocationId,
           tool_name: input.toolName,
+          turn_id: input.runContext.runtimeContext.activeTurnId,
           arguments: input.toolInput,
           reason: "auto_execute_tools_enabled",
         },
@@ -257,6 +265,7 @@ export class ClaudeSessionToolUseCoordinator {
         params: {
           invocation_id: input.invocationId,
           tool_name: input.toolName,
+          turn_id: input.runContext.runtimeContext.activeTurnId,
           arguments: input.toolInput,
           ...(decision.reason ? { reason: decision.reason } : {}),
         },
@@ -265,16 +274,27 @@ export class ClaudeSessionToolUseCoordinator {
     }
 
     const denialReason = decision.reason ?? "Tool execution denied by user.";
+    this.emitToolSegmentEndIfNeeded(input.runContext, input.invocationId, {
+      error: denialReason,
+      reason: denialReason,
+    });
     this.emitEvent(input.runContext, {
       method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_DENIED,
       params: {
         invocation_id: input.invocationId,
         tool_name: input.toolName,
+        turn_id: input.runContext.runtimeContext.activeTurnId,
         arguments: input.toolInput,
         reason: denialReason,
         error: denialReason,
       },
     });
+    const observed = this.observedToolInvocationsByRunId
+      .get(input.runContext.runId)
+      ?.get(input.invocationId);
+    if (observed) {
+      observed.terminalLifecycleEmitted = true;
+    }
     return {
       approved: false,
       reason: denialReason,
@@ -340,6 +360,7 @@ export class ClaudeSessionToolUseCoordinator {
         params: {
           invocation_id: input.invocationId,
           tool_name: input.toolName,
+          turn_id: input.runContext.runtimeContext.activeTurnId,
           arguments: input.toolInput,
         },
       });
@@ -356,19 +377,150 @@ export class ClaudeSessionToolUseCoordinator {
     return created;
   }
 
-  private trackObservedToolInvocation(
+  private upsertObservedToolInvocation(
     runId: string,
     invocationId: string,
-    observed: ObservedClaudeToolInvocation,
+    observed: Pick<ObservedClaudeToolInvocation, "toolName" | "toolInput">,
+  ): ObservedClaudeToolInvocation {
+    const invocations = this.getOrCreateObservedToolInvocations(runId);
+    const existing = invocations.get(invocationId);
+    const toolInput = Object.keys(observed.toolInput).length > 0
+      ? { ...observed.toolInput }
+      : { ...(existing?.toolInput ?? observed.toolInput) };
+    const toolName = observed.toolName && observed.toolName !== "unknown_tool"
+      ? observed.toolName
+      : existing?.toolName ?? observed.toolName ?? null;
+    const next: ObservedClaudeToolInvocation = {
+      toolName,
+      toolInput,
+      segmentStartedEmitted: existing?.segmentStartedEmitted ?? false,
+      lifecycleStartedEmitted: existing?.lifecycleStartedEmitted ?? false,
+      segmentEndedEmitted: existing?.segmentEndedEmitted ?? false,
+      terminalLifecycleEmitted: existing?.terminalLifecycleEmitted ?? false,
+    };
+    invocations.set(invocationId, next);
+    return next;
+  }
+
+  private emitToolSegmentStartIfNeeded(
+    runContext: ClaudeRunContext,
+    invocationId: string,
   ): void {
-    const existing = this.observedToolInvocationsByRunId.get(runId);
-    if (existing) {
-      existing.set(invocationId, observed);
+    const observed = this.observedToolInvocationsByRunId.get(runContext.runId)?.get(invocationId);
+    if (!observed || observed.segmentStartedEmitted || !observed.toolName) {
       return;
     }
+    observed.segmentStartedEmitted = true;
+    if (isClaudeSendMessageToolName(observed.toolName)) {
+      return;
+    }
+    this.emitEvent(runContext, {
+      method: ClaudeSessionEventName.ITEM_ADDED,
+      params: {
+        id: invocationId,
+        turn_id: runContext.runtimeContext.activeTurnId,
+        segment_type: "tool_call",
+        tool_name: observed.toolName,
+        arguments: observed.toolInput,
+        metadata: {
+          tool_name: observed.toolName,
+          arguments: observed.toolInput,
+        },
+      },
+    });
+  }
+
+  private emitToolExecutionStartedIfNeeded(
+    runContext: ClaudeRunContext,
+    invocationId: string,
+  ): void {
+    const observed = this.observedToolInvocationsByRunId.get(runContext.runId)?.get(invocationId);
+    if (!observed || observed.lifecycleStartedEmitted || !observed.toolName) {
+      return;
+    }
+    observed.lifecycleStartedEmitted = true;
+    if (isClaudeSendMessageToolName(observed.toolName)) {
+      return;
+    }
+    this.emitEvent(runContext, {
+      method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_STARTED,
+      params: {
+        invocation_id: invocationId,
+        tool_name: observed.toolName,
+        turn_id: runContext.runtimeContext.activeTurnId,
+        arguments: observed.toolInput,
+      },
+    });
+  }
+
+  private emitToolSegmentEndIfNeeded(
+    runContext: ClaudeRunContext,
+    invocationId: string,
+    completionMetadata: ClaudeToolCompletionMetadata,
+  ): void {
+    const observed = this.observedToolInvocationsByRunId.get(runContext.runId)?.get(invocationId);
+    if (!observed || observed.segmentEndedEmitted || !observed.toolName) {
+      return;
+    }
+    observed.segmentEndedEmitted = true;
+    if (isClaudeSendMessageToolName(observed.toolName)) {
+      return;
+    }
+    const metadata = {
+      tool_name: observed.toolName,
+      arguments: observed.toolInput,
+      ...completionMetadata,
+    };
+    this.emitEvent(runContext, {
+      method: ClaudeSessionEventName.ITEM_COMPLETED,
+      params: {
+        id: invocationId,
+        turn_id: runContext.runtimeContext.activeTurnId,
+        segment_type: "tool_call",
+        tool_name: observed.toolName,
+        arguments: observed.toolInput,
+        metadata,
+      },
+    });
+  }
+
+  private emitToolExecutionCompletedIfNeeded(
+    runContext: ClaudeRunContext,
+    invocationId: string,
+    completionMetadata: Pick<ClaudeToolCompletionMetadata, "result" | "error">,
+  ): void {
+    const observed = this.observedToolInvocationsByRunId.get(runContext.runId)?.get(invocationId);
+    if (!observed || observed.terminalLifecycleEmitted || !observed.toolName) {
+      return;
+    }
+    observed.terminalLifecycleEmitted = true;
+    if (isClaudeSendMessageToolName(observed.toolName)) {
+      return;
+    }
+    this.emitEvent(runContext, {
+      method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: invocationId,
+        tool_name: observed.toolName,
+        turn_id: runContext.runtimeContext.activeTurnId,
+        arguments: observed.toolInput,
+        ...("error" in completionMetadata
+          ? { error: completionMetadata.error }
+          : { result: completionMetadata.result }),
+      },
+    });
+  }
+
+  private getOrCreateObservedToolInvocations(
+    runId: string,
+  ): Map<string, ObservedClaudeToolInvocation> {
+    const existing = this.observedToolInvocationsByRunId.get(runId);
+    if (existing) {
+      return existing;
+    }
     const created = new Map<string, ObservedClaudeToolInvocation>();
-    created.set(invocationId, observed);
     this.observedToolInvocationsByRunId.set(runId, created);
+    return created;
   }
 
   private consumeObservedToolInvocation(

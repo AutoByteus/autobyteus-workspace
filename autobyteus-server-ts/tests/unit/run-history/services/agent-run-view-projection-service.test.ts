@@ -219,6 +219,71 @@ describe("AgentRunViewProjectionService", () => {
     ]);
   });
 
+  it("keeps local-memory tool activities when Claude runtime projection is conversation-only", async () => {
+    const memoryDir = await createTempMemoryDir();
+    const runId = "run-claude-local-activity-merge";
+    const metadataStore = new AgentRunMetadataStore(memoryDir);
+    await metadataStore.writeMetadata(runId, createMetadata(RuntimeKind.CLAUDE_AGENT_SDK, runId));
+
+    const claudeProvider = createProvider(
+      RuntimeKind.CLAUDE_AGENT_SDK,
+      vi.fn(async (input) => ({
+        runId: input.source.runId,
+        conversation: [{ kind: "message", role: "assistant", content: "runtime reply", ts: 2 }],
+        activities: [],
+        summary: "runtime reply",
+        lastActivityAt: "2026-02-24T00:00:02.000Z",
+      })),
+    );
+    const fallbackProvider = createProvider(
+      RuntimeKind.AUTOBYTEUS,
+      vi.fn(async () => ({
+        runId,
+        conversation: [{ kind: "message", role: "user", content: "pwd please", ts: 1 }],
+        activities: [
+          {
+            invocationId: "toolu-bash-1",
+            toolName: "Bash",
+            type: "terminal_command",
+            status: "success",
+            contextText: "pwd",
+            arguments: { command: "pwd" },
+            logs: [],
+            result: "workspace\n",
+            error: null,
+            ts: 1.5,
+            detailLevel: "full",
+          },
+        ],
+        summary: "pwd please",
+        lastActivityAt: "2026-02-24T00:00:01.500Z",
+      })),
+    );
+
+    const service = new AgentRunViewProjectionService(memoryDir, {
+      metadataStore,
+      providerRegistry: new FakeRunProjectionProviderRegistry(fallbackProvider, [claudeProvider]),
+    });
+
+    const projection = await service.getProjection(runId);
+
+    expect(claudeProvider.buildProjection).toHaveBeenCalledTimes(1);
+    expect(fallbackProvider.buildProjection).toHaveBeenCalledTimes(1);
+    expect(projection.conversation.map((entry) => entry.content)).toEqual([
+      "pwd please",
+      "runtime reply",
+    ]);
+    expect(projection.activities).toEqual([
+      expect.objectContaining({
+        invocationId: "toolu-bash-1",
+        toolName: "Bash",
+        type: "terminal_command",
+        status: "success",
+        arguments: { command: "pwd" },
+      }),
+    ]);
+  });
+
   it("returns deterministic empty projection when both providers fail", async () => {
     const memoryDir = await createTempMemoryDir();
     const runId = "run-codex-empty";

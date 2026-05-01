@@ -120,7 +120,7 @@ The `agent-memory` subsystem no longer owns the canonical replay DTO. It supplie
 - Local-memory projection reads the complete raw-trace corpus from the declared run or team-member memory directory (complete archive segments plus active records) and is the fallback provider for native AutoByteus and for explicit `memoryDir` fallback reads.
 - Codex projection prefers persisted Codex thread history through the Codex history reader, then can fall back to local memory when the runtime-specific history is unavailable.
 - Claude projection prefers persisted Claude session history through the Claude history reader, then can fall back to local memory when the runtime-specific history is unavailable.
-- When a caller already has a local-memory projection and the runtime-specific provider also returns rows, `AgentRunViewProjectionService` merges the complementary local rows before runtime-provider rows and de-duplicates exact row matches before considering fallback. This preserves early local trace history alongside later runtime-native history during restored team-member projection.
+- `AgentRunViewProjectionService` may merge complementary local-memory rows with runtime-specific provider rows before deciding the projection is complete. This is required when the runtime-native provider is conversation-only (for example Claude session history with no activity rows) and local memory contains lifecycle-derived `activities`, and it also preserves early local trace history alongside later runtime-native history during restored team-member projection. Exact row matches are de-duplicated after merge.
 
 Normalization model:
 

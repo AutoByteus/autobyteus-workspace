@@ -226,6 +226,7 @@ export class ClaudeSessionEventConverter {
           ...serializePayload(payload),
           ...(invocationId ? { invocation_id: invocationId } : {}),
           ...(toolName ? { tool_name: toolName } : {}),
+          arguments: resolveToolArguments(payload),
           reason,
           error: asString(payload.error) ?? reason,
         })];
@@ -237,6 +238,7 @@ export class ClaudeSessionEventConverter {
           return [];
         }
         const error = asString(payload.error);
+        const hasArguments = Object.prototype.hasOwnProperty.call(payload, "arguments");
         return [this.createEvent(
           claudeEventName,
           error
@@ -247,6 +249,7 @@ export class ClaudeSessionEventConverter {
             ...(invocationId ? { invocation_id: invocationId } : {}),
             ...(toolName ? { tool_name: toolName } : {}),
             ...(error ? { error } : { result: payload.result ?? null }),
+            ...(hasArguments ? { arguments: resolveToolArguments(payload) } : {}),
           },
         )];
       }

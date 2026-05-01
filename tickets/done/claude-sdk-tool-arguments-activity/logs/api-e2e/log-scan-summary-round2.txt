@@ -1,0 +1,16 @@
+round2_raw_jsonl_files=
+- /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/claude-raw-events/api-e2e/round2-20260501T145315Z/claude-run-0f327fb6-081e-41fa-9707-a270bec24e73.jsonl
+
+raw_file=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/claude-raw-events/api-e2e/round2-20260501T145315Z/claude-run-0f327fb6-081e-41fa-9707-a270bec24e73.jsonl
+tool_use id=call_00_vuvLPJWQ3xvkzvc4Rk3q8qqf name=Bash input_keys=['command', 'description'] input={"command": "pwd", "description": "Get current working directory"}
+tool_result tool_use_id=call_00_vuvLPJWQ3xvkzvc4Rk3q8qqf content=/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude_agent_sdk-runtime-tool-workspace-xntZne
+tool_use id=call_00_225SZxVqM4mQJwxYizzl08r7 name=Write input_keys=['content', 'file_path'] input={"content": "TOOL_OK_4961a26d_e03c_4700_88db_d204b763a329", "file_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude_agent_sdk-runtime-tool-workspace-xntZne/api-tool-cffc577e_d55f_49a2_8491_53225da9e1ff.txt"}
+tool_result tool_use_id=call_00_225SZxVqM4mQJwxYizzl08r7 content=File created successfully at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude_agent_sdk-runtime-tool-workspace-xntZne/api-tool-cffc577e_d55f_49a2_8491_53225da9e1ff.txt
+
+runtime_log=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/claude-gated-tool-lifecycle-e2e-round2.log
+TOOL_EXECUTION_STARTED_eventType_lines=4 rawEventJson_count=2
+TOOL_APPROVAL_REQUESTED_eventType_lines=2 rawEventJson_count=1
+TOOL_APPROVED_eventType_lines=2 rawEventJson_count=1
+TOOL_EXECUTION_SUCCEEDED_eventType_lines=4 rawEventJson_count=2
+success_payloads_with_arguments=2
+runtime_send_message_to_rawEventJson_count=0

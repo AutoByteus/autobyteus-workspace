@@ -4,6 +4,72 @@ import { ClaudeSessionEventConverter } from "../../../../../../src/agent-executi
 import { ClaudeSessionEventName } from "../../../../../../src/agent-execution/backends/claude/events/claude-session-event-name.js";
 
 describe("ClaudeSessionEventConverter", () => {
+  it("converts normal Claude tool segment lane metadata with arguments", () => {
+    const converter = new ClaudeSessionEventConverter("run-claude-converter");
+
+    const [segmentStart] = converter.convert({
+      method: ClaudeSessionEventName.ITEM_ADDED,
+      params: {
+        id: "invoke-bash",
+        turn_id: "turn-1",
+        segment_type: "tool_call",
+        tool_name: "Bash",
+        arguments: {
+          command: "pwd",
+        },
+      },
+    });
+    expect(segmentStart).toMatchObject({
+      eventType: AgentRunEventType.SEGMENT_START,
+      payload: {
+        id: "invoke-bash",
+        turn_id: "turn-1",
+        segment_type: "tool_call",
+        metadata: {
+          tool_name: "Bash",
+          arguments: {
+            command: "pwd",
+          },
+        },
+      },
+    });
+
+    const [segmentEnd] = converter.convert({
+      method: ClaudeSessionEventName.ITEM_COMPLETED,
+      params: {
+        id: "invoke-bash",
+        turn_id: "turn-1",
+        segment_type: "tool_call",
+        tool_name: "Bash",
+        arguments: {
+          command: "pwd",
+        },
+        metadata: {
+          tool_name: "Bash",
+          arguments: {
+            command: "pwd",
+          },
+          result: "workspace\n",
+        },
+      },
+    });
+    expect(segmentEnd).toMatchObject({
+      eventType: AgentRunEventType.SEGMENT_END,
+      payload: {
+        id: "invoke-bash",
+        turn_id: "turn-1",
+        segment_type: "tool_call",
+        metadata: {
+          tool_name: "Bash",
+          arguments: {
+            command: "pwd",
+          },
+          result: "workspace\n",
+        },
+      },
+    });
+  });
+
   it("converts a normal Claude tool lifecycle into TOOL_* events", () => {
     const converter = new ClaudeSessionEventConverter("run-claude-converter");
 
@@ -35,6 +101,10 @@ describe("ClaudeSessionEventConverter", () => {
       params: {
         invocation_id: "invoke-write",
         tool_name: "Write",
+        arguments: {
+          file_path: "/tmp/example.txt",
+          content: "hello",
+        },
         result: {
           type: "create",
           filePath: "/tmp/example.txt",
@@ -46,6 +116,10 @@ describe("ClaudeSessionEventConverter", () => {
       payload: {
         invocation_id: "invoke-write",
         tool_name: "Write",
+        arguments: {
+          file_path: "/tmp/example.txt",
+          content: "hello",
+        },
         result: {
           type: "create",
           filePath: "/tmp/example.txt",
@@ -153,6 +227,63 @@ describe("ClaudeSessionEventConverter", () => {
           tab_id: "browser-1",
           status: "opened",
         },
+      },
+    });
+  });
+
+  it("preserves arguments on failed Claude tool completion events", () => {
+    const converter = new ClaudeSessionEventConverter("run-claude-converter");
+
+    const [failed] = converter.convert({
+      method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "invoke-bash-failed",
+        tool_name: "Bash",
+        arguments: {
+          command: "cat missing.txt",
+        },
+        error: "No such file or directory",
+      },
+    });
+
+    expect(failed).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_FAILED,
+      payload: {
+        invocation_id: "invoke-bash-failed",
+        tool_name: "Bash",
+        arguments: {
+          command: "cat missing.txt",
+        },
+        error: "No such file or directory",
+      },
+    });
+  });
+
+  it("preserves arguments on denied Claude tool lifecycle events", () => {
+    const converter = new ClaudeSessionEventConverter("run-claude-converter");
+
+    const [denied] = converter.convert({
+      method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_DENIED,
+      params: {
+        invocation_id: "invoke-bash-denied",
+        tool_name: "Bash",
+        arguments: {
+          command: "rm -rf /tmp/nope",
+        },
+        reason: "Denied by policy",
+      },
+    });
+
+    expect(denied).toMatchObject({
+      eventType: AgentRunEventType.TOOL_DENIED,
+      payload: {
+        invocation_id: "invoke-bash-denied",
+        tool_name: "Bash",
+        arguments: {
+          command: "rm -rf /tmp/nope",
+        },
+        reason: "Denied by policy",
+        error: "Denied by policy",
       },
     });
   });

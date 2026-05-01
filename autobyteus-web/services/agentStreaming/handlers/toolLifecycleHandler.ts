@@ -85,7 +85,19 @@ const inferSegmentTypeFromTool = (
 
 const getActivityType = (
   segment: ToolLifecycleSegment,
+  toolName: string,
+  argumentsPayload: Record<string, any>,
 ): 'tool_call' | 'write_file' | 'terminal_command' | 'edit_file' => {
+  const inferredSegmentType = inferSegmentTypeFromTool(toolName, argumentsPayload);
+  if (inferredSegmentType === 'run_bash') {
+    return 'terminal_command';
+  }
+  if (inferredSegmentType === 'write_file') {
+    return 'write_file';
+  }
+  if (inferredSegmentType === 'edit_file') {
+    return 'edit_file';
+  }
   if (segment.type === 'write_file') {
     return 'write_file';
   }
@@ -198,7 +210,7 @@ const ensureActivityForSegment = (
   activityStore.addActivity(context.state.runId, {
     invocationId,
     toolName,
-    type: getActivityType(segment),
+    type: getActivityType(segment, toolName, argumentsPayload),
     status: segment.status,
     contextText: getContextText(toolName, argumentsPayload),
     arguments: { ...segment.arguments, ...argumentsPayload },
@@ -375,12 +387,20 @@ export function handleToolDenied(payload: ToolDeniedPayload, context: AgentConte
     return;
   }
 
-  const segment = ensureToolLifecycleSegment(context, parsed.invocationId, parsed.turnId, parsed.toolName, {});
+  const segment = ensureToolLifecycleSegment(
+    context,
+    parsed.invocationId,
+    parsed.turnId,
+    parsed.toolName,
+    parsed.arguments,
+  );
 
   if (isPlaceholderToolName(segment.toolName)) {
     segment.toolName = parsed.toolName;
   }
+  mergeArguments(segment, parsed.arguments);
   syncActivityToolName(context, parsed.invocationId, parsed.toolName);
+  updateActivityArguments(context, parsed.invocationId, parsed.arguments);
 
   const transitioned = applyDeniedState(segment, parsed.reason, parsed.error);
   if (transitioned) {
@@ -432,12 +452,20 @@ export function handleToolExecutionSucceeded(
     return;
   }
 
-  const segment = ensureToolLifecycleSegment(context, parsed.invocationId, parsed.turnId, parsed.toolName, {});
+  const segment = ensureToolLifecycleSegment(
+    context,
+    parsed.invocationId,
+    parsed.turnId,
+    parsed.toolName,
+    parsed.arguments,
+  );
 
   if (isPlaceholderToolName(segment.toolName)) {
     segment.toolName = parsed.toolName;
   }
+  mergeArguments(segment, parsed.arguments);
   syncActivityToolName(context, parsed.invocationId, parsed.toolName);
+  updateActivityArguments(context, parsed.invocationId, parsed.arguments);
 
   const transitioned = applyExecutionSucceededState(segment, parsed.result);
   if (transitioned) {
@@ -456,12 +484,20 @@ export function handleToolExecutionFailed(
     return;
   }
 
-  const segment = ensureToolLifecycleSegment(context, parsed.invocationId, parsed.turnId, parsed.toolName, {});
+  const segment = ensureToolLifecycleSegment(
+    context,
+    parsed.invocationId,
+    parsed.turnId,
+    parsed.toolName,
+    parsed.arguments,
+  );
 
   if (isPlaceholderToolName(segment.toolName)) {
     segment.toolName = parsed.toolName;
   }
+  mergeArguments(segment, parsed.arguments);
   syncActivityToolName(context, parsed.invocationId, parsed.toolName);
+  updateActivityArguments(context, parsed.invocationId, parsed.arguments);
 
   const transitioned = applyExecutionFailedState(segment, parsed.error);
   if (transitioned) {

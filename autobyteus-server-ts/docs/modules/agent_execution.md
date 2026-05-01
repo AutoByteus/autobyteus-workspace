@@ -20,3 +20,14 @@ Runtime managers compose definitions, prompts, tools, processors, and workspace 
 `AgentRun.postUserMessage(...)` exposes an internal command-observer seam. Observers are notified only after the message is accepted, and observer failures are isolated from the user-message result.
 
 See [Agent Memory](./agent_memory.md) for the storage-only recorder contract and memory-file boundaries.
+
+## Runtime Tool Lifecycle Normalization
+
+Provider adapters must keep tool calls on two runtime-neutral lanes:
+
+- `SEGMENT_START` / `SEGMENT_END` owns transcript/conversation structure for a tool call.
+- `TOOL_APPROVAL_*` and `TOOL_EXECUTION_*` owns Activity state, execution/approval status, arguments, result/error, and durable tool traces.
+
+Claude Agent SDK sessions treat raw assistant `tool_use` blocks as authoritative invocation starts. `tool_use.input` / `tool_use.arguments` is tracked by invocation id, emitted on both the segment metadata lane and lifecycle argument lane, and preserved on terminal `TOOL_EXECUTION_SUCCEEDED` / `TOOL_EXECUTION_FAILED` events as a result-first recovery path. If the Claude SDK permission callback observes the same invocation, the coordinator must reuse that tracked state and suppress duplicate segment-start/lifecycle-start emissions independently.
+
+The frontend and storage-only memory recorder consume these normalized lanes rather than Claude-specific raw SDK messages. This keeps transcript rendering, Activity argument rendering, run history, and memory traces runtime-neutral.

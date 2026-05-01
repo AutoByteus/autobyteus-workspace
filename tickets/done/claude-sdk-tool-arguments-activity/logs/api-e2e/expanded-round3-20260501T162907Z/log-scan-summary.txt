@@ -1,0 +1,42 @@
+Expanded Round 3 API/E2E log scan summary
+LOG_DIR=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z
+RAW_LOG_DIR=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/claude-raw-events/api-e2e/expanded-round3-20260501T162907Z
+
+Claude raw JSONL files: 1
+- claude-run-91aade48-7b78-417f-ad66-5121fb22f890.jsonl: tool_use=1 tool_result_records=2
+  tool_use id=call_00_emOG9DhOJJpF5q8VM30o0EvM name=Write input_non_empty=True input_keys=['file_path', 'content']
+
+Claude gated lifecycle: status=passed; rawEventJson_entries=15; log=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/claude-gated-tool-lifecycle-e2e.log
+  line286 SEGMENT_START invocation=call_00_emOG9DhOJJpF5q8VM30o0EvM tool=Write payload_args_non_empty=True metadata_args_non_empty=True item_args_non_empty=False parsed=True keys=['id', 'turn_id', 'segment_type', 'tool_name', 'arguments', 'metadata']
+  line302 TOOL_EXECUTION_STARTED invocation=call_00_emOG9DhOJJpF5q8VM30o0EvM tool=Write payload_args_non_empty=True metadata_args_non_empty=False item_args_non_empty=False parsed=True keys=['invocation_id', 'tool_name', 'turn_id', 'arguments']
+  line320 TOOL_APPROVAL_REQUESTED invocation=call_00_emOG9DhOJJpF5q8VM30o0EvM tool=Write payload_args_non_empty=True metadata_args_non_empty=False item_args_non_empty=False parsed=True keys=['invocation_id', 'tool_name', 'turn_id', 'arguments']
+  line338 TOOL_APPROVED invocation=call_00_emOG9DhOJJpF5q8VM30o0EvM tool=Write payload_args_non_empty=True metadata_args_non_empty=False item_args_non_empty=False parsed=True keys=['invocation_id', 'tool_name', 'turn_id', 'arguments', 'reason']
+  line379 SEGMENT_END invocation=call_00_emOG9DhOJJpF5q8VM30o0EvM tool=Write payload_args_non_empty=True metadata_args_non_empty=True item_args_non_empty=False parsed=True keys=['id', 'turn_id', 'segment_type', 'tool_name', 'arguments', 'metadata']
+  line395 TOOL_EXECUTION_SUCCEEDED invocation=call_00_emOG9DhOJJpF5q8VM30o0EvM tool=Write payload_args_non_empty=True metadata_args_non_empty=False item_args_non_empty=False parsed=True keys=['invocation_id', 'tool_name', 'turn_id', 'arguments', 'result']
+  line424 FILE_CHANGE_UPDATED invocation=91aade48-7b78-417f-ad66-5121fb22f890:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude_agent_sdk-runtime-tool-workspace-gk81ck/api-tool-679e0ae2_eb0e_4d0d_a6cf_1bf8d4d0ebaf.txt tool=None payload_args_non_empty=False metadata_args_non_empty=False item_args_non_empty=False parsed=True keys=['id', 'runId', 'path', 'type', 'status', 'sourceTool', 'sourceInvocationId', 'createdAt', 'updatedAt']
+  line501 SEGMENT_END invocation=91aade48-7b78-417f-ad66-5121fb22f890:turn:1777653023437 tool=None payload_args_non_empty=False metadata_args_non_empty=False item_args_non_empty=False parsed=True keys=['id', 'turnId', 'sessionId', 'text', 'segment_type']
+  Claude target invocation lifecycle order=['SEGMENT_START', 'TOOL_EXECUTION_STARTED', 'TOOL_APPROVAL_REQUESTED', 'TOOL_APPROVED', 'SEGMENT_END', 'TOOL_EXECUTION_SUCCEEDED']
+  Claude generic TOOL_* send_message_to noise events: none
+
+Codex autoexecute command: status=passed; rawEventJson_entries=11; log=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/codex-autoexecute-command-e2e.log
+  line698 TOOL_EXECUTION_STARTED invocation=call_UXk9rhJSZxdCI9KAStsxq4wk tool=run_bash payload_args_non_empty=True metadata_args_non_empty=False item_args_non_empty=True parsed=False keys=[]
+  line738 TOOL_EXECUTION_SUCCEEDED invocation=call_UXk9rhJSZxdCI9KAStsxq4wk tool=run_bash payload_args_non_empty=False metadata_args_non_empty=False item_args_non_empty=False parsed=False keys=[]
+  line799 TOOL_LOG invocation=call_UXk9rhJSZxdCI9KAStsxq4wk tool=None payload_args_non_empty=False metadata_args_non_empty=False item_args_non_empty=False parsed=True keys=['threadId', 'turnId', 'item', 'tool_invocation_id', 'log_entry']
+  line835 SEGMENT_START invocation=msg_0230e0a3df93b9310169f4d5432300819197b62b0cbb8c25c5 tool=None payload_args_non_empty=False metadata_args_non_empty=False item_args_non_empty=False parsed=True keys=['item', 'threadId', 'turnId', 'id', 'segment_type']
+  line868 SEGMENT_END invocation=msg_0230e0a3df93b9310169f4d5432300819197b62b0cbb8c25c5 tool=None payload_args_non_empty=False metadata_args_non_empty=False item_args_non_empty=False parsed=True keys=['item', 'threadId', 'turnId', 'id']
+
+Codex autoexecute speak MCP: status=failed; rawEventJson_entries=12; log=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/codex-autoexecute-speak-mcp-e2e.log
+  line692 SEGMENT_START invocation=call_QMxUsB9muASGNqumd8wZw7mc tool=speak payload_args_non_empty=False metadata_args_non_empty=True item_args_non_empty=True parsed=True keys=['item', 'threadId', 'turnId', 'id', 'segment_type', 'metadata']
+  line764 TOOL_EXECUTION_SUCCEEDED invocation=call_QMxUsB9muASGNqumd8wZw7mc tool=speak payload_args_non_empty=True metadata_args_non_empty=False item_args_non_empty=True parsed=False keys=[]
+  line786 SEGMENT_END invocation=call_QMxUsB9muASGNqumd8wZw7mc tool=speak payload_args_non_empty=False metadata_args_non_empty=True item_args_non_empty=True parsed=False keys=[]
+  line819 TOOL_LOG invocation=call_QMxUsB9muASGNqumd8wZw7mc tool=None payload_args_non_empty=False metadata_args_non_empty=False item_args_non_empty=False parsed=False keys=[]
+  line852 SEGMENT_START invocation=msg_0dd9288c4247d8ba0169f4d57297c0819198c75e974a621149 tool=None payload_args_non_empty=False metadata_args_non_empty=False item_args_non_empty=False parsed=True keys=['item', 'threadId', 'turnId', 'id', 'segment_type']
+  line885 SEGMENT_END invocation=msg_0dd9288c4247d8ba0169f4d57297c0819198c75e974a621149 tool=None payload_args_non_empty=False metadata_args_non_empty=False item_args_non_empty=False parsed=True keys=['item', 'threadId', 'turnId', 'id']
+  Failure classification note: test timed out waiting for TOOL_APPROVED even though the auto-executed MCP speak invocation emitted SEGMENT_START, TOOL_EXECUTION_SUCCEEDED, SEGMENT_END, TOOL_LOG, and no TOOL_APPROVAL_REQUESTED.
+
+prisma-generate.log: passed; bytes=388; path=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/prisma-generate.log
+nuxi-prepare.log: passed; bytes=132; path=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/nuxi-prepare.log
+frontend-expanded-validation.log: passed; bytes=2672; path=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/frontend-expanded-validation.log
+backend-expanded-validation.log: passed; bytes=3718; path=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/backend-expanded-validation.log
+server-build-typecheck.log: passed/exit0-empty-log; bytes=0; path=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/server-build-typecheck.log
+git-diff-check.log: passed/exit0-empty-log; bytes=0; path=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/git-diff-check.log

@@ -1,0 +1,54 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/autobyteus-web
+
+stdout | services/agentStreaming/handlers/__tests__/toolLifecycleOrdering.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/toolLifecycleParsers.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/toolLifecycleState.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runHydration/__tests__/runProjectionActivityHydration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentStreaming/handlers/__tests__/toolLifecycleParsers.spec.ts (3 tests) 3ms
+ ✓ services/agentStreaming/handlers/__tests__/toolLifecycleState.spec.ts (7 tests) 3ms
+ ✓ services/runHydration/__tests__/runProjectionActivityHydration.spec.ts (2 tests) 3ms
+ ✓ services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts (2 tests) 5ms
+ ✓ services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts (17 tests) 6ms
+ ✓ services/agentStreaming/handlers/__tests__/toolLifecycleOrdering.spec.ts (6 tests) 8ms
+stderr | services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts > toolLifecycleHandler > drops malformed denied payload without state mutation
+[toolLifecycleHandler] Dropping malformed TOOL_DENIED payload {
+  invocation_id: 'tool-4',
+  tool_name: 'delete_file',
+  reason: null,
+  error: null
+}
+
+ ✓ services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts (11 tests) 11ms
+
+ Test Files  7 passed (7)
+      Tests  48 passed (48)
+   Start at  18:29:33
+   Duration  2.11s (transform 1.13s, setup 9.87s, collect 489ms, tests 39ms, environment 1.57s, prepare 1.29s)
+

@@ -1,0 +1,69 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+
+ ✓ tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts (9 tests) 24ms
+stdout | tests/unit/run-history/services/agent-run-view-projection-service.test.ts > AgentRunViewProjectionService > uses runtime provider first and falls back to local provider when primary result is null
+[AgentRunViewProjectionService] fallback projection selected for run 'run-codex-fallback' (codex_app_server -> autobyteus)
+
+stderr | tests/unit/run-history/services/agent-run-view-projection-service.test.ts > AgentRunViewProjectionService > returns deterministic empty projection when both providers fail
+[AgentRunViewProjectionService] primary projection failed for run 'run-codex-empty' (codex_app_server): Error: primary failed
+
+stdout | tests/unit/run-history/services/agent-run-view-projection-service.test.ts > AgentRunViewProjectionService > returns deterministic empty projection when both providers fail
+[AgentRunViewProjectionService] fallback projection selected for run 'run-codex-empty' (codex_app_server -> autobyteus)
+
+ ✓ tests/unit/run-history/services/agent-run-view-projection-service.test.ts (5 tests) 13ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts (23 tests) 9ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts (11 tests) 5ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.test.ts (5 tests) 5ms
+
+ Test Files  5 passed (5)
+      Tests  53 passed (53)
+   Start at  18:29:52
+   Duration  1.16s (transform 256ms, setup 46ms, import 327ms, tests 56ms, environment 0ms)
+

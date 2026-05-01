@@ -228,6 +228,20 @@ const matchesInvocationId = (
   return resolved === null || resolved === invocationId;
 };
 
+const expectNonEmptyArgumentsPayload = (payload: Record<string, unknown>): void => {
+  const argumentsPayload = payload.arguments;
+  expect(argumentsPayload && typeof argumentsPayload === "object" && !Array.isArray(argumentsPayload)).toBe(true);
+  expect(Object.keys(argumentsPayload as Record<string, unknown>).length).toBeGreaterThan(0);
+};
+
+const expectNonEmptySegmentMetadataArguments = (payload: Record<string, unknown>): void => {
+  const metadata = payload.metadata;
+  expect(metadata && typeof metadata === "object" && !Array.isArray(metadata)).toBe(true);
+  const argumentsPayload = (metadata as Record<string, unknown>).arguments;
+  expect(argumentsPayload && typeof argumentsPayload === "object" && !Array.isArray(argumentsPayload)).toBe(true);
+  expect(Object.keys(argumentsPayload as Record<string, unknown>).length).toBeGreaterThan(0);
+};
+
 const getMessageItem = (message: WsMessage): Record<string, unknown> | null =>
   message.payload.item && typeof message.payload.item === "object"
     ? (message.payload.item as Record<string, unknown>)
@@ -1042,9 +1056,13 @@ const defineRuntimeSuite = (input: {
             messages
               .slice(startIndex)
               .find(
-                (message) =>
-                  message.type === "TOOL_EXECUTION_SUCCEEDED" &&
-                  matchesInvocationId(message.payload, resolveInvocationId(message.payload)),
+                (message) => {
+                  if (message.type !== "TOOL_EXECUTION_SUCCEEDED") {
+                    return false;
+                  }
+                  const invocationId = resolveInvocationId(message.payload);
+                  return Boolean(invocationId && approvedInvocationIds.has(invocationId));
+                },
               ) ?? null;
           if (succeededMessage) {
             break;
@@ -1060,24 +1078,61 @@ const defineRuntimeSuite = (input: {
         }
 
         const successfulInvocationId = resolveInvocationId(succeededMessage.payload);
+        expect(successfulInvocationId).toBeTruthy();
         expect(approvedInvocationIds.size).toBeGreaterThan(0);
 
-        await waitForMessageAfter(
+        const targetApprovalRequested = await waitForMessageAfter(
+          messages,
+          startIndex,
+          (message) =>
+            message.type === "TOOL_APPROVAL_REQUESTED" &&
+            resolveInvocationId(message.payload) === successfulInvocationId,
+          "target TOOL_APPROVAL_REQUESTED",
+        );
+        const approvedMessage = await waitForMessageAfter(
           messages,
           startIndex,
           (message) =>
             message.type === "TOOL_APPROVED" &&
-            matchesInvocationId(message.payload, successfulInvocationId),
+            resolveInvocationId(message.payload) === successfulInvocationId,
           "TOOL_APPROVED",
         );
-        await waitForMessageAfter(
+        const startedMessage = await waitForMessageAfter(
           messages,
           startIndex,
           (message) =>
             message.type === "TOOL_EXECUTION_STARTED" &&
-            matchesInvocationId(message.payload, successfulInvocationId),
+            resolveInvocationId(message.payload) === successfulInvocationId,
           "TOOL_EXECUTION_STARTED",
         );
+        expect(resolveInvocationId(approvedMessage.payload)).toBe(successfulInvocationId);
+        if (input.runtimeKind === "claude_agent_sdk" || input.runtimeKind === "codex_app_server") {
+          expectNonEmptyArgumentsPayload(targetApprovalRequested.payload);
+          expectNonEmptyArgumentsPayload(startedMessage.payload);
+        }
+        if (input.runtimeKind === "claude_agent_sdk") {
+          const segmentStartMessage = await waitForMessageAfter(
+            messages,
+            startIndex,
+            (message) =>
+              message.type === "SEGMENT_START" &&
+              message.payload.segment_type === "tool_call" &&
+              resolveInvocationId(message.payload) === successfulInvocationId,
+            "Claude tool SEGMENT_START",
+          );
+          const segmentEndMessage = await waitForMessageAfter(
+            messages,
+            startIndex,
+            (message) =>
+              message.type === "SEGMENT_END" &&
+              message.payload.segment_type === "tool_call" &&
+              resolveInvocationId(message.payload) === successfulInvocationId,
+            "Claude tool SEGMENT_END",
+          );
+          expectNonEmptySegmentMetadataArguments(segmentStartMessage.payload);
+          expectNonEmptySegmentMetadataArguments(segmentEndMessage.payload);
+          expectNonEmptyArgumentsPayload(succeededMessage.payload);
+        }
         await waitForMessageAfter(
           messages,
           startIndex,

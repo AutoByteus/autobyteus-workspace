@@ -158,6 +158,7 @@ export interface ToolDeniedPayload {
   invocation_id: string;
   tool_name: string;
   turn_id: string | null;
+  arguments?: Record<string, any>;
   reason?: string | null;
   error?: string | null;
   agent_name?: string;
@@ -185,6 +186,7 @@ export interface ToolExecutionSucceededPayload {
   invocation_id: string;
   tool_name: string;
   turn_id: string | null;
+  arguments?: Record<string, any>;
   result?: any;
   agent_name?: string;
   agent_id?: string;
@@ -194,6 +196,7 @@ export interface ToolExecutionFailedPayload {
   invocation_id: string;
   tool_name: string;
   turn_id: string | null;
+  arguments?: Record<string, any>;
   error: string;
   agent_name?: string;
   agent_id?: string;
