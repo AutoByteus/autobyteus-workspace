@@ -4,11 +4,11 @@
 
 - Ticket: `history-run-archive`
 - Date: `2026-05-01`
-- Current Status: `Ready for user verification`
+- Current Status: `Ready for user verification; integrated Electron test build prepared`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/archive-run-history`
 - Ticket branch: `codex/archive-run-history`
 - Finalization target: `origin/personal` / `personal`
-- Integrated base reference: `origin/personal` at `5995fd8f4e6b6b8c4015e7e474998a47e099e089`
+- Integrated base reference: `origin/personal` at `2686b6d3141a682f896dccc405c486ce908ad93d` merged into ticket branch at `a5e9d7b934dd41b4fa34e9cc7a0fa3ea0aa81270`
 
 ## Delivery Summary
 
@@ -44,7 +44,9 @@
 
 - Integration refresh:
   - `git fetch origin personal --prune`
-  - latest tracked base `origin/personal` remained `5995fd8f4e6b6b8c4015e7e474998a47e099e089`, matching ticket branch `HEAD`; no base commits were integrated and no integration rerun was required.
+  - initial delivery refresh found `origin/personal` at `5995fd8f4e6b6b8c4015e7e474998a47e099e089`.
+  - before the requested Electron test build handoff, `origin/personal` advanced to `2686b6d3141a682f896dccc405c486ce908ad93d`.
+  - local checkpoint commit `392669a3` preserved the reviewed candidate, then latest `origin/personal` was merged into ticket branch merge commit `a5e9d7b934dd41b4fa34e9cc7a0fa3ea0aa81270` with no conflicts.
 - Reviewer/API/E2E validation already passed:
   - `pnpm -C autobyteus-server-ts exec vitest --run tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts`
   - `pnpm -C autobyteus-server-ts exec vitest --run tests/unit/run-history/store/agent-run-metadata-store.test.ts tests/unit/run-history/store/team-run-metadata-store.test.ts tests/unit/run-history/services/agent-run-history-service.test.ts tests/unit/run-history/services/team-run-history-service.test.ts tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts`
@@ -57,7 +59,9 @@
   - live-backend GraphQL codegen idempotency check
   - `git diff --check`
 - Delivery-owned verification:
+  - `pnpm -C autobyteus-server-ts exec vitest --run tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts`
   - `git diff --check`
+  - `NO_TIMESTAMP=1 APPLE_TEAM_ID= APPLE_ID= APPLE_APP_SPECIFIC_PASSWORD= APPLE_SIGNING_IDENTITY= AUTOBYTEUS_BUILD_FLAVOR=personal pnpm build:electron:mac`
 - Acceptance-criteria closure summary:
   - archive is non-destructive for agent and team history;
   - default workspace history hides archived inactive rows and preserves active visibility;
@@ -87,7 +91,7 @@
 
 - Release notes required: `No`
 - Release notes artifact: `N/A`
-- Notes: no version bump, release tag, publication, or deployment step has been requested for this internal feature branch handoff.
+- Notes: no version bump, release tag, publication, or deployment step has been requested for this internal feature branch handoff. A local unsigned macOS arm64 Electron build was produced for user testing under `autobyteus-web/electron-dist/`.
 
 ## User Verification Hold
 
@@ -103,7 +107,7 @@
 - Ticket branch: `codex/archive-run-history`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Commit status: `Blocked pending explicit user verification`
+- Commit status: `Local checkpoint completed (392669a3) and latest-base merge completed (a5e9d7b9); final ticket-branch push remains blocked pending explicit user verification`
 - Push status: `Blocked pending explicit user verification`
 - Merge status: `Blocked pending explicit user verification`
 - Release/publication/deployment status: `Not required at this stage`

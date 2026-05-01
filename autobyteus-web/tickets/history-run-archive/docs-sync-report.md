@@ -5,8 +5,8 @@
 - Ticket: `history-run-archive`
 - Trigger: Post-validation durable-validation/generated-artifact code review PASS on 2026-05-01; proceed to delivery docs sync.
 - Bootstrap base reference: `origin/personal` at `5995fd8f4e6b6b8c4015e7e474998a47e099e089`
-- Integrated base reference used for docs sync: `origin/personal` at `5995fd8f4e6b6b8c4015e7e474998a47e099e089` after `git fetch origin personal --prune` on 2026-05-01
-- Post-integration verification reference: branch already matched the latest tracked base, so no integration rerun was required; delivery-owned docs/artifacts were checked with `git diff --check`.
+- Integrated base reference used for docs sync: initial docs sync was prepared against `origin/personal` at `5995fd8f4e6b6b8c4015e7e474998a47e099e089`; after `origin/personal` advanced, delivery refreshed and merged latest `origin/personal` at `2686b6d3141a682f896dccc405c486ce908ad93d` into ticket merge commit `a5e9d7b934dd41b4fa34e9cc7a0fa3ea0aa81270`.
+- Post-integration verification reference: `pnpm -C autobyteus-server-ts exec vitest --run tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts`, `git diff --check`, and the documented macOS Electron build command passed against the refreshed integrated state.
 
 ## Why Docs Were Updated
 
@@ -57,7 +57,7 @@
 
 - Result: `Pass`
 - Next owner: `delivery_engineer`
-- Notes: Long-lived docs now reflect the reviewed, validated, latest-base-integrated implementation state. Repository finalization remains blocked until explicit user verification/completion is received.
+- Notes: Long-lived docs remain valid after merging the latest tracked base; repository finalization remains blocked until explicit user verification/completion is received.
 
 ## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
 
