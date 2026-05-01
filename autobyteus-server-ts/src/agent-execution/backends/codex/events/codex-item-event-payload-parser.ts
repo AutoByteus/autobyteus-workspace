@@ -219,6 +219,10 @@ export class CodexItemEventPayloadParser {
     return this.toolPayloadParser.resolveToolArguments(payload, fallbackToolName);
   }
 
+  public resolveDynamicToolArguments(payload: Record<string, unknown>): Record<string, unknown> {
+    return this.toolPayloadParser.resolveDynamicToolArguments(payload);
+  }
+
   public resolveCommandValue(payload: Record<string, unknown>): string | null {
     return this.toolPayloadParser.resolveCommandValue(payload);
   }

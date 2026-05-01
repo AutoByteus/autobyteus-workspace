@@ -397,7 +397,164 @@ describe("CodexThreadEventConverter", () => {
     });
   });
 
-  it("maps browser dynamic tool completions into TOOL_EXECUTION_SUCCEEDED", () => {
+  it("fans out dynamicToolCall starts into tool_call segment and lifecycle start", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.ITEM_STARTED,
+      params: {
+        item: {
+          type: "dynamicToolCall",
+          id: "call_send_message",
+          tool: "send_message_to",
+          arguments: {
+            recipient_name: "pong",
+            content: "hello",
+          },
+          status: "inProgress",
+        },
+        turnId: "turn-1",
+      },
+    });
+
+    expect(converted.map((event) => event.eventType)).toEqual([
+      AgentRunEventType.SEGMENT_START,
+      AgentRunEventType.TOOL_EXECUTION_STARTED,
+    ]);
+    expect(converted[0]).toMatchObject({
+      runId: "run-1",
+      payload: {
+        id: "call_send_message",
+        segment_type: "tool_call",
+        metadata: {
+          tool_name: "send_message_to",
+          arguments: {
+            recipient_name: "pong",
+            content: "hello",
+          },
+        },
+      },
+    });
+    expect(converted[1]).toMatchObject({
+      runId: "run-1",
+      payload: {
+        invocation_id: "call_send_message",
+        tool_name: "send_message_to",
+        arguments: {
+          recipient_name: "pong",
+          content: "hello",
+        },
+      },
+    });
+  });
+
+  it("fans out successful dynamicToolCall completions into terminal success and segment end", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "dynamicToolCall",
+          id: "call_send_message",
+          tool: "send_message_to",
+          arguments: {
+            recipient_name: "pong",
+            content: "hello",
+          },
+          status: "completed",
+          success: true,
+          contentItems: [
+            {
+              type: "inputText",
+              text: "Delivered message to pong.",
+            },
+          ],
+        },
+      },
+    });
+
+    expect(converted.map((event) => event.eventType)).toEqual([
+      AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      AgentRunEventType.SEGMENT_END,
+    ]);
+    expect(converted[0]).toMatchObject({
+      runId: "run-1",
+      payload: {
+        invocation_id: "call_send_message",
+        tool_name: "send_message_to",
+        result: "Delivered message to pong.",
+      },
+    });
+    expect(converted[1]).toMatchObject({
+      runId: "run-1",
+      payload: {
+        id: "call_send_message",
+        metadata: {
+          tool_name: "send_message_to",
+          arguments: {
+            recipient_name: "pong",
+            content: "hello",
+          },
+        },
+      },
+    });
+  });
+
+  it("fans out failed dynamicToolCall completions into terminal failure with contentItems error and segment end", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "dynamicToolCall",
+          id: "call_send_message_failed",
+          tool: "send_message_to",
+          arguments: {
+            recipient_name: "missing",
+            content: "hello",
+          },
+          status: "completed",
+          success: false,
+          contentItems: [
+            {
+              type: "inputText",
+              text: "Recipient missing was not found.",
+            },
+          ],
+        },
+      },
+    });
+
+    expect(converted.map((event) => event.eventType)).toEqual([
+      AgentRunEventType.TOOL_EXECUTION_FAILED,
+      AgentRunEventType.SEGMENT_END,
+    ]);
+    expect(converted[0]).toMatchObject({
+      runId: "run-1",
+      payload: {
+        invocation_id: "call_send_message_failed",
+        tool_name: "send_message_to",
+        error: "Recipient missing was not found.",
+      },
+    });
+    expect(converted[1]).toMatchObject({
+      runId: "run-1",
+      payload: {
+        id: "call_send_message_failed",
+        metadata: {
+          tool_name: "send_message_to",
+          arguments: {
+            recipient_name: "missing",
+            content: "hello",
+          },
+        },
+      },
+    });
+  });
+
+  it("maps browser dynamic tool completions into terminal success and segment end", () => {
     const converter = new CodexThreadEventConverter("run-1");
 
     const converted = converter.convert({
@@ -416,7 +573,10 @@ describe("CodexThreadEventConverter", () => {
       },
     });
 
-    expect(converted).toHaveLength(1);
+    expect(converted.map((event) => event.eventType)).toEqual([
+      AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      AgentRunEventType.SEGMENT_END,
+    ]);
     expect(converted[0]).toMatchObject({
       eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
       runId: "run-1",
@@ -426,6 +586,16 @@ describe("CodexThreadEventConverter", () => {
         result: {
           tab_id: "browser-1",
           status: "opened",
+        },
+      },
+    });
+    expect(converted[1]).toMatchObject({
+      eventType: AgentRunEventType.SEGMENT_END,
+      runId: "run-1",
+      payload: {
+        id: "call_browser_open",
+        metadata: {
+          tool_name: "open_tab",
         },
       },
     });
@@ -457,7 +627,10 @@ describe("CodexThreadEventConverter", () => {
       },
     });
 
-    expect(converted).toHaveLength(1);
+    expect(converted.map((event) => event.eventType)).toEqual([
+      AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      AgentRunEventType.SEGMENT_END,
+    ]);
     expect(converted[0]).toMatchObject({
       eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
       runId: "run-1",
@@ -469,6 +642,16 @@ describe("CodexThreadEventConverter", () => {
           status: "opened",
           url: "https://example.com",
           title: "Example",
+        },
+      },
+    });
+    expect(converted[1]).toMatchObject({
+      eventType: AgentRunEventType.SEGMENT_END,
+      runId: "run-1",
+      payload: {
+        id: "call_browser_open_text",
+        metadata: {
+          tool_name: "open_tab",
         },
       },
     });

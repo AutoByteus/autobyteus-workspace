@@ -110,6 +110,17 @@ export class CodexToolPayloadParser {
     return this.sanitizeRecord(next);
   }
 
+  public resolveDynamicToolArguments(payload: Record<string, unknown>): Record<string, unknown> {
+    const item = asObject(payload.item);
+    const explicitArguments = this.sanitizeRecord(
+      this.resolveStructuredArguments(payload.arguments, payload.args, payload.input),
+    );
+    const itemArguments = this.sanitizeRecord(
+      this.resolveStructuredArguments(item.arguments, item.args, item.input),
+    );
+    return this.sanitizeRecord({ ...itemArguments, ...explicitArguments });
+  }
+
   public resolveToolCallMetadataArguments(
     payload: Record<string, unknown>,
   ): Record<string, unknown> {
@@ -216,7 +227,19 @@ export class CodexToolPayloadParser {
       return candidate;
     }
 
-    const status = asString(payload.status) ?? asString(item.status);
+    const textCandidate = this.resolveToolResultText(payload);
+    if (textCandidate) {
+      const parsed = parseJsonValue(textCandidate);
+      if (parsed.parsed) {
+        const parsedError = this.resolveParsedErrorText(parsed.value);
+        if (parsedError) {
+          return parsedError;
+        }
+      }
+      return textCandidate;
+    }
+
+    const status = (asString(payload.status) ?? asString(item.status))?.toLowerCase();
     if (status === "declined") {
       return "Tool execution denied.";
     }
@@ -234,7 +257,7 @@ export class CodexToolPayloadParser {
     if (payload.success === false || item.success === false) {
       return true;
     }
-    const status = this.resolveExecutionStatus(payload);
+    const status = this.resolveExecutionStatus(payload)?.toLowerCase();
     return status === "failed" || status === "error";
   }
 
@@ -341,6 +364,19 @@ export class CodexToolPayloadParser {
       this.collectText(payload.content) ||
       this.collectText(item.content);
     return candidate.trim();
+  }
+
+  private resolveParsedErrorText(value: unknown): string | null {
+    if (typeof value === "string" && value.trim().length > 0) {
+      return value;
+    }
+    const parsed = asObject(value);
+    const direct = asString(parsed.error) ?? asString(parsed.message);
+    if (direct) {
+      return direct;
+    }
+    const nestedError = asObject(parsed.error);
+    return asString(nestedError.message) ?? asString(nestedError.code);
   }
 
   private resolveCommandActionValue(payload: Record<string, unknown>): string | null {

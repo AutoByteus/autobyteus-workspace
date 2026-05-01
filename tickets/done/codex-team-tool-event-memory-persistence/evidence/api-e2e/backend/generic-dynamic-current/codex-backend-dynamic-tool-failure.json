@@ -1,0 +1,246 @@
+[
+  {
+    "eventType": "AGENT_STATUS",
+    "runId": "run-codex-backend-dynamic-tool-failure",
+    "payload": {
+      "threadId": "019de281-2f8b-7c82-bc40-2e58b9a567d7",
+      "status": {
+        "type": "active",
+        "activeFlags": []
+      }
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "TURN_STARTED",
+    "runId": "run-codex-backend-dynamic-tool-failure",
+    "payload": {
+      "turnId": "019de281-2fc1-75b1-8af4-5eaa531cba71"
+    },
+    "statusHint": "ACTIVE"
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "runId": "run-codex-backend-dynamic-tool-failure",
+    "payload": {
+      "new_status": "RUNNING",
+      "old_status": null,
+      "turnId": "019de281-2fc1-75b1-8af4-5eaa531cba71"
+    },
+    "statusHint": "ACTIVE"
+  },
+  {
+    "eventType": "SEGMENT_START",
+    "runId": "run-codex-backend-dynamic-tool-failure",
+    "payload": {
+      "item": {
+        "type": "dynamicToolCall",
+        "id": "call_vRTKb0DqG0Cc81iEZ2XMKjtE",
+        "namespace": null,
+        "tool": "fail_dynamic",
+        "arguments": {
+          "value": "HELLO_FAILURE"
+        },
+        "status": "inProgress",
+        "contentItems": null,
+        "success": null,
+        "durationMs": null
+      },
+      "threadId": "019de281-2f8b-7c82-bc40-2e58b9a567d7",
+      "turnId": "019de281-2fc1-75b1-8af4-5eaa531cba71",
+      "id": "call_vRTKb0DqG0Cc81iEZ2XMKjtE",
+      "segment_type": "tool_call",
+      "metadata": {
+        "tool_name": "fail_dynamic",
+        "arguments": {
+          "value": "HELLO_FAILURE"
+        }
+      }
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "TOOL_EXECUTION_STARTED",
+    "runId": "run-codex-backend-dynamic-tool-failure",
+    "payload": {
+      "item": {
+        "type": "dynamicToolCall",
+        "id": "call_vRTKb0DqG0Cc81iEZ2XMKjtE",
+        "namespace": null,
+        "tool": "fail_dynamic",
+        "arguments": {
+          "value": "HELLO_FAILURE"
+        },
+        "status": "inProgress",
+        "contentItems": null,
+        "success": null,
+        "durationMs": null
+      },
+      "threadId": "019de281-2f8b-7c82-bc40-2e58b9a567d7",
+      "turnId": "019de281-2fc1-75b1-8af4-5eaa531cba71",
+      "invocation_id": "call_vRTKb0DqG0Cc81iEZ2XMKjtE",
+      "tool_name": "fail_dynamic",
+      "arguments": {
+        "value": "HELLO_FAILURE"
+      }
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "TOOL_EXECUTION_FAILED",
+    "runId": "run-codex-backend-dynamic-tool-failure",
+    "payload": {
+      "item": {
+        "type": "dynamicToolCall",
+        "id": "call_vRTKb0DqG0Cc81iEZ2XMKjtE",
+        "namespace": null,
+        "tool": "fail_dynamic",
+        "arguments": {
+          "value": "HELLO_FAILURE"
+        },
+        "status": "failed",
+        "contentItems": [
+          {
+            "type": "inputText",
+            "text": "DYNAMIC_FAILURE_c09339b1-ea51-483b-b6ff-1465d6af461a"
+          }
+        ],
+        "success": false,
+        "durationMs": 2
+      },
+      "threadId": "019de281-2f8b-7c82-bc40-2e58b9a567d7",
+      "turnId": "019de281-2fc1-75b1-8af4-5eaa531cba71",
+      "invocation_id": "call_vRTKb0DqG0Cc81iEZ2XMKjtE",
+      "tool_name": "fail_dynamic",
+      "error": "DYNAMIC_FAILURE_c09339b1-ea51-483b-b6ff-1465d6af461a"
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "SEGMENT_END",
+    "runId": "run-codex-backend-dynamic-tool-failure",
+    "payload": {
+      "item": {
+        "type": "dynamicToolCall",
+        "id": "call_vRTKb0DqG0Cc81iEZ2XMKjtE",
+        "namespace": null,
+        "tool": "fail_dynamic",
+        "arguments": {
+          "value": "HELLO_FAILURE"
+        },
+        "status": "failed",
+        "contentItems": [
+          {
+            "type": "inputText",
+            "text": "DYNAMIC_FAILURE_c09339b1-ea51-483b-b6ff-1465d6af461a"
+          }
+        ],
+        "success": false,
+        "durationMs": 2
+      },
+      "threadId": "019de281-2f8b-7c82-bc40-2e58b9a567d7",
+      "turnId": "019de281-2fc1-75b1-8af4-5eaa531cba71",
+      "id": "call_vRTKb0DqG0Cc81iEZ2XMKjtE",
+      "metadata": {
+        "tool_name": "fail_dynamic",
+        "arguments": {
+          "value": "HELLO_FAILURE"
+        }
+      }
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "TOOL_LOG",
+    "runId": "run-codex-backend-dynamic-tool-failure",
+    "payload": {
+      "threadId": "019de281-2f8b-7c82-bc40-2e58b9a567d7",
+      "turnId": "019de281-2fc1-75b1-8af4-5eaa531cba71",
+      "item": {
+        "type": "function_call_output",
+        "call_id": "call_vRTKb0DqG0Cc81iEZ2XMKjtE",
+        "output": "DYNAMIC_FAILURE_c09339b1-ea51-483b-b6ff-1465d6af461a"
+      },
+      "tool_invocation_id": "call_vRTKb0DqG0Cc81iEZ2XMKjtE",
+      "log_entry": "DYNAMIC_FAILURE_c09339b1-ea51-483b-b6ff-1465d6af461a"
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "SEGMENT_START",
+    "runId": "run-codex-backend-dynamic-tool-failure",
+    "payload": {
+      "item": {
+        "type": "agentMessage",
+        "id": "msg_02e461c725944cd90169f45a72636081919b6a2280bcc64a54",
+        "text": "",
+        "phase": "final_answer",
+        "memoryCitation": null
+      },
+      "threadId": "019de281-2f8b-7c82-bc40-2e58b9a567d7",
+      "turnId": "019de281-2fc1-75b1-8af4-5eaa531cba71",
+      "id": "msg_02e461c725944cd90169f45a72636081919b6a2280bcc64a54",
+      "segment_type": "text"
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "SEGMENT_CONTENT",
+    "runId": "run-codex-backend-dynamic-tool-failure",
+    "payload": {
+      "threadId": "019de281-2f8b-7c82-bc40-2e58b9a567d7",
+      "turnId": "019de281-2fc1-75b1-8af4-5eaa531cba71",
+      "itemId": "msg_02e461c725944cd90169f45a72636081919b6a2280bcc64a54",
+      "delta": "DONE",
+      "id": "msg_02e461c725944cd90169f45a72636081919b6a2280bcc64a54",
+      "segment_type": "text"
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "SEGMENT_END",
+    "runId": "run-codex-backend-dynamic-tool-failure",
+    "payload": {
+      "item": {
+        "type": "agentMessage",
+        "id": "msg_02e461c725944cd90169f45a72636081919b6a2280bcc64a54",
+        "text": "DONE",
+        "phase": "final_answer",
+        "memoryCitation": null
+      },
+      "threadId": "019de281-2f8b-7c82-bc40-2e58b9a567d7",
+      "turnId": "019de281-2fc1-75b1-8af4-5eaa531cba71",
+      "id": "msg_02e461c725944cd90169f45a72636081919b6a2280bcc64a54"
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "runId": "run-codex-backend-dynamic-tool-failure",
+    "payload": {
+      "threadId": "019de281-2f8b-7c82-bc40-2e58b9a567d7",
+      "status": {
+        "type": "idle"
+      }
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "TURN_COMPLETED",
+    "runId": "run-codex-backend-dynamic-tool-failure",
+    "payload": {
+      "turnId": "019de281-2fc1-75b1-8af4-5eaa531cba71"
+    },
+    "statusHint": "IDLE"
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "runId": "run-codex-backend-dynamic-tool-failure",
+    "payload": {
+      "new_status": "IDLE",
+      "old_status": "RUNNING",
+      "turnId": "019de281-2fc1-75b1-8af4-5eaa531cba71"
+    },
+    "statusHint": "IDLE"
+  }
+]
