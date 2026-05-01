@@ -52,8 +52,8 @@ class ScenarioSummarizer extends Summarizer {
     const traces = blocks.flatMap((block) => block.traces ?? []) as RawTraceItem[];
     const summary = traces.map((trace) => trace.content).filter(Boolean).join(' ');
     const { decisions, constraints } = extractMarkedItems(traces);
-    const durableFacts = decisions.map((decision) => ({ fact: decision, tags: ['decision'] }));
-    const unresolvedWork = constraints.map((constraint) => ({ fact: constraint, tags: ['constraint'] }));
+    const durableFacts = decisions.map((decision) => ({ fact: decision }));
+    const unresolvedWork = constraints.map((constraint) => ({ fact: constraint }));
 
     this.lastPayload = {
       episodic_summary: summary,

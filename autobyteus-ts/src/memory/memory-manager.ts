@@ -77,8 +77,7 @@ export class MemoryManager {
         images: llmUserMessage.image_urls ?? [],
         audio: llmUserMessage.audio_urls ?? [],
         video: llmUserMessage.video_urls ?? []
-      },
-      tags: ['processed']
+      }
     });
     this.store.add([trace]);
   }
@@ -91,8 +90,7 @@ export class MemoryManager {
       seq: this.nextSeq(turnId),
       traceType: 'tool_continuation',
       content,
-      sourceEvent,
-      tags: ['boundary']
+      sourceEvent
     });
     this.store.add([trace]);
   }
@@ -190,8 +188,7 @@ export class MemoryManager {
       seq: this.nextSeq(turnId),
       traceType: 'assistant',
       content: response.content ?? '',
-      sourceEvent,
-      tags: ['final']
+      sourceEvent
     });
     this.store.add([trace]);
     if (appendToWorkingContext && (response.content || response.reasoning)) {

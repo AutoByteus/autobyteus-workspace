@@ -5,7 +5,6 @@ export type EpisodicItemOptions = {
   ts: number;
   turnIds: string[];
   summary: string;
-  tags?: string[];
   salience?: number;
 };
 
@@ -14,7 +13,6 @@ export class EpisodicItem implements MemoryItem {
   ts: number;
   turnIds: string[];
   summary: string;
-  tags: string[];
   salience: number;
 
   constructor(options: EpisodicItemOptions) {
@@ -22,7 +20,6 @@ export class EpisodicItem implements MemoryItem {
     this.ts = options.ts;
     this.turnIds = options.turnIds ?? [];
     this.summary = options.summary;
-    this.tags = options.tags ?? [];
     this.salience = options.salience ?? 0.0;
   }
 
@@ -31,18 +28,13 @@ export class EpisodicItem implements MemoryItem {
   }
 
   toDict(): Record<string, unknown> {
-    const data: Record<string, unknown> = {
+    return {
       id: this.id,
       ts: this.ts,
       turn_ids: this.turnIds,
       summary: this.summary,
       salience: this.salience
     };
-
-    if (this.tags.length) {
-      data.tags = this.tags;
-    }
-    return data;
   }
 
   static fromDict(data: Record<string, unknown>): EpisodicItem {
@@ -51,7 +43,6 @@ export class EpisodicItem implements MemoryItem {
       ts: Number(data.ts),
       turnIds: Array.isArray(data.turn_ids) ? (data.turn_ids as string[]) : [],
       summary: typeof data.summary === 'string' ? data.summary : '',
-      tags: Array.isArray(data.tags) ? (data.tags as string[]) : [],
       salience: typeof data.salience === 'number' ? data.salience : 0.0
     });
   }

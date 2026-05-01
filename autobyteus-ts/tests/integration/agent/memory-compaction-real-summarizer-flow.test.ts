@@ -85,7 +85,7 @@ describe('Memory compaction summarizer flow', () => {
       expect(semanticItems.length).toBeGreaterThan(0);
       expect(episodicItems[0].summary.trim().length).toBeGreaterThan(10);
       expect(semanticItems.some((item) => item.fact === 'hello.py created')).toBe(true);
-      expect(semanticItems.every((item) => item.reference === null && item.tags.length === 0)).toBe(true);
+      expect(semanticItems.every((item) => !('reference' in item.toDict()) && !('tags' in item.toDict()))).toBe(true);
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }

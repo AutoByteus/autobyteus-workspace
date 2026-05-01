@@ -61,7 +61,7 @@ Raw traces preserve provenance needed by future analyzers:
 - `seq`
 - `trace_type` / GraphQL `traceType`, including `provider_compaction_boundary` markers
 - `source_event` / GraphQL `sourceEvent`
-- `content`, `media`, tool identity, tool args/result/error, correlation id, tags, and timestamp fields when present
+- `content`, `media`, tool identity, tool args/result/error, correlation id, and timestamp fields when present
 
 GraphQL memory-view queries:
 
