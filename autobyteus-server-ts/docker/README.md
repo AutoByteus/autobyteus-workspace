@@ -130,6 +130,14 @@ The container runs as `root`, and `/root` is persisted in a Docker-managed named
 
 Host credential folders are not mounted into the container by default.
 
+Claude Agent SDK runtime sessions automatically load Claude Code filesystem
+settings sources (`user`, `project`, and `local`). The `user` source means
+`~/.claude/settings.json` for the OS user running the AutoByteus server process.
+In this Docker image the server runs as `root`, so that path is normally
+`/root/.claude/settings.json` inside the container. Mount or persist `/root` (as
+the quick-start example does) if you want Claude Code gateway/model settings to
+survive container recreation.
+
 ## Management Commands
 
 - `./docker-start.sh ps`: Show running instances and their names.

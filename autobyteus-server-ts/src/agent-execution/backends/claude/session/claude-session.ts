@@ -305,7 +305,6 @@ export class ClaudeSession {
       workingDirectory: this.workingDirectory,
       mcpServers,
       allowedTools,
-      enableProjectSkillSettings: this.isProjectSkillSettingsEnabled(),
       permissionMode: this.permissionMode,
       ...(this.permissionMode !== "bypassPermissions"
         ? {

@@ -163,7 +163,6 @@ describeClaudeSdkClientIntegration("ClaudeSdkClient integration (live transport)
         model: modelIdentifier,
         workingDirectory: workspaceRoot,
         permissionMode: "default",
-        enableProjectSkillSettings: true,
         autoExecuteTools: true,
       });
 

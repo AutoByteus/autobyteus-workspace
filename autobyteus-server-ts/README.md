@@ -177,6 +177,12 @@ docker run -d \
   autobyteus/autobyteus-server:latest
 ```
 
+Claude Agent SDK sessions automatically read Claude Code filesystem settings.
+For this Docker image, the `user` Claude Code settings source resolves to
+`/root/.claude/settings.json` inside the container because the server process
+runs as `root`. Keep the `/root` volume mounted if you want Claude Code auth,
+gateway, or model settings to survive container recreation.
+
 Useful endpoints after startup:
 
 ```text

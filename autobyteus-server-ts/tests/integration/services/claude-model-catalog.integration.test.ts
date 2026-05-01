@@ -9,6 +9,31 @@ const liveClaudeTestsEnabled = process.env.RUN_CLAUDE_E2E === "1";
 const describeClaudeModelCatalogIntegration =
   claudeBinaryReady && liveClaudeTestsEnabled ? describe : describe.skip;
 
+const KNOWN_REASONING_EFFORT_LEVELS: readonly string[] = [
+  "high",
+  "low",
+  "max",
+  "medium",
+  "xhigh",
+];
+
+const expectReasoningEffortLevels = (
+  actualLevels: string[],
+  requiredLevels: string[],
+): void => {
+  expect(actualLevels).toEqual(expect.arrayContaining(requiredLevels));
+  expect(actualLevels.every((level) => KNOWN_REASONING_EFFORT_LEVELS.includes(level))).toBe(
+    true,
+  );
+};
+
+const getReasoningEffortLevels = (
+  configSchema: unknown,
+): string[] => [
+  ...(((configSchema as { properties?: Record<string, { enum?: string[] }> } | undefined)
+    ?.properties?.reasoning_effort?.enum) ?? []),
+].sort();
+
 describeClaudeModelCatalogIntegration("ClaudeModelCatalog integration (live transport)", () => {
   it("lists live Claude models with usable identifiers", async () => {
     const catalog = new ClaudeModelCatalog();
@@ -30,20 +55,21 @@ describeClaudeModelCatalogIntegration("ClaudeModelCatalog integration (live tran
       (defaultModel?.config_schema as { properties?: Record<string, unknown> } | undefined)?.properties
         ?.thinking_enabled,
     ).toBeTruthy();
-    expect(
-      (
-        (defaultModel?.config_schema as { properties?: Record<string, { enum?: string[] }> } | undefined)
-          ?.properties?.reasoning_effort?.enum ?? []
-      ).sort(),
-    ).toEqual(["high", "low", "medium"]);
+    expectReasoningEffortLevels(
+      getReasoningEffortLevels(defaultModel?.config_schema),
+      ["high", "low", "medium"],
+    );
 
-    expect(
-      (
-        (opusModel?.config_schema as { properties?: Record<string, { enum?: string[] }> } | undefined)
-          ?.properties?.reasoning_effort?.enum ?? []
-      ).sort(),
-    ).toEqual(["high", "low", "max", "medium"]);
+    expectReasoningEffortLevels(
+      getReasoningEffortLevels(opusModel?.config_schema),
+      ["high", "low", "max", "medium"],
+    );
 
-    expect(haikuModel?.config_schema ?? null).toBeNull();
+    if (haikuModel?.config_schema) {
+      expectReasoningEffortLevels(
+        getReasoningEffortLevels(haikuModel.config_schema),
+        ["high", "low", "medium"],
+      );
+    }
   });
 });

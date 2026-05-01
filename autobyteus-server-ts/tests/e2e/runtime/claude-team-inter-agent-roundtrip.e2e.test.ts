@@ -168,7 +168,6 @@ describeClaudeRuntime("Claude team inter-agent roundtrip e2e (live transport)", 
     const query = `
       query Models($runtimeKind: String) {
         availableLlmProvidersWithModels(runtimeKind: $runtimeKind) {
-          provider
           models {
             modelIdentifier
           }
@@ -178,7 +177,6 @@ describeClaudeRuntime("Claude team inter-agent roundtrip e2e (live transport)", 
 
     const result = await execGraphql<{
       availableLlmProvidersWithModels: Array<{
-        provider: string;
         models: Array<{ modelIdentifier: string }>;
       }>;
     }>(query, {
@@ -231,6 +229,7 @@ Rules:
             role: "assistant",
             description: "Claude ping agent for live inter-agent roundtrip validation.",
             instructions: teamInstructions,
+            toolNames: ["send_message_to"],
           },
         },
       );
@@ -242,6 +241,7 @@ Rules:
             role: "assistant",
             description: "Claude pong agent for live inter-agent roundtrip validation.",
             instructions: teamInstructions,
+            toolNames: ["send_message_to"],
           },
         },
       );
@@ -270,11 +270,13 @@ Rules:
                 memberName: "ping",
                 ref: pingAgentDefinitionId,
                 refType: "AGENT",
+                refScope: "SHARED",
               },
               {
                 memberName: "pong",
                 ref: pongAgentDefinitionId,
                 refType: "AGENT",
+                refScope: "SHARED",
               },
             ],
           },
@@ -558,6 +560,7 @@ Rules:
             role: "assistant",
             description: "Claude nested parent coordinator.",
             instructions: rootInstructions,
+            toolNames: ["send_message_to"],
           },
         },
       );
@@ -599,6 +602,7 @@ Rules:
               memberName: "specialist",
               ref: specialistAgentDefinitionId,
               refType: "AGENT",
+              refScope: "SHARED",
             },
           ],
         },
@@ -619,6 +623,7 @@ Rules:
               memberName: "parent",
               ref: parentAgentDefinitionId,
               refType: "AGENT",
+              refScope: "SHARED",
             },
             {
               memberName: "research_subteam",
@@ -839,6 +844,7 @@ Rules:
                 memberName: "professor",
                 ref: professorAgentDefinitionId,
                 refType: "AGENT",
+                refScope: "SHARED",
               },
             ],
           },
@@ -1126,6 +1132,7 @@ Rules:
                 memberName: "professor",
                 ref: professorAgentDefinitionId,
                 refType: "AGENT",
+                refScope: "SHARED",
               },
             ],
           },
@@ -1234,6 +1241,16 @@ Rules:
 
       const firstToken = `CLAUDE_TEAM_PROJECTION_FIRST_${randomUUID().replace(/-/g, "_")}`;
       const secondToken = `CLAUDE_TEAM_PROJECTION_SECOND_${randomUUID().replace(/-/g, "_")}`;
+      const hasProfessorTokenResponse = (
+        messages: Array<{ type: string; payload: Record<string, unknown> }>,
+        token: string,
+      ): boolean =>
+        messages.some(
+          (message) =>
+            ["SEGMENT_CONTENT", "SEGMENT_END", "ASSISTANT_COMPLETE"].includes(message.type) &&
+            message.payload.agent_name === "professor" &&
+            JSON.stringify(message.payload).includes(token),
+        );
 
       try {
         sendTeamMessageOverSocket(teamSocket, {
@@ -1242,23 +1259,12 @@ Rules:
 
         const deadline = Date.now() + 120_000;
         while (Date.now() < deadline) {
-          const matched = streamMessages.some(
-            (message) =>
-              (message.type === "SEGMENT_END" || message.type === "ASSISTANT_COMPLETE") &&
-              message.payload.agent_name === "professor",
-          );
-          if (matched) {
+          if (hasProfessorTokenResponse(streamMessages, firstToken)) {
             break;
           }
           await wait(1_000);
         }
-        expect(
-          streamMessages.some(
-            (message) =>
-              (message.type === "SEGMENT_END" || message.type === "ASSISTANT_COMPLETE") &&
-              message.payload.agent_name === "professor",
-          ),
-        ).toBe(true);
+        expect(hasProfessorTokenResponse(streamMessages, firstToken)).toBe(true);
         while (Date.now() < deadline) {
           const isProfessorIdle = streamMessages.some(
             (message) =>
@@ -1314,25 +1320,15 @@ Rules:
           content: `Reply with exactly ${secondToken} and nothing else.`,
         });
 
-        while (Date.now() < deadline) {
-          const matched = streamMessages.slice(secondStartIndex).some(
-            (message) =>
-              (message.type === "SEGMENT_END" || message.type === "ASSISTANT_COMPLETE") &&
-              message.payload.agent_name === "professor",
-          );
-          if (matched) {
+        const secondDeadline = Date.now() + 120_000;
+        while (Date.now() < secondDeadline) {
+          if (hasProfessorTokenResponse(streamMessages.slice(secondStartIndex), secondToken)) {
             break;
           }
           await wait(1_000);
         }
-        expect(
-          streamMessages.slice(secondStartIndex).some(
-            (message) =>
-              (message.type === "SEGMENT_END" || message.type === "ASSISTANT_COMPLETE") &&
-              message.payload.agent_name === "professor",
-          ),
-        ).toBe(true);
-        while (Date.now() < deadline) {
+        expect(hasProfessorTokenResponse(streamMessages.slice(secondStartIndex), secondToken)).toBe(true);
+        while (Date.now() < secondDeadline) {
           const isProfessorIdle = streamMessages.slice(secondStartIndex).some(
             (message) =>
               message.type === "AGENT_STATUS" &&
@@ -1350,17 +1346,42 @@ Rules:
         }>(terminateTeamRunMutation, { teamRunId });
         expect(secondTerminateResult.terminateAgentTeamRun.success).toBe(true);
 
-        const secondProjectionResult = await execGraphql<{
-          getTeamMemberRunProjection: {
-            agentRunId: string;
-            summary: string | null;
-            lastActivityAt: string | null;
-            conversation: Array<Record<string, unknown>>;
-          };
-        }>(projectionQuery, {
-          teamRunId,
-          memberRouteKey: professorRouteKey,
-        });
+        let secondProjectionResult:
+          | {
+              getTeamMemberRunProjection: {
+                agentRunId: string;
+                summary: string | null;
+                lastActivityAt: string | null;
+                conversation: Array<Record<string, unknown>>;
+              };
+            }
+          | null = null;
+        const projectionDeadline = Date.now() + 120_000;
+        while (Date.now() < projectionDeadline) {
+          secondProjectionResult = await execGraphql<{
+            getTeamMemberRunProjection: {
+              agentRunId: string;
+              summary: string | null;
+              lastActivityAt: string | null;
+              conversation: Array<Record<string, unknown>>;
+            };
+          }>(projectionQuery, {
+            teamRunId,
+            memberRouteKey: professorRouteKey,
+          });
+          if (
+            JSON.stringify(secondProjectionResult.getTeamMemberRunProjection.conversation).includes(
+              secondToken,
+            )
+          ) {
+            break;
+          }
+          await wait(2_000);
+        }
+        expect(secondProjectionResult).toBeTruthy();
+        if (!secondProjectionResult) {
+          throw new Error("Projection result was not returned after the restored Claude team turn.");
+        }
         const serializedConversation = JSON.stringify(secondProjectionResult.getTeamMemberRunProjection.conversation);
         expect(secondProjectionResult.getTeamMemberRunProjection.conversation.length).toBeGreaterThanOrEqual(3);
         expect(serializedConversation).toContain(firstToken);

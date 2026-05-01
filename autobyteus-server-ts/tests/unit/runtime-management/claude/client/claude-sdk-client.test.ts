@@ -38,7 +38,6 @@ describe("ClaudeSdkClient", () => {
         "mcp__autobyteus_browser__open_tab",
         "mcp__autobyteus_browser__read_page",
       ],
-      enableProjectSkillSettings: true,
       permissionMode: "default",
       autoExecuteTools: false,
     });
@@ -53,7 +52,7 @@ describe("ClaudeSdkClient", () => {
         resume: "session-123",
         mcpServers: { demo: mcpServer },
         permissionMode: "default",
-        settingSources: ["project"],
+        settingSources: ["user", "project", "local"],
         allowedTools: expect.arrayContaining([
           "Skill",
           "send_message_to",
@@ -63,6 +62,55 @@ describe("ClaudeSdkClient", () => {
           "mcp__autobyteus_browser__open_tab",
           "mcp__autobyteus_browser__read_page",
         ]),
+      }),
+    });
+  });
+
+  it("loads user, project, and local Claude Code settings for normal turns", async () => {
+    const client = new ClaudeSdkClient();
+    const queryMock = createMockQuery();
+    const queryFn = vi.fn(async (_input: unknown) => queryMock);
+
+    client.setCachedModuleForTesting({
+      query: queryFn,
+    });
+
+    await client.startQueryTurn({
+      prompt: "Use the configured Claude Code settings.",
+      model: "default",
+      workingDirectory: "/tmp/claude-client-default-setting-sources",
+    });
+
+    expect(queryFn).toHaveBeenCalledWith({
+      prompt: "Use the configured Claude Code settings.",
+      options: expect.objectContaining({
+        settingSources: ["user", "project", "local"],
+      }),
+    });
+  });
+
+  it("uses user settings-source policy for model discovery", async () => {
+    const client = new ClaudeSdkClient();
+    const control = {
+      supportedModels: vi.fn(async () => ["deepseek-v4-flash"]),
+      interrupt: vi.fn(async () => undefined),
+      close: vi.fn(() => undefined),
+    };
+    const queryFn = vi.fn(async (_input: unknown) => control);
+
+    client.setCachedModuleForTesting({
+      query: queryFn,
+    });
+
+    const models = await client.listModels();
+
+    expect(models[0]?.model_identifier).toBe("deepseek-v4-flash");
+    expect(queryFn).toHaveBeenCalledWith({
+      prompt: expect.any(String),
+      options: expect.objectContaining({
+        maxTurns: 0,
+        permissionMode: "plan",
+        settingSources: ["user"],
       }),
     });
   });

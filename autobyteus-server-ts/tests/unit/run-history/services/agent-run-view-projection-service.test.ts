@@ -76,7 +76,7 @@ describe("AgentRunViewProjectionService", () => {
   };
 
   const createProvider = (
-    runtimeKind: "autobyteus" | "codex_app_server" | undefined,
+    runtimeKind: RuntimeKind | undefined,
     impl: RunProjectionProvider["buildProjection"],
   ): RunProjectionProvider => ({
     runtimeKind,
@@ -90,11 +90,11 @@ describe("AgentRunViewProjectionService", () => {
     await metadataStore.writeMetadata(runId, createMetadata(RuntimeKind.CODEX_APP_SERVER, runId));
 
     const codexProvider = createProvider(
-      "codex_app_server",
+      RuntimeKind.CODEX_APP_SERVER,
       vi.fn(async () => null),
     );
     const fallbackProvider = createProvider(
-      "autobyteus",
+      RuntimeKind.AUTOBYTEUS,
       vi.fn(async (input) => ({
         runId: input.source.runId,
         conversation: [{ kind: "message", role: "user", content: "local fallback", ts: 1 }],
@@ -123,7 +123,7 @@ describe("AgentRunViewProjectionService", () => {
     await metadataStore.writeMetadata(runId, createMetadata(RuntimeKind.CODEX_APP_SERVER, runId));
 
     const codexProvider = createProvider(
-      "codex_app_server",
+      RuntimeKind.CODEX_APP_SERVER,
       vi.fn(async (input) => ({
         runId: input.source.runId,
         conversation: [],
@@ -147,7 +147,7 @@ describe("AgentRunViewProjectionService", () => {
       })),
     );
     const fallbackProvider = createProvider(
-      "autobyteus",
+      RuntimeKind.AUTOBYTEUS,
       vi.fn(async () => ({
         runId,
         conversation: [{ kind: "message", role: "assistant", content: "fallback", ts: 3 }],
@@ -169,6 +169,56 @@ describe("AgentRunViewProjectionService", () => {
     expect(projection.activities).toHaveLength(1);
   });
 
+  it("merges local projection rows with runtime provider rows instead of dropping complementary history", async () => {
+    const memoryDir = await createTempMemoryDir();
+    const runId = "run-claude-merged";
+
+    const claudeProvider = createProvider(
+      RuntimeKind.CLAUDE_AGENT_SDK,
+      vi.fn(async (input) => ({
+        runId: input.source.runId,
+        conversation: [{ kind: "message", role: "assistant", content: "runtime follow-up", ts: 2 }],
+        activities: [],
+        summary: "runtime follow-up",
+        lastActivityAt: "2026-02-24T00:00:02.000Z",
+      })),
+    );
+    const fallbackProvider = createProvider(
+      RuntimeKind.AUTOBYTEUS,
+      vi.fn(async () => ({
+        runId,
+        conversation: [{ kind: "message", role: "assistant", content: "fallback", ts: 3 }],
+        activities: [],
+        summary: "fallback",
+        lastActivityAt: "2026-02-24T00:00:03.000Z",
+      })),
+    );
+
+    const service = new AgentRunViewProjectionService(memoryDir, {
+      providerRegistry: new FakeRunProjectionProviderRegistry(fallbackProvider, [claudeProvider]),
+    });
+
+    const projection = await service.getProjectionFromMetadata({
+      runId,
+      metadata: createMetadata(RuntimeKind.CLAUDE_AGENT_SDK, runId),
+      localProjection: {
+        runId,
+        conversation: [{ kind: "message", role: "user", content: "local first turn", ts: 1 }],
+        activities: [],
+        summary: "local first turn",
+        lastActivityAt: "2026-02-24T00:00:01.000Z",
+      },
+      allowFallbackProvider: false,
+    });
+
+    expect(claudeProvider.buildProjection).toHaveBeenCalledTimes(1);
+    expect(fallbackProvider.buildProjection).not.toHaveBeenCalled();
+    expect(projection.conversation.map((entry) => entry.content)).toEqual([
+      "local first turn",
+      "runtime follow-up",
+    ]);
+  });
+
   it("returns deterministic empty projection when both providers fail", async () => {
     const memoryDir = await createTempMemoryDir();
     const runId = "run-codex-empty";
@@ -176,13 +226,13 @@ describe("AgentRunViewProjectionService", () => {
     await metadataStore.writeMetadata(runId, createMetadata(RuntimeKind.CODEX_APP_SERVER, runId));
 
     const codexProvider = createProvider(
-      "codex_app_server",
+      RuntimeKind.CODEX_APP_SERVER,
       vi.fn(async () => {
         throw new Error("primary failed");
       }),
     );
     const fallbackProvider = createProvider(
-      "autobyteus",
+      RuntimeKind.AUTOBYTEUS,
       vi.fn(async () => null),
     );
 

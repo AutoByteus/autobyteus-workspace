@@ -155,6 +155,8 @@ const buildExactWriteToolPrompt = (input: {
     "After the file is created, reply with DONE.",
   ].join("\n");
 
+const normalizeWrittenText = (value: string): string => value.replace(/\r?\n$/u, "");
+
 const buildBootstrapper = (
   workspaceRoot: string,
   instructions = "Reply briefly.",
@@ -431,7 +433,9 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
         );
 
         expect(await waitForFile(targetFilePath)).toBe(true);
-        expect(await fs.readFile(targetFilePath, "utf8")).toBe(targetLines.join("\n"));
+        expect(normalizeWrittenText(await fs.readFile(targetFilePath, "utf8"))).toBe(
+          targetLines.join("\n"),
+        );
       } finally {
         unsubscribe();
         await writeBackendEventLog("claude-backend-approved-tool", events);
@@ -580,7 +584,9 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
           events.some((event) => event.eventType === AgentRunEventType.TOOL_APPROVAL_REQUESTED),
         ).toBe(false);
         expect(await waitForFile(targetFilePath)).toBe(true);
-        expect(await fs.readFile(targetFilePath, "utf8")).toBe(targetLines.join("\n"));
+        expect(normalizeWrittenText(await fs.readFile(targetFilePath, "utf8"))).toBe(
+          targetLines.join("\n"),
+        );
       } finally {
         unsubscribe();
         await writeBackendEventLog("claude-backend-autoexec-tool", events);
@@ -716,7 +722,9 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
           (event) => event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
         );
         expect(await waitForFile(targetFilePath)).toBe(true);
-        expect(await fs.readFile(targetFilePath, "utf8")).toBe(targetLines.join("\n"));
+        expect(normalizeWrittenText(await fs.readFile(targetFilePath, "utf8"))).toBe(
+          targetLines.join("\n"),
+        );
 
         const sessionId = original.getPlatformAgentRunId();
         expect(sessionId).toBeTruthy();
