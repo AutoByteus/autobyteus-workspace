@@ -4,20 +4,23 @@
 
 - Ticket: `claude-agent-sdk-custom-settings`
 - Current owner: `delivery_engineer`
-- Status: Ready for explicit user verification before repository finalization.
-- Timestamp: 2026-05-01 13:33 CEST (+0200)
+- Status: Local checkpoint committed, latest `origin/personal` merged into ticket branch, macOS Electron build produced for user testing. Repository finalization is still held pending explicit user verification.
+- Timestamp: 2026-05-01 14:19 CEST (+0200)
 
 ## Integrated-State Summary
 
 - Task branch: `codex/claude-agent-sdk-custom-settings`
 - Upstream / bootstrap base: `origin/personal`
 - Finalization target recorded by bootstrap: `personal`
-- Latest tracked remote base checked: `origin/personal` at `5995fd8f4e6b6b8c4015e7e474998a47e099e089`
-- Ticket branch HEAD during delivery refresh: `5995fd8f4e6b6b8c4015e7e474998a47e099e089`
-- Integration method: `Already current` after `git fetch origin --prune`; no merge or rebase required.
-- Local checkpoint commit: Not needed because the tracked base had not advanced and no integration was performed.
-- Post-integration executable rerun: Not required because no base commits were integrated; API/E2E Round 4 is authoritative and remains applicable to the same base revision.
-- Delivery-owned verification: `git add -N ... && git diff --check; git reset --quiet` passed after docs sync and handoff/report artifacts were written, including new files.
+- Bootstrap base revision: `5995fd8f4e6b6b8c4015e7e474998a47e099e089`
+- Latest tracked remote base checked: `origin/personal` at `2686b6d3141a682f896dccc405c486ce908ad93d`
+- Local checkpoint commit before integration: `db1e36be` (`fix(claude): inherit Claude Code settings in SDK runtime`)
+- Latest-base integration method: `Merge`
+- Latest-base integration result: `Completed`
+- Latest-base merge commit: `32fed9890d3ddbc8d5e3ba95a8ed26eec48968b0`
+- Post-integration executable check: `NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm build:electron:mac` from `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/autobyteus-web`
+- Post-integration executable result: `Passed`; macOS arm64 DMG and ZIP were produced.
+- Delivery-owned patch cleanliness check before checkpoint: `git diff --cached --check` passed.
 
 ## What Is Ready For User Verification
 
@@ -35,6 +38,29 @@
 - Run-history module docs explain the local+runtime projection merge policy.
 - No Server Settings UI selector/card was added.
 - API/E2E validation Round 4 passed and supersedes previous rounds.
+
+## Electron Build For Testing
+
+Build command used after merging latest `origin/personal`:
+
+```bash
+cd /Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/autobyteus-web
+NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm build:electron:mac
+```
+
+Build result: `Passed`.
+
+Artifacts:
+
+- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.2.88.dmg`
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.2.88.zip`
+- DMG blockmap: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.2.88.dmg.blockmap`
+- ZIP blockmap: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.2.88.zip.blockmap`
+
+Build notes:
+
+- Local macOS build skipped code signing because signing identity was explicitly unset.
+- Build emitted non-blocking warnings about large frontend chunks, deprecated dependencies, and ignored optional build scripts; the command exited successfully.
 
 ## Artifacts
 
@@ -61,27 +87,21 @@ Authoritative latest validation:
   - `git diff --check` passed;
   - secret scan: `secret_values_checked=4`, `secret_value_hits=0`.
 
-Prior supporting checks:
+Post-integration user-test build:
 
-- Independent full code review Round 4 passed after reviewing the complete current patch.
-- Source build/type validation passed in code review: `pnpm --dir autobyteus-server-ts exec prisma generate --schema ./prisma/schema.prisma && pnpm --dir autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`.
-- Focused unit tests passed in code review: settings-source resolver/client tests plus run-history projection merge tests.
-- Known unrelated broad repo issue remains: full `pnpm --dir autobyteus-server-ts run typecheck` fails with pre-existing `TS6059` due tests being included while `rootDir` is `src`; source-build typecheck passed.
+- `NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm build:electron:mac`: `Passed`.
+
+Known unrelated broad repo issue remains: full `pnpm --dir autobyteus-server-ts run typecheck` fails with pre-existing `TS6059` due tests being included while `rootDir` is `src`; source-build typecheck passed.
 
 ## User Verification Needed
 
-Please verify the delivered behavior before finalization:
-
-1. Confirm the implementation meets the desired product behavior: Claude-backed AutoByteus sessions should automatically honor Claude Code filesystem settings without a settings-page selector.
-2. Optionally run or inspect a Claude Agent SDK session/model picker using your configured Claude Code settings.
-3. Confirm whether I should proceed with repository finalization after verification.
+Please test the built Electron app from the DMG/ZIP above. If it is good, reply with explicit approval such as `verified, proceed with finalization`.
 
 ## Finalization Hold
 
 Per delivery workflow, the following are intentionally not done yet:
 
-- No ticket folder was archived/moved to `tickets/done`.
-- No final commit was created for delivery-owned docs/artifacts.
+- No ticket folder was archived/moved to `tickets/done` for this ticket.
 - No ticket branch push was performed.
 - No merge into `personal` was performed.
 - No release, publication, or deployment was performed.
