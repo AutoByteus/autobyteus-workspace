@@ -432,12 +432,20 @@ export function handleToolExecutionSucceeded(
     return;
   }
 
-  const segment = ensureToolLifecycleSegment(context, parsed.invocationId, parsed.turnId, parsed.toolName, {});
+  const segment = ensureToolLifecycleSegment(
+    context,
+    parsed.invocationId,
+    parsed.turnId,
+    parsed.toolName,
+    parsed.arguments,
+  );
 
   if (isPlaceholderToolName(segment.toolName)) {
     segment.toolName = parsed.toolName;
   }
+  mergeArguments(segment, parsed.arguments);
   syncActivityToolName(context, parsed.invocationId, parsed.toolName);
+  updateActivityArguments(context, parsed.invocationId, parsed.arguments);
 
   const transitioned = applyExecutionSucceededState(segment, parsed.result);
   if (transitioned) {
@@ -456,12 +464,20 @@ export function handleToolExecutionFailed(
     return;
   }
 
-  const segment = ensureToolLifecycleSegment(context, parsed.invocationId, parsed.turnId, parsed.toolName, {});
+  const segment = ensureToolLifecycleSegment(
+    context,
+    parsed.invocationId,
+    parsed.turnId,
+    parsed.toolName,
+    parsed.arguments,
+  );
 
   if (isPlaceholderToolName(segment.toolName)) {
     segment.toolName = parsed.toolName;
   }
+  mergeArguments(segment, parsed.arguments);
   syncActivityToolName(context, parsed.invocationId, parsed.toolName);
+  updateActivityArguments(context, parsed.invocationId, parsed.arguments);
 
   const transitioned = applyExecutionFailedState(segment, parsed.error);
   if (transitioned) {

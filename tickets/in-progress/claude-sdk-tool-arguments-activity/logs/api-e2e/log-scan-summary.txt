@@ -1,0 +1,13 @@
+raw_jsonl_files=
+- /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/claude-raw-events/api-e2e/20260501T143427Z/claude-run-a8ce4f88-5704-46fd-afcd-a1d21ba62b8a.jsonl
+
+raw_file=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/claude-raw-events/api-e2e/20260501T143427Z/claude-run-a8ce4f88-5704-46fd-afcd-a1d21ba62b8a.jsonl
+tool_use id=call_00_LddpnoR1ovoW6OjiBgSb8ssV name=Write input_keys=['content', 'file_path'] input={"content": "TOOL_OK_d75e32ca_7d57_44bb_8460_42b8a847a9f5", "file_path": "api-tool-f189afad_ac8d_44cb_ad2a_e675b5660b35.txt"}
+tool_result tool_use_id=call_00_LddpnoR1ovoW6OjiBgSb8ssV content=File created successfully at: api-tool-f189afad_ac8d_44cb_ad2a_e675b5660b35.txt
+
+runtime_log=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/claude-gated-tool-lifecycle-e2e.log
+TOOL_EXECUTION_STARTED_eventType_lines=2 rawEventJson_count=1
+TOOL_APPROVAL_REQUESTED_eventType_lines=2 rawEventJson_count=1
+TOOL_APPROVED_eventType_lines=2 rawEventJson_count=1
+TOOL_EXECUTION_SUCCEEDED_eventType_lines=2 rawEventJson_count=1
+runtime_send_message_to_rawEventJson_count=0

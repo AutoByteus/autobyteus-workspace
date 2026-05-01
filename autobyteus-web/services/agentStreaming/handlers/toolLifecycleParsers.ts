@@ -32,10 +32,12 @@ export interface ParsedToolExecutionStartedPayload extends ParsedToolLifecycleBa
 }
 
 export interface ParsedToolExecutionSucceededPayload extends ParsedToolLifecycleBase {
+  arguments: Record<string, any>;
   result: any;
 }
 
 export interface ParsedToolExecutionFailedPayload extends ParsedToolLifecycleBase {
+  arguments: Record<string, any>;
   error: string;
 }
 
@@ -168,6 +170,7 @@ export const parseToolExecutionSucceededPayload = (
   }
   return {
     ...base,
+    arguments: normalizeArguments(payload.arguments),
     result: payload.result ?? null,
   };
 };
@@ -187,6 +190,7 @@ export const parseToolExecutionFailedPayload = (
 
   return {
     ...base,
+    arguments: normalizeArguments(payload.arguments),
     error,
   };
 };

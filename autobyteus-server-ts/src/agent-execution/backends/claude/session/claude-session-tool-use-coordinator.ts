@@ -20,6 +20,7 @@ type PendingClaudeToolApproval = {
 type ObservedClaudeToolInvocation = {
   toolName: string | null;
   toolInput: Record<string, unknown>;
+  startedEmitted: boolean;
 };
 
 const CLAUDE_TOOL_APPROVAL_TIMEOUT_MS = 120_000;
@@ -86,18 +87,11 @@ export class ClaudeSessionToolUseCoordinator {
         ? { ...toolInputRaw }
         : {};
 
-    this.trackObservedToolInvocation(runContext.runId, invocationId, {
+    this.upsertObservedToolInvocation(runContext.runId, invocationId, {
       toolName,
       toolInput,
     });
-    this.emitEvent(runContext, {
-      method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_STARTED,
-      params: {
-        invocation_id: invocationId,
-        tool_name: toolName,
-        arguments: toolInput,
-      },
-    });
+    this.emitToolExecutionStartedIfNeeded(runContext, invocationId);
 
     const decision = await this.resolveToolApprovalDecision({
       runContext,
@@ -175,10 +169,11 @@ export class ClaudeSessionToolUseCoordinator {
             ? (block.arguments as Record<string, unknown>)
             : null) ??
           {};
-        this.trackObservedToolInvocation(runContext.runId, invocationId, {
+        this.upsertObservedToolInvocation(runContext.runId, invocationId, {
           toolName,
           toolInput,
         });
+        this.emitToolExecutionStartedIfNeeded(runContext, invocationId);
         continue;
       }
 
@@ -209,6 +204,7 @@ export class ClaudeSessionToolUseCoordinator {
           params: {
             invocation_id: invocationId,
             tool_name: toolName,
+            ...(tracked ? { arguments: tracked.toolInput } : {}),
             error: errorMessage,
           },
         });
@@ -220,6 +216,7 @@ export class ClaudeSessionToolUseCoordinator {
         params: {
           invocation_id: invocationId,
           tool_name: toolName,
+          ...(tracked ? { arguments: tracked.toolInput } : {}),
           result: blockResult,
         },
       });
@@ -356,19 +353,60 @@ export class ClaudeSessionToolUseCoordinator {
     return created;
   }
 
-  private trackObservedToolInvocation(
+  private upsertObservedToolInvocation(
     runId: string,
     invocationId: string,
-    observed: ObservedClaudeToolInvocation,
+    observed: Omit<ObservedClaudeToolInvocation, "startedEmitted">,
+  ): ObservedClaudeToolInvocation {
+    const invocations = this.getOrCreateObservedToolInvocations(runId);
+    const existing = invocations.get(invocationId);
+    const toolInput = Object.keys(observed.toolInput).length > 0
+      ? { ...observed.toolInput }
+      : { ...(existing?.toolInput ?? observed.toolInput) };
+    const toolName = observed.toolName && observed.toolName !== "unknown_tool"
+      ? observed.toolName
+      : existing?.toolName ?? observed.toolName ?? null;
+    const next: ObservedClaudeToolInvocation = {
+      toolName,
+      toolInput,
+      startedEmitted: existing?.startedEmitted ?? false,
+    };
+    invocations.set(invocationId, next);
+    return next;
+  }
+
+  private emitToolExecutionStartedIfNeeded(
+    runContext: ClaudeRunContext,
+    invocationId: string,
   ): void {
-    const existing = this.observedToolInvocationsByRunId.get(runId);
-    if (existing) {
-      existing.set(invocationId, observed);
+    const observed = this.observedToolInvocationsByRunId.get(runContext.runId)?.get(invocationId);
+    if (!observed || observed.startedEmitted || !observed.toolName) {
       return;
     }
+    observed.startedEmitted = true;
+    if (isClaudeSendMessageToolName(observed.toolName)) {
+      return;
+    }
+    this.emitEvent(runContext, {
+      method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_STARTED,
+      params: {
+        invocation_id: invocationId,
+        tool_name: observed.toolName,
+        arguments: observed.toolInput,
+      },
+    });
+  }
+
+  private getOrCreateObservedToolInvocations(
+    runId: string,
+  ): Map<string, ObservedClaudeToolInvocation> {
+    const existing = this.observedToolInvocationsByRunId.get(runId);
+    if (existing) {
+      return existing;
+    }
     const created = new Map<string, ObservedClaudeToolInvocation>();
-    created.set(invocationId, observed);
     this.observedToolInvocationsByRunId.set(runId, created);
+    return created;
   }
 
   private consumeObservedToolInvocation(

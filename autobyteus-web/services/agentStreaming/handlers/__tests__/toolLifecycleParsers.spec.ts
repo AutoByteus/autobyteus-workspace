@@ -48,18 +48,28 @@ describe('toolLifecycleParsers', () => {
         invocation_id: 'inv-1',
         tool_name: 'read_file',
         turn_id: null,
+        arguments: { path: '/tmp/a.txt' },
         result: { content: 'hello' },
       } as any),
-    )?.toMatchObject({ invocationId: 'inv-1', result: { content: 'hello' } });
+    )?.toMatchObject({
+      invocationId: 'inv-1',
+      arguments: { path: '/tmp/a.txt' },
+      result: { content: 'hello' },
+    });
 
     expect(
       parseToolExecutionFailedPayload({
         invocation_id: 'inv-1',
         tool_name: 'read_file',
         turn_id: null,
+        arguments: { path: '/tmp/a.txt' },
         error: 'failure',
       } as any),
-    )?.toMatchObject({ invocationId: 'inv-1', error: 'failure' });
+    )?.toMatchObject({
+      invocationId: 'inv-1',
+      arguments: { path: '/tmp/a.txt' },
+      error: 'failure',
+    });
 
     expect(
       parseToolLogPayload({

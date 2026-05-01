@@ -1,0 +1,1070 @@
+
+> autobyteus-server-ts@0.1.1 pretest /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/autobyteus-server-ts
+> pnpm prepare:shared
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 11 workspace projects
+autobyteus-ts build$ tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+
+> autobyteus-server-ts@0.1.1 test /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/autobyteus-server-ts
+> vitest tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts --run -t 'routes tool approval over websocket and streams the normalized tool lifecycle'
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+Registered 6 image models from Autobyteus host https://localhost:51739.
+Autobyteus image models from https://localhost:51739: gpt-image-1-rpa@localhost:51739, nano-banana-pro-app-rpa@localhost:51739, imagen-4-rpa@localhost:51739, imagen-4-ultra-rpa@localhost:51739, imagen-4-fast-rpa@localhost:51739, qwen-image-rpa@localhost:51739
+Autobyteus image discovery summary for https://localhost:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=27
+
+stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+Registered 6 image models from Autobyteus host https://localhost:51740.
+Autobyteus image models from https://localhost:51740: gpt-image-1-rpa@localhost:51740, nano-banana-pro-app-rpa@localhost:51740, imagen-4-rpa@localhost:51740, imagen-4-ultra-rpa@localhost:51740, imagen-4-fast-rpa@localhost:51740, qwen-image-rpa@localhost:51740
+Autobyteus image discovery summary for https://localhost:51740: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=13
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+Finished Autobyteus image model discovery. Total models registered: 12
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:20256) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/autobyteus-server-ts
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-app-server-runtime-api-e2e-1gQtQf
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-app-server-runtime-api-e2e-1gQtQf/.env
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Agent Definition created successfully with ID: codex-app-server-api-e2e-4054bb4e-8f69-4538-bf8d-bec89016685c
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-tool-workspace-yiuJ5P
+Initialized FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-tool-workspace-yiuJ5P. Call initialize() to build file tree.
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-tool-workspace-yiuJ5P' with max_depth=1
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-tool-workspace-yiuJ5P' completed in 0.0010 seconds.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Initialized FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-tool-workspace-yiuJ5P (Shallow). Starting background full scan...
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-tool-workspace-yiuJ5P' with max_depth=null
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-tool-workspace-yiuJ5P' completed in 0.0000 seconds.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+FileNameIndexer starting...
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Created and registered workspace ID: agent_ws_b3ab6f0a69715953b8755d6ecee463525a8a561246c1da231b9f3bb22f98a0f5
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Initialized server settings service with 11 predefined settings
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-tool-workspace-yiuJ5P' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-tool-workspace-yiuJ5P
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+FileNameIndexer started monitoring
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Background full initialization for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-tool-workspace-yiuJ5P completed.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Agent definition cache populated with 46 items.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Successfully created codex_app_server agent run 'a27b9fae-e93b-40d6-9116-b699522f2677'.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'thread/started',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: null,
+  threadCount: 1,
+  paramKeys: [ 'thread' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'thread/started',
+  listenerCount: 1,
+  paramKeys: [ 'thread' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: null,
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: null,
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: null,
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: null,
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: null,
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: null,
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Agent websocket attached for run a27b9fae-e93b-40d6-9116-b699522f2677
+Created agent session 2ab059a5-330f-43ce-aadc-ab9d6d24d915 for run a27b9fae-e93b-40d6-9116-b699522f2677
+Agent WebSocket connected: session=2ab059a5-330f-43ce-aadc-ab9d6d24d915, run=a27b9fae-e93b-40d6-9116-b699522f2677
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[CodexSendTurnStart] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: null,
+  startupStatus: 'ready',
+  contentPreview: 'Use the terminal tool to execute this command exactly once:\n' +
+    "printf 'TOOL_OK_1344ab63_3c30_4df9_8d40_d35d44ca1da0\\n' > '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0"
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[CodexSendTurnResponse] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  turnId: '019de3f7-86c3-7941-aa61-cdd28f54a49d',
+  payloadType: 'object',
+  payloadKeys: [ 'turn' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'thread/status/changed',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: '019de3f7-86c3-7941-aa61-cdd28f54a49d',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'status' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'thread/status/changed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'status' ]
+}
+[RuntimeEvent] {
+  sequence: 1,
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  eventType: 'AGENT_STATUS',
+  statusHint: null,
+  payloadKeys: [ 'threadId', 'status' ],
+  rawEventJson: '{"eventType":"AGENT_STATUS","runId":"a27b9fae-e93b-40d6-9116-b699522f2677","payload":{"threadId":"019de3f7-8685-76b2-9491-07f38e66f367","status":{"type":"active","activeFlags":[]}},"statusHint":null}'
+}
+[RuntimeMappedMessage] {
+  sequence: 1,
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  messageType: 'AGENT_STATUS',
+  payloadId: null,
+  segmentType: null,
+  eventType: 'AGENT_STATUS'
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'turn/started',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: '019de3f7-86c3-7941-aa61-cdd28f54a49d',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turn' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'turn/started',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turn' ]
+}
+[RuntimeEvent] {
+  sequence: 2,
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  eventType: 'TURN_STARTED',
+  statusHint: 'ACTIVE',
+  payloadKeys: [ 'turnId' ],
+  rawEventJson: '{"eventType":"TURN_STARTED","runId":"a27b9fae-e93b-40d6-9116-b699522f2677","payload":{"turnId":"019de3f7-86c3-7941-aa61-cdd28f54a49d"},"statusHint":"ACTIVE"}'
+}
+[RuntimeMappedMessage] {
+  sequence: 2,
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  messageType: 'TURN_STARTED',
+  payloadId: null,
+  segmentType: null,
+  eventType: 'TURN_STARTED'
+}
+[RuntimeEvent] {
+  sequence: 3,
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  eventType: 'AGENT_STATUS',
+  statusHint: 'ACTIVE',
+  payloadKeys: [ 'new_status', 'old_status', 'turnId' ],
+  rawEventJson: '{"eventType":"AGENT_STATUS","runId":"a27b9fae-e93b-40d6-9116-b699522f2677","payload":{"new_status":"RUNNING","old_status":null,"turnId":"019de3f7-86c3-7941-aa61-cdd28f54a49d"},"statusHint":"ACTIVE"}'
+}
+[RuntimeMappedMessage] {
+  sequence: 3,
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  messageType: 'AGENT_STATUS',
+  payloadId: null,
+  segmentType: null,
+  eventType: 'AGENT_STATUS'
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: '019de3f7-86c3-7941-aa61-cdd28f54a49d',
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: '019de3f7-86c3-7941-aa61-cdd28f54a49d',
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: '019de3f7-86c3-7941-aa61-cdd28f54a49d',
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: '019de3f7-86c3-7941-aa61-cdd28f54a49d',
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: '019de3f7-86c3-7941-aa61-cdd28f54a49d',
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: '019de3f7-86c3-7941-aa61-cdd28f54a49d',
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'rawResponseItem/completed',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: '019de3f7-86c3-7941-aa61-cdd28f54a49d',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'rawResponseItem/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'rawResponseItem/completed',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: '019de3f7-86c3-7941-aa61-cdd28f54a49d',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'rawResponseItem/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'rawResponseItem/completed',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: '019de3f7-86c3-7941-aa61-cdd28f54a49d',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'rawResponseItem/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'item/started',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: '019de3f7-86c3-7941-aa61-cdd28f54a49d',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'item/started',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId' ]
+}
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'item/completed',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: '019de3f7-86c3-7941-aa61-cdd28f54a49d',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'item/completed',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'account/rateLimits/updated',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: '019de3f7-86c3-7941-aa61-cdd28f54a49d',
+  threadCount: 1,
+  paramKeys: [ 'rateLimits' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'account/rateLimits/updated',
+  listenerCount: 1,
+  paramKeys: [ 'rateLimits' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'item/started',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: '019de3f7-86c3-7941-aa61-cdd28f54a49d',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'item/started',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'item/completed',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: '019de3f7-86c3-7941-aa61-cdd28f54a49d',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'item/completed',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'rawResponseItem/completed',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: '019de3f7-86c3-7941-aa61-cdd28f54a49d',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'rawResponseItem/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'rawResponseItem/completed',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: '019de3f7-86c3-7941-aa61-cdd28f54a49d',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'rawResponseItem/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'thread/tokenUsage/updated',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: '019de3f7-86c3-7941-aa61-cdd28f54a49d',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'tokenUsage' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'thread/tokenUsage/updated',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'tokenUsage' ]
+}
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'account/rateLimits/updated',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: '019de3f7-86c3-7941-aa61-cdd28f54a49d',
+  threadCount: 1,
+  paramKeys: [ 'rateLimits' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'account/rateLimits/updated',
+  listenerCount: 1,
+  paramKeys: [ 'rateLimits' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'item/started',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: '019de3f7-86c3-7941-aa61-cdd28f54a49d',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'item/started',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId' ]
+}
+[RuntimeEvent] {
+  sequence: 4,
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  eventType: 'TOOL_EXECUTION_STARTED',
+  statusHint: null,
+  payloadKeys: [
+    'item',
+    'threadId',
+    'turnId',
+    'invocation_id',
+    'tool_name',
+    'arguments'
+  ],
+  rawEventJson: `{"eventType":"TOOL_EXECUTION_STARTED","runId":"a27b9fae-e93b-40d6-9116-b699522f2677","payload":{"item":{"type":"commandExecution","id":"call_Nplt9aV5T8V8nsDLGyZkuTbx","command":"/bin/bash -lc \\"printf 'TOOL_OK_1344ab63_3c30_4df9_8d40_d35d44ca1da0\\\\\\\\n' > '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-tool-workspace-yiuJ5P/api-tool-ec76f20c_a6f5_4e2e_a920_c1806afc9b3f.txt'\\"","cwd":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-tool-workspace-yiuJ5P","processId":"14166","source":"unifiedExecStartup","status":"inProgress","commandActions":[{"type":"unknown","command":"printf 'TOOL_OK_1344ab63_3c30_4df9_8d40_d35d44ca1da0\\\\n' > '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-tool-workspace-yiuJ5P/api-tool-ec76f20c_a6f5_4e2e_a920_c1806afc9b3f.txt'"}],"aggregatedOutput":null,"exitCode":null,"durationMs":null},"threadId":"019de3f7-8685-76b2-9491-07f38e66f367","turnId":"019de3f7-86c3-7941-aa61-cdd28f54a49d","invocation_id":"call_Nplt9aV5T8V8nsDLGyZkuTbx","tool_name":"run_bash","arguments":{"command":"/bin/bash -lc \\"printf 'TOOL_OK_1344ab63_3c30_4df9_8d40_d35d44ca1da0\\\\\\\\n' > '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-tool-workspace-yiuJ5P/api-tool-ec76f20c_a6f5_4e2e_a920_c1806afc9b3f.txt'\\""}},"statusHint":null}`
+}
+[RuntimeMappedMessage] {
+  sequence: 4,
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  messageType: 'TOOL_EXECUTION_STARTED',
+  payloadId: null,
+  segmentType: null,
+  eventType: 'TOOL_EXECUTION_STARTED'
+}
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'item/completed',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: '019de3f7-86c3-7941-aa61-cdd28f54a49d',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'item/completed',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId' ]
+}
+[RuntimeEvent] {
+  sequence: 5,
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  eventType: 'TOOL_EXECUTION_SUCCEEDED',
+  statusHint: null,
+  payloadKeys: [
+    'item',
+    'threadId',
+    'turnId',
+    'invocation_id',
+    'tool_name',
+    'result'
+  ],
+  rawEventJson: `{"eventType":"TOOL_EXECUTION_SUCCEEDED","runId":"a27b9fae-e93b-40d6-9116-b699522f2677","payload":{"item":{"type":"commandExecution","id":"call_Nplt9aV5T8V8nsDLGyZkuTbx","command":"/bin/bash -lc \\"printf 'TOOL_OK_1344ab63_3c30_4df9_8d40_d35d44ca1da0\\\\\\\\n' > '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-tool-workspace-yiuJ5P/api-tool-ec76f20c_a6f5_4e2e_a920_c1806afc9b3f.txt'\\"","cwd":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-tool-workspace-yiuJ5P","processId":"14166","source":"unifiedExecStartup","status":"completed","commandActions":[{"type":"unknown","command":"printf 'TOOL_OK_1344ab63_3c30_4df9_8d40_d35d44ca1da0\\\\n' > '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-tool-workspace-yiuJ5P/api-tool-ec76f20c_a6f5_4e2e_a920_c1806afc9b3f.txt'"}],"aggregatedOutput":null,"exitCode":0,"durationMs":0},"threadId":"019de3f7-8685-76b2-9491-07f38e66f367","turnId":"019de3f7-86c3-7941-aa61-cdd28f54a49d","invocation_id":"call_Nplt9aV5T8V8nsDLGyZkuTbx","tool_name":"run_bash","result":null},"statusHint":null}`
+}
+[RuntimeMappedMessage] {
+  sequence: 5,
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  messageType: 'TOOL_EXECUTION_SUCCEEDED',
+  payloadId: null,
+  segmentType: null,
+  eventType: 'TOOL_EXECUTION_SUCCEEDED'
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'rawResponseItem/completed',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: '019de3f7-86c3-7941-aa61-cdd28f54a49d',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'rawResponseItem/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[RuntimeEvent] {
+  sequence: 6,
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  eventType: 'TOOL_LOG',
+  statusHint: null,
+  payloadKeys: [ 'threadId', 'turnId', 'item', 'tool_invocation_id', 'log_entry' ],
+  rawEventJson: '{"eventType":"TOOL_LOG","runId":"a27b9fae-e93b-40d6-9116-b699522f2677","payload":{"threadId":"019de3f7-8685-76b2-9491-07f38e66f367","turnId":"019de3f7-86c3-7941-aa61-cdd28f54a49d","item":{"type":"function_call_output","call_id":"call_Nplt9aV5T8V8nsDLGyZkuTbx","output":"Chunk ID: 97905e\\nWall time: 0.0000 seconds\\nProcess exited with code 0\\nOriginal token count: 0\\nOutput:\\n"},"tool_invocation_id":"call_Nplt9aV5T8V8nsDLGyZkuTbx","log_entry":"Chunk ID: 97905e\\nWall time: 0.0000 seconds\\nProcess exited with code 0\\nOriginal token count: 0\\nOutput:\\n"},"statusHint":null}'
+}
+[RuntimeMappedMessage] {
+  sequence: 6,
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  messageType: 'TOOL_LOG',
+  payloadId: null,
+  segmentType: null,
+  eventType: 'TOOL_LOG'
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Watcher detected creation: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-tool-workspace-yiuJ5P/api-tool-ec76f20c_a6f5_4e2e_a920_c1806afc9b3f.txt
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'item/started',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: '019de3f7-86c3-7941-aa61-cdd28f54a49d',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'item/started',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId' ]
+}
+[RuntimeEvent] {
+  sequence: 7,
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  eventType: 'SEGMENT_START',
+  statusHint: null,
+  payloadKeys: [ 'item', 'threadId', 'turnId', 'id', 'segment_type' ],
+  rawEventJson: '{"eventType":"SEGMENT_START","runId":"a27b9fae-e93b-40d6-9116-b699522f2677","payload":{"item":{"type":"agentMessage","id":"msg_00fdaf09d08603f70169f4ba4616b08191a08ba69a45f7e44c","text":"","phase":"final_answer","memoryCitation":null},"threadId":"019de3f7-8685-76b2-9491-07f38e66f367","turnId":"019de3f7-86c3-7941-aa61-cdd28f54a49d","id":"msg_00fdaf09d08603f70169f4ba4616b08191a08ba69a45f7e44c","segment_type":"text"},"statusHint":null}'
+}
+[RuntimeMappedMessage] {
+  sequence: 7,
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  messageType: 'SEGMENT_START',
+  payloadId: 'msg_00fdaf09d08603f70169f4ba4616b08191a08ba69a45f7e44c',
+  segmentType: 'text',
+  eventType: 'SEGMENT_START'
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'item/completed',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: '019de3f7-86c3-7941-aa61-cdd28f54a49d',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'item/completed',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId' ]
+}
+[RuntimeEvent] {
+  sequence: 8,
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  eventType: 'SEGMENT_END',
+  statusHint: null,
+  payloadKeys: [ 'item', 'threadId', 'turnId', 'id' ],
+  rawEventJson: '{"eventType":"SEGMENT_END","runId":"a27b9fae-e93b-40d6-9116-b699522f2677","payload":{"item":{"type":"agentMessage","id":"msg_00fdaf09d08603f70169f4ba4616b08191a08ba69a45f7e44c","text":"","phase":"final_answer","memoryCitation":null},"threadId":"019de3f7-8685-76b2-9491-07f38e66f367","turnId":"019de3f7-86c3-7941-aa61-cdd28f54a49d","id":"msg_00fdaf09d08603f70169f4ba4616b08191a08ba69a45f7e44c"},"statusHint":null}'
+}
+[RuntimeMappedMessage] {
+  sequence: 8,
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  messageType: 'SEGMENT_END',
+  payloadId: 'msg_00fdaf09d08603f70169f4ba4616b08191a08ba69a45f7e44c',
+  segmentType: null,
+  eventType: 'SEGMENT_END'
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'rawResponseItem/completed',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: '019de3f7-86c3-7941-aa61-cdd28f54a49d',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'rawResponseItem/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'thread/tokenUsage/updated',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: '019de3f7-86c3-7941-aa61-cdd28f54a49d',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'tokenUsage' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'thread/tokenUsage/updated',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'tokenUsage' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'account/rateLimits/updated',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: '019de3f7-86c3-7941-aa61-cdd28f54a49d',
+  threadCount: 1,
+  paramKeys: [ 'rateLimits' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'account/rateLimits/updated',
+  listenerCount: 1,
+  paramKeys: [ 'rateLimits' ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'thread/status/changed',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: '019de3f7-86c3-7941-aa61-cdd28f54a49d',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'status' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'thread/status/changed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'status' ]
+}
+[RuntimeEvent] {
+  sequence: 9,
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  eventType: 'AGENT_STATUS',
+  statusHint: null,
+  payloadKeys: [ 'threadId', 'status' ],
+  rawEventJson: '{"eventType":"AGENT_STATUS","runId":"a27b9fae-e93b-40d6-9116-b699522f2677","payload":{"threadId":"019de3f7-8685-76b2-9491-07f38e66f367","status":{"type":"idle"}},"statusHint":null}'
+}
+[RuntimeMappedMessage] {
+  sequence: 9,
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  messageType: 'AGENT_STATUS',
+  payloadId: null,
+  segmentType: null,
+  eventType: 'AGENT_STATUS'
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+[CodexAppServerNotification] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'turn/completed',
+  matchesThread: true,
+  threadId: '019de3f7-8685-76b2-9491-07f38e66f367',
+  activeTurnId: '019de3f7-86c3-7941-aa61-cdd28f54a49d',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turn' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  method: 'turn/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turn' ]
+}
+[RuntimeEvent] {
+  sequence: 10,
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  eventType: 'TURN_COMPLETED',
+  statusHint: 'IDLE',
+  payloadKeys: [ 'turnId' ],
+  rawEventJson: '{"eventType":"TURN_COMPLETED","runId":"a27b9fae-e93b-40d6-9116-b699522f2677","payload":{"turnId":"019de3f7-86c3-7941-aa61-cdd28f54a49d"},"statusHint":"IDLE"}'
+}
+[RuntimeMappedMessage] {
+  sequence: 10,
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  messageType: 'TURN_COMPLETED',
+  payloadId: null,
+  segmentType: null,
+  eventType: 'TURN_COMPLETED'
+}
+[RuntimeEvent] {
+  sequence: 11,
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  eventType: 'AGENT_STATUS',
+  statusHint: 'IDLE',
+  payloadKeys: [ 'new_status', 'old_status', 'turnId' ],
+  rawEventJson: '{"eventType":"AGENT_STATUS","runId":"a27b9fae-e93b-40d6-9116-b699522f2677","payload":{"new_status":"IDLE","old_status":"RUNNING","turnId":"019de3f7-86c3-7941-aa61-cdd28f54a49d"},"statusHint":"IDLE"}'
+}
+[RuntimeMappedMessage] {
+  sequence: 11,
+  runId: 'a27b9fae-e93b-40d6-9116-b699522f2677',
+  messageType: 'AGENT_STATUS',
+  payloadId: null,
+  segmentType: null,
+  eventType: 'AGENT_STATUS'
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Closed agent session 2ab059a5-330f-43ce-aadc-ab9d6d24d915
+Agent WebSocket disconnected: 2ab059a5-330f-43ce-aadc-ab9d6d24d915
+
+ ❯ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts (15 tests | 1 failed | 14 skipped) 121353ms
+     ↓ creates a run, restores it, and continues streaming on the same websocket
+     ↓ serves run history and projection after terminate, restore, and continue
+     ↓ routes tool approval over websocket and streams the normalized tool lifecycle
+     ↓ creates a run, restores it, and continues streaming on the same websocket
+     ↓ serves run history and projection after terminate, restore, and continue
+     × routes tool approval over websocket and streams the normalized tool lifecycle 121296ms
+     ↓ auto-executes Codex tool calls over websocket without approval requests
+     ↓ routes Codex MCP tool approval over websocket for the speak tool
+     ↓ auto-executes the Codex speak MCP tool without approval requests
+     ↓ applies configured runtime skills over the current websocket API contract
+     ↓ uses a whole-directory materialized skill whose linked shared file sits outside the skill folder
+     ↓ creates a run, restores it, and continues streaming on the same websocket
+     ↓ serves run history and projection after terminate, restore, and continue
+     ↓ routes tool approval over websocket and streams the normalized tool lifecycle
+     ↓ applies configured runtime skills over the current websocket API contract
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+Error: Timed out waiting for websocket message 'TOOL_APPROVAL_REQUESTED'. preview='CONNECTED:{"agent_id":"a27b9fae-e93b-40d6-9116-b699522f2677","session_id":"2ab059a5-330f-43ce-aadc-ab9d6d24d915"} | AGENT_STATUS:{"new_status":"IDLE","old_status":null} | AGENT_STATUS:{"threadId":"019de3f7-8685-76b2-9491-07f38e66f367","status":{"type":"active","activeFlags":[]}} | TURN_STARTED:{"turnId":"019de3f7-86c3-7941-aa61-cdd28f54a49d","turn_id":"019de3f7-86c3-7941-aa61-cdd28f54a49d"} | AGENT_STATUS:{"new_status":"RUNNING","old_status":null,"turnId":"019de3f7-86c3-7941-aa61-cdd28f54a49d","turn_id":"019de3f7-86c3-7941-aa61-cdd28f54a49d"} | TOOL_EXECUTION_STARTED:{"item":{"type":"commandExecution","id":"call_Nplt9aV5T8V8nsDLGyZkuTbx","command":"/bin/bash -lc \"printf 'TOOL_OK_1344ab63_3c30_4df9_8d40_d35d44ca1da0\\\\n' > '/var/folders/7w/9r4 | TOOL_EXECUTION_SUCCEEDED:{"item":{"type":"commandExecution","id":"call_Nplt9aV5T8V8nsDLGyZkuTbx","command":"/bin/bash -lc \"printf 'TOOL_OK_1344ab63_3c30_4df9_8d40_d35d44ca1da0\\\\n' > '/var/folders/7w/9r4 | TOOL_LOG:{"threadId":"019de3f7-8685-76b2-9491-07f38e66f367","turnId":"019de3f7-86c3-7941-aa61-cdd28f54a49d","item":{"type":"function_call_output","call_id":"call_Nplt9aV5T8V8nsDLGyZkuTbx"," | SEGMENT_START:{"item":{"type":"agentMessage","id":"msg_00fdaf09d08603f70169f4ba4616b08191a08ba69a45f7e44c","text":"","phase":"final_answer","memoryCitation":null},"threadId":"019de3f7-8685-76b2- | SEGMENT_END:{"item":{"type":"agentMessage","id":"msg_00fdaf09d08603f70169f4ba4616b08191a08ba69a45f7e44c","text":"","phase":"final_answer","memoryCitation":null},"threadId":"019de3f7-8685-76b2- | AGENT_STATUS:{"threadId":"019de3f7-8685-76b2-9491-07f38e66f367","status":{"type":"idle"}} | TURN_COMPLETED:{"turnId":"019de3f7-86c3-7941-aa61-cdd28f54a49d","turn_id":"019de3f7-86c3-7941-aa61-cdd28f54a49d"} | AGENT_STATUS:{"new_status":"IDLE","old_status":"RUNNING","turnId":"019de3f7-86c3-7941-aa61-cdd28f54a49d","turn_id":"019de3f7-86c3-7941-aa61-cdd28f54a49d"}'
+ ❯ waitForMessage tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts:127:9
+    125|     .map((message) => `${message.type}:${JSON.stringify(message.payloa…
+    126|     .join(" | ");
+    127|   throw new Error(`Timed out waiting for websocket message '${label}'.…
+       |         ^
+    128| };
+    129| 
+ ❯ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts:1000:35
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 14 skipped (15)
+   Start at  16:35:38
+   Duration  125.55s (transform 2.44s, setup 17ms, import 3.73s, tests 121.35s, environment 0ms)
+
+ ELIFECYCLE  Test failed. See above for more details.

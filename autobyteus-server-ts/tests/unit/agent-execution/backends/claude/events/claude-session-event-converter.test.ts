@@ -35,6 +35,10 @@ describe("ClaudeSessionEventConverter", () => {
       params: {
         invocation_id: "invoke-write",
         tool_name: "Write",
+        arguments: {
+          file_path: "/tmp/example.txt",
+          content: "hello",
+        },
         result: {
           type: "create",
           filePath: "/tmp/example.txt",
@@ -46,6 +50,10 @@ describe("ClaudeSessionEventConverter", () => {
       payload: {
         invocation_id: "invoke-write",
         tool_name: "Write",
+        arguments: {
+          file_path: "/tmp/example.txt",
+          content: "hello",
+        },
         result: {
           type: "create",
           filePath: "/tmp/example.txt",
@@ -153,6 +161,34 @@ describe("ClaudeSessionEventConverter", () => {
           tab_id: "browser-1",
           status: "opened",
         },
+      },
+    });
+  });
+
+  it("preserves arguments on failed Claude tool completion events", () => {
+    const converter = new ClaudeSessionEventConverter("run-claude-converter");
+
+    const [failed] = converter.convert({
+      method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "invoke-bash-failed",
+        tool_name: "Bash",
+        arguments: {
+          command: "cat missing.txt",
+        },
+        error: "No such file or directory",
+      },
+    });
+
+    expect(failed).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_FAILED,
+      payload: {
+        invocation_id: "invoke-bash-failed",
+        tool_name: "Bash",
+        arguments: {
+          command: "cat missing.txt",
+        },
+        error: "No such file or directory",
       },
     });
   });
