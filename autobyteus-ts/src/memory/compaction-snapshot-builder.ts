@@ -27,8 +27,7 @@ const compareSemanticItems = (left: SemanticItem, right: SemanticItem): number =
   return right.ts - left.ts;
 };
 
-const renderSemanticLine = (item: SemanticItem): string =>
-  item.reference ? `- ${item.fact} (ref: ${item.reference})` : `- ${item.fact}`;
+const renderSemanticLine = (item: SemanticItem): string => `- ${item.fact}`;
 
 export class CompactionSnapshotBuilder {
   private frontierFormatter: FrontierFormatter;
