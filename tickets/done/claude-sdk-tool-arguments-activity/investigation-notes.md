@@ -29,7 +29,7 @@ User specifically asked to investigate whether this is our bug and suggested ena
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity`
 - Current Branch: `codex/claude-sdk-tool-arguments-activity`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity`
 - Bootstrap Base Branch: `origin/personal`
@@ -59,8 +59,8 @@ User specifically asked to investigate whether this is our bug and suggested ena
 | 2026-05-01 | Command | `RUN_CLAUDE_E2E=1 CLAUDE_SESSION_EVENT_DEBUG=1 CLAUDE_SESSION_RAW_EVENT_DEBUG=1 CLAUDE_SESSION_RAW_EVENT_LOG_DIR=... RUNTIME_RAW_EVENT_DEBUG=1 ... pnpm -C autobyteus-server-ts test tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts --run -t "Claude current GraphQL runtime e2e.*routes tool approval..."` | First e2e attempt with raw logging | Failed before tests due missing Prisma generated client in fresh worktree. | No; setup fixed with prisma generate. |
 | 2026-05-01 | Setup | `pnpm -C autobyteus-server-ts exec prisma generate --schema ./prisma/schema.prisma` | Generate Prisma client for e2e | Generated client successfully. | No |
 | 2026-05-01 | Trace | `RUN_CLAUDE_E2E=1 CLAUDE_SESSION_EVENT_DEBUG=1 CLAUDE_SESSION_RAW_EVENT_DEBUG=1 CLAUDE_SESSION_RAW_EVENT_LOG_DIR=... RUNTIME_RAW_EVENT_DEBUG=1 ... pnpm -C autobyteus-server-ts test tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts --run -t "routes tool approval over websocket and streams the normalized tool lifecycle"` | Run live Claude e2e with raw/runtime event logs | Raw logs show SDK `tool_use.input` for `Bash` and `Write`. Runtime logs show `Bash` emitted only `TOOL_EXECUTION_SUCCEEDED` with no args; `Write` emitted started/request/approved with args because permission callback ran. Test failed due existing matcher selecting the preliminary `Bash` success and then waiting for approval for that invocation. | Yes: fix runtime event emission and e2e matcher/assertions. |
-| 2026-05-01 | Log | `tickets/in-progress/claude-sdk-tool-arguments-activity/logs/claude-raw-events/claude-run-12670a43-469e-4352-9b92-d37f5cd85384.jsonl` | Inspect raw SDK evidence | Sequence 3: `Bash` tool_use input `{ command: "pwd", description: "Get current working directory" }`; sequence 6: `Write` tool_use input `{ file_path: ..., content: ... }`. | No |
-| 2026-05-01 | Log | `tickets/in-progress/claude-sdk-tool-arguments-activity/logs/claude-tool-lifecycle-e2e.log` | Inspect runtime/websocket evidence | Runtime sequence 3 `TOOL_EXECUTION_SUCCEEDED` for `Bash` has payload keys `invocation_id`, `tool_name`, `result` only. Runtime sequence 4/5/6 for `Write` include `arguments`. | No |
+| 2026-05-01 | Log | `tickets/done/claude-sdk-tool-arguments-activity/logs/claude-raw-events/claude-run-12670a43-469e-4352-9b92-d37f5cd85384.jsonl` | Inspect raw SDK evidence | Sequence 3: `Bash` tool_use input `{ command: "pwd", description: "Get current working directory" }`; sequence 6: `Write` tool_use input `{ file_path: ..., content: ... }`. | No |
+| 2026-05-01 | Log | `tickets/done/claude-sdk-tool-arguments-activity/logs/claude-tool-lifecycle-e2e.log` | Inspect runtime/websocket evidence | Runtime sequence 3 `TOOL_EXECUTION_SUCCEEDED` for `Bash` has payload keys `invocation_id`, `tool_name`, `result` only. Runtime sequence 4/5/6 for `Write` include `arguments`. | No |
 
 ## Current Behavior / Current Flow
 
@@ -140,7 +140,7 @@ User specifically asked to investigate whether this is our bug and suggested ena
 | --- | --- | --- | --- | --- |
 | 2026-05-01 | Test | `pnpm -C autobyteus-server-ts test tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts --run` | Passed 8 tests. | Existing converter tests do not cover raw-observed `tool_use -> tool_result` coordinator path. |
 | 2026-05-01 | Setup | `pnpm -C autobyteus-server-ts exec prisma generate --schema ./prisma/schema.prisma` | Required after first e2e attempt failed with missing `.prisma/client/default`. | Fresh worktrees need Prisma generate before e2e. |
-| 2026-05-01 | E2E Trace | `RUN_CLAUDE_E2E=1 CLAUDE_SESSION_EVENT_DEBUG=1 CLAUDE_SESSION_RAW_EVENT_DEBUG=1 CLAUDE_SESSION_RAW_EVENT_LOG_DIR="$(pwd)/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/claude-raw-events" RUNTIME_RAW_EVENT_DEBUG=1 RUNTIME_RAW_EVENT_MAX_CHARS=50000 CLAUDE_SESSION_RAW_EVENT_MAX_CHARS=50000 pnpm -C autobyteus-server-ts test tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts --run -t "routes tool approval over websocket and streams the normalized tool lifecycle"` | Produced raw/runtime logs. Test failed after 129s because it picked preliminary `Bash` success, but logs are sufficient. | Root cause confirmed; e2e needs matcher fix. |
+| 2026-05-01 | E2E Trace | `RUN_CLAUDE_E2E=1 CLAUDE_SESSION_EVENT_DEBUG=1 CLAUDE_SESSION_RAW_EVENT_DEBUG=1 CLAUDE_SESSION_RAW_EVENT_LOG_DIR="$(pwd)/tickets/done/claude-sdk-tool-arguments-activity/logs/claude-raw-events" RUNTIME_RAW_EVENT_DEBUG=1 RUNTIME_RAW_EVENT_MAX_CHARS=50000 CLAUDE_SESSION_RAW_EVENT_MAX_CHARS=50000 pnpm -C autobyteus-server-ts test tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts --run -t "routes tool approval over websocket and streams the normalized tool lifecycle"` | Produced raw/runtime logs. Test failed after 129s because it picked preliminary `Bash` success, but logs are sufficient. | Root cause confirmed; e2e needs matcher fix. |
 | 2026-05-01 | Log Probe | Python JSONL parser over raw log | Raw assistant `tool_use` entries include `input` for both `Bash` and `Write`; raw user `tool_result` entries contain result but not original args. | Coordinator must emit args at observation time and/or attach tracked args on completion. |
 
 ## External / Public Source Findings
@@ -157,7 +157,7 @@ User specifically asked to investigate whether this is our bug and suggested ena
   - `RUN_CLAUDE_E2E=1`
   - `CLAUDE_SESSION_EVENT_DEBUG=1`
   - `CLAUDE_SESSION_RAW_EVENT_DEBUG=1`
-  - `CLAUDE_SESSION_RAW_EVENT_LOG_DIR=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/claude-raw-events`
+  - `CLAUDE_SESSION_RAW_EVENT_LOG_DIR=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/logs/claude-raw-events`
   - `RUNTIME_RAW_EVENT_DEBUG=1`
   - `RUNTIME_RAW_EVENT_MAX_CHARS=50000`
   - `CLAUDE_SESSION_RAW_EVENT_MAX_CHARS=50000`

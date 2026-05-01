@@ -27,8 +27,8 @@ The original missing-arguments issue is from our side, not from missing Claude S
 
 Evidence files:
 
-- Raw Claude SDK JSONL log: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/claude-raw-events/claude-run-12670a43-469e-4352-9b92-d37f5cd85384.jsonl`
-- E2E/runtime console log: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/claude-tool-lifecycle-e2e.log`
+- Raw Claude SDK JSONL log: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/logs/claude-raw-events/claude-run-12670a43-469e-4352-9b92-d37f5cd85384.jsonl`
+- E2E/runtime console log: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/logs/claude-tool-lifecycle-e2e.log`
 
 ## Design Health Assessment (Mandatory)
 

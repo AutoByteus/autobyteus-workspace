@@ -1,0 +1,34 @@
+$ pnpm -C autobyteus-web test:nuxt services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleParsers.spec.ts --run
+
+> autobyteus@1.2.89 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/autobyteus-web
+> cross-env NUXT_TEST=true vitest services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleParsers.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/autobyteus-web
+
+stdout | services/agentStreaming/handlers/__tests__/toolLifecycleParsers.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentStreaming/handlers/__tests__/toolLifecycleParsers.spec.ts (3 tests) 3ms
+stderr | services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts > toolLifecycleHandler > drops malformed denied payload without state mutation
+[toolLifecycleHandler] Dropping malformed TOOL_DENIED payload {
+  invocation_id: 'tool-4',
+  tool_name: 'delete_file',
+  reason: null,
+  error: null
+}
+
+ ✓ services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts (11 tests) 9ms
+
+ Test Files  2 passed (2)
+      Tests  14 passed (14)
+   Start at  16:43:10
+   Duration  1.75s (transform 874ms, setup 2.49s, collect 81ms, tests 11ms, environment 282ms, prepare 255ms)
+

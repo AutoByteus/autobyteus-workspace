@@ -3,17 +3,17 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/requirements.md`
 - Current Review Round: `5`
 - Trigger: CR-002 Local Fix returned by `implementation_engineer`; user requested another full cumulative review before API/E2E validation.
 - Prior Review Round Reviewed: `4`
 - Latest Authoritative Round: `5`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/design-spec.md`
-- Design Impact Rework Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/design-impact-rework.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/implementation-handoff.md`
-- Validation Report Reviewed As Context: Historical/narrow validation report only, not authoritative for this expanded pre-validation implementation review: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/validation-report.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/design-spec.md`
+- Design Impact Rework Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/design-impact-rework.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/implementation-handoff.md`
+- Validation Report Reviewed As Context: Historical/narrow validation report only, not authoritative for this expanded pre-validation implementation review: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/validation-report.md`
 - API / E2E Validation Started Yet: `No` for the expanded implementation after CR-002.
 - Repository-Resident Durable Validation Added Or Updated After Prior Review: `No` for this implementation-review entry point. Durable validation code in the implementation diff is reviewed as part of implementation readiness.
 
@@ -161,7 +161,7 @@ Prior findings are resolved in the mandatory prior-findings table:
 - Files or areas likely affected:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/autobyteus-server-ts/docs/modules/agent_execution.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/autobyteus-web/docs/agent_execution_architecture.md`
-  - Ticket handoff/docs artifacts under `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/`
+  - Ticket handoff/docs artifacts under `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/`
 
 ## Classification
 

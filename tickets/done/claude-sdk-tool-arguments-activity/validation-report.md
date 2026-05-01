@@ -2,13 +2,13 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/design-spec.md`
-- Design Impact Rework Note: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/design-impact-rework.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/implementation-handoff.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/design-spec.md`
+- Design Impact Rework Note: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/design-impact-rework.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/implementation-handoff.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/review-report.md`
 - Current Validation Round: 3
 - Trigger: Code reviewer Round 5 passed the expanded Claude Agent SDK Activity Arguments / two-lane refactor implementation and asked API/E2E to validate the live Claude argument path plus Codex/history non-regression.
 - Prior Round Reviewed: Round 2 validation report, Round 5 code-review report, and retained raw/runtime logs.
@@ -62,10 +62,10 @@ Validation was derived from the approved requirements/design, design-impact rewo
 
 ## Validation Setup / Environment
 
-- Main log directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z`
-- Claude raw SDK JSONL directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/claude-raw-events/api-e2e/expanded-round3-20260501T162907Z`
-- Environment reference file: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/latest-expanded-validation-env.txt`
-- Log scan summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/log-scan-summary.txt`
+- Main log directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z`
+- Claude raw SDK JSONL directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/logs/claude-raw-events/api-e2e/expanded-round3-20260501T162907Z`
+- Environment reference file: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/logs/api-e2e/latest-expanded-validation-env.txt`
+- Log scan summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/log-scan-summary.txt`
 
 Setup commands:
 
@@ -96,18 +96,18 @@ Commands run from `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-t
 4. `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.test.ts tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts tests/unit/run-history/services/agent-run-view-projection-service.test.ts tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts`
 5. `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`
 6. `git diff --check`
-7. `RUN_CLAUDE_E2E=1 CLAUDE_SESSION_EVENT_DEBUG=1 CLAUDE_SESSION_RAW_EVENT_DEBUG=1 CLAUDE_SESSION_RAW_EVENT_LOG_DIR=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/claude-raw-events/api-e2e/expanded-round3-20260501T162907Z RUNTIME_RAW_EVENT_DEBUG=1 RUNTIME_RAW_EVENT_MAX_CHARS=80000 CLAUDE_SESSION_RAW_EVENT_MAX_CHARS=80000 pnpm -C autobyteus-server-ts test tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts --run -t "routes tool approval over websocket and streams the normalized tool lifecycle"`
+7. `RUN_CLAUDE_E2E=1 CLAUDE_SESSION_EVENT_DEBUG=1 CLAUDE_SESSION_RAW_EVENT_DEBUG=1 CLAUDE_SESSION_RAW_EVENT_LOG_DIR=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/logs/claude-raw-events/api-e2e/expanded-round3-20260501T162907Z RUNTIME_RAW_EVENT_DEBUG=1 RUNTIME_RAW_EVENT_MAX_CHARS=80000 CLAUDE_SESSION_RAW_EVENT_MAX_CHARS=80000 pnpm -C autobyteus-server-ts test tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts --run -t "routes tool approval over websocket and streams the normalized tool lifecycle"`
 8. `RUN_CODEX_E2E=1 RUNTIME_RAW_EVENT_DEBUG=1 RUNTIME_RAW_EVENT_MAX_CHARS=80000 pnpm -C autobyteus-server-ts test tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts --run -t "auto-executes Codex tool calls over websocket without approval requests"`
 9. Extra exploratory probe: `RUN_CODEX_E2E=1 RUNTIME_RAW_EVENT_DEBUG=1 RUNTIME_RAW_EVENT_MAX_CHARS=80000 pnpm -C autobyteus-server-ts test tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts --run -t "auto-executes the Codex speak MCP tool without approval requests"`
 
 ## Passed
 
-- Frontend expanded validation: 7 files, 48 tests passed. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/frontend-expanded-validation.log`
-- Backend expanded validation: 5 files, 53 tests passed. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/backend-expanded-validation.log`
-- Server build typecheck: passed. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/server-build-typecheck.log`
-- `git diff --check`: passed. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/git-diff-check.log`
-- Live Claude gated backend E2E: 1 test passed, 14 skipped. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/claude-gated-tool-lifecycle-e2e.log`
-- Live Codex command auto-execute E2E: 1 test passed, 14 skipped. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/codex-autoexecute-command-e2e.log`
+- Frontend expanded validation: 7 files, 48 tests passed. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/frontend-expanded-validation.log`
+- Backend expanded validation: 5 files, 53 tests passed. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/backend-expanded-validation.log`
+- Server build typecheck: passed. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/server-build-typecheck.log`
+- `git diff --check`: passed. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/git-diff-check.log`
+- Live Claude gated backend E2E: 1 test passed, 14 skipped. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/claude-gated-tool-lifecycle-e2e.log`
+- Live Codex command auto-execute E2E: 1 test passed, 14 skipped. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/codex-autoexecute-command-e2e.log`
 
 ## Failed / Non-Blocking Observations
 
@@ -116,7 +116,7 @@ No scoped validation scenario failed.
 One extra exploratory Codex MCP auto-execute probe failed:
 
 - Command: `RUN_CODEX_E2E=1 ... -t "auto-executes the Codex speak MCP tool without approval requests"`
-- Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/codex-autoexecute-speak-mcp-e2e.log`
+- Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/codex-autoexecute-speak-mcp-e2e.log`
 - Observed behavior: the runtime auto-executed `tts/speak` and emitted `SEGMENT_START`, `TOOL_EXECUTION_SUCCEEDED`, `SEGMENT_END`, and `TOOL_LOG`, with no `TOOL_APPROVAL_REQUESTED`.
 - Test failure reason: the existing test timed out waiting for `TOOL_APPROVED for auto-executed speak`, despite the test name saying it should run without approval requests.
 - Classification: non-blocking, out of current Claude Activity Arguments scope, and not treated as a regression from this implementation. The scoped Codex requirements in this ticket cover command, dynamic-tool, and file-change Activity ownership; those passed via live command E2E and deterministic frontend/backend coverage. This MCP-specific expectation mismatch should be considered for a future Codex MCP validation cleanup ticket if desired.
@@ -138,7 +138,7 @@ The live Round 3 Claude E2E ran these assertions successfully against invocation
 
 Round 3 raw Claude evidence:
 
-- Raw SDK JSONL: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/claude-raw-events/api-e2e/expanded-round3-20260501T162907Z/claude-run-91aade48-7b78-417f-ad66-5121fb22f890.jsonl`
+- Raw SDK JSONL: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/logs/claude-raw-events/api-e2e/expanded-round3-20260501T162907Z/claude-run-91aade48-7b78-417f-ad66-5121fb22f890.jsonl`
 - Raw `tool_use`: id `call_00_emOG9DhOJJpF5q8VM30o0EvM`, name `Write`, `input_non_empty=True`, keys `file_path`, `content`.
 
 Round 3 normalized Claude runtime evidence:
@@ -171,23 +171,23 @@ The approved invocation event order was:
 
 Current Round 3 artifacts:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/prisma-generate.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/nuxi-prepare.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/frontend-expanded-validation.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/backend-expanded-validation.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/server-build-typecheck.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/git-diff-check.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/claude-gated-tool-lifecycle-e2e.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/codex-autoexecute-command-e2e.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/codex-autoexecute-speak-mcp-e2e.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/log-scan-summary.txt`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/claude-raw-events/api-e2e/expanded-round3-20260501T162907Z/claude-run-91aade48-7b78-417f-ad66-5121fb22f890.jsonl`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/prisma-generate.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/nuxi-prepare.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/frontend-expanded-validation.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/backend-expanded-validation.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/server-build-typecheck.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/git-diff-check.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/claude-gated-tool-lifecycle-e2e.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/codex-autoexecute-command-e2e.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/codex-autoexecute-speak-mcp-e2e.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/logs/api-e2e/expanded-round3-20260501T162907Z/log-scan-summary.txt`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/logs/claude-raw-events/api-e2e/expanded-round3-20260501T162907Z/claude-run-91aade48-7b78-417f-ad66-5121fb22f890.jsonl`
 
 Retained prior artifacts remain under:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/claude-gated-tool-lifecycle-e2e-round2.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/api-e2e/log-scan-summary-round2.txt`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/in-progress/claude-sdk-tool-arguments-activity/logs/claude-raw-events/api-e2e/round2-20260501T145315Z/claude-run-0f327fb6-081e-41fa-9707-a270bec24e73.jsonl`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/logs/api-e2e/claude-gated-tool-lifecycle-e2e-round2.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/logs/api-e2e/log-scan-summary-round2.txt`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity/tickets/done/claude-sdk-tool-arguments-activity/logs/claude-raw-events/api-e2e/round2-20260501T145315Z/claude-run-0f327fb6-081e-41fa-9707-a270bec24e73.jsonl`
 
 ## Temporary Validation Methods / Scaffolding
 
