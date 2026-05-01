@@ -4,7 +4,7 @@
 
 - Ticket: `claude-agent-sdk-custom-settings`
 - Current owner: `delivery_engineer`
-- Status: User verified the Electron build; task is being finalized with no release/version bump.
+- Status: Finalized on `personal`; no release/version bump performed.
 - Timestamp: 2026-05-01 14:19 CEST (+0200)
 
 ## Integrated-State Summary
@@ -102,6 +102,6 @@ User verified the built Electron app works and requested finalization with no ne
 Per delivery workflow, the following are intentionally not done yet:
 
 - Ticket artifacts have been archived under `tickets/done/claude-agent-sdk-custom-settings/`.
-- Ticket branch push is pending final archive commit.
-- Merge into `personal` is pending final archive commit.
-- No release, publication, or deployment will be performed per user request.
+- Ticket branch was pushed, merged into `personal`, and `origin/personal` was pushed.
+- Remote ticket branch was deleted after merge.
+- No release, publication, or deployment was performed per user request.
