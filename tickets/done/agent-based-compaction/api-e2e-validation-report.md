@@ -2,20 +2,20 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/implementation-handoff.md`
+- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/review-report.md`
 - Additional upstream design-impact notes reviewed:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/implementation-design-impact-note.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/design-impact-resolution-visible-compactor-runs.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/design-impact-resolution-default-compactor-agent-and-e2e.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/implementation-design-impact-note-prompt-ownership.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/design-impact-resolution-compactor-prompt-ownership.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/design-impact-resolution-compactor-output-tags.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/design-impact-resolution-minimal-compactor-schema.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/implementation-design-impact-note.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/design-impact-resolution-visible-compactor-runs.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/design-impact-resolution-default-compactor-agent-and-e2e.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/implementation-design-impact-note-prompt-ownership.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/design-impact-resolution-compactor-prompt-ownership.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/design-impact-resolution-compactor-output-tags.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/design-impact-resolution-minimal-compactor-schema.md`
 - Current Validation Round: `4`
 - Trigger: Independent complete implementation code-review pass against the full current `origin/personal...HEAD` scope, with request to resume API/E2E for the real visible AutoByteus-parent + Codex-compactor scenario and facts-only persisted output behavior.
 - Prior Round Reviewed: `3`
@@ -163,7 +163,7 @@ Relevant durable validation already present and re-run after the independent com
 
 ## Other Validation Artifacts
 
-- Canonical validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/api-e2e-validation-report.md`
+- Canonical validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/api-e2e-validation-report.md`
 - Temporary Claude recheck log: `/tmp/agent-based-compaction-claude-recheck-round4.log` (outside repository, not a handoff artifact).
 - No persistent temporary harness artifacts remain in the repository.
 

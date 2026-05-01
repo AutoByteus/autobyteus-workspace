@@ -2,18 +2,18 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/design-review-report.md`
-- Implementation design-impact note: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/implementation-design-impact-note.md`
-- Visible-runs solution note: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/design-impact-resolution-visible-compactor-runs.md`
-- Default/E2E solution note: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/design-impact-resolution-default-compactor-agent-and-e2e.md`
-- Prompt-ownership implementation design-impact note: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/implementation-design-impact-note-prompt-ownership.md`
-- Prompt-ownership solution note: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/design-impact-resolution-compactor-prompt-ownership.md`
-- Output-tags solution note: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/design-impact-resolution-compactor-output-tags.md`
-- Minimal-schema solution note: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/design-impact-resolution-minimal-compactor-schema.md`
-- Prior code review report with `CR-004-001`: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/design-review-report.md`
+- Implementation design-impact note: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/implementation-design-impact-note.md`
+- Visible-runs solution note: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/design-impact-resolution-visible-compactor-runs.md`
+- Default/E2E solution note: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/design-impact-resolution-default-compactor-agent-and-e2e.md`
+- Prompt-ownership implementation design-impact note: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/implementation-design-impact-note-prompt-ownership.md`
+- Prompt-ownership solution note: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/design-impact-resolution-compactor-prompt-ownership.md`
+- Output-tags solution note: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/design-impact-resolution-compactor-output-tags.md`
+- Minimal-schema solution note: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/design-impact-resolution-minimal-compactor-schema.md`
+- Prior code review report with `CR-004-001`: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/review-report.md`
 
 ## What Changed
 

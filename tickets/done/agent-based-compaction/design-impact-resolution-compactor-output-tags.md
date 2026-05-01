@@ -2,7 +2,7 @@
 
 ## Status
 
-Resolved by solution designer on 2026-04-30; superseded/extended by `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/design-impact-resolution-minimal-compactor-schema.md` after the user also questioned optional `reference`. Pending architecture re-review.
+Resolved by solution designer on 2026-04-30; superseded/extended by `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/design-impact-resolution-minimal-compactor-schema.md` after the user also questioned optional `reference`. Pending architecture re-review.
 
 ## Trigger
 

@@ -3,23 +3,23 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/requirements.md`
 - Current Review Round: 6
 - Trigger: User-requested independent complete implementation review, not an additive delta review, after round-7 facts-only schema rework.
 - Prior Review Round Reviewed: 5
 - Latest Authoritative Round: 6
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/implementation-handoff.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/implementation-handoff.md`
 - Validation Report Reviewed As Context: `N/A for this independent implementation-review round; API/E2E validation is still the next workflow stage.`
 - Design Principles / Common Best Practices Basis: `/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-engineering-team/agents/code-reviewer/design-principles.md`
 - Additional Design-Impact Notes Reviewed As Context:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/design-impact-resolution-visible-compactor-runs.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/design-impact-resolution-default-compactor-agent-and-e2e.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/design-impact-resolution-compactor-prompt-ownership.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/design-impact-resolution-compactor-output-tags.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/design-impact-resolution-minimal-compactor-schema.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/design-impact-resolution-visible-compactor-runs.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/design-impact-resolution-default-compactor-agent-and-e2e.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/design-impact-resolution-compactor-prompt-ownership.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/design-impact-resolution-compactor-output-tags.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/design-impact-resolution-minimal-compactor-schema.md`
 - API / E2E Validation Started Yet: `No, not after this independent complete implementation review.`
 - Repository-Resident Durable Validation Added Or Updated After Prior Review: `No post-API/E2E durable validation in this round. This review re-evaluates the whole implementation state independently.`
 

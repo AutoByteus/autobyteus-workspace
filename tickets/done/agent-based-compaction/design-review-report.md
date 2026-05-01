@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/design-spec.md`
 - Current Review Round: 7
 - Trigger: Design-impact rework after code-review block `CR-004-001` and user clarification that optional model-generated `reference` should also be removed from the compactor-facing schema.
 - Prior Review Round Reviewed: 6
@@ -25,7 +25,7 @@
 
 ## Reviewed Design Spec
 
-Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/in-progress/agent-based-compaction/design-spec.md` as the authoritative target design. Requirements and investigation notes were used as supporting context only.
+Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction/tickets/done/agent-based-compaction/design-spec.md` as the authoritative target design. Requirements and investigation notes were used as supporting context only.
 
 Round 7 specifically reviewed the mandatory `Minimal Compactor Output Schema Policy` together with the prompt-ownership split. The latest design keeps the two-layer prompt contract and tightens the compactor-facing semantic entry contract to facts-only entries:
 
