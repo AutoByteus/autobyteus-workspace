@@ -233,6 +233,32 @@ const getMessageItem = (message: WsMessage): Record<string, unknown> | null =>
     ? (message.payload.item as Record<string, unknown>)
     : null;
 
+const containsStructuredOk = (value: unknown): boolean => {
+  if (typeof value === "string") {
+    if (value === "{\"ok\":true}" || value.includes("\"ok\":true")) {
+      return true;
+    }
+    try {
+      return containsStructuredOk(JSON.parse(value));
+    } catch {
+      return false;
+    }
+  }
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+  const record = value as Record<string, unknown>;
+  if (record.ok === true) {
+    return true;
+  }
+  return containsStructuredOk(record.structuredContent) || containsStructuredOk(record.output);
+};
+
+const isSuccessfulToolLog = (message: WsMessage, invocationId: string | null): boolean =>
+  message.type === "TOOL_LOG" &&
+  matchesInvocationId(message.payload, invocationId) &&
+  (containsStructuredOk(message.payload.log_entry) || containsStructuredOk(getMessageItem(message)));
+
 const isMcpToolCallSegment = (input: {
   message: WsMessage;
   type: "SEGMENT_START" | "SEGMENT_END";
@@ -1254,10 +1280,7 @@ const defineRuntimeSuite = (input: {
           await waitForMessageAfter(
             messages,
             startIndex,
-            (message) =>
-              message.type === "TOOL_LOG" &&
-              matchesInvocationId(message.payload, invocationId) &&
-              message.payload.log_entry === "{\"ok\":true}",
+            (message) => isSuccessfulToolLog(message, invocationId),
             "TOOL_LOG success for speak",
           );
           await waitForMessageAfter(
@@ -1364,10 +1387,7 @@ const defineRuntimeSuite = (input: {
           await waitForMessageAfter(
             messages,
             startIndex,
-            (message) =>
-              message.type === "TOOL_LOG" &&
-              matchesInvocationId(message.payload, invocationId) &&
-              message.payload.log_entry === "{\"ok\":true}",
+            (message) => isSuccessfulToolLog(message, invocationId),
             "TOOL_LOG success for auto-executed speak",
           );
           await waitForMessageAfter(

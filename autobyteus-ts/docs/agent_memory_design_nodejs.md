@@ -101,10 +101,24 @@ The memory system is defined by its implemented operations:
 - `list(type, limit)`
 
 **Default backend**: file-backed store (JSONL). The file store also provides
-raw-trace archive helpers (`listRawTraceDicts`, `readArchiveRawTraces`,
-`pruneRawTracesById`) plus compacted-memory manifest helpers
+segmented raw-trace archive helpers plus compacted-memory manifest helpers
 (`readCompactedMemoryManifest`, `writeCompactedMemoryManifest`) used by
 compaction and startup/restore schema-gate reset behavior.
+
+`RunMemoryFileStore` is the shared low-level direct-run-directory facade. It owns
+canonical active file paths, raw-trace appends, complete-corpus reads (complete
+archive segments plus active records), semantic replacement, manifest IO, native
+compaction prune/archive entrypoints, provider-boundary rotation entrypoints, and
+working-context snapshot serialization without requiring callers to instantiate
+`MemoryManager`. Native `FileMemoryStore` delegates its common file operations to
+this facade, and `autobyteus-server-ts` uses the same facade for storage-only
+Codex/Claude run and team-member memory recording.
+
+`RawTraceArchiveManager` is the only owner of segmented archive internals:
+`raw_traces_archive_manifest.json`, immutable files under `raw_traces_archive/`,
+pending/complete segment state, deterministic segment filenames, and idempotent
+same-boundary retry behavior. The old monolithic `raw_traces_archive.jsonl` file
+is intentionally not a current compatibility read/write target.
 
 ### 7.1 File-Backed Store Layout (Default)
 
@@ -119,15 +133,45 @@ inspection:
 ```
 memory/
   agents/
-    <agent_id>/
+    <agent_id_or_run_id>/
       raw_traces.jsonl
-      raw_traces_archive.jsonl  # append-only archive (optional)
+      raw_traces_archive_manifest.json  # segmented archive manifest
+      raw_traces_archive/               # immutable complete/pending segment files
       episodic.jsonl
       semantic.jsonl
       compacted_memory_manifest.json
+      working_context_snapshot.json
+  agent_teams/
+    <team_run_id>/
+      <member_run_id>/
+        raw_traces.jsonl
+        working_context_snapshot.json
 ```
 
 ---
+
+## 7.2 Server-Side External Runtime Recording
+
+`autobyteus-server-ts` records Codex and Claude runtime output into the same file
+shape as native memory, but that path is intentionally **storage-only**:
+
+- accepted user messages are captured after `AgentRun.postUserMessage(...)` is
+  accepted;
+- assistant, reasoning, and tool lifecycle records are captured from normalized
+  `AgentRunEvent`s;
+- `raw_traces.jsonl` and `working_context_snapshot.json` are written through
+  `RunMemoryFileStore` / `RawTraceItem` / `WorkingContextSnapshot` primitives;
+- native AutoByteus runs still use `MemoryManager` directly and are skipped by
+  the server recorder to avoid duplicate traces.
+
+External-runtime recording does not retrieve memory for Codex/Claude, inject
+recorded traces into their prompts, create a runtime-specific memory manager, or
+run semantic/episodic compaction in their execution path. Provider/session
+compaction boundaries may only append storage-only provenance markers and rotate
+settled active raw traces before an eligible marker into shared archive segments.
+This preserves active plus complete archive segments as the full raw-trace corpus.
+There is no external-runtime semantic compaction, trace-content rewrite,
+compression, total-retention policy, or snapshot-windowing behavior.
 
 ## 8. Triggering and Lifecycle
 

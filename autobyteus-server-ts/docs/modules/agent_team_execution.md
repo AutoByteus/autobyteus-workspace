@@ -36,6 +36,8 @@ Manages running team runs, selecting the authoritative team backend, restoring p
 ## Restore / Persistence Notes
 
 - Restore uses persisted per-member runtime metadata plus `TeamBackendKind`; it does not collapse mixed teams back to one runtime owner.
+- Every Codex and Claude member receives a member `memoryDir` on create and restore, including single-runtime Claude teams and mixed-runtime members. The storage path is `memory/agent_teams/<teamRunId>/<memberRunId>/...`.
+- Non-native member memory is storage-only: `AgentRunManager` attaches the shared recorder to each member `AgentRun`, while native AutoByteus members continue to use native memory ownership.
 - `TeamRunService.resolveTeamRun(teamRunId)` is the canonical restore-aware lookup boundary for callers that are allowed to resume a stopped persisted team run. It returns the active team runtime when present and otherwise attempts persisted restore before returning `null`.
 - Team WebSocket connection and `SEND_MESSAGE` dispatch use `resolveTeamRun(...)`, so a follow-up message to a stopped-but-persisted team can restore the team runtime, rebind stream subscription to the restored `TeamRun`, and post to the requested member route.
 - Active-only team controls still use the active lookup path. `STOP_GENERATION` and tool approval/denial commands must not restore a stopped team run as a side effect.

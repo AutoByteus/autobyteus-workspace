@@ -19,7 +19,7 @@ The target behavior is to make Codex and Claude runtime runs produce server-owne
 - User input is not represented as an `AgentRunEvent`; it enters through `AgentRun.postUserMessage(...)`. A memory design must capture accepted user messages at this command boundary rather than relying only on runtime callbacks.
 - Team Codex member configs already get a member `memoryDir`; mixed-runtime members also get `memoryDir`; Claude single-runtime team members currently do not reliably receive a member `memoryDir` and must be fixed for parity.
 - Current run-history providers can reconstruct Codex/Claude views from runtime-specific thread/session history, but that is not server-owned durable memory and is insufficient for future memory-analysis cron agents.
-- Native Autobyteus emits normalized compaction status events and its compactor prunes selected raw trace ids from active `raw_traces.jsonl` into `raw_traces_archive.jsonl` while writing compacted memory/snapshot state; it does not simply create a replacement active raw-traces file.
+- Native Autobyteus emits normalized compaction status events and currently prunes selected raw trace ids from active `raw_traces.jsonl` into a single `raw_traces_archive.jsonl` while writing compacted memory/snapshot state; this single archive file makes individual compaction boundaries harder to inspect.
 - Official OpenAI compaction docs state that server-side Responses compaction emits an encrypted `type=compaction` item in the response stream, and the official Codex agent-loop article says Codex automatically uses `/responses/compact` when `auto_compact_limit` is exceeded.
 - The installed Codex CLI 0.125.0 binary contains app-server/protocol evidence for `thread/compacted`, `ContextCompactedNotification`, `ContextCompactedEvent`, `ContextCompactionItem`, and raw response item completion, but the current server Codex integration does not list or convert `thread/compacted` and drops raw response items unless they are function-call outputs.
 - The installed Claude Agent SDK typings define compaction-related system messages (`compact_boundary` and status `compacting`), but the current server integration does not convert them; their payload lacks local raw-trace ids or summary output, so they are not equivalent to native Autobyteus compaction.
@@ -33,8 +33,10 @@ The target behavior is to make Codex and Claude runtime runs produce server-owne
 - Preserve native Autobyteus memory writing as-is and explicitly skip duplicate recording for `RuntimeKind.AUTOBYTEUS`.
 - Fix Claude team member memory directory provisioning so team Claude member runs receive the same durable memory layout as Codex and mixed-runtime members.
 - Update run-history local memory fallback so explicit `memoryDir` reads use the memory directory's run id/member run id rather than the provider platform id.
-- Do not use Codex/Claude provider-internal compaction signals to prune, delete, rewrite, or semantically compact local memory files. Codex `thread/compacted` / `type=compaction` and Claude compact boundaries may be used as non-destructive provenance markers or safe active-file rotation boundaries unless a runtime supplies a local trace-id compaction plan.
-- Treat long-running Codex/Claude raw-trace growth as a storage/log-rotation concern separate from memory compaction; a future rotation policy may move settled traces from active `raw_traces.jsonl` to archive/chunk files while preserving full analyzability.
+- Do not use Codex/Claude provider-internal compaction signals to delete raw traces, rewrite trace content, or semantically compact local memory. Codex `thread/compacted` / `type=compaction` and Claude compact boundaries should be used as non-destructive provenance markers and safe active-file rotation boundaries.
+- Refactor raw-trace archive management into a shared segmented archive model used by native Autobyteus compaction and Codex/Claude provider-boundary rotation, so each compaction/rotation boundary produces its own archive segment file.
+- Treat long-running Codex/Claude raw-trace growth as a storage/log-rotation concern separate from memory compaction; provider compaction boundaries should be captured and used to rotate settled active raw traces into boundary-specific archive segment files while preserving full analyzability.
+- Enhance Codex and Claude event conversion so provider compaction boundaries become normalized runtime events/recording inputs even though the server does not perform Codex/Claude semantic compaction.
 
 ## Scope Classification (`Small`/`Medium`/`Large`)
 
@@ -58,8 +60,8 @@ Medium
 - Changing frontend UX beyond any schema/type adjustments required to surface already-existing memory files.
 - Persisting raw provider-specific logs as the memory source of truth.
 - Managing, retrieving, compacting, or injecting memory into Codex/Claude runtime contexts.
-- Pruning, deleting, rewriting, or semantically compacting local Codex/Claude `raw_traces.jsonl` based on provider-internal compact/compaction events.
-- Implementing long-run raw-trace rotation, compressed archive chunking, or working-context snapshot retention policies beyond the storage-only recorder.
+- Deleting raw traces, rewriting trace content, or semantically compacting local Codex/Claude memory based on provider-internal compact/compaction events.
+- Implementing archive compression or working-context snapshot retention/windowing beyond segmented raw-trace archives and provider-boundary-triggered active raw-trace rotation.
 
 ## Functional Requirements
 
@@ -74,7 +76,11 @@ Medium
 - REQ-009: The run-history local memory projection path must be able to build conversation/activity views from the persisted Codex/Claude raw traces when runtime-specific history is unavailable.
 - REQ-010: The implementation must avoid per-runtime duplicate writer implementations; runtime-specific adapters may normalize event payload differences, but file writing and trace/snapshot ownership must remain in the `agent-memory` subsystem.
 - REQ-011: Codex/Claude memory persistence must be storage-only recording; it must not instantiate a Codex/Claude memory manager, drive external-runtime context retrieval/compaction, or inject recorded memory back into those runtimes.
-- REQ-012: Raw-trace file shape, working-context snapshot shape, memory file names, and direct memory-directory read/write helpers must be reusable from `autobyteus-ts` or an explicitly shared memory package; the server recorder must not duplicate those serialization/layout definitions.
+- REQ-012: Raw-trace file shape, segmented archive file naming, working-context snapshot shape, memory file names, and direct memory-directory read/write helpers must be reusable from `autobyteus-ts` or an explicitly shared memory package; the server recorder must not duplicate those serialization/layout definitions.
+- REQ-013: The server must normalize Codex and Claude provider compaction boundaries into a runtime-neutral compaction-boundary event/recording input, including runtime kind, provider, source surface, deduplication key, provider timestamp when available, trigger/status/token metadata when available, rotation eligibility, and explicit `semantic_compaction=false` semantics.
+- REQ-014: For Codex and Claude runs, provider compaction-boundary events must trigger non-destructive active raw-trace rotation: after a boundary marker is written, settled active raw traces before the marker are moved to a new boundary-specific archive segment file, the active `raw_traces.jsonl` remains small, and active plus archive segments remain the complete trace corpus.
+- REQ-015: Provider compaction-boundary rotation must not create semantic or episodic memory, must not delete raw traces, must not rewrite trace content, and must not inject or retrieve memory into/from Codex or Claude runtime contexts.
+- REQ-016: Native Autobyteus compaction archival and Codex/Claude provider-boundary rotation must share the same explicitly owned segmented raw-trace archive manager, behind the shared memory-directory facade, so archive segment naming, manifest/indexing, active-plus-archive reads, idempotent retry behavior, and deduplication by raw trace id behave consistently across runtime kinds instead of being duplicated per runtime.
 
 ## Acceptance Criteria
 
@@ -85,10 +91,14 @@ Medium
 - AC-005: Given a Codex or Claude team member run, memory files are written under the member memory directory and the team memory index/view can detect the member's stored raw traces.
 - AC-006: Given a native Autobyteus run, existing memory files are still written by native runtime memory and are not doubled by server-side event recording.
 - AC-007: Given a Codex/Claude run with no live browser connected, memory files are still written because the recorder is attached by `AgentRunManager`, not by WebSocket streaming.
-- AC-008: Given a post-change Codex/Claude run whose runtime-specific history provider cannot read the provider history, the local persisted memory fallback can still build run-history conversation/activity projection from `raw_traces.jsonl`.
+- AC-008: Given a post-change Codex/Claude run whose runtime-specific history provider cannot read the provider history, the local persisted memory fallback can still build run-history conversation/activity projection from the complete local raw-trace corpus: active `raw_traces.jsonl` plus completed archive segments.
 - AC-009: Targeted unit/integration validation covers the recorder's event mapping, standalone Codex persistence, standalone Claude persistence, team member memory directory parity, and native Autobyteus no-duplicate behavior.
 - AC-010: Code review can verify there is one shared storage-only recorder/writer for Codex and Claude and no new per-runtime `MemoryManager` implementation or memory injection path for those runtimes.
 - AC-011: Code review can verify the server recorder uses shared `autobyteus-ts` memory file-format/store primitives for raw traces and working-context snapshots rather than maintaining an independent duplicate file-format implementation.
+- AC-012: Given a Codex compaction boundary (`thread/compacted` or raw response compaction item), the server records exactly one non-destructive `provider_compaction_boundary` marker for one deduplicated boundary and rotates settled earlier active raw traces into a new archive segment file; reading active plus archive segments returns the original trace history in order.
+- AC-013: Given a Claude SDK compact boundary/status sequence, the server records status metadata without rotating on `status: compacting`, records a `provider_compaction_boundary` marker on `compact_boundary`, and rotates only at that safe boundary into a new archive segment file; active plus archive segments still return the original trace history in order.
+- AC-014: Given provider compaction-boundary rotation, no Codex/Claude semantic/episodic memory file is created by the recorder and no raw trace record is deleted or content-rewritten.
+- AC-015: Given native Autobyteus compaction, the compacted raw traces are archived into a boundary-specific segment file through the shared archive manager instead of being appended to a monolithic archive file, and active plus archive segments remain readable through memory view/projection paths.
 
 ## Constraints / Dependencies
 
@@ -101,7 +111,8 @@ Medium
 - Must not require WebSocket stream subscribers to be present for memory to persist.
 - Must not store provider-specific raw logs as the authoritative memory model.
 - Must keep Codex/Claude persistence storage-only; the server recorder must not be treated as the runtime memory manager for external runtimes.
-- Must treat external-runtime compaction signals as provider/session metadata only; Codex `thread/compacted` / `type=compaction` and Claude compact boundaries must not trigger local raw-trace deletion or semantic memory compaction in this scope.
+- Must treat external-runtime compaction signals as provider/session metadata and storage-rotation boundaries only; Codex `thread/compacted` / `type=compaction` and Claude compact boundaries must not trigger local raw-trace deletion or semantic memory compaction in this scope.
+- Must ensure every raw trace moved out of active `raw_traces.jsonl` remains available through segmented archive reads and run-history projection paths that include archive segments.
 - Must keep low-level memory file schema/layout definitions reusable and singular; if the server needs convenience wrappers, they must delegate to shared memory primitives rather than redefine the format.
 
 ## Assumptions
@@ -118,8 +129,7 @@ Medium
 - OQ-002: Segment events can contain multiple assistant text segments per turn; implementation must define whether working context appends each assistant segment or one combined assistant message per turn.
 - OQ-003: Reasoning persistence may increase disk usage; implementation should keep raw reasoning normalized and avoid provider raw-log dumps.
 - OQ-004: Historical Codex/Claude runs that lack memory files will remain dependent on existing runtime-specific history providers unless a future migration/import ticket is created.
-- OQ-005: A future product decision is needed on whether to persist provider compact-boundary markers as explicit raw traces or a separate runtime-event file; either choice must stay non-destructive unless the runtime supplies local trace-id mapping.
-- OQ-006: Long-running external-runtime runs can grow active raw traces and working-context snapshots; a future policy should decide whether to rotate active traces by size/turn/provider boundary and whether to keep snapshots to a recent window while raw traces remain complete.
+- OQ-005: Provider-boundary active raw-trace rotation and native segmented archival address hot active-file growth and compaction-boundary inspectability, but total archive storage and `working_context_snapshot.json` can still grow; archive compression and snapshot windowing remain future policy decisions.
 
 ## Requirement-To-Use-Case Coverage
 
@@ -135,6 +145,10 @@ Medium
 - REQ-010 -> UC-001, UC-002, UC-003, UC-004
 - REQ-011 -> UC-001, UC-002, UC-003, UC-004, UC-005
 - REQ-012 -> UC-001, UC-002, UC-003, UC-004, UC-005, UC-006
+- REQ-013 -> UC-001, UC-002, UC-003, UC-005
+- REQ-014 -> UC-001, UC-002, UC-003, UC-005, UC-006
+- REQ-015 -> UC-001, UC-002, UC-003, UC-004, UC-005
+- REQ-016 -> UC-001, UC-002, UC-003, UC-004, UC-005, UC-006
 
 ## Acceptance-Criteria-To-Scenario Intent
 
@@ -149,6 +163,10 @@ Medium
 - AC-009 -> Executable validation completeness scenario.
 - AC-010 -> Storage-only/no-duplicated-manager architecture scenario.
 - AC-011 -> Shared memory file-format/no duplicated serialization scenario.
+- AC-012 -> Codex provider compaction-boundary marker and active raw-trace rotation scenario.
+- AC-013 -> Claude provider compaction-boundary marker and active raw-trace rotation scenario.
+- AC-014 -> Non-destructive/no semantic-compaction guard scenario.
+- AC-015 -> Native Autobyteus segmented archive parity scenario.
 
 ## Approval Status
 

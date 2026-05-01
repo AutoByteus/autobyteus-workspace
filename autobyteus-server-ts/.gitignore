@@ -22,6 +22,7 @@ node_modules/
 /media/
 /download/
 /temp_workspace/
+/workspaces.json
 
 # OS / editor
 .DS_Store
@@ -38,5 +39,7 @@ Thumbs.db
 # Local MCP configs
 /docs/examples/alexa_mcp_import.local.json
 memory
+!/tests/e2e/memory/
+!/tests/e2e/memory/*.test.ts
 # File-profile build output
 /dist-file/

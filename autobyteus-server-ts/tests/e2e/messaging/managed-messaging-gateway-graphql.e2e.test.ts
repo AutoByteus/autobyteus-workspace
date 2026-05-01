@@ -31,6 +31,7 @@ describe("Managed messaging gateway GraphQL e2e", () => {
   let artifactServer: http.Server;
   let artifactBaseUrl: string;
   let healthyArchivePath: string;
+  let originalAutobyteusServerHost: string | undefined;
 
   beforeAll(async () => {
     process.env.MANAGED_MESSAGING_GATEWAY_HEALTH_STARTUP_TIMEOUT_MS = "10000";
@@ -53,6 +54,9 @@ describe("Managed messaging gateway GraphQL e2e", () => {
       "AUTOBYTEUS_SERVER_HOST=http://localhost:60634\n",
       "utf8",
     );
+
+    originalAutobyteusServerHost = process.env.AUTOBYTEUS_SERVER_HOST;
+    process.env.AUTOBYTEUS_SERVER_HOST = "http://localhost:60634";
 
     appConfigProvider.config.setCustomAppDataDir(dataDir);
     appConfigProvider.config.initialize();
@@ -120,6 +124,11 @@ describe("Managed messaging gateway GraphQL e2e", () => {
     delete process.env.MANAGED_MESSAGING_GATEWAY_HEALTH_STARTUP_TIMEOUT_MS;
     delete process.env.MANAGED_MESSAGING_GATEWAY_MANIFEST_PATH;
     delete process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
+    if (originalAutobyteusServerHost === undefined) {
+      delete process.env.AUTOBYTEUS_SERVER_HOST;
+    } else {
+      process.env.AUTOBYTEUS_SERVER_HOST = originalAutobyteusServerHost;
+    }
     await __resetManagedMessagingGatewayServiceForTests();
     await new Promise<void>((resolve, reject) => {
       artifactServer.close((error) => {

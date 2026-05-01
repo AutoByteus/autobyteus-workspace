@@ -411,7 +411,7 @@ describe("Agent definitions GraphQL e2e", () => {
 
     expect(deleteResult.deleteAgentDefinition.success).toBe(false);
     expect(deleteResult.deleteAgentDefinition.message).toContain(
-      "Deleting team-owned agent definitions is not supported.",
+      "Deleting non-shared agent definitions is not supported.",
     );
     await expect(fs.access(localAgentDir)).resolves.toBeUndefined();
   });

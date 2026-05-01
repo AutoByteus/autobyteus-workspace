@@ -68,7 +68,7 @@ export class FileMemoryStore extends MemoryStore {
   }
 
   readArchiveRawTraces(): Record<string, unknown>[] {
-    return this.runStore.readArchiveRawTraces();
+    return this.runStore.readCompleteArchiveRawTraceDicts();
   }
 
   pruneRawTracesById(traceIdsToRemove: Iterable<string>, archive = true): void {

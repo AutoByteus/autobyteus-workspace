@@ -157,9 +157,7 @@ describe('FileMemoryStore', () => {
     const remaining = store.listRawTracesOrdered();
     expect(remaining).toHaveLength(1);
     expect(remaining[0].id).toBe('rt-2');
-
-    const archivePath = path.join(tempDir, 'agents', 'agent-no-archive', 'raw_traces_archive.jsonl');
-    expect(fs.existsSync(archivePath)).toBe(false);
+    expect(store.readArchiveRawTraces()).toEqual([]);
   });
 
   it('prunes only the selected raw trace ids and archives removed items', () => {
@@ -200,10 +198,8 @@ describe('FileMemoryStore', () => {
     const remaining = store.listRawTracesOrdered().map((item) => item.id);
     expect(remaining).toEqual(['rt-1', 'rt-3']);
 
-    const archivePath = path.join(tempDir, 'agents', 'agent-2', 'raw_traces_archive.jsonl');
-    const archiveContent = fs.readFileSync(archivePath, 'utf-8');
-    expect(archiveContent).toContain('"id":"rt-2"');
-    expect(archiveContent).not.toContain('"id":"rt-1"');
+    const archive = store.readArchiveRawTraces();
+    expect(archive.map((item) => item.id)).toEqual(['rt-2']);
   });
 
   it('supports flat team-member layout when agentRootSubdir is empty', () => {

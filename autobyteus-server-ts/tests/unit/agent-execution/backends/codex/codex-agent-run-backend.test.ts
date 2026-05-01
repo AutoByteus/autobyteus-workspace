@@ -93,6 +93,7 @@ describe("CodexAgentRunBackend", () => {
     );
     expect(result).toEqual({
       accepted: true,
+      turnId: "turn-1",
       platformAgentRunId: "thread-1",
     });
   });

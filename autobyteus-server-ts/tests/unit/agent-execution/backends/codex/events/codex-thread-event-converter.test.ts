@@ -31,6 +31,212 @@ describe("CodexThreadEventConverter", () => {
     expect(converted).toEqual([]);
   });
 
+  it("normalizes thread/compacted into provider compaction boundary status", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.THREAD_COMPACTED,
+      params: {
+        thread_id: "thread-1",
+        id: "compaction-1",
+        turn_id: "turn-1",
+        pre_tokens: 120000,
+      },
+    });
+
+    expect(converted).toHaveLength(1);
+    expect(converted[0]).toMatchObject({
+      eventType: AgentRunEventType.COMPACTION_STATUS,
+      payload: {
+        kind: "provider_compaction_boundary",
+        runtime_kind: "CODEX",
+        provider: "codex",
+        source_surface: "codex.thread_compacted",
+        boundary_key: "codex:thread-1:compaction-1",
+        provider_thread_id: "thread-1",
+        provider_event_id: "compaction-1",
+        turn_id: "turn-1",
+        rotation_eligible: true,
+        semantic_compaction: false,
+      },
+    });
+  });
+
+  it("dedupes raw compaction items when thread/compacted already reported the boundary", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    expect(converter.convert({
+      method: CodexThreadEventName.THREAD_COMPACTED,
+      params: {
+        thread_id: "thread-1",
+        id: "compaction-1",
+        turn_id: "turn-1",
+      },
+    })).toHaveLength(1);
+
+    expect(converter.convert({
+      method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "compaction",
+          id: "compaction-1",
+          response_id: "response-1",
+        },
+        thread_id: "thread-1",
+        turn_id: "turn-1",
+      },
+    })).toEqual([]);
+  });
+
+  it("dedupes raw no-stable compaction items when thread/compacted already reported the boundary", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    expect(converter.convert({
+      method: CodexThreadEventName.THREAD_COMPACTED,
+      params: {
+        thread_id: "thread-1",
+        turn_id: "turn-1",
+      },
+    })).toHaveLength(1);
+
+    expect(converter.convert({
+      method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "compaction",
+        },
+        thread_id: "thread-1",
+        turn_id: "turn-1",
+      },
+    })).toEqual([]);
+  });
+
+  it("dedupes later thread/compacted when a raw no-stable compaction item arrived first", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    expect(converter.convert({
+      method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "compaction",
+        },
+        thread_id: "thread-1",
+        turn_id: "turn-1",
+      },
+    })).toHaveLength(1);
+
+    expect(converter.convert({
+      method: CodexThreadEventName.THREAD_COMPACTED,
+      params: {
+        thread_id: "thread-1",
+        turn_id: "turn-1",
+      },
+    })).toEqual([]);
+  });
+
+  it("dedupes repeated raw no-stable compaction items in the same converter window", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    expect(converter.convert({
+      method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "compaction",
+        },
+        thread_id: "thread-1",
+        turn_id: "turn-1",
+      },
+    })).toHaveLength(1);
+
+    expect(converter.convert({
+      method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "compaction",
+        },
+        thread_id: "thread-1",
+        turn_id: "turn-1",
+      },
+    })).toEqual([]);
+  });
+
+  it("dedupes stable-id compaction boundaries when the raw item arrives before thread/compacted", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    expect(converter.convert({
+      method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "compaction",
+          id: "compaction-1",
+        },
+        thread_id: "thread-1",
+        turn_id: "turn-1",
+      },
+    })).toHaveLength(1);
+
+    expect(converter.convert({
+      method: CodexThreadEventName.THREAD_COMPACTED,
+      params: {
+        thread_id: "thread-1",
+        id: "compaction-1",
+        turn_id: "turn-1",
+      },
+    })).toEqual([]);
+  });
+
+  it("dedupes raw compaction items with a different stable id after thread/compacted in the same window", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    expect(converter.convert({
+      method: CodexThreadEventName.THREAD_COMPACTED,
+      params: {
+        thread_id: "thread-1",
+        id: "thread-boundary-1",
+        turn_id: "turn-1",
+      },
+    })).toHaveLength(1);
+
+    expect(converter.convert({
+      method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "compaction",
+          id: "raw-item-1",
+          response_id: "response-1",
+        },
+        thread_id: "thread-1",
+        turn_id: "turn-1",
+      },
+    })).toEqual([]);
+  });
+
+  it("dedupes thread/compacted with a different stable id after a raw compaction item in the same window", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    expect(converter.convert({
+      method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "compaction",
+          id: "raw-item-1",
+          response_id: "response-1",
+        },
+        thread_id: "thread-1",
+        turn_id: "turn-1",
+      },
+    })).toHaveLength(1);
+
+    expect(converter.convert({
+      method: CodexThreadEventName.THREAD_COMPACTED,
+      params: {
+        thread_id: "thread-1",
+        id: "thread-boundary-1",
+        turn_id: "turn-1",
+      },
+    })).toEqual([]);
+  });
+
   it("still maps thread status changes into AGENT_STATUS", () => {
     const converter = new CodexThreadEventConverter("run-1");
 

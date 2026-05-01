@@ -10,6 +10,10 @@ import {
   AgentRunEventType,
   type AgentRunEvent,
 } from "../../../src/agent-execution/domain/agent-run-event.js";
+import { CodexThreadEventConverter } from "../../../src/agent-execution/backends/codex/events/codex-thread-event-converter.js";
+import { CodexThreadEventName } from "../../../src/agent-execution/backends/codex/events/codex-thread-event-name.js";
+import { ClaudeSessionEventConverter } from "../../../src/agent-execution/backends/claude/events/claude-session-event-converter.js";
+import { ClaudeSessionEventName } from "../../../src/agent-execution/backends/claude/events/claude-session-event-name.js";
 import type { AgentRunBackend } from "../../../src/agent-execution/backends/agent-run-backend.js";
 import type { AgentRunBackendFactory } from "../../../src/agent-execution/backends/agent-run-backend-factory.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
@@ -23,10 +27,13 @@ import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { MemberTeamContext } from "../../../src/agent-team-execution/domain/member-team-context.js";
 import {
-  RAW_TRACES_ARCHIVE_MEMORY_FILE_NAME,
+  EPISODIC_MEMORY_FILE_NAME,
   RAW_TRACES_MEMORY_FILE_NAME,
+  SEMANTIC_MEMORY_FILE_NAME,
   WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
 } from "autobyteus-ts/memory/store/memory-file-names.js";
+import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
+import { RunMemoryWriter } from "../../../src/agent-memory/store/run-memory-writer.js";
 
 const tempDirs = new Set<string>();
 
@@ -111,10 +118,11 @@ const readLines = async (filePath: string) =>
     .filter(Boolean)
     .map((line) => JSON.parse(line) as Record<string, unknown>);
 
-const readView = (memoryDir: string) =>
+const readView = (memoryDir: string, includeArchive = false) =>
   new AgentMemoryService(new MemoryFileStore(path.dirname(memoryDir), { runRootSubdir: "" }))
     .getRunMemoryView(path.basename(memoryDir), {
       includeRawTraces: true,
+      includeArchive,
       includeWorkingContext: true,
       includeEpisodic: false,
       includeSemantic: false,
@@ -200,7 +208,7 @@ describe("cross-runtime memory persistence integration", () => {
 
       await expect(fs.access(path.join(memoryDir, RAW_TRACES_MEMORY_FILE_NAME))).resolves.toBeUndefined();
       await expect(fs.access(path.join(memoryDir, WORKING_CONTEXT_SNAPSHOT_FILE_NAME))).resolves.toBeUndefined();
-      await expect(fs.access(path.join(memoryDir, RAW_TRACES_ARCHIVE_MEMORY_FILE_NAME))).rejects.toThrow();
+      expect(new RunMemoryFileStore(memoryDir).getRawTraceArchiveRevisionInfo()).toBeNull();
 
       const view = readView(memoryDir);
       expect(view.rawTraces?.map((trace) => trace.traceType)).toEqual([
@@ -263,6 +271,223 @@ describe("cross-runtime memory persistence integration", () => {
 
     await expect(fs.access(path.join(memoryDir, RAW_TRACES_MEMORY_FILE_NAME))).rejects.toThrow();
     await expect(fs.access(path.join(memoryDir, WORKING_CONTEXT_SNAPSHOT_FILE_NAME))).rejects.toThrow();
+  });
+
+  it("uses Codex thread/raw compaction duplicate-window conversion to write one marker and one archive segment", async () => {
+    const memoryDir = await mkTempDir();
+    const recorder = new AgentRunMemoryRecorder();
+    const { factory } = createRuntimeBackendFactory(RuntimeKind.CODEX_APP_SERVER);
+    const manager = new AgentRunManager({
+      autoByteusBackendFactory: createRuntimeBackendFactory(RuntimeKind.AUTOBYTEUS).factory,
+      codexBackendFactory: factory,
+      claudeBackendFactory: createRuntimeBackendFactory(RuntimeKind.CLAUDE_AGENT_SDK).factory,
+      runFileChangeService: createNoopSidecar() as never,
+      publishedArtifactRelayService: createNoopSidecar() as never,
+      memoryRecorder: recorder,
+    });
+    const run = await manager.createAgentRun(
+      new AgentRunConfig({
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        agentDefinitionId: "agent-def-1",
+        llmModelIdentifier: "gpt-codex",
+        autoExecuteTools: true,
+        workspaceId: "workspace-1",
+        memoryDir,
+        skillAccessMode: SkillAccessMode.NONE,
+      }),
+    );
+    const converter = new CodexThreadEventConverter(run.runId);
+    const turnId = `turn-${run.runId}`;
+
+    run.emitLocalEvent(event(run.runId, AgentRunEventType.TURN_STARTED, { turnId }));
+    run.emitLocalEvent(event(run.runId, AgentRunEventType.SEGMENT_CONTENT, {
+      id: "codex-before-boundary",
+      segment_type: "text",
+      delta: "before codex compaction",
+      timestamp: 1,
+    }));
+    run.emitLocalEvent(event(run.runId, AgentRunEventType.SEGMENT_END, {
+      id: "codex-before-boundary",
+      segment_type: "text",
+    }));
+    const compactedEvents = converter.convert({
+      method: CodexThreadEventName.THREAD_COMPACTED,
+      params: {
+        thread_id: "thread-1",
+        id: "compaction-1",
+        turn_id: turnId,
+        pre_tokens: 120000,
+        timestamp: 2,
+      },
+    });
+    expect(compactedEvents).toHaveLength(1);
+    compactedEvents.forEach((converted) => run.emitLocalEvent(converted));
+    expect(converter.convert({
+      method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "compaction",
+          id: "compaction-1",
+          response_id: "response-1",
+        },
+        thread_id: "thread-1",
+        turn_id: turnId,
+      },
+    })).toEqual([]);
+    await recorder.waitForIdle(run.runId);
+
+    const store = new RunMemoryFileStore(memoryDir);
+    expect(store.listRawTracesOrdered().map((trace) => trace.traceType)).toEqual([
+      "provider_compaction_boundary",
+    ]);
+    const manifest = store.readRawTraceArchiveManifest();
+    expect(manifest.segments).toHaveLength(1);
+    expect(manifest.segments[0]).toMatchObject({
+      boundary_type: "provider_compaction_boundary",
+      boundary_key: "codex:thread-1:compaction-1",
+      status: "complete",
+      record_count: 1,
+    });
+    expect(readView(memoryDir, true).rawTraces?.map((trace) => trace.traceType)).toEqual([
+      "assistant",
+      "provider_compaction_boundary",
+    ]);
+    expect(readView(memoryDir, true).rawTraces?.filter((trace) => trace.traceType === "provider_compaction_boundary")).toHaveLength(1);
+    await expect(fs.access(path.join(memoryDir, SEMANTIC_MEMORY_FILE_NAME))).rejects.toThrow();
+    await expect(fs.access(path.join(memoryDir, EPISODIC_MEMORY_FILE_NAME))).rejects.toThrow();
+
+    const restoredWriter = new RunMemoryWriter({ memoryDir });
+    const continued = restoredWriter.appendRawTrace({
+      traceType: "assistant",
+      turnId,
+      content: "after restore",
+      sourceEvent: "test-restore",
+      ts: 3,
+    });
+    expect(continued.seq).toBe(3);
+  });
+
+  it("keeps Claude compacting status non-rotating and rotates only at compact_boundary", async () => {
+    const memoryDir = await mkTempDir();
+    const recorder = new AgentRunMemoryRecorder();
+    const { factory } = createRuntimeBackendFactory(RuntimeKind.CLAUDE_AGENT_SDK);
+    const manager = new AgentRunManager({
+      autoByteusBackendFactory: createRuntimeBackendFactory(RuntimeKind.AUTOBYTEUS).factory,
+      codexBackendFactory: createRuntimeBackendFactory(RuntimeKind.CODEX_APP_SERVER).factory,
+      claudeBackendFactory: factory,
+      runFileChangeService: createNoopSidecar() as never,
+      publishedArtifactRelayService: createNoopSidecar() as never,
+      memoryRecorder: recorder,
+    });
+    const run = await manager.createAgentRun(
+      new AgentRunConfig({
+        runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+        agentDefinitionId: "agent-def-1",
+        llmModelIdentifier: "claude-sonnet",
+        autoExecuteTools: true,
+        workspaceId: "workspace-1",
+        memoryDir,
+        skillAccessMode: SkillAccessMode.NONE,
+      }),
+    );
+    const converter = new ClaudeSessionEventConverter(run.runId);
+    const turnId = `turn-${run.runId}`;
+
+    run.emitLocalEvent(event(run.runId, AgentRunEventType.TURN_STARTED, { turnId }));
+    run.emitLocalEvent(event(run.runId, AgentRunEventType.SEGMENT_CONTENT, {
+      id: "claude-before-status",
+      segment_type: "text",
+      delta: "before claude status",
+      timestamp: 1,
+    }));
+    run.emitLocalEvent(event(run.runId, AgentRunEventType.SEGMENT_END, {
+      id: "claude-before-status",
+      segment_type: "text",
+    }));
+    converter.convert({
+      method: ClaudeSessionEventName.STATUS_COMPACTING,
+      params: {
+        session_id: "session-1",
+        uuid: "compaction-operation-1",
+        turnId,
+        timestamp: 2,
+        input_tokens: 50000,
+      },
+    }).forEach((converted) => run.emitLocalEvent(converted));
+    await recorder.waitForIdle(run.runId);
+
+    let store = new RunMemoryFileStore(memoryDir);
+    expect(store.getRawTraceArchiveRevisionInfo()).toBeNull();
+    expect(store.listRawTracesOrdered().map((trace) => trace.traceType)).toEqual([
+      "assistant",
+      "provider_compaction_boundary",
+    ]);
+    expect(store.listRawTracesOrdered()[1]?.toolResult).toMatchObject({
+      provider: "claude",
+      status: "compacting",
+      rotation_eligible: false,
+      semantic_compaction: false,
+    });
+
+    run.emitLocalEvent(event(run.runId, AgentRunEventType.SEGMENT_CONTENT, {
+      id: "claude-before-boundary",
+      segment_type: "text",
+      delta: "before claude boundary",
+      timestamp: 3,
+    }));
+    run.emitLocalEvent(event(run.runId, AgentRunEventType.SEGMENT_END, {
+      id: "claude-before-boundary",
+      segment_type: "text",
+    }));
+    converter.convert({
+      method: ClaudeSessionEventName.COMPACT_BOUNDARY,
+      params: {
+        session_id: "session-1",
+        uuid: "compaction-operation-1",
+        turnId,
+        timestamp: 4,
+        pre_tokens: 75000,
+      },
+    }).forEach((converted) => run.emitLocalEvent(converted));
+    await recorder.waitForIdle(run.runId);
+
+    store = new RunMemoryFileStore(memoryDir);
+    expect(store.listRawTracesOrdered().map((trace) => trace.traceType)).toEqual([
+      "provider_compaction_boundary",
+    ]);
+    expect(store.listRawTracesOrdered()[0]?.toolResult).toMatchObject({
+      provider: "claude",
+      status: "compacted",
+      rotation_eligible: true,
+      source_surface: "claude.compact_boundary",
+    });
+    expect(store.readRawTraceArchiveManifest().segments).toEqual([
+      expect.objectContaining({
+        boundary_type: "provider_compaction_boundary",
+        boundary_key: `claude:session-1:claude.compact_boundary:compaction-operation-1:${turnId}`,
+        status: "complete",
+        record_count: 3,
+      }),
+    ]);
+    const completeTraces = readView(memoryDir, true).rawTraces ?? [];
+    expect(completeTraces.map((trace) => trace.traceType)).toEqual([
+      "assistant",
+      "provider_compaction_boundary",
+      "assistant",
+      "provider_compaction_boundary",
+    ]);
+    expect(completeTraces[1]?.toolResult).toMatchObject({
+      provider: "claude",
+      status: "compacting",
+      rotation_eligible: false,
+      source_surface: "claude.status_compacting",
+    });
+    expect(completeTraces[3]?.toolResult).toMatchObject({
+      provider: "claude",
+      status: "compacted",
+      rotation_eligible: true,
+      source_surface: "claude.compact_boundary",
+    });
   });
 
   it("records one denied tool result when duplicate tool lifecycle events are observed", async () => {

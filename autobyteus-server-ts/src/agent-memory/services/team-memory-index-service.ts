@@ -1,7 +1,6 @@
 import { TeamRunMetadataStore } from "../../run-history/store/team-run-metadata-store.js";
 import {
   EPISODIC_MEMORY_FILE_NAME,
-  RAW_TRACES_ARCHIVE_MEMORY_FILE_NAME,
   RAW_TRACES_MEMORY_FILE_NAME,
   SEMANTIC_MEMORY_FILE_NAME,
   WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
@@ -162,7 +161,7 @@ export class TeamMemoryIndexService {
     const episodicInfo = memoryStore.getFileInfo(`${runDir}/${EPISODIC_MEMORY_FILE_NAME}`);
     const semanticInfo = memoryStore.getFileInfo(`${runDir}/${SEMANTIC_MEMORY_FILE_NAME}`);
     const rawTracesInfo = memoryStore.getFileInfo(`${runDir}/${RAW_TRACES_MEMORY_FILE_NAME}`);
-    const rawArchiveInfo = memoryStore.getFileInfo(`${runDir}/${RAW_TRACES_ARCHIVE_MEMORY_FILE_NAME}`);
+    const rawArchiveInfo = memoryStore.getRawTraceArchiveInfo(member.memberRunId);
 
     const mtimes = [
       workingContextInfo,

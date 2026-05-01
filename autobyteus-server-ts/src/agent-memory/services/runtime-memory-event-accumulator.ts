@@ -3,6 +3,7 @@ import type { AgentRunEvent } from "../../agent-execution/domain/agent-run-event
 import { AgentRunEventType } from "../../agent-execution/domain/agent-run-event.js";
 import type { RunMemoryWriter } from "../store/run-memory-writer.js";
 import type { RawTraceMedia } from "autobyteus-ts/memory/models/raw-trace-item.js";
+import { ProviderCompactionBoundaryRecorder } from "./provider-compaction-boundary-recorder.js";
 import {
   asString,
   extractContentDelta,
@@ -43,13 +44,19 @@ export class RuntimeMemoryEventAccumulator {
   private readonly tools = new Map<string, ToolState>();
   private readonly anonymousToolQueue: string[] = [];
   private readonly pendingReasoningByTurn = new Map<string, string[]>();
+  private readonly providerCompactionBoundaryRecorder: ProviderCompactionBoundaryRecorder;
 
   constructor(
     private readonly input: {
       runId: string;
       writer: RunMemoryWriter;
     },
-  ) {}
+  ) {
+    this.providerCompactionBoundaryRecorder = new ProviderCompactionBoundaryRecorder({
+      writer: input.writer,
+      resolveTurnId: (candidate) => this.resolveTurnId(candidate),
+    });
+  }
 
   recordAcceptedUserMessage(payload: AgentRunUserMessageAcceptedPayload): void {
     const turnId = this.resolveTurnId(payload.result.turnId);
@@ -100,6 +107,9 @@ export class RuntimeMemoryEventAccumulator {
       case AgentRunEventType.TOOL_EXECUTION_SUCCEEDED:
       case AgentRunEventType.TOOL_EXECUTION_FAILED:
         this.recordToolResult(event);
+        return;
+      case AgentRunEventType.COMPACTION_STATUS:
+        this.providerCompactionBoundaryRecorder.record(event);
         return;
       default:
         return;

@@ -71,7 +71,7 @@ describe("TeamMemberCodexThreadBootstrapStrategy", () => {
     expect(preparation.dynamicToolRegistrations?.[0]?.spec).toEqual(
       expect.objectContaining({
         name: "send_message_to",
-        input_schema: expect.objectContaining({
+        inputSchema: expect.objectContaining({
           properties: expect.objectContaining({
             recipient_name: expect.objectContaining({ enum: ["Writer"] }),
           }),

@@ -19,6 +19,9 @@ const resolveInvocationId = (payload: Record<string, unknown>): string | null =>
 const resolveTurnId = (payload: Record<string, unknown>): string | null =>
   asString(payload.turnId) ?? asString(payload.turn_id);
 
+const asNumber = (value: unknown): number | null =>
+  typeof value === "number" && Number.isFinite(value) ? value : null;
+
 const normalizeToolNameForEvent = (value: string | null): string | null => {
   if (!value) {
     return null;
@@ -108,6 +111,18 @@ export class ClaudeSessionEventConverter {
           old_status: "RUNNING",
           ...(turnId ? { turnId } : {}),
         });
+      case ClaudeSessionEventName.STATUS_COMPACTING:
+        return [this.createEvent(
+          claudeEventName,
+          AgentRunEventType.COMPACTION_STATUS,
+          this.buildClaudeCompactionBoundaryPayload(payload, "claude.status_compacting", false),
+        )];
+      case ClaudeSessionEventName.COMPACT_BOUNDARY:
+        return [this.createEvent(
+          claudeEventName,
+          AgentRunEventType.COMPACTION_STATUS,
+          this.buildClaudeCompactionBoundaryPayload(payload, "claude.compact_boundary", true),
+        )];
       case ClaudeSessionEventName.ITEM_OUTPUT_TEXT_DELTA: {
         const id = resolveSegmentId(payload);
         const delta = asString(payload.delta);
@@ -268,6 +283,48 @@ export class ClaudeSessionEventConverter {
       runId: this.runId,
       payload,
       statusHint: deriveClaudeAgentRunStatusHint(claudeEventName),
+    };
+  }
+
+  private buildClaudeCompactionBoundaryPayload(
+    payload: Record<string, unknown>,
+    sourceSurface: "claude.status_compacting" | "claude.compact_boundary",
+    rotationEligible: boolean,
+  ): Record<string, unknown> {
+    const sessionId =
+      asString(payload.sessionId) ??
+      asString(payload.session_id) ??
+      asString(payload.threadId) ??
+      asString(payload.thread_id);
+    const turnId = resolveTurnId(payload);
+    const eventId =
+      asString(payload.uuid) ??
+      asString(payload.id) ??
+      asString(payload.event_id) ??
+      asString(payload.eventId);
+    const boundaryKey = [
+      "claude",
+      sessionId ?? "session",
+      sourceSurface,
+      eventId ?? "event",
+      turnId ?? "turn",
+    ].join(":");
+    return {
+      kind: "provider_compaction_boundary",
+      runtime_kind: "CLAUDE",
+      provider: "claude",
+      source_surface: sourceSurface,
+      boundary_key: boundaryKey,
+      provider_session_id: sessionId,
+      provider_event_id: eventId,
+      provider_timestamp: asNumber(payload.ts) ?? asNumber(payload.timestamp) ?? null,
+      turn_id: turnId,
+      trigger: asString(payload.trigger) ?? null,
+      status: sourceSurface === "claude.status_compacting" ? "compacting" : "compacted",
+      pre_tokens: asNumber(payload.pre_tokens) ?? asNumber(payload.input_tokens) ?? null,
+      rotation_eligible: rotationEligible,
+      semantic_compaction: false,
+      raw: serializePayload(payload),
     };
   }
 }

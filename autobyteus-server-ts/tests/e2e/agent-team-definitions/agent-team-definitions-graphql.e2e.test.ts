@@ -30,6 +30,7 @@ describe("Agent team definitions GraphQL e2e", () => {
       provider: emptyApplicationBundleProvider,
       builtInMaterializer: {
         ensureMaterialized: async () => undefined,
+        getBundledSourceRootPath: () => appConfigProvider.config.getAppRootDir(),
       },
     });
     (AgentTeamDefinitionService as unknown as { instance: AgentTeamDefinitionService | null }).instance = null;
@@ -51,6 +52,7 @@ describe("Agent team definitions GraphQL e2e", () => {
       provider: emptyApplicationBundleProvider,
       builtInMaterializer: {
         ensureMaterialized: async () => undefined,
+        getBundledSourceRootPath: () => appConfigProvider.config.getAppRootDir(),
       },
     });
     (AgentTeamDefinitionService as unknown as { instance: AgentTeamDefinitionService | null }).instance = null;

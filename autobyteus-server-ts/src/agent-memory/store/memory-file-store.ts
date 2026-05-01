@@ -2,11 +2,11 @@ import fs from "node:fs";
 import path from "node:path";
 import {
   EPISODIC_MEMORY_FILE_NAME,
-  RAW_TRACES_ARCHIVE_MEMORY_FILE_NAME,
   RAW_TRACES_MEMORY_FILE_NAME,
   SEMANTIC_MEMORY_FILE_NAME,
   WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
 } from "autobyteus-ts/memory/store/memory-file-names.js";
+import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -126,8 +126,16 @@ export class MemoryFileStore {
   }
 
   readRawTracesArchive(runId: string, limit?: number): Array<Record<string, unknown>> {
-    const filePath = path.join(this.getRunDir(runId), RAW_TRACES_ARCHIVE_MEMORY_FILE_NAME);
-    return this.readJsonl(filePath, limit, { warnIfMissing: false });
+    const records = new RunMemoryFileStore(this.getRunDir(runId)).readCompleteArchiveRawTraceDicts();
+    return limit && limit > 0 ? records.slice(-limit) : records;
+  }
+
+  getRawTraceArchiveInfo(runId: string): FileInfo | null {
+    return new RunMemoryFileStore(this.getRunDir(runId)).getRawTraceArchiveRevisionInfo();
+  }
+
+  readRawTraceCorpus(runId: string, limit?: number): Array<Record<string, unknown>> {
+    return new RunMemoryFileStore(this.getRunDir(runId)).readCompleteRawTraceCorpusDicts(limit);
   }
 
   readEpisodic(runId: string, limit?: number): Array<Record<string, unknown>> {

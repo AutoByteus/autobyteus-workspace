@@ -19,6 +19,7 @@ export enum CodexThreadEventName {
   LOCAL_TOOL_APPROVED = "codex/local/toolApproved",
   LOCAL_MCP_TOOL_EXECUTION_COMPLETED = "codex/local/mcpToolExecutionCompleted",
   THREAD_STARTED = "thread/started",
+  THREAD_COMPACTED = "thread/compacted",
   THREAD_STATUS_CHANGED = "thread/status/changed",
   THREAD_TOKEN_USAGE_UPDATED = "thread/tokenUsage/updated",
   ERROR = "error",

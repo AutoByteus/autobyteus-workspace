@@ -4,6 +4,8 @@ import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { AgentMemoryService } from "../../../src/agent-memory/services/agent-memory-service.js";
 import { MemoryFileStore } from "../../../src/agent-memory/store/memory-file-store.js";
+import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
+import { RawTraceItem } from "autobyteus-ts/memory/models/raw-trace-item.js";
 
 const writeJson = (filePath: string, payload: unknown) => {
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
@@ -96,6 +98,59 @@ describe("AgentMemoryService", () => {
 
     expect(view.rawTraces?.length).toBe(1);
     expect(view.rawTraces?.[0]?.content).toBe("two");
+  });
+
+  it("reads archive segments plus active traces as the complete corpus", () => {
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "agent-memory-service-"));
+    const runId = "agent-archive";
+    const agentDir = path.join(tempDir, "agents", runId);
+    const store = new RunMemoryFileStore(agentDir);
+    store.appendRawTrace(new RawTraceItem({
+      id: "rt-archive",
+      ts: 1,
+      turnId: "t1",
+      seq: 1,
+      traceType: "user",
+      content: "archived",
+      sourceEvent: "test",
+    }));
+    store.appendRawTrace(new RawTraceItem({
+      id: "rt-boundary",
+      ts: 2,
+      turnId: "t1",
+      seq: 2,
+      traceType: "provider_compaction_boundary",
+      content: "boundary",
+      sourceEvent: "COMPACTION_STATUS",
+    }));
+    store.rotateActiveRawTracesBeforeBoundary({
+      boundaryType: "provider_compaction_boundary",
+      boundaryKey: "codex:thread:boundary",
+      boundaryTraceId: "rt-boundary",
+    });
+
+    const service = new AgentMemoryService(new MemoryFileStore(tempDir));
+    const view = service.getRunMemoryView(runId, {
+      includeRawTraces: true,
+      includeArchive: true,
+    });
+
+    expect(view.rawTraces?.map((trace) => trace.id)).toEqual(["rt-archive", "rt-boundary"]);
+  });
+
+  it("does not create a missing run directory for includeArchive raw-trace reads", () => {
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "agent-memory-service-"));
+    const runId = "missing-run";
+    const runDir = path.join(tempDir, "agents", runId);
+
+    const service = new AgentMemoryService(new MemoryFileStore(tempDir));
+    const view = service.getRunMemoryView(runId, {
+      includeRawTraces: true,
+      includeArchive: true,
+    });
+
+    expect(view.rawTraces).toEqual([]);
+    expect(fs.existsSync(runDir)).toBe(false);
   });
 
   it("respects include flags", () => {

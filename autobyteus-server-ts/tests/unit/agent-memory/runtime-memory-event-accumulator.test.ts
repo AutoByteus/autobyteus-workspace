@@ -11,7 +11,7 @@ import { AgentMemoryService } from "../../../src/agent-memory/services/agent-mem
 import { MemoryFileStore } from "../../../src/agent-memory/store/memory-file-store.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { RAW_TRACES_ARCHIVE_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
+import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
 
 const tempDirs = new Set<string>();
 
@@ -33,10 +33,11 @@ const event = (eventType: AgentRunEventType, payload: Record<string, unknown>): 
   statusHint: null,
 });
 
-const readView = (memoryDir: string) =>
+const readView = (memoryDir: string, includeArchive = false) =>
   new AgentMemoryService(new MemoryFileStore(path.dirname(memoryDir), { runRootSubdir: "" }))
     .getRunMemoryView(path.basename(memoryDir), {
       includeRawTraces: true,
+      includeArchive,
       includeEpisodic: false,
       includeSemantic: false,
     });
@@ -184,6 +185,194 @@ describe("RuntimeMemoryEventAccumulator", () => {
     const traces = readView(memoryDir).rawTraces ?? [];
     expect(traces).toHaveLength(1);
     expect(traces[0]).toMatchObject({ traceType: "assistant", content: "durable text" });
-    await expect(fs.access(path.join(memoryDir, RAW_TRACES_ARCHIVE_MEMORY_FILE_NAME))).rejects.toThrow();
+    expect(new RunMemoryFileStore(memoryDir).getRawTraceArchiveRevisionInfo()).toBeNull();
+  });
+
+  it("writes provider compaction markers and rotates settled active traces into segmented archives", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = new RuntimeMemoryEventAccumulator({
+      runId: "run-1",
+      writer: new RunMemoryWriter({ memoryDir }),
+    });
+
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-compact" }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "text-before-boundary",
+      segment_type: "text",
+      delta: "before boundary",
+      timestamp: 1,
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
+      id: "text-before-boundary",
+      segment_type: "text",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.COMPACTION_STATUS, {
+      kind: "provider_compaction_boundary",
+      runtime_kind: "CODEX",
+      provider: "codex",
+      source_surface: "codex.thread_compacted",
+      boundary_key: "codex:thread-1:compaction-1",
+      provider_thread_id: "thread-1",
+      provider_event_id: "compaction-1",
+      provider_timestamp: 2,
+      turn_id: "turn-compact",
+      trigger: "auto",
+      status: "compacted",
+      pre_tokens: 120000,
+      rotation_eligible: true,
+      semantic_compaction: false,
+    }));
+
+    const store = new RunMemoryFileStore(memoryDir);
+    const active = store.listRawTracesOrdered();
+    expect(active.map((trace) => trace.traceType)).toEqual(["provider_compaction_boundary"]);
+    expect(active[0]).toMatchObject({
+      content: "Provider-owned context compaction boundary: codex/codex.thread_compacted",
+      correlationId: "codex:thread-1:compaction-1",
+    });
+
+    const manifest = store.readRawTraceArchiveManifest();
+    expect(manifest.segments).toHaveLength(1);
+    expect(manifest.segments[0]).toMatchObject({
+      boundary_type: "provider_compaction_boundary",
+      boundary_key: "codex:thread-1:compaction-1",
+      status: "complete",
+      record_count: 1,
+    });
+
+    const fullView = readView(memoryDir, true);
+    expect(fullView.rawTraces?.map((trace) => trace.traceType)).toEqual([
+      "assistant",
+      "provider_compaction_boundary",
+    ]);
+    expect(fullView.workingContext).toEqual([
+      expect.objectContaining({ role: "assistant", content: "before boundary" }),
+    ]);
+  });
+
+  it("dedupes replayed provider boundaries without dropping post-boundary active records", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = new RuntimeMemoryEventAccumulator({
+      runId: "run-1",
+      writer: new RunMemoryWriter({ memoryDir }),
+    });
+    const boundaryPayload = {
+      kind: "provider_compaction_boundary",
+      runtime_kind: "CODEX",
+      provider: "codex",
+      source_surface: "codex.thread_compacted",
+      boundary_key: "codex:thread-1:compaction-1",
+      provider_thread_id: "thread-1",
+      provider_event_id: "compaction-1",
+      provider_timestamp: 2,
+      turn_id: "turn-compact",
+      rotation_eligible: true,
+      semantic_compaction: false,
+    };
+
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-compact" }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "text-before-boundary",
+      segment_type: "text",
+      delta: "before boundary",
+      timestamp: 1,
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
+      id: "text-before-boundary",
+      segment_type: "text",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.COMPACTION_STATUS, boundaryPayload));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "text-after-boundary",
+      segment_type: "text",
+      delta: "after boundary",
+      timestamp: 3,
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
+      id: "text-after-boundary",
+      segment_type: "text",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.COMPACTION_STATUS, boundaryPayload));
+
+    const store = new RunMemoryFileStore(memoryDir);
+    expect(store.readRawTraceArchiveManifest().segments).toHaveLength(1);
+    expect(store.listRawTracesOrdered().map((trace) => [trace.traceType, trace.content])).toEqual([
+      ["provider_compaction_boundary", "Provider-owned context compaction boundary: codex/codex.thread_compacted"],
+      ["assistant", "after boundary"],
+    ]);
+
+    const fullView = readView(memoryDir, true);
+    expect(fullView.rawTraces?.map((trace) => [trace.traceType, trace.content])).toEqual([
+      ["assistant", "before boundary"],
+      ["provider_compaction_boundary", "Provider-owned context compaction boundary: codex/codex.thread_compacted"],
+      ["assistant", "after boundary"],
+    ]);
+  });
+
+  it("retries rotation from an existing provider boundary marker when no complete segment exists", async () => {
+    const memoryDir = await mkTempDir();
+    const boundaryKey = "codex:thread-1:marker-only";
+    const initialWriter = new RunMemoryWriter({ memoryDir });
+    const accumulator = new RuntimeMemoryEventAccumulator({
+      runId: "run-1",
+      writer: initialWriter,
+    });
+
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-compact" }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "text-before-marker",
+      segment_type: "text",
+      delta: "before marker",
+      timestamp: 1,
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
+      id: "text-before-marker",
+      segment_type: "text",
+    }));
+    initialWriter.appendRawTrace({
+      traceType: "provider_compaction_boundary",
+      turnId: "turn-compact",
+      content: "Provider-owned context compaction boundary: codex/codex.thread_compacted",
+      sourceEvent: AgentRunEventType.COMPACTION_STATUS,
+      ts: 2,
+      correlationId: boundaryKey,
+      tags: ["provider_compaction_boundary", "rotation_boundary"],
+    });
+
+    const replayAccumulator = new RuntimeMemoryEventAccumulator({
+      runId: "run-1",
+      writer: new RunMemoryWriter({ memoryDir }),
+    });
+    replayAccumulator.recordRunEvent(event(AgentRunEventType.COMPACTION_STATUS, {
+      kind: "provider_compaction_boundary",
+      runtime_kind: "CODEX",
+      provider: "codex",
+      source_surface: "codex.thread_compacted",
+      boundary_key: boundaryKey,
+      provider_thread_id: "thread-1",
+      provider_event_id: "marker-only",
+      provider_timestamp: 2,
+      turn_id: "turn-compact",
+      rotation_eligible: true,
+      semantic_compaction: false,
+    }));
+
+    const store = new RunMemoryFileStore(memoryDir);
+    expect(store.listRawTracesOrdered().map((trace) => [trace.traceType, trace.content])).toEqual([
+      ["provider_compaction_boundary", "Provider-owned context compaction boundary: codex/codex.thread_compacted"],
+    ]);
+    expect(store.readRawTraceArchiveManifest().segments).toHaveLength(1);
+    expect(store.readRawTraceArchiveManifest().segments[0]).toMatchObject({
+      boundary_key: boundaryKey,
+      status: "complete",
+      record_count: 1,
+    });
+
+    const fullView = readView(memoryDir, true);
+    expect(fullView.rawTraces?.map((trace) => [trace.traceType, trace.content])).toEqual([
+      ["assistant", "before marker"],
+      ["provider_compaction_boundary", "Provider-owned context compaction boundary: codex/codex.thread_compacted"],
+    ]);
+    expect(fullView.rawTraces?.filter((trace) => trace.traceType === "provider_compaction_boundary")).toHaveLength(1);
   });
 });

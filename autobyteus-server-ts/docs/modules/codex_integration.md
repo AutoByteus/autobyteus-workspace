@@ -29,6 +29,19 @@ Team runs:
 4. Codex member bootstrap now consumes a runtime-neutral `MemberTeamContext` for teammate instructions, allowed recipients, and `send_message_to` delivery wiring.
 5. Team websocket streaming preserves the member domain identity while forwarding member runtime events regardless of whether the governing team backend is single-runtime Codex or mixed.
 
+## Server-Owned Durable Memory
+
+Codex runtime runs now receive server-owned durable memory in addition to Codex-native thread history.
+
+- Standalone Codex runs write under `memory/agents/<runId>/...`.
+- Codex team members write under `memory/agent_teams/<teamRunId>/<memberRunId>/...`.
+- `AgentRunManager` attaches the storage-only `AgentRunMemoryRecorder`; the recorder captures accepted `AgentRun.postUserMessage(...)` commands plus normalized assistant, reasoning, and tool `AgentRunEvent`s.
+- The recorder writes shared `RawTraceItem` rows and `working_context_snapshot.json` through the `autobyteus-ts` `RunMemoryFileStore` primitives.
+
+This memory is for inspection, run-history fallback, and future offline analyzers. It is **not** Codex runtime memory management: AutoByteus does not retrieve these traces for Codex, inject them into Codex prompts, replace Codex session state, or run semantic compaction inside the Codex execution path.
+
+Codex provider/session compaction metadata is treated as provider-owned context management, not AutoByteus semantic compaction. `thread/compacted` and raw Responses `type = "compaction"` items are normalized at the Codex converter boundary into deduplicated `provider_compaction_boundary` payloads. The server recorder writes one provenance marker and may rotate settled active raw traces before that marker into a complete segmented archive entry. It must not create semantic/episodic memory, rewrite trace content, drop trace history, retrieve memory for Codex, or inject memory back into Codex.
+
 ## Sandbox Mode Configuration
 
 Codex filesystem sandbox behavior is controlled by the Codex-specific server setting
@@ -68,6 +81,7 @@ Event normalization:
 - `src/agent-execution/backends/codex/events/codex-item-event-converter.ts`
 - `src/agent-execution/backends/codex/events/codex-raw-response-event-converter.ts`
 - `src/agent-execution/backends/codex/events/codex-thread-lifecycle-event-converter.ts`
+- `src/agent-memory/services/provider-compaction-boundary-recorder.ts`
 - Detailed raw-event audit table: `docs/design/codex_raw_event_mapping.md`
 
 Team runtime:
@@ -101,12 +115,13 @@ This keeps Codex skill loading aligned with the Codex filesystem contract instea
 
 ## Projection / History
 
-Codex run history and projection are reconstructed from persisted Codex thread history rather than from AutoByteus-native memory records.
+Codex run history and projection prefer persisted Codex thread history. Server-owned local memory is also available for the memory inspector and as a run-history fallback when the Codex-native history reader cannot produce a usable replay bundle.
 
 Relevant components:
 
 - `src/agent-execution/backends/codex/history/codex-thread-history-reader.ts`
 - `src/run-history/projection/providers/codex-run-view-projection-provider.ts`
+- `src/run-history/projection/providers/local-memory-run-view-projection-provider.ts`
 - `src/run-history/services/agent-run-view-projection-service.ts`
 - `src/run-history/services/team-member-run-view-projection-service.ts`
 
@@ -114,6 +129,7 @@ The projection path uses:
 
 - domain run ids for AutoByteus-owned identity
 - Codex thread ids for Codex-native identity
+- explicit `memoryDir` basenames for local-memory fallback reads
 
 ## Event-Normalization Rules
 
@@ -129,6 +145,7 @@ The projection path uses:
 - In practice, Codex may emit visible final-answer text only after reasoning finishes, which can make text streaming appear as a late burst even though lifecycle/tool events are still live.
 - Large long-running Codex turns can also become bursty and include long silent gaps at the native `codex app-server` layer; when debugging attribution, compare native raw deltas with backend `SEGMENT_CONTENT` cadence before blaming the AutoByteus bridge.
 - Team member identity is deterministic and server-owned; Codex thread ids are stored separately as runtime-native references.
+- Storage-only Codex memory appends active raw traces and updates the working-context snapshot for normal user/assistant/tool records. Provider compaction boundaries may additionally rotate settled active raw traces into segmented archive entries while leaving the boundary marker active. There is no Codex semantic compaction, archive compression, total-storage retention window, or snapshot windowing policy in this path.
 - Raw Codex debug capture is available through `CODEX_THREAD_RAW_EVENT_LOG_DIR`; see `docs/design/codex_raw_event_mapping.md` for the audit workflow and file format.
 
 ## Validation Notes

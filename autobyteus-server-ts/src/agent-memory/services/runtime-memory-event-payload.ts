@@ -61,3 +61,9 @@ export const extractError = (payload: Record<string, unknown>): string | null =>
 
 export const extractReason = (payload: Record<string, unknown>): string | null =>
   asString(payload["reason"]);
+
+export const asBoolean = (value: unknown): boolean | null =>
+  typeof value === "boolean" ? value : null;
+
+export const asNumber = (value: unknown): number | null =>
+  typeof value === "number" && Number.isFinite(value) ? value : null;

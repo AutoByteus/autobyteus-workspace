@@ -75,6 +75,39 @@ export class RunMemoryWriter {
     this.persistWorkingContextSnapshot();
   }
 
+  getProviderCompactionBoundaryState(boundaryKey: string): {
+    activeMarkerTraceId: string | null;
+    hasCompleteSegment: boolean;
+  } {
+    return {
+      activeMarkerTraceId: this.store.findActiveRawTraceByCorrelationId(
+        boundaryKey,
+        "provider_compaction_boundary",
+      )?.id ?? null,
+      hasCompleteSegment: this.store.hasCompleteRawTraceArchiveSegment(boundaryKey),
+    };
+  }
+
+  removeActiveRecordsArchivedByBoundary(boundaryKey: string): void {
+    this.store.removeActiveRawTracesArchivedByBoundary(boundaryKey);
+  }
+
+  rotateActiveRawTracesBeforeBoundary(input: {
+    boundaryTraceId: string;
+    boundaryKey: string;
+    boundaryType: "provider_compaction_boundary";
+    runtimeKind?: string | null;
+    sourceEvent?: string | null;
+  }): void {
+    this.store.rotateActiveRawTracesBeforeBoundary({
+      boundaryTraceId: input.boundaryTraceId,
+      boundaryKey: input.boundaryKey,
+      boundaryType: input.boundaryType,
+      runtimeKind: input.runtimeKind ?? null,
+      sourceEvent: input.sourceEvent ?? null,
+    });
+  }
+
   private nextSeq(turnId: string): number {
     const current = (this.seqByTurn.get(turnId) ?? 0) + 1;
     this.seqByTurn.set(turnId, current);

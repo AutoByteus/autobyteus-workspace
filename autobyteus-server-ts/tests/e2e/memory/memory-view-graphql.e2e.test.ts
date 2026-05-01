@@ -5,6 +5,8 @@ import path from "node:path";
 import { createRequire } from "node:module";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
+import { RawTraceItem } from "autobyteus-ts/memory/models/raw-trace-item.js";
+import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 
@@ -80,15 +82,24 @@ describe("Memory view GraphQL e2e", () => {
     writeJsonl(path.join(agentDir, "episodic.jsonl"), [{ summary: "episode" }]);
     writeJsonl(path.join(agentDir, "semantic.jsonl"), [{ fact: "fact" }]);
 
-    writeJsonl(path.join(agentDir, "raw_traces.jsonl"), [
-      { id: "rt-user", trace_type: "user", source_event: "AgentRun.postUserMessage", content: "hello", ts: 1, turn_id: "t1", seq: 1 },
-      { id: "rt-tool-call", trace_type: "tool_call", source_event: "TOOL_EXECUTION_STARTED", tool_call_id: "1", tool_name: "search", tool_args: { q: "x" }, ts: 2, turn_id: "t1", seq: 2 },
-      { id: "rt-tool-result", trace_type: "tool_result", source_event: "TOOL_EXECUTION_SUCCEEDED", tool_call_id: "1", tool_result: { ok: true }, ts: 3, turn_id: "t1", seq: 3 },
-    ]);
-
-    writeJsonl(path.join(agentDir, "raw_traces_archive.jsonl"), [
-      { id: "rt-archive", trace_type: "assistant", source_event: "SEGMENT_END", content: "old", ts: 0, turn_id: "t0", seq: 1 },
-    ]);
+    const runStore = new RunMemoryFileStore(agentDir);
+    runStore.appendRawTrace(new RawTraceItem({
+      id: "rt-archive",
+      traceType: "assistant",
+      sourceEvent: "SEGMENT_END",
+      content: "old",
+      ts: 0,
+      turnId: "t0",
+      seq: 1,
+    }));
+    runStore.pruneRawTracesById(["rt-archive"]);
+    for (const trace of [
+      new RawTraceItem({ id: "rt-user", traceType: "user", sourceEvent: "AgentRun.postUserMessage", content: "hello", ts: 1, turnId: "t1", seq: 1 }),
+      new RawTraceItem({ id: "rt-tool-call", traceType: "tool_call", sourceEvent: "TOOL_EXECUTION_STARTED", content: "", toolCallId: "1", toolName: "search", toolArgs: { q: "x" }, ts: 2, turnId: "t1", seq: 2 }),
+      new RawTraceItem({ id: "rt-tool-result", traceType: "tool_result", sourceEvent: "TOOL_EXECUTION_SUCCEEDED", content: "", toolCallId: "1", toolResult: { ok: true }, ts: 3, turnId: "t1", seq: 3 }),
+    ]) {
+      runStore.appendRawTrace(trace);
+    }
 
     const query = `
       query MemoryView($runId: String!) {

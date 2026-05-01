@@ -3,6 +3,8 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import { RawTraceItem } from "autobyteus-ts/memory/models/raw-trace-item.js";
+import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
 import { AgentRunService } from "../../../src/agent-execution/services/agent-run-service.js";
 import { AgentRunMetadataService } from "../../../src/run-history/services/agent-run-metadata-service.js";
 import { AgentRunHistoryIndexService } from "../../../src/run-history/services/agent-run-history-index-service.js";
@@ -249,27 +251,58 @@ describe("memory layout and projection integration", () => {
       }),
       "utf-8",
     );
-    await fs.writeFile(
-      path.join(runDir, "raw_traces.jsonl"),
-      [
-        JSON.stringify({ trace_type: "user", content: "hello from user", ts: 1 }),
-        JSON.stringify({ trace_type: "assistant", content: "hello from assistant", ts: 2 }),
-      ].join("\n"),
-      "utf-8",
-    );
-    await fs.writeFile(path.join(runDir, "raw_traces_archive.jsonl"), "", "utf-8");
-
+    const runStore = new RunMemoryFileStore(runDir);
+    runStore.appendRawTrace(new RawTraceItem({
+      id: "rt-archived-user",
+      traceType: "user",
+      sourceEvent: "AgentRun.postUserMessage",
+      content: "hello from archived user",
+      ts: 1,
+      turnId: "turn-1",
+      seq: 1,
+    }));
+    runStore.appendRawTrace(new RawTraceItem({
+      id: "rt-boundary",
+      traceType: "provider_compaction_boundary",
+      sourceEvent: "COMPACTION_BOUNDARY",
+      content: "",
+      ts: 1.5,
+      turnId: "turn-1",
+      seq: 2,
+      toolResult: { provider: "codex", rotation_eligible: true },
+    }));
+    runStore.rotateActiveRawTracesBeforeBoundary({
+      boundaryType: "provider_compaction_boundary",
+      boundaryKey: "codex:thread-1:projection-boundary",
+      boundaryTraceId: "rt-boundary",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      sourceEvent: "COMPACTION_BOUNDARY",
+    });
+    runStore.appendRawTrace(new RawTraceItem({
+      id: "rt-active-assistant",
+      traceType: "assistant",
+      sourceEvent: "SEGMENT_END",
+      content: "hello from active assistant",
+      ts: 2,
+      turnId: "turn-1",
+      seq: 3,
+    }));
     const service = new AgentRunViewProjectionService(memoryDir, {
       providerRegistry: createLocalProjectionRegistry(memoryDir) as never,
     });
     const projection = await service.getProjection(runId);
 
     expect(projection.runId).toBe(runId);
-    expect(projection.summary).toBe("hello from user");
+    expect(runStore.readRawTraceArchiveManifest().segments).toHaveLength(1);
+    expect(runStore.listRawTracesOrdered().map((trace) => trace.id)).toEqual([
+      "rt-boundary",
+      "rt-active-assistant",
+    ]);
+    expect(projection.summary).toBe("hello from archived user");
     expect(projection.conversation).toHaveLength(2);
     expect(projection.activities).toEqual([]);
-    expect(projection.conversation[0]?.content).toBe("hello from user");
-    expect(projection.conversation[1]?.content).toBe("hello from assistant");
+    expect(projection.conversation[0]?.content).toBe("hello from archived user");
+    expect(projection.conversation[1]?.content).toBe("hello from active assistant");
     expect(projection.lastActivityAt).toBe("1970-01-01T00:00:02.000Z");
   });
 

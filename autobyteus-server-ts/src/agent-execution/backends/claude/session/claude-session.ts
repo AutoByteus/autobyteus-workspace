@@ -1,6 +1,7 @@
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import {
   logger,
+  asObject,
   asString,
   nowTimestampSeconds,
   type ClaudeSessionEvent,
@@ -340,6 +341,7 @@ export class ClaudeSession {
         if (options.signal.aborted) {
           break;
         }
+        this.emitClaudeProviderCompactionEventIfPresent(chunk, options.turnId);
         this.dependencies.toolingCoordinator.processToolLifecycleChunk(this.runContext, chunk);
         const normalized = normalizeClaudeStreamChunk(chunk);
         const isTerminalChunk = this.isClaudeTurnTerminalChunk(chunk);
@@ -525,6 +527,34 @@ export class ClaudeSession {
         ? (chunk as Record<string, unknown>)
         : null;
     return asString(payload?.type)?.toLowerCase() === "result";
+  }
+
+  private emitClaudeProviderCompactionEventIfPresent(chunk: unknown, turnId: string): void {
+    const payload = asObject(chunk);
+    if (!payload) {
+      return;
+    }
+    const nested = asObject(payload.message) ?? asObject(payload.event) ?? payload;
+    const type = asString(nested.type)?.toLowerCase() ?? asString(payload.type)?.toLowerCase();
+    const status = asString(nested.status)?.toLowerCase() ?? asString(payload.status)?.toLowerCase();
+    const baseParams = {
+      ...payload,
+      turnId,
+      sessionId: this.sessionId,
+    };
+    if (type === "compact_boundary" || Boolean(nested.compact_boundary) || Boolean(payload.compact_boundary)) {
+      this.emitRuntimeEvent({
+        method: ClaudeSessionEventName.COMPACT_BOUNDARY,
+        params: baseParams,
+      });
+      return;
+    }
+    if (status === "compacting") {
+      this.emitRuntimeEvent({
+        method: ClaudeSessionEventName.STATUS_COMPACTING,
+        params: baseParams,
+      });
+    }
   }
 
 }

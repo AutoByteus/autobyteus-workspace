@@ -1,7 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
 import {
-  RAW_TRACES_ARCHIVE_MEMORY_FILE_NAME,
   RAW_TRACES_MEMORY_FILE_NAME,
   WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
 } from "autobyteus-ts/memory/store/memory-file-names.js";
@@ -140,8 +139,8 @@ export class AgentRunHistoryIndexService {
       }
       const agentName = await this.resolveAgentName(metadata.agentDefinitionId);
       const summary = extractSummaryFromRawTraces(
-        this.memoryStore.readRawTracesActive(runId, 300),
-        this.memoryStore.readRawTracesArchive(runId, 300),
+        this.memoryStore.readRawTraceCorpus(runId, 600),
+        [],
       );
       rows.push({
         runId,
@@ -202,7 +201,6 @@ export class AgentRunHistoryIndexService {
     const runDir = this.memoryStore.getRunDir(runId);
     const candidateFiles = [
       path.join(runDir, RAW_TRACES_MEMORY_FILE_NAME),
-      path.join(runDir, RAW_TRACES_ARCHIVE_MEMORY_FILE_NAME),
       path.join(runDir, WORKING_CONTEXT_SNAPSHOT_FILE_NAME),
       path.join(runDir, "run_metadata.json"),
     ];
@@ -212,6 +210,10 @@ export class AgentRunHistoryIndexService {
       if (info) {
         latest = Math.max(latest, info.mtime);
       }
+    }
+    const archiveInfo = this.memoryStore.getRawTraceArchiveInfo(runId);
+    if (archiveInfo) {
+      latest = Math.max(latest, archiveInfo.mtime);
     }
     if (latest > 0) {
       return new Date(latest * 1000).toISOString();

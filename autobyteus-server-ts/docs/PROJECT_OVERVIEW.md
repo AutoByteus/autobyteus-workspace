@@ -32,6 +32,7 @@ Major domains under `src/`:
 - LLM and multimedia model management
 - Workspaces and file explorer
 - Token usage and memory-centric conversation state
+- Server-owned agent memory inspection and storage-only external-runtime recording
 - Agent artifacts
 
 ## Configuration Model

@@ -13,6 +13,10 @@ export type CodexRawResponseEventConverterContext = {
   resolveItemType: (payload: JsonObject) => string | null;
   resolveInvocationId: (payload: JsonObject) => string | null;
   resolveLogEntry: (payload: JsonObject) => string;
+  createCompactionBoundaryEvent: (
+    sourceSurface: "codex.raw_response_compaction_item",
+    payload: JsonObject,
+  ) => AgentRunEvent | null;
 };
 
 export const isCodexRawResponseEventName = (codexEventName: string): boolean =>
@@ -28,6 +32,9 @@ export const convertCodexRawResponseEvent = (
   }
 
   const itemType = context.resolveItemType(payload);
+  if (itemType === "compaction") {
+    return context.createCompactionBoundaryEvent("codex.raw_response_compaction_item", payload);
+  }
   if (itemType !== "functioncalloutput") {
     return null;
   }

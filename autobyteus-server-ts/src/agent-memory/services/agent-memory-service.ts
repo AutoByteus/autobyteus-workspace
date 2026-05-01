@@ -44,9 +44,9 @@ export class AgentMemoryService {
 
     let rawTraces: MemoryTraceEvent[] | null = null;
     if (includeRawTraces) {
-      const active = this.store.readRawTracesActive(runId);
-      const archive = includeArchive ? this.store.readRawTracesArchive(runId) : [];
-      let merged = this.mergeAndSortTraces(active, archive);
+      let merged = includeArchive
+        ? this.store.readRawTraceCorpus(runId)
+        : this.mergeAndSortTraces(this.store.readRawTracesActive(runId));
       merged = this.applyRawTraceLimit(merged, rawTraceLimit);
 
       rawTraces = merged.map((trace) => this.toTraceEvent(trace));
@@ -103,7 +103,12 @@ export class AgentMemoryService {
       }
       const seqA = (a.seq as number | undefined) ?? 0;
       const seqB = (b.seq as number | undefined) ?? 0;
-      return seqA - seqB;
+      if (seqA !== seqB) {
+        return seqA - seqB;
+      }
+      const idA = (a.id as string | undefined) ?? "";
+      const idB = (b.id as string | undefined) ?? "";
+      return idA.localeCompare(idB);
     });
     return combined;
   }
