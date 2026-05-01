@@ -109,7 +109,7 @@ describe("UserInputContextBuildingProcessor", () => {
     expect(result.contextFiles?.[0].uri).toBe(imagePath);
   });
 
-  it("prepends system prompt for first-turn AUTOBYTEUS models", async () => {
+  it("does not prepend system prompt for first-turn AUTOBYTEUS models", async () => {
     const workspace = new FileSystemWorkspace(new WorkspaceConfig({ rootPath: tempDir }));
     const context = buildContext({
       workspace,
@@ -123,9 +123,29 @@ describe("UserInputContextBuildingProcessor", () => {
 
     const result = await processor.process(message, context, new UserMessageReceivedEvent(message));
 
-    expect(result.content.startsWith("AUTOBYTEUS System Message.")).toBe(true);
-    expect(result.content).toContain("**[User Requirement]**\nMy Requirement");
+    expect(result.content).toBe("**[User Requirement]**\nMy Requirement");
+    expect(result.content).not.toContain("AUTOBYTEUS System Message.");
     expect(context.customData.is_first_user_turn).toBe(false);
+  });
+
+  it.each([
+    [SenderType.USER, "**[User Requirement]**"],
+    [SenderType.TOOL, "**[Tool Execution Result]**"],
+    [SenderType.AGENT, "**[Message From Agent]**"],
+    [SenderType.SYSTEM, "**[System Notification]**"],
+  ])("preserves the %s sender header", async (senderType, expectedHeader) => {
+    const context = buildContext({
+      workspaceRootPath: tempDir,
+      provider: LLMProvider.AUTOBYTEUS,
+      customData: { is_first_user_turn: true },
+    });
+    const message = new AgentInputUserMessage("sender body", senderType);
+    const processor = new UserInputContextBuildingProcessor();
+
+    const result = await processor.process(message, context, new UserMessageReceivedEvent(message));
+
+    expect(result.content).toBe(`${expectedHeader}\nsender body`);
+    expect(result.content).not.toContain("System Prompt.");
   });
 
   it("does not prepend system prompt after first turn", async () => {
