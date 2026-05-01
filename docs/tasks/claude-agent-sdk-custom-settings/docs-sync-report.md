@@ -5,8 +5,8 @@
 - Ticket: `claude-agent-sdk-custom-settings`
 - Trigger: Delivery resumed after independent full code review Round 4 passed and API/E2E validation Round 4 passed for the full enabled Claude live/E2E suite.
 - Bootstrap base reference: `origin/personal` at `5995fd8f4e6b6b8c4015e7e474998a47e099e089` (`docs(ticket): finalize Codex lifecycle delivery record`)
-- Integrated base reference used for docs sync: `origin/personal` at `5995fd8f4e6b6b8c4015e7e474998a47e099e089`
-- Post-integration verification reference: Latest tracked remote base matched ticket branch HEAD after `git fetch origin --prune`; no base commits were integrated. API/E2E Round 4 is authoritative (`Pass`) on this branch state. Delivery patch cleanliness was checked after docs sync with `git add -N ... && git diff --check; git reset --quiet`.
+- Integrated base reference used for docs sync: `origin/personal` at `2686b6d3141a682f896dccc405c486ce908ad93d`
+- Post-integration verification reference: Latest tracked remote base advanced to `2686b6d3141a682f896dccc405c486ce908ad93d` and was merged into the ticket branch after local checkpoint commit `db1e36be`. API/E2E Round 4 remains the latest authoritative validation pass, and post-merge user-test validation passed with `NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm build:electron:mac`.
 
 ## Why Docs Were Updated
 
@@ -59,7 +59,7 @@
 
 - Result: `Pass`
 - Next owner: `delivery_engineer`
-- Notes: Docs sync completed against the refreshed integrated state after API/E2E Round 4 pass. Finalization remains blocked only pending explicit user verification, per delivery workflow.
+- Notes: Docs sync is recorded against the latest merged `origin/personal` state (`2686b6d3141a682f896dccc405c486ce908ad93d`). Post-merge Electron build passed and finalization remains blocked only pending explicit user verification, per delivery workflow.
 
 ## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
 
