@@ -1,10 +1,11 @@
 ## What's New
-- Added a non-destructive Archive action for stored workspace history runs so inactive agent and team runs can be hidden from the default history list without deleting their saved memory.
-- Added backend archive support for both standalone agent runs and team runs, keeping archived data available on disk for future recovery tooling.
+- Added a more reliable two-lane tool activity model so tool transcript entries and executable Activity rows stay synchronized without duplicating each other.
 
 ## Improvements
-- Kept Archive separate from permanent Delete so users can choose between decluttering history and actually removing stored run data.
-- The default workspace history list now hides archived inactive runs while still showing active runs if they are restored or resumed.
+- Claude tool runs now keep their input arguments visible across live progress, approval, completion, and run-history views.
+- Restored runs can now preserve Activity details even when the runtime history only contains conversation transcript rows.
 
 ## Fixes
-- Added safeguards so active runs, draft rows, and path-unsafe IDs cannot be archived accidentally.
+- Fixed Claude tool Activity cards that could show empty or missing arguments after approval or successful completion.
+- Fixed edge cases where tool execution status ordering could cause Activity rows to appear late, duplicate, or lose argument details.
+- Preserved existing Codex command, dynamic-tool, and file-change Activity behavior while applying the Claude fix.
