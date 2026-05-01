@@ -742,7 +742,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     }
   }, FLOW_TEST_TIMEOUT_MS);
 
-  it("converts a custom dynamic tool call into tool_call segments and tool output logs", async () => {
+  it("converts a custom dynamic tool call into lifecycle events, tool_call segments, and tool output logs", async () => {
     const workspaceRoot = await createWorkspace("codex-backend-dynamic-tool");
     clientManager = new CodexAppServerClientManager({
       createClient: (cwd) =>
@@ -858,6 +858,26 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         value: "HELLO_DYNAMIC",
       });
 
+      const lifecycleStart = await waitForEvent(
+        events,
+        (event) =>
+          event.eventType === AgentRunEventType.TOOL_EXECUTION_STARTED &&
+          event.payload.tool_name === "echo_dynamic" &&
+          event.payload.invocation_id === segmentId,
+      );
+      expect(lifecycleStart.payload.arguments).toMatchObject({
+        value: "HELLO_DYNAMIC",
+      });
+
+      const lifecycleSuccess = await waitForEvent(
+        events,
+        (event) =>
+          event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED &&
+          event.payload.tool_name === "echo_dynamic" &&
+          event.payload.invocation_id === segmentId,
+      );
+      expect(lifecycleSuccess.payload.result).toBe("HELLO_DYNAMIC");
+
       await waitForEvent(
         events,
         (event) =>
@@ -880,25 +900,206 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
           event.payload.new_status === "IDLE",
       );
 
-      const dynamicToolLifecycleNoise = events.filter((event) => {
-        if (
-          ![
-            AgentRunEventType.TOOL_APPROVAL_REQUESTED,
-            AgentRunEventType.TOOL_APPROVED,
-            AgentRunEventType.TOOL_DENIED,
-            AgentRunEventType.TOOL_EXECUTION_STARTED,
-            AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
-            AgentRunEventType.TOOL_EXECUTION_FAILED,
-          ].includes(event.eventType)
-        ) {
-          return false;
-        }
-        return event.payload.tool_name === "echo_dynamic";
-      });
-      expect(dynamicToolLifecycleNoise).toHaveLength(0);
+      const dynamicToolStartedEvents = events.filter(
+        (event) =>
+          event.eventType === AgentRunEventType.TOOL_EXECUTION_STARTED &&
+          event.payload.tool_name === "echo_dynamic" &&
+          event.payload.invocation_id === segmentId,
+      );
+      const dynamicToolSucceededEvents = events.filter(
+        (event) =>
+          event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED &&
+          event.payload.tool_name === "echo_dynamic" &&
+          event.payload.invocation_id === segmentId,
+      );
+      const dynamicToolFailedEvents = events.filter(
+        (event) =>
+          event.eventType === AgentRunEventType.TOOL_EXECUTION_FAILED &&
+          event.payload.tool_name === "echo_dynamic" &&
+          event.payload.invocation_id === segmentId,
+      );
+      expect(dynamicToolStartedEvents).toHaveLength(1);
+      expect(dynamicToolSucceededEvents).toHaveLength(1);
+      expect(dynamicToolFailedEvents).toHaveLength(0);
     } finally {
       unsubscribe();
       await writeBackendEventLog("codex-backend-dynamic-tool", events);
+    }
+  }, FLOW_TEST_TIMEOUT_MS);
+
+  it("converts a false-returning custom dynamic tool call into lifecycle failure and error payload", async () => {
+    const workspaceRoot = await createWorkspace("codex-backend-dynamic-tool-failure");
+    clientManager = new CodexAppServerClientManager({
+      createClient: (cwd) =>
+        new CodexAppServerClient({
+          command: "codex",
+          args: ["app-server"],
+          cwd,
+          requestTimeoutMs: 45_000,
+        }),
+    });
+    threadManager = new CodexThreadManager(
+      clientManager,
+      undefined,
+      new CodexClientThreadRouter(),
+    );
+    const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
+    const runId = "run-codex-backend-dynamic-tool-failure";
+    const observedToolCalls: Array<Record<string, unknown>> = [];
+    const expectedError = `DYNAMIC_FAILURE_${randomUUID()}`;
+    const factory = createFactory({
+      clientManager,
+      threadManager,
+      workspaceRoot,
+      runId,
+      toolNames: ["fail_dynamic"],
+      defaultBootstrapStrategy: {
+        appliesTo: () => true,
+        prepare: ({ agentInstruction }) => ({
+          baseInstructions: agentInstruction ? `## Agent Instruction\n${agentInstruction}` : null,
+          developerInstructions:
+            "If the user instructs you to call fail_dynamic with explicit JSON arguments, you must call fail_dynamic exactly once with those exact arguments, do not call any other tool, and then reply DONE only.",
+          dynamicToolRegistrations: [
+            {
+              spec: {
+                name: "fail_dynamic",
+                description: "Always returns a failed dynamic tool result with diagnostic text.",
+                inputSchema: {
+                  type: "object",
+                  properties: {
+                    value: {
+                      type: "string",
+                    },
+                  },
+                  required: ["value"],
+                  additionalProperties: false,
+                },
+              },
+              handler: async (input) => {
+                observedToolCalls.push(input);
+                return createCodexDynamicToolTextResult(expectedError, false);
+              },
+            },
+          ],
+        }),
+      },
+    });
+
+    const backend = await factory.createBackend(
+      new AgentRunConfig({
+        runtimeKind: "codex_app_server",
+        agentDefinitionId: "agent-def-codex-live",
+        llmModelIdentifier: modelIdentifier,
+        autoExecuteTools: true,
+        workspaceId: "workspace-codex-dynamic-tool-failure",
+        llmConfig: { reasoning_effort: "high" },
+      }),
+    );
+    createdRunIds.add(backend.runId);
+
+    const thread = threadManager.getThread(backend.runId);
+    expect(thread).toBeTruthy();
+    await waitForStartupReady(thread!.startup.waitForReady);
+
+    const events: AgentRunEvent[] = [];
+    const unsubscribe = backend.subscribeToEvents((event) => {
+      if (event && typeof event === "object") {
+        events.push(event as AgentRunEvent);
+      }
+    });
+
+    try {
+      const sendResult = await backend.postUserMessage(
+        new AgentInputUserMessage(
+          'You must call the fail_dynamic tool exactly once in this turn. Do not call any other tool. Use exactly these arguments: {"value":"HELLO_FAILURE"}. After the tool call returns, reply with DONE only.',
+        ),
+      );
+      expect(sendResult.accepted).toBe(true);
+
+      await waitFor(() => observedToolCalls.length === 1);
+      expect(observedToolCalls[0]).toMatchObject({
+        toolName: "fail_dynamic",
+        arguments: {
+          value: "HELLO_FAILURE",
+        },
+      });
+
+      const segmentStart = await waitForEvent(
+        events,
+        (event) =>
+          event.eventType === AgentRunEventType.SEGMENT_START &&
+          event.payload.segment_type === "tool_call" &&
+          event.payload.metadata &&
+          typeof event.payload.metadata === "object" &&
+          !Array.isArray(event.payload.metadata) &&
+          (event.payload.metadata as Record<string, unknown>).tool_name === "fail_dynamic",
+      );
+      const segmentId = segmentStart.payload.id;
+      expect(typeof segmentId).toBe("string");
+      expect(
+        (segmentStart.payload.metadata as Record<string, unknown>).arguments,
+      ).toMatchObject({
+        value: "HELLO_FAILURE",
+      });
+
+      const lifecycleStart = await waitForEvent(
+        events,
+        (event) =>
+          event.eventType === AgentRunEventType.TOOL_EXECUTION_STARTED &&
+          event.payload.tool_name === "fail_dynamic" &&
+          event.payload.invocation_id === segmentId,
+      );
+      expect(lifecycleStart.payload.arguments).toMatchObject({
+        value: "HELLO_FAILURE",
+      });
+
+      const lifecycleFailure = await waitForEvent(
+        events,
+        (event) =>
+          event.eventType === AgentRunEventType.TOOL_EXECUTION_FAILED &&
+          event.payload.tool_name === "fail_dynamic" &&
+          event.payload.invocation_id === segmentId,
+      );
+      expect(lifecycleFailure.payload.error).toBe(expectedError);
+
+      await waitForEvent(
+        events,
+        (event) =>
+          event.eventType === AgentRunEventType.SEGMENT_END &&
+          event.payload.id === segmentId,
+      );
+
+      await waitForEvent(
+        events,
+        (event) =>
+          event.eventType === AgentRunEventType.AGENT_STATUS &&
+          event.payload.new_status === "IDLE",
+      );
+
+      const dynamicToolStartedEvents = events.filter(
+        (event) =>
+          event.eventType === AgentRunEventType.TOOL_EXECUTION_STARTED &&
+          event.payload.tool_name === "fail_dynamic" &&
+          event.payload.invocation_id === segmentId,
+      );
+      const dynamicToolSucceededEvents = events.filter(
+        (event) =>
+          event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED &&
+          event.payload.tool_name === "fail_dynamic" &&
+          event.payload.invocation_id === segmentId,
+      );
+      const dynamicToolFailedEvents = events.filter(
+        (event) =>
+          event.eventType === AgentRunEventType.TOOL_EXECUTION_FAILED &&
+          event.payload.tool_name === "fail_dynamic" &&
+          event.payload.invocation_id === segmentId,
+      );
+      expect(dynamicToolStartedEvents).toHaveLength(1);
+      expect(dynamicToolSucceededEvents).toHaveLength(0);
+      expect(dynamicToolFailedEvents).toHaveLength(1);
+    } finally {
+      unsubscribe();
+      await writeBackendEventLog("codex-backend-dynamic-tool-failure", events);
     }
   }, FLOW_TEST_TIMEOUT_MS);
 

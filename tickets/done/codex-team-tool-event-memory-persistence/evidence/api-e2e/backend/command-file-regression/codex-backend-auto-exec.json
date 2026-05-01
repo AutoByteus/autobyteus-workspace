@@ -1,0 +1,200 @@
+[
+  {
+    "eventType": "AGENT_STATUS",
+    "runId": "run-codex-backend-auto-exec",
+    "payload": {
+      "threadId": "019de27b-8b5e-75d0-80ae-9a8b39778122",
+      "status": {
+        "type": "active",
+        "activeFlags": []
+      }
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "TURN_STARTED",
+    "runId": "run-codex-backend-auto-exec",
+    "payload": {
+      "turnId": "019de27b-8b6e-7eb2-b19f-d9e3ca6695ba"
+    },
+    "statusHint": "ACTIVE"
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "runId": "run-codex-backend-auto-exec",
+    "payload": {
+      "new_status": "RUNNING",
+      "old_status": null,
+      "turnId": "019de27b-8b6e-7eb2-b19f-d9e3ca6695ba"
+    },
+    "statusHint": "ACTIVE"
+  },
+  {
+    "eventType": "TOOL_EXECUTION_STARTED",
+    "runId": "run-codex-backend-auto-exec",
+    "payload": {
+      "item": {
+        "type": "commandExecution",
+        "id": "call_D3emn3zi7n3aha9vNitwFXn6",
+        "command": "/bin/bash -lc \"cat '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-backend-auto-exec-mkc7C3/source.txt' > '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-backend-auto-exec-mkc7C3/destination.txt'\"",
+        "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-backend-auto-exec-mkc7C3",
+        "processId": "98089",
+        "source": "unifiedExecStartup",
+        "status": "inProgress",
+        "commandActions": [
+          {
+            "type": "unknown",
+            "command": "cat '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-backend-auto-exec-mkc7C3/source.txt' > '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-backend-auto-exec-mkc7C3/destination.txt'"
+          }
+        ],
+        "aggregatedOutput": null,
+        "exitCode": null,
+        "durationMs": null
+      },
+      "threadId": "019de27b-8b5e-75d0-80ae-9a8b39778122",
+      "turnId": "019de27b-8b6e-7eb2-b19f-d9e3ca6695ba",
+      "invocation_id": "call_D3emn3zi7n3aha9vNitwFXn6",
+      "tool_name": "run_bash",
+      "arguments": {
+        "command": "/bin/bash -lc \"cat '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-backend-auto-exec-mkc7C3/source.txt' > '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-backend-auto-exec-mkc7C3/destination.txt'\""
+      }
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "TOOL_EXECUTION_SUCCEEDED",
+    "runId": "run-codex-backend-auto-exec",
+    "payload": {
+      "item": {
+        "type": "commandExecution",
+        "id": "call_D3emn3zi7n3aha9vNitwFXn6",
+        "command": "/bin/bash -lc \"cat '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-backend-auto-exec-mkc7C3/source.txt' > '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-backend-auto-exec-mkc7C3/destination.txt'\"",
+        "cwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-backend-auto-exec-mkc7C3",
+        "processId": "98089",
+        "source": "unifiedExecStartup",
+        "status": "completed",
+        "commandActions": [
+          {
+            "type": "unknown",
+            "command": "cat '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-backend-auto-exec-mkc7C3/source.txt' > '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-backend-auto-exec-mkc7C3/destination.txt'"
+          }
+        ],
+        "aggregatedOutput": null,
+        "exitCode": 0,
+        "durationMs": 0
+      },
+      "threadId": "019de27b-8b5e-75d0-80ae-9a8b39778122",
+      "turnId": "019de27b-8b6e-7eb2-b19f-d9e3ca6695ba",
+      "invocation_id": "call_D3emn3zi7n3aha9vNitwFXn6",
+      "tool_name": "run_bash",
+      "result": null
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "TOOL_LOG",
+    "runId": "run-codex-backend-auto-exec",
+    "payload": {
+      "threadId": "019de27b-8b5e-75d0-80ae-9a8b39778122",
+      "turnId": "019de27b-8b6e-7eb2-b19f-d9e3ca6695ba",
+      "item": {
+        "type": "function_call_output",
+        "call_id": "call_D3emn3zi7n3aha9vNitwFXn6",
+        "output": "Chunk ID: 289ecd\nWall time: 0.0000 seconds\nProcess exited with code 0\nOriginal token count: 0\nOutput:\n"
+      },
+      "tool_invocation_id": "call_D3emn3zi7n3aha9vNitwFXn6",
+      "log_entry": "Chunk ID: 289ecd\nWall time: 0.0000 seconds\nProcess exited with code 0\nOriginal token count: 0\nOutput:\n"
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "SEGMENT_START",
+    "runId": "run-codex-backend-auto-exec",
+    "payload": {
+      "item": {
+        "type": "agentMessage",
+        "id": "msg_073f34277c93f8550169f4590114b481918e3f9d4873956266",
+        "text": "",
+        "phase": "final_answer",
+        "memoryCitation": null
+      },
+      "threadId": "019de27b-8b5e-75d0-80ae-9a8b39778122",
+      "turnId": "019de27b-8b6e-7eb2-b19f-d9e3ca6695ba",
+      "id": "msg_073f34277c93f8550169f4590114b481918e3f9d4873956266",
+      "segment_type": "text"
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "SEGMENT_CONTENT",
+    "runId": "run-codex-backend-auto-exec",
+    "payload": {
+      "threadId": "019de27b-8b5e-75d0-80ae-9a8b39778122",
+      "turnId": "019de27b-8b6e-7eb2-b19f-d9e3ca6695ba",
+      "itemId": "msg_073f34277c93f8550169f4590114b481918e3f9d4873956266",
+      "delta": "Done",
+      "id": "msg_073f34277c93f8550169f4590114b481918e3f9d4873956266",
+      "segment_type": "text"
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "SEGMENT_CONTENT",
+    "runId": "run-codex-backend-auto-exec",
+    "payload": {
+      "threadId": "019de27b-8b5e-75d0-80ae-9a8b39778122",
+      "turnId": "019de27b-8b6e-7eb2-b19f-d9e3ca6695ba",
+      "itemId": "msg_073f34277c93f8550169f4590114b481918e3f9d4873956266",
+      "delta": ".",
+      "id": "msg_073f34277c93f8550169f4590114b481918e3f9d4873956266",
+      "segment_type": "text"
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "SEGMENT_END",
+    "runId": "run-codex-backend-auto-exec",
+    "payload": {
+      "item": {
+        "type": "agentMessage",
+        "id": "msg_073f34277c93f8550169f4590114b481918e3f9d4873956266",
+        "text": "Done.",
+        "phase": "final_answer",
+        "memoryCitation": null
+      },
+      "threadId": "019de27b-8b5e-75d0-80ae-9a8b39778122",
+      "turnId": "019de27b-8b6e-7eb2-b19f-d9e3ca6695ba",
+      "id": "msg_073f34277c93f8550169f4590114b481918e3f9d4873956266"
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "runId": "run-codex-backend-auto-exec",
+    "payload": {
+      "threadId": "019de27b-8b5e-75d0-80ae-9a8b39778122",
+      "status": {
+        "type": "idle"
+      }
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "TURN_COMPLETED",
+    "runId": "run-codex-backend-auto-exec",
+    "payload": {
+      "turnId": "019de27b-8b6e-7eb2-b19f-d9e3ca6695ba"
+    },
+    "statusHint": "IDLE"
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "runId": "run-codex-backend-auto-exec",
+    "payload": {
+      "new_status": "IDLE",
+      "old_status": "RUNNING",
+      "turnId": "019de27b-8b6e-7eb2-b19f-d9e3ca6695ba"
+    },
+    "statusHint": "IDLE"
+  }
+]

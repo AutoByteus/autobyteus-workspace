@@ -1,0 +1,388 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-team-tool-event-memory-persistence/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/codex-team-tool-event-memory-persistence/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-team-tool-event-memory-persistence/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-team-tool-event-memory-persistence/autobyteus-server-ts
+AppConfig instance created.
+
+stderr | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts
+Registered 6 image models from Autobyteus host https://localhost:51739.
+Autobyteus image models from https://localhost:51739: gpt-image-1-rpa@localhost:51739, nano-banana-pro-app-rpa@localhost:51739, imagen-4-rpa@localhost:51739, imagen-4-ultra-rpa@localhost:51739, imagen-4-fast-rpa@localhost:51739, qwen-image-rpa@localhost:51739
+Autobyteus image discovery summary for https://localhost:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=31
+
+stderr | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts
+Registered 6 image models from Autobyteus host https://localhost:51740.
+Autobyteus image models from https://localhost:51740: gpt-image-1-rpa@localhost:51740, nano-banana-pro-app-rpa@localhost:51740, imagen-4-rpa@localhost:51740, imagen-4-ultra-rpa@localhost:51740, imagen-4-fast-rpa@localhost:51740, qwen-image-rpa@localhost:51740
+Autobyteus image discovery summary for https://localhost:51740: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=9
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts
+Finished Autobyteus image model discovery. Total models registered: 12
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:76523) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts status and assistant text segments for a normal Codex turn
+ ↓ tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts approval, tool execution, and terminal tool events for an approved command
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-6082-7942-bf5f-954aef9b342a', cacheSize: 0 }
+
+ ✓ tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled 10984ms
+ ↓ tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts denied approval into TOOL_DENIED and preserves post-deny assistant output
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts tool execution events without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-8b6e-7eb2-b19f-d9e3ca6695ba', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts tool execution events without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-8b6e-7eb2-b19f-d9e3ca6695ba', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts tool execution events without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-8b6e-7eb2-b19f-d9e3ca6695ba', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts tool execution events without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-8b6e-7eb2-b19f-d9e3ca6695ba', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts tool execution events without approval when autoExecuteTools is enabled
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-8b6e-7eb2-b19f-d9e3ca6695ba', cacheSize: 0 }
+
+ ✓ tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts tool execution events without approval when autoExecuteTools is enabled 8869ms
+ ↓ tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts a custom dynamic tool call into lifecycle events, tool_call segments, and tool output logs
+ ↓ tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > emits multiple reasoning segment ids when one turn reasons again between two tool calls
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts raw Codex fileChange activity into segment, lifecycle, and artifact events
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-ae0f-7dc2-a832-c4e6694fbbf4', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts raw Codex fileChange activity into segment, lifecycle, and artifact events
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-ae0f-7dc2-a832-c4e6694fbbf4', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts raw Codex fileChange activity into segment, lifecycle, and artifact events
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-ae0f-7dc2-a832-c4e6694fbbf4', cacheSize: 0 }
+
+stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts raw Codex fileChange activity into segment, lifecycle, and artifact events
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019de27b-ae0f-7dc2-a832-c4e6694fbbf4', cacheSize: 0 }
+
+ ✓ tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > converts raw Codex fileChange activity into segment, lifecycle, and artifact events 9773ms
+ ↓ tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > executes open_tab through the live Codex browser dynamic tool path
+ ↓ tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > publishes an existing workspace file through the live Codex publish_artifact dynamic tool path
+ ↓ tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts > CodexAgentRunBackendFactory integration (live transport) > executes the full browser tool surface through the live Codex browser dynamic tool path
+
+ Test Files  1 passed (1)
+      Tests  3 passed | 8 skipped (11)
+   Start at  09:40:26
+   Duration  33.07s (transform 2.03s, setup 15ms, import 3.02s, tests 29.63s, environment 0ms)
+

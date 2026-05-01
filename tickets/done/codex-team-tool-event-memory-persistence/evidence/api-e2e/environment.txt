@@ -1,0 +1,4 @@
+node=v22.21.1
+pnpm=10.28.2
+codex=codex-cli 0.125.0
+Darwin MacBookPro 25.2.0 Darwin Kernel Version 25.2.0: Tue Nov 18 21:09:40 PST 2025; root:xnu-12377.61.12~1/RELEASE_ARM64_T6000 arm64

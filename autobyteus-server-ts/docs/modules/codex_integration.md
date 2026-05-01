@@ -29,6 +29,13 @@ Team runs:
 4. Codex member bootstrap now consumes a runtime-neutral `MemberTeamContext` for teammate instructions, allowed recipients, and `send_message_to` delivery wiring.
 5. Team websocket streaming preserves the member domain identity while forwarding member runtime events regardless of whether the governing team backend is single-runtime Codex or mixed.
 
+Codex team communication uses the same dynamic-tool lifecycle normalization as
+other Codex dynamic tools. `send_message_to` remains a Codex dynamic tool, but a
+successful delivery is no longer represented only by `SEGMENT_START` /
+`SEGMENT_END`; the sender stream must also contain matching
+`TOOL_EXECUTION_STARTED` and terminal `TOOL_EXECUTION_SUCCEEDED` events keyed by
+the dynamic tool invocation id.
+
 ## Server-Owned Durable Memory
 
 Codex runtime runs now receive server-owned durable memory in addition to Codex-native thread history.
@@ -134,6 +141,9 @@ The projection path uses:
 ## Event-Normalization Rules
 
 - Raw Codex event interpretation stays inside `src/agent-execution/backends/codex/events/`.
+- `item/started` / `item/completed` with `item.type = dynamicToolCall` are the authoritative raw owners for Codex dynamic-tool execution lifecycle. The converter emits display segments and execution lifecycle separately: start produces `SEGMENT_START(tool_call)` plus `TOOL_EXECUTION_STARTED`, and completion produces exactly one terminal `TOOL_EXECUTION_SUCCEEDED` or `TOOL_EXECUTION_FAILED` before `SEGMENT_END(tool_call)`.
+- Raw `function_call_output` remains diagnostic `TOOL_LOG` output for dynamic tools. It is not the terminal lifecycle authority and must not be used as a substitute for success/error Activity state.
+- Browser dynamic tools use the generalized `dynamicToolCall` lifecycle path rather than a browser-only terminal event special case.
 - `item/started` / `item/completed` with `item.type = fileChange` are the authoritative raw owners for Codex `edit_file` lifecycle and artifact availability.
 - `turn/diff/updated` is treated as supplemental diff information and is intentionally not promoted into lifecycle or artifact ownership.
 - `rawResponseItem/completed` for custom tool completions is not the authoritative owner of `apply_patch` file mutation state.
@@ -145,7 +155,7 @@ The projection path uses:
 - In practice, Codex may emit visible final-answer text only after reasoning finishes, which can make text streaming appear as a late burst even though lifecycle/tool events are still live.
 - Large long-running Codex turns can also become bursty and include long silent gaps at the native `codex app-server` layer; when debugging attribution, compare native raw deltas with backend `SEGMENT_CONTENT` cadence before blaming the AutoByteus bridge.
 - Team member identity is deterministic and server-owned; Codex thread ids are stored separately as runtime-native references.
-- Storage-only Codex memory appends active raw traces and updates the working-context snapshot for normal user/assistant/tool records. Provider compaction boundaries may additionally rotate settled active raw traces into segmented archive entries while leaving the boundary marker active. There is no Codex semantic compaction, archive compression, total-storage retention window, or snapshot windowing policy in this path.
+- Storage-only Codex memory appends active raw traces and updates the working-context snapshot for normal user/assistant/tool records. Dynamic tools, including `send_message_to`, are recorded from normalized lifecycle events as tool-call and terminal tool-result traces; display `SEGMENT_*` events alone are not treated as memory tool-result authority. Provider compaction boundaries may additionally rotate settled active raw traces into segmented archive entries while leaving the boundary marker active. There is no Codex semantic compaction, archive compression, total-storage retention window, or snapshot windowing policy in this path.
 - Raw Codex debug capture is available through `CODEX_THREAD_RAW_EVENT_LOG_DIR`; see `docs/design/codex_raw_event_mapping.md` for the audit workflow and file format.
 
 ## Validation Notes
