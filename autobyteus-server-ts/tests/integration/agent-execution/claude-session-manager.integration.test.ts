@@ -19,6 +19,7 @@ import { ClaudeSessionEventName } from "../../../src/agent-execution/backends/cl
 import type { ClaudeSessionEvent } from "../../../src/agent-execution/backends/claude/claude-runtime-shared.js";
 import { ClaudeModelCatalog } from "../../../src/llm-management/services/claude-model-catalog.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { buildConfiguredAgentToolExposure } from "../../../src/agent-execution/shared/configured-agent-tool-exposure.js";
 
 const claudeBinaryReady = spawnSync("claude", ["--version"], {
   stdio: "ignore",
@@ -91,6 +92,7 @@ const createRunContext = (input: {
         workingDirectory: input.workspaceRoot,
         permissionMode: resolveClaudePermissionMode(input.autoExecuteTools),
       }),
+      configuredToolExposure: buildConfiguredAgentToolExposure([]),
     }),
   });
 
@@ -125,6 +127,8 @@ const buildExactWriteToolPrompt = (input: {
     input.targetLines[1],
     "After the file is created, reply with DONE.",
   ].join("\n");
+
+const normalizeWrittenText = (value: string): string => value.replace(/\r?\n$/u, "");
 
 const waitForTurnSettlement = async (events: ClaudeSessionEvent[]): Promise<void> =>
   waitFor(() =>
@@ -439,7 +443,9 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
             continue;
           }
 
-          expect(await fs.readFile(targetFilePath, "utf8")).toBe(targetLines.join("\n"));
+          expect(normalizeWrittenText(await fs.readFile(targetFilePath, "utf8"))).toBe(
+            targetLines.join("\n"),
+          );
           resolved = true;
           break;
         } catch (error) {
@@ -684,7 +690,9 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
             (event) =>
               event.method === ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_REQUEST_APPROVAL,
           )).toBe(false);
-          expect(await fs.readFile(targetFilePath, "utf8")).toBe(targetLines.join("\n"));
+          expect(normalizeWrittenText(await fs.readFile(targetFilePath, "utf8"))).toBe(
+            targetLines.join("\n"),
+          );
           resolved = true;
           break;
         } catch (error) {
@@ -928,7 +936,9 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
       await waitForTurnSettlement(originalEvents);
 
       expect(fsSync.existsSync(targetFilePath)).toBe(true);
-      expect(await fs.readFile(targetFilePath, "utf8")).toBe(targetLines.join("\n"));
+      expect(normalizeWrittenText(await fs.readFile(targetFilePath, "utf8"))).toBe(
+        targetLines.join("\n"),
+      );
 
       const sessionId = original.runContext.runtimeContext.sessionId;
       expect(sessionId).toBeTruthy();

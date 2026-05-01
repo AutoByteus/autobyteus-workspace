@@ -14,6 +14,10 @@ import {
   toModelInfo,
   type NormalizedModelDescriptor,
 } from "./claude-sdk-model-normalizer.js";
+import {
+  getClaudeCatalogSettingSources,
+  getClaudeRuntimeSettingSources,
+} from "./claude-sdk-setting-sources.js";
 
 type ClaudePermissionDecision = { behavior: "allow" };
 
@@ -210,7 +214,6 @@ export class ClaudeSdkClient {
     env?: Record<string, string | undefined>;
     mcpServers?: Record<string, unknown> | null;
     allowedTools?: Iterable<string> | null;
-    enableProjectSkillSettings?: boolean;
     permissionMode?: ClaudeSdkPermissionMode;
     autoExecuteTools?: boolean;
     canUseTool?: ClaudeSdkCanUseTool;
@@ -348,13 +351,13 @@ export class ClaudeSdkClient {
     env?: Record<string, string | undefined>;
     mcpServers?: Record<string, unknown> | null;
     allowedTools?: Iterable<string> | null;
-    enableProjectSkillSettings?: boolean;
     permissionMode?: ClaudeSdkPermissionMode;
     autoExecuteTools?: boolean;
     canUseTool?: ClaudeSdkCanUseTool;
   }): Record<string, unknown> {
     const pathToClaudeCodeExecutable = resolveClaudeCodeExecutablePath();
     const sdkSpawnEnvironment = options.env ?? buildClaudeSdkSpawnEnvironment();
+    const settingSources = getClaudeRuntimeSettingSources();
     const allowedTools = new Set<string>();
     for (const toolName of options.allowedTools ?? []) {
       const normalizedToolName = asString(toolName)?.trim();
@@ -372,7 +375,7 @@ export class ClaudeSdkClient {
       ...(allowedTools.size > 0 ? { allowedTools: [...allowedTools] } : {}),
       ...(options.sessionId ? { resume: options.sessionId } : {}),
       ...(options.mcpServers ? { mcpServers: options.mcpServers } : {}),
-      ...(options.enableProjectSkillSettings ? { settingSources: ["project"] } : {}),
+      settingSources,
       ...(options.canUseTool
         ? { canUseTool: options.canUseTool }
         : options.autoExecuteTools
@@ -412,6 +415,7 @@ export class ClaudeSdkClient {
     }
 
     const pathToClaudeCodeExecutable = resolveClaudeCodeExecutablePath();
+    const settingSources = getClaudeCatalogSettingSources();
 
     let controlLike: Record<string, unknown> | null = null;
     try {
@@ -422,6 +426,7 @@ export class ClaudeSdkClient {
           permissionMode: "plan",
           cwd: process.cwd(),
           pathToClaudeCodeExecutable,
+          settingSources,
           ...(env ? { env } : {}),
         },
       });
