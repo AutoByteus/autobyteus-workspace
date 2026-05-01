@@ -249,12 +249,18 @@ The payload invariants are:
 
 On the RPA server, an existing cached session sends only the current user
 message to the remote UI. A cache miss creates a new browser-backed LLM
-instance and sends one synthesized user message by flattening the already
-rendered role/content transcript through `messages[current_message_index]`.
-That flattened prompt uses role headers (`System:`, `User:`, `Assistant:`,
-`Tool:`), ends with the current `User:` block, and does not add a separate
-current-request section. The server does not parse tool payloads and
-does not generate tool XML.
+instance and sends one neutral browser-visible user input by flattening the
+already rendered role/content transcript through
+`messages[current_message_index]`. The cache-miss input intentionally avoids
+visible resume/session/cache wrappers and never emits `Prior transcript:`,
+`Current user request:`, or a `System:` header. System-role content is included
+as an unlabeled preface when present. A first call with `[system, current user]`
+therefore appears as `<system content>\n\n<current user content>`; a first call
+with only `[current user]` appears as exactly the current user content. Multi-
+turn reconstruction keeps the unlabeled system preface, then uses ordered
+`User:`, `Assistant:`, and `Tool:` blocks for non-system history and ends with
+the current `User:` block. The server does not parse tool payloads and does not
+generate tool XML.
 
 ## 10. Testing
 
