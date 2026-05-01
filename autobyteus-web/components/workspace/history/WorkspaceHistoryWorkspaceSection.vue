@@ -112,9 +112,19 @@
               <button
                 v-else-if="run.source === 'history' && !run.isActive"
                 type="button"
+                class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-amber-50 hover:text-amber-600 md:opacity-0 md:group-hover/run-row:opacity-100 md:group-focus-within/run-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
+                :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.archive_run')"
+                :disabled="state.isRunArchiving(run.runId) || state.isRunDeleting(run.runId)"
+                @click.stop="actions.onArchiveRun(run)"
+              >
+                <Icon icon="heroicons:archive-box-20-solid" class="h-3.5 w-3.5" />
+              </button>
+              <button
+                v-if="run.source === 'history' && !run.isActive"
+                type="button"
                 class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 md:opacity-0 md:group-hover/run-row:opacity-100 md:group-focus-within/run-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
                 :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.delete_run_permanently')"
-                :disabled="state.isRunDeleting(run.runId)"
+                :disabled="state.isRunDeleting(run.runId) || state.isRunArchiving(run.runId)"
                 @click.stop="actions.onDeleteRun(run)"
               >
                 <Icon icon="heroicons:trash-20-solid" class="h-3.5 w-3.5" />
@@ -219,9 +229,19 @@
                   <button
                     v-else-if="team.deleteLifecycle === 'READY'"
                     type="button"
+                    class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-amber-50 hover:text-amber-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
+                    :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.archive_team_history')"
+                    :disabled="state.isTeamArchiving(team.teamRunId) || state.isTeamDeleting(team.teamRunId)"
+                    @click.stop="actions.onArchiveTeam(team)"
+                  >
+                    <Icon icon="heroicons:archive-box-20-solid" class="h-3.5 w-3.5" />
+                  </button>
+                  <button
+                    v-if="!team.teamRunId.startsWith('temp-') && !state.canTerminateTeam(team.currentStatus) && team.deleteLifecycle === 'READY'"
+                    type="button"
                     class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
                     :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.delete_team_history_permanently')"
-                    :disabled="state.isTeamDeleting(team.teamRunId)"
+                    :disabled="state.isTeamDeleting(team.teamRunId) || state.isTeamArchiving(team.teamRunId)"
                     @click.stop="actions.onDeleteTeam(team)"
                   >
                     <Icon icon="heroicons:trash-20-solid" class="h-3.5 w-3.5" />

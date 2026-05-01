@@ -2,6 +2,7 @@ import { ref } from 'vue';
 import type { RunTreeRow } from '~/utils/runTreeProjection';
 import type { TeamTreeNode } from '~/stores/runHistoryTypes';
 import type { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
+import { useLocalization } from '~/composables/useLocalization';
 
 export const useWorkspaceHistoryMutations = (params: {
   terminateRun: (runId: string) => Promise<boolean>;
@@ -10,13 +11,18 @@ export const useWorkspaceHistoryMutations = (params: {
   removeDraftTeam: (teamRunId: string) => Promise<boolean>;
   deleteRun: (runId: string) => Promise<boolean>;
   deleteTeamRun: (teamRunId: string) => Promise<boolean>;
+  archiveRun: (runId: string) => Promise<boolean>;
+  archiveTeamRun: (teamRunId: string) => Promise<boolean>;
   addToast: (message: string, type: 'success' | 'error' | 'warning' | 'info') => void;
   canTerminateTeam: (status: AgentTeamStatus) => boolean;
 }) => {
+  const { t } = useLocalization();
   const terminatingRunIds = ref<Record<string, boolean>>({});
   const terminatingTeamIds = ref<Record<string, boolean>>({});
   const deletingRunIds = ref<Record<string, boolean>>({});
   const deletingTeamIds = ref<Record<string, boolean>>({});
+  const archivingRunIds = ref<Record<string, boolean>>({});
+  const archivingTeamIds = ref<Record<string, boolean>>({});
   const showDeleteConfirmation = ref(false);
   const pendingDeleteRunId = ref<string | null>(null);
   const pendingDeleteTeamRunId = ref<string | null>(null);
@@ -138,7 +144,7 @@ export const useWorkspaceHistoryMutations = (params: {
     }
 
     const runId = run.runId;
-    if (deletingRunIds.value[runId]) {
+    if (deletingRunIds.value[runId] || archivingRunIds.value[runId]) {
       return;
     }
 
@@ -158,13 +164,99 @@ export const useWorkspaceHistoryMutations = (params: {
     }
 
     const teamRunId = team.teamRunId.trim();
-    if (!teamRunId || deletingTeamIds.value[teamRunId]) {
+    if (!teamRunId || deletingTeamIds.value[teamRunId] || archivingTeamIds.value[teamRunId]) {
       return;
     }
 
     pendingDeleteRunId.value = null;
     pendingDeleteTeamRunId.value = teamRunId;
     showDeleteConfirmation.value = true;
+  };
+
+  const onArchiveRun = async (run: RunTreeRow): Promise<void> => {
+    if (run.source !== 'history' || run.isActive) {
+      return;
+    }
+
+    const runId = run.runId.trim();
+    if (!runId || archivingRunIds.value[runId] || deletingRunIds.value[runId]) {
+      return;
+    }
+
+    archivingRunIds.value = {
+      ...archivingRunIds.value,
+      [runId]: true,
+    };
+
+    try {
+      const archived = await params.archiveRun(runId);
+      if (!archived) {
+        params.addToast(
+          t('workspace.composables.useWorkspaceHistoryMutations.archive_run_failed'),
+          'error',
+        );
+        return;
+      }
+      params.addToast(
+        t('workspace.composables.useWorkspaceHistoryMutations.run_archived'),
+        'success',
+      );
+    } catch (error) {
+      console.error('Failed to archive run:', error);
+      params.addToast(
+        t('workspace.composables.useWorkspaceHistoryMutations.archive_run_failed'),
+        'error',
+      );
+    } finally {
+      const next = { ...archivingRunIds.value };
+      delete next[runId];
+      archivingRunIds.value = next;
+    }
+  };
+
+  const onArchiveTeam = async (team: TeamTreeNode): Promise<void> => {
+    if (
+      team.teamRunId.trim().startsWith('temp-') ||
+      params.canTerminateTeam(team.currentStatus) ||
+      team.deleteLifecycle !== 'READY'
+    ) {
+      return;
+    }
+
+    const teamRunId = team.teamRunId.trim();
+    if (!teamRunId || archivingTeamIds.value[teamRunId] || deletingTeamIds.value[teamRunId]) {
+      return;
+    }
+
+    archivingTeamIds.value = {
+      ...archivingTeamIds.value,
+      [teamRunId]: true,
+    };
+
+    try {
+      const archived = await params.archiveTeamRun(teamRunId);
+      if (!archived) {
+        params.addToast(
+          t('workspace.composables.useWorkspaceHistoryMutations.archive_team_failed'),
+          'error',
+        );
+        return;
+      }
+      params.addToast(
+        t('workspace.composables.useWorkspaceHistoryMutations.team_archived'),
+        'success',
+      );
+    } catch (error) {
+      console.error('Failed to archive team history:', error);
+      params.addToast(
+        t('workspace.composables.useWorkspaceHistoryMutations.archive_team_failed'),
+        'error',
+      );
+    } finally {
+      const next = { ...archivingTeamIds.value };
+      delete next[teamRunId];
+      archivingTeamIds.value = next;
+    }
   };
 
   const closeDeleteConfirmation = (): void => {
@@ -181,7 +273,7 @@ export const useWorkspaceHistoryMutations = (params: {
     closeDeleteConfirmation();
 
     if (runId) {
-      if (deletingRunIds.value[runId]) {
+      if (deletingRunIds.value[runId] || archivingRunIds.value[runId]) {
         return;
       }
 
@@ -208,7 +300,7 @@ export const useWorkspaceHistoryMutations = (params: {
       return;
     }
 
-    if (!teamRunId || deletingTeamIds.value[teamRunId]) {
+    if (!teamRunId || deletingTeamIds.value[teamRunId] || archivingTeamIds.value[teamRunId]) {
       return;
     }
 
@@ -240,8 +332,12 @@ export const useWorkspaceHistoryMutations = (params: {
     deletingRunIds,
     deletingTeamIds,
     showDeleteConfirmation,
+    archivingRunIds,
+    archivingTeamIds,
     onTerminateRun,
     onTerminateTeam,
+    onArchiveRun,
+    onArchiveTeam,
     onDeleteRun,
     onDeleteTeam,
     closeDeleteConfirmation,

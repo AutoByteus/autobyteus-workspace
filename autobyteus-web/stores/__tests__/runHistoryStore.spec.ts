@@ -2463,4 +2463,253 @@ describe('runHistoryStore', () => {
     expect(deleted).toBe(false);
     expect(mutateMock).not.toHaveBeenCalled();
   });
+
+  it('archiveRun removes local state and refreshes tree when backend succeeds', async () => {
+    mutateMock.mockResolvedValueOnce({
+      data: {
+        archiveStoredRun: {
+          success: true,
+          message: 'Run archived.',
+        },
+      },
+      errors: [],
+    });
+
+    const store = useRunHistoryStore();
+    store.workspaceGroups = [
+      buildWorkspaceHistoryGroup({
+        workspaceRootPath: '/ws/a',
+        workspaceName: 'a',
+        agents: [
+          {
+            agentDefinitionId: 'agent-def-1',
+            agentName: 'SuperAgent',
+            runs: [
+              {
+                runId: 'run-1',
+                summary: 'Persisted run',
+                lastActivityAt: '2026-01-01T00:00:00.000Z',
+                lastKnownStatus: 'IDLE',
+                isActive: false,
+              },
+            ],
+          },
+        ],
+        teamRuns: [],
+      }),
+    ];
+    store.resumeConfigByRunId = {
+      'run-1': {
+        runId: 'run-1',
+        isActive: false,
+        metadataConfig: {
+          agentDefinitionId: 'agent-def-1',
+          workspaceRootPath: '/ws/a',
+          llmModelIdentifier: 'model-x',
+          llmConfig: null,
+          autoExecuteTools: false,
+          skillAccessMode: null,
+        },
+        editableFields: {
+          llmModelIdentifier: true,
+          llmConfig: true,
+          autoExecuteTools: true,
+          skillAccessMode: true,
+          workspaceRootPath: false,
+          runtimeKind: false,
+        },
+      },
+    };
+    store.selectedRunId = 'run-1';
+    selectionStoreMock.selectedType = 'agent';
+    selectionStoreMock.selectedRunId = 'run-1';
+    agentContextsStoreMock.runs.set('run-1', {
+      config: { workspaceId: 'ws-1' },
+      state: { conversation: { messages: [] } },
+    });
+
+    const refreshSpy = vi.spyOn(store, 'refreshTreeQuietly').mockResolvedValue(undefined);
+    const archived = await store.archiveRun('run-1');
+
+    expect(archived).toBe(true);
+    expect(mutateMock).toHaveBeenCalledWith(expect.objectContaining({
+      variables: { runId: 'run-1' },
+    }));
+    expect(agentContextsStoreMock.removeRun).toHaveBeenCalledWith('run-1');
+    expect(selectionStoreMock.clearSelection).toHaveBeenCalledTimes(1);
+    expect(store.selectedRunId).toBeNull();
+    expect(store.resumeConfigByRunId['run-1']).toBeUndefined();
+    expect(store.workspaceGroups).toEqual([]);
+    expect(refreshSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('archiveRun does not mutate local state when backend rejects archive', async () => {
+    mutateMock.mockResolvedValueOnce({
+      data: {
+        archiveStoredRun: {
+          success: false,
+          message: 'Run is active.',
+        },
+      },
+      errors: [],
+    });
+
+    const store = useRunHistoryStore();
+    store.workspaceGroups = [
+      buildWorkspaceHistoryGroup({
+        workspaceRootPath: '/ws/a',
+        workspaceName: 'a',
+        agents: [
+          {
+            agentDefinitionId: 'agent-def-1',
+            agentName: 'SuperAgent',
+            runs: [
+              {
+                runId: 'run-1',
+                summary: 'Persisted run',
+                lastActivityAt: '2026-01-01T00:00:00.000Z',
+                lastKnownStatus: 'IDLE',
+                isActive: false,
+              },
+            ],
+          },
+        ],
+        teamRuns: [],
+      }),
+    ];
+
+    const archived = await store.archiveRun('run-1');
+
+    expect(archived).toBe(false);
+    expect(store.workspaceGroups[0]?.agentDefinitions[0]?.runs[0]?.runId).toBe('run-1');
+    expect(agentContextsStoreMock.removeRun).not.toHaveBeenCalled();
+  });
+
+  it('archiveRun rejects draft run IDs without backend mutation call', async () => {
+    const store = useRunHistoryStore();
+    const archived = await store.archiveRun('temp-123');
+
+    expect(archived).toBe(false);
+    expect(mutateMock).not.toHaveBeenCalled();
+  });
+
+  it('archiveTeamRun removes local team state and refreshes tree when backend succeeds', async () => {
+    mutateMock.mockResolvedValueOnce({
+      data: {
+        archiveStoredTeamRun: {
+          success: true,
+          message: 'Team archived.',
+        },
+      },
+      errors: [],
+    });
+
+    const store = useRunHistoryStore();
+    store.workspaceGroups = [
+      buildWorkspaceHistoryGroup({
+        workspaceRootPath: '/ws/a',
+        workspaceName: 'a',
+        agents: [],
+        teamRuns: [
+          {
+            teamRunId: 'team-1',
+            teamDefinitionId: 'team-def-1',
+            teamDefinitionName: 'Team Alpha',
+            workspaceRootPath: '/ws/a',
+            summary: 'Team task',
+            lastActivityAt: '2026-01-01T00:00:00.000Z',
+            lastKnownStatus: 'IDLE',
+            deleteLifecycle: 'READY',
+            isActive: false,
+            members: [],
+          },
+        ],
+      }),
+    ];
+    store.teamResumeConfigByTeamRunId = {
+      'team-1': {
+        teamRunId: 'team-1',
+        isActive: false,
+        metadata: {
+          teamRunId: 'team-1',
+          teamDefinitionId: 'team-def-1',
+          teamDefinitionName: 'Team Alpha',
+          coordinatorMemberRouteKey: 'super_agent',
+          runVersion: 1,
+          createdAt: '2026-01-01T00:00:00.000Z',
+          updatedAt: '2026-01-01T00:00:00.000Z',
+          memberMetadata: [],
+        },
+      },
+    };
+    store.selectedTeamRunId = 'team-1';
+    store.selectedTeamMemberRouteKey = 'super_agent';
+    selectionStoreMock.selectedType = 'team';
+    selectionStoreMock.selectedRunId = 'team-1';
+    teamContextsStoreMock.teams.set('team-1', { teamRunId: 'team-1' });
+
+    const refreshSpy = vi.spyOn(store, 'refreshTreeQuietly').mockResolvedValue(undefined);
+    const archived = await store.archiveTeamRun('team-1');
+
+    expect(archived).toBe(true);
+    expect(mutateMock).toHaveBeenCalledWith(expect.objectContaining({
+      variables: { teamRunId: 'team-1' },
+    }));
+    expect(teamContextsStoreMock.removeTeamContext).toHaveBeenCalledWith('team-1');
+    expect(selectionStoreMock.clearSelection).toHaveBeenCalledTimes(1);
+    expect(store.selectedTeamRunId).toBeNull();
+    expect(store.selectedTeamMemberRouteKey).toBeNull();
+    expect(store.teamResumeConfigByTeamRunId['team-1']).toBeUndefined();
+    expect(store.workspaceGroups).toEqual([]);
+    expect(refreshSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('archiveTeamRun leaves local state unchanged when backend rejects archive', async () => {
+    mutateMock.mockResolvedValueOnce({
+      data: {
+        archiveStoredTeamRun: {
+          success: false,
+          message: 'Team is active.',
+        },
+      },
+      errors: [],
+    });
+
+    const store = useRunHistoryStore();
+    store.workspaceGroups = [
+      buildWorkspaceHistoryGroup({
+        workspaceRootPath: '/ws/a',
+        workspaceName: 'a',
+        agents: [],
+        teamRuns: [
+          {
+            teamRunId: 'team-1',
+            teamDefinitionId: 'team-def-1',
+            teamDefinitionName: 'Team Alpha',
+            workspaceRootPath: '/ws/a',
+            summary: 'Team task',
+            lastActivityAt: '2026-01-01T00:00:00.000Z',
+            lastKnownStatus: 'IDLE',
+            deleteLifecycle: 'READY',
+            isActive: false,
+            members: [],
+          },
+        ],
+      }),
+    ];
+
+    const archived = await store.archiveTeamRun('team-1');
+
+    expect(archived).toBe(false);
+    expect(flattenWorkspaceGroupTeamRuns(store.workspaceGroups[0])[0]?.teamRunId).toBe('team-1');
+    expect(teamContextsStoreMock.removeTeamContext).not.toHaveBeenCalled();
+  });
+
+  it('archiveTeamRun rejects draft team IDs without backend mutation call', async () => {
+    const store = useRunHistoryStore();
+    const archived = await store.archiveTeamRun('temp-team-123');
+
+    expect(archived).toBe(false);
+    expect(mutateMock).not.toHaveBeenCalled();
+  });
 });

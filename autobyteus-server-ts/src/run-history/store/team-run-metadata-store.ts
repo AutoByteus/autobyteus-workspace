@@ -5,6 +5,7 @@ import {
   TeamRunMetadata,
   TeamRunMemberMetadata,
 } from "./team-run-metadata-types.js";
+import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
 import { canonicalizeWorkspaceRootPath } from "../utils/workspace-path-normalizer.js";
 import { normalizeMemberRouteKey } from "../utils/team-member-run-id.js";
 import {
@@ -28,6 +29,18 @@ const normalizeTeamRunId = (teamRunId: string, options: { allowEmpty?: boolean }
     throw new Error("teamRunId cannot be empty.");
   }
   return normalized;
+};
+
+const normalizeArchivedAt = (value: string | null | undefined): string | null =>
+  typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
+
+const normalizeApplicationExecutionContext = (
+  value: ApplicationExecutionContext | null | undefined,
+): ApplicationExecutionContext | null => {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return null;
+  }
+  return { ...value };
 };
 
 const normalizeMemberMetadata = (
@@ -60,6 +73,9 @@ const normalizeMemberMetadata = (
   workspaceRootPath: memberMetadata.workspaceRootPath
     ? canonicalizeWorkspaceRootPath(memberMetadata.workspaceRootPath)
     : null,
+  applicationExecutionContext: normalizeApplicationExecutionContext(
+    memberMetadata.applicationExecutionContext,
+  ),
 });
 
 const normalizeMetadata = (
@@ -72,6 +88,7 @@ const normalizeMetadata = (
   runVersion: Number.isFinite(metadata.runVersion) ? Math.max(1, Math.floor(metadata.runVersion)) : 1,
   createdAt: metadata.createdAt,
   updatedAt: metadata.updatedAt,
+  archivedAt: normalizeArchivedAt(metadata.archivedAt),
   memberMetadata: metadata.memberMetadata.map(normalizeMemberMetadata),
 });
 
@@ -96,7 +113,11 @@ const isMemberMetadataLike = (
       payload.skillAccessMode === SkillAccessMode.GLOBAL_DISCOVERY) &&
     (payload.llmConfig === null ||
       (typeof payload.llmConfig === "object" && !Array.isArray(payload.llmConfig))) &&
-    (typeof payload.workspaceRootPath === "string" || payload.workspaceRootPath === null)
+    (typeof payload.workspaceRootPath === "string" || payload.workspaceRootPath === null) &&
+    (payload.applicationExecutionContext === undefined ||
+      payload.applicationExecutionContext === null ||
+      (typeof payload.applicationExecutionContext === "object" &&
+        !Array.isArray(payload.applicationExecutionContext)))
   );
 };
 
@@ -152,6 +173,12 @@ const validateMetadata = (value: unknown): TeamRunMetadata | null => {
         typeof normalizedMember.workspaceRootPath === "string"
           ? normalizedMember.workspaceRootPath
           : null,
+      applicationExecutionContext:
+        normalizedMember.applicationExecutionContext &&
+        typeof normalizedMember.applicationExecutionContext === "object" &&
+        !Array.isArray(normalizedMember.applicationExecutionContext)
+          ? (normalizedMember.applicationExecutionContext as ApplicationExecutionContext)
+          : null,
     });
   }
   return {
@@ -162,6 +189,10 @@ const validateMetadata = (value: unknown): TeamRunMetadata | null => {
     runVersion: payload.runVersion,
     createdAt: payload.createdAt,
     updatedAt: payload.updatedAt,
+    archivedAt:
+      typeof payload.archivedAt === "string"
+        ? payload.archivedAt
+        : null,
     memberMetadata,
   };
 };

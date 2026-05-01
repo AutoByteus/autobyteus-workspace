@@ -28,13 +28,44 @@ Workspace + agent operations:
 - `listWorkspaceRunHistory`
 - `getRunProjection`
 - `getAgentRunResumeConfig`
+- `archiveStoredRun`
 - `deleteStoredRun`
 
 Team operations:
 
 - `getTeamRunResumeConfig`
 - `getTeamMemberRunProjection`
+- `archiveStoredTeamRun`
 - `deleteStoredTeamRun`
+
+## Default History Visibility, Archive, And Delete Semantics
+
+The default `listWorkspaceRunHistory` response is intentionally a visible
+history tree, not a complete retention inventory. It excludes inactive
+standalone agent runs and inactive team runs whose metadata contains an
+`archivedAt` timestamp before workspace grouping and count projection. If an
+archived run or team is active again through a restore/resume path, it remains
+visible while active so live work is not hidden.
+
+Archive is a non-destructive visibility action:
+
+- `archiveStoredRun(runId)` writes `archivedAt` in
+  `memory/agents/<runId>/run_metadata.json`.
+- `archiveStoredTeamRun(teamRunId)` writes `archivedAt` in
+  `memory/agent_teams/<teamRunId>/team_run_metadata.json`.
+- Archive keeps the run/team metadata, raw traces, projections, member
+  directories, and index rows on disk.
+- Archive rejects active runs/teams and invalid or path-unsafe ids before
+  metadata read/write.
+- Existing metadata with no `archivedAt` is visible by default, and metadata
+  normalization must preserve unrelated optional fields when archive state is
+  written.
+
+Permanent delete remains a separate destructive action. `deleteStoredRun` and
+`deleteStoredTeamRun` remove the persisted run/team storage and corresponding
+history index entries instead of only hiding the row. The current product slice
+does not expose an archived-list or unarchive GraphQL/UI path; archived data
+remains retained on disk for future recovery tooling.
 
 ## Persistence Files
 
@@ -115,6 +146,9 @@ Providers:
 - `src/run-history/projection/providers/claude-run-view-projection-provider.ts`
 
 ## Archive / Rotation / Retention Boundaries
+
+This section describes raw-trace segment archives and is separate from the
+history-row visibility archive flag documented above.
 
 Native AutoByteus compaction archives compacted raw traces into segmented `native_compaction` archive entries. Codex and Claude provider-boundary handling may rotate settled active raw traces before a normalized, rotation-eligible provider boundary marker into segmented `provider_compaction_boundary` archive entries. Run-history and memory-view readers include only complete archive segments plus active records, dedupe by raw trace id, and ignore pending manifest entries.
 

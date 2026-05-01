@@ -42,6 +42,15 @@ class DeleteStoredTeamRunMutationResult {
   message!: string;
 }
 
+@ObjectType()
+class ArchiveStoredTeamRunMutationResult {
+  @Field(() => Boolean)
+  success!: boolean;
+
+  @Field(() => String)
+  message!: string;
+}
+
 @Resolver()
 export class TeamRunHistoryResolver {
   private teamRunHistoryService = getTeamRunHistoryService();
@@ -80,6 +89,20 @@ export class TeamRunHistoryResolver {
   ): Promise<DeleteStoredTeamRunMutationResult> {
     try {
       return await this.teamRunHistoryService.deleteStoredTeamRun(teamRunId);
+    } catch (error) {
+      return {
+        success: false,
+        message: String(error),
+      };
+    }
+  }
+
+  @Mutation(() => ArchiveStoredTeamRunMutationResult)
+  async archiveStoredTeamRun(
+    @Arg("teamRunId", () => String) teamRunId: string,
+  ): Promise<ArchiveStoredTeamRunMutationResult> {
+    try {
+      return await this.teamRunHistoryService.archiveStoredTeamRun(teamRunId);
     } catch (error) {
       return {
         success: false,

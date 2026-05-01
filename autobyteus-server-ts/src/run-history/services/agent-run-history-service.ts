@@ -28,6 +28,11 @@ export interface DeleteStoredRunResult {
   message: string;
 }
 
+export interface ArchiveStoredRunResult {
+  success: boolean;
+  message: string;
+}
+
 export class AgentRunHistoryService {
   private readonly indexService: AgentRunHistoryIndexService;
   private readonly memoryStore: MemoryFileStore;
@@ -63,6 +68,9 @@ export class AgentRunHistoryService {
           const metadata = await this.metadataStore.readMetadata(row.runId);
           if (!metadata) {
             staleRunIds.push(row.runId);
+            return null;
+          }
+          if (metadata.archivedAt && !activeRunIds.has(row.runId)) {
             return null;
           }
           return {
@@ -125,6 +133,50 @@ export class AgentRunHistoryService {
     return workspaceGroups;
   }
 
+  async archiveStoredRun(runId: string): Promise<ArchiveStoredRunResult> {
+    const normalizedRunId = this.resolveSafeArchiveRunId(runId);
+    if (!normalizedRunId) {
+      return {
+        success: false,
+        message: "Invalid run ID path.",
+      };
+    }
+
+    if (this.agentRunManager.hasActiveRun(normalizedRunId)) {
+      return {
+        success: false,
+        message: "Run is active. Terminate it before archiving history.",
+      };
+    }
+
+    try {
+      const metadata = await this.metadataStore.readMetadata(normalizedRunId);
+      if (!metadata) {
+        return {
+          success: false,
+          message: `Run metadata not found for '${normalizedRunId}'.`,
+        };
+      }
+
+      const archivedAt = metadata.archivedAt ?? new Date().toISOString();
+      await this.metadataStore.writeMetadata(normalizedRunId, {
+        ...metadata,
+        archivedAt,
+      });
+
+      return {
+        success: true,
+        message: `Run '${normalizedRunId}' archived.`,
+      };
+    } catch (error) {
+      logger.warn(`Failed to archive stored run '${normalizedRunId}': ${String(error)}`);
+      return {
+        success: false,
+        message: `Failed to archive stored run '${normalizedRunId}'.`,
+      };
+    }
+  }
+
   async deleteStoredRun(runId: string): Promise<DeleteStoredRunResult> {
     const normalizedRunId = runId.trim();
     if (!normalizedRunId) {
@@ -181,6 +233,44 @@ export class AgentRunHistoryService {
     }
 
     return targetPath;
+  }
+
+  private resolveSafeArchiveRunId(runId: string): string | null {
+    const normalizedRunId = runId.trim();
+    if (!this.isSafeArchiveIdentity(normalizedRunId, "temp-")) {
+      return null;
+    }
+
+    const agentsRoot = path.resolve(this.memoryStore.getRunDir(""));
+    const targetDir = path.resolve(agentsRoot, normalizedRunId);
+    const metadataPath = path.resolve(targetDir, "run_metadata.json");
+    if (!this.isStrictlyInsideRoot(targetDir, agentsRoot)) {
+      return null;
+    }
+    if (!this.isStrictlyInsideRoot(metadataPath, agentsRoot)) {
+      return null;
+    }
+    return normalizedRunId;
+  }
+
+  private isSafeArchiveIdentity(value: string, draftPrefix: string): boolean {
+    if (!value || value.startsWith(draftPrefix)) {
+      return false;
+    }
+    if (path.isAbsolute(value) || path.posix.isAbsolute(value) || path.win32.isAbsolute(value)) {
+      return false;
+    }
+    if (/[\\/]/.test(value)) {
+      return false;
+    }
+    const segments = value.split(/[\\/]+/);
+    return !segments.some((segment) => segment === "." || segment === "..");
+  }
+
+  private isStrictlyInsideRoot(candidatePath: string, rootPath: string): boolean {
+    const resolvedRoot = path.resolve(rootPath);
+    const resolvedCandidate = path.resolve(candidatePath);
+    return resolvedCandidate.startsWith(`${resolvedRoot}${path.sep}`);
   }
 }
 

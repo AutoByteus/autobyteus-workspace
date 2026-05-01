@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia';
-import { getApolloClient } from '~/utils/apolloClient';
 import { useWorkspaceStore } from '~/stores/workspace';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
@@ -9,12 +8,9 @@ import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig';
-import { DeleteStoredRun, DeleteStoredTeamRun } from '~/graphql/mutations/runHistoryMutations';
 import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
 import { buildEditableAgentRunSeed } from '~/composables/useDefinitionLaunchDefaults';
 import type {
-  DeleteStoredRunMutationData,
-  DeleteStoredTeamRunMutationData,
   RunEditableFieldFlags,
   RunHistoryWorkspaceGroup,
   RunResumeConfigPayload,
@@ -26,10 +22,6 @@ import {
   findAgentNameByRunId as findAgentNameFromHistory,
   formatRunHistoryRelativeTime,
 } from '~/stores/runHistoryReadModel';
-import {
-  removeRunFromWorkspaceGroups,
-  removeTeamRunFromWorkspaceGroups,
-} from '~/stores/runHistoryStoreSupport';
 import { openTeamMemberRunFromHistory, selectTreeRunFromHistory } from '~/stores/runHistorySelectionActions';
 import {
   type RunTreeRow,
@@ -44,6 +36,12 @@ import {
   fetchRunHistoryTree,
   openHistoricalRun,
 } from '~/stores/runHistoryLoadActions';
+import {
+  archiveRunInHistoryStore,
+  archiveTeamRunInHistoryStore,
+  deleteRunFromHistoryStore,
+  deleteTeamRunFromHistoryStore,
+} from '~/stores/runHistoryMutationActions';
 
 const FALSE_EDITABLE_FIELDS: RunEditableFieldFlags = {
   llmModelIdentifier: false,
@@ -397,110 +395,19 @@ export const useRunHistoryStore = defineStore('runHistory', {
     },
 
     async deleteRun(runId: string): Promise<boolean> {
-      const normalizedRunId = runId.trim();
-      if (!normalizedRunId || normalizedRunId.startsWith(DRAFT_RUN_ID_PREFIX)) {
-        return false;
-      }
+      return deleteRunFromHistoryStore(this, runId);
+    },
 
-      try {
-        const client = getApolloClient();
-        const { data, errors } = await client.mutate<DeleteStoredRunMutationData>({
-          mutation: DeleteStoredRun,
-          variables: { runId: normalizedRunId },
-        });
-
-        if (errors && errors.length > 0) {
-          throw new Error(errors.map((e: { message: string }) => e.message).join(', '));
-        }
-
-        const result = data?.deleteStoredRun;
-        if (!result?.success) {
-          return false;
-        }
-
-        const nextResumeConfigs = { ...this.resumeConfigByRunId };
-        delete nextResumeConfigs[normalizedRunId];
-        this.resumeConfigByRunId = nextResumeConfigs;
-        this.workspaceGroups = removeRunFromWorkspaceGroups(this.workspaceGroups, normalizedRunId);
-
-        const agentContextsStore = useAgentContextsStore();
-        const hadContext = Boolean(agentContextsStore.getRun(normalizedRunId));
-        if (hadContext) {
-          agentContextsStore.removeRun(normalizedRunId);
-        }
-
-        const selectionStore = useAgentSelectionStore();
-        const selectedBySelectionStore =
-          selectionStore.selectedType === 'agent' &&
-          selectionStore.selectedRunId === normalizedRunId;
-        if (selectedBySelectionStore && !hadContext) {
-          selectionStore.clearSelection();
-        }
-
-        if (this.selectedRunId === normalizedRunId) {
-          this.selectedRunId = null;
-        }
-
-        await this.refreshTreeQuietly();
-        return true;
-      } catch (error: any) {
-        console.error(`Failed to delete run '${normalizedRunId}':`, error);
-        return false;
-      }
+    async archiveRun(runId: string): Promise<boolean> {
+      return archiveRunInHistoryStore(this, runId);
     },
 
     async deleteTeamRun(teamRunId: string): Promise<boolean> {
-      const normalizedTeamRunId = teamRunId.trim();
-      if (!normalizedTeamRunId || normalizedTeamRunId.startsWith('temp-')) {
-        return false;
-      }
+      return deleteTeamRunFromHistoryStore(this, teamRunId);
+    },
 
-      try {
-        const client = getApolloClient();
-        const { data, errors } = await client.mutate<DeleteStoredTeamRunMutationData>({
-          mutation: DeleteStoredTeamRun,
-          variables: { teamRunId: normalizedTeamRunId },
-        });
-
-        if (errors && errors.length > 0) {
-          throw new Error(errors.map((e: { message: string }) => e.message).join(', '));
-        }
-
-        const result = data?.deleteStoredTeamRun;
-        if (!result?.success) {
-          return false;
-        }
-
-        const nextTeamResume = { ...this.teamResumeConfigByTeamRunId };
-        delete nextTeamResume[normalizedTeamRunId];
-        this.teamResumeConfigByTeamRunId = nextTeamResume;
-        this.workspaceGroups = removeTeamRunFromWorkspaceGroups(
-          this.workspaceGroups,
-          normalizedTeamRunId,
-        );
-
-        const teamContextsStore = useAgentTeamContextsStore();
-        teamContextsStore.removeTeamContext(normalizedTeamRunId);
-
-        const selectionStore = useAgentSelectionStore();
-        if (
-          selectionStore.selectedType === 'team' &&
-          selectionStore.selectedRunId === normalizedTeamRunId
-        ) {
-          selectionStore.clearSelection();
-        }
-
-        if (this.selectedTeamRunId === normalizedTeamRunId) {
-          this.selectedTeamRunId = null;
-          this.selectedTeamMemberRouteKey = null;
-        }
-
-        await this.refreshTreeQuietly();
-        return true;
-      } catch (error: any) {
-        console.error(`Failed to delete team run '${normalizedTeamRunId}':`, error);
-        return false;
-      }
+    async archiveTeamRun(teamRunId: string): Promise<boolean> {
+      return archiveTeamRunInHistoryStore(this, teamRunId);
     },
 
     async refreshTreeQuietly(limitPerAgent = 6): Promise<void> {

@@ -15,5 +15,6 @@ export type AgentRunMetadata = {
   runtimeKind: RuntimeKind;
   platformAgentRunId: string | null;
   lastKnownStatus: AgentRunStatusRecord;
+  archivedAt?: string | null;
   applicationExecutionContext?: ApplicationExecutionContext | null;
 };

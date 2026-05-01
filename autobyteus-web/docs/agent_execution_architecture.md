@@ -63,6 +63,30 @@ Single-agent and team follow-up chat share the same recovery model:
 - accepted follow-up messages mark the run/team active in run history and refresh the history tree; and
 - stop/tool-approval control messages are active-only and should not be used as implicit restore operations.
 
+### Workspace History Archive And Delete Actions
+
+`components/workspace/history/WorkspaceAgentRunsTreePanel.vue` owns the
+workspace history tree wiring and delegates row rendering to
+`WorkspaceHistoryWorkspaceSection.vue`. The row actions intentionally keep
+archive, termination, draft removal, and permanent delete separate:
+
+- active standalone runs and active team runs expose stop/terminate actions, not
+  archive;
+- temporary draft rows use local remove/discard behavior and are not sent to the
+  archive API;
+- inactive persisted standalone runs call `runHistoryStore.archiveRun(runId)`,
+  which uses the backend `archiveStoredRun` mutation; and
+- inactive persisted team runs call `runHistoryStore.archiveTeamRun(teamRunId)`,
+  which uses the backend `archiveStoredTeamRun` mutation.
+
+Successful archive removes the row from the current default history tree,
+clears selected/open local context for the hidden run or team when applicable,
+and refreshes history from the backend. Failed archive leaves the visible tree
+and current selection unchanged and reports the error. The destructive delete
+affordance remains separate and continues to use the existing permanent-delete
+confirmation path for users who intend to remove stored memory. There is
+currently no archived-history browser or unarchive UI in this frontend slice.
+
 ### Uploaded Context Attachment Orchestration
 
 Browser-uploaded composer files now follow the same high-level orchestration pattern across single-agent, team, and application-backed conversations:
