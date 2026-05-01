@@ -223,6 +223,18 @@ export type ApproveToolInvocationResult = {
   success: Scalars['Boolean']['output'];
 };
 
+export type ArchiveStoredRunMutationResult = {
+  __typename?: 'ArchiveStoredRunMutationResult';
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+};
+
+export type ArchiveStoredTeamRunMutationResult = {
+  __typename?: 'ArchiveStoredTeamRunMutationResult';
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+};
+
 export type ConfigureMcpServerResult = {
   __typename?: 'ConfigureMcpServerResult';
   savedConfig: McpServerConfigUnion;
@@ -650,8 +662,10 @@ export type MemorySnapshotSummary = {
 export type MemoryTraceEvent = {
   __typename?: 'MemoryTraceEvent';
   content?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
   media?: Maybe<Scalars['JSON']['output']>;
   seq: Scalars['Int']['output'];
+  sourceEvent?: Maybe<Scalars['String']['output']>;
   toolArgs?: Maybe<Scalars['JSON']['output']>;
   toolCallId?: Maybe<Scalars['String']['output']>;
   toolError?: Maybe<Scalars['String']['output']>;
@@ -685,6 +699,8 @@ export type Mutation = {
   activateSkillVersion: SkillVersion;
   addSkillSource: Array<SkillSource>;
   approveToolInvocation: ApproveToolInvocationResult;
+  archiveStoredRun: ArchiveStoredRunMutationResult;
+  archiveStoredTeamRun: ArchiveStoredTeamRunMutationResult;
   clearRemoteBrowserBridge: RemoteBrowserBridgeMutationResult;
   configureMcpServer: ConfigureMcpServerResult;
   createAgentDefinition: AgentDefinition;
@@ -760,6 +776,16 @@ export type MutationAddSkillSourceArgs = {
 
 export type MutationApproveToolInvocationArgs = {
   input: ApproveToolInvocationInput;
+};
+
+
+export type MutationArchiveStoredRunArgs = {
+  runId: Scalars['String']['input'];
+};
+
+
+export type MutationArchiveStoredTeamRunArgs = {
+  teamRunId: Scalars['String']['input'];
 };
 
 
@@ -2187,12 +2213,26 @@ export type DeleteStoredRunMutationVariables = Exact<{
 
 export type DeleteStoredRunMutation = { __typename?: 'Mutation', deleteStoredRun: { __typename?: 'DeleteStoredRunMutationResult', success: boolean, message: string } };
 
+export type ArchiveStoredRunMutationVariables = Exact<{
+  runId: Scalars['String']['input'];
+}>;
+
+
+export type ArchiveStoredRunMutation = { __typename?: 'Mutation', archiveStoredRun: { __typename?: 'ArchiveStoredRunMutationResult', success: boolean, message: string } };
+
 export type DeleteStoredTeamRunMutationVariables = Exact<{
   teamRunId: Scalars['String']['input'];
 }>;
 
 
 export type DeleteStoredTeamRunMutation = { __typename?: 'Mutation', deleteStoredTeamRun: { __typename?: 'DeleteStoredTeamRunMutationResult', success: boolean, message: string } };
+
+export type ArchiveStoredTeamRunMutationVariables = Exact<{
+  teamRunId: Scalars['String']['input'];
+}>;
+
+
+export type ArchiveStoredTeamRunMutation = { __typename?: 'Mutation', archiveStoredTeamRun: { __typename?: 'ArchiveStoredTeamRunMutationResult', success: boolean, message: string } };
 
 export type UpdateServerSettingMutationVariables = Exact<{
   key: Scalars['String']['input'];
@@ -2280,19 +2320,23 @@ export type GetApplicationsCapabilityQueryVariables = Exact<{ [key: string]: nev
 
 export type GetApplicationsCapabilityQuery = { __typename?: 'Query', applicationsCapability: { __typename?: 'ApplicationsCapability', enabled: boolean, scope: ApplicationsCapabilityScope, settingKey: string, source: ApplicationsCapabilitySource } };
 
-export type ApplicationFieldsFragment = { __typename: 'Application', id: string, localApplicationId: string, packageId: string, name: string, description?: string | null, iconAssetPath?: string | null, entryHtmlAssetPath: string, writable: boolean, resourceSlots: Array<{ __typename?: 'ApplicationResourceSlotSummary', slotKey: string, required: boolean }>, bundleResources: Array<{ __typename?: 'ApplicationRuntimeResource', kind: ApplicationRuntimeResourceKind, localId: string, definitionId: string }> };
+export type ApplicationCatalogFieldsFragment = { __typename: 'Application', id: string, name: string, description?: string | null, iconAssetPath?: string | null, entryHtmlAssetPath: string, resourceSlots: Array<{ __typename?: 'ApplicationResourceSlotSummary', slotKey: string, required: boolean }> };
+
+export type ApplicationTechnicalDetailsFieldsFragment = { __typename: 'Application', localApplicationId: string, packageId: string, writable: boolean, bundleResources: Array<{ __typename?: 'ApplicationRuntimeResource', kind: ApplicationRuntimeResourceKind, localId: string, definitionId: string }> };
+
+export type ApplicationDetailFieldsFragment = { __typename: 'Application', id: string, name: string, description?: string | null, iconAssetPath?: string | null, entryHtmlAssetPath: string, localApplicationId: string, packageId: string, writable: boolean, resourceSlots: Array<{ __typename?: 'ApplicationResourceSlotSummary', slotKey: string, required: boolean }>, bundleResources: Array<{ __typename?: 'ApplicationRuntimeResource', kind: ApplicationRuntimeResourceKind, localId: string, definitionId: string }> };
 
 export type ListApplicationsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ListApplicationsQuery = { __typename?: 'Query', listApplications: Array<{ __typename: 'Application', id: string, localApplicationId: string, packageId: string, name: string, description?: string | null, iconAssetPath?: string | null, entryHtmlAssetPath: string, writable: boolean, resourceSlots: Array<{ __typename?: 'ApplicationResourceSlotSummary', slotKey: string, required: boolean }>, bundleResources: Array<{ __typename?: 'ApplicationRuntimeResource', kind: ApplicationRuntimeResourceKind, localId: string, definitionId: string }> }> };
+export type ListApplicationsQuery = { __typename?: 'Query', listApplications: Array<{ __typename: 'Application', id: string, name: string, description?: string | null, iconAssetPath?: string | null, entryHtmlAssetPath: string, resourceSlots: Array<{ __typename?: 'ApplicationResourceSlotSummary', slotKey: string, required: boolean }> }> };
 
 export type GetApplicationByIdQueryVariables = Exact<{
   id: Scalars['String']['input'];
 }>;
 
 
-export type GetApplicationByIdQuery = { __typename?: 'Query', application?: { __typename: 'Application', id: string, localApplicationId: string, packageId: string, name: string, description?: string | null, iconAssetPath?: string | null, entryHtmlAssetPath: string, writable: boolean, resourceSlots: Array<{ __typename?: 'ApplicationResourceSlotSummary', slotKey: string, required: boolean }>, bundleResources: Array<{ __typename?: 'ApplicationRuntimeResource', kind: ApplicationRuntimeResourceKind, localId: string, definitionId: string }> } | null };
+export type GetApplicationByIdQuery = { __typename?: 'Query', application?: { __typename: 'Application', id: string, name: string, description?: string | null, iconAssetPath?: string | null, entryHtmlAssetPath: string, localApplicationId: string, packageId: string, writable: boolean, resourceSlots: Array<{ __typename?: 'ApplicationResourceSlotSummary', slotKey: string, required: boolean }>, bundleResources: Array<{ __typename?: 'ApplicationRuntimeResource', kind: ApplicationRuntimeResourceKind, localId: string, definitionId: string }> } | null };
 
 export type ExternalChannelCapabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2715,21 +2759,26 @@ export const ApplicationsCapabilityFieldsFragmentDoc = gql`
   source
 }
     `;
-export const ApplicationFieldsFragmentDoc = gql`
-    fragment ApplicationFields on Application {
+export const ApplicationCatalogFieldsFragmentDoc = gql`
+    fragment ApplicationCatalogFields on Application {
   __typename
   id
-  localApplicationId
-  packageId
   name
   description
   iconAssetPath
   entryHtmlAssetPath
-  writable
   resourceSlots {
     slotKey
     required
   }
+}
+    `;
+export const ApplicationTechnicalDetailsFieldsFragmentDoc = gql`
+    fragment ApplicationTechnicalDetailsFields on Application {
+  __typename
+  localApplicationId
+  packageId
+  writable
   bundleResources {
     kind
     localId
@@ -2737,6 +2786,13 @@ export const ApplicationFieldsFragmentDoc = gql`
   }
 }
     `;
+export const ApplicationDetailFieldsFragmentDoc = gql`
+    fragment ApplicationDetailFields on Application {
+  ...ApplicationCatalogFields
+  ...ApplicationTechnicalDetailsFields
+}
+    ${ApplicationCatalogFieldsFragmentDoc}
+${ApplicationTechnicalDetailsFieldsFragmentDoc}`;
 export const GetAgentPackagesDocument = gql`
     query GetAgentPackages {
   agentPackages {
@@ -4145,6 +4201,36 @@ export function useDeleteStoredRunMutation(options: VueApolloComposable.UseMutat
   return VueApolloComposable.useMutation<DeleteStoredRunMutation, DeleteStoredRunMutationVariables>(DeleteStoredRunDocument, options);
 }
 export type DeleteStoredRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DeleteStoredRunMutation, DeleteStoredRunMutationVariables>;
+export const ArchiveStoredRunDocument = gql`
+    mutation ArchiveStoredRun($runId: String!) {
+  archiveStoredRun(runId: $runId) {
+    success
+    message
+  }
+}
+    `;
+
+/**
+ * __useArchiveStoredRunMutation__
+ *
+ * To run a mutation, you first call `useArchiveStoredRunMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useArchiveStoredRunMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useArchiveStoredRunMutation({
+ *   variables: {
+ *     runId: // value for 'runId'
+ *   },
+ * });
+ */
+export function useArchiveStoredRunMutation(options: VueApolloComposable.UseMutationOptions<ArchiveStoredRunMutation, ArchiveStoredRunMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<ArchiveStoredRunMutation, ArchiveStoredRunMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<ArchiveStoredRunMutation, ArchiveStoredRunMutationVariables>(ArchiveStoredRunDocument, options);
+}
+export type ArchiveStoredRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ArchiveStoredRunMutation, ArchiveStoredRunMutationVariables>;
 export const DeleteStoredTeamRunDocument = gql`
     mutation DeleteStoredTeamRun($teamRunId: String!) {
   deleteStoredTeamRun(teamRunId: $teamRunId) {
@@ -4175,6 +4261,36 @@ export function useDeleteStoredTeamRunMutation(options: VueApolloComposable.UseM
   return VueApolloComposable.useMutation<DeleteStoredTeamRunMutation, DeleteStoredTeamRunMutationVariables>(DeleteStoredTeamRunDocument, options);
 }
 export type DeleteStoredTeamRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DeleteStoredTeamRunMutation, DeleteStoredTeamRunMutationVariables>;
+export const ArchiveStoredTeamRunDocument = gql`
+    mutation ArchiveStoredTeamRun($teamRunId: String!) {
+  archiveStoredTeamRun(teamRunId: $teamRunId) {
+    success
+    message
+  }
+}
+    `;
+
+/**
+ * __useArchiveStoredTeamRunMutation__
+ *
+ * To run a mutation, you first call `useArchiveStoredTeamRunMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useArchiveStoredTeamRunMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useArchiveStoredTeamRunMutation({
+ *   variables: {
+ *     teamRunId: // value for 'teamRunId'
+ *   },
+ * });
+ */
+export function useArchiveStoredTeamRunMutation(options: VueApolloComposable.UseMutationOptions<ArchiveStoredTeamRunMutation, ArchiveStoredTeamRunMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<ArchiveStoredTeamRunMutation, ArchiveStoredTeamRunMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<ArchiveStoredTeamRunMutation, ArchiveStoredTeamRunMutationVariables>(ArchiveStoredTeamRunDocument, options);
+}
+export type ArchiveStoredTeamRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ArchiveStoredTeamRunMutation, ArchiveStoredTeamRunMutationVariables>;
 export const UpdateServerSettingDocument = gql`
     mutation UpdateServerSetting($key: String!, $value: String!) {
   updateServerSetting(key: $key, value: $value)
@@ -4629,10 +4745,10 @@ export type GetApplicationsCapabilityQueryCompositionFunctionResult = VueApolloC
 export const ListApplicationsDocument = gql`
     query ListApplications {
   listApplications {
-    ...ApplicationFields
+    ...ApplicationCatalogFields
   }
 }
-    ${ApplicationFieldsFragmentDoc}`;
+    ${ApplicationCatalogFieldsFragmentDoc}`;
 
 /**
  * __useListApplicationsQuery__
@@ -4656,10 +4772,10 @@ export type ListApplicationsQueryCompositionFunctionResult = VueApolloComposable
 export const GetApplicationByIdDocument = gql`
     query GetApplicationById($id: String!) {
   application(id: $id) {
-    ...ApplicationFields
+    ...ApplicationDetailFields
   }
 }
-    ${ApplicationFieldsFragmentDoc}`;
+    ${ApplicationDetailFieldsFragmentDoc}`;
 
 /**
  * __useGetApplicationByIdQuery__

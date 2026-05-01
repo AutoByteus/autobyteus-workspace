@@ -25,5 +25,6 @@ export interface TeamRunMetadata {
   runVersion: number;
   createdAt: string;
   updatedAt: string;
+  archivedAt?: string | null;
   memberMetadata: TeamRunMemberMetadata[];
 }

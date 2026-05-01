@@ -231,6 +231,15 @@ class DeleteStoredRunMutationResult {
   message!: string;
 }
 
+@ObjectType()
+class ArchiveStoredRunMutationResult {
+  @Field(() => Boolean)
+  success!: boolean;
+
+  @Field(() => String)
+  message!: string;
+}
+
 @Resolver()
 export class RunHistoryResolver {
   private agentRunHistoryService = getAgentRunHistoryService();
@@ -265,6 +274,20 @@ export class RunHistoryResolver {
   ): Promise<DeleteStoredRunMutationResult> {
     try {
       return await this.agentRunHistoryService.deleteStoredRun(runId);
+    } catch (error) {
+      return {
+        success: false,
+        message: String(error),
+      };
+    }
+  }
+
+  @Mutation(() => ArchiveStoredRunMutationResult)
+  async archiveStoredRun(
+    @Arg("runId", () => String) runId: string,
+  ): Promise<ArchiveStoredRunMutationResult> {
+    try {
+      return await this.agentRunHistoryService.archiveStoredRun(runId);
     } catch (error) {
       return {
         success: false,

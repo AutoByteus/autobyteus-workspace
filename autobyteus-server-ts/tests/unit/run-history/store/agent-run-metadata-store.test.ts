@@ -21,6 +21,8 @@ const buildMetadata = (
   runtimeKind: RuntimeKind.CODEX_APP_SERVER,
   platformAgentRunId: "thread-1",
   lastKnownStatus: "IDLE",
+  archivedAt: null,
+  applicationExecutionContext: null,
   ...overrides,
 });
 
@@ -42,6 +44,19 @@ describe("AgentRunMetadataStore", () => {
       memoryDir: path.join(memoryDir, "agents", "run-1"),
       platformAgentRunId: "  thread-1  ",
       lastKnownStatus: "TERMINATED",
+      archivedAt: "2026-05-01T10:00:00.000Z",
+      applicationExecutionContext: {
+        applicationId: "app-1",
+        bindingId: "binding-1",
+        producer: {
+          runId: "run-1",
+          memberRouteKey: "agent",
+          memberName: "Agent",
+          displayName: "Agent",
+          runtimeKind: "AGENT",
+          teamPath: [],
+        },
+      },
     }));
 
     const metadata = await store.readMetadata("run-1");
@@ -51,6 +66,19 @@ describe("AgentRunMetadataStore", () => {
       memoryDir: path.join(memoryDir, "agents", "run-1"),
       platformAgentRunId: "thread-1",
       lastKnownStatus: "TERMINATED",
+      archivedAt: "2026-05-01T10:00:00.000Z",
+      applicationExecutionContext: {
+        applicationId: "app-1",
+        bindingId: "binding-1",
+        producer: {
+          runId: "run-1",
+          memberRouteKey: "agent",
+          memberName: "Agent",
+          displayName: "Agent",
+          runtimeKind: "AGENT",
+          teamPath: [],
+        },
+      },
     }));
   });
 
@@ -78,5 +106,7 @@ describe("AgentRunMetadataStore", () => {
 
     expect(metadata?.memoryDir).toBe(path.join(memoryDir, "agents", "run-legacy"));
     expect(metadata?.lastKnownStatus).toBe("IDLE");
+    expect(metadata?.archivedAt).toBeNull();
+    expect(metadata?.applicationExecutionContext).toBeNull();
   });
 });

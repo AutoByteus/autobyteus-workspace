@@ -186,8 +186,22 @@ export interface DeleteStoredRunMutationData {
   };
 }
 
+export interface ArchiveStoredRunMutationData {
+  archiveStoredRun: {
+    success: boolean;
+    message: string;
+  };
+}
+
 export interface DeleteStoredTeamRunMutationData {
   deleteStoredTeamRun: {
+    success: boolean;
+    message: string;
+  };
+}
+
+export interface ArchiveStoredTeamRunMutationData {
+  archiveStoredTeamRun: {
     success: boolean;
     message: string;
   };

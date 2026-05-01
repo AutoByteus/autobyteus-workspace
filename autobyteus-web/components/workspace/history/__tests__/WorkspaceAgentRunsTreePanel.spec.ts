@@ -128,6 +128,8 @@ const {
       createWorkspace: vi.fn(async (rootPath: string) => rootPath),
       deleteRun: vi.fn().mockResolvedValue(true),
       deleteTeamRun: vi.fn().mockResolvedValue(true),
+      archiveRun: vi.fn().mockResolvedValue(true),
+      archiveTeamRun: vi.fn().mockResolvedValue(true),
     },
     workspaceStoreMock: {
       workspaces: {
@@ -838,6 +840,31 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     expect(deleteButtons).toHaveLength(1);
   });
 
+  it('renders archive action for inactive team history rows', async () => {
+    runHistoryState.teamNodesByWorkspace['/ws/a'] = [
+      {
+        teamRunId: 'team-1',
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        workspaceRootPath: '/ws/a',
+        summary: 'Team summary',
+        lastActivityAt: '2026-01-01T02:00:00.000Z',
+        lastKnownStatus: 'IDLE',
+        isActive: false,
+        currentStatus: 'shutdown_complete',
+        deleteLifecycle: 'READY',
+        focusedMemberName: 'super_agent',
+        members: [],
+      },
+    ];
+
+    const wrapper = mountComponent();
+    await flushPromises();
+
+    const archiveButtons = wrapper.findAll('button[title="Archive team history"]');
+    expect(archiveButtons).toHaveLength(1);
+  });
+
   it('does not render team-row configuration button', async () => {
     runHistoryState.teamNodesByWorkspace['/ws/a'] = [
       {
@@ -911,6 +938,38 @@ describe('WorkspaceAgentRunsTreePanel', () => {
 
     expect(runHistoryStoreMock.deleteTeamRun).toHaveBeenCalledWith('team-1');
     expect(selectionStoreMock.selectRun).not.toHaveBeenCalled();
+  });
+
+  it('archives inactive team history from team row action without selecting the row', async () => {
+    runHistoryState.teamNodesByWorkspace['/ws/a'] = [
+      {
+        teamRunId: 'team-1',
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        workspaceRootPath: '/ws/a',
+        summary: 'Team summary',
+        lastActivityAt: '2026-01-01T02:00:00.000Z',
+        lastKnownStatus: 'IDLE',
+        isActive: false,
+        currentStatus: 'shutdown_complete',
+        deleteLifecycle: 'READY',
+        focusedMemberName: 'super_agent',
+        members: [],
+      },
+    ];
+
+    const wrapper = mountComponent();
+    await flushPromises();
+
+    const archiveButton = wrapper.find('button[title="Archive team history"]');
+    expect(archiveButton.exists()).toBe(true);
+
+    await archiveButton.trigger('click');
+    await flushPromises();
+
+    expect(runHistoryStoreMock.archiveTeamRun).toHaveBeenCalledWith('team-1');
+    expect(selectionStoreMock.selectRun).not.toHaveBeenCalled();
+    expect(addToastMock).toHaveBeenCalledWith('Team history archived.', 'success');
   });
 
   it('creates workspace from inline input when user presses Enter', async () => {
@@ -1006,6 +1065,14 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     expect(deleteButtons).toHaveLength(1);
   });
 
+  it('renders archive action only for inactive persisted history runs', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+
+    const archiveButtons = wrapper.findAll('button[title="Archive run"]');
+    expect(archiveButtons).toHaveLength(1);
+  });
+
   it('terminates active run from row action without selecting the row', async () => {
     const wrapper = mountComponent();
     await flushPromises();
@@ -1047,6 +1114,33 @@ describe('WorkspaceAgentRunsTreePanel', () => {
 
     expect(runHistoryStoreMock.deleteRun).toHaveBeenCalledWith('run-2');
     expect(runHistoryStoreMock.selectTreeRun).not.toHaveBeenCalled();
+  });
+
+  it('archives inactive history run from row action without selecting the row', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+
+    const archiveButton = wrapper.find('button[title="Archive run"]');
+    expect(archiveButton.exists()).toBe(true);
+
+    await archiveButton.trigger('click');
+    await flushPromises();
+
+    expect(runHistoryStoreMock.archiveRun).toHaveBeenCalledWith('run-2');
+    expect(runHistoryStoreMock.selectTreeRun).not.toHaveBeenCalled();
+    expect(addToastMock).toHaveBeenCalledWith('Run archived.', 'success');
+  });
+
+  it('shows an error toast when archive fails', async () => {
+    runHistoryStoreMock.archiveRun.mockResolvedValueOnce(false);
+    const wrapper = mountComponent();
+    await flushPromises();
+
+    const archiveButton = wrapper.find('button[title="Archive run"]');
+    await archiveButton.trigger('click');
+    await flushPromises();
+
+    expect(addToastMock).toHaveBeenCalledWith('Failed to archive run. Please try again.', 'error');
   });
 
   it('does not call delete when confirmation is cancelled', async () => {

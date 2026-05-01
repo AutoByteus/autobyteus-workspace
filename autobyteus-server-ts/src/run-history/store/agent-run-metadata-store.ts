@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import type { AgentRunMetadata } from "./agent-run-metadata-types.js";
+import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
 import { canonicalizeWorkspaceRootPath } from "../utils/workspace-path-normalizer.js";
 import type { AgentRunStatusRecord } from "./agent-run-history-index-record-types.js";
 import { AgentRunMemoryLayout } from "../../agent-memory/store/agent-run-memory-layout.js";
@@ -31,6 +32,18 @@ const normalizeMemoryDir = (
     ? path.resolve(memoryDir.trim())
     : path.resolve(fallbackMemoryDir);
 
+const normalizeArchivedAt = (value: string | null | undefined): string | null =>
+  typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
+
+const normalizeApplicationExecutionContext = (
+  value: ApplicationExecutionContext | null | undefined,
+): ApplicationExecutionContext | null => {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return null;
+  }
+  return { ...value };
+};
+
 const normalizeMetadata = (
   metadata: AgentRunMetadata,
   fallbackMemoryDir: string,
@@ -49,6 +62,10 @@ const normalizeMetadata = (
       ? metadata.platformAgentRunId.trim()
       : null,
   lastKnownStatus: normalizeLastKnownStatus(metadata.lastKnownStatus),
+  archivedAt: normalizeArchivedAt(metadata.archivedAt),
+  applicationExecutionContext: normalizeApplicationExecutionContext(
+    metadata.applicationExecutionContext,
+  ),
 });
 
 export class AgentRunMetadataStore {

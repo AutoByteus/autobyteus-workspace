@@ -30,6 +30,11 @@ export interface DeleteStoredTeamRunResult {
   message: string;
 }
 
+export interface ArchiveStoredTeamRunResult {
+  success: boolean;
+  message: string;
+}
+
 export interface TeamRunResumeConfig {
   teamRunId: string;
   isActive: boolean;
@@ -79,8 +84,11 @@ export class TeamRunHistoryService {
         staleTeamRunIds.push(row.teamRunId);
         continue;
       }
-      const summary = await this.resolveSummary(row, metadata);
       const isActive = this.isTeamRunActive(row.teamRunId);
+      if (metadata.archivedAt && !isActive) {
+        continue;
+      }
+      const summary = await this.resolveSummary(row, metadata);
       const coordinatorMemberRouteKey = resolveCoordinatorMemberRouteKey(metadata);
       items.push({
         teamRunId: row.teamRunId,
@@ -126,6 +134,50 @@ export class TeamRunHistoryService {
       isActive: this.isTeamRunActive(teamRunId),
       metadata,
     };
+  }
+
+  async archiveStoredTeamRun(teamRunId: string): Promise<ArchiveStoredTeamRunResult> {
+    const normalizedTeamRunId = this.resolveSafeArchiveTeamRunId(teamRunId);
+    if (!normalizedTeamRunId) {
+      return {
+        success: false,
+        message: "Invalid team run ID path.",
+      };
+    }
+
+    if (this.isTeamRunActive(normalizedTeamRunId)) {
+      return {
+        success: false,
+        message: "Team run is active. Terminate it before archiving history.",
+      };
+    }
+
+    try {
+      const metadata = await this.metadataStore.readMetadata(normalizedTeamRunId);
+      if (!metadata) {
+        return {
+          success: false,
+          message: `Team run metadata not found for '${normalizedTeamRunId}'.`,
+        };
+      }
+
+      const archivedAt = metadata.archivedAt ?? new Date().toISOString();
+      await this.metadataStore.writeMetadata(normalizedTeamRunId, {
+        ...metadata,
+        archivedAt,
+      });
+
+      return {
+        success: true,
+        message: `Team run '${normalizedTeamRunId}' archived.`,
+      };
+    } catch (error) {
+      logger.warn(`Failed to archive stored team run '${normalizedTeamRunId}': ${String(error)}`);
+      return {
+        success: false,
+        message: `Failed to archive stored team run '${normalizedTeamRunId}'.`,
+      };
+    }
   }
 
   async deleteStoredTeamRun(teamRunId: string): Promise<DeleteStoredTeamRunResult> {
@@ -177,6 +229,44 @@ export class TeamRunHistoryService {
       return null;
     }
     return targetPath;
+  }
+
+  private resolveSafeArchiveTeamRunId(teamRunId: string): string | null {
+    const normalizedTeamRunId = teamRunId.trim();
+    if (!this.isSafeArchiveIdentity(normalizedTeamRunId, "temp-")) {
+      return null;
+    }
+
+    const teamsRoot = path.resolve(this.memberLayout.getTeamRootDirPath());
+    const targetDir = path.resolve(teamsRoot, normalizedTeamRunId);
+    const metadataPath = path.resolve(targetDir, "team_run_metadata.json");
+    if (!this.isStrictlyInsideRoot(targetDir, teamsRoot)) {
+      return null;
+    }
+    if (!this.isStrictlyInsideRoot(metadataPath, teamsRoot)) {
+      return null;
+    }
+    return normalizedTeamRunId;
+  }
+
+  private isSafeArchiveIdentity(value: string, draftPrefix: string): boolean {
+    if (!value || value.startsWith(draftPrefix)) {
+      return false;
+    }
+    if (path.isAbsolute(value) || path.posix.isAbsolute(value) || path.win32.isAbsolute(value)) {
+      return false;
+    }
+    if (/[\\/]/.test(value)) {
+      return false;
+    }
+    const segments = value.split(/[\\/]+/);
+    return !segments.some((segment) => segment === "." || segment === "..");
+  }
+
+  private isStrictlyInsideRoot(candidatePath: string, rootPath: string): boolean {
+    const resolvedRoot = path.resolve(rootPath);
+    const resolvedCandidate = path.resolve(candidatePath);
+    return resolvedCandidate.startsWith(`${resolvedRoot}${path.sep}`);
   }
 
   private isTeamRunActive(teamRunId: string): boolean {
