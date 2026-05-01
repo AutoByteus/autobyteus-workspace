@@ -49,7 +49,6 @@ export class Compactor {
       ts: timestampSeconds,
       turnIds,
       summary: result.episodicSummary,
-      tags: [],
       salience: 0.0,
     });
 
@@ -58,8 +57,6 @@ export class Compactor {
       ts: entry.ts ?? timestampSeconds,
       category: entry.category,
       fact: entry.fact,
-      reference: entry.reference,
-      tags: entry.tags,
       salience: entry.salience,
     }));
 

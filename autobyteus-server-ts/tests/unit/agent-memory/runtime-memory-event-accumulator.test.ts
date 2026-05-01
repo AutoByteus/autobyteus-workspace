@@ -336,7 +336,6 @@ describe("RuntimeMemoryEventAccumulator", () => {
       sourceEvent: AgentRunEventType.COMPACTION_STATUS,
       ts: 2,
       correlationId: boundaryKey,
-      tags: ["provider_compaction_boundary", "rotation_boundary"],
     });
 
     const replayAccumulator = new RuntimeMemoryEventAccumulator({

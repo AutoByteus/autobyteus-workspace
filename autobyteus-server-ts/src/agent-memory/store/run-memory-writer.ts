@@ -59,8 +59,6 @@ export class RunMemoryWriter {
       toolResult: input.toolResult,
       toolError: input.toolError ?? null,
       correlationId: input.correlationId ?? null,
-      tags: input.tags ?? [],
-      toolResultRef: input.toolResultRef ?? null,
     });
     this.store.appendRawTrace(trace);
     return trace;

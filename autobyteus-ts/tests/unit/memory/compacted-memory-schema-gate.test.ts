@@ -15,17 +15,32 @@ import { COMPACTED_MEMORY_SCHEMA_VERSION } from '../../../src/memory/store/compa
 const makeTempDir = () => fs.mkdtempSync(path.join(os.tmpdir(), 'memory-schema-gate-'));
 
 describe('CompactedMemorySchemaGate', () => {
-  it('clears stale flat semantic memory, writes manifest v2, and invalidates stale snapshots', () => {
+  it('clears semantic memory containing removed metadata, writes the current manifest, and invalidates stale snapshots', () => {
     const tempDir = makeTempDir();
     try {
       const store = new FileMemoryStore(tempDir, 'agent_reset');
       const snapshotStore = new WorkingContextSnapshotStore(tempDir, 'agent_reset');
       const semanticPath = path.join(tempDir, 'agents', 'agent_reset', 'semantic.jsonl');
+      fs.mkdirSync(path.dirname(semanticPath), { recursive: true });
       fs.writeFileSync(
         semanticPath,
         [
-          JSON.stringify({ id: 'old_1', ts: 100, fact: 'Critical validation finding: Pinia getter attempts to access undefined products.value causing reference error', tags: ['validation'] }),
-          JSON.stringify({ id: 'old_2', ts: 101, fact: 'User prefers concise answers', tags: ['preference'] }),
+          JSON.stringify({
+            id: 'old_1',
+            ts: 100,
+            category: 'critical_issue',
+            fact: 'Critical validation finding: Pinia getter attempts to access undefined products.value',
+            salience: 500,
+            reference: 'turn-1',
+          }),
+          JSON.stringify({
+            id: 'old_2',
+            ts: 101,
+            category: 'user_preference',
+            fact: 'User prefers concise answers',
+            salience: 300,
+            tags: ['preference'],
+          }),
         ].join('\n') + '\n',
         'utf-8'
       );

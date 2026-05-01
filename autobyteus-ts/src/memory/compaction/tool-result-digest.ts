@@ -6,5 +6,4 @@ export type ToolResultDigest = {
   toolName: string | null;
   status: ToolResultDigestStatus;
   summary: string;
-  reference: string | null;
 };

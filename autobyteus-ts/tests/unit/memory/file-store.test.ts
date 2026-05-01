@@ -37,6 +37,8 @@ describe('FileMemoryStore', () => {
     expect(items).toHaveLength(1);
     expect(items[0].turnId).toBe('turn_0001');
     expect(items[0].content).toBe('hello');
+    expect(Object.keys(items[0].toDict())).not.toContain('tags');
+    expect(Object.keys(items[0].toDict())).not.toContain('tool_result_ref');
   });
 
   it('adds and lists episodic items', () => {
@@ -46,7 +48,6 @@ describe('FileMemoryStore', () => {
       ts: Date.now() / 1000,
       turnIds: ['turn_0001', 'turn_0002'],
       summary: 'We discussed refactoring.',
-      tags: ['project'],
       salience: 0.7
     });
 
@@ -55,6 +56,7 @@ describe('FileMemoryStore', () => {
 
     expect(episodicItems).toHaveLength(1);
     expect(episodicItems[0].summary).toBe('We discussed refactoring.');
+    expect(Object.keys(episodicItems[0].toDict())).not.toContain('tags');
   });
 
   it('adds and lists typed semantic items', () => {
@@ -64,7 +66,6 @@ describe('FileMemoryStore', () => {
       ts: Date.now() / 1000,
       category: 'user_preference',
       fact: 'Use pnpm exec vitest.',
-      tags: ['preference'],
       salience: 300
     });
 
@@ -90,8 +91,7 @@ describe('FileMemoryStore', () => {
         id: 'sem_2',
         ts: 101,
         category: 'important_artifact',
-        fact: 'Implementation handoff saved.',
-        reference: '/tmp/implementation-handoff.md',
+        fact: 'Implementation handoff saved at /tmp/implementation-handoff.md.',
         salience: 100,
       }),
     ]);
@@ -102,7 +102,9 @@ describe('FileMemoryStore', () => {
 
     const semanticItems = store.list(MemoryType.SEMANTIC) as SemanticItem[];
     expect(semanticItems).toHaveLength(2);
-    expect(semanticItems[1].reference).toBe('/tmp/implementation-handoff.md');
+    expect(semanticItems[1].fact).toContain('/tmp/implementation-handoff.md');
+    expect(Object.keys(semanticItems[1].toDict())).not.toContain('reference');
+    expect(Object.keys(semanticItems[1].toDict())).not.toContain('tags');
     expect(store.readCompactedMemoryManifest()).toEqual({
       schema_version: COMPACTED_MEMORY_SCHEMA_VERSION,
       last_reset_ts: 123,

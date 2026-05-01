@@ -35,14 +35,6 @@ export class ProviderCompactionBoundaryRecorder {
       sourceEvent: event.eventType,
       ts: boundary.provider_timestamp ?? extractTimestamp(event.payload),
       correlationId: boundary.boundary_key,
-      tags: [
-        "provider_compaction_boundary",
-        "provider_owned_compaction",
-        ...(boundary.rotation_eligible ? ["rotation_boundary"] : ["rotation_eligible:false"]),
-        "semantic_compaction:false",
-        `runtime:${boundary.runtime_kind.toLowerCase()}`,
-        `provider:${boundary.provider}`,
-      ],
       toolResult: {
         provider: boundary.provider,
         runtime_kind: boundary.runtime_kind,

@@ -61,8 +61,7 @@ export class CompactionTaskPromptBuilder {
       for (const trace of block.traces) {
         const digest = digestByTraceId.get(trace.id);
         if (trace.traceType === 'tool_result' && digest) {
-          const ref = digest.reference ? ` ref=${digest.reference}` : '';
-          const digestLine = `(${trace.turnId}:${trace.seq}) TOOL_RESULT_DIGEST: ${digest.toolName ?? 'unknown_tool'} status=${digest.status}${ref} summary=${digest.summary}`;
+          const digestLine = `(${trace.turnId}:${trace.seq}) TOOL_RESULT_DIGEST: ${digest.toolName ?? 'unknown_tool'} status=${digest.status} summary=${digest.summary}`;
           lines.push(clampRenderedLine(digestLine, maxItemChars));
           continue;
         }

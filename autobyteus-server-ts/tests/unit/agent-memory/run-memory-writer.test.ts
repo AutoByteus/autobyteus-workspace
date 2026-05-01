@@ -63,6 +63,11 @@ describe("RunMemoryWriter", () => {
       ["user", "hello", "test-user"],
       ["assistant", "hi", "test-assistant"],
     ]);
+    const persistedRawTraceKeys = new RunMemoryFileStore(memoryDir)
+      .listRawTraceDicts()
+      .flatMap((trace) => Object.keys(trace));
+    expect(persistedRawTraceKeys).not.toContain("tags");
+    expect(persistedRawTraceKeys).not.toContain("tool_result_ref");
     expect(view.workingContext).toEqual([
       expect.objectContaining({ role: "user", content: "hello" }),
       expect.objectContaining({ role: "assistant", content: "hi", reasoning: "thinking" }),

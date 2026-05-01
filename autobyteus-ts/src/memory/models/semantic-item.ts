@@ -26,8 +26,6 @@ export type SemanticItemOptions = {
   ts: number;
   category: CompactedMemoryCategory;
   fact: string;
-  reference?: string | null;
-  tags?: string[];
   salience?: number;
 };
 
@@ -36,8 +34,6 @@ export class SemanticItem implements MemoryItem {
   ts: number;
   category: CompactedMemoryCategory;
   fact: string;
-  reference: string | null;
-  tags: string[];
   salience: number;
 
   constructor(options: SemanticItemOptions) {
@@ -45,8 +41,6 @@ export class SemanticItem implements MemoryItem {
     this.ts = options.ts;
     this.category = options.category;
     this.fact = options.fact;
-    this.reference = options.reference ?? null;
-    this.tags = options.tags ?? [];
     this.salience = options.salience ?? COMPACTED_MEMORY_CATEGORY_BASE_SALIENCE[options.category];
   }
 
@@ -55,20 +49,13 @@ export class SemanticItem implements MemoryItem {
   }
 
   toDict(): Record<string, unknown> {
-    const data: Record<string, unknown> = {
+    return {
       id: this.id,
       ts: this.ts,
       category: this.category,
       fact: this.fact,
       salience: this.salience,
     };
-    if (this.reference) {
-      data.reference = this.reference;
-    }
-    if (this.tags.length) {
-      data.tags = this.tags;
-    }
-    return data;
   }
 
   static isSerializedDict(data: Record<string, unknown>): boolean {
@@ -79,8 +66,8 @@ export class SemanticItem implements MemoryItem {
       isCompactedMemoryCategory(data.category) &&
       typeof data.fact === 'string' &&
       data.fact.trim().length > 0 &&
-      (data.reference === undefined || data.reference === null || typeof data.reference === 'string') &&
-      (data.tags === undefined || Array.isArray(data.tags)) &&
+      !('reference' in data) &&
+      !('tags' in data) &&
       typeof data.salience === 'number' &&
       Number.isFinite(data.salience)
     );
@@ -96,10 +83,6 @@ export class SemanticItem implements MemoryItem {
       ts: Number(data.ts),
       category: data.category as CompactedMemoryCategory,
       fact: String(data.fact).trim(),
-      reference: typeof data.reference === 'string' && data.reference.trim() ? data.reference.trim() : null,
-      tags: Array.isArray(data.tags)
-        ? data.tags.filter((tag): tag is string => typeof tag === 'string').map((tag) => tag.trim()).filter(Boolean)
-        : [],
       salience: Number(data.salience),
     });
   }
