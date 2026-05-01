@@ -385,4 +385,3 @@ stdout | tests/integration/agent-execution/codex-agent-run-backend-factory.integ
       Tests  3 passed | 8 skipped (11)
    Start at  09:40:26
    Duration  33.07s (transform 2.03s, setup 15ms, import 3.02s, tests 29.63s, environment 0ms)
-

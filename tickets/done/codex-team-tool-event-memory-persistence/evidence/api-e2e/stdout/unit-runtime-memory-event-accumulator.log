@@ -53,4 +53,3 @@ migrations/
       Tests  8 passed (8)
    Start at  09:39:02
    Duration  585ms (transform 119ms, setup 15ms, import 142ms, tests 27ms, environment 0ms)
-
