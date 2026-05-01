@@ -14,7 +14,6 @@ export class ToolResultDigestBuilder {
       toolName: trace.toolName ?? null,
       status: trace.toolError ? 'error' : trace.toolResult !== null && trace.toolResult !== undefined ? 'success' : 'unknown',
       summary: rendered,
-      reference: trace.toolResultRef ?? null,
     };
   }
 }

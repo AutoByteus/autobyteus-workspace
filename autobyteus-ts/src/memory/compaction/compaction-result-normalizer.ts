@@ -15,8 +15,6 @@ export type CompactedMemoryEntryCandidate = {
 export type NormalizedCompactedMemoryEntry = {
   category: CompactedMemoryCategory;
   fact: string;
-  reference: string | null;
-  tags: string[];
   salience: number;
   id?: string | null;
   ts?: number | null;
@@ -108,8 +106,6 @@ export class CompactionResultNormalizer {
       normalized.push({
         category: candidate.category,
         fact: candidate.fact,
-        reference: null,
-        tags: [],
         salience: COMPACTED_MEMORY_CATEGORY_BASE_SALIENCE[candidate.category] - currentCount,
         id: candidate.id ?? null,
         ts: candidate.ts ?? null,

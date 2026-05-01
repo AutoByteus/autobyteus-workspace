@@ -63,7 +63,7 @@ describe('CompactionSnapshotBuilder', () => {
       semantic: [
         new SemanticItem({ id: 'sem_1', ts: 10, category: 'durable_fact', fact: 'Use pnpm exec vitest.', salience: 200 }),
         new SemanticItem({ id: 'sem_2', ts: 20, category: 'critical_issue', fact: 'Fix the Pinia getter bug.', salience: 500 }),
-        new SemanticItem({ id: 'sem_3', ts: 30, category: 'important_artifact', fact: 'Implementation handoff saved.', reference: '/tmp/implementation-handoff.md', salience: 100 }),
+        new SemanticItem({ id: 'sem_3', ts: 30, category: 'important_artifact', fact: 'Implementation handoff saved at /tmp/implementation-handoff.md.', salience: 100 }),
       ]
     });
 
@@ -78,6 +78,7 @@ describe('CompactionSnapshotBuilder', () => {
     expect(snapshot).toContain('[RAW_FRONTIER]');
     expect(snapshot.indexOf('[MEMORY:CRITICAL_ISSUES]')).toBeLessThan(snapshot.indexOf('[MEMORY:DURABLE_FACTS]'));
     expect(snapshot).toContain('/tmp/implementation-handoff.md');
+    expect(snapshot).not.toContain('(ref:');
     expect(snapshot).toContain('latest user message');
   });
 

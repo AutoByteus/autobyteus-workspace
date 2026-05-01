@@ -21,8 +21,6 @@ export type RuntimeMemoryTraceInput = {
   toolResult?: unknown;
   toolError?: string | null;
   correlationId?: string | null;
-  tags?: string[];
-  toolResultRef?: string | null;
 };
 
 export type RuntimeMemorySnapshotUpdate =

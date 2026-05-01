@@ -69,7 +69,6 @@ export class RuntimeMemoryEventAccumulator {
         sourceEvent: "AgentRun.postUserMessage",
         ts: payload.acceptedAt.getTime() / 1000,
         media,
-        tags: ["accepted"],
       },
       snapshotUpdate: {
         kind: "user",
@@ -226,7 +225,6 @@ export class RuntimeMemoryEventAccumulator {
         content,
         sourceEvent,
         ts,
-        tags: ["final"],
       },
       snapshotUpdate: {
         kind: "assistant",

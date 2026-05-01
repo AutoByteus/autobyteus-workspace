@@ -29,9 +29,10 @@ describe('CompactionResultNormalizer', () => {
     expect(normalized.semanticEntries.filter((entry) => entry.fact.includes('Pinia getter'))).toHaveLength(1);
     expect(normalized.semanticEntries.find((entry) => entry.category === 'important_artifact')).toMatchObject({
       fact: 'Important artifact path remains in fact text: /tmp/design-spec.md',
-      reference: null,
-      tags: [],
+      salience: 100,
     });
+    expect(Object.keys(normalized.semanticEntries[0] ?? {})).not.toContain('reference');
+    expect(Object.keys(normalized.semanticEntries[0] ?? {})).not.toContain('tags');
   });
 
   it('drops low-value operational noise outside critical/unresolved categories', () => {

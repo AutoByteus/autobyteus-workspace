@@ -70,18 +70,15 @@ The memory system is defined by its implemented operations:
 
 - `id`, `ts`, `turn_id`, `seq`, `trace_type`, `content`, `source_event`
 - Optional: `media`, `tool_name`, `tool_call_id`, `tool_args`, `tool_result`, `tool_error`,
-  `correlation_id`, `tags`, `tool_result_ref`
+  `correlation_id`
 
 **EPISODIC (EpisodicItem)**
 
 - `id`, `ts`, `turn_ids`, `summary`, `salience`
-- Optional internal metadata: `tags`
-
 **SEMANTIC (SemanticItem)**
 
 - `id`, `ts`, `category`, `fact`, `salience`
-- Optional internal metadata for non-compactor/future controlled sources: `reference`, `tags`
-- Agent-based compactor output is facts-only and does not ask the model to generate `reference` or `tags`.
+- Agent-based compactor output is facts-only and does not ask the model to generate free-form metadata.
 - `category` enum: `critical_issue | unresolved_work | user_preference | durable_fact | important_artifact`
 
 **ToolInteraction (derived view)**
@@ -381,12 +378,12 @@ Compaction produces **structured memory artifacts** and a new working context sn
 
 The selected compactor agent's `agent.md` owns stable behavior: category meanings, preservation/drop rules, JSON-only discipline, and manual-test guidance. The seeded `autobyteus-memory-compactor` is intentionally written so a user can run it as a normal visible agent, paste conversation/history content, and inspect the compaction behavior.
 
-Automated compaction still includes the current exact JSON output contract in every task envelope before `[SETTLED_BLOCKS]`. That contract is owned by memory compaction/parser code, not solely by editable agent instructions, so user-edited or stale compactor agents cannot silently become the only parser-compatibility source. The compactor-facing semantic entries are facts-only: the model returns `fact` objects inside the typed category arrays and does not generate optional `reference` strings or free-form `tags`.
+Automated compaction still includes the current exact JSON output contract in every task envelope before `[SETTLED_BLOCKS]`. That contract is owned by memory compaction/parser code, not solely by editable agent instructions, so user-edited or stale compactor agents cannot silently become the only parser-compatibility source. The compactor-facing semantic entries are facts-only: the model returns `fact` objects inside the typed category arrays and does not generate free-form metadata.
 
 ### Snapshot Cache / Schema-3 Bootstrap
 
 - `WorkingContextSnapshotSerializer.CURRENT_SCHEMA_VERSION` remains `3`.
-- `COMPACTED_MEMORY_SCHEMA_VERSION` is now `2` for persisted semantic-memory +
+- `COMPACTED_MEMORY_SCHEMA_VERSION` is now `3` for persisted semantic-memory +
   manifest state.
 - `WorkingContextSnapshotBootstrapper` runs
   `CompactedMemorySchemaGate.ensureCurrentSchema(...)` before any snapshot
@@ -506,20 +503,18 @@ are present only when relevant.
 - `tool_args`
 - `tool_result`
 - `tool_error`
-- `tool_result_ref`
 - `correlation_id`
-- `tags`
 
 **Example: user trace**
 
 ```
-{"id":"rt_001","ts":1738100000.12,"turn_id":"turn_0001","seq":1,"trace_type":"user","content":"Please refactor the parser.","source_event":"LLMUserMessageReadyEvent","media":{"images":[],"audio":[],"video":[]},"tags":["processed"]}
+{"id":"rt_001","ts":1738100000.12,"turn_id":"turn_0001","seq":1,"trace_type":"user","content":"Please refactor the parser.","source_event":"LLMUserMessageReadyEvent","media":{"images":[],"audio":[],"video":[]}}
 ```
 
 **Example: tool continuation boundary**
 
 ```
-{"id":"rt_005_tool_continuation","ts":1738100004.10,"turn_id":"turn_0001","seq":5,"trace_type":"tool_continuation","content":"Tool continuation","source_event":"ToolContinuationInput","tags":["boundary"]}
+{"id":"rt_005_tool_continuation","ts":1738100004.10,"turn_id":"turn_0001","seq":5,"trace_type":"tool_continuation","content":"Tool continuation","source_event":"ToolContinuationInput"}
 ```
 
 **Example: tool result**
@@ -531,7 +526,7 @@ are present only when relevant.
 **Example: assistant response**
 
 ```
-{"id":"rt_004","ts":1738100005.90,"turn_id":"turn_0001","seq":4,"trace_type":"assistant","content":"I will refactor the parser next.","source_event":"LLMCompleteResponseReceivedEvent","tags":["final"]}
+{"id":"rt_004","ts":1738100005.90,"turn_id":"turn_0001","seq":4,"trace_type":"assistant","content":"I will refactor the parser next.","source_event":"LLMCompleteResponseReceivedEvent"}
 ```
 
 ---
@@ -1586,7 +1581,7 @@ Turns are created when a processed non-tool user message is ready.
 
 ```
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "last_reset_ts": 1738100501123
 }
 ```
