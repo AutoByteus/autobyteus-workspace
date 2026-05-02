@@ -46,6 +46,51 @@ export class CodexToolPayloadParser {
     return next;
   }
 
+  public resolveWebSearchArguments(payload: Record<string, unknown>): Record<string, unknown> {
+    const item = asObject(payload.item);
+    const action = asObject(item.action ?? payload.action);
+    const next: Record<string, unknown> = {};
+
+    const query = asString(action.query) ?? asString(item.query) ?? asString(payload.query);
+    if (query) {
+      next.query = query;
+    }
+
+    const actionType = asString(action.type);
+    if (actionType && actionType !== "other") {
+      next.action_type = actionType;
+    }
+
+    const queriesCandidate = action.queries ?? item.queries ?? payload.queries;
+    if (Array.isArray(queriesCandidate)) {
+      const queries = queriesCandidate
+        .filter((entry): entry is string => typeof entry === "string")
+        .map((entry) => entry.trim())
+        .filter((entry) => entry.length > 0);
+      if (queries.length > 0) {
+        next.queries = queries;
+      }
+    }
+
+    return this.sanitizeRecord(next);
+  }
+
+  public resolveWebSearchResult(payload: Record<string, unknown>): unknown {
+    const item = asObject(payload.item);
+    const explicitResult = payload.result ?? item.result ?? payload.output ?? item.output;
+    const status = this.resolveExecutionStatus(payload) ?? "completed";
+    return this.sanitizeRecord({
+      status,
+      ...this.resolveWebSearchArguments(payload),
+      ...(explicitResult !== undefined ? { result: explicitResult } : {}),
+    });
+  }
+
+  public resolveWebSearchError(payload: Record<string, unknown>): string {
+    const error = this.resolveToolError(payload);
+    return error === "Tool execution failed." ? "Web search failed." : error;
+  }
+
   public resolveToolName(
     payload: Record<string, unknown>,
     fallback?: "run_bash" | "edit_file",
@@ -259,35 +304,6 @@ export class CodexToolPayloadParser {
     }
     const status = this.resolveExecutionStatus(payload)?.toLowerCase();
     return status === "failed" || status === "error";
-  }
-
-  private resolveWebSearchArguments(payload: Record<string, unknown>): Record<string, unknown> {
-    const item = asObject(payload.item);
-    const action = asObject(item.action ?? payload.action);
-    const next: Record<string, unknown> = {};
-
-    const query = asString(action.query) ?? asString(item.query) ?? asString(payload.query);
-    if (query) {
-      next.query = query;
-    }
-
-    const actionType = asString(action.type);
-    if (actionType && actionType !== "other") {
-      next.action_type = actionType;
-    }
-
-    const queriesCandidate = action.queries ?? item.queries ?? payload.queries;
-    if (Array.isArray(queriesCandidate)) {
-      const queries = queriesCandidate
-        .filter((entry): entry is string => typeof entry === "string")
-        .map((entry) => entry.trim())
-        .filter((entry) => entry.length > 0);
-      if (queries.length > 0) {
-        next.queries = queries;
-      }
-    }
-
-    return this.sanitizeRecord(next);
   }
 
   private sanitizeRecord(value: Record<string, unknown>): Record<string, unknown> {

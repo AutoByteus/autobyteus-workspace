@@ -397,6 +397,173 @@ describe("CodexThreadEventConverter", () => {
     });
   });
 
+  it("fans out webSearch starts into tool_call segment and lifecycle start", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.ITEM_STARTED,
+      params: {
+        item: {
+          type: "webSearch",
+          id: "ws_1",
+          query: "OpenAI Codex CLI",
+          action: {
+            type: "search",
+            query: "OpenAI Codex CLI",
+            queries: ["OpenAI Codex CLI", ""],
+          },
+        },
+        turnId: "turn-1",
+      },
+    });
+
+    expect(converted.map((event) => event.eventType)).toEqual([
+      AgentRunEventType.SEGMENT_START,
+      AgentRunEventType.TOOL_EXECUTION_STARTED,
+    ]);
+    expect(converted[0]).toMatchObject({
+      runId: "run-1",
+      payload: {
+        id: "ws_1",
+        segment_type: "tool_call",
+        metadata: {
+          tool_name: "search_web",
+          arguments: {
+            query: "OpenAI Codex CLI",
+            action_type: "search",
+            queries: ["OpenAI Codex CLI"],
+          },
+        },
+      },
+    });
+    expect(converted[1]).toMatchObject({
+      runId: "run-1",
+      payload: {
+        invocation_id: "ws_1",
+        turn_id: "turn-1",
+        tool_name: "search_web",
+        arguments: {
+          query: "OpenAI Codex CLI",
+          action_type: "search",
+          queries: ["OpenAI Codex CLI"],
+        },
+      },
+    });
+  });
+
+  it("fans out successful webSearch completions into terminal success and segment end", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "webSearch",
+          id: "ws_1",
+          status: "completed",
+          query: "OpenAI Codex CLI",
+          action: {
+            type: "search",
+            query: "OpenAI Codex CLI",
+            queries: ["OpenAI Codex CLI"],
+          },
+        },
+        turnId: "turn-1",
+      },
+    });
+
+    expect(converted.map((event) => event.eventType)).toEqual([
+      AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      AgentRunEventType.SEGMENT_END,
+    ]);
+    expect(converted[0]).toMatchObject({
+      runId: "run-1",
+      payload: {
+        invocation_id: "ws_1",
+        turn_id: "turn-1",
+        tool_name: "search_web",
+        arguments: {
+          query: "OpenAI Codex CLI",
+          action_type: "search",
+          queries: ["OpenAI Codex CLI"],
+        },
+        result: {
+          status: "completed",
+          query: "OpenAI Codex CLI",
+          action_type: "search",
+          queries: ["OpenAI Codex CLI"],
+        },
+      },
+    });
+    expect(converted[1]).toMatchObject({
+      runId: "run-1",
+      payload: {
+        id: "ws_1",
+        metadata: {
+          tool_name: "search_web",
+          arguments: {
+            query: "OpenAI Codex CLI",
+            action_type: "search",
+            queries: ["OpenAI Codex CLI"],
+          },
+        },
+      },
+    });
+  });
+
+  it("fans out failed webSearch completions into terminal failure and segment end", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "webSearch",
+          id: "ws_failed",
+          status: "failed",
+          query: "OpenAI Codex CLI",
+          action: {
+            type: "search",
+            query: "OpenAI Codex CLI",
+          },
+        },
+        turn_id: "turn-2",
+        error: "Search provider unavailable.",
+      },
+    });
+
+    expect(converted.map((event) => event.eventType)).toEqual([
+      AgentRunEventType.TOOL_EXECUTION_FAILED,
+      AgentRunEventType.SEGMENT_END,
+    ]);
+    expect(converted[0]).toMatchObject({
+      runId: "run-1",
+      payload: {
+        invocation_id: "ws_failed",
+        turn_id: "turn-2",
+        tool_name: "search_web",
+        arguments: {
+          query: "OpenAI Codex CLI",
+          action_type: "search",
+        },
+        error: "Search provider unavailable.",
+      },
+    });
+    expect(converted[1]).toMatchObject({
+      runId: "run-1",
+      payload: {
+        id: "ws_failed",
+        metadata: {
+          tool_name: "search_web",
+          arguments: {
+            query: "OpenAI Codex CLI",
+            action_type: "search",
+          },
+        },
+      },
+    });
+  });
+
   it("fans out dynamicToolCall starts into tool_call segment and lifecycle start", () => {
     const converter = new CodexThreadEventConverter("run-1");
 

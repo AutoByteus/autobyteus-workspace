@@ -25,9 +25,9 @@ See [Agent Memory](./agent_memory.md) for the storage-only recorder contract and
 
 Provider adapters must keep tool calls on two runtime-neutral lanes:
 
-- `SEGMENT_START` / `SEGMENT_END` owns transcript/conversation structure for a tool call.
-- `TOOL_APPROVAL_*` and `TOOL_EXECUTION_*` owns Activity state, execution/approval status, arguments, result/error, and durable tool traces.
+- `SEGMENT_START` / `SEGMENT_END` owns transcript/conversation structure for a tool call and can provide enough normalized display facts for the frontend to seed a pending Activity row immediately.
+- `TOOL_APPROVAL_*` and `TOOL_EXECUTION_*` owns execution/approval status, terminal result/error, logs, argument hydration, and durable tool traces.
 
 Claude Agent SDK sessions treat raw assistant `tool_use` blocks as authoritative invocation starts. `tool_use.input` / `tool_use.arguments` is tracked by invocation id, emitted on both the segment metadata lane and lifecycle argument lane, and preserved on terminal `TOOL_EXECUTION_SUCCEEDED` / `TOOL_EXECUTION_FAILED` events as a result-first recovery path. If the Claude SDK permission callback observes the same invocation, the coordinator must reuse that tracked state and suppress duplicate segment-start/lifecycle-start emissions independently.
 
-The frontend and storage-only memory recorder consume these normalized lanes rather than Claude-specific raw SDK messages. This keeps transcript rendering, Activity argument rendering, run history, and memory traces runtime-neutral.
+The frontend consumes both normalized lanes through a shared Activity projection owner: eligible segment starts provide immediate Activity visibility, while lifecycle events update the same invocation through execution and terminal states. The storage-only memory recorder treats lifecycle events, not display-only segments, as durable tool-call/tool-result trace authority. This keeps transcript rendering, Activity argument rendering, run history, and memory traces runtime-neutral without requiring UI code to parse raw provider payloads.

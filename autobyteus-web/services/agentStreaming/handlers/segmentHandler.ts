@@ -12,6 +12,8 @@ import type { SegmentStartPayload, SegmentContentPayload, SegmentEndPayload } fr
 import { createSegmentFromPayload } from '../protocol/segmentTypes';
 import { hasStreamSegmentId, matchesStreamSegmentIdentity, setStreamSegmentIdentity } from './segmentIdentity';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
+import { invocationIdsMatch } from '~/utils/invocationAliases';
+import { isProjectableToolSegment, upsertActivityFromToolSegment } from './toolActivityProjection';
 
 function extractToolCallArgumentsFromMetadata(metadata?: Record<string, any>): Record<string, any> {
   const parseArgumentsCandidate = (value: unknown): Record<string, any> => {
@@ -61,26 +63,21 @@ export function handleSegmentStart(
   const existingSegment = findSegmentById(context, payload.id, payload.segment_type);
   if (existingSegment) {
     mergeSegmentStartMetadata(existingSegment, payload);
+    if (isProjectableToolSegment(existingSegment)) {
+      upsertActivityFromToolSegment(context, payload.id, existingSegment);
+    }
     return;
   }
   const aiMessage = findOrCreateAIMessage(context);
   const segment = createSegmentFromPayload(payload);
 
   setStreamSegmentIdentity(segment, payload.id, payload.segment_type);
-  if (
-    segment.type === 'terminal_command' &&
-    typeof payload.metadata?.command === 'string' &&
-    payload.metadata.command.trim().length > 0
-  ) {
-    const terminalSegment = segment as TerminalCommandSegment;
-    terminalSegment.command = payload.metadata.command;
-    terminalSegment.arguments = {
-      ...terminalSegment.arguments,
-      command: payload.metadata.command,
-    };
-  }
+  mergeSegmentStartMetadata(segment, payload);
 
   aiMessage.segments.push(segment);
+  if (isProjectableToolSegment(segment)) {
+    upsertActivityFromToolSegment(context, payload.id, segment);
+  }
 }
 
 function mergeSegmentStartMetadata(
@@ -218,6 +215,9 @@ export function handleSegmentEnd(
   }
 
   finalizeSegment(segment, payload.metadata);
+  if (isProjectableToolSegment(segment)) {
+    upsertActivityFromToolSegment(context, payload.id, segment);
+  }
 }
 
 /**
@@ -262,7 +262,7 @@ export function findSegmentById(
         }
         if (
           ['tool_call', 'write_file', 'terminal_command', 'edit_file'].includes(segment.type) &&
-          (segment as ToolInvocationLifecycle).invocationId === segmentId
+          invocationIdsMatch((segment as ToolInvocationLifecycle).invocationId, segmentId)
         ) {
           return segment;
         }

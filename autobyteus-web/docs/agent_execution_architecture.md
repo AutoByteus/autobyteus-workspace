@@ -167,9 +167,9 @@ Incoming events are routed based on their `type`:
 
 | Event Type                | Handler Function                                   | Purpose                                                         |
 | :------------------------ | :------------------------------------------------- | :-------------------------------------------------------------- |
-| `SEGMENT_START`           | `segmentHandler.handleSegmentStart`                | Creates or merges a transcript UI segment (Text, Code, Tool) without creating Activity rows. |
+| `SEGMENT_START`           | `segmentHandler.handleSegmentStart`                | Creates or merges a transcript UI segment (Text, Code, Tool) and seeds/hydrates a pending Activity row for eligible displayable tool segments. |
 | `SEGMENT_CONTENT`         | `segmentHandler.handleSegmentContent`              | Appends streaming content (deltas) to an existing segment.      |
-| `SEGMENT_END`             | `segmentHandler.handleSegmentEnd`                  | Finalizes transcript segment state and metadata without owning Activity terminal state. |
+| `SEGMENT_END`             | `segmentHandler.handleSegmentEnd`                  | Finalizes transcript segment state/metadata and hydrates the matching Activity row without owning terminal execution state. |
 | `TURN_STARTED`            | inline lifecycle handling                          | Marks a new turn boundary in the protocol; current clients treat it as an observable lifecycle checkpoint. |
 | `TURN_COMPLETED`          | `agentStatusHandler.handleTurnCompleted`           | Marks the current AI message complete for that turn without waiting only for idle inference. |
 | `AGENT_STATUS`            | `agentStatusHandler.handleAgentStatus`             | Updates run-level status such as `running`, `idle`, or `error`. |
@@ -199,9 +199,9 @@ These handlers are pure functions that take a payload and an `AgentContext`, and
 
 #### `segmentHandler.ts`
 
-- **`handleSegmentStart`**: Finds the current AI message (or creates one) and pushes/merges a new Segment object (e.g., `ToolCallSegment`, `WriteFileSegment`) for transcript structure only. It does not mutate `AgentActivityStore`. File-change sidecar state is no longer inferred here; the backend emits dedicated `FILE_CHANGE_UPDATED` events for the Artifacts experience.
+- **`handleSegmentStart`**: Finds the current AI message (or creates one) and pushes/merges a new Segment object (e.g., `ToolCallSegment`, `WriteFileSegment`) for transcript structure. When that segment is an eligible displayable tool invocation with a stable invocation id and tool identity, it delegates to `toolActivityProjection.ts` to seed or hydrate the matching pending Activity row. File-change sidecar state is still not inferred here; the backend emits dedicated `FILE_CHANGE_UPDATED` events for the Artifacts experience.
 - **`handleSegmentContent`**: Finds the segment by ID and appends string deltas. This powers the "typewriter" effect.
-- **`handleSegmentEnd`**: Performs transcript cleanup, sets the final tool name if it was streamed lazily, preserves final metadata such as arguments, and marks the segment as "parsed" (ready for execution state changes). Activity result/error/terminal state remains lifecycle-owned.
+- **`handleSegmentEnd`**: Performs transcript cleanup, sets the final tool name if it was streamed lazily, preserves final metadata such as arguments, and marks the segment as "parsed" (ready for execution state changes). It also delegates segment metadata hydration to `toolActivityProjection.ts`; lifecycle events remain authoritative for execution and terminal result/error state.
 
 #### `toolLifecycleHandler.ts`
 
@@ -209,7 +209,14 @@ These handlers are pure functions that take a payload and an `AgentContext`, and
 - Enforces normal non-terminal progress while allowing provider order where `TOOL_EXECUTION_STARTED` can arrive before `TOOL_APPROVAL_REQUESTED`; in that case `awaiting-approval` remains the active UI state until approval/denial/terminal events arrive.
 - Enforces terminal precedence: `success` / `error` / `denied` are terminal and cannot be regressed by later non-terminal events or logs.
 - Hydrates arguments from lifecycle payloads. `TOOL_APPROVAL_REQUESTED` and `TOOL_EXECUTION_STARTED` are the primary sources; `TOOL_EXECUTION_SUCCEEDED` and `TOOL_EXECUTION_FAILED` may also carry arguments as a defensive result-first recovery path for runtimes whose start event is missed or arrives out of order.
-- Owns live Activity creation and updates. Segment handling should not create Activity rows; executable Activity cards should be created from lifecycle events so Codex and Claude share one Activity ownership boundary.
+- Owns lifecycle state transitions and delegates Activity projection to `toolActivityProjection.ts`. Lifecycle events create the row if no segment has seeded it yet, and otherwise update the same Activity row by invocation id/aliases.
+
+#### `toolActivityProjection.ts`
+
+- Owns the shared live Activity projection policy used by both segment and lifecycle handlers.
+- Seeds pending/running Activity visibility from eligible tool-like `SEGMENT_START` payloads so the right-side Activity panel appears when the middle tool card appears.
+- Deduplicates segment-first and lifecycle-first paths by invocation id/aliases, merges arguments and tool names, projects logs/result/error updates, and preserves terminal status precedence.
+- Skips placeholder or missing generic tool names to avoid noisy blank Activity rows.
 
 ### Sidecar Store Pattern
 
@@ -222,7 +229,8 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
     - Keeps transient `write_file` buffers only until committed previews are fetched from the server-backed run preview route.
 2.  **Activity (`AgentActivityStore`)**:
     - Tracks every tool call, file write, and terminal command as a linear history of "Activities".
-    - Is updated by lifecycle handlers and projection hydration, not by live transcript segment handlers.
+    - Is updated through shared tool Activity projection from both eligible live transcript segment events and lifecycle events.
+    - Segment events provide immediate pending visibility and metadata hydration; lifecycle events provide approval/execution/terminal status, result/error, logs, and additional argument hydration.
     - Powers the right-side Progress/Activity feed UI.
     - Feeds two intentionally different presentation surfaces:
       - `components/conversation/ToolCallIndicator.vue` renders compact inline tool cards in the conversation. These cards keep status understanding non-textual in the header (icon/spinner, tint, context, error row) and route non-awaiting cards into the matching activity item.

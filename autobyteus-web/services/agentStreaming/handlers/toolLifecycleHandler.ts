@@ -16,7 +16,6 @@ import type {
 } from '../protocol/messageTypes';
 import { createSegmentFromPayload } from '../protocol/segmentTypes';
 import { findOrCreateAIMessage, findSegmentById } from './segmentHandler';
-import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import {
   appendLog,
   applyApprovedState,
@@ -40,19 +39,16 @@ import {
 import { setStreamSegmentIdentity } from './segmentIdentity';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
 import { buildInvocationAliases } from '~/utils/invocationAliases';
-
-const isToolLifecycleSegment = (segment: unknown): segment is ToolLifecycleSegment => {
-  if (!segment || typeof segment !== 'object') {
-    return false;
-  }
-  const type = (segment as { type?: string }).type;
-  return (
-    type === 'tool_call' ||
-    type === 'write_file' ||
-    type === 'terminal_command' ||
-    type === 'edit_file'
-  );
-};
+import {
+  addActivityLog,
+  inferSegmentTypeFromTool,
+  isProjectableToolSegment,
+  setActivityResult,
+  syncActivityToolName,
+  updateActivityArguments,
+  updateActivityStatus,
+  upsertActivityFromToolSegment,
+} from './toolActivityProjection';
 
 const resolveToolSegmentByAlias = (
   context: AgentContext,
@@ -60,67 +56,11 @@ const resolveToolSegmentByAlias = (
 ): ToolLifecycleSegment | null => {
   for (const alias of buildInvocationAliases(invocationId)) {
     const segment = findSegmentById(context, alias);
-    if (isToolLifecycleSegment(segment)) {
+    if (isProjectableToolSegment(segment)) {
       return segment;
     }
   }
   return null;
-};
-
-const inferSegmentTypeFromTool = (
-  toolName: string,
-  argumentsPayload: Record<string, any>,
-): 'tool_call' | 'write_file' | 'run_bash' | 'edit_file' => {
-  if (toolName === 'write_file') {
-    return 'write_file';
-  }
-  if (toolName === 'edit_file' || argumentsPayload.patch || argumentsPayload.diff) {
-    return 'edit_file';
-  }
-  if (toolName === 'run_bash' || typeof argumentsPayload.command === 'string') {
-    return 'run_bash';
-  }
-  return 'tool_call';
-};
-
-const getActivityType = (
-  segment: ToolLifecycleSegment,
-  toolName: string,
-  argumentsPayload: Record<string, any>,
-): 'tool_call' | 'write_file' | 'terminal_command' | 'edit_file' => {
-  const inferredSegmentType = inferSegmentTypeFromTool(toolName, argumentsPayload);
-  if (inferredSegmentType === 'run_bash') {
-    return 'terminal_command';
-  }
-  if (inferredSegmentType === 'write_file') {
-    return 'write_file';
-  }
-  if (inferredSegmentType === 'edit_file') {
-    return 'edit_file';
-  }
-  if (segment.type === 'write_file') {
-    return 'write_file';
-  }
-  if (segment.type === 'terminal_command') {
-    return 'terminal_command';
-  }
-  if (segment.type === 'edit_file') {
-    return 'edit_file';
-  }
-  return 'tool_call';
-};
-
-const getContextText = (
-  toolName: string,
-  argumentsPayload: Record<string, any>,
-): string => {
-  if (typeof argumentsPayload.path === 'string' && argumentsPayload.path.trim().length > 0) {
-    return argumentsPayload.path;
-  }
-  if (typeof argumentsPayload.command === 'string' && argumentsPayload.command.trim().length > 0) {
-    return argumentsPayload.command;
-  }
-  return toolName;
 };
 
 const createSyntheticToolSegment = (
@@ -143,7 +83,7 @@ const createSyntheticToolSegment = (
     metadata,
   });
 
-  if (!isToolLifecycleSegment(segment)) {
+  if (!isProjectableToolSegment(segment)) {
     const fallback: ToolCallSegment = {
       type: 'tool_call',
       invocationId,
@@ -191,36 +131,6 @@ const createSyntheticToolSegment = (
   return segment;
 };
 
-const ensureActivityForSegment = (
-  context: AgentContext,
-  invocationId: string,
-  toolName: string,
-  segment: ToolLifecycleSegment,
-  argumentsPayload: Record<string, any>,
-): void => {
-  const activityStore = useAgentActivityStore();
-  const aliases = buildInvocationAliases(invocationId);
-  const hasExisting = activityStore
-    .getActivities(context.state.runId)
-    .some((activity) => aliases.includes(activity.invocationId));
-  if (hasExisting) {
-    return;
-  }
-
-  activityStore.addActivity(context.state.runId, {
-    invocationId,
-    toolName,
-    type: getActivityType(segment, toolName, argumentsPayload),
-    status: segment.status,
-    contextText: getContextText(toolName, argumentsPayload),
-    arguments: { ...segment.arguments, ...argumentsPayload },
-    logs: [...segment.logs],
-    result: segment.result,
-    error: segment.error,
-    timestamp: new Date(),
-  });
-};
-
 const ensureToolLifecycleSegment = (
   context: AgentContext,
   invocationId: string,
@@ -230,78 +140,17 @@ const ensureToolLifecycleSegment = (
 ): ToolLifecycleSegment => {
   const existing = resolveToolSegmentByAlias(context, invocationId);
   if (existing) {
-    ensureActivityForSegment(context, invocationId, toolName, existing, argumentsPayload);
+    upsertActivityFromToolSegment(context, invocationId, existing, argumentsPayload);
     return existing;
   }
 
   const synthetic = createSyntheticToolSegment(context, invocationId, turnId, toolName, argumentsPayload);
-  ensureActivityForSegment(context, invocationId, toolName, synthetic, argumentsPayload);
+  upsertActivityFromToolSegment(context, invocationId, synthetic, argumentsPayload);
   return synthetic;
 };
 
 const warnInvalidPayload = (eventType: string, payload: unknown): void => {
   console.warn(`[toolLifecycleHandler] Dropping malformed ${eventType} payload`, payload);
-};
-
-const withActivityInvocationAliases = (
-  invocationId: string,
-  fn: (activityInvocationId: string) => void,
-): void => {
-  for (const alias of buildInvocationAliases(invocationId)) {
-    fn(alias);
-  }
-};
-
-const syncActivityToolName = (
-  context: AgentContext,
-  invocationId: string,
-  toolName: string,
-): void => {
-  const activityStore = useAgentActivityStore();
-  withActivityInvocationAliases(invocationId, (activityInvocationId) => {
-    activityStore.updateActivityToolName(context.state.runId, activityInvocationId, toolName);
-  });
-};
-
-const updateActivityArguments = (
-  context: AgentContext,
-  invocationId: string,
-  argumentsPayload: Record<string, any>,
-): void => {
-  const activityStore = useAgentActivityStore();
-  withActivityInvocationAliases(invocationId, (activityInvocationId) => {
-    activityStore.updateActivityArguments(context.state.runId, activityInvocationId, argumentsPayload);
-  });
-};
-
-const updateActivityStatus = (
-  context: AgentContext,
-  invocationId: string,
-  status: 'awaiting-approval' | 'approved' | 'executing' | 'success' | 'error' | 'denied',
-): void => {
-  const activityStore = useAgentActivityStore();
-  withActivityInvocationAliases(invocationId, (activityInvocationId) => {
-    activityStore.updateActivityStatus(context.state.runId, activityInvocationId, status);
-  });
-};
-
-const setActivityResult = (
-  context: AgentContext,
-  invocationId: string,
-  result: any,
-  error: string | null,
-): void => {
-  const activityStore = useAgentActivityStore();
-  withActivityInvocationAliases(invocationId, (activityInvocationId) => {
-    activityStore.setActivityResult(context.state.runId, activityInvocationId, result, error);
-  });
-};
-
-const addActivityLog = (context: AgentContext, invocationId: string, logEntry: string): void => {
-  const activityStore = useAgentActivityStore();
-  withActivityInvocationAliases(invocationId, (activityInvocationId) => {
-    activityStore.addActivityLog(context.state.runId, activityInvocationId, logEntry);
-  });
 };
 
 const mergeArguments = (
