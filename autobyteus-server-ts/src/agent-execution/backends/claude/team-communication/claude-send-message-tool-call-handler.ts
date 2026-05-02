@@ -51,6 +51,16 @@ const emitSendMessageToolStart = (options: {
       },
     },
   });
+
+  options.emitEvent(options.runContext, {
+    method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_STARTED,
+    params: {
+      invocation_id: options.invocationId,
+      turnId: options.runContext.runtimeContext.activeTurnId,
+      tool_name: CLAUDE_SEND_MESSAGE_TOOL_NAME,
+      arguments: options.toolArguments,
+    },
+  });
 };
 
 const emitSendMessageToolCompleted = (options: {
@@ -64,7 +74,9 @@ const emitSendMessageToolCompleted = (options: {
     method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED,
     params: {
       invocation_id: options.invocationId,
+      turnId: options.runContext.runtimeContext.activeTurnId,
       tool_name: CLAUDE_SEND_MESSAGE_TOOL_NAME,
+      arguments: options.toolArguments,
       ...(options.result.accepted
         ? {
             result: {

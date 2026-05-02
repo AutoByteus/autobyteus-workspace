@@ -1,6 +1,6 @@
 import { asString, type ClaudeSessionEvent } from "../claude-runtime-shared.js";
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
-import { isClaudeSendMessageToolName } from "../claude-send-message-tool-name.js";
+import { isClaudeSendMessageMcpToolName } from "../claude-send-message-tool-name.js";
 import { ClaudeSessionEventName } from "../events/claude-session-event-name.js";
 
 type ClaudeCanUseToolOptions = {
@@ -202,7 +202,7 @@ export class ClaudeSessionToolUseCoordinator {
       if (!toolName) {
         continue;
       }
-      if (isClaudeSendMessageToolName(toolName)) {
+      if (isClaudeSendMessageMcpToolName(toolName)) {
         this.consumeObservedToolInvocation(runContext.runId, invocationId);
         continue;
       }
@@ -411,7 +411,7 @@ export class ClaudeSessionToolUseCoordinator {
       return;
     }
     observed.segmentStartedEmitted = true;
-    if (isClaudeSendMessageToolName(observed.toolName)) {
+    if (isClaudeSendMessageMcpToolName(observed.toolName)) {
       return;
     }
     this.emitEvent(runContext, {
@@ -439,7 +439,7 @@ export class ClaudeSessionToolUseCoordinator {
       return;
     }
     observed.lifecycleStartedEmitted = true;
-    if (isClaudeSendMessageToolName(observed.toolName)) {
+    if (isClaudeSendMessageMcpToolName(observed.toolName)) {
       return;
     }
     this.emitEvent(runContext, {
@@ -463,7 +463,7 @@ export class ClaudeSessionToolUseCoordinator {
       return;
     }
     observed.segmentEndedEmitted = true;
-    if (isClaudeSendMessageToolName(observed.toolName)) {
+    if (isClaudeSendMessageMcpToolName(observed.toolName)) {
       return;
     }
     const metadata = {
@@ -494,7 +494,7 @@ export class ClaudeSessionToolUseCoordinator {
       return;
     }
     observed.terminalLifecycleEmitted = true;
-    if (isClaudeSendMessageToolName(observed.toolName)) {
+    if (isClaudeSendMessageMcpToolName(observed.toolName)) {
       return;
     }
     this.emitEvent(runContext, {

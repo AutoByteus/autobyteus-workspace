@@ -5,7 +5,8 @@ import {
 import { isBrowserToolName } from "../../../../agent-tools/browser/browser-tool-contract.js";
 import { serializePayload } from "../../../../services/agent-streaming/payload-serialization.js";
 import { asObject, asString, type ClaudeSessionEvent } from "../claude-runtime-shared.js";
-import { isClaudeSendMessageToolName } from "../claude-send-message-tool-name.js";
+import { isClaudeSendMessageMcpToolName } from "../claude-send-message-tool-name.js";
+import { normalizeClaudeBrowserToolResult } from "./claude-browser-tool-result-normalizer.js";
 import { ClaudeSessionEventName } from "./claude-session-event-name.js";
 
 const CLAUDE_BROWSER_MCP_TOOL_PREFIX = "mcp__autobyteus_browser__";
@@ -37,6 +38,13 @@ const normalizeToolNameForEvent = (value: string | null): string | null => {
 const resolveToolName = (payload: Record<string, unknown>): string | null =>
   normalizeToolNameForEvent(asString(payload.tool_name));
 
+const normalizeSerializedToolName = (
+  payload: Record<string, unknown>,
+): Record<string, unknown> => {
+  const toolName = normalizeToolNameForEvent(asString(payload.tool_name));
+  return toolName ? { ...payload, tool_name: toolName } : payload;
+};
+
 const resolveToolArguments = (payload: Record<string, unknown>): Record<string, unknown> => {
   const argumentsPayload = asObject(payload.arguments);
   return argumentsPayload ? serializePayload(argumentsPayload) : {};
@@ -47,7 +55,7 @@ const resolveSegmentMetadata = (
 ): Record<string, unknown> | undefined => {
   const metadata = asObject(payload.metadata);
   if (metadata) {
-    return serializePayload(metadata);
+    return normalizeSerializedToolName(serializePayload(metadata));
   }
   const toolName = resolveToolName(payload);
   const argumentsPayload = resolveToolArguments(payload);
@@ -151,6 +159,10 @@ export class ClaudeSessionEventConverter {
       case ClaudeSessionEventName.ITEM_COMPLETED: {
         const id = resolveSegmentId(payload);
         const segmentType = asString(payload.segment_type);
+        const rawToolName = asString(payload.tool_name);
+        if (isClaudeSendMessageMcpToolName(rawToolName)) {
+          return [];
+        }
         const toolName = resolveToolName(payload);
         const segmentMetadata = resolveSegmentMetadata(payload);
         if (!id || !segmentType) {
@@ -164,13 +176,14 @@ export class ClaudeSessionEventConverter {
           ...serializePayload(payload),
           id,
           segment_type: segmentType,
+          ...(toolName ? { tool_name: toolName } : {}),
           ...(segmentMetadata ? { metadata: segmentMetadata } : {}),
         })];
       }
       case ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_STARTED: {
         const invocationId = resolveInvocationId(payload);
         const toolName = resolveToolName(payload);
-        if (isClaudeSendMessageToolName(toolName)) {
+        if (isClaudeSendMessageMcpToolName(toolName)) {
           return [];
         }
         return [this.createEvent(
@@ -187,7 +200,7 @@ export class ClaudeSessionEventConverter {
       case ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_REQUEST_APPROVAL: {
         const invocationId = resolveInvocationId(payload);
         const toolName = resolveToolName(payload);
-        if (isClaudeSendMessageToolName(toolName)) {
+        if (isClaudeSendMessageMcpToolName(toolName)) {
           return [];
         }
         return [this.createEvent(
@@ -204,7 +217,7 @@ export class ClaudeSessionEventConverter {
       case ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_APPROVED: {
         const invocationId = resolveInvocationId(payload);
         const toolName = resolveToolName(payload);
-        if (isClaudeSendMessageToolName(toolName)) {
+        if (isClaudeSendMessageMcpToolName(toolName)) {
           return [];
         }
         const reason = asString(payload.reason);
@@ -218,7 +231,7 @@ export class ClaudeSessionEventConverter {
       case ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_DENIED: {
         const invocationId = resolveInvocationId(payload);
         const toolName = resolveToolName(payload);
-        if (isClaudeSendMessageToolName(toolName)) {
+        if (isClaudeSendMessageMcpToolName(toolName)) {
           return [];
         }
         const reason = asString(payload.reason) ?? "Tool execution denied.";
@@ -234,11 +247,12 @@ export class ClaudeSessionEventConverter {
       case ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED: {
         const invocationId = resolveInvocationId(payload);
         const toolName = resolveToolName(payload);
-        if (isClaudeSendMessageToolName(toolName)) {
+        if (isClaudeSendMessageMcpToolName(toolName)) {
           return [];
         }
         const error = asString(payload.error);
         const hasArguments = Object.prototype.hasOwnProperty.call(payload, "arguments");
+        const result = normalizeClaudeBrowserToolResult(toolName, payload.result ?? null);
         return [this.createEvent(
           claudeEventName,
           error
@@ -248,7 +262,7 @@ export class ClaudeSessionEventConverter {
             ...serializePayload(payload),
             ...(invocationId ? { invocation_id: invocationId } : {}),
             ...(toolName ? { tool_name: toolName } : {}),
-            ...(error ? { error } : { result: payload.result ?? null }),
+            ...(error ? { error } : { result }),
             ...(hasArguments ? { arguments: resolveToolArguments(payload) } : {}),
           },
         )];

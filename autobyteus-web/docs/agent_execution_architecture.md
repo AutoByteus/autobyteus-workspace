@@ -243,6 +243,7 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
     - Tracks every tool call, file write, and terminal command as a linear history of "Activities".
     - Is updated through shared tool Activity projection from both eligible live transcript segment events and lifecycle events.
     - Segment events provide immediate pending visibility and metadata hydration; lifecycle events provide approval/execution/terminal status, result/error, logs, and additional argument hydration.
+    - Tool display names and statuses are backend-provided canonical values. Runtime-specific transport names such as MCP-prefixed Claude browser/team tools must be normalized before streaming; frontend Activity and conversation components should render `toolName` and lifecycle state directly instead of stripping provider prefixes or inferring execution from presentation-only segments.
     - Powers the right-side Progress/Activity feed UI.
     - Feeds two intentionally different presentation surfaces:
       - `components/conversation/ToolCallIndicator.vue` renders compact inline tool cards in the conversation. These cards keep status understanding non-textual in the header (icon/spinner, tint, context, error row) and route non-awaiting cards into the matching activity item.

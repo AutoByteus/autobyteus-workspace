@@ -30,6 +30,13 @@ Manages running team runs, selecting the authoritative team backend, restoring p
   - optional team instruction
   - `send_message_to` delivery handler
 - `InterAgentMessageRouter` is the canonical mixed-team inter-agent delivery owner. It delivers through the shared `AgentRun.postUserMessage(...)` boundary while preserving sender identity in recipient-visible content.
+- Runtime adapters must expose `send_message_to` as one logical team-delivery
+  tool invocation with both transcript and lifecycle events. Claude Agent SDK
+  members route first-party MCP `send_message_to` through the dedicated team
+  communication handler, which emits canonical `send_message_to` start and
+  terminal lifecycle events; raw MCP transport chunks such as
+  `mcp__autobyteus_team__send_message_to` are duplicate noise and must be
+  suppressed before they create extra Activity rows.
 - AutoByteus standalone members participating in mixed teams receive a compatible `teamContext.communicationContext` payload through `initialCustomData`, so the shared `send_message_to` tool can work without native `AgentTeam` ownership.
 - Mixed AutoByteus standalone members explicitly strip `ToolCategory.TASK_MANAGEMENT` tools before exposure; mixed-team v1 is communication-only.
 
