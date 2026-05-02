@@ -83,10 +83,10 @@ No version bump, tag, release commit, or release notes were created; no release 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility`
-- Worktree cleanup result: `Not performed` — retained the dedicated worktree because it still contains the local Electron test build artifacts requested by the user.
-- Worktree prune result: `Not performed`
-- Local ticket branch cleanup result: `Not performed` — branch retained with the archived ticket commit for traceability.
-- Remote branch cleanup result: `Not performed` — branch retained for traceability.
+- Worktree cleanup result: `Completed` — removed `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility` after user confirmed testing was done.
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed` — deleted `codex/codex-search-web-activity-visibility`.
+- Remote branch cleanup result: `Completed` — deleted `origin/codex/codex-search-web-activity-visibility`.
 - Blocker (if applicable): N/A
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
@@ -145,4 +145,4 @@ Rollback or reroute before finalization if user verification shows any of the fo
 
 ## Final Status
 
-Repository finalization completed. `personal` contains the verified segment-first Activity projection and Codex `search_web` lifecycle fix, archived ticket artifacts, and delivery documentation. No release/version/tag work was performed because none was requested for this ticket.
+Repository finalization and cleanup completed. `personal` contains the verified segment-first Activity projection and Codex `search_web` lifecycle fix, archived ticket artifacts, and delivery documentation. No release/version/tag work was performed because none was requested for this ticket.

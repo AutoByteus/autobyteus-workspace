@@ -78,7 +78,7 @@ Runtime observation addendum: `/Users/normy/autobyteus_org/autobyteus-worktrees/
 - Merge into `personal`: `94f434036137` (`merge: codex search web activity visibility`)
 - Target push: `Completed` after finalization report update.
 - Release/version/tag: `Not performed`; not requested for this ticket.
-- Cleanup: dedicated worktree retained because it contains the local Electron test build artifacts requested for verification.
+- Cleanup: `Completed`; dedicated ticket worktree and local/remote ticket branches were removed after user confirmed testing was done.
 
 ## Live Validation Evidence
 
