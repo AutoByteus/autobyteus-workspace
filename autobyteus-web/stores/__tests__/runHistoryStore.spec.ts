@@ -52,6 +52,7 @@ const {
   llmProviderConfigStoreMock,
   hydrateLiveRunContextMock,
   hydrateLiveTeamRunContextMock,
+  hydrateTeamMemberActivitiesFromProjectionMock,
 } = vi.hoisted(() => {
   const selection = {
     selectedType: null as string | null,
@@ -182,6 +183,7 @@ const {
     },
     hydrateLiveRunContextMock: vi.fn().mockResolvedValue(undefined),
     hydrateLiveTeamRunContextMock: vi.fn().mockResolvedValue(undefined),
+    hydrateTeamMemberActivitiesFromProjectionMock: vi.fn(),
   };
 });
 
@@ -262,6 +264,7 @@ vi.mock('~/services/runHydration/teamRunContextHydrationService', async () => {
   return {
     ...actual,
     hydrateLiveTeamRunContext: hydrateLiveTeamRunContextMock,
+    hydrateTeamMemberActivitiesFromProjection: hydrateTeamMemberActivitiesFromProjectionMock,
   };
 });
 
@@ -300,6 +303,7 @@ describe('runHistoryStore', () => {
     hydrateLiveRunContextMock.mockReset();
     hydrateLiveRunContextMock.mockResolvedValue(undefined);
     hydrateLiveTeamRunContextMock.mockReset();
+    hydrateTeamMemberActivitiesFromProjectionMock.mockReset();
     hydrateLiveTeamRunContextMock.mockImplementation(async ({ teamRunId }: { teamRunId: string }) => ({
       teamRunId,
       focusedMemberRouteKey: 'super_agent',
@@ -342,6 +346,7 @@ describe('runHistoryStore', () => {
         taskPlan: null,
         taskStatuses: null,
       },
+      projectionByMemberRouteKey: new Map(),
     }));
     mutateMock.mockReset();
   });

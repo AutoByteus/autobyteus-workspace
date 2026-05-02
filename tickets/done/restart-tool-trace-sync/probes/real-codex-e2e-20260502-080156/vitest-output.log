@@ -1,0 +1,304 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/restart-tool-trace-sync/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/restart-tool-trace-sync/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+Registered 6 image models from Autobyteus host https://localhost:51739.
+Autobyteus image models from https://localhost:51739: gpt-image-1-rpa@localhost:51739, nano-banana-pro-app-rpa@localhost:51739, imagen-4-rpa@localhost:51739, imagen-4-ultra-rpa@localhost:51739, imagen-4-fast-rpa@localhost:51739, qwen-image-rpa@localhost:51739
+Autobyteus image discovery summary for https://localhost:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=27
+
+stderr | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+Registered 6 image models from Autobyteus host https://localhost:51740.
+Autobyteus image models from https://localhost:51740: gpt-image-1-rpa@localhost:51740, nano-banana-pro-app-rpa@localhost:51740, imagen-4-rpa@localhost:51740, imagen-4-ultra-rpa@localhost:51740, imagen-4-fast-rpa@localhost:51740, qwen-image-rpa@localhost:51740
+Autobyteus image discovery summary for https://localhost:51740: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=10
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+Finished Autobyteus image model discovery. Total models registered: 12
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:50135) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/restart-tool-trace-sync/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/restart-tool-trace-sync/autobyteus-server-ts
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-app-server-runtime-api-e2e-dHrBmY
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-app-server-runtime-api-e2e-dHrBmY/.env
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > serves run history and projection after terminate, restore, and continue
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > AutoByteus current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > serves run history and projection after terminate, restore, and continue
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes Codex tool calls over websocket without approval requests
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > routes Codex MCP tool approval over websocket for the speak tool
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Agent Definition created successfully with ID: codex-app-server-api-e2e-7eeee1ee-732d-465b-8175-f0512381f54b
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-mcp-autoexec-workspace-JNpEDA
+Initialized FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-mcp-autoexec-workspace-JNpEDA. Call initialize() to build file tree.
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-mcp-autoexec-workspace-JNpEDA' with max_depth=1
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-mcp-autoexec-workspace-JNpEDA' completed in 0.0010 seconds.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Initialized FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-mcp-autoexec-workspace-JNpEDA (Shallow). Starting background full scan...
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-mcp-autoexec-workspace-JNpEDA' with max_depth=null
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-mcp-autoexec-workspace-JNpEDA' completed in 0.0010 seconds.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+FileNameIndexer starting...
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Created and registered workspace ID: agent_ws_85ce39f9656b8ffefd0b99c2dcf8b65cf5b17a37c6a3c41253c1822c00437561
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-mcp-autoexec-workspace-JNpEDA' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-mcp-autoexec-workspace-JNpEDA
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+FileNameIndexer started monitoring
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Background full initialization for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex_app_server-runtime-mcp-autoexec-workspace-JNpEDA completed.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Initialized server settings service with 11 predefined settings
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Agent definition cache populated with 46 items.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Successfully created codex_app_server agent run 'a1aff7d2-d3ef-4d90-a7d6-3757742f0296'.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Agent websocket attached for run a1aff7d2-d3ef-4d90-a7d6-3757742f0296
+Created agent session 6f1d4854-2cb8-4cc9-b842-2711f2296c80 for run a1aff7d2-d3ef-4d90-a7d6-3757742f0296
+Agent WebSocket connected: session=6f1d4854-2cb8-4cc9-b842-2711f2296c80, run=a1aff7d2-d3ef-4d90-a7d6-3757742f0296
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+[2026-05-02T06:02:17.724Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentTeamRunManager initialized.
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+[CodexMcpMemoryArgsProbe] {
+  "runId": "a1aff7d2-d3ef-4d90-a7d6-3757742f0296",
+  "invocationId": "call_3dSS7oDmBaIKoIKtIcUHYzZl",
+  "expectedText": "codex auto speak 979ba587 ba85 406f a2fb 4cd059019a6d",
+  "liveSegmentItemArguments": {
+    "text": "codex auto speak 979ba587 ba85 406f a2fb 4cd059019a6d",
+    "play": false
+  },
+  "liveSegmentMetadataArguments": {
+    "text": "codex auto speak 979ba587 ba85 406f a2fb 4cd059019a6d",
+    "play": false
+  },
+  "rawSpeakTraces": [
+    {
+      "traceType": "tool_call",
+      "sourceEvent": "TOOL_EXECUTION_STARTED",
+      "toolName": "speak",
+      "toolCallId": "call_3dSS7oDmBaIKoIKtIcUHYzZl",
+      "toolArgs": {},
+      "toolResult": null,
+      "toolError": null
+    },
+    {
+      "traceType": "tool_result",
+      "sourceEvent": "TOOL_EXECUTION_SUCCEEDED",
+      "toolName": "speak",
+      "toolCallId": "call_3dSS7oDmBaIKoIKtIcUHYzZl",
+      "toolArgs": {},
+      "toolResult": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"ok\": true\n}"
+          }
+        ],
+        "structuredContent": {
+          "ok": true
+        },
+        "_meta": null
+      },
+      "toolError": null
+    }
+  ],
+  "projectionSpeakActivities": [
+    {
+      "invocationId": "call_3dSS7oDmBaIKoIKtIcUHYzZl",
+      "toolName": "speak",
+      "type": "tool_call",
+      "status": "success",
+      "contextText": "speak",
+      "arguments": {},
+      "logs": [],
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"ok\": true\n}"
+          }
+        ],
+        "structuredContent": {
+          "ok": true
+        },
+        "_meta": null
+      },
+      "error": null,
+      "ts": 1777701736.421,
+      "detailLevel": "source_limited"
+    }
+  ],
+  "projectionSpeakConversation": [
+    {
+      "kind": "tool_call",
+      "invocationId": "call_3dSS7oDmBaIKoIKtIcUHYzZl",
+      "role": null,
+      "content": "",
+      "toolName": "speak",
+      "toolArgs": {},
+      "toolResult": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"ok\": true\n}"
+          }
+        ],
+        "structuredContent": {
+          "ok": true
+        },
+        "_meta": null
+      },
+      "toolError": null,
+      "media": null,
+      "ts": 1777701736.421
+    }
+  ]
+}
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests
+Closed agent session 6f1d4854-2cb8-4cc9-b842-2711f2296c80
+Agent WebSocket disconnected: 6f1d4854-2cb8-4cc9-b842-2711f2296c80
+
+ ✓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > auto-executes the Codex speak MCP tool without approval requests 17040ms
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > applies configured runtime skills over the current websocket API contract
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Codex current GraphQL runtime e2e > uses a whole-directory materialized skill whose linked shared file sits outside the skill folder
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > creates a run, restores it, and continues streaming on the same websocket
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > serves run history and projection after terminate, restore, and continue
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > routes tool approval over websocket and streams the normalized tool lifecycle
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts > Claude current GraphQL runtime e2e > applies configured runtime skills over the current websocket API contract
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 14 skipped (15)
+   Start at  08:01:57
+   Duration  21.66s (transform 2.62s, setup 17ms, import 4.13s, tests 17.08s, environment 0ms)
+

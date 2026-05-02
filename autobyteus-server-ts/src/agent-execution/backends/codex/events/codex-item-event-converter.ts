@@ -77,7 +77,10 @@ const createTerminalToolExecutionEvent = (
   fallbackToolName?: "run_bash" | "edit_file",
 ): AgentRunEvent => {
   const invocationId = context.resolveInvocationId(payload);
+  const turnId = context.resolveTurnId(payload);
   const toolName = normalizeToolNameForEvent(context.resolveToolName(payload, fallbackToolName));
+  const toolArguments = context.resolveDynamicToolArguments(payload);
+  const hasToolArguments = Object.keys(toolArguments).length > 0;
   const serializedPayload = serializePayload(payload);
   const status = context.resolveExecutionStatus(payload)?.toLowerCase() ?? null;
   if (status === "declined") {
@@ -85,7 +88,9 @@ const createTerminalToolExecutionEvent = (
     return context.createEvent(codexEventName, AgentRunEventType.TOOL_DENIED, {
       ...serializedPayload,
       ...(invocationId ? { invocation_id: invocationId } : {}),
+      ...(turnId ? { turn_id: turnId } : {}),
       ...(toolName ? { tool_name: toolName } : {}),
+      ...(hasToolArguments ? { arguments: toolArguments } : {}),
       reason,
       error: context.resolveToolError(payload),
     });
@@ -96,7 +101,9 @@ const createTerminalToolExecutionEvent = (
   return context.createEvent(codexEventName, eventType, {
     ...serializedPayload,
     ...(invocationId ? { invocation_id: invocationId } : {}),
+    ...(turnId ? { turn_id: turnId } : {}),
     ...(toolName ? { tool_name: toolName } : {}),
+    ...(hasToolArguments ? { arguments: toolArguments } : {}),
     ...(context.isExecutionFailure(payload)
       ? { error: context.resolveToolError(payload) }
       : { result: context.resolveToolResult(payload) }),
@@ -123,10 +130,12 @@ const createDynamicToolLifecycleStartedEvent = (
   payload: JsonObject,
 ): AgentRunEvent => {
   const invocationId = context.resolveInvocationId(payload);
+  const turnId = context.resolveTurnId(payload);
   const toolName = normalizeToolNameForEvent(context.resolveToolName(payload));
   return context.createEvent(codexEventName, AgentRunEventType.TOOL_EXECUTION_STARTED, {
     ...serializePayload(payload),
     ...(invocationId ? { invocation_id: invocationId } : {}),
+    ...(turnId ? { turn_id: turnId } : {}),
     ...(toolName ? { tool_name: toolName } : {}),
     arguments: context.resolveDynamicToolArguments(payload),
   });
@@ -295,6 +304,12 @@ export const convertCodexItemEvent = (
         return [
           createFileChangeSegmentStartEvent(context, codexEventName, payload),
           createFileChangeLifecycleStartedEvent(context, codexEventName, payload),
+        ];
+      }
+      if (itemType === "mcptoolcall") {
+        return [
+          createDynamicToolSegmentStartEvent(context, codexEventName, payload),
+          createDynamicToolLifecycleStartedEvent(context, codexEventName, payload),
         ];
       }
       if (itemType === "dynamictoolcall") {
@@ -474,7 +489,7 @@ export const convertCodexItemEvent = (
       ];
     }
     case CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED:
-      return [createTerminalToolExecutionEvent(context, codexEventName, payload, "run_bash")];
+      return [createTerminalToolExecutionEvent(context, codexEventName, payload)];
     case CodexThreadEventName.ITEM_FILE_CHANGE_OUTPUT_DELTA: {
       const invocationId = context.resolveInvocationId(payload);
       const logEntry = context.resolveLogEntry(payload);

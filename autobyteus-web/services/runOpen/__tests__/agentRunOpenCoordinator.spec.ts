@@ -80,7 +80,7 @@ describe('openAgentRun', () => {
     vi.clearAllMocks();
   });
 
-  it('merges authoritative file changes into an active subscribed context instead of skipping hydration', async () => {
+  it('preserves live activities while merging file changes into an active subscribed context', async () => {
     getRunMock.mockReturnValue({
       isSubscribed: true,
       state: { runId: 'run-1' },
@@ -136,12 +136,7 @@ describe('openAgentRun', () => {
         path: 'src/history.txt',
       }),
     ]);
-    expect(hydrateActivitiesFromProjectionMock).toHaveBeenCalledWith('run-1', [
-      expect.objectContaining({
-        invocationId: 'tool-1',
-        toolName: 'run_bash',
-      }),
-    ]);
+    expect(hydrateActivitiesFromProjectionMock).not.toHaveBeenCalled();
     expect(hydrateRunFileChangesMock).not.toHaveBeenCalled();
     expect(connectToAgentStreamMock).toHaveBeenCalledWith('run-1');
   });

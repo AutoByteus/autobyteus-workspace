@@ -1,0 +1,111 @@
+{
+  "runId": "d39a0c73-0eed-463a-9303-9f5c88e30ee7",
+  "model": "gpt-5.4-mini",
+  "invocationId": "call_7PlD3P51lYbjD0yS5yqXXa4w",
+  "expected": {
+    "output_file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-tool-trace-sync-image-workspace-gmfOHH/generate-image-trace-sync.png",
+    "prompt": "tiny red circle restart trace sync bc35102d 48cf 4785 817e 792f284cb4fd"
+  },
+  "terminalType": "TOOL_EXECUTION_FAILED",
+  "liveSegmentItemArguments": {
+    "output_file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-tool-trace-sync-image-workspace-gmfOHH/generate-image-trace-sync.png",
+    "prompt": "tiny red circle restart trace sync bc35102d 48cf 4785 817e 792f284cb4fd"
+  },
+  "liveSegmentMetadataArguments": {
+    "output_file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-tool-trace-sync-image-workspace-gmfOHH/generate-image-trace-sync.png",
+    "prompt": "tiny red circle restart trace sync bc35102d 48cf 4785 817e 792f284cb4fd"
+  },
+  "lifecycleStartArguments": {
+    "output_file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-tool-trace-sync-image-workspace-gmfOHH/generate-image-trace-sync.png",
+    "prompt": "tiny red circle restart trace sync bc35102d 48cf 4785 817e 792f284cb4fd"
+  },
+  "terminalArguments": {
+    "output_file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-tool-trace-sync-image-workspace-gmfOHH/generate-image-trace-sync.png",
+    "prompt": "tiny red circle restart trace sync bc35102d 48cf 4785 817e 792f284cb4fd"
+  },
+  "rawTraceFile": "/Users/normy/autobyteus_org/autobyteus-worktrees/restart-tool-trace-sync/tickets/in-progress/restart-tool-trace-sync/probes/real-codex-generate-image-validation-20260502-075207/raw_traces.jsonl",
+  "rawGenerateImageTraces": [
+    {
+      "id": "rt_1777708340843_7c1e51eb-8442-4fee-be42-14c60157b48d",
+      "ts": 1777708340.843,
+      "turn_id": "019de7ac-7901-74d2-abc1-44d95a7454c6",
+      "seq": 2,
+      "trace_type": "tool_call",
+      "content": "",
+      "source_event": "TOOL_EXECUTION_STARTED",
+      "tool_name": "generate_image",
+      "tool_call_id": "call_7PlD3P51lYbjD0yS5yqXXa4w",
+      "tool_args": {
+        "output_file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-tool-trace-sync-image-workspace-gmfOHH/generate-image-trace-sync.png",
+        "prompt": "tiny red circle restart trace sync bc35102d 48cf 4785 817e 792f284cb4fd"
+      }
+    },
+    {
+      "id": "rt_1777708522831_ed3ce423-8760-437e-b7ef-867c0059a574",
+      "ts": 1777708522.831,
+      "turn_id": "019de7ac-7901-74d2-abc1-44d95a7454c6",
+      "seq": 3,
+      "trace_type": "tool_result",
+      "content": "",
+      "source_event": "TOOL_EXECUTION_FAILED",
+      "tool_name": "generate_image",
+      "tool_call_id": "call_7PlD3P51lYbjD0yS5yqXXa4w",
+      "tool_args": {
+        "output_file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-tool-trace-sync-image-workspace-gmfOHH/generate-image-trace-sync.png",
+        "prompt": "tiny red circle restart trace sync bc35102d 48cf 4785 817e 792f284cb4fd"
+      },
+      "tool_error": "Tool execution failed."
+    }
+  ],
+  "rawToolCallArguments": {
+    "output_file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-tool-trace-sync-image-workspace-gmfOHH/generate-image-trace-sync.png",
+    "prompt": "tiny red circle restart trace sync bc35102d 48cf 4785 817e 792f284cb4fd"
+  },
+  "rawToolResultArguments": {
+    "output_file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-tool-trace-sync-image-workspace-gmfOHH/generate-image-trace-sync.png",
+    "prompt": "tiny red circle restart trace sync bc35102d 48cf 4785 817e 792f284cb4fd"
+  },
+  "projectionGenerateImageConversation": [
+    {
+      "kind": "tool_call",
+      "invocationId": "call_7PlD3P51lYbjD0yS5yqXXa4w",
+      "role": null,
+      "content": "",
+      "toolName": "generate_image",
+      "toolArgs": {
+        "output_file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-tool-trace-sync-image-workspace-gmfOHH/generate-image-trace-sync.png",
+        "prompt": "tiny red circle restart trace sync bc35102d 48cf 4785 817e 792f284cb4fd"
+      },
+      "toolResult": null,
+      "toolError": "Tool execution failed.",
+      "media": null,
+      "ts": 1777708522.831
+    }
+  ],
+  "projectionGenerateImageActivities": [
+    {
+      "invocationId": "call_7PlD3P51lYbjD0yS5yqXXa4w",
+      "toolName": "generate_image",
+      "type": "tool_call",
+      "status": "error",
+      "contextText": "generate_image",
+      "arguments": {
+        "output_file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-tool-trace-sync-image-workspace-gmfOHH/generate-image-trace-sync.png",
+        "prompt": "tiny red circle restart trace sync bc35102d 48cf 4785 817e 792f284cb4fd"
+      },
+      "logs": [],
+      "result": null,
+      "error": "Tool execution failed.",
+      "ts": 1777708522.831,
+      "detailLevel": "source_limited"
+    }
+  ],
+  "projectionConversationArguments": {
+    "output_file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-tool-trace-sync-image-workspace-gmfOHH/generate-image-trace-sync.png",
+    "prompt": "tiny red circle restart trace sync bc35102d 48cf 4785 817e 792f284cb4fd"
+  },
+  "projectionActivityArguments": {
+    "output_file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/restart-tool-trace-sync-image-workspace-gmfOHH/generate-image-trace-sync.png",
+    "prompt": "tiny red circle restart trace sync bc35102d 48cf 4785 817e 792f284cb4fd"
+  }
+}

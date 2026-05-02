@@ -73,6 +73,29 @@ has finished display parsing. They are not execution success/failure authority.
 tool-call/tool-result traces. Browser dynamic tools use this same generalized
 dynamic-tool mapping rather than a browser-specific terminal lifecycle branch.
 
+## MCP Tool Lifecycle Spine
+
+For Codex MCP tool calls, the raw `mcpToolCall` item start is the
+authoritative source for the invocation id, turn id, tool name, and arguments
+that must be stored for restart/history projection. The completion path is
+split: the raw item completion closes the display segment, and the thread
+notification handler emits a local completion event after enriching it from the
+pending MCP call.
+
+Normalized result:
+
+- `item/started(mcpToolCall)` -> `SEGMENT_START(tool_call)` + `TOOL_EXECUTION_STARTED`
+- `item/completed(mcpToolCall)` -> `SEGMENT_END(tool_call)` plus a local
+  `codex/local/mcpToolExecutionCompleted` notification
+- `codex/local/mcpToolExecutionCompleted` -> exactly one terminal lifecycle
+  event (`TOOL_EXECUTION_SUCCEEDED` or `TOOL_EXECUTION_FAILED`) with the same
+  invocation id, turn id, tool name, and arguments when available
+
+`SEGMENT_START` / `SEGMENT_END` keep the transcript visible, while
+`TOOL_EXECUTION_*` events remain the only durable storage authority for
+tool-call and tool-result raw traces. The memory recorder must not parse raw
+Codex MCP item internals to repair missing arguments.
+
 ## Web Search Lifecycle Spine
 
 For Codex built-in web search, the raw `webSearch` item lifecycle is the
@@ -120,6 +143,9 @@ Forbidden downstream effect:
 | `item/completed` | `item.type = commandExecution` | `TOOL_DENIED` or `TOOL_EXECUTION_FAILED` or `TOOL_EXECUTION_SUCCEEDED` | `codex-item-event-converter.ts` | Keep |
 | `item/started` | `item.type = dynamicToolCall` | `SEGMENT_START(tool_call)`, `TOOL_EXECUTION_STARTED` | `codex-item-event-converter.ts` | Keep |
 | `item/completed` | `item.type = dynamicToolCall` | `TOOL_EXECUTION_FAILED` when `success === false` or status is failure-like; otherwise `TOOL_EXECUTION_SUCCEEDED`; always ends with `SEGMENT_END(tool_call)` | `codex-item-event-converter.ts` | Keep |
+| `item/started` | `item.type = mcpToolCall` | `SEGMENT_START(tool_call)`, `TOOL_EXECUTION_STARTED`; also tracks pending MCP call data on `CodexThread` | `codex-item-event-converter.ts`, `codex-thread-notification-handler.ts` | Keep |
+| `item/completed` | `item.type = mcpToolCall` | `SEGMENT_END(tool_call)`; also emits `codex/local/mcpToolExecutionCompleted` enriched from pending call data | `codex-item-event-converter.ts`, `codex-thread-notification-handler.ts` | Keep |
+| `codex/local/mcpToolExecutionCompleted` | local event emitted from `item/completed(mcpToolCall)` | `TOOL_EXECUTION_FAILED` when status is failure-like; otherwise `TOOL_EXECUTION_SUCCEEDED`, preserving pending call arguments when raw completion omits them | `codex-item-event-converter.ts` | Keep |
 | `item/started` | `item.type = webSearch` | `SEGMENT_START(tool_call, tool_name=search_web)`, `TOOL_EXECUTION_STARTED(search_web)` | `codex-item-event-converter.ts` | Keep |
 | `item/completed` | `item.type = webSearch` | `TOOL_EXECUTION_FAILED` when status is failure-like; otherwise `TOOL_EXECUTION_SUCCEEDED(search_web)`; always ends with `SEGMENT_END(tool_call)` | `codex-item-event-converter.ts` | Keep |
 | `item/started` | `item.type = fileChange` | `SEGMENT_START(edit_file)`, `TOOL_EXECUTION_STARTED(edit_file)` | `codex-item-event-converter.ts` | Keep |
@@ -183,6 +209,7 @@ Output shape:
 
 - Treat `fileChange` item lifecycle as the authoritative owner for Codex `edit_file` lifecycle and changed-file availability.
 - Treat `dynamicToolCall` item lifecycle as the authoritative owner for Codex dynamic-tool execution lifecycle. Use its lifecycle events, not display-only `SEGMENT_*` events or diagnostic `TOOL_LOG`, for Activity success/error status and storage-only memory tool traces.
+- Treat `mcpToolCall` start plus the enriched local MCP completion event as the authoritative owner for Codex MCP tool execution lifecycle. Preserve pending call arguments through terminal events so restart/history projection can rebuild both transcript and Activity surfaces from the same raw traces.
 - Treat `webSearch` item lifecycle as the authoritative owner for Codex `search_web` execution status and storage-only memory tool traces. Segment events may seed pending Activity visibility, but lifecycle events own Activity executing/success/error status.
 - Treat `thread/tokenUsage/updated` as a `CodexThread` state update. Persist ready per-turn usage from the thread boundary instead of parsing raw token payloads in higher runtime layers.
 - Treat provider/session compaction signals as storage-only boundary metadata: marker append plus eligible segmented archive rotation only. Never treat them as permission for semantic compaction, trace-content rewrite, trace loss, runtime memory retrieval, or runtime memory injection.

@@ -202,7 +202,12 @@ describe("CodexThread MCP tool approval bridge", () => {
         method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
         params: expect.objectContaining({
           invocation_id: "call_speak_done",
+          turn_id: "turn-1",
           tool_name: "speak",
+          arguments: {
+            text: "codex unit speak probe",
+            play: true,
+          },
           item: expect.objectContaining({
             type: "mcpToolCall",
             id: "call_speak_done",

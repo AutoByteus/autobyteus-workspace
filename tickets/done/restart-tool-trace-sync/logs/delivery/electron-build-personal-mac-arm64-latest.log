@@ -1,0 +1,452 @@
+Started: 2026-05-02T14:12:42Z
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/restart-tool-trace-sync
+Branch: codex/restart-tool-trace-sync
+HEAD: b16a5f879c5b2efbd1a111f4adf4b069a2ca4ccb
+Command: AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm build:electron:mac -- --arm64
+
+> autobyteus@1.2.90 build:electron:mac /Users/normy/autobyteus_org/autobyteus-worktrees/restart-tool-trace-sync/autobyteus-web
+> cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --mac -- --arm64
+
+
+> autobyteus@1.2.90 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/restart-tool-trace-sync/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+
+> autobyteus@1.2.90 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/restart-tool-trace-sync/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+
+> autobyteus@1.2.90 audit:localization-literals /Users/normy/autobyteus_org/autobyteus-worktrees/restart-tool-trace-sync/autobyteus-web
+> node ./scripts/audit-localization-literals.mjs
+
+[audit:localization-literals] Passed with zero unresolved findings.
+(node:91273) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/normy/autobyteus_org/autobyteus-worktrees/restart-tool-trace-sync/autobyteus-web/localization/audit/migrationScopes.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/autobyteus-worktrees/restart-tool-trace-sync/autobyteus-web/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+> autobyteus@1.2.90 prepare-server /Users/normy/autobyteus_org/autobyteus-worktrees/restart-tool-trace-sync/autobyteus-web
+> node ./scripts/prepare-server-dispatch.mjs
+
+[0;32m=======================================[0m
+[0;32m   Preparing AutoByteus Server Files   [0m
+[0;32m=======================================[0m
+[0;32m✓[0m Created target directory: /Users/normy/autobyteus_org/autobyteus-worktrees/restart-tool-trace-sync/autobyteus-web/resources/server
+
+[0;33mBuilding server and dependencies...[0m
+Scope: all 11 workspace projects
+
+   ╭───────────────────────────────────────────────╮
+   │                                               │
+   │     Update available! 10.28.1 → 10.33.2.      │
+   │     Changelog: https://pnpm.io/v/10.33.2      │
+   │   To update, run: corepack use pnpm@10.33.2   │
+   │                                               │
+   ╰───────────────────────────────────────────────╯
+
+
+../autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+../autobyteus-ts postinstall: [node-pty-fix] ok: /Users/normy/autobyteus_org/autobyteus-worktrees/restart-tool-trace-sync/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+../autobyteus-ts postinstall: Done
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: lzma-native@8.0.6.                                  │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 1.4s using pnpm v10.28.1
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 76ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Interested in query caching in just a few lines of code? Try Accelerate today! https://pris.ly/tip-3-accelerate
+
+
+> autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/restart-tool-trace-sync/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/restart-tool-trace-sync/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 11 workspace projects
+autobyteus-ts build$ tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 70ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want to turn off tips and other hints? https://pris.ly/tip-4-nohints
+
+
+> autobyteus-server-ts@0.1.1 build /Users/normy/autobyteus_org/autobyteus-worktrees/restart-tool-trace-sync/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /Users/normy/autobyteus_org/autobyteus-worktrees/restart-tool-trace-sync/autobyteus-server-ts
+> tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs
+
+
+[0;33mDeploying server package into Electron resources...[0m
+ WARN  Shared workspace lockfile detected but configuration forces legacy deploy implementation.
+Packages are cloned from the content-addressable store to the virtual store.
+  Content-addressable store is at: /Users/normy/Library/pnpm/store/v10
+  Virtual store is at:             autobyteus-web/resources/server/node_modules/.pnpm
+Progress: resolved 1, reused 0, downloaded 0, added 0
+autobyteus-web                           |  WARN  deprecated electron-rebuild@3.2.9
+Progress: resolved 1095, reused 0, downloaded 0, added 0
+Progress: resolved 1908, reused 1, downloaded 0, added 0
+ WARN  23 deprecated subdependencies found: @babel/plugin-proposal-class-properties@7.18.6, @babel/plugin-proposal-object-rest-spread@7.20.7, @graphql-tools/prisma-loader@8.0.17, @npmcli/move-file@2.0.1, are-we-there-yet@3.0.1, boolean@3.2.0, gauge@4.0.4, glob@10.5.0, glob@7.2.3, glob@8.1.0, har-validator@5.1.5, inflight@1.0.6, lodash.get@4.4.2, lodash.isequal@4.5.0, mkdirp@0.5.1, node-domexception@1.0.0, npmlog@6.0.2, phin@3.7.1, request@2.88.2, rimraf@3.0.2, tar@6.2.1, uuid@3.4.0, whatwg-encoding@3.1.1
+Progress: resolved 1922, reused 1, downloaded 0, added 0, done
+ WARN  Issues with peer dependencies found
+autobyteus-web
+└─┬ nuxt 3.21.1
+  └─┬ @nuxt/cli 3.33.1
+    ├── ✕ unmet peer @nuxt/schema@^4.3.0: found 3.21.1
+    └─┬ @bomb.sh/tab 0.0.12
+      └── ✕ unmet peer citty@^0.1.6: found 0.2.1
+.                                        | +454 ++++++++++++++++++++++++++++++++
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: autobyteus-ts@file:autobyteus-ts.                   │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+[0;33mCleaning workspace symlinks in deployment...[0m
+Removed 1 external symlinks from /Users/normy/autobyteus_org/autobyteus-worktrees/restart-tool-trace-sync/autobyteus-web/resources/server/node_modules/.pnpm/node_modules
+
+[0;33mRemoving non-runtime test fixtures from deployed dependencies...[0m
+
+[0;33mGenerating Prisma client (ensures engines are bundled)...[0m
+Environment variables loaded from .env
+Prisma schema loaded from resources/server/prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 94ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want to turn off tips and other hints? https://pris.ly/tip-4-nohints
+
+
+[0;33mPruning native prebuilds for host platform...[0m
+
+[0;33mRebuilding native modules for Electron...[0m
+- Searching dependency tree
+(node:91633) [DEP0060] DeprecationWarning: The `util._extend` API is deprecated. Please use Object.assign() instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+  TOUCH Release/obj.target/../../../node-addon-api@7.1.1/node_modules/node-addon-api/node_addon_api_except.stamp
+  CXX(target) Release/obj.target/pty/src/unix/pty.o
+../src/unix/pty.cc:139:30: warning: missing field 'filter' initializer [-Wmissing-field-initializers]
+  139 |     struct kevent change = {0};
+      |                              ^
+../src/unix/pty.cc:159:31: warning: missing field 'filter' initializer [-Wmissing-field-initializers]
+  159 |       struct kevent event = {0};
+      |                               ^
+2 warnings generated.
+  SOLINK_MODULE(target) Release/pty.node
+  CXX(target) Release/obj.target/spawn-helper/src/unix/spawn-helper.o
+  LINK(target) Release/spawn-helper
+✔ Rebuild Complete
+
+[0;33mRemoving symlinks that point outside the bundle...[0m
+Removed 1 external symlinks from /Users/normy/autobyteus_org/autobyteus-worktrees/restart-tool-trace-sync/autobyteus-web/resources/server
+
+[0;32m=======================================[0m
+[0;32m   Server files prepared successfully!   [0m
+[0;32m=======================================[0m
+Target directory: [0;33m/Users/normy/autobyteus_org/autobyteus-worktrees/restart-tool-trace-sync/autobyteus-web/resources/server[0m
+You can now build the Electron app with the server included
+
+> autobyteus@1.2.90 generate:electron /Users/normy/autobyteus_org/autobyteus-worktrees/restart-tool-trace-sync/autobyteus-web
+> cross-env NODE_ENV=production BUILD_TARGET=electron nuxt generate
+
+┌  Building Nuxt for production...
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+isElectronBuild true
+[Electron Module] Initializing electron module
+[Electron Module] Applying default Electron configurations
+[Electron Module] Configuring for Electron build target
+[Electron Module] Configuring production settings
+[Electron Module] Electron module initialization completed
+│
+●  Nitro preset: static
+[Electron Module] Extending Vite config
+ℹ Building client...
+[Electron Module] Vite config resolved: { mode: 'production', base: './', buildTarget: 'electron' }
+ℹ vite v7.3.1 building client environment for production...
+ℹ transforming...
+ℹ ✓ 3327 modules transformed.
+ℹ rendering chunks...
+
+ WARN  [plugin vite:reporter] 
+(!) /Users/normy/autobyteus_org/autobyteus-worktrees/restart-tool-trace-sync/autobyteus-web/graphql/queries/file_explorer_queries.ts is dynamically imported by /Users/normy/autobyteus_org/autobyteus-worktrees/restart-tool-trace-sync/autobyteus-web/stores/workspace.ts but also statically imported by /Users/normy/autobyteus_org/autobyteus-worktrees/restart-tool-trace-sync/autobyteus-web/stores/fileExplorer.ts, dynamic import will not move module into another chunk.
+
+
+ℹ computing gzip size...
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size3-Regular.CTq5MqoE.woff                       4.42 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size4-Regular.Dl5lxZxV.woff2                      4.93 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size2-Regular.Dy4dx90m.woff2                      5.21 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size1-Regular.mCD8mA8B.woff2                      5.47 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size4-Regular.BF-4gkZK.woff                       5.98 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size2-Regular.oD1tc_U0.woff                       6.19 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size1-Regular.C195tn64.woff                       6.50 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Regular.Di6jR-x-.woff2                6.91 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Bold.Dq_IR9rO.woff2                   6.91 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size3-Regular.DgpXs0kz.ttf                        7.59 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Regular.CTRA-rTL.woff                 7.66 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Bold.BEiXGLvX.woff                    7.72 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Script-Regular.D3wIWfF6.woff2                     9.64 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Regular.DDBCnlJ7.woff2                 10.34 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size4-Regular.DWFBv043.ttf                       10.36 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Script-Regular.D5yQViql.woff                     10.59 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Regular.CTYiF6lA.woff2                   11.32 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Bold.CL6g_b3V.woff2                      11.35 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size2-Regular.B7gKUWhC.ttf                       11.51 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Italic.C3H0VqGB.woff2                  12.03 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Bold.D1sUS0GD.woff2                    12.22 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Size1-Regular.Dbsnue_I.ttf                       12.23 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Regular.CS6fqUqJ.woff                  12.32 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Regular.wX97UBjC.ttf                 12.34 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Bold.ATXxdsX0.ttf                    12.37 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Regular.Dxdc4cR9.woff                    13.21 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Bold.BsDP51OF.woff                       13.30 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Typewriter-Regular.CO6r4hn1.woff2                13.57 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Italic.DN2j7dab.woff                   14.11 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Bold.DbIhKOiC.woff                     14.41 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Typewriter-Regular.C0xS9mPB.woff                 16.03 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-BoldItalic.CZnvNsCZ.woff2                   16.40 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-Italic.t53AETM-.woff2                       16.44 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Script-Regular.C5JkGWo-.ttf                      16.65 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-BoldItalic.DxDJ3AOS.woff2                   16.78 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Italic.NWA7e6Wa.woff2                       16.99 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-BoldItalic.iY-2wyZ7.woff                    18.67 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-Italic.DA0__PXp.woff                        18.75 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-BoldItalic.SpSLRI95.woff                    19.41 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Regular.BNo7hRIc.ttf                   19.44 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Regular.CB_wures.ttf                     19.57 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Bold.BdnERNNW.ttf                        19.58 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Italic.BMLOBm91.woff                        19.68 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Italic.YYjJ1zSn.ttf                    22.36 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Bold.CFMepnvq.ttf                      24.50 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Bold.Cx986IdX.woff2                         25.32 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Regular.B22Nviop.woff2                      26.27 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Typewriter-Regular.D3Ib7_Hf.ttf                  27.56 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_AMS-Regular.BQhdFMY1.woff2                       28.08 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Bold.Jm3AIy58.woff                          29.91 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Regular.Dr94JaBh.woff                       30.77 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-BoldItalic.B3XSjfu4.ttf                     31.20 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-Italic.flOr_0UB.ttf                         31.31 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-BoldItalic.DzxPMmG6.ttf                     32.97 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_AMS-Regular.DMm9YOAa.woff                        33.52 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Italic.3WenGoN9.ttf                         33.58 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Bold.waoOVXN0.ttf                           51.34 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Regular.ypZvNtVU.ttf                        53.58 kB
+ℹ .nuxt/dist/client/_nuxt/KaTeX_AMS-Regular.DRggAlZN.ttf                         63.63 kB
+ℹ .nuxt/dist/client/manifest.json                                                66.31 kB │ gzip:     5.80 kB
+ℹ .nuxt/dist/client/_nuxt/ConfirmationModal.CJV_gWfn.css                          0.20 kB │ gzip:     0.12 kB
+ℹ .nuxt/dist/client/_nuxt/media.yjOJmL4q.css                                      0.23 kB │ gzip:     0.13 kB
+ℹ .nuxt/dist/client/_nuxt/settings.CxTZU0Nv.css                                   0.27 kB │ gzip:     0.21 kB
+ℹ .nuxt/dist/client/_nuxt/DefinitionLaunchPreferencesSection.B4uhkLvJ.css         0.28 kB │ gzip:     0.15 kB
+ℹ .nuxt/dist/client/_nuxt/FullScreenImageModal.aod6xn15.css                       0.35 kB │ gzip:     0.17 kB
+ℹ .nuxt/dist/client/_nuxt/default.DgwjW6tw.css                                    0.86 kB │ gzip:     0.35 kB
+ℹ .nuxt/dist/client/_nuxt/workspace.DpW0gMr5.css                                 10.11 kB │ gzip:     2.68 kB
+ℹ .nuxt/dist/client/_nuxt/skills.DgQDsQ24.css                                    21.72 kB │ gzip:     4.28 kB
+ℹ .nuxt/dist/client/_nuxt/FileExplorerTabs.ByGIVj0F.css                          49.85 kB │ gzip:    12.78 kB
+ℹ .nuxt/dist/client/_nuxt/entry.DgmdIDez.css                                    106.32 kB │ gzip:    16.99 kB
+ℹ .nuxt/dist/client/_nuxt/clone.Cd_tfcJY.js                                       0.10 kB │ gzip:     0.11 kB
+ℹ .nuxt/dist/client/_nuxt/channel.qU8gpSlP.js                                     0.12 kB │ gzip:     0.14 kB
+ℹ .nuxt/dist/client/_nuxt/init.Gi6I4Gst.js                                        0.15 kB │ gzip:     0.13 kB
+ℹ .nuxt/dist/client/_nuxt/chunk-QZHKN3VN.CASZh1sw.js                              0.20 kB │ gzip:     0.17 kB
+ℹ .nuxt/dist/client/_nuxt/settings.BPpmNdtr.js                                    0.23 kB │ gzip:     0.20 kB
+ℹ .nuxt/dist/client/_nuxt/chunk-4BX2VUAB.DL6hIPa9.js                              0.24 kB │ gzip:     0.18 kB
+ℹ .nuxt/dist/client/_nuxt/chunk-55IACEB6.CuDth-oa.js                              0.24 kB │ gzip:     0.22 kB
+ℹ .nuxt/dist/client/_nuxt/useNativeFolderDialog.DvC0fQjE.js                       0.27 kB │ gzip:     0.20 kB
+ℹ .nuxt/dist/client/_nuxt/tools.D9lCgtDa.js                                       0.31 kB │ gzip:     0.24 kB
+ℹ .nuxt/dist/client/_nuxt/chunk-FMBD7UC4.Cv6MS-aL.js                              0.37 kB │ gzip:     0.28 kB
+ℹ .nuxt/dist/client/_nuxt/stateDiagram-v2-4FDKWEC3.DlAaDqR1.js                    0.45 kB │ gzip:     0.31 kB
+ℹ .nuxt/dist/client/_nuxt/appLayoutStore.CvOhBDEJ.js                              0.48 kB │ gzip:     0.24 kB
+ℹ .nuxt/dist/client/_nuxt/classDiagram-2ON5EDUG.DB6JUtFo.js                       0.49 kB │ gzip:     0.33 kB
+ℹ .nuxt/dist/client/_nuxt/classDiagram-v2-WZHVMYZB.DB6JUtFo.js                    0.49 kB │ gzip:     0.33 kB
+ℹ .nuxt/dist/client/_nuxt/chunk-QN33PNHL.9LWp42r4.js                              0.51 kB │ gzip:     0.37 kB
+ℹ .nuxt/dist/client/_nuxt/index.DLHKL6T2.js                                       0.52 kB │ gzip:     0.36 kB
+ℹ .nuxt/dist/client/_nuxt/infoDiagram-HS3SLOUP.BGeKxpHv.js                        0.75 kB │ gzip:     0.49 kB
+ℹ .nuxt/dist/client/_nuxt/api.nm8GgRz3.js                                         0.93 kB │ gzip:     0.44 kB
+ℹ .nuxt/dist/client/_nuxt/ordinal.BYWQX77i.js                                     1.19 kB │ gzip:     0.57 kB
+ℹ .nuxt/dist/client/_nuxt/agentDefinitionOptionsStore.C4-Dv4GE.js                 1.42 kB │ gzip:     0.56 kB
+ℹ .nuxt/dist/client/_nuxt/chunk-TZMSLE5B.CLlgwRg9.js                              1.45 kB │ gzip:     0.64 kB
+ℹ .nuxt/dist/client/_nuxt/applicationAssetUrl.CeLjE3PV.js                         1.82 kB │ gzip:     0.83 kB
+ℹ .nuxt/dist/client/_nuxt/ConfirmationModal.Dbh_C5Y5.js                           2.03 kB │ gzip:     0.97 kB
+ℹ .nuxt/dist/client/_nuxt/_basePickBy.5osCvz77.js                                 2.59 kB │ gzip:     1.30 kB
+ℹ .nuxt/dist/client/_nuxt/arc.1JSg367a.js                                         3.45 kB │ gzip:     1.49 kB
+ℹ .nuxt/dist/client/_nuxt/applicationStore.DWb3bCUU.js                            3.80 kB │ gzip:     1.49 kB
+ℹ .nuxt/dist/client/_nuxt/diagram-S2PKOQOG.BI-EBRBu.js                            4.37 kB │ gzip:     1.92 kB
+ℹ .nuxt/dist/client/_nuxt/RuntimeModelConfigFields.vue.CiVtfUZT.js                4.45 kB │ gzip:     1.75 kB
+ℹ .nuxt/dist/client/_nuxt/defaultLocale.DX6XiGOO.js                               4.69 kB │ gzip:     2.18 kB
+ℹ .nuxt/dist/client/_nuxt/index.BcQlp1kb.js                                       4.78 kB │ gzip:     1.90 kB
+ℹ .nuxt/dist/client/_nuxt/FullScreenImageModal.BRH6998D.js                        4.96 kB │ gzip:     2.03 kB
+ℹ .nuxt/dist/client/_nuxt/SearchableGroupedSelect.vue.C1bpSWGL.js                 5.05 kB │ gzip:     2.08 kB
+ℹ .nuxt/dist/client/_nuxt/pieDiagram-ADFJNKIX.CnbRUq-Y.js                         5.30 kB │ gzip:     2.36 kB
+ℹ .nuxt/dist/client/_nuxt/SearchableSelect.vue.BuXnYOlW.js                        5.55 kB │ gzip:     2.22 kB
+ℹ .nuxt/dist/client/_nuxt/linear.C17JuiLr.js                                      5.67 kB │ gzip:     2.32 kB
+ℹ .nuxt/dist/client/_nuxt/graph.C4ljRhHE.js                                       5.93 kB │ gzip:     1.88 kB
+ℹ .nuxt/dist/client/_nuxt/diagram-QEK2KX5R.iHbq7ENq.js                            5.97 kB │ gzip:     2.53 kB
+ℹ .nuxt/dist/client/_nuxt/NodeSyncReportPanel.vue.CDytiH1v.js                     8.42 kB │ gzip:     2.71 kB
+ℹ .nuxt/dist/client/_nuxt/toolManagementStore.DZJ2OdKD.js                         8.71 kB │ gzip:     1.83 kB
+ℹ .nuxt/dist/client/_nuxt/skillStore.BVzG28Jz.js                                  9.02 kB │ gzip:     1.72 kB
+ℹ .nuxt/dist/client/_nuxt/stateDiagram-FKZM4ZOC.DtpICb68.js                      10.44 kB │ gzip:     3.67 kB
+ℹ .nuxt/dist/client/_nuxt/ModelConfigSection.vue.weFbKAM8.js                     10.55 kB │ gzip:     3.45 kB
+ℹ .nuxt/dist/client/_nuxt/dagre-6UL2VRFP.CYBS3SSn.js                             11.06 kB │ gzip:     4.14 kB
+ℹ .nuxt/dist/client/_nuxt/_baseUniq.C43kSwFR.js                                  11.90 kB │ gzip:     4.66 kB
+ℹ .nuxt/dist/client/_nuxt/DefinitionLaunchPreferencesSection.vue.BxXxgnD1.js     12.30 kB │ gzip:     4.10 kB
+ℹ .nuxt/dist/client/_nuxt/media.j4onojPn.js                                      13.27 kB │ gzip:     4.48 kB
+ℹ .nuxt/dist/client/_nuxt/diagram-PSM6KHXK.HMwFw_gQ.js                           15.93 kB │ gzip:     5.71 kB
+ℹ .nuxt/dist/client/_nuxt/useRuntimeScopedModelSelection.CZroJy2p.js             17.13 kB │ gzip:     4.41 kB
+ℹ .nuxt/dist/client/_nuxt/iconify.B01zLY5j.js                                    18.47 kB │ gzip:     7.20 kB
+ℹ .nuxt/dist/client/_nuxt/mindmap-definition-VGOIOE7T.DK_GGy6y.js                20.09 kB │ gzip:     6.94 kB
+ℹ .nuxt/dist/client/_nuxt/kanban-definition-3W4ZIXB7.CAiOFdnX.js                 20.25 kB │ gzip:     7.20 kB
+ℹ .nuxt/dist/client/_nuxt/sankeyDiagram-TZEHDZUN.vIw7E_qx.js                     22.17 kB │ gzip:     8.16 kB
+ℹ .nuxt/dist/client/_nuxt/journeyDiagram-XKPGCS4Q.O02GwCv3.js                    23.60 kB │ gzip:     8.36 kB
+ℹ .nuxt/dist/client/_nuxt/timeline-definition-IT6M3QCI.BitYX3eL.js               23.64 kB │ gzip:     8.26 kB
+ℹ .nuxt/dist/client/_nuxt/gitGraphDiagram-V2S2FVAM.j98_0bx6.js                   24.19 kB │ gzip:     7.47 kB
+ℹ .nuxt/dist/client/_nuxt/erDiagram-Q2GNP2WA.NExI1IAD.js                         25.30 kB │ gzip:     8.86 kB
+ℹ .nuxt/dist/client/_nuxt/voiceInputStore.CdglekHw.js                            27.31 kB │ gzip:     7.60 kB
+ℹ .nuxt/dist/client/_nuxt/layout.BYMKArgQ.js                                     27.39 kB │ gzip:     9.74 kB
+ℹ .nuxt/dist/client/_nuxt/memory.Baj6tKbE.js                                     27.62 kB │ gzip:     6.38 kB
+ℹ .nuxt/dist/client/_nuxt/requirementDiagram-UZGBJVZJ.D1JajVaM.js                30.14 kB │ gzip:     9.46 kB
+ℹ .nuxt/dist/client/_nuxt/skills.Bzrm9zfP.js                                     32.86 kB │ gzip:     8.69 kB
+ℹ .nuxt/dist/client/_nuxt/quadrantDiagram-AYHSOK5B.CTP_xJNA.js                   33.90 kB │ gzip:     9.97 kB
+ℹ .nuxt/dist/client/_nuxt/chunk-DI55MBZ5.CBhw5cmI.js                             36.35 kB │ gzip:    11.83 kB
+ℹ .nuxt/dist/client/_nuxt/xychartDiagram-PRI3JC2R.DS4LCmct.js                    40.24 kB │ gzip:    11.38 kB
+ℹ .nuxt/dist/client/_nuxt/ToolsManagementWorkspace.vue.CBIeCIkS.js               40.74 kB │ gzip:    10.58 kB
+ℹ .nuxt/dist/client/_nuxt/default.M0nc_FDn.js                                    43.40 kB │ gzip:    10.94 kB
+ℹ .nuxt/dist/client/_nuxt/chunk-B4BG7PRW.CS-vhD2V.js                             45.32 kB │ gzip:    14.69 kB
+ℹ .nuxt/dist/client/_nuxt/agents.7uVvOwle.js                                     54.09 kB │ gzip:    13.79 kB
+ℹ .nuxt/dist/client/_nuxt/flowDiagram-NV44I4VS.CRTjG843.js                       60.51 kB │ gzip:    19.46 kB
+ℹ .nuxt/dist/client/_nuxt/agent-teams.WncwPAb8.js                                60.60 kB │ gzip:    14.48 kB
+ℹ .nuxt/dist/client/_nuxt/ganttDiagram-JELNMOA3.B5qFAvjc.js                      68.37 kB │ gzip:    23.18 kB
+ℹ .nuxt/dist/client/_nuxt/c4Diagram-YG6GDRKO.DsthwUTh.js                         70.19 kB │ gzip:    19.71 kB
+ℹ .nuxt/dist/client/_nuxt/blockDiagram-VD42YOAC.BUWEteUQ.js                      71.84 kB │ gzip:    20.54 kB
+ℹ .nuxt/dist/client/_nuxt/_id_.o72NAAhw.js                                       73.03 kB │ gzip:    16.83 kB
+ℹ .nuxt/dist/client/_nuxt/agentRunStore.C0iysSCA.js                              80.21 kB │ gzip:    21.01 kB
+ℹ .nuxt/dist/client/_nuxt/cose-bilkent-S5V4N54A.DTh8rF2o.js                      81.76 kB │ gzip:    22.51 kB
+ℹ .nuxt/dist/client/_nuxt/workspace.CwIi4R5a.js                                  90.28 kB │ gzip:    24.18 kB
+ℹ .nuxt/dist/client/_nuxt/sequenceDiagram-WL72ISMW.BHQDx4RY.js                   97.86 kB │ gzip:    26.89 kB
+ℹ .nuxt/dist/client/_nuxt/architectureDiagram-VXUJARFQ.CGWkecAQ.js              148.69 kB │ gzip:    42.09 kB
+ℹ .nuxt/dist/client/_nuxt/cytoscape.esm.5J0xJHOV.js                             441.64 kB │ gzip:   141.47 kB
+ℹ .nuxt/dist/client/_nuxt/treemap-GDKQZRPO.D01nxYQA.js                          452.90 kB │ gzip:   107.06 kB
+ℹ .nuxt/dist/client/_nuxt/settings.CNFeRYwe.js                                  458.95 kB │ gzip:   126.80 kB
+ℹ .nuxt/dist/client/_nuxt/workspace.DpEnK1hk.js                                 658.89 kB │ gzip:   177.02 kB
+ℹ .nuxt/dist/client/_nuxt/entry.qjWY7eGZ.js                                     857.01 kB │ gzip:   240.63 kB
+ℹ .nuxt/dist/client/_nuxt/FileExplorerTabs.vue.BfPcZYjI.js                    3,769.75 kB │ gzip: 1,212.17 kB
+
+ WARN 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+
+ℹ ✓ built in 16.60s
+✔ Client built in 16616ms
+[Electron Module] Extending Vite config
+ℹ Building server...
+[Electron Module] Vite config resolved: { mode: 'production', base: '/', buildTarget: 'electron' }
+ℹ vite v7.3.1 building ssr environment for production...
+ℹ transforming...
+ℹ ✓ 1 modules transformed.
+ℹ rendering chunks...
+ℹ ✓ built in 9ms
+[Electron Module] Processing build manifest
+✔ Server built in 38ms
+[Electron Module] Build process completed
+[Electron Module] Running production build steps
+[Electron Module] Building entry: electron/main.ts
+vite v7.3.1 building client environment for production...
+transforming...
+✓ 402 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/electron/main.js  651.30 kB │ gzip: 186.26 kB
+✓ built in 1.23s
+[Electron Module] Building entry: electron/preload.ts
+vite v7.3.1 building client environment for production...
+transforming...
+✓ 1 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/electron/preload.js  3.87 kB │ gzip: 1.04 kB
+✓ built in 13ms
+[Electron Module] Production build completed successfully
+[nitro] ℹ Initializing prerenderer
+[nitro] ℹ Prerendering 3 initial routes with crawler
+[nitro]   ├─ /index.html (25ms)
+[nitro]   ├─ /404.html (25ms)
+[nitro]   ├─ /200.html (25ms)
+[nitro] ℹ Prerendered 3 routes in 0.659 seconds
+[nitro] ✔ Generated public dist/renderer
+[nitro] ✔ You can preview this build using npx serve dist/renderer
+│
+▲  HTML content not prerendered because ssr: false was set.
+│
+●  You can read more in https://nuxt.com/docs/getting-started/deployment#static-hosting.
+│
+└  ✨ You can now deploy dist/renderer to any static hosting!
+
+> autobyteus@1.2.90 transpile-electron /Users/normy/autobyteus_org/autobyteus-worktrees/restart-tool-trace-sync/autobyteus-web
+> tsc -p electron/tsconfig.json
+
+Building with environment: production
+Using environment file: .env.production
+Resolved build flavor: personal
+Artifact base name: AutoByteus_personal
+Requested architecture: ARM64
+Updater publish config: [{"provider":"github","owner":"AutoByteus","repo":"autobyteus-workspace"}]
+Generating application icons...
+Generating 16x16 PNG icon...
+Generating 32x32 PNG icon...
+Generating 48x48 PNG icon...
+Generating 64x64 PNG icon...
+Generating 128x128 PNG icon...
+Generating 256x256 PNG icon...
+Generating 512x512 PNG icon...
+Generating 1024x1024 PNG icon...
+Generating Windows ICO icon...
+Generating macOS ICNS icon...
+Icon generation completed successfully
+Starting electron-builder...
+  • electron-builder  version=25.1.8 os=25.2.0
+  • @electron/rebuild already used by electron-builder, please consider to remove excess dependency from devDependencies
+
+To ensure your native dependencies are always matched electron version, simply add script `"postinstall": "electron-builder install-app-deps" to your `package.json`
+  • executing @electron/rebuild  electronVersion=38.8.2 arch=arm64 buildFromSource=false appDir=./
+  • installing native dependencies  arch=arm64
+  • completed installing native dependencies
+  • packaging       platform=darwin arch=arm64 electron=38.8.2 appOutDir=electron-dist/mac-arm64
+[WARN] APPLE_SIGNING_IDENTITY not set, skipping extra resource signing
+  • skipped macOS code signing  reason=identity explicitly is set to null
+  • building        target=DMG arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.2.90.dmg
+  • building        target=macOS zip arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.2.90.zip
+  • Detected arm64 process, HFS+ is unavailable. Creating dmg with APFS - supports Mac OSX 10.12+
+  • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-arm64-1.2.90.dmg.blockmap
+  • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-arm64-1.2.90.zip.blockmap
+Build completed: [
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/restart-tool-trace-sync/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.90.dmg.blockmap',
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/restart-tool-trace-sync/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.90.dmg',
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/restart-tool-trace-sync/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.90.zip.blockmap',
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/restart-tool-trace-sync/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.90.zip'
+]
+Finished: 2026-05-02T14:39:47Z

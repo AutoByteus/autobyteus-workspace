@@ -1,0 +1,95 @@
+{
+  "runId": "a1aff7d2-d3ef-4d90-a7d6-3757742f0296",
+  "invocationId": "call_3dSS7oDmBaIKoIKtIcUHYzZl",
+  "expectedText": "codex auto speak 979ba587 ba85 406f a2fb 4cd059019a6d",
+  "liveSegmentItemArguments": {
+    "text": "codex auto speak 979ba587 ba85 406f a2fb 4cd059019a6d",
+    "play": false
+  },
+  "liveSegmentMetadataArguments": {
+    "text": "codex auto speak 979ba587 ba85 406f a2fb 4cd059019a6d",
+    "play": false
+  },
+  "rawSpeakTraces": [
+    {
+      "traceType": "tool_call",
+      "sourceEvent": "TOOL_EXECUTION_STARTED",
+      "toolName": "speak",
+      "toolCallId": "call_3dSS7oDmBaIKoIKtIcUHYzZl",
+      "toolArgs": {},
+      "toolResult": null,
+      "toolError": null
+    },
+    {
+      "traceType": "tool_result",
+      "sourceEvent": "TOOL_EXECUTION_SUCCEEDED",
+      "toolName": "speak",
+      "toolCallId": "call_3dSS7oDmBaIKoIKtIcUHYzZl",
+      "toolArgs": {},
+      "toolResult": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"ok\": true\n}"
+          }
+        ],
+        "structuredContent": {
+          "ok": true
+        },
+        "_meta": null
+      },
+      "toolError": null
+    }
+  ],
+  "projectionSpeakActivities": [
+    {
+      "invocationId": "call_3dSS7oDmBaIKoIKtIcUHYzZl",
+      "toolName": "speak",
+      "type": "tool_call",
+      "status": "success",
+      "contextText": "speak",
+      "arguments": {},
+      "logs": [],
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"ok\": true\n}"
+          }
+        ],
+        "structuredContent": {
+          "ok": true
+        },
+        "_meta": null
+      },
+      "error": null,
+      "ts": 1777701736.421,
+      "detailLevel": "source_limited"
+    }
+  ],
+  "projectionSpeakConversation": [
+    {
+      "kind": "tool_call",
+      "invocationId": "call_3dSS7oDmBaIKoIKtIcUHYzZl",
+      "role": null,
+      "content": "",
+      "toolName": "speak",
+      "toolArgs": {},
+      "toolResult": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"ok\": true\n}"
+          }
+        ],
+        "structuredContent": {
+          "ok": true
+        },
+        "_meta": null
+      },
+      "toolError": null,
+      "media": null,
+      "ts": 1777701736.421
+    }
+  ]
+}
