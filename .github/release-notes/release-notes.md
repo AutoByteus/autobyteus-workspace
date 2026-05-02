@@ -1,11 +1,11 @@
 ## What's New
-- Added a more reliable two-lane tool activity model so tool transcript entries and executable Activity rows stay synchronized without duplicating each other.
+- Added canonical Claude Agent SDK lifecycle handling for first-party team messaging so `send_message_to` now progresses through Activity execution and completion states.
 
 ## Improvements
-- Claude tool runs now keep their input arguments visible across live progress, approval, completion, and run-history views.
-- Restored runs can now preserve Activity details even when the runtime history only contains conversation transcript rows.
+- Preserved Claude browser `open_tab` visibility by normalizing first-party browser MCP tool names and results before Browser panel handling.
+- Added live Claude SDK team validation coverage for `send_message_to` lifecycle, arguments, memory traces, and raw MCP duplicate suppression.
 
 ## Fixes
-- Fixed Claude tool Activity cards that could show empty or missing arguments after approval or successful completion.
-- Fixed edge cases where tool execution status ordering could cause Activity rows to appear late, duplicate, or lose argument details.
-- Preserved existing Codex command, dynamic-tool, and file-change Activity behavior while applying the Claude fix.
+- Fixed Claude Agent SDK browser `open_tab` results so successful tab opens focus the Browser panel instead of leaving it empty.
+- Fixed Claude Agent SDK `send_message_to` Activity rows getting stuck at `Parsed`; canonical deliveries now reach `Executing` and terminal `Success` or `Error`.
+- Prevented raw Claude MCP transport names such as `mcp__autobyteus_team__send_message_to` from creating duplicate Activity rows or leaking into first-party tool display.
