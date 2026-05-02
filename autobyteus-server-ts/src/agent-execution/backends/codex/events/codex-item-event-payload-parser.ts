@@ -183,6 +183,30 @@ export class CodexItemEventPayloadParser {
     return this.toolPayloadParser.resolveWebSearchMetadata(payload);
   }
 
+  public resolveWebSearchArguments(payload: Record<string, unknown>): Record<string, unknown> {
+    return this.toolPayloadParser.resolveWebSearchArguments(payload);
+  }
+
+  public resolveWebSearchResult(payload: Record<string, unknown>): unknown {
+    return this.toolPayloadParser.resolveWebSearchResult(payload);
+  }
+
+  public resolveWebSearchError(payload: Record<string, unknown>): string {
+    return this.toolPayloadParser.resolveWebSearchError(payload);
+  }
+
+  public resolveTurnId(payload: Record<string, unknown>): string | null {
+    const item = asObject(payload.item);
+    const turn = asObject(payload.turn);
+    return (
+      asString(payload.turn_id) ??
+      asString(payload.turnId) ??
+      asString(item.turn_id) ??
+      asString(item.turnId) ??
+      asString(turn.id)
+    );
+  }
+
   public resolveInvocationId(payload: Record<string, unknown>): string | null {
     const item = asObject(payload.item);
     const invocationBase =

@@ -42,6 +42,18 @@ describe('tool lifecycle ordering regression', () => {
       context,
     );
 
+    let activities = useAgentActivityStore().getActivities(runId);
+    expect(activities).toHaveLength(1);
+    expect(activities[0]).toEqual(
+      expect.objectContaining({
+        invocationId: 'bash-segment-first',
+        toolName: 'Bash',
+        type: 'terminal_command',
+        status: 'parsing',
+        arguments: { command: 'pwd' },
+      }),
+    );
+
     handleToolExecutionStarted(
       {
         invocation_id: 'bash-segment-first',
@@ -56,7 +68,7 @@ describe('tool lifecycle ordering regression', () => {
     expect(aiMessage.segments).toHaveLength(1);
     expect(aiMessage.segments[0].arguments).toEqual({ command: 'pwd' });
 
-    const activities = useAgentActivityStore().getActivities(runId);
+    activities = useAgentActivityStore().getActivities(runId);
     expect(activities).toHaveLength(1);
     expect(activities[0]).toEqual(
       expect.objectContaining({
@@ -112,7 +124,57 @@ describe('tool lifecycle ordering regression', () => {
     );
   });
 
-  it('keeps Codex command, dynamic tool, and file-change Activity lifecycle-owned', () => {
+  it('dedupes Activity and transcript segment when lifecycle invocation uses an approval alias', () => {
+    const context = buildContext();
+    const store = useAgentActivityStore();
+
+    handleToolExecutionStarted(
+      {
+        invocation_id: 'bash-alias-base:approval-1',
+        tool_name: 'run_bash',
+        turn_id: 'turn-1',
+        arguments: { command: 'pwd' },
+      },
+      context,
+    );
+
+    handleSegmentStart(
+      {
+        id: 'bash-alias-base',
+        turn_id: 'turn-1',
+        segment_type: 'run_bash',
+        metadata: {
+          command: 'pwd',
+        },
+      },
+      context,
+    );
+
+    const aiMessage = context.conversation.messages[0] as any;
+    expect(aiMessage.segments).toHaveLength(1);
+    expect(aiMessage.segments[0]).toEqual(
+      expect.objectContaining({
+        invocationId: 'bash-alias-base:approval-1',
+        type: 'terminal_command',
+        command: 'pwd',
+        status: 'executing',
+      }),
+    );
+
+    const activities = store.getActivities(runId);
+    expect(activities).toHaveLength(1);
+    expect(activities[0]).toEqual(
+      expect.objectContaining({
+        invocationId: 'bash-alias-base:approval-1',
+        toolName: 'run_bash',
+        type: 'terminal_command',
+        status: 'executing',
+        arguments: { command: 'pwd' },
+      }),
+    );
+  });
+
+  it('seeds Codex dynamic tool and file-change Activity from segments and keeps lifecycle deduped', () => {
     const context = buildContext();
     const store = useAgentActivityStore();
 
@@ -152,9 +214,30 @@ describe('tool lifecycle ordering regression', () => {
       context,
     );
 
-    expect(store.getActivities(runId).map((activity) => activity.invocationId)).toEqual([
+    expect(store.getActivities(runId).map((activity) => activity.invocationId).sort()).toEqual([
       'codex-command-1',
+      'codex-dynamic-1',
+      'codex-file-1',
     ]);
+    expect(store.getActivities(runId).find((activity) => activity.invocationId === 'codex-dynamic-1')).toEqual(
+      expect.objectContaining({
+        status: 'parsing',
+        toolName: 'echo_dynamic',
+        type: 'tool_call',
+        arguments: { value: 'HELLO_DYNAMIC' },
+      }),
+    );
+    expect(store.getActivities(runId).find((activity) => activity.invocationId === 'codex-file-1')).toEqual(
+      expect.objectContaining({
+        status: 'parsing',
+        toolName: 'edit_file',
+        type: 'edit_file',
+        arguments: {
+          path: '/tmp/example.py',
+          patch: '@@\\n+print(\"hi\")',
+        },
+      }),
+    );
 
     handleToolExecutionStarted(
       {
@@ -236,6 +319,102 @@ describe('tool lifecycle ordering regression', () => {
         arguments: {
           path: '/tmp/example.py',
           patch: '@@\\n+print(\"hi\")',
+        },
+      }),
+    );
+  });
+
+  it('creates one terminal search_web Activity while preserving the transcript segment', () => {
+    const context = buildContext();
+    const store = useAgentActivityStore();
+    const invocationId = 'codex-websearch-1';
+    const searchArguments = {
+      query: 'OpenAI Codex CLI web search',
+      action_type: 'search',
+    };
+
+    handleSegmentStart(
+      {
+        id: invocationId,
+        turn_id: 'turn-1',
+        segment_type: 'tool_call',
+        metadata: {
+          tool_name: 'search_web',
+        },
+      },
+      context,
+    );
+
+    expect(store.getActivities(runId)).toEqual([
+      expect.objectContaining({
+        invocationId,
+        toolName: 'search_web',
+        type: 'tool_call',
+        status: 'parsing',
+        arguments: {},
+      }),
+    ]);
+
+    handleToolExecutionStarted(
+      {
+        invocation_id: invocationId,
+        tool_name: 'search_web',
+        turn_id: 'turn-1',
+        arguments: {},
+      },
+      context,
+    );
+
+    handleToolExecutionSucceeded(
+      {
+        invocation_id: invocationId,
+        tool_name: 'search_web',
+        turn_id: 'turn-1',
+        arguments: searchArguments,
+        result: {
+          status: 'completed',
+          query: searchArguments.query,
+        },
+      },
+      context,
+    );
+
+    handleSegmentEnd(
+      {
+        id: invocationId,
+        turn_id: 'turn-1',
+        metadata: {
+          tool_name: 'search_web',
+          arguments: searchArguments,
+        },
+      },
+      context,
+    );
+
+    const aiMessage = context.conversation.messages[0] as any;
+    expect(aiMessage.segments).toHaveLength(1);
+    expect(aiMessage.segments[0]).toEqual(
+      expect.objectContaining({
+        invocationId,
+        type: 'tool_call',
+        toolName: 'search_web',
+        status: 'success',
+        arguments: searchArguments,
+      }),
+    );
+
+    const activities = store.getActivities(runId);
+    expect(activities).toHaveLength(1);
+    expect(activities[0]).toEqual(
+      expect.objectContaining({
+        invocationId,
+        toolName: 'search_web',
+        type: 'tool_call',
+        status: 'success',
+        arguments: searchArguments,
+        result: {
+          status: 'completed',
+          query: searchArguments.query,
         },
       }),
     );

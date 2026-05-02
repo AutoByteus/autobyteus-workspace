@@ -1,7 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { createPinia, setActivePinia } from 'pinia';
 import { findSegmentById, handleSegmentContent, handleSegmentEnd, handleSegmentStart } from '../segmentHandler';
 import type { SegmentStartPayload } from '../../protocol/messageTypes';
 import type { AgentContext } from '~/types/agent/AgentContext';
+import { useAgentActivityStore } from '~/stores/agentActivityStore';
 
 const buildContext = (): AgentContext =>
   ({
@@ -18,12 +20,13 @@ describe('segmentHandler', () => {
   let mockContext: AgentContext;
 
   beforeEach(() => {
+    setActivePinia(createPinia());
     mockContext = buildContext();
     vi.restoreAllMocks();
   });
 
   describe('handleSegmentStart', () => {
-    it('creates a tool_call conversation segment from metadata without creating Activity state', () => {
+    it('creates a tool_call conversation segment and seeds Activity state from metadata', () => {
       const payload: SegmentStartPayload = {
         id: 'test-id',
         turn_id: 'turn-1',
@@ -43,6 +46,16 @@ describe('segmentHandler', () => {
       expect(segment.arguments).toEqual({ path: '/tmp/readme.md' });
       expect(mockContext.conversation.messages[0]?.type).toBe('ai');
       expect((mockContext.conversation.messages[0] as any).segments).toHaveLength(1);
+
+      expect(useAgentActivityStore().getActivities('test-agent-id')).toEqual([
+        expect.objectContaining({
+          invocationId: 'test-id',
+          toolName: 'read_file',
+          type: 'tool_call',
+          status: 'parsing',
+          arguments: { path: '/tmp/readme.md' },
+        }),
+      ]);
     });
 
     it('hydrates tool_call arguments from metadata.arguments/query fields', () => {
@@ -105,6 +118,7 @@ describe('segmentHandler', () => {
       expect(segment.type).toBe('tool_call');
       expect(segment.toolName).toBe('');
       expect(consoleErrorSpy).not.toHaveBeenCalled();
+      expect(useAgentActivityStore().getActivities('test-agent-id')).toHaveLength(0);
     });
 
     it('replaces unknown_tool when a later SEGMENT_START provides the concrete tool name', () => {
@@ -154,6 +168,16 @@ describe('segmentHandler', () => {
         recipient_name: 'Student',
         content: 'Question for you',
       });
+      expect(useAgentActivityStore().getActivities('test-agent-id')).toEqual([
+        expect.objectContaining({
+          invocationId: 'send-msg-1',
+          toolName: 'send_message_to',
+          arguments: {
+            recipient_name: 'Student',
+            content: 'Question for you',
+          },
+        }),
+      ]);
     });
 
     it('creates write_file/edit_file/run_bash transcript segments from metadata', () => {
@@ -196,6 +220,27 @@ describe('segmentHandler', () => {
       expect(bashSegment.type).toBe('terminal_command');
       expect(bashSegment.command).toBe('python fibonacci.py');
       expect(bashSegment.arguments).toEqual({ command: 'python fibonacci.py' });
+
+      expect(useAgentActivityStore().getActivities('test-agent-id')).toEqual([
+        expect.objectContaining({
+          invocationId: 'test-id-kf',
+          toolName: 'write_file',
+          type: 'write_file',
+          arguments: { path: '/tmp/foo.txt' },
+        }),
+        expect.objectContaining({
+          invocationId: 'test-id-pf',
+          toolName: 'edit_file',
+          type: 'edit_file',
+          arguments: { path: '/tmp/bar.txt' },
+        }),
+        expect.objectContaining({
+          invocationId: 'test-id-bash',
+          toolName: 'run_bash',
+          type: 'terminal_command',
+          arguments: { command: 'python fibonacci.py' },
+        }),
+      ]);
     });
 
     it('deduplicates repeated SEGMENT_START with same id', () => {
@@ -223,6 +268,7 @@ describe('segmentHandler', () => {
         recipient_name: 'Student',
         content: 'hello',
       });
+      expect(useAgentActivityStore().getActivities('test-agent-id')).toHaveLength(1);
     });
 
     it('deduplicates cross-type start collisions and keeps a single segment', () => {

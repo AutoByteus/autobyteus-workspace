@@ -38,6 +38,10 @@ export type CodexItemEventConverterContext = {
   isReasoningItem: (itemType: string | null) => boolean;
   isWebSearchItem: (itemType: string | null) => boolean;
   resolveWebSearchMetadata: (payload: JsonObject) => Record<string, unknown>;
+  resolveWebSearchArguments: (payload: JsonObject) => Record<string, unknown>;
+  resolveWebSearchResult: (payload: JsonObject) => unknown;
+  resolveWebSearchError: (payload: JsonObject) => string;
+  resolveTurnId: (payload: JsonObject) => string | null;
   resolveSegmentStartId: (payload: JsonObject, segmentType: string) => string;
   resolveSegmentType: (payload: JsonObject) => string;
   resolveSegmentMetadata: (payload: JsonObject) => Record<string, unknown> | undefined;
@@ -141,6 +145,73 @@ const createSegmentEndEvent = (
   });
 };
 
+const createWebSearchSegmentStartEvent = (
+  context: CodexItemEventConverterContext,
+  codexEventName: string,
+  payload: JsonObject,
+): AgentRunEvent =>
+  context.createEvent(codexEventName, AgentRunEventType.SEGMENT_START, {
+    ...serializePayload(payload),
+    id: context.resolveSegmentStartId(payload, "tool_call"),
+    segment_type: "tool_call",
+    metadata: context.resolveWebSearchMetadata(payload),
+  });
+
+const createWebSearchLifecycleStartedEvent = (
+  context: CodexItemEventConverterContext,
+  codexEventName: string,
+  payload: JsonObject,
+): AgentRunEvent => {
+  const invocationId = context.resolveInvocationId(payload);
+  const turnId = context.resolveTurnId(payload);
+  return context.createEvent(codexEventName, AgentRunEventType.TOOL_EXECUTION_STARTED, {
+    ...serializePayload(payload),
+    ...(invocationId ? { invocation_id: invocationId } : {}),
+    ...(turnId ? { turn_id: turnId } : {}),
+    tool_name: "search_web",
+    arguments: context.resolveWebSearchArguments(payload),
+  });
+};
+
+const createWebSearchTerminalLifecycleEvent = (
+  context: CodexItemEventConverterContext,
+  codexEventName: string,
+  payload: JsonObject,
+): AgentRunEvent => {
+  const invocationId = context.resolveInvocationId(payload);
+  const turnId = context.resolveTurnId(payload);
+  const basePayload = {
+    ...serializePayload(payload),
+    ...(invocationId ? { invocation_id: invocationId } : {}),
+    ...(turnId ? { turn_id: turnId } : {}),
+    tool_name: "search_web",
+    arguments: context.resolveWebSearchArguments(payload),
+  };
+
+  if (context.isExecutionFailure(payload)) {
+    return context.createEvent(codexEventName, AgentRunEventType.TOOL_EXECUTION_FAILED, {
+      ...basePayload,
+      error: context.resolveWebSearchError(payload),
+    });
+  }
+
+  return context.createEvent(codexEventName, AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+    ...basePayload,
+    result: context.resolveWebSearchResult(payload),
+  });
+};
+
+const createWebSearchSegmentEndEvent = (
+  context: CodexItemEventConverterContext,
+  codexEventName: string,
+  payload: JsonObject,
+): AgentRunEvent =>
+  context.createEvent(codexEventName, AgentRunEventType.SEGMENT_END, {
+    ...serializePayload(payload),
+    id: context.resolveSegmentId(payload),
+    metadata: context.resolveWebSearchMetadata(payload),
+  });
+
 const createFileChangeSegmentStartEvent = (
   context: CodexItemEventConverterContext,
   codexEventName: string,
@@ -216,12 +287,8 @@ export const convertCodexItemEvent = (
       context.clearReasoningSegmentForTurn(payload);
       if (context.isWebSearchItem(itemType)) {
         return [
-          context.createEvent(codexEventName, AgentRunEventType.SEGMENT_START, {
-            ...serializePayload(payload),
-            id: context.resolveSegmentStartId(payload, "tool_call"),
-            segment_type: "tool_call",
-            metadata: context.resolveWebSearchMetadata(payload),
-          }),
+          createWebSearchSegmentStartEvent(context, codexEventName, payload),
+          createWebSearchLifecycleStartedEvent(context, codexEventName, payload),
         ];
       }
       if (itemType === "filechange") {
@@ -334,11 +401,8 @@ export const convertCodexItemEvent = (
       }
       if (context.isWebSearchItem(itemType)) {
         return [
-          context.createEvent(codexEventName, AgentRunEventType.SEGMENT_END, {
-            ...serializePayload(payload),
-            id: context.resolveSegmentId(payload),
-            metadata: context.resolveWebSearchMetadata(payload),
-          }),
+          createWebSearchTerminalLifecycleEvent(context, codexEventName, payload),
+          createWebSearchSegmentEndEvent(context, codexEventName, payload),
         ];
       }
       return [

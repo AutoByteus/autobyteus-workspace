@@ -142,6 +142,7 @@ The projection path uses:
 
 - Raw Codex event interpretation stays inside `src/agent-execution/backends/codex/events/`.
 - `item/started` / `item/completed` with `item.type = dynamicToolCall` are the authoritative raw owners for Codex dynamic-tool execution lifecycle. The converter emits display segments and execution lifecycle separately: start produces `SEGMENT_START(tool_call)` plus `TOOL_EXECUTION_STARTED`, and completion produces exactly one terminal `TOOL_EXECUTION_SUCCEEDED` or `TOOL_EXECUTION_FAILED` before `SEGMENT_END(tool_call)`.
+- `item/started` / `item/completed` with `item.type = webSearch` are the authoritative raw owners for Codex built-in `search_web` execution lifecycle. The converter emits the same separated transcript and lifecycle surfaces: start produces `SEGMENT_START(tool_call, tool_name=search_web)` plus `TOOL_EXECUTION_STARTED(search_web)`, and completion produces exactly one terminal lifecycle event before `SEGMENT_END(tool_call)`.
 - Raw `function_call_output` remains diagnostic `TOOL_LOG` output for dynamic tools. It is not the terminal lifecycle authority and must not be used as a substitute for success/error Activity state.
 - Browser dynamic tools use the generalized `dynamicToolCall` lifecycle path rather than a browser-only terminal event special case.
 - `item/started` / `item/completed` with `item.type = fileChange` are the authoritative raw owners for Codex `edit_file` lifecycle and artifact availability.
