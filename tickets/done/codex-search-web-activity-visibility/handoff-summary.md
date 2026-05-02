@@ -1,6 +1,6 @@
 # Handoff Summary - codex-search-web-activity-visibility
 
-- Stage: User verified; repository finalization in progress
+- Stage: Finalized on `personal`
 - Date: 2026-05-01
 - Ticket state: `tickets/done/codex-search-web-activity-visibility`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility`
@@ -68,7 +68,17 @@ Runtime observation addendum: `/Users/normy/autobyteus_org/autobyteus-worktrees/
 - Waiting for explicit user verification: `No`.
 - User verification received: `Yes`.
 - Verification reference: user said `no worries all good` after testing the latest local Electron build, then clarified `no new code changes`; solution design also recorded the suspected `open_tab` / browser tool issue as a false alarm in `runtime-observation-addendum.md`.
-- Held after verification: final commit/push, merge into `personal`, and any cleanup. No release/version/tag work is requested or planned for this ticket.
+- Finalization result: ticket branch commit `83d1a8b25c18` was pushed and merged into `personal` via merge commit `94f434036137`. No release/version/tag work was requested or performed for this ticket.
+
+
+
+## Finalization Result
+
+- Ticket branch commit: `83d1a8b25c18` (`fix(activity): show segment-start tools in activity`)
+- Merge into `personal`: `94f434036137` (`merge: codex search web activity visibility`)
+- Target push: `Completed` after finalization report update.
+- Release/version/tag: `Not performed`; not requested for this ticket.
+- Cleanup: dedicated worktree retained because it contains the local Electron test build artifacts requested for verification.
 
 ## Live Validation Evidence
 

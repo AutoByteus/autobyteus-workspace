@@ -2,7 +2,7 @@
 
 ## Release / Publication / Deployment Scope
 
-No release, publication, or deployment is in scope before explicit user verification. Current delivery scope is integrated-state handoff, docs sync, and verification hold for the revised segment-first Activity projection plus Codex `search_web` lifecycle fan-out.
+User verification was received after testing the latest local Electron build. This final delivery pass archived the ticket and merged the verified fix into `personal`. No release, version bump, tag, publication, or deployment was requested for this ticket.
 
 ## Handoff Summary
 
@@ -52,23 +52,23 @@ No release, publication, or deployment is in scope before explicit user verifica
 
 ## Version / Tag / Release Commit
 
-No version bump, tag, or release commit was created before user verification. Release notes are not required for the current pre-verification handoff.
+No version bump, tag, release commit, or release notes were created; no release was requested for this ticket.
 
 ## Repository Finalization
 
 - Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/tickets/done/codex-search-web-activity-visibility/investigation-notes.md`
 - Ticket branch: `codex/codex-search-web-activity-visibility`
-- Ticket branch commit result: `Pending; finalization in progress`
-- Ticket branch push result: `Pending; finalization in progress`
+- Ticket branch commit result: `Completed` — ticket branch commit `83d1a8b25c18` (`fix(activity): show segment-start tools in activity`).
+- Ticket branch push result: `Completed` — pushed `origin/codex/codex-search-web-activity-visibility`.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: `No`; finalization refresh found `origin/personal` still at `27f368b97d4ab538d32fcd2038fae917c86cdb39`.
 - Delivery-owned edits protected before re-integration: `Not needed`; target did not advance and main worktree was clean.
 - Re-integration before final merge result: `Not needed`; ticket branch was current with `origin/personal`.
-- Target branch update result: `Pending; finalization in progress`
-- Merge into target result: `Pending; finalization in progress`
-- Push target branch result: `Pending; finalization in progress`
-- Repository finalization status: `In progress`
+- Target branch update result: `Completed` — `origin/personal` was rechecked and remained at `27f368b97d4a` before merge.
+- Merge into target result: `Completed` — merge commit `94f434036137` (`merge: codex search web activity visibility`).
+- Push target branch result: `Completed` — `personal` pushed after finalization report update.
+- Repository finalization status: `Completed`
 - Blocker (if applicable): N/A
 
 ## Release / Publication / Deployment
@@ -83,11 +83,11 @@ No version bump, tag, or release commit was created before user verification. Re
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility`
-- Worktree cleanup result: `Blocked`
-- Worktree prune result: `Blocked`
-- Local ticket branch cleanup result: `Blocked`
-- Remote branch cleanup result: `Not required`
-- Blocker (if applicable): Cleanup is intentionally held until after user verification and repository finalization.
+- Worktree cleanup result: `Not performed` — retained the dedicated worktree because it still contains the local Electron test build artifacts requested by the user.
+- Worktree prune result: `Not performed`
+- Local ticket branch cleanup result: `Not performed` — branch retained with the archived ticket commit for traceability.
+- Remote branch cleanup result: `Not performed` — branch retained for traceability.
+- Blocker (if applicable): N/A
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
@@ -145,4 +145,4 @@ Rollback or reroute before finalization if user verification shows any of the fo
 
 ## Final Status
 
-User verification received. Repository finalization is in progress; no release/version/tag work is requested for this ticket.
+Repository finalization completed. `personal` contains the verified segment-first Activity projection and Codex `search_web` lifecycle fix, archived ticket artifacts, and delivery documentation. No release/version/tag work was performed because none was requested for this ticket.
