@@ -5,7 +5,7 @@
 - Ticket: `codex-search-web-activity-visibility`
 - Purpose: Local macOS ARM64 Electron build for user verification before repository finalization.
 - Date: 2026-05-02
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility`
+- Worktree used for build: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility` (removed during post-finalization cleanup after user testing completed)
 - Package version: `1.2.90`
 - Build flavor: `personal`
 - Platform/arch: `macOS arm64`
@@ -28,20 +28,20 @@ AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm build:electr
 ## Result
 
 - Result: `Pass`
-- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/tickets/done/codex-search-web-activity-visibility/logs/delivery/electron-build-mac-arm64-20260502.log`
+- Build log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-search-web-activity-visibility/logs/delivery/electron-build-mac-arm64-20260502.log`
 - Notes:
   - Build was intentionally unsigned/not notarized for local testing; the log includes `skipped macOS code signing`.
   - Temporary dependency symlinks to the shared checkout were removed after the build.
-  - Repository finalization is still held until explicit user verification.
+  - Repository finalization later completed after user verification; the dedicated build worktree and local DMG/ZIP artifacts were removed during cleanup.
 
 ## Artifacts
 
 | Artifact | Path | Size | SHA-256 |
 | --- | --- | ---: | --- |
-| DMG | `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.90.dmg` | 358.0MB | `badce72e5d347eee5d680841002c0c0d3fbc9251124f2700a8e8a1413c99bd5e` |
-| ZIP | `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.90.zip` | 355.5MB | `030b0e0d5ac9458ed788cf8aef090b0b730844d0abc3fd58e424b97eb1d5b621` |
-| DMG blockmap | `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.90.dmg.blockmap` | 382.8KB | N/A |
-| ZIP blockmap | `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.90.zip.blockmap` | 373.7KB | N/A |
+| DMG | `removed after user testing; build-time path /Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.90.dmg` | 358.0MB | `badce72e5d347eee5d680841002c0c0d3fbc9251124f2700a8e8a1413c99bd5e` |
+| ZIP | `removed after user testing; build-time path /Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.90.zip` | 355.5MB | `030b0e0d5ac9458ed788cf8aef090b0b730844d0abc3fd58e424b97eb1d5b621` |
+| DMG blockmap | `removed after user testing; build-time path /Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.90.dmg.blockmap` | 382.8KB | N/A |
+| ZIP blockmap | `removed after user testing; build-time path /Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.90.zip.blockmap` | 373.7KB | N/A |
 
 ## Suggested Verification
 

@@ -6,7 +6,7 @@ User verification was received after testing the latest local Electron build. Th
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/tickets/done/codex-search-web-activity-visibility/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-search-web-activity-visibility/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Notes: Summary records revised delivered behavior, latest-base refresh result, validation snapshot, docs updates, pause/resume context, and the user-verification hold.
 
@@ -36,7 +36,7 @@ User verification was received after testing the latest local Electron build. Th
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/tickets/done/codex-search-web-activity-visibility/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-search-web-activity-visibility/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/autobyteus-server-ts/docs/design/codex_raw_event_mapping.md`
@@ -48,7 +48,7 @@ User verification was received after testing the latest local Electron build. Th
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/<ticket-name>`: `Yes`
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/tickets/done/codex-search-web-activity-visibility`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-search-web-activity-visibility`
 
 ## Version / Tag / Release Commit
 
@@ -56,7 +56,7 @@ No version bump, tag, release commit, or release notes were created; no release 
 
 ## Repository Finalization
 
-- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/tickets/done/codex-search-web-activity-visibility/investigation-notes.md`
+- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-search-web-activity-visibility/investigation-notes.md`
 - Ticket branch: `codex/codex-search-web-activity-visibility`
 - Ticket branch commit result: `Completed` — ticket branch commit `83d1a8b25c18` (`fix(activity): show segment-start tools in activity`).
 - Ticket branch push result: `Completed` — pushed `origin/codex/codex-search-web-activity-visibility`.
@@ -109,7 +109,7 @@ N/A for current scope.
 
 - No migration, restart, installer, or environment change is required.
 - Live Codex web-search selection remains model/tool-availability dependent; deterministic converter and frontend handler/state tests carry the contract.
-- The earlier delivery pause is resolved/superseded by the revised reviewed and validated package; see `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/tickets/done/codex-search-web-activity-visibility/delivery-pause-note.md`.
+- The earlier delivery pause is resolved/superseded by the revised reviewed and validated package; see `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-search-web-activity-visibility/delivery-pause-note.md`.
 - Live validation evidence retained by API/E2E Round 2:
   - Raw JSONL: `/tmp/codex-websearch-round2-validation-20260501-233739/raw/codex-run-run-websearch-round2-6d30626b-f671-434f-8a96-01102e722a4a.jsonl`
   - Summary JSON: `/tmp/codex-websearch-round2-validation-20260501-233739/summary/run-websearch-round2-6d30626b-f671-434f-8a96-01102e722a4a-summary.json`
@@ -127,10 +127,9 @@ N/A for current scope.
 - Delivery-stage check:
   - `git diff --check` from `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility` -> passed after docs sync.
 - Local Electron test build passed:
-  - Build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/tickets/done/codex-search-web-activity-visibility/electron-test-build-report.md`
-  - Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/tickets/done/codex-search-web-activity-visibility/logs/delivery/electron-build-mac-arm64-20260502.log`
-  - DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.90.dmg`
-  - ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.90.zip`
+  - Build report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-search-web-activity-visibility/electron-test-build-report.md`
+  - Build log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-search-web-activity-visibility/logs/delivery/electron-build-mac-arm64-20260502.log`
+  - DMG/ZIP: created successfully for user testing, then removed with the dedicated ticket worktree during post-finalization cleanup. Build-time paths and checksums are retained in the Electron test build report.
 
 ## Rollback Criteria
 

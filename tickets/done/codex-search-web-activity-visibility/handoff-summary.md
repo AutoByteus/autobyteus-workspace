@@ -48,19 +48,19 @@
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/autobyteus-server-ts/docs/modules/agent_execution.md`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/autobyteus-web/docs/agent_execution_architecture.md`
 
-Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/tickets/done/codex-search-web-activity-visibility/docs-sync-report.md`
-Delivery/release report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/tickets/done/codex-search-web-activity-visibility/release-deployment-report.md`
-Delivery pause/resume note: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/tickets/done/codex-search-web-activity-visibility/delivery-pause-note.md`
-Runtime observation addendum: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/tickets/done/codex-search-web-activity-visibility/runtime-observation-addendum.md`
+Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-search-web-activity-visibility/docs-sync-report.md`
+Delivery/release report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-search-web-activity-visibility/release-deployment-report.md`
+Delivery pause/resume note: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-search-web-activity-visibility/delivery-pause-note.md`
+Runtime observation addendum: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-search-web-activity-visibility/runtime-observation-addendum.md`
 
 
 ## Local Electron Test Build
 
 - Status: `Built successfully for user verification`
-- Build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/tickets/done/codex-search-web-activity-visibility/electron-test-build-report.md`
-- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/tickets/done/codex-search-web-activity-visibility/logs/delivery/electron-build-mac-arm64-20260502.log`
-- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.90.dmg`
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.90.zip`
+- Build report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-search-web-activity-visibility/electron-test-build-report.md`
+- Build log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-search-web-activity-visibility/logs/delivery/electron-build-mac-arm64-20260502.log`
+- DMG: removed with the dedicated ticket worktree after user testing completed; build-time path was `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.90.dmg`.
+- ZIP: removed with the dedicated ticket worktree after user testing completed; build-time path was `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.90.zip`.
 - Notes: macOS ARM64 personal build, unsigned/not notarized, created with `AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm build:electron:mac -- --arm64`.
 
 ## User Verification
@@ -90,16 +90,16 @@ Runtime observation addendum: `/Users/normy/autobyteus_org/autobyteus-worktrees/
 
 ## Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/tickets/done/codex-search-web-activity-visibility/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/tickets/done/codex-search-web-activity-visibility/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/tickets/done/codex-search-web-activity-visibility/design-spec.md`
-- Design impact rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/tickets/done/codex-search-web-activity-visibility/design-impact-rework-note.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/tickets/done/codex-search-web-activity-visibility/design-review-report.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/tickets/done/codex-search-web-activity-visibility/implementation-handoff.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/tickets/done/codex-search-web-activity-visibility/review-report.md`
-- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/tickets/done/codex-search-web-activity-visibility/validation-report.md`
-- Delivery pause/resume note: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/tickets/done/codex-search-web-activity-visibility/delivery-pause-note.md`
-- Runtime observation addendum: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/tickets/done/codex-search-web-activity-visibility/runtime-observation-addendum.md`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/tickets/done/codex-search-web-activity-visibility/docs-sync-report.md`
-- Delivery/release report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/tickets/done/codex-search-web-activity-visibility/release-deployment-report.md`
-- Electron test build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-search-web-activity-visibility/tickets/done/codex-search-web-activity-visibility/electron-test-build-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-search-web-activity-visibility/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-search-web-activity-visibility/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-search-web-activity-visibility/design-spec.md`
+- Design impact rework note: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-search-web-activity-visibility/design-impact-rework-note.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-search-web-activity-visibility/design-review-report.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-search-web-activity-visibility/implementation-handoff.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-search-web-activity-visibility/review-report.md`
+- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-search-web-activity-visibility/validation-report.md`
+- Delivery pause/resume note: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-search-web-activity-visibility/delivery-pause-note.md`
+- Runtime observation addendum: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-search-web-activity-visibility/runtime-observation-addendum.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-search-web-activity-visibility/docs-sync-report.md`
+- Delivery/release report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-search-web-activity-visibility/release-deployment-report.md`
+- Electron test build report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/codex-search-web-activity-visibility/electron-test-build-report.md`
