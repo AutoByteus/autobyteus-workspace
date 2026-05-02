@@ -60,3 +60,7 @@ aaa050eb8a083ca4fe9117b9270d302191447a6c18fb09c897d7ef422b9128cf  AutoByteus_per
 - This is a local test build only; no release, version bump, tag, publication, or deployment was performed.
 - macOS code signing was intentionally skipped because no signing identity/team id was provided for this local verification build.
 - Build warnings were non-blocking and consistent with prior local builds: ignored optional dependency build scripts, dependency deprecation/peer warnings, Nuxt chunk-size warnings, and APFS DMG creation on arm64.
+
+## Finalization Cleanup Note
+
+Artifacts were removed with the dedicated ticket worktree after user testing completed. Build-time artifact paths and checksums above are retained for audit purposes; no release artifact was published.
