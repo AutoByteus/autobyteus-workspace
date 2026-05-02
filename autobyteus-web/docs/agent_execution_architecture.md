@@ -63,6 +63,18 @@ Single-agent and team follow-up chat share the same recovery model:
 - accepted follow-up messages mark the run/team active in run history and refresh the history tree; and
 - stop/tool-approval control messages are active-only and should not be used as implicit restore operations.
 
+### Run Reopen Projection Hydration
+
+Run-history reopen consumes a backend replay bundle with sibling
+`conversation` and `activities` projections. Frontend open coordinators must
+apply those siblings together when replacing from projection, or preserve both
+existing live surfaces when an already-subscribed live context is kept. They
+must not hydrate projected Activity rows into a context whose live conversation
+is being preserved, because that can create right-pane-only tool entries after
+restart. For active team reopen, projected Activity hydration is limited to
+newly materialized member contexts whose projected conversation is also being
+applied.
+
 ### Workspace History Archive And Delete Actions
 
 `components/workspace/history/WorkspaceAgentRunsTreePanel.vue` owns the

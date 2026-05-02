@@ -5,6 +5,7 @@ import {
 } from '~/graphql/queries/runHistoryQueries';
 import type {
   GetTeamRunResumeConfigQueryData,
+  TeamMemberRunProjectionPayload,
   TeamRunResumeConfigPayload,
 } from '~/stores/runHistoryTypes';
 import { parseTeamRunMetadata, toTeamMemberKey } from '~/stores/runHistoryMetadata';
@@ -46,6 +47,7 @@ export interface TeamRunContextHydrationPayload {
   focusedMemberRouteKey: string;
   resumeConfig: TeamRunResumeConfigPayload;
   hydratedContext: AgentTeamContext;
+  projectionByMemberRouteKey: Map<string, TeamMemberRunProjectionPayload | null>;
 }
 
 interface LoadedTeamRunContextHydrationPayload {
@@ -56,6 +58,7 @@ interface LoadedTeamRunContextHydrationPayload {
   firstWorkspaceId: string | null;
   metadata: ReturnType<typeof parseTeamRunMetadata>;
   historicalHydration: HistoricalTeamHydrationState | null;
+  projectionByMemberRouteKey: Map<string, TeamMemberRunProjectionPayload | null>;
 }
 
 const historicalMemberHydrationRequests = new Map<string, Promise<void>>();
@@ -110,21 +113,20 @@ const applyMemberStatuses = (
   });
 };
 
-const hydrateLoadedMemberActivities = (params: {
-  metadata: ReturnType<typeof parseTeamRunMetadata>;
-  projectionByMemberRouteKey: Map<string, any>;
+export const hydrateTeamMemberActivitiesFromProjection = (params: {
+  members: Map<string, any>;
+  projectionByMemberRouteKey: Map<string, TeamMemberRunProjectionPayload | null>;
+  memberRouteKeys?: string[];
 }): void => {
-  params.metadata.memberMetadata.forEach((member) => {
-    const normalizedMemberRouteKey = toTeamMemberKey(member).trim();
-    if (!normalizedMemberRouteKey) {
-      return;
-    }
+  const memberRouteKeys = params.memberRouteKeys ?? Array.from(params.members.keys());
+  memberRouteKeys.forEach((memberRouteKey) => {
+    const normalizedMemberRouteKey = memberRouteKey.trim();
+    const memberContext = params.members.get(normalizedMemberRouteKey) || null;
     const projection = params.projectionByMemberRouteKey.get(normalizedMemberRouteKey) || null;
-    if (!projection) {
+    if (!memberContext || !projection) {
       return;
     }
-    const memberRunId = member.memberRunId || normalizedMemberRouteKey;
-    hydrateActivitiesFromProjection(memberRunId, projection.activities || []);
+    hydrateActivitiesFromProjection(memberContext.state.runId, projection.activities || []);
   });
 };
 
@@ -246,10 +248,6 @@ const loadLiveTeamRunContextHydrationPayload = async (input: {
     toTeamMemberKey,
     ensureWorkspaceByRootPath: input.ensureWorkspaceByRootPath,
   });
-  hydrateLoadedMemberActivities({
-    metadata: input.metadata,
-    projectionByMemberRouteKey,
-  });
 
   const availableMemberRouteKeys = Array.from(members.keys());
   const focusedMemberRouteKey = resolveFocusKey({
@@ -270,6 +268,7 @@ const loadLiveTeamRunContextHydrationPayload = async (input: {
     firstWorkspaceId,
     metadata: input.metadata,
     historicalHydration: null,
+    projectionByMemberRouteKey,
   };
 };
 
@@ -299,7 +298,7 @@ const loadHistoricalTeamRunContextHydrationPayload = async (input: {
     teamRunId: input.metadata.teamRunId,
     memberRouteKey: focusedMemberRouteKey,
   });
-  const projectionByMemberRouteKey = new Map<string, any>();
+  const projectionByMemberRouteKey = new Map<string, TeamMemberRunProjectionPayload | null>();
   if (focusedProjection) {
     projectionByMemberRouteKey.set(focusedMemberRouteKey, focusedProjection);
   }
@@ -342,6 +341,7 @@ const loadHistoricalTeamRunContextHydrationPayload = async (input: {
       loadedMemberRouteKeys: focusedProjection ? [focusedMemberRouteKey] : [],
       erroredMemberRouteKeys: focusedProjection ? [] : [focusedMemberRouteKey],
     }),
+    projectionByMemberRouteKey,
   };
 };
 
@@ -422,6 +422,7 @@ export const hydrateLiveTeamRunContext = async (
     focusedMemberRouteKey: payload.focusedMemberRouteKey,
     resumeConfig: payload.resumeConfig,
     hydratedContext,
+    projectionByMemberRouteKey: payload.projectionByMemberRouteKey,
   };
 };
 

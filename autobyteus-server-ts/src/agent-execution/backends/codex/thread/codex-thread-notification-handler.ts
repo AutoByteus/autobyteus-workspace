@@ -12,6 +12,8 @@ const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
 };
 
+const hasEntries = (value: JsonObject): boolean => Object.keys(value).length > 0;
+
 export const handleAppServerNotification = (
   codexThread: CodexThread,
   method: string,
@@ -74,7 +76,7 @@ export const handleAppServerNotification = (
     if (eventMethod === CodexThreadEventName.ITEM_STARTED && invocationId) {
       codexThread.trackPendingMcpToolCall({
         invocationId,
-        turnId: asString(params.turnId),
+        turnId: asString(params.turnId) ?? asString(params.turn_id),
         serverName: asString(item?.server),
         toolName: asString(item?.tool),
         arguments: asObject(item?.arguments) ?? {},
@@ -82,16 +84,23 @@ export const handleAppServerNotification = (
     }
     if (eventMethod === CodexThreadEventName.ITEM_COMPLETED) {
       if (invocationId) {
+        const pending = codexThread.completePendingMcpToolCall(invocationId);
+        const pendingArguments = pending?.arguments ?? {};
+        const itemArguments = asObject(item?.arguments) ?? {};
+        const argumentsPayload = { ...itemArguments, ...pendingArguments };
+        const toolName = asString(item?.tool) ?? pending?.toolName ?? null;
+        const turnId = asString(params.turnId) ?? asString(params.turn_id) ?? pending?.turnId ?? null;
         emitEvent(codexThread, {
           method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
           params: {
             ...params,
             invocation_id: invocationId,
-            ...(asString(item?.tool) ? { tool_name: asString(item?.tool) } : {}),
+            ...(turnId ? { turn_id: turnId } : {}),
+            ...(toolName ? { tool_name: toolName } : {}),
+            ...(hasEntries(argumentsPayload) ? { arguments: argumentsPayload } : {}),
           },
         });
       }
-      codexThread.completePendingMcpToolCall(invocationId);
     }
   }
 

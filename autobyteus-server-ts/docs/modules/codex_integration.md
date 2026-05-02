@@ -36,6 +36,14 @@ successful delivery is no longer represented only by `SEGMENT_START` /
 `TOOL_EXECUTION_STARTED` and terminal `TOOL_EXECUTION_SUCCEEDED` events keyed by
 the dynamic tool invocation id.
 
+Codex MCP tool calls exposed by the native runtime follow the same split
+surface contract. A raw `mcpToolCall` start emits a display
+`SEGMENT_START(tool_call)` and a durable `TOOL_EXECUTION_STARTED` event with the
+same invocation id, turn id, tool name, and arguments. Completion is enriched
+from the thread-local pending MCP call before the pending state is removed, so
+terminal lifecycle events and storage-only memory retain the same arguments
+that the live segment showed.
+
 ## Server-Owned Durable Memory
 
 Codex runtime runs now receive server-owned durable memory in addition to Codex-native thread history.
@@ -138,10 +146,18 @@ The projection path uses:
 - Codex thread ids for Codex-native identity
 - explicit `memoryDir` basenames for local-memory fallback reads
 
+Projection consumers must apply conversation and Activity rows as one replay
+bundle. If a subscribed live context is preserved during reopen, the frontend
+must preserve both the live conversation and the live Activity feed instead of
+hydrating Activity-only rows from projection. Team reopen may hydrate projected
+Activity only for newly materialized member contexts whose projected
+conversation is being applied.
+
 ## Event-Normalization Rules
 
 - Raw Codex event interpretation stays inside `src/agent-execution/backends/codex/events/`.
 - `item/started` / `item/completed` with `item.type = dynamicToolCall` are the authoritative raw owners for Codex dynamic-tool execution lifecycle. The converter emits display segments and execution lifecycle separately: start produces `SEGMENT_START(tool_call)` plus `TOOL_EXECUTION_STARTED`, and completion produces exactly one terminal `TOOL_EXECUTION_SUCCEEDED` or `TOOL_EXECUTION_FAILED` before `SEGMENT_END(tool_call)`.
+- `item/started` with `item.type = mcpToolCall` follows the dynamic-tool split surface and is the canonical start authority for storage-only memory. `item/completed(mcpToolCall)` closes the display segment, while `codex/local/mcpToolExecutionCompleted` emits exactly one terminal lifecycle event enriched with the pending call's tool name, turn id, and arguments.
 - `item/started` / `item/completed` with `item.type = webSearch` are the authoritative raw owners for Codex built-in `search_web` execution lifecycle. The converter emits the same separated transcript and lifecycle surfaces: start produces `SEGMENT_START(tool_call, tool_name=search_web)` plus `TOOL_EXECUTION_STARTED(search_web)`, and completion produces exactly one terminal lifecycle event before `SEGMENT_END(tool_call)`.
 - Raw `function_call_output` remains diagnostic `TOOL_LOG` output for dynamic tools. It is not the terminal lifecycle authority and must not be used as a substitute for success/error Activity state.
 - Browser dynamic tools use the generalized `dynamicToolCall` lifecycle path rather than a browser-only terminal event special case.
@@ -156,7 +172,7 @@ The projection path uses:
 - In practice, Codex may emit visible final-answer text only after reasoning finishes, which can make text streaming appear as a late burst even though lifecycle/tool events are still live.
 - Large long-running Codex turns can also become bursty and include long silent gaps at the native `codex app-server` layer; when debugging attribution, compare native raw deltas with backend `SEGMENT_CONTENT` cadence before blaming the AutoByteus bridge.
 - Team member identity is deterministic and server-owned; Codex thread ids are stored separately as runtime-native references.
-- Storage-only Codex memory appends active raw traces and updates the working-context snapshot for normal user/assistant/tool records. Dynamic tools, including `send_message_to`, are recorded from normalized lifecycle events as tool-call and terminal tool-result traces; display `SEGMENT_*` events alone are not treated as memory tool-result authority. Provider compaction boundaries may additionally rotate settled active raw traces into segmented archive entries while leaving the boundary marker active. There is no Codex semantic compaction, archive compression, total-storage retention window, or snapshot windowing policy in this path.
+- Storage-only Codex memory appends active raw traces and updates the working-context snapshot for normal user/assistant/tool records. Dynamic tools, MCP tool calls, and built-in tool-like items such as `search_web` are recorded from normalized lifecycle events as tool-call and terminal tool-result traces; display `SEGMENT_*` events alone are not treated as memory tool-result authority. Existing historical rows that were already persisted with empty tool arguments are not backfilled by this path. Provider compaction boundaries may additionally rotate settled active raw traces into segmented archive entries while leaving the boundary marker active. There is no Codex semantic compaction, archive compression, total-storage retention window, or snapshot windowing policy in this path.
 - Raw Codex debug capture is available through `CODEX_THREAD_RAW_EVENT_LOG_DIR`; see `docs/design/codex_raw_event_mapping.md` for the audit workflow and file format.
 
 ## Validation Notes

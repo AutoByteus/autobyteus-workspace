@@ -22,7 +22,7 @@ const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
 };
 
-type CodexPendingMcpToolCall = {
+export type CodexPendingMcpToolCall = {
   invocationId: string;
   turnId: string | null;
   serverName: string | null;
@@ -343,11 +343,13 @@ export class CodexThread {
     this.pendingMcpToolCalls.set(call.invocationId, call);
   }
 
-  completePendingMcpToolCall(invocationId: string | null): void {
+  completePendingMcpToolCall(invocationId: string | null): CodexPendingMcpToolCall | null {
     if (!invocationId) {
-      return;
+      return null;
     }
+    const pending = this.pendingMcpToolCalls.get(invocationId) ?? null;
     this.pendingMcpToolCalls.delete(invocationId);
+    return pending;
   }
 
   findPendingMcpToolCall(input: {

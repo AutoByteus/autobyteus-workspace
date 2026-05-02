@@ -56,10 +56,9 @@ export const openAgentRun = async (
       conversation,
       status: liveStatus,
     });
+    hydrateActivitiesFromProjection(input.runId, activities);
     hydrateRunFileChanges(input.runId, fileChanges);
   }
-
-  hydrateActivitiesFromProjection(input.runId, activities);
 
   if (input.selectRun !== false) {
     useAgentSelectionStore().selectRun(input.runId, 'agent');

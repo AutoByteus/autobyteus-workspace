@@ -9,6 +9,7 @@ import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import {
+  hydrateTeamMemberActivitiesFromProjection,
   loadTeamRunContextHydrationPayload,
 } from '~/services/runHydration/teamRunContextHydrationService';
 import { reconstructTeamRunConfigFromMetadata } from '~/utils/teamRunConfigUtils';
@@ -64,6 +65,7 @@ export const openTeamRun = async (
     firstWorkspaceId,
     focusedMemberRouteKey,
     historicalHydration,
+    projectionByMemberRouteKey,
   } = await loadTeamRunContextHydrationPayload(input);
 
   const shouldTreatAsLive = resumeConfig.isActive;
@@ -90,6 +92,7 @@ export const openTeamRun = async (
 
   const existingTeamContext = teamContextsStore.getTeamContextById(metadata.teamRunId);
   const shouldKeepLiveContext = shouldTreatAsLive && Boolean(existingTeamContext?.isSubscribed);
+  let liveProjectionActivityMemberKeys = Array.from(members.keys());
 
   if (existingTeamContext) {
     if (!shouldKeepLiveContext && existingTeamContext.unsubscribe) {
@@ -102,6 +105,10 @@ export const openTeamRun = async (
     existingTeamContext.focusedMemberName = focusedMemberRouteKey;
 
     if (shouldKeepLiveContext) {
+      const existingMemberKeys = new Set(existingTeamContext.members.keys());
+      liveProjectionActivityMemberKeys = Array.from(members.keys()).filter(
+        (memberRouteKey) => !existingMemberKeys.has(memberRouteKey),
+      );
       existingTeamContext.members = mergeHydratedMembers(existingTeamContext.members, members, {
         preserveLiveRuntimeState: true,
       });
@@ -117,6 +124,15 @@ export const openTeamRun = async (
     }
   } else {
     teamContextsStore.addTeamContext(hydratedContext);
+  }
+
+  if (shouldTreatAsLive && liveProjectionActivityMemberKeys.length > 0) {
+    const teamContext = teamContextsStore.getTeamContextById(metadata.teamRunId) || hydratedContext;
+    hydrateTeamMemberActivitiesFromProjection({
+      members: teamContext.members,
+      projectionByMemberRouteKey,
+      memberRouteKeys: liveProjectionActivityMemberKeys,
+    });
   }
 
   if (input.selectRun !== false) {

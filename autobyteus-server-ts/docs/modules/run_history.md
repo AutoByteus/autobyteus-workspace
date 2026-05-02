@@ -135,6 +135,15 @@ Frontend restore uses that bundle in two sibling hydration paths:
 - middle pane: conversation hydration
 - right pane: activity hydration
 
+Those sibling paths must stay synchronized. Reopen/hydration code should apply
+the projected `conversation` and `activities` from the same replay bundle, or
+preserve both existing live surfaces when a subscribed live context is kept. It
+must not hydrate projected Activity rows while preserving a different live
+conversation, because that creates Activity-only tool calls after restart. For
+active team reopen, only newly materialized member contexts may receive
+projected Activity rows, and only alongside that member's projected
+conversation.
+
 Provider registry:
 
 - `src/run-history/projection/run-projection-provider-registry.ts`

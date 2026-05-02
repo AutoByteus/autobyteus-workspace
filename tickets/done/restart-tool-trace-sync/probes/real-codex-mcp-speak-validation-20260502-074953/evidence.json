@@ -1,0 +1,202 @@
+{
+  "runId": "6d07b47f-2a11-4e52-8dbc-6e601f6b21c4",
+  "model": "gpt-5.4-mini",
+  "invocationId": "call_J7ZmfVxvUAu2rGqDEZDHUq1j",
+  "expectedText": "restart trace sync speak 0d7c38de e56d 475e b99a 7f8521af79c7",
+  "eventOrder": [
+    {
+      "index": 0,
+      "type": "AGENT_STATUS"
+    },
+    {
+      "index": 1,
+      "type": "TURN_STARTED"
+    },
+    {
+      "index": 2,
+      "type": "AGENT_STATUS"
+    },
+    {
+      "index": 3,
+      "type": "SEGMENT_START"
+    },
+    {
+      "index": 4,
+      "type": "TOOL_EXECUTION_STARTED"
+    },
+    {
+      "index": 5,
+      "type": "TOOL_EXECUTION_SUCCEEDED"
+    },
+    {
+      "index": 6,
+      "type": "SEGMENT_END"
+    },
+    {
+      "index": 7,
+      "type": "TOOL_LOG"
+    },
+    {
+      "index": 8,
+      "type": "SEGMENT_START"
+    },
+    {
+      "index": 9,
+      "type": "SEGMENT_CONTENT"
+    },
+    {
+      "index": 10,
+      "type": "SEGMENT_CONTENT"
+    },
+    {
+      "index": 11,
+      "type": "SEGMENT_END"
+    },
+    {
+      "index": 12,
+      "type": "AGENT_STATUS"
+    },
+    {
+      "index": 13,
+      "type": "TURN_COMPLETED"
+    },
+    {
+      "index": 14,
+      "type": "AGENT_STATUS"
+    }
+  ],
+  "liveSegmentItemArguments": {
+    "text": "restart trace sync speak 0d7c38de e56d 475e b99a 7f8521af79c7",
+    "play": false
+  },
+  "liveSegmentMetadataArguments": {
+    "text": "restart trace sync speak 0d7c38de e56d 475e b99a 7f8521af79c7",
+    "play": false
+  },
+  "lifecycleStartArguments": {
+    "text": "restart trace sync speak 0d7c38de e56d 475e b99a 7f8521af79c7",
+    "play": false
+  },
+  "lifecycleSucceededArguments": {
+    "text": "restart trace sync speak 0d7c38de e56d 475e b99a 7f8521af79c7",
+    "play": false
+  },
+  "rawTraceFile": "/Users/normy/autobyteus_org/autobyteus-worktrees/restart-tool-trace-sync/tickets/in-progress/restart-tool-trace-sync/probes/real-codex-mcp-speak-validation-20260502-074953/raw_traces.jsonl",
+  "rawSpeakTraces": [
+    {
+      "id": "rt_1777708210742_f1ab670e-6283-4f64-93ca-147004f6d8db",
+      "ts": 1777708210.742,
+      "turn_id": "019de7aa-74bb-7d90-bc96-c522ec9eafd6",
+      "seq": 2,
+      "trace_type": "tool_call",
+      "content": "",
+      "source_event": "TOOL_EXECUTION_STARTED",
+      "tool_name": "speak",
+      "tool_call_id": "call_J7ZmfVxvUAu2rGqDEZDHUq1j",
+      "tool_args": {
+        "text": "restart trace sync speak 0d7c38de e56d 475e b99a 7f8521af79c7",
+        "play": false
+      }
+    },
+    {
+      "id": "rt_1777708219166_b7a77c5a-e9a3-4829-96d7-721c2ee77270",
+      "ts": 1777708219.166,
+      "turn_id": "019de7aa-74bb-7d90-bc96-c522ec9eafd6",
+      "seq": 3,
+      "trace_type": "tool_result",
+      "content": "",
+      "source_event": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "speak",
+      "tool_call_id": "call_J7ZmfVxvUAu2rGqDEZDHUq1j",
+      "tool_args": {
+        "text": "restart trace sync speak 0d7c38de e56d 475e b99a 7f8521af79c7",
+        "play": false
+      },
+      "tool_result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"ok\": true\n}"
+          }
+        ],
+        "structuredContent": {
+          "ok": true
+        },
+        "_meta": null
+      }
+    }
+  ],
+  "rawToolCallArguments": {
+    "text": "restart trace sync speak 0d7c38de e56d 475e b99a 7f8521af79c7",
+    "play": false
+  },
+  "rawToolResultArguments": {
+    "text": "restart trace sync speak 0d7c38de e56d 475e b99a 7f8521af79c7",
+    "play": false
+  },
+  "projectionSpeakConversation": [
+    {
+      "kind": "tool_call",
+      "invocationId": "call_J7ZmfVxvUAu2rGqDEZDHUq1j",
+      "role": null,
+      "content": "",
+      "toolName": "speak",
+      "toolArgs": {
+        "text": "restart trace sync speak 0d7c38de e56d 475e b99a 7f8521af79c7",
+        "play": false
+      },
+      "toolResult": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"ok\": true\n}"
+          }
+        ],
+        "structuredContent": {
+          "ok": true
+        },
+        "_meta": null
+      },
+      "toolError": null,
+      "media": null,
+      "ts": 1777708219.166
+    }
+  ],
+  "projectionSpeakActivities": [
+    {
+      "invocationId": "call_J7ZmfVxvUAu2rGqDEZDHUq1j",
+      "toolName": "speak",
+      "type": "tool_call",
+      "status": "success",
+      "contextText": "speak",
+      "arguments": {
+        "text": "restart trace sync speak 0d7c38de e56d 475e b99a 7f8521af79c7",
+        "play": false
+      },
+      "logs": [],
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"ok\": true\n}"
+          }
+        ],
+        "structuredContent": {
+          "ok": true
+        },
+        "_meta": null
+      },
+      "error": null,
+      "ts": 1777708219.166,
+      "detailLevel": "source_limited"
+    }
+  ],
+  "projectionConversationArguments": {
+    "text": "restart trace sync speak 0d7c38de e56d 475e b99a 7f8521af79c7",
+    "play": false
+  },
+  "projectionActivityArguments": {
+    "text": "restart trace sync speak 0d7c38de e56d 475e b99a 7f8521af79c7",
+    "play": false
+  }
+}

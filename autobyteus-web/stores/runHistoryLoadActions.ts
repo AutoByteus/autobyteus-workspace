@@ -26,7 +26,10 @@ import {
   openAgentRun,
 } from '~/services/runOpen/agentRunOpenCoordinator';
 import { hydrateLiveRunContext } from '~/services/runHydration/runContextHydrationService';
-import { hydrateLiveTeamRunContext } from '~/services/runHydration/teamRunContextHydrationService';
+import {
+  hydrateLiveTeamRunContext,
+  hydrateTeamMemberActivitiesFromProjection,
+} from '~/services/runHydration/teamRunContextHydrationService';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import {
@@ -207,6 +210,10 @@ const reconcileDiscoveredActiveRuns = async (
         memberStatuses: [],
       });
       teamContextsStore.addTeamContext(result.hydratedContext);
+      hydrateTeamMemberActivitiesFromProjection({
+        members: result.hydratedContext.members,
+        projectionByMemberRouteKey: result.projectionByMemberRouteKey,
+      });
       agentTeamRunStore.connectToTeamStream(teamRunId);
     } catch (error) {
       console.warn(`[runHistorySync] Failed to hydrate active team run '${teamRunId}'.`, error);

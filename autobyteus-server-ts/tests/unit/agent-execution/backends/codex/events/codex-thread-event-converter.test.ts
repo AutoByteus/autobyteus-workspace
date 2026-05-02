@@ -323,7 +323,7 @@ describe("CodexThreadEventConverter", () => {
     });
   });
 
-  it("normalizes mcpToolCall items into tool_call segments", () => {
+  it("fans out mcpToolCall starts into tool_call segment and lifecycle start", () => {
     const converter = new CodexThreadEventConverter("run-1");
 
     const converted = converter.convert({
@@ -338,10 +338,14 @@ describe("CodexThreadEventConverter", () => {
             play: true,
           },
         },
+        turnId: "turn-mcp-1",
       },
     });
 
-    expect(converted).toHaveLength(1);
+    expect(converted.map((event) => event.eventType)).toEqual([
+      AgentRunEventType.SEGMENT_START,
+      AgentRunEventType.TOOL_EXECUTION_STARTED,
+    ]);
     expect(converted[0]).toMatchObject({
       eventType: AgentRunEventType.SEGMENT_START,
       runId: "run-1",
@@ -357,16 +361,34 @@ describe("CodexThreadEventConverter", () => {
         },
       },
     });
+    expect(converted[1]).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_STARTED,
+      runId: "run-1",
+      payload: {
+        invocation_id: "call_speak_auto",
+        turn_id: "turn-mcp-1",
+        tool_name: "speak",
+        arguments: {
+          text: "codex converter auto speak probe",
+          play: true,
+        },
+      },
+    });
   });
 
-  it("maps local MCP completion events into TOOL_EXECUTION_SUCCEEDED", () => {
+  it("maps local MCP completion events into TOOL_EXECUTION_SUCCEEDED with arguments", () => {
     const converter = new CodexThreadEventConverter("run-1");
 
     const converted = converter.convert({
       method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
       params: {
         invocation_id: "call_speak_auto",
+        turn_id: "turn-mcp-1",
         tool_name: "speak",
+        arguments: {
+          text: "codex converter auto speak probe",
+          play: true,
+        },
         item: {
           type: "mcpToolCall",
           id: "call_speak_auto",
@@ -387,12 +409,57 @@ describe("CodexThreadEventConverter", () => {
       runId: "run-1",
       payload: {
         invocation_id: "call_speak_auto",
+        turn_id: "turn-mcp-1",
         tool_name: "speak",
+        arguments: {
+          text: "codex converter auto speak probe",
+          play: true,
+        },
         result: {
           structuredContent: {
             ok: true,
           },
         },
+      },
+    });
+  });
+
+  it("maps failed local MCP completion events into TOOL_EXECUTION_FAILED with arguments", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "call_speak_failed",
+        turn_id: "turn-mcp-2",
+        tool_name: "speak",
+        arguments: {
+          text: "codex converter failed speak probe",
+          play: false,
+        },
+        item: {
+          type: "mcpToolCall",
+          id: "call_speak_failed",
+          tool: "speak",
+          status: "failed",
+          error: "speaker unavailable",
+        },
+      },
+    });
+
+    expect(converted).toHaveLength(1);
+    expect(converted[0]).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_FAILED,
+      runId: "run-1",
+      payload: {
+        invocation_id: "call_speak_failed",
+        turn_id: "turn-mcp-2",
+        tool_name: "speak",
+        arguments: {
+          text: "codex converter failed speak probe",
+          play: false,
+        },
+        error: "speaker unavailable",
       },
     });
   });
