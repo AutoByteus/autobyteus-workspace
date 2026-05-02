@@ -28,6 +28,28 @@ Provider adapters must keep tool calls on two runtime-neutral lanes:
 - `SEGMENT_START` / `SEGMENT_END` owns transcript/conversation structure for a tool call and can provide enough normalized display facts for the frontend to seed a pending Activity row immediately.
 - `TOOL_APPROVAL_*` and `TOOL_EXECUTION_*` owns execution/approval status, terminal result/error, logs, argument hydration, and durable tool traces.
 
+Provider-specific tool identities and result envelopes must be canonicalized at
+the runtime event-converter boundary before they become `AgentRunEvent`s.
+Frontend streaming handlers, Activity rows, and conversation tool cards consume
+the backend-provided tool name and result shape; they must not infer provider
+wire protocols such as MCP prefixes.
+
 Claude Agent SDK sessions treat raw assistant `tool_use` blocks as authoritative invocation starts. `tool_use.input` / `tool_use.arguments` is tracked by invocation id, emitted on both the segment metadata lane and lifecycle argument lane, and preserved on terminal `TOOL_EXECUTION_SUCCEEDED` / `TOOL_EXECUTION_FAILED` events as a result-first recovery path. If the Claude SDK permission callback observes the same invocation, the coordinator must reuse that tracked state and suppress duplicate segment-start/lifecycle-start emissions independently.
+
+Claude browser MCP tools add one extra converter responsibility: allowlisted
+`mcp__autobyteus_browser__<tool>` names for known stable browser tools are
+projected to canonical names such as `open_tab`, and successful MCP
+content-block/content-envelope results are parsed into the standard browser
+result object before terminal lifecycle events are emitted. Non-AutoByteus MCP
+tools and unknown browser-like suffixes stay unchanged.
+
+Claude team `send_message_to` is also a first-party MCP tool with a canonical
+event contract. The dedicated team communication handler owns the logical
+delivery invocation and emits canonical segment plus lifecycle events:
+`SEGMENT_START`, `TOOL_EXECUTION_STARTED`, one terminal
+`TOOL_EXECUTION_SUCCEEDED` or `TOOL_EXECUTION_FAILED`, then `SEGMENT_END`.
+Raw SDK transport events named `mcp__autobyteus_team__send_message_to` are
+suppressed as duplicate MCP noise; they must not replace the handler-owned
+canonical lifecycle or create extra Activity rows.
 
 The frontend consumes both normalized lanes through a shared Activity projection owner: eligible segment starts provide immediate Activity visibility, while lifecycle events update the same invocation through execution and terminal states. The storage-only memory recorder treats lifecycle events, not display-only segments, as durable tool-call/tool-result trace authority. This keeps transcript rendering, Activity argument rendering, run history, and memory traces runtime-neutral without requiring UI code to parse raw provider payloads.

@@ -81,6 +81,7 @@ The server owns:
 - input parsing and semantic validation
 - browser tool manifest
 - runtime-specific tool projection for Codex and Claude
+- runtime-specific browser tool event canonicalization before streaming
 - bridge client dispatch through `BrowserToolService`
 
 The server does not own browser window or tab lifecycle.
@@ -249,6 +250,12 @@ Runtime-specific raw result shapes are normalized into canonical browser tool ev
 
 Claude browser tools are exposed through MCP projection.
 MCP-prefixed raw tool names are normalized into canonical browser tool names at the Claude event-converter boundary.
+Successful Claude browser MCP content-block or content-envelope results are also normalized there into the same canonical browser result objects used by other runtimes.
+For example, `mcp__autobyteus_browser__open_tab` must stream as `open_tab` with `result.tab_id` available directly before the renderer sees `TOOL_EXECUTION_SUCCEEDED`.
+
+The Claude browser normalization is intentionally allowlisted to the AutoByteus browser MCP prefix and known stable browser tool names.
+Unknown browser-like suffixes and tools from other MCP servers must remain raw so the converter does not rewrite unrelated MCP traffic.
+Conversation tool cards, Activity rows, and Browser-shell focus handling consume the backend-provided canonical event contract; they should not strip MCP prefixes or parse Claude MCP result envelopes as presentation logic.
 
 ## OAuth / Social Login Limits
 
