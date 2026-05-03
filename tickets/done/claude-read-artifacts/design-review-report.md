@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/in-progress/claude-read-artifacts/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/in-progress/claude-read-artifacts/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/in-progress/claude-read-artifacts/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/done/claude-read-artifacts/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/done/claude-read-artifacts/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/done/claude-read-artifacts/design-spec.md`
 - Current Review Round: 2
 - Trigger: Revised architecture review after user-approved final direction: one normalized `FILE_CHANGE` event derived in a cross-runtime post-normalization `AgentRunEventPipeline`, with `RunFileChangeService` projection/persistence only.
 - Prior Review Round Reviewed: Round 1 report in this same file path was reviewed; it passed the earlier tactical classifier-split design, which is now superseded by the user-approved event-pipeline design.
@@ -20,9 +20,9 @@
 
 ## Reviewed Design Spec
 
-Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/in-progress/claude-read-artifacts/design-spec.md`.
+Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/done/claude-read-artifacts/design-spec.md`.
 
-The superseded two-event addendum at `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/in-progress/claude-read-artifacts/design-impact-native-file-change-events.md` was used for context only; the authoritative target is the revised one-event design spec.
+The superseded two-event addendum at `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/done/claude-read-artifacts/design-impact-native-file-change-events.md` was used for context only; the authoritative target is the revised one-event design spec.
 
 ## Task Design Health Assessment Verdict
 

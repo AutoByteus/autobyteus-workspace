@@ -161,7 +161,8 @@ conversation is being applied.
 - `item/started` / `item/completed` with `item.type = webSearch` are the authoritative raw owners for Codex built-in `search_web` execution lifecycle. The converter emits the same separated transcript and lifecycle surfaces: start produces `SEGMENT_START(tool_call, tool_name=search_web)` plus `TOOL_EXECUTION_STARTED(search_web)`, and completion produces exactly one terminal lifecycle event before `SEGMENT_END(tool_call)`.
 - Raw `function_call_output` remains diagnostic `TOOL_LOG` output for dynamic tools. It is not the terminal lifecycle authority and must not be used as a substitute for success/error Activity state.
 - Browser dynamic tools use the generalized `dynamicToolCall` lifecycle path rather than a browser-only terminal event special case.
-- `item/started` / `item/completed` with `item.type = fileChange` are the authoritative raw owners for Codex `edit_file` lifecycle and artifact availability.
+- `item/started` / `item/completed` with `item.type = fileChange` are the authoritative raw owners for Codex `edit_file` lifecycle. After conversion, `AgentRunEventPipeline` derives the Artifacts-tab `FILE_CHANGE` event; Codex frontend code must not infer artifacts from supplemental diff events.
+- Codex may expose multiple start-like normalized facts for one file operation. Duplicate identical interim `FILE_CHANGE` `pending` updates for the same path/source invocation are acceptable when idempotent, followed by terminal `available`/`failed`, and the run-file-changes projection remains one row.
 - `turn/diff/updated` is treated as supplemental diff information and is intentionally not promoted into lifecycle or artifact ownership.
 - `rawResponseItem/completed` for custom tool completions is not the authoritative owner of `apply_patch` file mutation state.
 - The durable raw-event mapping table lives in `docs/design/codex_raw_event_mapping.md` and should be updated before adding new Codex raw-event handling.

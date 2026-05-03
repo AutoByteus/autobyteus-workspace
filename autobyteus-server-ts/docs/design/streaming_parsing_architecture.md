@@ -18,6 +18,14 @@ Describes how streaming model output is parsed and transformed before being pers
 1. User message enters runtime manager.
 2. Input processors apply transformations.
 3. Model stream events are parsed.
-4. Tool invocation/result processors transform artifacts.
+4. Tool invocation/result processors may transform application/runtime artifacts.
 5. Response processors persist/normalize outbound content.
 6. Transport layer emits stream chunks and completion events.
+
+The run-scoped web Artifacts tab is intentionally separate from this
+customization pipeline: runtime adapters first emit base normalized
+`AgentRunEvent` batches, then `AgentRunEventPipeline` appends derived
+`FILE_CHANGE` events for explicit write/edit/generated-output semantics before
+subscriber fan-out. `RunFileChangeService` consumes those `FILE_CHANGE` events
+for projection/persistence instead of deriving artifacts from generic
+tool-result processors.

@@ -6,7 +6,7 @@ Refined — user direction incorporated on 2026-05-03; awaiting user review of t
 
 ## Goal / Problem Statement
 
-Fix the bug where Claude Code Agent SDK read-only `Read` tool events appear as right-side `Artifacts` entries, and replace the root architecture that made the bug possible. A read-only path must stay an activity/tool event only. A file-impacting operation must emit one first-class normalized `FILE_CHANGE` event through the same normalized event pipeline used by Codex, Claude Agent SDK, and AutoByteus runtime events.
+Fix the bug where Claude Code Agent SDK read-only `Read` tool events appear as right-side `Artifacts` entries, and replace the root architecture that made the bug possible. A read-only path must stay an activity/tool event only. A file-impacting operation must emit the single public normalized file-change event type, `FILE_CHANGE`, through the same normalized event pipeline used by Codex, Claude Agent SDK, and AutoByteus runtime events. `FILE_CHANGE` is a state-update event type; one operation may produce multiple lifecycle update occurrences such as `streaming`, `pending`, and terminal `available`/`failed`.
 
 The target design must not keep `FILE_CHANGE_UPDATED` compatibility or a two-event `FILE_CHANGE_OBSERVED` / `FILE_CHANGE_UPDATED` split. The normalized event name should be simply `FILE_CHANGE`.
 
@@ -79,19 +79,21 @@ Large enough to require design review: it changes event architecture and removes
 - REQ-010: The event pipeline must support future derived/custom event processors without turning runtime converters, AutoByteus customization processors, or projection services into mixed-concern coordinators.
 - REQ-011: Frontend streaming and protocol code must consume `FILE_CHANGE`, not `FILE_CHANGE_UPDATED`.
 - REQ-012: Executable validation must cover Claude `Read`, Claude mutation, Codex file change, generated output, and `RunFileChangeService` ignoring unrelated events.
+- REQ-013: The `FILE_CHANGE` event stream must be idempotent for interim state updates. Duplicate identical `streaming`/`pending` updates for the same run/path/source invocation are permitted and must not create duplicate Artifacts rows; validation must assert terminal state and projection identity rather than exact interim event counts.
 
 ## Acceptance Criteria
 
 - AC-001: Given a Claude `Read` event sequence with `arguments.file_path`, the Claude normalizer emits activity/tool lifecycle events, the event pipeline emits no `FILE_CHANGE`, and the Artifacts projection remains empty.
 - AC-002: Given a Claude `Write` event sequence with `arguments.file_path`, the pipeline emits exactly one terminal `FILE_CHANGE` for that path with `sourceTool: "write_file"` after success, plus any streaming/pending `FILE_CHANGE` updates if the normalized base events carry streaming content.
 - AC-003: Given a Claude `Edit` / `MultiEdit` / notebook edit event sequence, the pipeline emits `FILE_CHANGE` with `sourceTool: "edit_file"` for the mutation target path.
-- AC-004: Given a Codex file-change item normalized as edit-file/tool lifecycle events, the pipeline emits `FILE_CHANGE` and preserves existing Codex activity rendering.
+- AC-004: Given a Codex file-change item normalized as edit-file/tool lifecycle events, the pipeline emits `FILE_CHANGE` and preserves existing Codex activity rendering. Duplicate idempotent interim `pending` updates for the same run/path/source invocation are acceptable if a terminal `available` or `failed` update follows and the final projection remains one row for the path.
 - AC-005: Given AutoByteus `write_file` / `edit_file`, the pipeline emits `FILE_CHANGE` without `RunFileChangeService` inspecting raw segment/tool events.
 - AC-006: Given `autobyteus-ts` `generate_image`, `edit_image`, or `generate_speech` with explicit `output_file_path` and returned `{ file_path: resolvedPath }`, the runtime/event pipeline emits `FILE_CHANGE` with `sourceTool: "generated_output"`.
 - AC-007: Given a non-file tool whose only path-like field is `file_path`, no `FILE_CHANGE` is emitted.
 - AC-008: `RunFileChangeService.attachToRun(...)` handles `FILE_CHANGE` only; tests prove unrelated normalized events do not mutate projection or emit secondary file-change events.
 - AC-009: No repository runtime/protocol/frontend enum, message type, or handler still uses `FILE_CHANGE_UPDATED` after the clean-cut rename.
 - AC-010: A focused automated regression test logs/inspects the base normalized events, derived pipeline events, and final projection for the Claude read pollution scenario.
+- AC-011: Given a live/runtime Codex edit-file flow that emits duplicate identical interim `pending` `FILE_CHANGE` updates followed by terminal `available`, validation classifies the flow as passing if the duplicate updates are idempotent, activity events are preserved, and the Artifacts projection has a single row.
 
 ## Constraints / Dependencies
 
@@ -124,6 +126,7 @@ Large enough to require design review: it changes event architecture and removes
 - REQ-008 covers UC-004.
 - REQ-009 covers UC-007.
 - REQ-012 covers all in-scope validation paths.
+- REQ-013 covers UC-003, UC-004, UC-006, and projection idempotency.
 
 ## Acceptance-Criteria-To-Scenario Intent
 
@@ -133,6 +136,7 @@ Large enough to require design review: it changes event architecture and removes
 - AC-008 proves `RunFileChangeService` is projection-only.
 - AC-009 proves the clean-cut event rename.
 - AC-010 provides reviewer/debug evidence for the event chain.
+- AC-011 clarifies that exact-one interim `pending` is not part of the product contract; idempotent duplicate interim updates are acceptable.
 
 ## Approval Status
 

@@ -3,15 +3,15 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/in-progress/claude-read-artifacts/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/done/claude-read-artifacts/requirements.md`
 - Current Review Round: `2`
 - Trigger: Round 2 revised-design implementation handoff from `implementation_engineer`; the earlier tactical classifier/RFS-derived implementation is superseded.
 - Prior Review Round Reviewed: `1`
 - Latest Authoritative Round: `2`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/in-progress/claude-read-artifacts/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/in-progress/claude-read-artifacts/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/in-progress/claude-read-artifacts/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/in-progress/claude-read-artifacts/implementation-handoff.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/done/claude-read-artifacts/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/done/claude-read-artifacts/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/done/claude-read-artifacts/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/done/claude-read-artifacts/implementation-handoff.md`
 - Validation Report Reviewed As Context: `N/A`
 - API / E2E Validation Started Yet: `No`
 - Repository-Resident Durable Validation Added Or Updated After Prior Review: `No`

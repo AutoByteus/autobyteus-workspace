@@ -22,7 +22,7 @@ User reports that many `Read` files are showing in the right `Artifacts` area fo
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/in-progress/claude-read-artifacts`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/done/claude-read-artifacts`
 - Current Branch: `codex/claude-read-artifacts`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts`
 - Bootstrap Base Branch: `origin/personal`
@@ -51,7 +51,7 @@ User reports that many `Read` files are showing in the right `Artifacts` area fo
 | 2026-05-03 | Code | `autobyteus-server-ts/tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts` | Check current Claude event coverage | Existing tests cover `Write` with `file_path` and prove converter preserves that shape, but no read-artifact regression exists. | Add new focused coverage |
 | 2026-05-03 | Code | `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-file-change-payload-helper.ts`, `codex-item-event-converter.ts`, `codex-tool-payload-parser.ts` | Compare Codex behavior | Codex file mutations have explicit file-change event handling (`item.type=fileChange`, `ITEM_FILE_CHANGE_*`) and normalized `edit_file` events. This explains why Codex reads are not hit by the same `file_path` false positive in the user's report. | Protect non-regression |
 | 2026-05-03 | Setup | `pnpm install --offline --frozen-lockfile` | Install workspace dependencies in the dedicated worktree for Vitest probes | Completed using local pnpm store; no downloads. `node_modules/` ignored. | No |
-| 2026-05-03 | Trace | Temporary probe command: `pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/run-file-changes/claude-read-artifact-probe.test.ts --reporter verbose`; probe source later moved to `tickets/in-progress/claude-read-artifacts/probes/claude-read-artifact-probe.test.ts` | Reproduce bug with logs at converter-to-service boundary | Failed as expected. Logs show Claude `Read` events with `arguments.file_path` produced one `FILE_CHANGE_UPDATED` with `path: src/server.py`, `status: available`, `sourceTool: generated_output`, `sourceInvocationId: read-1`, and one projection entry. | Convert into durable passing regression during implementation |
+| 2026-05-03 | Trace | Temporary probe command: `pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/run-file-changes/claude-read-artifact-probe.test.ts --reporter verbose`; probe source later moved to `tickets/done/claude-read-artifacts/probes/claude-read-artifact-probe.test.ts` | Reproduce bug with logs at converter-to-service boundary | Failed as expected. Logs show Claude `Read` events with `arguments.file_path` produced one `FILE_CHANGE_UPDATED` with `path: src/server.py`, `status: available`, `sourceTool: generated_output`, `sourceInvocationId: read-1`, and one projection entry. | Convert into durable passing regression during implementation |
 | 2026-05-03 | Trace | `pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/run-file-changes/run-file-change-service.test.ts tests/unit/utils/artifact-utils.test.ts --reporter dot` | Check current targeted tests after removing temporary failing probe from the test tree | Passed: 2 files, 9 tests. Confirms current suite lacks coverage for the Claude read false-positive invariant. | Add coverage |
 | 2026-05-03 | Repo | `git blame -L 1,80 -- autobyteus-server-ts/src/utils/artifact-utils.ts`; `git show --name-only 58fc24370` | Identify when broad helper appeared | `file_path` output-candidate behavior was introduced in commit `58fc2437 feat(artifacts): unify effective file content handling`, which moved Artifacts to the unified file-change/generated-output model. | Design should tighten this earlier broadening without reverting unified model |
 | 2026-05-03 | Doc | `tickets/done/artifact-effective-file-content-investigation/*` | Understand prior unified Artifacts design intent | Prior design intentionally made generated outputs part of run-file-changes and used invocation-cache output-path discovery, but did not specify that `file_path` alone must not imply generated output. Architect review noted heuristic path extraction needed representative verification. | Current bug is missing invariant from that design |
@@ -107,7 +107,7 @@ User reports that many `Read` files are showing in the right `Artifacts` area fo
 | Date | Method (`Repro`/`Trace`/`Probe`/`Script`/`Test`/`Setup`) | Exact Command / Method | Observation | Implication |
 | --- | --- | --- | --- | --- |
 | 2026-05-03 | Setup | `pnpm install --offline --frozen-lockfile` | Dependencies installed in dedicated worktree from local store. | Enabled focused Vitest probe/checks. |
-| 2026-05-03 | Probe | Temporary `autobyteus-server-ts/tests/unit/services/run-file-changes/claude-read-artifact-probe.test.ts` then moved to `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/in-progress/claude-read-artifacts/probes/claude-read-artifact-probe.test.ts` | Probe creates a temp workspace file, converts Claude `Read` started/completed events, feeds them to `RunFileChangeService`, and expects zero file-change rows. | The exact converter-to-service path is enough to reproduce without a live Claude API call. |
+| 2026-05-03 | Probe | Temporary `autobyteus-server-ts/tests/unit/services/run-file-changes/claude-read-artifact-probe.test.ts` then moved to `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/done/claude-read-artifacts/probes/claude-read-artifact-probe.test.ts` | Probe creates a temp workspace file, converts Claude `Read` started/completed events, feeds them to `RunFileChangeService`, and expects zero file-change rows. | The exact converter-to-service path is enough to reproduce without a live Claude API call. |
 | 2026-05-03 | Trace | `pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/run-file-changes/claude-read-artifact-probe.test.ts --reporter verbose` | Failed as expected. Log: `CLAUDE_READ_PROBE_FILE_CHANGE_EVENTS` contained one `FILE_CHANGE_UPDATED` with `path: src/server.py`, `status: available`, `sourceTool: generated_output`, `sourceInvocationId: read-1`. | Confirms backend false event is the source of the UI pollution. |
 | 2026-05-03 | Test | `pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/run-file-changes/run-file-change-service.test.ts tests/unit/utils/artifact-utils.test.ts --reporter dot` | Passed: 2 files, 9 tests. | Existing tests are insufficient; add read false-positive and file-mutation/output positive cases. |
 
@@ -126,7 +126,7 @@ User reports that many `Read` files are showing in the right `Artifacts` area fo
 - Setup commands that materially affected the investigation:
   - `pnpm install --offline --frozen-lockfile` in `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts`.
 - Cleanup notes for temporary investigation-only setup:
-  - Temporary failing test was moved out of the active Vitest include tree to `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/in-progress/claude-read-artifacts/probes/claude-read-artifact-probe.test.ts`.
+  - Temporary failing test was moved out of the active Vitest include tree to `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/done/claude-read-artifacts/probes/claude-read-artifact-probe.test.ts`.
   - `node_modules/` is ignored and may remain for downstream validation convenience.
 
 ## Findings From Code / Docs / Data / Logs
@@ -158,12 +158,12 @@ User reports that many `Read` files are showing in the right `Artifacts` area fo
   - generated-output path extraction, where `file_path` alone is invalid.
 - Avoid a one-off `if toolName === "Read" return` patch because it would not fix the broader invariant for any future read/import/inspection tool using `file_path`.
 - The probe source and summarized output are available at:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/in-progress/claude-read-artifacts/probes/claude-read-artifact-probe.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/in-progress/claude-read-artifacts/probes/claude-read-artifact-probe-output.txt`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/done/claude-read-artifacts/probes/claude-read-artifact-probe.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/done/claude-read-artifacts/probes/claude-read-artifact-probe-output.txt`
 
 ## Follow-Up Architecture Investigation: Native File-Change Observation Events
 
-After the initial design handoff, the user asked why `RunFileChangeService` derives from broad tool lifecycle events at all when file-impacting tools/runtimes can issue file-change events natively. Investigation confirms this is a real architecture issue: current `FILE_CHANGE_UPDATED` is the service's downstream projection event, not an upstream normalized file-change input. Because the service owns both detection and projection, it listens to broad `SEGMENT_*` / `TOOL_EXECUTION_*` events and guesses generated outputs. The cleaner target is to add a distinct upstream event such as `FILE_CHANGE_OBSERVED`, emitted by Codex/Claude/AutoByteus tool adapters only for known file-impacting operations, then make `RunFileChangeService` project only those explicit observations and emit `FILE_CHANGE_UPDATED` for the frontend. Detailed addendum: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/in-progress/claude-read-artifacts/design-impact-native-file-change-events.md`.
+After the initial design handoff, the user asked why `RunFileChangeService` derives from broad tool lifecycle events at all when file-impacting tools/runtimes can issue file-change events natively. Investigation confirms this is a real architecture issue: current `FILE_CHANGE_UPDATED` is the service's downstream projection event, not an upstream normalized file-change input. Because the service owns both detection and projection, it listens to broad `SEGMENT_*` / `TOOL_EXECUTION_*` events and guesses generated outputs. The cleaner target is to add a distinct upstream event such as `FILE_CHANGE_OBSERVED`, emitted by Codex/Claude/AutoByteus tool adapters only for known file-impacting operations, then make `RunFileChangeService` project only those explicit observations and emit `FILE_CHANGE_UPDATED` for the frontend. Detailed addendum: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/done/claude-read-artifacts/design-impact-native-file-change-events.md`.
 
 ## User-Driven Design Revision: Single FILE_CHANGE Event + Event Processor Chain
 
@@ -237,3 +237,12 @@ Date: 2026-05-03
 After user review, the final design decision is to keep server/web file-change derivation in the cross-runtime `AgentRunEventPipeline`, not in AutoByteus customization processors. The pipeline checks known normalized tool names (`generate_image`, `edit_image`, `generate_speech`, `write_file`, `edit_file`, Claude `Write`/`Edit`/`MultiEdit`, Codex `edit_file`, etc.) and appends `FILE_CHANGE` events.
 
 AutoByteus customization processors remain useful for AutoByteus-only input, LLM response, and invocation/result customization, but they are not the authoritative boundary for unified server Artifacts because they cannot cover Claude/Codex normalized event streams. Native `autobyteus-ts` `StreamEventType.FILE_CHANGE` is deferred/out of scope unless standalone `autobyteus-ts` consumers later need it.
+
+
+## Design Clarification: Codex Duplicate Pending FILE_CHANGE
+
+Date: 2026-05-03
+
+API/E2E Round 3 observed a live Codex `edit_file` flow that emitted `FILE_CHANGE` statuses `pending`, duplicate `pending`, then terminal `available` for the same path/source invocation. The final projection remained a single Artifacts row and tool lifecycle events remained visible.
+
+Decision: this is not a product bug. `FILE_CHANGE` is a single public normalized event type and a state-update stream, not an exact-one occurrence contract. Duplicate identical interim `streaming`/`pending` updates are permitted when idempotent. Correctness is terminal state plus canonical projection identity. Exact-one-pending should not be required by validation or implementation unless duplicate updates cause visible duplicate artifacts, stale state, non-idempotent content changes, or material performance issues.

@@ -38,4 +38,4 @@ AgentRunEventType.FILE_CHANGE
 
 See the revised design spec:
 
-`/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/in-progress/claude-read-artifacts/design-spec.md`
+`/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/done/claude-read-artifacts/design-spec.md`

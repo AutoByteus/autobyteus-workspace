@@ -33,7 +33,7 @@ The active Artifacts surface is backed by a derived `FILE_CHANGE` runtime event 
 - run each normalized backend event batch through `AgentRunEventPipeline` once before subscriber fan-out
 - let `FileChangeEventProcessor` derive the sole live Artifacts event, `FILE_CHANGE`
 - classify file mutations explicitly: Claude `Write`/`Edit`/`MultiEdit`/`NotebookEdit`, Codex `edit_file`, and AutoByteus `write_file`/`edit_file`
-- classify generated outputs only for known generated-output tools with explicit output-path semantics or known result paths
+- classify generated outputs only for known generated-output tools (`generate_image`, `edit_image`, `generate_speech`, including the AutoByteus image/audio MCP forms) with explicit output-path semantics or known result paths
 - keep read-only tool calls such as Claude `Read(file_path)` as tool/activity lifecycle only; generic unknown-tool `file_path` is not file-change evidence
 - project `FILE_CHANGE` events into canonical run-scoped rows in `RunFileChangeService`
 - persist metadata-only projection state to `<run-memory-dir>/file_changes.json`
@@ -50,6 +50,7 @@ The active Artifacts surface is backed by a derived `FILE_CHANGE` runtime event 
 - Current filesystem bytes are the source of truth for committed previews.
 - Generated outputs use the same projection and preview route as text edits and writes.
 - Persisted state stores metadata only; transient `content` exists only for live buffered `write_file` preview.
+- `FILE_CHANGE` is a state-update stream, not an exact-one occurrence guarantee. `write_file` pre-available statuses are not required to include every intermediate state: AutoByteus live streaming may produce `streaming -> available`, Claude/Codex paths may produce `pending -> available`, and duplicate identical interim `streaming`/`pending` updates are acceptable when idempotent and followed by terminal state without duplicating projection rows.
 - The only supported persisted file is `<run-memory-dir>/file_changes.json`.
 - Legacy `run-file-changes/projection.json` is intentionally unsupported and hydrates no rows.
 

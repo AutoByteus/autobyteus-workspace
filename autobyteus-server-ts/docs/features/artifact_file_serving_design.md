@@ -33,7 +33,7 @@ The active runtime uses the derived `FILE_CHANGE` event plus the run-file-change
 
 1. Runtime backends convert provider events into normalized `AgentRunEvent` batches.
 2. `AgentRunEventPipeline` processes each batch once before subscriber fan-out.
-3. `FileChangeEventProcessor` derives `FILE_CHANGE` only for explicit file mutations or known generated-output tools.
+3. `FileChangeEventProcessor` derives `FILE_CHANGE` only for explicit file mutations or known generated-output tools (`generate_image`, `edit_image`, `generate_speech`, including the AutoByteus image/audio MCP forms).
 4. `RunFileChangeService` consumes `FILE_CHANGE`, canonicalizes path identity, and updates the run projection.
 5. The service persists metadata-only state to `<run-memory-dir>/file_changes.json`.
 6. The frontend hydrates rows through `getRunFileChanges(runId)` and continues live updates from `FILE_CHANGE`.
@@ -46,7 +46,7 @@ The active runtime uses the derived `FILE_CHANGE` event plus the run-file-change
 This is the authoritative Artifacts-area event.
 It carries the canonical path, type, status, source tool, timestamps, and optional transient `content` for live `write_file` preview.
 
-`FileChangeEventProcessor` is the only owner of derived file-change semantics. It recognizes known mutation tools and known generated-output tools with explicit output path semantics. Read-only tools and unknown tools with generic `file_path` fields remain lifecycle/activity events only.
+`FileChangeEventProcessor` is the only owner of derived file-change semantics. It recognizes known mutation tools and known generated-output tools with explicit output path semantics. Current generated-output tools are `generate_image`, `edit_image`, `generate_speech`, and their AutoByteus image/audio MCP-prefixed forms; unknown tools with generic `file_path`/`filePath` fields remain lifecycle/activity events only.
 
 ### Published-artifact transport
 
@@ -86,7 +86,8 @@ It is not the Artifacts tab source of truth.
 
 - one row per canonical path
 - live `write_file` preview remains available through `FILE_CHANGE` content updates
-- generated media/document outputs share the same list and preview boundary as file changes
+- `FILE_CHANGE` is a state-update stream. Pre-available updates are runtime-shaped: AutoByteus live runs may emit `streaming` then `available` without a separate `pending` row, while other runtimes may emit `pending` before `available`; duplicate identical interim `streaming`/`pending` updates are acceptable when idempotent, terminal state follows, and the final projection remains one row per canonical path.
+- known generated image/audio outputs share the same list and preview boundary as file changes
 - reopen/history still works from metadata while previews use current filesystem bytes
 - legacy-only runs are unsupported by design and behavior
 

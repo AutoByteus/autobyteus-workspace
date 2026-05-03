@@ -34,6 +34,13 @@ Frontend streaming handlers, Activity rows, and conversation tool cards consume
 the backend-provided tool name and result shape; they must not infer provider
 wire protocols such as MCP prefixes.
 
+After provider adapters produce a base normalized event batch, the shared
+`AgentRunEventPipeline` runs before subscriber fan-out. The pipeline may append
+derived normalized events such as `FILE_CHANGE` for explicit file mutations and
+known generated-output tools. File-change projection is not inferred by
+streaming handlers or by `RunFileChangeService`; that service consumes
+`FILE_CHANGE` only and persists the run-scoped projection.
+
 Claude Agent SDK sessions treat raw assistant `tool_use` blocks as authoritative invocation starts. `tool_use.input` / `tool_use.arguments` is tracked by invocation id, emitted on both the segment metadata lane and lifecycle argument lane, and preserved on terminal `TOOL_EXECUTION_SUCCEEDED` / `TOOL_EXECUTION_FAILED` events as a result-first recovery path. If the Claude SDK permission callback observes the same invocation, the coordinator must reuse that tracked state and suppress duplicate segment-start/lifecycle-start emissions independently.
 
 Claude Agent SDK turn interruption is owned by the session, not by websocket or

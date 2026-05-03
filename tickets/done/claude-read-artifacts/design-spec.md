@@ -66,6 +66,30 @@ Claude Write(file_path)
 `RunFileChangeService` must stop deriving and publishing file-change events. It becomes a durable projection/persistence consumer of `FILE_CHANGE` only.
 
 
+### FILE_CHANGE Occurrence Semantics
+
+`FILE_CHANGE` is one public normalized event **type**, not a promise that each file operation produces exactly one event occurrence. It is a state-update stream for file-change projection.
+
+Allowed lifecycle examples:
+
+```txt
+pending -> available
+streaming -> streaming -> pending -> available
+pending -> pending -> available   # duplicate pending is acceptable when idempotent
+pending -> failed
+```
+
+The correctness contract is:
+
+- read-only operations emit no `FILE_CHANGE`;
+- true file-impacting operations eventually emit a terminal `available` or `failed` update when the runtime reports terminal success/failure;
+- duplicate identical interim `streaming`/`pending` updates for the same run/path/source invocation are permitted;
+- consumers and `RunFileChangeService` must treat `FILE_CHANGE` idempotently and upsert by canonical identity rather than append duplicate artifact rows;
+- validation should not require exactly one interim `pending` event.
+
+A processor may suppress no-op duplicate updates as an optimization, especially within one event batch, but exact-one interim pending is not a product invariant and should not drive rework unless duplicates create visible duplicate artifacts, stale final state, or material performance issues.
+
+
 
 ### Existing Autobyteus Customization Processors
 
@@ -421,6 +445,7 @@ Final AgentRunEvent(FILE_CHANGE)
 | Read-only Claude file read | `Read -> TOOL_EXECUTION_* -> no FILE_CHANGE` | `Read -> file_path heuristic -> FILE_CHANGE` | Locks the bug fix. |
 | File mutation | `Write -> TOOL_EXECUTION_SUCCEEDED -> FILE_CHANGE(path, write_file, available)` | `RunFileChangeService scans every tool success` | Shows new owner. |
 | Processor chain | `base events -> FileChangeEventProcessor appends FILE_CHANGE -> future CustomProcessor appends CUSTOM_EVENT` | Processors publish recursively to subscribers | Enables extension without loops. |
+| Idempotent interim updates | Codex `edit_file` may produce `pending, pending, available`; projection remains one row | Treat duplicate pending as duplicate artifact rows or validation failure | Clarifies state-update stream semantics. |
 | Generated output | `generate_image(output_file_path) -> FILE_CHANGE(generated_output)` | Unknown tool with `file_path` -> artifact | Keeps output semantics explicit. |
 
 ## Backward-Compatibility Rejection Log (Mandatory)
@@ -476,6 +501,7 @@ The important rule is not the layer names; it is that no lower presentation/proj
 - Running a processor chain before fan-out requires touching backend dispatch paths, but it prevents every subscriber from running its own derivation and avoids duplicated state.
 - A single `FILE_CHANGE` event is simpler than observed/updated, but it means the processor must emit canonical payloads suitable for live UI and durable projection. That is acceptable because file-change derivation is now the processor's explicit responsibility.
 - Not using AutoByteus customization processors means standalone `autobyteus-ts` consumers do not gain native file-change stream events in this task. That is an intentional tradeoff: this bug is in the unified server/web Artifacts path and needs one cross-runtime owner.
+- Allowing idempotent duplicate interim `FILE_CHANGE` updates keeps the stream robust across runtimes that expose multiple start-like normalized facts for one file operation. This favors idempotent state projection over brittle exact-once interim event counting.
 
 ## Risks
 
@@ -489,6 +515,7 @@ The important rule is not the layer names; it is that no lower presentation/proj
 - Treat the pipeline as an append-only transformation, not an event bus.
 - Processors return derived events; they do not call listeners, services, or frontend transports.
 - `FileChangeEventProcessor` should be explicit and conservative: unknown tool + `file_path` means no file change.
+- `FileChangeEventProcessor` may suppress identical duplicate interim updates if simple, but downstream correctness must not rely on exact-one pending semantics.
 - Keep `Read` test coverage at the converter-to-pipeline boundary because that is the bug path.
 - Keep `RunFileChangeService` tests focused on projection from `FILE_CHANGE`, not on tool semantics.
 - Remove old names and broad derivation code in the same change; do not leave compatibility branches.

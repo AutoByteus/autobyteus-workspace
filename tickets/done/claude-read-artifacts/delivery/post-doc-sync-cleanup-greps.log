@@ -1,0 +1,6 @@
+# Post-doc-sync cleanup grep
+Date: 2026-05-03T06:41:08Z
+Command: rg "FILE_CHANGE_UPDATED|FileChangeUpdated|fileChangeUpdated|handleFileChangeUpdated|FileChangeUpdatedPayload" -n --glob '!tickets/**' --glob '!**/node_modules/**' --glob '!**/dist/**' --glob '!autobyteus-web/.nuxt/**' .
+Command exit: 1
+Command: rg "run-file-change-event-payload|run-file-change-invocation-cache|extractCandidateOutputPath|isCandidateKey|candidateOutputPath" -n --glob '!tickets/**' --glob '!**/node_modules/**' --glob '!**/dist/**' --glob '!autobyteus-web/.nuxt/**' .
+Command exit: 1

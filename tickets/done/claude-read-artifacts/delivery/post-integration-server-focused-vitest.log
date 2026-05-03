@@ -1,0 +1,75 @@
+# Post-integration server focused check
+Date: 2026-05-03T06:38:13Z
+Command: cd autobyteus-server-ts && pnpm exec vitest run tests/unit/agent-execution/events/agent-run-event-pipeline.test.ts tests/unit/agent-execution/events/file-change-event-processor.test.ts tests/unit/services/run-file-changes/run-file-change-service.test.ts tests/unit/utils/artifact-utils.test.ts --reporter verbose
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+
+ ✓ tests/unit/services/run-file-changes/run-file-change-service.test.ts > RunFileChangeService > projects FILE_CHANGE events, keeps live content transient, and persists metadata only 12ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-service.test.ts > RunFileChangeService > canonicalizes absolute and relative FILE_CHANGE references to one workspace row 8ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-service.test.ts > RunFileChangeService > ignores unrelated activity events and only consumes FILE_CHANGE 4ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-service.test.ts > RunFileChangeService > records failed FILE_CHANGE status 5ms
+ ✓ tests/unit/agent-execution/events/file-change-event-processor.test.ts > FileChangeEventProcessor > keeps Claude Read lifecycle events activity-only and emits no FILE_CHANGE 2ms
+ ✓ tests/unit/agent-execution/events/file-change-event-processor.test.ts > FileChangeEventProcessor > emits FILE_CHANGE for Claude Write 2ms
+ ✓ tests/unit/agent-execution/events/file-change-event-processor.test.ts > FileChangeEventProcessor > emits FILE_CHANGE for Claude Edit 0ms
+ ✓ tests/unit/agent-execution/events/file-change-event-processor.test.ts > FileChangeEventProcessor > emits FILE_CHANGE for Claude MultiEdit 0ms
+ ✓ tests/unit/agent-execution/events/file-change-event-processor.test.ts > FileChangeEventProcessor > emits FILE_CHANGE for Claude NotebookEdit 1ms
+ ✓ tests/unit/agent-execution/events/file-change-event-processor.test.ts > FileChangeEventProcessor > emits streaming, pending, and available FILE_CHANGE updates for write_file preview 1ms
+ ✓ tests/unit/agent-execution/events/file-change-event-processor.test.ts > FileChangeEventProcessor > emits FILE_CHANGE for Codex edit_file lifecycle 2ms
+ ✓ tests/unit/agent-execution/events/file-change-event-processor.test.ts > FileChangeEventProcessor > emits generated-output FILE_CHANGE for generate_image 0ms
+ ✓ tests/unit/agent-execution/events/file-change-event-processor.test.ts > FileChangeEventProcessor > emits generated-output FILE_CHANGE for edit_image 1ms
+ ✓ tests/unit/agent-execution/events/file-change-event-processor.test.ts > FileChangeEventProcessor > emits generated-output FILE_CHANGE for generate_speech 0ms
+ ✓ tests/unit/agent-execution/events/file-change-event-processor.test.ts > FileChangeEventProcessor > rejects unknown non-mutation tools whose only path-like field is file_path 0ms
+ ✓ tests/unit/agent-execution/events/agent-run-event-pipeline.test.ts > AgentRunEventPipeline > runs processors in order and lets later processors see earlier derived events 1ms
+ ✓ tests/unit/utils/artifact-utils.test.ts > artifact-utils > infers artifact types from extensions 1ms
+
+ Test Files  4 passed (4)
+      Tests  17 passed (17)
+   Start at  08:38:13
+   Duration  1.28s (transform 307ms, setup 45ms, import 419ms, tests 43ms, environment 0ms)
+

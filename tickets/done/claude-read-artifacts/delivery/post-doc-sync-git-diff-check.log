@@ -1,0 +1,3 @@
+# Post-doc-sync diff whitespace check
+Date: 2026-05-03T06:41:15Z
+Command: git diff --check

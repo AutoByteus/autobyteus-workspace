@@ -8,7 +8,7 @@ That model covers:
 
 - `write_file`
 - `edit_file`
-- generated outputs discovered from successful non-file tools
+- generated outputs from known output-producing tools (`generate_image`, `edit_image`, `generate_speech`, including the AutoByteus image/audio MCP forms)
 
 The backend owns path identity, live status, and historical replay. The frontend renders one unified list from `runFileChangesStore`.
 
@@ -35,6 +35,8 @@ Key rules:
 - current filesystem content is the source of truth for committed previews
 - `content` is transient and only used for live buffered `write_file` rendering
 - generated outputs are represented as `sourceTool = 'generated_output'`
+- generic `file_path`/`filePath` fields are not artifact evidence unless they are returned by a known generated-output tool or paired with explicit output/destination semantics
+- `FILE_CHANGE` is a state-update stream, not an exact-one occurrence guarantee; pre-available status sequences are runtime-shaped, so a row can move `streaming -> available`, `pending -> available`, or receive idempotent duplicate interim `streaming`/`pending` updates before terminal state
 
 ## High-Level Data Flow
 
