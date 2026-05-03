@@ -59,6 +59,16 @@
 Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/claude-sdk-post-tool-text-render-order/docs-sync-report.md`
 Delivery/release report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/claude-sdk-post-tool-text-render-order/release-deployment-report.md`
 
+## Local Electron Test Build
+
+- Status: `Built successfully for user verification`
+- Build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/claude-sdk-post-tool-text-render-order/electron-test-build-report.md`
+- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/claude-sdk-post-tool-text-render-order/logs/delivery/electron-build-mac-arm64-personal-20260503T081717Z.log`
+- Latest log alias: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/claude-sdk-post-tool-text-render-order/logs/delivery/electron-build-mac-arm64-personal-latest.log`
+- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.92.dmg`
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.92.zip`
+- Notes: macOS ARM64 personal build, unsigned/not notarized, created with `AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm -C autobyteus-web build:electron:mac -- --arm64`.
+
 ## Residual / Accepted Scope
 
 - Full browser visual E2E was not run. API/E2E validation intentionally covered the live runtime, team websocket mapping, memory projection, and frontend reducer contracts that own this behavior.

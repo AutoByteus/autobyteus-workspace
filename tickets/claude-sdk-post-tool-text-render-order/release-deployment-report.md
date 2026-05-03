@@ -125,8 +125,20 @@ No version bump, tag, or release commit is required before user verification. If
 6. Reviewed long-lived backend and frontend docs against the final integrated implementation state.
 7. Updated durable docs for runtime segment identity/order, single-agent/team streaming forwarding, and frontend segment handler identity coalescing.
 8. Wrote/updated the docs sync report, handoff summary, and this delivery/release report against the integrated branch state.
-9. Ran `git diff --check` after delivery-owned docs/artifact edits; it passed.
-10. Holding for explicit user verification before ticket archival, push, target merge, release/deployment, and cleanup.
+9. Read `autobyteus-web/README.md` Electron build instructions and ran a local macOS ARM64 personal Electron build for user verification.
+10. Recorded build evidence in `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/claude-sdk-post-tool-text-render-order/electron-test-build-report.md`.
+11. Ran `git diff --check` after delivery-owned docs/artifact edits; it passed.
+12. Holding for explicit user verification before ticket archival, push, target merge, release/deployment, and cleanup.
+
+## Local Electron Test Build
+
+- Applicable for user verification: `Yes`
+- Command: `AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm -C autobyteus-web build:electron:mac -- --arm64`
+- Result: `Passed`
+- Build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/claude-sdk-post-tool-text-render-order/electron-test-build-report.md`
+- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.92.dmg`
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.92.zip`
+- Signing/notarization: local unsigned build; no notarization/timestamping.
 
 ## Environment Or Migration Notes
 
