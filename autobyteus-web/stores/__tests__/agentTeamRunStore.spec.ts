@@ -433,7 +433,7 @@ describe('agentTeamRunStore', () => {
     expect(typeof replacementTeamContext.unsubscribe).toBe('function');
   });
 
-  it('stopGeneration should send STOP_GENERATION to the active team stream', () => {
+  it('stopGeneration should send STOP_GENERATION without clearing sending state optimistically', () => {
     const focusedMember = {
       isSending: true,
       state: {
@@ -469,7 +469,7 @@ describe('agentTeamRunStore', () => {
 
     expect(result).toBe(true);
     expect(mockStopGeneration).toHaveBeenCalledTimes(1);
-    expect(focusedMember.isSending).toBe(false);
+    expect(focusedMember.isSending).toBe(true);
   });
 
   it('fans out mixed member runtimes when launching a temporary team', async () => {

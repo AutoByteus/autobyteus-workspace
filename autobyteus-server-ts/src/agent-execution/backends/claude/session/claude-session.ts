@@ -1,7 +1,6 @@
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import {
   logger,
-  asObject,
   asString,
   nowTimestampSeconds,
   type ClaudeSessionEvent,
@@ -18,25 +17,31 @@ import { ClaudeSessionMessageCache } from "./claude-session-message-cache.js";
 import type { ClaudeSessionToolUseCoordinator } from "./claude-session-tool-use-coordinator.js";
 import type { ClaudeSessionConfig } from "./claude-session-config.js";
 import { buildClaudeTurnInput } from "./claude-turn-input-builder.js";
+import {
+  createClaudeActiveTurnExecution,
+  isClaudeActiveTurnInterrupted,
+  type ClaudeActiveTurnExecution,
+} from "./claude-active-turn-execution.js";
+import { resolveClaudeSessionToolingOptions } from "./claude-session-tooling-options.js";
+import {
+  buildClaudeProviderCompactionEvent,
+  isClaudeTurnTerminalChunk,
+  resolveClaudeIncrementalDelta,
+} from "./claude-session-output-events.js";
 import type {
   ClaudeSdkClient,
   ClaudeSdkQueryLike,
 } from "../../../../runtime-management/claude/client/claude-sdk-client.js";
 
 import { dispatchRuntimeEvent } from "../../shared/runtime-event-dispatch.js";
-import { CLAUDE_SEND_MESSAGE_MCP_TOOL_NAME, CLAUDE_SEND_MESSAGE_TOOL_NAME } from "../claude-send-message-tool-name.js";
-
-const CLAUDE_BROWSER_MCP_TOOL_PREFIX = "mcp__autobyteus_browser__";
-const CLAUDE_PUBLISHED_ARTIFACT_MCP_TOOL_NAME =
-  "mcp__autobyteus_published_artifacts__publish_artifact";
 
 const formatClaudeRuntimeError = (error: unknown): string =>
   error instanceof Error ? error.stack ?? error.message : String(error);
 
-export type ClaudeSessionTurnExecutionInput = {
+type ClaudeSessionTurnExecutionInput = {
   turnId: string;
   content: string;
-  signal: AbortSignal;
+  abortController: AbortController;
 };
 
 export type ClaudeSessionDependencies = {
@@ -61,6 +66,7 @@ export class ClaudeSession {
   private readonly dependencies: ClaudeSessionDependencies;
   readonly listeners: Set<(event: ClaudeSessionEvent) => void>;
   activeAbortController: AbortController | null;
+  private activeTurnExecution: ClaudeActiveTurnExecution | null = null;
   private rawClaudeChunkSequence = 0;
 
   constructor(input: ClaudeSessionStateInput) {
@@ -159,7 +165,11 @@ export class ClaudeSession {
     }
 
     const turnId = `${this.runId}:turn:${Date.now()}`;
+    const abortController = new AbortController();
+    const activeTurn = createClaudeActiveTurnExecution(turnId, abortController);
+    this.activeTurnExecution = activeTurn;
     this.setActiveTurn(turnId);
+    this.setActiveAbortController(abortController);
     this.dependencies.sessionMessageCache.appendMessage(this.sessionId, {
       role: "user",
       content,
@@ -174,17 +184,20 @@ export class ClaudeSession {
       },
     });
 
-    const abortController = new AbortController();
-    this.setActiveAbortController(abortController);
     const runTurn = async () => {
       try {
         await this.executeTurn({
           turnId,
           content,
-          signal: abortController.signal,
+          abortController,
         });
-        this.markTurnCompleted();
+        if (!isClaudeActiveTurnInterrupted(activeTurn)) {
+          this.markTurnCompleted(turnId);
+        }
       } catch (error) {
+        if (isClaudeActiveTurnInterrupted(activeTurn)) {
+          return;
+        }
         this.emitRuntimeEvent({
           method: ClaudeSessionEventName.ERROR,
           params: {
@@ -194,12 +207,11 @@ export class ClaudeSession {
         });
         throw error;
       } finally {
-        this.clearActiveAbortController();
-        this.clearActiveTurn();
+        this.clearActiveTurnExecution(activeTurn);
       }
     };
-    const turnTask = runTurn();
-    void turnTask.catch((error) => {
+    activeTurn.settledTask = runTurn();
+    void activeTurn.settledTask.catch((error) => {
       logger.warn(
         `Claude runtime turn failed for run '${this.runId}': ${formatClaudeRuntimeError(error)}`,
       );
@@ -222,19 +234,33 @@ export class ClaudeSession {
   }
 
   async interrupt(): Promise<void> {
-    this.activeAbortController?.abort();
-    this.clearActiveAbortController();
+    const activeTurn = this.activeTurnExecution;
+    if (!activeTurn) {
+      this.cleanupLegacyActiveInterruptState();
+      return;
+    }
+
+    if (!activeTurn.interruptSettlementTask) {
+      activeTurn.interruptSettlementTask = this.interruptActiveTurn(activeTurn);
+    }
+    await activeTurn.interruptSettlementTask;
+  }
+
+  private async interruptActiveTurn(activeTurn: ClaudeActiveTurnExecution): Promise<void> {
+    const interruptedTurnId = activeTurn.turnId;
+    activeTurn.interrupted = true;
     this.dependencies.toolingCoordinator.clearPendingToolApprovals(
       this.runId,
       "Tool approval interrupted.",
     );
-    await this.dependencies.sdkClient.interruptQuery(
-      this.dependencies.activeQueriesByRunId.get(this.runId) ?? null,
-    );
+    await this.flushPendingToolApprovalResponses();
+    activeTurn.abortController.abort();
+    this.closeActiveTurnQuery(activeTurn);
+    await activeTurn.settledTask;
     this.emitRuntimeEvent({
       method: ClaudeSessionEventName.TURN_INTERRUPTED,
       params: {
-        turnId: this.activeTurnId,
+        turnId: interruptedTurnId,
       },
     });
   }
@@ -273,30 +299,91 @@ export class ClaudeSession {
     this.activeAbortController = null;
   }
 
-  markTurnCompleted(): void {
+  markTurnCompleted(turnId: string | null = null): void {
     this.runContext.runtimeContext.hasCompletedTurn = true;
-    this.runContext.runtimeContext.activeTurnId = null;
+    if (!turnId || this.runContext.runtimeContext.activeTurnId === turnId) {
+      this.runContext.runtimeContext.activeTurnId = null;
+    }
+  }
+
+  private clearActiveTurnExecution(activeTurn: ClaudeActiveTurnExecution): void {
+    this.closeActiveTurnQuery(activeTurn);
+    if (this.activeTurnExecution === activeTurn) {
+      this.activeTurnExecution = null;
+    }
+    if (this.activeAbortController === activeTurn.abortController) {
+      this.clearActiveAbortController();
+    }
+    if (this.activeTurnId === activeTurn.turnId) {
+      this.clearActiveTurn();
+    }
+  }
+
+  private closeActiveTurnQuery(activeTurn: ClaudeActiveTurnExecution): void {
+    if (activeTurn.queryClosed) {
+      return;
+    }
+    const query =
+      activeTurn.query ?? this.dependencies.activeQueriesByRunId.get(this.runId) ?? null;
+    if (!query) {
+      this.dependencies.activeQueriesByRunId.delete(this.runId);
+      return;
+    }
+    activeTurn.queryClosed = true;
+    try {
+      this.dependencies.sdkClient.closeQuery(query);
+    } catch {
+      // best-effort cleanup
+    } finally {
+      activeTurn.query = null;
+      if (this.dependencies.activeQueriesByRunId.get(this.runId) === query) {
+        this.dependencies.activeQueriesByRunId.delete(this.runId);
+      }
+    }
+  }
+
+  private async flushPendingToolApprovalResponses(): Promise<void> {
+    await Promise.resolve();
+    await new Promise<void>((resolve) => {
+      setImmediate(resolve);
+    });
+  }
+
+  private cleanupLegacyActiveInterruptState(): void {
+    this.activeAbortController?.abort();
+    this.clearActiveAbortController();
+    this.dependencies.toolingCoordinator.clearPendingToolApprovals(
+      this.runId,
+      "Tool approval interrupted.",
+    );
+    const query = this.dependencies.activeQueriesByRunId.get(this.runId) ?? null;
+    try {
+      this.dependencies.sdkClient.closeQuery(query);
+    } catch {
+      // best-effort cleanup
+    } finally {
+      this.dependencies.activeQueriesByRunId.delete(this.runId);
+      this.clearActiveTurn();
+    }
   }
 
   private async executeTurn(options: ClaudeSessionTurnExecutionInput): Promise<void> {
-    const sendMessageToToolingEnabled =
-      this.isSendMessageToToolingEnabled();
-    const enabledBrowserToolNames = this.resolveEnabledBrowserToolNames();
-    const publishArtifactToolingEnabled = this.isPublishArtifactToolingEnabled();
-    const allowedTools = this.resolveAllowedToolNames({
-      sendMessageToToolingEnabled,
-      enabledBrowserToolNames,
-      publishArtifactToolingEnabled,
+    const activeTurn =
+      this.activeTurnExecution?.turnId === options.turnId ? this.activeTurnExecution : null;
+    const toolingOptions = resolveClaudeSessionToolingOptions({
+      configuredToolExposure: this.runContext.runtimeContext.configuredToolExposure,
+      hasMaterializedSkills: this.runContext.runtimeContext.materializedConfiguredSkills.length > 0,
+      memberTeamContext: this.memberTeamContext,
     });
     const turnInput = buildClaudeTurnInput({
       runContext: this.runContext,
       content: options.content,
-      sendMessageToEnabled: sendMessageToToolingEnabled,
+      sendMessageToEnabled: toolingOptions.sendMessageToToolingEnabled,
     });
     const mcpServers = await this.buildSessionMcpServers({
-      sendMessageToToolingEnabled,
-      enabledBrowserToolNames,
-      publishArtifactToolingEnabled,
+      sendMessageToToolingEnabled: toolingOptions.sendMessageToToolingEnabled,
+      enabledBrowserToolNames: toolingOptions.enabledBrowserToolNames,
+      publishArtifactToolingEnabled: toolingOptions.publishArtifactToolingEnabled,
     });
     const query = await this.dependencies.sdkClient.startQueryTurn({
       prompt: turnInput,
@@ -304,8 +391,9 @@ export class ClaudeSession {
       model: this.model,
       workingDirectory: this.workingDirectory,
       mcpServers,
-      allowedTools,
+      allowedTools: toolingOptions.allowedTools,
       permissionMode: this.permissionMode,
+      abortController: options.abortController,
       ...(this.permissionMode !== "bypassPermissions"
         ? {
             canUseTool: (
@@ -324,11 +412,17 @@ export class ClaudeSession {
             autoExecuteTools: true,
           }),
     });
+    if (activeTurn) {
+      activeTurn.query = query;
+    }
     this.dependencies.activeQueriesByRunId.set(this.runId, query);
 
     let assistantOutput = "";
     let hasObservedStreamingDelta = false;
     try {
+      if (isClaudeActiveTurnInterrupted(activeTurn, options.abortController)) {
+        return;
+      }
       for await (const chunk of query) {
         this.rawClaudeChunkSequence += 1;
         logRawClaudeSessionChunkDetails({
@@ -337,17 +431,24 @@ export class ClaudeSession {
           sequence: this.rawClaudeChunkSequence,
           chunk,
         });
-        if (options.signal.aborted) {
+        if (isClaudeActiveTurnInterrupted(activeTurn, options.abortController)) {
           break;
         }
-        this.emitClaudeProviderCompactionEventIfPresent(chunk, options.turnId);
+        const compactionEvent = buildClaudeProviderCompactionEvent({
+          chunk,
+          turnId: options.turnId,
+          sessionId: this.sessionId,
+        });
+        if (compactionEvent) {
+          this.emitRuntimeEvent(compactionEvent);
+        }
         this.dependencies.toolingCoordinator.processToolLifecycleChunk(this.runContext, chunk);
         const normalized = normalizeClaudeStreamChunk(chunk);
-        const isTerminalChunk = this.isClaudeTurnTerminalChunk(chunk);
+        const isTerminalChunk = isClaudeTurnTerminalChunk(chunk);
         this.adoptResolvedSessionId(normalized.sessionId, this.dependencies.sessionMessageCache);
 
         if (normalized.delta) {
-          const incrementalDelta = this.resolveClaudeIncrementalDelta({
+          const incrementalDelta = resolveClaudeIncrementalDelta({
             normalizedDelta: normalized.delta,
             source: normalized.source,
             assistantOutput,
@@ -379,8 +480,16 @@ export class ClaudeSession {
         }
       }
     } finally {
-      this.dependencies.activeQueriesByRunId.delete(this.runId);
-      this.dependencies.sdkClient.closeQuery(query);
+      if (activeTurn) {
+        this.closeActiveTurnQuery(activeTurn);
+      } else {
+        this.dependencies.activeQueriesByRunId.delete(this.runId);
+        this.dependencies.sdkClient.closeQuery(query);
+      }
+    }
+
+    if (isClaudeActiveTurnInterrupted(activeTurn, options.abortController)) {
+      return;
     }
 
     if (assistantOutput.length > 0) {
@@ -409,10 +518,6 @@ export class ClaudeSession {
     });
   }
 
-  private isProjectSkillSettingsEnabled(): boolean {
-    return this.runContext.runtimeContext.materializedConfiguredSkills.length > 0;
-  }
-
   private async buildSessionMcpServers(input: {
     sendMessageToToolingEnabled: boolean;
     enabledBrowserToolNames: string[];
@@ -436,124 +541,6 @@ export class ClaudeSession {
         : null,
       emitEvent: (_runContext, event) => this.emitRuntimeEvent(event),
     });
-  }
-
-  private isSendMessageToToolingEnabled(): boolean {
-    const allowedRecipientNames = this.resolveAllowedRecipientNames();
-    return (
-      this.runContext.runtimeContext.configuredToolExposure.sendMessageToConfigured &&
-      Boolean(this.memberTeamContext?.sendMessageToEnabled) &&
-      allowedRecipientNames.length > 0
-    );
-  }
-
-  private resolveEnabledBrowserToolNames(): string[] {
-    return [...this.runContext.runtimeContext.configuredToolExposure.enabledBrowserToolNames];
-  }
-
-  private isPublishArtifactToolingEnabled(): boolean {
-    return this.runContext.runtimeContext.configuredToolExposure.publishArtifactConfigured;
-  }
-
-  private resolveAllowedToolNames(input: {
-    sendMessageToToolingEnabled: boolean;
-    enabledBrowserToolNames: string[];
-    publishArtifactToolingEnabled: boolean;
-  }): string[] {
-    const allowedTools = new Set<string>();
-    if (input.sendMessageToToolingEnabled) {
-      allowedTools.add(CLAUDE_SEND_MESSAGE_TOOL_NAME);
-      allowedTools.add(CLAUDE_SEND_MESSAGE_MCP_TOOL_NAME);
-    }
-    if (this.isProjectSkillSettingsEnabled()) {
-      allowedTools.add("Skill");
-    }
-    for (const toolName of input.enabledBrowserToolNames) {
-      allowedTools.add(toolName);
-      allowedTools.add(`${CLAUDE_BROWSER_MCP_TOOL_PREFIX}${toolName}`);
-    }
-    if (input.publishArtifactToolingEnabled) {
-      allowedTools.add("publish_artifact");
-      allowedTools.add(CLAUDE_PUBLISHED_ARTIFACT_MCP_TOOL_NAME);
-    }
-    return [...allowedTools];
-  }
-
-  private resolveAllowedRecipientNames(): string[] {
-    return [...(this.memberTeamContext?.allowedRecipientNames ?? [])];
-  }
-
-  private resolveClaudeIncrementalDelta(options: {
-    normalizedDelta: string;
-    source: "stream_delta" | "assistant_message" | "result" | "unknown";
-    assistantOutput: string;
-    hasObservedStreamingDelta: boolean;
-  }): string | null {
-    const {
-      normalizedDelta,
-      source,
-      assistantOutput,
-      hasObservedStreamingDelta,
-    } = options;
-
-    if (source === "stream_delta") {
-      return normalizedDelta;
-    }
-
-    if (source === "result" && assistantOutput.length > 0 && !hasObservedStreamingDelta) {
-      return null;
-    }
-
-    if (!hasObservedStreamingDelta || (source !== "assistant_message" && source !== "result")) {
-      return normalizedDelta;
-    }
-
-    if (normalizedDelta.startsWith(assistantOutput)) {
-      const suffix = normalizedDelta.slice(assistantOutput.length);
-      return suffix.length > 0 ? suffix : null;
-    }
-
-    if (assistantOutput.startsWith(normalizedDelta)) {
-      return null;
-    }
-
-    return null;
-  }
-
-  private isClaudeTurnTerminalChunk(chunk: unknown): boolean {
-    const payload =
-      chunk && typeof chunk === "object" && !Array.isArray(chunk)
-        ? (chunk as Record<string, unknown>)
-        : null;
-    return asString(payload?.type)?.toLowerCase() === "result";
-  }
-
-  private emitClaudeProviderCompactionEventIfPresent(chunk: unknown, turnId: string): void {
-    const payload = asObject(chunk);
-    if (!payload) {
-      return;
-    }
-    const nested = asObject(payload.message) ?? asObject(payload.event) ?? payload;
-    const type = asString(nested.type)?.toLowerCase() ?? asString(payload.type)?.toLowerCase();
-    const status = asString(nested.status)?.toLowerCase() ?? asString(payload.status)?.toLowerCase();
-    const baseParams = {
-      ...payload,
-      turnId,
-      sessionId: this.sessionId,
-    };
-    if (type === "compact_boundary" || Boolean(nested.compact_boundary) || Boolean(payload.compact_boundary)) {
-      this.emitRuntimeEvent({
-        method: ClaudeSessionEventName.COMPACT_BOUNDARY,
-        params: baseParams,
-      });
-      return;
-    }
-    if (status === "compacting") {
-      this.emitRuntimeEvent({
-        method: ClaudeSessionEventName.STATUS_COMPACTING,
-        params: baseParams,
-      });
-    }
   }
 
 }

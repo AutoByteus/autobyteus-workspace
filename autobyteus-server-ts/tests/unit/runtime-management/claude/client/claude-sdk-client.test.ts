@@ -89,6 +89,31 @@ describe("ClaudeSdkClient", () => {
     });
   });
 
+  it("forwards an AbortController to Claude SDK query options when provided", async () => {
+    const client = new ClaudeSdkClient();
+    const queryMock = createMockQuery();
+    const queryFn = vi.fn(async (_input: unknown) => queryMock);
+    const abortController = new AbortController();
+
+    client.setCachedModuleForTesting({
+      query: queryFn,
+    });
+
+    await client.startQueryTurn({
+      prompt: "abortable turn",
+      model: "haiku",
+      workingDirectory: "/tmp/claude-client-abort-controller",
+      abortController,
+    });
+
+    expect(queryFn).toHaveBeenCalledWith({
+      prompt: "abortable turn",
+      options: expect.objectContaining({
+        abortController,
+      }),
+    });
+  });
+
   it("uses user settings-source policy for model discovery", async () => {
     const client = new ClaudeSdkClient();
     const control = {

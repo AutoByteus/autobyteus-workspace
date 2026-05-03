@@ -174,6 +174,7 @@ export const useMyFeatureStore = defineStore('myFeature', {
 
 - Stuck in loading state
   - Ensure the streaming service sets `isSending = false` on `TURN_COMPLETED` or `ASSISTANT_COMPLETE`, with `AGENT_STATUS: idle` treated as a compatibility fallback rather than the only completion signal.
+  - Do not clear `isSending` merely because a stop/interrupt command was sent; wait for the backend lifecycle/status/error stream event so provider runtimes can finish cancellation cleanup first.
 - "agentDefinitionId and llmModelIdentifier are required"
   - Both must be provided for a new agent run.
 - No stream output
