@@ -41,6 +41,7 @@ The Pinia stores act as the primary interface for the UI components to interact 
 - **Key Actions**:
   - `sendUserInputAndSubscribe()`: Sends user messages via mutation and ensures an agent WebSocket stream is connected. For persisted inactive runs, it uses resume config to call `RestoreAgentRun` before finalizing attachments and sending. Before the send, it finalizes any staged browser uploads so optimistic history and runtime payloads both point at final run-scoped attachment locators.
   - `connectToAgentStream(runId)`: Listens for real-time events specific to an agent run via WebSocket. The backend WebSocket boundary is also restore-aware for connect and `SEND_MESSAGE`, so a stale/missing frontend resume cache does not have to be the only recovery path.
+  - `stopGeneration()`: Sends the backend `STOP_GENERATION` control command without locally marking the run send-ready. `isSending` is cleared by backend lifecycle/status/error stream handling after the runtime has settled the active turn.
   - `postToolExecutionApproval()`: Sends user decisions (Approve/Deny) for "Awaiting Approval" tool calls.
   - `closeAgent()`: Cleans up local state and unsubscribes.
 
@@ -52,6 +53,7 @@ The Pinia stores act as the primary interface for the UI components to interact 
   - `launchExistingTeam()`: Resumes or starts a session from an existing team instance.
   - `connectToTeamStream(teamRunId)`: Listens for team-level events (e.g., task updates, status changes) via WebSocket.
   - `sendMessageToFocusedMember()`: Routes user input to a specific agent within the team context, restoring an inactive persisted team when resume config says it is inactive, then finalizing that member's staged uploaded attachments after the authoritative team/member identity is known. Backend WebSocket `SEND_MESSAGE` provides the authoritative final recovery boundary when the local resume cache is stale or absent.
+  - `stopGeneration()`: Sends the team `STOP_GENERATION` control command for the active team run/member without locally clearing the focused member's `isSending` flag. The focused member becomes send-ready from backend lifecycle/status/error events, not from local stop-command dispatch.
   - `terminateTeamRun()`: Calls backend termination before local teardown for persisted teams. On success it disconnects the team stream, marks members shut down, marks run-history resume config inactive, and refreshes the history tree; on failure it leaves the active local team state intact.
 
 ### Stopped-Run Follow-Up Recovery
@@ -62,6 +64,13 @@ Single-agent and team follow-up chat share the same recovery model:
 - WebSocket connect and `SEND_MESSAGE` are restore-aware on the backend, so follow-up chat can still recover stopped-but-persisted runs when the frontend cache is stale, missing, or was updated after a local stop;
 - accepted follow-up messages mark the run/team active in run history and refresh the history tree; and
 - stop/tool-approval control messages are active-only and should not be used as implicit restore operations.
+
+Stop dispatch is intentionally not a local completion event. The frontend must
+keep the affected single run or focused team member in its current sending
+state until `TURN_COMPLETED`, `AGENT_STATUS`, or `ERROR` stream handling clears
+that state. This keeps the primary input from advertising follow-up readiness
+before provider runtimes such as Claude Agent SDK have settled interrupted
+query/process resources.
 
 ### Run Reopen Projection Hydration
 

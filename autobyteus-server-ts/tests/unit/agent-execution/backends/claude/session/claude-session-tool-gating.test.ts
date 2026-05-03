@@ -130,7 +130,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifact gating", () => 
     await (session as any).executeTurn({
       turnId: "turn-1",
       content: new AgentInputUserMessage("hello").content,
-      signal: new AbortController().signal,
+      abortController: new AbortController(),
     });
 
     expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(
@@ -160,7 +160,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifact gating", () => 
     await (session as any).executeTurn({
       turnId: "turn-1",
       content: new AgentInputUserMessage("hello").content,
-      signal: new AbortController().signal,
+      abortController: new AbortController(),
     });
 
     expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(
@@ -193,7 +193,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifact gating", () => 
     await (session as any).executeTurn({
       turnId: "turn-1",
       content: new AgentInputUserMessage("hello").content,
-      signal: new AbortController().signal,
+      abortController: new AbortController(),
     });
 
     expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(

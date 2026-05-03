@@ -367,7 +367,7 @@ describe('agentRunStore', () => {
         expect(mockContextsStore.removeRun).not.toHaveBeenCalled();
     });
 
-    it('stopGeneration should signal active stream and clear sending state', () => {
+    it('stopGeneration should signal active stream without clearing sending state optimistically', () => {
         const store = useAgentRunStore();
         mockAgentContext.state.runId = 'agent-1';
         mockAgentContext.isSending = true;
@@ -377,6 +377,6 @@ describe('agentRunStore', () => {
 
         expect(result).toBe(true);
         expect(mockStopGeneration).toHaveBeenCalledTimes(1);
-        expect(mockAgentContext.isSending).toBe(false);
+        expect(mockAgentContext.isSending).toBe(true);
     });
 });
