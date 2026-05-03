@@ -193,6 +193,63 @@ describe("RuntimeMemoryEventAccumulator", () => {
     });
   });
 
+  it("preserves assistant-tool-assistant raw trace order from distinct text segment ids", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = new RuntimeMemoryEventAccumulator({
+      runId: "run-1",
+      writer: new RunMemoryWriter({ memoryDir }),
+    });
+
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-text-tool-text" }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "turn-text-tool-text:claude-text:msg-pre:0",
+      turnId: "turn-text-tool-text",
+      segment_type: "text",
+      delta: "Before tool.",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
+      id: "turn-text-tool-text:claude-text:msg-pre:0",
+      turnId: "turn-text-tool-text",
+      segment_type: "text",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+      invocation_id: "tool-bash-text-order",
+      turn_id: "turn-text-tool-text",
+      tool_name: "Bash",
+      arguments: { command: "pwd" },
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+      invocation_id: "tool-bash-text-order",
+      turn_id: "turn-text-tool-text",
+      tool_name: "Bash",
+      arguments: { command: "pwd" },
+      result: "/tmp/project",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "turn-text-tool-text:claude-text:msg-post:0",
+      turnId: "turn-text-tool-text",
+      segment_type: "text",
+      delta: "After tool.",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
+      id: "turn-text-tool-text:claude-text:msg-post:0",
+      turnId: "turn-text-tool-text",
+      segment_type: "text",
+    }));
+
+    const traces = readView(memoryDir).rawTraces ?? [];
+    expect(traces.map((trace) => trace.traceType)).toEqual([
+      "assistant",
+      "tool_call",
+      "tool_result",
+      "assistant",
+    ]);
+    expect(traces[0]).toMatchObject({ content: "Before tool." });
+    expect(traces[1]).toMatchObject({ toolName: "Bash", toolCallId: "tool-bash-text-order" });
+    expect(traces[2]).toMatchObject({ toolName: "Bash", toolResult: "/tmp/project" });
+    expect(traces[3]).toMatchObject({ content: "After tool." });
+  });
+
   it("creates deterministic fallback turns when no turn id is active", async () => {
     const memoryDir = await mkTempDir();
     const accumulator = new RuntimeMemoryEventAccumulator({

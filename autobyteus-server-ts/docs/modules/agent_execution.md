@@ -21,6 +21,22 @@ Runtime managers compose definitions, prompts, tools, processors, and workspace 
 
 See [Agent Memory](./agent_memory.md) for the storage-only recorder contract and memory-file boundaries.
 
+## Runtime Segment Identity And Ordering
+
+Provider adapters own the stream segment identities they emit. Text segments must
+use provider message/content-block identity when it is available, and may fall
+back to runtime-generated identities only for genuinely anonymous stream text.
+They must not use the whole turn id as the text segment id for all assistant
+text in a turn, because clients intentionally coalesce later content into an
+existing rendered segment when `segment_type` and `id` match.
+
+Adapters also own the ordering boundary between assistant text and tool
+lifecycles. If a provider emits `assistant text -> tool_use/tool_result ->
+assistant text`, the runtime must emit separate text segment completion events
+at the provider text-block boundaries so live streaming, team fanout,
+run-history projection, and storage-only memory traces all preserve the same
+assistant/tool/assistant order without frontend provider-specific repair logic.
+
 ## Runtime Tool Lifecycle Normalization
 
 Provider adapters must keep tool calls on two runtime-neutral lanes:

@@ -1,4 +1,4 @@
-import { asString, type ClaudeSessionEvent } from "../claude-runtime-shared.js";
+import { asObject, asString, type ClaudeSessionEvent } from "../claude-runtime-shared.js";
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
 import { isClaudeSendMessageMcpToolName } from "../claude-send-message-tool-name.js";
 import { ClaudeSessionEventName } from "../events/claude-session-event-name.js";
@@ -138,99 +138,102 @@ export class ClaudeSessionToolUseCoordinator {
   }
 
   processToolLifecycleChunk(runContext: ClaudeRunContext, chunk: unknown): void {
-    const payload =
-      chunk && typeof chunk === "object" && !Array.isArray(chunk)
-        ? (chunk as Record<string, unknown>)
-        : null;
+    const payload = asObject(chunk);
     if (!payload) {
       return;
     }
 
-    const messagePayload =
-      payload.message && typeof payload.message === "object" && !Array.isArray(payload.message)
-        ? (payload.message as Record<string, unknown>)
-        : null;
+    const messagePayload = asObject(payload.message);
     const contentBlocks = Array.isArray(messagePayload?.content)
       ? (messagePayload?.content as unknown[])
       : [];
 
-    const type = asString(payload.type);
+    const messageType = asString(payload.type);
     for (const blockRaw of contentBlocks) {
-      const block =
-        blockRaw && typeof blockRaw === "object" && !Array.isArray(blockRaw)
-          ? (blockRaw as Record<string, unknown>)
-          : null;
-      if (!block) {
-        continue;
-      }
+      this.processToolLifecycleContentBlock(runContext, {
+        messageType,
+        block: blockRaw,
+      });
+    }
+  }
 
-      const blockType = asString(block.type);
-      if (blockType === "tool_use" && type === "assistant") {
-        const invocationId = asString(block.id) ?? asString(block.tool_use_id);
-        const toolName = asString(block.name) ?? asString(block.tool_name);
-        if (!invocationId || !toolName) {
-          continue;
-        }
-        const toolInput =
-          (block.input && typeof block.input === "object" && !Array.isArray(block.input)
-            ? (block.input as Record<string, unknown>)
-            : null) ??
-          (block.arguments && typeof block.arguments === "object" && !Array.isArray(block.arguments)
-            ? (block.arguments as Record<string, unknown>)
-            : null) ??
-          {};
-        this.upsertObservedToolInvocation(runContext.runId, invocationId, {
-          toolName,
-          toolInput,
-        });
-        this.emitToolSegmentStartIfNeeded(runContext, invocationId);
-        this.emitToolExecutionStartedIfNeeded(runContext, invocationId);
-        continue;
+  processToolLifecycleContentBlock(
+    runContext: ClaudeRunContext,
+    input: {
+      messageType: string | null;
+      block: unknown;
+    },
+  ): void {
+    const block = asObject(input.block);
+    if (!block) {
+      return;
+    }
+    const blockType = asString(block.type);
+    if (blockType === "tool_use" && input.messageType === "assistant") {
+      const invocationId = asString(block.id) ?? asString(block.tool_use_id);
+      const toolName = asString(block.name) ?? asString(block.tool_name);
+      if (!invocationId || !toolName) {
+        return;
       }
-
-      if (blockType !== "tool_result" || type !== "user") {
-        continue;
-      }
-
-      const invocationId = asString(block.tool_use_id) ?? asString(block.id);
-      if (!invocationId) {
-        continue;
-      }
-
-      const tracked = this.observedToolInvocationsByRunId.get(runContext.runId)?.get(invocationId) ?? null;
-      const toolName = tracked?.toolName ?? asString(block.tool_name) ?? asString(block.name);
-      if (!toolName) {
-        continue;
-      }
-      if (isClaudeSendMessageMcpToolName(toolName)) {
-        this.consumeObservedToolInvocation(runContext.runId, invocationId);
-        continue;
-      }
+      const toolInput =
+        (block.input && typeof block.input === "object" && !Array.isArray(block.input)
+          ? (block.input as Record<string, unknown>)
+          : null) ??
+        (block.arguments && typeof block.arguments === "object" && !Array.isArray(block.arguments)
+          ? (block.arguments as Record<string, unknown>)
+          : null) ??
+        {};
       this.upsertObservedToolInvocation(runContext.runId, invocationId, {
         toolName,
-        toolInput: tracked?.toolInput ?? {},
+        toolInput,
       });
-      const blockResult = block.content;
-      const isError = block.is_error === true;
-
-      if (isError) {
-        const errorMessage = typeof blockResult === "string" ? blockResult : JSON.stringify(blockResult);
-        this.emitToolSegmentStartIfNeeded(runContext, invocationId);
-        this.emitToolSegmentEndIfNeeded(runContext, invocationId, { error: errorMessage });
-        this.emitToolExecutionCompletedIfNeeded(runContext, invocationId, {
-          error: errorMessage,
-        });
-        this.consumeObservedToolInvocation(runContext.runId, invocationId);
-        continue;
-      }
-
       this.emitToolSegmentStartIfNeeded(runContext, invocationId);
-      this.emitToolSegmentEndIfNeeded(runContext, invocationId, { result: blockResult });
+      this.emitToolExecutionStartedIfNeeded(runContext, invocationId);
+      return;
+    }
+
+    if (blockType !== "tool_result" || input.messageType !== "user") {
+      return;
+    }
+
+    const invocationId = asString(block.tool_use_id) ?? asString(block.id);
+    if (!invocationId) {
+      return;
+    }
+
+    const tracked = this.observedToolInvocationsByRunId.get(runContext.runId)?.get(invocationId) ?? null;
+    const toolName = tracked?.toolName ?? asString(block.tool_name) ?? asString(block.name);
+    if (!toolName) {
+      return;
+    }
+    if (isClaudeSendMessageMcpToolName(toolName)) {
+      this.consumeObservedToolInvocation(runContext.runId, invocationId);
+      return;
+    }
+    this.upsertObservedToolInvocation(runContext.runId, invocationId, {
+      toolName,
+      toolInput: tracked?.toolInput ?? {},
+    });
+    const blockResult = block.content;
+    const isError = block.is_error === true;
+
+    if (isError) {
+      const errorMessage = typeof blockResult === "string" ? blockResult : JSON.stringify(blockResult);
+      this.emitToolSegmentStartIfNeeded(runContext, invocationId);
+      this.emitToolSegmentEndIfNeeded(runContext, invocationId, { error: errorMessage });
       this.emitToolExecutionCompletedIfNeeded(runContext, invocationId, {
-        result: blockResult,
+        error: errorMessage,
       });
       this.consumeObservedToolInvocation(runContext.runId, invocationId);
+      return;
     }
+
+    this.emitToolSegmentStartIfNeeded(runContext, invocationId);
+    this.emitToolSegmentEndIfNeeded(runContext, invocationId, { result: blockResult });
+    this.emitToolExecutionCompletedIfNeeded(runContext, invocationId, {
+      result: blockResult,
+    });
+    this.consumeObservedToolInvocation(runContext.runId, invocationId);
   }
 
   private async resolveToolApprovalDecision(input: {
@@ -402,10 +405,7 @@ export class ClaudeSessionToolUseCoordinator {
     return next;
   }
 
-  private emitToolSegmentStartIfNeeded(
-    runContext: ClaudeRunContext,
-    invocationId: string,
-  ): void {
+  private emitToolSegmentStartIfNeeded(runContext: ClaudeRunContext, invocationId: string): void {
     const observed = this.observedToolInvocationsByRunId.get(runContext.runId)?.get(invocationId);
     if (!observed || observed.segmentStartedEmitted || !observed.toolName) {
       return;

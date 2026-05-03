@@ -1,0 +1,253 @@
+{
+  "runId": "run-claude-memory-trace-probe-0386fd96-7f93-4e81-bbb8-195f8b23fc42",
+  "workspaceRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-memory-trace-probe-LzrHkd",
+  "memoryRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/claude-sdk-post-tool-text-render-order/live-probe/memory-traces",
+  "runMemoryDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/claude-sdk-post-tool-text-render-order/live-probe/memory-traces",
+  "rawTracePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/claude-sdk-post-tool-text-render-order/live-probe/memory-traces/raw_traces.jsonl",
+  "preToken": "MEM_PRE_5e4a758d_b5a2_49e9_befd_5cd098c34e7a",
+  "postToken": "MEM_POST_8760ad56_ff2c_4b5e_abfc_ca0ae05b30bc",
+  "interestingTraceTypes": [
+    "user",
+    "assistant",
+    "tool_call",
+    "tool_result",
+    "assistant"
+  ],
+  "traceOrder": {
+    "preTraceIndex": 1,
+    "toolCallIndex": 2,
+    "toolResultIndex": 3,
+    "postTraceIndex": 4
+  },
+  "events": [
+    {
+      "index": 0,
+      "eventType": "TURN_STARTED",
+      "id": null,
+      "turnId": "run-claude-memory-trace-probe-0386fd96-7f93-4e81-bbb8-195f8b23fc42:turn:1777793106429",
+      "segmentType": null,
+      "invocationId": null,
+      "toolName": null,
+      "delta": null,
+      "text": null,
+      "statusHint": "ACTIVE",
+      "newStatus": null
+    },
+    {
+      "index": 1,
+      "eventType": "AGENT_STATUS",
+      "id": null,
+      "turnId": "run-claude-memory-trace-probe-0386fd96-7f93-4e81-bbb8-195f8b23fc42:turn:1777793106429",
+      "segmentType": null,
+      "invocationId": null,
+      "toolName": null,
+      "delta": null,
+      "text": null,
+      "statusHint": "ACTIVE",
+      "newStatus": "RUNNING"
+    },
+    {
+      "index": 2,
+      "eventType": "SEGMENT_CONTENT",
+      "id": "run-claude-memory-trace-probe-0386fd96-7f93-4e81-bbb8-195f8b23fc42:turn:1777793106429:claude-text:1a99fc56-6da0-4039-90cd-63de28db53d0:0",
+      "turnId": "run-claude-memory-trace-probe-0386fd96-7f93-4e81-bbb8-195f8b23fc42:turn:1777793106429",
+      "segmentType": "text",
+      "invocationId": null,
+      "toolName": null,
+      "delta": "MEM_PRE_5e4a758d_b5a2_49e9_befd_5cd098c34e7a",
+      "text": null,
+      "statusHint": null,
+      "newStatus": null
+    },
+    {
+      "index": 3,
+      "eventType": "SEGMENT_END",
+      "id": "run-claude-memory-trace-probe-0386fd96-7f93-4e81-bbb8-195f8b23fc42:turn:1777793106429:claude-text:1a99fc56-6da0-4039-90cd-63de28db53d0:0",
+      "turnId": "run-claude-memory-trace-probe-0386fd96-7f93-4e81-bbb8-195f8b23fc42:turn:1777793106429",
+      "segmentType": "text",
+      "invocationId": null,
+      "toolName": null,
+      "delta": null,
+      "text": "MEM_PRE_5e4a758d_b5a2_49e9_befd_5cd098c34e7a",
+      "statusHint": null,
+      "newStatus": null
+    },
+    {
+      "index": 4,
+      "eventType": "SEGMENT_START",
+      "id": "call_00_ULgRtrQrrcIJqclPpyC64495",
+      "turnId": "run-claude-memory-trace-probe-0386fd96-7f93-4e81-bbb8-195f8b23fc42:turn:1777793106429",
+      "segmentType": "tool_call",
+      "invocationId": null,
+      "toolName": "Write",
+      "delta": null,
+      "text": null,
+      "statusHint": null,
+      "newStatus": null
+    },
+    {
+      "index": 5,
+      "eventType": "TOOL_EXECUTION_STARTED",
+      "id": null,
+      "turnId": "run-claude-memory-trace-probe-0386fd96-7f93-4e81-bbb8-195f8b23fc42:turn:1777793106429",
+      "segmentType": null,
+      "invocationId": "call_00_ULgRtrQrrcIJqclPpyC64495",
+      "toolName": "Write",
+      "delta": null,
+      "text": null,
+      "statusHint": null,
+      "newStatus": null
+    },
+    {
+      "index": 6,
+      "eventType": "SEGMENT_END",
+      "id": "call_00_ULgRtrQrrcIJqclPpyC64495",
+      "turnId": "run-claude-memory-trace-probe-0386fd96-7f93-4e81-bbb8-195f8b23fc42:turn:1777793106429",
+      "segmentType": "tool_call",
+      "invocationId": null,
+      "toolName": "Write",
+      "delta": null,
+      "text": null,
+      "statusHint": null,
+      "newStatus": null
+    },
+    {
+      "index": 7,
+      "eventType": "TOOL_EXECUTION_SUCCEEDED",
+      "id": null,
+      "turnId": "run-claude-memory-trace-probe-0386fd96-7f93-4e81-bbb8-195f8b23fc42:turn:1777793106429",
+      "segmentType": null,
+      "invocationId": "call_00_ULgRtrQrrcIJqclPpyC64495",
+      "toolName": "Write",
+      "delta": null,
+      "text": null,
+      "statusHint": null,
+      "newStatus": null
+    },
+    {
+      "index": 8,
+      "eventType": "FILE_CHANGE_UPDATED",
+      "id": "run-claude-memory-trace-probe-0386fd96-7f93-4e81-bbb8-195f8b23fc42:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-memory-trace-probe-LzrHkd/memory-probe-output.txt",
+      "turnId": null,
+      "segmentType": null,
+      "invocationId": null,
+      "toolName": null,
+      "delta": null,
+      "text": null,
+      "statusHint": null,
+      "newStatus": null
+    },
+    {
+      "index": 9,
+      "eventType": "SEGMENT_CONTENT",
+      "id": "run-claude-memory-trace-probe-0386fd96-7f93-4e81-bbb8-195f8b23fc42:turn:1777793106429:claude-text:1ca15cca-83f3-49d0-b77b-fc18abf6caba:0",
+      "turnId": "run-claude-memory-trace-probe-0386fd96-7f93-4e81-bbb8-195f8b23fc42:turn:1777793106429",
+      "segmentType": "text",
+      "invocationId": null,
+      "toolName": null,
+      "delta": "MEM_POST_8760ad56_ff2c_4b5e_abfc_ca0ae05b30bc",
+      "text": null,
+      "statusHint": null,
+      "newStatus": null
+    },
+    {
+      "index": 10,
+      "eventType": "SEGMENT_END",
+      "id": "run-claude-memory-trace-probe-0386fd96-7f93-4e81-bbb8-195f8b23fc42:turn:1777793106429:claude-text:1ca15cca-83f3-49d0-b77b-fc18abf6caba:0",
+      "turnId": "run-claude-memory-trace-probe-0386fd96-7f93-4e81-bbb8-195f8b23fc42:turn:1777793106429",
+      "segmentType": "text",
+      "invocationId": null,
+      "toolName": null,
+      "delta": null,
+      "text": "MEM_POST_8760ad56_ff2c_4b5e_abfc_ca0ae05b30bc",
+      "statusHint": null,
+      "newStatus": null
+    },
+    {
+      "index": 11,
+      "eventType": "TURN_COMPLETED",
+      "id": null,
+      "turnId": "run-claude-memory-trace-probe-0386fd96-7f93-4e81-bbb8-195f8b23fc42:turn:1777793106429",
+      "segmentType": null,
+      "invocationId": null,
+      "toolName": null,
+      "delta": null,
+      "text": null,
+      "statusHint": "IDLE",
+      "newStatus": null
+    },
+    {
+      "index": 12,
+      "eventType": "AGENT_STATUS",
+      "id": null,
+      "turnId": "run-claude-memory-trace-probe-0386fd96-7f93-4e81-bbb8-195f8b23fc42:turn:1777793106429",
+      "segmentType": null,
+      "invocationId": null,
+      "toolName": null,
+      "delta": null,
+      "text": null,
+      "statusHint": "IDLE",
+      "newStatus": "IDLE"
+    }
+  ],
+  "traces": [
+    {
+      "id": "rt_1777793106433_000c72f3-f95f-496d-bb0a-508bdc132309",
+      "ts": 1777793106.431,
+      "turn_id": "run-claude-memory-trace-probe-0386fd96-7f93-4e81-bbb8-195f8b23fc42:turn:1777793106429",
+      "seq": 1,
+      "trace_type": "user",
+      "content": "First, output exactly this text as assistant text before any tool call: MEM_PRE_5e4a758d_b5a2_49e9_befd_5cd098c34e7a\nSecond, call the Write tool exactly once to create this file: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-memory-trace-probe-LzrHkd/memory-probe-output.txt\nThe file content must be exactly: hello from memory probe\nThird, after the Write tool result, output exactly this text: MEM_POST_8760ad56_ff2c_4b5e_abfc_ca0ae05b30bc\nDo not use Bash. Do not ask follow-up questions.",
+      "source_event": "AgentRun.postUserMessage"
+    },
+    {
+      "id": "rt_1777793110600_05260556-14d5-4b09-a268-e37849119b20",
+      "ts": 1777793110.6,
+      "turn_id": "run-claude-memory-trace-probe-0386fd96-7f93-4e81-bbb8-195f8b23fc42:turn:1777793106429",
+      "seq": 2,
+      "trace_type": "assistant",
+      "content": "MEM_PRE_5e4a758d_b5a2_49e9_befd_5cd098c34e7a",
+      "source_event": "SEGMENT_END"
+    },
+    {
+      "id": "rt_1777793111837_ddf20cd4-b10e-4e3e-93af-2ad8b72aa061",
+      "ts": 1777793111.837,
+      "turn_id": "run-claude-memory-trace-probe-0386fd96-7f93-4e81-bbb8-195f8b23fc42:turn:1777793106429",
+      "seq": 3,
+      "trace_type": "tool_call",
+      "content": "",
+      "source_event": "TOOL_EXECUTION_STARTED",
+      "tool_name": "Write",
+      "tool_call_id": "call_00_ULgRtrQrrcIJqclPpyC64495",
+      "tool_args": {
+        "file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-memory-trace-probe-LzrHkd/memory-probe-output.txt",
+        "content": "hello from memory probe"
+      }
+    },
+    {
+      "id": "rt_1777793111847_1eead768-eb59-44ea-8b9a-206c7c3cf1d3",
+      "ts": 1777793111.847,
+      "turn_id": "run-claude-memory-trace-probe-0386fd96-7f93-4e81-bbb8-195f8b23fc42:turn:1777793106429",
+      "seq": 4,
+      "trace_type": "tool_result",
+      "content": "",
+      "source_event": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "Write",
+      "tool_call_id": "call_00_ULgRtrQrrcIJqclPpyC64495",
+      "tool_args": {
+        "file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-memory-trace-probe-LzrHkd/memory-probe-output.txt",
+        "content": "hello from memory probe"
+      },
+      "tool_result": "File created successfully at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-memory-trace-probe-LzrHkd/memory-probe-output.txt"
+    },
+    {
+      "id": "rt_1777793113383_cf2ad8bd-ba22-4a47-9c33-bc73506a4191",
+      "ts": 1777793113.383,
+      "turn_id": "run-claude-memory-trace-probe-0386fd96-7f93-4e81-bbb8-195f8b23fc42:turn:1777793106429",
+      "seq": 5,
+      "trace_type": "assistant",
+      "content": "MEM_POST_8760ad56_ff2c_4b5e_abfc_ca0ae05b30bc",
+      "source_event": "SEGMENT_END"
+    }
+  ]
+}
