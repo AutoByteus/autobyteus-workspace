@@ -1,6 +1,8 @@
-## Fixes
-- Fixed Claude Agent SDK team runs so sending a follow-up message after pressing stop/interrupt no longer fails with `spawn EBADF`.
-- Fixed stop/interrupt handling so the app waits for the backend to finish cancelling the active Claude turn before treating the input as ready for the next message.
+## What's New
+- Added stronger Claude Agent SDK stream ordering so assistant text, tool cards, and later assistant conclusions stay in the order Claude produced them.
 
 ## Improvements
-- Added durable validation for the common Claude team flow: send a message, interrupt it, then send another message in the same team session.
+- Improved live single-agent, team stream, and memory trace consistency for Claude text/tool/text turns.
+
+## Fixes
+- Fixed Claude post-tool assistant text rendering above tool cards by giving distinct Claude text blocks their own backend segment identities.
