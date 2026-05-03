@@ -78,10 +78,12 @@ The actual artifact/output files remain where the runtime wrote them.
 
 ### Run-scoped artifact preview flow
 
-1. A runtime writes/edits a file or produces an output path.
-2. `RunFileChangeService` indexes the canonical path and type in the run-scoped projection.
-3. The frontend requests `/runs/:runId/file-change-content?path=...`.
-4. The server streams the current bytes directly from the filesystem if the indexed file still exists.
+1. A runtime writes/edits a file or a known generated-output tool produces an output path.
+2. `AgentRunEventPipeline` runs once on the normalized backend event batch before subscriber fan-out.
+3. `FileChangeEventProcessor` derives a `FILE_CHANGE` event for explicit file mutations or known generated outputs.
+4. `RunFileChangeService` indexes the canonical path and type in the run-scoped projection.
+5. The frontend requests `/runs/:runId/file-change-content?path=...`.
+6. The server streams the current bytes directly from the filesystem if the indexed file still exists.
 
 ## Operational Notes
 

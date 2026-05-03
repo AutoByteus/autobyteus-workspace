@@ -41,5 +41,5 @@ export {
 
 
 export {
-  handleFileChangeUpdated,
+  handleFileChange,
 } from './fileChangeHandler';

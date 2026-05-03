@@ -67,55 +67,61 @@ describe("RunFileChangeService", () => {
     } as any,
   });
 
-  it("builds one path-keyed projection entry, keeps live write content transient, and persists metadata only", async () => {
-    const { run, emit, localEvents, workspaceRoot, memoryDir } = await createRunHarness();
-    const outputPath = path.join(workspaceRoot, "src", "hello.txt");
-    await fs.mkdir(path.dirname(outputPath), { recursive: true });
-    await fs.writeFile(outputPath, "hello from stream", "utf-8");
+  const fileChangeEvent = (
+    runId: string,
+    input: {
+      id?: string;
+      path: string;
+      status?: "streaming" | "pending" | "available" | "failed";
+      sourceTool?: "write_file" | "edit_file" | "generated_output";
+      sourceInvocationId?: string | null;
+      content?: string | null;
+      type?: "file" | "image" | "audio" | "video" | "pdf" | "csv" | "excel" | "other";
+      createdAt?: string;
+      updatedAt?: string;
+    },
+  ): AgentRunEvent => {
+    const timestamp = input.updatedAt ?? "2026-05-03T10:00:00.000Z";
+    return {
+      eventType: AgentRunEventType.FILE_CHANGE,
+      runId,
+      statusHint: null,
+      payload: {
+        id: input.id ?? `${runId}:${input.path}`,
+        runId,
+        path: input.path,
+        type: input.type ?? "file",
+        status: input.status ?? "available",
+        sourceTool: input.sourceTool ?? "write_file",
+        sourceInvocationId: input.sourceInvocationId ?? "write-1",
+        createdAt: input.createdAt ?? timestamp,
+        updatedAt: timestamp,
+        ...(Object.prototype.hasOwnProperty.call(input, "content") ? { content: input.content } : {}),
+      },
+    };
+  };
 
+  it("projects FILE_CHANGE events, keeps live content transient, and persists metadata only", async () => {
+    const { run, emit, localEvents, workspaceRoot, memoryDir } = await createRunHarness();
     const projectionStore = new RunFileChangeProjectionStore();
     const service = createService(workspaceRoot, projectionStore);
     service.attachToRun(run);
 
-    await emit({
-      eventType: AgentRunEventType.SEGMENT_START,
-      runId: run.runId,
-      statusHint: null,
-      payload: {
-        id: "write-1",
-        segment_type: "write_file",
-        metadata: { path: "src/hello.txt" },
-      },
-    });
-    await emit({
-      eventType: AgentRunEventType.SEGMENT_CONTENT,
-      runId: run.runId,
-      statusHint: null,
-      payload: {
-        id: "write-1",
-        segment_type: "write_file",
-        delta: "hello from stream",
-      },
-    });
-    await emit({
-      eventType: AgentRunEventType.SEGMENT_END,
-      runId: run.runId,
-      statusHint: null,
-      payload: {
-        id: "write-1",
-        segment_type: "write_file",
-      },
-    });
-    await emit({
-      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
-      runId: run.runId,
-      statusHint: null,
-      payload: {
-        invocation_id: "write-1",
-        tool_name: "write_file",
-        arguments: { path: "src/hello.txt" },
-      },
-    });
+    await emit(fileChangeEvent(run.runId, {
+      path: "src/hello.txt",
+      status: "streaming",
+      sourceTool: "write_file",
+      sourceInvocationId: "write-1",
+      content: "hello from stream",
+    }));
+    await emit(fileChangeEvent(run.runId, {
+      path: "src/hello.txt",
+      status: "available",
+      sourceTool: "write_file",
+      sourceInvocationId: "write-1",
+      content: "hello from stream",
+      updatedAt: "2026-05-03T10:00:01.000Z",
+    }));
 
     const liveProjection = await service.getProjectionForRun(run);
     expect(liveProjection.entries).toHaveLength(1);
@@ -138,65 +144,25 @@ describe("RunFileChangeService", () => {
       sourceInvocationId: "write-1",
     });
     expect(persistedProjection.entries[0]?.content).toBeUndefined();
-
-    expect(localEvents.map((event) => event.eventType)).toContain(AgentRunEventType.FILE_CHANGE_UPDATED);
-    expect(localEvents.at(-1)?.payload).toMatchObject({
-      path: "src/hello.txt",
-      status: "available",
-      content: "hello from stream",
-    });
+    expect(localEvents).toEqual([]);
   });
 
-  it("canonicalizes absolute and relative references to the same workspace file into one row", async () => {
+  it("canonicalizes absolute and relative FILE_CHANGE references to one workspace row", async () => {
     const { run, emit, workspaceRoot } = await createRunHarness();
     const outputPath = path.join(workspaceRoot, "src", "same.txt");
-    await fs.mkdir(path.dirname(outputPath), { recursive: true });
-    await fs.writeFile(outputPath, "second version", "utf-8");
 
     const service = createService(workspaceRoot);
     service.attachToRun(run);
 
-    await emit({
-      eventType: AgentRunEventType.SEGMENT_START,
-      runId: run.runId,
-      statusHint: null,
-      payload: {
-        id: "write-1",
-        segment_type: "write_file",
-        metadata: { path: "src/same.txt" },
-      },
-    });
-    await emit({
-      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
-      runId: run.runId,
-      statusHint: null,
-      payload: {
-        invocation_id: "write-1",
-        tool_name: "write_file",
-        arguments: { path: "src/same.txt" },
-      },
-    });
-
-    await emit({
-      eventType: AgentRunEventType.SEGMENT_START,
-      runId: run.runId,
-      statusHint: null,
-      payload: {
-        id: "write-2",
-        segment_type: "write_file",
-        metadata: { path: outputPath },
-      },
-    });
-    await emit({
-      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
-      runId: run.runId,
-      statusHint: null,
-      payload: {
-        invocation_id: "write-2",
-        tool_name: "write_file",
-        arguments: { path: outputPath },
-      },
-    });
+    await emit(fileChangeEvent(run.runId, {
+      path: "src/same.txt",
+      sourceInvocationId: "write-1",
+    }));
+    await emit(fileChangeEvent(run.runId, {
+      path: outputPath,
+      sourceInvocationId: "write-2",
+      updatedAt: "2026-05-03T10:00:01.000Z",
+    }));
 
     const liveProjection = await service.getProjectionForRun(run);
     expect(liveProjection.entries).toHaveLength(1);
@@ -207,92 +173,41 @@ describe("RunFileChangeService", () => {
     });
   });
 
-  it("captures generated outputs from cached invocation context when the success payload omits arguments", async () => {
+  it("ignores unrelated activity events and only consumes FILE_CHANGE", async () => {
     const { run, emit, localEvents, workspaceRoot } = await createRunHarness();
-    const outputPath = path.join(workspaceRoot, "assets", "image.png");
-    await fs.mkdir(path.dirname(outputPath), { recursive: true });
-    await fs.writeFile(outputPath, Buffer.from([0x89, 0x50, 0x4e, 0x47]));
-
     const service = createService(workspaceRoot);
     service.attachToRun(run);
 
-    await emit({
-      eventType: AgentRunEventType.TOOL_EXECUTION_STARTED,
-      runId: run.runId,
-      statusHint: null,
-      payload: {
-        invocation_id: "image-1:0",
-        tool_name: "generate_image",
-        arguments: { output_file_path: "assets/image.png" },
-      },
-    });
     await emit({
       eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
       runId: run.runId,
       statusHint: null,
       payload: {
-        invocation_id: "image-1",
-        tool_name: "generate_image",
-        result: { ok: true },
+        invocation_id: "read-1",
+        tool_name: "Read",
+        arguments: { file_path: "src/server.py" },
+        result: "print('hello')\n",
       },
     });
 
-    const liveProjection = await service.getProjectionForRun(run);
-    expect(liveProjection.entries).toHaveLength(1);
-    expect(liveProjection.entries[0]).toMatchObject({
-      id: "run-1:assets/image.png",
-      path: "assets/image.png",
-      type: "image",
-      status: "available",
-      sourceTool: "generated_output",
-      sourceInvocationId: "image-1",
-    });
-    expect(liveProjection.entries[0]?.content).toBeUndefined();
-
-    expect(localEvents.at(-1)?.payload).toMatchObject({
-      path: "assets/image.png",
-      sourceTool: "generated_output",
-      status: "available",
-    });
+    const projection = await service.getProjectionForRun(run);
+    expect(projection.entries).toEqual([]);
+    expect(localEvents).toEqual([]);
   });
 
-  it("clears buffered write_file content when the write fails", async () => {
-    const { run, emit, localEvents, workspaceRoot, memoryDir } = await createRunHarness();
+  it("records failed FILE_CHANGE status", async () => {
+    const { run, emit, workspaceRoot, memoryDir } = await createRunHarness();
     const projectionStore = new RunFileChangeProjectionStore();
     const service = createService(workspaceRoot, projectionStore);
     service.attachToRun(run);
 
-    await emit({
-      eventType: AgentRunEventType.SEGMENT_START,
-      runId: run.runId,
-      statusHint: null,
-      payload: {
-        id: "write-fail-1",
-        segment_type: "write_file",
-        metadata: { path: "src/broken.txt" },
-      },
-    });
-    await emit({
-      eventType: AgentRunEventType.SEGMENT_CONTENT,
-      runId: run.runId,
-      statusHint: null,
-      payload: {
-        id: "write-fail-1",
-        segment_type: "write_file",
-        delta: "draft that never committed",
-      },
-    });
-    await emit({
-      eventType: AgentRunEventType.TOOL_EXECUTION_FAILED,
-      runId: run.runId,
-      statusHint: null,
-      payload: {
-        invocation_id: "write-fail-1",
-        tool_name: "write_file",
-        arguments: { path: "src/broken.txt" },
-        error: "permission denied",
-      },
-    });
+    await emit(fileChangeEvent(run.runId, {
+      path: "src/broken.txt",
+      status: "failed",
+      sourceTool: "write_file",
+      sourceInvocationId: "write-fail-1",
+      content: null,
+    }));
 
     const liveProjection = await service.getProjectionForRun(run);
     expect(liveProjection.entries).toHaveLength(1);
@@ -309,11 +224,5 @@ describe("RunFileChangeService", () => {
       status: "failed",
     });
     expect(persistedProjection.entries[0]?.content).toBeUndefined();
-
-    expect(localEvents.at(-1)?.payload).toMatchObject({
-      path: "src/broken.txt",
-      status: "failed",
-      content: null,
-    });
   });
 });

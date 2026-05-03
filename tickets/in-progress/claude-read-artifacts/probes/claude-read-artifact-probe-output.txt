@@ -1,0 +1,17 @@
+Command:
+  pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/run-file-changes/claude-read-artifact-probe.test.ts --reporter verbose
+
+Result:
+  Failed as expected on current code.
+
+Key observed logs:
+  CLAUDE_READ_PROBE_EVENTS included TOOL_EXECUTION_STARTED and TOOL_EXECUTION_SUCCEEDED for Claude tool_name "Read" with arguments.file_path = /tmp/.../src/server.py.
+  CLAUDE_READ_PROBE_FILE_CHANGE_EVENTS included one FILE_CHANGE_UPDATED event:
+    path: src/server.py
+    status: available
+    sourceTool: generated_output
+    sourceInvocationId: read-1
+  CLAUDE_READ_PROBE_PROJECTION included one entry for src/server.py.
+
+Failure:
+  Expected zero FILE_CHANGE_UPDATED events and zero projection entries for read-only Claude Read, but got one entry.

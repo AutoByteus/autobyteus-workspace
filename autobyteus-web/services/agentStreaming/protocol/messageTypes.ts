@@ -33,7 +33,7 @@ export type ServerMessageType =
   | 'INTER_AGENT_MESSAGE'
   | 'SYSTEM_TASK_NOTIFICATION'
   | 'ARTIFACT_PERSISTED'
-  | 'FILE_CHANGE_UPDATED'
+  | 'FILE_CHANGE'
   | 'ERROR';
 
 export type SegmentType = 
@@ -298,7 +298,7 @@ export interface ArtifactPersistedPayload {
   agent_name?: string;
 }
 
-export interface FileChangeUpdatedPayload {
+export interface FileChangePayload {
   id: string;
   runId: string;
   path: string;
@@ -344,7 +344,7 @@ export type ServerMessage =
   | { type: 'INTER_AGENT_MESSAGE'; payload: InterAgentMessagePayload }
   | { type: 'SYSTEM_TASK_NOTIFICATION'; payload: SystemTaskNotificationPayload }
   | { type: 'ARTIFACT_PERSISTED'; payload: ArtifactPersistedPayload }
-  | { type: 'FILE_CHANGE_UPDATED'; payload: FileChangeUpdatedPayload }
+  | { type: 'FILE_CHANGE'; payload: FileChangePayload }
   | { type: 'ERROR'; payload: ErrorPayload };
 
 // ============================================================================

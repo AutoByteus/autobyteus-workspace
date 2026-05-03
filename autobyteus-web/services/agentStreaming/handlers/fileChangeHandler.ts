@@ -1,9 +1,9 @@
 import { useRunFileChangesStore, type RunFileChangeArtifact } from '~/stores/runFileChangesStore';
 import type { AgentContext } from '~/types/agent/AgentContext';
-import type { FileChangeUpdatedPayload } from '../protocol/messageTypes';
+import type { FileChangePayload } from '../protocol/messageTypes';
 
-export const handleFileChangeUpdated = (
-  payload: FileChangeUpdatedPayload,
+export const handleFileChange = (
+  payload: FileChangePayload,
   _context: AgentContext,
 ): void => {
   const nextPayload: RunFileChangeArtifact = {

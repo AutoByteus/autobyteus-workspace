@@ -3,14 +3,23 @@
 ## Scope
 
 Covers the current Artifacts-tab serving design.
-The active runtime uses the run-file-changes subsystem as the only supported server-side source for touched files and generated outputs.
+The active runtime uses the derived `FILE_CHANGE` event plus the run-file-changes projection as the only supported server-side source for touched files and generated outputs.
 
 ## Relevant TS Modules
 
+- Runtime derivation:
+  - `src/agent-execution/domain/agent-run-file-change.ts`
+  - `src/agent-execution/domain/agent-run-file-change-path.ts`
+  - `src/agent-execution/events/agent-run-event-pipeline.ts`
+  - `src/agent-execution/events/default-agent-run-event-pipeline.ts`
+  - `src/agent-execution/events/dispatch-processed-agent-run-events.ts`
+  - `src/agent-execution/events/processors/file-change/file-change-event-processor.ts`
+  - `src/agent-execution/events/processors/file-change/file-change-tool-semantics.ts`
+  - `src/agent-execution/events/processors/file-change/file-change-output-path.ts`
+  - `src/agent-execution/events/processors/file-change/file-change-payload-builder.ts`
 - Live projection owner:
   - `src/services/run-file-changes/run-file-change-service.ts`
   - `src/services/run-file-changes/run-file-change-path-identity.ts`
-  - `src/services/run-file-changes/run-file-change-invocation-cache.ts`
 - Persistence and historical reads:
   - `src/services/run-file-changes/run-file-change-projection-store.ts`
   - `src/run-history/services/run-file-change-projection-service.ts`
@@ -22,18 +31,22 @@ The active runtime uses the run-file-changes subsystem as the only supported ser
 
 ## High-Level Flow
 
-1. Agent-run lifecycle, segment, and tool events enter `RunFileChangeService`.
-2. The service canonicalizes path identity, buffers transient `write_file` content, and discovers generated outputs from invocation context plus success payloads.
-3. The service emits `FILE_CHANGE_UPDATED` and persists metadata-only state to `<run-memory-dir>/file_changes.json`.
-4. The frontend hydrates rows through `getRunFileChanges(runId)` and continues live updates from `FILE_CHANGE_UPDATED`.
-5. The viewer fetches `/runs/:runId/file-change-content?path=...` to stream the current file bytes.
+1. Runtime backends convert provider events into normalized `AgentRunEvent` batches.
+2. `AgentRunEventPipeline` processes each batch once before subscriber fan-out.
+3. `FileChangeEventProcessor` derives `FILE_CHANGE` only for explicit file mutations or known generated-output tools.
+4. `RunFileChangeService` consumes `FILE_CHANGE`, canonicalizes path identity, and updates the run projection.
+5. The service persists metadata-only state to `<run-memory-dir>/file_changes.json`.
+6. The frontend hydrates rows through `getRunFileChanges(runId)` and continues live updates from `FILE_CHANGE`.
+7. The viewer fetches `/runs/:runId/file-change-content?path=...` to stream the current file bytes.
 
 ## Live Event Semantics
 
-### `FILE_CHANGE_UPDATED`
+### `FILE_CHANGE`
 
 This is the authoritative Artifacts-area event.
 It carries the canonical path, type, status, source tool, timestamps, and optional transient `content` for live `write_file` preview.
+
+`FileChangeEventProcessor` is the only owner of derived file-change semantics. It recognizes known mutation tools and known generated-output tools with explicit output path semantics. Read-only tools and unknown tools with generic `file_path` fields remain lifecycle/activity events only.
 
 ### Published-artifact transport
 
@@ -72,7 +85,7 @@ It is not the Artifacts tab source of truth.
 ## Current Guarantees
 
 - one row per canonical path
-- live `write_file` preview remains available
+- live `write_file` preview remains available through `FILE_CHANGE` content updates
 - generated media/document outputs share the same list and preview boundary as file changes
 - reopen/history still works from metadata while previews use current filesystem bytes
 - legacy-only runs are unsupported by design and behavior
@@ -81,6 +94,7 @@ It is not the Artifacts tab source of truth.
 
 The following are no longer the active Artifacts-tab serving path:
 
+- `RunFileChangeService` derivation from generic segment/tool/denial events
 - tool-result processors that copied media or emitted artifact events for the Artifacts tab
 - `/workspaces/:workspaceId/content` as the Artifacts viewer boundary
 - copied media-storage URLs as the primary artifact preview source

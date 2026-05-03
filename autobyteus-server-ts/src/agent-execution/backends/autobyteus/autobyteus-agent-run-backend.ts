@@ -6,6 +6,7 @@ import type { AgentRunContext, RuntimeAgentRunContext } from "../../domain/agent
 import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import type { AgentRunBackend, AgentRunEventListener } from "../agent-run-backend.js";
 import { AutoByteusStreamEventConverter } from "./events/autobyteus-stream-event-converter.js";
+import { dispatchProcessedAgentRunEvents } from "../../events/dispatch-processed-agent-run-events.js";
 
 export type AutoByteusAgentLike = {
   agentId: string;
@@ -42,6 +43,9 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
   readonly runtimeKind = RuntimeKind.AUTOBYTEUS;
   private readonly eventConverter: AutoByteusStreamEventConverter;
   private readonly context: AgentRunContext<RuntimeAgentRunContext>;
+  private readonly listeners = new Set<AgentRunEventListener>();
+  private stream: AgentEventStream | null = null;
+  private isStreamClosed = true;
 
   constructor(
     context: AgentRunContext<RuntimeAgentRunContext>,
@@ -70,37 +74,13 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
   }
 
   subscribeToEvents(listener: AgentRunEventListener): () => void {
-    const stream = new AgentEventStream(this.agent as any);
-    let isClosed = false;
-
-    void (async () => {
-      try {
-        for await (const event of stream.allEvents()) {
-          if (isClosed) {
-            break;
-          }
-          const convertedEvent = this.eventConverter.convert(event);
-          if (!convertedEvent) {
-            continue;
-          }
-          listener(convertedEvent);
-        }
-      } catch {
-        // Ignore transport shutdown races; callers observe disconnection through inactivity.
-      } finally {
-        if (!isClosed) {
-          isClosed = true;
-          await stream.close().catch(() => {});
-        }
-      }
-    })();
-
+    this.listeners.add(listener);
+    this.ensureSubscribed();
     return () => {
-      if (isClosed) {
-        return;
+      this.listeners.delete(listener);
+      if (this.listeners.size === 0) {
+        this.closeStream();
       }
-      isClosed = true;
-      void stream.close().catch(() => {});
     };
   }
 
@@ -148,6 +128,7 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
 
   async terminate(): Promise<AgentOperationResult> {
     try {
+      this.closeStream();
       const removed = await this.options.removeAgent(this.runId);
       return removed
         ? {
@@ -157,5 +138,50 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
     } catch (error) {
       return buildCommandFailure("terminate run", error);
     }
+  }
+
+  private ensureSubscribed(): void {
+    if (!this.isStreamClosed) {
+      return;
+    }
+
+    const stream = new AgentEventStream(this.agent as any);
+    this.stream = stream;
+    this.isStreamClosed = false;
+
+    void (async () => {
+      try {
+        for await (const event of stream.allEvents()) {
+          if (this.isStreamClosed) {
+            break;
+          }
+          const convertedEvent = this.eventConverter.convert(event);
+          if (!convertedEvent) {
+            continue;
+          }
+          await dispatchProcessedAgentRunEvents({
+            runContext: this.context,
+            listeners: this.listeners,
+            events: [convertedEvent],
+          });
+        }
+      } catch {
+        // Ignore transport shutdown races; callers observe disconnection through inactivity.
+      } finally {
+        if (!this.isStreamClosed) {
+          this.closeStream();
+        }
+      }
+    })();
+  }
+
+  private closeStream(): void {
+    if (this.isStreamClosed) {
+      return;
+    }
+    this.isStreamClosed = true;
+    const stream = this.stream;
+    this.stream = null;
+    void stream?.close().catch(() => {});
   }
 }

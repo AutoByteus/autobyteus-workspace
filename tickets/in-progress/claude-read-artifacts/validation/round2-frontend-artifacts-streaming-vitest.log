@@ -1,0 +1,67 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/autobyteus-web
+
+stdout | services/agentStreaming/handlers/__tests__/fileChangeHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/agent/__tests__/ArtifactsTab.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runFileChangesStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/AgentStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentStreaming/handlers/__tests__/fileChangeHandler.spec.ts > fileChangeHandler > upserts live file-change payloads into the dedicated store 2ms
+ ✓ services/agentStreaming/handlers/__tests__/fileChangeHandler.spec.ts > fileChangeHandler > preserves missing transient content as undefined 0ms
+ ✓ stores/__tests__/runFileChangesStore.spec.ts > RunFileChangesStore > announces a same-path retouch when a new invocation updates an existing row 2ms
+ ✓ stores/__tests__/runFileChangesStore.spec.ts > RunFileChangesStore > applies an explicit null content update so failed writes do not retain stale buffered drafts 1ms
+ ✓ stores/__tests__/runFileChangesStore.spec.ts > RunFileChangesStore > merges authoritative projection rows without dropping newer live rows 9ms
+ ✓ stores/__tests__/runFileChangesStore.spec.ts > RunFileChangesStore > replaces an older local row when the authoritative projection is newer 1ms
+stdout | services/agentStreaming/__tests__/AgentStreamingService.spec.ts > AgentStreamingService > tracks subscription state on connect and disconnect
+Agent WebSocket connected
+Agent WebSocket disconnected: bye
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > marks team subscription state on connect and disconnect callbacks
+Team WebSocket connected
+Team WebSocket disconnected: closed
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > reattaches lifecycle callbacks to the latest team context
+Team WebSocket connected
+Team WebSocket disconnected: closed
+
+ ✓ services/agentStreaming/__tests__/AgentStreamingService.spec.ts > AgentStreamingService > should initialize with disconnected state 1ms
+ ✓ services/agentStreaming/__tests__/AgentStreamingService.spec.ts > AgentStreamingService > should connect and set agent context 2ms
+ ✓ services/agentStreaming/__tests__/AgentStreamingService.spec.ts > AgentStreamingService > tracks subscription state on connect and disconnect 0ms
+ ✓ services/agentStreaming/__tests__/AgentStreamingService.spec.ts > AgentStreamingService > mirrors external user messages into the open conversation 1ms
+ ✓ services/agentStreaming/__tests__/AgentStreamingService.spec.ts > AgentStreamingService > routes successful tool execution through the browser-owned post-success handler 2ms
+ ✓ services/agentStreaming/__tests__/AgentStreamingService.spec.ts > AgentStreamingService > routes compaction lifecycle messages through the compaction status handler 0ms
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > echoes captured approval token when approving tool invocation 3ms
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > marks team subscription state on connect and disconnect callbacks 1ms
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > reattaches lifecycle callbacks to the latest team context 0ms
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > mirrors external user messages into the targeted team member conversation 1ms
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > routes successful tool execution through the browser-owned post-success handler 1ms
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > routes compaction lifecycle messages to the targeted member context 0ms
+stderr | components/workspace/agent/__tests__/ArtifactsTab.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/workspace/agent/__tests__/ArtifactsTab.spec.ts > ArtifactsTab.vue > renders with split pane layout 11ms
+ ✓ components/workspace/agent/__tests__/ArtifactsTab.spec.ts > ArtifactsTab.vue > passes the selected artifact to the viewer and retries on same-row clicks 4ms
+ ✓ components/workspace/agent/__tests__/ArtifactsTab.spec.ts > ArtifactsTab.vue > auto-selects the newest row when a newly visible artifact signal arrives 9ms
+
+ Test Files  5 passed (5)
+      Tests  21 passed (21)
+   Start at  08:33:28
+   Duration  4.19s (transform 1.96s, setup 8.46s, collect 2.72s, tests 56ms, environment 1.47s, prepare 1.02s)
+

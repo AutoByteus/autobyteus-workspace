@@ -103,8 +103,8 @@ export class AgentRunEventMessageMapper {
         return new ServerMessage(ServerMessageType.SYSTEM_TASK_NOTIFICATION, payload);
       case AgentRunEventType.ARTIFACT_PERSISTED:
         return new ServerMessage(ServerMessageType.ARTIFACT_PERSISTED, payload);
-      case AgentRunEventType.FILE_CHANGE_UPDATED:
-        return new ServerMessage(ServerMessageType.FILE_CHANGE_UPDATED, payload);
+      case AgentRunEventType.FILE_CHANGE:
+        return new ServerMessage(ServerMessageType.FILE_CHANGE, payload);
       case AgentRunEventType.ERROR:
         return new ServerMessage(ServerMessageType.ERROR, payload);
       default:
