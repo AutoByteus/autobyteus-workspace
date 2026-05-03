@@ -1,0 +1,443 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+
+stderr | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts
+Registered 6 image models from Autobyteus host https://192.168.2.158:51739.
+Autobyteus image models from https://192.168.2.158:51739: gpt-image-1-rpa@192.168.2.158:51739, nano-banana-pro-app-rpa@192.168.2.158:51739, imagen-4-rpa@192.168.2.158:51739, imagen-4-ultra-rpa@192.168.2.158:51739, imagen-4-fast-rpa@192.168.2.158:51739, qwen-image-rpa@192.168.2.158:51739
+Autobyteus image discovery summary for https://192.168.2.158:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=28
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts
+Finished Autobyteus image model discovery. Total models registered: 6
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:56758) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/autobyteus-server-ts
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+Successfully registered tool definition: 'publish_artifact'
+
+ ↓ tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > converts approval and tool lifecycle events through the backend event stream
+ ↓ tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > converts a denied approval into TOOL_DENIED and leaves the file absent
+stderr | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+Failed to resolve model metadata for provider GEMINI: Gemini metadata request failed with status 400
+
+stderr | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+Failed to resolve model metadata for provider ANTHROPIC: Anthropic metadata request failed with status 401
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stderr | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+Finished LM Studio discovery. Total models registered: 27
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+Discovering Autobyteus models from host: https://192.168.2.158:51739
+
+stderr | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+Finished Autobyteus discovery. Total models registered: 34
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+Resolved system prompt from fresh definition instructions for AgentDefinition def-live-autobyteus-backend.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+Using temp workspace (ID: temp_ws_live_backend_integration) for agent.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+AgentRuntimeState initialized for agent_id 'liveautobyteusbackendagent_tool_user_6811'. Initial status: uninitialized. Workspace linked. InputQueues pending initialization. Output data via notifier.
+Agent 'liveautobyteusbackendagent_tool_user_6811': LLM instance 'LMStudioLLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'liveautobyteusbackendagent_tool_user_6811'. Config and State linked.
+EventHandlerRegistry initialized.
+UserInputMessageEventHandler initialized.
+Handler 'UserInputMessageEventHandler' registered for event class 'UserMessageReceivedEvent'.
+InterAgentMessageReceivedEventHandler initialized.
+Handler 'InterAgentMessageReceivedEventHandler' registered for event class 'InterAgentMessageReceivedEvent'.
+LLMCompleteResponseReceivedEventHandler initialized.
+Handler 'LLMCompleteResponseReceivedEventHandler' registered for event class 'LLMCompleteResponseReceivedEvent'.
+ToolInvocationRequestEventHandler initialized.
+Handler 'ToolInvocationRequestEventHandler' registered for event class 'PendingToolInvocationEvent'.
+ToolResultEventHandler initialized.
+Handler 'ToolResultEventHandler' registered for event class 'ToolResultEvent'.
+GenericEventHandler initialized.
+Handler 'GenericEventHandler' registered for event class 'GenericEvent'.
+ToolExecutionApprovalEventHandler initialized.
+Handler 'ToolExecutionApprovalEventHandler' registered for event class 'ToolExecutionApprovalEvent'.
+LLMUserMessageReadyEventHandler initialized.
+Handler 'LLMUserMessageReadyEventHandler' registered for event class 'LLMUserMessageReadyEvent'.
+ToolInvocationExecutionEventHandler initialized.
+Handler 'ToolInvocationExecutionEventHandler' registered for event class 'ExecuteToolInvocationEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapStartedEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapStepRequestedEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapStepCompletedEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapCompletedEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentReadyEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentStoppedEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentIdleEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'ShutdownRequestedEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentErrorEvent'.
+Instantiating AgentRuntime for agent_id: 'liveautobyteusbackendagent_tool_user_6811' with config: 'LiveAutoByteusBackendAgent'.
+AgentWorker initialized for agent_id 'liveautobyteusbackendagent_tool_user_6811'.
+Registered AgentContext for agent_id 'liveautobyteusbackendagent_tool_user_6811'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'liveautobyteusbackendagent_tool_user_6811'. Context registered.
+Agent facade initialized for agent_id 'liveautobyteusbackendagent_tool_user_6811'.
+Agent 'liveautobyteusbackendagent_tool_user_6811' created and stored successfully.
+Agent 'liveautobyteusbackendagent_tool_user_6811' requesting runtime to start.
+AgentRuntime for 'liveautobyteusbackendagent_tool_user_6811': Starting worker.
+AgentWorker 'liveautobyteusbackendagent_tool_user_6811': Starting...
+AgentWorker 'liveautobyteusbackendagent_tool_user_6811' asyncRun(): Starting.
+Agent 'liveautobyteusbackendagent_tool_user_6811': Runtime init completed (event store initialized).
+Agent 'liveautobyteusbackendagent_tool_user_6811': Runtime init completed (status deriver initialized).
+Agent 'liveautobyteusbackendagent_tool_user_6811': Runtime init completed (input queues initialized).
+Waiting for agent 'liveautobyteusbackendagent_tool_user_6811' to become idle (timeout: 30s)...
+AgentEventStream (ID: f97052be-6e5c-41ee-ba08-646f95c14aca) initialized for agent_id 'liveautobyteusbackendagent_tool_user_6811'. Subscribed to notifier.
+Agent 'liveautobyteusbackendagent_tool_user_6811': Starting internal initialization process using bootstrap events.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+AgentExternalEventNotifier (NotifierID: 237a12af-0330-47af-9cda-71b0c16c98e6, AgentID: liveautobyteusbackendagent_tool_user_6811) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+Agent 'liveautobyteusbackendagent_tool_user_6811': Bootstrap started with 3 steps.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+Agent 'liveautobyteusbackendagent_tool_user_6811': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+Agent 'liveautobyteusbackendagent_tool_user_6811': Executing SystemPromptProcessingStep.
+Agent 'liveautobyteusbackendagent_tool_user_6811': Final processed system prompt configured on LLM instance. Final length: 164.
+Agent 'liveautobyteusbackendagent_tool_user_6811': Final processed system prompt:
+---
+When the user asks you to write a file, call the write_file tool exactly once. Use the provided relative path and exact file content. Do not answer with plain text.
+---
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+Agent 'liveautobyteusbackendagent_tool_user_6811': Bootstrap completed successfully. Emitting AgentReadyEvent.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+AgentExternalEventNotifier (NotifierID: 237a12af-0330-47af-9cda-71b0c16c98e6, AgentID: liveautobyteusbackendagent_tool_user_6811) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+Agent 'liveautobyteusbackendagent_tool_user_6811' Logged AgentReadyEvent. Current agent status: idle
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+AgentWorker 'liveautobyteusbackendagent_tool_user_6811' initialized successfully. Entering main event loop.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+Agent 'liveautobyteusbackendagent_tool_user_6811' has become idle.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+AgentEventStream (ID: f97052be-6e5c-41ee-ba08-646f95c14aca) for 'liveautobyteusbackendagent_tool_user_6811': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+AgentEventStream (ID: b6c09ed5-b658-4e2d-84e7-c2cd61c9988a) initialized for agent_id 'liveautobyteusbackendagent_tool_user_6811'. Subscribed to notifier.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+AgentExternalEventNotifier (NotifierID: 237a12af-0330-47af-9cda-71b0c16c98e6, AgentID: liveautobyteusbackendagent_tool_user_6811) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+AgentExternalEventNotifier (NotifierID: 237a12af-0330-47af-9cda-71b0c16c98e6, AgentID: liveautobyteusbackendagent_tool_user_6811) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+Agent 'liveautobyteusbackendagent_tool_user_6811' handling UserMessageReceivedEvent (type: user): 'Create auto-exec-flow-test.txt with exactly two lines: "line one" and "line two". Use a relative path and do not answer with plain text.'
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+Agent 'liveautobyteusbackendagent_tool_user_6811': Input processor 'MemoryIngestInputProcessor' applied successfully.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+Agent 'liveautobyteusbackendagent_tool_user_6811' processed AgentInputUserMessage and enqueued LLMUserMessageReadyEvent.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+AgentExternalEventNotifier (NotifierID: 237a12af-0330-47af-9cda-71b0c16c98e6, AgentID: liveautobyteusbackendagent_tool_user_6811) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+Agent 'liveautobyteusbackendagent_tool_user_6811' handling LLMUserMessageReadyEvent: 'Create auto-exec-flow-test.txt with exactly two lines: "line one" and "line two". Use a relative path and do not answer with plain text.'
+Agent 'liveautobyteusbackendagent_tool_user_6811': Streaming handler selected: ApiToolCallStreamingResponseHandler
+Agent 'liveautobyteusbackendagent_tool_user_6811': Passing 1 tool schemas to LLM API (Provider: LMSTUDIO).
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+Agent 'liveautobyteusbackendagent_tool_user_6811': Parsed 1 tool invocations from streaming parser.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+compaction_budget_evaluated {
+  agent_id: 'liveautobyteusbackendagent_tool_user_6811',
+  prompt_tokens: 482,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 262144,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 262144,
+  reserved_output_tokens: 0,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 261888,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 130944,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+Agent 'liveautobyteusbackendagent_tool_user_6811' enqueued LLMCompleteResponseReceivedEvent from LLMUserMessageReadyEventHandler.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+AgentExternalEventNotifier (NotifierID: 237a12af-0330-47af-9cda-71b0c16c98e6, AgentID: liveautobyteusbackendagent_tool_user_6811) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+Agent 'liveautobyteusbackendagent_tool_user_6811' handling LLMCompleteResponseReceivedEvent. Response Length: 2, Reasoning Length: 434, IsErrorFlagged: false, TokenUsage: [object Object]
+Agent 'liveautobyteusbackendagent_tool_user_6811' received full LLM content for processing:
+---
+
+
+
+---
+Agent 'liveautobyteusbackendagent_tool_user_6811': No LLMResponseProcessor handled the response. Emitting the full LLM response as a final answer and completion signal.
+AgentExternalEventNotifier (NotifierID: 237a12af-0330-47af-9cda-71b0c16c98e6, AgentID: liveautobyteusbackendagent_tool_user_6811) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+AgentExternalEventNotifier (NotifierID: 237a12af-0330-47af-9cda-71b0c16c98e6, AgentID: liveautobyteusbackendagent_tool_user_6811) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 237a12af-0330-47af-9cda-71b0c16c98e6, AgentID: liveautobyteusbackendagent_tool_user_6811) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+AgentExternalEventNotifier (NotifierID: 237a12af-0330-47af-9cda-71b0c16c98e6, AgentID: liveautobyteusbackendagent_tool_user_6811) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+AgentExternalEventNotifier (NotifierID: 237a12af-0330-47af-9cda-71b0c16c98e6, AgentID: liveautobyteusbackendagent_tool_user_6811) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+AgentExternalEventNotifier (NotifierID: 237a12af-0330-47af-9cda-71b0c16c98e6, AgentID: liveautobyteusbackendagent_tool_user_6811) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 237a12af-0330-47af-9cda-71b0c16c98e6, AgentID: liveautobyteusbackendagent_tool_user_6811) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+Agent 'liveautobyteusbackendagent_tool_user_6811' enqueued tool continuation input with aggregated results from 1 tool(s) and 0 media file(s).
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+AgentExternalEventNotifier (NotifierID: 237a12af-0330-47af-9cda-71b0c16c98e6, AgentID: liveautobyteusbackendagent_tool_user_6811) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+Agent 'liveautobyteusbackendagent_tool_user_6811' handling UserMessageReceivedEvent (type: tool): 'The following tool executions have completed. Please analyze their results and decide the next course of action.
+
+Tool: write_file (ID: 808576709)
+Status: Success
+Result:
+File created/updated at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-live-backend-workspace-YhNqvq/auto-exec-flow-test.txt'
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+Agent 'liveautobyteusbackendagent_tool_user_6811': Input processor 'MemoryIngestInputProcessor' applied successfully.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+Agent 'liveautobyteusbackendagent_tool_user_6811' processed AgentInputUserMessage and enqueued LLMUserMessageReadyEvent.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+AgentExternalEventNotifier (NotifierID: 237a12af-0330-47af-9cda-71b0c16c98e6, AgentID: liveautobyteusbackendagent_tool_user_6811) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+Agent 'liveautobyteusbackendagent_tool_user_6811' handling LLMUserMessageReadyEvent: 'The following tool executions have completed. Please analyze their results and decide the next course of action.
+
+Tool: write_file (ID: 808576709)
+Status: Success
+Result:
+File created/updated at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-live-backend-workspace-YhNqvq/auto-exec-flow-test.txt'
+Agent 'liveautobyteusbackendagent_tool_user_6811': Streaming handler selected: ApiToolCallStreamingResponseHandler
+Agent 'liveautobyteusbackendagent_tool_user_6811': Passing 1 tool schemas to LLM API (Provider: LMSTUDIO).
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+compaction_budget_evaluated {
+  agent_id: 'liveautobyteusbackendagent_tool_user_6811',
+  prompt_tokens: 686,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 262144,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 262144,
+  reserved_output_tokens: 0,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 261888,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 130944,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+Agent 'liveautobyteusbackendagent_tool_user_6811' enqueued LLMCompleteResponseReceivedEvent from LLMUserMessageReadyEventHandler.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+AgentExternalEventNotifier (NotifierID: 237a12af-0330-47af-9cda-71b0c16c98e6, AgentID: liveautobyteusbackendagent_tool_user_6811) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+Agent 'liveautobyteusbackendagent_tool_user_6811' handling LLMCompleteResponseReceivedEvent. Response Length: 117, Reasoning Length: 409, IsErrorFlagged: false, TokenUsage: [object Object]
+Agent 'liveautobyteusbackendagent_tool_user_6811' received full LLM content for processing:
+---
+
+
+The file `auto-exec-flow-test.txt` has been successfully created with exactly two lines: "line one" and "line two".
+---
+Agent 'liveautobyteusbackendagent_tool_user_6811': No LLMResponseProcessor handled the response. Emitting the full LLM response as a final answer and completion signal.
+AgentExternalEventNotifier (NotifierID: 237a12af-0330-47af-9cda-71b0c16c98e6, AgentID: liveautobyteusbackendagent_tool_user_6811) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+AgentExternalEventNotifier (NotifierID: 237a12af-0330-47af-9cda-71b0c16c98e6, AgentID: liveautobyteusbackendagent_tool_user_6811) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+AgentExternalEventNotifier (NotifierID: 237a12af-0330-47af-9cda-71b0c16c98e6, AgentID: liveautobyteusbackendagent_tool_user_6811) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+Agent 'liveautobyteusbackendagent_tool_user_6811' Logged AgentIdleEvent. Current agent status: idle
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+AgentEventStream (ID: b6c09ed5-b658-4e2d-84e7-c2cd61c9988a) for 'liveautobyteusbackendagent_tool_user_6811': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+Removing agent 'liveautobyteusbackendagent_tool_user_6811'. Attempting graceful shutdown.
+Agent 'liveautobyteusbackendagent_tool_user_6811' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+AgentExternalEventNotifier (NotifierID: 237a12af-0330-47af-9cda-71b0c16c98e6, AgentID: liveautobyteusbackendagent_tool_user_6811) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+AgentWorker 'liveautobyteusbackendagent_tool_user_6811': Stop requested.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+AgentExternalEventNotifier (NotifierID: 237a12af-0330-47af-9cda-71b0c16c98e6, AgentID: liveautobyteusbackendagent_tool_user_6811) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+Agent 'liveautobyteusbackendagent_tool_user_6811' Logged AgentStoppedEvent. Current agent status: shutdown_complete
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+AgentWorker 'liveautobyteusbackendagent_tool_user_6811' asyncRun() loop has finished.
+AgentWorker 'liveautobyteusbackendagent_tool_user_6811': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+AgentWorker 'liveautobyteusbackendagent_tool_user_6811': Shutdown resource cleanup completed successfully.
+AgentWorker 'liveautobyteusbackendagent_tool_user_6811': Shutdown sequence completed.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+Unregistered AgentContext for agent_id 'liveautobyteusbackendagent_tool_user_6811'.
+AgentRuntime for 'liveautobyteusbackendagent_tool_user_6811': Context unregistered.
+
+stdout | tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+AgentRuntime for 'liveautobyteusbackendagent_tool_user_6811' stop() method completed.
+
+ × tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events 34693ms
+   → expected false to be true // Object.is equality
+ ↓ tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > publishes an existing workspace file through the live AutoByteus publish_artifact tool path
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts > AutoByteusAgentRunBackendFactory live LM Studio integration > auto-executes tools without approval and still emits converted execution events
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.filechange-smoke.temp.test.ts:481:11
+    479|               resolveFileChangePath(event).endsWith(targetRelativePath…
+    480|           ),
+    481|         ).toBe(true);
+       |           ^
+    482| 
+    483|         const targetPath = path.join(workspaceDir, targetRelativePath);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 skipped (4)
+   Start at  08:51:36
+   Duration  39.26s (transform 2.69s, setup 20ms, import 4.05s, tests 34.69s, environment 0ms)
+

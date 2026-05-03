@@ -8,7 +8,7 @@ That model covers:
 
 - `write_file`
 - `edit_file`
-- generated outputs discovered from successful non-file tools
+- generated outputs from known output-producing tools (`generate_image`, `edit_image`, `generate_speech`, including the AutoByteus image/audio MCP forms)
 
 The backend owns path identity, live status, and historical replay. The frontend renders one unified list from `runFileChangesStore`.
 
@@ -35,33 +35,37 @@ Key rules:
 - current filesystem content is the source of truth for committed previews
 - `content` is transient and only used for live buffered `write_file` rendering
 - generated outputs are represented as `sourceTool = 'generated_output'`
+- generic `file_path`/`filePath` fields are not artifact evidence unless they are returned by a known generated-output tool or paired with explicit output/destination semantics
+- `FILE_CHANGE` is a state-update stream, not an exact-one occurrence guarantee; pre-available status sequences are runtime-shaped, so a row can move `streaming -> available`, `pending -> available`, or receive idempotent duplicate interim `streaming`/`pending` updates before terminal state
 
 ## High-Level Data Flow
 
 ```mermaid
 flowchart LR
-  A["AgentRun events"] --> B["RunFileChangeService"]
-  B --> C["In-memory projection"]
-  B --> D["<memoryDir>/file_changes.json"]
-  B --> E["FILE_CHANGE_UPDATED"]
-  E --> F["agent streaming websocket"]
-  F --> G["runFileChangesStore"]
-  G --> H["ArtifactsTab"]
-  H --> I["ArtifactContentViewer"]
+  A["Backend runtime events"] --> B["AgentRunEventPipeline"]
+  B --> C["FileChangeEventProcessor"]
+  C --> D["FILE_CHANGE"]
+  D --> E["RunFileChangeService projection"]
+  E --> F["<memoryDir>/file_changes.json"]
+  D --> G["agent streaming websocket"]
+  G --> H["runFileChangesStore"]
+  H --> I["ArtifactsTab"]
+  I --> J["ArtifactContentViewer"]
 
-  C --> J["RunFileChangeProjectionService"]
-  D --> J
-  J --> K["GraphQL: getRunFileChanges"]
-  J --> L["REST: /runs/:runId/file-change-content"]
+  E --> K["RunFileChangeProjectionService"]
+  F --> K
+  K --> L["GraphQL: getRunFileChanges"]
+  K --> M["REST: /runs/:runId/file-change-content"]
 ```
 
 ## Backend Owners
 
 | Owner | Path | Responsibility |
 | --- | --- | --- |
-| Live owner | `autobyteus-server-ts/src/services/run-file-changes/run-file-change-service.ts` | normalizes run events into one row per canonical path, buffers live `write_file` text, discovers generated outputs, emits `FILE_CHANGE_UPDATED`, and persists metadata |
+| Event pipeline | `autobyteus-server-ts/src/agent-execution/events/agent-run-event-pipeline.ts` | runs post-normalization event processors once per backend batch before subscriber fan-out |
+| File-change derivation | `autobyteus-server-ts/src/agent-execution/events/processors/file-change/file-change-event-processor.ts` | derives `FILE_CHANGE` from explicit mutation tools and known generated-output tools; read-only and unknown generic `file_path` events stay out of Artifacts |
+| Live projection | `autobyteus-server-ts/src/services/run-file-changes/run-file-change-service.ts` | consumes `FILE_CHANGE` only, projects one row per canonical path, and persists metadata |
 | Path identity | `autobyteus-server-ts/src/services/run-file-changes/run-file-change-path-identity.ts` | canonicalizes workspace-local paths and resolves absolute preview paths |
-| Invocation cache | `autobyteus-server-ts/src/services/run-file-changes/run-file-change-invocation-cache.ts` | preserves tool arguments/output-path hints for success payloads that omit arguments |
 | Projection persistence | `autobyteus-server-ts/src/services/run-file-changes/run-file-change-projection-store.ts` | reads and writes the canonical `file_changes.json` metadata file and strips transient `content` before persistence |
 | Historical read boundary | `autobyteus-server-ts/src/run-history/services/run-file-change-projection-service.ts` | reads the active in-memory owner for live runs and normalized persisted projections for inactive runs |
 | Preview route | `autobyteus-server-ts/src/api/rest/run-file-changes.ts` | streams the current file bytes for text and media previews by `runId + path` |
@@ -83,7 +87,7 @@ Only metadata is persisted. Transient `content` is stripped before writing.
 | Owner | Path | Responsibility |
 | --- | --- | --- |
 | Unified store | `autobyteus-web/stores/runFileChangesStore.ts` | owns hydrated and live rows for touched files plus generated outputs |
-| Stream ingestion | `autobyteus-web/services/agentStreaming/handlers/fileChangeHandler.ts` | applies `FILE_CHANGE_UPDATED` payloads into the unified store |
+| Stream ingestion | `autobyteus-web/services/agentStreaming/handlers/fileChangeHandler.ts` | applies `FILE_CHANGE` payloads into the unified store |
 | Hydration | `autobyteus-web/services/runHydration/runContextHydrationService.ts` | loads `getRunFileChanges(runId)` during reopen/recovery |
 | Artifacts list | `autobyteus-web/components/workspace/agent/ArtifactsTab.vue` | renders one sorted list directly from `runFileChangesStore` |
 | Viewer | `autobyteus-web/components/workspace/agent/ArtifactContentViewer.vue` | renders buffered text or fetches current server-backed bytes from the run-scoped preview route |
@@ -119,10 +123,11 @@ This keeps historical replay lightweight while still using current filesystem by
 
 Primary coverage for the unified model lives in:
 
+- `autobyteus-server-ts/tests/unit/agent-execution/events/agent-run-event-pipeline.test.ts`
+- `autobyteus-server-ts/tests/unit/agent-execution/events/file-change-event-processor.test.ts`
 - `autobyteus-server-ts/tests/unit/services/run-file-changes/run-file-change-service.test.ts`
 - `autobyteus-server-ts/tests/unit/services/run-file-changes/run-file-change-projection-store.test.ts`
 - `autobyteus-server-ts/tests/unit/services/run-file-changes/run-file-change-path-identity.test.ts`
-- `autobyteus-server-ts/tests/unit/services/run-file-changes/run-file-change-invocation-cache.test.ts`
 - `autobyteus-server-ts/tests/unit/run-history/services/run-file-change-projection-service.test.ts`
 - `autobyteus-server-ts/tests/unit/api/rest/run-file-changes.test.ts`
 - `autobyteus-web/stores/__tests__/runFileChangesStore.spec.ts`

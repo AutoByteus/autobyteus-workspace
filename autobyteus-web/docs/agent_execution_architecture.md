@@ -205,7 +205,7 @@ Incoming events are routed based on their `type`:
 | `TOOL_EXECUTION_FAILED`   | `toolLifecycleHandler.handleToolExecutionFailed`   | Sets terminal `error` + stores failure details; hydrates arguments when the terminal payload carries them. |
 | `TOOL_LOG`                | `toolLifecycleHandler.handleToolLog`               | Appends diagnostic execution logs only.                         |
 | `ARTIFACT_PERSISTED`      | inline no-op compatibility                         | Ignored by the current client; published artifacts are not displayed in the current web UI. |
-| `FILE_CHANGE_UPDATED`     | `fileChangeHandler.handleFileChangeUpdated`        | Syncs touched files and generated outputs into the unified run-scoped store. |
+| `FILE_CHANGE`             | `fileChangeHandler.handleFileChange`        | Syncs touched files and generated outputs into the unified run-scoped store. |
 | `TODO_LIST_UPDATE`        | `todoHandler.handleTodoListUpdate`                 | Syncs the agent's internal todo list with the UI.               |
 
 ---
@@ -220,7 +220,7 @@ These handlers are pure functions that take a payload and an `AgentContext`, and
 
 #### `segmentHandler.ts`
 
-- **`handleSegmentStart`**: Finds the current AI message (or creates one) and pushes/merges a new Segment object (e.g., `ToolCallSegment`, `WriteFileSegment`) for transcript structure. When that segment is an eligible displayable tool invocation with a stable invocation id and tool identity, it delegates to `toolActivityProjection.ts` to seed or hydrate the matching pending Activity row. File-change sidecar state is still not inferred here; the backend emits dedicated `FILE_CHANGE_UPDATED` events for the Artifacts experience.
+- **`handleSegmentStart`**: Finds the current AI message (or creates one) and pushes/merges a new Segment object (e.g., `ToolCallSegment`, `WriteFileSegment`) for transcript structure. When that segment is an eligible displayable tool invocation with a stable invocation id and tool identity, it delegates to `toolActivityProjection.ts` to seed or hydrate the matching pending Activity row. File-change sidecar state is still not inferred here; the backend emits dedicated `FILE_CHANGE` events for the Artifacts experience.
 - **`handleSegmentContent`**: Finds the segment by backend-provided `segment_type` + `id` and appends string deltas. This powers the "typewriter" effect. The frontend intentionally trusts that identity contract; provider adapters must emit different ids for distinct text blocks that belong on different sides of tool cards instead of relying on frontend runtime-specific reorder logic.
 - **`handleSegmentEnd`**: Performs transcript cleanup, sets the final tool name if it was streamed lazily, preserves final metadata such as arguments, and marks the segment as "parsed" (ready for execution state changes). It also delegates segment metadata hydration to `toolActivityProjection.ts`; lifecycle events remain authoritative for execution and terminal result/error state.
 
@@ -244,7 +244,7 @@ These handlers are pure functions that take a payload and an `AgentContext`, and
 A key architectural pattern is the **Sidecar Store Pattern** for runtime data. Instead of keeping all state in a monolithic `AgentContext` (which is optimized for Chat UI), distinct data streams are routed to dedicated stores:
 
 1.  **Run File Changes (`RunFileChangesStore`)**:
-    - Listens to `FILE_CHANGE_UPDATED` plus reopen hydration from `getRunFileChanges(runId)`.
+    - Listens to `FILE_CHANGE` plus reopen hydration from `getRunFileChanges(runId)`.
     - Owns the run-scoped projection for touched files and generated outputs.
     - Tracks latest-visible discoverability so the Artifacts tab can auto-focus when a new row appears.
     - Keeps transient `write_file` buffers only until committed previews are fetched from the server-backed run preview route.

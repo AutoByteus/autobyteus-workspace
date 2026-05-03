@@ -1,0 +1,143 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+
+stdout | tests/unit/services/run-file-changes/run-file-change-service.test.ts > RunFileChangeService > keeps Claude Read tool activity events out of run file changes
+CLAUDE_READ_ARTIFACT_REGRESSION {
+  "convertedEvents": [
+    {
+      "eventType": "TOOL_EXECUTION_STARTED",
+      "runId": "run-1",
+      "payload": {
+        "invocation_id": "read-1",
+        "tool_name": "Read",
+        "arguments": {
+          "file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-file-changes-s4R6Wk/src/server.py"
+        }
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "TOOL_EXECUTION_SUCCEEDED",
+      "runId": "run-1",
+      "payload": {
+        "invocation_id": "read-1",
+        "tool_name": "Read",
+        "arguments": {
+          "file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-file-changes-s4R6Wk/src/server.py"
+        },
+        "result": "print('hello')\n"
+      },
+      "statusHint": null
+    }
+  ],
+  "fileChangeEvents": [],
+  "projection": {
+    "version": 2,
+    "entries": []
+  }
+}
+
+ ✓ tests/unit/services/run-file-changes/run-file-change-service.test.ts > RunFileChangeService > builds one path-keyed projection entry, keeps live write content transient, and persists metadata only 15ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-service.test.ts > RunFileChangeService > canonicalizes absolute and relative references to the same workspace file into one row 14ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-service.test.ts > RunFileChangeService > captures generated outputs from cached invocation context when the success payload omits arguments 7ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-service.test.ts > RunFileChangeService > keeps Claude Read tool activity events out of run file changes 9ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-service.test.ts > RunFileChangeService > classifies Claude 'Write' as a canonical mutation artifact 6ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-service.test.ts > RunFileChangeService > classifies Claude 'Edit' as a canonical mutation artifact 6ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-service.test.ts > RunFileChangeService > classifies Claude 'MultiEdit' as a canonical mutation artifact 5ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-service.test.ts > RunFileChangeService > classifies Claude 'NotebookEdit' as a canonical mutation artifact 6ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-service.test.ts > RunFileChangeService > does not classify a non-mutation tool that only reports file_path as generated output 5ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-service.test.ts > RunFileChangeService > clears buffered write_file content when the write fails 9ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > converts normal Claude tool segment lane metadata with arguments 2ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > converts a normal Claude tool lifecycle into TOOL_* events 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > suppresses raw MCP send_message_to segment and lifecycle transport noise 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > passes canonical send_message_to segment and started lifecycle events 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > passes canonical send_message_to success and failure lifecycle events with arguments 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > normalizes browser MCP tool names to canonical browser tool names 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > normalizes browser MCP content-block results to canonical browser result objects 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > normalizes browser MCP content-envelope results to canonical browser result objects 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > preserves unknown MCP browser-like names and results 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > preserves non-Autobyteus MCP tools with browser-like suffixes and results 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > normalizes browser MCP tool names in segment start metadata and top-level payload 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > normalizes browser MCP tool names in provided segment end metadata 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > preserves arguments on failed Claude tool completion events 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > preserves arguments on denied Claude tool lifecycle events 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > emits explicit turn completed plus preserved agent-status events 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > emits explicit turn started before the running status event 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > normalizes compacting status without rotation eligibility 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > normalizes compact_boundary as rotation eligible 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > keeps compacting status and compact boundary keys distinct when provider uuid matches 0ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-projection-store.test.ts > RunFileChangeProjectionStore > writes canonical file_changes.json and strips transient content 4ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-projection-store.test.ts > RunFileChangeProjectionStore > returns an empty projection when only the removed legacy projection path exists 2ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-tool-classification.test.ts > run-file-change mutation tool classification > maps write_file to write_file 1ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-tool-classification.test.ts > run-file-change mutation tool classification > maps Write to write_file 0ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-tool-classification.test.ts > run-file-change mutation tool classification > maps edit_file to edit_file 0ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-tool-classification.test.ts > run-file-change mutation tool classification > maps Edit to edit_file 0ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-tool-classification.test.ts > run-file-change mutation tool classification > maps MultiEdit to edit_file 0ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-tool-classification.test.ts > run-file-change mutation tool classification > maps NotebookEdit to edit_file 0ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-tool-classification.test.ts > run-file-change mutation tool classification > maps Read to null 0ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-tool-classification.test.ts > run-file-change mutation tool classification > maps TodoWrite to null 0ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-tool-classification.test.ts > run-file-change mutation tool classification > extracts mutation target paths after a tool has been classified as mutation 0ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-tool-classification.test.ts > run-file-change mutation tool classification > extracts mutation target paths from normalized payload containers 0ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-invocation-cache.test.ts > RunFileChangeInvocationCache > consumes recorded invocation context through invocation aliases only once 1ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-invocation-cache.test.ts > RunFileChangeInvocationCache > clears one run without affecting other runs 1ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-generated-output-path.test.ts > run-file-change generated output path extraction > detects explicit output and destination keys 1ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-generated-output-path.test.ts > run-file-change generated output path extraction > extracts path from result output_file_url plus local_file_path 0ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-generated-output-path.test.ts > run-file-change generated output path extraction > extracts explicit output path fields from result before args 0ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-generated-output-path.test.ts > run-file-change generated output path extraction > extracts explicit output path fields from args when result has none 0ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-generated-output-path.test.ts > run-file-change generated output path extraction > rejects generic input file_path fields as generated-output evidence 0ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-path-identity.test.ts > run-file-change path identity > canonicalizes workspace-local absolute paths to relative posix paths 1ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-path-identity.test.ts > run-file-change path identity > preserves absolute paths that live outside the workspace 0ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-path-identity.test.ts > run-file-change path identity > resolves relative canonical paths back against the workspace root 0ms
+ ✓ tests/unit/utils/artifact-utils.test.ts > artifact-utils > infers artifact types from extensions 1ms
+
+ Test Files  8 passed (8)
+      Tests  52 passed (52)
+   Start at  06:09:36
+   Duration  1.66s (transform 244ms, setup 82ms, import 343ms, tests 107ms, environment 1ms)
+

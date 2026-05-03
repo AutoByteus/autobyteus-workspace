@@ -1,0 +1,606 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+
+stdout | tests/unit/agent-execution/events/api-e2e-round2-runtime-validation.temp.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-execution/events/api-e2e-round2-runtime-validation.temp.test.ts
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/unit/agent-execution/events/api-e2e-round2-runtime-validation.temp.test.ts
+Registered 6 image models from Autobyteus host https://localhost:51739.
+Autobyteus image models from https://localhost:51739: gpt-image-1-rpa@localhost:51739, nano-banana-pro-app-rpa@localhost:51739, imagen-4-rpa@localhost:51739, imagen-4-ultra-rpa@localhost:51739, imagen-4-fast-rpa@localhost:51739, qwen-image-rpa@localhost:51739
+Autobyteus image discovery summary for https://localhost:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=31
+
+stderr | tests/unit/agent-execution/events/api-e2e-round2-runtime-validation.temp.test.ts
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/unit/agent-execution/events/api-e2e-round2-runtime-validation.temp.test.ts
+Registered 6 image models from Autobyteus host https://localhost:51740.
+Autobyteus image models from https://localhost:51740: gpt-image-1-rpa@localhost:51740, nano-banana-pro-app-rpa@localhost:51740, imagen-4-rpa@localhost:51740, imagen-4-ultra-rpa@localhost:51740, imagen-4-fast-rpa@localhost:51740, qwen-image-rpa@localhost:51740
+Autobyteus image discovery summary for https://localhost:51740: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=12
+
+stdout | tests/unit/agent-execution/events/api-e2e-round2-runtime-validation.temp.test.ts
+Finished Autobyteus image model discovery. Total models registered: 12
+
+stdout | tests/unit/agent-execution/events/api-e2e-round2-runtime-validation.temp.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-execution/events/api-e2e-round2-runtime-validation.temp.test.ts > Round 2 API/E2E runtime validation for FILE_CHANGE architecture > validates cross-runtime FILE_CHANGE derivation and projection behavior
+ROUND2_FILE_CHANGE_VALIDATION_EVIDENCE {
+  "claudeRead": {
+    "baseEventTypes": [
+      "TOOL_EXECUTION_STARTED",
+      "TOOL_EXECUTION_SUCCEEDED"
+    ],
+    "finalEventTypes": [
+      "TOOL_EXECUTION_STARTED",
+      "TOOL_EXECUTION_SUCCEEDED"
+    ],
+    "toolPayloads": [
+      {
+        "invocation_id": "read-1",
+        "tool_name": "Read",
+        "arguments": {
+          "file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/round2-file-change-validation-b5ltOD/src/server.py"
+        }
+      },
+      {
+        "invocation_id": "read-1",
+        "tool_name": "Read",
+        "arguments": {
+          "file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/round2-file-change-validation-b5ltOD/src/server.py"
+        },
+        "result": "print('read-only')\n"
+      }
+    ],
+    "fileChangeCount": 0,
+    "projectionEntries": [],
+    "persistedFileExists": false
+  },
+  "claudeMutations": {
+    "Write": {
+      "finalEventTypes": [
+        "TOOL_EXECUTION_STARTED",
+        "TOOL_EXECUTION_SUCCEEDED",
+        "FILE_CHANGE",
+        "FILE_CHANGE"
+      ],
+      "fileChangePayloads": [
+        {
+          "id": "round2-claude-write:src/claude-write.txt",
+          "runId": "round2-claude-write",
+          "path": "src/claude-write.txt",
+          "type": "file",
+          "status": "pending",
+          "sourceTool": "write_file",
+          "sourceInvocationId": "invoke-Write",
+          "createdAt": "2026-05-03T06:32:12.400Z",
+          "updatedAt": "2026-05-03T06:32:12.400Z"
+        },
+        {
+          "id": "round2-claude-write:src/claude-write.txt",
+          "runId": "round2-claude-write",
+          "path": "src/claude-write.txt",
+          "type": "file",
+          "status": "available",
+          "sourceTool": "write_file",
+          "sourceInvocationId": "invoke-Write",
+          "createdAt": "2026-05-03T06:32:12.400Z",
+          "updatedAt": "2026-05-03T06:32:12.400Z"
+        }
+      ],
+      "protocolMessageTypes": [
+        "FILE_CHANGE",
+        "FILE_CHANGE"
+      ],
+      "projectionEntries": [
+        {
+          "id": "round2-claude-write:src/claude-write.txt",
+          "runId": "round2-claude-write",
+          "path": "src/claude-write.txt",
+          "type": "file",
+          "status": "available",
+          "sourceTool": "write_file",
+          "sourceInvocationId": "invoke-Write",
+          "createdAt": "2026-05-03T06:32:12.400Z",
+          "updatedAt": "2026-05-03T06:32:12.400Z"
+        }
+      ]
+    },
+    "Edit": {
+      "finalEventTypes": [
+        "TOOL_EXECUTION_STARTED",
+        "TOOL_EXECUTION_SUCCEEDED",
+        "FILE_CHANGE",
+        "FILE_CHANGE"
+      ],
+      "fileChangePayloads": [
+        {
+          "id": "round2-claude-edit:src/claude-edit.txt",
+          "runId": "round2-claude-edit",
+          "path": "src/claude-edit.txt",
+          "type": "file",
+          "status": "pending",
+          "sourceTool": "edit_file",
+          "sourceInvocationId": "invoke-Edit",
+          "createdAt": "2026-05-03T06:32:12.435Z",
+          "updatedAt": "2026-05-03T06:32:12.435Z"
+        },
+        {
+          "id": "round2-claude-edit:src/claude-edit.txt",
+          "runId": "round2-claude-edit",
+          "path": "src/claude-edit.txt",
+          "type": "file",
+          "status": "available",
+          "sourceTool": "edit_file",
+          "sourceInvocationId": "invoke-Edit",
+          "createdAt": "2026-05-03T06:32:12.435Z",
+          "updatedAt": "2026-05-03T06:32:12.435Z"
+        }
+      ],
+      "protocolMessageTypes": [
+        "FILE_CHANGE",
+        "FILE_CHANGE"
+      ],
+      "projectionEntries": [
+        {
+          "id": "round2-claude-edit:src/claude-edit.txt",
+          "runId": "round2-claude-edit",
+          "path": "src/claude-edit.txt",
+          "type": "file",
+          "status": "available",
+          "sourceTool": "edit_file",
+          "sourceInvocationId": "invoke-Edit",
+          "createdAt": "2026-05-03T06:32:12.435Z",
+          "updatedAt": "2026-05-03T06:32:12.435Z"
+        }
+      ]
+    },
+    "MultiEdit": {
+      "finalEventTypes": [
+        "TOOL_EXECUTION_STARTED",
+        "TOOL_EXECUTION_SUCCEEDED",
+        "FILE_CHANGE",
+        "FILE_CHANGE"
+      ],
+      "fileChangePayloads": [
+        {
+          "id": "round2-claude-multiedit:src/claude-multiedit.txt",
+          "runId": "round2-claude-multiedit",
+          "path": "src/claude-multiedit.txt",
+          "type": "file",
+          "status": "pending",
+          "sourceTool": "edit_file",
+          "sourceInvocationId": "invoke-MultiEdit",
+          "createdAt": "2026-05-03T06:32:12.469Z",
+          "updatedAt": "2026-05-03T06:32:12.469Z"
+        },
+        {
+          "id": "round2-claude-multiedit:src/claude-multiedit.txt",
+          "runId": "round2-claude-multiedit",
+          "path": "src/claude-multiedit.txt",
+          "type": "file",
+          "status": "available",
+          "sourceTool": "edit_file",
+          "sourceInvocationId": "invoke-MultiEdit",
+          "createdAt": "2026-05-03T06:32:12.469Z",
+          "updatedAt": "2026-05-03T06:32:12.469Z"
+        }
+      ],
+      "protocolMessageTypes": [
+        "FILE_CHANGE",
+        "FILE_CHANGE"
+      ],
+      "projectionEntries": [
+        {
+          "id": "round2-claude-multiedit:src/claude-multiedit.txt",
+          "runId": "round2-claude-multiedit",
+          "path": "src/claude-multiedit.txt",
+          "type": "file",
+          "status": "available",
+          "sourceTool": "edit_file",
+          "sourceInvocationId": "invoke-MultiEdit",
+          "createdAt": "2026-05-03T06:32:12.469Z",
+          "updatedAt": "2026-05-03T06:32:12.469Z"
+        }
+      ]
+    },
+    "NotebookEdit": {
+      "finalEventTypes": [
+        "TOOL_EXECUTION_STARTED",
+        "TOOL_EXECUTION_SUCCEEDED",
+        "FILE_CHANGE",
+        "FILE_CHANGE"
+      ],
+      "fileChangePayloads": [
+        {
+          "id": "round2-claude-notebookedit:notebooks/example.ipynb",
+          "runId": "round2-claude-notebookedit",
+          "path": "notebooks/example.ipynb",
+          "type": "file",
+          "status": "pending",
+          "sourceTool": "edit_file",
+          "sourceInvocationId": "invoke-NotebookEdit",
+          "createdAt": "2026-05-03T06:32:12.504Z",
+          "updatedAt": "2026-05-03T06:32:12.504Z"
+        },
+        {
+          "id": "round2-claude-notebookedit:notebooks/example.ipynb",
+          "runId": "round2-claude-notebookedit",
+          "path": "notebooks/example.ipynb",
+          "type": "file",
+          "status": "available",
+          "sourceTool": "edit_file",
+          "sourceInvocationId": "invoke-NotebookEdit",
+          "createdAt": "2026-05-03T06:32:12.504Z",
+          "updatedAt": "2026-05-03T06:32:12.504Z"
+        }
+      ],
+      "protocolMessageTypes": [
+        "FILE_CHANGE",
+        "FILE_CHANGE"
+      ],
+      "projectionEntries": [
+        {
+          "id": "round2-claude-notebookedit:notebooks/example.ipynb",
+          "runId": "round2-claude-notebookedit",
+          "path": "notebooks/example.ipynb",
+          "type": "file",
+          "status": "available",
+          "sourceTool": "edit_file",
+          "sourceInvocationId": "invoke-NotebookEdit",
+          "createdAt": "2026-05-03T06:32:12.504Z",
+          "updatedAt": "2026-05-03T06:32:12.504Z"
+        }
+      ]
+    }
+  },
+  "codexFileChange": {
+    "startBaseEventTypes": [
+      "SEGMENT_START",
+      "TOOL_EXECUTION_STARTED"
+    ],
+    "startFileChangePayloads": [
+      {
+        "id": "round2-codex-file-change:codex/demo.py",
+        "runId": "round2-codex-file-change",
+        "path": "codex/demo.py",
+        "type": "file",
+        "status": "pending",
+        "sourceTool": "edit_file",
+        "sourceInvocationId": "codex-change-1",
+        "createdAt": "2026-05-03T06:32:12.539Z",
+        "updatedAt": "2026-05-03T06:32:12.539Z"
+      },
+      {
+        "id": "round2-codex-file-change:codex/demo.py",
+        "runId": "round2-codex-file-change",
+        "path": "codex/demo.py",
+        "type": "file",
+        "status": "pending",
+        "sourceTool": "edit_file",
+        "sourceInvocationId": "codex-change-1",
+        "createdAt": "2026-05-03T06:32:12.539Z",
+        "updatedAt": "2026-05-03T06:32:12.539Z"
+      }
+    ],
+    "completeBaseEventTypes": [
+      "TOOL_EXECUTION_SUCCEEDED",
+      "SEGMENT_END"
+    ],
+    "completeFileChangePayloads": [
+      {
+        "id": "round2-codex-file-change:codex/demo.py",
+        "runId": "round2-codex-file-change",
+        "path": "codex/demo.py",
+        "type": "file",
+        "status": "available",
+        "sourceTool": "edit_file",
+        "sourceInvocationId": "codex-change-1",
+        "createdAt": "2026-05-03T06:32:12.574Z",
+        "updatedAt": "2026-05-03T06:32:12.574Z"
+      }
+    ],
+    "projectionEntries": [
+      {
+        "id": "round2-codex-file-change:codex/demo.py",
+        "runId": "round2-codex-file-change",
+        "path": "codex/demo.py",
+        "type": "file",
+        "status": "available",
+        "sourceTool": "edit_file",
+        "sourceInvocationId": "codex-change-1",
+        "createdAt": "2026-05-03T06:32:12.539Z",
+        "updatedAt": "2026-05-03T06:32:12.574Z"
+      }
+    ],
+    "duplicatePendingCount": 2,
+    "duplicatePendingIdempotent": true
+  },
+  "autobyteusFiles": {
+    "baseEventTypes": [
+      "SEGMENT_START",
+      "SEGMENT_CONTENT",
+      "SEGMENT_CONTENT",
+      "SEGMENT_END",
+      "TOOL_EXECUTION_SUCCEEDED",
+      "TOOL_EXECUTION_STARTED",
+      "TOOL_EXECUTION_SUCCEEDED"
+    ],
+    "fileChangePayloads": [
+      {
+        "id": "round2-autobyteus-files:auto/stream.txt",
+        "runId": "round2-autobyteus-files",
+        "path": "auto/stream.txt",
+        "type": "file",
+        "status": "streaming",
+        "sourceTool": "write_file",
+        "sourceInvocationId": "auto-write-1",
+        "createdAt": "2026-05-03T06:32:12.607Z",
+        "updatedAt": "2026-05-03T06:32:12.607Z",
+        "content": ""
+      },
+      {
+        "id": "round2-autobyteus-files:auto/stream.txt",
+        "runId": "round2-autobyteus-files",
+        "path": "auto/stream.txt",
+        "type": "file",
+        "status": "streaming",
+        "sourceTool": "write_file",
+        "sourceInvocationId": "auto-write-1",
+        "createdAt": "2026-05-03T06:32:12.607Z",
+        "updatedAt": "2026-05-03T06:32:12.607Z",
+        "content": "hello "
+      },
+      {
+        "id": "round2-autobyteus-files:auto/stream.txt",
+        "runId": "round2-autobyteus-files",
+        "path": "auto/stream.txt",
+        "type": "file",
+        "status": "streaming",
+        "sourceTool": "write_file",
+        "sourceInvocationId": "auto-write-1",
+        "createdAt": "2026-05-03T06:32:12.607Z",
+        "updatedAt": "2026-05-03T06:32:12.607Z",
+        "content": "hello stream"
+      },
+      {
+        "id": "round2-autobyteus-files:auto/stream.txt",
+        "runId": "round2-autobyteus-files",
+        "path": "auto/stream.txt",
+        "type": "file",
+        "status": "pending",
+        "sourceTool": "write_file",
+        "sourceInvocationId": "auto-write-1",
+        "createdAt": "2026-05-03T06:32:12.607Z",
+        "updatedAt": "2026-05-03T06:32:12.607Z",
+        "content": "hello stream"
+      },
+      {
+        "id": "round2-autobyteus-files:auto/stream.txt",
+        "runId": "round2-autobyteus-files",
+        "path": "auto/stream.txt",
+        "type": "file",
+        "status": "available",
+        "sourceTool": "write_file",
+        "sourceInvocationId": "auto-write-1",
+        "createdAt": "2026-05-03T06:32:12.607Z",
+        "updatedAt": "2026-05-03T06:32:12.607Z",
+        "content": "hello stream"
+      },
+      {
+        "id": "round2-autobyteus-files:auto/edit.txt",
+        "runId": "round2-autobyteus-files",
+        "path": "auto/edit.txt",
+        "type": "file",
+        "status": "pending",
+        "sourceTool": "edit_file",
+        "sourceInvocationId": "auto-edit-1",
+        "createdAt": "2026-05-03T06:32:12.607Z",
+        "updatedAt": "2026-05-03T06:32:12.607Z"
+      },
+      {
+        "id": "round2-autobyteus-files:auto/edit.txt",
+        "runId": "round2-autobyteus-files",
+        "path": "auto/edit.txt",
+        "type": "file",
+        "status": "available",
+        "sourceTool": "edit_file",
+        "sourceInvocationId": "auto-edit-1",
+        "createdAt": "2026-05-03T06:32:12.607Z",
+        "updatedAt": "2026-05-03T06:32:12.607Z"
+      }
+    ],
+    "projectionEntries": [
+      {
+        "id": "round2-autobyteus-files:auto/stream.txt",
+        "runId": "round2-autobyteus-files",
+        "path": "auto/stream.txt",
+        "type": "file",
+        "status": "available",
+        "sourceTool": "write_file",
+        "sourceInvocationId": "auto-write-1",
+        "createdAt": "2026-05-03T06:32:12.607Z",
+        "updatedAt": "2026-05-03T06:32:12.607Z",
+        "content": "hello stream"
+      },
+      {
+        "id": "round2-autobyteus-files:auto/edit.txt",
+        "runId": "round2-autobyteus-files",
+        "path": "auto/edit.txt",
+        "type": "file",
+        "status": "available",
+        "sourceTool": "edit_file",
+        "sourceInvocationId": "auto-edit-1",
+        "createdAt": "2026-05-03T06:32:12.607Z",
+        "updatedAt": "2026-05-03T06:32:12.607Z"
+      }
+    ]
+  },
+  "autobyteusGenerated": {
+    "fileChangePayloads": [
+      {
+        "id": "round2-autobyteus-generated:generated/image.png",
+        "runId": "round2-autobyteus-generated",
+        "path": "generated/image.png",
+        "type": "image",
+        "status": "available",
+        "sourceTool": "generated_output",
+        "sourceInvocationId": "generate_image-1",
+        "createdAt": "2026-05-03T06:32:12.641Z",
+        "updatedAt": "2026-05-03T06:32:12.641Z"
+      },
+      {
+        "id": "round2-autobyteus-generated:generated/edited.webp",
+        "runId": "round2-autobyteus-generated",
+        "path": "generated/edited.webp",
+        "type": "image",
+        "status": "available",
+        "sourceTool": "generated_output",
+        "sourceInvocationId": "edit_image-1",
+        "createdAt": "2026-05-03T06:32:12.641Z",
+        "updatedAt": "2026-05-03T06:32:12.641Z"
+      },
+      {
+        "id": "round2-autobyteus-generated:generated/speech.mp3",
+        "runId": "round2-autobyteus-generated",
+        "path": "generated/speech.mp3",
+        "type": "audio",
+        "status": "available",
+        "sourceTool": "generated_output",
+        "sourceInvocationId": "generate_speech-1",
+        "createdAt": "2026-05-03T06:32:12.641Z",
+        "updatedAt": "2026-05-03T06:32:12.641Z"
+      }
+    ],
+    "projectionEntries": [
+      {
+        "id": "round2-autobyteus-generated:generated/image.png",
+        "runId": "round2-autobyteus-generated",
+        "path": "generated/image.png",
+        "type": "image",
+        "status": "available",
+        "sourceTool": "generated_output",
+        "sourceInvocationId": "generate_image-1",
+        "createdAt": "2026-05-03T06:32:12.641Z",
+        "updatedAt": "2026-05-03T06:32:12.641Z"
+      },
+      {
+        "id": "round2-autobyteus-generated:generated/edited.webp",
+        "runId": "round2-autobyteus-generated",
+        "path": "generated/edited.webp",
+        "type": "image",
+        "status": "available",
+        "sourceTool": "generated_output",
+        "sourceInvocationId": "edit_image-1",
+        "createdAt": "2026-05-03T06:32:12.641Z",
+        "updatedAt": "2026-05-03T06:32:12.641Z"
+      },
+      {
+        "id": "round2-autobyteus-generated:generated/speech.mp3",
+        "runId": "round2-autobyteus-generated",
+        "path": "generated/speech.mp3",
+        "type": "audio",
+        "status": "available",
+        "sourceTool": "generated_output",
+        "sourceInvocationId": "generate_speech-1",
+        "createdAt": "2026-05-03T06:32:12.641Z",
+        "updatedAt": "2026-05-03T06:32:12.641Z"
+      }
+    ]
+  },
+  "unknownFilePathOnly": {
+    "finalEventTypes": [
+      "TOOL_EXECUTION_STARTED",
+      "TOOL_EXECUTION_SUCCEEDED"
+    ],
+    "fileChangeCount": 0,
+    "projectionEntries": []
+  },
+  "runFileChangeServiceProjectionOnly": {
+    "projectionEntries": []
+  }
+}
+
+ ✓ tests/unit/agent-execution/events/api-e2e-round2-runtime-validation.temp.test.ts > Round 2 API/E2E runtime validation for FILE_CHANGE architecture > validates cross-runtime FILE_CHANGE derivation and projection behavior 386ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  08:32:08
+   Duration  4.32s (transform 2.09s, setup 22ms, import 3.40s, tests 387ms, environment 0ms)
+

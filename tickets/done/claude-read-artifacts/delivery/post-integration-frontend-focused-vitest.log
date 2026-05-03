@@ -1,0 +1,42 @@
+# Post-integration frontend focused check
+Date: 2026-05-03T06:38:24Z
+Command: cd autobyteus-web && pnpm exec nuxi prepare && NUXT_TEST=true pnpm exec vitest run services/agentStreaming/handlers/__tests__/fileChangeHandler.spec.ts stores/__tests__/runFileChangesStore.spec.ts components/workspace/agent/__tests__/ArtifactsTab.spec.ts --reporter verbose
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+│
+◆  Types generated in .nuxt.
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/autobyteus-web
+
+stdout | stores/__tests__/runFileChangesStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/fileChangeHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/agent/__tests__/ArtifactsTab.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentStreaming/handlers/__tests__/fileChangeHandler.spec.ts > fileChangeHandler > upserts live file-change payloads into the dedicated store 4ms
+ ✓ services/agentStreaming/handlers/__tests__/fileChangeHandler.spec.ts > fileChangeHandler > preserves missing transient content as undefined 0ms
+ ✓ stores/__tests__/runFileChangesStore.spec.ts > RunFileChangesStore > announces a same-path retouch when a new invocation updates an existing row 2ms
+ ✓ stores/__tests__/runFileChangesStore.spec.ts > RunFileChangesStore > applies an explicit null content update so failed writes do not retain stale buffered drafts 1ms
+ ✓ stores/__tests__/runFileChangesStore.spec.ts > RunFileChangesStore > merges authoritative projection rows without dropping newer live rows 10ms
+ ✓ stores/__tests__/runFileChangesStore.spec.ts > RunFileChangesStore > replaces an older local row when the authoritative projection is newer 1ms
+stderr | components/workspace/agent/__tests__/ArtifactsTab.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/workspace/agent/__tests__/ArtifactsTab.spec.ts > ArtifactsTab.vue > renders with split pane layout 10ms
+ ✓ components/workspace/agent/__tests__/ArtifactsTab.spec.ts > ArtifactsTab.vue > passes the selected artifact to the viewer and retries on same-row clicks 3ms
+ ✓ components/workspace/agent/__tests__/ArtifactsTab.spec.ts > ArtifactsTab.vue > auto-selects the newest row when a newly visible artifact signal arrives 9ms
+
+ Test Files  3 passed (3)
+      Tests  9 passed (9)
+   Start at  08:38:27
+   Duration  3.87s (transform 1.70s, setup 4.93s, collect 1.59s, tests 43ms, environment 657ms, prepare 550ms)
+

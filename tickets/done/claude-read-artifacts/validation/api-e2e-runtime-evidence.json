@@ -1,0 +1,304 @@
+{
+  "readOnly": {
+    "activityEventTypes": [
+      "TOOL_EXECUTION_STARTED",
+      "TOOL_EXECUTION_SUCCEEDED"
+    ],
+    "activityPayloads": [
+      {
+        "invocation_id": "read-1",
+        "tool_name": "Read",
+        "arguments": {
+          "file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-e2e-claude-artifacts-hHK5YA/src/server.py"
+        }
+      },
+      {
+        "invocation_id": "read-1",
+        "tool_name": "Read",
+        "arguments": {
+          "file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-e2e-claude-artifacts-hHK5YA/src/server.py"
+        },
+        "result": "print('read-only')\n"
+      }
+    ],
+    "emittedFileChangeCount": 0,
+    "liveProjectionEntries": [],
+    "persistedProjectionEntries": [],
+    "persistedFileExists": false
+  },
+  "mutations": {
+    "Write": {
+      "activityEventTypes": [
+        "TOOL_EXECUTION_STARTED",
+        "TOOL_EXECUTION_SUCCEEDED"
+      ],
+      "emittedFileChangePayloads": [
+        {
+          "id": "validation-write-run:src/claude-write.txt",
+          "runId": "validation-write-run",
+          "path": "src/claude-write.txt",
+          "type": "file",
+          "status": "streaming",
+          "sourceTool": "write_file",
+          "sourceInvocationId": "invoke-Write",
+          "content": "",
+          "createdAt": "2026-05-03T04:09:18.339Z",
+          "updatedAt": "2026-05-03T04:09:18.340Z"
+        },
+        {
+          "id": "validation-write-run:src/claude-write.txt",
+          "runId": "validation-write-run",
+          "path": "src/claude-write.txt",
+          "type": "file",
+          "status": "available",
+          "sourceTool": "write_file",
+          "sourceInvocationId": "invoke-Write",
+          "content": "",
+          "createdAt": "2026-05-03T04:09:18.339Z",
+          "updatedAt": "2026-05-03T04:09:18.342Z"
+        }
+      ],
+      "projectionEntries": [
+        {
+          "id": "validation-write-run:src/claude-write.txt",
+          "runId": "validation-write-run",
+          "path": "src/claude-write.txt",
+          "type": "file",
+          "status": "available",
+          "sourceTool": "write_file",
+          "sourceInvocationId": "invoke-Write",
+          "content": "",
+          "createdAt": "2026-05-03T04:09:18.339Z",
+          "updatedAt": "2026-05-03T04:09:18.342Z"
+        }
+      ]
+    },
+    "Edit": {
+      "activityEventTypes": [
+        "TOOL_EXECUTION_STARTED",
+        "TOOL_EXECUTION_SUCCEEDED"
+      ],
+      "emittedFileChangePayloads": [
+        {
+          "id": "validation-edit-run:src/claude-edit.txt",
+          "runId": "validation-edit-run",
+          "path": "src/claude-edit.txt",
+          "type": "file",
+          "status": "pending",
+          "sourceTool": "edit_file",
+          "sourceInvocationId": "invoke-Edit",
+          "createdAt": "2026-05-03T04:09:18.347Z",
+          "updatedAt": "2026-05-03T04:09:18.347Z"
+        },
+        {
+          "id": "validation-edit-run:src/claude-edit.txt",
+          "runId": "validation-edit-run",
+          "path": "src/claude-edit.txt",
+          "type": "file",
+          "status": "available",
+          "sourceTool": "edit_file",
+          "sourceInvocationId": "invoke-Edit",
+          "createdAt": "2026-05-03T04:09:18.347Z",
+          "updatedAt": "2026-05-03T04:09:18.350Z"
+        }
+      ],
+      "projectionEntries": [
+        {
+          "id": "validation-edit-run:src/claude-edit.txt",
+          "runId": "validation-edit-run",
+          "path": "src/claude-edit.txt",
+          "type": "file",
+          "status": "available",
+          "sourceTool": "edit_file",
+          "sourceInvocationId": "invoke-Edit",
+          "createdAt": "2026-05-03T04:09:18.347Z",
+          "updatedAt": "2026-05-03T04:09:18.350Z"
+        }
+      ]
+    },
+    "MultiEdit": {
+      "activityEventTypes": [
+        "TOOL_EXECUTION_STARTED",
+        "TOOL_EXECUTION_SUCCEEDED"
+      ],
+      "emittedFileChangePayloads": [
+        {
+          "id": "validation-multiedit-run:src/claude-multiedit.txt",
+          "runId": "validation-multiedit-run",
+          "path": "src/claude-multiedit.txt",
+          "type": "file",
+          "status": "pending",
+          "sourceTool": "edit_file",
+          "sourceInvocationId": "invoke-MultiEdit",
+          "createdAt": "2026-05-03T04:09:18.356Z",
+          "updatedAt": "2026-05-03T04:09:18.356Z"
+        },
+        {
+          "id": "validation-multiedit-run:src/claude-multiedit.txt",
+          "runId": "validation-multiedit-run",
+          "path": "src/claude-multiedit.txt",
+          "type": "file",
+          "status": "available",
+          "sourceTool": "edit_file",
+          "sourceInvocationId": "invoke-MultiEdit",
+          "createdAt": "2026-05-03T04:09:18.356Z",
+          "updatedAt": "2026-05-03T04:09:18.359Z"
+        }
+      ],
+      "projectionEntries": [
+        {
+          "id": "validation-multiedit-run:src/claude-multiedit.txt",
+          "runId": "validation-multiedit-run",
+          "path": "src/claude-multiedit.txt",
+          "type": "file",
+          "status": "available",
+          "sourceTool": "edit_file",
+          "sourceInvocationId": "invoke-MultiEdit",
+          "createdAt": "2026-05-03T04:09:18.356Z",
+          "updatedAt": "2026-05-03T04:09:18.359Z"
+        }
+      ]
+    },
+    "NotebookEdit": {
+      "activityEventTypes": [
+        "TOOL_EXECUTION_STARTED",
+        "TOOL_EXECUTION_SUCCEEDED"
+      ],
+      "emittedFileChangePayloads": [
+        {
+          "id": "validation-notebookedit-run:notebooks/example.ipynb",
+          "runId": "validation-notebookedit-run",
+          "path": "notebooks/example.ipynb",
+          "type": "file",
+          "status": "pending",
+          "sourceTool": "edit_file",
+          "sourceInvocationId": "invoke-NotebookEdit",
+          "createdAt": "2026-05-03T04:09:18.364Z",
+          "updatedAt": "2026-05-03T04:09:18.364Z"
+        },
+        {
+          "id": "validation-notebookedit-run:notebooks/example.ipynb",
+          "runId": "validation-notebookedit-run",
+          "path": "notebooks/example.ipynb",
+          "type": "file",
+          "status": "available",
+          "sourceTool": "edit_file",
+          "sourceInvocationId": "invoke-NotebookEdit",
+          "createdAt": "2026-05-03T04:09:18.364Z",
+          "updatedAt": "2026-05-03T04:09:18.367Z"
+        }
+      ],
+      "projectionEntries": [
+        {
+          "id": "validation-notebookedit-run:notebooks/example.ipynb",
+          "runId": "validation-notebookedit-run",
+          "path": "notebooks/example.ipynb",
+          "type": "file",
+          "status": "available",
+          "sourceTool": "edit_file",
+          "sourceInvocationId": "invoke-NotebookEdit",
+          "createdAt": "2026-05-03T04:09:18.364Z",
+          "updatedAt": "2026-05-03T04:09:18.367Z"
+        }
+      ]
+    }
+  },
+  "generatedOutputs": {
+    "emittedFileChangePayloads": [
+      {
+        "id": "validation-generated-output-run:assets/from-output-file-path.png",
+        "runId": "validation-generated-output-run",
+        "path": "assets/from-output-file-path.png",
+        "type": "image",
+        "status": "available",
+        "sourceTool": "generated_output",
+        "sourceInvocationId": "image-1",
+        "createdAt": "2026-05-03T04:09:18.377Z",
+        "updatedAt": "2026-05-03T04:09:18.377Z"
+      },
+      {
+        "id": "validation-generated-output-run:reports/from-output-path.pdf",
+        "runId": "validation-generated-output-run",
+        "path": "reports/from-output-path.pdf",
+        "type": "pdf",
+        "status": "available",
+        "sourceTool": "generated_output",
+        "sourceInvocationId": "pdf-1",
+        "createdAt": "2026-05-03T04:09:18.380Z",
+        "updatedAt": "2026-05-03T04:09:18.380Z"
+      },
+      {
+        "id": "validation-generated-output-run:exports/from-destination.csv",
+        "runId": "validation-generated-output-run",
+        "path": "exports/from-destination.csv",
+        "type": "csv",
+        "status": "available",
+        "sourceTool": "generated_output",
+        "sourceInvocationId": "csv-1",
+        "createdAt": "2026-05-03T04:09:18.384Z",
+        "updatedAt": "2026-05-03T04:09:18.384Z"
+      },
+      {
+        "id": "validation-generated-output-run:media/from-url-local-path.mp3",
+        "runId": "validation-generated-output-run",
+        "path": "media/from-url-local-path.mp3",
+        "type": "audio",
+        "status": "available",
+        "sourceTool": "generated_output",
+        "sourceInvocationId": "audio-1",
+        "createdAt": "2026-05-03T04:09:18.388Z",
+        "updatedAt": "2026-05-03T04:09:18.388Z"
+      }
+    ],
+    "projectionEntries": [
+      {
+        "id": "validation-generated-output-run:assets/from-output-file-path.png",
+        "runId": "validation-generated-output-run",
+        "path": "assets/from-output-file-path.png",
+        "type": "image",
+        "status": "available",
+        "sourceTool": "generated_output",
+        "sourceInvocationId": "image-1",
+        "createdAt": "2026-05-03T04:09:18.377Z",
+        "updatedAt": "2026-05-03T04:09:18.377Z"
+      },
+      {
+        "id": "validation-generated-output-run:reports/from-output-path.pdf",
+        "runId": "validation-generated-output-run",
+        "path": "reports/from-output-path.pdf",
+        "type": "pdf",
+        "status": "available",
+        "sourceTool": "generated_output",
+        "sourceInvocationId": "pdf-1",
+        "createdAt": "2026-05-03T04:09:18.380Z",
+        "updatedAt": "2026-05-03T04:09:18.380Z"
+      },
+      {
+        "id": "validation-generated-output-run:exports/from-destination.csv",
+        "runId": "validation-generated-output-run",
+        "path": "exports/from-destination.csv",
+        "type": "csv",
+        "status": "available",
+        "sourceTool": "generated_output",
+        "sourceInvocationId": "csv-1",
+        "createdAt": "2026-05-03T04:09:18.384Z",
+        "updatedAt": "2026-05-03T04:09:18.384Z"
+      },
+      {
+        "id": "validation-generated-output-run:media/from-url-local-path.mp3",
+        "runId": "validation-generated-output-run",
+        "path": "media/from-url-local-path.mp3",
+        "type": "audio",
+        "status": "available",
+        "sourceTool": "generated_output",
+        "sourceInvocationId": "audio-1",
+        "createdAt": "2026-05-03T04:09:18.388Z",
+        "updatedAt": "2026-05-03T04:09:18.388Z"
+      }
+    ]
+  },
+  "genericFilePathOnly": {
+    "emittedFileChangeCount": 0,
+    "projectionEntries": []
+  }
+}

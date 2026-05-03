@@ -1,0 +1,197 @@
+[
+  {
+    "eventType": "TURN_STARTED",
+    "runId": "run-claude-backend-approved-f3e4575b-970b-4943-8e64-ba4f6f0c14aa",
+    "payload": {
+      "turnId": "run-claude-backend-approved-f3e4575b-970b-4943-8e64-ba4f6f0c14aa:turn:1777790882978"
+    },
+    "statusHint": "ACTIVE"
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "runId": "run-claude-backend-approved-f3e4575b-970b-4943-8e64-ba4f6f0c14aa",
+    "payload": {
+      "new_status": "RUNNING",
+      "old_status": null,
+      "turnId": "run-claude-backend-approved-f3e4575b-970b-4943-8e64-ba4f6f0c14aa:turn:1777790882978"
+    },
+    "statusHint": "ACTIVE"
+  },
+  {
+    "eventType": "SEGMENT_START",
+    "runId": "run-claude-backend-approved-f3e4575b-970b-4943-8e64-ba4f6f0c14aa",
+    "payload": {
+      "id": "call_00_qcRVF4TdopAC3cm7H9rS9199",
+      "turn_id": "run-claude-backend-approved-f3e4575b-970b-4943-8e64-ba4f6f0c14aa:turn:1777790882978",
+      "segment_type": "tool_call",
+      "tool_name": "Write",
+      "arguments": {
+        "file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-backend-approved-tool-YKUNfh/approved-write.txt",
+        "content": "first-6778045d-8115-4b81-a3c2-0fc1af7d5660\nsecond-c4e63d19-70e0-4571-a363-9af9fb21fffc"
+      },
+      "metadata": {
+        "tool_name": "Write",
+        "arguments": {
+          "file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-backend-approved-tool-YKUNfh/approved-write.txt",
+          "content": "first-6778045d-8115-4b81-a3c2-0fc1af7d5660\nsecond-c4e63d19-70e0-4571-a363-9af9fb21fffc"
+        }
+      }
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "TOOL_EXECUTION_STARTED",
+    "runId": "run-claude-backend-approved-f3e4575b-970b-4943-8e64-ba4f6f0c14aa",
+    "payload": {
+      "invocation_id": "call_00_qcRVF4TdopAC3cm7H9rS9199",
+      "tool_name": "Write",
+      "turn_id": "run-claude-backend-approved-f3e4575b-970b-4943-8e64-ba4f6f0c14aa:turn:1777790882978",
+      "arguments": {
+        "file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-backend-approved-tool-YKUNfh/approved-write.txt",
+        "content": "first-6778045d-8115-4b81-a3c2-0fc1af7d5660\nsecond-c4e63d19-70e0-4571-a363-9af9fb21fffc"
+      }
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "FILE_CHANGE",
+    "runId": "run-claude-backend-approved-f3e4575b-970b-4943-8e64-ba4f6f0c14aa",
+    "payload": {
+      "id": "run-claude-backend-approved-f3e4575b-970b-4943-8e64-ba4f6f0c14aa:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-backend-approved-tool-YKUNfh/approved-write.txt",
+      "runId": "run-claude-backend-approved-f3e4575b-970b-4943-8e64-ba4f6f0c14aa",
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-backend-approved-tool-YKUNfh/approved-write.txt",
+      "type": "file",
+      "status": "pending",
+      "sourceTool": "write_file",
+      "sourceInvocationId": "call_00_qcRVF4TdopAC3cm7H9rS9199",
+      "createdAt": "2026-05-03T06:48:06.720Z",
+      "updatedAt": "2026-05-03T06:48:06.720Z"
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "TOOL_APPROVAL_REQUESTED",
+    "runId": "run-claude-backend-approved-f3e4575b-970b-4943-8e64-ba4f6f0c14aa",
+    "payload": {
+      "invocation_id": "call_00_qcRVF4TdopAC3cm7H9rS9199",
+      "tool_name": "Write",
+      "turn_id": "run-claude-backend-approved-f3e4575b-970b-4943-8e64-ba4f6f0c14aa:turn:1777790882978",
+      "arguments": {
+        "file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-backend-approved-tool-YKUNfh/approved-write.txt",
+        "content": "first-6778045d-8115-4b81-a3c2-0fc1af7d5660\nsecond-c4e63d19-70e0-4571-a363-9af9fb21fffc"
+      }
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "TOOL_APPROVED",
+    "runId": "run-claude-backend-approved-f3e4575b-970b-4943-8e64-ba4f6f0c14aa",
+    "payload": {
+      "invocation_id": "call_00_qcRVF4TdopAC3cm7H9rS9199",
+      "tool_name": "Write",
+      "turn_id": "run-claude-backend-approved-f3e4575b-970b-4943-8e64-ba4f6f0c14aa:turn:1777790882978",
+      "arguments": {
+        "file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-backend-approved-tool-YKUNfh/approved-write.txt",
+        "content": "first-6778045d-8115-4b81-a3c2-0fc1af7d5660\nsecond-c4e63d19-70e0-4571-a363-9af9fb21fffc"
+      },
+      "reason": "approved by backend integration test"
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "SEGMENT_END",
+    "runId": "run-claude-backend-approved-f3e4575b-970b-4943-8e64-ba4f6f0c14aa",
+    "payload": {
+      "id": "call_00_qcRVF4TdopAC3cm7H9rS9199",
+      "turn_id": "run-claude-backend-approved-f3e4575b-970b-4943-8e64-ba4f6f0c14aa:turn:1777790882978",
+      "segment_type": "tool_call",
+      "tool_name": "Write",
+      "arguments": {
+        "file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-backend-approved-tool-YKUNfh/approved-write.txt",
+        "content": "first-6778045d-8115-4b81-a3c2-0fc1af7d5660\nsecond-c4e63d19-70e0-4571-a363-9af9fb21fffc"
+      },
+      "metadata": {
+        "tool_name": "Write",
+        "arguments": {
+          "file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-backend-approved-tool-YKUNfh/approved-write.txt",
+          "content": "first-6778045d-8115-4b81-a3c2-0fc1af7d5660\nsecond-c4e63d19-70e0-4571-a363-9af9fb21fffc"
+        },
+        "result": "File created successfully at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-backend-approved-tool-YKUNfh/approved-write.txt"
+      }
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "TOOL_EXECUTION_SUCCEEDED",
+    "runId": "run-claude-backend-approved-f3e4575b-970b-4943-8e64-ba4f6f0c14aa",
+    "payload": {
+      "invocation_id": "call_00_qcRVF4TdopAC3cm7H9rS9199",
+      "tool_name": "Write",
+      "turn_id": "run-claude-backend-approved-f3e4575b-970b-4943-8e64-ba4f6f0c14aa:turn:1777790882978",
+      "arguments": {
+        "file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-backend-approved-tool-YKUNfh/approved-write.txt",
+        "content": "first-6778045d-8115-4b81-a3c2-0fc1af7d5660\nsecond-c4e63d19-70e0-4571-a363-9af9fb21fffc"
+      },
+      "result": "File created successfully at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-backend-approved-tool-YKUNfh/approved-write.txt"
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "FILE_CHANGE",
+    "runId": "run-claude-backend-approved-f3e4575b-970b-4943-8e64-ba4f6f0c14aa",
+    "payload": {
+      "id": "run-claude-backend-approved-f3e4575b-970b-4943-8e64-ba4f6f0c14aa:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-backend-approved-tool-YKUNfh/approved-write.txt",
+      "runId": "run-claude-backend-approved-f3e4575b-970b-4943-8e64-ba4f6f0c14aa",
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-backend-approved-tool-YKUNfh/approved-write.txt",
+      "type": "file",
+      "status": "available",
+      "sourceTool": "write_file",
+      "sourceInvocationId": "call_00_qcRVF4TdopAC3cm7H9rS9199",
+      "createdAt": "2026-05-03T06:48:06.828Z",
+      "updatedAt": "2026-05-03T06:48:06.828Z"
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "SEGMENT_CONTENT",
+    "runId": "run-claude-backend-approved-f3e4575b-970b-4943-8e64-ba4f6f0c14aa",
+    "payload": {
+      "id": "run-claude-backend-approved-f3e4575b-970b-4943-8e64-ba4f6f0c14aa:turn:1777790882978",
+      "turnId": "run-claude-backend-approved-f3e4575b-970b-4943-8e64-ba4f6f0c14aa:turn:1777790882978",
+      "sessionId": "59470921-03ed-48e7-99a1-35f5d3478136",
+      "delta": "DONE",
+      "segment_type": "text"
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "SEGMENT_END",
+    "runId": "run-claude-backend-approved-f3e4575b-970b-4943-8e64-ba4f6f0c14aa",
+    "payload": {
+      "id": "run-claude-backend-approved-f3e4575b-970b-4943-8e64-ba4f6f0c14aa:turn:1777790882978",
+      "turnId": "run-claude-backend-approved-f3e4575b-970b-4943-8e64-ba4f6f0c14aa:turn:1777790882978",
+      "sessionId": "59470921-03ed-48e7-99a1-35f5d3478136",
+      "text": "DONE",
+      "segment_type": "text"
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "TURN_COMPLETED",
+    "runId": "run-claude-backend-approved-f3e4575b-970b-4943-8e64-ba4f6f0c14aa",
+    "payload": {
+      "turnId": "run-claude-backend-approved-f3e4575b-970b-4943-8e64-ba4f6f0c14aa:turn:1777790882978"
+    },
+    "statusHint": "IDLE"
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "runId": "run-claude-backend-approved-f3e4575b-970b-4943-8e64-ba4f6f0c14aa",
+    "payload": {
+      "new_status": "IDLE",
+      "old_status": "RUNNING",
+      "turnId": "run-claude-backend-approved-f3e4575b-970b-4943-8e64-ba4f6f0c14aa:turn:1777790882978"
+    },
+    "statusHint": "IDLE"
+  }
+]

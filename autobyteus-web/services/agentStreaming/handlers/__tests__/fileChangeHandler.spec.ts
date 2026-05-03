@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
-import { handleFileChangeUpdated } from '../fileChangeHandler';
+import { handleFileChange } from '../fileChangeHandler';
 import { useRunFileChangesStore } from '~/stores/runFileChangesStore';
 import type { AgentContext } from '~/types/agent/AgentContext';
 
@@ -13,7 +13,7 @@ describe('fileChangeHandler', () => {
   });
 
   it('upserts live file-change payloads into the dedicated store', () => {
-    handleFileChangeUpdated(
+    handleFileChange(
       {
         id: 'agent-1:src/test.md',
         runId: 'agent-1',
@@ -40,7 +40,7 @@ describe('fileChangeHandler', () => {
   });
 
   it('preserves missing transient content as undefined', () => {
-    handleFileChangeUpdated(
+    handleFileChange(
       {
         id: 'agent-1:assets/image.png',
         runId: 'agent-1',

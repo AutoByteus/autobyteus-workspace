@@ -1,0 +1,206 @@
+{
+  "generatedAt": "2026-05-03T06:54:49.296Z",
+  "liveRuntimeEnv": {
+    "claudeCli": "2.1.126 (Claude Code)",
+    "codexCli": "0.128.0",
+    "lmStudioHost": "loaded from .env.test without secret values"
+  },
+  "logs": {
+    "claudeWrite": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/done/claude-read-artifacts/validation/live-runtime/logs/claude-live-write.log",
+    "claudeRead": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/done/claude-read-artifacts/validation/live-runtime/logs/claude-live-read-no-file-change.log",
+    "codexEdit": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/done/claude-read-artifacts/validation/live-runtime/logs/codex-live-filechange.log",
+    "autobyteusWriteInitialFailedHarness": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/done/claude-read-artifacts/validation/live-runtime/logs/autobyteus-live-autoexec-write-file.log",
+    "autobyteusWriteRerun": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/done/claude-read-artifacts/validation/live-runtime/logs/autobyteus-live-autoexec-write-file-rerun.log"
+  },
+  "eventLogs": {
+    "claudeWrite": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/done/claude-read-artifacts/validation/live-runtime/events/claude/claude-backend-approved-tool.json",
+    "claudeRead": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/done/claude-read-artifacts/validation/live-runtime/events/claude/claude-live-read-no-file-change.json",
+    "codexEdit": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/done/claude-read-artifacts/validation/live-runtime/events/codex/codex-backend-edit-file.json",
+    "autobyteusWrite": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/done/claude-read-artifacts/validation/live-runtime/events/autobyteus/autobyteus-live-autoexec-write-file.json"
+  },
+  "results": {
+    "claudeWrite": {
+      "eventCount": 14,
+      "eventTypes": [
+        "TURN_STARTED",
+        "AGENT_STATUS",
+        "SEGMENT_START",
+        "TOOL_EXECUTION_STARTED",
+        "FILE_CHANGE",
+        "TOOL_APPROVAL_REQUESTED",
+        "TOOL_APPROVED",
+        "SEGMENT_END",
+        "TOOL_EXECUTION_SUCCEEDED",
+        "SEGMENT_CONTENT",
+        "TURN_COMPLETED"
+      ],
+      "fileChangeCount": 2,
+      "fileChanges": [
+        {
+          "status": "pending",
+          "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-backend-approved-tool-YKUNfh/approved-write.txt",
+          "sourceTool": "write_file",
+          "contentLength": null
+        },
+        {
+          "status": "available",
+          "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-backend-approved-tool-YKUNfh/approved-write.txt",
+          "sourceTool": "write_file",
+          "contentLength": null
+        }
+      ],
+      "toolEvents": [
+        {
+          "eventType": "TOOL_EXECUTION_STARTED",
+          "toolName": "Write"
+        },
+        {
+          "eventType": "TOOL_APPROVAL_REQUESTED",
+          "toolName": "Write"
+        },
+        {
+          "eventType": "TOOL_APPROVED",
+          "toolName": "Write"
+        },
+        {
+          "eventType": "TOOL_EXECUTION_SUCCEEDED",
+          "toolName": "Write"
+        }
+      ]
+    },
+    "claudeRead": {
+      "eventCount": 10,
+      "eventTypes": [
+        "TURN_STARTED",
+        "AGENT_STATUS",
+        "SEGMENT_START",
+        "TOOL_EXECUTION_STARTED",
+        "SEGMENT_END",
+        "TOOL_EXECUTION_SUCCEEDED",
+        "SEGMENT_CONTENT",
+        "TURN_COMPLETED"
+      ],
+      "fileChangeCount": 0,
+      "fileChanges": [],
+      "toolEvents": [
+        {
+          "eventType": "TOOL_EXECUTION_STARTED",
+          "toolName": "Read"
+        },
+        {
+          "eventType": "TOOL_EXECUTION_SUCCEEDED",
+          "toolName": "Read"
+        }
+      ]
+    },
+    "codexEdit": {
+      "eventCount": 18,
+      "eventTypes": [
+        "AGENT_STATUS",
+        "TURN_STARTED",
+        "SEGMENT_CONTENT",
+        "SEGMENT_START",
+        "TOOL_EXECUTION_STARTED",
+        "FILE_CHANGE",
+        "TOOL_LOG",
+        "TOOL_EXECUTION_SUCCEEDED",
+        "SEGMENT_END",
+        "TURN_COMPLETED"
+      ],
+      "fileChangeCount": 3,
+      "fileChanges": [
+        {
+          "status": "pending",
+          "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-backend-edit-file-ftd8KF/codex_backend_edit_1ec6bfe6_47b4_4bc6_a6f7_2ccadd92ffba.py",
+          "sourceTool": "edit_file",
+          "contentLength": null
+        },
+        {
+          "status": "pending",
+          "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-backend-edit-file-ftd8KF/codex_backend_edit_1ec6bfe6_47b4_4bc6_a6f7_2ccadd92ffba.py",
+          "sourceTool": "edit_file",
+          "contentLength": null
+        },
+        {
+          "status": "available",
+          "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-backend-edit-file-ftd8KF/codex_backend_edit_1ec6bfe6_47b4_4bc6_a6f7_2ccadd92ffba.py",
+          "sourceTool": "edit_file",
+          "contentLength": null
+        }
+      ],
+      "toolEvents": [
+        {
+          "eventType": "TOOL_EXECUTION_STARTED",
+          "toolName": "edit_file"
+        },
+        {
+          "eventType": "TOOL_LOG",
+          "toolName": "edit_file"
+        },
+        {
+          "eventType": "TOOL_EXECUTION_SUCCEEDED",
+          "toolName": "edit_file"
+        }
+      ]
+    },
+    "autobyteusWrite": {
+      "eventCount": 235,
+      "eventTypes": [
+        "AGENT_STATUS",
+        "TURN_STARTED",
+        "SEGMENT_START",
+        "SEGMENT_CONTENT",
+        "FILE_CHANGE",
+        "SEGMENT_END",
+        "ASSISTANT_COMPLETE",
+        "TOOL_EXECUTION_STARTED",
+        "TOOL_LOG",
+        "TOOL_EXECUTION_SUCCEEDED",
+        "TURN_COMPLETED"
+      ],
+      "fileChangeCount": 2,
+      "fileChanges": [
+        {
+          "status": "streaming",
+          "path": "auto-exec-flow-test.txt",
+          "sourceTool": "write_file",
+          "contentLength": 0
+        },
+        {
+          "status": "available",
+          "path": "auto-exec-flow-test.txt",
+          "sourceTool": "write_file",
+          "contentLength": 0
+        }
+      ],
+      "toolEvents": [
+        {
+          "eventType": "TOOL_EXECUTION_STARTED",
+          "toolName": "write_file"
+        },
+        {
+          "eventType": "TOOL_LOG",
+          "toolName": "write_file"
+        },
+        {
+          "eventType": "TOOL_LOG",
+          "toolName": "write_file"
+        },
+        {
+          "eventType": "TOOL_LOG",
+          "toolName": "write_file"
+        },
+        {
+          "eventType": "TOOL_EXECUTION_SUCCEEDED",
+          "toolName": "write_file"
+        }
+      ]
+    }
+  },
+  "notes": [
+    "Claude Read live SDK turn emitted Read lifecycle events and zero FILE_CHANGE events.",
+    "Claude Write live SDK turn emitted pending and available FILE_CHANGE events.",
+    "Codex live app-server edit_file turn emitted duplicate idempotent pending FILE_CHANGE events and one available FILE_CHANGE event.",
+    "AutoByteus live LM Studio write_file turn emitted streaming and available FILE_CHANGE events; initial temp assertion expected pending and was corrected to accept the live streaming state before rerun."
+  ]
+}
