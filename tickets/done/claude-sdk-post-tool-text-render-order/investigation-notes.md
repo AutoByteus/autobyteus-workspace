@@ -22,7 +22,7 @@ The user provided screenshots showing a single agent run using Claude Agent SDK.
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order
-- Task Artifact Folder: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/claude-sdk-post-tool-text-render-order
+- Task Artifact Folder: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order
 - Current Branch: codex/claude-sdk-post-tool-text-render-order
 - Current Worktree / Working Directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order
 - Bootstrap Base Branch: origin/personal

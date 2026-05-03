@@ -2,11 +2,11 @@
 
 ## Release / Publication / Deployment Scope
 
-No release, publication, deployment, version bump, or tag is currently in scope. This delivery pass refreshed the ticket branch against the latest tracked base, protected the reviewed/validated candidate with a local checkpoint commit, merged the advanced base into the ticket branch, reran focused post-integration checks, synced long-lived docs, and prepared the handoff state for user verification. Repository finalization remains blocked until explicit user completion/verification is received.
+A new patch release is now in scope after user verification. This delivery pass refreshed the ticket branch against the latest tracked base, protected the reviewed/validated candidate with a local checkpoint commit, merged the advanced base into the ticket branch, reran focused post-integration checks, synced long-lived docs, built the local Electron artifact for testing, and is finalizing the verified ticket for release `v1.2.93`.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/claude-sdk-post-tool-text-render-order/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Notes: The handoff records delivered behavior, latest-base integration refresh, checkpoint/merge commits, post-integration validation evidence, docs sync, residual scope, and user verification instructions.
 
@@ -24,7 +24,7 @@ No release, publication, deployment, version bump, or tag is currently in scope.
 - No-rerun rationale (only if no new base commits were integrated): `N/A`
 - Delivery edits started only after integrated state was current: `Yes for the final handoff state; a later remote advancement was detected before handoff, so delivery-owned edits were protected in the checkpoint and refreshed after merging the latest base.`
 - Handoff state current with latest tracked remote base: `Yes`
-- Blocker (if applicable): `Repository finalization is intentionally blocked pending explicit user verification.`
+- Blocker (if applicable): `None; user verification received and finalization/release is in progress.`
 
 Refresh evidence:
 
@@ -43,15 +43,15 @@ Refresh evidence:
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `No`
-- Initial verification reference: `Pending user verification of the local Claude Agent SDK text/tool/text rendering behavior on the integrated branch state.`
+- Initial explicit user completion/verification received: `Yes`
+- Initial verification reference: User confirmed on 2026-05-03: "i tested it works. lets finalize the ticket and release a new version."
 - Renewed verification required after later re-integration: `No`
 - Renewed verification received: `Not needed`
 - Renewed verification reference: `N/A`
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/claude-sdk-post-tool-text-render-order/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated:
   - `autobyteus-server-ts/docs/modules/agent_execution.md`
@@ -61,45 +61,45 @@ Refresh evidence:
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/<ticket-name>`: `No`
-- Archived ticket path: `N/A; ticket remains at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/claude-sdk-post-tool-text-render-order until explicit user verification.`
+- Ticket moved to `tickets/done/<ticket-name>`: `Yes`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order`
 
 ## Version / Tag / Release Commit
 
-No version bump, tag, or release commit is required before user verification. If the user later requests a release, use the repository release workflow documented in `README.md` and create/update release notes as part of that release path.
+User requested a new release after verification. Planned release version: `v1.2.93`. Release notes artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/release-notes.md`.
 
 ## Repository Finalization
 
-- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/claude-sdk-post-tool-text-render-order/investigation-notes.md`
+- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/investigation-notes.md`
 - Ticket branch: `codex/claude-sdk-post-tool-text-render-order`
-- Ticket branch commit result: `Pre-verification checkpoint and integration merge completed; final ticket archival/finalization commit is blocked pending user verification.`
-- Ticket branch push result: `Blocked pending user verification`
+- Ticket branch commit result: `In progress`; pre-verification checkpoint and integration merge completed, user verification received, ticket archived to `tickets/done`.
+- Ticket branch push result: `Pending`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after user verification: `N/A; verification not yet received`
+- Target advanced after user verification: `No`
 - Delivery-owned edits protected before re-integration: `Completed` via checkpoint commit `807c0d0dde5f9126d48df72f20f613aaa787b090`
 - Re-integration before final merge result: `Completed` via merge commit `b3cb799de173170fb299a89b023efaf69692c81c`
-- Target branch update result: `Blocked pending user verification`
-- Merge into target result: `Blocked pending user verification`
-- Push target branch result: `Blocked pending user verification`
-- Repository finalization status: `Blocked`
-- Blocker (if applicable): `Awaiting explicit user completion/verification before archiving the ticket, pushing, merging into the finalization target, cleaning up, or releasing.`
+- Target branch update result: `Pending`
+- Merge into target result: `Pending`
+- Push target branch result: `Pending`
+- Repository finalization status: `In progress`
+- Blocker (if applicable): `None currently; user verification received and finalization is in progress.`
 
 ## Release / Publication / Deployment
 
-- Applicable: `No`
-- Method: `Other`
-- Method reference / command: `N/A before user verification; documented release helper is pnpm release <version> -- --release-notes tickets/done/<ticket-name>/release-notes.md if a release is later requested.`
-- Release/publication/deployment result: `Not required`
-- Release notes handoff result: `Not required`
-- Blocker (if applicable): `N/A; no release/deployment currently in scope.`
+- Applicable: `Yes`
+- Method: `Documented Command`
+- Method reference / command: `pnpm release 1.2.93 -- --release-notes tickets/done/claude-sdk-post-tool-text-render-order/release-notes.md`
+- Release/publication/deployment result: `Pending`
+- Release notes handoff result: `Pending`
+- Blocker (if applicable): `None currently`
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order`
-- Worktree cleanup result: `Blocked pending user verification and repository finalization`
-- Worktree prune result: `Blocked pending user verification and repository finalization`
-- Local ticket branch cleanup result: `Blocked pending user verification and repository finalization`
+- Worktree cleanup result: `Pending repository finalization and release`
+- Worktree prune result: `Pending repository finalization and release`
+- Local ticket branch cleanup result: `Pending repository finalization and release`
 - Remote branch cleanup result: `Not required before finalization`
 - Blocker (if applicable): `Cleanup is intentionally deferred until the finalization target safely contains the ticket changes.`
 
@@ -107,13 +107,13 @@ No version bump, tag, or release commit is required before user verification. If
 
 - Classification: `N/A`
 - Recommended recipient: `N/A`
-- Why final handoff could not complete: `N/A for delivery handoff; final repository finalization is waiting on required user verification, not a code/design blocker.`
+- Why final handoff could not complete: `N/A; user verification has been received and finalization/release is in progress without a code/design blocker.`
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification: `No`
-- Archived release notes artifact used for release/publication: `N/A`
-- Release notes status: `Not required`
+- Release notes artifact created before verification: `No`; release was requested after verification.
+- Archived release notes artifact used for release/publication: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/release-notes.md`
+- Release notes status: `Updated`
 
 ## Deployment Steps
 
@@ -126,16 +126,18 @@ No version bump, tag, or release commit is required before user verification. If
 7. Updated durable docs for runtime segment identity/order, single-agent/team streaming forwarding, and frontend segment handler identity coalescing.
 8. Wrote/updated the docs sync report, handoff summary, and this delivery/release report against the integrated branch state.
 9. Read `autobyteus-web/README.md` Electron build instructions and ran a local macOS ARM64 personal Electron build for user verification.
-10. Recorded build evidence in `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/claude-sdk-post-tool-text-render-order/electron-test-build-report.md`.
+10. Recorded build evidence in `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/electron-test-build-report.md`.
 11. Ran `git diff --check` after delivery-owned docs/artifact edits; it passed.
-12. Holding for explicit user verification before ticket archival, push, target merge, release/deployment, and cleanup.
+12. Received explicit user verification and release request.
+13. Created release notes and moved the ticket folder to `tickets/done/claude-sdk-post-tool-text-render-order/`.
+14. Continuing with ticket-branch push, merge into `personal`, and release `v1.2.93`.
 
 ## Local Electron Test Build
 
 - Applicable for user verification: `Yes`
 - Command: `AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm -C autobyteus-web build:electron:mac -- --arm64`
 - Result: `Passed`
-- Build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/claude-sdk-post-tool-text-render-order/electron-test-build-report.md`
+- Build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/electron-test-build-report.md`
 - DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.92.dmg`
 - ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.92.zip`
 - Signing/notarization: local unsigned build; no notarization/timestamping.
@@ -183,4 +185,4 @@ Do not finalize/merge if user verification shows Claude Agent SDK post-tool assi
 
 ## Final Status
 
-`Ready for user verification — the ticket branch is integrated with latest origin/personal, focused post-integration checks passed, and delivery docs/artifacts are prepared; repository finalization, cleanup, and any release/deployment remain blocked until explicit user completion/verification is received.`
+`Finalization in progress — user verification received, ticket archived, and release v1.2.93 requested.`

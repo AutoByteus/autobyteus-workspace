@@ -1,9 +1,9 @@
 {
   "runId": "run-claude-memory-trace-probe-0386fd96-7f93-4e81-bbb8-195f8b23fc42",
   "workspaceRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-memory-trace-probe-LzrHkd",
-  "memoryRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/claude-sdk-post-tool-text-render-order/live-probe/memory-traces",
-  "runMemoryDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/claude-sdk-post-tool-text-render-order/live-probe/memory-traces",
-  "rawTracePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/claude-sdk-post-tool-text-render-order/live-probe/memory-traces/raw_traces.jsonl",
+  "memoryRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/memory-traces",
+  "runMemoryDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/memory-traces",
+  "rawTracePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/memory-traces/raw_traces.jsonl",
   "preToken": "MEM_PRE_5e4a758d_b5a2_49e9_befd_5cd098c34e7a",
   "postToken": "MEM_POST_8760ad56_ff2c_4b5e_abfc_ca0ae05b30bc",
   "interestingTraceTypes": [
