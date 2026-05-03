@@ -376,6 +376,70 @@ describe('segmentHandler', () => {
       expect(aiMessage.segments[1].type).toBe('terminal_command');
       expect(aiMessage.segments[1].command).toBe('echo shared');
     });
+
+    it('preserves text-tool-text order when text segment ids differ around a tool', () => {
+      handleSegmentContent(
+        {
+          id: 'turn-1:claude-text:msg-pre:0',
+          turn_id: 'turn-1',
+          delta: 'Pre-tool answer. ',
+          segment_type: 'text',
+        },
+        mockContext,
+      );
+      handleSegmentEnd(
+        {
+          id: 'turn-1:claude-text:msg-pre:0',
+          turn_id: 'turn-1',
+        },
+        mockContext,
+      );
+
+      handleSegmentStart(
+        {
+          id: 'tool-bash-1',
+          turn_id: 'turn-1',
+          segment_type: 'tool_call',
+          metadata: {
+            tool_name: 'Bash',
+            arguments: { command: 'pwd' },
+          },
+        },
+        mockContext,
+      );
+      handleSegmentEnd(
+        {
+          id: 'tool-bash-1',
+          turn_id: 'turn-1',
+          metadata: {
+            tool_name: 'Bash',
+            arguments: { command: 'pwd' },
+            result: '/tmp/project',
+          },
+        },
+        mockContext,
+      );
+
+      handleSegmentContent(
+        {
+          id: 'turn-1:claude-text:msg-post:0',
+          turn_id: 'turn-1',
+          delta: 'Post-tool answer.',
+          segment_type: 'text',
+        },
+        mockContext,
+      );
+
+      const aiMessage = mockContext.conversation.messages[0] as any;
+      expect(aiMessage.segments.map((segment: any) => segment.type)).toEqual([
+        'text',
+        'tool_call',
+        'text',
+      ]);
+      expect(aiMessage.segments[0].content).toBe('Pre-tool answer. ');
+      expect(aiMessage.segments[1].toolName).toBe('Bash');
+      expect(aiMessage.segments[2].content).toBe('Post-tool answer.');
+    });
   });
 
   describe('handleSegmentEnd', () => {

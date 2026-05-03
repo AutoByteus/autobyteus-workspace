@@ -36,6 +36,16 @@ const createResultQuery = (): ClaudeSdkQueryLike => ({
   close: vi.fn(() => undefined),
 });
 
+const createQueryFromChunks = (chunks: unknown[]): ClaudeSdkQueryLike => ({
+  async *[Symbol.asyncIterator]() {
+    for (const chunk of chunks) {
+      yield chunk;
+    }
+  },
+  interrupt: vi.fn(async () => undefined),
+  close: vi.fn(() => undefined),
+});
+
 const createManuallySettledQuery = (): {
   query: ClaudeSdkQueryLike;
   release: () => void;
@@ -68,7 +78,12 @@ const createSession = (input: {
   });
   const terminateRunSession = vi.fn(async () => undefined);
   const clearPendingToolApprovals = vi.fn();
-  const toolingCoordinator = new ClaudeSessionToolUseCoordinator(new Map(), new Map(), () => {});
+  let sessionRef: ClaudeSession | null = null;
+  const toolingCoordinator = new ClaudeSessionToolUseCoordinator(
+    new Map(),
+    new Map(),
+    (_runContext, event) => sessionRef?.emitRuntimeEvent(event),
+  );
   toolingCoordinator.clearPendingToolApprovals = clearPendingToolApprovals;
   const activeQueriesByRunId = new Map<string, ClaudeSdkQueryLike>();
 
@@ -108,6 +123,7 @@ const createSession = (input: {
       terminateRunSession,
     },
   });
+  sessionRef = session;
 
   return {
     session,
@@ -263,5 +279,253 @@ describe("ClaudeSession", () => {
         createdAt: 1,
       },
     ]);
+  });
+
+  it("emits provider-derived text segment ids and preserves text-tool-text order", async () => {
+    const chunks = [
+      {
+        type: "assistant",
+        session_id: "claude-session-1",
+        uuid: "assistant-wrapper-pre",
+        message: {
+          id: "msg-pre",
+          role: "assistant",
+          content: [
+            {
+              type: "text",
+              text: "I will inspect the workspace first.",
+            },
+            {
+              type: "tool_use",
+              id: "tool-bash-1",
+              name: "Bash",
+              input: { command: "pwd" },
+            },
+          ],
+        },
+      },
+      {
+        type: "user",
+        session_id: "claude-session-1",
+        uuid: "user-wrapper-tool-result",
+        message: {
+          role: "user",
+          content: [
+            {
+              type: "tool_result",
+              tool_use_id: "tool-bash-1",
+              content: "/tmp/project",
+              is_error: false,
+            },
+          ],
+        },
+      },
+      {
+        type: "assistant",
+        session_id: "claude-session-1",
+        uuid: "assistant-wrapper-post",
+        message: {
+          id: "msg-post",
+          role: "assistant",
+          content: [
+            {
+              type: "text",
+              text: "The workspace is /tmp/project.",
+            },
+          ],
+        },
+      },
+      {
+        type: "result",
+        session_id: "claude-session-1",
+        uuid: "result-wrapper",
+        result: "The workspace is /tmp/project.",
+      },
+    ];
+    const { session, sessionMessageCache } = createSession({
+      query: createQueryFromChunks(chunks),
+    });
+    const events: Array<{ method: string; params?: Record<string, unknown> }> = [];
+    session.subscribeRuntimeEvents((event) => {
+      events.push(event);
+    });
+
+    const { turnId } = await session.sendTurn(new AgentInputUserMessage("where am I?"));
+    const activeTurnId = turnId ?? "";
+    await waitFor(
+      () => events.some((event) => event.method === ClaudeSessionEventName.TURN_COMPLETED),
+      "Claude turn completion",
+    );
+
+    const textDeltas = events.filter(
+      (event) => event.method === ClaudeSessionEventName.ITEM_OUTPUT_TEXT_DELTA,
+    );
+    const textCompletions = events.filter(
+      (event) => event.method === ClaudeSessionEventName.ITEM_OUTPUT_TEXT_COMPLETED,
+    );
+    const preTextId = `${activeTurnId}:claude-text:msg-pre:0`;
+    const postTextId = `${activeTurnId}:claude-text:msg-post:0`;
+
+    expect(textDeltas.map((event) => event.params?.id)).toEqual([preTextId, postTextId]);
+    expect(textDeltas.every((event) => event.params?.id !== activeTurnId)).toBe(true);
+    expect(textDeltas.map((event) => event.params?.delta)).toEqual([
+      "I will inspect the workspace first.",
+      "The workspace is /tmp/project.",
+    ]);
+    expect(textCompletions.map((event) => event.params?.id)).toEqual([preTextId, postTextId]);
+    expect(textCompletions.map((event) => event.params?.text)).toEqual([
+      "I will inspect the workspace first.",
+      "The workspace is /tmp/project.",
+    ]);
+
+    const preTextIndex = events.findIndex(
+      (event) =>
+        event.method === ClaudeSessionEventName.ITEM_OUTPUT_TEXT_DELTA &&
+        event.params?.id === preTextId,
+    );
+    const toolStartIndex = events.findIndex(
+      (event) =>
+        event.method === ClaudeSessionEventName.ITEM_ADDED &&
+        event.params?.id === "tool-bash-1",
+    );
+    const toolEndIndex = events.findIndex(
+      (event) =>
+        event.method === ClaudeSessionEventName.ITEM_COMPLETED &&
+        event.params?.id === "tool-bash-1",
+    );
+    const postTextIndex = events.findIndex(
+      (event) =>
+        event.method === ClaudeSessionEventName.ITEM_OUTPUT_TEXT_DELTA &&
+        event.params?.id === postTextId,
+    );
+    expect(preTextIndex).toBeGreaterThanOrEqual(0);
+    expect(toolStartIndex).toBeGreaterThan(preTextIndex);
+    expect(toolEndIndex).toBeGreaterThan(toolStartIndex);
+    expect(postTextIndex).toBeGreaterThan(toolEndIndex);
+
+    expect(sessionMessageCache.getCachedMessages("claude-session-1")).toEqual([
+      expect.objectContaining({
+        role: "user",
+        content: "where am I?",
+      }),
+      expect.objectContaining({
+        role: "assistant",
+        content: "I will inspect the workspace first.The workspace is /tmp/project.",
+      }),
+    ]);
+  });
+
+  it("coalesces partial stream_event text deltas by message and content block", async () => {
+    const chunks = [
+      {
+        type: "stream_event",
+        session_id: "claude-session-1",
+        uuid: "partial-wrapper-start",
+        event: {
+          type: "message_start",
+          message: {
+            id: "msg-partial",
+            role: "assistant",
+            content: [],
+          },
+        },
+      },
+      {
+        type: "stream_event",
+        session_id: "claude-session-1",
+        uuid: "partial-wrapper-block-start",
+        event: {
+          type: "content_block_start",
+          index: 0,
+          content_block: {
+            type: "text",
+            text: "",
+          },
+        },
+      },
+      {
+        type: "stream_event",
+        session_id: "claude-session-1",
+        uuid: "partial-wrapper-delta-1",
+        event: {
+          type: "content_block_delta",
+          index: 0,
+          delta: {
+            type: "text_delta",
+            text: "Hel",
+          },
+        },
+      },
+      {
+        type: "stream_event",
+        session_id: "claude-session-1",
+        uuid: "partial-wrapper-delta-2",
+        event: {
+          type: "content_block_delta",
+          index: 0,
+          delta: {
+            type: "text_delta",
+            text: "lo",
+          },
+        },
+      },
+      {
+        type: "stream_event",
+        session_id: "claude-session-1",
+        uuid: "partial-wrapper-block-stop",
+        event: {
+          type: "content_block_stop",
+          index: 0,
+        },
+      },
+      {
+        type: "stream_event",
+        session_id: "claude-session-1",
+        uuid: "partial-wrapper-message-stop",
+        event: {
+          type: "message_stop",
+        },
+      },
+      {
+        type: "result",
+        session_id: "claude-session-1",
+        uuid: "partial-result-wrapper",
+        result: "Hello",
+      },
+    ];
+    const { session } = createSession({
+      query: createQueryFromChunks(chunks),
+    });
+    const events: Array<{ method: string; params?: Record<string, unknown> }> = [];
+    session.subscribeRuntimeEvents((event) => {
+      events.push(event);
+    });
+
+    const { turnId } = await session.sendTurn(new AgentInputUserMessage("stream please"));
+    const activeTurnId = turnId ?? "";
+    await waitFor(
+      () => events.some((event) => event.method === ClaudeSessionEventName.TURN_COMPLETED),
+      "Claude partial turn completion",
+    );
+
+    const expectedTextId = `${activeTurnId}:claude-text:msg-partial:0`;
+    const textDeltas = events.filter(
+      (event) => event.method === ClaudeSessionEventName.ITEM_OUTPUT_TEXT_DELTA,
+    );
+    const textCompletions = events.filter(
+      (event) => event.method === ClaudeSessionEventName.ITEM_OUTPUT_TEXT_COMPLETED,
+    );
+
+    expect(textDeltas.map((event) => event.params?.id)).toEqual([
+      expectedTextId,
+      expectedTextId,
+    ]);
+    expect(textDeltas.map((event) => event.params?.delta)).toEqual(["Hel", "lo"]);
+    expect(textCompletions).toHaveLength(1);
+    expect(textCompletions[0]?.params).toMatchObject({
+      id: expectedTextId,
+      text: "Hello",
+    });
+    expect(events.some((event) => event.params?.id === activeTurnId)).toBe(false);
   });
 });

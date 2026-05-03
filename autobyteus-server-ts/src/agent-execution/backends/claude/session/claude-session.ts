@@ -1,16 +1,15 @@
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import {
   logger,
+  asObject,
   asString,
   nowTimestampSeconds,
   type ClaudeSessionEvent,
 } from "../claude-runtime-shared.js";
-import { normalizeClaudeStreamChunk } from "../claude-runtime-message-normalizers.js";
+import { resolveClaudeStreamChunkSessionId } from "../claude-runtime-message-normalizers.js";
 import { ClaudeSessionEventName } from "../events/claude-session-event-name.js";
 import { logRawClaudeSessionChunkDetails } from "../events/claude-session-event-debug.js";
-import {
-  buildClaudeSessionMcpServers,
-} from "./build-claude-session-mcp-servers.js";
+import { buildClaudeSessionMcpServers } from "./build-claude-session-mcp-servers.js";
 import type { MemberTeamContext } from "../../../../agent-team-execution/domain/member-team-context.js";
 import type { ClaudeAgentRunContext, ClaudeRunContext } from "../backend/claude-agent-run-context.js";
 import { ClaudeSessionMessageCache } from "./claude-session-message-cache.js";
@@ -26,12 +25,9 @@ import { resolveClaudeSessionToolingOptions } from "./claude-session-tooling-opt
 import {
   buildClaudeProviderCompactionEvent,
   isClaudeTurnTerminalChunk,
-  resolveClaudeIncrementalDelta,
 } from "./claude-session-output-events.js";
-import type {
-  ClaudeSdkClient,
-  ClaudeSdkQueryLike,
-} from "../../../../runtime-management/claude/client/claude-sdk-client.js";
+import { ClaudeTextSegmentProjector } from "./claude-text-segment-projector.js";
+import type { ClaudeSdkClient, ClaudeSdkQueryLike } from "../../../../runtime-management/claude/client/claude-sdk-client.js";
 
 import { dispatchRuntimeEvent } from "../../shared/runtime-event-dispatch.js";
 
@@ -417,8 +413,11 @@ export class ClaudeSession {
     }
     this.dependencies.activeQueriesByRunId.set(this.runId, query);
 
-    let assistantOutput = "";
-    let hasObservedStreamingDelta = false;
+    const textProjector = new ClaudeTextSegmentProjector({
+      turnId: options.turnId,
+      getSessionId: () => this.sessionId,
+      emitEvent: (event) => this.emitRuntimeEvent(event),
+    });
     try {
       if (isClaudeActiveTurnInterrupted(activeTurn, options.abortController)) {
         return;
@@ -434,6 +433,8 @@ export class ClaudeSession {
         if (isClaudeActiveTurnInterrupted(activeTurn, options.abortController)) {
           break;
         }
+        const resolvedSessionId = resolveClaudeStreamChunkSessionId(chunk);
+        this.adoptResolvedSessionId(resolvedSessionId, this.dependencies.sessionMessageCache);
         const compactionEvent = buildClaudeProviderCompactionEvent({
           chunk,
           turnId: options.turnId,
@@ -442,37 +443,14 @@ export class ClaudeSession {
         if (compactionEvent) {
           this.emitRuntimeEvent(compactionEvent);
         }
-        this.dependencies.toolingCoordinator.processToolLifecycleChunk(this.runContext, chunk);
-        const normalized = normalizeClaudeStreamChunk(chunk);
         const isTerminalChunk = isClaudeTurnTerminalChunk(chunk);
-        this.adoptResolvedSessionId(normalized.sessionId, this.dependencies.sessionMessageCache);
-
-        if (normalized.delta) {
-          const incrementalDelta = resolveClaudeIncrementalDelta({
-            normalizedDelta: normalized.delta,
-            source: normalized.source,
-            assistantOutput,
-            hasObservedStreamingDelta,
-          });
-          if (!incrementalDelta) {
-            if (isTerminalChunk) {
-              break;
-            }
-            continue;
-          }
-          if (normalized.source === "stream_delta") {
-            hasObservedStreamingDelta = true;
-          }
-          assistantOutput += incrementalDelta;
-          this.emitRuntimeEvent({
-            method: ClaudeSessionEventName.ITEM_OUTPUT_TEXT_DELTA,
-            params: {
-              id: options.turnId,
-              turnId: options.turnId,
-              sessionId: this.sessionId,
-              delta: incrementalDelta,
-            },
-          });
+        const processedOrderedContent = this.processOrderedClaudeContentBlocks(
+          chunk,
+          textProjector,
+        );
+        if (!processedOrderedContent) {
+          this.dependencies.toolingCoordinator.processToolLifecycleChunk(this.runContext, chunk);
+          textProjector.processChunk(chunk);
         }
 
         if (isTerminalChunk) {
@@ -492,6 +470,8 @@ export class ClaudeSession {
       return;
     }
 
+    textProjector.finishTurn();
+    const assistantOutput = textProjector.getAssistantOutput();
     if (assistantOutput.length > 0) {
       this.dependencies.sessionMessageCache.appendMessage(this.sessionId, {
         role: "assistant",
@@ -501,21 +481,48 @@ export class ClaudeSession {
     }
 
     this.emitRuntimeEvent({
-      method: ClaudeSessionEventName.ITEM_OUTPUT_TEXT_COMPLETED,
-      params: {
-        id: options.turnId,
-        turnId: options.turnId,
-        sessionId: this.sessionId,
-        text: assistantOutput,
-      },
-    });
-    this.emitRuntimeEvent({
       method: ClaudeSessionEventName.TURN_COMPLETED,
       params: {
         turnId: options.turnId,
         sessionId: this.sessionId,
       },
     });
+  }
+
+  private processOrderedClaudeContentBlocks(
+    chunk: unknown,
+    textProjector: ClaudeTextSegmentProjector,
+  ): boolean {
+    const payload = asObject(chunk);
+    if (!payload) {
+      return false;
+    }
+
+    const messagePayload = asObject(payload.message);
+    const contentBlocks = Array.isArray(messagePayload?.content)
+      ? (messagePayload.content as unknown[])
+      : [];
+    if (contentBlocks.length === 0) {
+      return false;
+    }
+
+    const messageType = asString(payload.type);
+    for (let index = 0; index < contentBlocks.length; index += 1) {
+      const block = contentBlocks[index];
+      if (messageType === "assistant") {
+        textProjector.processAssistantContentBlock({
+          chunk: payload,
+          message: messagePayload ?? {},
+          block,
+          contentBlockIndex: index,
+        });
+      }
+      this.dependencies.toolingCoordinator.processToolLifecycleContentBlock(this.runContext, {
+        messageType,
+        block,
+      });
+    }
+    return true;
   }
 
   private async buildSessionMcpServers(input: {

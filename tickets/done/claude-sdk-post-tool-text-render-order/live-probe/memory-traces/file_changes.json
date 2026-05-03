@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "entries": [
+    {
+      "id": "run-claude-memory-trace-probe-0386fd96-7f93-4e81-bbb8-195f8b23fc42:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-memory-trace-probe-LzrHkd/memory-probe-output.txt",
+      "runId": "run-claude-memory-trace-probe-0386fd96-7f93-4e81-bbb8-195f8b23fc42",
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-memory-trace-probe-LzrHkd/memory-probe-output.txt",
+      "type": "file",
+      "status": "available",
+      "sourceTool": "generated_output",
+      "sourceInvocationId": "call_00_ULgRtrQrrcIJqclPpyC64495",
+      "createdAt": "2026-05-03T07:25:11.848Z",
+      "updatedAt": "2026-05-03T07:25:11.848Z"
+    }
+  ]
+}
