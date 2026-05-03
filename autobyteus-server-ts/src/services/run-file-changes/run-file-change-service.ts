@@ -5,44 +5,80 @@ import {
   type AgentRunEvent,
 } from "../../agent-execution/domain/agent-run-event.js";
 import { getWorkspaceManager, type WorkspaceManager } from "../../workspaces/workspace-manager.js";
-import { extractCandidateOutputPath, inferArtifactType } from "../../utils/artifact-utils.js";
 import {
   EMPTY_RUN_FILE_CHANGE_PROJECTION,
   buildRunFileChangeId,
-  invocationIdsMatch,
+  normalizeRunFileChangePath,
   type RunFileChangeArtifactType,
   type RunFileChangeEntry,
   type RunFileChangeProjection,
   type RunFileChangeSourceTool,
+  type RunFileChangeStatus,
 } from "./run-file-change-types.js";
 import {
   RunFileChangeProjectionStore,
   getRunFileChangeProjectionStore,
 } from "./run-file-change-projection-store.js";
 import { canonicalizeRunFileChangePath } from "./run-file-change-path-identity.js";
-import { RunFileChangeInvocationCache, type RunFileChangeInvocationContext } from "./run-file-change-invocation-cache.js";
 import { normalizeRunFileChangeProjection } from "./run-file-change-projection-normalizer.js";
-import {
-  extractInvocationId,
-  extractObservedPath,
-  extractSegmentType,
-  extractToolArguments,
-  extractToolName,
-  isFileChangeTool,
-  nowIso,
-} from "./run-file-change-event-payload.js";
 import {
   cloneRunFileChangeProjection,
   resolveRunFileChangeWorkspaceRootPath,
 } from "./run-file-change-runtime.js";
 
 const logger = { warn: (...args: unknown[]) => console.warn(...args) };
-const asDeltaString = (value: unknown): string | null => (typeof value === "string" ? value : null);
+
+const STATUS_VALUES: RunFileChangeStatus[] = ["streaming", "pending", "available", "failed"];
+const SOURCE_TOOL_VALUES: RunFileChangeSourceTool[] = ["write_file", "edit_file", "generated_output"];
+const ARTIFACT_TYPE_VALUES: RunFileChangeArtifactType[] = [
+  "file",
+  "image",
+  "audio",
+  "video",
+  "pdf",
+  "csv",
+  "excel",
+  "other",
+];
+
+const normalizeTimestamp = (value: unknown, fallback: string): string =>
+  typeof value === "string" && value.trim().length > 0 ? value : fallback;
+
+const normalizeStatus = (value: unknown): RunFileChangeStatus =>
+  STATUS_VALUES.includes(value as RunFileChangeStatus)
+    ? (value as RunFileChangeStatus)
+    : "available";
+
+const normalizeSourceTool = (value: unknown): RunFileChangeSourceTool =>
+  SOURCE_TOOL_VALUES.includes(value as RunFileChangeSourceTool)
+    ? (value as RunFileChangeSourceTool)
+    : "generated_output";
+
+const normalizeArtifactType = (value: unknown): RunFileChangeArtifactType =>
+  ARTIFACT_TYPE_VALUES.includes(value as RunFileChangeArtifactType)
+    ? (value as RunFileChangeArtifactType)
+    : "file";
+
+const normalizeOptionalString = (value: unknown): string | null => {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : null;
+};
+
+const normalizeOptionalContent = (value: unknown): string | null | undefined => {
+  if (typeof value === "string") {
+    return value;
+  }
+
+  return value === null ? null : undefined;
+};
 
 export class RunFileChangeService {
   private readonly projectionStore: RunFileChangeProjectionStore;
   private readonly workspaceManager: WorkspaceManager;
-  private readonly invocationCache = new RunFileChangeInvocationCache();
   private readonly projectionByRunId = new Map<string, RunFileChangeProjection>();
   private readonly operationQueueByRunId = new Map<string, Promise<void>>();
 
@@ -56,7 +92,7 @@ export class RunFileChangeService {
 
   attachToRun(run: AgentRun): () => void {
     const unsubscribe = run.subscribeToEvents((event: unknown) => {
-      if (!isAgentRunEvent(event) || event.eventType === AgentRunEventType.FILE_CHANGE_UPDATED) {
+      if (!isAgentRunEvent(event) || event.eventType !== AgentRunEventType.FILE_CHANGE) {
         return;
       }
       void this.enqueueRunEvent(run, event);
@@ -64,7 +100,6 @@ export class RunFileChangeService {
 
     return () => {
       unsubscribe();
-      this.invocationCache.clearRun(run.runId);
       this.projectionByRunId.delete(run.runId);
       this.operationQueueByRunId.delete(run.runId);
     };
@@ -80,7 +115,7 @@ export class RunFileChangeService {
       .catch(() => undefined)
       .then(async () => {
         try {
-          await this.handleRunEvent(run, event);
+          await this.handleFileChangeEvent(run, event);
         } catch (error) {
           logger.warn(
             `RunFileChangeService: failed processing '${event.eventType}' for run '${run.runId}': ${String(error)}`,
@@ -97,33 +132,15 @@ export class RunFileChangeService {
     return next;
   }
 
-  private async handleRunEvent(run: AgentRun, event: AgentRunEvent): Promise<void> {
+  private async handleFileChangeEvent(run: AgentRun, event: AgentRunEvent): Promise<void> {
     const projection = await this.loadProjection(run);
     const before = JSON.stringify(projection);
-
-    switch (event.eventType) {
-      case AgentRunEventType.SEGMENT_START:
-        this.handleSegmentStart(run, projection, event.payload);
-        break;
-      case AgentRunEventType.SEGMENT_CONTENT:
-        this.handleSegmentContent(run, projection, event.payload);
-        break;
-      case AgentRunEventType.SEGMENT_END:
-        this.handleSegmentEnd(run, projection, event.payload);
-        break;
-      case AgentRunEventType.TOOL_EXECUTION_STARTED:
-        this.handleToolExecutionStarted(run, projection, event.payload);
-        break;
-      case AgentRunEventType.TOOL_EXECUTION_SUCCEEDED:
-        this.handleToolExecutionSucceeded(run, projection, event.payload);
-        break;
-      case AgentRunEventType.TOOL_EXECUTION_FAILED:
-      case AgentRunEventType.TOOL_DENIED:
-        this.handleToolExecutionFailure(run, projection, event.payload);
-        break;
-      default:
-        return;
+    const entry = this.normalizeLiveEntry(run, event.payload);
+    if (!entry) {
+      return;
     }
+
+    this.upsertEntry(projection, entry);
 
     const after = JSON.stringify(projection);
     if (before === after) {
@@ -156,335 +173,63 @@ export class RunFileChangeService {
     return cloneRunFileChangeProjection(normalizedProjection);
   }
 
-  private handleSegmentStart(
+  private normalizeLiveEntry(
     run: AgentRun,
-    projection: RunFileChangeProjection,
-    payload: Record<string, unknown>,
-  ): void {
-    const segmentType = extractSegmentType(payload);
-    if (!isFileChangeTool(segmentType)) {
-      return;
-    }
-
-    const canonicalPath = this.canonicalizeObservedPath(run, extractObservedPath(payload));
-    if (!canonicalPath) {
-      return;
-    }
-
-    const invocationId = extractInvocationId(payload);
-    const entry = this.upsertEntry(projection, {
-      runId: run.runId,
-      canonicalPath,
-      sourceTool: segmentType,
-      sourceInvocationId: invocationId,
-      type: this.inferEntryType(canonicalPath),
-    });
-    entry.status = segmentType === "write_file" ? "streaming" : "pending";
-    if (segmentType === "write_file") {
-      entry.content = "";
-    }
-    entry.updatedAt = nowIso();
-    this.publishEntry(run, entry);
-  }
-
-  private handleSegmentContent(
-    run: AgentRun,
-    projection: RunFileChangeProjection,
-    payload: Record<string, unknown>,
-  ): void {
-    const segmentType = extractSegmentType(payload);
-    if (segmentType !== "write_file") {
-      return;
-    }
-
-    const invocationId = extractInvocationId(payload);
-    const delta = asDeltaString(payload.delta);
-    if (!invocationId || !delta) {
-      return;
-    }
-
-    const entry = this.findEntryByInvocation(projection, invocationId);
-    if (!entry) {
-      return;
-    }
-
-    entry.status = "streaming";
-    entry.content = `${entry.content ?? ""}${delta}`;
-    entry.updatedAt = nowIso();
-    this.publishEntry(run, entry);
-  }
-
-  private handleSegmentEnd(
-    run: AgentRun,
-    projection: RunFileChangeProjection,
-    payload: Record<string, unknown>,
-  ): void {
-    const segmentType = extractSegmentType(payload);
-    if (segmentType !== "write_file") {
-      return;
-    }
-
-    const invocationId = extractInvocationId(payload);
-    if (!invocationId) {
-      return;
-    }
-
-    const entry = this.findEntryByInvocation(projection, invocationId);
-    if (!entry || entry.status !== "streaming") {
-      return;
-    }
-
-    entry.status = "pending";
-    entry.updatedAt = nowIso();
-    this.publishEntry(run, entry);
-  }
-
-  private handleToolExecutionStarted(
-    run: AgentRun,
-    projection: RunFileChangeProjection,
-    payload: Record<string, unknown>,
-  ): void {
-    const invocationId = extractInvocationId(payload);
-    const toolName = extractToolName(payload);
-    const toolArguments = extractToolArguments(payload);
-    if (invocationId) {
-      this.invocationCache.record(run.runId, invocationId, {
-        toolName,
-        arguments: toolArguments,
-        candidateOutputPath: extractCandidateOutputPath(toolArguments, null),
-      });
-    }
-
-    if (!isFileChangeTool(toolName)) {
-      return;
-    }
-
-    const canonicalPath = this.canonicalizeObservedPath(
-      run,
-      extractObservedPath(payload) ?? extractCandidateOutputPath(toolArguments, null),
+    rawEntry: Record<string, unknown>,
+  ): RunFileChangeEntry | null {
+    const canonicalPath = canonicalizeRunFileChangePath(
+      normalizeOptionalString(rawEntry.path),
+      resolveRunFileChangeWorkspaceRootPath(run, this.workspaceManager),
     );
     if (!canonicalPath) {
-      return;
+      return null;
     }
 
-    const entry = this.upsertEntry(projection, {
+    const createdAtFallback = new Date().toISOString();
+    const updatedAt = normalizeTimestamp(rawEntry.updatedAt, createdAtFallback);
+    const createdAt = normalizeTimestamp(rawEntry.createdAt, updatedAt);
+    const entry: RunFileChangeEntry = {
+      id: buildRunFileChangeId(run.runId, canonicalPath),
       runId: run.runId,
-      canonicalPath,
-      sourceTool: toolName,
-      sourceInvocationId: invocationId,
-      type: this.inferEntryType(canonicalPath),
-    });
-    if (entry.status !== "streaming") {
-      entry.status = "pending";
-    }
-    entry.updatedAt = nowIso();
-    this.publishEntry(run, entry);
-  }
+      path: normalizeRunFileChangePath(canonicalPath),
+      type: normalizeArtifactType(rawEntry.type),
+      status: normalizeStatus(rawEntry.status),
+      sourceTool: normalizeSourceTool(rawEntry.sourceTool),
+      sourceInvocationId: normalizeOptionalString(rawEntry.sourceInvocationId),
+      createdAt,
+      updatedAt,
+    };
 
-  private handleToolExecutionSucceeded(
-    run: AgentRun,
-    projection: RunFileChangeProjection,
-    payload: Record<string, unknown>,
-  ): void {
-    const invocationId = extractInvocationId(payload);
-    const cachedInvocation = this.invocationCache.consume(run.runId, invocationId);
-    const toolName = extractToolName(payload) ?? cachedInvocation?.toolName ?? null;
-
-    if (isFileChangeTool(toolName)) {
-      this.handleFileChangeToolSuccess(run, projection, payload, invocationId, toolName, cachedInvocation);
-      return;
+    const content = normalizeOptionalContent(rawEntry.content);
+    if (content !== undefined) {
+      entry.content = content;
     }
 
-    this.handleGeneratedOutputSuccess(run, projection, payload, invocationId, cachedInvocation);
-  }
-
-  private handleToolExecutionFailure(
-    run: AgentRun,
-    projection: RunFileChangeProjection,
-    payload: Record<string, unknown>,
-  ): void {
-    const invocationId = extractInvocationId(payload);
-    const cachedInvocation = this.invocationCache.consume(run.runId, invocationId);
-    const toolName = extractToolName(payload) ?? cachedInvocation?.toolName ?? null;
-    if (!isFileChangeTool(toolName)) {
-      return;
-    }
-
-    const canonicalPath = this.resolveCanonicalFileChangePath(run, payload, cachedInvocation);
-    const entry =
-      (invocationId ? this.findEntryByInvocation(projection, invocationId) : null)
-      ?? (canonicalPath ? this.findEntryByPath(projection, canonicalPath) : null);
-
-    if (!entry) {
-      return;
-    }
-
-    entry.status = "failed";
-    entry.content = null;
-    entry.updatedAt = nowIso();
-    this.publishEntry(run, entry);
-  }
-
-  private handleFileChangeToolSuccess(
-    run: AgentRun,
-    projection: RunFileChangeProjection,
-    payload: Record<string, unknown>,
-    invocationId: string | null,
-    toolName: Exclude<RunFileChangeSourceTool, "generated_output">,
-    cachedInvocation: RunFileChangeInvocationContext | null,
-  ): void {
-    const canonicalPath = this.resolveCanonicalFileChangePath(run, payload, cachedInvocation);
-    const entry =
-      (invocationId ? this.findEntryByInvocation(projection, invocationId) : null)
-      ?? (canonicalPath ? this.findEntryByPath(projection, canonicalPath) : null)
-      ?? (canonicalPath
-        ? this.upsertEntry(projection, {
-          runId: run.runId,
-          canonicalPath,
-          sourceTool: toolName,
-          sourceInvocationId: invocationId,
-          type: this.inferEntryType(canonicalPath),
-        })
-        : null);
-
-    if (!entry) {
-      return;
-    }
-
-    entry.status = "available";
-    entry.type = this.inferEntryType(entry.path);
-    if (toolName !== "write_file") {
-      entry.content = undefined;
-    }
-    entry.updatedAt = nowIso();
-    this.publishEntry(run, entry);
-  }
-
-  private handleGeneratedOutputSuccess(
-    run: AgentRun,
-    projection: RunFileChangeProjection,
-    payload: Record<string, unknown>,
-    invocationId: string | null,
-    cachedInvocation: RunFileChangeInvocationContext | null,
-  ): void {
-    const toolArguments = extractToolArguments(payload);
-    const toolResult = payload.result;
-    const candidateOutputPath =
-      extractCandidateOutputPath(toolArguments, toolResult)
-      ?? extractCandidateOutputPath(cachedInvocation?.arguments, toolResult)
-      ?? cachedInvocation?.candidateOutputPath
-      ?? extractCandidateOutputPath(null, toolResult);
-    const canonicalPath = this.canonicalizeObservedPath(run, candidateOutputPath);
-    if (!canonicalPath) {
-      return;
-    }
-
-    const entry = this.upsertEntry(projection, {
-      runId: run.runId,
-      canonicalPath,
-      sourceTool: "generated_output",
-      sourceInvocationId: invocationId,
-      type: this.inferEntryType(canonicalPath),
-    });
-    entry.status = "available";
-    entry.content = undefined;
-    entry.updatedAt = nowIso();
-    this.publishEntry(run, entry);
-  }
-
-  private resolveCanonicalFileChangePath(
-    run: AgentRun,
-    payload: Record<string, unknown>,
-    cachedInvocation: RunFileChangeInvocationContext | null,
-  ): string | null {
-    return this.canonicalizeObservedPath(
-      run,
-      extractObservedPath(payload)
-        ?? extractCandidateOutputPath(extractToolArguments(payload), payload.result)
-        ?? cachedInvocation?.candidateOutputPath
-        ?? extractCandidateOutputPath(cachedInvocation?.arguments, payload.result),
-    );
-  }
-
-  private canonicalizeObservedPath(run: AgentRun, observedPath: string | null): string | null {
-    return canonicalizeRunFileChangePath(observedPath, resolveRunFileChangeWorkspaceRootPath(run, this.workspaceManager));
-  }
-
-  private inferEntryType(pathValue: string): RunFileChangeArtifactType {
-    const inferred = inferArtifactType(pathValue);
-    return inferred === "file"
-      || inferred === "image"
-      || inferred === "audio"
-      || inferred === "video"
-      || inferred === "pdf"
-      || inferred === "csv"
-      || inferred === "excel"
-      ? inferred
-      : "other";
+    return entry;
   }
 
   private upsertEntry(
     projection: RunFileChangeProjection,
-    input: {
-      runId: string;
-      canonicalPath: string;
-      sourceTool: RunFileChangeSourceTool;
-      sourceInvocationId: string | null;
-      type: RunFileChangeArtifactType;
-    },
-  ): RunFileChangeEntry {
-    const existing = this.findEntryByPath(projection, input.canonicalPath);
-    if (existing) {
-      existing.id = buildRunFileChangeId(input.runId, input.canonicalPath);
-      existing.path = input.canonicalPath;
-      existing.type = input.type;
-      existing.sourceTool = input.sourceTool;
-      existing.sourceInvocationId = input.sourceInvocationId ?? existing.sourceInvocationId;
-      return existing;
+    incoming: RunFileChangeEntry,
+  ): void {
+    const existing = projection.entries.find((entry) => entry.path === incoming.path) ?? null;
+    if (!existing) {
+      projection.entries.push(incoming);
+      return;
     }
 
-    const timestamp = nowIso();
-    const entry: RunFileChangeEntry = {
-      id: buildRunFileChangeId(input.runId, input.canonicalPath),
-      runId: input.runId,
-      path: input.canonicalPath,
-      type: input.type,
-      status: input.sourceTool === "write_file" ? "streaming" : "pending",
-      sourceTool: input.sourceTool,
-      sourceInvocationId: input.sourceInvocationId,
-      content: input.sourceTool === "write_file" ? "" : undefined,
-      createdAt: timestamp,
-      updatedAt: timestamp,
-    };
-    projection.entries.push(entry);
-    return entry;
-  }
-
-  private findEntryByPath(
-    projection: RunFileChangeProjection,
-    canonicalPath: string,
-  ): RunFileChangeEntry | null {
-    return projection.entries.find((entry) => entry.path === canonicalPath) ?? null;
-  }
-
-  private findEntryByInvocation(
-    projection: RunFileChangeProjection,
-    invocationId: string,
-  ): RunFileChangeEntry | null {
-    return (
-      projection.entries.find((entry) =>
-        invocationIdsMatch(entry.sourceInvocationId, invocationId),
-      ) ?? null
-    );
-  }
-
-  private publishEntry(run: AgentRun, entry: RunFileChangeEntry): void {
-    run.emitLocalEvent({
-      eventType: AgentRunEventType.FILE_CHANGE_UPDATED,
-      runId: run.runId,
-      statusHint: null,
-      payload: { ...entry },
-    });
+    existing.id = incoming.id;
+    existing.runId = incoming.runId;
+    existing.path = incoming.path;
+    existing.type = incoming.type;
+    existing.status = incoming.status;
+    existing.sourceTool = incoming.sourceTool;
+    existing.sourceInvocationId = incoming.sourceInvocationId ?? existing.sourceInvocationId;
+    if (Object.prototype.hasOwnProperty.call(incoming, "content")) {
+      existing.content = incoming.content ?? null;
+    }
+    existing.createdAt = existing.createdAt || incoming.createdAt;
+    existing.updatedAt = incoming.updatedAt;
   }
 }
 

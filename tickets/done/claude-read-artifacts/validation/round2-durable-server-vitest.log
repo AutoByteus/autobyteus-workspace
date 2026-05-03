@@ -1,0 +1,123 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+
+ ✓ tests/unit/services/run-file-changes/run-file-change-service.test.ts > RunFileChangeService > projects FILE_CHANGE events, keeps live content transient, and persists metadata only 10ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-service.test.ts > RunFileChangeService > canonicalizes absolute and relative FILE_CHANGE references to one workspace row 5ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-service.test.ts > RunFileChangeService > ignores unrelated activity events and only consumes FILE_CHANGE 4ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-service.test.ts > RunFileChangeService > records failed FILE_CHANGE status 4ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > ignores codex-prefixed internal events at the dispatcher boundary 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > does not map token-usage telemetry into AGENT_STATUS 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > normalizes thread/compacted into provider compaction boundary status 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > dedupes raw compaction items when thread/compacted already reported the boundary 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > dedupes raw no-stable compaction items when thread/compacted already reported the boundary 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > dedupes later thread/compacted when a raw no-stable compaction item arrived first 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > dedupes repeated raw no-stable compaction items in the same converter window 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > dedupes stable-id compaction boundaries when the raw item arrives before thread/compacted 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > dedupes raw compaction items with a different stable id after thread/compacted in the same window 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > dedupes thread/compacted with a different stable id after a raw compaction item in the same window 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > still maps thread status changes into AGENT_STATUS 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > emits explicit turn lifecycle plus preserved agent-status events 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > maps local MCP tool approval requests into TOOL_APPROVAL_REQUESTED 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > fans out mcpToolCall starts into tool_call segment and lifecycle start 1ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > maps local MCP completion events into TOOL_EXECUTION_SUCCEEDED with arguments 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > maps failed local MCP completion events into TOOL_EXECUTION_FAILED with arguments 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > fans out webSearch starts into tool_call segment and lifecycle start 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > fans out successful webSearch completions into terminal success and segment end 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > fans out failed webSearch completions into terminal failure and segment end 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > fans out dynamicToolCall starts into tool_call segment and lifecycle start 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > fans out successful dynamicToolCall completions into terminal success and segment end 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > fans out failed dynamicToolCall completions into terminal failure with contentItems error and segment end 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > maps browser dynamic tool completions into terminal success and segment end 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > parses browser dynamic tool JSON text results from contentItems 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > fans out fileChange start into segment and lifecycle events 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > fans out fileChange completion into success and segment end 0ms
+ ✓ tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts > CodexThreadEventConverter > preserves edit_file metadata when converting file-change segments 0ms
+ ✓ tests/unit/agent-execution/events/file-change-event-processor.test.ts > FileChangeEventProcessor > keeps Claude Read lifecycle events activity-only and emits no FILE_CHANGE 2ms
+ ✓ tests/unit/agent-execution/events/file-change-event-processor.test.ts > FileChangeEventProcessor > emits FILE_CHANGE for Claude Write 2ms
+ ✓ tests/unit/agent-execution/events/file-change-event-processor.test.ts > FileChangeEventProcessor > emits FILE_CHANGE for Claude Edit 0ms
+ ✓ tests/unit/agent-execution/events/file-change-event-processor.test.ts > FileChangeEventProcessor > emits FILE_CHANGE for Claude MultiEdit 0ms
+ ✓ tests/unit/agent-execution/events/file-change-event-processor.test.ts > FileChangeEventProcessor > emits FILE_CHANGE for Claude NotebookEdit 0ms
+ ✓ tests/unit/agent-execution/events/file-change-event-processor.test.ts > FileChangeEventProcessor > emits streaming, pending, and available FILE_CHANGE updates for write_file preview 1ms
+ ✓ tests/unit/agent-execution/events/file-change-event-processor.test.ts > FileChangeEventProcessor > emits FILE_CHANGE for Codex edit_file lifecycle 1ms
+ ✓ tests/unit/agent-execution/events/file-change-event-processor.test.ts > FileChangeEventProcessor > emits generated-output FILE_CHANGE for generate_image 0ms
+ ✓ tests/unit/agent-execution/events/file-change-event-processor.test.ts > FileChangeEventProcessor > emits generated-output FILE_CHANGE for edit_image 0ms
+ ✓ tests/unit/agent-execution/events/file-change-event-processor.test.ts > FileChangeEventProcessor > emits generated-output FILE_CHANGE for generate_speech 0ms
+ ✓ tests/unit/agent-execution/events/file-change-event-processor.test.ts > FileChangeEventProcessor > rejects unknown non-mutation tools whose only path-like field is file_path 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > converts normal Claude tool segment lane metadata with arguments 2ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > converts a normal Claude tool lifecycle into TOOL_* events 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > suppresses raw MCP send_message_to segment and lifecycle transport noise 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > passes canonical send_message_to segment and started lifecycle events 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > passes canonical send_message_to success and failure lifecycle events with arguments 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > normalizes browser MCP tool names to canonical browser tool names 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > normalizes browser MCP content-block results to canonical browser result objects 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > normalizes browser MCP content-envelope results to canonical browser result objects 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > preserves unknown MCP browser-like names and results 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > preserves non-Autobyteus MCP tools with browser-like suffixes and results 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > normalizes browser MCP tool names in segment start metadata and top-level payload 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > normalizes browser MCP tool names in provided segment end metadata 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > preserves arguments on failed Claude tool completion events 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > preserves arguments on denied Claude tool lifecycle events 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > emits explicit turn completed plus preserved agent-status events 1ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > emits explicit turn started before the running status event 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > normalizes compacting status without rotation eligibility 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > normalizes compact_boundary as rotation eligible 0ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts > ClaudeSessionEventConverter > keeps compacting status and compact boundary keys distinct when provider uuid matches 0ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-projection-store.test.ts > RunFileChangeProjectionStore > writes canonical file_changes.json and strips transient content 4ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-projection-store.test.ts > RunFileChangeProjectionStore > returns an empty projection when only the removed legacy projection path exists 2ms
+ ✓ tests/unit/agent-execution/events/agent-run-event-pipeline.test.ts > AgentRunEventPipeline > runs processors in order and lets later processors see earlier derived events 2ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-path-identity.test.ts > run-file-change path identity > canonicalizes workspace-local absolute paths to relative posix paths 1ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-path-identity.test.ts > run-file-change path identity > preserves absolute paths that live outside the workspace 0ms
+ ✓ tests/unit/services/run-file-changes/run-file-change-path-identity.test.ts > run-file-change path identity > resolves relative canonical paths back against the workspace root 0ms
+ ✓ tests/unit/utils/artifact-utils.test.ts > artifact-utils > infers artifact types from extensions 1ms
+
+ Test Files  8 passed (8)
+      Tests  68 passed (68)
+   Start at  08:32:42
+   Duration  1.81s (transform 355ms, setup 84ms, import 523ms, tests 62ms, environment 1ms)
+

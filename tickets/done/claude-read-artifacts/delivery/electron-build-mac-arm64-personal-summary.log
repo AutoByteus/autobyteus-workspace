@@ -1,0 +1,30 @@
+# Local Electron macOS ARM64 personal build summary
+Date: 2026-05-03T07:24:29Z
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts
+README command basis: autobyteus-web/README.md uses pnpm build:electron:mac; local no-notarization build uses NO_TIMESTAMP=1 APPLE_TEAM_ID=.
+Command run: cd autobyteus-web && AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm build:electron:mac -- --arm64
+Result: PASS
+Flavor: personal
+Version: 1.2.92
+Architecture: macOS arm64
+Code signing/notarization: skipped for local testing (APPLE_TEAM_ID empty, signing identity null).
+
+Artifacts:
+total 1510920
+-rw-r--r--@ 1 normy  staff   358M May  3 09:22 AutoByteus_personal_macos-arm64-1.2.92.dmg
+-rw-r--r--@ 1 normy  staff   382K May  3 09:22 AutoByteus_personal_macos-arm64-1.2.92.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   356M May  3 09:24 AutoByteus_personal_macos-arm64-1.2.92.zip
+-rw-r--r--@ 1 normy  staff   374K May  3 09:24 AutoByteus_personal_macos-arm64-1.2.92.zip.blockmap
+-rw-r--r--@ 1 normy  staff   813B May  3 09:24 builder-debug.yml
+-rw-r--r--@ 1 normy  staff   555B May  3 09:24 latest-mac.yml
+drwxr-xr-x@ 3 normy  staff    96B May  3 09:21 mac-arm64
+
+SHA-256:
+f3d9a3d763ec5eccb1e4294ad0382ce10ee22d016bdc24b28610a6d209164982  /Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.92.dmg
+c8d80c5f9f5e4fb964a917041712714822039fcdbc3562d889478ee76542ca91  /Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.92.zip
+
+Primary test artifacts:
+DMG: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.92.dmg
+ZIP: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.92.zip
+
+Full build log: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/tickets/done/claude-read-artifacts/delivery/electron-build-mac-arm64-personal-local.log

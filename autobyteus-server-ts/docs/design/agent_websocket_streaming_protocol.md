@@ -24,6 +24,13 @@ Defines runtime behavior for agent and team streaming WebSocket endpoints.
 
 Handlers forward streamed model/tool events from runtime managers to clients and normalize error/completion semantics for transport-safe delivery.
 
+Runtime backends run each base normalized event batch through
+`AgentRunEventPipeline` before any subscriber fan-out. The stream therefore
+already includes derived events such as `FILE_CHANGE` for explicit
+write/edit/generated-output semantics. Clients consume `FILE_CHANGE` for the
+Artifacts tab and must not expect a legacy file-change-update event alias or
+derive artifact rows from arbitrary `file_path` tool arguments.
+
 ## Connection And Command Recovery Contract
 
 Connection establishment is restore-aware:

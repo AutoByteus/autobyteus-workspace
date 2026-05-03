@@ -1,0 +1,130 @@
+[
+  {
+    "eventType": "TURN_STARTED",
+    "runId": "run-claude-read-no-file-change-2b2ae03e-c913-4bc5-9452-90bb1649fc23",
+    "payload": {
+      "turnId": "run-claude-read-no-file-change-2b2ae03e-c913-4bc5-9452-90bb1649fc23:turn:1777790968034"
+    },
+    "statusHint": "ACTIVE"
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "runId": "run-claude-read-no-file-change-2b2ae03e-c913-4bc5-9452-90bb1649fc23",
+    "payload": {
+      "new_status": "RUNNING",
+      "old_status": null,
+      "turnId": "run-claude-read-no-file-change-2b2ae03e-c913-4bc5-9452-90bb1649fc23:turn:1777790968034"
+    },
+    "statusHint": "ACTIVE"
+  },
+  {
+    "eventType": "SEGMENT_START",
+    "runId": "run-claude-read-no-file-change-2b2ae03e-c913-4bc5-9452-90bb1649fc23",
+    "payload": {
+      "id": "call_00_WBMTf6xeG6swjADgBlLs5115",
+      "turn_id": "run-claude-read-no-file-change-2b2ae03e-c913-4bc5-9452-90bb1649fc23:turn:1777790968034",
+      "segment_type": "tool_call",
+      "tool_name": "Read",
+      "arguments": {
+        "file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-read-no-file-change-piTtqb/read-only-target.txt"
+      },
+      "metadata": {
+        "tool_name": "Read",
+        "arguments": {
+          "file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-read-no-file-change-piTtqb/read-only-target.txt"
+        }
+      }
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "TOOL_EXECUTION_STARTED",
+    "runId": "run-claude-read-no-file-change-2b2ae03e-c913-4bc5-9452-90bb1649fc23",
+    "payload": {
+      "invocation_id": "call_00_WBMTf6xeG6swjADgBlLs5115",
+      "tool_name": "Read",
+      "turn_id": "run-claude-read-no-file-change-2b2ae03e-c913-4bc5-9452-90bb1649fc23:turn:1777790968034",
+      "arguments": {
+        "file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-read-no-file-change-piTtqb/read-only-target.txt"
+      }
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "SEGMENT_END",
+    "runId": "run-claude-read-no-file-change-2b2ae03e-c913-4bc5-9452-90bb1649fc23",
+    "payload": {
+      "id": "call_00_WBMTf6xeG6swjADgBlLs5115",
+      "turn_id": "run-claude-read-no-file-change-2b2ae03e-c913-4bc5-9452-90bb1649fc23:turn:1777790968034",
+      "segment_type": "tool_call",
+      "tool_name": "Read",
+      "arguments": {
+        "file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-read-no-file-change-piTtqb/read-only-target.txt"
+      },
+      "metadata": {
+        "tool_name": "Read",
+        "arguments": {
+          "file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-read-no-file-change-piTtqb/read-only-target.txt"
+        },
+        "result": "1\tread-only-b435874c-8bd8-4fe0-bb47-55a2233744de\n2\t"
+      }
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "TOOL_EXECUTION_SUCCEEDED",
+    "runId": "run-claude-read-no-file-change-2b2ae03e-c913-4bc5-9452-90bb1649fc23",
+    "payload": {
+      "invocation_id": "call_00_WBMTf6xeG6swjADgBlLs5115",
+      "tool_name": "Read",
+      "turn_id": "run-claude-read-no-file-change-2b2ae03e-c913-4bc5-9452-90bb1649fc23:turn:1777790968034",
+      "arguments": {
+        "file_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-read-no-file-change-piTtqb/read-only-target.txt"
+      },
+      "result": "1\tread-only-b435874c-8bd8-4fe0-bb47-55a2233744de\n2\t"
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "SEGMENT_CONTENT",
+    "runId": "run-claude-read-no-file-change-2b2ae03e-c913-4bc5-9452-90bb1649fc23",
+    "payload": {
+      "id": "run-claude-read-no-file-change-2b2ae03e-c913-4bc5-9452-90bb1649fc23:turn:1777790968034",
+      "turnId": "run-claude-read-no-file-change-2b2ae03e-c913-4bc5-9452-90bb1649fc23:turn:1777790968034",
+      "sessionId": "c2afd090-669c-4654-b650-1b06282def4f",
+      "delta": "READ_DONE.",
+      "segment_type": "text"
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "SEGMENT_END",
+    "runId": "run-claude-read-no-file-change-2b2ae03e-c913-4bc5-9452-90bb1649fc23",
+    "payload": {
+      "id": "run-claude-read-no-file-change-2b2ae03e-c913-4bc5-9452-90bb1649fc23:turn:1777790968034",
+      "turnId": "run-claude-read-no-file-change-2b2ae03e-c913-4bc5-9452-90bb1649fc23:turn:1777790968034",
+      "sessionId": "c2afd090-669c-4654-b650-1b06282def4f",
+      "text": "READ_DONE.",
+      "segment_type": "text"
+    },
+    "statusHint": null
+  },
+  {
+    "eventType": "TURN_COMPLETED",
+    "runId": "run-claude-read-no-file-change-2b2ae03e-c913-4bc5-9452-90bb1649fc23",
+    "payload": {
+      "turnId": "run-claude-read-no-file-change-2b2ae03e-c913-4bc5-9452-90bb1649fc23:turn:1777790968034"
+    },
+    "statusHint": "IDLE"
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "runId": "run-claude-read-no-file-change-2b2ae03e-c913-4bc5-9452-90bb1649fc23",
+    "payload": {
+      "new_status": "IDLE",
+      "old_status": "RUNNING",
+      "turnId": "run-claude-read-no-file-change-2b2ae03e-c913-4bc5-9452-90bb1649fc23:turn:1777790968034"
+    },
+    "statusHint": "IDLE"
+  }
+]

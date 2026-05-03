@@ -1,11 +1,14 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import type { AgentRunEvent } from "../../../domain/agent-run-event.js";
 import type { AgentOperationResult } from "../../../domain/agent-operation-result.js";
 import type { AgentRunBackend, AgentRunEventListener } from "../../agent-run-backend.js";
 import type { ClaudeSession } from "../session/claude-session.js";
 import { ClaudeSessionEventConverter } from "../events/claude-session-event-converter.js";
 import type { ClaudeRunContext } from "./claude-agent-run-context.js";
-import { dispatchRuntimeEvent } from "../../shared/runtime-event-dispatch.js";
+import { dispatchProcessedAgentRunEvents } from "../../../events/dispatch-processed-agent-run-events.js";
+
+const logger = {
+  error: (...args: unknown[]) => console.error(...args),
+};
 
 export class ClaudeAgentRunBackend implements AgentRunBackend {
   private readonly context: ClaudeRunContext;
@@ -134,13 +137,19 @@ export class ClaudeAgentRunBackend implements AgentRunBackend {
       if (convertedEvents.length === 0) {
         return;
       }
-      for (const convertedEvent of convertedEvents) {
-        this.lastStatus = convertedEvent.statusHint ?? this.lastStatus;
-        dispatchRuntimeEvent({
-          listeners: this.listeners,
-          event: convertedEvent,
-        });
-      }
+      void dispatchProcessedAgentRunEvents({
+        runContext: this.context,
+        listeners: this.listeners,
+        events: convertedEvents,
+      }).then(() => {
+        for (const convertedEvent of convertedEvents) {
+          this.lastStatus = convertedEvent.statusHint ?? this.lastStatus;
+        }
+      }).catch((error: unknown) => {
+        logger.error(
+          `Failed to process Claude runtime event for run '${this.runId}': ${String(error)}`,
+        );
+      });
     });
   }
 }

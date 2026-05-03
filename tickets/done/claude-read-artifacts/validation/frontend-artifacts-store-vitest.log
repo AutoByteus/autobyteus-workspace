@@ -1,0 +1,35 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts/autobyteus-web
+
+stdout | components/workspace/agent/__tests__/ArtifactsTab.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/fileChangeHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runFileChangesStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentStreaming/handlers/__tests__/fileChangeHandler.spec.ts > fileChangeHandler > upserts live file-change payloads into the dedicated store 2ms
+ ✓ services/agentStreaming/handlers/__tests__/fileChangeHandler.spec.ts > fileChangeHandler > preserves missing transient content as undefined 0ms
+ ✓ stores/__tests__/runFileChangesStore.spec.ts > RunFileChangesStore > announces a same-path retouch when a new invocation updates an existing row 2ms
+ ✓ stores/__tests__/runFileChangesStore.spec.ts > RunFileChangesStore > applies an explicit null content update so failed writes do not retain stale buffered drafts 0ms
+ ✓ stores/__tests__/runFileChangesStore.spec.ts > RunFileChangesStore > merges authoritative projection rows without dropping newer live rows 9ms
+ ✓ stores/__tests__/runFileChangesStore.spec.ts > RunFileChangesStore > replaces an older local row when the authoritative projection is newer 1ms
+stderr | components/workspace/agent/__tests__/ArtifactsTab.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/workspace/agent/__tests__/ArtifactsTab.spec.ts > ArtifactsTab.vue > renders with split pane layout 11ms
+ ✓ components/workspace/agent/__tests__/ArtifactsTab.spec.ts > ArtifactsTab.vue > passes the selected artifact to the viewer and retries on same-row clicks 4ms
+ ✓ components/workspace/agent/__tests__/ArtifactsTab.spec.ts > ArtifactsTab.vue > auto-selects the newest row when a newly visible artifact signal arrives 10ms
+
+ Test Files  3 passed (3)
+      Tests  9 passed (9)
+   Start at  06:11:36
+   Duration  4.89s (transform 1.71s, setup 5.19s, collect 2.58s, tests 42ms, environment 538ms, prepare 484ms)
+

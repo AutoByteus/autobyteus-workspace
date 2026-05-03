@@ -5,10 +5,9 @@ import {
   CodexThreadEventConverter,
 } from "../events/codex-thread-event-converter.js";
 import type { AgentOperationResult } from "../../../domain/agent-operation-result.js";
-import type { AgentRunEvent } from "../../../domain/agent-run-event.js";
 import type { AgentRunBackend, AgentRunEventListener } from "../../agent-run-backend.js";
 import type { CodexRunContext } from "./codex-agent-run-context.js";
-import { dispatchRuntimeEvent } from "../../shared/runtime-event-dispatch.js";
+import { dispatchProcessedAgentRunEvents } from "../../../events/dispatch-processed-agent-run-events.js";
 import type { CodexAppServerMessage } from "../thread/codex-app-server-message.js";
 
 const buildCommandFailure = (operation: string, error: unknown): AgentOperationResult => ({
@@ -40,7 +39,11 @@ export class CodexAgentRunBackend implements AgentRunBackend {
     this.eventConverter = new CodexThreadEventConverter(this.runId, this.codexThread.workingDirectory);
     this.unsubscribeFromThread = this.codexThread.subscribeAppServerMessages((event) => {
       try {
-        this.handleAppServerMessage(event);
+        void this.handleAppServerMessage(event).catch((error: unknown) => {
+          logger.error(
+            `Failed to process Codex app-server event for run '${this.runId}': ${String(error)}`,
+          );
+        });
       } catch (error) {
         logger.error(
           `Failed to process Codex app-server event for run '${this.runId}': ${String(error)}`,
@@ -156,14 +159,12 @@ export class CodexAgentRunBackend implements AgentRunBackend {
     return platformAgentRunId;
   }
 
-  private handleAppServerMessage(event: CodexAppServerMessage): void {
+  private async handleAppServerMessage(event: CodexAppServerMessage): Promise<void> {
     const convertedEvents = this.eventConverter.convert(event);
-
-    for (const convertedEvent of convertedEvents) {
-      dispatchRuntimeEvent({
-        listeners: this.listeners,
-        event: convertedEvent,
-      });
-    }
+    await dispatchProcessedAgentRunEvents({
+      runContext: this.runContext,
+      listeners: this.listeners,
+      events: convertedEvents,
+    });
   }
 }
