@@ -1,0 +1,25 @@
+Local macOS Electron build for user verification
+Date: 2026-05-03
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-interrupt-followup-ebadf
+Directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-interrupt-followup-ebadf/autobyteus-web
+README guidance reviewed: autobyteus-web/README.md Desktop Application Build and macOS Build With Logs (No Notarization).
+Command run: NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm build:electron:mac
+Note: initial shell pipeline used an invalid tee output path, so the wrapper pipeline exited non-zero after the build output, but the Electron build itself reached "Build completed" and produced the artifacts below. Artifact existence and checksums were verified afterward.
+
+Artifacts:
+- /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-interrupt-followup-ebadf/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.91.dmg
+- /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-interrupt-followup-ebadf/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.91.zip
+- /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-interrupt-followup-ebadf/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.91.dmg.blockmap
+- /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-interrupt-followup-ebadf/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.91.zip.blockmap
+
+Sizes:
+- DMG: 358M
+- ZIP: 356M
+
+SHA-256:
+- DMG: ba806a491a7a3ceb9af72cb7b1abea02267e8c24d7030c06a8d83f4502ed3370
+- ZIP: 53ec1ac51feba8c28f514dfce27bc0a7dc2d59a20e2f661e27f2925f2623a20e
+
+Follow-up verification command:
+ls -lh electron-dist/AutoByteus_personal_macos-arm64-1.2.91.* && shasum -a 256 electron-dist/AutoByteus_personal_macos-arm64-1.2.91.dmg electron-dist/AutoByteus_personal_macos-arm64-1.2.91.zip
+Result: artifacts present and checksums computed successfully.

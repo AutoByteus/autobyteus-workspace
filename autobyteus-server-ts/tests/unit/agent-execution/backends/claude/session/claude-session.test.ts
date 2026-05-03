@@ -9,19 +9,68 @@ import { ClaudeSession } from "../../../../../../src/agent-execution/backends/cl
 import { ClaudeSessionMessageCache } from "../../../../../../src/agent-execution/backends/claude/session/claude-session-message-cache.js";
 import { ClaudeSessionToolUseCoordinator } from "../../../../../../src/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.js";
 import { ClaudeSessionEventName } from "../../../../../../src/agent-execution/backends/claude/events/claude-session-event-name.js";
+import { buildConfiguredAgentToolExposure } from "../../../../../../src/agent-execution/shared/configured-agent-tool-exposure.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
+import type { ClaudeSdkQueryLike } from "../../../../../../src/runtime-management/claude/client/claude-sdk-client.js";
+
+const waitFor = async (predicate: () => boolean, label: string): Promise<void> => {
+  const deadline = Date.now() + 1_000;
+  while (Date.now() < deadline) {
+    if (predicate()) {
+      return;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  }
+  throw new Error(`Timed out waiting for ${label}`);
+};
+
+const createResultQuery = (): ClaudeSdkQueryLike => ({
+  async *[Symbol.asyncIterator]() {
+    yield {
+      type: "result",
+      session_id: "claude-session-1",
+      result: "done",
+    };
+  },
+  interrupt: vi.fn(async () => undefined),
+  close: vi.fn(() => undefined),
+});
+
+const createManuallySettledQuery = (): {
+  query: ClaudeSdkQueryLike;
+  release: () => void;
+} => {
+  let release!: () => void;
+  const released = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  const query = {
+    async *[Symbol.asyncIterator]() {
+      await released;
+    },
+    interrupt: vi.fn(async () => undefined),
+    close: vi.fn(() => undefined),
+  };
+  return { query, release };
+};
 
 const createSession = (input: {
   activeTurnId?: string | null;
   sessionId?: string;
   autoExecuteTools?: boolean;
+  query?: ClaudeSdkQueryLike;
 } = {}) => {
   const sessionMessageCache = new ClaudeSessionMessageCache();
   const interruptQuery = vi.fn(async () => undefined);
+  const startQueryTurn = vi.fn(async () => input.query ?? createResultQuery());
+  const closeQuery = vi.fn((query: ClaudeSdkQueryLike | null) => {
+    query?.close();
+  });
   const terminateRunSession = vi.fn(async () => undefined);
   const clearPendingToolApprovals = vi.fn();
   const toolingCoordinator = new ClaudeSessionToolUseCoordinator(new Map(), new Map(), () => {});
   toolingCoordinator.clearPendingToolApprovals = clearPendingToolApprovals;
+  const activeQueriesByRunId = new Map<string, ClaudeSdkQueryLike>();
 
   const runContext = new AgentRunContext({
     runId: "run-1",
@@ -38,6 +87,7 @@ const createSession = (input: {
         workingDirectory: "/tmp",
         permissionMode: "default",
       }),
+      configuredToolExposure: buildConfiguredAgentToolExposure([]),
       sessionId: input.sessionId ?? "run-1",
       activeTurnId: input.activeTurnId ?? null,
     }),
@@ -48,9 +98,11 @@ const createSession = (input: {
     dependencies: {
       sessionMessageCache,
       sdkClient: {
+        startQueryTurn,
         interruptQuery,
+        closeQuery,
       } as never,
-      activeQueriesByRunId: new Map(),
+      activeQueriesByRunId,
       toolingCoordinator,
       isRunSessionActive: () => true,
       terminateRunSession,
@@ -60,9 +112,12 @@ const createSession = (input: {
   return {
     session,
     sessionMessageCache,
+    startQueryTurn,
     interruptQuery,
+    closeQuery,
     terminateRunSession,
     clearPendingToolApprovals,
+    activeQueriesByRunId,
   };
 };
 
@@ -75,9 +130,89 @@ describe("ClaudeSession", () => {
     );
   });
 
-  it("interrupts the active turn, clears pending approvals, and emits TURN_INTERRUPTED", async () => {
+  it("settles an interrupted active turn before emitting TURN_INTERRUPTED", async () => {
+    const controlledQuery = createManuallySettledQuery();
+    const {
+      session,
+      sessionMessageCache,
+      startQueryTurn,
+      interruptQuery,
+      closeQuery,
+      clearPendingToolApprovals,
+      activeQueriesByRunId,
+    } = createSession({
+      query: controlledQuery.query,
+    });
+
+    const events: Array<{ method: string; activeTurnId: string | null }> = [];
+    session.subscribeRuntimeEvents((event) => {
+      events.push({
+        method: event.method,
+        activeTurnId: session.activeTurnId,
+      });
+    });
+
+    const { turnId } = await session.sendTurn(new AgentInputUserMessage("hello"));
+    await waitFor(
+      () => activeQueriesByRunId.get("run-1") === controlledQuery.query,
+      "active Claude query registration",
+    );
+
+    const startQueryOptions = startQueryTurn.mock.calls[0]?.[0] as {
+      abortController?: AbortController;
+    };
+    expect(startQueryOptions.abortController).toBeInstanceOf(AbortController);
+    clearPendingToolApprovals.mockImplementation(() => {
+      expect(startQueryOptions.abortController?.signal.aborted).toBe(false);
+    });
+    closeQuery.mockImplementation((query: ClaudeSdkQueryLike | null) => {
+      expect(startQueryOptions.abortController?.signal.aborted).toBe(true);
+      query?.close();
+    });
+
+    const interruptPromise = session.interrupt();
+    await waitFor(() => closeQuery.mock.calls.length === 1, "interrupt query close");
+
+    expect(startQueryOptions.abortController?.signal.aborted).toBe(true);
+    expect(clearPendingToolApprovals).toHaveBeenCalledWith(
+      "run-1",
+      "Tool approval interrupted.",
+    );
+    expect(interruptQuery).not.toHaveBeenCalled();
+    expect(events.some((event) => event.method === ClaudeSessionEventName.TURN_INTERRUPTED)).toBe(
+      false,
+    );
+    expect(session.activeTurnId).toBe(turnId);
+
+    controlledQuery.release();
+    await interruptPromise;
+
+    const eventMethods = events.map((event) => event.method);
+    expect(eventMethods).toContain(ClaudeSessionEventName.TURN_STARTED);
+    expect(eventMethods).toContain(ClaudeSessionEventName.TURN_INTERRUPTED);
+    expect(eventMethods).not.toContain(ClaudeSessionEventName.ERROR);
+    expect(eventMethods).not.toContain(ClaudeSessionEventName.ITEM_OUTPUT_TEXT_COMPLETED);
+    expect(eventMethods).not.toContain(ClaudeSessionEventName.TURN_COMPLETED);
+    expect(
+      events.find((event) => event.method === ClaudeSessionEventName.TURN_INTERRUPTED)
+        ?.activeTurnId,
+    ).toBeNull();
+    expect(session.activeAbortController).toBe(null);
+    expect(session.activeTurnId).toBeNull();
+    expect(session.hasCompletedTurn).toBe(false);
+    expect(activeQueriesByRunId.has("run-1")).toBe(false);
+    expect(closeQuery).toHaveBeenCalledTimes(1);
+    expect(sessionMessageCache.getCachedMessages("run-1")).toEqual([
+      expect.objectContaining({
+        role: "user",
+        content: "hello",
+      }),
+    ]);
+  });
+
+  it("treats interrupt without an active turn execution as an idempotent cleanup no-op", async () => {
     const { session, interruptQuery, clearPendingToolApprovals } = createSession({
-      activeTurnId: "run-1:turn:active",
+      activeTurnId: "run-1:turn:stale",
     });
     const abortController = new AbortController();
     session.setActiveAbortController(abortController);
@@ -94,9 +229,10 @@ describe("ClaudeSession", () => {
       "run-1",
       "Tool approval interrupted.",
     );
-    expect(interruptQuery).toHaveBeenCalledWith(null);
-    expect(events).toContain(ClaudeSessionEventName.TURN_INTERRUPTED);
+    expect(interruptQuery).not.toHaveBeenCalled();
+    expect(events).not.toContain(ClaudeSessionEventName.TURN_INTERRUPTED);
     expect(session.activeAbortController).toBe(null);
+    expect(session.activeTurnId).toBeNull();
   });
 
   it("delegates terminate to the session manager dependency", async () => {

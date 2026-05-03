@@ -64,6 +64,59 @@ const sendTeamMessageOverSocket = (
   );
 };
 
+const sendStopGenerationOverSocket = (socket: WebSocket): void => {
+  socket.send(JSON.stringify({ type: "STOP_GENERATION" }));
+};
+
+type TeamStreamMessage = { type: string; payload: Record<string, unknown> };
+
+const captureTeamStreamMessage = (
+  messages: TeamStreamMessage[],
+  raw: WebSocket.RawData,
+): void => {
+  try {
+    const parsed = JSON.parse(String(raw)) as {
+      type?: unknown;
+      payload?: unknown;
+    };
+    if (typeof parsed.type !== "string") {
+      return;
+    }
+    const payload =
+      parsed.payload && typeof parsed.payload === "object" && !Array.isArray(parsed.payload)
+        ? (parsed.payload as Record<string, unknown>)
+        : {};
+    messages.push({
+      type: parsed.type,
+      payload,
+    });
+  } catch {
+    // ignore malformed rows in test stream capture
+  }
+};
+
+const waitForTeamStreamMessageAfter = async (
+  messages: TeamStreamMessage[],
+  startIndex: number,
+  predicate: (message: TeamStreamMessage) => boolean,
+  label: string,
+  timeoutMs = 120_000,
+): Promise<TeamStreamMessage> => {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    const matching = messages.slice(startIndex).find(predicate);
+    if (matching) {
+      return matching;
+    }
+    await wait(500);
+  }
+  const preview = messages
+    .slice(Math.max(0, messages.length - 30))
+    .map((entry) => `${entry.type}:${JSON.stringify(entry.payload).slice(0, 220)}`)
+    .join(" | ");
+  throw new Error(`Timed out waiting for team websocket event '${label}'. preview='${preview}'`);
+};
+
 describeClaudeRuntime("Claude team inter-agent roundtrip e2e (live transport)", () => {
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
@@ -711,6 +764,230 @@ Rules:
       }
     },
     180_000,
+  );
+
+  it(
+    "interrupts a pending Claude team turn and accepts a follow-up on the same websocket",
+    async () => {
+      const unique = randomUUID();
+      const modelIdentifier = await fetchPreferredClaudeToolModelIdentifier();
+      const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "claude-team-interrupt-e2e-"));
+      createdWorkspaceRoots.add(workspaceRootPath);
+
+      const createAgentDefinitionMutation = `
+        mutation CreateAgentDefinition($input: CreateAgentDefinitionInput!) {
+          createAgentDefinition(input: $input) {
+            id
+          }
+        }
+      `;
+      const workerAgentDefResult = await execGraphql<{ createAgentDefinition: { id: string } }>(
+        createAgentDefinitionMutation,
+        {
+          input: {
+            name: `claude-interrupt-worker-${unique}`,
+            role: "assistant",
+            description: "Claude worker for interrupt and follow-up validation.",
+            instructions: `
+You are validating interruption behavior.
+
+Rules:
+1. Follow the user's instruction exactly.
+2. If asked to create a file, call the write_file tool exactly once and do not simulate it in text.
+3. If asked to reply with a token, do not call tools; reply with exactly that token and nothing else.
+4. Keep all non-tool text minimal.
+`,
+            toolNames: ["write_file"],
+          },
+        },
+      );
+      const workerAgentDefinitionId = workerAgentDefResult.createAgentDefinition.id;
+      createdAgentDefinitionIds.add(workerAgentDefinitionId);
+
+      const createTeamDefinitionMutation = `
+        mutation CreateAgentTeamDefinition($input: CreateAgentTeamDefinitionInput!) {
+          createAgentTeamDefinition(input: $input) {
+            id
+          }
+        }
+      `;
+      const teamDefinitionResult = await execGraphql<{ createAgentTeamDefinition: { id: string } }>(
+        createTeamDefinitionMutation,
+        {
+          input: {
+            name: `claude-interrupt-team-${unique}`,
+            description: "Live Claude team interrupt/follow-up validation team.",
+            instructions: "Route direct user requests to the worker member.",
+            coordinatorMemberName: "worker",
+            nodes: [
+              {
+                memberName: "worker",
+                ref: workerAgentDefinitionId,
+                refType: "AGENT",
+                refScope: "SHARED",
+              },
+            ],
+          },
+        },
+      );
+      const teamDefinitionId = teamDefinitionResult.createAgentTeamDefinition.id;
+      createdTeamDefinitionIds.add(teamDefinitionId);
+
+      const createTeamRunMutation = `
+        mutation CreateAgentTeamRun($input: CreateAgentTeamRunInput!) {
+          createAgentTeamRun(input: $input) {
+            success
+            message
+            teamRunId
+          }
+        }
+      `;
+      const createTeamRunResult = await execGraphql<{
+        createAgentTeamRun: { success: boolean; message: string; teamRunId: string | null };
+      }>(createTeamRunMutation, {
+        input: {
+          teamDefinitionId,
+          memberConfigs: [
+            {
+              memberName: "worker",
+              agentDefinitionId: workerAgentDefinitionId,
+              llmModelIdentifier: modelIdentifier,
+              autoExecuteTools: false,
+              skillAccessMode: "NONE",
+              runtimeKind: "claude_agent_sdk",
+              workspaceRootPath,
+            },
+          ],
+        },
+      });
+
+      expect(createTeamRunResult.createAgentTeamRun.success).toBe(true);
+      expect(createTeamRunResult.createAgentTeamRun.teamRunId).toBeTruthy();
+      const teamRunId = createTeamRunResult.createAgentTeamRun.teamRunId as string;
+      createdTeamRunIds.add(teamRunId);
+
+      const streamApp = fastify();
+      await streamApp.register(websocket);
+      await registerAgentWebsocket(streamApp);
+      const streamAddress = await streamApp.listen({ port: 0, host: "127.0.0.1" });
+      const streamUrl = new URL(streamAddress);
+      const teamSocket = new WebSocket(
+        `ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`,
+      );
+      await waitForSocketOpen(teamSocket);
+      const streamMessages: TeamStreamMessage[] = [];
+      teamSocket.on("message", (raw) => {
+        captureTeamStreamMessage(streamMessages, raw);
+      });
+
+      const approvalTargetRelativePath = `interrupt-${randomUUID().replace(/-/g, "_")}.txt`;
+      const approvalContent = `INTERRUPT_TOOL_CONTENT_${randomUUID().replace(/-/g, "_")}`;
+      const followUpToken = `CLAUDE_INTERRUPT_FOLLOWUP_${randomUUID().replace(/-/g, "_")}`;
+      const hasWorkerTokenResponse = (messages: TeamStreamMessage[]): boolean =>
+        messages.some(
+          (message) =>
+            ["SEGMENT_CONTENT", "SEGMENT_END", "ASSISTANT_COMPLETE"].includes(message.type) &&
+            message.payload.agent_name === "worker" &&
+            JSON.stringify(message.payload).includes(followUpToken),
+        );
+      const isForbiddenRuntimeFailure = (message: TeamStreamMessage): boolean => {
+        const serializedPayload = JSON.stringify(message.payload);
+        return (
+          message.type === "ERROR" ||
+          serializedPayload.includes("spawn EBADF") ||
+          serializedPayload.includes("CLAUDE_RUNTIME_TURN_FAILED")
+        );
+      };
+
+      try {
+        const toolTurnStartIndex = streamMessages.length;
+        sendTeamMessageOverSocket(teamSocket, {
+          targetMemberName: "worker",
+          content:
+            `Create the file ${approvalTargetRelativePath} with exactly this content: ${approvalContent}. ` +
+            "Use the write_file tool exactly once, use a relative path, and do not answer with plain text.",
+        });
+
+        await waitForTeamStreamMessageAfter(
+          streamMessages,
+          toolTurnStartIndex,
+          (message) =>
+            message.type === "TOOL_APPROVAL_REQUESTED" &&
+            message.payload.agent_name === "worker",
+          "worker TOOL_APPROVAL_REQUESTED before interrupt",
+        );
+
+        const interruptStartIndex = streamMessages.length;
+        sendStopGenerationOverSocket(teamSocket);
+
+        await waitForTeamStreamMessageAfter(
+          streamMessages,
+          interruptStartIndex,
+          (message) =>
+            message.type === "TURN_COMPLETED" &&
+            message.payload.agent_name === "worker",
+          "worker interrupted TURN_COMPLETED projection",
+        );
+        await waitForTeamStreamMessageAfter(
+          streamMessages,
+          interruptStartIndex,
+          (message) =>
+            message.type === "AGENT_STATUS" &&
+            message.payload.agent_name === "worker" &&
+            message.payload.new_status === "IDLE",
+          "worker AGENT_STATUS IDLE after interrupt",
+        );
+
+        const interruptedWindow = streamMessages.slice(interruptStartIndex);
+        expect(
+          interruptedWindow.some(
+            (message) =>
+              message.type === "ASSISTANT_COMPLETE" &&
+              message.payload.agent_name === "worker",
+          ),
+        ).toBe(false);
+
+        const followUpStartIndex = streamMessages.length;
+        sendTeamMessageOverSocket(teamSocket, {
+          targetMemberName: "worker",
+          content: `Reply with exactly ${followUpToken} and nothing else. Do not use tools.`,
+        });
+
+        await waitForTeamStreamMessageAfter(
+          streamMessages,
+          followUpStartIndex,
+          (message) =>
+            message.type === "TURN_STARTED" &&
+            message.payload.agent_name === "worker",
+          "worker follow-up TURN_STARTED",
+        );
+        const followUpDeadline = Date.now() + 120_000;
+        while (Date.now() < followUpDeadline) {
+          if (hasWorkerTokenResponse(streamMessages.slice(followUpStartIndex))) {
+            break;
+          }
+          await wait(1_000);
+        }
+        expect(hasWorkerTokenResponse(streamMessages.slice(followUpStartIndex))).toBe(true);
+        await waitForTeamStreamMessageAfter(
+          streamMessages,
+          followUpStartIndex,
+          (message) =>
+            message.type === "AGENT_STATUS" &&
+            message.payload.agent_name === "worker" &&
+            message.payload.new_status === "IDLE",
+          "worker AGENT_STATUS IDLE after follow-up",
+        );
+
+        const forbiddenFailuresAfterInterrupt =
+          streamMessages.slice(interruptStartIndex).filter(isForbiddenRuntimeFailure);
+        expect(forbiddenFailuresAfterInterrupt).toHaveLength(0);
+      } finally {
+        teamSocket.close();
+        await streamApp.close();
+      }
+    },
+    240_000,
   );
 
   it(

@@ -47,6 +47,20 @@ export type ClaudeSdkCanUseTool = (
   options: ClaudeSdkCanUseToolOptions,
 ) => Promise<Record<string, unknown>>;
 
+export type ClaudeSdkStartQueryTurnOptions = {
+  prompt: string;
+  sessionId?: string | null;
+  model: string;
+  workingDirectory: string | null;
+  env?: Record<string, string | undefined>;
+  mcpServers?: Record<string, unknown> | null;
+  allowedTools?: Iterable<string> | null;
+  permissionMode?: ClaudeSdkPermissionMode;
+  autoExecuteTools?: boolean;
+  canUseTool?: ClaudeSdkCanUseTool;
+  abortController?: AbortController;
+};
+
 export type ClaudeSdkQueryLike = AsyncIterable<unknown> & {
   interrupt: () => Promise<void>;
   close: () => void;
@@ -206,18 +220,7 @@ export class ClaudeSdkClient {
     }
   }
 
-  async startQueryTurn(options: {
-    prompt: string;
-    sessionId?: string | null;
-    model: string;
-    workingDirectory: string | null;
-    env?: Record<string, string | undefined>;
-    mcpServers?: Record<string, unknown> | null;
-    allowedTools?: Iterable<string> | null;
-    permissionMode?: ClaudeSdkPermissionMode;
-    autoExecuteTools?: boolean;
-    canUseTool?: ClaudeSdkCanUseTool;
-  }): Promise<ClaudeSdkQueryLike> {
+  async startQueryTurn(options: ClaudeSdkStartQueryTurnOptions): Promise<ClaudeSdkQueryLike> {
     const sdk = await this.loadModuleSafe();
     const queryFn = this.resolveFunction(sdk, "query");
     if (!queryFn) {
@@ -244,7 +247,11 @@ export class ClaudeSdkClient {
     if (!query) {
       return;
     }
-    query.close();
+    try {
+      query.close();
+    } catch {
+      // best-effort cleanup
+    }
   }
 
   async createToolDefinition(options: {
@@ -343,18 +350,7 @@ export class ClaudeSdkClient {
     return null;
   }
 
-  private buildQueryOptions(options: {
-    prompt: string;
-    sessionId?: string | null;
-    model: string;
-    workingDirectory: string | null;
-    env?: Record<string, string | undefined>;
-    mcpServers?: Record<string, unknown> | null;
-    allowedTools?: Iterable<string> | null;
-    permissionMode?: ClaudeSdkPermissionMode;
-    autoExecuteTools?: boolean;
-    canUseTool?: ClaudeSdkCanUseTool;
-  }): Record<string, unknown> {
+  private buildQueryOptions(options: ClaudeSdkStartQueryTurnOptions): Record<string, unknown> {
     const pathToClaudeCodeExecutable = resolveClaudeCodeExecutablePath();
     const sdkSpawnEnvironment = options.env ?? buildClaudeSdkSpawnEnvironment();
     const settingSources = getClaudeRuntimeSettingSources();
@@ -375,6 +371,7 @@ export class ClaudeSdkClient {
       ...(allowedTools.size > 0 ? { allowedTools: [...allowedTools] } : {}),
       ...(options.sessionId ? { resume: options.sessionId } : {}),
       ...(options.mcpServers ? { mcpServers: options.mcpServers } : {}),
+      ...(options.abortController ? { abortController: options.abortController } : {}),
       settingSources,
       ...(options.canUseTool
         ? { canUseTool: options.canUseTool }

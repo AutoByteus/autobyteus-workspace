@@ -431,14 +431,6 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       }
 
       service.stopGeneration();
-
-      if (activeTeam?.teamRunId === resolvedTeamRunId) {
-        const focusedMember = teamContextsStore.focusedMemberContext;
-        if (focusedMember) {
-          focusedMember.isSending = false;
-        }
-      }
-
       return true;
     },
   },

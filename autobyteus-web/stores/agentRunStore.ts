@@ -343,11 +343,6 @@ export const useAgentRunStore = defineStore('agentRun', {
       }
 
       service.stopGeneration();
-
-      const context = agentContextsStore.getRun(resolvedRunId);
-      if (context) {
-        context.isSending = false;
-      }
       return true;
     },
 
