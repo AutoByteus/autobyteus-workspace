@@ -34,8 +34,8 @@ pnpm -C autobyteus-web build:electron:mac -- --arm64
 - Architecture: `macOS ARM64`
 - Version: `1.2.92`
 - Signing/notarization: local unsigned build; log records `skipped macOS code signing` because signing identity is explicitly null.
-- Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/logs/delivery/electron-build-mac-arm64-personal-20260503T081717Z.log`
-- Latest log alias: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/logs/delivery/electron-build-mac-arm64-personal-latest.log`
+- Log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/logs/delivery/electron-build-mac-arm64-personal-20260503T081717Z.log`
+- Latest log alias: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/logs/delivery/electron-build-mac-arm64-personal-latest.log`
 
 ## Test Artifacts
 
@@ -50,6 +50,9 @@ pnpm -C autobyteus-web build:electron:mac -- --arm64
 
 ## Notes For User Testing
 
-- Prefer the DMG for installation-style testing: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.92.dmg`.
-- The ZIP and app bundle are also available under `autobyteus-web/electron-dist/`.
-- This is a local unsigned/not-notarized build, so macOS may require explicit approval to open it.
+- User verification already used the local unsigned/not-notarized build. macOS may require explicit approval to open equivalent local builds.
+- The listed DMG/ZIP/app-bundle paths are retained as build-time evidence; they were removed with the dedicated worktree during cleanup.
+
+## Cleanup Note
+
+The DMG/ZIP/app-bundle paths above are build-time paths from the dedicated ticket worktree. After user verification and release completion, that dedicated worktree was removed during post-finalization cleanup; checksums and build logs are retained in this ticket artifact.

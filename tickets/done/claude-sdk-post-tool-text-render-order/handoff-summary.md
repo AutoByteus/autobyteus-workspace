@@ -1,10 +1,10 @@
 # Handoff Summary - claude-sdk-post-tool-text-render-order
 
-- Stage: User verified; finalization and release in progress
+- Stage: Finalized and released
 - Date: 2026-05-03
 - Ticket state: `tickets/done/claude-sdk-post-tool-text-render-order`
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order`
-- Branch: `codex/claude-sdk-post-tool-text-render-order`
+- Original worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order` (removed during cleanup)
+- Branch: `codex/claude-sdk-post-tool-text-render-order` (local and remote branches deleted after merge)
 - Finalization target: `personal` / `origin/personal`
 
 ## Delivered
@@ -52,52 +52,64 @@
 
 ## Long-Lived Docs Updated
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/autobyteus-server-ts/docs/modules/agent_execution.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/autobyteus-server-ts/docs/modules/agent_streaming.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/autobyteus-web/docs/agent_execution_architecture.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/modules/agent_execution.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/modules/agent_streaming.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/agent_execution_architecture.md`
 
-Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/docs-sync-report.md`
-Release notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/release-notes.md`
-Delivery/release report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/release-deployment-report.md`
+Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/docs-sync-report.md`
+Release notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/release-notes.md`
+Delivery/release report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/release-deployment-report.md`
 
 ## Local Electron Test Build
 
 - Status: `Built successfully for user verification`
-- Build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/electron-test-build-report.md`
-- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/logs/delivery/electron-build-mac-arm64-personal-20260503T081717Z.log`
-- Latest log alias: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/logs/delivery/electron-build-mac-arm64-personal-latest.log`
-- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.92.dmg`
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.92.zip`
+- Build report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/electron-test-build-report.md`
+- Build log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/logs/delivery/electron-build-mac-arm64-personal-20260503T081717Z.log`
+- Latest log alias: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/logs/delivery/electron-build-mac-arm64-personal-latest.log`
+- DMG: build-time artifact was produced in the dedicated ticket worktree and removed with that worktree after user verification
+- ZIP: build-time artifact was produced in the dedicated ticket worktree and removed with that worktree after user verification
 - Notes: macOS ARM64 personal build, unsigned/not notarized, created with `AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm -C autobyteus-web build:electron:mac -- --arm64`.
 
 ## Residual / Accepted Scope
 
 - Full browser visual E2E was not run. API/E2E validation intentionally covered the live runtime, team websocket mapping, memory projection, and frontend reducer contracts that own this behavior.
 - Live partial-message mode was not exposed by the current runtime path; deterministic partial `stream_event` coalescing coverage passed.
-- No database migration, installer migration, or restart behavior is part of this ticket. A new patch release is being prepared after user verification.
+- No database migration, installer migration, or restart behavior is part of this ticket. Release `v1.2.93` completed successfully.
 
 ## User Verification
 
-User verification passed for the local Electron build. Repository finalization and release are now in progress per user request.
+User verification passed for the local Electron build. Repository finalization and release completed per user request.
+
+## Finalization Result
+
+- Ticket branch archive commit: `882b877ebd85bf6373d3bf6d3818c7abb9f22571` (`docs(ticket): archive claude text order ticket`).
+- Ticket branch push: `Completed`; remote branch later deleted after merge.
+- Merge into `personal`: `14abaa438ea35d726d31e2c422ffaac8c7942d6c` (`merge: claude text segment ordering`).
+- Target branch push: `Completed`; `origin/personal` was updated through the merge and then release commit.
+- Release commit: `bdba4d356067d112a6b4128c3b94aba60ec6ed7a` (`chore(release): bump workspace release version to 1.2.93`).
+- Annotated tag: `v1.2.93` (tag object `2c86100e162f9bdd3c4217d01492d1883f9397ca`) pointing to `bdba4d356067d112a6b4128c3b94aba60ec6ed7a`.
+- GitHub Release: `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.2.93` (published, non-prerelease).
+- Release workflows: `Release Messaging Gateway` run `25274425461`, `Server Docker Release` run `25274425469`, and `Desktop Release` run `25274425463` all completed successfully.
+- Cleanup: `Completed`; dedicated ticket worktree removed, worktrees pruned, and local/remote ticket branches deleted.
 
 ## Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/design-review-report.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/implementation-handoff.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/review-report.md`
-- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/api-e2e-validation-report.md`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/docs-sync-report.md`
-- Release notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/release-notes.md`
-Delivery/release report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/release-deployment-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/design-review-report.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/implementation-handoff.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/review-report.md`
+- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/api-e2e-validation-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/docs-sync-report.md`
+- Release notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/release-notes.md`
+Delivery/release report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/release-deployment-report.md`
 
 ## Live Validation Evidence
 
-- Single-agent live Claude probe output: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/claude-text-tool-text-probe-output.json`
-- Team streaming live Claude probe output: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/claude-team-text-tool-text-probe-output.json`
-- Memory trace live Claude probe output: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/claude-memory-trace-probe-output.json`
-- Raw memory traces: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/memory-traces/raw_traces.jsonl`
-- Working context snapshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/memory-traces/working_context_snapshot.json`
-- Raw Claude SDK event logs directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/raw-events/`
+- Single-agent live Claude probe output: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/claude-text-tool-text-probe-output.json`
+- Team streaming live Claude probe output: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/claude-team-text-tool-text-probe-output.json`
+- Memory trace live Claude probe output: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/claude-memory-trace-probe-output.json`
+- Raw memory traces: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/memory-traces/raw_traces.jsonl`
+- Working context snapshot: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/memory-traces/working_context_snapshot.json`
+- Raw Claude SDK event logs directory: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/raw-events/`

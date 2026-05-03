@@ -21,10 +21,10 @@ The user provided screenshots showing a single agent run using Claude Agent SDK.
 ## Environment Discovery / Bootstrap Context
 
 - Project Type (`Git`/`Non-Git`): Git
-- Task Workspace Root: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order
-- Task Artifact Folder: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order
+- Task Workspace Root: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+- Task Artifact Folder: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order
 - Current Branch: codex/claude-sdk-post-tool-text-render-order
-- Current Worktree / Working Directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order
+- Current Worktree / Working Directory: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
 - Bootstrap Base Branch: origin/personal
 - Remote Refresh Result: `git fetch origin personal` succeeded on 2026-05-03
 - Task Branch: codex/claude-sdk-post-tool-text-render-order
@@ -38,7 +38,7 @@ The user provided screenshots showing a single agent run using Claude Agent SDK.
 | Date | Source Type (`Code`/`Doc`/`Spec`/`Web`/`Repo`/`Issue`/`Command`/`Trace`/`Log`/`Data`/`Setup`/`Other`) | Exact Source / Query / Command | Why Consulted | Relevant Findings | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- |
 | 2026-05-03 | Command | `pwd`; `git rev-parse --show-toplevel`; `git status --short --branch`; `ls -la` in `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo` | Bootstrap workspace and repo state | Shared checkout is branch `personal`; untracked `.claude/`; monorepo root identified. | No |
-| 2026-05-03 | Command | `git remote show origin`; `git worktree list --porcelain`; `git fetch origin personal`; `git worktree add -b codex/claude-sdk-post-tool-text-render-order /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order origin/personal` | Resolve base branch, refresh remote, create dedicated task worktree | Origin HEAD branch is `personal`; created dedicated worktree at `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order`. | No |
+| 2026-05-03 | Command | `git remote show origin`; `git worktree list --porcelain`; `git fetch origin personal`; `git worktree add -b codex/claude-sdk-post-tool-text-render-order /Users/normy/autobyteus_org/autobyteus-workspace-superrepo origin/personal` | Resolve base branch, refresh remote, create dedicated task worktree | Origin HEAD branch is `personal`; created dedicated worktree at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`. | No |
 | 2026-05-03 | Other | User screenshots in prompt | Establish observed symptom | Text conclusion appears above tool-call cards in focus/history display for a Claude Agent SDK run. | No |
 | 2026-05-03 | Code | `autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts` lines 370-511 | Locate Claude SDK turn loop and UI-facing text event emission | All normalized text deltas emit `ITEM_OUTPUT_TEXT_DELTA` with `id: options.turnId`; end emits one `ITEM_OUTPUT_TEXT_COMPLETED` with the same turn id and aggregate `assistantOutput`. | Implement provider-derived text segment ids and per-segment completion. |
 | 2026-05-03 | Code | `autobyteus-server-ts/src/agent-execution/backends/claude/events/claude-session-event-converter.ts` lines 134-157 | Confirm server `AgentRunEvent` projection | Claude text delta/completed events are mapped to `SEGMENT_CONTENT`/`SEGMENT_END` with `segment_type: "text"` and the same id they received from `ClaudeSession`. | Converter can stay thin if session emits correct ids. |
@@ -121,7 +121,7 @@ The user provided screenshots showing a single agent run using Claude Agent SDK.
 - Required services, mocks, emulators, or fixtures: A deterministic unit fixture can mock the Claude SDK query; live Claude SDK is not required for the core failing-before-fix regression.
 - Required config, feature flags, env vars, or accounts: None for unit/contract tests. Existing live integration tests remain gated by `RUN_CLAUDE_E2E=1`.
 - External repos, samples, or artifacts cloned/downloaded for investigation: None.
-- Setup commands that materially affected the investigation: `git fetch origin personal`; `git worktree add -b codex/claude-sdk-post-tool-text-render-order /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order origin/personal`.
+- Setup commands that materially affected the investigation: `git fetch origin personal`; `git worktree add -b codex/claude-sdk-post-tool-text-render-order /Users/normy/autobyteus_org/autobyteus-workspace-superrepo origin/personal`.
 - Cleanup notes for temporary investigation-only setup: None.
 
 ## Findings From Code / Docs / Data / Logs

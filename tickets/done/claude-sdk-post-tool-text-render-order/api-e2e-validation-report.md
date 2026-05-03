@@ -2,12 +2,12 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/implementation-handoff.md`
+- Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/review-report.md`
 - Current Validation Round: 1
 - Trigger: Code review pass; requested live/API/E2E validation for Claude SDK post-tool text render-order fix.
 - Prior Round Reviewed: N/A
@@ -56,7 +56,7 @@ Additional evidence:
 
 ## Platform / Runtime Targets
 
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order`
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Branch: `codex/claude-sdk-post-tool-text-render-order`
 - OS/runtime: `Darwin MacBookPro 25.2.0 ... RELEASE_ARM64_T6000 arm64`
 - Node: `v22.21.1`
@@ -99,7 +99,7 @@ Out of scope:
 
 - Dependencies were already installed in the worktree from implementation handoff setup.
 - Live probes used local Claude Code authentication/runtime state available to the SDK; no API keys were printed or recorded.
-- Live probes wrote evidence under `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/`.
+- Live probes wrote evidence under `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/`.
 - Temporary vitest configs and probe files used for team/memory validation were created under `/tmp` or transiently in the ticket folder and removed after execution.
 
 ## Tests Implemented Or Updated
@@ -117,14 +117,14 @@ The implementation already added/updated durable boundary-local tests before cod
 
 ## Other Validation Artifacts
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/claude-text-tool-text-probe-output.json`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/claude-team-text-tool-text-probe-output.json`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/claude-memory-trace-probe-output.json`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/memory-traces/raw_traces.jsonl`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/memory-traces/working_context_snapshot.json`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/raw-events/claude-run-run-claude-text-tool-text-probe-754096a5-3b13-474c-bc6e-1ce5d70f9b42.jsonl`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/raw-events/claude-run-probe_2cecd863ddcb5554.jsonl`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/raw-events/claude-run-run-claude-memory-trace-probe-0386fd96-7f93-4e81-bbb8-195f8b23fc42.jsonl`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/claude-text-tool-text-probe-output.json`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/claude-team-text-tool-text-probe-output.json`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/claude-memory-trace-probe-output.json`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/memory-traces/raw_traces.jsonl`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/memory-traces/working_context_snapshot.json`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/raw-events/claude-run-run-claude-text-tool-text-probe-754096a5-3b13-474c-bc6e-1ce5d70f9b42.jsonl`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/raw-events/claude-run-probe_2cecd863ddcb5554.jsonl`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/raw-events/claude-run-run-claude-memory-trace-probe-0386fd96-7f93-4e81-bbb8-195f8b23fc42.jsonl`
 
 ## Temporary Validation Methods / Scaffolding
 
@@ -152,8 +152,8 @@ The implementation already added/updated durable boundary-local tests before cod
 Command:
 
 ```bash
-CLAUDE_PROBE_OUTPUT_PATH=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/claude-text-tool-text-probe-output.json \
-CLAUDE_SESSION_RAW_EVENT_LOG_DIR=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/raw-events \
+CLAUDE_PROBE_OUTPUT_PATH=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/claude-text-tool-text-probe-output.json \
+CLAUDE_SESSION_RAW_EVENT_LOG_DIR=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/raw-events \
 CLAUDE_PROBE_TIMEOUT_MS=240000 \
 pnpm -C autobyteus-server-ts exec vitest run --config <temporary-ticket-vitest-config> --reporter=verbose
 ```
@@ -170,8 +170,8 @@ Raw Claude provider log for the same run showed provider order: assistant text P
 Command:
 
 ```bash
-CLAUDE_TEAM_PROBE_OUTPUT_PATH=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/claude-team-text-tool-text-probe-output.json \
-CLAUDE_SESSION_RAW_EVENT_LOG_DIR=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/raw-events \
+CLAUDE_TEAM_PROBE_OUTPUT_PATH=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/claude-team-text-tool-text-probe-output.json \
+CLAUDE_SESSION_RAW_EVENT_LOG_DIR=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/raw-events \
 CLAUDE_TEAM_PROBE_TIMEOUT_MS=240000 \
 pnpm -C autobyteus-server-ts exec vitest run --config /tmp/claude-team-probe-vitest.config.ts --reporter=verbose
 ```
@@ -183,9 +183,9 @@ Result: 1 test passed. Websocket-message evidence showed `SEGMENT_CONTENT(text T
 Command:
 
 ```bash
-CLAUDE_MEMORY_PROBE_MEMORY_DIR=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/memory-traces \
-CLAUDE_MEMORY_PROBE_OUTPUT_PATH=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/claude-memory-trace-probe-output.json \
-CLAUDE_SESSION_RAW_EVENT_LOG_DIR=/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/raw-events \
+CLAUDE_MEMORY_PROBE_MEMORY_DIR=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/memory-traces \
+CLAUDE_MEMORY_PROBE_OUTPUT_PATH=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/claude-memory-trace-probe-output.json \
+CLAUDE_SESSION_RAW_EVENT_LOG_DIR=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/live-probe/raw-events \
 CLAUDE_MEMORY_PROBE_TIMEOUT_MS=240000 \
 pnpm -C autobyteus-server-ts exec vitest run --config /tmp/claude-memory-probe-vitest.config.ts --reporter=verbose
 ```

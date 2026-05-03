@@ -3,15 +3,15 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/requirements.md`
 - Current Review Round: 2
 - Trigger: CR-001 local fix returned from `implementation_engineer`.
 - Prior Review Round Reviewed: Round 1 in this same report.
 - Latest Authoritative Round: 2
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/implementation-handoff.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/implementation-handoff.md`
 - Validation Report Reviewed As Context: N/A
 - API / E2E Validation Started Yet: `No`
 - Repository-Resident Durable Validation Added Or Updated After Prior Review: `No`
@@ -25,7 +25,7 @@
 
 ## Review Scope
 
-Reviewed the returned implementation state in `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order` on branch `codex/claude-sdk-post-tool-text-render-order`, focusing on:
+Reviewed the returned implementation state in `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo` on branch `codex/claude-sdk-post-tool-text-render-order`, focusing on:
 
 - Prior finding CR-001 cleanup in `claude-runtime-message-normalizers.ts`.
 - Preservation of the Claude text segment projector/session/tool ordering design from Round 1.

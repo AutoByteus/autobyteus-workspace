@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/design-spec.md`
 - Current Review Round: 1
 - Trigger: Initial architecture review after solution design handoff for Claude SDK post-tool text render-order bug.
 - Prior Review Round Reviewed: N/A
@@ -19,7 +19,7 @@
 
 ## Reviewed Design Spec
 
-`/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/done/claude-sdk-post-tool-text-render-order/design-spec.md`
+`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/claude-sdk-post-tool-text-render-order/design-spec.md`
 
 The design proposes a Claude session-owned `ClaudeTextSegmentProjector` that derives UI-facing text segment ids from Claude assistant message/content-block identity, emits per-text-segment deltas/completions, preserves provider block order relative to tool lifecycle events, and removes the old whole-turn aggregate UI text path. The converter, streaming mapper, frontend segment handler, and memory accumulator remain provider-agnostic consumers of corrected segment events.
 

@@ -1,0 +1,35 @@
+
+> autobyteus-workspace@ release /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+> bash scripts/desktop-release.sh release 1.2.93 -- --release-notes tickets/done/claude-sdk-post-tool-text-render-order/release-notes.md
+
+Updating autobyteus-web/package.json: 1.2.92 -> 1.2.93
+Updating autobyteus-message-gateway/package.json: 1.2.92 -> 1.2.93
+Synced curated release notes to .github/release-notes/release-notes.md
+Syncing managed messaging release manifest to v1.2.93
+[32mSynced default release manifest: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/managed-capabilities/messaging-gateway/release-manifest.json[0m
+[32mRelease tag: v1.2.93[0m
+[32mServer version: 0.1.1[0m
+[personal bdba4d35] chore(release): bump workspace release version to 1.2.93
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 4 files changed, 13 insertions(+), 11 deletions(-)
+remote: 
+remote: GitHub found 302 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (5 critical, 138 high, 138 moderate, 21 low). To find out more, visit:        
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot        
+remote: 
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+   14abaa43..bdba4d35  personal -> personal
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ * [new tag]           v1.2.93 -> v1.2.93
+Release complete and pushed: branch 'personal', tag 'v1.2.93'.

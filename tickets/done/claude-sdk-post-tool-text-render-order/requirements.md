@@ -67,7 +67,7 @@ Medium
 
 ## Constraints / Dependencies
 
-- Must use the dedicated task worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order`.
+- Must use the dedicated task worktree `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`.
 - Must keep runtime-specific identity extraction in the Claude backend/session layer.
 - Must avoid compatibility wrappers or dual-path behavior for the old turn-id text segment model.
 - Must work with Claude SDK full assistant message chunks observed in local logs and not preclude partial `stream_event` chunks described by the installed SDK types.
