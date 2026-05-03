@@ -17,17 +17,24 @@
 - Removed the obsolete exported Claude aggregate text normalizer path and verified no references remain.
 - Added/updated durable backend, memory, and frontend contract tests for full-message text/tool/text ordering, partial stream-event coalescing, raw memory trace order, frontend segment order, and unchanged Codex behavior.
 - Updated long-lived docs for runtime segment identity/order, streaming transport forwarding, and frontend segment handler identity expectations.
+- Integrated the latest `origin/personal` state, including the already-finalized `claude-read-artifacts` file-change event pipeline changes, before this user-verification handoff.
 
 ## Integration Refresh
 
 - Bootstrap base: `origin/personal @ 399b45cfc656bb30e87c07c3be2cce637313acda`.
-- Latest tracked remote base checked during delivery: `origin/personal @ 399b45cfc656bb30e87c07c3be2cce637313acda` after `git fetch origin personal` on 2026-05-03.
-- Base advanced since reviewed/validated state: `No`.
-- New base commits integrated into ticket branch: `No`.
-- Integration method: `Already current`; no merge or rebase was needed before user verification.
-- Local checkpoint commit before integration: `Not needed` because no base commits had to be integrated.
-- Post-integration executable rerun: `Not required`; latest tracked remote base was identical to the reviewed/validated base and API/E2E validation was already on this candidate.
-- Delivery check after docs/artifacts sync: `git diff --check` passed.
+- First delivery fetch initially matched the reviewed/validated base at `399b45cfc656bb30e87c07c3be2cce637313acda`.
+- A later freshness check before handoff found `origin/personal` had advanced to `a72bebd79b6157a390bef92a604f216d627fa585`.
+- Base advanced since reviewed/validated state: `Yes` — 4 commits from the finalized `claude-read-artifacts` branch.
+- Local checkpoint commit before integration: `807c0d0dde5f9126d48df72f20f613aaa787b090` (`checkpoint(delivery): preserve claude text order candidate`).
+- Integration method: `Merge` of `origin/personal` into `codex/claude-sdk-post-tool-text-render-order`.
+- Integration result: `Completed` via merge commit `b3cb799de173170fb299a89b023efaf69692c81c`.
+- Conflict handling: one documentation conflict in `autobyteus-web/docs/agent_execution_architecture.md` was resolved by retaining the integrated base's `FILE_CHANGE` event wording and this ticket's segment identity/coalescing contract. No source-code conflicts occurred.
+- Post-integration executable reruns: `Yes`.
+- Post-integration checks passed:
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/claude/session/claude-session.test.ts tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts --reporter=verbose` — 2 files, 17 tests passed.
+  - `pnpm -C autobyteus-web exec vitest run services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleOrdering.spec.ts --reporter=verbose` — 2 files, 26 tests passed.
+  - `git diff --check` — passed.
+- Handoff state current with latest tracked remote base: `Yes`; local branch is ahead of `origin/personal` by the checkpoint and integration merge commits.
 
 ## Verification Snapshot
 
@@ -36,12 +43,12 @@
 - Live Claude single-agent probe passed: `assistant text -> Write tool -> assistant text`; post-run assertion confirmed text PRE at event index 2, tool `Write` start at index 4, and text POST at index 8 with different provider-derived text ids.
 - Live Claude-backed team probe passed: team websocket-message mapping preserved text/tool/text order at message indexes 4, 6, and 11 with member metadata.
 - Live memory trace probe passed: raw traces recorded `user -> assistant -> tool_call -> tool_result -> assistant` with expected indexes.
-- Targeted Claude/memory tests passed: `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/claude/session/claude-session.test.ts tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts --reporter=verbose` — 17 tests.
-- Targeted frontend tests passed: `pnpm -C autobyteus-web exec vitest run services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleOrdering.spec.ts --reporter=verbose` — 26 tests.
-- Targeted Codex unchanged-scope tests passed: `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/codex/events/codex-reasoning-segment-tracker.test.ts tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts --reporter=verbose` — 29 tests.
-- Server build passed: `pnpm -C autobyteus-server-ts run build`.
-- Removed-symbol check passed: `rg "normalizeClaudeStreamChunk|extractStreamEventDelta|extractAssistantMessageText" autobyteus-server-ts/src autobyteus-server-ts/tests || true` returned no matches.
-- Whitespace check passed: `git diff --check`.
+- Targeted Claude/memory tests passed before API/E2E and again after delivery integration refresh: `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/claude/session/claude-session.test.ts tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts --reporter=verbose` — 17 tests.
+- Targeted frontend tests passed before API/E2E and again after delivery integration refresh: `pnpm -C autobyteus-web exec vitest run services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleOrdering.spec.ts --reporter=verbose` — 26 tests.
+- Targeted Codex unchanged-scope tests passed during API/E2E: `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/codex/events/codex-reasoning-segment-tracker.test.ts tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts --reporter=verbose` — 29 tests.
+- Server build passed during API/E2E: `pnpm -C autobyteus-server-ts run build`.
+- Removed-symbol check passed during API/E2E: `rg "normalizeClaudeStreamChunk|extractStreamEventDelta|extractAssistantMessageText" autobyteus-server-ts/src autobyteus-server-ts/tests || true` returned no matches.
+- Whitespace checks passed during API/E2E and after delivery integration/docs sync: `git diff --check`.
 
 ## Long-Lived Docs Updated
 

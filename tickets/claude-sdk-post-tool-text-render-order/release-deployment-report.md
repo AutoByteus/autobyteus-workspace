@@ -2,43 +2,49 @@
 
 ## Release / Publication / Deployment Scope
 
-No release, publication, deployment, version bump, or tag is currently in scope. This delivery pass refreshes the ticket branch against the latest tracked base, syncs long-lived docs, prepares the handoff state for user verification, and blocks repository finalization until explicit user completion/verification is received.
+No release, publication, deployment, version bump, or tag is currently in scope. This delivery pass refreshed the ticket branch against the latest tracked base, protected the reviewed/validated candidate with a local checkpoint commit, merged the advanced base into the ticket branch, reran focused post-integration checks, synced long-lived docs, and prepared the handoff state for user verification. Repository finalization remains blocked until explicit user completion/verification is received.
 
 ## Handoff Summary
 
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/claude-sdk-post-tool-text-render-order/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Notes: The handoff records delivered behavior, integration refresh, validation evidence, docs sync, residual scope, and user verification instructions.
+- Notes: The handoff records delivered behavior, latest-base integration refresh, checkpoint/merge commits, post-integration validation evidence, docs sync, residual scope, and user verification instructions.
 
 ## Initial Delivery Integration Refresh
 
 - Bootstrap base reference: `origin/personal @ 399b45cfc656bb30e87c07c3be2cce637313acda`
-- Latest tracked remote base reference checked: `origin/personal @ 399b45cfc656bb30e87c07c3be2cce637313acda`
-- Base advanced since bootstrap or previous refresh: `No`
-- New base commits integrated into the ticket branch: `No`
-- Local checkpoint commit result: `Not needed`
-- Integration method: `Already current`
-- Integration result: `Completed`
-- Post-integration executable checks rerun: `No`
+- Latest tracked remote base reference checked: `origin/personal @ a72bebd79b6157a390bef92a604f216d627fa585`
+- Base advanced since bootstrap or previous refresh: `Yes`
+- New base commits integrated into the ticket branch: `Yes`
+- Local checkpoint commit result: `Completed` — `807c0d0dde5f9126d48df72f20f613aaa787b090` (`checkpoint(delivery): preserve claude text order candidate`)
+- Integration method: `Merge`
+- Integration result: `Completed` — merge commit `b3cb799de173170fb299a89b023efaf69692c81c`
+- Post-integration executable checks rerun: `Yes`
 - Post-integration verification result: `Passed`
-- No-rerun rationale (only if no new base commits were integrated): `git fetch origin personal` confirmed `HEAD` and `origin/personal` are both `399b45cfc656bb30e87c07c3be2cce637313acda`; no base commits were integrated after the reviewed/API-E2E-validated candidate, so an additional executable rerun was not required.
-- Delivery edits started only after integrated state was current: `Yes`
+- No-rerun rationale (only if no new base commits were integrated): `N/A`
+- Delivery edits started only after integrated state was current: `Yes for the final handoff state; a later remote advancement was detected before handoff, so delivery-owned edits were protected in the checkpoint and refreshed after merging the latest base.`
 - Handoff state current with latest tracked remote base: `Yes`
 - Blocker (if applicable): `Repository finalization is intentionally blocked pending explicit user verification.`
 
 Refresh evidence:
 
-- `git fetch origin personal` — passed.
-- `git rev-parse HEAD` — `399b45cfc656bb30e87c07c3be2cce637313acda`.
-- `git rev-parse origin/personal` — `399b45cfc656bb30e87c07c3be2cce637313acda`.
-- `git log --oneline HEAD..origin/personal` — no commits.
-- `git log --oneline origin/personal..HEAD` — no commits.
+- Initial `git fetch origin personal` found `HEAD` and `origin/personal` at `399b45cfc656bb30e87c07c3be2cce637313acda`.
+- A later pre-handoff freshness check found `origin/personal @ a72bebd79b6157a390bef92a604f216d627fa585` with 4 new base commits.
+- `git log --oneline HEAD..origin/personal` listed:
+  - `a72bebd7 Merge branch 'codex/claude-read-artifacts' into personal`
+  - `8593442d fix(artifacts): normalize file change events`
+  - `fd90533d Merge remote-tracking branch 'origin/personal' into codex/claude-read-artifacts`
+  - `0eba4c0f checkpoint(delivery): preserve claude read artifacts candidate`
+- `git commit -m "checkpoint(delivery): preserve claude text order candidate"` — completed as `807c0d0dde5f9126d48df72f20f613aaa787b090`.
+- `git merge --no-edit origin/personal` — required one documentation conflict in `autobyteus-web/docs/agent_execution_architecture.md`; resolved by preserving the integrated base's `FILE_CHANGE` wording and this ticket's segment identity/coalescing contract.
+- `git commit --no-edit` completed the merge as `b3cb799de173170fb299a89b023efaf69692c81c`.
+- `git rev-list --left-right --count HEAD...origin/personal` after merge — `2 0`.
 - `git diff --check` after delivery docs/artifacts sync — passed.
 
 ## User Verification
 
 - Initial explicit user completion/verification received: `No`
-- Initial verification reference: `Pending user verification of the local Claude Agent SDK text/tool/text rendering behavior.`
+- Initial verification reference: `Pending user verification of the local Claude Agent SDK text/tool/text rendering behavior on the integrated branch state.`
 - Renewed verification required after later re-integration: `No`
 - Renewed verification received: `Not needed`
 - Renewed verification reference: `N/A`
@@ -66,18 +72,18 @@ No version bump, tag, or release commit is required before user verification. If
 
 - Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-post-tool-text-render-order/tickets/claude-sdk-post-tool-text-render-order/investigation-notes.md`
 - Ticket branch: `codex/claude-sdk-post-tool-text-render-order`
-- Ticket branch commit result: `Blocked pending user verification`
+- Ticket branch commit result: `Pre-verification checkpoint and integration merge completed; final ticket archival/finalization commit is blocked pending user verification.`
 - Ticket branch push result: `Blocked pending user verification`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: `N/A; verification not yet received`
-- Delivery-owned edits protected before re-integration: `Not needed before verification`
-- Re-integration before final merge result: `Not needed before verification`
+- Delivery-owned edits protected before re-integration: `Completed` via checkpoint commit `807c0d0dde5f9126d48df72f20f613aaa787b090`
+- Re-integration before final merge result: `Completed` via merge commit `b3cb799de173170fb299a89b023efaf69692c81c`
 - Target branch update result: `Blocked pending user verification`
 - Merge into target result: `Blocked pending user verification`
 - Push target branch result: `Blocked pending user verification`
 - Repository finalization status: `Blocked`
-- Blocker (if applicable): `Awaiting explicit user completion/verification before archiving the ticket, committing, pushing, merging, cleaning up, or releasing.`
+- Blocker (if applicable): `Awaiting explicit user completion/verification before archiving the ticket, pushing, merging into the finalization target, cleaning up, or releasing.`
 
 ## Release / Publication / Deployment
 
@@ -112,13 +118,15 @@ No version bump, tag, or release commit is required before user verification. If
 ## Deployment Steps
 
 1. Accepted the cumulative delivery artifact package from `api_e2e_engineer` after API/E2E validation passed and no repository-resident durable validation was added after code review.
-2. Fetched `origin personal` and confirmed the ticket branch is already current with `origin/personal @ 399b45cfc656bb30e87c07c3be2cce637313acda`.
-3. Confirmed no delivery-stage merge/rebase or checkpoint commit was needed because no new base commits were present.
-4. Reviewed long-lived backend and frontend docs against the final reviewed/validated implementation state.
-5. Updated durable docs for runtime segment identity/order, single-agent/team streaming forwarding, and frontend segment handler identity coalescing.
-6. Wrote the docs sync report, handoff summary, and this delivery/release report.
-7. Ran `git diff --check` after delivery-owned docs/artifact edits; it passed.
-8. Holding for explicit user verification before ticket archival, commit, push, target merge, release/deployment, and cleanup.
+2. Fetched `origin personal`; an initial fetch matched the reviewed/validated base, then a later pre-handoff freshness check found `origin/personal` had advanced to `a72bebd79b6157a390bef92a604f216d627fa585`.
+3. Created local checkpoint commit `807c0d0dde5f9126d48df72f20f613aaa787b090` before integrating the advanced base.
+4. Merged `origin/personal` into the ticket branch; resolved one documentation conflict in `autobyteus-web/docs/agent_execution_architecture.md`; completed merge commit `b3cb799de173170fb299a89b023efaf69692c81c`.
+5. Reran focused backend Claude/memory and frontend segment/tool-lifecycle checks after integration; both passed.
+6. Reviewed long-lived backend and frontend docs against the final integrated implementation state.
+7. Updated durable docs for runtime segment identity/order, single-agent/team streaming forwarding, and frontend segment handler identity coalescing.
+8. Wrote/updated the docs sync report, handoff summary, and this delivery/release report against the integrated branch state.
+9. Ran `git diff --check` after delivery-owned docs/artifact edits; it passed.
+10. Holding for explicit user verification before ticket archival, push, target merge, release/deployment, and cleanup.
 
 ## Environment Or Migration Notes
 
@@ -126,38 +134,41 @@ No version bump, tag, or release commit is required before user verification. If
 - The change affects Claude Agent SDK runtime stream identity/order, server memory trace projection from normalized events, team websocket mapping, and frontend segment reducer contracts.
 - Full browser visual E2E was not run; API/E2E validation covered live runtime, team websocket mapping, memory projection, and frontend reducer behavior directly.
 - Live partial-message mode was not exposed by the current runtime path; deterministic partial `stream_event` coalescing coverage passed.
+- The integrated `claude-read-artifacts` base replaces legacy file-change-update transport wording with `FILE_CHANGE`; the docs conflict was resolved to preserve that new base behavior.
 
 ## Verification Checks
 
-Delivery-stage refresh:
+Delivery-stage refresh and integration:
 
 - `git fetch origin personal` — passed.
-- `git rev-parse HEAD` — `399b45cfc656bb30e87c07c3be2cce637313acda`.
-- `git rev-parse origin/personal` — `399b45cfc656bb30e87c07c3be2cce637313acda`.
-- `git log --oneline HEAD..origin/personal` — no commits.
-- `git log --oneline origin/personal..HEAD` — no commits.
-- No executable post-integration rerun was required because no new base commits were integrated after validation.
+- Initial `git rev-parse HEAD` and `git rev-parse origin/personal` — both `399b45cfc656bb30e87c07c3be2cce637313acda`.
+- Later freshness check `git rev-parse origin/personal` — `a72bebd79b6157a390bef92a604f216d627fa585`.
+- Checkpoint commit — `807c0d0dde5f9126d48df72f20f613aaa787b090`.
+- Merge commit — `b3cb799de173170fb299a89b023efaf69692c81c`.
+- `git rev-list --left-right --count HEAD...origin/personal` after merge — `2 0`.
 
-Delivery-stage docs/report checks:
+Post-integration executable checks:
 
-- `git diff --check` — passed after delivery-owned docs/report edits.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/claude/session/claude-session.test.ts tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts --reporter=verbose` — passed, 2 files / 17 tests.
+- `pnpm -C autobyteus-web exec vitest run services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleOrdering.spec.ts --reporter=verbose` — passed, 2 files / 26 tests.
+- `git diff --check` — passed after integration and delivery docs/artifacts sync.
 
 Authoritative upstream verification inherited from review and API/E2E:
 
 - Live Claude single-agent probe: `assistant text -> Write tool -> assistant text` with different provider-derived text ids — passed.
 - Live Claude-backed team stream probe preserving text/tool/text order with member metadata — passed.
 - Live memory trace probe recording `user -> assistant -> tool_call -> tool_result -> assistant` — passed.
-- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/claude/session/claude-session.test.ts tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts --reporter=verbose` — passed, 17 tests.
-- `pnpm -C autobyteus-web exec vitest run services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleOrdering.spec.ts --reporter=verbose` — passed, 26 tests.
-- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/codex/events/codex-reasoning-segment-tracker.test.ts tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts --reporter=verbose` — passed, 29 tests.
-- `pnpm -C autobyteus-server-ts run build` — passed.
-- `rg "normalizeClaudeStreamChunk|extractStreamEventDelta|extractAssistantMessageText" autobyteus-server-ts/src autobyteus-server-ts/tests || true` — no matches.
-- `git diff --check` — passed.
+- API/E2E `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/claude/session/claude-session.test.ts tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts --reporter=verbose` — passed, 17 tests.
+- API/E2E `pnpm -C autobyteus-web exec vitest run services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleOrdering.spec.ts --reporter=verbose` — passed, 26 tests.
+- API/E2E `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/codex/events/codex-reasoning-segment-tracker.test.ts tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts --reporter=verbose` — passed, 29 tests.
+- API/E2E `pnpm -C autobyteus-server-ts run build` — passed.
+- API/E2E `rg "normalizeClaudeStreamChunk|extractStreamEventDelta|extractAssistantMessageText" autobyteus-server-ts/src autobyteus-server-ts/tests || true` — no matches.
+- API/E2E `git diff --check` — passed.
 
 ## Rollback Criteria
 
-Do not finalize/merge if user verification shows Claude Agent SDK post-tool assistant text still renders before the tool card, if pre-tool and post-tool Claude text share the same UI-facing text segment id, if team streaming loses member metadata/order, if memory traces no longer record assistant/tool/assistant order, or if Codex runtime segment behavior regresses. Route local implementation failures to `implementation_engineer`; route ambiguous intended ordering or compatibility questions to `solution_designer`.
+Do not finalize/merge if user verification shows Claude Agent SDK post-tool assistant text still renders before the tool card, if pre-tool and post-tool Claude text share the same UI-facing text segment id, if team streaming loses member metadata/order, if memory traces no longer record assistant/tool/assistant order, or if Codex/runtime segment behavior regresses. Route local implementation failures to `implementation_engineer`; route ambiguous intended ordering or compatibility questions to `solution_designer`.
 
 ## Final Status
 
-`Ready for user verification — delivery docs/artifacts are prepared on the latest tracked base; repository finalization, cleanup, and any release/deployment remain blocked until explicit user completion/verification is received.`
+`Ready for user verification — the ticket branch is integrated with latest origin/personal, focused post-integration checks passed, and delivery docs/artifacts are prepared; repository finalization, cleanup, and any release/deployment remain blocked until explicit user completion/verification is received.`
