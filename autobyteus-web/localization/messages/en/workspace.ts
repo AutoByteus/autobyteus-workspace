@@ -32,6 +32,8 @@ const messages = {
   'workspace.components.workspace.agent.ArtifactList.agent_artifacts': 'Agent Artifacts',
   'workspace.components.workspace.agent.ArtifactList.sent_artifacts': 'Sent Artifacts',
   'workspace.components.workspace.agent.ArtifactList.received_artifacts': 'Received Artifacts',
+  'workspace.components.workspace.agent.ArtifactList.to_counterpart_prefix': 'To',
+  'workspace.components.workspace.agent.ArtifactList.from_counterpart_prefix': 'From',
   'workspace.components.workspace.agent.ArtifactList.unknown_teammate': 'Unknown teammate',
   'workspace.components.launchConfig.DefinitionLaunchPreferencesSection.title': 'LLM config',
   'workspace.components.launchConfig.DefinitionLaunchPreferencesSection.help': 'Optional runtime, model, and LLM settings.',

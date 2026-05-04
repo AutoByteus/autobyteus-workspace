@@ -59,6 +59,8 @@ describe('ArtifactList.vue', () => {
           'workspace.components.workspace.agent.ArtifactList.agent_artifacts': 'Agent Artifacts',
           'workspace.components.workspace.agent.ArtifactList.sent_artifacts': 'Sent Artifacts',
           'workspace.components.workspace.agent.ArtifactList.received_artifacts': 'Received Artifacts',
+          'workspace.components.workspace.agent.ArtifactList.to_counterpart_prefix': 'To',
+          'workspace.components.workspace.agent.ArtifactList.from_counterpart_prefix': 'From',
           'workspace.components.workspace.agent.ArtifactList.unknown_teammate': 'Unknown teammate',
         }[key] ?? key),
       },
@@ -77,12 +79,16 @@ describe('ArtifactList.vue', () => {
     expect(wrapper.text()).toContain('Agent Artifacts');
     expect(wrapper.text()).toContain('Sent Artifacts');
     expect(wrapper.text()).toContain('Received Artifacts');
+    expect(wrapper.text()).toContain('To');
+    expect(wrapper.text()).toContain('From');
     expect(wrapper.text()).toContain('Worker');
     expect(wrapper.text()).toContain('Reviewer');
     expect(wrapper.text()).toContain('test.txt');
     expect(wrapper.text()).toContain('image.png');
     expect(wrapper.text()).toContain('sent-report.md');
     expect(wrapper.text()).toContain('received-report.md');
+    expect(wrapper.text()).not.toContain('Sent to Worker');
+    expect(wrapper.text()).not.toContain('Received from Reviewer');
     expect(wrapper.text()).not.toContain(['Referenced', 'Artifacts'].join(' '));
   });
 

@@ -11,7 +11,7 @@
 
     <div v-else class="flex-1 overflow-y-auto py-4">
       <div v-if="agentArtifacts.length > 0" class="mb-6">
-        <div class="px-4 py-2 text-[0.6875rem] font-bold text-gray-400 uppercase tracking-widest">
+        <div class="px-4 py-2 text-[0.6875rem] font-bold text-gray-600 uppercase tracking-widest">
           {{ $t('workspace.components.workspace.agent.ArtifactList.agent_artifacts') }}
         </div>
         <ArtifactItem
@@ -24,36 +24,48 @@
       </div>
 
       <div v-if="sentGroups.length > 0" class="mb-6">
-        <div class="px-4 py-2 text-[0.6875rem] font-bold text-gray-400 uppercase tracking-widest">
+        <div class="px-4 py-2 text-[0.6875rem] font-bold text-gray-600 uppercase tracking-widest">
           {{ $t('workspace.components.workspace.agent.ArtifactList.sent_artifacts') }}
         </div>
         <div v-for="group in sentGroups" :key="`sent:${group.counterpartKey}`" class="mb-2">
-          <div class="px-4 pb-1 text-[0.6875rem] font-semibold text-gray-500 truncate">
-            {{ group.counterpartLabel }}
+          <div class="px-4 pb-1.5 flex items-baseline gap-1.5 min-w-0">
+            <span class="text-[0.625rem] font-bold text-gray-500 uppercase tracking-wide">
+              {{ $t('workspace.components.workspace.agent.ArtifactList.to_counterpart_prefix') }}
+            </span>
+            <span class="text-[0.8125rem] font-semibold text-gray-700 truncate">
+              {{ group.counterpartLabel }}
+            </span>
           </div>
           <ArtifactItem
             v-for="artifact in group.items"
             :key="artifact.itemId"
             :artifact="artifact"
             :is-selected="artifact.itemId === selectedArtifactId"
+            :show-provenance-label="false"
             @select="$emit('select', artifact)"
           />
         </div>
       </div>
 
       <div v-if="receivedGroups.length > 0">
-        <div class="px-4 py-2 text-[0.6875rem] font-bold text-gray-400 uppercase tracking-widest">
+        <div class="px-4 py-2 text-[0.6875rem] font-bold text-gray-600 uppercase tracking-widest">
           {{ $t('workspace.components.workspace.agent.ArtifactList.received_artifacts') }}
         </div>
         <div v-for="group in receivedGroups" :key="`received:${group.counterpartKey}`" class="mb-2">
-          <div class="px-4 pb-1 text-[0.6875rem] font-semibold text-gray-500 truncate">
-            {{ group.counterpartLabel }}
+          <div class="px-4 pb-1.5 flex items-baseline gap-1.5 min-w-0">
+            <span class="text-[0.625rem] font-bold text-gray-500 uppercase tracking-wide">
+              {{ $t('workspace.components.workspace.agent.ArtifactList.from_counterpart_prefix') }}
+            </span>
+            <span class="text-[0.8125rem] font-semibold text-gray-700 truncate">
+              {{ group.counterpartLabel }}
+            </span>
           </div>
           <ArtifactItem
             v-for="artifact in group.items"
             :key="artifact.itemId"
             :artifact="artifact"
             :is-selected="artifact.itemId === selectedArtifactId"
+            :show-provenance-label="false"
             @select="$emit('select', artifact)"
           />
         </div>

@@ -53,12 +53,16 @@ import type { ArtifactViewerItem } from './artifactViewerItem';
 const props = defineProps<{
   artifact: ArtifactViewerItem;
   isSelected?: boolean;
+  showProvenanceLabel?: boolean;
 }>();
 
 defineEmits(['select']);
 
 const fileName = computed(() => props.artifact.path.split('/').pop() || props.artifact.path);
 const provenanceLabel = computed(() => {
+  if (props.showProvenanceLabel === false) {
+    return '';
+  }
   if (props.artifact.kind !== 'message_reference') {
     return '';
   }

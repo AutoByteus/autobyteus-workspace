@@ -32,6 +32,8 @@ const messages = {
   'workspace.components.workspace.agent.ArtifactList.agent_artifacts': '智能体产物',
   'workspace.components.workspace.agent.ArtifactList.sent_artifacts': '已发送产物',
   'workspace.components.workspace.agent.ArtifactList.received_artifacts': '已接收产物',
+  'workspace.components.workspace.agent.ArtifactList.to_counterpart_prefix': '发给',
+  'workspace.components.workspace.agent.ArtifactList.from_counterpart_prefix': '来自',
   'workspace.components.workspace.agent.ArtifactList.unknown_teammate': '未知队友',
   'workspace.components.launchConfig.DefinitionLaunchPreferencesSection.title': 'LLM 配置',
   'workspace.components.launchConfig.DefinitionLaunchPreferencesSection.help': '可选的运行时、模型和 LLM 设置。',

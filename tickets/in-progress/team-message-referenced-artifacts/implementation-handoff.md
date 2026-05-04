@@ -26,6 +26,10 @@
 - Runtime delivery now carries `referenceFiles` through `InterAgentMessageDeliveryRequest` and emits `INTER_AGENT_MESSAGE.payload.reference_files`.
 - Recipient runtime input appends a generated **Reference files:** block when explicit refs exist. This block supplements the self-contained body like an email attachment/index list.
 - Local Fix for code-review finding `CR-004-001`: native/AutoByteus agent-recipient routing now constructs `InterAgentMessage` with the original natural `event.content` and carries `event.referenceFiles` separately. `InterAgentMessageReceivedEventHandler` remains the single owner that appends the generated **Reference files:** block for native agent LLM input, preventing duplicate blocks. Sub-team `postMessage` routing still receives the generated block directly because that path does not have an `InterAgentMessage.referenceFiles` hop.
+- User-requested Artifacts tab UI polish:
+  - Sent/Received groups now render the direction once in the group heading as `To <agent>` or `From <agent>` instead of repeating `Sent to ...` / `Received from ...` under every file.
+  - Message-reference rows in grouped Sent/Received sections now show only file names, reducing visual noise for large handoffs.
+  - Section headings and counterpart names use darker gray weights for better legibility.
 - Round 6 Local Fixes for code-review findings `CR-006-001` through `CR-006-003`:
   - `AutoByteusTeamRunBackend` now owns one native `AgentTeamEventStream` bridge per backend/team run. Native events are converted, enriched, processed through `AgentRunEventPipeline` exactly once, collected into a processed `TeamRunEvent` batch, then fanned out to all registered listeners. Listener subscription no longer creates another native stream or another pipeline pass.
   - `RunFileChangeProjectionStore.writeProjection(...)` now writes `file_changes.json` atomically with same-directory temp-file-plus-rename semantics so readers do not observe partial JSON.
@@ -79,8 +83,12 @@
   - `autobyteus-server-ts/src/services/run-file-changes/run-file-change-projection-store.ts`
   - `autobyteus-server-ts/src/run-history/services/run-file-change-projection-service.ts`
   - `autobyteus-server-ts/src/run-history/services/team-run-metadata-service.ts`
-- Frontend typing/docs only for Round 4:
+- Frontend typing/docs/UI:
   - `autobyteus-web/services/agentStreaming/protocol/messageTypes.ts`
+  - `autobyteus-web/components/workspace/agent/ArtifactList.vue`
+  - `autobyteus-web/components/workspace/agent/ArtifactItem.vue`
+  - `autobyteus-web/localization/messages/en/workspace.ts`
+  - `autobyteus-web/localization/messages/zh-CN/workspace.ts`
   - `autobyteus-web/docs/agent_artifacts.md`
 - Tests added/updated:
   - `autobyteus-server-ts/tests/unit/agent-team-execution/send-message-to-tool-argument-parser.test.ts`
@@ -91,6 +99,7 @@
   - `autobyteus-server-ts/tests/integration/api/run-file-changes-api.integration.test.ts`
   - `autobyteus-server-ts/tests/unit/run-history/services/run-file-change-projection-service.test.ts`
   - `autobyteus-server-ts/tests/unit/services/run-file-changes/run-file-change-projection-store.test.ts`
+  - `autobyteus-web/components/workspace/agent/__tests__/ArtifactList.spec.ts`
   - `autobyteus-ts/tests/unit/agent/message/send-message-to.test.ts`
   - `autobyteus-ts/tests/unit/agent/handlers/inter-agent-message-event-handler.test.ts`
   - `autobyteus-ts/tests/unit/agent-team/handlers/inter-agent-message-request-event-handler.test.ts`
@@ -260,6 +269,16 @@ Implementation-scoped checks only; API/E2E validation remains downstream.
 - Passed: whitespace hygiene after Round 6
   - Command: `git diff --check`
   - Result: no output.
+- Passed: Artifacts tab UI polish focused tests
+  ```bash
+  NUXT_TEST=true pnpm -C autobyteus-web exec vitest run \
+    components/workspace/agent/__tests__/ArtifactList.spec.ts \
+    components/workspace/agent/__tests__/ArtifactsTab.spec.ts --reporter=dot
+  ```
+  Result: `Test Files 2 passed (2); Tests 8 passed (8)`.
+- Passed: whitespace hygiene after UI polish
+  - Command: `git diff --check`
+  - Result: no output.
 
 ## Downstream Validation Hints / Suggested Scenarios
 
@@ -273,6 +292,7 @@ Implementation-scoped checks only; API/E2E validation remains downstream.
 - Negative scenario: body contains `/absolute/path/report.md` but `reference_files` is omitted; conversation text remains plain and no `MESSAGE_FILE_REFERENCE_DECLARED`/Artifacts row is created.
 - Negative validation: malformed `reference_files` rejects the whole tool call before delivery.
 - Persistence/reopen: verify `agent_teams/<teamRunId>/message_file_references.json` is the only message-reference projection and `getMessageFileReferences(teamRunId)` hydrates Sent/Received views.
+- UI visual check: in Sent/Received Artifacts, verify the group header shows `To <agent>` / `From <agent>` once and individual rows do not repeat the direction label.
 
 ## API / E2E / Executable Validation Still Required
 
