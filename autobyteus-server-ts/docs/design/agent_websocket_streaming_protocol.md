@@ -33,7 +33,7 @@ derive artifact rows from arbitrary `file_path` tool arguments.
 
 Team managers also process accepted synthetic `INTER_AGENT_MESSAGE` events
 through the same pipeline before team fan-out. When an accepted inter-agent
-message contains valid absolute local path candidates, the stream can include a
+message carries explicit `payload.reference_files`, the stream can include a
 sidecar `MESSAGE_FILE_REFERENCE_DECLARED` event. Clients consume that event into
 a dedicated team-level message-reference store; they must not derive references
 by parsing rendered chat text, linkifying raw paths, or adding those rows to the

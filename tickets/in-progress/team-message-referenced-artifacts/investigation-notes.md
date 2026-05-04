@@ -23,7 +23,8 @@ After seeing the feature working, the user noticed that content-scanned referenc
 Design vocabulary from the discussion:
 
 - Use a structured optional field for files the recipient may need to inspect.
-- Keep message `content` natural and detailed.
+- Keep message `content` natural, detailed, and self-contained, like an email body.
+- Important referenced paths may still be naturally mentioned in `content`; `reference_files` is the structured attachment/index list.
 - Prefer positive guidance about what goes in the reference list.
 - Avoid adding unnatural defensive wording to the message content or agent-facing prose.
 - Keep Sent/Received grouping simple; no occurrence count/history UI.
@@ -48,7 +49,7 @@ Design vocabulary from the discussion:
 | Date | Source Type (`Code`/`Doc`/`Spec`/`Web`/`Repo`/`Issue`/`Command`/`Trace`/`Log`/`Data`/`Setup`/`Other`) | Exact Source / Query / Command | Why Consulted | Relevant Findings | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- |
 | 2026-05-04 | Other | User discussion in current session | Clarify product direction after Sent/Received UI was visible | User likes Sent/Received model but sees noisy/duplicated rows from content scanning. User proposed an optional send-message reference/attachment list and later confirmed content path detection should be removed. | Yes: update design and route back through architecture review. |
-| 2026-05-04 | Other | User wording preference in current session | Decide schema/instruction phrasing | User prefers natural message content and positive guidance for the reference list. Avoid agent-facing negative/prohibitive wording about path handling in the message body. | Yes: tool descriptions should describe what `reference_files` is for. |
+| 2026-05-04 | Other | User wording preference in current session | Decide schema/instruction phrasing | User prefers natural, self-contained message content, using an email-with-attachments mental model: the body still explains and may mention important file paths, while `reference_files` is the structured attachment/index list. Avoid agent-facing negative/prohibitive wording about path handling in the message body. | Yes: tool descriptions/examples should show complete content plus `reference_files`. |
 | 2026-05-04 | Command | `git status --short --branch` in ticket worktree | Verify dedicated branch/worktree state | Branch is `codex/team-message-referenced-artifacts`, tracking `origin/personal`; many source changes from earlier implementation exist, and ticket artifacts are untracked/modified. | No. |
 | 2026-05-04 | Code | `autobyteus-server-ts/src/agent-execution/backends/codex/team-communication/codex-send-message-tool-spec-builder.ts` | Inspect Codex `send_message_to` schema | Schema currently has `recipient_name`, `content`, `message_type`; no `reference_files`. | Add optional array schema and examples. |
 | 2026-05-04 | Code | `autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-send-message-tool-definition-builder.ts` | Inspect Claude `send_message_to` schema | Zod schema currently has `recipient_name`, `content`, `message_type`; no `reference_files`. | Add optional array with same semantics. |
@@ -143,7 +144,7 @@ No internet or external sources were needed. The task is a local repository desi
 2. The current source of message references should change from content scanning to explicit `reference_files`.
 3. The processor should stay because it keeps derived reference declarations out of provider-specific tool handlers and frontend UI code.
 4. The free-text path parser should be removed or replaced by a validator/normalizer for explicit list entries; Markdown wrapper detection should not be extended.
-5. Recipient agents still need to see file paths in their actual runtime context; therefore shared runtime builders should render a generated **Reference files:** block from the structured list.
+5. Recipient agents still need self-contained message content and an explicit attachment/index view; therefore shared runtime builders should render a generated **Reference files:** block from the structured list while preserving the natural body.
 6. The content endpoint and projection service should continue resolving by persisted `teamRunId + referenceId`, not raw path URLs and not receiver-scoped URLs.
 
 ## Constraints / Dependencies / Compatibility Facts
@@ -156,7 +157,7 @@ No internet or external sources were needed. The task is a local repository desi
 
 ## Open Unknowns / Risks
 
-- Agents may omit `reference_files` when they mention file paths in prose. The schema description and member instructions should mitigate this with positive examples.
+- Agents may omit `reference_files` when they mention file paths in prose, or conversely may rely too heavily on `reference_files` and write thin content. The schema description and member instructions should mitigate both risks with email-like examples: complete content plus attachment/reference list.
 - Strict validation of invalid reference-list entries may reject a whole message instead of silently dropping one bad path; this is intentional for an explicit contract but should have a concise error.
 - Existing tests and docs written for content scanning will need to be updated or removed.
 

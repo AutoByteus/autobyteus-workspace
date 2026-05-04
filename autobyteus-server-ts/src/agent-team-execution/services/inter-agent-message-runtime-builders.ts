@@ -13,6 +13,33 @@ const resolveMessageType = (value: string | null | undefined): string => {
   return value.trim();
 };
 
+const normalizeReferenceFiles = (
+  referenceFiles: string[] | null | undefined,
+): string[] => {
+  if (!Array.isArray(referenceFiles)) {
+    return [];
+  }
+  const seen = new Set<string>();
+  const normalized: string[] = [];
+  for (const value of referenceFiles) {
+    if (typeof value !== "string") {
+      continue;
+    }
+    const trimmed = value.trim();
+    if (!trimmed || seen.has(trimmed)) {
+      continue;
+    }
+    seen.add(trimmed);
+    normalized.push(trimmed);
+  }
+  return normalized;
+};
+
+const buildReferenceFilesBlock = (referenceFiles: string[]): string =>
+  referenceFiles.length === 0
+    ? ""
+    : `\n\nReference files:\n${referenceFiles.map((filePath) => `- ${filePath}`).join("\n")}`;
+
 export const buildRecipientVisibleInterAgentMessageContent = (
   request: InterAgentMessageDeliveryRequest,
 ): string => {
@@ -20,21 +47,30 @@ export const buildRecipientVisibleInterAgentMessageContent = (
     typeof request.senderMemberName === "string" && request.senderMemberName.trim().length > 0
       ? request.senderMemberName.trim()
       : request.senderRunId;
+  const referenceFiles = normalizeReferenceFiles(request.referenceFiles);
   return (
     `You received a message from sender name: ${senderName}, sender id: ${request.senderRunId}\n` +
-    `message:\n${request.content}`
+    `message:\n${request.content}${buildReferenceFilesBlock(referenceFiles)}`
   );
 };
 
 export const buildInterAgentDeliveryInputMessage = (
   request: InterAgentMessageDeliveryRequest,
-): AgentInputUserMessage =>
-  new AgentInputUserMessage(buildRecipientVisibleInterAgentMessageContent(request), SenderType.AGENT, null, {
-    sender_agent_id: request.senderRunId,
-    sender_agent_name: request.senderMemberName ?? null,
-    original_message_type: resolveMessageType(request.messageType),
-    team_run_id: request.teamRunId,
-  });
+): AgentInputUserMessage => {
+  const referenceFiles = normalizeReferenceFiles(request.referenceFiles);
+  return new AgentInputUserMessage(
+    buildRecipientVisibleInterAgentMessageContent(request),
+    SenderType.AGENT,
+    null,
+    {
+      sender_agent_id: request.senderRunId,
+      sender_agent_name: request.senderMemberName ?? null,
+      original_message_type: resolveMessageType(request.messageType),
+      team_run_id: request.teamRunId,
+      reference_files: referenceFiles,
+    },
+  );
+};
 
 export const buildInterAgentMessageAgentRunEvent = (input: {
   recipientRunId: string;
@@ -51,6 +87,7 @@ export const buildInterAgentMessageAgentRunEvent = (input: {
     recipient_role_name: input.request.recipientMemberName,
     content: input.request.content,
     message_type: resolveMessageType(input.request.messageType),
+    reference_files: normalizeReferenceFiles(input.request.referenceFiles),
   },
   statusHint: null,
 });

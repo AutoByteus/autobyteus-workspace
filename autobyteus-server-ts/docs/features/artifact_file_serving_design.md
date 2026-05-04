@@ -29,8 +29,8 @@ content through persisted team reference identity.
   - `src/agent-execution/events/processors/file-change/file-change-output-path.ts`
   - `src/agent-execution/events/processors/file-change/file-change-payload-builder.ts`
   - `src/agent-execution/events/processors/message-file-reference/message-file-reference-processor.ts`
-  - `src/agent-execution/events/processors/message-file-reference/message-file-reference-paths.ts`
   - `src/agent-execution/events/processors/message-file-reference/message-file-reference-payload-builder.ts`
+  - `src/services/message-file-references/message-file-reference-explicit-paths.ts`
   - `src/agent-team-execution/services/publish-processed-team-agent-events.ts`
 - Live projection owners:
   - `src/services/run-file-changes/run-file-change-service.ts`
@@ -64,14 +64,15 @@ For Agent Artifacts:
 
 For message-reference artifacts:
 
-1. Team managers emit synthetic `INTER_AGENT_MESSAGE` events only after the recipient runtime accepts the inter-agent message.
-2. Those synthetic events pass through the shared `AgentRunEventPipeline` before team fan-out.
-3. `MessageFileReferenceProcessor` conservatively extracts absolute local path candidates and derives `MESSAGE_FILE_REFERENCE_DECLARED`; it accepts common AI/Markdown wrappers around a full absolute path, strips those wrappers from the normalized path, and rejects relative paths, URLs/protocols, route templates, null-byte values, and obvious non-file candidates.
-4. `MessageFileReferenceService` consumes the derived events, dedupes by deterministic team/sender/receiver/path identity, and persists metadata under the team run directory.
-5. Active projection reads wait for pending same-team updates so immediate opens can resolve just-declared references.
-6. The frontend hydrates rows through `getMessageFileReferences(teamRunId)` and continues live updates from `MESSAGE_FILE_REFERENCE_DECLARED`.
-7. `messageFileReferencesStore` projects the same canonical team row as **Sent Artifacts** for the sender and **Received Artifacts** for the receiver.
-8. The viewer fetches `/team-runs/:teamRunId/message-file-references/:referenceId/content` to stream bytes only after the server resolves the persisted reference.
+1. `send_message_to` accepts natural `content` plus optional explicit `reference_files` absolute local paths.
+2. Team managers emit synthetic `INTER_AGENT_MESSAGE` events only after the recipient runtime accepts the inter-agent message; the event payload carries normalized `reference_files`.
+3. Those synthetic events pass through the shared `AgentRunEventPipeline` before team fan-out.
+4. `MessageFileReferenceProcessor` reads only `INTER_AGENT_MESSAGE.payload.reference_files` and derives `MESSAGE_FILE_REFERENCE_DECLARED`; message prose is not scanned for paths.
+5. `MessageFileReferenceService` consumes the derived events, dedupes by deterministic team/sender/receiver/path identity, and persists metadata under the team run directory.
+6. Active projection reads wait for pending same-team updates so immediate opens can resolve just-declared references.
+7. The frontend hydrates rows through `getMessageFileReferences(teamRunId)` and continues live updates from `MESSAGE_FILE_REFERENCE_DECLARED`.
+8. `messageFileReferencesStore` projects the same canonical team row as **Sent Artifacts** for the sender and **Received Artifacts** for the receiver.
+9. The viewer fetches `/team-runs/:teamRunId/message-file-references/:referenceId/content` to stream bytes only after the server resolves the persisted reference.
 
 ## Live Event Semantics
 
@@ -98,14 +99,14 @@ the referenced path exists and does not read file content. Existence,
 file-vs-directory, readability, and MIME handling belong to the referenced-content
 REST route.
 
-Supported wrapper contexts include inline code, emphasis/bold delimiters,
-Markdown link targets, blockquote/list prefixes, quotes, and parentheses. Those
-delimiters are never part of persisted path identity.
+`reference_files` is the sole declaration source. Paths mentioned only in
+message prose remain ordinary text and never create message-reference rows.
 
 Runtime diagnostics use the `[message-file-reference]` prefix and intentionally
-log concise event-level metadata: content length, extracted count, extracted
-paths when present, projection ids, and content failure reason codes. They must
-not log full inter-agent message content by default.
+log concise event-level metadata: content length, explicit reference count,
+reference paths when present, projection ids, validation failures, and content
+failure reason codes. They must not log full inter-agent message content by
+default.
 
 ### Published-artifact transport
 

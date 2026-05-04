@@ -28,8 +28,8 @@ Manages running team runs, selecting the authoritative team backend, restoring p
   - current member identity
   - teammate list and allowed recipients
   - optional team instruction
-  - `send_message_to` delivery handler
-- `InterAgentMessageRouter` is the canonical mixed-team inter-agent delivery owner. It delivers through the shared `AgentRun.postUserMessage(...)` boundary while preserving sender identity in recipient-visible content.
+  - `send_message_to` delivery handler with optional explicit `reference_files` path references
+- `InterAgentMessageRouter` is the canonical mixed-team inter-agent delivery owner. It delivers through the shared `AgentRun.postUserMessage(...)` boundary while preserving sender identity and generated **Reference files:** blocks in recipient-visible content.
 - Runtime adapters must expose `send_message_to` as one logical team-delivery
   tool invocation with both transcript and lifecycle events. Claude Agent SDK
   members route first-party MCP `send_message_to` through the dedicated team

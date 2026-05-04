@@ -163,6 +163,7 @@ This mode allows _fully automated_ task distribution with minimal coordinator ov
 
 - resolves the injected `TeamCommunicationContext` from `team_context`,
 - dispatches an `InterAgentMessageRequestEvent` through that communication context,
+- can include optional explicit `reference_files` absolute local paths for files the recipient may need to inspect,
 - relies on the communication-context owner to start or wake the recipient if needed.
 
 In native teams, `createScopedNativeTeamContext(...)` supplies a communication context that still delegates to `TeamManager`. Server-owned mixed-team adapters can provide the same communication contract without exposing the whole native `AgentTeamContext`. Task-plan tools remain native-team concerns and are not covered by this narrower communication seam.

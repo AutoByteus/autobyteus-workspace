@@ -5,8 +5,9 @@
 The Artifacts tab is backed by two deliberately separate models:
 
 - **Agent Artifacts** are files produced or touched by the active agent run.
-- **Message-reference artifacts** are absolute local files mentioned in accepted
-  inter-agent/team messages. The focused member sees these as:
+- **Message-reference artifacts** are explicit absolute local files declared by
+  accepted inter-agent/team messages through `reference_files`. The focused
+  member sees these as:
   - **Sent Artifacts** when the focused member sent the reference, grouped by receiver/counterpart.
   - **Received Artifacts** when the focused member received the reference, grouped by sender/counterpart.
 
@@ -22,9 +23,9 @@ Artifacts. The frontend renders those rows from `runFileChangesStore` under the
 
 Message-reference artifacts are additive and do not make raw paths inside chat
 messages clickable. The backend derives `MESSAGE_FILE_REFERENCE_DECLARED`
-metadata from accepted `INTER_AGENT_MESSAGE` events, persists one canonical
-team-level projection, and the frontend renders focused-member sent/received
-perspectives from `messageFileReferencesStore`.
+metadata from accepted `INTER_AGENT_MESSAGE.payload.reference_files`, persists
+one canonical team-level projection, and the frontend renders focused-member
+sent/received perspectives from `messageFileReferencesStore`.
 
 ## Canonical Runtime Shapes
 
@@ -51,7 +52,7 @@ interface MessageFileReferenceArtifact {
   senderMemberName?: string | null;
   receiverRunId: string;
   receiverMemberName?: string | null;
-  path: string; // normalized absolute local path captured from accepted inter-agent text
+  path: string; // normalized absolute local path declared via reference_files
   type: 'file' | 'image' | 'audio' | 'video' | 'pdf' | 'csv' | 'excel' | 'other';
   messageType: string;
   createdAt: string;
@@ -64,11 +65,9 @@ Key rules:
 - Agent Artifacts have one row per `runId + canonical path`.
 - Message-reference artifacts have one canonical team-level row per
   `teamRunId + senderRunId + receiverRunId + normalized path`.
-- Message-reference extraction accepts full absolute local paths even when common
-  AI/Markdown decoration is adjacent to the path, such as inline code,
-  emphasis/bold markers, Markdown link targets, blockquote context, or list
-  context. The persisted row stores the unwrapped normalized path, not the
-  Markdown delimiters.
+- Message-reference extraction reads only explicit `reference_files`; paths
+  mentioned only in message prose remain ordinary non-clickable text and do not
+  create rows.
 - Repeated message references with the same canonical identity dedupe to one row,
   preserve `createdAt`, and update `updatedAt`.
 - Current filesystem content is the source of truth for committed previews.
@@ -128,7 +127,7 @@ flowchart LR
 | --- | --- | --- |
 | Event pipeline | `autobyteus-server-ts/src/agent-execution/events/agent-run-event-pipeline.ts` | Runs post-normalization event processors once per backend batch before subscriber fan-out. |
 | File-change derivation | `autobyteus-server-ts/src/agent-execution/events/processors/file-change/file-change-event-processor.ts` | Derives `FILE_CHANGE` from explicit mutation tools and known generated-output tools; read-only and unknown generic `file_path` events stay out of Agent Artifacts. |
-| Message-reference derivation | `autobyteus-server-ts/src/agent-execution/events/processors/message-file-reference/message-file-reference-processor.ts` | Derives `MESSAGE_FILE_REFERENCE_DECLARED` from accepted inter-agent messages that contain valid absolute local path candidates, including supported Markdown-wrapped candidates. |
+| Message-reference derivation | `autobyteus-server-ts/src/agent-execution/events/processors/message-file-reference/message-file-reference-processor.ts` | Derives `MESSAGE_FILE_REFERENCE_DECLARED` from accepted inter-agent messages that carry explicit `payload.reference_files`; content prose is not scanned. |
 | Team synthetic-event seam | `autobyteus-server-ts/src/agent-team-execution/services/publish-processed-team-agent-events.ts` | Processes accepted synthetic team-manager `INTER_AGENT_MESSAGE` events through the event pipeline before team fan-out. |
 | Agent Artifact projection | `autobyteus-server-ts/src/services/run-file-changes/run-file-change-service.ts` | Consumes `FILE_CHANGE` only, projects one row per canonical path, and persists metadata. |
 | Message-reference projection | `autobyteus-server-ts/src/services/message-file-references/message-file-reference-service.ts` | Consumes `MESSAGE_FILE_REFERENCE_DECLARED`, projects canonical team-level rows, waits for pending same-team updates before active reads, and persists metadata. |

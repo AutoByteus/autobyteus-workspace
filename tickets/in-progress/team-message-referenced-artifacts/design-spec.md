@@ -41,14 +41,14 @@ The target design must preserve:
 
 ## Intended Change
 
-Add optional `reference_files` to `send_message_to` and make it the sole source of message-file-reference declarations for new accepted inter-agent messages.
+Add optional `reference_files` to `send_message_to` and make it the sole source of Artifacts-tab message-file-reference declarations for new accepted inter-agent messages. Preserve the message body as self-contained communication, analogous to an email body that still explains and naturally mentions its attachments.
 
 Target public contract:
 
 ```json
 {
   "recipient_name": "code_reviewer",
-  "content": "Implementation is ready. Key points and risks are summarized below...",
+  "content": "Implementation is ready for review. The main handoff is at /Users/normy/.../implementation-handoff.md, and the validation evidence is in /Users/normy/.../review-evidence.log. Key points and risks are summarized below...",
   "message_type": "agent_message",
   "reference_files": [
     "/Users/normy/.../implementation-handoff.md",
@@ -59,16 +59,16 @@ Target public contract:
 
 Recommended schema description for `reference_files`:
 
-> Optional attachment/reference list of absolute file paths the recipient may need to inspect, such as handoff documents, reports, logs, validation evidence, generated outputs, or related project files that should appear in Sent/Received Artifacts.
+> Optional attachment/reference list of absolute file paths the recipient may need to inspect, such as handoff documents, reports, logs, validation evidence, generated outputs, or related project files that should appear in Sent/Received Artifacts. Keep the message content self-contained, like an email body, and use this list as the structured attachment/index list.
 
 Use the field name `reference_files`, not `attachments`, because the tool is not uploading file bytes; it is declaring local file references that the backend later resolves through persisted reference identity.
 
 High-level flow:
 
-1. Sender calls `send_message_to` with natural `content` and optional `reference_files`.
+1. Sender calls `send_message_to` with self-contained natural `content` and optional `reference_files`.
 2. Shared parser validates and normalizes `reference_files` as absolute local file paths.
 3. Delivery request carries `referenceFiles` through the shared team delivery boundary.
-4. Runtime builders append a generated **Reference files:** block to the recipient-visible input when references exist and include `reference_files` in `INTER_AGENT_MESSAGE.payload`.
+4. Runtime builders append a generated **Reference files:** block to the recipient-visible input when references exist, analogous to an email attachment list, and include `reference_files` in `INTER_AGENT_MESSAGE.payload`.
 5. `MessageFileReferenceProcessor` reads only `payload.reference_files` and emits `MESSAGE_FILE_REFERENCE_DECLARED` events.
 6. Existing team-level projection/content/frontend paths persist, hydrate, and display canonical references as **Sent Artifacts** and **Received Artifacts**.
 
@@ -81,7 +81,7 @@ High-level flow:
 - Evidence: Content scanning makes prose an implicit artifact-sharing authority and creates noisy rows. Keeping content scanning after adding `reference_files` would leave two competing authorities. The existing processor boundary is still healthy because it decouples provider-specific tool handlers from reference projection; the processor's input source is the design issue.
 - Design response: Strengthen the public send-message contract with explicit `reference_files`, carry it through delivery/events, refactor the processor to consume that structured field, and remove free-text path extraction.
 - Refactor rationale: This is a clean-cut ownership correction. Tool schemas own agent intent capture; runtime builders own recipient/event shaping; the processor owns declaration derivation; projection services own persistence/content; frontend stores own perspective views.
-- Intentional deferrals and residual risk, if any: Historical backfill remains out of scope. Agents may omit `reference_files` in some messages; schema/instruction examples mitigate this, and omitted references intentionally produce no artifact rows.
+- Intentional deferrals and residual risk, if any: Historical backfill remains out of scope. Agents may omit `reference_files` in some messages, or may write thinner content if examples are poor; schema/instruction examples must show complete email-like content plus `reference_files`, and omitted references intentionally produce no artifact rows.
 
 ## Terminology
 
@@ -110,7 +110,7 @@ Read this design in this order:
 
 | Spine ID | Scope (`Primary End-to-End`/`Return-Event`/`Bounded Local`) | Start | End | Governing Owner | Why It Matters |
 | --- | --- | --- | --- | --- | --- |
-| DS-001 | Primary End-to-End | Sender `send_message_to` call | Accepted recipient runtime input and `INTER_AGENT_MESSAGE.payload.reference_files` | Team communication delivery boundary | Captures explicit file-reference intent and makes it visible to recipient agents. |
+| DS-001 | Primary End-to-End | Sender `send_message_to` call | Accepted recipient runtime input and `INTER_AGENT_MESSAGE.payload.reference_files` | Team communication delivery boundary | Captures explicit file-reference intent while preserving self-contained communication for recipient agents. |
 | DS-002 | Return-Event | Accepted `INTER_AGENT_MESSAGE` event | Persisted `message_file_references.json` row and streamed declaration | Message reference processor + projection service | Converts explicit references into durable team-level artifact metadata. |
 | DS-003 | Primary End-to-End | Live/hydrated message-reference payload | Focused member Artifacts tab Sent/Received rows | Frontend message-reference store | Shows the same canonical reference differently for sender and receiver. |
 | DS-004 | Primary End-to-End | User selects a referenced artifact row | Read-only content displayed or graceful unavailable state | Message-reference content service | Serves file bytes only through persisted team/reference identity. |
@@ -126,7 +126,7 @@ Read this design in this order:
 
 | Spine ID | Short Narrative | Main Domain Subject Nodes | Governing Owner | Key Off-Spine Concerns |
 | --- | --- | --- | --- | --- |
-| DS-001 | The sender declares natural content plus optional reference files. The shared parser normalizes the request and the runtime builder creates both recipient-visible context and the synthetic inter-agent event payload. | Tool schema, argument parser, delivery request, runtime builder | Team communication delivery | Validation, generated reference-files block, provider adapters |
+| DS-001 | The sender writes self-contained natural content plus optional reference files. The shared parser normalizes the request and the runtime builder creates both recipient-visible body/attachment context and the synthetic inter-agent event payload. | Tool schema, argument parser, delivery request, runtime builder | Team communication delivery | Validation, generated reference-files block, provider adapters |
 | DS-002 | Accepted inter-agent events are processed after delivery. The processor reads explicit `reference_files`, builds declaration payloads, and the projection service persists/upserts them. | Inter-agent event, reference processor, projection service | Message-reference event/projection capability | Path normalizer, id builder, artifact type inference, diagnostics |
 | DS-003 | Live and historical references enter one frontend store. The store derives Sent/Received groups for the focused member without duplicating persisted direction rows. | Streaming/hydration adapters, store, Artifacts UI | Frontend message-reference store | GraphQL query, websocket handler, localization labels |
 | DS-004 | Selecting a row asks the backend for content by persisted team/reference id. The content service resolves the stored path, validates readability, and returns content or a graceful error. | Viewer, REST route, content service, projection resolver | Message-reference content service | MIME/type detection, filesystem errors, read-only policy |
@@ -203,7 +203,7 @@ The event spine matters because the provider-specific `send_message_to` handlers
 | Off-Spine Concern | Related Spine ID(s) | Serves Which Owner | Responsibility | Why It Exists | Risk If Misplaced On Main Line |
 | --- | --- | --- | --- | --- | --- |
 | Reference-list validation/normalization | DS-001, DS-002 | Shared parser / processor | Ensure explicit refs are absolute local strings and deduped | Prevents malformed explicit contracts | Provider drift or late noisy failures |
-| Generated recipient reference block | DS-001, DS-005 | Runtime builders | Make files visible to recipient agents | Recipient should not need sender to duplicate paths in prose | Tool schema leaks into provider-specific message formatting |
+| Generated recipient reference block | DS-001, DS-005 | Runtime builders | Make explicit references visible as an attachment/index list | Mirrors email attachment affordance while preserving self-contained body | Tool schema leaks into provider-specific message formatting |
 | Stable reference id builder | DS-002, DS-004 | Projection/content services | Build deterministic ids from team/sender/receiver/path | Enables dedupe and content lookup | Random ids or raw path URLs |
 | Artifact type inference | DS-002, DS-003 | Reference payload builder/UI | Choose icon/viewer handling | Reuses existing artifact utility | UI guesses repeatedly |
 | Streaming/hydration adapters | DS-003 | Frontend store | Convert backend payloads into client state | Keeps Artifacts UI thin | UI components become transport-aware |
@@ -342,7 +342,7 @@ Forbidden:
 | `send_message_to` | Inter-agent communication request | Send natural message and optional explicit file references | `recipient_name`, `content`, optional `message_type`, optional `reference_files: string[]` | `reference_files` contains absolute paths only. |
 | `parseSendMessageToToolArguments` | Tool argument validation | Produce normalized send-message args | Unknown tool args -> typed args | Shared by Codex/Claude server paths. |
 | `InterAgentMessageDeliveryRequest` | Accepted delivery request | Carry sender/team/recipient/content/type/references | `teamRunId`, `senderRunId`, `recipientMemberName`, `referenceFiles` | No raw extra provider args. |
-| `buildRecipientVisibleInterAgentMessageContent` | Recipient runtime context | Create visible content including generated reference block | Delivery request | Existing message style preserved plus block when refs exist. |
+| `buildRecipientVisibleInterAgentMessageContent` | Recipient runtime context | Create visible self-contained content including generated attachment/index block | Delivery request | Existing message style preserved plus block when refs exist. |
 | `buildInterAgentMessageAgentRunEvent` | Accepted event payload | Build `INTER_AGENT_MESSAGE` with `reference_files` | Sender/receiver/team request | Event source for processor. |
 | `MESSAGE_FILE_REFERENCE_DECLARED` | Reference declaration event | Declare one canonical file reference | team + sender + receiver + normalized path/reference id | No direction field. |
 | `getMessageFileReferences(teamRunId)` | Reference hydration | Return canonical refs for a team | `teamRunId` | No receiver argument. |
@@ -409,8 +409,8 @@ Rule validation: no one generic boundary handles both generated run-file artifac
 
 | Topic | Good Example | Bad / Avoided Shape | Why The Example Matters |
 | --- | --- | --- | --- |
-| Tool call | `send_message_to({ recipient_name: "code_reviewer", content: "Implementation is ready...", reference_files: ["/Users/.../implementation-handoff.md"] })` | Only mentioning `/Users/.../implementation-handoff.md` in prose and expecting an artifact row | Makes reference intent explicit while content stays natural. |
-| Recipient-visible input | Natural content followed by generated `Reference files:\n- /Users/.../implementation-handoff.md` | Forcing agents to manually format a special Markdown block inside `content` | Recipient can inspect files even when content does not repeat all paths. |
+| Tool call | `send_message_to({ recipient_name: "code_reviewer", content: "Implementation is ready. The main handoff is at /Users/.../implementation-handoff.md. Please review the parser refactor and validation evidence.", reference_files: ["/Users/.../implementation-handoff.md"] })` | Thin content like `See attached.` with only `reference_files`, or only prose paths with no artifact list | Makes reference intent explicit while content stays self-contained. |
+| Recipient-visible input | Self-contained natural content followed by generated `Reference files:\n- /Users/.../implementation-handoff.md` | Treating `reference_files` as a replacement for explaining the handoff in `content` | Recipient gets both an email-like body and an attachment/index list. |
 | Processor source | `payload.reference_files.map(buildMessageFileReferencePayload)` | `extractMessageFileReferencePathCandidates(payload.content)` | Prevents prose from becoming an implicit API. |
 | UI projection | Canonical row shows under Sent for sender and Received for receiver | Persisting separate sent/received JSON rows | Direction is a perspective, not storage identity. |
 | Content read | `/team-runs/team-1/message-file-references/ref-1/content` | `/local-file?path=/Users/...` | Persisted reference id is the content authority. |
@@ -460,6 +460,7 @@ Layering is explanatory only; ownership boundaries above are authoritative.
 Implementation should provide evidence for:
 
 - tool schema snapshots/types include `reference_files` for Codex, Claude, and native/autobyteus send-message paths;
+- tool schema/instruction examples show self-contained email-like `content` plus `reference_files`, not thin `See attached`-style content;
 - parser accepts omitted/empty `reference_files`, normalizes valid absolute paths, dedupes duplicates, and rejects malformed lists;
 - recipient-visible runtime input includes generated **Reference files:** block when explicit references exist;
 - `INTER_AGENT_MESSAGE.payload.reference_files` is present for accepted referenced messages;
@@ -484,9 +485,9 @@ Suggested grep/review checks:
 
 | Risk | Impact | Mitigation |
 | --- | --- | --- |
-| Agents omit `reference_files` when mentioning paths in prose | Artifact row absent | Positive schema description plus examples in member instructions/tool docs. |
+| Agents omit `reference_files` when mentioning paths in prose | Artifact row absent | Positive schema description plus examples showing complete content and `reference_files`. |
 | Provider implementations diverge | Some teams fail to share artifacts | Shared parser and delivery DTO; tests for each provider schema/handler. |
-| Recipient does not know about references if content omits paths | Agent cannot inspect shared files | Runtime builders append generated **Reference files:** block. |
+| Agents write thin content because references are in `reference_files` | Recipient loses context | Email-like examples require self-contained body plus generated **Reference files:** block. |
 | Invalid path entry blocks message delivery | Sender must retry | Concise validation error; explicit contract favors correction over silent noise. |
 | Old content-scanning tests conflict | Failing tests | Replace with explicit-reference tests; mark runtime parser investigation superseded. |
 

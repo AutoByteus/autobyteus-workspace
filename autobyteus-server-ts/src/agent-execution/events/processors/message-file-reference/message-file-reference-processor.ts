@@ -6,8 +6,10 @@ import type {
   AgentRunEventProcessor,
   AgentRunEventProcessorInput,
 } from "../../agent-run-event-processor.js";
+import {
+  normalizeExplicitMessageFileReferencePaths,
+} from "../../../../services/message-file-references/message-file-reference-explicit-paths.js";
 import { buildMessageFileReferencePayload } from "./message-file-reference-payload-builder.js";
-import { extractMessageFileReferencePathCandidates } from "./message-file-reference-paths.js";
 
 const LOG_PREFIX = "[message-file-reference]";
 const logger = {
@@ -37,13 +39,11 @@ export class MessageFileReferenceProcessor implements AgentRunEventProcessor {
 
       const payload = event.payload;
       const rawContent = typeof payload.content === "string" ? payload.content : "";
-      const content = normalizeRequiredString(payload.content);
       const teamRunId = normalizeRequiredString(payload.team_run_id);
       const senderRunId = normalizeRequiredString(payload.sender_agent_id);
       const receiverRunId = normalizeRequiredString(payload.receiver_run_id) ?? event.runId;
-      if (!content || !teamRunId || !senderRunId || !receiverRunId) {
+      if (!teamRunId || !senderRunId || !receiverRunId) {
         const missingFields = [
-          !content ? "content" : null,
           !teamRunId ? "team_run_id" : null,
           !senderRunId ? "sender_agent_id" : null,
           !receiverRunId ? "receiver_run_id" : null,
@@ -54,13 +54,26 @@ export class MessageFileReferenceProcessor implements AgentRunEventProcessor {
         continue;
       }
 
-      const paths = extractMessageFileReferencePathCandidates(content);
+      const referenceFilesResult = normalizeExplicitMessageFileReferencePaths(
+        payload.reference_files,
+      );
+      if (!referenceFilesResult.ok) {
+        const location = referenceFilesResult.error.index === undefined
+          ? ""
+          : ` index=${referenceFilesResult.error.index}`;
+        logger.warn(
+          `${LOG_PREFIX} skipped accepted INTER_AGENT_MESSAGE invalid reference_files teamRunId=${teamRunId} senderRunId=${senderRunId} receiverRunId=${receiverRunId}${location} reason=${referenceFilesResult.error.reason}`,
+        );
+        continue;
+      }
+
+      const paths = referenceFilesResult.referenceFiles;
       const senderMemberName = normalizeRequiredString(payload.sender_agent_name);
       const receiverMemberName =
         normalizeRequiredString(payload.receiver_agent_name)
         ?? normalizeRequiredString(payload.recipient_role_name);
       logger.info(
-        `${LOG_PREFIX} scanned accepted INTER_AGENT_MESSAGE teamRunId=${teamRunId} senderRunId=${senderRunId} senderName=${senderMemberName ?? "unknown"} receiverRunId=${receiverRunId} receiverName=${receiverMemberName ?? "unknown"} contentLength=${rawContent.length} referenceCount=${paths.length}${paths.length > 0 ? ` paths=${JSON.stringify(paths)}` : ""}`,
+        `${LOG_PREFIX} processed accepted INTER_AGENT_MESSAGE teamRunId=${teamRunId} senderRunId=${senderRunId} senderName=${senderMemberName ?? "unknown"} receiverRunId=${receiverRunId} receiverName=${receiverMemberName ?? "unknown"} contentLength=${rawContent.length} referenceCount=${paths.length}${paths.length > 0 ? ` paths=${JSON.stringify(paths)}` : ""}`,
       );
       if (paths.length === 0) {
         continue;

@@ -37,8 +37,8 @@ identity.
 - Message-reference runtime/projection:
   - `src/agent-execution/domain/agent-run-message-file-reference.ts`
   - `src/agent-execution/events/processors/message-file-reference/message-file-reference-processor.ts`
-  - `src/agent-execution/events/processors/message-file-reference/message-file-reference-paths.ts`
   - `src/agent-execution/events/processors/message-file-reference/message-file-reference-payload-builder.ts`
+  - `src/services/message-file-references/message-file-reference-explicit-paths.ts`
   - `src/agent-team-execution/services/publish-processed-team-agent-events.ts`
   - `src/services/message-file-references/message-file-reference-identity.ts`
   - `src/services/message-file-references/message-file-reference-service.ts`
@@ -59,9 +59,10 @@ identity.
 
 - Run each normalized backend event batch through `AgentRunEventPipeline` once before subscriber fan-out.
 - Let `FileChangeEventProcessor` derive the sole live Agent Artifact event, `FILE_CHANGE`.
-- Let `MessageFileReferenceProcessor` derive `MESSAGE_FILE_REFERENCE_DECLARED` only from accepted `INTER_AGENT_MESSAGE` events that contain valid absolute local path candidates, including paths directly wrapped in common AI/Markdown delimiters.
-- Process synthetic team-manager `INTER_AGENT_MESSAGE` events through the shared event pipeline before team fan-out via `publishProcessedTeamAgentEvents`, without moving extraction into `send_message_to` handlers.
-- Normalize extracted message-reference paths by stripping adjacent wrapper characters from supported inline-code, emphasis/bold, Markdown link-target, blockquote, list, quote, and parenthesis contexts while still requiring a full absolute local path.
+- Let `send_message_to.reference_files` capture explicit file-reference intent while keeping message `content` natural.
+- Process synthetic team-manager `INTER_AGENT_MESSAGE` events through the shared event pipeline before team fan-out via `publishProcessedTeamAgentEvents`, without moving projection persistence into provider-specific handlers.
+- Let `MessageFileReferenceProcessor` derive `MESSAGE_FILE_REFERENCE_DECLARED` only from accepted `INTER_AGENT_MESSAGE.payload.reference_files`; message content is not scanned for paths.
+- Normalize explicit message-reference paths by trimming, normalizing separators, deduping within one message, and requiring absolute local path strings.
 - Classify file mutations explicitly: Claude `Write`/`Edit`/`MultiEdit`/`NotebookEdit`, Codex `edit_file`, and AutoByteus `write_file`/`edit_file`.
 - Classify generated outputs only for known generated-output tools (`generate_image`, `edit_image`, `generate_speech`, including the AutoByteus image/audio MCP forms) with explicit output-path semantics or known result paths.
 - Keep read-only tool calls such as Claude `Read(file_path)` as tool/activity lifecycle only; generic unknown-tool `file_path` is not file-change evidence.
@@ -75,8 +76,8 @@ identity.
 - Hydrate active and historical message references through `MessageFileReferenceProjectionService` and `getMessageFileReferences(teamRunId)`.
 - Serve Agent Artifact bytes by `runId + canonical path` through `/runs/:runId/file-change-content`.
 - Serve referenced bytes through `/team-runs/:teamRunId/message-file-references/:referenceId/content` only after resolving a persisted reference.
-- Avoid filesystem existence or content checks while deriving references from message text; file IO occurs only when the referenced-content route opens a persisted reference.
-- Emit concise `[message-file-reference]` diagnostics for accepted-message scans, metadata skips, projection insert/update, and content-resolution failures without logging full inter-agent message content by default.
+- Avoid filesystem existence or content checks while deriving references from explicit `reference_files`; file IO occurs only when the referenced-content route opens a persisted reference.
+- Emit concise `[message-file-reference]` diagnostics for accepted-message reference counts, invalid reference-list validation failures, metadata skips, projection insert/update, and content-resolution failures without logging full inter-agent message content by default.
 - Keep published-artifact transport separate from the Artifacts tab; current clients depend on `FILE_CHANGE` and `MESSAGE_FILE_REFERENCE_DECLARED`, not on published-artifact events.
 - Keep assistant-message media URL transformation separate from the Artifacts path via `MediaUrlTransformerProcessor`.
 
@@ -88,8 +89,8 @@ identity.
 - The pipeline owns both derived file-change semantics and derived message-reference semantics. `RunFileChangeService` only consumes `FILE_CHANGE`; `MessageFileReferenceService` only consumes `MESSAGE_FILE_REFERENCE_DECLARED`.
 - Current filesystem bytes are the source of truth for committed previews.
 - Referenced-file previews read current filesystem bytes by persisted `teamRunId + referenceId` identity. There is no supported raw-path-only content route for message references.
-- Markdown/AI decoration around a path is parsing syntax only. It is not part of
-  persisted path identity.
+- Paths mentioned only in inter-agent message prose are ordinary text and do not
+  create message-reference rows.
 - Generated outputs use the same projection and preview route as text edits and writes.
 - Persisted state stores metadata only; transient `content` exists only for live buffered `write_file` preview.
 - `FILE_CHANGE` is a state-update stream, not an exact-one occurrence guarantee. `write_file` pre-available statuses are runtime-shaped and duplicate identical interim updates are acceptable when idempotent and followed by terminal state without duplicating projection rows.

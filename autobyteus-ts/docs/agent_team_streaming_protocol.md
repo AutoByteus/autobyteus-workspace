@@ -175,11 +175,10 @@ This flattening ensures that the frontend can reuse existing single-agent compon
 
 For accepted inter-agent messages, the server may process the synthetic
 `INTER_AGENT_MESSAGE` through the normal agent-run event pipeline before team
-fan-out. If the message text contains valid absolute local path candidates, the
+fan-out. If the accepted event carries explicit `payload.reference_files`, the
 client stream can include a `MESSAGE_FILE_REFERENCE_DECLARED` sidecar event.
-Common AI/Markdown decoration around the path, such as bold, emphasis, inline
-code, link-target, blockquote, list, quote, or parenthesis context, is parsing
-syntax only; the emitted reference stores the unwrapped normalized absolute path.
+Message prose is not scanned for paths; paths mentioned only in content remain
+ordinary non-clickable text.
 
 That event is canonical team-level metadata for the Artifacts tab's message
 reference surfaces. A focused sender sees the row as **Sent Artifacts** grouped

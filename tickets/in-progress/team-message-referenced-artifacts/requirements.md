@@ -6,13 +6,14 @@ Refined - ready for architecture review. Revised on 2026-05-04 for the explicit 
 
 ## Goal / Problem Statement
 
-Agents need a clean way to share files during team communication. The message body should remain natural, detailed prose, while files that should appear in the Artifacts tab are declared explicitly through an optional structured field on `send_message_to`.
+Agents need a clean way to share files during team communication. The message body should remain natural, detailed, and self-contained, like an email body that still explains its attachments. Files that should appear in the Artifacts tab are additionally declared through an optional structured field on `send_message_to`.
 
 The target behavior is:
 
 - `send_message_to` accepts the existing `recipient_name`, `content`, and `message_type` arguments plus optional `reference_files`.
+- `content` remains the complete communication: the sender should explain what is being handed off, why it matters, and naturally mention important file paths when those paths are part of the handoff.
 - `reference_files` is an explicit attachment/reference list of absolute file paths the recipient may need to inspect, such as handoff documents, reports, logs, generated outputs, or validation evidence.
-- The backend creates message-file-reference metadata only from the structured `reference_files` field on accepted inter-agent messages.
+- The backend creates Artifacts-tab message-file-reference metadata only from the structured `reference_files` field on accepted inter-agent messages.
 - The conversation still renders normal `INTER_AGENT_MESSAGE` content through the existing UI path; file paths in prose remain ordinary message text.
 - The Artifacts tab projects one canonical team-level reference set as **Sent Artifacts** for the sender and **Received Artifacts** for the receiver.
 
@@ -51,8 +52,9 @@ The target behavior is:
 
 - Add optional `reference_files: string[]` to all `send_message_to` tool definitions and native/autobyteus send-message contracts.
 - Describe `reference_files` positively as an optional attachment/reference list of absolute file paths the recipient may need to inspect.
-- Keep `content` unchanged as the natural communication body.
-- Render accepted `reference_files` into the recipient-visible runtime input as a short generated **Reference files:** block so the recipient agent can inspect the files even when the prose does not repeat every path.
+- Keep `content` as the natural, self-contained communication body; schema/instruction examples should show agents explaining the handoff and mentioning important paths in `content`, the way an email body can describe attached files.
+- Treat `reference_files` as the structured attachment/index list for Artifacts registration, not as a substitute for self-contained message content.
+- Render accepted `reference_files` into the recipient-visible runtime input as a short generated **Reference files:** block, analogous to an email attachment list, so the recipient has an explicit attachment/index view in addition to the self-contained body.
 - Carry normalized `reference_files` through `InterAgentMessageDeliveryRequest` and `INTER_AGENT_MESSAGE.payload.reference_files`.
 - Keep `MessageFileReferenceProcessor` as the event-sidecar owner, but refactor it to read only `payload.reference_files`; remove the free-text path scanner.
 - Keep one canonical team-level `message_file_references.json` per team run.
@@ -71,7 +73,7 @@ Medium
 
 - UC-001: Preserve existing inter-agent message display behavior in the conversation.
 - UC-002: Allow an agent to call `send_message_to` with optional explicit `reference_files`.
-- UC-003: Deliver the natural message plus a generated reference-files block to the recipient runtime when explicit references exist.
+- UC-003: Deliver a self-contained natural message plus a generated reference-files attachment/index block to the recipient runtime when explicit references exist.
 - UC-004: Derive team-level referenced-artifact metadata from accepted `INTER_AGENT_MESSAGE.payload.reference_files`.
 - UC-005: Display references for the focused sender under **Sent Artifacts**, grouped by receiver/counterpart agent.
 - UC-006: Display the same canonical references for the focused receiver under **Received Artifacts**, grouped by sender/counterpart agent.
@@ -99,11 +101,11 @@ Medium
 - REQ-001: Existing `INTER_AGENT_MESSAGE` event emission, frontend handling, and `InterAgentMessageSegment` conversation display must remain behaviorally unchanged for message content.
 - REQ-002: Raw file paths inside inter-agent message text must remain ordinary text and must not become clickable links as part of this feature.
 - REQ-003: `send_message_to` tool schemas for Codex, Claude, and native/autobyteus execution must expose optional `reference_files` as an array of absolute file path strings.
-- REQ-004: The `reference_files` schema description must be positive and usage-oriented: it should tell agents to include files the recipient may need to inspect, such as handoff docs, reports, logs, evidence, generated outputs, or related project files. It must not add noisy defensive wording to the natural message body.
+- REQ-004: The `reference_files` schema description must be positive and usage-oriented: it should tell agents to include files the recipient may need to inspect, such as handoff docs, reports, logs, evidence, generated outputs, or related project files. It must also preserve the email-like mental model: write complete message content and use `reference_files` as the attachment/reference list. It must not add noisy defensive wording to the natural message body.
 - REQ-005: Send-message argument parsing must normalize `reference_files` by trimming strings, normalizing separators where appropriate, removing duplicates within one call, and accepting omitted or empty lists as no referenced files.
 - REQ-006: If `reference_files` is present but malformed, non-string, relative, protocol/URL-shaped, null-byte-containing, or otherwise not an absolute local path list, the tool call must fail validation with a concise corrective error before delivery.
 - REQ-007: The accepted delivery request, recipient-visible runtime input metadata, and synthetic `INTER_AGENT_MESSAGE` payload must carry `reference_files` as the explicit reference source.
-- REQ-008: When explicit `reference_files` exist, the recipient-visible runtime message must append a generated **Reference files:** block listing those paths, without requiring the sender to duplicate paths manually in `content`.
+- REQ-008: When explicit `reference_files` exist, the recipient-visible runtime message must append a generated **Reference files:** block listing those paths, analogous to an email attachment list. This block supplements the self-contained `content`; it must not be framed as a replacement for explaining the files in the message body.
 - REQ-009: The backend must derive `MESSAGE_FILE_REFERENCE_DECLARED` metadata from accepted `INTER_AGENT_MESSAGE.payload.reference_files` through an event-processor-style sidecar, not inside provider-specific `send_message_to` handlers and not inside frontend rendering.
 - REQ-010: Message content must not be scanned to create message-file-reference metadata. If `reference_files` is omitted or empty, no referenced-artifact row is created even when the content prose contains absolute file paths.
 - REQ-011: Reference derivation must perform no filesystem existence or content checks during message delivery or event processing.
@@ -130,7 +132,7 @@ Medium
 - AC-004: Given `send_message_to` is called with detailed prose content and no `reference_files`, no referenced-artifact row is created from paths mentioned only in the prose.
 - AC-005: Given `reference_files` contains duplicate instances of the same normalized absolute path in one call, one declaration/projection row is created for that sender/receiver/path.
 - AC-006: Given `reference_files` contains a relative path, URL, null-byte path, or non-string entry, the tool call fails validation with a concise corrective error and does not deliver a partial message.
-- AC-007: Given explicit references exist, the recipient runtime input includes the natural message plus a generated **Reference files:** block listing those paths.
+- AC-007: Given explicit references exist, the recipient runtime input includes the self-contained natural message plus a generated **Reference files:** block listing those paths.
 - AC-008: Given the sender's Artifacts tab is focused, the derived reference appears under **Sent Artifacts**, grouped below the receiver/counterpart agent.
 - AC-009: Given the receiver's Artifacts tab is focused, the same derived reference appears under **Received Artifacts**, grouped below the sender/counterpart agent.
 - AC-010: Given the same sender sends the same explicit path to the same receiver multiple times, the relevant Sent/Received UI shows one file row and updates its timestamp instead of duplicate rows or counts.
@@ -143,6 +145,7 @@ Medium
 - AC-017: Tests, grep evidence, or review evidence prove the receiver-scoped content URL, receiver-scoped GraphQL query argument, member-level projection file location, frontend receiver-keyed store API, and single **Referenced Artifacts** section have been replaced by the team-level Sent/Received design.
 - AC-018: Tests, grep evidence, or review evidence prove `extractMessageFileReferencePathCandidates` and content-based parser fallback are removed/decommissioned, and reference declarations are sourced from `payload.reference_files` only.
 - AC-019: Runtime or automated-test evidence proves accepted `send_message_to` messages with explicit `reference_files` create message-file references and log concise explicit-reference diagnostics.
+- AC-020: Review evidence proves tool schema/instruction examples use self-contained email-like `content` that explains the handoff and naturally mentions important referenced paths, plus `reference_files` as the structured attachment/reference list.
 
 ## Constraints / Dependencies
 
@@ -164,7 +167,7 @@ Medium
 ## Risks / Open Questions
 
 - Agents may still mention helpful paths in prose without adding them to `reference_files`; that is acceptable because the explicit list is the artifact-sharing contract.
-- Provider-specific tool schema/instruction wording must be clear enough that agents populate `reference_files` for handoff packages.
+- Provider-specific tool schema/instruction wording must be clear enough that agents both keep `content` self-contained and populate `reference_files` for handoff packages.
 - Implementation must avoid double-processing runtime events that already pass through `AgentRunEventPipeline`.
 - Historical backfill is explicitly out of scope; old messages will not create new referenced rows unless separately approved.
 
@@ -217,7 +220,8 @@ Medium
 - AC-017 -> Guard against retaining the receiver-scoped prior implementation.
 - AC-018 -> Guard against retaining the implicit path parser.
 - AC-019 -> Guard against missing explicit-reference diagnostics.
+- AC-020 -> Guard against agents writing thin/non-self-contained messages because references moved into a structured field.
 
 ## Approval Status
 
-Requirements refined on 2026-05-04 after explicit user discussion. The user approved another refactoring design round and agreed the target should use an optional explicit `reference_files`/attachment-list field instead of scanning paths out of message content.
+Requirements refined on 2026-05-04 after explicit user discussion. The user approved another refactoring design round and agreed the target should use an optional explicit `reference_files`/attachment-list field instead of scanning paths out of message content. The user also clarified that `content` must remain self-contained, like an email body that still explains and naturally mentions its attachments.

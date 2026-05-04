@@ -274,6 +274,7 @@ export interface InterAgentMessagePayload {
   recipient_role_name: string;
   content: string;
   message_type: string;
+  reference_files?: string[];
   agent_name?: string;
   agent_id?: string;
 }

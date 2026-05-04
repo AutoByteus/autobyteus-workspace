@@ -421,7 +421,8 @@ describe("Message file references API integration", () => {
         senderMemberName: "sender",
         recipientMemberName: "receiver",
         messageType,
-        content: `Please review **${referencedFilePath}** before delivery. Raw text must stay plain.`,
+        content: "Please review the accepted referenced report before delivery. Raw text must stay plain.",
+        referenceFiles: [referencedFilePath, referencedFilePath],
       });
       expect(result).toMatchObject({
         accepted: true,
@@ -435,7 +436,10 @@ describe("Message file references API integration", () => {
 
     const firstAgentEvents = await deliver("handoff");
     expect(agentRunManager.backendsByRunId.get("receiver-run-1")?.postedMessages[0]?.content).toContain(
-      `message:\nPlease review **${referencedFilePath}**`,
+      "message:\nPlease review the accepted referenced report before delivery. Raw text must stay plain.",
+    );
+    expect(agentRunManager.backendsByRunId.get("receiver-run-1")?.postedMessages[0]?.content).toContain(
+      `Reference files:\n- ${referencedFilePath}`,
     );
 
     expect(firstAgentEvents.map((event) => event.eventType)).toEqual([
@@ -452,8 +456,9 @@ describe("Message file references API integration", () => {
         sender_agent_name: "sender",
         receiver_agent_name: "receiver",
         recipient_role_name: "receiver",
-        content: `Please review **${referencedFilePath}** before delivery. Raw text must stay plain.`,
+        content: "Please review the accepted referenced report before delivery. Raw text must stay plain.",
         message_type: "handoff",
+        reference_files: [referencedFilePath],
       },
     });
 
@@ -572,6 +577,41 @@ describe("Message file references API integration", () => {
     expect(historicalResponse.payload).toBe("# Accepted referenced report");
     expect(String(historicalResponse.headers["content-type"])).toContain("text/markdown");
     expect(historicalResponse.headers["cache-control"]).toBe("no-store");
+
+    unsubscribeCapture();
+  });
+
+  it("does not create team-level references from message content without explicit reference_files", async () => {
+    const teamRunId = "team-content-only-1";
+    await writeTeamMetadata(teamRunId, [
+      { memberRouteKey: "sender", memberName: "sender", memberRunId: "sender-run-1" },
+      { memberRouteKey: "receiver", memberName: "receiver", memberRunId: "receiver-run-1" },
+    ]);
+    const { manager } = createTeamManager(teamRunId);
+    const capturedEvents: TeamRunEvent[] = [];
+    const unsubscribeCapture = manager.subscribeToEvents((event) => {
+      capturedEvents.push(event);
+    });
+
+    const result = await manager.deliverInterAgentMessage({
+      teamRunId,
+      senderRunId: "sender-run-1",
+      senderMemberName: "sender",
+      recipientMemberName: "receiver",
+      messageType: "handoff",
+      content: "This prose mentions /tmp/content-only-report.md but does not declare reference_files.",
+    });
+
+    expect(result.accepted).toBe(true);
+    const agentEvents = capturedEvents
+      .filter((event) => event.eventSourceType === TeamRunEventSourceType.AGENT)
+      .map((event) => (event.data as TeamRunAgentEventPayload).agentEvent);
+    expect(agentEvents.map((event) => event.eventType)).toEqual([
+      AgentRunEventType.INTER_AGENT_MESSAGE,
+    ]);
+    expect(agentEvents[0]?.payload).toMatchObject({
+      reference_files: [],
+    });
 
     unsubscribeCapture();
   });

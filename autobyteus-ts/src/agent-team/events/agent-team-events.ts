@@ -43,13 +43,21 @@ export class InterAgentMessageRequestEvent extends OperationalAgentTeamEvent {
   recipientName: string;
   content: string;
   messageType: string;
+  referenceFiles: string[];
 
-  constructor(senderAgentId: string, recipientName: string, content: string, messageType: string) {
+  constructor(
+    senderAgentId: string,
+    recipientName: string,
+    content: string,
+    messageType: string,
+    referenceFiles: string[] = []
+  ) {
     super();
     this.senderAgentId = senderAgentId;
     this.recipientName = recipientName;
     this.content = content;
     this.messageType = messageType;
+    this.referenceFiles = Array.isArray(referenceFiles) ? [...referenceFiles] : [];
   }
 }
 

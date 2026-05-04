@@ -4,6 +4,16 @@ import { InterAgentMessage } from '../../agent/message/inter-agent-message.js';
 import { AgentInputUserMessage } from '../../agent/message/agent-input-user-message.js';
 import type { AgentTeamContext } from '../context/agent-team-context.js';
 
+const buildRecipientVisibleInterAgentMessageContent = (event: InterAgentMessageRequestEvent): string => {
+  if (!Array.isArray(event.referenceFiles) || event.referenceFiles.length === 0) {
+    return event.content;
+  }
+  return (
+    `${event.content}\n\nReference files:\n` +
+    event.referenceFiles.map((filePath) => `- ${filePath}`).join('\n')
+  );
+};
+
 export class InterAgentMessageRequestEventHandler extends BaseAgentTeamEventHandler {
   async handle(event: InterAgentMessageRequestEvent, context: AgentTeamContext): Promise<void> {
     const teamId = context.teamId;
@@ -43,7 +53,9 @@ export class InterAgentMessageRequestEventHandler extends BaseAgentTeamEventHand
 
     try {
       if (targetNode && typeof (targetNode as { postMessage?: unknown }).postMessage === 'function') {
-        const messageForTeam = new AgentInputUserMessage(event.content);
+        const messageForTeam = new AgentInputUserMessage(
+          buildRecipientVisibleInterAgentMessageContent(event)
+        );
         await (targetNode as { postMessage: (message: AgentInputUserMessage) => Promise<void> })
           .postMessage(messageForTeam);
         console.info(
@@ -64,9 +76,10 @@ export class InterAgentMessageRequestEventHandler extends BaseAgentTeamEventHand
         const messageForAgent = InterAgentMessage.createWithDynamicMessageType(
           recipientRole,
           recipientAgentId,
-          event.content,
+          buildRecipientVisibleInterAgentMessageContent(event),
           event.messageType,
-          event.senderAgentId
+          event.senderAgentId,
+          event.referenceFiles
         );
         await targetAgent.postInterAgentMessage(messageForAgent);
         console.info(
