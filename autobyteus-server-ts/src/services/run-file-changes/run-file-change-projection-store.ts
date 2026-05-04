@@ -12,6 +12,14 @@ const logger = {
 const canonicalProjectionPathForMemoryDir = (memoryDir: string): string =>
   path.join(path.resolve(memoryDir), "file_changes.json");
 
+const createTempPath = (filePath: string): string =>
+  `${filePath}.${process.pid}.${Date.now()}.${Math.random().toString(16).slice(2)}.tmp`;
+
+type ProjectionStoreFileSystem = Pick<
+  typeof fs,
+  "mkdir" | "readFile" | "rename" | "unlink" | "writeFile"
+>;
+
 const stripTransientFields = (projection: RunFileChangeProjection): RunFileChangeProjection => ({
   version: 2,
   entries: projection.entries.map(({ content: _content, ...entry }) => ({ ...entry })),
@@ -22,8 +30,11 @@ const emptyProjection = (): RunFileChangeProjection => ({
   entries: [],
 });
 
-const readProjectionFile = async (projectionPath: string): Promise<RunFileChangeProjection | null> => {
-  const raw = await fs.readFile(projectionPath, "utf-8");
+const readProjectionFile = async (
+  files: ProjectionStoreFileSystem,
+  projectionPath: string,
+): Promise<RunFileChangeProjection | null> => {
+  const raw = await files.readFile(projectionPath, "utf-8");
   const parsed = JSON.parse(raw) as RunFileChangeProjection;
   if (!Array.isArray(parsed?.entries)) {
     return emptyProjection();
@@ -42,11 +53,13 @@ const isMissingFileError = (error: unknown): boolean =>
   && (error as { code?: unknown }).code === "ENOENT";
 
 export class RunFileChangeProjectionStore {
+  constructor(private readonly files: ProjectionStoreFileSystem = fs) {}
+
   async readProjection(memoryDir: string): Promise<RunFileChangeProjection> {
     const canonicalPath = canonicalProjectionPathForMemoryDir(memoryDir);
 
     try {
-      return (await readProjectionFile(canonicalPath)) ?? emptyProjection();
+      return (await readProjectionFile(this.files, canonicalPath)) ?? emptyProjection();
     } catch (error) {
       if (!isMissingFileError(error)) {
         logger.warn(
@@ -60,12 +73,19 @@ export class RunFileChangeProjectionStore {
 
   async writeProjection(memoryDir: string, projection: RunFileChangeProjection): Promise<void> {
     const projectionPath = canonicalProjectionPathForMemoryDir(memoryDir);
-    await fs.mkdir(path.dirname(projectionPath), { recursive: true });
-    await fs.writeFile(
-      projectionPath,
-      JSON.stringify(stripTransientFields(projection), null, 2),
-      "utf-8",
-    );
+    const tempPath = createTempPath(projectionPath);
+    await this.files.mkdir(path.dirname(projectionPath), { recursive: true });
+    try {
+      await this.files.writeFile(
+        tempPath,
+        JSON.stringify(stripTransientFields(projection), null, 2),
+        "utf-8",
+      );
+      await this.files.rename(tempPath, projectionPath);
+    } catch (error) {
+      await this.files.unlink(tempPath).catch(() => {});
+      throw error;
+    }
   }
 }
 

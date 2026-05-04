@@ -27,6 +27,7 @@ import type { TeamMemberRunConfig, TeamRunConfig } from "../../domain/team-run-c
 import { TeamBackendKind } from "../../domain/team-backend-kind.js";
 import {
   TeamRunEventSourceType,
+  type TeamRunEvent,
   type TeamRunEventListener,
   type TeamRunStatusUpdateData,
   type TeamRunTaskPlanEventPayload,
@@ -80,6 +81,10 @@ const buildCommandFailure = (operation: string, error: unknown): AgentOperationR
   message: `Failed to ${operation}: ${String(error)}`,
 });
 
+const logger = {
+  warn: (...args: unknown[]) => console.warn(...args),
+};
+
 const asRecord = (value: unknown): Record<string, unknown> =>
   value && typeof value === "object" && !Array.isArray(value)
     ? (value as Record<string, unknown>)
@@ -126,6 +131,8 @@ const toReferenceFilesPayload = (
 export class AutoByteusTeamRunBackend implements TeamRunBackend {
   readonly runId: string;
   readonly teamBackendKind = TeamBackendKind.AUTOBYTEUS;
+  private readonly listeners = new Set<TeamRunEventListener>();
+  private nativeEventStream: AgentTeamEventStream | null = null;
 
   constructor(
     private readonly team: AutoByteusTeamLike,
@@ -143,33 +150,14 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
   }
 
   subscribeToEvents(listener: TeamRunEventListener): TeamRunEventUnsubscribe {
-    const stream = new AgentTeamEventStream(this.team as any);
-    let isClosed = false;
-
-    void (async () => {
-      try {
-        for await (const nativeEvent of stream.allEvents()) {
-          if (isClosed) {
-            break;
-          }
-          await this.emitNativeEvent(nativeEvent, listener, null);
-        }
-      } catch {
-        // Ignore stream shutdown races.
-      } finally {
-        if (!isClosed) {
-          isClosed = true;
-          await stream.close().catch(() => {});
-        }
-      }
-    })();
+    this.listeners.add(listener);
+    this.ensureNativeEventBridge();
 
     return () => {
-      if (isClosed) {
-        return;
+      this.listeners.delete(listener);
+      if (this.listeners.size === 0) {
+        this.closeNativeEventBridge();
       }
-      isClosed = true;
-      void stream.close().catch(() => {});
     };
   }
 
@@ -266,17 +254,73 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
     }
   }
 
-  private async emitNativeEvent(
+  private ensureNativeEventBridge(): void {
+    if (this.nativeEventStream) {
+      return;
+    }
+
+    const stream = new AgentTeamEventStream(this.team as any);
+    this.nativeEventStream = stream;
+    void (async () => {
+      try {
+        for await (const nativeEvent of stream.allEvents()) {
+          if (this.nativeEventStream !== stream) {
+            break;
+          }
+          const processedEvents = await this.buildProcessedTeamEvents(nativeEvent, null);
+          this.fanOutProcessedEvents(processedEvents);
+        }
+      } catch {
+        // Ignore native stream shutdown races.
+      } finally {
+        await stream.close().catch(() => {});
+        if (this.nativeEventStream === stream) {
+          this.nativeEventStream = null;
+        }
+      }
+    })();
+  }
+
+  private closeNativeEventBridge(): void {
+    const stream = this.nativeEventStream;
+    if (!stream) {
+      return;
+    }
+    this.nativeEventStream = null;
+    void stream.close().catch(() => {});
+  }
+
+  private fanOutProcessedEvents(events: TeamRunEvent[]): void {
+    if (events.length === 0 || this.listeners.size === 0) {
+      return;
+    }
+
+    const listeners = Array.from(this.listeners);
+    for (const event of events) {
+      for (const listener of listeners) {
+        if (!this.listeners.has(listener)) {
+          continue;
+        }
+        try {
+          listener(event);
+        } catch (error) {
+          logger.warn(
+            `AutoByteusTeamRunBackend: team event listener failed for '${this.runId}': ${String(error)}`,
+          );
+        }
+      }
+    }
+  }
+
+  private async buildProcessedTeamEvents(
     nativeEvent: AgentTeamStreamEvent,
-    listener: TeamRunEventListener,
     subTeamNodeName: string | null,
-  ): Promise<void> {
+  ): Promise<TeamRunEvent[]> {
     if (
       nativeEvent.event_source_type === "AGENT" &&
       nativeEvent.data instanceof AgentEventRebroadcastPayload
     ) {
       const agentPayload = nativeEvent.data;
-      const payload = asRecord(agentPayload.agent_event.data);
       const memberRunId = extractMemberRunId(
         agentPayload.agent_event as { agent_id?: unknown; data?: unknown },
         agentPayload.agent_name,
@@ -302,9 +346,10 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
       const converter = new AutoByteusStreamEventConverter(resolvedMemberRunId);
       const convertedEvent = converter.convert(agentPayload.agent_event);
       if (!convertedEvent) {
-        return;
+        return [];
       }
 
+      const processedEvents: TeamRunEvent[] = [];
       await publishProcessedTeamAgentEvents({
         teamRunId: this.runId,
         runContext: this.buildMemberRunContext(
@@ -321,33 +366,33 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
             memberRunId: resolvedMemberRunId,
           }),
         ],
-        publishTeamEvent: listener,
+        publishTeamEvent: (event) => {
+          processedEvents.push(event);
+        },
         subTeamNodeName,
       });
-      return;
+      return processedEvents;
     }
 
     if (
       nativeEvent.event_source_type === "TEAM" &&
       nativeEvent.data instanceof AgentTeamStatusUpdateData
     ) {
-      listener({
+      return [{
         eventSourceType: TeamRunEventSourceType.TEAM,
         teamRunId: this.runId,
         data: asRecord(nativeEvent.data) as TeamRunStatusUpdateData,
         subTeamNodeName,
-      });
-      return;
+      }];
     }
 
     if (nativeEvent.event_source_type === "TASK_PLAN") {
-      listener({
+      return [{
         eventSourceType: TeamRunEventSourceType.TASK_PLAN,
         teamRunId: this.runId,
         data: asRecord(nativeEvent.data as TaskPlanEventPayload) as TeamRunTaskPlanEventPayload,
         subTeamNodeName,
-      });
-      return;
+      }];
     }
 
     if (
@@ -355,12 +400,13 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
       nativeEvent.data instanceof SubTeamEventRebroadcastPayload &&
       nativeEvent.data.sub_team_event instanceof AgentTeamStreamEvent
     ) {
-      await this.emitNativeEvent(
+      return this.buildProcessedTeamEvents(
         nativeEvent.data.sub_team_event,
-        listener,
         nativeEvent.data.sub_team_node_name,
       );
     }
+
+    return [];
   }
 
   private enrichConvertedEvent(input: {

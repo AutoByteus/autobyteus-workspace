@@ -127,6 +127,15 @@ export class RunFileChangeService {
     return this.loadProjection(this.buildProjectionContextFromRun(run));
   }
 
+  async getProjectionForTeamMemberRun(
+    teamRun: TeamRun,
+    memberRunId: string,
+  ): Promise<RunFileChangeProjection> {
+    return this.loadProjection(
+      this.buildProjectionContextFromTeamMemberRun(teamRun, memberRunId),
+    );
+  }
+
   private enqueueRunEvent(run: AgentRun, event: AgentRunEvent): Promise<void> {
     return this.enqueueProjectionEvent(
       this.buildProjectionContextFromRun(run),
@@ -278,21 +287,35 @@ export class RunFileChangeService {
     teamRun: TeamRun,
     payload: TeamRunAgentEventPayload,
   ): RunFileChangeProjectionContext {
+    return this.buildProjectionContextFromTeamMemberRun(teamRun, payload.memberRunId, {
+      memberName: payload.memberName,
+    });
+  }
+
+  private buildProjectionContextFromTeamMemberRun(
+    teamRun: TeamRun,
+    memberRunId: string,
+    input: { memberName?: string | null } = {},
+  ): RunFileChangeProjectionContext {
+    const normalizedMemberRunId =
+      normalizeOptionalString(memberRunId)
+      ?? normalizeOptionalString(input.memberName)
+      ?? teamRun.runId;
     const memberConfig = teamRun.config?.memberConfigs.find(
       (candidate) =>
-        candidate.memberRunId === payload.memberRunId ||
-        candidate.memberName === payload.memberName ||
-        candidate.memberRouteKey === payload.memberName,
+        candidate.memberRunId === normalizedMemberRunId ||
+        candidate.memberName === input.memberName ||
+        candidate.memberRouteKey === input.memberName,
     );
     const workspaceRootPath =
       normalizeOptionalString(memberConfig?.workspaceRootPath)
       ?? this.resolveWorkspaceRootPath(memberConfig?.workspaceId);
     const memoryDir =
       normalizeOptionalString(memberConfig?.memoryDir)
-      ?? this.teamLayout.getMemberDirPath(teamRun.runId, payload.memberRunId);
+      ?? this.teamLayout.getMemberDirPath(teamRun.runId, normalizedMemberRunId);
 
     return {
-      runId: payload.memberRunId,
+      runId: normalizedMemberRunId,
       memoryDir,
       workspaceRootPath,
     };

@@ -42,6 +42,10 @@ class FakeNotifier {
     this.listeners.get(eventType)?.delete(listener);
   }
 
+  listenerCount(eventType: string): number {
+    return this.listeners.get(eventType)?.size ?? 0;
+  }
+
   emit(eventType: string, payload?: unknown): void {
     for (const listener of this.listeners.get(eventType) ?? []) {
       listener(payload);
@@ -635,6 +639,107 @@ describe("AutoByteusTeamRunBackend integration", () => {
         sourceTool: "write_file",
       }),
     ]);
+  });
+
+  it("processes each AutoByteus native event once before multi-subscriber fanout", async () => {
+    const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-team-fanout-"));
+    const workspaceRootPath = path.join(memoryDir, "workspace");
+    await fs.mkdir(workspaceRootPath, { recursive: true });
+    const { backend, team } = createBackend({}, {
+      runtimeContext: createRuntimeContext(),
+      teamRunConfig: createTeamRunConfig({
+        memoryDir,
+        workspaceRootPath,
+      }),
+    });
+    const observerA: Array<Parameters<Parameters<typeof backend.subscribeToEvents>[0]>[0]> = [];
+    const observerB: Array<Parameters<Parameters<typeof backend.subscribeToEvents>[0]>[0]> = [];
+    const unsubscribeA = backend.subscribeToEvents((event) => {
+      observerA.push(event);
+    });
+    const unsubscribeB = backend.subscribeToEvents((event) => {
+      observerB.push(event);
+    });
+
+    expect(team.notifier.listenerCount(EventType.TEAM_STREAM_EVENT)).toBe(1);
+
+    const targetPath = path.join(workspaceRootPath, "shared.md");
+    team.notifier.emit(
+      EventType.TEAM_STREAM_EVENT,
+      new AgentTeamStreamEvent({
+        team_id: team.teamId,
+        event_source_type: "AGENT",
+        data: new AgentEventRebroadcastPayload({
+          agent_name: "Professor",
+          agent_event: new StreamEvent({
+            agent_id: "native-professor",
+            event_type: StreamEventType.TOOL_EXECUTION_STARTED,
+            data: {
+              invocation_id: "write-shared",
+              tool_name: "write_file",
+              turn_id: "turn-shared",
+              arguments: { path: targetPath },
+            },
+          }),
+        }),
+      }),
+    );
+    team.notifier.emit(
+      EventType.TEAM_STREAM_EVENT,
+      new AgentTeamStreamEvent({
+        team_id: team.teamId,
+        event_source_type: "AGENT",
+        data: new AgentEventRebroadcastPayload({
+          agent_name: "Professor",
+          agent_event: new StreamEvent({
+            agent_id: "native-professor",
+            event_type: StreamEventType.TOOL_EXECUTION_SUCCEEDED,
+            data: {
+              invocation_id: "write-shared",
+              tool_name: "write_file",
+              turn_id: "turn-shared",
+              result: { ok: true },
+            },
+          }),
+        }),
+      }),
+    );
+
+    await waitForCondition(() =>
+      [observerA, observerB].every((observed) =>
+        observed.some(
+          (event) =>
+            event.eventSourceType === TeamRunEventSourceType.AGENT &&
+            (event.data as any).agentEvent.eventType === AgentRunEventType.FILE_CHANGE &&
+            (event.data as any).agentEvent.payload.status === "available",
+        ),
+      ),
+    );
+
+    const fileChangeEventsA = observerA.filter(
+      (event) =>
+        event.eventSourceType === TeamRunEventSourceType.AGENT &&
+        (event.data as any).agentEvent.eventType === AgentRunEventType.FILE_CHANGE,
+    );
+    const fileChangeEventsB = observerB.filter(
+      (event) =>
+        event.eventSourceType === TeamRunEventSourceType.AGENT &&
+        (event.data as any).agentEvent.eventType === AgentRunEventType.FILE_CHANGE,
+    );
+
+    expect(fileChangeEventsA.map((event) => (event.data as any).agentEvent.payload.status)).toEqual([
+      "pending",
+      "available",
+    ]);
+    expect(fileChangeEventsB.map((event) => (event.data as any).agentEvent.payload.status)).toEqual([
+      "pending",
+      "available",
+    ]);
+
+    unsubscribeA();
+    expect(team.notifier.listenerCount(EventType.TEAM_STREAM_EVENT)).toBe(1);
+    unsubscribeB();
+    await waitForCondition(() => team.notifier.listenerCount(EventType.TEAM_STREAM_EVENT) === 0);
   });
 
   it("persists AutoByteus explicit message references from enriched team events", async () => {
