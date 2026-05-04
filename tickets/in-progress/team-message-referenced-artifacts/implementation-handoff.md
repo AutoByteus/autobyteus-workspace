@@ -6,6 +6,7 @@
 - Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/in-progress/team-message-referenced-artifacts/investigation-notes.md`
 - Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/in-progress/team-message-referenced-artifacts/design-spec.md`
 - Runtime parser evidence note: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/in-progress/team-message-referenced-artifacts/runtime-investigation-message-reference-parser.md`
+- AutoByteus runtime investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/in-progress/team-message-referenced-artifacts/runtime-investigation-autobyteus-reference-files.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/in-progress/team-message-referenced-artifacts/design-review-report.md`
 - Prior code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/in-progress/team-message-referenced-artifacts/review-report.md`
 - Prior API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/in-progress/team-message-referenced-artifacts/api-e2e-validation-report.md`
@@ -25,6 +26,12 @@
 - Runtime delivery now carries `referenceFiles` through `InterAgentMessageDeliveryRequest` and emits `INTER_AGENT_MESSAGE.payload.reference_files`.
 - Recipient runtime input appends a generated **Reference files:** block when explicit refs exist. This block supplements the self-contained body like an email attachment/index list.
 - Local Fix for code-review finding `CR-004-001`: native/AutoByteus agent-recipient routing now constructs `InterAgentMessage` with the original natural `event.content` and carries `event.referenceFiles` separately. `InterAgentMessageReceivedEventHandler` remains the single owner that appends the generated **Reference files:** block for native agent LLM input, preventing duplicate blocks. Sub-team `postMessage` routing still receives the generated block directly because that path does not have an `InterAgentMessage.referenceFiles` hop.
+- Round 5 AutoByteus runtime parity fix:
+  - `AutoByteusTeamRunBackend` now processes converted native team member stream events through the default `AgentRunEventPipeline` before team listener fanout.
+  - Converted native `INTER_AGENT_MESSAGE` events are enriched in the AutoByteus team bridge with `team_run_id`, canonical receiver run/name, canonical sender run/name when resolvable, message type/content, and existing `reference_files`.
+  - The converter remains conversion-only; provenance enrichment stays in the AutoByteus team bridge where team/member/run context is available.
+  - No duplicate inter-agent source event is synthesized. The fanout publishes the converted source event once plus derived sidecar events such as `FILE_CHANGE` and `MESSAGE_FILE_REFERENCE_DECLARED`.
+  - `RunFileChangeService` can now observe AutoByteus team run fanout for `FILE_CHANGE` events so AutoByteus team member `file_changes.json` projections are persisted under the existing member memory layout.
 - `MessageFileReferenceProcessor` now reads only `INTER_AGENT_MESSAGE.payload.reference_files` and no longer scans `payload.content`.
 - Deleted the free-text Markdown/content path parser: `autobyteus-server-ts/src/agent-execution/events/processors/message-file-reference/message-file-reference-paths.ts`.
 - Preserved the previously approved team-level Artifacts model:
@@ -58,6 +65,12 @@
   - `autobyteus-ts/src/agent/handlers/inter-agent-message-event-handler.ts`
   - `autobyteus-ts/src/agent-team/events/agent-team-events.ts`
   - `autobyteus-ts/src/agent-team/handlers/inter-agent-message-request-event-handler.ts`
+- AutoByteus team bridge/runtime parity:
+  - `autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend.ts`
+  - `autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend-factory.ts`
+  - `autobyteus-server-ts/src/agent-team-execution/services/publish-processed-team-agent-events.ts`
+  - `autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts`
+  - `autobyteus-server-ts/src/services/run-file-changes/run-file-change-service.ts`
 - Frontend typing/docs only for Round 4:
   - `autobyteus-web/services/agentStreaming/protocol/messageTypes.ts`
   - `autobyteus-web/docs/agent_artifacts.md`
@@ -66,6 +79,7 @@
   - `autobyteus-server-ts/tests/unit/agent-execution/backends/claude/team-communication/claude-send-message-tool-definition-builder.test.ts`
   - `autobyteus-server-ts/tests/unit/agent-execution/events/message-file-reference-processor.test.ts`
   - `autobyteus-server-ts/tests/integration/api/message-file-references-api.integration.test.ts`
+  - `autobyteus-server-ts/tests/integration/agent-team-execution/autobyteus-team-run-backend.integration.test.ts`
   - `autobyteus-ts/tests/unit/agent/message/send-message-to.test.ts`
   - `autobyteus-ts/tests/unit/agent/handlers/inter-agent-message-event-handler.test.ts`
   - `autobyteus-ts/tests/unit/agent-team/handlers/inter-agent-message-request-event-handler.test.ts`
@@ -77,6 +91,7 @@
 - File existence/readability checks remain deferred to the persisted-reference content endpoint.
 - Paths mentioned only in `content` intentionally do not create Artifacts-tab rows.
 - Historical backfill of old message text remains out of scope.
+- AutoByteus file-change persistence uses existing `RunFileChangeService` projection ownership and is attached only for AutoByteus team runs because those native team members are not separate server `AgentRun` objects.
 
 ## Known Risks
 
@@ -84,15 +99,16 @@
 - Invalid `reference_files` entries reject the whole delivery. This is intentional fail-fast behavior from the reviewed design.
 - Referenced content can become unavailable later if the file is deleted, becomes unreadable, or is a directory; the content endpoint returns graceful errors.
 - Server project-level `typecheck` remains known-broken by repo config (`tests` included while `rootDir` is `src`); `build:full` passes.
+- AutoByteus live `FILE_CHANGE` paths are built by the existing `FileChangePayloadBuilder`; in normal launched team runs workspace IDs are available for relative path canonicalization. The team-run persistence path also canonicalizes against member workspace root metadata before writing `file_changes.json`.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: Behavior change plus bounded refactor of an additive feature.
-- Reviewed root-cause classification: Boundary Or Ownership Issue plus Legacy/Compatibility Pressure for the old content-scanning source.
-- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): Refactor Needed Now.
+- Reviewed change posture: Behavior change plus bounded refactor of an additive feature, followed by a bounded AutoByteus runtime parity bug fix.
+- Reviewed root-cause classification: Boundary Or Ownership Issue plus Legacy/Compatibility Pressure for the old content-scanning source; Round 5 parity issue is a Local Implementation Defect in the AutoByteus team bridge bypassing the default event pipeline.
+- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): Refactor Needed Now for the Round 4 replacement; no architecture redesign required for Round 5.
 - Implementation matched the reviewed assessment (`Yes`/`No`): Yes.
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): N/A.
-- Evidence / notes: The implementation uses `reference_files` as the sole declaration authority, deletes the free-text parser, keeps projection/content authority under `services/message-file-references`, and leaves frontend conversation rendering/linkification unchanged.
+- Evidence / notes: The implementation uses `reference_files` as the sole declaration authority, deletes the free-text parser, keeps projection/content authority under `services/message-file-references`, leaves frontend conversation rendering/linkification unchanged, and restores AutoByteus parity by processing the converted native source event once through the default pipeline before fanout.
 
 ## Legacy / Compatibility Removal Check
 
@@ -111,6 +127,7 @@
 - Base/finalization target: `origin/personal` -> `personal`
 - Checkpoint commit before Round 3/Round 4 implementation: `46cb7895 Checkpoint team message referenced artifacts`
 - `autobyteus-server-ts` builds against `autobyteus-ts/dist`, so `pnpm -C autobyteus-ts build` was run before the final server build.
+- Round 5 AutoByteus runtime parity implementation was performed after commit `e6af228c Fix native reference file block duplication`.
 
 ## Local Implementation Checks Run
 
@@ -136,6 +153,17 @@ Implementation-scoped checks only; API/E2E validation remains downstream.
     tests/integration/api/message-file-references-api.integration.test.ts
   ```
   Result: `Test Files 15 passed (15); Tests 39 passed (39)`.
+- Passed: AutoByteus team runtime parity targeted suite
+  ```bash
+  pnpm -C autobyteus-server-ts exec vitest run \
+    tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts \
+    tests/integration/agent-team-execution/autobyteus-team-run-backend.integration.test.ts \
+    tests/unit/agent-team-execution/publish-processed-team-agent-events.test.ts \
+    tests/unit/services/run-file-changes/run-file-change-service.test.ts \
+    tests/unit/agent-execution/events/message-file-reference-processor.test.ts \
+    tests/unit/agent-execution/events/file-change-event-processor.test.ts
+  ```
+  Result: `Test Files 6 passed (6); Tests 42 passed (42)`.
 - Passed: AutoByteus/native focused tests
   ```bash
   pnpm -C autobyteus-ts exec vitest run \
@@ -146,6 +174,13 @@ Implementation-scoped checks only; API/E2E validation remains downstream.
     tests/unit/agent/agent.test.ts
   ```
   Result: `Test Files 5 passed (5); Tests 29 passed (29)`.
+- Passed: AutoByteus/native generated `Reference files:` invariant recheck after Round 5
+  ```bash
+  pnpm -C autobyteus-ts exec vitest run \
+    tests/unit/agent/handlers/inter-agent-message-event-handler.test.ts \
+    tests/unit/agent-team/handlers/inter-agent-message-request-event-handler.test.ts
+  ```
+  Result: `Test Files 2 passed (2); Tests 11 passed (11)`.
 - Passed: frontend targeted Nuxt/Vitest regression
   ```bash
   NUXT_TEST=true pnpm -C autobyteus-web exec vitest run \
@@ -185,6 +220,8 @@ Implementation-scoped checks only; API/E2E validation remains downstream.
 - Codex team runtime: call `send_message_to` with a self-contained body that mentions an important absolute path and `reference_files` listing that same file; verify accepted delivery, generated **Reference files:** recipient block, `INTER_AGENT_MESSAGE.payload.reference_files`, one team-level projection row, immediate content open, and no raw-path linkification.
 - Claude team runtime: same scenario through the Claude first-party send-message tool/MCP path.
 - AutoByteus/native or mixed AutoByteus member: same scenario through native `SendMessageTo` and server-backed communication context.
+- AutoByteus team runtime: verify native `write_file` emits `FILE_CHANGE`, persists the professor/member `file_changes.json`, and does not require converter-owned provenance logic.
+- AutoByteus team runtime: verify native `send_message_to.reference_files` emits one converted `INTER_AGENT_MESSAGE`, one derived `MESSAGE_FILE_REFERENCE_DECLARED`, and persists team-level `message_file_references.json`.
 - Negative scenario: body contains `/absolute/path/report.md` but `reference_files` is omitted; conversation text remains plain and no `MESSAGE_FILE_REFERENCE_DECLARED`/Artifacts row is created.
 - Negative validation: malformed `reference_files` rejects the whole tool call before delivery.
 - Persistence/reopen: verify `agent_teams/<teamRunId>/message_file_references.json` is the only message-reference projection and `getMessageFileReferences(teamRunId)` hydrates Sent/Received views.

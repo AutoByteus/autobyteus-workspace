@@ -27,6 +27,10 @@ import {
   MessageFileReferenceService,
   getMessageFileReferenceService,
 } from "../../services/message-file-references/message-file-reference-service.js";
+import {
+  RunFileChangeService,
+  getRunFileChangeService,
+} from "../../services/run-file-changes/run-file-change-service.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -40,6 +44,7 @@ type AgentTeamRunManagerOptions = {
   claudeTeamRunBackendFactory?: ClaudeTeamRunBackendFactory;
   mixedTeamRunBackendFactory?: MixedTeamRunBackendFactory;
   messageFileReferenceService?: MessageFileReferenceService;
+  runFileChangeService?: RunFileChangeService;
 };
 
 export class AgentTeamRunManager {
@@ -49,8 +54,10 @@ export class AgentTeamRunManager {
   private readonly claudeTeamRunBackendFactory: ClaudeTeamRunBackendFactory;
   private readonly mixedTeamRunBackendFactory: MixedTeamRunBackendFactory;
   private readonly messageFileReferenceService: MessageFileReferenceService;
+  private readonly runFileChangeService: RunFileChangeService;
   private activeRuns = new Map<string, TeamRun>();
   private readonly messageFileReferenceUnsubscribers = new Map<string, () => void>();
+  private readonly runFileChangeUnsubscribers = new Map<string, () => void>();
 
   static getInstance(options: AgentTeamRunManagerOptions = {}): AgentTeamRunManager {
     if (!AgentTeamRunManager.instance) {
@@ -70,6 +77,8 @@ export class AgentTeamRunManager {
       options.mixedTeamRunBackendFactory ?? getMixedTeamRunBackendFactory();
     this.messageFileReferenceService =
       options.messageFileReferenceService ?? getMessageFileReferenceService();
+    this.runFileChangeService =
+      options.runFileChangeService ?? getRunFileChangeService();
     logger.info("AgentTeamRunManager initialized.");
   }
 
@@ -167,16 +176,24 @@ export class AgentTeamRunManager {
 
   private registerActiveRun(run: TeamRun): void {
     this.unregisterMessageFileReferences(run.runId);
+    this.unregisterRunFileChanges(run.runId);
     this.activeRuns.set(run.runId, run);
     this.messageFileReferenceUnsubscribers.set(
       run.runId,
       this.messageFileReferenceService.attachToTeamRun(run),
     );
+    if (run.teamBackendKind === TeamBackendKind.AUTOBYTEUS) {
+      this.runFileChangeUnsubscribers.set(
+        run.runId,
+        this.runFileChangeService.attachToTeamRun(run),
+      );
+    }
   }
 
   private unregisterActiveRun(teamRunId: string): void {
     this.activeRuns.delete(teamRunId);
     this.unregisterMessageFileReferences(teamRunId);
+    this.unregisterRunFileChanges(teamRunId);
   }
 
   private unregisterMessageFileReferences(teamRunId: string): void {
@@ -185,6 +202,15 @@ export class AgentTeamRunManager {
       return;
     }
     this.messageFileReferenceUnsubscribers.delete(teamRunId);
+    unsubscribe();
+  }
+
+  private unregisterRunFileChanges(teamRunId: string): void {
+    const unsubscribe = this.runFileChangeUnsubscribers.get(teamRunId);
+    if (!unsubscribe) {
+      return;
+    }
+    this.runFileChangeUnsubscribers.delete(teamRunId);
     unsubscribe();
   }
 

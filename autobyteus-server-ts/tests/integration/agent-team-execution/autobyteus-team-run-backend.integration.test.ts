@@ -1,3 +1,6 @@
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   AgentEventRebroadcastPayload,
@@ -9,12 +12,22 @@ import {
 } from "autobyteus-ts";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { EventType } from "autobyteus-ts/events/event-types.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { AutoByteusTeamRunBackend } from "../../../src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend.js";
 import { TeamRunEventSourceType } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
+import {
+  AutoByteusTeamMemberContext,
+  AutoByteusTeamRunContext,
+} from "../../../src/agent-team-execution/backends/autobyteus/autobyteus-team-run-context.js";
+import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
+import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
+import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
+import { MessageFileReferenceService } from "../../../src/services/message-file-references/message-file-reference-service.js";
+import { RunFileChangeService } from "../../../src/services/run-file-changes/run-file-change-service.js";
 
 class FakeNotifier {
   private readonly listeners = new Map<string, Set<(payload?: unknown) => void>>();
@@ -36,10 +49,13 @@ class FakeNotifier {
   }
 }
 
-const waitForCondition = async (fn: () => boolean, timeoutMs = 2000): Promise<void> => {
+const waitForCondition = async (
+  fn: () => boolean | Promise<boolean>,
+  timeoutMs = 2000,
+): Promise<void> => {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
-    if (fn()) {
+    if (await fn()) {
       return;
     }
     await new Promise((resolve) => setTimeout(resolve, 10));
@@ -56,7 +72,75 @@ type FakeTeam = {
   stop: ReturnType<typeof vi.fn>;
 };
 
-const createBackend = (overrides: Partial<FakeTeam> = {}) => {
+const createTeamRunConfig = (input: {
+  teamRunId?: string;
+  memoryDir?: string;
+  workspaceRootPath?: string | null;
+} = {}) => {
+  const teamRunId = input.teamRunId ?? "team-auto-1";
+  return new TeamRunConfig({
+    teamDefinitionId: "team-def-1",
+    teamBackendKind: TeamBackendKind.AUTOBYTEUS,
+    coordinatorMemberName: "Professor",
+    memberConfigs: [
+      {
+        memberName: "Professor",
+        memberRouteKey: "professor",
+        memberRunId: "professor-run",
+        agentDefinitionId: "professor-def",
+        llmModelIdentifier: "dummy-model",
+        autoExecuteTools: false,
+        skillAccessMode: SkillAccessMode.NONE,
+        runtimeKind: RuntimeKind.AUTOBYTEUS,
+        memoryDir: input.memoryDir
+          ? path.join(input.memoryDir, "agent_teams", teamRunId, "professor-run")
+          : null,
+        workspaceRootPath: input.workspaceRootPath ?? null,
+      },
+      {
+        memberName: "Student",
+        memberRouteKey: "student",
+        memberRunId: "student-run",
+        agentDefinitionId: "student-def",
+        llmModelIdentifier: "dummy-model",
+        autoExecuteTools: false,
+        skillAccessMode: SkillAccessMode.NONE,
+        runtimeKind: RuntimeKind.AUTOBYTEUS,
+        memoryDir: input.memoryDir
+          ? path.join(input.memoryDir, "agent_teams", teamRunId, "student-run")
+          : null,
+        workspaceRootPath: input.workspaceRootPath ?? null,
+      },
+    ],
+  });
+};
+
+const createRuntimeContext = () =>
+  new AutoByteusTeamRunContext({
+    coordinatorMemberRouteKey: "professor",
+    memberContexts: [
+      new AutoByteusTeamMemberContext({
+        memberName: "Professor",
+        memberRouteKey: "professor",
+        memberRunId: "professor-run",
+        nativeAgentId: "native-professor",
+      }),
+      new AutoByteusTeamMemberContext({
+        memberName: "Student",
+        memberRouteKey: "student",
+        memberRunId: "student-run",
+        nativeAgentId: "native-student",
+      }),
+    ],
+  });
+
+const createBackend = (
+  overrides: Partial<FakeTeam> = {},
+  options: {
+    runtimeContext?: AutoByteusTeamRunContext | null;
+    teamRunConfig?: TeamRunConfig | null;
+  } = {},
+) => {
   const team: FakeTeam = {
     teamId: "team-auto-1",
     notifier: new FakeNotifier(),
@@ -71,6 +155,12 @@ const createBackend = (overrides: Partial<FakeTeam> = {}) => {
   const backend = new AutoByteusTeamRunBackend(team, {
     isActive: () => isActive,
     removeTeamRun: vi.fn().mockResolvedValue(true),
+    memberRunIdsByName: new Map([
+      ["Professor", "professor-run"],
+      ["Student", "student-run"],
+    ]),
+    runtimeContext: options.runtimeContext,
+    teamRunConfig: options.teamRunConfig,
   });
 
   return {
@@ -313,5 +403,313 @@ describe("AutoByteusTeamRunBackend integration", () => {
         },
       },
     });
+  });
+
+  it("processes AutoByteus team stream events through the default pipeline and enriches explicit references", async () => {
+    const { backend, team } = createBackend({}, {
+      runtimeContext: createRuntimeContext(),
+      teamRunConfig: createTeamRunConfig(),
+    });
+    const observed: Array<Parameters<Parameters<typeof backend.subscribeToEvents>[0]>[0]> = [];
+    const unsubscribe = backend.subscribeToEvents((event) => {
+      observed.push(event);
+    });
+
+    team.notifier.emit(
+      EventType.TEAM_STREAM_EVENT,
+      new AgentTeamStreamEvent({
+        team_id: team.teamId,
+        event_source_type: "AGENT",
+        data: new AgentEventRebroadcastPayload({
+          agent_name: "Student",
+          agent_event: new StreamEvent({
+            agent_id: "native-student",
+            event_type: StreamEventType.INTER_AGENT_MESSAGE,
+            data: {
+              sender_agent_id: "native-professor",
+              recipient_role_name: "student",
+              content: "Please solve the attached problem.",
+              message_type: "direct_message",
+              reference_files: ["/tmp/math_problem.md"],
+            },
+          }),
+        }),
+      }),
+    );
+
+    await waitForCondition(() => observed.length === 2);
+    unsubscribe();
+
+    const interAgentEvents = observed.filter(
+      (event) =>
+        event.eventSourceType === TeamRunEventSourceType.AGENT &&
+        (event.data as any).agentEvent.eventType === AgentRunEventType.INTER_AGENT_MESSAGE,
+    );
+    const referenceEvents = observed.filter(
+      (event) =>
+        event.eventSourceType === TeamRunEventSourceType.AGENT &&
+        (event.data as any).agentEvent.eventType === AgentRunEventType.MESSAGE_FILE_REFERENCE_DECLARED,
+    );
+
+    expect(interAgentEvents).toHaveLength(1);
+    expect(referenceEvents).toHaveLength(1);
+    expect(interAgentEvents[0]).toMatchObject({
+      eventSourceType: TeamRunEventSourceType.AGENT,
+      teamRunId: "team-auto-1",
+      data: {
+        runtimeKind: RuntimeKind.AUTOBYTEUS,
+        memberName: "Student",
+        memberRunId: "student-run",
+        agentEvent: {
+          eventType: AgentRunEventType.INTER_AGENT_MESSAGE,
+          runId: "student-run",
+          payload: {
+            team_run_id: "team-auto-1",
+            sender_agent_id: "professor-run",
+            sender_agent_name: "Professor",
+            receiver_run_id: "student-run",
+            receiver_agent_name: "Student",
+            content: "Please solve the attached problem.",
+            message_type: "direct_message",
+            reference_files: ["/tmp/math_problem.md"],
+          },
+        },
+      },
+    });
+    expect(referenceEvents[0]).toMatchObject({
+      eventSourceType: TeamRunEventSourceType.AGENT,
+      teamRunId: "team-auto-1",
+      data: {
+        runtimeKind: RuntimeKind.AUTOBYTEUS,
+        memberName: "Student",
+        memberRunId: "student-run",
+        agentEvent: {
+          eventType: AgentRunEventType.MESSAGE_FILE_REFERENCE_DECLARED,
+          runId: "student-run",
+          payload: {
+            teamRunId: "team-auto-1",
+            senderRunId: "professor-run",
+            senderMemberName: "Professor",
+            receiverRunId: "student-run",
+            receiverMemberName: "Student",
+            path: "/tmp/math_problem.md",
+            messageType: "direct_message",
+          },
+        },
+      },
+    });
+  });
+
+  it("processes AutoByteus write_file events into FILE_CHANGE events and persists team-member projections", async () => {
+    const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-team-file-changes-"));
+    const workspaceRootPath = path.join(memoryDir, "workspace");
+    await fs.mkdir(workspaceRootPath, { recursive: true });
+    const teamRunConfig = createTeamRunConfig({
+      memoryDir,
+      workspaceRootPath,
+    });
+    const runtimeContext = createRuntimeContext();
+    const { backend, team } = createBackend({}, {
+      runtimeContext,
+      teamRunConfig,
+    });
+    const teamRun = new TeamRun({
+      context: new TeamRunContext({
+        runId: "team-auto-1",
+        teamBackendKind: TeamBackendKind.AUTOBYTEUS,
+        coordinatorMemberName: "Professor",
+        config: teamRunConfig,
+        runtimeContext,
+      }),
+      backend,
+    });
+    const fileChangeService = new RunFileChangeService({ memoryDir });
+    const unsubscribeProjection = fileChangeService.attachToTeamRun(teamRun);
+    const observed: Array<Parameters<Parameters<typeof backend.subscribeToEvents>[0]>[0]> = [];
+    const unsubscribeStream = backend.subscribeToEvents((event) => {
+      observed.push(event);
+    });
+
+    const targetPath = path.join(workspaceRootPath, "math_problem.md");
+    team.notifier.emit(
+      EventType.TEAM_STREAM_EVENT,
+      new AgentTeamStreamEvent({
+        team_id: team.teamId,
+        event_source_type: "AGENT",
+        data: new AgentEventRebroadcastPayload({
+          agent_name: "Professor",
+          agent_event: new StreamEvent({
+            agent_id: "native-professor",
+            event_type: StreamEventType.TOOL_EXECUTION_STARTED,
+            data: {
+              invocation_id: "write-1",
+              tool_name: "write_file",
+              turn_id: "turn-write-1",
+              arguments: { path: targetPath },
+            },
+          }),
+        }),
+      }),
+    );
+    team.notifier.emit(
+      EventType.TEAM_STREAM_EVENT,
+      new AgentTeamStreamEvent({
+        team_id: team.teamId,
+        event_source_type: "AGENT",
+        data: new AgentEventRebroadcastPayload({
+          agent_name: "Professor",
+          agent_event: new StreamEvent({
+            agent_id: "native-professor",
+            event_type: StreamEventType.TOOL_EXECUTION_SUCCEEDED,
+            data: {
+              invocation_id: "write-1",
+              tool_name: "write_file",
+              turn_id: "turn-write-1",
+              result: { ok: true },
+            },
+          }),
+        }),
+      }),
+    );
+
+    await waitForCondition(() =>
+      observed.some(
+        (event) =>
+          event.eventSourceType === TeamRunEventSourceType.AGENT &&
+          (event.data as any).agentEvent.eventType === AgentRunEventType.FILE_CHANGE &&
+          (event.data as any).agentEvent.payload.status === "available",
+      ),
+    );
+    const projectionPath = path.join(
+      memoryDir,
+      "agent_teams",
+      "team-auto-1",
+      "professor-run",
+      "file_changes.json",
+    );
+    await waitForCondition(async () => {
+      try {
+        const raw = await fs.readFile(projectionPath, "utf-8");
+        return raw.includes("math_problem.md");
+      } catch {
+        return false;
+      }
+    });
+
+    unsubscribeStream();
+    unsubscribeProjection();
+
+    const fileChangeEvents = observed.filter(
+      (event) =>
+        event.eventSourceType === TeamRunEventSourceType.AGENT &&
+        (event.data as any).agentEvent.eventType === AgentRunEventType.FILE_CHANGE,
+    );
+    expect(fileChangeEvents).toHaveLength(2);
+    const availableFileChangeEvent = fileChangeEvents.find(
+      (event) => (event.data as any).agentEvent.payload.status === "available",
+    );
+    expect(availableFileChangeEvent).toMatchObject({
+      data: {
+        runtimeKind: RuntimeKind.AUTOBYTEUS,
+        memberName: "Professor",
+        memberRunId: "professor-run",
+        agentEvent: {
+          eventType: AgentRunEventType.FILE_CHANGE,
+          runId: "professor-run",
+          payload: {
+            runId: "professor-run",
+            path: targetPath,
+            status: "available",
+            sourceTool: "write_file",
+            sourceInvocationId: "write-1",
+          },
+        },
+      },
+    });
+    const persistedProjection = JSON.parse(await fs.readFile(projectionPath, "utf-8"));
+    expect(persistedProjection.entries).toEqual([
+      expect.objectContaining({
+        runId: "professor-run",
+        path: "math_problem.md",
+        status: "available",
+        sourceTool: "write_file",
+      }),
+    ]);
+  });
+
+  it("persists AutoByteus explicit message references from enriched team events", async () => {
+    const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-team-message-refs-"));
+    const teamRunConfig = createTeamRunConfig({ memoryDir });
+    const runtimeContext = createRuntimeContext();
+    const { backend, team } = createBackend({}, {
+      runtimeContext,
+      teamRunConfig,
+    });
+    const teamRun = new TeamRun({
+      context: new TeamRunContext({
+        runId: "team-auto-1",
+        teamBackendKind: TeamBackendKind.AUTOBYTEUS,
+        coordinatorMemberName: "Professor",
+        config: teamRunConfig,
+        runtimeContext,
+      }),
+      backend,
+    });
+    const referenceService = new MessageFileReferenceService({ memoryDir });
+    const unsubscribeProjection = referenceService.attachToTeamRun(teamRun);
+    const unsubscribeStream = backend.subscribeToEvents(() => undefined);
+
+    team.notifier.emit(
+      EventType.TEAM_STREAM_EVENT,
+      new AgentTeamStreamEvent({
+        team_id: team.teamId,
+        event_source_type: "AGENT",
+        data: new AgentEventRebroadcastPayload({
+          agent_name: "Student",
+          agent_event: new StreamEvent({
+            agent_id: "native-student",
+            event_type: StreamEventType.INTER_AGENT_MESSAGE,
+            data: {
+              sender_agent_id: "native-professor",
+              recipient_role_name: "student",
+              content: "The worksheet is attached.",
+              message_type: "direct_message",
+              reference_files: ["/tmp/math_problem.md"],
+            },
+          }),
+        }),
+      }),
+    );
+
+    const projectionPath = path.join(
+      memoryDir,
+      "agent_teams",
+      "team-auto-1",
+      "message_file_references.json",
+    );
+    await waitForCondition(async () => {
+      try {
+        const raw = await fs.readFile(projectionPath, "utf-8");
+        return raw.includes("/tmp/math_problem.md");
+      } catch {
+        return false;
+      }
+    });
+
+    unsubscribeStream();
+    unsubscribeProjection();
+
+    const persistedProjection = JSON.parse(await fs.readFile(projectionPath, "utf-8"));
+    expect(persistedProjection.entries).toEqual([
+      expect.objectContaining({
+        teamRunId: "team-auto-1",
+        senderRunId: "professor-run",
+        senderMemberName: "Professor",
+        receiverRunId: "student-run",
+        receiverMemberName: "Student",
+        path: "/tmp/math_problem.md",
+        messageType: "direct_message",
+      }),
+    ]);
   });
 });

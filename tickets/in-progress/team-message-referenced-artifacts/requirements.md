@@ -198,6 +198,9 @@ Medium
 - REQ-023 -> UC-005, UC-006, UC-007, UC-009
 - REQ-024 -> UC-004
 - REQ-025 -> UC-002, UC-004, UC-007
+- REQ-026 -> UC-004, UC-008, UC-009
+- REQ-027 -> UC-004
+- REQ-028 -> UC-001, UC-004
 
 ## Acceptance-Criteria-To-Scenario Intent
 
@@ -221,7 +224,27 @@ Medium
 - AC-018 -> Guard against retaining the implicit path parser.
 - AC-019 -> Guard against missing explicit-reference diagnostics.
 - AC-020 -> Guard against agents writing thin/non-self-contained messages because references moved into a structured field.
+- AC-021 -> AutoByteus file-change runtime parity.
+- AC-022 -> AutoByteus message-reference runtime parity.
+- AC-023 -> AutoByteus no duplicate inter-agent display.
+
+
+## Runtime Investigation Addendum: AutoByteus Reference Files Not Showing
+
+Runtime investigation on 2026-05-04 found that AutoByteus `send_message_to.reference_files` reaches the recipient runtime input and the recipient can read the file, but no Artifacts rows are created. The root cause is not the tool schema: the successful AutoByteus message includes `reference_files`. The missing piece is AutoByteus team event-pipeline parity. AutoByteus converted native member events are currently published directly to team listeners without running through the default `AgentRunEventPipeline`, so neither `FileChangeEventProcessor` nor `MessageFileReferenceProcessor` emits derived events for AutoByteus team runs.
+
+Additional requirements from this finding:
+
+- REQ-026: AutoByteus team member events that are converted into server `AgentRunEvent`s must be enriched with team/member provenance and processed through the default `AgentRunEventPipeline` before team-event fanout, so derived `FILE_CHANGE` and `MESSAGE_FILE_REFERENCE_DECLARED` events are produced consistently with Codex and Claude.
+- REQ-027: AutoByteus converted `INTER_AGENT_MESSAGE` events must carry enough provenance for message-reference processing: `team_run_id`, `sender_agent_id`, receiver run id, receiver member name, message type, content, and `reference_files`.
+- REQ-028: The AutoByteus fix must not duplicate conversation messages. The native converted `INTER_AGENT_MESSAGE` should be published once, with derived sidecar events added by the pipeline.
+
+Additional acceptance criteria:
+
+- AC-021: Given an AutoByteus team member successfully writes a file, the Artifacts tab receives the normal file-change/touched-file artifact for that member.
+- AC-022: Given an AutoByteus team member successfully sends `send_message_to` with an absolute `reference_files` path, the team-level message-reference projection is written and the Artifacts tab can show the referenced file according to the current UI model.
+- AC-023: Given the AutoByteus referenced message is delivered, the conversation displays one inter-agent message, not a duplicate source message plus synthetic copy.
 
 ## Approval Status
 
-Requirements refined on 2026-05-04 after explicit user discussion. The user approved another refactoring design round and agreed the target should use an optional explicit `reference_files`/attachment-list field instead of scanning paths out of message content. The user also clarified that `content` must remain self-contained, like an email body that still explains and naturally mentions its attachments.
+Requirements refined on 2026-05-04 after explicit user discussion and updated after AutoByteus runtime investigation. The user approved another refactoring design round and agreed the target should use an optional explicit `reference_files`/attachment-list field instead of scanning paths out of message content. The user also clarified that `content` must remain self-contained, like an email body that still explains and naturally mentions its attachments.

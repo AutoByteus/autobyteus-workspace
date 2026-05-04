@@ -18,6 +18,7 @@ export const publishProcessedTeamAgentEvents = async (input: {
   agentEvents: readonly AgentRunEvent[];
   publishTeamEvent: (event: TeamRunEvent) => void;
   pipeline?: AgentRunEventPipeline;
+  subTeamNodeName?: string | null;
 }): Promise<void> => {
   if (input.agentEvents.length === 0) {
     return;
@@ -29,7 +30,7 @@ export const publishProcessedTeamAgentEvents = async (input: {
   });
 
   for (const agentEvent of processedEvents) {
-    input.publishTeamEvent({
+    const teamEvent: TeamRunEvent = {
       eventSourceType: TeamRunEventSourceType.AGENT,
       teamRunId: input.teamRunId,
       data: {
@@ -38,6 +39,10 @@ export const publishProcessedTeamAgentEvents = async (input: {
         memberRunId: input.memberRunId,
         agentEvent,
       } satisfies TeamRunAgentEventPayload,
-    });
+    };
+    if (input.subTeamNodeName !== undefined) {
+      teamEvent.subTeamNodeName = input.subTeamNodeName;
+    }
+    input.publishTeamEvent(teamEvent);
   }
 };

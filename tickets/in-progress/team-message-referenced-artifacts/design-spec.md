@@ -495,3 +495,43 @@ Suggested grep/review checks:
 
 - Should invalid `reference_files` entries fail the whole tool call as designed, or should the parser drop invalid entries and deliver the message with only valid references? Current design chooses fail-fast to keep the explicit contract honest.
 - Should the generated recipient block label be exactly **Reference files:** or should product copy prefer **Attached reference files:**? Current design uses **Reference files:** to avoid implying upload semantics.
+
+
+## AutoByteus Runtime Parity Addendum
+
+Runtime investigation of `team_classroomsimulation_74c892f3` showed that AutoByteus already accepts `send_message_to.reference_files` and passes the generated `Reference files:` block to the recipient, but Artifacts remains empty because AutoByteus converted native events bypass the derived-event pipeline.
+
+### Target Adjustment
+
+AutoByteus team event fanout must match the same derived-event invariant as Codex and Claude:
+
+`native AutoByteus stream event -> AutoByteusStreamEventConverter -> provenance enrichment -> AgentRunEventPipeline -> team listener fanout`
+
+This replaces the current shape:
+
+`native AutoByteus stream event -> AutoByteusStreamEventConverter -> direct team listener fanout`
+
+### Ownership
+
+- `AutoByteusTeamRunBackend` owns the AutoByteus native event bridge and must not bypass the server-side event pipeline for converted member events.
+- `AutoByteusStreamEventConverter` should remain a converter; team/run/member provenance enrichment belongs in the team backend bridge where `teamRunId`, member name, and member run id are known.
+- `MessageFileReferenceProcessor` remains unchanged in responsibility: it consumes enriched `INTER_AGENT_MESSAGE.payload.reference_files`.
+- `FileChangeEventProcessor` should also receive AutoByteus tool events through the same pipeline, which fixes the empty normal file artifact state shown in the runtime screenshot.
+
+### File Responsibility Additions
+
+| File | Required Change | Reason |
+| --- | --- | --- |
+| `autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend.ts` | Process converted native agent events through `AgentRunEventPipeline` before listener fanout; enrich `INTER_AGENT_MESSAGE` payloads with `team_run_id`, `receiver_run_id`, receiver name, and resolvable sender name. | Creates derived file-change/message-reference events for AutoByteus team runs. |
+| `autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-context.ts` | If needed, carry enough per-member config/runtime context to construct an `AgentRunContext` for pipeline processing. | `FileChangeEventProcessor` needs member run context; message references need team/member provenance. |
+| `autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend-factory.ts` | If needed, populate the additional per-member pipeline context from `TeamMemberRunConfig`. | Keeps bridge setup centralized. |
+
+### Duplication Guard
+
+Do not add a second synthetic `INTER_AGENT_MESSAGE` on AutoByteus delivery that duplicates the native one. Process the converted native source event once and publish the processed batch. The processed batch may contain the source event plus derived sidecar events, but only one source inter-agent message should reach conversation rendering.
+
+### Added Validation
+
+- AutoByteus `write_file` in a team run produces/persists file-change artifacts.
+- AutoByteus `send_message_to.reference_files` produces/persists team-level message-file references.
+- AutoByteus conversation rendering receives one inter-agent message, not duplicates.

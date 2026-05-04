@@ -1,4 +1,11 @@
 import type { AgentRun } from "../../agent-execution/domain/agent-run.js";
+import type { TeamRun } from "../../agent-team-execution/domain/team-run.js";
+import {
+  TeamRunEventSourceType,
+  type TeamRunAgentEventPayload,
+} from "../../agent-team-execution/domain/team-run-event.js";
+import { TeamMemberMemoryLayout } from "../../agent-memory/store/team-member-memory-layout.js";
+import { appConfigProvider } from "../../config/app-config-provider.js";
 import {
   AgentRunEventType,
   isAgentRunEvent,
@@ -76,18 +83,29 @@ const normalizeOptionalContent = (value: unknown): string | null | undefined => 
   return value === null ? null : undefined;
 };
 
+type RunFileChangeProjectionContext = {
+  runId: string;
+  memoryDir: string | null;
+  workspaceRootPath: string | null;
+};
+
 export class RunFileChangeService {
   private readonly projectionStore: RunFileChangeProjectionStore;
   private readonly workspaceManager: WorkspaceManager;
+  private readonly teamLayout: TeamMemberMemoryLayout;
   private readonly projectionByRunId = new Map<string, RunFileChangeProjection>();
   private readonly operationQueueByRunId = new Map<string, Promise<void>>();
 
   constructor(options: {
     projectionStore?: RunFileChangeProjectionStore;
     workspaceManager?: WorkspaceManager;
+    memoryDir?: string;
   } = {}) {
     this.projectionStore = options.projectionStore ?? getRunFileChangeProjectionStore();
     this.workspaceManager = options.workspaceManager ?? getWorkspaceManager();
+    this.teamLayout = new TeamMemberMemoryLayout(
+      options.memoryDir ?? appConfigProvider.config.getMemoryDir(),
+    );
   }
 
   attachToRun(run: AgentRun): () => void {
@@ -106,36 +124,74 @@ export class RunFileChangeService {
   }
 
   async getProjectionForRun(run: AgentRun): Promise<RunFileChangeProjection> {
-    return this.loadProjection(run);
+    return this.loadProjection(this.buildProjectionContextFromRun(run));
   }
 
   private enqueueRunEvent(run: AgentRun, event: AgentRunEvent): Promise<void> {
-    const previous = this.operationQueueByRunId.get(run.runId) ?? Promise.resolve();
+    return this.enqueueProjectionEvent(
+      this.buildProjectionContextFromRun(run),
+      event,
+    );
+  }
+
+  attachToTeamRun(teamRun: TeamRun): () => void {
+    const subscribedRunIds = new Set<string>();
+    const unsubscribe = teamRun.subscribeToEvents((event) => {
+      if (event.eventSourceType !== TeamRunEventSourceType.AGENT) {
+        return;
+      }
+      const payload = event.data as TeamRunAgentEventPayload;
+      const agentEvent = payload.agentEvent;
+      if (!isAgentRunEvent(agentEvent) || agentEvent.eventType !== AgentRunEventType.FILE_CHANGE) {
+        return;
+      }
+      const context = this.buildProjectionContextFromTeamEvent(teamRun, payload);
+      subscribedRunIds.add(context.runId);
+      void this.enqueueProjectionEvent(context, agentEvent);
+    });
+
+    return () => {
+      unsubscribe();
+      for (const runId of subscribedRunIds) {
+        this.projectionByRunId.delete(runId);
+        this.operationQueueByRunId.delete(runId);
+      }
+    };
+  }
+
+  private enqueueProjectionEvent(
+    context: RunFileChangeProjectionContext,
+    event: AgentRunEvent,
+  ): Promise<void> {
+    const previous = this.operationQueueByRunId.get(context.runId) ?? Promise.resolve();
     const next = previous
       .catch(() => undefined)
       .then(async () => {
         try {
-          await this.handleFileChangeEvent(run, event);
+          await this.handleFileChangeEvent(context, event);
         } catch (error) {
           logger.warn(
-            `RunFileChangeService: failed processing '${event.eventType}' for run '${run.runId}': ${String(error)}`,
+            `RunFileChangeService: failed processing '${event.eventType}' for run '${context.runId}': ${String(error)}`,
           );
         }
       });
 
-    this.operationQueueByRunId.set(run.runId, next);
+    this.operationQueueByRunId.set(context.runId, next);
     void next.finally(() => {
-      if (this.operationQueueByRunId.get(run.runId) === next) {
-        this.operationQueueByRunId.delete(run.runId);
+      if (this.operationQueueByRunId.get(context.runId) === next) {
+        this.operationQueueByRunId.delete(context.runId);
       }
     });
     return next;
   }
 
-  private async handleFileChangeEvent(run: AgentRun, event: AgentRunEvent): Promise<void> {
-    const projection = await this.loadProjection(run);
+  private async handleFileChangeEvent(
+    context: RunFileChangeProjectionContext,
+    event: AgentRunEvent,
+  ): Promise<void> {
+    const projection = await this.loadProjection(context);
     const before = JSON.stringify(projection);
-    const entry = this.normalizeLiveEntry(run, event.payload);
+    const entry = this.normalizeLiveEntry(context, event.payload);
     if (!entry) {
       return;
     }
@@ -147,39 +203,41 @@ export class RunFileChangeService {
       return;
     }
 
-    this.projectionByRunId.set(run.runId, projection);
-    if (run.config.memoryDir) {
-      await this.projectionStore.writeProjection(run.config.memoryDir, projection);
+    this.projectionByRunId.set(context.runId, projection);
+    if (context.memoryDir) {
+      await this.projectionStore.writeProjection(context.memoryDir, projection);
     }
   }
 
-  private async loadProjection(run: AgentRun): Promise<RunFileChangeProjection> {
-    const cached = this.projectionByRunId.get(run.runId);
+  private async loadProjection(
+    context: RunFileChangeProjectionContext,
+  ): Promise<RunFileChangeProjection> {
+    const cached = this.projectionByRunId.get(context.runId);
     if (cached) {
       return cloneRunFileChangeProjection(cached);
     }
 
     const loadedProjection =
-      run.config.memoryDir
-        ? await this.projectionStore.readProjection(run.config.memoryDir)
+      context.memoryDir
+        ? await this.projectionStore.readProjection(context.memoryDir)
         : { ...EMPTY_RUN_FILE_CHANGE_PROJECTION, entries: [] };
     const normalizedProjection = normalizeRunFileChangeProjection(loadedProjection, {
-      runId: run.runId,
-      workspaceRootPath: resolveRunFileChangeWorkspaceRootPath(run, this.workspaceManager),
+      runId: context.runId,
+      workspaceRootPath: context.workspaceRootPath,
       preferTransientContentOnTie: true,
     });
 
-    this.projectionByRunId.set(run.runId, normalizedProjection);
+    this.projectionByRunId.set(context.runId, normalizedProjection);
     return cloneRunFileChangeProjection(normalizedProjection);
   }
 
   private normalizeLiveEntry(
-    run: AgentRun,
+    context: RunFileChangeProjectionContext,
     rawEntry: Record<string, unknown>,
   ): RunFileChangeEntry | null {
     const canonicalPath = canonicalizeRunFileChangePath(
       normalizeOptionalString(rawEntry.path),
-      resolveRunFileChangeWorkspaceRootPath(run, this.workspaceManager),
+      context.workspaceRootPath,
     );
     if (!canonicalPath) {
       return null;
@@ -189,8 +247,8 @@ export class RunFileChangeService {
     const updatedAt = normalizeTimestamp(rawEntry.updatedAt, createdAtFallback);
     const createdAt = normalizeTimestamp(rawEntry.createdAt, updatedAt);
     const entry: RunFileChangeEntry = {
-      id: buildRunFileChangeId(run.runId, canonicalPath),
-      runId: run.runId,
+      id: buildRunFileChangeId(context.runId, canonicalPath),
+      runId: context.runId,
       path: normalizeRunFileChangePath(canonicalPath),
       type: normalizeArtifactType(rawEntry.type),
       status: normalizeStatus(rawEntry.status),
@@ -206,6 +264,53 @@ export class RunFileChangeService {
     }
 
     return entry;
+  }
+
+  private buildProjectionContextFromRun(run: AgentRun): RunFileChangeProjectionContext {
+    return {
+      runId: run.runId,
+      memoryDir: run.config.memoryDir,
+      workspaceRootPath: resolveRunFileChangeWorkspaceRootPath(run, this.workspaceManager),
+    };
+  }
+
+  private buildProjectionContextFromTeamEvent(
+    teamRun: TeamRun,
+    payload: TeamRunAgentEventPayload,
+  ): RunFileChangeProjectionContext {
+    const memberConfig = teamRun.config?.memberConfigs.find(
+      (candidate) =>
+        candidate.memberRunId === payload.memberRunId ||
+        candidate.memberName === payload.memberName ||
+        candidate.memberRouteKey === payload.memberName,
+    );
+    const workspaceRootPath =
+      normalizeOptionalString(memberConfig?.workspaceRootPath)
+      ?? this.resolveWorkspaceRootPath(memberConfig?.workspaceId);
+    const memoryDir =
+      normalizeOptionalString(memberConfig?.memoryDir)
+      ?? this.teamLayout.getMemberDirPath(teamRun.runId, payload.memberRunId);
+
+    return {
+      runId: payload.memberRunId,
+      memoryDir,
+      workspaceRootPath,
+    };
+  }
+
+  private resolveWorkspaceRootPath(workspaceId: string | null | undefined): string | null {
+    const normalizedWorkspaceId = normalizeOptionalString(workspaceId);
+    if (!normalizedWorkspaceId) {
+      return null;
+    }
+    try {
+      return this.workspaceManager.getWorkspaceById(normalizedWorkspaceId)?.getBasePath() ?? null;
+    } catch (error) {
+      logger.warn(
+        `RunFileChangeService: failed resolving workspace '${normalizedWorkspaceId}': ${String(error)}`,
+      );
+      return null;
+    }
   }
 
   private upsertEntry(

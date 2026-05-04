@@ -164,3 +164,24 @@ No internet or external sources were needed. The task is a local repository desi
 ## Notes For Architect Reviewer
 
 Please review this as a superseding design round. The major Sent/Received/team-level direction is preserved; the refactor is specifically to make `send_message_to.reference_files` the sole file-reference authority and to decommission content-path scanning. The design intentionally keeps `MessageFileReferenceProcessor` as the sidecar derivation owner, because removing the processor would push projection concerns into provider-specific tool handlers.
+
+
+## AutoByteus Runtime Investigation Addendum
+
+Detailed runtime artifact:
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/in-progress/team-message-referenced-artifacts/runtime-investigation-autobyteus-reference-files.md`
+
+Summary:
+
+- Electron runtime team: `team_classroomsimulation_74c892f3`.
+- Runtime kind: `autobyteus` for professor and student.
+- Successful professor `send_message_to` call included `reference_files: ["/Users/normy/.autobyteus/server-data/temp_workspace/math_problem.md"]`.
+- Student raw trace confirms the recipient-visible message included the generated `Reference files:` block and the student successfully used `read_file` on that absolute path.
+- No `message_file_references.json` was written under the team directory.
+- No `file_changes.json` was written for the successful AutoByteus `write_file` in this run.
+- Code evidence points to `AutoByteusTeamRunBackend`: converted native member events are published directly to team listeners without `AgentRunEventPipeline` processing, unlike the Codex/Claude synthetic inter-agent event path.
+
+Design implication:
+
+This is a bounded AutoByteus runtime parity bug. The explicit `reference_files` design remains valid, but the design/implementation must require AutoByteus converted native events to be enriched with team/member provenance and processed through the default agent-run event pipeline before team fanout. This should create both file-change and message-reference sidecar events without duplicating the native inter-agent message.
