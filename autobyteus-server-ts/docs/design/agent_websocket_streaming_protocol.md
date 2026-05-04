@@ -31,6 +31,24 @@ write/edit/generated-output semantics. Clients consume `FILE_CHANGE` for the
 Artifacts tab and must not expect a legacy file-change-update event alias or
 derive artifact rows from arbitrary `file_path` tool arguments.
 
+Team managers also process accepted synthetic `INTER_AGENT_MESSAGE` events
+through the same pipeline before team fan-out. When an accepted inter-agent
+message contains valid absolute local path candidates, the stream can include a
+sidecar `MESSAGE_FILE_REFERENCE_DECLARED` event. Clients consume that event into
+a dedicated team-level message-reference store; they must not derive references
+by parsing rendered chat text, linkifying raw paths, or adding those rows to the
+run-file-changes projection.
+
+Content route ownership stays split:
+
+- Agent Artifact rows use `/runs/:runId/file-change-content?path=...`.
+- Message-reference rows use `/team-runs/:teamRunId/message-file-references/:referenceId/content`
+  after resolving persisted `teamRunId + referenceId` identity.
+
+The focused frontend member decides whether a canonical message-reference row is
+shown as **Sent Artifacts** or **Received Artifacts**; sender/receiver identity is
+metadata, not a receiver-owned route or projection owner.
+
 ## Connection And Command Recovery Contract
 
 Connection establishment is restore-aware:

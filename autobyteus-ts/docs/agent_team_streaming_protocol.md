@@ -170,3 +170,20 @@ When an `AGENT` event (`AgentEventRebroadcastPayload`) is processed:
 ```
 
 This flattening ensures that the frontend can reuse existing single-agent components while simply checking for the extra `agent_name` field to attribute the activity.
+
+### Derived Artifact Sidecars
+
+For accepted inter-agent messages, the server may process the synthetic
+`INTER_AGENT_MESSAGE` through the normal agent-run event pipeline before team
+fan-out. If the message text contains valid absolute local path candidates, the
+client stream can include a `MESSAGE_FILE_REFERENCE_DECLARED` sidecar event.
+Common AI/Markdown decoration around the path, such as bold, emphasis, inline
+code, link-target, blockquote, list, quote, or parenthesis context, is parsing
+syntax only; the emitted reference stores the unwrapped normalized absolute path.
+
+That event is canonical team-level metadata for the Artifacts tab's message
+reference surfaces. A focused sender sees the row as **Sent Artifacts** grouped
+by receiver/counterpart; a focused receiver sees the same row as **Received
+Artifacts** grouped by sender/counterpart. It is not a replacement for
+`INTER_AGENT_MESSAGE` conversation display, and clients must not make raw message
+paths clickable or add those rows to the produced-file `FILE_CHANGE` projection.

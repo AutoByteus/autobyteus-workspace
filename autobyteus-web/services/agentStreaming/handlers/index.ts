@@ -43,3 +43,7 @@ export {
 export {
   handleFileChange,
 } from './fileChangeHandler';
+
+export {
+  handleMessageFileReferenceDeclared,
+} from './messageFileReferenceHandler';

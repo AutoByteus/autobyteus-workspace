@@ -43,8 +43,11 @@ export const buildInterAgentMessageAgentRunEvent = (input: {
   eventType: AgentRunEventType.INTER_AGENT_MESSAGE,
   runId: input.recipientRunId,
   payload: {
+    team_run_id: input.request.teamRunId,
     sender_agent_id: input.request.senderRunId,
     sender_agent_name: input.request.senderMemberName ?? null,
+    receiver_run_id: input.recipientRunId,
+    receiver_agent_name: input.request.recipientMemberName,
     recipient_role_name: input.request.recipientMemberName,
     content: input.request.content,
     message_type: resolveMessageType(input.request.messageType),
