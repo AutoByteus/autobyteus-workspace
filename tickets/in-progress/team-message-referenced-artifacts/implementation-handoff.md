@@ -24,6 +24,7 @@
 - Added native AutoByteus validation/normalization and propagation for the same public contract.
 - Runtime delivery now carries `referenceFiles` through `InterAgentMessageDeliveryRequest` and emits `INTER_AGENT_MESSAGE.payload.reference_files`.
 - Recipient runtime input appends a generated **Reference files:** block when explicit refs exist. This block supplements the self-contained body like an email attachment/index list.
+- Local Fix for code-review finding `CR-004-001`: native/AutoByteus agent-recipient routing now constructs `InterAgentMessage` with the original natural `event.content` and carries `event.referenceFiles` separately. `InterAgentMessageReceivedEventHandler` remains the single owner that appends the generated **Reference files:** block for native agent LLM input, preventing duplicate blocks. Sub-team `postMessage` routing still receives the generated block directly because that path does not have an `InterAgentMessage.referenceFiles` hop.
 - `MessageFileReferenceProcessor` now reads only `INTER_AGENT_MESSAGE.payload.reference_files` and no longer scans `payload.content`.
 - Deleted the free-text Markdown/content path parser: `autobyteus-server-ts/src/agent-execution/events/processors/message-file-reference/message-file-reference-paths.ts`.
 - Preserved the previously approved team-level Artifacts model:
@@ -67,6 +68,7 @@
   - `autobyteus-server-ts/tests/integration/api/message-file-references-api.integration.test.ts`
   - `autobyteus-ts/tests/unit/agent/message/send-message-to.test.ts`
   - `autobyteus-ts/tests/unit/agent/handlers/inter-agent-message-event-handler.test.ts`
+  - `autobyteus-ts/tests/unit/agent-team/handlers/inter-agent-message-request-event-handler.test.ts`
 
 ## Important Assumptions
 
@@ -140,9 +142,10 @@ Implementation-scoped checks only; API/E2E validation remains downstream.
     tests/unit/agent/message/send-message-to.test.ts \
     tests/unit/agent/message/inter-agent-message.test.ts \
     tests/unit/agent/handlers/inter-agent-message-event-handler.test.ts \
+    tests/unit/agent-team/handlers/inter-agent-message-request-event-handler.test.ts \
     tests/unit/agent/agent.test.ts
   ```
-  Result: `Test Files 4 passed (4); Tests 24 passed (24)`.
+  Result: `Test Files 5 passed (5); Tests 29 passed (29)`.
 - Passed: frontend targeted Nuxt/Vitest regression
   ```bash
   NUXT_TEST=true pnpm -C autobyteus-web exec vitest run \

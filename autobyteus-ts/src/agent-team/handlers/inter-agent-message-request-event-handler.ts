@@ -76,7 +76,7 @@ export class InterAgentMessageRequestEventHandler extends BaseAgentTeamEventHand
         const messageForAgent = InterAgentMessage.createWithDynamicMessageType(
           recipientRole,
           recipientAgentId,
-          buildRecipientVisibleInterAgentMessageContent(event),
+          event.content,
           event.messageType,
           event.senderAgentId,
           event.referenceFiles

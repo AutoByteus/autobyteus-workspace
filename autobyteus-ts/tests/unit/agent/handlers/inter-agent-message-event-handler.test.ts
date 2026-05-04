@@ -58,6 +58,9 @@ const makeContext = (senderNameByAgentId: Record<string, string> = {}) => {
   return { context, inputQueues, notifier };
 };
 
+const countOccurrences = (content: string, needle: string): number =>
+  content.split(needle).length - 1;
+
 describe('InterAgentMessageReceivedEventHandler', () => {
   let infoSpy: ReturnType<typeof vi.spyOn>;
   let warnSpy: ReturnType<typeof vi.spyOn>;
@@ -143,6 +146,7 @@ describe('InterAgentMessageReceivedEventHandler', () => {
       reference_files: ['/tmp/report.md'],
     }));
     const enqueued = inputQueues.enqueueUserMessage.mock.calls[0][0];
+    expect(countOccurrences(enqueued.agentInputUserMessage.content, 'Reference files:')).toBe(1);
     expect(enqueued.agentInputUserMessage.content).toContain(
       'Reference files:\n- /tmp/report.md'
     );
