@@ -2,12 +2,12 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/tickets/in-progress/server-owned-media-tools-analysis/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/tickets/in-progress/server-owned-media-tools-analysis/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/tickets/in-progress/server-owned-media-tools-analysis/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/tickets/in-progress/server-owned-media-tools-analysis/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/tickets/in-progress/server-owned-media-tools-analysis/implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/tickets/in-progress/server-owned-media-tools-analysis/review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/tickets/done/server-owned-media-tools-analysis/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/tickets/done/server-owned-media-tools-analysis/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/tickets/done/server-owned-media-tools-analysis/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/tickets/done/server-owned-media-tools-analysis/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/tickets/done/server-owned-media-tools-analysis/implementation-handoff.md`
+- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/tickets/done/server-owned-media-tools-analysis/review-report.md`
 - Current Validation Round: 3
 - Trigger: User requested credential-backed real provider integration smoke after Round 2 pass.
 - Prior Round Reviewed: Round 2 passing report.
@@ -115,11 +115,11 @@ Durable validation originally added/updated during Round 1 and reviewed by code 
 - Repository-resident durable validation added or updated this round: `No`
 - Paths added or updated: N/A for Round 3.
 - Prior API/E2E durable validation already reviewed before delivery: `Yes` — code review Round 3 passed the current durable media validation and F-001 local fix.
-- Post-validation code review artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/tickets/in-progress/server-owned-media-tools-analysis/review-report.md`
+- Post-validation code review artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/tickets/done/server-owned-media-tools-analysis/review-report.md`
 
 ## Other Validation Artifacts
 
-- Canonical validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/tickets/in-progress/server-owned-media-tools-analysis/api-e2e-validation-report.md`
+- Canonical validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/tickets/done/server-owned-media-tools-analysis/api-e2e-validation-report.md`
 
 ## Temporary Validation Methods / Scaffolding
 

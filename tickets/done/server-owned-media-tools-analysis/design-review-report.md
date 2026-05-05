@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/tickets/in-progress/server-owned-media-tools-analysis/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/tickets/in-progress/server-owned-media-tools-analysis/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/tickets/in-progress/server-owned-media-tools-analysis/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/tickets/done/server-owned-media-tools-analysis/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/tickets/done/server-owned-media-tools-analysis/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/tickets/done/server-owned-media-tools-analysis/design-spec.md`
 - Current Review Round: 1
 - Trigger: Initial architecture review request from `solution_designer` after user approval on 2026-05-05.
 - Prior Review Round Reviewed: N/A
@@ -19,7 +19,7 @@
 
 ## Reviewed Design Spec
 
-Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/tickets/in-progress/server-owned-media-tools-analysis/design-spec.md` for the server-owned media tools refactor.
+Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/tickets/done/server-owned-media-tools-analysis/design-spec.md` for the server-owned media tools refactor.
 
 ## Task Design Health Assessment Verdict
 

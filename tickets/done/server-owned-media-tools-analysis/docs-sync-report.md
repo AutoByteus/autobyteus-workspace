@@ -4,7 +4,7 @@
 
 - Ticket: `server-owned-media-tools-analysis`
 - Trigger: Delivery-stage docs synchronization after API/E2E validation passed for the server-owned media tools refactor.
-- Bootstrap base reference: recorded base branch `origin/personal` from `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/tickets/in-progress/server-owned-media-tools-analysis/investigation-notes.md`.
+- Bootstrap base reference: recorded base branch `origin/personal` from `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/tickets/done/server-owned-media-tools-analysis/investigation-notes.md`.
 - Integrated base reference used for docs sync: `origin/personal` at `1e63654e174de9600dde3016a7d8486020414ff3` after `git fetch origin --prune` on 2026-05-05. Ticket branch `codex/server-owned-media-tools-analysis` was already at the same revision before delivery-owned edits.
 - Post-integration verification reference: no base commits were integrated because `HEAD`, `origin/personal`, and their merge base all resolved to `1e63654e174de9600dde3016a7d8486020414ff3`. `git diff --check` passed after the refresh and before docs sync; upstream API/E2E checks remain applicable to the same base.
 
@@ -28,7 +28,7 @@
 | --- | --- | --- | --- |
 | `autobyteus-server-ts/docs/modules/agent_tools.md` | Canonical backend module doc for agent tool registration/exposure. | `Updated` | Added server-owned media tool ownership, runtime projections, Claude MCP server name/conflict behavior, array-shaped `input_images`, safe path policy, and `{ file_path }` generated-output result semantics. |
 | `autobyteus-server-ts/docs/modules/multimedia_management.md` | Canonical backend module doc for media catalogs/client integration. | `Updated` | Added agent-tool integration notes, active media tool names, `input_images` array contract, no string/comma compatibility parsing, and default media model setting keys. |
-| `tickets/in-progress/server-owned-media-tools-analysis/design-spec.md` | Durable design note still contained the prior string-shape design detail flagged by code review/API-E2E. | `Updated` | Aligned the design artifact with the final product-clarified F-001 contract: `input_images` is `array<string>` and strings are rejected rather than compatibility-parsed. |
+| `tickets/done/server-owned-media-tools-analysis/design-spec.md` | Durable design note still contained the prior string-shape design detail flagged by code review/API-E2E. | `Updated` | Aligned the design artifact with the final product-clarified F-001 contract: `input_images` is `array<string>` and strings are rejected rather than compatibility-parsed. |
 | `autobyteus-server-ts/docs/FILE_RENDERING_AND_MEDIA_PIPELINE.md` | Checked generated-output file-change semantics for media tool names and MCP-prefixed forms. | `No change` | Existing generated-output wording remains accurate; the change preserves known media tool names and MCP forms. |
 | `autobyteus-server-ts/docs/features/artifact_file_serving_design.md` | Checked generated-output artifact/file-serving references. | `No change` | Existing generated-output allowlist wording remains accurate. |
 | `autobyteus-server-ts/docs/modules/agent_artifacts.md` | Checked backend artifact module generated-output references. | `No change` | Existing known output-producing tool wording remains accurate. |
@@ -41,7 +41,7 @@
 | --- | --- | --- | --- |
 | `autobyteus-server-ts/docs/modules/agent_tools.md` | Backend developer/runtime docs | Added a Server-Owned Media Tools section covering active tool names, server-owned contract path, runtime projections, Claude MCP server conflict behavior, array-shaped `input_images`, safe path behavior, and generated-output result normalization. | Makes the active tool boundary and final public media image-reference contract durable outside ticket artifacts. |
 | `autobyteus-server-ts/docs/modules/multimedia_management.md` | Backend developer/runtime docs | Added Agent Tool Integration notes connecting multimedia catalogs/client factories to server-owned media agent tools and documenting default media model settings plus `input_images` array requirements. | Clarifies how the multimedia subsystem supports, but no longer directly owns, first-party media agent tools. |
-| `tickets/in-progress/server-owned-media-tools-analysis/design-spec.md` | Ticket durable design note | Replaced stale string-shaped `input_images` design detail with the final array-shaped contract and no-compatibility-parser decision. | Prevents the ticket’s durable design artifact from preserving obsolete understanding. |
+| `tickets/done/server-owned-media-tools-analysis/design-spec.md` | Ticket durable design note | Replaced stale string-shaped `input_images` design detail with the final array-shaped contract and no-compatibility-parser decision. | Prevents the ticket’s durable design artifact from preserving obsolete understanding. |
 
 ## Durable Design / Runtime Knowledge Promoted
 
@@ -59,7 +59,7 @@
 | Old Component / Path / Concept | What Replaced It | Where The New Truth Is Documented |
 | --- | --- | --- |
 | Direct first-party media tool ownership in `autobyteus-ts` media `BaseTool` classes | Server-owned media tool manifests/services/wrappers under `autobyteus-server-ts/src/agent-tools/media` and runtime-specific projections | `autobyteus-server-ts/docs/modules/agent_tools.md`, `autobyteus-server-ts/docs/modules/multimedia_management.md` |
-| String/comma-shaped `input_images` parsing behavior | Array-shaped `input_images: string[]` contract; string/comma-shaped input is rejected | `autobyteus-server-ts/docs/modules/agent_tools.md`, `autobyteus-server-ts/docs/modules/multimedia_management.md`, `tickets/in-progress/server-owned-media-tools-analysis/design-spec.md` |
+| String/comma-shaped `input_images` parsing behavior | Array-shaped `input_images: string[]` contract; string/comma-shaped input is rejected | `autobyteus-server-ts/docs/modules/agent_tools.md`, `autobyteus-server-ts/docs/modules/multimedia_management.md`, `tickets/done/server-owned-media-tools-analysis/design-spec.md` |
 | Silent Claude MCP overwrite risk for `autobyteus_image_audio` | Explicit MCP server-name conflict behavior | `autobyteus-server-ts/docs/modules/agent_tools.md` |
 
 ## No-Impact Decision (Use Only If Truly No Docs Changes Are Needed)

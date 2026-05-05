@@ -18,7 +18,7 @@ The user observed that the image generation, image editing, and speech generatio
 
 - Project Type (`Git`/`Non-Git`): Git monorepo
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/tickets/in-progress/server-owned-media-tools-analysis`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/tickets/done/server-owned-media-tools-analysis`
 - Current Branch: `codex/server-owned-media-tools-analysis`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis`
 - Bootstrap Base Branch: `origin/personal`
@@ -126,4 +126,4 @@ None.
 
 ## Notes For Architect Reviewer
 
-User approved this as a refactoring/design ticket on 2026-05-05. The design spec is `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/tickets/in-progress/server-owned-media-tools-analysis/design-spec.md`. Primary target spine: `AgentDefinition.toolNames -> Runtime tool exposure resolver -> Server media tool manifest/projection -> Server media generation service -> Multimedia client factory -> output file/artifact projection`.
+User approved this as a refactoring/design ticket on 2026-05-05. The design spec is `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/tickets/done/server-owned-media-tools-analysis/design-spec.md`. Primary target spine: `AgentDefinition.toolNames -> Runtime tool exposure resolver -> Server media tool manifest/projection -> Server media generation service -> Multimedia client factory -> output file/artifact projection`.
