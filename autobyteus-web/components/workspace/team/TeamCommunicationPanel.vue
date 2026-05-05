@@ -120,7 +120,7 @@
           </div>
           <MarkdownRenderer
             :content="selectedMessage.content"
-            class="team-communication-message-markdown text-base leading-7 text-gray-700"
+            class="team-communication-message-markdown text-[0.9375rem] leading-6 text-gray-700"
             data-test="team-communication-message-markdown"
           />
         </div>
@@ -297,7 +297,7 @@ onBeforeUnmount(() => stopResize());
 
 <style scoped>
 .team-communication-message-markdown :deep(.markdown-body) {
-  font-size: 1rem;
+  font-size: 0.9375rem;
   line-height: 1.5rem;
   color: rgb(17 24 39);
 }
