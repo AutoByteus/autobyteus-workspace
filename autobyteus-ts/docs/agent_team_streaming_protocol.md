@@ -171,18 +171,16 @@ When an `AGENT` event (`AgentEventRebroadcastPayload`) is processed:
 
 This flattening ensures that the frontend can reuse existing single-agent components while simply checking for the extra `agent_name` field to attribute the activity.
 
-### Derived Artifact Sidecars
+### Team Communication References
 
-For accepted inter-agent messages, the server may process the synthetic
-`INTER_AGENT_MESSAGE` through the normal agent-run event pipeline before team
-fan-out. If the accepted event carries explicit `payload.reference_files`, the
-client stream can include a `MESSAGE_FILE_REFERENCE_DECLARED` sidecar event.
-Message prose is not scanned for paths; paths mentioned only in content remain
-ordinary non-clickable text.
+For accepted inter-agent messages, the server emits the source
+`INTER_AGENT_MESSAGE` with stable message identity and any explicit
+`payload.reference_files` represented as child reference metadata. Message prose
+is not scanned for paths; paths mentioned only in content remain ordinary
+non-clickable text.
 
-That event is canonical team-level metadata for the Artifacts tab's message
-reference surfaces. A focused sender sees the row as **Sent Artifacts** grouped
-by receiver/counterpart; a focused receiver sees the same row as **Received
-Artifacts** grouped by sender/counterpart. It is not a replacement for
-`INTER_AGENT_MESSAGE` conversation display, and clients must not make raw message
-paths clickable or add those rows to the produced-file `FILE_CHANGE` projection.
+That source message is canonical Team Communication metadata. The Team tab shows
+focused-member sent/received message perspectives grouped by counterpart, and
+reference files are rendered beneath the message that carried them. Clients must
+not make raw message paths clickable or add those rows to the produced-file
+`FILE_CHANGE` projection.

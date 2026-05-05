@@ -31,30 +31,34 @@ describe("AgentRunEventMessageMapper", () => {
     });
   });
 
-  it("maps message file reference declarations without routing them through file changes", () => {
+  it("maps inter-agent messages with team communication metadata without routing them through file changes", () => {
     const mapper = new AgentRunEventMessageMapper();
 
     const message = mapper.map({
-      eventType: AgentRunEventType.MESSAGE_FILE_REFERENCE_DECLARED,
+      eventType: AgentRunEventType.INTER_AGENT_MESSAGE,
       runId: "receiver-run-1",
       payload: {
-        referenceId: "ref-1",
-        teamRunId: "team-1",
-        senderRunId: "sender-run-1",
-        receiverRunId: "receiver-run-1",
-        path: "/tmp/report.md",
+        message_id: "message-1",
+        team_run_id: "team-1",
+        sender_agent_id: "sender-run-1",
+        receiver_run_id: "receiver-run-1",
+        content: "Please review the attached report.",
+        message_type: "handoff",
+        reference_file_entries: [{ referenceId: "ref-1", path: "/tmp/report.md" }],
       },
       statusHint: null,
     });
 
-    expect(message.type).toBe(ServerMessageType.MESSAGE_FILE_REFERENCE_DECLARED);
+    expect(message.type).toBe(ServerMessageType.INTER_AGENT_MESSAGE);
     expect(message.type).not.toBe(ServerMessageType.FILE_CHANGE);
     expect(message.payload).toEqual({
-      referenceId: "ref-1",
-      teamRunId: "team-1",
-      senderRunId: "sender-run-1",
-      receiverRunId: "receiver-run-1",
-      path: "/tmp/report.md",
+      message_id: "message-1",
+      team_run_id: "team-1",
+      sender_agent_id: "sender-run-1",
+      receiver_run_id: "receiver-run-1",
+      content: "Please review the attached report.",
+      message_type: "handoff",
+      reference_file_entries: [{ referenceId: "ref-1", path: "/tmp/report.md" }],
     });
   });
 });

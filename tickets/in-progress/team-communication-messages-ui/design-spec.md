@@ -1,0 +1,420 @@
+# Design Spec
+
+## Current-State Read
+
+The current merged code is based on the finalized `team-message-referenced-artifacts` ticket. It has the correct explicit `send_message_to.reference_files` tool contract, but its UI ownership is now product-wrong for the clarified direction.
+
+Current behavior and ownership:
+
+- `send_message_to` carries explicit `reference_files` through accepted `INTER_AGENT_MESSAGE` payloads.
+- `MessageFileReferenceProcessor` derives `MESSAGE_FILE_REFERENCE_DECLARED` sidecar events from `INTER_AGENT_MESSAGE.payload.reference_files`.
+- `MessageFileReferenceService` listens to team events, persists standalone file-reference rows to `message_file_references.json`, and exposes them through:
+  - GraphQL `getMessageFileReferences(teamRunId)`;
+  - REST `/team-runs/:teamRunId/message-file-references/:referenceId/content`.
+- Frontend `messageFileReferencesStore` stores standalone sent/received reference rows grouped by focused member.
+- `ArtifactsTab.vue` combines focused-run file changes from `runFileChangesStore` with those message-reference rows.
+- `ArtifactList.vue` renders **Agent Artifacts**, **Sent Artifacts**, and **Received Artifacts**.
+- `ArtifactContentViewer.vue` knows how to fetch both run file-change content and standalone `message_reference` content.
+- `TeamOverviewPanel.vue` currently renders only task-plan content and does not own team communication.
+
+The clarified product model is different: `reference_files` are child references of an inter-agent message. The user should see the message context first, then the files referenced by that message. Therefore the Team tab should own team communication and the Artifacts tab should return to a produced/touched-files-only meaning.
+
+## Intended Change
+
+Create a message-first **Team Communication** experience under the Team tab:
+
+- Team tab displays inter-agent messages from the focused member perspective.
+- Each message card/row shows:
+  - `Sent to <member>` or `Received from <member>`;
+  - counterpart member;
+  - message type;
+  - timestamp/order;
+  - bounded content preview;
+  - vertical list of referenced files attached to that message.
+- Selecting a message shows the full message in the detail pane.
+- Selecting a referenced file shows the file content through a message-centric content endpoint.
+- The Artifacts tab shows only produced/touched focused-run artifacts.
+- Remove/decommission the standalone Sent/Received Artifacts UI and the standalone message-file-reference projection/event/API that exists only to support that file-first model.
+
+This is a clean-cut replacement. Do not keep duplicate visibility or compatibility switches for the old member-Artifacts Sent/Received model.
+
+## Task Design Health Assessment (Mandatory)
+
+- Change posture: Behavior Change + Refactor + UI Feature.
+- Current design issue found: Yes.
+- Root cause classification: Boundary Or Ownership Issue + Legacy Or Compatibility Pressure.
+- Refactor needed now: Yes.
+- Evidence:
+  - `ArtifactsTab.vue` currently mixes produced/touched file changes with communicated references.
+  - `messageFileReferencesStore.ts` is file-reference-first and groups by sender/receiver, losing message ownership as the primary subject.
+  - `message_file_references.json` rows are keyed around `teamRunId + senderRunId + receiverRunId + path`, not one message with child references.
+  - The API/E2E reroute explicitly identifies the old Sent/Received Artifacts requirements as conflicting with the new Team-tab ownership direction.
+- Design response:
+  - Introduce **Team Communication Message** as the governing product/domain subject.
+  - Persist accepted `INTER_AGENT_MESSAGE` events into a message-centric team projection.
+  - Move reference-file content resolution behind Team Communication.
+  - Remove Sent/Received artifact rendering and the standalone message-reference artifact pipeline.
+- Refactor rationale:
+  - Keeping both Team Communication and Sent/Received Artifacts would create duplicate UI ownership and make the same `reference_files` look like both message attachments and standalone artifacts.
+- Intentional deferrals and residual risk:
+  - No historical backfill for runs that never recorded accepted `INTER_AGENT_MESSAGE` events or message reference metadata. Existing runs with new projection data hydrate; older runs can show an empty communication state.
+
+## Terminology
+
+- **Team Communication Message**: one accepted inter-agent communication event between two team members.
+- **Reference file**: one absolute local file path listed in `send_message_to.reference_files`, displayed as a child of the message that declared it.
+- **Agent Artifact**: a produced/touched file from the focused agent run, derived from file-change events. This remains the Artifacts tab subject.
+
+## Design Reading Order
+
+1. Team Communication event/projection spine.
+2. Team tab message/detail UI spine.
+3. Artifacts tab removal spine.
+4. Backend/frontend file mapping and decommission plan.
+
+## Legacy Removal Policy (Mandatory)
+
+- Policy: `No backward compatibility; remove legacy code paths.`
+- The old **Sent Artifacts** / **Received Artifacts** member Artifacts-tab UI is removed in this change.
+- The old standalone message-file-reference artifact event/projection/API is removed or replaced by the Team Communication projection/content boundary.
+- The design rejects flags, dual views, or fallback UI that keeps Sent/Received Artifacts around after Team Communication owns the same data.
+
+## Data-Flow Spine Inventory
+
+| Spine ID | Scope | Start | End | Governing Owner | Why It Matters |
+| --- | --- | --- | --- | --- | --- |
+| DS-001 | Primary End-to-End | Accepted `INTER_AGENT_MESSAGE` | Durable Team Communication projection | Team Communication Service | Creates the message-first source of truth. |
+| DS-002 | Primary End-to-End | Team tab focused member | Rendered message list and detail selection | Team Communication UI/store | Gives users transparent team communication context. |
+| DS-003 | Return-Event | Click message reference file | File content or graceful unavailable state | Team Communication Content boundary | Keeps reference-file preview under message ownership. |
+| DS-004 | Cleanup/Refactor | Artifacts tab data composition | Agent-artifacts-only view | Agent Artifacts UI | Removes duplicate Sent/Received ownership. |
+| DS-005 | Bounded Local | Live team streaming `INTER_AGENT_MESSAGE` | Frontend team communication store update | Team streaming handlers | Keeps live Team tab in sync without reload. |
+| DS-006 | Bounded Local | Historical team hydration | Frontend team communication store replacement | Run hydration service | Makes historical Team tab usable. |
+
+## Primary Execution Spine(s)
+
+- DS-001: `send_message_to accepted -> INTER_AGENT_MESSAGE payload -> TeamCommunicationService -> team_communication_messages.json -> GraphQL projection query`
+- DS-002: `Team tab -> teamCommunicationStore perspective -> TeamCommunicationPanel list -> selected message/reference -> detail pane`
+- DS-003: `Reference row click -> TeamCommunicationReferenceContentViewer -> /team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content -> TeamCommunicationContentService -> FileViewer`
+- DS-004: `ArtifactsTab -> runFileChangesStore only -> ArtifactList agent rows -> ArtifactContentViewer run-file-change content`
+
+## Spine Narratives (Mandatory)
+
+| Spine ID | Short Narrative | Main Domain Subject Nodes | Governing Owner | Key Off-Spine Concerns |
+| --- | --- | --- | --- | --- |
+| DS-001 | Every accepted inter-agent message is normalized as a Team Communication Message and persisted with child reference files. | Inter-agent message, Team Communication projection | TeamCommunicationService | ID generation, path normalization, artifact type inference, projection persistence |
+| DS-002 | The Team tab asks for messages for the active team/focused member and renders message cards; selection controls the detail pane. | Focused member perspective, message card, detail selection | TeamCommunicationPanel/store | Member display names, truncation, empty states |
+| DS-003 | A reference child is selected from inside a message and resolved through the Team Communication content endpoint. | Message reference child, content stream | TeamCommunicationContentService | Mime detection, readability checks, unavailable/deleted state |
+| DS-004 | The Artifacts tab stops reading team message references and displays only run file-change artifacts. | Agent artifact | ArtifactsTab / RunFileChangesStore | Keyboard order, existing file-change viewer behavior |
+| DS-005 | Live streaming updates the message store from source `INTER_AGENT_MESSAGE` payloads. | Live Team Communication Message | TeamStreamingService/team handler | Payload mapping, active team id, dedupe |
+| DS-006 | Historical team hydration fetches the message-centric projection and populates the same store. | Historical Team Communication projection | Team run hydration service | GraphQL query, network failure empty state |
+
+## Spine Actors / Main-Line Nodes
+
+- `INTER_AGENT_MESSAGE` accepted event payload.
+- `TeamCommunicationService`.
+- `TeamCommunicationProjectionStore`.
+- GraphQL `getTeamCommunicationMessages` query.
+- Frontend `teamCommunicationStore`.
+- `TeamOverviewPanel` / `TeamCommunicationPanel`.
+- `TeamCommunicationReferenceContentViewer`.
+- Agent Artifacts tab after cleanup.
+
+## Ownership Map
+
+- `INTER_AGENT_MESSAGE` event payload owns the accepted message contract: sender, receiver, content, message type, reference files, message id, timestamp.
+- `TeamCommunicationService` owns live event observation and durable projection updates.
+- `TeamCommunicationProjectionService` owns active/historical reads and hides whether data comes from an active in-memory service or disk.
+- `TeamCommunicationContentService` owns resolving file content for a reference child inside a message.
+- `teamCommunicationStore` owns frontend normalized team message state and focused-member perspective grouping.
+- `TeamCommunicationPanel` owns list/detail UI behavior for the Team tab.
+- `ArtifactsTab` owns only focused-run produced/touched artifacts.
+
+## Thin Entry Facades / Public Wrappers (If Applicable)
+
+| Facade / Entry Wrapper | Governing Owner Behind It | Why It Exists | Must Not Secretly Own |
+| --- | --- | --- | --- |
+| GraphQL `getTeamCommunicationMessages` | TeamCommunicationProjectionService | Frontend historical/live hydration query | Projection normalization or UI perspective logic |
+| REST team communication content route | TeamCommunicationContentService | Streams selected reference file content | File path policy outside the service |
+| `TeamOverviewPanel` | TeamCommunicationPanel + TaskPlanDisplay | Right-side Team tab composition | Backend projection semantics |
+
+## Removal / Decommission Plan (Mandatory)
+
+| Item To Remove / Decommission | Why It Becomes Unnecessary | Replaced By Which Owner / File / Structure | Scope | Notes |
+| --- | --- | --- | --- | --- |
+| `MESSAGE_FILE_REFERENCE_DECLARED` event as product UI source | Standalone reference artifact rows are no longer the UI subject | `INTER_AGENT_MESSAGE` -> TeamCommunicationService | In This Change | Remove from default event pipeline if no remaining non-legacy consumers. |
+| `MessageFileReferenceProcessor` | It derives the old standalone artifact reference model | TeamCommunicationService consumes source events directly | In This Change | Keep explicit path validation by moving it to a non-legacy owner. |
+| `services/message-file-references/*` projection/content service | File-reference-first projection duplicates message-centric ownership | `services/team-communication/*` | In This Change | Remove old route/query/tests/docs. |
+| GraphQL `getMessageFileReferences` | UI should hydrate team messages, not standalone references | `getTeamCommunicationMessages` | In This Change | Update frontend queries/types. |
+| REST `/team-runs/:teamRunId/message-file-references/:referenceId/content` | Content should resolve by message/reference child | Team communication content route | In This Change | No compatibility route. |
+| `messageFileReferencesStore.ts` | Store shape is standalone file-reference perspective | `teamCommunicationStore.ts` | In This Change | Remove tests asserting sent/received artifact sections. |
+| `ArtifactsTab.vue` message-reference merge | Duplicates Team tab ownership | Agent artifact-only composition | In This Change | Imports of `messageFileReferencesStore` removed. |
+| `ArtifactList.vue` Sent/Received sections | Legacy UI path | TeamCommunicationPanel message list | In This Change | Artifact list becomes simpler. |
+| `artifactViewerItem.ts` `MessageReferenceArtifactViewerItem` | Message references no longer artifact viewer items | Team communication reference item type | In This Change | Agent artifacts only remain. |
+| `ArtifactContentViewer.vue` `message_reference` branch | Artifact viewer must not own team message content | TeamCommunicationReferenceContentViewer | In This Change | Existing FileViewer logic can be reused/extracted. |
+| Agent/team wording mentioning Sent/Received Artifacts | Wrong product ownership language | Team Communication wording | In This Change | Update docs and instruction composer. |
+
+## Return Or Event Spine(s) (If Applicable)
+
+- Live event: `Team backend publishes AGENT TeamRunEvent -> TeamCommunicationService persists -> WebSocket sends INTER_AGENT_MESSAGE -> frontend handler upserts teamCommunicationStore`.
+- Content return: `reference content route -> content service -> fs stream or typed content error -> frontend viewer loading/deleted/error state`.
+
+## Bounded Local / Internal Spines (If Applicable)
+
+- TeamCommunicationService persistence queue:
+  - `TeamRunEvent -> normalize -> load cached projection -> upsert -> write team_communication_messages.json`.
+  - This mirrors the current message-file-reference queue pattern but owns messages, not standalone files.
+- Frontend selection state:
+  - `message card click/reference click -> selected item id/type -> detail pane mode -> content fetch if reference`.
+
+## Off-Spine Concerns Around The Spine
+
+| Off-Spine Concern | Related Spine ID(s) | Serves Which Owner | Responsibility | Why It Exists | Risk If Misplaced On Main Line |
+| --- | --- | --- | --- | --- | --- |
+| Message/reference ID builder | DS-001, DS-003 | TeamCommunicationService | Stable ids for messages and child refs | Dedupe and content addressing | UI invents unstable ids |
+| Reference path normalization/type inference | DS-001, DS-003 | TeamCommunicationService/ContentService | Normalize paths and infer file type | Consistent display/content behavior | Duplicate path logic across frontend/backend |
+| Member display name resolution | DS-002 | TeamCommunicationPanel | Show readable counterpart labels | UX clarity | Store becomes presentation-specific |
+| File content MIME/readability | DS-003 | TeamCommunicationContentService | Stream file safely | Graceful errors and mime handling | UI or route bypasses policy |
+| Artifact list keyboard behavior | DS-004 | ArtifactList | Preserve simple file navigation | Existing usability | Team refs leak back into artifact order |
+| Localization strings | DS-002, DS-004 | UI components | Copy for messages/empty states | Usable UI | Hard-coded text drift |
+
+## Existing Capability / Subsystem Reuse Check
+
+| Need / Concern | Existing Capability Area / Subsystem | Decision | Why | If New, Why Existing Areas Are Not Right |
+| --- | --- | --- | --- | --- |
+| Persist team-level event-derived projection | MessageFileReferenceService pattern | Create New using pattern | The pattern is useful, but subject changes to messages. | Old service owns file-reference rows, not messages. |
+| Reference content streaming | MessageFileReferenceContentService / ArtifactContentViewer logic | Create/Extract | Reuse MIME/readability approach. | Old boundary resolves standalone reference ids; Team Communication needs message child identity. |
+| Agent file artifacts | RunFileChangesStore/ArtifactsTab | Reuse and simplify | Correct owner for produced/touched files. | N/A |
+| Team tab composition | TeamOverviewPanel/TaskPlanDisplay | Extend | Existing right-side Team tab owner. | N/A |
+| Live team stream handling | TeamStreamingService/teamHandler | Extend | Existing live event boundary. | N/A |
+| Historical hydration | teamRunContextHydrationService | Extend | Existing team-history hydration boundary. | N/A |
+
+## Subsystem / Capability-Area Allocation
+
+| Subsystem / Capability Area | Owns Which Concerns | Related Spine ID(s) | Governing Owner(s) Served | Decision | Notes |
+| --- | --- | --- | --- | --- | --- |
+| Team Communication backend | Message projection, query, content route | DS-001, DS-003 | TeamCommunicationService | Create New | Replaces message-file-reference subsystem. |
+| Team Communication frontend | Store, message list/detail, reference viewer | DS-002, DS-003, DS-005, DS-006 | TeamCommunicationPanel/store | Create New | Lives under Team tab. |
+| Agent Artifacts frontend | Produced/touched artifacts only | DS-004 | ArtifactsTab | Reuse/Simplify | Remove Sent/Received. |
+| Team run streaming/hydration | Live and historical message store population | DS-005, DS-006 | TeamStreamingService/hydration service | Extend | Adds message projection handling. |
+| Team send-message delivery | Message id/timestamp in accepted event payloads | DS-001 | Runtime builders/managers | Extend | Preserve `reference_files` semantics. |
+
+## Draft File Responsibility Mapping
+
+| Candidate File | Owning Subsystem / Capability Area | Owner / Boundary | Concrete Concern | Why This Is One File | Reuses Shared Structure? |
+| --- | --- | --- | --- | --- | --- |
+| `services/team-communication/team-communication-types.ts` | Team Communication backend | Shared model | Projection/message/reference types | One type contract for service/API | Yes |
+| `services/team-communication/team-communication-identity.ts` | Team Communication backend | Identity helper | Message/reference id/path normalization | Keeps ids consistent | Yes |
+| `services/team-communication/team-communication-normalizer.ts` | Team Communication backend | Normalizer | Convert event/projection data to tight model | Avoid scattered normalization | Yes |
+| `services/team-communication/team-communication-projection-store.ts` | Team Communication backend | Persistence | Read/write `team_communication_messages.json` | Storage concern only | Yes |
+| `services/team-communication/team-communication-service.ts` | Team Communication backend | Live owner | Attach to TeamRun and persist messages | Event-to-projection owner | Yes |
+| `services/team-communication/team-communication-projection-service.ts` | Team Communication backend | Read boundary | Active/historical projection reads | Query owner | Yes |
+| `services/team-communication/team-communication-content-service.ts` | Team Communication backend | Content boundary | Resolve message reference file content | Content safety owner | Yes |
+| `api/graphql/types/team-communication.ts` | API | GraphQL facade | `getTeamCommunicationMessages` | Transport only | Yes |
+| `api/rest/team-communication.ts` | API | REST facade | Message reference content endpoint | Transport only | Yes |
+| `stores/teamCommunicationStore.ts` | Frontend Team Communication | UI state | Store messages and perspective lists | One UI state owner | Yes |
+| `components/workspace/team/TeamCommunicationPanel.vue` | Frontend Team Communication | Panel owner | Split/list/detail composition | Main Team UI component | Yes |
+| `components/workspace/team/TeamCommunicationList.vue` | Frontend Team Communication | List view | Message cards and reference child rows | Focused display concern | Yes |
+| `components/workspace/team/TeamCommunicationDetail.vue` | Frontend Team Communication | Detail view | Full message or selected reference preview | Selection display concern | Yes |
+| `components/workspace/team/TeamReferenceFileViewer.vue` | Frontend Team Communication | Content viewer | Fetch/display reference file | Team-owned equivalent of old artifact branch | Yes |
+
+## Reusable Owned Structures Check
+
+| Repeated Structure / Logic | Candidate Shared File | Owning Subsystem | Why Shared | Redundant Attributes Removed? | Overlapping Representations Removed? | Must Not Become |
+| --- | --- | --- | --- | --- | --- | --- |
+| Message/reference payload type | `team-communication-types.ts` | Team Communication | Used by service/API/frontend typing | Yes | Yes | Generic artifact item |
+| Reference path normalization/type inference | `team-communication-identity.ts` | Team Communication | Used by service/content/query | Yes | Yes | Old message-file-reference identity clone |
+| Content fetch display logic | `TeamReferenceFileViewer.vue` or extracted composable | Team Communication frontend | Used only in Team Communication detail | Yes | Yes | Artifact viewer dependency leak |
+| Explicit send-message reference validation | Move from `message-file-references` to send-message/team-communication owned file | Team communication / send-message delivery | Still needed by tool parser | Yes | Yes | Legacy message-reference subsystem anchor |
+
+## Shared Structure / Data Model Tightness Check
+
+| Shared Structure / Type / Schema | One Clear Meaning Per Field? | Redundant Attributes Removed? | Parallel / Overlapping Representation Risk | Corrective Action |
+| --- | --- | --- | --- | --- |
+| `TeamCommunicationMessage` | Yes | Yes | Low | One row = one accepted message. |
+| `TeamCommunicationReferenceFile` | Yes | Yes | Low | Child of one message; id includes message ownership. |
+| Frontend selected detail item | Yes | Yes | Low | Use discriminated union `message` / `reference`. |
+| Agent artifact viewer item | Yes after cleanup | Yes | Low | Remove `message_reference` variant. |
+
+## Final File Responsibility Mapping
+
+| File | Owning Subsystem / Capability Area | Owner / Boundary | Concrete Concern | Why This Is One File | Reuses Shared Structure? |
+| --- | --- | --- | --- | --- | --- |
+| `autobyteus-server-ts/src/agent-team-execution/domain/inter-agent-message-delivery.ts` | Team send-message delivery | Delivery DTO | Add optional message metadata fields if needed | Contract extension | TeamCommunication identity |
+| `autobyteus-server-ts/src/agent-team-execution/services/inter-agent-message-runtime-builders.ts` | Team send-message delivery | Accepted event builder | Populate `message_id`, `created_at`, receiver fields, references | One accepted-message shaper | TeamCommunication identity |
+| `autobyteus-server-ts/src/agent-team-execution/backends/*/*team-manager*.ts` | Runtime managers | Delivery coordinators | Ensure one normalized message metadata instance is used for input/event | Prevent id/timestamp drift | Runtime builders |
+| `autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend.ts` | AutoByteus bridge | Event enrichment | Ensure native converted `INTER_AGENT_MESSAGE` has message id/timestamp/reference fields | AutoByteus parity owner | TeamCommunication identity |
+| `autobyteus-ts/src/agent/message/inter-agent-message.ts` and related events/handlers | Native runtime | Native message contract | Propagate optional message id/created timestamp where available | Prevent native drift | TeamCommunication payload |
+| `autobyteus-server-ts/src/services/team-communication/*` | Team Communication backend | New service boundary | Types, identity, normalization, projection, content | Dedicated message subject | Yes |
+| `autobyteus-server-ts/src/api/graphql/types/team-communication.ts` | API | GraphQL facade | Query team communication messages | Transport mapping | Yes |
+| `autobyteus-server-ts/src/api/rest/team-communication.ts` | API | REST facade | Stream message reference content | Transport mapping | Yes |
+| `autobyteus-web/stores/teamCommunicationStore.ts` | Frontend Team Communication | State owner | Store/hydrate/upsert messages and focused perspective | Single UI state owner | Yes |
+| `autobyteus-web/services/agentStreaming/handlers/teamHandler.ts` | Streaming frontend | Event mapper | Upsert Team Communication store from `INTER_AGENT_MESSAGE`; keep conversation segment behavior as needed | Existing event boundary | Yes |
+| `autobyteus-web/services/runHydration/teamCommunicationHydrationService.ts` | Hydration frontend | Hydration boundary | Fetch/hydrate team messages | Mirrors current hydration pattern | Yes |
+| `autobyteus-web/components/workspace/team/TeamOverviewPanel.vue` | Team tab | Composition owner | Compose task-plan section and Team Communication panel | Current Team tab owner | Yes |
+| `autobyteus-web/components/workspace/team/TeamCommunication*.vue` | Team Communication UI | UI owner | List/detail/reference viewer | Clear component split | Yes |
+| `autobyteus-web/components/workspace/agent/ArtifactsTab.vue` | Agent Artifacts UI | Artifact tab owner | Agent file changes only | Removes mixed subject | RunFileChangesStore |
+| `autobyteus-web/components/workspace/agent/ArtifactList.vue` | Agent Artifacts UI | Artifact list | Agent artifacts only | Removes sent/received sections | Agent artifact item |
+| `autobyteus-web/components/workspace/agent/artifactViewerItem.ts` | Agent Artifacts UI | Item mapper | Agent artifact item only | Removes message reference variant | RunFileChangeArtifact |
+| `autobyteus-web/components/workspace/agent/ArtifactContentViewer.vue` | Agent Artifacts UI | Content viewer | Run file-change content only | Removes team communication content | FileViewer |
+
+## Ownership Boundaries
+
+- Team Communication is the authoritative boundary for inter-agent message history and message reference files.
+- Agent Artifacts is the authoritative boundary for produced/touched files from a run.
+- Send-message delivery remains the authoritative boundary for accepting and shaping inter-agent message payloads; Team Communication consumes accepted events, not raw tool-call arguments.
+- Team Communication content resolution must not call the old message-file-reference projection because that would preserve the old owner as an internal dependency. It should resolve from message projection.
+
+## Boundary Encapsulation Map
+
+| Authoritative Boundary | Internal Owned Mechanism(s) It Encapsulates | Upstream Callers That Must Use The Boundary | Forbidden Bypass Shape | If Boundary API Is Too Thin, Fix By |
+| --- | --- | --- | --- | --- |
+| TeamCommunicationProjectionService | Projection store, active service, normalizer | GraphQL resolver, hydration service | Frontend reading `message_file_references.json` shape | Add query fields/mappers |
+| TeamCommunicationContentService | Message projection lookup, file readability/mime | REST route, TeamReferenceFileViewer | Artifact viewer building message-file-reference URLs | Add content route capabilities |
+| ArtifactsTab | Run file changes store/viewer | Right-side Artifacts tab | Combining `messageFileReferencesStore` rows | Route message references to Team tab |
+| Send-message runtime builder | Payload ids/timestamps/reference list | Runtime managers/backends | Managers creating mismatched ids/timestamps | Strengthen builder API |
+
+## Dependency Rules
+
+Allowed:
+
+- TeamCommunicationService may subscribe to TeamRun events and read accepted `INTER_AGENT_MESSAGE` payloads.
+- TeamCommunicationProjectionService may read active service state or persisted team communication projection.
+- TeamCommunicationContentService may depend on TeamCommunicationProjectionService.
+- Team tab frontend may depend on `teamCommunicationStore` and Team Communication content route.
+- Artifacts tab may depend on `runFileChangesStore` only.
+
+Forbidden:
+
+- Artifacts tab must not import `messageFileReferencesStore`, `teamCommunicationStore`, or message-reference artifact item types.
+- Team Communication UI must not reuse `ArtifactContentViewer` if that keeps artifact/message reference coupling.
+- No content scanning from `content` to create reference files.
+- No dual display of the same message references in both Team tab and Artifacts tab.
+- No compatibility route/query/store kept only for Sent/Received Artifacts.
+
+## Interface Boundary Mapping
+
+| Interface / API / Query / Command / Method | Subject Owned | Responsibility | Accepted Identity Shape(s) | Notes |
+| --- | --- | --- | --- | --- |
+| `getTeamCommunicationMessages(teamRunId)` | Team communication messages | Return message projection | `teamRunId` | Replaces `getMessageFileReferences`. |
+| `GET /team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content` | One reference file under one message | Stream content | `teamRunId + messageId + referenceId` | Message child identity is explicit. |
+| `teamCommunicationStore.getPerspectiveForMember(teamRunId, memberRunId)` | Focused-member message perspective | Sent/received message groups/list | `teamRunId + memberRunId` | Message-first, not file-first. |
+| `ArtifactsTab` props/store reads | Agent artifacts | Render produced/touched files | `runId` | No team reference identity accepted. |
+
+## Interface Boundary Check
+
+| Interface | Responsibility Is Singular? | Identity Shape Is Explicit? | Ambiguous Selector Risk | Corrective Action |
+| --- | --- | --- | --- | --- |
+| `getTeamCommunicationMessages` | Yes | Yes | Low | N/A |
+| Team communication content route | Yes | Yes | Low | Include both messageId and referenceId. |
+| ArtifactsTab artifact list | Yes after cleanup | Yes | Low | Remove message_reference item shape. |
+| `send_message_to.reference_files` | Yes | Yes | Low | Keep explicit list semantics. |
+
+## Main Domain Subject Naming Check
+
+| Node / Subject | Current / Proposed Name | Name Is Natural And Self-Descriptive? | Naming Drift Risk | Corrective Action |
+| --- | --- | --- | --- | --- |
+| Message projection | `TeamCommunicationMessage` | Yes | Low | Use consistently. |
+| Child reference | `TeamCommunicationReferenceFile` | Yes | Low | Avoid generic `artifact` in Team UI. |
+| Old standalone refs | `MessageFileReference*` | No for target | High | Remove/decommission. |
+| Agent file artifacts | `AgentArtifactViewerItem` | Yes | Low | Keep for Artifacts tab. |
+
+## Applied Patterns (If Any)
+
+- Projection service pattern: used for Team Communication as a team-level event-derived projection, similar structurally to the old reference service but with the correct message subject.
+- Master/detail UI pattern: Team tab uses compact message list and detail pane, matching the successful right-panel split interaction while keeping the left list message-first.
+- Discriminated selection union: detail pane selection is either full message or reference file.
+
+## Target Subsystem / Folder / File Mapping
+
+| Path | Kind | Owner / Boundary | Responsibility | Why It Belongs Here | Must Not Contain |
+| --- | --- | --- | --- | --- | --- |
+| `autobyteus-server-ts/src/services/team-communication/` | Folder | Team Communication backend | Message projection and content services | New backend subject | Agent artifact UI logic |
+| `autobyteus-server-ts/src/api/graphql/types/team-communication.ts` | File | GraphQL API | Query message projection | Existing GraphQL folder pattern | Projection persistence |
+| `autobyteus-server-ts/src/api/rest/team-communication.ts` | File | REST API | Stream selected reference content | Existing REST route pattern | Path policy outside service |
+| `autobyteus-web/stores/teamCommunicationStore.ts` | File | Frontend state | Team message projection and perspective | Existing Pinia store pattern | Artifact viewer item mapping |
+| `autobyteus-web/components/workspace/team/` | Folder | Team tab UI | Team communication components | Current Team UI home | Agent artifact sections |
+| `autobyteus-web/components/workspace/agent/` | Folder | Agent artifact UI | Produced/touched artifacts only | Existing artifact UI home | Team message reference rows |
+
+## Folder Boundary Check
+
+| Path / Folder | Intended Structural Depth | Ownership Boundary Is Clear? | Mixed-Layer Or Over-Split Risk | Justification / Corrective Action |
+| --- | --- | --- | --- | --- |
+| `services/team-communication` | Persistence/Provider + domain helpers | Yes | Low | Mirrors existing service folders but with correct subject. |
+| `components/workspace/team` | UI feature | Yes | Low | Team tab owns communication UI. |
+| `components/workspace/agent` | UI feature | Yes after cleanup | Low | Agent artifacts only. |
+| `api/rest` / `api/graphql/types` | Transport | Yes | Low | Thin facades only. |
+
+## Concrete Examples / Shape Guidance (Mandatory When Needed)
+
+| Topic | Good Example | Bad / Avoided Shape | Why The Example Matters |
+| --- | --- | --- | --- |
+| Message-first UI | `Sent to architecture_reviewer` -> preview -> `Reference files` vertical rows | `Sent Artifacts` -> `design-spec.md` detached from message | Keeps files in communication context. |
+| Projection shape | `{ messageId, senderRunId, receiverRunId, content, referenceFiles: [{ referenceId, path }] }` | `{ referenceId, senderRunId, receiverRunId, path }` as primary UI data | Message is the domain subject. |
+| Artifact tab | Agent file changes only | Agent + Sent + Received sections | Avoids duplicate ownership. |
+| Content route | `/team-communication/messages/:messageId/references/:referenceId/content` | `/message-file-references/:referenceId/content` | Route identity reflects message ownership. |
+
+## Backward-Compatibility Rejection Log (Mandatory)
+
+| Candidate Compatibility Mechanism | Why It Was Considered | Rejection Decision | Clean-Cut Replacement / Removal Plan |
+| --- | --- | --- | --- |
+| Keep Sent/Received Artifacts while adding Team Communication | Would avoid changing old UI tests | Rejected | Remove Sent/Received from Artifacts tab. |
+| Keep `messageFileReferencesStore` for Team UI | Existing store already hydrates references | Rejected | New `teamCommunicationStore` with message-first shape. |
+| Keep old GraphQL/REST APIs as hidden fallback | Existing content route works | Rejected | New message-centric query/content route. |
+| Keep `MESSAGE_FILE_REFERENCE_DECLARED` event for old projection | Existing pipeline emits it | Rejected unless another non-legacy consumer is found | TeamCommunicationService consumes source `INTER_AGENT_MESSAGE` directly. |
+| Use content path scanning as fallback | Could backfill missing refs | Rejected | Explicit `reference_files` only. |
+
+## Derived Layering (If Useful)
+
+- Runtime/event layer: accepted `INTER_AGENT_MESSAGE` events.
+- Projection/service layer: TeamCommunicationService and projection/content services.
+- Transport layer: GraphQL/REST facades.
+- Frontend state layer: teamCommunicationStore.
+- Frontend presentation layer: Team tab message list/detail and simplified Artifacts tab.
+
+## Migration / Refactor Sequence
+
+1. Add Team Communication backend types/identity/normalizer/projection/content services.
+2. Enrich accepted `INTER_AGENT_MESSAGE` payloads with `message_id`, `created_at`, `receiver_run_id`, receiver name, and normalized `reference_files` consistently across Codex, Claude, AutoByteus, and mixed paths.
+3. Attach TeamCommunicationService to active team runs in `AgentTeamRunManager`.
+4. Add GraphQL query and REST content route for Team Communication.
+5. Add frontend protocol/types/store/hydration for team communication messages.
+6. Build Team tab message-first UI with task-plan section and message/detail/reference selection.
+7. Simplify Artifacts tab/list/viewer to agent file-change artifacts only.
+8. Remove/decommission message-file-reference processor/event/service/routes/frontend store/tests/docs that exist only for old Sent/Received Artifacts.
+9. Update agent/team instruction wording and docs.
+10. Add/update tests, including absence of Sent/Received in Artifacts tab and presence of message references under Team Communication.
+
+## Validation Plan
+
+- Backend unit tests:
+  - TeamCommunication normalizer dedupes refs within a message.
+  - TeamCommunicationService persists accepted `INTER_AGENT_MESSAGE` events.
+  - Content service returns file stream and graceful errors.
+- Backend integration/API tests:
+  - `getTeamCommunicationMessages(teamRunId)` active/historical reads.
+  - Team communication content route resolves by `teamRunId + messageId + referenceId`.
+  - Old `getMessageFileReferences`/message-file-reference route removed if no non-legacy consumer remains.
+- Frontend store tests:
+  - focused member sent/received perspectives.
+  - live upsert from `INTER_AGENT_MESSAGE`.
+  - historical replace hydration.
+- Frontend component tests:
+  - Team tab renders message previews, full detail, vertical reference rows.
+  - Reference selection fetches preview state.
+  - Artifacts tab renders only agent artifacts and no Sent/Received sections.
+- Grep/review checks:
+  - no UI copy telling users `reference_files` appear as Sent/Received Artifacts;
+  - no artifact viewer `message_reference` branch;
+  - no content scanning fallback.
+
+## Documentation / Instruction Updates
+
+- Update `member-run-instruction-composer.ts` wording from Sent/Received Artifacts to Team Communication messages.
+- Update frontend docs around agent artifacts to say Artifacts tab is produced/touched files only.
+- Add/adjust docs for Team Communication reference files.
+
+## Open Questions / Review Focus
+
+- Whether to remove the `MESSAGE_FILE_REFERENCE_DECLARED` enum/protocol entirely or keep it only if a non-legacy backend/internal consumer exists. Current investigation found only old standalone reference projection/UI consumers, so the design expects removal.
+- Exact visual treatment of Task Plan within the Team tab: compact summary/collapsible section is preferred so messages remain visible in the right-side panel.
+- Whether the Team Communication file viewer should extract common content-viewing logic from `ArtifactContentViewer` or implement a small dedicated viewer using `FileViewer`. Either is acceptable if artifact/message ownership remains separated.

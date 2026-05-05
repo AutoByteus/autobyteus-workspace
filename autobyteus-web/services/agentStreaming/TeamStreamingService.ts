@@ -32,7 +32,6 @@ import {
   handleTeamStatus,
   handleTaskPlanEvent,
   handleFileChange,
-  handleMessageFileReferenceDeclared,
 } from './handlers';
 import { handleBrowserToolExecutionSucceeded } from './browser/browserToolExecutionSucceededHandler';
 
@@ -356,10 +355,6 @@ export class TeamStreamingService {
 
       case 'FILE_CHANGE':
         handleFileChange(message.payload, memberContext);
-        break;
-
-      case 'MESSAGE_FILE_REFERENCE_DECLARED':
-        handleMessageFileReferenceDeclared(message.payload, memberContext);
         break;
 
       case 'CONNECTED':

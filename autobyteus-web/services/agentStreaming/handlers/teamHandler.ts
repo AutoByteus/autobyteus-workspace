@@ -19,6 +19,7 @@ import type {
   TaskPlanDeliverablePayload,
 } from '../protocol/messageTypes';
 import { findOrCreateAIMessage } from './segmentHandler';
+import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
 
 /**
  * Handle INTER_AGENT_MESSAGE event.
@@ -27,6 +28,8 @@ export function handleInterAgentMessage(
   payload: InterAgentMessagePayload,
   context: AgentContext
 ): void {
+  useTeamCommunicationStore().upsertFromInterAgentPayload(payload);
+
   const aiMessage = findOrCreateAIMessage(context);
   
   const segment: InterAgentMessageSegment = {

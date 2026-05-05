@@ -99,8 +99,6 @@ export class AgentRunEventMessageMapper {
         return new ServerMessage(ServerMessageType.TODO_LIST_UPDATE, payload);
       case AgentRunEventType.INTER_AGENT_MESSAGE:
         return new ServerMessage(ServerMessageType.INTER_AGENT_MESSAGE, payload);
-      case AgentRunEventType.MESSAGE_FILE_REFERENCE_DECLARED:
-        return new ServerMessage(ServerMessageType.MESSAGE_FILE_REFERENCE_DECLARED, payload);
       case AgentRunEventType.SYSTEM_TASK_NOTIFICATION:
         return new ServerMessage(ServerMessageType.SYSTEM_TASK_NOTIFICATION, payload);
       case AgentRunEventType.ARTIFACT_PERSISTED:
