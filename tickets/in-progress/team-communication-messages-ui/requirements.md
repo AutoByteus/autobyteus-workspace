@@ -40,10 +40,13 @@ Initial bootstrap findings:
 - Treat accepted `INTER_AGENT_MESSAGE` events as the source for team communication records.
 - Model team communication as **messages first**; each message owns its child reference-file rows.
 - In the Team tab, keep Task Plan visible but add a communication area that can show sent/received messages for the focused team member.
+- The Team tab should follow the existing Activity tab's collapsible-section behavior: Task Plan and Messages are section headers with chevrons/counts, and the expanded section receives the usable height.
+- The empty Task Plan state must not reserve a large fixed panel above Team Communication; when there is no plan, it should remain collapsed or compact unless the user opens it.
 - Use a master/detail interaction adapted to the existing right-panel width:
-  - compact message list/cards show direction, counterpart, message type, truncated preview, and vertical reference-file list;
-  - selecting a message shows full message content;
-  - selecting a reference file previews its content using the existing safe content-resolution behavior where possible.
+  - compact message list/cards show direction, counterpart, message type, truncated preview, and vertical reference-file list in a left pane;
+  - selecting a message shows full message content in a right detail pane;
+  - selecting a reference file previews its content in the right detail pane using the existing safe content-resolution behavior where possible.
+- Do not keep an internal redundant `Team` header inside the Team tab; the right-side tab label already provides that context.
 - Remove Sent/Received Artifacts from the Artifacts tab; keep that tab focused on files created/touched by the focused agent.
 - Treat the prior `team-message-referenced-artifacts` Sent/Received Artifacts requirements (`REQ-016`, `REQ-017`, `AC-008`, `AC-009`, `AC-011`) as intentionally superseded for this new ticket.
 - Do not keep legacy duplicated Sent/Received artifact sections, fallback path scanning, or hidden compatibility rendering.
@@ -78,7 +81,7 @@ Rationale: The change spans server/event projection or hydration, frontend store
 
 - REQ-001: The Team tab must include a Team Communication/messages area in addition to the existing Task Plan information.
 - REQ-002: Team Communication must be message-first: each row/card represents one accepted inter-agent message, not one referenced file.
-- REQ-003: Each message item must show direction from the focused member perspective: `Sent to <member>` or `Received from <member>`.
+- REQ-003: Team Communication must show direction from the focused member perspective through top-level `Sent` and `Received` sections. Inside each section, counterpart group headers must use only the agent/member name; do not repeat redundant `to` or `from` wording.
 - REQ-004: Each message item must show message type and enough timestamp/order context to understand when the message occurred.
 - REQ-005: Each message item must show a bounded preview of message content; long content must not expand the list indefinitely.
 - REQ-006: Selecting a message must show the full message content in a detail/preview area.
@@ -96,18 +99,22 @@ Rationale: The change spans server/event projection or hydration, frontend store
 - REQ-018: The UI must handle empty states clearly: no task plan, no communication messages, no selected message/file, and unavailable referenced file content.
 - REQ-019: The standalone message-file-reference artifact projection/event/API created to support Sent/Received Artifacts must be removed or replaced by a message-centric Team Communication projection/content boundary; frontend UI must not consume standalone message-reference artifact rows as artifacts.
 - REQ-020: Agent/team instructions and docs must describe `reference_files` as files shown under Team Communication messages, not as Sent/Received Artifacts in the member Artifacts tab.
+- REQ-021: Team Communication live frontend state must be updated from normalized `TEAM_COMMUNICATION_MESSAGE` events, not directly from raw `INTER_AGENT_MESSAGE` events. Raw `INTER_AGENT_MESSAGE` may continue feeding existing conversation displays.
+- REQ-022: The Team tab must not render a redundant internal `Team` header row above Task Plan/Messages.
+- REQ-023: Task Plan and Team Communication/Messages must use compact collapsible section headers modeled after the Activity tab; Messages must be the default expanded section, and an empty Task Plan must not consume a large fixed-height body.
+- REQ-024: Team Communication message/reference selection must use an Artifacts-like left-list/right-detail layout so selected file content is previewed beside the message list, not squeezed underneath it.
 
 ## Acceptance Criteria
 
-- AC-001: Given a focused team member has sent accepted inter-agent messages, the Team tab shows those messages as `Sent to <member>` message cards/rows.
-- AC-002: Given a focused team member has received accepted inter-agent messages, the Team tab shows those messages as `Received from <member>` message cards/rows.
+- AC-001: Given a focused team member has sent accepted inter-agent messages, the Team tab shows them under a `Sent` section grouped by counterpart agent/member name, with no redundant `to` label in the group header.
+- AC-002: Given a focused team member has received accepted inter-agent messages, the Team tab shows them under a `Received` section grouped by counterpart agent/member name, with no redundant `from` label in the group header.
 - AC-003: Given a message has long content, the message list shows a truncated preview while selecting the message shows full content.
 - AC-004: Given a message has `reference_files`, those files appear vertically under that message in the Team Communication list.
 - AC-005: Given a referenced file is selected, the detail/preview area shows the file content or a graceful unavailable/deleted-file state.
 - AC-006: Given a message has no reference files, the message still appears normally without an empty/noisy reference section.
 - AC-007: Given the Artifacts tab is opened for a focused team member, Sent Artifacts and Received Artifacts sections are absent.
 - AC-008: Given the Artifacts tab is opened for a focused team member with touched files, agent-created/touched artifacts still appear and remain previewable.
-- AC-009: Given a live `INTER_AGENT_MESSAGE` with `reference_files` arrives, the Team Communication view updates without requiring a page reload.
+- AC-009: Given a live accepted message is processed into a `TEAM_COMMUNICATION_MESSAGE` with `referenceFiles`, the Team Communication view updates without requiring a page reload.
 - AC-010: Given a historical team run is opened, the Team Communication view hydrates from durable state and displays message records and references when available.
 - AC-011: Automated or review evidence proves no content-scanning fallback was added or retained for Team Communication references.
 - AC-012: Automated or review evidence proves legacy Sent/Received Artifacts rendering paths are removed/decommissioned rather than hidden behind a flag.
@@ -115,6 +122,10 @@ Rationale: The change spans server/event projection or hydration, frontend store
 - AC-014: Tests cover reference-file selection from inside a message and preview-state transitions.
 - AC-015: Review or grep evidence proves old standalone `MESSAGE_FILE_REFERENCE_DECLARED` / `messageFileReferencesStore` / Sent-Received-Artifacts UI paths are removed or no longer used by product UI.
 - AC-016: Docs/instructions no longer tell agents/users that `reference_files` appear as Sent/Received Artifacts in the Artifacts tab.
+- AC-017: The Team tab has no redundant internal `Team` header; Task Plan and Messages render as collapsible headers with counts/chevrons.
+- AC-018: With no task plan, the Task Plan section does not occupy a large empty area and Messages retains the primary usable height.
+- AC-019: Selecting a message reference file shows the file preview in a right-side detail pane while the message/reference list remains visible on the left.
+- AC-020: Automated or review evidence proves `teamCommunicationStore` live updates are driven by `TEAM_COMMUNICATION_MESSAGE`, not raw `INTER_AGENT_MESSAGE`.
 
 ## Constraints / Dependencies
 
@@ -127,26 +138,25 @@ Rationale: The change spans server/event projection or hydration, frontend store
 
 ## Assumptions
 
-- The focused team member remains the natural perspective for `Sent to` and `Received from` labels.
+- The focused team member remains the natural perspective for `Sent` and `Received` sections; section names imply direction, so child group labels should be counterpart names only.
 - The message-first view should use accepted inter-agent messages, not raw tool-call activity cards.
 - Existing safe file content viewer/resolution behavior can be reused or adapted for message reference previews.
-- Task Plan remains part of the Team tab, but the final layout may choose compact, collapsible, or sectioned presentation based on design investigation.
+- Task Plan remains part of the Team tab, but the final layout must use compact collapsible section presentation based on current UI review.
 
 ## Risks / Open Questions
 
 - Need to verify whether current durable run history stores enough accepted `INTER_AGENT_MESSAGE` data to build historical Team Communication without introducing a new projection.
-- Need to decide whether to replace `message_file_references.json` with a message-centric projection or keep it as an internal/content-resolution support structure while adding a new message projection.
-- Need to define exact detail-pane behavior when both a message and a child reference file can be selected.
-- Need to ensure the right-side Team tab remains usable at narrow widths.
+- Need architecture review to approve the final `TEAM_COMMUNICATION_MESSAGE` event naming and live fanout split.
+- Need implementation to verify the Artifacts-like split remains usable at the narrowest supported right-side Team tab width.
 
 ## Requirement-To-Use-Case Coverage
 
-- UC-001 -> REQ-001, REQ-012, REQ-013, REQ-018, REQ-019
+- UC-001 -> REQ-001, REQ-012, REQ-013, REQ-018, REQ-019, REQ-021, REQ-023
 - UC-002 -> REQ-002, REQ-003, REQ-004
 - UC-003 -> REQ-005
-- UC-004 -> REQ-006
+- UC-004 -> REQ-006, REQ-024
 - UC-005 -> REQ-007, REQ-014, REQ-015
-- UC-006 -> REQ-008, REQ-018
+- UC-006 -> REQ-008, REQ-018, REQ-024
 - UC-007 -> REQ-009, REQ-010, REQ-016, REQ-019, REQ-020
 - UC-008 -> REQ-013, REQ-014
 
@@ -158,6 +168,9 @@ Rationale: The change spans server/event projection or hydration, frontend store
 - AC-005, AC-014 -> Validate clickable preview behavior.
 - AC-007, AC-008, AC-012 -> Validate clean-cut Artifacts tab refactor without legacy Sent/Received sections.
 - AC-009, AC-010 -> Validate live and historical data paths.
+- AC-017, AC-018 -> Validate compact Team tab section layout.
+- AC-019 -> Validate Artifacts-like reference preview ergonomics.
+- AC-020 -> Validate processor-boundary live frontend ingestion.
 - AC-011 -> Preserve explicit-reference-only invariant.
 - AC-015 -> Validate clean removal of standalone message-reference artifact UI/event/store ownership.
 - AC-016 -> Validate docs/instruction ownership language.

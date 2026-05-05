@@ -12,7 +12,7 @@ vi.mock('../browser/browserToolExecutionSucceededHandler', () => ({
 
 vi.mock('~/stores/teamCommunicationStore', () => ({
   useTeamCommunicationStore: () => ({
-    upsertFromInterAgentPayload: upsertTeamCommunicationMessageMock,
+    upsertFromBackendPayload: upsertTeamCommunicationMessageMock,
   }),
 }));
 
@@ -294,7 +294,7 @@ describe('TeamStreamingService', () => {
     });
   });
 
-  it('routes inter-agent messages to team communication and the targeted member conversation', () => {
+  it('routes raw inter-agent messages only to the targeted member conversation', () => {
     const callbacks = new Map<string, (payload?: any) => void>();
     const wsClient = {
       state: 'disconnected',
@@ -345,7 +345,7 @@ describe('TeamStreamingService', () => {
       }),
     );
 
-    expect(upsertTeamCommunicationMessageMock).toHaveBeenCalledWith(payload);
+    expect(upsertTeamCommunicationMessageMock).not.toHaveBeenCalled();
     expect(conversation.messages).toHaveLength(1);
     expect(conversation.messages[0].segments[0]).toMatchObject({
       type: 'inter_agent_message',
@@ -354,6 +354,60 @@ describe('TeamStreamingService', () => {
       content: 'Please review the attached report.',
       messageType: 'handoff',
     });
+  });
+
+  it('routes derived team communication messages to the team communication store', () => {
+    const callbacks = new Map<string, (payload?: any) => void>();
+    const wsClient = {
+      state: 'disconnected',
+      connect: vi.fn(),
+      disconnect: vi.fn(),
+      send: vi.fn(),
+      on: vi.fn((event: string, cb: (payload?: any) => void) => {
+        callbacks.set(event, cb);
+      }),
+      off: vi.fn(),
+    } as any;
+
+    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+    const conversation = { messages: [], updatedAt: '' } as any;
+    const teamContext = {
+      focusedMemberName: 'worker-a',
+      members: new Map([
+        [
+          'worker-a',
+          {
+            state: { runId: 'receiver-run-1', compactionStatus: null },
+            conversation,
+          },
+        ],
+      ]),
+    } as any;
+
+    const payload = {
+      messageId: 'message-1',
+      teamRunId: 'team-1',
+      senderRunId: 'sender-run-1',
+      senderMemberName: 'Reviewer',
+      receiverRunId: 'receiver-run-1',
+      receiverMemberName: 'Worker',
+      content: 'Please review the attached report.',
+      messageType: 'handoff',
+      createdAt: '2026-04-08T00:00:00.000Z',
+      updatedAt: '2026-04-08T00:00:00.000Z',
+      referenceFiles: [{ referenceId: 'ref-1', path: '/tmp/report.md', type: 'file', createdAt: '2026-04-08T00:00:00.000Z', updatedAt: '2026-04-08T00:00:00.000Z' }],
+    };
+
+    service.connect('team-1', teamContext);
+    callbacks.get('onMessage')?.(
+      JSON.stringify({
+        type: 'TEAM_COMMUNICATION_MESSAGE',
+        payload,
+      }),
+    );
+
+    expect(upsertTeamCommunicationMessageMock).toHaveBeenCalledWith(payload);
+    expect(conversation.messages).toHaveLength(0);
   });
 
   it('routes compaction lifecycle messages to the targeted member context', () => {

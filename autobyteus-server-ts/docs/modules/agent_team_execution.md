@@ -48,7 +48,8 @@ Manages running team runs, selecting the authoritative team backend, restoring p
   enriched with team/member provenance by the backend, processed through the
   shared `AgentRunEventPipeline`, and then fanned out to all listeners.
 - This keeps the converter boundary conversion-only while letting the backend
-  supply team context required by `FILE_CHANGE` derivation and Team Communication message/reference projection.
+  supply team context required by `FILE_CHANGE` derivation and
+  `TEAM_COMMUNICATION_MESSAGE` derivation/projection.
 - Produced `FILE_CHANGE` events remain scoped to the producing member run id and
   persist through the existing run-file-change service/content route. Explicit
   `reference_files` remain child metadata on team-level Team Communication messages.

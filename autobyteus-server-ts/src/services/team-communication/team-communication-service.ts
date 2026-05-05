@@ -50,7 +50,7 @@ export class TeamCommunicationService {
 
   attachToTeamRun(teamRun: TeamRun): () => void {
     const unsubscribe = teamRun.subscribeToEvents((event) => {
-      if (!this.isInterAgentMessageTeamEvent(event)) {
+      if (!this.isTeamCommunicationMessageTeamEvent(event)) {
         return;
       }
       void this.enqueueTeamEvent(teamRun, event);
@@ -67,14 +67,14 @@ export class TeamCommunicationService {
     return this.loadProjection(teamRun.runId);
   }
 
-  private isInterAgentMessageTeamEvent(event: TeamRunEvent): boolean {
+  private isTeamCommunicationMessageTeamEvent(event: TeamRunEvent): boolean {
     if (event.eventSourceType !== TeamRunEventSourceType.AGENT) {
       return false;
     }
     const payload = event.data as TeamRunAgentEventPayload;
     return (
       isAgentRunEvent(payload.agentEvent) &&
-      payload.agentEvent.eventType === AgentRunEventType.INTER_AGENT_MESSAGE
+      payload.agentEvent.eventType === AgentRunEventType.TEAM_COMMUNICATION_MESSAGE
     );
   }
 
@@ -86,7 +86,7 @@ export class TeamCommunicationService {
       .catch(() => undefined)
       .then(async () => {
         try {
-          await this.handleInterAgentMessageEvent(teamRun.runId, payload.agentEvent);
+          await this.handleTeamCommunicationMessageEvent(teamRun.runId, payload.agentEvent);
         } catch (error) {
           logger.warn(
             `TeamCommunicationService: failed processing message for team '${teamRun.runId}': ${String(error)}`,
@@ -103,7 +103,7 @@ export class TeamCommunicationService {
     return next;
   }
 
-  private async handleInterAgentMessageEvent(
+  private async handleTeamCommunicationMessageEvent(
     teamRunId: string,
     event: AgentRunEvent,
   ): Promise<void> {
@@ -113,7 +113,7 @@ export class TeamCommunicationService {
     });
     if (!message) {
       logger.warn(
-        `${LOG_PREFIX} skipped accepted INTER_AGENT_MESSAGE teamRunId=${teamRunId} runId=${event.runId} reason=missing_required_metadata`,
+        `${LOG_PREFIX} skipped TEAM_COMMUNICATION_MESSAGE teamRunId=${teamRunId} runId=${event.runId} reason=missing_required_metadata`,
       );
       return;
     }

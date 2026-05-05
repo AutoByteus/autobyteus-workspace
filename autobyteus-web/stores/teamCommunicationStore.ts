@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import type { InterAgentMessagePayload } from '~/services/agentStreaming/protocol/messageTypes';
+import type { TeamCommunicationMessagePayload } from '~/services/agentStreaming/protocol/messageTypes';
 
 export type TeamCommunicationReferenceFileType = 'file' | 'image' | 'audio' | 'video' | 'pdf' | 'csv' | 'excel' | 'other';
 export type TeamCommunicationDirection = 'sent' | 'received';
@@ -148,31 +148,28 @@ const normalizeMessage = (
   };
 };
 
-const normalizeMessageFromInterAgentPayload = (
-  payload: InterAgentMessagePayload,
+const normalizeMessageFromPayload = (
+  payload: TeamCommunicationMessagePayload,
 ): TeamCommunicationMessage | null => {
-  const teamRunId = readString(payload.team_run_id);
-  const senderRunId = readString(payload.sender_agent_id);
-  const receiverRunId = readString(payload.receiver_run_id) || readString(payload.agent_id);
+  const teamRunId = readString(payload.teamRunId);
+  const senderRunId = readString(payload.senderRunId);
+  const receiverRunId = readString(payload.receiverRunId);
   if (!teamRunId || !senderRunId || !receiverRunId || typeof payload.content !== 'string') {
     return null;
   }
-  const createdAt = timestampOrNow(payload.created_at);
-  const referenceSource = Array.isArray(payload.reference_file_entries)
-    ? payload.reference_file_entries
-    : payload.reference_files;
+  const createdAt = timestampOrNow(payload.createdAt);
   return normalizeMessage(teamRunId, {
-    messageId: readString(payload.message_id) || `${teamRunId}:${senderRunId}:${receiverRunId}:${createdAt}`,
+    messageId: readString(payload.messageId) || `${teamRunId}:${senderRunId}:${receiverRunId}:${createdAt}`,
     teamRunId,
     senderRunId,
-    senderMemberName: payload.sender_agent_name ?? null,
+    senderMemberName: payload.senderMemberName ?? null,
     receiverRunId,
-    receiverMemberName: payload.receiver_agent_name ?? payload.recipient_role_name ?? payload.agent_name ?? null,
+    receiverMemberName: payload.receiverMemberName ?? null,
     content: payload.content,
-    messageType: payload.message_type || 'agent_message',
+    messageType: payload.messageType || 'agent_message',
     createdAt,
-    updatedAt: timestampOrNow(payload.updated_at || createdAt),
-    referenceFiles: normalizeReferenceFiles(referenceSource, createdAt),
+    updatedAt: timestampOrNow(payload.updatedAt || createdAt),
+    referenceFiles: normalizeReferenceFiles(payload.referenceFiles, createdAt),
   });
 };
 
@@ -315,8 +312,8 @@ export const useTeamCommunicationStore = defineStore('teamCommunication', {
       return existing;
     },
 
-    upsertFromInterAgentPayload(payload: InterAgentMessagePayload) {
-      const message = normalizeMessageFromInterAgentPayload(payload);
+    upsertFromBackendPayload(payload: TeamCommunicationMessagePayload) {
+      const message = normalizeMessageFromPayload(payload);
       if (!message) return null;
       return this.upsertMessage(message);
     },

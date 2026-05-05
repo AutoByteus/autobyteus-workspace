@@ -1,19 +1,5 @@
 <template>
-  <div class="flex h-full min-h-0 flex-col overflow-hidden bg-white">
-    <div class="flex items-center justify-between border-b border-gray-100 px-3 py-2">
-      <div>
-        <h4 class="text-xs font-bold uppercase tracking-widest text-blue-700">
-          {{ $t('workspace.components.workspace.team.TeamCommunicationPanel.title') }}
-        </h4>
-        <p class="mt-0.5 text-[0.6875rem] text-gray-500">
-          {{ focusedMemberLabel }}
-        </p>
-      </div>
-      <span class="rounded-full bg-blue-50 px-2 py-0.5 text-[0.6875rem] font-semibold text-blue-700">
-        {{ perspective.messages.length }}
-      </span>
-    </div>
-
+  <div class="flex h-full min-h-0 overflow-hidden bg-white">
     <div v-if="!teamRunId || !focusedMemberRunId" class="flex flex-1 items-center justify-center p-4 text-center text-xs text-gray-400">
       {{ $t('workspace.components.workspace.team.TeamCommunicationPanel.no_focused_member') }}
     </div>
@@ -24,16 +10,20 @@
       <p class="mt-1 text-xs">{{ $t('workspace.components.workspace.team.TeamCommunicationPanel.empty_detail') }}</p>
     </div>
 
-    <div v-else class="flex min-h-0 flex-1 flex-col">
-      <div class="max-h-[52%] min-h-[8rem] overflow-y-auto border-b border-gray-100 py-2">
+    <div v-else class="flex min-h-0 flex-1 overflow-hidden" data-test="team-communication-split">
+      <aside
+        class="min-h-0 shrink-0 overflow-y-auto border-r border-gray-200 py-2"
+        :style="{ width: `${leftPaneWidth}px` }"
+        data-test="team-communication-left-list"
+      >
         <template v-for="section in sections" :key="section.key">
-          <div v-if="section.groups.length > 0" class="mb-3">
-            <div class="px-3 py-1 text-[0.6875rem] font-bold uppercase tracking-widest text-gray-800">
+          <section v-if="section.groups.length > 0" class="mb-4" :data-test="`team-communication-${section.key}`">
+            <h4 class="px-3 py-1 text-[0.6875rem] font-bold uppercase tracking-widest text-gray-900">
               {{ section.label }}
-            </div>
+            </h4>
             <div v-for="group in section.groups" :key="`${section.key}:${group.counterpartRunId}`" class="mb-2">
-              <div class="px-3 pb-1 text-xs font-semibold text-gray-700">
-                {{ section.prefix }} {{ group.counterpartMemberName || group.counterpartRunId || $t('workspace.components.workspace.team.TeamCommunicationPanel.unknown_teammate') }}
+              <div class="px-3 pb-1 pt-1 text-xs font-semibold text-gray-700">
+                {{ counterpartLabel(group) }}
               </div>
               <button
                 v-for="message in group.messages"
@@ -65,11 +55,19 @@
                 </div>
               </button>
             </div>
-          </div>
+          </section>
         </template>
-      </div>
+      </aside>
 
-      <div class="min-h-0 flex-1 overflow-hidden">
+      <div
+        class="w-1 shrink-0 cursor-col-resize bg-gray-100 transition-colors hover:bg-blue-200"
+        role="separator"
+        aria-orientation="vertical"
+        data-test="team-communication-resize-handle"
+        @mousedown="startResize"
+      />
+
+      <main class="min-h-0 min-w-0 flex-1 overflow-hidden" data-test="team-communication-detail-pane">
         <div v-if="selectedType === 'reference' && selectedMessage && selectedReference" class="h-full">
           <TeamCommunicationReferenceViewer
             :team-run-id="teamRunId"
@@ -78,8 +76,8 @@
             :refresh-signal="referenceRefreshSignal"
           />
         </div>
-        <div v-else-if="selectedMessage" class="h-full overflow-y-auto p-3">
-          <div class="mb-2 text-xs font-semibold text-gray-800">{{ directionLabel(selectedMessage) }}</div>
+        <div v-else-if="selectedMessage" class="h-full overflow-y-auto p-4">
+          <div class="mb-2 text-sm font-semibold text-gray-900">{{ directionLabel(selectedMessage) }}</div>
           <div class="mb-3 flex flex-wrap gap-2 text-[0.6875rem] text-gray-500">
             <span>{{ selectedMessage.messageType }}</span>
             <span>{{ formatTimestamp(selectedMessage.createdAt) }}</span>
@@ -89,16 +87,16 @@
         <div v-else class="flex h-full items-center justify-center p-4 text-center text-xs text-gray-400">
           {{ $t('workspace.components.workspace.team.TeamCommunicationPanel.select_message') }}
         </div>
-      </div>
+      </main>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useLocalization } from '~/composables/useLocalization';
-import { useTeamCommunicationStore, type TeamCommunicationPerspectiveMessage, type TeamCommunicationReferenceFile } from '~/stores/teamCommunicationStore';
+import { useTeamCommunicationStore, type TeamCommunicationPerspectiveGroup, type TeamCommunicationPerspectiveMessage, type TeamCommunicationReferenceFile } from '~/stores/teamCommunicationStore';
 import TeamCommunicationReferenceViewer from './TeamCommunicationReferenceViewer.vue';
 
 const props = defineProps<{
@@ -113,24 +111,21 @@ const selectedMessageId = ref<string | null>(null);
 const selectedReferenceId = ref<string | null>(null);
 const selectedType = ref<'message' | 'reference'>('message');
 const referenceRefreshSignal = ref(0);
+const leftPaneWidth = ref(232);
+let removeResizeListeners: (() => void) | null = null;
 
 const perspective = computed(() =>
   teamCommunicationStore.getPerspectiveForMember(props.teamRunId, props.focusedMemberRunId),
-);
-const focusedMemberLabel = computed(() =>
-  props.focusedMemberName || props.focusedMemberRunId || t('workspace.components.workspace.team.TeamCommunicationPanel.no_focused_member'),
 );
 const sections = computed(() => [
   {
     key: 'sent',
     label: t('workspace.components.workspace.team.TeamCommunicationPanel.sent_messages'),
-    prefix: t('workspace.components.workspace.team.TeamCommunicationPanel.to'),
     groups: perspective.value.sentGroups,
   },
   {
     key: 'received',
     label: t('workspace.components.workspace.team.TeamCommunicationPanel.received_messages'),
-    prefix: t('workspace.components.workspace.team.TeamCommunicationPanel.from'),
     groups: perspective.value.receivedGroups,
   },
 ]);
@@ -141,7 +136,6 @@ const selectedReference = computed(() =>
   selectedMessage.value?.referenceFiles.find((reference) => reference.referenceId === selectedReferenceId.value) || null,
 );
 
-
 const compactMessageLabel = (message: TeamCommunicationPerspectiveMessage): string => {
   const normalized = (message.messageType || 'agent_message').trim();
   if (!normalized || normalized === 'agent_message') {
@@ -151,6 +145,11 @@ const compactMessageLabel = (message: TeamCommunicationPerspectiveMessage): stri
     .replace(/[_-]+/g, ' ')
     .replace(/\b\w/g, (char) => char.toUpperCase());
 };
+
+const counterpartLabel = (group: TeamCommunicationPerspectiveGroup): string =>
+  group.counterpartMemberName
+  || group.counterpartRunId
+  || t('workspace.components.workspace.team.TeamCommunicationPanel.unknown_teammate');
 
 const directionLabel = (message: TeamCommunicationPerspectiveMessage): string => {
   const counterpart = message.counterpartMemberName || message.counterpartRunId || t('workspace.components.workspace.team.TeamCommunicationPanel.unknown_teammate');
@@ -183,6 +182,29 @@ const selectReference = (
   selectedType.value = 'reference';
 };
 
+const stopResize = () => {
+  removeResizeListeners?.();
+  removeResizeListeners = null;
+};
+
+const startResize = (event: MouseEvent) => {
+  if (typeof window === 'undefined') return;
+  event.preventDefault();
+  const startX = event.clientX;
+  const startWidth = leftPaneWidth.value;
+  const onMove = (moveEvent: MouseEvent) => {
+    const nextWidth = Math.min(360, Math.max(168, startWidth + moveEvent.clientX - startX));
+    leftPaneWidth.value = nextWidth;
+  };
+  const onUp = () => stopResize();
+  window.addEventListener('mousemove', onMove);
+  window.addEventListener('mouseup', onUp, { once: true });
+  removeResizeListeners = () => {
+    window.removeEventListener('mousemove', onMove);
+    window.removeEventListener('mouseup', onUp);
+  };
+};
+
 watch(
   () => perspective.value.messages.map((message) => message.messageId).join('\n'),
   () => {
@@ -200,4 +222,6 @@ watch(
   },
   { immediate: true },
 );
+
+onBeforeUnmount(() => stopResize());
 </script>

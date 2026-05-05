@@ -38,17 +38,20 @@ server subscribers. This preserves stateful file-change ordering for
 `write_file` events and avoids duplicate derivation when multiple websocket/API
 subscribers are attached.
 
-Team Communication references use the accepted `INTER_AGENT_MESSAGE` itself as
-the source event. The message payload carries `message_id`, sender/receiver
+Team Communication references use the accepted `INTER_AGENT_MESSAGE` as
+processor input. The raw message payload carries `message_id`, sender/receiver
 identity, natural `content`, `message_type`, and structured reference metadata
 from explicit `payload.reference_files`. Message prose is not scanned for path
 candidates: absolute paths mentioned only in `content`, Markdown decoration,
 frontend chat rendering, and user clicks are not reference-declaration
-authorities. `TeamCommunicationService` persists the message-first projection
-once per team run in `agent_teams/<teamRunId>/team_communication_messages.json`
-and the frontend projects focused-member sent/received message views in the Team
-tab. Recipient runtime input may include one generated **Reference files:**
-block from the structured list, while the original inter-agent message content
-remains natural and self-contained. Runtime diagnostics for this path use the
-`[team-communication]` prefix and log concise event-level metadata rather than
-full message content.
+authorities. `TeamCommunicationMessageProcessor` emits one normalized
+`TEAM_COMMUNICATION_MESSAGE` event per accepted message, and
+`TeamCommunicationService` persists those derived events once per team run in
+`agent_teams/<teamRunId>/team_communication_messages.json`. The frontend
+projects focused-member sent/received message views in the Team tab from
+`TEAM_COMMUNICATION_MESSAGE`, while raw `INTER_AGENT_MESSAGE` remains the
+conversation display source. Recipient runtime input may include one generated
+**Reference files:** block from the structured list, while the original
+inter-agent message content remains natural and self-contained. Runtime
+diagnostics for this path use the `[team-communication]` prefix and log concise
+event-level metadata rather than full message content.

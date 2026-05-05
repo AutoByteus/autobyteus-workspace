@@ -25,6 +25,7 @@ are rendered in the Team tab, not as Sent/Received rows in the Artifacts tab.
   - `src/api/graphql/types/run-file-changes.ts`
   - `src/api/rest/run-file-changes.ts`
 - Team Communication references:
+  - `src/agent-execution/events/processors/team-communication/team-communication-message-event-processor.ts`
   - `src/services/team-communication/team-communication-service.ts`
   - `src/services/team-communication/team-communication-projection-store.ts`
   - `src/services/team-communication/team-communication-projection-service.ts`

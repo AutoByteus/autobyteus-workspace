@@ -33,12 +33,14 @@ Artifacts tab.
 2. Accepted delivery emits one `INTER_AGENT_MESSAGE` payload with message id,
    sender/receiver identity, content, message type, and structured reference
    metadata.
-3. `TeamCommunicationService` observes accepted `INTER_AGENT_MESSAGE` team events
-   and persists one message-first projection at
+3. `TeamCommunicationMessageProcessor` converts accepted `INTER_AGENT_MESSAGE`
+   events into one normalized `TEAM_COMMUNICATION_MESSAGE` per message.
+4. `TeamCommunicationService` observes derived `TEAM_COMMUNICATION_MESSAGE`
+   team events and persists one message-first projection at
    `agent_teams/<teamRunId>/team_communication_messages.json`.
-4. GraphQL exposes `getTeamCommunicationMessages(teamRunId)` for Team tab
+5. GraphQL exposes `getTeamCommunicationMessages(teamRunId)` for Team tab
    hydration.
-5. Reference bytes are served by message-owned identity:
+6. Reference bytes are served by message-owned identity:
    `/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`.
 
 There is no text-scanning fallback, no standalone message-reference sidecar

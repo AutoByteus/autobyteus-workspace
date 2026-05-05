@@ -80,8 +80,8 @@ interface TeamCommunicationReferenceFile {
 
 Rules:
 
-- Accepted `INTER_AGENT_MESSAGE` payloads are the source of Team Communication
-  messages.
+- Accepted `INTER_AGENT_MESSAGE` payloads are processor input for Team Communication
+  messages. The live/store authority is the derived `TEAM_COMMUNICATION_MESSAGE`.
 - Reference rows come only from explicit `payload.reference_files` /
   `payload.reference_file_entries`; message prose is not scanned and raw paths
   are not linkified.
@@ -89,8 +89,9 @@ Rules:
   `agent_teams/<teamRunId>/team_communication_messages.json`.
 - Reference content opens by message-owned identity:
   `/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`.
-- The focused member sees sent/received message perspectives in the Team tab,
-  grouped by counterpart with compact `To <agent>` / `From <agent>` headings.
+- The focused member sees sent/received message perspectives in the Team tab.
+  The left list hierarchy is `Sent` / `Received` -> counterpart member name ->
+  message -> reference file, without repeated `To` / `From` group prefixes.
 
 ## Data Flow
 
@@ -104,14 +105,16 @@ flowchart LR
   D --> G[runFileChangesStore]
   G --> H[ArtifactsTab: Agent Artifacts]
 
-  I[Accepted INTER_AGENT_MESSAGE] --> J[TeamCommunicationService]
-  J --> K[agent_teams/<teamRunId>/team_communication_messages.json]
-  I --> L[team websocket]
-  L --> M[teamCommunicationStore]
-  K --> N[GraphQL: getTeamCommunicationMessages]
-  M --> O[Team tab: Team Communication]
-  O --> P[TeamCommunicationReferenceViewer]
-  P --> Q[REST: message reference content route]
+  I[Accepted INTER_AGENT_MESSAGE] --> J[TeamCommunicationMessageProcessor]
+  J --> K[TEAM_COMMUNICATION_MESSAGE]
+  K --> L[TeamCommunicationService]
+  L --> N[agent_teams/<teamRunId>/team_communication_messages.json]
+  K --> M[team websocket]
+  M --> P[teamCommunicationStore]
+  N --> O[GraphQL: getTeamCommunicationMessages]
+  P --> R[Team tab: Team Communication]
+  R --> S[TeamCommunicationReferenceViewer]
+  S --> T[REST: message reference content route]
 ```
 
 ## Frontend Owners

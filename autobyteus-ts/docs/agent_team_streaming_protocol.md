@@ -179,7 +179,8 @@ For accepted inter-agent messages, the server emits the source
 is not scanned for paths; paths mentioned only in content remain ordinary
 non-clickable text.
 
-That source message is canonical Team Communication metadata. The Team tab shows
+The server-side event pipeline converts that source event into one normalized
+`TEAM_COMMUNICATION_MESSAGE` for the Team tab store. The Team tab shows
 focused-member sent/received message perspectives grouped by counterpart, and
 reference files are rendered beneath the message that carried them. Clients must
 not make raw message paths clickable or add those rows to the produced-file

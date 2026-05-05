@@ -31,6 +31,7 @@ export type ServerMessageType =
   | 'TODO_LIST_UPDATE'
   | 'TASK_PLAN_EVENT'
   | 'INTER_AGENT_MESSAGE'
+  | 'TEAM_COMMUNICATION_MESSAGE'
   | 'SYSTEM_TASK_NOTIFICATION'
   | 'ARTIFACT_PERSISTED'
   | 'FILE_CHANGE'
@@ -275,6 +276,20 @@ export interface TeamCommunicationReferenceFilePayload {
   updatedAt: string;
 }
 
+export interface TeamCommunicationMessagePayload {
+  messageId: string;
+  teamRunId: string;
+  senderRunId: string;
+  senderMemberName?: string | null;
+  receiverRunId: string;
+  receiverMemberName?: string | null;
+  content: string;
+  messageType: string;
+  createdAt: string;
+  updatedAt: string;
+  referenceFiles: TeamCommunicationReferenceFilePayload[];
+}
+
 export interface InterAgentMessagePayload {
   message_id?: string;
   team_run_id?: string;
@@ -358,6 +373,7 @@ export type ServerMessage =
   | { type: 'TODO_LIST_UPDATE'; payload: TodoListUpdatePayload }
   | { type: 'TASK_PLAN_EVENT'; payload: TaskPlanEventPayload }
   | { type: 'INTER_AGENT_MESSAGE'; payload: InterAgentMessagePayload }
+  | { type: 'TEAM_COMMUNICATION_MESSAGE'; payload: TeamCommunicationMessagePayload }
   | { type: 'SYSTEM_TASK_NOTIFICATION'; payload: SystemTaskNotificationPayload }
   | { type: 'ARTIFACT_PERSISTED'; payload: ArtifactPersistedPayload }
   | { type: 'FILE_CHANGE'; payload: FileChangePayload }

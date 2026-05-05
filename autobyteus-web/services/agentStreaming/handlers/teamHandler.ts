@@ -2,7 +2,7 @@
  * Team-specific event handlers.
  * 
  * Layer 3 of the agent streaming architecture - handles team-only events:
- * INTER_AGENT_MESSAGE, SYSTEM_TASK_NOTIFICATION
+ * INTER_AGENT_MESSAGE, TEAM_COMMUNICATION_MESSAGE, SYSTEM_TASK_NOTIFICATION
  */
 
 import type { AgentContext } from '~/types/agent/AgentContext';
@@ -13,6 +13,7 @@ import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { 
   InterAgentMessagePayload, 
   SystemTaskNotificationPayload,
+  TeamCommunicationMessagePayload,
   TeamStatusPayload,
   TaskPlanEventPayload,
   TaskPlanTaskPayload,
@@ -28,8 +29,6 @@ export function handleInterAgentMessage(
   payload: InterAgentMessagePayload,
   context: AgentContext
 ): void {
-  useTeamCommunicationStore().upsertFromInterAgentPayload(payload);
-
   const aiMessage = findOrCreateAIMessage(context);
   
   const segment: InterAgentMessageSegment = {
@@ -41,6 +40,15 @@ export function handleInterAgentMessage(
   };
   
   aiMessage.segments.push(segment);
+}
+
+/**
+ * Handle TEAM_COMMUNICATION_MESSAGE event.
+ */
+export function handleTeamCommunicationMessage(
+  payload: TeamCommunicationMessagePayload,
+): void {
+  useTeamCommunicationStore().upsertFromBackendPayload(payload);
 }
 
 /**

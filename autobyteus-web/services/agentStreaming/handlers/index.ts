@@ -34,6 +34,7 @@ export {
 
 export {
   handleInterAgentMessage,
+  handleTeamCommunicationMessage,
   handleSystemTaskNotification,
   handleTeamStatus,
   handleTaskPlanEvent,

@@ -28,6 +28,7 @@ import {
   handleTodoListUpdate,
   handleError,
   handleInterAgentMessage,
+  handleTeamCommunicationMessage,
   handleSystemTaskNotification,
   handleTeamStatus,
   handleTaskPlanEvent,
@@ -255,6 +256,11 @@ export class TeamStreamingService {
   }
 
   private dispatchMessage(message: ServerMessage, teamContext: AgentTeamContext): void {
+    if (message.type === 'TEAM_COMMUNICATION_MESSAGE') {
+      handleTeamCommunicationMessage(message.payload);
+      return;
+    }
+
     const memberContext = this.getMemberContext(message);
 
     if (!memberContext) {

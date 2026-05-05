@@ -441,7 +441,7 @@ describe("AutoByteusTeamRunBackend integration", () => {
       }),
     );
 
-    await waitForCondition(() => observed.length === 1);
+    await waitForCondition(() => observed.length === 2);
     unsubscribe();
 
     const interAgentEvents = observed.filter(
@@ -481,6 +481,41 @@ describe("AutoByteusTeamRunBackend integration", () => {
       },
     });
     expect((interAgentEvents[0].data as any).agentEvent.payload.message_id).toEqual(expect.any(String));
+
+    const teamCommunicationEvents = observed.filter(
+      (event) =>
+        event.eventSourceType === TeamRunEventSourceType.AGENT &&
+        (event.data as any).agentEvent.eventType === AgentRunEventType.TEAM_COMMUNICATION_MESSAGE,
+    );
+    expect(teamCommunicationEvents).toHaveLength(1);
+    expect(teamCommunicationEvents[0]).toMatchObject({
+      eventSourceType: TeamRunEventSourceType.AGENT,
+      teamRunId: "team-auto-1",
+      data: {
+        runtimeKind: RuntimeKind.AUTOBYTEUS,
+        memberName: "Student",
+        memberRunId: "student-run",
+        agentEvent: {
+          eventType: AgentRunEventType.TEAM_COMMUNICATION_MESSAGE,
+          runId: "student-run",
+          payload: {
+            teamRunId: "team-auto-1",
+            senderRunId: "professor-run",
+            senderMemberName: "Professor",
+            receiverRunId: "student-run",
+            receiverMemberName: "Student",
+            content: "Please solve the attached problem.",
+            messageType: "direct_message",
+            referenceFiles: [
+              expect.objectContaining({
+                path: "/tmp/math_problem.md",
+                type: "file",
+              }),
+            ],
+          },
+        },
+      },
+    });
   });
 
   it("processes AutoByteus write_file events into FILE_CHANGE events and persists team-member projections", async () => {

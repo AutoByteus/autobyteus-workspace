@@ -58,21 +58,21 @@ describe('teamCommunicationStore', () => {
     expect(perspective.messages.map((message) => message.messageId)).toEqual(['message-received', 'message-sent']);
   });
 
-  it('upserts live inter-agent payloads with reference file entries', () => {
+  it('upserts live derived team communication payloads with reference files', () => {
     const store = useTeamCommunicationStore();
 
-    store.upsertFromInterAgentPayload({
-      message_id: 'message-1',
-      team_run_id: 'team-1',
-      sender_agent_id: 'sender-run',
-      sender_agent_name: 'Sender',
-      receiver_run_id: 'receiver-run',
-      receiver_agent_name: 'Receiver',
-      recipient_role_name: 'receiver',
+    store.upsertFromBackendPayload({
+      messageId: 'message-1',
+      teamRunId: 'team-1',
+      senderRunId: 'sender-run',
+      senderMemberName: 'Sender',
+      receiverRunId: 'receiver-run',
+      receiverMemberName: 'Receiver',
       content: 'Please inspect the attachment.',
-      message_type: 'handoff',
-      created_at: '2026-04-08T00:00:00.000Z',
-      reference_file_entries: [
+      messageType: 'handoff',
+      createdAt: '2026-04-08T00:00:00.000Z',
+      updatedAt: '2026-04-08T00:00:00.000Z',
+      referenceFiles: [
         {
           referenceId: 'ref-1',
           path: '/tmp/report.md',

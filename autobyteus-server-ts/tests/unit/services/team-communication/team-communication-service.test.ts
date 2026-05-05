@@ -65,25 +65,25 @@ describe("TeamCommunicationService", () => {
     await Promise.all(tempDirs.splice(0).map((dir) => fs.rm(dir, { recursive: true, force: true })));
   });
 
-  it("persists accepted inter-agent messages with child reference files by message id", async () => {
+  it("persists normalized team communication messages with child reference files by message id", async () => {
     const memoryDir = await createTempDir();
     const service = new TeamCommunicationService({ memoryDir });
     const { teamRun, emit } = createFakeTeamRun("team-1");
     const unsubscribe = service.attachToTeamRun(teamRun);
 
     emit({
-      eventType: AgentRunEventType.INTER_AGENT_MESSAGE,
+      eventType: AgentRunEventType.TEAM_COMMUNICATION_MESSAGE,
       runId: "receiver-run-1",
       payload: {
-        message_id: "message-1",
-        team_run_id: "team-1",
-        sender_agent_id: "sender-run-1",
-        sender_agent_name: "Sender",
-        receiver_run_id: "receiver-run-1",
-        receiver_agent_name: "Receiver",
+        messageId: "message-1",
+        teamRunId: "team-1",
+        senderRunId: "sender-run-1",
+        senderMemberName: "Sender",
+        receiverRunId: "receiver-run-1",
+        receiverMemberName: "Receiver",
         content: "Please review the attached report.",
-        message_type: "handoff",
-        reference_file_entries: [
+        messageType: "handoff",
+        referenceFiles: [
           {
             referenceId: "ref-1",
             path: "/tmp/report.md",
@@ -92,7 +92,7 @@ describe("TeamCommunicationService", () => {
             updatedAt: "2026-04-08T00:00:00.000Z",
           },
         ],
-        created_at: "2026-04-08T00:00:00.000Z",
+        createdAt: "2026-04-08T00:00:00.000Z",
       },
       statusHint: null,
     });
@@ -136,16 +136,16 @@ describe("TeamCommunicationService", () => {
     service.attachToTeamRun(teamRun);
 
     emit({
-      eventType: AgentRunEventType.INTER_AGENT_MESSAGE,
+      eventType: AgentRunEventType.TEAM_COMMUNICATION_MESSAGE,
       runId: "receiver-run-1",
       payload: {
-        message_id: "message-with-prose-path",
-        team_run_id: "team-1",
-        sender_agent_id: "sender-run-1",
-        receiver_run_id: "receiver-run-1",
+        messageId: "message-with-prose-path",
+        teamRunId: "team-1",
+        senderRunId: "sender-run-1",
+        receiverRunId: "receiver-run-1",
         content: "The prose may mention /tmp/not-an-artifact.md, but reference_files is the only source.",
-        message_type: "handoff",
-        created_at: "2026-04-08T00:00:00.000Z",
+        messageType: "handoff",
+        createdAt: "2026-04-08T00:00:00.000Z",
       },
       statusHint: null,
     });

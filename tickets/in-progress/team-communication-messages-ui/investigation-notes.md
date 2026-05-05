@@ -177,3 +177,85 @@ The target should replace the standalone message-file-reference projection/UI ow
 | 2026-05-05 | Code | `autobyteus-web/components/workspace/agent/ArtifactContentViewer.vue` | Inspect frontend content preview coupling | Has `message_reference` branch and route construction in artifact viewer. | Yes: remove from artifact viewer and move preview to Team Communication. |
 | 2026-05-05 | Code | `autobyteus-web/services/runHydration/teamRunContextHydrationService.ts` | Inspect historical team hydration | Hydrates standalone message-file references separately from messages. | Yes: hydrate team communication messages instead. |
 | 2026-05-05 | Code | `autobyteus-server-ts/src/run-history/services/team-member-local-run-projection-reader.ts` | Check whether current history can derive team communication | Current reader builds member run conversation projections from raw traces, not a team message-first projection. | Yes: create dedicated projection. |
+
+## Post-Implementation UI Review Addendum - 2026-05-05
+
+User reviewed the Electron build produced from the implementation state and reported that the Team tab implementation is functionally present but visually/interaction-wise poor. I inspected the current implementation in the ticket worktree to ground the design correction.
+
+Sources inspected:
+
+- `autobyteus-web/components/workspace/team/TeamOverviewPanel.vue`
+- `autobyteus-web/components/workspace/team/TeamCommunicationPanel.vue`
+- `autobyteus-web/components/workspace/team/TeamCommunicationReferenceViewer.vue`
+- `autobyteus-web/components/progress/ProgressPanel.vue`
+- `autobyteus-web/components/workspace/agent/TodoListPanel.vue`
+- `autobyteus-web/components/progress/ActivityFeed.vue`
+- `autobyteus-web/components/workspace/agent/ArtifactsTab.vue`
+- `autobyteus-web/components/workspace/agent/ArtifactList.vue`
+
+Findings:
+
+1. `TeamOverviewPanel.vue` currently renders a redundant internal header row:
+   - `h3` text `Team` on the left;
+   - team name on the right.
+   The right-side tab already says `Team`, so this row consumes height without adding a distinct action or useful hierarchy.
+
+2. `TeamOverviewPanel.vue` currently allocates a fixed/large task-plan region:
+   - `section class="max-h-[34%] min-h-[8rem] ..."`.
+   When there is no task plan, the empty state still occupies a significant portion of the Team tab, pushing Team Communication into a smaller viewport.
+
+3. `TeamCommunicationPanel.vue` currently stacks message list and detail/file preview vertically:
+   - message list area: `max-h-[52%] min-h-[8rem]`;
+   - selected message/reference detail underneath.
+   This causes selected file content to be squeezed below messages, as shown in the user's screenshot. The behavior is unlike the Artifacts tab, where the file list remains on the left and preview occupies the right pane.
+
+4. `ProgressPanel.vue`, `TodoListPanel.vue`, and `ActivityFeed.vue` already provide a better local pattern:
+   - section header rows with chevron, title, and count;
+   - collapsed sections take only header height;
+   - expanded section receives `flex-1 min-h-0`.
+   This is the correct reference pattern for Task Plan + Messages in the Team tab.
+
+5. `ArtifactsTab.vue` already provides the correct preview ergonomics:
+   - left selectable list with fixed/resizable width;
+   - right content viewer with full available height;
+   - a divider/resizer.
+   Team Communication should reuse this interaction shape for message/reference selection while keeping message references owned by Team Communication, not Agent Artifacts.
+
+Design impact:
+
+- This is not a backend data issue. The UI defects are caused by layout decisions in `TeamOverviewPanel.vue` and `TeamCommunicationPanel.vue`.
+- Requirements/design must be tightened so implementation does not preserve the initial vertical stacked layout.
+- Target correction:
+  - remove the redundant internal Team header;
+  - use Activity-style collapsible `Task Plan` and `Messages` sections, defaulting Messages expanded;
+  - keep empty Task Plan compact/collapsed so it does not reserve large height;
+  - render Team Communication as Artifacts-like left message/reference list + right selected message/file detail pane.
+
+## UI Label Refinement - 2026-05-05
+
+User clarified the left message list should not repeat direction words inside group labels. Since the list already has top-level `Sent` and `Received` sections, child group labels should be counterpart agent/member names only.
+
+Target example:
+
+```text
+Sent
+  architecture_reviewer
+    Design review request
+      design-spec.md
+
+Received
+  api_e2e_engineer
+    Validation update
+      api-e2e-validation-report.md
+```
+
+Avoid:
+
+```text
+Sent
+  To architecture_reviewer
+Received
+  From api_e2e_engineer
+```
+
+Rationale: `Sent` already implies `to`; `Received` already implies `from`. Removing redundant words improves scanability in the constrained right-side panel.
