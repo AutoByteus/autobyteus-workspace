@@ -30,4 +30,31 @@ describe("AgentRunEventMessageMapper", () => {
       compaction_model_identifier: "compaction-model",
     });
   });
+
+  it("maps message file reference declarations without routing them through file changes", () => {
+    const mapper = new AgentRunEventMessageMapper();
+
+    const message = mapper.map({
+      eventType: AgentRunEventType.MESSAGE_FILE_REFERENCE_DECLARED,
+      runId: "receiver-run-1",
+      payload: {
+        referenceId: "ref-1",
+        teamRunId: "team-1",
+        senderRunId: "sender-run-1",
+        receiverRunId: "receiver-run-1",
+        path: "/tmp/report.md",
+      },
+      statusHint: null,
+    });
+
+    expect(message.type).toBe(ServerMessageType.MESSAGE_FILE_REFERENCE_DECLARED);
+    expect(message.type).not.toBe(ServerMessageType.FILE_CHANGE);
+    expect(message.payload).toEqual({
+      referenceId: "ref-1",
+      teamRunId: "team-1",
+      senderRunId: "sender-run-1",
+      receiverRunId: "receiver-run-1",
+      path: "/tmp/report.md",
+    });
+  });
 });

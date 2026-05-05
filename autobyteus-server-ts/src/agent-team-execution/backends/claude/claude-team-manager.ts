@@ -39,6 +39,7 @@ import {
   type ConfiguredAgentToolExposure,
 } from "../../../agent-execution/shared/configured-agent-tool-exposure.js";
 import { getMemberTeamContextBuilder, type MemberTeamContextBuilder } from "../../services/member-team-context-builder.js";
+import { publishProcessedTeamAgentEvents } from "../../services/publish-processed-team-agent-events.js";
 import { TeamBackendKind } from "../../domain/team-backend-kind.js";
 
 const buildRunNotFoundResult = (teamRunId: string): AgentOperationResult => ({
@@ -115,7 +116,8 @@ export class ClaudeTeamManager implements TeamManager {
   async deliverInterAgentMessage(
     request: InterAgentMessageDeliveryRequest,
   ): Promise<AgentOperationResult> {
-    if (!this.teamContext) {
+    const teamContext = this.teamContext;
+    if (!teamContext) {
       return buildRunNotFoundResult("unknown");
     }
     const memberContext = this.findMemberContextByName(request.recipientMemberName);
@@ -134,13 +136,20 @@ export class ClaudeTeamManager implements TeamManager {
     );
     memberContext.sessionId = memberRun.getPlatformAgentRunId() ?? memberContext.sessionId;
     if (result.accepted) {
-      this.publishMemberAgentEvent(
-        memberContext,
-        buildInterAgentMessageAgentRunEvent({
-          recipientRunId: memberContext.memberRunId,
-          request: normalizedRequest,
-        }),
-      );
+      await publishProcessedTeamAgentEvents({
+        teamRunId: teamContext.runId,
+        runContext: memberRun.context,
+        runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+        memberName: memberContext.memberName,
+        memberRunId: memberContext.memberRunId,
+        agentEvents: [
+          buildInterAgentMessageAgentRunEvent({
+            recipientRunId: memberContext.memberRunId,
+            request: normalizedRequest,
+          }),
+        ],
+        publishTeamEvent: (event) => this.publish(event),
+      });
     }
     this.publishTeamStatusIfChanged();
     return {

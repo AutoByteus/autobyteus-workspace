@@ -153,6 +153,7 @@
 
           <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
             <ApplicationsFeatureToggleCard />
+            <MediaDefaultModelsCard />
             <CodexFullAccessCard />
 
             <section class="rounded-3xl border border-slate-200 bg-white px-6 py-5 shadow-sm">
@@ -417,6 +418,7 @@ import ServerMonitor from '~/components/server/ServerMonitor.vue'
 import ApplicationsFeatureToggleCard from '~/components/settings/ApplicationsFeatureToggleCard.vue'
 import CodexFullAccessCard from '~/components/settings/CodexFullAccessCard.vue'
 import CompactionConfigCard from '~/components/settings/CompactionConfigCard.vue'
+import MediaDefaultModelsCard from '~/components/settings/MediaDefaultModelsCard.vue'
 
 type SettingsTab = 'quick' | 'advanced'
 type AdvancedPanel = 'raw-settings' | 'server-status'

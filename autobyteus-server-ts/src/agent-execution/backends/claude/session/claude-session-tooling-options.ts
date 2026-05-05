@@ -4,12 +4,12 @@ import { CLAUDE_SEND_MESSAGE_MCP_TOOL_NAME, CLAUDE_SEND_MESSAGE_TOOL_NAME } from
 
 const CLAUDE_BROWSER_MCP_TOOL_PREFIX = "mcp__autobyteus_browser__";
 const CLAUDE_PUBLISHED_ARTIFACT_MCP_TOOL_NAME =
-  "mcp__autobyteus_published_artifacts__publish_artifact";
+  "mcp__autobyteus_published_artifacts__publish_artifacts";
 
 export type ClaudeSessionToolingOptions = {
   sendMessageToToolingEnabled: boolean;
   enabledBrowserToolNames: string[];
-  publishArtifactToolingEnabled: boolean;
+  publishArtifactsToolingEnabled: boolean;
   allowedTools: string[];
 };
 
@@ -25,19 +25,19 @@ export const resolveClaudeSessionToolingOptions = (input: {
     input.configuredToolExposure.sendMessageToConfigured &&
     Boolean(input.memberTeamContext?.sendMessageToEnabled) &&
     (input.memberTeamContext?.allowedRecipientNames ?? []).length > 0;
-  const publishArtifactToolingEnabled =
-    input.configuredToolExposure.publishArtifactConfigured;
+  const publishArtifactsToolingEnabled =
+    input.configuredToolExposure.publishArtifactsConfigured;
   const allowedTools = resolveAllowedToolNames({
     sendMessageToToolingEnabled,
     enabledBrowserToolNames,
-    publishArtifactToolingEnabled,
+    publishArtifactsToolingEnabled,
     hasMaterializedSkills: input.hasMaterializedSkills,
   });
 
   return {
     sendMessageToToolingEnabled,
     enabledBrowserToolNames,
-    publishArtifactToolingEnabled,
+    publishArtifactsToolingEnabled,
     allowedTools,
   };
 };
@@ -45,7 +45,7 @@ export const resolveClaudeSessionToolingOptions = (input: {
 const resolveAllowedToolNames = (input: {
   sendMessageToToolingEnabled: boolean;
   enabledBrowserToolNames: string[];
-  publishArtifactToolingEnabled: boolean;
+  publishArtifactsToolingEnabled: boolean;
   hasMaterializedSkills: boolean;
 }): string[] => {
   const allowedTools = new Set<string>();
@@ -60,8 +60,8 @@ const resolveAllowedToolNames = (input: {
     allowedTools.add(toolName);
     allowedTools.add(`${CLAUDE_BROWSER_MCP_TOOL_PREFIX}${toolName}`);
   }
-  if (input.publishArtifactToolingEnabled) {
-    allowedTools.add("publish_artifact");
+  if (input.publishArtifactsToolingEnabled) {
+    allowedTools.add("publish_artifacts");
     allowedTools.add(CLAUDE_PUBLISHED_ARTIFACT_MCP_TOOL_NAME);
   }
   return [...allowedTools];

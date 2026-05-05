@@ -9,6 +9,7 @@ describe('InterAgentMessage', () => {
 
     expect(msg1.equals(msg2)).toBe(true);
     expect(msg1.equals(msg3)).toBe(false);
+    expect(msg1.equals(new InterAgentMessage('role', 'agent-1', 'hello', 'task_assignment', 'sender-1', ['/tmp/report.md']))).toBe(false);
   });
 
   it('creates with dynamic message type', () => {
@@ -17,10 +18,12 @@ describe('InterAgentMessage', () => {
       'agent-2',
       'content',
       'custom_type',
-      'sender-2'
+      'sender-2',
+      ['/tmp/report.md']
     );
 
     expect(msg.messageType).toBe('custom_type');
+    expect(msg.referenceFiles).toEqual(['/tmp/report.md']);
   });
 
   it('renders a readable string', () => {

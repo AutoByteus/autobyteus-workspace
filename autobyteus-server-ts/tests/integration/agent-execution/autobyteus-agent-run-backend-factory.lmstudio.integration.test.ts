@@ -9,7 +9,7 @@ import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
 import { LLMRuntime } from "autobyteus-ts/llm/runtimes.js";
 import { registerWriteFileTool } from "autobyteus-ts/tools/file/write-file.js";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
-import { registerPublishArtifactTool } from "../../../src/agent-tools/published-artifacts/publish-artifact-tool.js";
+import { registerPublishArtifactsTool } from "../../../src/agent-tools/published-artifacts/publish-artifacts-tool.js";
 import { AutoByteusAgentRunBackendFactory } from "../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import {
@@ -184,7 +184,7 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
     process.env.AUTOBYTEUS_MEMORY_DIR = memoryDir;
 
     registerWriteFileTool();
-    registerPublishArtifactTool();
+    registerPublishArtifactsTool();
 
     agentFactory = new AgentFactory();
     const activeIds = agentFactory.listActiveAgentIds();
@@ -456,13 +456,13 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
   );
 
   it(
-    "publishes an existing workspace file through the live AutoByteus publish_artifact tool path",
+    "publishes an existing workspace file through the live AutoByteus publish_artifacts tool path",
     async () => {
       const modelIdentifier = await resolveLmstudioModelIdentifier();
       expect(modelIdentifier).toBeTruthy();
 
       const workspace = await getWorkspaceManager().ensureWorkspaceByRootPath(workspaceDir);
-      const runId = generateStandaloneAgentRunId("LiveAutoByteusPublishArtifactAgent", "Tool User");
+      const runId = generateStandaloneAgentRunId("LiveAutoByteusPublishArtifactsAgent", "Tool User");
       const artifactRelativePath = path.posix.join("reports", "live-artifact.md");
       const artifactDescription = "Live AutoByteus publish artifact integration";
       const artifactBody = `# Live artifact\n\nToken: ${randomUUID()}`;
@@ -475,14 +475,14 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
         agentDefinitionService: {
           getAgentDefinitionById: async () =>
             new AgentDefinition({
-              id: "def-live-autobyteus-publish-artifact",
-              name: "LiveAutoByteusPublishArtifactAgent",
+              id: "def-live-autobyteus-publish-artifacts",
+              name: "LiveAutoByteusPublishArtifactsAgent",
               role: "Tool User",
-              description: "Live AutoByteus publish_artifact integration test",
+              description: "Live AutoByteus publish_artifacts integration test",
               instructions:
-                "When the user asks you to publish an artifact, call the publish_artifact tool exactly once. " +
+                "When the user asks you to publish an artifact, call the publish_artifacts tool exactly once. " +
                 "Use the provided relative path and exact description. Do not answer with plain text.",
-              toolNames: ["publish_artifact"],
+              toolNames: ["publish_artifacts"],
             }),
         } as any,
         llmFactory: createToolRequiredLlmFactory(),
@@ -506,7 +506,7 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
 
       const run = await runManager.createAgentRun(
         new AgentRunConfig({
-          agentDefinitionId: "def-live-autobyteus-publish-artifact",
+          agentDefinitionId: "def-live-autobyteus-publish-artifacts",
           llmModelIdentifier: modelIdentifier as string,
           autoExecuteTools: true,
           runtimeKind: "autobyteus",
@@ -527,8 +527,7 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
         const sendResult = await run.postUserMessage(
           new AgentInputUserMessage(
             `The file ${artifactRelativePath} already exists in the workspace. ` +
-              `Call publish_artifact exactly once with path "${artifactRelativePath}" ` +
-              `and description "${artifactDescription}". Do not call any other tool. ` +
+              `Call publish_artifacts exactly once with arguments {"artifacts":[{"path":"${artifactRelativePath}","description":"${artifactDescription}"}]}. Do not call any other tool. ` +
               "Do not answer with plain text.",
           ),
         );
@@ -538,7 +537,7 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
           events,
           (event) =>
             event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED &&
-            event.payload.tool_name === "publish_artifact",
+            event.payload.tool_name === "publish_artifacts",
         );
         const persisted = await waitForEvent(
           events,

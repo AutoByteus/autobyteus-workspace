@@ -198,11 +198,18 @@ Manage agent package sources used by the app.
 
 ### 11. Server Settings
 
-**Component:** \`components/settings/ServerSettingsManager.vue\`
+**Component:** `components/settings/ServerSettingsManager.vue`
 
 A flexible key-value store for backend configurations.
 
-- **Quick setup cards:** The quick server-settings surface now includes both `Web Search Configuration` and a dedicated `Compaction config` card.
+- **Quick setup cards:** The quick server-settings surface includes endpoint cards plus `Applications`, `Default media models`, `Codex full access`, `Web Search Configuration`, and a dedicated `Compaction config` card.
+- **Default media models:** `components/settings/MediaDefaultModelsCard.vue` exposes model selectors for the media-tool defaults without requiring operators to remember raw env keys:
+  - **Image editing:** saved to `DEFAULT_IMAGE_EDIT_MODEL`.
+  - **Image generation:** saved to `DEFAULT_IMAGE_GENERATION_MODEL`.
+  - **Speech generation:** saved to `DEFAULT_SPEECH_GENERATION_MODEL`.
+  - Image selectors use the existing image model catalog; speech uses the existing audio model catalog.
+  - If a saved model is not currently present in the loaded catalog, the selector keeps that current value visible until the operator chooses and saves another model.
+  - Defaults apply to future/new media tool use. Existing active sessions or already-created media clients may keep the model they started with.
 - **Codex full access:** `components/settings/CodexFullAccessCard.vue` appears in the Server Settings Basics grid and provides one toggle for the common Codex filesystem-access decision without requiring operators to edit the raw `CODEX_APP_SERVER_SANDBOX` key.
   - Toggle on saves `danger-full-access`.
   - Toggle off saves `workspace-write`, the default/recommended mode.
@@ -216,7 +223,7 @@ A flexible key-value store for backend configurations.
   - **Enable detailed compaction logs:** saved to `AUTOBYTEUS_COMPACTION_DEBUG_LOGS`; turns on verbose budget/execution/result diagnostics in server logs.
 - **Live runtime effect:** Compaction settings are env-backed server settings, but changes apply to subsequent compaction budget checks and visible compactor-agent runs without restarting the server.
 - **Local provider note:** LM Studio and Ollama long-running requests are now hardened internally for delayed first-token / long prompt-processing cases; there is no separate timeout setting in the UI. If local runs still fail before the practical context ceiling, lower **Effective context override** instead.
-- **Advanced raw table:** The full key-value table remains available for precise control over server-side flags and parameters, including custom settings. `CODEX_APP_SERVER_SANDBOX` is a predefined editable, non-deletable Codex runtime setting there, so invalid aliases or arbitrary values are rejected instead of being persisted as opaque custom settings.
+- **Advanced raw table:** The full key-value table remains available for precise control over server-side flags and parameters, including custom settings. `CODEX_APP_SERVER_SANDBOX` is a predefined editable, non-deletable Codex runtime setting there, so invalid aliases or arbitrary values are rejected instead of being persisted as opaque custom settings. `DEFAULT_IMAGE_EDIT_MODEL`, `DEFAULT_IMAGE_GENERATION_MODEL`, and `DEFAULT_SPEECH_GENERATION_MODEL` are also predefined editable, non-deletable settings while still accepting dynamic model identifiers from the runtime catalog.
 - **Applications feature toggle:** `components/settings/ApplicationsFeatureToggleCard.vue` now appears as a normal card inside the Server Settings Basics grid and is the first-class control for the bound node’s runtime Applications capability.
 - **Typed runtime authority:** The Applications card reads/writes the typed `applicationsCapability` / `setApplicationsEnabled(...)` boundary instead of treating the generic key-value table as the primary product-facing owner.
 - **Immediate runtime effect:** Enabling or disabling Applications refreshes the same window’s sidebar visibility, `/applications` route access, and catalog behavior without rebuilding the packaged frontend.

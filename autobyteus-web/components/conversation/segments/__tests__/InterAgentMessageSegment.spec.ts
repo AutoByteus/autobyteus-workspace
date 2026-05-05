@@ -108,4 +108,20 @@ describe('InterAgentMessageSegment', () => {
     expect(link.attributes('href')).toContain('/Users/normy/.autobyteus/server-data/temp_workspace/paul-paper/evidence_extract.md');
     expect(wrapper.find('.katex').exists()).toBe(false);
   });
+
+  it('does not linkify raw absolute file paths in inter-agent message content', () => {
+    const wrapper = mount(InterAgentMessageSegment, {
+      props: {
+        segment: {
+          ...baseSegment,
+          content:
+            'Please inspect /Users/normy/.autobyteus/server-data/temp_workspace/paul-paper/evidence_extract.md before replying.',
+        },
+      },
+    });
+
+    expect(wrapper.text()).toContain('/Users/normy/.autobyteus/server-data/temp_workspace/paul-paper/evidence_extract.md');
+    expect(wrapper.find('a').exists()).toBe(false);
+    expect(wrapper.find('.katex').exists()).toBe(false);
+  });
 });

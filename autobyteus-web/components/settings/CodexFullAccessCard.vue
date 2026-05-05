@@ -25,7 +25,7 @@
       </div>
     </div>
 
-    <label
+    <div
       class="flex items-start justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50/60 p-4"
       data-testid="codex-full-access-toggle-row"
     >
@@ -37,13 +37,25 @@
           {{ t('settings.components.settings.CodexFullAccessCard.warning') }}
         </span>
       </span>
-      <input
-        v-model="fullAccessEnabled"
-        type="checkbox"
-        class="mt-1 h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+      <button
+        type="button"
+        role="switch"
+        class="relative mt-1 inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60"
+        :class="switchTrackClass"
+        :aria-checked="fullAccessEnabled"
+        :aria-label="t('settings.components.settings.CodexFullAccessCard.toggleLabel')"
+        :disabled="isSaving"
         data-testid="codex-full-access-toggle"
+        @click="toggleFullAccess"
       >
-    </label>
+        <span class="sr-only">{{ t('settings.components.settings.CodexFullAccessCard.toggleLabel') }}</span>
+        <span
+          aria-hidden="true"
+          class="inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition-transform"
+          :class="switchThumbClass"
+        />
+      </button>
+    </div>
 
     <div class="mt-4 space-y-1">
       <p class="text-xs text-gray-500" data-testid="codex-full-access-note">
@@ -78,6 +90,8 @@ const isSaving = ref(false)
 const errorMessage = ref('')
 
 const isDirty = computed(() => fullAccessEnabled.value !== originalFullAccessEnabled.value)
+const switchTrackClass = computed(() => (fullAccessEnabled.value ? 'bg-blue-600' : 'bg-slate-300'))
+const switchThumbClass = computed(() => (fullAccessEnabled.value ? 'translate-x-5' : 'translate-x-0.5'))
 
 const isFullAccessSandboxValue = (value: unknown): boolean =>
   typeof value === 'string' && value.trim() === FULL_ACCESS_SANDBOX_VALUE
@@ -98,6 +112,11 @@ const syncFromStore = (): void => {
 }
 
 watch(() => store.settings, syncFromStore, { deep: true, immediate: true })
+
+const toggleFullAccess = (): void => {
+  if (isSaving.value) return
+  fullAccessEnabled.value = !fullAccessEnabled.value
+}
 
 const save = async (): Promise<void> => {
   if (!isDirty.value || isSaving.value) return

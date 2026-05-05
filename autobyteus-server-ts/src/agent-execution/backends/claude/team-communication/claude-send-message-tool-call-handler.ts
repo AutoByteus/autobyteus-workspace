@@ -135,6 +135,7 @@ export class ClaudeSendMessageToolCallHandler {
       recipient_name: parsed.recipientName ?? "",
       content: parsed.content ?? "",
       message_type: parsed.messageType,
+      ...(parsed.referenceFiles.length > 0 ? { reference_files: parsed.referenceFiles } : {}),
     };
 
     const invocationId = `${options.runContext.runId}:${CLAUDE_SEND_MESSAGE_TOOL_NAME}:${Date.now()}:${Math.random()
@@ -218,6 +219,7 @@ export class ClaudeSendMessageToolCallHandler {
       recipientMemberName,
       content,
       messageType: parsed.messageType,
+      referenceFiles: parsed.referenceFiles,
     });
 
     emitSendMessageToolCompleted({

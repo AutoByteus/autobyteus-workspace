@@ -118,7 +118,7 @@ const createSession = (configuredToolNames: string[] = []) => {
   };
 };
 
-describe("ClaudeSession browser/send_message_to/publish_artifact gating", () => {
+describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     buildClaudeSessionMcpServersMock.mockResolvedValue(null);
@@ -137,7 +137,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifact gating", () => 
       expect.objectContaining({
         sendMessageToToolingEnabled: false,
         enabledBrowserToolNames: ["read_page"],
-        publishArtifactToolingEnabled: false,
+        publishArtifactsToolingEnabled: false,
       }),
     );
     expect(startQueryTurn).toHaveBeenCalledWith(
@@ -167,7 +167,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifact gating", () => 
       expect.objectContaining({
         sendMessageToToolingEnabled: true,
         enabledBrowserToolNames: ["open_tab", "read_page"],
-        publishArtifactToolingEnabled: false,
+        publishArtifactsToolingEnabled: false,
       }),
     );
     expect(startQueryTurn).toHaveBeenCalledWith(
@@ -187,8 +187,8 @@ describe("ClaudeSession browser/send_message_to/publish_artifact gating", () => 
     );
   });
 
-  it("enables publish_artifact only when toolNames explicitly allow it", async () => {
-    const { session, startQueryTurn } = createSession(["publish_artifact"]);
+  it("enables publish_artifacts only when toolNames explicitly allow it", async () => {
+    const { session, startQueryTurn } = createSession(["publish_artifacts"]);
 
     await (session as any).executeTurn({
       turnId: "turn-1",
@@ -200,16 +200,62 @@ describe("ClaudeSession browser/send_message_to/publish_artifact gating", () => 
       expect.objectContaining({
         sendMessageToToolingEnabled: false,
         enabledBrowserToolNames: [],
-        publishArtifactToolingEnabled: true,
+        publishArtifactsToolingEnabled: true,
       }),
     );
     expect(startQueryTurn).toHaveBeenCalledWith(
       expect.objectContaining({
         allowedTools: [
-          "publish_artifact",
-          "mcp__autobyteus_published_artifacts__publish_artifact",
+          "publish_artifacts",
+          "mcp__autobyteus_published_artifacts__publish_artifacts",
         ],
       }),
     );
   });
+
+  it("does not enable artifact publication for old singular-only Claude configs", async () => {
+    const { session, startQueryTurn } = createSession(["publish_artifact"]);
+
+    await (session as any).executeTurn({
+      turnId: "turn-1",
+      content: new AgentInputUserMessage("hello").content,
+      abortController: new AbortController(),
+    });
+
+    expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        publishArtifactsToolingEnabled: false,
+      }),
+    );
+    expect(startQueryTurn).toHaveBeenCalledWith(
+      expect.objectContaining({
+        allowedTools: [],
+      }),
+    );
+  });
+
+  it("enables only plural artifact tooling for mixed old/new Claude configs", async () => {
+    const { session, startQueryTurn } = createSession(["publish_artifacts", "publish_artifact"]);
+
+    await (session as any).executeTurn({
+      turnId: "turn-1",
+      content: new AgentInputUserMessage("hello").content,
+      abortController: new AbortController(),
+    });
+
+    expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        publishArtifactsToolingEnabled: true,
+      }),
+    );
+    expect(startQueryTurn).toHaveBeenCalledWith(
+      expect.objectContaining({
+        allowedTools: [
+          "publish_artifacts",
+          "mcp__autobyteus_published_artifacts__publish_artifacts",
+        ],
+      }),
+    );
+  });
+
 });

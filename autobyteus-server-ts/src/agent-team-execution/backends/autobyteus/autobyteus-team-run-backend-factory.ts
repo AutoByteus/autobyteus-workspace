@@ -270,6 +270,7 @@ export class AutoByteusTeamRunBackendFactory implements TeamRunBackendFactory {
       removeTeamRun: async (runId: string) => this.removeTeamRun(runId),
       memberRunIdsByName,
       runtimeContext,
+      teamRunConfig: config,
     });
   }
 

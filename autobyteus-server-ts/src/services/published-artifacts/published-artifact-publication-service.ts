@@ -23,6 +23,7 @@ import {
   PublishedArtifactSnapshotStore,
   getPublishedArtifactSnapshotStore,
 } from "./published-artifact-snapshot-store.js";
+import type { PublishArtifactsToolArtifactInput } from "./published-artifact-tool-contract.js";
 import {
   EMPTY_PUBLISHED_ARTIFACT_PROJECTION,
   normalizePublishedArtifactType,
@@ -122,17 +123,17 @@ export class PublishedArtifactPublicationService {
 
     const canonicalPath = canonicalizePublishedArtifactPath(input.path, workspaceRootPath);
     if (!canonicalPath) {
-      throw new Error("publish_artifact path must resolve to a file inside the current workspace.");
+      throw new Error("Published artifact path must resolve to a file inside the current workspace.");
     }
 
     const absolutePath = resolvePublishedArtifactAbsolutePath(canonicalPath, workspaceRootPath);
     if (!absolutePath) {
-      throw new Error("publish_artifact path could not be resolved inside the current workspace.");
+      throw new Error("Published artifact path could not be resolved inside the current workspace.");
     }
 
     const sourceStat = await fs.stat(absolutePath).catch(() => null);
     if (!sourceStat?.isFile()) {
-      throw new Error(`publish_artifact path '${canonicalPath}' does not resolve to a readable file.`);
+      throw new Error(`Published artifact path '${canonicalPath}' does not resolve to a readable file.`);
     }
 
     const realWorkspaceRootPath = await fs.realpath(workspaceRootPath).catch(() => null);
@@ -142,7 +143,7 @@ export class PublishedArtifactPublicationService {
       || !realAbsolutePath
       || !isPublishedArtifactPathWithinRoot(realWorkspaceRootPath, realAbsolutePath)
     ) {
-      throw new Error("publish_artifact path must resolve to a file inside the current workspace.");
+      throw new Error("Published artifact path must resolve to a file inside the current workspace.");
     }
 
     const projection = await this.projectionStore.readProjection(memoryDir);
@@ -204,6 +205,29 @@ export class PublishedArtifactPublicationService {
       await this.snapshotStore.deleteRevisionSnapshot(memoryDir, snapshot.snapshotRelativePath).catch(() => undefined);
       throw error;
     }
+  }
+
+
+  async publishManyForRun(input: {
+    runId: string;
+    artifacts: PublishArtifactsToolArtifactInput[];
+    fallbackRuntimeContext?: FallbackPublicationRuntimeContext | null;
+  }): Promise<PublishedArtifactSummary[]> {
+    if (!Array.isArray(input.artifacts) || input.artifacts.length === 0) {
+      throw new Error("At least one published artifact is required.");
+    }
+
+    const summaries: PublishedArtifactSummary[] = [];
+    for (const artifact of input.artifacts) {
+      const publishedArtifact = await this.publishForRun({
+        runId: input.runId,
+        path: artifact.path,
+        description: artifact.description ?? null,
+        fallbackRuntimeContext: input.fallbackRuntimeContext ?? null,
+      });
+      summaries.push(publishedArtifact);
+    }
+    return summaries;
   }
 
   private buildNextProjection(input: {

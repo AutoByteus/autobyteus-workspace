@@ -8,13 +8,13 @@ import {
   type ApplicationExecutionContext,
 } from "../../application-orchestration/domain/models.js";
 import {
-  PUBLISH_ARTIFACT_TOOL_DESCRIPTION,
-  PUBLISH_ARTIFACT_TOOL_NAME,
-  normalizePublishArtifactToolInput,
+  PUBLISH_ARTIFACTS_TOOL_DESCRIPTION,
+  PUBLISH_ARTIFACTS_TOOL_NAME,
+  normalizePublishArtifactsToolInput,
 } from "../../services/published-artifacts/published-artifact-tool-contract.js";
 import { getPublishedArtifactPublicationService } from "../../services/published-artifacts/published-artifact-publication-service.js";
 
-type ToolContext = {
+export type ToolContext = {
   agentId?: string;
   workspaceRootPath?: string | null;
   customData?: Record<string, unknown>;
@@ -89,9 +89,9 @@ const resolveFallbackRuntimeContext = (context: ToolContext) => {
   };
 };
 
-const buildArgumentSchema = (): ParameterSchema => {
-  const schema = new ParameterSchema();
-  schema.addParameter(
+const buildArtifactItemSchema = (): ParameterSchema => {
+  const itemSchema = new ParameterSchema();
+  itemSchema.addParameter(
     new ParameterDefinition({
       name: "path",
       type: ParameterType.STRING,
@@ -100,7 +100,7 @@ const buildArgumentSchema = (): ParameterSchema => {
       required: true,
     }),
   );
-  schema.addParameter(
+  itemSchema.addParameter(
     new ParameterDefinition({
       name: "description",
       type: ParameterType.STRING,
@@ -108,50 +108,64 @@ const buildArgumentSchema = (): ParameterSchema => {
       required: false,
     }),
   );
+  return itemSchema;
+};
+
+const buildArgumentSchema = (): ParameterSchema => {
+  const schema = new ParameterSchema();
+  schema.addParameter(
+    new ParameterDefinition({
+      name: "artifacts",
+      type: ParameterType.ARRAY,
+      description:
+        "Non-empty list of files to publish. Use a one-item array for a single artifact; each item contains path and optional description.",
+      required: true,
+      arrayItemSchema: buildArtifactItemSchema(),
+    }),
+  );
   return schema;
 };
 
 const argumentSchema = buildArgumentSchema();
 
-const publishArtifact = async (context: ToolContext, rawArguments: unknown): Promise<string> => {
+const publishArtifacts = async (context: ToolContext, rawArguments: unknown): Promise<string> => {
   const runId =
     normalizeOptionalNonEmptyString(context.customData?.member_run_id)
     ?? normalizeOptionalNonEmptyString(context.agentId)
     ?? "";
   if (!runId) {
-    throw new Error("publish_artifact requires an agent runtime context.");
+    throw new Error("publish_artifacts requires an agent runtime context.");
   }
 
-  const input = normalizePublishArtifactToolInput(rawArguments);
+  const input = normalizePublishArtifactsToolInput(rawArguments);
   const publicationRequest: Parameters<
-    ReturnType<typeof getPublishedArtifactPublicationService>["publishForRun"]
+    ReturnType<typeof getPublishedArtifactPublicationService>["publishManyForRun"]
   >[0] = {
     runId,
-    path: input.path,
-    description: input.description ?? null,
+    artifacts: input.artifacts,
   };
   const fallbackRuntimeContext = resolveFallbackRuntimeContext(context);
   if (fallbackRuntimeContext) {
     publicationRequest.fallbackRuntimeContext = fallbackRuntimeContext;
   }
 
-  const artifact = await getPublishedArtifactPublicationService().publishForRun(publicationRequest);
+  const artifacts = await getPublishedArtifactPublicationService().publishManyForRun(publicationRequest);
 
   return JSON.stringify({
     success: true,
-    artifact,
+    artifacts,
   });
 };
 
-class PublishArtifactTool extends BaseTool<ToolContext, Record<string, unknown>, string> {
+class PublishArtifactsTool extends BaseTool<ToolContext, Record<string, unknown>, string> {
   static CATEGORY = "Applications";
 
   static getName(): string {
-    return PUBLISH_ARTIFACT_TOOL_NAME;
+    return PUBLISH_ARTIFACTS_TOOL_NAME;
   }
 
   static getDescription(): string {
-    return PUBLISH_ARTIFACT_TOOL_DESCRIPTION;
+    return PUBLISH_ARTIFACTS_TOOL_DESCRIPTION;
   }
 
   static getArgumentSchema(): ParameterSchema {
@@ -166,28 +180,28 @@ class PublishArtifactTool extends BaseTool<ToolContext, Record<string, unknown>,
     context: ToolContext,
     rawArguments: Record<string, unknown> = {},
   ): Promise<string> {
-    return publishArtifact(context, rawArguments);
+    return publishArtifacts(context, rawArguments);
   }
 }
 
 let cachedTool: BaseTool | null = null;
 
-export function registerPublishArtifactTool(): BaseTool {
-  if (!defaultToolRegistry.getToolDefinition(PUBLISH_ARTIFACT_TOOL_NAME)) {
+export function registerPublishArtifactsTool(): BaseTool {
+  if (!defaultToolRegistry.getToolDefinition(PUBLISH_ARTIFACTS_TOOL_NAME)) {
     const definition = new ToolDefinition(
-      PUBLISH_ARTIFACT_TOOL_NAME,
-      PUBLISH_ARTIFACT_TOOL_DESCRIPTION,
+      PUBLISH_ARTIFACTS_TOOL_NAME,
+      PUBLISH_ARTIFACTS_TOOL_DESCRIPTION,
       ToolOrigin.LOCAL,
-      PublishArtifactTool.CATEGORY,
-      () => PublishArtifactTool.getArgumentSchema(),
-      () => PublishArtifactTool.getConfigSchema(),
-      { toolClass: PublishArtifactTool },
+      PublishArtifactsTool.CATEGORY,
+      () => PublishArtifactsTool.getArgumentSchema(),
+      () => PublishArtifactsTool.getConfigSchema(),
+      { toolClass: PublishArtifactsTool },
     );
     defaultToolRegistry.registerTool(definition);
   }
 
   if (!cachedTool) {
-    cachedTool = defaultToolRegistry.createTool(PUBLISH_ARTIFACT_TOOL_NAME) as BaseTool;
+    cachedTool = defaultToolRegistry.createTool(PUBLISH_ARTIFACTS_TOOL_NAME) as BaseTool;
   }
   return cachedTool;
 }

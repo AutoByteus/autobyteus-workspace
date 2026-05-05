@@ -43,9 +43,17 @@ function cloneAgentInputUserMessage(message: AgentInputUserMessage): AgentInputU
 
 const resolveSenderDisplayName = (context: AgentContext, senderAgentId: string): string | null => {
   const communicationContext = resolveTeamCommunicationContext(context.customData?.teamContext);
-  const resolved = communicationContext?.resolveMemberNameByAgentId(senderAgentId) ?? null;
+  const resolved = communicationContext?.resolveMemberNameByAgentId.call(
+    communicationContext,
+    senderAgentId
+  ) ?? null;
   return typeof resolved === 'string' && resolved.trim().length > 0 ? resolved.trim() : null;
 };
+
+const buildReferenceFilesBlock = (referenceFiles: string[]): string =>
+  referenceFiles.length > 0
+    ? `\n\nReference files:\n${referenceFiles.map((filePath) => `- ${filePath}`).join('\n')}`
+    : '';
 
 export class AgentInputPipeline {
   async processExternalTrigger(
@@ -134,19 +142,22 @@ export class AgentInputPipeline {
       sender_agent_id: interAgentMsg.senderAgentId,
       recipient_role_name: interAgentMsg.recipientRoleName,
       content: interAgentMsg.content,
-      message_type: interAgentMsg.messageType
+      message_type: interAgentMsg.messageType,
+      reference_files: interAgentMsg.referenceFiles
     });
 
     const normalizedSenderName =
       resolveSenderDisplayName(context, interAgentMsg.senderAgentId) ?? interAgentMsg.senderAgentId;
+    const referenceFilesBlock = buildReferenceFilesBlock(interAgentMsg.referenceFiles);
     const contentForLlm =
       `You received a message from sender name: ${normalizedSenderName}, sender id: ${interAgentMsg.senderAgentId}\n` +
-      `message:\n${interAgentMsg.content}`;
+      `message:\n${interAgentMsg.content}${referenceFilesBlock}`;
 
     return new UserMessageReceivedEvent(
       new AgentInputUserMessage(contentForLlm, SenderType.AGENT, null, {
         sender_agent_id: interAgentMsg.senderAgentId,
-        original_message_type: interAgentMsg.messageType
+        original_message_type: interAgentMsg.messageType,
+        reference_files: interAgentMsg.referenceFiles
       })
     );
   }

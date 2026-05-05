@@ -1,17 +1,25 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { TeamStreamingService } from '../TeamStreamingService';
 
-const { handleBrowserToolExecutionSucceededMock } = vi.hoisted(() => ({
+const { handleBrowserToolExecutionSucceededMock, upsertMessageReferenceMock } = vi.hoisted(() => ({
   handleBrowserToolExecutionSucceededMock: vi.fn(),
+  upsertMessageReferenceMock: vi.fn(),
 }));
 
 vi.mock('../browser/browserToolExecutionSucceededHandler', () => ({
   handleBrowserToolExecutionSucceeded: handleBrowserToolExecutionSucceededMock,
 }));
 
+vi.mock('~/stores/messageFileReferencesStore', () => ({
+  useMessageFileReferencesStore: () => ({
+    upsertFromBackend: upsertMessageReferenceMock,
+  }),
+}));
+
 describe('TeamStreamingService', () => {
   beforeEach(() => {
     handleBrowserToolExecutionSucceededMock.mockReset();
+    upsertMessageReferenceMock.mockReset();
   });
 
   it('echoes captured approval token when approving tool invocation', () => {
@@ -283,6 +291,70 @@ describe('TeamStreamingService', () => {
         title: 'Example',
       },
       agent_name: 'worker-a',
+    });
+  });
+
+  it('routes message file reference declarations to the dedicated reference store', () => {
+    const callbacks = new Map<string, (payload?: any) => void>();
+    const wsClient = {
+      state: 'disconnected',
+      connect: vi.fn(),
+      disconnect: vi.fn(),
+      send: vi.fn(),
+      on: vi.fn((event: string, cb: (payload?: any) => void) => {
+        callbacks.set(event, cb);
+      }),
+      off: vi.fn(),
+    } as any;
+
+    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+    const teamContext = {
+      focusedMemberName: 'worker-a',
+      members: new Map([
+        [
+          'worker-a',
+          {
+            state: { runId: 'receiver-run-1', compactionStatus: null },
+            conversation: { messages: [], updatedAt: '' },
+          },
+        ],
+      ]),
+    } as any;
+
+    service.connect('team-1', teamContext);
+    callbacks.get('onMessage')?.(
+      JSON.stringify({
+        type: 'MESSAGE_FILE_REFERENCE_DECLARED',
+        payload: {
+          referenceId: 'ref-1',
+          teamRunId: 'team-1',
+          senderRunId: 'sender-run-1',
+          senderMemberName: 'Reviewer',
+          receiverRunId: 'receiver-run-1',
+          receiverMemberName: 'Worker',
+          messageType: 'handoff',
+          path: '/tmp/report.md',
+          type: 'file',
+          createdAt: '2026-04-08T00:00:00.000Z',
+          updatedAt: '2026-04-08T00:00:00.000Z',
+          agent_name: 'worker-a',
+          agent_id: 'receiver-run-1',
+        },
+      }),
+    );
+
+    expect(upsertMessageReferenceMock).toHaveBeenCalledWith({
+      referenceId: 'ref-1',
+      teamRunId: 'team-1',
+      senderRunId: 'sender-run-1',
+      senderMemberName: 'Reviewer',
+      receiverRunId: 'receiver-run-1',
+      receiverMemberName: 'Worker',
+      messageType: 'handoff',
+      path: '/tmp/report.md',
+      type: 'file',
+      createdAt: '2026-04-08T00:00:00.000Z',
+      updatedAt: '2026-04-08T00:00:00.000Z',
     });
   });
 

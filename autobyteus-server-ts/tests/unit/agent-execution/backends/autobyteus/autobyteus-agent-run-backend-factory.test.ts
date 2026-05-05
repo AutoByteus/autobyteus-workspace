@@ -309,6 +309,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
           "Writer",
           "Please investigate.",
           "direct_message",
+          ["/tmp/native-reference.md"],
         ),
       ),
     ).rejects.toThrow("Writer is unavailable.");
@@ -319,6 +320,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         recipientMemberName: "Writer",
         content: "Please investigate.",
         messageType: "direct_message",
+        referenceFiles: ["/tmp/native-reference.md"],
       }),
     );
   });

@@ -1441,8 +1441,8 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     }
   }, FLOW_TEST_TIMEOUT_MS);
 
-  it("publishes an existing workspace file through the live Codex publish_artifact dynamic tool path", async () => {
-    const workspaceRoot = await createWorkspace("codex-backend-publish-artifact");
+  it("publishes an existing workspace file through the live Codex publish_artifacts dynamic tool path", async () => {
+    const workspaceRoot = await createWorkspace("codex-backend-publish-artifacts");
     const workspace = await getWorkspaceManager().ensureWorkspaceByRootPath(workspaceRoot);
     clientManager = new CodexAppServerClientManager({
       createClient: (cwd) =>
@@ -1459,15 +1459,15 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
       new CodexClientThreadRouter(),
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
-    const runId = `run-codex-backend-publish-artifact-${randomUUID()}`;
+    const runId = `run-codex-backend-publish-artifacts-${randomUUID()}`;
     const factory = createFactory({
       clientManager,
       threadManager,
       workspaceRoot,
       runId,
-      toolNames: ["publish_artifact"],
+      toolNames: ["publish_artifacts"],
       instructions:
-        "If the user explicitly instructs you to call publish_artifact with a JSON argument object, call publish_artifact exactly once with those exact arguments and do not call any other tool.",
+        "If the user explicitly instructs you to call publish_artifacts with a JSON argument object, call publish_artifacts exactly once with those exact arguments and do not call any other tool.",
     });
 
     const runManager = new AgentRunManager({
@@ -1487,7 +1487,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     const run = await runManager.createAgentRun(
       new AgentRunConfig({
         runtimeKind: "codex_app_server",
-        agentDefinitionId: "agent-def-codex-publish-artifact-live",
+        agentDefinitionId: "agent-def-codex-publish-artifacts-live",
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: true,
         workspaceId: workspace.workspaceId,
@@ -1519,9 +1519,9 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     try {
       const sendResult = await run.postUserMessage(
         new AgentInputUserMessage(
-          `You must call the publish_artifact tool exactly once in this turn. ` +
+          `You must call the publish_artifacts tool exactly once in this turn. ` +
             `Do not call any other tool. Use exactly these arguments: ` +
-            `{\"path\":\"${artifactRelativePath}\",\"description\":\"${artifactDescription}\"}. ` +
+            `{\"artifacts\":[{\"path\":\"${artifactRelativePath}\",\"description\":\"${artifactDescription}\"}]}. ` +
             "The file already exists in the workspace. After the tool call succeeds, reply with DONE only.",
         ),
       );
@@ -1535,13 +1535,17 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
           event.payload.metadata &&
           typeof event.payload.metadata === "object" &&
           !Array.isArray(event.payload.metadata) &&
-          (event.payload.metadata as Record<string, unknown>).tool_name === "publish_artifact",
+          (event.payload.metadata as Record<string, unknown>).tool_name === "publish_artifacts",
       );
       expect(
         (publishSegmentStart.payload.metadata as Record<string, unknown>).arguments,
       ).toMatchObject({
-        path: artifactRelativePath,
-        description: artifactDescription,
+        artifacts: [
+          {
+            path: artifactRelativePath,
+            description: artifactDescription,
+          },
+        ],
       });
       const publishInvocationId = resolveInvocationId(publishSegmentStart.payload);
       expect(publishInvocationId).toBeTruthy();

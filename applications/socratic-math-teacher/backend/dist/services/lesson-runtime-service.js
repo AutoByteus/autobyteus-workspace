@@ -38,8 +38,8 @@ const ensureOpenBinding = (lesson) => {
 const buildTutorPrompt = (studentPrompt) => [
     "You are guiding one student through a math problem.",
     "Ask one focused question or give one concise hint at a time.",
-    "After every tutor response, call publish_artifact so the application can project your turn into lesson history.",
-    "Publish normal turns to socratic-math/lesson-response.md and hint turns to socratic-math/lesson-hint.md.",
+    "After every tutor response, call publish_artifacts with a one-item artifacts array so the application can project your turn into lesson history.",
+    `Publish normal turns with artifacts: [{ path: "socratic-math/lesson-response.md" }] and hint turns with artifacts: [{ path: "socratic-math/lesson-hint.md" }].`,
     `Student problem: ${studentPrompt}`,
 ].join("\n\n");
 const resolveStartLessonProjection = (input) => {

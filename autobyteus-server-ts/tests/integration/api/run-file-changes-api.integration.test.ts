@@ -4,6 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import fastify, { type FastifyInstance } from "fastify";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { registerGraphql } from "../../../src/api/graphql/index.js";
 import { registerRunFileChangeRoutes } from "../../../src/api/rest/run-file-changes.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
@@ -69,6 +70,62 @@ describe("Run file changes API integration", () => {
     }
 
     return runDir;
+  };
+
+  const seedTeamMemberRun = async (input: {
+    teamRunId: string;
+    memberRunId: string;
+    memberName: string;
+    memberRouteKey: string;
+    workspaceRootPath: string;
+    projection: {
+      version: number;
+      entries: Array<Record<string, unknown>>;
+    };
+  }): Promise<string> => {
+    const teamDir = path.join(getMemoryDir(), "agent_teams", input.teamRunId);
+    const memberDir = path.join(teamDir, input.memberRunId);
+    await fs.mkdir(memberDir, { recursive: true });
+    await fs.writeFile(
+      path.join(teamDir, "team_run_metadata.json"),
+      JSON.stringify(
+        {
+          teamRunId: input.teamRunId,
+          teamDefinitionId: "team-def-1",
+          teamDefinitionName: "Team Definition",
+          coordinatorMemberRouteKey: input.memberRouteKey,
+          runVersion: 1,
+          createdAt: timestamp,
+          updatedAt: timestamp,
+          archivedAt: null,
+          memberMetadata: [
+            {
+              memberRouteKey: input.memberRouteKey,
+              memberName: input.memberName,
+              memberRunId: input.memberRunId,
+              runtimeKind: RuntimeKind.AUTOBYTEUS,
+              platformAgentRunId: null,
+              agentDefinitionId: "agent-def-1",
+              llmModelIdentifier: "model-1",
+              autoExecuteTools: true,
+              skillAccessMode: SkillAccessMode.NONE,
+              llmConfig: null,
+              workspaceRootPath: input.workspaceRootPath,
+              applicationExecutionContext: null,
+            },
+          ],
+        },
+        null,
+        2,
+      ),
+      "utf-8",
+    );
+    await fs.writeFile(
+      path.join(memberDir, "file_changes.json"),
+      JSON.stringify(input.projection, null, 2),
+      "utf-8",
+    );
+    return memberDir;
   };
 
   const execGraphql = async <T>(query: string, variables: Record<string, unknown>): Promise<T> => {
@@ -300,6 +357,80 @@ describe("Run file changes API integration", () => {
 
     expect(response.statusCode).toBe(404);
     expect(response.json()).toEqual({ detail: "File change not found" });
+  });
+
+  it("hydrates historical AutoByteus team-member file changes through GraphQL and REST", async () => {
+    const teamRunId = `team-file-${Date.now()}`;
+    const memberRunId = `${teamRunId}-professor`;
+    const relativePath = `team/${teamRunId}.md`;
+    const filePath = path.join(workspaceRootPath, relativePath);
+    await fs.mkdir(path.dirname(filePath), { recursive: true });
+    await fs.writeFile(filePath, "team member artifact bytes", "utf-8");
+
+    await seedTeamMemberRun({
+      teamRunId,
+      memberRunId,
+      memberName: "Professor",
+      memberRouteKey: "professor",
+      workspaceRootPath,
+      projection: {
+        version: 2,
+        entries: [
+          {
+            id: `${memberRunId}:${relativePath}`,
+            runId: memberRunId,
+            path: relativePath,
+            type: "file",
+            status: "available",
+            sourceTool: "write_file",
+            sourceInvocationId: "team-write-1",
+            createdAt: timestamp,
+            updatedAt: timestamp,
+          },
+        ],
+      },
+    });
+
+    const data = await execGraphql<{
+      getRunFileChanges: Array<{
+        runId: string;
+        path: string;
+        type: string;
+        status: string;
+        sourceTool: string;
+      }>;
+    }>(
+      `query GetRunFileChanges($runId: String!) {
+        getRunFileChanges(runId: $runId) {
+          runId
+          path
+          type
+          status
+          sourceTool
+        }
+      }`,
+      { runId: memberRunId },
+    );
+
+    expect(data.getRunFileChanges).toEqual([
+      expect.objectContaining({
+        runId: memberRunId,
+        path: relativePath,
+        type: "file",
+        status: "available",
+        sourceTool: "write_file",
+      }),
+    ]);
+
+    const response = await app.inject({
+      method: "GET",
+      url: `/runs/${encodeURIComponent(memberRunId)}/file-change-content?path=${encodeURIComponent(relativePath)}`,
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.payload).toBe("team member artifact bytes");
+    expect(String(response.headers["content-type"])).toContain("text");
+    expect(response.headers["cache-control"]).toBe("no-store");
   });
 
   it("returns 404 for historical rows whose files no longer exist", async () => {

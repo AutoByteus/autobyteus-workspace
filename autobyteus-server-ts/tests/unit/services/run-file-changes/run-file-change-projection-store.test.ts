@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { RunFileChangeProjectionStore } from "../../../../src/services/run-file-changes/run-file-change-projection-store.js";
 
 describe("RunFileChangeProjectionStore", () => {
@@ -53,6 +53,58 @@ describe("RunFileChangeProjectionStore", () => {
           status: "available",
           sourceTool: "write_file",
           sourceInvocationId: "write-1",
+          createdAt: "2026-04-10T00:00:00.000Z",
+          updatedAt: "2026-04-10T00:00:01.000Z",
+        },
+      ],
+    });
+  });
+
+  it("writes through a same-directory temp file before renaming to the canonical projection", async () => {
+    const canonicalPath = path.join(path.resolve("/tmp/run-file-change-memory"), "file_changes.json");
+    const files = {
+      mkdir: vi.fn().mockResolvedValue(undefined),
+      readFile: vi.fn(),
+      rename: vi.fn().mockResolvedValue(undefined),
+      unlink: vi.fn().mockResolvedValue(undefined),
+      writeFile: vi.fn().mockResolvedValue(undefined),
+    };
+    const store = new RunFileChangeProjectionStore(files as any);
+
+    await store.writeProjection("/tmp/run-file-change-memory", {
+      version: 2,
+      entries: [
+        {
+          id: "run-atomic:src/atomic.txt",
+          runId: "run-atomic",
+          path: "src/atomic.txt",
+          type: "file",
+          status: "available",
+          sourceTool: "write_file",
+          sourceInvocationId: "write-atomic",
+          content: "transient live buffer",
+          createdAt: "2026-04-10T00:00:00.000Z",
+          updatedAt: "2026-04-10T00:00:01.000Z",
+        },
+      ],
+    });
+
+    const [tempPath, rawContent] = files.writeFile.mock.calls[0];
+    expect(tempPath).not.toBe(canonicalPath);
+    expect(path.dirname(tempPath)).toBe(path.dirname(canonicalPath));
+    expect(tempPath).toMatch(/file_changes\.json\..+\.tmp$/);
+    expect(files.rename).toHaveBeenCalledWith(tempPath, canonicalPath);
+    expect(JSON.parse(rawContent)).toEqual({
+      version: 2,
+      entries: [
+        {
+          id: "run-atomic:src/atomic.txt",
+          runId: "run-atomic",
+          path: "src/atomic.txt",
+          type: "file",
+          status: "available",
+          sourceTool: "write_file",
+          sourceInvocationId: "write-atomic",
           createdAt: "2026-04-10T00:00:00.000Z",
           updatedAt: "2026-04-10T00:00:01.000Z",
         },

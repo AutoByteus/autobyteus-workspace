@@ -23,6 +23,7 @@ Implemented the approved clean-cut native interrupt/runtime-loop redesign.
 - Removed stale old-handler tests and added/updated focused unit/integration coverage for the new runner/input-box/interruption paths.
 - Addressed code-review CR-001 by adding turn-start working-context checkpoints and interrupted-turn restore/suppression owned by `AgentRuntimeState`/`MemoryManager`; raw trace/history is retained while incomplete working-context user/tool fragments are removed before the next LLM request.
 - Addressed code-review CR-002 by tightening `AgentTurnInputBox` invocation identity acceptance, rejecting unknown/duplicate/stale approval/result messages, publishing terminal tool-interrupted lifecycle when pending approval is interrupted, and terminalizing pending approval rows on frontend `TURN_INTERRUPTED`.
+- Resolved delivery-stage latest-base merge conflict by preserving explicit inter-agent `reference_files` behavior in `AgentInputPipeline`/input-pipeline tests while keeping the deleted legacy `inter-agent-message-event-handler` path removed.
 
 ## Key Files Or Areas
 
@@ -39,6 +40,7 @@ Implemented the approved clean-cut native interrupt/runtime-loop redesign.
 - Typed pipelines/outbox:
   - `autobyteus-ts/src/agent/pipelines/*`
   - `autobyteus-ts/src/agent/outbox/agent-outbox.ts`
+  - Latest-base inter-agent `reference_files` ingestion now lives in `AgentInputPipeline.convertInterAgentEvent`; the old handler path remains removed.
 - Runtime wiring and working-context interruption checkpointing:
   - `autobyteus-ts/src/agent/runtime/agent-worker.ts`
   - `autobyteus-ts/src/agent/runtime/agent-runtime.ts`
@@ -91,6 +93,7 @@ Implemented the approved clean-cut native interrupt/runtime-loop redesign.
   - Tool continuation remains a `SenderType.TOOL` same-turn input and is covered by focused tests.
   - CR-001 checkpoint/restore is covered by `agent-runtime-state` unit coverage and runtime integration tests showing interrupted LLM/tool-intent context is absent from the next LLM request.
   - CR-002 approval/tool lifecycle fencing is covered by input-box/runtime integration and frontend projection tests.
+  - Delivery reroute reference-file conflict was resolved without resurrecting old handler turn control; `AgentInputPipeline` now publishes `reference_files`, adds exactly one LLM-visible reference-file block, and preserves metadata for inter-agent inputs.
 
 ## Legacy / Compatibility Removal Check
 
@@ -127,6 +130,17 @@ Passed:
   - Result: 4 files passed, 32 tests passed.
 - `pnpm -C autobyteus-web exec vitest run components/agentInput/__tests__/AgentUserInputTextArea.spec.ts stores/__tests__/agentRunStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts`
   - Result: 3 files passed, 29 tests passed.
+
+Additional checks after delivery latest-base conflict resolution local fix:
+
+- `git diff --check HEAD`
+  - Passed.
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/pipelines/agent-input-pipeline.test.ts tests/unit/agent/message/inter-agent-message.test.ts tests/unit/agent/message/send-message-to.test.ts tests/unit/agent-team/handlers/inter-agent-message-request-event-handler.test.ts`
+  - Result: 4 files passed, 24 tests passed.
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/context/agent-runtime-state.test.ts tests/unit/agent/loop/agent-turn-input-box.test.ts tests/unit/agent/interruption/abortable-operation.test.ts tests/integration/agent/runtime/agent-runtime.test.ts`
+  - Result: 4 files passed, 24 tests passed.
+- `pnpm -C autobyteus-ts run build`
+  - Passed, including runtime dependency verification.
 
 Additional checks after code-review local fixes:
 

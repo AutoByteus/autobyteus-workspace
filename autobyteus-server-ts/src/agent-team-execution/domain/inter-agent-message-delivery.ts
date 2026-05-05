@@ -7,6 +7,7 @@ export interface InterAgentMessageDeliveryRequest {
   recipientMemberName: string;
   content: string;
   messageType?: string | null;
+  referenceFiles?: string[] | null;
 }
 
 export type InterAgentMessageDeliveryHandler = (

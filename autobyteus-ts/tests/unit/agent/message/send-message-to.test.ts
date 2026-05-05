@@ -23,17 +23,21 @@ describe('SendMessageTo tool', () => {
   it('exposes name and description', () => {
     expect(SendMessageTo.getName()).toBe('send_message_to');
     const desc = SendMessageTo.getDescription();
-    expect(desc).toContain('Sends a message to another agent');
+    expect(desc).toContain('Sends a self-contained message to another agent');
     expect(desc).toContain('within the same team');
+    expect(desc).toContain('reference_files');
   });
 
   it('exposes argument schema', () => {
     const schema = SendMessageTo.getArgumentSchema();
     expect(schema).toBeInstanceOf(ParameterSchema);
-    expect(schema?.parameters.length).toBe(3);
+    expect(schema?.parameters.length).toBe(4);
     expect(schema?.getParameter('recipient_name')?.required).toBe(true);
     expect(schema?.getParameter('content')?.required).toBe(true);
     expect(schema?.getParameter('message_type')?.required).toBe(false);
+    expect(schema?.getParameter('reference_files')?.required).toBe(false);
+    expect(schema?.getParameter('content')?.description).toContain('email body');
+    expect(schema?.getParameter('reference_files')?.description).toContain('in addition to self-contained content');
   });
 
   it('dispatches inter-agent message requests with default message type', async () => {
@@ -55,6 +59,39 @@ describe('SendMessageTo tool', () => {
     expect(event.recipientName).toBe('Researcher');
     expect(event.content).toBe('Please find data on topic X.');
     expect(event.messageType).toBe('direct_message');
+    expect(event.referenceFiles).toEqual([]);
+  });
+
+
+  it('dispatches normalized explicit reference_files', async () => {
+    const tool = new SendMessageTo();
+    const communicationContext = makeCommunicationContext();
+    const context = makeAgentContext(makeTeamContext(communicationContext));
+
+    const result = await (tool as any)._execute(context, {
+      recipient_name: 'Researcher',
+      content: 'Please inspect the listed files.',
+      reference_files: [' /tmp/report.md ', '/tmp/report.md', 'C:\\Users\\normy\\Desktop\\chart.png']
+    });
+
+    expect(result).toContain("Message dispatch for recipient 'Researcher' has been successfully requested.");
+    const [event] = communicationContext.dispatchInterAgentMessageRequest.mock.calls[0];
+    expect(event.referenceFiles).toEqual(['/tmp/report.md', 'C:/Users/normy/Desktop/chart.png']);
+  });
+
+  it('rejects malformed reference_files before dispatch', async () => {
+    const tool = new SendMessageTo();
+    const communicationContext = makeCommunicationContext();
+    const context = makeAgentContext(makeTeamContext(communicationContext));
+
+    const result = await (tool as any)._execute(context, {
+      recipient_name: 'Researcher',
+      content: 'Please inspect.',
+      reference_files: ['relative/report.md']
+    });
+
+    expect(result).toBe('Error: `reference_files[0]` must be an absolute local file path.');
+    expect(communicationContext.dispatchInterAgentMessageRequest).not.toHaveBeenCalled();
   });
 
   it('uses provided message_type when supplied', async () => {

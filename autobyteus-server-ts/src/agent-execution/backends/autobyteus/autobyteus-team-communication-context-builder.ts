@@ -45,6 +45,7 @@ export const buildAutoByteusStandaloneTeamContext = (
         recipientMemberName: event.recipientName,
         content: event.content,
         messageType: event.messageType,
+        referenceFiles: event.referenceFiles,
       });
       if (!result.accepted) {
         const failureMessage =

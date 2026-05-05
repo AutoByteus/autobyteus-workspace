@@ -4,19 +4,22 @@ export class InterAgentMessage {
   content: string;
   messageType: string;
   senderAgentId: string;
+  referenceFiles: string[];
 
   constructor(
     recipientRoleName: string,
     recipientAgentId: string,
     content: string,
     messageType: string,
-    senderAgentId: string
+    senderAgentId: string,
+    referenceFiles: string[] = []
   ) {
     this.recipientRoleName = recipientRoleName;
     this.recipientAgentId = recipientAgentId;
     this.content = content;
     this.messageType = InterAgentMessage.normalizeMessageType(messageType);
     this.senderAgentId = senderAgentId;
+    this.referenceFiles = Array.isArray(referenceFiles) ? [...referenceFiles] : [];
   }
 
   equals(other: unknown): boolean {
@@ -28,7 +31,9 @@ export class InterAgentMessage {
       this.recipientAgentId === other.recipientAgentId &&
       this.content === other.content &&
       this.messageType === other.messageType &&
-      this.senderAgentId === other.senderAgentId
+      this.senderAgentId === other.senderAgentId &&
+      this.referenceFiles.length === other.referenceFiles.length &&
+      this.referenceFiles.every((filePath, index) => filePath === other.referenceFiles[index])
     );
   }
 
@@ -38,7 +43,8 @@ export class InterAgentMessage {
       `recipientAgentId='${this.recipientAgentId}', ` +
       `content='${this.content}', ` +
       `messageType='${this.messageType}', ` +
-      `senderAgentId='${this.senderAgentId}')`
+      `senderAgentId='${this.senderAgentId}', ` +
+      `referenceFiles=${JSON.stringify(this.referenceFiles)})`
     );
   }
 
@@ -47,7 +53,8 @@ export class InterAgentMessage {
     recipientAgentId: string,
     content: string,
     messageType: string,
-    senderAgentId: string
+    senderAgentId: string,
+    referenceFiles: string[] = []
   ): InterAgentMessage {
     const normalizedMessageType = InterAgentMessage.normalizeMessageType(messageType);
     return new InterAgentMessage(
@@ -56,6 +63,7 @@ export class InterAgentMessage {
       content,
       normalizedMessageType,
       senderAgentId,
+      referenceFiles,
     );
   }
 

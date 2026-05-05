@@ -115,6 +115,15 @@ Run-history owns the replay bundle contract:
 - `summary`
 - `lastActivityAt`
 
+Produced-file Artifacts are not part of the replay bundle, but their historical
+read path must resolve the same run identity. `RunFileChangeProjectionService`
+uses `AgentRunMetadataService` for standalone runs and team metadata plus
+`TeamMemberMemoryLayout` for team-member run ids. This lets
+`getRunFileChanges(runId)` and `/runs/:runId/file-change-content` read
+AutoByteus/native team-member `agent_teams/<teamRunId>/<memberRunId>/file_changes.json`
+without adding a separate team-file route or treating produced files as
+message-reference rows.
+
 The `agent-memory` subsystem no longer owns the canonical replay DTO. It supplies raw traces and memory-inspector views only; run-history is the only subsystem that may normalize those raw traces into the historical replay bundle used by reopen/hydration.
 
 - Local-memory projection reads the complete raw-trace corpus from the declared run or team-member memory directory (complete archive segments plus active records) and is the fallback provider for native AutoByteus and for explicit `memoryDir` fallback reads.

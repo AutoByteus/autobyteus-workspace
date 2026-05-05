@@ -80,7 +80,7 @@ This tool performs only one action:
 *   **Reaction:** If System Mode is ON, the Notifier detects the change and acts as the messenger. If System Mode is OFF, the tasks sit quietly until someone manually claims them.
 
 ### 5.3 `send_message_to`
-This is the generic communication primitive. It resolves the injected `TeamCommunicationContext` and asks that context to dispatch the inter-agent message.
+This is the generic communication primitive. It resolves the injected `TeamCommunicationContext` and asks that context to dispatch the inter-agent message. The tool also accepts optional `reference_files` absolute local paths so senders can explicitly declare files the recipient may need to inspect while keeping message `content` natural.
 
 *   **Native teams:** the communication context delegates to `TeamManager`, so the recipient is still started or awakened on demand.
 *   **Communication-only adapters:** server-owned mixed-team bridges can provide the same communication contract without exposing the full native team runtime or task-plan surfaces.

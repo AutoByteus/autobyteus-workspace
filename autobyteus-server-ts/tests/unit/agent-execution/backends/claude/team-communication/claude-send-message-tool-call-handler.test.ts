@@ -83,6 +83,7 @@ describe("ClaudeSendMessageToolCallHandler", () => {
       recipientMemberName: "student",
       content: "hello class",
       messageType: "classroom_update",
+      referenceFiles: [],
     });
     expect(events.map((event) => event.method)).toEqual([
       ClaudeSessionEventName.ITEM_ADDED,
@@ -138,6 +139,52 @@ describe("ClaudeSendMessageToolCallHandler", () => {
         message: "Delivered message to student.",
       },
     });
+  });
+
+
+  it("delivers normalized explicit reference_files", async () => {
+    const { handler, events, deliverInterAgentMessage, runContext } = createHandler();
+
+    const result = await handler.handle({
+      runContext,
+      rawArguments: {
+        recipient_name: "student",
+        content: "Please inspect the listed file.",
+        reference_files: [" /tmp/report.md ", "/tmp/report.md", "/tmp/evidence.log"],
+      },
+    });
+
+    expect(result.accepted).toBe(true);
+    expect(deliverInterAgentMessage).toHaveBeenCalledWith(expect.objectContaining({
+      recipientMemberName: "student",
+      content: "Please inspect the listed file.",
+      referenceFiles: ["/tmp/report.md", "/tmp/evidence.log"],
+    }));
+    expect(events[0]?.params).toMatchObject({
+      arguments: expect.objectContaining({
+        reference_files: ["/tmp/report.md", "/tmp/evidence.log"],
+      }),
+    });
+  });
+
+  it("rejects malformed reference_files before delivery", async () => {
+    const { handler, deliverInterAgentMessage, runContext } = createHandler();
+
+    const result = await handler.handle({
+      runContext,
+      rawArguments: {
+        recipient_name: "student",
+        content: "hello",
+        reference_files: ["relative/report.md"],
+      },
+    });
+
+    expect(result).toEqual({
+      accepted: false,
+      code: "INVALID_REFERENCE_FILES",
+      message: "send_message_to reference_files must be an array of absolute local file path strings. Invalid path must be absolute.",
+    });
+    expect(deliverInterAgentMessage).not.toHaveBeenCalled();
   });
 
   it("emits canonical lifecycle start and failure with arguments for rejected validation", async () => {

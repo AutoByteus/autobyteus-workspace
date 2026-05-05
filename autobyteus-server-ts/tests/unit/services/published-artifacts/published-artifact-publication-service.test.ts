@@ -112,6 +112,39 @@ describe("PublishedArtifactPublicationService", () => {
     });
   });
 
+
+  it("publishes multiple artifacts in input order using the shared batch path", async () => {
+    const { run, workspaceRoot, memoryDir, localEvents } = await createRunHarness();
+    const projectionStore = new PublishedArtifactProjectionStore();
+    const service = createService({
+      run,
+      workspaceRoot,
+      projectionStore,
+    });
+
+    const firstPath = path.join(workspaceRoot, "docs", "a.md");
+    const secondPath = path.join(workspaceRoot, "docs", "b.md");
+    await fs.mkdir(path.dirname(firstPath), { recursive: true });
+    await fs.writeFile(firstPath, "A", "utf-8");
+    await fs.writeFile(secondPath, "B", "utf-8");
+
+    const artifacts = await service.publishManyForRun({
+      runId: run.runId,
+      artifacts: [
+        { path: "docs/a.md", description: "First" },
+        { path: "docs/b.md", description: null },
+      ],
+    });
+
+    const projection = await projectionStore.readProjection(memoryDir);
+    expect(artifacts.map((artifact) => artifact.path)).toEqual(["docs/a.md", "docs/b.md"]);
+    expect(artifacts.map((artifact) => artifact.description)).toEqual(["First", null]);
+    expect(projection.summaries.map((artifact) => artifact.path)).toEqual(["docs/a.md", "docs/b.md"]);
+    expect(projection.revisions.map((revision) => revision.path)).toEqual(["docs/a.md", "docs/b.md"]);
+    expect(localEvents).toHaveLength(2);
+    expect(localEvents.map((event) => (event.payload as any).path)).toEqual(["docs/a.md", "docs/b.md"]);
+  });
+
   it("accepts the absolute file path returned by write_file and canonicalizes it to the workspace-relative artifact path", async () => {
     const { run, workspaceRoot, localEvents } = await createRunHarness();
     const service = createService({
@@ -159,7 +192,7 @@ describe("PublishedArtifactPublicationService", () => {
         runId: run.runId,
         path: "escape/secret.txt",
       }),
-    ).rejects.toThrow("publish_artifact path must resolve to a file inside the current workspace.");
+    ).rejects.toThrow("Published artifact path must resolve to a file inside the current workspace.");
 
     expect(await projectionStore.readProjection(memoryDir)).toEqual(EMPTY_PUBLISHED_ARTIFACT_PROJECTION);
     expect(await fs.readdir(snapshotStore.getSnapshotRootPath(memoryDir)).catch(() => [])).toEqual([]);

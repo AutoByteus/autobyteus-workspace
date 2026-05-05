@@ -10,6 +10,9 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { normalizeSandboxMode } from "../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
 import {
   AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID,
+  DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY,
+  DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY,
+  DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY,
 } from "../../../src/services/server-settings-service.js";
 import {
   CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
@@ -23,6 +26,7 @@ describe("Server settings GraphQL e2e", () => {
   let originalServerHostEnv: string | undefined;
   let originalCodexSandboxEnv: string | undefined;
   let originalCompactionAgentEnv: string | undefined;
+  let originalMediaModelEnv: Record<string, string | undefined>;
 
   beforeAll(async () => {
     schema = await buildGraphqlSchema();
@@ -38,6 +42,11 @@ describe("Server settings GraphQL e2e", () => {
     originalServerHostEnv = process.env.AUTOBYTEUS_SERVER_HOST;
     originalCodexSandboxEnv = process.env[CODEX_APP_SERVER_SANDBOX_SETTING_KEY];
     originalCompactionAgentEnv = process.env[AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID];
+    originalMediaModelEnv = {
+      [DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY]: process.env[DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY],
+      [DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY]: process.env[DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY],
+      [DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY]: process.env[DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY],
+    };
     tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "autobyteus-server-settings-graphql-"));
     fs.writeFileSync(
       path.join(tempDir, ".env"),
@@ -47,6 +56,9 @@ describe("Server settings GraphQL e2e", () => {
     process.env.AUTOBYTEUS_SERVER_HOST = "http://localhost:8000";
     delete process.env[CODEX_APP_SERVER_SANDBOX_SETTING_KEY];
     delete process.env[AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID];
+    delete process.env[DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY];
+    delete process.env[DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY];
+    delete process.env[DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY];
     appConfigProvider.config.setCustomAppDataDir(tempDir);
   });
 
@@ -66,6 +78,13 @@ describe("Server settings GraphQL e2e", () => {
       delete process.env[AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID];
     } else {
       process.env[AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID] = originalCompactionAgentEnv;
+    }
+    for (const [key, value] of Object.entries(originalMediaModelEnv)) {
+      if (value === undefined) {
+        delete process.env[key];
+      } else {
+        process.env[key] = value;
+      }
     }
     fs.rmSync(tempDir, { recursive: true, force: true });
   });
@@ -283,6 +302,74 @@ describe("Server settings GraphQL e2e", () => {
       `${AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID}=${selectedDefinitionId}`,
     );
     expect(envFileContents).not.toContain("AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER=");
+  });
+
+  it("persists media default model identifiers as predefined GraphQL settings without catalog allow-list validation", async () => {
+    const updateMutation = `
+      mutation UpdateServerSetting($key: String!, $value: String!) {
+        updateServerSetting(key: $key, value: $value)
+      }
+    `;
+    const deleteMutation = `
+      mutation DeleteServerSetting($key: String!) {
+        deleteServerSetting(key: $key)
+      }
+    `;
+    const listQuery = `
+      query GetServerSettings {
+        getServerSettings {
+          key
+          value
+          description
+          isEditable
+          isDeletable
+        }
+      }
+    `;
+
+    const selectedModels = {
+      [DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY]: "nano-banana-pro-app-rpa@host",
+      [DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY]: "gpt-image-1.5",
+      [DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY]: "gemini-2.5-flash-tts",
+    };
+
+    for (const [key, value] of Object.entries(selectedModels)) {
+      const updated = await execGraphql<{ updateServerSetting: string }>(updateMutation, {
+        key,
+        value,
+      });
+      expect(updated.updateServerSetting).toContain("updated successfully");
+      expect(process.env[key]).toBe(value);
+    }
+
+    const listed = await execGraphql<{
+      getServerSettings: Array<{
+        key: string;
+        value: string;
+        description: string;
+        isEditable: boolean;
+        isDeletable: boolean;
+      }>;
+    }>(listQuery);
+
+    for (const [key, value] of Object.entries(selectedModels)) {
+      const setting = listed.getServerSettings.find((entry) => entry.key === key);
+      expect(setting).toMatchObject({
+        value,
+        isEditable: true,
+        isDeletable: false,
+      });
+      expect(setting?.description).toContain("future");
+      expect(setting?.description).not.toBe("Custom user-defined setting");
+
+      const deleteResult = await execGraphql<{ deleteServerSetting: string }>(deleteMutation, { key });
+      expect(deleteResult.deleteServerSetting).toContain("managed by the system");
+    }
+
+    const envFileContents = fs.readFileSync(path.join(tempDir, ".env"), "utf-8");
+    for (const [key, value] of Object.entries(selectedModels)) {
+      expect(envFileContents).toContain(`${key}=${value}`);
+    }
   });
 
   it("lists effective Codex sandbox values with predefined metadata even when not persisted", async () => {
