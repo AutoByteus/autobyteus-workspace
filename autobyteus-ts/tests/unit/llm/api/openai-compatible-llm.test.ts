@@ -102,6 +102,22 @@ describe('OpenAICompatibleLLM', () => {
     expect(response.usage?.total_tokens).toBe(3);
   });
 
+  it('passes invocation AbortSignal to sync chat completion requests', async () => {
+    mockCreate.mockResolvedValue({
+      choices: [{ message: { role: 'assistant', content: 'hello' } }],
+      usage: {
+        prompt_tokens: 1,
+        completion_tokens: 1,
+        total_tokens: 2
+      }
+    });
+    const controller = new AbortController();
+
+    await llm.sendMessages([], null, {}, { signal: controller.signal });
+
+    expect(mockCreate.mock.calls[0]?.[1]).toEqual({ signal: controller.signal });
+  });
+
   it('maps alternate reasoning field on sync responses into CompleteResponse.reasoning', async () => {
     mockCreate.mockResolvedValue({
       choices: [
@@ -192,6 +208,17 @@ describe('OpenAICompatibleLLM', () => {
     ]);
     expect(chunks.at(-1)?.is_complete).toBe(true);
     expect(chunks.at(-1)?.usage?.total_tokens).toBe(12);
+  });
+
+  it('passes invocation AbortSignal to streaming chat completion requests', async () => {
+    mockCreate.mockResolvedValue(createStream([]));
+    const controller = new AbortController();
+
+    for await (const _chunk of llm.streamMessages([], null, {}, { signal: controller.signal })) {
+      // consume stream
+    }
+
+    expect(mockCreate.mock.calls[0]?.[1]).toEqual({ signal: controller.signal });
   });
 
   it('emits reasoning chunks from streamed alternate reasoning fields', async () => {

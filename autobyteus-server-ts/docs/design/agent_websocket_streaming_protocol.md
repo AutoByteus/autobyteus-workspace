@@ -44,13 +44,13 @@ Connection establishment is restore-aware:
 
 Control commands remain active-only:
 
-- `STOP_GENERATION`
+- `INTERRUPT_GENERATION`
 - `APPROVE_TOOL`
 - `DENY_TOOL`
 
 Those commands intentionally require an already-active runtime lookup and do not call the restore path. Clients should not treat approval/stop messages as a way to resume a stopped run; stopped-run recovery is owned by connection setup, explicit restore mutations, and `SEND_MESSAGE`.
 
-`STOP_GENERATION` should also not be treated as an immediate send-readiness
+`INTERRUPT_GENERATION` should also not be treated as an immediate send-readiness
 acknowledgement. A client that sends stop should wait for the backend's
 terminal lifecycle/status stream projection for the affected turn before
 enabling a follow-up send. Runtime adapters that own provider processes must

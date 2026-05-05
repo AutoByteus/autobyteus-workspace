@@ -46,6 +46,23 @@ type AutoByteusTeamLike = {
     approved: boolean,
     reason?: string | null,
   ) => Promise<void>;
+  interrupt?: (options?: {
+    reason?: string | null;
+    timeoutMs?: number | null;
+    targetMemberName?: string | null;
+  }) => Promise<{
+    accepted: boolean;
+    status?: string;
+    reason?: string;
+    interruptedCount?: number;
+    message?: string;
+  }> | {
+    accepted: boolean;
+    status?: string;
+    reason?: string;
+    interruptedCount?: number;
+    message?: string;
+  };
   stop?: (timeout?: number) => Promise<void> | void;
 };
 
@@ -215,12 +232,23 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
   }
 
   async interrupt(): Promise<AgentOperationResult> {
-    if (!this.team.stop || !this.isActive()) {
+    if (!this.isActive()) {
       return buildRunNotFoundResult(this.runId);
     }
+    if (!this.team.interrupt) {
+      return {
+        accepted: false,
+        code: "UNSUPPORTED_RUNTIME_COMMAND",
+        message: "Native Autobyteus team does not expose interrupt().",
+      };
+    }
     try {
-      await this.team.stop();
-      return { accepted: true };
+      const result = await this.team.interrupt({ reason: "user_interrupt" });
+      return {
+        accepted: result.accepted,
+        code: result.accepted ? result.status : (result.status ?? "INTERRUPT_REJECTED"),
+        message: result.message,
+      };
     } catch (error) {
       return buildCommandFailure("interrupt team run", error);
     }

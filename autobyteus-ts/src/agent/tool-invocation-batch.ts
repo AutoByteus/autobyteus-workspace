@@ -66,4 +66,8 @@ export class ToolInvocationBatch {
   getSettledInvocationIds(): string[] {
     return Array.from(this.settledResultsByInvocationId.keys());
   }
+
+  getExpectedInvocationIds(): string[] {
+    return [...this.expectedInvocationIds];
+  }
 }

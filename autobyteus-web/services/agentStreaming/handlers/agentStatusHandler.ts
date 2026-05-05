@@ -18,6 +18,11 @@ import { findOrCreateAIMessage, findSegmentById } from './segmentHandler';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
+import {
+  applyExecutionInterruptedState,
+  isTerminalStatus,
+  type ToolLifecycleSegment,
+} from './toolLifecycleState';
 
 
 /**
@@ -65,6 +70,15 @@ export function handleTurnCompleted(
   context: AgentContext
 ): void {
   markConversationComplete(context);
+}
+
+export function handleTurnInterrupted(
+  payload: TurnLifecyclePayload,
+  context: AgentContext
+): void {
+  terminalizeOpenToolSegmentsForInterruptedTurn(payload, context);
+  markConversationComplete(context);
+  context.isSending = false;
 }
 
 
@@ -202,4 +216,43 @@ function markConversationComplete(context: AgentContext): void {
     lastMessage.isComplete = true;
   }
   context.isSending = false;
+}
+
+function isToolLifecycleSegment(segment: unknown): segment is ToolLifecycleSegment {
+  if (!segment || typeof segment !== 'object') {
+    return false;
+  }
+  const type = (segment as { type?: string }).type;
+  return type === 'tool_call' || type === 'write_file' || type === 'terminal_command' || type === 'edit_file';
+}
+
+function terminalizeOpenToolSegmentsForInterruptedTurn(
+  payload: TurnLifecyclePayload,
+  context: AgentContext,
+): void {
+  const lastMessage = context.conversation.messages[context.conversation.messages.length - 1];
+  if (lastMessage?.type !== 'ai') {
+    return;
+  }
+
+  const rawReason = (payload as { reason?: unknown }).reason;
+  const reason =
+    typeof rawReason === 'string' && rawReason.trim().length > 0
+      ? rawReason.trim()
+      : 'interrupted';
+  const activityStore = useAgentActivityStore();
+
+  for (const segment of lastMessage.segments) {
+    if (!isToolLifecycleSegment(segment) || isTerminalStatus(segment.status)) {
+      continue;
+    }
+
+    const transitioned = applyExecutionInterruptedState(segment, reason);
+    if (!transitioned) {
+      continue;
+    }
+
+    activityStore.updateActivityStatus(context.state.runId, segment.invocationId, 'interrupted');
+    activityStore.setActivityResult(context.state.runId, segment.invocationId, null, segment.error);
+  }
 }

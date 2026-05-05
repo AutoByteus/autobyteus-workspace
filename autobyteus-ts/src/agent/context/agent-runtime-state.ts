@@ -7,7 +7,7 @@ import { RecentSettledInvocationCache } from './recent-settled-invocation-cache.
 import { ToDoList } from '../../task-management/todo-list.js';
 import { BaseLLM } from '../../llm/base.js';
 import type { BaseTool } from '../../tools/base-tool.js';
-import type { MemoryManager } from '../../memory/memory-manager.js';
+import type { MemoryManager, WorkingContextTurnCheckpoint } from '../../memory/memory-manager.js';
 import type { WorkingContextSnapshotBootstrapOptions } from '../../memory/restore/working-context-snapshot-bootstrapper.js';
 
 import type { AgentStatusDeriver } from '../status/status-deriver.js';
@@ -33,6 +33,7 @@ export class AgentRuntimeState {
   restoreOptions: WorkingContextSnapshotBootstrapOptions | null = null;
   processedSystemPrompt: string | null = null;
   statusManagerRef: AgentStatusManager | null = null;
+  private activeWorkingContextCheckpoint: WorkingContextTurnCheckpoint | null = null;
 
   constructor(
     agentId: string,
@@ -72,8 +73,8 @@ export class AgentRuntimeState {
     const nextTurnId =
       typeof turnId === 'string' && turnId.trim().length > 0 ? turnId.trim() : memoryManager.startTurn();
     const nextTurn = new AgentTurn(nextTurnId);
+    this.activeWorkingContextCheckpoint = memoryManager.createWorkingContextTurnCheckpoint(nextTurnId);
     this.activeTurn = nextTurn;
-    this.statusManagerRef?.notifier?.notifyAgentTurnStarted?.(nextTurnId);
     return nextTurn;
   }
 
@@ -86,18 +87,59 @@ export class AgentRuntimeState {
       return null;
     }
 
-    this.statusManagerRef?.notifier?.notifyAgentTurnCompleted?.(resolvedTurnId);
     if (this.activeTurn?.turnId === resolvedTurnId) {
       this.activeTurn = null;
+    }
+    if (this.activeWorkingContextCheckpoint?.turnId === resolvedTurnId) {
+      this.activeWorkingContextCheckpoint = null;
     }
     return resolvedTurnId;
   }
 
+  restoreWorkingContextForInterruptedTurn(turnId: string): boolean {
+    const checkpoint = this.activeWorkingContextCheckpoint;
+    const memoryManager = this.memoryManager;
+    if (!checkpoint || checkpoint.turnId !== turnId || !memoryManager) {
+      return false;
+    }
+
+    memoryManager.restoreWorkingContextTurnCheckpoint(checkpoint);
+    this.activeWorkingContextCheckpoint = null;
+    return true;
+  }
+
+  interruptActiveTurn(reason: string): import('../interruption/agent-interruption.js').AgentInterruptResult {
+    if (!this.activeTurn) {
+      return {
+        accepted: false,
+        status: 'no_active_turn',
+        turnId: null,
+        reason,
+        message: `Agent '${this.agentId}' has no active turn to interrupt.`
+      };
+    }
+    const result = this.activeTurn.interrupt(reason);
+    this.clearPendingToolApprovalsForTurn(this.activeTurn.turnId);
+    const activeBatch = this.activeTurn.activeToolInvocationBatch;
+    if (activeBatch) {
+      this.recentSettledInvocationIds.addMany(activeBatch.getExpectedInvocationIds());
+    }
+    return result;
+  }
+
+  clearPendingToolApprovalsForTurn(turnId: string): void {
+    for (const [invocationId, invocation] of Object.entries(this.pendingToolApprovals)) {
+      if (!invocation.turnId || invocation.turnId === turnId) {
+        delete this.pendingToolApprovals[invocationId];
+      }
+    }
+  }
+
+
   shouldEnterIdleAfterLlmResponse(currentStatus: AgentStatus): boolean {
     return (
       currentStatus === AgentStatus.ANALYZING_LLM_RESPONSE &&
-      Object.keys(this.pendingToolApprovals).length === 0 &&
-      (this.inputEventQueues?.toolInvocationRequestQueue.empty() ?? true)
+      Object.keys(this.pendingToolApprovals).length === 0
     );
   }
 

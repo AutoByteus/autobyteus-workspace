@@ -3,6 +3,10 @@ import type { AgentTeamExternalEventNotifier } from './streaming/agent-team-even
 import { ProcessUserMessageEvent, ToolApprovalTeamEvent } from './events/agent-team-events.js';
 import type { AgentInputUserMessage } from '../agent/message/agent-input-user-message.js';
 import { AgentTeamStatus } from './status/agent-team-status.js';
+import type {
+  TeamInterruptOptions,
+  TeamInterruptResult
+} from './context/team-manager.js';
 
 export class AgentTeam {
   private runtime: AgentTeamRuntime;
@@ -63,6 +67,10 @@ export class AgentTeam {
 
   async stop(timeout: number = 10.0): Promise<void> {
     await this.runtime.stop(timeout);
+  }
+
+  async interrupt(options: TeamInterruptOptions = {}): Promise<TeamInterruptResult> {
+    return this.runtime.interrupt(options);
   }
 
   get isRunning(): boolean {

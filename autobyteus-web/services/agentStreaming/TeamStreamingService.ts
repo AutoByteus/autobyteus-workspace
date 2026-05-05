@@ -19,11 +19,13 @@ import {
   handleToolExecutionStarted,
   handleToolExecutionSucceeded,
   handleToolExecutionFailed,
+  handleToolExecutionInterrupted,
   handleToolLog,
   handleAgentStatus,
   handleCompactionStatus,
   handleAssistantComplete,
   handleTurnCompleted,
+  handleTurnInterrupted,
   handleExternalUserMessage,
   handleTodoListUpdate,
   handleError,
@@ -145,8 +147,8 @@ export class TeamStreamingService {
     this.approvalTokenByInvocationId.delete(invocationId);
   }
 
-  stopGeneration(): void {
-    const message: ClientMessage = { type: 'STOP_GENERATION' };
+  interruptGeneration(): void {
+    const message: ClientMessage = { type: 'INTERRUPT_GENERATION' };
     this.wsClient.send(serializeClientMessage(message));
   }
 
@@ -302,6 +304,10 @@ export class TeamStreamingService {
         handleToolExecutionFailed(message.payload, memberContext);
         break;
 
+      case 'TOOL_EXECUTION_INTERRUPTED':
+        handleToolExecutionInterrupted(message.payload, memberContext);
+        break;
+
       case 'TOOL_LOG':
         handleToolLog(message.payload, memberContext);
         break;
@@ -319,6 +325,10 @@ export class TeamStreamingService {
 
       case 'TURN_COMPLETED':
         handleTurnCompleted(message.payload, memberContext);
+        break;
+
+      case 'TURN_INTERRUPTED':
+        handleTurnInterrupted(message.payload, memberContext);
         break;
 
       case 'ASSISTANT_COMPLETE':

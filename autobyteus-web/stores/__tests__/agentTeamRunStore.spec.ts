@@ -12,7 +12,7 @@ const {
   mockAttachContext,
   mockConnectionState,
   mockSendMessage,
-  mockStopGeneration,
+  mockInterruptGeneration,
   mockMutate,
   mockClearActivities,
   teamContextsStoreMock,
@@ -26,7 +26,7 @@ const {
   mockAttachContext: vi.fn(),
   mockConnectionState: { value: 'connected' as 'connected' | 'disconnected' | 'connecting' | 'reconnecting' },
   mockSendMessage: vi.fn(),
-  mockStopGeneration: vi.fn(),
+  mockInterruptGeneration: vi.fn(),
   mockMutate: vi.fn(),
   mockClearActivities: vi.fn(),
   teamContextsStoreMock: {
@@ -73,7 +73,7 @@ vi.mock('~/services/agentStreaming', () => ({
     sendMessage: mockSendMessage,
     approveTool: vi.fn(),
     denyTool: vi.fn(),
-    stopGeneration: mockStopGeneration,
+    interruptGeneration: mockInterruptGeneration,
   })),
 }));
 
@@ -126,7 +126,7 @@ describe('agentTeamRunStore', () => {
     mockDisconnect.mockReset();
     mockAttachContext.mockReset();
     mockSendMessage.mockReset();
-    mockStopGeneration.mockReset();
+    mockInterruptGeneration.mockReset();
     teamContextsStoreMock.activeTeamContext = null;
     teamContextsStoreMock.focusedMemberContext = null;
     teamContextsStoreMock.getTeamContextById.mockReset();
@@ -433,7 +433,7 @@ describe('agentTeamRunStore', () => {
     expect(typeof replacementTeamContext.unsubscribe).toBe('function');
   });
 
-  it('stopGeneration should send STOP_GENERATION without clearing sending state optimistically', () => {
+  it('interruptGeneration should send INTERRUPT_GENERATION without clearing sending state optimistically', () => {
     const focusedMember = {
       isSending: true,
       state: {
@@ -465,10 +465,10 @@ describe('agentTeamRunStore', () => {
 
     const store = useAgentTeamRunStore();
     store.connectToTeamStream('team-1');
-    const result = store.stopGeneration('team-1');
+    const result = store.interruptGeneration('team-1');
 
     expect(result).toBe(true);
-    expect(mockStopGeneration).toHaveBeenCalledTimes(1);
+    expect(mockInterruptGeneration).toHaveBeenCalledTimes(1);
     expect(focusedMember.isSending).toBe(true);
   });
 

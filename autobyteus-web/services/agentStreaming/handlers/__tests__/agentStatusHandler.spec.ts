@@ -4,6 +4,7 @@ import {
   handleCompactionStatus,
   handleAssistantComplete,
   handleTurnCompleted,
+  handleTurnInterrupted,
   handleError
 } from '../agentStatusHandler';
 import { AgentStatus } from '~/types/agent/AgentStatus';
@@ -179,6 +180,46 @@ describe('agentStatusHandler', () => {
 
       expect(aiMsg.isComplete).toBe(true);
       expect(mockContext.isSending).toBe(false);
+    });
+  });
+
+  describe('handleTurnInterrupted', () => {
+    it('terminalizes pending approval tool rows and stops sending', () => {
+      const toolSegment = {
+        type: 'tool_call',
+        invocationId: 'inv-pending',
+        toolName: 'approval_tool',
+        arguments: {},
+        status: 'awaiting-approval',
+        logs: [],
+        result: null,
+        error: null,
+      };
+      const aiMsg = { type: 'ai', isComplete: false, segments: [toolSegment] };
+      mockContext.conversation.messages.push(aiMsg);
+
+      const payload: TurnLifecyclePayload = {
+        turn_id: 'turn-1',
+        reason: 'user_interrupt',
+        interrupted: true,
+      };
+      handleTurnInterrupted(payload, mockContext);
+
+      expect(toolSegment.status).toBe('interrupted');
+      expect(toolSegment.error).toBe('user_interrupt');
+      expect(aiMsg.isComplete).toBe(true);
+      expect(mockContext.isSending).toBe(false);
+      expect(mockActivityStore.updateActivityStatus).toHaveBeenCalledWith(
+        mockContext.state.runId,
+        'inv-pending',
+        'interrupted',
+      );
+      expect(mockActivityStore.setActivityResult).toHaveBeenCalledWith(
+        mockContext.state.runId,
+        'inv-pending',
+        null,
+        'user_interrupt',
+      );
     });
   });
 

@@ -82,6 +82,28 @@ runIntegration('terminal tools integration', () => {
     });
   });
 
+  it('run_bash interrupts a foreground command through the execution signal', async () => {
+    await withTempDir(async (tempDir) => {
+      const context = new MockContext(tempDir);
+      const controller = new AbortController();
+      const startedAt = Date.now();
+      const resultPromise = runBashTool.execute(
+        context,
+        { command: 'sleep 10', timeout_seconds: 30 },
+        { signal: controller.signal }
+      );
+
+      await new Promise((resolve) => setTimeout(resolve, 150));
+      controller.abort();
+      const result = await resultPromise;
+
+      expect(result).toBeInstanceOf(TerminalResult);
+      expect(result.timedOut).toBe(true);
+      expect(Date.now() - startedAt).toBeLessThan(5000);
+      expect(result.effectiveCwd).toBe(tempDir);
+    });
+  });
+
   it('run_bash can start a background process', async () => {
     await withTempDir(async (tempDir) => {
       const context = new MockContext(tempDir);

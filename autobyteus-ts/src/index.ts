@@ -20,6 +20,7 @@ export * from './memory/index.js';
 export * from './agent/context/index.js';
 export * from './agent/factory/index.js';
 export * from './agent/input-processor/index.js';
+export * from './agent/interruption/index.js';
 export * from './agent/lifecycle/index.js';
 export * from './agent/llm-response-processor/index.js';
 export * from './agent/message/index.js';

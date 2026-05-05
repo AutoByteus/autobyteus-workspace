@@ -1,5 +1,5 @@
 import type { ParameterSchema } from '../../utils/parameter-schema.js';
-import { BaseTool } from '../base-tool.js';
+import { BaseTool, type ToolExecutionOptions } from '../base-tool.js';
 import { McpServerProxy } from './server/proxy.js';
 
 type AgentContextLike = { agentId: string };
@@ -52,9 +52,9 @@ export class GenericMcpTool extends BaseTool {
     return null;
   }
 
-  protected async _execute(context: AgentContextLike, kwargs: ToolArguments = {}): Promise<any> {
+  protected async _execute(context: AgentContextLike, kwargs: ToolArguments = {}, options: ToolExecutionOptions = {}): Promise<any> {
     const agentId = context.agentId;
     const proxy = new McpServerProxy(agentId, this.serverId);
-    return await proxy.callTool(this.remoteToolName, kwargs);
+    return await proxy.callTool(this.remoteToolName, kwargs, { signal: options.signal ?? undefined });
   }
 }

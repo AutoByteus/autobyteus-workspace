@@ -152,8 +152,8 @@ export class AgentTeamStreamHandler {
         return;
       }
 
-      if (msgType === ClientMessageType.STOP_GENERATION) {
-        await this.handleStopGeneration(teamRunId);
+      if (msgType === ClientMessageType.INTERRUPT_GENERATION) {
+        await this.handleInterruptGeneration(teamRunId);
       } else if (msgType === ClientMessageType.APPROVE_TOOL) {
         await this.handleToolApproval(teamRunId, payload, true);
       } else if (msgType === ClientMessageType.DENY_TOOL) {
@@ -324,17 +324,17 @@ export class AgentTeamStreamHandler {
     });
   }
 
-  private async handleStopGeneration(teamRunId: string): Promise<void> {
+  private async handleInterruptGeneration(teamRunId: string): Promise<void> {
     const activeRun = this.resolveCommandRun(teamRunId);
     if (!activeRun) {
-      logger.warn(`STOP_GENERATION rejected for team run ${teamRunId}: active run not found.`);
+      logger.warn(`INTERRUPT_GENERATION rejected for team run ${teamRunId}: active run not found.`);
       return;
     }
 
     const result = await activeRun.interrupt();
     if (!result.accepted) {
       logger.warn(
-        `STOP_GENERATION rejected for team run ${teamRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
+        `INTERRUPT_GENERATION rejected for team run ${teamRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
       );
     }
   }

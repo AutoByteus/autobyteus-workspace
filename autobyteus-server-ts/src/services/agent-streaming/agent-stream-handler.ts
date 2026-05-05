@@ -163,8 +163,8 @@ export class AgentStreamHandler {
         return;
       }
 
-      if (msgType === ClientMessageType.STOP_GENERATION) {
-        await this.handleStopGeneration(agentRunId);
+      if (msgType === ClientMessageType.INTERRUPT_GENERATION) {
+        await this.handleInterruptGeneration(agentRunId);
       } else if (msgType === ClientMessageType.APPROVE_TOOL) {
         await this.handleToolApproval(agentRunId, payload, true);
       } else if (msgType === ClientMessageType.DENY_TOOL) {
@@ -343,16 +343,16 @@ export class AgentStreamHandler {
     });
   }
 
-  private async handleStopGeneration(agentRunId: string): Promise<void> {
+  private async handleInterruptGeneration(agentRunId: string): Promise<void> {
     const activeRun = this.getActiveRun(agentRunId);
     if (!activeRun) {
-      logger.warn(`STOP_GENERATION rejected for missing agent run ${agentRunId}.`);
+      logger.warn(`INTERRUPT_GENERATION rejected for missing agent run ${agentRunId}.`);
       return;
     }
     const result = await activeRun.interrupt(null);
     if (!result.accepted) {
       logger.warn(
-        `STOP_GENERATION rejected for agent run ${agentRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
+        `INTERRUPT_GENERATION rejected for agent run ${agentRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
       );
     }
   }

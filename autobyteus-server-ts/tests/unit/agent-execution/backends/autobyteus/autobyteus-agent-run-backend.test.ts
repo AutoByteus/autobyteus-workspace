@@ -14,6 +14,11 @@ const createBackend = (overrides: {
     currentStatus: "idle",
     postUserMessage: vi.fn().mockResolvedValue(undefined),
     postToolExecutionApproval: vi.fn().mockResolvedValue(undefined),
+    interrupt: vi.fn().mockResolvedValue({
+      accepted: true,
+      status: "accepted",
+      turnId: "turn-1",
+    }),
     stop: vi.fn().mockResolvedValue(undefined),
     ...overrides.agent,
   };
@@ -77,7 +82,7 @@ describe("AutoByteusAgentRunBackend", () => {
     expect(result).toEqual({ accepted: true });
   });
 
-  it("interrupts the active native run through stop()", async () => {
+  it("interrupts the active native run through native interrupt()", async () => {
     const { backend, agent } = createBackend({
       agent: {
         currentStatus: "running",
@@ -86,8 +91,17 @@ describe("AutoByteusAgentRunBackend", () => {
 
     const result = await backend.interrupt();
 
-    expect(agent.stop).toHaveBeenCalledTimes(1);
-    expect(result).toEqual({ accepted: true });
+    expect(agent.interrupt).toHaveBeenCalledWith({
+      turnId: null,
+      reason: "user_interrupt",
+    });
+    expect(agent.stop).not.toHaveBeenCalled();
+    expect(result).toEqual({
+      accepted: true,
+      code: "accepted",
+      message: undefined,
+      turnId: "turn-1",
+    });
   });
 
   it("terminates the run by removing it from the native registry", async () => {
@@ -113,6 +127,7 @@ describe("AutoByteusAgentRunBackend", () => {
     const interruptResult = await backend.interrupt();
 
     expect(agent.postUserMessage).not.toHaveBeenCalled();
+    expect(agent.interrupt).not.toHaveBeenCalled();
     expect(agent.stop).not.toHaveBeenCalled();
     expect(sendResult).toEqual({
       accepted: false,
@@ -129,7 +144,7 @@ describe("AutoByteusAgentRunBackend", () => {
   it("wraps native command failures as runtime command failures", async () => {
     const { backend } = createBackend({
       agent: {
-        stop: vi.fn().mockRejectedValue(new Error("stop failed")),
+        interrupt: vi.fn().mockRejectedValue(new Error("interrupt failed")),
       },
     });
 
@@ -138,7 +153,7 @@ describe("AutoByteusAgentRunBackend", () => {
     expect(result).toEqual({
       accepted: false,
       code: "RUNTIME_COMMAND_FAILED",
-      message: "Failed to interrupt run: Error: stop failed",
+      message: "Failed to interrupt run: Error: interrupt failed",
     });
   });
 });

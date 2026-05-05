@@ -259,9 +259,9 @@ const handleSend = async () => {
 
 const handleStop = () => {
   try {
-    activeContextStore.stopGeneration();
+    activeContextStore.interruptGeneration();
   } catch (error) {
-    console.error('Error stopping generation:', error);
+    console.error('Error interrupting generation:', error);
   }
 };
 

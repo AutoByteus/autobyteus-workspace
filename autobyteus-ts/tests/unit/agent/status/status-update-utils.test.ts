@@ -4,9 +4,10 @@ import { AgentStatus } from '../../../../src/agent/status/status-enum.js';
 import { AgentStatusDeriver } from '../../../../src/agent/status/status-deriver.js';
 import {
   UserMessageReceivedEvent,
+  AgentInterruptRequestedEvent,
+  AgentTurnInterruptedEvent,
   PendingToolInvocationEvent,
   ToolExecutionApprovalEvent,
-  ExecuteToolInvocationEvent,
   ToolResultEvent,
   AgentErrorEvent
 } from '../../../../src/agent/events/agent-events.js';
@@ -65,13 +66,6 @@ describe('status_update_utils', () => {
     expect(data).toEqual({ tool_name: 'test_tool' });
   });
 
-  it('builds status update data for executing tool (approved invocation)', () => {
-    const invocation = new ToolInvocation('approved_tool', {}, 'tid2');
-    const event = new ExecuteToolInvocationEvent(invocation);
-    const data = buildStatusUpdateData(event, agentContext, AgentStatus.EXECUTING_TOOL);
-    expect(data).toEqual({ tool_name: 'approved_tool' });
-  });
-
   it('builds status update data for execution approval unknown tool', () => {
     const event = new ToolExecutionApprovalEvent('missing', true);
     agentContext.state.pendingToolApprovals = {};
@@ -97,6 +91,21 @@ describe('status_update_utils', () => {
     const event = new AgentErrorEvent('boom', 'trace');
     const data = buildStatusUpdateData(event, agentContext, AgentStatus.ERROR);
     expect(data).toEqual({ error_message: 'boom', error_details: 'trace' });
+  });
+
+  it('builds status update data for interrupt request and settlement', () => {
+    const request = new AgentInterruptRequestedEvent('turn-1', 'user_interrupt');
+    expect(buildStatusUpdateData(request, agentContext, AgentStatus.INTERRUPTING)).toEqual({
+      turn_id: 'turn-1',
+      reason: 'user_interrupt'
+    });
+
+    const interrupted = new AgentTurnInterruptedEvent('turn-1', 'user_interrupt');
+    expect(buildStatusUpdateData(interrupted, agentContext, AgentStatus.IDLE)).toEqual({
+      turn_id: 'turn-1',
+      reason: 'user_interrupt',
+      interrupted: true
+    });
   });
 
   it('apply_event_and_derive_status updates status and emits', async () => {

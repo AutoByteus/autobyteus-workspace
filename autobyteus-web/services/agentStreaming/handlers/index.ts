@@ -13,6 +13,7 @@ export {
   handleToolExecutionStarted,
   handleToolExecutionSucceeded,
   handleToolExecutionFailed,
+  handleToolExecutionInterrupted,
   handleToolLog,
 } from './toolLifecycleHandler';
 
@@ -21,6 +22,7 @@ export {
   handleCompactionStatus,
   handleAssistantComplete,
   handleTurnCompleted,
+  handleTurnInterrupted,
   handleError,
 } from './agentStatusHandler';
 

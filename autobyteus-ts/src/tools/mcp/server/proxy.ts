@@ -17,8 +17,8 @@ export class McpServerProxy {
     this.instanceManager = McpServerInstanceManager.getInstance();
   }
 
-  async callTool(toolName: string, argumentsPayload: ToolArguments): Promise<unknown> {
+  async callTool(toolName: string, argumentsPayload: ToolArguments, options: { signal?: AbortSignal | null } = {}): Promise<unknown> {
     const realServerInstance = this.instanceManager.getServerInstance(this.agentId, this.serverId);
-    return await realServerInstance.callTool(toolName, argumentsPayload);
+    return await realServerInstance.callTool(toolName, argumentsPayload, options);
   }
 }

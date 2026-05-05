@@ -52,6 +52,7 @@ const statusColor = computed(() => {
     case AgentStatus.ExecutingTool:
     case AgentStatus.ProcessingToolResult:
     case AgentStatus.AnalyzingLlmResponse:
+    case AgentStatus.Interrupting:
       return 'bg-blue-400 animate-pulse';
     case AgentStatus.AwaitingToolApproval:
     case AgentStatus.AwaitingLlmResponse:

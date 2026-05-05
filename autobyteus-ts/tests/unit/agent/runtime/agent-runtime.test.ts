@@ -46,7 +46,13 @@ import { AgentConfig } from '../../../../src/agent/context/agent-config.js';
 import { AgentRuntimeState } from '../../../../src/agent/context/agent-runtime-state.js';
 import { AgentContext } from '../../../../src/agent/context/agent-context.js';
 import { AgentStatus } from '../../../../src/agent/status/status-enum.js';
-import { ShutdownRequestedEvent, AgentStoppedEvent, AgentErrorEvent } from '../../../../src/agent/events/agent-events.js';
+import {
+  ShutdownRequestedEvent,
+  AgentStoppedEvent,
+  AgentErrorEvent,
+  AgentInterruptRequestedEvent,
+  ToolExecutionApprovalEvent
+} from '../../../../src/agent/events/agent-events.js';
 import { BaseLLM } from '../../../../src/llm/base.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
@@ -54,9 +60,10 @@ import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { CompleteResponse } from '../../../../src/llm/utils/response-types.js';
 import type { LLMUserMessage } from '../../../../src/llm/user-message.js';
 import type { CompleteResponse as CompleteResponseType, ChunkResponse } from '../../../../src/llm/utils/response-types.js';
+import type { Message } from '../../../../src/llm/utils/messages.js';
 
 class DummyLLM extends BaseLLM {
-  protected async _sendMessagesToLLM(_messages: any[]): Promise<CompleteResponseType> {
+  protected async _sendMessagesToLLM(_messages: Message[]): Promise<CompleteResponseType> {
     return new CompleteResponse({ content: 'ok' });
   }
 
@@ -77,6 +84,11 @@ const makeContext = () => {
   const llm = new DummyLLM(model, new LLMConfig());
   const config = new AgentConfig('name', 'role', 'desc', llm);
   const state = new AgentRuntimeState('agent-1');
+  state.memoryManager = {
+    startTurn: () => 'turn-1',
+    createWorkingContextTurnCheckpoint: (turnId: string) => ({ turnId, messages: [], lastCompactionTs: null }),
+    restoreWorkingContextTurnCheckpoint: vi.fn()
+  } as any;
   return new AgentContext('agent-1', config, state);
 };
 
@@ -182,5 +194,70 @@ describe('AgentRuntime', () => {
 
     mocks.workerInstance.isAlive.mockReturnValue(false);
     expect(runtime.isRunning).toBe(false);
+  });
+
+  it('interrupt returns no_active_turn when worker is inactive', async () => {
+    const context = makeContext();
+    const runtime = new AgentRuntime(context, {} as any);
+
+    mocks.workerInstance.isAlive.mockReturnValue(false);
+    const result = await runtime.interrupt({ reason: 'user_interrupt' });
+
+    expect(result.accepted).toBe(false);
+    expect(result.status).toBe('no_active_turn');
+    expect(result.turnId).toBeNull();
+  });
+
+  it('interrupt signals the active turn without stopping the worker', async () => {
+    const context = makeContext();
+    const runtime = new AgentRuntime(context, {} as any);
+    const activeTurn = context.state.startActiveTurn('turn-1');
+    mocks.workerInstance.isAlive.mockReturnValue(true);
+    runtime.applyEventAndDeriveStatus = vi.fn(async () => undefined) as any;
+
+    const interruptPromise = runtime.interrupt({
+      turnId: 'turn-1',
+      reason: 'user_interrupt',
+      timeoutMs: 100
+    });
+
+    await Promise.resolve();
+    expect(activeTurn.executionScope.signal.aborted).toBe(true);
+    activeTurn.settle({ kind: 'interrupted', turnId: 'turn-1', reason: 'user_interrupt' });
+    const result = await interruptPromise;
+
+    expect(result.accepted).toBe(true);
+    expect(result.status).toBe('accepted');
+    expect(result.turnId).toBe('turn-1');
+    expect((runtime.applyEventAndDeriveStatus as any).mock.calls[0][0]).toBeInstanceOf(
+      AgentInterruptRequestedEvent
+    );
+    expect(mocks.workerInstance.stop).not.toHaveBeenCalled();
+  });
+
+  it('interrupt rejects mismatched turn ids without signaling the active turn', async () => {
+    const context = makeContext();
+    const runtime = new AgentRuntime(context, {} as any);
+    const activeTurn = context.state.startActiveTurn('turn-1');
+    mocks.workerInstance.isAlive.mockReturnValue(true);
+
+    const result = await runtime.interrupt({ turnId: 'other-turn', reason: 'user_interrupt' });
+
+    expect(result.accepted).toBe(false);
+    expect(result.status).toBe('turn_mismatch');
+    expect(activeTurn.executionScope.signal.aborted).toBe(false);
+  });
+
+  it('rejects unknown active-turn tool approvals without status mutation', async () => {
+    const context = makeContext();
+    const runtime = new AgentRuntime(context, {} as any);
+    context.state.inputEventQueues = {} as any;
+    context.state.startActiveTurn('turn-1');
+    mocks.workerInstance.isAlive.mockReturnValue(true);
+    runtime.applyEventAndDeriveStatus = vi.fn(async () => undefined) as any;
+
+    await runtime.submitEvent(new ToolExecutionApprovalEvent('missing-invocation', true));
+
+    expect(runtime.applyEventAndDeriveStatus).not.toHaveBeenCalled();
   });
 });

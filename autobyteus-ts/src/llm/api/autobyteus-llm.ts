@@ -1,4 +1,4 @@
-import { BaseLLM } from '../base.js';
+import { BaseLLM, type LLMInvocationOptions } from '../base.js';
 import { LLMModel } from '../models.js';
 import { LLMConfig } from '../utils/llm-config.js';
 import { Message } from '../utils/messages.js';
@@ -52,7 +52,8 @@ export class AutobyteusLLM extends BaseLLM {
 
   protected async _sendMessagesToLLM(
     messages: Message[],
-    kwargs: Record<string, unknown>
+    kwargs: Record<string, unknown>,
+    _options: LLMInvocationOptions = {}
   ): Promise<CompleteResponse> {
     const conversationId = this.resolveConversationId(kwargs);
     const payload = await this.renderPayload(messages);
@@ -80,7 +81,8 @@ export class AutobyteusLLM extends BaseLLM {
 
   protected async *_streamMessagesToLLM(
     messages: Message[],
-    kwargs: Record<string, unknown>
+    kwargs: Record<string, unknown>,
+    _options: LLMInvocationOptions = {}
   ): AsyncGenerator<ChunkResponse, void, unknown> {
     const conversationId = this.resolveConversationId(kwargs);
     const payload = await this.renderPayload(messages);

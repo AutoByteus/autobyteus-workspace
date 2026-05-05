@@ -1,5 +1,5 @@
 import { LLMUserMessage } from '../llm/user-message.js';
-import { ToolCallSpec } from '../llm/utils/messages.js';
+import { Message, ToolCallSpec } from '../llm/utils/messages.js';
 import { CompleteResponse } from '../llm/utils/response-types.js';
 import { ToolResultEvent } from '../agent/events/agent-events.js';
 import { ToolInvocation } from '../agent/tool-invocation.js';
@@ -15,6 +15,12 @@ import { WorkingContextSnapshot } from './working-context-snapshot.js';
 import { WorkingContextSnapshotSerializer } from './working-context-snapshot-serializer.js';
 import { WorkingContextSnapshotStore } from './store/working-context-snapshot-store.js';
 import { buildToolInteractions } from './tool-interaction-builder.js';
+
+export type WorkingContextTurnCheckpoint = {
+  turnId: string;
+  messages: Message[];
+  lastCompactionTs: number | null;
+};
 
 export class MemoryManager {
   store: MemoryStore;
@@ -48,6 +54,18 @@ export class MemoryManager {
 
   startTurn(): string {
     return this.turnTracker.nextTurnId();
+  }
+
+  createWorkingContextTurnCheckpoint(turnId: string): WorkingContextTurnCheckpoint {
+    return {
+      turnId,
+      messages: this.workingContextSnapshot.buildMessages(),
+      lastCompactionTs: this.workingContextSnapshot.lastCompactionTs
+    };
+  }
+
+  restoreWorkingContextTurnCheckpoint(checkpoint: WorkingContextTurnCheckpoint): void {
+    this.resetWorkingContextSnapshot(checkpoint.messages, checkpoint.lastCompactionTs);
   }
 
   requestCompaction(): void {
@@ -209,8 +227,12 @@ export class MemoryManager {
     return this.workingContextSnapshot.buildMessages();
   }
 
-  resetWorkingContextSnapshot(snapshotMessages: Iterable<any>): void {
-    this.workingContextSnapshot.reset(snapshotMessages);
+  resetWorkingContextSnapshot(snapshotMessages: Iterable<any>, lastCompactionTs?: number | null): void {
+    if (arguments.length >= 2) {
+      this.workingContextSnapshot.reset(snapshotMessages, lastCompactionTs);
+    } else {
+      this.workingContextSnapshot.reset(snapshotMessages);
+    }
     this.persistWorkingContextSnapshot();
   }
 

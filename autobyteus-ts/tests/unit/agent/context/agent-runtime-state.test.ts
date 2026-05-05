@@ -2,8 +2,34 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AgentRuntimeState } from '../../../../src/agent/context/agent-runtime-state.js';
 import { AgentStatus } from '../../../../src/agent/status/status-enum.js';
 import { ToolInvocation } from '../../../../src/agent/tool-invocation.js';
-import { AgentInputEventQueueManager } from '../../../../src/agent/events/agent-input-event-queue-manager.js';
-import { PendingToolInvocationEvent } from '../../../../src/agent/events/agent-events.js';
+import { MemoryManager } from '../../../../src/memory/memory-manager.js';
+import { MemoryStore } from '../../../../src/memory/store/base-store.js';
+import { MemoryType } from '../../../../src/memory/models/memory-types.js';
+import { Message, MessageRole } from '../../../../src/llm/utils/messages.js';
+
+class InMemoryStore extends MemoryStore {
+  private items: any[] = [];
+
+  add(items: Iterable<any>): void {
+    for (const item of items) {
+      this.items.push(item);
+    }
+  }
+
+  list(memoryType: MemoryType, limit?: number): any[] {
+    const filtered = this.items.filter((item) => item?.memoryType === memoryType);
+    return typeof limit === 'number' ? filtered.slice(-limit) : filtered;
+  }
+
+  listRawTracesOrdered(limit?: number): any[] {
+    return this.list(MemoryType.RAW_TRACE, limit);
+  }
+
+  pruneRawTracesById(traceIdsToRemove: Iterable<string>): void {
+    const ids = new Set(Array.from(traceIdsToRemove));
+    this.items = this.items.filter((item) => item?.memoryType !== MemoryType.RAW_TRACE || !ids.has(item.id));
+  }
+}
 
 describe('AgentRuntimeState', () => {
   beforeEach(() => {
@@ -73,9 +99,8 @@ describe('AgentRuntimeState', () => {
     expect(Object.keys(state.pendingToolApprovals)).toHaveLength(0);
   });
 
-  it('makes the post-LLM idle decision explicit on runtime state', async () => {
+  it('makes the post-LLM idle decision explicit on runtime state', () => {
     const state = new AgentRuntimeState('agent-7');
-    state.inputEventQueues = new AgentInputEventQueueManager();
 
     expect(state.shouldEnterIdleAfterLlmResponse(AgentStatus.ANALYZING_LLM_RESPONSE)).toBe(true);
 
@@ -83,15 +108,58 @@ describe('AgentRuntimeState', () => {
     expect(state.shouldEnterIdleAfterLlmResponse(AgentStatus.ANALYZING_LLM_RESPONSE)).toBe(false);
 
     state.pendingToolApprovals = {};
-    await state.inputEventQueues.enqueueToolInvocationRequest(
-      new PendingToolInvocationEvent(new ToolInvocation('tool', {}, 'inv2'))
-    );
-    expect(state.shouldEnterIdleAfterLlmResponse(AgentStatus.ANALYZING_LLM_RESPONSE)).toBe(false);
+    expect(state.shouldEnterIdleAfterLlmResponse(AgentStatus.ANALYZING_LLM_RESPONSE)).toBe(true);
     expect(state.shouldEnterIdleAfterLlmResponse(AgentStatus.AWAITING_LLM_RESPONSE)).toBe(false);
   });
 
-  it('resolves the idle event turn id from active turn first and then the fallback', () => {
+  it('interrupts the active turn and fences pending approvals for that turn', () => {
     const state = new AgentRuntimeState('agent-8');
+    state.memoryManager = {
+      startTurn: () => 'turn-1',
+      createWorkingContextTurnCheckpoint: (turnId: string) => ({ turnId, messages: [], lastCompactionTs: null }),
+      restoreWorkingContextTurnCheckpoint: vi.fn()
+    } as any;
+    const activeTurn = state.startActiveTurn();
+    const invocation = new ToolInvocation('tool', {}, 'inv-1');
+    invocation.turnId = activeTurn.turnId;
+    state.storePendingToolInvocation(invocation);
+
+    const result = state.interruptActiveTurn('user_interrupt');
+
+    expect(result.accepted).toBe(true);
+    expect(result.status).toBe('accepted');
+    expect(activeTurn.executionScope.signal.aborted).toBe(true);
+    expect(state.pendingToolApprovals).toEqual({});
+  });
+
+  it('restores the turn-start working context checkpoint for interrupted turns', () => {
+    const state = new AgentRuntimeState('agent-checkpoint');
+    const memoryManager = new MemoryManager({ store: new InMemoryStore() });
+    memoryManager.workingContextSnapshot.appendMessage(
+      new Message(MessageRole.SYSTEM, { content: 'stable system prompt' })
+    );
+    state.memoryManager = memoryManager;
+
+    const activeTurn = state.startActiveTurn('turn-restore');
+    memoryManager.workingContextSnapshot.appendMessage(
+      new Message(MessageRole.USER, { content: 'interrupted user input' })
+    );
+    memoryManager.ingestToolIntents(
+      [new ToolInvocation('read_file', { path: '/tmp/incomplete.txt' }, 'inv-restore')],
+      activeTurn.turnId
+    );
+
+    expect(memoryManager.getWorkingContextMessages()).toHaveLength(3);
+    expect(state.restoreWorkingContextForInterruptedTurn(activeTurn.turnId)).toBe(true);
+
+    const messages = memoryManager.getWorkingContextMessages();
+    expect(messages).toHaveLength(1);
+    expect(messages[0].role).toBe(MessageRole.SYSTEM);
+    expect(messages[0].content).toBe('stable system prompt');
+  });
+
+  it('resolves the idle event turn id from active turn first and then the fallback', () => {
+    const state = new AgentRuntimeState('agent-9');
 
     expect(state.resolveTurnIdForIdleEvent('turn-fallback')).toBe('turn-fallback');
 
@@ -101,9 +169,9 @@ describe('AgentRuntimeState', () => {
   });
 
   it('renders a readable string representation', () => {
-    const state = new AgentRuntimeState('agent-9');
+    const state = new AgentRuntimeState('agent-10');
 
-    expect(state.toString()).toContain("agentId='agent-9'");
+    expect(state.toString()).toContain("agentId='agent-10'");
     expect(state.toString()).toContain("currentStatus='uninitialized'");
   });
 });

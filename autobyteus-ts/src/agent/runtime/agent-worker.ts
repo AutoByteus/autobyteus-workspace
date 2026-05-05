@@ -1,24 +1,31 @@
-import { AgentStatus } from '../status/status-enum.js';
 import {
+  AgentIdleEvent,
+  AgentReadyEvent,
   AgentErrorEvent,
   AgentStoppedEvent,
   BootstrapStartedEvent,
+  BootstrapCompletedEvent,
+  InterAgentMessageReceivedEvent,
+  ShutdownRequestedEvent,
+  ToolExecutionApprovalEvent,
+  UserMessageReceivedEvent,
   BaseEvent
 } from '../events/agent-events.js';
 import { AgentInputEventQueueManager } from '../events/agent-input-event-queue-manager.js';
 import { AgentEventStore } from '../events/event-store.js';
-import { WorkerEventDispatcher } from '../events/worker-event-dispatcher.js';
 import { AgentStatusDeriver } from '../status/status-deriver.js';
+import { applyEventAndDeriveStatus } from '../status/status-update-utils.js';
+import { AgentBootstrapper } from '../bootstrap-steps/agent-bootstrapper.js';
+import { AgentTurnRunner } from '../loop/agent-turn-runner.js';
 import { AgentShutdownOrchestrator } from '../shutdown-steps/agent-shutdown-orchestrator.js';
 import type { AgentContext } from '../context/agent-context.js';
-import type { EventHandlerRegistry } from '../handlers/event-handler-registry.js';
+import type { TurnOutcome } from '../agent-turn.js';
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export class AgentWorker {
   context: AgentContext;
   statusManager: any;
-  workerEventDispatcher: WorkerEventDispatcher;
   private isActive: boolean = false;
 
   private loopPromise: Promise<void> | null = null;
@@ -26,14 +33,13 @@ export class AgentWorker {
   private stopInitiated = false;
   private doneCallbacks: Array<(result: PromiseSettledResult<void>) => void> = [];
 
-  constructor(context: AgentContext, eventHandlerRegistry: EventHandlerRegistry) {
+  constructor(context: AgentContext, _eventHandlerRegistry?: unknown) {
     this.context = context;
     this.statusManager = this.context.statusManager;
     if (!this.statusManager) {
       throw new Error(`AgentWorker for '${this.context.agentId}': AgentStatusManager not found.`);
     }
 
-    this.workerEventDispatcher = new WorkerEventDispatcher(eventHandlerRegistry);
     console.info(`AgentWorker initialized for agent_id '${this.context.agentId}'.`);
   }
 
@@ -79,32 +85,39 @@ export class AgentWorker {
 
   private async initialize(): Promise<boolean> {
     const agentId = this.context.agentId;
-    console.info(`Agent '${agentId}': Starting internal initialization process using bootstrap events.`);
+    console.info(`Agent '${agentId}': Starting direct runtime bootstrap lifecycle.`);
 
-    await this.context.inputEventQueues.enqueueInternalSystemEvent(new BootstrapStartedEvent());
-
-    while (![AgentStatus.IDLE, AgentStatus.ERROR].includes(this.context.currentStatus)) {
-      if (this.stopRequested) {
-        break;
-      }
-
-      let queueEvent: [string, BaseEvent] | null = null;
-      try {
-        queueEvent = await this.context.state.inputEventQueues!.getNextInternalEvent();
-      } catch {
-        queueEvent = null;
-      }
-
-      if (!queueEvent) {
-        continue;
-      }
-
-      const [, eventObj] = queueEvent;
-      await this.workerEventDispatcher.dispatch(eventObj, this.context);
-      await delay(0);
+    if (this.stopRequested) {
+      return false;
     }
 
-    return this.context.currentStatus === AgentStatus.IDLE;
+    try {
+      await this.applyStatusEvent(new BootstrapStartedEvent());
+      const bootstrapper = new AgentBootstrapper();
+      const bootstrapSuccess = await bootstrapper.run(this.context);
+      await this.applyStatusEvent(
+        new BootstrapCompletedEvent(
+          bootstrapSuccess,
+          bootstrapSuccess ? undefined : 'Bootstrapper returned failure.'
+        )
+      );
+
+      if (!bootstrapSuccess) {
+        await this.applyStatusEvent(
+          new AgentErrorEvent('Bootstrap failed.', 'Bootstrapper returned failure.')
+        );
+        return false;
+      }
+
+      await this.applyStatusEvent(new AgentReadyEvent());
+      return true;
+    } catch (error) {
+      const errorMessage = `Agent '${agentId}': Bootstrap failed with exception: ${String(error)}`;
+      console.error(errorMessage);
+      await this.applyStatusEvent(new BootstrapCompletedEvent(false, errorMessage));
+      await this.applyStatusEvent(new AgentErrorEvent(errorMessage, String(error)));
+      return false;
+    }
   }
 
   private async runtimeInit(): Promise<boolean> {
@@ -159,9 +172,7 @@ export class AgentWorker {
       while (!this.stopRequested) {
         let queueEvent: [string, BaseEvent] | null = null;
         try {
-          queueEvent = await this.context.state.inputEventQueues!.getNextInputEvent({
-            allowExternalInput: this.context.state.activeTurn === null
-          });
+          queueEvent = await this.context.state.inputEventQueues!.getNextSchedulerEvent();
         } catch {
           queueEvent = null;
         }
@@ -172,9 +183,12 @@ export class AgentWorker {
 
         const [, eventObj] = queueEvent;
         try {
-          await this.workerEventDispatcher.dispatch(eventObj, this.context);
+          await this.handleSchedulerEvent(eventObj);
         } catch (error) {
-          console.error(`Fatal error in AgentWorker '${agentId}' dispatch: ${error}`);
+          console.error(`Fatal error in AgentWorker '${agentId}' scheduler event handling: ${error}`);
+          await this.applyStatusEvent(
+            new AgentErrorEvent('Agent worker scheduler event failed.', String(error))
+          );
           this.stopRequested = true;
         }
 
@@ -197,6 +211,72 @@ export class AgentWorker {
     }
   }
 
+  private async handleSchedulerEvent(event: BaseEvent): Promise<void> {
+    if (event instanceof UserMessageReceivedEvent || event instanceof InterAgentMessageReceivedEvent) {
+      await this.runTurn(event);
+      return;
+    }
+
+    if (event instanceof ToolExecutionApprovalEvent) {
+      const activeTurn = this.context.state.activeTurn;
+      if (activeTurn) {
+        if (!event.turnId) {
+          event.turnId = activeTurn.turnId;
+        }
+        const result = activeTurn.inputBox.postApproval(event);
+        if (result.accepted) {
+          await this.applyStatusEvent(event);
+        } else {
+          console.warn(
+            `AgentWorker '${this.context.agentId}': Tool approval '${event.toolInvocationId}' rejected by active turn input box: ${result.code ?? 'unknown'} ${result.message ?? ''}`
+          );
+        }
+      } else {
+        console.warn(
+          `AgentWorker '${this.context.agentId}': Ignoring tool approval '${event.toolInvocationId}' with no active turn.`
+        );
+      }
+      return;
+    }
+
+    if (event instanceof ShutdownRequestedEvent || event instanceof AgentStoppedEvent) {
+      await this.applyStatusEvent(event);
+      this.stopRequested = true;
+      return;
+    }
+
+    await this.applyStatusEvent(event);
+  }
+
+  private async runTurn(
+    event: UserMessageReceivedEvent | InterAgentMessageReceivedEvent
+  ): Promise<TurnOutcome> {
+    const agentId = this.context.agentId;
+    if (this.context.state.activeTurn) {
+      throw new Error(
+        `Agent '${agentId}' attempted to start a turn while turn '${this.context.state.activeTurn.turnId}' is active.`
+      );
+    }
+
+    const turn = this.context.state.startActiveTurn();
+    let outcome: TurnOutcome;
+    try {
+      outcome = await new AgentTurnRunner(this.context, turn).run(event);
+    } finally {
+      this.context.state.completeActiveTurn(turn.turnId);
+    }
+
+    if (outcome.kind === 'completed') {
+      await this.applyStatusEvent(new AgentIdleEvent(outcome.turnId));
+    }
+
+    return outcome;
+  }
+
+  private async applyStatusEvent(event: BaseEvent): Promise<void> {
+    await applyEventAndDeriveStatus(event, this.context);
+  }
+
   async stop(timeout: number = 10.0): Promise<void> {
     if (!this.isActive || this.stopInitiated) {
       return;
@@ -206,6 +286,11 @@ export class AgentWorker {
     console.info(`AgentWorker '${agentId}': Stop requested.`);
     this.stopInitiated = true;
     this.stopRequested = true;
+
+    const activeTurn = this.context.state.activeTurn;
+    if (activeTurn) {
+      activeTurn.interrupt('runtime_stop');
+    }
 
     if (this.context.state.inputEventQueues) {
       await this.context.state.inputEventQueues.enqueueInternalSystemEvent(new AgentStoppedEvent());

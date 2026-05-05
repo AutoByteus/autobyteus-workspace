@@ -326,23 +326,23 @@ export const useAgentRunStore = defineStore('agentRun', {
       }
     },
 
-    stopGeneration(runId?: string): boolean {
+    interruptGeneration(runId?: string): boolean {
       const agentContextsStore = useAgentContextsStore();
       const resolvedRunId =
         (runId && runId.trim()) || agentContextsStore.activeRun?.state.runId;
 
       if (!resolvedRunId) {
-        console.warn("Cannot stop generation: no active run ID.");
+        console.warn("Cannot interrupt generation: no active run ID.");
         return false;
       }
 
       const service = streamingServices.get(resolvedRunId);
       if (!service) {
-        console.warn(`Cannot stop generation: no streaming service for run '${resolvedRunId}'.`);
+        console.warn(`Cannot interrupt generation: no streaming service for run '${resolvedRunId}'.`);
         return false;
       }
 
-      service.stopGeneration();
+      service.interruptGeneration();
       return true;
     },
 

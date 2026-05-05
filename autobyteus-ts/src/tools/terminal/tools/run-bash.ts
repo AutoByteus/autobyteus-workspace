@@ -2,7 +2,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { statSync } from 'node:fs';
 import { tool } from '../../functional-tool.js';
-import type { BaseTool } from '../../base-tool.js';
+import type { BaseTool, ToolExecutionOptions } from '../../base-tool.js';
 import { ToolCategory } from '../../tool-category.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../../../utils/parameter-schema.js';
 import { defaultToolRegistry } from '../../registry/tool-registry.js';
@@ -99,7 +99,8 @@ export async function runBash(
   command: string,
   cwd?: string | null,
   timeoutSeconds: number = 30,
-  background: boolean = false
+  background: boolean = false,
+  executionOptions: ToolExecutionOptions = {}
 ): Promise<TerminalResult | RunBashBackgroundResult> {
   const resolvedCwd = resolveExecutionCwd(context, cwd);
 
@@ -119,7 +120,7 @@ export async function runBash(
   const manager = new TerminalSessionManager();
   try {
     await manager.ensureStarted(resolvedCwd);
-    return await manager.executeCommand(command, timeoutSeconds);
+    return await manager.executeCommand(command, timeoutSeconds, { signal: executionOptions.signal ?? undefined });
   } finally {
     await manager.close().catch(() => undefined);
   }
@@ -165,7 +166,7 @@ export function registerRunBashTool(): BaseTool {
         'Execute a shell command in a working directory. If cwd is omitted, the workspace root is used. If cwd is provided, it may be absolute or workspace-root-relative. For nested targets, reuse the same cwd on every command that should run there. The result includes effectiveCwd so you can confirm where the command actually ran.',
       argumentSchema,
       category: ToolCategory.SYSTEM,
-      paramNames: ['context', 'command', 'cwd', 'timeout_seconds', 'background']
+      paramNames: ['context', 'command', 'cwd', 'timeout_seconds', 'background', 'executionOptions']
     })(runBash) as BaseTool;
     return cachedTool;
   }

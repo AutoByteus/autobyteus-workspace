@@ -4,6 +4,12 @@ import { ToolConfig } from './tool-config.js';
 import { ToolState } from './tool-state.js';
 import type { ToolDefinition } from './registry/tool-definition.js';
 
+export type ToolExecutionOptions = {
+  signal?: AbortSignal | null;
+  turnId?: string | null;
+  invocationId?: string | null;
+};
+
 export type ToolClass = {
   new (config?: ToolConfig): BaseTool;
   getName(): string;
@@ -237,7 +243,7 @@ export abstract class BaseTool<
     return value !== null && typeof value === 'object' && !Array.isArray(value);
   }
 
-  public async execute(context: TContext, args: TArgs = {} as TArgs): Promise<TResult> {
+  public async execute(context: TContext, args: TArgs = {} as TArgs, options: ToolExecutionOptions = {}): Promise<TResult> {
      const toolName = this.getName();
 
      const contextAgentId = (context as { agentId?: string } | null | undefined)?.agentId;
@@ -263,10 +269,14 @@ export abstract class BaseTool<
        );
      }
 
-     return this._execute(context, coercedArgs as TArgs);
+     if (options.signal?.aborted) {
+       throw new Error(`Tool '${toolName}' execution aborted before start.`);
+     }
+
+     return this._execute(context, coercedArgs as TArgs, options);
   }
 
-  protected abstract _execute(context: TContext, args?: TArgs): Promise<TResult>;
+  protected abstract _execute(context: TContext, args?: TArgs, options?: ToolExecutionOptions): Promise<TResult>;
 
   public async cleanup(): Promise<void> {
     // no-op

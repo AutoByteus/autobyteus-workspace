@@ -1,5 +1,5 @@
 import { GoogleGenAI } from '@google/genai';
-import { BaseLLM } from '../base.js';
+import { BaseLLM, type LLMInvocationOptions } from '../base.js';
 import { LLMModel } from '../models.js';
 import { LLMProvider } from '../providers.js';
 import { LLMConfig } from '../utils/llm-config.js';
@@ -156,7 +156,7 @@ export class GeminiLLM extends BaseLLM {
     };
   }
 
-  protected async _sendMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>): Promise<CompleteResponse> {
+  protected async _sendMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>, options: LLMInvocationOptions = {}): Promise<CompleteResponse> {
     const history = await this._renderer.render(messages);
     const runtimeAdjustedModel = resolveModelForRuntime(
       this.model.value,
@@ -166,6 +166,9 @@ export class GeminiLLM extends BaseLLM {
 
     const tools = this.normalizeGeminiTools(kwargs.tools);
     const config = this.buildGenerationConfig(tools);
+    if (options.signal) {
+      (config as any).abortSignal = options.signal;
+    }
 
     const response = await this.client.models.generateContent({
       model: runtimeAdjustedModel,
@@ -190,7 +193,7 @@ export class GeminiLLM extends BaseLLM {
     });
   }
 
-  protected async *_streamMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>): AsyncGenerator<ChunkResponse, void, unknown> {
+  protected async *_streamMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>, options: LLMInvocationOptions = {}): AsyncGenerator<ChunkResponse, void, unknown> {
     const history = await this._renderer.render(messages);
     const runtimeAdjustedModel = resolveModelForRuntime(
       this.model.value,
@@ -200,6 +203,9 @@ export class GeminiLLM extends BaseLLM {
 
     const tools = this.normalizeGeminiTools(kwargs.tools);
     const config = this.buildGenerationConfig(tools);
+    if (options.signal) {
+      (config as any).abortSignal = options.signal;
+    }
 
     const stream = await this.client.models.generateContentStream({
       model: runtimeAdjustedModel,

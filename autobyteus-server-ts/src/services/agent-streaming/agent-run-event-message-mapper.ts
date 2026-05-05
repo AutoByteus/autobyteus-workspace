@@ -69,6 +69,8 @@ export class AgentRunEventMessageMapper {
         return new ServerMessage(ServerMessageType.TURN_STARTED, normalizeTurnPayload(payload));
       case AgentRunEventType.TURN_COMPLETED:
         return new ServerMessage(ServerMessageType.TURN_COMPLETED, normalizeTurnPayload(payload));
+      case AgentRunEventType.TURN_INTERRUPTED:
+        return new ServerMessage(ServerMessageType.TURN_INTERRUPTED, normalizeTurnPayload(payload));
       case AgentRunEventType.SEGMENT_START:
         return new ServerMessage(ServerMessageType.SEGMENT_START, payload);
       case AgentRunEventType.SEGMENT_CONTENT:
@@ -93,6 +95,8 @@ export class AgentRunEventMessageMapper {
         return new ServerMessage(ServerMessageType.TOOL_EXECUTION_SUCCEEDED, payload);
       case AgentRunEventType.TOOL_EXECUTION_FAILED:
         return new ServerMessage(ServerMessageType.TOOL_EXECUTION_FAILED, payload);
+      case AgentRunEventType.TOOL_EXECUTION_INTERRUPTED:
+        return new ServerMessage(ServerMessageType.TOOL_EXECUTION_INTERRUPTED, payload);
       case AgentRunEventType.TOOL_LOG:
         return new ServerMessage(ServerMessageType.TOOL_LOG, payload);
       case AgentRunEventType.TODO_LIST_UPDATE:

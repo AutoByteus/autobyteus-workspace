@@ -10,6 +10,7 @@ import type {
   ToolApprovedPayload,
   ToolDeniedPayload,
   ToolExecutionFailedPayload,
+  ToolExecutionInterruptedPayload,
   ToolExecutionStartedPayload,
   ToolExecutionSucceededPayload,
   ToolLogPayload,
@@ -22,6 +23,7 @@ import {
   applyApprovalRequestedState,
   applyDeniedState,
   applyExecutionFailedState,
+  applyExecutionInterruptedState,
   applyExecutionStartedState,
   applyExecutionSucceededState,
   isTerminalStatus,
@@ -32,6 +34,7 @@ import {
   parseToolApprovedPayload,
   parseToolDeniedPayload,
   parseToolExecutionFailedPayload,
+  parseToolExecutionInterruptedPayload,
   parseToolExecutionStartedPayload,
   parseToolExecutionSucceededPayload,
   parseToolLogPayload,
@@ -351,6 +354,38 @@ export function handleToolExecutionFailed(
   const transitioned = applyExecutionFailedState(segment, parsed.error);
   if (transitioned) {
     updateActivityStatus(context, parsed.invocationId, 'error');
+    setActivityResult(context, parsed.invocationId, null, segment.error);
+  }
+}
+
+export function handleToolExecutionInterrupted(
+  payload: ToolExecutionInterruptedPayload,
+  context: AgentContext,
+): void {
+  const parsed = parseToolExecutionInterruptedPayload(payload);
+  if (!parsed) {
+    warnInvalidPayload('TOOL_EXECUTION_INTERRUPTED', payload);
+    return;
+  }
+
+  const segment = ensureToolLifecycleSegment(
+    context,
+    parsed.invocationId,
+    parsed.turnId,
+    parsed.toolName,
+    parsed.arguments,
+  );
+
+  if (isPlaceholderToolName(segment.toolName)) {
+    segment.toolName = parsed.toolName;
+  }
+  mergeArguments(segment, parsed.arguments);
+  syncActivityToolName(context, parsed.invocationId, parsed.toolName);
+  updateActivityArguments(context, parsed.invocationId, parsed.arguments);
+
+  const transitioned = applyExecutionInterruptedState(segment, parsed.reason);
+  if (transitioned) {
+    updateActivityStatus(context, parsed.invocationId, 'interrupted');
     setActivityResult(context, parsed.invocationId, null, segment.error);
   }
 }

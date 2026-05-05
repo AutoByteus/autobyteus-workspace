@@ -18,6 +18,23 @@ export type AutoByteusAgentLike = {
     isApproved: boolean,
     reason?: string | null,
   ) => Promise<void>;
+  interrupt?: (options?: {
+    turnId?: string | null;
+    reason?: string | null;
+    timeoutMs?: number | null;
+  }) => Promise<{
+    accepted: boolean;
+    status?: string;
+    turnId?: string | null;
+    reason?: string | null;
+    message?: string;
+  }> | {
+    accepted: boolean;
+    status?: string;
+    turnId?: string | null;
+    reason?: string | null;
+    message?: string;
+  };
   stop?: (timeout?: number) => Promise<void> | void;
 };
 
@@ -114,13 +131,28 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
     }
   }
 
-  async interrupt(): Promise<AgentOperationResult> {
-    if (!this.agent.stop || !this.isActive()) {
+  async interrupt(turnId?: string | null): Promise<AgentOperationResult> {
+    if (!this.isActive()) {
       return buildRunNotFoundResult(this.runId);
     }
+    if (!this.agent.interrupt) {
+      return {
+        accepted: false,
+        code: "UNSUPPORTED_RUNTIME_COMMAND",
+        message: "Native Autobyteus agent does not expose interrupt().",
+      };
+    }
     try {
-      await this.agent.stop();
-      return { accepted: true };
+      const result = await this.agent.interrupt({
+        turnId: turnId ?? null,
+        reason: "user_interrupt",
+      });
+      return {
+        accepted: result.accepted,
+        code: result.accepted ? result.status : (result.status ?? "INTERRUPT_REJECTED"),
+        message: result.message,
+        turnId: result.turnId ?? null,
+      };
     } catch (error) {
       return buildCommandFailure("interrupt run", error);
     }

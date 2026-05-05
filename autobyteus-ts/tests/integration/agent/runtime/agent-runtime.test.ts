@@ -6,40 +6,8 @@ import { AgentContext } from '../../../../src/agent/context/agent-context.js';
 import { AgentRuntime } from '../../../../src/agent/runtime/agent-runtime.js';
 import { AgentStatus } from '../../../../src/agent/status/status-enum.js';
 import { AgentInputUserMessage } from '../../../../src/agent/message/agent-input-user-message.js';
-import { SenderType } from '../../../../src/agent/sender-type.js';
-import {
-  AgentErrorEvent,
-  AgentIdleEvent,
-  AgentReadyEvent,
-  AgentStoppedEvent,
-  BootstrapCompletedEvent,
-  BootstrapStartedEvent,
-  BootstrapStepCompletedEvent,
-  BootstrapStepRequestedEvent,
-  ExecuteToolInvocationEvent,
-  GenericEvent,
-  InterAgentMessageReceivedEvent,
-  LLMCompleteResponseReceivedEvent,
-  LLMUserMessageReadyEvent,
-  PendingToolInvocationEvent,
-  ShutdownRequestedEvent,
-  ToolExecutionApprovalEvent,
-  ToolResultEvent,
-  UserMessageReceivedEvent
-} from '../../../../src/agent/events/agent-events.js';
-import { EventHandlerRegistry } from '../../../../src/agent/handlers/event-handler-registry.js';
-import { UserInputMessageEventHandler } from '../../../../src/agent/handlers/user-input-message-event-handler.js';
-import { InterAgentMessageReceivedEventHandler } from '../../../../src/agent/handlers/inter-agent-message-event-handler.js';
-import { LLMCompleteResponseReceivedEventHandler } from '../../../../src/agent/handlers/llm-complete-response-received-event-handler.js';
-import { ToolInvocationRequestEventHandler } from '../../../../src/agent/handlers/tool-invocation-request-event-handler.js';
-import { ToolResultEventHandler } from '../../../../src/agent/handlers/tool-result-event-handler.js';
-import { GenericEventHandler } from '../../../../src/agent/handlers/generic-event-handler.js';
-import { ToolExecutionApprovalEventHandler } from '../../../../src/agent/handlers/tool-execution-approval-event-handler.js';
-import { LLMUserMessageReadyEventHandler } from '../../../../src/agent/handlers/llm-user-message-ready-event-handler.js';
-import { BootstrapEventHandler } from '../../../../src/agent/handlers/bootstrap-event-handler.js';
-import { LifecycleEventLogger } from '../../../../src/agent/handlers/lifecycle-event-logger.js';
-import { ToolInvocationExecutionEventHandler } from '../../../../src/agent/handlers/tool-invocation-execution-event-handler.js';
-import { BaseLLM } from '../../../../src/llm/base.js';
+import { ToolExecutionApprovalEvent, UserMessageReceivedEvent } from '../../../../src/agent/events/agent-events.js';
+import { BaseLLM, type LLMInvocationOptions } from '../../../../src/llm/base.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
@@ -50,6 +18,7 @@ import { EventType } from '../../../../src/events/event-types.js';
 import { MemoryManager } from '../../../../src/memory/memory-manager.js';
 import { MemoryStore } from '../../../../src/memory/store/base-store.js';
 import { MemoryType } from '../../../../src/memory/models/memory-types.js';
+import { BaseTool, type ToolExecutionOptions } from '../../../../src/tools/base-tool.js';
 import type { ChunkResponse } from '../../../../src/llm/utils/response-types.js';
 
 class DummyLLM extends BaseLLM {
@@ -59,7 +28,8 @@ class DummyLLM extends BaseLLM {
 
   protected async *_streamMessagesToLLM(
     _messages: Message[],
-    _kwargs: Record<string, unknown>
+    _kwargs: Record<string, unknown>,
+    _options?: LLMInvocationOptions
   ): AsyncGenerator<ChunkResponse, void, unknown> {
     yield { content: 'ok', is_complete: true } as ChunkResponse;
   }
@@ -67,6 +37,8 @@ class DummyLLM extends BaseLLM {
 
 class ControllableLLM extends BaseLLM {
   calls: string[] = [];
+  options: LLMInvocationOptions[] = [];
+  requestMessages: Message[][] = [];
   private releaseFirstResponse: (() => void) | null = null;
   private readonly firstRequestStarted: Promise<void>;
   private resolveFirstRequestStarted!: () => void;
@@ -92,13 +64,16 @@ class ControllableLLM extends BaseLLM {
 
   protected async *_streamMessagesToLLM(
     messages: Message[],
-    _kwargs: Record<string, unknown>
+    _kwargs: Record<string, unknown>,
+    options?: LLMInvocationOptions
   ): AsyncGenerator<ChunkResponse, void, unknown> {
+    this.requestMessages.push(messages);
     const latestUserContent =
       messages
         .filter((message) => message.role === MessageRole.USER)
         .at(-1)?.content ?? '';
     const callIndex = this.calls.push(String(latestUserContent));
+    this.options.push(options ?? {});
     if (callIndex === 1) {
       this.resolveFirstRequestStarted();
       await new Promise<void>((resolve) => {
@@ -108,6 +83,62 @@ class ControllableLLM extends BaseLLM {
     }
 
     yield { content: `reply-${callIndex}`, is_complete: true } as ChunkResponse;
+  }
+}
+
+class ApprovalToolCallingLLM extends BaseLLM {
+  requestMessages: Message[][] = [];
+  options: LLMInvocationOptions[] = [];
+
+  protected async _sendMessagesToLLM(_messages: Message[]): Promise<CompleteResponse> {
+    return new CompleteResponse({ content: 'ok' });
+  }
+
+  protected async *_streamMessagesToLLM(
+    messages: Message[],
+    _kwargs: Record<string, unknown>,
+    options?: LLMInvocationOptions
+  ): AsyncGenerator<ChunkResponse, void, unknown> {
+    this.requestMessages.push(messages);
+    this.options.push(options ?? {});
+    const callIndex = this.requestMessages.length;
+
+    if (callIndex === 1) {
+      yield {
+        content: '',
+        tool_calls: [{ index: 0, call_id: 'call_approval_1', name: ApprovalTool.getName() }]
+      } as ChunkResponse;
+      yield {
+        content: '',
+        is_complete: true,
+        tool_calls: [{ index: 0, arguments_delta: '{"path":"/tmp/interrupted.txt"}' }]
+      } as ChunkResponse;
+      return;
+    }
+
+    yield { content: `reply-${callIndex}`, is_complete: true } as ChunkResponse;
+  }
+}
+
+class ApprovalTool extends BaseTool<AgentContext, Record<string, unknown>, string> {
+  static getName(): string {
+    return 'approval_tool';
+  }
+
+  static getDescription(): string {
+    return 'Approval-gated test tool';
+  }
+
+  static getArgumentSchema() {
+    return null;
+  }
+
+  protected async _execute(
+    _context: AgentContext,
+    _args?: Record<string, unknown>,
+    _options?: ToolExecutionOptions
+  ): Promise<string> {
+    return 'should-not-run-without-approval';
   }
 }
 
@@ -122,10 +153,7 @@ class InMemoryStore extends MemoryStore {
 
   list(memoryType: MemoryType, limit?: number): any[] {
     const filtered = this.items.filter((item) => item?.memoryType === memoryType);
-    if (typeof limit === 'number') {
-      return filtered.slice(-limit);
-    }
-    return filtered;
+    return typeof limit === 'number' ? filtered.slice(-limit) : filtered;
   }
 
   listRawTracesOrdered(limit?: number): any[] {
@@ -175,67 +203,53 @@ const resetFactory = () => {
   (AgentFactory as any).instance = undefined;
 };
 
+const makeModel = () => new LLMModel({
+  name: 'dummy',
+  value: 'dummy',
+  canonicalName: 'dummy',
+  provider: LLMProvider.OPENAI
+});
+
 const createDummyConfig = () => {
-  const model = new LLMModel({
-    name: 'dummy',
-    value: 'dummy',
-    canonicalName: 'dummy',
-    provider: LLMProvider.OPENAI
-  });
-  const llm = new DummyLLM(model, new LLMConfig());
+  const llm = new DummyLLM(makeModel(), new LLMConfig());
   return new AgentConfig('RuntimeTestAgent', 'Tester', 'Runtime integration test agent', llm);
 };
 
-const createDefaultEventHandlerRegistry = (): EventHandlerRegistry => {
-  const registry = new EventHandlerRegistry();
-  registry.register(UserMessageReceivedEvent, new UserInputMessageEventHandler());
-  registry.register(InterAgentMessageReceivedEvent, new InterAgentMessageReceivedEventHandler());
-  registry.register(LLMCompleteResponseReceivedEvent, new LLMCompleteResponseReceivedEventHandler());
-  registry.register(PendingToolInvocationEvent, new ToolInvocationRequestEventHandler());
-  registry.register(ToolResultEvent, new ToolResultEventHandler());
-  registry.register(GenericEvent, new GenericEventHandler());
-  registry.register(ToolExecutionApprovalEvent, new ToolExecutionApprovalEventHandler());
-  registry.register(LLMUserMessageReadyEvent, new LLMUserMessageReadyEventHandler());
-  registry.register(ExecuteToolInvocationEvent, new ToolInvocationExecutionEventHandler());
-
-  const bootstrapHandler = new BootstrapEventHandler();
-  registry.register(BootstrapStartedEvent, bootstrapHandler);
-  registry.register(BootstrapStepRequestedEvent, bootstrapHandler);
-  registry.register(BootstrapStepCompletedEvent, bootstrapHandler);
-  registry.register(BootstrapCompletedEvent, bootstrapHandler);
-
-  const lifecycleLogger = new LifecycleEventLogger();
-  registry.register(AgentReadyEvent, lifecycleLogger);
-  registry.register(AgentStoppedEvent, lifecycleLogger);
-  registry.register(AgentIdleEvent, lifecycleLogger);
-  registry.register(ShutdownRequestedEvent, lifecycleLogger);
-  registry.register(AgentErrorEvent, lifecycleLogger);
-  return registry;
+const attachMemory = (state: AgentRuntimeState) => {
+  state.memoryManager = new MemoryManager({ store: new InMemoryStore() });
 };
 
 describe('Agent runtime integration', () => {
+  let previousParser: string | undefined;
+
   beforeEach(() => {
+    previousParser = process.env.AUTOBYTEUS_STREAM_PARSER;
+    process.env.AUTOBYTEUS_STREAM_PARSER = 'api_tool_call';
     SkillRegistry.getInstance().clear();
     resetFactory();
   });
 
   afterEach(() => {
+    if (previousParser === undefined) {
+      delete process.env.AUTOBYTEUS_STREAM_PARSER;
+    } else {
+      process.env.AUTOBYTEUS_STREAM_PARSER = previousParser;
+    }
     SkillRegistry.getInstance().clear();
     resetFactory();
   });
 
-  it('starts and stops AgentRuntime cleanly', async () => {
+  it('starts and stops AgentRuntime cleanly without legacy handler registry wiring', async () => {
     const config = createDummyConfig();
     const agentId = `runtime_${Date.now()}`;
 
     const state = new AgentRuntimeState(agentId, null, null);
     state.llmInstance = config.llmInstance;
     state.toolInstances = {};
+    attachMemory(state);
 
     const context = new AgentContext(agentId, config, state);
-    const registry = createDefaultEventHandlerRegistry();
-
-    const runtime = new AgentRuntime(context, registry);
+    const runtime = new AgentRuntime(context);
 
     try {
       expect(runtime.isRunning).toBe(false);
@@ -299,14 +313,8 @@ describe('Agent runtime integration', () => {
     }
   }, 20000);
 
-  it('keeps a later real user message queued behind the active turn until the first continuation finishes', async () => {
-    const model = new LLMModel({
-      name: 'dummy',
-      value: 'dummy',
-      canonicalName: 'dummy',
-      provider: LLMProvider.OPENAI
-    });
-    const llm = new ControllableLLM(model, new LLMConfig());
+  it('keeps a later external user message queued while one AgentTurnRunner is active', async () => {
+    const llm = new ControllableLLM(makeModel(), new LLMConfig());
     const config = new AgentConfig(
       'RuntimeQueueGuardAgent',
       'Tester',
@@ -318,26 +326,17 @@ describe('Agent runtime integration', () => {
     const state = new AgentRuntimeState(agentId, null, null);
     state.llmInstance = llm;
     state.toolInstances = {};
-    state.memoryManager = new MemoryManager({ store: new InMemoryStore() });
+    attachMemory(state);
 
     const context = new AgentContext(agentId, config, state);
-    const registry = createDefaultEventHandlerRegistry();
-    const runtime = new AgentRuntime(context, registry);
+    const runtime = new AgentRuntime(context);
     const turnLifecycle: Array<{ type: EventType; turnId: string }> = [];
 
     context.statusManager?.notifier?.subscribe(EventType.AGENT_TURN_STARTED, (payload) => {
-      const turnPayload = payload as { turn_id?: string | null };
-      turnLifecycle.push({
-        type: EventType.AGENT_TURN_STARTED,
-        turnId: String(turnPayload.turn_id)
-      });
+      turnLifecycle.push({ type: EventType.AGENT_TURN_STARTED, turnId: String((payload as any).turn_id) });
     });
     context.statusManager?.notifier?.subscribe(EventType.AGENT_TURN_COMPLETED, (payload) => {
-      const turnPayload = payload as { turn_id?: string | null };
-      turnLifecycle.push({
-        type: EventType.AGENT_TURN_COMPLETED,
-        turnId: String(turnPayload.turn_id)
-      });
+      turnLifecycle.push({ type: EventType.AGENT_TURN_COMPLETED, turnId: String((payload as any).turn_id) });
     });
 
     try {
@@ -349,25 +348,20 @@ describe('Agent runtime integration', () => {
       expect(ready).toBe(true);
       expect(context.currentStatus).toBe(AgentStatus.IDLE);
 
-      await runtime.submitEvent(
-        new UserMessageReceivedEvent(new AgentInputUserMessage('first message'))
-      );
+      await runtime.submitEvent(new UserMessageReceivedEvent(new AgentInputUserMessage('first message')));
       await llm.waitForFirstRequestStart();
 
       const firstTurnId = context.state.activeTurn?.turnId ?? null;
       expect(firstTurnId).toBeTruthy();
       expect(llm.calls).toHaveLength(1);
+      expect(llm.options[0]?.signal).toBeInstanceOf(AbortSignal);
 
-      await runtime.submitEvent(
-        new UserMessageReceivedEvent(new AgentInputUserMessage('second message'))
-      );
+      await runtime.submitEvent(new UserMessageReceivedEvent(new AgentInputUserMessage('second message')));
       await delay(100);
 
       expect(llm.calls).toHaveLength(1);
       expect(context.state.activeTurn?.turnId).toBe(firstTurnId);
-      expect(
-        turnLifecycle.filter((event) => event.type === EventType.AGENT_TURN_STARTED)
-      ).toHaveLength(1);
+      expect(turnLifecycle.filter((event) => event.type === EventType.AGENT_TURN_STARTED)).toHaveLength(1);
 
       llm.unblockFirstResponse();
 
@@ -399,103 +393,139 @@ describe('Agent runtime integration', () => {
     }
   }, 20000);
 
-  it('processes tool-result continuation before later external user input', async () => {
-    const model = new LLMModel({
-      name: 'dummy',
-      value: 'dummy',
-      canonicalName: 'dummy',
-      provider: LLMProvider.OPENAI
-    });
-    const llm = new ControllableLLM(model, new LLMConfig());
-    const config = new AgentConfig(
-      'RuntimeToolContinuationAgent',
-      'Tester',
-      'Runtime tool continuation ordering test agent',
-      llm
-    );
-    const agentId = `runtime_tool_continuation_${Date.now()}`;
+  it('interrupts an in-flight LLM turn without stopping the runtime', async () => {
+    const llm = new ControllableLLM(makeModel(), new LLMConfig());
+    const config = new AgentConfig('RuntimeInterruptAgent', 'Tester', 'Interrupt test agent', llm);
+    const agentId = `runtime_interrupt_${Date.now()}`;
 
     const state = new AgentRuntimeState(agentId, null, null);
     state.llmInstance = llm;
     state.toolInstances = {};
-    state.memoryManager = new MemoryManager({ store: new InMemoryStore() });
+    attachMemory(state);
 
     const context = new AgentContext(agentId, config, state);
-    const registry = createDefaultEventHandlerRegistry();
-    const runtime = new AgentRuntime(context, registry);
-    const turnLifecycle: Array<{ type: EventType; turnId: string }> = [];
-
-    context.statusManager?.notifier?.subscribe(EventType.AGENT_TURN_STARTED, (payload) => {
-      turnLifecycle.push({
-        type: EventType.AGENT_TURN_STARTED,
-        turnId: String((payload as { turn_id: string }).turn_id)
-      });
-    });
-    context.statusManager?.notifier?.subscribe(EventType.AGENT_TURN_COMPLETED, (payload) => {
-      turnLifecycle.push({
-        type: EventType.AGENT_TURN_COMPLETED,
-        turnId: String((payload as { turn_id: string }).turn_id)
-      });
+    const runtime = new AgentRuntime(context);
+    const interruptedTurns: string[] = [];
+    context.statusManager?.notifier?.subscribe(EventType.AGENT_TURN_INTERRUPTED, (payload) => {
+      interruptedTurns.push(String((payload as any).turn_id));
     });
 
     try {
       runtime.start();
-      const ready = await waitForStatus(
-        context,
-        (status) => status === AgentStatus.IDLE || status === AgentStatus.ERROR
-      );
+      const ready = await waitForStatus(context, (status) => status === AgentStatus.IDLE || status === AgentStatus.ERROR);
       expect(ready).toBe(true);
-      expect(context.currentStatus).toBe(AgentStatus.IDLE);
 
-      context.state.startActiveTurn('turn-tool-continuation');
-
-      await context.state.inputEventQueues?.enqueueToolContinuationInput(
-        new UserMessageReceivedEvent(
-          new AgentInputUserMessage('tool result payload', SenderType.TOOL)
-        )
-      );
-      await runtime.submitEvent(
-        new UserMessageReceivedEvent(new AgentInputUserMessage('second message'))
-      );
-
+      await runtime.submitEvent(new UserMessageReceivedEvent(new AgentInputUserMessage('please wait')));
       await llm.waitForFirstRequestStart();
-      expect(llm.calls).toHaveLength(1);
-      expect(context.state.activeTurn?.turnId).toBe('turn-tool-continuation');
-      expect(
-        turnLifecycle.filter((event) => event.type === EventType.AGENT_TURN_STARTED)
-      ).toHaveLength(1);
+      const activeTurnId = context.state.activeTurn?.turnId;
+      expect(activeTurnId).toBeTruthy();
 
-      await delay(100);
-      expect(llm.calls).toHaveLength(1);
+      const interruptResult = await runtime.interrupt({ turnId: activeTurnId, reason: 'user_interrupt', timeoutMs: 1000 });
+      expect(interruptResult.accepted).toBe(true);
+      expect(interruptResult.status).toBe('accepted');
+      expect(interruptResult.turnId).toBe(activeTurnId);
+      expect(context.currentStatus).toBe(AgentStatus.IDLE);
+      expect(context.state.activeTurn).toBeNull();
+      expect(runtime.isRunning).toBe(true);
+      expect(interruptedTurns).toContain(activeTurnId);
 
       llm.unblockFirstResponse();
 
-      const secondCallStarted = await waitForCondition(() => llm.calls.length === 2);
-      expect(secondCallStarted).toBe(true);
-      const startedTurns = turnLifecycle
-        .filter((event) => event.type === EventType.AGENT_TURN_STARTED)
-        .map((event) => event.turnId);
-      const completedTurns = turnLifecycle
-        .filter((event) => event.type === EventType.AGENT_TURN_COMPLETED)
-        .map((event) => event.turnId);
-      const firstCompletionIndex = turnLifecycle.findIndex(
-        (event) =>
-          event.type === EventType.AGENT_TURN_COMPLETED &&
-          event.turnId === 'turn-tool-continuation'
-      );
-      const secondStartIndex = turnLifecycle.findIndex(
-        (event) =>
-          event.type === EventType.AGENT_TURN_STARTED &&
-          event.turnId !== 'turn-tool-continuation'
-      );
-
-      expect(startedTurns).toHaveLength(2);
-      expect(completedTurns).toContain('turn-tool-continuation');
-      expect(firstCompletionIndex).toBeGreaterThanOrEqual(0);
-      expect(secondStartIndex).toBeGreaterThan(firstCompletionIndex);
-      expect(context.state.activeTurn?.turnId).not.toBe('turn-tool-continuation');
+      await runtime.submitEvent(new UserMessageReceivedEvent(new AgentInputUserMessage('next message')));
+      const nextCallStarted = await waitForCondition(() => llm.calls.length === 2);
+      expect(nextCallStarted).toBe(true);
+      expect(llm.requestMessages[1].some((message) => message.content === 'please wait')).toBe(false);
+      expect(llm.requestMessages[1].some((message) => message.content === 'next message')).toBe(true);
     } finally {
       llm.unblockFirstResponse();
+      if (runtime.isRunning) {
+        await runtime.stop(2);
+      }
+      await llm.cleanup();
+    }
+  }, 20000);
+
+  it('interrupts pending tool approval with a terminal tool lifecycle and restores tool-intent working context', async () => {
+    const llm = new ApprovalToolCallingLLM(makeModel(), new LLMConfig());
+    const approvalTool = new ApprovalTool();
+    const config = new AgentConfig(
+      'RuntimeApprovalInterruptAgent',
+      'Tester',
+      'Pending approval interrupt test agent',
+      llm,
+      null,
+      [approvalTool],
+      false
+    );
+    const agentId = `runtime_approval_interrupt_${Date.now()}`;
+
+    const state = new AgentRuntimeState(agentId, null, null);
+    state.llmInstance = llm;
+    state.toolInstances = { [ApprovalTool.getName()]: approvalTool };
+    attachMemory(state);
+
+    const context = new AgentContext(agentId, config, state);
+    const runtime = new AgentRuntime(context);
+    const approvalRequests: any[] = [];
+    const interruptedTools: any[] = [];
+
+    context.statusManager?.notifier?.subscribe(EventType.AGENT_TOOL_APPROVAL_REQUESTED, (payload) => {
+      approvalRequests.push(payload);
+    });
+    context.statusManager?.notifier?.subscribe(EventType.AGENT_TOOL_EXECUTION_INTERRUPTED, (payload) => {
+      interruptedTools.push(payload);
+    });
+
+    try {
+      runtime.start();
+      const ready = await waitForStatus(context, (status) => status === AgentStatus.IDLE || status === AgentStatus.ERROR);
+      expect(ready).toBe(true);
+
+      await runtime.submitEvent(new UserMessageReceivedEvent(new AgentInputUserMessage('needs approval')));
+      const approvalRequested = await waitForCondition(
+        () => approvalRequests.length === 1 && Boolean(context.state.pendingToolApprovals.call_approval_1)
+      );
+      expect(approvalRequested).toBe(true);
+      expect(llm.requestMessages).toHaveLength(1);
+      expect(context.memoryManager?.getWorkingContextMessages().some((message) => message.tool_payload)).toBe(true);
+
+      const activeTurnId = context.state.activeTurn?.turnId;
+      expect(activeTurnId).toBeTruthy();
+
+      const interruptResult = await runtime.interrupt({
+        turnId: activeTurnId,
+        reason: 'user_interrupt',
+        timeoutMs: 1000
+      });
+      expect(interruptResult.accepted).toBe(true);
+      expect(context.currentStatus).toBe(AgentStatus.IDLE);
+      expect(context.state.pendingToolApprovals).toEqual({});
+      expect(interruptedTools).toHaveLength(1);
+      expect(interruptedTools[0]).toMatchObject({
+        invocation_id: 'call_approval_1',
+        tool_name: ApprovalTool.getName(),
+        turn_id: activeTurnId,
+        reason: 'user_interrupt',
+        interrupted: true
+      });
+
+      const restoredMessages = context.memoryManager?.getWorkingContextMessages() ?? [];
+      expect(restoredMessages.some((message) => message.content === 'needs approval')).toBe(false);
+      expect(restoredMessages.some((message) => message.tool_payload)).toBe(false);
+
+      await runtime.submitEvent(new ToolExecutionApprovalEvent('call_approval_1', true));
+      await delay(50);
+      expect(llm.requestMessages).toHaveLength(1);
+
+      await runtime.submitEvent(new UserMessageReceivedEvent(new AgentInputUserMessage('after interrupt')));
+      const nextCallStarted = await waitForCondition(() => llm.requestMessages.length === 2);
+      expect(nextCallStarted).toBe(true);
+
+      const nextMessages = llm.requestMessages[1];
+      expect(nextMessages.some((message) => message.content === 'after interrupt')).toBe(true);
+      expect(nextMessages.some((message) => message.content === 'needs approval')).toBe(false);
+      expect(nextMessages.some((message) => message.tool_payload)).toBe(false);
+    } finally {
       if (runtime.isRunning) {
         await runtime.stop(2);
       }

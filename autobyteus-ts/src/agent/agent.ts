@@ -8,6 +8,10 @@ import {
   ToolExecutionApprovalEvent,
   BaseEvent
 } from './events/agent-events.js';
+import type {
+  AgentInterruptOptions,
+  AgentInterruptResult
+} from './interruption/agent-interruption.js';
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -87,6 +91,20 @@ export class Agent {
   async stop(timeout: number = 10.0): Promise<void> {
     console.info(`Agent '${this.agentId}' requesting runtime to stop (timeout: ${timeout}s).`);
     await this.runtime.stop(timeout);
+  }
+
+  async interrupt(options: AgentInterruptOptions = {}): Promise<AgentInterruptResult> {
+    if (!this.runtime.isRunning) {
+      return {
+        accepted: false,
+        status: 'no_active_turn',
+        turnId: null,
+        reason: options.reason ?? 'user_interrupt',
+        message: `Agent '${this.agentId}' runtime is not running.`
+      };
+    }
+    console.info(`Agent '${this.agentId}' requesting runtime interrupt.`);
+    return this.runtime.interrupt(options);
   }
 
   toString(): string {

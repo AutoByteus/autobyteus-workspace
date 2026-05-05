@@ -1,9 +1,7 @@
 import { BaseBootstrapStep } from './base-bootstrap-step.js';
-import { BaseSystemPromptProcessor } from '../system-prompt-processor/base-processor.js';
 import { AgentErrorEvent } from '../events/agent-events.js';
+import { SystemPromptPipeline } from '../pipelines/system-prompt-pipeline.js';
 import type { AgentContext } from '../context/agent-context.js';
-
-type SystemPromptProcessorLike = BaseSystemPromptProcessor;
 
 export class SystemPromptProcessingStep extends BaseBootstrapStep {
   constructor() {
@@ -24,51 +22,7 @@ export class SystemPromptProcessingStep extends BaseBootstrapStep {
       const baseSystemPrompt = context.config.systemPrompt ?? llmInstance.config.systemMessage;
       console.debug(`Agent '${agentId}': Retrieved base system prompt.`);
 
-      const processorInstances = context.config.systemPromptProcessors as SystemPromptProcessorLike[];
-      const toolInstancesForProcessor = context.toolInstances;
-
-      let currentSystemPrompt = baseSystemPrompt;
-      if (!processorInstances || processorInstances.length === 0) {
-        console.debug(
-          `Agent '${agentId}': No system prompt processors configured. Using system prompt as is.`
-        );
-      } else {
-        const sortedProcessors = processorInstances.sort(
-          (left, right) => left.getOrder() - right.getOrder()
-        );
-        const processorNames = sortedProcessors.map((processor) => processor.getName());
-        console.debug(
-          `Agent '${agentId}': Found ${sortedProcessors.length} configured system prompt processors. ` +
-            `Applying sequentially in order: ${JSON.stringify(processorNames)}`
-        );
-
-        for (const processor of sortedProcessors) {
-          const processorName = processor.getName();
-          try {
-            console.debug(
-              `Agent '${agentId}': Applying system prompt processor '${processorName}'.`
-            );
-            currentSystemPrompt = processor.process(
-              currentSystemPrompt,
-              toolInstancesForProcessor,
-              agentId,
-              context
-            );
-            console.info(
-              `Agent '${agentId}': System prompt processor '${processorName}' applied successfully.`
-            );
-          } catch (error) {
-            const errorMessage = `Agent '${agentId}': Error applying system prompt processor '${processorName}': ${error}`;
-            console.error(errorMessage);
-            if (context.state.inputEventQueues) {
-              await context.state.inputEventQueues.enqueueInternalSystemEvent(
-                new AgentErrorEvent(errorMessage, String(error))
-              );
-            }
-            return false;
-          }
-        }
-      }
+      const currentSystemPrompt = new SystemPromptPipeline().process(baseSystemPrompt, context);
 
       context.state.processedSystemPrompt = currentSystemPrompt;
 
