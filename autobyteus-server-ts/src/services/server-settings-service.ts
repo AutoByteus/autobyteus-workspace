@@ -27,6 +27,9 @@ type ServerSettingValueValidation = {
 
 const CUSTOM_SETTING_DESCRIPTION = "Custom user-defined setting";
 export const AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID = "AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID";
+export const DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY = "DEFAULT_IMAGE_EDIT_MODEL";
+export const DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY = "DEFAULT_IMAGE_GENERATION_MODEL";
+export const DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY = "DEFAULT_SPEECH_GENERATION_MODEL";
 
 export class ServerSettingsService {
   private settingsInfo = new Map<string, ServerSettingDescription>();
@@ -95,6 +98,21 @@ export class ServerSettingsService {
         allowedValues: CODEX_SANDBOX_MODES,
         trimBeforePersist: true,
       },
+    );
+
+    this.registerPredefinedSetting(
+      DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY,
+      "Default image editing model identifier used by future media tool calls.",
+    );
+
+    this.registerPredefinedSetting(
+      DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY,
+      "Default image generation model identifier used by future media tool calls.",
+    );
+
+    this.registerPredefinedSetting(
+      DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY,
+      "Default speech generation model identifier used by future text-to-speech media tool calls.",
     );
 
     logger.info(
