@@ -99,6 +99,9 @@ const mountComponent = async (
         CodexFullAccessCard: {
           template: '<div data-testid="codex-full-access-card-stub">Codex Full Access Card</div>',
         },
+        MediaDefaultModelsCard: {
+          template: '<div data-testid="media-default-models-card-stub">Media Default Models Card</div>',
+        },
         CompactionConfigCard: {
           template: '<div data-testid="compaction-config-card-stub">Compaction Config Card</div>',
         },
@@ -136,6 +139,7 @@ describe('ServerSettingsManager', () => {
     expect(wrapper.find('[data-testid="quick-setting-add-row-LMSTUDIO_HOSTS"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid^="quick-row-host-LMSTUDIO_HOSTS-"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="search-provider-select"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="media-default-models-card-stub"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="codex-full-access-card-stub"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="compaction-config-card-stub"]').exists()).toBe(true)
   })
