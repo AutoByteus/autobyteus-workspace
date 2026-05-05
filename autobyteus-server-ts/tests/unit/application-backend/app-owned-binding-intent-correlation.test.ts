@@ -204,9 +204,9 @@ const buildBriefArtifactEvent = (
   binding: ApplicationRunBindingSummary,
 ): ApplicationPublishedArtifactEvent => ({
   runId: "team-run-brief-1::researcher",
-  artifactId: "team-run-brief-1::researcher:brief-studio/research.md",
+  artifactId: "team-run-brief-1::researcher:/tmp/downloads/brief-studio/research.md",
   revisionId: "brief-revision-1",
-  path: "brief-studio/research.md",
+  path: "/tmp/downloads/brief-studio/research.md",
   description: "Audience and sources collected.",
   fileKind: "file",
   publishedAt: "2026-04-19T12:15:00.000Z",
@@ -225,9 +225,9 @@ const buildBriefFinalArtifactEvent = (
   binding: ApplicationRunBindingSummary,
 ): ApplicationPublishedArtifactEvent => ({
   runId: "team-run-brief-1::writer",
-  artifactId: "team-run-brief-1::writer:brief-studio/final-brief.md",
+  artifactId: "team-run-brief-1::writer:/tmp/downloads/final-brief.md",
   revisionId: "brief-revision-final-1",
-  path: "brief-studio/final-brief.md",
+  path: "/tmp/downloads/final-brief.md",
   description: "Final draft ready for review.",
   fileKind: "file",
   publishedAt: "2026-04-19T12:16:00.000Z",
@@ -246,12 +246,33 @@ const buildLessonArtifactEvent = (
   binding: ApplicationRunBindingSummary,
 ): ApplicationPublishedArtifactEvent => ({
   runId: "team-run-lesson-1::tutor",
-  artifactId: "team-run-lesson-1::tutor:socratic-math/lesson-response.md",
+  artifactId: "team-run-lesson-1::tutor:/tmp/downloads/socratic-math/lesson-response.md",
   revisionId: "lesson-revision-1",
-  path: "socratic-math/lesson-response.md",
+  path: "/tmp/downloads/socratic-math/lesson-response.md",
   description: "Try isolating x first.",
   fileKind: "file",
   publishedAt: "2026-04-19T12:25:00.000Z",
+  binding,
+  producer: {
+    memberRouteKey: "tutor",
+    memberName: "tutor",
+    displayName: "Tutor",
+    teamPath: [],
+    runId: "team-run-lesson-1::tutor",
+    runtimeKind: "AGENT_TEAM_MEMBER",
+  },
+});
+
+const buildLessonHintArtifactEvent = (
+  binding: ApplicationRunBindingSummary,
+): ApplicationPublishedArtifactEvent => ({
+  runId: "team-run-lesson-1::tutor",
+  artifactId: "team-run-lesson-1::tutor:/tmp/downloads/lesson-hint.md",
+  revisionId: "lesson-hint-revision-1",
+  path: "/tmp/downloads/lesson-hint.md",
+  description: "A small hint for the next step.",
+  fileKind: "file",
+  publishedAt: "2026-04-19T12:26:00.000Z",
   binding,
   producer: {
     memberRouteKey: "tutor",
@@ -587,6 +608,9 @@ describe("App-owned bindingIntentId correlation", () => {
       const artifactCount = Number(
         (verifiedDb.prepare(`SELECT COUNT(*) AS count FROM brief_artifacts`).get() as { count: number }).count,
       );
+      const artifactRow = verifiedDb.prepare(
+        `SELECT path, publication_kind FROM brief_artifacts LIMIT 1`,
+      ).get() as { path: string; publication_kind: string };
       const briefBindingCount = Number(
         (verifiedDb.prepare(`SELECT COUNT(*) AS count FROM brief_bindings`).get() as { count: number }).count,
       );
@@ -601,6 +625,10 @@ describe("App-owned bindingIntentId correlation", () => {
         latest_binding_status: "ATTACHED",
       });
       expect(artifactCount).toBe(1);
+      expect(artifactRow).toEqual({
+        path: "/tmp/downloads/brief-studio/research.md",
+        publication_kind: "research",
+      });
       expect(briefBindingCount).toBe(1);
       expect(pendingIntentRow).toEqual({
         status: "COMMITTED",
@@ -622,7 +650,7 @@ describe("App-owned bindingIntentId correlation", () => {
           ...artifactEvent,
           binding,
           runId: "team-run-brief-1::writer",
-          artifactId: "team-run-brief-1::writer:brief-studio/final-brief.md",
+          artifactId: "team-run-brief-1::writer:/tmp/downloads/final-brief.md",
         });
         return binding;
       }),
@@ -848,11 +876,16 @@ describe("App-owned bindingIntentId correlation", () => {
 
   it("reconciles Socratic early tutor events through bindingIntentId without event.executionRef", async () => {
     const appDatabasePath = await createTempDatabase("autobyteus-lesson-event-intent-", SOCRATIC_MIGRATIONS_DIR);
-    const artifactEvent = buildLessonArtifactEvent(buildLessonBinding("lesson-pending-intent-1"));
+    const binding = buildLessonBinding("lesson-pending-intent-1");
+    const artifactEvent = buildLessonArtifactEvent(binding);
+    const hintArtifactEvent = buildLessonHintArtifactEvent(binding);
+    const publishNotification = vi.fn(async () => undefined);
     const context = createHandlerContext({
       appDatabasePath,
+      publishNotification,
       runtimeControl: buildRevisionTextRuntimeControl({
         [artifactEvent.revisionId]: "Try isolating x first.",
+        [hintArtifactEvent.revisionId]: "Think about dividing both sides by 3.",
       }),
     });
 
@@ -893,6 +926,7 @@ describe("App-owned bindingIntentId correlation", () => {
     }
 
     await createLessonArtifactReconciliationService(context).handlePersistedArtifact(artifactEvent);
+    await createLessonArtifactReconciliationService(context).handlePersistedArtifact(hintArtifactEvent);
 
     const verifiedDb = new DatabaseSync(appDatabasePath);
     try {
@@ -909,6 +943,16 @@ describe("App-owned bindingIntentId correlation", () => {
       const messageCount = Number(
         (verifiedDb.prepare(`SELECT COUNT(*) AS count FROM lesson_messages`).get() as { count: number }).count,
       );
+      const messageRows = verifiedDb.prepare(
+        `SELECT role, kind, body, source_revision_id
+           FROM lesson_messages
+          ORDER BY datetime(created_at) ASC, kind ASC`,
+      ).all() as Array<{
+        role: string;
+        kind: string;
+        body: string;
+        source_revision_id: string | null;
+      }>;
       const pendingIntentRow = verifiedDb.prepare(
         `SELECT status, binding_id FROM pending_binding_intents LIMIT 1`,
       ).get() as { status: string; binding_id: string | null };
@@ -919,10 +963,37 @@ describe("App-owned bindingIntentId correlation", () => {
         latest_run_id: "team-run-lesson-1",
         latest_binding_status: "ATTACHED",
       });
-      expect(messageCount).toBe(1);
+      expect(messageCount).toBe(2);
+      expect(messageRows).toEqual([
+        {
+          role: "tutor",
+          kind: "lesson_response",
+          body: "Try isolating x first.",
+          source_revision_id: artifactEvent.revisionId,
+        },
+        {
+          role: "tutor",
+          kind: "lesson_hint",
+          body: "Think about dividing both sides by 3.",
+          source_revision_id: hintArtifactEvent.revisionId,
+        },
+      ]);
       expect(pendingIntentRow).toEqual({
         status: "COMMITTED",
         binding_id: "binding-lesson-1",
+      });
+      expect(publishNotification).toHaveBeenCalledTimes(2);
+      expect(publishNotification).toHaveBeenNthCalledWith(1, "lesson.response_received", {
+        lessonId: "lesson-1",
+        bindingId: "binding-lesson-1",
+        revisionId: artifactEvent.revisionId,
+        runId: artifactEvent.runId,
+      });
+      expect(publishNotification).toHaveBeenNthCalledWith(2, "lesson.hint_received", {
+        lessonId: "lesson-1",
+        bindingId: "binding-lesson-1",
+        revisionId: hintArtifactEvent.revisionId,
+        runId: hintArtifactEvent.runId,
       });
     } finally {
       verifiedDb.close();

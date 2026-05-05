@@ -126,7 +126,7 @@ publish_artifacts({
 })
 ```
 
-Each artifact item accepts only `path` and optional `description`; blank descriptions normalize to `null`. Paths may be relative to the current run workspace or absolute, but they must resolve to a readable file inside that workspace. Files in a temp directory, app package directory, or any other outside-workspace location must be written or copied into the agent workspace before publication.
+Each artifact item accepts only `path` and optional `description`; blank descriptions normalize to `null`. Paths may be relative to the current run workspace or absolute. Relative inputs are resolved against the workspace root before storage, and published artifact summaries/revisions expose the normalized absolute source path. Absolute paths may point inside or outside the workspace when they resolve to a readable file for the runtime server; publication snapshots the file into run memory at publish time. Application handlers should treat `path` as the source identity/display path and apply any app-specific artifact meaning in app-owned resolvers.
 
 The old singular `publish_artifact` tool is not registered, exposed, allowlisted, discoverable, or mapped as an alias. Existing custom agent configs that still list only `publish_artifact` must be migrated to `publish_artifacts` before they can publish artifacts.
 

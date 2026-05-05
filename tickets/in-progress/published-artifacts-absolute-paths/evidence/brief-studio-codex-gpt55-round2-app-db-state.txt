@@ -1,0 +1,10 @@
+--- app db brief_artifacts rows ---
+brief_id                                    artifact_kind  publication_kind  path                                                                                         revision_id                           producer_member_route_key
+------------------------------------------  -------------  ----------------  -------------------------------------------------------------------------------------------  ------------------------------------  -------------------------
+brief-79b9657c-4d18-4d22-ac36-d46d9cb50a4b  researcher     research          /private/tmp/autobyteus-paa-brief-studio-codex-round2-workspace/brief-studio/research.md     d302cda8-8d0c-4f7b-9cd0-a3e65c4d1ce2  researcher               
+brief-79b9657c-4d18-4d22-ac36-d46d9cb50a4b  writer         final             /private/tmp/autobyteus-paa-brief-studio-codex-round2-workspace/brief-studio/final-brief.md  da676386-e586-47df-a786-58c3b8357487  writer                   
+--- app db briefs row ---
+brief_id                                    title                                               status     latest_binding_id                     latest_run_id                                           latest_binding_status  last_error_message
+------------------------------------------  --------------------------------------------------  ---------  ------------------------------------  ------------------------------------------------------  ---------------------  ------------------
+brief-79b9657c-4d18-4d22-ac36-d46d9cb50a4b  Codex GPT-5.5 PAA runtime validation round 2 brief  in_review  a08449cc-e7cf-43c5-ace3-d70066b1af29  team_bundle-team-6170706c69636174696f6e2d6c6f_5bade660  ATTACHED                                 
+--- platform agent_artifacts rows for member runs ---

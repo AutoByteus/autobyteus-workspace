@@ -24,7 +24,7 @@ const buildInputSchema = (): JsonObject => ({
           path: {
             type: "string",
             description:
-              "Absolute path to the file that should be published as an artifact. Prefer the exact absolute path returned by write_file; the file must still be inside the current workspace.",
+              "Workspace-relative or absolute path to a readable file to publish. Absolute paths may point outside the workspace when readable by the runtime server; prefer the exact absolute path returned by write_file when available.",
           },
           description: {
             type: ["string", "null"],

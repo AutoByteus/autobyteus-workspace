@@ -9,10 +9,14 @@ import {
 import { PublishedArtifactProjectionStore } from "../../../../src/services/published-artifacts/published-artifact-projection-store.js";
 import { PublishedArtifactPublicationService } from "../../../../src/services/published-artifacts/published-artifact-publication-service.js";
 import { PublishedArtifactSnapshotStore } from "../../../../src/services/published-artifacts/published-artifact-snapshot-store.js";
+import { PublishedArtifactProjectionService } from "../../../../src/run-history/services/published-artifact-projection-service.js";
 import { EMPTY_PUBLISHED_ARTIFACT_PROJECTION } from "../../../../src/services/published-artifacts/published-artifact-types.js";
 
 describe("PublishedArtifactPublicationService", () => {
   const tempDirs: string[] = [];
+
+  const normalizePublishedPath = async (filePath: string): Promise<string> =>
+    (await fs.realpath(filePath).catch(() => filePath)).replace(/\\/g, "/");
 
   const createTempDir = async (): Promise<string> => {
     const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "published-artifact-publication-"));
@@ -20,15 +24,16 @@ describe("PublishedArtifactPublicationService", () => {
     return tempDir;
   };
 
-  const createRunHarness = async () => {
+  const createRunHarness = async (options: { workspaceId?: string | null } = {}) => {
     const workspaceRoot = await createTempDir();
     const memoryDir = await createTempDir();
     const localEvents: AgentRunEvent[] = [];
+    const workspaceId = options.workspaceId === undefined ? "workspace-1" : options.workspaceId;
     const run = {
       runId: "run-1",
       config: {
         memoryDir,
-        workspaceId: "workspace-1",
+        ...(workspaceId ? { workspaceId } : {}),
       },
       emitLocalEvent(event: AgentRunEvent) {
         localEvents.push(event);
@@ -45,7 +50,7 @@ describe("PublishedArtifactPublicationService", () => {
 
   const createService = (input: {
     run: any;
-    workspaceRoot: string;
+    workspaceRoot?: string;
     projectionStore?: PublishedArtifactProjectionStore;
     snapshotStore?: PublishedArtifactSnapshotStore;
   }): PublishedArtifactPublicationService =>
@@ -55,7 +60,7 @@ describe("PublishedArtifactPublicationService", () => {
       } as any,
       workspaceManager: {
         getOrCreateWorkspace: vi.fn().mockResolvedValue({
-          getBasePath: () => input.workspaceRoot,
+          getBasePath: () => input.workspaceRoot ?? "",
         }),
       } as any,
       projectionStore: input.projectionStore,
@@ -82,6 +87,7 @@ describe("PublishedArtifactPublicationService", () => {
     const filePath = path.join(workspaceRoot, "docs", "brief.md");
     await fs.mkdir(path.dirname(filePath), { recursive: true });
     await fs.writeFile(filePath, "# Review-ready brief", "utf-8");
+    const expectedPath = await normalizePublishedPath(filePath);
 
     const artifact = await service.publishForRun({
       runId: run.runId,
@@ -92,7 +98,7 @@ describe("PublishedArtifactPublicationService", () => {
     const projection = await projectionStore.readProjection(memoryDir);
     expect(artifact).toMatchObject({
       runId: "run-1",
-      path: "docs/brief.md",
+      path: expectedPath,
       type: "file",
       status: "available",
       description: "Ready for review",
@@ -127,6 +133,10 @@ describe("PublishedArtifactPublicationService", () => {
     await fs.mkdir(path.dirname(firstPath), { recursive: true });
     await fs.writeFile(firstPath, "A", "utf-8");
     await fs.writeFile(secondPath, "B", "utf-8");
+    const expectedPaths = [
+      await normalizePublishedPath(firstPath),
+      await normalizePublishedPath(secondPath),
+    ];
 
     const artifacts = await service.publishManyForRun({
       runId: run.runId,
@@ -137,15 +147,15 @@ describe("PublishedArtifactPublicationService", () => {
     });
 
     const projection = await projectionStore.readProjection(memoryDir);
-    expect(artifacts.map((artifact) => artifact.path)).toEqual(["docs/a.md", "docs/b.md"]);
+    expect(artifacts.map((artifact) => artifact.path)).toEqual(expectedPaths);
     expect(artifacts.map((artifact) => artifact.description)).toEqual(["First", null]);
-    expect(projection.summaries.map((artifact) => artifact.path)).toEqual(["docs/a.md", "docs/b.md"]);
-    expect(projection.revisions.map((revision) => revision.path)).toEqual(["docs/a.md", "docs/b.md"]);
+    expect(projection.summaries.map((artifact) => artifact.path)).toEqual(expectedPaths);
+    expect(projection.revisions.map((revision) => revision.path)).toEqual(expectedPaths);
     expect(localEvents).toHaveLength(2);
-    expect(localEvents.map((event) => (event.payload as any).path)).toEqual(["docs/a.md", "docs/b.md"]);
+    expect(localEvents.map((event) => (event.payload as any).path)).toEqual(expectedPaths);
   });
 
-  it("accepts the absolute file path returned by write_file and canonicalizes it to the workspace-relative artifact path", async () => {
+  it("accepts the absolute file path returned by write_file and stores its absolute source identity", async () => {
     const { run, workspaceRoot, localEvents } = await createRunHarness();
     const service = createService({
       run,
@@ -162,16 +172,131 @@ describe("PublishedArtifactPublicationService", () => {
       description: "Ready for review",
     });
 
-    expect(artifact.path).toBe("docs/brief.md");
+    const expectedPath = await normalizePublishedPath(filePath);
+    expect(artifact.path).toBe(expectedPath);
     expect(localEvents[0]).toMatchObject({
       eventType: AgentRunEventType.ARTIFACT_PERSISTED,
       payload: expect.objectContaining({
-        path: "docs/brief.md",
+        path: expectedPath,
       }),
     });
   });
 
-  it("rejects workspace-relative symlink escapes that resolve outside the bound workspace", async () => {
+  it("stores realpath-equivalent in-workspace absolute files as absolute source artifact paths", async () => {
+    const { run, memoryDir, localEvents } = await createRunHarness();
+    const projectionStore = new PublishedArtifactProjectionStore();
+    const snapshotStore = new PublishedArtifactSnapshotStore();
+    const tempRoot = await createTempDir();
+    const realWorkspaceRoot = path.join(tempRoot, "real-workspace");
+    const workspaceAliasRoot = path.join(tempRoot, "workspace-alias");
+    await fs.mkdir(path.join(realWorkspaceRoot, "brief-studio"), { recursive: true });
+    await fs.symlink(realWorkspaceRoot, workspaceAliasRoot, "dir");
+    const service = createService({
+      run,
+      workspaceRoot: workspaceAliasRoot,
+      projectionStore,
+      snapshotStore,
+    });
+
+    const filePath = path.join(realWorkspaceRoot, "brief-studio", "research.md");
+    await fs.writeFile(filePath, "realpath-equivalent workspace file", "utf-8");
+
+    const artifact = await service.publishForRun({
+      runId: run.runId,
+      path: filePath,
+      description: "Research checkpoint",
+    });
+
+    const projection = await projectionStore.readProjection(memoryDir);
+    const expectedPath = await normalizePublishedPath(filePath);
+    expect(artifact.path).toBe(expectedPath);
+    expect(projection.summaries[0]?.path).toBe(expectedPath);
+    expect(projection.revisions[0]?.path).toBe(expectedPath);
+    await expect(
+      snapshotStore.readRevisionText(memoryDir, projection.revisions[0]!.snapshotRelativePath),
+    ).resolves.toBe("realpath-equivalent workspace file");
+    expect(localEvents[0]?.payload).toEqual(artifact);
+  });
+
+  it("publishes an outside-workspace absolute file and stores the normalized absolute artifact path", async () => {
+    const { run, workspaceRoot, memoryDir, localEvents } = await createRunHarness();
+    const projectionStore = new PublishedArtifactProjectionStore();
+    const snapshotStore = new PublishedArtifactSnapshotStore();
+    const service = createService({
+      run,
+      workspaceRoot,
+      projectionStore,
+      snapshotStore,
+    });
+
+    const outsideRoot = await createTempDir();
+    const outsideFilePath = path.join(outsideRoot, "external-report.md");
+    await fs.writeFile(outsideFilePath, "outside workspace", "utf-8");
+
+    const artifact = await service.publishForRun({
+      runId: run.runId,
+      path: outsideFilePath,
+      description: "External report",
+    });
+
+    const expectedPath = await normalizePublishedPath(outsideFilePath);
+    const projection = await projectionStore.readProjection(memoryDir);
+    expect(artifact.path).toBe(expectedPath);
+    expect(projection.summaries[0]?.path).toBe(expectedPath);
+    expect(projection.revisions[0]?.path).toBe(expectedPath);
+    await expect(
+      snapshotStore.readRevisionText(memoryDir, projection.revisions[0]!.snapshotRelativePath),
+    ).resolves.toBe("outside workspace");
+    expect(localEvents[0]?.payload).toEqual(artifact);
+  });
+
+  it("publishes an absolute file without a workspace binding", async () => {
+    const { run, memoryDir, localEvents } = await createRunHarness({ workspaceId: null });
+    const projectionStore = new PublishedArtifactProjectionStore();
+    const snapshotStore = new PublishedArtifactSnapshotStore();
+    const service = createService({
+      run,
+      projectionStore,
+      snapshotStore,
+    });
+
+    const outsideRoot = await createTempDir();
+    const outsideFilePath = path.join(outsideRoot, "no-workspace.md");
+    await fs.writeFile(outsideFilePath, "absolute without workspace", "utf-8");
+
+    const artifact = await service.publishForRun({
+      runId: run.runId,
+      path: outsideFilePath,
+    });
+
+    expect(artifact.path).toBe(await normalizePublishedPath(outsideFilePath));
+    expect((await projectionStore.readProjection(memoryDir)).summaries).toEqual([artifact]);
+    expect(localEvents).toHaveLength(1);
+  });
+
+  it("rejects relative paths without a workspace binding before persisting", async () => {
+    const { run, memoryDir, localEvents } = await createRunHarness({ workspaceId: null });
+    const projectionStore = new PublishedArtifactProjectionStore();
+    const snapshotStore = new PublishedArtifactSnapshotStore();
+    const service = createService({
+      run,
+      projectionStore,
+      snapshotStore,
+    });
+
+    await expect(
+      service.publishForRun({
+        runId: run.runId,
+        path: "docs/brief.md",
+      }),
+    ).rejects.toThrow("Published artifact relative paths require a workspace root.");
+
+    expect(await projectionStore.readProjection(memoryDir)).toEqual(EMPTY_PUBLISHED_ARTIFACT_PROJECTION);
+    expect(await fs.readdir(snapshotStore.getSnapshotRootPath(memoryDir)).catch(() => [])).toEqual([]);
+    expect(localEvents).toEqual([]);
+  });
+
+  it("publishes workspace-relative symlink escapes and snapshots the resolved target content", async () => {
     const { run, workspaceRoot, memoryDir, localEvents } = await createRunHarness();
     const projectionStore = new PublishedArtifactProjectionStore();
     const snapshotStore = new PublishedArtifactSnapshotStore();
@@ -187,16 +312,51 @@ describe("PublishedArtifactPublicationService", () => {
     await fs.writeFile(outsideFilePath, "outside workspace", "utf-8");
     await fs.symlink(outsideRoot, path.join(workspaceRoot, "escape"), "dir");
 
-    await expect(
-      service.publishForRun({
-        runId: run.runId,
-        path: "escape/secret.txt",
-      }),
-    ).rejects.toThrow("Published artifact path must resolve to a file inside the current workspace.");
+    const artifact = await service.publishForRun({
+      runId: run.runId,
+      path: "escape/secret.txt",
+    });
 
-    expect(await projectionStore.readProjection(memoryDir)).toEqual(EMPTY_PUBLISHED_ARTIFACT_PROJECTION);
-    expect(await fs.readdir(snapshotStore.getSnapshotRootPath(memoryDir)).catch(() => [])).toEqual([]);
-    expect(localEvents).toEqual([]);
+    const projection = await projectionStore.readProjection(memoryDir);
+    expect(artifact.path).toBe(await normalizePublishedPath(outsideFilePath));
+    expect(projection.summaries).toEqual([artifact]);
+    await expect(
+      snapshotStore.readRevisionText(memoryDir, projection.revisions[0]!.snapshotRelativePath),
+    ).resolves.toBe("outside workspace");
+    expect(localEvents[0]?.payload).toEqual(artifact);
+  });
+
+  it("serves revision text from the snapshot after the outside source file is deleted", async () => {
+    const { run, workspaceRoot, memoryDir } = await createRunHarness();
+    const projectionStore = new PublishedArtifactProjectionStore();
+    const snapshotStore = new PublishedArtifactSnapshotStore();
+    const service = createService({
+      run,
+      workspaceRoot,
+      projectionStore,
+      snapshotStore,
+    });
+    const projectionService = new PublishedArtifactProjectionService({
+      projectionStore,
+      snapshotStore,
+    });
+
+    const outsideRoot = await createTempDir();
+    const outsideFilePath = path.join(outsideRoot, "durable.md");
+    await fs.writeFile(outsideFilePath, "durable snapshot content", "utf-8");
+
+    const artifact = await service.publishForRun({
+      runId: run.runId,
+      path: outsideFilePath,
+    });
+    await fs.rm(outsideFilePath);
+
+    await expect(
+      projectionService.getPublishedArtifactRevisionTextFromMemoryDir({
+        memoryDir,
+        revisionId: artifact.revisionId,
+      }),
+    ).resolves.toBe("durable snapshot content");
   });
 
   it("keeps one artifact identity while appending new revisions for repeated publication of the same path", async () => {
@@ -240,6 +400,68 @@ describe("PublishedArtifactPublicationService", () => {
       firstArtifact.revisionId,
       secondArtifact.revisionId,
     ]);
+  });
+
+  it("rejects invalid source files before persisting", async () => {
+    const { run, workspaceRoot, memoryDir, localEvents } = await createRunHarness();
+    const projectionStore = new PublishedArtifactProjectionStore();
+    const snapshotStore = new PublishedArtifactSnapshotStore();
+    const service = createService({
+      run,
+      workspaceRoot,
+      projectionStore,
+      snapshotStore,
+    });
+
+    await fs.mkdir(path.join(workspaceRoot, "docs"), { recursive: true });
+
+    await expect(
+      service.publishForRun({
+        runId: run.runId,
+        path: "docs",
+      }),
+    ).rejects.toThrow("does not resolve to a readable regular file");
+
+    expect(await projectionStore.readProjection(memoryDir)).toEqual(EMPTY_PUBLISHED_ARTIFACT_PROJECTION);
+    expect(await fs.readdir(snapshotStore.getSnapshotRootPath(memoryDir)).catch(() => [])).toEqual([]);
+    expect(localEvents).toEqual([]);
+  });
+
+  it("cleans up a revision directory when the source disappears during snapshot copy", async () => {
+    const { run, workspaceRoot, memoryDir, localEvents } = await createRunHarness();
+    const projectionStore = new PublishedArtifactProjectionStore();
+    class SourceDeletingSnapshotStore extends PublishedArtifactSnapshotStore {
+      override async snapshotArtifact(input: {
+        memoryDir: string;
+        revisionId: string;
+        sourceAbsolutePath: string;
+      }): Promise<{ snapshotRelativePath: string; sourceFileName: string }> {
+        await fs.rm(input.sourceAbsolutePath);
+        return super.snapshotArtifact(input);
+      }
+    }
+    const snapshotStore = new SourceDeletingSnapshotStore();
+    const service = createService({
+      run,
+      workspaceRoot,
+      projectionStore,
+      snapshotStore,
+    });
+
+    const filePath = path.join(workspaceRoot, "docs", "brief.md");
+    await fs.mkdir(path.dirname(filePath), { recursive: true });
+    await fs.writeFile(filePath, "will disappear", "utf-8");
+
+    await expect(
+      service.publishForRun({
+        runId: run.runId,
+        path: "docs/brief.md",
+      }),
+    ).rejects.toThrow("could not be snapshotted");
+
+    expect(await projectionStore.readProjection(memoryDir)).toEqual(EMPTY_PUBLISHED_ARTIFACT_PROJECTION);
+    expect(await fs.readdir(snapshotStore.getSnapshotRootPath(memoryDir)).catch(() => [])).toEqual([]);
+    expect(localEvents).toEqual([]);
   });
 
   it("cleans up the snapshot when projection persistence fails", async () => {
@@ -319,9 +541,10 @@ describe("PublishedArtifactPublicationService", () => {
     });
 
     const projection = await projectionStore.readProjection(memoryDir);
+    const expectedPath = await normalizePublishedPath(filePath);
     expect(artifact).toMatchObject({
       runId: "researcher_member_run",
-      path: "brief-studio/research.md",
+      path: expectedPath,
       type: "file",
       status: "available",
       description: "Research checkpoint",

@@ -17,7 +17,7 @@ const formatTime = (value) => {
   return timestamp.toLocaleString();
 };
 
-const isFinalArtifact = (artifact) => artifact?.path === "brief-studio/final-brief.md";
+const isFinalArtifact = (artifact) => artifact?.publicationKind === "final";
 
 const formatArtifactLabel = (artifact) => {
   switch (artifact?.publicationKind) {

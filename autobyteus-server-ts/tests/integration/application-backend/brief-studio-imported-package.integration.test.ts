@@ -980,12 +980,23 @@ describe("Brief Studio imported package integration", () => {
     const writerProducer = executionContextByRouteKey.get("writer")?.producer ?? null;
     expect(researcherProducer).not.toBeNull();
     expect(writerProducer).not.toBeNull();
+    const researcherPublishedPath = path.join(
+      tempRoot,
+      "absolute-source",
+      "brief-studio",
+      "research.md",
+    ).replace(/\\/g, "/");
+    const writerPublishedPath = path.join(
+      tempRoot,
+      "absolute-source",
+      "final-brief.md",
+    ).replace(/\\/g, "/");
 
     const researcherArtifactEvent = await persistPublishedArtifactForRun({
       runId: memberRunIdByRouteKey.get("researcher")!,
       binding: launchedBinding!,
       producer: researcherProducer!,
-      path: "brief-studio/research.md",
+      path: researcherPublishedPath,
       body: "Research summary",
       description: "Audience and sources collected.",
       revisionId: "research-note-1",
@@ -1000,7 +1011,7 @@ describe("Brief Studio imported package integration", () => {
       runId: memberRunIdByRouteKey.get("writer")!,
       binding: launchedBinding!,
       producer: writerProducer!,
-      path: "brief-studio/final-brief.md",
+      path: writerPublishedPath,
       body: "Final review-ready brief body.",
       description: "Draft ready for review.",
       revisionId: "brief-draft-1",
@@ -1146,7 +1157,7 @@ describe("Brief Studio imported package integration", () => {
           artifactKind: "researcher",
           publicationKind: "research",
           revisionId: "research-note-1",
-          path: "brief-studio/research.md",
+          path: researcherPublishedPath,
           description: "Audience and sources collected.",
           body: "Research summary",
           producerMemberRouteKey: "researcher",
@@ -1156,7 +1167,7 @@ describe("Brief Studio imported package integration", () => {
           artifactKind: "writer",
           publicationKind: "final",
           revisionId: "brief-draft-1",
-          path: "brief-studio/final-brief.md",
+          path: writerPublishedPath,
           description: "Draft ready for review.",
           body: "Final review-ready brief body.",
           producerMemberRouteKey: "writer",
@@ -1378,6 +1389,12 @@ describe("Brief Studio imported package integration", () => {
       latestRunId: null,
       latestBindingStatus: null,
     });
+    const earlyFinalPublishedPath = path.join(
+      tempRoot,
+      "launch-race-source",
+      "brief-studio",
+      "final-brief.md",
+    ).replace(/\\/g, "/");
 
     onObserveBoundRun = async ({ runId }) => {
       const writerRunId = `${runId}::writer`;
@@ -1398,7 +1415,7 @@ describe("Brief Studio imported package integration", () => {
         runId: writerRunId,
         binding: boundBinding!,
         producer: writerProducer!,
-        path: "brief-studio/final-brief.md",
+        path: earlyFinalPublishedPath,
         body: "Projected before launch completion.",
         description: "Projected before launch completion.",
         revisionId: "launch-race-final-1",
@@ -1466,7 +1483,7 @@ describe("Brief Studio imported package integration", () => {
           artifactKind: "writer",
           publicationKind: "final",
           revisionId: "launch-race-final-1",
-          path: "brief-studio/final-brief.md",
+          path: earlyFinalPublishedPath,
           description: "Projected before launch completion.",
           body: "Projected before launch completion.",
           producerMemberRouteKey: "writer",
