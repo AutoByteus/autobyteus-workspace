@@ -20,6 +20,8 @@ describe("codex-send-message-tool-spec-builder", () => {
     };
 
     expect(spec.name).toBe(SEND_MESSAGE_TO_TOOL_NAME);
+    expect((spec as { description?: string }).description).toContain("self-contained message");
+    expect((spec as { description?: string }).description).toContain("reference_files");
     expect(spec.input_schema).toBeUndefined();
     expect(spec.inputSchema).toEqual(
       expect.objectContaining({
@@ -36,9 +38,15 @@ describe("codex-send-message-tool-spec-builder", () => {
         }),
         content: expect.objectContaining({
           type: "string",
+          description: expect.stringContaining("email body"),
         }),
         message_type: expect.objectContaining({
           type: "string",
+        }),
+        reference_files: expect.objectContaining({
+          type: "array",
+          description: expect.stringContaining("in addition to self-contained content"),
+          items: { type: "string" },
         }),
       }),
     );

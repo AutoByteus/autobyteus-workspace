@@ -34,6 +34,7 @@ import type { TeamMemberRunConfig } from "../../domain/team-run-config.js";
 import type { TeamManager } from "../team-manager.js";
 import { getMemberTeamContextBuilder, type MemberTeamContextBuilder } from "../../services/member-team-context-builder.js";
 import { getInterAgentMessageRouter, type InterAgentMessageRouter } from "../../services/inter-agent-message-router.js";
+import { publishProcessedTeamAgentEvents } from "../../services/publish-processed-team-agent-events.js";
 import {
   buildInterAgentMessageAgentRunEvent,
 } from "../../services/inter-agent-message-runtime-builders.js";
@@ -111,7 +112,8 @@ export class MixedTeamManager implements TeamManager {
   async deliverInterAgentMessage(
     request: InterAgentMessageDeliveryRequest,
   ): Promise<AgentOperationResult> {
-    if (!this.teamContext) {
+    const teamContext = this.teamContext;
+    if (!teamContext) {
       return buildRunNotFoundResult("unknown");
     }
     const recipientContext = this.findMemberContextByName(request.recipientMemberName);
@@ -132,13 +134,20 @@ export class MixedTeamManager implements TeamManager {
     recipientContext.platformAgentRunId =
       recipientRun.getPlatformAgentRunId() ?? recipientContext.platformAgentRunId;
     if (result.accepted) {
-      this.publishMemberAgentEvent(
-        recipientContext,
-        buildInterAgentMessageAgentRunEvent({
-          recipientRunId: recipientContext.memberRunId,
-          request: normalizedRequest,
-        }),
-      );
+      await publishProcessedTeamAgentEvents({
+        teamRunId: teamContext.runId,
+        runContext: recipientRun.context,
+        runtimeKind: recipientContext.runtimeKind,
+        memberName: recipientContext.memberName,
+        memberRunId: recipientContext.memberRunId,
+        agentEvents: [
+          buildInterAgentMessageAgentRunEvent({
+            recipientRunId: recipientContext.memberRunId,
+            request: normalizedRequest,
+          }),
+        ],
+        publishTeamEvent: (event) => this.publish(event),
+      });
     }
     this.publishTeamStatusIfChanged();
     return {

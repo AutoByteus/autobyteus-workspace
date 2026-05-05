@@ -51,6 +51,7 @@ export const buildSendMessageToDynamicToolRegistrations = (input: {
           recipientMemberName,
           content,
           messageType: parsed.messageType,
+          referenceFiles: parsed.referenceFiles,
         });
         if (!result.accepted) {
           return createCodexDynamicToolTextResult(
