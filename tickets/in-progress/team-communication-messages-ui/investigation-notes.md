@@ -288,5 +288,47 @@ Design decision:
 - Do not use artifact display-mode store/state.
 - Raw/Preview controls must remain available while maximized.
 - Escape restores the normal Team tab split.
-- Selected plain message detail behavior remains unchanged; maximize applies only to selected reference-file previews for this addendum.
+- Maximize behavior applies only to selected reference-file previews for this addendum; selected message detail does not get maximize in this scope.
 - Add focused component tests for maximize, restore, Escape, and Raw/Preview controls while maximized.
+
+## Compact Email-Like Message Row Addendum - 2026-05-05
+
+Implementation engineer requested a design/addendum decision after user feedback on the Round 3 Team Communication list hierarchy.
+
+User feedback:
+
+- Current left list is too visually layered: `Sent/Received` -> counterpart agent name -> message type/title -> reference file.
+- Preferred list should be more email-like:
+  - top-level `Sent` and `Received` sections can remain;
+  - each message row should carry its own direction icon;
+  - message type behaves like the row title;
+  - counterpart metadata appears inline, e.g. `Direct Message · to student` or `Solution Submission · from student`;
+  - timestamp stays on the row;
+  - references remain under the message preview, but should use file-type icons rather than one generic paperclip.
+- Selected message detail should render nicely like other content previews; current plain `<pre>` is not good enough for natural/self-contained message content.
+
+Current implementation evidence:
+
+- `autobyteus-web/components/workspace/team/TeamCommunicationPanel.vue` currently renders sections -> groups -> message buttons -> reference buttons. Group headers are visible via `counterpartLabel(group)`.
+- The same component currently renders selected message body as a plain `<pre>`.
+- Shared renderer exists at `autobyteus-web/components/conversation/segments/renderer/MarkdownRenderer.vue` and is already used by conversation segments and markdown preview paths.
+
+Classification:
+
+- Frontend presentation addendum only.
+- No backend projection/API change expected.
+- Design update is needed because it revises the previously documented visible hierarchy from counterpart group headers to compact email-like rows.
+
+Design decision:
+
+- Keep top-level `Sent` and `Received` sections.
+- Remove the prominent counterpart group-header layer or make grouping visually implicit.
+- Each message row should show:
+  - sent/received direction icon;
+  - message type/title;
+  - inline `to/from <counterpart>` metadata;
+  - timestamp;
+  - bounded preview;
+  - child reference rows with file-type icons.
+- Selected message detail should use shared `MarkdownRenderer` instead of a normal plain `<pre>` block.
+- This remains Team Communication frontend presentation. Message rows and reference rows must not become Agent Artifact rows.

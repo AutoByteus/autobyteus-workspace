@@ -43,11 +43,14 @@ Initial bootstrap findings:
 - The Team tab should follow the existing Activity tab's collapsible-section behavior: Task Plan and Messages are section headers with chevrons/counts, and the expanded section receives the usable height.
 - The empty Task Plan state must not reserve a large fixed panel above Team Communication; when there is no plan, it should remain collapsed or compact unless the user opens it.
 - Use a master/detail interaction adapted to the existing right-panel width:
-  - compact message list/cards show direction, counterpart, message type, truncated preview, and vertical reference-file list in a left pane;
+  - compact email-like message rows show a sent/received direction icon, message type/title, inline counterpart metadata such as `to student` or `from student`, timestamp, truncated preview, and vertical reference-file list in a left pane;
   - selecting a message shows full message content in a right detail pane;
   - selecting a reference file previews its content in the right detail pane using the existing safe content-resolution behavior where possible.
 - When the selected item is a reference file, the Team Communication-owned reference viewer should support maximize/restore using the same interaction pattern as the Artifacts content viewer: maximize button, restore button, Escape-to-restore, and Raw/Preview controls available while maximized.
 - Do not keep an internal redundant `Team` header inside the Team tab; the right-side tab label already provides that context.
+- Do not keep a visually heavy hierarchy of `Sent/Received -> counterpart group header -> message -> reference`. The left list should remain compact: `Sent` and `Received` are top-level sections, while counterpart direction appears inline in each message row.
+- Reference-file child rows should use file-type icons where the reference type is known instead of a generic paperclip for every file.
+- Selected message detail should render natural/self-contained message content with the shared Markdown renderer used by conversation/file preview paths, instead of a plain `<pre>` block.
 - Remove Sent/Received Artifacts from the Artifacts tab; keep that tab focused on files created/touched by the focused agent.
 - Treat the prior `team-message-referenced-artifacts` Sent/Received Artifacts requirements (`REQ-016`, `REQ-017`, `AC-008`, `AC-009`, `AC-011`) as intentionally superseded for this new ticket.
 - Do not keep legacy duplicated Sent/Received artifact sections, fallback path scanning, or hidden compatibility rendering.
@@ -82,7 +85,7 @@ Rationale: The change spans server/event projection or hydration, frontend store
 
 - REQ-001: The Team tab must include a Team Communication/messages area in addition to the existing Task Plan information.
 - REQ-002: Team Communication must be message-first: each row/card represents one accepted inter-agent message, not one referenced file.
-- REQ-003: Team Communication must show direction from the focused member perspective through top-level `Sent` and `Received` sections. Inside each section, counterpart group headers must use only the agent/member name; do not repeat redundant `to` or `from` wording.
+- REQ-003: Team Communication must show direction from the focused member perspective through top-level `Sent` and `Received` sections plus compact row-level direction metadata. The left list should not rely on prominent counterpart group headers; each message row must show inline `to <counterpart>` or `from <counterpart>` metadata beside the message title/type.
 - REQ-004: Each message item must show message type and enough timestamp/order context to understand when the message occurred.
 - REQ-005: Each message item must show a bounded preview of message content; long content must not expand the list indefinitely.
 - REQ-006: Selecting a message must show the full message content in a detail/preview area.
@@ -106,12 +109,15 @@ Rationale: The change spans server/event projection or hydration, frontend store
 - REQ-024: Team Communication message/reference selection must use an Artifacts-like left-list/right-detail layout so selected file content is previewed beside the message list, not squeezed underneath it.
 - REQ-025: The Team Communication reference-file detail viewer must provide maximize/restore for selected reference files. The control must be owned by `TeamCommunicationReferenceViewer`, may reuse the Artifacts content viewer interaction pattern, and must not import/use `ArtifactContentViewer` or an artifact display-mode store.
 - REQ-026: While a Team Communication reference file is maximized, Raw/Preview controls for supported text/markdown/html files must remain available, and pressing Escape must restore the normal Team tab layout.
-- REQ-027: Message-detail selection behavior must remain unchanged: maximize applies only to selected reference-file previews, not to plain selected message content unless separately designed later.
+- REQ-027: Message-detail maximize behavior must remain unchanged: maximize applies only to selected reference-file previews, not to plain selected message content unless separately designed later.
+- REQ-028: Team Communication message rows must use a compact email-like hierarchy: direction icon, message title/type, inline `to/from <counterpart>`, timestamp, bounded preview, and reference child rows.
+- REQ-029: Team Communication reference child rows must use file-type icons based on the reference file type when available; a generic paperclip must not be the only normal visual treatment.
+- REQ-030: Selected message detail must render message content with the shared Markdown renderer so natural handoff content, lists, code fences, and links are readable. Plain `<pre>` rendering is not acceptable for the normal selected-message detail.
 
 ## Acceptance Criteria
 
-- AC-001: Given a focused team member has sent accepted inter-agent messages, the Team tab shows them under a `Sent` section grouped by counterpart agent/member name, with no redundant `to` label in the group header.
-- AC-002: Given a focused team member has received accepted inter-agent messages, the Team tab shows them under a `Received` section grouped by counterpart agent/member name, with no redundant `from` label in the group header.
+- AC-001: Given a focused team member has sent accepted inter-agent messages, the Team tab shows them under a `Sent` section with compact rows that include a sent direction icon and inline `to <counterpart>` metadata.
+- AC-002: Given a focused team member has received accepted inter-agent messages, the Team tab shows them under a `Received` section with compact rows that include a received direction icon and inline `from <counterpart>` metadata.
 - AC-003: Given a message has long content, the message list shows a truncated preview while selecting the message shows full content.
 - AC-004: Given a message has `reference_files`, those files appear vertically under that message in the Team Communication list.
 - AC-005: Given a referenced file is selected, the detail/preview area shows the file content or a graceful unavailable/deleted-file state.
@@ -134,6 +140,9 @@ Rationale: The change spans server/event projection or hydration, frontend store
 - AC-022: Given a Team Communication reference file preview is maximized, pressing Escape restores the normal Team tab split.
 - AC-023: Given a supported markdown/html/text reference is maximized, Raw/Preview controls remain usable and do not require leaving maximized view.
 - AC-024: Review or automated evidence proves the maximize behavior is implemented in Team Communication-owned components without importing `ArtifactContentViewer` or artifact display-mode state.
+- AC-025: Given a message row has references, each reference row shows a file-type-specific icon when the reference type is known.
+- AC-026: Given a message is selected, the right detail pane renders the message body through the shared Markdown renderer rather than a plain `<pre>` block.
+- AC-027: Review or component-test evidence proves the left list does not render a prominent extra counterpart group-header layer between `Sent`/`Received` and message rows.
 
 ## Constraints / Dependencies
 
@@ -146,7 +155,7 @@ Rationale: The change spans server/event projection or hydration, frontend store
 
 ## Assumptions
 
-- The focused team member remains the natural perspective for `Sent` and `Received` sections; section names imply direction, so child group labels should be counterpart names only.
+- The focused team member remains the natural perspective for `Sent` and `Received` sections; section names imply coarse direction, while rows include concise inline `to/from <counterpart>` metadata because prominent counterpart group headers are no longer the target hierarchy.
 - The message-first view should use accepted inter-agent messages, not raw tool-call activity cards.
 - Existing safe file content viewer/resolution behavior can be reused or adapted for message reference previews.
 - Task Plan remains part of the Team tab, but the final layout must use compact collapsible section presentation based on current UI review.
@@ -164,8 +173,8 @@ Rationale: The change spans server/event projection or hydration, frontend store
 - UC-001 -> REQ-001, REQ-012, REQ-013, REQ-018, REQ-019, REQ-021, REQ-023
 - UC-002 -> REQ-002, REQ-003, REQ-004
 - UC-003 -> REQ-005
-- UC-004 -> REQ-006, REQ-024
-- UC-005 -> REQ-007, REQ-014, REQ-015
+- UC-004 -> REQ-006, REQ-024, REQ-030
+- UC-005 -> REQ-007, REQ-014, REQ-015, REQ-028, REQ-029
 - UC-006 -> REQ-008, REQ-018, REQ-024, REQ-025, REQ-026, REQ-027
 - UC-007 -> REQ-009, REQ-010, REQ-016, REQ-019, REQ-020
 - UC-008 -> REQ-013, REQ-014
@@ -182,6 +191,9 @@ Rationale: The change spans server/event projection or hydration, frontend store
 - AC-019 -> Validate Artifacts-like reference preview ergonomics.
 - AC-020 -> Validate processor-boundary live frontend ingestion.
 - AC-021, AC-022, AC-023, AC-024 -> Validate Team Communication-owned reference maximize/restore behavior and ownership separation from Agent Artifacts.
+- AC-025 -> Validate reference child row visual clarity.
+- AC-026 -> Validate selected message readability.
+- AC-027 -> Validate compact email-like left-list hierarchy.
 - AC-011 -> Preserve explicit-reference-only invariant.
 - AC-015 -> Validate clean removal of standalone message-reference artifact UI/event/store ownership.
 - AC-016 -> Validate docs/instruction ownership language.

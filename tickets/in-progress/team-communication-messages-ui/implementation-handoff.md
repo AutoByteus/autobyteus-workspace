@@ -11,7 +11,7 @@
 
 ## What Changed
 
-Reworked the current in-ticket implementation to match the authoritative Round 3 Team Communication design, label-hierarchy addendum, and reference-viewer maximize UX addendum.
+Reworked the current in-ticket implementation to match the authoritative Round 3 Team Communication design, reference-viewer maximize UX addendum, and compact email-like row / Markdown-detail presentation addendum.
 
 - Added derived event authority:
   - Added `AgentRunEventType.TEAM_COMMUNICATION_MESSAGE` and `ServerMessageType.TEAM_COMMUNICATION_MESSAGE`.
@@ -27,15 +27,18 @@ Reworked the current in-ticket implementation to match the authoritative Round 3
   - Added Activity-style collapsible `Task Plan` and `Messages` sections; `Messages` is expanded by default.
   - Empty `Task Plan` remains compact and does not consume the primary Team tab height.
   - `TeamCommunicationPanel` now uses an Artifacts-like left message/reference list plus right selected message/file detail pane, with a resizable divider.
-  - Left list hierarchy is `Sent` / `Received` -> counterpart member name -> message -> reference file. It intentionally avoids redundant `To <agent>` / `From <agent>` group labels.
+  - The left list keeps top-level `Sent` / `Received` sections and now renders compact email-like message rows instead of a prominent counterpart group-header layer.
+  - Each message row shows a sent/received direction icon, message title/type, inline `to/from <counterpart>` metadata, timestamp, bounded preview, and child reference rows.
+  - Child reference rows now use file-type icons matching the Artifacts visual language where known, without reusing Agent Artifact rows/state.
+  - Selected message detail now renders through shared `MarkdownRenderer` instead of a plain `<pre>` block.
   - `TeamCommunicationReferenceViewer` now owns maximize/restore for selected reference-file previews using the Artifacts viewer interaction pattern without importing `ArtifactContentViewer` or artifact display-mode state.
   - Raw/Preview controls remain available while maximized, and Escape restores the normal Team tab split.
 - Preserved already-approved ownership cleanup:
   - Agent Artifacts remains produced/touched files only.
   - Team Communication owns inter-agent messages and explicit reference files.
   - Old message-file-reference route/store/event surfaces remain absent.
-- Updated durable docs to describe `INTER_AGENT_MESSAGE -> TeamCommunicationMessageProcessor -> TEAM_COMMUNICATION_MESSAGE -> TeamCommunicationService/store` and the revised left-list hierarchy.
-- Updated tests for the derived-event boundary, compact Team tab UI, constrained split behavior, and reference-viewer maximize/restore controls.
+- Updated durable docs to describe `INTER_AGENT_MESSAGE -> TeamCommunicationMessageProcessor -> TEAM_COMMUNICATION_MESSAGE -> TeamCommunicationService/store`, the compact email-like left-list row hierarchy, and the reference-viewer maximize behavior.
+- Updated tests for the derived-event boundary, compact Team tab UI, constrained split behavior, file-type reference icons, Markdown message detail rendering, and reference-viewer maximize/restore controls.
 
 ## Key Files Or Areas
 
@@ -78,6 +81,8 @@ Tests added/updated:
 - `TEAM_COMMUNICATION_MESSAGE` is the only live Team Communication store/projection event.
 - There is no compatibility branch for old `MESSAGE_FILE_REFERENCE_DECLARED`, old message-file-reference routes/stores, or Artifacts-tab Sent/Received reference rows.
 - Reference maximize state is local to the Team Communication reference viewer and is not shared with Agent Artifacts maximize/zen state.
+- File-type icons in Team Communication are presentation-only; message rows/reference rows remain Team Communication rows and do not become Agent Artifact rows.
+- Selected message body rendering reuses the shared Markdown renderer already used by conversation/file preview surfaces, without creating a new message parsing authority.
 
 ## Known Risks
 
@@ -91,7 +96,7 @@ Tests added/updated:
 - Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): Refactor Needed Now.
 - Implementation matched the reviewed assessment (`Yes`/`No`): Yes.
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): N/A; Round 3 addendum was implementable locally with no new design blocker.
-- Evidence / notes: Store/projection consumers now use `TEAM_COMMUNICATION_MESSAGE`; raw `INTER_AGENT_MESSAGE` is processor input and conversation display only; UI matches the reviewed collapsible/split layout, label hierarchy, and Team-owned reference maximize interaction.
+- Evidence / notes: Store/projection consumers now use `TEAM_COMMUNICATION_MESSAGE`; raw `INTER_AGENT_MESSAGE` is processor input and conversation display only; UI matches the reviewed collapsible/split layout, compact email-like message rows, file-type reference icons, Markdown message detail, and Team-owned reference maximize interaction.
 
 ## Legacy / Compatibility Removal Check
 
@@ -119,7 +124,9 @@ Passed:
 - `pnpm -C autobyteus-web exec vitest run components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts components/workspace/team/__tests__/TeamCommunicationReferenceViewer.spec.ts components/workspace/team/__tests__/TeamOverviewPanel.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts stores/__tests__/teamCommunicationStore.spec.ts --reporter=dot` — 5 files / 16 tests passed.
 - `pnpm -C autobyteus-web exec vitest run components/workspace/team/__tests__/TeamCommunicationReferenceViewer.spec.ts --reporter=dot` — 1 file / 5 tests passed.
 - `pnpm -C autobyteus-web exec vitest run components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts components/workspace/team/__tests__/TeamCommunicationReferenceViewer.spec.ts components/workspace/team/__tests__/TeamOverviewPanel.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts stores/__tests__/teamCommunicationStore.spec.ts --reporter=dot` — 5 files / 19 tests passed after the maximize addendum.
-- `pnpm -C autobyteus-web exec vitest run components/workspace/agent/__tests__/ArtifactList.spec.ts components/workspace/agent/__tests__/ArtifactsTab.spec.ts components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts components/workspace/team/__tests__/TeamCommunicationReferenceViewer.spec.ts components/workspace/team/__tests__/TeamOverviewPanel.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts stores/__tests__/teamCommunicationStore.spec.ts --reporter=dot` — 8 files / 43 tests passed after the maximize addendum.
+- `pnpm -C autobyteus-web exec vitest run components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts --reporter=dot` — 1 file / 4 tests passed after the compact-row / Markdown-detail addendum.
+- `pnpm -C autobyteus-web exec vitest run components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts components/workspace/team/__tests__/TeamCommunicationReferenceViewer.spec.ts components/workspace/team/__tests__/TeamOverviewPanel.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts stores/__tests__/teamCommunicationStore.spec.ts --reporter=dot` — 5 files / 20 tests passed after the compact-row / Markdown-detail addendum.
+- `pnpm -C autobyteus-web exec vitest run components/workspace/agent/__tests__/ArtifactList.spec.ts components/workspace/agent/__tests__/ArtifactsTab.spec.ts components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts components/workspace/team/__tests__/TeamCommunicationReferenceViewer.spec.ts components/workspace/team/__tests__/TeamOverviewPanel.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts stores/__tests__/teamCommunicationStore.spec.ts --reporter=dot` — 8 files / 44 tests passed after the compact-row / Markdown-detail addendum.
 - `pnpm -C autobyteus-web guard:web-boundary` — passed.
 - `pnpm -C autobyteus-web guard:localization-boundary` — passed.
 - `pnpm -C autobyteus-web audit:localization-literals` — passed with zero unresolved findings and the existing module-type warning.
@@ -128,7 +135,8 @@ Passed:
 - `git diff --check` — passed.
 - Stale surface grep: `git grep -n "MESSAGE_FILE_REFERENCE_DECLARED\|messageFileReferencesStore\|message-file-references\|MessageFileReference\|getMessageFileReferences\|message_file_references" -- . ':!tickets' ':!autobyteus-message-gateway/src/infrastructure/adapters/discord-business/discord-thread-context-resolver.ts'` — no matches.
 - Raw-store-authority grep: `rg "upsertFromInterAgentPayload|INTER_AGENT_MESSAGE.*teamCommunicationStore|TeamCommunicationService.*INTER_AGENT_MESSAGE" autobyteus-server-ts/src autobyteus-web/components autobyteus-web/services autobyteus-web/stores` — no matches.
-- Artifact-boundary grep for maximize addendum: `rg "ArtifactContentViewer|useArtifactContentDisplayModeStore|artifactContentDisplayMode" autobyteus-web/components/workspace/team autobyteus-web/stores/teamCommunicationStore.ts autobyteus-web/services/agentStreaming` — no matches.
+- Artifact-boundary grep for maximize and compact-row addenda: `rg "ArtifactContentViewer|ArtifactItem|useArtifactContentDisplayModeStore|artifactContentDisplayMode|paper-clip" autobyteus-web/components/workspace/team autobyteus-web/stores/teamCommunicationStore.ts autobyteus-web/services/agentStreaming` — no matches.
+- Stale direction-label grep: `rg "sent_to|received_from" autobyteus-web/components/workspace/team autobyteus-web/localization/messages` — no matches.
 - Source size guard over changed source implementation files — no files above 500 effective non-empty lines.
 
 Not run / not claimed:
@@ -141,8 +149,8 @@ Not run / not claimed:
 - Send `send_message_to` with natural content and `reference_files`; verify:
   - recipient conversation still shows exactly the normal inter-agent message;
   - live websocket publishes raw `INTER_AGENT_MESSAGE` for conversation and derived `TEAM_COMMUNICATION_MESSAGE` for Team Communication state;
-  - Team Communication list shows `Sent` / `Received` top-level sections with counterpart names only, not repeated `To` / `From` group prefixes;
-  - selecting a message shows full content in the right pane;
+  - Team Communication list shows `Sent` / `Received` top-level sections with compact email-like rows, direction icons, inline `to/from <counterpart>` metadata, and file-type icons for reference children;
+  - selecting a message shows Markdown-rendered full content in the right pane;
   - selecting a reference opens the message-owned content route in the right pane.
   - selecting a reference shows a maximize control; maximize opens a full-window Team-owned viewer, Raw/Preview controls remain available, and Escape restores the split.
 - Reopen/hydrate a historical team run and verify `getTeamCommunicationMessages(teamRunId)` populates the same store shape.
