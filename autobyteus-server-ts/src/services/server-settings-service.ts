@@ -4,6 +4,19 @@ import {
   CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
   CODEX_SANDBOX_MODES,
 } from "../runtime-management/codex/codex-sandbox-mode-setting.js";
+import {
+  DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY,
+  DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY,
+  DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY,
+  MEDIA_DEFAULT_MODEL_SETTING_KEYS,
+} from "../config/media-default-model-settings.js";
+import { reloadMediaToolSchemas } from "../agent-tools/media/register-media-tools.js";
+
+export {
+  DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY,
+  DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY,
+  DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY,
+} from "../config/media-default-model-settings.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -27,9 +40,6 @@ type ServerSettingValueValidation = {
 
 const CUSTOM_SETTING_DESCRIPTION = "Custom user-defined setting";
 export const AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID = "AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID";
-export const DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY = "DEFAULT_IMAGE_EDIT_MODEL";
-export const DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY = "DEFAULT_IMAGE_GENERATION_MODEL";
-export const DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY = "DEFAULT_SPEECH_GENERATION_MODEL";
 
 export class ServerSettingsService {
   private settingsInfo = new Map<string, ServerSettingDescription>();
@@ -213,6 +223,7 @@ export class ServerSettingsService {
 
       const config = appConfigProvider.config;
       config.set(key, normalizedValueOrError);
+      this.refreshDependentSettingsAfterUpdate(key);
 
       if (!this.settingsInfo.has(key)) {
         this.settingsInfo.set(
@@ -249,6 +260,12 @@ export class ServerSettingsService {
     }
 
     return [true, normalizedValue];
+  }
+
+  private refreshDependentSettingsAfterUpdate(key: string): void {
+    if (MEDIA_DEFAULT_MODEL_SETTING_KEYS.has(key)) {
+      reloadMediaToolSchemas();
+    }
   }
 
   deleteSetting(key: string): [boolean, string] {

@@ -379,6 +379,7 @@ export class ClaudeSession {
     const mcpServers = await this.buildSessionMcpServers({
       sendMessageToToolingEnabled: toolingOptions.sendMessageToToolingEnabled,
       enabledBrowserToolNames: toolingOptions.enabledBrowserToolNames,
+      enabledMediaToolNames: toolingOptions.enabledMediaToolNames,
       publishArtifactsToolingEnabled: toolingOptions.publishArtifactsToolingEnabled,
     });
     const query = await this.dependencies.sdkClient.startQueryTurn({
@@ -528,12 +529,14 @@ export class ClaudeSession {
   private async buildSessionMcpServers(input: {
     sendMessageToToolingEnabled: boolean;
     enabledBrowserToolNames: string[];
+    enabledMediaToolNames: string[];
     publishArtifactsToolingEnabled: boolean;
   },
   ): Promise<Record<string, unknown> | null> {
     return buildClaudeSessionMcpServers({
       sendMessageToToolingEnabled: input.sendMessageToToolingEnabled,
       enabledBrowserToolNames: input.enabledBrowserToolNames,
+      enabledMediaToolNames: input.enabledMediaToolNames,
       publishArtifactsToolingEnabled: input.publishArtifactsToolingEnabled,
       runContext: this.runContext,
       sdkClient: this.dependencies.sdkClient,

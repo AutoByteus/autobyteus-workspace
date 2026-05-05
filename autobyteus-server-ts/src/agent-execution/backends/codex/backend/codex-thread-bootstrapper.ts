@@ -40,6 +40,7 @@ import {
   type CodexAppServerClientManager,
 } from "../../../../runtime-management/codex/client/codex-app-server-client-manager.js";
 import { buildBrowserDynamicToolRegistrationsForEnabledToolNames } from "../browser/build-browser-dynamic-tool-registrations.js";
+import { buildMediaDynamicToolRegistrationsForEnabledToolNames } from "../media/build-media-dynamic-tool-registrations.js";
 import {
   CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
   DEFAULT_CODEX_SANDBOX_MODE,
@@ -192,12 +193,18 @@ export class CodexThreadBootstrapper {
         ? buildCodexPublishArtifactsDynamicToolRegistration()
         : null;
     const dynamicToolRegistrations = mergeDynamicToolRegistrations(
-      filterDynamicToolRegistrationsByToolNames(
-        mergeDynamicToolRegistrations(
-          threadConfigInput.dynamicToolRegistrations,
-          publishedArtifactToolRegistrations,
+      mergeDynamicToolRegistrations(
+        filterDynamicToolRegistrationsByToolNames(
+          mergeDynamicToolRegistrations(
+            threadConfigInput.dynamicToolRegistrations,
+            publishedArtifactToolRegistrations,
+          ),
+          toConfiguredAgentToolNameSet(configuredToolExposure),
         ),
-        toConfiguredAgentToolNameSet(configuredToolExposure),
+        buildMediaDynamicToolRegistrationsForEnabledToolNames({
+          enabledToolNames: configuredToolExposure.enabledMediaToolNames,
+          workingDirectory,
+        }),
       ),
       buildBrowserDynamicToolRegistrationsForEnabledToolNames(
         configuredToolExposure.enabledBrowserToolNames,

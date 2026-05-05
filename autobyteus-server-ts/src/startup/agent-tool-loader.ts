@@ -31,6 +31,11 @@ const loaderSpecs: LoaderSpec[] = [
     modulePath: "../agent-tools/published-artifacts/register-published-artifact-tools.js",
     exportName: "registerPublishedArtifactTools",
   },
+  {
+    name: "Media Tools",
+    modulePath: "../agent-tools/media/register-media-tools.js",
+    exportName: "registerMediaTools",
+  },
 ];
 
 type Loader = () => void;
