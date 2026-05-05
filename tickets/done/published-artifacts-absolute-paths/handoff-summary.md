@@ -2,11 +2,11 @@
 
 ## Status
 
-- Current status: `User verified; repository finalization in progress`
+- Current status: `Completed`
 - Ticket state: archived to `tickets/done/published-artifacts-absolute-paths/`
 - Last updated: `2026-05-05`
 - Release requested/performed: `No`
-- Repository finalization: `Pending ticket-branch commit, push, target merge, and cleanup`
+- Repository finalization: `Completed — merged into origin/personal and cleaned up`
 
 ## Delivered Scope
 
@@ -60,7 +60,7 @@ Previously passed API/E2E checks retained as authoritative evidence:
 
 ## Documentation Sync Summary
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/published-artifacts-absolute-paths/tickets/done/published-artifacts-absolute-paths/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/published-artifacts-absolute-paths/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Long-lived docs/prompts updated in the final branch:
   - `docs/custom-application-development.md`
@@ -82,31 +82,32 @@ Previously passed API/E2E checks retained as authoritative evidence:
 
 ## Key Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/published-artifacts-absolute-paths/tickets/done/published-artifacts-absolute-paths/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/published-artifacts-absolute-paths/tickets/done/published-artifacts-absolute-paths/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/published-artifacts-absolute-paths/tickets/done/published-artifacts-absolute-paths/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/published-artifacts-absolute-paths/tickets/done/published-artifacts-absolute-paths/design-review-report.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/published-artifacts-absolute-paths/tickets/done/published-artifacts-absolute-paths/implementation-handoff.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/published-artifacts-absolute-paths/tickets/done/published-artifacts-absolute-paths/review-report.md`
-- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/published-artifacts-absolute-paths/tickets/done/published-artifacts-absolute-paths/api-e2e-validation-report.md`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/published-artifacts-absolute-paths/tickets/done/published-artifacts-absolute-paths/docs-sync-report.md`
-- Release notes draft: `/Users/normy/autobyteus_org/autobyteus-worktrees/published-artifacts-absolute-paths/tickets/done/published-artifacts-absolute-paths/release-notes.md`
-- Delivery/release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/published-artifacts-absolute-paths/tickets/done/published-artifacts-absolute-paths/release-deployment-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/published-artifacts-absolute-paths/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/published-artifacts-absolute-paths/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/published-artifacts-absolute-paths/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/published-artifacts-absolute-paths/design-review-report.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/published-artifacts-absolute-paths/implementation-handoff.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/published-artifacts-absolute-paths/review-report.md`
+- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/published-artifacts-absolute-paths/api-e2e-validation-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/published-artifacts-absolute-paths/docs-sync-report.md`
+- Release notes draft: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/published-artifacts-absolute-paths/release-notes.md`
+- Delivery/release/deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/published-artifacts-absolute-paths/release-deployment-report.md`
 
 ## Evidence Highlights
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/published-artifacts-absolute-paths/tickets/done/published-artifacts-absolute-paths/evidence/brief-studio-codex-gpt55-round2-live-validation.json`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/published-artifacts-absolute-paths/tickets/done/published-artifacts-absolute-paths/evidence/brief-studio-codex-gpt55-round2-runtime-log-excerpts.txt`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/published-artifacts-absolute-paths/tickets/done/published-artifacts-absolute-paths/evidence/brief-studio-codex-gpt55-round2-app-db-state.txt`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/published-artifacts-absolute-paths/tickets/done/published-artifacts-absolute-paths/evidence/brief-studio-browser-runtime-round2.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/published-artifacts-absolute-paths/evidence/brief-studio-codex-gpt55-round2-live-validation.json`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/published-artifacts-absolute-paths/evidence/brief-studio-codex-gpt55-round2-runtime-log-excerpts.txt`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/published-artifacts-absolute-paths/evidence/brief-studio-codex-gpt55-round2-app-db-state.txt`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/published-artifacts-absolute-paths/evidence/brief-studio-browser-runtime-round2.png`
 
-## Remaining Action
+## Finalization Record
 
-- Complete repository finalization now that user verification was received on 2026-05-05.
-- Finalization steps remaining at the time of this archived ticket-branch commit:
-  - commit and push `codex/published-artifacts-absolute-paths`,
-  - merge into `origin/personal`,
-  - push `origin/personal`,
-  - record final merge/cleanup details,
-  - clean up the dedicated ticket worktree and ticket branches.
-- No release/version bump should be performed unless the user later explicitly asks for one.
+- User verification received: `Yes` on 2026-05-05.
+- Ticket branch final commit: `eb88aff8` (`docs(ticket): finalize published artifacts absolute paths`).
+- Ticket branch pushed: `Yes` (`origin/codex/published-artifacts-absolute-paths`).
+- Merged into target: `Yes` — merge commit `2e31adaf` (`merge: published artifacts absolute paths`).
+- Target pushed: `Yes` (`origin/personal`).
+- Release/version bump: `Skipped by user request`.
+- Dedicated ticket worktree cleanup: `Completed`.
+- Local ticket branch cleanup: `Completed`.
+- Remote ticket branch cleanup: `Completed`.
