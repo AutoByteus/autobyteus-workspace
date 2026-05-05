@@ -117,6 +117,39 @@ describe('TeamCommunicationPanel.vue', () => {
     expect(referenceIcons).toContain('vscode-icons:file-type-text');
   });
 
+  it('keeps message summary and reference rows as sibling interactive controls', async () => {
+    const store = useTeamCommunicationStore();
+    store.replaceProjection('team-1', [
+      {
+        messageId: 'message-sent',
+        teamRunId: 'team-1',
+        senderRunId: 'focused-run',
+        senderMemberName: 'Focused Member',
+        receiverRunId: 'reviewer-run',
+        receiverMemberName: 'Reviewer',
+        content: 'See the attachment.',
+        messageType: 'handoff',
+        createdAt: '2026-04-12T10:00:00.000Z',
+        updatedAt: '2026-04-12T10:00:00.000Z',
+        referenceFiles: [
+          { referenceId: 'ref-1', path: '/tmp/handoff.md', type: 'file', createdAt: '2026-04-12T10:00:00.000Z', updatedAt: '2026-04-12T10:00:00.000Z' },
+        ],
+      },
+    ]);
+
+    const wrapper = mountSubject();
+    await wrapper.vm.$nextTick();
+
+    const row = wrapper.get('[data-test="team-communication-message-row"]');
+    const summary = row.get('[data-test="team-communication-message-summary"]');
+    const reference = row.get('[data-test="team-communication-reference-row"]');
+
+    expect(row.element.tagName).not.toBe('BUTTON');
+    expect(summary.element.tagName).toBe('BUTTON');
+    expect(reference.element.tagName).toBe('BUTTON');
+    expect(summary.find('[data-test="team-communication-reference-row"]').exists()).toBe(false);
+  });
+
   it('renders the selected message detail through the shared Markdown renderer', async () => {
     const store = useTeamCommunicationStore();
     store.replaceProjection('team-1', [

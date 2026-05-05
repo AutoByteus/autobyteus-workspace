@@ -21,58 +21,63 @@
             <h4 class="px-3 py-1 text-[0.6875rem] font-bold uppercase tracking-widest text-gray-900">
               {{ section.label }}
             </h4>
-            <button
+            <div
               v-for="message in section.messages"
               :key="message.messageId"
-              class="w-full border-l-2 px-3 py-2.5 text-left transition-colors hover:bg-gray-50"
+              class="border-l-2 transition-colors"
               :class="isMessageSelected(message) ? 'border-blue-500 bg-blue-50' : 'border-transparent'"
               data-test="team-communication-message-row"
-              @click="selectMessage(message)"
             >
-              <div class="flex items-start gap-2">
-                <Icon
-                  :icon="directionIcon(message)"
-                  class="mt-0.5 h-4 w-4 shrink-0"
-                  :class="directionIconClass(message)"
-                  data-test="team-communication-direction-icon"
-                  :data-icon="directionIcon(message)"
-                />
-                <div class="min-w-0 flex-1">
-                  <div class="flex items-baseline justify-between gap-2">
-                    <div class="min-w-0 truncate">
-                      <span class="text-xs font-semibold" :class="isMessageSelected(message) ? 'text-blue-700' : 'text-gray-800'">
-                        {{ compactMessageLabel(message) }}
-                      </span>
-                      <span class="ml-1 text-[0.6875rem] text-gray-500">
-                        · {{ counterpartMetadata(message) }}
-                      </span>
+              <button
+                class="w-full px-3 py-2.5 text-left transition-colors hover:bg-gray-50 focus:outline-none focus-visible:bg-blue-50"
+                data-test="team-communication-message-summary"
+                @click="selectMessage(message)"
+              >
+                <div class="flex items-start gap-2">
+                  <Icon
+                    :icon="directionIcon(message)"
+                    class="mt-0.5 h-4 w-4 shrink-0"
+                    :class="directionIconClass(message)"
+                    data-test="team-communication-direction-icon"
+                    :data-icon="directionIcon(message)"
+                  />
+                  <div class="min-w-0 flex-1">
+                    <div class="flex items-baseline justify-between gap-2">
+                      <div class="min-w-0 truncate">
+                        <span class="text-xs font-semibold" :class="isMessageSelected(message) ? 'text-blue-700' : 'text-gray-800'">
+                          {{ compactMessageLabel(message) }}
+                        </span>
+                        <span class="ml-1 text-[0.6875rem] text-gray-500">
+                          · {{ counterpartMetadata(message) }}
+                        </span>
+                      </div>
+                      <span class="shrink-0 text-[0.625rem] text-gray-400">{{ formatTimestamp(message.createdAt) }}</span>
                     </div>
-                    <span class="shrink-0 text-[0.625rem] text-gray-400">{{ formatTimestamp(message.createdAt) }}</span>
-                  </div>
-                  <p class="mt-1 line-clamp-2 whitespace-pre-line text-xs leading-snug text-gray-600">
-                    {{ message.content }}
-                  </p>
-                  <div v-if="message.referenceFiles.length" class="mt-2 space-y-1">
-                    <button
-                      v-for="reference in message.referenceFiles"
-                      :key="reference.referenceId"
-                      class="flex w-full items-center gap-2 rounded px-1.5 py-1 text-left text-[0.6875rem] hover:bg-white"
-                      :class="selectedReferenceId === reference.referenceId && selectedMessageId === message.messageId ? 'bg-white text-blue-700 shadow-sm' : 'text-gray-600'"
-                      data-test="team-communication-reference-row"
-                      @click.stop="selectReference(message, reference)"
-                    >
-                      <Icon
-                        :icon="referenceFileIcon(reference)"
-                        class="h-4 w-4 shrink-0"
-                        data-test="team-communication-reference-icon"
-                        :data-icon="referenceFileIcon(reference)"
-                      />
-                      <span class="truncate">{{ referenceFileName(reference.path) }}</span>
-                    </button>
+                    <p class="mt-1 line-clamp-2 whitespace-pre-line text-xs leading-snug text-gray-600">
+                      {{ message.content }}
+                    </p>
                   </div>
                 </div>
+              </button>
+              <div v-if="message.referenceFiles.length" class="space-y-1 px-3 pb-2 pl-9">
+                <button
+                  v-for="reference in message.referenceFiles"
+                  :key="reference.referenceId"
+                  class="flex w-full items-center gap-2 rounded px-1.5 py-1 text-left text-[0.6875rem] hover:bg-white focus:outline-none focus-visible:bg-white"
+                  :class="selectedReferenceId === reference.referenceId && selectedMessageId === message.messageId ? 'bg-white text-blue-700 shadow-sm' : 'text-gray-600'"
+                  data-test="team-communication-reference-row"
+                  @click="selectReference(message, reference)"
+                >
+                  <Icon
+                    :icon="referenceFileIcon(reference)"
+                    class="h-4 w-4 shrink-0"
+                    data-test="team-communication-reference-icon"
+                    :data-icon="referenceFileIcon(reference)"
+                  />
+                  <span class="truncate">{{ referenceFileName(reference.path) }}</span>
+                </button>
               </div>
-            </button>
+            </div>
           </section>
         </template>
       </aside>
