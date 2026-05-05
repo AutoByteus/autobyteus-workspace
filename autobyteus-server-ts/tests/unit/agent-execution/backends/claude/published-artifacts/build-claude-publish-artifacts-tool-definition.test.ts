@@ -33,8 +33,13 @@ describe("buildClaudePublishArtifactsToolDefinition", () => {
 
     expect(createToolDefinition).toHaveBeenCalledTimes(1);
     expect(definition.name).toBe("publish_artifacts");
+    expect(definition.description).toContain("absolute paths can point outside the workspace");
+    expect(definition.description).not.toContain("must still resolve inside the current workspace");
     expect(definition.inputSchema).toHaveProperty("artifacts");
     expect(definition.inputSchema).not.toHaveProperty("path");
+    expect(definition.inputSchema.artifacts.element.shape.path.description).toContain(
+      "Absolute paths may point outside the workspace",
+    );
 
     const result = await definition.handler({
       artifacts: [{ path: "reports/a.md", description: "Ready" }],

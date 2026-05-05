@@ -19,9 +19,33 @@ const PATH_RULES: Record<string, LessonArtifactPathRule> = {
   },
 };
 
+const normalizeArtifactPath = (artifactPath: string): string =>
+  artifactPath.replace(/\\/g, "/").trim();
+
+const basenameOf = (normalizedPath: string): string => {
+  const segments = normalizedPath.split("/").filter((segment) => segment.length > 0);
+  return segments.at(-1) ?? normalizedPath;
+};
+
+const BASENAME_RULES: Record<string, LessonArtifactPathRule> = Object.fromEntries(
+  Object.values(PATH_RULES).map((rule) => [basenameOf(rule.path), rule]),
+);
+
+const extractSocraticMathSuffix = (normalizedPath: string): string | null => {
+  const appFolderMarker = "/socratic-math/";
+  const markerIndex = normalizedPath.lastIndexOf(appFolderMarker);
+  if (markerIndex < 0) {
+    return normalizedPath.startsWith("socratic-math/") ? normalizedPath : null;
+  }
+  return normalizedPath.slice(markerIndex + 1);
+};
+
 export const resolveLessonArtifactPathRule = (artifactPath: string): LessonArtifactPathRule => {
-  const normalizedPath = artifactPath.replace(/\\/g, "/").trim();
-  const rule = PATH_RULES[normalizedPath];
+  const normalizedPath = normalizeArtifactPath(artifactPath);
+  const suffixPath = extractSocraticMathSuffix(normalizedPath);
+  const rule = PATH_RULES[normalizedPath]
+    ?? (suffixPath ? PATH_RULES[suffixPath] : undefined)
+    ?? BASENAME_RULES[basenameOf(normalizedPath)];
   if (!rule) {
     throw new Error(`Unexpected Socratic Math Teacher artifact path '${artifactPath}'.`);
   }

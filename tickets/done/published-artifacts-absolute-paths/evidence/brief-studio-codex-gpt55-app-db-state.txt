@@ -1,0 +1,5 @@
+brief_artifacts rows:
+briefs:
+brief_id                                    title                                       status       latest_binding_id                     latest_run_id                                           latest_binding_status  last_error_message
+------------------------------------------  ------------------------------------------  -----------  ------------------------------------  ------------------------------------------------------  ---------------------  ------------------
+brief-b64f1a62-c707-4d8d-9935-c881d8354d14  Codex GPT-5.5 PAA runtime validation brief  not_started  412551a6-3903-4697-811f-60b8b42571e7  team_bundle-team-6170706c69636174696f6e2d6c6f_d61110d5  ATTACHED                                 

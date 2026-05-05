@@ -18,7 +18,7 @@ describe("publishArtifactsTool", () => {
     publishManyForRunMock.mockReset();
   });
 
-  it("describes one-item artifact arrays and the exact absolute path returned by write_file", async () => {
+  it("describes one-item artifact arrays and workspace-relative or absolute paths", async () => {
     const tool = registerPublishArtifactsTool();
     const toolClass = tool.constructor as typeof tool.constructor & {
       getDescription: () => string;
@@ -26,7 +26,8 @@ describe("publishArtifactsTool", () => {
     };
 
     expect(toolClass.getDescription()).toContain("single-file publication uses a one-item array");
-    expect(toolClass.getDescription()).toContain("exact absolute file path returned by write_file");
+    expect(toolClass.getDescription()).toContain("absolute paths can point outside the workspace");
+    expect(toolClass.getDescription()).not.toContain("must still resolve inside the current workspace");
     expect(toolClass.getArgumentSchema().getParameter("artifacts")?.description).toContain(
       "Use a one-item array for a single artifact",
     );

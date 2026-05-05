@@ -27,7 +27,7 @@ export const buildClaudePublishArtifactsToolDefinition = async (options: {
       artifacts: z.array(
         z.object({
           path: z.string().min(1, "path is required").describe(
-            "Absolute path to the file that should be published as an artifact. Prefer the exact absolute path returned by write_file; the file must still be inside the current workspace.",
+            "Workspace-relative or absolute path to a readable file to publish. Absolute paths may point outside the workspace when readable by the runtime server; prefer the exact absolute path returned by write_file when available.",
           ),
           description: z.string().nullable().optional().describe(
             "Optional short description for reviewers and application consumers.",
