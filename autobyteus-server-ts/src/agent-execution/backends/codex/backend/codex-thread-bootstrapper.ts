@@ -47,7 +47,7 @@ import {
   normalizeCodexSandboxMode,
   type CodexSandboxMode,
 } from "../../../../runtime-management/codex/codex-sandbox-mode-setting.js";
-import { buildCodexPublishArtifactDynamicToolRegistration } from "../published-artifacts/build-codex-publish-artifact-dynamic-tool-registration.js";
+import { buildCodexPublishArtifactsDynamicToolRegistration } from "../published-artifacts/build-codex-publish-artifacts-dynamic-tool-registration.js";
 import {
   filterDynamicToolRegistrationsByToolNames,
 } from "./codex-configured-tool-gating.js";
@@ -188,8 +188,8 @@ export class CodexThreadBootstrapper {
       configuredToolExposure,
     );
     const publishedArtifactToolRegistrations =
-      configuredToolExposure.publishArtifactConfigured
-        ? buildCodexPublishArtifactDynamicToolRegistration()
+      configuredToolExposure.publishArtifactsConfigured
+        ? buildCodexPublishArtifactsDynamicToolRegistration()
         : null;
     const dynamicToolRegistrations = mergeDynamicToolRegistrations(
       filterDynamicToolRegistrationsByToolNames(

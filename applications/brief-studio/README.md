@@ -14,7 +14,7 @@ It demonstrates:
 - post-bootstrap business UI ownership only; the bundle does not author pre-bootstrap waiting/failure/direct-open UX
 - application-owned runs that keep automatic tool execution enabled for the publishing workflow
 - app-owned schema and generated frontend client artifacts that stay inside the application workspace
-- durable artifact and lifecycle projection back into `app.sqlite`
+- durable `publish_artifacts` artifact publication and lifecycle projection back into `app.sqlite`
 
 Authoring roots:
 

@@ -1,7 +1,7 @@
 import { BROWSER_TOOL_NAMES } from "../../agent-tools/browser/browser-tool-contract.js";
+import { PUBLISH_ARTIFACTS_TOOL_NAME } from "../../services/published-artifacts/published-artifact-tool-contract.js";
 
 const SEND_MESSAGE_TO_TOOL_NAME = "send_message_to";
-const PUBLISH_ARTIFACT_TOOL_NAME = "publish_artifact";
 
 const asTrimmedToolName = (value: unknown): string | null =>
   typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
@@ -10,7 +10,7 @@ export type ConfiguredAgentToolExposure = {
   configuredToolNames: string[];
   enabledBrowserToolNames: string[];
   sendMessageToConfigured: boolean;
-  publishArtifactConfigured: boolean;
+  publishArtifactsConfigured: boolean;
 };
 
 export const resolveConfiguredAgentToolExposure = (agentDefinition: {
@@ -32,7 +32,7 @@ export const buildConfiguredAgentToolExposure = (
       BROWSER_TOOL_NAMES.has(toolName),
     ),
     sendMessageToConfigured: configuredToolNameSet.has(SEND_MESSAGE_TO_TOOL_NAME),
-    publishArtifactConfigured: configuredToolNameSet.has(PUBLISH_ARTIFACT_TOOL_NAME),
+    publishArtifactsConfigured: configuredToolNameSet.has(PUBLISH_ARTIFACTS_TOOL_NAME),
   };
 };
 

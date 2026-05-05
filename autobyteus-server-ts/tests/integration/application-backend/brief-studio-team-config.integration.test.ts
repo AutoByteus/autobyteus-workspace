@@ -68,12 +68,13 @@ describe("Brief Studio team package config", () => {
     );
 
     for (const config of [sourceResearcherConfig, packagedResearcherConfig]) {
-      expectRequiredTools(config.toolNames, ["write_file", "publish_artifact", "send_message_to"]);
-      expectMissingTools(config.toolNames, ["read_file"]);
+      expectRequiredTools(config.toolNames, ["write_file", "publish_artifacts", "send_message_to"]);
+      expectMissingTools(config.toolNames, ["read_file", "publish_artifact"]);
     }
 
     for (const config of [sourceWriterConfig, packagedWriterConfig]) {
-      expectRequiredTools(config.toolNames, ["read_file", "write_file", "publish_artifact", "send_message_to"]);
+      expectRequiredTools(config.toolNames, ["read_file", "write_file", "publish_artifacts", "send_message_to"]);
+      expectMissingTools(config.toolNames, ["publish_artifact"]);
     }
   });
 
@@ -97,7 +98,7 @@ describe("Brief Studio team package config", () => {
       expect(prompt).toContain("Required fresh-run sequence:");
       expect(prompt).toContain("write `brief-studio/research.md`");
       expect(prompt).toContain("capture the exact absolute path returned by the write step");
-      expect(prompt).toContain("call `publish_artifact` with that exact absolute path");
+      expect(prompt).toContain('call `publish_artifacts` with `artifacts: [{ path: "<exact absolute path returned by write_file>" }]`');
       expect(prompt).toContain("call `send_message_to` to recipient `writer`");
       expect(prompt).toContain("do not answer with plain prose instead of the required tool calls");
       expect(prompt).toContain("reuse the exact absolute path returned by the write step");
@@ -110,10 +111,10 @@ describe("Brief Studio team package config", () => {
       expect(prompt).toContain("When the researcher hands off `brief-studio/research.md`:");
       expect(prompt).toContain("review `brief-studio/research.md`");
       expect(prompt).toContain("capture the exact absolute path returned by the write step");
-      expect(prompt).toContain("call `publish_artifact` with that exact absolute path");
+      expect(prompt).toContain('call `publish_artifacts` with `artifacts: [{ path: "<exact absolute path returned by write_file>" }]`');
       expect(prompt).toContain("do not answer with plain prose instead of the required tool calls");
       expect(prompt).toContain("target about 250-600 words total");
-      expect(prompt).toContain("treat `publish_artifact` as the publication step at the end of a completed checkpoint");
+      expect(prompt).toContain("treat `publish_artifacts` as the publication step at the end of a completed checkpoint");
     }
   });
 
@@ -132,7 +133,7 @@ describe("Brief Studio team package config", () => {
     );
 
     for (const prompt of [sourceTeamPrompt, packagedTeamPrompt]) {
-      expect(prompt).toContain("researcher starts the fresh run, writes `brief-studio/research.md`, publishes it with `publish_artifact`");
+      expect(prompt).toContain("researcher starts the fresh run, writes `brief-studio/research.md`, publishes it with `publish_artifacts`");
       expect(prompt).toContain("writer begins only after that handoff arrives");
       expect(prompt).toContain("avoid freeform prose when a tool sequence is required");
       expect(prompt).toContain("researcher should publish a short structured research checkpoint, not a long report");
@@ -140,9 +141,9 @@ describe("Brief Studio team package config", () => {
     }
 
     for (const sourceText of [sourceLaunchService, packagedLaunchService]) {
-      expect(sourceText).toContain("Fresh-run workflow is research-first: the researcher starts, writes the research file, publishes it with publish_artifact");
+      expect(sourceText).toContain("Fresh-run workflow is research-first: the researcher starts, writes the research file, publishes it with publish_artifacts");
       expect(sourceText).toContain("Researcher: keep the research checkpoint concise and finish the required publication + handoff flow instead of replying with plain prose.");
-      expect(sourceText).toContain("publish_artifact is only for publishing a file after it has already been written, and it should receive the exact absolute file path returned by that write step.");
+      expect(sourceText).toContain('publish_artifacts is only for publishing files after they have already been written, and single-file publication should use artifacts: [{ path: "<exact absolute path returned by write_file>" }] with the exact absolute file path returned by that write step.');
     }
   });
 });

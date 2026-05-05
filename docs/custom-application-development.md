@@ -108,6 +108,30 @@ autobyteus-app dev \
 
 Real-backend dev mode uses the same id in launch hints, bootstrap `application.applicationId`, and `requestContext.applicationId`. Without real backend URLs, dev mode uses a local mock backend for startup and transport-shape testing.
 
+## Agent-published artifacts
+
+When an application agent needs to publish files back to the application, configure the agent with the canonical local tool name:
+
+```json
+{
+  "toolNames": ["publish_artifacts"]
+}
+```
+
+The agent must call the plural batch contract even for a single file:
+
+```ts
+publish_artifacts({
+  artifacts: [{ path: "relative/or/absolute/file.md", description: "Optional summary" }]
+})
+```
+
+Each artifact item accepts only `path` and optional `description`; blank descriptions normalize to `null`. Paths may be relative to the current run workspace or absolute, but they must resolve to a readable file inside that workspace. Files in a temp directory, app package directory, or any other outside-workspace location must be written or copied into the agent workspace before publication.
+
+The old singular `publish_artifact` tool is not registered, exposed, allowlisted, discoverable, or mapped as an alias. Existing custom agent configs that still list only `publish_artifact` must be migrated to `publish_artifacts` before they can publish artifacts.
+
+Application backends observe durable published artifacts through `artifactHandlers.persisted`, `runtimeControl.getRunPublishedArtifacts(...)`, and `runtimeControl.getPublishedArtifactRevisionText(...)`.
+
 ## Trust and safety boundary
 
 AutoByteus user import of a generated package is prebuilt-only: import validation reads files and does not run app-owned `npm install`, build scripts, or package lifecycle scripts. This is not a sandbox guarantee. Application backend code is still executed later by the existing application worker runtime when the user launches the application.

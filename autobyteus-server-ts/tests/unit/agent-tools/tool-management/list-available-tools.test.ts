@@ -5,6 +5,7 @@ import { ToolDefinition } from "autobyteus-ts/tools/registry/tool-definition.js"
 import { ToolOrigin } from "autobyteus-ts/tools/tool-origin.js";
 import { ParameterSchema } from "autobyteus-ts";
 import { BaseTool } from "autobyteus-ts/tools/base-tool.js";
+import { registerPublishedArtifactTools } from "../../../../src/agent-tools/published-artifacts/register-published-artifact-tools.js";
 
 class DummyTool extends BaseTool {
   static getDescription(): string {
@@ -67,4 +68,16 @@ describe("listAvailableTools", () => {
     expect(data).toHaveLength(1);
     expect(data[0]?.name).toBe("alpha");
   });
+
+  it("lists the plural artifact publication tool and not the removed singular tool", async () => {
+    registerPublishedArtifactTools();
+
+    const result = await listAvailableTools({ agentId: "test-agent" } as any);
+    const data = JSON.parse(result) as Array<Record<string, unknown>>;
+    const toolNames = new Set(data.map((tool) => tool.name));
+
+    expect(toolNames.has("publish_artifacts")).toBe(true);
+    expect(toolNames.has("publish_artifact")).toBe(false);
+  });
+
 });
