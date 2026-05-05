@@ -16,67 +16,65 @@
         :style="{ width: `${leftPaneWidth}px` }"
         data-test="team-communication-left-list"
       >
-        <template v-for="section in sections" :key="section.key">
-          <section v-if="section.messages.length > 0" class="py-1" :data-test="`team-communication-${section.key}`">
-            <div
-              v-for="message in section.messages"
-              :key="message.messageId"
-              class="border-l-2 transition-colors"
-              :class="isMessageSelected(message) ? 'border-blue-500 bg-blue-50' : 'border-transparent'"
-              data-test="team-communication-message-row"
+        <section class="py-1" data-test="team-communication-message-list">
+          <div
+            v-for="message in displayMessages"
+            :key="message.messageId"
+            class="border-l-2 transition-colors"
+            :class="isMessageSelected(message) ? 'border-blue-500 bg-blue-50' : 'border-transparent'"
+            data-test="team-communication-message-row"
+          >
+            <button
+              class="w-full px-3 py-2.5 text-left transition-colors hover:bg-gray-50 focus:outline-none focus-visible:bg-blue-50"
+              data-test="team-communication-message-summary"
+              @click="selectMessage(message)"
             >
-              <button
-                class="w-full px-3 py-2.5 text-left transition-colors hover:bg-gray-50 focus:outline-none focus-visible:bg-blue-50"
-                data-test="team-communication-message-summary"
-                @click="selectMessage(message)"
-              >
-                <div class="flex items-start gap-2">
-                  <Icon
-                    :icon="directionIcon(message)"
-                    class="mt-0.5 h-4 w-4 shrink-0"
-                    :class="directionIconClass(message)"
-                    data-test="team-communication-direction-icon"
-                    :data-icon="directionIcon(message)"
-                  />
-                  <div class="min-w-0 flex-1">
-                    <div class="flex items-baseline justify-between gap-2">
-                      <div class="min-w-0 truncate">
-                        <span class="text-sm font-semibold" :class="isMessageSelected(message) ? 'text-blue-700' : 'text-gray-800'">
-                          {{ compactMessageLabel(message) }}
-                        </span>
-                        <span class="ml-1 text-xs text-gray-500">
-                          · {{ counterpartMetadata(message) }}
-                        </span>
-                      </div>
-                      <span class="shrink-0 text-xs text-gray-400">{{ formatTimestamp(message.createdAt) }}</span>
+              <div class="flex items-start gap-2">
+                <Icon
+                  :icon="directionIcon(message)"
+                  class="mt-0.5 h-4 w-4 shrink-0"
+                  :class="directionIconClass(message)"
+                  data-test="team-communication-direction-icon"
+                  :data-icon="directionIcon(message)"
+                />
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-baseline justify-between gap-2">
+                    <div class="min-w-0 truncate">
+                      <span class="text-sm font-semibold" :class="isMessageSelected(message) ? 'text-blue-700' : 'text-gray-800'">
+                        {{ compactMessageLabel(message) }}
+                      </span>
+                      <span class="ml-1 text-xs text-gray-500">
+                        · {{ counterpartMetadata(message) }}
+                      </span>
                     </div>
-                    <p class="mt-1 line-clamp-2 whitespace-pre-line text-sm leading-5 text-gray-600">
-                      {{ message.content }}
-                    </p>
+                    <span class="shrink-0 text-xs text-gray-400">{{ formatTimestamp(message.createdAt) }}</span>
                   </div>
+                  <p class="mt-1 line-clamp-2 whitespace-pre-line text-sm leading-5 text-gray-600">
+                    {{ message.content }}
+                  </p>
                 </div>
-              </button>
-              <div v-if="message.referenceFiles.length" class="space-y-1 px-3 pb-2 pl-9">
-                <button
-                  v-for="reference in message.referenceFiles"
-                  :key="reference.referenceId"
-                  class="flex w-full items-center gap-2 rounded px-1.5 py-1 text-left text-sm hover:bg-white focus:outline-none focus-visible:bg-white"
-                  :class="selectedReferenceId === reference.referenceId && selectedMessageId === message.messageId ? 'bg-white text-blue-700 shadow-sm' : 'text-gray-600'"
-                  data-test="team-communication-reference-row"
-                  @click="selectReference(message, reference)"
-                >
-                  <Icon
-                    :icon="referenceFileIcon(reference)"
-                    class="h-4 w-4 shrink-0"
-                    data-test="team-communication-reference-icon"
-                    :data-icon="referenceFileIcon(reference)"
-                  />
-                  <span class="truncate">{{ referenceFileName(reference.path) }}</span>
-                </button>
               </div>
+            </button>
+            <div v-if="message.referenceFiles.length" class="space-y-1 px-3 pb-2 pl-9">
+              <button
+                v-for="reference in message.referenceFiles"
+                :key="reference.referenceId"
+                class="flex w-full items-center gap-2 rounded px-1.5 py-1 text-left text-sm hover:bg-white focus:outline-none focus-visible:bg-white"
+                :class="selectedReferenceId === reference.referenceId && selectedMessageId === message.messageId ? 'bg-white text-blue-700 shadow-sm' : 'text-gray-600'"
+                data-test="team-communication-reference-row"
+                @click="selectReference(message, reference)"
+              >
+                <Icon
+                  :icon="referenceFileIcon(reference)"
+                  class="h-4 w-4 shrink-0"
+                  data-test="team-communication-reference-icon"
+                  :data-icon="referenceFileIcon(reference)"
+                />
+                <span class="truncate">{{ referenceFileName(reference.path) }}</span>
+              </button>
             </div>
-          </section>
-        </template>
+          </div>
+        </section>
       </aside>
 
       <div
@@ -158,18 +156,7 @@ let removeResizeListeners: (() => void) | null = null;
 const perspective = computed(() =>
   teamCommunicationStore.getPerspectiveForMember(props.teamRunId, props.focusedMemberRunId),
 );
-const sections = computed(() => [
-  {
-    key: 'sent',
-    label: t('workspace.components.workspace.team.TeamCommunicationPanel.sent_messages'),
-    messages: perspective.value.messages.filter((message) => message.direction === 'sent'),
-  },
-  {
-    key: 'received',
-    label: t('workspace.components.workspace.team.TeamCommunicationPanel.received_messages'),
-    messages: perspective.value.messages.filter((message) => message.direction === 'received'),
-  },
-]);
+const displayMessages = computed(() => perspective.value.messages);
 const selectedMessage = computed(() =>
   perspective.value.messages.find((message) => message.messageId === selectedMessageId.value) || null,
 );
@@ -275,16 +262,16 @@ const startResize = (event: MouseEvent) => {
 };
 
 watch(
-  () => perspective.value.messages.map((message) => message.messageId).join('\n'),
+  () => displayMessages.value.map((message) => message.messageId).join('\n'),
   () => {
-    if (perspective.value.messages.length === 0) {
+    if (displayMessages.value.length === 0) {
       selectedMessageId.value = null;
       selectedReferenceId.value = null;
       selectedType.value = 'message';
       return;
     }
     if (!selectedMessage.value) {
-      selectedMessageId.value = perspective.value.messages[0].messageId;
+      selectedMessageId.value = displayMessages.value[0].messageId;
       selectedReferenceId.value = null;
       selectedType.value = 'message';
     }

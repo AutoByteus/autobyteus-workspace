@@ -48,7 +48,7 @@ describe('TeamCommunicationPanel.vue', () => {
     setActivePinia(createPinia());
   });
 
-  it('renders compact email-like message rows with file-type reference icons under the Team tab owner', async () => {
+  it('renders compact newest-first email-like message rows with file-type reference icons under the Team tab owner', async () => {
     const store = useTeamCommunicationStore();
     store.replaceProjection('team-1', [
       {
@@ -90,6 +90,14 @@ describe('TeamCommunicationPanel.vue', () => {
     const text = wrapper.text();
     expect(wrapper.get('[data-test="team-communication-left-list"]').exists()).toBe(true);
     expect(wrapper.get('[data-test="team-communication-detail-pane"]').exists()).toBe(true);
+    const rows = wrapper.findAll('[data-test="team-communication-message-row"]');
+    expect(rows).toHaveLength(2);
+    expect(rows[0].text()).toContain('Assignment');
+    expect(rows[0].text()).toContain('from Solution Designer');
+    expect(rows[1].text()).toContain('Handoff');
+    expect(rows[1].text()).toContain('to A Very Long Reviewer Name That Should Still Be Grouped Once');
+    expect(wrapper.get('[data-test="team-communication-message-markdown"]').text()).toContain('Please implement this new UI ownership model.');
+
     expect(text).not.toContain('Sent');
     expect(text).toContain('A Very Long Reviewer Name That Should Still Be Grouped Once');
     expect(text).toContain('Handoff');
@@ -103,7 +111,10 @@ describe('TeamCommunicationPanel.vue', () => {
     expect(text).toContain('handoff.md');
     expect(text).toContain('appendix.txt');
     expect(text).toContain('design-spec.md');
-    expect(text).toContain('Raw path /tmp/handoff.md stays plain text.');
+
+    await rows[1].get('[data-test="team-communication-message-summary"]').trigger('click');
+    await wrapper.vm.$nextTick();
+    expect(wrapper.get('[data-test="team-communication-message-markdown"]').text()).toContain('Raw path /tmp/handoff.md stays plain text.');
     expect(wrapper.findAll('a[href*="/tmp/handoff.md"]').length).toBe(0);
     expect(text).not.toContain('Sent Artifacts');
     expect(text).not.toContain('Received Artifacts');
