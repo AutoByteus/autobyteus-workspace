@@ -32,7 +32,7 @@ describe("MediaInputPathNormalizationPreprocessor", () => {
 
   it("skips non-target tools", async () => {
     const processor = new MediaInputPathNormalizationPreprocessor();
-    const invocation = new ToolInvocation("other_tool", { input_images: "foo.png" }, "1");
+    const invocation = new ToolInvocation("other_tool", { input_images: ["foo.png"] }, "1");
     const context = {
       agentId: "agent-1",
       llmInstance: { model: { provider: LLMProvider.AUTOBYTEUS } },
@@ -66,7 +66,7 @@ describe("MediaInputPathNormalizationPreprocessor", () => {
     const processor = new MediaInputPathNormalizationPreprocessor();
     const invocation = new ToolInvocation(
       "generate_image",
-      { input_images: "foo.png" },
+      { input_images: ["foo.png"] },
       "2",
     );
     const context = {
@@ -84,7 +84,7 @@ describe("MediaInputPathNormalizationPreprocessor", () => {
     const processor = new MediaInputPathNormalizationPreprocessor();
     const invocation = new ToolInvocation(
       "generate_image",
-      { input_images: "images/out.png" },
+      { input_images: ["images/out.png"] },
       "3",
     );
 
@@ -102,7 +102,7 @@ describe("MediaInputPathNormalizationPreprocessor", () => {
     const result = await processor.process(invocation, context);
 
     expect(mockMediaStorage.ingestLocalFileForContext).not.toHaveBeenCalled();
-    expect(result.arguments.input_images).toBe("/tmp/images/out.png");
+    expect(result.arguments.input_images).toEqual(["/tmp/images/out.png"]);
 
     existsSpy.mockRestore();
     statSpy.mockRestore();
@@ -112,7 +112,7 @@ describe("MediaInputPathNormalizationPreprocessor", () => {
     const processor = new MediaInputPathNormalizationPreprocessor();
     const invocation = new ToolInvocation(
       "generate_image",
-      { input_images: "http://example.com/img.png" },
+      { input_images: ["http://example.com/img.png"] },
       "4",
     );
     const context = {
@@ -122,7 +122,27 @@ describe("MediaInputPathNormalizationPreprocessor", () => {
 
     const result = await processor.process(invocation, context);
 
-    expect(result.arguments.input_images).toBe("http://example.com/img.png");
+    expect(result.arguments.input_images).toEqual(["http://example.com/img.png"]);
+    expect(mockMediaStorage.ingestLocalFileForContext).not.toHaveBeenCalled();
+  });
+
+
+  it("keeps data URI entries unchanged inside the input_images array", async () => {
+    const processor = new MediaInputPathNormalizationPreprocessor();
+    const dataUri = "data:image/png;base64,aW5wdXQtaW1hZ2U=";
+    const invocation = new ToolInvocation(
+      "generate_image",
+      { input_images: [dataUri] },
+      "4b",
+    );
+    const context = {
+      agentId: "agent-1",
+      llmInstance: { model: { provider: LLMProvider.AUTOBYTEUS } },
+    } as AgentContext;
+
+    const result = await processor.process(invocation, context);
+
+    expect(result.arguments.input_images).toEqual([dataUri]);
     expect(mockMediaStorage.ingestLocalFileForContext).not.toHaveBeenCalled();
   });
 
@@ -162,7 +182,7 @@ describe("MediaInputPathNormalizationPreprocessor", () => {
     const processor = new MediaInputPathNormalizationPreprocessor();
     const invocation = new ToolInvocation(
       "generate_image",
-      { input_images: "images/out.png" },
+      { input_images: ["images/out.png"] },
       "6",
     );
 
@@ -186,7 +206,7 @@ describe("MediaInputPathNormalizationPreprocessor", () => {
 
     expect(providerSpy).toHaveBeenCalledWith("my-model-id");
     expect(mockMediaStorage.ingestLocalFileForContext).not.toHaveBeenCalled();
-    expect(result.arguments.input_images).toBe("/tmp/images/out.png");
+    expect(result.arguments.input_images).toEqual(["/tmp/images/out.png"]);
 
     existsSpy.mockRestore();
     statSpy.mockRestore();

@@ -3,12 +3,14 @@ import type { ConfiguredAgentToolExposure } from "../../../shared/configured-age
 import { CLAUDE_SEND_MESSAGE_MCP_TOOL_NAME, CLAUDE_SEND_MESSAGE_TOOL_NAME } from "../claude-send-message-tool-name.js";
 
 const CLAUDE_BROWSER_MCP_TOOL_PREFIX = "mcp__autobyteus_browser__";
+const CLAUDE_MEDIA_MCP_TOOL_PREFIX = "mcp__autobyteus_image_audio__";
 const CLAUDE_PUBLISHED_ARTIFACT_MCP_TOOL_NAME =
   "mcp__autobyteus_published_artifacts__publish_artifacts";
 
 export type ClaudeSessionToolingOptions = {
   sendMessageToToolingEnabled: boolean;
   enabledBrowserToolNames: string[];
+  enabledMediaToolNames: string[];
   publishArtifactsToolingEnabled: boolean;
   allowedTools: string[];
 };
@@ -21,6 +23,9 @@ export const resolveClaudeSessionToolingOptions = (input: {
   const enabledBrowserToolNames = [
     ...input.configuredToolExposure.enabledBrowserToolNames,
   ];
+  const enabledMediaToolNames = [
+    ...input.configuredToolExposure.enabledMediaToolNames,
+  ];
   const sendMessageToToolingEnabled =
     input.configuredToolExposure.sendMessageToConfigured &&
     Boolean(input.memberTeamContext?.sendMessageToEnabled) &&
@@ -30,6 +35,7 @@ export const resolveClaudeSessionToolingOptions = (input: {
   const allowedTools = resolveAllowedToolNames({
     sendMessageToToolingEnabled,
     enabledBrowserToolNames,
+    enabledMediaToolNames,
     publishArtifactsToolingEnabled,
     hasMaterializedSkills: input.hasMaterializedSkills,
   });
@@ -37,6 +43,7 @@ export const resolveClaudeSessionToolingOptions = (input: {
   return {
     sendMessageToToolingEnabled,
     enabledBrowserToolNames,
+    enabledMediaToolNames,
     publishArtifactsToolingEnabled,
     allowedTools,
   };
@@ -45,6 +52,7 @@ export const resolveClaudeSessionToolingOptions = (input: {
 const resolveAllowedToolNames = (input: {
   sendMessageToToolingEnabled: boolean;
   enabledBrowserToolNames: string[];
+  enabledMediaToolNames: string[];
   publishArtifactsToolingEnabled: boolean;
   hasMaterializedSkills: boolean;
 }): string[] => {
@@ -59,6 +67,10 @@ const resolveAllowedToolNames = (input: {
   for (const toolName of input.enabledBrowserToolNames) {
     allowedTools.add(toolName);
     allowedTools.add(`${CLAUDE_BROWSER_MCP_TOOL_PREFIX}${toolName}`);
+  }
+  for (const toolName of input.enabledMediaToolNames) {
+    allowedTools.add(toolName);
+    allowedTools.add(`${CLAUDE_MEDIA_MCP_TOOL_PREFIX}${toolName}`);
   }
   if (input.publishArtifactsToolingEnabled) {
     allowedTools.add("publish_artifacts");

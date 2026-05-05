@@ -419,6 +419,39 @@ describe("ClaudeSessionEventConverter", () => {
     });
   });
 
+  it("normalizes media MCP tool names and content envelopes to canonical generated-output results", () => {
+    const converter = new ClaudeSessionEventConverter("run-claude-converter");
+
+    const [completed] = converter.convert({
+      method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "invoke-media",
+        tool_name: "mcp__autobyteus_image_audio__generate_image",
+        result: {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify({
+                file_path: "/tmp/generated.png",
+              }),
+            },
+          ],
+        },
+      },
+    });
+
+    expect(completed).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      payload: {
+        invocation_id: "invoke-media",
+        tool_name: "generate_image",
+        result: {
+          file_path: "/tmp/generated.png",
+        },
+      },
+    });
+  });
+
   it("preserves unknown MCP browser-like names and results", () => {
     const converter = new ClaudeSessionEventConverter("run-claude-converter");
     const rawResult = [
