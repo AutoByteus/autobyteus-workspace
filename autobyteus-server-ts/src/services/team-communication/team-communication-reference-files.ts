@@ -1,20 +1,20 @@
 import path from "node:path";
-import { normalizeMessageFileReferencePath } from "./message-file-reference-identity.js";
+import {
+  isAbsoluteTeamCommunicationReferencePath,
+  normalizeTeamCommunicationReferencePath,
+} from "./team-communication-identity.js";
 
-export type ExplicitMessageFileReferencePathValidationError = {
+export type ExplicitTeamCommunicationReferenceFileValidationError = {
   index?: number;
   reason: string;
 };
 
-export type NormalizeExplicitMessageFileReferencePathsResult =
+export type NormalizeExplicitTeamCommunicationReferenceFilesResult =
   | { ok: true; referenceFiles: string[] }
-  | { ok: false; error: ExplicitMessageFileReferencePathValidationError };
-
-const isAbsoluteLocalPath = (value: string): boolean =>
-  path.posix.isAbsolute(value) || path.win32.isAbsolute(value) || path.isAbsolute(value);
+  | { ok: false; error: ExplicitTeamCommunicationReferenceFileValidationError };
 
 const hasInvalidSegments = (value: string): boolean => {
-  const segments = value.split(/[\/]+/).filter(Boolean);
+  const segments = value.split(/[\\/]+/).filter(Boolean);
   return segments.some((segment) =>
     segment === "." ||
     segment === ".." ||
@@ -24,8 +24,8 @@ const hasInvalidSegments = (value: string): boolean => {
   );
 };
 
-export const validateExplicitMessageFileReferencePath = (value: string): string | null => {
-  const normalized = normalizeMessageFileReferencePath(value);
+export const validateExplicitTeamCommunicationReferenceFile = (value: string): string | null => {
+  const normalized = normalizeTeamCommunicationReferencePath(value);
   if (!normalized) {
     return "empty path";
   }
@@ -35,7 +35,7 @@ export const validateExplicitMessageFileReferencePath = (value: string): string 
   if (normalized.startsWith("//") || normalized.includes("://")) {
     return "path must be a local filesystem path, not a URL or protocol path";
   }
-  if (!isAbsoluteLocalPath(normalized)) {
+  if (!isAbsoluteTeamCommunicationReferencePath(normalized) && !path.isAbsolute(normalized)) {
     return "path must be absolute";
   }
   if (hasInvalidSegments(normalized)) {
@@ -44,9 +44,9 @@ export const validateExplicitMessageFileReferencePath = (value: string): string 
   return null;
 };
 
-export const normalizeExplicitMessageFileReferencePaths = (
+export const normalizeExplicitTeamCommunicationReferenceFiles = (
   rawReferenceFiles: unknown,
-): NormalizeExplicitMessageFileReferencePathsResult => {
+): NormalizeExplicitTeamCommunicationReferenceFilesResult => {
   if (rawReferenceFiles === undefined || rawReferenceFiles === null) {
     return { ok: true, referenceFiles: [] };
   }
@@ -69,8 +69,8 @@ export const normalizeExplicitMessageFileReferencePaths = (
         error: { index, reason: "each reference_files entry must be a string" },
       };
     }
-    const normalizedPath = normalizeMessageFileReferencePath(rawPath);
-    const invalidReason = validateExplicitMessageFileReferencePath(normalizedPath);
+    const normalizedPath = normalizeTeamCommunicationReferencePath(rawPath);
+    const invalidReason = validateExplicitTeamCommunicationReferenceFile(normalizedPath);
     if (invalidReason) {
       return {
         ok: false,

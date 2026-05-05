@@ -34,6 +34,7 @@ export {
 
 export {
   handleInterAgentMessage,
+  handleTeamCommunicationMessage,
   handleSystemTaskNotification,
   handleTeamStatus,
   handleTaskPlanEvent,
@@ -43,7 +44,3 @@ export {
 export {
   handleFileChange,
 } from './fileChangeHandler';
-
-export {
-  handleMessageFileReferenceDeclared,
-} from './messageFileReferenceHandler';

@@ -26,7 +26,7 @@ import {
 import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
-import { MessageFileReferenceService } from "../../../src/services/message-file-references/message-file-reference-service.js";
+import { TeamCommunicationService } from "../../../src/services/team-communication/team-communication-service.js";
 import { RunFileChangeService } from "../../../src/services/run-file-changes/run-file-change-service.js";
 
 class FakeNotifier {
@@ -449,14 +449,8 @@ describe("AutoByteusTeamRunBackend integration", () => {
         event.eventSourceType === TeamRunEventSourceType.AGENT &&
         (event.data as any).agentEvent.eventType === AgentRunEventType.INTER_AGENT_MESSAGE,
     );
-    const referenceEvents = observed.filter(
-      (event) =>
-        event.eventSourceType === TeamRunEventSourceType.AGENT &&
-        (event.data as any).agentEvent.eventType === AgentRunEventType.MESSAGE_FILE_REFERENCE_DECLARED,
-    );
 
     expect(interAgentEvents).toHaveLength(1);
-    expect(referenceEvents).toHaveLength(1);
     expect(interAgentEvents[0]).toMatchObject({
       eventSourceType: TeamRunEventSourceType.AGENT,
       teamRunId: "team-auto-1",
@@ -476,11 +470,25 @@ describe("AutoByteusTeamRunBackend integration", () => {
             content: "Please solve the attached problem.",
             message_type: "direct_message",
             reference_files: ["/tmp/math_problem.md"],
+            reference_file_entries: [
+              expect.objectContaining({
+                path: "/tmp/math_problem.md",
+                type: "file",
+              }),
+            ],
           },
         },
       },
     });
-    expect(referenceEvents[0]).toMatchObject({
+    expect((interAgentEvents[0].data as any).agentEvent.payload.message_id).toEqual(expect.any(String));
+
+    const teamCommunicationEvents = observed.filter(
+      (event) =>
+        event.eventSourceType === TeamRunEventSourceType.AGENT &&
+        (event.data as any).agentEvent.eventType === AgentRunEventType.TEAM_COMMUNICATION_MESSAGE,
+    );
+    expect(teamCommunicationEvents).toHaveLength(1);
+    expect(teamCommunicationEvents[0]).toMatchObject({
       eventSourceType: TeamRunEventSourceType.AGENT,
       teamRunId: "team-auto-1",
       data: {
@@ -488,7 +496,7 @@ describe("AutoByteusTeamRunBackend integration", () => {
         memberName: "Student",
         memberRunId: "student-run",
         agentEvent: {
-          eventType: AgentRunEventType.MESSAGE_FILE_REFERENCE_DECLARED,
+          eventType: AgentRunEventType.TEAM_COMMUNICATION_MESSAGE,
           runId: "student-run",
           payload: {
             teamRunId: "team-auto-1",
@@ -496,8 +504,14 @@ describe("AutoByteusTeamRunBackend integration", () => {
             senderMemberName: "Professor",
             receiverRunId: "student-run",
             receiverMemberName: "Student",
-            path: "/tmp/math_problem.md",
+            content: "Please solve the attached problem.",
             messageType: "direct_message",
+            referenceFiles: [
+              expect.objectContaining({
+                path: "/tmp/math_problem.md",
+                type: "file",
+              }),
+            ],
           },
         },
       },
@@ -742,7 +756,7 @@ describe("AutoByteusTeamRunBackend integration", () => {
     await waitForCondition(() => team.notifier.listenerCount(EventType.TEAM_STREAM_EVENT) === 0);
   });
 
-  it("persists AutoByteus explicit message references from enriched team events", async () => {
+  it("persists AutoByteus explicit team communication references from enriched team events", async () => {
     const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-team-message-refs-"));
     const teamRunConfig = createTeamRunConfig({ memoryDir });
     const runtimeContext = createRuntimeContext();
@@ -760,8 +774,8 @@ describe("AutoByteusTeamRunBackend integration", () => {
       }),
       backend,
     });
-    const referenceService = new MessageFileReferenceService({ memoryDir });
-    const unsubscribeProjection = referenceService.attachToTeamRun(teamRun);
+    const communicationService = new TeamCommunicationService({ memoryDir });
+    const unsubscribeProjection = communicationService.attachToTeamRun(teamRun);
     const unsubscribeStream = backend.subscribeToEvents(() => undefined);
 
     team.notifier.emit(
@@ -790,7 +804,7 @@ describe("AutoByteusTeamRunBackend integration", () => {
       memoryDir,
       "agent_teams",
       "team-auto-1",
-      "message_file_references.json",
+      "team_communication_messages.json",
     );
     await waitForCondition(async () => {
       try {
@@ -805,15 +819,21 @@ describe("AutoByteusTeamRunBackend integration", () => {
     unsubscribeProjection();
 
     const persistedProjection = JSON.parse(await fs.readFile(projectionPath, "utf-8"));
-    expect(persistedProjection.entries).toEqual([
+    expect(persistedProjection.messages).toEqual([
       expect.objectContaining({
         teamRunId: "team-auto-1",
         senderRunId: "professor-run",
         senderMemberName: "Professor",
         receiverRunId: "student-run",
         receiverMemberName: "Student",
-        path: "/tmp/math_problem.md",
+        content: "The worksheet is attached.",
         messageType: "direct_message",
+        referenceFiles: [
+          expect.objectContaining({
+            path: "/tmp/math_problem.md",
+            type: "file",
+          }),
+        ],
       }),
     ]);
   });

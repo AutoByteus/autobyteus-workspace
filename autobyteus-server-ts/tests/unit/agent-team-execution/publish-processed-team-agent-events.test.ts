@@ -9,13 +9,13 @@ describe("publishProcessedTeamAgentEvents", () => {
     const sourceEvent: AgentRunEvent = {
       eventType: AgentRunEventType.INTER_AGENT_MESSAGE,
       runId: "member-run-1",
-      payload: { content: "Please use /tmp/report.md" },
+      payload: { content: "Please inspect the generated output." },
       statusHint: null,
     };
     const derivedEvent: AgentRunEvent = {
-      eventType: AgentRunEventType.MESSAGE_FILE_REFERENCE_DECLARED,
+      eventType: AgentRunEventType.FILE_CHANGE,
       runId: "member-run-1",
-      payload: { referenceId: "ref-1", path: "/tmp/report.md" },
+      payload: { path: "output/report.md", status: "available" },
       statusHint: null,
     };
     const pipeline = {

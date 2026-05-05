@@ -31,7 +31,7 @@ export type ServerMessageType =
   | 'TODO_LIST_UPDATE'
   | 'TASK_PLAN_EVENT'
   | 'INTER_AGENT_MESSAGE'
-  | 'MESSAGE_FILE_REFERENCE_DECLARED'
+  | 'TEAM_COMMUNICATION_MESSAGE'
   | 'SYSTEM_TASK_NOTIFICATION'
   | 'ARTIFACT_PERSISTED'
   | 'FILE_CHANGE'
@@ -268,29 +268,42 @@ export interface TaskPlanEventPayload {
   sub_team_node_name?: string | null;
 }
 
-export interface InterAgentMessagePayload {
-  sender_agent_id: string;
-  sender_agent_name?: string | null;
-  recipient_role_name: string;
-  content: string;
-  message_type: string;
-  reference_files?: string[];
-  agent_name?: string;
-  agent_id?: string;
+export interface TeamCommunicationReferenceFilePayload {
+  referenceId: string;
+  path: string;
+  type: 'file' | 'image' | 'audio' | 'video' | 'pdf' | 'csv' | 'excel' | 'other';
+  createdAt: string;
+  updatedAt: string;
 }
 
-export interface MessageFileReferencePayload {
-  referenceId: string;
+export interface TeamCommunicationMessagePayload {
+  messageId: string;
   teamRunId: string;
   senderRunId: string;
   senderMemberName?: string | null;
   receiverRunId: string;
   receiverMemberName?: string | null;
-  path: string;
-  type: 'file' | 'image' | 'audio' | 'video' | 'pdf' | 'csv' | 'excel' | 'other';
+  content: string;
   messageType: string;
   createdAt: string;
   updatedAt: string;
+  referenceFiles: TeamCommunicationReferenceFilePayload[];
+}
+
+export interface InterAgentMessagePayload {
+  message_id?: string;
+  team_run_id?: string;
+  sender_agent_id: string;
+  sender_agent_name?: string | null;
+  receiver_run_id?: string;
+  receiver_agent_name?: string | null;
+  recipient_role_name: string;
+  content: string;
+  message_type: string;
+  reference_files?: string[];
+  reference_file_entries?: TeamCommunicationReferenceFilePayload[];
+  created_at?: string;
+  updated_at?: string;
   agent_name?: string;
   agent_id?: string;
 }
@@ -360,7 +373,7 @@ export type ServerMessage =
   | { type: 'TODO_LIST_UPDATE'; payload: TodoListUpdatePayload }
   | { type: 'TASK_PLAN_EVENT'; payload: TaskPlanEventPayload }
   | { type: 'INTER_AGENT_MESSAGE'; payload: InterAgentMessagePayload }
-  | { type: 'MESSAGE_FILE_REFERENCE_DECLARED'; payload: MessageFileReferencePayload }
+  | { type: 'TEAM_COMMUNICATION_MESSAGE'; payload: TeamCommunicationMessagePayload }
   | { type: 'SYSTEM_TASK_NOTIFICATION'; payload: SystemTaskNotificationPayload }
   | { type: 'ARTIFACT_PERSISTED'; payload: ArtifactPersistedPayload }
   | { type: 'FILE_CHANGE'; payload: FileChangePayload }

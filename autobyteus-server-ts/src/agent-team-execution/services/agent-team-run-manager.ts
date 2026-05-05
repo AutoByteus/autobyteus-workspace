@@ -24,9 +24,9 @@ import type { TeamRunBackendFactory } from "../backends/team-run-backend-factory
 import { buildTeamMemberRunId, normalizeMemberRouteKey } from "../../run-history/utils/team-member-run-id.js";
 import { TeamBackendKind } from "../domain/team-backend-kind.js";
 import {
-  MessageFileReferenceService,
-  getMessageFileReferenceService,
-} from "../../services/message-file-references/message-file-reference-service.js";
+  TeamCommunicationService,
+  getTeamCommunicationService,
+} from "../../services/team-communication/team-communication-service.js";
 import {
   RunFileChangeService,
   getRunFileChangeService,
@@ -43,7 +43,7 @@ type AgentTeamRunManagerOptions = {
   codexTeamRunBackendFactory?: CodexTeamRunBackendFactory;
   claudeTeamRunBackendFactory?: ClaudeTeamRunBackendFactory;
   mixedTeamRunBackendFactory?: MixedTeamRunBackendFactory;
-  messageFileReferenceService?: MessageFileReferenceService;
+  teamCommunicationService?: TeamCommunicationService;
   runFileChangeService?: RunFileChangeService;
 };
 
@@ -53,10 +53,10 @@ export class AgentTeamRunManager {
   private readonly codexTeamRunBackendFactory: CodexTeamRunBackendFactory;
   private readonly claudeTeamRunBackendFactory: ClaudeTeamRunBackendFactory;
   private readonly mixedTeamRunBackendFactory: MixedTeamRunBackendFactory;
-  private readonly messageFileReferenceService: MessageFileReferenceService;
+  private readonly teamCommunicationService: TeamCommunicationService;
   private readonly runFileChangeService: RunFileChangeService;
   private activeRuns = new Map<string, TeamRun>();
-  private readonly messageFileReferenceUnsubscribers = new Map<string, () => void>();
+  private readonly teamCommunicationUnsubscribers = new Map<string, () => void>();
   private readonly runFileChangeUnsubscribers = new Map<string, () => void>();
 
   static getInstance(options: AgentTeamRunManagerOptions = {}): AgentTeamRunManager {
@@ -75,8 +75,8 @@ export class AgentTeamRunManager {
       options.claudeTeamRunBackendFactory ?? getClaudeTeamRunBackendFactory();
     this.mixedTeamRunBackendFactory =
       options.mixedTeamRunBackendFactory ?? getMixedTeamRunBackendFactory();
-    this.messageFileReferenceService =
-      options.messageFileReferenceService ?? getMessageFileReferenceService();
+    this.teamCommunicationService =
+      options.teamCommunicationService ?? getTeamCommunicationService();
     this.runFileChangeService =
       options.runFileChangeService ?? getRunFileChangeService();
     logger.info("AgentTeamRunManager initialized.");
@@ -175,12 +175,12 @@ export class AgentTeamRunManager {
   }
 
   private registerActiveRun(run: TeamRun): void {
-    this.unregisterMessageFileReferences(run.runId);
+    this.unregisterTeamCommunication(run.runId);
     this.unregisterRunFileChanges(run.runId);
     this.activeRuns.set(run.runId, run);
-    this.messageFileReferenceUnsubscribers.set(
+    this.teamCommunicationUnsubscribers.set(
       run.runId,
-      this.messageFileReferenceService.attachToTeamRun(run),
+      this.teamCommunicationService.attachToTeamRun(run),
     );
     if (run.teamBackendKind === TeamBackendKind.AUTOBYTEUS) {
       this.runFileChangeUnsubscribers.set(
@@ -192,16 +192,16 @@ export class AgentTeamRunManager {
 
   private unregisterActiveRun(teamRunId: string): void {
     this.activeRuns.delete(teamRunId);
-    this.unregisterMessageFileReferences(teamRunId);
+    this.unregisterTeamCommunication(teamRunId);
     this.unregisterRunFileChanges(teamRunId);
   }
 
-  private unregisterMessageFileReferences(teamRunId: string): void {
-    const unsubscribe = this.messageFileReferenceUnsubscribers.get(teamRunId);
+  private unregisterTeamCommunication(teamRunId: string): void {
+    const unsubscribe = this.teamCommunicationUnsubscribers.get(teamRunId);
     if (!unsubscribe) {
       return;
     }
-    this.messageFileReferenceUnsubscribers.delete(teamRunId);
+    this.teamCommunicationUnsubscribers.delete(teamRunId);
     unsubscribe();
   }
 

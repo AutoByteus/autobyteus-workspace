@@ -33,9 +33,19 @@ import {
   type TeamRunTaskPlanEventPayload,
   type TeamRunEventUnsubscribe,
 } from "../../domain/team-run-event.js";
-import { buildInterAgentDeliveryInputMessage } from "../../services/inter-agent-message-runtime-builders.js";
+import {
+  buildInterAgentDeliveryInputMessage,
+  buildInterAgentMessageReferenceFileEntries,
+} from "../../services/inter-agent-message-runtime-builders.js";
 import { publishProcessedTeamAgentEvents } from "../../services/publish-processed-team-agent-events.js";
+import { buildTeamCommunicationMessageId } from "../../../services/team-communication/team-communication-identity.js";
 import type { AutoByteusTeamRunContext } from "./autobyteus-team-run-context.js";
+import {
+  asRecord,
+  extractMemberRunId,
+  normalizeOptionalString,
+  toReferenceFilesPayload,
+} from "./autobyteus-team-run-backend-utils.js";
 
 type AutoByteusTeamLike = {
   teamId: string;
@@ -84,49 +94,6 @@ const buildCommandFailure = (operation: string, error: unknown): AgentOperationR
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
 };
-
-const asRecord = (value: unknown): Record<string, unknown> =>
-  value && typeof value === "object" && !Array.isArray(value)
-    ? (value as Record<string, unknown>)
-    : {};
-
-const normalizeOptionalString = (value: unknown): string | null => {
-  if (typeof value !== "string") {
-    return null;
-  }
-  const normalized = value.trim();
-  return normalized.length > 0 ? normalized : null;
-};
-
-const extractMemberRunId = (
-  agentEvent: { agent_id?: unknown; data?: unknown } | null,
-  memberName: string | null,
-  memberRunIdsByName: ReadonlyMap<string, string> | undefined,
-): string | null => {
-  const normalizedMemberName = normalizeOptionalString(memberName);
-  if (!normalizedMemberName) {
-    return null;
-  }
-  const configuredMemberRunId = memberRunIdsByName?.get(normalizedMemberName) ?? null;
-  if (typeof configuredMemberRunId === "string" && configuredMemberRunId.trim().length > 0) {
-    return configuredMemberRunId.trim();
-  }
-  if (agentEvent && typeof agentEvent.agent_id === "string" && agentEvent.agent_id.trim().length > 0) {
-    return agentEvent.agent_id.trim();
-  }
-  const agentEventPayload = asRecord(agentEvent?.data);
-  if (typeof agentEventPayload.agent_id === "string" && agentEventPayload.agent_id.trim().length > 0) {
-    return agentEventPayload.agent_id.trim();
-  }
-  return normalizedMemberName;
-};
-
-const toReferenceFilesPayload = (
-  payload: Record<string, unknown>,
-): unknown =>
-  Object.prototype.hasOwnProperty.call(payload, "reference_files")
-    ? payload.reference_files
-    : payload.referenceFiles;
 
 export class AutoByteusTeamRunBackend implements TeamRunBackend {
   readonly runId: string;
@@ -438,7 +405,32 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
     const messageType =
       normalizeOptionalString(input.event.payload.message_type)
       ?? normalizeOptionalString(input.event.payload.messageType)
-      ?? normalizeOptionalString(input.event.payload.original_message_type);
+      ?? normalizeOptionalString(input.event.payload.original_message_type)
+      ?? "agent_message";
+    const content = typeof input.event.payload.content === "string" ? input.event.payload.content : "";
+    const createdAt =
+      normalizeOptionalString(input.event.payload.created_at)
+      ?? normalizeOptionalString(input.event.payload.createdAt)
+      ?? new Date().toISOString();
+    const existingMessageId =
+      normalizeOptionalString(input.event.payload.message_id)
+      ?? normalizeOptionalString(input.event.payload.messageId);
+    const referenceFiles = toReferenceFilesPayload(input.event.payload);
+    const normalizedReferenceFiles = Array.isArray(referenceFiles)
+      ? referenceFiles
+        .filter((entry): entry is string => typeof entry === "string" && entry.trim().length > 0)
+        .map((entry) => entry.trim())
+      : [];
+    const messageId = existingMessageId ?? (senderRunId
+      ? buildTeamCommunicationMessageId({
+        teamRunId: this.runId,
+        senderRunId,
+        receiverRunId,
+        messageType,
+        content,
+        createdAt,
+      })
+      : null);
 
     return {
       ...input.event,
@@ -450,8 +442,18 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
         receiver_agent_name: receiverMemberName,
         ...(senderRunId ? { sender_agent_id: senderRunId } : {}),
         ...(senderMemberName ? { sender_agent_name: senderMemberName } : {}),
-        ...(messageType ? { message_type: messageType } : {}),
-        reference_files: toReferenceFilesPayload(input.event.payload),
+        message_type: messageType,
+        ...(messageId ? { message_id: messageId } : {}),
+        created_at: createdAt,
+        reference_files: normalizedReferenceFiles,
+        ...(messageId ? {
+          reference_file_entries: buildInterAgentMessageReferenceFileEntries({
+            teamRunId: this.runId,
+            messageId,
+            referenceFiles: normalizedReferenceFiles,
+            timestamp: createdAt,
+          }),
+        } : {}),
       },
     };
   }

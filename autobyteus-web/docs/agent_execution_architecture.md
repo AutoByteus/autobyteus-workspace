@@ -21,13 +21,13 @@ graph TD
 
     Handler-->|Segment Created/Updated| Context[Agent Context State]
     Handler-->|File changes / outputs| RunFileChangeStore[Run File Change Store]
-    Handler-->|Message file references| MessageReferenceStore[Message File References Store]
+    Handler-->|Team communication messages| TeamCommunicationStore[Team Communication Store]
     Handler-->|Activity Log| ActivityStore[Activity Store]
     Handler-->|Task/Todo Update| TodoStore[Todo Store]
 
     Context-->|Reactivity| UI[Vue Component UI]
     RunFileChangeStore-->|Reactivity| UI
-    MessageReferenceStore-->|Reactivity| UI
+    TeamCommunicationStore-->|Reactivity| UI
     ActivityStore-->|Reactivity| UI
 ```
 
@@ -208,7 +208,8 @@ Incoming events are routed based on their `type`:
 | `TOOL_LOG`                | `toolLifecycleHandler.handleToolLog`               | Appends diagnostic execution logs only.                         |
 | `ARTIFACT_PERSISTED`      | inline no-op compatibility                         | Ignored by the current client; published artifacts are not displayed in the current web UI. |
 | `FILE_CHANGE`             | `fileChangeHandler.handleFileChange`        | Syncs touched files and generated outputs into the run-scoped Agent Artifact store. |
-| `MESSAGE_FILE_REFERENCE_DECLARED` | `messageFileReferenceHandler.handleMessageFileReferenceDeclared` | Syncs backend-derived, accepted inter-agent message file references into the team-level message-reference store for focused-member **Sent Artifacts** / **Received Artifacts** perspectives. |
+| `INTER_AGENT_MESSAGE`      | `teamHandler.handleInterAgentMessage`       | Preserves existing conversation rendering only. |
+| `TEAM_COMMUNICATION_MESSAGE`| `teamHandler.handleTeamCommunicationMessage` | Upserts normalized Team Communication messages and child reference files into the Team Communication store. |
 | `TODO_LIST_UPDATE`        | `todoHandler.handleTodoListUpdate`                 | Syncs the agent's internal todo list with the UI.               |
 
 ---
@@ -251,12 +252,12 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
     - Owns the run-scoped projection for touched files and generated outputs.
     - Tracks latest-visible discoverability so the Artifacts tab can auto-focus when a new Agent Artifact row appears.
     - Keeps transient `write_file` buffers only until committed previews are fetched from the server-backed run preview route.
-2.  **Message File References (`MessageFileReferencesStore`)**:
-    - Listens to `MESSAGE_FILE_REFERENCE_DECLARED` plus team reopen hydration from `getMessageFileReferences(teamRunId)`.
-    - Owns the canonical team-level projection for absolute local paths declared in accepted inter-agent messages.
-    - Exposes focused-member perspectives: **Sent Artifacts** when the focused member is the sender and **Received Artifacts** when the focused member is the receiver.
-    - Groups sent/received references by counterpart member without inserting those rows into `RunFileChangesStore`.
-    - Opens content by persisted identity (`teamRunId + referenceId`) through `/team-runs/:teamRunId/message-file-references/:referenceId/content`.
+2.  **Team Communication (`TeamCommunicationStore`)**:
+    - Listens to accepted `INTER_AGENT_MESSAGE` live payloads plus team reopen hydration from `getTeamCommunicationMessages(teamRunId)`.
+    - Owns the canonical team-level message projection and child `referenceFiles` declared by explicit `send_message_to.reference_files`.
+    - Exposes focused-member sent/received message perspectives grouped by counterpart member.
+    - Keeps reference files under their parent message in the Team tab instead of inserting them into `RunFileChangesStore` or the Artifacts tab.
+    - Opens reference content by persisted message identity (`teamRunId + messageId + referenceId`) through `/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`.
     - Does not parse chat text in the frontend and does not make raw paths in `InterAgentMessageSegment` clickable.
 3.  **Activity (`AgentActivityStore`)**:
     - Tracks every tool call, file write, and terminal command as a linear history of "Activities".
