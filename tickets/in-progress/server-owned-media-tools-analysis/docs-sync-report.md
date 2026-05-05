@@ -8,6 +8,15 @@
 - Integrated base reference used for docs sync: `origin/personal` at `1e63654e174de9600dde3016a7d8486020414ff3` after `git fetch origin --prune` on 2026-05-05. Ticket branch `codex/server-owned-media-tools-analysis` was already at the same revision before delivery-owned edits.
 - Post-integration verification reference: no base commits were integrated because `HEAD`, `origin/personal`, and their merge base all resolved to `1e63654e174de9600dde3016a7d8486020414ff3`. `git diff --check` passed after the refresh and before docs sync; upstream API/E2E checks remain applicable to the same base.
 
+
+## Post-Docs-Sync Latest-Base Verification Update
+
+- User requested a later latest-base refresh and Electron rebuild after `origin/personal` advanced.
+- Ticket changes were locally checkpointed at `dd6f134e`, then latest `origin/personal` was merged into the ticket branch. Because `origin/personal` advanced during the workflow, the branch includes no-edit merge commits `6ae09bd8` and `8250c1d6`.
+- Latest tracked remote base verified for the rebuild: `origin/personal` at `b28c378286fa`; a post-build fetch confirmed no further advance at that time.
+- Docs sync was rechecked against the integrated branch state after the merge. The durable docs updates in `autobyteus-server-ts/docs/modules/agent_tools.md`, `autobyteus-server-ts/docs/modules/multimedia_management.md`, and the ticket design note still represent the final server-owned media tool behavior and array-shaped `input_images` contract. No additional docs changes were required by the later base update.
+- Post-integration verification: Electron macOS build passed on 2026-05-05 18:54 CEST and `git diff --check` passed.
+
 ## Why Docs Were Updated
 
 - Summary: The implementation changes the media tool ownership boundary and the public image-reference input contract. Durable docs needed to state that `generate_image`, `edit_image`, and `generate_speech` are now server-owned first-party tools projected to AutoByteus, Codex, and Claude; that `input_images` is an array of strings for image tools across all projections; that string/comma-shaped `input_images` input is rejected rather than compatibility-parsed; and that generated media results preserve `{ file_path }` semantics.

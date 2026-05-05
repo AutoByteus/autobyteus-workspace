@@ -26,6 +26,22 @@ No release, publication, or deployment was requested for the pre-verification de
 - Handoff state current with latest tracked remote base: `Yes`
 - Blocker (if applicable): None for integration refresh.
 
+
+## User-Requested Commit / Merge / Electron Rebuild Update
+
+- User request: commit the ticket changes on the ticket branch, merge latest `origin/personal`, and rebuild the Electron app because `origin/personal` had advanced.
+- Local checkpoint commit before latest-base merge: `dd6f134e` (`feat(media): move media tools to server-owned runtime`).
+- Integration method: fetched `origin`, then merged `origin/personal` into `codex/server-owned-media-tools-analysis` with no-edit merge commits. `origin/personal` advanced during the workflow, so the ticket branch includes merge commits `6ae09bd8` and `8250c1d6`.
+- Latest tracked remote base used for the rebuild: `origin/personal` at `b28c378286fa`. A post-build `git fetch origin --prune` confirmed no further advance at that time.
+- Post-integration executable check: `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm -C autobyteus-web build:electron:mac` — passed on 2026-05-05 18:54 CEST.
+- Build flavor resolved by the current integrated `.env.production`: `enterprise`.
+- Latest test artifacts:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.2.93.dmg`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.2.93.zip`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- Hygiene check after rebuild: `git diff --check` — passed.
+- Finalization remains on hold pending explicit user verification/completion; the local checkpoint and merge commits are not a push, target-branch update, ticket archival, release, or deployment.
+
 ## User Verification
 
 - Initial explicit user completion/verification received: `No`
@@ -56,7 +72,7 @@ No release, publication, or deployment was requested for the pre-verification de
 
 - Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/tickets/in-progress/server-owned-media-tools-analysis/investigation-notes.md`
 - Ticket branch: `codex/server-owned-media-tools-analysis`
-- Ticket branch commit result: Not performed; pending explicit user verification/completion.
+- Ticket branch commit result: Local checkpoint commit performed for safe latest-base integration/build: `dd6f134e` (`feat(media): move media tools to server-owned runtime`). Delivery-artifact update commit is local on the ticket branch. This is not finalization.
 - Ticket branch push result: Not performed; pending explicit user verification/completion.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
@@ -67,7 +83,7 @@ No release, publication, or deployment was requested for the pre-verification de
 - Merge into target result: Not performed; pending explicit user verification/completion.
 - Push target branch result: Not performed; pending explicit user verification/completion.
 - Repository finalization status: `Blocked`
-- Blocker (if applicable): Workflow hold pending explicit user verification/completion. This is an expected delivery hold, not a code/design blocker.
+- Blocker (if applicable): Workflow hold pending explicit user verification/completion. Local ticket-branch checkpoint/merge/report commits exist for the requested integrated test build, but branch push, target-branch merge, ticket archival, release, deployment, and cleanup remain intentionally blocked until explicit finalization approval.
 
 ## Release / Publication / Deployment
 
@@ -129,11 +145,12 @@ Delivery-stage checks:
 - `git diff --check` — passed after delivery refresh.
 - Local Electron verification build:
   - README section used: `autobyteus-web/README.md` → `Desktop Application Build` / `macOS Build With Logs (No Notarization)`.
-  - Latest rebuild: 2026-05-05 17:17 CEST, after the supplemental Round 3 live provider smoke report update.
+  - Previous rebuild: 2026-05-05 17:17 CEST, after the supplemental Round 3 live provider smoke report update, produced `AutoByteus_personal_macos-arm64-1.2.93` artifacts.
+  - Latest rebuild: 2026-05-05 18:54 CEST, after committing the ticket changes and merging latest `origin/personal` at `b28c378286fa`.
   - Command: `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm -C autobyteus-web build:electron:mac`
-  - Result: passed; produced unsigned/unnotarized local macOS ARM64 artifacts:
-    - `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.93.dmg`
-    - `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.93.zip`
+  - Result: passed; build flavor resolved to `enterprise`; produced unsigned/unnotarized local macOS ARM64 artifacts:
+    - `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.2.93.dmg`
+    - `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.2.93.zip`
     - `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
 
 ## Rollback Criteria

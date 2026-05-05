@@ -18,6 +18,17 @@
 - Integration method: Already current; no merge/rebase was needed and no checkpoint commit was needed.
 - Post-integration executable rerun: Not required because no new base commits were integrated. Upstream validation/review checks remain applicable to the same base. Delivery ran `git diff --check` successfully after the refresh.
 
+
+### User-Requested Latest-Base Rebuild Update (2026-05-05)
+
+- User request: commit the ticket changes on `codex/server-owned-media-tools-analysis`, merge the latest `origin/personal`, and rebuild the Electron app for testing after `origin/personal` advanced.
+- Pre-merge local checkpoint commit: `dd6f134e` (`feat(media): move media tools to server-owned runtime`). This checkpoint preserves the reviewed/validated candidate before integrating the updated base.
+- Latest-base integration method: `git fetch origin --prune`, then no-edit merges from `origin/personal` into the ticket branch. `origin/personal` advanced during the workflow, so two merge commits were created: `6ae09bd8` and `8250c1d6`.
+- Latest tracked remote base used for the rebuild: `origin/personal` at `b28c378286fa`.
+- Post-build remote refresh: `git fetch origin --prune` confirmed `origin/personal` still resolved to `b28c378286fa`; branch was ahead of `origin/personal` and not behind before this delivery-artifact update.
+- Post-integration executable check: local Electron macOS build passed against the integrated branch state.
+- Hygiene check: `git diff --check` passed after the rebuild.
+
 ## What Changed
 
 - Moved the first-party media agent-tool boundary for `generate_image`, `edit_image`, and `generate_speech` into `autobyteus-server-ts`.
@@ -81,13 +92,15 @@ Delivery-stage verification:
 Local Electron build for user verification:
 
 - README section used: `autobyteus-web/README.md` → `Desktop Application Build` / `macOS Build With Logs (No Notarization)`.
-- Latest rebuild: 2026-05-05 17:17 CEST, after the supplemental Round 3 live provider smoke report update.
+- Previous rebuild: 2026-05-05 17:17 CEST, after the supplemental Round 3 live provider smoke report update, produced `AutoByteus_personal_macos-arm64-1.2.93` artifacts.
+- Latest rebuild: 2026-05-05 18:54 CEST, after committing the ticket changes and merging latest `origin/personal` at `b28c378286fa`.
 - Command run from the ticket worktree:
   - `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm -C autobyteus-web build:electron:mac`
 - Result: Passed.
-- Unsigned/unnotarized local macOS ARM64 artifacts:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.93.dmg`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.93.zip`
+- Build flavor resolved by the current integrated `.env.production`: `enterprise`.
+- Latest unsigned/unnotarized local macOS ARM64 artifacts for testing:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.2.93.dmg`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.2.93.zip`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
 
 Known non-blocking validation note:
@@ -122,7 +135,8 @@ Please verify the behavior most visible to users/runtime owners before approving
 ## Finalization Hold
 
 - Explicit user verification/completion received: No.
-- Per delivery workflow, no final commit, branch push, ticket archival to `tickets/done`, merge into `personal`, release, deployment, or cleanup has been performed yet.
+- Per delivery workflow, no ticket archival to `tickets/done`, branch push, merge into `personal`, release, deployment, or cleanup has been performed yet.
+- Local ticket-branch commits now exist only for the user-requested checkpoint/latest-base integration/build (`dd6f134e`, `6ae09bd8`, `8250c1d6` plus this delivery-artifact update). They are not repository finalization.
 - After explicit user approval, delivery should:
   1. Refresh the finalization target from remote again.
   2. If the target advanced, re-integrate the ticket branch, rerun required checks, update docs/artifacts if behavior changes, and request renewed verification if needed.
