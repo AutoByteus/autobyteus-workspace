@@ -73,35 +73,35 @@ No release, publication, deployment, or version bump is requested for finalizati
 - Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis/tickets/done/server-owned-media-tools-analysis/investigation-notes.md`
 - Ticket branch: `codex/server-owned-media-tools-analysis`
 - Ticket branch commit result: Local checkpoint commit performed for safe latest-base integration/build: `dd6f134e` (`feat(media): move media tools to server-owned runtime`). Delivery-artifact update commit is local on the ticket branch. This is not finalization.
-- Ticket branch push result: Authorized after this archive/finalization commit.
+- Ticket branch push result: `Completed` — pushed `origin/codex/server-owned-media-tools-analysis` before merge, then deleted after successful target push.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: No. `git fetch origin --prune` before archival confirmed `origin/personal` at `b28c378286fa`, matching the base used by the tested integrated build.
 - Delivery-owned edits protected before re-integration: Not needed; final target refresh showed no new commits beyond the tested integrated state.
 - Re-integration before final merge result: Not needed before archival; the target had not advanced beyond the tested integrated state.
-- Target branch update result: Authorized after this archive/finalization commit.
-- Merge into target result: Authorized after this archive/finalization commit.
-- Push target branch result: Authorized after this archive/finalization commit.
-- Repository finalization status: `Authorized for final merge/push`
-- Blocker (if applicable): Explicit verification received. Branch push and target-branch merge/push are authorized; release/version bump is explicitly out of scope.
+- Target branch update result: `Completed` — local `personal` was refreshed against `origin/personal` before merge.
+- Merge into target result: `Completed` — merge commit `48a504249659` (`merge: server owned media tools`).
+- Push target branch result: `Completed` — pushed `personal`; current release-prep base is `57f4313c69a7` on both local `personal` and `origin/personal`.
+- Repository finalization status: `Completed`
+- Blocker (if applicable): None for repository finalization. Release/version bump was initially out of scope, then explicitly authorized post-finalization.
 
 ## Release / Publication / Deployment
 
-- Applicable: `No`
-- Method: N/A — user explicitly requested no new version release.
-- Method reference / command: N/A
-- Release/publication/deployment result: `Not required`
-- Release notes handoff result: `Not required`
-- Blocker (if applicable): None; no release/publication/deployment scope requested.
+- Applicable: `Yes`, post-finalization.
+- Method: Repository release helper.
+- Method reference / command: `pnpm release 1.2.94 -- --release-notes tickets/done/server-owned-media-tools-analysis/release-notes.md`.
+- Release/publication/deployment result: Preparing `v1.2.94`; branch/tag push starts the documented GitHub release workflows.
+- Release notes handoff result: Created ticket release notes for `v1.2.94`.
+- Blocker (if applicable): None.
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis`
-- Worktree cleanup result: Deferred until after target branch push and post-finalization main-repo Electron build.
-- Worktree prune result: Deferred until after target branch push and post-finalization main-repo Electron build.
-- Local ticket branch cleanup result: Deferred until after target branch push and post-finalization main-repo Electron build.
-- Remote branch cleanup result: `Not required`
-- Blocker (if applicable): Cleanup intentionally deferred until after the requested main-repo Electron build, so the ticket worktree remains available if build verification needs it.
+- Worktree cleanup result: `Completed` — removed `/Users/normy/autobyteus_org/autobyteus-worktrees/server-owned-media-tools-analysis` after finalization and main-repo Electron build.
+- Worktree prune result: `Completed` — `git worktree prune`.
+- Local ticket branch cleanup result: `Completed` — deleted local `codex/server-owned-media-tools-analysis` after merge.
+- Remote branch cleanup result: `Completed` — deleted `origin/codex/server-owned-media-tools-analysis` after target merge/push.
+- Blocker (if applicable): None.
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
@@ -109,13 +109,13 @@ No release, publication, deployment, or version bump is requested for finalizati
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification: No.
-- Archived release notes artifact used for release/publication: N/A.
-- Release notes status: `Not required`
+- Release notes artifact created before verification: No; created post-finalization after explicit release authorization.
+- Archived release notes artifact used for release/publication: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-owned-media-tools-analysis/release-notes.md`.
+- Release notes status: `Ready for v1.2.94`.
 
 ## Deployment Steps
 
-No deployment steps were run or requested. If deployment becomes in scope after repository finalization, use the project's documented release/deployment workflow at that time and record the executed commands and rollback path in an updated report.
+Release publication is performed by the repository tag-triggered GitHub workflows after `v1.2.94` is pushed. No separate manual deployment command is required beyond the documented release helper.
 
 ## Environment Or Migration Notes
 
@@ -165,4 +165,12 @@ If issues are found after future finalization, revert the final merge/commit fro
 
 ## Final Status
 
-User verification was received and the ticket was archived for finalization. Integrated base refresh and docs sync passed. Repository push/merge is authorized; release/deployment/version bump is intentionally not performed.
+User verification was received, the ticket was archived, repository finalization completed, and a post-finalization release was authorized. Preparing `v1.2.94` with curated release notes; release/version bump is no longer intentionally skipped.
+
+## Post-Finalization Release Request
+
+- User release authorization received: Yes — user confirmed the finalized build works and requested a new version release on 2026-05-05.
+- Target release version: `1.2.94` (`v1.2.94`), the next patch after current package version/tag `1.2.93` / `v1.2.93`.
+- Release notes artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-owned-media-tools-analysis/release-notes.md`.
+- Release helper to use: `pnpm release 1.2.94 -- --release-notes tickets/done/server-owned-media-tools-analysis/release-notes.md`.
+- Expected release behavior from repository docs: bump `autobyteus-web` and `autobyteus-message-gateway` versions, sync curated GitHub release notes, sync managed messaging manifest, create release commit, create annotated tag `v1.2.94`, and push branch plus tag to start desktop, messaging gateway, and server Docker release workflows.
