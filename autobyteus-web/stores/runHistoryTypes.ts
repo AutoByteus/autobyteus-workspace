@@ -2,7 +2,7 @@ import type { AgentRuntimeKind, SkillAccessMode } from '~/types/agent/AgentRunCo
 import type { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { RunProjectionConversationEntry } from '~/services/runHydration/runProjectionConversation';
 import type { RunProjectionActivityEntry } from '~/services/runHydration/runProjectionActivityHydration';
-import type { MessageFileReferenceArtifact } from '~/stores/messageFileReferencesStore';
+import type { TeamCommunicationMessage } from '~/stores/teamCommunicationStore';
 
 export type RunKnownStatus = 'ACTIVE' | 'IDLE' | 'ERROR' | 'TERMINATED';
 
@@ -209,6 +209,6 @@ export interface ArchiveStoredTeamRunMutationData {
 }
 
 
-export interface GetMessageFileReferencesQueryData {
-  getMessageFileReferences: MessageFileReferenceArtifact[];
+export interface GetTeamCommunicationMessagesQueryData {
+  getTeamCommunicationMessages: TeamCommunicationMessage[];
 }

@@ -12,37 +12,37 @@ import {
 } from "../../agent-execution/domain/agent-run-event.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import {
-  cloneMessageFileReferenceProjection,
-  normalizeMessageFileReferenceEntry,
-  normalizeMessageFileReferenceProjection,
-} from "./message-file-reference-normalizer.js";
+  cloneTeamCommunicationProjection,
+  normalizeTeamCommunicationMessage,
+  normalizeTeamCommunicationProjection,
+} from "./team-communication-normalizer.js";
 import {
-  MessageFileReferenceProjectionStore,
-  getMessageFileReferenceProjectionPath,
-  getMessageFileReferenceProjectionStore,
-} from "./message-file-reference-projection-store.js";
+  TeamCommunicationProjectionStore,
+  getTeamCommunicationProjectionPath,
+  getTeamCommunicationProjectionStore,
+} from "./team-communication-projection-store.js";
 import type {
-  MessageFileReferenceEntry,
-  MessageFileReferenceProjection,
-} from "./message-file-reference-types.js";
+  TeamCommunicationMessage,
+  TeamCommunicationProjection,
+} from "./team-communication-types.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
   warn: (...args: unknown[]) => console.warn(...args),
 };
-const LOG_PREFIX = "[message-file-reference]";
+const LOG_PREFIX = "[team-communication]";
 
-export class MessageFileReferenceService {
-  private readonly projectionStore: MessageFileReferenceProjectionStore;
+export class TeamCommunicationService {
+  private readonly projectionStore: TeamCommunicationProjectionStore;
   private readonly teamLayout: TeamMemberMemoryLayout;
-  private readonly projectionByTeamRunId = new Map<string, MessageFileReferenceProjection>();
+  private readonly projectionByTeamRunId = new Map<string, TeamCommunicationProjection>();
   private readonly operationQueueByTeamRunId = new Map<string, Promise<void>>();
 
   constructor(options: {
-    projectionStore?: MessageFileReferenceProjectionStore;
+    projectionStore?: TeamCommunicationProjectionStore;
     memoryDir?: string;
   } = {}) {
-    this.projectionStore = options.projectionStore ?? getMessageFileReferenceProjectionStore();
+    this.projectionStore = options.projectionStore ?? getTeamCommunicationProjectionStore();
     this.teamLayout = new TeamMemberMemoryLayout(
       options.memoryDir ?? appConfigProvider.config.getMemoryDir(),
     );
@@ -50,7 +50,7 @@ export class MessageFileReferenceService {
 
   attachToTeamRun(teamRun: TeamRun): () => void {
     const unsubscribe = teamRun.subscribeToEvents((event) => {
-      if (!this.isMessageFileReferenceTeamEvent(event)) {
+      if (!this.isTeamCommunicationMessageTeamEvent(event)) {
         return;
       }
       void this.enqueueTeamEvent(teamRun, event);
@@ -62,19 +62,19 @@ export class MessageFileReferenceService {
     };
   }
 
-  async getProjectionForTeamRun(teamRun: TeamRun): Promise<MessageFileReferenceProjection> {
+  async getProjectionForTeamRun(teamRun: TeamRun): Promise<TeamCommunicationProjection> {
     await this.waitForPendingProjectionUpdates(teamRun.runId);
     return this.loadProjection(teamRun.runId);
   }
 
-  private isMessageFileReferenceTeamEvent(event: TeamRunEvent): boolean {
+  private isTeamCommunicationMessageTeamEvent(event: TeamRunEvent): boolean {
     if (event.eventSourceType !== TeamRunEventSourceType.AGENT) {
       return false;
     }
     const payload = event.data as TeamRunAgentEventPayload;
     return (
       isAgentRunEvent(payload.agentEvent) &&
-      payload.agentEvent.eventType === AgentRunEventType.MESSAGE_FILE_REFERENCE_DECLARED
+      payload.agentEvent.eventType === AgentRunEventType.TEAM_COMMUNICATION_MESSAGE
     );
   }
 
@@ -86,10 +86,10 @@ export class MessageFileReferenceService {
       .catch(() => undefined)
       .then(async () => {
         try {
-          await this.handleReferenceEvent(teamRun.runId, payload.agentEvent);
+          await this.handleTeamCommunicationMessageEvent(teamRun.runId, payload.agentEvent);
         } catch (error) {
           logger.warn(
-            `MessageFileReferenceService: failed processing reference for team '${teamRun.runId}': ${String(error)}`,
+            `TeamCommunicationService: failed processing message for team '${teamRun.runId}': ${String(error)}`,
           );
         }
       });
@@ -103,44 +103,50 @@ export class MessageFileReferenceService {
     return next;
   }
 
-  private async handleReferenceEvent(
+  private async handleTeamCommunicationMessageEvent(
     teamRunId: string,
     event: AgentRunEvent,
   ): Promise<void> {
-    const entry = normalizeMessageFileReferenceEntry(event.payload, { teamRunId });
-    if (!entry) {
+    const message = normalizeTeamCommunicationMessage(event.payload, {
+      teamRunId,
+      receiverRunId: event.runId,
+    });
+    if (!message) {
+      logger.warn(
+        `${LOG_PREFIX} skipped TEAM_COMMUNICATION_MESSAGE teamRunId=${teamRunId} runId=${event.runId} reason=missing_required_metadata`,
+      );
       return;
     }
 
     const projection = await this.loadProjection(teamRunId);
-    const upsertAction = this.upsertEntry(projection, entry);
+    const upsertAction = this.upsertMessage(projection, message);
     if (upsertAction === "unchanged") {
       return;
     }
 
     this.projectionByTeamRunId.set(teamRunId, projection);
     const teamMemoryDir = this.teamLayout.getTeamDirPath(teamRunId);
-    const projectionPath = getMessageFileReferenceProjectionPath(teamMemoryDir);
+    const projectionPath = getTeamCommunicationProjectionPath(teamMemoryDir);
     await this.projectionStore.writeProjection(teamMemoryDir, projection);
     logger.info(
-      `${LOG_PREFIX} projection ${upsertAction} teamRunId=${teamRunId} referenceId=${entry.referenceId} senderRunId=${entry.senderRunId} receiverRunId=${entry.receiverRunId} path=${entry.path} projectionPath=${projectionPath}`,
+      `${LOG_PREFIX} projection ${upsertAction} teamRunId=${teamRunId} messageId=${message.messageId} senderRunId=${message.senderRunId} receiverRunId=${message.receiverRunId} referenceCount=${message.referenceFiles.length} projectionPath=${projectionPath}`,
     );
   }
 
-  private async loadProjection(teamRunId: string): Promise<MessageFileReferenceProjection> {
+  private async loadProjection(teamRunId: string): Promise<TeamCommunicationProjection> {
     const cached = this.projectionByTeamRunId.get(teamRunId);
     if (cached) {
-      return cloneMessageFileReferenceProjection(cached);
+      return cloneTeamCommunicationProjection(cached);
     }
 
-    const loaded = normalizeMessageFileReferenceProjection(
+    const loaded = normalizeTeamCommunicationProjection(
       await this.projectionStore.readProjection(
         this.teamLayout.getTeamDirPath(teamRunId),
       ),
       { teamRunId },
     );
     this.projectionByTeamRunId.set(teamRunId, loaded);
-    return cloneMessageFileReferenceProjection(loaded);
+    return cloneTeamCommunicationProjection(loaded);
   }
 
   private async waitForPendingProjectionUpdates(teamRunId: string): Promise<void> {
@@ -156,32 +162,33 @@ export class MessageFileReferenceService {
     }
   }
 
-  private upsertEntry(
-    projection: MessageFileReferenceProjection,
-    incoming: MessageFileReferenceEntry,
+  private upsertMessage(
+    projection: TeamCommunicationProjection,
+    incoming: TeamCommunicationMessage,
   ): "inserted" | "updated" | "unchanged" {
-    const existing = projection.entries.find(
-      (entry) => entry.referenceId === incoming.referenceId,
+    const existing = projection.messages.find(
+      (message) => message.messageId === incoming.messageId,
     );
     if (!existing) {
-      projection.entries.push(incoming);
+      projection.messages.push(incoming);
       return "inserted";
     }
     if (incoming.updatedAt.localeCompare(existing.updatedAt) < 0) {
       return "unchanged";
     }
 
-    const nextEntry = {
+    const nextMessage = {
       ...existing,
       ...incoming,
       createdAt: existing.createdAt || incoming.createdAt,
       updatedAt: incoming.updatedAt,
+      referenceFiles: incoming.referenceFiles,
     };
-    if (JSON.stringify(existing) === JSON.stringify(nextEntry)) {
+    if (JSON.stringify(existing) === JSON.stringify(nextMessage)) {
       return "unchanged";
     }
 
-    Object.assign(existing, nextEntry);
+    Object.assign(existing, nextMessage);
     return "updated";
   }
 
@@ -191,11 +198,11 @@ export class MessageFileReferenceService {
   }
 }
 
-let cachedService: MessageFileReferenceService | null = null;
+let cachedService: TeamCommunicationService | null = null;
 
-export const getMessageFileReferenceService = (): MessageFileReferenceService => {
+export const getTeamCommunicationService = (): TeamCommunicationService => {
   if (!cachedService) {
-    cachedService = new MessageFileReferenceService();
+    cachedService = new TeamCommunicationService();
   }
   return cachedService;
 };

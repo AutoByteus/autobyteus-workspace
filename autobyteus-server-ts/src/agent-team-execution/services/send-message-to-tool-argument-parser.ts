@@ -1,7 +1,7 @@
 import {
-  normalizeExplicitMessageFileReferencePaths,
-  type ExplicitMessageFileReferencePathValidationError,
-} from "../../services/message-file-references/message-file-reference-explicit-paths.js";
+  normalizeExplicitTeamCommunicationReferenceFiles,
+  type ExplicitTeamCommunicationReferenceFileValidationError,
+} from "../../services/team-communication/team-communication-reference-files.js";
 
 type SendMessageToValidationError = {
   code: "RECIPIENT_NOT_FOUND_OR_AMBIGUOUS" | "INVALID_MESSAGE_CONTENT" | "INVALID_REFERENCE_FILES";
@@ -13,10 +13,10 @@ export type SendMessageToToolArguments = {
   content: string | null;
   messageType: string;
   referenceFiles: string[];
-  referenceFilesError: ExplicitMessageFileReferencePathValidationError | null;
+  referenceFilesError: ExplicitTeamCommunicationReferenceFileValidationError | null;
 };
 
-const LOG_PREFIX = "[message-file-reference]";
+const LOG_PREFIX = "[team-communication]";
 
 const readString = (value: unknown): string | null =>
   typeof value === "string" ? value : null;
@@ -29,7 +29,7 @@ const readReferenceFiles = (toolArguments: Record<string, unknown>): unknown =>
 export const parseSendMessageToToolArguments = (
   toolArguments: Record<string, unknown>,
 ): SendMessageToToolArguments => {
-  const referenceFilesResult = normalizeExplicitMessageFileReferencePaths(
+  const referenceFilesResult = normalizeExplicitTeamCommunicationReferenceFiles(
     readReferenceFiles(toolArguments),
   );
 

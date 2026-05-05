@@ -34,9 +34,6 @@
       <span class="text-[0.8125rem] font-medium truncate select-none leading-none" :class="isSelected ? 'text-blue-700' : 'text-gray-700'">
         {{ fileName }}
       </span>
-      <span v-if="provenanceLabel" class="mt-1 truncate text-[0.6875rem] leading-none" :class="isSelected ? 'text-blue-500' : 'text-gray-400'">
-        {{ provenanceLabel }}
-      </span>
     </div>
 
     <div v-if="artifact.status === 'available'" class="flex-shrink-0">
@@ -53,24 +50,11 @@ import type { ArtifactViewerItem } from './artifactViewerItem';
 const props = defineProps<{
   artifact: ArtifactViewerItem;
   isSelected?: boolean;
-  showProvenanceLabel?: boolean;
 }>();
 
 defineEmits(['select']);
 
 const fileName = computed(() => props.artifact.path.split('/').pop() || props.artifact.path);
-const provenanceLabel = computed(() => {
-  if (props.showProvenanceLabel === false) {
-    return '';
-  }
-  if (props.artifact.kind !== 'message_reference') {
-    return '';
-  }
-  const counterpart = props.artifact.counterpartMemberName || props.artifact.counterpartRunId || 'teammate';
-  return props.artifact.direction === 'sent'
-    ? `Sent to ${counterpart}`
-    : `Received from ${counterpart}`;
-});
 const ext = computed(() => {
   const name = fileName.value.toLowerCase();
   const parts = name.split('.');

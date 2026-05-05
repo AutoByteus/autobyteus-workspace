@@ -21,7 +21,6 @@ export type {
   TodoListUpdatePayload,
   TaskPlanEventPayload,
   InterAgentMessagePayload,
-  MessageFileReferencePayload,
   SystemTaskNotificationPayload,
   FileChangePayload,
   ErrorPayload,

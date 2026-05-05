@@ -5,6 +5,11 @@ import {
   type AgentRunEvent,
 } from "../../agent-execution/domain/agent-run-event.js";
 import type { InterAgentMessageDeliveryRequest } from "../domain/inter-agent-message-delivery.js";
+import {
+  buildTeamCommunicationMessageId,
+  buildTeamCommunicationReferenceId,
+} from "../../services/team-communication/team-communication-identity.js";
+import { inferTeamCommunicationReferenceFileType } from "../../services/team-communication/team-communication-normalizer.js";
 
 const resolveMessageType = (value: string | null | undefined): string => {
   if (typeof value !== "string" || value.trim().length === 0) {
@@ -34,6 +39,24 @@ const normalizeReferenceFiles = (
   }
   return normalized;
 };
+
+
+export const buildInterAgentMessageReferenceFileEntries = (input: {
+  teamRunId: string;
+  messageId: string;
+  referenceFiles: string[];
+  timestamp: string;
+}) => input.referenceFiles.map((filePath) => ({
+  referenceId: buildTeamCommunicationReferenceId({
+    teamRunId: input.teamRunId,
+    messageId: input.messageId,
+    path: filePath,
+  }),
+  path: filePath,
+  type: inferTeamCommunicationReferenceFileType(filePath),
+  createdAt: input.timestamp,
+  updatedAt: input.timestamp,
+}));
 
 const buildReferenceFilesBlock = (referenceFiles: string[]): string =>
   referenceFiles.length === 0
@@ -75,19 +98,45 @@ export const buildInterAgentDeliveryInputMessage = (
 export const buildInterAgentMessageAgentRunEvent = (input: {
   recipientRunId: string;
   request: InterAgentMessageDeliveryRequest;
-}): AgentRunEvent => ({
-  eventType: AgentRunEventType.INTER_AGENT_MESSAGE,
-  runId: input.recipientRunId,
-  payload: {
-    team_run_id: input.request.teamRunId,
-    sender_agent_id: input.request.senderRunId,
-    sender_agent_name: input.request.senderMemberName ?? null,
-    receiver_run_id: input.recipientRunId,
-    receiver_agent_name: input.request.recipientMemberName,
-    recipient_role_name: input.request.recipientMemberName,
+  createdAt?: string | null;
+}): AgentRunEvent => {
+  const messageType = resolveMessageType(input.request.messageType);
+  const createdAt =
+    typeof input.createdAt === "string" && input.createdAt.trim().length > 0
+      ? input.createdAt.trim()
+      : new Date().toISOString();
+  const messageId = buildTeamCommunicationMessageId({
+    teamRunId: input.request.teamRunId,
+    senderRunId: input.request.senderRunId,
+    receiverRunId: input.recipientRunId,
+    messageType,
     content: input.request.content,
-    message_type: resolveMessageType(input.request.messageType),
-    reference_files: normalizeReferenceFiles(input.request.referenceFiles),
-  },
-  statusHint: null,
-});
+    createdAt,
+  });
+  const referenceFiles = normalizeReferenceFiles(input.request.referenceFiles);
+
+  return {
+    eventType: AgentRunEventType.INTER_AGENT_MESSAGE,
+    runId: input.recipientRunId,
+    payload: {
+      message_id: messageId,
+      team_run_id: input.request.teamRunId,
+      sender_agent_id: input.request.senderRunId,
+      sender_agent_name: input.request.senderMemberName ?? null,
+      receiver_run_id: input.recipientRunId,
+      receiver_agent_name: input.request.recipientMemberName,
+      recipient_role_name: input.request.recipientMemberName,
+      content: input.request.content,
+      message_type: messageType,
+      reference_files: referenceFiles,
+      reference_file_entries: buildInterAgentMessageReferenceFileEntries({
+        teamRunId: input.request.teamRunId,
+        messageId,
+        referenceFiles,
+        timestamp: createdAt,
+      }),
+      created_at: createdAt,
+    },
+    statusHint: null,
+  };
+};
