@@ -9,7 +9,9 @@ The Artifacts tab is backed by two deliberately separate models:
   accepted inter-agent/team messages through `reference_files`. The focused
   member sees these as:
   - **Sent Artifacts** when the focused member sent the reference, grouped by receiver/counterpart.
+    The group heading renders `To <agent>` once; rows under the group show filenames only.
   - **Received Artifacts** when the focused member received the reference, grouped by sender/counterpart.
+    The group heading renders `From <agent>` once; rows under the group show filenames only.
 
 Agent Artifacts cover:
 
@@ -63,6 +65,10 @@ interface MessageFileReferenceArtifact {
 Key rules:
 
 - Agent Artifacts have one row per `runId + canonical path`.
+- In team contexts, produced Agent Artifacts stay scoped to the producing member
+  run id. Live AutoByteus team `write_file` events populate
+  `runFileChangesStore` under that member run id; they are not team-level
+  message-reference rows.
 - Message-reference artifacts have one canonical team-level row per
   `teamRunId + senderRunId + receiverRunId + normalized path`.
 - Message-reference extraction reads only explicit `reference_files`; paths
@@ -135,7 +141,7 @@ flowchart LR
 | Reference identity | `autobyteus-server-ts/src/services/message-file-references/message-file-reference-identity.ts` | Normalizes message-reference paths and builds deterministic reference ids from team/sender/receiver/path. |
 | Agent Artifact persistence | `autobyteus-server-ts/src/services/run-file-changes/run-file-change-projection-store.ts` | Reads and writes `file_changes.json` and strips transient `content` before persistence. |
 | Message-reference persistence | `autobyteus-server-ts/src/services/message-file-references/message-file-reference-projection-store.ts` | Reads and atomically writes `message_file_references.json` under the team run directory. |
-| Agent Artifact historical read boundary | `autobyteus-server-ts/src/run-history/services/run-file-change-projection-service.ts` | Reads the active in-memory owner for live runs and normalized persisted projections for inactive runs. |
+| Agent Artifact historical read boundary | `autobyteus-server-ts/src/run-history/services/run-file-change-projection-service.ts` | Reads the active in-memory owner for live runs and normalized persisted projections for inactive runs, including AutoByteus/native team-member run ids. |
 | Message-reference historical read boundary | `autobyteus-server-ts/src/services/message-file-references/message-file-reference-projection-service.ts` | Reads active or persisted message-reference metadata by `teamRunId`. |
 | Agent Artifact preview route | `autobyteus-server-ts/src/api/rest/run-file-changes.ts` | Streams current file bytes for text and media previews by `runId + path`. |
 | Message-reference content route | `autobyteus-server-ts/src/api/rest/message-file-references.ts` | Streams referenced file bytes only after resolving persisted `teamRunId + referenceId` identity. |
@@ -173,7 +179,7 @@ the current local filesystem only when the user opens a row.
 | Agent Artifact hydration | `autobyteus-web/services/runHydration/runContextHydrationService.ts` | Loads `getRunFileChanges(runId)` during reopen/recovery. |
 | Message-reference hydration | `autobyteus-web/services/runHydration/messageFileReferenceHydrationService.ts` | Loads `getMessageFileReferences(teamRunId)` for reopened team runs. |
 | Artifacts composition | `autobyteus-web/components/workspace/agent/ArtifactsTab.vue` | Combines **Agent Artifacts** from `runFileChangesStore` with focused-member **Sent Artifacts** and **Received Artifacts** from `messageFileReferencesStore`. |
-| Artifacts list | `autobyteus-web/components/workspace/agent/ArtifactList.vue` | Renders Agent, Sent, and Received sections, grouping sent/received references by counterpart. |
+| Artifacts list | `autobyteus-web/components/workspace/agent/ArtifactList.vue` | Renders Agent, Sent, and Received sections, grouping sent/received references by counterpart with `To` / `From` direction shown once per group. |
 | Viewer item adapter | `autobyteus-web/components/workspace/agent/artifactViewerItem.ts` | Normalizes produced and message-reference rows into the viewer's discriminated item shape. |
 | Viewer | `autobyteus-web/components/workspace/agent/ArtifactContentViewer.vue` | Renders buffered produced-file text or fetches current server-backed bytes from the correct produced/reference content route. |
 
@@ -210,6 +216,12 @@ When reopening a single run:
 4. The frontend hydrates `runFileChangesStore`.
 5. Committed content is still fetched from the preview route on demand.
 
+For team-member produced Agent Artifacts, the same run-file authority applies:
+the `runId` is the member run id, `getRunFileChanges(runId)` returns active or
+historical member projections when requested, and the viewer continues to use
+`/runs/:runId/file-change-content?path=...`. This is intentionally separate from
+team-level Sent/Received message references.
+
 When reopening a team run:
 
 1. The frontend requests `getMessageFileReferences(teamRunId)`.
@@ -221,6 +233,26 @@ When reopening a team run:
 
 This keeps historical replay lightweight while still using current filesystem
 bytes when a preview is requested.
+
+## List Grouping / Keyboard Behavior
+
+`ArtifactList` keeps the visible and keyboard traversal order as:
+
+1. **Agent Artifacts**
+2. **Sent Artifacts**
+3. **Received Artifacts**
+
+Sent and Received rows are grouped by counterpart. The direction belongs to the
+counterpart group heading, not every row:
+
+- sent group heading: `To <counterpart>`
+- received group heading: `From <counterpart>`
+- grouped rows: filename only, with repeated `Sent to ...` / `Received from ...`
+  provenance hidden to reduce noise during multi-file handoffs
+
+Long counterpart labels truncate within the Artifacts pane so multiple files
+remain scanable. Arrow-key navigation still walks the flattened Agent -> Sent ->
+Received item sequence.
 
 ## Testing
 

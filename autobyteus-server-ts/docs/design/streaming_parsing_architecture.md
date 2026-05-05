@@ -30,6 +30,14 @@ subscriber fan-out. `RunFileChangeService` consumes those `FILE_CHANGE` events
 for projection/persistence instead of deriving artifacts from generic
 tool-result processors.
 
+Native AutoByteus team events follow the same pipeline boundary. The
+AutoByteus team backend owns one native event bridge per active team run,
+converts/enriches each native member event once, runs that event through the
+pipeline, and only then fans the processed source/derived events out to all
+server subscribers. This preserves stateful file-change ordering for
+`write_file` events and avoids duplicate derivation when multiple websocket/API
+subscribers are attached.
+
 Message-derived Sent/Received Artifacts use the same event-pipeline boundary but
 a different owner. Accepted synthetic `INTER_AGENT_MESSAGE` events from team
 managers pass through `MessageFileReferenceProcessor`, which appends

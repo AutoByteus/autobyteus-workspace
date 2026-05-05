@@ -17,7 +17,7 @@ Manages running team runs, selecting the authoritative team backend, restoring p
 
 | Path | Authoritative owner | Member execution primitive | Notes |
 | --- | --- | --- | --- |
-| Single-runtime AutoByteus team | Native AutoByteus team backend | Native team runtime | Preserves existing task-plan-aware team behavior. |
+| Single-runtime AutoByteus team | Native AutoByteus team backend | Native team runtime | Preserves existing task-plan-aware team behavior. Native member events are converted/enriched/pipelined once per backend-owned stream bridge before fanout to all server subscribers. |
 | Single-runtime Codex team | `CodexTeamManager` | One standalone Codex `AgentRun` per member | Uses runtime-neutral member bootstrap for teammate instructions and `send_message_to`. |
 | Single-runtime Claude team | `ClaudeTeamManager` | One standalone Claude `AgentRun` per member | Uses the same runtime-neutral member bootstrap contract as Codex. |
 | Mixed-runtime team | `MixedTeamManager` | `AgentRunManager` over per-member `AgentRun`s | Server-owned communication-only v1 path; does not delegate through legacy runtime-specific team managers. |
@@ -39,6 +39,22 @@ Manages running team runs, selecting the authoritative team backend, restoring p
   suppressed before they create extra Activity rows.
 - AutoByteus standalone members participating in mixed teams receive a compatible `teamContext.communicationContext` payload through `initialCustomData`, so the shared `send_message_to` tool can work without native `AgentTeam` ownership.
 - Mixed AutoByteus standalone members explicitly strip `ToolCategory.TASK_MANAGEMENT` tools before exposure; mixed-team v1 is communication-only.
+
+## AutoByteus Team Event Bridge
+
+- The native AutoByteus team backend owns a single `AgentTeamEventStream` bridge
+  while it has active server subscribers.
+- Native agent events are converted through `AutoByteusStreamEventConverter`,
+  enriched with team/member provenance by the backend, processed through the
+  shared `AgentRunEventPipeline`, and then fanned out to all listeners.
+- This keeps the converter boundary conversion-only while letting the backend
+  supply team context required by `FILE_CHANGE` and
+  `MESSAGE_FILE_REFERENCE_DECLARED` derivation.
+- Produced `FILE_CHANGE` events remain scoped to the producing member run id and
+  persist through the existing run-file-change service/content route. Explicit
+  `reference_files` message rows remain team-level message-reference metadata.
+- Multiple websocket/API subscribers must not create multiple native stream
+  listeners or multiple independent pipeline passes for the same native event.
 
 ## Restore / Persistence Notes
 

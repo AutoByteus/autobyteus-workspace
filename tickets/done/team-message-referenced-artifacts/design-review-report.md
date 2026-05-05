@@ -2,11 +2,11 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/in-progress/team-message-referenced-artifacts/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/in-progress/team-message-referenced-artifacts/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/in-progress/team-message-referenced-artifacts/design-spec.md`
-- Runtime Parser Evidence Note: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/in-progress/team-message-referenced-artifacts/runtime-investigation-message-reference-parser.md`
-- AutoByteus Runtime Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/in-progress/team-message-referenced-artifacts/runtime-investigation-autobyteus-reference-files.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/done/team-message-referenced-artifacts/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/done/team-message-referenced-artifacts/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/done/team-message-referenced-artifacts/design-spec.md`
+- Runtime Parser Evidence Note: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/done/team-message-referenced-artifacts/runtime-investigation-message-reference-parser.md`
+- AutoByteus Runtime Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/done/team-message-referenced-artifacts/runtime-investigation-autobyteus-reference-files.md`
 - Current Review Round: 5
 - Trigger: Runtime investigation addendum after Electron/AutoByteus test showed `reference_files` reaches the recipient runtime and is readable, but Artifacts stays empty because AutoByteus converted native events bypass the server `AgentRunEventPipeline`.
 - Prior Review Round Reviewed: Round 4 (`Pass`) in this same report path. Round 4 explicit-reference/content invariant remains approved; Round 5 reviews bounded AutoByteus event-pipeline parity.
@@ -31,7 +31,7 @@
 
 ## Reviewed Design Spec
 
-Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/in-progress/team-message-referenced-artifacts/design-spec.md` plus the new AutoByteus runtime investigation. Round 5 preserves the Round 4 explicit-reference architecture and adds a runtime parity requirement: AutoByteus converted native member events must be enriched and processed through the same server-side event pipeline before team listener fanout.
+Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/done/team-message-referenced-artifacts/design-spec.md` plus the new AutoByteus runtime investigation. Round 5 preserves the Round 4 explicit-reference architecture and adds a runtime parity requirement: AutoByteus converted native member events must be enriched and processed through the same server-side event pipeline before team listener fanout.
 
 ## Task Design Health Assessment Verdict
 

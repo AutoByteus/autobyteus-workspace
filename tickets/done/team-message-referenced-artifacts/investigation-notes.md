@@ -33,7 +33,7 @@ Design vocabulary from the discussion:
 
 - Project Type (`Git`/`Non-Git`): Git.
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/in-progress/team-message-referenced-artifacts`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/done/team-message-referenced-artifacts`
 - Current Branch: `codex/team-message-referenced-artifacts`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts`
 - Bootstrap Base Branch: `origin/personal`.
@@ -170,7 +170,7 @@ Please review this as a superseding design round. The major Sent/Received/team-l
 
 Detailed runtime artifact:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/in-progress/team-message-referenced-artifacts/runtime-investigation-autobyteus-reference-files.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/done/team-message-referenced-artifacts/runtime-investigation-autobyteus-reference-files.md`
 
 Summary:
 

@@ -34,6 +34,8 @@ identity.
   - `src/run-history/services/run-file-change-projection-service.ts`
   - `src/api/graphql/types/run-file-changes.ts`
   - `src/api/rest/run-file-changes.ts`
+  - `src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend.ts`
+  - `src/agent-memory/store/team-member-memory-layout.ts`
 - Message-reference runtime/projection:
   - `src/agent-execution/domain/agent-run-message-file-reference.ts`
   - `src/agent-execution/events/processors/message-file-reference/message-file-reference-processor.ts`
@@ -59,6 +61,7 @@ identity.
 
 - Run each normalized backend event batch through `AgentRunEventPipeline` once before subscriber fan-out.
 - Let `FileChangeEventProcessor` derive the sole live Agent Artifact event, `FILE_CHANGE`.
+- For native AutoByteus teams, maintain one backend-owned native team event bridge per active team run; convert/enrich/process each native member event once, then fan out the processed source and derived events to every server subscriber.
 - Let `send_message_to.reference_files` capture explicit file-reference intent while keeping message `content` natural.
 - Process synthetic team-manager `INTER_AGENT_MESSAGE` events through the shared event pipeline before team fan-out via `publishProcessedTeamAgentEvents`, without moving projection persistence into provider-specific handlers.
 - Let `MessageFileReferenceProcessor` derive `MESSAGE_FILE_REFERENCE_DECLARED` only from accepted `INTER_AGENT_MESSAGE.payload.reference_files`; message content is not scanned for paths.
@@ -67,12 +70,14 @@ identity.
 - Classify generated outputs only for known generated-output tools (`generate_image`, `edit_image`, `generate_speech`, including the AutoByteus image/audio MCP forms) with explicit output-path semantics or known result paths.
 - Keep read-only tool calls such as Claude `Read(file_path)` as tool/activity lifecycle only; generic unknown-tool `file_path` is not file-change evidence.
 - Project `FILE_CHANGE` events into canonical run-scoped rows in `RunFileChangeService`.
+- For team-member runs, project `FILE_CHANGE` rows under the member run id and member memory directory; do not create a team-wide produced-file projection or mix produced Agent Artifacts into message references.
 - Project `MESSAGE_FILE_REFERENCE_DECLARED` events into canonical team-level rows in `MessageFileReferenceService`.
 - Deduplicate message references by deterministic `teamRunId + senderRunId + receiverRunId + normalizedPath` identity, preserving `createdAt` and updating `updatedAt` on repeat declarations.
 - Wait for pending same-team reference projection updates before active reads so immediate content opens can resolve newly declared references.
 - Persist Agent Artifact metadata-only projection state to `<run-memory-dir>/file_changes.json`.
+- For AutoByteus/native team-member runs, persist produced Agent Artifact metadata to `agent_teams/<teamRunId>/<memberRunId>/file_changes.json`; writes use same-directory temp-file + rename semantics.
 - Persist message-reference metadata-only projection state to `agent_teams/<teamRunId>/message_file_references.json` with atomic temp-file + rename writes.
-- Hydrate active and historical Agent Artifact rows through `RunFileChangeProjectionService` and `getRunFileChanges(runId)`.
+- Hydrate active and historical Agent Artifact rows, including AutoByteus/native team-member run rows, through `RunFileChangeProjectionService` and `getRunFileChanges(runId)`.
 - Hydrate active and historical message references through `MessageFileReferenceProjectionService` and `getMessageFileReferences(teamRunId)`.
 - Serve Agent Artifact bytes by `runId + canonical path` through `/runs/:runId/file-change-content`.
 - Serve referenced bytes through `/team-runs/:teamRunId/message-file-references/:referenceId/content` only after resolving a persisted reference.
@@ -84,8 +89,9 @@ identity.
 ## Current Live Design
 
 - **Agent Artifacts** are a run-scoped touched-file/output projection keyed by canonical path identity.
+- In team contexts, produced **Agent Artifacts** remain member-run-scoped; the focused member's run id is the same `runId` used by `runFileChangesStore`, `getRunFileChanges(runId)`, and `/runs/:runId/file-change-content`.
 - Message-reference artifacts are a team-scoped projection keyed by deterministic `referenceId`.
-- Runtime backends normalize provider events, then invoke the shared event pipeline before notifying subscribers.
+- Runtime backends normalize provider events, then invoke the shared event pipeline before notifying subscribers. Native AutoByteus teams use a single native stream bridge per backend/team run so multiple web/API subscribers observe the same processed event sequence instead of causing duplicate pipeline passes.
 - The pipeline owns both derived file-change semantics and derived message-reference semantics. `RunFileChangeService` only consumes `FILE_CHANGE`; `MessageFileReferenceService` only consumes `MESSAGE_FILE_REFERENCE_DECLARED`.
 - Current filesystem bytes are the source of truth for committed previews.
 - Referenced-file previews read current filesystem bytes by persisted `teamRunId + referenceId` identity. There is no supported raw-path-only content route for message references.
@@ -94,7 +100,7 @@ identity.
 - Generated outputs use the same projection and preview route as text edits and writes.
 - Persisted state stores metadata only; transient `content` exists only for live buffered `write_file` preview.
 - `FILE_CHANGE` is a state-update stream, not an exact-one occurrence guarantee. `write_file` pre-available statuses are runtime-shaped and duplicate identical interim updates are acceptable when idempotent and followed by terminal state without duplicating projection rows.
-- The only supported Agent Artifact persisted file is `<run-memory-dir>/file_changes.json`.
+- The only supported Agent Artifact persisted file is `<run-memory-dir>/file_changes.json`; for team-member runs the run memory dir is the member directory under `agent_teams/<teamRunId>/<memberRunId>/`.
 - The only supported message-reference persisted file is `agent_teams/<teamRunId>/message_file_references.json`.
 - Member-scoped duplicate reference files, receiver-owned query/route shapes, and a single generic reference section are intentionally not supported.
 - Legacy `run-file-changes/projection.json` is intentionally unsupported and hydrates no rows.
