@@ -12,6 +12,7 @@ It now demonstrates:
 - host-managed saved team `launchProfile` before entry: shared runtime/model/workspace defaults plus per-member runtime/model overrides
 - post-bootstrap business UI ownership only; the bundle does not author pre-bootstrap waiting/failure/direct-open UX
 - app-owned schema and generated frontend client artifacts that stay inside the application workspace
+- tutor-turn publication through the canonical `publish_artifacts` tool with one-item `artifacts` arrays for lesson-history projection
 
 Authoring roots:
 

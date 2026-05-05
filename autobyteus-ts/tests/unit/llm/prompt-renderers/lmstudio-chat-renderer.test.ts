@@ -13,7 +13,7 @@ describe('LMStudioChatRenderer', () => {
     const rendered = await renderer.render([
       new Message(MessageRole.ASSISTANT, {
         tool_payload: new ToolCallPayload([
-          { id: 'call_1', name: 'publish_artifact', arguments: { artifactType: 'draft' } },
+          { id: 'call_1', name: 'publish_artifacts', arguments: { artifacts: [{ path: 'draft.md' }] } },
         ]),
       }),
     ])
@@ -21,7 +21,7 @@ describe('LMStudioChatRenderer', () => {
     expect(rendered).toEqual([
       {
         role: 'assistant',
-        content: '[TOOL_CALL] publish_artifact {"artifactType":"draft"}',
+        content: '[TOOL_CALL] publish_artifacts {"artifacts":[{"path":"draft.md"}]}',
       },
     ])
   })
@@ -30,14 +30,14 @@ describe('LMStudioChatRenderer', () => {
     const renderer = new LMStudioChatRenderer()
     const rendered = await renderer.render([
       new Message(MessageRole.TOOL, {
-        tool_payload: new ToolResultPayload('call_1', 'publish_artifact', { ok: true }),
+        tool_payload: new ToolResultPayload('call_1', 'publish_artifacts', { ok: true }),
       }),
     ])
 
     expect(rendered).toEqual([
       {
         role: 'user',
-        content: '[TOOL_RESULT] publish_artifact {"ok":true}',
+        content: '[TOOL_RESULT] publish_artifacts {"ok":true}',
       },
     ])
   })
