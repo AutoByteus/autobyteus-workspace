@@ -24,6 +24,8 @@ Post-implementation UI review evidence from the Electron build showed additional
 - `TeamCommunicationPanel.vue` uses a vertical list/detail split, so long message lists and selected reference previews fight for height. A clicked file preview is squeezed below the message list instead of behaving like the Artifacts tab.
 - `ProgressPanel.vue` / `TodoListPanel.vue` / `ActivityFeed.vue` already provide a better local pattern: collapsible section headers with chevrons, counts, and only the expanded section taking flexible height.
 - `ArtifactsTab.vue` already provides the better file-preview interaction: a left selectable list and right content preview pane with a resizable divider.
+- `ArtifactContentViewer.vue` also provides a proven large-file reading interaction: maximize/restore control, `Teleport to="body"` full-window shell, Escape-to-restore, and preview/edit controls that remain usable while maximized.
+- `TeamCommunicationReferenceViewer.vue` already uses `FileViewer` and owns Team Communication reference content, but currently lacks maximize/restore and Escape behavior.
 
 The clarified product model is different: `reference_files` are child references of an inter-agent message. The user should see the message context first, then the files referenced by that message. Therefore the Team tab should own team communication and the Artifacts tab should return to a produced/touched-files-only meaning.
 
@@ -53,6 +55,12 @@ Create a message-first **Team Communication** experience under the Team tab:
   - the task plan is collapsed or compact when empty and must not reserve a large empty body;
   - the Messages section is expanded by default and owns the available height;
   - selected message/reference details render in a right-side detail pane, like Artifacts, not below the list.
+- Add a Team-Communication-owned maximize/restore interaction for selected reference files:
+  - implemented in `TeamCommunicationReferenceViewer.vue` or a Team Communication-owned child/composable;
+  - modeled after `ArtifactContentViewer.vue`'s maximize/restore behavior;
+  - keeps Raw/Preview controls available while maximized;
+  - Escape restores the normal split layout;
+  - does not import `ArtifactContentViewer` or use artifact-owned display-mode state.
 
 This is a clean-cut replacement. Do not keep duplicate visibility or compatibility switches for the old member-Artifacts Sent/Received model.
 
@@ -75,6 +83,10 @@ This is a clean-cut replacement. Do not keep duplicate visibility or compatibili
   - Remove Sent/Received artifact rendering and the standalone message-reference artifact pipeline.
 - Refactor rationale:
   - Keeping both Team Communication and Sent/Received Artifacts would create duplicate UI ownership and make the same `reference_files` look like both message attachments and standalone artifacts.
+- Small local implementation addendum:
+  - Team Communication reference maximize/restore is a local UX enhancement under the existing Team Communication reference viewer boundary.
+  - It does not change backend projection shape or message/reference ownership.
+  - It needs explicit requirements/design text only to prevent accidental coupling back to Agent Artifacts.
 - Intentional deferrals and residual risk:
   - No historical backfill for runs that never recorded accepted `INTER_AGENT_MESSAGE` events or message reference metadata. Existing runs with new projection data hydrate; older runs can show an empty communication state.
 
@@ -83,6 +95,7 @@ This is a clean-cut replacement. Do not keep duplicate visibility or compatibili
 - **Team Communication Message**: one accepted inter-agent communication event between two team members.
 - **Reference file**: one absolute local file path listed in `send_message_to.reference_files`, displayed as a child of the message that declared it.
 - **Agent Artifact**: a produced/touched file from the focused agent run, derived from file-change events. This remains the Artifacts tab subject.
+- **Reference maximize mode**: a temporary full-window view for a selected Team Communication reference file. It is a viewing state, not a new artifact state or persisted projection state.
 
 ## Design Reading Order
 
@@ -209,6 +222,7 @@ This is a clean-cut replacement. Do not keep duplicate visibility or compatibili
 | Artifact list keyboard behavior | DS-004 | ArtifactList | Preserve simple file navigation | Existing usability | Team refs leak back into artifact order |
 | Collapsible section expansion | DS-002 | TeamOverviewPanel | Allocate height between Task Plan and Messages | Prevent empty Task Plan from crowding communication | Fixed-height empty bodies waste the tab |
 | Resizable message/detail split | DS-002, DS-003 | TeamCommunicationPanel | Match Artifacts preview ergonomics | File previews need width and height | Vertical stacking squeezes previews |
+| Reference maximize state | DS-003 | TeamCommunicationReferenceViewer | Temporary full-window preview, restore, Escape handling | Larger files need reading space | Using artifact display state couples Team Communication to Agent Artifacts |
 | Localization strings | DS-002, DS-004 | UI components | Copy for messages/empty states | Usable UI | Hard-coded text drift |
 
 ## Existing Capability / Subsystem Reuse Check
@@ -221,6 +235,7 @@ This is a clean-cut replacement. Do not keep duplicate visibility or compatibili
 | Agent file artifacts | RunFileChangesStore/ArtifactsTab | Reuse and simplify | Correct owner for produced/touched files. | N/A |
 | Team tab composition | TeamOverviewPanel/TaskPlanDisplay | Extend with Activity-style collapsible section pattern | Existing right-side Team tab owner; first implementation's fixed task-plan body wastes space. | N/A |
 | Team Communication file preview layout | ArtifactsTab/ArtifactContentViewer pattern | Reuse Pattern | A left list and right preview pane already works well for file content. | Do not make message references artifact rows; reuse the interaction shape, not the artifact owner. |
+| Reference maximize/restore interaction | ArtifactContentViewer zen/maximize pattern | Reuse Pattern Only | The interaction is proven and useful for reading larger files. | Do not import `ArtifactContentViewer` or artifact display-mode store; implement the interaction in Team Communication-owned code. |
 | Live team stream handling | TeamStreamingService/teamHandler | Extend | Existing live event boundary; must route raw and processed events to distinct consumers. | N/A |
 | Historical hydration | teamRunContextHydrationService | Extend | Existing team-history hydration boundary. | N/A |
 
@@ -253,7 +268,7 @@ This is a clean-cut replacement. Do not keep duplicate visibility or compatibili
 | `components/workspace/team/TeamCommunicationPanel.vue` | Frontend Team Communication | Panel owner | Resizable left message/reference list and right detail composition | Main Team UI component | Yes |
 | `components/workspace/team/TeamCommunicationList.vue` | Frontend Team Communication | Left list view | Message cards and vertical reference child rows | Focused display concern | Yes |
 | `components/workspace/team/TeamCommunicationDetail.vue` | Frontend Team Communication | Right detail view | Full message or selected reference preview | Selection display concern | Yes |
-| `components/workspace/team/TeamReferenceFileViewer.vue` | Frontend Team Communication | Content viewer | Fetch/display reference file | Team-owned equivalent of old artifact branch | Yes |
+| `components/workspace/team/TeamReferenceFileViewer.vue` / `TeamCommunicationReferenceViewer.vue` | Frontend Team Communication | Content viewer | Fetch/display reference file; own maximize/restore and Escape behavior | Team-owned equivalent of old artifact branch and artifact viewer interaction pattern | Yes |
 
 ## Reusable Owned Structures Check
 
@@ -262,6 +277,7 @@ This is a clean-cut replacement. Do not keep duplicate visibility or compatibili
 | Message/reference payload type | `team-communication-types.ts` | Team Communication | Used by service/API/frontend typing | Yes | Yes | Generic artifact item |
 | Reference path normalization/type inference | `team-communication-identity.ts` | Team Communication | Used by service/content/query | Yes | Yes | Old message-file-reference identity clone |
 | Content fetch display logic | `TeamReferenceFileViewer.vue` or extracted composable | Team Communication frontend | Used only in Team Communication detail | Yes | Yes | Artifact viewer dependency leak |
+| Reference maximize interaction | Team Communication viewer-local state or Team-owned composable | Team Communication frontend | Used only by selected message reference file previews | Yes | Yes | Shared artifact display-mode state |
 | Explicit send-message reference validation | Move from `message-file-references` to send-message/team-communication owned file | Team communication / send-message delivery | Still needed by tool parser | Yes | Yes | Legacy message-reference subsystem anchor |
 
 ## Shared Structure / Data Model Tightness Check
@@ -291,6 +307,7 @@ This is a clean-cut replacement. Do not keep duplicate visibility or compatibili
 | `autobyteus-web/services/runHydration/teamCommunicationHydrationService.ts` | Hydration frontend | Hydration boundary | Fetch/hydrate team messages | Mirrors current hydration pattern | Yes |
 | `autobyteus-web/components/workspace/team/TeamOverviewPanel.vue` | Team tab | Composition owner | Compose collapsible Task Plan and Messages sections; no redundant Team header | Current Team tab owner | Yes |
 | `autobyteus-web/components/workspace/team/TeamCommunication*.vue` | Team Communication UI | UI owner | Left message/reference list, right message/file detail, resizable divider | Clear component split | Yes |
+| `autobyteus-web/components/workspace/team/TeamCommunicationReferenceViewer.vue` | Team Communication UI | Reference content viewer | Fetch selected reference content, Raw/Preview controls, maximize/restore, Escape-to-restore | Reference viewing belongs to message-owned Team Communication | FileViewer |
 | `autobyteus-web/components/workspace/agent/ArtifactsTab.vue` | Agent Artifacts UI | Artifact tab owner | Agent file changes only | Removes mixed subject | RunFileChangesStore |
 | `autobyteus-web/components/workspace/agent/ArtifactList.vue` | Agent Artifacts UI | Artifact list | Agent artifacts only | Removes sent/received sections | Agent artifact item |
 | `autobyteus-web/components/workspace/agent/artifactViewerItem.ts` | Agent Artifacts UI | Item mapper | Agent artifact item only | Removes message reference variant | RunFileChangeArtifact |
@@ -303,6 +320,7 @@ This is a clean-cut replacement. Do not keep duplicate visibility or compatibili
 - Send-message delivery remains the authoritative boundary for accepting and shaping raw inter-agent message payloads; the Team Communication processor consumes accepted events, not raw tool-call arguments.
 - TeamCommunicationService must consume normalized Team Communication processor output rather than parsing raw runtime events itself, except for tests/fallback-free fixture normalization inside the processor.
 - Team Communication content resolution must not call the old message-file-reference projection because that would preserve the old owner as an internal dependency. It should resolve from message projection.
+- Team Communication reference maximize/restore is owned by the Team Communication viewer. It may copy the ArtifactContentViewer interaction pattern but must not depend on artifact viewer ownership or artifact display-mode state.
 
 ## Boundary Encapsulation Map
 
@@ -312,6 +330,7 @@ This is a clean-cut replacement. Do not keep duplicate visibility or compatibili
 | TeamCommunicationContentService | Message projection lookup, file readability/mime | REST route, TeamReferenceFileViewer | Artifact viewer building message-file-reference URLs | Add content route capabilities |
 | ArtifactsTab | Run file changes store/viewer | Right-side Artifacts tab | Combining `messageFileReferencesStore` rows | Route message references to Team tab |
 | TeamCommunicationMessageProcessor | Raw `INTER_AGENT_MESSAGE` mapping, reference dedupe, derived event payload | TeamCommunicationService, streaming handlers | Service parsing raw message payloads or emitting file-first rows | Add fields to processor output |
+| TeamCommunicationReferenceViewer | FileViewer, local maximized/restore state, keyboard handling | TeamCommunicationDetail | ArtifactContentViewer or artifact display-mode store controlling team reference preview | Add Team-owned viewer state/composable |
 | Send-message runtime builder | Payload ids/timestamps/reference list | Runtime managers/backends | Managers creating mismatched ids/timestamps | Strengthen builder API |
 
 ## Dependency Rules
@@ -324,11 +343,13 @@ Allowed:
 - TeamCommunicationContentService may depend on TeamCommunicationProjectionService.
 - Team tab frontend may depend on `teamCommunicationStore` and Team Communication content route.
 - Artifacts tab may depend on `runFileChangesStore` only.
+- `TeamCommunicationReferenceViewer` may depend on `FileViewer`, `Teleport`, and local or Team-owned maximize state.
 
 Forbidden:
 
 - Artifacts tab must not import `messageFileReferencesStore`, `teamCommunicationStore`, or message-reference artifact item types.
 - Team Communication UI must not reuse `ArtifactContentViewer` if that keeps artifact/message reference coupling.
+- Team Communication UI must not import/use `ArtifactContentViewer` or artifact display-mode stores for maximize behavior.
 - No content scanning from `content` to create reference files.
 - No dual display of the same message references in both Team tab and Artifacts tab.
 - No compatibility route/query/store kept only for Sent/Received Artifacts.
@@ -401,6 +422,7 @@ Forbidden:
 | Live fanout split | `INTER_AGENT_MESSAGE` continues to conversation feed; `TEAM_COMMUNICATION_MESSAGE` updates Team Communication store/service | Team Communication store reading raw `INTER_AGENT_MESSAGE` directly | Preserves processor boundary and avoids duplicate team records. |
 | Team tab sections | Collapsible `Task Plan` and `Messages` headers like Activity; Messages expanded by default | Redundant `Team` header plus fixed 34% empty task-plan section | Maximizes useful communication space. |
 | Reference preview | Left message/reference list + right file/message preview | Message list on top and file preview squeezed below | Matches Artifacts ergonomics while preserving Team ownership. |
+| Reference maximize | Selected `math_solution.txt` in Team Communication -> maximize button -> full-window Team-owned FileViewer -> Escape restores split | Import `ArtifactContentViewer` or use artifact zen-mode store for Team references | Reuses proven UX without crossing ownership boundaries. |
 
 ## Backward-Compatibility Rejection Log (Mandatory)
 
@@ -429,10 +451,11 @@ Forbidden:
 5. Add GraphQL query and REST content route for Team Communication.
 6. Add frontend protocol/types/store/hydration for team communication messages.
 7. Build Team tab message-first UI with Activity-style collapsible Task Plan/Messages sections, Messages expanded by default, no redundant internal Team header, and Artifacts-style left-list/right-detail preview behavior.
-8. Simplify Artifacts tab/list/viewer to agent file-change artifacts only.
-9. Remove/decommission message-file-reference processor/event/service/routes/frontend store/tests/docs that exist only for old Sent/Received Artifacts.
-10. Update agent/team instruction wording and docs.
-11. Add/update tests, including absence of Sent/Received in Artifacts tab and presence of message references under Team Communication.
+8. Add TeamCommunicationReferenceViewer-owned maximize/restore, Escape-to-restore, and Raw/Preview controls while maximized.
+9. Simplify Artifacts tab/list/viewer to agent file-change artifacts only.
+10. Remove/decommission message-file-reference processor/event/service/routes/frontend store/tests/docs that exist only for old Sent/Received Artifacts.
+11. Update agent/team instruction wording and docs.
+12. Add/update tests, including absence of Sent/Received in Artifacts tab and presence of message references under Team Communication.
 
 ## Validation Plan
 
@@ -454,6 +477,10 @@ Forbidden:
   - Team tab renders collapsible Task Plan/Messages section headers; empty Task Plan does not consume large body space by default.
   - Team tab renders message previews, full detail, vertical reference rows in the left pane, and selected message/reference content in the right pane.
   - Reference selection fetches preview state.
+  - TeamCommunicationReferenceViewer maximize button enters full-window mode and restore returns to normal pane.
+  - Escape restores from maximized Team Communication reference view.
+  - Raw/Preview controls remain available and functional while maximized.
+  - Tests or review evidence prove TeamCommunicationReferenceViewer does not depend on `ArtifactContentViewer` or artifact display-mode store.
   - Artifacts tab renders only agent artifacts and no Sent/Received sections.
 - Grep/review checks:
   - no UI copy telling users `reference_files` appear as Sent/Received Artifacts;
@@ -471,4 +498,5 @@ Forbidden:
 - Derived event name decision: use `TEAM_COMMUNICATION_MESSAGE`.
 - Whether to remove the `MESSAGE_FILE_REFERENCE_DECLARED` enum/protocol entirely or keep it only if a non-legacy backend/internal consumer exists. Current investigation found only old standalone reference projection/UI consumers, so the design expects removal.
 - UI review focus: ensure the implementation follows the Activity-style collapsible section behavior and the Artifacts-style left-list/right-detail preview behavior instead of the initial fixed-height vertical stack.
-- Whether the Team Communication file viewer should extract common content-viewing logic from `ArtifactContentViewer` or implement a small dedicated viewer using `FileViewer`. Either is acceptable if artifact/message ownership remains separated.
+- Reference viewer addendum decision: add maximize/restore to `TeamCommunicationReferenceViewer` as a small local UX addendum. It may copy/adapt the ArtifactContentViewer pattern, but ownership remains Team Communication-only.
+- Whether the Team Communication file viewer should extract common content-viewing logic from `ArtifactContentViewer` or implement a small dedicated viewer using `FileViewer`. Either is acceptable if artifact/message ownership remains separated; direct `ArtifactContentViewer` reuse is not acceptable.

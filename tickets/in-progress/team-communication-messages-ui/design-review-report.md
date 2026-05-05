@@ -8,7 +8,7 @@
 - Relevant Upstream Reroute Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-message-referenced-artifacts/api-e2e-design-impact-reroute-artifacts-tab-ownership.md`
 - Relevant Upstream Validation Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-message-referenced-artifacts/api-e2e-validation-report.md`
 - Current Review Round: `3`
-- Trigger: Solution designer resubmitted the design after addressing Round 2 finding `AR-TCMU-001`, adding user-observed Team-tab UI corrections from Electron review, and adding the left-list label hierarchy refinement.
+- Trigger: Solution designer resubmitted the design after addressing Round 2 finding `AR-TCMU-001`, adding user-observed Team-tab UI corrections from Electron review, adding the left-list label hierarchy refinement, and adding the Team Communication reference-viewer maximize UX addendum.
 - Prior Review Round Reviewed: `2`
 - Latest Authoritative Round: `3`
 - Current-State Evidence Basis:
@@ -16,6 +16,7 @@
   - Rechecked Round 2 finding `AR-TCMU-001` against the updated DS-005, event spine, file responsibility mapping, dependency rules, validation plan, examples, and open questions.
   - Reviewed the UI addendum describing the current redundant internal Team header, fixed/large empty Task Plan region, and vertical message-list/detail stack, plus the target Activity-style collapsible sections and Artifacts-like left-list/right-detail interaction.
   - Reviewed the label hierarchy refinement: top-level `Sent` / `Received` sections own direction, and child counterpart group headers must be agent/member names only with no redundant `To` / `From` wording.
+  - Reviewed the reference-viewer maximize addendum: maximize/restore/Escape/Raw-Preview behavior is scoped to selected Team Communication reference-file previews and owned by `TeamCommunicationReferenceViewer` or a Team-owned child/composable, not `ArtifactContentViewer` or artifact display-mode state.
   - Inspected worktree status and noted current implementation commits exist; this report reviews the revised design target, not source correctness.
 
 ## Round History
@@ -24,13 +25,13 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | Initial architecture review for Team-tab message-first communication refactor | N/A | No | Pass | No | Superseded by processor-pattern design change. |
 | 2 | Processor-pattern correction: `INTER_AGENT_MESSAGE` -> message-centric processor -> normalized Team Communication event | N/A | Yes - `AR-TCMU-001` | Fail | No | Live/frontend sections still named raw `INTER_AGENT_MESSAGE` as Team Communication store source. |
-| 3 | Round 2 design-impact fix plus user-observed Team-tab UI layout corrections and label hierarchy refinement | Yes - `AR-TCMU-001` resolved | No | Pass | Yes | Design is ready for implementation/rework; left list uses `Sent` / `Received` sections with counterpart-name-only group headers. |
+| 3 | Round 2 design-impact fix plus user-observed Team-tab UI layout corrections, label hierarchy refinement, and reference-viewer maximize addendum | Yes - `AR-TCMU-001` resolved | No | Pass | Yes | Design is ready for implementation/rework; left list uses `Sent` / `Received` sections with counterpart-name-only group headers; selected reference-file previews support Team-owned maximize/restore. |
 
 ## Reviewed Design Spec
 
 Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/team-communication-messages-ui/tickets/in-progress/team-communication-messages-ui/design-spec.md` as the authoritative design for Round 3.
 
-The design now clearly makes `TEAM_COMMUNICATION_MESSAGE` the normalized processor-derived event for Team Communication backend/service/frontend live state. Raw `INTER_AGENT_MESSAGE` is limited to processor input and existing conversation-display behavior. The design also incorporates the user's UI review by requiring no redundant internal Team header, Activity-style collapsible Task Plan/Messages sections, Messages expanded by default, compact empty Task Plan behavior, and an Artifacts-like left message/reference list plus right selected detail pane. The left Team Communication list hierarchy is also implementation-ready: top-level `Sent` and `Received` sections carry direction, while child group headers are counterpart agent/member names only, without redundant `To` or `From` prefixes.
+The design now clearly makes `TEAM_COMMUNICATION_MESSAGE` the normalized processor-derived event for Team Communication backend/service/frontend live state. Raw `INTER_AGENT_MESSAGE` is limited to processor input and existing conversation-display behavior. The design also incorporates the user's UI review by requiring no redundant internal Team header, Activity-style collapsible Task Plan/Messages sections, Messages expanded by default, compact empty Task Plan behavior, and an Artifacts-like left message/reference list plus right selected detail pane. The left Team Communication list hierarchy is also implementation-ready: top-level `Sent` and `Received` sections carry direction, while child group headers are counterpart agent/member names only, without redundant `To` or `From` prefixes. The maximize addendum is appropriately local: selected reference-file previews get a Team Communication-owned maximize/restore/Escape interaction with Raw/Preview controls still available, while plain selected message detail remains unchanged.
 
 ## Task Design Health Assessment Verdict
 
@@ -65,7 +66,7 @@ The design now clearly makes `TEAM_COMMUNICATION_MESSAGE` the normalized process
 | Team Communication backend processor | Pass | Pass | Pass | Pass | `TeamCommunicationMessageProcessor` owns raw accepted-event interpretation and emits one normalized message event, not per-file events. |
 | Team Communication backend service/projection | Pass | Pass | Pass | Pass | Service persists normalized `TEAM_COMMUNICATION_MESSAGE` output and no longer parses raw runtime messages. |
 | Team Communication frontend live/store mapping | Pass | Pass | Pass | Pass | Store live updates are sourced from `TEAM_COMMUNICATION_MESSAGE`; raw `INTER_AGENT_MESSAGE` is conversation-only. |
-| Team Communication UI | Pass | Pass | Pass | Pass | Activity-style collapsible sections, Artifacts-like split, and `Sent`/`Received` -> counterpart-name-only grouping are concrete and implementation-ready. |
+| Team Communication UI | Pass | Pass | Pass | Pass | Activity-style collapsible sections, Artifacts-like split, `Sent`/`Received` -> counterpart-name-only grouping, and reference-viewer maximize behavior are concrete and implementation-ready. |
 | Agent Artifacts frontend | Pass | Pass | Pass | Pass | Existing Artifacts owner is simplified back to run file changes only. |
 | Team run streaming/hydration | Pass | Pass | Pass | Pass | Streaming carries split responsibilities; hydration uses message-centric projection query. |
 | Team send-message delivery | Pass | Pass | Pass | Pass | Accepted raw message contract remains the processor input and is enriched consistently across runtimes. |
@@ -80,6 +81,7 @@ The design now clearly makes `TEAM_COMMUNICATION_MESSAGE` the normalized process
 | Explicit `reference_files` validation | Pass | Pass | Pass | Pass | Validation moves away from old `message-file-references` ownership into a non-legacy delivery/team-communication owner. |
 | Collapsible section behavior | Pass | Pass | Pass | Pass | Design intentionally reuses local Activity/Progress section behavior rather than inventing a fixed-height panel. |
 | Direction label economy | Pass | Pass | Pass | Pass | `Sent`/`Received` sections own direction; counterpart group labels remain names only to avoid redundant `To`/`From` copy. |
+| Reference maximize interaction | Pass | Pass | Pass | Pass | Maximized view is local/Team-owned reference preview state; it copies the proven interaction pattern without artifact ownership coupling. |
 
 ## Shared Structure / Data Model Tightness Verdict
 
@@ -91,6 +93,7 @@ The design now clearly makes `TEAM_COMMUNICATION_MESSAGE` the normalized process
 | Agent artifact viewer item after cleanup | Pass | Pass | Pass | N/A | Pass | Removes `message_reference` artifact item. |
 | Team tab section state | Pass | Pass | Pass | Pass | Pass | Task Plan and Messages are UI sections, not independent ownership paths. |
 | Focused-member communication grouping | Pass | Pass | Pass | Pass | Pass | Direction is represented by top-level `Sent`/`Received`; group labels represent counterpart identity only. |
+| Reference maximize mode | Pass | Pass | Pass | Pass | Pass | Temporary viewer state for selected reference files only; not a persisted projection state and not shared artifact display mode. |
 
 ## Removal / Decommission Completeness Verdict
 
@@ -102,6 +105,7 @@ The design now clearly makes `TEAM_COMMUNICATION_MESSAGE` the normalized process
 | Artifacts Sent/Received UI branches | Pass | Pass | Pass | Pass | Removed from Artifacts tab target. |
 | Frontend raw-message Team Communication ingestion | Pass | Pass | Pass | Pass | Explicitly forbidden; raw message remains conversation-only. |
 | Redundant internal Team header / fixed empty Task Plan / vertical stacked preview | Pass | Pass | Pass | Pass | UI defects are explicitly named and replaced. |
+| Artifact-owned maximize state for Team references | Pass | Pass | Pass | Pass | Explicitly rejected; maximize belongs to Team Communication reference viewer. |
 
 ## File Responsibility Mapping Verdict
 
@@ -116,7 +120,7 @@ The design now clearly makes `TEAM_COMMUNICATION_MESSAGE` the normalized process
 | `stores/teamCommunicationStore.ts` | Pass | Pass | Pass | Pass | Stores normalized projection and focused-member perspective. |
 | `services/agentStreaming/handlers/teamHandler.ts` | Pass | Pass | Pass | Pass | Correct split: `TEAM_COMMUNICATION_MESSAGE` upserts Team Communication store; `INTER_AGENT_MESSAGE` remains conversation segment source. |
 | `TeamOverviewPanel.vue` | Pass | Pass | Pass | Pass | Composes collapsible Task Plan/Messages without redundant header. |
-| `TeamCommunication*.vue` | Pass | Pass | Pass | Pass | Owns left message/reference list, right detail/preview, split interaction, and counterpart-name-only group labels under `Sent`/`Received`. |
+| `TeamCommunication*.vue` | Pass | Pass | Pass | Pass | Owns left message/reference list, right detail/preview, split interaction, counterpart-name-only group labels under `Sent`/`Received`, and selected-reference maximize behavior. |
 | Agent Artifacts files | Pass | Pass | Pass | Pass | `ArtifactsTab`, `ArtifactList`, `artifactViewerItem`, and `ArtifactContentViewer` return to agent file-change-only responsibilities. |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
@@ -126,7 +130,7 @@ The design now clearly makes `TEAM_COMMUNICATION_MESSAGE` the normalized process
 | `TeamCommunicationMessageProcessor` | Pass | Pass | Pass | Pass | Raw event interpretation is centralized. |
 | `TeamCommunicationService` | Pass | Pass | Pass | Pass | Consumes normalized derived event only. |
 | Frontend Team Communication live handler/store | Pass | Pass | Pass | Pass | Store cannot upsert from raw `INTER_AGENT_MESSAGE`. |
-| Team tab UI | Pass | Pass | Pass | Pass | Uses Team Communication store/content route, not Artifacts or old message-reference stores; direction wording stays at section level only. |
+| Team tab UI | Pass | Pass | Pass | Pass | Uses Team Communication store/content route, not Artifacts or old message-reference stores; direction wording stays at section level only; maximize state stays Team-owned. |
 | Agent Artifacts UI | Pass | Pass | Pass | Pass | Depends on `runFileChangesStore` only. |
 
 ## Boundary Encapsulation Verdict
@@ -137,7 +141,7 @@ The design now clearly makes `TEAM_COMMUNICATION_MESSAGE` the normalized process
 | `TeamCommunicationService` | Pass | Pass | Pass | Pass | Persists processor output. |
 | `TeamCommunicationProjectionService` | Pass | Pass | Pass | Pass | GraphQL/hydration depend on service boundary. |
 | `TeamCommunicationContentService` | Pass | Pass | Pass | Pass | REST/viewer route through content boundary. |
-| `TeamCommunicationPanel` | Pass | Pass | Pass | Pass | Owns Team-tab list/detail behavior and label hierarchy without leaking into Artifacts. |
+| `TeamCommunicationPanel` / `TeamCommunicationReferenceViewer` | Pass | Pass | Pass | Pass | Own Team-tab list/detail behavior, label hierarchy, reference preview, and maximize/restore behavior without leaking into Artifacts. |
 | `ArtifactsTab` | Pass | Pass | Pass | Pass | Team message references are excluded. |
 
 ## Interface Boundary Verdict
@@ -150,6 +154,7 @@ The design now clearly makes `TEAM_COMMUNICATION_MESSAGE` the normalized process
 | `getTeamCommunicationMessages(teamRunId)` | Pass | Pass | Pass | Low | Pass |
 | `GET /team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content` | Pass | Pass | Pass | Low | Pass |
 | `teamCommunicationStore.getPerspectiveForMember(teamRunId, memberRunId)` | Pass | Pass | Pass | Low | Pass |
+| `TeamCommunicationReferenceViewer` maximize/restore commands | Pass | Pass | Pass | Low | Pass |
 | Artifacts tab store reads | Pass | Pass | Pass | Low | Pass |
 
 ## Subsystem / Folder / File Placement Verdict
@@ -172,6 +177,7 @@ The design now clearly makes `TEAM_COMMUNICATION_MESSAGE` the normalized process
 | Reference content streaming | Pass | Pass | Pass | Pass | Reuses/extracts mechanics below Team Communication boundary. |
 | Activity-style collapsible sections | Pass | Pass | N/A | Pass | Appropriate local UI pattern for Task Plan/Messages. |
 | Counterpart-name-only grouping | Pass | Pass | N/A | Pass | Appropriate refinement for constrained width because `Sent`/`Received` already imply direction. |
+| Reference maximize interaction | Pass | Pass | N/A | Pass | Appropriate local reuse of the Artifacts viewer interaction pattern, without importing ArtifactContentViewer or artifact display-mode state. |
 | Artifacts-style split detail interaction | Pass | Pass | N/A | Pass | Appropriate interaction pattern, without artifact ownership leakage. |
 | Produced/touched artifacts | Pass | Pass | N/A | Pass | Existing run-file-change authority remains. |
 
@@ -183,6 +189,7 @@ The design now clearly makes `TEAM_COMMUNICATION_MESSAGE` the normalized process
 | Old file-reference processor/event/store | No target compatibility | Pass | Pass | Replaced by message-centric processor/event/store. |
 | Raw `INTER_AGENT_MESSAGE` as Team Communication store source | No target compatibility | Pass | Pass | Explicitly rejected. |
 | Fixed-height/vertical Team tab layout defects | No target compatibility | Pass | Pass | Replaced by specific UI layout target. |
+| ArtifactContentViewer/artifact display-mode reuse for Team reference maximize | No target compatibility | Pass | Pass | Rejected; Team Communication owns its maximize state. |
 | Content scanning fallback | No | Pass | Pass | Still rejected. |
 | Historical backfill from old projections/content | No | Pass | Pass | Out-of-scope deferral remains explicit. |
 
@@ -194,6 +201,7 @@ The design now clearly makes `TEAM_COMMUNICATION_MESSAGE` the normalized process
 | Live frontend event mapping | Pass | Pass | Pass | Pass |
 | Backend projection/content replacement | Pass | Pass | Pass | Pass |
 | Team tab UI rework | Pass | Pass | Pass | Pass |
+| Reference-viewer maximize addendum | Pass | Pass | Pass | Pass |
 | Artifacts cleanup | Pass | Pass | Pass | Pass |
 | Tests/docs updates | Pass | Pass | Pass | Pass |
 
@@ -207,6 +215,7 @@ The design now clearly makes `TEAM_COMMUNICATION_MESSAGE` the normalized process
 | Collapsible Team tab sections | Yes | Pass | Pass | Pass | References local Activity-style behavior and rejects fixed empty Task Plan body. |
 | Reference preview interaction | Yes | Pass | Pass | Pass | References Artifacts-style left/right split and rejects vertical squeezed preview. |
 | Left-list label hierarchy | Yes | Pass | Pass | Pass | Good shape is `Sent` -> `architecture_reviewer` -> message -> reference; bad shape repeats `To`/`From` under direction sections. |
+| Reference maximize | Yes | Pass | Pass | Pass | Good shape is selected reference -> Team-owned maximize shell with Raw/Preview controls and Escape restore; bad shape imports `ArtifactContentViewer` or artifact display-mode state. |
 | Content route | Yes | Pass | Pass | Pass | Clear message-child identity. |
 
 ## Missing Use Cases / Open Unknowns
@@ -217,6 +226,7 @@ The design now clearly makes `TEAM_COMMUNICATION_MESSAGE` the normalized process
 | Live Team Communication store source | Prevents frontend raw parsing and preserves processor decoupling end-to-end. | Use normalized `TEAM_COMMUNICATION_MESSAGE`; raw `INTER_AGENT_MESSAGE` only for conversation. | Resolved. |
 | Exact narrow-width usability of left/right Team Communication split | Right panel width can constrain previews. | Implementation/API-E2E should validate the split at the narrowest supported right-panel width and adjust min widths/resizer behavior if necessary. | Non-blocking implementation validation risk. |
 | Whether `MESSAGE_FILE_REFERENCE_DECLARED` has any non-legacy consumer | Safe removal requires final grep. | Remove it if only old Sent/Received projection/UI consumers remain; otherwise route any true non-legacy consumer deliberately. | Non-blocking implementation guard. |
+| Team Communication reference maximize validation | Ensures local UX addendum does not couple to Artifacts and remains keyboard accessible. | Component tests should cover maximize, restore, Escape restore, and Raw/Preview controls while maximized. | Non-blocking implementation validation risk. |
 
 ## Review Decision
 
@@ -240,9 +250,9 @@ None.
 
 - Current in-ticket implementation commits appear to predate the final processor-boundary and UI-layout corrections; implementation should rework the existing code rather than layering compatibility over it.
 - Removing `MESSAGE_FILE_REFERENCE_DECLARED` and old message-reference files/routes/stores should be guarded by a final non-legacy-consumer grep.
-- The Artifacts-like Team Communication split must remain usable in the constrained right-side panel; include component/browser validation for empty Task Plan, expanded Messages, selected message detail, selected reference-file preview, and counterpart group labels without redundant `To`/`From` prefixes.
+- The Artifacts-like Team Communication split must remain usable in the constrained right-side panel; include component/browser validation for empty Task Plan, expanded Messages, selected message detail, selected reference-file preview, counterpart group labels without redundant `To`/`From` prefixes, and selected-reference maximize/restore with Raw/Preview controls.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Notes: Round 2 finding `AR-TCMU-001` is resolved. The design now has a coherent processor-derived event boundary, clean Team Communication ownership, no raw-message store bypass, explicit old-path decommissioning, implementation-ready UI layout corrections, and the refined `Sent`/`Received` -> counterpart-name-only label hierarchy.
+- Notes: Round 2 finding `AR-TCMU-001` is resolved. The design now has a coherent processor-derived event boundary, clean Team Communication ownership, no raw-message store bypass, explicit old-path decommissioning, implementation-ready UI layout corrections, the refined `Sent`/`Received` -> counterpart-name-only label hierarchy, and a safe Team-owned reference-viewer maximize addendum.

@@ -46,6 +46,7 @@ Initial bootstrap findings:
   - compact message list/cards show direction, counterpart, message type, truncated preview, and vertical reference-file list in a left pane;
   - selecting a message shows full message content in a right detail pane;
   - selecting a reference file previews its content in the right detail pane using the existing safe content-resolution behavior where possible.
+- When the selected item is a reference file, the Team Communication-owned reference viewer should support maximize/restore using the same interaction pattern as the Artifacts content viewer: maximize button, restore button, Escape-to-restore, and Raw/Preview controls available while maximized.
 - Do not keep an internal redundant `Team` header inside the Team tab; the right-side tab label already provides that context.
 - Remove Sent/Received Artifacts from the Artifacts tab; keep that tab focused on files created/touched by the focused agent.
 - Treat the prior `team-message-referenced-artifacts` Sent/Received Artifacts requirements (`REQ-016`, `REQ-017`, `AC-008`, `AC-009`, `AC-011`) as intentionally superseded for this new ticket.
@@ -103,6 +104,9 @@ Rationale: The change spans server/event projection or hydration, frontend store
 - REQ-022: The Team tab must not render a redundant internal `Team` header row above Task Plan/Messages.
 - REQ-023: Task Plan and Team Communication/Messages must use compact collapsible section headers modeled after the Activity tab; Messages must be the default expanded section, and an empty Task Plan must not consume a large fixed-height body.
 - REQ-024: Team Communication message/reference selection must use an Artifacts-like left-list/right-detail layout so selected file content is previewed beside the message list, not squeezed underneath it.
+- REQ-025: The Team Communication reference-file detail viewer must provide maximize/restore for selected reference files. The control must be owned by `TeamCommunicationReferenceViewer`, may reuse the Artifacts content viewer interaction pattern, and must not import/use `ArtifactContentViewer` or an artifact display-mode store.
+- REQ-026: While a Team Communication reference file is maximized, Raw/Preview controls for supported text/markdown/html files must remain available, and pressing Escape must restore the normal Team tab layout.
+- REQ-027: Message-detail selection behavior must remain unchanged: maximize applies only to selected reference-file previews, not to plain selected message content unless separately designed later.
 
 ## Acceptance Criteria
 
@@ -126,6 +130,10 @@ Rationale: The change spans server/event projection or hydration, frontend store
 - AC-018: With no task plan, the Task Plan section does not occupy a large empty area and Messages retains the primary usable height.
 - AC-019: Selecting a message reference file shows the file preview in a right-side detail pane while the message/reference list remains visible on the left.
 - AC-020: Automated or review evidence proves `teamCommunicationStore` live updates are driven by `TEAM_COMMUNICATION_MESSAGE`, not raw `INTER_AGENT_MESSAGE`.
+- AC-021: Given a Team Communication reference file is selected, the reference viewer shows a maximize control; activating it displays the file in a full-window/zen shell and activating restore returns to the normal Team tab split.
+- AC-022: Given a Team Communication reference file preview is maximized, pressing Escape restores the normal Team tab split.
+- AC-023: Given a supported markdown/html/text reference is maximized, Raw/Preview controls remain usable and do not require leaving maximized view.
+- AC-024: Review or automated evidence proves the maximize behavior is implemented in Team Communication-owned components without importing `ArtifactContentViewer` or artifact display-mode state.
 
 ## Constraints / Dependencies
 
@@ -142,12 +150,14 @@ Rationale: The change spans server/event projection or hydration, frontend store
 - The message-first view should use accepted inter-agent messages, not raw tool-call activity cards.
 - Existing safe file content viewer/resolution behavior can be reused or adapted for message reference previews.
 - Task Plan remains part of the Team tab, but the final layout must use compact collapsible section presentation based on current UI review.
+- The Artifacts content viewer maximize behavior is a UI interaction pattern that can be copied/adapted for Team Communication reference files, but ownership must stay separate.
 
 ## Risks / Open Questions
 
 - Need to verify whether current durable run history stores enough accepted `INTER_AGENT_MESSAGE` data to build historical Team Communication without introducing a new projection.
 - Need architecture review to approve the final `TEAM_COMMUNICATION_MESSAGE` event naming and live fanout split.
 - Need implementation to verify the Artifacts-like split remains usable at the narrowest supported right-side Team tab width.
+- Need implementation to verify maximize/restore works for Team Communication reference files without coupling to Agent Artifacts state.
 
 ## Requirement-To-Use-Case Coverage
 
@@ -156,7 +166,7 @@ Rationale: The change spans server/event projection or hydration, frontend store
 - UC-003 -> REQ-005
 - UC-004 -> REQ-006, REQ-024
 - UC-005 -> REQ-007, REQ-014, REQ-015
-- UC-006 -> REQ-008, REQ-018, REQ-024
+- UC-006 -> REQ-008, REQ-018, REQ-024, REQ-025, REQ-026, REQ-027
 - UC-007 -> REQ-009, REQ-010, REQ-016, REQ-019, REQ-020
 - UC-008 -> REQ-013, REQ-014
 
@@ -171,6 +181,7 @@ Rationale: The change spans server/event projection or hydration, frontend store
 - AC-017, AC-018 -> Validate compact Team tab section layout.
 - AC-019 -> Validate Artifacts-like reference preview ergonomics.
 - AC-020 -> Validate processor-boundary live frontend ingestion.
+- AC-021, AC-022, AC-023, AC-024 -> Validate Team Communication-owned reference maximize/restore behavior and ownership separation from Agent Artifacts.
 - AC-011 -> Preserve explicit-reference-only invariant.
 - AC-015 -> Validate clean removal of standalone message-reference artifact UI/event/store ownership.
 - AC-016 -> Validate docs/instruction ownership language.

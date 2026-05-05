@@ -259,3 +259,34 @@ Received
 ```
 
 Rationale: `Sent` already implies `to`; `Received` already implies `from`. Removing redundant words improves scanability in the constrained right-side panel.
+
+## Team Communication Reference Maximize Addendum - 2026-05-05
+
+Implementation engineer requested a design/addendum decision after user feedback on the Round 3 implementation. The user likes the current Team tab message/reference split and asked whether selected reference files can get a maximize/fullscreen/restore control similar to the Artifacts content viewer.
+
+Classification:
+
+- Small local UX implementation addendum under the existing Team Communication reference viewer boundary.
+- Not a backend projection or ownership redesign.
+- Requirements/design text is still useful because the implementation must reuse only the interaction pattern from Artifacts, not artifact ownership or artifact state.
+
+Current implementation evidence:
+
+- `autobyteus-web/components/workspace/agent/ArtifactContentViewer.vue` already implements the desired interaction pattern:
+  - `Teleport to="body"`;
+  - `fixed inset-0 z-[120]` full-window shell when maximized/zen;
+  - maximize/restore icon button;
+  - preview/edit controls while maximized;
+  - Escape-to-restore;
+  - cleanup on unmount.
+- `autobyteus-web/components/workspace/team/TeamCommunicationReferenceViewer.vue` already owns Team Communication reference preview and uses `FileViewer`, with Raw/Preview mode for supported text/markdown/html, but lacks maximize/restore and Escape handling.
+
+Design decision:
+
+- Add maximize/restore to `TeamCommunicationReferenceViewer` only, or a Team Communication-owned child/composable.
+- Do not import/use `ArtifactContentViewer`.
+- Do not use artifact display-mode store/state.
+- Raw/Preview controls must remain available while maximized.
+- Escape restores the normal Team tab split.
+- Selected plain message detail behavior remains unchanged; maximize applies only to selected reference-file previews for this addendum.
+- Add focused component tests for maximize, restore, Escape, and Raw/Preview controls while maximized.

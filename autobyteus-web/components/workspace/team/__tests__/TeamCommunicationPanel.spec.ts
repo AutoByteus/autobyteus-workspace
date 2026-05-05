@@ -98,6 +98,44 @@ describe('TeamCommunicationPanel.vue', () => {
     expect(text).not.toContain('Received Artifacts');
   });
 
+  it('keeps the split usable by clamping resize handle movement in constrained widths', async () => {
+    const store = useTeamCommunicationStore();
+    store.replaceProjection('team-1', [
+      {
+        messageId: 'message-sent',
+        teamRunId: 'team-1',
+        senderRunId: 'focused-run',
+        senderMemberName: 'Focused Member',
+        receiverRunId: 'reviewer-run',
+        receiverMemberName: 'Reviewer',
+        content: 'See the attachment.',
+        messageType: 'handoff',
+        createdAt: '2026-04-12T10:00:00.000Z',
+        updatedAt: '2026-04-12T10:00:00.000Z',
+        referenceFiles: [],
+      },
+    ]);
+
+    const wrapper = mountSubject();
+    await wrapper.vm.$nextTick();
+    const leftList = wrapper.get('[data-test="team-communication-left-list"]');
+    const handle = wrapper.get('[data-test="team-communication-resize-handle"]');
+
+    expect(leftList.attributes('style')).toContain('width: 232px');
+
+    await handle.trigger('mousedown', { clientX: 200 });
+    window.dispatchEvent(new MouseEvent('mousemove', { clientX: 500 }));
+    await wrapper.vm.$nextTick();
+    expect(leftList.attributes('style')).toContain('width: 360px');
+    window.dispatchEvent(new MouseEvent('mouseup'));
+
+    await handle.trigger('mousedown', { clientX: 500 });
+    window.dispatchEvent(new MouseEvent('mousemove', { clientX: 100 }));
+    await wrapper.vm.$nextTick();
+    expect(leftList.attributes('style')).toContain('width: 168px');
+    window.dispatchEvent(new MouseEvent('mouseup'));
+  });
+
   it('opens a selected reference using the selected message and reference ids', async () => {
     const store = useTeamCommunicationStore();
     store.replaceProjection('team-1', [

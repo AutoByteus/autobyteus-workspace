@@ -40,6 +40,8 @@ const messages = {
   'workspace.components.workspace.team.TeamCommunicationPanel.reference_unavailable_detail': '文件可能已被删除、移动或变为不可读。',
   'workspace.components.workspace.team.TeamCommunicationPanel.preview': '预览',
   'workspace.components.workspace.team.TeamCommunicationPanel.raw': '原文',
+  'workspace.components.workspace.team.TeamCommunicationPanel.maximize_view': '最大化查看',
+  'workspace.components.workspace.team.TeamCommunicationPanel.restore_view': '恢复视图',
   'workspace.components.workspace.agent.ArtifactContentViewer.content_not_available_yet': '内容暂不可用',
   'workspace.components.workspace.agent.ArtifactContentViewer.preview_unavailable': '暂不支持预览',
   'workspace.components.workspace.agent.ArtifactContentViewer.failed_before_final_content_could_be_captured': '该文件变更在服务器捕获最终内容之前已失败。',

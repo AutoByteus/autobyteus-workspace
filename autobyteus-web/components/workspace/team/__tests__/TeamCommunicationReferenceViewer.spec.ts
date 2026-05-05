@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
 import TeamCommunicationReferenceViewer from '../TeamCommunicationReferenceViewer.vue';
 
@@ -20,6 +20,8 @@ const labels: Record<string, string> = {
   'workspace.components.workspace.team.TeamCommunicationPanel.reference_unavailable_detail': 'The file may have been deleted, moved, or become unreadable.',
   'workspace.components.workspace.team.TeamCommunicationPanel.preview': 'Preview',
   'workspace.components.workspace.team.TeamCommunicationPanel.raw': 'Raw',
+  'workspace.components.workspace.team.TeamCommunicationPanel.maximize_view': 'Maximize view',
+  'workspace.components.workspace.team.TeamCommunicationPanel.restore_view': 'Restore view',
 };
 
 const baseReference = {
@@ -40,8 +42,8 @@ const mountSubject = () => mount(TeamCommunicationReferenceViewer, {
     stubs: {
       Icon: true,
       FileViewer: {
-        props: ['file', 'error'],
-        template: '<div data-test="file-viewer"><span data-test="content">{{ file.content }}</span><span data-test="error">{{ error }}</span></div>',
+        props: ['file', 'error', 'mode'],
+        template: '<div data-test="file-viewer"><span data-test="content">{{ file.content }}</span><span data-test="mode">{{ mode }}</span><span data-test="error">{{ error }}</span></div>',
       },
     },
     mocks: {
@@ -53,6 +55,11 @@ const mountSubject = () => mount(TeamCommunicationReferenceViewer, {
 describe('TeamCommunicationReferenceViewer.vue', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    document.body.innerHTML = '';
   });
 
   it('fetches text reference bytes from the team-communication message-owned content route', async () => {
@@ -97,5 +104,60 @@ describe('TeamCommunicationReferenceViewer.vue', () => {
     await flushPromises();
 
     expect(wrapper.get('[data-test="error"]').text()).toContain('Failed to fetch reference content (403)');
+  });
+
+  it('maximizes and restores the Team Communication reference viewer with Escape', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => ({
+      status: 200,
+      ok: true,
+      text: async () => '# Handoff',
+    })));
+
+    const wrapper = mountSubject();
+    await flushPromises();
+
+    expect(wrapper.get('[data-test="team-reference-viewer-maximize-toggle"]').attributes('title')).toBe('Maximize view');
+
+    await wrapper.get('[data-test="team-reference-viewer-maximize-toggle"]').trigger('click');
+    await flushPromises();
+
+    const maximizedShell = document.body.querySelector('[data-test="team-reference-viewer-shell"]');
+    const restoreButton = document.body.querySelector('[data-test="team-reference-viewer-maximize-toggle"]');
+    expect(maximizedShell?.className).toContain('fixed');
+    expect(restoreButton?.getAttribute('title')).toBe('Restore view');
+
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    await flushPromises();
+
+    expect(wrapper.get('[data-test="team-reference-viewer-maximize-toggle"]').attributes('title')).toBe('Maximize view');
+    expect(wrapper.get('[data-test="team-reference-viewer-shell"]').classes()).not.toContain('fixed');
+  });
+
+  it('keeps Raw and Preview controls available and functional while maximized', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => ({
+      status: 200,
+      ok: true,
+      text: async () => '# Handoff',
+    })));
+
+    const wrapper = mountSubject();
+    await flushPromises();
+
+    await wrapper.get('[data-test="team-reference-viewer-maximize-toggle"]').trigger('click');
+    await flushPromises();
+
+    const rawButton = document.body.querySelector('button[title="Raw"]');
+    const previewButton = document.body.querySelector('button[title="Preview"]');
+    expect(rawButton).not.toBeNull();
+    expect(previewButton).not.toBeNull();
+    expect(document.body.querySelector('[data-test="mode"]')?.textContent).toBe('preview');
+
+    rawButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await flushPromises();
+    expect(document.body.querySelector('[data-test="mode"]')?.textContent).toBe('edit');
+
+    previewButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await flushPromises();
+    expect(document.body.querySelector('[data-test="mode"]')?.textContent).toBe('preview');
   });
 });

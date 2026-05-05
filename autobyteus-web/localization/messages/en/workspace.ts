@@ -40,6 +40,8 @@ const messages = {
   'workspace.components.workspace.team.TeamCommunicationPanel.reference_unavailable_detail': 'The file may have been deleted, moved, or become unreadable.',
   'workspace.components.workspace.team.TeamCommunicationPanel.preview': 'Preview',
   'workspace.components.workspace.team.TeamCommunicationPanel.raw': 'Raw',
+  'workspace.components.workspace.team.TeamCommunicationPanel.maximize_view': 'Maximize view',
+  'workspace.components.workspace.team.TeamCommunicationPanel.restore_view': 'Restore view',
   'workspace.components.workspace.agent.ArtifactContentViewer.content_not_available_yet': 'Content not available yet',
   'workspace.components.workspace.agent.ArtifactContentViewer.preview_unavailable': 'Preview unavailable',
   'workspace.components.workspace.agent.ArtifactContentViewer.failed_before_final_content_could_be_captured': 'This file change failed before the final content could be captured.',
