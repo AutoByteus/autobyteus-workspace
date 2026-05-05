@@ -21,13 +21,13 @@ graph TD
 
     Handler-->|Segment Created/Updated| Context[Agent Context State]
     Handler-->|File changes / outputs| RunFileChangeStore[Run File Change Store]
-    Handler-->|Message file references| MessageReferenceStore[Message File References Store]
+    Handler-->|Team communication messages| TeamCommunicationStore[Team Communication Store]
     Handler-->|Activity Log| ActivityStore[Activity Store]
     Handler-->|Task/Todo Update| TodoStore[Todo Store]
 
     Context-->|Reactivity| UI[Vue Component UI]
     RunFileChangeStore-->|Reactivity| UI
-    MessageReferenceStore-->|Reactivity| UI
+    TeamCommunicationStore-->|Reactivity| UI
     ActivityStore-->|Reactivity| UI
 ```
 

@@ -92,6 +92,13 @@ Rules:
 - The focused member sees sent/received message perspectives in the Team tab.
   The left list hierarchy is `Sent` / `Received` -> counterpart member name ->
   message -> reference file, without repeated `To` / `From` group prefixes.
+- Team Communication rows are compact, email-like rows. The row shell is a
+  non-interactive container; message summaries and reference-file rows are
+  sibling buttons so reference controls are never nested inside a message
+  summary button.
+- Selecting a message shows its content in the detail pane through the shared
+  Markdown renderer while keeping raw absolute paths as plain text. Selecting a
+  reference switches that same pane to the message-owned reference viewer.
 
 ## Data Flow
 
@@ -127,8 +134,8 @@ flowchart LR
 | Artifacts tab | `autobyteus-web/components/workspace/agent/ArtifactsTab.vue` | Displays only run-scoped Agent Artifacts. |
 | Team Communication store | `autobyteus-web/stores/teamCommunicationStore.ts` | Owns hydrated/live inter-agent messages and focused sent/received message perspectives. |
 | Team Communication hydration | `autobyteus-web/services/runHydration/teamCommunicationHydrationService.ts` | Loads `getTeamCommunicationMessages(teamRunId)`. |
-| Team Communication panel | `autobyteus-web/components/workspace/team/TeamCommunicationPanel.vue` | Renders sent/received message groups and reference-file children. |
-| Team reference viewer | `autobyteus-web/components/workspace/team/TeamCommunicationReferenceViewer.vue` | Opens a reference through the message-owned content route. |
+| Team Communication panel | `autobyteus-web/components/workspace/team/TeamCommunicationPanel.vue` | Renders compact sent/received message rows, sibling reference-file controls, and Markdown message detail. |
+| Team reference viewer | `autobyteus-web/components/workspace/team/TeamCommunicationReferenceViewer.vue` | Opens a reference through the message-owned content route and owns local inline/maximized preview state. |
 
 ## Viewer Resolution
 
@@ -141,4 +148,8 @@ flowchart LR
 4. Available row -> `/runs/:runId/file-change-content?path=...`.
 
 Team Communication reference previews use `TeamCommunicationReferenceViewer` and
-never use the run-file-change route.
+never use the run-file-change route. The Team reference viewer owns its local
+maximize/restore state independently of Agent Artifact display-mode controls:
+users can open the preview inline, maximize it to a viewport shell, restore with
+the control or `Escape`, and keep switching between Raw and Preview while
+maximized.
