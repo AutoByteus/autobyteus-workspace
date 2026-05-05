@@ -8,6 +8,7 @@
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-communication-messages-ui/tickets/in-progress/team-communication-messages-ui/design-review-report.md`
 - Upstream reroute evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-message-referenced-artifacts/api-e2e-design-impact-reroute-artifacts-tab-ownership.md`
 - Upstream validation evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-message-referenced-artifacts/api-e2e-validation-report.md`
+- Code review report (Round 1 Local Fix): `/Users/normy/autobyteus_org/autobyteus-worktrees/team-communication-messages-ui/tickets/in-progress/team-communication-messages-ui/review-report.md`
 
 ## What Changed
 
@@ -33,6 +34,7 @@ Implemented the reviewed Team-tab-only, message-first Team Communication design.
 - Simplified Agent Artifacts UI to produced/touched files only:
   - `ArtifactsTab`, `ArtifactList`, `ArtifactItem`, `ArtifactContentViewer`, and `artifactViewerItem` no longer know about message references.
 - Updated durable docs to reflect the new ownership split.
+- Local Fix `CR-001`: removed obsolete Sent/Received Artifacts localization keys from English and Chinese locale catalogs after Artifacts-tab clean-cut removal.
 - Refreshed the ticket worktree against `origin/personal` before implementation (`687b3fde` fast-forwarded to `1e63654e`).
 
 ## Key Files Or Areas
@@ -137,6 +139,11 @@ Passed:
 - `pnpm -C autobyteus-web exec vitest run components/workspace/agent/__tests__/ArtifactList.spec.ts components/workspace/agent/__tests__/ArtifactsTab.spec.ts components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts stores/__tests__/teamCommunicationStore.spec.ts --reporter=dot` — 5 files / 33 tests passed.
 - `pnpm -C autobyteus-web guard:web-boundary` — passed.
 - `git diff --check` — passed.
+- Local Fix `CR-001` checks:
+  - `pnpm -C autobyteus-web guard:localization-boundary` — passed.
+  - `pnpm -C autobyteus-web audit:localization-literals` — passed with zero unresolved findings and the existing module-type warning.
+  - Static grep for the obsolete ArtifactList Sent/Received localization keys plus old message-reference surfaces — no matches outside tickets and the unrelated Discord adapter field excluded.
+  - `git diff --check` — passed.
 - Legacy grep: `git grep -n "MESSAGE_FILE_REFERENCE_DECLARED\|messageFileReferencesStore\|message-file-references\|MessageFileReference\|message_reference\|getMessageFileReferences\|message_file_references" -- . ':!tickets' ':!autobyteus-message-gateway/src/infrastructure/adapters/discord-business/discord-thread-context-resolver.ts'` — no matches.
 - Source size guard script over changed source implementation files — no files above 500 effective non-empty lines.
 
