@@ -3,16 +3,16 @@
 ## Review Round Meta
 
 - Review Entry Point: `Post-Validation Durable-Validation Re-Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/tickets/done/server-settings-media-model-selectors/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-settings-media-model-selectors/requirements.md`
 - Current Review Round: 2
 - Trigger: API/E2E validation passed and added repository-resident durable validation after prior code review.
 - Prior Review Round Reviewed: 1
 - Latest Authoritative Round: 2
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/tickets/done/server-settings-media-model-selectors/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/tickets/done/server-settings-media-model-selectors/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/tickets/done/server-settings-media-model-selectors/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/tickets/done/server-settings-media-model-selectors/implementation-handoff.md`
-- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/tickets/done/server-settings-media-model-selectors/api-e2e-validation-report.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-settings-media-model-selectors/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-settings-media-model-selectors/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-settings-media-model-selectors/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-settings-media-model-selectors/implementation-handoff.md`
+- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-settings-media-model-selectors/api-e2e-validation-report.md`
 - API / E2E Validation Started Yet: `Yes`
 - Repository-Resident Durable Validation Added Or Updated After Prior Review: `Yes`
 
@@ -28,7 +28,7 @@
 Round 2 scope was intentionally narrow per the post-validation re-review entry point:
 
 - Reviewed the API/E2E validation report and directly related evidence.
-- Reviewed the repository-resident durable validation delta in `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts`.
+- Reviewed the repository-resident durable validation delta in `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts`.
 - Checked that the added validation is durable, scoped to the requirements, does not introduce compatibility/legacy expectations, preserves test isolation, and is maintainable enough for the existing E2E file style.
 - Re-ran the focused GraphQL E2E test and `git diff --check`.
 

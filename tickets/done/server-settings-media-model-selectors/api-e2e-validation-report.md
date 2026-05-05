@@ -2,12 +2,12 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/tickets/done/server-settings-media-model-selectors/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/tickets/done/server-settings-media-model-selectors/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/tickets/done/server-settings-media-model-selectors/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/tickets/done/server-settings-media-model-selectors/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/tickets/done/server-settings-media-model-selectors/implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/tickets/done/server-settings-media-model-selectors/review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-settings-media-model-selectors/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-settings-media-model-selectors/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-settings-media-model-selectors/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-settings-media-model-selectors/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-settings-media-model-selectors/implementation-handoff.md`
+- Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-settings-media-model-selectors/review-report.md`
 - Current Validation Round: 1
 - Trigger: Code review pass for Server Settings media model selectors / Codex toggle.
 - Prior Round Reviewed: N/A
@@ -92,7 +92,7 @@ Commands and setup used:
 
 ## Tests Implemented Or Updated
 
-- Updated durable GraphQL E2E test: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts`
+- Updated durable GraphQL E2E test: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts`
   - Added scenario covering media default keys through the GraphQL settings boundary.
   - Proves update persistence for dynamic model identifiers, predefined metadata, non-custom descriptions, non-deletability, and `.env` persistence.
 
@@ -100,13 +100,13 @@ Commands and setup used:
 
 - Repository-resident durable validation added or updated this round: `Yes`
 - Paths added or updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts`
 - If `Yes`, returned through `code_reviewer` before delivery: `Yes` (this validation-updated package is routed to `code_reviewer` after report creation).
 - Post-validation code review artifact: Pending code-reviewer re-review of validation-code delta.
 
 ## Other Validation Artifacts
 
-- Canonical validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/tickets/done/server-settings-media-model-selectors/api-e2e-validation-report.md`
+- Canonical validation report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-settings-media-model-selectors/api-e2e-validation-report.md`
 - Temporary runtime logs were used during execution but removed during cleanup; secret-bearing `.env.test` values were not printed or retained in validation artifacts.
 
 ## Temporary Validation Methods / Scaffolding

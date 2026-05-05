@@ -3,21 +3,21 @@
 ## Ticket
 
 - Ticket: `server-settings-media-model-selectors`
-- Worktree used for implementation/finalization: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors`
-- Ticket branch: `codex/server-settings-media-model-selectors`
+- Final repository path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Ticket branch used for finalization: `codex/server-settings-media-model-selectors`
 - Recorded base branch: `origin/personal`
 - Recorded finalization target: `personal`
 - User verification: Received on 2026-05-05. User said: “Yeah, I think the ticket is done, let's finalize and no need to renew a new version.”
 - Release/version instruction: No new version, no release, no tag.
+- Final status: Repository finalization completed; ticket archived under `tickets/done/server-settings-media-model-selectors/`.
 
 ## Integrated-State Refresh
 
 - Initial delivery fetch: `git fetch origin --prune` on 2026-05-05.
 - Pre-finalization fetch: `git fetch origin --prune` on 2026-05-05 after user verification.
-- Latest tracked remote base checked: `origin/personal` at `18f75c903eb3fe07949a18d5dd044e09f2147cb6`.
-- Ticket branch `HEAD` before final ticket commit: `18f75c903eb3fe07949a18d5dd044e09f2147cb6` plus the reviewed/validated uncommitted ticket changes.
+- Latest tracked remote base checked before ticket commit: `origin/personal` at `18f75c903eb3fe07949a18d5dd044e09f2147cb6`.
 - Base advanced since bootstrap/previous review/user verification: No. Bootstrap, delivery refresh, and pre-finalization `origin/personal` all resolved to `18f75c903eb3fe07949a18d5dd044e09f2147cb6` before the ticket commit.
-- Integration method: Already current; no merge/rebase was needed and no checkpoint commit was needed.
+- Integration method before final ticket commit: Already current; no merge/rebase was needed and no checkpoint commit was needed.
 - Post-integration executable rerun: Not required because no new base commits were integrated. The latest validation/review checks remained applicable to the same base; delivery additionally ran `git diff --check` after delivery edits.
 
 ## What Changed
@@ -71,33 +71,40 @@ Upstream validation/review evidence:
 - Post-validation code review reran `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/server-settings/server-settings-graphql.e2e.test.ts` — passed: 1 file / 5 tests.
 - Post-validation code review reran `git diff --check` — passed.
 
-Delivery-stage verification:
+Delivery/finalization verification:
 
-- `git fetch origin --prune` — passed; latest `origin/personal` remained `18f75c903eb3fe07949a18d5dd044e09f2147cb6`.
+- `git fetch origin --prune` — passed; latest `origin/personal` remained `18f75c903eb3fe07949a18d5dd044e09f2147cb6` before final ticket commit.
 - `git diff --check` — passed after delivery docs/report edits.
 - Pre-finalization `git fetch origin --prune` — passed; latest `origin/personal` still remained `18f75c903eb3fe07949a18d5dd044e09f2147cb6`.
+- Ticket branch commit: `ddd9279ca8cb04e61ac3f5967fc7367f96b81d77` (`feat(settings): add media default model selectors`).
+- Target merge commit: `dda6ffb17b89bbfb7773545cd49d4d4899bc0a87` (`merge: server settings media model selectors`).
+- Final report update validation: `git diff --check` passed before final report update commit.
 
 ## Docs Sync
 
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/tickets/done/server-settings-media-model-selectors/docs-sync-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-settings-media-model-selectors/docs-sync-report.md`
 - Long-lived doc updated/verified: `autobyteus-web/docs/settings.md`
 - Result: Pass.
 
-## Finalization Scope
+## Finalization Scope And Result
 
 - Ticket archived to: `tickets/done/server-settings-media-model-selectors/`
 - Repository finalization target: `personal`
-- Version/release/tag: Not required per explicit user instruction.
-- Final release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/tickets/done/server-settings-media-model-selectors/release-deployment-report.md`
+- Ticket branch commit: `ddd9279ca8cb04e61ac3f5967fc7367f96b81d77`
+- Merge commit on `personal`: `dda6ffb17b89bbfb7773545cd49d4d4899bc0a87`
+- Version/release/tag: Not performed per explicit user instruction.
+- Dedicated ticket worktree cleanup: Completed.
+- Local and remote ticket branch cleanup: Completed.
+- Final release/deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-settings-media-model-selectors/release-deployment-report.md`
 
 ## Artifact Package
 
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/tickets/done/server-settings-media-model-selectors/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/tickets/done/server-settings-media-model-selectors/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/tickets/done/server-settings-media-model-selectors/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/tickets/done/server-settings-media-model-selectors/design-review-report.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/tickets/done/server-settings-media-model-selectors/implementation-handoff.md`
-- Review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/tickets/done/server-settings-media-model-selectors/review-report.md`
-- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/tickets/done/server-settings-media-model-selectors/api-e2e-validation-report.md`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/tickets/done/server-settings-media-model-selectors/docs-sync-report.md`
-- Delivery/release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/tickets/done/server-settings-media-model-selectors/release-deployment-report.md`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-settings-media-model-selectors/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-settings-media-model-selectors/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-settings-media-model-selectors/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-settings-media-model-selectors/design-review-report.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-settings-media-model-selectors/implementation-handoff.md`
+- Review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-settings-media-model-selectors/review-report.md`
+- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-settings-media-model-selectors/api-e2e-validation-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-settings-media-model-selectors/docs-sync-report.md`
+- Delivery/release/deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-settings-media-model-selectors/release-deployment-report.md`

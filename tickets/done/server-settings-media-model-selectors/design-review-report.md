@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/tickets/done/server-settings-media-model-selectors/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/tickets/done/server-settings-media-model-selectors/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/tickets/done/server-settings-media-model-selectors/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-settings-media-model-selectors/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-settings-media-model-selectors/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-settings-media-model-selectors/design-spec.md`
 - Current Review Round: 1
 - Trigger: Initial architecture review request from `solution_designer` after user-approved requirements.
 - Prior Review Round Reviewed: N/A
@@ -19,7 +19,7 @@
 
 ## Reviewed Design Spec
 
-Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/tickets/done/server-settings-media-model-selectors/design-spec.md` for the Server Settings default media model selectors and Codex full-access switch UI replacement.
+Reviewed `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-settings-media-model-selectors/design-spec.md` for the Server Settings default media model selectors and Codex full-access switch UI replacement.
 
 ## Task Design Health Assessment Verdict
 

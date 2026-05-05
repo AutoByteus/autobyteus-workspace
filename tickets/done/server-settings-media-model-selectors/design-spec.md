@@ -369,7 +369,7 @@ Layering is descriptive only; ownership and existing boundaries above govern imp
 
 ## Guidance For Implementation
 
-- Do not edit the shared/base worktree. Work in `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors`.
+- Do not edit the shared/base worktree. Work in `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`.
 - Use `model.modelIdentifier` as the saved value, not `model.value`.
 - Build dropdown labels with existing `getModelSelectionOptionLabel` / `getModelSelectionSelectedLabel` helpers where practical.
 - Use runtime kind `autobyteus` for fetching image/audio model groups.

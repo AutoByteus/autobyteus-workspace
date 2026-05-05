@@ -21,10 +21,10 @@ User requested converting advanced environment-variable configuration for defaul
 ## Environment Discovery / Bootstrap Context
 
 - Project Type (`Git`/`Non-Git`): Git.
-- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors`.
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/tickets/done/server-settings-media-model-selectors`.
+- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`.
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-settings-media-model-selectors`.
 - Current Branch: `codex/server-settings-media-model-selectors`.
-- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors`.
+- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`.
 - Bootstrap Base Branch: `origin/personal`.
 - Remote Refresh Result: `git fetch origin --prune` completed successfully on 2026-05-05 before worktree creation; `origin/personal` at `18f75c903eb3fe07949a18d5dd044e09f2147cb6`.
 - Task Branch: `codex/server-settings-media-model-selectors`, created from `origin/personal`.
@@ -37,7 +37,7 @@ User requested converting advanced environment-variable configuration for defaul
 
 | Date | Source Type (`Code`/`Doc`/`Spec`/`Web`/`Repo`/`Issue`/`Command`/`Trace`/`Log`/`Data`/`Setup`/`Other`) | Exact Source / Query / Command | Why Consulted | Relevant Findings | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- |
-| 2026-05-05 | Command | `pwd`; `ls -la`; `git status --short --branch`; `git remote show origin`; `git fetch origin --prune`; `git worktree add -b codex/server-settings-media-model-selectors /Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors origin/personal` | Bootstrap repository, base branch, and dedicated worktree context | Source repo is git, remote default branch is `personal`, task worktree created from current `origin/personal` | No |
+| 2026-05-05 | Command | `pwd`; `ls -la`; `git status --short --branch`; `git remote show origin`; `git fetch origin --prune`; `git worktree add -b codex/server-settings-media-model-selectors /Users/normy/autobyteus_org/autobyteus-workspace-superrepo origin/personal` | Bootstrap repository, base branch, and dedicated worktree context | Source repo is git, remote default branch is `personal`, task worktree created from current `origin/personal` | No |
 | 2026-05-05 | Other | User screenshots in chat prompt | Understand current pain and desired UI reference | Advanced env rows expose exact keys and text inputs; Applications card uses desirable switch UI | No |
 | 2026-05-05 | Code | `autobyteus-web/components/settings/ServerSettingsManager.vue` | Find basic/advanced server settings entrypoint | Quick tab renders card grids and imports typed cards. Advanced tab renders raw `store.settings` key/value table. Quick endpoint fields are hard-coded in `quickSetupFields`. | Use as integration point for media defaults card |
 | 2026-05-05 | Code | `autobyteus-web/components/settings/CodexFullAccessCard.vue` | Inspect current Codex UI | Main control is native checkbox (`input type="checkbox"`) with local dirty/save state. Enabled maps to `danger-full-access`; disabled maps to `workspace-write`. | Replace checkbox markup with switch; preserve behavior |

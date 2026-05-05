@@ -2,10 +2,10 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/tickets/done/server-settings-media-model-selectors/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/tickets/done/server-settings-media-model-selectors/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/tickets/done/server-settings-media-model-selectors/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/tickets/done/server-settings-media-model-selectors/design-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-settings-media-model-selectors/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-settings-media-model-selectors/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-settings-media-model-selectors/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/server-settings-media-model-selectors/design-review-report.md`
 
 ## What Changed
 
@@ -27,24 +27,24 @@
 ## Key Files Or Areas
 
 - Frontend media defaults UI/state:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/autobyteus-web/components/settings/MediaDefaultModelsCard.vue`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/autobyteus-web/components/settings/useMediaDefaultModelsCard.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/autobyteus-web/components/settings/mediaDefaultModelSettings.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/settings/MediaDefaultModelsCard.vue`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/settings/useMediaDefaultModelsCard.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/settings/mediaDefaultModelSettings.ts`
 - Server Settings Basics placement:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/autobyteus-web/components/settings/ServerSettingsManager.vue`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/settings/ServerSettingsManager.vue`
 - Codex switch replacement:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/autobyteus-web/components/settings/CodexFullAccessCard.vue`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/settings/CodexFullAccessCard.vue`
 - Backend predefined setting metadata:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/autobyteus-server-ts/src/services/server-settings-service.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/services/server-settings-service.ts`
 - Tests:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/autobyteus-web/components/settings/__tests__/MediaDefaultModelsCard.spec.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/autobyteus-web/components/settings/__tests__/CodexFullAccessCard.spec.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/autobyteus-web/components/settings/__tests__/ServerSettingsManager.spec.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/autobyteus-server-ts/tests/unit/services/server-settings-service.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/settings/__tests__/MediaDefaultModelsCard.spec.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/settings/__tests__/CodexFullAccessCard.spec.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/settings/__tests__/ServerSettingsManager.spec.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/services/server-settings-service.test.ts`
 - Localization/docs:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/autobyteus-web/localization/messages/en/settings.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/autobyteus-web/localization/messages/zh-CN/settings.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-media-model-selectors/autobyteus-web/docs/settings.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/localization/messages/en/settings.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/localization/messages/zh-CN/settings.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/settings.md`
 
 ## Important Assumptions
 
