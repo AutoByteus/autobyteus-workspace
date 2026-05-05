@@ -24,6 +24,9 @@ const makeContext = (): AgentTeamContext => {
   return new AgentTeamContext('team-1', config, state);
 };
 
+const countOccurrences = (content: string, needle: string): number =>
+  content.split(needle).length - 1;
+
 describe('InterAgentMessageRequestEventHandler', () => {
   let handler: InterAgentMessageRequestEventHandler;
   let agentTeamContext: AgentTeamContext;
@@ -62,6 +65,34 @@ describe('InterAgentMessageRequestEventHandler', () => {
     expect(enqueue).not.toHaveBeenCalled();
   });
 
+  it('keeps agent recipient message content natural and carries explicit reference files separately', async () => {
+    const referenceFiles = ['/tmp/report.md', '/tmp/app.log'];
+    event = new InterAgentMessageRequestEvent(
+      'sender_agent_id_123',
+      'Recipient',
+      'Please review the attached artifacts and summarize your findings.',
+      'TASK_ASSIGNMENT',
+      referenceFiles
+    );
+    const mockAgent = {
+      agentId: 'agent-1',
+      context: { config: { role: 'RecipientRole' } },
+      postInterAgentMessage: vi.fn(async () => undefined)
+    };
+    agentTeamContext.state.teamManager = {
+      ensureNodeIsReady: vi.fn(async () => mockAgent)
+    } as any;
+
+    await handler.handle(event, agentTeamContext);
+
+    expect(mockAgent.postInterAgentMessage).toHaveBeenCalledTimes(1);
+    const postedMessage = (mockAgent.postInterAgentMessage as any).mock.calls[0][0];
+    expect(postedMessage).toBeInstanceOf(InterAgentMessage);
+    expect(postedMessage.content).toBe(event.content);
+    expect(postedMessage.content).not.toContain('Reference files:');
+    expect(postedMessage.referenceFiles).toEqual(referenceFiles);
+  });
+
   it('posts user message to sub-team recipient', async () => {
     const mockSubTeam = {
       postMessage: vi.fn(async () => undefined)
@@ -77,6 +108,33 @@ describe('InterAgentMessageRequestEventHandler', () => {
     const postedMessage = (mockSubTeam.postMessage as any).mock.calls[0][0];
     expect(postedMessage).toBeInstanceOf(AgentInputUserMessage);
     expect(postedMessage.content).toBe(event.content);
+  });
+
+  it('adds exactly one reference files block for sub-team recipients', async () => {
+    event = new InterAgentMessageRequestEvent(
+      'sender_agent_id_123',
+      'Recipient',
+      'Please review these files before continuing.',
+      'TASK_ASSIGNMENT',
+      ['/tmp/report.md', '/tmp/app.log']
+    );
+    const mockSubTeam = {
+      postMessage: vi.fn(async () => undefined)
+    };
+    agentTeamContext.state.teamManager = {
+      ensureNodeIsReady: vi.fn(async () => mockSubTeam)
+    } as any;
+
+    await handler.handle(event, agentTeamContext);
+
+    expect(mockSubTeam.postMessage).toHaveBeenCalledTimes(1);
+    const postedMessage = (mockSubTeam.postMessage as any).mock.calls[0][0];
+    expect(postedMessage).toBeInstanceOf(AgentInputUserMessage);
+    expect(countOccurrences(postedMessage.content, 'Reference files:')).toBe(1);
+    expect(postedMessage.content).toBe(
+      'Please review these files before continuing.\n\n' +
+      'Reference files:\n- /tmp/report.md\n- /tmp/app.log'
+    );
   });
 
   it('enqueues error when recipient not found or failed to start', async () => {

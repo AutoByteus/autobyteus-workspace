@@ -92,7 +92,7 @@ import { computed, onBeforeUnmount, onMounted, ref, Teleport, watch } from 'vue'
 import { storeToRefs } from 'pinia';
 import { Icon } from '@iconify/vue';
 import type { FileDataType, FileOpenMode } from '~/stores/fileExplorer';
-import type { RunFileChangeArtifact } from '~/stores/runFileChangesStore';
+import type { ArtifactViewerItem } from './artifactViewerItem';
 import { useLocalization } from '~/composables/useLocalization';
 import { useArtifactContentDisplayModeStore } from '~/stores/artifactContentDisplayMode';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
@@ -100,7 +100,7 @@ import { determineFileType } from '~/utils/fileExplorer/fileUtils';
 import FileViewer from '~/components/fileExplorer/FileViewer.vue';
 
 const props = defineProps<{
-  artifact: RunFileChangeArtifact | null;
+  artifact: ArtifactViewerItem | null;
   refreshSignal?: number;
 }>();
 
@@ -125,17 +125,23 @@ const toggleZenMode = () => artifactContentDisplayModeStore.toggleZenMode();
 const isLoading = computed(() => isDeterminingType.value || isFetchingContent.value);
 const usesBufferedWriteContent = computed(() => {
   return (
-    props.artifact?.sourceTool === 'write_file'
+    props.artifact?.kind === 'agent'
+    && props.artifact.sourceTool === 'write_file'
     && (props.artifact?.status === 'streaming' || props.artifact?.status === 'pending')
     && Object.prototype.hasOwnProperty.call(props.artifact, 'content')
   );
 });
 const normalizedArtifactPath = computed(() => props.artifact?.path?.replace(/\\/g, '/') ?? '');
 const displayPath = computed(() => normalizedArtifactPath.value || props.artifact?.path || '');
-const runArtifactUrl = computed(() => {
-  if (!props.artifact?.runId || !props.artifact.path) return null;
+const artifactContentUrl = computed(() => {
+  const artifact = props.artifact;
+  if (!artifact || !artifact.path) return null;
   const restBaseUrl = windowNodeContextStore.getBoundEndpoints().rest.replace(/\/$/, '');
-  return `${restBaseUrl}/runs/${encodeURIComponent(props.artifact.runId)}/file-change-content?path=${encodeURIComponent(displayPath.value)}`;
+  if (artifact.kind === 'message_reference') {
+    return `${restBaseUrl}/team-runs/${encodeURIComponent(artifact.teamRunId)}/message-file-references/${encodeURIComponent(artifact.referenceId)}/content`;
+  }
+  if (!artifact.runId) return null;
+  return `${restBaseUrl}/runs/${encodeURIComponent(artifact.runId)}/file-change-content?path=${encodeURIComponent(displayPath.value)}`;
 });
 const displayContent = computed(() => {
   if (!props.artifact) return null;
@@ -156,7 +162,7 @@ const supportsPreview = computed(() => {
   return path.endsWith('.md') || path.endsWith('.markdown') || path.endsWith('.html') || path.endsWith('.htm');
 });
 
-const mapArtifactTypeToFileType = (artifact: RunFileChangeArtifact | null): FileDataType | null => {
+const mapArtifactTypeToFileType = (artifact: ArtifactViewerItem | null): FileDataType | null => {
   switch (artifact?.type) {
     case 'image':
       return 'Image';
@@ -224,19 +230,19 @@ const refreshResolvedContent = async () => {
     return;
   }
 
-  if (artifact.status === 'failed') {
+  if (artifact.kind === 'agent' && artifact.status === 'failed') {
     errorMessage.value = t('workspace.components.workspace.agent.ArtifactContentViewer.failed_before_final_content_could_be_captured');
     isFetchingContent.value = false;
     return;
   }
 
-  if (artifact.status !== 'available') {
+  if (artifact.kind === 'agent' && artifact.status !== 'available') {
     pendingMessage.value = t('workspace.components.workspace.agent.ArtifactContentViewer.file_change_will_become_viewable_after_the_edit_completes');
     isFetchingContent.value = false;
     return;
   }
 
-  const fetchUrl = runArtifactUrl.value;
+  const fetchUrl = artifactContentUrl.value;
   if (!fetchUrl) {
     isFetchingContent.value = false;
     return;
@@ -316,7 +322,7 @@ onBeforeUnmount(() => {
 });
 
 watch(
-  () => [props.artifact?.id, props.artifact?.path, props.artifact?.type, props.artifact?.sourceTool, props.artifact?.status, props.artifact?.updatedAt, props.refreshSignal ?? 0],
+  () => [props.artifact?.itemId, props.artifact?.path, props.artifact?.type, props.artifact?.kind, props.artifact?.status, props.artifact?.updatedAt, props.refreshSignal ?? 0],
   () => {
     void syncArtifactView();
   },

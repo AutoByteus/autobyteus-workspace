@@ -1,6 +1,6 @@
 /**
  * TeamStreamingService - Facade for agent team WebSocket streaming.
- * 
+ *
  * Connects to team endpoint and routes events to appropriate team members
  * based on runtime member run IDs (`agent_id`) in the message payload.
  */
@@ -32,6 +32,7 @@ import {
   handleTeamStatus,
   handleTaskPlanEvent,
   handleFileChange,
+  handleMessageFileReferenceDeclared,
 } from './handlers';
 import { handleBrowserToolExecutionSucceeded } from './browser/browserToolExecutionSucceededHandler';
 
@@ -64,7 +65,7 @@ export class TeamStreamingService {
 
   /**
    * Create a TeamStreamingService.
-   * 
+   *
    * @param wsEndpoint - WebSocket endpoint from runtime config (e.g., 'ws://localhost:8000/ws/agent-team')
    * @param options - Optional configuration for testing
    */
@@ -86,7 +87,7 @@ export class TeamStreamingService {
    */
   connect(teamRunId: string, teamContext: AgentTeamContext): void {
     this.teamContext = teamContext;
-    
+
     this.wsClient.on('onMessage', this.handleMessage);
     this.wsClient.on('onConnect', this.handleConnect);
     this.wsClient.on('onDisconnect', this.handleDisconnect);
@@ -256,7 +257,7 @@ export class TeamStreamingService {
 
   private dispatchMessage(message: ServerMessage, teamContext: AgentTeamContext): void {
     const memberContext = this.getMemberContext(message);
-    
+
     if (!memberContext) {
       console.warn('No member context found for message, skipping');
       return;
@@ -355,6 +356,10 @@ export class TeamStreamingService {
 
       case 'FILE_CHANGE':
         handleFileChange(message.payload, memberContext);
+        break;
+
+      case 'MESSAGE_FILE_REFERENCE_DECLARED':
+        handleMessageFileReferenceDeclared(message.payload, memberContext);
         break;
 
       case 'CONNECTED':

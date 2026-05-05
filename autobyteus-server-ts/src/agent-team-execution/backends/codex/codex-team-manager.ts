@@ -34,6 +34,7 @@ import {
   buildInterAgentMessageAgentRunEvent,
 } from "../../services/inter-agent-message-runtime-builders.js";
 import { getMemberTeamContextBuilder, type MemberTeamContextBuilder } from "../../services/member-team-context-builder.js";
+import { publishProcessedTeamAgentEvents } from "../../services/publish-processed-team-agent-events.js";
 import { TeamBackendKind } from "../../domain/team-backend-kind.js";
 
 const buildRunNotFoundResult = (teamRunId: string): AgentOperationResult => ({
@@ -132,13 +133,20 @@ export class CodexTeamManager implements TeamManager {
     );
     memberContext.threadId = memberRun.getPlatformAgentRunId() ?? memberContext.threadId;
     if (result.accepted) {
-      this.publishMemberAgentEvent(
-        memberContext,
-        buildInterAgentMessageAgentRunEvent({
-          recipientRunId: memberContext.memberRunId,
-          request: normalizedRequest,
-        }),
-      );
+      await publishProcessedTeamAgentEvents({
+        teamRunId: teamContext.runId,
+        runContext: memberRun.context,
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        memberName: memberContext.memberName,
+        memberRunId: memberContext.memberRunId,
+        agentEvents: [
+          buildInterAgentMessageAgentRunEvent({
+            recipientRunId: memberContext.memberRunId,
+            request: normalizedRequest,
+          }),
+        ],
+        publishTeamEvent: (event) => this.publish(event),
+      });
     }
     this.publishTeamStatusIfChanged();
     return {

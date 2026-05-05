@@ -94,6 +94,25 @@ export const GetTeamMemberRunProjection = gql`
   }
 `;
 
+
+export const GetMessageFileReferences = gql`
+  query GetMessageFileReferences($teamRunId: String!) {
+    getMessageFileReferences(teamRunId: $teamRunId) {
+      referenceId
+      teamRunId
+      senderRunId
+      senderMemberName
+      receiverRunId
+      receiverMemberName
+      path
+      type
+      messageType
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
 export const GetAgentRunResumeConfig = gql`
   query GetAgentRunResumeConfig($runId: String!) {
     getAgentRunResumeConfig(runId: $runId) {

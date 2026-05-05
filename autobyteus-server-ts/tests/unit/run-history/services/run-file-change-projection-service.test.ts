@@ -2,9 +2,15 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../../src/agent-execution/domain/agent-run-event.js";
+import { TeamBackendKind } from "../../../../src/agent-team-execution/domain/team-backend-kind.js";
+import { TeamRun } from "../../../../src/agent-team-execution/domain/team-run.js";
+import { TeamRunConfig } from "../../../../src/agent-team-execution/domain/team-run-config.js";
+import { TeamRunContext } from "../../../../src/agent-team-execution/domain/team-run-context.js";
 import { RunFileChangeProjectionService } from "../../../../src/run-history/services/run-file-change-projection-service.js";
 import { RunFileChangeService } from "../../../../src/services/run-file-changes/run-file-change-service.js";
+import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 
 describe("RunFileChangeProjectionService", () => {
   const tempDirs: string[] = [];
@@ -212,25 +218,29 @@ describe("RunFileChangeProjectionService", () => {
     };
 
     emit({
-      eventType: AgentRunEventType.SEGMENT_START,
+      eventType: AgentRunEventType.FILE_CHANGE,
       runId: run.runId,
       statusHint: null,
       payload: {
-        id: "edit-1",
-        segment_type: "edit_file",
-        metadata: { path: "src/fresh.txt" },
+        runId: run.runId,
+        path: "src/fresh.txt",
+        status: "pending",
+        sourceTool: "edit_file",
+        sourceInvocationId: "edit-1",
       },
     });
     await new Promise((resolve) => setTimeout(resolve, 0));
 
     emit({
-      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      eventType: AgentRunEventType.FILE_CHANGE,
       runId: run.runId,
       statusHint: null,
       payload: {
-        invocation_id: "edit-1",
-        tool_name: "edit_file",
-        arguments: { path: "src/fresh.txt" },
+        runId: run.runId,
+        path: "src/fresh.txt",
+        status: "available",
+        sourceTool: "edit_file",
+        sourceInvocationId: "edit-1",
       },
     });
 
@@ -253,5 +263,179 @@ describe("RunFileChangeProjectionService", () => {
     await new Promise((resolve) => setTimeout(resolve, 0));
 
     expect(persistedProjection.entries[0]?.status).toBe("available");
+  });
+
+  it("reads active AutoByteus team-member projections through the run-file-change owner", async () => {
+    const workspaceRoot = await createTempDir();
+    const memberMemoryDir = await createTempDir();
+    const teamRun = new TeamRun({
+      context: new TeamRunContext({
+        runId: "team-active",
+        teamBackendKind: TeamBackendKind.AUTOBYTEUS,
+        coordinatorMemberName: "Professor",
+        config: new TeamRunConfig({
+          teamDefinitionId: "team-def",
+          teamBackendKind: TeamBackendKind.AUTOBYTEUS,
+          coordinatorMemberName: "Professor",
+          memberConfigs: [
+            {
+              memberName: "Professor",
+              memberRouteKey: "professor",
+              memberRunId: "professor-run",
+              agentDefinitionId: "professor-def",
+              llmModelIdentifier: "model",
+              autoExecuteTools: false,
+              skillAccessMode: SkillAccessMode.NONE,
+              runtimeKind: RuntimeKind.AUTOBYTEUS,
+              memoryDir: memberMemoryDir,
+              workspaceRootPath: workspaceRoot,
+            },
+          ],
+        }),
+        runtimeContext: null,
+      }),
+      backend: {
+        runId: "team-active",
+        teamBackendKind: TeamBackendKind.AUTOBYTEUS,
+        isActive: () => true,
+        getRuntimeContext: () => null,
+        subscribeToEvents: () => () => undefined,
+        getStatus: () => "IDLE",
+        postMessage: vi.fn(),
+        deliverInterAgentMessage: vi.fn(),
+        approveToolInvocation: vi.fn(),
+        interrupt: vi.fn(),
+        terminate: vi.fn(),
+      } as any,
+    });
+    const runFileChangeService = {
+      getProjectionForTeamMemberRun: vi.fn().mockResolvedValue({
+        version: 2,
+        entries: [
+          {
+            id: "professor-run:src/team.txt",
+            runId: "professor-run",
+            path: "src/team.txt",
+            type: "file",
+            status: "available",
+            sourceTool: "write_file",
+            sourceInvocationId: "write-team",
+            createdAt: "2026-04-10T00:00:00.000Z",
+            updatedAt: "2026-04-10T00:00:01.000Z",
+          },
+        ],
+      }),
+    };
+
+    const service = new RunFileChangeProjectionService({
+      agentRunManager: {
+        getActiveRun: vi.fn().mockReturnValue(null),
+      } as any,
+      teamRunManager: {
+        listActiveRuns: vi.fn().mockReturnValue(["team-active"]),
+        getTeamRun: vi.fn().mockReturnValue(teamRun),
+      } as any,
+      metadataService: {
+        readMetadata: vi.fn(),
+      } as any,
+      teamMetadataService: {
+        listTeamRunIds: vi.fn(),
+        readMetadata: vi.fn(),
+      } as any,
+      runFileChangeService: runFileChangeService as any,
+      workspaceManager: {
+        getWorkspaceById: vi.fn(),
+      } as any,
+    });
+
+    const resolved = await service.resolveEntry("professor-run", "src/team.txt");
+
+    expect(runFileChangeService.getProjectionForTeamMemberRun).toHaveBeenCalledWith(
+      teamRun,
+      "professor-run",
+    );
+    expect(resolved).toEqual({
+      entry: expect.objectContaining({
+        runId: "professor-run",
+        path: "src/team.txt",
+      }),
+      absolutePath: path.join(workspaceRoot, "src", "team.txt"),
+      isActiveRun: true,
+    });
+  });
+
+  it("reads historical AutoByteus team-member projections from team metadata", async () => {
+    const memoryDir = await createTempDir();
+    const workspaceRoot = await createTempDir();
+    const projectionStore = {
+      readProjection: vi.fn().mockResolvedValue({
+        version: 2,
+        entries: [
+          {
+            id: "student-run:src/history.txt",
+            runId: "student-run",
+            path: "src/history.txt",
+            type: "file",
+            status: "available",
+            sourceTool: "write_file",
+            sourceInvocationId: "write-history",
+            createdAt: "2026-04-10T00:00:00.000Z",
+            updatedAt: "2026-04-10T00:00:01.000Z",
+          },
+        ],
+      }),
+    };
+
+    const service = new RunFileChangeProjectionService({
+      agentRunManager: {
+        getActiveRun: vi.fn().mockReturnValue(null),
+      } as any,
+      teamRunManager: {
+        listActiveRuns: vi.fn().mockReturnValue([]),
+        getTeamRun: vi.fn(),
+      } as any,
+      metadataService: {
+        readMetadata: vi.fn().mockResolvedValue(null),
+      } as any,
+      teamMetadataService: {
+        listTeamRunIds: vi.fn().mockResolvedValue(["team-history"]),
+        readMetadata: vi.fn().mockResolvedValue({
+          teamRunId: "team-history",
+          memberMetadata: [
+            {
+              memberRunId: "student-run",
+              memberName: "Student",
+              memberRouteKey: "student",
+              workspaceRootPath: workspaceRoot,
+            },
+          ],
+        }),
+      } as any,
+      projectionStore: projectionStore as any,
+      runFileChangeService: {
+        getProjectionForRun: vi.fn(),
+        getProjectionForTeamMemberRun: vi.fn(),
+      } as any,
+      workspaceManager: {
+        getWorkspaceById: vi.fn(),
+      } as any,
+      memoryDir,
+    });
+
+    const projection = await service.getProjection("student-run");
+    const resolved = await service.resolveEntry("student-run", "src/history.txt");
+
+    expect(projectionStore.readProjection).toHaveBeenCalledWith(
+      path.join(memoryDir, "agent_teams", "team-history", "student-run"),
+    );
+    expect(projection).toHaveLength(1);
+    expect(resolved).toEqual({
+      entry: expect.objectContaining({
+        runId: "student-run",
+        path: "src/history.txt",
+      }),
+      absolutePath: path.join(workspaceRoot, "src", "history.txt"),
+      isActiveRun: false,
+    });
   });
 });

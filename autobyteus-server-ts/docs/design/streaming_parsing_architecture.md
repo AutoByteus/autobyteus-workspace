@@ -29,3 +29,27 @@ customization pipeline: runtime adapters first emit base normalized
 subscriber fan-out. `RunFileChangeService` consumes those `FILE_CHANGE` events
 for projection/persistence instead of deriving artifacts from generic
 tool-result processors.
+
+Native AutoByteus team events follow the same pipeline boundary. The
+AutoByteus team backend owns one native event bridge per active team run,
+converts/enriches each native member event once, runs that event through the
+pipeline, and only then fans the processed source/derived events out to all
+server subscribers. This preserves stateful file-change ordering for
+`write_file` events and avoids duplicate derivation when multiple websocket/API
+subscribers are attached.
+
+Message-derived Sent/Received Artifacts use the same event-pipeline boundary but
+a different owner. Accepted synthetic `INTER_AGENT_MESSAGE` events from team
+managers pass through `MessageFileReferenceProcessor`, which appends
+`MESSAGE_FILE_REFERENCE_DECLARED` metadata only when the event carries explicit
+`payload.reference_files`. Message prose is not scanned for path candidates:
+absolute paths mentioned only in `content`, Markdown decoration, frontend chat
+rendering, and user clicks are not reference-declaration authorities. Explicit
+reference paths are normalized and deduped before projection.
+`MessageFileReferenceService` persists that metadata once per team run in
+`agent_teams/<teamRunId>/message_file_references.json` and projects it as
+focused-member sent/received views on the frontend. Recipient runtime input may
+include one generated **Reference files:** block from the structured list, while
+the original inter-agent message content remains natural and self-contained.
+Runtime diagnostics for this path use the `[message-file-reference]` prefix and
+log concise event-level metadata rather than full message content.

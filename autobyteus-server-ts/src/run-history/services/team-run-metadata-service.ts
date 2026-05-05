@@ -19,6 +19,10 @@ export class TeamRunMetadataService {
     return this.metadataStore.readMetadata(teamRunId);
   }
 
+  async listTeamRunIds(): Promise<string[]> {
+    return this.metadataStore.listTeamRunIds();
+  }
+
   async writeMetadata(teamRunId: string, metadata: TeamRunMetadata): Promise<void> {
     await this.metadataStore.writeMetadata(teamRunId, metadata);
   }

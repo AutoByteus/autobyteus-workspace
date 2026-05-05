@@ -49,6 +49,7 @@ export class InterAgentMessageReceivedEventHandler extends AgentEventHandler {
         recipient_role_name: interAgentMsg.recipientRoleName,
         content: interAgentMsg.content,
         message_type: interAgentMsg.messageType,
+        reference_files: interAgentMsg.referenceFiles,
       });
     }
 
@@ -57,9 +58,14 @@ export class InterAgentMessageReceivedEventHandler extends AgentEventHandler {
         ? senderDisplayName.trim()
         : interAgentMsg.senderAgentId;
 
+    const referenceFilesBlock =
+      interAgentMsg.referenceFiles.length > 0
+        ? `\n\nReference files:\n${interAgentMsg.referenceFiles.map((filePath) => `- ${filePath}`).join('\n')}`
+        : '';
+
     const contentForLlm =
       `You received a message from sender name: ${normalizedSenderName}, sender id: ${interAgentMsg.senderAgentId}\n` +
-      `message:\n${interAgentMsg.content}`;
+      `message:\n${interAgentMsg.content}${referenceFilesBlock}`;
 
     const agentInputUserMessage = new AgentInputUserMessage(
       contentForLlm,
@@ -67,7 +73,8 @@ export class InterAgentMessageReceivedEventHandler extends AgentEventHandler {
       null,
       {
         sender_agent_id: interAgentMsg.senderAgentId,
-        original_message_type: interAgentMsg.messageType
+        original_message_type: interAgentMsg.messageType,
+        reference_files: interAgentMsg.referenceFiles
       }
     );
 

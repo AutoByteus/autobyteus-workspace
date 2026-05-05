@@ -1,4 +1,5 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import {
   AgentEventRebroadcastPayload,
   AgentTeamEventStream,
@@ -8,21 +9,32 @@ import {
   type TaskPlanEventPayload,
 } from "autobyteus-ts";
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
+import { AgentRunConfig } from "../../../agent-execution/domain/agent-run-config.js";
+import {
+  AgentRunContext,
+  type RuntimeAgentRunContext,
+} from "../../../agent-execution/domain/agent-run-context.js";
+import {
+  AgentRunEventType,
+  type AgentRunEvent,
+} from "../../../agent-execution/domain/agent-run-event.js";
 import { AutoByteusStreamEventConverter } from "../../../agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.js";
 import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import type { TeamRunBackend } from "../team-run-backend.js";
 import type { RuntimeTeamRunContext } from "../../domain/team-run-context.js";
 import type { InterAgentMessageDeliveryRequest } from "../../domain/inter-agent-message-delivery.js";
+import type { TeamMemberRunConfig, TeamRunConfig } from "../../domain/team-run-config.js";
 import { TeamBackendKind } from "../../domain/team-backend-kind.js";
 import {
   TeamRunEventSourceType,
-  type TeamRunAgentEventPayload,
+  type TeamRunEvent,
   type TeamRunEventListener,
   type TeamRunStatusUpdateData,
   type TeamRunTaskPlanEventPayload,
   type TeamRunEventUnsubscribe,
 } from "../../domain/team-run-event.js";
 import { buildInterAgentDeliveryInputMessage } from "../../services/inter-agent-message-runtime-builders.js";
+import { publishProcessedTeamAgentEvents } from "../../services/publish-processed-team-agent-events.js";
 import type { AutoByteusTeamRunContext } from "./autobyteus-team-run-context.js";
 
 type AutoByteusTeamLike = {
@@ -54,6 +66,7 @@ type AutoByteusTeamRunBackendOptions = {
   removeTeamRun: (teamRunId: string) => Promise<boolean>;
   memberRunIdsByName?: ReadonlyMap<string, string>;
   runtimeContext?: AutoByteusTeamRunContext | null;
+  teamRunConfig?: TeamRunConfig | null;
 };
 
 const buildRunNotFoundResult = (runId: string): AgentOperationResult => ({
@@ -68,10 +81,22 @@ const buildCommandFailure = (operation: string, error: unknown): AgentOperationR
   message: `Failed to ${operation}: ${String(error)}`,
 });
 
+const logger = {
+  warn: (...args: unknown[]) => console.warn(...args),
+};
+
 const asRecord = (value: unknown): Record<string, unknown> =>
   value && typeof value === "object" && !Array.isArray(value)
     ? (value as Record<string, unknown>)
     : {};
+
+const normalizeOptionalString = (value: unknown): string | null => {
+  if (typeof value !== "string") {
+    return null;
+  }
+  const normalized = value.trim();
+  return normalized.length > 0 ? normalized : null;
+};
 
 const extractMemberRunId = (
   agentEvent: { agent_id?: unknown; data?: unknown } | null,
@@ -96,9 +121,18 @@ const extractMemberRunId = (
   return normalizedMemberName;
 };
 
+const toReferenceFilesPayload = (
+  payload: Record<string, unknown>,
+): unknown =>
+  Object.prototype.hasOwnProperty.call(payload, "reference_files")
+    ? payload.reference_files
+    : payload.referenceFiles;
+
 export class AutoByteusTeamRunBackend implements TeamRunBackend {
   readonly runId: string;
   readonly teamBackendKind = TeamBackendKind.AUTOBYTEUS;
+  private readonly listeners = new Set<TeamRunEventListener>();
+  private nativeEventStream: AgentTeamEventStream | null = null;
 
   constructor(
     private readonly team: AutoByteusTeamLike,
@@ -116,33 +150,14 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
   }
 
   subscribeToEvents(listener: TeamRunEventListener): TeamRunEventUnsubscribe {
-    const stream = new AgentTeamEventStream(this.team as any);
-    let isClosed = false;
-
-    void (async () => {
-      try {
-        for await (const nativeEvent of stream.allEvents()) {
-          if (isClosed) {
-            break;
-          }
-          this.emitNativeEvent(nativeEvent, listener, null);
-        }
-      } catch {
-        // Ignore stream shutdown races.
-      } finally {
-        if (!isClosed) {
-          isClosed = true;
-          await stream.close().catch(() => {});
-        }
-      }
-    })();
+    this.listeners.add(listener);
+    this.ensureNativeEventBridge();
 
     return () => {
-      if (isClosed) {
-        return;
+      this.listeners.delete(listener);
+      if (this.listeners.size === 0) {
+        this.closeNativeEventBridge();
       }
-      isClosed = true;
-      void stream.close().catch(() => {});
     };
   }
 
@@ -239,17 +254,73 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
     }
   }
 
-  private emitNativeEvent(
+  private ensureNativeEventBridge(): void {
+    if (this.nativeEventStream) {
+      return;
+    }
+
+    const stream = new AgentTeamEventStream(this.team as any);
+    this.nativeEventStream = stream;
+    void (async () => {
+      try {
+        for await (const nativeEvent of stream.allEvents()) {
+          if (this.nativeEventStream !== stream) {
+            break;
+          }
+          const processedEvents = await this.buildProcessedTeamEvents(nativeEvent, null);
+          this.fanOutProcessedEvents(processedEvents);
+        }
+      } catch {
+        // Ignore native stream shutdown races.
+      } finally {
+        await stream.close().catch(() => {});
+        if (this.nativeEventStream === stream) {
+          this.nativeEventStream = null;
+        }
+      }
+    })();
+  }
+
+  private closeNativeEventBridge(): void {
+    const stream = this.nativeEventStream;
+    if (!stream) {
+      return;
+    }
+    this.nativeEventStream = null;
+    void stream.close().catch(() => {});
+  }
+
+  private fanOutProcessedEvents(events: TeamRunEvent[]): void {
+    if (events.length === 0 || this.listeners.size === 0) {
+      return;
+    }
+
+    const listeners = Array.from(this.listeners);
+    for (const event of events) {
+      for (const listener of listeners) {
+        if (!this.listeners.has(listener)) {
+          continue;
+        }
+        try {
+          listener(event);
+        } catch (error) {
+          logger.warn(
+            `AutoByteusTeamRunBackend: team event listener failed for '${this.runId}': ${String(error)}`,
+          );
+        }
+      }
+    }
+  }
+
+  private async buildProcessedTeamEvents(
     nativeEvent: AgentTeamStreamEvent,
-    listener: TeamRunEventListener,
     subTeamNodeName: string | null,
-  ): void {
+  ): Promise<TeamRunEvent[]> {
     if (
       nativeEvent.event_source_type === "AGENT" &&
       nativeEvent.data instanceof AgentEventRebroadcastPayload
     ) {
       const agentPayload = nativeEvent.data;
-      const payload = asRecord(agentPayload.agent_event.data);
       const memberRunId = extractMemberRunId(
         agentPayload.agent_event as { agent_id?: unknown; data?: unknown },
         agentPayload.agent_name,
@@ -275,43 +346,53 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
       const converter = new AutoByteusStreamEventConverter(resolvedMemberRunId);
       const convertedEvent = converter.convert(agentPayload.agent_event);
       if (!convertedEvent) {
-        return;
+        return [];
       }
-      listener({
-        eventSourceType: TeamRunEventSourceType.AGENT,
+
+      const processedEvents: TeamRunEvent[] = [];
+      await publishProcessedTeamAgentEvents({
         teamRunId: this.runId,
-        data: {
-          runtimeKind: RuntimeKind.AUTOBYTEUS,
-          memberName: agentPayload.agent_name,
-          memberRunId: resolvedMemberRunId,
-          agentEvent: convertedEvent,
-        } satisfies TeamRunAgentEventPayload,
+        runContext: this.buildMemberRunContext(
+          agentPayload.agent_name,
+          resolvedMemberRunId,
+        ),
+        runtimeKind: RuntimeKind.AUTOBYTEUS,
+        memberName: agentPayload.agent_name,
+        memberRunId: resolvedMemberRunId,
+        agentEvents: [
+          this.enrichConvertedEvent({
+            event: convertedEvent,
+            memberName: agentPayload.agent_name,
+            memberRunId: resolvedMemberRunId,
+          }),
+        ],
+        publishTeamEvent: (event) => {
+          processedEvents.push(event);
+        },
         subTeamNodeName,
       });
-      return;
+      return processedEvents;
     }
 
     if (
       nativeEvent.event_source_type === "TEAM" &&
       nativeEvent.data instanceof AgentTeamStatusUpdateData
     ) {
-      listener({
+      return [{
         eventSourceType: TeamRunEventSourceType.TEAM,
         teamRunId: this.runId,
         data: asRecord(nativeEvent.data) as TeamRunStatusUpdateData,
         subTeamNodeName,
-      });
-      return;
+      }];
     }
 
     if (nativeEvent.event_source_type === "TASK_PLAN") {
-      listener({
+      return [{
         eventSourceType: TeamRunEventSourceType.TASK_PLAN,
         teamRunId: this.runId,
         data: asRecord(nativeEvent.data as TaskPlanEventPayload) as TeamRunTaskPlanEventPayload,
         subTeamNodeName,
-      });
-      return;
+      }];
     }
 
     if (
@@ -319,20 +400,125 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
       nativeEvent.data instanceof SubTeamEventRebroadcastPayload &&
       nativeEvent.data.sub_team_event instanceof AgentTeamStreamEvent
     ) {
-      this.emitNativeEvent(
+      return this.buildProcessedTeamEvents(
         nativeEvent.data.sub_team_event,
-        listener,
         nativeEvent.data.sub_team_node_name,
       );
     }
+
+    return [];
+  }
+
+  private enrichConvertedEvent(input: {
+    event: AgentRunEvent;
+    memberName: string;
+    memberRunId: string;
+  }): AgentRunEvent {
+    if (input.event.eventType !== AgentRunEventType.INTER_AGENT_MESSAGE) {
+      return input.event;
+    }
+
+    const receiverContext = this.resolveMemberContextByRunIdOrName(
+      input.memberRunId,
+      input.memberName,
+    );
+    const receiverRunId = receiverContext?.memberRunId ?? input.memberRunId;
+    const receiverMemberName = receiverContext?.memberName ?? input.memberName;
+    const senderIdentity =
+      normalizeOptionalString(input.event.payload.sender_agent_id)
+      ?? normalizeOptionalString(input.event.payload.senderAgentId)
+      ?? normalizeOptionalString(input.event.payload.sender_run_id);
+    const senderContext = this.resolveMemberContextByIdentity(senderIdentity);
+    const senderRunId = senderContext?.memberRunId ?? senderIdentity;
+    const senderMemberName =
+      normalizeOptionalString(input.event.payload.sender_agent_name)
+      ?? normalizeOptionalString(input.event.payload.senderAgentName)
+      ?? senderContext?.memberName
+      ?? null;
+    const messageType =
+      normalizeOptionalString(input.event.payload.message_type)
+      ?? normalizeOptionalString(input.event.payload.messageType)
+      ?? normalizeOptionalString(input.event.payload.original_message_type);
+
+    return {
+      ...input.event,
+      runId: receiverRunId,
+      payload: {
+        ...input.event.payload,
+        team_run_id: this.runId,
+        receiver_run_id: receiverRunId,
+        receiver_agent_name: receiverMemberName,
+        ...(senderRunId ? { sender_agent_id: senderRunId } : {}),
+        ...(senderMemberName ? { sender_agent_name: senderMemberName } : {}),
+        ...(messageType ? { message_type: messageType } : {}),
+        reference_files: toReferenceFilesPayload(input.event.payload),
+      },
+    };
+  }
+
+  private buildMemberRunContext(
+    memberName: string,
+    memberRunId: string,
+  ): AgentRunContext<RuntimeAgentRunContext> {
+    const memberConfig = this.resolveMemberConfig(memberName, memberRunId);
+    return new AgentRunContext({
+      runId: memberRunId,
+      config: new AgentRunConfig({
+        agentDefinitionId: memberConfig?.agentDefinitionId ?? memberName,
+        llmModelIdentifier: memberConfig?.llmModelIdentifier ?? "",
+        autoExecuteTools: memberConfig?.autoExecuteTools ?? false,
+        workspaceId: memberConfig?.workspaceId ?? null,
+        memoryDir: memberConfig?.memoryDir ?? null,
+        llmConfig: memberConfig?.llmConfig ?? null,
+        skillAccessMode: memberConfig?.skillAccessMode ?? SkillAccessMode.NONE,
+        runtimeKind: memberConfig?.runtimeKind ?? RuntimeKind.AUTOBYTEUS,
+        applicationExecutionContext: memberConfig?.applicationExecutionContext ?? null,
+      }),
+      runtimeContext: null,
+    });
+  }
+
+  private resolveMemberConfig(
+    memberName: string,
+    memberRunId: string,
+  ): TeamMemberRunConfig | null {
+    return (
+      this.options.teamRunConfig?.memberConfigs.find(
+        (memberConfig) =>
+          memberConfig.memberRunId === memberRunId ||
+          memberConfig.memberName === memberName ||
+          memberConfig.memberRouteKey === memberName,
+      ) ?? null
+    );
+  }
+
+  private resolveMemberContextByRunIdOrName(
+    memberRunId: string,
+    memberName: string | null,
+  ) {
+    return (
+      this.options.runtimeContext?.memberContexts.find(
+        (memberContext) =>
+          memberContext.memberRunId === memberRunId ||
+          memberContext.memberName === memberName ||
+          memberContext.nativeAgentId === memberRunId,
+      ) ?? null
+    );
+  }
+
+  private resolveMemberContextByIdentity(identity: string | null) {
+    if (!identity) {
+      return null;
+    }
+    return (
+      this.options.runtimeContext?.memberContexts.find(
+        (memberContext) =>
+          memberContext.memberRunId === identity ||
+          memberContext.nativeAgentId === identity ||
+          memberContext.memberName === identity ||
+          memberContext.memberRouteKey === identity,
+      ) ?? null
+    );
   }
 
 }
-
-const normalizeOptionalString = (value: string | null): string | null => {
-  if (value === null) {
-    return null;
-  }
-  const normalized = value.trim();
-  return normalized.length > 0 ? normalized : null;
-};

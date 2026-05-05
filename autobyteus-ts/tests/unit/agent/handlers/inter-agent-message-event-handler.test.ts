@@ -58,6 +58,9 @@ const makeContext = (senderNameByAgentId: Record<string, string> = {}) => {
   return { context, inputQueues, notifier };
 };
 
+const countOccurrences = (content: string, needle: string): number =>
+  content.split(needle).length - 1;
+
 describe('InterAgentMessageReceivedEventHandler', () => {
   let infoSpy: ReturnType<typeof vi.spyOn>;
   let warnSpy: ReturnType<typeof vi.spyOn>;
@@ -104,7 +107,8 @@ describe('InterAgentMessageReceivedEventHandler', () => {
       sender_agent_id: senderId,
       recipient_role_name: recipientRole,
       content,
-      message_type: messageType
+      message_type: messageType,
+      reference_files: []
     });
 
     expect(inputQueues.enqueueUserMessage).toHaveBeenCalledTimes(1);
@@ -119,6 +123,36 @@ describe('InterAgentMessageReceivedEventHandler', () => {
     expect(contentSent).not.toContain('Message Type:');
     expect(contentSent).not.toContain('Recipient Role Name');
     expect(contentSent).not.toContain('Reply naturally based on this message.');
+  });
+
+
+  it('includes explicit reference files in recipient runtime input and metadata', async () => {
+    const handler = new InterAgentMessageReceivedEventHandler();
+    const { context, inputQueues, notifier } = makeContext({
+      sender_agent_123: 'Professor',
+    });
+    const interAgentMsg = new InterAgentMessage(
+      context.config.role,
+      context.agentId,
+      'Please inspect the referenced file.',
+      'handoff',
+      'sender_agent_123',
+      ['/tmp/report.md']
+    );
+
+    await handler.handle(new InterAgentMessageReceivedEvent(interAgentMsg), context);
+
+    expect(notifier.notifyAgentDataInterAgentMessageReceived).toHaveBeenCalledWith(expect.objectContaining({
+      reference_files: ['/tmp/report.md'],
+    }));
+    const enqueued = inputQueues.enqueueUserMessage.mock.calls[0][0];
+    expect(countOccurrences(enqueued.agentInputUserMessage.content, 'Reference files:')).toBe(1);
+    expect(enqueued.agentInputUserMessage.content).toContain(
+      'Reference files:\n- /tmp/report.md'
+    );
+    expect(enqueued.agentInputUserMessage.metadata).toEqual(expect.objectContaining({
+      reference_files: ['/tmp/report.md'],
+    }));
   });
 
   it('keeps the same strict template when sender name cannot be resolved', async () => {
