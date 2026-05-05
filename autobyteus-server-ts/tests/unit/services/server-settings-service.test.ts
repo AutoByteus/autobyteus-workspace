@@ -143,6 +143,36 @@ describe("ServerSettingsService", () => {
     ).toContain("danger-full-access disables filesystem sandboxing");
   });
 
+  it("exposes media default model settings as predefined editable metadata", () => {
+    mockConfig.getConfigData.mockReturnValue({
+      DEFAULT_IMAGE_EDIT_MODEL: "nano-banana-pro-app-rpa@host",
+      DEFAULT_IMAGE_GENERATION_MODEL: "gpt-image-1.5",
+      DEFAULT_SPEECH_GENERATION_MODEL: "gemini-2.5-flash-tts",
+    });
+
+    const service = new ServerSettingsService();
+    const settings = service.getAvailableSettings();
+
+    expect(settings.find((item) => item.key === "DEFAULT_IMAGE_EDIT_MODEL")).toMatchObject({
+      value: "nano-banana-pro-app-rpa@host",
+      description: expect.stringContaining("Default image editing model identifier"),
+      isEditable: true,
+      isDeletable: false,
+    });
+    expect(settings.find((item) => item.key === "DEFAULT_IMAGE_GENERATION_MODEL")).toMatchObject({
+      value: "gpt-image-1.5",
+      description: expect.stringContaining("Default image generation model identifier"),
+      isEditable: true,
+      isDeletable: false,
+    });
+    expect(settings.find((item) => item.key === "DEFAULT_SPEECH_GENERATION_MODEL")).toMatchObject({
+      value: "gemini-2.5-flash-tts",
+      description: expect.stringContaining("Default speech generation model identifier"),
+      isEditable: true,
+      isDeletable: false,
+    });
+  });
+
   it("updates settings successfully", () => {
     mockConfig.set.mockImplementation(() => undefined);
 
@@ -189,6 +219,19 @@ describe("ServerSettingsService", () => {
 
     expect(ok).toBe(true);
     expect(mockConfig.set).toHaveBeenCalledWith("CUSTOM_SETTING", "  raw value  ");
+  });
+
+  it("persists dynamic media model identifiers without static allowed-value validation", () => {
+    mockConfig.set.mockImplementation(() => undefined);
+
+    const service = new ServerSettingsService();
+    const [ok] = service.updateSetting("DEFAULT_IMAGE_EDIT_MODEL", "nano-banana-pro-app-rpa@host");
+
+    expect(ok).toBe(true);
+    expect(mockConfig.set).toHaveBeenCalledWith(
+      "DEFAULT_IMAGE_EDIT_MODEL",
+      "nano-banana-pro-app-rpa@host",
+    );
   });
 
   it("returns error when update fails", () => {

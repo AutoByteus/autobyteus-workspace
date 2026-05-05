@@ -262,10 +262,10 @@ describe("CodexThreadBootstrapper", () => {
     expect(dynamicToolSpecs?.map((spec) => spec.name)).toEqual(["open_tab", "read_page"]);
   });
 
-  it("exposes publish_artifact as a Codex dynamic tool only when the agent config allows it", async () => {
+  it("exposes publish_artifacts as a Codex dynamic tool only when the agent config allows it", async () => {
     const { bootstrapper } = createBootstrapper({
       skills: [],
-      toolNames: ["publish_artifact"],
+      toolNames: ["publish_artifacts"],
       requestImplementation: async () => ({ data: [] }),
     });
 
@@ -273,6 +273,36 @@ describe("CodexThreadBootstrapper", () => {
     const dynamicToolSpecs = runContext.runtimeContext.codexThreadConfig.dynamicTools;
 
     expect(dynamicToolSpecs).not.toBeNull();
-    expect(dynamicToolSpecs?.map((spec) => spec.name)).toEqual(["publish_artifact"]);
+    expect(dynamicToolSpecs?.map((spec) => spec.name)).toEqual(["publish_artifacts"]);
+    expect(dynamicToolSpecs?.[0]?.inputSchema).toMatchObject({
+      required: ["artifacts"],
+      additionalProperties: false,
+    });
   });
+
+  it("does not expose artifact publication for old singular-only Codex configs", async () => {
+    const { bootstrapper } = createBootstrapper({
+      skills: [],
+      toolNames: ["publish_artifact"],
+      requestImplementation: async () => ({ data: [] }),
+    });
+
+    const runContext = await bootstrapper.bootstrapForCreate(createRunContext());
+
+    expect(runContext.runtimeContext.codexThreadConfig.dynamicTools).toBeNull();
+  });
+
+  it("exposes only the plural artifact dynamic tool for mixed old/new Codex configs", async () => {
+    const { bootstrapper } = createBootstrapper({
+      skills: [],
+      toolNames: ["publish_artifacts", "publish_artifact"],
+      requestImplementation: async () => ({ data: [] }),
+    });
+
+    const runContext = await bootstrapper.bootstrapForCreate(createRunContext());
+    const dynamicToolSpecs = runContext.runtimeContext.codexThreadConfig.dynamicTools;
+
+    expect(dynamicToolSpecs?.map((spec) => spec.name)).toEqual(["publish_artifacts"]);
+  });
+
 });

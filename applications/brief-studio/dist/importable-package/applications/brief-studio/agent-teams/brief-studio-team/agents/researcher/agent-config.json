@@ -1,5 +1,5 @@
 {
-  "toolNames": ["write_file", "publish_artifact", "send_message_to"],
+  "toolNames": ["write_file", "publish_artifacts", "send_message_to"],
   "skillNames": [],
   "defaultLaunchConfig": {
     "runtimeKind": "autobyteus"

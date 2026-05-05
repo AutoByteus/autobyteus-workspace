@@ -4,7 +4,7 @@ import type { ClaudeSessionEvent } from "../claude-runtime-shared.js";
 import type { ClaudeSendMessageToolApprovalHandler } from "../team-communication/claude-send-message-tool-call-handler.js";
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
 import { buildClaudeBrowserMcpServers } from "../browser/build-claude-browser-mcp-servers.js";
-import { buildClaudePublishArtifactMcpServer } from "../published-artifacts/build-claude-publish-artifact-mcp-server.js";
+import { buildClaudePublishArtifactsMcpServer } from "../published-artifacts/build-claude-publish-artifacts-mcp-server.js";
 
 const mergeMcpServerMaps = (
   ...maps: Array<Record<string, unknown> | null>
@@ -22,7 +22,7 @@ const mergeMcpServerMaps = (
 export const buildClaudeSessionMcpServers = async (options: {
   sendMessageToToolingEnabled: boolean;
   enabledBrowserToolNames?: Iterable<string> | null;
-  publishArtifactToolingEnabled: boolean;
+  publishArtifactsToolingEnabled: boolean;
   runContext: ClaudeRunContext;
   sdkClient: ClaudeSdkClient;
   requestToolApproval: ClaudeSendMessageToolApprovalHandler | null;
@@ -48,8 +48,8 @@ export const buildClaudeSessionMcpServers = async (options: {
     enabledToolNames: options.enabledBrowserToolNames,
   });
 
-  const publishedArtifactMcpServer = options.publishArtifactToolingEnabled
-    ? await buildClaudePublishArtifactMcpServer({
+  const publishedArtifactMcpServer = options.publishArtifactsToolingEnabled
+    ? await buildClaudePublishArtifactsMcpServer({
         sdkClient: options.sdkClient,
         runId: options.runContext.runId,
       })
