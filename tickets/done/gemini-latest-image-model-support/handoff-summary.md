@@ -131,3 +131,12 @@ Known warnings during focused tests were the pre-existing dotenv / SSL certifica
 - Ticket branch final commit: `cf667942`
 - Merge commit into `personal`: `e11199b4`
 - Release/publication/deployment status: `Not required` per user request.
+
+
+## Post-Finalization Cleanup
+
+- Dedicated ticket worktree removed: `Yes`
+- Worktree metadata pruned: `Yes`
+- Local ticket branch deleted: `Yes`
+- Remote ticket branch cleanup: `Not required`; `origin/codex/gemini-latest-image-model-support` remains as the pushed ticket branch.
+- Release requested/performed: `No`
