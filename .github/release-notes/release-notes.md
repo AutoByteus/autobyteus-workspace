@@ -1,19 +1,10 @@
-# Release Notes — remove-media-output-path-restriction
+## What's New
+- None.
 
 ## Improvements
-
-- Server-owned `generate_image`, `edit_image`, and `generate_speech` can now save generated media to explicit absolute local paths outside the active workspace when the server process can write there.
-- `generate_image` and `edit_image` local `input_images` now accept absolute filesystem paths and `file:` URLs for existing files readable by the server process.
-- `edit_image.mask_image` now follows the same local input policy, so masks can live in task-specific folders outside the active workspace.
+- Added durable Claude Agent SDK interrupt/resume coverage for single-agent and team-member WebSocket follow-ups.
+- Added live-gated real Claude SDK proof that a follow-up after Stop/Interrupt recalls prior context when `RUN_CLAUDE_E2E=1` is enabled.
 
 ## Fixes
-
-- Fixed the common generate-then-edit workflow where an image generated to an external absolute path could not be reused as a later `edit_image` input.
-- Updated media tool descriptions and durable docs so they no longer advertise the old workspace/Downloads/system-temp allowlist for server-owned media paths.
-
-## Compatibility / Migration Notes
-
-- Relative media paths still resolve inside the active workspace, and relative traversal outside that workspace remains rejected.
-- URL and data URI image references continue to pass through unchanged.
-- Normal OS/runtime filesystem permissions remain the final authority for local media reads and writes.
-- The generic safe-path helper remains unchanged for unrelated tools.
+- Fixed Claude Agent SDK follow-up messages after Stop/Interrupt so they continue the same provider conversation when Claude has emitted a provider session id.
+- Prevented invalid Claude resume attempts that would send the local run id when no provider session id exists yet.
