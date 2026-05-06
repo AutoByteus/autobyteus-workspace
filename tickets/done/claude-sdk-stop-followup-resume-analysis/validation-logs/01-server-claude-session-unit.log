@@ -1,0 +1,152 @@
+pnpm --dir autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/claude/session/claude-session.test.ts tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts --reporter=verbose
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-stop-followup-resume-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-stop-followup-resume-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:41089) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-stop-followup-resume-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-stop-followup-resume-analysis/autobyteus-server-ts
+
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > rejects sending a new turn while another turn is already active 2ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > settles an interrupted active turn before emitting TURN_INTERRUPTED 5ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > treats interrupt without an active turn execution as an idempotent cleanup no-op 0ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > delegates terminate to the session manager dependency 0ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > adopts a resolved Claude session id and migrates cached messages 0ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > resumes an interrupted incomplete turn using its adopted Claude provider session id 3ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > does not pass the local run id placeholder as a Claude resume id after interrupt 3ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > continues to resume completed Claude turns with the adopted provider session id 3ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > continues to resume restored Claude runs with the restored provider session id 2ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > emits provider-derived text segment ids and preserves text-tool-text order 1ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > coalesces partial stream_event text deltas by message and content block 1ms
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:41090) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-stop-followup-resume-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-stop-followup-resume-analysis/autobyteus-server-ts
+
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts > ClaudeSessionManager > creates a run session and initializes runtime context to a fresh local placeholder session id 1ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts > ClaudeSessionManager > restores a run session and marks it as having completed a prior turn 0ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts > ClaudeSessionManager > uses the provided session id directly when fetching session messages 1ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts > ClaudeSessionManager > falls back to cached messages when the SDK returns no history 0ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts > ClaudeSessionManager > merges normalized SDK history with cached messages when both are available 0ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts > ClaudeSessionManager > terminates a run session, emits SESSION_TERMINATED, and removes the run session 0ms
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts > ClaudeSessionManager > settles an active turn through the session-owned interrupt sequence before termination cleanup 3ms
+
+ Test Files  2 passed (2)
+      Tests  18 passed (18)
+   Start at  21:34:22
+   Duration  4.70s (transform 2.31s, setup 24ms, import 4.12s, tests 29ms, environment 0ms)
+
+
+EXIT_CODE=0

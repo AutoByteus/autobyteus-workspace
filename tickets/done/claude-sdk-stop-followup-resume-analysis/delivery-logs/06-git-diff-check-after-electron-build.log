@@ -1,0 +1,3 @@
+Command: git add -N electron-test-build-report + final build log && git diff --check && git reset -q
+Purpose: include untracked latest Electron build artifacts in whitespace validation.
+Result: passed

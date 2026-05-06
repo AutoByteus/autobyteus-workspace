@@ -813,6 +813,95 @@ const defineRuntimeSuite = (input: {
       }
     }, 180_000);
 
+    if (input.runtimeKind === "claude_agent_sdk") {
+      it("terminates an active tool-approval run, restores it, reconnects, and continues streaming", async () => {
+        const workspaceRootPath = await mkdtemp(
+          path.join(os.tmpdir(), `${input.runtimeKind}-active-terminate-workspace-`),
+        );
+        createdWorkspaceRoots.add(workspaceRootPath);
+        const llmModelIdentifier = await fetchModelIdentifier();
+        const agentDefinitionId = await createAgentDefinition(["write_file"]);
+        const runId = await createAgentRun({
+          agentDefinitionId,
+          llmModelIdentifier,
+          workspaceRootPath,
+          autoExecuteTools: false,
+        });
+
+        const firstConnection = await openAgentSocket(runId);
+        let firstConnectionClosed = false;
+        let restoredConnection: Awaited<ReturnType<typeof openAgentSocket>> | null = null;
+        try {
+          const targetRelativePath = `active-terminate-${randomUUID().replace(/-/g, "_")}.txt`;
+          const expectedContent = `ACTIVE_TERMINATE_${randomUUID().replace(/-/g, "_")}`;
+          const firstStartIndex = firstConnection.messages.length;
+          firstConnection.socket.send(
+            JSON.stringify({
+              type: "SEND_MESSAGE",
+              payload: {
+                content:
+                  `Create the file ${targetRelativePath} with exactly this content: ${expectedContent}. ` +
+                  "Use the write_file tool exactly once, perform the real tool call, and do not answer with plain text.",
+              },
+            }),
+          );
+
+          const approvalRequested = await waitForMessageAfter(
+            firstConnection.messages,
+            firstStartIndex,
+            (message) => message.type === "TOOL_APPROVAL_REQUESTED",
+            "TOOL_APPROVAL_REQUESTED before active terminate",
+          );
+          expect(resolveInvocationId(approvalRequested.payload)).toBeTruthy();
+
+          await terminateAgentRun(runId);
+          firstConnection.socket.close();
+          await firstConnection.app.close();
+          firstConnectionClosed = true;
+
+          await restoreAgentRun(runId);
+          restoredConnection = await openAgentSocket(runId);
+
+          const followUpToken = `ACTIVE_TERMINATE_FOLLOWUP_${randomUUID().replace(/-/g, "_")}`;
+          const followUpStartIndex = restoredConnection.messages.length;
+          restoredConnection.socket.send(
+            JSON.stringify({
+              type: "SEND_MESSAGE",
+              payload: {
+                content: `Reply with exactly ${followUpToken} and nothing else.`,
+              },
+            }),
+          );
+
+          await waitForMessageAfter(
+            restoredConnection.messages,
+            followUpStartIndex,
+            (message) => assistantTextMatches(message, followUpToken),
+            `assistant text containing ${followUpToken} after active terminate restore`,
+            180_000,
+          );
+          await waitForMessageAfter(
+            restoredConnection.messages,
+            followUpStartIndex,
+            (message) =>
+              message.type === "AGENT_STATUS" && message.payload.new_status === "IDLE",
+            "AGENT_STATUS IDLE after active terminate restore follow-up",
+            180_000,
+          );
+        } finally {
+          if (!firstConnectionClosed) {
+            firstConnection.socket.close();
+            await firstConnection.app.close().catch(() => undefined);
+          }
+          if (restoredConnection) {
+            restoredConnection.socket.close();
+            await restoredConnection.app.close().catch(() => undefined);
+          }
+          await terminateAgentRun(runId).catch(() => undefined);
+        }
+      }, 240_000);
+    }
+
     it("serves run history and projection after terminate, restore, and continue", async () => {
       const workspaceRootPath = await mkdtemp(
         path.join(os.tmpdir(), `${input.runtimeKind}-runtime-projection-workspace-`),

@@ -10,8 +10,7 @@ import { resolveClaudeStreamChunkSessionId } from "../claude-runtime-message-nor
 import { ClaudeSessionEventName } from "../events/claude-session-event-name.js";
 import { logRawClaudeSessionChunkDetails } from "../events/claude-session-event-debug.js";
 import { buildClaudeSessionMcpServers } from "./build-claude-session-mcp-servers.js";
-import type { MemberTeamContext } from "../../../../agent-team-execution/domain/member-team-context.js";
-import type { ClaudeAgentRunContext, ClaudeRunContext } from "../backend/claude-agent-run-context.js";
+import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
 import { ClaudeSessionMessageCache } from "./claude-session-message-cache.js";
 import type { ClaudeSessionToolUseCoordinator } from "./claude-session-tool-use-coordinator.js";
 import type { ClaudeSessionConfig } from "./claude-session-config.js";
@@ -86,22 +85,6 @@ export class ClaudeSession {
     return this.runContext.runtimeContext.hasCompletedTurn;
   }
 
-  get agentInstruction(): string | null {
-    return this.runContext.runtimeContext.agentInstruction;
-  }
-
-  get configuredSkills(): ClaudeAgentRunContext["configuredSkills"] {
-    return this.runContext.runtimeContext.configuredSkills;
-  }
-
-  get skillAccessMode(): ClaudeAgentRunContext["skillAccessMode"] {
-    return this.runContext.runtimeContext.skillAccessMode;
-  }
-
-  get memberTeamContext(): MemberTeamContext | null {
-    return this.runContext.runtimeContext.memberTeamContext;
-  }
-
   get activeTurnId(): string | null {
     return this.runContext.runtimeContext.activeTurnId;
   }
@@ -116,10 +99,6 @@ export class ClaudeSession {
 
   get permissionMode(): ClaudeSessionConfig["permissionMode"] {
     return this.sessionConfig.permissionMode;
-  }
-
-  get autoExecuteTools(): boolean {
-    return this.runContext.runtimeContext.autoExecuteTools;
   }
 
   isActive(): boolean {
@@ -226,24 +205,34 @@ export class ClaudeSession {
   }
 
   async interrupt(): Promise<void> {
+    await this.settleActiveTurnForClosure("Tool approval interrupted.");
+  }
+
+  async settleActiveTurnForClosure(pendingToolApprovalReason: string): Promise<void> {
     const activeTurn = this.activeTurnExecution;
     if (!activeTurn) {
-      this.cleanupLegacyActiveInterruptState();
+      this.cleanupLegacyActiveInterruptState(pendingToolApprovalReason);
       return;
     }
 
     if (!activeTurn.interruptSettlementTask) {
-      activeTurn.interruptSettlementTask = this.interruptActiveTurn(activeTurn);
+      activeTurn.interruptSettlementTask = this.interruptActiveTurn(
+        activeTurn,
+        pendingToolApprovalReason,
+      );
     }
     await activeTurn.interruptSettlementTask;
   }
 
-  private async interruptActiveTurn(activeTurn: ClaudeActiveTurnExecution): Promise<void> {
+  private async interruptActiveTurn(
+    activeTurn: ClaudeActiveTurnExecution,
+    pendingToolApprovalReason: string,
+  ): Promise<void> {
     const interruptedTurnId = activeTurn.turnId;
     activeTurn.interrupted = true;
     this.dependencies.toolingCoordinator.clearPendingToolApprovals(
       this.runId,
-      "Tool approval interrupted.",
+      pendingToolApprovalReason,
     );
     await this.flushPendingToolApprovalResponses();
     activeTurn.abortController.abort();
@@ -346,12 +335,12 @@ export class ClaudeSession {
     });
   }
 
-  private cleanupLegacyActiveInterruptState(): void {
+  private cleanupLegacyActiveInterruptState(pendingToolApprovalReason: string): void {
     this.activeAbortController?.abort();
     this.clearActiveAbortController();
     this.dependencies.toolingCoordinator.clearPendingToolApprovals(
       this.runId,
-      "Tool approval interrupted.",
+      pendingToolApprovalReason,
     );
     const query = this.dependencies.activeQueriesByRunId.get(this.runId) ?? null;
     try {
@@ -370,7 +359,7 @@ export class ClaudeSession {
     const toolingOptions = resolveClaudeSessionToolingOptions({
       configuredToolExposure: this.runContext.runtimeContext.configuredToolExposure,
       hasMaterializedSkills: this.runContext.runtimeContext.materializedConfiguredSkills.length > 0,
-      memberTeamContext: this.memberTeamContext,
+      memberTeamContext: this.runContext.runtimeContext.memberTeamContext,
     });
     const turnInput = buildClaudeTurnInput({
       runContext: this.runContext,

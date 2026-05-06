@@ -1,0 +1,110 @@
+RUN_CLAUDE_E2E=1 CLAUDE_FLOW_TEST_TIMEOUT_MS=180000 CLAUDE_LIVE_INTERRUPT_STEP_TIMEOUT_MS=90000 pnpm --dir autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts -t "uses the real Claude SDK" --reporter=verbose
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-stop-followup-resume-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-stop-followup-resume-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:41429) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-stop-followup-resume-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-stop-followup-resume-analysis/autobyteus-server-ts
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume live E2E > uses the real Claude SDK to preserve context after STOP_GENERATION interrupts an incomplete turn
+Agent websocket attached for run claude-live-ws-e4a0ca32-2acb-43ee-9025-aabf1c3d746b
+Created agent session 0191b63f-1207-45b3-9f42-c4a1c5e1b345 for run claude-live-ws-e4a0ca32-2acb-43ee-9025-aabf1c3d746b
+Agent WebSocket connected: session=0191b63f-1207-45b3-9f42-c4a1c5e1b345, run=claude-live-ws-e4a0ca32-2acb-43ee-9025-aabf1c3d746b
+
+ ↓ tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > preserves provider conversation memory after interrupt instead of starting a new Claude conversation
+ ↓ tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > resumes the same WebSocket follow-up with the adopted provider session id after STOP_GENERATION
+ ↓ tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > resumes a targeted Claude team member follow-up sent on the same team WebSocket after STOP_GENERATION
+ ↓ tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > does not send the local run id as SDK resume when STOP_GENERATION happens before a provider session id exists
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume live E2E > uses the real Claude SDK to preserve context after STOP_GENERATION interrupts an incomplete turn
+Closed agent session 0191b63f-1207-45b3-9f42-c4a1c5e1b345
+Agent WebSocket disconnected: 0191b63f-1207-45b3-9f42-c4a1c5e1b345
+
+ ✓ tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume live E2E > uses the real Claude SDK to preserve context after STOP_GENERATION interrupts an incomplete turn 6193ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 4 skipped (5)
+   Start at  21:35:24
+   Duration  9.90s (transform 2.19s, setup 17ms, import 3.27s, tests 6.19s, environment 0ms)
+
+
+EXIT_CODE=0
