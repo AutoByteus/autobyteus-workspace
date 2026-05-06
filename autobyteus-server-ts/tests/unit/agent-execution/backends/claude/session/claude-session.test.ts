@@ -24,11 +24,11 @@ const waitFor = async (predicate: () => boolean, label: string): Promise<void> =
   throw new Error(`Timed out waiting for ${label}`);
 };
 
-const createResultQuery = (): ClaudeSdkQueryLike => ({
+const createResultQuery = (sessionId = "claude-session-1"): ClaudeSdkQueryLike => ({
   async *[Symbol.asyncIterator]() {
     yield {
       type: "result",
-      session_id: "claude-session-1",
+      session_id: sessionId,
       result: "done",
     };
   },
@@ -64,15 +64,47 @@ const createManuallySettledQuery = (): {
   return { query, release };
 };
 
+const createProviderSessionThenPendingQuery = (
+  providerSessionId: string,
+): {
+  query: ClaudeSdkQueryLike;
+  release: () => void;
+} => {
+  let release!: () => void;
+  const released = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  const query = {
+    async *[Symbol.asyncIterator]() {
+      yield {
+        type: "assistant",
+        session_id: providerSessionId,
+        message: {
+          id: "msg-provider-session",
+          role: "assistant",
+          content: [],
+        },
+      };
+      await released;
+    },
+    interrupt: vi.fn(async () => undefined),
+    close: vi.fn(() => undefined),
+  };
+  return { query, release };
+};
+
 const createSession = (input: {
   activeTurnId?: string | null;
   sessionId?: string;
+  hasCompletedTurn?: boolean;
   autoExecuteTools?: boolean;
   query?: ClaudeSdkQueryLike;
+  queries?: ClaudeSdkQueryLike[];
 } = {}) => {
   const sessionMessageCache = new ClaudeSessionMessageCache();
   const interruptQuery = vi.fn(async () => undefined);
-  const startQueryTurn = vi.fn(async () => input.query ?? createResultQuery());
+  const queryQueue = [...(input.queries ?? (input.query ? [input.query] : []))];
+  const startQueryTurn = vi.fn(async () => queryQueue.shift() ?? createResultQuery());
   const closeQuery = vi.fn((query: ClaudeSdkQueryLike | null) => {
     query?.close();
   });
@@ -104,6 +136,7 @@ const createSession = (input: {
       }),
       configuredToolExposure: buildConfiguredAgentToolExposure([]),
       sessionId: input.sessionId ?? "run-1",
+      hasCompletedTurn: input.hasCompletedTurn ?? false,
       activeTurnId: input.activeTurnId ?? null,
     }),
   });
@@ -279,6 +312,94 @@ describe("ClaudeSession", () => {
         createdAt: 1,
       },
     ]);
+  });
+
+  it("resumes an interrupted incomplete turn using its adopted Claude provider session id", async () => {
+    const providerSessionId = "claude-session-interrupted";
+    const firstQuery = createProviderSessionThenPendingQuery(providerSessionId);
+    const { session, startQueryTurn, closeQuery } = createSession({
+      queries: [firstQuery.query, createResultQuery(providerSessionId)],
+    });
+
+    await session.sendTurn(new AgentInputUserMessage("start long work"));
+    await waitFor(() => session.sessionId === providerSessionId, "provider session adoption");
+
+    const firstOptions = startQueryTurn.mock.calls[0]?.[0] as { sessionId?: string | null };
+    expect(firstOptions.sessionId).toBeNull();
+    expect(session.hasCompletedTurn).toBe(false);
+
+    const interruptPromise = session.interrupt();
+    await waitFor(() => closeQuery.mock.calls.length === 1, "interrupt query close");
+    firstQuery.release();
+    await interruptPromise;
+
+    expect(session.hasCompletedTurn).toBe(false);
+
+    await session.sendTurn(new AgentInputUserMessage("continue with that context"));
+    await waitFor(() => startQueryTurn.mock.calls.length === 2, "follow-up query start");
+
+    const secondOptions = startQueryTurn.mock.calls[1]?.[0] as { sessionId?: string | null };
+    expect(secondOptions.sessionId).toBe(providerSessionId);
+    await waitFor(() => session.hasCompletedTurn, "follow-up turn completion");
+  });
+
+  it("does not pass the local run id placeholder as a Claude resume id after interrupt", async () => {
+    const firstQuery = createManuallySettledQuery();
+    const { session, startQueryTurn, closeQuery } = createSession({
+      queries: [firstQuery.query, createResultQuery("claude-session-after-placeholder")],
+    });
+
+    await session.sendTurn(new AgentInputUserMessage("start before provider id"));
+    await waitFor(() => startQueryTurn.mock.calls.length === 1, "initial query start");
+
+    const interruptPromise = session.interrupt();
+    await waitFor(() => closeQuery.mock.calls.length === 1, "placeholder interrupt query close");
+    firstQuery.release();
+    await interruptPromise;
+
+    expect(session.sessionId).toBe("run-1");
+    expect(session.hasCompletedTurn).toBe(false);
+
+    await session.sendTurn(new AgentInputUserMessage("follow up without provider id"));
+    await waitFor(() => startQueryTurn.mock.calls.length === 2, "placeholder follow-up query start");
+
+    const secondOptions = startQueryTurn.mock.calls[1]?.[0] as { sessionId?: string | null };
+    expect(secondOptions.sessionId).toBeNull();
+    await waitFor(() => session.hasCompletedTurn, "placeholder follow-up completion");
+  });
+
+  it("continues to resume completed Claude turns with the adopted provider session id", async () => {
+    const providerSessionId = "claude-session-completed";
+    const { session, startQueryTurn } = createSession({
+      queries: [createResultQuery(providerSessionId), createResultQuery(providerSessionId)],
+    });
+
+    await session.sendTurn(new AgentInputUserMessage("first turn"));
+    await waitFor(() => session.hasCompletedTurn, "first turn completion");
+
+    const firstOptions = startQueryTurn.mock.calls[0]?.[0] as { sessionId?: string | null };
+    expect(firstOptions.sessionId).toBeNull();
+
+    await session.sendTurn(new AgentInputUserMessage("second turn"));
+    await waitFor(() => startQueryTurn.mock.calls.length === 2, "completed follow-up query start");
+
+    const secondOptions = startQueryTurn.mock.calls[1]?.[0] as { sessionId?: string | null };
+    expect(secondOptions.sessionId).toBe(providerSessionId);
+  });
+
+  it("continues to resume restored Claude runs with the restored provider session id", async () => {
+    const restoredSessionId = "claude-session-restored";
+    const { session, startQueryTurn } = createSession({
+      sessionId: restoredSessionId,
+      hasCompletedTurn: true,
+      queries: [createResultQuery(restoredSessionId)],
+    });
+
+    await session.sendTurn(new AgentInputUserMessage("restored follow up"));
+    await waitFor(() => startQueryTurn.mock.calls.length === 1, "restored query start");
+
+    const options = startQueryTurn.mock.calls[0]?.[0] as { sessionId?: string | null };
+    expect(options.sessionId).toBe(restoredSessionId);
   });
 
   it("emits provider-derived text segment ids and preserves text-tool-text order", async () => {
