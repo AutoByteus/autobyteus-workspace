@@ -7,6 +7,8 @@ const mockConfig = vi.hoisted(() => ({
   delete: vi.fn(),
 }));
 
+const mockReloadMediaToolSchemas = vi.hoisted(() => vi.fn());
+
 vi.mock("../../../src/config/app-config-provider.js", () => ({
   appConfigProvider: {
     get config() {
@@ -15,7 +17,16 @@ vi.mock("../../../src/config/app-config-provider.js", () => ({
   },
 }));
 
-import { ServerSettingsService } from "../../../src/services/server-settings-service.js";
+vi.mock("../../../src/agent-tools/media/register-media-tools.js", () => ({
+  reloadMediaToolSchemas: mockReloadMediaToolSchemas,
+}));
+
+import {
+  DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY,
+  DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY,
+  DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY,
+  ServerSettingsService,
+} from "../../../src/services/server-settings-service.js";
 
 describe("ServerSettingsService", () => {
   beforeEach(() => {
@@ -23,6 +34,7 @@ describe("ServerSettingsService", () => {
     mockConfig.get.mockReset();
     mockConfig.set.mockReset();
     mockConfig.delete.mockReset();
+    mockReloadMediaToolSchemas.mockReset();
     mockConfig.get.mockImplementation((key: string) => mockConfig.getConfigData.mock.results.at(-1)?.value?.[key]);
   });
 
@@ -232,6 +244,57 @@ describe("ServerSettingsService", () => {
       "DEFAULT_IMAGE_EDIT_MODEL",
       "nano-banana-pro-app-rpa@host",
     );
+  });
+
+  it.each([
+    DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY,
+    DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY,
+    DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY,
+  ])("reloads media tool schemas after successful media default update for %s", (key) => {
+    mockConfig.set.mockImplementation(() => undefined);
+
+    const service = new ServerSettingsService();
+    const [ok, message] = service.updateSetting(key, "next-media-model");
+
+    expect(ok).toBe(true);
+    expect(message).toMatch(/updated successfully/i);
+    expect(mockConfig.set).toHaveBeenCalledWith(key, "next-media-model");
+    expect(mockReloadMediaToolSchemas).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not reload media tool schemas after successful unrelated setting updates", () => {
+    mockConfig.set.mockImplementation(() => undefined);
+
+    const service = new ServerSettingsService();
+    const [ok] = service.updateSetting("CUSTOM_SETTING", "next");
+
+    expect(ok).toBe(true);
+    expect(mockReloadMediaToolSchemas).not.toHaveBeenCalled();
+  });
+
+  it("does not reload media tool schemas when an update fails before persistence", () => {
+    const service = new ServerSettingsService();
+    const [ok] = service.updateSetting("CODEX_APP_SERVER_SANDBOX", "invalid-mode");
+
+    expect(ok).toBe(false);
+    expect(mockConfig.set).not.toHaveBeenCalled();
+    expect(mockReloadMediaToolSchemas).not.toHaveBeenCalled();
+  });
+
+  it("does not reload media tool schemas when media default persistence fails", () => {
+    mockConfig.set.mockImplementation(() => {
+      throw new Error("boom");
+    });
+
+    const service = new ServerSettingsService();
+    const [ok, message] = service.updateSetting(
+      DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY,
+      "next-media-model",
+    );
+
+    expect(ok).toBe(false);
+    expect(message).toContain("boom");
+    expect(mockReloadMediaToolSchemas).not.toHaveBeenCalled();
   });
 
   it("returns error when update fails", () => {

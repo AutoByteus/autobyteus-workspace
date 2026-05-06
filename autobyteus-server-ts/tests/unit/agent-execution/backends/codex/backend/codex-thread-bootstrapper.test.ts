@@ -280,6 +280,27 @@ describe("CodexThreadBootstrapper", () => {
     });
   });
 
+  it("exposes only configured media dynamic tools for Codex", async () => {
+    const { bootstrapper } = createBootstrapper({
+      skills: [],
+      toolNames: ["generate_image", "generate_speech", "read_file"],
+      requestImplementation: async () => ({ data: [] }),
+    });
+
+    const runContext = await bootstrapper.bootstrapForCreate(createRunContext());
+    const dynamicToolSpecs = runContext.runtimeContext.codexThreadConfig.dynamicTools;
+
+    expect(dynamicToolSpecs).not.toBeNull();
+    expect(dynamicToolSpecs?.map((spec) => spec.name)).toEqual([
+      "generate_image",
+      "generate_speech",
+    ]);
+    expect(dynamicToolSpecs?.[0]?.inputSchema).toMatchObject({
+      required: expect.arrayContaining(["prompt", "output_file_path"]),
+      additionalProperties: false,
+    });
+  });
+
   it("does not expose artifact publication for old singular-only Codex configs", async () => {
     const { bootstrapper } = createBootstrapper({
       skills: [],

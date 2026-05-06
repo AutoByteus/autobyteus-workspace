@@ -13,8 +13,6 @@ export type { BaseSchemaFormatter, BaseExampleFormatter } from './usage/formatte
 
 
 export { Search } from './search-tool.js';
-export { GenerateImageTool, EditImageTool } from './multimedia/image-tools.js';
-export { GenerateSpeechTool } from './multimedia/audio-tools.js';
 export { ReadMediaFile } from './multimedia/media-reader-tool.js';
 export { DownloadMediaTool } from './multimedia/download-media-tool.js';
 export { ReadUrl } from './web/read-url-tool.js';

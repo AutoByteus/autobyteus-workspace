@@ -10,6 +10,7 @@ describe("configured-agent-tool-exposure", () => {
     const exposure = buildConfiguredAgentToolExposure([
       " open_tab ",
       "read_page",
+      "generate_image",
       "send_message_to",
       " publish_artifacts ",
       "",
@@ -20,14 +21,16 @@ describe("configured-agent-tool-exposure", () => {
     expect(exposure.configuredToolNames).toEqual([
       "open_tab",
       "read_page",
+      "generate_image",
       "send_message_to",
       "publish_artifacts",
     ]);
     expect(exposure.enabledBrowserToolNames).toEqual(["open_tab", "read_page"]);
+    expect(exposure.enabledMediaToolNames).toEqual(["generate_image"]);
     expect(exposure.sendMessageToConfigured).toBe(true);
     expect(exposure.publishArtifactsConfigured).toBe(true);
     expect(toConfiguredAgentToolNameSet(exposure)).toEqual(
-      new Set(["open_tab", "read_page", "send_message_to", "publish_artifacts"]),
+      new Set(["open_tab", "read_page", "generate_image", "send_message_to", "publish_artifacts"]),
     );
   });
 
@@ -49,6 +52,7 @@ describe("configured-agent-tool-exposure", () => {
     expect(resolveConfiguredAgentToolExposure(null)).toEqual({
       configuredToolNames: [],
       enabledBrowserToolNames: [],
+      enabledMediaToolNames: [],
       sendMessageToConfigured: false,
       publishArtifactsConfigured: false,
     });
