@@ -13,20 +13,22 @@ or changing provider-specific request-shaping behavior.
 | Audio / TTS models | `src/multimedia/audio/audio-client-factory.ts` | `src/multimedia/audio/api/*` | Built-in TTS models are registered by the audio factory. |
 | Gemini TTS runtime names | `src/utils/gemini-model-mapping.ts` | `GeminiAudioClient` | User-facing names can map to API-key and Vertex-specific model values. |
 | Image models | `src/multimedia/image/image-client-factory.ts` | `src/multimedia/image/api/*` | Built-in image models are registered by the image factory. |
+| Gemini image runtime names | `src/utils/gemini-model-mapping.ts` | `GeminiImageClient` | Official Gemini image IDs can map per API-key or Vertex runtime before request dispatch. |
 | OpenAI image request shape | `src/multimedia/image/api/openai-image-client.ts` | `OpenAIImageClient` | Keep GPT Image vs. non-GPT image edit payload differences provider-owned. |
 
-## Latest Catalog Additions Verified On 2026-04-25
+## Latest Catalog Additions
 
-| Surface | User-Facing Model ID | Provider API Value | Provider | Implementation Notes |
-| --- | --- | --- | --- | --- |
-| LLM | `gpt-5.5` | `gpt-5.5` | OpenAI | Uses the official OpenAI Responses path and the shared OpenAI reasoning schema. |
-| LLM | `claude-opus-4.7` | `claude-opus-4-7` | Anthropic | Uses adaptive-thinking schema; see request-shape notes below. |
-| LLM | `deepseek-v4-flash` | `deepseek-v4-flash` | DeepSeek | Uses the existing OpenAI-compatible DeepSeek adapter and V4 thinking schema. |
-| LLM | `deepseek-v4-pro` | `deepseek-v4-pro` | DeepSeek | Uses the existing OpenAI-compatible DeepSeek adapter and V4 thinking schema. |
-| LLM | `kimi-k2.6` | `kimi-k2.6` | Moonshot / Kimi | Uses the existing Kimi OpenAI-compatible adapter. |
-| Image | `gpt-image-2` | `gpt-image-2` | OpenAI | Supports generation and editing through `OpenAIImageClient`. |
-| Audio / TTS | `gemini-3.1-flash-tts-preview` | `gemini-3.1-flash-tts-preview` | Gemini | Registered in audio catalog and Gemini runtime mapping. |
-| Audio / TTS | `gemini-2.5-pro-tts` | `gemini-2.5-pro-preview-tts` | Gemini | User-facing compact ID maps to the documented preview API value. |
+| Surface | User-Facing Model ID | Provider API Value | Provider | Verified On | Implementation Notes |
+| --- | --- | --- | --- | --- | --- |
+| LLM | `gpt-5.5` | `gpt-5.5` | OpenAI | 2026-04-25 | Uses the official OpenAI Responses path and the shared OpenAI reasoning schema. |
+| LLM | `claude-opus-4.7` | `claude-opus-4-7` | Anthropic | 2026-04-25 | Uses adaptive-thinking schema; see request-shape notes below. |
+| LLM | `deepseek-v4-flash` | `deepseek-v4-flash` | DeepSeek | 2026-04-25 | Uses the existing OpenAI-compatible DeepSeek adapter and V4 thinking schema. |
+| LLM | `deepseek-v4-pro` | `deepseek-v4-pro` | DeepSeek | 2026-04-25 | Uses the existing OpenAI-compatible DeepSeek adapter and V4 thinking schema. |
+| LLM | `kimi-k2.6` | `kimi-k2.6` | Moonshot / Kimi | 2026-04-25 | Uses the existing Kimi OpenAI-compatible adapter. |
+| Image | `gpt-image-2` | `gpt-image-2` | OpenAI | 2026-04-25 | Supports generation and editing through `OpenAIImageClient`. |
+| Image | `gemini-3.1-flash-image-preview` | `gemini-3.1-flash-image-preview` | Gemini | 2026-05-05 | Registered in the image catalog and mapped identically for API-key and Vertex Gemini runtimes. |
+| Audio / TTS | `gemini-3.1-flash-tts-preview` | `gemini-3.1-flash-tts-preview` | Gemini | 2026-04-25 | Registered in audio catalog and Gemini runtime mapping. |
+| Audio / TTS | `gemini-2.5-pro-tts` | `gemini-2.5-pro-preview-tts` | Gemini | 2026-04-25 | User-facing compact ID maps to the documented preview API value. |
 
 ## Provider-Specific Runtime Notes
 
@@ -76,6 +78,22 @@ surface differs. `OpenAIImageClient` owns the request-shape split:
 Gemini TTS model registration and runtime mapping are separate. Add the model
 to `AudioClientFactory` first, then add any API-key or Vertex-specific mapping
 to `resolveGeminiRuntimeModelName` through `src/utils/gemini-model-mapping.ts`.
+
+### Gemini Image Models
+
+Gemini image model registration and runtime mapping are separate in the same
+way as Gemini TTS. Add the model to `ImageClientFactory` first, then add the
+image modality mapping in `src/utils/gemini-model-mapping.ts` so
+`GeminiImageClient` resolves the correct provider value for both API-key and
+Vertex runtime modes.
+
+`gemini-3.1-flash-image-preview` is the supported Gemini 3.1 Flash Image
+Preview / Nano Banana 2 model ID verified on 2026-05-05. It uses the same
+provider API value for API-key and Vertex runtimes, and it reuses the existing
+`GeminiImageClient` generation/editing request path. Do not add guessed aliases
+such as `gemini-3.1-image`, `gemini-3.1-flash-image`, or
+`gemini-3.1-pro-image` unless Google publishes them as official IDs in a future
+model update.
 
 ## Defaults, Deprecations, and Removals
 
