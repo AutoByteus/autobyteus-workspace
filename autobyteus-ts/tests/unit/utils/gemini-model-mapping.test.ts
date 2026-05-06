@@ -35,6 +35,15 @@ describe('resolveModelForRuntime', () => {
     expect(resolveModelForRuntime('gemini-3-flash-preview', 'llm', 'api_key')).toBe('gemini-3-flash-preview');
   });
 
+  it('maps Gemini 3.1 Flash Image Preview for api_key and vertex runtimes', () => {
+    expect(resolveModelForRuntime('gemini-3.1-flash-image-preview', 'image', 'api_key')).toBe(
+      'gemini-3.1-flash-image-preview'
+    );
+    expect(resolveModelForRuntime('gemini-3.1-flash-image-preview', 'image', 'vertex')).toBe(
+      'gemini-3.1-flash-image-preview'
+    );
+  });
+
   it('returns original when modality or model is unknown', () => {
     expect(resolveModelForRuntime('unknown-model', 'tts', 'vertex')).toBe('unknown-model');
     expect(resolveModelForRuntime('gemini-2.5-flash-preview-tts', 'unknown', 'vertex')).toBe('gemini-2.5-flash-preview-tts');
