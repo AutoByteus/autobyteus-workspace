@@ -151,6 +151,14 @@ not infer a current default, recover a runtime value, or materialize metadata.
 Backend/runtime/history recovery or persistence semantics belong to a separate
 backend ticket, not this frontend inspection boundary.
 
+The model-config surface is schema-driven, not thinking-only. Thinking controls
+such as `reasoning_effort` use the basic/advanced thinking presentation when the
+schema marks them as supported, while non-thinking runtime/model parameters
+render through the same advanced schema component. For Codex, a fast-capable
+model can therefore expose `service_tier` with the user-facing label **Fast
+mode** beside reasoning settings, and a non-thinking schema can still render its
+parameters directly.
+
 ### New Run From Existing Run
 
 When the user clicks the workspace header add/new-run action while an existing
@@ -166,6 +174,11 @@ loading. Schema arrival may sanitize invalid model-config keys after a real
 schema is available, but an empty/loading schema must not clear the copied
 `llmConfig`. Explicit user runtime/model changes remain the owner for stale
 model-config cleanup.
+
+Schema arrival is also the cleanup boundary for runtime-specific non-thinking
+parameters. For example, when a copied or default Codex config contains
+`service_tier: "fast"` and the user switches to a model whose active schema does
+not include `service_tier`, the stale key is removed before launch.
 
 If there is no selected same-definition source run, workspace add/new-run flows
 fall back to the existing definition/default launch preferences instead of

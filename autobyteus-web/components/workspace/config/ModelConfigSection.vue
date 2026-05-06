@@ -21,43 +21,38 @@
         :description="thinkingDescription"
         :compact="compact"
       />
-
-      <!-- Advanced Expand Button -->
-      <div class="mt-4 text-left">
-        <button
-          type="button"
-          data-testid="advanced-params-toggle"
-          @click="showAdvancedParams = !showAdvancedParams"
-          class="inline-flex items-center gap-1 text-sm text-gray-700 hover:text-gray-900 transition-colors focus:outline-none"
-          :aria-expanded="showAdvancedParams"
-        >
-          <span>{{ $t('workspace.components.workspace.config.ModelConfigSection.advanced') }}</span>
-          <Icon 
-            icon="heroicons:chevron-down-20-solid" 
-            class="w-4 h-4 transition-transform duration-200" 
-            :class="{ 'rotate-180': showAdvancedParams }"
-          />
-        </button>
-      </div>
-
-      <!-- Expanded Advanced Section -->
-      <div v-show="showAdvancedParams" class="mt-2">
-        <ModelConfigAdvanced
-          :schema="schema ?? {}"
-          :config="modelConfig"
-          :disabled="disabled"
-          :compact="compact"
-          :id-prefix="idPrefix"
-          :missing-historical-config="showMissingHistoricalConfig"
-          :missing-historical-config-label="$t('workspace.components.workspace.config.ModelConfigSection.not_recorded_for_this_historical_run')"
-          @update:config="emitConfig"
-        />
-      </div>
     </template>
 
-    <!-- Fallback for schemas without thinking support (unlikely given logic, but safe) -->
-    <div v-else class="text-xs text-gray-400 italic">
-      {{ $t('workspace.components.workspace.config.ModelConfigSection.thinking_configuration_not_available_for_this_model') }}
+    <!-- Advanced Expand Button -->
+    <div v-if="thinkingSupported" class="mt-4 text-left">
+      <button
+        type="button"
+        data-testid="advanced-params-toggle"
+        @click="showAdvancedParams = !showAdvancedParams"
+        class="inline-flex items-center gap-1 text-sm text-gray-700 hover:text-gray-900 transition-colors focus:outline-none"
+        :aria-expanded="showAdvancedParams"
+      >
+        <span>{{ $t('workspace.components.workspace.config.ModelConfigSection.advanced') }}</span>
+        <Icon
+          icon="heroicons:chevron-down-20-solid"
+          class="w-4 h-4 transition-transform duration-200"
+          :class="{ 'rotate-180': showAdvancedParams }"
+        />
+      </button>
+    </div>
+
+    <!-- Schema-driven advanced parameters. Non-thinking schemas render directly. -->
+    <div v-show="!thinkingSupported || showAdvancedParams" :class="thinkingSupported ? 'mt-2' : ''">
+      <ModelConfigAdvanced
+        :schema="schema ?? {}"
+        :config="modelConfig"
+        :disabled="disabled"
+        :compact="compact"
+        :id-prefix="idPrefix"
+        :missing-historical-config="showMissingHistoricalConfig"
+        :missing-historical-config-label="$t('workspace.components.workspace.config.ModelConfigSection.not_recorded_for_this_historical_run')"
+        @update:config="emitConfig"
+      />
     </div>
   </div>
 </template>

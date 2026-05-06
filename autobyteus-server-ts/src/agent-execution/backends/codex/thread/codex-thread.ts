@@ -100,6 +100,10 @@ export class CodexThread {
     return this.config.reasoningEffort;
   }
 
+  get serviceTier(): string | null {
+    return this.config.serviceTier ?? null;
+  }
+
   subscribeAppServerMessages(listener: (message: CodexAppServerMessage) => void): () => void {
     this.listeners.add(listener);
     return () => {
@@ -196,6 +200,7 @@ export class CodexThread {
       cwd: this.workingDirectory,
       model: this.model,
       effort: this.reasoningEffort,
+      serviceTier: this.serviceTier,
       summary: "auto",
       personality: null,
       outputSchema: null,

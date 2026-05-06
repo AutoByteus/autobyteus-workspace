@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunConfig } from "../../../../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../../../../src/agent-execution/domain/agent-run-context.js";
@@ -15,6 +16,7 @@ const createRunContext = (input: {
   runId: string;
   workingDirectory: string;
   autoExecuteTools: boolean;
+  serviceTier?: string | null;
 }) =>
   new AgentRunContext({
     runId: input.runId,
@@ -32,6 +34,7 @@ const createRunContext = (input: {
         model: "gpt-5.4-mini",
         workingDirectory: input.workingDirectory,
         reasoningEffort: "medium",
+        serviceTier: input.serviceTier ?? null,
         approvalPolicy: input.autoExecuteTools
           ? CodexApprovalPolicy.NEVER
           : CodexApprovalPolicy.ON_REQUEST,
@@ -43,8 +46,18 @@ const createRunContext = (input: {
     }),
   });
 
-const createThread = (autoExecuteTools: boolean) => {
+const createThread = (
+  autoExecuteTools: boolean,
+  input: {
+    serviceTier?: string | null;
+  } = {},
+) => {
   const client = {
+    request: vi.fn(async () => ({
+      turn: {
+        id: "turn-1",
+      },
+    })),
     respondSuccess: vi.fn(),
     respondError: vi.fn(),
   };
@@ -54,6 +67,7 @@ const createThread = (autoExecuteTools: boolean) => {
       runId: `run-${autoExecuteTools ? "auto" : "manual"}`,
       workingDirectory: "/tmp/codex-thread-unit",
       autoExecuteTools,
+      serviceTier: input.serviceTier ?? null,
     }),
     client: client as never,
     startup: createCodexThreadStartupGate(),
@@ -221,6 +235,29 @@ describe("CodexThread MCP tool approval bridge", () => {
       serverName: "tts",
       toolName: "speak",
     })).toBeNull();
+  });
+});
+
+describe("CodexThread turn payload", () => {
+  it("passes the configured Codex serviceTier to turn/start", async () => {
+    const { thread, client } = createThread(false, { serviceTier: "fast" });
+    thread.markStartupReady();
+
+    await thread.sendTurn(new AgentInputUserMessage("hello fast codex"));
+
+    expect(client.request).toHaveBeenCalledWith(
+      "turn/start",
+      expect.objectContaining({
+        effort: "medium",
+        serviceTier: "fast",
+        input: expect.arrayContaining([
+          expect.objectContaining({
+            type: "text",
+            text: "hello fast codex",
+          }),
+        ]),
+      }),
+    );
   });
 });
 

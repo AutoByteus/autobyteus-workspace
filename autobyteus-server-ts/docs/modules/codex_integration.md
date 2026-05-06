@@ -44,6 +44,36 @@ from the thread-local pending MCP call before the pending state is removed, so
 terminal lifecycle events and storage-only memory retain the same arguments
 that the live segment showed.
 
+## Model Catalog And Fast Mode Configuration
+
+Codex launch-time model configuration is driven by the Codex App Server
+`model/list` response and carried through the existing AutoByteus `llmConfig`
+field. No Codex-specific GraphQL or database field is introduced for these
+model settings.
+
+- `supportedReasoningEfforts` / `supported_reasoning_efforts` is normalized to
+  the existing `reasoning_effort` enum parameter.
+- `additionalSpeedTiers` / `additional_speed_tiers` containing `fast` adds a
+  `service_tier` enum parameter labeled **Fast mode**. Only `fast` is exposed;
+  leaving the control at Default/off omits the setting and preserves Codex's
+  default service tier.
+- Backend normalization accepts only `llmConfig.service_tier === "fast"` for
+  this feature. Unsupported values such as `flex` or arbitrary strings, and
+  camelCase caller attempts such as `serviceTier`, are ignored before requests
+  reach the Codex App Server.
+- `reasoning_effort` and `service_tier` are independent. A run can carry, for
+  example, `{ reasoning_effort: "high", service_tier: "fast" }`.
+- When selected, `service_tier: "fast"` is resolved into
+  `CodexThreadConfig.serviceTier` and sent as App Server `serviceTier` on
+  `thread/start`, `thread/resume`, and `turn/start` so launch, restore, and
+  subsequent turns stay aligned with the Codex service-tier contract.
+
+The frontend renders the normalized schema in existing agent, team, default
+launch, and member-override configuration surfaces. If the selected model's
+schema no longer includes `service_tier`, the frontend sanitizes stale
+`llmConfig.service_tier` before launch rather than carrying Fast mode into an
+unsupported model.
+
 ## Server-Owned Durable Memory
 
 Codex runtime runs now receive server-owned durable memory in addition to Codex-native thread history.

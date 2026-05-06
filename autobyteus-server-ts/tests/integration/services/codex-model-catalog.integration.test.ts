@@ -10,7 +10,7 @@ const describeCodexModelCatalogIntegration =
   codexBinaryReady && liveCodexTestsEnabled ? describe : describe.skip;
 
 describeCodexModelCatalogIntegration("CodexModelCatalog integration (live transport)", () => {
-  it("lists live Codex models with usable identifiers and normalized reasoning config", async () => {
+  it("lists live Codex models with usable identifiers and normalized config", async () => {
     const catalog = new CodexModelCatalog();
 
     const models = await catalog.listModels();
@@ -39,14 +39,25 @@ describeCodexModelCatalogIntegration("CodexModelCatalog integration (live transp
         continue;
       }
 
-      expect(schema.parameters).toHaveLength(1);
-      expect(schema.parameters[0]?.name).toBe("reasoning_effort");
-      expect(schema.parameters[0]?.type).toBe("enum");
-      expect(
-        (schema.parameters[0]?.enum_values ?? []).every((value) =>
-          ["none", "low", "medium", "high", "xhigh"].includes(value),
-        ),
-      ).toBe(true);
+      const reasoningParam = schema.parameters.find(
+        (parameter) => parameter.name === "reasoning_effort",
+      );
+      if (reasoningParam) {
+        expect(reasoningParam.type).toBe("enum");
+        expect(
+          (reasoningParam.enum_values ?? []).every((value) =>
+            ["none", "low", "medium", "high", "xhigh"].includes(value),
+          ),
+        ).toBe(true);
+      }
+
+      const serviceTierParam = schema.parameters.find(
+        (parameter) => parameter.name === "service_tier",
+      );
+      if (serviceTierParam) {
+        expect(serviceTierParam.type).toBe("enum");
+        expect(serviceTierParam.enum_values).toEqual(["fast"]);
+      }
     }
   });
 });

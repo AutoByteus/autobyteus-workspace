@@ -255,6 +255,7 @@ export class MixedTeamManager implements TeamManager {
           model: memberRunConfig.llmModelIdentifier,
           workingDirectory: ".",
           reasoningEffort: null,
+          serviceTier: null,
           approvalPolicy: resolveApprovalPolicyForAutoExecuteTools(
             memberRunConfig.autoExecuteTools,
           ),
