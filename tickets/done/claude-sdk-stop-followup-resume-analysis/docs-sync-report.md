@@ -6,7 +6,7 @@
 - Trigger: API/E2E validation pass from `api_e2e_engineer` on 2026-05-06; proceed to delivery-stage integrated-state refresh, docs sync, and local Electron test build.
 - Bootstrap base reference: `origin/personal@6f09d1a27e3989ae9cb88da7cf90d9b18c3ad6e2` (`chore(release): bump workspace release version to 1.2.97`)
 - Integrated base reference used for docs sync: `origin/personal@d9d2b4863e8a0f0fc5e1470f456cb802830eb4bf` (`chore(release): bump workspace release version to 1.2.98`), merged into ticket branch by `0dcebbdbfc5e281cb143efd4561738f22fa09fbd` after the tracked base advanced during delivery.
-- Post-integration verification reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-stop-followup-resume-analysis/tickets/in-progress/claude-sdk-stop-followup-resume-analysis/electron-test-build-report.md` and `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-stop-followup-resume-analysis/tickets/in-progress/claude-sdk-stop-followup-resume-analysis/delivery-logs/05-electron-build-personal-post-integration.log`
+- Post-integration verification reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-stop-followup-resume-analysis/tickets/done/claude-sdk-stop-followup-resume-analysis/electron-test-build-report.md` and `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-stop-followup-resume-analysis/tickets/done/claude-sdk-stop-followup-resume-analysis/delivery-logs/05-electron-build-personal-post-integration.log`
 
 ## Why Docs Were Updated
 

@@ -24,7 +24,7 @@
 
 ## Evidence Log
 
-- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-stop-followup-resume-analysis/tickets/in-progress/claude-sdk-stop-followup-resume-analysis/delivery-logs/05-electron-build-personal-post-integration.log`
+- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-stop-followup-resume-analysis/tickets/done/claude-sdk-stop-followup-resume-analysis/delivery-logs/05-electron-build-personal-post-integration.log`
 
 ## Notable Build Output
 
