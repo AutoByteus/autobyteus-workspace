@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/gemini-latest-image-model-support/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/gemini-latest-image-model-support/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/gemini-latest-image-model-support/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/done/gemini-latest-image-model-support/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/done/gemini-latest-image-model-support/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/done/gemini-latest-image-model-support/design-spec.md`
 - Current Review Round: 1
 - Trigger: Initial architecture review handoff from `solution_designer` for Gemini 3.1 image-model support.
 - Prior Review Round Reviewed: N/A

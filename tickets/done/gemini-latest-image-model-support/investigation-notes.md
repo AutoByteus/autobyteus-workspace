@@ -24,7 +24,7 @@ Interpreted request: verify the current official Gemini image model rather than 
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/gemini-latest-image-model-support`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/done/gemini-latest-image-model-support`
 - Current Branch: `codex/gemini-latest-image-model-support`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support`
 - Bootstrap Base Branch: `origin/personal`

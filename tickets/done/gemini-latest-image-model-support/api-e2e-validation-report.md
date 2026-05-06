@@ -2,12 +2,12 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/gemini-latest-image-model-support/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/gemini-latest-image-model-support/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/gemini-latest-image-model-support/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/gemini-latest-image-model-support/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/gemini-latest-image-model-support/implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/gemini-latest-image-model-support/review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/done/gemini-latest-image-model-support/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/done/gemini-latest-image-model-support/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/done/gemini-latest-image-model-support/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/done/gemini-latest-image-model-support/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/done/gemini-latest-image-model-support/implementation-handoff.md`
+- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/done/gemini-latest-image-model-support/review-report.md`
 - Current Validation Round: 1
 - Trigger: Code-review-passed handoff for Gemini 3.1 image-model support.
 - Prior Round Reviewed: N/A
@@ -118,11 +118,11 @@ Temporary validation files were created only for execution, removed afterward, a
 - If `Yes`, returned through `code_reviewer` before delivery: N/A
 - Post-validation code review artifact: N/A
 
-Existing durable validation from the implementation remains reviewed by `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/gemini-latest-image-model-support/review-report.md`; API/E2E did not modify it.
+Existing durable validation from the implementation remains reviewed by `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/done/gemini-latest-image-model-support/review-report.md`; API/E2E did not modify it.
 
 ## Other Validation Artifacts
 
-- This report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/gemini-latest-image-model-support/api-e2e-validation-report.md`
+- This report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/done/gemini-latest-image-model-support/api-e2e-validation-report.md`
 
 ## Temporary Validation Methods / Scaffolding
 
