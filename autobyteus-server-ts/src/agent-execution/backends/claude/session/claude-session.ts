@@ -34,11 +34,7 @@ import { dispatchRuntimeEvent } from "../../shared/runtime-event-dispatch.js";
 const formatClaudeRuntimeError = (error: unknown): string =>
   error instanceof Error ? error.stack ?? error.message : String(error);
 
-type ClaudeSessionTurnExecutionInput = {
-  turnId: string;
-  content: string;
-  abortController: AbortController;
-};
+type ClaudeSessionTurnExecutionInput = { turnId: string; content: string; abortController: AbortController };
 
 export type ClaudeSessionDependencies = {
   sessionMessageCache: ClaudeSessionMessageCache;
@@ -302,6 +298,11 @@ export class ClaudeSession {
     }
   }
 
+  private resolveProviderSessionIdForResume(): string | null {
+    const sessionId = asString(this.runContext.runtimeContext.sessionId);
+    return sessionId && sessionId !== this.runId ? sessionId : null;
+  }
+
   private clearActiveTurnExecution(activeTurn: ClaudeActiveTurnExecution): void {
     this.closeActiveTurnQuery(activeTurn);
     if (this.activeTurnExecution === activeTurn) {
@@ -384,7 +385,7 @@ export class ClaudeSession {
     });
     const query = await this.dependencies.sdkClient.startQueryTurn({
       prompt: turnInput,
-      sessionId: this.hasCompletedTurn ? this.sessionId : null,
+      sessionId: this.resolveProviderSessionIdForResume(),
       model: this.model,
       workingDirectory: this.workingDirectory,
       mcpServers,
@@ -531,8 +532,7 @@ export class ClaudeSession {
     enabledBrowserToolNames: string[];
     enabledMediaToolNames: string[];
     publishArtifactsToolingEnabled: boolean;
-  },
-  ): Promise<Record<string, unknown> | null> {
+  }): Promise<Record<string, unknown> | null> {
     return buildClaudeSessionMcpServers({
       sendMessageToToolingEnabled: input.sendMessageToToolingEnabled,
       enabledBrowserToolNames: input.enabledBrowserToolNames,

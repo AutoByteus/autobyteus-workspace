@@ -69,7 +69,12 @@ to settle before emitting the interrupted/idle lifecycle projection. A
 user-requested interrupt is a normal interrupted terminal path: it must not be
 recorded as a successful completed turn and SDK abort/close fallout should not
 surface as a runtime `ERROR`. Follow-up messages in the same run or team member
-must start from a fresh query resource after that settlement boundary.
+must start from a fresh query resource after that settlement boundary, but they
+must still resume the provider conversation when the session has already
+adopted a real Claude provider `session_id`. The local run id placeholder is not
+a provider session id and must never be sent as the SDK `resume` value; when no
+provider `session_id` has been observed before the interrupt, provider-level
+resume is unavailable for that follow-up.
 
 Claude browser MCP tools add one extra converter responsibility: allowlisted
 `mcp__autobyteus_browser__<tool>` names for known stable browser tools are
