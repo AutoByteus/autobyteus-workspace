@@ -16,7 +16,10 @@ import {
   type CodexWorkspaceResolver,
 } from "../codex-workspace-resolver.js";
 import { CodexAgentRunContext, type CodexRunContext } from "./codex-agent-run-context.js";
-import { resolveCodexSessionReasoningEffort } from "../codex-app-server-model-normalizer.js";
+import {
+  resolveCodexSessionReasoningEffort,
+  resolveCodexSessionServiceTier,
+} from "../codex-app-server-model-normalizer.js";
 import type { Skill } from "../../../../skills/domain/models.js";
 import {
   buildCodexThreadConfig,
@@ -258,6 +261,9 @@ export class CodexThreadBootstrapper {
       model: input.agentRunConfig.llmModelIdentifier ?? resolveDefaultModel(),
       workingDirectory: input.workingDirectory,
       reasoningEffort: resolveCodexSessionReasoningEffort(
+        input.agentRunConfig.llmConfig ?? null,
+      ),
+      serviceTier: resolveCodexSessionServiceTier(
         input.agentRunConfig.llmConfig ?? null,
       ),
       approvalPolicy: resolveApprovalPolicyForAutoExecuteTools(

@@ -13,6 +13,7 @@ export type CodexThreadConfig = {
   model: string | null;
   workingDirectory: string;
   reasoningEffort: string | null;
+  serviceTier: string | null;
   approvalPolicy: CodexApprovalPolicy;
   sandbox: CodexSandboxMode;
   baseInstructions: string | null;
@@ -24,6 +25,7 @@ export const buildCodexThreadConfig = (input: {
   model: string | null;
   workingDirectory: string;
   reasoningEffort: string | null;
+  serviceTier: string | null;
   approvalPolicy: CodexApprovalPolicy;
   sandbox: CodexSandboxMode;
   baseInstructions?: string | null;
@@ -33,6 +35,7 @@ export const buildCodexThreadConfig = (input: {
   model: input.model,
   workingDirectory: input.workingDirectory,
   reasoningEffort: input.reasoningEffort,
+  serviceTier: input.serviceTier,
   approvalPolicy: input.approvalPolicy,
   sandbox: input.sandbox,
   baseInstructions: asTrimmedString(input.baseInstructions),

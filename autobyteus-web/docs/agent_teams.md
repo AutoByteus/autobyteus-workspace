@@ -42,6 +42,11 @@ Team definitions now include:
 
 Nested team members continue to use `refType: 'AGENT_TEAM'` without `refScope`.
 
+`defaultLaunchConfig.llmConfig` carries schema-driven runtime/model parameters
+for the selected model. This includes thinking settings such as
+`reasoning_effort` and runtime-specific non-thinking settings such as Codex
+`service_tier: "fast"` for models whose catalog schema exposes **Fast mode**.
+
 ## Ownership Behavior
 
 | Scope | Shown in generic Agent Teams list | Editable from generic team detail/edit | Generic delete / sync |
@@ -80,6 +85,11 @@ That surface owns:
 - choose a compatible explicit model when the inherited global model is invalid for that runtime,
 - override auto-execute behavior, and
 - carry an explicit member `llmConfig` (including explicit `null`) only when that row truly owns the divergence.
+
+Member `llmConfig` values use the same schema-driven shape as the team default.
+For Codex members, `service_tier: "fast"` is valid only while the selected or
+inherited Codex model schema exposes **Fast mode**; stale values are cleared when
+the owning runtime/model context changes.
 
 When the runtime override changes, the row clears incompatible explicit model/config state instead of leaking stale member-only configuration into the next launch.
 

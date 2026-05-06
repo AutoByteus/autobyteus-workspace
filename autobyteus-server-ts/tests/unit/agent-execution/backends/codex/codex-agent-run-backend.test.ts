@@ -24,6 +24,7 @@ const createBackend = (overrides: Record<string, unknown> = {}) => {
         model: null,
         workingDirectory: "/tmp/codex-backend-test-workspace",
         reasoningEffort: null,
+        serviceTier: null,
         approvalPolicy: null,
         sandbox: null,
       },
@@ -116,7 +117,7 @@ describe("CodexAgentRunBackend", () => {
     expect(result.message).toContain("Failed to send user input");
   });
 
-  it("dispatches idle lifecycle events even when token usage updates were observed earlier", () => {
+  it("dispatches idle lifecycle events even when token usage updates were observed earlier", async () => {
     const { backend, codexThread, emitThreadEvent } = createBackend();
     codexThread.runContext.runtimeContext.activeTurnId = "turn-usage-1";
     codexThread.runContext.runtimeContext.codexThreadConfig.model = "gpt-5.4-mini";
@@ -161,6 +162,7 @@ describe("CodexAgentRunBackend", () => {
         },
       },
     });
+    await new Promise<void>((resolve) => setTimeout(resolve, 0));
 
     expect(emittedEvents).toEqual(
       expect.arrayContaining([
