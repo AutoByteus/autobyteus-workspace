@@ -148,6 +148,7 @@ export class CodexThreadManager {
     const response = await client.request<unknown>("thread/start", {
       model: config.model,
       modelProvider: null,
+      serviceTier: config.serviceTier,
       cwd: config.workingDirectory,
       approvalPolicy: config.approvalPolicy,
       sandbox: config.sandbox,
@@ -175,6 +176,7 @@ export class CodexThreadManager {
         path: null,
         model: config.model,
         modelProvider: null,
+        serviceTier: config.serviceTier,
         cwd: config.workingDirectory,
         approvalPolicy: config.approvalPolicy,
         sandbox: config.sandbox,

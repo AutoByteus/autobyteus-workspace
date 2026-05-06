@@ -4,10 +4,19 @@ import { LLMProvider } from "autobyteus-ts/llm/providers.js";
 import { asObject, asString, type JsonObject } from "./codex-app-server-json.js";
 
 const VALID_REASONING_EFFORTS = new Set(["none", "low", "medium", "high", "xhigh"]);
+const VALID_CODEX_SERVICE_TIERS = new Set(["fast"]);
 
 export const normalizeCodexReasoningEffort = (value: unknown): string | null => {
   const normalized = asString(value)?.toLowerCase() ?? null;
   if (!normalized || !VALID_REASONING_EFFORTS.has(normalized)) {
+    return null;
+  }
+  return normalized;
+};
+
+export const normalizeCodexServiceTier = (value: unknown): string | null => {
+  const normalized = asString(value)?.toLowerCase() ?? null;
+  if (!normalized || !VALID_CODEX_SERVICE_TIERS.has(normalized)) {
     return null;
   }
   return normalized;
@@ -21,12 +30,16 @@ export const resolveCodexSessionReasoningEffort = (
   llmConfig: Record<string, unknown> | null | undefined,
 ): string | null => resolveEffortFromConfig(llmConfig);
 
-const toReasoningEffortConfigSchema = (
+export const resolveCodexSessionServiceTier = (
+  llmConfig: Record<string, unknown> | null | undefined,
+): string | null => normalizeCodexServiceTier(llmConfig?.service_tier);
+
+const toReasoningEffortConfigParameter = (
   supportedEfforts: string[],
   defaultReasoningEffort: string | null,
-): Record<string, unknown> | undefined => {
+): Record<string, unknown> | null => {
   if (supportedEfforts.length === 0) {
-    return undefined;
+    return null;
   }
 
   const enumValues = supportedEfforts.slice();
@@ -35,18 +48,41 @@ const toReasoningEffortConfigSchema = (
   }
 
   return {
-    parameters: [
-      {
-        name: "reasoning_effort",
-        type: "enum",
-        description:
-          "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
-        required: false,
-        default_value: defaultReasoningEffort ?? enumValues[0] ?? null,
-        enum_values: enumValues,
-      },
-    ],
+    name: "reasoning_effort",
+    type: "enum",
+    description:
+      "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+    required: false,
+    default_value: defaultReasoningEffort ?? enumValues[0] ?? null,
+    enum_values: enumValues,
   };
+};
+
+const toServiceTierConfigParameter = (additionalSpeedTiers: string[]): Record<string, unknown> | null => {
+  if (!additionalSpeedTiers.includes("fast")) {
+    return null;
+  }
+  return {
+    name: "service_tier",
+    label: "Fast mode",
+    type: "enum",
+    description: "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+    required: false,
+    enum_values: ["fast"],
+  };
+};
+
+const toCodexConfigSchema = (
+  supportedEfforts: string[],
+  defaultReasoningEffort: string | null,
+  additionalSpeedTiers: string[],
+): Record<string, unknown> | undefined => {
+  const parameters = [
+    toReasoningEffortConfigParameter(supportedEfforts, defaultReasoningEffort),
+    toServiceTierConfigParameter(additionalSpeedTiers),
+  ].filter((parameter): parameter is Record<string, unknown> => parameter !== null);
+
+  return parameters.length > 0 ? { parameters } : undefined;
 };
 
 const toReasoningDisplayLabel = (displayName: string, defaultReasoningEffort: string | null): string =>
@@ -71,6 +107,22 @@ const toSupportedReasoningEfforts = (row: JsonObject): string[] => {
   return efforts;
 };
 
+const toAdditionalSpeedTiers = (row: JsonObject): string[] => {
+  const source = row.additionalSpeedTiers ?? row.additional_speed_tiers;
+  if (!Array.isArray(source)) {
+    return [];
+  }
+
+  const speedTiers: string[] = [];
+  for (const entry of source) {
+    const value = asString(entry)?.toLowerCase() ?? null;
+    if (value && !speedTiers.includes(value)) {
+      speedTiers.push(value);
+    }
+  }
+  return speedTiers;
+};
+
 export const mapCodexModelListRowToModelInfo = (row: unknown): ModelInfo | null => {
   const model = asObject(row);
   const modelName = asString(model?.model) ?? asString(model?.id);
@@ -82,7 +134,12 @@ export const mapCodexModelListRowToModelInfo = (row: unknown): ModelInfo | null 
     model.defaultReasoningEffort ?? model.default_reasoning_effort,
   );
   const supportedReasoningEfforts = toSupportedReasoningEfforts(model);
-  const configSchema = toReasoningEffortConfigSchema(supportedReasoningEfforts, defaultReasoningEffort);
+  const additionalSpeedTiers = toAdditionalSpeedTiers(model);
+  const configSchema = toCodexConfigSchema(
+    supportedReasoningEfforts,
+    defaultReasoningEffort,
+    additionalSpeedTiers,
+  );
   const displayName = asString(model.displayName) ?? modelName;
 
   return {

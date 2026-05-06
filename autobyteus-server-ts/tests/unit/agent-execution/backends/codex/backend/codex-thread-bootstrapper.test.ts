@@ -23,7 +23,9 @@ import type { CodexAppServerClientManager } from "../../../../../../src/runtime-
 
 const WORKING_DIRECTORY = "/tmp/codex-workspace";
 
-const createRunContext = () =>
+const createRunContext = (input: {
+  llmConfig?: Record<string, unknown> | null;
+} = {}) =>
   new AgentRunContext({
     runId: "run-1",
     config: new AgentRunConfig({
@@ -32,7 +34,7 @@ const createRunContext = () =>
       llmModelIdentifier: "gpt-test",
       autoExecuteTools: false,
       workspaceId: "workspace-id",
-      llmConfig: null,
+      llmConfig: input.llmConfig ?? null,
       skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
     }),
     runtimeContext: null,
@@ -189,6 +191,25 @@ describe("CodexThreadBootstrapper", () => {
     );
     expect(runContext.runtimeContext.materializedConfiguredSkills).toEqual([]);
     expect(clientManager.releaseClient).toHaveBeenCalledWith(WORKING_DIRECTORY);
+  });
+
+  it("normalizes llmConfig service_tier into Codex thread serviceTier", async () => {
+    const { bootstrapper } = createBootstrapper({
+      skills: [],
+      requestImplementation: async () => ({ data: [] }),
+    });
+
+    const runContext = await bootstrapper.bootstrapForCreate(
+      createRunContext({
+        llmConfig: {
+          reasoning_effort: "high",
+          service_tier: " FAST ",
+        },
+      }),
+    );
+
+    expect(runContext.runtimeContext.codexThreadConfig.reasoningEffort).toBe("high");
+    expect(runContext.runtimeContext.codexThreadConfig.serviceTier).toBe("fast");
   });
 
   it("falls back to workspace materialization when the discoverable-skill probe fails", async () => {

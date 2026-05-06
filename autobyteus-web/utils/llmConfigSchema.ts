@@ -2,6 +2,9 @@ type RawParameterSchema = {
   parameters?: Array<{
     name?: string;
     type?: string;
+    title?: string;
+    label?: string;
+    display_name?: string;
     description?: string;
     required?: boolean;
     default_value?: unknown;
@@ -20,6 +23,7 @@ type RawJsonSchema = {
 
 export type UiModelConfigSchema = Record<string, {
   type?: string;
+  title?: string;
   description?: string;
   enum?: unknown[];
   default?: unknown;
@@ -34,6 +38,15 @@ const isObject = (value: unknown): value is Record<string, unknown> =>
 
 const isFiniteNumber = (value: unknown): value is number =>
   typeof value === 'number' && Number.isFinite(value);
+
+const firstString = (...values: unknown[]): string | undefined => {
+  for (const value of values) {
+    if (typeof value === 'string' && value.trim().length > 0) {
+      return value.trim();
+    }
+  }
+  return undefined;
+};
 
 const isValidValueForParam = (
   value: unknown,
@@ -107,6 +120,7 @@ export const normalizeModelConfigSchema = (schema: unknown): UiModelConfigSchema
 
       normalized[param.name] = {
         type: param.type,
+        title: firstString(param.title, param.label, param.display_name),
         description: param.description,
         enum: param.enum_values,
         default: param.default_value,
@@ -133,6 +147,7 @@ export const normalizeModelConfigSchema = (schema: unknown): UiModelConfigSchema
       if (!isObject(value)) continue;
 
       const type = typeof value.type === 'string' ? value.type : undefined;
+      const title = firstString(value.title, value.label, value.display_name);
       const description = typeof value.description === 'string' ? value.description : undefined;
       const enumValues = Array.isArray(value.enum) ? value.enum : undefined;
       const defaultValue = 'default' in value ? value.default : undefined;
@@ -144,6 +159,7 @@ export const normalizeModelConfigSchema = (schema: unknown): UiModelConfigSchema
 
       normalized[key] = {
         type,
+        title,
         description,
         enum: enumValues,
         default: defaultValue,
