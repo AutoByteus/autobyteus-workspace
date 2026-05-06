@@ -8,7 +8,7 @@
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support`
 - Ticket branch: `codex/gemini-latest-image-model-support`
 - Finalization target: `origin/personal`
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/done/gemini-latest-image-model-support`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-latest-image-model-support`
 
 ## Delivered
 
@@ -29,7 +29,7 @@
 
 - Docs sync result: `Updated`
 - Docs sync artifact:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/done/gemini-latest-image-model-support/docs-sync-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-latest-image-model-support/docs-sync-report.md`
 - Durable docs updated:
   - `autobyteus-ts/docs/provider_model_catalogs.md`
 - Durable docs now record:
@@ -102,16 +102,16 @@ Known warnings during focused tests were the pre-existing dotenv / SSL certifica
 
 ## Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/done/gemini-latest-image-model-support/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/done/gemini-latest-image-model-support/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/done/gemini-latest-image-model-support/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/done/gemini-latest-image-model-support/design-review-report.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/done/gemini-latest-image-model-support/implementation-handoff.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/done/gemini-latest-image-model-support/review-report.md`
-- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/done/gemini-latest-image-model-support/api-e2e-validation-report.md`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/done/gemini-latest-image-model-support/docs-sync-report.md`
-- Delivery/release report: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/done/gemini-latest-image-model-support/release-deployment-report.md`
-- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-latest-image-model-support/tickets/done/gemini-latest-image-model-support/handoff-summary.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-latest-image-model-support/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-latest-image-model-support/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-latest-image-model-support/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-latest-image-model-support/design-review-report.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-latest-image-model-support/implementation-handoff.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-latest-image-model-support/review-report.md`
+- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-latest-image-model-support/api-e2e-validation-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-latest-image-model-support/docs-sync-report.md`
+- Delivery/release report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-latest-image-model-support/release-deployment-report.md`
+- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-latest-image-model-support/handoff-summary.md`
 
 ## User Verification
 
@@ -127,5 +127,7 @@ Known warnings during focused tests were the pre-existing dotenv / SSL certifica
 - Finalization target refreshed after user verification: `origin/personal @ 3be68b7bea72ff94e0cdd1edbfd45893e712454b`
 - Target advanced after user verification: `No`
 - No renewed verification required because the target did not advance after the verified Electron build state.
-- Repository finalization status: `In progress in delivery finalization`; exact pushed branch/merge results are recorded in `release-deployment-report.md` and final delivery response.
+- Repository finalization status: `Completed`
+- Ticket branch final commit: `cf667942`
+- Merge commit into `personal`: `e11199b4`
 - Release/publication/deployment status: `Not required` per user request.
