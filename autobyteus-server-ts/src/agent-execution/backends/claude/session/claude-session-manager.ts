@@ -21,8 +21,6 @@ export type { ClaudeSessionEvent } from "../claude-runtime-shared.js";
 export { ClaudeSession } from "./claude-session.js";
 
 export class ClaudeSessionManager {
-  private static readonly TERMINATION_SETTLE_TIMEOUT_MS = 2_000;
-
   private workspaceManager: WorkspaceManager;
   private readonly sessions = new Map<string, ClaudeSession>();
   private readonly sessionMessageCache = new ClaudeSessionMessageCache();
@@ -88,12 +86,9 @@ export class ClaudeSessionManager {
       return;
     }
     if (state.activeTurnId) {
-      state.activeAbortController?.abort();
-      this.toolingCoordinator.clearPendingToolApprovals(
-        runId,
+      await state.settleActiveTurnForClosure(
         "Tool approval cancelled because run was closed.",
       );
-      await this.waitForActiveTurnToSettle(state);
     }
     state.emitRuntimeEvent({
       method: ClaudeSessionEventName.SESSION_TERMINATED,
@@ -159,13 +154,6 @@ export class ClaudeSessionManager {
       isRunSessionActive: () => this.sessions.has(runId),
       terminateRunSession: () => this.terminateRun(runId),
     };
-  }
-
-  private async waitForActiveTurnToSettle(session: ClaudeSession): Promise<void> {
-    const deadline = Date.now() + ClaudeSessionManager.TERMINATION_SETTLE_TIMEOUT_MS;
-    while (session.activeTurnId && Date.now() < deadline) {
-      await new Promise((resolve) => setTimeout(resolve, 25));
-    }
   }
 }
 

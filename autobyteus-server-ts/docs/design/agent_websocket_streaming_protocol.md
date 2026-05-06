@@ -85,6 +85,13 @@ finish their cancellation boundary first; for Claude Agent SDK sessions this
 means aborting/closing the active query and clearing active turn/query state
 before the interrupted/idle projection is emitted.
 
+Explicit GraphQL termination of an active Claude Agent SDK run follows the same
+provider-settlement invariant before final session termination. The session must
+settle any active turn through the interrupt-safe query closure path first; only
+after that may the manager emit `SESSION_TERMINATED`, close/remove the run
+session, and leave later follow-up recovery to explicit restore plus
+`SEND_MESSAGE`.
+
 ## Error And Close Semantics
 
 - Missing or unrestorable single-agent runs emit `AGENT_NOT_FOUND` and close with `4004`.
