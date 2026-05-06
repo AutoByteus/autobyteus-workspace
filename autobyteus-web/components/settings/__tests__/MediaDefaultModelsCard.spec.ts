@@ -162,6 +162,9 @@ describe('MediaDefaultModelsCard', () => {
 
     expect(modelCatalogStore.fetchProvidersWithModels).toHaveBeenCalledWith('autobyteus')
     expect(wrapper.text()).toContain('Default media models')
+    expect(wrapper.text()).not.toContain('DEFAULT_IMAGE_EDIT_MODEL')
+    expect(wrapper.text()).not.toContain('DEFAULT_IMAGE_GENERATION_MODEL')
+    expect(wrapper.text()).not.toContain('DEFAULT_SPEECH_GENERATION_MODEL')
     expect(selectorFor(wrapper, DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY).element).toHaveProperty(
       'value',
       DEFAULT_IMAGE_MODEL_IDENTIFIER,

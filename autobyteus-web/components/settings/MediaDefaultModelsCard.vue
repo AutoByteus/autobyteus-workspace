@@ -39,11 +39,8 @@
         <label class="block text-sm font-semibold text-gray-900">
           {{ t(setting.labelKey) }}
         </label>
-        <p class="mt-1 text-sm text-gray-600">
-          {{ t(setting.descriptionKey) }}
-        </p>
 
-        <div class="mt-3">
+        <div class="mt-2">
           <SearchableGroupedSelect
             v-model="draftValues[setting.key]"
             :options="optionsForSetting(setting)"
