@@ -187,6 +187,12 @@ const mkTempDir = (): string => {
   return dir;
 };
 
+const createExternalOutputDir = (): string => {
+  const dir = fs.mkdtempSync(path.join(process.cwd(), ".server-owned-media-output-"));
+  tempDirs.push(dir);
+  return dir;
+};
+
 const createWorkspace = (): { workspaceRoot: string; inputPath: string; maskPath: string } => {
   const workspaceRoot = mkTempDir();
   const inputPath = path.join(workspaceRoot, "inputs", "reference.png");
@@ -264,7 +270,13 @@ afterEach(() => {
 
 describe("server-owned media tools API/E2E boundary", () => {
   it("executes the three canonical media tools through the AutoByteus local registry and writes output files", async () => {
-    const { workspaceRoot, inputPath, maskPath } = createWorkspace();
+    const { workspaceRoot, inputPath } = createWorkspace();
+    const externalOutputDir = createExternalOutputDir();
+    const generatedOutputPath = path.join(externalOutputDir, "generated.png");
+    const editedOutputPath = path.join(externalOutputDir, "edited.png");
+    const speechOutputPath = path.join(externalOutputDir, "speech.wav");
+    const externalMaskPath = path.join(externalOutputDir, "mask.png");
+    fs.writeFileSync(externalMaskPath, "external mask image");
     registerMediaTools();
 
     const generateImageTool = defaultToolRegistry.createTool(GENERATE_IMAGE_TOOL_NAME);
@@ -276,7 +288,7 @@ describe("server-owned media tools API/E2E boundary", () => {
       {
         prompt: "paint an integration robot",
         input_images: ["inputs/reference.png"],
-        output_file_path: "outputs/generated.png",
+        output_file_path: generatedOutputPath,
         generation_config: { style: "watercolor" },
       },
     ) as { file_path: string };
@@ -284,16 +296,16 @@ describe("server-owned media tools API/E2E boundary", () => {
       { agentId: "agent-auto", runId: "run-auto", workspaceRootPath: workspaceRoot } as any,
       {
         prompt: "add a blue badge",
-        input_images: [inputPath, INPUT_DATA_URI],
-        mask_image: "inputs/mask.png",
-        output_file_path: "outputs/edited.png",
+        input_images: [generated.file_path, INPUT_DATA_URI],
+        mask_image: pathToFileURL(externalMaskPath).href,
+        output_file_path: editedOutputPath,
       },
     ) as { file_path: string };
     const speech = await generateSpeechTool.execute(
       { agentId: "agent-auto", runId: "run-auto", workspaceRootPath: workspaceRoot } as any,
       {
         prompt: "hello from the server owned speech tool",
-        output_file_path: "outputs/speech.wav",
+        output_file_path: speechOutputPath,
         generation_config: { voice: "Test" },
       },
     ) as { file_path: string };
@@ -301,9 +313,9 @@ describe("server-owned media tools API/E2E boundary", () => {
     expectFileBytes(generated.file_path, IMAGE_BYTES);
     expectFileBytes(edited.file_path, EDIT_IMAGE_BYTES);
     expectFileBytes(speech.file_path, AUDIO_BYTES);
-    expect(generated.file_path).toBe(path.join(workspaceRoot, "outputs", "generated.png"));
-    expect(edited.file_path).toBe(path.join(workspaceRoot, "outputs", "edited.png"));
-    expect(speech.file_path).toBe(path.join(workspaceRoot, "outputs", "speech.wav"));
+    expect(generated.file_path).toBe(generatedOutputPath);
+    expect(edited.file_path).toBe(editedOutputPath);
+    expect(speech.file_path).toBe(speechOutputPath);
     expect(imageGenerateCalls).toEqual([
       expect.objectContaining({
         modelIdentifier: "image-gen-a",
@@ -314,8 +326,8 @@ describe("server-owned media tools API/E2E boundary", () => {
     expect(imageEditCalls).toEqual([
       expect.objectContaining({
         modelIdentifier: "image-edit-a",
-        inputImages: [inputPath, INPUT_DATA_URI],
-        maskImage: maskPath,
+        inputImages: [generatedOutputPath, INPUT_DATA_URI],
+        maskImage: externalMaskPath,
       }),
     ]);
     expect(speechCalls).toEqual([
@@ -357,18 +369,38 @@ describe("server-owned media tools API/E2E boundary", () => {
     });
   });
 
-  it("normalizes media input paths consistently for workspace, absolute, URL/data URI, disallowed, and nonexistent references", () => {
+  it("normalizes media input paths consistently for workspace, external absolute, file URL, URL/data URI, missing, non-file, and traversal references", () => {
     const { workspaceRoot, inputPath } = createWorkspace();
     const resolver = new MediaPathResolver();
+    const externalInputDir = createExternalOutputDir();
+    const externalInputPath = path.join(externalInputDir, "external-reference.png");
+    const nonFilePath = path.join(externalInputDir, "not-a-file");
+    const externalOutputPath = path.join(
+      externalInputDir,
+      "generated.png",
+    );
+    fs.writeFileSync(externalInputPath, "external reference image");
+    fs.mkdirSync(nonFilePath);
 
     expect(resolver.resolveInputImageReference("inputs/reference.png", { workspaceRootPath: workspaceRoot })).toBe(inputPath);
     expect(resolver.resolveInputImageReference(inputPath, { workspaceRootPath: workspaceRoot })).toBe(inputPath);
     expect(resolver.resolveInputImageReference(pathToFileURL(inputPath).href, { workspaceRootPath: workspaceRoot })).toBe(inputPath);
+    expect(resolver.resolveInputImageReference(externalInputPath, { workspaceRootPath: workspaceRoot })).toBe(externalInputPath);
+    expect(resolver.resolveInputImageReference(pathToFileURL(externalInputPath).href, { workspaceRootPath: workspaceRoot })).toBe(externalInputPath);
     expect(resolver.resolveInputImageReference("https://example.test/reference.png", { workspaceRootPath: workspaceRoot })).toBe("https://example.test/reference.png");
     expect(resolver.resolveInputImageReference(INPUT_DATA_URI, { workspaceRootPath: workspaceRoot })).toBe(INPUT_DATA_URI);
     expect(() => resolver.resolveInputImageReference("inputs/missing.png", { workspaceRootPath: workspaceRoot })).toThrow(/does not resolve to an existing file/);
-    expect(() => resolver.resolveInputImageReference("/etc/passwd", { workspaceRootPath: workspaceRoot })).toThrow(/Security Violation/);
-    expect(() => resolver.resolveOutputFilePath("/etc/generated.png", { workspaceRootPath: workspaceRoot })).toThrow(/Security Violation/);
+    expect(() => resolver.resolveInputImageReference(nonFilePath, { workspaceRootPath: workspaceRoot })).toThrow(/does not resolve to an existing file/);
+    expect(() => resolver.resolveInputImageReference("../reference.png", { workspaceRootPath: workspaceRoot })).toThrow(/escapes the workspace/);
+    expect(resolver.resolveOutputFilePath("outputs/generated.png", {
+      workspaceRootPath: workspaceRoot,
+    })).toBe(path.join(workspaceRoot, "outputs", "generated.png"));
+    expect(resolver.resolveOutputFilePath(externalOutputPath, {
+      workspaceRootPath: workspaceRoot,
+    })).toBe(externalOutputPath);
+    expect(() => resolver.resolveOutputFilePath("../generated.png", {
+      workspaceRootPath: workspaceRoot,
+    })).toThrow(/escapes the workspace/);
   });
 
   it("executes all enabled Codex dynamic media tools and returns structured failures for invalid input paths", async () => {

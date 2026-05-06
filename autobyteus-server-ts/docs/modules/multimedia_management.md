@@ -20,8 +20,8 @@ Audio/image model catalogs and media-serving integration.
 Server-owned media agent tools live in `src/agent-tools/media` and reuse the
 multimedia client factories/model catalogs for provider-specific execution.
 The server-owned tool layer is responsible for agent-facing contracts,
-runtime-specific projection, default-model resolution, safe path handling, and
-result shaping.
+runtime-specific projection, default-model resolution, media-local path
+handling, and result shaping.
 
 The active first-party agent tool names are:
 
@@ -34,6 +34,14 @@ array of image-reference strings. A single reference should be passed as a
 one-element array. String or comma-separated `input_images` input is not
 accepted, including as a compatibility fallback, because data URIs can contain
 commas and must stay intact as individual array entries.
+
+Media local-path handling is intentionally scoped to the server-owned media tool
+fields. Relative local paths resolve inside the active workspace and may not
+traverse outside it. Absolute `output_file_path` values may target any local path
+writable by the server process. Absolute local `input_images` entries,
+`input_images` `file:` URLs, and `edit_image.mask_image` local paths or `file:`
+URLs may target any existing local file readable by the server process. URL and
+data URI image references continue to pass through unchanged.
 
 Saved default model server settings apply to future/new media tool schema
 construction and invocation:

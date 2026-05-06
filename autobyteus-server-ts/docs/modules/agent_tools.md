@@ -28,8 +28,8 @@ The server owns the first-party media agent-tool boundary for:
 - `edit_image`
 - `generate_speech`
 
-Canonical contracts, schemas, parsing, model-default resolution, safe path
-resolution, and execution orchestration live under `src/agent-tools/media`.
+Canonical contracts, schemas, parsing, model-default resolution, media-local
+path resolution, and execution orchestration live under `src/agent-tools/media`.
 Provider-specific image/audio clients still come from `autobyteus-ts`
 multimedia infrastructure, but the old direct `autobyteus-ts` media `BaseTool`
 classes are no longer the active first-party registration path.
@@ -50,14 +50,20 @@ or comma-separated `input_images` values are rejected rather than
 compatibility-parsed, which avoids corrupting data URIs that legitimately
 contain commas.
 
-Image references may be URLs, data URIs, or safe local paths. Local references
-and media output paths are resolved through the media path resolver:
+Image references may be URLs, data URIs, local filesystem paths, or `file:`
+URLs. Local references and media output paths are resolved through the media
+path resolver:
 
-- relative output paths resolve inside the active workspace
-- absolute output paths must be under the workspace, Downloads, or system temp
-  directory
-- local input image paths must resolve to existing files inside the same safe
-  path policy
+- relative local paths resolve inside the active workspace and may not traverse
+  outside it
+- absolute output paths may target any local path writable by the server process
+- absolute local input paths and `file:` URL input paths may target any existing
+  local file readable by the server process
+- URL and data URI input references continue to pass through unchanged
+
+The media resolver owns this media-specific policy. The generic
+workspace/Downloads/system-temp safe-path helper remains available for unrelated
+tools, but it is not the authority for server-owned media local paths.
 
 All media tools return the canonical result shape `{ file_path }`. Runtime event
 normalizers preserve that result shape, including Claude MCP-prefixed tool names
