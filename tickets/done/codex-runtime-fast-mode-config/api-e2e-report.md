@@ -2,12 +2,12 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/codex-runtime-fast-mode-config/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/codex-runtime-fast-mode-config/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/codex-runtime-fast-mode-config/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/codex-runtime-fast-mode-config/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/codex-runtime-fast-mode-config/implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/codex-runtime-fast-mode-config/review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/done/codex-runtime-fast-mode-config/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/done/codex-runtime-fast-mode-config/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/done/codex-runtime-fast-mode-config/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/done/codex-runtime-fast-mode-config/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/done/codex-runtime-fast-mode-config/implementation-handoff.md`
+- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/done/codex-runtime-fast-mode-config/review-report.md`
 - Current Validation Round: `1`
 - Trigger: Code-review pass from `code_reviewer` on 2026-05-06 with requested product/API validation focus for Codex Fast mode `serviceTier` propagation and stale-config cleanup.
 - Prior Round Reviewed: N/A
@@ -135,7 +135,7 @@ Existing durable validation from implementation was run successfully:
 
 ## Other Validation Artifacts
 
-- Canonical validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/codex-runtime-fast-mode-config/api-e2e-report.md`
+- Canonical validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/done/codex-runtime-fast-mode-config/api-e2e-report.md`
 
 ## Temporary Validation Methods / Scaffolding
 

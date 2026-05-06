@@ -2,10 +2,10 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/codex-runtime-fast-mode-config/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/codex-runtime-fast-mode-config/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/codex-runtime-fast-mode-config/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/codex-runtime-fast-mode-config/design-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/done/codex-runtime-fast-mode-config/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/done/codex-runtime-fast-mode-config/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/done/codex-runtime-fast-mode-config/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/done/codex-runtime-fast-mode-config/design-review-report.md`
 
 ## What Changed
 

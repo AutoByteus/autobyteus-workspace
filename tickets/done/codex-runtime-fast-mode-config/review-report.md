@@ -3,15 +3,15 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/codex-runtime-fast-mode-config/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/done/codex-runtime-fast-mode-config/requirements.md`
 - Current Review Round: `1`
 - Trigger: Implementation handoff from `implementation_engineer` on 2026-05-06.
 - Prior Review Round Reviewed: N/A
 - Latest Authoritative Round: `1`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/codex-runtime-fast-mode-config/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/codex-runtime-fast-mode-config/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/codex-runtime-fast-mode-config/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/codex-runtime-fast-mode-config/implementation-handoff.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/done/codex-runtime-fast-mode-config/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/done/codex-runtime-fast-mode-config/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/done/codex-runtime-fast-mode-config/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/done/codex-runtime-fast-mode-config/implementation-handoff.md`
 - Validation Report Reviewed As Context: N/A
 - API / E2E Validation Started Yet: `No`
 - Repository-Resident Durable Validation Added Or Updated After Prior Review: `No`

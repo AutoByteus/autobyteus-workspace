@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/codex-runtime-fast-mode-config/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/codex-runtime-fast-mode-config/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/codex-runtime-fast-mode-config/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/done/codex-runtime-fast-mode-config/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/done/codex-runtime-fast-mode-config/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/done/codex-runtime-fast-mode-config/design-spec.md`
 - Current Review Round: 1
 - Trigger: Initial architecture review requested by `solution_designer` after requirements approval on 2026-05-06.
 - Prior Review Round Reviewed: N/A
@@ -19,7 +19,7 @@
 
 ## Reviewed Design Spec
 
-Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/codex-runtime-fast-mode-config/design-spec.md` dated 2026-05-06.
+Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-runtime-fast-mode-config/tickets/done/codex-runtime-fast-mode-config/design-spec.md` dated 2026-05-06.
 
 ## Task Design Health Assessment Verdict
 

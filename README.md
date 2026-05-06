@@ -134,6 +134,18 @@ RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts test -- --run
 pnpm -C autobyteus-web test
 ```
 
+## Codex Runtime Model Configuration
+
+Codex launch and resume flows use schema-driven model configuration. When the
+Codex App Server model catalog reports a model with the `fast` speed tier, the
+runtime/model config UI exposes **Fast mode** and persists it as
+`llmConfig.service_tier = "fast"`. Reasoning effort remains a separate setting
+such as `llmConfig.reasoning_effort = "high"`.
+
+Fast mode applies to new or restored Codex sessions and subsequent turns through
+the Codex App Server `serviceTier` request field. Leaving the control at
+Default/off omits the setting and keeps Codex's default service tier.
+
 ## Runtime Sandbox Overrides
 
 Codex full filesystem access can be toggled from the UI at **Settings -> Server
