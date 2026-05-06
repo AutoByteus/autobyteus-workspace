@@ -1,13 +1,25 @@
 import fs from "node:fs";
+import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { downloadFileFromUrl } from "autobyteus-ts/utils/download-utils.js";
-import { resolveSafePath } from "autobyteus-ts/utils/file-utils.js";
 import type { MediaToolExecutionContext } from "./media-tool-contract.js";
 
 const LOCAL_FILE_URL_PREFIX = "file:";
 
 const isRemoteOrDataReference = (value: string): boolean =>
   value.startsWith("http://") || value.startsWith("https://") || value.startsWith("data:");
+
+const isWithinOrEqualPath = (rootPath: string, targetPath: string): boolean => {
+  const relativePath = path.relative(rootPath, targetPath);
+  return (
+    relativePath === "" ||
+    (
+      relativePath !== ".." &&
+      !relativePath.startsWith(`..${path.sep}`) &&
+      !path.isAbsolute(relativePath)
+    )
+  );
+};
 
 const normalizeWorkspaceRoot = (context: MediaToolExecutionContext): string => {
   const workspaceRootPath = context.workspaceRootPath;
@@ -19,12 +31,42 @@ const normalizeWorkspaceRoot = (context: MediaToolExecutionContext): string => {
   return workspaceRootPath;
 };
 
+const resolveLocalMediaPath = (
+  rawPath: string,
+  context: MediaToolExecutionContext,
+  pathLabel: string,
+  options: { allowFileUrl?: boolean } = {},
+): string => {
+  const normalizedPath = rawPath.trim();
+  if (!normalizedPath) {
+    throw new Error(`${pathLabel} must be a non-empty string.`);
+  }
+
+  const isFileUrl = normalizedPath.startsWith(LOCAL_FILE_URL_PREFIX);
+  if (isFileUrl && options.allowFileUrl !== true) {
+    throw new Error(`${pathLabel} must be a local file path, not a file: URL.`);
+  }
+  const localPath = isFileUrl ? fileURLToPath(normalizedPath) : normalizedPath;
+  const workspaceRoot = path.resolve(normalizeWorkspaceRoot(context));
+  if (path.isAbsolute(localPath)) {
+    return path.resolve(localPath);
+  }
+
+  const resolvedPath = path.resolve(workspaceRoot, localPath);
+  if (!isWithinOrEqualPath(workspaceRoot, resolvedPath)) {
+    throw new Error(
+      `${pathLabel} '${rawPath}' escapes the workspace when resolved as a relative path; use an absolute local path for external media locations.`,
+    );
+  }
+  return resolvedPath;
+};
+
 export class MediaPathResolver {
   resolveOutputFilePath(
     outputFilePath: string,
     context: MediaToolExecutionContext,
   ): string {
-    return resolveSafePath(outputFilePath, normalizeWorkspaceRoot(context));
+    return resolveLocalMediaPath(outputFilePath, context, "Output file path");
   }
 
   resolveInputImageReferences(
@@ -50,10 +92,12 @@ export class MediaPathResolver {
       return normalized;
     }
 
-    const localPath = normalized.startsWith(LOCAL_FILE_URL_PREFIX)
-      ? fileURLToPath(normalized)
-      : normalized;
-    const resolvedPath = resolveSafePath(localPath, normalizeWorkspaceRoot(context));
+    const resolvedPath = resolveLocalMediaPath(
+      inputImage,
+      context,
+      "Input image path",
+      { allowFileUrl: true },
+    );
     if (!fs.existsSync(resolvedPath) || !fs.statSync(resolvedPath).isFile()) {
       throw new Error(`Input image path '${inputImage}' does not resolve to an existing file.`);
     }

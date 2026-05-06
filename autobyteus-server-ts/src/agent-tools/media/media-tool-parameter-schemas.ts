@@ -20,6 +20,13 @@ const buildBasePromptParameter = (description: string): ParameterDefinition =>
     required: true,
   });
 
+const OUTPUT_FILE_PATH_RESOLUTION_DESCRIPTION =
+  "Relative paths resolve inside the workspace; absolute paths may target any local path writable by the server process.";
+const INPUT_IMAGE_REFERENCE_DESCRIPTION =
+  "URLs, data URIs, and local file paths or file: URLs readable by the server process are supported; relative local paths resolve inside the workspace.";
+const MASK_IMAGE_REFERENCE_DESCRIPTION =
+  "Use a URL, data URI, or local file path/file: URL readable by the server process; relative local paths resolve inside the workspace.";
+
 const buildOutputFilePathParameter = (description: string): ParameterDefinition =>
   new ParameterDefinition({
     name: "output_file_path",
@@ -77,25 +84,25 @@ export const buildMediaToolParameterSchema = (toolName: MediaToolName): Paramete
   switch (toolName) {
     case GENERATE_IMAGE_TOOL_NAME:
       schema.addParameter(buildBasePromptParameter("A detailed textual description of the image to generate."));
-      schema.addParameter(buildInputImagesParameter("Optional array of image locations (URLs, data URIs, or safe local file paths) to use as references where supported by the current model."));
-      schema.addParameter(buildOutputFilePathParameter("Required local file path where the generated image should be saved. Relative paths resolve inside the workspace; absolute paths must be under the workspace, Downloads, or system temp directory."));
+      schema.addParameter(buildInputImagesParameter(`Optional array of image locations to use as references where supported by the current model. ${INPUT_IMAGE_REFERENCE_DESCRIPTION}`));
+      schema.addParameter(buildOutputFilePathParameter(`Required local file path where the generated image should be saved. ${OUTPUT_FILE_PATH_RESOLUTION_DESCRIPTION}`));
       break;
     case EDIT_IMAGE_TOOL_NAME:
       schema.addParameter(buildBasePromptParameter("A detailed textual description of the edits to apply to the image."));
-      schema.addParameter(buildInputImagesParameter("Array of image locations (URLs, data URIs, or safe local file paths) to edit or use as context. Required by most editing models unless image context is supplied by the runtime."));
-      schema.addParameter(buildOutputFilePathParameter("Required local file path where the edited image should be saved. Relative paths resolve inside the workspace; absolute paths must be under the workspace, Downloads, or system temp directory."));
+      schema.addParameter(buildInputImagesParameter(`Array of image locations to edit or use as context. ${INPUT_IMAGE_REFERENCE_DESCRIPTION} Required by most editing models unless image context is supplied by the runtime.`));
+      schema.addParameter(buildOutputFilePathParameter(`Required local file path where the edited image should be saved. ${OUTPUT_FILE_PATH_RESOLUTION_DESCRIPTION}`));
       schema.addParameter(
         new ParameterDefinition({
           name: "mask_image",
           type: ParameterType.STRING,
-          description: "Optional mask image location for inpainting. Transparent areas are regenerated when supported by the current model.",
+          description: `Optional mask image location for inpainting. ${MASK_IMAGE_REFERENCE_DESCRIPTION} Transparent areas are regenerated when supported by the current model.`,
           required: false,
         }),
       );
       break;
     case GENERATE_SPEECH_TOOL_NAME:
       schema.addParameter(buildBasePromptParameter("The text to convert into spoken audio. For multi-speaker models, format dialogue with speaker labels that match generation_config.speaker_mapping."));
-      schema.addParameter(buildOutputFilePathParameter("Required local file path where the generated audio should be saved. Relative paths resolve inside the workspace; absolute paths must be under the workspace, Downloads, or system temp directory."));
+      schema.addParameter(buildOutputFilePathParameter(`Required local file path where the generated audio should be saved. ${OUTPUT_FILE_PATH_RESOLUTION_DESCRIPTION}`));
       break;
   }
 
