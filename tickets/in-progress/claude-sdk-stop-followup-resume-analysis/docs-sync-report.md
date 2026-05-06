@@ -3,10 +3,10 @@
 ## Scope
 
 - Ticket: `claude-sdk-stop-followup-resume-analysis`
-- Trigger: API/E2E validation pass from `api_e2e_engineer` on 2026-05-06; proceed to delivery-stage integrated-state refresh and docs sync.
+- Trigger: API/E2E validation pass from `api_e2e_engineer` on 2026-05-06; proceed to delivery-stage integrated-state refresh, docs sync, and local Electron test build.
 - Bootstrap base reference: `origin/personal@6f09d1a27e3989ae9cb88da7cf90d9b18c3ad6e2` (`chore(release): bump workspace release version to 1.2.97`)
-- Integrated base reference used for docs sync: `origin/personal@6f09d1a27e3989ae9cb88da7cf90d9b18c3ad6e2` (`HEAD...origin/personal` count `0	0`; no merge/rebase needed)
-- Post-integration verification reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-stop-followup-resume-analysis/tickets/in-progress/claude-sdk-stop-followup-resume-analysis/delivery-logs/01-base-refresh-status.log` and `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-stop-followup-resume-analysis/tickets/in-progress/claude-sdk-stop-followup-resume-analysis/delivery-logs/02-git-diff-check-after-docs.log`
+- Integrated base reference used for docs sync: `origin/personal@d9d2b4863e8a0f0fc5e1470f456cb802830eb4bf` (`chore(release): bump workspace release version to 1.2.98`), merged into ticket branch by `0dcebbdbfc5e281cb143efd4561738f22fa09fbd` after the tracked base advanced during delivery.
+- Post-integration verification reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-stop-followup-resume-analysis/tickets/in-progress/claude-sdk-stop-followup-resume-analysis/electron-test-build-report.md` and `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-stop-followup-resume-analysis/tickets/in-progress/claude-sdk-stop-followup-resume-analysis/delivery-logs/05-electron-build-personal-post-integration.log`
 
 ## Why Docs Were Updated
 
@@ -19,10 +19,11 @@
 | --- | --- | --- | --- |
 | `autobyteus-server-ts/docs/modules/agent_execution.md` | Canonical module doc for runtime agent execution, Claude SDK session behavior, tool approval, interrupt, and provider resume semantics. | Updated | Promoted active-turn closure ownership and terminate-vs-interrupt invariant. |
 | `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md` | Canonical streaming/recovery design doc for WebSocket connect, `SEND_MESSAGE`, active-only controls, and GraphQL streaming entry points. | Updated | Added explicit note that GraphQL active terminate for Claude must settle the active turn before final session termination; restore/follow-up remains explicit restore + `SEND_MESSAGE`. |
-| `autobyteus-web/docs/agent_execution_architecture.md` | Frontend architecture doc for `agentRunStore`, row actions, stopped-run recovery, and send-readiness behavior. | Updated | Added `terminateRun(runId)` behavior so row-level terminate is not confused with stop or local-only close. |
+| `autobyteus-web/docs/agent_execution_architecture.md` | Frontend architecture doc for `agentRunStore`, row actions, stopped-run recovery, and send-readiness behavior. | Updated | Added `terminateRun(runId)` behavior so row-level terminate is not confused with stop or local-only close. Merge with `origin/personal@d9d2b486` preserved both this update and the newer Codex fast-mode config docs in the same file. |
 | `autobyteus-server-ts/docs/modules/run_history.md` | Reviewed because follow-up recovery depends on inactive resume config, persisted metadata, and Claude session id restore/projection contracts. | No change | Existing text already says frontend may call explicit restore and backend connect/`SEND_MESSAGE` remain authoritative restore-aware boundaries; the implementation does not change metadata shape or projection ownership. |
 | `autobyteus-server-ts/docs/modules/agent_team_execution.md` | Reviewed because team restore and active-only control language parallels the single-agent recovery model. | No change | This ticket is standalone Claude run termination; no team-specific behavior or doc contract changed. |
-| `README.md` and `autobyteus-server-ts/docker/README.md` | Reviewed for user/runtime configuration or deployment instructions related to Claude Agent SDK. | No change | No environment variables, Docker auth, install, or operator commands changed. |
+| `README.md`, `autobyteus-web/README.md`, and `autobyteus-web/docs/electron_packaging.md` | Reviewed for user test-build instructions and local Electron packaging behavior. | No change | Existing docs already describe `pnpm build:electron:mac`, local no-notarization flags, and `AUTOBYTEUS_BUILD_FLAVOR=personal`; no durable doc change was required for the build command itself. |
+| `autobyteus-server-ts/docker/README.md` | Reviewed for runtime/deployment instructions related to Claude Agent SDK. | No change | No Docker auth, environment, install, or operator commands changed. |
 
 ## Docs Updated
 
@@ -57,7 +58,7 @@
 
 - Result: `Pass`
 - Next owner: `delivery_engineer`
-- Notes: Docs sync completed after confirming the ticket branch was current with `origin/personal`. `git diff --check` passed after delivery docs edits. Repository finalization remains on hold pending explicit user verification.
+- Notes: Docs sync completed and was preserved after merging `origin/personal@d9d2b486`. Post-integration personal Electron build passed. Repository finalization remains on hold pending explicit user verification.
 
 ## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
 
