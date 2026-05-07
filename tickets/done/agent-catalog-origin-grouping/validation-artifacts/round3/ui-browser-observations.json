@@ -1,0 +1,73 @@
+{
+  "result": "PASS",
+  "url": "http://127.0.0.1:33821/agents",
+  "backendBaseUrl": "http://127.0.0.1:53821",
+  "browseMode": {
+    "searchValue": "",
+    "bodyHasLegacyName": false,
+    "dailyOccurrencesInBody": 1,
+    "sectionOrder": [
+      "Featured agents",
+      "Team-local agents",
+      "Application agents",
+      "Shared agents"
+    ],
+    "sections": [
+      {
+        "heading": "Featured agents",
+        "cards": [
+          { "name": "Daily Assistant", "buttons": ["Sync", "Run", "View Details→"] }
+        ]
+      },
+      {
+        "heading": "Team-local agents",
+        "groups": [
+          {
+            "label": "Research Workspace / Literature Review Team",
+            "hint": "Application team",
+            "cards": [
+              { "name": "Source Collector", "buttons": ["Run", "View Details→"] }
+            ]
+          },
+          {
+            "label": "Software Engineering Team",
+            "hint": null,
+            "cards": [
+              { "name": "Implementation Engineer", "buttons": ["Run", "View Details→"] }
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Application agents",
+        "groups": [
+          {
+            "label": "Research Workspace",
+            "cards": [
+              { "name": "Research Assistant", "buttons": ["Run", "View Details→"] }
+            ]
+          }
+        ]
+      },
+      {
+        "heading": "Shared agents",
+        "cards": [
+          { "name": "General Agent", "buttons": ["Sync", "Run", "View Details→"] },
+          { "name": "Memory Compactor", "buttons": ["Sync", "Run", "View Details→"] }
+        ]
+      }
+    ],
+    "dailyAssistantDuplicatedOutsideFeatured": false,
+    "legacySuperAssistantVisible": false
+  },
+  "searchModeOwnerName": {
+    "query": "Research Workspace",
+    "originHeadingsVisible": false,
+    "cards": ["Research Assistant", "Source Collector"]
+  },
+  "searchModeFeaturedName": {
+    "query": "Daily",
+    "originHeadingsVisible": false,
+    "cards": ["Daily Assistant"]
+  }
+}

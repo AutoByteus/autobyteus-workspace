@@ -1,0 +1,11 @@
+{
+  "coordinatorMemberName": "lead",
+  "members": [
+    {
+      "memberName": "lead",
+      "ref": "implementation-engineer",
+      "refType": "agent",
+      "refScope": "team_local"
+    }
+  ]
+}

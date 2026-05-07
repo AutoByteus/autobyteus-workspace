@@ -92,7 +92,10 @@
 <script setup lang="ts">
 import { computed, ref, toRefs, watch } from 'vue';
 import type { AgentDefinition } from '~/stores/agentDefinitionStore';
-import { formatApplicationOwnershipLabel } from '~/utils/definitionOwnership';
+import {
+  formatApplicationOwnershipLabel,
+  normalizeDefinitionOwnershipScope,
+} from '~/utils/definitionOwnership';
 
 const props = defineProps<{
   agentDef: AgentDefinition;
@@ -125,7 +128,7 @@ watch(() => agentDef.value.avatarUrl, () => {
 const showAvatarImage = computed(() => Boolean(agentDef.value.avatarUrl) && !avatarLoadError.value);
 const avatarUrl = computed(() => agentDef.value.avatarUrl || '');
 const descriptionText = computed(() => agentDef.value.description?.trim() || $t('agents.components.agents.AgentCard.noDescription'));
-const ownershipScope = computed(() => agentDef.value.ownershipScope ?? 'SHARED');
+const ownershipScope = computed(() => normalizeDefinitionOwnershipScope(agentDef.value));
 const isTeamLocal = computed(() => ownershipScope.value === 'TEAM_LOCAL');
 const isApplicationOwned = computed(() => ownershipScope.value === 'APPLICATION_OWNED');
 const teamLabel = computed(() =>

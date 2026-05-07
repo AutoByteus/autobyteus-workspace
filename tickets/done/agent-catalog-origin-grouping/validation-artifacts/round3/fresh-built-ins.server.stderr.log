@@ -1,0 +1,3 @@
+(node:62712) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed

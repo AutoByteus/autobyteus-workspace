@@ -1,0 +1,3 @@
+App data agent folders after UI runtime:
+autobyteus-memory-compactor
+general-agent

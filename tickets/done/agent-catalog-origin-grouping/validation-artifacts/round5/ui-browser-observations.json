@@ -1,0 +1,99 @@
+{
+  "result": "PASS",
+  "generatedAt": "2026-05-07T15:44:02.651030Z",
+  "runtime": {
+    "backendBaseUrl": "http://127.0.0.1:53861",
+    "webBaseUrl": "http://127.0.0.1:33861",
+    "dataDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/ui-runtime-data",
+    "privateAgentsRoot": "/Users/normy/autobyteus_org/autobyteus-private-agents"
+  },
+  "initialUnfeaturedAgentsPage": {
+    "url": "http://127.0.0.1:33861/agents",
+    "hasFeaturedHeading": false,
+    "headings": [
+      "Team-local agents",
+      "Application agents",
+      "Shared agents"
+    ],
+    "sharedContains": {
+      "dailyAssistant": true,
+      "memoryCompactor": true,
+      "generalAgent": true
+    },
+    "teamLocalContains": {
+      "softwareEngineeringTeam": true,
+      "implementationEngineer": true,
+      "literatureReviewTeam": true,
+      "sourceCollector": true,
+      "applicationTeamHint": true
+    },
+    "applicationContains": {
+      "researchWorkspace": true,
+      "researchAssistant": true
+    },
+    "dailyCardActions": {
+      "hasSync": true,
+      "hasRun": true,
+      "hasViewDetails": true
+    },
+    "sourceCollectorCardShowsApplicationProvenance": true,
+    "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/ui-agents-unfeatured-full.png"
+  },
+  "searchMode": {
+    "dailyQueryBeforeFeature": {
+      "query": "Daily",
+      "cardCount": 1,
+      "containsDailyAssistant": true,
+      "originHeadingsPresent": false
+    },
+    "ownerNameQueryBeforeFeature": {
+      "query": "Research Workspace",
+      "cardCount": 2,
+      "containsResearchAssistant": true,
+      "containsSourceCollector": true,
+      "originHeadingsPresent": false
+    },
+    "dailyQueryAfterFeature": {
+      "query": "Daily",
+      "cardCount": 1,
+      "containsDailyAssistant": true,
+      "featuredHeadingPresent": false,
+      "originHeadingsPresent": false
+    }
+  },
+  "settingsFeaturedCatalogFlow": {
+    "settingsUrl": "http://127.0.0.1:33861/settings?section=server-settings&mode=quick",
+    "initialEmptyStateObserved": true,
+    "uiRowAdded": true,
+    "selectedDefinitionId": "daily-assistant",
+    "saveCompletedText": "1 featured item(s) configured.",
+    "persistedSetting": "{\"version\":1,\"items\":[{\"resourceKind\":\"AGENT\",\"definitionId\":\"daily-assistant\",\"sortOrder\":10}]}"
+  },
+  "featuredAgentsPageAfterSettingsSave": {
+    "url": "http://127.0.0.1:33861/agents",
+    "headings": [
+      "Featured agents",
+      "Team-local agents",
+      "Application agents",
+      "Shared agents"
+    ],
+    "featuredCardNames": [
+      "Daily Assistant"
+    ],
+    "featuredFirstCard": "Daily Assistant",
+    "dailyDuplicatedInOriginSections": false,
+    "sharedContainsMemoryCompactor": true,
+    "teamLocalContainsImplementationEngineer": true,
+    "applicationContainsResearchAssistant": true,
+    "featuredDailyCardActions": {
+      "hasSync": true,
+      "hasRun": true,
+      "hasViewDetails": true
+    },
+    "screenshot": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/ui-agents-featured-full.png"
+  },
+  "notes": [
+    "Nuxt dev emitted repeated #app-manifest pre-transform warnings but still served the page and allowed successful DOM/browser validation.",
+    "The browser-use Node REPL surface was unavailable in this session, so validation used the available in-app browser tab tools."
+  ]
+}

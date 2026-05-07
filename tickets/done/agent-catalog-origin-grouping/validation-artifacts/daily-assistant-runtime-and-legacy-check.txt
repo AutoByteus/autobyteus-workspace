@@ -1,0 +1,11 @@
+Superseded identity artifact.
+
+The previous runtime check was captured before the canonical default-agent folder/id rework and is not current evidence. Current expected behavior after implementation rework:
+
+- Fresh app data seeds agents/daily-assistant/agent.md and agents/daily-assistant/agent-config.json.
+- The seeded definition resolves with id daily-assistant and name Daily Assistant.
+- Blank/missing AUTOBYTEUS_FEATURED_CATALOG_ITEMS initializes to definitionId daily-assistant.
+- Legacy agents/autobyteus-super-assistant/ and featured rows are migration inputs only and must migrate to daily-assistant when safe.
+- Active old-name text should be limited to the explicit legacy fixture autobyteus-server-ts/tests/fixtures/built-in-agents/legacy-daily-assistant-agent.md.
+
+Re-run API/E2E validation after code review for fresh runtime evidence.

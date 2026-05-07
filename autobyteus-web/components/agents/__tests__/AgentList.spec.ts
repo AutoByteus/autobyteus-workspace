@@ -100,6 +100,7 @@ describe('AgentList', () => {
   });
 
   const mountComponent = async (options?: {
+    agentDefs?: any[];
     nodes?: any[];
     sourceNodeId?: string;
     deleteResult?: { success: boolean; message: string } | null;
@@ -112,7 +113,7 @@ describe('AgentList', () => {
     setActivePinia(pinia);
 
     const store = useAgentDefinitionStore();
-    store.agentDefinitions = mockAgentDefs as any;
+    store.agentDefinitions = (options?.agentDefs ?? mockAgentDefs) as any;
     store.loading = false;
     store.error = null;
     store.deleteResult = options?.deleteResult ?? null;
@@ -166,7 +167,7 @@ describe('AgentList', () => {
     expect(cards).toHaveLength(2);
   });
 
-  it('renders configured featured agents first without duplicating them in all agents', async () => {
+  it('renders configured featured agents first without duplicating them in origin sections', async () => {
     const wrapper = await mountComponent({
       featuredSettingValue: JSON.stringify({
         version: 1,
@@ -175,11 +176,57 @@ describe('AgentList', () => {
     });
 
     expect(wrapper.text()).toContain('Featured agents');
-    expect(wrapper.text()).toContain('All agents');
+    expect(wrapper.text()).toContain('Shared agents');
     const cards = wrapper.findAllComponents({ name: 'AgentCard' });
     expect(cards).toHaveLength(2);
     expect(cards[0].props('agentDef')).toMatchObject({ id: '2' });
     expect(cards[1].props('agentDef')).toMatchObject({ id: '1' });
+  });
+
+  it('renders regular agents by team-local, application, and shared origin sections', async () => {
+    const wrapper = await mountComponent({
+      agentDefs: [
+        {
+          id: 'shared-agent',
+          name: 'Shared Agent',
+          description: 'Shared Desc',
+          ownershipScope: 'SHARED',
+        },
+        {
+          id: 'app-agent',
+          name: 'Application Agent',
+          description: 'Application Desc',
+          ownershipScope: 'APPLICATION_OWNED',
+          ownerApplicationId: 'app-research',
+          ownerApplicationName: 'Research Workspace',
+        },
+        {
+          id: 'team-agent',
+          name: 'Team Agent',
+          description: 'Team Desc',
+          ownershipScope: 'TEAM_LOCAL',
+          ownerTeamId: 'team-literature',
+          ownerTeamName: 'Literature Review Team',
+          ownerApplicationId: 'app-research',
+          ownerApplicationName: 'Research Workspace',
+        },
+      ],
+    });
+
+    const text = wrapper.text();
+    expect(text).toContain('Team local agents');
+    expect(text).toContain('Research Workspace / Literature Review Team');
+    expect(text).toContain('Application team hint');
+    expect(text).toContain('Application agents');
+    expect(text).toContain('Research Workspace');
+    expect(text).toContain('Shared agents');
+
+    const cards = wrapper.findAllComponents({ name: 'AgentCard' });
+    expect(cards.map((card) => (card.props('agentDef') as any).id)).toEqual([
+      'team-agent',
+      'app-agent',
+      'shared-agent',
+    ]);
   });
 
   it('hides featured grouping during search and searches the full agent list', async () => {
@@ -193,9 +240,42 @@ describe('AgentList', () => {
     await wrapper.find('input[name="agent-search"]').setValue('Agent');
 
     expect(wrapper.text()).not.toContain('Featured agents');
+    expect(wrapper.text()).not.toContain('Shared agents');
     const cards = wrapper.findAllComponents({ name: 'AgentCard' });
     expect(cards).toHaveLength(2);
     expect(cards.map((card) => (card.props('agentDef') as any).id)).toEqual(['1', '2']);
+  });
+
+  it('searches owner names in a flat result grid', async () => {
+    const wrapper = await mountComponent({
+      agentDefs: [
+        {
+          id: 'source-collector',
+          name: 'Source Collector',
+          description: 'Collects source material.',
+          ownershipScope: 'TEAM_LOCAL',
+          ownerTeamId: 'team-literature',
+          ownerTeamName: 'Literature Review Team',
+          ownerApplicationId: 'app-research',
+          ownerApplicationName: 'Research Workspace',
+        },
+        {
+          id: 'general-agent',
+          name: 'General Agent',
+          description: 'General work.',
+          ownershipScope: 'SHARED',
+        },
+      ],
+    });
+
+    await wrapper.find('input[name="agent-search"]').setValue('Research Workspace');
+
+    expect(wrapper.text()).not.toContain('Team local agents');
+    expect(wrapper.text()).not.toContain('Application agents');
+    expect(wrapper.text()).not.toContain('Shared agents');
+    const cards = wrapper.findAllComponents({ name: 'AgentCard' });
+    expect(cards).toHaveLength(1);
+    expect(cards[0].props('agentDef')).toMatchObject({ id: 'source-collector' });
   });
 
   it('shows error when no target nodes are available for sync', async () => {

@@ -1,0 +1,13 @@
+{
+  "repoRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping",
+  "artifactDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5",
+  "backendPort": 53861,
+  "webPort": 33861,
+  "dataDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/ui-runtime-data",
+  "appPackageRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/ui-application-package",
+  "privateAgentsRoot": "/Users/normy/autobyteus_org/autobyteus-private-agents",
+  "backendBaseUrl": "http://127.0.0.1:53861",
+  "graphqlUrl": "http://127.0.0.1:53861/graphql",
+  "agentsPageUrl": "http://127.0.0.1:33861/agents",
+  "settingsAdvancedUrl": "http://127.0.0.1:33861/settings?section=server-settings&mode=advanced"
+}
