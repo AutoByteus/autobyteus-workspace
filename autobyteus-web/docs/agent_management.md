@@ -6,6 +6,8 @@ Shows agent definitions in the native Agents surface, supports shared-agent crea
 
 For live execution/session behavior beyond definition management, see `agent_execution_architecture.md`.
 
+The Agents list can also present a server-configured **Featured agents** section. Featured placement is owned by the `AUTOBYTEUS_FEATURED_CATALOG_ITEMS` server setting and managed from Settings -> Server Settings -> Basics -> Featured catalog items; it is not derived from agent `category` values or agent package metadata.
+
 ## Main Files
 
 - `stores/agentDefinitionStore.ts`
@@ -16,6 +18,7 @@ For live execution/session behavior beyond definition management, see `agent_exe
 - `components/agents/AgentDefinitionForm.vue`
 - `components/launch-config/DefinitionLaunchPreferencesSection.vue`
 - `components/launch-config/RuntimeModelConfigFields.vue`
+- `utils/catalog/featuredCatalogItems.ts`
 - `utils/definitionOwnership.ts`
 
 ## Agent Definition Model
@@ -75,6 +78,17 @@ Definition editors can leave runtime blank to mean “choose when launching”, 
 ## Package Refresh Behavior
 
 Package import/remove flows invalidate and reload Agents together with Applications and Agent Teams. This keeps embedded application-owned definitions visible (or removed) in the same session immediately after a package mutation.
+
+## Featured Agents
+
+`AgentList.vue` joins the loaded agent catalog with `AUTOBYTEUS_FEATURED_CATALOG_ITEMS` entries whose `resourceKind` is `AGENT`.
+
+- Fresh server startup seeds the normal shared `autobyteus-super-assistant` definition and initializes the featured setting to point at it when the setting is missing or blank.
+- Featured agents render with the same `AgentCard` component and the same view, sync, and run actions as the regular grid.
+- When the featured section is visible, the same agent is removed from the regular grid to avoid duplicate cards.
+- Search mode hides featured grouping and searches the full agent catalog normally, including featured agents that match the query.
+- Unknown or removed definition ids in the setting are ignored on the catalog page; Settings keeps unresolved rows visible for operator cleanup.
+- Frontend code must not hard-code featured agent ids. Change featured placement through the server setting instead.
 
 ## Notes
 

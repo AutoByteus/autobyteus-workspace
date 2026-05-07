@@ -6,6 +6,8 @@ Shows team definitions in the native Agent Teams surface, supports shared-team c
 
 For runtime execution/streaming behavior, see `agent_execution_architecture.md`.
 
+The Agent Teams list can also present a server-configured **Featured teams** section. Featured placement is owned by the `AUTOBYTEUS_FEATURED_CATALOG_ITEMS` server setting and managed from Settings -> Server Settings -> Basics -> Featured catalog items; it is not a property of the team definition itself.
+
 ## Main Files
 
 - `stores/agentTeamDefinitionStore.ts`
@@ -26,6 +28,7 @@ For runtime execution/streaming behavior, see `agent_execution_architecture.md`.
 - `utils/teamRunConfigUtils.ts`
 - `utils/teamRunLaunchReadiness.ts`
 - `utils/teamRunMemberConfigBuilder.ts`
+- `utils/catalog/featuredCatalogItems.ts`
 - `utils/definitionOwnership.ts`
 
 ## Team Definition Model
@@ -195,6 +198,16 @@ materialization, or backfill is outside the Agent Teams frontend module.
 ## Package Refresh Behavior
 
 Package import/remove flows invalidate and reload Agent Teams together with Applications and Agents so application-owned teams appear or disappear immediately in the same session.
+
+## Featured Teams
+
+`AgentTeamList.vue` joins the loaded team catalog with `AUTOBYTEUS_FEATURED_CATALOG_ITEMS` entries whose `resourceKind` is `AGENT_TEAM`.
+
+- Featured teams render with the same `AgentTeamCard` component and the same view, sync, and run actions as the regular grid.
+- When the featured section is visible, the same team is removed from the regular grid to avoid duplicate cards.
+- Search mode hides featured grouping and searches the full team catalog normally, including featured teams that match the query.
+- Unknown or removed definition ids in the setting are ignored on the catalog page; Settings keeps unresolved rows visible for operator cleanup.
+- Frontend code must not hard-code featured team ids. Change featured placement through the server setting instead.
 
 ## Notes
 

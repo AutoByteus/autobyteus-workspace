@@ -63,9 +63,55 @@
         <p>{{ errorMessage }}</p>
       </div>
 
-      <div v-else-if="filteredAgentDefinitions.length > 0" class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div v-else-if="isSearchActive && filteredAgentDefinitions.length > 0" class="grid grid-cols-1 gap-4 md:grid-cols-2">
         <AgentCard
           v-for="agentDef in filteredAgentDefinitions"
+          :key="agentDef.id"
+          :agent-def="agentDef"
+          @view-details="viewDetails"
+          @run-agent="runAgent"
+          @sync-agent="syncAgent"
+        />
+      </div>
+
+      <div v-else-if="featuredAgentDefinitions.length > 0" class="space-y-8">
+        <section>
+          <div class="mb-3">
+            <h2 class="text-xl font-semibold text-slate-900">{{ $t('agents.components.agents.AgentList.featuredAgents') }}</h2>
+            <p class="mt-1 text-sm text-slate-500">{{ $t('agents.components.agents.AgentList.featuredAgentsDescription') }}</p>
+          </div>
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <AgentCard
+              v-for="agentDef in featuredAgentDefinitions"
+              :key="agentDef.id"
+              :agent-def="agentDef"
+              @view-details="viewDetails"
+              @run-agent="runAgent"
+              @sync-agent="syncAgent"
+            />
+          </div>
+        </section>
+
+        <section v-if="regularAgentDefinitions.length > 0">
+          <div class="mb-3">
+            <h2 class="text-xl font-semibold text-slate-900">{{ $t('agents.components.agents.AgentList.allAgents') }}</h2>
+          </div>
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <AgentCard
+              v-for="agentDef in regularAgentDefinitions"
+              :key="agentDef.id"
+              :agent-def="agentDef"
+              @view-details="viewDetails"
+              @run-agent="runAgent"
+              @sync-agent="syncAgent"
+            />
+          </div>
+        </section>
+      </div>
+
+      <div v-else-if="regularAgentDefinitions.length > 0" class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <AgentCard
+          v-for="agentDef in regularAgentDefinitions"
           :key="agentDef.id"
           :agent-def="agentDef"
           @view-details="viewDetails"
@@ -109,11 +155,17 @@ import { useRunActions } from '~/composables/useRunActions';
 import { useNodeStore } from '~/stores/nodeStore';
 import { useNodeSyncStore } from '~/stores/nodeSyncStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
+import { useServerSettingsStore } from '~/stores/serverSettings';
 import { EMBEDDED_NODE_ID } from '~/types/node';
 import NodeSyncTargetPickerModal from '~/components/sync/NodeSyncTargetPickerModal.vue';
 import NodeSyncReportPanel from '~/components/sync/NodeSyncReportPanel.vue';
 import type { NodeSyncRunReport } from '~/types/nodeSync';
 import { useToasts } from '~/composables/useToasts';
+import {
+  FEATURED_CATALOG_ITEMS_SETTING_KEY,
+  parseFeaturedCatalogItemsSetting,
+  splitFeaturedCatalogDefinitions,
+} from '~/utils/catalog/featuredCatalogItems';
 
 const emit = defineEmits(['navigate']);
 
@@ -124,6 +176,7 @@ const { deleteResult } = storeToRefs(agentDefinitionStore);
 const nodeStore = useNodeStore();
 const nodeSyncStore = useNodeSyncStore();
 const windowNodeContextStore = useWindowNodeContextStore();
+const serverSettingsStore = useServerSettingsStore();
 
 const agentDefinitions = computed(() => agentDefinitionStore.agentDefinitions);
 const loading = computed(() => agentDefinitionStore.loading);
@@ -141,6 +194,7 @@ const lastAgentSyncReport = ref<NodeSyncRunReport | null>(null);
 
 const sourceNodeId = computed(() => windowNodeContextStore.nodeId || EMBEDDED_NODE_ID);
 const sourceNodeName = computed(() => nodeStore.getNodeById(sourceNodeId.value)?.name || 'Current Node');
+const isSearchActive = computed(() => searchQuery.value.trim().length > 0);
 
 // Watch for delete result and show it through the shared global toaster.
 watch(deleteResult, (newResult) => {
@@ -151,10 +205,10 @@ watch(deleteResult, (newResult) => {
 }, { immediate: true });
 
 const filteredAgentDefinitions = computed(() => {
-  if (!searchQuery.value) {
+  if (!isSearchActive.value) {
     return agentDefinitions.value;
   }
-  const lowerCaseQuery = searchQuery.value.toLowerCase();
+  const lowerCaseQuery = searchQuery.value.trim().toLowerCase();
   return agentDefinitions.value.filter((agent) => {
     const name = agent.name?.toLowerCase() ?? '';
     const description = agent.description?.toLowerCase() ?? '';
@@ -175,11 +229,32 @@ const filteredAgentDefinitions = computed(() => {
   });
 });
 
+const featuredSetting = computed(() => parseFeaturedCatalogItemsSetting(
+  serverSettingsStore.getSettingByKey(FEATURED_CATALOG_ITEMS_SETTING_KEY)?.value ?? null,
+).setting);
+
+const splitAgentDefinitions = computed(() => splitFeaturedCatalogDefinitions(
+  featuredSetting.value.items,
+  'AGENT',
+  agentDefinitions.value,
+));
+
+const featuredAgentDefinitions = computed(() => (
+  isSearchActive.value ? [] : splitAgentDefinitions.value.featuredDefinitions
+));
+
+const regularAgentDefinitions = computed(() => (
+  isSearchActive.value ? filteredAgentDefinitions.value : splitAgentDefinitions.value.regularDefinitions
+));
+
 onMounted(() => {
   // Fetch main agent definitions
   if (agentDefinitions.value.length === 0) {
     agentDefinitionStore.fetchAllAgentDefinitions();
   }
+  serverSettingsStore.fetchServerSettings().catch((error) => {
+    console.warn('Failed to load featured catalog settings:', error);
+  });
 
   nodeStore.initializeRegistry().catch((error) => {
     syncError.value = error instanceof Error ? error.message : String(error);
@@ -192,7 +267,10 @@ onMounted(() => {
 const handleReload = async () => {
   reloading.value = true;
   try {
-    await agentDefinitionStore.reloadAllAgentDefinitions();
+    await Promise.all([
+      agentDefinitionStore.reloadAllAgentDefinitions(),
+      serverSettingsStore.reloadServerSettings(),
+    ]);
   } catch (e) {
     console.error("Failed to reload agents:", e);
     // Optionally show a notification to the user

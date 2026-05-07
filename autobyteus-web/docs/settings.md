@@ -202,7 +202,7 @@ Manage agent package sources used by the app.
 
 A flexible key-value store for backend configurations.
 
-- **Quick setup cards:** The quick server-settings surface includes endpoint cards plus `Applications`, `Default media models`, `Codex full access`, `Web Search Configuration`, and a dedicated `Compaction config` card.
+- **Quick setup cards:** The quick server-settings surface includes endpoint cards plus `Applications`, `Default media models`, `Featured catalog items`, `Codex full access`, `Web Search Configuration`, and a dedicated `Compaction config` card.
 - **Default media models:** `components/settings/MediaDefaultModelsCard.vue` exposes model selectors for the media-tool defaults without requiring operators to remember raw env keys:
   - **Image editing:** saved to `DEFAULT_IMAGE_EDIT_MODEL`.
   - **Image generation:** saved to `DEFAULT_IMAGE_GENERATION_MODEL`.
@@ -210,6 +210,13 @@ A flexible key-value store for backend configurations.
   - Image selectors use the existing image model catalog; speech uses the existing audio model catalog.
   - If a saved model is not currently present in the loaded catalog, the selector keeps that current value visible until the operator chooses and saves another model.
   - Defaults apply to future/new media tool use. Existing active sessions or already-created media clients may keep the model they started with.
+- **Featured catalog items:** `components/settings/FeaturedCatalogItemsCard.vue` saves the versioned JSON list behind `AUTOBYTEUS_FEATURED_CATALOG_ITEMS` without requiring operators to edit raw JSON.
+  - Entries can target either an `AGENT` or an `AGENT_TEAM` definition and are ordered with stable `sortOrder` values.
+  - Fresh servers seed the normal shared `autobyteus-super-assistant` agent and initialize the setting to feature it only when the setting is missing or blank.
+  - Existing non-blank settings are preserved, including an intentional empty `{"version":1,"items":[]}` list.
+  - The card supports adding, removing, and reordering featured agents and teams; duplicate entries are blocked before save and again at the server-setting boundary.
+  - If a saved definition id no longer resolves, Settings keeps the unresolved row visible so an operator can remove it, while catalog pages ignore the unresolved id safely.
+  - Agents and Agent Teams pages consume this server setting as the only featured-placement source; agent `category` values and `agent-config.json` metadata do not control featured placement.
 - **Codex full access:** `components/settings/CodexFullAccessCard.vue` appears in the Server Settings Basics grid and provides one toggle for the common Codex filesystem-access decision without requiring operators to edit the raw `CODEX_APP_SERVER_SANDBOX` key.
   - Toggle on saves `danger-full-access`.
   - Toggle off saves `workspace-write`, the default/recommended mode.
@@ -223,7 +230,7 @@ A flexible key-value store for backend configurations.
   - **Enable detailed compaction logs:** saved to `AUTOBYTEUS_COMPACTION_DEBUG_LOGS`; turns on verbose budget/execution/result diagnostics in server logs.
 - **Live runtime effect:** Compaction settings are env-backed server settings, but changes apply to subsequent compaction budget checks and visible compactor-agent runs without restarting the server.
 - **Local provider note:** LM Studio and Ollama long-running requests are now hardened internally for delayed first-token / long prompt-processing cases; there is no separate timeout setting in the UI. If local runs still fail before the practical context ceiling, lower **Effective context override** instead.
-- **Advanced raw table:** The full key-value table remains available for precise control over server-side flags and parameters, including custom settings. `CODEX_APP_SERVER_SANDBOX` is a predefined editable, non-deletable Codex runtime setting there, so invalid aliases or arbitrary values are rejected instead of being persisted as opaque custom settings. `DEFAULT_IMAGE_EDIT_MODEL`, `DEFAULT_IMAGE_GENERATION_MODEL`, and `DEFAULT_SPEECH_GENERATION_MODEL` are also predefined editable, non-deletable settings while still accepting dynamic model identifiers from the runtime catalog.
+- **Advanced raw table:** The full key-value table remains available for precise control over server-side flags and parameters, including custom settings. `CODEX_APP_SERVER_SANDBOX` is a predefined editable, non-deletable Codex runtime setting there, so invalid aliases or arbitrary values are rejected instead of being persisted as opaque custom settings. `DEFAULT_IMAGE_EDIT_MODEL`, `DEFAULT_IMAGE_GENERATION_MODEL`, and `DEFAULT_SPEECH_GENERATION_MODEL` are also predefined editable, non-deletable settings while still accepting dynamic model identifiers from the runtime catalog. `AUTOBYTEUS_FEATURED_CATALOG_ITEMS` is likewise predefined and validates/normalizes its versioned JSON payload before persistence.
 - **Applications feature toggle:** `components/settings/ApplicationsFeatureToggleCard.vue` now appears as a normal card inside the Server Settings Basics grid and is the first-class control for the bound node’s runtime Applications capability.
 - **Typed runtime authority:** The Applications card reads/writes the typed `applicationsCapability` / `setApplicationsEnabled(...)` boundary instead of treating the generic key-value table as the primary product-facing owner.
 - **Immediate runtime effect:** Enabling or disabling Applications refreshes the same window’s sidebar visibility, `/applications` route access, and catalog behavior without rebuilding the packaged frontend.

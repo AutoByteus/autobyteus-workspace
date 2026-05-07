@@ -1,0 +1,29 @@
+{
+  "webBaseUrl": "http://127.0.0.1:60267",
+  "serverBaseUrl": "http://127.0.0.1:60215",
+  "fixtures": {
+    "agentId": "browser-fixture-agent",
+    "agentName": "Browser Fixture Agent",
+    "teamId": "browser-fixture-team",
+    "teamName": "Browser Fixture Team"
+  },
+  "assertions": [
+    "Initial /agents rendered Featured agents with AutoByteus Super Assistant once and regular All agents with Memory Compactor and Browser Fixture Agent.",
+    "Agent search for Super hid Featured agents grouping and returned AutoByteus Super Assistant once as a normal search result.",
+    "Run on featured AutoByteus Super Assistant navigated to /workspace and displayed Agent Definition = AutoByteus Super Assistant.",
+    "Settings > Server Settings > Basics rendered Featured catalog items card; Add agent + Add team + Save persisted browser-fixture-agent and browser-fixture-team in AUTOBYTEUS_FEATURED_CATALOG_ITEMS.",
+    "After Settings save, /agents showed AutoByteus Super Assistant and Browser Fixture Agent in Featured agents once each, while Memory Compactor remained in All agents.",
+    "After Settings save, /agent-teams showed Browser Fixture Team in Featured teams once.",
+    "Team search for Browser hid Featured teams grouping and returned Browser Fixture Team once as a normal search result.",
+    "A setting containing missing-agent and missing-team did not render unresolved ids in /agents catalog output.",
+    "Settings card displayed unresolved missing-agent and missing-team rows, allowed removing them, and saved a cleaned setting without unresolved ids.",
+    "Run on featured Browser Fixture Team navigated to /workspace and displayed Team Definition = Browser Fixture Team."
+  ],
+  "screenshots": [
+    "browser-agents-initial.png",
+    "browser-featured-run-workspace.png",
+    "browser-agents-after-settings-save.png",
+    "browser-team-search.png",
+    "browser-featured-team-run-workspace.png"
+  ]
+}

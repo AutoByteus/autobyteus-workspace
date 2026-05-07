@@ -10,6 +10,10 @@ import {
   DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY,
   MEDIA_DEFAULT_MODEL_SETTING_KEYS,
 } from "../config/media-default-model-settings.js";
+import {
+  FEATURED_CATALOG_ITEMS_SETTING_KEY,
+  normalizeFeaturedCatalogItemsSettingForPersistence,
+} from "../config/featured-catalog-items-setting.js";
 import { reloadMediaToolSchemas } from "../agent-tools/media/register-media-tools.js";
 
 export {
@@ -34,7 +38,8 @@ export class ServerSettingDescription {
 }
 
 type ServerSettingValueValidation = {
-  readonly allowedValues: readonly string[];
+  readonly allowedValues?: readonly string[];
+  readonly normalizeForPersistence?: (value: string) => [true, string] | [false, string];
   readonly trimBeforePersist?: boolean;
 };
 
@@ -83,6 +88,15 @@ export class ServerSettingsService {
     this.registerPredefinedSetting(
       AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID,
       "Agent definition id for the memory compactor agent. Configure that agent's runtime and model on the selected agent definition.",
+    );
+
+    this.registerPredefinedSetting(
+      FEATURED_CATALOG_ITEMS_SETTING_KEY,
+      "Versioned JSON list of featured catalog agents and agent teams shown on the Agents and Agent Teams pages.",
+      true,
+      {
+        normalizeForPersistence: normalizeFeaturedCatalogItemsSettingForPersistence,
+      },
     );
 
     this.registerPredefinedSetting(
@@ -252,7 +266,11 @@ export class ServerSettingsService {
     }
 
     const normalizedValue = validation.trimBeforePersist === false ? value : value.trim();
-    if (!validation.allowedValues.includes(normalizedValue)) {
+    if (validation.normalizeForPersistence) {
+      return validation.normalizeForPersistence(normalizedValue);
+    }
+
+    if (validation.allowedValues && !validation.allowedValues.includes(normalizedValue)) {
       return [
         false,
         `Server setting '${key}' must be one of: ${validation.allowedValues.join(", ")}.`,
@@ -322,6 +340,10 @@ export class ServerSettingsService {
 
   getCompactionAgentDefinitionId(): string | null {
     return this.getSettingValue(AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID);
+  }
+
+  getFeaturedCatalogItemsSettingValue(): string | null {
+    return this.getSettingValue(FEATURED_CATALOG_ITEMS_SETTING_KEY);
   }
 }
 

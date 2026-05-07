@@ -9,7 +9,7 @@
     "prepare:shared": "pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build",
     "prebuild": "pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma",
     "build": "pnpm run build:full",
-    "build:full": "tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs",
+    "build:full": "tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs && node ./scripts/smoke-default-super-assistant-bootstrap.mjs",
     "pretypecheck": "pnpm prepare:shared",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "pretest": "pnpm prepare:shared",
