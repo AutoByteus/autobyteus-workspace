@@ -1,0 +1,10 @@
+$ rg active one-off old path source scan
+$ rg required legacy old-token active scan
+autobyteus-web/docs/settings.md:216:  - Backend startup migrates existing legacy `autobyteus-super-assistant` folders and featured-setting rows to `daily-assistant` when safe; edited user files are moved without overwriting their content.
+autobyteus-web/docs/agent_management.md:101:- Startup migrates legacy `autobyteus-super-assistant` folders and featured-setting references to `daily-assistant` when safe; that legacy id is not an active featured alias.
+autobyteus-server-ts/docs/modules/agent_definition.md:59:- featured rows referencing legacy `autobyteus-super-assistant` are migrated to `daily-assistant` while intentional empty lists remain empty;
+autobyteus-server-ts/docs/modules/agent_definition.md:60:- existing legacy `agents/autobyteus-super-assistant/` folders are migrated to `agents/daily-assistant/` when safe;
+autobyteus-server-ts/docs/modules/agent_definition.md:67:Do not add separate one-off built-in-agent bootstrappers or scatter platform templates under feature-runtime folders. Compaction runtime depends on `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID`; it does not own the Memory Compactor template/seeding lifecycle. Do not introduce frontend aliases or keep `autobyteus-super-assistant` as an active default. That id is legacy migration input only; the durable Daily Assistant identity is `daily-assistant`.
+autobyteus-server-ts/tests/fixtures/built-in-agents/legacy-daily-assistant-agent.md:2:name: AutoByteus Super Assistant
+autobyteus-server-ts/tests/fixtures/built-in-agents/legacy-daily-assistant-agent.md:8:You are AutoByteus Super Assistant. Help the user complete a wide range of tasks by understanding the request, reasoning about the situation, planning the work, executing actions with available tools, analyzing results, adapting as needed, and continuing until the task is handled.
+autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts:5:export const LEGACY_DAILY_ASSISTANT_AGENT_DEFINITION_ID = "autobyteus-super-assistant";

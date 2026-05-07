@@ -1,0 +1,115 @@
+{
+  "result": "PASS",
+  "generatedAt": "2026-05-07T14:55:04.191Z",
+  "cases": [
+    {
+      "caseName": "fresh-built-ins",
+      "port": 53692,
+      "agentFolders": [
+        "autobyteus-memory-compactor",
+        "daily-assistant"
+      ],
+      "definitionIds": [
+        "autobyteus-memory-compactor",
+        "daily-assistant"
+      ],
+      "featuredSetting": "{\"version\":1,\"items\":[{\"resourceKind\":\"AGENT\",\"definitionId\":\"daily-assistant\",\"sortOrder\":10}]}",
+      "compactionSetting": "autobyteus-memory-compactor",
+      "logSignals": {
+        "stdoutContainsMigration": false,
+        "stdoutContainsUpgrade": false,
+        "stdoutContainsCollisionRemoval": false,
+        "stdoutContainsCollisionWarning": false,
+        "stderrTail": "(node:62712) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nCould not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed\n"
+      }
+    },
+    {
+      "caseName": "legacy-unmodified-migration",
+      "port": 53704,
+      "agentFolders": [
+        "autobyteus-memory-compactor",
+        "daily-assistant",
+        "other-agent"
+      ],
+      "definitionIds": [
+        "autobyteus-memory-compactor",
+        "daily-assistant",
+        "other-agent"
+      ],
+      "featuredSetting": "{\"version\":1,\"items\":[{\"resourceKind\":\"AGENT_TEAM\",\"definitionId\":\"team-a\",\"sortOrder\":5},{\"resourceKind\":\"AGENT\",\"definitionId\":\"daily-assistant\",\"sortOrder\":20},{\"resourceKind\":\"AGENT\",\"definitionId\":\"other-agent\",\"sortOrder\":30}]}",
+      "compactionSetting": "autobyteus-memory-compactor",
+      "logSignals": {
+        "stdoutContainsMigration": true,
+        "stdoutContainsUpgrade": true,
+        "stdoutContainsCollisionRemoval": false,
+        "stdoutContainsCollisionWarning": false,
+        "stderrTail": "(node:62722) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nCould not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed\n"
+      }
+    },
+    {
+      "caseName": "legacy-edited-preservation",
+      "port": 53715,
+      "agentFolders": [
+        "autobyteus-memory-compactor",
+        "daily-assistant"
+      ],
+      "definitionIds": [
+        "autobyteus-memory-compactor",
+        "daily-assistant"
+      ],
+      "featuredSetting": "{\"version\":1,\"items\":[{\"resourceKind\":\"AGENT\",\"definitionId\":\"daily-assistant\",\"sortOrder\":10}]}",
+      "compactionSetting": "autobyteus-memory-compactor",
+      "logSignals": {
+        "stdoutContainsMigration": true,
+        "stdoutContainsUpgrade": false,
+        "stdoutContainsCollisionRemoval": false,
+        "stdoutContainsCollisionWarning": false,
+        "stderrTail": "(node:62731) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nCould not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed\n"
+      }
+    },
+    {
+      "caseName": "collision-unmodified-legacy",
+      "port": 53728,
+      "agentFolders": [
+        "autobyteus-memory-compactor",
+        "daily-assistant"
+      ],
+      "definitionIds": [
+        "autobyteus-memory-compactor",
+        "daily-assistant"
+      ],
+      "featuredSetting": "{\"version\":1,\"items\":[{\"resourceKind\":\"AGENT\",\"definitionId\":\"daily-assistant\",\"sortOrder\":10}]}",
+      "compactionSetting": "autobyteus-memory-compactor",
+      "logSignals": {
+        "stdoutContainsMigration": false,
+        "stdoutContainsUpgrade": false,
+        "stdoutContainsCollisionRemoval": true,
+        "stdoutContainsCollisionWarning": false,
+        "stderrTail": "(node:62740) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nCould not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed\n"
+      }
+    },
+    {
+      "caseName": "collision-edited-legacy",
+      "port": 53740,
+      "agentFolders": [
+        "autobyteus-memory-compactor",
+        "autobyteus-super-assistant",
+        "daily-assistant"
+      ],
+      "definitionIds": [
+        "autobyteus-memory-compactor",
+        "autobyteus-super-assistant",
+        "daily-assistant"
+      ],
+      "featuredSetting": "{\"version\":1,\"items\":[{\"resourceKind\":\"AGENT\",\"definitionId\":\"daily-assistant\",\"sortOrder\":10}]}",
+      "compactionSetting": "autobyteus-memory-compactor",
+      "logSignals": {
+        "stdoutContainsMigration": false,
+        "stdoutContainsUpgrade": false,
+        "stdoutContainsCollisionRemoval": false,
+        "stdoutContainsCollisionWarning": true,
+        "stderrTail": "(node:62748) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nBoth built-in agent folders 'autobyteus-super-assistant' and 'daily-assistant' exist. Preserving canonical target and leaving legacy folder for manual resolution.\nCould not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed\n"
+      }
+    }
+  ]
+}

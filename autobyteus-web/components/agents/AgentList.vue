@@ -74,8 +74,8 @@
         />
       </div>
 
-      <div v-else-if="featuredAgentDefinitions.length > 0" class="space-y-8">
-        <section>
+      <div v-else-if="hasBrowseContent" class="space-y-8">
+        <section v-if="featuredAgentDefinitions.length > 0">
           <div class="mb-3">
             <h2 class="text-xl font-semibold text-slate-900">{{ $t('agents.components.agents.AgentList.featuredAgents') }}</h2>
             <p class="mt-1 text-sm text-slate-500">{{ $t('agents.components.agents.AgentList.featuredAgentsDescription') }}</p>
@@ -92,13 +92,80 @@
           </div>
         </section>
 
-        <section v-if="regularAgentDefinitions.length > 0">
-          <div class="mb-3">
-            <h2 class="text-xl font-semibold text-slate-900">{{ $t('agents.components.agents.AgentList.allAgents') }}</h2>
+        <section v-if="originSections.teamLocalGroups.length > 0">
+          <div class="mb-4">
+            <h2 class="text-xl font-semibold text-slate-900">{{ $t('agents.components.agents.AgentList.teamLocalAgents') }}</h2>
+            <p class="mt-1 text-sm text-slate-500">{{ $t('agents.components.agents.AgentList.teamLocalAgentsDescription') }}</p>
+          </div>
+          <div class="space-y-5">
+            <article
+              v-for="group in originSections.teamLocalGroups"
+              :key="group.key"
+              class="space-y-3"
+            >
+              <div class="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <h3 class="text-base font-semibold text-slate-900">{{ group.label }}</h3>
+                  <p v-if="group.applicationTeam" class="mt-0.5 text-xs font-medium uppercase tracking-wide text-blue-600">
+                    {{ $t('agents.components.agents.AgentList.applicationTeamHint') }}
+                  </p>
+                </div>
+                <span class="text-sm text-slate-500">{{ formatAgentCount(group.count) }}</span>
+              </div>
+              <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <AgentCard
+                  v-for="agentDef in group.agentDefinitions"
+                  :key="agentDef.id"
+                  :agent-def="agentDef"
+                  @view-details="viewDetails"
+                  @run-agent="runAgent"
+                  @sync-agent="syncAgent"
+                />
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section v-if="originSections.applicationGroups.length > 0">
+          <div class="mb-4">
+            <h2 class="text-xl font-semibold text-slate-900">{{ $t('agents.components.agents.AgentList.applicationAgents') }}</h2>
+            <p class="mt-1 text-sm text-slate-500">{{ $t('agents.components.agents.AgentList.applicationAgentsDescription') }}</p>
+          </div>
+          <div class="space-y-5">
+            <article
+              v-for="group in originSections.applicationGroups"
+              :key="group.key"
+              class="space-y-3"
+            >
+              <div class="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+                <h3 class="text-base font-semibold text-slate-900">{{ group.label }}</h3>
+                <span class="text-sm text-slate-500">{{ formatAgentCount(group.count) }}</span>
+              </div>
+              <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <AgentCard
+                  v-for="agentDef in group.agentDefinitions"
+                  :key="agentDef.id"
+                  :agent-def="agentDef"
+                  @view-details="viewDetails"
+                  @run-agent="runAgent"
+                  @sync-agent="syncAgent"
+                />
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section v-if="originSections.sharedAgentDefinitions.length > 0">
+          <div class="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <h2 class="text-xl font-semibold text-slate-900">{{ $t('agents.components.agents.AgentList.sharedAgents') }}</h2>
+              <p class="mt-1 text-sm text-slate-500">{{ $t('agents.components.agents.AgentList.sharedAgentsDescription') }}</p>
+            </div>
+            <span class="text-sm text-slate-500">{{ formatAgentCount(originSections.sharedAgentDefinitions.length) }}</span>
           </div>
           <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
             <AgentCard
-              v-for="agentDef in regularAgentDefinitions"
+              v-for="agentDef in originSections.sharedAgentDefinitions"
               :key="agentDef.id"
               :agent-def="agentDef"
               @view-details="viewDetails"
@@ -107,17 +174,6 @@
             />
           </div>
         </section>
-      </div>
-
-      <div v-else-if="regularAgentDefinitions.length > 0" class="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <AgentCard
-          v-for="agentDef in regularAgentDefinitions"
-          :key="agentDef.id"
-          :agent-def="agentDef"
-          @view-details="viewDetails"
-          @run-agent="runAgent"
-          @sync-agent="syncAgent"
-        />
       </div>
 
       <div v-else class="rounded-lg border border-slate-200 bg-white py-16 text-center shadow-sm">
@@ -166,6 +222,8 @@ import {
   parseFeaturedCatalogItemsSetting,
   splitFeaturedCatalogDefinitions,
 } from '~/utils/catalog/featuredCatalogItems';
+import { buildAgentDefinitionOriginSections } from '~/utils/catalog/agentDefinitionOriginGroups';
+import { normalizeDefinitionOwnershipScope } from '~/utils/definitionOwnership';
 
 const emit = defineEmits(['navigate']);
 
@@ -177,6 +235,7 @@ const nodeStore = useNodeStore();
 const nodeSyncStore = useNodeSyncStore();
 const windowNodeContextStore = useWindowNodeContextStore();
 const serverSettingsStore = useServerSettingsStore();
+const { $t } = useNuxtApp();
 
 const agentDefinitions = computed(() => agentDefinitionStore.agentDefinitions);
 const loading = computed(() => agentDefinitionStore.loading);
@@ -244,8 +303,25 @@ const featuredAgentDefinitions = computed(() => (
 ));
 
 const regularAgentDefinitions = computed(() => (
-  isSearchActive.value ? filteredAgentDefinitions.value : splitAgentDefinitions.value.regularDefinitions
+  splitAgentDefinitions.value.regularDefinitions
 ));
+
+const originSections = computed(() => buildAgentDefinitionOriginSections(regularAgentDefinitions.value));
+const hasOriginSections = computed(() => (
+  originSections.value.teamLocalGroups.length > 0
+  || originSections.value.applicationGroups.length > 0
+  || originSections.value.sharedAgentDefinitions.length > 0
+));
+const hasBrowseContent = computed(() => (
+  !isSearchActive.value
+  && (featuredAgentDefinitions.value.length > 0 || hasOriginSections.value)
+));
+
+const formatAgentCount = (count: number): string => (
+  count === 1
+    ? $t('agents.components.agents.AgentList.agentCountSingular', { count })
+    : $t('agents.components.agents.AgentList.agentCountPlural', { count })
+);
 
 onMounted(() => {
   // Fetch main agent definitions
@@ -293,7 +369,7 @@ const syncAgent = async (agentDef: AgentDefinition): Promise<void> => {
   syncError.value = null;
   lastAgentSyncReport.value = null;
 
-  if ((agentDef.ownershipScope ?? 'SHARED') !== 'SHARED') {
+  if (normalizeDefinitionOwnershipScope(agentDef) !== 'SHARED') {
     syncError.value = 'Only shared agents can be synced individually.';
     return;
   }

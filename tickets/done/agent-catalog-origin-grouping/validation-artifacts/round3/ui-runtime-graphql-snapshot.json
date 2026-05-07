@@ -1,0 +1,110 @@
+{
+  "data": {
+    "agentDefinitions": [
+      {
+        "id": "autobyteus-memory-compactor",
+        "name": "Memory Compactor",
+        "ownershipScope": "SHARED",
+        "ownerTeamName": null,
+        "ownerApplicationName": null,
+        "ownerPackageId": null,
+        "ownerLocalApplicationId": null
+      },
+      {
+        "id": "daily-assistant",
+        "name": "Daily Assistant",
+        "ownershipScope": "SHARED",
+        "ownerTeamName": null,
+        "ownerApplicationName": null,
+        "ownerPackageId": null,
+        "ownerLocalApplicationId": null
+      },
+      {
+        "id": "general-agent",
+        "name": "General Agent",
+        "ownershipScope": "SHARED",
+        "ownerTeamName": null,
+        "ownerApplicationName": null,
+        "ownerPackageId": null,
+        "ownerLocalApplicationId": null
+      },
+      {
+        "id": "bundle-agent__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466167656e742d636174616c6f672d6f726967696e2d67726f7570696e672532467469636b6574732532466167656e742d636174616c6f672d6f726967696e2d67726f7570696e6725324676616c69646174696f6e2d617274696661637473253246726f756e643325324675692d6170706c69636174696f6e2d7061636b616765__72657365617263682d776f726b7370616365__72657365617263682d617373697374616e74",
+        "name": "Research Assistant",
+        "ownershipScope": "APPLICATION_OWNED",
+        "ownerTeamName": null,
+        "ownerApplicationName": "Research Workspace",
+        "ownerPackageId": "application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Fagent-catalog-origin-grouping%2Ftickets%2Fagent-catalog-origin-grouping%2Fvalidation-artifacts%2Fround3%2Fui-application-package",
+        "ownerLocalApplicationId": "research-workspace"
+      },
+      {
+        "id": "team-local:software-engineering:implementation-engineer",
+        "name": "Implementation Engineer",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamName": "Software Engineering Team",
+        "ownerApplicationName": null,
+        "ownerPackageId": null,
+        "ownerLocalApplicationId": null
+      },
+      {
+        "id": "team-local:bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466167656e742d636174616c6f672d6f726967696e2d67726f7570696e672532467469636b6574732532466167656e742d636174616c6f672d6f726967696e2d67726f7570696e6725324676616c69646174696f6e2d617274696661637473253246726f756e643325324675692d6170706c69636174696f6e2d7061636b616765__72657365617263682d776f726b7370616365__6c6974657261747572652d726576696577:source-collector",
+        "name": "Source Collector",
+        "ownershipScope": "TEAM_LOCAL",
+        "ownerTeamName": "Literature Review Team",
+        "ownerApplicationName": "Research Workspace",
+        "ownerPackageId": "application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Fagent-catalog-origin-grouping%2Ftickets%2Fagent-catalog-origin-grouping%2Fvalidation-artifacts%2Fround3%2Fui-application-package",
+        "ownerLocalApplicationId": "research-workspace"
+      }
+    ],
+    "getServerSettings": [
+      {
+        "key": "APP_ENV",
+        "value": "production"
+      },
+      {
+        "key": "AUTOBYTEUS_AGENT_PACKAGE_ROOTS",
+        "value": ""
+      },
+      {
+        "key": "AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS",
+        "value": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round3/ui-application-package"
+      },
+      {
+        "key": "AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID",
+        "value": "autobyteus-memory-compactor"
+      },
+      {
+        "key": "AUTOBYTEUS_FEATURED_CATALOG_ITEMS",
+        "value": "{\"version\":1,\"items\":[{\"resourceKind\":\"AGENT\",\"definitionId\":\"daily-assistant\",\"sortOrder\":10}]}"
+      },
+      {
+        "key": "AUTOBYTEUS_MEMORY_DIR",
+        "value": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round3/ui-runtime-data/memory"
+      },
+      {
+        "key": "AUTOBYTEUS_SERVER_HOST",
+        "value": "http://127.0.0.1:53821"
+      },
+      {
+        "key": "DATABASE_URL",
+        "value": "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round3/ui-runtime-data/db/production.db"
+      },
+      {
+        "key": "DB_TYPE",
+        "value": "sqlite"
+      },
+      {
+        "key": "DISABLE_HTTP_REQUEST_LOGS",
+        "value": "true"
+      },
+      {
+        "key": "LOG_LEVEL",
+        "value": "INFO"
+      },
+      {
+        "key": "PRISMA_LOG_QUERIES",
+        "value": "0"
+      }
+    ]
+  }
+}

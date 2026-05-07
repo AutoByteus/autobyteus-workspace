@@ -1,0 +1,1 @@
+Removed temporary runtime root: /tmp/autobyteus-agent-catalog-validation.DkDONE

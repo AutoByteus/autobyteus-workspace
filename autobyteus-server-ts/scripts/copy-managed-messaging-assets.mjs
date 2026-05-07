@@ -20,77 +20,12 @@ const fileAssets = [
       "release-manifest.json",
     ),
   },
+];
+
+const directoryAssets = [
   {
-    source: path.join(
-      rootDir,
-      "src",
-      "agent-execution",
-      "compaction",
-      "default-compactor-agent",
-      "agent.md",
-    ),
-    target: path.join(
-      rootDir,
-      "dist",
-      "agent-execution",
-      "compaction",
-      "default-compactor-agent",
-      "agent.md",
-    ),
-  },
-  {
-    source: path.join(
-      rootDir,
-      "src",
-      "agent-execution",
-      "compaction",
-      "default-compactor-agent",
-      "agent-config.json",
-    ),
-    target: path.join(
-      rootDir,
-      "dist",
-      "agent-execution",
-      "compaction",
-      "default-compactor-agent",
-      "agent-config.json",
-    ),
-  },
-  {
-    source: path.join(
-      rootDir,
-      "src",
-      "agent-definition",
-      "default-agents",
-      "super-assistant",
-      "agent.md",
-    ),
-    target: path.join(
-      rootDir,
-      "dist",
-      "agent-definition",
-      "default-agents",
-      "super-assistant",
-      "agent.md",
-    ),
-  },
-  {
-    source: path.join(
-      rootDir,
-      "src",
-      "agent-definition",
-      "default-agents",
-      "super-assistant",
-      "agent-config.json",
-    ),
-    target: path.join(
-      rootDir,
-      "dist",
-      "agent-definition",
-      "default-agents",
-      "super-assistant",
-      "agent-config.json",
-    ),
+    source: path.join(rootDir, "src", "built-in-agents", "templates"),
+    target: path.join(rootDir, "dist", "built-in-agents", "templates"),
   },
 ];
 
@@ -100,8 +35,17 @@ const copyFileAsset = async ({ source, target }) => {
   await fs.writeFile(target, content, "utf8");
 };
 
+const copyDirectoryAsset = async ({ source, target }) => {
+  await fs.rm(target, { recursive: true, force: true });
+  await fs.mkdir(path.dirname(target), { recursive: true });
+  await fs.cp(source, target, { recursive: true });
+};
+
 const main = async () => {
-  await Promise.all(fileAssets.map(copyFileAsset));
+  await Promise.all([
+    ...fileAssets.map(copyFileAsset),
+    ...directoryAssets.map(copyDirectoryAsset),
+  ]);
 };
 
 main().catch((error) => {

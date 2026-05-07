@@ -1,0 +1,10 @@
+{
+  "superseded": true,
+  "reason": "Previous runtime GraphQL artifact was captured before the canonical default-agent id/folder rework.",
+  "currentExpectedDefaultAgent": {
+    "id": "daily-assistant",
+    "name": "Daily Assistant"
+  },
+  "legacyMigrationInputOnly": "autobyteus-super-assistant",
+  "requiresRevalidation": true
+}

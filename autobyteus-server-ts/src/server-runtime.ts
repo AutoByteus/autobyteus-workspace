@@ -17,8 +17,7 @@ import {
 import { SERVER_ROUTE_PARAM_MAX_LENGTH } from "./api/fastify-runtime-config.js";
 import { runMigrations } from "./startup/migrations.js";
 import { scheduleBackgroundTasks } from "./startup/background-runner.js";
-import { bootstrapDefaultCompactorAgent } from "./agent-execution/compaction/default-compactor-agent-bootstrapper.js";
-import { bootstrapDefaultSuperAssistant } from "./agent-definition/default-agents/default-super-assistant-bootstrapper.js";
+import { bootstrapBuiltInAgents } from "./built-in-agents/built-in-agent-bootstrapper.js";
 import { registerRestRoutes } from "./api/rest/index.js";
 import { registerGraphql } from "./api/graphql/index.js";
 import { registerWebsocketRoutes } from "./api/websocket/index.js";
@@ -129,16 +128,9 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
   }
 
   try {
-    await bootstrapDefaultCompactorAgent();
+    await bootstrapBuiltInAgents();
   } catch (error) {
-    logger.error(`Failed to bootstrap the default compactor agent: ${String(error)}`);
-    process.exit(1);
-  }
-
-  try {
-    await bootstrapDefaultSuperAssistant();
-  } catch (error) {
-    logger.error(`Failed to bootstrap the default Super Assistant: ${String(error)}`);
+    logger.error(`Failed to bootstrap built-in agents: ${String(error)}`);
     process.exit(1);
   }
 
