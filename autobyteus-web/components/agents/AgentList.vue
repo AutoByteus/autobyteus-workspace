@@ -78,7 +78,6 @@
         <section v-if="featuredAgentDefinitions.length > 0">
           <div class="mb-3">
             <h2 class="text-xl font-semibold text-slate-900">{{ $t('agents.components.agents.AgentList.featuredAgents') }}</h2>
-            <p class="mt-1 text-sm text-slate-500">{{ $t('agents.components.agents.AgentList.featuredAgentsDescription') }}</p>
           </div>
           <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
             <AgentCard
@@ -93,10 +92,6 @@
         </section>
 
         <section v-if="originSections.teamLocalGroups.length > 0">
-          <div class="mb-4">
-            <h2 class="text-xl font-semibold text-slate-900">{{ $t('agents.components.agents.AgentList.teamLocalAgents') }}</h2>
-            <p class="mt-1 text-sm text-slate-500">{{ $t('agents.components.agents.AgentList.teamLocalAgentsDescription') }}</p>
-          </div>
           <div class="space-y-5">
             <article
               v-for="group in originSections.teamLocalGroups"
@@ -129,7 +124,6 @@
         <section v-if="originSections.applicationGroups.length > 0">
           <div class="mb-4">
             <h2 class="text-xl font-semibold text-slate-900">{{ $t('agents.components.agents.AgentList.applicationAgents') }}</h2>
-            <p class="mt-1 text-sm text-slate-500">{{ $t('agents.components.agents.AgentList.applicationAgentsDescription') }}</p>
           </div>
           <div class="space-y-5">
             <article
@@ -159,7 +153,6 @@
           <div class="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <h2 class="text-xl font-semibold text-slate-900">{{ $t('agents.components.agents.AgentList.sharedAgents') }}</h2>
-              <p class="mt-1 text-sm text-slate-500">{{ $t('agents.components.agents.AgentList.sharedAgentsDescription') }}</p>
             </div>
             <span class="text-sm text-slate-500">{{ formatAgentCount(originSections.sharedAgentDefinitions.length) }}</span>
           </div>
