@@ -27,6 +27,10 @@ import {
   DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY,
   ServerSettingsService,
 } from "../../../src/services/server-settings-service.js";
+import {
+  FEATURED_CATALOG_ITEMS_SETTING_KEY,
+  serializeFeaturedCatalogItemsSetting,
+} from "../../../src/config/featured-catalog-items-setting.js";
 
 describe("ServerSettingsService", () => {
   beforeEach(() => {
@@ -244,6 +248,89 @@ describe("ServerSettingsService", () => {
       "DEFAULT_IMAGE_EDIT_MODEL",
       "nano-banana-pro-app-rpa@host",
     );
+  });
+
+  it("exposes featured catalog items as predefined editable metadata", () => {
+    const featuredValue = serializeFeaturedCatalogItemsSetting({
+      version: 1,
+      items: [{ resourceKind: "AGENT", definitionId: "assistant", sortOrder: 10 }],
+    });
+    mockConfig.getConfigData.mockReturnValue({
+      [FEATURED_CATALOG_ITEMS_SETTING_KEY]: featuredValue,
+    });
+
+    const service = new ServerSettingsService();
+    const settings = service.getAvailableSettings();
+
+    expect(settings.find((item) => item.key === FEATURED_CATALOG_ITEMS_SETTING_KEY)).toMatchObject({
+      value: featuredValue,
+      description: expect.stringContaining("featured catalog"),
+      isEditable: true,
+      isDeletable: false,
+    });
+  });
+
+  it("normalizes valid featured catalog settings before persistence", () => {
+    mockConfig.set.mockImplementation(() => undefined);
+    const service = new ServerSettingsService();
+
+    const [ok] = service.updateSetting(
+      FEATURED_CATALOG_ITEMS_SETTING_KEY,
+      JSON.stringify({
+        version: 1,
+        items: [
+          { resourceKind: "AGENT_TEAM", definitionId: "team-a", sortOrder: 20 },
+          { resourceKind: "AGENT", definitionId: " agent-a " },
+        ],
+      }),
+    );
+
+    expect(ok).toBe(true);
+    expect(mockConfig.set).toHaveBeenCalledWith(
+      FEATURED_CATALOG_ITEMS_SETTING_KEY,
+      JSON.stringify({
+        version: 1,
+        items: [
+          { resourceKind: "AGENT_TEAM", definitionId: "team-a", sortOrder: 20 },
+          { resourceKind: "AGENT", definitionId: "agent-a", sortOrder: 20 },
+        ],
+      }),
+    );
+  });
+
+  it("rejects duplicate featured catalog identities before persistence", () => {
+    const service = new ServerSettingsService();
+
+    const [ok, message] = service.updateSetting(
+      FEATURED_CATALOG_ITEMS_SETTING_KEY,
+      JSON.stringify({
+        version: 1,
+        items: [
+          { resourceKind: "AGENT", definitionId: "assistant", sortOrder: 10 },
+          { resourceKind: "AGENT", definitionId: "assistant", sortOrder: 20 },
+        ],
+      }),
+    );
+
+    expect(ok).toBe(false);
+    expect(message).toContain("duplicated");
+    expect(mockConfig.set).not.toHaveBeenCalled();
+  });
+
+  it("rejects invalid featured catalog JSON before persistence", () => {
+    const service = new ServerSettingsService();
+
+    const [ok, message] = service.updateSetting(
+      FEATURED_CATALOG_ITEMS_SETTING_KEY,
+      JSON.stringify({
+        version: 1,
+        items: [{ resourceKind: "WORKSPACE", definitionId: "bad" }],
+      }),
+    );
+
+    expect(ok).toBe(false);
+    expect(message).toContain("AGENT or AGENT_TEAM");
+    expect(mockConfig.set).not.toHaveBeenCalled();
   });
 
   it.each([

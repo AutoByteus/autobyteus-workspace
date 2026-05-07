@@ -1,0 +1,17 @@
+{
+  "freshBuiltStartup": {
+    "dataDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-fresh-built-startup-5E2Tkd",
+    "logPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/featured-default-assistant/tickets/featured-default-assistant/validation-evidence/fresh-built-startup-server.log",
+    "port": 60144
+  },
+  "existingFilesBlankSetting": {
+    "dataDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-existing-files-blank-PbDj90",
+    "logPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/featured-default-assistant/tickets/featured-default-assistant/validation-evidence/existing-files-blank-setting-server.log",
+    "port": 60156
+  },
+  "emptySettingPreserved": {
+    "dataDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-empty-setting-preserved-CzoCN6",
+    "logPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/featured-default-assistant/tickets/featured-default-assistant/validation-evidence/empty-setting-preserved-server.log",
+    "port": 60176
+  }
+}

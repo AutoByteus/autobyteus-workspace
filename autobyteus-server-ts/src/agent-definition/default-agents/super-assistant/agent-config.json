@@ -1,0 +1,42 @@
+{
+  "toolNames": [
+    "read_file",
+    "write_file",
+    "edit_file",
+    "insert_in_file",
+    "replace_in_file",
+    "run_bash",
+    "read_url",
+    "search_web",
+    "close_tab",
+    "dom_snapshot",
+    "list_tabs",
+    "navigate_to",
+    "open_tab",
+    "read_page",
+    "run_script",
+    "screenshot",
+    "download_media",
+    "edit_image",
+    "generate_image",
+    "generate_speech",
+    "read_media_file"
+  ],
+  "skillNames": [],
+  "inputProcessorNames": [
+    "UserInputPersistenceProcessor"
+  ],
+  "llmResponseProcessorNames": [
+    "ProviderAwareToolUsageProcessor",
+    "AssistantResponsePersistenceProcessor",
+    "TokenUsagePersistenceProcessor"
+  ],
+  "systemPromptProcessorNames": [],
+  "toolExecutionResultProcessorNames": [
+    "MediaUrlToolResultTransformerProcessor"
+  ],
+  "toolInvocationPreprocessorNames": [],
+  "lifecycleProcessorNames": [],
+  "avatarUrl": null,
+  "defaultLaunchConfig": null
+}

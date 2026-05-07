@@ -56,6 +56,42 @@ const fileAssets = [
       "agent-config.json",
     ),
   },
+  {
+    source: path.join(
+      rootDir,
+      "src",
+      "agent-definition",
+      "default-agents",
+      "super-assistant",
+      "agent.md",
+    ),
+    target: path.join(
+      rootDir,
+      "dist",
+      "agent-definition",
+      "default-agents",
+      "super-assistant",
+      "agent.md",
+    ),
+  },
+  {
+    source: path.join(
+      rootDir,
+      "src",
+      "agent-definition",
+      "default-agents",
+      "super-assistant",
+      "agent-config.json",
+    ),
+    target: path.join(
+      rootDir,
+      "dist",
+      "agent-definition",
+      "default-agents",
+      "super-assistant",
+      "agent-config.json",
+    ),
+  },
 ];
 
 const copyFileAsset = async ({ source, target }) => {

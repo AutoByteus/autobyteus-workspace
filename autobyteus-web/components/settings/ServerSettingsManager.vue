@@ -155,6 +155,7 @@
             <ApplicationsFeatureToggleCard />
             <MediaDefaultModelsCard />
             <CodexFullAccessCard />
+            <FeaturedCatalogItemsCard />
 
             <section class="rounded-3xl border border-slate-200 bg-white px-6 py-5 shadow-sm">
               <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
@@ -418,6 +419,7 @@ import ServerMonitor from '~/components/server/ServerMonitor.vue'
 import ApplicationsFeatureToggleCard from '~/components/settings/ApplicationsFeatureToggleCard.vue'
 import CodexFullAccessCard from '~/components/settings/CodexFullAccessCard.vue'
 import CompactionConfigCard from '~/components/settings/CompactionConfigCard.vue'
+import FeaturedCatalogItemsCard from '~/components/settings/FeaturedCatalogItemsCard.vue'
 import MediaDefaultModelsCard from '~/components/settings/MediaDefaultModelsCard.vue'
 
 type SettingsTab = 'quick' | 'advanced'

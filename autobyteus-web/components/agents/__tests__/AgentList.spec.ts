@@ -7,6 +7,8 @@ import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useNodeStore } from '~/stores/nodeStore';
 import { useNodeSyncStore } from '~/stores/nodeSyncStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
+import { useServerSettingsStore } from '~/stores/serverSettings';
+import { FEATURED_CATALOG_ITEMS_SETTING_KEY } from '~/utils/catalog/featuredCatalogItems';
 
 const EMBEDDED_SERVER_BASE_URL = 'http://127.0.0.1:29695';
 
@@ -101,6 +103,7 @@ describe('AgentList', () => {
     nodes?: any[];
     sourceNodeId?: string;
     deleteResult?: { success: boolean; message: string } | null;
+    featuredSettingValue?: string | null;
   }) => {
     const pinia = createTestingPinia({
       createSpy: vi.fn,
@@ -123,6 +126,19 @@ describe('AgentList', () => {
 
     const windowNodeContextStore = useWindowNodeContextStore();
     windowNodeContextStore.nodeId = options?.sourceNodeId ?? 'embedded-local';
+
+    const serverSettingsStore = useServerSettingsStore();
+    serverSettingsStore.settings = options?.featuredSettingValue === undefined || options.featuredSettingValue === null
+      ? []
+      : [{
+          key: FEATURED_CATALOG_ITEMS_SETTING_KEY,
+          value: options.featuredSettingValue,
+          description: 'Featured catalog items',
+          isEditable: true,
+          isDeletable: false,
+        }];
+    (serverSettingsStore.fetchServerSettings as any).mockResolvedValue(serverSettingsStore.settings);
+    (serverSettingsStore.reloadServerSettings as any).mockResolvedValue(serverSettingsStore.settings);
 
     const wrapper = mount(AgentList, {
       global: {
@@ -148,6 +164,38 @@ describe('AgentList', () => {
     const wrapper = await mountComponent();
     const cards = wrapper.findAllComponents({ name: 'AgentCard' });
     expect(cards).toHaveLength(2);
+  });
+
+  it('renders configured featured agents first without duplicating them in all agents', async () => {
+    const wrapper = await mountComponent({
+      featuredSettingValue: JSON.stringify({
+        version: 1,
+        items: [{ resourceKind: 'AGENT', definitionId: '2', sortOrder: 10 }],
+      }),
+    });
+
+    expect(wrapper.text()).toContain('Featured agents');
+    expect(wrapper.text()).toContain('All agents');
+    const cards = wrapper.findAllComponents({ name: 'AgentCard' });
+    expect(cards).toHaveLength(2);
+    expect(cards[0].props('agentDef')).toMatchObject({ id: '2' });
+    expect(cards[1].props('agentDef')).toMatchObject({ id: '1' });
+  });
+
+  it('hides featured grouping during search and searches the full agent list', async () => {
+    const wrapper = await mountComponent({
+      featuredSettingValue: JSON.stringify({
+        version: 1,
+        items: [{ resourceKind: 'AGENT', definitionId: '2', sortOrder: 10 }],
+      }),
+    });
+
+    await wrapper.find('input[name="agent-search"]').setValue('Agent');
+
+    expect(wrapper.text()).not.toContain('Featured agents');
+    const cards = wrapper.findAllComponents({ name: 'AgentCard' });
+    expect(cards).toHaveLength(2);
+    expect(cards.map((card) => (card.props('agentDef') as any).id)).toEqual(['1', '2']);
   });
 
   it('shows error when no target nodes are available for sync', async () => {
