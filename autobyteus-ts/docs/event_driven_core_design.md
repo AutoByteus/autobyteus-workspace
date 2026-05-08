@@ -80,14 +80,18 @@ Shutdown is orchestrated inside the worker loop (e.g., `AgentShutdownOrchestrato
 
 ### 3.1 AgentInputEventQueueManager
 
-The agent runtime has **multiple input queues**, each dedicated to a class of events:
+The agent runtime mailbox (`AgentInputBox`) has **multiple input queues**, each
+dedicated to a class of accepted runtime input:
 
 - user messages
 - inter-agent messages
-- tool approval
 - internal system events
 
 This separation allows the runtime to coordinate priorities and preserve order **per queue**.
+Tool approvals do not use the runtime lifecycle queue; `AgentRuntime.submitEvent(...)`
+posts them directly to the active turn's `AgentTurnInputBox`. Unsupported
+turn-local operational events are rejected rather than smuggled through the
+runtime lifecycle lane.
 Tool requests, tool execution, tool results, and same-turn tool continuations are
 turn-local state owned by `AgentTurnRunner`, `ToolPhase`,
 `ToolResultPipeline`, and `ToolResultContinuationBuilder`.
@@ -105,7 +109,7 @@ returns and are not scheduled as independent normal-flow worker-handler events.
 3. Return the highest-priority buffered event.
 
 Priority order is deterministic for scheduler-visible queues (user →
-inter-agent → tool approval → internal system). This avoids the previous bug
+inter-agent → internal system). This avoids the previous bug
 where ready events were reinserted at the tail and changed order.
 
 ### 3.3 Team/Workflow Queue Managers
@@ -134,10 +138,14 @@ This makes the queueing safe across async contexts and ensures all queue ops hap
 
 The agent worker loop looks like:
 
-1. await `getNextSchedulerEvent()`
+1. await the next `AgentInputBox` item
 2. start `AgentTurnRunner` for a user/inter-agent external turn trigger, or
    apply lifecycle/control status events directly
 3. yield to the Node.js event loop so other tasks can run
+
+Stop/shutdown preempts queued turn triggers. `AgentWorker.stop()` sets the stop
+flag before waking the mailbox with a terminal lifecycle event, and the main
+loop checks the flag after wakeup but before `AgentTurnRunner.run(...)`.
 
 ### 4.3 Turn Runner + Status Management
 
@@ -209,8 +217,10 @@ This decouples internal control flow (queues) from external observability (strea
 ### 6.4 Shutdown
 
 1. `AgentRuntime.stop()` triggers status update to SHUTTING_DOWN.
-2. Worker stop signal set; `AgentStoppedEvent` enqueued.
-3. Worker exits loop and runs shutdown orchestrator.
+2. Worker stop signal set; active turn, if any, is interrupted with
+   `runtime_stop`; `AgentStoppedEvent` wakes the runtime lifecycle lane.
+3. Worker exits without starting any queued user/inter-agent turn triggers and
+   runs shutdown orchestrator.
 4. Runtime completes final status update.
 
 ---

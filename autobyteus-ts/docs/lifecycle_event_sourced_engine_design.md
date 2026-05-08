@@ -312,11 +312,18 @@ This appendix documents the **current implemented agent runtime behavior** in co
 
 ### High-Level Data Flow
 
-1. External inputs (user, inter-agent, approvals) and internal events are enqueued into `AgentInputEventQueueManager`.
-2. `AgentWorker` performs direct lifecycle bootstrap, then pulls the next scheduler event.
-3. For user or inter-agent external triggers, the worker starts one `AgentTurn` and delegates the finite turn to `AgentTurnRunner`.
+1. External user/inter-agent inputs and runtime lifecycle events are enqueued
+   into `AgentInputBox`; active-turn approvals bypass that mailbox and post to
+   the active `AgentTurnInputBox`.
+2. `AgentWorker` performs direct lifecycle bootstrap, then pulls the next
+   mailbox item.
+3. For user or inter-agent external triggers, the worker starts one `AgentTurn`
+   and delegates the finite turn to `AgentTurnRunner`.
 4. `AgentTurnRunner` applies status events, calls phase/pipeline services, publishes through `AgentOutbox`, and settles the turn.
-5. Tool approvals are posted into the active `AgentTurnInputBox`; interrupt is side-band control through `AgentRuntime.interrupt()`.
+5. Tool approvals are posted into the active `AgentTurnInputBox`; unsupported
+   turn-local operational events are rejected by `AgentRuntime.submitEvent(...)`
+   rather than queued as lifecycle input; interrupt is side-band control through
+   `AgentRuntime.interrupt()`.
 
 ### Event Pipeline (Primary)
 
@@ -333,6 +340,11 @@ This appendix documents the **current implemented agent runtime behavior** in co
 Additional note: after a completed turn settles, `AgentWorker` applies
 `AgentIdleEvent`. Interrupted turns settle through `AgentTurnInterruptedEvent`
 and working-context checkpoint restore.
+
+Shutdown/stop preempts queued turn triggers: once the worker stop flag is set,
+the main loop checks it after mailbox wakeup and before `AgentTurnRunner.run(...)`,
+so user/inter-agent messages already waiting in the mailbox do not start new
+turns during terminal shutdown.
 
 #### Tool Invocation and Results
 

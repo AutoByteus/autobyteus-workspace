@@ -23,7 +23,7 @@ The important ownership rule is:
 2. `AgentWorker` performs runtime init:
    - `AgentEventStore`
    - `AgentStatusDeriver`
-   - `AgentInputEventQueueManager`
+   - `AgentInputBox` backed by `AgentInputEventQueueManager`
 3. `AgentWorker` runs direct bootstrap through `AgentBootstrapper.run(context)`.
 4. `SystemPromptPipeline` applies system-prompt processors during bootstrap.
 5. `AgentReadyEvent` moves the runtime to the ready/idle state.
@@ -35,7 +35,7 @@ and normal generation interrupt does not run shutdown cleanup.
 ## Turn Scheduling
 
 External user and inter-agent inputs enter the runtime through
-`AgentRuntime.submitEvent(...)` and are queued by `AgentInputEventQueueManager`.
+`AgentRuntime.submitEvent(...)` and are queued by `AgentInputBox`.
 When the worker selects a `UserMessageReceivedEvent` or
 `InterAgentMessageReceivedEvent`, it:
 
@@ -46,6 +46,20 @@ When the worker selects a `UserMessageReceivedEvent` or
 5. emits `AgentIdleEvent` after a completed turn.
 
 Only one active turn is allowed per runtime.
+
+`AgentInputBox` is the runtime mailbox for turn-starting and lifecycle inputs
+only. It accepts:
+
+- external user messages (`UserMessageReceivedEvent`);
+- inter-agent messages (`InterAgentMessageReceivedEvent`);
+- runtime lifecycle events (`LifecycleEvent`).
+
+`AgentRuntime.submitEvent(...)` rejects unsupported operational events instead
+of hiding them in the lifecycle queue. Tool approvals are posted directly to the
+active turn's `AgentTurnInputBox`; if no active turn exists, the approval is
+ignored. Tool results and same-turn TOOL continuations remain inside
+`AgentTurnRunner`/`ToolPhase`/`ToolResultContinuationBuilder` and must not enter
+the runtime mailbox.
 
 ## Turn Execution Ownership
 
@@ -107,7 +121,11 @@ not start or stop the runtime.
 
 `stop(...)` remains terminal runtime shutdown. If a stop happens during an
 active turn, it interrupts the turn with a runtime-stop reason and then runs the
-shutdown orchestrator. User generation interrupt must not run shutdown cleanup.
+shutdown orchestrator. The worker sets its stop flag before enqueuing the
+terminal lifecycle notification and checks that flag again after waking from
+the mailbox, so already-queued user/inter-agent turn triggers are not started
+after terminal stop/shutdown begins. User generation interrupt must not run
+shutdown cleanup.
 
 ## Working Context and Stale Results
 
