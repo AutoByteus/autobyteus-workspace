@@ -87,6 +87,7 @@ Team persisted files:
 - team metadata: `memory/agent_teams/<teamRunId>/team_run_metadata.json`
 - member runtime memory artifacts: `memory/agent_teams/<teamRunId>/<memberRunId>/{raw_traces.jsonl,working_context_snapshot.json,...}`
 - optional member segmented archive: `memory/agent_teams/<teamRunId>/<memberRunId>/raw_traces_archive_manifest.json` plus `raw_traces_archive/*.jsonl`
+- team communication projection: `memory/agent_teams/<teamRunId>/team_communication_messages.json`
 
 Important identity/storage rules:
 
@@ -124,6 +125,16 @@ AutoByteus/native team-member `agent_teams/<teamRunId>/<memberRunId>/file_change
 without adding a separate team-file route or treating produced files as
 message-reference rows.
 
+Team Communication messages are also outside the member replay bundle. Accepted
+team `INTER_AGENT_MESSAGE` events are processor input; derived
+`TEAM_COMMUNICATION_MESSAGE` events are projected once per team run into
+`agent_teams/<teamRunId>/team_communication_messages.json`. Historical Team tab
+hydration reads that projection through `getTeamCommunicationMessages(teamRunId)`,
+and referenced content opens by persisted message-owned identity at
+`/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`.
+The member Artifacts tab must not hydrate those reference files as Sent/Received
+artifact rows.
+
 The `agent-memory` subsystem no longer owns the canonical replay DTO. It supplies raw traces and memory-inspector views only; run-history is the only subsystem that may normalize those raw traces into the historical replay bundle used by reopen/hydration.
 
 - Local-memory projection reads the complete raw-trace corpus from the declared run or team-member memory directory (complete archive segments plus active records) and is the fallback provider for native AutoByteus and for explicit `memoryDir` fallback reads.
@@ -143,6 +154,9 @@ Frontend restore uses that bundle in two sibling hydration paths:
 
 - middle pane: conversation hydration
 - right pane: activity hydration
+- team pane: Team Communication hydration from
+  `getTeamCommunicationMessages(teamRunId)` for message-owned sent/received
+  communication records and child reference files
 
 Those sibling paths must stay synchronized. Reopen/hydration code should apply
 the projected `conversation` and `activities` from the same replay bundle, or

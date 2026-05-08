@@ -33,7 +33,12 @@ describe("buildCodexPublishArtifactsDynamicToolRegistration", () => {
         additionalProperties: false,
       },
     });
+    expect(registration?.spec.description).toContain("absolute paths can point outside the workspace");
+    expect(registration?.spec.description).not.toContain("must still resolve inside the current workspace");
     expect((registration?.spec.inputSchema as any).properties).not.toHaveProperty("path");
+    expect((registration?.spec.inputSchema as any).properties.artifacts.items.properties.path.description).toContain(
+      "Absolute paths may point outside the workspace",
+    );
 
     const result = await registration!.handler({
       runId: "run-1",

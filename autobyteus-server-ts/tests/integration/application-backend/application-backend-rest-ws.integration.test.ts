@@ -9,15 +9,15 @@ import { ApplicationStorageLifecycleService } from "../../../src/application-sto
 import { ApplicationEngineHostService } from "../../../src/application-engine/services/application-engine-host-service.js";
 import { ApplicationBackendGatewayService } from "../../../src/application-backend-gateway/services/application-backend-gateway-service.js";
 import {
-  ApplicationNotificationStreamService,
-  type ApplicationNotificationStreamMessage,
-} from "../../../src/application-backend-gateway/streaming/application-notification-stream-service.js";
+  ApplicationBackendNotificationStreamService,
+  type ApplicationBackendNotificationStreamMessage,
+} from "../../../src/application-backend-gateway/streaming/application-backend-notification-stream-service.js";
 import { SERVER_ROUTE_PARAM_MAX_LENGTH } from "../../../src/api/fastify-runtime-config.js";
 import type { ApplicationBundle } from "../../../src/application-bundles/domain/models.js";
 
 const applicationBackendState = vi.hoisted(() => ({
   gatewayService: null as ApplicationBackendGatewayService | null,
-  notificationStreamService: null as ApplicationNotificationStreamService | null,
+  notificationStreamService: null as ApplicationBackendNotificationStreamService | null,
 }));
 
 vi.mock("../../../src/application-backend-gateway/services/application-backend-gateway-service.js", async () => {
@@ -35,13 +35,13 @@ vi.mock("../../../src/application-backend-gateway/services/application-backend-g
   };
 });
 
-vi.mock("../../../src/application-backend-gateway/streaming/application-notification-stream-service.js", async () => {
+vi.mock("../../../src/application-backend-gateway/streaming/application-backend-notification-stream-service.js", async () => {
   const actual = await vi.importActual<
-    typeof import("../../../src/application-backend-gateway/streaming/application-notification-stream-service.js")
-  >("../../../src/application-backend-gateway/streaming/application-notification-stream-service.js");
+    typeof import("../../../src/application-backend-gateway/streaming/application-backend-notification-stream-service.js")
+  >("../../../src/application-backend-gateway/streaming/application-backend-notification-stream-service.js");
   return {
     ...actual,
-    getApplicationNotificationStreamService: () => {
+    getApplicationBackendNotificationStreamService: () => {
       if (!applicationBackendState.notificationStreamService) {
         throw new Error("Integration test notification stream service was not initialized.");
       }
@@ -142,11 +142,11 @@ const waitForSocketOpen = async (socket: WebSocket): Promise<void> =>
   });
 
 const waitForMessage = async (
-  messages: ApplicationNotificationStreamMessage[],
+  messages: ApplicationBackendNotificationStreamMessage[],
   socket: WebSocket,
-  predicate: (message: ApplicationNotificationStreamMessage) => boolean,
+  predicate: (message: ApplicationBackendNotificationStreamMessage) => boolean,
   label: string,
-): Promise<ApplicationNotificationStreamMessage> =>
+): Promise<ApplicationBackendNotificationStreamMessage> =>
   new Promise((resolve, reject) => {
     const existing = messages.find(predicate);
     if (existing) {
@@ -167,7 +167,7 @@ const waitForMessage = async (
     };
 
     const onMessage = (raw: WebSocket.RawData) => {
-      const parsed = JSON.parse(String(raw)) as ApplicationNotificationStreamMessage;
+      const parsed = JSON.parse(String(raw)) as ApplicationBackendNotificationStreamMessage;
       if (predicate(parsed)) {
         cleanup();
         resolve(parsed);
@@ -190,7 +190,7 @@ describe("Application backend REST/WS integration", () => {
   let baseUrl: string;
   let engineHostService: ApplicationEngineHostService;
   let notificationSocket: WebSocket | null;
-  let notificationMessages: ApplicationNotificationStreamMessage[];
+  let notificationMessages: ApplicationBackendNotificationStreamMessage[];
 
   beforeEach(async () => {
     tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-application-backend-"));
@@ -338,7 +338,7 @@ export default {
       applicationBundleService: bundleService as never,
       storageLifecycleService,
     });
-    applicationBackendState.notificationStreamService = new ApplicationNotificationStreamService();
+    applicationBackendState.notificationStreamService = new ApplicationBackendNotificationStreamService();
     applicationBackendState.gatewayService = new ApplicationBackendGatewayService({
       applicationBundleService: bundleService as never,
       engineHostService,
@@ -373,7 +373,7 @@ export default {
       `${baseUrl.replace("http://", "ws://")}/ws/applications/${APPLICATION_ID}/backend/notifications`,
     );
     notificationSocket.on("message", (raw) => {
-      notificationMessages.push(JSON.parse(String(raw)) as ApplicationNotificationStreamMessage);
+      notificationMessages.push(JSON.parse(String(raw)) as ApplicationBackendNotificationStreamMessage);
     });
     await waitForSocketOpen(notificationSocket);
 

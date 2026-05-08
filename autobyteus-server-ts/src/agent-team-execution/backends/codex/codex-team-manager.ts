@@ -54,6 +54,7 @@ const buildPlaceholderThreadConfig = (memberContext: CodexTeamMemberContext) =>
     model: memberContext.agentRunConfig.llmModelIdentifier,
     workingDirectory: ".",
     reasoningEffort: null,
+    serviceTier: null,
     approvalPolicy: resolveApprovalPolicyForAutoExecuteTools(
       memberContext.agentRunConfig.autoExecuteTools,
     ),

@@ -1,0 +1,18 @@
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:60267/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 50ms
+✔ Vite server built in 252ms
+[nitro] ✔ Nuxt Nitro server built in 2925ms
+ℹ Vite client warmed up in 2ms
+ℹ ✨ new dependencies optimized: @iconify/vue, crypto-js/sha256
+ℹ ✨ optimized dependencies changed. reloading
+ℹ ✨ new dependencies optimized: @xterm/xterm, @xterm/addon-fit, @monaco-editor/loader, xlsx, vue-pdf-embed, markdown-it, dompurify, katex, @mdit/plugin-katex, mermaid, prismjs, prismjs/components/prism-markup, prismjs/components/prism-css, prismjs/components/prism-clike, prismjs/components/prism-javascript, prismjs/components/prism-markdown, prismjs/components/prism-markup-templating, prismjs/components/prism-typescript, prismjs/components/prism-jsx, prismjs/components/prism-python, prismjs/components/prism-ruby, prismjs/components/prism-php, prismjs/components/prism-json
+ℹ ✨ optimized dependencies changed. reloading
+ℹ ✨ new dependencies optimized: chart.js, qrcode
+ℹ ✨ optimized dependencies changed. reloading

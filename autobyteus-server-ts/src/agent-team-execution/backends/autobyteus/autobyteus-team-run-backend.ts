@@ -55,7 +55,6 @@ type AutoByteusTeamLike = {
     interruptedCount?: number;
     message?: string;
   };
-  stop?: (timeout?: number) => Promise<void> | void;
 };
 
 type AutoByteusTeamRunBackendOptions = {

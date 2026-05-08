@@ -24,8 +24,14 @@ export class PublishedArtifactSnapshotStore {
       snapshotRelativePath,
     );
 
-    await fs.mkdir(path.dirname(snapshotAbsolutePath), { recursive: true });
-    await fs.copyFile(input.sourceAbsolutePath, snapshotAbsolutePath);
+    const revisionDirPath = path.dirname(snapshotAbsolutePath);
+    await fs.mkdir(revisionDirPath, { recursive: true });
+    try {
+      await fs.copyFile(input.sourceAbsolutePath, snapshotAbsolutePath);
+    } catch (error) {
+      await fs.rm(revisionDirPath, { recursive: true, force: true }).catch(() => undefined);
+      throw error;
+    }
 
     return {
       snapshotRelativePath,

@@ -6,7 +6,6 @@ import ArtifactContentViewer from '../ArtifactContentViewer.vue';
 import {
   toAgentArtifactViewerItem,
   type ArtifactViewerItem,
-  type MessageReferenceArtifactViewerItem,
 } from '../artifactViewerItem';
 import { useFileContentDisplayModeStore } from '~/stores/fileContentDisplayMode';
 
@@ -59,7 +58,7 @@ describe('ArtifactContentViewer', () => {
     if (!artifact) {
       return null;
     }
-    if (artifact.kind === 'agent' || artifact.kind === 'message_reference') {
+    if (artifact.kind === 'agent') {
       return artifact;
     }
     return toAgentArtifactViewerItem(artifact);
@@ -178,58 +177,6 @@ describe('ArtifactContentViewer', () => {
     );
     expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain('updated artifact content');
     expect((wrapper.vm as any).viewMode).toBe('preview');
-  });
-
-  it('fetches referenced artifacts from the persisted message-reference route', async () => {
-    const fetchMock = vi.mocked(global.fetch);
-    fetchMock.mockResolvedValue({
-      ok: true,
-      status: 200,
-      text: async () => 'referenced artifact content',
-    } as Response);
-
-    const referencedArtifact: MessageReferenceArtifactViewerItem = {
-      kind: 'message_reference',
-      itemId: 'message_reference:received:ref-1',
-      id: 'ref-1',
-      referenceId: 'ref-1',
-      teamRunId: 'team-1',
-      senderRunId: 'sender-1',
-      senderMemberName: 'Reviewer',
-      receiverRunId: 'member-1',
-      receiverMemberName: 'Worker',
-      counterpartRunId: 'sender-1',
-      counterpartMemberName: 'Reviewer',
-      direction: 'received',
-      path: '/tmp/report.md',
-      type: 'file',
-      status: 'available',
-      createdAt: '2026-04-08T00:00:00.000Z',
-      updatedAt: '2026-04-08T00:00:00.000Z',
-      reference: {
-        referenceId: 'ref-1',
-        teamRunId: 'team-1',
-        senderRunId: 'sender-1',
-        senderMemberName: 'Reviewer',
-        receiverRunId: 'member-1',
-        receiverMemberName: 'Worker',
-        messageType: 'handoff',
-        path: '/tmp/report.md',
-        type: 'file',
-        createdAt: '2026-04-08T00:00:00.000Z',
-        updatedAt: '2026-04-08T00:00:00.000Z',
-      },
-    };
-
-    const wrapper = mountComponent(referencedArtifact);
-
-    await flushPromises();
-
-    expect(fetchMock).toHaveBeenCalledWith(
-      'http://localhost:3000/rest/team-runs/team-1/message-file-references/ref-1/content',
-      { cache: 'no-store' },
-    );
-    expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain('referenced artifact content');
   });
 
   it('fetches external absolute edit_file paths from the run-scoped server route', async () => {

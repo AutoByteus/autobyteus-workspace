@@ -8,6 +8,7 @@ import {
 } from "../../../../src/agent-execution/domain/agent-run-event.js";
 import { RunFileChangeProjectionStore } from "../../../../src/services/run-file-changes/run-file-change-projection-store.js";
 import { RunFileChangeService } from "../../../../src/services/run-file-changes/run-file-change-service.js";
+import type { RunFileChangeEntry } from "../../../../src/services/run-file-changes/run-file-change-types.js";
 
 describe("RunFileChangeService", () => {
   const tempDirs: string[] = [];
@@ -22,6 +23,21 @@ describe("RunFileChangeService", () => {
     vi.restoreAllMocks();
     await Promise.all(tempDirs.splice(0).map((dir) => fs.rm(dir, { recursive: true, force: true })));
   });
+
+  const waitForCondition = async (
+    predicate: () => boolean | Promise<boolean>,
+    failureMessage: string,
+    timeoutMs = 2000,
+  ): Promise<void> => {
+    const deadline = Date.now() + timeoutMs;
+    while (Date.now() < deadline) {
+      if (await predicate()) {
+        return;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    }
+    throw new Error(failureMessage);
+  };
 
   const createRunHarness = async () => {
     const workspaceRoot = await createTempDir();
@@ -48,8 +64,6 @@ describe("RunFileChangeService", () => {
       for (const listener of listeners) {
         listener(event);
       }
-      await new Promise((resolve) => setTimeout(resolve, 0));
-      await new Promise((resolve) => setTimeout(resolve, 0));
     };
 
     return { run, emit, localEvents, workspaceRoot, memoryDir };
@@ -101,6 +115,49 @@ describe("RunFileChangeService", () => {
     };
   };
 
+  const waitForLiveProjectionStatus = async (
+    service: RunFileChangeService,
+    run: any,
+    status: "streaming" | "pending" | "available" | "failed",
+  ) => {
+    await waitForCondition(
+      async () =>
+        (await service.getProjectionForRun(run)).entries.some(
+          (entry) => entry.path === "src/hello.txt" && entry.status === status,
+        ),
+      `Timed out waiting for live projection status '${status}'.`,
+    );
+  };
+
+  const waitForLiveProjectionEntry = async (
+    service: RunFileChangeService,
+    run: any,
+    predicate: (entry: RunFileChangeEntry) => boolean,
+    failureMessage: string,
+  ) => {
+    await waitForCondition(
+      async () => (await service.getProjectionForRun(run)).entries.some(predicate),
+      failureMessage,
+    );
+  };
+
+  const waitForPersistedProjectionStatus = async (
+    projectionStore: RunFileChangeProjectionStore,
+    memoryDir: string,
+    input: {
+      path: string;
+      status: "streaming" | "pending" | "available" | "failed";
+    },
+  ) => {
+    await waitForCondition(
+      async () =>
+        (await projectionStore.readProjection(memoryDir)).entries.some(
+          (entry) => entry.path === input.path && entry.status === input.status,
+        ),
+      `Timed out waiting for persisted projection '${input.path}' status '${input.status}'.`,
+    );
+  };
+
   it("projects FILE_CHANGE events, keeps live content transient, and persists metadata only", async () => {
     const { run, emit, localEvents, workspaceRoot, memoryDir } = await createRunHarness();
     const projectionStore = new RunFileChangeProjectionStore();
@@ -114,6 +171,7 @@ describe("RunFileChangeService", () => {
       sourceInvocationId: "write-1",
       content: "hello from stream",
     }));
+    await waitForLiveProjectionStatus(service, run, "streaming");
     await emit(fileChangeEvent(run.runId, {
       path: "src/hello.txt",
       status: "available",
@@ -122,6 +180,11 @@ describe("RunFileChangeService", () => {
       content: "hello from stream",
       updatedAt: "2026-05-03T10:00:01.000Z",
     }));
+    await waitForLiveProjectionStatus(service, run, "available");
+    await waitForPersistedProjectionStatus(projectionStore, memoryDir, {
+      path: "src/hello.txt",
+      status: "available",
+    });
 
     const liveProjection = await service.getProjectionForRun(run);
     expect(liveProjection.entries).toHaveLength(1);
@@ -163,6 +226,12 @@ describe("RunFileChangeService", () => {
       sourceInvocationId: "write-2",
       updatedAt: "2026-05-03T10:00:01.000Z",
     }));
+    await waitForLiveProjectionEntry(
+      service,
+      run,
+      (entry) => entry.path === "src/same.txt" && entry.sourceInvocationId === "write-2",
+      "Timed out waiting for canonicalized live projection update.",
+    );
 
     const liveProjection = await service.getProjectionForRun(run);
     expect(liveProjection.entries).toHaveLength(1);
@@ -208,6 +277,10 @@ describe("RunFileChangeService", () => {
       sourceInvocationId: "write-fail-1",
       content: null,
     }));
+    await waitForPersistedProjectionStatus(projectionStore, memoryDir, {
+      path: "src/broken.txt",
+      status: "failed",
+    });
 
     const liveProjection = await service.getProjectionForRun(run);
     expect(liveProjection.entries).toHaveLength(1);

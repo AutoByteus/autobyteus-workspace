@@ -11,7 +11,14 @@ import type { CodexAppServerClientManager } from "../../../../../../src/runtime-
 import type { CodexClientThreadRouter } from "../../../../../../src/agent-execution/backends/codex/thread/codex-client-thread-router.js";
 import type { CodexThreadCleanup } from "../../../../../../src/agent-execution/backends/codex/backend/codex-thread-cleanup.js";
 
-const createRunContext = (runId: string, workingDirectory: string) =>
+const createRunContext = (
+  runId: string,
+  workingDirectory: string,
+  input: {
+    serviceTier?: string | null;
+    threadId?: string | null;
+  } = {},
+) =>
   new AgentRunContext({
     runId,
     config: new AgentRunConfig({
@@ -28,12 +35,14 @@ const createRunContext = (runId: string, workingDirectory: string) =>
         model: null,
         workingDirectory,
         reasoningEffort: null,
+        serviceTier: input.serviceTier ?? null,
         approvalPolicy: CodexApprovalPolicy.ON_REQUEST,
         sandbox: "workspace-write",
         baseInstructions: null,
         developerInstructions: null,
         dynamicTools: [],
       },
+      threadId: input.threadId ?? null,
     }),
   });
 
@@ -77,16 +86,63 @@ describe("CodexThreadManager", () => {
       clientThreadRouter,
     );
 
-    const thread = await manager.createThread(createRunContext("run-1", "/tmp/workspace"));
+    const thread = await manager.createThread(
+      createRunContext("run-1", "/tmp/workspace", { serviceTier: "fast" }),
+    );
 
     expect(clientThreadRouter.registerThread).toHaveBeenCalledTimes(1);
     expect(request).toHaveBeenCalledWith(
       "thread/start",
       expect.objectContaining({
         cwd: "/tmp/workspace",
+        serviceTier: "fast",
       }),
     );
     expect(thread.threadId).toBe("thread-live-1");
     expect(thread.startup.status).toBe("ready");
+  });
+
+  it("passes serviceTier when resuming a remote Codex thread", async () => {
+    const request = vi.fn(async () => ({
+      thread: {
+        id: "thread-restored-1",
+      },
+    }));
+    const client = {
+      request,
+      onNotification: vi.fn(() => () => {}),
+      onServerRequest: vi.fn(() => () => {}),
+      onClose: vi.fn(() => () => {}),
+    } as unknown as CodexAppServerClient;
+    const clientManager = {
+      acquireClient: vi.fn(async () => client),
+      releaseClient: vi.fn(async () => undefined),
+    } as unknown as CodexAppServerClientManager;
+    const threadCleanup = {
+      cleanupThreadResources: vi.fn(async () => undefined),
+    } as unknown as CodexThreadCleanup;
+    const clientThreadRouter = {
+      registerThread: vi.fn(() => () => {}),
+    } as unknown as CodexClientThreadRouter;
+    const manager = new CodexThreadManager(
+      clientManager,
+      threadCleanup,
+      clientThreadRouter,
+    );
+
+    await manager.restoreThread(
+      createRunContext("run-restore", "/tmp/workspace", {
+        serviceTier: "fast",
+        threadId: "thread-existing",
+      }),
+    );
+
+    expect(request).toHaveBeenCalledWith(
+      "thread/resume",
+      expect.objectContaining({
+        threadId: "thread-existing",
+        serviceTier: "fast",
+      }),
+    );
   });
 });

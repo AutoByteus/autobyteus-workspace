@@ -1,0 +1,235 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/ui-runtime-data
+AppConfig instance created.
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/ui-runtime-data/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/ui-runtime-data/.env
+[dotenv@17.3.1] injecting env (6) from tickets/agent-catalog-origin-grouping/validation-artifacts/round5/ui-runtime-data/.env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:53861
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:53861
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/ui-runtime-data
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/ui-runtime-data/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/ui-runtime-data/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/ui-runtime-data/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/ui-runtime-data/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+AgentTeamFactory (Singleton) initialized.
+(node:31610) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/ui-runtime-data/db/production.db"
+
+SQLite database production.db created at file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/ui-runtime-data/db/production.db
+
+12 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+
+All migrations have been successfully applied.
+Database migrations completed successfully.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 15 predefined settings
+Server setting 'AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID' updated to 'autobyteus-memory-compactor'
+Initialized 'AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID' with 'autobyteus-memory-compactor'.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 46 items.
+AgentRunManager initialized.
+[2026-05-07T15:40:04.548Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentTeamRunManager initialized.
+{"level":30,"time":1778168404613,"pid":31610,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:53861"}
+[2026-05-07T15:40:04.613Z] [INFO] [server.runtime] Server listening on 127.0.0.1:53861
+[2026-05-07T15:40:04.614Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:53861
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/ui-runtime-data/temp_workspace
+Initialized FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/ui-runtime-data/temp_workspace. Call initialize() to build file tree.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/ui-runtime-data/temp_workspace with fixed ID 'temp_ws_default'
+Starting directory traversal for: '/Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/ui-runtime-data/temp_workspace' with max_depth=1
+Directory traversal for '/Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/ui-runtime-data/temp_workspace' completed in 0.0000 seconds.
+Initialized FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/ui-runtime-data/temp_workspace (Shallow). Starting background full scan...
+Starting directory traversal for: '/Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/ui-runtime-data/temp_workspace' with max_depth=null
+Temp workspace created and cached with ID: temp_ws_default
+Directory traversal for '/Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/ui-runtime-data/temp_workspace' completed in 0.0000 seconds.
+FileNameIndexer starting...
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/ui-runtime-data/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/ui-runtime-data/temp_workspace
+FileNameIndexer started monitoring
+Background full initialization for /Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/ui-runtime-data/temp_workspace completed.
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+Registering agent customization processors...
+System prompt processor definition 'ToolManifestInjector' (class: 'ToolManifestInjectorProcessor') registered successfully.
+System prompt processor definition 'AvailableSkillsProcessor' (class: 'AvailableSkillsProcessor') registered successfully.
+Registered system prompt processors: ToolManifestInjector, AvailableSkillsProcessor
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'TokenUsagePersistenceProcessor' (class: 'TokenUsagePersistenceProcessor') registered successfully.
+Registered LLM response processor 'TokenUsagePersistenceProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Pre-loaded 46 agent definitions into cache.
+[2026-05-07T15:40:04.642Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Loaded tool group: Browser Tools
+No Autobyteus server hosts configured. Skipping Autobyteus image model discovery.
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'list_available_tools'
+Successfully registered tool definition: 'list_input_processors'
+Successfully registered tool definition: 'list_llm_response_processors'
+Successfully registered tool definition: 'list_lifecycle_processors'
+Successfully registered tool definition: 'list_tool_result_processors'
+Loaded tool group: Tool Management Tools
+Successfully registered tool definition: 'get_available_skills'
+Successfully registered tool definition: 'get_skill_content'
+Successfully registered tool definition: 'create_skill_version'
+Loaded tool group: Skills Tools
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-05-07T15:40:04.652Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 8 items.
+Pre-loaded 8 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+Discovering Ollama models from host: http://localhost:11434
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+Discovering LM Studio models from host: http://localhost:1234
+Finished LM Studio discovery. Total models registered: 27
+No Autobyteus LLM server hosts configured. Skipping discovery.
+Successfully fetched 50 models from LLMFactory.
+LLM models cache populated with 50 items.
+Pre-loaded 50 LLM models into cache.
+Populating Image models cache for the first time...
+Fetching list of available Image models from ImageClientFactory...
+Awaiting Autobyteus image model discovery before listing models...
+Successfully fetched 6 image models from ImageClientFactory.
+Image models by provider: OPENAI=2, GEMINI=4
+Image models by runtime: api=6
+Image models cache populated with 6 items.
+Pre-loaded 6 image models into cache.
+Populating Audio models cache for the first time...
+Fetching list of available Audio models from AudioClientFactory...
+Awaiting Autobyteus audio model discovery before listing models...
+No Autobyteus server hosts configured. Skipping Autobyteus audio model discovery.
+Successfully fetched 4 audio models from AudioClientFactory.
+Audio models by provider: OPENAI=1, GEMINI=3
+Audio models by runtime: api=4
+Audio models cache populated with 4 items.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+File explorer websocket attached for workspace temp_ws_default
+FileExplorerSession created: e0a68952-b1c9-4a46-8565-cad4e9e6fb39 for workspace temp_ws_default
+Created file explorer session e0a68952-b1c9-4a46-8565-cad4e9e6fb39 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: e0a68952-b1c9-4a46-8565-cad4e9e6fb39 for workspace temp_ws_default
+FileExplorerSession closed: e0a68952-b1c9-4a46-8565-cad4e9e6fb39
+Closed file explorer session e0a68952-b1c9-4a46-8565-cad4e9e6fb39. Active sessions: 0
+File explorer WebSocket disconnected: e0a68952-b1c9-4a46-8565-cad4e9e6fb39
+Server setting 'AUTOBYTEUS_FEATURED_CATALOG_ITEMS' updated to '{"version":1,"items":[{"resourceKind":"AGENT","definitionId":"daily-assistant","sortOrder":10}]}'
+File explorer websocket attached for workspace temp_ws_default
+FileExplorerSession created: b5593465-9743-4df7-aa74-76c381521693 for workspace temp_ws_default
+Created file explorer session b5593465-9743-4df7-aa74-76c381521693 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: b5593465-9743-4df7-aa74-76c381521693 for workspace temp_ws_default
+[2026-05-07T15:44:17.306Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+FileExplorerSession closed: b5593465-9743-4df7-aa74-76c381521693
+Closed file explorer session b5593465-9743-4df7-aa74-76c381521693. Active sessions: 0
+File explorer WebSocket disconnected: b5593465-9743-4df7-aa74-76c381521693
+[2026-05-07T15:44:17.309Z] [INFO] [server.runtime] Server closed cleanly.

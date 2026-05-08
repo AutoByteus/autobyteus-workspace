@@ -11,9 +11,7 @@ import { getWorkspaceManager, type WorkspaceManager } from "../../workspaces/wor
 import { inferArtifactType } from "../../utils/artifact-utils.js";
 import {
   buildPublishedArtifactIdentity,
-  canonicalizePublishedArtifactPath,
-  isPublishedArtifactPathWithinRoot,
-  resolvePublishedArtifactAbsolutePath,
+  resolvePublishedArtifactSourcePath,
 } from "./published-artifact-path-identity.js";
 import {
   PublishedArtifactProjectionStore,
@@ -111,39 +109,24 @@ export class PublishedArtifactPublicationService {
     }
 
     const workspaceRootPath = run?.config.workspaceId?.trim()
-      ? (await this.workspaceManager.getOrCreateWorkspace(run.config.workspaceId)).getBasePath()
+      ? normalizeOptionalNonEmptyString(
+          (await this.workspaceManager.getOrCreateWorkspace(run.config.workspaceId)).getBasePath(),
+        )
       : normalizeOptionalNonEmptyString(fallbackRuntimeContext?.workspaceRootPath);
-    if (!workspaceRootPath) {
-      throw new Error(`Run '${input.runId}' is missing a workspace binding.`);
-    }
 
     const applicationExecutionContext = run?.config.applicationExecutionContext
       ?? fallbackRuntimeContext?.applicationExecutionContext
       ?? null;
 
-    const canonicalPath = canonicalizePublishedArtifactPath(input.path, workspaceRootPath);
-    if (!canonicalPath) {
-      throw new Error("Published artifact path must resolve to a file inside the current workspace.");
+    const pathResolution = await resolvePublishedArtifactSourcePath(input.path, workspaceRootPath);
+    if (!pathResolution.ok) {
+      throw new Error(pathResolution.message);
     }
+    const { canonicalPath, sourceAbsolutePath } = pathResolution;
 
-    const absolutePath = resolvePublishedArtifactAbsolutePath(canonicalPath, workspaceRootPath);
-    if (!absolutePath) {
-      throw new Error("Published artifact path could not be resolved inside the current workspace.");
-    }
-
-    const sourceStat = await fs.stat(absolutePath).catch(() => null);
+    const sourceStat = await fs.stat(sourceAbsolutePath).catch(() => null);
     if (!sourceStat?.isFile()) {
-      throw new Error(`Published artifact path '${canonicalPath}' does not resolve to a readable file.`);
-    }
-
-    const realWorkspaceRootPath = await fs.realpath(workspaceRootPath).catch(() => null);
-    const realAbsolutePath = await fs.realpath(absolutePath).catch(() => null);
-    if (
-      !realWorkspaceRootPath
-      || !realAbsolutePath
-      || !isPublishedArtifactPathWithinRoot(realWorkspaceRootPath, realAbsolutePath)
-    ) {
-      throw new Error("Published artifact path must resolve to a file inside the current workspace.");
+      throw new Error(`Published artifact path '${canonicalPath}' does not resolve to a readable regular file.`);
     }
 
     const projection = await this.projectionStore.readProjection(memoryDir);
@@ -156,7 +139,10 @@ export class PublishedArtifactPublicationService {
     const snapshot = await this.snapshotStore.snapshotArtifact({
       memoryDir,
       revisionId,
-      sourceAbsolutePath: realAbsolutePath,
+      sourceAbsolutePath,
+    }).catch((error: unknown) => {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(`Published artifact path '${canonicalPath}' could not be snapshotted: ${message}`);
     });
 
     try {

@@ -1,29 +1,38 @@
 import path from "node:path";
 
-const WINDOWS_ABSOLUTE_PATH_PATTERN = /^[A-Za-z]:[\\/]/;
+import {
+  isAgentRunFilePathAbsolute,
+  isAgentRunFilePathWithinRoot,
+  isAgentRunWindowsAbsolutePath,
+  normalizeAgentRunFilePathDisplay,
+} from "./agent-run-file-path-identity.js";
 
-const normalizePathDisplay = (value: string): string => value.replace(/\\/g, "/").trim();
-
-const isWindowsAbsolutePath = (value: string): boolean => WINDOWS_ABSOLUTE_PATH_PATTERN.test(value);
-
-const isAbsolutePath = (value: string): boolean => path.isAbsolute(value) || isWindowsAbsolutePath(value);
-
-const isWithinRoot = (rootPath: string, candidatePath: string): boolean => {
-  const resolvedRoot = path.resolve(rootPath);
-  const resolvedCandidate = path.resolve(candidatePath);
-  return (
-    resolvedCandidate === resolvedRoot
-    || resolvedCandidate.startsWith(`${resolvedRoot}${path.sep}`)
-  );
+const normalizeOptionalWorkspaceRoot = (
+  workspaceRootPath: string | null | undefined,
+): string | null => {
+  if (typeof workspaceRootPath !== "string") {
+    return null;
+  }
+  const trimmed = workspaceRootPath.trim();
+  return trimmed.length > 0 ? path.resolve(trimmed) : null;
 };
 
-const resolveAbsoluteCandidatePath = (
+const resolveFileChangeCandidatePath = (
   rawPath: string,
-  workspaceRootPath: string,
-): string => {
-  if (isAbsolutePath(rawPath)) {
+  workspaceRootPath: string | null,
+): string | null => {
+  if (isAgentRunWindowsAbsolutePath(rawPath) && path.sep !== "\\") {
+    return null;
+  }
+
+  if (isAgentRunFilePathAbsolute(rawPath)) {
     return path.resolve(rawPath);
   }
+
+  if (!workspaceRootPath) {
+    return null;
+  }
+
   return path.resolve(workspaceRootPath, rawPath);
 };
 
@@ -40,20 +49,22 @@ export const canonicalizeAgentRunFileChangePath = (
     return null;
   }
 
-  const normalizedRawPath = normalizePathDisplay(trimmed);
-  if (!workspaceRootPath) {
-    return normalizedRawPath;
+  const resolvedWorkspaceRoot = normalizeOptionalWorkspaceRoot(workspaceRootPath);
+  const absoluteCandidatePath = resolveFileChangeCandidatePath(trimmed, resolvedWorkspaceRoot);
+  if (!resolvedWorkspaceRoot) {
+    return normalizeAgentRunFilePathDisplay(absoluteCandidatePath ?? trimmed);
   }
 
-  const resolvedWorkspaceRoot = path.resolve(workspaceRootPath);
-  const absoluteCandidatePath = resolveAbsoluteCandidatePath(trimmed, resolvedWorkspaceRoot);
+  if (!absoluteCandidatePath) {
+    return null;
+  }
 
-  if (isWithinRoot(resolvedWorkspaceRoot, absoluteCandidatePath)) {
+  if (isAgentRunFilePathWithinRoot(resolvedWorkspaceRoot, absoluteCandidatePath)) {
     const relativePath = path.relative(resolvedWorkspaceRoot, absoluteCandidatePath);
-    return normalizePathDisplay(relativePath || path.basename(absoluteCandidatePath));
+    return normalizeAgentRunFilePathDisplay(relativePath || path.basename(absoluteCandidatePath));
   }
 
-  return normalizePathDisplay(absoluteCandidatePath);
+  return normalizeAgentRunFilePathDisplay(absoluteCandidatePath);
 };
 
 export const resolveAgentRunFileChangeAbsolutePath = (
@@ -69,19 +80,20 @@ export const resolveAgentRunFileChangeAbsolutePath = (
     return null;
   }
 
-  if (isWindowsAbsolutePath(trimmed) && path.sep !== "\\") {
+  if (isAgentRunWindowsAbsolutePath(trimmed) && path.sep !== "\\") {
     return null;
   }
 
-  if (isAbsolutePath(trimmed)) {
+  if (isAgentRunFilePathAbsolute(trimmed)) {
     return path.resolve(trimmed);
   }
 
-  if (!workspaceRootPath) {
+  const resolvedWorkspaceRoot = normalizeOptionalWorkspaceRoot(workspaceRootPath);
+  if (!resolvedWorkspaceRoot) {
     return null;
   }
 
-  return path.resolve(workspaceRootPath, trimmed);
+  return path.resolve(resolvedWorkspaceRoot, trimmed);
 };
 
 export const isCanonicalAgentRunFileChangePathAbsolute = (
@@ -96,5 +108,5 @@ export const isCanonicalAgentRunFileChangePathAbsolute = (
     return false;
   }
 
-  return isAbsolutePath(trimmed);
+  return isAgentRunFilePathAbsolute(trimmed);
 };

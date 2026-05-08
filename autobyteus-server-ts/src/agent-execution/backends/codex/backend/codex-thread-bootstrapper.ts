@@ -16,7 +16,10 @@ import {
   type CodexWorkspaceResolver,
 } from "../codex-workspace-resolver.js";
 import { CodexAgentRunContext, type CodexRunContext } from "./codex-agent-run-context.js";
-import { resolveCodexSessionReasoningEffort } from "../codex-app-server-model-normalizer.js";
+import {
+  resolveCodexSessionReasoningEffort,
+  resolveCodexSessionServiceTier,
+} from "../codex-app-server-model-normalizer.js";
 import type { Skill } from "../../../../skills/domain/models.js";
 import {
   buildCodexThreadConfig,
@@ -40,6 +43,7 @@ import {
   type CodexAppServerClientManager,
 } from "../../../../runtime-management/codex/client/codex-app-server-client-manager.js";
 import { buildBrowserDynamicToolRegistrationsForEnabledToolNames } from "../browser/build-browser-dynamic-tool-registrations.js";
+import { buildMediaDynamicToolRegistrationsForEnabledToolNames } from "../media/build-media-dynamic-tool-registrations.js";
 import {
   CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
   DEFAULT_CODEX_SANDBOX_MODE,
@@ -192,12 +196,18 @@ export class CodexThreadBootstrapper {
         ? buildCodexPublishArtifactsDynamicToolRegistration()
         : null;
     const dynamicToolRegistrations = mergeDynamicToolRegistrations(
-      filterDynamicToolRegistrationsByToolNames(
-        mergeDynamicToolRegistrations(
-          threadConfigInput.dynamicToolRegistrations,
-          publishedArtifactToolRegistrations,
+      mergeDynamicToolRegistrations(
+        filterDynamicToolRegistrationsByToolNames(
+          mergeDynamicToolRegistrations(
+            threadConfigInput.dynamicToolRegistrations,
+            publishedArtifactToolRegistrations,
+          ),
+          toConfiguredAgentToolNameSet(configuredToolExposure),
         ),
-        toConfiguredAgentToolNameSet(configuredToolExposure),
+        buildMediaDynamicToolRegistrationsForEnabledToolNames({
+          enabledToolNames: configuredToolExposure.enabledMediaToolNames,
+          workingDirectory,
+        }),
       ),
       buildBrowserDynamicToolRegistrationsForEnabledToolNames(
         configuredToolExposure.enabledBrowserToolNames,
@@ -251,6 +261,9 @@ export class CodexThreadBootstrapper {
       model: input.agentRunConfig.llmModelIdentifier ?? resolveDefaultModel(),
       workingDirectory: input.workingDirectory,
       reasoningEffort: resolveCodexSessionReasoningEffort(
+        input.agentRunConfig.llmConfig ?? null,
+      ),
+      serviceTier: resolveCodexSessionServiceTier(
         input.agentRunConfig.llmConfig ?? null,
       ),
       approvalPolicy: resolveApprovalPolicyForAutoExecuteTools(

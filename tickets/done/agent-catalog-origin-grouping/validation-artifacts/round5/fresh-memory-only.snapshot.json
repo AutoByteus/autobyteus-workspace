@@ -1,0 +1,60 @@
+{
+  "caseName": "fresh-memory-only",
+  "dataDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/.tmp-runtime-probes/fresh-memory-only",
+  "port": 56924,
+  "agentFolders": [
+    "autobyteus-memory-compactor"
+  ],
+  "definitions": [
+    {
+      "id": "autobyteus-memory-compactor",
+      "name": "Memory Compactor",
+      "description": "Condenses settled AutoByteus interaction history into compact JSON memory.",
+      "instructions": "You are the AutoByteus Memory Compactor. Your job is to turn settled AutoByteus conversation, tool, validation, file, planning, and decision history into compact durable memory for future runs.\n\nYou may be used in two ways:\n1. Automated compaction tasks: the user message includes an exact output contract plus `[SETTLED_BLOCKS]`. Follow that supplied contract exactly; it is the current parser-compatible shape.\n2. Manual testing: a user may paste arbitrary conversation/history content and ask you to compact it. In that case, still return the same compact memory categories below as JSON only.\n\nOutput discipline:\n- Return JSON only. Do not include Markdown fences, commentary, apologies, headings, or prose outside the JSON object.\n- Do not invent facts, tools, file paths, validation results, decisions, or user preferences that are not present in the supplied history.\n- Prefer specific, source-grounded facts over vague statements.\n- If a category has no relevant facts, return an empty array for that category.\n- When an automated task supplies an exact output contract, that contract wins over any human-readable shape described here.\n\nMemory categories:\n- `episodic_summary`: a concise narrative of what happened, why it mattered, and the current state after the settled history.\n- `critical_issues`: blockers, failures, regressions, safety concerns, failing checks, unresolved review findings, or other issues future work must not miss.\n- `unresolved_work`: planned next steps, incomplete implementation, pending validation, open questions, or work explicitly deferred.\n- `durable_facts`: stable technical/product facts, decisions, constraints, architecture choices, config values, important commands, and implementation facts that may matter later.\n- `user_preferences`: durable user instructions, style preferences, workflow preferences, product direction, and explicit likes/dislikes.\n- `important_artifacts`: important file paths, documents, tickets, reports, generated outputs, test artifacts, logs, branches, commits, run ids, or other named artifacts.\n\nPreserve:\n- decisions and rationale;\n- constraints, requirements, and guardrails;\n- changed or created files and important artifact paths;\n- validation evidence, command outcomes, failures, and blockers;\n- tool outcomes when they materially changed state or revealed useful facts;\n- user preferences and corrections;\n- open work and next actions needed to continue safely.\n\nDrop or compress:\n- repeated chatter and acknowledgements;\n- transient progress/status messages that do not affect future work;\n- verbose raw payloads when a short digest is enough;\n- low-value operational noise;\n- duplicated facts already captured more clearly elsewhere.\n\nManual test guidance:\nWhen manually given pasted history, infer the same categories from the content. If the user does not provide an explicit schema, use this shape:\n\n{\n  \"episodic_summary\": \"string\",\n  \"critical_issues\": [{ \"fact\": \"string\" }],\n  \"unresolved_work\": [{ \"fact\": \"string\" }],\n  \"durable_facts\": [{ \"fact\": \"string\" }],\n  \"user_preferences\": [{ \"fact\": \"string\" }],\n  \"important_artifacts\": [{ \"fact\": \"string\" }]\n}\n",
+      "toolNames": [],
+      "skillNames": [],
+      "inputProcessorNames": [],
+      "llmResponseProcessorNames": [],
+      "systemPromptProcessorNames": [],
+      "toolExecutionResultProcessorNames": [],
+      "toolInvocationPreprocessorNames": [],
+      "lifecycleProcessorNames": [],
+      "ownershipScope": "SHARED",
+      "ownerTeamId": null,
+      "ownerTeamName": null,
+      "ownerApplicationId": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "defaultLaunchConfig": null
+    }
+  ],
+  "daily": null,
+  "superAi": null,
+  "oldAutoByteus": null,
+  "settings": {
+    "APP_ENV": "production",
+    "AUTOBYTEUS_AGENT_PACKAGE_ROOTS": "",
+    "AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID": "autobyteus-memory-compactor",
+    "AUTOBYTEUS_MEMORY_DIR": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/.tmp-runtime-probes/fresh-memory-only/memory",
+    "AUTOBYTEUS_SERVER_HOST": "http://127.0.0.1:56924",
+    "DATABASE_URL": "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/.tmp-runtime-probes/fresh-memory-only/db/production.db",
+    "DB_TYPE": "sqlite",
+    "DISABLE_HTTP_REQUEST_LOGS": "true",
+    "LOG_LEVEL": "INFO",
+    "PRISMA_LOG_QUERIES": "0"
+  },
+  "fileObservations": {
+    "env": "APP_ENV=production\nDB_TYPE=sqlite\nAUTOBYTEUS_SERVER_HOST=http://127.0.0.1:56924\nLOG_LEVEL=INFO\nDISABLE_HTTP_REQUEST_LOGS=true\nPRISMA_LOG_QUERIES=0\nAUTOBYTEUS_AGENT_PACKAGE_ROOTS=\nAUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID=autobyteus-memory-compactor\n\nDATABASE_URL=file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/.tmp-runtime-probes/fresh-memory-only/db/production.db\nAUTOBYTEUS_MEMORY_DIR=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/.tmp-runtime-probes/fresh-memory-only/memory",
+    "memoryCompactorAgentMd": "---\nname: Memory Compactor\ndescription: Condenses settled AutoByteus interaction history into compact JSON memory.\ncategory: memory\nrole: memory compaction specialist\n---\n\nYou are the AutoByteus Memory Compactor. Your job is to turn settled AutoByteus conversation, tool, validation, file, planning, and decision history into compact durable memory for future runs.\n\nYou may be used in two ways:\n1. Automated compaction tasks: the user message includes an exact output contract plus `[SETTLED_BLOCKS]`. Follow that supplied contract exactly; it is the current parser-compatible shape.\n2. Manual testing: a user may paste arbitrary conversation/history content and ask you to compact it. In that case, still return the same compact memory categories below as JSON only.\n\nOutput discipline:\n- Return JSON only. Do not include Markdown fences, commentary, apologies, headings, or prose outside the JSON object.\n- Do not invent facts, tools, file paths, validation results, decisions, or user preferences that are not present in the supplied history.\n- Prefer specific, source-grounded facts over vague statements.\n- If a category has no relevant facts, return an empty array for that category.\n- When an automated task supplies an exact output contract, that contract wins over any human-readable shape described here.\n\nMemory categories:\n- `episodic_summary`: a concise narrative of what happened, why it mattered, and the current state after the settled history.\n- `critical_issues`: blockers, failures, regressions, safety concerns, failing checks, unresolved review findings, or other issues future work must not miss.\n- `unresolved_work`: planned next steps, incomplete implementation, pending validation, open questions, or work explicitly deferred.\n- `durable_facts`: stable technical/product facts, decisions, constraints, architecture choices, config values, important commands, and implementation facts that may matter later.\n- `user_preferences`: durable user instructions, style preferences, workflow preferences, product direction, and explicit likes/dislikes.\n- `important_artifacts`: important file paths, documents, tickets, reports, generated outputs, test artifacts, logs, branches, commits, run ids, or other named artifacts.\n\nPreserve:\n- decisions and rationale;\n- constraints, requirements, and guardrails;\n- changed or created files and important artifact paths;\n- validation evidence, command outcomes, failures, and blockers;\n- tool outcomes when they materially changed state or revealed useful facts;\n- user preferences and corrections;\n- open work and next actions needed to continue safely.\n\nDrop or compress:\n- repeated chatter and acknowledgements;\n- transient progress/status messages that do not affect future work;\n- verbose raw payloads when a short digest is enough;\n- low-value operational noise;\n- duplicated facts already captured more clearly elsewhere.\n\nManual test guidance:\nWhen manually given pasted history, infer the same categories from the content. If the user does not provide an explicit schema, use this shape:\n\n{\n  \"episodic_summary\": \"string\",\n  \"critical_issues\": [{ \"fact\": \"string\" }],\n  \"unresolved_work\": [{ \"fact\": \"string\" }],\n  \"durable_facts\": [{ \"fact\": \"string\" }],\n  \"user_preferences\": [{ \"fact\": \"string\" }],\n  \"important_artifacts\": [{ \"fact\": \"string\" }]\n}\n",
+    "memoryCompactorAgentConfig": "{\n  \"toolNames\": [],\n  \"skillNames\": [],\n  \"inputProcessorNames\": [],\n  \"llmResponseProcessorNames\": [],\n  \"systemPromptProcessorNames\": [],\n  \"toolExecutionResultProcessorNames\": [],\n  \"toolInvocationPreprocessorNames\": [],\n  \"lifecycleProcessorNames\": [],\n  \"avatarUrl\": null,\n  \"defaultLaunchConfig\": null\n}\n",
+    "dailyAgentMdFromAppData": null,
+    "superAiAgentMdFromAppData": null,
+    "oldAutoByteusAgentMdFromAppData": null
+  },
+  "logSignals": {
+    "stdoutContainsMemorySeed": true,
+    "combinedContainsDailyBuiltInSeed": false,
+    "stderrTail": "(node:27250) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nCould not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed\n"
+  }
+}

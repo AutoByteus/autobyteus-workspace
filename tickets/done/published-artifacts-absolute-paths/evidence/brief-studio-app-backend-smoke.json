@@ -1,0 +1,46 @@
+{
+  "baseUrl": "http://127.0.0.1:18081",
+  "app": {
+    "id": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532467075626c69736865642d6172746966616374732d6162736f6c7574652d70617468732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f",
+    "localApplicationId": "brief-studio",
+    "name": "Brief Studio"
+  },
+  "applicationsCapability": {
+    "enabled": true,
+    "source": "SERVER_SETTING"
+  },
+  "ensureReady": "ok",
+  "entryHtml": {
+    "status": 200,
+    "prefix": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF"
+  },
+  "emptyBriefsBeforeCreate": [],
+  "createdBrief": {
+    "briefId": "brief-4ae51158-7055-40b8-bbd3-7bca94bbff6e",
+    "title": "PAA runtime smoke brief",
+    "status": "not_started",
+    "latestBindingId": null,
+    "latestRunId": null,
+    "latestBindingStatus": null,
+    "lastErrorMessage": null,
+    "createdAt": "2026-05-05T08:48:26.481Z",
+    "updatedAt": "2026-05-05T08:48:26.481Z",
+    "approvedAt": null,
+    "rejectedAt": null
+  },
+  "detailAfterCreate": {
+    "briefId": "brief-4ae51158-7055-40b8-bbd3-7bca94bbff6e",
+    "title": "PAA runtime smoke brief",
+    "status": "not_started",
+    "latestBindingId": null,
+    "latestRunId": null,
+    "latestBindingStatus": null,
+    "lastErrorMessage": null,
+    "createdAt": "2026-05-05T08:48:26.481Z",
+    "updatedAt": "2026-05-05T08:48:26.481Z",
+    "approvedAt": null,
+    "rejectedAt": null,
+    "artifacts": [],
+    "reviewNotes": []
+  }
+}

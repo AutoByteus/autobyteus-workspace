@@ -197,6 +197,77 @@ describe('ModelConfigSection', () => {
     expect(hasSanitizedUpdate).toBe(true);
   });
 
+  it('renders non-thinking schema parameters directly with display labels', () => {
+    const wrapper = mount(ModelConfigSection, {
+      props: {
+        modelConfig: null,
+        schema: {
+          service_tier: {
+            type: 'string',
+            title: 'Fast mode',
+            description: 'Enable Codex Fast mode for this model.',
+            enum: ['fast'],
+          },
+        },
+      },
+    });
+
+    expect(wrapper.text()).toContain('Fast mode');
+    expect(wrapper.find('[data-testid="advanced-params-toggle"]').exists()).toBe(false);
+    expect(wrapper.get('select').text()).toContain('fast');
+  });
+
+  it('emits Codex Fast mode through service_tier and removes it through Default', async () => {
+    const wrapper = mount(ModelConfigSection, {
+      props: {
+        modelConfig: null,
+        schema: {
+          service_tier: {
+            type: 'string',
+            title: 'Fast mode',
+            enum: ['fast'],
+          },
+        },
+      },
+    });
+
+    const select = wrapper.get('select');
+    await select.setValue('fast');
+
+    expect(wrapper.emitted('update:config')?.at(-1)?.[0]).toEqual({
+      service_tier: 'fast',
+    });
+
+    await wrapper.setProps({
+      modelConfig: { service_tier: 'fast' },
+    });
+    await select.setValue('__default__');
+
+    expect(wrapper.emitted('update:config')?.at(-1)?.[0]).toBeNull();
+  });
+
+  it('sanitizes stale Codex Fast mode when the current schema no longer supports it', async () => {
+    const wrapper = mount(ModelConfigSection, {
+      props: {
+        modelConfig: {
+          service_tier: 'fast',
+          reasoning_effort: 'high',
+        },
+        schema: {
+          reasoning_effort: { type: 'string', enum: ['low', 'medium', 'high'] },
+        },
+      },
+    });
+
+    await wrapper.vm.$nextTick();
+
+    const updates = wrapper.emitted('update:config') || [];
+    const hasSanitizedUpdate = updates.some((args) =>
+      JSON.stringify(args[0]) === JSON.stringify({ reasoning_effort: 'high' }),
+    );
+    expect(hasSanitizedUpdate).toBe(true);
+  });
+
   it('expands advanced params initially when requested, even while inputs are disabled', () => {
     const wrapper = mount(ModelConfigSection, {
       props: {

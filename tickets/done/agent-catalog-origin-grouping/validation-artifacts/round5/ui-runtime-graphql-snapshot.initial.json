@@ -1,0 +1,1672 @@
+{
+  "agentDefinitions": [
+    {
+      "id": "autobyteus-memory-compactor",
+      "name": "Memory Compactor",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [],
+      "inputProcessorNames": [],
+      "llmResponseProcessorNames": [],
+      "toolExecutionResultProcessorNames": [],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "general-agent",
+      "name": "General Agent",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [],
+      "inputProcessorNames": [],
+      "llmResponseProcessorNames": [],
+      "toolExecutionResultProcessorNames": [],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "audiogenerator",
+      "name": "AudioGenerator",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "GenerateSpeech"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor",
+        "WorkspacePathResolutionProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaUrlToolResultTransformerProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "chapter-slide-planner",
+      "name": "Chapter Slide Planner",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "write_file",
+        "assign_task_to"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaUrlToolResultTransformerProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "chemistry-concept-visualizer",
+      "name": "Chemistry Concept Visualizer",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "FileWriter"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor",
+        "WorkspacePathResolutionProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaUrlToolResultTransformerProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "chemistry-homework-grader",
+      "name": "Chemistry homework grader",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "chemistry-teacher-germany",
+      "name": "Chemistry Teacher Germany",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "FileWriter",
+        "read_pdf_pages",
+        "pdf_metadata",
+        "render_pdf_pages"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor",
+        "WorkspacePathResolutionProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaUrlToolResultTransformerProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "cinematic-storybook-director",
+      "name": "Cinematic Storybook Director",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "write_file"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaUrlToolResultTransformerProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "claras-ocean-friends-story-creator",
+      "name": "Clara’s Ocean Friends Story Creator",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "coding-agent",
+      "name": "coding agent",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "patch_file",
+        "read_file",
+        "write_file",
+        "run_bash"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "AgentArtifactPersistenceProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "daily-assistant",
+      "name": "Daily Assistant",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "read_file",
+        "write_file",
+        "edit_file",
+        "insert_in_file",
+        "replace_in_file",
+        "run_bash",
+        "read_url",
+        "search_web",
+        "close_tab",
+        "dom_snapshot",
+        "list_tabs",
+        "navigate_to",
+        "open_tab",
+        "read_page",
+        "run_script",
+        "screenshot"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaUrlToolResultTransformerProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "database-manager",
+      "name": "database manager",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "read_query",
+        "write_query",
+        "create_table",
+        "alter_table",
+        "drop_table",
+        "export_query",
+        "list_tables",
+        "describe_table",
+        "append_insight",
+        "list_insights"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor",
+        "WorkspacePathSanitizationProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "gemini-rpa-ppt-designer",
+      "name": "Gemini RPA PPT designer",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "generate_image",
+        "edit_image"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaToolResultUrlTransformerProcessor",
+        "AgentArtifactPersistenceProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "image-designer",
+      "name": "Image Designer",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "edit_image",
+        "generate_image"
+      ],
+      "inputProcessorNames": [
+        "WorkspacePathSanitizationProcessor",
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaToolResultUrlTransformerProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "infographics-creator",
+      "name": "Infographics Creator",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "kid-story-teller",
+      "name": "Kid_Story_Teller",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "write_file",
+        "generate_image",
+        "generate_speech"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaUrlToolResultTransformerProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "linkedin-marketer",
+      "name": "LinkedIn marketer",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "close_tab",
+        "dom_snapshot",
+        "list_tabs",
+        "navigate_to",
+        "open_tab",
+        "read_page",
+        "run_script",
+        "screenshot",
+        "run_bash",
+        "edit_file",
+        "read_file",
+        "write_file",
+        "read_media_file"
+      ],
+      "inputProcessorNames": [],
+      "llmResponseProcessorNames": [],
+      "toolExecutionResultProcessorNames": [],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "mcp-tool-manager",
+      "name": "MCP Tool Manager",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "ApplyMcpServerConfigurations",
+        "DeleteMcpServerConfiguration",
+        "DiscoverMcpServerTools",
+        "GetMcpServerConfiguration",
+        "ListMcpServerConfigurations",
+        "PreviewMcpServerTools"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor",
+        "WorkspacePathSanitizationProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "media-editor",
+      "name": "Media Editor",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "edit_image",
+        "generate_image",
+        "generate_speech",
+        "get_media_duration",
+        "convert_audio_properties",
+        "convert_video_properties",
+        "change_aspect_ratio",
+        "convert_audio_format",
+        "set_audio_bitrate",
+        "set_audio_sample_rate",
+        "set_audio_channels",
+        "convert_video_format",
+        "set_video_resolution",
+        "set_video_codec",
+        "set_video_bitrate",
+        "set_video_frame_rate",
+        "set_video_audio_track_codec",
+        "set_video_audio_track_bitrate",
+        "set_video_audio_track_sample_rate",
+        "set_video_audio_track_channels",
+        "trim_video",
+        "concatenate_videos",
+        "concatenate_audios",
+        "change_video_speed",
+        "remove_silence",
+        "extract_audio_from_video",
+        "replace_audio_track",
+        "add_subtitles",
+        "add_text_overlay",
+        "add_image_overlay",
+        "create_video_from_image_and_audio",
+        "extract_frame_from_video",
+        "add_b_roll",
+        "add_basic_transitions",
+        "health_check"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaUrlToolResultTransformerProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "niuzhirui-production-db-manager",
+      "name": "niuzhirui_production_db_manager",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "read_query",
+        "write_query",
+        "create_table",
+        "alter_table",
+        "drop_table",
+        "export_query",
+        "list_tables",
+        "describe_table",
+        "append_insight",
+        "list_insights"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "ppt-creator",
+      "name": "PPT Creator",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "generate_image",
+        "create_ppt_from_images",
+        "replace_slide_with_image",
+        "append_images_as_slides"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaToolResultUrlTransformerProcessor",
+        "AgentArtifactPersistenceProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "ppt-designer",
+      "name": "PPT Designer",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "generate_image",
+        "edit_image"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaToolResultUrlTransformerProcessor",
+        "AgentArtifactPersistenceProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "presentation-designer",
+      "name": "Presentation Designer",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "generate_image",
+        "create_ppt_from_images",
+        "run_bash",
+        "append_images_as_slides",
+        "replace_slide_with_image"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaToolResultUrlTransformerProcessor",
+        "AgentArtifactPersistenceProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "project-manager",
+      "name": "project manager",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "CreateTask",
+        "CreateTasks"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor",
+        "WorkspacePathResolutionProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaUrlToolResultTransformerProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "prompt-generator",
+      "name": "prompt generator",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor",
+        "AgentPromptComposer"
+      ],
+      "llmResponseProcessorNames": [
+        "provider_aware_tool_usage",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "prompt-manager",
+      "name": "prompt manager",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "activate_prompt",
+        "create_prompt",
+        "delete_prompt",
+        "get_prompt",
+        "list_prompts",
+        "patch_prompt",
+        "update_prompt",
+        "update_prompt_metadata"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaToolResultUrlTransformerProcessor",
+        "AgentArtifactPersistenceProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "publisher",
+      "name": "Publisher",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor",
+        "WorkspacePathResolutionProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaUrlToolResultTransformerProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "reflectioncards",
+      "name": "ReflectionCards",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "write_file",
+        "generate_image",
+        "generate_speech"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaToolResultUrlTransformerProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "reflective-storyteller",
+      "name": "Reflective Storyteller",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "write_file",
+        "generate_image",
+        "generate_speech"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "requirement",
+      "name": "requirement",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaUrlToolResultTransformerProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "requirement-engineer",
+      "name": "requirement engineer",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor",
+        "WorkspacePathSanitizationProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "TokenUsagePersistenceProcessor",
+        "AssistantResponsePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "slideimagegenerator",
+      "name": "SlideImageGenerator",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "send_message_to",
+        "read_file",
+        "write_file"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaUrlToolResultTransformerProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "slidenarrator",
+      "name": "SlideNarrator",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "read_file",
+        "write_file",
+        "assign_task_to"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaUrlToolResultTransformerProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "software-architect",
+      "name": "software architect",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [],
+      "inputProcessorNames": [],
+      "llmResponseProcessorNames": [],
+      "toolExecutionResultProcessorNames": [],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "software-developer",
+      "name": "Software Developer",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "edit_file",
+        "read_file",
+        "write_file",
+        "send_message_to"
+      ],
+      "inputProcessorNames": [],
+      "llmResponseProcessorNames": [],
+      "toolExecutionResultProcessorNames": [],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "tutorialvideocreator",
+      "name": "TutorialVideoCreator",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "FileWriter",
+        "BashExecutor",
+        "GenerateSpeech",
+        "video_editing_create_video_from_image_and_audio",
+        "video_editing_concatenate_videos",
+        "video_editing_add_subtitles",
+        "video_editing_add_text_overlay"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaUrlToolResultTransformerProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "video-subtitle-burn-in",
+      "name": "video subtitle burn in engineer",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "read_file",
+        "write_file",
+        "run_bash",
+        "read_media_file"
+      ],
+      "inputProcessorNames": [],
+      "llmResponseProcessorNames": [],
+      "toolExecutionResultProcessorNames": [],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "visual-book-storyteller",
+      "name": "Visual Book Storyteller",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "generate_image",
+        "generate_speech",
+        "write_file",
+        "run_bash"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "visual-dialogue-weaver",
+      "name": "Visual Dialogue Weaver",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "write_file",
+        "read_media_file",
+        "generate_speech",
+        "generate_image"
+      ],
+      "inputProcessorNames": [
+        "WorkspacePathSanitizationProcessor",
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaUrlToolResultTransformerProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "visualstoryteller",
+      "name": "VisualStoryteller",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "generate_image",
+        "generate_speech",
+        "write_file"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor",
+        "WorkspacePathResolutionProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaUrlToolResultTransformerProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "wechat-official-account-article-writer",
+      "name": "WeChat Official Account Article Writer",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "write_file"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaUrlToolResultTransformerProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "weixin-gongzhonghao-marketer",
+      "name": "Weixin gongzhonghao marketer",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "close_tab",
+        "dom_snapshot",
+        "list_tabs",
+        "navigate_to",
+        "open_tab",
+        "read_page",
+        "run_script",
+        "screenshot",
+        "run_bash",
+        "read_file",
+        "write_file",
+        "edit_file",
+        "read_media_file"
+      ],
+      "inputProcessorNames": [],
+      "llmResponseProcessorNames": [],
+      "toolExecutionResultProcessorNames": [],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "weixin-linux-desktop-operator",
+      "name": "Weixin Linux desktop operator",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "close_tab",
+        "dom_snapshot",
+        "list_tabs",
+        "navigate_to",
+        "open_tab",
+        "read_page",
+        "run_script",
+        "screenshot",
+        "run_bash",
+        "read_file",
+        "write_file",
+        "edit_file",
+        "read_media_file"
+      ],
+      "inputProcessorNames": [],
+      "llmResponseProcessorNames": [],
+      "toolExecutionResultProcessorNames": [],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "x-marketer",
+      "name": "X marketer",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "close_tab",
+        "dom_snapshot",
+        "list_tabs",
+        "navigate_to",
+        "open_tab",
+        "read_page",
+        "run_script",
+        "screenshot",
+        "run_bash",
+        "edit_file",
+        "read_file",
+        "write_file",
+        "read_media_file"
+      ],
+      "inputProcessorNames": [],
+      "llmResponseProcessorNames": [],
+      "toolExecutionResultProcessorNames": [],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "xiaohongshu-marketer",
+      "name": "Xiaohongshu marketer",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "close_tab",
+        "dom_snapshot",
+        "list_tabs",
+        "navigate_to",
+        "open_tab",
+        "read_page",
+        "read_media_file",
+        "run_script",
+        "screenshot",
+        "run_bash",
+        "read_file",
+        "write_file",
+        "edit_file"
+      ],
+      "inputProcessorNames": [],
+      "llmResponseProcessorNames": [],
+      "toolExecutionResultProcessorNames": [],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "bundle-agent__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466167656e742d636174616c6f672d6f726967696e2d67726f7570696e672532467469636b6574732532466167656e742d636174616c6f672d6f726967696e2d67726f7570696e6725324676616c69646174696f6e2d617274696661637473253246726f756e643525324675692d6170706c69636174696f6e2d7061636b616765__72657365617263682d776f726b7370616365__72657365617263682d617373697374616e74",
+      "name": "Research Assistant",
+      "ownershipScope": "APPLICATION_OWNED",
+      "ownerTeamName": null,
+      "ownerApplicationName": "Research Workspace",
+      "ownerPackageId": "application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Fagent-catalog-origin-grouping%2Ftickets%2Fagent-catalog-origin-grouping%2Fvalidation-artifacts%2Fround5%2Fui-application-package",
+      "ownerLocalApplicationId": "research-workspace",
+      "toolNames": [],
+      "inputProcessorNames": [],
+      "llmResponseProcessorNames": [],
+      "toolExecutionResultProcessorNames": [],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local:software-engineering:implementation-engineer",
+      "name": "Implementation Engineer",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamName": "Software Engineering Team",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [],
+      "inputProcessorNames": [],
+      "llmResponseProcessorNames": [],
+      "toolExecutionResultProcessorNames": [],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local:bible-study-group:careful-reader",
+      "name": "细读经文的组员",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamName": "Bible Study Group",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "edit_file",
+        "read_file",
+        "write_file",
+        "run_bash",
+        "start_background_process",
+        "get_process_output",
+        "stop_background_process",
+        "search_web",
+        "read_url",
+        "send_message_to"
+      ],
+      "inputProcessorNames": [],
+      "llmResponseProcessorNames": [],
+      "toolExecutionResultProcessorNames": [],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local:bible-study-group:context-guide",
+      "name": "提供上下文的组员",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamName": "Bible Study Group",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "edit_file",
+        "read_file",
+        "write_file",
+        "run_bash",
+        "start_background_process",
+        "get_process_output",
+        "stop_background_process",
+        "search_web",
+        "read_url",
+        "send_message_to"
+      ],
+      "inputProcessorNames": [],
+      "llmResponseProcessorNames": [],
+      "toolExecutionResultProcessorNames": [],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local:bible-study-group:study-leader",
+      "name": "查经小组长",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamName": "Bible Study Group",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "edit_file",
+        "read_file",
+        "write_file",
+        "run_bash",
+        "start_background_process",
+        "get_process_output",
+        "stop_background_process",
+        "search_web",
+        "read_url",
+        "send_message_to"
+      ],
+      "inputProcessorNames": [],
+      "llmResponseProcessorNames": [],
+      "toolExecutionResultProcessorNames": [],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local:clara-ocean-friends:clara-story-orchestrator",
+      "name": "Clara Story Orchestrator",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamName": "Clara Ocean Friends",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "write_file",
+        "send_message_to"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local:clara-ocean-friends:clara-storybook-builder",
+      "name": "Clara Storybook Builder",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamName": "Clara Ocean Friends",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "read_file",
+        "generate_image",
+        "generate_speech",
+        "write_file",
+        "run_bash"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaUrlToolResultTransformerProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local:movie-maker:cinematic-frame-artist",
+      "name": "Cinematic Frame Artist",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamName": "Movie Maker",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "write_file",
+        "send_message_to",
+        "read_file",
+        "generate_image"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaToolResultDownloadProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local:movie-maker:cinematic-sound-designer",
+      "name": "Cinematic Sound Designer",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamName": "Movie Maker",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "read_file",
+        "write_file",
+        "send_message_to",
+        "generate_speech"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaToolResultDownloadProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local:movie-maker:cinematic-storyboard-architect",
+      "name": "Cinematic Storyboard Architect",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamName": "Movie Maker",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "write_file",
+        "send_message_to"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaToolResultDownloadProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local:movie-maker:cinematic-video-editor",
+      "name": "Cinematic Video Editor",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamName": "Movie Maker",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "read_file",
+        "write_file",
+        "send_message_to"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaToolResultDownloadProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local:socratic-math-team:animationdeveloper",
+      "name": "AnimationDeveloper",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamName": "Socratic Math Team",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaUrlToolResultTransformerProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local:socratic-math-team:geniusmathresolver",
+      "name": "GeniusMathResolver",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamName": "Socratic Math Team",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaUrlToolResultTransformerProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local:socratic-math-team:socraticmathteacher",
+      "name": "SocraticMathTeacher",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamName": "Socratic Math Team",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "edit_file",
+        "list_directory",
+        "read_file",
+        "search_files",
+        "write_file"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaUrlToolResultTransformerProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local:video-tutorial-creation-team:tutorial-video-assembler",
+      "name": "TutorialVideoAssembler",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamName": "Video Tutorial Creation Team",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "video_editing_trim_video",
+        "video_editing_extract_frame_from_video",
+        "video_editing_create_video_from_image_and_audio",
+        "video_editing_replace_audio_track",
+        "video_editing_concatenate_videos",
+        "generate_speech",
+        "read_file",
+        "send_message_to"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaUrlToolResultTransformerProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local:video-tutorial-creation-team:tutorial-voiceover-writer",
+      "name": "TutorialVoiceoverWriter",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamName": "Video Tutorial Creation Team",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null,
+      "toolNames": [
+        "read_media_file",
+        "write_file",
+        "send_message_to"
+      ],
+      "inputProcessorNames": [
+        "UserInputPersistenceProcessor"
+      ],
+      "llmResponseProcessorNames": [
+        "ProviderAwareToolUsageProcessor",
+        "AssistantResponsePersistenceProcessor",
+        "TokenUsagePersistenceProcessor"
+      ],
+      "toolExecutionResultProcessorNames": [
+        "MediaUrlToolResultTransformerProcessor"
+      ],
+      "defaultLaunchConfig": null
+    },
+    {
+      "id": "team-local:bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466167656e742d636174616c6f672d6f726967696e2d67726f7570696e672532467469636b6574732532466167656e742d636174616c6f672d6f726967696e2d67726f7570696e6725324676616c69646174696f6e2d617274696661637473253246726f756e643525324675692d6170706c69636174696f6e2d7061636b616765__72657365617263682d776f726b7370616365__6c6974657261747572652d726576696577:source-collector",
+      "name": "Source Collector",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamName": "Literature Review Team",
+      "ownerApplicationName": "Research Workspace",
+      "ownerPackageId": "application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Fagent-catalog-origin-grouping%2Ftickets%2Fagent-catalog-origin-grouping%2Fvalidation-artifacts%2Fround5%2Fui-application-package",
+      "ownerLocalApplicationId": "research-workspace",
+      "toolNames": [],
+      "inputProcessorNames": [],
+      "llmResponseProcessorNames": [],
+      "toolExecutionResultProcessorNames": [],
+      "defaultLaunchConfig": null
+    }
+  ],
+  "agentTeamDefinitions": [
+    {
+      "id": "software-engineering",
+      "name": "Software Engineering Team",
+      "ownershipScope": "SHARED",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "bible-study-group",
+      "name": "Bible Study Group",
+      "ownershipScope": "SHARED",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "clara-ocean-friends",
+      "name": "Clara Ocean Friends",
+      "ownershipScope": "SHARED",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "movie-maker",
+      "name": "Movie Maker",
+      "ownershipScope": "SHARED",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "presentation-chemie",
+      "name": "Presentation_Chemie",
+      "ownershipScope": "SHARED",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "socratic-math-team",
+      "name": "Socratic Math Team",
+      "ownershipScope": "SHARED",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "video-tutorial-creation-team",
+      "name": "Video Tutorial Creation Team",
+      "ownershipScope": "SHARED",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466167656e742d636174616c6f672d6f726967696e2d67726f7570696e672532467469636b6574732532466167656e742d636174616c6f672d6f726967696e2d67726f7570696e6725324676616c69646174696f6e2d617274696661637473253246726f756e643525324675692d6170706c69636174696f6e2d7061636b616765__72657365617263682d776f726b7370616365__6c6974657261747572652d726576696577",
+      "name": "Literature Review Team",
+      "ownershipScope": "APPLICATION_OWNED",
+      "ownerApplicationName": "Research Workspace",
+      "ownerPackageId": "application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Fagent-catalog-origin-grouping%2Ftickets%2Fagent-catalog-origin-grouping%2Fvalidation-artifacts%2Fround5%2Fui-application-package",
+      "ownerLocalApplicationId": "research-workspace"
+    }
+  ],
+  "getServerSettings": [
+    {
+      "key": "APP_ENV",
+      "value": "production"
+    },
+    {
+      "key": "AUTOBYTEUS_AGENT_PACKAGE_ROOTS",
+      "value": "/Users/normy/autobyteus_org/autobyteus-private-agents"
+    },
+    {
+      "key": "AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS",
+      "value": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/ui-application-package"
+    },
+    {
+      "key": "AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID",
+      "value": "autobyteus-memory-compactor"
+    },
+    {
+      "key": "AUTOBYTEUS_MEMORY_DIR",
+      "value": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/ui-runtime-data/memory"
+    },
+    {
+      "key": "AUTOBYTEUS_SERVER_HOST",
+      "value": "http://127.0.0.1:53861"
+    },
+    {
+      "key": "DATABASE_URL",
+      "value": "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/ui-runtime-data/db/production.db"
+    },
+    {
+      "key": "DB_TYPE",
+      "value": "sqlite"
+    },
+    {
+      "key": "DISABLE_HTTP_REQUEST_LOGS",
+      "value": "true"
+    },
+    {
+      "key": "LOG_LEVEL",
+      "value": "INFO"
+    },
+    {
+      "key": "PRISMA_LOG_QUERIES",
+      "value": "0"
+    }
+  ]
+}

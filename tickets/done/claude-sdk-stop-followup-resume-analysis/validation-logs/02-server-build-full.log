@@ -1,0 +1,7 @@
+pnpm --dir autobyteus-server-ts run build:full
+
+> autobyteus-server-ts@0.1.1 build:full /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-stop-followup-resume-analysis/autobyteus-server-ts
+> tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs
+
+
+EXIT_CODE=0

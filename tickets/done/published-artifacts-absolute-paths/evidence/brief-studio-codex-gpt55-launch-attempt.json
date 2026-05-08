@@ -1,0 +1,113 @@
+{
+  "configuredAt": "2026-05-05T08:49:33Z",
+  "baseUrl": "http://127.0.0.1:18081",
+  "app": {
+    "id": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532467075626c69736865642d6172746966616374732d6162736f6c7574652d70617468732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f",
+    "localApplicationId": "brief-studio",
+    "name": "Brief Studio"
+  },
+  "workspaceRootPath": "/tmp/autobyteus-paa-brief-studio-codex-workspace",
+  "teamDefinitionId": "bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532467075626c69736865642d6172746966616374732d6162736f6c7574652d70617468732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d",
+  "resourceConfiguration": {
+    "slot": {
+      "slotKey": "draftingTeam",
+      "name": "Drafting Team",
+      "description": "Team resource used when Brief Studio launches a new drafting run.",
+      "allowedResourceKinds": [
+        "AGENT_TEAM"
+      ],
+      "allowedResourceOwners": [
+        "bundle",
+        "shared"
+      ],
+      "required": true,
+      "supportedLaunchConfig": {
+        "AGENT_TEAM": {
+          "llmModelIdentifier": true,
+          "runtimeKind": true,
+          "workspaceRootPath": true,
+          "memberOverrides": {
+            "llmModelIdentifier": true,
+            "runtimeKind": true
+          }
+        }
+      },
+      "defaultResourceRef": {
+        "owner": "bundle",
+        "kind": "AGENT_TEAM",
+        "localId": "brief-studio-team"
+      }
+    },
+    "updatedAt": "2026-05-05T08:49:33.411Z",
+    "status": "READY",
+    "configuration": {
+      "slotKey": "draftingTeam",
+      "resourceRef": {
+        "owner": "bundle",
+        "kind": "AGENT_TEAM",
+        "localId": "brief-studio-team"
+      },
+      "launchProfile": {
+        "kind": "AGENT_TEAM",
+        "defaults": {
+          "llmModelIdentifier": "gpt-5.5",
+          "runtimeKind": "codex_app_server",
+          "workspaceRootPath": "/tmp/autobyteus-paa-brief-studio-codex-workspace"
+        },
+        "memberProfiles": [
+          {
+            "memberRouteKey": "researcher",
+            "memberName": "researcher",
+            "agentDefinitionId": "team-local:bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532467075626c69736865642d6172746966616374732d6162736f6c7574652d70617468732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d:researcher",
+            "llmModelIdentifier": "gpt-5.5",
+            "runtimeKind": "codex_app_server"
+          },
+          {
+            "memberRouteKey": "writer",
+            "memberName": "writer",
+            "agentDefinitionId": "team-local:bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532467075626c69736865642d6172746966616374732d6162736f6c7574652d70617468732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d:writer",
+            "llmModelIdentifier": "gpt-5.5",
+            "runtimeKind": "codex_app_server"
+          }
+        ]
+      }
+    },
+    "invalidSavedConfiguration": null,
+    "issue": null
+  },
+  "createdBrief": {
+    "briefId": "brief-b64f1a62-c707-4d8d-9935-c881d8354d14",
+    "title": "Codex GPT-5.5 PAA runtime validation brief",
+    "status": "not_started",
+    "latestBindingId": null,
+    "latestRunId": null,
+    "latestBindingStatus": null,
+    "lastErrorMessage": null,
+    "createdAt": "2026-05-05T08:49:33.435Z",
+    "updatedAt": "2026-05-05T08:49:33.435Z",
+    "approvedAt": null,
+    "rejectedAt": null
+  },
+  "launchResult": {
+    "briefId": "brief-b64f1a62-c707-4d8d-9935-c881d8354d14",
+    "bindingId": "412551a6-3903-4697-811f-60b8b42571e7",
+    "runId": "team_bundle-team-6170706c69636174696f6e2d6c6f_d61110d5",
+    "status": "ATTACHED"
+  },
+  "launchError": null,
+  "briefAfterLaunchAttempt": {
+    "briefId": "brief-b64f1a62-c707-4d8d-9935-c881d8354d14",
+    "title": "Codex GPT-5.5 PAA runtime validation brief",
+    "status": "not_started",
+    "latestBindingId": "412551a6-3903-4697-811f-60b8b42571e7",
+    "latestRunId": "team_bundle-team-6170706c69636174696f6e2d6c6f_d61110d5",
+    "latestBindingStatus": "ATTACHED",
+    "lastErrorMessage": null,
+    "createdAt": "2026-05-05T08:49:33.435Z",
+    "updatedAt": "2026-05-05T08:49:33.496Z",
+    "approvedAt": null,
+    "rejectedAt": null,
+    "artifacts": [],
+    "reviewNotes": []
+  }
+}

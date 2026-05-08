@@ -134,6 +134,15 @@ export class ImageClientFactory extends Singleton {
       description: 'Fast conversational multimodal image model.'
     });
 
+    const gemini31FlashImageModel = new ImageModel({
+      name: 'gemini-3.1-flash-image-preview',
+      value: 'gemini-3.1-flash-image-preview',
+      provider: MultimediaProvider.GEMINI,
+      clientClass: GeminiImageClient,
+      parameterSchema: null,
+      description: 'Fast Gemini 3.1 Flash Image Preview model for conversational image generation and editing.'
+    });
+
     const geminiProImageModel = new ImageModel({
       name: 'gemini-3-pro-image-preview',
       value: 'gemini-3-pro-image-preview',
@@ -143,7 +152,14 @@ export class ImageClientFactory extends Singleton {
       description: 'High-quality conversational image model for complex edits.'
     });
 
-    const modelsToRegister = [gptImageModel, gptImage2Model, imagenModel, geminiFlashImageModel, geminiProImageModel];
+    const modelsToRegister = [
+      gptImageModel,
+      gptImage2Model,
+      imagenModel,
+      geminiFlashImageModel,
+      gemini31FlashImageModel,
+      geminiProImageModel
+    ];
     for (const model of modelsToRegister) {
       ImageClientFactory.registerModel(model);
     }

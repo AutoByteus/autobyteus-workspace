@@ -43,7 +43,7 @@ If research is blocked:
 
 Rules:
 - do not invent other Brief Studio artifact file names
-- do not call `publish_artifacts` until the target file has already been written in the workspace
+- do not call `publish_artifacts` until the target checkpoint file has already been written
 - do not guess or reconstruct the publish path; reuse the exact absolute path returned by the write step
 - treat `publish_artifacts` as the publication step at the end of a completed checkpoint, not as the file-writing step itself
 - use a one-item `artifacts` array when publishing a single checkpoint file

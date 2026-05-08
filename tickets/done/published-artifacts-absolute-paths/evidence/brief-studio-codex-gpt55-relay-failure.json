@@ -1,0 +1,46 @@
+{
+  "capturedAt": "2026-05-05T08:51:06Z",
+  "failureClassification": "Local Fix candidate",
+  "observedBackendLogMessages": [
+    "ApplicationPublishedArtifactRelayService: live artifact relay failed for binding '412551a6-3903-4697-811f-60b8b42571e7' revision '7b9e8bfd-be48-4fb4-aba9-d5d5356b8bae': Error: Unexpected Brief Studio artifact path '/private/tmp/autobyteus-paa-brief-studio-codex-workspace/brief-studio/research.md' for producer 'researcher'.",
+    "ApplicationPublishedArtifactRelayService: live artifact relay failed for binding '412551a6-3903-4697-811f-60b8b42571e7' revision '70940957-6c62-4717-8b45-fbf1549fbe01': Error: Unexpected Brief Studio artifact path '/private/tmp/autobyteus-paa-brief-studio-codex-workspace/brief-studio/final-brief.md' for producer 'writer'."
+  ],
+  "briefDetailAfterRelayFailures": {
+    "result": {
+      "data": {
+        "brief": {
+          "briefId": "brief-b64f1a62-c707-4d8d-9935-c881d8354d14",
+          "title": "Codex GPT-5.5 PAA runtime validation brief",
+          "status": "not_started",
+          "latestBindingId": "412551a6-3903-4697-811f-60b8b42571e7",
+          "latestRunId": "team_bundle-team-6170706c69636174696f6e2d6c6f_d61110d5",
+          "latestBindingStatus": "ATTACHED",
+          "lastErrorMessage": null,
+          "createdAt": "2026-05-05T08:49:33.435Z",
+          "updatedAt": "2026-05-05T08:49:33.496Z",
+          "approvedAt": null,
+          "rejectedAt": null,
+          "artifacts": [],
+          "reviewNotes": []
+        }
+      }
+    }
+  },
+  "workspaceFiles": [
+    {
+      "path": "/tmp/autobyteus-paa-brief-studio-codex-workspace/brief-studio/research.md",
+      "exists": true,
+      "realpath": "/private/tmp/autobyteus-paa-brief-studio-codex-workspace/brief-studio/research.md",
+      "size": 2183,
+      "prefix": "# Codex GPT-5.5 PAA runtime validation brief \u2014 research checkpoint\n\n## Key findings\n- The brief should focus on runtime validation for a PAA-style Codex workflow: confirming that GPT-5.5 can follow ordered team roles, produce durable artifacts, and use the correct publication/handoff sequence without relying on informal prose.\n- The critical acceptance path is procedural: researcher writes `brief-studio/research.md`, publishes that exact written file as an artifact, then hands off to writer; writer then reviews the handoff, drafts the brief, and publishes its own checkpoint.\n- Artifact integri"
+    },
+    {
+      "path": "/tmp/autobyteus-paa-brief-studio-codex-workspace/brief-studio/final-brief.md",
+      "exists": true,
+      "realpath": "/private/tmp/autobyteus-paa-brief-studio-codex-workspace/brief-studio/final-brief.md",
+      "size": 2588,
+      "prefix": "# Codex GPT-5.5 PAA Runtime Validation Brief\n\nRecommendation: validate the Codex GPT-5.5 PAA runtime by treating this run as a strict research-first workflow test, not just a content-generation task. Operationally, \u201cPAA\u201d should mean the app-backed agent workflow that projects published artifacts into Brief Studio review state. The runtime should pass only if it preserves ordered team roles, durable workspace files, exact-path artifact publication, concise checkpoints, and handoff discipline from researcher to writer.\n\n## Key evidence\n- The required happy path is procedural: researcher writes `"
+    }
+  ],
+  "launchEvidenceFile": "/Users/normy/autobyteus_org/autobyteus-worktrees/published-artifacts-absolute-paths/tickets/in-progress/published-artifacts-absolute-paths/evidence/brief-studio-codex-gpt55-launch-attempt.json"
+}

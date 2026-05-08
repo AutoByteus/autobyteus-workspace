@@ -21,13 +21,13 @@ graph TD
 
     Handler-->|Segment Created/Updated| Context[Agent Context State]
     Handler-->|File changes / outputs| RunFileChangeStore[Run File Change Store]
-    Handler-->|Message file references| MessageReferenceStore[Message File References Store]
+    Handler-->|Team communication messages| TeamCommunicationStore[Team Communication Store]
     Handler-->|Activity Log| ActivityStore[Activity Store]
     Handler-->|Task/Todo Update| TodoStore[Todo Store]
 
     Context-->|Reactivity| UI[Vue Component UI]
     RunFileChangeStore-->|Reactivity| UI
-    MessageReferenceStore-->|Reactivity| UI
+    TeamCommunicationStore-->|Reactivity| UI
     ActivityStore-->|Reactivity| UI
 ```
 
@@ -44,6 +44,7 @@ The Pinia stores act as the primary interface for the UI components to interact 
   - `sendUserInputAndSubscribe()`: Sends user messages via mutation and ensures an agent WebSocket stream is connected. For persisted inactive runs, it uses resume config to call `RestoreAgentRun` before finalizing attachments and sending. Before the send, it finalizes any staged browser uploads so optimistic history and runtime payloads both point at final run-scoped attachment locators.
   - `connectToAgentStream(runId)`: Listens for real-time events specific to an agent run via WebSocket. The backend WebSocket boundary is also restore-aware for connect and `SEND_MESSAGE`, so a stale/missing frontend resume cache does not have to be the only recovery path.
   - `interruptGeneration()`: Sends the backend `INTERRUPT_GENERATION` control command without locally marking the run send-ready. `isSending` is cleared by backend lifecycle/status/error stream handling after the runtime has settled the active turn.
+  - `terminateRun(runId)`: Sends backend `TerminateAgentRun` for persisted runs before local teardown, then disconnects the stream, marks the run inactive in history, and refreshes the history tree. Row-level terminate actions delegate here without selecting the row; follow-up chat recovery still uses the restore-aware send path rather than treating terminate as a local-only close.
   - `postToolExecutionApproval()`: Sends user decisions (Approve/Deny) for "Awaiting Approval" tool calls.
   - `closeAgent()`: Cleans up local state and unsubscribes.
 
@@ -65,9 +66,9 @@ Single-agent and team follow-up chat share the same recovery model:
 - frontend stores use cached resume config to eagerly call explicit restore mutations when they know a selected run/team is inactive;
 - WebSocket connect and `SEND_MESSAGE` are restore-aware on the backend, so follow-up chat can still recover stopped-but-persisted runs when the frontend cache is stale, missing, or was updated after a local stop;
 - accepted follow-up messages mark the run/team active in run history and refresh the history tree; and
-- stop/tool-approval control messages are active-only and should not be used as implicit restore operations.
+- interrupt/tool-approval control messages are active-only and should not be used as implicit restore operations.
 
-Stop dispatch is intentionally not a local completion event. The frontend must
+Interrupt dispatch is intentionally not a local completion event. The frontend must
 keep the affected single run or focused team member in its current sending
 state until `TURN_COMPLETED`, `AGENT_STATUS`, or `ERROR` stream handling clears
 that state. This keeps the primary input from advertising follow-up readiness
@@ -150,6 +151,14 @@ not infer a current default, recover a runtime value, or materialize metadata.
 Backend/runtime/history recovery or persistence semantics belong to a separate
 backend ticket, not this frontend inspection boundary.
 
+The model-config surface is schema-driven, not thinking-only. Thinking controls
+such as `reasoning_effort` use the basic/advanced thinking presentation when the
+schema marks them as supported, while non-thinking runtime/model parameters
+render through the same advanced schema component. For Codex, a fast-capable
+model can therefore expose `service_tier` with the user-facing label **Fast
+mode** beside reasoning settings, and a non-thinking schema can still render its
+parameters directly.
+
 ### New Run From Existing Run
 
 When the user clicks the workspace header add/new-run action while an existing
@@ -165,6 +174,11 @@ loading. Schema arrival may sanitize invalid model-config keys after a real
 schema is available, but an empty/loading schema must not clear the copied
 `llmConfig`. Explicit user runtime/model changes remain the owner for stale
 model-config cleanup.
+
+Schema arrival is also the cleanup boundary for runtime-specific non-thinking
+parameters. For example, when a copied or default Codex config contains
+`service_tier: "fast"` and the user switches to a model whose active schema does
+not include `service_tier`, the stale key is removed before launch.
 
 If there is no selected same-definition source run, workspace add/new-run flows
 fall back to the existing definition/default launch preferences instead of
@@ -208,7 +222,8 @@ Incoming events are routed based on their `type`:
 | `TOOL_LOG`                | `toolLifecycleHandler.handleToolLog`               | Appends diagnostic execution logs only.                         |
 | `ARTIFACT_PERSISTED`      | inline no-op compatibility                         | Ignored by the current client; published artifacts are not displayed in the current web UI. |
 | `FILE_CHANGE`             | `fileChangeHandler.handleFileChange`        | Syncs touched files and generated outputs into the run-scoped Agent Artifact store. |
-| `MESSAGE_FILE_REFERENCE_DECLARED` | `messageFileReferenceHandler.handleMessageFileReferenceDeclared` | Syncs backend-derived, accepted inter-agent message file references into the team-level message-reference store for focused-member **Sent Artifacts** / **Received Artifacts** perspectives. |
+| `INTER_AGENT_MESSAGE`      | `teamHandler.handleInterAgentMessage`       | Preserves existing conversation rendering only. |
+| `TEAM_COMMUNICATION_MESSAGE`| `teamHandler.handleTeamCommunicationMessage` | Upserts normalized Team Communication messages and child reference files into the Team Communication store. |
 | `TODO_LIST_UPDATE`        | `todoHandler.handleTodoListUpdate`                 | Syncs the agent's internal todo list with the UI.               |
 
 ---
@@ -251,12 +266,12 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
     - Owns the run-scoped projection for touched files and generated outputs.
     - Tracks latest-visible discoverability so the Artifacts tab can auto-focus when a new Agent Artifact row appears.
     - Keeps transient `write_file` buffers only until committed previews are fetched from the server-backed run preview route.
-2.  **Message File References (`MessageFileReferencesStore`)**:
-    - Listens to `MESSAGE_FILE_REFERENCE_DECLARED` plus team reopen hydration from `getMessageFileReferences(teamRunId)`.
-    - Owns the canonical team-level projection for absolute local paths declared in accepted inter-agent messages.
-    - Exposes focused-member perspectives: **Sent Artifacts** when the focused member is the sender and **Received Artifacts** when the focused member is the receiver.
-    - Groups sent/received references by counterpart member without inserting those rows into `RunFileChangesStore`.
-    - Opens content by persisted identity (`teamRunId + referenceId`) through `/team-runs/:teamRunId/message-file-references/:referenceId/content`.
+2.  **Team Communication (`TeamCommunicationStore`)**:
+    - Listens to accepted `INTER_AGENT_MESSAGE` live payloads plus team reopen hydration from `getTeamCommunicationMessages(teamRunId)`.
+    - Owns the canonical team-level message projection and child `referenceFiles` declared by explicit `send_message_to.reference_files`.
+    - Exposes focused-member sent/received message perspectives grouped by counterpart member.
+    - Keeps reference files under their parent message in the Team tab instead of inserting them into `RunFileChangesStore` or the Artifacts tab.
+    - Opens reference content by persisted message identity (`teamRunId + messageId + referenceId`) through `/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`.
     - Does not parse chat text in the frontend and does not make raw paths in `InterAgentMessageSegment` clickable.
 3.  **Activity (`AgentActivityStore`)**:
     - Tracks every tool call, file write, and terminal command as a linear history of "Activities".

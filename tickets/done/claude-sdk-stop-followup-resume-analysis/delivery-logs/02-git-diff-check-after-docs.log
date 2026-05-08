@@ -1,0 +1,3 @@
+Command: git add -N tickets/in-progress/claude-sdk-stop-followup-resume-analysis && git diff --check && git reset -q
+Purpose: include untracked delivery/ticket artifacts in whitespace validation.
+Result: passed

@@ -24,7 +24,7 @@ describe("member-run-instruction-composer", () => {
       "Use `send_message_to` only for actual teammate delivery; plain text does not deliver a teammate message.",
     );
     expect(composition.runtimeInstruction).toContain(
-      "When sending files the teammate may need to inspect, keep `content` self-contained like an email body and also list those absolute paths in `reference_files` for Sent/Received Artifacts.",
+      "When sending files the teammate may need to inspect, keep `content` self-contained like an email body and also list those absolute paths in `reference_files` for Team Communication messages.",
     );
     expect(composition.runtimeInstruction).toContain(
       "Example: content explains the handoff and may mention `/Users/me/project/implementation-handoff.md`; reference_files includes [`/Users/me/project/implementation-handoff.md`].",

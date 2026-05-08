@@ -22,9 +22,9 @@ import { ApplicationPlatformStateStore } from "../../../src/application-storage/
 import { ApplicationEngineHostService } from "../../../src/application-engine/services/application-engine-host-service.js";
 import { ApplicationBackendGatewayService } from "../../../src/application-backend-gateway/services/application-backend-gateway-service.js";
 import {
-  ApplicationNotificationStreamService,
-  type ApplicationNotificationStreamMessage,
-} from "../../../src/application-backend-gateway/streaming/application-notification-stream-service.js";
+  ApplicationBackendNotificationStreamService,
+  type ApplicationBackendNotificationStreamMessage,
+} from "../../../src/application-backend-gateway/streaming/application-backend-notification-stream-service.js";
 import { ApplicationExecutionEventDispatchService } from "../../../src/application-orchestration/services/application-execution-event-dispatch-service.js";
 import { ApplicationExecutionEventIngressService } from "../../../src/application-orchestration/services/application-execution-event-ingress-service.js";
 import { ApplicationAvailabilityService } from "../../../src/application-orchestration/services/application-availability-service.js";
@@ -50,7 +50,7 @@ import { buildPublishedArtifactId } from "../../../src/services/published-artifa
 
 const applicationBackendState = vi.hoisted(() => ({
   gatewayService: null as ApplicationBackendGatewayService | null,
-  notificationStreamService: null as ApplicationNotificationStreamService | null,
+  notificationStreamService: null as ApplicationBackendNotificationStreamService | null,
 }));
 
 vi.mock("../../../src/application-backend-gateway/services/application-backend-gateway-service.js", async () => {
@@ -68,13 +68,13 @@ vi.mock("../../../src/application-backend-gateway/services/application-backend-g
   };
 });
 
-vi.mock("../../../src/application-backend-gateway/streaming/application-notification-stream-service.js", async () => {
+vi.mock("../../../src/application-backend-gateway/streaming/application-backend-notification-stream-service.js", async () => {
   const actual = await vi.importActual<
-    typeof import("../../../src/application-backend-gateway/streaming/application-notification-stream-service.js")
-  >("../../../src/application-backend-gateway/streaming/application-notification-stream-service.js");
+    typeof import("../../../src/application-backend-gateway/streaming/application-backend-notification-stream-service.js")
+  >("../../../src/application-backend-gateway/streaming/application-backend-notification-stream-service.js");
   return {
     ...actual,
-    getApplicationNotificationStreamService: () => {
+    getApplicationBackendNotificationStreamService: () => {
       if (!applicationBackendState.notificationStreamService) {
         throw new Error("Integration test notification stream service was not initialized.");
       }
@@ -161,11 +161,11 @@ const waitForSocketOpen = async (socket: WebSocket): Promise<void> =>
   });
 
 const waitForMessage = async (
-  messages: ApplicationNotificationStreamMessage[],
+  messages: ApplicationBackendNotificationStreamMessage[],
   socket: WebSocket,
-  predicate: (message: ApplicationNotificationStreamMessage) => boolean,
+  predicate: (message: ApplicationBackendNotificationStreamMessage) => boolean,
   label: string,
-): Promise<ApplicationNotificationStreamMessage> =>
+): Promise<ApplicationBackendNotificationStreamMessage> =>
   new Promise((resolve, reject) => {
     const existing = messages.find(predicate);
     if (existing) {
@@ -186,7 +186,7 @@ const waitForMessage = async (
     };
 
     const onMessage = (raw: WebSocket.RawData) => {
-      const parsed = JSON.parse(String(raw)) as ApplicationNotificationStreamMessage;
+      const parsed = JSON.parse(String(raw)) as ApplicationBackendNotificationStreamMessage;
       if (predicate(parsed)) {
         cleanup();
         resolve(parsed);
@@ -397,7 +397,7 @@ describe("Brief Studio imported package integration", () => {
   let applicationId: string;
   let startupGate: ApplicationOrchestrationStartupGate;
   let notificationSocket: WebSocket | null;
-  let notificationMessages: ApplicationNotificationStreamMessage[];
+  let notificationMessages: ApplicationBackendNotificationStreamMessage[];
   let ingressService: ApplicationExecutionEventIngressService;
   let bindingStore: ApplicationRunBindingStore;
   let lookupStore: ApplicationRunLookupStore;
@@ -705,7 +705,7 @@ describe("Brief Studio imported package integration", () => {
     });
     engineHostServiceRef = engineHostService;
 
-    applicationBackendState.notificationStreamService = new ApplicationNotificationStreamService();
+    applicationBackendState.notificationStreamService = new ApplicationBackendNotificationStreamService();
     applicationBackendState.gatewayService = new ApplicationBackendGatewayService({
       applicationBundleService: bundleService as never,
       availabilityService,
@@ -794,7 +794,7 @@ describe("Brief Studio imported package integration", () => {
       `${baseUrl.replace("http://", "ws://")}/ws/applications/${encodeURIComponent(applicationId)}/backend/notifications`,
     );
     notificationSocket.on("message", (raw) => {
-      notificationMessages.push(JSON.parse(String(raw)) as ApplicationNotificationStreamMessage);
+      notificationMessages.push(JSON.parse(String(raw)) as ApplicationBackendNotificationStreamMessage);
     });
     await waitForSocketOpen(notificationSocket);
     await waitForMessage(
@@ -980,12 +980,23 @@ describe("Brief Studio imported package integration", () => {
     const writerProducer = executionContextByRouteKey.get("writer")?.producer ?? null;
     expect(researcherProducer).not.toBeNull();
     expect(writerProducer).not.toBeNull();
+    const researcherPublishedPath = path.join(
+      tempRoot,
+      "absolute-source",
+      "brief-studio",
+      "research.md",
+    ).replace(/\\/g, "/");
+    const writerPublishedPath = path.join(
+      tempRoot,
+      "absolute-source",
+      "final-brief.md",
+    ).replace(/\\/g, "/");
 
     const researcherArtifactEvent = await persistPublishedArtifactForRun({
       runId: memberRunIdByRouteKey.get("researcher")!,
       binding: launchedBinding!,
       producer: researcherProducer!,
-      path: "brief-studio/research.md",
+      path: researcherPublishedPath,
       body: "Research summary",
       description: "Audience and sources collected.",
       revisionId: "research-note-1",
@@ -1000,7 +1011,7 @@ describe("Brief Studio imported package integration", () => {
       runId: memberRunIdByRouteKey.get("writer")!,
       binding: launchedBinding!,
       producer: writerProducer!,
-      path: "brief-studio/final-brief.md",
+      path: writerPublishedPath,
       body: "Final review-ready brief body.",
       description: "Draft ready for review.",
       revisionId: "brief-draft-1",
@@ -1146,7 +1157,7 @@ describe("Brief Studio imported package integration", () => {
           artifactKind: "researcher",
           publicationKind: "research",
           revisionId: "research-note-1",
-          path: "brief-studio/research.md",
+          path: researcherPublishedPath,
           description: "Audience and sources collected.",
           body: "Research summary",
           producerMemberRouteKey: "researcher",
@@ -1156,7 +1167,7 @@ describe("Brief Studio imported package integration", () => {
           artifactKind: "writer",
           publicationKind: "final",
           revisionId: "brief-draft-1",
-          path: "brief-studio/final-brief.md",
+          path: writerPublishedPath,
           description: "Draft ready for review.",
           body: "Final review-ready brief body.",
           producerMemberRouteKey: "writer",
@@ -1356,7 +1367,7 @@ describe("Brief Studio imported package integration", () => {
 
     notificationSocket = new WebSocket(buildHostedBackendNotificationsUrl(applicationId, baseUrl));
     notificationSocket.on("message", (raw) => {
-      notificationMessages.push(JSON.parse(String(raw)) as ApplicationNotificationStreamMessage);
+      notificationMessages.push(JSON.parse(String(raw)) as ApplicationBackendNotificationStreamMessage);
     });
     await waitForSocketOpen(notificationSocket);
     await waitForMessage(
@@ -1378,6 +1389,12 @@ describe("Brief Studio imported package integration", () => {
       latestRunId: null,
       latestBindingStatus: null,
     });
+    const earlyFinalPublishedPath = path.join(
+      tempRoot,
+      "launch-race-source",
+      "brief-studio",
+      "final-brief.md",
+    ).replace(/\\/g, "/");
 
     onObserveBoundRun = async ({ runId }) => {
       const writerRunId = `${runId}::writer`;
@@ -1398,7 +1415,7 @@ describe("Brief Studio imported package integration", () => {
         runId: writerRunId,
         binding: boundBinding!,
         producer: writerProducer!,
-        path: "brief-studio/final-brief.md",
+        path: earlyFinalPublishedPath,
         body: "Projected before launch completion.",
         description: "Projected before launch completion.",
         revisionId: "launch-race-final-1",
@@ -1466,7 +1483,7 @@ describe("Brief Studio imported package integration", () => {
           artifactKind: "writer",
           publicationKind: "final",
           revisionId: "launch-race-final-1",
-          path: "brief-studio/final-brief.md",
+          path: earlyFinalPublishedPath,
           description: "Projected before launch completion.",
           body: "Projected before launch completion.",
           producerMemberRouteKey: "writer",

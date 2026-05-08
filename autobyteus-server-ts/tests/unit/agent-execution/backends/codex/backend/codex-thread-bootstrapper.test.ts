@@ -23,7 +23,9 @@ import type { CodexAppServerClientManager } from "../../../../../../src/runtime-
 
 const WORKING_DIRECTORY = "/tmp/codex-workspace";
 
-const createRunContext = () =>
+const createRunContext = (input: {
+  llmConfig?: Record<string, unknown> | null;
+} = {}) =>
   new AgentRunContext({
     runId: "run-1",
     config: new AgentRunConfig({
@@ -32,7 +34,7 @@ const createRunContext = () =>
       llmModelIdentifier: "gpt-test",
       autoExecuteTools: false,
       workspaceId: "workspace-id",
-      llmConfig: null,
+      llmConfig: input.llmConfig ?? null,
       skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
     }),
     runtimeContext: null,
@@ -191,6 +193,25 @@ describe("CodexThreadBootstrapper", () => {
     expect(clientManager.releaseClient).toHaveBeenCalledWith(WORKING_DIRECTORY);
   });
 
+  it("normalizes llmConfig service_tier into Codex thread serviceTier", async () => {
+    const { bootstrapper } = createBootstrapper({
+      skills: [],
+      requestImplementation: async () => ({ data: [] }),
+    });
+
+    const runContext = await bootstrapper.bootstrapForCreate(
+      createRunContext({
+        llmConfig: {
+          reasoning_effort: "high",
+          service_tier: " FAST ",
+        },
+      }),
+    );
+
+    expect(runContext.runtimeContext.codexThreadConfig.reasoningEffort).toBe("high");
+    expect(runContext.runtimeContext.codexThreadConfig.serviceTier).toBe("fast");
+  });
+
   it("falls back to workspace materialization when the discoverable-skill probe fails", async () => {
     const skill = createSkill("missing_skill");
     const { bootstrapper, workspaceSkillMaterializer, clientManager } = createBootstrapper({
@@ -276,6 +297,27 @@ describe("CodexThreadBootstrapper", () => {
     expect(dynamicToolSpecs?.map((spec) => spec.name)).toEqual(["publish_artifacts"]);
     expect(dynamicToolSpecs?.[0]?.inputSchema).toMatchObject({
       required: ["artifacts"],
+      additionalProperties: false,
+    });
+  });
+
+  it("exposes only configured media dynamic tools for Codex", async () => {
+    const { bootstrapper } = createBootstrapper({
+      skills: [],
+      toolNames: ["generate_image", "generate_speech", "read_file"],
+      requestImplementation: async () => ({ data: [] }),
+    });
+
+    const runContext = await bootstrapper.bootstrapForCreate(createRunContext());
+    const dynamicToolSpecs = runContext.runtimeContext.codexThreadConfig.dynamicTools;
+
+    expect(dynamicToolSpecs).not.toBeNull();
+    expect(dynamicToolSpecs?.map((spec) => spec.name)).toEqual([
+      "generate_image",
+      "generate_speech",
+    ]);
+    expect(dynamicToolSpecs?.[0]?.inputSchema).toMatchObject({
+      required: expect.arrayContaining(["prompt", "output_file_path"]),
       additionalProperties: false,
     });
   });

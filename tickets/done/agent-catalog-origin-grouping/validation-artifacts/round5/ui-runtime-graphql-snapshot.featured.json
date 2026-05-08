@@ -1,0 +1,616 @@
+{
+  "getServerSettings": [
+    {
+      "key": "APP_ENV",
+      "value": "production"
+    },
+    {
+      "key": "AUTOBYTEUS_AGENT_PACKAGE_ROOTS",
+      "value": "/Users/normy/autobyteus_org/autobyteus-private-agents"
+    },
+    {
+      "key": "AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS",
+      "value": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/ui-application-package"
+    },
+    {
+      "key": "AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID",
+      "value": "autobyteus-memory-compactor"
+    },
+    {
+      "key": "AUTOBYTEUS_FEATURED_CATALOG_ITEMS",
+      "value": "{\"version\":1,\"items\":[{\"resourceKind\":\"AGENT\",\"definitionId\":\"daily-assistant\",\"sortOrder\":10}]}"
+    },
+    {
+      "key": "AUTOBYTEUS_MEMORY_DIR",
+      "value": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/ui-runtime-data/memory"
+    },
+    {
+      "key": "AUTOBYTEUS_SERVER_HOST",
+      "value": "http://127.0.0.1:53861"
+    },
+    {
+      "key": "DATABASE_URL",
+      "value": "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/tickets/agent-catalog-origin-grouping/validation-artifacts/round5/ui-runtime-data/db/production.db"
+    },
+    {
+      "key": "DB_TYPE",
+      "value": "sqlite"
+    },
+    {
+      "key": "DISABLE_HTTP_REQUEST_LOGS",
+      "value": "true"
+    },
+    {
+      "key": "ENABLE_APPLICATIONS",
+      "value": "true"
+    },
+    {
+      "key": "LOG_LEVEL",
+      "value": "INFO"
+    },
+    {
+      "key": "PRISMA_LOG_QUERIES",
+      "value": "0"
+    }
+  ],
+  "agentDefinitions": [
+    {
+      "id": "autobyteus-memory-compactor",
+      "name": "Memory Compactor",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "general-agent",
+      "name": "General Agent",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "audiogenerator",
+      "name": "AudioGenerator",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "chapter-slide-planner",
+      "name": "Chapter Slide Planner",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "chemistry-concept-visualizer",
+      "name": "Chemistry Concept Visualizer",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "chemistry-homework-grader",
+      "name": "Chemistry homework grader",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "chemistry-teacher-germany",
+      "name": "Chemistry Teacher Germany",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "cinematic-storybook-director",
+      "name": "Cinematic Storybook Director",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "claras-ocean-friends-story-creator",
+      "name": "Clara’s Ocean Friends Story Creator",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "coding-agent",
+      "name": "coding agent",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "daily-assistant",
+      "name": "Daily Assistant",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "database-manager",
+      "name": "database manager",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "gemini-rpa-ppt-designer",
+      "name": "Gemini RPA PPT designer",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "image-designer",
+      "name": "Image Designer",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "infographics-creator",
+      "name": "Infographics Creator",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "kid-story-teller",
+      "name": "Kid_Story_Teller",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "linkedin-marketer",
+      "name": "LinkedIn marketer",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "mcp-tool-manager",
+      "name": "MCP Tool Manager",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "media-editor",
+      "name": "Media Editor",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "niuzhirui-production-db-manager",
+      "name": "niuzhirui_production_db_manager",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "ppt-creator",
+      "name": "PPT Creator",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "ppt-designer",
+      "name": "PPT Designer",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "presentation-designer",
+      "name": "Presentation Designer",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "project-manager",
+      "name": "project manager",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "prompt-generator",
+      "name": "prompt generator",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "prompt-manager",
+      "name": "prompt manager",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "publisher",
+      "name": "Publisher",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "reflectioncards",
+      "name": "ReflectionCards",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "reflective-storyteller",
+      "name": "Reflective Storyteller",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "requirement",
+      "name": "requirement",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "requirement-engineer",
+      "name": "requirement engineer",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "slideimagegenerator",
+      "name": "SlideImageGenerator",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "slidenarrator",
+      "name": "SlideNarrator",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "software-architect",
+      "name": "software architect",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "software-developer",
+      "name": "Software Developer",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "tutorialvideocreator",
+      "name": "TutorialVideoCreator",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "video-subtitle-burn-in",
+      "name": "video subtitle burn in engineer",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "visual-book-storyteller",
+      "name": "Visual Book Storyteller",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "visual-dialogue-weaver",
+      "name": "Visual Dialogue Weaver",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "visualstoryteller",
+      "name": "VisualStoryteller",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "wechat-official-account-article-writer",
+      "name": "WeChat Official Account Article Writer",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "weixin-gongzhonghao-marketer",
+      "name": "Weixin gongzhonghao marketer",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "weixin-linux-desktop-operator",
+      "name": "Weixin Linux desktop operator",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "x-marketer",
+      "name": "X marketer",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "xiaohongshu-marketer",
+      "name": "Xiaohongshu marketer",
+      "ownershipScope": "SHARED",
+      "ownerTeamName": null,
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "bundle-agent__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466167656e742d636174616c6f672d6f726967696e2d67726f7570696e672532467469636b6574732532466167656e742d636174616c6f672d6f726967696e2d67726f7570696e6725324676616c69646174696f6e2d617274696661637473253246726f756e643525324675692d6170706c69636174696f6e2d7061636b616765__72657365617263682d776f726b7370616365__72657365617263682d617373697374616e74",
+      "name": "Research Assistant",
+      "ownershipScope": "APPLICATION_OWNED",
+      "ownerTeamName": null,
+      "ownerApplicationName": "Research Workspace",
+      "ownerPackageId": "application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Fagent-catalog-origin-grouping%2Ftickets%2Fagent-catalog-origin-grouping%2Fvalidation-artifacts%2Fround5%2Fui-application-package",
+      "ownerLocalApplicationId": "research-workspace"
+    },
+    {
+      "id": "team-local:software-engineering:implementation-engineer",
+      "name": "Implementation Engineer",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamName": "Software Engineering Team",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "team-local:bible-study-group:careful-reader",
+      "name": "细读经文的组员",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamName": "Bible Study Group",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "team-local:bible-study-group:context-guide",
+      "name": "提供上下文的组员",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamName": "Bible Study Group",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "team-local:bible-study-group:study-leader",
+      "name": "查经小组长",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamName": "Bible Study Group",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "team-local:clara-ocean-friends:clara-story-orchestrator",
+      "name": "Clara Story Orchestrator",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamName": "Clara Ocean Friends",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "team-local:clara-ocean-friends:clara-storybook-builder",
+      "name": "Clara Storybook Builder",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamName": "Clara Ocean Friends",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "team-local:movie-maker:cinematic-frame-artist",
+      "name": "Cinematic Frame Artist",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamName": "Movie Maker",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "team-local:movie-maker:cinematic-sound-designer",
+      "name": "Cinematic Sound Designer",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamName": "Movie Maker",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "team-local:movie-maker:cinematic-storyboard-architect",
+      "name": "Cinematic Storyboard Architect",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamName": "Movie Maker",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "team-local:movie-maker:cinematic-video-editor",
+      "name": "Cinematic Video Editor",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamName": "Movie Maker",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "team-local:socratic-math-team:animationdeveloper",
+      "name": "AnimationDeveloper",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamName": "Socratic Math Team",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "team-local:socratic-math-team:geniusmathresolver",
+      "name": "GeniusMathResolver",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamName": "Socratic Math Team",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "team-local:socratic-math-team:socraticmathteacher",
+      "name": "SocraticMathTeacher",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamName": "Socratic Math Team",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "team-local:video-tutorial-creation-team:tutorial-video-assembler",
+      "name": "TutorialVideoAssembler",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamName": "Video Tutorial Creation Team",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "team-local:video-tutorial-creation-team:tutorial-voiceover-writer",
+      "name": "TutorialVoiceoverWriter",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamName": "Video Tutorial Creation Team",
+      "ownerApplicationName": null,
+      "ownerPackageId": null,
+      "ownerLocalApplicationId": null
+    },
+    {
+      "id": "team-local:bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466167656e742d636174616c6f672d6f726967696e2d67726f7570696e672532467469636b6574732532466167656e742d636174616c6f672d6f726967696e2d67726f7570696e6725324676616c69646174696f6e2d617274696661637473253246726f756e643525324675692d6170706c69636174696f6e2d7061636b616765__72657365617263682d776f726b7370616365__6c6974657261747572652d726576696577:source-collector",
+      "name": "Source Collector",
+      "ownershipScope": "TEAM_LOCAL",
+      "ownerTeamName": "Literature Review Team",
+      "ownerApplicationName": "Research Workspace",
+      "ownerPackageId": "application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Fagent-catalog-origin-grouping%2Ftickets%2Fagent-catalog-origin-grouping%2Fvalidation-artifacts%2Fround5%2Fui-application-package",
+      "ownerLocalApplicationId": "research-workspace"
+    }
+  ]
+}

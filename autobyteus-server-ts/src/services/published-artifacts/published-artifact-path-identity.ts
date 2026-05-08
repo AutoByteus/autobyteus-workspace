@@ -1,76 +1,55 @@
-import path from "node:path";
+import fs from "node:fs/promises";
+
+import {
+  resolveAgentRunAbsoluteSourcePath,
+  type AgentRunFilePathResolutionFailureCode,
+} from "../../agent-execution/domain/agent-run-file-path-identity.js";
 import {
   buildPublishedArtifactId,
   normalizePublishedArtifactPath,
 } from "./published-artifact-types.js";
 
-const WINDOWS_ABSOLUTE_PATH_PATTERN = /^[A-Za-z]:[\\/]/;
+export type PublishedArtifactPathResolutionFailureCode = AgentRunFilePathResolutionFailureCode;
 
-const isWindowsAbsolutePath = (value: string): boolean => WINDOWS_ABSOLUTE_PATH_PATTERN.test(value);
+export type PublishedArtifactSourcePathResolution =
+  | {
+      ok: true;
+      canonicalPath: string;
+      sourceAbsolutePath: string;
+    }
+  | {
+      ok: false;
+      code: PublishedArtifactPathResolutionFailureCode;
+      message: string;
+    };
 
-const isAbsolutePath = (value: string): boolean => path.isAbsolute(value) || isWindowsAbsolutePath(value);
-
-export const isPublishedArtifactPathWithinRoot = (
-  rootPath: string,
-  candidatePath: string,
-): boolean => {
-  const resolvedRoot = path.resolve(rootPath);
-  const resolvedCandidate = path.resolve(candidatePath);
-  return resolvedCandidate === resolvedRoot || resolvedCandidate.startsWith(`${resolvedRoot}${path.sep}`);
+const pathResolutionMessageByCode: Record<PublishedArtifactPathResolutionFailureCode, string> = {
+  INVALID_PATH: "Published artifact path is required.",
+  RELATIVE_PATH_REQUIRES_WORKSPACE_ROOT: "Published artifact relative paths require a workspace root.",
+  UNSUPPORTED_ABSOLUTE_PATH: "Published artifact path is not supported by this runtime platform.",
 };
 
-export const canonicalizePublishedArtifactPath = (
+export const resolvePublishedArtifactSourcePath = async (
   rawPath: string | null | undefined,
-  workspaceRootPath: string | null | undefined,
-): string | null => {
-  if (typeof rawPath !== "string" || typeof workspaceRootPath !== "string") {
-    return null;
+  workspaceRootPath?: string | null,
+): Promise<PublishedArtifactSourcePathResolution> => {
+  const result = resolveAgentRunAbsoluteSourcePath(rawPath, workspaceRootPath);
+  if (!result.ok) {
+    return {
+      ok: false,
+      code: result.code,
+      message: pathResolutionMessageByCode[result.code],
+    };
   }
 
-  const trimmedPath = rawPath.trim();
-  const trimmedWorkspaceRoot = workspaceRootPath.trim();
-  if (!trimmedPath || !trimmedWorkspaceRoot) {
-    return null;
-  }
+  const resolvedSourceAbsolutePath = await fs.realpath(result.sourceAbsolutePath)
+    .catch(() => result.sourceAbsolutePath);
 
-  const resolvedWorkspaceRoot = path.resolve(trimmedWorkspaceRoot);
-  const absoluteCandidatePath = isAbsolutePath(trimmedPath)
-    ? path.resolve(trimmedPath)
-    : path.resolve(resolvedWorkspaceRoot, trimmedPath);
-
-  if (!isPublishedArtifactPathWithinRoot(resolvedWorkspaceRoot, absoluteCandidatePath)) {
-    return null;
-  }
-
-  const relativePath = path.relative(resolvedWorkspaceRoot, absoluteCandidatePath);
-  if (!relativePath || relativePath === ".") {
-    return null;
-  }
-
-  return normalizePublishedArtifactPath(relativePath);
-};
-
-export const resolvePublishedArtifactAbsolutePath = (
-  canonicalPath: string | null | undefined,
-  workspaceRootPath: string | null | undefined,
-): string | null => {
-  if (typeof canonicalPath !== "string" || typeof workspaceRootPath !== "string") {
-    return null;
-  }
-
-  const trimmedPath = canonicalPath.trim();
-  const trimmedWorkspaceRoot = workspaceRootPath.trim();
-  if (!trimmedPath || !trimmedWorkspaceRoot) {
-    return null;
-  }
-
-  const resolvedWorkspaceRoot = path.resolve(trimmedWorkspaceRoot);
-  const absoluteCandidatePath = path.resolve(resolvedWorkspaceRoot, trimmedPath);
-  if (!isPublishedArtifactPathWithinRoot(resolvedWorkspaceRoot, absoluteCandidatePath)) {
-    return null;
-  }
-
-  return absoluteCandidatePath;
+  return {
+    ok: true,
+    canonicalPath: normalizePublishedArtifactPath(resolvedSourceAbsolutePath),
+    sourceAbsolutePath: resolvedSourceAbsolutePath,
+  };
 };
 
 export const buildPublishedArtifactIdentity = (

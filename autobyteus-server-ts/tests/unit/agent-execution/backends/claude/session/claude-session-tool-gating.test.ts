@@ -213,6 +213,32 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
     );
   });
 
+  it("enables media tools and their autobyteus_image_audio MCP names only when configured", async () => {
+    const { session, startQueryTurn } = createSession(["generate_image", "generate_speech"]);
+
+    await (session as any).executeTurn({
+      turnId: "turn-1",
+      content: new AgentInputUserMessage("hello").content,
+      abortController: new AbortController(),
+    });
+
+    expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        enabledMediaToolNames: ["generate_image", "generate_speech"],
+      }),
+    );
+    expect(startQueryTurn).toHaveBeenCalledWith(
+      expect.objectContaining({
+        allowedTools: [
+          "generate_image",
+          "mcp__autobyteus_image_audio__generate_image",
+          "generate_speech",
+          "mcp__autobyteus_image_audio__generate_speech",
+        ],
+      }),
+    );
+  });
+
   it("does not enable artifact publication for old singular-only Claude configs", async () => {
     const { session, startQueryTurn } = createSession(["publish_artifact"]);
 

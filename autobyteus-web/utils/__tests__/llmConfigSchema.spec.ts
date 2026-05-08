@@ -19,6 +19,7 @@ describe('normalizeModelConfigSchema', () => {
         {
           name: 'mode',
           type: 'string',
+          label: 'Fast mode',
           enum_values: ['balanced', 'creative'],
           required: true,
         },
@@ -36,6 +37,7 @@ describe('normalizeModelConfigSchema', () => {
     });
     expect(result?.mode).toMatchObject({
       type: 'string',
+      title: 'Fast mode',
       enum: ['balanced', 'creative'],
       required: true,
     });
@@ -47,6 +49,7 @@ describe('normalizeModelConfigSchema', () => {
       properties: {
         thinking_enabled: {
           type: 'boolean',
+          title: 'Thinking Enabled',
           description: 'Enable extended thinking',
           default: false,
         },
@@ -64,6 +67,7 @@ describe('normalizeModelConfigSchema', () => {
     expect(result).toBeTruthy();
     expect(result?.thinking_enabled).toMatchObject({
       type: 'boolean',
+      title: 'Thinking Enabled',
       description: 'Enable extended thinking',
       default: false,
       required: true,
@@ -82,16 +86,32 @@ describe('sanitizeModelConfigAgainstSchema', () => {
   it('removes unknown keys and invalid enum values', () => {
     const schema = {
       reasoning_effort: { type: 'string', enum: ['low', 'medium', 'high'] },
+      service_tier: { type: 'string', enum: ['fast'] },
       temperature: { type: 'number', minimum: 0, maximum: 1 },
     };
 
     const result = sanitizeModelConfigAgainstSchema(schema, {
       reasoning_effort: 'ultra',
+      service_tier: 'turbo',
       temperature: 0.4,
       unknown_key: 'value',
     });
 
     expect(result).toEqual({ temperature: 0.4 });
+  });
+
+  it('keeps valid Codex service_tier values and drops stale ones', () => {
+    const schema = {
+      service_tier: { type: 'string', enum: ['fast'] },
+    };
+
+    expect(sanitizeModelConfigAgainstSchema(schema, { service_tier: 'fast' })).toEqual({
+      service_tier: 'fast',
+    });
+    expect(sanitizeModelConfigAgainstSchema(schema, { service_tier: 'flex' })).toBeNull();
+    expect(sanitizeModelConfigAgainstSchema({ temperature: { type: 'number' } }, {
+      service_tier: 'fast',
+    })).toBeNull();
   });
 
   it('returns null when all persisted values are invalid for current schema', () => {

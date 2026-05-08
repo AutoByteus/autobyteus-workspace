@@ -12,8 +12,6 @@ import { registerGetProcessOutputTool } from './terminal/tools/get-process-outpu
 import { registerStopBackgroundProcessTool } from './terminal/tools/stop-background-process.js';
 import { SendMessageTo } from '../agent/message/send-message-to.js';
 import { Search } from './search-tool.js';
-import { GenerateImageTool, EditImageTool } from './multimedia/image-tools.js';
-import { GenerateSpeechTool } from './multimedia/audio-tools.js';
 import { ReadMediaFile } from './multimedia/media-reader-tool.js';
 import { DownloadMediaTool } from './multimedia/download-media-tool.js';
 import { ReadUrl } from './web/read-url-tool.js';
@@ -45,9 +43,6 @@ export function registerTools(): void {
   registerStopBackgroundProcessTool();
 
   registerToolClass(Search);
-  registerToolClass(GenerateImageTool);
-  registerToolClass(EditImageTool);
-  registerToolClass(GenerateSpeechTool);
   registerToolClass(ReadMediaFile);
   registerToolClass(DownloadMediaTool);
   registerToolClass(ReadUrl);

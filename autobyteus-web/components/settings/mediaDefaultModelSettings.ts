@@ -16,7 +16,6 @@ export interface MediaDefaultModelSettingSpec {
   readonly catalogKind: MediaDefaultModelCatalogKind
   readonly fallbackModelIdentifier: string
   readonly labelKey: string
-  readonly descriptionKey: string
 }
 
 export const MEDIA_DEFAULT_MODEL_SETTINGS = [
@@ -26,7 +25,6 @@ export const MEDIA_DEFAULT_MODEL_SETTINGS = [
     catalogKind: 'image',
     fallbackModelIdentifier: DEFAULT_IMAGE_MODEL_IDENTIFIER,
     labelKey: 'settings.components.settings.MediaDefaultModelsCard.fields.imageEdit.label',
-    descriptionKey: 'settings.components.settings.MediaDefaultModelsCard.fields.imageEdit.description',
   },
   {
     id: 'image-generation',
@@ -34,7 +32,6 @@ export const MEDIA_DEFAULT_MODEL_SETTINGS = [
     catalogKind: 'image',
     fallbackModelIdentifier: DEFAULT_IMAGE_MODEL_IDENTIFIER,
     labelKey: 'settings.components.settings.MediaDefaultModelsCard.fields.imageGeneration.label',
-    descriptionKey: 'settings.components.settings.MediaDefaultModelsCard.fields.imageGeneration.description',
   },
   {
     id: 'speech-generation',
@@ -42,7 +39,6 @@ export const MEDIA_DEFAULT_MODEL_SETTINGS = [
     catalogKind: 'audio',
     fallbackModelIdentifier: DEFAULT_SPEECH_MODEL_IDENTIFIER,
     labelKey: 'settings.components.settings.MediaDefaultModelsCard.fields.speechGeneration.label',
-    descriptionKey: 'settings.components.settings.MediaDefaultModelsCard.fields.speechGeneration.description',
   },
 ] as const satisfies readonly MediaDefaultModelSettingSpec[]
 

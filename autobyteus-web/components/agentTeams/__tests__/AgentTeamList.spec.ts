@@ -7,6 +7,8 @@ import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import { useNodeStore } from '~/stores/nodeStore';
 import { useNodeSyncStore } from '~/stores/nodeSyncStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
+import { useServerSettingsStore } from '~/stores/serverSettings';
+import { FEATURED_CATALOG_ITEMS_SETTING_KEY } from '~/utils/catalog/featuredCatalogItems';
 
 const EMBEDDED_SERVER_BASE_URL = 'http://127.0.0.1:29695';
 
@@ -100,7 +102,7 @@ describe('AgentTeamList', () => {
     setElectronApiMock(null);
   });
 
-  const mountComponent = async (options?: { nodes?: any[]; sourceNodeId?: string }) => {
+  const mountComponent = async (options?: { nodes?: any[]; sourceNodeId?: string; featuredSettingValue?: string | null }) => {
     const pinia = createTestingPinia({
       createSpy: vi.fn,
       stubActions: true,
@@ -122,6 +124,19 @@ describe('AgentTeamList', () => {
     const windowNodeContextStore = useWindowNodeContextStore();
     windowNodeContextStore.nodeId = options?.sourceNodeId ?? 'embedded-local';
 
+    const serverSettingsStore = useServerSettingsStore();
+    serverSettingsStore.settings = options?.featuredSettingValue === undefined || options.featuredSettingValue === null
+      ? []
+      : [{
+          key: FEATURED_CATALOG_ITEMS_SETTING_KEY,
+          value: options.featuredSettingValue,
+          description: 'Featured catalog items',
+          isEditable: true,
+          isDeletable: false,
+        }];
+    (serverSettingsStore.fetchServerSettings as any).mockResolvedValue(serverSettingsStore.settings);
+    (serverSettingsStore.reloadServerSettings as any).mockResolvedValue(serverSettingsStore.settings);
+
     const wrapper = mount(AgentTeamList, {
       global: {
         plugins: [pinia],
@@ -142,6 +157,38 @@ describe('AgentTeamList', () => {
     const wrapper = await mountComponent();
     const cards = wrapper.findAllComponents({ name: 'AgentTeamCard' });
     expect(cards).toHaveLength(2);
+  });
+
+  it('renders configured featured teams first without duplicating them in all teams', async () => {
+    const wrapper = await mountComponent({
+      featuredSettingValue: JSON.stringify({
+        version: 1,
+        items: [{ resourceKind: 'AGENT_TEAM', definitionId: 't2', sortOrder: 10 }],
+      }),
+    });
+
+    expect(wrapper.text()).toContain('Featured teams');
+    expect(wrapper.text()).toContain('All teams');
+    const cards = wrapper.findAllComponents({ name: 'AgentTeamCard' });
+    expect(cards).toHaveLength(2);
+    expect(cards[0].props('teamDef')).toMatchObject({ id: 't2' });
+    expect(cards[1].props('teamDef')).toMatchObject({ id: 't1' });
+  });
+
+  it('hides featured team grouping during search and searches the full team list', async () => {
+    const wrapper = await mountComponent({
+      featuredSettingValue: JSON.stringify({
+        version: 1,
+        items: [{ resourceKind: 'AGENT_TEAM', definitionId: 't2', sortOrder: 10 }],
+      }),
+    });
+
+    await wrapper.find('#team-search').setValue('Team');
+
+    expect(wrapper.text()).not.toContain('Featured teams');
+    const cards = wrapper.findAllComponents({ name: 'AgentTeamCard' });
+    expect(cards).toHaveLength(2);
+    expect(cards.map((card) => (card.props('teamDef') as any).id)).toEqual(['t1', 't2']);
   });
 
   it('shows error when no target nodes are available for team sync', async () => {

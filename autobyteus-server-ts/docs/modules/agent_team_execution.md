@@ -48,11 +48,11 @@ Manages running team runs, selecting the authoritative team backend, restoring p
   enriched with team/member provenance by the backend, processed through the
   shared `AgentRunEventPipeline`, and then fanned out to all listeners.
 - This keeps the converter boundary conversion-only while letting the backend
-  supply team context required by `FILE_CHANGE` and
-  `MESSAGE_FILE_REFERENCE_DECLARED` derivation.
+  supply team context required by `FILE_CHANGE` derivation and
+  `TEAM_COMMUNICATION_MESSAGE` derivation/projection.
 - Produced `FILE_CHANGE` events remain scoped to the producing member run id and
   persist through the existing run-file-change service/content route. Explicit
-  `reference_files` message rows remain team-level message-reference metadata.
+  `reference_files` remain child metadata on team-level Team Communication messages.
 - Multiple websocket/API subscribers must not create multiple native stream
   listeners or multiple independent pipeline passes for the same native event.
 

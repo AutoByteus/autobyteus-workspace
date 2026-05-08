@@ -1,0 +1,221 @@
+$ git diff --check origin/personal --
+$ git -C /Users/normy/autobyteus_org/autobyteus-private-agents diff --check -- agents/super-ai-assistant agents/daily-assistant
+$ cmp private daily config against private HEAD super-ai-assistant config
+$ restored private Daily config forbidden server-only media/image/speech tool scan
+$ private Daily JSON parse and whitespace scan
+private Daily agent-config.json parses
+private Daily whitespace scan passed
+$ pnpm -C autobyteus-server-ts exec vitest run tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts tests/unit/built-in-agents/built-in-agent-templates.test.ts
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:21339) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/autobyteus-server-ts
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > seeds Memory Compactor only and initializes the blank compaction setting
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-wjChzx
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > seeds Memory Compactor only and initializes the blank compaction setting
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 15 predefined settings
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > seeds Memory Compactor only and initializes the blank compaction setting
+Server setting 'AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID' updated to 'autobyteus-memory-compactor'
+Initialized 'AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID' with 'autobyteus-memory-compactor'.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > seeds Memory Compactor only and initializes the blank compaction setting
+Populating agent definition cache for the first time...
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > seeds Memory Compactor only and initializes the blank compaction setting
+Initialized server settings service with 15 predefined settings
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > seeds Memory Compactor only and initializes the blank compaction setting
+Agent definition cache populated with 1 items.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > preserves an existing compaction setting and leaves featured settings untouched
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-Tb0n0z
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > preserves an existing compaction setting and leaves featured settings untouched
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 15 predefined settings
+Server setting 'AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID' updated to 'custom-memory-compactor'
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > preserves an existing compaction setting and leaves featured settings untouched
+Populating agent definition cache for the first time...
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > preserves an existing compaction setting and leaves featured settings untouched
+Agent definition cache populated with 1 items.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > preserves user-edited Memory Compactor instructions while seeding only missing files
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-U8lucw
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > preserves user-edited Memory Compactor instructions while seeding only missing files
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 15 predefined settings
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > preserves user-edited Memory Compactor instructions while seeding only missing files
+Server setting 'AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID' updated to 'autobyteus-memory-compactor'
+Initialized 'AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID' with 'autobyteus-memory-compactor'.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > preserves user-edited Memory Compactor instructions while seeding only missing files
+Populating agent definition cache for the first time...
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > preserves user-edited Memory Compactor instructions while seeding only missing files
+Agent definition cache populated with 1 items.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > does not initialize the compaction setting when Memory Compactor is invalid
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-QubCiM
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > does not initialize the compaction setting when Memory Compactor is invalid
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 15 predefined settings
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > lists Memory Compactor through normal paths and preserves normal user edits
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-y2EPiy
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > lists Memory Compactor through normal paths and preserves normal user edits
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 15 predefined settings
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > lists Memory Compactor through normal paths and preserves normal user edits
+Server setting 'AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID' updated to 'autobyteus-memory-compactor'
+Initialized 'AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID' with 'autobyteus-memory-compactor'.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > lists Memory Compactor through normal paths and preserves normal user edits
+Populating agent definition cache for the first time...
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > lists Memory Compactor through normal paths and preserves normal user edits
+Agent definition cache populated with 1 items.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > lists Memory Compactor through normal paths and preserves normal user edits
+In-memory cache: Updated agent definition with ID autobyteus-memory-compactor.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > lists Memory Compactor through normal paths and preserves normal user edits
+Agent Definition with ID autobyteus-memory-compactor updated successfully.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > lists Memory Compactor through normal paths and preserves normal user edits
+Populating agent definition cache for the first time...
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > lists Memory Compactor through normal paths and preserves normal user edits
+Agent definition cache populated with 1 items.
+
+ ✓ tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts (5 tests) 29ms
+ ✓ tests/unit/built-in-agents/built-in-agent-templates.test.ts (1 test) 2ms
+
+ Test Files  2 passed (2)
+      Tests  6 passed (6)
+   Start at  17:33:18
+   Duration  3.82s (transform 2.28s, setup 24ms, import 3.24s, tests 32ms, environment 0ms)
+
+$ NUXT_TEST=true pnpm -C autobyteus-web exec vitest run --config vitest.config.mts components/agents/__tests__/AgentList.spec.ts utils/catalog/__tests__/agentDefinitionOriginGroups.spec.ts
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-catalog-origin-grouping/autobyteus-web
+
+stdout | utils/catalog/__tests__/agentDefinitionOriginGroups.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agents/__tests__/AgentList.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/catalog/__tests__/agentDefinitionOriginGroups.spec.ts (5 tests) 11ms
+ ✓ components/agents/__tests__/AgentList.spec.ts (11 tests) 75ms
+
+ Test Files  2 passed (2)
+      Tests  16 passed (16)
+   Start at  17:33:24
+   Duration  2.28s (transform 1.26s, setup 2.57s, collect 519ms, tests 86ms, environment 287ms, prepare 268ms)

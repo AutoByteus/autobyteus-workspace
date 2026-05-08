@@ -22,7 +22,7 @@ import { NodeSyncResolver } from './types/node-sync.js';
 import { NodeSyncControlResolver } from './types/node-sync-control.js';
 import { RunHistoryResolver } from './types/run-history.js';
 import { RunFileChangesResolver } from './types/run-file-changes.js';
-import { MessageFileReferencesResolver } from './types/message-file-references.js';
+import { TeamCommunicationResolver } from './types/team-communication.js';
 import { TeamRunHistoryResolver } from './types/team-run-history.js';
 import { RuntimeAvailabilityResolver } from './types/runtime-availability.js';
 import { AgentPackageResolver } from './types/agent-packages.js';
@@ -57,7 +57,7 @@ export async function buildGraphqlSchema() {
       NodeSyncControlResolver,
       RunHistoryResolver,
       RunFileChangesResolver,
-      MessageFileReferencesResolver,
+      TeamCommunicationResolver,
       TeamRunHistoryResolver,
       RuntimeAvailabilityResolver,
       AgentPackageResolver,

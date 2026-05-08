@@ -11,9 +11,9 @@ import {
   getApplicationEngineHostService,
 } from "../../application-engine/services/application-engine-host-service.js";
 import {
-  ApplicationNotificationStreamService,
-  getApplicationNotificationStreamService,
-} from "../streaming/application-notification-stream-service.js";
+  ApplicationBackendNotificationStreamService,
+  getApplicationBackendNotificationStreamService,
+} from "../streaming/application-backend-notification-stream-service.js";
 
 const normalizeRequestContext = (
   applicationId: string,
@@ -51,7 +51,7 @@ export class ApplicationBackendGatewayService {
       applicationBundleService?: ApplicationBundleService;
       availabilityService?: ApplicationAvailabilityService;
       engineHostService?: ApplicationEngineHostService;
-      notificationStreamService?: ApplicationNotificationStreamService;
+      notificationStreamService?: ApplicationBackendNotificationStreamService;
     } = {},
   ) {
     this.ensureNotificationBridge();
@@ -69,8 +69,8 @@ export class ApplicationBackendGatewayService {
     return this.dependencies.engineHostService ?? getApplicationEngineHostService();
   }
 
-  private get notificationStreamService(): ApplicationNotificationStreamService {
-    return this.dependencies.notificationStreamService ?? getApplicationNotificationStreamService();
+  private get notificationStreamService(): ApplicationBackendNotificationStreamService {
+    return this.dependencies.notificationStreamService ?? getApplicationBackendNotificationStreamService();
   }
 
   private ensureNotificationBridge(): void {

@@ -4,6 +4,23 @@ import {
   CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
   CODEX_SANDBOX_MODES,
 } from "../runtime-management/codex/codex-sandbox-mode-setting.js";
+import {
+  DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY,
+  DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY,
+  DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY,
+  MEDIA_DEFAULT_MODEL_SETTING_KEYS,
+} from "../config/media-default-model-settings.js";
+import {
+  FEATURED_CATALOG_ITEMS_SETTING_KEY,
+  normalizeFeaturedCatalogItemsSettingForPersistence,
+} from "../config/featured-catalog-items-setting.js";
+import { reloadMediaToolSchemas } from "../agent-tools/media/register-media-tools.js";
+
+export {
+  DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY,
+  DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY,
+  DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY,
+} from "../config/media-default-model-settings.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -21,15 +38,13 @@ export class ServerSettingDescription {
 }
 
 type ServerSettingValueValidation = {
-  readonly allowedValues: readonly string[];
+  readonly allowedValues?: readonly string[];
+  readonly normalizeForPersistence?: (value: string) => [true, string] | [false, string];
   readonly trimBeforePersist?: boolean;
 };
 
 const CUSTOM_SETTING_DESCRIPTION = "Custom user-defined setting";
 export const AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID = "AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID";
-export const DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY = "DEFAULT_IMAGE_EDIT_MODEL";
-export const DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY = "DEFAULT_IMAGE_GENERATION_MODEL";
-export const DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY = "DEFAULT_SPEECH_GENERATION_MODEL";
 
 export class ServerSettingsService {
   private settingsInfo = new Map<string, ServerSettingDescription>();
@@ -73,6 +88,15 @@ export class ServerSettingsService {
     this.registerPredefinedSetting(
       AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID,
       "Agent definition id for the memory compactor agent. Configure that agent's runtime and model on the selected agent definition.",
+    );
+
+    this.registerPredefinedSetting(
+      FEATURED_CATALOG_ITEMS_SETTING_KEY,
+      "Versioned JSON list of featured catalog agents and agent teams shown on the Agents and Agent Teams pages.",
+      true,
+      {
+        normalizeForPersistence: normalizeFeaturedCatalogItemsSettingForPersistence,
+      },
     );
 
     this.registerPredefinedSetting(
@@ -213,6 +237,7 @@ export class ServerSettingsService {
 
       const config = appConfigProvider.config;
       config.set(key, normalizedValueOrError);
+      this.refreshDependentSettingsAfterUpdate(key);
 
       if (!this.settingsInfo.has(key)) {
         this.settingsInfo.set(
@@ -241,7 +266,11 @@ export class ServerSettingsService {
     }
 
     const normalizedValue = validation.trimBeforePersist === false ? value : value.trim();
-    if (!validation.allowedValues.includes(normalizedValue)) {
+    if (validation.normalizeForPersistence) {
+      return validation.normalizeForPersistence(normalizedValue);
+    }
+
+    if (validation.allowedValues && !validation.allowedValues.includes(normalizedValue)) {
       return [
         false,
         `Server setting '${key}' must be one of: ${validation.allowedValues.join(", ")}.`,
@@ -249,6 +278,12 @@ export class ServerSettingsService {
     }
 
     return [true, normalizedValue];
+  }
+
+  private refreshDependentSettingsAfterUpdate(key: string): void {
+    if (MEDIA_DEFAULT_MODEL_SETTING_KEYS.has(key)) {
+      reloadMediaToolSchemas();
+    }
   }
 
   deleteSetting(key: string): [boolean, string] {
@@ -305,6 +340,10 @@ export class ServerSettingsService {
 
   getCompactionAgentDefinitionId(): string | null {
     return this.getSettingValue(AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID);
+  }
+
+  getFeaturedCatalogItemsSettingValue(): string | null {
+    return this.getSettingValue(FEATURED_CATALOG_ITEMS_SETTING_KEY);
   }
 }
 

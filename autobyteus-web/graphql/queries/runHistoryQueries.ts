@@ -95,20 +95,26 @@ export const GetTeamMemberRunProjection = gql`
 `;
 
 
-export const GetMessageFileReferences = gql`
-  query GetMessageFileReferences($teamRunId: String!) {
-    getMessageFileReferences(teamRunId: $teamRunId) {
-      referenceId
+export const GetTeamCommunicationMessages = gql`
+  query GetTeamCommunicationMessages($teamRunId: String!) {
+    getTeamCommunicationMessages(teamRunId: $teamRunId) {
+      messageId
       teamRunId
       senderRunId
       senderMemberName
       receiverRunId
       receiverMemberName
-      path
-      type
+      content
       messageType
       createdAt
       updatedAt
+      referenceFiles {
+        referenceId
+        path
+        type
+        createdAt
+        updatedAt
+      }
     }
   }
 `;

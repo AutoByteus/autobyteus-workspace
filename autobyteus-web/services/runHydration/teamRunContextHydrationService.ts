@@ -23,7 +23,7 @@ import type {
 import { normalizeAgentRuntimeStatus, normalizeTeamRuntimeStatus } from './runtimeStatusNormalization';
 import { reconstructTeamRunConfigFromMetadata } from '~/utils/teamRunConfigUtils';
 import { hydrateActivitiesFromProjection } from './runProjectionActivityHydration';
-import { fetchAndHydrateMessageFileReferencesForTeam } from './messageFileReferenceHydrationService';
+import { fetchAndHydrateTeamCommunicationForTeam } from './teamCommunicationHydrationService';
 
 export interface LoadTeamRunContextHydrationInput {
   teamRunId: string;
@@ -241,7 +241,7 @@ const loadLiveTeamRunContextHydrationPayload = async (input: {
     toTeamMemberKey,
   });
 
-  await fetchAndHydrateMessageFileReferencesForTeam({
+  await fetchAndHydrateTeamCommunicationForTeam({
     client,
     teamRunId: input.metadata.teamRunId,
   });
@@ -309,7 +309,7 @@ const loadHistoricalTeamRunContextHydrationPayload = async (input: {
     projectionByMemberRouteKey.set(focusedMemberRouteKey, focusedProjection);
   }
 
-  await fetchAndHydrateMessageFileReferencesForTeam({
+  await fetchAndHydrateTeamCommunicationForTeam({
     client,
     teamRunId: input.metadata.teamRunId,
   });

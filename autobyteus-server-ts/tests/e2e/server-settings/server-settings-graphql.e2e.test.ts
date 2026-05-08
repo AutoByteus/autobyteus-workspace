@@ -18,6 +18,7 @@ import {
   CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
   CODEX_SANDBOX_MODES,
 } from "../../../src/runtime-management/codex/codex-sandbox-mode-setting.js";
+import { FEATURED_CATALOG_ITEMS_SETTING_KEY } from "../../../src/config/featured-catalog-items-setting.js";
 
 describe("Server settings GraphQL e2e", () => {
   let schema: GraphQLSchema;
@@ -26,6 +27,7 @@ describe("Server settings GraphQL e2e", () => {
   let originalServerHostEnv: string | undefined;
   let originalCodexSandboxEnv: string | undefined;
   let originalCompactionAgentEnv: string | undefined;
+  let originalFeaturedCatalogItemsEnv: string | undefined;
   let originalMediaModelEnv: Record<string, string | undefined>;
 
   beforeAll(async () => {
@@ -42,6 +44,7 @@ describe("Server settings GraphQL e2e", () => {
     originalServerHostEnv = process.env.AUTOBYTEUS_SERVER_HOST;
     originalCodexSandboxEnv = process.env[CODEX_APP_SERVER_SANDBOX_SETTING_KEY];
     originalCompactionAgentEnv = process.env[AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID];
+    originalFeaturedCatalogItemsEnv = process.env[FEATURED_CATALOG_ITEMS_SETTING_KEY];
     originalMediaModelEnv = {
       [DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY]: process.env[DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY],
       [DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY]: process.env[DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY],
@@ -56,6 +59,7 @@ describe("Server settings GraphQL e2e", () => {
     process.env.AUTOBYTEUS_SERVER_HOST = "http://localhost:8000";
     delete process.env[CODEX_APP_SERVER_SANDBOX_SETTING_KEY];
     delete process.env[AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID];
+    delete process.env[FEATURED_CATALOG_ITEMS_SETTING_KEY];
     delete process.env[DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY];
     delete process.env[DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY];
     delete process.env[DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY];
@@ -78,6 +82,11 @@ describe("Server settings GraphQL e2e", () => {
       delete process.env[AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID];
     } else {
       process.env[AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID] = originalCompactionAgentEnv;
+    }
+    if (originalFeaturedCatalogItemsEnv === undefined) {
+      delete process.env[FEATURED_CATALOG_ITEMS_SETTING_KEY];
+    } else {
+      process.env[FEATURED_CATALOG_ITEMS_SETTING_KEY] = originalFeaturedCatalogItemsEnv;
     }
     for (const [key, value] of Object.entries(originalMediaModelEnv)) {
       if (value === undefined) {
@@ -174,6 +183,109 @@ describe("Server settings GraphQL e2e", () => {
     }>(listQuery);
 
     expect(listedAfterDelete.getServerSettings.find((entry) => entry.key === key)).toBeUndefined();
+  });
+
+  it("persists featured catalog items through the GraphQL settings boundary", async () => {
+    const updateMutation = `
+      mutation UpdateServerSetting($key: String!, $value: String!) {
+        updateServerSetting(key: $key, value: $value)
+      }
+    `;
+    const listQuery = `
+      query GetServerSettings {
+        getServerSettings {
+          key
+          value
+          description
+          isEditable
+          isDeletable
+        }
+      }
+    `;
+    const rawValue = JSON.stringify({
+      version: 1,
+      items: [
+        { resourceKind: "AGENT_TEAM", definitionId: " e2e-team ", sortOrder: 30 },
+        { resourceKind: "AGENT", definitionId: "e2e-agent" },
+      ],
+    });
+
+    const updated = await execGraphql<{ updateServerSetting: string }>(updateMutation, {
+      key: FEATURED_CATALOG_ITEMS_SETTING_KEY,
+      value: rawValue,
+    });
+    expect(updated.updateServerSetting).toContain("updated successfully");
+
+    const listed = await execGraphql<{
+      getServerSettings: Array<{
+        key: string;
+        value: string;
+        description: string;
+        isEditable: boolean;
+        isDeletable: boolean;
+      }>;
+    }>(listQuery);
+    const featuredSetting = listed.getServerSettings.find(
+      (entry) => entry.key === FEATURED_CATALOG_ITEMS_SETTING_KEY,
+    );
+
+    expect(featuredSetting).toMatchObject({
+      description: expect.stringContaining("featured catalog"),
+      isEditable: true,
+      isDeletable: false,
+    });
+    expect(JSON.parse(featuredSetting?.value ?? "")).toEqual({
+      version: 1,
+      items: [
+        { resourceKind: "AGENT", definitionId: "e2e-agent", sortOrder: 20 },
+        { resourceKind: "AGENT_TEAM", definitionId: "e2e-team", sortOrder: 30 },
+      ],
+    });
+  });
+
+  it("rejects duplicate featured catalog items through GraphQL without replacing the saved value", async () => {
+    const updateMutation = `
+      mutation UpdateServerSetting($key: String!, $value: String!) {
+        updateServerSetting(key: $key, value: $value)
+      }
+    `;
+    const listQuery = `
+      query GetServerSettings {
+        getServerSettings {
+          key
+          value
+        }
+      }
+    `;
+    const baselineValue = JSON.stringify({
+      version: 1,
+      items: [{ resourceKind: "AGENT", definitionId: "baseline-agent", sortOrder: 10 }],
+    });
+
+    await execGraphql<{ updateServerSetting: string }>(updateMutation, {
+      key: FEATURED_CATALOG_ITEMS_SETTING_KEY,
+      value: baselineValue,
+    });
+
+    const duplicateUpdate = await execGraphql<{ updateServerSetting: string }>(updateMutation, {
+      key: FEATURED_CATALOG_ITEMS_SETTING_KEY,
+      value: JSON.stringify({
+        version: 1,
+        items: [
+          { resourceKind: "AGENT", definitionId: "baseline-agent", sortOrder: 10 },
+          { resourceKind: "AGENT", definitionId: "baseline-agent", sortOrder: 20 },
+        ],
+      }),
+    });
+    expect(duplicateUpdate.updateServerSetting).toContain("duplicated");
+
+    const listed = await execGraphql<{
+      getServerSettings: Array<{ key: string; value: string }>;
+    }>(listQuery);
+    expect(
+      listed.getServerSettings.find((entry) => entry.key === FEATURED_CATALOG_ITEMS_SETTING_KEY)
+        ?.value,
+    ).toBe(baselineValue);
   });
 
   it("validates and exposes Codex sandbox mode through the GraphQL settings boundary", async () => {

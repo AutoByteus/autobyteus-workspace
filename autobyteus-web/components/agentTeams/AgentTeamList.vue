@@ -61,9 +61,53 @@
         <p class="font-bold">{{ $t('agentTeams.components.agentTeams.AgentTeamList.error_loading_agent_team_definitions') }}</p>
         <p>{{ errorMessage }}</p>
       </div>
-      <div v-else-if="filteredTeamDefinitions.length > 0" class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div v-else-if="isSearchActive && filteredTeamDefinitions.length > 0" class="grid grid-cols-1 gap-4 md:grid-cols-2">
         <AgentTeamCard
           v-for="teamDef in filteredTeamDefinitions"
+          :key="teamDef.id"
+          :team-def="teamDef"
+          @view-details="viewDetails"
+          @run-team="handleRunTeam"
+          @sync-team="syncTeam"
+        />
+      </div>
+      <div v-else-if="featuredTeamDefinitions.length > 0" class="space-y-8">
+        <section>
+          <div class="mb-3">
+            <h2 class="text-xl font-semibold text-slate-900">{{ $t('agentTeams.components.agentTeams.AgentTeamList.featuredTeams') }}</h2>
+            <p class="mt-1 text-sm text-slate-500">{{ $t('agentTeams.components.agentTeams.AgentTeamList.featuredTeamsDescription') }}</p>
+          </div>
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <AgentTeamCard
+              v-for="teamDef in featuredTeamDefinitions"
+              :key="teamDef.id"
+              :team-def="teamDef"
+              @view-details="viewDetails"
+              @run-team="handleRunTeam"
+              @sync-team="syncTeam"
+            />
+          </div>
+        </section>
+
+        <section v-if="regularTeamDefinitions.length > 0">
+          <div class="mb-3">
+            <h2 class="text-xl font-semibold text-slate-900">{{ $t('agentTeams.components.agentTeams.AgentTeamList.allTeams') }}</h2>
+          </div>
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <AgentTeamCard
+              v-for="teamDef in regularTeamDefinitions"
+              :key="teamDef.id"
+              :team-def="teamDef"
+              @view-details="viewDetails"
+              @run-team="handleRunTeam"
+              @sync-team="syncTeam"
+            />
+          </div>
+        </section>
+      </div>
+      <div v-else-if="regularTeamDefinitions.length > 0" class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <AgentTeamCard
+          v-for="teamDef in regularTeamDefinitions"
           :key="teamDef.id"
           :team-def="teamDef"
           @view-details="viewDetails"
@@ -105,10 +149,16 @@ import { useRunActions } from '~/composables/useRunActions';
 import { useNodeStore } from '~/stores/nodeStore';
 import { useNodeSyncStore } from '~/stores/nodeSyncStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
+import { useServerSettingsStore } from '~/stores/serverSettings';
 import { EMBEDDED_NODE_ID } from '~/types/node';
 import NodeSyncTargetPickerModal from '~/components/sync/NodeSyncTargetPickerModal.vue';
 import NodeSyncReportPanel from '~/components/sync/NodeSyncReportPanel.vue';
 import type { NodeSyncRunReport } from '~/types/nodeSync';
+import {
+  FEATURED_CATALOG_ITEMS_SETTING_KEY,
+  parseFeaturedCatalogItemsSetting,
+  splitFeaturedCatalogDefinitions,
+} from '~/utils/catalog/featuredCatalogItems';
 
 const emit = defineEmits(['navigate']);
 
@@ -118,6 +168,7 @@ const router = useRouter();
 const nodeStore = useNodeStore();
 const nodeSyncStore = useNodeSyncStore();
 const windowNodeContextStore = useWindowNodeContextStore();
+const serverSettingsStore = useServerSettingsStore();
 
 const teamDefinitions = computed(() => store.agentTeamDefinitions);
 const loading = computed(() => store.loading);
@@ -135,6 +186,7 @@ const lastTeamSyncReport = ref<NodeSyncRunReport | null>(null);
 
 const sourceNodeId = computed(() => windowNodeContextStore.nodeId || EMBEDDED_NODE_ID);
 const sourceNodeName = computed(() => nodeStore.getNodeById(sourceNodeId.value)?.name || 'Current Node');
+const isSearchActive = computed(() => searchQuery.value.trim().length > 0);
 
 const filteredTeamDefinitions = computed(() => {
   const query = searchQuery.value.trim().toLowerCase();
@@ -149,10 +201,31 @@ const filteredTeamDefinitions = computed(() => {
   ));
 });
 
+const featuredSetting = computed(() => parseFeaturedCatalogItemsSetting(
+  serverSettingsStore.getSettingByKey(FEATURED_CATALOG_ITEMS_SETTING_KEY)?.value ?? null,
+).setting);
+
+const splitTeamDefinitions = computed(() => splitFeaturedCatalogDefinitions(
+  featuredSetting.value.items,
+  'AGENT_TEAM',
+  teamDefinitions.value,
+));
+
+const featuredTeamDefinitions = computed(() => (
+  isSearchActive.value ? [] : splitTeamDefinitions.value.featuredDefinitions
+));
+
+const regularTeamDefinitions = computed(() => (
+  isSearchActive.value ? filteredTeamDefinitions.value : splitTeamDefinitions.value.regularDefinitions
+));
+
 onMounted(() => {
   if (teamDefinitions.value.length === 0) {
     store.fetchAllAgentTeamDefinitions();
   }
+  serverSettingsStore.fetchServerSettings().catch((error) => {
+    console.warn('Failed to load featured catalog settings:', error);
+  });
 
   nodeStore.initializeRegistry().catch((error) => {
     syncError.value = error instanceof Error ? error.message : String(error);
@@ -165,7 +238,10 @@ onMounted(() => {
 const handleReload = async () => {
   reloading.value = true;
   try {
-    await store.reloadAllAgentTeamDefinitions();
+    await Promise.all([
+      store.reloadAllAgentTeamDefinitions(),
+      serverSettingsStore.reloadServerSettings(),
+    ]);
   } catch (e) {
     console.error('Failed to reload agent teams:', e);
   } finally {

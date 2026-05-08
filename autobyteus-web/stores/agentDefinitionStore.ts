@@ -10,8 +10,12 @@ import {
 } from '~/graphql/mutations/agentDefinitionMutations'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import type { DefaultLaunchConfig } from '~/types/launch/defaultLaunchConfig'
+import {
+  normalizeDefinitionOwnershipScope,
+  type DefinitionOwnershipScope,
+} from '~/utils/definitionOwnership'
 
-export type AgentDefinitionOwnershipScope = 'SHARED' | 'TEAM_LOCAL' | 'APPLICATION_OWNED'
+export type AgentDefinitionOwnershipScope = DefinitionOwnershipScope
 
 export interface AgentDefinition {
   __typename?: 'AgentDefinition'
@@ -85,15 +89,6 @@ interface DeleteResult {
 interface DuplicateAgentDefinitionInput {
   sourceId: string
   newName: string
-}
-
-const normalizeOwnershipScope = (
-  value: AgentDefinitionOwnershipScope | null | undefined,
-): AgentDefinitionOwnershipScope => {
-  if (value === 'TEAM_LOCAL' || value === 'APPLICATION_OWNED') {
-    return value
-  }
-  return 'SHARED'
 }
 
 export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
@@ -318,19 +313,19 @@ export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
 
   const sharedAgentDefinitions = computed(() => (
     agentDefinitions.value.filter(
-      (definition) => normalizeOwnershipScope(definition.ownershipScope) === 'SHARED',
+      (definition) => normalizeDefinitionOwnershipScope(definition) === 'SHARED',
     )
   ))
 
   const teamLocalAgentDefinitions = computed(() => (
     agentDefinitions.value.filter(
-      (definition) => normalizeOwnershipScope(definition.ownershipScope) === 'TEAM_LOCAL',
+      (definition) => normalizeDefinitionOwnershipScope(definition) === 'TEAM_LOCAL',
     )
   ))
 
   const applicationOwnedAgentDefinitions = computed(() => (
     agentDefinitions.value.filter(
-      (definition) => normalizeOwnershipScope(definition.ownershipScope) === 'APPLICATION_OWNED',
+      (definition) => normalizeDefinitionOwnershipScope(definition) === 'APPLICATION_OWNED',
     )
   ))
 

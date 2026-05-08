@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "resourceKind": "AGENT",
+      "definitionId": "missing-agent",
+      "sortOrder": 5
+    },
+    {
+      "resourceKind": "AGENT",
+      "definitionId": "autobyteus-super-assistant",
+      "sortOrder": 10
+    },
+    {
+      "resourceKind": "AGENT",
+      "definitionId": "browser-fixture-agent",
+      "sortOrder": 20
+    },
+    {
+      "resourceKind": "AGENT_TEAM",
+      "definitionId": "missing-team",
+      "sortOrder": 5
+    },
+    {
+      "resourceKind": "AGENT_TEAM",
+      "definitionId": "browser-fixture-team",
+      "sortOrder": 10
+    }
+  ]
+}

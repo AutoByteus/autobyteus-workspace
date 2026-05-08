@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "resourceKind": "AGENT",
+      "definitionId": "autobyteus-super-assistant",
+      "sortOrder": 10
+    },
+    {
+      "resourceKind": "AGENT_TEAM",
+      "definitionId": "browser-fixture-team",
+      "sortOrder": 20
+    },
+    {
+      "resourceKind": "AGENT",
+      "definitionId": "browser-fixture-agent",
+      "sortOrder": 30
+    }
+  ]
+}

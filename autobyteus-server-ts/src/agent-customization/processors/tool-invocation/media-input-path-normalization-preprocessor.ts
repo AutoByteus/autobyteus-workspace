@@ -1,22 +1,17 @@
-import fs from "node:fs";
-import path from "node:path";
 import { BaseToolInvocationPreprocessor } from "autobyteus-ts";
 import type { AgentContext } from "autobyteus-ts";
 import type { ToolInvocation } from "autobyteus-ts/agent/tool-invocation.js";
 import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
 import { LLMProvider } from "autobyteus-ts/llm/providers.js";
 import { resolveAgentRunIdFromRuntimeContext } from "../../utils/core-boundary-id-normalizer.js";
+import { getMediaPathResolver } from "../../../agent-tools/media/media-tool-path-resolver.js";
+import { parseMediaInputImages } from "../../../agent-tools/media/media-tool-input-parsers.js";
 
 const logger = {
   debug: (...args: unknown[]) => console.debug(...args),
   warn: (...args: unknown[]) => console.warn(...args),
   error: (...args: unknown[]) => console.error(...args),
 };
-
-function isWithinRoot(root: string, target: string): boolean {
-  const relative = path.relative(root, target);
-  return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative));
-}
 
 export class MediaInputPathNormalizationPreprocessor extends BaseToolInvocationPreprocessor {
   static TARGET_TOOLS = new Set(["generate_image", "edit_image"]);
@@ -79,58 +74,31 @@ export class MediaInputPathNormalizationPreprocessor extends BaseToolInvocationP
     return this.isAutobyteusProvider(provider);
   }
 
-  private isUrl(value: string): boolean {
-    return (
-      value.startsWith("http://") ||
-      value.startsWith("https://") ||
-      value.startsWith("data:")
-    );
-  }
-
   private async normalizeList(
     items: string[],
     workspaceRootPath: string | null,
     agentRunId: string,
   ): Promise<string[]> {
     const normalized: string[] = [];
+    const pathResolver = getMediaPathResolver();
 
     for (const entryRaw of items) {
       const entry = entryRaw.trim();
       if (!entry) {
         continue;
       }
-      if (this.isUrl(entry)) {
-        normalized.push(entry);
-        continue;
-      }
-
-      let resolvedPath: string | null = null;
-      if (path.isAbsolute(entry)) {
-        resolvedPath = path.resolve(entry);
-      } else if (workspaceRootPath) {
-        const candidatePath = path.resolve(workspaceRootPath, entry);
-        if (!isWithinRoot(workspaceRootPath, candidatePath)) {
-          logger.warn(
-            `Agent run '${agentRunId}': relative path '${entry}' resolves outside workspace root '${workspaceRootPath}'. Skipping.`,
-          );
-          continue;
-        }
-        resolvedPath = candidatePath;
-      } else {
-        logger.warn(
-          `Agent run '${agentRunId}': no workspaceRootPath to resolve relative path '${entry}'. Skipping.`,
+      try {
+        normalized.push(
+          pathResolver.resolveInputImageReference(entry, {
+            agentId: agentRunId,
+            workspaceRootPath,
+          }),
         );
-        continue;
-      }
-
-      if (!resolvedPath || !fs.existsSync(resolvedPath) || !fs.statSync(resolvedPath).isFile()) {
+      } catch (error) {
         logger.warn(
-          `Agent run '${agentRunId}': path '${resolvedPath ?? entry}' is not a file. Skipping.`,
+          `Agent run '${agentRunId}': failed to normalize media input path '${entry}': ${String(error)}. Skipping.`,
         );
-        continue;
       }
-
-      normalized.push(resolvedPath);
     }
 
     return normalized;
@@ -153,11 +121,9 @@ export class MediaInputPathNormalizationPreprocessor extends BaseToolInvocationP
     const imagesVal = args["input_images"];
     if (imagesVal) {
       let items: string[] = [];
-      if (typeof imagesVal === "string") {
-        items = imagesVal.split(",").map((entry) => entry.trim()).filter(Boolean);
-      } else if (Array.isArray(imagesVal)) {
-        items = imagesVal.filter((entry) => typeof entry === "string") as string[];
-      } else {
+      try {
+        items = parseMediaInputImages(imagesVal) ?? [];
+      } catch {
         logger.warn(
           `Agent run '${agentRunId}': input_images has unsupported type ${typeof imagesVal}; skipping normalization.`,
         );
@@ -165,12 +131,12 @@ export class MediaInputPathNormalizationPreprocessor extends BaseToolInvocationP
 
       const normalized = await this.normalizeList(items, workspaceRootPath, agentRunId);
       if (normalized.length) {
-        args["input_images"] = normalized.join(",");
+        args["input_images"] = normalized;
       }
     }
 
     const maskVal = args["mask_image"];
-    if (maskVal && typeof maskVal === "string" && !this.isUrl(maskVal)) {
+    if (maskVal && typeof maskVal === "string") {
       const maskList = await this.normalizeList([maskVal], workspaceRootPath, agentRunId);
       if (maskList.length) {
         args["mask_image"] = maskList[0];

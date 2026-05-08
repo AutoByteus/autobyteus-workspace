@@ -1,0 +1,4 @@
+(node:62748) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Both built-in agent folders 'autobyteus-super-assistant' and 'daily-assistant' exist. Preserving canonical target and leaving legacy folder for manual resolution.
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed

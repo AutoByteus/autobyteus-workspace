@@ -27,53 +27,23 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { useRunFileChangesStore } from '~/stores/runFileChangesStore';
-import { useMessageFileReferencesStore } from '~/stores/messageFileReferencesStore';
 import { useActiveContextStore } from '~/stores/activeContextStore';
-import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
-import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import ArtifactList from './ArtifactList.vue';
 import ArtifactContentViewer from './ArtifactContentViewer.vue';
 import {
   type ArtifactViewerItem,
   toAgentArtifactViewerItem,
-  toMessageReferenceArtifactViewerItem,
 } from './artifactViewerItem';
 
 const runFileChangesStore = useRunFileChangesStore();
-const messageFileReferencesStore = useMessageFileReferencesStore();
 const activeContextStore = useActiveContextStore();
-const selectionStore = useAgentSelectionStore();
-const teamContextsStore = useAgentTeamContextsStore();
 
 const currentAgentRunId = computed(() => activeContextStore.activeAgentContext?.state.runId || '');
-const currentTeamRunId = computed(() =>
-  selectionStore.selectedType === 'team' ? (teamContextsStore.activeTeamContext?.teamRunId || '') : '',
-);
-
-const agentArtifactItems = computed<ArtifactViewerItem[]>(() =>
+const artifacts = computed<ArtifactViewerItem[]>(() =>
   [...runFileChangesStore.getArtifactsForRun(currentAgentRunId.value)]
     .sort((left, right) => right.updatedAt.localeCompare(left.updatedAt))
     .map(toAgentArtifactViewerItem),
 );
-
-const messageReferenceItems = computed<ArtifactViewerItem[]>(() => {
-  if (!currentTeamRunId.value || !currentAgentRunId.value) {
-    return [];
-  }
-  const perspective = messageFileReferencesStore.getPerspectiveForMember(
-    currentTeamRunId.value,
-    currentAgentRunId.value,
-  );
-  return [
-    ...perspective.sentGroups.flatMap((group) => group.items),
-    ...perspective.receivedGroups.flatMap((group) => group.items),
-  ].map(toMessageReferenceArtifactViewerItem);
-});
-
-const artifacts = computed<ArtifactViewerItem[]>(() => [
-  ...agentArtifactItems.value,
-  ...messageReferenceItems.value,
-]);
 
 const latestVisibleArtifactSignal = computed(() =>
   runFileChangesStore.getLatestVisibleArtifactSignalForRun(currentAgentRunId.value),
@@ -91,7 +61,7 @@ const selectedArtifact = computed<ArtifactViewerItem | null>(() => {
 watch(
   latestVisibleArtifactSignal,
   () => {
-    const latestArtifactId = agentArtifactItems.value[0]?.itemId ?? null;
+    const latestArtifactId = artifacts.value[0]?.itemId ?? null;
     if (latestArtifactId) {
       selectedArtifactId.value = latestArtifactId;
     }

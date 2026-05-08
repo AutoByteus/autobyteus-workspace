@@ -1,0 +1,438 @@
+{
+  "capturedAt": "2026-05-05T10:41:07Z",
+  "baseUrl": "http://127.0.0.1:18083",
+  "applicationsCapabilityBefore": {
+    "enabled": false,
+    "source": "SERVER_SETTING"
+  },
+  "applications": [
+    {
+      "id": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532467075626c69736865642d6172746966616374732d6162736f6c7574652d70617468732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f",
+      "localApplicationId": "brief-studio",
+      "name": "Brief Studio"
+    },
+    {
+      "id": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532467075626c69736865642d6172746966616374732d6162736f6c7574652d70617468732532466170706c69636174696f6e73253246736f6372617469632d6d6174682d7465616368657225324664697374253246696d706f727461626c652d7061636b616765__736f6372617469632d6d6174682d74656163686572",
+      "localApplicationId": "socratic-math-teacher",
+      "name": "Socratic Math Teacher"
+    }
+  ],
+  "applicationsCapabilityAfter": {
+    "enabled": true,
+    "source": "SERVER_SETTING"
+  },
+  "runtimeAvailabilities": [
+    {
+      "runtimeKind": "autobyteus",
+      "enabled": true,
+      "reason": null
+    },
+    {
+      "runtimeKind": "codex_app_server",
+      "enabled": true,
+      "reason": null
+    },
+    {
+      "runtimeKind": "claude_agent_sdk",
+      "enabled": true,
+      "reason": null
+    }
+  ],
+  "briefApp": {
+    "id": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532467075626c69736865642d6172746966616374732d6162736f6c7574652d70617468732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f",
+    "localApplicationId": "brief-studio",
+    "name": "Brief Studio"
+  },
+  "appBackendStatusBefore": {
+    "applicationId": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532467075626c69736865642d6172746966616374732d6162736f6c7574652d70617468732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f",
+    "state": "stopped",
+    "ready": false,
+    "startedAt": null,
+    "lastFailure": null,
+    "exposures": null
+  },
+  "appBackendEnsureReady": {
+    "applicationId": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532467075626c69736865642d6172746966616374732d6162736f6c7574652d70617468732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f",
+    "state": "ready",
+    "ready": true,
+    "startedAt": "2026-05-05T10:39:56.738Z",
+    "lastFailure": null,
+    "exposures": {
+      "supportedExposures": {
+        "queries": false,
+        "commands": false,
+        "routes": false,
+        "graphql": true,
+        "notifications": true,
+        "eventHandlers": true
+      },
+      "queries": [],
+      "commands": [],
+      "routes": [],
+      "graphql": true,
+      "notifications": true,
+      "eventHandlers": [
+        "RUN_STARTED",
+        "RUN_TERMINATED",
+        "RUN_FAILED",
+        "RUN_ORPHANED"
+      ]
+    }
+  },
+  "appBackendStatusAfter": {
+    "applicationId": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532467075626c69736865642d6172746966616374732d6162736f6c7574652d70617468732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f",
+    "state": "ready",
+    "ready": true,
+    "startedAt": "2026-05-05T10:39:56.738Z",
+    "lastFailure": null,
+    "exposures": {
+      "supportedExposures": {
+        "queries": false,
+        "commands": false,
+        "routes": false,
+        "graphql": true,
+        "notifications": true,
+        "eventHandlers": true
+      },
+      "queries": [],
+      "commands": [],
+      "routes": [],
+      "graphql": true,
+      "notifications": true,
+      "eventHandlers": [
+        "RUN_STARTED",
+        "RUN_TERMINATED",
+        "RUN_FAILED",
+        "RUN_ORPHANED"
+      ]
+    }
+  },
+  "entryHtml": {
+    "status": 200,
+    "prefix": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta"
+  },
+  "emptyBriefsBeforeCreate": [],
+  "workspaceRootPath": "/tmp/autobyteus-paa-brief-studio-codex-round2-workspace",
+  "workspaceRootRealpath": "/private/tmp/autobyteus-paa-brief-studio-codex-round2-workspace",
+  "teamDefinitionId": "bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532467075626c69736865642d6172746966616374732d6162736f6c7574652d70617468732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d",
+  "resourceConfiguration": {
+    "slot": {
+      "slotKey": "draftingTeam",
+      "name": "Drafting Team",
+      "description": "Team resource used when Brief Studio launches a new drafting run.",
+      "allowedResourceKinds": [
+        "AGENT_TEAM"
+      ],
+      "allowedResourceOwners": [
+        "bundle",
+        "shared"
+      ],
+      "required": true,
+      "supportedLaunchConfig": {
+        "AGENT_TEAM": {
+          "llmModelIdentifier": true,
+          "runtimeKind": true,
+          "workspaceRootPath": true,
+          "memberOverrides": {
+            "llmModelIdentifier": true,
+            "runtimeKind": true
+          }
+        }
+      },
+      "defaultResourceRef": {
+        "owner": "bundle",
+        "kind": "AGENT_TEAM",
+        "localId": "brief-studio-team"
+      }
+    },
+    "updatedAt": "2026-05-05T10:39:56.801Z",
+    "status": "READY",
+    "configuration": {
+      "slotKey": "draftingTeam",
+      "resourceRef": {
+        "owner": "bundle",
+        "kind": "AGENT_TEAM",
+        "localId": "brief-studio-team"
+      },
+      "launchProfile": {
+        "kind": "AGENT_TEAM",
+        "defaults": {
+          "llmModelIdentifier": "gpt-5.5",
+          "runtimeKind": "codex_app_server",
+          "workspaceRootPath": "/tmp/autobyteus-paa-brief-studio-codex-round2-workspace"
+        },
+        "memberProfiles": [
+          {
+            "memberRouteKey": "researcher",
+            "memberName": "researcher",
+            "agentDefinitionId": "team-local:bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532467075626c69736865642d6172746966616374732d6162736f6c7574652d70617468732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d:researcher",
+            "llmModelIdentifier": "gpt-5.5",
+            "runtimeKind": "codex_app_server"
+          },
+          {
+            "memberRouteKey": "writer",
+            "memberName": "writer",
+            "agentDefinitionId": "team-local:bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532467075626c69736865642d6172746966616374732d6162736f6c7574652d70617468732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d:writer",
+            "llmModelIdentifier": "gpt-5.5",
+            "runtimeKind": "codex_app_server"
+          }
+        ]
+      }
+    },
+    "invalidSavedConfiguration": null,
+    "issue": null
+  },
+  "createdBrief": {
+    "briefId": "brief-79b9657c-4d18-4d22-ac36-d46d9cb50a4b",
+    "title": "Codex GPT-5.5 PAA runtime validation round 2 brief",
+    "status": "not_started",
+    "latestBindingId": null,
+    "latestRunId": null,
+    "latestBindingStatus": null,
+    "lastErrorMessage": null,
+    "createdAt": "2026-05-05T10:39:56.825Z",
+    "updatedAt": "2026-05-05T10:39:56.825Z",
+    "approvedAt": null,
+    "rejectedAt": null
+  },
+  "launchResult": {
+    "briefId": "brief-79b9657c-4d18-4d22-ac36-d46d9cb50a4b",
+    "bindingId": "a08449cc-e7cf-43c5-ace3-d70066b1af29",
+    "runId": "team_bundle-team-6170706c69636174696f6e2d6c6f_5bade660",
+    "status": "ATTACHED"
+  },
+  "pollObservations": [
+    {
+      "t": "2026-05-05T10:39:57Z",
+      "status": "not_started",
+      "latestBindingStatus": "ATTACHED",
+      "artifactCount": 0,
+      "artifactKinds": [],
+      "lastErrorMessage": null
+    },
+    {
+      "t": "2026-05-05T10:40:02Z",
+      "status": "not_started",
+      "latestBindingStatus": "ATTACHED",
+      "artifactCount": 0,
+      "artifactKinds": [],
+      "lastErrorMessage": null
+    },
+    {
+      "t": "2026-05-05T10:40:07Z",
+      "status": "not_started",
+      "latestBindingStatus": "ATTACHED",
+      "artifactCount": 0,
+      "artifactKinds": [],
+      "lastErrorMessage": null
+    },
+    {
+      "t": "2026-05-05T10:40:12Z",
+      "status": "not_started",
+      "latestBindingStatus": "ATTACHED",
+      "artifactCount": 0,
+      "artifactKinds": [],
+      "lastErrorMessage": null
+    },
+    {
+      "t": "2026-05-05T10:40:17Z",
+      "status": "not_started",
+      "latestBindingStatus": "ATTACHED",
+      "artifactCount": 0,
+      "artifactKinds": [],
+      "lastErrorMessage": null
+    },
+    {
+      "t": "2026-05-05T10:40:22Z",
+      "status": "not_started",
+      "latestBindingStatus": "ATTACHED",
+      "artifactCount": 0,
+      "artifactKinds": [],
+      "lastErrorMessage": null
+    },
+    {
+      "t": "2026-05-05T10:40:27Z",
+      "status": "researching",
+      "latestBindingStatus": "ATTACHED",
+      "artifactCount": 1,
+      "artifactKinds": [
+        [
+          "researcher",
+          "research",
+          "/private/tmp/autobyteus-paa-brief-studio-codex-round2-workspace/brief-studio/research.md"
+        ]
+      ],
+      "lastErrorMessage": null
+    },
+    {
+      "t": "2026-05-05T10:40:32Z",
+      "status": "researching",
+      "latestBindingStatus": "ATTACHED",
+      "artifactCount": 1,
+      "artifactKinds": [
+        [
+          "researcher",
+          "research",
+          "/private/tmp/autobyteus-paa-brief-studio-codex-round2-workspace/brief-studio/research.md"
+        ]
+      ],
+      "lastErrorMessage": null
+    },
+    {
+      "t": "2026-05-05T10:40:37Z",
+      "status": "researching",
+      "latestBindingStatus": "ATTACHED",
+      "artifactCount": 1,
+      "artifactKinds": [
+        [
+          "researcher",
+          "research",
+          "/private/tmp/autobyteus-paa-brief-studio-codex-round2-workspace/brief-studio/research.md"
+        ]
+      ],
+      "lastErrorMessage": null
+    },
+    {
+      "t": "2026-05-05T10:40:42Z",
+      "status": "researching",
+      "latestBindingStatus": "ATTACHED",
+      "artifactCount": 1,
+      "artifactKinds": [
+        [
+          "researcher",
+          "research",
+          "/private/tmp/autobyteus-paa-brief-studio-codex-round2-workspace/brief-studio/research.md"
+        ]
+      ],
+      "lastErrorMessage": null
+    },
+    {
+      "t": "2026-05-05T10:40:47Z",
+      "status": "researching",
+      "latestBindingStatus": "ATTACHED",
+      "artifactCount": 1,
+      "artifactKinds": [
+        [
+          "researcher",
+          "research",
+          "/private/tmp/autobyteus-paa-brief-studio-codex-round2-workspace/brief-studio/research.md"
+        ]
+      ],
+      "lastErrorMessage": null
+    },
+    {
+      "t": "2026-05-05T10:40:52Z",
+      "status": "researching",
+      "latestBindingStatus": "ATTACHED",
+      "artifactCount": 1,
+      "artifactKinds": [
+        [
+          "researcher",
+          "research",
+          "/private/tmp/autobyteus-paa-brief-studio-codex-round2-workspace/brief-studio/research.md"
+        ]
+      ],
+      "lastErrorMessage": null
+    },
+    {
+      "t": "2026-05-05T10:40:57Z",
+      "status": "researching",
+      "latestBindingStatus": "ATTACHED",
+      "artifactCount": 1,
+      "artifactKinds": [
+        [
+          "researcher",
+          "research",
+          "/private/tmp/autobyteus-paa-brief-studio-codex-round2-workspace/brief-studio/research.md"
+        ]
+      ],
+      "lastErrorMessage": null
+    },
+    {
+      "t": "2026-05-05T10:41:02Z",
+      "status": "researching",
+      "latestBindingStatus": "ATTACHED",
+      "artifactCount": 1,
+      "artifactKinds": [
+        [
+          "researcher",
+          "research",
+          "/private/tmp/autobyteus-paa-brief-studio-codex-round2-workspace/brief-studio/research.md"
+        ]
+      ],
+      "lastErrorMessage": null
+    },
+    {
+      "t": "2026-05-05T10:41:07Z",
+      "status": "in_review",
+      "latestBindingStatus": "ATTACHED",
+      "artifactCount": 2,
+      "artifactKinds": [
+        [
+          "researcher",
+          "research",
+          "/private/tmp/autobyteus-paa-brief-studio-codex-round2-workspace/brief-studio/research.md"
+        ],
+        [
+          "writer",
+          "final",
+          "/private/tmp/autobyteus-paa-brief-studio-codex-round2-workspace/brief-studio/final-brief.md"
+        ]
+      ],
+      "lastErrorMessage": null
+    }
+  ],
+  "projectionSucceeded": true,
+  "finalBriefDetail": {
+    "briefId": "brief-79b9657c-4d18-4d22-ac36-d46d9cb50a4b",
+    "title": "Codex GPT-5.5 PAA runtime validation round 2 brief",
+    "status": "in_review",
+    "latestBindingId": "a08449cc-e7cf-43c5-ace3-d70066b1af29",
+    "latestRunId": "team_bundle-team-6170706c69636174696f6e2d6c6f_5bade660",
+    "latestBindingStatus": "ATTACHED",
+    "lastErrorMessage": null,
+    "createdAt": "2026-05-05T10:39:56.825Z",
+    "updatedAt": "2026-05-05T10:41:04.419Z",
+    "approvedAt": null,
+    "rejectedAt": null,
+    "artifacts": [
+      {
+        "briefId": "brief-79b9657c-4d18-4d22-ac36-d46d9cb50a4b",
+        "artifactKind": "researcher",
+        "publicationKind": "research",
+        "revisionId": "d302cda8-8d0c-4f7b-9cd0-a3e65c4d1ce2",
+        "path": "/private/tmp/autobyteus-paa-brief-studio-codex-round2-workspace/brief-studio/research.md",
+        "description": null,
+        "body": "# Codex GPT-5.5 PAA runtime validation round 2 brief \u2014 research checkpoint\n\n## Key findings\n- The requested deliverable is a reviewable brief titled \u201cCodex GPT-5.5 PAA runtime validation round 2 brief\u201d; this checkpoint should support the writer with concise process, scope, and validation criteria rather than a long report.\n- The fresh-run workflow is explicitly research-first: researcher must create `brief-studio/research.md`, publish that exact file as an artifact, and only then hand off to the writer.\n- Artifact publication is a validation target: `publish_artifacts` must be called after the file exists, with a one-item `artifacts` array and the exact absolute path returned by the write step.\n- The brief should emphasize runtime compliance signals: correct role sequencing, no premature drafting by the researcher, exact-path artifact publication, concise handoff, and writer follow-through after handoff.\n- No external factual research appears necessary for this brief; the available user and system instructions are sufficient and are the authoritative source for this validation round.\n\n## Risks or open questions\n- The writer\u2019s final artifact filename is not prescribed in the researcher instructions, so the writer should choose a clear reviewable brief path while avoiding invented researcher artifact names.\n- If the runtime lacks a dedicated file-write tool, the exact path must still be captured from the actual write operation before publication to preserve the intent of the validation.\n- The final brief should avoid overexplaining implementation internals; the main value is demonstrating that the PAA workflow obeyed the required sequence.\n\n## Recommendations or next steps\n- Writer should begin only after this handoff, review this research file, then draft a concise brief with title, purpose, validation checklist, observed compliance, and remaining risks.\n- Writer should publish the brief checkpoint only after writing it, using a one-item `artifacts` array and the exact absolute path returned by its write step.\n- Keep the final checkpoint short and reviewable, focused on whether round 2 validates correct Codex GPT-5.5 PAA runtime behavior.\n",
+        "producerMemberRouteKey": "researcher",
+        "updatedAt": "2026-05-05T10:40:24.535Z"
+      },
+      {
+        "briefId": "brief-79b9657c-4d18-4d22-ac36-d46d9cb50a4b",
+        "artifactKind": "writer",
+        "publicationKind": "final",
+        "revisionId": "da676386-e586-47df-a786-58c3b8357487",
+        "path": "/private/tmp/autobyteus-paa-brief-studio-codex-round2-workspace/brief-studio/final-brief.md",
+        "description": null,
+        "body": "# Codex GPT-5.5 PAA runtime validation round 2 brief\n\nRecommendation: Treat this round as a focused validation of Brief Studio runtime compliance, not a broad implementation review. The run should be considered successful if the visible checkpoint sequence proves that the researcher acted first, wrote and published the research artifact before handoff, and the writer began only after receiving that handoff, reviewed the research file, wrote the final brief, and published it only after the write step using the exact absolute path returned by that step.\n\n## Key evidence\n- The researcher handoff identified `brief-studio/research.md` as ready and provided the absolute handoff path: `/private/tmp/autobyteus-paa-brief-studio-codex-round2-workspace/brief-studio/research.md`.\n- The research checkpoint states that no external factual research was needed; the authoritative inputs are the workflow and role instructions for this validation round.\n- The central validation signals are sequencing and artifact handling: researcher-first execution, publication after file creation, one-item `artifacts` arrays, and exact absolute paths.\n- The writer reviewed the handoff file before drafting this checkpoint, aligning with the required \u201cno premature drafting\u201d constraint.\n- The final writer artifact is placed at `brief-studio/final-brief.md`, matching the prescribed writer output path and avoiding invented researcher filenames.\n\n## Risks or cautions\n- Passing this round should not be interpreted as validating product behavior beyond the Brief Studio checkpoint workflow.\n- The most important failure modes remain procedural: drafting before handoff, publishing before a file exists, reconstructing paths instead of using returned paths, or publishing multi-item arrays when only one checkpoint is required.\n- Because the brief is intentionally concise, it should preserve auditability through clear file paths and sequence evidence rather than extensive narrative detail.\n\n## Next actions\n- Confirm the writer publication call uses a one-item `artifacts` array containing the exact absolute path returned by this write step.\n- Review app-owned brief tables and review state to verify both researcher and writer checkpoints were projected correctly.\n- Mark round 2 successful if the recorded tool sequence shows research-first handoff, writer follow-through, and post-write artifact publication with exact paths.\n",
+        "producerMemberRouteKey": "writer",
+        "updatedAt": "2026-05-05T10:41:04.419Z"
+      }
+    ],
+    "reviewNotes": []
+  },
+  "workspaceFiles": [
+    {
+      "path": "/tmp/autobyteus-paa-brief-studio-codex-round2-workspace/brief-studio/final-brief.md",
+      "realpath": "/private/tmp/autobyteus-paa-brief-studio-codex-round2-workspace/brief-studio/final-brief.md",
+      "size": 2420,
+      "prefix": "# Codex GPT-5.5 PAA runtime validation round 2 brief\n\nRecommendation: Treat this round as a focused validation of Brief Studio runtime compliance, not a broad implementation review. The run should be considered successful if the visible checkpoint sequence proves that the researcher acted first, wrote and published the research artifact before handoff, and the writer began only after receiving that handoff, reviewed the research file, wrote the final brief, and published it only after the write "
+    },
+    {
+      "path": "/tmp/autobyteus-paa-brief-studio-codex-round2-workspace/brief-studio/research.md",
+      "realpath": "/private/tmp/autobyteus-paa-brief-studio-codex-round2-workspace/brief-studio/research.md",
+      "size": 2184,
+      "prefix": "# Codex GPT-5.5 PAA runtime validation round 2 brief \u2014 research checkpoint\n\n## Key findings\n- The requested deliverable is a reviewable brief titled \u201cCodex GPT-5.5 PAA runtime validation round 2 brief\u201d; this checkpoint should support the writer with concise process, scope, and validation criteria rather than a long report.\n- The fresh-run workflow is explicitly research-first: researcher must create `brief-studio/research.md`, publish that exact file as an artifact, and only then hand off to the"
+    }
+  ]
+}

@@ -28,6 +28,8 @@ Implemented the approved clean-cut native interrupt/runtime-loop redesign.
 - Addressed code-review CR-004 by forwarding `LLMInvocationOptions.signal` through `AutobyteusLLM` to `AutobyteusClient` and Axios `/send-message` and `/stream-message` requests.
 - Addressed code-review CR-005 by extracting native Autobyteus team event processing/enrichment/member context resolution into `AutoByteusTeamRunEventProcessor`, reducing `autobyteus-team-run-backend.ts` below the 500-line hard limit.
 - Addressed code-review CR-006 by removing dormant `AgentTurnInputBox` tool-result/continuation lanes and keeping direct `ToolPhase` return values as the authoritative tool-result flow.
+- Resolved the API/E2E Round 3 delivery latest-base merge conflict against `origin/personal` by keeping the extracted `AutoByteusTeamRunEventProcessor` as the native team event-processing owner, folding in latest Team Communication `message_id` / `reference_file_entries` enrichment for explicit `reference_files`, preserving de-duplication, and keeping native team interrupt on `interrupt(...)` with no stop fallback.
+- Reconciled conflicted server/web docs to preserve `INTERRUPT_GENERATION` terminology while retaining latest Claude active-terminate settlement and Team Communication reference-route documentation.
 
 ## Key Files Or Areas
 
@@ -71,6 +73,7 @@ Implemented the approved clean-cut native interrupt/runtime-loop redesign.
   - `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts`
   - `autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend.ts`
   - `autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-event-processor.ts`
+  - `autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend-utils.ts`
   - `autobyteus-server-ts/src/services/agent-streaming/*`
   - `autobyteus-web/services/agentStreaming/*`
   - `autobyteus-web/services/agentStreaming/handlers/agentStatusHandler.ts`
@@ -109,7 +112,7 @@ Implemented the approved clean-cut native interrupt/runtime-loop redesign.
   - Delivery reroute reference-file conflict was resolved without resurrecting old handler turn control; `AgentInputPipeline` now publishes `reference_files`, adds exactly one LLM-visible reference-file block, and preserves metadata for inter-agent inputs.
   - CR-003 streaming interruption is covered by handler unit tests and runtime integration asserting interrupted `SEGMENT_END` publication for an active streamed response.
   - CR-004 Autobyteus cancellation is covered by LLM/client unit tests asserting `AbortSignal` propagation to Axios request config.
-  - CR-005 file-size cleanup split native team event processing into an owned processor; effective non-empty source lines are now 260 for the backend and 287 for the processor.
+  - CR-005 file-size cleanup split native team event processing into an owned processor; after latest-base reconciliation effective non-empty source lines are 260 for the backend, 308 for the processor, and 39 for the shared backend utility file.
   - CR-006 dormant result/continuation input-box APIs and side writes were removed; `ToolPhase` return values remain the single tool-result authority.
 
 ## Legacy / Compatibility Removal Check
@@ -123,7 +126,7 @@ Implemented the approved clean-cut native interrupt/runtime-loop redesign.
 - Notes:
   - `LlmTurnPhase` was split with tool-schema and compaction helpers to keep the phase file below the implementation size-pressure threshold.
   - Existing larger source files received limited deltas and were not expanded beyond their existing responsibilities.
-  - `AutoByteusTeamRunBackend` was split into a command/bridge backend and a native event processor to satisfy the hard size limit without introducing pass-through-only helpers.
+  - `AutoByteusTeamRunBackend` was split into a command/bridge backend and a native event processor to satisfy the hard size limit without introducing pass-through-only helpers; latest Team Communication backend utilities are imported by the processor for real normalization/extraction work rather than re-expanding the backend.
   - `AgentTurnInputBox` now owns approval side-band traffic only; tool-result aggregation/continuation remains in `ToolPhase`/`AgentTurnRunner`.
 
 ## Environment Or Dependency Notes
@@ -147,6 +150,24 @@ Passed:
 - `pnpm -C autobyteus-server-ts run build:full`
 - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts tests/integration/agent-team-execution/autobyteus-team-run-backend.integration.test.ts tests/unit/services/agent-streaming/agent-stream-handler.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts`
   - Result: 4 files passed, 32 tests passed.
+
+Additional checks after API/E2E Round 3 delivery latest-base conflict resolution local fix:
+
+- `git diff --check HEAD`
+  - Passed after completing the latest-base merge commit; only delivery-owned report artifacts remain unstaged.
+- `git diff --check HEAD -- autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend.ts autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-event-processor.ts autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend-utils.ts autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md autobyteus-server-ts/docs/modules/agent_execution.md autobyteus-web/docs/agent_execution_architecture.md`
+  - Passed before commit for the resolved conflict files.
+- `git diff --cached --check -- autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend.ts autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-event-processor.ts autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend-utils.ts autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md autobyteus-server-ts/docs/modules/agent_execution.md autobyteus-web/docs/agent_execution_architecture.md`
+  - Passed.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent-team-execution/autobyteus-team-run-backend.integration.test.ts tests/unit/agent-execution/events/team-communication-message-event-processor.test.ts tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts`
+  - Result: 3 files passed, 14 tests passed.
+- `pnpm -C autobyteus-server-ts run build:full`
+  - Passed.
+
+Blocked / not used as pass criteria for this latest-base conflict fix:
+
+- `git diff --check HEAD`
+  - Fails on pre-existing incoming `origin/personal` evidence artifacts under `tickets/done/published-artifacts-absolute-paths/evidence/*app-db-state.txt` with trailing whitespace. The scoped diff checks above pass for the files resolved in this local fix.
 - `pnpm -C autobyteus-web exec vitest run components/agentInput/__tests__/AgentUserInputTextArea.spec.ts stores/__tests__/agentRunStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts`
   - Result: 3 files passed, 29 tests passed.
 
@@ -189,6 +210,16 @@ Additional checks after code-review local fixes:
 - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts tests/integration/agent-team-execution/autobyteus-team-run-backend.integration.test.ts tests/unit/services/agent-streaming/agent-stream-handler.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts`
   - Result: 4 files passed, 32 tests passed.
 
+Additional checks after API/E2E Round 3 delivery latest-base conflict resolution local fix:
+
+- `git diff --check HEAD -- autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend.ts autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-event-processor.ts autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend-utils.ts autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md autobyteus-server-ts/docs/modules/agent_execution.md autobyteus-web/docs/agent_execution_architecture.md`
+  - Passed.
+- `git diff --cached --check -- autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend.ts autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-event-processor.ts autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend-utils.ts autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md autobyteus-server-ts/docs/modules/agent_execution.md autobyteus-web/docs/agent_execution_architecture.md`
+  - Passed.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent-team-execution/autobyteus-team-run-backend.integration.test.ts tests/unit/agent-execution/events/team-communication-message-event-processor.test.ts tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts`
+  - Result: 3 files passed, 14 tests passed.
+- `pnpm -C autobyteus-server-ts run build:full`
+  - Passed.
 Blocked / not used as pass criteria:
 
 - `pnpm -C autobyteus-ts exec tsc -p tsconfig.json --noEmit`

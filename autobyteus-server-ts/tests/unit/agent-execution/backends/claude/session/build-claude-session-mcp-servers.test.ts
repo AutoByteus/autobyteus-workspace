@@ -3,9 +3,11 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const {
   buildClaudeTeamMcpServersMock,
   buildClaudeBrowserMcpServersMock,
+  buildClaudeMediaMcpServerMock,
 } = vi.hoisted(() => ({
   buildClaudeTeamMcpServersMock: vi.fn(),
   buildClaudeBrowserMcpServersMock: vi.fn(),
+  buildClaudeMediaMcpServerMock: vi.fn(),
 }));
 
 vi.mock(
@@ -22,11 +24,19 @@ vi.mock(
   }),
 );
 
+vi.mock(
+  "../../../../../../src/agent-execution/backends/claude/media/build-claude-media-mcp-server.js",
+  () => ({
+    buildClaudeMediaMcpServer: buildClaudeMediaMcpServerMock,
+  }),
+);
+
 import { buildClaudeSessionMcpServers } from "../../../../../../src/agent-execution/backends/claude/session/build-claude-session-mcp-servers.js";
 
 describe("buildClaudeSessionMcpServers", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    buildClaudeMediaMcpServerMock.mockResolvedValue(null);
   });
 
   it("returns browser MCP servers when send-message tooling is disabled", async () => {
@@ -87,5 +97,39 @@ describe("buildClaudeSessionMcpServers", () => {
         emitEvent: vi.fn(),
       }),
     ).rejects.toThrow(/CLAUDE_QUERY_MCP_UNAVAILABLE/);
+  });
+
+  it("throws an explicit conflict when media MCP server name autobyteus_image_audio is already configured", async () => {
+    buildClaudeBrowserMcpServersMock.mockResolvedValue({
+      autobyteus_image_audio: { name: "external-media-server" },
+    });
+    buildClaudeMediaMcpServerMock.mockResolvedValue({
+      autobyteus_image_audio: { name: "server-owned-media" },
+    });
+
+    await expect(
+      buildClaudeSessionMcpServers({
+        sendMessageToToolingEnabled: false,
+        enabledMediaToolNames: ["generate_image"],
+        publishArtifactsToolingEnabled: false,
+        runContext: {
+          runtimeContext: {
+            sessionConfig: {
+              workingDirectory: "/tmp/workspace",
+            },
+          },
+        } as any,
+        sdkClient: {} as any,
+        requestToolApproval: null,
+        emitEvent: vi.fn(),
+      }),
+    ).rejects.toThrow(
+      /CLAUDE_MCP_SERVER_NAME_CONFLICT: MCP server 'autobyteus_image_audio' is already configured/,
+    );
+    expect(buildClaudeMediaMcpServerMock).toHaveBeenCalledWith({
+      sdkClient: {},
+      enabledToolNames: ["generate_image"],
+      workingDirectory: "/tmp/workspace",
+    });
   });
 });

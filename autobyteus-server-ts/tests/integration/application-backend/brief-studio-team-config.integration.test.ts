@@ -39,6 +39,8 @@ const expectMissingTools = (toolNames: string[] | undefined, forbiddenTools: str
   }
 };
 
+const staleWorkspaceBoundPublishGuidance = "target file has already been written in the workspace";
+
 describe("Brief Studio team package config", () => {
   it("ships source and packaged team configs with the research-first coordinator handoff", async () => {
     const sourceTeamConfig = await readJson<TeamConfigFile>(
@@ -93,6 +95,8 @@ describe("Brief Studio team package config", () => {
     );
 
     for (const prompt of [sourceResearcherPrompt, packagedResearcherPrompt]) {
+      expect(prompt).not.toContain(staleWorkspaceBoundPublishGuidance);
+      expect(prompt).toContain("target checkpoint file has already been written");
       expect(prompt).toContain("you are the first active member for a new Brief Studio run");
       expect(prompt).toContain("`read_file` is intentionally not exposed in this run");
       expect(prompt).toContain("Required fresh-run sequence:");
@@ -106,6 +110,8 @@ describe("Brief Studio team package config", () => {
     }
 
     for (const prompt of [sourceWriterPrompt, packagedWriterPrompt]) {
+      expect(prompt).not.toContain(staleWorkspaceBoundPublishGuidance);
+      expect(prompt).toContain("target checkpoint file has already been written");
       expect(prompt).toContain("wait for the research handoff from the researcher");
       expect(prompt).toContain("do not start by probing for `brief-studio/research.md` on your own");
       expect(prompt).toContain("When the researcher hands off `brief-studio/research.md`:");

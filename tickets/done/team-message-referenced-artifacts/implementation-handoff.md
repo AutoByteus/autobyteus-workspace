@@ -2,14 +2,14 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/done/team-message-referenced-artifacts/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/done/team-message-referenced-artifacts/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/done/team-message-referenced-artifacts/design-spec.md`
-- Runtime parser evidence note: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/done/team-message-referenced-artifacts/runtime-investigation-message-reference-parser.md`
-- AutoByteus runtime investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/done/team-message-referenced-artifacts/runtime-investigation-autobyteus-reference-files.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/done/team-message-referenced-artifacts/design-review-report.md`
-- Prior code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/done/team-message-referenced-artifacts/review-report.md`
-- Prior API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/done/team-message-referenced-artifacts/api-e2e-validation-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-message-referenced-artifacts/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-message-referenced-artifacts/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-message-referenced-artifacts/design-spec.md`
+- Runtime parser evidence note: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-message-referenced-artifacts/runtime-investigation-message-reference-parser.md`
+- AutoByteus runtime investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-message-referenced-artifacts/runtime-investigation-autobyteus-reference-files.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-message-referenced-artifacts/design-review-report.md`
+- Prior code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-message-referenced-artifacts/review-report.md`
+- Prior API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-message-referenced-artifacts/api-e2e-validation-report.md`
 
 ## What Changed
 
@@ -26,6 +26,7 @@
 - Runtime delivery now carries `referenceFiles` through `InterAgentMessageDeliveryRequest` and emits `INTER_AGENT_MESSAGE.payload.reference_files`.
 - Recipient runtime input appends a generated **Reference files:** block when explicit refs exist. This block supplements the self-contained body like an email attachment/index list.
 - Local Fix for code-review finding `CR-004-001`: native/AutoByteus agent-recipient routing now constructs `InterAgentMessage` with the original natural `event.content` and carries `event.referenceFiles` separately. `InterAgentMessageReceivedEventHandler` remains the single owner that appends the generated **Reference files:** block for native agent LLM input, preventing duplicate blocks. Sub-team `postMessage` routing still receives the generated block directly because that path does not have an `InterAgentMessage.referenceFiles` hop.
+- CR-009 Local Fix: stabilized `RunFileChangeService` unit coverage by replacing fixed `setTimeout(0)` flush assumptions with bounded polling around the live projection and persisted projection state. The test now waits for the expected `streaming` and `available` states before asserting durable metadata, removing the broad-suite timing flake without changing production event flow.
 - User-requested Artifacts tab UI polish:
   - Sent/Received groups now render the direction once in the group heading as `To <agent>` or `From <agent>` instead of repeating `Sent to ...` / `Received from ...` under every file.
   - Message-reference rows in grouped Sent/Received sections now show only file names, reducing visual noise for large handoffs.
@@ -97,6 +98,7 @@
   - `autobyteus-server-ts/tests/integration/api/message-file-references-api.integration.test.ts`
   - `autobyteus-server-ts/tests/integration/agent-team-execution/autobyteus-team-run-backend.integration.test.ts`
   - `autobyteus-server-ts/tests/integration/api/run-file-changes-api.integration.test.ts`
+  - `autobyteus-server-ts/tests/unit/services/run-file-changes/run-file-change-service.test.ts`
   - `autobyteus-server-ts/tests/unit/run-history/services/run-file-change-projection-service.test.ts`
   - `autobyteus-server-ts/tests/unit/services/run-file-changes/run-file-change-projection-store.test.ts`
   - `autobyteus-web/components/workspace/agent/__tests__/ArtifactList.spec.ts`
@@ -125,12 +127,12 @@
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: Behavior change plus bounded refactor of an additive feature, followed by bounded AutoByteus runtime parity and Round 6 Local Fix work.
-- Reviewed root-cause classification: Boundary Or Ownership Issue plus Legacy/Compatibility Pressure for the old content-scanning source; Round 5 parity issue is a Local Implementation Defect in the AutoByteus team bridge bypassing the default event pipeline; Round 6 findings were Local Fixes for bridge fanout ownership, atomic projection persistence, and existing read/content authority completeness.
-- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): Refactor Needed Now for the Round 4 replacement and Round 6 bridge/read-authority corrections; no architecture redesign required for Round 5/Round 6.
+- Reviewed change posture: Behavior change plus bounded refactor of an additive feature, followed by bounded AutoByteus runtime parity, Round 6 Local Fix work, UI polish, and CR-009 validation-stability Local Fix work.
+- Reviewed root-cause classification: Boundary Or Ownership Issue plus Legacy/Compatibility Pressure for the old content-scanning source; Round 5 parity issue is a Local Implementation Defect in the AutoByteus team bridge bypassing the default event pipeline; Round 6 findings were Local Fixes for bridge fanout ownership, atomic projection persistence, and existing read/content authority completeness; CR-009 was a validation timing flake in unit test wait strategy, not a production architecture issue.
+- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): Refactor Needed Now for the Round 4 replacement and Round 6 bridge/read-authority corrections; no architecture redesign required for Round 5/Round 6/CR-009.
 - Implementation matched the reviewed assessment (`Yes`/`No`): Yes.
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): N/A.
-- Evidence / notes: The implementation uses `reference_files` as the sole declaration authority, deletes the free-text parser, keeps projection/content authority under `services/message-file-references`, leaves frontend conversation rendering/linkification unchanged, restores AutoByteus parity by processing each converted native source event once through the default pipeline before fanout, writes file-change projections atomically, and routes AutoByteus member Agent Artifact GraphQL/REST reads through the existing run-file-change projection/content service boundary.
+- Evidence / notes: The implementation uses `reference_files` as the sole declaration authority, deletes the free-text parser, keeps projection/content authority under `services/message-file-references`, leaves frontend conversation rendering/linkification unchanged, restores AutoByteus parity by processing each converted native source event once through the default pipeline before fanout, writes file-change projections atomically, routes AutoByteus member Agent Artifact GraphQL/REST reads through the existing run-file-change projection/content service boundary, and makes run-file-change unit validation wait on observable projection state instead of fixed sleeps.
 
 ## Legacy / Compatibility Removal Check
 
@@ -144,13 +146,13 @@
 
 ## Environment Or Dependency Notes
 
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts`
-- Branch: `codex/team-message-referenced-artifacts`
+- Current integrated workspace: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Current branch: `personal`
 - Base/finalization target: `origin/personal` -> `personal`
 - Checkpoint commit before Round 3/Round 4 implementation: `46cb7895 Checkpoint team message referenced artifacts`
 - `autobyteus-server-ts` builds against `autobyteus-ts/dist`, so `pnpm -C autobyteus-ts build` was run before the final server build.
 - Round 5 AutoByteus runtime parity implementation was performed after commit `e6af228c Fix native reference file block duplication`.
-- Round 6 Local Fix implementation builds on reviewed commit `deca3046 Restore AutoByteus team artifact event parity`; final fix commit is recorded in the code-review handoff message.
+- Round 6 Local Fix implementation builds on reviewed commit `deca3046 Restore AutoByteus team artifact event parity`. CR-009 Local Fix was applied in the integrated `personal` workspace; final fix commit is recorded in the code-review handoff message.
 
 ## Local Implementation Checks Run
 
@@ -277,6 +279,25 @@ Implementation-scoped checks only; API/E2E validation remains downstream.
   ```
   Result: `Test Files 2 passed (2); Tests 8 passed (8)`.
 - Passed: whitespace hygiene after UI polish
+  - Command: `git diff --check`
+  - Result: no output.
+
+- Passed: CR-009 directly affected run-file-change service unit test after deterministic wait rewrite
+  ```bash
+  pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/run-file-changes/run-file-change-service.test.ts --reporter=dot
+  ```
+  Result: `Test Files 1 passed (1); Tests 4 passed (4)`.
+- Passed: CR-009 broad related backend suite from code review
+  ```bash
+  pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/codex/team-communication/codex-send-message-tool-spec-builder.test.ts tests/unit/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.test.ts tests/unit/agent-execution/backends/claude/team-communication/claude-send-message-tool-definition-builder.test.ts tests/unit/agent-execution/backends/claude/team-communication/claude-send-message-tool-call-handler.test.ts tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts tests/unit/agent-execution/events/message-file-reference-processor.test.ts tests/unit/agent-team-execution/send-message-to-tool-argument-parser.test.ts tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts tests/unit/agent-team-execution/member-run-instruction-composer.test.ts tests/unit/agent-team-execution/publish-processed-team-agent-events.test.ts tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts tests/unit/services/message-file-references/message-file-reference-content-service.test.ts tests/unit/services/message-file-references/message-file-reference-identity.test.ts tests/unit/services/message-file-references/message-file-reference-service.test.ts tests/integration/api/message-file-references-api.integration.test.ts tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts tests/integration/agent-team-execution/autobyteus-team-run-backend.integration.test.ts tests/unit/services/run-file-changes/run-file-change-service.test.ts tests/unit/services/run-file-changes/run-file-change-projection-store.test.ts tests/unit/run-history/services/run-file-change-projection-service.test.ts tests/unit/agent-execution/events/file-change-event-processor.test.ts tests/integration/api/run-file-changes-api.integration.test.ts --reporter=dot
+  ```
+  Result: `Test Files 22 passed (22); Tests 87 passed (87)`.
+- Passed: CR-009 Round 6 backend suite rerun
+  ```bash
+  pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts tests/integration/agent-team-execution/autobyteus-team-run-backend.integration.test.ts tests/unit/agent-team-execution/publish-processed-team-agent-events.test.ts tests/unit/services/run-file-changes/run-file-change-service.test.ts tests/unit/services/run-file-changes/run-file-change-projection-store.test.ts tests/unit/run-history/services/run-file-change-projection-service.test.ts tests/unit/agent-execution/events/message-file-reference-processor.test.ts tests/unit/agent-execution/events/file-change-event-processor.test.ts --reporter=dot
+  ```
+  Result: `Test Files 8 passed (8); Tests 51 passed (51)`.
+- Passed: whitespace hygiene after CR-009
   - Command: `git diff --check`
   - Result: no output.
 

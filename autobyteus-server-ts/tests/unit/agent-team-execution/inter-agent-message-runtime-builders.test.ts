@@ -90,10 +90,12 @@ describe("inter-agent-message-runtime-builders", () => {
     expect(buildInterAgentMessageAgentRunEvent({
       recipientRunId: "run-reviewer",
       request,
+      createdAt: "2026-04-08T00:00:00.000Z",
     })).toEqual({
       eventType: AgentRunEventType.INTER_AGENT_MESSAGE,
       runId: "run-reviewer",
       payload: {
+        message_id: expect.any(String),
         team_run_id: "team-1",
         sender_agent_id: "run-writer",
         sender_agent_name: "Writer",
@@ -103,6 +105,16 @@ describe("inter-agent-message-runtime-builders", () => {
         content: "Please review the referenced report.",
         message_type: "handoff",
         reference_files: ["/tmp/report.md"],
+        reference_file_entries: [
+          expect.objectContaining({
+            referenceId: expect.any(String),
+            path: "/tmp/report.md",
+            type: "file",
+            createdAt: "2026-04-08T00:00:00.000Z",
+            updatedAt: "2026-04-08T00:00:00.000Z",
+          }),
+        ],
+        created_at: "2026-04-08T00:00:00.000Z",
       },
       statusHint: null,
     });

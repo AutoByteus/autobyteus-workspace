@@ -86,7 +86,7 @@ export class SendMessageTo extends BaseTool {
     return (
       'Sends a self-contained message to another agent within the same team, starting them if necessary. ' +
       'You must specify the recipient by their unique name as provided in your team manifest. ' +
-      'When sharing files, keep content as the detailed email-like body and also list those absolute paths in reference_files so they appear in Sent/Received Artifacts.'
+      'When sharing files, keep content as the detailed email-like body and also list those absolute paths in reference_files so they appear under Team Communication messages.'
     );
   }
 
@@ -102,7 +102,7 @@ export class SendMessageTo extends BaseTool {
     schema.addParameter(new ParameterDefinition({
       name: 'content',
       type: ParameterType.STRING,
-      description: 'Self-contained message body or task instruction. Explain the handoff like an email body; you may naturally mention important absolute paths here, and also put files that should appear in Sent/Received Artifacts in reference_files. Example: "Implementation is ready. The handoff is at /Users/me/project/implementation-handoff.md and the test log is at /Users/me/project/test.log; please review the risks below."',
+      description: 'Self-contained message body or task instruction. Explain the handoff like an email body; you may naturally mention important absolute paths here, and also put files that should appear under the Team Communication message in reference_files. Example: "Implementation is ready. The handoff is at /Users/me/project/implementation-handoff.md and the test log is at /Users/me/project/test.log; please review the risks below."',
       required: true
     }));
     schema.addParameter(new ParameterDefinition({
@@ -115,7 +115,7 @@ export class SendMessageTo extends BaseTool {
       name: 'reference_files',
       type: ParameterType.ARRAY,
       description:
-        'Optional attachment/reference list of absolute local file paths the recipient may need to inspect and that should appear in Sent/Received Artifacts. Use this in addition to self-contained content, not instead of explaining the handoff. Example: ["/Users/me/project/implementation-handoff.md", "/Users/me/project/test.log"].',
+        'Optional attachment/reference list of absolute local file paths the recipient may need to inspect and that should appear in Team Communication messages. Use this in addition to self-contained content, not instead of explaining the handoff. Example: ["/Users/me/project/implementation-handoff.md", "/Users/me/project/test.log"].',
       required: false,
       arrayItemSchema: ParameterType.STRING
     }));
@@ -144,7 +144,7 @@ export class SendMessageTo extends BaseTool {
     }
     if (!referenceFilesResult.ok) {
       console.warn(
-        `[message-file-reference] invalid reference_files validation toolName=${this.getName()} reason=${referenceFilesResult.message}`
+        `[team-communication] invalid reference_files validation toolName=${this.getName()} reason=${referenceFilesResult.message}`
       );
       return `Error: ${referenceFilesResult.message}`;
     }

@@ -10,10 +10,10 @@
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/done/team-message-referenced-artifacts/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/done/team-message-referenced-artifacts/implementation-handoff.md`
 - Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/done/team-message-referenced-artifacts/review-report.md`
-- Current Validation Round: `6` for reviewed Artifacts-tab UI polish commit `f07dae69 Polish artifacts tab reference grouping`
-- Trigger: Code review passed after reviewing the small Artifacts-tab UI polish commit `f07dae69`.
-- Prior Round Reviewed: Round 5 passed for AutoByteus fanout/run-file artifact fixes at `c01113f9`.
-- Latest Authoritative Round: `6`
+- Current Validation Round: `8` design-resolution acknowledgment after solution design moved Team-tab-only ownership into follow-up ticket `team-communication-messages-ui`
+- Trigger: Solution designer resolved the API/E2E design-impact reroute by treating `team-message-referenced-artifacts` as finalized historical context and capturing the ownership correction in new ticket `team-communication-messages-ui`.
+- Prior Round Reviewed: Round 7 passed CR-009 test-only Local Fix validation at `0cd64f23`; Round 6 passed Artifacts-tab UI polish at `f07dae69`; Round 5 remains backend/runtime behavior validation base for `c01113f9`.
+- Latest Authoritative Round: `8`
 
 ## Round History
 
@@ -24,7 +24,9 @@
 | 3 | Code re-review pass after runtime parser/logging Local Fix | Yes - `VAL-005` still returned `200`; prior API/UI/dedupe/hydration/error coverage rechecked | No | Pass | No | Markdown-bolded runtime path sample extracted through the then-current parser design. Superseded by explicit `reference_files`. |
 | 4 | Code re-review pass after `CR-004-001` native duplicate-block Local Fix | Yes - explicit-ref API/UI/dedupe/hydration/error coverage rechecked | No | Pass | No | Explicit `reference_files` is the sole declaration source across Codex, Claude, and native/AutoByteus validation surfaces; native recipient input contains exactly one generated **Reference files:** block. |
 | 5 | Fresh code-review pass at `c01113f9` after AutoByteus fanout/run-file artifact fixes | Yes - explicit refs, immediate open, dedupe, hydration, graceful errors, no raw-path linkification, no content-scanning fallback | No | Pass | No | AutoByteus team stream fanout, produced run-file artifact visibility, existing run-file GraphQL/REST/content surfaces, and active/historical hydration were revalidated. |
-| 6 | Code-review pass at `f07dae69` after Artifacts-tab reference grouping polish | Yes - route/store/linkification boundaries rechecked; keyboard order and grouped-row behavior rechecked | No | Pass | Yes | Browser visual validation confirmed `To <agent>` / `From <agent>` once per group, filename-only grouped rows, long-name truncation, and Agent -> Sent -> Received keyboard traversal. |
+| 6 | Code-review pass at `f07dae69` after Artifacts-tab reference grouping polish | Yes - route/store/linkification boundaries rechecked; keyboard order and grouped-row behavior rechecked | No | Pass | No | Browser visual validation confirmed `To <agent>` / `From <agent>` once per group, filename-only grouped rows, long-name truncation, and Agent -> Sent -> Received keyboard traversal. |
+| 7 | Code-review pass at `0cd64f23` after `CR-009-001` test-stability Local Fix | Yes - previously flaky run-file-change persistence wait rechecked | No | Pass for CR-009 executable validation; delivery paused until ownership question was resolved | No | Focused test and broad related backend suite passed. The separate Team-tab/member-Artifacts ownership design-impact artifact was still unresolved at this point. |
+| 8 | Solution-design response moved Team-tab-only ownership into follow-up ticket `team-communication-messages-ui` | Yes - design-impact/requirement-gap reroute rechecked | No | Pass / no old-ticket blocker | Yes | Old ticket remains finalized historical context; new ticket supersedes its Sent/Received Artifacts UI ownership model. |
 
 ## Validation Basis
 
@@ -60,18 +62,23 @@ Static stale receiver-scope grep returned no matches in the reviewed implementat
 - Static authority checks for stale receiver-scoped surfaces, no content-scanning fallback, route/store separation, and localization key usage.
 - Build/boundary/localization/diff hygiene commands.
 - Prior Round 5 backend/runtime validation remains the latest backend/runtime evidence for AutoByteus fanout, produced run-file artifacts, explicit refs, immediate open, dedupe, hydration, and graceful content failures.
+- CR-009 test-only validation: focused run-file-change service test and broad related backend suite proving observable live/persisted projection waits are stable.
+- Design-resolution status: solution design accepted the API/E2E ownership reroute and moved Team-tab-only ownership to new ticket `team-communication-messages-ui`; this old ticket is not reopened or treated as failed.
 
 ## Platform / Runtime Targets
 
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts`
 - Branch: `codex/team-message-referenced-artifacts`
 - Base/finalization target: `origin/personal` -> `personal`
-- Latest reviewed implementation commit: `f07dae69 Polish artifacts tab reference grouping`
+- Latest reviewed commit: `0cd64f23 test: stabilize run file change persistence wait`
+- Follow-up ownership-correction ticket: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-communication-messages-ui/tickets/in-progress/team-communication-messages-ui/requirements.md`
+- Latest reviewed UI implementation commit: `f07dae69 Polish artifacts tab reference grouping`
 - Prior source-reviewed backend/runtime fix commit: `c01113f9 Fix AutoByteus team artifact fanout and reads`
 - Node: `v22.21.1`
 - pnpm: `10.28.2`
 - Browser validation target: Nuxt dev server at `http://127.0.0.1:4176/__artifact-polish-validation`
 - Browser screenshot evidence: `/Users/normy/.autobyteus/browser-artifacts/61538a-1777924668164.png`
+- Design-impact reroute artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-message-referenced-artifacts/api-e2e-design-impact-reroute-artifacts-tab-ownership.md`
 - Host observed in this worktree: macOS/Darwin ARM64 (`Darwin MacBookPro 25.2.0 ... RELEASE_ARM64_T6000 arm64`)
 
 ## Lifecycle / Upgrade / Restart / Migration Checks
@@ -110,6 +117,7 @@ Static stale receiver-scope grep returned no matches in the reviewed implementat
 | VAL-023 | Multiple files per counterpart remain scanable and less noisy | Round 6 browser fixture with two Sent files under one long counterpart and two Received files under one long counterpart | Pass | Browser DOM confirmed both multiple-file groups rendered under a single group heading per counterpart. |
 | VAL-024 | Long counterpart names truncate/scan acceptably in narrow Artifacts pane | Round 6 browser DOM geometry and screenshot | Pass | Long counterpart spans had `scrollWidth > clientWidth` (`656 > 305`, `611 > 289`) with visible ellipsis in screenshot. |
 | VAL-025 | Keyboard traversal order remains Agent Artifacts -> Sent Artifacts -> Received Artifacts | Round 6 browser keydown probe and `ArtifactList.spec.ts` | Pass | Browser sequence: `agent-produced-summary.md` -> `agent-produced-diagram.png` -> `handoff-summary.md` -> `api-e2e-validation-report.md` -> `compact-worker-note.txt` -> `runtime-investigation-autobyteus-reference-files.md` -> `design-spec.md`. |
+| VAL-026 | CR-009 run-file-change persistence tests wait on observable live and persisted projection state instead of fixed event-loop sleeps | Round 7 focused and broad backend Vitest reruns | Pass | `run-file-change-service.test.ts` passed focused (`1 file / 4 tests`) and broad related backend suite passed (`22 files / 87 tests`). |
 
 ## Test Scope
 
@@ -134,12 +142,13 @@ Repository-resident durable validation added/updated by implementation and revie
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/autobyteus-web/services/runHydration/__tests__/messageFileReferenceHydrationService.spec.ts`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/autobyteus-web/components/conversation/segments/__tests__/InterAgentMessageSegment.spec.ts`
 
-No repository-resident durable validation code was added or updated by API/E2E during this Round 6 resume.
+No repository-resident durable validation code was added or updated by API/E2E during the Round 6 or Round 7 resumes. The CR-009 durable test fix was implementation-owned and code-reviewed before this API/E2E validation rerun.
 
 ## Durable Validation Added To The Codebase
 
-- Repository-resident durable validation added or updated this round: `No`
-- Paths added or updated this round: `None`
+- Repository-resident durable validation added or updated by API/E2E this round: `No`
+- Paths added or updated by API/E2E this round: `None`
+- Implementation-owned durable validation updated before review: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/services/run-file-changes/run-file-change-service.test.ts`
 - Prior implementation-owned validation updates already returned through `code_reviewer` before delivery: `Yes`
 - Post-validation code review artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/done/team-message-referenced-artifacts/review-report.md`
 
@@ -147,6 +156,7 @@ No repository-resident durable validation code was added or updated by API/E2E d
 
 - Validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/done/team-message-referenced-artifacts/api-e2e-validation-report.md`
 - Browser screenshot evidence: `/Users/normy/.autobyteus/browser-artifacts/61538a-1777924668164.png`
+- Design-impact reroute artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-message-referenced-artifacts/api-e2e-design-impact-reroute-artifacts-tab-ownership.md`
 - Runtime parser evidence note: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/done/team-message-referenced-artifacts/runtime-investigation-message-reference-parser.md`
 - AutoByteus runtime investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-message-referenced-artifacts/tickets/done/team-message-referenced-artifacts/runtime-investigation-autobyteus-reference-files.md`
 
@@ -173,6 +183,8 @@ No repository-resident durable validation code was added or updated by API/E2E d
 | Review Round 6 | `CR-006-001`: AutoByteus team events risked duplicate processing/fanout across subscribers | Local Fix | Still resolved | Round 5 `autobyteus-team-run-backend.integration.test.ts` passed. | Round 6 did not change AutoByteus backend code. |
 | Review Round 6 | `CR-006-002`: run-file projections needed atomic persistence | Local Fix | Still resolved | Round 5 `run-file-change-projection-store.test.ts` passed. | Round 6 did not change run-file projection code. |
 | Review Round 6 | `CR-006-003`: AutoByteus team-member produced artifacts needed existing run-file read authority | Local Fix | Still resolved | Round 6 route/store tests passed; Round 5 run-file API integration passed. | Existing GraphQL/REST/content surfaces remain authoritative. |
+| Review Round 9 | `CR-009-001`: run-file-change service test used fixed flush timing and was flaky under broader targeted backend runs | Local Fix | Resolved | Round 7 focused `run-file-change-service.test.ts` passed (`1 file / 4 tests`); broad related backend suite passed (`22 files / 87 tests`). | Local Fix is test-only; production behavior unchanged. |
+| API/E2E design-impact reroute | Member Artifacts tab vs Team tab ownership of Sent/Received/team message references | Design Impact / Requirement Gap | Resolved for old ticket by follow-up ticket | Solution design chose Team-tab-only ownership for new ticket `team-communication-messages-ui` and explicitly treats `team-message-referenced-artifacts` as finalized historical context. | The reroute artifact remains upstream evidence for the new ticket, not an old-ticket blocker. |
 
 ## Scenarios Checked
 
@@ -221,13 +233,25 @@ Commands executed from `/Users/normy/autobyteus_org/autobyteus-worktrees/team-me
 6. Static stale receiver-scope/content-scanning/route-store authority grep:
    - Result: Pass. Route/store grep showed `ArtifactContentViewer.vue` still builds message-reference fetches as `/team-runs/:teamRunId/message-file-references/:referenceId/content` and agent-artifact fetches as `/runs/:runId/file-change-content?path=...`; `ArtifactsTab.vue` still reads generated artifacts from `runFileChangesStore` and message references from `messageFileReferencesStore`.
 
+7. Round 7 focused CR-009 run-file-change persistence validation:
+   - Command: `pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/run-file-changes/run-file-change-service.test.ts --reporter=dot`
+   - Result: Pass, `Test Files 1 passed (1); Tests 4 passed (4)`.
+
+8. Round 7 broad related backend suite:
+   - Command: `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/codex/team-communication/codex-send-message-tool-spec-builder.test.ts tests/unit/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.test.ts tests/unit/agent-execution/backends/claude/team-communication/claude-send-message-tool-definition-builder.test.ts tests/unit/agent-execution/backends/claude/team-communication/claude-send-message-tool-call-handler.test.ts tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts tests/unit/agent-execution/events/message-file-reference-processor.test.ts tests/unit/agent-team-execution/send-message-to-tool-argument-parser.test.ts tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts tests/unit/agent-team-execution/member-run-instruction-composer.test.ts tests/unit/agent-team-execution/publish-processed-team-agent-events.test.ts tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts tests/unit/services/message-file-references/message-file-reference-content-service.test.ts tests/unit/services/message-file-references/message-file-reference-identity.test.ts tests/unit/services/message-file-references/message-file-reference-service.test.ts tests/integration/api/message-file-references-api.integration.test.ts tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts tests/integration/agent-team-execution/autobyteus-team-run-backend.integration.test.ts tests/unit/services/run-file-changes/run-file-change-service.test.ts tests/unit/services/run-file-changes/run-file-change-projection-store.test.ts tests/unit/run-history/services/run-file-change-projection-service.test.ts tests/unit/agent-execution/events/file-change-event-processor.test.ts tests/integration/api/run-file-changes-api.integration.test.ts --reporter=dot`
+   - Result: Pass, `Test Files 22 passed (22); Tests 87 passed (87)`.
+
+9. Round 7 whitespace hygiene:
+   - Command: `git diff --check`
+   - Result: Pass / no output.
+
 ## Failed
 
 None.
 
 ## Not Tested / Out Of Scope
 
-- Full backend/runtime suites were not rerun in Round 6 because the reviewed delta is a frontend-only UI polish commit. Round 5 remains the authoritative backend/runtime validation for AutoByteus fanout, explicit refs, produced run-file artifacts, immediate open, dedupe, hydration, and graceful failures.
+- Full backend/runtime suites were not rerun in Round 6 because that reviewed delta was a frontend-only UI polish commit. Round 7 reran the focused CR-009 test and a broad related backend suite, but did not rerun live provider/Electron scenarios.
 - Live Codex/Claude/AutoByteus/LLM provider sessions were not run in Round 6.
 - Full production Electron relaunch was not run. Browser visual validation used Nuxt dev server rendering of the changed components.
 - Backend `typecheck` remains excluded as sign-off due to the known inherited `TS6059` tests/rootDir project config issue documented upstream. Prior targeted suites and `build:full` passed.
@@ -235,7 +259,7 @@ None.
 
 ## Blocked
 
-None.
+None. The prior design-impact/requirement-gap question is resolved for this old ticket by the new follow-up/refactoring ticket `team-communication-messages-ui`; it is no longer an old-ticket delivery blocker.
 
 ## Cleanup Performed
 
@@ -243,12 +267,14 @@ None.
 - Stopped the Nuxt dev server on port `4176`.
 - Closed the in-app browser tab used for validation.
 - No temporary validation scripts, pages, or harness files were left behind.
-- `git diff --check` passes after cleanup.
+- `git diff --check` passes after cleanup and after Round 7 validation.
 
 ## Classification
 
-- Validation result: `Pass`
-- Reroute classification: `N/A`
+- CR-009 executable validation result: `Pass`
+- Design-resolution result: `Resolved by follow-up ticket team-communication-messages-ui`
+- Old-ticket delivery readiness: `No old-ticket blocker from API/E2E`
+- Reroute classification: `N/A` for the finalized old ticket; prior design-impact artifact remains evidence for the new ticket
 
 ## Recommended Recipient
 
@@ -256,16 +282,26 @@ None.
 
 ## Evidence / Notes
 
+- Round 7 CR-009 Local Fix is test-only and does not change production code, message-reference API, Artifacts UI, or event-flow behavior.
 - Round 6 UI polish is presentation-only and does not change the Artifacts data model, grouping order, selection semantics, stores, content routes, or message-reference declaration semantics.
 - Sent/Received group headings now carry the direction once; grouped rows show filenames only.
 - Long counterpart labels truncate and remain scanable in a narrow Artifacts pane.
 - Explicit `reference_files` remains the sole message-reference declaration authority.
 - Content-only absolute paths create no `MESSAGE_FILE_REFERENCE_DECLARED`, so no Sent/Received row source exists.
 - AutoByteus team-produced artifacts remain under the existing run-file-change authority and are readable through existing run-file GraphQL/REST/content paths.
-- No repository-resident durable validation code was added or updated after the latest code review.
+- No repository-resident durable validation code was added or updated by API/E2E after the latest code review.
+- The design-impact artifact about duplicate Team tab vs member Artifacts tab ownership has been incorporated into new ticket `team-communication-messages-ui`; it remains cumulative evidence but is no longer an old-ticket blocker.
+
+## Design-Resolution Follow-Up
+
+- Solution design accepted the API/E2E design-impact classification and chose Option B / Team-tab-only ownership for a new follow-up ticket.
+- New ticket: `team-communication-messages-ui`.
+- New-ticket requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-communication-messages-ui/tickets/in-progress/team-communication-messages-ui/requirements.md`.
+- New-ticket investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-communication-messages-ui/tickets/in-progress/team-communication-messages-ui/investigation-notes.md`.
+- Interpretation: `team-message-referenced-artifacts` remains historically valid and finalized for its recorded requirements. The reroute artifact and this validation report are upstream evidence for the new refactor, not blockers requiring old-ticket redesign.
 
 ## Latest Authoritative Result
 
 - Result values: `Pass` / `Fail` / `Blocked`
-- Result: `Pass`
-- Notes: Validation is complete for the latest reviewed implementation and the task is ready for delivery-stage integrated-state/docs/finalization work.
+- Result: `Pass` for CR-009 executable validation and no old-ticket blocker after solution-design resolution.
+- Notes: The CR-009 test-only Local Fix is independently validated. The Team-tab-only ownership correction is now scoped to new ticket `team-communication-messages-ui`, which supersedes the old ticket's Sent/Received Artifacts UI ownership model without reopening this finalized ticket.

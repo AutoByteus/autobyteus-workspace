@@ -1,0 +1,87 @@
+pnpm --dir autobyteus-web exec nuxi prepare && pnpm --dir autobyteus-web exec vitest run stores/__tests__/agentRunStore.spec.ts services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts -t "restore|terminate|terminates active run|sendUserInputAndSubscribe should restore persisted inactive runs" --reporter=verbose
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+│
+◆  Types generated in .nuxt.
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-stop-followup-resume-analysis/autobyteus-web
+
+stdout | services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentRunStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ↓ services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts > openAgentRun > preserves live activities while merging file changes into an active subscribed context
+ ↓ services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts > openAgentRun > hydrates projected activities when reopening a historical run from projection
+stderr | stores/__tests__/agentRunStore.spec.ts > agentRunStore > terminateRun should not teardown local runtime when persisted termination fails
+Error terminating run 'run-1': Error: failure
+    at Proxy.terminateRun (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-stop-followup-resume-analysis/autobyteus-web/stores/agentRunStore.ts:389:17)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-stop-followup-resume-analysis/autobyteus-web/stores/__tests__/agentRunStore.spec.ts:309:24
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-stop-followup-resume-analysis/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+ ↓ stores/__tests__/agentRunStore.spec.ts > agentRunStore > sendUserInputAndSubscribe should handle new agent flow
+ ↓ stores/__tests__/agentRunStore.spec.ts > agentRunStore > sendUserInputAndSubscribe should apply fallback model for new agent when missing
+ ↓ stores/__tests__/agentRunStore.spec.ts > agentRunStore > sendUserInputAndSubscribe should throw when no model is available anywhere
+ ↓ stores/__tests__/agentRunStore.spec.ts > agentRunStore > sendUserInputAndSubscribe should throw if no agent selected
+ ✓ stores/__tests__/agentRunStore.spec.ts > agentRunStore > sendUserInputAndSubscribe should restore persisted inactive runs before sending 4ms
+ ↓ stores/__tests__/agentRunStore.spec.ts > agentRunStore > closeAgent should disconnect and remove context
+ ↓ stores/__tests__/agentRunStore.spec.ts > agentRunStore > disconnectAgentStream tears down socket state without removing the context
+ ✓ stores/__tests__/agentRunStore.spec.ts > agentRunStore > terminateRun should not teardown local runtime when persisted termination fails 4ms
+ ✓ stores/__tests__/agentRunStore.spec.ts > agentRunStore > terminateRun should teardown local runtime and mark history inactive on success 1ms
+ ✓ stores/__tests__/agentRunStore.spec.ts > agentRunStore > terminateRun should teardown local runtime and skip backend for temp runs 0ms
+ ↓ stores/__tests__/agentRunStore.spec.ts > agentRunStore > closeAgent should keep context when backend termination fails
+ ↓ stores/__tests__/agentRunStore.spec.ts > agentRunStore > stopGeneration should signal active stream without clearing sending state optimistically
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > shows an error toast when terminate fails
+Failed to terminate run 'run-1'.
+
+ ↓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > loads workspace list and history tree on mount
+ ↓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > refreshes run history quietly on the background interval while mounted
+ ↓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders agent avatar image when the tree node provides avatar URL
+ ↓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > tracks broken avatar per URL key so a changed avatar URL can recover
+ ↓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > selects run via runHistoryStore.selectTreeRun and emits run-selected
+ ↓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > creates draft run from agent row plus button and emits run-created
+ ↓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > does not render run-row configuration button
+ ↓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders grouped team rows under workspace and selects the team run when clicked
+ ↓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > opens a historical team row through the coordinator-focused member instead of the first alphabetical member
+ ↓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > strips the user requirement prefix from agent and team summary labels
+ ↓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders team avatar image when team definition avatar is available
+ ↓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders team member avatar image when matching agent definition avatar is available
+ ↓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > selects team member through runHistoryStore so persisted member history can hydrate
+ ↓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders delete action for inactive team history rows
+ ↓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders archive action for inactive team history rows
+ ↓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > does not render team-row configuration button
+ ↓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > deletes inactive team history from team row action without selecting the row
+ ↓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > archives inactive team history from team row action without selecting the row
+ ↓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > creates workspace from inline input when user presses Enter
+ ↓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > opens native folder picker on embedded electron and creates workspace from selected path
+ ↓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > does not create workspace when embedded electron picker is canceled
+ ↓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > closes inline add workspace input without creating workspace on cancel
+ ↓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders active status indicator for active runs
+ ↓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > does not render status indicator for inactive runs
+ ↓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders delete action only for inactive history runs
+ ↓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > renders archive action only for inactive persisted history runs
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > terminates active run from row action without selecting the row 43ms
+ ✓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > shows an error toast when terminate fails 8ms
+ ↓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > deletes inactive history run from row action without selecting the row
+ ↓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > archives inactive history run from row action without selecting the row
+ ↓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > shows an error toast when archive fails
+ ↓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > does not call delete when confirmation is cancelled
+ ↓ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts > WorkspaceAgentRunsTreePanel > shows an error toast when delete fails
+
+ Test Files  2 passed | 1 skipped (3)
+      Tests  6 passed | 41 skipped (47)
+   Start at  21:36:10
+   Duration  2.33s (transform 1.32s, setup 3.94s, collect 809ms, tests 61ms, environment 546ms, prepare 412ms)
+
+
+EXIT_CODE=0

@@ -1,0 +1,11 @@
+{
+  "coordinatorMemberName": "lead",
+  "members": [
+    {
+      "memberName": "lead",
+      "ref": "source-collector",
+      "refType": "agent",
+      "refScope": "team_local"
+    }
+  ]
+}

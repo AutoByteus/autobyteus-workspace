@@ -55,6 +55,7 @@ const createRunContext = (input: {
         model: input.model,
         workingDirectory: input.workingDirectory,
         reasoningEffort: input.reasoningEffort ?? "medium",
+        serviceTier: null,
         approvalPolicy: input.approvalPolicy ?? CodexApprovalPolicy.NEVER,
         sandbox: input.sandbox ?? "workspace-write",
         baseInstructions: null,

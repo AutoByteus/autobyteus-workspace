@@ -35,26 +35,28 @@ Native AutoByteus team runs use one backend-owned native event bridge per active
 team backend. The bridge converts and enriches each native member event,
 processes it through the pipeline once, then fans out the processed source and
 derived events to every server subscriber. Multiple websocket/API subscribers
-must therefore observe the same `FILE_CHANGE` and `MESSAGE_FILE_REFERENCE_DECLARED`
-sequence without causing duplicate processing.
+must therefore observe the same `FILE_CHANGE` sequence without causing duplicate
+processing.
 
-Team managers also process accepted synthetic `INTER_AGENT_MESSAGE` events
-through the same pipeline before team fan-out. When an accepted inter-agent
-message carries explicit `payload.reference_files`, the stream can include a
-sidecar `MESSAGE_FILE_REFERENCE_DECLARED` event. Clients consume that event into
-a dedicated team-level message-reference store; they must not derive references
-by parsing rendered chat text, linkifying raw paths, or adding those rows to the
-run-file-changes projection.
+Accepted `INTER_AGENT_MESSAGE` events are processor input for Team
+Communication. When an accepted inter-agent message carries explicit
+`payload.reference_files`, the payload also carries message-owned reference
+metadata. `TeamCommunicationMessageProcessor` emits one normalized
+`TEAM_COMMUNICATION_MESSAGE` event for that accepted message. Clients consume
+`TEAM_COMMUNICATION_MESSAGE` into the Team Communication store; they must not
+derive references by parsing rendered chat text, linkifying raw paths, or adding
+those rows to the run-file-changes projection.
 
 Content route ownership stays split:
 
 - Agent Artifact rows use `/runs/:runId/file-change-content?path=...`.
-- Message-reference rows use `/team-runs/:teamRunId/message-file-references/:referenceId/content`
-  after resolving persisted `teamRunId + referenceId` identity.
+- Team Communication reference rows use
+  `/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`
+  after resolving persisted `teamRunId + messageId + referenceId` identity.
 
-The focused frontend member decides whether a canonical message-reference row is
-shown as **Sent Artifacts** or **Received Artifacts**; sender/receiver identity is
-metadata, not a receiver-owned route or projection owner.
+The focused frontend member decides whether a message is shown in the sent or
+received Team Communication perspective; sender/receiver identity is metadata on
+the message, not a receiver-owned route or projection owner.
 
 ## Connection And Command Recovery Contract
 
@@ -73,7 +75,7 @@ Control commands remain active-only:
 - `APPROVE_TOOL`
 - `DENY_TOOL`
 
-Those commands intentionally require an already-active runtime lookup and do not call the restore path. Clients should not treat approval/stop messages as a way to resume a stopped run; stopped-run recovery is owned by connection setup, explicit restore mutations, and `SEND_MESSAGE`.
+Those commands intentionally require an already-active runtime lookup and do not call the restore path. Clients should not treat interrupt/approval messages as a way to resume a stopped run; stopped-run recovery is owned by connection setup, explicit restore mutations, and `SEND_MESSAGE`.
 
 `INTERRUPT_GENERATION` should also not be treated as an immediate send-readiness
 acknowledgement. A client that sends interrupt should wait for the backend's
@@ -88,6 +90,13 @@ Native AutoByteus runtimes follow the same interrupt-vs-stop split:
 while terminal stop/termination remains the shutdown path. Stale or inactive
 control commands must not restore a stopped run and must not fall back to
 shutdown cleanup.
+
+Explicit GraphQL termination of an active Claude Agent SDK run follows the same
+provider-settlement invariant before final session termination. The session must
+settle any active turn through the interrupt-safe query closure path first; only
+after that may the manager emit `SESSION_TERMINATED`, close/remove the run
+session, and leave later follow-up recovery to explicit restore plus
+`SEND_MESSAGE`.
 
 ## Error And Close Semantics
 

@@ -77,4 +77,4 @@ export const normalizePublishArtifactsToolInput = (
 
 export const PUBLISH_ARTIFACTS_TOOL_NAME = "publish_artifacts" as const;
 export const PUBLISH_ARTIFACTS_TOOL_DESCRIPTION =
-  "Publish one or more files from the current run workspace as durable artifacts. Pass a non-empty artifacts array; single-file publication uses a one-item array. For each item, use the exact absolute file path returned by write_file when available; the path must still resolve inside the current workspace. An optional short description may also be provided.";
+  "Publish one or more readable files as durable run artifacts. Paths may be workspace-relative or absolute; absolute paths can point outside the workspace when readable by the runtime server. Pass a non-empty artifacts array; single-file publication uses a one-item array. For each item, use the exact absolute path returned by write_file when available, or a workspace-relative path for files in the workspace. An optional short description may also be provided.";

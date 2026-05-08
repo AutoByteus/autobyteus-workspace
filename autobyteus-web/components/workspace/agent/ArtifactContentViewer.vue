@@ -137,9 +137,6 @@ const artifactContentUrl = computed(() => {
   const artifact = props.artifact;
   if (!artifact || !artifact.path) return null;
   const restBaseUrl = windowNodeContextStore.getBoundEndpoints().rest.replace(/\/$/, '');
-  if (artifact.kind === 'message_reference') {
-    return `${restBaseUrl}/team-runs/${encodeURIComponent(artifact.teamRunId)}/message-file-references/${encodeURIComponent(artifact.referenceId)}/content`;
-  }
   if (!artifact.runId) return null;
   return `${restBaseUrl}/runs/${encodeURIComponent(artifact.runId)}/file-change-content?path=${encodeURIComponent(displayPath.value)}`;
 });
@@ -322,7 +319,7 @@ onBeforeUnmount(() => {
 });
 
 watch(
-  () => [props.artifact?.itemId, props.artifact?.path, props.artifact?.type, props.artifact?.kind, props.artifact?.status, props.artifact?.updatedAt, props.refreshSignal ?? 0],
+  () => [props.artifact?.itemId, props.artifact?.path, props.artifact?.type, props.artifact?.status, props.artifact?.updatedAt, props.refreshSignal ?? 0],
   () => {
     void syncArtifactView();
   },

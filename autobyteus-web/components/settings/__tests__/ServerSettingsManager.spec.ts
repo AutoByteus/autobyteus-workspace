@@ -105,6 +105,9 @@ const mountComponent = async (
         CompactionConfigCard: {
           template: '<div data-testid="compaction-config-card-stub">Compaction Config Card</div>',
         },
+        FeaturedCatalogItemsCard: {
+          template: '<div data-testid="featured-catalog-items-card-stub">Featured Catalog Items Card</div>',
+        },
       },
     },
   })
@@ -142,6 +145,7 @@ describe('ServerSettingsManager', () => {
     expect(wrapper.find('[data-testid="media-default-models-card-stub"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="codex-full-access-card-stub"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="compaction-config-card-stub"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="featured-catalog-items-card-stub"]').exists()).toBe(true)
   })
 
   it('only shows quick card status messaging after a field changes', async () => {

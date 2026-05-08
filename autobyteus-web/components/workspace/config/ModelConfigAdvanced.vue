@@ -3,7 +3,7 @@
     <!-- Clean grid layout for advanced parameters -->
     <div v-for="(paramSchema, key) in schema" :key="key" class="grid grid-cols-[1.2fr,1fr] items-center gap-3">
       <label :for="inputId(key)" class="text-sm text-gray-700 font-normal" :title="key">
-        {{ formatLabel(key) }}
+        {{ displayLabel(String(key), paramSchema) }}
         <span v-if="paramSchema.description" :title="paramSchema.description" class="ml-1 text-gray-400 cursor-help hover:text-gray-600 transition-colors">ⓘ</span>
       </label>
 
@@ -101,6 +101,11 @@ const formatLabel = (key: string): string => {
     .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(' ');
 };
+
+const displayLabel = (
+  key: string,
+  paramSchema: UiModelConfigSchema[string],
+): string => paramSchema.title ?? formatLabel(key);
 
 const inputId = (key: string) => {
   if (props.idPrefix) {

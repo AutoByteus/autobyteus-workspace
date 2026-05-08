@@ -1,0 +1,14 @@
+{
+  "manifestVersion": "3",
+  "id": "research-workspace",
+  "name": "Research Workspace",
+  "description": "Application package for grouped catalog validation",
+  "ui": {
+    "entryHtml": "ui/index.html",
+    "frontendSdkContractVersion": "3"
+  },
+  "backend": {
+    "bundleManifest": "backend/bundle.json"
+  },
+  "resourceSlots": []
+}
