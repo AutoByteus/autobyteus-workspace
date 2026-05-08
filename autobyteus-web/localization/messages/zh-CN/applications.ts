@@ -168,7 +168,7 @@ const applicationMessages = {
   'applications.components.applications.ApplicationLaunchSetupPanel.notSavedYet': '当前仅使用 manifest 默认值',
   'applications.components.applications.ApplicationLaunchSetupPanel.lastUpdated': '已保存于 {{value}}',
   'applications.components.applications.ApplicationLaunchSetupPanel.applicationIdMissing': '加载启动设置需要应用程序 ID。',
-  'applications.components.applications.ApplicationResourceSlotEditor.noEditorForSelection': '当前资源类型下，此槽位只会保存所选运行时资源。',
+  'applications.components.applications.ApplicationExecutionResourceSlotEditor.noEditorForSelection': '当前资源类型下，此槽位只会保存所选运行时资源。',
   'applications.components.applications.ApplicationWorkspaceRootSelector.loadedWorkspaces': '已加载工作区',
   'applications.components.applications.ApplicationWorkspaceRootSelector.customPath': '自定义路径',
   'applications.components.applications.ApplicationWorkspaceRootSelector.selectWorkspacePlaceholder': '选择已加载的工作区路径',

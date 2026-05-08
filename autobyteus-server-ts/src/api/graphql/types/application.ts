@@ -1,19 +1,19 @@
 import { Arg, Field, ObjectType, Query, Resolver, registerEnumType } from "type-graphql";
 import { ApplicationBundleService } from "../../../application-bundles/services/application-bundle-service.js";
 
-export enum ApplicationRuntimeResourceKindGraph {
+export enum ApplicationExecutionResourceKindGraph {
   AGENT = "AGENT",
   AGENT_TEAM = "AGENT_TEAM",
 }
 
-registerEnumType(ApplicationRuntimeResourceKindGraph, {
-  name: "ApplicationRuntimeResourceKind",
+registerEnumType(ApplicationExecutionResourceKindGraph, {
+  name: "ApplicationExecutionResourceKind",
 });
 
 @ObjectType()
-export class ApplicationRuntimeResource {
-  @Field(() => ApplicationRuntimeResourceKindGraph)
-  kind!: ApplicationRuntimeResourceKindGraph;
+export class ApplicationExecutionResource {
+  @Field(() => ApplicationExecutionResourceKindGraph)
+  kind!: ApplicationExecutionResourceKindGraph;
 
   @Field(() => String)
   localId!: string;
@@ -23,7 +23,7 @@ export class ApplicationRuntimeResource {
 }
 
 @ObjectType()
-export class ApplicationResourceSlotSummary {
+export class ApplicationExecutionResourceSlotSummary {
   @Field(() => String)
   slotKey!: string;
 
@@ -57,11 +57,11 @@ export class Application {
   @Field(() => Boolean)
   writable!: boolean;
 
-  @Field(() => [ApplicationRuntimeResource])
-  bundleResources!: ApplicationRuntimeResource[];
+  @Field(() => [ApplicationExecutionResource])
+  bundleResources!: ApplicationExecutionResource[];
 
-  @Field(() => [ApplicationResourceSlotSummary])
-  resourceSlots!: ApplicationResourceSlotSummary[];
+  @Field(() => [ApplicationExecutionResourceSlotSummary])
+  executionResourceSlots!: ApplicationExecutionResourceSlotSummary[];
 }
 
 @Resolver()
@@ -82,12 +82,12 @@ export class ApplicationResolver {
       bundleResources: application.bundleResources.map((resource) => ({
         kind:
           resource.kind === "AGENT"
-            ? ApplicationRuntimeResourceKindGraph.AGENT
-            : ApplicationRuntimeResourceKindGraph.AGENT_TEAM,
+            ? ApplicationExecutionResourceKindGraph.AGENT
+            : ApplicationExecutionResourceKindGraph.AGENT_TEAM,
         localId: resource.localId,
         definitionId: resource.definitionId,
       })),
-      resourceSlots: application.resourceSlots.map((slot) => ({
+      executionResourceSlots: application.executionResourceSlots.map((slot) => ({
         slotKey: slot.slotKey,
         required: slot.required === true,
       })),
@@ -113,12 +113,12 @@ export class ApplicationResolver {
       bundleResources: application.bundleResources.map((resource) => ({
         kind:
           resource.kind === "AGENT"
-            ? ApplicationRuntimeResourceKindGraph.AGENT
-            : ApplicationRuntimeResourceKindGraph.AGENT_TEAM,
+            ? ApplicationExecutionResourceKindGraph.AGENT
+            : ApplicationExecutionResourceKindGraph.AGENT_TEAM,
         localId: resource.localId,
         definitionId: resource.definitionId,
       })),
-      resourceSlots: application.resourceSlots.map((slot) => ({
+      executionResourceSlots: application.executionResourceSlots.map((slot) => ({
         slotKey: slot.slotKey,
         required: slot.required === true,
       })),

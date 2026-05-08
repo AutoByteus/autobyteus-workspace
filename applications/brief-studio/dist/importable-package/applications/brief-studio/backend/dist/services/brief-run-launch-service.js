@@ -8,7 +8,7 @@ import { createPendingBindingIntentRepository } from "../repositories/pending-bi
 import { createReviewNoteRepository } from "../repositories/review-note-repository.js";
 import { createRunBindingCorrelationService } from "./run-binding-correlation-service.js";
 const BRIEF_STUDIO_TEAM_RESOURCE = {
-    owner: "bundle",
+    source: "bundle",
     kind: "AGENT_TEAM",
     localId: "brief-studio-team",
 };
@@ -55,8 +55,8 @@ const resolveLaunchProjection = (input) => {
 };
 const resolveDraftingTeamConfiguration = async (context) => {
     return resolveConfiguredTeamLaunchProfile({
-        configuredResource: await context.runtimeControl.getConfiguredResource(DRAFTING_TEAM_SLOT_KEY),
-        fallbackResourceRef: BRIEF_STUDIO_TEAM_RESOURCE,
+        configuredResource: await context.runtimeControl.getConfiguredExecutionResource(DRAFTING_TEAM_SLOT_KEY),
+        fallbackExecutionResourceRef: BRIEF_STUDIO_TEAM_RESOURCE,
     });
 };
 export const createBriefRunLaunchService = (context) => ({
@@ -120,7 +120,7 @@ export const createBriefRunLaunchService = (context) => ({
         try {
             const binding = await context.runtimeControl.startRun({
                 bindingIntentId: pendingIntent.bindingIntentId,
-                resourceRef: draftingTeam.resourceRef,
+                executionResourceRef: draftingTeam.executionResourceRef,
                 launch: buildConfiguredTeamRunLaunch({
                     launchProfile: draftingTeam.launchProfile,
                     workspaceRootPath,

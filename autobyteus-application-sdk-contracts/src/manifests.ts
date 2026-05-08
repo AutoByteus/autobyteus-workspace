@@ -1,8 +1,8 @@
 import type {
-  ApplicationRuntimeResourceKind,
-  ApplicationRuntimeResourceOwner,
-  ApplicationRuntimeResourceRef,
-} from "./runtime-resources.js";
+  ApplicationExecutionResourceKind,
+  ApplicationExecutionResourceSource,
+  ApplicationExecutionResourceRef,
+} from "./execution-resources.js";
 
 export const APPLICATION_MANIFEST_VERSION_V3 = "3" as const;
 
@@ -29,15 +29,15 @@ export type ApplicationSupportedLaunchConfigDeclaration = {
   AGENT_TEAM?: ApplicationSupportedTeamLaunchConfigDeclaration | null;
 };
 
-export type ApplicationResourceSlotDeclaration = {
+export type ApplicationExecutionResourceSlotDeclaration = {
   slotKey: string;
   name: string;
   description?: string | null;
-  allowedResourceKinds: ApplicationRuntimeResourceKind[];
-  allowedResourceOwners?: ApplicationRuntimeResourceOwner[] | null;
+  allowedExecutionResourceKinds: ApplicationExecutionResourceKind[];
+  allowedExecutionResourceSources?: ApplicationExecutionResourceSource[] | null;
   required?: boolean | null;
   supportedLaunchConfig?: ApplicationSupportedLaunchConfigDeclaration | null;
-  defaultResourceRef?: ApplicationRuntimeResourceRef | null;
+  defaultExecutionResourceRef?: ApplicationExecutionResourceRef | null;
 };
 
 export type ApplicationManifestV3 = {
@@ -53,5 +53,5 @@ export type ApplicationManifestV3 = {
   backend: {
     bundleManifest: string;
   };
-  resourceSlots?: ApplicationResourceSlotDeclaration[] | null;
+  executionResourceSlots?: ApplicationExecutionResourceSlotDeclaration[] | null;
 };

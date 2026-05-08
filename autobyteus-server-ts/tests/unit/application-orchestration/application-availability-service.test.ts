@@ -27,7 +27,7 @@ const buildSnapshot = (): ApplicationCatalogSnapshot => ({
       iconAssetPath: null,
       entryHtmlAssetPath: "/application-bundles/app-1/ui/index.html",
       bundleResources: [],
-      resourceSlots: [],
+      executionResourceSlots: [],
       writable: true,
       applicationRootPath: "/tmp/app-1",
       packageRootPath: "/tmp",

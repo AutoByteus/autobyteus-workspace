@@ -107,7 +107,7 @@ import {
   useRuntimeScopedModelSelection,
 } from '~/composables/useRuntimeScopedModelSelection'
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
-import type { ApplicationRuntimeResourceSummary } from '@autobyteus/application-sdk-contracts'
+import type { ApplicationExecutionResourceSummary } from '@autobyteus/application-sdk-contracts'
 import type {
   ApplicationSlotEditorReadiness,
   ApplicationTeamLaunchProfileDraft,
@@ -120,8 +120,8 @@ import {
 import { resolveLeafTeamMembers } from '~/utils/teamDefinitionMembers'
 
 const props = withDefaults(defineProps<{
-  slot: import('@autobyteus/application-sdk-contracts').ApplicationResourceSlotDeclaration
-  selectedResource: ApplicationRuntimeResourceSummary | null
+  slot: import('@autobyteus/application-sdk-contracts').ApplicationExecutionResourceSlotDeclaration
+  selectedResource: ApplicationExecutionResourceSummary | null
   draft: ApplicationTeamLaunchProfileDraft
   disabled?: boolean
 }>(), {

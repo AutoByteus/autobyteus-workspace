@@ -2,7 +2,7 @@ import { pathToFileURL } from "node:url";
 import type {
   ApplicationBackendDefinition,
   ApplicationBackendExposureSummary,
-  ApplicationConfiguredResource,
+  ApplicationConfiguredExecutionResource,
   ApplicationExecutionEventFamily,
   ApplicationHandlerContext,
   ApplicationPublishedArtifactEvent,
@@ -10,7 +10,7 @@ import type {
   ApplicationRouteDefinition,
   ApplicationRouteResponse,
   ApplicationStorageContext,
-  ApplicationRuntimeResourceSummary,
+  ApplicationExecutionResourceSummary,
 } from "@autobyteus/application-sdk-contracts";
 import {
   APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V2,
@@ -157,10 +157,10 @@ const buildExposureSummary = (
 const createRuntimeControl = (
   invokeRuntimeControl: RuntimeControlInvoker,
 ): ApplicationHandlerContext["runtimeControl"] => ({
-  listAvailableResources: async (filter) =>
-    invokeRuntimeControl({ action: "listAvailableResources", input: filter ?? null }) as Promise<ApplicationRuntimeResourceSummary[]>,
-  getConfiguredResource: async (slotKey) =>
-    invokeRuntimeControl({ action: "getConfiguredResource", input: { slotKey } }) as Promise<ApplicationConfiguredResource | null>,
+  listAvailableExecutionResources: async (filter) =>
+    invokeRuntimeControl({ action: "listAvailableExecutionResources", input: filter ?? null }) as Promise<ApplicationExecutionResourceSummary[]>,
+  getConfiguredExecutionResource: async (slotKey) =>
+    invokeRuntimeControl({ action: "getConfiguredExecutionResource", input: { slotKey } }) as Promise<ApplicationConfiguredExecutionResource | null>,
   startRun: async (input) =>
     invokeRuntimeControl({ action: "startRun", input }) as Promise<ApplicationRunBindingSummary>,
   getRunBinding: async (bindingId) =>

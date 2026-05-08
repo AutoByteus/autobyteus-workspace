@@ -91,7 +91,7 @@ vi.mock('~/composables/useRuntimeScopedModelSelection', () => ({
 const buildSlot = () => ({
   slotKey: 'draftingTeam',
   name: 'Drafting Team',
-  allowedResourceKinds: ['AGENT_TEAM'],
+  allowedExecutionResourceKinds: ['AGENT_TEAM'],
   supportedLaunchConfig: {
     AGENT_TEAM: {
       runtimeKind: true,
@@ -106,7 +106,7 @@ const buildSlot = () => ({
 })
 
 const buildSelectedResource = () => ({
-  owner: 'bundle' as const,
+  source: 'bundle' as const,
   kind: 'AGENT_TEAM' as const,
   localId: 'brief-studio-team',
   definitionId: 'team-1',

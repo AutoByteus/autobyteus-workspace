@@ -3,10 +3,10 @@ import type {
   ApplicationConfiguredLaunchProfile,
   ApplicationConfiguredTeamLaunchProfile,
   ApplicationConfiguredTeamMemberProfile,
-  ApplicationResourceConfigurationView,
-  ApplicationResourceSlotDeclaration,
-  ApplicationRuntimeResourceRef,
-  ApplicationRuntimeResourceSummary,
+  ApplicationExecutionResourceConfigurationView,
+  ApplicationExecutionResourceSlotDeclaration,
+  ApplicationExecutionResourceRef,
+  ApplicationExecutionResourceSummary,
 } from '@autobyteus/application-sdk-contracts'
 
 export type ApplicationAgentLaunchProfileDraft = {
@@ -65,59 +65,59 @@ const normalizeOptionalString = (value: unknown): string => {
 }
 
 export const isSameResourceRef = (
-  left: ApplicationRuntimeResourceRef | null | undefined,
-  right: ApplicationRuntimeResourceRef | null | undefined,
+  left: ApplicationExecutionResourceRef | null | undefined,
+  right: ApplicationExecutionResourceRef | null | undefined,
 ): boolean => {
   if (!left || !right) {
     return left === right
   }
-  if (left.owner !== right.owner || left.kind !== right.kind) {
+  if (left.source !== right.source || left.kind !== right.kind) {
     return false
   }
-  if (left.owner === 'bundle' && right.owner === 'bundle') {
+  if (left.source === 'bundle' && right.source === 'bundle') {
     return left.localId === right.localId
   }
-  if (left.owner === 'shared' && right.owner === 'shared') {
+  if (left.source === 'shared' && right.source === 'shared') {
     return left.definitionId === right.definitionId
   }
   return false
 }
 
-export const buildResourceRefKey = (resourceRef: ApplicationRuntimeResourceRef): string => (
-  resourceRef.owner === 'bundle'
-    ? `bundle:${resourceRef.kind}:${resourceRef.localId}`
-    : `shared:${resourceRef.kind}:${resourceRef.definitionId}`
+export const buildResourceRefKey = (executionResourceRef: ApplicationExecutionResourceRef): string => (
+  executionResourceRef.source === 'bundle'
+    ? `bundle:${executionResourceRef.kind}:${executionResourceRef.localId}`
+    : `shared:${executionResourceRef.kind}:${executionResourceRef.definitionId}`
 )
 
-export const summaryToResourceRef = (resource: ApplicationRuntimeResourceSummary): ApplicationRuntimeResourceRef => (
-  resource.owner === 'bundle'
+export const summaryToResourceRef = (resource: ApplicationExecutionResourceSummary): ApplicationExecutionResourceRef => (
+  resource.source === 'bundle'
     ? {
-        owner: 'bundle',
+        source: 'bundle',
         kind: resource.kind,
         localId: resource.localId ?? resource.definitionId,
       }
     : {
-        owner: 'shared',
+        source: 'shared',
         kind: resource.kind,
         definitionId: resource.definitionId,
       }
 )
 
 export const resourcesForSlot = (
-  slot: ApplicationResourceSlotDeclaration,
-  availableResources: ApplicationRuntimeResourceSummary[],
-): ApplicationRuntimeResourceSummary[] => {
-  const allowedOwners = slot.allowedResourceOwners ?? ['bundle', 'shared']
+  slot: ApplicationExecutionResourceSlotDeclaration,
+  availableResources: ApplicationExecutionResourceSummary[],
+): ApplicationExecutionResourceSummary[] => {
+  const allowedSources = slot.allowedExecutionResourceSources ?? ['bundle', 'shared']
   return availableResources.filter((resource) => (
-    slot.allowedResourceKinds.includes(resource.kind)
-    && allowedOwners.includes(resource.owner)
+    slot.allowedExecutionResourceKinds.includes(resource.kind)
+    && allowedSources.includes(resource.source)
   ))
 }
 
 export const resolveSelectedResourceRef = (
   selection: string,
-  availableResources: ApplicationRuntimeResourceSummary[],
-): ApplicationRuntimeResourceRef | null => {
+  availableResources: ApplicationExecutionResourceSummary[],
+): ApplicationExecutionResourceRef | null => {
   if (!selection || selection === MANIFEST_DEFAULT_SELECTION) {
     return null
   }
@@ -128,23 +128,23 @@ export const resolveSelectedResourceRef = (
 }
 
 export const resolveEffectiveResourceRef = (
-  view: ApplicationResourceConfigurationView,
+  view: ApplicationExecutionResourceConfigurationView,
   draft: ApplicationSlotDraft | null | undefined,
-  availableResources: ApplicationRuntimeResourceSummary[],
-): ApplicationRuntimeResourceRef | null => {
+  availableResources: ApplicationExecutionResourceSummary[],
+): ApplicationExecutionResourceRef | null => {
   if (!draft) {
     return null
   }
   if (draft.selection === MANIFEST_DEFAULT_SELECTION) {
-    return view.slot.defaultResourceRef ?? null
+    return view.slot.defaultExecutionResourceRef ?? null
   }
   return resolveSelectedResourceRef(draft.selection, availableResources)
 }
 
 export const hasEffectiveResourceSelection = (
-  view: ApplicationResourceConfigurationView,
+  view: ApplicationExecutionResourceConfigurationView,
   draft: ApplicationSlotDraft | null | undefined,
-  availableResources: ApplicationRuntimeResourceSummary[],
+  availableResources: ApplicationExecutionResourceSummary[],
 ): boolean => Boolean(resolveEffectiveResourceRef(view, draft, availableResources))
 
 const buildAgentLaunchProfileDraft = (
@@ -192,7 +192,7 @@ const buildLaunchProfileDraft = (
 }
 
 export const buildEmptyLaunchProfileDraft = (
-  resourceKind: ApplicationRuntimeResourceRef['kind'],
+  resourceKind: ApplicationExecutionResourceRef['kind'],
 ): ApplicationLaunchProfileDraft => (
   resourceKind === 'AGENT'
     ? buildAgentLaunchProfileDraft(null)
@@ -200,14 +200,14 @@ export const buildEmptyLaunchProfileDraft = (
 )
 
 export const buildDraftFromView = (
-  view: ApplicationResourceConfigurationView,
+  view: ApplicationExecutionResourceConfigurationView,
 ): ApplicationSlotDraft => {
   const candidateConfiguration = view.configuration ?? view.invalidSavedConfiguration ?? null
-  const currentResourceRef = candidateConfiguration?.resourceRef ?? null
+  const currentResourceRef = candidateConfiguration?.executionResourceRef ?? null
   const usingManifestDefault = Boolean(
-    view.slot.defaultResourceRef
+    view.slot.defaultExecutionResourceRef
     && currentResourceRef
-    && isSameResourceRef(currentResourceRef, view.slot.defaultResourceRef)
+    && isSameResourceRef(currentResourceRef, view.slot.defaultExecutionResourceRef)
   )
 
   return {
@@ -294,7 +294,7 @@ const normalizeDraft = (
 })
 
 export const hasUnsavedDraftChanges = (
-  view: ApplicationResourceConfigurationView,
+  view: ApplicationExecutionResourceConfigurationView,
   draft: ApplicationSlotDraft | null | undefined,
 ): boolean => {
   if (!draft) {
@@ -304,44 +304,44 @@ export const hasUnsavedDraftChanges = (
 }
 
 export const describeResourceSummary = (
-  resource: ApplicationRuntimeResourceSummary,
+  resource: ApplicationExecutionResourceSummary,
   t: ApplicationLaunchSetupTranslate,
 ): string => {
-  const ownerLabel = resource.owner === 'bundle'
+  const sourceLabel = resource.source === 'bundle'
     ? t('applications.components.applications.ApplicationLaunchSetupPanel.bundleResource')
     : t('applications.components.applications.ApplicationLaunchSetupPanel.sharedResource')
   const kindLabel = resource.kind === 'AGENT_TEAM'
     ? t('applications.shared.agentTeam')
     : t('applications.shared.singleAgent')
-  return `${resource.name} · ${ownerLabel} · ${kindLabel}`
+  return `${resource.name} · ${sourceLabel} · ${kindLabel}`
 }
 
 export const describeResourceRef = (
-  resourceRef: ApplicationRuntimeResourceRef,
-  availableResources: ApplicationRuntimeResourceSummary[],
+  executionResourceRef: ApplicationExecutionResourceRef,
+  availableResources: ApplicationExecutionResourceSummary[],
   t: ApplicationLaunchSetupTranslate,
 ): string => {
-  const matched = availableResources.find((resource) => isSameResourceRef(summaryToResourceRef(resource), resourceRef))
+  const matched = availableResources.find((resource) => isSameResourceRef(summaryToResourceRef(resource), executionResourceRef))
   if (matched) {
     return describeResourceSummary(matched, t)
   }
 
-  const identifier = resourceRef.owner === 'bundle' ? resourceRef.localId : resourceRef.definitionId
-  return `${resourceRef.kind} · ${resourceRef.owner} · ${identifier}`
+  const identifier = executionResourceRef.source === 'bundle' ? executionResourceRef.localId : executionResourceRef.definitionId
+  return `${executionResourceRef.kind} · ${executionResourceRef.source} · ${identifier}`
 }
 
 export const describeCurrentSelection = (
-  view: ApplicationResourceConfigurationView,
-  availableResources: ApplicationRuntimeResourceSummary[],
+  view: ApplicationExecutionResourceConfigurationView,
+  availableResources: ApplicationExecutionResourceSummary[],
   t: ApplicationLaunchSetupTranslate,
 ): string => {
   const candidateConfiguration = view.configuration ?? view.invalidSavedConfiguration ?? null
-  if (candidateConfiguration?.resourceRef) {
-    return describeResourceRef(candidateConfiguration.resourceRef, availableResources, t)
+  if (candidateConfiguration?.executionResourceRef) {
+    return describeResourceRef(candidateConfiguration.executionResourceRef, availableResources, t)
   }
-  if (view.slot.defaultResourceRef) {
+  if (view.slot.defaultExecutionResourceRef) {
     return t('applications.components.applications.ApplicationLaunchSetupPanel.usingManifestDefault', {
-      resource: describeResourceRef(view.slot.defaultResourceRef, availableResources, t),
+      resource: describeResourceRef(view.slot.defaultExecutionResourceRef, availableResources, t),
     })
   }
   return t('applications.components.applications.ApplicationLaunchSetupPanel.notConfigured')

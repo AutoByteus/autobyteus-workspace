@@ -113,7 +113,7 @@
           data-testid="application-launch-setup-slot-body"
           :class="slotEditorGridClasses"
         >
-          <ApplicationResourceSlotEditor
+          <ApplicationExecutionResourceSlotEditor
             v-if="drafts[view.slot.slotKey]"
             :view="view"
             :draft="drafts[view.slot.slotKey]"
@@ -172,10 +172,10 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import type {
-  ApplicationResourceConfigurationView,
-  ApplicationRuntimeResourceSummary,
+  ApplicationExecutionResourceConfigurationView,
+  ApplicationExecutionResourceSummary,
 } from '@autobyteus/application-sdk-contracts'
-import ApplicationResourceSlotEditor from '~/components/applications/setup/ApplicationResourceSlotEditor.vue'
+import ApplicationExecutionResourceSlotEditor from '~/components/applications/setup/ApplicationExecutionResourceSlotEditor.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import {
@@ -262,8 +262,8 @@ const secondaryActionButtonClasses = computed(() => (
 
 const loading = ref(false)
 const loadError = ref<string | null>(null)
-const configurationViews = ref<ApplicationResourceConfigurationView[]>([])
-const availableResources = ref<ApplicationRuntimeResourceSummary[]>([])
+const configurationViews = ref<ApplicationExecutionResourceConfigurationView[]>([])
+const availableResources = ref<ApplicationExecutionResourceSummary[]>([])
 const drafts = ref<Record<string, ApplicationSlotDraft>>({})
 const slotReadinessByKey = ref<Record<string, ApplicationSlotEditorReadiness>>({})
 const savingSlotKeys = ref<string[]>([])
@@ -318,11 +318,11 @@ const loadSetup = async (): Promise<void> => {
 
   try {
     const [views, resources] = await Promise.all([
-      fetchJson<ApplicationResourceConfigurationView[]>(
-        `/applications/${encodeURIComponent(normalizedApplicationId)}/resource-configurations`,
+      fetchJson<ApplicationExecutionResourceConfigurationView[]>(
+        `/applications/${encodeURIComponent(normalizedApplicationId)}/execution-resource-configurations`,
       ),
-      fetchJson<ApplicationRuntimeResourceSummary[]>(
-        `/applications/${encodeURIComponent(normalizedApplicationId)}/available-resources`,
+      fetchJson<ApplicationExecutionResourceSummary[]>(
+        `/applications/${encodeURIComponent(normalizedApplicationId)}/available-execution-resources`,
       ),
     ])
 
@@ -388,7 +388,7 @@ const updateSlotReadiness = (slotKey: string, readiness: ApplicationSlotEditorRe
   }
 }
 
-const saveConfiguration = async (view: ApplicationResourceConfigurationView): Promise<void> => {
+const saveConfiguration = async (view: ApplicationExecutionResourceConfigurationView): Promise<void> => {
   const draft = drafts.value[view.slot.slotKey]
   if (!draft) {
     return
@@ -405,8 +405,8 @@ const saveConfiguration = async (view: ApplicationResourceConfigurationView): Pr
   }
 
   try {
-    const nextView = await fetchJson<ApplicationResourceConfigurationView>(
-      `/applications/${encodeURIComponent(props.applicationId)}/resource-configurations/${encodeURIComponent(view.slot.slotKey)}`,
+    const nextView = await fetchJson<ApplicationExecutionResourceConfigurationView>(
+      `/applications/${encodeURIComponent(props.applicationId)}/execution-resource-configurations/${encodeURIComponent(view.slot.slotKey)}`,
       {
         method: 'PUT',
         headers: {
@@ -414,7 +414,7 @@ const saveConfiguration = async (view: ApplicationResourceConfigurationView): Pr
           accept: 'application/json',
         },
         body: JSON.stringify({
-          resourceRef: draft.selection === ''
+          executionResourceRef: draft.selection === ''
             ? null
             : draft.selection === MANIFEST_DEFAULT_SELECTION
               ? null
@@ -466,7 +466,7 @@ const resetDraft = (slotKey: string): void => {
 
 const isSaving = (slotKey: string): boolean => savingSlotKeys.value.includes(slotKey)
 
-const describeCurrentSelectionForView = (view: ApplicationResourceConfigurationView): string => (
+const describeCurrentSelectionForView = (view: ApplicationExecutionResourceConfigurationView): string => (
   describeCurrentSelection(view, availableResources.value, $t)
 )
 

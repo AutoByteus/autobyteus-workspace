@@ -63,8 +63,8 @@ export type ApplicationWorkerInvokeArtifactHandlerInput = {
 
 export type ApplicationWorkerRuntimeControlInput = {
   action:
-    | "listAvailableResources"
-    | "getConfiguredResource"
+    | "listAvailableExecutionResources"
+    | "getConfiguredExecutionResource"
     | "startRun"
     | "getRunBinding"
     | "getRunBindingByIntentId"

@@ -17,8 +17,8 @@ const buildBinding = (): ApplicationRunBindingSummary => ({
   applicationId,
   bindingIntentId: "binding-intent-1",
   status: "ATTACHED",
-  resourceRef: {
-    owner: "bundle",
+  executionResourceRef: {
+    source: "bundle",
     kind: "AGENT_TEAM",
     localId: "brief-studio-team",
   },

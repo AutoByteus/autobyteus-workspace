@@ -5,7 +5,7 @@ import type {
   ApplicationAgentRunLaunch,
   ApplicationRunBindingMemberSummary,
   ApplicationRunBindingSummary,
-  ApplicationRuntimeResourceRef,
+  ApplicationExecutionResourceRef,
   ApplicationStartRunInput,
   ApplicationTeamMemberLaunchConfig,
   ApplicationTeamRunLaunch,
@@ -19,9 +19,9 @@ import { TeamRunService, getTeamRunService } from "../../agent-team-execution/se
 import type { TeamMemberRunConfig } from "../../agent-team-execution/domain/team-run-config.js";
 import type { ApplicationExecutionContext } from "../domain/models.js";
 import {
-  ApplicationRuntimeResourceResolver,
-  type ResolvedApplicationRuntimeResource,
-} from "./application-runtime-resource-resolver.js";
+  ApplicationExecutionResourceResolver,
+  type ResolvedApplicationExecutionResource,
+} from "./application-execution-resource-resolver.js";
 import { ApplicationRunBindingStore } from "../stores/application-run-binding-store.js";
 import { ApplicationRunLookupStore } from "../stores/application-run-lookup-store.js";
 
@@ -51,12 +51,12 @@ const toSkillAccessMode = (
 };
 
 const requireLaunchKind = (
-  resource: ResolvedApplicationRuntimeResource,
+  resource: ResolvedApplicationExecutionResource,
   launch: ApplicationStartRunInput["launch"],
 ): void => {
   if (resource.kind !== launch.kind) {
     throw new Error(
-      `Runtime launch kind '${launch.kind}' does not match runtime resource kind '${resource.kind}'.`,
+      `Runtime launch kind '${launch.kind}' does not match execution resource kind '${resource.kind}'.`,
     );
   }
 };
@@ -72,7 +72,7 @@ const requireNonEmptyString = (value: string, fieldName: string): string => {
 export class ApplicationRunBindingLaunchService {
   constructor(
     private readonly dependencies: {
-      resourceResolver?: ApplicationRuntimeResourceResolver;
+      executionResourceResolver?: ApplicationExecutionResourceResolver;
       bindingStore?: ApplicationRunBindingStore;
       lookupStore?: ApplicationRunLookupStore;
       agentRunService?: AgentRunService;
@@ -82,8 +82,8 @@ export class ApplicationRunBindingLaunchService {
     } = {},
   ) {}
 
-  private get resourceResolver(): ApplicationRuntimeResourceResolver {
-    return this.dependencies.resourceResolver ?? new ApplicationRuntimeResourceResolver();
+  private get executionResourceResolver(): ApplicationExecutionResourceResolver {
+    return this.dependencies.executionResourceResolver ?? new ApplicationExecutionResourceResolver();
   }
 
   private get bindingStore(): ApplicationRunBindingStore {
@@ -114,7 +114,7 @@ export class ApplicationRunBindingLaunchService {
     applicationId: string,
     input: ApplicationStartRunInput,
   ): Promise<ApplicationRunBindingSummary> {
-    const resource = await this.resourceResolver.resolveResource(applicationId, input.resourceRef);
+    const resource = await this.executionResourceResolver.resolveExecutionResource(applicationId, input.executionResourceRef);
     requireLaunchKind(resource, input.launch);
 
     const bindingSeed = {
@@ -124,16 +124,16 @@ export class ApplicationRunBindingLaunchService {
     };
 
     if (input.launch.kind === "AGENT") {
-      return this.startAgentBinding(bindingSeed, input.resourceRef, resource, input.launch);
+      return this.startAgentBinding(bindingSeed, input.executionResourceRef, resource, input.launch);
     }
 
-    return this.startTeamBinding(bindingSeed, input.resourceRef, resource, input.launch);
+    return this.startTeamBinding(bindingSeed, input.executionResourceRef, resource, input.launch);
   }
 
   private async startAgentBinding(
     bindingSeed: { applicationId: string; bindingId: string; bindingIntentId: string },
-    resourceRef: ApplicationRuntimeResourceRef,
-    resource: ResolvedApplicationRuntimeResource,
+    executionResourceRef: ApplicationExecutionResourceRef,
+    resource: ResolvedApplicationExecutionResource,
     launch: ApplicationAgentRunLaunch,
   ): Promise<ApplicationRunBindingSummary> {
     const memberSummary = await this.buildSingleAgentMemberSummary(resource);
@@ -157,7 +157,7 @@ export class ApplicationRunBindingLaunchService {
       applicationId: bindingSeed.applicationId,
       bindingIntentId: bindingSeed.bindingIntentId,
       status: "ATTACHED",
-      resourceRef: structuredClone(resourceRef),
+      executionResourceRef: structuredClone(executionResourceRef),
       runtime: {
         subject: "AGENT_RUN",
         runId: agentRun.runId,
@@ -176,8 +176,8 @@ export class ApplicationRunBindingLaunchService {
 
   private async startTeamBinding(
     bindingSeed: { applicationId: string; bindingId: string; bindingIntentId: string },
-    resourceRef: ApplicationRuntimeResourceRef,
-    resource: ResolvedApplicationRuntimeResource,
+    executionResourceRef: ApplicationExecutionResourceRef,
+    resource: ResolvedApplicationExecutionResource,
     launch: ApplicationTeamRunLaunch,
   ): Promise<ApplicationRunBindingSummary> {
     const memberDescriptors = await this.collectTeamMemberDescriptors(resource.definitionId);
@@ -251,7 +251,7 @@ export class ApplicationRunBindingLaunchService {
       applicationId: bindingSeed.applicationId,
       bindingIntentId: bindingSeed.bindingIntentId,
       status: "ATTACHED",
-      resourceRef: structuredClone(resourceRef),
+      executionResourceRef: structuredClone(executionResourceRef),
       runtime: {
         subject: "TEAM_RUN",
         runId: teamRun.runId,
@@ -269,7 +269,7 @@ export class ApplicationRunBindingLaunchService {
   }
 
   private async buildSingleAgentMemberSummary(
-    resource: ResolvedApplicationRuntimeResource,
+    resource: ResolvedApplicationExecutionResource,
   ): Promise<ApplicationRunBindingMemberSummary> {
     const definition = await this.agentDefinitionService.getAgentDefinitionById(resource.definitionId);
     const memberName = resource.localId ?? (definition?.name?.trim() || resource.definitionId);

@@ -1,9 +1,9 @@
 import type {
   ApplicationAgentRunLaunch,
   ApplicationConfiguredAgentLaunchProfile,
-  ApplicationConfiguredResource,
+  ApplicationConfiguredExecutionResource,
   ApplicationConfiguredTeamLaunchProfile,
-  ApplicationRuntimeResourceRef,
+  ApplicationExecutionResourceRef,
   ApplicationSkillAccessMode,
   ApplicationTeamMemberLaunchConfig,
   ApplicationTeamRunLaunch,
@@ -29,9 +29,9 @@ const requireNonEmptyString = (
   return normalized;
 };
 
-const cloneResourceRef = (
-  resourceRef: ApplicationRuntimeResourceRef,
-): ApplicationRuntimeResourceRef => structuredClone(resourceRef);
+const cloneExecutionResourceRef = (
+  executionResourceRef: ApplicationExecutionResourceRef,
+): ApplicationExecutionResourceRef => structuredClone(executionResourceRef);
 
 const normalizeSkillAccessMode = (
   skillAccessMode: ApplicationSkillAccessMode | null | undefined,
@@ -43,37 +43,37 @@ const normalizeSkillAccessMode = (
 };
 
 export const resolveConfiguredAgentLaunchProfile = (input: {
-  configuredResource: ApplicationConfiguredResource | null | undefined;
-  fallbackResourceRef: ApplicationRuntimeResourceRef;
+  configuredResource: ApplicationConfiguredExecutionResource | null | undefined;
+  fallbackExecutionResourceRef: ApplicationExecutionResourceRef;
 }): {
-  resourceRef: ApplicationRuntimeResourceRef;
+  executionResourceRef: ApplicationExecutionResourceRef;
   launchProfile: ApplicationConfiguredAgentLaunchProfile | null;
 } => {
-  const resourceRef = input.configuredResource?.resourceRef ?? input.fallbackResourceRef;
+  const executionResourceRef = input.configuredResource?.executionResourceRef ?? input.fallbackExecutionResourceRef;
   const launchProfile = input.configuredResource?.launchProfile?.kind === "AGENT"
     ? input.configuredResource.launchProfile
     : null;
 
   return {
-    resourceRef: cloneResourceRef(resourceRef),
+    executionResourceRef: cloneExecutionResourceRef(executionResourceRef),
     launchProfile: launchProfile ? structuredClone(launchProfile) : null,
   };
 };
 
 export const resolveConfiguredTeamLaunchProfile = (input: {
-  configuredResource: ApplicationConfiguredResource | null | undefined;
-  fallbackResourceRef: ApplicationRuntimeResourceRef;
+  configuredResource: ApplicationConfiguredExecutionResource | null | undefined;
+  fallbackExecutionResourceRef: ApplicationExecutionResourceRef;
 }): {
-  resourceRef: ApplicationRuntimeResourceRef;
+  executionResourceRef: ApplicationExecutionResourceRef;
   launchProfile: ApplicationConfiguredTeamLaunchProfile | null;
 } => {
-  const resourceRef = input.configuredResource?.resourceRef ?? input.fallbackResourceRef;
+  const executionResourceRef = input.configuredResource?.executionResourceRef ?? input.fallbackExecutionResourceRef;
   const launchProfile = input.configuredResource?.launchProfile?.kind === "AGENT_TEAM"
     ? input.configuredResource.launchProfile
     : null;
 
   return {
-    resourceRef: cloneResourceRef(resourceRef),
+    executionResourceRef: cloneExecutionResourceRef(executionResourceRef),
     launchProfile: launchProfile ? structuredClone(launchProfile) : null,
   };
 };

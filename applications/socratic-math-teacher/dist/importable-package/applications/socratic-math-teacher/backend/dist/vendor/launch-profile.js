@@ -10,7 +10,7 @@ const requireNonEmptyString = (value, fieldName) => {
     }
     return normalized;
 };
-const cloneResourceRef = (resourceRef) => structuredClone(resourceRef);
+const cloneExecutionResourceRef = (executionResourceRef) => structuredClone(executionResourceRef);
 const normalizeSkillAccessMode = (skillAccessMode) => {
     if (skillAccessMode === "GLOBAL_DISCOVERY" || skillAccessMode === "NONE") {
         return skillAccessMode;
@@ -18,22 +18,22 @@ const normalizeSkillAccessMode = (skillAccessMode) => {
     return APPLICATION_HOST_MANAGED_SKILL_ACCESS_MODE;
 };
 export const resolveConfiguredAgentLaunchProfile = (input) => {
-    const resourceRef = input.configuredResource?.resourceRef ?? input.fallbackResourceRef;
+    const executionResourceRef = input.configuredResource?.executionResourceRef ?? input.fallbackExecutionResourceRef;
     const launchProfile = input.configuredResource?.launchProfile?.kind === "AGENT"
         ? input.configuredResource.launchProfile
         : null;
     return {
-        resourceRef: cloneResourceRef(resourceRef),
+        executionResourceRef: cloneExecutionResourceRef(executionResourceRef),
         launchProfile: launchProfile ? structuredClone(launchProfile) : null,
     };
 };
 export const resolveConfiguredTeamLaunchProfile = (input) => {
-    const resourceRef = input.configuredResource?.resourceRef ?? input.fallbackResourceRef;
+    const executionResourceRef = input.configuredResource?.executionResourceRef ?? input.fallbackExecutionResourceRef;
     const launchProfile = input.configuredResource?.launchProfile?.kind === "AGENT_TEAM"
         ? input.configuredResource.launchProfile
         : null;
     return {
-        resourceRef: cloneResourceRef(resourceRef),
+        executionResourceRef: cloneExecutionResourceRef(executionResourceRef),
         launchProfile: launchProfile ? structuredClone(launchProfile) : null,
     };
 };

@@ -77,7 +77,7 @@ const buildApplication = (): ApplicationDetailRecord => ({
   description: 'Sample description',
   iconAssetPath: null,
   entryHtmlAssetPath: '/application-bundles/sample-app/assets/ui/index.html',
-  resourceSlots: [],
+  executionResourceSlots: [],
   technicalDetails: {
     localApplicationId: 'sample-app',
     packageId: 'pkg',

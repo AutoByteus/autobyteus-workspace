@@ -2,9 +2,17 @@ import { DatabaseSync } from "node:sqlite";
 import type {
   ApplicationRunBindingListFilter,
   ApplicationRunBindingSummary,
-  ApplicationRuntimeResourceRef,
+  ApplicationExecutionResourceRef,
 } from "@autobyteus/application-sdk-contracts";
 import { ApplicationPlatformStateStore } from "../../application-storage/stores/application-platform-state-store.js";
+
+const STALE_RUN_BINDING_SUMMARY_PREDICATE = `
+  json_valid(summary_json)
+  AND (
+    json_type(summary_json, '$.resourceRef') IS NOT NULL
+    OR json_type(summary_json, '$.executionResourceRef.owner') IS NOT NULL
+  )
+`;
 
 const ensureTables = (db: DatabaseSync): void => {
   db.exec(`
@@ -53,6 +61,8 @@ const ensureTables = (db: DatabaseSync): void => {
     CREATE UNIQUE INDEX IF NOT EXISTS __autobyteus_run_bindings_by_binding_intent_id
       ON __autobyteus_run_bindings (binding_intent_id);
   `);
+
+  dropStaleOldShapeRunBindings(db);
 };
 
 const cloneSummary = (summary: ApplicationRunBindingSummary): ApplicationRunBindingSummary => structuredClone(summary);
@@ -60,11 +70,36 @@ const cloneSummary = (summary: ApplicationRunBindingSummary): ApplicationRunBind
 const hydrateSummary = (row: { summary_json: string }): ApplicationRunBindingSummary =>
   JSON.parse(row.summary_json) as ApplicationRunBindingSummary;
 
-const normalizeResourceColumns = (resourceRef: ApplicationRuntimeResourceRef) => ({
-  owner: resourceRef.owner,
-  kind: resourceRef.kind,
-  localId: resourceRef.owner === "bundle" ? resourceRef.localId : null,
-  definitionId: resourceRef.owner === "shared" ? resourceRef.definitionId : null,
+const dropStaleOldShapeRunBindings = (db: DatabaseSync): void => {
+  const staleCount = (
+    db.prepare(
+      `SELECT COUNT(*) AS count
+         FROM __autobyteus_run_bindings
+        WHERE ${STALE_RUN_BINDING_SUMMARY_PREDICATE}`,
+    ).get() as { count: number } | undefined
+  )?.count ?? 0;
+  if (staleCount > 0) {
+    console.warn(
+      `Dropped ${staleCount} stale application run binding row(s) that used old execution-resource summary fields. Re-run state must be recreated with the new execution-resource contract.`,
+    );
+  }
+  db.exec(`
+    DELETE FROM __autobyteus_run_binding_members
+      WHERE binding_id IN (
+        SELECT binding_id
+          FROM __autobyteus_run_bindings
+         WHERE ${STALE_RUN_BINDING_SUMMARY_PREDICATE}
+      );
+    DELETE FROM __autobyteus_run_bindings
+      WHERE ${STALE_RUN_BINDING_SUMMARY_PREDICATE};
+  `);
+};
+
+const normalizeResourceColumns = (executionResourceRef: ApplicationExecutionResourceRef) => ({
+  source: executionResourceRef.source,
+  kind: executionResourceRef.kind,
+  localId: executionResourceRef.source === "bundle" ? executionResourceRef.localId : null,
+  definitionId: executionResourceRef.source === "shared" ? executionResourceRef.definitionId : null,
 });
 
 export class ApplicationRunBindingStore {
@@ -103,7 +138,7 @@ export class ApplicationRunBindingStore {
   async persistBinding(summary: ApplicationRunBindingSummary): Promise<ApplicationRunBindingSummary> {
     return this.platformStateStore.withTransaction(summary.applicationId, (db) => {
       ensureTables(db);
-      const resourceColumns = normalizeResourceColumns(summary.resourceRef);
+      const resourceColumns = normalizeResourceColumns(summary.executionResourceRef);
       db.prepare(
         `INSERT INTO __autobyteus_run_bindings (
            binding_id,
@@ -147,7 +182,7 @@ export class ApplicationRunBindingStore {
         summary.runtime.subject,
         summary.runtime.runId,
         summary.runtime.definitionId,
-        resourceColumns.owner,
+        resourceColumns.source,
         resourceColumns.kind,
         resourceColumns.localId,
         resourceColumns.definitionId,

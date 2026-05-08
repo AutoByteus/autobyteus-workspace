@@ -92,13 +92,13 @@ const writeApplicationBundle = async (packageRoot: string, applicationId: string
     name: applicationId,
     ui: { entryHtml: "ui/index.html", frontendSdkContractVersion: "3" },
     backend: { bundleManifest: "backend/bundle.json" },
-    resourceSlots: [
+    executionResourceSlots: [
       {
         slotKey: "draftingTeam",
         name: "Drafting Team",
-        allowedResourceKinds: ["AGENT_TEAM"],
-        defaultResourceRef: {
-          owner: "bundle",
+        allowedExecutionResourceKinds: ["AGENT_TEAM"],
+        defaultExecutionResourceRef: {
+          source: "bundle",
           kind: "AGENT_TEAM",
           localId: "sample-team",
         },

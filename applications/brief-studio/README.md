@@ -7,7 +7,7 @@ It demonstrates:
 - framework-owned hosted application startup through `startHostedApplication(...)`
 - one app-owned GraphQL brief API hosted under the platform backend mount
 - one app-owned `briefId` business identity
-- one required manifest `resourceSlots[]` team slot resolved through the host-managed setup-first launch gate
+- one required manifest `executionResourceSlots[]` team slot resolved through the host-managed setup-first launch gate
 - pending `bindingIntentId` handoff before each direct draft-run launch
 - many bound runs over time for one brief record
 - host-managed saved team `launchProfile` before entry: shared runtime/model/workspace defaults plus per-member runtime/model overrides

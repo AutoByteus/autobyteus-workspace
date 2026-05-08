@@ -61,7 +61,7 @@ const buildCatalogQueryRecord = (
   description: `${name} description`,
   iconAssetPath: null,
   entryHtmlAssetPath: `/application-bundles/${id}/assets/ui/index.html`,
-  resourceSlots: [
+  executionResourceSlots: [
     {
       slotKey: `${id}-team`,
       required: true,
@@ -144,7 +144,7 @@ describe('applicationStore', () => {
         description: 'App 1 description',
         iconAssetPath: null,
         entryHtmlAssetPath: '/application-bundles/app-1/assets/ui/index.html',
-        resourceSlots: [],
+        executionResourceSlots: [],
       },
     ]
     store.hasFetched = true
@@ -180,7 +180,7 @@ describe('applicationStore', () => {
         description: 'App 1 description',
         iconAssetPath: null,
         entryHtmlAssetPath: '/application-bundles/app-1/assets/ui/index.html',
-        resourceSlots: [],
+        executionResourceSlots: [],
       },
     ]
 
@@ -216,7 +216,7 @@ describe('applicationStore', () => {
       description: null,
       iconAssetPath: null,
       entryHtmlAssetPath: '/application-bundles/app-1/assets/ui/index.html',
-      resourceSlots: [],
+      executionResourceSlots: [],
     }]
     store.applicationDetails = {
       'app-1': {
@@ -225,7 +225,7 @@ describe('applicationStore', () => {
         description: null,
         iconAssetPath: null,
         entryHtmlAssetPath: '/application-bundles/app-1/assets/ui/index.html',
-        resourceSlots: [],
+        executionResourceSlots: [],
         technicalDetails: {
           localApplicationId: 'app-1',
           packageId: 'pkg',
@@ -257,7 +257,7 @@ describe('applicationStore', () => {
       description: null,
       iconAssetPath: null,
       entryHtmlAssetPath: '/application-bundles/app-1/assets/ui/index.html',
-      resourceSlots: [],
+      executionResourceSlots: [],
     }]
     store.applicationDetails = {
       'app-1': {
@@ -266,7 +266,7 @@ describe('applicationStore', () => {
         description: null,
         iconAssetPath: null,
         entryHtmlAssetPath: '/application-bundles/app-1/assets/ui/index.html',
-        resourceSlots: [],
+        executionResourceSlots: [],
         technicalDetails: {
           localApplicationId: 'app-1',
           packageId: 'pkg',
@@ -298,7 +298,7 @@ describe('applicationStore', () => {
       description: null,
       iconAssetPath: null,
       entryHtmlAssetPath: '/application-bundles/app-1/assets/ui/index.html',
-      resourceSlots: [],
+      executionResourceSlots: [],
     }]
     store.applicationDetails = {
       'app-1': {
@@ -307,7 +307,7 @@ describe('applicationStore', () => {
         description: null,
         iconAssetPath: null,
         entryHtmlAssetPath: '/application-bundles/app-1/assets/ui/index.html',
-        resourceSlots: [],
+        executionResourceSlots: [],
         technicalDetails: {
           localApplicationId: 'app-1',
           packageId: 'pkg',

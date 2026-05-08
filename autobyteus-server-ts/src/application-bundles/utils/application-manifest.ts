@@ -4,10 +4,10 @@ import {
   APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V3,
   APPLICATION_MANIFEST_VERSION_V3,
   type ApplicationManifestV3,
-  type ApplicationResourceSlotDeclaration,
-  type ApplicationRuntimeResourceKind,
-  type ApplicationRuntimeResourceOwner,
-  type ApplicationRuntimeResourceRef,
+  type ApplicationExecutionResourceSlotDeclaration,
+  type ApplicationExecutionResourceKind,
+  type ApplicationExecutionResourceSource,
+  type ApplicationExecutionResourceRef,
   type ApplicationSupportedAgentLaunchConfigDeclaration,
   type ApplicationSupportedLaunchConfigDeclaration,
   type ApplicationSupportedTeamLaunchConfigDeclaration,
@@ -17,9 +17,9 @@ import {
 export const APPLICATION_MANIFEST_FILE_NAME = "application.json";
 
 const SLOT_KEY_PATTERN = /^[A-Za-z][A-Za-z0-9_-]*$/;
-const RESOURCE_KINDS = new Set<ApplicationRuntimeResourceKind>(["AGENT", "AGENT_TEAM"]);
-const RESOURCE_OWNERS = new Set<ApplicationRuntimeResourceOwner>(["bundle", "shared"]);
-const DEFAULT_ALLOWED_RESOURCE_OWNERS: ApplicationRuntimeResourceOwner[] = ["bundle", "shared"];
+const EXECUTION_RESOURCE_KINDS = new Set<ApplicationExecutionResourceKind>(["AGENT", "AGENT_TEAM"]);
+const EXECUTION_RESOURCE_SOURCES = new Set<ApplicationExecutionResourceSource>(["bundle", "shared"]);
+const DEFAULT_ALLOWED_EXECUTION_RESOURCE_SOURCES: ApplicationExecutionResourceSource[] = ["bundle", "shared"];
 const SUPPORTED_AGENT_LAUNCH_KEYS = new Set<keyof ApplicationSupportedAgentLaunchConfigDeclaration>([
   "llmModelIdentifier",
   "runtimeKind",
@@ -81,7 +81,7 @@ type ParsedManifest = {
   iconRelativePath: string | null;
   entryHtmlRelativePath: string;
   backendBundleManifestRelativePath: string;
-  resourceSlots: ApplicationResourceSlotDeclaration[];
+  executionResourceSlots: ApplicationExecutionResourceSlotDeclaration[];
 };
 
 export class ApplicationManifestParseError extends Error {
@@ -108,6 +108,24 @@ const normalizeOptionalString = (value: unknown): string | null => {
   }
   const normalized = value.trim();
   return normalized.length > 0 ? normalized : null;
+};
+
+const hasOwnField = (
+  record: Record<string, unknown>,
+  candidateFieldName: string,
+): boolean => Object.prototype.hasOwnProperty.call(record, candidateFieldName);
+
+const rejectLegacyField = (
+  record: Record<string, unknown>,
+  fieldName: string,
+  legacyFieldName: string,
+  replacementFieldName: string,
+): void => {
+  if (hasOwnField(record, legacyFieldName)) {
+    throw new ApplicationManifestParseError(
+      `${fieldName}.${legacyFieldName} is no longer supported. Use ${fieldName}.${replacementFieldName}.`,
+    );
+  }
 };
 
 const normalizeBundleRelativePath = (
@@ -173,40 +191,41 @@ const normalizeUniqueStringList = <TValue extends string>(input: {
   return normalized;
 };
 
-const normalizeRuntimeResourceRef = (
+const normalizeExecutionResourceRef = (
   value: unknown,
   fieldName: string,
-): ApplicationRuntimeResourceRef => {
+): ApplicationExecutionResourceRef => {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     throw new ApplicationManifestParseError(`${fieldName} must be an object.`);
   }
   const record = value as Record<string, unknown>;
-  const owner = normalizeRequiredString(record.owner, `${fieldName}.owner`) as ApplicationRuntimeResourceOwner;
-  if (!RESOURCE_OWNERS.has(owner)) {
-    throw new ApplicationManifestParseError(`${fieldName}.owner must be 'bundle' or 'shared'.`);
+  rejectLegacyField(record, fieldName, "owner", "source");
+  const source = normalizeRequiredString(record.source, `${fieldName}.source`) as ApplicationExecutionResourceSource;
+  if (!EXECUTION_RESOURCE_SOURCES.has(source)) {
+    throw new ApplicationManifestParseError(`${fieldName}.source must be 'bundle' or 'shared'.`);
   }
-  const kind = normalizeRequiredString(record.kind, `${fieldName}.kind`) as ApplicationRuntimeResourceKind;
-  if (!RESOURCE_KINDS.has(kind)) {
+  const kind = normalizeRequiredString(record.kind, `${fieldName}.kind`) as ApplicationExecutionResourceKind;
+  if (!EXECUTION_RESOURCE_KINDS.has(kind)) {
     throw new ApplicationManifestParseError(`${fieldName}.kind must be 'AGENT' or 'AGENT_TEAM'.`);
   }
-  if (owner === "bundle") {
+  if (source === "bundle") {
     return {
-      owner,
+      source,
       kind,
       localId: normalizeRequiredString(record.localId, `${fieldName}.localId`),
-    } as ApplicationRuntimeResourceRef;
+    } as ApplicationExecutionResourceRef;
   }
   return {
-    owner,
+    source,
     kind,
     definitionId: normalizeRequiredString(record.definitionId, `${fieldName}.definitionId`),
-  } as ApplicationRuntimeResourceRef;
+  } as ApplicationExecutionResourceRef;
 };
 
 const normalizeSupportedLaunchConfig = (
   value: unknown,
   fieldName: string,
-  allowedResourceKinds: ApplicationRuntimeResourceKind[],
+  allowedExecutionResourceKinds: ApplicationExecutionResourceKind[],
 ): ApplicationSupportedLaunchConfigDeclaration | null => {
   if (value === undefined || value === null) {
     return null;
@@ -217,15 +236,15 @@ const normalizeSupportedLaunchConfig = (
 
   const record = value as Record<string, unknown>;
   const normalized: ApplicationSupportedLaunchConfigDeclaration = {};
-  const unknownKinds = Object.keys(record).filter((key) => !RESOURCE_KINDS.has(key as ApplicationRuntimeResourceKind));
+  const unknownKinds = Object.keys(record).filter((key) => !EXECUTION_RESOURCE_KINDS.has(key as ApplicationExecutionResourceKind));
   if (unknownKinds.length > 0) {
     throw new ApplicationManifestParseError(`${fieldName} contains unsupported key '${unknownKinds[0]}'.`);
   }
 
   if (record.AGENT !== undefined) {
-    if (!allowedResourceKinds.includes("AGENT")) {
+    if (!allowedExecutionResourceKinds.includes("AGENT")) {
       throw new ApplicationManifestParseError(
-        `${fieldName}.AGENT is not allowed when ${fieldName.replace(/\.supportedLaunchConfig$/, ".allowedResourceKinds")} does not include 'AGENT'.`,
+        `${fieldName}.AGENT is not allowed when ${fieldName.replace(/\.supportedLaunchConfig$/, ".allowedExecutionResourceKinds")} does not include 'AGENT'.`,
       );
     }
     normalized.AGENT = normalizeFlagMap({
@@ -236,9 +255,9 @@ const normalizeSupportedLaunchConfig = (
   }
 
   if (record.AGENT_TEAM !== undefined) {
-    if (!allowedResourceKinds.includes("AGENT_TEAM")) {
+    if (!allowedExecutionResourceKinds.includes("AGENT_TEAM")) {
       throw new ApplicationManifestParseError(
-        `${fieldName}.AGENT_TEAM is not allowed when ${fieldName.replace(/\.supportedLaunchConfig$/, ".allowedResourceKinds")} does not include 'AGENT_TEAM'.`,
+        `${fieldName}.AGENT_TEAM is not allowed when ${fieldName.replace(/\.supportedLaunchConfig$/, ".allowedExecutionResourceKinds")} does not include 'AGENT_TEAM'.`,
       );
     }
     if (!record.AGENT_TEAM || typeof record.AGENT_TEAM !== "object" || Array.isArray(record.AGENT_TEAM)) {
@@ -278,21 +297,24 @@ const normalizeSupportedLaunchConfig = (
   return Object.keys(normalized).length > 0 ? normalized : null;
 };
 
-const normalizeResourceSlots = (value: unknown): ApplicationResourceSlotDeclaration[] => {
+const normalizeExecutionResourceSlots = (value: unknown): ApplicationExecutionResourceSlotDeclaration[] => {
   if (value === undefined || value === null) {
     return [];
   }
   if (!Array.isArray(value)) {
-    throw new ApplicationManifestParseError("resourceSlots must be an array when provided.");
+    throw new ApplicationManifestParseError("executionResourceSlots must be an array when provided.");
   }
 
   const seenSlotKeys = new Set<string>();
   return value.map((entry, index) => {
-    const fieldName = `resourceSlots[${index}]`;
+    const fieldName = `executionResourceSlots[${index}]`;
     if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
       throw new ApplicationManifestParseError(`${fieldName} must be an object.`);
     }
     const record = entry as Record<string, unknown>;
+    rejectLegacyField(record, fieldName, "allowedResourceKinds", "allowedExecutionResourceKinds");
+    rejectLegacyField(record, fieldName, "allowedResourceOwners", "allowedExecutionResourceSources");
+    rejectLegacyField(record, fieldName, "defaultResourceRef", "defaultExecutionResourceRef");
     const slotKey = normalizeRequiredString(record.slotKey, `${fieldName}.slotKey`);
     if (!SLOT_KEY_PATTERN.test(slotKey)) {
       throw new ApplicationManifestParseError(
@@ -300,34 +322,35 @@ const normalizeResourceSlots = (value: unknown): ApplicationResourceSlotDeclarat
       );
     }
     if (seenSlotKeys.has(slotKey)) {
-      throw new ApplicationManifestParseError(`resourceSlots contains duplicate slotKey '${slotKey}'.`);
+      throw new ApplicationManifestParseError(`executionResourceSlots contains duplicate slotKey '${slotKey}'.`);
     }
     seenSlotKeys.add(slotKey);
 
-    const allowedResourceKinds = normalizeUniqueStringList<ApplicationRuntimeResourceKind>({
-      value: record.allowedResourceKinds,
-      fieldName: `${fieldName}.allowedResourceKinds`,
-      allowedValues: RESOURCE_KINDS,
+    const allowedExecutionResourceKinds = normalizeUniqueStringList<ApplicationExecutionResourceKind>({
+      value: record.allowedExecutionResourceKinds,
+      fieldName: `${fieldName}.allowedExecutionResourceKinds`,
+      allowedValues: EXECUTION_RESOURCE_KINDS,
     });
-    const allowedResourceOwners = normalizeUniqueStringList<ApplicationRuntimeResourceOwner>({
-      value: record.allowedResourceOwners,
-      fieldName: `${fieldName}.allowedResourceOwners`,
-      allowedValues: RESOURCE_OWNERS,
-      defaultValue: DEFAULT_ALLOWED_RESOURCE_OWNERS,
+    const allowedExecutionResourceSources = normalizeUniqueStringList<ApplicationExecutionResourceSource>({
+      value: record.allowedExecutionResourceSources,
+      fieldName: `${fieldName}.allowedExecutionResourceSources`,
+      allowedValues: EXECUTION_RESOURCE_SOURCES,
+      defaultValue: DEFAULT_ALLOWED_EXECUTION_RESOURCE_SOURCES,
     });
-    const defaultResourceRef = record.defaultResourceRef === undefined || record.defaultResourceRef === null
+    const defaultExecutionResourceRef = record.defaultExecutionResourceRef === undefined
+      || record.defaultExecutionResourceRef === null
       ? null
-      : normalizeRuntimeResourceRef(record.defaultResourceRef, `${fieldName}.defaultResourceRef`);
+      : normalizeExecutionResourceRef(record.defaultExecutionResourceRef, `${fieldName}.defaultExecutionResourceRef`);
 
-    if (defaultResourceRef) {
-      if (!allowedResourceKinds.includes(defaultResourceRef.kind)) {
+    if (defaultExecutionResourceRef) {
+      if (!allowedExecutionResourceKinds.includes(defaultExecutionResourceRef.kind)) {
         throw new ApplicationManifestParseError(
-          `${fieldName}.defaultResourceRef.kind must be allowed by ${fieldName}.allowedResourceKinds.`,
+          `${fieldName}.defaultExecutionResourceRef.kind must be allowed by ${fieldName}.allowedExecutionResourceKinds.`,
         );
       }
-      if (!allowedResourceOwners.includes(defaultResourceRef.owner)) {
+      if (!allowedExecutionResourceSources.includes(defaultExecutionResourceRef.source)) {
         throw new ApplicationManifestParseError(
-          `${fieldName}.defaultResourceRef.owner must be allowed by ${fieldName}.allowedResourceOwners.`,
+          `${fieldName}.defaultExecutionResourceRef.source must be allowed by ${fieldName}.allowedExecutionResourceSources.`,
         );
       }
     }
@@ -336,16 +359,16 @@ const normalizeResourceSlots = (value: unknown): ApplicationResourceSlotDeclarat
       slotKey,
       name: normalizeRequiredString(record.name, `${fieldName}.name`),
       description: normalizeOptionalString(record.description),
-      allowedResourceKinds,
-      allowedResourceOwners,
+      allowedExecutionResourceKinds,
+      allowedExecutionResourceSources,
       required: typeof record.required === "boolean" ? record.required : null,
       supportedLaunchConfig: normalizeSupportedLaunchConfig(
         record.supportedLaunchConfig,
         `${fieldName}.supportedLaunchConfig`,
-        allowedResourceKinds,
+        allowedExecutionResourceKinds,
       ),
-      defaultResourceRef,
-    } satisfies ApplicationResourceSlotDeclaration;
+      defaultExecutionResourceRef,
+    } satisfies ApplicationExecutionResourceSlotDeclaration;
   });
 };
 
@@ -372,6 +395,7 @@ export const parseApplicationManifest = (
   }
 
   const manifest = payload as ApplicationManifestV3 & Record<string, unknown>;
+  rejectLegacyField(manifest, "application manifest", "resourceSlots", "executionResourceSlots");
   const manifestVersion = normalizeRequiredString(manifest.manifestVersion, "manifestVersion");
   if (manifestVersion !== APPLICATION_MANIFEST_VERSION_V3) {
     throw new ApplicationManifestParseError(
@@ -411,7 +435,7 @@ export const parseApplicationManifest = (
       "backend.bundleManifest",
       { requiredPrefix: "backend/" },
     ),
-    resourceSlots: normalizeResourceSlots(manifest.resourceSlots),
+    executionResourceSlots: normalizeExecutionResourceSlots(manifest.executionResourceSlots),
   };
 };
 

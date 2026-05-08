@@ -1,4 +1,4 @@
-import type { ApplicationResourceConfigurationView } from '@autobyteus/application-sdk-contracts'
+import type { ApplicationExecutionResourceConfigurationView } from '@autobyteus/application-sdk-contracts'
 import type {
   ApplicationLaunchSetupTranslate,
   ApplicationSlotDraft,
@@ -15,7 +15,7 @@ export type ApplicationLaunchSetupGateState = {
 export const buildLaunchSetupGateState = (input: {
   loading: boolean
   loadError: string | null
-  configurationViews: ApplicationResourceConfigurationView[]
+  configurationViews: ApplicationExecutionResourceConfigurationView[]
   drafts: Record<string, ApplicationSlotDraft>
   slotReadinessByKey: Record<string, ApplicationSlotEditorReadiness>
   savingSlotKeys: string[]

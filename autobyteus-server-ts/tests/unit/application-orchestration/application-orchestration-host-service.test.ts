@@ -28,8 +28,8 @@ const buildBinding = (): ApplicationRunBindingSummary => ({
   applicationId,
   bindingIntentId: "binding-intent-1",
   status: "ATTACHED",
-  resourceRef: {
-    owner: "bundle",
+  executionResourceRef: {
+    source: "bundle",
     kind: "AGENT",
     localId: "sample-agent",
   },
@@ -59,8 +59,8 @@ const buildTeamBinding = (): ApplicationRunBindingSummary => ({
   applicationId,
   bindingIntentId: "binding-intent-1",
   status: "ATTACHED",
-  resourceRef: {
-    owner: "bundle",
+  executionResourceRef: {
+    source: "bundle",
     kind: "AGENT_TEAM",
     localId: "brief-studio-team",
   },
@@ -203,8 +203,8 @@ describe("ApplicationOrchestrationHostService startRun", () => {
 
     const startRunPromise = hostService.startRun(applicationId, {
       bindingIntentId: "binding-intent-1",
-      resourceRef: {
-        owner: "bundle",
+      executionResourceRef: {
+        source: "bundle",
         kind: "AGENT",
         localId: "sample-agent",
       },

@@ -60,8 +60,8 @@ vi.mock('~/stores/windowNodeContextStore', () => ({
   }),
 }))
 
-const ApplicationResourceSlotEditorStub = defineComponent({
-  name: 'ApplicationResourceSlotEditor',
+const ApplicationExecutionResourceSlotEditorStub = defineComponent({
+  name: 'ApplicationExecutionResourceSlotEditor',
   emits: ['update:selection', 'update:launchProfile', 'readiness-change'],
   setup(_props, { emit }) {
     return () => h('div', { 'data-testid': 'application-resource-slot-editor' }, [
@@ -129,8 +129,8 @@ describe('ApplicationLaunchSetupPanel', () => {
             slotKey: 'draftingTeam',
             name: 'Drafting team',
             description: 'Used for brief drafting runs.',
-            allowedResourceKinds: ['AGENT_TEAM'],
-            allowedResourceOwners: ['bundle', 'shared'],
+            allowedExecutionResourceKinds: ['AGENT_TEAM'],
+            allowedExecutionResourceSources: ['bundle', 'shared'],
             required: true,
             supportedLaunchConfig: {
               AGENT_TEAM: {
@@ -143,8 +143,8 @@ describe('ApplicationLaunchSetupPanel', () => {
                 },
               },
             },
-            defaultResourceRef: {
-              owner: 'bundle',
+            defaultExecutionResourceRef: {
+              source: 'bundle',
               kind: 'AGENT_TEAM',
               localId: 'brief-studio-team',
             },
@@ -152,8 +152,8 @@ describe('ApplicationLaunchSetupPanel', () => {
           status: 'READY',
           configuration: {
             slotKey: 'draftingTeam',
-            resourceRef: {
-              owner: 'bundle',
+            executionResourceRef: {
+              source: 'bundle',
               kind: 'AGENT_TEAM',
               localId: 'brief-studio-team',
             },
@@ -166,7 +166,7 @@ describe('ApplicationLaunchSetupPanel', () => {
       ]))
       .mockResolvedValueOnce(okJson([
         {
-          owner: 'bundle',
+          source: 'bundle',
           kind: 'AGENT_TEAM',
           localId: 'brief-studio-team',
           definitionId: 'brief-studio-team',
@@ -174,7 +174,7 @@ describe('ApplicationLaunchSetupPanel', () => {
           applicationId: 'bundle-app__pkg__brief-studio',
         },
         {
-          owner: 'shared',
+          source: 'shared',
           kind: 'AGENT_TEAM',
           localId: null,
           definitionId: 'shared-writing-team',
@@ -187,8 +187,8 @@ describe('ApplicationLaunchSetupPanel', () => {
           slotKey: 'draftingTeam',
           name: 'Drafting team',
           description: 'Used for brief drafting runs.',
-          allowedResourceKinds: ['AGENT_TEAM'],
-          allowedResourceOwners: ['bundle', 'shared'],
+          allowedExecutionResourceKinds: ['AGENT_TEAM'],
+          allowedExecutionResourceSources: ['bundle', 'shared'],
           required: true,
           supportedLaunchConfig: {
             AGENT_TEAM: {
@@ -201,8 +201,8 @@ describe('ApplicationLaunchSetupPanel', () => {
               },
             },
           },
-          defaultResourceRef: {
-            owner: 'bundle',
+          defaultExecutionResourceRef: {
+            source: 'bundle',
             kind: 'AGENT_TEAM',
             localId: 'brief-studio-team',
           },
@@ -210,8 +210,8 @@ describe('ApplicationLaunchSetupPanel', () => {
         status: 'READY',
         configuration: {
           slotKey: 'draftingTeam',
-          resourceRef: {
-            owner: 'shared',
+          executionResourceRef: {
+            source: 'shared',
             kind: 'AGENT_TEAM',
             definitionId: 'shared-writing-team',
           },
@@ -250,7 +250,7 @@ describe('ApplicationLaunchSetupPanel', () => {
       },
       global: {
         stubs: {
-          ApplicationResourceSlotEditor: ApplicationResourceSlotEditorStub,
+          ApplicationExecutionResourceSlotEditor: ApplicationExecutionResourceSlotEditorStub,
         },
       },
     })
@@ -258,10 +258,10 @@ describe('ApplicationLaunchSetupPanel', () => {
     await flushPromises()
 
     expect(fetchMock.mock.calls[0]?.[0]).toBe(
-      'http://127.0.0.1:43123/rest/applications/bundle-app__pkg__brief-studio/resource-configurations',
+      'http://127.0.0.1:43123/rest/applications/bundle-app__pkg__brief-studio/execution-resource-configurations',
     )
     expect(fetchMock.mock.calls[1]?.[0]).toBe(
-      'http://127.0.0.1:43123/rest/applications/bundle-app__pkg__brief-studio/available-resources',
+      'http://127.0.0.1:43123/rest/applications/bundle-app__pkg__brief-studio/available-execution-resources',
     )
     expect(wrapper.get('[data-testid="application-launch-setup-panel"]').attributes('data-presentation')).toBe('panel')
     expect(wrapper.emitted('setup-state-change')?.at(-1)?.[0]).toMatchObject({
@@ -284,8 +284,8 @@ describe('ApplicationLaunchSetupPanel', () => {
     const [, saveInit] = fetchMock.mock.calls[2] as [string, RequestInit]
     expect(saveInit.method).toBe('PUT')
     expect(JSON.parse(String(saveInit.body))).toEqual({
-      resourceRef: {
-        owner: 'shared',
+      executionResourceRef: {
+        source: 'shared',
         kind: 'AGENT_TEAM',
         definitionId: 'shared-writing-team',
       },
@@ -319,5 +319,66 @@ describe('ApplicationLaunchSetupPanel', () => {
       isLaunchReady: true,
       blockingReason: null,
     })
+  })
+
+  it('mounts the real execution-resource slot editor with available resources from the parent', async () => {
+    fetchMock
+      .mockResolvedValueOnce(okJson([
+        {
+          slot: {
+            slotKey: 'draftingTeam',
+            name: 'Drafting team',
+            description: 'Used for brief drafting runs.',
+            allowedExecutionResourceKinds: ['AGENT_TEAM'],
+            allowedExecutionResourceSources: ['bundle', 'shared'],
+            required: true,
+            supportedLaunchConfig: null,
+            defaultExecutionResourceRef: null,
+          },
+          status: 'NOT_CONFIGURED',
+          configuration: null,
+          invalidSavedConfiguration: null,
+          issue: null,
+          updatedAt: null,
+        },
+      ]))
+      .mockResolvedValueOnce(okJson([
+        {
+          source: 'bundle',
+          kind: 'AGENT_TEAM',
+          localId: 'brief-studio-team',
+          definitionId: 'brief-studio-team',
+          name: 'Bundled Brief Team',
+          applicationId: 'bundle-app__pkg__brief-studio',
+        },
+        {
+          source: 'shared',
+          kind: 'AGENT_TEAM',
+          localId: null,
+          definitionId: 'shared-writing-team',
+          name: 'Shared Writing Team',
+          applicationId: null,
+        },
+      ]))
+
+    const wrapper = mount(ApplicationLaunchSetupPanel, {
+      props: {
+        applicationId: 'bundle-app__pkg__brief-studio',
+        presentation: 'page',
+      },
+      global: {
+        stubs: {
+          ApplicationAgentLaunchProfileEditor: true,
+          ApplicationTeamLaunchProfileEditor: true,
+        },
+      },
+    })
+
+    await flushPromises()
+
+    const selection = wrapper.get('select')
+    expect(selection.text()).toContain('Bundled Brief Team · Bundled · Agent team')
+    expect(selection.text()).toContain('Shared Writing Team · Shared · Agent team')
+    expect(wrapper.text()).not.toContain('Cannot read properties of undefined')
   })
 })

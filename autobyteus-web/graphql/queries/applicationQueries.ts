@@ -8,7 +8,7 @@ export const ApplicationCatalogFields = gql`
     description
     iconAssetPath
     entryHtmlAssetPath
-    resourceSlots {
+    executionResourceSlots {
       slotKey
       required
     }

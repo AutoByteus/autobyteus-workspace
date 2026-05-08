@@ -87,7 +87,7 @@ export const renderBriefStudioShell = (rootElement) => {
           <div>
             <h2>Create a brief</h2>
             <p class="muted">
-              Start the workflow with the business record. Runtime resource, model, workspace, and tool-execution
+              Start the workflow with the business record. Execution resource, model, workspace, and tool-execution
               defaults come from the host-managed application launch setup.
             </p>
           </div>
