@@ -5,7 +5,7 @@
 - Requested action: read README and build Electron locally.
 - README command selected for this macOS ARM64 host: `NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm -C autobyteus-web build:electron:mac`
 - Result: `Pass`
-- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/stream-parser-server-basics/tickets/done/stream-parser-server-basics/electron-build-mac.log`
+- Build log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/stream-parser-server-basics/electron-build-mac.log`
 - Original output directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/stream-parser-server-basics/autobyteus-web/electron-dist`
 - Preserved artifact directory: `/Users/normy/autobyteus_org/autobyteus-build-artifacts/stream-parser-server-basics-20260508`
 
@@ -22,4 +22,4 @@
 
 - Local README no-notarization mode was used.
 - Electron Builder skipped macOS code signing because identity was explicitly null.
-- Generated build outputs under `.nuxt/`, `dist/`, `electron-dist/`, and `resources/` are ignored and were not added to the source diff.
+- Generated build outputs under `.nuxt/`, `dist/`, `electron-dist/`, and `resources/` were ignored and not added to the source diff. Before the ticket worktree was cleaned up, the DMG/ZIP/blockmaps/latest metadata were copied to the preserved artifact directory listed above.

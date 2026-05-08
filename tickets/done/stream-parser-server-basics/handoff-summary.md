@@ -4,33 +4,33 @@
 
 - Ticket: `stream-parser-server-basics`
 - Date: `2026-05-08`
-- Current Status: `User verified; finalizing into personal without release`
-- Task worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/stream-parser-server-basics`
-- Current artifact root: `/Users/normy/autobyteus_org/autobyteus-worktrees/stream-parser-server-basics/tickets/done/stream-parser-server-basics`
-- Ticket branch: `codex/stream-parser-server-basics`
+- Current Status: `Finalized into personal; no release requested`
+- Original ticket worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/stream-parser-server-basics` (removed after finalization)
+- Final archived artifact root: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/stream-parser-server-basics`
+- Ticket branch: `codex/stream-parser-server-basics` (pushed for finalization, then deleted locally/remotely after merge)
 - Tracked base/finalization target: `origin/personal` / local `personal`
 - Bootstrap base reference from investigation: `origin/personal @ 7738faa4956cd9925825e24baae77bb1a47a81a4`
 - Integrated base reference for current delivery: `origin/personal @ 7738faa4956cd9925825e24baae77bb1a47a81a4`
 - Delivery refresh result: `Already current` (`git fetch origin --prune`; current `HEAD`, merge-base, and `origin/personal` all `7738faa4956cd9925825e24baae77bb1a47a81a4`)
-- Ticket branch pre-finalization base `HEAD`: `7738faa4956cd9925825e24baae77bb1a47a81a4`; reviewed/validated implementation and delivery edits are being committed for finalization.
+- Ticket branch final commit: `6acc2d797b2a590683a8fed3a89f059e683981b3` (`feat(settings): add streaming parser basics card`)
 - Latest authoritative review result: `Pass` (`review-report.md`, Review Round 3 post-validation durable-validation re-review, 9.3/10, no open findings)
 - Latest authoritative API/E2E validation result: `Pass` (`api-e2e-validation-report.md`)
 
 ## Cumulative Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/stream-parser-server-basics/tickets/done/stream-parser-server-basics/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/stream-parser-server-basics/tickets/done/stream-parser-server-basics/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/stream-parser-server-basics/tickets/done/stream-parser-server-basics/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/stream-parser-server-basics/tickets/done/stream-parser-server-basics/design-review-report.md`
-- Design-impact rework artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/stream-parser-server-basics/tickets/done/stream-parser-server-basics/design-impact-rework.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/stream-parser-server-basics/tickets/done/stream-parser-server-basics/implementation-handoff.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/stream-parser-server-basics/tickets/done/stream-parser-server-basics/review-report.md`
-- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/stream-parser-server-basics/tickets/done/stream-parser-server-basics/api-e2e-validation-report.md`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/stream-parser-server-basics/tickets/done/stream-parser-server-basics/docs-sync-report.md`
-- Release notes draft: `/Users/normy/autobyteus_org/autobyteus-worktrees/stream-parser-server-basics/tickets/done/stream-parser-server-basics/release-notes.md`
-- Delivery/release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/stream-parser-server-basics/tickets/done/stream-parser-server-basics/release-deployment-report.md`
-- This handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/stream-parser-server-basics/tickets/done/stream-parser-server-basics/handoff-summary.md`
-- Electron macOS build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/stream-parser-server-basics/tickets/done/stream-parser-server-basics/electron-build-mac.log`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/stream-parser-server-basics/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/stream-parser-server-basics/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/stream-parser-server-basics/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/stream-parser-server-basics/design-review-report.md`
+- Design-impact rework artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/stream-parser-server-basics/design-impact-rework.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/stream-parser-server-basics/implementation-handoff.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/stream-parser-server-basics/review-report.md`
+- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/stream-parser-server-basics/api-e2e-validation-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/stream-parser-server-basics/docs-sync-report.md`
+- Release notes draft: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/stream-parser-server-basics/release-notes.md`
+- Delivery/release/deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/stream-parser-server-basics/release-deployment-report.md`
+- This handoff summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/stream-parser-server-basics/handoff-summary.md`
+- Electron macOS build log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/stream-parser-server-basics/electron-build-mac.log`
 
 ## Delivered Change
 
@@ -135,7 +135,7 @@ Known validation context:
 
 ## Documentation Sync Summary
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/stream-parser-server-basics/tickets/done/stream-parser-server-basics/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/stream-parser-server-basics/docs-sync-report.md`
 - Docs result: `Updated`
 - Docs updated:
   - `autobyteus-web/docs/settings.md`
@@ -151,7 +151,7 @@ Known validation context:
 
 - Build command: `NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm -C autobyteus-web build:electron:mac`
 - Build result: `Pass`
-- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/stream-parser-server-basics/tickets/done/stream-parser-server-basics/electron-build-mac.log`
+- Build log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/stream-parser-server-basics/electron-build-mac.log`
 - Original output directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/stream-parser-server-basics/autobyteus-web/electron-dist`
 - Preserved artifact directory outside the cleanup worktree: `/Users/normy/autobyteus_org/autobyteus-build-artifacts/stream-parser-server-basics-20260508`
 - Primary artifacts:
@@ -167,14 +167,14 @@ Known validation context:
 - Basics intentionally exposes only the XML override. Advanced/API remain the expert surface for `json`, `sentinel`, and `api_tool_call`.
 - A pre-existing non-XML Advanced value renders the Basics toggle off and remains unchanged unless the user explicitly changes and saves the Basics toggle.
 - Saved parser changes apply to future streamed agent responses; already-active streams are not mutated in place.
-- User verification has been received. Repository finalization is proceeding. No release/deployment/version bump is requested.
+- User verification was received and repository finalization is complete. No release/deployment/version bump was performed per user instruction.
 
 ## Release Notes
 
 - Release notes required before user verification: `Yes` because this is a user-visible Settings feature.
-- Release notes artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/stream-parser-server-basics/tickets/done/stream-parser-server-basics/release-notes.md`
+- Release notes artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/stream-parser-server-basics/release-notes.md`
 - Release/deployment requested: `No`
-- Release/deployment status: `Not required per user instruction.`
+- Release/deployment status: `Not required; user explicitly requested no new version.`
 
 ## User Verification
 
@@ -182,17 +182,20 @@ Known validation context:
 - User verification received: `Yes`
 - User verification reference: User stated on 2026-05-08: "i tested the ticket is done. lets finalize and no need to release a new verison"
 - Release request: `No new version` requested.
-- Finalization hold: Released by explicit user verification; ticket archival and repository finalization are proceeding.
+- Finalization hold: Released by explicit user verification; ticket archival and repository finalization completed.
 
 ## Finalization Status
 
 - Ticket archived to `tickets/done`: `Yes`
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/stream-parser-server-basics/tickets/done/stream-parser-server-basics` before branch commit; final archived path after merge is `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/stream-parser-server-basics`.
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/stream-parser-server-basics`
 - Post-verification target refresh: `Completed`; `origin/personal` remained `7738faa4956cd9925825e24baae77bb1a47a81a4`, with `HEAD..origin/personal = 0`.
-- Ticket branch commit: `In progress`
-- Ticket branch push: `Pending`
-- Merge into `personal`: `Pending`
-- Target push: `Pending`
+- Ticket branch commit: `Completed` (`6acc2d797b2a590683a8fed3a89f059e683981b3 feat(settings): add streaming parser basics card`)
+- Ticket branch push: `Completed` (`origin/codex/stream-parser-server-basics`, later deleted after merge)
+- Merge into `personal`: `Completed` (`1275b7ce Merge branch 'codex/stream-parser-server-basics' into personal`)
+- Target push: `Completed` (`origin/personal` updated through `1275b7ce`)
 - Release/publication/deployment: `Not required — user explicitly requested no new version`
 - Build artifact preservation before worktree cleanup: `Completed` to `/Users/normy/autobyteus_org/autobyteus-build-artifacts/stream-parser-server-basics-20260508`
-- Worktree cleanup: `Pending until after merge/push`
+- Worktree cleanup: `Completed`
+- Worktree prune: `Completed`
+- Local ticket branch cleanup: `Completed`
+- Remote ticket branch cleanup: `Completed`
