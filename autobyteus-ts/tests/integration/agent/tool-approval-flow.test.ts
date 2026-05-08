@@ -5,7 +5,11 @@ import os from 'node:os';
 import { AgentFactory } from '../../../src/agent/factory/agent-factory.js';
 import { AgentConfig } from '../../../src/agent/context/agent-config.js';
 import { AgentTurn } from '../../../src/agent/agent-turn.js';
-import { PendingToolInvocationEvent, ToolResultEvent } from '../../../src/agent/events/agent-events.js';
+import { ToolResultEvent } from '../../../src/agent/events/agent-events.js';
+import { ToolPhase } from '../../../src/agent/loop/tool-phase.js';
+import { ToolResultPipeline } from '../../../src/agent/pipelines/tool-result-pipeline.js';
+import { AgentOutbox } from '../../../src/agent/outbox/agent-outbox.js';
+import { applyEventAndDeriveStatus } from '../../../src/agent/status/status-update-utils.js';
 import { ToolInvocation } from '../../../src/agent/tool-invocation.js';
 import { waitForAgentToBeIdle } from '../../../src/agent/utils/wait-for-idle.js';
 import { BaseLLM } from '../../../src/llm/base.js';
@@ -113,6 +117,32 @@ const assignActiveTurn = (fixture: AgentFixture): string => {
   return turnId;
 };
 
+const runToolPhaseForApprovalTest = async (
+  fixture: AgentFixture,
+  invocation: ToolInvocation
+): Promise<ToolResultEvent[]> => {
+  const turn = fixture.agent.context.state.activeTurn;
+  if (!turn) {
+    throw new Error('Tool approval test requires an active turn.');
+  }
+
+  const outbox = new AgentOutbox(
+    fixture.agent.context.statusManager?.notifier ?? null,
+    fixture.agent.agentId
+  );
+  const rawResults = await new ToolPhase().run([invocation], fixture.agent.context, turn, outbox);
+  const resultPipeline = new ToolResultPipeline();
+  const processedResults: ToolResultEvent[] = [];
+
+  for (const rawResult of rawResults) {
+    const processed = await resultPipeline.process(rawResult, fixture.agent.context);
+    processedResults.push(processed);
+    await applyEventAndDeriveStatus(processed, fixture.agent.context);
+  }
+
+  return processedResults;
+};
+
 describe('Tool approval integration flow', () => {
   let fixture: AgentFixture | null = null;
   let previousMemoryDir: string | undefined;
@@ -147,9 +177,7 @@ describe('Tool approval integration flow', () => {
     const invocationId = `write-${Date.now()}`;
     const invocation = new ToolInvocation('write_file', { path: finalPath, content }, invocationId, turnId);
 
-    await fixture.agent.context.inputEventQueues.enqueueInternalSystemEvent(
-      new PendingToolInvocationEvent(invocation)
-    );
+    const phasePromise = runToolPhaseForApprovalTest(fixture, invocation);
 
     await waitFor(
       () => Boolean(fixture!.agent.context.state.pendingToolApprovals[invocationId]),
@@ -159,6 +187,7 @@ describe('Tool approval integration flow', () => {
     );
 
     await fixture.agent.postToolExecutionApproval(invocationId, true, 'approved');
+    await phasePromise;
 
     await waitFor(
       async () => {
@@ -190,9 +219,7 @@ describe('Tool approval integration flow', () => {
     const invocationId = `read-${Date.now()}`;
     const invocation = new ToolInvocation('read_file', { path: targetPath }, invocationId, turnId);
 
-    await fixture.agent.context.inputEventQueues.enqueueInternalSystemEvent(
-      new PendingToolInvocationEvent(invocation)
-    );
+    const phasePromise = runToolPhaseForApprovalTest(fixture, invocation);
 
     await waitFor(
       () => Boolean(fixture!.agent.context.state.pendingToolApprovals[invocationId]),
@@ -202,6 +229,7 @@ describe('Tool approval integration flow', () => {
     );
 
     await fixture.agent.postToolExecutionApproval(invocationId, true, 'approved');
+    await phasePromise;
 
     await waitFor(
       async () => {
@@ -245,9 +273,7 @@ describe('Tool approval integration flow', () => {
       turnId
     );
 
-    await fixture.agent.context.inputEventQueues.enqueueInternalSystemEvent(
-      new PendingToolInvocationEvent(invocation)
-    );
+    const phasePromise = runToolPhaseForApprovalTest(fixture, invocation);
 
     await waitFor(
       () => Boolean(fixture!.agent.context.state.pendingToolApprovals[invocationId]),
@@ -257,6 +283,7 @@ describe('Tool approval integration flow', () => {
     );
 
     await fixture.agent.postToolExecutionApproval(invocationId, true, 'approved');
+    await phasePromise;
 
     await waitFor(
       async () => {
@@ -290,9 +317,7 @@ describe('Tool approval integration flow', () => {
       turnId
     );
 
-    await fixture.agent.context.inputEventQueues.enqueueInternalSystemEvent(
-      new PendingToolInvocationEvent(invocation)
-    );
+    const phasePromise = runToolPhaseForApprovalTest(fixture, invocation);
 
     await waitFor(
       () => Boolean(fixture!.agent.context.state.pendingToolApprovals[invocationId]),
@@ -302,6 +327,7 @@ describe('Tool approval integration flow', () => {
     );
 
     await fixture.agent.postToolExecutionApproval(invocationId, true, 'approved');
+    await phasePromise;
 
     await waitFor(
       () => {
@@ -345,9 +371,7 @@ describe('Tool approval integration flow', () => {
       turnId
     );
 
-    await fixture.agent.context.inputEventQueues.enqueueInternalSystemEvent(
-      new PendingToolInvocationEvent(invocation)
-    );
+    const phasePromise = runToolPhaseForApprovalTest(fixture, invocation);
 
     await waitFor(
       () => Boolean(fixture!.agent.context.state.pendingToolApprovals[invocationId]),
@@ -357,6 +381,7 @@ describe('Tool approval integration flow', () => {
     );
 
     await fixture.agent.postToolExecutionApproval(invocationId, true, 'approved');
+    await phasePromise;
 
     await waitFor(
       () => {

@@ -45,14 +45,17 @@ import { AgentRuntime } from '../../../../src/agent/runtime/agent-runtime.js';
 import { AgentConfig } from '../../../../src/agent/context/agent-config.js';
 import { AgentRuntimeState } from '../../../../src/agent/context/agent-runtime-state.js';
 import { AgentContext } from '../../../../src/agent/context/agent-context.js';
+import { AgentInputBox } from '../../../../src/agent/input-box/agent-input-box.js';
 import { AgentStatus } from '../../../../src/agent/status/status-enum.js';
 import {
   ShutdownRequestedEvent,
   AgentStoppedEvent,
   AgentErrorEvent,
   AgentInterruptRequestedEvent,
+  UserMessageReceivedEvent,
   ToolExecutionApprovalEvent
 } from '../../../../src/agent/events/agent-events.js';
+import { AgentInputUserMessage } from '../../../../src/agent/message/agent-input-user-message.js';
 import { BaseLLM } from '../../../../src/llm/base.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
@@ -251,7 +254,6 @@ describe('AgentRuntime', () => {
   it('rejects unknown active-turn tool approvals without status mutation', async () => {
     const context = makeContext();
     const runtime = new AgentRuntime(context, {} as any);
-    context.state.inputEventQueues = {} as any;
     context.state.startActiveTurn('turn-1');
     mocks.workerInstance.isAlive.mockReturnValue(true);
     runtime.applyEventAndDeriveStatus = vi.fn(async () => undefined) as any;
@@ -259,5 +261,19 @@ describe('AgentRuntime', () => {
     await runtime.submitEvent(new ToolExecutionApprovalEvent('missing-invocation', true));
 
     expect(runtime.applyEventAndDeriveStatus).not.toHaveBeenCalled();
+  });
+
+  it('routes external turn-starting input through AgentInputBox', async () => {
+    const context = makeContext();
+    const runtime = new AgentRuntime(context, {} as any);
+    const agentInputBox = new AgentInputBox();
+    agentInputBox.enqueueUserMessage = vi.fn(async () => undefined) as any;
+    context.state.agentInputBox = agentInputBox;
+    mocks.workerInstance.isAlive.mockReturnValue(true);
+
+    const event = new UserMessageReceivedEvent(new AgentInputUserMessage('hello'));
+    await runtime.submitEvent(event);
+
+    expect(agentInputBox.enqueueUserMessage).toHaveBeenCalledWith(event);
   });
 });

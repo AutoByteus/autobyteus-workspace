@@ -25,7 +25,7 @@ vi.mock('../../../../src/agent/loop/agent-turn-runner.js', () => ({
 }));
 
 import { AgentWorker } from '../../../../src/agent/runtime/agent-worker.js';
-import { AgentInputEventQueueManager } from '../../../../src/agent/events/agent-input-event-queue-manager.js';
+import { AgentInputBox } from '../../../../src/agent/input-box/agent-input-box.js';
 import { AgentRuntimeState } from '../../../../src/agent/context/agent-runtime-state.js';
 import { AgentConfig } from '../../../../src/agent/context/agent-config.js';
 import { AgentContext } from '../../../../src/agent/context/agent-context.js';
@@ -133,13 +133,13 @@ describe('AgentWorker', () => {
 
   it('runs one AgentTurnRunner for an external scheduler event', async () => {
     const context = makeContext();
-    context.state.inputEventQueues = new AgentInputEventQueueManager();
+    context.state.agentInputBox = new AgentInputBox();
     const worker = new AgentWorker(context);
     vi.spyOn(worker as any, 'initialize').mockResolvedValue(true as any);
 
     worker.start();
     await delay(10);
-    await context.state.inputEventQueues.enqueueUserMessage(
+    await context.state.agentInputBox.enqueueUserMessage(
       new UserMessageReceivedEvent(new AgentInputUserMessage('hello'))
     );
 
@@ -151,7 +151,7 @@ describe('AgentWorker', () => {
 
   it('start/stop lifecycle toggles isAlive and runs shutdown cleanup', async () => {
     const context = makeContext();
-    context.state.inputEventQueues = new AgentInputEventQueueManager();
+    context.state.agentInputBox = new AgentInputBox();
     const worker = new AgentWorker(context);
     vi.spyOn(worker as any, 'initialize').mockResolvedValue(true as any);
 

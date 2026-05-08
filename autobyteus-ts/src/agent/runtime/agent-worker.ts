@@ -5,13 +5,10 @@ import {
   AgentStoppedEvent,
   BootstrapStartedEvent,
   BootstrapCompletedEvent,
-  InterAgentMessageReceivedEvent,
   ShutdownRequestedEvent,
-  ToolExecutionApprovalEvent,
-  UserMessageReceivedEvent,
   BaseEvent
 } from '../events/agent-events.js';
-import { AgentInputEventQueueManager } from '../events/agent-input-event-queue-manager.js';
+import { AgentInputBox, type AgentInputBoxTrigger } from '../input-box/agent-input-box.js';
 import { AgentEventStore } from '../events/event-store.js';
 import { AgentStatusDeriver } from '../status/status-deriver.js';
 import { applyEventAndDeriveStatus } from '../status/status-update-utils.js';
@@ -133,17 +130,17 @@ export class AgentWorker {
       console.info(`Agent '${agentId}': Runtime init completed (status deriver initialized).`);
     }
 
-    if (this.context.state.inputEventQueues) {
-      console.debug(`Agent '${agentId}': Runtime init skipped; input event queues already initialized.`);
+    if (this.context.state.agentInputBox) {
+      console.debug(`Agent '${agentId}': Runtime init skipped; AgentInputBox already initialized.`);
       return true;
     }
 
     try {
-      this.context.state.inputEventQueues = new AgentInputEventQueueManager();
-      console.info(`Agent '${agentId}': Runtime init completed (input queues initialized).`);
+      this.context.state.agentInputBox = new AgentInputBox();
+      console.info(`Agent '${agentId}': Runtime init completed (AgentInputBox initialized).`);
       return true;
     } catch (error) {
-      console.error(`Agent '${agentId}': Runtime init failed while initializing input queues: ${error}`);
+      console.error(`Agent '${agentId}': Runtime init failed while initializing AgentInputBox: ${error}`);
       return false;
     }
   }
@@ -170,20 +167,23 @@ export class AgentWorker {
 
       console.info(`AgentWorker '${agentId}' initialized successfully. Entering main event loop.`);
       while (!this.stopRequested) {
-        let queueEvent: [string, BaseEvent] | null = null;
+        let inputBoxItem: Awaited<ReturnType<AgentInputBox['nextTurnTriggerWhenIdle']>> | null = null;
         try {
-          queueEvent = await this.context.state.inputEventQueues!.getNextSchedulerEvent();
+          inputBoxItem = await this.context.state.agentInputBox!.nextTurnTriggerWhenIdle();
         } catch {
-          queueEvent = null;
+          inputBoxItem = null;
         }
 
-        if (!queueEvent) {
+        if (!inputBoxItem) {
           continue;
         }
 
-        const [, eventObj] = queueEvent;
         try {
-          await this.handleSchedulerEvent(eventObj);
+          if (inputBoxItem.kind === 'turn_trigger') {
+            await this.runTurn(inputBoxItem);
+          } else {
+            await this.handleRuntimeLifecycleEvent(inputBoxItem.event);
+          }
         } catch (error) {
           console.error(`Fatal error in AgentWorker '${agentId}' scheduler event handling: ${error}`);
           await this.applyStatusEvent(
@@ -211,34 +211,7 @@ export class AgentWorker {
     }
   }
 
-  private async handleSchedulerEvent(event: BaseEvent): Promise<void> {
-    if (event instanceof UserMessageReceivedEvent || event instanceof InterAgentMessageReceivedEvent) {
-      await this.runTurn(event);
-      return;
-    }
-
-    if (event instanceof ToolExecutionApprovalEvent) {
-      const activeTurn = this.context.state.activeTurn;
-      if (activeTurn) {
-        if (!event.turnId) {
-          event.turnId = activeTurn.turnId;
-        }
-        const result = activeTurn.inputBox.postApproval(event);
-        if (result.accepted) {
-          await this.applyStatusEvent(event);
-        } else {
-          console.warn(
-            `AgentWorker '${this.context.agentId}': Tool approval '${event.toolInvocationId}' rejected by active turn input box: ${result.code ?? 'unknown'} ${result.message ?? ''}`
-          );
-        }
-      } else {
-        console.warn(
-          `AgentWorker '${this.context.agentId}': Ignoring tool approval '${event.toolInvocationId}' with no active turn.`
-        );
-      }
-      return;
-    }
-
+  private async handleRuntimeLifecycleEvent(event: BaseEvent): Promise<void> {
     if (event instanceof ShutdownRequestedEvent || event instanceof AgentStoppedEvent) {
       await this.applyStatusEvent(event);
       this.stopRequested = true;
@@ -249,7 +222,7 @@ export class AgentWorker {
   }
 
   private async runTurn(
-    event: UserMessageReceivedEvent | InterAgentMessageReceivedEvent
+    trigger: AgentInputBoxTrigger
   ): Promise<TurnOutcome> {
     const agentId = this.context.agentId;
     if (this.context.state.activeTurn) {
@@ -261,7 +234,7 @@ export class AgentWorker {
     const turn = this.context.state.startActiveTurn();
     let outcome: TurnOutcome;
     try {
-      outcome = await new AgentTurnRunner(this.context, turn).run(event);
+      outcome = await new AgentTurnRunner(this.context, turn).run(trigger.event);
     } finally {
       this.context.state.completeActiveTurn(turn.turnId);
     }
@@ -292,8 +265,8 @@ export class AgentWorker {
       activeTurn.interrupt('runtime_stop');
     }
 
-    if (this.context.state.inputEventQueues) {
-      await this.context.state.inputEventQueues.enqueueInternalSystemEvent(new AgentStoppedEvent());
+    if (this.context.state.agentInputBox) {
+      await this.context.state.agentInputBox.enqueueLifecycleMessage(new AgentStoppedEvent());
     }
 
     if (this.loopPromise) {

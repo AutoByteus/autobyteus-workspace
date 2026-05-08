@@ -30,6 +30,12 @@ Implemented the approved clean-cut native interrupt/runtime-loop redesign.
 - Addressed code-review CR-006 by removing dormant `AgentTurnInputBox` tool-result/continuation lanes and keeping direct `ToolPhase` return values as the authoritative tool-result flow.
 - Resolved the API/E2E Round 3 delivery latest-base merge conflict against `origin/personal` by keeping the extracted `AutoByteusTeamRunEventProcessor` as the native team event-processing owner, folding in latest Team Communication `message_id` / `reference_file_entries` enrichment for explicit `reference_files`, preserving de-duplication, and keeping native team interrupt on `interrupt(...)` with no stop fallback.
 - Reconciled conflicted server/web docs to preserve `INTERRUPT_GENERATION` terminology while retaining latest Claude active-terminate settlement and Team Communication reference-route documentation.
+- Implemented the approved AgentInputBox addendum:
+  - Added `AgentInputBox` as the first-class single-agent runtime inbound boundary for external turn-starting user and inter-agent messages.
+  - Rewired `AgentRuntime.submitEvent(...)` and `AgentWorker` so normal turn triggers enter through `AgentInputBox.nextTurnTriggerWhenIdle(...) -> AgentWorker -> AgentTurn -> AgentTurnRunner`.
+  - Demoted `AgentInputEventQueueManager` to generic queue storage with no domain-event semantics and no runtime-level caller access.
+  - Kept turn-local approvals/results/continuations out of `AgentInputBox`; approvals still route directly to the active `AgentTurnInputBox`, and `SenderType.TOOL` continuations remain same-turn pipeline outputs.
+  - Added explicit discriminants for turn triggers vs runtime lifecycle notifications so lifecycle messages cannot be treated as turn triggers.
 
 ## Key Files Or Areas
 
@@ -56,6 +62,9 @@ Implemented the approved clean-cut native interrupt/runtime-loop redesign.
   - `autobyteus-ts/src/llm/api/autobyteus-llm.ts`
   - `autobyteus-ts/src/clients/autobyteus-client.ts`
 - Runtime wiring and working-context interruption checkpointing:
+  - `autobyteus-ts/src/agent/input-box/agent-input-box.ts`
+  - `autobyteus-ts/src/agent/input-box/index.ts`
+  - `autobyteus-ts/src/agent/events/agent-input-event-queue-manager.ts`
   - `autobyteus-ts/src/agent/runtime/agent-worker.ts`
   - `autobyteus-ts/src/agent/runtime/agent-runtime.ts`
   - `autobyteus-ts/src/agent/context/agent-runtime-state.ts`
@@ -114,6 +123,7 @@ Implemented the approved clean-cut native interrupt/runtime-loop redesign.
   - CR-004 Autobyteus cancellation is covered by LLM/client unit tests asserting `AbortSignal` propagation to Axios request config.
   - CR-005 file-size cleanup split native team event processing into an owned processor; after latest-base reconciliation effective non-empty source lines are 260 for the backend, 308 for the processor, and 39 for the shared backend utility file.
   - CR-006 dormant result/continuation input-box APIs and side writes were removed; `ToolPhase` return values remain the single tool-result authority.
+  - AgentInputBox addendum is implemented as an authoritative runtime inbox boundary; runtime callers no longer depend on both `AgentInputBox` and the queue manager internals, and the queue manager is generic storage only.
 
 ## Legacy / Compatibility Removal Check
 
@@ -128,6 +138,7 @@ Implemented the approved clean-cut native interrupt/runtime-loop redesign.
   - Existing larger source files received limited deltas and were not expanded beyond their existing responsibilities.
   - `AutoByteusTeamRunBackend` was split into a command/bridge backend and a native event processor to satisfy the hard size limit without introducing pass-through-only helpers; latest Team Communication backend utilities are imported by the processor for real normalization/extraction work rather than re-expanding the backend.
   - `AgentTurnInputBox` now owns approval side-band traffic only; tool-result aggregation/continuation remains in `ToolPhase`/`AgentTurnRunner`.
+  - `AgentInputBox` now owns runtime-level external turn-starting input. `AgentInputEventQueueManager` no longer knows about user/inter-agent/tool/lifecycle event classes and is only storage behind `AgentInputBox`.
 
 ## Environment Or Dependency Notes
 
@@ -163,13 +174,6 @@ Additional checks after API/E2E Round 3 delivery latest-base conflict resolution
   - Result: 3 files passed, 14 tests passed.
 - `pnpm -C autobyteus-server-ts run build:full`
   - Passed.
-
-Blocked / not used as pass criteria for this latest-base conflict fix:
-
-- `git diff --check HEAD`
-  - Fails on pre-existing incoming `origin/personal` evidence artifacts under `tickets/done/published-artifacts-absolute-paths/evidence/*app-db-state.txt` with trailing whitespace. The scoped diff checks above pass for the files resolved in this local fix.
-- `pnpm -C autobyteus-web exec vitest run components/agentInput/__tests__/AgentUserInputTextArea.spec.ts stores/__tests__/agentRunStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts`
-  - Result: 3 files passed, 29 tests passed.
 
 Additional checks after code-review CR-003 through CR-006 local fixes:
 
@@ -220,6 +224,22 @@ Additional checks after API/E2E Round 3 delivery latest-base conflict resolution
   - Result: 3 files passed, 14 tests passed.
 - `pnpm -C autobyteus-server-ts run build:full`
   - Passed.
+
+Additional checks after AgentInputBox addendum implementation:
+
+- `git diff --check HEAD`
+  - Passed.
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/events/agent-input-event-queue-manager.test.ts tests/unit/agent/input-box/agent-input-box.test.ts tests/unit/agent/context/agent-context.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/unit/agent/runtime/agent-worker.test.ts tests/unit/agent/loop/agent-turn-input-box.test.ts tests/integration/agent/runtime/agent-runtime.test.ts tests/integration/agent/tool-approval-flow.test.ts`
+  - Result: 8 files passed, 44 tests passed.
+- `pnpm -C autobyteus-ts run build`
+  - Passed, including runtime dependency verification.
+- Changed source implementation file size check:
+  - `agent-input-event-queue-manager.ts`: 126 effective non-empty lines.
+  - `agent-input-box.ts`: 126 effective non-empty lines.
+  - `agent-worker.ts`: 243 effective non-empty lines.
+  - `agent-runtime.ts`: 186 effective non-empty lines.
+  - Other changed source files remain below 220 effective non-empty lines.
+
 Blocked / not used as pass criteria:
 
 - `pnpm -C autobyteus-ts exec tsc -p tsconfig.json --noEmit`

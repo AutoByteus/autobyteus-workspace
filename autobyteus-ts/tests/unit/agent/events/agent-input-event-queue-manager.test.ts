@@ -1,12 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import { AgentInputEventQueueManager } from '../../../../src/agent/events/agent-input-event-queue-manager.js';
-import {
-  AgentReadyEvent,
-  InterAgentMessageReceivedEvent,
-  ToolExecutionApprovalEvent,
-  UserMessageReceivedEvent
-} from '../../../../src/agent/events/agent-events.js';
-import { AgentInputUserMessage } from '../../../../src/agent/message/agent-input-user-message.js';
 
 const timeout = <T>(promise: Promise<T>, ms = 1000): Promise<T> =>
   Promise.race([
@@ -15,51 +8,40 @@ const timeout = <T>(promise: Promise<T>, ms = 1000): Promise<T> =>
   ]);
 
 describe('AgentInputEventQueueManager', () => {
-  it('preserves external scheduler FIFO order for user messages', async () => {
-    const mgr = new AgentInputEventQueueManager();
+  it('stores generic queue items in FIFO order without domain event knowledge', async () => {
+    const mgr = new AgentInputEventQueueManager<{ id: string }>(['external']);
 
-    await mgr.enqueueUserMessage(
-      new UserMessageReceivedEvent(new AgentInputUserMessage('first'))
-    );
-    await mgr.enqueueUserMessage(
-      new UserMessageReceivedEvent(new AgentInputUserMessage('second'))
-    );
+    await mgr.enqueue('external', { id: 'first' });
+    await mgr.enqueue('external', { id: 'second' });
 
-    const evt1 = await timeout(mgr.getNextSchedulerEvent());
-    const evt2 = await timeout(mgr.getNextSchedulerEvent());
+    const evt1 = await timeout(mgr.getNext(['external']));
+    const evt2 = await timeout(mgr.getNext(['external']));
 
-    expect(evt1?.[0]).toBe('userMessageInputQueue');
-    expect((evt1?.[1] as UserMessageReceivedEvent).agentInputUserMessage.content).toBe('first');
-    expect(evt2?.[0]).toBe('userMessageInputQueue');
-    expect((evt2?.[1] as UserMessageReceivedEvent).agentInputUserMessage.content).toBe('second');
+    expect(evt1).toEqual(['external', { id: 'first' }]);
+    expect(evt2).toEqual(['external', { id: 'second' }]);
   });
 
-  it('prioritizes external turn triggers before approval and internal lifecycle traffic', async () => {
-    const mgr = new AgentInputEventQueueManager();
+  it('uses caller-provided priority instead of hard-coded domain queues', async () => {
+    const mgr = new AgentInputEventQueueManager<string>(['low', 'high', 'lifecycle']);
 
-    await mgr.enqueueInternalSystemEvent(new AgentReadyEvent());
-    await mgr.enqueueToolApprovalEvent(new ToolExecutionApprovalEvent('tool-1', true));
-    await mgr.enqueueInterAgentMessage(new InterAgentMessageReceivedEvent({} as any));
-    await mgr.enqueueUserMessage(new UserMessageReceivedEvent(new AgentInputUserMessage('external')));
+    await mgr.enqueue('lifecycle', 'ready');
+    await mgr.enqueue('low', 'later');
+    await mgr.enqueue('high', 'now');
 
-    expect((await timeout(mgr.getNextSchedulerEvent()))?.[0]).toBe('userMessageInputQueue');
-    expect((await timeout(mgr.getNextSchedulerEvent()))?.[0]).toBe('interAgentMessageInputQueue');
-    expect((await timeout(mgr.getNextSchedulerEvent()))?.[0]).toBe('toolExecutionApprovalQueue');
-    expect((await timeout(mgr.getNextSchedulerEvent()))?.[0]).toBe('internalSystemEventQueue');
+    expect(await timeout(mgr.getNext(['high', 'low', 'lifecycle']))).toEqual(['high', 'now']);
+    expect(await timeout(mgr.getNext(['high', 'low', 'lifecycle']))).toEqual(['low', 'later']);
+    expect(await timeout(mgr.getNext(['high', 'low', 'lifecycle']))).toEqual(['lifecycle', 'ready']);
   });
 
-  it('can withhold external input while still allowing control or lifecycle queues', async () => {
-    const mgr = new AgentInputEventQueueManager();
+  it('drains queued items using explicit caller priority', async () => {
+    const mgr = new AgentInputEventQueueManager<string>(['a', 'b']);
 
-    await mgr.enqueueUserMessage(new UserMessageReceivedEvent(new AgentInputUserMessage('later')));
-    await mgr.enqueueToolApprovalEvent(new ToolExecutionApprovalEvent('tool-1', false));
+    await mgr.enqueue('a', 'a1');
+    await mgr.enqueue('b', 'b1');
+    await mgr.enqueue('a', 'a2');
 
-    const approval = await timeout(mgr.getNextInputEvent({ allowExternalInput: false }));
-    expect(approval?.[0]).toBe('toolExecutionApprovalQueue');
-    expect(approval?.[1]).toBeInstanceOf(ToolExecutionApprovalEvent);
-
-    const external = await timeout(mgr.getNextInputEvent({ allowExternalInput: true }));
-    expect(external?.[0]).toBe('userMessageInputQueue');
-    expect(external?.[1]).toBeInstanceOf(UserMessageReceivedEvent);
+    expect(mgr.qsize()).toBe(3);
+    expect(mgr.drain(['b', 'a'])).toEqual(['b1', 'a1', 'a2']);
+    expect(mgr.empty()).toBe(true);
   });
 });

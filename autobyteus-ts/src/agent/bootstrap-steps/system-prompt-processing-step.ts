@@ -38,8 +38,8 @@ export class SystemPromptProcessingStep extends BaseBootstrapStep {
     } catch (error) {
       const errorMessage = `Agent '${context.agentId}': Critical failure during system prompt processing step: ${error}`;
       console.error(errorMessage);
-      if (context.state.inputEventQueues) {
-        await context.state.inputEventQueues.enqueueInternalSystemEvent(
+      if (context.state.agentInputBox) {
+        await context.state.agentInputBox.enqueueLifecycleMessage(
           new AgentErrorEvent(errorMessage, String(error))
         );
       }

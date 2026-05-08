@@ -1,33 +1,17 @@
-import type {
-  BaseEvent,
-  UserMessageReceivedEvent,
-  InterAgentMessageReceivedEvent,
-  ToolExecutionApprovalEvent
-} from './agent-events.js';
-
 class AsyncQueue<T> {
   private items: T[] = [];
-  private waiters: Array<(value: T) => void> = [];
+  private waiters: Array<() => void> = [];
 
   async put(item: T): Promise<void> {
+    this.items.push(item);
     const waiter = this.waiters.shift();
     if (waiter) {
-      waiter(item);
-      return;
+      waiter();
     }
-    this.items.push(item);
   }
 
   tryGet(): T | undefined {
     return this.items.shift();
-  }
-
-  async get(): Promise<T> {
-    const item = this.tryGet();
-    if (item !== undefined) {
-      return item;
-    }
-    return new Promise<T>((resolve) => this.waiters.push(resolve));
   }
 
   qsize(): number {
@@ -37,43 +21,96 @@ class AsyncQueue<T> {
   empty(): boolean {
     return this.items.length === 0;
   }
+
+  drain(): T[] {
+    const drained = this.items;
+    this.items = [];
+    return drained;
+  }
 }
 
-export class AgentInputEventQueueManager {
-  userMessageInputQueue: AsyncQueue<UserMessageReceivedEvent>;
-  interAgentMessageInputQueue: AsyncQueue<InterAgentMessageReceivedEvent>;
-  toolExecutionApprovalQueue: AsyncQueue<ToolExecutionApprovalEvent>;
-  internalSystemEventQueue: AsyncQueue<BaseEvent>;
-
-  private inputQueues: Array<[string, AsyncQueue<BaseEvent>]>;
-  private readyBuffers: Map<string, BaseEvent[]>;
-  private queuePriority: string[];
+export class AgentInputEventQueueManager<T> {
+  private readonly queues = new Map<string, AsyncQueue<T>>();
   private availabilityWaiters: Array<() => void> = [];
-  private readonly externalInputQueues = new Set([
-    'userMessageInputQueue',
-    'interAgentMessageInputQueue'
-  ]);
 
-  constructor() {
-    this.userMessageInputQueue = new AsyncQueue();
-    this.interAgentMessageInputQueue = new AsyncQueue();
-    this.toolExecutionApprovalQueue = new AsyncQueue();
-    this.internalSystemEventQueue = new AsyncQueue();
+  constructor(queueNames: readonly string[]) {
+    if (!Array.isArray(queueNames) || queueNames.length === 0) {
+      throw new Error('AgentInputEventQueueManager requires at least one queue name.');
+    }
+    for (const queueName of queueNames) {
+      this.assertQueueName(queueName);
+      if (this.queues.has(queueName)) {
+        throw new Error(`Duplicate queue name '${queueName}'.`);
+      }
+      this.queues.set(queueName, new AsyncQueue<T>());
+    }
+  }
 
-    this.inputQueues = [
-      ['userMessageInputQueue', this.userMessageInputQueue as unknown as AsyncQueue<BaseEvent>],
-      ['interAgentMessageInputQueue', this.interAgentMessageInputQueue as unknown as AsyncQueue<BaseEvent>],
-      ['toolExecutionApprovalQueue', this.toolExecutionApprovalQueue as unknown as AsyncQueue<BaseEvent>],
-      ['internalSystemEventQueue', this.internalSystemEventQueue]
-    ];
+  get queueNames(): string[] {
+    return Array.from(this.queues.keys());
+  }
 
-    this.readyBuffers = new Map(this.inputQueues.map(([name]) => [name, []]));
-    this.queuePriority = [
-      'userMessageInputQueue',
-      'interAgentMessageInputQueue',
-      'toolExecutionApprovalQueue',
-      'internalSystemEventQueue'
-    ];
+  async enqueue(queueName: string, item: T): Promise<void> {
+    await this.getQueue(queueName).put(item);
+    this.notifyAvailability();
+  }
+
+  tryGetNext(queuePriority: readonly string[] = this.queueNames): [string, T] | null {
+    for (const queueName of queuePriority) {
+      const queue = this.getQueue(queueName);
+      const item = queue.tryGet();
+      if (item !== undefined) {
+        return [queueName, item];
+      }
+    }
+    return null;
+  }
+
+  async getNext(
+    queuePriority: readonly string[] = this.queueNames,
+    options: { signal?: AbortSignal } = {}
+  ): Promise<[string, T]> {
+    while (true) {
+      const next = this.tryGetNext(queuePriority);
+      if (next) {
+        return next;
+      }
+      await this.waitForAvailability(options.signal);
+    }
+  }
+
+  qsize(queueName?: string): number {
+    if (queueName) {
+      return this.getQueue(queueName).qsize();
+    }
+    return Array.from(this.queues.values()).reduce((total, queue) => total + queue.qsize(), 0);
+  }
+
+  empty(queueName?: string): boolean {
+    return this.qsize(queueName) === 0;
+  }
+
+  drain(queuePriority: readonly string[] = this.queueNames): T[] {
+    const drained: T[] = [];
+    for (const queueName of queuePriority) {
+      drained.push(...this.getQueue(queueName).drain());
+    }
+    return drained;
+  }
+
+  private getQueue(queueName: string): AsyncQueue<T> {
+    this.assertQueueName(queueName);
+    const queue = this.queues.get(queueName);
+    if (!queue) {
+      throw new Error(`Unknown queue '${queueName}'.`);
+    }
+    return queue;
+  }
+
+  private assertQueueName(queueName: string): void {
+    if (typeof queueName !== 'string' || queueName.trim().length === 0) {
+      throw new Error('Queue name must be a non-empty string.');
+    }
   }
 
   private notifyAvailability(): void {
@@ -83,109 +120,25 @@ export class AgentInputEventQueueManager {
     }
   }
 
-  async enqueueUserMessage(event: UserMessageReceivedEvent): Promise<void> {
-    await this.userMessageInputQueue.put(event);
-    this.notifyAvailability();
-  }
-
-  async enqueueInterAgentMessage(event: InterAgentMessageReceivedEvent): Promise<void> {
-    await this.interAgentMessageInputQueue.put(event);
-    this.notifyAvailability();
-  }
-
-  async enqueueToolApprovalEvent(event: ToolExecutionApprovalEvent): Promise<void> {
-    await this.toolExecutionApprovalQueue.put(event);
-    this.notifyAvailability();
-  }
-
-  async enqueueInternalSystemEvent(event: BaseEvent): Promise<void> {
-    await this.internalSystemEventQueue.put(event);
-    this.notifyAvailability();
-  }
-
-  private getEligibleQueuePriority(allowExternalInput: boolean): string[] {
-    if (allowExternalInput) {
-      return this.queuePriority;
+  private async waitForAvailability(signal?: AbortSignal): Promise<void> {
+    if (signal?.aborted) {
+      throw new Error('Queue wait aborted.');
     }
-
-    return this.queuePriority.filter((queueName) => !this.externalInputQueues.has(queueName));
-  }
-
-  async getNextInputEvent(
-    options: {
-      allowExternalInput?: boolean;
-    } = {}
-  ): Promise<[string, BaseEvent] | null> {
-    const allowExternalInput = options.allowExternalInput ?? true;
-    const eligibleQueuePriority = this.getEligibleQueuePriority(allowExternalInput);
-
-    while (true) {
-      for (const qname of eligibleQueuePriority) {
-        const buffer = this.readyBuffers.get(qname);
-        if (buffer && buffer.length > 0) {
-          return [qname, buffer.shift()!];
-        }
-      }
-
-      let bufferedAny = false;
-      for (const [name, queue] of this.inputQueues) {
-        const item = queue.tryGet();
-        if (item !== undefined) {
-          this.readyBuffers.get(name)?.push(item);
-          bufferedAny = true;
-        }
-      }
-
-      if (bufferedAny) {
-        continue;
-      }
-
-      await new Promise<void>((resolve) => this.availabilityWaiters.push(resolve));
-    }
-  }
-
-  async getNextSchedulerEvent(): Promise<[string, BaseEvent] | null> {
-    const schedulerQueuePriority = [
-      'userMessageInputQueue',
-      'interAgentMessageInputQueue',
-      'toolExecutionApprovalQueue',
-      'internalSystemEventQueue'
-    ];
-
-    while (true) {
-      for (const qname of schedulerQueuePriority) {
-        const buffer = this.readyBuffers.get(qname);
-        if (buffer && buffer.length > 0) {
-          return [qname, buffer.shift()!];
-        }
-      }
-
-      for (const qname of schedulerQueuePriority) {
-        const queue = this.inputQueues.find(([name]) => name === qname)?.[1];
-        const item = queue?.tryGet();
-        if (item !== undefined) {
-          return [qname, item];
-        }
-      }
-
-      await new Promise<void>((resolve) => this.availabilityWaiters.push(resolve));
-    }
-  }
-
-  async getNextInternalEvent(): Promise<[string, BaseEvent] | null> {
-    const qname = 'internalSystemEventQueue';
-    const buffer = this.readyBuffers.get(qname);
-    if (buffer && buffer.length > 0) {
-      return [qname, buffer.shift()!];
-    }
-
-    const item = this.internalSystemEventQueue.tryGet();
-    if (item !== undefined) {
-      return [qname, item];
-    }
-
-    await new Promise<void>((resolve) => this.availabilityWaiters.push(resolve));
-    const nextItem = await this.internalSystemEventQueue.get();
-    return [qname, nextItem];
+    await new Promise<void>((resolve, reject) => {
+      const waiter = () => {
+        cleanup();
+        resolve();
+      };
+      const onAbort = () => {
+        cleanup();
+        reject(new Error('Queue wait aborted.'));
+      };
+      const cleanup = () => {
+        this.availabilityWaiters = this.availabilityWaiters.filter((entry) => entry !== waiter);
+        signal?.removeEventListener('abort', onAbort);
+      };
+      this.availabilityWaiters.push(waiter);
+      signal?.addEventListener('abort', onAbort, { once: true });
+    });
   }
 }

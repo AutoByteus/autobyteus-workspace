@@ -1,8 +1,8 @@
-import { AgentInputEventQueueManager } from '../events/agent-input-event-queue-manager.js';
 import { AgentEventStore } from '../events/event-store.js';
 import { AgentStatus } from '../status/status-enum.js';
 import { ToolInvocation } from '../tool-invocation.js';
 import { AgentTurn } from '../agent-turn.js';
+import type { AgentInputBox } from '../input-box/agent-input-box.js';
 import { RecentSettledInvocationCache } from './recent-settled-invocation-cache.js';
 import { ToDoList } from '../../task-management/todo-list.js';
 import { BaseLLM } from '../../llm/base.js';
@@ -20,7 +20,7 @@ export class AgentRuntimeState {
   currentStatus: AgentStatus;
   llmInstance: BaseLLM | null = null;
   toolInstances: ToolInstances | null = null;
-  inputEventQueues: AgentInputEventQueueManager | null = null;
+  agentInputBox: AgentInputBox | null = null;
   eventStore: AgentEventStore | null = null;
   statusDeriver: AgentStatusDeriver | null = null;
   workspaceRootPath: string | null;
@@ -60,7 +60,7 @@ export class AgentRuntimeState {
     this.recentSettledInvocationIds = new RecentSettledInvocationCache();
 
     console.info(
-      `AgentRuntimeState initialized for agent_id '${this.agentId}'. Initial status: ${this.currentStatus}. Workspace linked. InputQueues pending initialization. Output data via notifier.`
+      `AgentRuntimeState initialized for agent_id '${this.agentId}'. Initial status: ${this.currentStatus}. Workspace linked. AgentInputBox pending initialization. Output data via notifier.`
     );
   }
 
@@ -182,13 +182,13 @@ export class AgentRuntimeState {
   toString(): string {
     const llmStatus = this.llmInstance ? 'Initialized' : 'Not Initialized';
     const toolsStatus = this.toolInstances ? `${Object.keys(this.toolInstances).length} Initialized` : 'Not Initialized';
-    const inputQueuesStatus = this.inputEventQueues ? 'Initialized' : 'Not Initialized';
+    const inputBoxStatus = this.agentInputBox ? 'Initialized' : 'Not Initialized';
     const activeTurnStatus = this.activeTurn ? 'Active' : 'Inactive';
 
     return (
       `AgentRuntimeState(agentId='${this.agentId}', currentStatus='${this.currentStatus}', ` +
       `llmStatus='${llmStatus}', toolsStatus='${toolsStatus}', ` +
-      `inputQueuesStatus='${inputQueuesStatus}', ` +
+      `agentInputBoxStatus='${inputBoxStatus}', ` +
       `pendingApprovals=${Object.keys(this.pendingToolApprovals).length}, ` +
       `agentTurn='${activeTurnStatus}')`
     );

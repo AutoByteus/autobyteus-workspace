@@ -15,6 +15,7 @@ import {
 } from '../events/agent-events.js';
 import { applyEventAndDeriveStatus } from '../status/status-update-utils.js';
 import { AgentWorker } from './agent-worker.js';
+import { AgentInputBox } from '../input-box/agent-input-box.js';
 import {
   normalizeInterruptReason,
   type AgentInterruptOptions,
@@ -52,17 +53,10 @@ export class AgentRuntime {
       throw new Error(`Agent '${agentId}' worker is not active.`);
     }
 
-    if (!this.context.state.inputEventQueues) {
-      console.error(
-        `AgentRuntime '${agentId}': Input event queues not initialized for event ${event.constructor.name}.`
-      );
-      return;
-    }
-
     if (event instanceof UserMessageReceivedEvent) {
-      await this.context.state.inputEventQueues.enqueueUserMessage(event);
+      await this.getAgentInputBox().enqueueUserMessage(event);
     } else if (event instanceof InterAgentMessageReceivedEvent) {
-      await this.context.state.inputEventQueues.enqueueInterAgentMessage(event);
+      await this.getAgentInputBox().enqueueInterAgentMessage(event);
     } else if (event instanceof ToolExecutionApprovalEvent) {
       const activeTurn = this.context.state.activeTurn;
       if (!activeTurn) {
@@ -83,8 +77,15 @@ export class AgentRuntime {
         );
       }
     } else {
-      await this.context.state.inputEventQueues.enqueueInternalSystemEvent(event);
+      await this.getAgentInputBox().enqueueLifecycleMessage(event);
     }
+  }
+
+  private getAgentInputBox(): AgentInputBox {
+    if (!this.context.state.agentInputBox) {
+      this.context.state.agentInputBox = new AgentInputBox();
+    }
+    return this.context.state.agentInputBox;
   }
 
   start(): void {

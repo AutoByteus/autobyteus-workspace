@@ -3,7 +3,7 @@ import { AgentContext } from '../../../../src/agent/context/agent-context.js';
 import { AgentConfig } from '../../../../src/agent/context/agent-config.js';
 import { AgentRuntimeState } from '../../../../src/agent/context/agent-runtime-state.js';
 import { AgentStatus } from '../../../../src/agent/status/status-enum.js';
-import { AgentInputEventQueueManager } from '../../../../src/agent/events/agent-input-event-queue-manager.js';
+import { AgentInputBox } from '../../../../src/agent/input-box/agent-input-box.js';
 import { ToolInvocation } from '../../../../src/agent/tool-invocation.js';
 import { BaseLLM } from '../../../../src/llm/base.js';
 import { LLMModel } from '../../../../src/llm/models.js';
@@ -72,17 +72,17 @@ describe('AgentContext', () => {
     expect(context.customData).toEqual({});
   });
 
-  it('throws when input queues are not initialized', () => {
+  it('throws when AgentInputBox is not initialized', () => {
     const llm = makeLLM();
     const config = new AgentConfig('name', 'role', 'desc', llm);
     const state = new AgentRuntimeState('agent-3');
 
     const context = new AgentContext('agent-3', config, state);
 
-    expect(() => context.inputEventQueues).toThrow(/Input event queues/);
+    expect(() => context.agentInputBox).toThrow(/AgentInputBox/);
 
-    state.inputEventQueues = new AgentInputEventQueueManager();
-    expect(context.inputEventQueues).toBe(state.inputEventQueues);
+    state.agentInputBox = new AgentInputBox();
+    expect(context.agentInputBox).toBe(state.agentInputBox);
   });
 
   it('gets tools and warns when missing', () => {
