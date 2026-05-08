@@ -258,22 +258,20 @@ Buffer: "print('hi')</write_file>"
 Final emit: remaining content, then SEGMENT_END
 ```
 
-## Integration with Event Handler
+## Integration with LLM Turn Phase
 
-The `LLMUserMessageReadyEventHandler` integrates the parser via the
-`StreamingResponseHandlerFactory`:
+`LlmTurnPhase` integrates the parser via the `StreamingResponseHandlerFactory`:
 
 ```ts
-async function handle(event: LLMUserMessageReadyEvent) {
+async function runLlmPhase(input: AgentInputPipelineResult) {
   const { handler } = StreamingResponseHandlerFactory.create({
     toolNames,
     provider,
     onSegmentEvent: emitPartEvent,
-    onToolInvocation: emitToolInvocation,
     agentId,
   });
 
-  for await (const chunk of llm.streamUserMessage(message)) {
+  for await (const chunk of llm.streamMessages(messages, renderedPayload, kwargs, { signal })) {
     // Pass the full ChunkResponse object
     handler.feed(chunk);
   }
@@ -294,7 +292,7 @@ Agent default:
 
 - If `AUTOBYTEUS_STREAM_PARSER` is not set, the default is `api_tool_call`.
 
-When `AUTOBYTEUS_STREAM_PARSER` is set to `xml` or `json`, the agent handler
+When `AUTOBYTEUS_STREAM_PARSER` is set to `xml` or `json`, `LlmTurnPhase`
 selects the corresponding parser strategy. JSON parsing uses provider-aware
 signature patterns and parsing strategies to match tool formatting examples.
 

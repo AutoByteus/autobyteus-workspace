@@ -8,6 +8,8 @@
 The **Autobyteus Agent Framework** is built on a highly modular, event-driven architecture designed to support complex, stateful agents. At its core, the framework separates the **Engine** (execution runtime) from the **Processors** (logic units) and **Tools** (capabilities). This separation allows for granular control over the agent's lifecycle, from input processing to tool execution and response generation.
 
 This document details the design and implementation of these three pillars.
+For the current single-agent turn runner and interrupt model, see
+[Agent Runtime Loop and Native Interrupt](agent_runtime_loop_and_interrupt.md).
 
 ---
 
@@ -29,8 +31,13 @@ The flow of execution follows a standard pipeline:
 
 1.  **Submission**: Events (e.g., `UserMessageReceivedEvent`) are submitted to the runtime safely from any async context (or worker thread if used).
 2.  **Queueing**: Events are routed to specific input queues based on their type (e.g., user messages, tool results, internal signals). This allows for priority handling (e.g., system signals > user input).
-3.  **Dispatching**: The `WorkerEventDispatcher` picks the next event and routes it to the appropriate **Handler**.
-4.  **Handling**: Handlers execute business logic. Crucially, **Processors** are often invoked within these handlers to perform specific transformations or logic.
+3.  **Turn scheduling**: `AgentWorker` starts one `AgentTurn` for an external
+    user/inter-agent trigger and delegates the finite LLM/tool loop to
+    `AgentTurnRunner`.
+4.  **Phase execution**: The runner invokes typed pipelines and phase services
+    (`AgentInputPipeline`, `LlmTurnPhase`, `ToolPhase`,
+    `ToolResultPipeline`, `LLMResponsePipeline`) rather than routing normal
+    LLM/tool/continuation control through legacy handlers.
 
 ---
 
@@ -68,9 +75,10 @@ All processors share a common architectural pattern:
 #### C. LLM Response Processors (`src/agent/llm-response-processor`)
 
 - **Role**: Optional post-processing of the `CompleteResponse` received from the LLM.
-- **Tool Parsing Note**: Tool invocation parsing is handled during streaming by
-  `LLMUserMessageReadyEventHandler` using `StreamingResponseHandler` and the
-  `ToolInvocationAdapter`. LLM response processors are no longer required by default.
+- **Tool Parsing Note**: Tool invocation parsing is handled during
+  `LlmTurnPhase` streaming by `StreamingResponseHandlerFactory`, the selected
+  streaming handler, and the `ToolInvocationAdapter`. LLM response processors
+  are no longer required by default.
 
 #### D. Tool Invocation Preprocessors (`src/agent/tool-invocation-preprocessor`)
 
@@ -122,7 +130,7 @@ When the LLM responds, the system interprets intent during streaming using one o
 4.  **System Prompt Processor (Bootstrap)**: `ToolManifestInjectorProcessor` has already inserted the schema for `list_directory` into the system prompt during bootstrapping.
 5.  **LLM Call**: Agent sends prompt to LLM.
 6.  **LLM Response**: LLM returns text/JSON requesting `list_directory(path="src")`.
-7.  **Streaming Parser**: `LLMUserMessageReadyEventHandler` parses the stream, identifies tool calls, and enqueues `PendingToolInvocationEvent`.
+7.  **Streaming Parser**: `LlmTurnPhase` parses the stream, identifies tool calls, and lets `AgentTurnRunner` apply `PendingToolInvocationEvent` status projections before `ToolPhase` executes the calls.
 8.  **Preprocessor**: Checks if `list_directory` is allowed (e.g., within sandbox).
 9.  **Execution**: Tool runs, returns list of files.
 10. **Result Processor**: Formats the file list.

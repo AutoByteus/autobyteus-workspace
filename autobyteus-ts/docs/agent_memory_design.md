@@ -20,6 +20,8 @@ an execution component that consumes prompts built from memory.
 Legacy trace storage in `AgentRuntimeState.conversation_history` has been removed.
 LLM calls are memory‑centric, and providers no longer own history.
 
+Current runtime-loop note: single-agent memory ingestion now runs through `AgentTurnRunner` phases (`AgentInputPipeline`, `LlmTurnPhase`, `ToolPhase`, `ToolResultPipeline`, and `LLMResponsePipeline`). The old single-agent normal-flow handler files are removed; any references in older diagrams should be read as the equivalent runner/phase event projection, not as live handler classes.
+
 ---
 
 ## 3. Design Principles
@@ -458,7 +460,7 @@ Use **processors** where possible to ingest traces and keep handlers clean:
 - Input processor (runs last): capture processed user input
 - Tool result processor: capture tool outcomes
 
-Assistant responses are ingested in `LLMUserMessageReadyEventHandler` after the
+Assistant responses are ingested in `LlmTurnPhase / AgentTurnRunner` after the
 LLM stream completes (no separate response processor yet).
 
 This keeps accumulation consistent and centralizes memory ingestion.
@@ -508,7 +510,7 @@ are present only when relevant.
 **Example: user trace**
 
 ```
-{"id":"rt_001","ts":1738100000.12,"turn_id":"turn_0001","seq":1,"trace_type":"user","content":"Please refactor the parser.","source_event":"LLMUserMessageReadyEvent","media":{"images":[],"audio":[],"video":[]}}
+{"id":"rt_001","ts":1738100000.12,"turn_id":"turn_0001","seq":1,"trace_type":"user","content":"Please refactor the parser.","source_event":"AgentInputPipeline","media":{"images":[],"audio":[],"video":[]}}
 ```
 
 **Example: tool continuation boundary**
@@ -539,7 +541,7 @@ Raw traces are stored line-by-line, but compaction plans them into
 **Turn definition**
 
 - One processed non-tool user message still creates one `turn_id`.
-- `turn_id` is generated at `LLMUserMessageReadyEvent` time.
+- `turn_id` is generated when `AgentRuntimeState.startActiveTurn()` calls `MemoryManager.startTurn()` before `AgentTurnRunner` begins the external trigger.
 - Tool call intents and tool results inherit the `turn_id` stored on the
   `ToolInvocation`, even if the result arrives later.
 - TOOL-origin continuation input does **not** mint a new turn; it reuses the
@@ -577,7 +579,7 @@ UserInputMessageEventHandler
    ▼
 LLMUserMessageReadyEvent
    ▼
-LLMUserMessageReadyEventHandler
+LlmTurnPhase / AgentTurnRunner
    ├─► LLMRequestAssembler.prepareRequest(...)
    │      └─► PendingCompactionExecutor.executeIfRequired(...)
    │            ├─► CompactionWindowPlanner.plan(...)
@@ -589,7 +591,7 @@ LLMUserMessageReadyEventHandler
    └─► MemoryManager.ingestAssistantResponse(...)
 
 ToolResultEvent
-   └─► ToolResultEventHandler
+   └─► ToolResultPipeline / AgentTurnRunner
          └─► MemoryIngestToolResultProcessor (order 900)
                └─► MemoryManager.ingestToolResult(...)
 
@@ -775,7 +777,7 @@ if prompt_tokens > 0.8 * input_budget:
 
 ### Where the trigger lives
 
-- **LLMUserMessageReadyEventHandler** (post-response):
+- **LlmTurnPhase / AgentTurnRunner** (post-response):
   1. Receives `TokenUsage` from the provider (exact prompt tokens)
   2. Evaluates the compaction policy
   3. Sets `MemoryManager.compaction_required = True`
@@ -797,7 +799,7 @@ provider-specific counting logic in the request path.
 
 - `UserMessageReceivedEvent`
   - `UserInputMessageEventHandler` creates `LLMUserMessageReadyEvent`
-- `LLMUserMessageReadyEventHandler` calls:
+- `LlmTurnPhase / AgentTurnRunner` calls:
 - `context.state.llmInstance.streamMessages(...)` with assembled messages
 
 Legacy `conversation_history` has been removed. LLM providers are stateless.
@@ -816,7 +818,7 @@ UserMessageReceivedEvent
   └─► UserInputMessageEventHandler
         └─► LLMUserMessageReadyEvent (processed input)
               └─► MemoryManager.ingestUserMessage(...)
-                    └─► LLMUserMessageReadyEventHandler
+                    └─► LlmTurnPhase / AgentTurnRunner
                           ├─► LLMRequestAssembler.prepareRequest(processedUser)
                           ├─► LLM.streamMessages(messages, renderedPayload)
                           └─► MemoryManager.ingestAssistantResponse(...)
@@ -1054,7 +1056,7 @@ type ToolPayload = ToolCallPayload | ToolResultPayload;
 
 **Agent integration**
 
-- `LLMUserMessageReadyEventHandler` calls
+- `LlmTurnPhase / AgentTurnRunner` calls
   `LLMRequestAssembler.prepareRequest(...)`, which runs `PendingCompactionExecutor` before passing messages to the LLM.
 
 **Tests**
@@ -1094,13 +1096,13 @@ flows to validate the new file structure and data flow.
 
 ### 16.1 Simple user → assistant (no tools)
 
-**Scenario**  
+**Scenario**
 User asks a question; no tool calls are emitted.
 
 **Call stack (debug-trace style)**
 
 ```
-LLMUserMessageReadyEventHandler.handle(...)
+LlmTurnPhase / AgentTurnRunner.handle(...)
   at src/agent/handlers/llm-user-message-ready-event-handler.ts
   └─► LLMRequestAssembler.prepareRequest(...)
         at src/agent/llm-request-assembler.ts
@@ -1121,20 +1123,20 @@ LLMUserMessageReadyEventHandler.handle(...)
               at src/memory/working-context-snapshot.ts
 ```
 
-**Gap check**  
+**Gap check**
 Requires stateless LLM API + prompt renderer.
 
 ---
 
 ### 16.2 User → tool call → tool result → assistant
 
-**Scenario**  
+**Scenario**
 LLM emits one or more tool calls; tools run; results return; LLM continues.
 
 **Call stack (debug-trace style)**
 
 ```
-LLMUserMessageReadyEventHandler.handle(...)
+LlmTurnPhase / AgentTurnRunner.handle(...)
   at src/agent/handlers/llm-user-message-ready-event-handler.ts
   └─► LLMRequestAssembler.prepareRequest(...)
         at src/agent/llm-request-assembler.ts
@@ -1163,21 +1165,21 @@ LLMUserMessageReadyEventHandler.handle(...)
                                             before the next LLM leg
 ```
 
-**Gap check**  
+**Gap check**
 Requires structured tool messages + renderer support for tool roles.
 
 ---
 
 ### 16.3 Compaction boundary (token pressure)
 
-**Scenario**  
+**Scenario**
 Previous LLM response reports prompt tokens above budget; compaction is executed
 before the next LLM call.
 
 **Call stack (debug-trace style)**
 
 ```
-LLMUserMessageReadyEventHandler.handle(...)
+LlmTurnPhase / AgentTurnRunner.handle(...)
   at src/agent/handlers/llm-user-message-ready-event-handler.ts
   └─► LLMRequestAssembler.prepareRequest(...)
         at src/agent/llm-request-assembler.ts
@@ -1200,7 +1202,7 @@ LLMUserMessageReadyEventHandler.handle(...)
   └─► LLM.streamMessages(compacted working context snapshot)
 ```
 
-**Gap check**  
+**Gap check**
 Requires deterministic snapshot formatting + model token budget fields.
 
 ---
@@ -1385,7 +1387,7 @@ UserMessageReceivedEvent
               └─► MemoryManager.ingestToolContinuationBoundary(...) for TOOL sender
         └─► LLMUserMessageReadyEvent
 
-LLMUserMessageReadyEventHandler
+LlmTurnPhase / AgentTurnRunner
   ├─► request = LLMRequestAssembler.prepareRequest(...)
   │     ├─► PendingCompactionExecutor.executeIfRequired(...)
   │     │     ├─► CompactionWindowPlanner.plan(listRawTracesOrdered(), activeTurnId)
@@ -1400,7 +1402,7 @@ LLMUserMessageReadyEventHandler
   ├─► PendingToolInvocationEvent
   └─► MemoryManager.ingestAssistantResponse(...)
 
-ToolResultEventHandler
+ToolResultPipeline / AgentTurnRunner
   └─► Tool result processors
         └─► MemoryIngestToolResultProcessor (order 900)
               └─► MemoryManager.ingestToolResult(...)
@@ -1591,18 +1593,18 @@ Turns are created when a processed non-tool user message is ready.
 
 These decisions are required to keep data flow consistent and avoid ambiguity:
 
-1. **Turn ID propagation**  
-   - `turn_id` is assigned at `LLMUserMessageReadyEvent`.  
+1. **Turn ID propagation**
+   - `turn_id` is assigned when `AgentRuntimeState.startActiveTurn()` calls `MemoryManager.startTurn()` before `AgentTurnRunner` begins the external trigger.
    - It is stored on `ToolInvocation` metadata and propagated to `ToolResultEvent`.
 
-2. **Assistant response ingestion point**  
-   - Ingest assistant output directly in `LLMUserMessageReadyEventHandler`.  
+2. **Assistant response ingestion point**
+   - Ingest assistant output directly in `LlmTurnPhase / AgentTurnRunner`.
    - Do not rely on optional LLM response processors.
 
-3. **Raw trace pruning strategy**  
-   - Use atomic file rewrite (write new JSONL → replace old file).  
+3. **Raw trace pruning strategy**
+   - Use atomic file rewrite (write new JSONL → replace old file).
    - Avoid tombstones in the active raw file.
 
-4. **Token budget source**  
-   - Add `max_context_tokens` to `LLMModel` metadata.  
+4. **Token budget source**
+   - Add `max_context_tokens` to `LLMModel` metadata.
    - Use provider-reported `prompt_tokens` (post-response) to trigger compaction.

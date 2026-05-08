@@ -60,7 +60,7 @@ streaming handlers or by `RunFileChangeService`; that service consumes
 Claude Agent SDK sessions treat raw assistant `tool_use` blocks as authoritative invocation starts. `tool_use.input` / `tool_use.arguments` is tracked by invocation id, emitted on both the segment metadata lane and lifecycle argument lane, and preserved on terminal `TOOL_EXECUTION_SUCCEEDED` / `TOOL_EXECUTION_FAILED` events as a result-first recovery path. If the Claude SDK permission callback observes the same invocation, the coordinator must reuse that tracked state and suppress duplicate segment-start/lifecycle-start emissions independently.
 
 Claude Agent SDK turn interruption is owned by the session, not by websocket or
-frontend stop-button state. Each active Claude turn is tracked with its own
+frontend button state. Each active Claude turn is tracked with its own
 `AbortController`, and that controller is passed into the SDK query options.
 When a user interrupt is requested, the session clears pending tool approvals,
 flushes pending approval/control-response work, aborts and closes the active SDK
@@ -70,6 +70,16 @@ user-requested interrupt is a normal interrupted terminal path: it must not be
 recorded as a successful completed turn and SDK abort/close fallout should not
 surface as a runtime `ERROR`. Follow-up messages in the same run or team member
 must start from a fresh query resource after that settlement boundary.
+
+Native AutoByteus runs expose the same user-facing interrupt contract through
+the `autobyteus-ts` runtime. `AgentRun.interrupt(...)` delegates to
+`AgentRuntime.interrupt(...)`, which targets only the active `AgentTurn` and
+leaves the worker/runtime alive for a later follow-up. The native runner passes
+the active turn's `AbortSignal` through LLM, MCP, tool, and terminal execution
+boundaries where supported, restores the turn-start working-context checkpoint
+on interruption, and rejects stale approvals/results after the turn input box is
+closed. This is distinct from `stop()`, which remains terminal runtime
+shutdown and runs cleanup.
 
 Claude browser MCP tools add one extra converter responsibility: allowlisted
 `mcp__autobyteus_browser__<tool>` names for known stable browser tools are

@@ -12,8 +12,11 @@ This project uses two different runtime concepts that previously both used the w
 
 2. `ToolInvocationBatch` (tool aggregation batch)
 - Scope: one set of tool calls emitted by a single LLM response.
-- Source: created in `LLMUserMessageReadyEventHandler` when tool invocations are parsed from streamed output.
-- Usage: temporarily collects tool results and gates when to enqueue one aggregated tool-results message back into the input pipeline.
+- Source: created by the active `AgentTurn` when `LlmTurnPhase` returns tool
+  invocations parsed from streamed output.
+- Usage: temporarily collects tool results and gates when
+  `ToolResultContinuationBuilder` creates one same-turn `SenderType.TOOL`
+  continuation message for `AgentInputPipeline`.
 
 ## Relationship
 

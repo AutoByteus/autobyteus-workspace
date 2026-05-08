@@ -56,7 +56,7 @@ API-provided tool calls. We need to:
                                   │
                                   ▼
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                   LLMUserMessageReadyEventHandler                             │
+│                            LlmTurnPhase                                      │
 │  Selects handler based on AUTOBYTEUS_STREAM_PARSER:                          │
 │    - "xml" / "json" / "sentinel" → ParsingStreamingResponseHandler           │
 │    - "api_tool_call"             → ApiToolCallStreamingResponseHandler       │
@@ -78,7 +78,7 @@ API-provided tool calls. We need to:
                                   │ get_all_invocations()
                                   ▼
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                     PendingToolInvocationEvent → Execution                    │
+│          AgentTurnRunner status projection → ToolPhase execution             │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -479,7 +479,7 @@ async function* _streamUserMessageToLLM(
 
 ## 9. Handler Orchestration
 
-### 9.1. `LLMUserMessageReadyEventHandler` (MODIFIED)
+### 9.1. `LlmTurnPhase` (MODIFIED)
 
 **Key changes**:
 
@@ -493,12 +493,16 @@ const { handler, toolSchemas } = StreamingResponseHandlerFactory.create({
   toolNames,
   provider,
   onSegmentEvent: emitSegmentEvent,
-  onToolInvocation: emitToolInvocation,
   agentId,
 });
 
 // Stream processing loop
-for await (const chunkResponse of context.state.llmInstance.streamUserMessage(llmUserMessage, { tools: toolSchemas })) {
+for await (const chunkResponse of context.state.llmInstance.streamMessages(
+  messages,
+  renderedPayload,
+  { tools: toolSchemas },
+  { signal: turn.executionScope.signal, turnId }
+)) {
   // ... aggregation logic ...
 
   // Feed full ChunkResponse to handler (not just content!)
@@ -542,7 +546,7 @@ class AgentConfig {
 | `src/agent/streaming/handlers/parsing-streaming-response-handler.ts`       | Use `chunk.content`                          | MODIFIED |
 | `src/agent/streaming/handlers/pass-through-streaming-response-handler.ts`  | Use `chunk.content`                          | MODIFIED |
 | `src/agent/streaming/handlers/api-tool-call-streaming-response-handler.ts` | New handler for SDK tool calls               | **NEW**  |
-| `src/agent/handlers/llm-user-message-ready-event-handler.ts`  | Handler selection, pass full ChunkResponse   | MODIFIED |
+| `src/agent/loop/llm-turn-phase.ts`  | Streaming-handler selection, pass full ChunkResponse   | MODIFIED |
 | `src/utils/tool-call-format.ts`                               | Remove legacy "native" alias                 | MODIFIED |
 
 ---
@@ -601,15 +605,15 @@ Similar formatters exist for:
 
 ### 13.3. Design: Tool Schema Passing
 
-**Option A: Pass via `LLMUserMessageReadyEventHandler` (Recommended)**
+**Option A: Pass via `LlmTurnPhase` (Recommended)**
 
-The handler already has access to tool definitions. When `api_tool_call` mode is selected:
+The LLM turn phase already resolves turn tool definitions. When `api_tool_call` mode is selected:
 
 1. Format tool definitions to API schema
 2. Pass as `tools` kwarg to LLM stream
 
 ```ts
-// In LLMUserMessageReadyEventHandler.handle()
+// In LlmTurnPhase.run()
 if (formatOverride === 'api_tool_call') {
   const toolDefinitions = context.state.toolNames
     .map((name) => defaultToolRegistry.getToolDefinition(name))
@@ -652,7 +656,7 @@ async _streamUserMessageToLLM(
 
 | File                                                     | Change                            |
 | -------------------------------------------------------- | --------------------------------- |
-| `src/agent/handlers/llm-user-message-ready-event-handler.ts` | Format tool schemas, pass to LLM  |
+| `src/agent/loop/llm-turn-phase.ts` | Format tool schemas, pass to LLM with turn-scoped options  |
 | `src/llm/api/openai-compatible-llm.ts`                       | Accept `tools` kwarg, pass to API |
 | (similar for other LLM providers)                        | Accept `tools` kwarg              |
 

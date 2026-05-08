@@ -1,18 +1,20 @@
 # Autobyteus Lifecycle Event-Sourced Engine Design
 
 **Date:** 2025-12-29
-**Status:** Design & Implementation
+**Status:** Historical design note; current turn-loop implementation differs
 
 ## 1. Purpose
 
-This document proposes a **fully lifecycle-event-driven, event-sourced** engine model for Autobyteus. In this model:
+This document proposed a **fully lifecycle-event-driven, event-sourced** engine model for Autobyteus. The current runtime keeps event-sourced status projection and stream observability, but normal single-agent LLM/tool turn control is now owned by `AgentTurnRunner` and typed phase/pipeline services instead of handler-only choreography.
 
 - **Lifecycle events are the primary extension points.**
-- **Handlers are driven exclusively by events.**
+- **Lifecycle and team/workflow handlers are driven by events.**
 - **Status is derived** from the event stream (not manually mutated as the source of truth).
-- **Processor pipelines remain** as configurable steps _inside_ handlers, not separate lifecycle concepts.
+- **Processor pipelines remain** configurable steps, now called by runner/phase services for single-agent turns.
 
 The goal is to make the system simpler to reason about, easier to extend, and easier to debug via event replay.
+For the canonical current single-agent runtime-loop and interrupt design, see
+[Agent Runtime Loop and Native Interrupt](agent_runtime_loop_and_interrupt.md).
 
 ---
 
@@ -304,53 +306,60 @@ A lifecycle event‑sourced design keeps **events as the single source of truth*
 
 ## Appendix A. Implementation Details (Agent Event Flow Map)
 
-This appendix documents the **implemented agent runtime behavior** in code. The design and implementation are now aligned.
+This appendix documents the **current implemented agent runtime behavior** in code.
 
 ### High-Level Data Flow
 
 1. External inputs (user, inter-agent, approvals) and internal events are enqueued into `AgentInputEventQueueManager`.
-2. `AgentWorker` pulls the next event (internal-only while bootstrapping).
-3. `WorkerEventDispatcher` appends the event to the event store (if configured), **derives status**, emits lifecycle + external status notifications, then dispatches to a handler.
-4. The handler may enqueue additional events, continuing the chain.
+2. `AgentWorker` performs direct lifecycle bootstrap, then pulls the next scheduler event.
+3. For user or inter-agent external triggers, the worker starts one `AgentTurn` and delegates the finite turn to `AgentTurnRunner`.
+4. `AgentTurnRunner` applies status events, calls phase/pipeline services, publishes through `AgentOutbox`, and settles the turn.
+5. Tool approvals are posted into the active `AgentTurnInputBox`; interrupt is side-band control through `AgentRuntime.interrupt()`.
 
 ### Event Pipeline (Primary)
 
 #### User Input -> LLM -> Response
 
-| Event                              | Handler                                   | Emits (next events)                                | Notes                                                                          |
-| ---------------------------------- | ----------------------------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------ |
-| `UserMessageReceivedEvent`         | `UserInputMessageEventHandler`            | `LLMUserMessageReadyEvent`                         | Routes all user/system/tool/inter-agent input through the same input pipeline. |
-| `LLMUserMessageReadyEvent`         | `LLMUserMessageReadyEventHandler`         | `LLMCompleteResponseReceivedEvent`                 | Streams chunks to notifier, aggregates full response.                          |
-| `LLMCompleteResponseReceivedEvent` | `LLMCompleteResponseReceivedEventHandler` | (Processors may emit `PendingToolInvocationEvent`) | Always notifies a complete response event.                                     |
+| Step / Event | Owner | Emits / Applies | Notes |
+| --- | --- | --- | --- |
+| `UserMessageReceivedEvent` | `AgentWorker` → `AgentTurnRunner` | starts `AgentTurn` | External trigger for one turn. |
+| `InterAgentMessageReceivedEvent` | `AgentWorker` → `AgentTurnRunner` | starts `AgentTurn` | `AgentInputPipeline` preserves sender/reference-file metadata and generates recipient-visible reference block. |
+| Input conversion | `AgentInputPipeline` | `LLMUserMessageReadyEvent` status projection | Runs input processors and builds the LLM input. |
+| LLM stream | `LlmTurnPhase` | segment events; `LLMCompleteResponseReceivedEvent` or tool invocations | Streams chunks to `AgentOutbox`, aggregates full response, parses text/API tool calls. |
+| Final response | `LLMResponsePipeline` | assistant output / final response side effects | Runs final response processors and notifies completion. |
 
-Additional note: after `LLMCompleteResponseReceivedEvent` is handled, the dispatcher may enqueue `AgentIdleEvent` if there are no pending tool approvals and the tool invocation queue is empty.
+Additional note: after a completed turn settles, `AgentWorker` applies
+`AgentIdleEvent`. Interrupted turns settle through `AgentTurnInterruptedEvent`
+and working-context checkpoint restore.
 
 #### Tool Invocation and Results
 
-| Event                         | Handler                              | Emits (next events)                                                             | Notes                                                                                                    |
-| ----------------------------- | ------------------------------------ | ------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `PendingToolInvocationEvent`  | `ToolInvocationRequestEventHandler`  | `ToolResultEvent` (auto) or approval notification                               | If manual approval is needed, it stores pending invocation and emits an approval request (not an event). |
-| `ToolExecutionApprovalEvent`  | `ToolExecutionApprovalEventHandler`  | `ApprovedToolInvocationEvent` (approved) or `LLMUserMessageReadyEvent` (denied) | Denials go back to the LLM.                                                                              |
-| `ApprovedToolInvocationEvent` | `ApprovedToolInvocationEventHandler` | `ToolResultEvent`                                                               | Executes tool after approval.                                                                            |
-| `ToolResultEvent`             | `ToolResultEventHandler`             | `UserMessageReceivedEvent` (aggregated results)                                 | Aggregates multi-tool results into one LLM turn.                                                         |
+| Step / Event | Owner | Emits / Applies | Notes |
+| --- | --- | --- | --- |
+| `PendingToolInvocationEvent` | `AgentTurnRunner` status projection | tool lifecycle/request notification | Runner applies status before execution. |
+| Tool execution / approval wait | `ToolPhase` + `AgentTurnInputBox` | `ToolResultEvent` | Manual approvals are posted into the active turn input box; stale approvals are rejected after settlement/interruption. |
+| Tool result processing | `ToolResultPipeline` | processed `ToolResultEvent` | Applies configured tool-result processors. |
+| Tool continuation | `ToolResultContinuationBuilder` + `AgentInputPipeline` | next same-turn LLM input | Aggregates multi-tool results into one `SenderType.TOOL` continuation inside the same turn. |
 
 #### Inter-Agent Messages
 
-| Event                            | Handler                                 | Emits (next events)        | Notes                                                  |
-| -------------------------------- | --------------------------------------- | -------------------------- | ------------------------------------------------------ |
-| `InterAgentMessageReceivedEvent` | `InterAgentMessageReceivedEventHandler` | `UserMessageReceivedEvent` | Normalizes inter-agent traffic into the same pipeline. |
+| Event | Owner | Emits (next events) | Notes |
+| --- | --- | --- | --- |
+| `InterAgentMessageReceivedEvent` | `AgentInputPipeline.convertInterAgentEvent(...)` inside `AgentTurnRunner` | LLM-ready user message | Normalizes inter-agent traffic into the same input pipeline and preserves structured `reference_files`. |
 
 ### Bootstrapping Flow (Internal)
 
-Runtime init is **not** an event. It happens once in `AgentWorker._runtime_init` to create the event store, status deriver, and input queues.
+Runtime init is **not** an event. It happens once in `AgentWorker.runtimeInit`
+to create the event store, status deriver, and input queues. Bootstrap is direct
+lifecycle orchestration through `AgentBootstrapper.run(context)`, with status
+events applied for observability.
 
-| Event                         | Handler                 | Emits (next events)                                             | Notes                            |
-| ----------------------------- | ----------------------- | --------------------------------------------------------------- | -------------------------------- |
-| `BootstrapStartedEvent`       | `BootstrapEventHandler` | `BootstrapStepRequestedEvent` or `BootstrapCompletedEvent`      | Starts bootstrap orchestration.  |
-| `BootstrapStepRequestedEvent` | `BootstrapEventHandler` | `BootstrapStepCompletedEvent`                                   | Executes one step.               |
-| `BootstrapStepCompletedEvent` | `BootstrapEventHandler` | Next `BootstrapStepRequestedEvent` or `BootstrapCompletedEvent` | Advances the sequence.           |
-| `BootstrapCompletedEvent`     | `BootstrapEventHandler` | `AgentReadyEvent`                                               | Only on success.                 |
-| `AgentReadyEvent`             | (no explicit handler)   | -                                                               | Status derivation drives `IDLE`. |
+| Event | Owner | Emits / Applies | Notes |
+| --- | --- | --- | --- |
+| `BootstrapStartedEvent` | `AgentWorker.initialize()` | status projection | Marks bootstrap start. |
+| bootstrap steps | `AgentBootstrapper` | workspace/MCP/system-prompt setup | `SystemPromptPipeline` applies system prompt processors. |
+| `BootstrapCompletedEvent` | `AgentWorker.initialize()` | status projection | Records success/failure. |
+| `AgentReadyEvent` | `AgentWorker.initialize()` | status projection | Drives `IDLE` after successful bootstrap. |
 
 ### Shutdown / Error Flow
 

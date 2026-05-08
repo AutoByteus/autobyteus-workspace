@@ -35,7 +35,7 @@ maps those segments into tool calls.
 ## Non-goals
 
 - Designing new tool syntaxes beyond JSON/XML.
-- Replacing the existing event-driven execution pipeline.
+- Replacing the current `AgentTurnRunner` / phase-service execution pipeline.
 - Introducing new runtime registries for custom parsing strategies.
 
 ## High-level Flow
@@ -52,8 +52,8 @@ ToolManifestInjectorProcessor
       ▼
 LLM
       ▼
-LLMUserMessageReadyEventHandler
-      │  (StreamingResponseHandler)
+LlmTurnPhase
+      │  (StreamingResponseHandlerFactory + selected streaming handler)
       ▼
 StreamingParser + ToolInvocationAdapter
       │
@@ -61,7 +61,7 @@ StreamingParser + ToolInvocationAdapter
 ToolInvocation list (per stream)
       │
       ▼
-PendingToolInvocationEvent -> tool execution -> ToolResultEventHandler
+AgentTurnRunner status projection -> ToolPhase execution -> ToolResultPipeline
 ```
 
 ## Formatter / Example / Parser Contract
@@ -189,7 +189,7 @@ Key files:
 
 Tool parsing is wired into the agent loop via the streaming handler:
 
-- `LLMUserMessageReadyEventHandler` streams chunks through `StreamingResponseHandler`.
+- `LlmTurnPhase` streams chunks through the selected streaming response handler.
 - Completed tool segments are converted into `ToolInvocation` objects.
 - The handler enqueues `PendingToolInvocationEvent` entries once the stream is finalized.
 
@@ -198,7 +198,8 @@ Tool parsing is wired into the agent loop via the streaming handler:
 means tool approval requests and UI segment rendering can be correlated without
 any additional mapping.
 
-Tool execution results are aggregated by `ToolResultEventHandler`.
+Tool execution results are processed by `ToolResultPipeline`, then aggregated
+into a same-turn `SenderType.TOOL` continuation by `ToolResultContinuationBuilder`.
 For multi-tool turns, results are reordered to match the invocation
 sequence before being sent back to the LLM.
 

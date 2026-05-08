@@ -2,215 +2,202 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `API/E2E Validation-Code Re-review`
+- Review Entry Point: `Implementation Review — Independent Deep Review Re-Review`
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/requirements.md`
-- Current Review Round: `3`
-- Trigger: API/E2E validation passed and added repository-resident durable validation; re-review required before delivery.
-- Prior Review Round Reviewed: `2`
-- Latest Authoritative Round: `3`
+- Current Review Round: `6`
+- Trigger: Implementation local fix commit `a78c92e6` addressing Round 5 blockers `CR-003` through `CR-006`.
+- Prior Review Round Reviewed: `5`
+- Latest Authoritative Round: `6`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/design-spec.md`
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/design-review-report.md`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/implementation-handoff.md`
-- Prior Code Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/review-report.md`
-- API/E2E Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/api-e2e-validation-report.md`
-- API / E2E Validation Started Yet: `Yes — validation round 1 complete and passed`
-- Repository-Resident Durable Validation Added Or Updated After Prior Review: `Yes`
+- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/api-e2e-validation-report.md`
+- API / E2E Validation Started Yet: `Yes — earlier API/E2E passed before the latest source fix; source changed in commit a78c92e6, so API/E2E must revalidate before delivery resumes.`
+- Repository-Resident Durable Validation Added Or Updated After Prior Review: `No new API/E2E-authored durable validation in this round; this was an implementation-owned source/test fix.`
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Implementation handoff | N/A | 2 blocking | Changes requested | No | Main runner/interrupt refactor shape was present, but interrupted-turn working-context restore and pending-approval terminal lifecycle/invocation identity blocked API/E2E handoff. |
-| 2 | Local fixes handoff | `CR-001`, `CR-002` | 0 blocking | Pass / Ready for API/E2E validation | No | Both blocking findings were resolved with source changes and targeted tests. |
-| 3 | API/E2E validation-code re-review | Round 2 pass state, plus API/E2E durable validation additions | 0 blocking | Pass / Ready for delivery | Yes | Durable validation additions are narrow, relevant, maintainable, and pass targeted review checks. |
+| 1 | Implementation handoff | N/A | 2 blocking | Changes requested | No | Working-context restore and pending-approval lifecycle/invocation identity blocked API/E2E handoff. |
+| 2 | Local fixes handoff | `CR-001`, `CR-002` | 0 blocking | Pass / Ready for API/E2E validation | No | Working-context and approval lifecycle fixes passed re-review. |
+| 3 | API/E2E durable-validation re-review | Round 2 pass state plus durable validation additions | 0 blocking | Pass / Ready for delivery | No | API/E2E-added durable validation passed source re-review. |
+| 4 | Delivery-reroute latest-base merge/local fix | Rounds 1-3 pass state plus merge-conflict resolution | 0 blocking | Pass / Ready for API/E2E revalidation | No | `reference_files` inter-agent behavior was ported into the new input pipeline. |
+| 5 | User-requested independent deep review | Rounds 1-4 pass state rechecked broadly | 4 blocking | Changes requested | No | Deep review found missed LLM segment interruption finalization, missing AutobyteusLLM/AutobyteusClient signal propagation, source-size hard-limit breach, and a dormant input-box result/continuation path. |
+| 6 | Implementation local fix commit `a78c92e6` | `CR-003`, `CR-004`, `CR-005`, `CR-006` | 0 blocking | Pass / Ready for API/E2E revalidation | Yes | The Round 5 blockers are resolved in implementation-owned source and tests; revalidation is required because source behavior changed after the previous API/E2E pass. |
 
 ## Review Scope
 
-This round is a post-API/E2E validation-code re-review. Scope was intentionally centered on repository-resident durable validation added or updated by `api_e2e_engineer`, plus directly related validation evidence and sanity checks for compatibility/legacy absence.
+Round 6 reviewed the latest source/test implementation state, not only a superficial diff. I rechecked the prior blockers against the same design-principle gates used in Round 5:
 
-Durable validation files reviewed:
+- streaming interruption ownership from `LlmTurnPhase` through `StreamingResponseHandler`, pass-through/API-tool-call/parser handlers, parser event emission, `ToolInvocationAdapter`, server segment mapping, and frontend segment projection;
+- provider cancellation from `BaseLLM` invocation options through `AutobyteusLLM`, `AutobyteusClient`, and Axios request config;
+- native team backend decomposition from `AutoByteusTeamRunBackend` into `AutoByteusTeamRunEventProcessor`;
+- turn-local side-band ownership in `AgentTurnInputBox` and authoritative tool-result flow through `ToolPhase` return values;
+- stale legacy/dormant path cleanup and source-file hard-limit checks;
+- representative tests/builds for the changed areas.
 
-- `autobyteus-server-ts/tests/integration/agent/agent-websocket.integration.test.ts`
-- `autobyteus-server-ts/tests/integration/agent/agent-team-websocket.integration.test.ts`
-- `autobyteus-ts/tests/unit/llm/api/openai-compatible-llm.test.ts`
-- `autobyteus-ts/tests/unit/llm/api/anthropic-llm.test.ts`
-- `autobyteus-ts/tests/unit/llm/api/ollama-llm.test.ts`
-- `autobyteus-ts/tests/unit/tools/mcp/proxy.test.ts`
-- `autobyteus-ts/tests/unit/tools/mcp/tool.test.ts`
-- `autobyteus-ts/tests/integration/tools/terminal/terminal-session-manager.test.ts`
-- `autobyteus-ts/tests/integration/tools/terminal/terminal-tools.test.ts`
-
-Reviewed for:
-
-- Whether durable tests validate the right API/E2E risks from the previous code review: provider SDK/client cancellation signal propagation, MCP signal propagation, foreground terminal/run-bash abort behavior, WebSocket interrupt-vs-stop semantics, and active-only interrupt command routing.
-- Whether tests are durable repository validation rather than temporary harness code or compatibility-only coverage.
-- Whether mocks/fakes distinguish `interrupt()` from `stop()` enough to catch regressions.
-- Whether tests are appropriately placed under owning packages/subsystems and maintainable enough for future runs.
-- Whether any validation-code addition introduces legacy `STOP_GENERATION` expectations or resurrects old single-agent dispatcher/handler control flow.
-
-Round 2 implementation review remains the latest source-implementation review basis; no new implementation blocker was found during validation-code re-review.
+This review is still **not** final delivery approval. The branch remains `ahead 3, behind 70` relative to `origin/personal`; delivery must refresh against the recorded base branch later, and API/E2E must revalidate the new source behavior before delivery resumes.
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
 | Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `CR-001` | Blocking | Still resolved | API/E2E report validates interrupted LLM/tool/pending approval working-context suppression, and round 2 source review verified checkpoint/restore ownership in state/memory/runner. | No regression found in validation-code review. |
-| 1 | `CR-002` | Blocking | Still resolved | API/E2E report validates pending approval terminal lifecycle, stale approval/result fencing, and frontend projection; round 2 source review verified tool phase/input box/runtime/web changes. | No regression found in validation-code review. |
-| 2 | N/A | N/A | N/A | Round 2 had no unresolved findings. | This round reviewed only the API/E2E durable validation additions before delivery. |
+| 1 | `CR-001` | Blocking | Still resolved | `AgentRuntimeState.startActiveTurn()` checkpoints working context; `AgentTurnRunner` restores on `AgentInterruptionError`; Round 6 runtime suite passed. | Raw trace/history retention remains intentional; working context restore is the enforced invariant. |
+| 1 | `CR-002` | Blocking | Still resolved | `AgentTurnInputBox` keeps approval invocation identity fences; `ToolPhase` publishes terminal interrupted lifecycle/log for pending approvals; Round 6 runtime/input-box/web suites passed. | No stale approval resurrection found. |
+| 5 | `CR-003` | Blocking | Resolved | `StreamingResponseHandler.finalizeInterrupted(reason)` is now a required contract. `LlmTurnPhase` calls it on `AgentInterruptionError` and also ends the reasoning lane as interrupted. Pass-through/API-tool-call/parser handlers emit interrupted `SEGMENT_END` for active segments; `ToolInvocationAdapter` ignores interrupted tool segment ends. Frontend `SegmentEndPayload` and `segmentHandler` preserve interrupted status. Tests cover text, API tool-call/write-file, parser tool segment, runtime interruption, and web projection. | Completed tool segments that are no longer active are still terminalized by turn-interrupted frontend handling if non-terminal; partial active tool calls do not become invocations. |
+| 5 | `CR-004` | Blocking | Resolved | `AutobyteusLLM` passes `options.signal` to `AutobyteusClient.sendMessage()` and `.streamMessage()`; `AutobyteusClient` forwards the signal into Axios config for `/send-message` and `/stream-message`. Unit tests assert signal forwarding at both LLM and client layers. | Physical transport abort is now wired where Axios supports it; broader live paid-provider cancellation remains API/E2E/out-of-scope evidence. |
+| 5 | `CR-005` | Blocking | Resolved | `AutoByteusTeamRunBackend` is reduced to 260 effective non-empty lines; `AutoByteusTeamRunEventProcessor` owns native event processing/enrichment/member context resolution at 287 effective non-empty lines. | New processor is a real off-spine concern, not empty pass-through indirection. |
+| 5 | `CR-006` | Blocking | Resolved | `AgentTurnInputBox` now owns approval side-band only. Dormant `postToolResult`, `waitForToolResult`, `postContinuation`, result queues, continuation queues, and `ToolPhase.run()` side-write were removed. Source grep found no remaining dormant APIs in source/tests. | Direct `ToolPhase` return values remain the authoritative tool-result flow, matching `AgentTurnRunner`. |
+| 3 | N/A | N/A | Still no unresolved validation-code findings | Earlier API/E2E durable validation remains present; this round reviewed implementation-owned source fixes. | Because source changed, route back to API/E2E for revalidation rather than delivery. |
+| 4 | N/A | N/A | Latest-base reference-file fix still looks correct | `AgentInputPipeline.convertInterAgentEvent()` remains the inter-agent LLM conversion/outbox publication owner; old handler path remains deleted. | No regression found in this area. |
 
-## Source File Size And Structure Audit (If Applicable)
+## Source File Size And Structure Audit (Changed Implementation Source)
 
-No source implementation file was added or modified by API/E2E beyond durable validation tests. The changed validation files were still checked for size and responsibility pressure. Two server WebSocket integration files are already large, but the API/E2E deltas are small, localized assertions/fake counters, and do not justify blocking extraction in this ticket.
+Hard/proactive thresholds are applied to changed source implementation files, not tests. Effective non-empty lines exclude blank lines and `//` comments.
 
-| File | Physical Lines | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
-| --- | ---: | ---: | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/tests/integration/agent/agent-websocket.integration.test.ts` | 575 | 512 | Reviewed; test file, not implementation source | Existing large integration file, small local delta | Pass; WebSocket interrupt-vs-stop assertions belong with agent websocket integration. | Pass | None | None; future unrelated additions may warrant splitting websocket integration scenarios. |
-| `autobyteus-server-ts/tests/integration/agent/agent-team-websocket.integration.test.ts` | 808 | 717 | Reviewed; test file, not implementation source | Existing large integration file, small local delta | Pass; team WebSocket interrupt assertions belong with team websocket integration. | Pass | None | None; future unrelated additions may warrant splitting team websocket integration scenarios. |
-| `autobyteus-ts/tests/unit/llm/api/openai-compatible-llm.test.ts` | 267 | 238 | Pass | Slightly above proactive threshold | Pass; OpenAI-compatible adapter signal pass-through belongs with adapter unit tests. | Pass | None | None. |
-| `autobyteus-ts/tests/unit/llm/api/anthropic-llm.test.ts` | 195 | 161 | Pass | Pass | Pass; Anthropic adapter signal pass-through belongs with adapter unit tests. | Pass | None | None. |
-| `autobyteus-ts/tests/unit/llm/api/ollama-llm.test.ts` | 193 | 173 | Pass | Pass | Pass; Ollama client abort behavior belongs with adapter unit tests. | Pass | None | None. |
-| `autobyteus-ts/tests/unit/tools/mcp/proxy.test.ts` | 60 | 49 | Pass | Pass | Pass; proxy signal forwarding belongs with MCP proxy unit tests. | Pass | None | None. |
-| `autobyteus-ts/tests/unit/tools/mcp/tool.test.ts` | 125 | 105 | Pass | Pass | Pass; `GenericMcpTool` execution-options forwarding belongs with tool wrapper tests. | Pass | None | None. |
-| `autobyteus-ts/tests/integration/tools/terminal/terminal-session-manager.test.ts` | 115 | 99 | Pass | Pass | Pass; foreground command signal abort belongs with terminal session integration tests. | Pass | None | None. |
-| `autobyteus-ts/tests/integration/tools/terminal/terminal-tools.test.ts` | 200 | 164 | Pass | Pass | Pass; `run_bash` execution signal abort belongs with terminal tool integration tests. | Pass | None | None. |
+| Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
+| --- | ---: | --- | --- | --- | --- | --- | --- |
+| `autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend.ts` | 260 | Pass | Review pressure only | Now focused on `TeamRunBackend` command surface, subscription bridge lifecycle, and fan-out. | Correct Autobyteus team backend folder. | Pass | No blocking action. Avoid growing event enrichment back into this file. |
+| `autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-event-processor.ts` | 287 | Pass | Review pressure only | Cohesively owns native team event processing, sub-team unwrapping, member-context enrichment, and conversion to server-domain team events. | Correct sibling file under Autobyteus team backend ownership. | Pass | No blocking action. Future growth should split resolver/enrichment only if responsibilities diverge further. |
+| `autobyteus-ts/src/agent/streaming/handlers/api-tool-call-streaming-response-handler.ts` | 324 | Pass | Review pressure only | Large but cohesive API tool-call streaming owner; interrupted finalization fits existing active-tool state ownership. | Correct streaming handler folder. | Pass | No blocking action. Future parser/streamer extraction may be useful if this expands. |
+| `autobyteus-ts/src/clients/autobyteus-client.ts` | 371 | Pass | Review pressure only | Broad client file predates this round; signal forwarding stays at the transport boundary and does not add cross-domain policy. | Correct client folder. | Pass | No blocking action. Future endpoint expansion should consider endpoint-group extraction. |
+| `autobyteus-web/services/agentStreaming/handlers/segmentHandler.ts` | 372 | Pass | Review pressure only | Large projection handler but changed responsibility is local: end-segment finalization now models interrupted tool segments. | Correct web streaming handler folder. | Pass | No blocking action. Future projection growth should split by segment family. |
+| `autobyteus-web/services/agentStreaming/protocol/messageTypes.ts` | 366 | Pass | Review pressure only | Protocol union/type file remains cohesive; adding `interrupted`/`reason` to `SegmentEndPayload` tightens an existing shape. | Correct protocol folder. | Pass | No blocking action. |
+| Other changed source in fix commit (`agent-turn-input-box.ts`, `llm-turn-phase.ts`, `tool-phase.ts`, parser/event-emitter/context/factory/parser, `autobyteus-llm.ts`) | Under 220 except `tool-phase.ts` at 212 | Pass | Pass | Responsibilities remain bounded to turn input, LLM phase, tool phase, parser API, and provider adapter boundaries. | Correct owning folders. | Pass | No blocking action. |
 
 ## Structural / Design Checks
 
 | Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Validation additions reinforce the approved native interrupt design and do not change the root-cause/design posture. | None. |
-| Data-flow spine inventory clarity and preservation under shared principles | Pass | Tests cover meaningful edges of the interrupt spine: WebSocket command -> active run interrupt, runtime/tool/provider cancellation signal -> downstream adapter/tool boundary. | None. |
-| Ownership boundary preservation and clarity | Pass | Tests stay in package/subsystem owners: server websocket integration, LLM adapter unit tests, MCP proxy/tool tests, terminal integration tests. | None. |
-| Off-spine concern clarity | Pass | Cancellation signal propagation is validated at adapter/tool off-spine boundaries without making tests depend on unrelated runtime internals. | None. |
-| Existing capability/subsystem reuse check | Pass | Existing test files and fakes were extended; no new parallel validation framework was introduced. | None. |
-| Reusable owned structures check | Pass | Fake `interruptCalls`/`stopCalls` counters are narrow and local to WebSocket integration tests; no duplicated production-like framework added. | None. |
-| Shared-structure/data-model tightness check | Pass | Test payloads and execution options remain narrow and explicit. | None. |
-| Repeated coordination ownership check | Pass | No repeated validation coordination policy was introduced; each test owns only its local setup. | None. |
-| Empty indirection check | Pass | Added helpers such as `waitForCondition` perform concrete polling needed by integration assertions. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Durable validation is placed at the seams it validates. | None. |
-| Ownership-driven dependency check | Pass | Tests use public/existing boundaries where practical and mocks only the immediate external SDK/proxy surfaces. | None. |
-| Authoritative Boundary Rule check | Pass | Validation does not require callers to depend on both an owner and its internals in production code; unit tests mock owned external boundaries appropriately. | None. |
-| File placement check | Pass | Files are under the correct package and subsystem test directories. | None. |
-| Flat-vs-over-split layout judgment | Pass | Keeping these small deltas in existing test files is clearer than introducing new fragmented test files for one or two related assertions. | None. |
-| Interface/API/query/command/service-method boundary clarity | Pass | Tests assert explicit `INTERRUPT_GENERATION`, `interrupt()`, `AbortSignal`, and execution-options identity rather than generic stop/command behavior. | None. |
-| Naming quality and naming-to-responsibility alignment check | Pass | Test names describe interrupt/abort behaviors clearly. Minor inherited names still mention stopped run in the active-only context, but the assertions are now interrupt-specific and not misleading enough to block. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | Added polling helpers are small and file-local; no broad duplication concern. | None. |
-| Patch-on-patch complexity control | Pass | Validation changes are additive/narrow and do not mask implementation behavior with compatibility branches. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | Validation report records no active `STOP_GENERATION` or old single-agent dispatcher/handler path; reviewed test diffs also removed old stop-generation expectations. | None. |
-| Test quality is acceptable for the changed behavior | Pass | Tests are deterministic, local, and focused on the risks API/E2E was asked to validate. | None. |
-| Test maintainability is acceptable for the changed behavior | Pass | Assertions are direct and tied to stable public behavior or local adapter boundaries. | None. |
-| Validation or delivery readiness for the next workflow stage | Pass | API/E2E passed and durable validation-code re-review found no blockers. | None. |
-| No backward-compatibility mechanisms | Pass | Durable tests validate the clean `INTERRUPT_GENERATION` path and absence of stop fallback rather than preserving legacy `STOP_GENERATION`. | None. |
-| No legacy code retention for old behavior | Pass | No old normal single-agent handler/dispatcher control-flow tests remain in the reviewed validation additions. | None. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | The clean-cut runtime loop remains intact after fixes; missed edge contracts from Round 5 are now represented in source and tests. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | User/team interrupt flows still run through runtime/backend -> active turn scope -> phase services -> outbox/server/web projections; tool continuation remains `ToolPhase` return -> `ToolResultPipeline` -> `ToolResultContinuationBuilder` -> `AgentInputPipeline(SenderType.TOOL)`. | None. |
+| Ownership boundary preservation and clarity | Pass | Streaming handlers now own active segment interrupted finalization; Autobyteus client owns HTTP signal mapping; team backend delegates event processing to a sibling processor; input box owns approval side-band only. | None. |
+| Off-spine concern clarity | Pass | `AutoByteusTeamRunEventProcessor` serves the backend event bridge; outbox/projection/server mapping remain off-spine observers/translators. | None. |
+| Existing capability/subsystem reuse check | Pass | Fixes extend existing streaming handler/parser, client/provider, backend, and web projection subsystems rather than adding unrelated helpers. | None. |
+| Reusable owned structures check | Pass | `finalizeInterrupted` is standardized on the existing handler interface; parser `interrupt(reason)` exposes a reusable contract under parser ownership. | None. |
+| Shared-structure/data-model tightness check | Pass | `SegmentEndPayload` now explicitly models `interrupted` and `reason`; runtime segment-end payloads use the same top-level shape consumed by web projection. | None. |
+| Repeated coordination ownership check | Pass | Cancellation mapping, event processing, and tool-result continuation have single owners; no duplicated coordinator found in the changed scope. | None. |
+| Empty indirection check | Pass | The new team event processor owns conversion/enrichment and member-context resolution; removed dormant input-box lanes eliminate previous empty/dormant control paths. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | The only prior hard-size failure is fixed; remaining large files are below hard limit and cohesive for current changes. | None. |
+| Ownership-driven dependency check | Pass | Callers depend on `StreamingResponseHandler.finalizeInterrupted`, `AutobyteusLLM`/`AutobyteusClient`, `TeamRunBackend`, and `AgentTurnInputBox` boundaries rather than internals. | None. |
+| Authoritative Boundary Rule check | Pass | No caller above an owner depends on both that owner and one of its internals for the same subject. The latest fixes strengthen, rather than bypass, authoritative boundaries. | None. |
+| File placement check | Pass | New/changed files live under their owning runtime-loop, streaming, client/provider, server backend, and web streaming protocol/handler folders. | None. |
+| Flat-vs-over-split layout judgment | Pass | Team backend split adds one meaningful sibling processor without artificial fragmentation; core runtime loop remains readable. | None. |
+| Interface/API/query/command/service-method boundary clarity | Pass | `finalizeInterrupted(reason)`, parser `interrupt(reason)`, and `AutobyteusRequestOptions.signal` have explicit subject and identity semantics. | None. |
+| Naming quality and naming-to-responsibility alignment check | Pass | New names map to concrete concerns: `finalizeInterrupted`, `AutoByteusTeamRunEventProcessor`, `AutobyteusRequestOptions`, approval-only `AgentTurnInputBox`. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | No duplicate old handler flow or parallel tool-result lane remains; no repeated signal-mapping policy outside provider/client owners. | None. |
+| Patch-on-patch complexity control | Pass | Fixes close ownership gaps instead of layering ad hoc checks: handler contract for segments, client options for signal, processor extraction for backend size, removal of dormant lanes. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Dormant input-box APIs and old handler/dispatcher normal-flow files are absent; grep found no active `STOP_GENERATION` path. | None. |
+| Test quality is acceptable for the changed behavior | Pass | Tests now assert interrupted segment ends, ignored interrupted tool invocations, Autobyteus signal forwarding, input-box simplification, server processing, and frontend projection. | None. |
+| Test maintainability is acceptable for the changed behavior | Pass | Tests are located near owning units and use existing fixtures/patterns. | None. |
+| Validation or delivery readiness for the next workflow stage | Pass | Source review is ready for API/E2E revalidation. Not ready for delivery until API/E2E reruns after source changes. | Route to `api_e2e_engineer`. |
+| No backward-compatibility mechanisms | Pass | No active `STOP_GENERATION` protocol path; no dual old/new normal turn execution path. | None. |
+| No legacy code retention for old behavior | Pass | Old single-agent worker dispatcher/handler normal-flow source/tests remain deleted; latest merge did not resurrect them. | None. |
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): `9.3`
-- Overall score (`/100`): `93`
-- Score calculation note: Simple average for summary only; the review decision is controlled by absence/presence of blocking findings and pass/fail structural gates.
+- Overall score (`/10`): `9.1`
+- Overall score (`/100`): `91`
+- Score calculation note: Simple average for trend visibility only. The pass decision is based on absence of blocking findings and passing mandatory structural gates.
 
 | Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 9.4 | Validation covers key command/cancellation spines from WebSocket and adapter/tool boundaries. | Full browser/Electron and live paid-provider endpoint validation remain out of scope. | Delivery should preserve the documented out-of-scope notes. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.3 | Tests are placed at their owning subsystem boundaries and avoid production boundary bypasses. | Server WebSocket integration files are large. | Future broad additions should consider splitting scenario groups. |
-| `3` | `API / Interface / Query / Command Clarity` | 9.4 | Assertions distinguish `INTERRUPT_GENERATION`/`interrupt()` from stop and validate `AbortSignal` handoff explicitly. | Some tests assert exact SDK option objects, which is acceptable now but may need adjustment if SDK options grow. | Keep future assertions focused on signal presence if unrelated request options are added. |
-| `4` | `Separation of Concerns and File Placement` | 9.2 | Validation is spread across server, LLM, MCP, and terminal owners rather than centralized in one brittle E2E blob. | Existing server integration files have size pressure. | Split only if future unrelated coverage grows. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.2 | Test shapes and fakes are narrow and specific. | Small polling helpers repeat locally. | Acceptable for this scope; extract only if repetition grows. |
-| `6` | `Naming Quality and Local Readability` | 9.1 | Added test names are clear for abort/signal/interrupt semantics. | Some inherited active-only test names still say stopped run. | Optional rename polish later, not blocking. |
-| `7` | `Validation Readiness` | 9.4 | API/E2E passed and review-local rerun passed changed durable validation files. | Live paid-provider and full browser/Electron E2E are not covered. | Track as out-of-scope/residual, not as blockers. |
-| `8` | `Runtime Correctness Under Edge Cases` | 9.3 | Durable tests cover adapter signal forwarding, terminal foreground abort, active-only WebSocket interrupt, and no stop fallback. | Real external provider cancellation semantics vary by provider. | Future provider-specific live validation can be added when cost/environment permits. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.5 | Validation removes legacy stop-generation assertions and reinforces clean interrupt semantics. | None blocking. | Keep resisting compatibility-only tests. |
-| `10` | `Cleanup Completeness` | 9.3 | No temporary harness files were retained; durable tests are repository-owned. | Large existing test files remain. | Future cleanup can split large integration files opportunistically. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.2 | The runtime command, LLM/tool/continuation, interrupt return/event, and server/web projection spines are now explicit and have clear owners. | The branch is large, so future readers still rely on the design/report artifacts to see the full spine quickly. | Keep runtime-loop docs synchronized after API/E2E revalidation. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.1 | Segment interruption, provider signal mapping, team event processing, and approval side-band ownership are now correctly encapsulated. | Some existing files remain large under the hard limit, which keeps future ownership drift risk alive. | Keep future additions out of large projection/client files unless split first. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.0 | `finalizeInterrupted(reason)`, parser `interrupt(reason)`, and `AutobyteusRequestOptions.signal` are explicit, narrow interfaces. | Existing server/web protocol files are broad unions; the new fields are correct but type files are still large. | Group protocol types if future protocol expansion continues. |
+| `4` | `Separation of Concerns and File Placement` | 9.0 | The previous hard-limit backend file is split; new processor placement matches backend ownership. | `api-tool-call-streaming-response-handler.ts`, `AutobyteusClient`, and web segment projection remain proactive-size pressure points. | Split only if future changes add new responsibilities. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.0 | Interrupted segment-end payload is explicit and shared consistently across runtime/server/web; dormant parallel input-box shapes were removed. | Tool segment state is still distributed across runtime segment model and lifecycle projection by necessity. | Keep lifecycle/segment projection tests paired for future status fields. |
+| `6` | `Naming Quality and Local Readability` | 9.1 | Names reflect concrete responsibilities and improve Round 5 weak spots. | Existing large files make local scanning less direct. | Maintain short, domain-specific names if future extraction happens. |
+| `7` | `Validation Readiness` | 9.1 | Targeted source, web, server, and build checks passed; tests cover the exact Round 5 blockers. | Full browser/Electron E2E and live paid-provider cancellation remain outside code-review execution. | API/E2E should rerun realistic protocol/transport validation after this source change. |
+| `8` | `Runtime Correctness Under Edge Cases` | 9.0 | Interrupt during active text/tool/parser/reasoning, pending approval, and Autobyteus transport cancellation paths are now covered locally. | Network-level abort behavior can still vary by provider/SDK and needs validation evidence beyond unit mocks. | API/E2E should rerun WebSocket and provider-adapter validation. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.4 | Old dispatcher/handler normal flow and `STOP_GENERATION` protocol path are absent; no transitional adapter state found. | No material weakness in reviewed scope. | Preserve clean-cut posture during future latest-base refresh. |
+| `10` | `Cleanup Completeness` | 9.1 | Dormant input-box tool-result/continuation lanes were removed and hard-size violation fixed. | Existing docs/delivery artifacts remain uncommitted from adjacent workflow stages; not source blockers but need downstream handling. | Delivery should handle docs/final artifact state after revalidation. |
 
 ## Findings
 
-No blocking or non-blocking findings remain.
+No unresolved Round 6 findings.
 
-### Validation-code re-review result
+Resolved findings retained for traceability:
 
-- Status: Passed
-- Files reviewed: the nine API/E2E-added or updated durable validation files listed in this report.
-- Evidence:
-  - WebSocket integration fakes now count `interruptCalls` separately from `stopCalls` and assert `INTERRUPT_GENERATION` invokes interrupt without stop fallback.
-  - Active-only WebSocket tests assert interrupt commands do not lazily restore stopped/missing active runs.
-  - OpenAI-compatible and Anthropic adapter unit tests assert sync and streaming request options receive the invocation `AbortSignal`.
-  - Ollama unit test asserts the client `abort()` hook is invoked on invocation signal abort.
-  - MCP proxy/tool unit tests assert execution `AbortSignal` reaches the remote server call boundary.
-  - Terminal integration tests assert foreground `sleep`/`run_bash` paths abort promptly through execution signals.
+- `CR-001` — Working-context checkpoint/restore for interrupted turns: resolved in Round 2, still resolved.
+- `CR-002` — Pending approval terminal lifecycle and invocation identity: resolved in Round 2, still resolved.
+- `CR-003` — Interrupted LLM streams must close active non-reasoning segments and avoid partial tool invocations: resolved in Round 6.
+- `CR-004` — AutobyteusLLM/AutobyteusClient must propagate cancellation signal: resolved in Round 6.
+- `CR-005` — Changed team backend source file exceeded 500 effective lines: resolved in Round 6.
+- `CR-006` — Dormant AgentTurnInputBox tool-result/continuation lanes: resolved in Round 6.
 
 ## Test Quality And Validation-Readiness Verdict
 
 | Area | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- |
-| Validation Readiness | Ready for the next workflow stage (`Delivery`) | Pass | API/E2E validation passed and durable validation code passed re-review. |
-| Tests | Test quality is acceptable | Pass | Added tests are targeted, deterministic, and cover the key residual risks from code review. |
-| Tests | Test maintainability is acceptable | Pass | Test deltas are small and located in existing relevant test owners. |
-| Tests | Review findings are clear enough for the next owner before delivery resumes | Pass | No findings require rework; delivery can proceed with docs/final handoff. |
+| Validation Readiness | Ready for the next workflow stage (`API/E2E`) | Pass | Code review passes; API/E2E must rerun because source behavior changed after the previous API/E2E pass. |
+| Tests | Test quality is acceptable | Pass | Tests now cover the Round 5 failure modes directly and at runtime/projection boundaries. |
+| Tests | Test maintainability is acceptable | Pass | Tests are targeted and colocated with the owners they validate. |
+| Tests | Review findings are clear enough for the next owner before API/E2E or delivery resumes | Pass | No source blockers remain; API/E2E should validate the integrated behavior. |
 
-Review-local checks run in round 3:
+Review-local checks run in Round 6:
 
-- `git diff --check` — passed.
-- `pnpm -C autobyteus-ts exec vitest run tests/unit/llm/api/openai-compatible-llm.test.ts tests/unit/llm/api/anthropic-llm.test.ts tests/unit/llm/api/ollama-llm.test.ts tests/unit/tools/mcp/proxy.test.ts tests/unit/tools/mcp/tool.test.ts tests/integration/tools/terminal/terminal-session-manager.test.ts tests/integration/tools/terminal/terminal-tools.test.ts` — passed (`7` files, `43` tests).
-- `pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent/agent-websocket.integration.test.ts tests/integration/agent/agent-team-websocket.integration.test.ts` — passed (`2` files, `14` tests).
-
-API/E2E validation report additionally records passed builds and broader targeted runtime/team/server/web suites:
-
-- `pnpm -C autobyteus-ts run build` — passed.
+- `git diff --check HEAD` — passed.
+- Effective source line check for key changed files — passed hard limit (`AutoByteusTeamRunBackend` 260, `AutoByteusTeamRunEventProcessor` 287; no changed implementation source over 500 effective non-empty lines found in the fix set).
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/streaming/handlers/pass-through-streaming-response-handler.test.ts tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts tests/unit/agent/streaming/handlers/parsing-streaming-response-handler.test.ts tests/unit/llm/api/autobyteus-llm.test.ts tests/unit/clients/autobyteus-client.test.ts tests/unit/agent/loop/agent-turn-input-box.test.ts tests/integration/agent/runtime/agent-runtime.test.ts` — passed (`7` files, `61` tests).
+- `pnpm -C autobyteus-web exec vitest run services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts stores/__tests__/agentRunStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts components/agentInput/__tests__/AgentUserInputTextArea.spec.ts` — passed (`6` files, `69` tests).
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts tests/integration/agent-team-execution/autobyteus-team-run-backend.integration.test.ts tests/unit/services/agent-streaming/agent-stream-handler.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts` — passed (`4` files, `36` tests).
+- `pnpm -C autobyteus-ts run build` — passed, including runtime dependency verification.
 - `pnpm -C autobyteus-server-ts run build:full` — passed.
-- Core runtime interrupt suite — passed (`5` files, `38` tests).
-- Team manager/runtime suite — passed (`2` files, `17` tests).
-- Server WebSocket/backend suite — passed (`6` files, `46` tests).
-- Web frontend projection/store/component suite — passed (`5` files, `50` tests).
-- Temporary real OpenAI Node SDK local streaming abort harness — passed with `{"sawRequest":true,"chunksBeforeAbort":1,"streamError":null}`.
-- Legacy grep checks — passed.
+
+Not run in Round 6:
+
+- Full browser/Electron E2E.
+- Live paid-provider cancellation for every provider.
+- Broad package-level noEmit/typecheck paths that upstream artifacts document as baseline/non-blocking limitations.
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | Durable validation targets `INTERRUPT_GENERATION` and `interrupt()` rather than legacy stop-generation semantics. |
-| No legacy old-behavior retention in changed scope | Pass | Reviewed validation additions do not revive old single-agent dispatcher/handler tests. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | API/E2E report grep checks found no active `STOP_GENERATION` protocol path or old single-agent dispatcher/handler control flow. |
+| No backward-compatibility mechanisms in changed scope | Pass | No active `STOP_GENERATION` protocol path found; web/server use `INTERRUPT_GENERATION`. |
+| No legacy old-behavior retention in changed scope | Pass | Old single-agent worker dispatcher/handler normal-flow references are absent from active source. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Dormant input-box result/continuation lanes from Round 5 are removed; no replacement dormant path found. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
 
-| Item / Path | Type (`DeadCode`/`ObsoleteFile`/`LegacyBranch`/`CompatWrapper`/`UnusedHelper`/`UnusedTest`/`UnusedFlag`/`ObsoleteAdapter`/`DormantPath`) | Evidence | Why It Must Be Removed | Required Action |
-| --- | --- | --- | --- | --- |
-| None | N/A | Review did not find validation code that retains active old stop-generation protocol or old single-agent dispatcher/handler control-flow expectations. | N/A | N/A |
+No dead/obsolete/legacy items requiring removal remain in the reviewed changed scope.
 
 ## Docs-Impact Verdict
 
 - Docs impact: `Yes`
-- Why: Runtime interrupt semantics, protocol naming, server events, tool/pending-approval lifecycle, provider/tool cancellation behavior, and validation/out-of-scope notes are externally observable enough to require final docs verification.
-- Files or areas already touched in this ticket and requiring delivery-stage sync check:
+- Why: This change affects runtime-loop/interrupt behavior, streaming protocol semantics for interrupted `SEGMENT_END`, provider cancellation behavior, and team backend event processing structure.
+- Files or areas likely affected:
+  - `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md`
+  - `autobyteus-ts/docs/api_tool_call_streaming_design.md`
+  - `autobyteus-ts/docs/streaming_parser_design.md`
   - `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md`
-  - `autobyteus-server-ts/docs/modules/agent_streaming.md`
-  - `autobyteus-server-ts/docs/modules/agent_team_execution.md`
-  - `autobyteus-web/docs/agent_execution_architecture.md`
-- Delivery-stage note: confirm docs match the integrated final state and explicitly record no-impact for any documentation area that does not need updating.
+  - `autobyteus-server-ts/docs/modules/agent_execution.md`
 
 ## Classification
 
 - Latest Authoritative Result: `Pass`
-- Classification: `Ready for Delivery`
-- Reason: API/E2E validation passed, repository-resident durable validation additions passed code re-review, and no local validation-code, implementation, design, or requirement blockers remain.
+- Classification: N/A for pass.
+- Reason: The implementation-owned blockers from Round 5 are resolved; no new source/design blockers were found in Round 6.
 
 ## Recommended Recipient
 
-- `delivery_engineer`
+- `api_e2e_engineer`
 
-Routing note: Delivery should first refresh the ticket branch against the latest tracked remote state of the recorded base branch, record integrated-state check results, then complete docs sync/final handoff according to the delivery workflow.
+Routing note: This is an implementation-review pass, not a delivery pass. Because commit `a78c92e6` changed source behavior after the previous API/E2E pass, API/E2E validation must resume/re-run before delivery.
 
 ## Residual Risks
 
-- Live paid-provider endpoint cancellation for every provider remains out of scope; durable unit tests plus the local real OpenAI SDK streaming abort harness cover adapter/SDK cancellation boundaries without provider spend.
-- Full browser/Nuxt/Electron E2E remains out of scope; frontend behavior is covered by handler/store/component tests.
-- Broad package-level `tsc --noEmit` typecheck failures remain documented baseline limitations. Builds and targeted validation passed.
-- Existing server WebSocket integration test files are large; this is not a delivery blocker but should be considered if future unrelated scenarios are added.
+- The branch is currently `ahead 3, behind 70` relative to `origin/personal`; delivery still must refresh/integrate the latest tracked remote base before finalization.
+- Existing large server/web/client files under 500 remain proactive line-pressure risks for future unrelated changes.
+- Live paid-provider cancellation for every provider remains outside this code-review run; adapter signal forwarding has local durable tests and should receive API/E2E coverage where practical.
+- Broad package-level noEmit/typecheck limitations remain baseline issues documented by implementation/API-E2E; build-scoped checks passed.
+- Documentation/delivery artifacts from adjacent workflow stages remain in the worktree and should be reconciled by downstream validation/delivery after revalidation.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass / Ready for Delivery`
-- Score Summary: `9.3/10` (`93/100`)
-- Notes: API/E2E durable validation additions are relevant, maintainable, clean-cut, and aligned with the native interrupt/runtime-loop redesign. Delivery may proceed with the cumulative artifact package.
+- Review Decision: `Pass — ready for API/E2E revalidation; not ready for delivery until revalidation completes`
+- Score Summary: `9.1/10` (`91/100`)
+- Notes: Round 6 independently rechecked the Round 5 blockers and architectural fit. The fixes strengthen ownership boundaries instead of adding compatibility patches, and representative reviewer checks passed.

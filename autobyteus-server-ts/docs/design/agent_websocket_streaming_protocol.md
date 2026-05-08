@@ -76,12 +76,18 @@ Control commands remain active-only:
 Those commands intentionally require an already-active runtime lookup and do not call the restore path. Clients should not treat approval/stop messages as a way to resume a stopped run; stopped-run recovery is owned by connection setup, explicit restore mutations, and `SEND_MESSAGE`.
 
 `INTERRUPT_GENERATION` should also not be treated as an immediate send-readiness
-acknowledgement. A client that sends stop should wait for the backend's
+acknowledgement. A client that sends interrupt should wait for the backend's
 terminal lifecycle/status stream projection for the affected turn before
 enabling a follow-up send. Runtime adapters that own provider processes must
 finish their cancellation boundary first; for Claude Agent SDK sessions this
 means aborting/closing the active query and clearing active turn/query state
 before the interrupted/idle projection is emitted.
+
+Native AutoByteus runtimes follow the same interrupt-vs-stop split:
+`INTERRUPT_GENERATION` delegates to the active run/team `interrupt(...)` path,
+while terminal stop/termination remains the shutdown path. Stale or inactive
+control commands must not restore a stopped run and must not fall back to
+shutdown cleanup.
 
 ## Error And Close Semantics
 
