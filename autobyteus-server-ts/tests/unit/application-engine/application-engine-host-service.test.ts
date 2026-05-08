@@ -203,8 +203,8 @@ describe("ApplicationEngineHostService", () => {
             applicationId: "built-in:applications__sample-app",
             bindingIntentId: "binding-intent-1",
             status: "ATTACHED",
-            resourceRef: {
-              owner: "bundle",
+            executionResourceRef: {
+              source: "bundle",
               kind: "AGENT",
               localId: "sample-agent",
             },
@@ -245,8 +245,8 @@ describe("ApplicationEngineHostService", () => {
           applicationId: "built-in:applications__sample-app",
           bindingIntentId: "binding-intent-1",
           status: "ATTACHED",
-          resourceRef: {
-            owner: "bundle",
+          executionResourceRef: {
+            source: "bundle",
             kind: "AGENT",
             localId: "sample-agent",
           },

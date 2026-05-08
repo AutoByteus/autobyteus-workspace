@@ -9,12 +9,12 @@ import type {
 import { getApplicationBackendGatewayService } from "../../application-backend-gateway/services/application-backend-gateway-service.js";
 import { ApplicationUnavailableError, getApplicationAvailabilityService } from "../../application-orchestration/services/application-availability-service.js";
 import { ApplicationOrchestrationHostService } from "../../application-orchestration/services/application-orchestration-host-service.js";
-import { LaunchProfileValidationError } from "../../application-orchestration/services/application-resource-configuration-launch-profile.js";
-import { ApplicationResourceConfigurationService } from "../../application-orchestration/services/application-resource-configuration-service.js";
+import { LaunchProfileValidationError } from "../../application-orchestration/services/application-execution-resource-configuration-launch-profile.js";
+import { ApplicationExecutionResourceConfigurationService } from "../../application-orchestration/services/application-execution-resource-configuration-service.js";
 
 const gateway = () => getApplicationBackendGatewayService();
 const orchestrationHost = () => ApplicationOrchestrationHostService.getInstance();
-const resourceConfigurations = () => new ApplicationResourceConfigurationService();
+const executionResourceConfigurations = () => new ApplicationExecutionResourceConfigurationService();
 const APPLICATION_BACKEND_ROUTE_BASE = "/applications/:applicationId/backend";
 const readRequestContext = (
   applicationId: string,
@@ -95,10 +95,10 @@ export async function registerApplicationBackendRoutes(app: FastifyInstance): Pr
   );
 
   app.get<{ Params: { applicationId: string } }>(
-    `/applications/:applicationId/resource-configurations`,
+    `/applications/:applicationId/execution-resource-configurations`,
     async (request, reply) => {
       try {
-        return reply.send(await resourceConfigurations().listConfigurations(request.params.applicationId));
+        return reply.send(await executionResourceConfigurations().listConfigurations(request.params.applicationId));
       } catch (error) {
         return sendGatewayError(reply, error);
       }
@@ -106,10 +106,10 @@ export async function registerApplicationBackendRoutes(app: FastifyInstance): Pr
   );
 
   app.get<{ Params: { applicationId: string } }>(
-    `/applications/:applicationId/available-resources`,
+    `/applications/:applicationId/available-execution-resources`,
     async (request, reply) => {
       try {
-        return reply.send(await orchestrationHost().listAvailableResources(request.params.applicationId));
+        return reply.send(await orchestrationHost().listAvailableExecutionResources(request.params.applicationId));
       } catch (error) {
         return sendGatewayError(reply, error);
       }
@@ -118,17 +118,17 @@ export async function registerApplicationBackendRoutes(app: FastifyInstance): Pr
 
   app.put<{
     Params: { applicationId: string; slotKey: string };
-    Body: { resourceRef?: unknown; launchProfile?: ApplicationConfiguredLaunchProfile | null };
+    Body: { executionResourceRef?: unknown; launchProfile?: ApplicationConfiguredLaunchProfile | null };
   }>(
-    `/applications/:applicationId/resource-configurations/:slotKey`,
+    `/applications/:applicationId/execution-resource-configurations/:slotKey`,
     async (request, reply) => {
       try {
         return reply.send(
-          await resourceConfigurations().upsertConfiguration(
+          await executionResourceConfigurations().upsertConfiguration(
             request.params.applicationId,
             request.params.slotKey,
             {
-              resourceRef: request.body?.resourceRef as never,
+              executionResourceRef: request.body?.executionResourceRef as never,
               launchProfile: request.body?.launchProfile ?? null,
             },
           ),

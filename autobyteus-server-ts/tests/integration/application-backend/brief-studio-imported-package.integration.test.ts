@@ -30,13 +30,13 @@ import { ApplicationExecutionEventIngressService } from "../../../src/applicatio
 import { ApplicationAvailabilityService } from "../../../src/application-orchestration/services/application-availability-service.js";
 import { ApplicationOrchestrationHostService } from "../../../src/application-orchestration/services/application-orchestration-host-service.js";
 import { ApplicationOrchestrationStartupGate } from "../../../src/application-orchestration/services/application-orchestration-startup-gate.js";
-import { ApplicationResourceConfigurationService } from "../../../src/application-orchestration/services/application-resource-configuration-service.js";
+import { ApplicationExecutionResourceConfigurationService } from "../../../src/application-orchestration/services/application-execution-resource-configuration-service.js";
 import { ApplicationRunBindingLaunchService } from "../../../src/application-orchestration/services/application-run-binding-launch-service.js";
 import { ApplicationRunObserverService } from "../../../src/application-orchestration/services/application-run-observer-service.js";
-import { ApplicationRuntimeResourceResolver } from "../../../src/application-orchestration/services/application-runtime-resource-resolver.js";
+import { ApplicationExecutionResourceResolver } from "../../../src/application-orchestration/services/application-execution-resource-resolver.js";
 import { ApplicationExecutionContext } from "../../../src/application-orchestration/domain/models.js";
 import { ApplicationExecutionEventJournalStore } from "../../../src/application-orchestration/stores/application-execution-event-journal-store.js";
-import { ApplicationResourceConfigurationStore } from "../../../src/application-orchestration/stores/application-resource-configuration-store.js";
+import { ApplicationExecutionResourceConfigurationStore } from "../../../src/application-orchestration/stores/application-execution-resource-configuration-store.js";
 import { ApplicationRunBindingStore } from "../../../src/application-orchestration/stores/application-run-binding-store.js";
 import { ApplicationRunLookupStore } from "../../../src/application-orchestration/stores/application-run-lookup-store.js";
 import { SERVER_ROUTE_PARAM_MAX_LENGTH } from "../../../src/api/fastify-runtime-config.js";
@@ -629,14 +629,14 @@ describe("Brief Studio imported package integration", () => {
       )),
     };
 
-    const resourceResolver = new ApplicationRuntimeResourceResolver({
+    const executionResourceResolver = new ApplicationExecutionResourceResolver({
       applicationBundleService: bundleService,
       agentDefinitionService: fakeAgentDefinitionService as never,
       agentTeamDefinitionService: fakeTeamDefinitionService as never,
     });
 
     const runBindingLaunchService = new ApplicationRunBindingLaunchService({
-      resourceResolver,
+      executionResourceResolver,
       bindingStore,
       lookupStore,
       teamRunService: fakeTeamRunService as never,
@@ -670,10 +670,10 @@ describe("Brief Studio imported package integration", () => {
       dispatchService,
     });
 
-    const resourceConfigurationService = new ApplicationResourceConfigurationService({
+    const executionResourceConfigurationService = new ApplicationExecutionResourceConfigurationService({
       applicationBundleService: bundleService,
-      resourceResolver,
-      configurationStore: new ApplicationResourceConfigurationStore({
+      executionResourceResolver,
+      configurationStore: new ApplicationExecutionResourceConfigurationStore({
         platformStateStore,
       }),
     });
@@ -688,8 +688,8 @@ describe("Brief Studio imported package integration", () => {
     const orchestrationHostService = new ApplicationOrchestrationHostService({
       startupGate,
       availabilityService,
-      resourceResolver,
-      resourceConfigurationService,
+      executionResourceResolver,
+      executionResourceConfigurationService,
       runBindingLaunchService,
       bindingStore,
       lookupStore,
@@ -1584,8 +1584,8 @@ describe("Brief Studio imported package integration", () => {
       applicationId,
       bindingIntentId: "binding-intent-unexpected-1",
       status: "ATTACHED",
-      resourceRef: {
-        owner: "bundle",
+      executionResourceRef: {
+        source: "bundle",
         kind: "AGENT_TEAM",
         localId: "brief-studio-team",
       },

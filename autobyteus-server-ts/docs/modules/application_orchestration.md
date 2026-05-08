@@ -2,7 +2,7 @@
 
 ## Scope
 
-Owns application-authored runtime orchestration after an application backend is running: list available runtime resources, start bound runs, persist durable run bindings keyed by app-owned opaque `bindingIntentId` handoff, route live input/termination to those bindings, append runtime lifecycle events to the durable journal, dispatch those lifecycle events back into application event handlers with at-least-once semantics, relay published-artifact events live to bound applications, expose runtime-control published-artifact reads for in-scope apps, rebuild run lookups on restart, and gate live traffic until startup recovery completes.
+Owns application-authored runtime orchestration after an application backend is running: list available execution resources, start bound runs, persist durable run bindings keyed by app-owned opaque `bindingIntentId` handoff, route live input/termination to those bindings, append runtime lifecycle events to the durable journal, dispatch those lifecycle events back into application event handlers with at-least-once semantics, relay published-artifact events live to bound applications, expose runtime-control published-artifact reads for in-scope apps, rebuild run lookups on restart, and gate live traffic until startup recovery completes.
 
 ## TS Source
 
@@ -14,9 +14,9 @@ Owns application-authored runtime orchestration after an application backend is 
 
 - `src/application-orchestration/services/application-orchestration-host-service.ts`
 - `src/application-orchestration/services/application-run-binding-launch-service.ts`
-- `src/application-orchestration/services/application-resource-configuration-service.ts`
-- `src/application-orchestration/services/application-resource-configuration-launch-profile.ts`
-- `src/application-orchestration/services/application-runtime-resource-resolver.ts`
+- `src/application-orchestration/services/application-execution-resource-configuration-service.ts`
+- `src/application-orchestration/services/application-execution-resource-configuration-launch-profile.ts`
+- `src/application-orchestration/services/application-execution-resource-resolver.ts`
 - `src/application-orchestration/services/application-run-observer-service.ts`
 - `src/application-orchestration/services/application-bound-run-lifecycle-gateway.ts`
 - `src/application-orchestration/services/application-execution-event-ingress-service.ts`
@@ -24,7 +24,7 @@ Owns application-authored runtime orchestration after an application backend is 
 - `src/application-orchestration/services/application-orchestration-recovery-service.ts`
 - `src/application-orchestration/services/application-orchestration-startup-gate.ts`
 - `src/application-orchestration/services/application-published-artifact-relay-service.ts`
-- `src/application-orchestration/stores/application-resource-configuration-store.ts`
+- `src/application-orchestration/stores/application-execution-resource-configuration-store.ts`
 - `src/application-orchestration/stores/application-run-binding-store.ts`
 - `src/application-orchestration/stores/application-run-lookup-store.ts`
 - `src/application-orchestration/stores/application-execution-event-journal-store.ts`
@@ -42,8 +42,8 @@ Owns application-authored runtime orchestration after an application backend is 
 
 `ApplicationHandlerContext.runtimeControl` exposes:
 
-- `listAvailableResources(...)`
-- `getConfiguredResource(...)`
+- `listAvailableExecutionResources(...)`
+- `getConfiguredExecutionResource(...)`
 - `startRun(...)`
 - `getRunBinding(...)`
 - `getRunBindingByIntentId(...)`
@@ -53,15 +53,15 @@ Owns application-authored runtime orchestration after an application backend is 
 - `postRunInput(...)`
 - `terminateRunBinding(...)`
 
-`listAvailableResources(...)` returns both:
+`listAvailableExecutionResources(...)` returns both:
 
-- bundled application resources discovered from the owning bundle (`owner = bundle`), and
-- shared agent / team definitions that remain visible to the application (`owner = shared`).
+- bundled application resources discovered from the owning bundle (`source = bundle`), and
+- shared agent / team definitions that remain visible to the application (`source = shared`).
 
-`getConfiguredResource(slotKey)` resolves the effective resource selection for one manifest-declared slot after validating:
+`getConfiguredExecutionResource(slotKey)` resolves the effective resource selection for one manifest-declared slot after validating:
 
 - the slot exists for the application,
-- the persisted override (if any) still satisfies the slot's allowed owner/kind contract, and
+- the persisted override (if any) still satisfies the slot's allowed source/kind contract, and
 - the manifest default still resolves when no persisted override exists.
 
 This read-time validation is authoritative: stale persisted overrides or invalid manifest defaults fail here before app launch code can call `startRun(...)`.
@@ -69,7 +69,7 @@ This read-time validation is authoritative: stale persisted overrides or invalid
 `startRun(...)` requires:
 
 - app-owned opaque `bindingIntentId`,
-- a concrete `resourceRef` (`bundle` or `shared`, `AGENT` or `AGENT_TEAM`),
+- a concrete `executionResourceRef` (`bundle` or `shared`, `AGENT` or `AGENT_TEAM`),
 - launch configuration for the matching runtime kind, and
 - optional `initialInput`.
 
@@ -79,16 +79,17 @@ The orchestration host validates the resource choice, launches the underlying ag
 
 ## Resource Configuration And Availability
 
-The orchestration boundary also owns persisted application launch setup for manifest-declared `resourceSlots[]`:
+The orchestration boundary also owns persisted application launch setup for manifest-declared `executionResourceSlots[]`:
 
 - per-application saved resource selections and kind-aware `launchProfile` records are stored in platform-owned state,
 - agent-backed selections can persist `runtimeKind`, `llmModelIdentifier`, and `workspaceRootPath` only when the slot declares those fields,
 - agent-team-backed selections can persist shared defaults plus current member runtime/model overrides, with `workspaceRootPath` stored on the shared defaults record,
-- legacy `launch_defaults_json` rows are migrated forward through the normal read/write path so preexisting saved application setup survives the contract rename,
+- old execution-resource JSON keys such as `resourceRef` or `owner` are never migrated to the new shape; stale configured-resource rows are reset/deleted so setup becomes `NOT_CONFIGURED`, and stale run-binding summaries are dropped instead of hydrated or rewritten,
+- the older flat `launch_defaults_json` to `launchProfile` normalization is separate from the execution-resource rename and does not permit old execution-resource refs,
 - read-time validation is authoritative: malformed profiles, kind mismatches, unsupported fields, or stale team topology are surfaced as `INVALID_SAVED_CONFIGURATION` together with `invalidSavedConfiguration` and issue detail instead of silently launching stale state, and
 - host-managed application flows keep `autoExecuteTools` enabled for the application-owned teaching workflows.
 
-`ApplicationResourceConfigurationService` is the semantic owner for `GET /applications/:applicationId/resource-configurations` and `PUT /applications/:applicationId/resource-configurations/:slotKey`. It normalizes writes, rewrites legacy rows when needed, maps invalid write attempts to HTTP 400, and returns `READY`, `NOT_CONFIGURED`, or `INVALID_SAVED_CONFIGURATION` views for the frontend setup gate.
+`ApplicationExecutionResourceConfigurationService` is the semantic owner for `GET /applications/:applicationId/execution-resource-configurations` and `PUT /applications/:applicationId/execution-resource-configurations/:slotKey`. It validates and normalizes current-shape writes, resets stale old execution-resource rows instead of migrating them, maps invalid write attempts to HTTP 400, and returns `READY`, `NOT_CONFIGURED`, or `INVALID_SAVED_CONFIGURATION` views for the frontend setup gate.
 
 Application backends still keep business launch timing app-owned. They consume the saved `launchProfile` through the shared helpers in `@autobyteus/application-backend-sdk` to expand the persisted selection into the concrete runtime launch input each app needs.
 

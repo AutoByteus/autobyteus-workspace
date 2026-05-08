@@ -3,12 +3,12 @@ import type { ContextFileType } from "autobyteus-ts/agent/message/context-file-t
 import { ContextFile } from "autobyteus-ts/agent/message/context-file.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 import type {
-  ApplicationConfiguredResource,
+  ApplicationConfiguredExecutionResource,
   ApplicationRunBindingListFilter,
   ApplicationRunBindingSummary,
   ApplicationRuntimeInput,
   ApplicationRuntimeInputContextFile,
-  ApplicationRuntimeResourceSummary,
+  ApplicationExecutionResourceSummary,
   ApplicationStartRunInput,
 } from "@autobyteus/application-sdk-contracts";
 import { AgentRunService, getAgentRunService } from "../../agent-execution/services/agent-run-service.js";
@@ -20,10 +20,10 @@ import {
   ApplicationOrchestrationStartupGate,
   getApplicationOrchestrationStartupGate,
 } from "./application-orchestration-startup-gate.js";
-import { ApplicationRuntimeResourceResolver } from "./application-runtime-resource-resolver.js";
+import { ApplicationExecutionResourceResolver } from "./application-execution-resource-resolver.js";
 import { ApplicationRunBindingLaunchService } from "./application-run-binding-launch-service.js";
 import { ApplicationAvailabilityService, getApplicationAvailabilityService } from "./application-availability-service.js";
-import { ApplicationResourceConfigurationService } from "./application-resource-configuration-service.js";
+import { ApplicationExecutionResourceConfigurationService } from "./application-execution-resource-configuration-service.js";
 import { ApplicationRunObserverService, getApplicationRunObserverService } from "./application-run-observer-service.js";
 import { ApplicationRunBindingStore } from "../stores/application-run-binding-store.js";
 import { ApplicationRunLookupStore } from "../stores/application-run-lookup-store.js";
@@ -81,8 +81,8 @@ export class ApplicationOrchestrationHostService {
     private readonly dependencies: {
       startupGate?: ApplicationOrchestrationStartupGate;
       availabilityService?: ApplicationAvailabilityService;
-      resourceResolver?: ApplicationRuntimeResourceResolver;
-      resourceConfigurationService?: ApplicationResourceConfigurationService;
+      executionResourceResolver?: ApplicationExecutionResourceResolver;
+      executionResourceConfigurationService?: ApplicationExecutionResourceConfigurationService;
       runBindingLaunchService?: ApplicationRunBindingLaunchService;
       bindingStore?: ApplicationRunBindingStore;
       lookupStore?: ApplicationRunLookupStore;
@@ -105,19 +105,19 @@ export class ApplicationOrchestrationHostService {
     return this.dependencies.availabilityService ?? getApplicationAvailabilityService();
   }
 
-  private get resourceResolver(): ApplicationRuntimeResourceResolver {
-    return this.dependencies.resourceResolver ?? new ApplicationRuntimeResourceResolver();
+  private get executionResourceResolver(): ApplicationExecutionResourceResolver {
+    return this.dependencies.executionResourceResolver ?? new ApplicationExecutionResourceResolver();
   }
 
-  private get resourceConfigurationService(): ApplicationResourceConfigurationService {
-    return this.dependencies.resourceConfigurationService ?? new ApplicationResourceConfigurationService({
-      resourceResolver: this.resourceResolver,
+  private get executionResourceConfigurationService(): ApplicationExecutionResourceConfigurationService {
+    return this.dependencies.executionResourceConfigurationService ?? new ApplicationExecutionResourceConfigurationService({
+      executionResourceResolver: this.executionResourceResolver,
     });
   }
 
   private get runBindingLaunchService(): ApplicationRunBindingLaunchService {
     return this.dependencies.runBindingLaunchService ?? new ApplicationRunBindingLaunchService({
-      resourceResolver: this.resourceResolver,
+      executionResourceResolver: this.executionResourceResolver,
       bindingStore: this.bindingStore,
       lookupStore: this.lookupStore,
       agentRunService: this.agentRunService,
@@ -161,22 +161,22 @@ export class ApplicationOrchestrationHostService {
     await this.availabilityService.requireApplicationActive(applicationId);
   }
 
-  async listAvailableResources(
+  async listAvailableExecutionResources(
     applicationId: string,
-    filter?: { owner?: "bundle" | "shared" | null; kind?: "AGENT" | "AGENT_TEAM" | null } | null,
-  ): Promise<ApplicationRuntimeResourceSummary[]> {
+    filter?: { source?: "bundle" | "shared" | null; kind?: "AGENT" | "AGENT_TEAM" | null } | null,
+  ): Promise<ApplicationExecutionResourceSummary[]> {
     await this.startupGate.awaitReady();
     await this.requireApplicationActive(applicationId);
-    return this.resourceResolver.listAvailableResources(applicationId, filter);
+    return this.executionResourceResolver.listAvailableExecutionResources(applicationId, filter);
   }
 
-  async getConfiguredResource(
+  async getConfiguredExecutionResource(
     applicationId: string,
     slotKey: string,
-  ): Promise<ApplicationConfiguredResource | null> {
+  ): Promise<ApplicationConfiguredExecutionResource | null> {
     await this.startupGate.awaitReady();
     await this.requireApplicationActive(applicationId);
-    return this.resourceConfigurationService.getConfiguredResource(applicationId, slotKey);
+    return this.executionResourceConfigurationService.getConfiguredExecutionResource(applicationId, slotKey);
   }
 
   async startRun(

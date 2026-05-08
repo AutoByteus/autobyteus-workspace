@@ -2,7 +2,7 @@
 
 ## Scope
 
-Discovers self-contained application bundles, validates both the bundle UI contract and the bundle-owned backend contract, exposes transport-neutral catalog metadata plus bundled runtime resources, and serves bundle-owned `ui/` assets for the generic frontend Applications host.
+Discovers self-contained application bundles, validates both the bundle UI contract and the bundle-owned backend contract, exposes transport-neutral catalog metadata plus bundled execution resources, and serves bundle-owned `ui/` assets for the generic frontend Applications host.
 
 Application-owned runtime orchestration, backend transport, worker lifecycle, and storage ownership are documented separately in [`application_orchestration.md`](./application_orchestration.md), [`application_backend_gateway.md`](./application_backend_gateway.md), [`application_engine.md`](./application_engine.md), and [`application_storage.md`](./application_storage.md). Runtime module availability is documented separately in [`application_capability.md`](./application_capability.md).
 
@@ -32,7 +32,7 @@ Each application bundle lives under `applications/<application-id>/` and must sa
 - `icon` is optional and must also stay under `ui/`.
 - `backend.bundleManifest` is required and must point to a file under `backend/`.
 
-There is no longer a bundle-level `runtimeTarget`. Instead, bundle-owned agents and teams are discovered from `agents/` and `agent-teams/` and surfaced to callers as `bundleResources[]`. Applications may also declare `resourceSlots[]` in `application.json` to describe the app-consumable runtime resources that the host setup flow must configure before entry. The generic Applications host does not auto-launch any one of them.
+There is no longer a bundle-level `runtimeTarget`. Instead, bundle-owned agents and teams are discovered from `agents/` and `agent-teams/` and surfaced to callers as `bundleResources[]`. Applications may also declare `executionResourceSlots[]` in `application.json` to describe the app-consumable execution resources that the host setup flow must configure before entry. The generic Applications host does not auto-launch any one of them.
 
 ### Backend bundle manifest (`backend.bundleManifest`)
 
@@ -89,10 +89,10 @@ These are authoring/sample roots, not current shipped built-ins. Future built-in
 - If the same physical applications root is also presented as an additional package root, discovery skips the duplicate additional-root entry instead of minting a competing package identity.
 - The protected managed built-in applications root and the bundled source root are not valid user-configured additional package roots.
 - Bundle validation checks UI asset paths, backend manifest integrity, and application-owned team integrity including nested `agent-teams/<team-id>/agents/*` members before a bundle reaches the catalog.
-- GraphQL exposes transport-neutral UI asset paths (`iconAssetPath`, `entryHtmlAssetPath`) plus `bundleResources[]` and manifest-declared `resourceSlots[]` rather than host-usable absolute URLs or launch-time runtime state.
-- `Application.resourceSlots` gives the frontend enough contract detail to summarize required host-managed setup on catalog cards and host pages without promoting raw runtime-resource identities into the primary catalog UX.
+- GraphQL exposes transport-neutral UI asset paths (`iconAssetPath`, `entryHtmlAssetPath`) plus `bundleResources[]` and manifest-declared `executionResourceSlots[]` rather than host-usable absolute URLs or launch-time runtime state.
+- `Application.executionResourceSlots` gives the frontend enough contract detail to summarize required host-managed setup on catalog cards and host pages without promoting raw execution-resource identities into the primary catalog UX.
 - Backend exposures are not surfaced as raw public URLs in the catalog; they stay behind the platform-owned backend gateway and iframe bootstrap transport.
-- Bundles may expose zero or more bundled runtime resources. Application backends can also choose shared agents/teams later through the runtime-control boundary.
+- Bundles may expose zero or more bundled execution resources. Application backends can also choose shared agents/teams later through the runtime-control boundary.
 - Discovery now produces a diagnostic-aware catalog snapshot: valid bundles remain visible while invalid bundles are quarantined with per-application diagnostics instead of aborting the whole catalog refresh.
 - App-scoped reload/reentry can repair one quarantined application and return it to service without restarting unrelated applications. Re-entry preserves `REENTERING` until recovery/dispatch resume finish, then returns the app to `ACTIVE` with the worker still stopped so the next `ensure-ready` path boots a fresh worker.
 - When a package is removed or temporarily undiscoverable but platform state still exists, persisted-known reconciliation keeps the real canonical `applicationId` under `QUARANTINED` ownership instead of dropping admission ownership or falling back to the hashed storage-key identity.
@@ -114,7 +114,7 @@ These are authoring/sample roots, not current shipped built-ins. Future built-in
 ## Runtime Handoff
 
 - The applications module owns discovery, validation, catalog metadata, app-scoped availability diagnostics, and asset serving only; it does not own live run bindings, event journals, backend request handling, worker lifecycle, or per-app storage.
-- After a catalog entry is selected, the generic host loads the application's saved launch setup for declared `resourceSlots[]`, blocks entry until required setup is launch-ready, and only then ensures the application backend is ready and boots the iframe.
+- After a catalog entry is selected, the generic host loads the application's saved launch setup for declared `executionResourceSlots[]`, blocks entry until required setup is launch-ready, and only then ensures the application backend is ready and boots the iframe.
 - If the application backend later wants runtime work, it calls `context.runtimeControl.*` through the application-orchestration boundary.
 - Bundles therefore remain the durable package/distribution boundary, while orchestration, backend transport, engine startup, and storage state have separate authoritative owners.
 

@@ -150,20 +150,20 @@ const createDiagnostic = (
   discoveredAt: new Date().toISOString(),
 });
 
-const validateManifestResourceSlotDefaults = (record: ScannedBundleRecord): void => {
+const validateManifestExecutionResourceSlotDefaults = (record: ScannedBundleRecord): void => {
   const bundleAgentIds = new Set(record.bundle.localAgentIds);
   const bundleTeamIds = new Set(record.bundle.localTeamIds);
-  for (const slot of record.bundle.resourceSlots) {
-    const defaultResourceRef = slot.defaultResourceRef;
-    if (!defaultResourceRef || defaultResourceRef.owner !== "bundle") {
+  for (const slot of record.bundle.executionResourceSlots) {
+    const defaultExecutionResourceRef = slot.defaultExecutionResourceRef;
+    if (!defaultExecutionResourceRef || defaultExecutionResourceRef.source !== "bundle") {
       continue;
     }
     if (
-      (defaultResourceRef.kind === "AGENT" && !bundleAgentIds.has(defaultResourceRef.localId))
-      || (defaultResourceRef.kind === "AGENT_TEAM" && !bundleTeamIds.has(defaultResourceRef.localId))
+      (defaultExecutionResourceRef.kind === "AGENT" && !bundleAgentIds.has(defaultExecutionResourceRef.localId))
+      || (defaultExecutionResourceRef.kind === "AGENT_TEAM" && !bundleTeamIds.has(defaultExecutionResourceRef.localId))
     ) {
       throw new Error(
-        `Application bundle '${record.bundle.applicationRootPath}' resource slot '${slot.slotKey}' defaultResourceRef.localId '${defaultResourceRef.localId}' does not resolve to a discovered bundle-owned ${defaultResourceRef.kind.toLowerCase()}.`,
+        `Application bundle '${record.bundle.applicationRootPath}' execution resource slot '${slot.slotKey}' defaultExecutionResourceRef.localId '${defaultExecutionResourceRef.localId}' does not resolve to a discovered bundle-owned ${defaultExecutionResourceRef.kind.toLowerCase()}.`,
       );
     }
   }
@@ -224,14 +224,14 @@ export class FileApplicationBundleProvider {
           description: manifest.description,
           iconRelativePath: manifest.iconRelativePath,
           entryHtmlRelativePath: manifest.entryHtmlRelativePath,
-          resourceSlots: manifest.resourceSlots,
+          executionResourceSlots: manifest.executionResourceSlots,
           localAgentIds,
           localTeamIds,
           writable: await isWritablePath(applicationRootPath),
           backend,
         },
       };
-      validateManifestResourceSlotDefaults(record);
+      validateManifestExecutionResourceSlotDefaults(record);
       return { record, diagnostic: null };
     } catch (error) {
       return {
@@ -419,7 +419,7 @@ export class FileApplicationBundleProvider {
           ),
         })),
       ],
-      resourceSlots: record.bundle.resourceSlots,
+      executionResourceSlots: record.bundle.executionResourceSlots,
       writable: record.bundle.writable,
       applicationRootPath: record.bundle.applicationRootPath,
       packageRootPath: record.packageRootPath,

@@ -10,7 +10,7 @@ Shared TypeScript contract package for AutoByteus application bundles.
 - frontend SDK contract v3 constants
 - iframe/bootstrap contract v3 constants, query hints, payload types, transport shape, and validators/builders
 - shared request/route/GraphQL/notification/storage context types
-- runtime-resource, resource-slot, and host-managed launch-default configuration types
+- execution-resource, resource-slot, and host-managed launch-default configuration types
 - runtime-control, run-binding, execution-event envelope, and published-artifact callback/query types
 - application engine status types
 
@@ -36,7 +36,7 @@ New external custom applications should start with `@autobyteus/application-devk
   - requires `manifestVersion: "3"`
   - requires `ui.frontendSdkContractVersion: "3"`
   - requires `backend.bundleManifest`
-  - may declare app-consumable `resourceSlots[]` for host-managed saved setup
+  - may declare app-consumable `executionResourceSlots[]` for host-managed saved setup
   - does **not** declare a singular launch-time `runtimeTarget`
 - `ApplicationBackendBundleManifestV1`
   - bundle-owned backend manifest under `backend/`
@@ -77,9 +77,9 @@ New external custom applications should start with `@autobyteus/application-devk
 ### Runtime-orchestration contracts
 
 - `ApplicationRuntimeControl`
-- `ApplicationRuntimeResourceRef` / `ApplicationRuntimeResourceSummary`
-- `ApplicationResourceSlotDeclaration`
-- `ApplicationConfiguredResource` / `ApplicationConfiguredLaunchDefaults`
+- `ApplicationExecutionResourceRef` / `ApplicationExecutionResourceSummary`
+- `ApplicationExecutionResourceSlotDeclaration`
+- `ApplicationConfiguredExecutionResource` / `ApplicationConfiguredLaunchDefaults`
 - `ApplicationStartRunInput`
 - `ApplicationRunBindingSummary`
 - `ApplicationExecutionEventEnvelope`
@@ -88,6 +88,8 @@ New external custom applications should start with `@autobyteus/application-devk
 `ApplicationExecutionEventEnvelope` carries stable `eventId` and `journalSequence` plus attempt-specific delivery metadata. App-owned side effects should therefore be idempotent by `eventId`.
 
 `ApplicationRuntimeControl` includes durable published-artifact reads through `getRunPublishedArtifacts(runId)` and `getPublishedArtifactRevisionText({ runId, revisionId })`, and `ApplicationBackendDefinition` exposes live published-artifact callbacks through `artifactHandlers.persisted`. These artifact callbacks are intentionally separate from lifecycle `eventHandlers`.
+
+The execution-resource rename is a clean break. SDK consumers should use the `ApplicationExecutionResource*` types, `source`, `executionResourceRef`, `executionResourceSlots[]`, and the `listAvailableExecutionResources(...)` / `getConfiguredExecutionResource(...)` runtime-control methods. Old runtime-resource names and old `owner` / `resourceRef` shapes are not compatibility aliases and are not migrated by the platform.
 
 ### Engine status
 
@@ -108,11 +110,11 @@ It also emits a packaging-only import mirror under:
 It demonstrates:
 
 - manifest v3
-- manifest-declared `resourceSlots[]`
+- manifest-declared `executionResourceSlots[]`
 - backend bundle manifest v1
 - shared iframe/bootstrap contract v3
 - request context `{ applicationId }`
-- application-authored `runtimeControl.getConfiguredResource(...)` + `startRun(...)`
+- application-authored `runtimeControl.getConfiguredExecutionResource(...)` + `startRun(...)`
 - published-artifact reads via `runtimeControl.getRunPublishedArtifacts(...)`
 - durable execution-event dispatch envelopes with stable `eventId` and `journalSequence`
 

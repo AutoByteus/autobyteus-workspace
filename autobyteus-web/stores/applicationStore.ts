@@ -5,15 +5,15 @@ import { GetApplicationById, ListApplications } from '~/graphql/queries/applicat
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { useApplicationsCapabilityStore } from '~/stores/applicationsCapabilityStore'
 
-export type ApplicationRuntimeResourceKind = 'AGENT' | 'AGENT_TEAM'
+export type ApplicationExecutionResourceKind = 'AGENT' | 'AGENT_TEAM'
 
 export interface ApplicationBundleResource {
-  kind: ApplicationRuntimeResourceKind
+  kind: ApplicationExecutionResourceKind
   localId: string
   definitionId: string
 }
 
-export interface ApplicationResourceSlotSummary {
+export interface ApplicationExecutionResourceSlotSummary {
   slotKey: string
   required: boolean
 }
@@ -25,7 +25,7 @@ export interface ApplicationCatalogEntry {
   description?: string | null
   iconAssetPath?: string | null
   entryHtmlAssetPath: string
-  resourceSlots: ApplicationResourceSlotSummary[]
+  executionResourceSlots: ApplicationExecutionResourceSlotSummary[]
 }
 
 export interface ApplicationTechnicalDetails {
@@ -65,7 +65,7 @@ const toCatalogEntry = (
   description: application.description ?? null,
   iconAssetPath: application.iconAssetPath ?? null,
   entryHtmlAssetPath: application.entryHtmlAssetPath,
-  resourceSlots: [...(application.resourceSlots ?? [])].map((slot) => ({
+  executionResourceSlots: [...(application.executionResourceSlots ?? [])].map((slot) => ({
     slotKey: slot.slotKey,
     required: slot.required,
   })),

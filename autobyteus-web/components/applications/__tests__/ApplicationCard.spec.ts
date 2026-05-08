@@ -37,7 +37,7 @@ describe('ApplicationCard', () => {
           description: 'Create and review briefs.',
           iconAssetPath: null,
           entryHtmlAssetPath: '/application-bundles/brief-studio/ui/index.html',
-          resourceSlots: [
+          executionResourceSlots: [
             {
               slotKey: 'draftingTeam',
               required: true,

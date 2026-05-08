@@ -1,17 +1,17 @@
-import type { ApplicationAgentRunLaunch, ApplicationConfiguredAgentLaunchProfile, ApplicationConfiguredResource, ApplicationConfiguredTeamLaunchProfile, ApplicationRuntimeResourceRef, ApplicationSkillAccessMode, ApplicationTeamMemberLaunchConfig, ApplicationTeamRunLaunch } from "@autobyteus/application-sdk-contracts";
+import type { ApplicationAgentRunLaunch, ApplicationConfiguredAgentLaunchProfile, ApplicationConfiguredExecutionResource, ApplicationConfiguredTeamLaunchProfile, ApplicationExecutionResourceRef, ApplicationSkillAccessMode, ApplicationTeamMemberLaunchConfig, ApplicationTeamRunLaunch } from "@autobyteus/application-sdk-contracts";
 export declare const APPLICATION_HOST_MANAGED_SKILL_ACCESS_MODE: "PRELOADED_ONLY";
 export declare const resolveConfiguredAgentLaunchProfile: (input: {
-    configuredResource: ApplicationConfiguredResource | null | undefined;
-    fallbackResourceRef: ApplicationRuntimeResourceRef;
+    configuredResource: ApplicationConfiguredExecutionResource | null | undefined;
+    fallbackExecutionResourceRef: ApplicationExecutionResourceRef;
 }) => {
-    resourceRef: ApplicationRuntimeResourceRef;
+    executionResourceRef: ApplicationExecutionResourceRef;
     launchProfile: ApplicationConfiguredAgentLaunchProfile | null;
 };
 export declare const resolveConfiguredTeamLaunchProfile: (input: {
-    configuredResource: ApplicationConfiguredResource | null | undefined;
-    fallbackResourceRef: ApplicationRuntimeResourceRef;
+    configuredResource: ApplicationConfiguredExecutionResource | null | undefined;
+    fallbackExecutionResourceRef: ApplicationExecutionResourceRef;
 }) => {
-    resourceRef: ApplicationRuntimeResourceRef;
+    executionResourceRef: ApplicationExecutionResourceRef;
     launchProfile: ApplicationConfiguredTeamLaunchProfile | null;
 };
 export declare const buildConfiguredAgentRunLaunch: (input: {

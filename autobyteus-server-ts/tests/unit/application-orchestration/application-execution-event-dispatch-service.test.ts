@@ -22,8 +22,8 @@ const buildRecord = (journalSequence: number): ApplicationExecutionEventJournalR
       applicationId,
       bindingIntentId: `binding-intent-${journalSequence}`,
       status: "ATTACHED",
-      resourceRef: {
-        owner: "bundle",
+      executionResourceRef: {
+        source: "bundle",
         kind: "AGENT",
         localId: "sample-agent",
       },

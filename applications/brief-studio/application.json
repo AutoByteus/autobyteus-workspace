@@ -11,13 +11,13 @@
   "backend": {
     "bundleManifest": "backend/bundle.json"
   },
-  "resourceSlots": [
+  "executionResourceSlots": [
     {
       "slotKey": "draftingTeam",
       "name": "Drafting Team",
       "description": "Team resource used when Brief Studio launches a new drafting run.",
-      "allowedResourceKinds": ["AGENT_TEAM"],
-      "allowedResourceOwners": ["bundle", "shared"],
+      "allowedExecutionResourceKinds": ["AGENT_TEAM"],
+      "allowedExecutionResourceSources": ["bundle", "shared"],
       "required": true,
       "supportedLaunchConfig": {
         "AGENT_TEAM": {
@@ -30,8 +30,8 @@
           }
         }
       },
-      "defaultResourceRef": {
-        "owner": "bundle",
+      "defaultExecutionResourceRef": {
+        "source": "bundle",
         "kind": "AGENT_TEAM",
         "localId": "brief-studio-team"
       }

@@ -85,7 +85,7 @@ import type {
 } from '~/utils/application/applicationLaunchProfile'
 
 const props = withDefaults(defineProps<{
-  slot: import('@autobyteus/application-sdk-contracts').ApplicationResourceSlotDeclaration
+  slot: import('@autobyteus/application-sdk-contracts').ApplicationExecutionResourceSlotDeclaration
   draft: ApplicationAgentLaunchProfileDraft
   disabled?: boolean
 }>(), {

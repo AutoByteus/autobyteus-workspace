@@ -12,7 +12,7 @@ import { createLessonReadService } from "./lesson-read-service.js";
 import { createRunBindingCorrelationService } from "./run-binding-correlation-service.js";
 
 const SOCRATIC_TEAM_RESOURCE = {
-  owner: "bundle",
+  source: "bundle",
   kind: "AGENT_TEAM",
   localId: "socratic-math-team",
 } as const;
@@ -89,8 +89,8 @@ const resolveStartLessonProjection = (input: {
 
 const resolveLessonTutorTeamConfiguration = async (context: ApplicationHandlerContext) => {
   return resolveConfiguredTeamLaunchProfile({
-    configuredResource: await context.runtimeControl.getConfiguredResource(LESSON_TUTOR_TEAM_SLOT_KEY),
-    fallbackResourceRef: SOCRATIC_TEAM_RESOURCE,
+    configuredResource: await context.runtimeControl.getConfiguredExecutionResource(LESSON_TUTOR_TEAM_SLOT_KEY),
+    fallbackExecutionResourceRef: SOCRATIC_TEAM_RESOURCE,
   });
 };
 
@@ -132,7 +132,7 @@ export const createLessonRuntimeService = (context: ApplicationHandlerContext) =
     try {
       const binding = await context.runtimeControl.startRun({
         bindingIntentId: pendingIntent.bindingIntentId,
-        resourceRef: tutorTeam.resourceRef,
+        executionResourceRef: tutorTeam.executionResourceRef,
         launch: buildConfiguredTeamRunLaunch({
           launchProfile: tutorTeam.launchProfile,
           workspaceRootPath,

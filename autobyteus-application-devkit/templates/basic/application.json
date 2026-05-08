@@ -11,5 +11,5 @@
   "backend": {
     "bundleManifest": "backend/bundle.json"
   },
-  "resourceSlots": []
+  "executionResourceSlots": []
 }

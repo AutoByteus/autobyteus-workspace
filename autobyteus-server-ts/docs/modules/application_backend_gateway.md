@@ -44,9 +44,9 @@ Queries, commands, and GraphQL accept `{ applicationId }` request context in the
 
 The same REST module also exposes the host launch-setup surfaces outside the backend subpath:
 
-- `GET /rest/applications/:applicationId/available-resources`
-- `GET /rest/applications/:applicationId/resource-configurations`
-- `PUT /rest/applications/:applicationId/resource-configurations/:slotKey`
+- `GET /rest/applications/:applicationId/available-execution-resources`
+- `GET /rest/applications/:applicationId/execution-resource-configurations`
+- `PUT /rest/applications/:applicationId/execution-resource-configurations/:slotKey`
 
 Those setup routes feed the authoritative pre-entry setup gate on `/applications/:id` before the iframe host is allowed to enter the application.
 

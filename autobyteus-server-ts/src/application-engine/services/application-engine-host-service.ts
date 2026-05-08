@@ -308,10 +308,10 @@ export class ApplicationEngineHostService {
     input: ApplicationWorkerRuntimeControlInput,
   ): Promise<unknown> {
     switch (input.action) {
-      case "listAvailableResources":
-        return this.orchestrationHostService.listAvailableResources(applicationId, input.input as never);
-      case "getConfiguredResource":
-        return this.orchestrationHostService.getConfiguredResource(
+      case "listAvailableExecutionResources":
+        return this.orchestrationHostService.listAvailableExecutionResources(applicationId, input.input as never);
+      case "getConfiguredExecutionResource":
+        return this.orchestrationHostService.getConfiguredExecutionResource(
           applicationId,
           (input.input as { slotKey?: string }).slotKey ?? "",
         );

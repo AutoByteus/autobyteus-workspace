@@ -137,11 +137,11 @@ describe("FileApplicationBundleProvider", () => {
           backend: {
             bundleManifest: "backend/bundle.json",
           },
-          resourceSlots: [
+          executionResourceSlots: [
             {
               slotKey: "draftingTeam",
               name: "Drafting Team",
-              allowedResourceKinds: ["AGENT_TEAM"],
+              allowedExecutionResourceKinds: ["AGENT_TEAM"],
               supportedLaunchConfig: {
                 AGENT_TEAM: {
                   runtimeKind: true,
@@ -149,8 +149,8 @@ describe("FileApplicationBundleProvider", () => {
                   workspaceRootPath: true,
                 },
               },
-              defaultResourceRef: {
-                owner: "bundle",
+              defaultExecutionResourceRef: {
+                source: "bundle",
                 kind: "AGENT_TEAM",
                 localId: "sample-team",
               },
@@ -260,7 +260,7 @@ describe("FileApplicationBundleProvider", () => {
     });
   });
 
-  it("lists valid bundles from the managed built-in application root with manifest resource slots", async () => {
+  it("lists valid bundles from the managed built-in application root with manifest execution resource slots", async () => {
     await writeBundle();
     const provider = buildProvider();
 
@@ -271,11 +271,11 @@ describe("FileApplicationBundleProvider", () => {
       id: buildCanonicalApplicationId(BUILT_IN_APPLICATION_PACKAGE_ID, "sample-app"),
       localApplicationId: "sample-app",
       packageId: BUILT_IN_APPLICATION_PACKAGE_ID,
-      resourceSlots: [
+      executionResourceSlots: [
         {
           slotKey: "draftingTeam",
-          allowedResourceKinds: ["AGENT_TEAM"],
-          allowedResourceOwners: ["bundle", "shared"],
+          allowedExecutionResourceKinds: ["AGENT_TEAM"],
+          allowedExecutionResourceSources: ["bundle", "shared"],
           supportedLaunchConfig: {
             AGENT_TEAM: {
               runtimeKind: true,
@@ -283,8 +283,8 @@ describe("FileApplicationBundleProvider", () => {
               workspaceRootPath: true,
             },
           },
-          defaultResourceRef: {
-            owner: "bundle",
+          defaultExecutionResourceRef: {
+            source: "bundle",
             kind: "AGENT_TEAM",
             localId: "sample-team",
           },
@@ -387,11 +387,11 @@ describe("FileApplicationBundleProvider", () => {
           backend: {
             bundleManifest: "backend/bundle.json",
           },
-          resourceSlots: [
+          executionResourceSlots: [
             {
               slotKey: "broken slot key",
               name: "Broken Slot",
-              allowedResourceKinds: ["AGENT_TEAM"],
+              allowedExecutionResourceKinds: ["AGENT_TEAM"],
             },
           ],
         },
@@ -410,9 +410,10 @@ describe("FileApplicationBundleProvider", () => {
     expect(snapshot.diagnostics[0]?.message).toContain("slotKey");
   });
 
-  it("fails package validation when a discovered resource-slot default does not resolve", async () => {
+  it("surfaces legacy top-level resourceSlots as diagnostics instead of silently dropping slots", async () => {
     await writeBundle(builtInRoot, {
       manifestOverrides: {
+        executionResourceSlots: undefined,
         resourceSlots: [
           {
             slotKey: "draftingTeam",
@@ -420,6 +421,92 @@ describe("FileApplicationBundleProvider", () => {
             allowedResourceKinds: ["AGENT_TEAM"],
             defaultResourceRef: {
               owner: "bundle",
+              kind: "AGENT_TEAM",
+              localId: "sample-team",
+            },
+          },
+        ],
+      },
+    });
+
+    const snapshot = await buildProvider().getCatalogSnapshot();
+
+    expect(snapshot.applications).toHaveLength(0);
+    expect(snapshot.diagnostics).toHaveLength(1);
+    expect(snapshot.diagnostics[0]?.message).toContain(
+      "application manifest.resourceSlots is no longer supported",
+    );
+  });
+
+  it.each([
+    {
+      name: "allowedResourceKinds",
+      legacySlotFields: {
+        allowedResourceKinds: ["AGENT_TEAM"],
+      },
+      expectedMessage: "executionResourceSlots[0].allowedResourceKinds is no longer supported",
+    },
+    {
+      name: "allowedResourceOwners",
+      legacySlotFields: {
+        allowedResourceOwners: ["bundle"],
+      },
+      expectedMessage: "executionResourceSlots[0].allowedResourceOwners is no longer supported",
+    },
+    {
+      name: "defaultResourceRef",
+      legacySlotFields: {
+        defaultResourceRef: {
+          owner: "bundle",
+          kind: "AGENT_TEAM",
+          localId: "sample-team",
+        },
+      },
+      expectedMessage: "executionResourceSlots[0].defaultResourceRef is no longer supported",
+    },
+    {
+      name: "defaultExecutionResourceRef.owner",
+      legacySlotFields: {
+        defaultExecutionResourceRef: {
+          owner: "bundle",
+          source: "bundle",
+          kind: "AGENT_TEAM",
+          localId: "sample-team",
+        },
+      },
+      expectedMessage: "executionResourceSlots[0].defaultExecutionResourceRef.owner is no longer supported",
+    },
+  ])("surfaces legacy slot field $name as diagnostics", async ({ legacySlotFields, expectedMessage }) => {
+    await writeBundle(builtInRoot, {
+      manifestOverrides: {
+        executionResourceSlots: [
+          {
+            slotKey: "draftingTeam",
+            name: "Drafting Team",
+            allowedExecutionResourceKinds: ["AGENT_TEAM"],
+            ...legacySlotFields,
+          },
+        ],
+      },
+    });
+
+    const snapshot = await buildProvider().getCatalogSnapshot();
+
+    expect(snapshot.applications).toHaveLength(0);
+    expect(snapshot.diagnostics).toHaveLength(1);
+    expect(snapshot.diagnostics[0]?.message).toContain(expectedMessage);
+  });
+
+  it("fails package validation when a discovered resource-slot default does not resolve", async () => {
+    await writeBundle(builtInRoot, {
+      manifestOverrides: {
+        executionResourceSlots: [
+          {
+            slotKey: "draftingTeam",
+            name: "Drafting Team",
+            allowedExecutionResourceKinds: ["AGENT_TEAM"],
+            defaultExecutionResourceRef: {
+              source: "bundle",
               kind: "AGENT_TEAM",
               localId: "missing-team",
             },

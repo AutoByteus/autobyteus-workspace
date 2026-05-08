@@ -1,14 +1,14 @@
 import type {
-  ApplicationConfiguredResource,
-  ApplicationRuntimeResourceKind,
-  ApplicationRuntimeResourceOwner,
-  ApplicationRuntimeResourceRef,
-  ApplicationRuntimeResourceSummary,
-} from "./runtime-resources.js";
+  ApplicationConfiguredExecutionResource,
+  ApplicationExecutionResourceKind,
+  ApplicationExecutionResourceSource,
+  ApplicationExecutionResourceRef,
+  ApplicationExecutionResourceSummary,
+} from "./execution-resources.js";
 import type { ApplicationManifestV3 } from "./manifests.js";
 
 export * from "./manifests.js";
-export * from "./runtime-resources.js";
+export * from "./execution-resources.js";
 export * from "./application-iframe-contract.js";
 
 export const APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1 = "1" as const;
@@ -134,7 +134,7 @@ export type ApplicationTeamRunLaunch =
 
 export type ApplicationStartRunInput = {
   bindingIntentId: string;
-  resourceRef: ApplicationRuntimeResourceRef;
+  executionResourceRef: ApplicationExecutionResourceRef;
   launch: ApplicationAgentRunLaunch | ApplicationTeamRunLaunch;
   initialInput?: ApplicationRuntimeInput | null;
 };
@@ -163,7 +163,7 @@ export type ApplicationRunBindingSummary = {
   applicationId: string;
   bindingIntentId: string;
   status: ApplicationRunBindingStatus;
-  resourceRef: ApplicationRuntimeResourceRef;
+  executionResourceRef: ApplicationExecutionResourceRef;
   runtime: {
     subject: ApplicationRunBindingRuntimeSubject;
     runId: string;
@@ -238,11 +238,11 @@ export type ApplicationExecutionEventEnvelope<TPayload = unknown> = {
 };
 
 export type ApplicationRuntimeControl = {
-  listAvailableResources: (filter?: {
-    owner?: ApplicationRuntimeResourceOwner | null;
-    kind?: ApplicationRuntimeResourceKind | null;
-  } | null) => Promise<ApplicationRuntimeResourceSummary[]>;
-  getConfiguredResource: (slotKey: string) => Promise<ApplicationConfiguredResource | null>;
+  listAvailableExecutionResources: (filter?: {
+    source?: ApplicationExecutionResourceSource | null;
+    kind?: ApplicationExecutionResourceKind | null;
+  } | null) => Promise<ApplicationExecutionResourceSummary[]>;
+  getConfiguredExecutionResource: (slotKey: string) => Promise<ApplicationConfiguredExecutionResource | null>;
   startRun: (input: ApplicationStartRunInput) => Promise<ApplicationRunBindingSummary>;
   getRunBinding: (bindingId: string) => Promise<ApplicationRunBindingSummary | null>;
   getRunBindingByIntentId: (bindingIntentId: string) => Promise<ApplicationRunBindingSummary | null>;

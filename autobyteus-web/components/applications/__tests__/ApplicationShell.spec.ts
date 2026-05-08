@@ -68,7 +68,7 @@ vi.mock('~/composables/useLocalization', () => ({
         'applications.components.applications.ApplicationIframeHost.initializationFailed': 'Initialization failed',
         'applications.components.applications.ApplicationImmersiveControlPanel.exitApplication': 'Exit application',
         'applications.shared.noDescriptionProvided': 'No description',
-        'applications.shared.noBundleResources': 'No bundled runtime resources',
+        'applications.shared.noBundleResources': 'No bundled execution resources',
         'applications.shared.package': 'Package',
         'applications.shared.localApplicationId': 'Local application id',
         'applications.shared.bundleResources': 'Bundle resources',
@@ -187,7 +187,7 @@ describe('ApplicationShell', () => {
       description: 'Business-first brief workflow',
       iconAssetPath: null,
       entryHtmlAssetPath: '/application-bundles/brief-studio/assets/ui/index.html',
-      resourceSlots: [
+      executionResourceSlots: [
         {
           slotKey: 'draftingTeam',
           required: true,

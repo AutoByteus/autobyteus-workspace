@@ -17,7 +17,7 @@ Shows Applications as a first-class top-level module, resolves whether the modul
 - `components/applications/ApplicationSurface.vue`
 - `components/applications/ApplicationIframeHost.vue`
 - `components/applications/ApplicationImmersiveControlPanel.vue`
-- `components/applications/setup/ApplicationResourceSlotEditor.vue`
+- `components/applications/setup/ApplicationExecutionResourceSlotEditor.vue`
 - `components/applications/setup/ApplicationAgentLaunchProfileEditor.vue`
 - `components/applications/setup/ApplicationTeamLaunchProfileEditor.vue`
 - `components/applications/setup/ApplicationWorkspaceRootSelector.vue`
@@ -50,20 +50,20 @@ Each catalog entry carries only:
 - stable application id
 - name and description
 - transport-neutral `iconAssetPath` and `entryHtmlAssetPath`
-- manifest-declared setup requirements exposed as `resourceSlots[]`
+- manifest-declared setup requirements exposed as `executionResourceSlots[]`
 
 The detail fetch extends that catalog record with `technicalDetails`, which contains:
 
 - local application id
 - owning `packageId`
 - `writable` source metadata
-- bundled runtime resources exposed as `bundleResources[]`
+- bundled execution resources exposed as `bundleResources[]`
 
 That split is intentional: internal bootstrap/package identifiers remain available for iframe bootstrap and diagnostics, but the normal catalog/setup path should not casually render them.
 
 The generic host no longer treats one singular bundle resource as the required launch-time runtime target. The catalog exposes what the bundle contains; application backends decide if and when to use those resources.
 
-`ApplicationCard.vue` uses the same authoritative `resourceSlots[]` contract to summarize host-managed setup requirements on the primary `/applications` surface. The catalog should describe required setup work in business-facing language (for example, required setup-item counts) instead of leaking raw runtime-resource ids as the primary card message.
+`ApplicationCard.vue` uses the same authoritative `executionResourceSlots[]` contract to summarize host-managed setup requirements on the primary `/applications` surface. The catalog should describe required setup work in business-facing language (for example, required setup-item counts) instead of leaking raw execution-resource ids as the primary card message.
 
 The store also owns stale-response protection for node switches: late catalog or detail responses from the old bound node are discarded instead of repopulating stale application state after `bindingRevision` changes.
 
@@ -112,26 +112,26 @@ This keeps host-launch identity tied to route visit and explicit reload/exit sem
 
 That gate:
 
-- loads the application's declared `resourceSlots[]` contract and current saved setup,
+- loads the application's declared `executionResourceSlots[]` contract and current saved setup,
 - keeps technical metadata hidden behind an explicit toggle by default,
-- lets the user save required runtime-resource and launch-profile selections before entry,
+- lets the user save required execution-resource and launch-profile selections before entry,
 - keeps `Enter application` disabled while setup is loading, saving, dirty, or missing required saved state, and
 - only allows host launch after the setup panel reports `launch-ready`.
 
 `ApplicationLaunchSetupPanel.vue` owns the overall setup orchestration UI. It loads the saved slot state, owns refresh/save/reset actions, and surfaces:
 
 - required vs optional slots, and
-- bundled vs shared runtime-resource choices,
+- bundled vs shared execution-resource choices,
 - configuration-view issues such as invalid saved topology or unsupported persisted profile fields, and
 - the host-managed note that automatic tool execution remains enabled for this application flow.
 
-`ApplicationResourceSlotEditor.vue` owns the slot-local editor choice:
+`ApplicationExecutionResourceSlotEditor.vue` owns the slot-local editor choice:
 
 - `ApplicationAgentLaunchProfileEditor.vue` saves the agent-shaped `launchProfile` fields (`runtimeKind`, `llmModelIdentifier`, `workspaceRootPath`) only when the selected slot declares them under `supportedLaunchConfig.AGENT`.
 - `ApplicationTeamLaunchProfileEditor.vue` saves the team-shaped `launchProfile`: shared defaults plus the current member override rows for runtime/model when the slot declares them under `supportedLaunchConfig.AGENT_TEAM`.
 - `ApplicationWorkspaceRootSelector.vue` keeps workspace-root path selection consistent across the agent and team editors.
 
-The persisted contract is now `launchProfile`, not the older flat `launchDefaults` record. The frontend draft helpers in `applicationLaunchProfile.ts` and `applicationSetupGate.ts` keep the route gate aligned with that kind-aware contract while the server handles legacy row migration.
+The persisted contract is now `launchProfile`, not the older flat `launchDefaults` record. The frontend draft helpers in `applicationLaunchProfile.ts` and `applicationSetupGate.ts` keep the route gate aligned with that kind-aware contract. For the execution-resource rename itself, stale saved refs using old `resourceRef`/`owner` shapes are not migrated: the server resets those setup rows so the host gate returns to setup/reconfigure state.
 
 ## Immersive Control Panel
 
@@ -226,7 +226,7 @@ The application backend owns:
 
 - business identifiers and pending binding intents
 - when to start runs
-- which configured runtime resource slot to use after the host saves setup
+- which configured execution resource slot to use after the host saves setup
 - how runtime outputs project into app-owned state
 
 This separation is the core architectural change: the Applications page launches applications, not platform-owned application executions.
