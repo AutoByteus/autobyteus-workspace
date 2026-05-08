@@ -12,3 +12,4 @@
 - Removed server auto-seeding and auto-featuring for Daily Assistant.
 - Prevented old Daily Assistant ids (`super-ai-assistant`, `autobyteus-super-assistant`) from resolving as active aliases.
 - Preserved the private Daily Assistant config shape while renaming it to `daily-assistant`.
+- Fixed server Docker release builds to use a Node runtime that supports the application storage layer.
