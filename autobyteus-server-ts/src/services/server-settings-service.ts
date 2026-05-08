@@ -14,6 +14,11 @@ import {
   FEATURED_CATALOG_ITEMS_SETTING_KEY,
   normalizeFeaturedCatalogItemsSettingForPersistence,
 } from "../config/featured-catalog-items-setting.js";
+import {
+  AUTOBYTEUS_STREAM_PARSER_SETTING_KEY,
+  normalizeStreamParserSettingForPersistence,
+  STREAM_PARSER_SETTING_VALUES,
+} from "../config/stream-parser-setting.js";
 import { reloadMediaToolSchemas } from "../agent-tools/media/register-media-tools.js";
 
 export {
@@ -121,6 +126,15 @@ export class ServerSettingsService {
       {
         allowedValues: CODEX_SANDBOX_MODES,
         trimBeforePersist: true,
+      },
+    );
+
+    this.registerPredefinedSetting(
+      AUTOBYTEUS_STREAM_PARSER_SETTING_KEY,
+      `Streaming tool-call parser override for future streamed agent responses. Allowed values: ${STREAM_PARSER_SETTING_VALUES.join(", ")}. Use api_tool_call for provider-native API tool calls; use xml for the XML parser override.`,
+      true,
+      {
+        normalizeForPersistence: normalizeStreamParserSettingForPersistence,
       },
     );
 

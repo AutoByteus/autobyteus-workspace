@@ -2,27 +2,29 @@
  * Helpers for resolving tool-call format selection.
  */
 
-const ENV_TOOL_CALL_FORMAT = "AUTOBYTEUS_STREAM_PARSER";
-const VALID_FORMATS = new Set(["xml", "json", "sentinel", "api_tool_call"]);
+export const TOOL_CALL_FORMAT_ENV_VAR = "AUTOBYTEUS_STREAM_PARSER";
+export const TOOL_CALL_FORMATS = ["xml", "json", "sentinel", "api_tool_call"] as const;
+export type ToolCallFormat = (typeof TOOL_CALL_FORMATS)[number];
+export const DEFAULT_TOOL_CALL_FORMAT: ToolCallFormat = "api_tool_call";
 
-export type ToolCallFormat = "xml" | "json" | "sentinel" | "api_tool_call";
+const VALID_FORMATS = new Set<ToolCallFormat>(TOOL_CALL_FORMATS);
 
 /**
  * Resolve the tool-call format from environment.
  * Defaults to "api_tool_call" when unset/invalid.
  */
 export function resolveToolCallFormat(): ToolCallFormat {
-  const value = process.env[ENV_TOOL_CALL_FORMAT];
+  const value = process.env[TOOL_CALL_FORMAT_ENV_VAR];
   if (!value) {
-    return "api_tool_call";
+    return DEFAULT_TOOL_CALL_FORMAT;
   }
-  
+
   const normalizedValue = value.trim().toLowerCase();
-  if (VALID_FORMATS.has(normalizedValue)) {
+  if (VALID_FORMATS.has(normalizedValue as ToolCallFormat)) {
     return normalizedValue as ToolCallFormat;
   }
-  
-  return "api_tool_call";
+
+  return DEFAULT_TOOL_CALL_FORMAT;
 }
 
 /**

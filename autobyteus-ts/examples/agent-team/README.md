@@ -61,7 +61,7 @@ You can override it in your shell if needed.
 ## Tool Call Format
 
 You can override the tool-call parser by setting `AUTOBYTEUS_STREAM_PARSER` to
-`api_tool_call`, `xml`, or `json` before running an example.
+`api_tool_call`, `xml`, `json`, or `sentinel` before running an example.
 
 ## Logging
 
