@@ -46,6 +46,21 @@ describe('PassThroughStreamingResponseHandler', () => {
     expect(events[0].event_type).toBe(SegmentEventType.END);
   });
 
+  it('finalizeInterrupted closes active text segment with interruption metadata', () => {
+    const handler = new PassThroughStreamingResponseHandler({ turnId: TURN_ID });
+    handler.feed(chunk('partial text'));
+
+    const events = handler.finalizeInterrupted('user_interrupt');
+
+    expect(events).toHaveLength(1);
+    expect(events[0].event_type).toBe(SegmentEventType.END);
+    expect(events[0].payload).toMatchObject({
+      interrupted: true,
+      reason: 'user_interrupt'
+    });
+    expect(handler.finalize()).toEqual([]);
+  });
+
   it('getAllInvocations is empty', () => {
     const handler = new PassThroughStreamingResponseHandler({ turnId: TURN_ID });
     handler.feed(chunk('<tool name="foo"></tool>'));

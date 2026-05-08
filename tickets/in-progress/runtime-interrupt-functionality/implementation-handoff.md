@@ -24,6 +24,10 @@ Implemented the approved clean-cut native interrupt/runtime-loop redesign.
 - Addressed code-review CR-001 by adding turn-start working-context checkpoints and interrupted-turn restore/suppression owned by `AgentRuntimeState`/`MemoryManager`; raw trace/history is retained while incomplete working-context user/tool fragments are removed before the next LLM request.
 - Addressed code-review CR-002 by tightening `AgentTurnInputBox` invocation identity acceptance, rejecting unknown/duplicate/stale approval/result messages, publishing terminal tool-interrupted lifecycle when pending approval is interrupted, and terminalizing pending approval rows on frontend `TURN_INTERRUPTED`.
 - Resolved delivery-stage latest-base merge conflict by preserving explicit inter-agent `reference_files` behavior in `AgentInputPipeline`/input-pipeline tests while keeping the deleted legacy `inter-agent-message-event-handler` path removed.
+- Addressed code-review CR-003 by adding interrupted-finalization contracts for streaming handlers/parsers; active text/tool/write/edit/reasoning segments now emit interrupted `SEGMENT_END` metadata and interrupted tool segments do not produce valid tool invocations.
+- Addressed code-review CR-004 by forwarding `LLMInvocationOptions.signal` through `AutobyteusLLM` to `AutobyteusClient` and Axios `/send-message` and `/stream-message` requests.
+- Addressed code-review CR-005 by extracting native Autobyteus team event processing/enrichment/member context resolution into `AutoByteusTeamRunEventProcessor`, reducing `autobyteus-team-run-backend.ts` below the 500-line hard limit.
+- Addressed code-review CR-006 by removing dormant `AgentTurnInputBox` tool-result/continuation lanes and keeping direct `ToolPhase` return values as the authoritative tool-result flow.
 
 ## Key Files Or Areas
 
@@ -41,6 +45,14 @@ Implemented the approved clean-cut native interrupt/runtime-loop redesign.
   - `autobyteus-ts/src/agent/pipelines/*`
   - `autobyteus-ts/src/agent/outbox/agent-outbox.ts`
   - Latest-base inter-agent `reference_files` ingestion now lives in `AgentInputPipeline.convertInterAgentEvent`; the old handler path remains removed.
+- Streaming interrupted-finalization:
+  - `autobyteus-ts/src/agent/streaming/handlers/streaming-response-handler.ts`
+  - `autobyteus-ts/src/agent/streaming/handlers/*-streaming-response-handler.ts`
+  - `autobyteus-ts/src/agent/streaming/parser/*`
+  - `autobyteus-web/services/agentStreaming/handlers/segmentHandler.ts`
+- Provider cancellation mapping:
+  - `autobyteus-ts/src/llm/api/autobyteus-llm.ts`
+  - `autobyteus-ts/src/clients/autobyteus-client.ts`
 - Runtime wiring and working-context interruption checkpointing:
   - `autobyteus-ts/src/agent/runtime/agent-worker.ts`
   - `autobyteus-ts/src/agent/runtime/agent-runtime.ts`
@@ -58,6 +70,7 @@ Implemented the approved clean-cut native interrupt/runtime-loop redesign.
 - Server and web protocol/frontend projection:
   - `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts`
   - `autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend.ts`
+  - `autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-event-processor.ts`
   - `autobyteus-server-ts/src/services/agent-streaming/*`
   - `autobyteus-web/services/agentStreaming/*`
   - `autobyteus-web/services/agentStreaming/handlers/agentStatusHandler.ts`
@@ -94,6 +107,10 @@ Implemented the approved clean-cut native interrupt/runtime-loop redesign.
   - CR-001 checkpoint/restore is covered by `agent-runtime-state` unit coverage and runtime integration tests showing interrupted LLM/tool-intent context is absent from the next LLM request.
   - CR-002 approval/tool lifecycle fencing is covered by input-box/runtime integration and frontend projection tests.
   - Delivery reroute reference-file conflict was resolved without resurrecting old handler turn control; `AgentInputPipeline` now publishes `reference_files`, adds exactly one LLM-visible reference-file block, and preserves metadata for inter-agent inputs.
+  - CR-003 streaming interruption is covered by handler unit tests and runtime integration asserting interrupted `SEGMENT_END` publication for an active streamed response.
+  - CR-004 Autobyteus cancellation is covered by LLM/client unit tests asserting `AbortSignal` propagation to Axios request config.
+  - CR-005 file-size cleanup split native team event processing into an owned processor; effective non-empty source lines are now 260 for the backend and 287 for the processor.
+  - CR-006 dormant result/continuation input-box APIs and side writes were removed; `ToolPhase` return values remain the single tool-result authority.
 
 ## Legacy / Compatibility Removal Check
 
@@ -106,6 +123,8 @@ Implemented the approved clean-cut native interrupt/runtime-loop redesign.
 - Notes:
   - `LlmTurnPhase` was split with tool-schema and compaction helpers to keep the phase file below the implementation size-pressure threshold.
   - Existing larger source files received limited deltas and were not expanded beyond their existing responsibilities.
+  - `AutoByteusTeamRunBackend` was split into a command/bridge backend and a native event processor to satisfy the hard size limit without introducing pass-through-only helpers.
+  - `AgentTurnInputBox` now owns approval side-band traffic only; tool-result aggregation/continuation remains in `ToolPhase`/`AgentTurnRunner`.
 
 ## Environment Or Dependency Notes
 
@@ -130,6 +149,21 @@ Passed:
   - Result: 4 files passed, 32 tests passed.
 - `pnpm -C autobyteus-web exec vitest run components/agentInput/__tests__/AgentUserInputTextArea.spec.ts stores/__tests__/agentRunStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts`
   - Result: 3 files passed, 29 tests passed.
+
+Additional checks after code-review CR-003 through CR-006 local fixes:
+
+- `git diff --check HEAD`
+  - Passed.
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/streaming/handlers/pass-through-streaming-response-handler.test.ts tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts tests/unit/agent/streaming/handlers/parsing-streaming-response-handler.test.ts tests/unit/llm/api/autobyteus-llm.test.ts tests/unit/clients/autobyteus-client.test.ts tests/unit/agent/loop/agent-turn-input-box.test.ts tests/integration/agent/runtime/agent-runtime.test.ts`
+  - Result: 7 files passed, 61 tests passed.
+- `pnpm -C autobyteus-ts run build`
+  - Passed, including runtime dependency verification.
+- `pnpm -C autobyteus-web exec vitest run services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts stores/__tests__/agentRunStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts components/agentInput/__tests__/AgentUserInputTextArea.spec.ts`
+  - Result: 6 files passed, 69 tests passed.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts tests/integration/agent-team-execution/autobyteus-team-run-backend.integration.test.ts tests/unit/services/agent-streaming/agent-stream-handler.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts`
+  - Result: 4 files passed, 36 tests passed.
+- `pnpm -C autobyteus-server-ts run build:full`
+  - Passed.
 
 Additional checks after delivery latest-base conflict resolution local fix:
 
@@ -170,6 +204,7 @@ Blocked / not used as pass criteria:
 ## Downstream Validation Hints / Suggested Scenarios
 
 - Single-agent WebSocket: start native Autobyteus run, send a long LLM prompt, send `INTERRUPT_GENERATION`, verify turn interrupted event/status, runtime stays reusable, and next user message runs normally.
+- Streaming UI projection: interrupt after assistant text/tool-call/file segments have started and verify each active segment receives one interrupted `SEGMENT_END` with `interrupted: true` and no valid tool continuation is produced from a partial tool call.
 - Tool execution: run a long foreground `run_bash`, interrupt during execution, verify tool interrupted event/log, no tool-result continuation LLM call, and later turn works.
 - Pending approval: request a tool approval, interrupt before approval, verify pending approval is cleared/rejected, a terminal tool-interrupted lifecycle event reaches the client, frontend approval controls become disabled/interrupted, and late approval does not resume the old turn.
 - Working context: interrupt during LLM stream and after tool intents are appended; verify the next LLM request excludes incomplete interrupted-turn user/tool context while raw history remains inspectable.

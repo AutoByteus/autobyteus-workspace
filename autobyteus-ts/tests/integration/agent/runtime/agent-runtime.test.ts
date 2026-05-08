@@ -86,6 +86,45 @@ class ControllableLLM extends BaseLLM {
   }
 }
 
+class SegmentInterruptLLM extends BaseLLM {
+  private releaseAfterFirstChunk: (() => void) | null = null;
+  private readonly firstChunkYielded: Promise<void>;
+  private resolveFirstChunkYielded!: () => void;
+
+  constructor(model: LLMModel, config: LLMConfig) {
+    super(model, config);
+    this.firstChunkYielded = new Promise<void>((resolve) => {
+      this.resolveFirstChunkYielded = resolve;
+    });
+  }
+
+  async waitForFirstChunk(): Promise<void> {
+    await this.firstChunkYielded;
+  }
+
+  unblock(): void {
+    this.releaseAfterFirstChunk?.();
+  }
+
+  protected async _sendMessagesToLLM(_messages: Message[]): Promise<CompleteResponse> {
+    return new CompleteResponse({ content: 'ok' });
+  }
+
+  protected async *_streamMessagesToLLM(
+    _messages: Message[],
+    _kwargs: Record<string, unknown>,
+    _options?: LLMInvocationOptions
+  ): AsyncGenerator<ChunkResponse, void, unknown> {
+    yield { content: 'partial streamed text' } as ChunkResponse;
+    this.resolveFirstChunkYielded();
+    await new Promise<void>((resolve) => {
+      this.releaseAfterFirstChunk = resolve;
+    });
+    this.releaseAfterFirstChunk = null;
+    yield { content: 'should not settle before interrupt', is_complete: true } as ChunkResponse;
+  }
+}
+
 class ApprovalToolCallingLLM extends BaseLLM {
   requestMessages: Message[][] = [];
   options: LLMInvocationOptions[] = [];
@@ -438,6 +477,56 @@ describe('Agent runtime integration', () => {
       expect(llm.requestMessages[1].some((message) => message.content === 'next message')).toBe(true);
     } finally {
       llm.unblockFirstResponse();
+      if (runtime.isRunning) {
+        await runtime.stop(2);
+      }
+      await llm.cleanup();
+    }
+  }, 20000);
+
+  it('closes active streamed response segment as interrupted when LLM turn is interrupted', async () => {
+    const llm = new SegmentInterruptLLM(makeModel(), new LLMConfig());
+    const config = new AgentConfig('RuntimeSegmentInterruptAgent', 'Tester', 'Segment interrupt test agent', llm);
+    const agentId = `runtime_segment_interrupt_${Date.now()}`;
+
+    const state = new AgentRuntimeState(agentId, null, null);
+    state.llmInstance = llm;
+    state.toolInstances = {};
+    attachMemory(state);
+
+    const context = new AgentContext(agentId, config, state);
+    const runtime = new AgentRuntime(context);
+    const segmentEvents: any[] = [];
+    context.statusManager?.notifier?.subscribe(EventType.AGENT_DATA_SEGMENT_EVENT, (payload) => {
+      segmentEvents.push(payload);
+    });
+
+    try {
+      runtime.start();
+      const ready = await waitForStatus(context, (status) => status === AgentStatus.IDLE || status === AgentStatus.ERROR);
+      expect(ready).toBe(true);
+
+      await runtime.submitEvent(new UserMessageReceivedEvent(new AgentInputUserMessage('stream then interrupt')));
+      await llm.waitForFirstChunk();
+      const activeTurnId = context.state.activeTurn?.turnId;
+      expect(activeTurnId).toBeTruthy();
+
+      const interruptResult = await runtime.interrupt({
+        turnId: activeTurnId,
+        reason: 'user_interrupt',
+        timeoutMs: 1000
+      });
+
+      expect(interruptResult.accepted).toBe(true);
+      const interruptedEnd = segmentEvents.find((event) =>
+        event?.type === 'SEGMENT_END' &&
+        event?.turn_id === activeTurnId &&
+        event?.payload?.interrupted === true
+      );
+      expect(interruptedEnd).toBeDefined();
+      expect(interruptedEnd.payload.reason).toBe('user_interrupt');
+    } finally {
+      llm.unblock();
       if (runtime.isRunning) {
         await runtime.stop(2);
       }

@@ -61,6 +61,23 @@ export class PassThroughStreamingResponseHandler extends StreamingResponseHandle
     return events;
   }
 
+  finalizeInterrupted(reason: string): SegmentEvent[] {
+    if (this.isFinalized) {
+      return [];
+    }
+    this.isFinalized = true;
+    const events: SegmentEvent[] = [];
+    if (this.isActive) {
+      events.push(SegmentEvent.end(this.turnId, this.segmentId, {
+        interrupted: true,
+        reason
+      }));
+      this.isActive = false;
+    }
+    this.processEvents(events);
+    return events;
+  }
+
   private processEvents(events: SegmentEvent[]): void {
     for (const event of events) {
       this.allEvents.push(event);

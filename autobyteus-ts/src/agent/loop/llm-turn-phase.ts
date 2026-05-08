@@ -139,9 +139,11 @@ export class LlmTurnPhase {
       streamingHandler.finalize();
       if (currentReasoningPartId) {
         outbox.publishSegment(SegmentEvent.end(activeTurnId, currentReasoningPartId));
+        currentReasoningPartId = null;
       }
     } catch (error) {
       if (isAgentInterruptionError(error)) {
+        streamingHandler.finalizeInterrupted(error.reason);
         if (currentReasoningPartId) {
           outbox.publishSegment(
             SegmentEvent.end(activeTurnId, currentReasoningPartId, {
@@ -149,6 +151,7 @@ export class LlmTurnPhase {
               reason: error.reason
             })
           );
+          currentReasoningPartId = null;
         }
         throw error;
       }

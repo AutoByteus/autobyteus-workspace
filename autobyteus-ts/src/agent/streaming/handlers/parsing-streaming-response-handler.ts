@@ -69,6 +69,17 @@ export class ParsingStreamingResponseHandler extends StreamingResponseHandler {
     return events;
   }
 
+  finalizeInterrupted(reason: string): SegmentEvent[] {
+    if (this.isFinalized) {
+      return [];
+    }
+
+    this.isFinalized = true;
+    const events = this.parser.interrupt(reason);
+    this.processEvents(events);
+    return events;
+  }
+
   getAllEvents(): SegmentEvent[] {
     return [...this.allEvents];
   }

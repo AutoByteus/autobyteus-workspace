@@ -82,6 +82,34 @@ describe('ApiToolCallStreamingResponseHandler basics', () => {
     expect(invocations[0].arguments).toEqual({ path: 'hello.py', content: 'print()' });
     expect(invocations[0].id).toBe('call_abc');
   });
+
+  it('finalizeInterrupted closes active text and tool-call segments without creating invocations', () => {
+    const handler = new ApiToolCallStreamingResponseHandler({ turnId: TURN_ID });
+    handler.feed(new ChunkResponse({ content: 'partial assistant text' }));
+    handler.feed(
+      new ChunkResponse({
+        content: '',
+        tool_calls: [
+          {
+            index: 0,
+            call_id: 'call_partial',
+            name: 'search_web',
+            arguments_delta: '{"query":"unfinished'
+          }
+        ]
+      })
+    );
+
+    const events = handler.finalizeInterrupted('user_interrupt');
+
+    const endEvents = events.filter((event) => event.event_type === SegmentEventType.END);
+    expect(endEvents).toHaveLength(2);
+    expect(endEvents.every((event) => event.payload.interrupted === true)).toBe(true);
+    expect(endEvents.every((event) => event.payload.reason === 'user_interrupt')).toBe(true);
+    const toolEnd = endEvents.find((event) => event.segment_id === 'call_partial');
+    expect(toolEnd?.payload.metadata.tool_name).toBe('search_web');
+    expect(handler.getAllInvocations()).toEqual([]);
+  });
 });
 
 describe('ApiToolCallStreamingResponseHandler parallel tool calls', () => {
@@ -222,6 +250,38 @@ describe('ApiToolCallStreamingResponseHandler file streaming', () => {
     const invocations = handler.getAllInvocations();
     expect(invocations).toHaveLength(1);
     expect(invocations[0].arguments).toEqual({ path: 'a.txt', content: 'hi\\nthere' });
+  });
+
+  it('finalizeInterrupted closes active write_file segment with path metadata without creating an invocation', () => {
+    const handler = new ApiToolCallStreamingResponseHandler({ turnId: TURN_ID });
+    handler.feed(
+      new ChunkResponse({
+        content: '',
+        tool_calls: [
+          {
+            index: 0,
+            call_id: 'call_write_partial',
+            name: 'write_file',
+            arguments_delta: '{"path":"partial.txt","content":"hello'
+          }
+        ]
+      })
+    );
+
+    const events = handler.finalizeInterrupted('user_interrupt');
+
+    const endEvent = events.find((event) => event.event_type === SegmentEventType.END);
+    expect(endEvent).toBeDefined();
+    expect(endEvent?.segment_id).toBe('call_write_partial');
+    expect(endEvent?.payload).toMatchObject({
+      interrupted: true,
+      reason: 'user_interrupt',
+      metadata: {
+        tool_name: 'write_file',
+        path: 'partial.txt'
+      }
+    });
+    expect(handler.getAllInvocations()).toEqual([]);
   });
 });
 

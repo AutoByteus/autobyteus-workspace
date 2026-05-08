@@ -15,6 +15,10 @@ export class CertificateError extends Error {}
 
 type JsonRecord = Record<string, unknown>;
 
+export type AutobyteusRequestOptions = {
+  signal?: AbortSignal | null;
+};
+
 function joinUrl(baseUrl: string, path: string): string {
   return new URL(path, baseUrl).toString();
 }
@@ -192,7 +196,10 @@ export class AutobyteusClient {
     }
   }
 
-  async sendMessage(request: AutobyteusSendMessageRequest): Promise<JsonRecord> {
+  async sendMessage(
+    request: AutobyteusSendMessageRequest,
+    options: AutobyteusRequestOptions = {},
+  ): Promise<JsonRecord> {
     try {
       const normalizedPayload = await this.normalizeConversationPayload(request.payload);
       const payload = {
@@ -201,14 +208,19 @@ export class AutobyteusClient {
         messages: normalizedPayload.messages,
         current_message_index: normalizedPayload.current_message_index
       };
-      const response = await this.asyncClient.post(joinUrl(this.serverUrl, '/send-message'), payload);
+      const response = await this.asyncClient.post(joinUrl(this.serverUrl, '/send-message'), payload, {
+        signal: options.signal ?? undefined
+      });
       return response.data;
     } catch (error) {
       throw this.handleAxiosError(error, 'Error sending message');
     }
   }
 
-  async *streamMessage(request: AutobyteusSendMessageRequest): AsyncGenerator<JsonRecord, void, void> {
+  async *streamMessage(
+    request: AutobyteusSendMessageRequest,
+    options: AutobyteusRequestOptions = {},
+  ): AsyncGenerator<JsonRecord, void, void> {
     const normalizedPayload = await this.normalizeConversationPayload(request.payload);
     const payload = {
       conversation_id: request.conversationId,
@@ -219,7 +231,8 @@ export class AutobyteusClient {
 
     try {
       const response = await this.asyncClient.post(joinUrl(this.serverUrl, '/stream-message'), payload, {
-        responseType: 'stream'
+        responseType: 'stream',
+        signal: options.signal ?? undefined
       });
 
       const readline = await import('node:readline');

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { AgentTurnInputBox } from '../../../../src/agent/loop/agent-turn-input-box.js';
-import { ToolExecutionApprovalEvent, ToolResultEvent } from '../../../../src/agent/events/agent-events.js';
+import { ToolExecutionApprovalEvent } from '../../../../src/agent/events/agent-events.js';
 import { AgentInterruptionError } from '../../../../src/agent/interruption/agent-interruption.js';
 
 const timeout = <T>(promise: Promise<T>, ms = 1000): Promise<T> =>
@@ -39,15 +39,6 @@ describe('AgentTurnInputBox', () => {
     expect(duplicate.code).toBe('duplicate');
   });
 
-  it('rejects unknown invocation tool results', () => {
-    const box = new AgentTurnInputBox('turn-1');
-
-    const result = box.postToolResult(new ToolResultEvent('tool', 'ok', 'missing-invocation'));
-
-    expect(result.accepted).toBe(false);
-    expect(result.code).toBe('unknown_invocation');
-  });
-
   it('rejects waiters as interruption errors when the turn input box closes', async () => {
     const box = new AgentTurnInputBox('turn-1');
     const approvalPromise = box.waitForApproval('inv-1', { signal: new AbortController().signal });
@@ -55,14 +46,15 @@ describe('AgentTurnInputBox', () => {
     box.close('interrupted');
 
     await expect(approvalPromise).rejects.toBeInstanceOf(AgentInterruptionError);
-    expect(box.postToolResult(new ToolResultEvent('tool', 'ok', 'inv-1')).accepted).toBe(false);
+    expect(box.postApproval(new ToolExecutionApprovalEvent('inv-1', true)).accepted).toBe(false);
   });
 
   it('rejects mismatched turn ids', () => {
     const box = new AgentTurnInputBox('turn-1');
-    const event = new ToolResultEvent('tool', 'ok', 'inv-1', undefined, undefined, 'other-turn');
+    const event = new ToolExecutionApprovalEvent('inv-1', true);
+    event.turnId = 'other-turn';
 
-    const result = box.postToolResult(event);
+    const result = box.postApproval(event);
 
     expect(result.accepted).toBe(false);
     expect(result.code).toBe('turn_mismatch');

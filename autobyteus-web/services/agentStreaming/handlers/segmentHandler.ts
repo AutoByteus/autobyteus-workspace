@@ -214,7 +214,10 @@ export function handleSegmentEnd(
     }
   }
 
-  finalizeSegment(segment, payload.metadata);
+  finalizeSegment(segment, payload.metadata, {
+    interrupted: payload.interrupted === true,
+    reason: typeof payload.reason === 'string' ? payload.reason : null,
+  });
   if (isProjectableToolSegment(segment)) {
     upsertActivityFromToolSegment(context, payload.id, segment);
   }
@@ -343,7 +346,8 @@ function removeSegmentById(context: AgentContext, segmentId: string): void {
  */
 function finalizeSegment(
   segment: AIResponseSegment,
-  metadata?: Record<string, any>
+  metadata?: Record<string, any>,
+  options: { interrupted?: boolean; reason?: string | null } = {},
 ): void {
   if (segment.type === 'tool_call' || segment.type === 'write_file' || segment.type === 'terminal_command' || segment.type === 'edit_file') {
     const toolSegment = segment as ToolInvocationLifecycle;
@@ -393,6 +397,12 @@ function finalizeSegment(
       if (!terminalSegment.command && typeof metadata?.command === 'string') {
         terminalSegment.command = metadata.command;
       }
+    }
+
+    if (options.interrupted) {
+      toolSegment.status = 'interrupted';
+      toolSegment.error = options.reason ?? 'interrupted';
+      return;
     }
 
     if (toolSegment.status === 'parsing') {

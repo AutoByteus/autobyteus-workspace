@@ -53,7 +53,7 @@ export class AutobyteusLLM extends BaseLLM {
   protected async _sendMessagesToLLM(
     messages: Message[],
     kwargs: Record<string, unknown>,
-    _options: LLMInvocationOptions = {}
+    options: LLMInvocationOptions = {}
   ): Promise<CompleteResponse> {
     const conversationId = this.resolveConversationId(kwargs);
     const payload = await this.renderPayload(messages);
@@ -63,6 +63,8 @@ export class AutobyteusLLM extends BaseLLM {
       conversationId,
       modelName: this.model.name,
       payload
+    }, {
+      signal: options.signal ?? null
     });
 
     const responseRecord = isRecord(response) ? response : {};
@@ -82,7 +84,7 @@ export class AutobyteusLLM extends BaseLLM {
   protected async *_streamMessagesToLLM(
     messages: Message[],
     kwargs: Record<string, unknown>,
-    _options: LLMInvocationOptions = {}
+    options: LLMInvocationOptions = {}
   ): AsyncGenerator<ChunkResponse, void, unknown> {
     const conversationId = this.resolveConversationId(kwargs);
     const payload = await this.renderPayload(messages);
@@ -92,6 +94,8 @@ export class AutobyteusLLM extends BaseLLM {
       conversationId,
       modelName: this.model.name,
       payload
+    }, {
+      signal: options.signal ?? null
     })) {
       if (chunk?.error) {
         throw new Error(String(chunk.error));

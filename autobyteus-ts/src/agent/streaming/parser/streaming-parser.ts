@@ -53,6 +53,20 @@ export class StreamingParser {
     return this.context.getAndClearEvents();
   }
 
+  interrupt(reason: string): SegmentEvent[] {
+    if (this.isFinalizedFlag) {
+      return [];
+    }
+
+    this.isFinalizedFlag = true;
+    if (this.context.getCurrentSegmentId()) {
+      this.context.emitSegmentInterrupted(reason);
+    }
+    this.context.compact();
+
+    return this.context.getAndClearEvents();
+  }
+
   feedAndFinalize(text: string): SegmentEvent[] {
     const events = this.feed(text);
     events.push(...this.finalize());

@@ -23,7 +23,6 @@ export class ToolPhase {
       const result = await this.runOneInvocation(originalInvocation, context, turn, outbox);
       if (result) {
         results.push(result);
-        turn.inputBox.postToolResult(result);
       }
     }
     return results;

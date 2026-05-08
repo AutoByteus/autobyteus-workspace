@@ -633,5 +633,46 @@ describe('segmentHandler', () => {
 
       expect(segment.status).toBe('approved');
     });
+
+    it('marks tool segment interrupted from segment-end interruption metadata', () => {
+      handleSegmentStart(
+        {
+          id: 'seg-tool-interrupted',
+          turn_id: 'turn-1',
+          segment_type: 'tool_call',
+          metadata: {
+            tool_name: 'search_web',
+          },
+        },
+        mockContext,
+      );
+
+      handleSegmentContent(
+        {
+          id: 'seg-tool-interrupted',
+          turn_id: 'turn-1',
+          delta: '{"query":"partial',
+          segment_type: 'tool_call',
+        },
+        mockContext,
+      );
+
+      handleSegmentEnd(
+        {
+          id: 'seg-tool-interrupted',
+          turn_id: 'turn-1',
+          interrupted: true,
+          reason: 'user_interrupt',
+          metadata: {
+            tool_name: 'search_web',
+          },
+        },
+        mockContext,
+      );
+
+      const segment = findSegmentById(mockContext, 'seg-tool-interrupted') as any;
+      expect(segment.status).toBe('interrupted');
+      expect(segment.error).toBe('user_interrupt');
+    });
   });
 });
