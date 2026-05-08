@@ -3,12 +3,17 @@ import { AgentInputBox } from '../../../../src/agent/input-box/agent-input-box.j
 import {
   AgentReadyEvent,
   InterAgentMessageReceivedEvent,
+  LLMCompleteResponseReceivedEvent,
+  LLMUserMessageReadyEvent,
+  PendingToolInvocationEvent,
   ToolExecutionApprovalEvent,
   ToolResultEvent,
   UserMessageReceivedEvent
 } from '../../../../src/agent/events/agent-events.js';
 import { AgentInputUserMessage } from '../../../../src/agent/message/agent-input-user-message.js';
 import { SenderType } from '../../../../src/agent/sender-type.js';
+import { ToolInvocation } from '../../../../src/agent/tool-invocation.js';
+import { CompleteResponse } from '../../../../src/llm/utils/response-types.js';
 
 const timeout = <T>(promise: Promise<T>, ms = 1000): Promise<T> =>
   Promise.race([
@@ -53,11 +58,11 @@ describe('AgentInputBox', () => {
     const box = new AgentInputBox();
 
     await expect(
-      box.enqueueLifecycleMessage(new ToolExecutionApprovalEvent('invocation-1', true))
+      box.enqueueLifecycleMessage(new ToolExecutionApprovalEvent('invocation-1', true) as any)
     ).rejects.toThrow(/turn-local tool approvals\/results/);
 
     await expect(
-      box.enqueueLifecycleMessage(new ToolResultEvent('tool', { ok: true }, 'invocation-1'))
+      box.enqueueLifecycleMessage(new ToolResultEvent('tool', { ok: true }, 'invocation-1') as any)
     ).rejects.toThrow(/turn-local tool approvals\/results/);
 
     await expect(
@@ -65,5 +70,25 @@ describe('AgentInputBox', () => {
         new UserMessageReceivedEvent(new AgentInputUserMessage('tool result', SenderType.TOOL))
       )
     ).rejects.toThrow(/TOOL continuations/);
+  });
+
+  it('rejects operational turn and phase events on the lifecycle lane', async () => {
+    const box = new AgentInputBox();
+
+    await expect(
+      box.enqueueLifecycleMessage(
+        new PendingToolInvocationEvent(new ToolInvocation('tool', {}, 'invocation-1')) as any
+      )
+    ).rejects.toThrow(/LifecycleEvent/);
+
+    await expect(
+      box.enqueueLifecycleMessage(new LLMUserMessageReadyEvent({} as any, 'turn-1') as any)
+    ).rejects.toThrow(/LifecycleEvent/);
+
+    await expect(
+      box.enqueueLifecycleMessage(
+        new LLMCompleteResponseReceivedEvent(new CompleteResponse({ content: 'done' }), false, 'turn-1') as any
+      )
+    ).rejects.toThrow(/LifecycleEvent/);
   });
 });

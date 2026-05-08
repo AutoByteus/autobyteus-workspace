@@ -11,7 +11,8 @@ import {
   ShutdownRequestedEvent,
   UserMessageReceivedEvent,
   InterAgentMessageReceivedEvent,
-  ToolExecutionApprovalEvent
+  ToolExecutionApprovalEvent,
+  LifecycleEvent
 } from '../events/agent-events.js';
 import { applyEventAndDeriveStatus } from '../status/status-update-utils.js';
 import { AgentWorker } from './agent-worker.js';
@@ -76,8 +77,13 @@ export class AgentRuntime {
           `AgentRuntime '${agentId}': Tool approval '${event.toolInvocationId}' rejected by active turn input box: ${result.code ?? 'unknown'} ${result.message ?? ''}`
         );
       }
-    } else {
+    } else if (event instanceof LifecycleEvent) {
       await this.getAgentInputBox().enqueueLifecycleMessage(event);
+    } else {
+      throw new TypeError(
+        `AgentRuntime '${agentId}' rejects unsupported runtime input event '${event.constructor.name}'. ` +
+        'Route turn-local operational events through AgentTurnRunner/AgentTurnInputBox.'
+      );
     }
   }
 

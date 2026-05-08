@@ -36,6 +36,10 @@ Implemented the approved clean-cut native interrupt/runtime-loop redesign.
   - Demoted `AgentInputEventQueueManager` to generic queue storage with no domain-event semantics and no runtime-level caller access.
   - Kept turn-local approvals/results/continuations out of `AgentInputBox`; approvals still route directly to the active `AgentTurnInputBox`, and `SenderType.TOOL` continuations remain same-turn pipeline outputs.
   - Added explicit discriminants for turn triggers vs runtime lifecycle notifications so lifecycle messages cannot be treated as turn triggers.
+- Addressed code-review CR-007 and CR-008 for the AgentInputBox addendum:
+  - Narrowed the `AgentInputBox` lifecycle lane from `BaseEvent` to `LifecycleEvent` and rejected unsupported turn/phase operational events such as pending tool invocations and LLM phase events.
+  - Updated `AgentRuntime.submitEvent(...)` to reject unsupported turn-local operational events instead of queuing them through the lifecycle lane.
+  - Added a stop preemption guard after `AgentInputBox.nextTurnTriggerWhenIdle(...)` returns so a queued external turn trigger cannot start after `stop()` has begun.
 
 ## Key Files Or Areas
 
@@ -124,6 +128,8 @@ Implemented the approved clean-cut native interrupt/runtime-loop redesign.
   - CR-005 file-size cleanup split native team event processing into an owned processor; after latest-base reconciliation effective non-empty source lines are 260 for the backend, 308 for the processor, and 39 for the shared backend utility file.
   - CR-006 dormant result/continuation input-box APIs and side writes were removed; `ToolPhase` return values remain the single tool-result authority.
   - AgentInputBox addendum is implemented as an authoritative runtime inbox boundary; runtime callers no longer depend on both `AgentInputBox` and the queue manager internals, and the queue manager is generic storage only.
+  - CR-007 lifecycle-lane tightening is covered by `AgentInputBox` rejection tests for `PendingToolInvocationEvent`, `LLMUserMessageReadyEvent`, and `LLMCompleteResponseReceivedEvent`, plus a runtime rejection test proving unsupported operational events are not queued as lifecycle input.
+  - CR-008 shutdown preemption is covered by an `AgentWorker` regression test proving a queued user turn trigger does not invoke `AgentTurnRunner.run` after `stop()` begins while the worker is idle.
 
 ## Legacy / Compatibility Removal Check
 
@@ -138,7 +144,7 @@ Implemented the approved clean-cut native interrupt/runtime-loop redesign.
   - Existing larger source files received limited deltas and were not expanded beyond their existing responsibilities.
   - `AutoByteusTeamRunBackend` was split into a command/bridge backend and a native event processor to satisfy the hard size limit without introducing pass-through-only helpers; latest Team Communication backend utilities are imported by the processor for real normalization/extraction work rather than re-expanding the backend.
   - `AgentTurnInputBox` now owns approval side-band traffic only; tool-result aggregation/continuation remains in `ToolPhase`/`AgentTurnRunner`.
-  - `AgentInputBox` now owns runtime-level external turn-starting input. `AgentInputEventQueueManager` no longer knows about user/inter-agent/tool/lifecycle event classes and is only storage behind `AgentInputBox`.
+  - `AgentInputBox` now owns runtime-level external turn-starting input and a strictly lifecycle-only runtime-control lane. `AgentInputEventQueueManager` no longer knows about user/inter-agent/tool/lifecycle event classes and is only storage behind `AgentInputBox`.
 
 ## Environment Or Dependency Notes
 
@@ -239,6 +245,22 @@ Additional checks after AgentInputBox addendum implementation:
   - `agent-worker.ts`: 243 effective non-empty lines.
   - `agent-runtime.ts`: 186 effective non-empty lines.
   - Other changed source files remain below 220 effective non-empty lines.
+
+Additional checks after code-review CR-007 and CR-008 local fixes:
+
+- `git diff --check HEAD`
+  - Passed.
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/input-box/agent-input-box.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/unit/agent/runtime/agent-worker.test.ts tests/unit/agent/events/agent-input-event-queue-manager.test.ts`
+  - Result: 4 files passed, 26 tests passed.
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/events/agent-input-event-queue-manager.test.ts tests/unit/agent/input-box/agent-input-box.test.ts tests/unit/agent/context/agent-context.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/unit/agent/runtime/agent-worker.test.ts tests/unit/agent/loop/agent-turn-input-box.test.ts tests/integration/agent/runtime/agent-runtime.test.ts tests/integration/agent/tool-approval-flow.test.ts`
+  - Result: 8 files passed, 47 tests passed.
+- `pnpm -C autobyteus-ts run build`
+  - Passed, including runtime dependency verification.
+- Changed source implementation file size check after CR-007/CR-008:
+  - `agent-input-event-queue-manager.ts`: 126 effective non-empty lines.
+  - `agent-input-box.ts`: 126 effective non-empty lines.
+  - `agent-runtime.ts`: 192 effective non-empty lines.
+  - `agent-worker.ts`: 247 effective non-empty lines.
 
 Blocked / not used as pass criteria:
 

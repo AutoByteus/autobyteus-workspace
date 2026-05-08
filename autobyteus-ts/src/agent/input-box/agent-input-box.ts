@@ -1,7 +1,7 @@
 import { SenderType } from '../sender-type.js';
 import {
-  BaseEvent,
   InterAgentMessageReceivedEvent,
+  LifecycleEvent,
   ToolExecutionApprovalEvent,
   ToolResultEvent,
   UserMessageReceivedEvent
@@ -20,7 +20,7 @@ export type InterAgentInputMessage = {
 
 export type RuntimeLifecycleInputMessage = {
   kind: 'runtime_lifecycle';
-  event: BaseEvent;
+  event: LifecycleEvent;
 };
 
 export type AgentInputBoxMessage =
@@ -42,7 +42,7 @@ export type AgentInputBoxTrigger =
 
 export type AgentInputBoxLifecycleNotification = {
   kind: 'runtime_lifecycle';
-  event: BaseEvent;
+  event: LifecycleEvent;
 };
 
 export type AgentInputBoxNextItem = AgentInputBoxTrigger | AgentInputBoxLifecycleNotification;
@@ -73,7 +73,7 @@ export class AgentInputBox {
     await this.enqueue({ kind: 'inter_agent_message', event });
   }
 
-  async enqueueLifecycleMessage(event: BaseEvent): Promise<void> {
+  async enqueueLifecycleMessage(event: LifecycleEvent): Promise<void> {
     await this.enqueue({ kind: 'runtime_lifecycle', event });
   }
 
@@ -135,11 +135,11 @@ export class AgentInputBox {
     }
 
     if (message.kind === 'runtime_lifecycle') {
-      if (!(message.event instanceof BaseEvent)) {
-        throw new TypeError('runtime_lifecycle requires a BaseEvent.');
-      }
       if (message.event instanceof ToolExecutionApprovalEvent || message.event instanceof ToolResultEvent) {
         throw new Error('AgentInputBox rejects turn-local tool approvals/results; route them through AgentTurnInputBox.');
+      }
+      if (!(message.event instanceof LifecycleEvent)) {
+        throw new TypeError('runtime_lifecycle requires a LifecycleEvent.');
       }
       return;
     }

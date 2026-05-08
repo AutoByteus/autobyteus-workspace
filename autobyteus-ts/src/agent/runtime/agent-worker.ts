@@ -6,7 +6,8 @@ import {
   BootstrapStartedEvent,
   BootstrapCompletedEvent,
   ShutdownRequestedEvent,
-  BaseEvent
+  BaseEvent,
+  LifecycleEvent
 } from '../events/agent-events.js';
 import { AgentInputBox, type AgentInputBoxTrigger } from '../input-box/agent-input-box.js';
 import { AgentEventStore } from '../events/event-store.js';
@@ -178,6 +179,10 @@ export class AgentWorker {
           continue;
         }
 
+        if (this.stopRequested) {
+          break;
+        }
+
         try {
           if (inputBoxItem.kind === 'turn_trigger') {
             await this.runTurn(inputBoxItem);
@@ -211,7 +216,7 @@ export class AgentWorker {
     }
   }
 
-  private async handleRuntimeLifecycleEvent(event: BaseEvent): Promise<void> {
+  private async handleRuntimeLifecycleEvent(event: LifecycleEvent): Promise<void> {
     if (event instanceof ShutdownRequestedEvent || event instanceof AgentStoppedEvent) {
       await this.applyStatusEvent(event);
       this.stopRequested = true;

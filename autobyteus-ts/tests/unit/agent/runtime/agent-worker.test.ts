@@ -163,4 +163,32 @@ describe('AgentWorker', () => {
     expect(worker.isAlive()).toBe(false);
     expect(mocks.shutdownRun).toHaveBeenCalledWith(context);
   });
+
+  it('does not start a queued external turn after stop is requested while idle', async () => {
+    const context = makeContext();
+    const queuedEvent = new UserMessageReceivedEvent(new AgentInputUserMessage('queued before stop wake'));
+    let releaseNextInput!: (value: unknown) => void;
+    const nextInput = new Promise((resolve) => {
+      releaseNextInput = resolve;
+    });
+    context.state.agentInputBox = {
+      nextTurnTriggerWhenIdle: vi.fn(() => nextInput),
+      enqueueLifecycleMessage: vi.fn(async () => undefined)
+    } as any;
+    const worker = new AgentWorker(context);
+    vi.spyOn(worker as any, 'initialize').mockResolvedValue(true as any);
+
+    worker.start();
+    expect(await waitForCondition(() =>
+      (context.state.agentInputBox!.nextTurnTriggerWhenIdle as any).mock.calls.length === 1
+    )).toBe(true);
+
+    const stopPromise = worker.stop(0.5);
+    await Promise.resolve();
+    releaseNextInput({ kind: 'turn_trigger', source: 'user_message', event: queuedEvent });
+    await stopPromise;
+
+    expect(mocks.runnerRun).not.toHaveBeenCalled();
+    expect(worker.isAlive()).toBe(false);
+  });
 });

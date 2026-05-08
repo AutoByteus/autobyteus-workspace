@@ -53,9 +53,11 @@ import {
   AgentErrorEvent,
   AgentInterruptRequestedEvent,
   UserMessageReceivedEvent,
-  ToolExecutionApprovalEvent
+  ToolExecutionApprovalEvent,
+  PendingToolInvocationEvent
 } from '../../../../src/agent/events/agent-events.js';
 import { AgentInputUserMessage } from '../../../../src/agent/message/agent-input-user-message.js';
+import { ToolInvocation } from '../../../../src/agent/tool-invocation.js';
 import { BaseLLM } from '../../../../src/llm/base.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
@@ -275,5 +277,20 @@ describe('AgentRuntime', () => {
     await runtime.submitEvent(event);
 
     expect(agentInputBox.enqueueUserMessage).toHaveBeenCalledWith(event);
+  });
+
+  it('rejects unsupported turn-local operational events instead of queuing them as lifecycle input', async () => {
+    const context = makeContext();
+    const runtime = new AgentRuntime(context, {} as any);
+    const agentInputBox = new AgentInputBox();
+    agentInputBox.enqueueLifecycleMessage = vi.fn(async () => undefined) as any;
+    context.state.agentInputBox = agentInputBox;
+    mocks.workerInstance.isAlive.mockReturnValue(true);
+
+    await expect(
+      runtime.submitEvent(new PendingToolInvocationEvent(new ToolInvocation('tool', {}, 'invocation-1')))
+    ).rejects.toThrow(/unsupported runtime input event 'PendingToolInvocationEvent'/);
+
+    expect(agentInputBox.enqueueLifecycleMessage).not.toHaveBeenCalled();
   });
 });
