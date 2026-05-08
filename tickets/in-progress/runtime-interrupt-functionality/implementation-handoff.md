@@ -40,6 +40,9 @@ Implemented the approved clean-cut native interrupt/runtime-loop redesign.
   - Narrowed the `AgentInputBox` lifecycle lane from `BaseEvent` to `LifecycleEvent` and rejected unsupported turn/phase operational events such as pending tool invocations and LLM phase events.
   - Updated `AgentRuntime.submitEvent(...)` to reject unsupported turn-local operational events instead of queuing them through the lifecycle lane.
   - Added a stop preemption guard after `AgentInputBox.nextTurnTriggerWhenIdle(...)` returns so a queued external turn trigger cannot start after `stop()` has begun.
+- Addressed code-review CR-009 and CR-010:
+  - Normalized outbound native Autobyteus segment WebSocket payloads at the server boundary to canonical `turn_id`, stripping legacy `turnId` from `SEGMENT_START`, `SEGMENT_CONTENT`, and `SEGMENT_END` payloads while preserving interrupted metadata.
+  - Added failed-finalization for non-interrupt LLM stream errors: active text/tool/write/edit/reasoning segments now emit failed `SEGMENT_END` metadata with the stream error, failed partial tool segments do not produce tool invocations/continuations, and frontend projection terminalizes partial tool rows as `error`.
 
 ## Key Files Or Areas
 
@@ -61,7 +64,12 @@ Implemented the approved clean-cut native interrupt/runtime-loop redesign.
   - `autobyteus-ts/src/agent/streaming/handlers/streaming-response-handler.ts`
   - `autobyteus-ts/src/agent/streaming/handlers/*-streaming-response-handler.ts`
   - `autobyteus-ts/src/agent/streaming/parser/*`
+  - `autobyteus-ts/src/agent/streaming/adapters/invocation-adapter.ts`
   - `autobyteus-web/services/agentStreaming/handlers/segmentHandler.ts`
+- Segment protocol normalization:
+  - `autobyteus-server-ts/src/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.ts`
+  - `autobyteus-server-ts/src/services/agent-streaming/agent-run-event-message-mapper.ts`
+  - `autobyteus-web/services/agentStreaming/protocol/messageTypes.ts`
 - Provider cancellation mapping:
   - `autobyteus-ts/src/llm/api/autobyteus-llm.ts`
   - `autobyteus-ts/src/clients/autobyteus-client.ts`
@@ -130,6 +138,8 @@ Implemented the approved clean-cut native interrupt/runtime-loop redesign.
   - AgentInputBox addendum is implemented as an authoritative runtime inbox boundary; runtime callers no longer depend on both `AgentInputBox` and the queue manager internals, and the queue manager is generic storage only.
   - CR-007 lifecycle-lane tightening is covered by `AgentInputBox` rejection tests for `PendingToolInvocationEvent`, `LLMUserMessageReadyEvent`, and `LLMCompleteResponseReceivedEvent`, plus a runtime rejection test proving unsupported operational events are not queued as lifecycle input.
   - CR-008 shutdown preemption is covered by an `AgentWorker` regression test proving a queued user turn trigger does not invoke `AgentTurnRunner.run` after `stop()` begins while the worker is idle.
+  - CR-009 segment payload canonicalization is covered by native server converter/mapper tests for `SEGMENT_START`, `SEGMENT_CONTENT`, and `SEGMENT_END`, including interrupted segment metadata and assertions that `turnId` does not leak.
+  - CR-010 non-interrupt stream-error terminalization is covered by streaming handler unit tests, runtime integration coverage for failed partial text/tool streams with no approval/continuation, and frontend segment/status projection tests for failed partial tool rows.
 
 ## Legacy / Compatibility Removal Check
 
@@ -262,6 +272,30 @@ Additional checks after code-review CR-007 and CR-008 local fixes:
   - `agent-runtime.ts`: 192 effective non-empty lines.
   - `agent-worker.ts`: 247 effective non-empty lines.
 
+Additional checks after code-review CR-009 and CR-010 local fixes:
+
+- `git diff --check HEAD`
+  - Passed.
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/streaming/handlers/pass-through-streaming-response-handler.test.ts tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts tests/unit/agent/streaming/handlers/parsing-streaming-response-handler.test.ts tests/integration/agent/runtime/agent-runtime.test.ts`
+  - Result: 4 files passed, 43 tests passed.
+- `pnpm -C autobyteus-ts run build`
+  - Passed, including runtime dependency verification.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts`
+  - Result: 2 files passed, 28 tests passed.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/agent-streaming/agent-stream-handler.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts`
+  - Result: 2 files passed, 23 tests passed.
+- `pnpm -C autobyteus-server-ts run build:full`
+  - Passed.
+- `pnpm -C autobyteus-web exec vitest run services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts stores/__tests__/agentRunStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts components/agentInput/__tests__/AgentUserInputTextArea.spec.ts`
+  - Result: 6 files passed, 71 tests passed.
+- Changed source implementation file size check after CR-009/CR-010:
+  - `autobyteus-stream-event-converter.ts`: 138 effective non-empty lines.
+  - `agent-run-event-message-mapper.ts`: 140 effective non-empty lines.
+  - `llm-turn-phase.ts`: 199 effective non-empty lines.
+  - `api-tool-call-streaming-response-handler.ts`: 361 effective non-empty lines.
+  - `agentStatusHandler.ts`: 245 effective non-empty lines.
+  - `segmentHandler.ts`: 386 effective non-empty lines.
+
 Blocked / not used as pass criteria:
 
 - `pnpm -C autobyteus-ts exec tsc -p tsconfig.json --noEmit`
@@ -273,11 +307,15 @@ Blocked / not used as pass criteria:
 - `pnpm -C autobyteus-web exec tsc -p tsconfig.json --noEmit`
   - Fails on broad existing Nuxt/test/electron typing issues, including component-test relative `.vue` module resolution, build script type-only imports, browser shell electron API declarations, and several unrelated store/test strictness errors.
   - Targeted changed web tests pass.
+- `pnpm -C autobyteus-web exec nuxi typecheck`
+  - Fails on the same broad existing Nuxt/test/electron typing baseline, including build script type-only imports, stale component/store test fixtures, browser shell electron API declarations, and unrelated strictness errors.
+  - Targeted changed web tests pass.
 
 ## Downstream Validation Hints / Suggested Scenarios
 
 - Single-agent WebSocket: start native Autobyteus run, send a long LLM prompt, send `INTERRUPT_GENERATION`, verify turn interrupted event/status, runtime stays reusable, and next user message runs normally.
 - Streaming UI projection: interrupt after assistant text/tool-call/file segments have started and verify each active segment receives one interrupted `SEGMENT_END` with `interrupted: true` and no valid tool continuation is produced from a partial tool call.
+- Stream-error UI projection: force a native Autobyteus LLM stream error after partial text and tool-call segments; verify outbound segment messages use `turn_id`, active segments receive failed `SEGMENT_END` metadata, partial tool rows end as `error`, and no approval/continuation is produced.
 - Tool execution: run a long foreground `run_bash`, interrupt during execution, verify tool interrupted event/log, no tool-result continuation LLM call, and later turn works.
 - Pending approval: request a tool approval, interrupt before approval, verify pending approval is cleared/rejected, a terminal tool-interrupted lifecycle event reaches the client, frontend approval controls become disabled/interrupted, and late approval does not resume the old turn.
 - Working context: interrupt during LLM stream and after tool intents are appended; verify the next LLM request excludes incomplete interrupted-turn user/tool context while raw history remains inspectable.

@@ -125,6 +125,35 @@ class SegmentInterruptLLM extends BaseLLM {
   }
 }
 
+class SegmentFailureLLM extends BaseLLM {
+  requestMessages: Message[][] = [];
+
+  protected async _sendMessagesToLLM(_messages: Message[]): Promise<CompleteResponse> {
+    return new CompleteResponse({ content: 'ok' });
+  }
+
+  protected async *_streamMessagesToLLM(
+    messages: Message[],
+    _kwargs: Record<string, unknown>,
+    _options?: LLMInvocationOptions
+  ): AsyncGenerator<ChunkResponse, void, unknown> {
+    this.requestMessages.push(messages);
+    yield { content: 'partial streamed text' } as ChunkResponse;
+    yield {
+      content: '',
+      tool_calls: [
+        {
+          index: 0,
+          call_id: 'call_stream_failure',
+          name: ApprovalTool.getName(),
+          arguments_delta: '{"path":"/tmp/partial'
+        }
+      ]
+    } as ChunkResponse;
+    throw new Error('stream exploded');
+  }
+}
+
 class ApprovalToolCallingLLM extends BaseLLM {
   requestMessages: Message[][] = [];
   options: LLMInvocationOptions[] = [];
@@ -527,6 +556,82 @@ describe('Agent runtime integration', () => {
       expect(interruptedEnd.payload.reason).toBe('user_interrupt');
     } finally {
       llm.unblock();
+      if (runtime.isRunning) {
+        await runtime.stop(2);
+      }
+      await llm.cleanup();
+    }
+  }, 20000);
+
+  it('closes active streamed text and tool segments as failed when LLM stream throws', async () => {
+    const llm = new SegmentFailureLLM(makeModel(), new LLMConfig());
+    const approvalTool = new ApprovalTool();
+    const config = new AgentConfig(
+      'RuntimeSegmentFailureAgent',
+      'Tester',
+      'Segment failure test agent',
+      llm,
+      null,
+      [approvalTool],
+      false
+    );
+    const agentId = `runtime_segment_failure_${Date.now()}`;
+
+    const state = new AgentRuntimeState(agentId, null, null);
+    state.llmInstance = llm;
+    state.toolInstances = { [ApprovalTool.getName()]: approvalTool };
+    attachMemory(state);
+
+    const context = new AgentContext(agentId, config, state);
+    const runtime = new AgentRuntime(context);
+    const segmentEvents: any[] = [];
+    const approvalRequests: any[] = [];
+    context.statusManager?.notifier?.subscribe(EventType.AGENT_DATA_SEGMENT_EVENT, (payload) => {
+      segmentEvents.push(payload);
+    });
+    context.statusManager?.notifier?.subscribe(EventType.AGENT_TOOL_APPROVAL_REQUESTED, (payload) => {
+      approvalRequests.push(payload);
+    });
+
+    try {
+      runtime.start();
+      const ready = await waitForStatus(context, (status) => status === AgentStatus.IDLE || status === AgentStatus.ERROR);
+      expect(ready).toBe(true);
+
+      await runtime.submitEvent(new UserMessageReceivedEvent(new AgentInputUserMessage('stream then fail')));
+      const turnSettled = await waitForCondition(
+        () => context.state.activeTurn === null && llm.requestMessages.length === 1
+      );
+      expect(turnSettled).toBe(true);
+
+      const failedTextEnd = segmentEvents.find((event) =>
+        event?.type === 'SEGMENT_END' &&
+        event?.payload?.failed === true &&
+        typeof event?.payload?.error === 'string' &&
+        event.payload.error.includes('stream exploded') &&
+        segmentEvents.some((startEvent) =>
+          startEvent?.type === 'SEGMENT_START' &&
+          startEvent?.segment_id === event.segment_id &&
+          startEvent?.segment_type === 'text'
+        )
+      );
+      expect(failedTextEnd).toBeDefined();
+
+      const failedToolEnd = segmentEvents.find((event) =>
+        event?.type === 'SEGMENT_END' &&
+        event?.segment_id === 'call_stream_failure' &&
+        event?.payload?.failed === true
+      );
+      expect(failedToolEnd).toBeDefined();
+      expect(failedToolEnd.payload.error).toContain('stream exploded');
+      expect(failedToolEnd.payload.interrupted).toBeUndefined();
+      expect(failedToolEnd.payload.metadata).toMatchObject({
+        tool_name: ApprovalTool.getName()
+      });
+      expect(approvalRequests).toHaveLength(0);
+      expect(context.state.pendingToolApprovals).toEqual({});
+      expect(context.currentStatus).not.toBe(AgentStatus.AWAITING_TOOL_APPROVAL);
+    } finally {
       if (runtime.isRunning) {
         await runtime.stop(2);
       }

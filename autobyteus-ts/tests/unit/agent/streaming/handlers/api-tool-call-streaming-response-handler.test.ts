@@ -110,6 +110,34 @@ describe('ApiToolCallStreamingResponseHandler basics', () => {
     expect(toolEnd?.payload.metadata.tool_name).toBe('search_web');
     expect(handler.getAllInvocations()).toEqual([]);
   });
+
+  it('finalizeFailed closes active text and tool-call segments without creating invocations', () => {
+    const handler = new ApiToolCallStreamingResponseHandler({ turnId: TURN_ID });
+    handler.feed(new ChunkResponse({ content: 'partial assistant text' }));
+    handler.feed(
+      new ChunkResponse({
+        content: '',
+        tool_calls: [
+          {
+            index: 0,
+            call_id: 'call_failed_partial',
+            name: 'search_web',
+            arguments_delta: '{"query":"unfinished'
+          }
+        ]
+      })
+    );
+
+    const events = handler.finalizeFailed('stream failed');
+
+    const endEvents = events.filter((event) => event.event_type === SegmentEventType.END);
+    expect(endEvents).toHaveLength(2);
+    expect(endEvents.every((event) => event.payload.failed === true)).toBe(true);
+    expect(endEvents.every((event) => event.payload.error === 'stream failed')).toBe(true);
+    const toolEnd = endEvents.find((event) => event.segment_id === 'call_failed_partial');
+    expect(toolEnd?.payload.metadata.tool_name).toBe('search_web');
+    expect(handler.getAllInvocations()).toEqual([]);
+  });
 });
 
 describe('ApiToolCallStreamingResponseHandler parallel tool calls', () => {

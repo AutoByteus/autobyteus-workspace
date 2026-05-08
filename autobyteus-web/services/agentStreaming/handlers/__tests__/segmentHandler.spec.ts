@@ -674,5 +674,56 @@ describe('segmentHandler', () => {
       expect(segment.status).toBe('interrupted');
       expect(segment.error).toBe('user_interrupt');
     });
+
+    it('marks partial tool segment failed from segment-end failure metadata', () => {
+      handleSegmentStart(
+        {
+          id: 'seg-tool-failed',
+          turn_id: 'turn-1',
+          segment_type: 'tool_call',
+          metadata: {
+            tool_name: 'search_web',
+          },
+        },
+        mockContext,
+      );
+
+      handleSegmentContent(
+        {
+          id: 'seg-tool-failed',
+          turn_id: 'turn-1',
+          delta: '{"query":"partial',
+          segment_type: 'tool_call',
+        },
+        mockContext,
+      );
+
+      handleSegmentEnd(
+        {
+          id: 'seg-tool-failed',
+          turn_id: 'turn-1',
+          failed: true,
+          error: 'stream exploded',
+          metadata: {
+            tool_name: 'search_web',
+          },
+        },
+        mockContext,
+      );
+
+      const segment = findSegmentById(mockContext, 'seg-tool-failed') as any;
+      expect(segment.status).toBe('error');
+      expect(segment.error).toBe('stream exploded');
+      expect(segment.result).toBeNull();
+      expect(useAgentActivityStore().getActivities('test-agent-id')).toEqual([
+        expect.objectContaining({
+          invocationId: 'seg-tool-failed',
+          toolName: 'search_web',
+          status: 'error',
+          error: 'stream exploded',
+          result: null,
+        }),
+      ]);
+    });
   });
 });

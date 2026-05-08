@@ -104,6 +104,17 @@ export class AutoByteusStreamEventConverter {
       if (!turnId) {
         return null;
       }
+      const nestedPayload =
+        payload.payload &&
+        typeof payload.payload === "object" &&
+        !Array.isArray(payload.payload)
+          ? (payload.payload as Record<string, unknown>)
+          : {};
+      const {
+        turnId: _legacyNestedTurnId,
+        turn_id: _nestedTurnId,
+        ...canonicalNestedPayload
+      } = nestedPayload;
       return {
         eventType,
         runId: this.runId,
@@ -112,13 +123,9 @@ export class AutoByteusStreamEventConverter {
             typeof payload.segment_id === "string" && payload.segment_id.length > 0
               ? payload.segment_id
               : "",
-          turnId,
+          turn_id: turnId,
           ...(payload.segment_type !== undefined ? { segment_type: payload.segment_type } : {}),
-          ...((payload.payload &&
-          typeof payload.payload === "object" &&
-          !Array.isArray(payload.payload))
-            ? (payload.payload as Record<string, unknown>)
-            : {}),
+          ...canonicalNestedPayload,
         },
         statusHint,
       };

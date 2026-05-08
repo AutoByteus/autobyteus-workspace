@@ -61,6 +61,21 @@ describe('PassThroughStreamingResponseHandler', () => {
     expect(handler.finalize()).toEqual([]);
   });
 
+  it('finalizeFailed closes active text segment with failure metadata', () => {
+    const handler = new PassThroughStreamingResponseHandler({ turnId: TURN_ID });
+    handler.feed(chunk('partial text'));
+
+    const events = handler.finalizeFailed('stream failed');
+
+    expect(events).toHaveLength(1);
+    expect(events[0].event_type).toBe(SegmentEventType.END);
+    expect(events[0].payload).toMatchObject({
+      failed: true,
+      error: 'stream failed'
+    });
+    expect(handler.finalize()).toEqual([]);
+  });
+
   it('getAllInvocations is empty', () => {
     const handler = new PassThroughStreamingResponseHandler({ turnId: TURN_ID });
     handler.feed(chunk('<tool name="foo"></tool>'));

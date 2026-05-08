@@ -157,6 +157,16 @@ export class LlmTurnPhase {
       }
 
       const errorMessage = `Error processing your request with the LLM: ${String(error)}`;
+      streamingHandler.finalizeFailed(errorMessage);
+      if (currentReasoningPartId) {
+        outbox.publishSegment(
+          SegmentEvent.end(activeTurnId, currentReasoningPartId, {
+            failed: true,
+            error: errorMessage
+          })
+        );
+        currentReasoningPartId = null;
+      }
       outbox.publishError('LlmTurnPhase.stream', errorMessage, String(error));
       return {
         kind: 'final',

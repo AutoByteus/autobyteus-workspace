@@ -273,5 +273,51 @@ describe('agentStatusHandler', () => {
       expect(mockContext.isSending).toBe(false);
       expect(aiMsg.isComplete).toBe(true);
     });
+
+    it('terminalizes open tool segments on generic stream errors', () => {
+      const toolSegment = {
+        type: 'tool_call',
+        invocationId: 'inv-partial',
+        toolName: 'search_web',
+        arguments: {},
+        status: 'parsing',
+        logs: [],
+        result: null,
+        error: null,
+      };
+
+      const aiMsg = { type: 'ai', isComplete: false, segments: [toolSegment] };
+      mockContext.conversation.messages.push(aiMsg);
+
+      const payload: ErrorPayload = {
+        code: 'LLM_STREAM_ERROR',
+        message: 'stream exploded',
+      };
+
+      handleError(payload, mockContext);
+
+      expect(toolSegment.status).toBe('error');
+      expect(toolSegment.error).toBe('stream exploded');
+      expect(toolSegment.result).toBeNull();
+      expect(aiMsg.segments).toHaveLength(2);
+      expect(aiMsg.segments[1]).toEqual({
+        type: 'error',
+        source: 'LLM_STREAM_ERROR',
+        message: 'stream exploded',
+      });
+      expect(aiMsg.isComplete).toBe(true);
+      expect(mockContext.isSending).toBe(false);
+      expect(mockActivityStore.updateActivityStatus).toHaveBeenCalledWith(
+        mockContext.state.runId,
+        'inv-partial',
+        'error',
+      );
+      expect(mockActivityStore.setActivityResult).toHaveBeenCalledWith(
+        mockContext.state.runId,
+        'inv-partial',
+        null,
+        'stream exploded',
+      );
+    });
   });
 });

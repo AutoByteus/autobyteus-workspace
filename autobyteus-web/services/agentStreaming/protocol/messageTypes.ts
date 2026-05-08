@@ -82,6 +82,8 @@ export interface SegmentEndPayload {
   metadata?: Record<string, any>;
   interrupted?: boolean;
   reason?: string | null;
+  failed?: boolean;
+  error?: string | null;
 }
 
 export interface AgentStatusPayload {

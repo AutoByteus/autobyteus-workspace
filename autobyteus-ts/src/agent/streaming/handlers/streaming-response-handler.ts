@@ -9,6 +9,8 @@ export abstract class StreamingResponseHandler {
 
   abstract finalizeInterrupted(reason: string): SegmentEvent[];
 
+  abstract finalizeFailed(error: string): SegmentEvent[];
+
   abstract getAllInvocations(): ToolInvocation[];
 
   abstract getAllEvents(): SegmentEvent[];

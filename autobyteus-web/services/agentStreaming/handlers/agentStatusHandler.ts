@@ -19,6 +19,7 @@ import { AgentStatus } from '~/types/agent/AgentStatus';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
 import {
+  applyExecutionFailedState,
   applyExecutionInterruptedState,
   isTerminalStatus,
   type ToolLifecycleSegment,
@@ -133,6 +134,8 @@ export function handleError(
     markConversationComplete(context);
     return;
   }
+
+  terminalizeOpenToolSegmentsForError(payload, context);
 
   const aiMessage = findOrCreateAIMessage(context);
 
@@ -253,6 +256,36 @@ function terminalizeOpenToolSegmentsForInterruptedTurn(
     }
 
     activityStore.updateActivityStatus(context.state.runId, segment.invocationId, 'interrupted');
+    activityStore.setActivityResult(context.state.runId, segment.invocationId, null, segment.error);
+  }
+}
+
+function terminalizeOpenToolSegmentsForError(
+  payload: ErrorPayload,
+  context: AgentContext,
+): void {
+  const lastMessage = context.conversation.messages[context.conversation.messages.length - 1];
+  if (lastMessage?.type !== 'ai') {
+    return;
+  }
+
+  const error =
+    typeof payload.message === 'string' && payload.message.trim().length > 0
+      ? payload.message.trim()
+      : 'stream_error';
+  const activityStore = useAgentActivityStore();
+
+  for (const segment of lastMessage.segments) {
+    if (!isToolLifecycleSegment(segment) || isTerminalStatus(segment.status)) {
+      continue;
+    }
+
+    const transitioned = applyExecutionFailedState(segment, error);
+    if (!transitioned) {
+      continue;
+    }
+
+    activityStore.updateActivityStatus(context.state.runId, segment.invocationId, 'error');
     activityStore.setActivityResult(context.state.runId, segment.invocationId, null, segment.error);
   }
 }
