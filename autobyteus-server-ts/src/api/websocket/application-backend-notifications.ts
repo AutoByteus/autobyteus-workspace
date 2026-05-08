@@ -1,8 +1,8 @@
 import type { FastifyInstance } from "fastify";
 import {
-  getApplicationNotificationStreamService,
-  type ApplicationNotificationStreamConnection,
-} from "../../application-backend-gateway/streaming/application-notification-stream-service.js";
+  getApplicationBackendNotificationStreamService,
+  type ApplicationBackendNotificationStreamConnection,
+} from "../../application-backend-gateway/streaming/application-backend-notification-stream-service.js";
 
 type Params = {
   applicationId: string;
@@ -21,22 +21,22 @@ export async function registerApplicationBackendNotificationWebsocket(
         return;
       }
 
-      const adapter: ApplicationNotificationStreamConnection = {
+      const adapter: ApplicationBackendNotificationStreamConnection = {
         send: (data: string) => (socket as { send: (payload: string) => void }).send(data),
         close: (code?: number) => (socket as { close: (code?: number) => void }).close(code),
       };
 
-      connectionId = getApplicationNotificationStreamService().connect(req.params.applicationId, adapter);
+      connectionId = getApplicationBackendNotificationStreamService().connect(req.params.applicationId, adapter);
 
       (socket as { on: (event: string, cb: () => void) => void }).on("close", () => {
         if (connectionId) {
-          getApplicationNotificationStreamService().disconnect(connectionId);
+          getApplicationBackendNotificationStreamService().disconnect(connectionId);
         }
       });
 
       (socket as { on: (event: string, cb: (error: unknown) => void) => void }).on("error", () => {
         if (connectionId) {
-          getApplicationNotificationStreamService().disconnect(connectionId);
+          getApplicationBackendNotificationStreamService().disconnect(connectionId);
         }
       });
     },

@@ -144,6 +144,7 @@ Runtime-visible lifecycle events use the application-owned orchestration journal
 - `ApplicationPublishedArtifactRelayService` listens for bound-run `ARTIFACT_PERSISTED` events, derives the bound application context, and invokes `artifactHandlers.persisted` through `ApplicationEngineHostService`.
 - Live artifact relay is intentionally best-effort. Relay failure logs a warning but does not roll back the published artifact or synthesize retry journal state.
 - Applications recover missed deliveries by calling `listRunBindings(...)`, `getRunPublishedArtifacts(...)`, and `getPublishedArtifactRevisionText(...)`, then applying their own idempotency keyed by `revisionId`.
+- For a full overview of how artifact relay, backend notifications, and runtime control relate to each other, see [`application_communication_model.md`](./application_communication_model.md).
 
 ## Startup Recovery And Gating
 
@@ -177,6 +178,7 @@ See [`application_sessions.md`](./application_sessions.md) only for the historic
 - [`application_engine.md`](./application_engine.md)
 - [`application_storage.md`](./application_storage.md)
 - [`application_sessions.md`](./application_sessions.md)
+- [`application_communication_model.md`](./application_communication_model.md)
 - [`agent_artifacts.md`](./agent_artifacts.md)
 - `../../../autobyteus-web/docs/applications.md`
 - `../../../autobyteus-web/docs/application-bundle-iframe-contract-v3.md`

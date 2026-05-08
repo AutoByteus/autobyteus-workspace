@@ -13,7 +13,7 @@ Owns the platform-facing transport boundary for application backends: engine sta
 ## Main Service And Supporting Owners
 
 - `src/application-backend-gateway/services/application-backend-gateway-service.ts`
-- `src/application-backend-gateway/streaming/application-notification-stream-service.ts`
+- `src/application-backend-gateway/streaming/application-backend-notification-stream-service.ts`
 - `src/application-engine/services/application-engine-host-service.ts`
 
 ## Authority Boundary
@@ -60,7 +60,8 @@ The gateway bridges worker-published notifications into a per-application websoc
 
 - `ensure-ready`, query, command, route, GraphQL, and event-handler dispatch invocations all rely on `ApplicationEngineHostService`.
 - Status reads do not implicitly start the worker.
-- Worker notifications are subscribed once at the gateway/engine boundary and re-published through `ApplicationNotificationStreamService`.
+- Worker notifications are subscribed once at the gateway/engine boundary and re-published through `ApplicationBackendNotificationStreamService`.
+- For a full overview of how backend notifications relate to other communication mechanisms (request/response, artifact relay, runtime control), see [`application_communication_model.md`](./application_communication_model.md).
 
 ## Error Behavior
 
@@ -75,6 +76,7 @@ The gateway bridges worker-published notifications into a per-application websoc
 - [`application_orchestration.md`](./application_orchestration.md)
 - [`application_engine.md`](./application_engine.md)
 - [`application_storage.md`](./application_storage.md)
+- [`application_communication_model.md`](./application_communication_model.md)
 - `../../../autobyteus-web/docs/applications.md`
 - `../../../autobyteus-web/docs/application-bundle-iframe-contract-v3.md`
 - `../../../autobyteus-application-sdk-contracts/README.md`
