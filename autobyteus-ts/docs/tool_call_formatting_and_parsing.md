@@ -205,10 +205,13 @@ sequence before being sent back to the LLM.
 
 Key files:
 
-- `src/agent/handlers/llm-user-message-ready-event-handler.ts`
+- `src/agent/loop/llm-turn-phase.ts`
+- `src/agent/loop/agent-turn-runner.ts`
 - `src/agent/streaming/handlers/streaming-response-handler.ts`
 - `src/agent/tool-invocation.ts`
-- `src/agent/handlers/tool-result-event-handler.ts`
+- `src/agent/loop/tool-phase.ts`
+- `src/agent/pipelines/tool-result-pipeline.ts`
+- `src/agent/loop/tool-result-continuation-builder.ts`
 
 ### 5) Configuration and Overrides
 
@@ -223,7 +226,7 @@ Key files:
 
 - `src/agent/streaming/parser/parser-factory.ts`
 - `src/utils/tool-call-format.ts`
-- `src/agent/handlers/llm-user-message-ready-event-handler.ts`
+- `src/agent/loop/llm-turn-phase.ts`
 
 ## Design Patterns
 

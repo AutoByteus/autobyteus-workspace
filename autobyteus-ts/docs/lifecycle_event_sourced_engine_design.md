@@ -180,13 +180,15 @@ Before any event can be handled, the engine must bring up the **minimal runtime*
 
 1. Create the worker event loop.
 2. Initialize the **input event queues** (the event intake surface).
-3. Instantiate the dispatcher/handler registry (if not already constructed).
+3. Instantiate the worker scheduler, status manager, and turn phase/pipeline
+   services required for direct single-agent turn execution.
 
 This phase is intentionally **not event-driven** because it is the prerequisite for
 event delivery. It should be as small and deterministic as possible.
 
-**Rule of thumb:** core input queues and the dispatcher belong here; bootstrap steps may
-initialize **auxiliary resources** (tool registries, streaming sinks, caches, prewarmers),
+**Rule of thumb:** core input queues, the worker scheduler, and direct turn
+phase/pipeline services belong here; bootstrap steps may initialize
+**auxiliary resources** (tool registries, streaming sinks, caches, prewarmers),
 but should not be required for basic event routing to function.
 
 ### 5.1 Bootstrap
@@ -374,11 +376,12 @@ events applied for observability.
 
 - Runtime init + worker loop: `src/agent/runtime/agent-worker.ts`
 - Event queues + priority dispatch: `src/agent/events/agent-input-event-queue-manager.ts`
-- Event dispatch + status derivation: `src/agent/events/worker-event-dispatcher.ts`
+- Turn scheduling + status application: `src/agent/runtime/agent-worker.ts`,
+  `src/agent/loop/agent-turn-runner.ts`
 - Event store: `src/agent/events/event-store.ts`
 - Status derivation rules: `src/agent/status/status-deriver.ts`
 - Lifecycle + notifier emission: `src/agent/status/manager.ts`
-- Event handlers: `src/agent/handlers/*.ts`
+- Turn phases and pipelines: `src/agent/loop/*.ts`, `src/agent/pipelines/*.ts`
 - LLM response processors (emit tool events): `src/agent/llm-response-processor/*.ts`
 - Tool result processors: `src/agent/tool-execution-result-processor/*.ts`
 - Input processors: `src/agent/input-processor/*.ts`

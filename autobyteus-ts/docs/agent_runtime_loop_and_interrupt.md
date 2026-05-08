@@ -69,7 +69,8 @@ uses these collaborators:
   - passes cancellation context into tools that support it;
   - waits for approval through `AgentTurnInputBox` when needed.
 - `ToolResultPipeline`
-  - applies configured tool-result processors.
+  - applies configured tool-result processors to the direct results returned by
+    `ToolPhase`; tool results are not posted back through `AgentTurnInputBox`.
 - `ToolResultContinuationBuilder`
   - builds the same-turn `SenderType.TOOL` continuation input.
 - `LLMResponsePipeline`
@@ -116,9 +117,10 @@ assistant fragments do not leak into the next LLM request. Raw trace files may
 still keep audit/history records; the restored working-context snapshot is the
 prompt authority for follow-up turns.
 
-`AgentTurnInputBox` rejects late approvals or stale tool results after a turn is
-interrupted or completed. This prevents a delayed approval/result from
-continuing an already-terminal turn.
+`AgentTurnInputBox` rejects late approvals after a turn is interrupted or
+completed. Tool execution results are direct `ToolPhase` returns owned by the
+active turn, so there is no separate input-box tool-result lane that can revive
+an already-terminal turn.
 
 ## Inter-Agent Reference Files
 
@@ -135,4 +137,3 @@ pipeline:
 This keeps `send_message_to` reference-file behavior compatible with the
 integrated team/server artifact pipeline while preserving the clean-cut
 runtime-loop ownership model.
-

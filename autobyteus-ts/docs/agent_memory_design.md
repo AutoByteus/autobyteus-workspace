@@ -650,7 +650,10 @@ src/memory/
 
 src/agent/
 ├── llm-request-assembler.ts             # memory + renderer + pending-compaction orchestration
-├── handlers/llm-user-message-ready-event-handler.ts
+├── pipelines/agent-input-pipeline.ts    # external/continuation input -> LLM-ready messages
+├── loop/agent-turn-runner.ts            # in-turn LLM/tool/continuation owner
+├── loop/llm-turn-phase.ts               # request assembly + LLM streaming
+├── loop/tool-phase.ts                   # tool execution + approval waits
 └── input-processor/memory-ingest-input-processor.ts
 ```
 
@@ -836,10 +839,11 @@ Key changes:
 
 Primary touch points:
 
-- `src/agent/handlers/llm-user-message-ready-event-handler.ts`
-- `src/agent/handlers/user-input-message-event-handler.ts`
-- `src/agent/handlers/tool-result-event-handler.ts`
-- `src/agent/handlers/tool-invocation-request-event-handler.ts`
+- `src/agent/pipelines/agent-input-pipeline.ts`
+- `src/agent/loop/agent-turn-runner.ts`
+- `src/agent/loop/llm-turn-phase.ts`
+- `src/agent/loop/tool-phase.ts`
+- `src/agent/loop/tool-result-continuation-builder.ts`
 - `src/agent/context/agent-runtime-state.ts`
 
 ### 15.5 LLM API adjustment (implemented)
@@ -1102,10 +1106,12 @@ User asks a question; no tool calls are emitted.
 **Call stack (debug-trace style)**
 
 ```
-LlmTurnPhase / AgentTurnRunner.handle(...)
-  at src/agent/handlers/llm-user-message-ready-event-handler.ts
-  └─► LLMRequestAssembler.prepareRequest(...)
-        at src/agent/llm-request-assembler.ts
+AgentTurnRunner.run(...)
+  at src/agent/loop/agent-turn-runner.ts
+  └─► LlmTurnPhase.run(...)
+        at src/agent/loop/llm-turn-phase.ts
+        └─► LLMRequestAssembler.prepareRequest(...)
+              at src/agent/llm-request-assembler.ts
         ├─► PendingCompactionExecutor.executeIfRequired(...)
         │     at src/memory/compaction/pending-compaction-executor.ts
         │     └─► (no compaction when flag is clear)
@@ -1136,10 +1142,12 @@ LLM emits one or more tool calls; tools run; results return; LLM continues.
 **Call stack (debug-trace style)**
 
 ```
-LlmTurnPhase / AgentTurnRunner.handle(...)
-  at src/agent/handlers/llm-user-message-ready-event-handler.ts
-  └─► LLMRequestAssembler.prepareRequest(...)
-        at src/agent/llm-request-assembler.ts
+AgentTurnRunner.run(...)
+  at src/agent/loop/agent-turn-runner.ts
+  └─► LlmTurnPhase.run(...)
+        at src/agent/loop/llm-turn-phase.ts
+        └─► LLMRequestAssembler.prepareRequest(...)
+              at src/agent/llm-request-assembler.ts
   └─► LLM.streamMessages(messages, tools)
         at src/llm/base.ts
         └─► Streaming parser detects tool call(s)
@@ -1150,19 +1158,22 @@ LlmTurnPhase / AgentTurnRunner.handle(...)
                           at src/memory/working-context-snapshot.ts
               └─► PendingToolInvocationEvent
                     at src/agent/events/agent-events.ts
-                    └─► ToolInvocationRequestEventHandler.handle(...)
-                          at src/agent/handlers/tool-invocation-request-event-handler.ts
-                          └─► ToolResultEvent
-                                at src/agent/events/agent-events.ts
-                                └─► MemoryIngestToolResultProcessor.process(...)
-                                      at src/agent/tool-execution-result-processor/memory-ingest-tool-result-processor.ts
-                                      └─► MemoryManager.ingestToolResult(...)
-                                            at src/memory/memory-manager.ts
-                                            └─► WorkingContextSnapshot.appendToolResult(...)
-                                                  at src/memory/working-context-snapshot.ts
-                                └─► TOOL-origin continuation input arrives on the same turn
-                                      └─► MemoryIngestInputProcessor persists `tool_continuation`
-                                            before the next LLM leg
+                    └─► AgentTurnRunner.applyStatusEvent(...)
+                          at src/agent/loop/agent-turn-runner.ts
+              └─► ToolPhase.run(...)
+                    at src/agent/loop/tool-phase.ts
+                    └─► ToolResultEvent
+                          at src/agent/events/agent-events.ts
+                          └─► MemoryIngestToolResultProcessor.process(...)
+                                at src/agent/tool-execution-result-processor/memory-ingest-tool-result-processor.ts
+                                └─► MemoryManager.ingestToolResult(...)
+                                      at src/memory/memory-manager.ts
+                                      └─► WorkingContextSnapshot.appendToolResult(...)
+                                            at src/memory/working-context-snapshot.ts
+                          └─► ToolResultContinuationBuilder.build(...)
+                                at src/agent/loop/tool-result-continuation-builder.ts
+                                └─► same-turn `SenderType.TOOL` continuation input
+                                      processed by AgentInputPipeline before the next LLM leg
 ```
 
 **Gap check**
@@ -1179,10 +1190,12 @@ before the next LLM call.
 **Call stack (debug-trace style)**
 
 ```
-LlmTurnPhase / AgentTurnRunner.handle(...)
-  at src/agent/handlers/llm-user-message-ready-event-handler.ts
-  └─► LLMRequestAssembler.prepareRequest(...)
-        at src/agent/llm-request-assembler.ts
+AgentTurnRunner.run(...)
+  at src/agent/loop/agent-turn-runner.ts
+  └─► LlmTurnPhase.run(...)
+        at src/agent/loop/llm-turn-phase.ts
+        └─► LLMRequestAssembler.prepareRequest(...)
+              at src/agent/llm-request-assembler.ts
         ├─► PendingCompactionExecutor.executeIfRequired(...)
         │     at src/memory/compaction/pending-compaction-executor.ts
         │     ├─► CompactionWindowPlanner.plan(...)

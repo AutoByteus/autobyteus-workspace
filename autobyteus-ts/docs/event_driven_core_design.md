@@ -89,9 +89,10 @@ The agent runtime has **multiple input queues**, each dedicated to a class of ev
 
 This separation allows the runtime to coordinate priorities and preserve order **per queue**.
 Tool requests, tool execution, tool results, and same-turn tool continuations are
-turn-local state owned by `AgentTurnRunner`, `ToolPhase`, `AgentTurnInputBox`,
-and `ToolResultContinuationBuilder`; they are not scheduled as independent
-normal-flow worker-handler events.
+turn-local state owned by `AgentTurnRunner`, `ToolPhase`,
+`ToolResultPipeline`, and `ToolResultContinuationBuilder`.
+`AgentTurnInputBox` is approval-only. Tool results are direct `ToolPhase`
+returns and are not scheduled as independent normal-flow worker-handler events.
 
 ### 3.2 Deterministic Queue Selection
 

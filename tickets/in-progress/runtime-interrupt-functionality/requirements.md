@@ -74,6 +74,7 @@ Large
 - FR-004B: The implementation shall separate mailbox/runtime events from turn-local business control flow by introducing explicit turn runner and phase/pipeline services; normal LLM/tool/continuation progression shall not be owned by internal queue-event choreography in the final implementation.
 - FR-004C: Existing processor extension points shall be preserved through typed pipeline orchestrators: input processors, tool invocation preprocessors, tool execution result processors, LLM response/output processors, and system prompt processors.
 - FR-004D: Tool results, tool approvals, and tool continuations shall be modeled as `AgentTurnInputBox` messages keyed by turn/invocation identity; they shall not be accepted as `AgentInputBox` messages that can start a new turn.
+- FR-004D1: `AgentInputBox` shall be a first-class semantic runtime inbound boundary above low-level queue storage; it shall own external turn-starting message eligibility, preserve unrelated external messages while a turn is active, and be the source consumed by the AgentWorker scheduler.
 - FR-004E: Agent-produced outbound facts and data shall flow through an AgentOutbox publication boundary above existing notifier/event-stream implementations, including assistant output, streaming segments, tool lifecycle/logs, approvals, errors, artifacts, state updates, and turn/runtime lifecycle messages.
 - FR-005: Interrupting pending approval shall clear pending approval state for the interrupted turn and ignore later stale approval/denial messages for those invocation IDs.
 - FR-006: Native interrupt shall clear or invalidate turn-scoped queued work (`LLMUserMessageReadyEvent`, tool invocation request/execution/result events, and tool-continuation input) for the interrupted turn while preserving unrelated later external user messages.
@@ -101,6 +102,7 @@ Large
 - AC-004B: Architecture/code review verifies that `AgentTurnRunner` and extracted phase/pipeline services own turn-local LLM/tool continuation flow, while `AgentWorker` remains a mailbox/scheduler/lifecycle worker and does not directly encode the reasoning loop.
 - AC-004C: Processor pipeline tests verify existing processor ordering and error behavior are preserved for input, tool invocation, tool result, and LLM response/output processors after extraction.
 - AC-004D: AgentTurnInputBox tests verify tool results/approvals are accepted only for the active turn/invocation, stale or post-interrupt messages are ignored, and external user messages remain queued separately.
+- AC-004D1: AgentInputBox tests/review verify external user/inter-agent messages enter the semantic AgentInputBox, the worker consumes triggers from AgentInputBox rather than direct queue storage, and tool results/approvals/continuations cannot start turns through AgentInputBox.
 - AC-004E: Outbox tests verify new turn/tool interruption outbound messages are published through AgentOutbox and mapped to existing notifier/event-stream outputs without being used to advance turn control flow.
 - AC-005: Interrupt during pending tool approval clears `pendingToolApprovals` for that turn; a later approval for that invocation is rejected/ignored as stale without changing runtime status.
 - AC-006: `agent.stop()` and `runtime.stop()` still transition to shutdown complete and unregister/cleanup runtime resources.
@@ -141,9 +143,9 @@ Large
 
 | Use Case | Covered Requirements |
 | --- | --- |
-| UC-001 | FR-001, FR-002, FR-003, FR-006, FR-007, FR-009, FR-014, FR-015, FR-016, FR-017 |
-| UC-002 | FR-001, FR-002, FR-004, FR-004A, FR-004B, FR-004C, FR-004D, FR-004E, FR-006, FR-007, FR-010, FR-014, FR-015, FR-016, FR-017 |
-| UC-003 | FR-004B, FR-004C, FR-004D, FR-005, FR-006, FR-014, FR-015, FR-016, FR-017 |
+| UC-001 | FR-001, FR-002, FR-003, FR-004D1, FR-006, FR-007, FR-009, FR-014, FR-015, FR-016, FR-017 |
+| UC-002 | FR-001, FR-002, FR-004, FR-004A, FR-004B, FR-004C, FR-004D, FR-004D1, FR-004E, FR-006, FR-007, FR-010, FR-014, FR-015, FR-016, FR-017 |
+| UC-003 | FR-004B, FR-004C, FR-004D, FR-004D1, FR-005, FR-006, FR-014, FR-015, FR-016, FR-017 |
 | UC-004 | FR-012, FR-013, FR-014 |
 | UC-005 | FR-011, FR-012, FR-014 |
 | UC-006 | FR-009, FR-010 |
@@ -161,6 +163,7 @@ Large
 | AC-004B | Turn-local flow is owned by runner/phase services, not fragmented queue choreography. |
 | AC-004C | Typed processor pipeline extraction preserves existing processor behavior. |
 | AC-004D | AgentTurnInputBox separates tool results/approvals from `AgentInputBox` turn-starting messages. |
+| AC-004D1 | AgentInputBox is the semantic runtime inbox above queue storage. |
 | AC-004E | AgentOutbox is the outbound boundary for new interruption events and remains observation-only. |
 | AC-005 | Pending approval state is cleared safely. |
 | AC-006 | Stop remains terminal lifecycle control. |
