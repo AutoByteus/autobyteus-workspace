@@ -128,7 +128,7 @@ Formatting is handled by a provider-aware registry of formatter pairs:
 - `ToolFormattingRegistry` maps `LLMProvider` -> `ToolFormatterPair`.
 - Each pair includes a schema formatter and an example formatter.
 - Default fallback is JSON when a provider is unknown.
-- Env override (`AUTOBYTEUS_STREAM_PARSER=xml|json`) forces a specific formatter.
+- Env override (`AUTOBYTEUS_STREAM_PARSER=xml|json|sentinel|api_tool_call`) selects the tool-call mode. `xml` forces XML prompt formatting, `json` forces the default JSON formatter, `sentinel` keeps default prompt formatting with the sentinel parser, and `api_tool_call` uses provider-native tool calls.
 
 The manifest itself is composed by `ToolManifestProvider`:
 
@@ -154,10 +154,11 @@ Parsing is performed during streaming by the FSM-based `StreamingParser`.
 - `StreamingResponseHandler` feeds chunks and emits `SegmentEvent`s.
 - `ToolInvocationAdapter` converts completed tool segments into `ToolInvocation`.
 - Parser strategies are selected by `AUTOBYTEUS_STREAM_PARSER`:
-  - `xml` (default): XML tag detection.
+  - `xml`: XML tag detection.
   - `json`: JSON tool detection.
   - `sentinel`: explicit sentinel markers.
   - `api_tool_call`: disables tool-tag parsing (provider-native tool calls only).
+  - Unset or invalid values default to `api_tool_call`.
 
 #### Provider-Aware JSON Parsing
 
@@ -219,8 +220,9 @@ Key files:
   the tool-call formatting override (`xml`, `json`, `sentinel`, `api_tool_call`).
 
 - If `AUTOBYTEUS_STREAM_PARSER` is not set, the default is `api_tool_call`.
-- When `AUTOBYTEUS_STREAM_PARSER` is set to `xml` or `json`, provider-aware
-  parsing profiles apply (JSON for most providers, XML for Anthropic).
+- `xml` selects XML parsing/formatting, `json` selects JSON parsing with
+  provider-aware JSON signatures, `sentinel` selects the sentinel parser, and
+  `api_tool_call` relies on provider-native tool-call schemas and stream events.
 
 Key files:
 
