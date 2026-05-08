@@ -1,24 +1,24 @@
 <template>
   <section class="rounded-3xl border border-slate-200 bg-white px-6 py-5 shadow-sm" data-testid="featured-catalog-items-card">
-    <div class="mb-4 flex flex-wrap items-start justify-between gap-4">
-      <div>
+    <div class="mb-4 flex items-start justify-between gap-3">
+      <div class="min-w-0">
         <h3 class="text-2xl font-semibold leading-tight text-gray-900">{{ t('settings.components.settings.FeaturedCatalogItemsCard.title') }}</h3>
         <p class="mt-1 text-sm text-gray-500">{{ t('settings.components.settings.FeaturedCatalogItemsCard.description') }}</p>
+        <div class="mt-3 flex items-center gap-2">
+          <button type="button" :class="secondaryButtonClass" :disabled="isBusy" data-testid="featured-catalog-add-agent" @click="addRow('AGENT')">
+            <Icon icon="heroicons:plus" class="h-4 w-4" />
+            <span>{{ t('settings.components.settings.FeaturedCatalogItemsCard.addAgent') }}</span>
+          </button>
+          <button type="button" :class="secondaryButtonClass" :disabled="isBusy" data-testid="featured-catalog-add-team" @click="addRow('AGENT_TEAM')">
+            <Icon icon="heroicons:plus" class="h-4 w-4" />
+            <span>{{ t('settings.components.settings.FeaturedCatalogItemsCard.addTeam') }}</span>
+          </button>
+        </div>
       </div>
-      <div class="flex items-center gap-2">
-        <button type="button" :class="secondaryButtonClass" :disabled="isBusy" data-testid="featured-catalog-add-agent" @click="addRow('AGENT')">
-          <Icon icon="heroicons:plus" class="h-4 w-4" />
-          <span>{{ t('settings.components.settings.FeaturedCatalogItemsCard.addAgent') }}</span>
-        </button>
-        <button type="button" :class="secondaryButtonClass" :disabled="isBusy" data-testid="featured-catalog-add-team" @click="addRow('AGENT_TEAM')">
-          <Icon icon="heroicons:plus" class="h-4 w-4" />
-          <span>{{ t('settings.components.settings.FeaturedCatalogItemsCard.addTeam') }}</span>
-        </button>
-        <button type="button" :class="iconSaveButtonClass" :disabled="!canSave" data-testid="featured-catalog-save" :aria-label="t('settings.components.settings.FeaturedCatalogItemsCard.save')" :title="t('settings.components.settings.FeaturedCatalogItemsCard.save')" @click="saveRows">
-          <span v-if="isSaving" class="inline-block h-4 w-4 animate-spin rounded-full border-b-2 border-blue-700"></span>
-          <Icon v-else icon="heroicons:check" class="h-4 w-4" />
-        </button>
-      </div>
+      <button type="button" :class="iconSaveButtonClass" class="shrink-0" :disabled="!canSave" data-testid="featured-catalog-save" :aria-label="t('settings.components.settings.FeaturedCatalogItemsCard.save')" :title="t('settings.components.settings.FeaturedCatalogItemsCard.save')" @click="saveRows">
+        <span v-if="isSaving" class="inline-block h-4 w-4 animate-spin rounded-full border-b-2 border-blue-700"></span>
+        <Icon v-else icon="heroicons:check" class="h-4 w-4" />
+      </button>
     </div>
 
     <div v-if="loadError" class="mb-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
