@@ -7,7 +7,7 @@ import { createApplicationBackendMountTransport } from "../../../../autobyteus-a
 import { ApplicationStorageLifecycleService } from "../../../src/application-storage/services/application-storage-lifecycle-service.js";
 import { ApplicationEngineHostService } from "../../../src/application-engine/services/application-engine-host-service.js";
 import { ApplicationBackendGatewayService } from "../../../src/application-backend-gateway/services/application-backend-gateway-service.js";
-import { ApplicationNotificationStreamService } from "../../../src/application-backend-gateway/streaming/application-notification-stream-service.js";
+import { ApplicationBackendNotificationStreamService } from "../../../src/application-backend-gateway/streaming/application-backend-notification-stream-service.js";
 import { SERVER_ROUTE_PARAM_MAX_LENGTH } from "../../../src/api/fastify-runtime-config.js";
 import type { ApplicationBundle } from "../../../src/application-bundles/domain/models.js";
 
@@ -167,7 +167,7 @@ describe("Application backend mount route transport integration", () => {
     applicationBackendState.gatewayService = new ApplicationBackendGatewayService({
       applicationBundleService: bundleService as never,
       engineHostService,
-      notificationStreamService: new ApplicationNotificationStreamService(),
+      notificationStreamService: new ApplicationBackendNotificationStreamService(),
     });
 
     app = fastify({ maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH });

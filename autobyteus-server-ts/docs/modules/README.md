@@ -16,6 +16,7 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 | Agent Team Execution | [agent_team_execution.md](./agent_team_execution.md) |
 | Agent Tools | [agent_tools.md](./agent_tools.md) |
 | Application Backend Gateway | [application_backend_gateway.md](./application_backend_gateway.md) |
+| Application Communication Model | [application_communication_model.md](./application_communication_model.md) |
 | Application Capability | [application_capability.md](./application_capability.md) |
 | Application Engine | [application_engine.md](./application_engine.md) |
 | Application Orchestration | [application_orchestration.md](./application_orchestration.md) |

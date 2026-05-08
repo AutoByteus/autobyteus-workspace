@@ -1,25 +1,25 @@
 import { randomUUID } from "node:crypto";
 import type { ApplicationNotificationMessage } from "@autobyteus/application-sdk-contracts";
 
-export type ApplicationNotificationStreamMessage =
+export type ApplicationBackendNotificationStreamMessage =
   | { type: "connected"; applicationId: string }
   | { type: "notification"; notification: ApplicationNotificationMessage };
 
-export type ApplicationNotificationStreamConnection = {
+export type ApplicationBackendNotificationStreamConnection = {
   send: (data: string) => void;
   close: (code?: number) => void;
 };
 
-const toJson = (payload: ApplicationNotificationStreamMessage): string => JSON.stringify(payload);
+const toJson = (payload: ApplicationBackendNotificationStreamMessage): string => JSON.stringify(payload);
 
-export class ApplicationNotificationStreamService {
+export class ApplicationBackendNotificationStreamService {
   private readonly listenersByApplicationId = new Map<
     string,
-    Map<string, ApplicationNotificationStreamConnection>
+    Map<string, ApplicationBackendNotificationStreamConnection>
   >();
   private readonly applicationIdByConnectionId = new Map<string, string>();
 
-  connect(applicationId: string, connection: ApplicationNotificationStreamConnection): string {
+  connect(applicationId: string, connection: ApplicationBackendNotificationStreamConnection): string {
     const connectionId = randomUUID();
     const listeners = this.listenersByApplicationId.get(applicationId) ?? new Map();
     listeners.set(connectionId, connection);
@@ -63,11 +63,11 @@ export class ApplicationNotificationStreamService {
   }
 }
 
-let cachedApplicationNotificationStreamService: ApplicationNotificationStreamService | null = null;
+let cachedApplicationBackendNotificationStreamService: ApplicationBackendNotificationStreamService | null = null;
 
-export const getApplicationNotificationStreamService = (): ApplicationNotificationStreamService => {
-  if (!cachedApplicationNotificationStreamService) {
-    cachedApplicationNotificationStreamService = new ApplicationNotificationStreamService();
+export const getApplicationBackendNotificationStreamService = (): ApplicationBackendNotificationStreamService => {
+  if (!cachedApplicationBackendNotificationStreamService) {
+    cachedApplicationBackendNotificationStreamService = new ApplicationBackendNotificationStreamService();
   }
-  return cachedApplicationNotificationStreamService;
+  return cachedApplicationBackendNotificationStreamService;
 };
