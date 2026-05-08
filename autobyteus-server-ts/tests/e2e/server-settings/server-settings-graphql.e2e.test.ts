@@ -19,6 +19,11 @@ import {
   CODEX_SANDBOX_MODES,
 } from "../../../src/runtime-management/codex/codex-sandbox-mode-setting.js";
 import { FEATURED_CATALOG_ITEMS_SETTING_KEY } from "../../../src/config/featured-catalog-items-setting.js";
+import {
+  AUTOBYTEUS_STREAM_PARSER_SETTING_KEY,
+  STREAM_PARSER_PROVIDER_NATIVE_VALUE,
+  STREAM_PARSER_SETTING_VALUES,
+} from "../../../src/config/stream-parser-setting.js";
 
 describe("Server settings GraphQL e2e", () => {
   let schema: GraphQLSchema;
@@ -28,6 +33,7 @@ describe("Server settings GraphQL e2e", () => {
   let originalCodexSandboxEnv: string | undefined;
   let originalCompactionAgentEnv: string | undefined;
   let originalFeaturedCatalogItemsEnv: string | undefined;
+  let originalStreamParserEnv: string | undefined;
   let originalMediaModelEnv: Record<string, string | undefined>;
 
   beforeAll(async () => {
@@ -45,6 +51,7 @@ describe("Server settings GraphQL e2e", () => {
     originalCodexSandboxEnv = process.env[CODEX_APP_SERVER_SANDBOX_SETTING_KEY];
     originalCompactionAgentEnv = process.env[AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID];
     originalFeaturedCatalogItemsEnv = process.env[FEATURED_CATALOG_ITEMS_SETTING_KEY];
+    originalStreamParserEnv = process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY];
     originalMediaModelEnv = {
       [DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY]: process.env[DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY],
       [DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY]: process.env[DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY],
@@ -60,6 +67,7 @@ describe("Server settings GraphQL e2e", () => {
     delete process.env[CODEX_APP_SERVER_SANDBOX_SETTING_KEY];
     delete process.env[AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID];
     delete process.env[FEATURED_CATALOG_ITEMS_SETTING_KEY];
+    delete process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY];
     delete process.env[DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY];
     delete process.env[DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY];
     delete process.env[DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY];
@@ -87,6 +95,11 @@ describe("Server settings GraphQL e2e", () => {
       delete process.env[FEATURED_CATALOG_ITEMS_SETTING_KEY];
     } else {
       process.env[FEATURED_CATALOG_ITEMS_SETTING_KEY] = originalFeaturedCatalogItemsEnv;
+    }
+    if (originalStreamParserEnv === undefined) {
+      delete process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY];
+    } else {
+      process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY] = originalStreamParserEnv;
     }
     for (const [key, value] of Object.entries(originalMediaModelEnv)) {
       if (value === undefined) {
@@ -357,6 +370,84 @@ describe("Server settings GraphQL e2e", () => {
     );
   });
 
+  it("validates and exposes the stream parser override through the GraphQL settings boundary", async () => {
+    const updateMutation = `
+      mutation UpdateServerSetting($key: String!, $value: String!) {
+        updateServerSetting(key: $key, value: $value)
+      }
+    `;
+    const deleteMutation = `
+      mutation DeleteServerSetting($key: String!) {
+        deleteServerSetting(key: $key)
+      }
+    `;
+    const listQuery = `
+      query GetServerSettings {
+        getServerSettings {
+          key
+          value
+          description
+          isEditable
+          isDeletable
+        }
+      }
+    `;
+
+    for (const parserValue of STREAM_PARSER_SETTING_VALUES) {
+      const rawValue = parserValue === "xml" ? " XML " : parserValue.toUpperCase();
+      const updated = await execGraphql<{ updateServerSetting: string }>(updateMutation, {
+        key: AUTOBYTEUS_STREAM_PARSER_SETTING_KEY,
+        value: rawValue,
+      });
+      expect(updated.updateServerSetting).toContain("updated successfully");
+      expect(process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY]).toBe(parserValue);
+
+      const listed = await execGraphql<{
+        getServerSettings: Array<{
+          key: string;
+          value: string;
+          description: string;
+          isEditable: boolean;
+          isDeletable: boolean;
+        }>;
+      }>(listQuery);
+      const streamParserSetting = listed.getServerSettings.find(
+        (entry) => entry.key === AUTOBYTEUS_STREAM_PARSER_SETTING_KEY,
+      );
+
+      expect(streamParserSetting).toMatchObject({
+        value: parserValue,
+        isEditable: true,
+        isDeletable: false,
+      });
+      expect(streamParserSetting?.description).toContain("Streaming tool-call parser override");
+      expect(streamParserSetting?.description).toContain(STREAM_PARSER_PROVIDER_NATIVE_VALUE);
+      expect(streamParserSetting?.description).not.toBe("Custom user-defined setting");
+    }
+
+    const invalidUpdate = await execGraphql<{ updateServerSetting: string }>(updateMutation, {
+      key: AUTOBYTEUS_STREAM_PARSER_SETTING_KEY,
+      value: "yaml",
+    });
+    expect(invalidUpdate.updateServerSetting).toContain(
+      STREAM_PARSER_SETTING_VALUES.join(", "),
+    );
+    expect(process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY]).toBe(
+      STREAM_PARSER_PROVIDER_NATIVE_VALUE,
+    );
+
+    const deleteResult = await execGraphql<{ deleteServerSetting: string }>(deleteMutation, {
+      key: AUTOBYTEUS_STREAM_PARSER_SETTING_KEY,
+    });
+    expect(deleteResult.deleteServerSetting).toContain("managed by the system");
+
+    const envFileContents = fs.readFileSync(path.join(tempDir, ".env"), "utf-8");
+    expect(envFileContents).toContain(
+      `${AUTOBYTEUS_STREAM_PARSER_SETTING_KEY}=${STREAM_PARSER_PROVIDER_NATIVE_VALUE}`,
+    );
+    expect(envFileContents).not.toContain(`${AUTOBYTEUS_STREAM_PARSER_SETTING_KEY}=yaml`);
+  });
+
   it("persists the selected compactor agent definition id as a predefined GraphQL setting", async () => {
     const updateMutation = `
       mutation UpdateServerSetting($key: String!, $value: String!) {
@@ -522,6 +613,45 @@ describe("Server settings GraphQL e2e", () => {
     expect(codexSandboxSetting?.description).not.toBe("Custom user-defined setting");
     expect(fs.readFileSync(path.join(tempDir, ".env"), "utf-8")).not.toContain(
       CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
+    );
+  });
+
+  it("lists effective stream parser values with predefined metadata even when not persisted", async () => {
+    process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY] = "sentinel";
+    const listQuery = `
+      query GetServerSettings {
+        getServerSettings {
+          key
+          value
+          description
+          isEditable
+          isDeletable
+        }
+      }
+    `;
+
+    const listed = await execGraphql<{
+      getServerSettings: Array<{
+        key: string;
+        value: string;
+        description: string;
+        isEditable: boolean;
+        isDeletable: boolean;
+      }>;
+    }>(listQuery);
+
+    const streamParserSetting = listed.getServerSettings.find(
+      (entry) => entry.key === AUTOBYTEUS_STREAM_PARSER_SETTING_KEY,
+    );
+    expect(streamParserSetting).toMatchObject({
+      value: "sentinel",
+      isEditable: true,
+      isDeletable: false,
+    });
+    expect(streamParserSetting?.description).toContain("future streamed agent responses");
+    expect(streamParserSetting?.description).not.toBe("Custom user-defined setting");
+    expect(fs.readFileSync(path.join(tempDir, ".env"), "utf-8")).not.toContain(
+      AUTOBYTEUS_STREAM_PARSER_SETTING_KEY,
     );
   });
 });
