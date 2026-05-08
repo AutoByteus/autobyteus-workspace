@@ -1,11 +1,14 @@
 ## What's New
-- Added Codex Fast mode as a launch/runtime model configuration option for Codex models that advertise the `fast` speed tier.
+- Added origin-aware browsing on the Agents page: Featured agents, Team-local agents grouped by team, Application agents grouped by application, and Shared agents.
+- Centralized server platform built-in agent provisioning for Memory Compactor under the backend built-in-agent subsystem.
+- Moved Daily Assistant to the private/user-managed agent package model at definition id `daily-assistant`; it can be featured through Settings when the private package root is configured.
 
 ## Improvements
-- Codex Fast mode now persists through the existing model config path as `service_tier: "fast"` and remains separate from reasoning effort.
-- Fast-mode configuration is applied when starting, restoring, and continuing Codex app-server threads.
-- Runtime model configuration now supports non-thinking schema parameters instead of treating advanced model config as thinking-only.
+- Search on the Agents page stays flat and separate from grouped browsing while still matching team/application provenance.
+- Team-local agents from application-owned teams show both application and team context in browse grouping.
+- Fresh runtimes now seed only the platform Memory Compactor built-in and initialize `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` when blank.
 
 ## Fixes
-- Removed stale Fast-mode config when switching to a model whose schema no longer supports it.
-- Dropped unsupported Codex service-tier values before app-server requests are sent.
+- Removed server auto-seeding and auto-featuring for Daily Assistant.
+- Prevented old Daily Assistant ids (`super-ai-assistant`, `autobyteus-super-assistant`) from resolving as active aliases.
+- Preserved the private Daily Assistant config shape while renaming it to `daily-assistant`.
