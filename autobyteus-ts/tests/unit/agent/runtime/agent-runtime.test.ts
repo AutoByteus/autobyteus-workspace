@@ -308,6 +308,28 @@ describe('AgentRuntime', () => {
     expect(runtime.applyEventAndDeriveStatus).not.toHaveBeenCalled();
   });
 
+  it('rejects approvals for active-batch auto-executing invocations without a pending approval marker', async () => {
+    const context = makeContext();
+    const runtime = new AgentRuntime(context, {} as any);
+    const activeTurn = context.state.startActiveTurn('turn-1');
+    activeTurn.startToolInvocationBatch([
+      new ToolInvocation('auto_tool', {}, 'auto-invocation', 'turn-1')
+    ]);
+    mocks.workerInstance.isAlive.mockReturnValue(true);
+    runtime.applyEventAndDeriveStatus = vi.fn(async () => undefined) as any;
+
+    const result = await runtime.postToolApproval({
+      kind: 'tool_approval',
+      invocationId: 'auto-invocation',
+      turnId: 'turn-1',
+      approved: true
+    });
+
+    expect(result.accepted).toBe(false);
+    expect(result.code).toBe('no_pending_invocation');
+    expect(runtime.applyEventAndDeriveStatus).not.toHaveBeenCalled();
+  });
+
   it('returns explicit stale/no-active/interrupted approval results without starting turn work', async () => {
     const context = makeContext();
     const runtime = new AgentRuntime(context, {} as any);

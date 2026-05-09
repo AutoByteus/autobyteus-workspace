@@ -187,8 +187,7 @@ export class AgentRuntimeState {
     }
 
     const pendingInvocation = this.pendingToolApprovals[invocationId];
-    const activeBatchAccepts = activeTurn.activeToolInvocationBatch?.accepts(invocationId, activeTurn.turnId) ?? false;
-    if (!pendingInvocation && !activeBatchAccepts) {
+    if (!pendingInvocation || (pendingInvocation.turnId && pendingInvocation.turnId !== activeTurn.turnId)) {
       return {
         accepted: false,
         code: 'no_pending_invocation',

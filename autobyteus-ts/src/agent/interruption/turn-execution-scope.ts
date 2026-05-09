@@ -106,10 +106,12 @@ export class TurnExecutionScope {
     meta: Omit<TurnOperationMeta, 'turnId'> & { turnId?: string },
     run: () => Promise<T>
   ): Promise<T> {
+    const resolvedMeta = { ...meta, turnId: meta.turnId ?? this.turnId };
+    this.throwIfAborted(resolvedMeta);
     return racePromiseWithAbort(
       run(),
       { signal: this.signal, getReason: () => this.getReason() },
-      { ...meta, turnId: meta.turnId ?? this.turnId }
+      resolvedMeta
     );
   }
 
@@ -117,10 +119,12 @@ export class TurnExecutionScope {
     meta: Omit<TurnOperationMeta, 'turnId'> & { turnId?: string },
     iterable: AsyncIterable<T>
   ): AsyncGenerator<T, void, unknown> {
+    const resolvedMeta = { ...meta, turnId: meta.turnId ?? this.turnId };
+    this.throwIfAborted(resolvedMeta);
     return iterateWithAbort(
       iterable,
       { signal: this.signal, getReason: () => this.getReason() },
-      { ...meta, turnId: meta.turnId ?? this.turnId }
+      resolvedMeta
     );
   }
 }

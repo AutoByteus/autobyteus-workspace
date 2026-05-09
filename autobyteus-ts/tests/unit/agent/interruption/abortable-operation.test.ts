@@ -1,6 +1,7 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { iterateWithAbort, racePromiseWithAbort } from '../../../../src/agent/interruption/abortable-operation.js';
 import { AgentInterruptionError } from '../../../../src/agent/interruption/agent-interruption.js';
+import { TurnExecutionScope } from '../../../../src/agent/interruption/turn-execution-scope.js';
 
 const makeState = () => {
   const controller = new AbortController();
@@ -39,5 +40,57 @@ describe('abortable operations', () => {
 
     await expect(consume).rejects.toBeInstanceOf(AgentInterruptionError);
     expect(Date.now() - start).toBeLessThan(500);
+  });
+
+  it('does not invoke TurnExecutionScope run thunks when already aborted', async () => {
+    const scope = new TurnExecutionScope('turn-1');
+    const run = vi.fn(async () => 'should-not-start');
+    scope.interrupt('user_interrupt');
+
+    await expect(scope.runAbortable({ kind: 'pre_start' }, run)).rejects.toBeInstanceOf(AgentInterruptionError);
+    expect(run).not.toHaveBeenCalled();
+  });
+
+  it('does not acquire async iterators when already aborted', async () => {
+    const { controller, state, meta } = makeState();
+    const iteratorFactory = vi.fn();
+    const iterable = {
+      [Symbol.asyncIterator]: iteratorFactory
+    } as AsyncIterable<string>;
+    controller.abort();
+
+    const consume = (async () => {
+      for await (const _item of iterateWithAbort(iterable, state, meta)) {
+        // no-op
+      }
+    })();
+
+    await expect(consume).rejects.toBeInstanceOf(AgentInterruptionError);
+    expect(iteratorFactory).not.toHaveBeenCalled();
+  });
+
+  it('does not request another async iterator item after abort', async () => {
+    const { controller, state, meta } = makeState();
+    const iterator = {
+      next: vi
+        .fn()
+        .mockResolvedValueOnce({ value: 'first', done: false })
+        .mockResolvedValueOnce({ value: 'second', done: false }),
+      return: vi.fn().mockResolvedValue({ done: true })
+    };
+    const iterable = {
+      [Symbol.asyncIterator]: () => iterator
+    } as AsyncIterable<string>;
+
+    const observed: string[] = [];
+    await expect((async () => {
+      for await (const item of iterateWithAbort(iterable, state, meta)) {
+        observed.push(item);
+        controller.abort();
+      }
+    })()).rejects.toBeInstanceOf(AgentInterruptionError);
+
+    expect(observed).toEqual(['first']);
+    expect(iterator.next).toHaveBeenCalledTimes(1);
   });
 });

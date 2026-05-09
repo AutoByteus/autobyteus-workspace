@@ -89,6 +89,7 @@ export class LlmTurnPhase {
       );
     } catch (error) {
       if (error instanceof CompactionPreparationError) {
+        turn.executionScope.throwIfAborted({ kind: 'llm_request_assembly' });
         outbox.publishError('LlmTurnPhase.prepareRequest', error.message, String(error.cause ?? error));
         return {
           kind: 'final',
@@ -98,12 +99,14 @@ export class LlmTurnPhase {
       }
       throw error;
     }
+    turn.executionScope.throwIfAborted({ kind: 'llm_request_assembly' });
 
     const segmentIdPrefix = `segment_${randomUUID().replace(/-/g, '')}:`;
     let currentReasoningPartId: string | null = null;
     let parsedToolInvocationCount = 0;
 
     try {
+      turn.executionScope.throwIfAborted({ kind: 'llm_stream_start' });
       const stream = llmInstance.streamMessages(
         request.messages,
         request.renderedPayload,
@@ -115,6 +118,7 @@ export class LlmTurnPhase {
         { kind: 'llm_stream' },
         stream as AsyncIterable<ChunkResponse>
       )) {
+        turn.executionScope.throwIfAborted({ kind: 'llm_stream_chunk' });
         if (chunkResponse.content) completeResponseText += chunkResponse.content;
         if (chunkResponse.reasoning) completeReasoningText += chunkResponse.reasoning;
 
@@ -136,6 +140,7 @@ export class LlmTurnPhase {
         streamingHandler.feed(chunkResponse);
       }
 
+      turn.executionScope.throwIfAborted({ kind: 'llm_stream_finalize' });
       streamingHandler.finalize();
       if (currentReasoningPartId) {
         outbox.publishSegment(SegmentEvent.end(activeTurnId, currentReasoningPartId));
@@ -175,6 +180,7 @@ export class LlmTurnPhase {
       };
     }
 
+    turn.executionScope.throwIfAborted({ kind: 'post_llm_stream' });
     const completeResponse = new CompleteResponse({
       content: completeResponseText,
       reasoning: completeReasoningText || null,
@@ -188,11 +194,13 @@ export class LlmTurnPhase {
       const toolInvocations = streamingHandler.getAllInvocations();
       if (toolInvocations.length) {
         parsedToolInvocationCount = toolInvocations.length;
+        turn.executionScope.throwIfAborted({ kind: 'llm_tool_intents' });
         turn.startToolInvocationBatch(toolInvocations);
         memoryManager.ingestToolIntents(toolInvocations, activeTurnId);
       }
     }
 
+    turn.executionScope.throwIfAborted({ kind: 'llm_assistant_response' });
     memoryManager.ingestAssistantResponse(
       completeResponse,
       activeTurnId,
@@ -200,6 +208,7 @@ export class LlmTurnPhase {
       { appendToWorkingContext: parsedToolInvocationCount === 0 }
     );
 
+    turn.executionScope.throwIfAborted({ kind: 'llm_compaction' });
     evaluateLlmTurnCompaction({
       llmInstance,
       memoryManager,

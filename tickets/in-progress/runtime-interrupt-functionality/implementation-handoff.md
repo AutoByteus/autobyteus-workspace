@@ -50,6 +50,11 @@ Implemented the approved clean-cut native interrupt/runtime-loop redesign.
   - Kept `ToolPhase.waitForApproval(...)` consuming only active-turn input-box messages, and left `ToolExecutionApprovalEvent` as a status/event-store projection rather than a runtime turn-control input.
   - Updated the native server backend to map accepted and stale/no-active/no-pending/interrupted native approval outcomes to `AgentOperationResult` without treating normal races as command failures.
   - Updated team approval routing to call the target member agent's public `postToolExecutionApproval(...)` API and not member runtime internals or turn input-box internals.
+- Addressed code-review CR-011 through CR-013:
+  - Added pre-start interruption guards for `TurnExecutionScope.runAbortable(...)` and async iterator wrapping so already-aborted turns do not invoke request/tool/preprocessor thunks or request the next iterator item.
+  - Added post-await interruption fences across `AgentTurnRunner`, `LlmTurnPhase`, and `ToolPhase` before normal-completion status, outbox, memory-ingestion, tool-terminal, and continuation side effects.
+  - Tightened runtime approval validation so approval/denial acceptance requires a pending approval marker in `AgentRuntimeState.pendingToolApprovals`; active auto-executing tool-batch membership alone is no longer sufficient.
+  - Added unit regression coverage for already-aborted run/iterator starts, post-LLM and post-tool late-interrupt seams, and auto-executing active-batch/no-pending approval rejection.
 
 ## Key Files Or Areas
 
@@ -99,6 +104,13 @@ Implemented the approved clean-cut native interrupt/runtime-loop redesign.
   - `autobyteus-ts/src/agent/loop/tool-phase.ts`
   - `autobyteus-ts/src/agent-team/handlers/tool-approval-team-event-handler.ts`
   - `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts`
+- Interruption fence fixes:
+  - `autobyteus-ts/src/agent/interruption/turn-execution-scope.ts`
+  - `autobyteus-ts/src/agent/interruption/abortable-operation.ts`
+  - `autobyteus-ts/src/agent/loop/agent-turn-runner.ts`
+  - `autobyteus-ts/src/agent/loop/llm-turn-phase.ts`
+  - `autobyteus-ts/src/agent/loop/tool-phase.ts`
+  - `autobyteus-ts/src/agent/context/agent-runtime-state.ts`
 - Removed old turn-control files:
   - `autobyteus-ts/src/agent/events/worker-event-dispatcher.ts`
   - `autobyteus-ts/src/agent/handlers/*` normal-flow handlers, except `tool-lifecycle-payload.ts` remains as a non-control payload formatter.
@@ -156,6 +168,9 @@ Implemented the approved clean-cut native interrupt/runtime-loop redesign.
   - CR-008 shutdown preemption is covered by an `AgentWorker` regression test proving a queued user turn trigger does not invoke `AgentTurnRunner.run` after `stop()` begins while the worker is idle.
   - CR-009 segment payload canonicalization is covered by native server converter/mapper tests for `SEGMENT_START`, `SEGMENT_CONTENT`, and `SEGMENT_END`, including interrupted segment metadata and assertions that `turnId` does not leak.
   - CR-010 non-interrupt stream-error terminalization is covered by streaming handler unit tests, runtime integration coverage for failed partial text/tool streams with no approval/continuation, and frontend segment/status projection tests for failed partial tool rows.
+  - CR-011 pre-start abort fencing is covered by abortable-operation tests proving already-aborted `TurnExecutionScope.runAbortable(...)` does not invoke the supplied thunk, already-aborted iterators are not acquired, and aborted iterators do not request another item.
+  - CR-012 post-await interruption seams are covered by `AgentTurnRunner` tests proving late post-LLM and post-tool interrupts produce interrupted outcomes without final LLM response processing, turn completion, tool-result processing, or terminal tool success/failure publication.
+  - CR-013 approval validation is covered by a runtime test proving an active auto-executing tool-batch invocation with no pending approval marker rejects approval as `no_pending_invocation` and does not mutate runtime status.
 
 ## Legacy / Compatibility Removal Check
 
@@ -335,6 +350,26 @@ Additional checks after Round 8 external approval/denial spine implementation:
   - `agent-runtime.ts`: 204 effective non-empty lines.
   - `index.ts`: 45 effective non-empty lines.
   - `tool-approval-command.ts`: 29 effective non-empty lines.
+
+Additional checks after code-review CR-011 through CR-013 local fixes:
+
+- `git diff --check HEAD`
+  - Passed.
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/interruption/abortable-operation.test.ts tests/unit/agent/loop/agent-turn-runner.test.ts tests/unit/agent/runtime/agent-runtime.test.ts`
+  - Result: 3 files passed, 24 tests passed.
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/interruption/abortable-operation.test.ts tests/unit/agent/loop/agent-turn-runner.test.ts tests/unit/agent/loop/agent-turn-input-box.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/integration/agent/runtime/agent-runtime.test.ts tests/integration/agent/tool-approval-flow.test.ts`
+  - Result: 6 files passed, 40 tests passed.
+- `pnpm -C autobyteus-ts run build`
+  - Passed, including runtime dependency verification.
+- `pnpm -C autobyteus-server-ts run build:full`
+  - Passed.
+- Changed source implementation file size check after CR-011/CR-012/CR-013:
+  - `abortable-operation.ts`: 96 effective non-empty lines.
+  - `turn-execution-scope.ts`: 113 effective non-empty lines.
+  - `agent-turn-runner.ts`: 148 effective non-empty lines.
+  - `llm-turn-phase.ts`: 208 effective non-empty lines.
+  - `tool-phase.ts`: 219 effective non-empty lines.
+  - `agent-runtime-state.ts`: 265 effective non-empty lines.
 
 Blocked / not used as pass criteria:
 

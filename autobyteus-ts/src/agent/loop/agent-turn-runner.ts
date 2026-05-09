@@ -40,41 +40,59 @@ export class AgentTurnRunner {
 
   async run(trigger: AgentTurnTrigger): Promise<TurnOutcome> {
     const turnId = this.turn.turnId;
-    this.outbox.publishTurnStarted(turnId);
     try {
+      this.turn.executionScope.throwIfAborted({ kind: 'turn_start' });
+      this.outbox.publishTurnStarted(turnId);
       await this.applyStatusEvent(trigger);
+      this.turn.executionScope.throwIfAborted({ kind: 'external_trigger_status' });
       let nextInput = await this.inputPipeline.processExternalTrigger(trigger, this.context, this.turn, this.outbox);
+      this.turn.executionScope.throwIfAborted({ kind: 'input_pipeline' });
 
       while (true) {
         this.turn.executionScope.throwIfAborted({ kind: 'turn_loop' });
         await this.applyStatusEvent(new LLMUserMessageReadyEvent(nextInput.llmUserMessage, turnId));
+        this.turn.executionScope.throwIfAborted({ kind: 'llm_user_message_status' });
         const llmOutcome = await this.llmPhase.run(nextInput, this.context, this.turn, this.outbox);
+        this.turn.executionScope.throwIfAborted({ kind: 'post_llm_phase' });
 
         if (llmOutcome.kind === 'final') {
           await this.applyStatusEvent(
             new LLMCompleteResponseReceivedEvent(llmOutcome.response, llmOutcome.isError ?? false, turnId)
           );
+          this.turn.executionScope.throwIfAborted({ kind: 'pre_llm_response_pipeline' });
           await this.llmResponsePipeline.processFinalResponse(llmOutcome.response, this.context, this.outbox, {
             isError: llmOutcome.isError ?? false,
             turnId
           });
+          this.turn.executionScope.throwIfAborted({ kind: 'post_llm_response_pipeline' });
           this.outbox.publishTurnCompleted(turnId);
           return this.turn.settle({ kind: 'completed', turnId });
         }
 
         for (const invocation of llmOutcome.toolInvocations) {
+          this.turn.executionScope.throwIfAborted({ kind: 'pending_tool_invocation' });
           await this.applyStatusEvent(new PendingToolInvocationEvent(invocation));
         }
 
         const rawResults = await this.toolPhase.run(llmOutcome.toolInvocations, this.context, this.turn, this.outbox);
+        this.turn.executionScope.throwIfAborted({ kind: 'post_tool_phase' });
         const processedResults: ToolResultEvent[] = [];
         for (const rawResult of rawResults) {
           const processed = await this.toolResultPipeline.process(rawResult, this.context);
+          this.turn.executionScope.throwIfAborted({
+            kind: 'post_tool_result_pipeline',
+            operationId: processed.toolInvocationId
+          });
           processedResults.push(processed);
           await this.applyStatusEvent(processed);
+          this.turn.executionScope.throwIfAborted({
+            kind: 'pre_tool_terminal_lifecycle',
+            operationId: processed.toolInvocationId
+          });
           this.emitToolTerminalLifecycle(processed);
         }
 
+        this.turn.executionScope.throwIfAborted({ kind: 'post_tool_terminal_lifecycle' });
         const activeBatch = this.turn.activeToolInvocationBatch;
         if (activeBatch) {
           this.context.state.recentSettledInvocationIds.addMany(activeBatch.getExpectedInvocationIds());
@@ -92,7 +110,9 @@ export class AgentTurnRunner {
           this.turn,
           this.outbox
         );
+        this.turn.executionScope.throwIfAborted({ kind: 'post_tool_continuation_pipeline' });
         await this.applyStatusEvent(nextInput.sourceEvent);
+        this.turn.executionScope.throwIfAborted({ kind: 'tool_continuation_status' });
       }
     } catch (error) {
       if (isAgentInterruptionError(error)) {

@@ -22,6 +22,7 @@ export class ToolPhase {
     for (const originalInvocation of invocations) {
       turn.executionScope.throwIfAborted({ kind: 'tool_phase' });
       const result = await this.runOneInvocation(originalInvocation, context, turn, outbox);
+      turn.executionScope.throwIfAborted({ kind: 'post_tool_invocation' });
       if (result) {
         results.push(result);
       }
@@ -47,6 +48,7 @@ export class ToolPhase {
         { kind: 'tool_invocation_preprocess', operationId: invocationId },
         () => this.invocationPipeline.process(toolInvocation, context)
       );
+      turn.executionScope.throwIfAborted({ kind: 'tool_invocation_preprocess', operationId: invocationId });
       toolName = toolInvocation.name;
       arguments_ = toolInvocation.arguments;
       invocationId = toolInvocation.id;
@@ -66,6 +68,7 @@ export class ToolPhase {
       }
     }
 
+    turn.executionScope.throwIfAborted({ kind: 'tool_execution_start', operationId: invocationId });
     outbox.publishToolExecutionStarted({
       ...buildToolLifecyclePayloadFromInvocation(agentId, toolInvocation),
       arguments: arguments_
@@ -103,6 +106,7 @@ export class ToolPhase {
         })
       );
 
+      turn.executionScope.throwIfAborted({ kind: 'tool_execution_result', operationId: invocationId });
       let resultJsonForLog = '';
       try { resultJsonForLog = formatToCleanString(executionResult); }
       catch { resultJsonForLog = formatToCleanString(String(executionResult)); }
@@ -135,6 +139,7 @@ export class ToolPhase {
         throw error;
       }
 
+      turn.executionScope.throwIfAborted({ kind: 'tool_execution_error', operationId: invocationId });
       const errorMessage = `Error executing tool '${toolName}' (ID: ${invocationId}): ${String(error)}`;
       const errorDetails = error instanceof Error ? error.stack ?? String(error) : String(error);
       outbox.publishToolLog({
@@ -174,6 +179,7 @@ export class ToolPhase {
       throw error;
     }
 
+    turn.executionScope.throwIfAborted({ kind: 'tool_approval', operationId: toolInvocation.id });
     const retrievedInvocation = context.state.retrievePendingToolInvocation(toolInvocation.id) ?? toolInvocation;
     if (approvalEvent.approved) {
       outbox.publishToolApproved({

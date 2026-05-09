@@ -81,10 +81,13 @@ export async function* iterateWithAbort<T>(
   state: AbortableOperationState,
   meta: TurnOperationMeta
 ): AsyncGenerator<T, void, unknown> {
+  throwIfAborted(state, meta);
   const iterator = iterable[Symbol.asyncIterator]();
   try {
     while (true) {
+      throwIfAborted(state, meta);
       const next = await racePromiseWithAbort(iterator.next(), state, meta);
+      throwIfAborted(state, meta);
       if (next.done) {
         return;
       }
