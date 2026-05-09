@@ -17,7 +17,14 @@ export type AutoByteusAgentLike = {
     toolInvocationId: string,
     isApproved: boolean,
     reason?: string | null,
-  ) => Promise<void>;
+    options?: { turnId?: string; requestedBy?: string },
+  ) => Promise<{
+    accepted: boolean;
+    code?: string;
+    turnId?: string | null;
+    invocationId?: string;
+    message?: string;
+  }>;
   interrupt?: (options?: {
     turnId?: string | null;
     reason?: string | null;
@@ -124,8 +131,13 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
       return buildRunNotFoundResult(this.runId);
     }
     try {
-      await this.agent.postToolExecutionApproval(invocationId, approved, reason);
-      return { accepted: true };
+      const result = await this.agent.postToolExecutionApproval(invocationId, approved, reason);
+      return {
+        accepted: result.accepted,
+        code: result.code,
+        message: result.message,
+        turnId: result.turnId ?? null,
+      };
     } catch (error) {
       return buildCommandFailure("approve tool", error);
     }

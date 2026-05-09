@@ -5,13 +5,16 @@ import { InterAgentMessage } from './message/inter-agent-message.js';
 import {
   UserMessageReceivedEvent,
   InterAgentMessageReceivedEvent,
-  ToolExecutionApprovalEvent,
   BaseEvent
 } from './events/agent-events.js';
 import type {
   AgentInterruptOptions,
   AgentInterruptResult
 } from './interruption/agent-interruption.js';
+import {
+  normalizeToolApprovalInvocationId,
+  type PostToolApprovalResult
+} from './tool-approval-command.js';
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -54,17 +57,25 @@ export class Agent {
   async postToolExecutionApproval(
     toolInvocationId: string,
     isApproved: boolean,
-    reason: string | null = null
-  ): Promise<void> {
-    if (!toolInvocationId || typeof toolInvocationId !== 'string') {
+    reason: string | null = null,
+    options: { turnId?: string; requestedBy?: string } = {}
+  ): Promise<PostToolApprovalResult> {
+    const invocationId = normalizeToolApprovalInvocationId(toolInvocationId);
+    if (!invocationId) {
       throw new Error('tool_invocation_id must be a non-empty string.');
     }
     if (typeof isApproved !== 'boolean') {
       throw new TypeError('is_approved must be a boolean.');
     }
 
-    const approvalEvent = new ToolExecutionApprovalEvent(toolInvocationId, isApproved, reason ?? undefined);
-    await this.submitEventToRuntime(approvalEvent);
+    return this.runtime.postToolApproval({
+      kind: 'tool_approval',
+      invocationId,
+      approved: isApproved,
+      reason: reason ?? null,
+      ...(options.turnId ? { turnId: options.turnId } : {}),
+      ...(options.requestedBy ? { requestedBy: options.requestedBy } : {})
+    });
   }
 
   get currentStatus(): AgentStatus {

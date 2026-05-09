@@ -13,7 +13,12 @@ const createBackend = (overrides: {
     agentId: "agent-1",
     currentStatus: "idle",
     postUserMessage: vi.fn().mockResolvedValue(undefined),
-    postToolExecutionApproval: vi.fn().mockResolvedValue(undefined),
+    postToolExecutionApproval: vi.fn().mockResolvedValue({
+      accepted: true,
+      code: "posted",
+      turnId: "turn-1",
+      invocationId: "invoke-1",
+    }),
     interrupt: vi.fn().mockResolvedValue({
       accepted: true,
       status: "accepted",
@@ -58,7 +63,12 @@ describe("AutoByteusAgentRunBackend", () => {
     );
     expect(agent.postToolExecutionApproval).toHaveBeenCalledWith("invoke-1", true, "approved");
     expect(sendResult).toEqual({ accepted: true });
-    expect(approveResult).toEqual({ accepted: true });
+    expect(approveResult).toEqual({
+      accepted: true,
+      code: "posted",
+      message: undefined,
+      turnId: "turn-1",
+    });
     expect(backend.getStatus()).toBe("idle");
     expect(backend.getPlatformAgentRunId()).toBe("agent-1");
     expect(backend.getContext()).toBe(context);
@@ -101,6 +111,28 @@ describe("AutoByteusAgentRunBackend", () => {
       code: "accepted",
       message: undefined,
       turnId: "turn-1",
+    });
+  });
+
+  it("maps stale native tool approval results without treating them as command failures", async () => {
+    const { backend } = createBackend({
+      agent: {
+        postToolExecutionApproval: vi.fn().mockResolvedValue({
+          accepted: false,
+          code: "no_active_turn",
+          invocationId: "invoke-2",
+          message: "no active turn",
+        }),
+      },
+    });
+
+    await expect(
+      backend.approveToolInvocation("invoke-2", false, "denied"),
+    ).resolves.toEqual({
+      accepted: false,
+      code: "no_active_turn",
+      message: "no active turn",
+      turnId: null,
     });
   });
 

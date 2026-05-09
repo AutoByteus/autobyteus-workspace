@@ -22,6 +22,10 @@ import {
   type AgentInterruptOptions,
   type AgentInterruptResult
 } from '../interruption/agent-interruption.js';
+import type {
+  ToolApprovalInputMessage,
+  PostToolApprovalResult
+} from '../tool-approval-command.js';
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -58,25 +62,6 @@ export class AgentRuntime {
       await this.getAgentInputBox().enqueueUserMessage(event);
     } else if (event instanceof InterAgentMessageReceivedEvent) {
       await this.getAgentInputBox().enqueueInterAgentMessage(event);
-    } else if (event instanceof ToolExecutionApprovalEvent) {
-      const activeTurn = this.context.state.activeTurn;
-      if (!activeTurn) {
-        console.warn(
-          `AgentRuntime '${agentId}': Ignoring tool approval '${event.toolInvocationId}' with no active turn.`
-        );
-        return;
-      }
-      if (!event.turnId) {
-        event.turnId = activeTurn.turnId;
-      }
-      const result = activeTurn.inputBox.postApproval(event);
-      if (result.accepted) {
-        await this.applyEventAndDeriveStatus(event);
-      } else {
-        console.warn(
-          `AgentRuntime '${agentId}': Tool approval '${event.toolInvocationId}' rejected by active turn input box: ${result.code ?? 'unknown'} ${result.message ?? ''}`
-        );
-      }
     } else if (event instanceof LifecycleEvent) {
       await this.getAgentInputBox().enqueueLifecycleMessage(event);
     } else {
@@ -85,6 +70,36 @@ export class AgentRuntime {
         'Route turn-local operational events through AgentTurnRunner/AgentTurnInputBox.'
       );
     }
+  }
+
+  async postToolApproval(input: ToolApprovalInputMessage): Promise<PostToolApprovalResult> {
+    const agentId = this.context.agentId;
+    if (!this.worker || !this.worker.isAlive()) {
+      return {
+        accepted: false,
+        code: 'runtime_stopped',
+        invocationId: input.invocationId,
+        message: `Agent '${agentId}' runtime is not running.`
+      };
+    }
+
+    const result = this.context.state.postToolApprovalToActiveTurn(input);
+    if (!result.accepted) {
+      console.warn(
+        `AgentRuntime '${agentId}': Tool approval '${input.invocationId}' rejected: ${result.code} ${result.message}`
+      );
+      return result;
+    }
+
+    await this.applyEventAndDeriveStatus(
+      new ToolExecutionApprovalEvent(
+        result.invocationId,
+        input.approved,
+        input.reason ?? undefined,
+        result.turnId
+      )
+    );
+    return result;
   }
 
   private getAgentInputBox(): AgentInputBox {

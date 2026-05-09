@@ -3,7 +3,7 @@ import { Agent } from '../../../src/agent/agent.js';
 import { AgentStatus } from '../../../src/agent/status/status-enum.js';
 import { AgentInputUserMessage } from '../../../src/agent/message/agent-input-user-message.js';
 import { InterAgentMessage } from '../../../src/agent/message/inter-agent-message.js';
-import { UserMessageReceivedEvent, InterAgentMessageReceivedEvent, ToolExecutionApprovalEvent } from '../../../src/agent/events/agent-events.js';
+import { UserMessageReceivedEvent, InterAgentMessageReceivedEvent } from '../../../src/agent/events/agent-events.js';
 import { AgentRuntime } from '../../../src/agent/runtime/agent-runtime.js';
 import { AgentRuntimeState } from '../../../src/agent/context/agent-runtime-state.js';
 import { AgentConfig } from '../../../src/agent/context/agent-config.js';
@@ -47,9 +47,15 @@ const makeRuntimeStub = (context: AgentContext, isRunning: boolean) => {
   runtime.start = vi.fn();
   runtime.stop = vi.fn(async () => undefined);
   runtime.submitEvent = vi.fn(async () => undefined);
+  runtime.postToolApproval = vi.fn(async (input) => ({
+    accepted: true,
+    code: 'posted',
+    turnId: input.turnId ?? 'turn-1',
+    invocationId: input.invocationId
+  }));
   Object.defineProperty(runtime, 'isRunning', { get: () => isRunning });
   Object.defineProperty(runtime, 'currentStatus', { get: () => AgentStatus.IDLE, configurable: true });
-  return runtime as AgentRuntime & { start: any; stop: any; submitEvent: any };
+  return runtime as AgentRuntime & { start: any; stop: any; submitEvent: any; postToolApproval: any };
 };
 
 describe('Agent', () => {
@@ -94,14 +100,27 @@ describe('Agent', () => {
     expect(event).toBeInstanceOf(InterAgentMessageReceivedEvent);
   });
 
-  it('submits tool execution approvals', async () => {
+  it('posts tool execution approvals through runtime approval boundary without starting runtime', async () => {
     const context = makeContext();
-    const runtime = makeRuntimeStub(context, true);
+    const runtime = makeRuntimeStub(context, false);
     const agent = new Agent(runtime as any);
-    await agent.postToolExecutionApproval('tid-1', true, 'ok');
+    const result = await agent.postToolExecutionApproval('tid-1', true, 'ok', { turnId: 'turn-1' });
 
-    const event = runtime.submitEvent.mock.calls[0][0];
-    expect(event).toBeInstanceOf(ToolExecutionApprovalEvent);
+    expect(runtime.start).not.toHaveBeenCalled();
+    expect(runtime.submitEvent).not.toHaveBeenCalled();
+    expect(runtime.postToolApproval).toHaveBeenCalledWith({
+      kind: 'tool_approval',
+      invocationId: 'tid-1',
+      approved: true,
+      reason: 'ok',
+      turnId: 'turn-1'
+    });
+    expect(result).toEqual({
+      accepted: true,
+      code: 'posted',
+      turnId: 'turn-1',
+      invocationId: 'tid-1'
+    });
   });
 
   it('exposes status and running state', () => {

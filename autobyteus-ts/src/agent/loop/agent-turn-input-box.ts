@@ -1,5 +1,5 @@
-import type { ToolExecutionApprovalEvent } from '../events/agent-events.js';
 import { AgentInterruptionError } from '../interruption/agent-interruption.js';
+import type { ToolApprovalInputMessage } from '../tool-approval-command.js';
 
 export type TurnInputBoxCloseReason = 'completed' | 'interrupted' | 'failed' | 'stopped';
 
@@ -17,7 +17,7 @@ type Waiter<T> = {
   abortListener?: () => void;
 };
 
-const getApprovalTurnId = (event: ToolExecutionApprovalEvent): string | null =>
+const getApprovalTurnId = (event: ToolApprovalInputMessage): string | null =>
   typeof event.turnId === 'string' ? event.turnId : null;
 
 const normalizeInvocationId = (invocationId: unknown): string | null => {
@@ -34,8 +34,8 @@ export class AgentTurnInputBox {
   private closeReason: TurnInputBoxCloseReason | null = null;
   private readonly knownToolInvocationIds = new Set<string>();
   private readonly settledApprovalIds = new Set<string>();
-  private readonly approvals: ToolExecutionApprovalEvent[] = [];
-  private readonly approvalWaiters: Array<Waiter<ToolExecutionApprovalEvent>> = [];
+  private readonly approvals: ToolApprovalInputMessage[] = [];
+  private readonly approvalWaiters: Array<Waiter<ToolApprovalInputMessage>> = [];
 
   constructor(turnId: string) {
     this.turnId = turnId;
@@ -54,7 +54,7 @@ export class AgentTurnInputBox {
     }
   }
 
-  postApproval(event: ToolExecutionApprovalEvent): PostTurnMessageResult {
+  postApproval(event: ToolApprovalInputMessage): PostTurnMessageResult {
     if (this.closed) {
       return { accepted: false, code: 'closed', message: `Turn input box is closed (${this.closeReason}).` };
     }
@@ -62,17 +62,17 @@ export class AgentTurnInputBox {
     if (eventTurnId && eventTurnId !== this.turnId) {
       return { accepted: false, code: 'turn_mismatch', message: `Expected turn '${this.turnId}', got '${eventTurnId}'.` };
     }
-    const invocationId = normalizeInvocationId(event.toolInvocationId);
+    const invocationId = normalizeInvocationId(event.invocationId);
     if (!invocationId || !this.knownToolInvocationIds.has(invocationId)) {
       return {
         accepted: false,
         code: 'unknown_invocation',
-        message: `Tool approval invocation '${event.toolInvocationId ?? 'unknown'}' is not active for turn '${this.turnId}'.`
+        message: `Tool approval invocation '${event.invocationId ?? 'unknown'}' is not active for turn '${this.turnId}'.`
       };
     }
     if (
       this.settledApprovalIds.has(invocationId) ||
-      this.approvals.some((queued) => queued.toolInvocationId === invocationId)
+      this.approvals.some((queued) => queued.invocationId === invocationId)
     ) {
       return {
         accepted: false,
@@ -96,15 +96,15 @@ export class AgentTurnInputBox {
   waitForApproval(
     invocationId: string,
     options: { signal: AbortSignal; reason?: () => string }
-  ): Promise<ToolExecutionApprovalEvent> {
+  ): Promise<ToolApprovalInputMessage> {
     this.registerToolInvocation(invocationId);
-    const existingIndex = this.approvals.findIndex((event) => event.toolInvocationId === invocationId);
+    const existingIndex = this.approvals.findIndex((event) => event.invocationId === invocationId);
     if (existingIndex >= 0) {
       const [event] = this.approvals.splice(existingIndex, 1);
       this.settledApprovalIds.add(invocationId);
       return Promise.resolve(event);
     }
-    return this.waitFor(this.approvalWaiters, (event) => event.toolInvocationId === invocationId, options);
+    return this.waitFor(this.approvalWaiters, (event) => event.invocationId === invocationId, options);
   }
 
   close(reason: TurnInputBoxCloseReason): void {

@@ -163,11 +163,12 @@ export class ToolExecutionApprovalEvent extends AgentOperationalEvent {
   reason?: string;
   turnId?: string;
 
-  constructor(toolInvocationId: string, isApproved: boolean, reason?: string) {
+  constructor(toolInvocationId: string, isApproved: boolean, reason?: string, turnId?: string) {
     super();
     this.toolInvocationId = toolInvocationId;
     this.isApproved = isApproved;
     this.reason = reason;
+    this.turnId = turnId;
   }
 }
 

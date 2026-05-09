@@ -9,6 +9,12 @@ import { BaseLLM } from '../../llm/base.js';
 import type { BaseTool } from '../../tools/base-tool.js';
 import type { MemoryManager, WorkingContextTurnCheckpoint } from '../../memory/memory-manager.js';
 import type { WorkingContextSnapshotBootstrapOptions } from '../../memory/restore/working-context-snapshot-bootstrapper.js';
+import {
+  normalizeToolApprovalInvocationId,
+  normalizeToolApprovalTurnId,
+  type ToolApprovalInputMessage,
+  type PostToolApprovalResult
+} from '../tool-approval-command.js';
 
 import type { AgentStatusDeriver } from '../status/status-deriver.js';
 import type { AgentStatusManager } from '../status/manager.js';
@@ -133,6 +139,98 @@ export class AgentRuntimeState {
         delete this.pendingToolApprovals[invocationId];
       }
     }
+  }
+
+  postToolApprovalToActiveTurn(input: ToolApprovalInputMessage): PostToolApprovalResult {
+    const invocationId = normalizeToolApprovalInvocationId(input.invocationId) ?? String(input.invocationId ?? '');
+    const activeTurn = this.activeTurn;
+    if (!activeTurn) {
+      return {
+        accepted: false,
+        code: 'no_active_turn',
+        invocationId,
+        message: `Agent '${this.agentId}' has no active turn for tool approval '${invocationId}'.`
+      };
+    }
+
+    const turnId = normalizeToolApprovalTurnId(input.turnId);
+    if (turnId && turnId !== activeTurn.turnId) {
+      return {
+        accepted: false,
+        code: 'stale_turn',
+        invocationId,
+        turnId,
+        activeTurnId: activeTurn.turnId,
+        message: `Tool approval '${invocationId}' belongs to stale turn '${turnId}', active turn is '${activeTurn.turnId}'.`
+      };
+    }
+
+    if (activeTurn.isSettled) {
+      return {
+        accepted: false,
+        code: 'stale_turn',
+        invocationId,
+        turnId: activeTurn.turnId,
+        activeTurnId: activeTurn.turnId,
+        message: `Tool approval '${invocationId}' targets already-settled turn '${activeTurn.turnId}'.`
+      };
+    }
+
+    if (activeTurn.executionScope.isInterrupted) {
+      return {
+        accepted: false,
+        code: 'interrupted_turn',
+        invocationId,
+        turnId: activeTurn.turnId,
+        message: `Tool approval '${invocationId}' targets interrupted turn '${activeTurn.turnId}'.`
+      };
+    }
+
+    const pendingInvocation = this.pendingToolApprovals[invocationId];
+    const activeBatchAccepts = activeTurn.activeToolInvocationBatch?.accepts(invocationId, activeTurn.turnId) ?? false;
+    if (!pendingInvocation && !activeBatchAccepts) {
+      return {
+        accepted: false,
+        code: 'no_pending_invocation',
+        invocationId,
+        turnId: activeTurn.turnId,
+        message: `Tool approval invocation '${invocationId}' is not pending for active turn '${activeTurn.turnId}'.`
+      };
+    }
+
+    const postResult = activeTurn.inputBox.postApproval({
+      kind: 'tool_approval',
+      invocationId,
+      turnId: activeTurn.turnId,
+      approved: input.approved,
+      reason: input.reason ?? null,
+      ...(input.requestedBy ? { requestedBy: input.requestedBy } : {})
+    });
+    if (!postResult.accepted) {
+      const code = postResult.code === 'closed' ? 'interrupted_turn' : 'no_pending_invocation';
+      return code === 'interrupted_turn'
+        ? {
+            accepted: false,
+            code,
+            invocationId,
+            turnId: activeTurn.turnId,
+            message: postResult.message ?? `Tool approval '${invocationId}' could not be posted to interrupted turn.`
+          }
+        : {
+            accepted: false,
+            code,
+            invocationId,
+            turnId: activeTurn.turnId,
+            message: postResult.message ?? `Tool approval '${invocationId}' is not pending.`
+          };
+    }
+
+    return {
+      accepted: true,
+      code: 'posted',
+      turnId: activeTurn.turnId,
+      invocationId
+    };
   }
 
 

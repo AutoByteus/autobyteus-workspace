@@ -253,16 +253,117 @@ describe('AgentRuntime', () => {
     expect(activeTurn.executionScope.signal.aborted).toBe(false);
   });
 
-  it('rejects unknown active-turn tool approvals without status mutation', async () => {
+  it('posts valid tool approvals through runtime state into the active turn input box', async () => {
+    const context = makeContext();
+    const runtime = new AgentRuntime(context, {} as any);
+    const activeTurn = context.state.startActiveTurn('turn-1');
+    context.state.storePendingToolInvocation(new ToolInvocation('tool', {}, 'inv-1', 'turn-1'));
+    mocks.workerInstance.isAlive.mockReturnValue(true);
+    runtime.applyEventAndDeriveStatus = vi.fn(async () => undefined) as any;
+
+    const approvalPromise = activeTurn.inputBox.waitForApproval('inv-1', {
+      signal: activeTurn.executionScope.signal
+    });
+    const result = await runtime.postToolApproval({
+      kind: 'tool_approval',
+      invocationId: 'inv-1',
+      turnId: 'turn-1',
+      approved: true,
+      reason: 'approved'
+    });
+    const delivered = await approvalPromise;
+
+    expect(result).toEqual({
+      accepted: true,
+      code: 'posted',
+      turnId: 'turn-1',
+      invocationId: 'inv-1'
+    });
+    expect(delivered).toMatchObject({
+      kind: 'tool_approval',
+      invocationId: 'inv-1',
+      turnId: 'turn-1',
+      approved: true,
+      reason: 'approved'
+    });
+    expect(runtime.applyEventAndDeriveStatus).toHaveBeenCalledOnce();
+    expect((runtime.applyEventAndDeriveStatus as any).mock.calls[0][0]).toBeInstanceOf(ToolExecutionApprovalEvent);
+  });
+
+  it('returns no_pending_invocation for unknown active-turn tool approvals without status mutation', async () => {
     const context = makeContext();
     const runtime = new AgentRuntime(context, {} as any);
     context.state.startActiveTurn('turn-1');
     mocks.workerInstance.isAlive.mockReturnValue(true);
     runtime.applyEventAndDeriveStatus = vi.fn(async () => undefined) as any;
 
-    await runtime.submitEvent(new ToolExecutionApprovalEvent('missing-invocation', true));
+    const result = await runtime.postToolApproval({
+      kind: 'tool_approval',
+      invocationId: 'missing-invocation',
+      approved: true
+    });
 
+    expect(result.accepted).toBe(false);
+    expect(result.code).toBe('no_pending_invocation');
     expect(runtime.applyEventAndDeriveStatus).not.toHaveBeenCalled();
+  });
+
+  it('returns explicit stale/no-active/interrupted approval results without starting turn work', async () => {
+    const context = makeContext();
+    const runtime = new AgentRuntime(context, {} as any);
+    mocks.workerInstance.isAlive.mockReturnValue(true);
+    runtime.applyEventAndDeriveStatus = vi.fn(async () => undefined) as any;
+
+    const noActive = await runtime.postToolApproval({
+      kind: 'tool_approval',
+      invocationId: 'inv-1',
+      approved: true
+    });
+    expect(noActive.accepted).toBe(false);
+    expect(noActive.code).toBe('no_active_turn');
+
+    const activeTurn = context.state.startActiveTurn('turn-1');
+    context.state.storePendingToolInvocation(new ToolInvocation('tool', {}, 'inv-1', 'turn-1'));
+    const stale = await runtime.postToolApproval({
+      kind: 'tool_approval',
+      invocationId: 'inv-1',
+      turnId: 'old-turn',
+      approved: true
+    });
+    expect(stale.accepted).toBe(false);
+    expect(stale.code).toBe('stale_turn');
+
+    activeTurn.interrupt('user_interrupt');
+    const interrupted = await runtime.postToolApproval({
+      kind: 'tool_approval',
+      invocationId: 'inv-1',
+      turnId: 'turn-1',
+      approved: true
+    });
+    expect(interrupted.accepted).toBe(false);
+    expect(interrupted.code).toBe('interrupted_turn');
+    expect(runtime.applyEventAndDeriveStatus).not.toHaveBeenCalled();
+    expect(mocks.workerInstance.start).not.toHaveBeenCalled();
+  });
+
+  it('returns runtime_stopped for tool approvals when the worker is inactive', async () => {
+    const context = makeContext();
+    const runtime = new AgentRuntime(context, {} as any);
+    mocks.workerInstance.isAlive.mockReturnValue(false);
+
+    const result = await runtime.postToolApproval({
+      kind: 'tool_approval',
+      invocationId: 'inv-1',
+      approved: true
+    });
+
+    expect(result).toEqual({
+      accepted: false,
+      code: 'runtime_stopped',
+      invocationId: 'inv-1',
+      message: "Agent 'agent-1' runtime is not running."
+    });
+    expect(mocks.workerInstance.start).not.toHaveBeenCalled();
   });
 
   it('routes external turn-starting input through AgentInputBox', async () => {
@@ -290,6 +391,10 @@ describe('AgentRuntime', () => {
     await expect(
       runtime.submitEvent(new PendingToolInvocationEvent(new ToolInvocation('tool', {}, 'invocation-1')))
     ).rejects.toThrow(/unsupported runtime input event 'PendingToolInvocationEvent'/);
+
+    await expect(
+      runtime.submitEvent(new ToolExecutionApprovalEvent('invocation-1', true))
+    ).rejects.toThrow(/unsupported runtime input event 'ToolExecutionApprovalEvent'/);
 
     expect(agentInputBox.enqueueLifecycleMessage).not.toHaveBeenCalled();
   });

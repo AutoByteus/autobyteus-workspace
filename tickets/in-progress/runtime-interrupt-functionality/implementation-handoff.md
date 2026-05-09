@@ -43,6 +43,13 @@ Implemented the approved clean-cut native interrupt/runtime-loop redesign.
 - Addressed code-review CR-009 and CR-010:
   - Normalized outbound native Autobyteus segment WebSocket payloads at the server boundary to canonical `turn_id`, stripping legacy `turnId` from `SEGMENT_START`, `SEGMENT_CONTENT`, and `SEGMENT_END` payloads while preserving interrupted metadata.
   - Added failed-finalization for non-interrupt LLM stream errors: active text/tool/write/edit/reasoning segments now emit failed `SEGMENT_END` metadata with the stream error, failed partial tool segments do not produce tool invocations/continuations, and frontend projection terminalizes partial tool rows as `error`.
+- Implemented the approved Round 8 external tool approval/denial spine:
+  - Added `ToolApprovalInputMessage` / `PostToolApprovalResult` as the typed approval command contract.
+  - Rewired `Agent.postToolExecutionApproval(...)` to call `AgentRuntime.postToolApproval(...)` directly without starting runtime work or submitting an operational event.
+  - Added `AgentRuntimeState.postToolApprovalToActiveTurn(...)` validation for active turn, optional turn ID, pending/active invocation identity, settled/interrupted turn state, and duplicate/unknown approval results before posting to the active `AgentTurnInputBox`.
+  - Kept `ToolPhase.waitForApproval(...)` consuming only active-turn input-box messages, and left `ToolExecutionApprovalEvent` as a status/event-store projection rather than a runtime turn-control input.
+  - Updated the native server backend to map accepted and stale/no-active/no-pending/interrupted native approval outcomes to `AgentOperationResult` without treating normal races as command failures.
+  - Updated team approval routing to call the target member agent's public `postToolExecutionApproval(...)` API and not member runtime internals or turn input-box internals.
 
 ## Key Files Or Areas
 
@@ -83,6 +90,15 @@ Implemented the approved clean-cut native interrupt/runtime-loop redesign.
   - `autobyteus-ts/src/memory/memory-manager.ts`
   - `autobyteus-ts/src/memory/working-context-snapshot.ts`
   - `autobyteus-ts/src/agent/factory/agent-factory.ts`
+- External approval command boundary:
+  - `autobyteus-ts/src/agent/tool-approval-command.ts`
+  - `autobyteus-ts/src/agent/agent.ts`
+  - `autobyteus-ts/src/agent/runtime/agent-runtime.ts`
+  - `autobyteus-ts/src/agent/context/agent-runtime-state.ts`
+  - `autobyteus-ts/src/agent/loop/agent-turn-input-box.ts`
+  - `autobyteus-ts/src/agent/loop/tool-phase.ts`
+  - `autobyteus-ts/src/agent-team/handlers/tool-approval-team-event-handler.ts`
+  - `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts`
 - Removed old turn-control files:
   - `autobyteus-ts/src/agent/events/worker-event-dispatcher.ts`
   - `autobyteus-ts/src/agent/handlers/*` normal-flow handlers, except `tool-lifecycle-payload.ts` remains as a non-control payload formatter.
@@ -295,6 +311,30 @@ Additional checks after code-review CR-009 and CR-010 local fixes:
   - `api-tool-call-streaming-response-handler.ts`: 361 effective non-empty lines.
   - `agentStatusHandler.ts`: 245 effective non-empty lines.
   - `segmentHandler.ts`: 386 effective non-empty lines.
+
+Additional checks after Round 8 external approval/denial spine implementation:
+
+- `git diff --check HEAD`
+  - Passed.
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/agent.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/unit/agent/loop/agent-turn-input-box.test.ts tests/unit/agent-team/handlers/tool-approval-team-event-handler.test.ts tests/integration/agent/runtime/agent-runtime.test.ts tests/integration/agent/tool-approval-flow.test.ts`
+  - Result: 6 files passed, 39 tests passed.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts tests/unit/services/agent-streaming/agent-stream-handler.test.ts`
+  - Result: 2 files passed, 21 tests passed.
+- `pnpm -C autobyteus-ts run build`
+  - Passed, including runtime dependency verification.
+- `pnpm -C autobyteus-server-ts run build:full`
+  - Passed.
+- Changed source implementation file size check after Round 8 approval-spine implementation:
+  - `autobyteus-agent-run-backend.ts`: 211 effective non-empty lines.
+  - `tool-approval-team-event-handler.ts`: 57 effective non-empty lines.
+  - `agent.ts`: 106 effective non-empty lines.
+  - `agent-runtime-state.ts`: 266 effective non-empty lines.
+  - `agent-events.ts`: 150 effective non-empty lines.
+  - `agent-turn-input-box.ts`: 151 effective non-empty lines.
+  - `tool-phase.ts`: 213 effective non-empty lines.
+  - `agent-runtime.ts`: 204 effective non-empty lines.
+  - `index.ts`: 45 effective non-empty lines.
+  - `tool-approval-command.ts`: 29 effective non-empty lines.
 
 Blocked / not used as pass criteria:
 

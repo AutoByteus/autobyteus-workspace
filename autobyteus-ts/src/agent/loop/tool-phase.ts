@@ -1,4 +1,4 @@
-import { ToolExecutionApprovalEvent, ToolResultEvent } from '../events/agent-events.js';
+import { ToolResultEvent } from '../events/agent-events.js';
 import { ToolInvocation } from '../tool-invocation.js';
 import { ToolInvocationPipeline } from '../pipelines/tool-invocation-pipeline.js';
 import { formatToCleanString } from '../../utils/llm-output-formatter.js';
@@ -7,6 +7,7 @@ import { isAgentInterruptionError } from '../interruption/agent-interruption.js'
 import type { AgentContext } from '../context/agent-context.js';
 import type { AgentTurn } from '../agent-turn.js';
 import type { AgentOutbox } from '../outbox/agent-outbox.js';
+import type { ToolApprovalInputMessage } from '../tool-approval-command.js';
 
 export class ToolPhase {
   private readonly invocationPipeline = new ToolInvocationPipeline();
@@ -160,7 +161,7 @@ export class ToolPhase {
       arguments: toolInvocation.arguments
     });
 
-    let approvalEvent: ToolExecutionApprovalEvent;
+    let approvalEvent: ToolApprovalInputMessage;
     try {
       approvalEvent = await turn.inputBox.waitForApproval(
         toolInvocation.id,
@@ -174,7 +175,7 @@ export class ToolPhase {
     }
 
     const retrievedInvocation = context.state.retrievePendingToolInvocation(toolInvocation.id) ?? toolInvocation;
-    if (approvalEvent.isApproved) {
+    if (approvalEvent.approved) {
       outbox.publishToolApproved({
         ...buildToolLifecyclePayloadFromInvocation(context.agentId, retrievedInvocation),
         reason: approvalEvent.reason ?? null

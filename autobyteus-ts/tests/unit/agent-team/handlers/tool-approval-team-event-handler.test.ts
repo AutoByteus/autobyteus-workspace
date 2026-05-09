@@ -39,7 +39,14 @@ describe('ToolApprovalTeamEventHandler', () => {
   });
 
   it('posts approval to agent', async () => {
-    const mockAgent = { postToolExecutionApproval: vi.fn(async () => undefined) };
+    const mockAgent = {
+      postToolExecutionApproval: vi.fn(async () => ({
+        accepted: true,
+        code: 'posted',
+        turnId: 'turn-1',
+        invocationId: 'tool-call-123'
+      }))
+    };
     agentTeamContext.state.teamManager = {
       ensureNodeIsReady: vi.fn(async () => mockAgent)
     } as any;
