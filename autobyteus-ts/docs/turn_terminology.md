@@ -13,7 +13,13 @@ This project uses two different runtime concepts that previously both used the w
 2. `ToolInvocationBatch` (tool aggregation batch)
 - Scope: one set of tool calls emitted by a single LLM response.
 - Source: created in `LLMUserMessageReadyEventHandler` when tool invocations are parsed from streamed output.
-- Usage: temporarily collects tool results and gates when to enqueue one aggregated tool-results message back into the input pipeline.
+- Usage: temporarily collects tool results and gates when to continue the same outer turn.
+  - In legacy text-parser modes, completion enqueues one aggregated
+    tool-results message back into the input pipeline.
+  - In native `api_tool_call` mode, completion enqueues an internal
+    `ToolContinuationReadyEvent` so the next LLM request uses structured
+    `assistant.tool_calls` / `role: "tool"` history without adding an
+    aggregate user message.
 
 ## Relationship
 

@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { AgentInputEventQueueManager } from '../../../../src/agent/events/agent-input-event-queue-manager.js';
 import {
   PendingToolInvocationEvent,
+  ToolContinuationReadyEvent,
   ToolResultEvent,
   UserMessageReceivedEvent
 } from '../../../../src/agent/events/agent-events.js';
@@ -90,5 +91,24 @@ describe('AgentInputEventQueueManager', () => {
     expect(evt2).not.toBeNull();
     expect(evt2?.[0]).toBe('userMessageInputQueue');
     expect(evt2?.[1]).toBeInstanceOf(UserMessageReceivedEvent);
+  });
+
+  it('accepts native tool continuation events on the continuation queue', async () => {
+    const mgr = new AgentInputEventQueueManager();
+
+    await mgr.enqueueToolContinuationInput(new ToolContinuationReadyEvent('turn-native'));
+    await mgr.enqueueUserMessage(
+      new UserMessageReceivedEvent(new AgentInputUserMessage('second external input'))
+    );
+
+    const evt1 = await mgr.getNextInputEvent({ allowExternalInput: false });
+    expect(evt1).not.toBeNull();
+    expect(evt1?.[0]).toBe('toolContinuationInputQueue');
+    expect(evt1?.[1]).toBeInstanceOf(ToolContinuationReadyEvent);
+    expect((evt1?.[1] as ToolContinuationReadyEvent).turnId).toBe('turn-native');
+
+    const evt2 = await mgr.getNextInputEvent({ allowExternalInput: true });
+    expect(evt2).not.toBeNull();
+    expect(evt2?.[0]).toBe('userMessageInputQueue');
   });
 });

@@ -83,7 +83,10 @@ This separation allows the runtime to coordinate priorities and preserve order *
    - Pending tasks are cancelled.
 3. Return the highest-priority buffered event.
 
-Priority order is deterministic (user → inter-agent → tool invocation → tool result → tool approval → internal system). This avoids the previous bug where ready events were reinserted at the tail and changed order.
+Priority order is deterministic (tool continuation → user → inter-agent →
+tool result → tool invocation → tool approval → internal system). This keeps
+same-turn continuation ahead of later external input and avoids the previous
+bug where ready events were reinserted at the tail and changed order.
 
 ### 3.3 Team/Workflow Queue Managers
 

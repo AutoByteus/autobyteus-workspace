@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { OpenAICompatibleLLM } from '../../../../src/llm/api/openai-compatible-llm.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
+import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 
 const mockCreate = vi.hoisted(() => vi.fn());
 const mockOpenAIConstructor = vi.hoisted(
@@ -236,5 +237,62 @@ describe('OpenAICompatibleLLM', () => {
     });
     expect(clientOptions).not.toHaveProperty('timeout');
     expect(clientOptions).not.toHaveProperty('fetch');
+  });
+
+  it('sends mapped OpenAI-compatible params while filtering internal kwargs', async () => {
+    const model = new LLMModel({
+      name: 'gpt-4o',
+      value: 'gpt-4o',
+      canonicalName: 'gpt-4o',
+      provider: LLMProvider.OPENAI
+    });
+    const configured = new OpenAICompatibleLLM(
+      model,
+      'TEST_API_KEY',
+      'https://api.openai.com/v1',
+      new LLMConfig({
+        temperature: 0,
+        topP: 0.4,
+        frequencyPenalty: 0.2,
+        presencePenalty: 0.1,
+        stopSequences: ['STOP'],
+        maxTokens: 42,
+        extraParams: { chat_template_kwargs: { enable_thinking: false } }
+      })
+    );
+    mockCreate.mockResolvedValue({
+      choices: [{ message: { role: 'assistant', content: 'ok' } }]
+    });
+    const tools = [
+      {
+        type: 'function',
+        function: {
+          name: 'run_bash',
+          description: 'Run command',
+          parameters: { type: 'object', properties: {}, required: [], additionalProperties: false }
+        }
+      }
+    ];
+
+    await configured.sendMessages([], null, {
+      logicalConversationId: 'agent-1',
+      tools,
+      tool_choice: 'required'
+    });
+
+    const [params] = mockCreate.mock.calls.at(-1) ?? [];
+    expect(params).toMatchObject({
+      model: 'gpt-4o',
+      temperature: 0,
+      top_p: 0.4,
+      frequency_penalty: 0.2,
+      presence_penalty: 0.1,
+      stop: ['STOP'],
+      max_completion_tokens: 42,
+      chat_template_kwargs: { enable_thinking: false },
+      tools,
+      tool_choice: 'required'
+    });
+    expect(params).not.toHaveProperty('logicalConversationId');
   });
 });

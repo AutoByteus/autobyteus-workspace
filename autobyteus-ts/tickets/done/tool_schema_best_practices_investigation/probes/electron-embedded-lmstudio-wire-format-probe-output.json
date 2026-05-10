@@ -1,0 +1,33 @@
+{
+  "embeddedRoot": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/autobyteus-ts/dist",
+  "parser": "api_tool_call",
+  "requestCount": 1,
+  "path": "/v1/chat/completions",
+  "hasTools": true,
+  "messages": [
+    {
+      "role": "system",
+      "content": "System prompt."
+    },
+    {
+      "role": "user",
+      "content": "Please inspect the workspace."
+    },
+    {
+      "role": "assistant",
+      "content": "[TOOL_CALL] run_bash {\"command\":\"pwd && ls -la\"}"
+    },
+    {
+      "role": "user",
+      "content": "[TOOL_RESULT] run_bash {\"stdout\":\"/tmp\\n\",\"stderr\":\"\",\"exitCode\":0}"
+    }
+  ],
+  "containsLegacyToolResultUserText": true,
+  "containsSyntheticToolExecutionUserText": false,
+  "roleSequence": [
+    "system",
+    "user",
+    "assistant",
+    "user"
+  ]
+}

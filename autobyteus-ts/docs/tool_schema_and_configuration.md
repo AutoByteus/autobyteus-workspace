@@ -5,7 +5,7 @@
 
 ## 1. Overview
 
-Tools in Autobyteus support two distict data ingestion pathways, each requiring a well-defined schema:
+Tools in Autobyteus support two distinct data ingestion pathways, each requiring a well-defined schema:
 
 1.  **Runtime Arguments**: Arguments passed by the LLM when it invokes a tool (e.g., source code content for a `write_file` tool).
 2.  **Instantiation Configuration**: Configuration parameters passed when a tool instance is created (e.g., API keys, result limits).
@@ -117,17 +117,60 @@ const createUser = tool({
 });
 ```
 
-### 4.4 Flow: From TypeScript to LLM Prompt
+### 4.4 Flow: From TypeScript to LLM
 
 1.  **Developer**: Writes a `tool(...)` function with a `ParameterSchema`.
 2.  **Decorator**: Registers the schema as a `ToolDefinition`.
 3.  **Registry**: Stores it in `ToolRegistry`.
-4.  **Formatters**:
+4.  **Provider schema path**:
+    - `ToolSchemaProvider` resolves the provider-aware runtime argument schema
+      formatter.
+    - In native API tool-call mode (`AUTOBYTEUS_STREAM_PARSER=api_tool_call`),
+      `LLMUserMessageReadyEventHandler` passes those schemas to the LLM as the
+      provider-native `tools` request field. The tool manifest is not injected
+      into the system prompt in this mode.
+    - In text-parser modes (`xml`, `json`, `sentinel`), the formatter output is
+      still used to build prompt-visible tool instructions.
+5.  **Formatters**:
     - `DefaultXmlSchemaFormatter`: Converts schema to `<tool>` XML.
-    - `DefaultJsonSchemaFormatter`: Converts schema to JSON for OpenAI.
-5.  **LLM**: Sees the formatted schema in the system prompt.
+    - `DefaultJsonSchemaFormatter`: Converts schema to the default JSON
+      prompt/tool representation.
+    - `OpenAiJsonSchemaFormatter`: Converts schema to the OpenAI-compatible
+      function-tool envelope.
+6.  **LLM**: Receives the schema either as provider-native API metadata or as
+    prompt text, depending on the selected tool-call mode.
 
-### 4.5 Custom Overrides
+### 4.5 OpenAI-Compatible Function Tool Schemas
+
+_Files_: `src/tools/usage/formatters/openai-json-schema-formatter.ts`,
+`src/tools/usage/formatters/openai-tool-schema-normalizer.ts`
+
+OpenAI-compatible providers such as LM Studio and custom OpenAI-style endpoints
+use the function-tool envelope:
+
+```ts
+{
+  type: 'function',
+  function: {
+    name: tool.name,
+    description: tool.description,
+    parameters
+  }
+}
+```
+
+Before the schema is returned, `normalizeOpenAiToolParameters(...)` recursively
+closes JSON object schemas by setting `additionalProperties: false`. This
+applies to the top-level `parameters` object and nested object schemas produced
+from `ParameterSchema`.
+
+Strict function tools remain intentionally gated off by default. Current
+`ParameterSchema` optional fields remain optional by being omitted from
+`required`; enabling `function.strict: true` safely would require a future
+nullable-required optional-field conversion. The normalizer therefore rejects
+attempts to enable strict mode until that transform exists.
+
+### 4.6 Custom Overrides
 
 For complex requirements (e.g., custom sentinel tag instructions like `write_file`'s `__START_CONTENT__`), specific tools can bypass default generation by registering a **Custom Formatter** in the `ToolFormattingRegistry`.
 

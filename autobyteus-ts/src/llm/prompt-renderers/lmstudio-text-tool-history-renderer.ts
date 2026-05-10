@@ -30,7 +30,11 @@ const appendHistoryContent = (content: string | null | undefined, historyLine: s
     .filter((value): value is string => Boolean(value))
     .join('\n');
 
-export class LMStudioChatRenderer extends OpenAIChatRenderer {
+/**
+ * Legacy LM Studio renderer for explicit text-parser tool-call modes only.
+ * Native api_tool_call mode must use OpenAIChatRenderer structured tool history.
+ */
+export class LMStudioTextToolHistoryRenderer extends OpenAIChatRenderer {
   async render(messages: Message[]): Promise<ChatCompletionMessageParam[]> {
     const normalizedMessages = messages.map((message) => {
       if (message.tool_payload instanceof ToolCallPayload) {

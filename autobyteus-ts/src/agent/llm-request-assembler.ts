@@ -43,6 +43,29 @@ export class LLMRequestAssembler {
     };
   }
 
+  async prepareToolContinuationRequest(
+    turnId?: string | null,
+    systemPrompt?: string | null,
+  ): Promise<RequestPackage> {
+    this.ensureSystemPrompt(systemPrompt ?? undefined);
+
+    const didCompact = this.pendingCompactionExecutor
+      ? await this.pendingCompactionExecutor.executeIfRequired({
+          turnId,
+          systemPrompt: systemPrompt ?? '',
+        })
+      : false;
+
+    const finalMessages = this.memoryManager.getWorkingContextMessages();
+    const renderedPayload = await this.renderPayload(finalMessages);
+
+    return {
+      messages: finalMessages,
+      renderedPayload,
+      didCompact
+    };
+  }
+
   async renderPayload(messages: Message[]): Promise<unknown> {
     return this.renderer.render(messages);
   }

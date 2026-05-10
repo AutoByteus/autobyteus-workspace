@@ -514,8 +514,10 @@ are present only when relevant.
 **Example: tool continuation boundary**
 
 ```
-{"id":"rt_005_tool_continuation","ts":1738100004.10,"turn_id":"turn_0001","seq":5,"trace_type":"tool_continuation","content":"Tool continuation","source_event":"ToolContinuationInput"}
+{"id":"rt_005_tool_continuation","ts":1738100004.10,"turn_id":"turn_0001","seq":5,"trace_type":"tool_continuation","content":"Native API tool continuation","source_event":"ToolContinuationReadyEvent"}
 ```
+
+Legacy text-parser continuations may use `source_event: "ToolContinuationInput"` for the same trace type.
 
 **Example: tool result**
 
@@ -542,8 +544,12 @@ Raw traces are stored line-by-line, but compaction plans them into
 - `turn_id` is generated at `LLMUserMessageReadyEvent` time.
 - Tool call intents and tool results inherit the `turn_id` stored on the
   `ToolInvocation`, even if the result arrives later.
-- TOOL-origin continuation input does **not** mint a new turn; it reuses the
-  active `turn_id` and writes a lightweight `tool_continuation` boundary trace.
+- Tool continuation does **not** mint a new turn; it reuses the active
+  `turn_id` and writes a lightweight `tool_continuation` boundary trace. Legacy
+  text-parser modes reach this through `SenderType.TOOL` continuation input;
+  native `api_tool_call` mode writes the boundary from the internal
+  `ToolContinuationReadyEvent` path without appending provider-visible user
+  input.
 
 **Interaction-block rules**
 
@@ -573,12 +579,17 @@ UserInputMessageEventHandler
    │   (input processors run here)
    └─► MemoryIngestInputProcessor (order 900)
    │      ├─► MemoryManager.ingestUserMessage(...)
-   │      └─► MemoryManager.ingestToolContinuationBoundary(...) for TOOL-origin continuation input
+   │      └─► MemoryManager.ingestToolContinuationBoundary(...) for legacy TOOL-origin continuation input
    ▼
 LLMUserMessageReadyEvent
    ▼
 LLMUserMessageReadyEventHandler
-   ├─► LLMRequestAssembler.prepareRequest(...)
+
+Native api_tool_call tool-result continuation skips UserInputMessageEventHandler:
+ToolResultEventHandler ─► validate active batch/invocation/turn before processors
+   └─► accepted result processors ─► MemoryManager.ingestToolResult(...)
+   └─► ToolContinuationReadyEvent ─► LLMUserMessageReadyEventHandler
+   ├─► LLMRequestAssembler.prepareToolContinuationRequest(...)
    │      └─► PendingCompactionExecutor.executeIfRequired(...)
    │            ├─► CompactionWindowPlanner.plan(...)
    │            ├─► Compactor.compact(...)
@@ -1048,9 +1059,12 @@ type ToolPayload = ToolCallPayload | ToolResultPayload;
 
 - Append **assistant tool_call** messages when the model requests tools.
 - Append **tool result** messages with `role=TOOL` when tool execution finishes.
-- When tool execution returns control to the model, the TOOL-origin continuation
-  input reuses the active turn and persists a lightweight
-  `tool_continuation` boundary trace before the next LLM leg.
+- When tool execution returns control to the model, continuation reuses the
+  active turn and persists a lightweight `tool_continuation` boundary trace
+  before the next LLM leg. Native `api_tool_call` mode uses an internal
+  `ToolContinuationReadyEvent` and renders existing structured tool messages;
+  legacy text-parser modes use the aggregate `SenderType.TOOL` continuation
+  input.
 
 **Agent integration**
 
@@ -1084,7 +1098,10 @@ type ToolPayload = ToolCallPayload | ToolResultPayload;
 - After parsing tool calls, append an assistant message with `tool_calls`
   metadata to the Working Context Snapshot.
 - Tool results are appended as `MessageRole.TOOL` messages.
-- TOOL-origin continuation input reuses the active turn and persists a lightweight `tool_continuation` boundary trace before the next LLM leg.
+- Tool continuation reuses the active turn and persists a lightweight
+  `tool_continuation` boundary trace before the next LLM leg. Native
+  `api_tool_call` continuation uses `ToolContinuationReadyEvent`; legacy text
+  modes use TOOL-origin aggregate input.
 
 ---
 
@@ -1153,15 +1170,19 @@ LLMUserMessageReadyEventHandler.handle(...)
                           at src/agent/handlers/tool-invocation-request-event-handler.ts
                           └─► ToolResultEvent
                                 at src/agent/events/agent-events.ts
-                                └─► MemoryIngestToolResultProcessor.process(...)
-                                      at src/agent/tool-execution-result-processor/memory-ingest-tool-result-processor.ts
-                                      └─► MemoryManager.ingestToolResult(...)
-                                            at src/memory/memory-manager.ts
-                                            └─► WorkingContextSnapshot.appendToolResult(...)
-                                                  at src/memory/working-context-snapshot.ts
-                                └─► TOOL-origin continuation input arrives on the same turn
-                                      └─► MemoryIngestInputProcessor persists `tool_continuation`
-                                            before the next LLM leg
+                                └─► ToolResultEventHandler validates active batch/invocation/turn
+                                      before native memory mutation
+                                      └─► MemoryIngestToolResultProcessor.process(...)
+                                            at src/agent/tool-execution-result-processor/memory-ingest-tool-result-processor.ts
+                                            └─► MemoryManager.ingestToolResult(...)
+                                                  at src/memory/memory-manager.ts
+                                                  └─► WorkingContextSnapshot.appendToolResult(...)
+                                                        at src/memory/working-context-snapshot.ts
+                                └─► Tool continuation arrives on the same turn
+                                      ├─► native api_tool_call: ToolResultEventHandler records `tool_continuation`
+                                      │     and enqueues ToolContinuationReadyEvent
+                                      └─► legacy text mode: MemoryIngestInputProcessor records `tool_continuation`
+                                            for aggregate TOOL-origin input
 ```
 
 **Gap check**  
@@ -1383,18 +1404,26 @@ UserMessageReceivedEvent
         └─► Input processors
         └─► MemoryIngestInputProcessor (order 900)
               ├─► MemoryManager.ingestUserMessage(...)
-              └─► MemoryManager.ingestToolContinuationBoundary(...) for TOOL sender
+              └─► MemoryManager.ingestToolContinuationBoundary(...) for legacy TOOL sender
         └─► LLMUserMessageReadyEvent
 
+ToolResultEventHandler (native api_tool_call)
+  └─► validate active batch/invocation/turn identity
+  └─► accepted tool result processors
+        └─► MemoryIngestToolResultProcessor (order 900)
+              └─► MemoryManager.ingestToolResult(...)
+  └─► MemoryManager.ingestToolContinuationBoundary(...)
+  └─► ToolContinuationReadyEvent
+
 LLMUserMessageReadyEventHandler
-  ├─► request = LLMRequestAssembler.prepareRequest(...)
+  ├─► request = LLMRequestAssembler.prepareRequest(...) or prepareToolContinuationRequest(...)
   │     ├─► PendingCompactionExecutor.executeIfRequired(...)
   │     │     ├─► CompactionWindowPlanner.plan(listRawTracesOrdered(), activeTurnId)
   │     │     ├─► Compactor.compact(plan)
   │     │     │     ├─► Summarizer.summarize(plan.eligibleBlocks)
   │     │     │     └─► MemoryStore.pruneRawTracesById(plan.eligibleTraceIds)
   │     │     └─► CompactionSnapshotBuilder.build(systemPrompt, bundle, plan)
-  │     ├─► MemoryManager.workingContextSnapshot.appendMessage(userMessage)
+  │     ├─► append user message only for normal user input
   │     └─► Prompt Renderer.render(messages)
   ├─► LLM.streamMessages(request.messages, request.renderedPayload)
   ├─► MemoryManager.ingestToolIntents(...)
@@ -1540,9 +1569,11 @@ Turns are created when a processed non-tool user message is ready.
 
 - `turn_id = turn_<counter:04d>` per agent
 - Increment when `LLMUserMessageReadyEvent` fires
-- TOOL-origin continuation input keeps the current `turn_id`; it does not create
-  a new turn and instead writes a `tool_continuation` boundary trace for
-  compaction planning
+- Tool continuation keeps the current `turn_id`; it does not create a new turn
+  and instead writes a `tool_continuation` boundary trace for compaction
+  planning. Native `api_tool_call` continuation uses `ToolContinuationReadyEvent`
+  without provider-visible aggregate user input; legacy text-parser continuation
+  uses `SenderType.TOOL` aggregate input.
 
 **Linking tool events**
 

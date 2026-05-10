@@ -16,7 +16,7 @@ import {
   ExecuteToolInvocationEvent,
   PendingToolInvocationEvent,
   ToolResultEvent,
-  UserMessageReceivedEvent
+  ToolContinuationReadyEvent
 } from '../../../src/agent/events/agent-events.js';
 import { AgentInputUserMessage } from '../../../src/agent/message/agent-input-user-message.js';
 import { buildLLMUserMessage } from '../../../src/agent/message/multimodal-message-builder.js';
@@ -62,7 +62,7 @@ runIntegration('Full tool roundtrip flow (LM Studio)', () => {
   it('executes tool calls and records memory traces', async () => {
     process.env.AUTOBYTEUS_STREAM_PARSER = 'api_tool_call';
 
-    const llm = await createLmstudioLLM({ requireToolChoice: true });
+    const llm = await createLmstudioLLM({});
     if (!llm) {
       return;
     }
@@ -157,15 +157,12 @@ runIntegration('Full tool roundtrip flow (LM Studio)', () => {
 
       const followEvent = (runtimeState.inputEventQueues as any).toolContinuationEvents.at(
         -1
-      ) as UserMessageReceivedEvent;
-      expect(followEvent).toBeInstanceOf(UserMessageReceivedEvent);
-
-      await new MemoryIngestInputProcessor().process(followEvent.agentInputUserMessage, context, null as any);
-      const followMessage = buildLLMUserMessage(followEvent.agentInputUserMessage);
-      const followEventMessage = new LLMUserMessageReadyEvent(followMessage, initialTurnId);
+      ) as ToolContinuationReadyEvent;
+      expect(followEvent).toBeInstanceOf(ToolContinuationReadyEvent);
+      expect(followEvent.turnId).toBe(initialTurnId);
 
       try {
-        await handler.handle(followEventMessage, context);
+        await handler.handle(followEvent, context);
       } catch (error) {
         console.warn(`LM Studio follow-up failed: ${String(error)}`);
         return;

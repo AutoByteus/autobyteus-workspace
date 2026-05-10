@@ -21,6 +21,7 @@ import {
   InterAgentMessageReceivedEvent,
   LLMCompleteResponseReceivedEvent,
   LLMUserMessageReadyEvent,
+  ToolContinuationReadyEvent,
   PendingToolInvocationEvent,
   ShutdownRequestedEvent,
   ToolExecutionApprovalEvent,
@@ -195,7 +196,9 @@ const createDefaultEventHandlerRegistry = (): EventHandlerRegistry => {
   registry.register(ToolResultEvent, new ToolResultEventHandler());
   registry.register(GenericEvent, new GenericEventHandler());
   registry.register(ToolExecutionApprovalEvent, new ToolExecutionApprovalEventHandler());
-  registry.register(LLMUserMessageReadyEvent, new LLMUserMessageReadyEventHandler());
+  const llmReadyHandler = new LLMUserMessageReadyEventHandler();
+  registry.register(LLMUserMessageReadyEvent, llmReadyHandler);
+  registry.register(ToolContinuationReadyEvent, llmReadyHandler);
   registry.register(ExecuteToolInvocationEvent, new ToolInvocationExecutionEventHandler());
 
   const bootstrapHandler = new BootstrapEventHandler();

@@ -131,9 +131,9 @@ runIntegration('Agent team integration (LM Studio, api_tool_call)', () => {
     const tool = registerWriteFileTool();
     const toolArgs = { path: path.join(tempDirWorker, 'team_output.txt'), content: 'Team worker output.' };
 
-    coordinatorLlm = await createLmstudioLLM({ requireToolChoice: true });
+    coordinatorLlm = await createLmstudioLLM({});
     if (!coordinatorLlm) return;
-    workerLlm = await createLmstudioLLM({ requireToolChoice: true });
+    workerLlm = await createLmstudioLLM({});
     if (!workerLlm) return;
 
     const coordinatorConfig = new AgentConfig(

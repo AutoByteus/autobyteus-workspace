@@ -14,6 +14,7 @@ import {
   GenericEvent,
   ToolExecutionApprovalEvent,
   LLMUserMessageReadyEvent,
+  ToolContinuationReadyEvent,
   ExecuteToolInvocationEvent,
   BootstrapStartedEvent,
   BootstrapStepRequestedEvent,
@@ -89,7 +90,9 @@ export class AgentFactory extends Singleton {
     registry.register(ToolResultEvent, new ToolResultEventHandler());
     registry.register(GenericEvent, new GenericEventHandler());
     registry.register(ToolExecutionApprovalEvent, new ToolExecutionApprovalEventHandler());
-    registry.register(LLMUserMessageReadyEvent, new LLMUserMessageReadyEventHandler());
+    const llmUserMessageReadyHandler = new LLMUserMessageReadyEventHandler();
+    registry.register(LLMUserMessageReadyEvent, llmUserMessageReadyHandler);
+    registry.register(ToolContinuationReadyEvent, llmUserMessageReadyHandler);
     registry.register(ExecuteToolInvocationEvent, new ToolInvocationExecutionEventHandler());
 
     const bootstrapHandler = new BootstrapEventHandler();

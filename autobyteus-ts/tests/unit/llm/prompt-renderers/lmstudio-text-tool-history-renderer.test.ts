@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { LMStudioChatRenderer } from '../../../../src/llm/prompt-renderers/lmstudio-chat-renderer.js'
+import { LMStudioTextToolHistoryRenderer } from '../../../../src/llm/prompt-renderers/lmstudio-text-tool-history-renderer.js'
 import {
   Message,
   MessageRole,
@@ -7,9 +7,9 @@ import {
   ToolResultPayload,
 } from '../../../../src/llm/utils/messages.js'
 
-describe('LMStudioChatRenderer', () => {
+describe('LMStudioTextToolHistoryRenderer', () => {
   it('flattens prior tool calls into assistant text history', async () => {
-    const renderer = new LMStudioChatRenderer()
+    const renderer = new LMStudioTextToolHistoryRenderer()
     const rendered = await renderer.render([
       new Message(MessageRole.ASSISTANT, {
         tool_payload: new ToolCallPayload([
@@ -27,7 +27,7 @@ describe('LMStudioChatRenderer', () => {
   })
 
   it('flattens tool results into user text history instead of tool-role messages', async () => {
-    const renderer = new LMStudioChatRenderer()
+    const renderer = new LMStudioTextToolHistoryRenderer()
     const rendered = await renderer.render([
       new Message(MessageRole.TOOL, {
         tool_payload: new ToolResultPayload('call_1', 'publish_artifacts', { ok: true }),

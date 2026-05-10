@@ -2,7 +2,8 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { LLMUserMessageReadyEventHandler } from '../../../../src/agent/handlers/llm-user-message-ready-event-handler.js';
 import {
   LLMCompleteResponseReceivedEvent,
-  LLMUserMessageReadyEvent
+  LLMUserMessageReadyEvent,
+  ToolContinuationReadyEvent
 } from '../../../../src/agent/events/agent-events.js';
 import { LLMUserMessage } from '../../../../src/llm/user-message.js';
 import { ChunkResponse } from '../../../../src/llm/utils/response-types.js';
@@ -16,7 +17,7 @@ import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { CompleteResponse } from '../../../../src/llm/utils/response-types.js';
 import { ToolSchemaProvider } from '../../../../src/tools/usage/providers/tool-schema-provider.js';
 import type { ChunkResponse as ChunkResponseType } from '../../../../src/llm/utils/response-types.js';
-import { MessageRole, ToolCallPayload } from '../../../../src/llm/utils/messages.js';
+import { Message, MessageRole, ToolCallPayload } from '../../../../src/llm/utils/messages.js';
 import { MemoryManager } from '../../../../src/memory/memory-manager.js';
 import { MemoryStore } from '../../../../src/memory/store/base-store.js';
 import { MemoryType } from '../../../../src/memory/models/memory-types.js';
@@ -213,7 +214,7 @@ describe('LLMUserMessageReadyEventHandler', () => {
     expect(inputQueues.enqueueToolInvocationRequest).not.toHaveBeenCalled();
   });
 
-  it('passes tool schemas to LLM stream for api_tool_call mode', async () => {
+  it('passes tool schemas but no default tool_choice to LLM stream for api_tool_call mode', async () => {
     process.env.AUTOBYTEUS_STREAM_PARSER = 'api_tool_call';
     const handler = new LLMUserMessageReadyEventHandler();
     const { context } = makeContext(LLMProvider.OPENAI, ['mock_tool']);
@@ -251,7 +252,54 @@ describe('LLMUserMessageReadyEventHandler', () => {
 
     expect(schemaSpy).toHaveBeenCalledOnce();
     expect(kwargsPassed.value.tools).toEqual(toolsSchema);
+    expect(kwargsPassed.value).not.toHaveProperty('tool_choice');
     expect(kwargsPassed.value.logicalConversationId).toBe('agent-1');
+  });
+
+  it('diagnoses text-shaped tool calls in api_tool_call mode without executing them', async () => {
+    process.env.AUTOBYTEUS_STREAM_PARSER = 'api_tool_call';
+    const handler = new LLMUserMessageReadyEventHandler();
+    const { context, inputQueues, notifier } = makeContext(LLMProvider.LMSTUDIO, ['search']);
+
+    const toolsSchema = [
+      {
+        type: 'function',
+        function: {
+          name: 'search',
+          description: 'A search tool',
+          parameters: {
+            type: 'object',
+            properties: { query: { type: 'string' } },
+            required: ['query'],
+            additionalProperties: false
+          }
+        }
+      }
+    ];
+    vi.spyOn(ToolSchemaProvider.prototype, 'buildSchema').mockReturnValue(toolsSchema);
+
+    const mockLLM = {
+      model: { provider: LLMProvider.LMSTUDIO },
+      config: { systemMessage: 'system' },
+      streamMessages: async function* () {
+        yield new ChunkResponse({ content: '[TOOL_CALL] search {\"query\":\"autobyteus\"}', is_complete: true });
+      }
+    };
+    context.state.llmInstance = mockLLM as any;
+
+    const event = new LLMUserMessageReadyEvent(new LLMUserMessage({ content: 'prompt' }), 'turn-1');
+    await handler.handle(event, context);
+
+    expect(inputQueues.enqueueToolInvocationRequest).not.toHaveBeenCalled();
+    expect(notifier.notifyAgentErrorOutputGeneration).toHaveBeenCalledWith(
+      'ApiToolCallTextDiagnostic',
+      expect.stringContaining('looks like a legacy [TOOL_CALL] payload'),
+      expect.stringContaining('[TOOL_CALL] search')
+    );
+
+    const messages = context.state.memoryManager?.getWorkingContextMessages() ?? [];
+    const assistantMessages = messages.filter((message) => message.role === MessageRole.ASSISTANT);
+    expect(assistantMessages.at(-1)?.content).toContain('[TOOL_CALL] search');
   });
 
   it('propagates active turn id on error completion events', async () => {
@@ -365,5 +413,64 @@ describe('LLMUserMessageReadyEventHandler', () => {
     expect(assistantMessages).toHaveLength(1);
     expect(assistantMessages[0].content).toBeNull();
     expect(assistantMessages[0].tool_payload).toBeInstanceOf(ToolCallPayload);
+  });
+
+  it('renders native tool continuation without synthetic aggregate user message', async () => {
+    process.env.AUTOBYTEUS_STREAM_PARSER = 'api_tool_call';
+    const handler = new LLMUserMessageReadyEventHandler();
+    const { context, inputQueues } = makeContext(LLMProvider.LMSTUDIO, ['run_bash']);
+    const memoryManager = context.state.memoryManager!;
+    memoryManager.workingContextSnapshot.appendMessage(new Message(MessageRole.USER, {
+      content: 'List files.'
+    }));
+    memoryManager.workingContextSnapshot.appendToolCalls([
+      {
+        id: 'call_abc123',
+        name: 'run_bash',
+        arguments: { command: 'ls -la' }
+      }
+    ]);
+    memoryManager.workingContextSnapshot.appendToolResult(
+      'call_abc123',
+      'run_bash',
+      'total 8\n-rw-r--r-- README.md'
+    );
+
+    const captured: { messages: any[] | null; rendered: any } = { messages: null, rendered: null };
+    const mockLLM = {
+      model: { provider: LLMProvider.LMSTUDIO },
+      config: { systemMessage: 'system' },
+      streamMessages: async function* (messages: any[], renderedPayload: unknown) {
+        captured.messages = messages;
+        captured.rendered = renderedPayload;
+        yield new ChunkResponse({ content: 'Done.', is_complete: true });
+      }
+    };
+    context.state.llmInstance = mockLLM as any;
+
+    await handler.handle(new ToolContinuationReadyEvent('turn-1'), context);
+
+    expect(inputQueues.enqueueInternalSystemEvent).toHaveBeenCalledOnce();
+    const rendered = captured.rendered as Array<Record<string, any>>;
+    expect(rendered.some((message) => message.role === 'assistant' && Array.isArray(message.tool_calls))).toBe(true);
+    expect(rendered.some((message) => message.role === 'tool' && message.tool_call_id === 'call_abc123')).toBe(true);
+    expect(
+      rendered.some(
+        (message) =>
+          message.role === 'user' &&
+          typeof message.content === 'string' &&
+          message.content.startsWith('The following tool executions have completed')
+      )
+    ).toBe(false);
+
+    const workingMessages = memoryManager.getWorkingContextMessages();
+    expect(
+      workingMessages.some(
+        (message) =>
+          message.role === MessageRole.USER &&
+          typeof message.content === 'string' &&
+          message.content.startsWith('The following tool executions have completed')
+      )
+    ).toBe(false);
   });
 });
