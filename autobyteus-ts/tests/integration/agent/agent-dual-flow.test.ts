@@ -79,9 +79,9 @@ runIntegration('Agent dual-flow integration (LM Studio, api_tool_call)', () => {
     const toolArgsA = { path: 'alpha.txt', content: 'Alpha agent output.' };
     const toolArgsB = { path: 'beta.txt', content: 'Beta agent output.' };
 
-    const llmA = await createLmstudioLLM({ requireToolChoice: true });
+    const llmA = await createLmstudioLLM({});
     if (!llmA) return;
-    const llmB = await createLmstudioLLM({ requireToolChoice: true });
+    const llmB = await createLmstudioLLM({});
     if (!llmB) {
       await llmA.cleanup();
       return;

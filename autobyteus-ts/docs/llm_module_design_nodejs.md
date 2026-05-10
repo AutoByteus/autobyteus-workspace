@@ -49,6 +49,15 @@ Two OpenAI-style paths coexist:
 
 - **Built-in OpenAI-style providers** such as DeepSeek, Grok, Kimi, Qwen, GLM,
   and MiniMax still use `OpenAICompatibleLLM`.
+- OpenAI-compatible Chat Completions payloads are built through
+  `OpenAICompatibleRequestBuilder`, which maps `LLMConfig` generation controls,
+  merges provider-specific `extraParams`, filters framework-internal kwargs, owns
+  `tools` placement, and preserves explicit lower-level `tool_choice`
+  pass-through. The default agent/server path leaves `tool_choice` unset.
+- Provider adapters keep provider-specific request legality local before
+  delegating to that builder. `KimiLLM`, for example, normalizes `kimi-k2.5` and
+  `kimi-k2.6` requests to Moonshot-safe temperature defaults unless the caller
+  explicitly passes a per-request `temperature`.
 - **Saved custom providers** use:
   - `openai-compatible-endpoint-discovery.ts` for `/models` probing
   - `OpenAICompatibleEndpointModel`
@@ -122,7 +131,10 @@ Provider adapters own request-shape differences:
   thinking budgets or an adapter-injected default `temperature`.
 - `DeepSeekLLM` continues to use the OpenAI-compatible DeepSeek path for V4.
 - `KimiLLM` keeps tool-call continuation safe for `kimi-k2.6` by disabling
-  thinking when tool workflows have no explicit thinking override.
+  thinking when tool workflows have no explicit thinking override. For
+  `kimi-k2.5` and `kimi-k2.6`, Kimi also normalizes provider-safe temperature
+  defaults: `0.6` for tool workflows and `1` for non-tool requests, while
+  preserving explicit per-request temperature kwargs.
 
 For image and audio/TTS catalogs, including OpenAI `gpt-image-2` and Gemini TTS
 models, see `docs/provider_model_catalogs.md`.
@@ -164,6 +176,15 @@ Responses streaming (official OpenAI) emits:
 
 Custom OpenAI-compatible providers stay on the existing OpenAI-style tool-call
 path rather than the Responses event format.
+
+In that OpenAI-compatible path, native API tool-call mode keeps tool metadata
+and history provider-native: schemas are sent through `tools`, the default
+agent/server path leaves `tool_choice` unset, and LM Studio uses
+`assistant.tool_calls` plus `role: "tool"` history instead of prompt-template
+`[TOOL_CALL]` / `[TOOL_RESULT]` text. Legacy text-shaped LM Studio history
+remains available only when an explicit text-parser mode is selected. Native
+tool-result continuations render the existing working context directly and do
+not append an extra aggregate `role: "user"` message containing tool results.
 
 ## 9. Autobyteus RPA Runtime Conversation Contract
 

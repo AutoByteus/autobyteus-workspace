@@ -1,10 +1,16 @@
 import { AgentEventHandler } from './base-event-handler.js';
-import { ToolResultEvent, UserMessageReceivedEvent, BaseEvent } from '../events/agent-events.js';
+import {
+  ToolContinuationReadyEvent,
+  ToolResultEvent,
+  UserMessageReceivedEvent,
+  BaseEvent
+} from '../events/agent-events.js';
 import { ContextFile } from '../message/context-file.js';
 import { AgentInputUserMessage } from '../message/agent-input-user-message.js';
 import { SenderType } from '../sender-type.js';
 import { formatToCleanString } from '../../utils/llm-output-formatter.js';
 import { buildToolLifecyclePayloadFromResult } from './tool-lifecycle-payload.js';
+import { resolveToolCallFormat } from '../../utils/tool-call-format.js';
 import type { AgentContext } from '../context/agent-context.js';
 
 type ToolResultProcessorLike = {
@@ -31,10 +37,82 @@ export class ToolResultEventHandler extends AgentEventHandler {
     console.info('ToolResultEventHandler initialized.');
   }
 
+  private async applyToolResultProcessors(
+    event: ToolResultEvent,
+    context: AgentContext,
+    acceptedIdentity?: { invocationId: string; turnId: string }
+  ): Promise<ToolResultEvent> {
+    const agentId = context.agentId;
+    let processedEvent = event;
+    const processorInstances = context.config.toolExecutionResultProcessors as unknown[];
+    if (!processorInstances || processorInstances.length === 0) {
+      return processedEvent;
+    }
+
+    const sortedProcessors = processorInstances
+      .filter(isToolResultProcessor)
+      .sort((left, right) => left.getOrder() - right.getOrder());
+
+    for (const processor of sortedProcessors) {
+      try {
+        if (acceptedIdentity) {
+          processedEvent.toolInvocationId = acceptedIdentity.invocationId;
+          processedEvent.turnId = acceptedIdentity.turnId;
+        }
+        processedEvent = await processor.process(processedEvent, context);
+        if (acceptedIdentity) {
+          processedEvent.toolInvocationId = acceptedIdentity.invocationId;
+          processedEvent.turnId = acceptedIdentity.turnId;
+        }
+      } catch (error) {
+        console.error(
+          `Agent '${agentId}': Error applying tool result processor '${processor.getName()}': ${error}`
+        );
+      }
+    }
+
+    return processedEvent;
+  }
+
+  private emitToolResultLog(processedEvent: ToolResultEvent, context: AgentContext): void {
+    const agentId = context.agentId;
+    const notifier = context.statusManager?.notifier;
+    if (!notifier) {
+      return;
+    }
+
+    const toolInvocationId = processedEvent.toolInvocationId ?? 'N/A';
+    const logTurnId = processedEvent.turnId ?? context.state.activeTurn?.turnId ?? null;
+    let logMessage = '';
+    if (processedEvent.isDenied) {
+      logMessage = `[TOOL_RESULT_DENIED] Agent_ID: ${agentId}, Tool: ${processedEvent.toolName}, Invocation_ID: ${toolInvocationId}, Reason: ${processedEvent.error ?? 'Denied'}`;
+    } else if (processedEvent.error) {
+      logMessage = `[TOOL_RESULT_ERROR_PROCESSED] Agent_ID: ${agentId}, Tool: ${processedEvent.toolName}, Invocation_ID: ${toolInvocationId}, Error: ${processedEvent.error}`;
+    } else {
+      logMessage = `[TOOL_RESULT_SUCCESS_PROCESSED] Agent_ID: ${agentId}, Tool: ${processedEvent.toolName}, Invocation_ID: ${toolInvocationId}, Result: ${formatToCleanString(processedEvent.result)}`;
+    }
+
+    try {
+      notifier.notifyAgentDataToolLog({
+        log_entry: logMessage,
+        tool_invocation_id: toolInvocationId,
+        tool_name: processedEvent.toolName,
+        turn_id: logTurnId
+      });
+    } catch (error) {
+      console.error(`Agent '${agentId}': Error notifying tool result log: ${error}`);
+    }
+  }
+
   private async dispatchResultsToInputPipeline(
     processedEvents: ToolResultEvent[],
     context: AgentContext
   ): Promise<void> {
+    if (resolveToolCallFormat() === 'api_tool_call') {
+      await this.dispatchNativeToolContinuation(processedEvents, context);
+      return;
+    }
+
     const agentId = context.agentId;
     const aggregatedContentParts: string[] = [];
     const mediaContextFiles: ContextFile[] = [];
@@ -120,6 +198,46 @@ export class ToolResultEventHandler extends AgentEventHandler {
     );
   }
 
+  private async dispatchNativeToolContinuation(
+    processedEvents: ToolResultEvent[],
+    context: AgentContext
+  ): Promise<void> {
+    const agentId = context.agentId;
+    const turnId = this.resolveContinuationTurnId(processedEvents, context);
+    if (!turnId) {
+      throw new Error(
+        `Agent '${agentId}' cannot continue native API tool results without an active turn or result turnId.`
+      );
+    }
+
+    context.state.memoryManager?.ingestToolContinuationBoundary(
+      turnId,
+      'ToolContinuationReadyEvent',
+      'Native API tool continuation'
+    );
+
+    await context.inputEventQueues.enqueueToolContinuationInput(
+      new ToolContinuationReadyEvent(turnId)
+    );
+
+    console.info(
+      `Agent '${agentId}' enqueued native API tool continuation for turn '${turnId}' ` +
+        `after ${processedEvents.length} tool result(s); no aggregate user message was added.`
+    );
+  }
+
+  private resolveContinuationTurnId(
+    processedEvents: ToolResultEvent[],
+    context: AgentContext
+  ): string | null {
+    for (const processedEvent of processedEvents) {
+      if (typeof processedEvent.turnId === 'string' && processedEvent.turnId.trim()) {
+        return processedEvent.turnId.trim();
+      }
+    }
+    return context.state.activeTurn?.turnId ?? null;
+  }
+
   private emitTerminalLifecycle(processedEvent: ToolResultEvent, context: AgentContext): void {
     if (processedEvent.isDenied) {
       return;
@@ -158,55 +276,19 @@ export class ToolResultEventHandler extends AgentEventHandler {
     }
 
     const agentId = context.agentId;
-    const notifier = context.statusManager?.notifier;
-
-    let processedEvent: ToolResultEvent = event;
-    const processorInstances = context.config.toolExecutionResultProcessors as unknown[];
-    if (processorInstances && processorInstances.length > 0) {
-      const sortedProcessors = processorInstances
-        .filter(isToolResultProcessor)
-        .sort((left, right) => left.getOrder() - right.getOrder());
-
-      for (const processor of sortedProcessors) {
-        try {
-          processedEvent = await processor.process(processedEvent, context);
-        } catch (error) {
-          console.error(
-            `Agent '${agentId}': Error applying tool result processor '${processor.getName()}': ${error}`
-          );
-        }
-      }
-    }
-
-    const toolInvocationId = processedEvent.toolInvocationId ?? 'N/A';
-    if (notifier) {
-      const logTurnId = processedEvent.turnId ?? context.state.activeTurn?.turnId ?? null;
-      let logMessage = '';
-      if (processedEvent.isDenied) {
-        logMessage = `[TOOL_RESULT_DENIED] Agent_ID: ${agentId}, Tool: ${processedEvent.toolName}, Invocation_ID: ${toolInvocationId}, Reason: ${processedEvent.error ?? 'Denied'}`;
-      } else if (processedEvent.error) {
-        logMessage = `[TOOL_RESULT_ERROR_PROCESSED] Agent_ID: ${agentId}, Tool: ${processedEvent.toolName}, Invocation_ID: ${toolInvocationId}, Error: ${processedEvent.error}`;
-      } else {
-        logMessage = `[TOOL_RESULT_SUCCESS_PROCESSED] Agent_ID: ${agentId}, Tool: ${processedEvent.toolName}, Invocation_ID: ${toolInvocationId}, Result: ${formatToCleanString(processedEvent.result)}`;
-      }
-
-      try {
-        notifier.notifyAgentDataToolLog({
-          log_entry: logMessage,
-          tool_invocation_id: toolInvocationId,
-          tool_name: processedEvent.toolName,
-          turn_id: logTurnId
-        });
-      } catch (error) {
-        console.error(`Agent '${agentId}': Error notifying tool result log: ${error}`);
-      }
-    }
-
     const activeTurn = context.state.activeTurn;
     const activeBatch = activeTurn?.activeToolInvocationBatch ?? null;
-    const invocationId = processedEvent.toolInvocationId;
+    const invocationId = event.toolInvocationId;
 
     if (!activeBatch) {
+      if (resolveToolCallFormat() === 'api_tool_call') {
+        console.warn(
+          `Agent '${agentId}': Ignoring native API tool result for invocation '${invocationId ?? 'N/A'}' ` +
+            'because no active tool invocation batch can validate its provider tool_call_id.'
+        );
+        return;
+      }
+
       if (invocationId && context.state.recentSettledInvocationIds.has(invocationId)) {
         console.warn(
           `Agent '${agentId}': Dropping late duplicate tool result for invocation '${invocationId}' after turn cleanup.`
@@ -214,6 +296,8 @@ export class ToolResultEventHandler extends AgentEventHandler {
         return;
       }
 
+      const processedEvent = await this.applyToolResultProcessors(event, context);
+      this.emitToolResultLog(processedEvent, context);
       this.emitTerminalLifecycle(processedEvent, context);
       await this.dispatchResultsToInputPipeline([processedEvent], context);
       return;
@@ -239,16 +323,29 @@ export class ToolResultEventHandler extends AgentEventHandler {
     }
 
     if (
-      processedEvent.turnId &&
+      event.turnId &&
       activeBatch.turnId &&
-      processedEvent.turnId !== activeBatch.turnId
+      event.turnId !== activeBatch.turnId
     ) {
       console.warn(
         `Agent '${agentId}': Ignoring turn-mismatched result for invocation '${invocationId}'. ` +
-          `Expected turn '${activeBatch.turnId}', got '${processedEvent.turnId}'.`
+          `Expected turn '${activeBatch.turnId}', got '${event.turnId}'.`
       );
       return;
     }
+
+    if (activeBatch.hasSettled(invocationId)) {
+      console.warn(
+        `Agent '${agentId}': Duplicate in-turn result for invocation '${invocationId}' received; ignoring.`
+      );
+      return;
+    }
+
+    const processedEvent = await this.applyToolResultProcessors(event, context, {
+      invocationId,
+      turnId: activeBatch.turnId
+    });
+    this.emitToolResultLog(processedEvent, context);
 
     const isNewSettlement = activeBatch.settleResult(processedEvent);
     if (!isNewSettlement) {

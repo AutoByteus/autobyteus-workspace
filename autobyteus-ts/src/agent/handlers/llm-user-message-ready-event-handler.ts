@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { AgentEventHandler } from './base-event-handler.js';
 import {
   LLMUserMessageReadyEvent,
+  ToolContinuationReadyEvent,
   LLMCompleteResponseReceivedEvent,
   PendingToolInvocationEvent,
   BaseEvent
@@ -21,6 +22,8 @@ import { defaultToolRegistry } from '../../tools/registry/tool-registry.js';
 import type { ParameterSchema } from '../../utils/parameter-schema.js';
 import type { AgentContext } from '../context/agent-context.js';
 import type { TokenUsage } from '../../llm/utils/token-usage.js';
+import { resolveToolCallFormat } from '../../utils/tool-call-format.js';
+import { detectApiToolCallTextLeak } from '../streaming/handlers/api-tool-call-text-diagnostic.js';
 
 export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
   constructor() {
@@ -29,9 +32,9 @@ export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
   }
 
   async handle(event: BaseEvent, context: AgentContext): Promise<void> {
-    if (!(event instanceof LLMUserMessageReadyEvent)) {
+    if (!(event instanceof LLMUserMessageReadyEvent) && !(event instanceof ToolContinuationReadyEvent)) {
       console.warn(
-        `LLMUserMessageReadyEventHandler received non-LLMUserMessageReadyEvent: ${event?.constructor?.name ?? typeof event}. Skipping.`
+        `LLMUserMessageReadyEventHandler received unsupported event: ${event?.constructor?.name ?? typeof event}. Skipping.`
       );
       return;
     }
@@ -39,7 +42,7 @@ export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
     const agentId = context.agentId;
     const llmInstance = context.state.llmInstance as BaseLLM | null;
     if (!llmInstance) {
-      const errorMsg = `Agent '${agentId}' received LLMUserMessageReadyEvent but LLM instance is not yet initialized.`;
+      const errorMsg = `Agent '${agentId}' received ${event.constructor.name} but LLM instance is not yet initialized.`;
       console.error(errorMsg);
       context.statusManager?.notifier?.notifyAgentErrorOutputGeneration(
         'LLMUserMessageReadyEventHandler.pre_llm_check',
@@ -48,12 +51,20 @@ export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
       throw new Error(errorMsg);
     }
 
-    const llmUserMessage = event.llmUserMessage;
+    const isToolContinuation = event instanceof ToolContinuationReadyEvent;
+    const llmUserMessage = event instanceof LLMUserMessageReadyEvent ? event.llmUserMessage : null;
     const activeTurnId = event.turnId;
-    console.info(`Agent '${agentId}' handling LLMUserMessageReadyEvent: '${llmUserMessage.content}'`);
-    console.debug(
-      `Agent '${agentId}' preparing to send full message to LLM:\n---\n${llmUserMessage.content}\n---`
-    );
+    if (llmUserMessage) {
+      console.info(`Agent '${agentId}' handling LLMUserMessageReadyEvent: '${llmUserMessage.content}'`);
+      console.debug(
+        `Agent '${agentId}' preparing to send full message to LLM:\n---\n${llmUserMessage.content}\n---`
+      );
+    } else {
+      console.info(`Agent '${agentId}' handling ToolContinuationReadyEvent for turn '${activeTurnId}'.`);
+      console.debug(
+        `Agent '${agentId}' preparing native API tool continuation without appending a user message.`
+      );
+    }
     const memoryManager = context.state.memoryManager;
     if (!memoryManager) {
       throw new Error(`Agent '${agentId}' requires a memory manager to assemble LLM requests.`);
@@ -62,7 +73,7 @@ export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
     const activeTurn = context.state.activeTurn;
     if (!activeTurn || activeTurn.turnId !== activeTurnId) {
       const errorMessage =
-        `Agent '${agentId}' received LLMUserMessageReadyEvent for turn '${activeTurnId}', ` +
+        `Agent '${agentId}' received ${event.constructor.name} for turn '${activeTurnId}', ` +
         `but activeTurn is '${activeTurn?.turnId ?? 'null'}'.`;
       console.error(errorMessage);
       throw new Error(errorMessage);
@@ -176,11 +187,16 @@ export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
 
     let request: RequestPackage;
     try {
-      request = await assembler.prepareRequest(
-        llmUserMessage,
-        activeTurnId,
-        systemPrompt ?? undefined
-      );
+      request = isToolContinuation
+        ? await assembler.prepareToolContinuationRequest(
+            activeTurnId,
+            systemPrompt ?? undefined
+          )
+        : await assembler.prepareRequest(
+            llmUserMessage!,
+            activeTurnId,
+            systemPrompt ?? undefined
+          );
     } catch (error) {
       if (error instanceof CompactionPreparationError) {
         await this.enqueueErrorCompletion(
@@ -252,6 +268,26 @@ export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
           for (const invocation of toolInvocations) {
             await context.inputEventQueues.enqueueToolInvocationRequest(
               new PendingToolInvocationEvent(invocation)
+            );
+          }
+        }
+      }
+
+      if (resolveToolCallFormat() === 'api_tool_call' && toolNames.length > 0) {
+        const diagnostic = detectApiToolCallTextLeak(completeResponseText, parsedToolInvocationCount);
+        if (diagnostic) {
+          console.warn(
+            `Agent '${agentId}': ${diagnostic.message} ${diagnostic.details}`
+          );
+          try {
+            notifier?.notifyAgentErrorOutputGeneration?.(
+              'ApiToolCallTextDiagnostic',
+              diagnostic.message,
+              diagnostic.details
+            );
+          } catch (notifyError) {
+            console.error(
+              `Agent '${agentId}': Error notifying API tool-call text diagnostic: ${notifyError}`
             );
           }
         }

@@ -1,0 +1,44 @@
+{
+  "requestCount": 1,
+  "path": "/v1/chat/completions",
+  "parser": "api_tool_call",
+  "hasTools": true,
+  "toolChoice": null,
+  "messages": [
+    {
+      "role": "system",
+      "content": "System prompt."
+    },
+    {
+      "role": "user",
+      "content": "Please inspect the workspace."
+    },
+    {
+      "role": "assistant",
+      "content": null,
+      "tool_calls": [
+        {
+          "id": "call_probe_1",
+          "type": "function",
+          "function": {
+            "name": "run_bash",
+            "arguments": "{\"command\":\"pwd && ls -la\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_probe_1",
+      "content": "{\"stdout\":\"/tmp\\n\",\"stderr\":\"\",\"exitCode\":0}"
+    }
+  ],
+  "containsLegacyToolResultUserText": false,
+  "containsSyntheticToolExecutionUserText": false,
+  "roleSequence": [
+    "system",
+    "user",
+    "assistant",
+    "tool"
+  ]
+}

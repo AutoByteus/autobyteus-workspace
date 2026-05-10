@@ -1,0 +1,379 @@
+{
+  "generatedAt": "2026-05-09T18:34:17.422Z",
+  "reportPurpose": "current_state_regression_after_tool_schema_best_practices_fix",
+  "provider": "LMSTUDIO",
+  "toolCount": 25,
+  "criteria": {
+    "openaiCompatibleEnvelope": {
+      "level": "required",
+      "passed": true,
+      "issueCount": 0,
+      "sampleIssues": []
+    },
+    "closedObjectSchemas": {
+      "level": "best_practice_and_strict_required",
+      "passed": true,
+      "issueCount": 0,
+      "sampleIssues": []
+    },
+    "strictModeEnabled": {
+      "level": "best_practice",
+      "passed": false,
+      "issueCount": 25,
+      "sampleIssues": [
+        {
+          "tool": "add_todo",
+          "path": "function.strict",
+          "level": "best_practice",
+          "message": "OpenAI Structured Outputs strict mode is not enabled for this function tool."
+        },
+        {
+          "tool": "assign_task_to",
+          "path": "function.strict",
+          "level": "best_practice",
+          "message": "OpenAI Structured Outputs strict mode is not enabled for this function tool."
+        },
+        {
+          "tool": "create_task",
+          "path": "function.strict",
+          "level": "best_practice",
+          "message": "OpenAI Structured Outputs strict mode is not enabled for this function tool."
+        },
+        {
+          "tool": "create_tasks",
+          "path": "function.strict",
+          "level": "best_practice",
+          "message": "OpenAI Structured Outputs strict mode is not enabled for this function tool."
+        },
+        {
+          "tool": "create_todo_list",
+          "path": "function.strict",
+          "level": "best_practice",
+          "message": "OpenAI Structured Outputs strict mode is not enabled for this function tool."
+        },
+        {
+          "tool": "download_media",
+          "path": "function.strict",
+          "level": "best_practice",
+          "message": "OpenAI Structured Outputs strict mode is not enabled for this function tool."
+        },
+        {
+          "tool": "edit_file",
+          "path": "function.strict",
+          "level": "best_practice",
+          "message": "OpenAI Structured Outputs strict mode is not enabled for this function tool."
+        },
+        {
+          "tool": "get_my_tasks",
+          "path": "function.strict",
+          "level": "best_practice",
+          "message": "OpenAI Structured Outputs strict mode is not enabled for this function tool."
+        },
+        {
+          "tool": "get_process_output",
+          "path": "function.strict",
+          "level": "best_practice",
+          "message": "OpenAI Structured Outputs strict mode is not enabled for this function tool."
+        },
+        {
+          "tool": "get_task_plan_status",
+          "path": "function.strict",
+          "level": "best_practice",
+          "message": "OpenAI Structured Outputs strict mode is not enabled for this function tool."
+        },
+        {
+          "tool": "get_todo_list",
+          "path": "function.strict",
+          "level": "best_practice",
+          "message": "OpenAI Structured Outputs strict mode is not enabled for this function tool."
+        },
+        {
+          "tool": "insert_in_file",
+          "path": "function.strict",
+          "level": "best_practice",
+          "message": "OpenAI Structured Outputs strict mode is not enabled for this function tool."
+        }
+      ]
+    },
+    "strictRequiredFieldReady": {
+      "level": "strict_required_if_strict_enabled",
+      "passed": false,
+      "issueCount": 13,
+      "sampleIssues": [
+        {
+          "tool": "assign_task_to",
+          "path": "function.parameters",
+          "level": "strict_required",
+          "message": "Strict OpenAI schemas require all object properties to be listed in required; missing: dependencies. Optional fields need nullable types if strict mode is used."
+        },
+        {
+          "tool": "create_task",
+          "path": "function.parameters",
+          "level": "strict_required",
+          "message": "Strict OpenAI schemas require all object properties to be listed in required; missing: dependencies. Optional fields need nullable types if strict mode is used."
+        },
+        {
+          "tool": "create_tasks",
+          "path": "function.parameters.properties.tasks.items",
+          "level": "strict_required",
+          "message": "Strict OpenAI schemas require all object properties to be listed in required; missing: dependencies. Optional fields need nullable types if strict mode is used."
+        },
+        {
+          "tool": "download_media",
+          "path": "function.parameters",
+          "level": "strict_required",
+          "message": "Strict OpenAI schemas require all object properties to be listed in required; missing: folder. Optional fields need nullable types if strict mode is used."
+        },
+        {
+          "tool": "get_process_output",
+          "path": "function.parameters",
+          "level": "strict_required",
+          "message": "Strict OpenAI schemas require all object properties to be listed in required; missing: lines. Optional fields need nullable types if strict mode is used."
+        },
+        {
+          "tool": "insert_in_file",
+          "path": "function.parameters",
+          "level": "strict_required",
+          "message": "Strict OpenAI schemas require all object properties to be listed in required; missing: before_text, after_text. Optional fields need nullable types if strict mode is used."
+        },
+        {
+          "tool": "read_file",
+          "path": "function.parameters",
+          "level": "strict_required",
+          "message": "Strict OpenAI schemas require all object properties to be listed in required; missing: start_line, end_line, include_line_numbers. Optional fields need nullable types if strict mode is used."
+        },
+        {
+          "tool": "read_url",
+          "path": "function.parameters",
+          "level": "strict_required",
+          "message": "Strict OpenAI schemas require all object properties to be listed in required; missing: output_format. Optional fields need nullable types if strict mode is used."
+        },
+        {
+          "tool": "run_bash",
+          "path": "function.parameters",
+          "level": "strict_required",
+          "message": "Strict OpenAI schemas require all object properties to be listed in required; missing: cwd, timeout_seconds, background. Optional fields need nullable types if strict mode is used."
+        },
+        {
+          "tool": "search_web",
+          "path": "function.parameters",
+          "level": "strict_required",
+          "message": "Strict OpenAI schemas require all object properties to be listed in required; missing: num_results. Optional fields need nullable types if strict mode is used."
+        },
+        {
+          "tool": "send_message_to",
+          "path": "function.parameters",
+          "level": "strict_required",
+          "message": "Strict OpenAI schemas require all object properties to be listed in required; missing: message_type, reference_files. Optional fields need nullable types if strict mode is used."
+        },
+        {
+          "tool": "start_background_process",
+          "path": "function.parameters",
+          "level": "strict_required",
+          "message": "Strict OpenAI schemas require all object properties to be listed in required; missing: cwd. Optional fields need nullable types if strict mode is used."
+        }
+      ]
+    }
+  },
+  "runBash": {
+    "openaiCompatibleEnvelope": true,
+    "closedObjectSchemas": true,
+    "strictModeEnabled": false,
+    "strictRequiredFieldReady": false,
+    "firstClosedObjectIssues": [],
+    "firstStrictRequiredFieldIssues": [
+      {
+        "tool": "run_bash",
+        "path": "function.parameters",
+        "level": "strict_required",
+        "message": "Strict OpenAI schemas require all object properties to be listed in required; missing: cwd, timeout_seconds, background. Optional fields need nullable types if strict mode is used."
+      }
+    ],
+    "generatedSchema": {
+      "type": "function",
+      "function": {
+        "name": "run_bash",
+        "description": "Execute a shell command in a working directory. If cwd is omitted, the workspace root is used. If cwd is provided, it may be absolute or workspace-root-relative. For nested targets, reuse the same cwd on every command that should run there. The result includes effectiveCwd so you can confirm where the command actually ran.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "command": {
+              "description": "Shell command to execute.",
+              "type": "string"
+            },
+            "cwd": {
+              "description": "Optional working-directory path for this command. Absolute paths are allowed. Relative paths are resolved from the workspace root when available. If omitted, the workspace root is used when available. If a task targets a nested directory, pass that same cwd on every location-sensitive command in that directory, including pwd, git init, redirections, file creation, and scripts.",
+              "type": "string"
+            },
+            "timeout_seconds": {
+              "description": "Maximum execution time for a foreground command in seconds.",
+              "type": "integer",
+              "default": 30
+            },
+            "background": {
+              "description": "Whether to start the command asynchronously and return a process handle.",
+              "type": "boolean",
+              "default": false
+            }
+          },
+          "required": [
+            "command"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  },
+  "perToolSummary": {
+    "add_todo": {
+      "openaiCompatibleEnvelope": true,
+      "closedObjectSchemas": true,
+      "strictModeEnabled": false,
+      "strictRequiredFieldReady": true
+    },
+    "assign_task_to": {
+      "openaiCompatibleEnvelope": true,
+      "closedObjectSchemas": true,
+      "strictModeEnabled": false,
+      "strictRequiredFieldReady": false
+    },
+    "create_task": {
+      "openaiCompatibleEnvelope": true,
+      "closedObjectSchemas": true,
+      "strictModeEnabled": false,
+      "strictRequiredFieldReady": false
+    },
+    "create_tasks": {
+      "openaiCompatibleEnvelope": true,
+      "closedObjectSchemas": true,
+      "strictModeEnabled": false,
+      "strictRequiredFieldReady": false
+    },
+    "create_todo_list": {
+      "openaiCompatibleEnvelope": true,
+      "closedObjectSchemas": true,
+      "strictModeEnabled": false,
+      "strictRequiredFieldReady": true
+    },
+    "download_media": {
+      "openaiCompatibleEnvelope": true,
+      "closedObjectSchemas": true,
+      "strictModeEnabled": false,
+      "strictRequiredFieldReady": false
+    },
+    "edit_file": {
+      "openaiCompatibleEnvelope": true,
+      "closedObjectSchemas": true,
+      "strictModeEnabled": false,
+      "strictRequiredFieldReady": true
+    },
+    "get_my_tasks": {
+      "openaiCompatibleEnvelope": true,
+      "closedObjectSchemas": true,
+      "strictModeEnabled": false,
+      "strictRequiredFieldReady": true
+    },
+    "get_process_output": {
+      "openaiCompatibleEnvelope": true,
+      "closedObjectSchemas": true,
+      "strictModeEnabled": false,
+      "strictRequiredFieldReady": false
+    },
+    "get_task_plan_status": {
+      "openaiCompatibleEnvelope": true,
+      "closedObjectSchemas": true,
+      "strictModeEnabled": false,
+      "strictRequiredFieldReady": true
+    },
+    "get_todo_list": {
+      "openaiCompatibleEnvelope": true,
+      "closedObjectSchemas": true,
+      "strictModeEnabled": false,
+      "strictRequiredFieldReady": true
+    },
+    "insert_in_file": {
+      "openaiCompatibleEnvelope": true,
+      "closedObjectSchemas": true,
+      "strictModeEnabled": false,
+      "strictRequiredFieldReady": false
+    },
+    "load_skill": {
+      "openaiCompatibleEnvelope": true,
+      "closedObjectSchemas": true,
+      "strictModeEnabled": false,
+      "strictRequiredFieldReady": true
+    },
+    "read_file": {
+      "openaiCompatibleEnvelope": true,
+      "closedObjectSchemas": true,
+      "strictModeEnabled": false,
+      "strictRequiredFieldReady": false
+    },
+    "read_media_file": {
+      "openaiCompatibleEnvelope": true,
+      "closedObjectSchemas": true,
+      "strictModeEnabled": false,
+      "strictRequiredFieldReady": true
+    },
+    "read_url": {
+      "openaiCompatibleEnvelope": true,
+      "closedObjectSchemas": true,
+      "strictModeEnabled": false,
+      "strictRequiredFieldReady": false
+    },
+    "replace_in_file": {
+      "openaiCompatibleEnvelope": true,
+      "closedObjectSchemas": true,
+      "strictModeEnabled": false,
+      "strictRequiredFieldReady": true
+    },
+    "run_bash": {
+      "openaiCompatibleEnvelope": true,
+      "closedObjectSchemas": true,
+      "strictModeEnabled": false,
+      "strictRequiredFieldReady": false
+    },
+    "search_web": {
+      "openaiCompatibleEnvelope": true,
+      "closedObjectSchemas": true,
+      "strictModeEnabled": false,
+      "strictRequiredFieldReady": false
+    },
+    "send_message_to": {
+      "openaiCompatibleEnvelope": true,
+      "closedObjectSchemas": true,
+      "strictModeEnabled": false,
+      "strictRequiredFieldReady": false
+    },
+    "start_background_process": {
+      "openaiCompatibleEnvelope": true,
+      "closedObjectSchemas": true,
+      "strictModeEnabled": false,
+      "strictRequiredFieldReady": false
+    },
+    "stop_background_process": {
+      "openaiCompatibleEnvelope": true,
+      "closedObjectSchemas": true,
+      "strictModeEnabled": false,
+      "strictRequiredFieldReady": true
+    },
+    "update_task_status": {
+      "openaiCompatibleEnvelope": true,
+      "closedObjectSchemas": true,
+      "strictModeEnabled": false,
+      "strictRequiredFieldReady": false
+    },
+    "update_todo_status": {
+      "openaiCompatibleEnvelope": true,
+      "closedObjectSchemas": true,
+      "strictModeEnabled": false,
+      "strictRequiredFieldReady": true
+    },
+    "write_file": {
+      "openaiCompatibleEnvelope": true,
+      "closedObjectSchemas": true,
+      "strictModeEnabled": false,
+      "strictRequiredFieldReady": true
+    }
+  }
+}

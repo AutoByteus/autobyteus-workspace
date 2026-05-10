@@ -75,6 +75,7 @@ describe('KimiLLM', () => {
     expect(mockCreate.mock.calls[0]?.[0]).toMatchObject({
       model: 'kimi-k2.5',
       tool_choice: 'required',
+      temperature: 0.6,
       thinking: { type: 'disabled' }
     });
   });
@@ -110,6 +111,7 @@ describe('KimiLLM', () => {
     expect(mockCreate.mock.calls[0]?.[0]).toMatchObject({
       model: 'kimi-k2.6',
       tool_choice: 'required',
+      temperature: 0.6,
       thinking: { type: 'disabled' }
     });
   });
@@ -142,6 +144,7 @@ describe('KimiLLM', () => {
     expect(mockCreate).toHaveBeenCalledTimes(1);
     expect(mockCreate.mock.calls[0]?.[0]).toMatchObject({
       model: 'kimi-k2.5',
+      temperature: 0.6,
       thinking: { type: 'disabled' }
     });
   });
@@ -183,6 +186,7 @@ describe('KimiLLM', () => {
     expect(mockCreate).toHaveBeenCalledTimes(1);
     expect(mockCreate.mock.calls[0]?.[0]).toMatchObject({
       model: 'kimi-k2.5',
+      temperature: 0.6,
       thinking: { type: 'enabled' }
     });
   });
@@ -217,7 +221,43 @@ describe('KimiLLM', () => {
     expect(mockCreate).toHaveBeenCalledTimes(1);
     expect(mockCreate.mock.calls[0]?.[0]).toMatchObject({
       model: 'kimi-k2.6',
+      temperature: 0.6,
       thinking: { type: 'enabled' }
+    });
+  });
+
+  it('uses Kimi provider-safe default temperature for kimi-k2.6 non-tool requests', async () => {
+    const llm = new KimiLLM(buildModel('kimi-k2.6'));
+
+    await llm.sendMessages([
+      new Message(MessageRole.SYSTEM, { content: 'You are a helpful assistant.' }),
+      new Message(MessageRole.USER, { content: 'Say pong.' })
+    ]);
+
+    expect(mockCreate).toHaveBeenCalledTimes(1);
+    expect(mockCreate.mock.calls[0]?.[0]).toMatchObject({
+      model: 'kimi-k2.6',
+      temperature: 1
+    });
+    expect(mockCreate.mock.calls[0]?.[0]).not.toHaveProperty('thinking');
+  });
+
+  it('preserves explicit per-request temperature kwargs for kimi-k2.6', async () => {
+    const llm = new KimiLLM(buildModel('kimi-k2.6'));
+
+    await llm.sendMessages(
+      [
+        new Message(MessageRole.SYSTEM, { content: 'You are a helpful assistant.' }),
+        new Message(MessageRole.USER, { content: 'Say pong.' })
+      ],
+      null,
+      { temperature: 0.9 }
+    );
+
+    expect(mockCreate).toHaveBeenCalledTimes(1);
+    expect(mockCreate.mock.calls[0]?.[0]).toMatchObject({
+      model: 'kimi-k2.6',
+      temperature: 0.9
     });
   });
 

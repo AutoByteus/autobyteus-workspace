@@ -761,7 +761,7 @@ runDiagnostics('edit_file diagnostics integration (LM Studio)', () => {
     const startedAt = Date.now();
     const workspace = await fs.mkdtemp(path.join(os.tmpdir(), `edit-file-diagnostics-${definition.id}-`));
     const runtime = await definition.setup(workspace);
-    const llm = await createLmstudioLLM({ requireToolChoice: true, temperature: 0 });
+    const llm = await createLmstudioLLM({ temperature: 0 });
 
     if (!llm) {
       await fs.rm(workspace, { recursive: true, force: true });

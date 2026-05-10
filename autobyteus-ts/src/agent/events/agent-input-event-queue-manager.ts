@@ -2,6 +2,7 @@ import type {
   BaseEvent,
   UserMessageReceivedEvent,
   InterAgentMessageReceivedEvent,
+  ToolContinuationReadyEvent,
   PendingToolInvocationEvent,
   ToolResultEvent,
   ToolExecutionApprovalEvent
@@ -42,7 +43,7 @@ class AsyncQueue<T> {
 }
 
 export class AgentInputEventQueueManager {
-  toolContinuationInputQueue: AsyncQueue<UserMessageReceivedEvent>;
+  toolContinuationInputQueue: AsyncQueue<UserMessageReceivedEvent | ToolContinuationReadyEvent>;
   userMessageInputQueue: AsyncQueue<UserMessageReceivedEvent>;
   interAgentMessageInputQueue: AsyncQueue<InterAgentMessageReceivedEvent>;
   toolInvocationRequestQueue: AsyncQueue<PendingToolInvocationEvent>;
@@ -102,7 +103,7 @@ export class AgentInputEventQueueManager {
     this.notifyAvailability();
   }
 
-  async enqueueToolContinuationInput(event: UserMessageReceivedEvent): Promise<void> {
+  async enqueueToolContinuationInput(event: UserMessageReceivedEvent | ToolContinuationReadyEvent): Promise<void> {
     await this.toolContinuationInputQueue.put(event);
     this.notifyAvailability();
   }

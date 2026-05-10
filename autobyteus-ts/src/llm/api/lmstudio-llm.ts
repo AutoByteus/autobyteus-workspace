@@ -1,11 +1,13 @@
 import { OpenAICompatibleLLM } from './openai-compatible-llm.js';
 import { LLMModel } from '../models.js';
 import { LLMConfig } from '../utils/llm-config.js';
-import { LMStudioChatRenderer } from '../prompt-renderers/lmstudio-chat-renderer.js';
+import { LMStudioTextToolHistoryRenderer } from '../prompt-renderers/lmstudio-text-tool-history-renderer.js';
+import { OpenAIChatRenderer } from '../prompt-renderers/openai-chat-renderer.js';
 import {
   createLocalLongRunningFetch,
   LOCAL_PROVIDER_SDK_TIMEOUT_MS,
 } from '../transport/local-long-running-fetch.js';
+import { resolveToolCallFormat } from '../../utils/tool-call-format.js';
 
 export class LMStudioLLM extends OpenAICompatibleLLM {
   constructor(model: LLMModel, llmConfig?: LLMConfig) {
@@ -28,6 +30,8 @@ export class LMStudioLLM extends OpenAICompatibleLLM {
       },
     );
 
-    this._renderer = new LMStudioChatRenderer();
+    this._renderer = resolveToolCallFormat() === 'api_tool_call'
+      ? new OpenAIChatRenderer()
+      : new LMStudioTextToolHistoryRenderer();
   }
 }

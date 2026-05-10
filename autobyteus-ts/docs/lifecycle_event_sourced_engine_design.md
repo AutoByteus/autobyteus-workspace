@@ -332,7 +332,7 @@ Additional note: after `LLMCompleteResponseReceivedEvent` is handled, the dispat
 | `PendingToolInvocationEvent`  | `ToolInvocationRequestEventHandler`  | `ToolResultEvent` (auto) or approval notification                               | If manual approval is needed, it stores pending invocation and emits an approval request (not an event). |
 | `ToolExecutionApprovalEvent`  | `ToolExecutionApprovalEventHandler`  | `ApprovedToolInvocationEvent` (approved) or `LLMUserMessageReadyEvent` (denied) | Denials go back to the LLM.                                                                              |
 | `ApprovedToolInvocationEvent` | `ApprovedToolInvocationEventHandler` | `ToolResultEvent`                                                               | Executes tool after approval.                                                                            |
-| `ToolResultEvent`             | `ToolResultEventHandler`             | `UserMessageReceivedEvent` (aggregated results)                                 | Aggregates multi-tool results into one LLM turn.                                                         |
+| `ToolResultEvent`             | `ToolResultEventHandler`             | `ToolContinuationReadyEvent` in native `api_tool_call`; `UserMessageReceivedEvent` aggregate in legacy text modes | Validates active-batch/provider identity before processors mutate memory; native mode continues with structured `role: "tool"` history, while legacy modes use the aggregate prompt. |
 
 #### Inter-Agent Messages
 

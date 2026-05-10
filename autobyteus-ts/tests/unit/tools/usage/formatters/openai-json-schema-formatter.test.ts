@@ -30,6 +30,20 @@ describe('OpenAiJsonSchemaFormatter', () => {
       required: false,
       defaultValue: false
     }));
+    schema.addParameter(new ParameterDefinition({
+      name: 'metadata',
+      type: ParameterType.OBJECT,
+      description: 'Additional metadata.',
+      required: false,
+      objectSchema: new ParameterSchema([
+        new ParameterDefinition({
+          name: 'owner',
+          type: ParameterType.STRING,
+          description: 'Metadata owner.',
+          required: true
+        })
+      ])
+    }));
 
     const toolDef = new ToolDefinition(
       'AdvancedFileProcessor',
@@ -47,9 +61,13 @@ describe('OpenAiJsonSchemaFormatter', () => {
     expect(output.function.name).toBe('AdvancedFileProcessor');
     expect(output.function.description).toBe('Processes a file with advanced options.');
     expect(output.function.parameters.type).toBe('object');
+    expect(output.function.parameters.additionalProperties).toBe(false);
     expect(output.function.parameters.properties.input_path).toBeDefined();
     expect(output.function.parameters.properties.overwrite).toBeDefined();
+    expect(output.function.parameters.properties.metadata.additionalProperties).toBe(false);
     expect(output.function.parameters.required).toContain('input_path');
     expect(output.function.parameters.required).not.toContain('overwrite');
+    expect(output.function.parameters.required).not.toContain('metadata');
+    expect(output.function.strict).toBeUndefined();
   });
 });

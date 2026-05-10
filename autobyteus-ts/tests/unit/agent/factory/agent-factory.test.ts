@@ -9,8 +9,16 @@ import { Agent } from '../../../../src/agent/agent.js';
 import { EventHandlerRegistry } from '../../../../src/agent/handlers/event-handler-registry.js';
 import { UserInputMessageEventHandler } from '../../../../src/agent/handlers/user-input-message-event-handler.js';
 import { LifecycleEventLogger } from '../../../../src/agent/handlers/lifecycle-event-logger.js';
-import { UserMessageReceivedEvent, AgentReadyEvent, AgentErrorEvent, AgentStoppedEvent } from '../../../../src/agent/events/agent-events.js';
+import {
+  UserMessageReceivedEvent,
+  AgentReadyEvent,
+  AgentErrorEvent,
+  AgentStoppedEvent,
+  LLMUserMessageReadyEvent,
+  ToolContinuationReadyEvent
+} from '../../../../src/agent/events/agent-events.js';
 import { BaseLLM } from '../../../../src/llm/base.js';
+import { LLMUserMessageReadyEventHandler } from '../../../../src/agent/handlers/llm-user-message-ready-event-handler.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
@@ -88,6 +96,10 @@ describe('AgentFactory', () => {
 
     const handler = registry.getHandler(UserMessageReceivedEvent);
     expect(handler).toBeInstanceOf(UserInputMessageEventHandler);
+
+    const llmReadyHandler = registry.getHandler(LLMUserMessageReadyEvent);
+    expect(llmReadyHandler).toBeInstanceOf(LLMUserMessageReadyEventHandler);
+    expect(registry.getHandler(ToolContinuationReadyEvent)).toBe(llmReadyHandler);
 
     const lifecycleLogger = registry.getHandler(AgentReadyEvent);
     expect(lifecycleLogger).toBeInstanceOf(LifecycleEventLogger);

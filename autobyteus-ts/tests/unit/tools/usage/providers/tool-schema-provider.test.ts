@@ -53,6 +53,8 @@ describe('ToolSchemaProvider', () => {
     expect(output[0].type).toBe('function');
     expect(output[0].function.name).toBe('ToolA');
     expect(output[0].function.parameters.required).toContain('input');
+    expect(output[0].function.parameters.additionalProperties).toBe(false);
+    expect(output[0].function.strict).toBeUndefined();
   });
 
   it('builds Anthropic schemas when provider is ANTHROPIC', () => {

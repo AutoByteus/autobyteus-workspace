@@ -447,12 +447,39 @@ export function convert(
 
 ### 8.1. `OpenAICompatibleLLM._stream_user_message_to_llm` (MODIFIED)
 
+OpenAI-compatible Chat Completions requests are assembled through
+`OpenAICompatibleRequestBuilder` before the SDK call. The builder is the
+authoritative place for this path to:
+
+- map `LLMConfig` controls (`temperature`, `topP`, penalties, stop sequences,
+  `maxTokens`, and `extraParams`) into the request body;
+- filter framework-internal kwargs such as `logicalConversationId` and
+  `requestId`;
+- attach provider-native `tools`; pass `tool_choice` only when an explicit
+  lower-level caller supplies `kwargs.tool_choice`, never as an agent/server
+  default.
+
+Provider adapters may normalize provider-specific request legality before
+calling the shared builder. Keep those rules in the provider adapter rather than
+adding provider-specific branches to `OpenAICompatibleRequestBuilder`; for
+example, `KimiLLM` normalizes `kimi-k2.5` / `kimi-k2.6` temperature and thinking
+defaults for Moonshot-safe tool workflows before delegating to the shared
+OpenAI-compatible request path.
+
 ```ts
 async function* _streamUserMessageToLLM(
   userMessage: LLMUserMessage,
   kwargs: Record<string, unknown> = {}
 ): AsyncGenerator<ChunkResponse> {
   // ... existing setup ...
+
+  const params = OpenAICompatibleRequestBuilder.build({
+    model: this.model.value,
+    messages: formattedMessages,
+    stream: true,
+    config: this.config,
+    kwargs
+  });
 
   for await (const chunk of stream) {
     const delta = chunk.choices[0].delta;
@@ -485,7 +512,13 @@ async function* _streamUserMessageToLLM(
 
 1. Pass full `ChunkResponse` to handler (not just `chunk.content`)
 2. Select handler based on `AUTOBYTEUS_STREAM_PARSER`
-3. Use `api_tool_call` for SDK tool calls
+3. Use `api_tool_call` for SDK tool calls.
+4. Pass provider-native `tools` to the LLM when API tools are present; the
+   default agent/server path does not emit `tool_choice`.
+5. Emit a diagnostic, not a fallback tool invocation, when API mode receives
+   legacy-looking `[TOOL_CALL] ...` assistant text and zero native tool calls.
+6. Consume native tool-result continuation events by rendering the current
+   working context without appending another user message.
 
 ```ts
 // Determine handler type (factory encapsulates format override + parser config)
@@ -497,14 +530,41 @@ const { handler, toolSchemas } = StreamingResponseHandlerFactory.create({
   agentId,
 });
 
+const streamKwargs = { tools: toolSchemas };
+
 // Stream processing loop
-for await (const chunkResponse of context.state.llmInstance.streamUserMessage(llmUserMessage, { tools: toolSchemas })) {
+for await (const chunkResponse of context.state.llmInstance.streamUserMessage(llmUserMessage, streamKwargs)) {
   // ... aggregation logic ...
 
   // Feed full ChunkResponse to handler (not just content!)
   handler.feed(chunkResponse);
 }
 ```
+
+### 9.2. Native Tool-Result Continuation
+
+`ToolResultEventHandler` owns native result acceptance and the native-vs-legacy
+continuation split. In native `api_tool_call` mode it first validates active
+batch/provider identity before result processors can mutate memory: missing
+invocation ids, unknown invocation ids, turn mismatches, duplicates, and
+no-active-batch results are rejected without raw `tool_result` traces,
+working-context `ToolResultPayload`s, `tool_continuation` traces, or continuation
+events. After an accepted tool invocation batch settles:
+
+- In `api_tool_call` mode it enqueues an internal `ToolContinuationReadyEvent`.
+  `LLMUserMessageReadyEventHandler` then calls
+  `LLMRequestAssembler.prepareToolContinuationRequest(...)`, which renders the
+  current working context as-is. The next OpenAI-compatible request contains the
+  prior `assistant.tool_calls` message plus matching `role: "tool"` result
+  messages, and it does **not** append the aggregate text beginning
+  `The following tool executions have completed...` as `role: "user"`.
+- In legacy `xml`, `json`, and `sentinel` parser modes it keeps the aggregate
+  `SenderType.TOOL` user-input continuation path, because those modes lack a
+  provider-native tool-result channel.
+
+The server-side input customization path remains intact for normal inputs and
+intentional legacy text-mode continuations. Native API mode avoids that path for
+provider-visible tool results instead of weakening server input formatting.
 
 ---
 
@@ -528,6 +588,11 @@ class AgentConfig {
 }
 ```
 
+The agent/server path intentionally leaves provider `tool_choice` unset. Direct
+lower-level LLM callers may still pass explicit `kwargs.tool_choice` into the
+OpenAI-compatible request builder for focused tests or specialized integrations,
+but product-configurable tool choice is out of scope for this path.
+
 ---
 
 ## 11. File Summary & Concerns
@@ -537,12 +602,19 @@ class AgentConfig {
 | `src/llm/utils/tool-call-delta.ts`                            | Common data structure for tool call updates  | **NEW**  |
 | `src/llm/utils/response-types.ts`                             | Add `tool_calls` field to `ChunkResponse`    | MODIFIED |
 | `src/llm/converters/openai-tool-call-converter.ts`            | Normalize OpenAI SDK format                  | **NEW**  |
+| `src/llm/api/openai-compatible-request-builder.ts`            | Build safe OpenAI-compatible Chat Completions payloads | **NEW** |
 | `src/llm/api/openai-compatible-llm.ts`                        | Convert tool calls, include in ChunkResponse | MODIFIED |
+| `src/tools/usage/formatters/openai-tool-schema-normalizer.ts` | Normalize OpenAI-compatible JSON Schema parameters | **NEW** |
+| `src/agent/streaming/handlers/api-tool-call-text-diagnostic.ts` | Diagnose legacy text-shaped tool calls in API mode | **NEW** |
 | `src/agent/streaming/handlers/streaming-response-handler.ts`               | Change `feed(string)` to `feed(ChunkResponse)`  | MODIFIED |
 | `src/agent/streaming/handlers/parsing-streaming-response-handler.ts`       | Use `chunk.content`                          | MODIFIED |
 | `src/agent/streaming/handlers/pass-through-streaming-response-handler.ts`  | Use `chunk.content`                          | MODIFIED |
 | `src/agent/streaming/handlers/api-tool-call-streaming-response-handler.ts` | New handler for SDK tool calls               | **NEW**  |
 | `src/agent/handlers/llm-user-message-ready-event-handler.ts`  | Handler selection, pass full ChunkResponse   | MODIFIED |
+| `src/agent/handlers/tool-result-event-handler.ts`             | Route native API tool-result continuations without aggregate user message; preserve legacy text continuation | MODIFIED |
+| `src/agent/events/agent-events.ts`                            | Add internal `ToolContinuationReadyEvent`     | MODIFIED |
+| `src/agent/llm-request-assembler.ts`                          | Add tool-continuation request assembly without appending user input | MODIFIED |
+| `src/llm/prompt-renderers/lmstudio-text-tool-history-renderer.ts` | Keep LM Studio `[TOOL_CALL]` history text scoped to explicit text-parser modes | **NEW** |
 | `src/utils/tool-call-format.ts`                               | Remove legacy "native" alias                 | MODIFIED |
 
 ---
@@ -582,17 +654,26 @@ We already have formatters that convert tool definitions to API schemas:
 // src/tools/usage/formatters/openai-json-schema-formatter.ts
 class OpenAiJsonSchemaFormatter extends BaseSchemaFormatter {
   provide(toolDefinition: ToolDefinition): Record<string, unknown> {
+    const parameters = normalizeOpenAiToolParameters(
+      toolDefinition.argumentSchema.toJsonSchemaDict()
+    );
+
     return {
       type: 'function',
       function: {
         name: toolDefinition.name,
         description: toolDefinition.description,
-        parameters: toolDefinition.argumentSchema.toJsonSchemaDict(),
+        parameters,
       },
     };
   }
 }
 ```
+
+`normalizeOpenAiToolParameters(...)` recursively sets
+`additionalProperties: false` on object schemas. `function.strict` is not
+enabled by default because strict mode also requires optional fields to be
+represented with nullable-required semantics, which is intentionally deferred.
 
 Similar formatters exist for:
 
@@ -632,16 +713,13 @@ async _streamUserMessageToLLM(
   kwargs: Record<string, unknown> = {}
 ): AsyncGenerator<ChunkResponse> {
   // ...
-  const params = {
+  const params = OpenAICompatibleRequestBuilder.build({
     model: this.model.value,
     messages: formattedMessages,
     stream: true,
-  };
-
-  // Include tools if provided
-  if (kwargs.tools) {
-    params.tools = kwargs.tools;
-  }
+    config: this.config,
+    kwargs
+  });
 
   const stream = this.client.chat.completions.create(params);
   // ...
@@ -652,8 +730,9 @@ async _streamUserMessageToLLM(
 
 | File                                                     | Change                            |
 | -------------------------------------------------------- | --------------------------------- |
-| `src/agent/handlers/llm-user-message-ready-event-handler.ts` | Format tool schemas, pass to LLM  |
-| `src/llm/api/openai-compatible-llm.ts`                       | Accept `tools` kwarg, pass to API |
+| `src/agent/handlers/llm-user-message-ready-event-handler.ts` | Format tool schemas, pass `tools` to LLM without default `tool_choice`, emit API text-leak diagnostics |
+| `src/llm/api/openai-compatible-request-builder.ts`           | Map config fields, filter internal kwargs, pass `tools`, and preserve explicit lower-level `tool_choice` kwargs |
+| `src/llm/api/openai-compatible-llm.ts`                       | Use request builder for sync and streaming API calls |
 | (similar for other LLM providers)                        | Accept `tools` kwarg              |
 
 ---
@@ -663,7 +742,11 @@ async _streamUserMessageToLLM(
 1. **Provider Detection**: Auto-detect when to use `api_tool_call` based on provider capabilities
    instead of requiring explicit configuration.
 
-2. **Hybrid Mode**: Some responses may contain both text-embedded and API tool calls.
-   Current design handles this by treating them as separate concerns.
+2. **Hybrid Mode**: Some responses may contain both text-embedded and API tool
+   calls. Native API mode does not execute text-embedded fallbacks; it keeps
+   legacy-looking text as assistant output and emits diagnostics so the provider
+   or model mismatch is visible.
 
-3. **Tool Choice**: Support `tool_choice` parameter for forcing specific tool usage.
+3. **Strict Function Tools**: Full strict-mode support remains future work and
+   should be added only with nullable-required optional-field conversion and
+   provider compatibility checks.
