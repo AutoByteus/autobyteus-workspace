@@ -1017,9 +1017,26 @@ type ToolPayload = ToolCallPayload | ToolResultPayload;
 **OpenAI Responses API**
 
 - Assistant tool-call:
-  - `{"type": "tool_call", "id": ..., "name": ..., "arguments": ...}`
+  - `{"type": "function_call", "id": ..., "call_id": ..., "name": ..., "arguments": ...}`
 - Tool result:
-  - `{"type": "tool", "tool_call_id": ..., "output": ...}`
+  - `{"type": "function_call_output", "call_id": ..., "output": ...}`
+
+**Other native provider APIs**
+
+- Gemini: model `functionCall` parts and user `functionResponse` parts.
+- Anthropic: assistant `tool_use` blocks and immediately-following user
+  `tool_result` blocks.
+- Mistral: assistant `tool_calls` and `role: "tool"` result messages with
+  `tool_call_id`, `name`, and string `content`.
+- Ollama: assistant `tool_calls` and `role: "tool"` result messages with
+  `tool_name`.
+
+Native renderers sort result replay by the prior assistant `ToolCallSpec[]`
+order, not by completion order. Providers that require a single result turn for
+a batch, such as Gemini and Anthropic, coalesce adjacent matching
+`ToolResultPayload`s into one provider-valid user result turn. Legacy
+`[TOOL_CALL]` / `[TOOL_RESULT]` text rendering is isolated to non-native
+`xml`, `json`, and `sentinel` tool-call formats.
 
 ---
 
@@ -1031,15 +1048,25 @@ type ToolPayload = ToolCallPayload | ToolResultPayload;
 - Add provider renderers:
   - `openai-responses-renderer.ts`
   - `openai-chat-renderer.ts`
-  - later: `anthropic-prompt-renderer.ts`, `gemini-prompt-renderer.ts`
+  - `anthropic-prompt-renderer.ts`
+  - `gemini-prompt-renderer.ts`
+  - `mistral-prompt-renderer.ts`
+  - `ollama-prompt-renderer.ts`
+  - explicit `*-text-tool-history-renderer.ts` variants for non-native parser modes.
 - LLM implementations call renderer to produce API payloads.
   - `tools` schema remains a kwarg passed into the LLM call.
-  - Renderers decide how to encode tool schemas for providers that support native tools.
+  - `provider-tool-history-renderer-selection.ts` chooses native renderers only
+    for `api_tool_call`; non-native parser modes keep text history.
+  - Streaming converters may preserve provider-native metadata on
+    `ToolCallSpec.nativeToolCallContext`, but normalized id/name/arguments remain
+    authoritative when renderers replay history.
 
 **Tests**
 
 - Renderer tests: deterministic formatting + stable ordering.
 - Round-trip tests: messages → payload contains expected fields.
+- Provider API payload tests: final SDK request parameters contain native tool
+  history and no legacy aggregate tool-result text.
 
 ---
 

@@ -218,6 +218,42 @@ This hardening still matters to compaction when the selected visible compactor
 agent uses a local model and sends a large request before the next parent-agent
 LLM leg is allowed to continue.
 
+## 6.2 Native API Tool-Call History Rendering
+
+In native API tool-call mode, working-context tool history stays semantic until
+the final provider renderer boundary. The runtime stores assistant tool calls as
+`ToolCallPayload` and tool outputs as `ToolResultPayload`; the selected provider
+renderer then maps those entries to provider-native request history instead of
+legacy prompt text.
+
+Current native mappings are:
+
+| Provider path | Native history shape |
+| --- | --- |
+| OpenAI-compatible Chat / LM Studio | `assistant.tool_calls` plus matching `role: "tool"` messages. |
+| Gemini | model `functionCall` parts plus user `functionResponse` parts, preserving call ids when available. |
+| Ollama | assistant `tool_calls` plus `role: "tool"` result messages with `tool_name`. |
+| Anthropic | assistant `tool_use` blocks plus immediately-following user `tool_result` blocks. |
+| Mistral | assistant `tool_calls` plus `role: "tool"` messages with `tool_call_id` and `name`. |
+| OpenAI Responses | `function_call` items plus `function_call_output` items keyed by `call_id`. |
+
+Renderer selection is mode-aware. `api_tool_call` selects the native provider
+renderer; `xml`, `json`, and `sentinel` select explicit text-history renderers
+so non-native parser modes continue to emit their configured
+`[TOOL_CALL]` / `[TOOL_RESULT]`-style history. Native tool-result continuation
+does not append an additional aggregate user message such as
+`The following tool executions have completed...`, legacy
+`Tool: <name> (ID: ...)` lines, or aggregate `Status: Success` markers; the
+next LLM request is assembled from the existing working context and rendered
+through the provider's native channel.
+
+For parallel tool-call batches, renderers replay results in the original
+assistant tool-call order rather than result completion order. Gemini and
+Anthropic coalesce adjacent result payloads into one provider-valid user result
+turn/block group. Streaming converters may preserve provider-native metadata in
+`nativeToolCallContext` for stateless replay, but the normalized stored
+`id`, `name`, and arguments remain authoritative in the rendered request.
+
 ## 7. Dynamic Model Reloading
 
 For reloadable built-in runtimes (`OLLAMA`, `LMSTUDIO`, `AUTOBYTEUS`),

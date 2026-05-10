@@ -112,7 +112,10 @@ export class WorkingContextSnapshotSerializer {
         tool_calls: payload.tool_calls.map((call) => ({
           id: (call as Record<string, unknown>).id,
           name: (call as Record<string, unknown>).name,
-          arguments: safeJsonValue((call as Record<string, unknown>).arguments)
+          arguments: safeJsonValue((call as Record<string, unknown>).arguments),
+          nativeToolCallContext: safeJsonValue(
+            (call as Record<string, unknown>).nativeToolCallContext
+          )
         }))
       };
     }
@@ -134,7 +137,8 @@ export class WorkingContextSnapshotSerializer {
       const calls = payload.tool_calls.map((call) => ({
         id: String((call as Record<string, unknown>).id ?? ''),
         name: String((call as Record<string, unknown>).name ?? ''),
-        arguments: ((call as Record<string, unknown>).arguments as Record<string, unknown>) ?? {}
+        arguments: ((call as Record<string, unknown>).arguments as Record<string, unknown>) ?? {},
+        nativeToolCallContext: (call as Record<string, unknown>).nativeToolCallContext as ToolCallSpec['nativeToolCallContext']
       })) as ToolCallSpec[];
       return new ToolCallPayload(calls);
     }

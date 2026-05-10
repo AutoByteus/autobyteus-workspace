@@ -5,13 +5,14 @@ import { LLMConfig } from '../utils/llm-config.js';
 import { CompleteResponse, ChunkResponse } from '../utils/response-types.js';
 import { TokenUsage } from '../utils/token-usage.js';
 import { Message } from '../utils/messages.js';
-import { OllamaPromptRenderer } from '../prompt-renderers/ollama-prompt-renderer.js';
+import { BasePromptRenderer } from '../prompt-renderers/base-prompt-renderer.js';
+import { createOllamaPromptRendererForToolFormat } from '../prompt-renderers/provider-tool-history-renderer-selection.js';
 import { convertOllamaToolCalls } from '../converters/ollama-tool-call-converter.js';
 import { createLocalLongRunningFetch } from '../transport/local-long-running-fetch.js';
 
 export class OllamaLLM extends BaseLLM {
   private client: Ollama;
-  private _renderer: OllamaPromptRenderer;
+  private _renderer: BasePromptRenderer;
 
   constructor(model: LLMModel, llmConfig: LLMConfig) {
     if (!model.hostUrl) {
@@ -23,11 +24,11 @@ export class OllamaLLM extends BaseLLM {
       host: model.hostUrl,
       fetch: createLocalLongRunningFetch(),
     });
-    this._renderer = new OllamaPromptRenderer();
+    this._renderer = createOllamaPromptRendererForToolFormat();
   }
 
   private buildChatRequest(
-    messages: Awaited<ReturnType<OllamaPromptRenderer['render']>>,
+    messages: unknown[],
     kwargs: Record<string, unknown>,
     stream: boolean
   ): Record<string, unknown> {

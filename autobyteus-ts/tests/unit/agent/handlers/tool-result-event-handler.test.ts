@@ -308,8 +308,8 @@ describe('ToolResultEventHandler', () => {
         context
       );
 
-      expect(listRawToolResults(memoryManager)).toHaveLength(1);
-      expect(listWorkingToolMessages(memoryManager)).toHaveLength(1);
+      expect(listRawToolResults(memoryManager)).toHaveLength(0);
+      expect(listWorkingToolMessages(memoryManager)).toHaveLength(0);
       expect(listRawToolContinuations(memoryManager)).toHaveLength(0);
       expect(inputQueues.enqueueToolContinuationInput).not.toHaveBeenCalled();
 
@@ -386,6 +386,43 @@ describe('ToolResultEventHandler', () => {
             message.content.startsWith('The following tool executions have completed')
         )
       ).toBe(false);
+    } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('appends active native batch results to memory in assistant call order after reverse settlement', async () => {
+    process.env.AUTOBYTEUS_STREAM_PARSER = 'api_tool_call';
+    const handler = new ToolResultEventHandler();
+    const { context, inputQueues, memoryManager, tempDir } = makeNativeMemoryContext([
+      { name: 'tool_A', id: 'call_A' },
+      { name: 'tool_B', id: 'call_B' }
+    ]);
+
+    try {
+      await handler.handle(
+        new ToolResultEvent('tool_B', 'Result B', 'call_B', undefined, undefined, 'turn_0001'),
+        context
+      );
+
+      expect(listRawToolResults(memoryManager)).toHaveLength(0);
+      expect(listWorkingToolMessages(memoryManager)).toHaveLength(0);
+      expect(inputQueues.enqueueToolContinuationInput).not.toHaveBeenCalled();
+
+      await handler.handle(
+        new ToolResultEvent('tool_A', 'Result A', 'call_A', undefined, undefined, 'turn_0001'),
+        context
+      );
+
+      expect(inputQueues.enqueueToolContinuationInput).toHaveBeenCalledTimes(1);
+      expect(listWorkingToolMessages(memoryManager).map((message) => (message.tool_payload as any).toolCallId)).toEqual([
+        'call_A',
+        'call_B'
+      ]);
+      expect(listRawToolResults(memoryManager).map((item: any) => item.toolCallId)).toEqual([
+        'call_A',
+        'call_B'
+      ]);
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }

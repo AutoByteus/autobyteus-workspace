@@ -22,24 +22,27 @@ describe('MistralPromptRenderer', () => {
     ]);
   });
 
-  it('renders tool payloads as text', async () => {
+  it('renders tool payloads as native Mistral tool messages', async () => {
     const renderer = new MistralPromptRenderer();
-    const toolArgs = { query: 'autobyteus' };
-    const toolResult = { status: 'ok' };
     const messages = [
       new Message(MessageRole.ASSISTANT, {
         content: null,
-        tool_payload: new ToolCallPayload([{ id: 'call_1', name: 'search', arguments: toolArgs }])
+        tool_payload: new ToolCallPayload([{ id: 'call_1', name: 'search', arguments: { query: 'autobyteus' } }])
       }),
       new Message(MessageRole.TOOL, {
-        tool_payload: new ToolResultPayload('call_1', 'search', toolResult)
+        tool_payload: new ToolResultPayload('call_1', 'search', { status: 'ok' })
       })
     ];
 
     const rendered = await renderer.render(messages);
     expect(rendered).toEqual([
-      { role: 'assistant', content: "[TOOL_CALL] search {'query': 'autobyteus'}" },
-      { role: 'user', content: "[TOOL_RESULT] search {'status': 'ok'}" }
+      {
+        role: 'assistant',
+        content: '',
+        tool_calls: [{ id: 'call_1', type: 'function', function: { name: 'search', arguments: JSON.stringify({ query: 'autobyteus' }) } }]
+      },
+      { role: 'tool', name: 'search', content: JSON.stringify({ status: 'ok' }), tool_call_id: 'call_1' }
     ]);
+    expect(JSON.stringify(rendered)).not.toContain('[TOOL_');
   });
 });

@@ -436,10 +436,22 @@ export function convert(
 }
 ```
 
-### 7.2. Future Converters
+### 7.2. Provider Converters
 
-- `AnthropicToolCallConverter`: Convert Anthropic's `content_block_delta` with `input_json_delta`
-- `GeminiToolCallConverter`: Convert Gemini's `functionCall` responses
+Native API tool-call providers normalize their streaming/function-call output to
+the shared `ToolCallDelta` boundary:
+
+- `openai-tool-call-converter.ts`: OpenAI Chat-style `tool_calls` deltas.
+- `anthropic-tool-call-converter.ts`: Anthropic content blocks with
+  `tool_use` / `input_json_delta` semantics.
+- `gemini-tool-call-converter.ts`: Gemini `functionCall` parts.
+- `mistral-tool-call-converter.ts`: Mistral function-call deltas.
+- `ollama-tool-call-converter.ts`: Ollama `message.tool_calls`.
+
+Converters may attach `native_context` for provider metadata that a stateless
+continuation needs to replay exactly enough provider-native history. The
+normalized call id, name, and parsed arguments are still the authoritative
+tool-invocation fields consumed by the runtime.
 
 ---
 
@@ -566,6 +578,38 @@ The server-side input customization path remains intact for normal inputs and
 intentional legacy text-mode continuations. Native API mode avoids that path for
 provider-visible tool results instead of weakening server input formatting.
 
+### 9.3. Provider-Native History Renderer Selection
+
+`api_tool_call` mode selects provider-native history renderers for all
+first-party providers with native tool-result channels. Non-native `xml`,
+`json`, and `sentinel` formats select explicit text-history renderers so stored
+`ToolCallPayload` / `ToolResultPayload` messages do not accidentally become
+native tool objects when the configured parser mode expects text.
+
+| Provider | Native renderer output | Non-native renderer output |
+| --- | --- | --- |
+| Gemini | model `functionCall` parts and user `functionResponse` parts | text history via `gemini-text-tool-history-renderer.ts` |
+| Ollama | assistant `tool_calls` and `role: "tool"` result messages with `tool_name` | text history via `ollama-text-tool-history-renderer.ts` |
+| Anthropic | assistant `tool_use` blocks and immediately-following user `tool_result` blocks | text history via `anthropic-text-tool-history-renderer.ts` |
+| Mistral | assistant `tool_calls` and `role: "tool"` messages with `tool_call_id` and `name` | text history via `mistral-text-tool-history-renderer.ts` |
+| OpenAI Responses | `function_call` and `function_call_output` items keyed by `call_id` | text history via `openai-responses-text-tool-history-renderer.ts` |
+
+For parallel tool-call batches, renderers order completed results by the
+assistant tool-call order before they build provider-visible history. Gemini and
+Anthropic coalesce adjacent matching results into one result turn/block group
+because those providers require ordered result parts/blocks immediately after
+the tool-use turn. OpenAI-compatible Chat / LM Studio keeps its existing
+`assistant.tool_calls` plus `role: "tool"` request shape.
+
+Native provider payloads must not contain the old synthetic aggregate result
+message text, including the
+`The following tool executions have completed...` prefix, legacy
+`Tool: <name> (ID: ...)` lines, `Status: Success` markers, or legacy
+`[TOOL_CALL]` / `[TOOL_RESULT]` tags. Provider-native user-role result carriers,
+such as Gemini `functionResponse` turns and Anthropic `tool_result` blocks,
+remain valid because they carry structured native result payloads rather than
+the aggregate text continuation.
+
 ---
 
 ## 10. Configuration
@@ -615,6 +659,12 @@ but product-configurable tool choice is out of scope for this path.
 | `src/agent/events/agent-events.ts`                            | Add internal `ToolContinuationReadyEvent`     | MODIFIED |
 | `src/agent/llm-request-assembler.ts`                          | Add tool-continuation request assembly without appending user input | MODIFIED |
 | `src/llm/prompt-renderers/lmstudio-text-tool-history-renderer.ts` | Keep LM Studio `[TOOL_CALL]` history text scoped to explicit text-parser modes | **NEW** |
+| `src/llm/prompt-renderers/provider-tool-history-renderer-selection.ts` | Select native provider history only for `api_tool_call`; select text history for `xml`/`json`/`sentinel` | **NEW** |
+| `src/llm/prompt-renderers/{anthropic,gemini,mistral,ollama,openai-responses}-text-tool-history-renderer.ts` | Keep legacy text tool history isolated to non-native parser modes | **NEW** |
+| `src/llm/prompt-renderers/{anthropic,gemini,mistral,ollama,openai-responses}-prompt-renderer.ts` | Render stored semantic tool history into provider-native request payloads | MODIFIED |
+| `src/llm/prompt-renderers/native-tool-payload-format.ts`       | Shared native argument/result serialization helpers | **NEW** |
+| `src/llm/utils/messages.ts`                                    | Carry optional `nativeToolCallContext` on normalized tool calls | MODIFIED |
+| `src/llm/utils/tool-call-delta.ts`                             | Carry provider-native context alongside normalized deltas | MODIFIED |
 | `src/utils/tool-call-format.ts`                               | Remove legacy "native" alias                 | MODIFIED |
 
 ---

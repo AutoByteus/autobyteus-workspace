@@ -1,9 +1,11 @@
-import { describe, it, expect, vi } from 'vitest';
+import { afterEach, describe, it, expect, vi } from 'vitest';
+import { AgentTurn } from '../../../../src/agent/agent-turn.js';
 import { AgentConfig } from '../../../../src/agent/context/agent-config.js';
 import { AgentRuntimeState } from '../../../../src/agent/context/agent-runtime-state.js';
 import { AgentContext } from '../../../../src/agent/context/agent-context.js';
 import { MemoryIngestToolResultProcessor } from '../../../../src/agent/tool-execution-result-processor/memory-ingest-tool-result-processor.js';
 import { ToolResultEvent } from '../../../../src/agent/events/agent-events.js';
+import { ToolInvocation } from '../../../../src/agent/tool-invocation.js';
 import { BaseLLM } from '../../../../src/llm/base.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
@@ -37,6 +39,12 @@ const makeContext = () => {
 };
 
 describe('MemoryIngestToolResultProcessor', () => {
+  const originalEnv = { ...process.env };
+
+  afterEach(() => {
+    process.env = { ...originalEnv };
+  });
+
   it('ingests tool result when turn id is available', async () => {
     const context = makeContext();
     const processor = new MemoryIngestToolResultProcessor();
@@ -93,5 +101,24 @@ describe('MemoryIngestToolResultProcessor', () => {
 
     expect(result).toBe(event);
     expect(memoryManager.ingestToolResult).toHaveBeenCalledWith(event, 'turn_active');
+  });
+
+  it('defers active native API batch results to ordered batch ingestion', async () => {
+    process.env.AUTOBYTEUS_STREAM_PARSER = 'api_tool_call';
+    const context = makeContext();
+    const processor = new MemoryIngestToolResultProcessor();
+    const memoryManager = {
+      ingestToolResult: vi.fn()
+    };
+    context.state.memoryManager = memoryManager as any;
+    const turn = new AgentTurn('turn_native');
+    turn.startToolInvocationBatch([new ToolInvocation('tool', {}, 'call_1')]);
+    context.state.activeTurn = turn;
+
+    const event = new ToolResultEvent('tool', 'ok', 'call_1', undefined, undefined, 'turn_native');
+    const result = await processor.process(event, context);
+
+    expect(result).toBe(event);
+    expect(memoryManager.ingestToolResult).not.toHaveBeenCalled();
   });
 });

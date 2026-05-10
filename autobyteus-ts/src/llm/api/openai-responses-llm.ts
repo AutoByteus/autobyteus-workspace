@@ -7,7 +7,8 @@ import { Message } from '../utils/messages.js';
 import { CompleteResponse, ChunkResponse } from '../utils/response-types.js';
 import { TokenUsage } from '../utils/token-usage.js';
 import { ToolCallDelta } from '../utils/tool-call-delta.js';
-import { OpenAIResponsesRenderer } from '../prompt-renderers/openai-responses-renderer.js';
+import { BasePromptRenderer } from '../prompt-renderers/base-prompt-renderer.js';
+import { createOpenAIResponsesRendererForToolFormat } from '../prompt-renderers/provider-tool-history-renderer-selection.js';
 
 type ResponseInputItem = Record<string, unknown>;
 type ResponseOutputItem = Record<string, unknown>;
@@ -23,7 +24,7 @@ const asNumber = (value: unknown): number => (typeof value === 'number' ? value 
 export class OpenAIResponsesLLM extends BaseLLM {
   protected client: OpenAIClient;
   protected maxTokens: number | null;
-  protected _renderer: OpenAIResponsesRenderer;
+  protected _renderer: BasePromptRenderer;
 
   constructor(
     model: LLMModel,
@@ -50,7 +51,7 @@ export class OpenAIResponsesLLM extends BaseLLM {
 
     this.client = new OpenAIClient({ apiKey, baseURL: baseUrl });
     this.maxTokens = effectiveConfig.maxTokens ?? null;
-    this._renderer = new OpenAIResponsesRenderer();
+    this._renderer = createOpenAIResponsesRendererForToolFormat();
   }
 
   private createTokenUsage(usageData?: ResponseUsage | null): TokenUsage | null {
@@ -204,7 +205,16 @@ export class OpenAIResponsesLLM extends BaseLLM {
       params.tool_choice = kwargs.tool_choice;
     }
 
-    const toolCallState = new Map<number, { call_id?: string; name?: string; args_seen: boolean; emitted: boolean }>();
+    const toolCallState = new Map<
+      number,
+      {
+        call_id?: string;
+        name?: string;
+        args_seen: boolean;
+        emitted: boolean;
+        functionCallItem?: Record<string, unknown>;
+      }
+    >();
     const textDeltaSeen = new Set<string>();
     const summaryDeltaSeen = new Set<string>();
 
@@ -254,13 +264,18 @@ export class OpenAIResponsesLLM extends BaseLLM {
               call_id: item.call_id,
               name: item.name,
               args_seen: false,
-              emitted: true
+              emitted: true,
+              functionCallItem: item as Record<string, unknown>
             });
 
             const toolCalls: ToolCallDelta[] = [{
               index: (event as any).output_index,
               call_id: item.call_id,
-              name: item.name
+              name: item.name,
+              native_context: {
+                provider: 'openai_responses',
+                functionCallItem: item as Record<string, unknown>
+              }
             }];
             yield new ChunkResponse({ content: '', reasoning: null, tool_calls: toolCalls });
           }
@@ -301,27 +316,44 @@ export class OpenAIResponsesLLM extends BaseLLM {
             const item = outputItems[idx];
             if (item?.type !== 'function_call') continue;
 
+            const nativeContext = {
+              provider: 'openai_responses' as const,
+              functionCallItem: item as Record<string, unknown>,
+              responseOutputItems: outputItems as Record<string, unknown>[]
+            };
             let state = toolCallState.get(idx);
             if (!state || !state.emitted) {
               const toolCalls: ToolCallDelta[] = [{
                 index: idx,
                 call_id: item.call_id,
-                name: item.name
+                name: item.name,
+                native_context: nativeContext
               }];
               yield new ChunkResponse({ content: '', reasoning: null, tool_calls: toolCalls });
               toolCallState.set(idx, {
                 call_id: item.call_id,
                 name: item.name,
                 args_seen: false,
-                emitted: true
+                emitted: true,
+                functionCallItem: item as Record<string, unknown>
               });
               state = toolCallState.get(idx);
+            } else {
+              state.functionCallItem = item as Record<string, unknown>;
+              const toolCalls: ToolCallDelta[] = [{
+                index: idx,
+                call_id: item.call_id,
+                name: item.name,
+                native_context: nativeContext
+              }];
+              yield new ChunkResponse({ content: '', reasoning: null, tool_calls: toolCalls });
             }
 
             if (state && !state.args_seen) {
               const toolCalls: ToolCallDelta[] = [{
                 index: idx,
-                arguments_delta: item.arguments
+                arguments_delta: item.arguments,
+                native_context: nativeContext
               }];
               yield new ChunkResponse({ content: '', reasoning: null, tool_calls: toolCalls });
               state.args_seen = true;

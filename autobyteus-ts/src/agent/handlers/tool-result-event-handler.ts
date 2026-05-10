@@ -210,7 +210,11 @@ export class ToolResultEventHandler extends AgentEventHandler {
       );
     }
 
-    context.state.memoryManager?.ingestToolContinuationBoundary(
+    const memoryManager = context.state.memoryManager;
+    memoryManager?.ingestToolResults?.(processedEvents, turnId, {
+      source: 'native_api_ordered_batch'
+    });
+    memoryManager?.ingestToolContinuationBoundary?.(
       turnId,
       'ToolContinuationReadyEvent',
       'Native API tool continuation'

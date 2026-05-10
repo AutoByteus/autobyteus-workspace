@@ -1,0 +1,232 @@
+{
+  "generatedAt": "2026-05-10T05:09:44.650Z",
+  "distPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/provider-native-tool-history-rendering/autobyteus-ts/autobyteus-ts/dist",
+  "distGitHead": "8ff0cd3c622b4a2d2a8a2e2311014ff5b60ffcec",
+  "results": [
+    {
+      "provider": "openai-compatible-chat",
+      "nativeShapeObserved": true,
+      "containsLegacyToolCallText": false,
+      "containsLegacyToolResultText": false,
+      "rendered": [
+        {
+          "role": "system",
+          "content": "system prompt"
+        },
+        {
+          "role": "user",
+          "content": "inspect"
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "call_1",
+              "type": "function",
+              "function": {
+                "name": "run_bash",
+                "arguments": "{\"command\":\"pwd\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "call_1",
+          "content": "{\"stdout\":\"/tmp\\n\"}"
+        }
+      ]
+    },
+    {
+      "provider": "gemini",
+      "nativeShapeObserved": true,
+      "containsLegacyToolCallText": false,
+      "containsLegacyToolResultText": false,
+      "rendered": [
+        {
+          "role": "user",
+          "parts": [
+            {
+              "text": "inspect"
+            }
+          ]
+        },
+        {
+          "role": "model",
+          "parts": [
+            {
+              "functionCall": {
+                "id": "call_1",
+                "name": "run_bash",
+                "args": {
+                  "command": "pwd"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "parts": [
+            {
+              "functionResponse": {
+                "id": "call_1",
+                "name": "run_bash",
+                "response": {
+                  "result": {
+                    "stdout": "/tmp\n"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "provider": "ollama",
+      "nativeShapeObserved": true,
+      "containsLegacyToolCallText": false,
+      "containsLegacyToolResultText": false,
+      "rendered": [
+        {
+          "role": "system",
+          "content": "system prompt"
+        },
+        {
+          "role": "user",
+          "content": "inspect"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "call_1",
+              "type": "function",
+              "function": {
+                "index": 0,
+                "name": "run_bash",
+                "arguments": {
+                  "command": "pwd"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_name": "run_bash",
+          "content": "{\"stdout\":\"/tmp\\n\"}"
+        }
+      ]
+    },
+    {
+      "provider": "anthropic",
+      "nativeShapeObserved": true,
+      "containsLegacyToolCallText": false,
+      "containsLegacyToolResultText": false,
+      "rendered": [
+        {
+          "role": "user",
+          "content": "system prompt"
+        },
+        {
+          "role": "user",
+          "content": "inspect"
+        },
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "type": "tool_use",
+              "id": "call_1",
+              "name": "run_bash",
+              "input": {
+                "command": "pwd"
+              }
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "tool_result",
+              "tool_use_id": "call_1",
+              "content": "{\"stdout\":\"/tmp\\n\"}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "provider": "mistral",
+      "nativeShapeObserved": true,
+      "containsLegacyToolCallText": false,
+      "containsLegacyToolResultText": false,
+      "rendered": [
+        {
+          "role": "system",
+          "content": "system prompt"
+        },
+        {
+          "role": "user",
+          "content": "inspect"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "call_1",
+              "type": "function",
+              "function": {
+                "name": "run_bash",
+                "arguments": "{\"command\":\"pwd\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "name": "run_bash",
+          "content": "{\"stdout\":\"/tmp\\n\"}",
+          "tool_call_id": "call_1"
+        }
+      ]
+    },
+    {
+      "provider": "openai-responses",
+      "nativeShapeObserved": true,
+      "containsLegacyToolCallText": false,
+      "containsLegacyToolResultText": false,
+      "rendered": [
+        {
+          "type": "message",
+          "role": "system",
+          "content": "system prompt"
+        },
+        {
+          "type": "message",
+          "role": "user",
+          "content": "inspect"
+        },
+        {
+          "type": "function_call",
+          "id": "call_1",
+          "call_id": "call_1",
+          "name": "run_bash",
+          "arguments": "{\"command\":\"pwd\"}",
+          "status": "completed"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "call_1",
+          "output": "{\"stdout\":\"/tmp\\n\"}"
+        }
+      ]
+    }
+  ]
+}

@@ -12,6 +12,10 @@ describe('AnthropicToolConverter', () => {
     expect(res).toHaveLength(1);
     expect(res![0].call_id).toBe('call_1');
     expect(res![0].index).toBe(1);
+    expect(res![0].native_context).toEqual({
+      provider: 'anthropic',
+      toolUseBlock: { type: 'tool_use', id: 'call_1', name: 'tool' }
+    });
   });
 
   it('should convert delta event', () => {

@@ -45,6 +45,24 @@ export class WorkingContextSnapshot {
     }));
   }
 
+  appendToolResults(
+    toolResults: Array<{
+      toolCallId: string;
+      toolName: string;
+      toolResult: unknown;
+      toolError?: string | null;
+    }>
+  ): void {
+    for (const result of toolResults) {
+      this.appendToolResult(
+        result.toolCallId,
+        result.toolName,
+        result.toolResult,
+        result.toolError ?? null
+      );
+    }
+  }
+
   buildMessages(): Message[] {
     return [...this.messages];
   }

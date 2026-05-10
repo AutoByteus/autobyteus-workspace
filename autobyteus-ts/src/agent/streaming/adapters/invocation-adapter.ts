@@ -4,6 +4,7 @@ import { parseJsonToolCall, parseXmlArguments, type JsonToolParsingStrategy } fr
 import { ToolInvocation } from '../../tool-invocation.js';
 import { defaultToolRegistry } from '../../../tools/registry/tool-registry.js';
 import type { ParameterSchema } from '../../../utils/parameter-schema.js';
+import type { ProviderNativeToolCallContext } from '../../../llm/utils/tool-call-delta.js';
 
 export class ToolInvocationAdapter {
   private activeSegments: Map<string, Record<string, any>> = new Map();
@@ -138,7 +139,17 @@ export class ToolInvocationAdapter {
       return null;
     }
 
-    const invocation = new ToolInvocation(toolName, argumentsValue, event.segment_id);
+    const nativeToolCallContext =
+      (metadata.native_tool_call_context ?? startMetadata.native_tool_call_context) as
+        | ProviderNativeToolCallContext
+        | undefined;
+    const invocation = new ToolInvocation(
+      toolName,
+      argumentsValue,
+      event.segment_id,
+      undefined,
+      nativeToolCallContext
+    );
     return invocation;
   }
 }

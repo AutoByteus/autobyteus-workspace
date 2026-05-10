@@ -18,7 +18,15 @@ describe('WorkingContextSnapshotSerializer', () => {
     snapshot.appendMessage(new Message(MessageRole.ASSISTANT, {
       content: null,
       tool_payload: new ToolCallPayload([
-        { id: 'call_1', name: 'search', arguments: { q: 'abc' } } as ToolCallSpec,
+        {
+          id: 'call_1',
+          name: 'search',
+          arguments: { q: 'abc' },
+          nativeToolCallContext: {
+            provider: 'openai_responses',
+            functionCallItem: { type: 'function_call', call_id: 'call_1' }
+          }
+        } as ToolCallSpec,
       ]),
     }));
     snapshot.appendMessage(new Message(MessageRole.TOOL, {
@@ -48,6 +56,10 @@ describe('WorkingContextSnapshotSerializer', () => {
     expect(messages[2].reasoning_content).toBe('Because');
     expect(messages[2].image_urls).toEqual(['img://1']);
     expect(messages[3].tool_payload).toBeInstanceOf(ToolCallPayload);
+    expect((messages[3].tool_payload as ToolCallPayload).toolCalls[0].nativeToolCallContext).toEqual({
+      provider: 'openai_responses',
+      functionCallItem: { type: 'function_call', call_id: 'call_1' }
+    });
     expect(messages[4].tool_payload).toBeInstanceOf(ToolResultPayload);
   });
 

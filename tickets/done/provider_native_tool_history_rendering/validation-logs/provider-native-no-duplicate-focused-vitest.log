@@ -1,0 +1,36 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/provider-native-tool-history-rendering/autobyteus-ts/autobyteus-ts
+
+stdout | tests/unit/llm/api/provider-native-request-payloads.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/handlers/tool-result-event-handler.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts > provider native tool history renderers > reconciles stream-start native metadata with final normalized arguments
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts > provider native tool history renderers > reconciles stream-start native metadata with final normalized arguments
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts > provider native tool history renderers > reconciles stream-start native metadata with final normalized arguments
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+
+ ✓ tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts (12 tests) 10ms
+ ✓ tests/unit/agent/handlers/tool-result-event-handler.test.ts (14 tests) 22ms
+ ✓ tests/unit/llm/api/provider-native-request-payloads.test.ts (5 tests) 10ms
+
+ Test Files  3 passed (3)
+      Tests  31 passed (31)
+   Start at  07:25:21
+   Duration  1.02s (transform 1.14s, setup 113ms, import 1.95s, tests 43ms, environment 0ms)
+

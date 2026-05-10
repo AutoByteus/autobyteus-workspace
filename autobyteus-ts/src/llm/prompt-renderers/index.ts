@@ -1,9 +1,15 @@
 export { BasePromptRenderer } from './base-prompt-renderer.js';
 export { AnthropicPromptRenderer } from './anthropic-prompt-renderer.js';
+export { AnthropicTextToolHistoryRenderer } from './anthropic-text-tool-history-renderer.js';
 export { AutobyteusPromptRenderer } from './autobyteus-prompt-renderer.js';
 export { GeminiPromptRenderer } from './gemini-prompt-renderer.js';
+export { GeminiTextToolHistoryRenderer } from './gemini-text-tool-history-renderer.js';
 export { LMStudioTextToolHistoryRenderer } from './lmstudio-text-tool-history-renderer.js';
 export { MistralPromptRenderer } from './mistral-prompt-renderer.js';
+export { MistralTextToolHistoryRenderer } from './mistral-text-tool-history-renderer.js';
+export { OllamaPromptRenderer } from './ollama-prompt-renderer.js';
+export { OllamaTextToolHistoryRenderer } from './ollama-text-tool-history-renderer.js';
 export { OpenAIChatRenderer } from './openai-chat-renderer.js';
 export { OpenAIResponsesRenderer } from './openai-responses-renderer.js';
-export { OllamaPromptRenderer } from './ollama-prompt-renderer.js';
+export { OpenAIResponsesTextToolHistoryRenderer } from './openai-responses-text-tool-history-renderer.js';
+export * from './provider-tool-history-renderer-selection.js';

@@ -140,7 +140,21 @@ describe('OllamaLLM', () => {
         index: 0,
         call_id: 'call_abc',
         name: 'write_file',
-        arguments_delta: '{"file_path":"hello.py","content":"print(1)"}'
+        arguments_delta: '{"file_path":"hello.py","content":"print(1)"}',
+        native_context: {
+          provider: 'ollama',
+          toolCall: {
+            id: 'call_abc',
+            function: {
+              index: 0,
+              name: 'write_file',
+              arguments: {
+                file_path: 'hello.py',
+                content: 'print(1)'
+              }
+            }
+          }
+        }
       }
     ]);
 

@@ -9,7 +9,8 @@ import { TokenUsage } from '../utils/token-usage.js';
 import { initializeGeminiClientWithRuntime } from '../../utils/gemini-helper.js';
 import { resolveModelForRuntime } from '../../utils/gemini-model-mapping.js';
 import { convertGeminiToolCalls } from '../converters/gemini-tool-call-converter.js';
-import { GeminiPromptRenderer } from '../prompt-renderers/gemini-prompt-renderer.js';
+import { BasePromptRenderer } from '../prompt-renderers/base-prompt-renderer.js';
+import { createGeminiPromptRendererForToolFormat } from '../prompt-renderers/provider-tool-history-renderer-selection.js';
 
 const THINKING_LEVEL_BUDGETS: Record<string, number> = {
   minimal: 0,
@@ -41,7 +42,7 @@ const splitGeminiParts = (parts: Array<Record<string, unknown>> = []): { content
 export class GeminiLLM extends BaseLLM {
   private client: GoogleGenAI;
   private runtimeInfo: { runtime: string; project: string | null; location: string | null } | null = null;
-  private _renderer: GeminiPromptRenderer;
+  private _renderer: BasePromptRenderer;
 
   constructor(model?: LLMModel, llmConfig?: LLMConfig) {
     const effectiveModel =
@@ -59,7 +60,7 @@ export class GeminiLLM extends BaseLLM {
     const init = initializeGeminiClientWithRuntime();
     this.client = init.client;
     this.runtimeInfo = init.runtimeInfo;
-    this._renderer = new GeminiPromptRenderer();
+    this._renderer = createGeminiPromptRendererForToolFormat();
   }
 
   private buildGenerationConfig(tools?: Array<Record<string, unknown>>): Record<string, unknown> {
@@ -209,6 +210,7 @@ export class GeminiLLM extends BaseLLM {
 
     let accumulatedContent = '';
     let accumulatedReasoning = '';
+    let nextToolCallIndex = 0;
 
     for await (const chunk of stream) {
       let handledParts = false;
@@ -227,8 +229,9 @@ export class GeminiLLM extends BaseLLM {
             }
           }
 
-          const toolCalls = convertGeminiToolCalls(part);
+          const toolCalls = convertGeminiToolCalls(part, nextToolCallIndex);
           if (toolCalls) {
+            nextToolCallIndex += toolCalls.length;
             yield new ChunkResponse({ content: '', tool_calls: toolCalls, is_complete: false });
           }
         }

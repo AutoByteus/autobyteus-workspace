@@ -37,7 +37,11 @@ export function convertAnthropicToolCall(event: unknown): ToolCallDelta[] | null
         index,
         call_id: startEvent.content_block.id,
         name: startEvent.content_block.name,
-        arguments_delta: undefined // No args yet
+        arguments_delta: undefined, // No args yet
+        native_context: {
+          provider: 'anthropic',
+          toolUseBlock: startEvent.content_block as Record<string, unknown>
+        }
       }];
     }
   } else if (event.type === 'content_block_delta') {
