@@ -2,8 +2,8 @@
 
 ## Status
 
-- Delivery-stage status: `User verified; finalization in progress`
-- Repository finalization status: `In progress after explicit user verification`
+- Delivery-stage status: `Completed`
+- Repository finalization status: `Completed; released v1.3.1`
 - Ticket branch: `codex/provider-native-tool-history-rendering`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-native-tool-history-rendering/autobyteus-ts`
 - Package root: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-native-tool-history-rendering/autobyteus-ts/autobyteus-ts`
@@ -36,11 +36,11 @@ Native mode no longer renders stored tool calls/results as provider-visible `[TO
 
 - Prior blocker: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-native-tool-history-rendering/autobyteus-ts/autobyteus-ts/tests/integration/agent/provider-native-tool-continuation-flow.test.ts` was present but not referenced in the earlier canonical review package.
 - Resolution: Code-review round 6 explicitly reviewed and accepted the integration test as intentional durable repository-resident validation. It must remain part of the deliverable.
-- Blocker report marked resolved: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-native-tool-history-rendering/autobyteus-ts/tickets/provider_native_tool_history_rendering/delivery-review-scope-blocker.md`
+- Blocker report marked resolved: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/provider_native_tool_history_rendering/delivery-review-scope-blocker.md`
 
 ## Delivery Docs Sync
 
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-native-tool-history-rendering/autobyteus-ts/tickets/provider_native_tool_history_rendering/docs-sync-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/provider_native_tool_history_rendering/docs-sync-report.md`
 - Long-lived docs updated:
   - `autobyteus-ts/docs/llm_module_design.md`
   - `autobyteus-ts/docs/llm_module_design_nodejs.md`
@@ -55,17 +55,17 @@ Native mode no longer renders stored tool calls/results as provider-visible `[TO
 
 Latest authoritative validation/review artifacts:
 
-- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-native-tool-history-rendering/autobyteus-ts/tickets/provider_native_tool_history_rendering/api-e2e-validation-report.md`
-- Latest code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-native-tool-history-rendering/autobyteus-ts/tickets/provider_native_tool_history_rendering/review-report.md`
+- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/provider_native_tool_history_rendering/api-e2e-validation-report.md`
+- Latest code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/provider_native_tool_history_rendering/review-report.md`
 - Durable provider request-payload test: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-native-tool-history-rendering/autobyteus-ts/autobyteus-ts/tests/unit/llm/api/provider-native-request-payloads.test.ts`
 - Durable provider-native continuation integration test: `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-native-tool-history-rendering/autobyteus-ts/autobyteus-ts/tests/integration/agent/provider-native-tool-continuation-flow.test.ts`
 
 Validation logs:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-native-tool-history-rendering/autobyteus-ts/tickets/provider_native_tool_history_rendering/validation-logs/provider-native-tool-continuation-flow-vitest.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-native-tool-history-rendering/autobyteus-ts/tickets/provider_native_tool_history_rendering/validation-logs/provider-native-no-duplicate-focused-vitest.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-native-tool-history-rendering/autobyteus-ts/tickets/provider_native_tool_history_rendering/validation-logs/tsc-build-noemit.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/provider-native-tool-history-rendering/autobyteus-ts/tickets/provider_native_tool_history_rendering/validation-logs/git-diff-check.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/provider_native_tool_history_rendering/validation-logs/provider-native-tool-continuation-flow-vitest.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/provider_native_tool_history_rendering/validation-logs/provider-native-no-duplicate-focused-vitest.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/provider_native_tool_history_rendering/validation-logs/tsc-build-noemit.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/provider_native_tool_history_rendering/validation-logs/git-diff-check.log`
 
 Reviewer-accepted checks from round 6:
 
@@ -82,8 +82,20 @@ Delivery-stage check after docs/handoff updates:
 - Full `pnpm exec vitest run tests/unit` and full repository integration attempts still have unrelated pre-existing/environment-bound failures documented in the API/E2E validation report; focused provider-native unit/API/integration validation passed.
 - No paid live-provider calls were performed. Validation is request-shape/payload-boundary coverage plus deterministic local integration continuation coverage, matching the ticket scope.
 - Local ignored `autobyteus-ts/.env.test` exists for tests and must remain untracked.
-- Repository finalization is intentionally paused pending explicit user verification. No branch push, target-branch merge, ticket move to `tickets/done`, release, deployment, or cleanup has been performed.
+- Repository finalization completed after explicit user verification. Ticket branch `codex/provider-native-tool-history-rendering` was pushed, `personal` was fast-forwarded and pushed, and `v1.3.1` was released. Cleanup of the dedicated ticket worktree/local branch was deferred to preserve the local Electron build artifacts the user had just tested.
 
 ## User Verification Request
 
-User verification received on 2026-05-10: local Electron build was tested and reported working. Delivery is proceeding with ticket archival, repository finalization, and release `v1.3.1`.
+User verification received on 2026-05-10: local Electron build was tested and reported working. Ticket archival, repository finalization, and release `v1.3.1` are complete.
+
+## Repository Finalization And Release
+
+- Ticket branch commit: `d3d7980caeaaf514e2e7f3f7f3bdf44d06424bcf` (`feat: render provider-native tool history`)
+- Ticket branch push: `Completed` (`origin/codex/provider-native-tool-history-rendering`)
+- Target branch merge/push: `Completed`; `personal` fast-forwarded from `8ff0cd3c622b4a2d2a8a2e2311014ff5b60ffcec` to `d3d7980caeaaf514e2e7f3f7f3bdf44d06424bcf` and pushed.
+- Release command: `pnpm release 1.3.1 -- --release-notes tickets/done/provider_native_tool_history_rendering/release-notes.md`
+- Release commit: `8c742d978e6a16a550f01b82168ae1bb33475929` (`chore(release): bump workspace release version to 1.3.1`)
+- Release tag: `v1.3.1` pushed.
+- GitHub release: `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.1`
+- Release workflows: Desktop Release, Release Messaging Gateway, and Server Docker Release all completed successfully for `v1.3.1`.
+- Delivery report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/provider_native_tool_history_rendering/release-deployment-report.md`
