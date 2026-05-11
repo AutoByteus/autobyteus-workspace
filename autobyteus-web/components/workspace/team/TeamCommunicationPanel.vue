@@ -12,11 +12,11 @@
 
     <div v-else class="flex min-h-0 flex-1 overflow-hidden" data-test="team-communication-split">
       <aside
-        class="min-h-0 shrink-0 overflow-y-auto border-r border-gray-200 py-2"
+        class="min-h-0 shrink-0 overflow-y-auto border-r border-gray-200 pb-2"
         :style="{ width: `${leftPaneWidth}px` }"
         data-test="team-communication-left-list"
       >
-        <section class="py-1" data-test="team-communication-message-list">
+        <section class="pb-1" data-test="team-communication-message-list">
           <div
             v-for="message in displayMessages"
             :key="message.messageId"
