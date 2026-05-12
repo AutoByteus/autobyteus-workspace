@@ -1,0 +1,7 @@
+# Post-finalization cleanup
+
+- Stopped frontend dev server processes that were listening on TCP port 3335 for user verification: `9312`, `92475`.
+- Stopped launcher-managed Docker container `autobyteus-server`; named volumes were kept.
+- Verified after cleanup:
+  - `http://127.0.0.1:3335/settings` unreachable (`curl` HTTP code `000`).
+  - `http://localhost:8001/rest/health` unreachable (`curl` HTTP code `000`).
