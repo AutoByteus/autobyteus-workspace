@@ -38,24 +38,26 @@ Full guide:
 
 ## Run The Published Server Docker
 
-If you want to start the released server image without cloning this repository, run it directly from Docker Hub:
+If you want to start the released server image without cloning this repository, use the public launcher. It pulls `autobyteus/autobyteus-server:latest`, keeps state outside any source checkout, picks non-conflicting ports, and prints the Backend URL to add in **Settings → Nodes → Add Remote Node**.
+
+Install the local launcher once:
+
+macOS / Linux:
 
 ```bash
-docker run -d \
-  --name autobyteus-server \
-  --restart unless-stopped \
-  --cap-add SYS_ADMIN \
-  --security-opt seccomp=unconfined \
-  -p 8001:8000 \
-  -p 5908:5900 \
-  -p 6080:6080 \
-  -p 9228:9223 \
-  -e AUTOBYTEUS_SERVER_HOST=http://localhost:8001 \
-  -e AUTOBYTEUS_VNC_SERVER_HOSTS=localhost:6080 \
-  -v autobyteus-server-workspace:/app/autobyteus-server-ts/workspace \
-  -v autobyteus-server-data:/home/autobyteus/data \
-  -v autobyteus-server-root-home:/root \
-  autobyteus/autobyteus-server:latest
+curl -fsSL https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.sh | bash -s -- install
+```
+
+Windows PowerShell:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.ps1 | iex; autobyteus-docker install"
+```
+
+Then use direct local commands. `start` checks/pulls the image and only recreates the managed container when the image/config changed or the container is missing:
+
+```bash
+autobyteus-docker start
 ```
 
 Claude Agent SDK sessions automatically read Claude Code filesystem settings.
@@ -67,20 +69,33 @@ gateway, or model settings to survive container recreation.
 Useful endpoints after startup:
 
 ```text
-GraphQL: http://localhost:8001/graphql
-REST:    http://localhost:8001/rest/*
-WS:      ws://localhost:8001/ws/...
-noVNC:   http://localhost:6080
-VNC:     localhost:5908
+Backend: printed by the launcher, usually http://localhost:8001
+GraphQL: <Backend>/graphql
+REST:    <Backend>/rest/*
+WS:      ws://localhost:<Backend port>/ws/...
+noVNC:   printed by the launcher, usually http://localhost:6080
+VNC:     printed by the launcher, usually localhost:5908
 ```
 
-Stop it with:
+Start a new isolated Docker node:
 
 ```bash
-docker stop autobyteus-server
+autobyteus-docker start --new
 ```
 
-If you already cloned this repository, you can use the helper script instead:
+Show the Backend URL again:
+
+```bash
+autobyteus-docker urls
+```
+
+Stop it without removing named volumes:
+
+```bash
+autobyteus-docker stop
+```
+
+If you already cloned this repository and want developer/source-helper behavior, you can use the source helper instead:
 
 ```bash
 cd autobyteus-server-ts/docker

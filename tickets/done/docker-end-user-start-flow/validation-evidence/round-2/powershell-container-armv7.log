@@ -1,0 +1,5 @@
+## PowerShell parser/help smoke via linux/arm/v7 container
+docker run --rm --platform linux/arm/v7 -v /Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/scripts/public/docker/autobyteus-docker.ps1:/work/autobyteus-docker.ps1:ro mcr.microsoft.com/powershell:latest pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File /work/autobyteus-docker.ps1 help
+An error occurred while creating the pipeline.
+
+EXIT=1

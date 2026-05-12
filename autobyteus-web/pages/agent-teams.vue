@@ -67,7 +67,23 @@ const currentView = computed((): View => {
 
 const currentId = computed(() => route.query.id as string | undefined);
 
-const handleNavigation = (payload: { view: View; id?: string }) => {
+type AgentTeamNavigationPayload =
+  | { view: View; id?: string }
+  | { target: 'agents'; view: 'detail'; id: string; returnToTeam: string };
+
+const handleNavigation = (payload: AgentTeamNavigationPayload) => {
+  if ('target' in payload && payload.target === 'agents') {
+    router.push({
+      path: '/agents',
+      query: {
+        view: payload.view,
+        id: payload.id,
+        returnToTeam: payload.returnToTeam,
+      },
+    });
+    return;
+  }
+
   const { view, id } = payload;
   const query: Record<string, string> = { view };
   if (id) {

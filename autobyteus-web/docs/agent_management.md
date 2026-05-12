@@ -2,7 +2,7 @@
 
 ## Scope
 
-Shows agent definitions in the native Agents surface, supports shared-agent creation, supports edit/detail flows for existing shared, team-local, and application-owned agents, and prepares direct agent launches from persisted definition defaults.
+Shows agent definitions in the native Agents surface, supports shared-agent creation, supports edit/detail flows for discoverable shared and application-owned agents, and prepares direct agent launches from persisted definition defaults. Team-local agents are primarily managed from their owning Agent Team detail page and are excluded from normal Agents browse/search discovery.
 
 For live execution/session behavior beyond definition management, see `agent_execution_architecture.md`.
 
@@ -49,25 +49,24 @@ for the selected model. This includes thinking settings such as
 | Scope | Shown in generic Agents list | Editable from generic agent detail/edit | Generic delete / duplicate / sync |
 | --- | --- | --- | --- |
 | `SHARED` | Yes | Yes | Allowed |
-| `TEAM_LOCAL` | Yes | Yes | Not allowed in the generic shared workflow |
+| `TEAM_LOCAL` | No in normal browse/search; use owning Agent Team detail | Direct known-id routes remain available, but primary edit is in Agent Team detail | Not allowed in the generic shared workflow |
 | `APPLICATION_OWNED` | Yes | Yes when backed by a writable source | Not allowed in the generic shared workflow |
 
-The list/detail/card surfaces show provenance badges and owner labels so users can distinguish standalone agents from embedded team-local or application-owned definitions.
+The list/detail/card surfaces show provenance badges and owner labels so users can distinguish standalone agents from application-owned definitions. Direct known-id team-local detail/edit routes still show team provenance, but normal discovery for team-local definitions lives in Agent Team detail.
 
-For team-local agents whose owning team belongs to an application bundle, the UI now shows both the owning team and the owning application/package provenance together.
+For team-local agents whose owning team belongs to an application bundle, direct detail surfaces and team-member details show both the owning team and the owning application/package provenance when available.
 
 ## Browse Layout
 
 When the search box is empty, `AgentList.vue` renders the agent catalog as origin-aware browse sections in this order:
 
-1. **Featured agents** from `AUTOBYTEUS_FEATURED_CATALOG_ITEMS`.
-2. **Team-local agents**, grouped by owning team.
-3. **Application agents**, grouped by owning application.
-4. **Shared agents**, shown as the global standalone section.
+1. **Featured agents** from `AUTOBYTEUS_FEATURED_CATALOG_ITEMS`, after filtering out team-local definitions.
+2. **Application agents**, grouped by owning application.
+3. **Shared agents**, shown as the global standalone section.
 
-Featured agents are removed from the later origin sections to avoid duplicate cards. Team-local groups use the owning team name or id as the group heading; when the owning team comes from an application bundle, the heading includes both application and team context and the group shows an **Application team** hint. Application-owned groups use the owning application/package label. Shared agents remain the global fallback section for normal standalone definitions.
+Featured agents are removed from the later origin sections to avoid duplicate cards. Application-owned groups use the owning application/package label. Shared agents remain the global fallback section for normal standalone definitions. Team-local definitions are filtered before featured splitting and origin grouping so they do not appear as normal catalog cards.
 
-Search mode intentionally hides all browse grouping, including featured placement, and returns a flat filtered catalog. Search still matches definition name, description, tool/skill names, and provenance fields such as owning team, owning application, and package id.
+Search mode intentionally hides all browse grouping, including featured placement, and returns a flat filtered catalog. Search still matches discoverable definition name, description, tool/skill names, and provenance fields such as owning application and package id. `TEAM_LOCAL` definitions are excluded before search, even if their name, owning team, or application provenance matches the query.
 
 ## Default Launch Config
 
@@ -101,12 +100,14 @@ Package import/remove flows invalidate and reload Agents together with Applicati
 - Daily Assistant can be loaded as a normal private/shared agent from an agent package such as `/Users/normy/autobyteus_org/autobyteus-private-agents/agents/daily-assistant/`, then added to Featured agents through Settings if desired.
 - Featured agents render with the same `AgentCard` component and the same view, sync, and run actions as the origin-grouped browse sections.
 - When the featured section is visible, the same agent is removed from later origin sections to avoid duplicate cards.
-- Search mode hides featured and origin grouping and searches the full agent catalog normally, including featured agents that match the query.
+- Search mode hides featured and origin grouping and searches the discoverable agent catalog, excluding team-local definitions.
 - Unknown or removed definition ids in the setting are ignored on the catalog page; Settings keeps unresolved rows visible for operator cleanup.
 - Frontend code must not hard-code featured agent ids. Change featured placement through the server setting instead.
 
 ## Notes
 
 - The generic create flow still creates shared standalone agents.
-- Application-owned and team-local agents are surfaced for inspection/testing and in-place editing, not for shared-path duplication or destructive management.
-- Search in the list includes provenance fields such as owning team, owning application, and package id.
+- Application-owned agents are surfaced for inspection/testing and in-place editing, not for shared-path duplication or destructive management.
+- Team-local agents are inspected and edited from the owning Agent Team detail page; direct known-id `/agents` detail/edit routes remain available for debugging but are not normal discovery.
+- When a shared/global agent member is opened from Agent Team detail, the Agent Detail route may include `returnToTeam=<teamId>`; its back action returns to `/agent-teams?view=team-detail&id=<teamId>` when that context is present and otherwise keeps the normal Back to Agents behavior.
+- Search in the list includes provenance fields such as owning application and package id for discoverable agents, while excluding team-local definitions.

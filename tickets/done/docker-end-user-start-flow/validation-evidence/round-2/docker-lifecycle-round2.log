@@ -1,0 +1,80 @@
+STATE_DIR=/tmp/autobyteus-docker-e2e-round2.AA27jj
+## urls and status after V-006 fix
+AutoByteus Docker node: autobyteus-server
+Container: autobyteus-server
+Image: autobyteus/autobyteus-server:latest
+Backend: http://localhost:61899
+GraphQL: http://localhost:61899/graphql
+noVNC: http://localhost:61901
+VNC: localhost:61900
+Chrome debug: localhost:61902
+Next step: paste Backend into Add Remote Node in AutoByteus.
+NODE                     CONTAINER                STATUS         BACKEND
+autobyteus-server        autobyteus-server        running        http://localhost:61899 (autobyteus/autobyteus-server:latest)
+## logs smoke
+
+2026-05-12 07:06:39,104 DEBG 'dbus' stderr output:
+Xlib:  extension "DPMS" missing on display ":99".
+
+2026-05-12 07:06:50,351 DEBG 'chrome' stderr output:
+[41:107:0512/070650.350974:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+
+2026-05-12 07:06:54,095 DEBG 'dbus' stderr output:
+Xlib:  extension "DPMS" missing on display ":99".
+
+## start --new for multi-node regression
+[AutoByteus Docker] Pulling autobyteus/autobyteus-server:latest
+latest: Pulling from autobyteus/autobyteus-server
+Digest: sha256:8006705559a1b74f88e462e3699cb136895ae8c4b846aa274cb94c51e8be0549
+Status: Image is up to date for autobyteus/autobyteus-server:latest
+docker.io/autobyteus/autobyteus-server:latest
+[AutoByteus Docker] Started autobyteus-server-2.
+AutoByteus Docker node: autobyteus-server-2
+Container: autobyteus-server-2
+Image: autobyteus/autobyteus-server:latest
+Backend: http://localhost:62009
+GraphQL: http://localhost:62009/graphql
+noVNC: http://localhost:62011
+VNC: localhost:62010
+Chrome debug: localhost:62014
+Next step: paste Backend into Add Remote Node in AutoByteus.
+## status after start --new
+NODE                     CONTAINER                STATUS         BACKEND
+autobyteus-server-2      autobyteus-server-2      running        http://localhost:62009 (autobyteus/autobyteus-server:latest)
+autobyteus-server        autobyteus-server        running        http://localhost:61899 (autobyteus/autobyteus-server:latest)
+SECOND_PORT=62009
+second health attempt 1 failed code=56 curl: (56) Recv failure: Connection reset by peer
+second health attempt 2 failed code=56 curl: (56) Recv failure: Connection reset by peer
+second health attempt 3 failed code=56 curl: (56) Recv failure: Connection reset by peer
+second health attempt 4 OK: {"status":"ok","message":"Server is running"}
+## state files
+/tmp/autobyteus-docker-e2e-round2.AA27jj/nodes/autobyteus-server-2.env
+NODE_NAME=autobyteus-server-2
+CONTAINER_NAME=autobyteus-server-2
+BACKEND_PORT=62009
+VNC_PORT=62010
+NOVNC_PORT=62011
+DEBUG_PORT=62014
+IMAGE_REF=autobyteus/autobyteus-server:latest
+CREATED_AT=2026-05-12T07:06:57Z
+UPDATED_AT=2026-05-12T07:07:00Z
+/tmp/autobyteus-docker-e2e-round2.AA27jj/nodes/autobyteus-server.env.before-v006
+NODE_NAME=autobyteus-server
+CONTAINER_NAME=autobyteus-server
+BACKEND_PORT=8001
+VNC_PORT=5908
+NOVNC_PORT=61879
+DEBUG_PORT=9228
+IMAGE_REF=autobyteus/autobyteus-server:latest
+CREATED_AT=2026-05-12T07:05:29Z
+UPDATED_AT=2026-05-12T07:05:33Z
+/tmp/autobyteus-docker-e2e-round2.AA27jj/nodes/autobyteus-server.env
+NODE_NAME=autobyteus-server
+CONTAINER_NAME=autobyteus-server
+BACKEND_PORT=61899
+VNC_PORT=61900
+NOVNC_PORT=61901
+DEBUG_PORT=61902
+IMAGE_REF=autobyteus/autobyteus-server:latest
+CREATED_AT=2026-05-12T07:05:29Z
+UPDATED_AT=2026-05-12T07:05:36Z

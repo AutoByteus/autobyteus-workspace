@@ -1,0 +1,13 @@
+STATE_DIR=/tmp/autobyteus-docker-e2e.qwRecf
+## launcher stop --all
+[AutoByteus Docker] Stopped autobyteus-server-2. Named volumes were kept.
+[AutoByteus Docker] Stopped autobyteus-server. Named volumes were kept.
+## managed containers after stop --all
+NAMES                 STATUS                                PORTS
+autobyteus-server     Exited (137) Less than a second ago
+autobyteus-server-2   Exited (137) 4 seconds ago
+## cleanup containers created by validation
+## cleanup volumes created by validation
+## post-cleanup managed containers
+NAMES     STATUS    PORTS
+state copied then temp state removed: /tmp/autobyteus-docker-e2e.qwRecf

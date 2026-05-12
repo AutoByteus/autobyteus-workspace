@@ -1,0 +1,129 @@
+DATE_UTC=2026-05-12T13:27:51Z
+PWD=/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow
+NOTE: final static run uses public launcher/UI/catalog/docs install-once scope; internal source Docker README paths and test assertion text are not public command leaks.
+
+## bash syntax
+bash -n passed
+
+## shellcheck
+shellcheck passed
+
+## Bash help install-once and direct lifecycle wording
+AutoByteus Docker node launcher
+
+Usage:
+  autobyteus-docker <command> [options]
+  curl -fsSL <script-url> | bash -s -- install
+
+Advanced temporary use:
+  curl -fsSL <script-url> | bash -s -- <command> [options]
+
+Commands:
+  install            Install or update the local autobyteus-docker CLI
+  update             Alias for install
+  start              Pull and start the default Docker node
+  start --new        Start a new Docker node with automatic name and ports
+  urls               Show Backend, GraphQL, noVNC, VNC, and debug URLs
+  ports              Alias for urls
+  status             Show managed Docker nodes
+  logs               Show Docker logs for a managed node
+  stop               Stop one managed Docker node
+  stop --all         Stop all managed Docker nodes
+  help               Show this help
+
+Options:
+  --name <name>      Friendly node name (default: autobyteus-server)
+  --tag <tag>        Docker image tag (default: latest)
+  --image <image>    Docker image repository or full image ref (default: autobyteus/autobyteus-server)
+  --new              Create the next available friendly node name
+  --all              Apply stop/status to all managed nodes
+  -h, --help         Show this help
+
+State:
+  AUTOBYTEUS_DOCKER_INSTALL_DIR overrides the install directory.
+  Default install path: $HOME/.local/bin/autobyteus-docker
+  AUTOBYTEUS_DOCKER_STATE_DIR overrides the state directory.
+  Default state directory: $HOME/.autobyteus/docker-server
+  install            Install or update the local autobyteus-docker CLI
+  update             Alias for install
+  curl -fsSL <script-url> | bash -s -- install
+  autobyteus-docker <command> [options]
+  start --new        Start a new Docker node with automatic name and ports
+
+## PowerShell static install/update/help peer
+28:  install            Install or update the local autobyteus-docker CLI
+29:  update             Alias for install
+31:  start --new        Start a new Docker node with automatic name and ports
+22:  powershell -NoProfile -ExecutionPolicy Bypass -Command "irm <script-url> | iex; autobyteus-docker install"
+
+## public launcher/UI boundary forbidden-term grep
+public launcher/UI forbidden-term grep passed
+
+## broader docs must not expose Compose or --project public flow
+broader docs Compose/project grep passed
+
+## primary UI/docs/catalog should not repeat raw lifecycle curl|bash commands
+raw lifecycle command grep passed
+
+## install-once commands present in catalog/docs
+autobyteus-web/utils/dockerNodeLauncherCommands.ts:45:  return `curl -fsSL ${dockerNodeLauncherScriptUrls.bash} | bash -s -- install`;
+README.md:48:curl -fsSL https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.sh | bash -s -- install
+autobyteus-server-ts/README.md:171:curl -fsSL https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.sh | bash -s -- install
+autobyteus-server-ts/docker/README.md:29:curl -fsSL https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.sh | bash -s -- install
+autobyteus-web/docs/settings.md:92:  - After install, the guide shows direct local commands such as `autobyteus-docker start`, `autobyteus-docker start --new`, `autobyteus-docker urls`, `autobyteus-docker status`, `autobyteus-docker logs`, and `autobyteus-docker stop`.
+README.md:83:autobyteus-docker start --new
+autobyteus-server-ts/README.md:206:autobyteus-docker start --new
+autobyteus-server-ts/docker/README.md:49:autobyteus-docker start --new
+autobyteus-server-ts/docker/README.md:193:- `autobyteus-docker start --new`: Start a new friendly Docker node with automatic ports.
+
+## targeted Vitest command catalog/guide/NodeManager
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/autobyteus-web
+
+stdout | components/settings/__tests__/DockerNodeStartGuideCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/dockerNodeLauncherCommands.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/NodeManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/dockerNodeLauncherCommands.spec.ts (2 tests) 2ms
+ ✓ components/settings/__tests__/DockerNodeStartGuideCard.spec.ts (2 tests) 45ms
+ ✓ components/settings/__tests__/NodeManager.spec.ts (7 tests) 60ms
+
+ Test Files  3 passed (3)
+      Tests  11 passed (11)
+   Start at  15:27:54
+   Duration  3.09s (transform 1.52s, setup 5.70s, collect 575ms, tests 107ms, environment 651ms, prepare 499ms)
+
+
+## frontend guards
+
+> autobyteus@1.3.2 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+
+> autobyteus@1.3.2 audit:localization-literals /Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/autobyteus-web
+> node ./scripts/audit-localization-literals.mjs
+
+[audit:localization-literals] Passed with zero unresolved findings.
+(node:98801) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/autobyteus-web/localization/audit/migrationScopes.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/autobyteus-web/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+> autobyteus@1.3.2 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+
+## diff whitespace
+git diff --check passed

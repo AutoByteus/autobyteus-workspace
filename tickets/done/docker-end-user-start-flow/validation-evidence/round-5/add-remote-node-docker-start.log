@@ -1,0 +1,37 @@
+DATE_UTC=2026-05-12T14:34:16Z
+CUSTOM_STATE=/tmp/autobyteus-r5-state.QBvHeI
+LAUNCHER=/tmp/autobyteus-r5-install.ws3AiA/autobyteus-docker
+
+## start add-remote validation node
+[AutoByteus Docker] Checking image autobyteus/autobyteus-server:latest
+latest: Pulling from autobyteus/autobyteus-server
+Digest: sha256:8006705559a1b74f88e462e3699cb136895ae8c4b846aa274cb94c51e8be0549
+Status: Image is up to date for autobyteus/autobyteus-server:latest
+docker.io/autobyteus/autobyteus-server:latest
+[AutoByteus Docker] Started e2e-r5-add-node.
+AutoByteus Docker node: e2e-r5-add-node
+Container: e2e-r5-add-node
+Image: autobyteus/autobyteus-server:latest
+Backend: http://localhost:59636
+GraphQL: http://localhost:59636/graphql
+noVNC: http://localhost:59638
+VNC: localhost:59637
+Chrome debug: localhost:59639
+Next step: paste Backend into Add Remote Node in AutoByteus.
+NODE_NAME=e2e-r5-add-node
+CONTAINER_NAME=e2e-r5-add-node
+BACKEND_PORT=59636
+VNC_PORT=59637
+NOVNC_PORT=59638
+DEBUG_PORT=59639
+IMAGE_REF=autobyteus/autobyteus-server:latest
+CREATED_AT=2026-05-12T14:34:17Z
+CONFIG_HASH=e3ff4a6dc2006a5a7c5d025bb98b71fab71699d5862666ab54f37c48c5aba2f6
+UPDATED_AT=2026-05-12T14:34:19Z
+ADD_NODE_BACKEND=http://localhost:59636
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+{"status":"ok","message":"Server is running"}
+add-node health ok on attempt 4
+{"data":{"__typename":"Query"}}

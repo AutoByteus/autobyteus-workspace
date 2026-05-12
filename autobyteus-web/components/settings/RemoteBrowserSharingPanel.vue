@@ -1,7 +1,7 @@
 <template>
-  <section class="border border-gray-200 rounded-lg p-4">
+  <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
     <h3 class="text-sm font-semibold text-gray-900">{{ t('settings.components.settings.NodeManager.remoteBrowserSharing.title') }}</h3>
-    <p class="mt-1 text-xs text-gray-500">
+    <p class="mt-1 text-xs leading-5 text-gray-500">
       {{ t('settings.components.settings.NodeManager.remoteBrowserSharing.description') }}
     </p>
 
@@ -9,7 +9,7 @@
       <input
         v-model="store.settings.enabled"
         type="checkbox"
-        class="rounded border-gray-300"
+        class="rounded border-slate-300 text-blue-600 focus:ring-blue-200"
         data-testid="remote-browser-sharing-toggle"
       />
       {{ t('settings.components.settings.NodeManager.remoteBrowserSharing.toggleLabel') }}
@@ -23,14 +23,14 @@
         v-model="store.settings.advertisedHost"
         type="text"
         :placeholder="t('settings.components.settings.NodeManager.remoteBrowserSharing.advertisedHostPlaceholder')"
-        class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm font-mono"
+        class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm shadow-sm transition focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100"
         data-testid="remote-browser-sharing-host"
       />
     </div>
 
     <div class="mt-3 flex items-center gap-2">
       <button
-        class="px-4 py-2 rounded-md bg-slate-800 text-white text-sm disabled:opacity-50"
+        class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-slate-50 disabled:opacity-50"
         :disabled="store.busyNodeId !== null"
         data-testid="remote-browser-sharing-save"
         @click="store.saveSettings"

@@ -1,0 +1,13 @@
+# Delivery refresh and raw URL check - 2026-05-12T10:16:57Z
+
+## Git refs
+be56cab9b41b850c92690d79a8dfa70c52c369a0
+be56cab9b41b850c92690d79a8dfa70c52c369a0
+0	0
+
+## Remote personal ref
+be56cab9b41b850c92690d79a8dfa70c52c369a0	refs/heads/personal
+
+## Raw URL status before repository finalization
+https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.sh -> 404
+https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.ps1 -> 404

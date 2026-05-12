@@ -1,0 +1,15 @@
+DATE_UTC=2026-05-12T14:33:38Z
+## git branch/ref context
+codex/docker-end-user-start-flow
+be56cab9
+origin	git@github.com-ryan:AutoByteus/autobyteus-workspace.git (fetch)
+origin	git@github.com-ryan:AutoByteus/autobyteus-workspace.git (push)
+d066ac32d77e8caf019d41c083eed04d95b17bdd	refs/heads/personal
+
+## raw GitHub public script URLs on configured personal ref
+https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.sh -> curl: (56) The requested URL returned error: 404
+404
+https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.ps1 -> curl: (56) The requested URL returned error: 404
+404
+
+## PowerShell runtime availability

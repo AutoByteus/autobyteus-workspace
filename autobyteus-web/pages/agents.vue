@@ -9,7 +9,12 @@
 
     <AgentList v-else-if="currentView === 'list'" @navigate="handleNavigation" />
     <AgentCreate v-else-if="currentView === 'create'" @navigate="handleNavigation" />
-    <AgentDetail v-else-if="currentView === 'detail' && currentId" :agent-definition-id="currentId" @navigate="handleNavigation" />
+    <AgentDetail
+      v-else-if="currentView === 'detail' && currentId"
+      :agent-definition-id="currentId"
+      :return-to-team-id="returnToTeamId"
+      @navigate="handleNavigation"
+    />
     <AgentEdit v-else-if="currentView === 'edit' && currentId" :agent-definition-id="currentId" @navigate="handleNavigation" />
 
     <div v-else class="mx-auto mt-6 max-w-3xl rounded-xl border border-gray-200 bg-white p-8">
@@ -64,12 +69,25 @@ const currentView = computed((): View => {
 });
 
 const currentId = computed(() => route.query.id as string | undefined);
+const returnToTeamId = computed(() => route.query.returnToTeam as string | undefined);
 
-const handleNavigation = (payload: { view: View; id?: string }) => {
+type AgentNavigationPayload =
+  | { view: View; id?: string }
+  | { target: 'agent-team'; view: 'team-detail'; id: string };
+
+const handleNavigation = (payload: AgentNavigationPayload) => {
+  if ('target' in payload && payload.target === 'agent-team') {
+    router.push({ path: '/agent-teams', query: { view: payload.view, id: payload.id } });
+    return;
+  }
+
   const { view, id } = payload;
   const query: Record<string, string> = { view };
   if (id) {
     query.id = id;
+  }
+  if (returnToTeamId.value && view !== 'list') {
+    query.returnToTeam = returnToTeamId.value;
   }
   router.push({ path: '/agents', query });
 };

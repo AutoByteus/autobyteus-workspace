@@ -1,0 +1,15 @@
+# Delivery final diff check - 2026-05-12T14:55:29Z
+
+## status before check
+## codex/docker-end-user-start-flow...origin/personal [ahead 2]
+ M tickets/done/docker-end-user-start-flow/docs-sync-report.md
+ M tickets/done/docker-end-user-start-flow/handoff-summary.md
+ M tickets/done/docker-end-user-start-flow/release-deployment-report.md
+ M tickets/done/docker-end-user-start-flow/release-notes.md
+?? tickets/done/docker-end-user-start-flow/validation-evidence/round-5/delivery-final-diff-check.log
+?? tickets/done/docker-end-user-start-flow/validation-evidence/round-5/delivery-integrated-raw-url-recheck.log
+?? tickets/done/docker-end-user-start-flow/validation-evidence/round-5/delivery-post-integration-check.log
+?? tickets/done/docker-end-user-start-flow/validation-evidence/round-5/delivery-user-check-server-status.log
+
+## git diff --check including untracked via temporary intent-to-add
+full candidate git diff --check passed including untracked files

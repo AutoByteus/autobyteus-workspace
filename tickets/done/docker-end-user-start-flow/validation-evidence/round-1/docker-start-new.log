@@ -1,0 +1,42 @@
+STATE_DIR=/tmp/autobyteus-docker-e2e.qwRecf
+## start --new
+[AutoByteus Docker] Pulling autobyteus/autobyteus-server:latest
+latest: Pulling from autobyteus/autobyteus-server
+Digest: sha256:8006705559a1b74f88e462e3699cb136895ae8c4b846aa274cb94c51e8be0549
+Status: Image is up to date for autobyteus/autobyteus-server:latest
+docker.io/autobyteus/autobyteus-server:latest
+[AutoByteus Docker] Started autobyteus-server-2.
+AutoByteus Docker node: autobyteus-server-2
+Container: autobyteus-server-2
+Image: autobyteus/autobyteus-server:latest
+Backend: http://localhost:59897
+GraphQL: http://localhost:59897/graphql
+noVNC: http://localhost:59899
+VNC: localhost:59898
+Chrome debug: localhost:59900
+Next step: paste Backend into Add Remote Node in AutoByteus.
+## status after second node
+NODE                     CONTAINER                STATUS         BACKEND
+autobyteus-server-2      autobyteus-server-2      running        http://localhost:59897 (autobyteus/autobyteus-server:latest)
+autobyteus-server        autobyteus-server        running        http://localhost:8001 (autobyteus/autobyteus-server:latest)
+## state files
+/tmp/autobyteus-docker-e2e.qwRecf/nodes/autobyteus-server-2.env
+NODE_NAME=autobyteus-server-2
+CONTAINER_NAME=autobyteus-server-2
+BACKEND_PORT=59897
+VNC_PORT=59898
+NOVNC_PORT=59899
+DEBUG_PORT=59900
+IMAGE_REF=autobyteus/autobyteus-server:latest
+CREATED_AT=2026-05-12T06:12:59Z
+UPDATED_AT=2026-05-12T06:13:01Z
+/tmp/autobyteus-docker-e2e.qwRecf/nodes/autobyteus-server.env
+NODE_NAME=autobyteus-server
+CONTAINER_NAME=autobyteus-server
+BACKEND_PORT=8001
+VNC_PORT=5908
+NOVNC_PORT=59841
+DEBUG_PORT=9228
+IMAGE_REF=autobyteus/autobyteus-server:latest
+CREATED_AT=2026-05-12T06:11:32Z
+UPDATED_AT=2026-05-12T06:12:22Z

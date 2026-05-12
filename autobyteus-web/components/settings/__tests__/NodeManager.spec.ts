@@ -144,6 +144,12 @@ vi.mock('~/components/settings/RemoteBrowserSharingPanel.vue', () => ({
   },
 }));
 
+vi.mock('~/components/settings/DockerNodeStartGuideCard.vue', () => ({
+  default: {
+    template: '<div data-testid="docker-node-start-guide-card" />',
+  },
+}));
+
 vi.mock('~/components/settings/RemoteNodePairingControls.vue', () => ({
   default: {
     props: ['node'],
@@ -224,6 +230,13 @@ describe('NodeManager', () => {
     await wrapper.vm.$nextTick();
 
     expect(wrapper.find('[data-testid="remote-browser-sharing-panel"]').exists()).toBe(true);
+  });
+
+  it('renders the Docker node start guide before Add Remote Node', async () => {
+    const wrapper = mount(NodeManager);
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.find('[data-testid="docker-node-start-guide-card"]').exists()).toBe(true);
   });
 
   it('runs full sync with explicit source and selected targets', async () => {

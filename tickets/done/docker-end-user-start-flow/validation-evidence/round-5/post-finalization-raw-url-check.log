@@ -1,0 +1,9 @@
+# Post-finalization raw URL check - 2026-05-12T15:15:15Z
+
+## Git refs
+HEAD=4533663d9fe303109952c1f06aaa030abe77dd56
+origin/personal=4533663d9fe303109952c1f06aaa030abe77dd56
+
+## Raw URL status after origin/personal push
+https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.sh -> 200
+https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.ps1 -> 200
