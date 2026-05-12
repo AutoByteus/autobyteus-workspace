@@ -18,6 +18,12 @@ import {
   getAgentRunHistoryIndexService,
 } from "./agent-run-history-index-service.js";
 import { AgentRunMetadataStore } from "../store/agent-run-metadata-store.js";
+import type { AgentRunMetadata } from "../store/agent-run-metadata-types.js";
+import {
+  AgentRunViewProjectionService,
+  type RunProjection,
+} from "./agent-run-view-projection-service.js";
+import { compactSummary } from "./run-history-service-helpers.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -38,12 +44,14 @@ export class AgentRunHistoryService {
   private readonly memoryStore: MemoryFileStore;
   private readonly agentRunManager: AgentRunManager;
   private readonly metadataStore: AgentRunMetadataStore;
+  private readonly agentRunViewProjectionService: AgentRunViewProjectionService;
 
   constructor(
     memoryDir: string,
     dependencies: {
       indexService?: AgentRunHistoryIndexService;
       metadataStore?: AgentRunMetadataStore;
+      agentRunViewProjectionService?: AgentRunViewProjectionService;
     } = {},
   ) {
     this.indexService =
@@ -52,6 +60,9 @@ export class AgentRunHistoryService {
     this.agentRunManager = AgentRunManager.getInstance();
     this.metadataStore =
       dependencies.metadataStore ?? new AgentRunMetadataStore(memoryDir);
+    this.agentRunViewProjectionService =
+      dependencies.agentRunViewProjectionService ??
+      new AgentRunViewProjectionService(memoryDir);
   }
 
   async listRunHistory(limitPerAgent = 6): Promise<RunHistoryWorkspaceGroup[]> {
@@ -73,9 +84,12 @@ export class AgentRunHistoryService {
           if (metadata.archivedAt && !activeRunIds.has(row.runId)) {
             return null;
           }
+          const isActive = activeRunIds.has(row.runId);
+          const summary = await this.resolveSummary(row, metadata, isActive);
           return {
             ...row,
             workspaceRootPath: canonicalizeWorkspaceRootPath(row.workspaceRootPath),
+            summary,
           };
         }),
       )
@@ -271,6 +285,78 @@ export class AgentRunHistoryService {
     const resolvedRoot = path.resolve(rootPath);
     const resolvedCandidate = path.resolve(candidatePath);
     return resolvedCandidate.startsWith(`${resolvedRoot}${path.sep}`);
+  }
+
+  private async resolveSummary(
+    row: RunHistoryIndexRow,
+    metadata: AgentRunMetadata,
+    isActive: boolean,
+  ): Promise<string> {
+    const existing = compactSummary(row.summary);
+    if (existing && !isActive) {
+      return existing;
+    }
+
+    const projection = await this.tryGetProjection(row.runId, metadata);
+    if (!projection?.summary) {
+      return existing;
+    }
+
+    const recovered = compactSummary(projection.summary);
+    if (!recovered) {
+      return existing;
+    }
+
+    const shouldRepairMissingSummary = !existing;
+    // Preserve intentional synthetic titles (for example compaction task labels)
+    // unless the stored value is clearly one of the later user-message summaries.
+    const shouldRepairActiveLatestUserSummary =
+      isActive && this.matchesLaterUserSummary(existing, projection);
+    if (!shouldRepairMissingSummary && !shouldRepairActiveLatestUserSummary) {
+      return existing;
+    }
+
+    await this.indexService.recordRecoveredSummary({
+      runId: row.runId,
+      summary: recovered,
+    }).catch((error) => {
+      logger.warn(
+        `Failed to repair run history summary for '${row.runId}': ${String(error)}`,
+      );
+    });
+    return recovered;
+  }
+
+  private async tryGetProjection(
+    runId: string,
+    metadata: AgentRunMetadata,
+  ): Promise<RunProjection | null> {
+    try {
+      return await this.agentRunViewProjectionService.getProjectionFromMetadata({
+        runId,
+        metadata,
+      });
+    } catch (error) {
+      logger.warn(
+        `Failed to resolve run projection for history summary recovery '${runId}': ${String(error)}`,
+      );
+      return null;
+    }
+  }
+
+  private matchesLaterUserSummary(
+    existing: string,
+    projection: RunProjection,
+  ): boolean {
+    if (!existing || existing === compactSummary(projection.summary)) {
+      return false;
+    }
+
+    const userSummaries = projection.conversation
+      .filter((entry) => entry.role === "user")
+      .map((entry) => compactSummary(entry.content ?? null))
+      .filter((summary) => summary.length > 0);
+    return userSummaries.slice(1).includes(existing);
   }
 }
 

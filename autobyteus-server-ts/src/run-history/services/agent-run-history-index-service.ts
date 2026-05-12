@@ -19,6 +19,7 @@ import { canonicalizeWorkspaceRootPath } from "../utils/workspace-path-normalize
 import {
   compactSummary,
   extractSummaryFromRawTraces,
+  resolveFirstNonEmptySummary,
 } from "./run-history-service-helpers.js";
 
 const nowIso = (): string => new Date().toISOString();
@@ -82,11 +83,10 @@ export class AgentRunHistoryIndexService {
     lastKnownStatus?: RunKnownStatus;
     lastActivityAt?: string;
   }): Promise<void> {
-    const existing = await this.indexStore.getRow(input.runId);
     await this.upsertFromMetadata({
       runId: input.runId,
       metadata: input.metadata,
-      summary: existing?.summary ?? "",
+      summary: "",
       lastKnownStatus: input.lastKnownStatus ?? "ACTIVE",
       lastActivityAt: input.lastActivityAt ?? nowIso(),
     });
@@ -101,24 +101,52 @@ export class AgentRunHistoryIndexService {
   }): Promise<void> {
     const lastActivityAt = input.lastActivityAt ?? nowIso();
     const lastKnownStatus = input.lastKnownStatus ?? "ACTIVE";
-    const existing = await this.indexStore.getRow(input.runId);
 
     if (input.metadata) {
       await this.upsertFromMetadata({
         runId: input.runId,
         metadata: input.metadata,
-        summary: this.resolveFirstSummary(existing?.summary, input.summary) ?? "",
+        summary: input.summary ?? "",
         lastKnownStatus,
         lastActivityAt,
       });
       return;
     }
 
-    const nextSummary = this.resolveFirstSummary(existing?.summary, input.summary);
-    await this.indexStore.updateRow(input.runId, {
-      ...(nextSummary !== undefined ? { summary: nextSummary } : {}),
-      lastKnownStatus,
-      lastActivityAt,
+    await this.indexStore.mutateRow(input.runId, (current) => {
+      if (!current) {
+        return null;
+      }
+      const nextSummary = resolveFirstNonEmptySummary(
+        current.summary,
+        input.summary,
+      );
+      return {
+        ...current,
+        ...(nextSummary !== undefined ? { summary: nextSummary } : {}),
+        lastKnownStatus,
+        lastActivityAt,
+      };
+    });
+  }
+
+  async recordRecoveredSummary(input: {
+    runId: string;
+    summary: string;
+  }): Promise<void> {
+    const summary = compactSummary(input.summary);
+    if (!summary) {
+      return;
+    }
+
+    await this.indexStore.mutateRow(input.runId, (current) => {
+      if (!current || current.summary === summary) {
+        return null;
+      }
+      return {
+        ...current,
+        summary,
+      };
     });
   }
 
@@ -168,33 +196,19 @@ export class AgentRunHistoryIndexService {
     lastKnownStatus: RunKnownStatus;
     lastActivityAt: string;
   }): Promise<void> {
-    const agentName = await this.resolveAgentName(input.metadata.agentDefinitionId);
-    const row: RunHistoryIndexRow = {
-      runId: input.runId,
-      agentDefinitionId: input.metadata.agentDefinitionId,
-      agentName,
-      workspaceRootPath: canonicalizeWorkspaceRootPath(input.metadata.workspaceRootPath),
-      summary: compactSummary(input.summary),
-      lastActivityAt: input.lastActivityAt,
-      lastKnownStatus: input.lastKnownStatus,
-    };
-    await this.indexStore.upsertRow(row);
-  }
-
-  private resolveFirstSummary(
-    existingSummary: string | null | undefined,
-    nextSummary: string | null | undefined,
-  ): string | undefined {
-    const existing = compactSummary(existingSummary ?? null);
-    if (existing) {
-      return existing;
-    }
-
-    if (nextSummary === undefined || nextSummary === null) {
-      return undefined;
-    }
-
-    return compactSummary(nextSummary);
+    await this.indexStore.mutateRow(input.runId, async (current) => {
+      const agentName = await this.resolveAgentName(input.metadata.agentDefinitionId);
+      return {
+        runId: input.runId,
+        agentDefinitionId: input.metadata.agentDefinitionId,
+        agentName,
+        workspaceRootPath: canonicalizeWorkspaceRootPath(input.metadata.workspaceRootPath),
+        summary:
+          resolveFirstNonEmptySummary(current?.summary, input.summary) ?? "",
+        lastActivityAt: input.lastActivityAt,
+        lastKnownStatus: input.lastKnownStatus,
+      };
+    });
   }
 
   private inferLastActivityAt(runId: string): string {
