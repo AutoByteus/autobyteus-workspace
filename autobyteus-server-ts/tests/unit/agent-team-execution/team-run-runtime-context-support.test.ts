@@ -4,6 +4,7 @@ import { TeamMemberMemoryLayout } from "../../../src/agent-memory/store/team-mem
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { buildRestoreTeamRunRuntimeContext } from "../../../src/agent-team-execution/services/team-run-runtime-context-support.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 
 describe("buildRestoreTeamRunRuntimeContext", () => {
   it("preserves Codex team-member durable memory bindings on restore", () => {
@@ -12,12 +13,13 @@ describe("buildRestoreTeamRunRuntimeContext", () => {
       teamDefinitionId: "brief-studio-team",
       teamDefinitionName: "Brief Studio Team",
       coordinatorMemberRouteKey: "researcher",
-      runVersion: 1,
       createdAt: "2026-04-23T00:00:00.000Z",
       updatedAt: "2026-04-23T00:00:00.000Z",
-      memberMetadata: [
+      memberTree: [
         {
+          memberKind: "agent",
           memberRouteKey: "researcher",
+          memberPath: ["Researcher"],
           memberName: "Researcher",
           memberRunId: "researcher_member_run",
           runtimeKind: RuntimeKind.CODEX_APP_SERVER,
@@ -25,7 +27,7 @@ describe("buildRestoreTeamRunRuntimeContext", () => {
           agentDefinitionId: "agent-researcher",
           llmModelIdentifier: "gpt-5.4",
           autoExecuteTools: true,
-          skillAccessMode: SkillAccessMode.WORKSPACE,
+          skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
           llmConfig: { reasoning_effort: "medium" },
           workspaceRootPath: "/tmp/brief-workspace",
           applicationExecutionContext: null,
@@ -35,12 +37,12 @@ describe("buildRestoreTeamRunRuntimeContext", () => {
 
     const runtimeContext = buildRestoreTeamRunRuntimeContext(
       metadata,
-      RuntimeKind.CODEX_APP_SERVER,
+      TeamBackendKind.CODEX_APP_SERVER,
     );
     const memberContext = runtimeContext.memberContexts[0];
     const expectedMemoryDir = new TeamMemberMemoryLayout(
       appConfigProvider.config.getMemoryDir(),
-    ).getMemberDirPath(metadata.teamRunId, metadata.memberMetadata[0].memberRunId);
+    ).getMemberDirPath(metadata.teamRunId, metadata.memberTree[0].memberRunId);
 
     expect(memberContext.memberRunId).toBe("researcher_member_run");
     expect(memberContext.threadId).toBe("thread_researcher_1");

@@ -7,14 +7,28 @@ import {
 } from "../domain/member-team-context.js";
 import type { TeamBackendKind } from "../domain/team-backend-kind.js";
 
-export type MemberTeamContextMemberInput = {
-  memberName: string;
-  memberRouteKey: string;
-  memberRunId: string;
-  runtimeKind: RuntimeKind;
-  role?: string | null;
-  description?: string | null;
-};
+export type MemberTeamContextMemberInput =
+  | {
+      memberKind?: "agent" | null;
+      memberName: string;
+      memberPath?: string[] | null;
+      memberRouteKey: string;
+      memberRunId: string;
+      runtimeKind: RuntimeKind;
+      role?: string | null;
+      description?: string | null;
+    }
+  | {
+      memberKind: "agent_team";
+      memberName: string;
+      memberPath?: string[] | null;
+      memberRouteKey: string;
+      memberRunId: string;
+      teamDefinitionId: string;
+      coordinatorMemberRouteKey?: string | null;
+      role?: string | null;
+      description?: string | null;
+    };
 
 export class MemberTeamContextBuilder {
   private readonly teamDefinitionService: AgentTeamDefinitionService;
@@ -31,23 +45,42 @@ export class MemberTeamContextBuilder {
     teamDefinitionId: string;
     teamBackendKind: TeamBackendKind;
     currentMemberName: string;
+    currentMemberPath?: string[] | null;
     currentMemberRouteKey: string;
     currentMemberRunId: string;
     members: MemberTeamContextMemberInput[];
     deliverInterAgentMessage?: InterAgentMessageDeliveryHandler | null;
   }): Promise<MemberTeamContext> {
-    const members = input.members.map<MemberTeamDescriptor>((member) => ({
-      memberName: member.memberName,
-      memberRouteKey: member.memberRouteKey,
-      memberRunId: member.memberRunId,
-      runtimeKind: member.runtimeKind,
-      role: member.role ?? null,
-      description: member.description ?? null,
-    }));
-    const currentMemberNameLower = input.currentMemberName.trim().toLowerCase();
+    const members = input.members.map<MemberTeamDescriptor>((member) => {
+      const memberPath = member.memberPath?.length ? [...member.memberPath] : [member.memberName];
+      if (member.memberKind === "agent_team") {
+        return {
+          memberKind: "agent_team",
+          memberName: member.memberName,
+          memberPath,
+          memberRouteKey: member.memberRouteKey,
+          memberRunId: member.memberRunId,
+          teamDefinitionId: member.teamDefinitionId,
+          coordinatorMemberRouteKey: member.coordinatorMemberRouteKey ?? null,
+          role: member.role ?? null,
+          description: member.description ?? null,
+        };
+      }
+      return {
+        memberKind: "agent",
+        memberName: member.memberName,
+        memberPath,
+        memberRouteKey: member.memberRouteKey,
+        memberRunId: member.memberRunId,
+        runtimeKind: member.runtimeKind,
+        role: member.role ?? null,
+        description: member.description ?? null,
+      };
+    });
+    const currentMemberRouteKeyLower = input.currentMemberRouteKey.trim().toLowerCase();
     const allowedRecipientNames = members
-      .map((member) => member.memberName)
-      .filter((memberName) => memberName.trim().toLowerCase() !== currentMemberNameLower);
+      .filter((member) => member.memberRouteKey.trim().toLowerCase() !== currentMemberRouteKeyLower)
+      .map((member) => member.memberName);
     const deliverInterAgentMessage = input.deliverInterAgentMessage ?? null;
 
     return new MemberTeamContext({
@@ -55,6 +88,7 @@ export class MemberTeamContextBuilder {
       teamDefinitionId: input.teamDefinitionId,
       teamBackendKind: input.teamBackendKind,
       memberName: input.currentMemberName,
+      memberPath: input.currentMemberPath ?? [input.currentMemberName],
       memberRouteKey: input.currentMemberRouteKey,
       memberRunId: input.currentMemberRunId,
       teamInstruction: await this.resolveTeamInstruction(input.teamDefinitionId),

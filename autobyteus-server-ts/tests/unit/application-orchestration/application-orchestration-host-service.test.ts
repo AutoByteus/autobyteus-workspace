@@ -271,12 +271,13 @@ describe("ApplicationOrchestrationHostService startRun", () => {
         teamDefinitionId: "team-def-1",
         teamDefinitionName: "Brief Team",
         coordinatorMemberRouteKey: "researcher",
-        runVersion: 1,
         createdAt: "2026-04-19T09:10:00.000Z",
         updatedAt: "2026-04-19T09:10:00.000Z",
-        memberMetadata: [
+        memberTree: [
           {
+            memberKind: "agent",
             memberRouteKey: "researcher",
+            memberPath: ["Researcher"],
             memberName: "Researcher",
             memberRunId: "researcher-member-run-1",
             runtimeKind: "AUTOBYTEUS",

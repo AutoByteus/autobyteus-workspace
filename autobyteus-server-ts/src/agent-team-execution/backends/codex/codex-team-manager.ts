@@ -36,6 +36,11 @@ import {
 import { getMemberTeamContextBuilder, type MemberTeamContextBuilder } from "../../services/member-team-context-builder.js";
 import { publishProcessedTeamAgentEvents } from "../../services/publish-processed-team-agent-events.js";
 import { TeamBackendKind } from "../../domain/team-backend-kind.js";
+import {
+  resolveTeamMemberSelector,
+  selectorToDisplayString,
+  type TeamMemberSelector,
+} from "../../domain/team-run-member-identity.js";
 
 const buildRunNotFoundResult = (teamRunId: string): AgentOperationResult => ({
   accepted: false,
@@ -43,10 +48,10 @@ const buildRunNotFoundResult = (teamRunId: string): AgentOperationResult => ({
   message: `Run '${teamRunId}' is not active.`,
 });
 
-const buildTargetMemberNotFoundResult = (targetMemberName: string): AgentOperationResult => ({
+const buildTargetMemberNotFoundResult = (target: string): AgentOperationResult => ({
   accepted: false,
   code: "TARGET_MEMBER_NOT_FOUND",
-  message: `Team member '${targetMemberName}' was not found.`,
+  message: `Team member '${target}' was not found.`,
 });
 
 const buildPlaceholderThreadConfig = (memberContext: CodexTeamMemberContext) =>
@@ -90,15 +95,15 @@ export class CodexTeamManager implements TeamManager {
 
   async postMessage(
     message: AgentInputUserMessage,
-    targetMemberName: string,
+    target: TeamMemberSelector,
   ): Promise<AgentOperationResult> {
     const teamContext = this.teamContext;
     if (!teamContext) {
       return buildRunNotFoundResult("unknown");
     }
-    const memberContext = this.findMemberContextByName(targetMemberName);
-    if (!memberContext) {
-      return buildTargetMemberNotFoundResult(targetMemberName);
+    const memberContext = this.resolveTargetMemberContext(target);
+    if ("accepted" in memberContext) {
+      return memberContext;
     }
     const memberRun = await this.ensureMemberReady(memberContext);
     const result = await memberRun.postUserMessage(message);
@@ -118,9 +123,9 @@ export class CodexTeamManager implements TeamManager {
     if (!teamContext) {
       return buildRunNotFoundResult("unknown");
     }
-    const memberContext = this.findMemberContextByName(request.recipientMemberName);
-    if (!memberContext) {
-      return buildTargetMemberNotFoundResult(request.recipientMemberName);
+    const memberContext = this.resolveTargetMemberContext(request.recipientSelector);
+    if ("accepted" in memberContext) {
+      return memberContext;
     }
     const memberRun = await this.ensureMemberReady(memberContext);
     const senderMemberName =
@@ -140,6 +145,7 @@ export class CodexTeamManager implements TeamManager {
         runtimeKind: RuntimeKind.CODEX_APP_SERVER,
         memberName: memberContext.memberName,
         memberRunId: memberContext.memberRunId,
+        sourcePath: memberContext.memberPath,
         agentEvents: [
           buildInterAgentMessageAgentRunEvent({
             recipientRunId: memberContext.memberRunId,
@@ -158,7 +164,7 @@ export class CodexTeamManager implements TeamManager {
   }
 
   async approveToolInvocation(
-    targetMemberName: string,
+    target: TeamMemberSelector,
     invocationId: string,
     approved: boolean,
     reason: string | null = null,
@@ -166,9 +172,9 @@ export class CodexTeamManager implements TeamManager {
     if (!this.teamContext) {
       return buildRunNotFoundResult("unknown");
     }
-    const memberContext = this.findMemberContextByName(targetMemberName);
-    if (!memberContext) {
-      return buildTargetMemberNotFoundResult(targetMemberName);
+    const memberContext = this.resolveTargetMemberContext(target);
+    if ("accepted" in memberContext) {
+      return memberContext;
     }
     const memberRun = await this.ensureMemberReady(memberContext);
     return memberRun.approveToolInvocation(invocationId, approved, reason ?? null);
@@ -247,13 +253,16 @@ export class CodexTeamManager implements TeamManager {
     };
   }
 
-  private findMemberContextByName(targetMemberName: string): CodexTeamMemberContext | null {
+  private resolveTargetMemberContext(
+    target: TeamMemberSelector,
+  ): CodexTeamMemberContext | AgentOperationResult {
     const runtimeContext = this.getRuntimeContext();
-    return (
-      runtimeContext.memberContexts.find(
-        (memberContext) => memberContext.memberName === targetMemberName,
-      ) ?? null
-    );
+    const resolution = resolveTeamMemberSelector(target, runtimeContext.memberContexts);
+    return resolution.ok
+      ? resolution.member
+      : buildTargetMemberNotFoundResult(
+          `${resolution.message} Selector: '${selectorToDisplayString(target)}'`,
+        );
   }
 
   private findMemberContextByRouteKey(memberRouteKey: string): CodexTeamMemberContext | null {
@@ -328,10 +337,13 @@ export class CodexTeamManager implements TeamManager {
       teamDefinitionId: config.teamDefinitionId,
       teamBackendKind: TeamBackendKind.CODEX_APP_SERVER,
       currentMemberName: memberContext.memberName,
+      currentMemberPath: memberContext.memberPath,
       currentMemberRouteKey: memberContext.memberRouteKey,
       currentMemberRunId: memberContext.memberRunId,
       members: this.getRuntimeContext().memberContexts.map((member) => ({
+        memberKind: "agent" as const,
         memberName: member.memberName,
+        memberPath: member.memberPath,
         memberRouteKey: member.memberRouteKey,
         memberRunId: member.memberRunId,
         runtimeKind: member.agentRunConfig.runtimeKind,
@@ -385,10 +397,13 @@ export class CodexTeamManager implements TeamManager {
     this.publish({
       eventSourceType: TeamRunEventSourceType.AGENT,
       teamRunId: this.teamContext.runId,
+      sourcePath: memberContext.memberPath,
       data: {
         runtimeKind: RuntimeKind.CODEX_APP_SERVER,
         memberName: memberContext.memberName,
         memberRunId: memberContext.memberRunId,
+        memberPath: memberContext.memberPath,
+        memberRouteKey: memberContext.memberRouteKey,
         agentEvent,
       } satisfies TeamRunAgentEventPayload,
     });
@@ -407,6 +422,7 @@ export class CodexTeamManager implements TeamManager {
     this.publish({
       eventSourceType: TeamRunEventSourceType.TEAM,
       teamRunId: this.teamContext.runId,
+      sourcePath: [],
       data: {
         new_status: nextStatus,
         ...(this.lastTeamStatus ? { old_status: this.lastTeamStatus } : {}),

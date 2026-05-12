@@ -88,8 +88,24 @@ export const buildInterAgentDeliveryInputMessage = (
     {
       sender_agent_id: request.senderRunId,
       sender_agent_name: request.senderMemberName ?? null,
+      ...(request.senderRouteKey ? {
+        sender_route_key: request.senderRouteKey,
+        sender_member_route_key: request.senderRouteKey,
+      } : {}),
+      ...(request.senderPath ? {
+        sender_path: request.senderPath,
+        sender_member_path: request.senderPath,
+      } : {}),
       original_message_type: resolveMessageType(request.messageType),
       team_run_id: request.teamRunId,
+      ...(request.recipientRouteKey ? {
+        receiver_route_key: request.recipientRouteKey,
+        receiver_member_route_key: request.recipientRouteKey,
+      } : {}),
+      ...(request.recipientPath ? {
+        receiver_path: request.recipientPath,
+        receiver_member_path: request.recipientPath,
+      } : {}),
       reference_files: referenceFiles,
     },
   );
@@ -123,9 +139,19 @@ export const buildInterAgentMessageAgentRunEvent = (input: {
       team_run_id: input.request.teamRunId,
       sender_agent_id: input.request.senderRunId,
       sender_agent_name: input.request.senderMemberName ?? null,
+      ...(input.request.senderRouteKey ? {
+        sender_route_key: input.request.senderRouteKey,
+        sender_member_route_key: input.request.senderRouteKey,
+      } : {}),
+      ...(input.request.senderPath ? {
+        sender_path: input.request.senderPath,
+        sender_member_path: input.request.senderPath,
+      } : {}),
       receiver_run_id: input.recipientRunId,
-      receiver_agent_name: input.request.recipientMemberName,
-      recipient_role_name: input.request.recipientMemberName,
+      receiver_agent_name: input.request.recipientMemberName ?? input.request.recipientRouteKey ?? null,
+      ...(input.request.recipientRouteKey ? { receiver_member_route_key: input.request.recipientRouteKey } : {}),
+      ...(input.request.recipientPath ? { receiver_member_path: input.request.recipientPath } : {}),
+      recipient_role_name: input.request.recipientMemberName ?? input.request.recipientRouteKey ?? null,
       content: input.request.content,
       message_type: messageType,
       reference_files: referenceFiles,

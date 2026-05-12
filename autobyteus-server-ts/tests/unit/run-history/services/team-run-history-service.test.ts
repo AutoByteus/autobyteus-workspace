@@ -25,13 +25,14 @@ const buildTeamMetadata = (
   teamDefinitionId: "team-def-1",
   teamDefinitionName: "Team Alpha",
   coordinatorMemberRouteKey: "coordinator",
-  runVersion: 1,
   createdAt: "2026-04-11T20:00:00.000Z",
   updatedAt: "2026-04-11T20:05:00.000Z",
   archivedAt: null,
-  memberMetadata: [
+  memberTree: [
     {
+      memberKind: "agent",
       memberRouteKey: "coordinator",
+      memberPath: ["Coordinator"],
       memberName: "Coordinator",
       memberRunId: "member-run-1",
       runtimeKind: RuntimeKind.AUTOBYTEUS,
@@ -135,9 +136,9 @@ describe("TeamRunHistoryService", () => {
     await metadataStore.writeMetadata(
       "team-archive",
       buildTeamMetadata("team-archive", {
-        memberMetadata: [
+        memberTree: [
           {
-            ...buildTeamMetadata("team-archive").memberMetadata[0]!,
+            ...buildTeamMetadata("team-archive").memberTree[0]!,
             applicationExecutionContext: {
               applicationId: "app-1",
               bindingId: "binding-1",
@@ -175,7 +176,11 @@ describe("TeamRunHistoryService", () => {
       message: "Team run 'team-archive' archived.",
     });
     expect(archivedMetadata?.archivedAt).toEqual(expect.any(String));
-    expect(archivedMetadata?.memberMetadata[0]?.applicationExecutionContext?.applicationId).toBe("app-1");
+    expect(
+      archivedMetadata?.memberTree[0]?.memberKind === "agent"
+        ? archivedMetadata.memberTree[0].applicationExecutionContext?.applicationId
+        : null,
+    ).toBe("app-1");
     await expect(fs.stat(teamDir)).resolves.toBeTruthy();
     await expect(fs.stat(path.join(teamDir, "member-run-1", "raw_traces.jsonl"))).resolves.toBeTruthy();
     expect(indexService.removeRow).not.toHaveBeenCalled();

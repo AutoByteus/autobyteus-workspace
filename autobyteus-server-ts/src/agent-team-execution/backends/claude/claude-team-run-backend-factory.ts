@@ -72,6 +72,7 @@ export class ClaudeTeamRunBackendFactory implements TeamRunBackendFactory {
 
         return new ClaudeTeamMemberContext({
           memberName: memberConfig.memberName,
+          memberPath: memberConfig.memberPath,
           memberRouteKey: memberConfig.memberRouteKey ?? memberConfig.memberName,
           memberRunId,
           agentRunConfig: new AgentRunConfig({
@@ -93,17 +94,20 @@ export class ClaudeTeamRunBackendFactory implements TeamRunBackendFactory {
     );
 
     const runtimeContext = new ClaudeTeamRunContext({
-      coordinatorMemberRouteKey: null,
+      coordinatorMemberRouteKey: config.coordinatorMemberRouteKey,
       memberContexts,
     });
 
     return new TeamRunContext({
       runId: teamRunId,
       teamBackendKind: TeamBackendKind.CLAUDE_AGENT_SDK,
-      coordinatorMemberName: null,
+      coordinatorMemberName: config.coordinatorMemberName,
+      coordinatorMemberRouteKey: config.coordinatorMemberRouteKey,
       config: new TeamRunConfig({
         teamDefinitionId: config.teamDefinitionId,
         teamBackendKind: TeamBackendKind.CLAUDE_AGENT_SDK,
+        coordinatorMemberName: config.coordinatorMemberName,
+        coordinatorMemberRouteKey: config.coordinatorMemberRouteKey,
         memberConfigs,
       }),
       runtimeContext,
@@ -127,7 +131,9 @@ export class ClaudeTeamRunBackendFactory implements TeamRunBackendFactory {
       const memberRunId =
         memberConfig.memberRunId?.trim() || buildTeamMemberRunId(teamRunId, memberRouteKey);
       return {
+        memberKind: "agent",
         memberName: memberConfig.memberName,
+        memberPath: memberConfig.memberPath,
         memberRouteKey,
         memberRunId,
         runtimeKind: memberConfig.runtimeKind,

@@ -2,8 +2,10 @@ import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js"
 import type { InterAgentMessageDeliveryHandler } from "./inter-agent-message-delivery.js";
 import type { TeamBackendKind } from "./team-backend-kind.js";
 
-export type MemberTeamDescriptor = {
+export type AgentMemberTeamDescriptor = {
+  memberKind: "agent";
   memberName: string;
+  memberPath: string[];
   memberRouteKey: string;
   memberRunId: string;
   runtimeKind: RuntimeKind;
@@ -11,11 +13,26 @@ export type MemberTeamDescriptor = {
   description: string | null;
 };
 
+export type SubTeamMemberTeamDescriptor = {
+  memberKind: "agent_team";
+  memberName: string;
+  memberPath: string[];
+  memberRouteKey: string;
+  memberRunId: string;
+  teamDefinitionId: string;
+  coordinatorMemberRouteKey: string | null;
+  role: string | null;
+  description: string | null;
+};
+
+export type MemberTeamDescriptor = AgentMemberTeamDescriptor | SubTeamMemberTeamDescriptor;
+
 export class MemberTeamContext {
   readonly teamRunId: string;
   readonly teamDefinitionId: string;
   readonly teamBackendKind: TeamBackendKind;
   readonly memberName: string;
+  readonly memberPath: string[];
   readonly memberRouteKey: string;
   readonly memberRunId: string;
   readonly teamInstruction: string | null;
@@ -29,6 +46,7 @@ export class MemberTeamContext {
     teamDefinitionId: string;
     teamBackendKind: TeamBackendKind;
     memberName: string;
+    memberPath?: string[] | null;
     memberRouteKey: string;
     memberRunId: string;
     teamInstruction?: string | null;
@@ -41,6 +59,7 @@ export class MemberTeamContext {
     this.teamDefinitionId = input.teamDefinitionId;
     this.teamBackendKind = input.teamBackendKind;
     this.memberName = input.memberName;
+    this.memberPath = input.memberPath?.length ? [...input.memberPath] : [input.memberName];
     this.memberRouteKey = input.memberRouteKey;
     this.memberRunId = input.memberRunId;
     this.teamInstruction = input.teamInstruction ?? null;

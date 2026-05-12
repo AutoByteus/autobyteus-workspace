@@ -1,13 +1,13 @@
 import { describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
 import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
+import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 
 const createBackend = () => ({
   runId: "team-run-1",
-  runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+  teamBackendKind: TeamBackendKind.CODEX_APP_SERVER,
   getRuntimeContext: () => null,
   isActive: () => true,
   getStatus: () => "IDLE",
@@ -25,11 +25,11 @@ describe("TeamRun", () => {
     const run = new TeamRun({
       context: new TeamRunContext({
         runId: "team-run-1",
-        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        teamBackendKind: TeamBackendKind.CODEX_APP_SERVER,
         coordinatorMemberName: "Coordinator",
         config: new TeamRunConfig({
           teamDefinitionId: "team-def-1",
-          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+          teamBackendKind: TeamBackendKind.CODEX_APP_SERVER,
           coordinatorMemberName: "Coordinator",
           memberConfigs: [],
         }),
@@ -40,7 +40,10 @@ describe("TeamRun", () => {
 
     await run.postMessage(new AgentInputUserMessage("continue"));
 
-    expect(backend.postMessage).toHaveBeenCalledWith(expect.any(AgentInputUserMessage), "Coordinator");
+    expect(backend.postMessage).toHaveBeenCalledWith(
+      expect.any(AgentInputUserMessage),
+      { kind: "route_key", memberRouteKey: "Coordinator" },
+    );
   });
 
   it("falls back to config coordinator member when context coordinator is absent", async () => {
@@ -48,11 +51,11 @@ describe("TeamRun", () => {
     const run = new TeamRun({
       context: new TeamRunContext({
         runId: "team-run-1",
-        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        teamBackendKind: TeamBackendKind.CODEX_APP_SERVER,
         coordinatorMemberName: null,
         config: new TeamRunConfig({
           teamDefinitionId: "team-def-1",
-          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+          teamBackendKind: TeamBackendKind.CODEX_APP_SERVER,
           coordinatorMemberName: "Coordinator",
           memberConfigs: [],
         }),
@@ -63,6 +66,36 @@ describe("TeamRun", () => {
 
     await run.postMessage(new AgentInputUserMessage("continue"));
 
-    expect(backend.postMessage).toHaveBeenCalledWith(expect.any(AgentInputUserMessage), "Coordinator");
+    expect(backend.postMessage).toHaveBeenCalledWith(
+      expect.any(AgentInputUserMessage),
+      { kind: "route_key", memberRouteKey: "Coordinator" },
+    );
+  });
+
+  it("defaults omitted team messages to a configured coordinator route key", async () => {
+    const backend = createBackend();
+    const run = new TeamRun({
+      context: new TeamRunContext({
+        runId: "team-run-1",
+        teamBackendKind: TeamBackendKind.MIXED,
+        coordinatorMemberName: null,
+        coordinatorMemberRouteKey: "ReviewTeam/Reviewer",
+        config: new TeamRunConfig({
+          teamDefinitionId: "team-def-1",
+          teamBackendKind: TeamBackendKind.MIXED,
+          coordinatorMemberRouteKey: "ReviewTeam/Reviewer",
+          memberConfigs: [],
+        }),
+        runtimeContext: { memberContexts: [] },
+      }),
+      backend: backend as never,
+    });
+
+    await run.postMessage(new AgentInputUserMessage("continue"));
+
+    expect(backend.postMessage).toHaveBeenCalledWith(
+      expect.any(AgentInputUserMessage),
+      { kind: "route_key", memberRouteKey: "ReviewTeam/Reviewer" },
+    );
   });
 });

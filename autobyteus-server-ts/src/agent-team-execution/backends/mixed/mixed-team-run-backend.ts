@@ -2,6 +2,7 @@ import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-in
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import type { InterAgentMessageDeliveryRequest } from "../../domain/inter-agent-message-delivery.js";
 import type { TeamRunEventListener, TeamRunEventUnsubscribe } from "../../domain/team-run-event.js";
+import type { TeamMemberSelector } from "../../domain/team-run-member-identity.js";
 import { TeamBackendKind } from "../../domain/team-backend-kind.js";
 import type { TeamRunBackend } from "../team-run-backend.js";
 import type { TeamManager } from "../team-manager.js";
@@ -16,7 +17,7 @@ const buildRunNotFoundResult = (runId: string): AgentOperationResult => ({
 const buildTargetMemberRequiredResult = (): AgentOperationResult => ({
   accepted: false,
   code: "TARGET_MEMBER_REQUIRED",
-  message: "targetMemberName is required.",
+  message: "target member selector is required.",
 });
 
 const buildCommandFailure = (operation: string, error: unknown): AgentOperationResult => ({
@@ -60,17 +61,17 @@ export class MixedTeamRunBackend implements TeamRunBackend {
 
   async postMessage(
     message: AgentInputUserMessage,
-    targetMemberName: string | null = null,
+    target: TeamMemberSelector | null = null,
   ): Promise<AgentOperationResult> {
     if (!this.isActive()) {
       return buildRunNotFoundResult(this.runId);
     }
-    if (typeof targetMemberName !== "string" || targetMemberName.trim().length === 0) {
+    if (!target) {
       return buildTargetMemberRequiredResult();
     }
 
     try {
-      return await this.teamManager.postMessage(message, targetMemberName.trim());
+      return await this.teamManager.postMessage(message, target);
     } catch (error) {
       return buildCommandFailure("post team message", error);
     }
@@ -90,7 +91,7 @@ export class MixedTeamRunBackend implements TeamRunBackend {
   }
 
   async approveToolInvocation(
-    targetMemberName: string,
+    target: TeamMemberSelector,
     invocationId: string,
     approved: boolean,
     reason: string | null = null,
@@ -100,7 +101,7 @@ export class MixedTeamRunBackend implements TeamRunBackend {
     }
     try {
       return await this.teamManager.approveToolInvocation(
-        targetMemberName,
+        target,
         invocationId,
         approved,
         reason,

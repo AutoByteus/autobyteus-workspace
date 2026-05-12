@@ -4,12 +4,26 @@ import type { CodexTeamRunContext } from "../backends/codex/codex-team-run-conte
 import type { MixedTeamRunContext } from "../backends/mixed/mixed-team-run-context.js";
 import type { TeamRunConfig } from "./team-run-config.js";
 import type { TeamBackendKind } from "./team-backend-kind.js";
+import { buildMemberPath, buildMemberRouteKeyFromPath } from "./team-run-member-identity.js";
 
 export interface TeamMemberRuntimeContext {
+  readonly memberKind: "agent" | "agent_team";
   readonly memberName: string;
+  readonly memberPath: string[];
   readonly memberRouteKey: string;
   readonly memberRunId: string;
   getPlatformAgentRunId(): string | null;
+}
+
+export interface TeamAgentMemberRuntimeContext extends TeamMemberRuntimeContext {
+  readonly memberKind: "agent";
+}
+
+export interface TeamSubTeamMemberRuntimeContext extends TeamMemberRuntimeContext {
+  readonly memberKind: "agent_team";
+  readonly teamDefinitionId: string;
+  childTeamRunId: string | null;
+  childRuntimeContext?: RuntimeTeamRunContext | null;
 }
 
 type TeamMemberContextCarrier = {
@@ -34,6 +48,7 @@ export type TeamRunContextInput<TRuntimeContext> = {
   runId: string;
   teamBackendKind: TeamBackendKind;
   coordinatorMemberName?: string | null;
+  coordinatorMemberRouteKey?: string | null;
   config: TeamRunConfig | null;
   runtimeContext: TRuntimeContext;
 };
@@ -42,6 +57,7 @@ export class TeamRunContext<TRuntimeContext = RuntimeTeamRunContext> {
   readonly runId: string;
   readonly teamBackendKind: TeamBackendKind;
   readonly coordinatorMemberName: string | null;
+  readonly coordinatorMemberRouteKey: string | null;
   readonly config: TeamRunConfig | null;
   readonly runtimeContext: TRuntimeContext;
 
@@ -49,10 +65,28 @@ export class TeamRunContext<TRuntimeContext = RuntimeTeamRunContext> {
     this.runId = input.runId;
     this.teamBackendKind = input.teamBackendKind;
     this.coordinatorMemberName = input.coordinatorMemberName ?? null;
+    this.coordinatorMemberRouteKey = input.coordinatorMemberRouteKey ?? input.config?.coordinatorMemberRouteKey ?? null;
     this.config = input.config;
     this.runtimeContext = input.runtimeContext;
   }
 }
+
+export const ensureRuntimeMemberPath = (input: {
+  memberName: string;
+  memberPath?: string[] | null;
+}): string[] =>
+  Array.isArray(input.memberPath) && input.memberPath.length > 0
+    ? [...input.memberPath]
+    : buildMemberPath([], input.memberName);
+
+export const ensureRuntimeMemberRouteKey = (input: {
+  memberName: string;
+  memberPath?: string[] | null;
+  memberRouteKey?: string | null;
+}): string =>
+  typeof input.memberRouteKey === "string" && input.memberRouteKey.trim().length > 0
+    ? input.memberRouteKey.trim()
+    : buildMemberRouteKeyFromPath(ensureRuntimeMemberPath(input));
 
 export const getRuntimeMemberContexts = (
   runtimeContext: RuntimeTeamRunContext | null | undefined,

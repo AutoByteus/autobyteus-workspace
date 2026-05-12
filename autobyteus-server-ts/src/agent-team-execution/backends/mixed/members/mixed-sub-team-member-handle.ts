@@ -1,0 +1,133 @@
+import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import type { AgentOperationResult } from "../../../../agent-execution/domain/agent-operation-result.js";
+import type { TeamRun } from "../../../domain/team-run.js";
+import type { TeamRunContext } from "../../../domain/team-run-context.js";
+import type { InterAgentMessageDeliveryRequest } from "../../../domain/inter-agent-message-delivery.js";
+import {
+  stripSelectorTopLevel,
+  type TeamMemberSelector,
+} from "../../../domain/team-run-member-identity.js";
+import { TeamRunEventSourceType, type TeamRunStatusUpdateData } from "../../../domain/team-run-event.js";
+import type { TeamSubTeamMemberRunConfig } from "../../../domain/team-run-config.js";
+import type { MixedTeamRunContext, MixedSubTeamMemberContext } from "../mixed-team-run-context.js";
+import type { MixedSubTeamRunFactory } from "../mixed-sub-team-run-factory.js";
+import { buildInterAgentDeliveryInputMessage } from "../../../services/inter-agent-message-runtime-builders.js";
+import { prefixMixedSubTeamEvent } from "../events/mixed-team-event-bridge.js";
+import type { MixedTeamEventPublish, MixedTeamMemberHandle, MixedTeamStatusChange } from "./mixed-team-member-handle.js";
+
+const unsupportedSubteamApproval = (memberName: string): AgentOperationResult => ({
+  accepted: false,
+  code: "TARGET_MEMBER_NOT_AGENT",
+  message: `Team member '${memberName}' is a subteam; approve a nested agent by memberPath or memberRouteKey.`,
+});
+
+export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
+  readonly context: MixedSubTeamMemberContext;
+  private childRun: TeamRun | null = null;
+  private unsubscribe: (() => void) | null = null;
+
+  constructor(private readonly options: {
+    parentContext: TeamRunContext<MixedTeamRunContext>;
+    context: MixedSubTeamMemberContext;
+    config: TeamSubTeamMemberRunConfig;
+    subTeamRunFactory: MixedSubTeamRunFactory;
+    publish: MixedTeamEventPublish;
+    notifyStatusChange: MixedTeamStatusChange;
+  }) {
+    this.context = options.context;
+  }
+
+  isActive(): boolean {
+    return this.childRun?.isActive() ?? false;
+  }
+
+  getStatus(): string | null {
+    return this.childRun?.getStatus() ?? null;
+  }
+
+  async postMessage(message: AgentInputUserMessage): Promise<AgentOperationResult> {
+    const childRun = await this.ensureReady();
+    const result = await childRun.postMessage(message, null);
+    this.options.notifyStatusChange();
+    return { ...result, memberRunId: this.context.memberRunId, memberName: this.context.memberName };
+  }
+
+  async deliverInterMemberMessage(request: InterAgentMessageDeliveryRequest): Promise<AgentOperationResult> {
+    const childRun = await this.ensureReady();
+    const result = await childRun.postMessage(buildInterAgentDeliveryInputMessage(request), null);
+    this.options.notifyStatusChange();
+    return { ...result, memberRunId: this.context.memberRunId, memberName: this.context.memberName };
+  }
+
+  async approveToolInvocation(
+    target: TeamMemberSelector | null,
+    invocationId: string,
+    approved: boolean,
+    reason: string | null = null,
+  ): Promise<AgentOperationResult> {
+    if (!target) {
+      return unsupportedSubteamApproval(this.context.memberName);
+    }
+    const childSelector = stripSelectorTopLevel(target) ?? target;
+    const childRun = await this.ensureReady();
+    return childRun.approveToolInvocation(childSelector, invocationId, approved, reason ?? null);
+  }
+
+  async interrupt(): Promise<AgentOperationResult> {
+    return this.childRun ? this.childRun.interrupt() : { accepted: true };
+  }
+
+  async terminate(): Promise<AgentOperationResult> {
+    const result = this.childRun ? await this.childRun.terminate() : { accepted: true };
+    this.dispose();
+    return result;
+  }
+
+  dispose(): void {
+    this.unsubscribe?.();
+    this.unsubscribe = null;
+    this.childRun = null;
+    this.context.childRuntimeContext = null;
+  }
+
+  private async ensureReady(): Promise<TeamRun> {
+    if (this.childRun?.isActive()) {
+      return this.childRun;
+    }
+    const restoreRuntimeContext = this.context.childRuntimeContext;
+    this.dispose();
+    this.childRun = await this.options.subTeamRunFactory.createOrRestore({
+      parentTeamRunId: this.options.parentContext.runId,
+      subTeamConfig: this.options.config,
+      childTeamRunId: this.context.childTeamRunId ?? this.options.config.childTeamRunId ?? null,
+      restoreRuntimeContext,
+    });
+    this.context.childTeamRunId = this.childRun.runId;
+    this.context.childRuntimeContext = this.childRun.getRuntimeContext() as MixedTeamRunContext;
+    this.bindEvents(this.childRun);
+    this.publishStatus("IDLE");
+    return this.childRun;
+  }
+
+  private bindEvents(childRun: TeamRun): void {
+    this.unsubscribe?.();
+    this.unsubscribe = childRun.subscribeToEvents((event) => {
+      this.options.publish(prefixMixedSubTeamEvent({
+        parentTeamRunId: this.options.parentContext.runId,
+        sourcePrefix: this.context.memberPath,
+        event,
+      }));
+      this.options.notifyStatusChange();
+    });
+  }
+
+  private publishStatus(status: string): void {
+    this.options.publish({
+      eventSourceType: TeamRunEventSourceType.TEAM,
+      teamRunId: this.options.parentContext.runId,
+      sourcePath: this.context.memberPath,
+      data: { new_status: status } satisfies TeamRunStatusUpdateData,
+    });
+    this.options.notifyStatusChange();
+  }
+}

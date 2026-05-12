@@ -15,6 +15,7 @@ import {
   ChannelDispatchLockRegistry,
   getChannelDispatchLockRegistry,
 } from "./channel-dispatch-lock-registry.js";
+import { selectorFromMemberName } from "../../agent-team-execution/domain/team-run-member-identity.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -64,9 +65,10 @@ export class ChannelTeamRunFacade {
         );
         let result;
         try {
+          const targetNodeName = normalizeOptionalString(binding.targetNodeName ?? null);
           result = await teamRun.postMessage(
             buildAgentInputMessage(envelope),
-            binding.targetNodeName ?? null,
+            targetNodeName ? selectorFromMemberName(targetNodeName) : null,
           );
         } catch (error) {
           turnCapture.dispose();

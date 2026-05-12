@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { MixedTeamRunBackendFactory } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.js";
 import {
-  MixedTeamMemberContext,
+  MixedAgentMemberContext,
   MixedTeamRunContext,
 } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
@@ -81,7 +81,7 @@ describe("MixedTeamRunBackendFactory integration", () => {
     expect(context.runtimeContext.memberContexts).toHaveLength(2);
 
     const coordinatorContext = context.runtimeContext.memberContexts[0];
-    expect(coordinatorContext).toBeInstanceOf(MixedTeamMemberContext);
+    expect(coordinatorContext).toBeInstanceOf(MixedAgentMemberContext);
     expect(coordinatorContext.memberName).toBe("Coordinator");
     expect(coordinatorContext.memberRouteKey).toBe("coord-route");
     expect(coordinatorContext.memberRunId).toBe("coord-run");
@@ -120,8 +120,9 @@ describe("MixedTeamRunBackendFactory integration", () => {
       runtimeContext: new MixedTeamRunContext({
         coordinatorMemberRouteKey: "coord-route",
         memberContexts: [
-          new MixedTeamMemberContext({
+          new MixedAgentMemberContext({
             memberName: "Coordinator",
+            memberPath: ["Coordinator"],
             memberRouteKey: "coord-route",
             memberRunId: "coord-run",
             runtimeKind: RuntimeKind.CODEX_APP_SERVER,

@@ -24,12 +24,13 @@ const buildMetadata = (
   teamDefinitionId: "team-def-1",
   teamDefinitionName: "Team One",
   coordinatorMemberRouteKey: "planner",
-  runVersion: 1,
   createdAt: "2026-03-26T10:00:00.000Z",
   updatedAt: "2026-03-26T10:00:00.000Z",
-  memberMetadata: [
+  memberTree: [
     {
+      memberKind: "agent",
       memberRouteKey: "planner",
+      memberPath: ["Planner"],
       memberName: "Planner",
       memberRunId: "planner-run",
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
@@ -191,11 +192,12 @@ describe("TeamRunHistoryIndexService", () => {
     const metadataStore = new TeamRunMetadataStore(memoryDir);
     await metadataStore.writeMetadata("team-1", buildMetadata({
       coordinatorMemberRouteKey: "planner",
-      memberMetadata: [
-        buildMetadata().memberMetadata[0],
+      memberTree: [
+        buildMetadata().memberTree[0],
         {
-          ...buildMetadata().memberMetadata[0],
+          ...buildMetadata().memberTree[0],
           memberRouteKey: "reviewer",
+          memberPath: ["Reviewer"],
           memberName: "Reviewer",
           memberRunId: "reviewer-run",
         },

@@ -42,7 +42,9 @@ const createMemberTeamContext = () =>
     memberRunId: "run-1",
     members: [
       {
+        memberKind: "agent",
         memberName: "Professor",
+        memberPath: ["Professor"],
         memberRouteKey: "professor",
         memberRunId: "run-1",
         runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
@@ -50,7 +52,9 @@ const createMemberTeamContext = () =>
         description: null,
       },
       {
+        memberKind: "agent",
         memberName: "Student",
+        memberPath: ["Student"],
         memberRouteKey: "student",
         memberRunId: "run-2",
         runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,

@@ -68,7 +68,15 @@ export class TeamMemberCodexThreadBootstrapStrategy implements CodexThreadBootst
               allowedRecipientNames: memberTeamContext.allowedRecipientNames,
               deliverInterAgentMessage: memberTeamContext.deliverInterAgentMessage,
               senderRunId: input.runContext.runId,
+              senderMemberName: memberTeamContext.memberName,
+              senderMemberPath: memberTeamContext.memberPath,
+              senderMemberRouteKey: memberTeamContext.memberRouteKey,
               teamRunId: memberTeamContext.teamRunId,
+              members: memberTeamContext.members.map((member) => ({
+                memberName: member.memberName,
+                memberPath: member.memberPath,
+                memberRouteKey: member.memberRouteKey,
+              })),
             })
           : null,
     };

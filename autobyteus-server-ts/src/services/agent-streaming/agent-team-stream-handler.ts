@@ -14,9 +14,16 @@ import {
   TeamRunEventSourceType,
   type TeamRunEvent,
   type TeamRunAgentEventPayload,
+  type TeamRunCommunicationEventPayload,
   type TeamRunStatusUpdateData,
   type TeamRunTaskPlanEventPayload,
+  getTeamRunEventSourceRouteKey,
 } from "../../agent-team-execution/domain/team-run-event.js";
+import {
+  selectorFromMemberName,
+  selectorFromMemberPath,
+  type TeamMemberSelector,
+} from "../../agent-team-execution/domain/team-run-member-identity.js";
 import { TeamStreamBroadcaster, getTeamStreamBroadcaster } from "./team-stream-broadcaster.js";
 import { AgentSession } from "./agent-session.js";
 import { AgentSessionManager } from "./agent-session-manager.js";
@@ -31,6 +38,7 @@ import {
   ServerMessageType,
 } from "./models.js";
 import { serializePayload } from "./payload-serialization.js";
+import { resolveTeamMemberSelectorFromPayload } from "./team-member-selector-payload-adapter.js";
 
 export type WebSocketConnection = {
   send: (data: string) => void;
@@ -283,10 +291,11 @@ export class AgentTeamStreamHandler {
   ): Promise<void> {
     const teamRunId = teamRun.runId;
     const content = typeof payload.content === "string" ? payload.content : "";
-    const targetMemberName =
-      (typeof payload.target_member_name === "string" && payload.target_member_name) ||
-      (typeof payload.target_agent_name === "string" && payload.target_agent_name) ||
-      null;
+    const targetSelector = resolveTeamMemberSelectorFromPayload(payload, {
+      pathKeys: ["target_member_path", "targetMemberPath"],
+      routeKeyKeys: ["target_member_route_key", "targetMemberRouteKey"],
+      nameKeys: ["target_member_name", "target_agent_name", "targetMemberName", "targetAgentName"],
+    });
 
     const contextFilePaths =
       (payload.context_file_paths as unknown[]) ?? (payload.contextFilePaths as unknown[]) ?? [];
@@ -310,7 +319,7 @@ export class AgentTeamStreamHandler {
       context_files: contextPayload.length > 0 ? contextPayload : null,
     });
 
-    const result = await teamRun.postMessage(userMessage, targetMemberName);
+    const result = await teamRun.postMessage(userMessage, targetSelector);
     if (!result.accepted) {
       logger.warn(
         `SEND_MESSAGE rejected for team run ${teamRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
@@ -356,19 +365,17 @@ export class AgentTeamStreamHandler {
       return;
     }
 
-    const explicitApprovalTarget =
-      (typeof payload.agent_name === "string" && payload.agent_name) ||
-      (typeof payload.target_member_name === "string" && payload.target_member_name) ||
-      null;
     const approvalTargetRunId =
       typeof payload.agent_id === "string" && payload.agent_id ? payload.agent_id : null;
     const reason = typeof payload.reason === "string" ? payload.reason : null;
     const approvalTarget =
-      explicitApprovalTarget ??
-      this.resolveApprovalTargetName(activeRun, approvalTargetRunId) ??
-      approvalTargetRunId;
+      resolveTeamMemberSelectorFromPayload(payload, {
+        pathKeys: ["source_path", "member_path", "target_member_path", "sourcePath", "memberPath", "targetMemberPath"],
+        routeKeyKeys: ["source_route_key", "member_route_key", "target_member_route_key", "sourceRouteKey", "memberRouteKey", "targetMemberRouteKey"],
+        nameKeys: ["agent_name", "target_member_name", "target_agent_name", "member_name", "agentName", "targetMemberName"],
+      }) ?? this.resolveApprovalTargetSelector(activeRun, approvalTargetRunId);
 
-    if (typeof approvalTarget !== "string" || approvalTarget.trim().length === 0) {
+    if (!approvalTarget) {
       logger.warn(`TOOL_APPROVAL rejected for team run ${teamRunId}: approval target missing.`);
       return;
     }
@@ -386,25 +393,29 @@ export class AgentTeamStreamHandler {
     }
   }
 
-  private resolveApprovalTargetName(
+  private resolveApprovalTargetSelector(
     teamRun: TeamRun,
     memberRunId: string | null,
-  ): string | null {
+  ): TeamMemberSelector | null {
     if (typeof memberRunId !== "string" || memberRunId.trim().length === 0) {
       return null;
     }
     const runtimeMember = resolveRuntimeMemberContext(teamRun.context, memberRunId);
-    const runtimeName = runtimeMember?.memberName;
-    if (typeof runtimeName === "string" && runtimeName.trim().length > 0) {
-      return runtimeName.trim();
+    if (runtimeMember?.memberPath?.length) {
+      return selectorFromMemberPath(runtimeMember.memberPath);
+    }
+    if (runtimeMember?.memberName?.trim()) {
+      return selectorFromMemberName(runtimeMember.memberName.trim());
     }
 
     const configuredMember = teamRun.config?.memberConfigs.find(
       (candidate) => candidate.memberRunId === memberRunId,
     );
-    const configuredName = configuredMember?.memberName;
-    return typeof configuredName === "string" && configuredName.trim().length > 0
-      ? configuredName.trim()
+    if (configuredMember?.memberPath?.length) {
+      return selectorFromMemberPath(configuredMember.memberPath);
+    }
+    return configuredMember?.memberName?.trim()
+      ? selectorFromMemberName(configuredMember.memberName.trim())
       : null;
   }
 
@@ -444,6 +455,13 @@ export class AgentTeamStreamHandler {
   }
 
   convertTeamEvent(event: TeamRunEvent): ServerMessage {
+    const sourceRouteKey = getTeamRunEventSourceRouteKey(event);
+    const sourcePath = Array.isArray(event.sourcePath) ? event.sourcePath : [];
+    const sourcePayload = {
+      source_path: sourcePath,
+      ...(sourceRouteKey ? { source_route_key: sourceRouteKey } : {}),
+      ...(event.subTeamNodeName ? { sub_team_node_name: event.subTeamNodeName } : {}),
+    };
     if (event.eventSourceType === TeamRunEventSourceType.AGENT) {
       const payload = event.data as TeamRunAgentEventPayload;
       const message = this.agentRunEventMessageMapper.map(payload.agentEvent);
@@ -453,14 +471,19 @@ export class AgentTeamStreamHandler {
         ...basePayload,
         agent_name: payload.memberName,
         agent_id: payload.memberRunId,
-        ...(event.subTeamNodeName ? { sub_team_node_name: event.subTeamNodeName } : {}),
+        member_route_key: payload.memberRouteKey,
+        member_path: payload.memberPath,
+        ...sourcePayload,
       });
     }
 
     if (event.eventSourceType === TeamRunEventSourceType.TEAM) {
       return new ServerMessage(
         ServerMessageType.TEAM_STATUS,
-        serializePayload(event.data as TeamRunStatusUpdateData),
+        {
+          ...serializePayload(event.data as TeamRunStatusUpdateData),
+          ...sourcePayload,
+        },
       );
     }
 
@@ -475,7 +498,14 @@ export class AgentTeamStreamHandler {
       return new ServerMessage(ServerMessageType.TASK_PLAN_EVENT, {
         event_type: eventType,
         ...payload,
-        ...(event.subTeamNodeName ? { sub_team_node_name: event.subTeamNodeName } : {}),
+        ...sourcePayload,
+      });
+    }
+
+    if (event.eventSourceType === TeamRunEventSourceType.COMMUNICATION) {
+      return new ServerMessage(ServerMessageType.TEAM_COMMUNICATION_MESSAGE, {
+        ...serializePayload(event.data as TeamRunCommunicationEventPayload),
+        ...sourcePayload,
       });
     }
 

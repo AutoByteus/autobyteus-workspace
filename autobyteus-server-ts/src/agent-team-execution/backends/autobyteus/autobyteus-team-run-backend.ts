@@ -23,8 +23,12 @@ import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import type { TeamRunBackend } from "../team-run-backend.js";
 import type { RuntimeTeamRunContext } from "../../domain/team-run-context.js";
 import type { InterAgentMessageDeliveryRequest } from "../../domain/inter-agent-message-delivery.js";
-import type { TeamMemberRunConfig, TeamRunConfig } from "../../domain/team-run-config.js";
+import type { TeamMemberRunConfig } from "../../domain/team-run-config.js";
 import { TeamBackendKind } from "../../domain/team-backend-kind.js";
+import {
+  resolveTeamMemberSelector,
+  type TeamMemberSelector,
+} from "../../domain/team-run-member-identity.js";
 import {
   TeamRunEventSourceType,
   type TeamRunEvent,
@@ -39,61 +43,20 @@ import {
 } from "../../services/inter-agent-message-runtime-builders.js";
 import { publishProcessedTeamAgentEvents } from "../../services/publish-processed-team-agent-events.js";
 import { buildTeamCommunicationMessageId } from "../../../services/team-communication/team-communication-identity.js";
-import type { AutoByteusTeamRunContext } from "./autobyteus-team-run-context.js";
 import {
   asRecord,
   extractMemberRunId,
   normalizeOptionalString,
   toReferenceFilesPayload,
 } from "./autobyteus-team-run-backend-utils.js";
-
-type AutoByteusTeamLike = {
-  teamId: string;
-  context?: {
-    agents?: Array<{
-      agentId?: string | null;
-      context?: {
-        config?: {
-          name?: string | null;
-        } | null;
-      } | null;
-    }>;
-  } | null;
-  notifier?: unknown;
-  currentStatus?: string;
-  postMessage?: (message: AgentInputUserMessage, targetMemberName?: string | null) => Promise<void>;
-  postToolExecutionApproval?: (
-    targetMemberName: string,
-    invocationId: string,
-    approved: boolean,
-    reason?: string | null,
-  ) => Promise<void>;
-  stop?: (timeout?: number) => Promise<void> | void;
-};
-
-type AutoByteusTeamRunBackendOptions = {
-  isActive: () => boolean;
-  removeTeamRun: (teamRunId: string) => Promise<boolean>;
-  memberRunIdsByName?: ReadonlyMap<string, string>;
-  runtimeContext?: AutoByteusTeamRunContext | null;
-  teamRunConfig?: TeamRunConfig | null;
-};
-
-const buildRunNotFoundResult = (runId: string): AgentOperationResult => ({
-  accepted: false,
-  code: "RUN_NOT_FOUND",
-  message: `Run '${runId}' is not active.`,
-});
-
-const buildCommandFailure = (operation: string, error: unknown): AgentOperationResult => ({
-  accepted: false,
-  code: "RUNTIME_COMMAND_FAILED",
-  message: `Failed to ${operation}: ${String(error)}`,
-});
-
-const logger = {
-  warn: (...args: unknown[]) => console.warn(...args),
-};
+import {
+  autoByteusTeamRunBackendLogger as logger,
+  buildCommandFailure,
+  buildRunNotFoundResult,
+  buildTargetResolutionFailure,
+  type AutoByteusTeamLike,
+  type AutoByteusTeamRunBackendOptions,
+} from "./autobyteus-team-run-backend-contracts.js";
 
 export class AutoByteusTeamRunBackend implements TeamRunBackend {
   readonly runId: string;
@@ -134,14 +97,19 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
 
   async postMessage(
     message: AgentInputUserMessage,
-    targetMemberName: string | null = null,
+    target: TeamMemberSelector | null = null,
   ): Promise<AgentOperationResult> {
     if (!this.team.postMessage || !this.isActive()) {
       return buildRunNotFoundResult(this.runId);
     }
+    const memberContext = target ? this.resolveTargetMemberContext(target) : null;
+    if (memberContext && "accepted" in memberContext) {
+      return memberContext;
+    }
+    const targetMemberName = memberContext?.memberName ?? null;
     try {
       await this.team.postMessage(message, targetMemberName);
-      const memberName = normalizeOptionalString(targetMemberName ?? null);
+      const memberName = normalizeOptionalString(targetMemberName);
       return {
         accepted: true,
         memberName,
@@ -157,7 +125,7 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
   }
 
   async approveToolInvocation(
-    targetMemberName: string,
+    target: TeamMemberSelector,
     invocationId: string,
     approved: boolean,
     reason: string | null = null,
@@ -165,9 +133,13 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
     if (!this.team.postToolExecutionApproval || !this.isActive()) {
       return buildRunNotFoundResult(this.runId);
     }
+    const memberContext = this.resolveTargetMemberContext(target);
+    if ("accepted" in memberContext) {
+      return memberContext;
+    }
     try {
       await this.team.postToolExecutionApproval(
-        targetMemberName,
+        memberContext.memberName,
         invocationId,
         approved,
         reason,
@@ -186,9 +158,13 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
     }
 
     try {
+      const recipientContext = this.resolveTargetMemberContext(request.recipientSelector);
+      if ("accepted" in recipientContext) {
+        return recipientContext;
+      }
       await this.team.postMessage(
         buildInterAgentDeliveryInputMessage(request),
-        request.recipientMemberName,
+        recipientContext.memberName,
       );
       return { accepted: true };
     } catch (error) {
@@ -212,9 +188,7 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
     try {
       const removed = await this.options.removeTeamRun(this.runId);
       return removed
-        ? {
-            accepted: true,
-          }
+        ? { accepted: true }
         : buildRunNotFoundResult(this.runId);
     } catch (error) {
       return buildCommandFailure("terminate team run", error);
@@ -336,6 +310,11 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
         publishTeamEvent: (event) => {
           processedEvents.push(event);
         },
+        sourcePath: this.resolveSourcePath(
+          runtimeMemberContext?.memberPath ?? null,
+          agentPayload.agent_name,
+          subTeamNodeName,
+        ),
         subTeamNodeName,
       });
       return processedEvents;
@@ -348,6 +327,7 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
       return [{
         eventSourceType: TeamRunEventSourceType.TEAM,
         teamRunId: this.runId,
+        sourcePath: this.resolveTeamEventSourcePath(subTeamNodeName),
         data: asRecord(nativeEvent.data) as TeamRunStatusUpdateData,
         subTeamNodeName,
       }];
@@ -357,6 +337,7 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
       return [{
         eventSourceType: TeamRunEventSourceType.TASK_PLAN,
         teamRunId: this.runId,
+        sourcePath: this.resolveTeamEventSourcePath(subTeamNodeName),
         data: asRecord(nativeEvent.data as TaskPlanEventPayload) as TeamRunTaskPlanEventPayload,
         subTeamNodeName,
       }];
@@ -521,6 +502,33 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
           memberContext.memberRouteKey === identity,
       ) ?? null
     );
+  }
+
+  private resolveTargetMemberContext(
+    selector: TeamMemberSelector,
+  ) {
+    const memberContexts = this.options.runtimeContext?.memberContexts ?? [];
+    const resolution = resolveTeamMemberSelector(selector, memberContexts);
+    if (!resolution.ok) {
+      return buildTargetResolutionFailure(selector, resolution.message, resolution.code);
+    }
+    return resolution.member;
+  }
+
+  private resolveSourcePath(
+    memberPath: string[] | null,
+    memberName: string,
+    subTeamNodeName: string | null,
+  ): string[] {
+    if (Array.isArray(memberPath) && memberPath.length > 0) {
+      return [...memberPath];
+    }
+    const normalizedMemberName = normalizeOptionalString(memberName) ?? memberName;
+    return subTeamNodeName ? [subTeamNodeName, normalizedMemberName] : [normalizedMemberName];
+  }
+
+  private resolveTeamEventSourcePath(subTeamNodeName: string | null): string[] {
+    return subTeamNodeName ? [subTeamNodeName] : [];
   }
 
 }

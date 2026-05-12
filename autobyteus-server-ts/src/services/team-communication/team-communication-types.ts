@@ -20,9 +20,15 @@ export interface TeamCommunicationMessage {
   messageId: string;
   teamRunId: string;
   senderRunId: string;
+  senderMemberKind?: "agent" | "agent_team" | null;
   senderMemberName?: string | null;
+  senderMemberPath?: string[] | null;
+  senderMemberRouteKey?: string | null;
   receiverRunId: string;
+  receiverMemberKind?: "agent" | "agent_team" | null;
   receiverMemberName?: string | null;
+  receiverMemberPath?: string[] | null;
+  receiverMemberRouteKey?: string | null;
   content: string;
   messageType: string;
   createdAt: string;

@@ -4,7 +4,10 @@ import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
-import { TeamRunMetadataStore } from "../../../../src/run-history/store/team-run-metadata-store.js";
+import {
+  TeamRunMetadataStore,
+  UnsupportedLegacyTeamRunMetadataError,
+} from "../../../../src/run-history/store/team-run-metadata-store.js";
 import type { TeamRunMetadata } from "../../../../src/run-history/store/team-run-metadata-types.js";
 
 const buildMetadata = (
@@ -14,12 +17,13 @@ const buildMetadata = (
   teamDefinitionId: "team-def-1",
   teamDefinitionName: "Team One",
   coordinatorMemberRouteKey: "planner",
-  runVersion: 1,
   createdAt: "2026-03-26T10:00:00.000Z",
   updatedAt: "2026-03-26T10:00:00.000Z",
-  memberMetadata: [
+  memberTree: [
     {
+      memberKind: "agent",
       memberRouteKey: " planner ",
+      memberPath: ["Planner"],
       memberName: "Planner",
       memberRunId: "planner-run",
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
@@ -64,9 +68,9 @@ describe("TeamRunMetadataStore", () => {
     };
     await store.writeMetadata("team-1", buildMetadata({
       archivedAt: "2026-05-01T10:00:00.000Z",
-      memberMetadata: [
+      memberTree: [
         {
-          ...buildMetadata().memberMetadata[0]!,
+          ...buildMetadata().memberTree[0]!,
           applicationExecutionContext,
         },
       ],
@@ -74,9 +78,10 @@ describe("TeamRunMetadataStore", () => {
 
     const metadata = await store.readMetadata("team-1");
 
-    expect(metadata?.memberMetadata[0]?.memberRouteKey).toBe("planner");
-    expect(metadata?.memberMetadata[0]?.workspaceRootPath).toBe("/tmp/workspace");
-    expect(metadata?.memberMetadata[0]?.applicationExecutionContext).toEqual(applicationExecutionContext);
+    expect(metadata?.memberTree[0]?.memberRouteKey).toBe("planner");
+    expect(metadata?.memberTree[0]?.memberKind).toBe("agent");
+    expect(metadata?.memberTree[0]?.memberKind === "agent" ? metadata.memberTree[0].workspaceRootPath : null).toBe("/tmp/workspace");
+    expect(metadata?.memberTree[0]?.memberKind === "agent" ? metadata.memberTree[0].applicationExecutionContext : null).toEqual(applicationExecutionContext);
     expect(metadata?.coordinatorMemberRouteKey).toBe("planner");
     expect(metadata?.archivedAt).toBe("2026-05-01T10:00:00.000Z");
   });
@@ -89,7 +94,7 @@ describe("TeamRunMetadataStore", () => {
     await expect(store.listTeamRunIds()).resolves.toEqual(["team-a", "team-b"]);
   });
 
-  it("defaults missing archivedAt and member application context to null", async () => {
+  it("fails fast for unsupported legacy flat metadata", async () => {
     const store = new TeamRunMetadataStore(memoryDir);
     const metadataPath = store.getMetadataPath("team-legacy");
     await fs.mkdir(path.dirname(metadataPath), { recursive: true });
@@ -122,9 +127,8 @@ describe("TeamRunMetadataStore", () => {
       "utf-8",
     );
 
-    const metadata = await store.readMetadata("team-legacy");
-
-    expect(metadata?.archivedAt).toBeNull();
-    expect(metadata?.memberMetadata[0]?.applicationExecutionContext).toBeNull();
+    await expect(store.readMetadata("team-legacy")).rejects.toBeInstanceOf(
+      UnsupportedLegacyTeamRunMetadataError,
+    );
   });
 });

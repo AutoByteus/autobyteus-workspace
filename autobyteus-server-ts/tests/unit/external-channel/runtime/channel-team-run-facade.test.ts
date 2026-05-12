@@ -111,7 +111,10 @@ describe("ChannelTeamRunFacade", () => {
           externalSource: expect.any(Object),
         }),
       }),
-      "support-node",
+      {
+        kind: "top_level_name",
+        memberName: "support-node",
+      },
     );
     expect(publishExternalUserMessage).toHaveBeenCalledWith({
       teamRunId: "team-1",

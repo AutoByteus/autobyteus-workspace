@@ -23,7 +23,9 @@ describe("AgentTeamStreamHandler", () => {
       runtimeContext: {
         memberContexts: [
           {
+            memberKind: "agent",
             memberName: "worker-a",
+            memberPath: ["worker-a"],
             memberRouteKey: "worker-a",
             memberRunId: "member-42",
             getPlatformAgentRunId: () => null,
@@ -34,7 +36,9 @@ describe("AgentTeamStreamHandler", () => {
     config: {
       memberConfigs: [
         {
+          memberKind: "agent",
           memberName: "worker-a",
+          memberPath: ["worker-a"],
           memberRunId: "member-42",
         },
       ],
@@ -179,7 +183,10 @@ describe("AgentTeamStreamHandler", () => {
     );
 
     expect(teamRun.postMessage).toHaveBeenCalledTimes(1);
-    expect(teamRun.postMessage.mock.calls[0]?.[1]).toBe("worker-a");
+    expect(teamRun.postMessage.mock.calls[0]?.[1]).toEqual({
+      kind: "top_level_name",
+      memberName: "worker-a",
+    });
     expect(teamRunService.recordRunActivity).toHaveBeenCalledWith(
       teamRun,
       expect.objectContaining({
@@ -290,7 +297,10 @@ describe("AgentTeamStreamHandler", () => {
     );
 
     expect(teamRun.approveToolInvocation).toHaveBeenCalledWith(
-      "worker-a",
+      {
+        kind: "path",
+        memberPath: ["worker-a"],
+      },
       "inv-1",
       true,
       null,

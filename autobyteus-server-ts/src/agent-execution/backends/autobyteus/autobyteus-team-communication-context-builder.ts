@@ -3,6 +3,10 @@ import type {
   TeamCommunicationContext,
   TeamCommunicationMember,
 } from "autobyteus-ts/agent-team/context/team-communication-context.js";
+import {
+  selectorFromMemberName,
+  selectorFromMemberPath,
+} from "../../../agent-team-execution/domain/team-run-member-identity.js";
 import type { MemberTeamContext } from "../../../agent-team-execution/domain/member-team-context.js";
 
 export type AutoByteusStandaloneTeamContext = {
@@ -36,13 +40,27 @@ export const buildAutoByteusStandaloneTeamContext = (
       }
       const result = await memberTeamContext.deliverInterAgentMessage({
         senderRunId: event.senderAgentId,
+        senderSelector: selectorFromMemberPath(memberTeamContext.memberPath),
         senderMemberName:
           memberNameByAgentId.get(event.senderAgentId) ??
           (event.senderAgentId === memberTeamContext.memberRunId
             ? memberTeamContext.memberName
             : null),
+        senderPath: memberTeamContext.memberPath,
+        senderRouteKey: memberTeamContext.memberRouteKey,
         teamRunId: memberTeamContext.teamRunId,
-        recipientMemberName: event.recipientName,
+        recipientSelector: memberTeamContext.members.find((member) => member.memberName === event.recipientName)
+          ? selectorFromMemberPath(memberTeamContext.members.find((member) => member.memberName === event.recipientName)!.memberPath)
+          : selectorFromMemberName(event.recipientName),
+        recipientMemberName:
+          memberTeamContext.members.find((member) => member.memberName === event.recipientName)?.memberName ??
+          event.recipientName,
+        recipientPath:
+          memberTeamContext.members.find((member) => member.memberName === event.recipientName)?.memberPath ??
+          null,
+        recipientRouteKey:
+          memberTeamContext.members.find((member) => member.memberName === event.recipientName)?.memberRouteKey ??
+          null,
         content: event.content,
         messageType: event.messageType,
         referenceFiles: event.referenceFiles,

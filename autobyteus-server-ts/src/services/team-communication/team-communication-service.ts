@@ -3,6 +3,7 @@ import { TeamRun } from "../../agent-team-execution/domain/team-run.js";
 import {
   TeamRunEventSourceType,
   type TeamRunAgentEventPayload,
+  type TeamRunCommunicationEventPayload,
   type TeamRunEvent,
 } from "../../agent-team-execution/domain/team-run-event.js";
 import {
@@ -68,6 +69,9 @@ export class TeamCommunicationService {
   }
 
   private isTeamCommunicationMessageTeamEvent(event: TeamRunEvent): boolean {
+    if (event.eventSourceType === TeamRunEventSourceType.COMMUNICATION) {
+      return true;
+    }
     if (event.eventSourceType !== TeamRunEventSourceType.AGENT) {
       return false;
     }
@@ -79,14 +83,13 @@ export class TeamCommunicationService {
   }
 
   private enqueueTeamEvent(teamRun: TeamRun, event: TeamRunEvent): Promise<void> {
-    const payload = event.data as TeamRunAgentEventPayload;
     const key = teamRun.runId;
     const previous = this.operationQueueByTeamRunId.get(key) ?? Promise.resolve();
     const next = previous
       .catch(() => undefined)
       .then(async () => {
         try {
-          await this.handleTeamCommunicationMessageEvent(teamRun.runId, payload.agentEvent);
+          await this.handleTeamCommunicationEvent(teamRun.runId, event);
         } catch (error) {
           logger.warn(
             `TeamCommunicationService: failed processing message for team '${teamRun.runId}': ${String(error)}`,
@@ -101,6 +104,59 @@ export class TeamCommunicationService {
       }
     });
     return next;
+  }
+
+  private async handleTeamCommunicationEvent(
+    teamRunId: string,
+    event: TeamRunEvent,
+  ): Promise<void> {
+    if (event.eventSourceType === TeamRunEventSourceType.COMMUNICATION) {
+      await this.handleCanonicalTeamCommunicationEvent(
+        teamRunId,
+        event.data as TeamRunCommunicationEventPayload,
+      );
+      return;
+    }
+
+    const payload = event.data as TeamRunAgentEventPayload;
+    await this.handleTeamCommunicationMessageEvent(teamRunId, payload.agentEvent);
+  }
+
+  private async handleCanonicalTeamCommunicationEvent(
+    teamRunId: string,
+    payload: TeamRunCommunicationEventPayload,
+  ): Promise<void> {
+    const message = normalizeTeamCommunicationMessage({
+      messageId: payload.messageId,
+      teamRunId: payload.teamRunId,
+      senderRunId: payload.sender.memberRunId,
+      senderMemberKind: payload.sender.memberKind,
+      senderMemberName: payload.sender.memberName,
+      senderMemberPath: payload.sender.memberPath,
+      senderMemberRouteKey: payload.sender.memberRouteKey,
+      receiverRunId: payload.receiver.memberRunId,
+      receiverMemberKind: payload.receiver.memberKind,
+      receiverMemberName: payload.receiver.memberName,
+      receiverMemberPath: payload.receiver.memberPath,
+      receiverMemberRouteKey: payload.receiver.memberRouteKey,
+      content: payload.content,
+      messageType: payload.messageType,
+      createdAt: payload.createdAt,
+      updatedAt: payload.createdAt,
+      referenceFileEntries: payload.referenceFiles,
+    }, {
+      teamRunId,
+      receiverRunId: payload.receiver.memberRunId,
+      timestampFallback: payload.createdAt,
+    });
+    if (!message) {
+      logger.warn(
+        `${LOG_PREFIX} skipped COMMUNICATION teamRunId=${teamRunId} messageId=${payload.messageId} reason=missing_required_metadata`,
+      );
+      return;
+    }
+
+    await this.persistMessage(teamRunId, message);
   }
 
   private async handleTeamCommunicationMessageEvent(
@@ -118,6 +174,13 @@ export class TeamCommunicationService {
       return;
     }
 
+    await this.persistMessage(teamRunId, message);
+  }
+
+  private async persistMessage(
+    teamRunId: string,
+    message: TeamCommunicationMessage,
+  ): Promise<void> {
     const projection = await this.loadProjection(teamRunId);
     const upsertAction = this.upsertMessage(projection, message);
     if (upsertAction === "unchanged") {

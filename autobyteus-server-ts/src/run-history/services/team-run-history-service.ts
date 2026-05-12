@@ -10,7 +10,7 @@ import {
 import type { AgentRunMetadata } from "../store/agent-run-metadata-types.js";
 import {
   TeamRunMetadata,
-  type TeamRunMemberMetadata,
+  type TeamRunAgentMemberMetadata,
 } from "../store/team-run-metadata-types.js";
 import { TeamRunMetadataStore } from "../store/team-run-metadata-store.js";
 import { extractSummaryFromRawTraces } from "./run-history-service-helpers.js";
@@ -20,6 +20,11 @@ import {
   TeamRunHistoryIndexService,
   getTeamRunHistoryIndexService,
 } from "./team-run-history-index-service.js";
+import {
+  getTeamRunLeafAgentMetadata,
+  resolveTeamRunLeafAgentByRouteKey,
+  resolveTeamWorkspaceRootPath,
+} from "./team-run-metadata-flattener.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -101,7 +106,7 @@ export class TeamRunHistoryService {
         lastKnownStatus: isActive ? "ACTIVE" : row.lastKnownStatus,
         deleteLifecycle: row.deleteLifecycle,
         isActive,
-        members: metadata.memberMetadata.map((member) => ({
+        members: getTeamRunLeafAgentMetadata(metadata).map((member) => ({
           memberRouteKey: member.memberRouteKey,
           memberName: member.memberName,
           memberRunId: member.memberRunId,
@@ -303,9 +308,8 @@ export class TeamRunHistoryService {
   private async extractSummaryFromCoordinator(metadata: TeamRunMetadata): Promise<string> {
     const coordinatorMemberRouteKey = resolveCoordinatorMemberRouteKey(metadata);
     const coordinatorMember =
-      metadata.memberMetadata.find(
-        (member) => member.memberRouteKey.trim() === coordinatorMemberRouteKey,
-      ) ?? metadata.memberMetadata[0];
+      resolveTeamRunLeafAgentByRouteKey(metadata, coordinatorMemberRouteKey) ??
+      getTeamRunLeafAgentMetadata(metadata)[0];
 
     if (!coordinatorMember) {
       return "";
@@ -340,14 +344,14 @@ export class TeamRunHistoryService {
 
   private toMemberRunMetadata(
     metadata: TeamRunMetadata,
-    member: TeamRunMemberMetadata,
+    member: TeamRunAgentMemberMetadata,
   ): AgentRunMetadata {
     return {
       runId: member.memberRunId,
       agentDefinitionId: member.agentDefinitionId,
       workspaceRootPath:
         member.workspaceRootPath ??
-        metadata.memberMetadata.find((candidate) => candidate.workspaceRootPath)?.workspaceRootPath ??
+        resolveTeamWorkspaceRootPath(metadata) ??
         process.cwd(),
       memoryDir: this.memberLayout.getMemberDirPath(metadata.teamRunId, member.memberRunId),
       llmModelIdentifier: member.llmModelIdentifier,
@@ -363,7 +367,9 @@ export class TeamRunHistoryService {
 }
 
 const resolveCoordinatorMemberRouteKey = (metadata: TeamRunMetadata): string =>
-  metadata.coordinatorMemberRouteKey.trim() || metadata.memberMetadata[0]?.memberRouteKey?.trim() || "";
+  metadata.coordinatorMemberRouteKey.trim() ||
+  getTeamRunLeafAgentMetadata(metadata)[0]?.memberRouteKey?.trim() ||
+  "";
 
 let cachedTeamRunHistoryService: TeamRunHistoryService | null = null;
 
@@ -375,8 +381,3 @@ export const getTeamRunHistoryService = (): TeamRunHistoryService => {
   }
   return cachedTeamRunHistoryService;
 };
-
-const resolveTeamWorkspaceRootPath = (
-  metadata: TeamRunMetadata,
-): string | null =>
-  metadata.memberMetadata.find((member) => member.workspaceRootPath)?.workspaceRootPath ?? null;

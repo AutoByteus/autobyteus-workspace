@@ -3,6 +3,7 @@ import type { TeamMemberRuntimeContext, TeamRunContext } from "../../domain/team
 
 export type CodexTeamMemberContextInput = {
   memberName: string;
+  memberPath: string[];
   memberRouteKey: string;
   memberRunId: string;
   agentRunConfig: AgentRunConfig;
@@ -10,7 +11,9 @@ export type CodexTeamMemberContextInput = {
 };
 
 export class CodexTeamMemberContext implements TeamMemberRuntimeContext {
+  readonly memberKind = "agent" as const;
   readonly memberName: string;
+  readonly memberPath: string[];
   readonly memberRouteKey: string;
   readonly memberRunId: string;
   readonly agentRunConfig: AgentRunConfig;
@@ -18,6 +21,7 @@ export class CodexTeamMemberContext implements TeamMemberRuntimeContext {
 
   constructor(input: CodexTeamMemberContextInput) {
     this.memberName = input.memberName;
+    this.memberPath = [...input.memberPath];
     this.memberRouteKey = input.memberRouteKey;
     this.memberRunId = input.memberRunId;
     this.agentRunConfig = input.agentRunConfig;

@@ -30,9 +30,11 @@ describe("TeamMemberRunViewProjectionService", () => {
     const getTeamRunResumeConfig = vi.fn().mockResolvedValue({
       teamRunId: "team-1",
       metadata: {
-        memberMetadata: [
+        memberTree: [
           {
+            memberKind: "agent",
             memberRouteKey: "professor",
+            memberPath: ["Professor"],
             memberName: "Professor",
             memberRunId: "member-1",
             runtimeKind: "autobyteus",
@@ -80,9 +82,11 @@ describe("TeamMemberRunViewProjectionService", () => {
     const getTeamRunResumeConfig = vi.fn().mockResolvedValue({
       teamRunId: "team-1",
       metadata: {
-        memberMetadata: [
+        memberTree: [
           {
+            memberKind: "agent",
             memberRouteKey: "root/professor",
+            memberPath: ["professor"],
             memberName: "professor",
             memberRunId: "member-1",
             runtimeKind: "autobyteus",
@@ -125,9 +129,11 @@ describe("TeamMemberRunViewProjectionService", () => {
     const getTeamRunResumeConfig = vi.fn().mockResolvedValue({
       teamRunId: "team-1",
       metadata: {
-        memberMetadata: [
+        memberTree: [
           {
+            memberKind: "agent",
             memberRouteKey: "professor",
+            memberPath: ["Professor"],
             memberName: "Professor",
             memberRunId: "member-1",
             runtimeKind: "claude_agent_sdk",
@@ -203,9 +209,11 @@ describe("TeamMemberRunViewProjectionService", () => {
     const getTeamRunResumeConfig = vi.fn().mockResolvedValue({
       teamRunId: "team-1",
       metadata: {
-        memberMetadata: [
+        memberTree: [
           {
+            memberKind: "agent",
             memberRouteKey: "professor",
+            memberPath: ["Professor"],
             memberName: "Professor",
             memberRunId: "member-1",
             runtimeKind: "claude_agent_sdk",
@@ -242,7 +250,7 @@ describe("TeamMemberRunViewProjectionService", () => {
   it("throws when member binding is missing", async () => {
     const getTeamRunResumeConfig = vi.fn().mockResolvedValue({
       teamRunId: "team-1",
-      metadata: { memberMetadata: [] },
+      metadata: { memberTree: [] },
     });
 
     const service = new TeamMemberRunViewProjectionService({
@@ -260,9 +268,11 @@ describe("TeamMemberRunViewProjectionService", () => {
     const getTeamRunResumeConfig = vi.fn().mockResolvedValue({
       teamRunId: "team-1",
       metadata: {
-        memberMetadata: [
+        memberTree: [
           {
+            memberKind: "agent",
             memberRouteKey: "pong",
+            memberPath: ["pong"],
             memberName: "pong",
             memberRunId: "pong-run",
             runtimeKind: "codex_app_server",
@@ -308,9 +318,11 @@ describe("TeamMemberRunViewProjectionService", () => {
     const getTeamRunResumeConfig = vi.fn().mockResolvedValue({
       teamRunId: "team-1",
       metadata: {
-        memberMetadata: [
+        memberTree: [
           {
+            memberKind: "agent",
             memberRouteKey: "student",
+            memberPath: ["student"],
             memberName: "student",
             memberRunId: "student-run",
             runtimeKind: "codex_app_server",

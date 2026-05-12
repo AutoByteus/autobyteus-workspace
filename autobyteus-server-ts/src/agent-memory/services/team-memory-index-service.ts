@@ -1,4 +1,5 @@
 import { TeamRunMetadataStore } from "../../run-history/store/team-run-metadata-store.js";
+import { getTeamRunLeafAgentMetadata } from "../../run-history/services/team-run-metadata-flattener.js";
 import {
   EPISODIC_MEMORY_FILE_NAME,
   RAW_TRACES_MEMORY_FILE_NAME,
@@ -110,7 +111,7 @@ export class TeamMemoryIndexService {
     const memoryStore = new MemoryFileStore(teamDir, { runRootSubdir: "" });
 
     const memberSummaries: Array<{ summary: TeamMemberMemorySnapshotSummary; mtime: number }> = [];
-    for (const member of metadata.memberMetadata) {
+    for (const member of getTeamRunLeafAgentMetadata(metadata)) {
       const memberSummary = this.buildMemberSummary(memoryStore, member);
       memberSummaries.push(memberSummary);
     }

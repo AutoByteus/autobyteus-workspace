@@ -37,6 +37,17 @@ const normalizeOptionalString = (value: unknown): string | null =>
 const normalizeTimestamp = (value: unknown, fallback: string): string =>
   normalizeRequiredString(value) ?? fallback;
 
+const normalizeMemberKind = (value: unknown): "agent" | "agent_team" | null =>
+  value === "agent" || value === "agent_team" ? value : null;
+
+const normalizeMemberPath = (value: unknown): string[] | null => {
+  if (!Array.isArray(value) || !value.every((entry) => typeof entry === "string")) {
+    return null;
+  }
+  const path = value.map((entry) => entry.trim()).filter(Boolean);
+  return path.length > 0 ? path : null;
+};
+
 export const inferTeamCommunicationReferenceFileType = (
   filePath: string,
 ): TeamCommunicationReferenceFileType => {
@@ -216,14 +227,32 @@ export const normalizeTeamCommunicationMessage = (
     messageId,
     teamRunId,
     senderRunId,
+    senderMemberKind:
+      normalizeMemberKind(rawEntry.senderMemberKind)
+      ?? normalizeMemberKind(rawEntry.sender_member_kind),
     senderMemberName:
       normalizeOptionalString(rawEntry.senderMemberName)
       ?? normalizeOptionalString(rawEntry.sender_agent_name),
+    senderMemberPath:
+      normalizeMemberPath(rawEntry.senderMemberPath)
+      ?? normalizeMemberPath(rawEntry.sender_member_path),
+    senderMemberRouteKey:
+      normalizeOptionalString(rawEntry.senderMemberRouteKey)
+      ?? normalizeOptionalString(rawEntry.sender_member_route_key),
     receiverRunId,
+    receiverMemberKind:
+      normalizeMemberKind(rawEntry.receiverMemberKind)
+      ?? normalizeMemberKind(rawEntry.receiver_member_kind),
     receiverMemberName:
       normalizeOptionalString(rawEntry.receiverMemberName)
       ?? normalizeOptionalString(rawEntry.receiver_agent_name)
       ?? normalizeOptionalString(rawEntry.recipient_role_name),
+    receiverMemberPath:
+      normalizeMemberPath(rawEntry.receiverMemberPath)
+      ?? normalizeMemberPath(rawEntry.receiver_member_path),
+    receiverMemberRouteKey:
+      normalizeOptionalString(rawEntry.receiverMemberRouteKey)
+      ?? normalizeOptionalString(rawEntry.receiver_member_route_key),
     content,
     messageType,
     createdAt,

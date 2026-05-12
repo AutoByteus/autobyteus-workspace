@@ -8,6 +8,11 @@ import {
   type RuntimeTeamRunContext,
   type TeamRunContext,
 } from "./team-run-context.js";
+import {
+  selectorFromMemberName,
+  selectorFromMemberRouteKey,
+  type TeamMemberSelector,
+} from "./team-run-member-identity.js";
 import type { TeamRunEventListener, TeamRunEventUnsubscribe } from "./team-run-event.js";
 
 type TeamRunOptions = {
@@ -58,11 +63,11 @@ export class TeamRun {
 
   async postMessage(
     message: AgentInputUserMessage,
-    targetMemberName: string | null = null,
+    target: TeamMemberSelector | null = null,
   ): Promise<AgentOperationResult> {
     return this.backend.postMessage(
       message,
-      this.resolvePostMessageTarget(targetMemberName),
+      this.resolvePostMessageTarget(target),
     );
   }
 
@@ -73,13 +78,13 @@ export class TeamRun {
   }
 
   async approveToolInvocation(
-    targetMemberName: string,
+    target: TeamMemberSelector,
     invocationId: string,
     approved: boolean,
     reason: string | null = null,
   ): Promise<AgentOperationResult> {
     return this.backend.approveToolInvocation(
-      targetMemberName,
+      target,
       invocationId,
       approved,
       reason,
@@ -94,9 +99,23 @@ export class TeamRun {
     return this.backend.terminate();
   }
 
-  private resolvePostMessageTarget(targetMemberName: string | null): string | null {
-    if (typeof targetMemberName === "string" && targetMemberName.trim().length > 0) {
-      return targetMemberName.trim();
+  private resolvePostMessageTarget(
+    target: TeamMemberSelector | null,
+  ): TeamMemberSelector | null {
+    if (target) {
+      return target;
+    }
+
+    const coordinatorMemberRouteKey =
+      typeof this.context?.coordinatorMemberRouteKey === "string" &&
+      this.context.coordinatorMemberRouteKey.trim().length > 0
+        ? this.context.coordinatorMemberRouteKey.trim()
+        : typeof this.configValue?.coordinatorMemberRouteKey === "string" &&
+            this.configValue.coordinatorMemberRouteKey.trim().length > 0
+          ? this.configValue.coordinatorMemberRouteKey.trim()
+          : null;
+    if (coordinatorMemberRouteKey) {
+      return selectorFromMemberRouteKey(coordinatorMemberRouteKey);
     }
 
     const coordinatorMemberName =
@@ -106,16 +125,16 @@ export class TeamRun {
         : typeof this.configValue?.coordinatorMemberName === "string" &&
             this.configValue.coordinatorMemberName.trim().length > 0
           ? this.configValue.coordinatorMemberName.trim()
-        : null;
+          : null;
     if (coordinatorMemberName) {
-      return coordinatorMemberName;
+      return selectorFromMemberName(coordinatorMemberName);
     }
 
     const memberContexts = getRuntimeMemberContexts(this.context?.runtimeContext ?? null);
     if (memberContexts.length === 1) {
       const soleMemberName = memberContexts[0]?.memberName;
       return typeof soleMemberName === "string" && soleMemberName.trim().length > 0
-        ? soleMemberName.trim()
+        ? selectorFromMemberName(soleMemberName.trim())
         : null;
     }
 

@@ -1,7 +1,8 @@
 import { TeamRun } from "../domain/team-run.js";
 import {
-  TeamRunConfig,
   type TeamMemberRunConfig,
+  TeamRunConfig,
+  type TeamRunMemberConfigInput as DomainTeamRunMemberConfigInput,
 } from "../domain/team-run-config.js";
 import { AgentTeamRunManager } from "./agent-team-run-manager.js";
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
@@ -26,9 +27,10 @@ import {
 } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type { ObservedRunLifecycleEvent } from "../../runtime-management/domain/observed-run-lifecycle-event.js";
 import { TeamRunEventSourceType } from "../domain/team-run-event.js";
-import { TeamDefinitionTraversalService } from "./team-definition-traversal-service.js";
 import { TeamRunMetadataMapper } from "./team-run-metadata-mapper.js";
-import { resolveTeamBackendKindFromMemberRuntimeKinds } from "./team-run-runtime-context-support.js";
+import { TeamDefinitionTopologyPlanner } from "./team-definition-topology-planner.js";
+import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
+import { TeamBackendKind } from "../domain/team-backend-kind.js";
 
 export interface TeamRunPresetInput {
   workspaceRootPath: string;
@@ -39,8 +41,21 @@ export interface TeamRunPresetInput {
   llmConfig?: Record<string, unknown> | null;
 }
 
-type TeamRunMemberConfigInput = Omit<TeamMemberRunConfig, "runtimeKind"> & {
+type TeamRunMemberConfigInput = {
+  memberKind?: "agent" | null;
+  memberName: string;
+  memberPath?: string[] | null;
+  memberRouteKey?: string | null;
+  agentDefinitionId: string;
+  llmModelIdentifier: string;
+  autoExecuteTools: boolean;
+  skillAccessMode: SkillAccessMode;
+  workspaceId?: string | null;
+  workspaceRootPath?: string | null;
+  memoryDir?: string | null;
+  llmConfig?: Record<string, unknown> | null;
   runtimeKind?: RuntimeKind | string | null;
+  applicationExecutionContext?: ApplicationExecutionContext | null;
 };
 
 export interface CreateTeamRunInput {
@@ -84,21 +99,23 @@ export class TeamRunService {
   }): Promise<TeamMemberRunConfig[]> {
     const teamDefinitionId = normalizeRequiredString(input.teamDefinitionId, "teamDefinitionId");
     const launchPreset = normalizeLaunchPreset(input.launchPreset);
-    const leafMembers = await this.teamDefinitionTraversalService.collectLeafAgentMembers(
+    const leafMemberInputs = await this.teamDefinitionTopologyPlanner.buildPresetLeafMemberConfigs({
       teamDefinitionId,
-    );
+      launchPreset: {
+        llmModelIdentifier: launchPreset.llmModelIdentifier,
+        autoExecuteTools: launchPreset.autoExecuteTools,
+        skillAccessMode: launchPreset.skillAccessMode,
+        workspaceRootPath: launchPreset.workspaceRootPath,
+        llmConfig: launchPreset.llmConfig ?? null,
+        runtimeKind: launchPreset.runtimeKind,
+      },
+    });
 
-    return leafMembers.map((member) => ({
-      memberName: member.memberName,
-      memberRouteKey: member.memberRouteKey,
-      agentDefinitionId: member.agentDefinitionId,
-      llmModelIdentifier: launchPreset.llmModelIdentifier,
-      autoExecuteTools: launchPreset.autoExecuteTools,
-      skillAccessMode: launchPreset.skillAccessMode,
-      workspaceRootPath: launchPreset.workspaceRootPath,
-      llmConfig: launchPreset.llmConfig ?? null,
-      runtimeKind: launchPreset.runtimeKind,
-    }));
+    return new TeamRunConfig({
+      teamDefinitionId,
+      teamBackendKind: TeamBackendKind.MIXED,
+      memberConfigs: leafMemberInputs,
+    }).memberConfigs;
   }
 
   async observeTeamRunLifecycle(
@@ -198,20 +215,11 @@ export class TeamRunService {
         };
       }),
     );
-    const coordinatorMemberName = await this.teamDefinitionTraversalService.resolveCoordinatorMemberName(
-      input.teamDefinitionId,
-      memberConfigs,
-    );
-    const teamBackendKind = resolveTeamBackendKindFromMemberRuntimeKinds(
-      memberConfigs.map((memberConfig) => memberConfig.runtimeKind),
-    );
-    const config = new TeamRunConfig({
+    const plan = await this.teamDefinitionTopologyPlanner.buildPlan({
       teamDefinitionId: input.teamDefinitionId,
-      teamBackendKind,
-      coordinatorMemberName,
-      memberConfigs,
+      memberConfigs: memberConfigs as DomainTeamRunMemberConfigInput[],
     });
-    const run = await this.agentTeamRunManager.createTeamRun(config);
+    const run = await this.agentTeamRunManager.createTeamRun(plan.config);
     const metadata = await this.teamRunMetadataMapper.buildMetadata(run);
 
     await this.teamRunMetadataService.writeMetadata(run.runId, metadata);
@@ -330,8 +338,8 @@ export class TeamRunService {
     }
   }
 
-  private get teamDefinitionTraversalService(): TeamDefinitionTraversalService {
-    return new TeamDefinitionTraversalService(this.teamDefinitionService);
+  private get teamDefinitionTopologyPlanner(): TeamDefinitionTopologyPlanner {
+    return new TeamDefinitionTopologyPlanner(this.teamDefinitionService);
   }
 
   private get teamRunMetadataMapper(): TeamRunMetadataMapper {
