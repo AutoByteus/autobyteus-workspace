@@ -1,0 +1,29 @@
+DATE_UTC=2026-05-12T14:36:40Z
+FRONTEND_URL=http://127.0.0.1:3335/settings
+DEFAULT_BACKEND=http://localhost:8001
+LAUNCHER_PRINTED_ADD_REMOTE_BACKEND=http://localhost:59636
+SCREENSHOT=/Users/normy/.autobyteus/browser-artifacts/7dc8f2-1778596600360.png
+
+Browser Settings -> Nodes validation:
+- Node Manager rendered: true
+- Install-once Bash command rendered: true (`bash -s -- install`)
+- Install-once PowerShell command rendered: true (`autobyteus-docker install`)
+- Direct installed CLI commands rendered: true (`autobyteus-docker start`, `start --new`, `urls`, `status`, `logs`, `stop`)
+- Repeated raw lifecycle commands absent: true (`bash -s -- start` absent)
+- Superseded wording absent: true (`Start another Docker node` absent)
+- Current backend shown as ready at http://localhost:8001: true
+- Add Remote Node form rendered: true
+- Added remote node from launcher-printed Backend URL http://localhost:59636: true
+- Bootstrap sync was unchecked before add to keep validation scoped to capability probe/Add Remote behavior.
+- Added node displayed with name `Round 5 Docker Node`, URL http://localhost:59636, remote type: true
+- Removed validation remote node from the UI after proof: true
+
+Rendered command texts observed:
+1. curl -fsSL https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.sh | bash -s -- install
+2. powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.ps1 | iex; autobyteus-docker install"
+3. autobyteus-docker start
+4. autobyteus-docker start --new
+5. autobyteus-docker urls
+6. autobyteus-docker status
+7. autobyteus-docker logs
+8. autobyteus-docker stop

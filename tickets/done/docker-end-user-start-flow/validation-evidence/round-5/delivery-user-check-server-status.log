@@ -1,0 +1,7 @@
+# Delivery user-check server status - 2026-05-12T14:47:15Z
+
+## Backend health
+{"status":"ok","message":"Server is running"}
+
+## Frontend settings dev server HTTP status
+http://127.0.0.1:3335/settings -> 200

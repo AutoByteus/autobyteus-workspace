@@ -1,0 +1,46 @@
+DATE_UTC=2026-05-12T14:24:44Z
+PWD=/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow
+BRANCH=codex/docker-end-user-start-flow
+HEAD=be56cab9
+UNAME=Darwin MacBookPro 25.2.0 Darwin Kernel Version 25.2.0: Tue Nov 18 21:09:40 PST 2025; root:xnu-12377.61.12~1/RELEASE_ARM64_T6000 arm64
+DOCKER=Docker version 29.0.1, build eedd969
+NODE=v22.21.1
+PNPM=10.28.2
+PWSH=
+POWERSHELL=
+
+## current git status
+ M README.md
+ M autobyteus-server-ts/README.md
+ M autobyteus-server-ts/docker/README.md
+ M autobyteus-web/components/settings/NodeManager.vue
+ M autobyteus-web/components/settings/__tests__/NodeManager.spec.ts
+ M autobyteus-web/docs/settings.md
+ M autobyteus-web/localization/messages/en/settings.ts
+ M autobyteus-web/localization/messages/zh-CN/settings.ts
+?? autobyteus-web/components/settings/DockerNodeStartGuideCard.vue
+?? autobyteus-web/components/settings/__tests__/DockerNodeStartGuideCard.spec.ts
+?? autobyteus-web/utils/__tests__/dockerNodeLauncherCommands.spec.ts
+?? autobyteus-web/utils/dockerNodeLauncherCommands.ts
+?? scripts/public/
+?? tickets/done/docker-end-user-start-flow/
+
+## running listeners
+-- port 3335 --
+-- port 3336 --
+-- port 8001 --
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+com.docke 67751 normy  341u  IPv6 0xe5eda4ac1492338f      0t0  TCP *:8001 (LISTEN)
+
+## Docker managed containers before latest validation
+NAMES                                     STATUS       PORTS                                                                                                                                                                                        launcher
+autobyteus-server                         Up 2 hours   0.0.0.0:5908->5900/tcp, [::]:5908->5900/tcp, 0.0.0.0:52448->6080/tcp, [::]:52448->6080/tcp, 0.0.0.0:8001->8000/tcp, [::]:8001->8000/tcp, 0.0.0.0:9228->9223/tcp, [::]:9228->9223/tcp         server-docker
+autobyteus-server-autobyteus-server-1     Up 2 days    0.0.0.0:60635->5900/tcp, [::]:60635->5900/tcp, 0.0.0.0:60637->6080/tcp, [::]:60637->6080/tcp, 0.0.0.0:60634->8000/tcp, [::]:60634->8000/tcp, 0.0.0.0:60638->9223/tcp, [::]:60638->9223/tcp
+llm-server-3                              Up 5 days    0.0.0.0:5905->5900/tcp, [::]:5905->5900/tcp, 0.0.0.0:6085->6080/tcp, [::]:6085->6080/tcp, 0.0.0.0:51743->51739/tcp, [::]:51743->51739/tcp
+llm-server-2                              Up 5 days    0.0.0.0:5903->5900/tcp, [::]:5903->5900/tcp, 0.0.0.0:6083->6080/tcp, [::]:6083->6080/tcp, 0.0.0.0:51741->51739/tcp, [::]:51741->51739/tcp
+llm-server-1                              Up 5 days    0.0.0.0:5902->5900/tcp, [::]:5902->5900/tcp, 0.0.0.0:6082->6080/tcp, [::]:6082->6080/tcp, 0.0.0.0:51740->51739/tcp, [::]:51740->51739/tcp
+llm-server-0                              Up 5 days    0.0.0.0:5900->5900/tcp, [::]:5900->5900/tcp, 0.0.0.0:6080->6080/tcp, [::]:6080->6080/tcp, 0.0.0.0:51739->51739/tcp, [::]:51739->51739/tcp
+llm-server-source-0                       Up 5 days    0.0.0.0:5904->5900/tcp, [::]:5904->5900/tcp, 0.0.0.0:6084->6080/tcp, [::]:6084->6080/tcp, 0.0.0.0:51742->51739/tcp, [::]:51742->51739/tcp
+openclaw-subscription                     Up 5 days    127.0.0.1:9223->9223/tcp, 127.0.0.1:5901->5900/tcp, 127.0.0.1:6081->6080/tcp
+chrome-vnc-tigervnc                       Up 5 days    0.0.0.0:5907->5900/tcp, [::]:5907->5900/tcp, 0.0.0.0:9227->9223/tcp, [::]:9227->9223/tcp
+buildx_buildkit_multi-platform-builder0   Up 5 days

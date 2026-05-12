@@ -1,0 +1,77 @@
+INSTALL_DIR=/tmp/autobyteus-r5-install.ws3AiA
+STATE_DIR=/tmp/autobyteus-r5-state.QBvHeI
+DATE_UTC=2026-05-12T14:27:07Z
+
+## baseline managed containers
+autobyteus-server Up 3 hours
+
+## baseline validation volumes
+
+## install from local current source; should not touch Docker/state
+[AutoByteus Docker] Installed AutoByteus Docker launcher: /tmp/autobyteus-r5-install.ws3AiA/autobyteus-docker
+Next commands:
+  autobyteus-docker start
+  autobyteus-docker start --new
+  autobyteus-docker urls
+PATH guidance:
+  This shell cannot find autobyteus-docker until /tmp/autobyteus-r5-install.ws3AiA is on PATH.
+  Use direct path now: "/tmp/autobyteus-r5-install.ws3AiA/autobyteus-docker" start
+  For this shell session: export PATH="/tmp/autobyteus-r5-install.ws3AiA:$PATH"
+  To persist, add that export line to your shell profile, then open a new terminal.
+
+## installed metadata/help
+-rwx--x--x@ 1 normy  staff  21226 May 12 16:27 /tmp/autobyteus-r5-install.ws3AiA/autobyteus-docker
+AutoByteus Docker node launcher
+
+Usage:
+  autobyteus-docker <command> [options]
+  curl -fsSL <script-url> | bash -s -- install
+
+Commands:
+  install            Install or update the local autobyteus-docker CLI
+  update             Alias for install
+  start              Check image updates and start the default Docker node
+  start --new        Start a new Docker node with automatic name and ports
+  urls | ports       Show Backend, GraphQL, noVNC, VNC, and debug URLs
+  status | ps        Show managed Docker nodes
+  logs               Show Docker logs for a managed node
+  stop [--all]       Stop one or all managed Docker nodes
+  help               Show this help
+
+Advanced temporary use: curl -fsSL <script-url> | bash -s -- <command> [options]
+
+Options:
+  --name <name>      Friendly node name (default: autobyteus-server)
+  --tag <tag>        Docker image tag (default: latest)
+  --image <image>    Docker image repository or full image ref (default: autobyteus/autobyteus-server)
+  --new              Create the next available friendly node name
+  --all              Apply stop/status to all managed nodes
+  -h, --help         Show this help
+
+State:
+  Default install path: $HOME/.local/bin/autobyteus-docker
+  Default state directory: $HOME/.autobyteus/docker-server
+  Overrides: AUTOBYTEUS_DOCKER_INSTALL_DIR, AUTOBYTEUS_DOCKER_STATE_DIR
+
+## state dir after install
+state dir absent
+
+## update alias from local current source; still should not touch Docker/state
+[AutoByteus Docker] Installed AutoByteus Docker launcher: /tmp/autobyteus-r5-install.ws3AiA/autobyteus-docker
+Next commands:
+  autobyteus-docker start
+  autobyteus-docker start --new
+  autobyteus-docker urls
+PATH guidance:
+  This shell cannot find autobyteus-docker until /tmp/autobyteus-r5-install.ws3AiA is on PATH.
+  Use direct path now: "/tmp/autobyteus-r5-install.ws3AiA/autobyteus-docker" start
+  For this shell session: export PATH="/tmp/autobyteus-r5-install.ws3AiA:$PATH"
+  To persist, add that export line to your shell profile, then open a new terminal.
+
+## state dir after update
+state dir absent
+
+## managed containers after install/update
+autobyteus-server Up 3 hours
+
+## validation volumes after install/update

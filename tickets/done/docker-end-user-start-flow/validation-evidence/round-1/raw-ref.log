@@ -1,0 +1,10 @@
+## remote config
+origin	git@github.com-ryan:AutoByteus/autobyteus-workspace.git (fetch)
+origin	git@github.com-ryan:AutoByteus/autobyteus-workspace.git (push)
+## origin heads
+be56cab9b41b850c92690d79a8dfa70c52c369a0	refs/heads/personal
+## raw script HEAD checks before merge (expected to 404 until branch changes are published to personal)
+URL: https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.sh
+HTTP 404
+URL: https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.ps1
+HTTP 404
