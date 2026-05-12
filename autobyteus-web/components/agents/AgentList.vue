@@ -91,36 +91,6 @@
           </div>
         </section>
 
-        <section v-if="originSections.teamLocalGroups.length > 0">
-          <div class="space-y-5">
-            <article
-              v-for="group in originSections.teamLocalGroups"
-              :key="group.key"
-              class="space-y-3"
-            >
-              <div class="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                  <h3 class="text-base font-semibold text-slate-900">{{ group.label }}</h3>
-                  <p v-if="group.applicationTeam" class="mt-0.5 text-xs font-medium uppercase tracking-wide text-blue-600">
-                    {{ $t('agents.components.agents.AgentList.applicationTeamHint') }}
-                  </p>
-                </div>
-                <span class="text-sm text-slate-500">{{ formatAgentCount(group.count) }}</span>
-              </div>
-              <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <AgentCard
-                  v-for="agentDef in group.agentDefinitions"
-                  :key="agentDef.id"
-                  :agent-def="agentDef"
-                  @view-details="viewDetails"
-                  @run-agent="runAgent"
-                  @sync-agent="syncAgent"
-                />
-              </div>
-            </article>
-          </div>
-        </section>
-
         <section v-if="originSections.applicationGroups.length > 0">
           <div class="mb-4">
             <h2 class="text-xl font-semibold text-slate-900">{{ $t('agents.components.agents.AgentList.applicationAgents') }}</h2>
@@ -231,6 +201,9 @@ const serverSettingsStore = useServerSettingsStore();
 const { $t } = useNuxtApp();
 
 const agentDefinitions = computed(() => agentDefinitionStore.agentDefinitions);
+const discoverableAgentDefinitions = computed(() => agentDefinitions.value.filter(
+  (definition) => normalizeDefinitionOwnershipScope(definition) !== 'TEAM_LOCAL',
+));
 const loading = computed(() => agentDefinitionStore.loading);
 const error = computed<Error | null>(() => agentDefinitionStore.error instanceof Error ? agentDefinitionStore.error : agentDefinitionStore.error ? new Error(String(agentDefinitionStore.error)) : null);
 const errorMessage = computed(() => error.value?.message || '');
@@ -258,10 +231,10 @@ watch(deleteResult, (newResult) => {
 
 const filteredAgentDefinitions = computed(() => {
   if (!isSearchActive.value) {
-    return agentDefinitions.value;
+    return discoverableAgentDefinitions.value;
   }
   const lowerCaseQuery = searchQuery.value.trim().toLowerCase();
-  return agentDefinitions.value.filter((agent) => {
+  return discoverableAgentDefinitions.value.filter((agent) => {
     const name = agent.name?.toLowerCase() ?? '';
     const description = agent.description?.toLowerCase() ?? '';
     const ownerTeamName = agent.ownerTeamName?.toLowerCase() ?? '';
@@ -288,7 +261,7 @@ const featuredSetting = computed(() => parseFeaturedCatalogItemsSetting(
 const splitAgentDefinitions = computed(() => splitFeaturedCatalogDefinitions(
   featuredSetting.value.items,
   'AGENT',
-  agentDefinitions.value,
+  discoverableAgentDefinitions.value,
 ));
 
 const featuredAgentDefinitions = computed(() => (
@@ -301,8 +274,7 @@ const regularAgentDefinitions = computed(() => (
 
 const originSections = computed(() => buildAgentDefinitionOriginSections(regularAgentDefinitions.value));
 const hasOriginSections = computed(() => (
-  originSections.value.teamLocalGroups.length > 0
-  || originSections.value.applicationGroups.length > 0
+  originSections.value.applicationGroups.length > 0
   || originSections.value.sharedAgentDefinitions.length > 0
 ));
 const hasBrowseContent = computed(() => (

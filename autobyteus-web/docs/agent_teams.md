@@ -213,5 +213,10 @@ Package import/remove flows invalidate and reload Agent Teams together with Appl
 
 - The generic create flow still creates shared standalone teams.
 - Application-owned teams are surfaced for inspection/testing and in-place editing, not for shared-path deletion or sync.
-- Team detail cards surface team-local member badges for embedded private agents, while agent cards/details show both team and application provenance when the owning team belongs to an application bundle.
+- Team detail cards surface team-local member badges for embedded private agents. Resolvable team-local agent members use compact `Details ▾` / `Hide ▴` actions and can be expanded in the team detail page to inspect the member agent's name, role, description, instructions, skills, tools, default runtime/model, and optional processor configuration without leaving team context.
+- Expanded team-local member panels provide in-place editing through the canonical agent definition form and persist through `agentDefinitionStore.updateAgentDefinition(...)`; canceling edit returns to the expanded read view without saving draft changes.
+- Shared/global individual-agent members (`refType === 'AGENT'` with absent/`SHARED` scope) use a compact `View ↗` action that opens the existing Agent Detail route with `returnToTeam=<teamId>` so the Agent Detail back action returns to the originating team. Shared/global members do not get inline team-local details/editing.
+- Application-owned member behavior remains unchanged in this ticket.
+- Generic Agents browse/search excludes team-local definitions, so the owning Agent Team detail page is the primary team-local discovery and edit surface. Direct known-id agent detail/edit routes are still available for debugging.
+- Agent cards/details show both team and application provenance when the owning team belongs to an application bundle.
 - The workspace run-config flow now truthfully supports mixed-runtime teams; any future team-launch UX must preserve the same per-member runtime/model/readiness invariants.

@@ -12,7 +12,7 @@
             d="M17 10a.75.75 0 0 1-.75.75H5.56l3.22 3.22a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06l4.5-4.5a.75.75 0 1 1 1.06 1.06L5.56 9.25h10.69A.75.75 0 0 1 17 10Z"
             clip-rule="evenodd"
           />
-        </svg>{{ $t('agents.components.agents.AgentDetail.back_to_agents') }}</button>
+        </svg>{{ backButtonLabel }}</button>
 
       <div v-if="viewState === 'loading'" class="text-center py-20">
         <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600 mx-auto"></div>
@@ -22,7 +22,7 @@
       <div v-else-if="viewState === 'not-found'" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
         <h3 class="font-bold">{{ $t('agents.components.agents.AgentDetail.agent_not_found') }}</h3>
         <p>{{ $t('agents.components.agents.AgentDetail.the_agent_definition_with_the_specified') }}</p>
-        <button @click="goBackToList" class="text-indigo-600 hover:underline mt-2 inline-block">{{ $t('agents.components.agents.AgentDetail.and_larr_back_to_all_agents') }}</button>
+        <button @click="goBackToList" class="text-indigo-600 hover:underline mt-2 inline-block">{{ backButtonLabel }}</button>
       </div>
 
       <div v-else-if="agentDef" class="bg-white p-8 rounded-xl shadow-md border border-gray-200">
@@ -85,65 +85,7 @@
             </div>
           </aside>
 
-          <section class="space-y-6">
-            <div class="rounded-xl border border-gray-200 bg-white p-5">
-              <h2 class="text-lg font-semibold text-gray-800 mb-2">{{ $t('agents.components.agents.AgentDetail.description') }}</h2>
-              <p class="text-gray-600 whitespace-pre-wrap">{{ agentDef.description }}</p>
-              <div class="mt-4 grid grid-cols-1 gap-4 border-t border-gray-200 pt-4 md:grid-cols-3">
-                <div>
-                  <p class="text-xs uppercase tracking-wide text-gray-500">{{ $t('agents.components.agents.AgentDetail.category') }}</p>
-                  <p class="mt-1 text-sm text-gray-700">{{ agentDef.category || $t('agents.components.agents.AgentDetail.uncategorized') }}</p>
-                </div>
-                <div>
-                  <p class="text-xs uppercase tracking-wide text-gray-500">{{ $t('agents.components.agents.AgentDetail.defaultRuntime') }}</p>
-                  <p class="mt-1 text-sm text-gray-700">{{ agentDef.defaultLaunchConfig?.runtimeKind || $t('agents.components.agents.AgentDetail.notSet') }}</p>
-                </div>
-                <div>
-                  <p class="text-xs uppercase tracking-wide text-gray-500">{{ $t('agents.components.agents.AgentDetail.defaultModel') }}</p>
-                  <p class="mt-1 break-all text-sm text-gray-700">{{ agentDef.defaultLaunchConfig?.llmModelIdentifier || $t('agents.components.agents.AgentDetail.notSet') }}</p>
-                </div>
-              </div>
-            </div>
-
-            <ExpandableInstructionCard
-              :content="agentDef.instructions"
-              variant="gray"
-            />
-
-            <div class="rounded-xl border border-gray-200 bg-white p-5">
-              <h2 class="text-lg font-semibold text-gray-800 mb-3">{{ $t('agents.components.agents.AgentDetail.skillsHeading') }}</h2>
-              <ul v-if="agentDef.skillNames && agentDef.skillNames.length" class="space-y-2">
-                <li v-for="item in agentDef.skillNames" :key="item" class="text-sm font-mono bg-gray-50 text-gray-800 px-4 py-2 rounded-md border border-gray-200">
-                  {{ item }}
-                </li>
-              </ul>
-              <p v-else class="text-sm text-gray-500 italic">{{ $t('agents.components.agents.AgentDetail.none_configured') }}</p>
-            </div>
-
-            <div class="rounded-xl border border-gray-200 bg-white p-5">
-              <h2 class="text-lg font-semibold text-gray-800 mb-3">{{ $t('agents.components.agents.AgentDetail.toolsHeading') }}</h2>
-              <ul v-if="agentDef.toolNames && agentDef.toolNames.length" class="space-y-2">
-                <li v-for="item in agentDef.toolNames" :key="item" class="text-sm font-mono bg-gray-50 text-gray-800 px-4 py-2 rounded-md border border-gray-200">
-                  {{ item }}
-                </li>
-              </ul>
-              <p v-else class="text-sm text-gray-500 italic">{{ $t('agents.components.agents.AgentDetail.none_configured') }}</p>
-            </div>
-
-            <details v-if="optionalProcessorLists.length" class="rounded-xl border border-gray-200 bg-white p-5">
-              <summary class="text-lg font-semibold text-gray-800 cursor-pointer">{{ $t('agents.components.agents.AgentDetail.optional_processors_advanced') }}</summary>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                <div v-for="list in optionalProcessorLists" :key="list.title">
-                  <h3 class="font-semibold text-gray-800 mb-3">{{ list.title }}</h3>
-                  <ul class="space-y-2">
-                    <li v-for="item in agentDef[list.key]" :key="item" class="text-sm font-mono bg-gray-50 text-gray-800 px-4 py-2 rounded-md border border-gray-200">
-                      {{ item }}
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </details>
-          </section>
+          <AgentDefinitionDetailSections :agent-def="agentDef" />
         </div>
       </div>
     </div>
@@ -165,14 +107,17 @@ import { ref, computed, onMounted, toRefs, watch } from 'vue';
 import { useAgentDefinitionStore, type AgentDefinition } from '~/stores/agentDefinitionStore';
 import AgentDeleteConfirmDialog from '~/components/agents/AgentDeleteConfirmDialog.vue';
 import AgentDuplicateButton from '~/components/agents/AgentDuplicateButton.vue';
-import ExpandableInstructionCard from '~/components/common/ExpandableInstructionCard.vue';
+import AgentDefinitionDetailSections from '~/components/agents/AgentDefinitionDetailSections.vue';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useLocalization } from '~/composables/useLocalization';
 import { formatApplicationOwnershipLabel } from '~/utils/definitionOwnership';
 
-const props = defineProps<{ agentDefinitionId: string }>();
-const { agentDefinitionId } = toRefs(props);
+const props = defineProps<{
+  agentDefinitionId: string;
+  returnToTeamId?: string;
+}>();
+const { agentDefinitionId, returnToTeamId } = toRefs(props);
 
 const emit = defineEmits(['navigate']);
 
@@ -192,33 +137,9 @@ const viewState = computed(() => {
   if (!agentDef.value) return 'not-found';
   return 'ready';
 });
-
-type AgentDefinitionArrayField =
-  | 'toolNames'
-  | 'inputProcessorNames'
-  | 'llmResponseProcessorNames'
-  | 'systemPromptProcessorNames'
-  | 'toolExecutionResultProcessorNames'
-  | 'toolInvocationPreprocessorNames'
-  | 'lifecycleProcessorNames'
-
-const componentLists: Array<{ title: string; key: AgentDefinitionArrayField }> = [
-  { title: $t('agents.components.agents.AgentDetail.optionalProcessor.tools'), key: 'toolNames' },
-  { title: $t('agents.components.agents.AgentDetail.optionalProcessor.inputProcessors'), key: 'inputProcessorNames' },
-  { title: $t('agents.components.agents.AgentDetail.optionalProcessor.llmResponseProcessors'), key: 'llmResponseProcessorNames' },
-  { title: $t('agents.components.agents.AgentDetail.optionalProcessor.systemPromptProcessors'), key: 'systemPromptProcessorNames' },
-  { title: $t('agents.components.agents.AgentDetail.optionalProcessor.toolExecutionResultProcessors'), key: 'toolExecutionResultProcessorNames' },
-  { title: $t('agents.components.agents.AgentDetail.optionalProcessor.toolInvocationPreprocessors'), key: 'toolInvocationPreprocessorNames' },
-  { title: $t('agents.components.agents.AgentDetail.optionalProcessor.lifecycleProcessors'), key: 'lifecycleProcessorNames' },
-];
-
-const optionalProcessorLists = computed(() => {
-  const def = agentDef.value;
-  if (!def) return [];
-  return componentLists
-    .filter(list => list.key !== 'toolNames')
-    .filter(list => Array.isArray(def[list.key]) && def[list.key].length > 0);
-});
+const backButtonLabel = computed(() => (returnToTeamId.value
+  ? $t('agents.components.agents.AgentDetail.back_to_team')
+  : $t('agents.components.agents.AgentDetail.back_to_agents')));
 
 const avatarUrl = computed(() => agentDef.value?.avatarUrl || '');
 const showAvatarImage = computed(() => Boolean(avatarUrl.value) && !avatarLoadError.value);
@@ -310,6 +231,10 @@ const onDeleteCanceled = () => {
 };
 
 const goBackToList = () => {
+  if (returnToTeamId.value) {
+    emit('navigate', { target: 'agent-team', view: 'team-detail', id: returnToTeamId.value });
+    return;
+  }
   emit('navigate', { view: 'list' });
 };
 
