@@ -2,11 +2,11 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/in-progress/single-agent-run-title-initial-message/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/in-progress/single-agent-run-title-initial-message/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/in-progress/single-agent-run-title-initial-message/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/in-progress/single-agent-run-title-initial-message/design-review-report.md`
-- Code review report addressed in this revision: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/in-progress/single-agent-run-title-initial-message/review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/done/single-agent-run-title-initial-message/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/done/single-agent-run-title-initial-message/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/done/single-agent-run-title-initial-message/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/done/single-agent-run-title-initial-message/design-review-report.md`
+- Code review report addressed in this revision: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/done/single-agent-run-title-initial-message/review-report.md`
 
 ## What Changed
 

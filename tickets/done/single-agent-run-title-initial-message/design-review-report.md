@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/in-progress/single-agent-run-title-initial-message/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/in-progress/single-agent-run-title-initial-message/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/in-progress/single-agent-run-title-initial-message/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/done/single-agent-run-title-initial-message/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/done/single-agent-run-title-initial-message/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/done/single-agent-run-title-initial-message/design-spec.md`
 - Current Review Round: 1
 - Trigger: Initial architecture review requested by `solution_designer` after design-ready package handoff.
 - Prior Review Round Reviewed: N/A
@@ -19,7 +19,7 @@
 
 ## Reviewed Design Spec
 
-`/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/in-progress/single-agent-run-title-initial-message/design-spec.md`
+`/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/done/single-agent-run-title-initial-message/design-spec.md`
 
 ## Task Design Health Assessment Verdict
 

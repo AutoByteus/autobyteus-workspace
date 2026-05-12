@@ -2,12 +2,12 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/in-progress/single-agent-run-title-initial-message/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/in-progress/single-agent-run-title-initial-message/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/in-progress/single-agent-run-title-initial-message/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/in-progress/single-agent-run-title-initial-message/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/in-progress/single-agent-run-title-initial-message/implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/in-progress/single-agent-run-title-initial-message/review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/done/single-agent-run-title-initial-message/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/done/single-agent-run-title-initial-message/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/done/single-agent-run-title-initial-message/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/done/single-agent-run-title-initial-message/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/done/single-agent-run-title-initial-message/implementation-handoff.md`
+- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/done/single-agent-run-title-initial-message/review-report.md`
 - Current Validation Round: 1
 - Trigger: Code-review Round 2 pass plus user request to prove the behavior with a real Codex runtime or an existing runtime harness.
 - Prior Round Reviewed: N/A
@@ -111,7 +111,7 @@ Round rules:
 
 ## Other Validation Artifacts
 
-- Canonical validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/in-progress/single-agent-run-title-initial-message/api-e2e-report.md`
+- Canonical validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/done/single-agent-run-title-initial-message/api-e2e-report.md`
 
 ## Temporary Validation Methods / Scaffolding
 

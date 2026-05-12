@@ -24,7 +24,7 @@ The supplied screenshot shows the workspace history tree in the left sidebar. Th
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/in-progress/single-agent-run-title-initial-message`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/done/single-agent-run-title-initial-message`
 - Current Branch: `codex/single-agent-run-title-initial-message`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message`
 - Bootstrap Base Branch: `origin/personal`
