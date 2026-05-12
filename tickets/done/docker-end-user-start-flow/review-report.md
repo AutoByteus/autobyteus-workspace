@@ -3,16 +3,16 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/requirements.md`
 - Current Review Round: `5 - independent full current-state review`
 - Trigger: `implementation update after architecture review round 5 approved update-vs-start ownership split; user requested one independent code review, not a delta review`
 - Prior Review Round Reviewed: `Round 4 canonical report reviewed as history only; current review independently re-reviewed the full changed implementation state`
 - Latest Authoritative Round: `5`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/implementation-handoff.md`
-- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/api-e2e-validation-report.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/implementation-handoff.md`
+- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/api-e2e-validation-report.md`
 - API / E2E Validation Started Yet: `Yes`
 - Repository-Resident Durable Validation Added Or Updated After Prior Review: `No`
 

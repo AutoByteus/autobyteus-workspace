@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/design-spec.md`
 - Current Review Round: `5`
 - Trigger: Additional user clarification that launcher `update` is script-only while `start` owns Docker image pull/check and conditional managed-container refresh.
 - Prior Review Round Reviewed: `4`

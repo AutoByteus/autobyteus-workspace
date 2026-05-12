@@ -13,7 +13,9 @@ COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
 node    92475 normy   12u  IPv4 0x7c2a94ffdd4ae537      0t0  TCP 127.0.0.1:3335 (LISTEN)
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
 HTTP/1.1 200 OK
 content-type: text/html;charset=utf-8
 x-powered-by: Nuxt

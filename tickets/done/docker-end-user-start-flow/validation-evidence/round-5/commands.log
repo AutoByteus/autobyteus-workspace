@@ -23,7 +23,7 @@ POWERSHELL=
 ?? autobyteus-web/utils/__tests__/dockerNodeLauncherCommands.spec.ts
 ?? autobyteus-web/utils/dockerNodeLauncherCommands.ts
 ?? scripts/public/
-?? tickets/in-progress/docker-end-user-start-flow/
+?? tickets/done/docker-end-user-start-flow/
 
 ## running listeners
 -- port 3335 --

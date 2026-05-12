@@ -23,7 +23,7 @@ The user reports that maintainers can conveniently start/release server Docker f
 
 - Project Type (`Git`/`Non-Git`): `Git`
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow`
 - Current Branch: `codex/docker-end-user-start-flow`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow`
 - Bootstrap Base Branch: `origin/personal`

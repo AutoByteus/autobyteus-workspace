@@ -2,12 +2,12 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/implementation-handoff.md`
+- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/review-report.md`
 - Current Validation Round: `5`
 - Trigger: `code_reviewer pass after architecture review round 5 approved the update-vs-start ownership split on 2026-05-12`
 - Prior Round Reviewed: `Round 3 canonical report plus superseded round-4 local evidence`
@@ -85,19 +85,19 @@ No compatibility wrapper, source-helper/Compose/`--project` public path, superse
 
 | Scenario ID | Requirement / AC | Validation Method | Latest Result | Evidence |
 | --- | --- | --- | --- | --- |
-| `V-001` | `REQ-001`, `REQ-003`, `AC-003` | `bash -n`, ShellCheck, Bash help, static PowerShell help, public-boundary grep | `Pass` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/validation-evidence/round-5/static-unit.log` |
-| `V-002` | `REQ-007`, `REQ-009`, `AC-005`, `AC-007` | Targeted Vitest for command catalog, guide card, and NodeManager | `Pass` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/validation-evidence/round-5/static-unit.log` |
-| `V-003` | Localization/web constraints | Localization boundary guard, literal audit, web boundary guard, `git diff --check` | `Pass` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/validation-evidence/round-5/static-unit.log` |
-| `V-004` | `REQ-005`, `AC-001`, Docker happy path | Installed Bash launcher default `start`; Docker pull/check; `/rest/health`; GraphQL probe | `Pass` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/validation-evidence/round-5/real-docker-lifecycle-update-start-split.log` |
-| `V-005` | `REQ-004`, `AC-004` | Installed launcher `start --new`; separate friendly node, state, ports, health | `Pass` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/validation-evidence/round-5/real-docker-lifecycle-update-start-split.log` |
-| `V-006` | Stale occupied-port retry; `REQ-004`, `AC-004` edge case | Edited saved `NOVNC_PORT=6080` occupied by another Docker-published container; reran installed launcher `start` | `Pass` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/validation-evidence/round-5/real-docker-lifecycle-update-start-split.log` |
-| `V-007` | `REQ-003`, lifecycle commands | `urls`, `status`, `logs`, `stop`, `stop --all` against isolated installed-launcher state | `Pass` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/validation-evidence/round-5/real-docker-lifecycle-update-start-split.log` |
-| `V-008` | `REQ-008`, `AC-006` Add Remote Node boundary | Browser Settings → Nodes guide, direct commands, Add Remote Node using launcher-printed Backend URL | `Pass` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/validation-evidence/round-5/browser-ui-add-remote-node.log`; screenshot `/Users/normy/.autobyteus/browser-artifacts/7dc8f2-1778596600360.png` |
-| `V-009` | `REQ-010`, raw GitHub ref assumption | `git ls-remote` and raw URL `curl` on configured `personal` ref | `Blocked / delivery recheck required` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/validation-evidence/round-5/raw-ref-powershell-residual.log` |
-| `V-010` | `REQ-002`, `AC-002` PowerShell executable path | Native runtime availability check plus static peer review | `Blocked for native execution` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/validation-evidence/round-5/raw-ref-powershell-residual.log`; `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/validation-evidence/round-5/static-unit.log` |
-| `V-011` | CLI clarification, `REQ-003`, `REQ-004`, `AC-004`, `AC-005` | Bash help, static PowerShell help, docs/localization/UI grep, browser UI command smoke | `Pass` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/validation-evidence/round-5/static-unit.log`; `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/validation-evidence/round-5/browser-ui-add-remote-node.log` |
-| `V-012` | Install-once CLI; install/update ownership | Installed from local current source; verified install/update created launcher only and no Docker runtime state | `Pass` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/validation-evidence/round-5/install-update-isolation.log` |
-| `V-013` | Update-vs-start ownership split | Real Docker repeated start no-recreate, config refresh recreation, stopped restart, default refresh, and image check/pull ownership on `start` | `Pass` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/validation-evidence/round-5/real-docker-lifecycle-update-start-split.log` |
+| `V-001` | `REQ-001`, `REQ-003`, `AC-003` | `bash -n`, ShellCheck, Bash help, static PowerShell help, public-boundary grep | `Pass` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/validation-evidence/round-5/static-unit.log` |
+| `V-002` | `REQ-007`, `REQ-009`, `AC-005`, `AC-007` | Targeted Vitest for command catalog, guide card, and NodeManager | `Pass` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/validation-evidence/round-5/static-unit.log` |
+| `V-003` | Localization/web constraints | Localization boundary guard, literal audit, web boundary guard, `git diff --check` | `Pass` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/validation-evidence/round-5/static-unit.log` |
+| `V-004` | `REQ-005`, `AC-001`, Docker happy path | Installed Bash launcher default `start`; Docker pull/check; `/rest/health`; GraphQL probe | `Pass` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/validation-evidence/round-5/real-docker-lifecycle-update-start-split.log` |
+| `V-005` | `REQ-004`, `AC-004` | Installed launcher `start --new`; separate friendly node, state, ports, health | `Pass` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/validation-evidence/round-5/real-docker-lifecycle-update-start-split.log` |
+| `V-006` | Stale occupied-port retry; `REQ-004`, `AC-004` edge case | Edited saved `NOVNC_PORT=6080` occupied by another Docker-published container; reran installed launcher `start` | `Pass` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/validation-evidence/round-5/real-docker-lifecycle-update-start-split.log` |
+| `V-007` | `REQ-003`, lifecycle commands | `urls`, `status`, `logs`, `stop`, `stop --all` against isolated installed-launcher state | `Pass` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/validation-evidence/round-5/real-docker-lifecycle-update-start-split.log` |
+| `V-008` | `REQ-008`, `AC-006` Add Remote Node boundary | Browser Settings → Nodes guide, direct commands, Add Remote Node using launcher-printed Backend URL | `Pass` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/validation-evidence/round-5/browser-ui-add-remote-node.log`; screenshot `/Users/normy/.autobyteus/browser-artifacts/7dc8f2-1778596600360.png` |
+| `V-009` | `REQ-010`, raw GitHub ref assumption | `git ls-remote` and raw URL `curl` on configured `personal` ref | `Blocked / delivery recheck required` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/validation-evidence/round-5/raw-ref-powershell-residual.log` |
+| `V-010` | `REQ-002`, `AC-002` PowerShell executable path | Native runtime availability check plus static peer review | `Blocked for native execution` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/validation-evidence/round-5/raw-ref-powershell-residual.log`; `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/validation-evidence/round-5/static-unit.log` |
+| `V-011` | CLI clarification, `REQ-003`, `REQ-004`, `AC-004`, `AC-005` | Bash help, static PowerShell help, docs/localization/UI grep, browser UI command smoke | `Pass` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/validation-evidence/round-5/static-unit.log`; `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/validation-evidence/round-5/browser-ui-add-remote-node.log` |
+| `V-012` | Install-once CLI; install/update ownership | Installed from local current source; verified install/update created launcher only and no Docker runtime state | `Pass` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/validation-evidence/round-5/install-update-isolation.log` |
+| `V-013` | Update-vs-start ownership split | Real Docker repeated start no-recreate, config refresh recreation, stopped restart, default refresh, and image check/pull ownership on `start` | `Pass` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/validation-evidence/round-5/real-docker-lifecycle-update-start-split.log` |
 
 ## Test Scope
 
@@ -105,7 +105,7 @@ Round 5 validates the current implementation after the architecture-approved `up
 
 ## Validation Setup / Environment
 
-- Round-5 evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/validation-evidence/round-5/`.
+- Round-5 evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/validation-evidence/round-5/`.
 - Installed launcher path used for runtime validation: `/tmp/autobyteus-r5-install.ws3AiA/autobyteus-docker`.
 - Isolated validation state dir: `/tmp/autobyteus-r5-state.QBvHeI`.
 - Existing user-check default state dir: `/tmp/autobyteus-user-check-docker`.
@@ -124,16 +124,16 @@ No source or durable test files were added or updated by API/E2E in this round.
 
 ## Other Validation Artifacts
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/api-e2e-validation-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/validation-evidence/round-5/commands.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/validation-evidence/round-5/install-update-isolation.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/validation-evidence/round-5/real-docker-lifecycle-update-start-split.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/validation-evidence/round-5/static-unit.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/validation-evidence/round-5/add-remote-node-docker-start.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/validation-evidence/round-5/browser-ui-add-remote-node.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/validation-evidence/round-5/raw-ref-powershell-residual.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/validation-evidence/round-5/cleanup-and-user-check-status.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/validation-evidence/round-5/frontend-dev-3335.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/api-e2e-validation-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/validation-evidence/round-5/commands.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/validation-evidence/round-5/install-update-isolation.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/validation-evidence/round-5/real-docker-lifecycle-update-start-split.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/validation-evidence/round-5/static-unit.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/validation-evidence/round-5/add-remote-node-docker-start.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/validation-evidence/round-5/browser-ui-add-remote-node.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/validation-evidence/round-5/raw-ref-powershell-residual.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/validation-evidence/round-5/cleanup-and-user-check-status.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/validation-evidence/round-5/frontend-dev-3335.log`
 - Browser screenshot: `/Users/normy/.autobyteus/browser-artifacts/7dc8f2-1778596600360.png`
 
 ## Temporary Validation Methods / Scaffolding
@@ -153,10 +153,10 @@ No source or durable test files were added or updated by API/E2E in this round.
 
 | Prior Round | Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `1` | `V-006` stale/occupied saved-port recovery | `Local Fix` | `Resolved and rechecked again in round 5` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/validation-evidence/round-5/real-docker-lifecycle-update-start-split.log` | Saved `NOVNC_PORT=6080` produced bind retry and fresh running ports. |
-| `2` / `3` | `V-009` raw GitHub URL publication check | `Blocked / pre-merge expected` | `Still blocked until integration/publication` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/validation-evidence/round-5/raw-ref-powershell-residual.log` | `origin/personal` exists, but raw `.sh` and `.ps1` URLs return `404` because these files are not yet published on the referenced ref. |
-| `2` / `3` | `V-010` native Windows PowerShell execution | `Blocked` | `Still blocked in this macOS arm64 environment` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/validation-evidence/round-5/raw-ref-powershell-residual.log` | No native `pwsh` or `powershell` binary is installed. |
-| `4` | Install-once CLI behavior | `Superseded before handoff` | `Revalidated against current round-5 source` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/in-progress/docker-end-user-start-flow/validation-evidence/round-5/install-update-isolation.log` | `install`/`update` only wrote launcher files and did not create state, containers, or volumes. |
+| `1` | `V-006` stale/occupied saved-port recovery | `Local Fix` | `Resolved and rechecked again in round 5` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/validation-evidence/round-5/real-docker-lifecycle-update-start-split.log` | Saved `NOVNC_PORT=6080` produced bind retry and fresh running ports. |
+| `2` / `3` | `V-009` raw GitHub URL publication check | `Blocked / pre-merge expected` | `Still blocked until integration/publication` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/validation-evidence/round-5/raw-ref-powershell-residual.log` | `origin/personal` exists, but raw `.sh` and `.ps1` URLs return `404` because these files are not yet published on the referenced ref. |
+| `2` / `3` | `V-010` native Windows PowerShell execution | `Blocked` | `Still blocked in this macOS arm64 environment` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/validation-evidence/round-5/raw-ref-powershell-residual.log` | No native `pwsh` or `powershell` binary is installed. |
+| `4` | Install-once CLI behavior | `Superseded before handoff` | `Revalidated against current round-5 source` | `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-end-user-start-flow/tickets/done/docker-end-user-start-flow/validation-evidence/round-5/install-update-isolation.log` | `install`/`update` only wrote launcher files and did not create state, containers, or volumes. |
 
 ## Scenarios Checked
 
