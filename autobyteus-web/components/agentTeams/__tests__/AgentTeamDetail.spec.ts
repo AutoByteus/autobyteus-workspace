@@ -188,7 +188,7 @@ describe('AgentTeamDetail', () => {
     const memberAvatar = wrapper.find('img[alt="superagent avatar"]');
     expect(memberAvatar.exists()).toBe(false);
 
-    const memberInitials = wrapper.find('article .h-9.w-9 span');
+    const memberInitials = wrapper.find('article .h-10.w-10 span');
     expect(memberInitials.exists()).toBe(true);
     expect(memberInitials.text()).toBe('SU');
   });

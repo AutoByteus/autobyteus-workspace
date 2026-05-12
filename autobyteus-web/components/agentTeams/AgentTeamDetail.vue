@@ -135,7 +135,7 @@
             >
               <div class="flex items-start justify-between gap-3">
                 <div class="flex min-w-0 items-start gap-3">
-                  <div class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full text-xs font-semibold"
+                  <div class="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full text-sm font-semibold"
                     :class="node.refType === 'AGENT' ? 'bg-blue-100 text-blue-700' : 'bg-violet-100 text-violet-700'"
                   >
                     <img
@@ -148,37 +148,25 @@
                     <span v-else>{{ memberInitials(node.memberName) }}</span>
                   </div>
                   <div class="min-w-0">
-                    <p class="truncate text-sm font-semibold text-slate-900">{{ node.memberName }}</p>
-                    <p class="truncate text-xs text-slate-500">{{ $t('agentTeams.components.agentTeams.AgentTeamDetail.blueprintLabel', { name: getBlueprintNameForNode(node) }) }}</p>
+                    <div class="flex min-w-0 flex-wrap items-center gap-1.5">
+                      <p class="min-w-0 max-w-full truncate text-base font-semibold text-slate-900">{{ node.memberName }}</p>
+                      <span
+                        v-if="isCoordinatorNode(node)"
+                        class="shrink-0 rounded-full bg-emerald-50 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-700"
+                      >
+                        {{ $t('agentTeams.components.agentTeams.AgentTeamDetail.badgeCoordinator') }}
+                      </span>
+                    </div>
+                    <p class="mt-0.5 truncate text-sm text-slate-500">
+                      {{ $t('agentTeams.components.agentTeams.AgentTeamDetail.blueprintLabel', { name: getBlueprintNameForNode(node) }) }}
+                    </p>
                   </div>
                 </div>
 
-                <div class="flex shrink-0 flex-wrap items-center justify-end gap-1">
-                  <span class="rounded-full px-2 py-0.5 text-[10px] font-semibold"
-                    :class="node.refType === 'AGENT' ? 'bg-blue-50 text-blue-700' : 'bg-violet-50 text-violet-700'"
-                  >
-                    {{ node.refType === 'AGENT' ? $t('agentTeams.components.agentTeams.AgentTeamDetail.badgeAgent') : $t('agentTeams.components.agentTeams.AgentTeamDetail.badgeTeam') }}
-                  </span>
-                  <span
-                    v-if="isTeamLocalAgentNode(node)"
-                    class="rounded-full bg-violet-50 px-2 py-0.5 text-[10px] font-semibold text-violet-700"
-                  >
-                    {{ $t('agents.components.agents.AgentDetail.ownership.teamLocal') }}
-                  </span>
-                  <span
-                    v-if="isCoordinatorNode(node)"
-                    class="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-700"
-                  >
-                    {{ $t('agentTeams.components.agentTeams.AgentTeamDetail.badgeCoordinator') }}
-                  </span>
-                </div>
-              </div>
-
-              <div v-if="hasMemberPrimaryAction(node)" class="mt-3 flex justify-end">
                 <button
                   v-if="canExpandTeamLocalMember(node)"
                   type="button"
-                  class="inline-flex min-w-[6rem] items-center justify-center rounded-lg border border-violet-200 bg-violet-50 px-4 py-2 text-sm font-semibold text-violet-700 shadow-sm transition-colors hover:bg-violet-100"
+                  class="inline-flex h-8 shrink-0 items-center justify-center rounded-full border border-violet-200 bg-white px-3 text-sm font-semibold text-violet-700 transition-colors hover:bg-violet-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/40 focus-visible:ring-offset-1"
                   :aria-expanded="isMemberExpanded(node) ? 'true' : 'false'"
                   :aria-label="isMemberExpanded(node)
                     ? $t('agentTeams.components.agentTeams.AgentTeamDetail.hideTeamLocalDetailsLabel', { name: node.memberName })
@@ -196,7 +184,7 @@
                 <button
                   v-else-if="canViewSharedAgentMember(node)"
                   type="button"
-                  class="inline-flex min-w-[6rem] items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-100"
+                  class="inline-flex h-8 shrink-0 items-center justify-center rounded-full border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 focus-visible:ring-offset-1"
                   :aria-label="$t('agentTeams.components.agentTeams.AgentTeamDetail.viewSharedAgentLabel', { name: node.memberName })"
                   :title="$t('agentTeams.components.agentTeams.AgentTeamDetail.viewSharedAgentLabel', { name: node.memberName })"
                   data-test="shared-agent-view-link"
@@ -384,10 +372,6 @@ const canViewSharedAgentMember = (node: TeamMemberNode): boolean => (
 
 const canExpandTeamLocalMember = (node: TeamMemberNode): boolean => (
   isTeamLocalAgentNode(node) && Boolean(getAgentDefinitionForNode(node))
-);
-
-const hasMemberPrimaryAction = (node: TeamMemberNode): boolean => (
-  canExpandTeamLocalMember(node) || canViewSharedAgentMember(node)
 );
 
 const getRequiredAgentDefinitionForNode = (node: TeamMemberNode): AgentDefinition => {

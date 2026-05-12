@@ -50,7 +50,7 @@ const messages = {
   'agentTeams.components.agentTeams.TeamLocalAgentMemberDetails.memberContext': '团队成员：{{member}}',
   'agentTeams.components.agentTeams.TeamLocalAgentMemberDetails.teamContext': '所属团队：{{team}}',
   'agentTeams.components.agentTeams.TeamLocalAgentMemberDetails.edit': '编辑',
-  'agentTeams.components.agentTeams.TeamLocalAgentMemberDetails.saveMemberAgent': '保存成员智能体',
+  'agentTeams.components.agentTeams.TeamLocalAgentMemberDetails.saveMemberAgent': '保存',
   'agentTeams.components.agentTeams.TeamLocalAgentMemberDetails.updateSuccess': '已更新成员智能体“{{name}}”。',
   'agentTeams.components.agentTeams.TeamLocalAgentMemberDetails.updateFailedEmpty': '更新成员智能体失败，返回结果为空。',
   'agentTeams.components.agentTeams.TeamLocalAgentMemberDetails.updateFailed': '更新成员智能体失败。',

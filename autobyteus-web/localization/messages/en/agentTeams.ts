@@ -50,7 +50,7 @@ const messages = {
   'agentTeams.components.agentTeams.TeamLocalAgentMemberDetails.memberContext': 'Team member: {{member}}',
   'agentTeams.components.agentTeams.TeamLocalAgentMemberDetails.teamContext': 'Owning team: {{team}}',
   'agentTeams.components.agentTeams.TeamLocalAgentMemberDetails.edit': 'Edit',
-  'agentTeams.components.agentTeams.TeamLocalAgentMemberDetails.saveMemberAgent': 'Save member agent',
+  'agentTeams.components.agentTeams.TeamLocalAgentMemberDetails.saveMemberAgent': 'Save',
   'agentTeams.components.agentTeams.TeamLocalAgentMemberDetails.updateSuccess': 'Updated member agent "{{name}}".',
   'agentTeams.components.agentTeams.TeamLocalAgentMemberDetails.updateFailedEmpty': 'Failed to update member agent. The result was empty.',
   'agentTeams.components.agentTeams.TeamLocalAgentMemberDetails.updateFailed': 'Failed to update member agent.',
