@@ -1,0 +1,24 @@
+DATE_UTC=2026-05-12T14:37:40Z
+## stop/remove add-remote validation node
+[AutoByteus Docker] Stopped e2e-r5-add-node. Named volumes were kept.
+add-remote validation node cleanup complete
+
+## default backend remains running for user verification
+{"status":"ok","message":"Server is running"}
+NODE                     CONTAINER                STATUS         BACKEND
+autobyteus-server        autobyteus-server        running        http://localhost:8001 (autobyteus/autobyteus-server:latest)
+
+## frontend dev listener intentionally left running for user verification
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    92475 normy   12u  IPv4 0x7c2a94ffdd4ae537      0t0  TCP 127.0.0.1:3335 (LISTEN)
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/1.1 200 OK
+content-type: text/html;charset=utf-8
+x-powered-by: Nuxt
+date: Tue, 12 May 2026 14:37:43 GMT
+connection: close
+
+
+## validation-created containers/volumes remaining check

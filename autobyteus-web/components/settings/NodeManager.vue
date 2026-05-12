@@ -20,6 +20,8 @@
 
       <RemoteBrowserSharingPanel />
 
+      <DockerNodeStartGuideCard />
+
       <section class="border border-gray-200 rounded-lg p-4">
         <h3 class="text-sm font-semibold text-gray-900">{{ $t('settings.components.settings.NodeManager.add_remote_node') }}</h3>
         <p class="text-xs text-gray-500 mt-1">{{ $t('settings.components.settings.NodeManager.add_a_node_and_optionally_bootstrap') }}</p>
@@ -232,6 +234,7 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 import NodeSyncReportPanel from '~/components/sync/NodeSyncReportPanel.vue';
+import DockerNodeStartGuideCard from '~/components/settings/DockerNodeStartGuideCard.vue';
 import RemoteBrowserSharingPanel from '~/components/settings/RemoteBrowserSharingPanel.vue';
 import RemoteNodePairingControls from '~/components/settings/RemoteNodePairingControls.vue';
 import { useLocalization } from '~/composables/useLocalization';

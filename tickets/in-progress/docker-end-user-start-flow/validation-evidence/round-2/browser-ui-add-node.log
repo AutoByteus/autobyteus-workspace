@@ -1,0 +1,10 @@
+Local Nuxt browser smoke on http://127.0.0.1:3333/settings
+- Opened Settings page in Codex in-app browser.
+- Clicked Nodes nav.
+- Verified page rendered Start Docker node card with macOS/Linux and Windows PowerShell copyable commands and next-step text.
+- Verified Add Remote Node section appears immediately after the Docker guidance card.
+- Entered real launcher Backend URL from round-2 Docker node: http://localhost:61899.
+- Disabled bootstrap sync checkbox to isolate Add Remote Node registration/probe path.
+- Clicked Add Node.
+- Browser result: node was added to Configured Nodes as remote/ready with base URL http://localhost:61899; UI displayed expected loopback warning.
+- Full-page screenshot captured by Browser tool: /Users/normy/.autobyteus/browser-artifacts/4e8c1b-1778580212660.png

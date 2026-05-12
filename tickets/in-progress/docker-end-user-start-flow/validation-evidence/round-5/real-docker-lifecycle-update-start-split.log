@@ -1,0 +1,349 @@
+DATE_UTC=2026-05-12T14:29:49Z
+LAUNCHER=/tmp/autobyteus-r5-install.ws3AiA/autobyteus-docker
+USER_STATE=/tmp/autobyteus-user-check-docker
+CUSTOM_STATE=/tmp/autobyteus-r5-state.QBvHeI
+
+## ensure no old round-5 validation containers/volumes
+cleanup baseline done
+
+## default node start/refresh using existing user-check state
+DEFAULT_BEFORE_ID=2e971ec558e3ff445aea7c7b70ae122f69321457ec558a1e8fb4c4272e6a7eb6
+DEFAULT_BEFORE_CONFIG_LABEL=
+[AutoByteus Docker] Checking image autobyteus/autobyteus-server:latest
+latest: Pulling from autobyteus/autobyteus-server
+Digest: sha256:8006705559a1b74f88e462e3699cb136895ae8c4b846aa274cb94c51e8be0549
+Status: Image is up to date for autobyteus/autobyteus-server:latest
+docker.io/autobyteus/autobyteus-server:latest
+[AutoByteus Docker] Refreshing autobyteus-server; existing container predates launcher config tracking.
+[AutoByteus Docker] Started autobyteus-server.
+AutoByteus Docker node: autobyteus-server
+Container: autobyteus-server
+Image: autobyteus/autobyteus-server:latest
+Backend: http://localhost:8001
+GraphQL: http://localhost:8001/graphql
+noVNC: http://localhost:52448
+VNC: localhost:5908
+Chrome debug: localhost:9228
+Next step: paste Backend into Add Remote Node in AutoByteus.
+NODE_NAME=autobyteus-server
+CONTAINER_NAME=autobyteus-server
+BACKEND_PORT=8001
+VNC_PORT=5908
+NOVNC_PORT=52448
+DEBUG_PORT=9228
+IMAGE_REF=autobyteus/autobyteus-server:latest
+CREATED_AT=2026-05-12T11:56:54Z
+CONFIG_HASH=477df58726492efb8716d90231fca7fddec2aa79cb6c425923ccaf2f9848952b
+UPDATED_AT=2026-05-12T14:29:55Z
+DEFAULT_AFTER_REFRESH_ID=ca5ac01137078743bb30e2848f3b0c70c834bf68955755954af9b50160cccf17
+DEFAULT_AFTER_REFRESH_CONFIG_LABEL=477df58726492efb8716d90231fca7fddec2aa79cb6c425923ccaf2f9848952b
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+{"status":"ok","message":"Server is running"}
+default after start/refresh health ok on attempt 4
+{"data":{"__typename":"Query"}}
+
+## default repeated start should not recreate when image/config unchanged
+[AutoByteus Docker] Checking image autobyteus/autobyteus-server:latest
+latest: Pulling from autobyteus/autobyteus-server
+Digest: sha256:8006705559a1b74f88e462e3699cb136895ae8c4b846aa274cb94c51e8be0549
+Status: Image is up to date for autobyteus/autobyteus-server:latest
+docker.io/autobyteus/autobyteus-server:latest
+[AutoByteus Docker] autobyteus-server is already running with the current image and launcher config.
+AutoByteus Docker node: autobyteus-server
+Container: autobyteus-server
+Image: autobyteus/autobyteus-server:latest
+Backend: http://localhost:8001
+GraphQL: http://localhost:8001/graphql
+noVNC: http://localhost:52448
+VNC: localhost:5908
+Chrome debug: localhost:9228
+Next step: paste Backend into Add Remote Node in AutoByteus.
+DEFAULT_AFTER_REPEAT_ID=ca5ac01137078743bb30e2848f3b0c70c834bf68955755954af9b50160cccf17
+{"status":"ok","message":"Server is running"}
+default after repeated start health ok on attempt 1
+
+## default stopped-current-container restart should keep same container id
+DEFAULT_STOPPED=ca5ac01137078743bb30e2848f3b0c70c834bf68955755954af9b50160cccf17 exited
+[AutoByteus Docker] Checking image autobyteus/autobyteus-server:latest
+latest: Pulling from autobyteus/autobyteus-server
+Digest: sha256:8006705559a1b74f88e462e3699cb136895ae8c4b846aa274cb94c51e8be0549
+Status: Image is up to date for autobyteus/autobyteus-server:latest
+docker.io/autobyteus/autobyteus-server:latest
+[AutoByteus Docker] Started autobyteus-server.
+AutoByteus Docker node: autobyteus-server
+Container: autobyteus-server
+Image: autobyteus/autobyteus-server:latest
+Backend: http://localhost:8001
+GraphQL: http://localhost:8001/graphql
+noVNC: http://localhost:52448
+VNC: localhost:5908
+Chrome debug: localhost:9228
+Next step: paste Backend into Add Remote Node in AutoByteus.
+DEFAULT_AFTER_RESTART_ID=ca5ac01137078743bb30e2848f3b0c70c834bf68955755954af9b50160cccf17
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+{"status":"ok","message":"Server is running"}
+default after stopped restart health ok on attempt 4
+
+## custom named node start
+[AutoByteus Docker] Checking image autobyteus/autobyteus-server:latest
+latest: Pulling from autobyteus/autobyteus-server
+Digest: sha256:8006705559a1b74f88e462e3699cb136895ae8c4b846aa274cb94c51e8be0549
+Status: Image is up to date for autobyteus/autobyteus-server:latest
+docker.io/autobyteus/autobyteus-server:latest
+[AutoByteus Docker] Started e2e-r5-node.
+AutoByteus Docker node: e2e-r5-node
+Container: e2e-r5-node
+Image: autobyteus/autobyteus-server:latest
+Backend: http://localhost:59294
+GraphQL: http://localhost:59294/graphql
+noVNC: http://localhost:59296
+VNC: localhost:59295
+Chrome debug: localhost:59297
+Next step: paste Backend into Add Remote Node in AutoByteus.
+NODE_NAME=e2e-r5-node
+CONTAINER_NAME=e2e-r5-node
+BACKEND_PORT=59294
+VNC_PORT=59295
+NOVNC_PORT=59296
+DEBUG_PORT=59297
+IMAGE_REF=autobyteus/autobyteus-server:latest
+CREATED_AT=2026-05-12T14:30:12Z
+CONFIG_HASH=060c8d5eac83fdb06f010e85716f93f4ae84d0e380636a6b5cde9fd7816abb2a
+UPDATED_AT=2026-05-12T14:30:15Z
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+{"status":"ok","message":"Server is running"}
+e2e-r5-node initial health ok on attempt 4
+{"data":{"__typename":"Query"}}
+
+## custom repeated start no-recreate
+[AutoByteus Docker] Checking image autobyteus/autobyteus-server:latest
+latest: Pulling from autobyteus/autobyteus-server
+Digest: sha256:8006705559a1b74f88e462e3699cb136895ae8c4b846aa274cb94c51e8be0549
+Status: Image is up to date for autobyteus/autobyteus-server:latest
+docker.io/autobyteus/autobyteus-server:latest
+[AutoByteus Docker] e2e-r5-node is already running with the current image and launcher config.
+AutoByteus Docker node: e2e-r5-node
+Container: e2e-r5-node
+Image: autobyteus/autobyteus-server:latest
+Backend: http://localhost:59294
+GraphQL: http://localhost:59294/graphql
+noVNC: http://localhost:59296
+VNC: localhost:59295
+Chrome debug: localhost:59297
+Next step: paste Backend into Add Remote Node in AutoByteus.
+E2E_ID_1=d4baff85bfb8380959bce058934b5940b65935331d56d1155d2fb641e63daaa9
+E2E_ID_REPEAT=d4baff85bfb8380959bce058934b5940b65935331d56d1155d2fb641e63daaa9
+{"status":"ok","message":"Server is running"}
+e2e-r5-node repeated health ok on attempt 1
+
+## custom launcher-config refresh recreation with saved named volumes
+edited DEBUG_PORT=59336
+[AutoByteus Docker] Checking image autobyteus/autobyteus-server:latest
+latest: Pulling from autobyteus/autobyteus-server
+Digest: sha256:8006705559a1b74f88e462e3699cb136895ae8c4b846aa274cb94c51e8be0549
+Status: Image is up to date for autobyteus/autobyteus-server:latest
+docker.io/autobyteus/autobyteus-server:latest
+[AutoByteus Docker] Launcher config changed for e2e-r5-node; recreating the managed container while keeping named volumes.
+[AutoByteus Docker] Started e2e-r5-node.
+AutoByteus Docker node: e2e-r5-node
+Container: e2e-r5-node
+Image: autobyteus/autobyteus-server:latest
+Backend: http://localhost:59294
+GraphQL: http://localhost:59294/graphql
+noVNC: http://localhost:59296
+VNC: localhost:59295
+Chrome debug: localhost:59336
+Next step: paste Backend into Add Remote Node in AutoByteus.
+E2E_ID_CONFIG=54fd396f7a7072edd284cda6e3b61535636371c6de45aa8a3b6ea081fcd6f1df
+NODE_NAME=e2e-r5-node
+CONTAINER_NAME=e2e-r5-node
+BACKEND_PORT=59294
+VNC_PORT=59295
+NOVNC_PORT=59296
+DEBUG_PORT=59336
+IMAGE_REF=autobyteus/autobyteus-server:latest
+CREATED_AT=2026-05-12T14:30:12Z
+CONFIG_HASH=1d94a21449633b6ff6cb91ea07b955bfaff32ce5d1a7f767c83fdfe8ef76d7cf
+UPDATED_AT=2026-05-12T14:30:25Z
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+{"status":"ok","message":"Server is running"}
+e2e-r5-node after config refresh health ok on attempt 4
+
+## custom stopped-current-container restart should keep refreshed container id
+E2E_STOPPED=54fd396f7a7072edd284cda6e3b61535636371c6de45aa8a3b6ea081fcd6f1df exited
+[AutoByteus Docker] Checking image autobyteus/autobyteus-server:latest
+latest: Pulling from autobyteus/autobyteus-server
+Digest: sha256:8006705559a1b74f88e462e3699cb136895ae8c4b846aa274cb94c51e8be0549
+Status: Image is up to date for autobyteus/autobyteus-server:latest
+docker.io/autobyteus/autobyteus-server:latest
+[AutoByteus Docker] Started e2e-r5-node.
+AutoByteus Docker node: e2e-r5-node
+Container: e2e-r5-node
+Image: autobyteus/autobyteus-server:latest
+Backend: http://localhost:59294
+GraphQL: http://localhost:59294/graphql
+noVNC: http://localhost:59296
+VNC: localhost:59295
+Chrome debug: localhost:59336
+Next step: paste Backend into Add Remote Node in AutoByteus.
+E2E_ID_RESTART=54fd396f7a7072edd284cda6e3b61535636371c6de45aa8a3b6ea081fcd6f1df
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+{"status":"ok","message":"Server is running"}
+e2e-r5-node after stopped restart health ok on attempt 4
+
+## stale occupied noVNC port retry against Docker-published 6080
+NODE_NAME=e2e-r5-node
+CONTAINER_NAME=e2e-r5-node
+BACKEND_PORT=59294
+VNC_PORT=59295
+NOVNC_PORT=6080
+DEBUG_PORT=59336
+IMAGE_REF=autobyteus/autobyteus-server:latest
+CREATED_AT=2026-05-12T14:30:12Z
+CONFIG_HASH=1d94a21449633b6ff6cb91ea07b955bfaff32ce5d1a7f767c83fdfe8ef76d7cf
+UPDATED_AT=2026-05-12T14:30:35Z
+[AutoByteus Docker] Checking image autobyteus/autobyteus-server:latest
+latest: Pulling from autobyteus/autobyteus-server
+Digest: sha256:8006705559a1b74f88e462e3699cb136895ae8c4b846aa274cb94c51e8be0549
+Status: Image is up to date for autobyteus/autobyteus-server:latest
+docker.io/autobyteus/autobyteus-server:latest
+[AutoByteus Docker] Launcher config changed for e2e-r5-node; recreating the managed container while keeping named volumes.
+[AutoByteus Docker] Port bind failed; retrying with fresh ports (attempt 2/5).
+[AutoByteus Docker] Started e2e-r5-node.
+AutoByteus Docker node: e2e-r5-node
+Container: e2e-r5-node
+Image: autobyteus/autobyteus-server:latest
+Backend: http://localhost:59416
+GraphQL: http://localhost:59416/graphql
+noVNC: http://localhost:59418
+VNC: localhost:59417
+Chrome debug: localhost:59419
+Next step: paste Backend into Add Remote Node in AutoByteus.
+E2E_ID_RETRY=9a10d789716beaea3abbdea84cbafce523943a7aaa13122c2ecb66895a7f86fc
+NODE_NAME=e2e-r5-node
+CONTAINER_NAME=e2e-r5-node
+BACKEND_PORT=59416
+VNC_PORT=59417
+NOVNC_PORT=59418
+DEBUG_PORT=59419
+IMAGE_REF=autobyteus/autobyteus-server:latest
+CREATED_AT=2026-05-12T14:30:12Z
+CONFIG_HASH=147d60955128a59e1fc0a09f11c31a2f644240c79489a1a4b317388294b65454
+UPDATED_AT=2026-05-12T14:30:45Z
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+{"status":"ok","message":"Server is running"}
+e2e-r5-node after stale retry health ok on attempt 4
+{"data":{"__typename":"Query"}}
+
+## start --new in isolated custom state
+[AutoByteus Docker] Checking image autobyteus/autobyteus-server:latest
+latest: Pulling from autobyteus/autobyteus-server
+Digest: sha256:8006705559a1b74f88e462e3699cb136895ae8c4b846aa274cb94c51e8be0549
+Status: Image is up to date for autobyteus/autobyteus-server:latest
+docker.io/autobyteus/autobyteus-server:latest
+[AutoByteus Docker] Started autobyteus-server-2.
+AutoByteus Docker node: autobyteus-server-2
+Container: autobyteus-server-2
+Image: autobyteus/autobyteus-server:latest
+Backend: http://localhost:59450
+GraphQL: http://localhost:59450/graphql
+noVNC: http://localhost:59452
+VNC: localhost:59451
+Chrome debug: localhost:59453
+Next step: paste Backend into Add Remote Node in AutoByteus.
+NEW_NAME=autobyteus-server-2
+NODE_NAME=autobyteus-server-2
+CONTAINER_NAME=autobyteus-server-2
+BACKEND_PORT=59450
+VNC_PORT=59451
+NOVNC_PORT=59452
+DEBUG_PORT=59453
+IMAGE_REF=autobyteus/autobyteus-server:latest
+CREATED_AT=2026-05-12T14:30:52Z
+CONFIG_HASH=cfa30474c942eb21bb48c3dc303dc061d225bfa8833ef8d9d847e77b7ad4f04c
+UPDATED_AT=2026-05-12T14:30:55Z
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+{"status":"ok","message":"Server is running"}
+autobyteus-server-2 health ok on attempt 4
+{"data":{"__typename":"Query"}}
+
+## urls/status/logs lifecycle commands
+AutoByteus Docker node: e2e-r5-node
+Container: e2e-r5-node
+Image: autobyteus/autobyteus-server:latest
+Backend: http://localhost:59416
+GraphQL: http://localhost:59416/graphql
+noVNC: http://localhost:59418
+VNC: localhost:59417
+Chrome debug: localhost:59419
+Next step: paste Backend into Add Remote Node in AutoByteus.
+NODE                     CONTAINER                STATUS         BACKEND
+autobyteus-server-2      autobyteus-server-2      running        http://localhost:59450 (autobyteus/autobyteus-server:latest)
+e2e-r5-node              e2e-r5-node              running        http://localhost:59416 (autobyteus/autobyteus-server:latest)
+Audio models by provider: OPENAI=1, GEMINI=3
+Audio models by runtime: api=4
+Audio models cache populated with 4 items.
+Pre-loaded 4 audio models into cache.
+
+2026-05-12 14:30:52,134 DEBG 'autobyteus_server' stdout output:
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+
+2026-05-12 14:30:52,217 DEBG 'chrome' stderr output:
+[35:121:0512/143052.216780:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+[35:121:0512/143052.216932:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+
+2026-05-12 14:30:52,218 DEBG 'chrome' stderr output:
+[35:121:0512/143052.217923:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+
+2026-05-12 14:30:53,220 INFO success: dbus entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)
+2026-05-12 14:30:53,220 INFO success: copyq entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)
+2026-05-12 14:30:53,220 INFO reaped unknown pid 446 (exit status 0)
+2026-05-12 14:30:53,220 DEBG received SIGCHLD indicating a child quit
+
+## stop specific node then stop --all for isolated validation state
+[AutoByteus Docker] Stopped e2e-r5-node. Named volumes were kept.
+NODE                     CONTAINER                STATUS         BACKEND
+autobyteus-server-2      autobyteus-server-2      running        http://localhost:59450 (autobyteus/autobyteus-server:latest)
+e2e-r5-node              e2e-r5-node              exited         http://localhost:59416 (autobyteus/autobyteus-server:latest)
+[AutoByteus Docker] Stopped autobyteus-server-2. Named volumes were kept.
+[AutoByteus Docker] Stopped e2e-r5-node. Named volumes were kept.
+NODE                     CONTAINER                STATUS         BACKEND
+autobyteus-server-2      autobyteus-server-2      exited         http://localhost:59450 (autobyteus/autobyteus-server:latest)
+e2e-r5-node              e2e-r5-node              exited         http://localhost:59416 (autobyteus/autobyteus-server:latest)
+
+## cleanup validation-created custom containers/volumes only
+custom cleanup complete
+
+## final default backend health left running for user check
+{"status":"ok","message":"Server is running"}
+default final health ok on attempt 1
+NODE                     CONTAINER                STATUS         BACKEND
+autobyteus-server        autobyteus-server        running        http://localhost:8001 (autobyteus/autobyteus-server:latest)
+
+## final managed containers
+NAMES                                     STATUS              PORTS                                                                                                                                                                                        launcher
+autobyteus-server                         Up About a minute   0.0.0.0:5908->5900/tcp, [::]:5908->5900/tcp, 0.0.0.0:52448->6080/tcp, [::]:52448->6080/tcp, 0.0.0.0:8001->8000/tcp, [::]:8001->8000/tcp, 0.0.0.0:9228->9223/tcp, [::]:9228->9223/tcp         server-docker
+autobyteus-server-autobyteus-server-1     Up 2 days           0.0.0.0:60635->5900/tcp, [::]:60635->5900/tcp, 0.0.0.0:60637->6080/tcp, [::]:60637->6080/tcp, 0.0.0.0:60634->8000/tcp, [::]:60634->8000/tcp, 0.0.0.0:60638->9223/tcp, [::]:60638->9223/tcp
+llm-server-3                              Up 5 days           0.0.0.0:5905->5900/tcp, [::]:5905->5900/tcp, 0.0.0.0:6085->6080/tcp, [::]:6085->6080/tcp, 0.0.0.0:51743->51739/tcp, [::]:51743->51739/tcp
+llm-server-2                              Up 5 days           0.0.0.0:5903->5900/tcp, [::]:5903->5900/tcp, 0.0.0.0:6083->6080/tcp, [::]:6083->6080/tcp, 0.0.0.0:51741->51739/tcp, [::]:51741->51739/tcp
+llm-server-1                              Up 5 days           0.0.0.0:5902->5900/tcp, [::]:5902->5900/tcp, 0.0.0.0:6082->6080/tcp, [::]:6082->6080/tcp, 0.0.0.0:51740->51739/tcp, [::]:51740->51739/tcp
+llm-server-0                              Up 5 days           0.0.0.0:5900->5900/tcp, [::]:5900->5900/tcp, 0.0.0.0:6080->6080/tcp, [::]:6080->6080/tcp, 0.0.0.0:51739->51739/tcp, [::]:51739->51739/tcp
+llm-server-source-0                       Up 5 days           0.0.0.0:5904->5900/tcp, [::]:5904->5900/tcp, 0.0.0.0:6084->6080/tcp, [::]:6084->6080/tcp, 0.0.0.0:51742->51739/tcp, [::]:51742->51739/tcp
+openclaw-subscription                     Up 5 days           127.0.0.1:9223->9223/tcp, 127.0.0.1:5901->5900/tcp, 127.0.0.1:6081->6080/tcp
+chrome-vnc-tigervnc                       Up 5 days           0.0.0.0:5907->5900/tcp, [::]:5907->5900/tcp, 0.0.0.0:9227->9223/tcp, [::]:9227->9223/tcp
+buildx_buildkit_multi-platform-builder0   Up 5 days

@@ -157,55 +157,78 @@ termux-volume music 10
 
 ## Docker
 
-Recommended for users: start the published Docker Hub image directly, without cloning this repository:
+Recommended for users: start the published Docker Hub image without cloning
+this repository by using the public launcher. It pulls
+`autobyteus/autobyteus-server:latest`, keeps launcher state outside any source
+checkout, chooses non-conflicting ports, and prints the Backend URL to add in
+**Settings -> Nodes -> Add Remote Node**.
+
+Install the local launcher once:
+
+macOS / Linux:
 
 ```bash
-docker run -d \
-  --name autobyteus-server \
-  --restart unless-stopped \
-  --cap-add SYS_ADMIN \
-  --security-opt seccomp=unconfined \
-  -p 8001:8000 \
-  -p 5908:5900 \
-  -p 6080:6080 \
-  -p 9228:9223 \
-  -e AUTOBYTEUS_SERVER_HOST=http://localhost:8001 \
-  -e AUTOBYTEUS_VNC_SERVER_HOSTS=localhost:6080 \
-  -v autobyteus-server-workspace:/app/autobyteus-server-ts/workspace \
-  -v autobyteus-server-data:/home/autobyteus/data \
-  -v autobyteus-server-root-home:/root \
-  autobyteus/autobyteus-server:latest
+curl -fsSL https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.sh | bash -s -- install
+```
+
+Windows PowerShell:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.ps1 | iex; autobyteus-docker install"
+```
+
+Then use direct local commands. `start` checks/pulls the image and only recreates the managed container when the image/config changed or the container is missing:
+
+```bash
+autobyteus-docker start
 ```
 
 Claude Agent SDK sessions automatically read Claude Code filesystem settings.
 For this Docker image, the `user` Claude Code settings source resolves to
 `/root/.claude/settings.json` inside the container because the server process
-runs as `root`. Keep the `/root` volume mounted if you want Claude Code auth,
-gateway, or model settings to survive container recreation.
+runs as `root`. Keep the launcher-managed root-home volume if you want Claude
+Code auth, gateway, or model settings to survive container recreation.
 
-Useful endpoints after startup:
+Useful endpoints after startup are printed by the launcher:
 
 ```text
-GraphQL: http://localhost:8001/graphql
-REST:    http://localhost:8001/rest/*
-WS:      ws://localhost:8001/ws/...
-noVNC:   http://localhost:6080
-VNC:     localhost:5908
+Backend: printed by the launcher, usually http://localhost:8001
+GraphQL: <Backend>/graphql
+REST:    <Backend>/rest/*
+WS:      ws://localhost:<Backend port>/ws/...
+noVNC:   printed by the launcher, usually http://localhost:6080
+VNC:     printed by the launcher, usually localhost:5908
 ```
 
-Stop it with:
+Start a new isolated Docker node:
 
 ```bash
-docker stop autobyteus-server
+autobyteus-docker start --new
 ```
 
-If you already cloned this repository, you can use the helper script instead:
+Show the Backend URL again:
+
+```bash
+autobyteus-docker urls
+```
+
+Stop it without removing named volumes:
+
+```bash
+autobyteus-docker stop
+```
+
+If you already cloned this repository and want developer/source-helper
+behavior, you can use the source helper instead:
 
 ```bash
 cd autobyteus-server-ts/docker
 ./docker-start.sh up --pull-remote
 ./docker-start.sh ports
 ```
+
+See [`docker/README.md`](docker/README.md) for public launcher management
+commands, source-helper behavior, and the advanced direct `docker run` fallback.
 
 If you are developing locally and want to build the image from source instead, build from repo root (required so workspace packages are available):
 

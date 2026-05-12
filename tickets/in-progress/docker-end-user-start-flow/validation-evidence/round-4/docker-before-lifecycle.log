@@ -1,0 +1,48 @@
+## docker ps before real lifecycle
+NAMES                                     STATUS             PORTS                                                                                                                                                                                        launcher
+autobyteus-server                         Up About an hour   0.0.0.0:5908->5900/tcp, [::]:5908->5900/tcp, 0.0.0.0:52448->6080/tcp, [::]:52448->6080/tcp, 0.0.0.0:8001->8000/tcp, [::]:8001->8000/tcp, 0.0.0.0:9228->9223/tcp, [::]:9228->9223/tcp         server-docker
+autobyteus-server-autobyteus-server-1     Up 2 days          0.0.0.0:60635->5900/tcp, [::]:60635->5900/tcp, 0.0.0.0:60637->6080/tcp, [::]:60637->6080/tcp, 0.0.0.0:60634->8000/tcp, [::]:60634->8000/tcp, 0.0.0.0:60638->9223/tcp, [::]:60638->9223/tcp
+llm-server-3                              Up 5 days          0.0.0.0:5905->5900/tcp, [::]:5905->5900/tcp, 0.0.0.0:6085->6080/tcp, [::]:6085->6080/tcp, 0.0.0.0:51743->51739/tcp, [::]:51743->51739/tcp
+llm-server-2                              Up 5 days          0.0.0.0:5903->5900/tcp, [::]:5903->5900/tcp, 0.0.0.0:6083->6080/tcp, [::]:6083->6080/tcp, 0.0.0.0:51741->51739/tcp, [::]:51741->51739/tcp
+llm-server-1                              Up 5 days          0.0.0.0:5902->5900/tcp, [::]:5902->5900/tcp, 0.0.0.0:6082->6080/tcp, [::]:6082->6080/tcp, 0.0.0.0:51740->51739/tcp, [::]:51740->51739/tcp
+llm-server-0                              Up 5 days          0.0.0.0:5900->5900/tcp, [::]:5900->5900/tcp, 0.0.0.0:6080->6080/tcp, [::]:6080->6080/tcp, 0.0.0.0:51739->51739/tcp, [::]:51739->51739/tcp
+llm-server-source-0                       Up 5 days          0.0.0.0:5904->5900/tcp, [::]:5904->5900/tcp, 0.0.0.0:6084->6080/tcp, [::]:6084->6080/tcp, 0.0.0.0:51742->51739/tcp, [::]:51742->51739/tcp
+openclaw-subscription                     Up 5 days          127.0.0.1:9223->9223/tcp, 127.0.0.1:5901->5900/tcp, 127.0.0.1:6081->6080/tcp
+chrome-vnc-tigervnc                       Up 5 days          0.0.0.0:5907->5900/tcp, [::]:5907->5900/tcp, 0.0.0.0:9227->9223/tcp, [::]:9227->9223/tcp
+buildx_buildkit_multi-platform-builder0   Up 5 days
+
+## docker images autobyteus
+REPOSITORY                                      TAG                                         IMAGE ID       CREATED         SIZE
+autobyteus/autobyteus-server                    latest                                      8006705559a1   9 hours ago     4.74GB
+autobyteus-server                               latest                                      03d6bb4180a3   2 days ago      4.74GB
+autobyteus/llm-server                           latest-arm64                                c56c0ff95521   11 days ago     4.99GB
+autobyteus/llm-server                           latest-source                               d465cc208bb1   2 weeks ago     5.36GB
+autobyteus/llm-server                           read-media-file-investigation-arm64-local   28a7aceee294   3 weeks ago     4.98GB
+autobyteus/llm-server                           ci-smoke-20260330                           0e0c97f6c245   6 weeks ago     4.98GB
+autobyteus/llm-server                           latest-amd64                                924ebd7f016e   6 weeks ago     5.23GB
+autobyteus-personal-allinone                    local                                       c31658c5c579   2 months ago    6.75GB
+autobyteus/chrome-vnc                           openclaw-local                              a727a104f55f   2 months ago    6.55GB
+autobyteus-personal-remote-server               local                                       6d3dc323e561   2 months ago    1.07GB
+autobyteus-enterprise-allinone                  local                                       d49f66c0a853   2 months ago    6.47GB
+autobyteus-enterprise-remote-server             local                                       c4cfab783a3a   2 months ago    864MB
+autobyteus-enterprise-server                    local                                       754cf259b902   2 months ago    5.21GB
+autobyteus/chrome-vnc                           local-zh-fcitx-fix                          e9cf39819054   2 months ago    4.72GB
+autobyteus/chrome-vnc                           zh                                          a66d93597cb1   2 months ago    4.71GB
+autobyteus/chrome-vnc                           latest                                      d80ef400bc03   2 months ago    7.21GB
+autobyteus-message-gateway-message-gateway      latest                                      bcc1f37fc84b   3 months ago    1.62GB
+autobyteus-message-gateway                      test                                        e6b4bce82a78   3 months ago    1.62GB
+autobyteus/chrome-vnc                           local-scrot-check                           9549374bc2ea   3 months ago    3.54GB
+autobyteus/chrome-vnc                           local-tigervnc-check                        41ff97c13631   3 months ago    3.53GB
+autobyteus/chrome-vnc                           push-probe-amd64                            b3255e7dfbcd   19 months ago   6.77MB
+
+## occupied docker-published ports candidates
+autobyteus-server 0.0.0.0:5908->5900/tcp, [::]:5908->5900/tcp, 0.0.0.0:52448->6080/tcp, [::]:52448->6080/tcp, 0.0.0.0:8001->8000/tcp, [::]:8001->8000/tcp, 0.0.0.0:9228->9223/tcp, [::]:9228->9223/tcp
+autobyteus-server-autobyteus-server-1 0.0.0.0:60635->5900/tcp, [::]:60635->5900/tcp, 0.0.0.0:60637->6080/tcp, [::]:60637->6080/tcp, 0.0.0.0:60634->8000/tcp, [::]:60634->8000/tcp, 0.0.0.0:60638->9223/tcp, [::]:60638->9223/tcp
+llm-server-3 0.0.0.0:5905->5900/tcp, [::]:5905->5900/tcp, 0.0.0.0:6085->6080/tcp, [::]:6085->6080/tcp, 0.0.0.0:51743->51739/tcp, [::]:51743->51739/tcp
+llm-server-2 0.0.0.0:5903->5900/tcp, [::]:5903->5900/tcp, 0.0.0.0:6083->6080/tcp, [::]:6083->6080/tcp, 0.0.0.0:51741->51739/tcp, [::]:51741->51739/tcp
+llm-server-1 0.0.0.0:5902->5900/tcp, [::]:5902->5900/tcp, 0.0.0.0:6082->6080/tcp, [::]:6082->6080/tcp, 0.0.0.0:51740->51739/tcp, [::]:51740->51739/tcp
+llm-server-0 0.0.0.0:5900->5900/tcp, [::]:5900->5900/tcp, 0.0.0.0:6080->6080/tcp, [::]:6080->6080/tcp, 0.0.0.0:51739->51739/tcp, [::]:51739->51739/tcp
+llm-server-source-0 0.0.0.0:5904->5900/tcp, [::]:5904->5900/tcp, 0.0.0.0:6084->6080/tcp, [::]:6084->6080/tcp, 0.0.0.0:51742->51739/tcp, [::]:51742->51739/tcp
+openclaw-subscription 127.0.0.1:9223->9223/tcp, 127.0.0.1:5901->5900/tcp, 127.0.0.1:6081->6080/tcp
+chrome-vnc-tigervnc 0.0.0.0:5907->5900/tcp, [::]:5907->5900/tcp, 0.0.0.0:9227->9223/tcp, [::]:9227->9223/tcp
+buildx_buildkit_multi-platform-builder0

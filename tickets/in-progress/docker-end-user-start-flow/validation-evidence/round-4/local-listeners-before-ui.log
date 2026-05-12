@@ -1,0 +1,12 @@
+## process/listener check before browser UI
+-- port 3334 --
+-- port 3335 --
+-- port 3000 --
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    75731 normy   19u  IPv6 0x8eb519507f77dc2f      0t0  TCP [::1]:3000 (LISTEN)
+-- port 8001 --
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+com.docke 67751 normy  341u  IPv6 0xe5eda4ac1492338f      0t0  TCP *:8001 (LISTEN)
+
+## backend health 8001
+{"status":"ok","message":"Server is running"}

@@ -1,0 +1,52 @@
+## Bash help output
+AutoByteus Docker node launcher
+
+Usage:
+  autobyteus-docker <command> [options]
+  curl -fsSL <script-url> | bash -s -- <command> [options]
+
+Commands:
+  start              Pull and start the default Docker node
+  start --new        Start a new Docker node with automatic name and ports
+  urls               Show Backend, GraphQL, noVNC, VNC, and debug URLs
+  ports              Alias for urls
+  status             Show managed Docker nodes
+  logs               Show Docker logs for a managed node
+  stop               Stop one managed Docker node
+  stop --all         Stop all managed Docker nodes
+  help               Show this help
+
+Options:
+  --name <name>      Friendly node name (default: autobyteus-server)
+  --tag <tag>        Docker image tag (default: latest)
+  --image <image>    Docker image repository or full image ref (default: autobyteus/autobyteus-server)
+  --new              Create the next available friendly node name
+  --all              Apply stop/status to all managed nodes
+  -h, --help         Show this help
+
+State:
+  AUTOBYTEUS_DOCKER_STATE_DIR overrides the state directory.
+  Default state directory: $HOME/.autobyteus/docker-server
+## exact Bash help wording
+  start --new        Start a new Docker node with automatic name and ports
+## PowerShell static help wording
+  start --new        Start a new Docker node with automatic name and ports
+## command catalog still emits start --new
+autobyteus-web/utils/__tests__/dockerNodeLauncherCommands.spec.ts:33:    expect(commands.find((command) => command.id === 'macos-linux-start-new')?.command).toContain('start --new');
+autobyteus-web/utils/__tests__/dockerNodeLauncherCommands.spec.ts:38:    expect(commands.find((command) => command.id === 'windows-powershell-start-new')?.command).toContain('autobyteus-docker start --new');
+autobyteus-web/components/settings/__tests__/DockerNodeStartGuideCard.spec.ts:41:    expect(wrapper.text()).toContain('bash -s -- start --new');
+autobyteus-web/components/settings/__tests__/DockerNodeStartGuideCard.spec.ts:43:    expect(wrapper.text()).toContain('autobyteus-docker start --new');
+## public implementation/docs wording check: no superseded public labels
+superseded public wording grep passed
+## forbidden public launcher terms
+forbidden public launcher term grep passed
+## docs expected new-node wording
+README.md:72:Start a new isolated Docker node:
+README.md:75:curl -fsSL https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.sh | bash -s -- start --new
+autobyteus-server-ts/README.md:195:Start a new isolated Docker node:
+autobyteus-server-ts/README.md:198:curl -fsSL https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.sh | bash -s -- start --new
+autobyteus-server-ts/docker/README.md:38:Start a new isolated Docker node:
+autobyteus-server-ts/docker/README.md:41:curl -fsSL https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.sh | bash -s -- start --new
+autobyteus-server-ts/docker/README.md:184:- `autobyteus-docker start --new`: Start a new friendly Docker node with automatic ports.
+autobyteus-web/docs/settings.md:93:  - The command catalog lives in `utils/dockerNodeLauncherCommands.ts`; public script paths, the raw GitHub owner/repo/ref, and the `start`, `start --new`, and `urls` command variants should be changed there rather than duplicated in the component template.
+autobyteus-web/docs/settings.md:95:  - The default Docker launcher command is idempotent for the default node; `start --new` is the user-facing way to create a new isolated node with automatic naming and ports.

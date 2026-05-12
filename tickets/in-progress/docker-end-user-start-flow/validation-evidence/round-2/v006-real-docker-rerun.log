@@ -1,0 +1,77 @@
+STATE_DIR=/tmp/autobyteus-docker-e2e-round2.AA27jj
+## start default node to create launcher state
+[AutoByteus Docker] Pulling autobyteus/autobyteus-server:latest
+latest: Pulling from autobyteus/autobyteus-server
+Digest: sha256:8006705559a1b74f88e462e3699cb136895ae8c4b846aa274cb94c51e8be0549
+Status: Image is up to date for autobyteus/autobyteus-server:latest
+docker.io/autobyteus/autobyteus-server:latest
+[AutoByteus Docker] Started autobyteus-server.
+AutoByteus Docker node: autobyteus-server
+Container: autobyteus-server
+Image: autobyteus/autobyteus-server:latest
+Backend: http://localhost:8001
+GraphQL: http://localhost:8001/graphql
+noVNC: http://localhost:61879
+VNC: localhost:5908
+Chrome debug: localhost:9228
+Next step: paste Backend into Add Remote Node in AutoByteus.
+## initial state
+NODE_NAME=autobyteus-server
+CONTAINER_NAME=autobyteus-server
+BACKEND_PORT=8001
+VNC_PORT=5908
+NOVNC_PORT=61879
+DEBUG_PORT=9228
+IMAGE_REF=autobyteus/autobyteus-server:latest
+CREATED_AT=2026-05-12T07:05:29Z
+UPDATED_AT=2026-05-12T07:05:33Z
+## force stale noVNC port to Docker-occupied 6080
+NODE_NAME=autobyteus-server
+CONTAINER_NAME=autobyteus-server
+BACKEND_PORT=8001
+VNC_PORT=5908
+NOVNC_PORT=6080
+DEBUG_PORT=9228
+IMAGE_REF=autobyteus/autobyteus-server:latest
+CREATED_AT=2026-05-12T07:05:29Z
+UPDATED_AT=2026-05-12T07:05:33Z
+## rerun start; expected: detect Created bind failure, remove, retry fresh ports, then print reachable URL
+[AutoByteus Docker] Pulling autobyteus/autobyteus-server:latest
+latest: Pulling from autobyteus/autobyteus-server
+Digest: sha256:8006705559a1b74f88e462e3699cb136895ae8c4b846aa274cb94c51e8be0549
+Status: Image is up to date for autobyteus/autobyteus-server:latest
+docker.io/autobyteus/autobyteus-server:latest
+[AutoByteus Docker] Port bind failed; retrying with fresh ports (attempt 2/5).
+[AutoByteus Docker] Started autobyteus-server.
+AutoByteus Docker node: autobyteus-server
+Container: autobyteus-server
+Image: autobyteus/autobyteus-server:latest
+Backend: http://localhost:61899
+GraphQL: http://localhost:61899/graphql
+noVNC: http://localhost:61901
+VNC: localhost:61900
+Chrome debug: localhost:61902
+Next step: paste Backend into Add Remote Node in AutoByteus.
+## post-rerun state
+NODE_NAME=autobyteus-server
+CONTAINER_NAME=autobyteus-server
+BACKEND_PORT=61899
+VNC_PORT=61900
+NOVNC_PORT=61901
+DEBUG_PORT=61902
+IMAGE_REF=autobyteus/autobyteus-server:latest
+CREATED_AT=2026-05-12T07:05:29Z
+UPDATED_AT=2026-05-12T07:05:36Z
+## managed containers after V-006 rerun
+NAMES               STATUS                  PORTS
+autobyteus-server   Up Less than a second   0.0.0.0:61900->5900/tcp, [::]:61900->5900/tcp, 0.0.0.0:61901->6080/tcp, [::]:61901->6080/tcp, 0.0.0.0:61899->8000/tcp, [::]:61899->8000/tcp, 0.0.0.0:61902->9223/tcp, [::]:61902->9223/tcp
+## inspect default container
+State=running Running=true ExitCode=0 Error= Ports={"5900/tcp":[{"HostIp":"0.0.0.0","HostPort":"61900"},{"HostIp":"::","HostPort":"61900"}],"6080/tcp":[{"HostIp":"0.0.0.0","HostPort":"61901"},{"HostIp":"::","HostPort":"61901"}],"8000/tcp":[{"HostIp":"0.0.0.0","HostPort":"61899"},{"HostIp":"::","HostPort":"61899"}],"9223/tcp":[{"HostIp":"0.0.0.0","HostPort":"61902"},{"HostIp":"::","HostPort":"61902"}]}
+BACKEND_PORT=61899 NOVNC_PORT=61901
+## wait for backend health
+health attempt 1 failed code=56 curl: (56) Recv failure: Connection reset by peer
+health attempt 2 failed code=56 curl: (56) Recv failure: Connection reset by peer
+health attempt 3 failed code=56 curl: (56) Recv failure: Connection reset by peer
+health attempt 4 OK: {"status":"ok","message":"Server is running"}
+## GraphQL health
+{"data":{"health":{"status":"ok","message":"Server is running"}}}

@@ -1,0 +1,46 @@
+STATE_DIR=/tmp/autobyteus-docker-e2e.qwRecf
+BACKEND_PORT=8001
+## wait for /rest/health
+health attempt 1 OK: {"status":"ok","message":"Server is running"}
+## GraphQL health query
+{"data":{"health":{"status":"ok","message":"Server is running"}}}
+## launcher urls/status/logs smoke
+AutoByteus Docker node: autobyteus-server
+Container: autobyteus-server
+Image: autobyteus/autobyteus-server:latest
+Backend: http://localhost:8001
+GraphQL: http://localhost:8001/graphql
+noVNC: http://localhost:59841
+VNC: localhost:5908
+Chrome debug: localhost:9228
+Next step: paste Backend into Add Remote Node in AutoByteus.
+AutoByteus Docker node: autobyteus-server
+Container: autobyteus-server
+Image: autobyteus/autobyteus-server:latest
+Backend: http://localhost:8001
+GraphQL: http://localhost:8001/graphql
+noVNC: http://localhost:59841
+VNC: localhost:5908
+Chrome debug: localhost:9228
+Next step: paste Backend into Add Remote Node in AutoByteus.
+NODE                     CONTAINER                STATUS         BACKEND
+autobyteus-server        autobyteus-server        running        http://localhost:8001 (autobyteus/autobyteus-server:latest)
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+
+2026-05-12 06:12:27,923 INFO success: autobyteus_server entered RUNNING state, process has stayed up for > than 3 seconds (startsecs)
+2026-05-12 06:12:27,923 INFO reaped unknown pid 449 (exit status 0)
+2026-05-12 06:12:27,923 DEBG received SIGCHLD indicating a child quit
+2026-05-12 06:12:28,837 DEBG 'chrome' stderr output:
+[37:109:0512/061228.836917:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+
+2026-05-12 06:12:28,837 DEBG 'chrome' stderr output:
+[37:109:0512/061228.837160:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+
+2026-05-12 06:12:28,837 DEBG 'chrome' stderr output:
+[37:109:0512/061228.837427:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+
+2026-05-12 06:12:29,843 INFO success: dbus entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)
+2026-05-12 06:12:29,843 INFO success: copyq entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)
+2026-05-12 06:12:39,313 DEBG 'dbus' stderr output:
+Xlib:  extension "DPMS" missing on display ":99".

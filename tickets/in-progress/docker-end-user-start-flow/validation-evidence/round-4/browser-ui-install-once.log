@@ -1,0 +1,25 @@
+DATE_UTC=2026-05-12T13:30:45Z
+FRONTEND_URL=http://127.0.0.1:3335/settings
+BACKEND_NODE_BASE_URL=http://localhost:8001
+SCREENSHOT=/Users/normy/.autobyteus/browser-artifacts/63e8dd-1778592645805.png
+
+Browser Settings → Nodes smoke result:
+- Node Manager rendered: true
+- Docker launcher guide rendered install-once primary flow: true
+- Bash install command rendered: true (`bash -s -- install`)
+- PowerShell install command rendered: true (`autobyteus-docker install`)
+- Direct installed CLI commands rendered: true (`autobyteus-docker start`, `autobyteus-docker start --new`, `autobyteus-docker urls`, `autobyteus-docker status`, `autobyteus-docker logs`, `autobyteus-docker stop`)
+- Add Remote Node section rendered: true
+- Current embedded/backend node shown ready at http://localhost:8001: true
+- Repeated raw lifecycle commands absent: true (`bash -s -- start`, `bash -s -- urls`, `bash -s -- stop` not found)
+- Superseded public wording absent: true (`Start another Docker node` not found)
+
+Rendered command texts observed:
+1. curl -fsSL https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.sh | bash -s -- install
+2. powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.ps1 | iex; autobyteus-docker install"
+3. autobyteus-docker start
+4. autobyteus-docker start --new
+5. autobyteus-docker urls
+6. autobyteus-docker status
+7. autobyteus-docker logs
+8. autobyteus-docker stop

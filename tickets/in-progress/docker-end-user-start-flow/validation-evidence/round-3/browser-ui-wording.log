@@ -1,0 +1,8 @@
+Local Nuxt browser smoke on http://127.0.0.1:3334/settings
+- Opened Settings page in Codex in-app browser.
+- Clicked Nodes nav.
+- Verified Docker guide card rendered.
+- Verified additional-node UI title uses `Start new Docker node`.
+- Verified rendered command text still includes `start --new` for macOS/Linux and Windows PowerShell variants.
+- Verified guide text does not contain superseded public title `Start another Docker node`.
+- Full-page screenshot captured by Browser tool: /Users/normy/.autobyteus/browser-artifacts/bcb54e-1778582030484.png

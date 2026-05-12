@@ -1,0 +1,13 @@
+## docker ps all for managed
+NAMES                 STATUS              PORTS
+autobyteus-server     Created
+autobyteus-server-2   Up About a minute   0.0.0.0:59898->5900/tcp, [::]:59898->5900/tcp, 0.0.0.0:59899->6080/tcp, [::]:59899->6080/tcp, 0.0.0.0:59897->8000/tcp, [::]:59897->8000/tcp, 0.0.0.0:59900->9223/tcp, [::]:59900->9223/tcp
+## inspect default state/status/error
+Name=/autobyteus-server State=created Running=false ExitCode=128 Error=failed to set up container networking: driver failed programming external connectivity on endpoint autobyteus-server (307574498e62671afd25803d8169e7fbcbd6936703cac0afa6e6a1cb4562474e): Bind for 0.0.0.0:6080 failed: port is already allocated Ports={}
+## health curl against recorded backend
+curl: (7) Failed to connect to localhost port 8001 after 0 ms: Couldn't connect to server
+
+## docker start explicit
+autobyteus-server
+## inspect after explicit start
+State=running Running=true Error=

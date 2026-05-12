@@ -1,0 +1,2 @@
+SECOND_PORT=59897
+second health attempt 1 OK: {"status":"ok","message":"Server is running"}

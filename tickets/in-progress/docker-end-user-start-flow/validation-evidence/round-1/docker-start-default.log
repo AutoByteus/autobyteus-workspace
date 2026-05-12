@@ -1,0 +1,94 @@
+STATE_DIR=/tmp/autobyteus-docker-e2e.qwRecf
+## default start
+[AutoByteus Docker] Pulling autobyteus/autobyteus-server:latest
+latest: Pulling from autobyteus/autobyteus-server
+2f01e07e1c6d: Pulling fs layer
+42403f3d0e44: Pulling fs layer
+8c650ba0ea1c: Pulling fs layer
+b4ffdf7ebcf4: Pulling fs layer
+b610e158bf59: Pulling fs layer
+0bd841a25eb9: Pulling fs layer
+2c2b7adab890: Pulling fs layer
+b3cd864f24ea: Pulling fs layer
+080cd8ac45b1: Pulling fs layer
+dec32c60a908: Pulling fs layer
+e77a12fcd0e5: Pulling fs layer
+18a767e3d43d: Pulling fs layer
+4ac3ad6ac380: Pulling fs layer
+7c92290a4067: Pulling fs layer
+d7d373ab2ef0: Pulling fs layer
+246c1fc81e91: Pulling fs layer
+7a3f54a7a1f4: Pulling fs layer
+d2d309c83b61: Pulling fs layer
+944009881980: Pulling fs layer
+e7b1c4a79c74: Pulling fs layer
+cc208aacd5ca: Pulling fs layer
+42403f3d0e44: Download complete
+246c1fc81e91: Download complete
+246c1fc81e91: Pull complete
+b4ffdf7ebcf4: Download complete
+8c650ba0ea1c: Download complete
+b610e158bf59: Download complete
+2f01e07e1c6d: Download complete
+4ac3ad6ac380: Download complete
+7a3f54a7a1f4: Download complete
+d2d309c83b61: Download complete
+cc208aacd5ca: Download complete
+b3cd864f24ea: Download complete
+dec32c60a908: Download complete
+e7b1c4a79c74: Download complete
+0bd841a25eb9: Download complete
+080cd8ac45b1: Download complete
+944009881980: Download complete
+2c2b7adab890: Download complete
+d7d373ab2ef0: Download complete
+18a767e3d43d: Download complete
+18a767e3d43d: Pull complete
+7c92290a4067: Download complete
+d2d309c83b61: Pull complete
+7c92290a4067: Pull complete
+e77a12fcd0e5: Download complete
+e77a12fcd0e5: Pull complete
+0bd841a25eb9: Pull complete
+d7d373ab2ef0: Pull complete
+42403f3d0e44: Pull complete
+8c650ba0ea1c: Pull complete
+4ac3ad6ac380: Pull complete
+cc208aacd5ca: Pull complete
+944009881980: Pull complete
+2c2b7adab890: Pull complete
+2f01e07e1c6d: Pull complete
+b3cd864f24ea: Pull complete
+dec32c60a908: Pull complete
+e7b1c4a79c74: Pull complete
+080cd8ac45b1: Pull complete
+b4ffdf7ebcf4: Pull complete
+b610e158bf59: Pull complete
+7a3f54a7a1f4: Pull complete
+Digest: sha256:8006705559a1b74f88e462e3699cb136895ae8c4b846aa274cb94c51e8be0549
+Status: Downloaded newer image for autobyteus/autobyteus-server:latest
+docker.io/autobyteus/autobyteus-server:latest
+[AutoByteus Docker] Started autobyteus-server.
+AutoByteus Docker node: autobyteus-server
+Container: autobyteus-server
+Image: autobyteus/autobyteus-server:latest
+Backend: http://localhost:8001
+GraphQL: http://localhost:8001/graphql
+noVNC: http://localhost:59841
+VNC: localhost:5908
+Chrome debug: localhost:9228
+Next step: paste Backend into Add Remote Node in AutoByteus.
+## docker ps after start
+NAMES               STATUS                  IMAGE                                 PORTS
+autobyteus-server   Up Less than a second   autobyteus/autobyteus-server:latest   0.0.0.0:5908->5900/tcp, [::]:5908->5900/tcp, 0.0.0.0:59841->6080/tcp, [::]:59841->6080/tcp, 0.0.0.0:8001->8000/tcp, [::]:8001->8000/tcp, 0.0.0.0:9228->9223/tcp, [::]:9228->9223/tcp
+## state files
+/tmp/autobyteus-docker-e2e.qwRecf/nodes/autobyteus-server.env
+NODE_NAME=autobyteus-server
+CONTAINER_NAME=autobyteus-server
+BACKEND_PORT=8001
+VNC_PORT=5908
+NOVNC_PORT=59841
+DEBUG_PORT=9228
+IMAGE_REF=autobyteus/autobyteus-server:latest
+CREATED_AT=2026-05-12T06:11:32Z
+UPDATED_AT=2026-05-12T06:12:22Z

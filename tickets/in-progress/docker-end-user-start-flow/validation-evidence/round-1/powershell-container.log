@@ -1,0 +1,23 @@
+## PowerShell parser/help smoke in Linux PowerShell container
+Unable to find image 'mcr.microsoft.com/powershell:latest' locally
+latest: Pulling from powershell
+8d2aa40673e5: Pulling fs layer
+d067eeecb566: Pulling fs layer
+e6fd83845bcc: Pulling fs layer
+1fdd7fe6a2aa: Pulling fs layer
+8d2aa40673e5: Download complete
+e6fd83845bcc: Download complete
+1fdd7fe6a2aa: Download complete
+e6fd83845bcc: Pull complete
+d067eeecb566: Download complete
+d067eeecb566: Pull complete
+8d2aa40673e5: Pull complete
+8d2aa40673e5: Pull complete
+1fdd7fe6a2aa: Pull complete
+Digest: sha256:810c4f1e0c9d23022c3ec18c50a6205ee4b60766f1739d329b2948df1fd7d5b0
+Status: Downloaded newer image for mcr.microsoft.com/powershell:latest
+
+An error has occurred that was not properly handled. Additional information is shown below. The PowerShell process will exit.
+Unhandled exception. System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation.
+   at System.Reflection.MethodBaseInvoker.InvokePropertySetter(Object obj, BindingFlags invokeAttr, Binder binder, Object parameter, CultureInfo culture)
+qemu: uncaught target signal 6 (Aborted) - core dumped
