@@ -4,9 +4,9 @@
 
 - Ticket: `single-agent-run-title-initial-message`
 - Date: `2026-05-12`
-- Current Status: `User verified; finalization proceeding; no release requested`
-- Ticket worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message`
-- Ticket artifact root: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/done/single-agent-run-title-initial-message`
+- Current Status: `Finalized into personal; no release requested`
+- Original ticket worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message` (removed after finalization)
+- Final archived artifact root: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/single-agent-run-title-initial-message`
 - Ticket branch: `codex/single-agent-run-title-initial-message`
 - Tracked base/finalization target: `origin/personal` / local `personal`
 - Bootstrap base reference from investigation: `origin/personal @ 56bd1b1e60921f686d5b4d080833cae60279040b`
@@ -14,23 +14,23 @@
 - Delivery integration commit: `cc35d54453d0dcf3ad619f8c5a0ffecd7420e9d4`
 - Local checkpoint commit before integration: `839b80c265d993792a553100bc254faf6f131055`
 - Current branch relation to latest tracked base: ahead `2`, behind `0`
-- Delivery-owned docs/report edits: user verified on 2026-05-12; included in the finalization commit. No release was requested.
+- Delivery-owned docs/report edits: included in ticket-branch finalization commit `0a2a98e1`; final status recorded on `personal` after merge/cleanup. No release was requested.
 - Latest authoritative review result: `Pass` (`review-report.md`, Round 3 post-validation durable-validation re-review)
 - Latest authoritative validation result: `Pass` (`api-e2e-report.md`, live Codex E2E plus focused checks)
 
 ## Cumulative Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/done/single-agent-run-title-initial-message/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/done/single-agent-run-title-initial-message/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/done/single-agent-run-title-initial-message/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/done/single-agent-run-title-initial-message/design-review-report.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/done/single-agent-run-title-initial-message/implementation-handoff.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/done/single-agent-run-title-initial-message/review-report.md`
-- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/done/single-agent-run-title-initial-message/api-e2e-report.md`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/done/single-agent-run-title-initial-message/docs-sync-report.md`
-- Delivery/release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/done/single-agent-run-title-initial-message/release-deployment-report.md`
-- This handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/done/single-agent-run-title-initial-message/handoff-summary.md`
-- Durable E2E test: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/autobyteus-server-ts/tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/single-agent-run-title-initial-message/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/single-agent-run-title-initial-message/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/single-agent-run-title-initial-message/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/single-agent-run-title-initial-message/design-review-report.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/single-agent-run-title-initial-message/implementation-handoff.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/single-agent-run-title-initial-message/review-report.md`
+- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/single-agent-run-title-initial-message/api-e2e-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/single-agent-run-title-initial-message/docs-sync-report.md`
+- Delivery/release/deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/single-agent-run-title-initial-message/release-deployment-report.md`
+- This handoff summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/single-agent-run-title-initial-message/handoff-summary.md`
+- Durable E2E test: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts`
 
 ## Delivered Change
 
@@ -117,10 +117,11 @@ User-requested local Electron build for verification:
 
 - README guidance reviewed: `autobyteus-web/README.md` -> `Desktop Application Build` and `macOS Build With Logs (No Notarization)`.
 - Command run from `autobyteus-web`: `NO_TIMESTAMP=1 APPLE_TEAM_ID= APPLE_SIGNING_IDENTITY= CSC_IDENTITY_AUTO_DISCOVERY=false AUTOBYTEUS_BUILD_FLAVOR=personal pnpm build:electron:mac` — passed.
-- Build output:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.3.dmg`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.3.zip`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- Build output before cleanup:
+  - `autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.3.dmg`
+  - `autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.3.zip`
+  - `autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- Artifact retention note: these local test artifacts were removed with the dedicated ticket worktree after the user confirmed testing was complete.
 - Packaging notes: local build intentionally disabled notarization/timestamping and code signing for test speed/reliability; output is for local testing, not release distribution.
 
 Known validation context:
@@ -130,7 +131,7 @@ Known validation context:
 
 ## Documentation Sync Summary
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/done/single-agent-run-title-initial-message/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/single-agent-run-title-initial-message/docs-sync-report.md`
 - Docs result: `Updated`
 - Docs updated:
   - `autobyteus-server-ts/docs/modules/run_history.md`
@@ -165,10 +166,20 @@ Known validation context:
 ## Finalization Status
 
 - Ticket archived to `tickets/done`: `Yes`
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/single-agent-run-title-initial-message/tickets/done/single-agent-run-title-initial-message` before merge; final archived artifact root will be under the target checkout after merge.
-- Ticket branch pushed: `Proceeding`
-- Merged into `personal`: `Proceeding`
-- Target branch pushed: `Proceeding`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/single-agent-run-title-initial-message`
+- Ticket branch finalization commit: `0a2a98e1 docs(ticket): finalize single agent run title handoff`
+- Ticket branch pushed: `Yes` (`origin/codex/single-agent-run-title-initial-message`, later deleted after merge)
+- Merged into `personal`: `Yes` (`73b2997b Merge branch 'codex/single-agent-run-title-initial-message' into personal`)
+- Target branch pushed: `Yes` (`origin/personal` updated through `73b2997b`, then this final report update)
 - Release/publication/deployment: `Not required — user explicitly requested no new version`
-- Worktree cleanup: `Proceeding after target push`
-- Local/remote branch cleanup: `Proceeding after target push`
+- Worktree cleanup: `Completed`
+- Local/remote branch cleanup: `Completed`
+
+## Final Repository State
+
+- Finalization target: `personal` / `origin/personal`
+- Merge commit: `73b2997b`
+- Ticket branch cleanup: local and remote ticket branches deleted after merge.
+- Dedicated ticket worktree cleanup: completed.
+- Release/deployment: skipped per user request for no new version.
+- Note: the main `personal` checkout still has unrelated pre-existing local modifications in agent-team execution files; they were preserved and not included in this ticket finalization.
