@@ -24,3 +24,8 @@ Release notes not required: this is an in-progress frontend UI cleanup pending u
 
 ## Release / Version
 - User explicitly requested no new release/version. Release/publication/deployment step is skipped.
+
+## Finalization
+- Ticket archived under `tickets/done/node-manager-ui-cleanup/`.
+- Changes committed and merged to `personal`.
+- No release/version publication was run.
