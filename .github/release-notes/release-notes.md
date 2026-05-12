@@ -1,6 +1,9 @@
-# Provider-native tool history rendering
+## What's New
+- Added DeepSeek thinking-mode continuation support for conversations that include tool calls.
 
-- Native tool-call mode now replays prior tool calls and tool results through each provider's native history format for Gemini, Ollama, Anthropic, Mistral, and OpenAI Responses.
-- Tool-result continuations no longer duplicate completed tool results as legacy aggregate user text in native provider requests.
-- Parallel tool results are replayed in the original assistant tool-call order, while XML/JSON/sentinel parser modes keep their legacy text-history behavior isolated.
-- Added durable request-payload and local integration validation for provider-native continuations.
+## Improvements
+- Preserved assistant reasoning internally through tool-call continuations while keeping provider-specific payload handling isolated.
+- Kept non-DeepSeek OpenAI-compatible providers on conservative request payloads that do not include DeepSeek-only reasoning fields.
+
+## Fixes
+- Fixed DeepSeek continuation failures where follow-up requests after tool use could be rejected because prior assistant `reasoning_content` was not replayed.
