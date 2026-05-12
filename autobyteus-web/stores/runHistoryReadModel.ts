@@ -17,6 +17,7 @@ import {
   DEFAULT_DRAFT_SUMMARY_PREFIX,
   DRAFT_RUN_ID_PREFIX,
 } from '~/utils/runTreeProjectionConstants';
+import { resolveFirstUserMessageSummary } from '~/utils/runTreeSummary';
 import {
   buildTeamNodes,
   resolveTeamLastActivityAt,
@@ -82,11 +83,9 @@ const summarizeDraftRun = (
   conversation: Conversation,
   agentName: string,
 ): string => {
-  const firstUserMessage = conversation.messages.find(
-    message => message.type === 'user' && message.text?.trim().length > 0,
-  );
-  if (firstUserMessage?.type === 'user') {
-    return firstUserMessage.text.trim();
+  const firstUserSummary = resolveFirstUserMessageSummary(conversation);
+  if (firstUserSummary) {
+    return firstUserSummary;
   }
   return `${DEFAULT_DRAFT_SUMMARY_PREFIX}${agentName}`.trim();
 };

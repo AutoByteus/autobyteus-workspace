@@ -116,6 +116,32 @@ Run-history owns the replay bundle contract:
 - `summary`
 - `lastActivityAt`
 
+## History Row Summary / Title Semantics
+
+The `summary` field in workspace history is the stable row title, not a
+"latest message" field. For standalone agent runs, the preferred summary is the
+first non-empty user message associated with the run. Follow-up user messages
+may update `lastActivityAt` and active/error/terminated status, but they must
+not replace the existing non-empty row title.
+
+Standalone agent history enforces that invariant at the run-history index owner:
+`AgentRunHistoryIndexStore.mutateRow(...)` serializes the read/modify/write
+operation, and `AgentRunHistoryIndexService.recordRunActivity(...)` resolves the
+first non-empty summary inside that queued mutation. This avoids overlapping
+activity writes letting a later user message win before the first activity has
+finished its metadata/agent-name lookup.
+
+Read-side history listing also has a narrow recovery path for current rows:
+`AgentRunHistoryService` can fill a missing summary from the canonical run
+projection and can repair an active row only when the stored value is clearly a
+later user-message summary. Intentional synthetic labels, such as internal or
+compaction-style summaries, are preserved. Already-mutated inactive historical
+rows are not broadly migrated by this repair path.
+
+Team rows keep their existing opening/coordinator-title behavior. Team
+follow-up activity should refresh activity time/status without changing a
+stable non-empty title.
+
 Produced-file Artifacts are not part of the replay bundle, but their historical
 read path must resolve the same run identity. `RunFileChangeProjectionService`
 uses `AgentRunMetadataService` for standalone runs and team metadata plus

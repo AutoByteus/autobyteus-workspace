@@ -196,6 +196,113 @@ describe("AgentRunHistoryService", () => {
     expect(result[0]?.agents[0]?.runs[0]?.runId).toBe("run-1");
   });
 
+  it("repairs an active row summary from the projection first user message when the stored summary is a later user message", async () => {
+    const { AgentRunHistoryService } = await import(
+      "../../../../src/run-history/services/agent-run-history-service.js"
+    );
+
+    const rows: RunHistoryIndexRow[] = [
+      {
+        runId: "run-active",
+        agentDefinitionId: "agent-def-1",
+        agentName: "Agent",
+        workspaceRootPath: "/tmp/workspace",
+        summary: "do it",
+        lastActivityAt: "2026-03-26T12:00:00.000Z",
+        lastKnownStatus: "IDLE",
+      },
+    ];
+    const recordRecoveredSummary = vi.fn().mockResolvedValue(undefined);
+    agentRunManagerMock.listActiveRuns.mockReturnValue(["run-active"]);
+
+    const service = new AgentRunHistoryService(memoryDir, {
+      indexService: {
+        listRows: vi.fn().mockResolvedValue(rows),
+        rebuildIndexFromDisk: vi.fn().mockResolvedValue([]),
+        removeRow: vi.fn(),
+        recordRecoveredSummary,
+      } as any,
+      metadataStore: createMetadataStore({ "run-active": {} }) as any,
+      agentRunViewProjectionService: {
+        getProjectionFromMetadata: vi.fn().mockResolvedValue({
+          runId: "run-active",
+          summary: "First task",
+          lastActivityAt: "2026-03-26T12:00:00.000Z",
+          activities: [],
+          conversation: [
+            { kind: "message", role: "user", content: "First task", ts: 1 },
+            { kind: "message", role: "assistant", content: "ok", ts: 2 },
+            { kind: "message", role: "user", content: "do it", ts: 3 },
+          ],
+        }),
+      } as any,
+    });
+
+    const result = await service.listRunHistory();
+
+    expect(result[0]?.agents[0]?.runs[0]).toEqual(expect.objectContaining({
+      runId: "run-active",
+      summary: "First task",
+      isActive: true,
+      lastKnownStatus: "ACTIVE",
+    }));
+    expect(recordRecoveredSummary).toHaveBeenCalledWith({
+      runId: "run-active",
+      summary: "First task",
+    });
+  });
+
+  it("preserves an active synthetic summary when it is not a later user message", async () => {
+    const { AgentRunHistoryService } = await import(
+      "../../../../src/run-history/services/agent-run-history-service.js"
+    );
+
+    const rows: RunHistoryIndexRow[] = [
+      {
+        runId: "run-active",
+        agentDefinitionId: "agent-def-1",
+        agentName: "Agent",
+        workspaceRootPath: "/tmp/workspace",
+        summary: "Memory compaction task task-1",
+        lastActivityAt: "2026-03-26T12:00:00.000Z",
+        lastKnownStatus: "IDLE",
+      },
+    ];
+    const recordRecoveredSummary = vi.fn().mockResolvedValue(undefined);
+    agentRunManagerMock.listActiveRuns.mockReturnValue(["run-active"]);
+
+    const service = new AgentRunHistoryService(memoryDir, {
+      indexService: {
+        listRows: vi.fn().mockResolvedValue(rows),
+        rebuildIndexFromDisk: vi.fn().mockResolvedValue([]),
+        removeRow: vi.fn(),
+        recordRecoveredSummary,
+      } as any,
+      metadataStore: createMetadataStore({ "run-active": {} }) as any,
+      agentRunViewProjectionService: {
+        getProjectionFromMetadata: vi.fn().mockResolvedValue({
+          runId: "run-active",
+          summary: "Summarize compacted memory blocks",
+          lastActivityAt: "2026-03-26T12:00:00.000Z",
+          activities: [],
+          conversation: [
+            {
+              kind: "message",
+              role: "user",
+              content: "Summarize compacted memory blocks",
+              ts: 1,
+            },
+          ],
+        }),
+      } as any,
+    });
+
+    const result = await service.listRunHistory();
+
+    expect(result[0]?.agents[0]?.runs[0]?.summary).toBe("Memory compaction task task-1");
+    expect(recordRecoveredSummary).not.toHaveBeenCalled();
+  });
+
   it("deletes the stored run directory and removes the index row", async () => {
     const { AgentRunHistoryService } = await import(
       "../../../../src/run-history/services/agent-run-history-service.js"

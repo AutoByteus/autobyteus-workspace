@@ -104,4 +104,48 @@ describe('runTreeLiveStatusMerge', () => {
     expect(runB?.isActive).toBe(true);
     expect(runB?.lastKnownStatus).toBe('ACTIVE');
   });
+
+  it('overlays matching persisted history row summary with the live first user message', () => {
+    const contexts = new Map<string, any>([
+      [
+        'run-history-b',
+        {
+          state: {
+            currentStatus: AgentStatus.Bootstrapping,
+            conversation: {
+              updatedAt: '2026-01-05T00:00:00.000Z',
+              messages: [
+                {
+                  type: 'user',
+                  text: '  First task  ',
+                  timestamp: new Date('2026-01-01T00:00:00.000Z'),
+                },
+                {
+                  type: 'ai',
+                  text: 'ok',
+                  segments: [],
+                  isComplete: true,
+                  timestamp: new Date('2026-01-01T00:01:00.000Z'),
+                },
+                {
+                  type: 'user',
+                  text: 'do it',
+                  timestamp: new Date('2026-01-01T00:02:00.000Z'),
+                },
+              ],
+            },
+          },
+        },
+      ],
+    ]);
+    const tree = baseTree();
+    tree[0]!.agents[0]!.runs[1]!.summary = 'do it';
+
+    const merged = mergeRunTreeWithLiveContexts(tree, contexts as Map<string, any>);
+    const runB = merged[0]?.agents[0]?.runs.find((run) => run.runId === 'run-history-b');
+
+    expect(runB?.summary).toBe('First task');
+    expect(runB?.lastActivityAt).toBe('2026-01-05T00:00:00.000Z');
+    expect(runB?.isActive).toBe(true);
+  });
 });

@@ -66,7 +66,10 @@ Manages running team runs, selecting the authoritative team backend, restoring p
 - Active-only team controls still use the active lookup path. `STOP_GENERATION` and tool approval/denial commands must not restore a stopped team run as a side effect.
 - Persisted member metadata still carries the member runtime kind and platform-native run/thread/session id needed for restore.
 - `applicationExecutionContext` stays member-local and flows through create/restore for both single-runtime and mixed team members.
-- Accepted restored follow-up messages call `TeamRunService.recordRunActivity(...)`, refreshing team metadata/history with an active status and the latest activity summary.
+- Accepted restored follow-up messages call
+  `TeamRunService.recordRunActivity(...)`, refreshing team metadata/history
+  activity state while preserving the stable opening/coordinator title for the
+  workspace history row.
 
 ## TS Source
 

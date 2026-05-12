@@ -1,12 +1,20 @@
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import type { AgentContext } from '~/types/agent/AgentContext';
+import type { Conversation } from '~/types/conversation';
 import type { RunTreeWorkspaceNode, RunTreeRow } from '~/utils/runTreeProjection';
+import { resolveFirstUserMessageSummary } from '~/utils/runTreeSummary';
 
 type RunKnownStatus = 'ACTIVE' | 'IDLE' | 'ERROR';
 
 interface LiveStatusOverlay {
   isActive: boolean;
   lastKnownStatus: RunKnownStatus;
+}
+
+interface LiveRunContext {
+  state: {
+    currentStatus: AgentStatus;
+    conversation: Conversation;
+  };
 }
 
 const toRunStatusOverlay = (status: AgentStatus): LiveStatusOverlay => {
@@ -27,21 +35,23 @@ const toRunStatusOverlay = (status: AgentStatus): LiveStatusOverlay => {
 
 const mergeHistoryRowWithContext = (
   row: RunTreeRow,
-  context: AgentContext,
+  context: LiveRunContext,
 ): RunTreeRow => {
   const overlay = toRunStatusOverlay(context.state.currentStatus);
   const lastActivityAt = context.state.conversation.updatedAt || row.lastActivityAt;
+  const liveSummary = resolveFirstUserMessageSummary(context.state.conversation);
 
   return {
     ...row,
     ...overlay,
+    ...(liveSummary ? { summary: liveSummary } : {}),
     lastActivityAt,
   };
 };
 
 export const mergeRunTreeWithLiveContexts = (
   nodes: RunTreeWorkspaceNode[],
-  contexts: Map<string, AgentContext>,
+  contexts: Map<string, LiveRunContext>,
 ): RunTreeWorkspaceNode[] => {
   if (contexts.size === 0) {
     return nodes;
