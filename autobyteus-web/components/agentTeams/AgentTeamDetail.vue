@@ -129,8 +129,9 @@
           <div class="mt-4 grid grid-cols-1 gap-3 lg:grid-cols-2">
             <article
               v-for="node in teamDef.nodes"
-              :key="node.memberName"
+              :key="getMemberKey(node)"
               class="rounded-lg border border-slate-200 bg-white p-3"
+              :class="isMemberExpanded(node) ? 'lg:col-span-2' : ''"
             >
               <div class="flex items-start justify-between gap-3">
                 <div class="flex min-w-0 items-start gap-3">
@@ -148,29 +149,78 @@
                   </div>
                   <div class="min-w-0">
                     <p class="truncate text-sm font-semibold text-slate-900">{{ node.memberName }}</p>
-                    <p class="truncate text-xs text-slate-500">{{ $t('agentTeams.components.agentTeams.AgentTeamDetail.blueprintLabel', { name: getBlueprintName(node.refType, node.ref) }) }}</p>
+                    <p class="truncate text-xs text-slate-500">{{ $t('agentTeams.components.agentTeams.AgentTeamDetail.blueprintLabel', { name: getBlueprintNameForNode(node) }) }}</p>
                   </div>
                 </div>
 
-                <div class="flex shrink-0 items-center gap-1">
+                <div class="flex shrink-0 flex-wrap items-center justify-end gap-1">
                   <span class="rounded-full px-2 py-0.5 text-[10px] font-semibold"
                     :class="node.refType === 'AGENT' ? 'bg-blue-50 text-blue-700' : 'bg-violet-50 text-violet-700'"
                   >
                     {{ node.refType === 'AGENT' ? $t('agentTeams.components.agentTeams.AgentTeamDetail.badgeAgent') : $t('agentTeams.components.agentTeams.AgentTeamDetail.badgeTeam') }}
                   </span>
                   <span
-                    v-if="node.refType === 'AGENT' && node.refScope === 'TEAM_LOCAL'"
+                    v-if="isTeamLocalAgentNode(node)"
                     class="rounded-full bg-violet-50 px-2 py-0.5 text-[10px] font-semibold text-violet-700"
                   >
-                    Team-local
+                    {{ $t('agents.components.agents.AgentDetail.ownership.teamLocal') }}
                   </span>
                   <span
-                    v-if="node.memberName === teamDef.coordinatorMemberName"
+                    v-if="isCoordinatorNode(node)"
                     class="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-700"
                   >
                     {{ $t('agentTeams.components.agentTeams.AgentTeamDetail.badgeCoordinator') }}
                   </span>
                 </div>
+              </div>
+
+              <div v-if="hasMemberPrimaryAction(node)" class="mt-3 flex justify-end">
+                <button
+                  v-if="canExpandTeamLocalMember(node)"
+                  type="button"
+                  class="inline-flex min-w-[6rem] items-center justify-center rounded-lg border border-violet-200 bg-violet-50 px-4 py-2 text-sm font-semibold text-violet-700 shadow-sm transition-colors hover:bg-violet-100"
+                  :aria-expanded="isMemberExpanded(node) ? 'true' : 'false'"
+                  :aria-label="isMemberExpanded(node)
+                    ? $t('agentTeams.components.agentTeams.AgentTeamDetail.hideTeamLocalDetailsLabel', { name: node.memberName })
+                    : $t('agentTeams.components.agentTeams.AgentTeamDetail.showTeamLocalDetailsLabel', { name: node.memberName })"
+                  :title="isMemberExpanded(node)
+                    ? $t('agentTeams.components.agentTeams.AgentTeamDetail.hideTeamLocalDetailsLabel', { name: node.memberName })
+                    : $t('agentTeams.components.agentTeams.AgentTeamDetail.showTeamLocalDetailsLabel', { name: node.memberName })"
+                  data-test="team-local-expand-toggle"
+                  @click="toggleMemberExpansion(node)"
+                >
+                  {{ isMemberExpanded(node)
+                    ? $t('agentTeams.components.agentTeams.AgentTeamDetail.hideDetailsAction')
+                    : $t('agentTeams.components.agentTeams.AgentTeamDetail.detailsAction') }}
+                </button>
+                <button
+                  v-else-if="canViewSharedAgentMember(node)"
+                  type="button"
+                  class="inline-flex min-w-[6rem] items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-100"
+                  :aria-label="$t('agentTeams.components.agentTeams.AgentTeamDetail.viewSharedAgentLabel', { name: node.memberName })"
+                  :title="$t('agentTeams.components.agentTeams.AgentTeamDetail.viewSharedAgentLabel', { name: node.memberName })"
+                  data-test="shared-agent-view-link"
+                  @click="viewSharedAgentMember(node)"
+                >
+                  {{ $t('agentTeams.components.agentTeams.AgentTeamDetail.viewAgentAction') }}
+                </button>
+              </div>
+
+              <div v-if="isTeamLocalAgentNode(node) && (!canExpandTeamLocalMember(node) || isMemberExpanded(node))" class="mt-3 border-t border-slate-100 pt-3">
+                <p v-if="!canExpandTeamLocalMember(node)" class="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800" data-test="team-local-unresolved-message">
+                  {{ $t('agentTeams.components.agentTeams.AgentTeamDetail.teamLocalDefinitionMissing', { id: getTeamLocalDefinitionId(node) || node.ref }) }}
+                </p>
+
+                <TeamLocalAgentMemberDetails
+                  v-if="isMemberExpanded(node) && getAgentDefinitionForNode(node)"
+                  class="mt-3"
+                  :agent-def="getRequiredAgentDefinitionForNode(node)"
+                  :member-name="node.memberName"
+                  :is-coordinator="isCoordinatorNode(node)"
+                  :team-name="teamDef.name"
+                  @saved="handleTeamLocalMemberSaved"
+                  @error="handleTeamLocalMemberError"
+                />
               </div>
             </article>
           </div>
@@ -204,10 +254,11 @@
 import { computed, onMounted, ref, toRefs, watch } from 'vue';
 import { useLocalization } from '~/composables/useLocalization';
 import { useAgentTeamDefinitionStore, type AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore';
-import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
+import { useAgentDefinitionStore, type AgentDefinition } from '~/stores/agentDefinitionStore';
 import { useRunActions } from '~/composables/useRunActions';
 import AgentDeleteConfirmDialog from '~/components/agents/AgentDeleteConfirmDialog.vue';
 import ExpandableInstructionCard from '~/components/common/ExpandableInstructionCard.vue';
+import TeamLocalAgentMemberDetails from '~/components/agentTeams/TeamLocalAgentMemberDetails.vue';
 import { formatApplicationOwnershipLabel } from '~/utils/definitionOwnership';
 import { buildTeamLocalAgentDefinitionId } from '~/utils/teamLocalAgentDefinitionId';
 
@@ -237,12 +288,14 @@ const notification = ref<{ type: 'success' | 'error'; message: string } | null>(
 const showDeleteConfirm = ref(false);
 const teamDefinitionIdToDelete = ref<string | null>(null);
 const memberAvatarLoadErrors = ref<Record<string, boolean>>({});
+const expandedMemberKeys = ref<string[]>([]);
 const deleteSuccessRedirecting = ref(false);
 
 type TeamMemberNode = AgentTeamDefinition['nodes'][number];
 
 watch(teamDefinitionId, () => {
   memberAvatarLoadErrors.value = {};
+  expandedMemberKeys.value = [];
   deleteSuccessRedirecting.value = false;
 });
 
@@ -294,15 +347,69 @@ const memberInitials = (memberName: string): string => {
 const getMemberAvatarErrorKey = (node: TeamMemberNode): string =>
   `${node.refType}:${node.ref}:${node.memberName}`;
 
+const getMemberKey = (node: TeamMemberNode): string => `${node.refType}:${node.refScope || 'GLOBAL'}:${node.ref}:${node.memberName}`;
+
+const isCoordinatorNode = (node: TeamMemberNode): boolean => node.memberName === teamDef.value?.coordinatorMemberName;
+
+const isTeamLocalAgentNode = (node: TeamMemberNode): boolean => (
+  node.refType === 'AGENT' && node.refScope === 'TEAM_LOCAL'
+);
+
+const isSharedAgentMemberNode = (node: TeamMemberNode): boolean => (
+  node.refType === 'AGENT' && (!node.refScope || node.refScope === 'SHARED')
+);
+
+const getTeamLocalDefinitionId = (node: TeamMemberNode): string => {
+  if (!teamDef.value || !isTeamLocalAgentNode(node)) {
+    return '';
+  }
+  try {
+    return buildTeamLocalAgentDefinitionId(teamDef.value.id, node.ref);
+  } catch {
+    return '';
+  }
+};
+
+const getAgentDefinitionForNode = (node: TeamMemberNode): AgentDefinition | null => {
+  if (node.refType !== 'AGENT') {
+    return null;
+  }
+  const definitionId = isTeamLocalAgentNode(node) ? getTeamLocalDefinitionId(node) : node.ref;
+  return definitionId ? agentDefStore.getAgentDefinitionById(definitionId) ?? null : null;
+};
+
+const canViewSharedAgentMember = (node: TeamMemberNode): boolean => (
+  isSharedAgentMemberNode(node) && Boolean(getAgentDefinitionForNode(node))
+);
+
+const canExpandTeamLocalMember = (node: TeamMemberNode): boolean => (
+  isTeamLocalAgentNode(node) && Boolean(getAgentDefinitionForNode(node))
+);
+
+const hasMemberPrimaryAction = (node: TeamMemberNode): boolean => (
+  canExpandTeamLocalMember(node) || canViewSharedAgentMember(node)
+);
+
+const getRequiredAgentDefinitionForNode = (node: TeamMemberNode): AgentDefinition => {
+  const definition = getAgentDefinitionForNode(node);
+  if (!definition) {
+    throw new Error(`Agent definition is required for member ${node.memberName}.`);
+  }
+  return definition;
+};
+
+const isMemberExpanded = (node: TeamMemberNode): boolean => expandedMemberKeys.value.includes(getMemberKey(node));
+
+const toggleMemberExpansion = (node: TeamMemberNode): void => {
+  const key = getMemberKey(node);
+  expandedMemberKeys.value = isMemberExpanded(node)
+    ? expandedMemberKeys.value.filter((entry) => entry !== key)
+    : [...expandedMemberKeys.value, key];
+};
+
 const getMemberAvatarUrl = (node: TeamMemberNode): string => {
   if (node.refType === 'AGENT') {
-    if (node.refScope === 'TEAM_LOCAL') {
-      const localDefinitionId = teamDef.value
-        ? buildTeamLocalAgentDefinitionId(teamDef.value.id, node.ref)
-        : ''
-      return (agentDefStore.getAgentDefinitionById(localDefinitionId)?.avatarUrl || '').trim()
-    }
-    return (agentDefStore.getAgentDefinitionById(node.ref)?.avatarUrl || '').trim();
+    return (getAgentDefinitionForNode(node)?.avatarUrl || '').trim();
   }
   return (teamStore.getAgentTeamDefinitionById(node.ref)?.avatarUrl || '').trim();
 };
@@ -322,23 +429,26 @@ const handleMemberAvatarError = (node: TeamMemberNode): void => {
   };
 };
 
-const getBlueprintName = (type: 'AGENT' | 'AGENT_TEAM', id: string): string => {
-  if (type === 'AGENT') {
-    const localNode = teamDef.value?.nodes.find(
-      (entry) => entry.refType === 'AGENT' && entry.ref === id && entry.refScope === 'TEAM_LOCAL',
-    );
-    if (localNode) {
-      const localDefinitionId = teamDef.value
-        ? buildTeamLocalAgentDefinitionId(teamDef.value.id, id)
-        : ''
-      return (
-        agentDefStore.getAgentDefinitionById(localDefinitionId)?.name
-        || $t('agentTeams.components.agentTeams.AgentTeamDetail.localAgent', { id })
-      )
-    }
-    return agentDefStore.getAgentDefinitionById(id)?.name || $t('agentTeams.components.agentTeams.AgentTeamDetail.unknownAgent', { id });
+const getBlueprintNameForNode = (node: TeamMemberNode): string => {
+  if (node.refType === 'AGENT') {
+    return getAgentDefinitionForNode(node)?.name
+      || (isTeamLocalAgentNode(node)
+        ? $t('agentTeams.components.agentTeams.AgentTeamDetail.localAgent', { id: node.ref })
+        : $t('agentTeams.components.agentTeams.AgentTeamDetail.unknownAgent', { id: node.ref }));
   }
-  return teamStore.getAgentTeamDefinitionById(id)?.name || $t('agentTeams.components.agentTeams.AgentTeamDetail.unknownTeam', { id });
+  return teamStore.getAgentTeamDefinitionById(node.ref)?.name || $t('agentTeams.components.agentTeams.AgentTeamDetail.unknownTeam', { id: node.ref });
+};
+
+const viewSharedAgentMember = (node: TeamMemberNode): void => {
+  if (!teamDef.value || !canViewSharedAgentMember(node)) {
+    return;
+  }
+  emit('navigate', {
+    target: 'agents',
+    view: 'detail',
+    id: node.ref,
+    returnToTeam: teamDef.value.id,
+  });
 };
 
 const runTeam = () => {
@@ -382,6 +492,14 @@ const showNotification = (message: string, type: 'success' | 'error') => {
   setTimeout(() => {
     notification.value = null;
   }, 3000);
+};
+
+const handleTeamLocalMemberSaved = (payload: { message: string }) => {
+  showNotification(payload.message, 'success');
+};
+
+const handleTeamLocalMemberError = (payload: { message: string }) => {
+  showNotification(payload.message, 'error');
 };
 
 const goBackToList = () => {

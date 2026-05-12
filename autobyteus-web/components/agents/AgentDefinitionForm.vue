@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="handleSubmit" class="space-y-8 bg-white p-8 rounded-lg shadow-md border border-gray-200">
+  <form @submit.prevent="handleSubmit" :class="formClass">
     <fieldset class="space-y-6">
       <div>
         <label for="name" class="block text-base font-medium text-gray-800">{{ $t('agents.components.agents.AgentDefinitionForm.name') }}</label>
@@ -222,10 +222,15 @@ const props = defineProps<{
   isSubmitting: boolean;
   submitButtonText: string;
   isCreateMode: boolean;
+  variant?: 'page' | 'embedded';
 }>();
 
 const emit = defineEmits(['submit', 'cancel']);
 const { initialData, isCreateMode } = toRefs(props);
+
+const formClass = computed(() => (props.variant === 'embedded'
+  ? 'space-y-6 rounded-lg border border-slate-200 bg-slate-50 p-4'
+  : 'space-y-8 rounded-lg border border-gray-200 bg-white p-8 shadow-md'));
 
 // Stores
 const optionsStore = useAgentDefinitionOptionsStore();
