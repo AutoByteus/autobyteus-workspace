@@ -529,7 +529,10 @@ async function* _streamUserMessageToLLM(
    default agent/server path does not emit `tool_choice`.
 5. Emit a diagnostic, not a fallback tool invocation, when API mode receives
    legacy-looking `[TOOL_CALL] ...` assistant text and zero native tool calls.
-6. Consume native tool-result continuation events by rendering the current
+6. When native tool calls are parsed, pass the accumulated assistant content and
+   reasoning into `MemoryManager.ingestToolIntents(...)` so the assistant
+   `ToolCallPayload` message preserves the full provider-returned envelope.
+7. Consume native tool-result continuation events by rendering the current
    working context without appending another user message.
 
 ```ts
@@ -578,6 +581,11 @@ The server-side input customization path remains intact for normal inputs and
 intentional legacy text-mode continuations. Native API mode avoids that path for
 provider-visible tool results instead of weakening server input formatting.
 
+For DeepSeek thinking-mode turns, the same continuation path also preserves the
+assistant reasoning envelope: `Message.reasoning_content` remains in working
+context on the assistant tool-call message, and only `DeepSeekChatRenderer`
+emits it as provider-visible `reasoning_content` on the next request.
+
 ### 9.3. Provider-Native History Renderer Selection
 
 `api_tool_call` mode selects provider-native history renderers for all
@@ -599,7 +607,10 @@ assistant tool-call order before they build provider-visible history. Gemini and
 Anthropic coalesce adjacent matching results into one result turn/block group
 because those providers require ordered result parts/blocks immediately after
 the tool-use turn. OpenAI-compatible Chat / LM Studio keeps its existing
-`assistant.tool_calls` plus `role: "tool"` request shape.
+`assistant.tool_calls` plus `role: "tool"` request shape. DeepSeek uses the same
+OpenAI-compatible shape, but its dedicated renderer additionally replays
+preserved assistant `Message.reasoning_content` as DeepSeek `reasoning_content`;
+generic OpenAI-compatible renderers omit that extension field.
 
 Native provider payloads must not contain the old synthetic aggregate result
 message text, including the

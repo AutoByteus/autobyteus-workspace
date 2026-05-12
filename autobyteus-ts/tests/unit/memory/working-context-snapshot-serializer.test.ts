@@ -16,7 +16,8 @@ describe('WorkingContextSnapshotSerializer', () => {
       video_urls: ['vid://1'],
     }));
     snapshot.appendMessage(new Message(MessageRole.ASSISTANT, {
-      content: null,
+      content: 'I will search.',
+      reasoning_content: 'Need search results before answering.',
       tool_payload: new ToolCallPayload([
         {
           id: 'call_1',
@@ -55,6 +56,8 @@ describe('WorkingContextSnapshotSerializer', () => {
     ]);
     expect(messages[2].reasoning_content).toBe('Because');
     expect(messages[2].image_urls).toEqual(['img://1']);
+    expect(messages[3].content).toBe('I will search.');
+    expect(messages[3].reasoning_content).toBe('Need search results before answering.');
     expect(messages[3].tool_payload).toBeInstanceOf(ToolCallPayload);
     expect((messages[3].tool_payload as ToolCallPayload).toolCalls[0].nativeToolCallContext).toEqual({
       provider: 'openai_responses',

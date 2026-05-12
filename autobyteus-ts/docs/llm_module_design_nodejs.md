@@ -186,6 +186,14 @@ remains available only when an explicit text-parser mode is selected. Native
 tool-result continuations render the existing working context directly and do
 not append an extra aggregate `role: "user"` message containing tool results.
 
+DeepSeek is the provider-specific reasoning replay exception on this shared
+OpenAI-compatible transport: `DeepSeekLLM` installs `DeepSeekChatRenderer`, which
+emits preserved assistant `Message.reasoning_content` as DeepSeek
+`reasoning_content` on assistant messages, including assistant `tool_calls` turns
+needed for thinking-mode continuation. The default `OpenAIChatRenderer` used by
+generic OpenAI-compatible clients, custom endpoints, and LM Studio deliberately
+omits that extension field.
+
 The same native-history rule applies to the first-party provider adapters that
 have native tool APIs. `ToolCallPayload` and `ToolResultPayload` remain the
 internal memory contract, while each prompt renderer converts those semantic
@@ -194,6 +202,7 @@ entries to the provider's wire format only when `resolveToolCallFormat()` is
 
 | Provider path | Native history shape in `api_tool_call` mode |
 | --- | --- |
+| DeepSeek Chat | OpenAI-compatible `assistant.tool_calls` followed by matching `role: "tool"` messages; assistant messages with preserved `Message.reasoning_content` also render DeepSeek `reasoning_content`. |
 | Gemini | model turns with `functionCall` parts followed by user `functionResponse` parts, preserving the function-call `id` when present. |
 | Ollama | assistant messages with `tool_calls` followed by `role: "tool"` result messages containing `tool_name`. |
 | Anthropic | assistant `tool_use` blocks followed immediately by user `tool_result` blocks, with result blocks first in that user message. |

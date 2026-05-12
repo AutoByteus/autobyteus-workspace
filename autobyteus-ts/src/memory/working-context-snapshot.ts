@@ -1,5 +1,10 @@
 import { Message, MessageRole, ToolCallPayload, ToolCallSpec, ToolResultPayload } from '../llm/utils/messages.js';
 
+export type AssistantToolCallEnvelope = {
+  content?: string | null;
+  reasoningContent?: string | null;
+};
+
 export class WorkingContextSnapshot {
   private messages: Message[] = [];
   epochId = 1;
@@ -26,9 +31,10 @@ export class WorkingContextSnapshot {
     }));
   }
 
-  appendToolCalls(toolCalls: ToolCallSpec[]): void {
+  appendToolCalls(toolCalls: ToolCallSpec[], envelope: AssistantToolCallEnvelope = {}): void {
     this.messages.push(new Message(MessageRole.ASSISTANT, {
-      content: null,
+      content: envelope.content ?? null,
+      reasoning_content: envelope.reasoningContent ?? null,
       tool_payload: new ToolCallPayload(toolCalls)
     }));
   }

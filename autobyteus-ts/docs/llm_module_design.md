@@ -192,6 +192,16 @@ delegating to this builder. For example, `KimiLLM` keeps `kimi-k2.5` and
 `kimi-k2.6` on Moonshot-safe temperature defaults unless a caller explicitly
 passes a per-request `temperature`.
 
+Prompt renderers, not `OpenAICompatibleRequestBuilder`, own provider-visible
+message-history extensions. The default `OpenAIChatRenderer` is conservative and
+omits internal `Message.reasoning_content` from generic OpenAI-compatible
+requests. `DeepSeekLLM` explicitly installs `DeepSeekChatRenderer`, which
+replays preserved assistant `Message.reasoning_content` as DeepSeek
+`reasoning_content` on assistant messages, including assistant messages that also
+carry `tool_calls` for thinking-mode continuation. Custom OpenAI-compatible
+endpoints and LM Studio stay on the generic non-emitting renderer unless a future
+provider-capability design opts them in.
+
 ## 6.1 Local Runtime Transport Hardening
 
 LM Studio and Ollama can spend minutes in prompt processing before they emit the
@@ -230,7 +240,8 @@ Current native mappings are:
 
 | Provider path | Native history shape |
 | --- | --- |
-| OpenAI-compatible Chat / LM Studio | `assistant.tool_calls` plus matching `role: "tool"` messages. |
+| OpenAI-compatible Chat / LM Studio | `assistant.tool_calls` plus matching `role: "tool"` messages. Generic `OpenAIChatRenderer` omits internal `Message.reasoning_content`. |
+| DeepSeek Chat | Same OpenAI-compatible tool-call/result shape, with `DeepSeekChatRenderer` replaying preserved assistant `Message.reasoning_content` as DeepSeek `reasoning_content` for thinking-mode continuation. |
 | Gemini | model `functionCall` parts plus user `functionResponse` parts, preserving call ids when available. |
 | Ollama | assistant `tool_calls` plus `role: "tool"` result messages with `tool_name`. |
 | Anthropic | assistant `tool_use` blocks plus immediately-following user `tool_result` blocks. |

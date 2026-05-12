@@ -946,10 +946,13 @@ messages and renders provider payloads via Prompt Renderers.
 ```
 const message: Message = {
   role: MessageRole.ASSISTANT,
-  content: null,
-  toolPayload: {
-    toolCalls: [{ id: 'call_abc123', name: 'list_directory', arguments: { path: 'src' } }]
-  }
+  content: 'I will inspect the workspace.',
+  // Optional provider-returned assistant reasoning. Kept internal until the
+  // selected provider renderer decides whether it is valid on the wire.
+  reasoning_content: 'Need the current directory before answering.',
+  tool_payload: new ToolCallPayload([
+    { id: 'call_abc123', name: 'list_directory', arguments: { path: 'src' } }
+  ])
 };
 ```
 
@@ -973,11 +976,11 @@ const toolResult: Message = {
 type Message = {
   role: MessageRole;
   content: string | null;
-  reasoningContent?: string | null;
-  imageUrls: string[];
-  audioUrls: string[];
-  videoUrls: string[];
-  toolPayload: ToolPayload | null;
+  reasoning_content?: string | null;
+  image_urls: string[];
+  audio_urls: string[];
+  video_urls: string[];
+  tool_payload: ToolPayload | null;
 };
 ```
 
@@ -1037,6 +1040,12 @@ a batch, such as Gemini and Anthropic, coalesce adjacent matching
 `ToolResultPayload`s into one provider-valid user result turn. Legacy
 `[TOOL_CALL]` / `[TOOL_RESULT]` text rendering is isolated to non-native
 `xml`, `json`, and `sentinel` tool-call formats.
+
+`reasoning_content` is preserved provider-neutrally in working context for both
+normal assistant messages and assistant `ToolCallPayload` messages. Renderer
+selection decides whether it is provider-visible: generic `OpenAIChatRenderer`
+omits it, while `DeepSeekChatRenderer` replays it on assistant messages for
+DeepSeek thinking-mode continuation.
 
 ---
 
@@ -1122,7 +1131,8 @@ a batch, such as Gemini and Anthropic, coalesce adjacent matching
 
 - Streaming parser continues to detect tool calls (XML / JSON / API-native).
 - After parsing tool calls, append an assistant message with `tool_calls`
-  metadata to the Working Context Snapshot.
+  metadata to the Working Context Snapshot, carrying accumulated assistant
+  `content` and `reasoning_content` when the provider streamed them.
 - Tool results are appended as `MessageRole.TOOL` messages.
 - Tool continuation reuses the active turn and persists a lightweight
   `tool_continuation` boundary trace before the next LLM leg. Native

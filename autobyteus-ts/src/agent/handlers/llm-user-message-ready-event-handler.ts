@@ -264,7 +264,10 @@ export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
           console.info(
             `Agent '${agentId}': Parsed ${toolInvocations.length} tool invocations from streaming parser.`
           );
-          memoryManager.ingestToolIntents(toolInvocations, activeTurnId);
+          memoryManager.ingestToolIntents(toolInvocations, activeTurnId, {
+            assistantContent: completeResponseText || null,
+            assistantReasoning: completeReasoningText || null
+          });
           for (const invocation of toolInvocations) {
             await context.inputEventQueues.enqueueToolInvocationRequest(
               new PendingToolInvocationEvent(invocation)

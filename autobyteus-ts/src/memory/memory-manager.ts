@@ -16,6 +16,11 @@ import { WorkingContextSnapshotSerializer } from './working-context-snapshot-ser
 import { WorkingContextSnapshotStore } from './store/working-context-snapshot-store.js';
 import { buildToolInteractions } from './tool-interaction-builder.js';
 
+export type ToolIntentIngestionOptions = {
+  assistantContent?: string | null;
+  assistantReasoning?: string | null;
+};
+
 export class MemoryManager {
   store: MemoryStore;
   turnTracker: TurnTracker;
@@ -95,11 +100,19 @@ export class MemoryManager {
     this.store.add([trace]);
   }
 
-  ingestToolIntent(toolInvocation: ToolInvocation, turnId?: string): void {
-    this.ingestToolIntents([toolInvocation], turnId);
+  ingestToolIntent(
+    toolInvocation: ToolInvocation,
+    turnId?: string,
+    options?: ToolIntentIngestionOptions
+  ): void {
+    this.ingestToolIntents([toolInvocation], turnId, options);
   }
 
-  ingestToolIntents(toolInvocations: ToolInvocation[], turnId?: string): void {
+  ingestToolIntents(
+    toolInvocations: ToolInvocation[],
+    turnId?: string,
+    options?: ToolIntentIngestionOptions
+  ): void {
     if (!toolInvocations.length) {
       return;
     }
@@ -142,7 +155,10 @@ export class MemoryManager {
     }
 
     this.store.add(traces);
-    this.workingContextSnapshot.appendToolCalls(toolCalls);
+    this.workingContextSnapshot.appendToolCalls(toolCalls, {
+      content: options?.assistantContent ?? null,
+      reasoningContent: options?.assistantReasoning ?? null
+    });
   }
 
   ingestToolResult(event: ToolResultEvent, turnId?: string): void {

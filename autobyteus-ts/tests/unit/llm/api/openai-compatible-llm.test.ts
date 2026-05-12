@@ -1,8 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { DeepSeekLLM } from '../../../../src/llm/api/deepseek-llm.js';
 import { OpenAICompatibleLLM } from '../../../../src/llm/api/openai-compatible-llm.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
+import { Message, MessageRole, ToolCallPayload } from '../../../../src/llm/utils/messages.js';
 
 const mockCreate = vi.hoisted(() => vi.fn());
 const mockOpenAIConstructor = vi.hoisted(
@@ -37,6 +39,7 @@ describe('OpenAICompatibleLLM', () => {
     mockCreate.mockReset();
     mockOpenAIConstructor.mockClear();
     process.env.TEST_API_KEY = 'sk-test';
+    process.env.DEEPSEEK_API_KEY = 'sk-deepseek-test';
     const model = new LLMModel({
       name: 'gpt-4o',
       value: 'gpt-4o',
@@ -101,6 +104,74 @@ describe('OpenAICompatibleLLM', () => {
     expect(response.content).toBe('hello');
     expect(response.reasoning).toBe('private reasoning');
     expect(response.usage?.total_tokens).toBe(3);
+  });
+
+  it('omits reasoning_content from default OpenAI-compatible request payloads', async () => {
+    mockCreate.mockResolvedValue({
+      choices: [{ message: { role: 'assistant', content: 'ok' } }]
+    });
+
+    await llm.sendMessages([
+      new Message(MessageRole.ASSISTANT, {
+        content: 'I will inspect the workspace.',
+        reasoning_content: 'generic clients should not emit this field',
+        tool_payload: new ToolCallPayload([
+          { id: 'call_1', name: 'run_bash', arguments: { command: 'pwd' } }
+        ])
+      })
+    ]);
+
+    const [params] = mockCreate.mock.calls.at(-1) ?? [];
+    expect(params.messages[0]).toMatchObject({
+      role: 'assistant',
+      content: 'I will inspect the workspace.',
+      tool_calls: [
+        {
+          id: 'call_1',
+          type: 'function',
+          function: {
+            name: 'run_bash',
+            arguments: JSON.stringify({ command: 'pwd' })
+          }
+        }
+      ]
+    });
+    expect(params.messages[0]).not.toHaveProperty('reasoning_content');
+  });
+
+  it('uses DeepSeekChatRenderer from DeepSeekLLM to emit reasoning_content request payloads', async () => {
+    const deepSeek = new DeepSeekLLM();
+    mockCreate.mockResolvedValue({
+      choices: [{ message: { role: 'assistant', content: 'ok' } }]
+    });
+
+    await deepSeek.sendMessages([
+      new Message(MessageRole.ASSISTANT, {
+        content: 'I will inspect the workspace.',
+        reasoning_content: 'DeepSeek requires this replay field',
+        tool_payload: new ToolCallPayload([
+          { id: 'call_1', name: 'run_bash', arguments: { command: 'pwd' } }
+        ])
+      })
+    ]);
+
+    const [params] = mockCreate.mock.calls.at(-1) ?? [];
+    expect(params.model).toBe('deepseek-chat');
+    expect(params.messages[0]).toMatchObject({
+      role: 'assistant',
+      content: 'I will inspect the workspace.',
+      reasoning_content: 'DeepSeek requires this replay field',
+      tool_calls: [
+        {
+          id: 'call_1',
+          type: 'function',
+          function: {
+            name: 'run_bash',
+            arguments: JSON.stringify({ command: 'pwd' })
+          }
+        }
+      ]
+    });
   });
 
   it('maps alternate reasoning field on sync responses into CompleteResponse.reasoning', async () => {
