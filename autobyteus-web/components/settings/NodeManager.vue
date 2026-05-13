@@ -1,27 +1,21 @@
 <template>
   <div class="h-full flex flex-col overflow-hidden bg-slate-50">
-    <div class="flex flex-shrink-0 items-center justify-between border-b border-slate-200 bg-white/95 px-8 py-5">
-      <h2 class="text-xl font-semibold text-gray-900">{{ $t('settings.components.settings.NodeManager.node_manager') }}</h2>
+    <div class="flex flex-shrink-0 items-center border-b border-slate-200 bg-white/95 px-8 py-4">
+      <NodeManagerTabs v-model="activeTab" :aria-label="$t('settings.components.settings.NodeManager.node_manager')" />
     </div>
 
     <div class="flex-1 overflow-auto px-6 py-6 lg:px-8">
-      <div class="mx-auto w-full max-w-7xl space-y-5">
-        <section class="rounded-2xl border border-blue-100 bg-white p-5 shadow-sm">
-          <h3 class="text-sm font-semibold text-slate-900">{{ $t('settings.components.settings.NodeManager.current_window_node') }}</h3>
-          <p class="mt-2 text-sm text-slate-700">
-            {{ currentNode?.name || $t('settings.components.settings.NodeManager.currentNodeUnknown') }}
-            <span class="ml-2 rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-blue-700">
-              {{ currentNodeTypeLabel }}
-            </span>
-          </p>
-          <p v-if="currentNode?.baseUrl" class="mt-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-mono text-xs text-slate-600">
-            {{ currentNode.baseUrl }}
-          </p>
-        </section>
+      <div
+        v-if="activeTab === 'manage'"
+        id="node-manager-panel-manage"
+        class="mx-auto w-full max-w-7xl space-y-5"
+        role="tabpanel"
+        aria-labelledby="node-manager-tab-manage"
+        data-testid="node-manager-panel-manage"
+      >
+        <CurrentWindowNodeCard :node-name="currentNode?.name || $t('settings.components.settings.NodeManager.currentNodeUnknown')" :node-type-label="currentNodeTypeLabel" :base-url="currentNode?.baseUrl" />
 
         <RemoteBrowserSharingPanel />
-
-        <DockerNodeStartGuideCard />
 
         <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
           <h3 class="text-sm font-semibold text-gray-900">{{ $t('settings.components.settings.NodeManager.add_remote_node') }}</h3>
@@ -152,12 +146,7 @@
           <p v-if="fullSyncInfo" class="mt-2 text-sm text-blue-600" data-testid="full-sync-info">
             {{ fullSyncInfo }}
           </p>
-          <NodeSyncReportPanel
-            v-if="fullSyncReport"
-            :report="fullSyncReport"
-            :title="$t('settings.components.settings.NodeManager.full_sync_report')"
-            data-testid="full-sync-report"
-          />
+          <NodeSyncReportPanel v-if="fullSyncReport" :report="fullSyncReport" :title="$t('settings.components.settings.NodeManager.full_sync_report')" data-testid="full-sync-report" />
         </section>
 
         <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
@@ -229,6 +218,16 @@
           </div>
         </section>
       </div>
+      <div
+        v-else
+        id="node-manager-panel-dockerGuide"
+        class="mx-auto w-full max-w-7xl"
+        role="tabpanel"
+        aria-labelledby="node-manager-tab-dockerGuide"
+        data-testid="node-manager-panel-dockerGuide"
+      >
+        <DockerNodeStartGuideCard />
+      </div>
     </div>
   </div>
 </template>
@@ -236,7 +235,9 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 import NodeSyncReportPanel from '~/components/sync/NodeSyncReportPanel.vue';
+import CurrentWindowNodeCard from '~/components/settings/CurrentWindowNodeCard.vue';
 import DockerNodeStartGuideCard from '~/components/settings/DockerNodeStartGuideCard.vue';
+import NodeManagerTabs from '~/components/settings/NodeManagerTabs.vue';
 import RemoteBrowserSharingPanel from '~/components/settings/RemoteBrowserSharingPanel.vue';
 import RemoteNodePairingControls from '~/components/settings/RemoteNodePairingControls.vue';
 import { useLocalization } from '~/composables/useLocalization';
@@ -256,6 +257,8 @@ const scopeOptions: Array<{ value: SyncEntityType; labelKey: string }> = [
 
 const defaultFullSyncScope: SyncEntityType[] = scopeOptions.map((option) => option.value);
 const { t } = useLocalization();
+
+type NodeManagerTabId = 'manage' | 'dockerGuide';
 
 const nodeStore = useNodeStore();
 const nodeSyncStore = useNodeSyncStore();
@@ -282,6 +285,7 @@ const bootstrapSyncOnAdd = ref(true);
 const fullSyncSourceNodeId = ref('');
 const fullSyncTargetNodeIds = ref<string[]>([]);
 const fullSyncScope = ref<SyncEntityType[]>([...defaultFullSyncScope]);
+const activeTab = ref<NodeManagerTabId>('manage');
 
 const currentNode = computed(() => nodeStore.getNodeById(windowNodeContextStore.nodeId));
 const nodeTypeLabel = (nodeType: string | undefined) =>
@@ -289,9 +293,7 @@ const nodeTypeLabel = (nodeType: string | undefined) =>
 const capabilityStateLabel = (state: string | undefined) =>
   t(`settings.components.settings.NodeManager.capability.${state ?? 'unknown'}` as const);
 const currentNodeTypeLabel = computed(() => nodeTypeLabel(currentNode.value?.nodeType));
-const availableTargetNodes = computed(() => {
-  return nodeStore.nodes.filter((node) => node.id !== fullSyncSourceNodeId.value);
-});
+const availableTargetNodes = computed(() => nodeStore.nodes.filter((node) => node.id !== fullSyncSourceNodeId.value));
 
 function syncRenameDrafts(): void {
   const currentIds = new Set(nodeStore.nodes.map((node) => node.id));
