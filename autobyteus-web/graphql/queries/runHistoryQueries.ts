@@ -106,11 +106,39 @@ export const GetTeamCommunicationMessages = gql`
       senderMemberName
       senderMemberPath
       senderMemberRouteKey
+      senderRepresentedSubTeam {
+        memberKind
+        memberName
+        memberPath
+        memberRouteKey
+        memberRunId
+        teamDefinitionId
+        childTeamRunId
+        address {
+          teamRunId
+          memberPath
+          memberRouteKey
+        }
+      }
       receiverRunId
       receiverMemberKind
       receiverMemberName
       receiverMemberPath
       receiverMemberRouteKey
+      receiverRepresentedSubTeam {
+        memberKind
+        memberName
+        memberPath
+        memberRouteKey
+        memberRunId
+        teamDefinitionId
+        childTeamRunId
+        address {
+          teamRunId
+          memberPath
+          memberRouteKey
+        }
+      }
       content
       messageType
       createdAt

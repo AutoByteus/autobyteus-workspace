@@ -3,7 +3,7 @@ import { TeamRunConfig, stripMemberPathPrefix, type TeamSubTeamMemberRunConfig }
 import type { TeamRunContext } from "../../domain/team-run-context.js";
 import type { TeamManager } from "../team-manager.js";
 import { MixedTeamRunBackend } from "./mixed-team-run-backend.js";
-import { MixedTeamRunContext } from "./mixed-team-run-context.js";
+import { MixedTeamRunContext, type MixedParentBoundaryContext } from "./mixed-team-run-context.js";
 import { TeamBackendKind } from "../../domain/team-backend-kind.js";
 import { buildTeamMemberRunId } from "../../../run-history/utils/team-member-run-id.js";
 import { generateTeamRunId } from "../../../run-history/utils/team-run-id-utils.js";
@@ -13,6 +13,7 @@ export type MixedSubTeamRunFactoryOptions = {
     config: TeamRunConfig,
     teamRunId: string,
     restoreRuntimeContext?: MixedTeamRunContext | null,
+    parentBoundary?: MixedParentBoundaryContext | null,
   ) => TeamRunContext<MixedTeamRunContext>;
   createTeamManager: (context: TeamRunContext<MixedTeamRunContext>) => TeamManager;
 };
@@ -25,6 +26,7 @@ export class MixedSubTeamRunFactory {
     subTeamConfig: TeamSubTeamMemberRunConfig;
     childTeamRunId?: string | null;
     restoreRuntimeContext?: MixedTeamRunContext | null;
+    parentBoundary?: MixedParentBoundaryContext | null;
   }): Promise<TeamRun> {
     const childTeamRunId = input.childTeamRunId?.trim() || generateTeamRunId(input.subTeamConfig.teamDefinitionId);
     const childTree = stripMemberPathPrefix(
@@ -46,6 +48,7 @@ export class MixedSubTeamRunFactory {
       config,
       childTeamRunId,
       input.restoreRuntimeContext ?? null,
+      input.parentBoundary ?? null,
     );
     const manager = this.options.createTeamManager(context);
     const backend = new MixedTeamRunBackend(context, manager);

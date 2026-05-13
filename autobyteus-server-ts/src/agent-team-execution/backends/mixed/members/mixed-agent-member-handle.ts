@@ -24,8 +24,13 @@ import {
   type TeamRunMemberInputEventPayload,
 } from "../../../domain/team-run-event.js";
 import type { TeamMemberRunConfig } from "../../../domain/team-run-config.js";
+import type { TeamRunMemberConfig } from "../../../domain/team-run-config.js";
 import { TeamBackendKind } from "../../../domain/team-backend-kind.js";
-import { getMemberTeamContextBuilder, type MemberTeamContextBuilder } from "../../../services/member-team-context-builder.js";
+import {
+  getMemberTeamContextBuilder,
+  type MemberTeamContextBuilder,
+  type MemberTeamContextMemberInput,
+} from "../../../services/member-team-context-builder.js";
 import { getInterAgentMessageRouter, type InterAgentMessageRouter } from "../../../services/inter-agent-message-router.js";
 import {
   buildInterAgentDeliveryInputMessage,
@@ -184,27 +189,9 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
       currentMemberPath: this.context.memberPath,
       currentMemberRouteKey: this.context.memberRouteKey,
       currentMemberRunId: this.context.memberRunId,
-      members: this.options.teamContext.runtimeContext.memberContexts.map((member) => {
-        if (member.memberKind === "agent_team") {
-          return {
-            memberKind: "agent_team" as const,
-            memberName: member.memberName,
-            memberPath: member.memberPath,
-            memberRouteKey: member.memberRouteKey,
-            memberRunId: member.memberRunId,
-            teamDefinitionId: member.teamDefinitionId,
-            coordinatorMemberRouteKey: null,
-          };
-        }
-        return {
-          memberKind: "agent" as const,
-          memberName: member.memberName,
-          memberPath: member.memberPath,
-          memberRouteKey: member.memberRouteKey,
-          memberRunId: member.memberRunId,
-          runtimeKind: member.runtimeKind,
-        };
-      }),
+      coordinatorMemberRouteKey: this.options.teamContext.runtimeContext.coordinatorMemberRouteKey,
+      members: this.buildMemberTeamContextInputs(),
+      parentBoundary: this.options.teamContext.runtimeContext.parentBoundary,
       deliverInterAgentMessage: this.options.deliverInterAgentMessage,
     });
 
@@ -220,6 +207,75 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
       memberTeamContext,
       applicationExecutionContext: this.options.config.applicationExecutionContext ?? null,
     });
+  }
+
+  private buildMemberTeamContextInputs(): MemberTeamContextMemberInput[] {
+    return this.options.teamContext.runtimeContext.memberContexts.map((member) => {
+      const memberConfig = this.findMemberConfig(member.memberRouteKey);
+      if (member.memberKind === "agent_team") {
+        const subTeamConfig = memberConfig?.memberKind === "agent_team" ? memberConfig : null;
+        return {
+          memberKind: "agent_team" as const,
+          memberName: member.memberName,
+          memberPath: member.memberPath,
+          memberRouteKey: member.memberRouteKey,
+          memberRunId: member.memberRunId,
+          teamDefinitionId: member.teamDefinitionId,
+          childTeamRunId: member.childTeamRunId,
+          coordinatorMemberRouteKey: subTeamConfig?.coordinatorMemberRouteKey ?? null,
+          representative: subTeamConfig ? this.buildSubTeamRepresentative(subTeamConfig) : null,
+        };
+      }
+      return {
+        memberKind: "agent" as const,
+        memberName: member.memberName,
+        memberPath: member.memberPath,
+        memberRouteKey: member.memberRouteKey,
+        memberRunId: member.memberRunId,
+        runtimeKind: member.runtimeKind,
+        role: memberConfig?.role ?? null,
+        description: memberConfig?.description ?? null,
+      };
+    });
+  }
+
+  private buildSubTeamRepresentative(
+    subTeamConfig: Extract<TeamRunMemberConfig, { memberKind: "agent_team" }>,
+  ) {
+    const coordinatorRouteKey = subTeamConfig.coordinatorMemberRouteKey?.trim();
+    if (!coordinatorRouteKey) {
+      return null;
+    }
+    const representative = subTeamConfig.memberConfigs.find(
+      (member) => member.memberKind === "agent" && member.memberRouteKey === coordinatorRouteKey,
+    );
+    if (!representative || representative.memberKind !== "agent") {
+      return null;
+    }
+    return {
+      memberKind: "agent" as const,
+      memberName: representative.memberName,
+      memberPath: representative.memberPath,
+      memberRouteKey: representative.memberRouteKey,
+      memberRunId: representative.memberRunId!,
+      runtimeKind: representative.runtimeKind,
+      role: representative.role ?? null,
+      description: representative.description ?? null,
+    };
+  }
+
+  private findMemberConfig(memberRouteKey: string): TeamRunMemberConfig | null {
+    const stack = [...(this.options.teamContext.config?.memberTree ?? [])];
+    while (stack.length > 0) {
+      const memberConfig = stack.shift()!;
+      if (memberConfig.memberRouteKey === memberRouteKey) {
+        return memberConfig;
+      }
+      if (memberConfig.memberKind === "agent_team") {
+        stack.push(...memberConfig.memberConfigs);
+      }
+    }
+    return null;
   }
 
   private bindEvents(run: AgentRun): void {

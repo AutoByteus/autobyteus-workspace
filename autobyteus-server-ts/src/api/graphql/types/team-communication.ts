@@ -20,6 +20,45 @@ class TeamCommunicationReferenceFileObject {
 }
 
 @ObjectType()
+class TeamCommunicationMemberAddressObject {
+  @Field(() => String)
+  teamRunId!: string;
+
+  @Field(() => [String])
+  memberPath!: string[];
+
+  @Field(() => String)
+  memberRouteKey!: string;
+}
+
+@ObjectType()
+class TeamCommunicationRepresentedSubTeamObject {
+  @Field(() => String)
+  memberKind!: string;
+
+  @Field(() => String)
+  memberName!: string;
+
+  @Field(() => [String])
+  memberPath!: string[];
+
+  @Field(() => String)
+  memberRouteKey!: string;
+
+  @Field(() => String)
+  memberRunId!: string;
+
+  @Field(() => String)
+  teamDefinitionId!: string;
+
+  @Field(() => String, { nullable: true })
+  childTeamRunId?: string | null;
+
+  @Field(() => TeamCommunicationMemberAddressObject)
+  address!: TeamCommunicationMemberAddressObject;
+}
+
+@ObjectType()
 class TeamCommunicationMessageObject {
   @Field(() => String)
   messageId!: string;
@@ -42,6 +81,9 @@ class TeamCommunicationMessageObject {
   @Field(() => String, { nullable: true })
   senderMemberName?: string | null;
 
+  @Field(() => TeamCommunicationRepresentedSubTeamObject, { nullable: true })
+  senderRepresentedSubTeam?: TeamCommunicationRepresentedSubTeamObject | null;
+
   @Field(() => String)
   receiverRunId!: string;
 
@@ -56,6 +98,9 @@ class TeamCommunicationMessageObject {
 
   @Field(() => String, { nullable: true })
   receiverMemberName?: string | null;
+
+  @Field(() => TeamCommunicationRepresentedSubTeamObject, { nullable: true })
+  receiverRepresentedSubTeam?: TeamCommunicationRepresentedSubTeamObject | null;
 
   @Field(() => String)
   content!: string;

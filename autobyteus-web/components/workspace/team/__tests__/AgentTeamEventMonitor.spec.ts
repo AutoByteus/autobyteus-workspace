@@ -6,6 +6,7 @@ const { state, teamContextsStoreMock } = vi.hoisted(() => {
   const localState = {
     activeTeamContext: null as any,
     focusedMemberContext: null as any,
+    focusedMemberNode: null as any,
   };
 
   return {
@@ -17,6 +18,10 @@ const { state, teamContextsStoreMock } = vi.hoisted(() => {
       get focusedMemberContext() {
         return localState.focusedMemberContext;
       },
+      get focusedMemberNode() {
+        return localState.focusedMemberNode;
+      },
+      focusMemberAndEnsureHydrated: vi.fn().mockResolvedValue(undefined),
     },
   };
 });
@@ -90,15 +95,40 @@ describe('AgentTeamEventMonitor.vue', () => {
       },
     };
 
+    const professorNode = {
+      memberKind: 'agent',
+      memberName: 'Professor',
+      displayName: 'Professor',
+      memberPath: ['Professor'],
+      memberRouteKey: 'Professor',
+      memberRunId: 'member_a111',
+      agentDefinitionId: 'agent-professor-def',
+    };
+    const studentNode = {
+      memberKind: 'agent',
+      memberName: 'Student',
+      displayName: 'Student',
+      memberPath: ['sub-team', 'Student'],
+      memberRouteKey: 'sub-team/Student',
+      memberRunId: 'member_b222',
+      agentDefinitionId: 'agent-student-def',
+    };
+
     state.activeTeamContext = {
       teamRunId: 'team-1',
-      focusedMemberName: 'professor',
-      members: new Map<string, any>([
-        ['professor', professorContext],
-        ['sub-team/student', studentContext],
+      focusedMemberRouteKey: 'Professor',
+      memberTree: [professorNode, studentNode],
+      memberNodesByRouteKey: new Map<string, any>([
+        ['Professor', professorNode],
+        ['sub-team/Student', studentNode],
+      ]),
+      leafAgentContextsByRouteKey: new Map<string, any>([
+        ['Professor', professorContext],
+        ['sub-team/Student', studentContext],
       ]),
     };
     state.focusedMemberContext = professorContext;
+    state.focusedMemberNode = professorNode;
   });
 
   it('passes sender-id to member-name mapping to AgentEventMonitor', () => {

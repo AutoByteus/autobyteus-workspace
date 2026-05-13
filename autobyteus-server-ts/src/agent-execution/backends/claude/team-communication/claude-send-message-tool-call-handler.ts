@@ -10,13 +10,10 @@ import type {
 import { ClaudeSessionEventName } from "../events/claude-session-event-name.js";
 import type { AgentOperationResult } from "../../../domain/agent-operation-result.js";
 import {
-  selectorFromMemberName,
-  selectorFromMemberPath,
-} from "../../../../agent-team-execution/domain/team-run-member-identity.js";
-import {
   parseSendMessageToToolArguments,
   validateParsedSendMessageToToolArguments,
 } from "../../../../agent-team-execution/services/send-message-to-tool-argument-parser.js";
+import { buildInterAgentMessageDeliveryRequestFromRecipientName } from "../../../../agent-team-execution/services/inter-agent-message-delivery-request-builder.js";
 
 export type ClaudeSendMessageToolApprovalDecision = {
   approved: boolean;
@@ -217,26 +214,23 @@ export class ClaudeSendMessageToolCallHandler {
 
     const recipientMemberName = parsed.recipientName.trim();
     const content = parsed.content.trim();
-    const recipient = memberTeamContext.members.find(
-      (member) => member.memberName === recipientMemberName || member.memberRouteKey === recipientMemberName,
-    ) ?? null;
-    const sendMessageToResult = await this.deliverInterAgentMessage({
-      senderRunId: options.runContext.runId,
-      senderSelector: selectorFromMemberPath(memberTeamContext.memberPath),
-      senderMemberName: memberTeamContext.memberName,
-      senderPath: memberTeamContext.memberPath,
-      senderRouteKey: memberTeamContext.memberRouteKey,
-      teamRunId: memberTeamContext.teamRunId,
-      recipientSelector: recipient
-        ? selectorFromMemberPath(recipient.memberPath)
-        : selectorFromMemberName(recipientMemberName),
-      recipientMemberName: recipient?.memberName ?? recipientMemberName,
-      recipientPath: recipient?.memberPath ?? null,
-      recipientRouteKey: recipient?.memberRouteKey ?? null,
+    const requestResult = buildInterAgentMessageDeliveryRequestFromRecipientName({
+      memberTeamContext,
+      recipientName: recipientMemberName,
       content,
       messageType: parsed.messageType,
       referenceFiles: parsed.referenceFiles,
     });
+    if (!requestResult.ok) {
+      return this.buildRejectedResult({
+        runContext: options.runContext,
+        invocationId,
+        toolArguments: normalizedArguments,
+        code: requestResult.code,
+        message: requestResult.message,
+      });
+    }
+    const sendMessageToResult = await this.deliverInterAgentMessage(requestResult.request);
 
     emitSendMessageToolCompleted({
       runContext: options.runContext,

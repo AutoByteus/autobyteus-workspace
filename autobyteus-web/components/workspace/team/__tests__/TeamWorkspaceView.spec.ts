@@ -104,36 +104,70 @@ const buildTeamContext = (overrides: Record<string, any> = {}) => ({
     teamDefinitionName: 'Class Room Simulation',
     teamDefinitionId: 'team-def-1',
   },
-  focusedMemberName: 'professor',
-  members: new Map<string, any>([
-    [
-      'professor',
-      {
-        config: {
-          agentDefinitionId: 'agent-professor-def',
-          agentDefinitionName: 'Professor',
-          agentAvatarUrl: null,
-        },
-        state: {
-          currentStatus: AgentStatus.ExecutingTool,
-          conversation: { agentName: 'Professor', messages: [] },
-        },
+  focusedMemberRouteKey: 'professor',
+  memberTree: [
+    {
+      memberKind: 'agent',
+      memberName: 'professor',
+      displayName: 'Professor',
+      memberPath: ['professor'],
+      memberRouteKey: 'professor',
+      memberRunId: 'professor-run',
+      agentDefinitionId: 'agent-professor-def',
+    },
+    {
+      memberKind: 'agent',
+      memberName: 'student',
+      displayName: 'Student',
+      memberPath: ['student'],
+      memberRouteKey: 'student',
+      memberRunId: 'student-run',
+      agentDefinitionId: 'agent-student-def',
+    },
+  ],
+  memberNodesByRouteKey: new Map<string, any>([
+    ['professor', {
+      memberKind: 'agent',
+      memberName: 'professor',
+      displayName: 'Professor',
+      memberPath: ['professor'],
+      memberRouteKey: 'professor',
+      memberRunId: 'professor-run',
+      agentDefinitionId: 'agent-professor-def',
+    }],
+    ['student', {
+      memberKind: 'agent',
+      memberName: 'student',
+      displayName: 'Student',
+      memberPath: ['student'],
+      memberRouteKey: 'student',
+      memberRunId: 'student-run',
+      agentDefinitionId: 'agent-student-def',
+    }],
+  ]),
+  leafAgentContextsByRouteKey: new Map<string, any>([
+    ['professor', {
+      config: {
+        agentDefinitionId: 'agent-professor-def',
+        agentDefinitionName: 'Professor',
+        agentAvatarUrl: null,
       },
-    ],
-    [
-      'student',
-      {
-        config: {
-          agentDefinitionId: 'agent-student-def',
-          agentDefinitionName: 'Student',
-          agentAvatarUrl: null,
-        },
-        state: {
-          currentStatus: AgentStatus.Idle,
-          conversation: { agentName: 'Student', messages: [] },
-        },
+      state: {
+        currentStatus: AgentStatus.ExecutingTool,
+        conversation: { agentName: 'Professor', messages: [] },
       },
-    ],
+    }],
+    ['student', {
+      config: {
+        agentDefinitionId: 'agent-student-def',
+        agentDefinitionName: 'Student',
+        agentAvatarUrl: null,
+      },
+      state: {
+        currentStatus: AgentStatus.Idle,
+        conversation: { agentName: 'Student', messages: [] },
+      },
+    }],
   ]),
   currentStatus: AgentTeamStatus.Idle,
   ...overrides,
@@ -196,8 +230,10 @@ describe('TeamWorkspaceView', () => {
 
   it('falls back to focused route key when focused member context is missing', () => {
     state.activeTeamContext = buildTeamContext({
-      focusedMemberName: 'missing-member',
-      members: new Map<string, any>(),
+      focusedMemberRouteKey: 'missing-member',
+      memberTree: [],
+      memberNodesByRouteKey: new Map<string, any>(),
+      leafAgentContextsByRouteKey: new Map<string, any>(),
     });
     const wrapper = mountComponent();
     expect(wrapper.find('h4').text()).toBe('missing-member');

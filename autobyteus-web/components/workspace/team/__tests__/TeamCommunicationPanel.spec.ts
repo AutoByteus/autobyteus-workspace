@@ -14,6 +14,7 @@ const labels: Record<string, string> = {
   'workspace.components.workspace.team.TeamCommunicationPanel.empty_title': 'No team messages yet',
   'workspace.components.workspace.team.TeamCommunicationPanel.empty_detail': 'Accepted inter-agent messages will appear here with their reference files.',
   'workspace.components.workspace.team.TeamCommunicationPanel.select_message': 'Select a message to read the full content.',
+  'workspace.components.workspace.team.TeamCommunicationPanel.represents_subteam': 'Represents',
 };
 
 const mountSubject = (propOverrides: Record<string, unknown> = {}) => mount(TeamCommunicationPanel, {
@@ -260,6 +261,51 @@ describe('TeamCommunicationPanel.vue', () => {
     expect(wrapper.text()).toContain('Handoff');
     expect(wrapper.text()).toContain('from program_manager');
     expect(wrapper.get('[data-test="team-communication-message-markdown"]').text()).toContain('Please review the implementation.');
+  });
+
+  it('renders represented-subteam badges for representative leaf communication', async () => {
+    const store = useTeamCommunicationStore();
+    store.replaceProjection('team-1', [
+      {
+        messageId: 'message-to-representative',
+        teamRunId: 'team-1',
+        senderRunId: 'focused-run',
+        senderMemberKind: 'agent',
+        senderMemberName: 'program_manager',
+        senderMemberPath: ['program_manager'],
+        senderMemberRouteKey: 'program_manager',
+        receiverRunId: 'review-run',
+        receiverMemberKind: 'agent',
+        receiverMemberName: 'review_lead',
+        receiverMemberPath: ['BuildSquad', 'review_lead'],
+        receiverMemberRouteKey: 'BuildSquad/review_lead',
+        receiverRepresentedSubTeam: {
+          memberKind: 'agent_team',
+          memberName: 'BuildSquad',
+          memberPath: ['BuildSquad'],
+          memberRouteKey: 'BuildSquad',
+          memberRunId: 'build-squad-run',
+          teamDefinitionId: 'build-squad-team',
+          address: {
+            teamRunId: 'team-1',
+            memberPath: ['BuildSquad'],
+            memberRouteKey: 'BuildSquad',
+          },
+        },
+        content: 'Please coordinate the child team.',
+        messageType: 'assignment',
+        createdAt: '2026-04-12T10:04:00.000Z',
+        updatedAt: '2026-04-12T10:04:00.000Z',
+        referenceFiles: [],
+      },
+    ]);
+
+    const wrapper = mountSubject();
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.get('[data-test="team-communication-represented-subteam"]').text()).toBe('Represents BuildSquad');
+    expect(wrapper.get('[data-test="team-communication-detail-represented-subteam"]').text()).toBe('Represents BuildSquad');
+    expect(wrapper.text()).toContain('to BuildSquad / review_lead');
   });
 
   it('keeps message summary and reference rows as sibling interactive controls', async () => {

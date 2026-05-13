@@ -21,6 +21,8 @@ New runs whose definitions contain nested `agent_team` nodes should route to `Te
 
 The frontend must also treat nested teams as first-class team members. The visible workspace tree, active team member panel, grid/spotlight/focus modes, launch configuration, run history/restore, streaming, and activity/communication read models must preserve subteam nodes and use canonical route/path identity rather than flattening nested leaves into parent-level agent rows.
 
+Nested communication is not allowed to remain top-down only, and normal `send_message_to` visibility should not expose abstract subteam node names as if they were agents. Parent-to-subteam delegation exposes the subteam coordinator/representative as the visible recipient while routing through the structural subteam boundary. A child coordinator also has a controlled upward reporting path to immediate parent-boundary recipients such as the parent delegator. This is a bounded communication roster, not arbitrary cross-level messaging: child members do not become top-level parent members and cannot message unrelated grandparents, sibling internals, or global runs.
+
 ## Design-Owner Recheck Decisions
 
 Architecture review paused for design-owner confirmation. The refined decisions are:
@@ -112,68 +114,159 @@ Concrete consumers to update from `metadata.memberMetadata` to flattener helpers
 - `agent-team-execution/services/team-run-runtime-context-support.ts`
 - any GraphQL/run-history DTO mappers that expose team members
 
-### ARCH-NESTED-003 Resolution: Team Communication Is Member-Kind And Path Aware
+### ARCH-NESTED-003 / ARCH-COMM-001+002 Resolution: Team Communication Uses Absolute-Route Representative Delivery
 
-Parent-to-subteam communication is not an agent-to-agent shortcut. It is a parent team communication from one member to another member whose kind may be `agent_team`.
+Round 10 tightened the earlier member-kind/path-aware communication design. The canonical contract is now **absolute-route representative delivery**:
 
-Update `MemberTeamDescriptor` to a discriminated member descriptor:
+- `InterAgentMessageDeliveryRequest.teamRunId` is the communication coordinate root and projection owner for that delivery.
+- Every delivery participant path/route in the request is relative to that `teamRunId`.
+- Parent-to-subteam representative delivery targets the actual representative leaf route under the parent root, for example `BuildSquad/review_lead`; it does **not** collapse to abstract `BuildSquad` default/coordinator delivery once the representative is known.
+- `MixedTeamManager` may resolve the executable handle by the top-level segment (`BuildSquad`) when the target is nested, but communication identity and recipient input trace remain the actual representative leaf (`BuildSquad/review_lead`).
+- `MixedSubTeamMemberHandle` is responsible for translating a root-relative nested target under its subteam path into a child-local selector before posting into the child run.
 
-```ts
-type MemberTeamDescriptor =
-  | {
-      memberKind: 'agent';
-      memberName: string;
-      memberPath: string[];
-      memberRouteKey: string;
-      memberRunId: string;
-      runtimeKind: RuntimeKind;
-      role: string | null;
-      description: string | null;
-    }
-  | {
-      memberKind: 'agent_team';
-      memberName: string;
-      memberPath: string[];
-      memberRouteKey: string;
-      memberRunId: string;
-      teamDefinitionId: string;
-      coordinatorMemberRouteKey: string | null;
-      role: string | null;
-      description: string | null;
-    };
-```
+This replaces the rejected default-only inter-member delivery contract. Structural user/composer commands addressed to the subteam node itself may still let the child team choose its configured default target; representative `send_message_to` delivery MUST carry the explicit nested representative selector.
 
-Update inter-member delivery request shape:
+Canonical coordinate and participant shapes:
 
 ```ts
-interface InterAgentMessageDeliveryRequest {
-  senderRunId: string;
-  senderSelector?: TeamMemberSelector | null;
-  senderMemberName?: string | null; // display only
-  senderPath?: string[] | null;
-  senderRouteKey?: string | null;
+type TeamMemberAddress = {
+  /** The team run whose topology defines memberPath/memberRouteKey. */
   teamRunId: string;
-  recipientSelector: TeamMemberSelector;
-  recipientMemberName?: string | null; // display only
-  recipientPath?: string[] | null;
-  recipientRouteKey?: string | null;
+  /** Path relative to teamRunId, e.g. ['program_manager'] or ['BuildSquad', 'review_lead']. */
+  memberPath: string[];
+  /** Normalized route relative to teamRunId, e.g. 'program_manager' or 'BuildSquad/review_lead'. */
+  memberRouteKey: string;
+};
+
+type TeamCommunicationRepresentedSubTeam = {
+  address: TeamMemberAddress;          // same coordinate root as the participant
+  memberName: string;                  // e.g. 'BuildSquad'
+  memberRunId: string;
+  teamDefinitionId: string;
+  childTeamRunId?: string | null;
+};
+
+type TeamCommunicationParticipant = {
+  memberKind: 'agent' | 'agent_team';
+  memberName: string;
+  memberRunId: string;
+  memberPath: string[];                // relative to payload.teamRunId
+  memberRouteKey: string;              // relative to payload.teamRunId
+  platformRunId?: string | null;
+  teamDefinitionId?: string | null;
+  representedSubTeam?: TeamCommunicationRepresentedSubTeam | null;
+};
+
+type InterAgentDeliveryParticipant = TeamCommunicationParticipant & {
+  address: TeamMemberAddress;          // address.teamRunId === request.teamRunId
+  selector?: TeamMemberSelector | null; // selector relative to request.teamRunId when this participant must be resolved
+};
+
+interface InterAgentMessageDeliveryRequest {
+  /** Coordinate root/projection owner. All participant paths/selectors are relative to this run. */
+  teamRunId: string;
+  sender: InterAgentDeliveryParticipant;
+  recipient: InterAgentDeliveryParticipant & { selector: TeamMemberSelector };
   content: string;
   messageType?: string | null;
   referenceFiles?: string[] | null;
+  parentCommunicationMessageId?: string | null;
+  recipientInputMessageId?: string | null;
+  recipientInputDedupeKey?: string | null;
 }
 ```
 
-`MixedTeamManager.deliverInterAgentMessage()` resolves the recipient selector inside the parent team boundary, publishes one parent-level communication event, and delegates delivery to the resolved member handle:
+Descriptor shape uses the same coordinates instead of parallel loose fields:
 
-- agent recipient handle: post the recipient-visible message to `AgentRun`;
-- subteam recipient handle: create/restore the internal child `TeamRun`, post to the child team default/coordinator target, and do not expose child coordinator as a parent recipient.
+```ts
+type CommunicationRecipientScope =
+  | 'local_agent'
+  | 'local_subteam_representative'
+  | 'parent_boundary_agent'
+  | 'parent_boundary_subteam_representative';
 
-Add a member-kind-aware team communication event payload instead of relying only on agent-shaped `TEAM_COMMUNICATION_MESSAGE` agent events:
+type MemberTeamRecipientDescriptor = {
+  recipientName: string;        // accepted tool argument, unique within this member's roster
+  displayName: string;
+  recipientScope: CommunicationRecipientScope;
+  delivery: {
+    teamRunId: string;          // coordinate root / manager entry target
+    selector: TeamMemberSelector; // relative to delivery.teamRunId; generated descriptors prefer route_key
+  };
+  participant: TeamCommunicationParticipant & { address: TeamMemberAddress };
+};
+```
+
+Descriptor invariants:
+
+- `descriptor.delivery.teamRunId === descriptor.participant.address.teamRunId`.
+- `descriptor.participant.address.memberRouteKey === descriptor.participant.memberRouteKey`.
+- `descriptor.participant.address.memberPath` equals `descriptor.participant.memberPath`.
+- Generated descriptors should use `route_key` selectors to avoid bare-name ambiguity.
+- If `participant.representedSubTeam` is present, its address uses the same `teamRunId` and its path is an ancestor/prefix of the representative participant path.
+- No reply alias, `reply_to_sender`, `replyAddress`, or stored reply-context field exists in this descriptor.
+
+Coordinate examples:
+
+| Current member context | Visible `recipient_name` | `descriptor.delivery.teamRunId` | `descriptor.delivery.selector` | Recipient participant address | `representedSubTeam` |
+| --- | --- | --- | --- | --- | --- |
+| Parent member `program_manager` in parent run | `review_lead` | parent run ID | `route_key('BuildSquad/review_lead')` | parent run + `BuildSquad/review_lead` | `BuildSquad` |
+| Child member `BuildSquad/review_lead` messaging child teammate | `qa_specialist` | child run ID | `route_key('qa_specialist')` | child run + `qa_specialist` | none |
+| Child member `BuildSquad/review_lead` reporting upward | `program_manager` | parent run ID | `route_key('program_manager')` | parent run + `program_manager` | none on recipient; sender participant carries `representedSubTeam=BuildSquad` |
+
+A child-local descriptor never mixes child-local selectors with parent-root participant addresses. If a child action needs a parent communication row, it uses a parent-boundary descriptor whose `delivery.teamRunId` is the parent run and whose sender participant is normalized to the parent-root route, for example `BuildSquad/review_lead`.
+
+Parent-to-representative example:
+
+```json
+{
+  "teamRunId": "team_nested-mixed-runtime-delivery-team_9585e151",
+  "sender": {
+    "memberKind": "agent",
+    "memberName": "program_manager",
+    "memberPath": ["program_manager"],
+    "memberRouteKey": "program_manager",
+    "address": { "teamRunId": "team_nested-mixed-runtime-delivery-team_9585e151", "memberPath": ["program_manager"], "memberRouteKey": "program_manager" }
+  },
+  "recipient": {
+    "selector": { "kind": "route_key", "memberRouteKey": "BuildSquad/review_lead" },
+    "memberKind": "agent",
+    "memberName": "review_lead",
+    "memberPath": ["BuildSquad", "review_lead"],
+    "memberRouteKey": "BuildSquad/review_lead",
+    "address": { "teamRunId": "team_nested-mixed-runtime-delivery-team_9585e151", "memberPath": ["BuildSquad", "review_lead"], "memberRouteKey": "BuildSquad/review_lead" },
+    "representedSubTeam": {
+      "memberName": "BuildSquad",
+      "memberRunId": "team_member_...",
+      "teamDefinitionId": "nested-build-squad-team",
+      "address": { "teamRunId": "team_nested-mixed-runtime-delivery-team_9585e151", "memberPath": ["BuildSquad"], "memberRouteKey": "BuildSquad" }
+    }
+  },
+  "content": "Please handle this work"
+}
+```
+
+`MixedTeamManager.deliverInterAgentMessage()` responsibilities under this contract:
+
+1. Treat `request.teamRunId` as the coordinate root/projection owner. A manager may execute the request only when it owns that root; a child manager receiving a parent-boundary descriptor must forward through `ParentBoundaryBridge` instead of resolving the parent selector locally.
+2. Resolve the executable recipient handle from `request.recipient.selector`. For nested route/path selectors, the registry may return the top-level subteam handle, but the request recipient participant remains the actual nested leaf.
+3. Publish one `COMMUNICATION` event using `request.sender` and `request.recipient` participants verbatim after normalizing defaults; `sourcePath` is `request.sender.memberPath`.
+4. Attach delivery trace IDs using the actual recipient participant route, not the top-level subteam route.
+5. Delegate to the resolved handle with the same request.
+
+`MixedSubTeamMemberHandle.deliverInterMemberMessage()` responsibilities:
+
+1. Ensure the child `TeamRun` exists.
+2. If `request.recipient.address.memberPath` starts with this subteam's parent-root path, strip that prefix and build a child-local selector for the remaining path/route.
+3. Call `childRun.postMessage(buildInterAgentDeliveryInputMessage(request), childSelector)` for representative delivery.
+4. Use `childRun.postMessage(..., null)` only for structural subteam user/composer posts where no explicit nested representative selector is present.
+
+Communication event/projection payload is concrete and represented-subteam-aware:
 
 ```ts
 type TeamRunCommunicationEventPayload = {
   messageId: string;
-  teamRunId: string;
+  teamRunId: string;                    // same coordinate root as participant paths
   sender: TeamCommunicationParticipant;
   receiver: TeamCommunicationParticipant;
   content: string;
@@ -181,37 +274,31 @@ type TeamRunCommunicationEventPayload = {
   referenceFiles: TeamCommunicationReferenceFile[];
   createdAt: string;
 };
-
-type TeamCommunicationParticipant = {
-  memberKind: 'agent' | 'agent_team';
-  memberName: string;
-  memberPath: string[];
-  memberRouteKey: string;
-  memberRunId: string;
-  platformRunId?: string | null;
-  teamDefinitionId?: string | null;
-};
 ```
 
-`TeamRunEvent.sourcePath` for the parent communication event is the sender path. The receiver path lives in the communication payload.
-
-`TeamCommunicationService` must consume the member-kind-aware team communication event and write a projection with sender/receiver path/route/member-kind. It must not fake an `agent_team` receiver as an agent runtime. Existing agent-shaped communication events can be removed/replaced for mixed nested communication; do not add a compatibility wrapper as the authoritative path.
-
-Concrete example:
+`representedSubTeam` flows end-to-end:
 
 ```text
-Parent team: EngineeringTeam
-Members: Coordinator(agent), CodeReviewTeam(agent_team)
-Action: Coordinator send_message_to CodeReviewTeam
+MemberTeamRecipientDescriptor.participant.representedSubTeam
+-> InterAgentMessageDeliveryRequest.sender/recipient.representedSubTeam
+-> MixedTeamManager.buildCommunicationPayload().sender/receiver.representedSubTeam
+-> TeamCommunicationService / team-communication-types.ts projection row
+-> GraphQL/WebSocket communication DTOs
+-> frontend TeamCommunicationStore sender/receiver representedSubTeam fields
+-> activity/team-communication display badges/breadcrumbs
 ```
 
-Parent projection event:
+Concrete downward display/projection example:
 
 ```json
 {
-  "sourcePath": ["Coordinator"],
-  "sender": { "memberKind": "agent", "memberRouteKey": "Coordinator" },
-  "receiver": { "memberKind": "agent_team", "memberRouteKey": "CodeReviewTeam" },
+  "sourcePath": ["program_manager"],
+  "sender": { "memberKind": "agent", "memberRouteKey": "program_manager" },
+  "receiver": {
+    "memberKind": "agent",
+    "memberRouteKey": "BuildSquad/review_lead",
+    "representedSubTeam": { "memberRouteKey": "BuildSquad", "teamDefinitionId": "nested-build-squad-team" }
+  },
   "content": "Please review this PR"
 }
 ```
@@ -220,8 +307,8 @@ Child processing appears separately through the child event bridge, for example:
 
 ```json
 {
-  "sourcePath": ["CodeReviewTeam", "ReviewLead"],
-  "data": { "memberName": "ReviewLead", "agentEvent": "..." }
+  "sourcePath": ["BuildSquad", "review_lead"],
+  "data": { "memberName": "review_lead", "agentEvent": "..." }
 }
 ```
 
@@ -311,7 +398,7 @@ The selected/focused identity is `focusedMemberRouteKey`, not `focusedMemberName
 - Grid/spotlight: render both `TeamMemberMonitorTile` for leaf agents and a new/extended `TeamMemberGroupTile` for subteam nodes. A subteam tile can expand or focus the group and show immediate children/status counts.
 - Composer: sending while focused on `BuildSquad` calls the stream/API with `target_member_route_key: 'BuildSquad'` or equivalent selector and the backend routes to the child coordinator. Sending while focused on `BuildSquad/review_lead` targets that exact leaf route key.
 
-Direct arbitrary child-to-parent or cross-subteam bypass remains out of scope; selecting a subteam still respects the subteam boundary.
+Arbitrary cross-boundary bypass remains out of scope, but controlled child-to-immediate-parent reporting is in scope. Selecting a subteam still respects the subteam boundary; upward reporting uses scoped communication recipient descriptors and the parent-boundary bridge described in `CR-001` through `CR-009`, not direct child access to parent internals or stored reply state.
 
 ### UI-005: Run History And Restore Render `memberTree` Recursively
 
@@ -333,7 +420,7 @@ The parent team run remains the only top-level history/active run. Internal chil
 
 `TeamStreamingService.getMemberContext()` must resolve inbound events by canonical `source_path`/`member_route_key` first, with `agent_name`/`agent_id` only as edge fallback. Tool approval commands should send `member_route_key`/`source_path` from the approval event; `agent_name` is not authoritative for nested leaves.
 
-`TeamCommunicationStore` and activity panels should store/display participant identity with member kind, path, and route key. Parent communication should display `program_manager -> BuildSquad` as a parent-level message to an `agent_team`; child processing appears separately as `BuildSquad/review_lead` events.
+`TeamCommunicationStore` and activity panels should store/display participant identity with member kind, path, route key, and represented-subteam context. Parent communication should display `program_manager -> BuildSquad/review_lead` (or `program_manager -> review_lead` with a `BuildSquad` badge) as a parent-level message to the responsible representative; child processing appears separately as `BuildSquad/review_lead` events.
 
 ### UI-007: Frontend File Responsibilities Added By Validation
 
@@ -362,7 +449,7 @@ Recipient-side live user/inbound transcript entries must come from the backend d
 
 Reason:
 
-- A parent communication event says `program_manager -> BuildSquad`.
+- A parent communication event says `program_manager -> BuildSquad/review_lead` with represented-subteam context for `BuildSquad`.
 - The child transcript entry belongs to the resolved child leaf, e.g. `BuildSquad/review_lead`.
 - Only the backend child `TeamRun`/child manager knows whether the default target is `review_lead`, another coordinator, or a sole child member.
 
@@ -426,15 +513,15 @@ Producer rules:
 - `MixedAgentMemberHandle.postMessage()` emits `MEMBER_INPUT` after an accepted user input reaches an agent leaf.
 - `MixedAgentMemberHandle.deliverInterMemberMessage()` emits `MEMBER_INPUT` with `inputOrigin: 'inter_agent_delivery'` after the recipient-visible `AgentInputUserMessage` is accepted by the agent leaf.
 - `MixedSubTeamMemberHandle` does not guess the child leaf itself. It posts into the child `TeamRun`; the child manager/agent handle emits the `MEMBER_INPUT`, and the existing child event bridge prefixes the child's `sourcePath` to the parent path.
-- `MixedTeamManager.deliverInterAgentMessage()` still publishes one parent `COMMUNICATION` event for `program_manager -> BuildSquad`. That event is for team communication panels/projections, not for the child leaf transcript.
+- `MixedTeamManager.deliverInterAgentMessage()` still publishes one parent `COMMUNICATION` event for `program_manager -> BuildSquad/review_lead` with represented-subteam context. That event is for team communication panels/projections, not for the child leaf transcript.
 
 If implementation chooses a smaller first patch, it may emit the same member input event from `MixedSubTeamMemberHandle` after resolving the returned child leaf context, but the steady-state owner should be the accepting child leaf handle so child subscribers and parent bridged subscribers observe the same event.
 
 ### R5-002: One Delivery Trace Links Parent Communication, Recipient Input, Live Event, And Projection
 
-When a parent agent sends to a subteam, there are two user-visible records:
+When a parent agent sends to a subteam representative, there are two user-visible records:
 
-1. Parent team communication row: `program_manager -> BuildSquad`, original content.
+1. Parent team communication row: `program_manager -> BuildSquad/review_lead` (displayable as `program_manager -> review_lead` with `BuildSquad` badge), original content.
 2. Child coordinator transcript row: `BuildSquad/review_lead` user/inbound prompt, recipient-visible content (`You received ...`).
 
 They must be linked but not conflated. Generate or carry a single delivery trace:
@@ -476,8 +563,8 @@ Frontend rules:
 Expected seeded flow:
 
 ```text
-program_manager send_message_to BuildSquad
-  -> TeamCommunicationStore: one message program_manager -> BuildSquad
+program_manager send_message_to review_lead
+  -> TeamCommunicationStore: one message program_manager -> BuildSquad/review_lead, representedSubTeam=BuildSquad
   -> Leaf conversation BuildSquad/review_lead:
        user: You received a message from sender name: program_manager ...
        assistant: FRONTEND_PARENT_TO_SUBTEAM...
@@ -568,6 +655,246 @@ Add or update tests to prove:
 - active and history tree rows use the same primary labels for the seeded team: `program_manager`, `BuildSquad`, `review_lead`, `qa_specialist`.
 
 
+## Communication Roster / Representative Refactor Decisions (2026-05-13)
+
+Follow-up requirements discussion refined the upward-reporting design. The previous `reply_to_sender` idea is rejected. The runtime should model organization communication by exposing real visible member names in each member's scoped communication roster, while the backend keeps structural topology and routing boundaries explicit.
+
+The core separation is:
+
+```text
+structural topology:        program_manager, BuildSquad -> review_lead, qa_specialist
+communication roster view: program_manager sees review_lead as BuildSquad representative
+                            BuildSquad/review_lead sees qa_specialist and program_manager
+```
+
+Structural `agent_team` nodes remain first-class tree nodes for execution, metadata, UI, user composer targeting, and lifecycle. `send_message_to` does not normally expose the abstract subteam node name; it exposes the responsible coordinator/representative member name. The descriptor behind that visible name carries the structural subteam route and actual coordinator route.
+
+### CR-001: Structural Tree And Communication Roster Are Different Owned Projections
+
+Do not use the structural `members` list as the authoritative `send_message_to` roster.
+
+- Structural tree owner: topology/config/metadata/frontend display. It preserves `BuildSquad` as an `agent_team` node.
+- Communication roster owner: backend member communication context. It exposes the names the current agent may call through `send_message_to`.
+- Tool adapters consume the communication roster descriptors only. They must not infer recipients by searching structural `members` directly.
+
+For the seeded team:
+
+```text
+Parent structural members:
+- program_manager
+- BuildSquad [agent_team]
+
+program_manager communication recipients:
+- review_lead     representedTeam: BuildSquad, actualRoute: BuildSquad/review_lead
+
+BuildSquad/review_lead communication recipients:
+- qa_specialist   local child teammate, actualRoute: qa_specialist inside child run / BuildSquad/qa_specialist in root path
+- program_manager parent-boundary member, actualRoute: program_manager in parent/root run
+```
+
+### CR-002: Use One Scoped Communication Recipient Descriptor Coordinate System
+
+`MemberTeamRecipientDescriptor` uses the canonical coordinate and participant shapes defined in `ARCH-COMM-001+002 Resolution`. Do not reintroduce parallel fields such as `targetTeamRunId`, `targetSelector`, `actualMemberPath`, and `actualMemberRouteKey` outside the `delivery` and `participant.address` objects.
+
+Target shape:
+
+```ts
+type MemberTeamRecipientDescriptor = {
+  recipientName: string;        // accepted tool argument, e.g. 'review_lead', 'program_manager'
+  displayName: string;
+  recipientScope: CommunicationRecipientScope;
+  delivery: {
+    teamRunId: string;          // coordinate root / manager entry target
+    selector: TeamMemberSelector; // relative to delivery.teamRunId; generated descriptors prefer route_key
+  };
+  participant: TeamCommunicationParticipant & { address: TeamMemberAddress };
+};
+```
+
+Important tightening:
+
+- No reply alias scope, no stored reply-state scope, and no `replyAddress` routing field.
+- No kitchen-sink optional address fields that duplicate `delivery.selector` or `participant.address`.
+- `recipientName` must be unique within the current member's roster.
+- `participant.representedSubTeam` exists only when the visible recipient is acting as a subteam representative.
+- `participant.address.teamRunId`, `delivery.teamRunId`, and any represented-subteam address `teamRunId` must match.
+
+`MemberTeamContext` target shape:
+
+```ts
+class MemberTeamContext {
+  members: MemberTeamDescriptor[];                    // structural same-boundary members only
+  communicationRecipients: MemberTeamRecipientDescriptor[];
+  allowedRecipientNames: string[];                    // derived from communicationRecipients for runtime tool schema only
+}
+```
+
+### CR-003: Communication Roster Builder Owns Visibility Policy
+
+Add a single backend owner, tentatively:
+
+```text
+autobyteus-server-ts/src/agent-team-execution/services/member-communication-roster-builder.ts
+```
+
+Responsibilities:
+
+1. Build local recipients for the current member's own team boundary.
+2. Replace structural subteam recipients with the subteam coordinator/representative when building communication-visible recipients for parent members.
+3. For a subteam coordinator, combine:
+   - local child-team recipients, excluding itself;
+   - exposed immediate parent-boundary recipients, excluding the represented subteam/self;
+   - sibling subteam coordinators only as representatives if explicitly exposed by the parent roster policy.
+4. Reject duplicate visible `recipientName` values in the current roster.
+5. Emit grouped recipient sections for instructions:
+
+```text
+Team members you can message:
+- qa_specialist
+
+Parent team members visible while representing BuildSquad:
+- program_manager
+```
+
+The initial required policy is immediate-parent only. Do not expose grandparents, unrelated runs, sibling subteam internals, or every child member to the parent.
+
+### CR-004: Parent-To-Subteam Communication Targets The Representative Name, Routes Through The Subteam Boundary
+
+Parent member prompt/tool exposure should not list `BuildSquad` as the normal communication target. It should list the responsible coordinator/member, e.g. `review_lead`, with secondary represented-team context.
+
+Delivery spine:
+
+```text
+program_manager send_message_to('review_lead')
+-> tool adapter resolves communicationRecipients['review_lead']
+-> descriptor.delivery.selector = route_key('BuildSquad/review_lead')
+-> parent MixedTeamManager resolves top-level BuildSquad handle from the nested selector
+-> MixedSubTeamMemberHandle strips BuildSquad prefix and calls childRun.postMessage(..., route_key('review_lead'))
+-> child coordinator receives backend-delivered member input
+```
+
+This means `MixedSubTeamMemberHandle.deliverInterMemberMessage()` must stop blindly calling `childRun.postMessage(..., null)` for every inter-member delivery. If the parent request target is nested under the subteam path, the subteam handle strips the top-level segment and passes the child selector explicitly. It may still use `null` for a user/composer message addressed to the subteam group itself.
+
+Communication event identity:
+
+- sender: `program_manager`
+- receiver: actual leaf `BuildSquad/review_lead`
+- representedSubTeam: `BuildSquad`
+- event `sourcePath`: `['program_manager']`
+
+This preserves the fact that the visible person/member is `review_lead`, while also preserving that routing crossed the `BuildSquad` boundary.
+
+### CR-005: Child Coordinator Upward Reporting Uses Parent-Boundary Recipient Descriptors, Not Reply State
+
+A child coordinator reports upward by direct visible name:
+
+```text
+BuildSquad/review_lead send_message_to('program_manager')
+```
+
+No `reply_to_sender` alias is exposed. No previous inbound message state is required to route this. The child coordinator's `communicationRecipients` contains a `parent_boundary_agent` descriptor for `program_manager` because the coordinator is acting as `BuildSquad` representative.
+
+Upward delivery spine:
+
+```text
+BuildSquad/review_lead send_message_to('program_manager')
+-> child tool adapter resolves communicationRecipients['program_manager']
+-> request carries descriptor.delivery.teamRunId = parentTeamRunId and descriptor.delivery.selector = route_key('program_manager')
+-> child MixedTeamManager delegates through ParentBoundaryBridge
+-> parent MixedTeamManager.deliverInterAgentMessage receives normalized sender path BuildSquad/review_lead
+-> parent communication event records BuildSquad/review_lead -> program_manager
+-> parent MixedAgentMemberHandle delivers recipient-visible input to program_manager
+```
+
+`ParentBoundaryBridge` remains the right mechanism, but it should carry parent-boundary recipient descriptors rather than reply contexts:
+
+```ts
+type ParentBoundaryBridge = {
+  parentTeamRunId: string;
+  subTeamMemberName: string;
+  subTeamMemberPath: string[];
+  subTeamMemberRouteKey: string;
+  communicationRecipients: MemberTeamRecipientDescriptor[];
+  deliverToParent: InterAgentMessageDeliveryHandler;
+};
+```
+
+The serializable identity fields may live in `MixedTeamRunContext`; the function handler belongs to factory/manager wiring and must not be persisted into metadata.
+
+### CR-006: Delivery Request Uses Participant Objects, Not Loose Optional Scalar Identity Fields
+
+`InterAgentMessageDeliveryRequest` uses the participant-object shape from `ARCH-COMM-001+002 Resolution`:
+
+```ts
+interface InterAgentMessageDeliveryRequest {
+  teamRunId: string; // coordinate root/projection owner
+  sender: InterAgentDeliveryParticipant;
+  recipient: InterAgentDeliveryParticipant & { selector: TeamMemberSelector };
+  content: string;
+  messageType?: string | null;
+  referenceFiles?: string[] | null;
+  parentCommunicationMessageId?: string | null;
+  recipientInputMessageId?: string | null;
+  recipientInputDedupeKey?: string | null;
+}
+```
+
+Do not retain a second authoritative identity model made from optional `senderMemberName`, `senderPath`, `recipientRouteKey`, `representedRecipientSubTeam`, or similar scalar fields. If edge adapters still receive those fields from older transport payloads, they must normalize them into `sender` / `recipient` participants before entering `MixedTeamManager.deliverInterAgentMessage()`.
+
+The parent `MixedTeamManager.buildCommunicationPayload()` must use `request.sender` and `request.recipient` as the communication participants. In particular, upward reports must publish `sourcePath: ['BuildSquad', 'review_lead']`, not `[]`, and downward representative deliveries must publish receiver route `BuildSquad/review_lead` with `receiver.representedSubTeam = BuildSquad`.
+
+### CR-007: Prompt And Tool Adapters Use The Same Descriptor Boundary Across Runtimes
+
+Affected adapters:
+
+```text
+autobyteus-server-ts/src/agent-execution/backends/codex/team-communication/*
+autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/*
+autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-team-communication-context-builder.ts
+```
+
+Rules:
+
+- Tool schema enum derives from `communicationRecipients.map(r => r.recipientName)`.
+- Handler lookup resolves against `communicationRecipients`, not `members`.
+- Handler passes descriptor `delivery`, `participant`, represented-subteam metadata, and scope into the participant-shaped delivery request.
+- `composeMemberRunInstructions()` formats grouped communication recipients and must not present parent recipients as fake local teammates.
+
+### CR-008: UI And Projection Perspective Rules
+
+The structural UI stays nested:
+
+```text
+Nested Mixed Runtime Delivery Team
+  program_manager
+  BuildSquad [team]
+    review_lead
+    qa_specialist
+```
+
+Team communication displays actual participants plus representation context:
+
+- Downward: `program_manager -> review_lead` with `BuildSquad` as secondary badge/breadcrumb.
+- Upward: `BuildSquad / review_lead -> program_manager`.
+- Focused `program_manager` leaf conversation: one inbound backend-delivered member input for upward reports.
+- Focused `BuildSquad` group Team Messages: communication rows involving descendants of `BuildSquad` may be shown as group perspective rows.
+- Focused `BuildSquad/review_lead` leaf: normal tool call/result and assistant transcript; do not synthesize a second user prompt for messages it sends.
+
+Projection dedupe from Round 5 still applies. Communication rows and recipient input transcript rows are linked by trace IDs but not conflated, and each logical transcript message renders once.
+
+### CR-009: Regression Expectations For Communication Roster Refactor
+
+Add or update tests to prove:
+
+- `MemberCommunicationRosterBuilder` exposes `review_lead` to `program_manager` as the `BuildSquad` representative and does not expose abstract `BuildSquad` as the normal `send_message_to` recipient.
+- `MemberCommunicationRosterBuilder` exposes `qa_specialist` and `program_manager` to `BuildSquad/review_lead`, grouped by local child-team vs parent-boundary scope.
+- Duplicate visible recipient names in one scoped roster fail tool exposure/delivery with a clear ambiguity error.
+- Codex, Claude, and AutoByteus team communication adapters resolve `recipient_name` against `communicationRecipients`, not structural `members`.
+- Parent `send_message_to('review_lead')` routes through `BuildSquad` and delivers to child route `review_lead`; the parent communication event receiver is `BuildSquad/review_lead` with represented-subteam metadata.
+- Child `send_message_to('program_manager')` routes through the `ParentBoundaryBridge`, publishes a parent communication event with `sourcePath: ['BuildSquad', 'review_lead']`, and delivers one live/durable member input to `program_manager`.
+- No `reply_to_sender`, `replyAddress`, or stored reply context is required for upward routing.
+- Attempts to send from a child member to an unexposed parent/sibling/grandparent route are rejected with a clear error.
+
 ## Task Design Health Assessment (Mandatory)
 
 - Change posture (`Feature`/`Bug Fix`/`Behavior Change`/`Refactor`/`Cleanup`/`Performance`/`Larger Requirement`): Feature / Larger Requirement
@@ -575,9 +902,9 @@ Add or update tests to prove:
 - Root cause classification (`Local Implementation Defect`/`Missing Invariant`/`Boundary Or Ownership Issue`/`Duplicated Policy Or Coordination`/`File Placement Or Responsibility Drift`/`Shared Structure Looseness`/`Legacy Or Compatibility Pressure`/`No Design Issue Found`/`Unclear`): Boundary Or Ownership Issue; Shared Structure Looseness
 - Refactor needed now (`Yes`/`No`/`Deferred`/`Unclear`): Yes
 - Evidence: Current mixed manager originally owned `Map<string, AgentRun>` and `ensureMemberReady(): Promise<AgentRun>`; current run config and metadata required agent-only fields; launch traversal flattened nested teams. The 2026-05-13 full-stack validation additionally proved `autobyteus-web` still flattens nested active UI members through `resolveLeafTeamMembers()` and omits `BuildSquad` even when backend `memberTree` is recursive.
-- Design response: Introduce recursive team topology planning, make `MixedTeamManager` own member handles instead of `AgentRun`s directly, and make the frontend own a recursive `TeamMemberNode` tree with derived leaf lookups instead of flat display members.
-- Refactor rationale: Adding an `if subteam` branch inside agent-only backend maps or frontend leaf-only component loops would violate the authoritative boundary rule and spread agent/team distinctions across launch, runtime, events, restore, and UI display.
-- Intentional deferrals and residual risk, if any: Direct child-to-parent or arbitrary cross-level leaf-to-leaf messaging remains deferred. Frontend nested tree/config/workspace/history/activity behavior is now in scope because seeded browser validation proved flatten-only UI is user-visible wrong.
+- Design response: Introduce recursive team topology planning, make `MixedTeamManager` own member handles instead of `AgentRun`s directly, add a scoped communication roster/representative projection for `send_message_to`, and make the frontend own a recursive `TeamMemberNode` tree with derived leaf lookups instead of flat display members.
+- Refactor rationale: Adding an `if subteam` branch inside agent-only backend maps, runtime tool handlers, or frontend leaf-only component loops would violate the authoritative boundary rule and spread structural-vs-communication roster distinctions across launch, runtime, events, restore, and UI display.
+- Intentional deferrals and residual risk, if any: Arbitrary cross-level leaf-to-leaf messaging remains out of scope, but controlled child-to-immediate-parent reporting and parent-to-subteam-representative communication are now in scope because manual full-stack validation and user discussion showed abstract-subteam/top-down-only delegation is incomplete. Frontend nested tree/config/workspace/history/activity behavior remains in scope because seeded browser validation proved flatten-only UI is user-visible wrong.
 
 ## Terminology
 
@@ -617,11 +944,11 @@ The spine inventory is intentionally complete across the approved use cases. Imp
 | DS-004 | Primary End-to-End | UC-002, UC-003, UC-007, UC-009 | WebSocket/GraphQL/tool command target payload or `send_message_to` recipient | `TeamMemberSelector` entering `TeamRun`/backend/domain command chain | Transport adapters + `team-run-member-identity.ts` | Raw names must stop at edges. Every runtime command must carry path/route identity before it reaches a manager. |
 | DS-005 | Primary End-to-End | UC-009, UC-011 | User composer sends to an agent leaf route key | Target leaf `AgentRun` receives user input and live/durable transcript identity is established | `MixedTeamManager` + `MixedAgentMemberHandle` | Direct leaf sends remain normal agent conversations, but backend and frontend must share message identity to avoid duplicate optimistic/live rows. |
 | DS-006 | Primary End-to-End | UC-002, UC-009, UC-011 | User composer sends to an `agent_team` route key such as `BuildSquad` | Child team default/coordinator leaf receives the input and live child transcript shows the user prompt | `MixedSubTeamMemberHandle` + child `TeamRun` | This is the user-to-department flow. The parent does not know the child coordinator transcript until the child team resolves it. |
-| DS-007 | Primary End-to-End | UC-003, UC-011 | Parent agent tool call `send_message_to({ recipient_name: 'BuildSquad' })` | Parent communication projection records `program_manager -> BuildSquad`; child coordinator receives recipient-visible prompt | `MixedTeamManager.deliverInterAgentMessage` | This is the company/department collaboration path. It must produce both parent-level communication and child leaf transcript without conflating them. |
+| DS-007 | Primary End-to-End | UC-003, UC-011 | Parent agent tool call `send_message_to({ recipient_name: 'review_lead' })` where `review_lead` represents `BuildSquad` | Parent communication projection records `program_manager -> BuildSquad/review_lead` with represented-subteam metadata; child coordinator receives recipient-visible prompt | `MemberCommunicationRosterBuilder` + `MixedTeamManager.deliverInterAgentMessage` + `MixedSubTeamMemberHandle` | This is the company/department collaboration path. It must produce both parent-level communication and child leaf transcript without exposing abstract subteam names as normal tool recipients. |
 | DS-008 | Primary End-to-End | UC-004 | Child coordinator/leaf sends to another child member | Child leaf/member receives the work within the child team boundary | Child `MixedTeamManager` | Proves nested teams remain real teams internally, not only parent-visible groups. |
 | DS-009 | Return-Event | UC-002, UC-003, UC-009, UC-011 | Accepted backend-delivered member input | Frontend leaf conversation contains exactly one user message for the actual recipient leaf | Backend `TeamMemberInputEvent` producer + `TeamStreamingService` | This is the missing Round 5 live transcript spine. The backend, not the frontend, owns the resolved child coordinator and exact recipient-visible prompt. |
 | DS-010 | Return-Event | UC-005, UC-011 | Agent runtime output/tool/status event from root or child leaf | Parent WebSocket/client receives event routed by canonical `sourcePath` | `MixedAgentMemberHandle` / `MixedTeamEventBridge` | Keeps output, tools, statuses, and child replies attached to `BuildSquad/review_lead`, not to a flat or focused fallback member. |
-| DS-011 | Return-Event | UC-003, UC-005, UC-008 | Parent team communication event | Backend communication projection and frontend Team Messages panel show sender/receiver participants with kind/path/route | `TeamCommunicationService` + `TeamCommunicationStore` | Parent-level `program_manager -> BuildSquad` belongs in communication panels, not as a fake leaf user prompt. |
+| DS-011 | Return-Event | UC-003, UC-005, UC-008 | Parent team communication event | Backend communication projection and frontend Team Messages panel show sender/receiver participants with kind/path/route and represented-subteam context | `TeamCommunicationService` + `TeamCommunicationStore` | Parent-level `program_manager -> BuildSquad/review_lead` belongs in communication panels, not as a fake leaf user prompt or an abstract subteam-as-agent row. |
 | DS-012 | Primary End-to-End | UC-005, UC-007 | Nested leaf tool approval request | Approval command targets the exact nested leaf and reaches the correct handle | Tool approval token/payload mapper + `TeamMemberSelector` chain | Prevents approval by ambiguous leaf names such as `review_lead` when the organization repeats roles. |
 | DS-013 | Return-Event | UC-006, UC-008 | Runtime context/metadata refresh trigger | Canonical recursive `TeamRunMetadata.memberTree` persisted for the parent run | `TeamRunMetadataMapper` + `TeamRunMetadataStore` | Stores child team run IDs and leaf platform IDs inside the parent topology without a flat compatibility schema. |
 | DS-014 | Primary End-to-End | UC-006 | Restore active/stopped parent team run | Recursive parent context restored; child team handles remain parent-owned and lazy | `TeamRunService` + `TeamRunMetadataMapper` + `MixedTeamRunBackendFactory` | Prevents restore from either flattening child leaves or registering child teams as independent top-level runs. |
@@ -630,6 +957,9 @@ The spine inventory is intentionally complete across the approved use cases. Imp
 | DS-017 | Primary End-to-End | UC-008, UC-011 | A team/member row is built from active context or history metadata | Stable primary label plus secondary route/definition metadata | `useTeamMemberPresentation` + row builders | This is the Round 5 active/history label spine. The same member must not appear as `Nested Review Lead Agent` in one view and `review_lead` in another. |
 | DS-018 | Bounded Local | UC-006 | Parent interrupt/terminate command | All active agent and child team handles interrupted/terminated; subscriptions cleared | `MixedTeamManager` | Prevents orphaned child teams/agents and stale bridges. |
 | DS-019 | Primary End-to-End | UC-006, UC-008 | Run-history read model builds workspace tree | Parent team appears once as top-level; child teams appear as nested member rows | Run-history services + frontend run-history row builders | Keeps parent-owned child team runs out of top-level global history while still making them visible under the parent. |
+| DS-020 | Primary End-to-End | UC-012 | Child coordinator tool call `send_message_to({ recipient_name: 'program_manager' })` resolved from scoped parent-boundary recipient descriptors | Parent recipient leaf receives backend member input and parent communication projection records nested sender | `MemberCommunicationRosterBuilder` + child `MixedTeamManager` parent-boundary bridge + parent `MixedTeamManager` | Closes the delegation/report loop without flattening the child team into the parent member list or relying on stored reply state. |
+| DS-021 | Return-Event | UC-005, UC-011, UC-012 | Accepted upward parent-boundary communication | Parent Team Messages, subteam perspective, and parent recipient transcript each update once with canonical path identity | `TeamCommunicationService`, `TeamMemberInputEvent` producer, and `TeamStreamingService` | Ensures upward reports are visible where users expect them without duplicate transcript/communication rows. |
+| DS-022 | Bounded Local | UC-003, UC-007, UC-012 | `send_message_to` recipient name inside any member run | Communication recipient descriptor or clear rejection | `MemberCommunicationRosterBuilder` + `MemberTeamContextBuilder` + manager recipient resolver | Prevents representative/downward/upward communication from becoming an unsafe flat organization-wide recipient list. |
 
 ### Use-Case-To-Spine Coverage
 
@@ -637,7 +967,7 @@ The spine inventory is intentionally complete across the approved use cases. Imp
 | --- | --- |
 | UC-001 Create/run nested mixed team | DS-001, DS-002, DS-003 |
 | UC-002 User posts to subteam member | DS-004, DS-006, DS-009, DS-010 |
-| UC-003 Parent agent sends to subteam | DS-004, DS-007, DS-009, DS-011 |
+| UC-003 Parent agent sends to subteam representative | DS-004, DS-007, DS-009, DS-011 |
 | UC-004 Child team coordinates internally | DS-008, DS-010 |
 | UC-005 Parent stream has nested attribution | DS-010, DS-011, DS-012 |
 | UC-006 Interrupt/terminate/restore parent run | DS-013, DS-014, DS-015, DS-018, DS-019 |
@@ -646,6 +976,7 @@ The spine inventory is intentionally complete across the approved use cases. Imp
 | UC-009 Select/focus subteam and leaf nodes | DS-004, DS-005, DS-006, DS-016 |
 | UC-010 Configure nested launches | DS-002 |
 | UC-011 Live/restored transcript, dedupe, labels | DS-005, DS-006, DS-007, DS-009, DS-015, DS-017 |
+| UC-012 Child reports upward to parent boundary | DS-004, DS-020, DS-021, DS-022 |
 
 ## Primary Execution Spine(s)
 
@@ -654,8 +985,9 @@ The spine inventory is intentionally complete across the approved use cases. Imp
 - Parent run creation spine (UC-001): `GraphQL createAgentTeamRun -> TeamRunService -> AgentTeamRunManager top-level registration -> MixedTeamRunBackendFactory -> MixedTeamManager -> initial TeamRunMetadata.memberTree`
 - User-to-agent leaf spine (UC-009): `Composer -> TeamStreamingService SEND_MESSAGE(target_member_route_key leaf) -> AgentTeamStreamHandler selector adapter -> TeamRun.postMessage -> MixedAgentMemberHandle -> AgentRun.postUserMessage -> TeamMemberInputEvent/live echo`
 - User-to-subteam spine (UC-002/UC-009): `Composer focused on BuildSquad -> SEND_MESSAGE(target_member_route_key BuildSquad) -> MixedSubTeamMemberHandle -> internal child TeamRun.postMessage(null/default) -> child coordinator MixedAgentMemberHandle -> AgentRun.postUserMessage -> bridged TeamMemberInputEvent`
-- Parent-agent-to-subteam spine (UC-003): `Parent leaf send_message_to tool -> MemberTeamContext delivery handler -> MixedTeamManager.deliverInterAgentMessage -> parent Communication event -> MixedSubTeamMemberHandle -> child coordinator AgentRun input -> bridged TeamMemberInputEvent`
+- Parent-agent-to-subteam representative spine (UC-003): `Parent leaf send_message_to('review_lead') -> communication recipient descriptor representedSubTeam=BuildSquad -> MixedTeamManager.deliverInterAgentMessage -> parent Communication event receiver=BuildSquad/review_lead -> MixedSubTeamMemberHandle strips BuildSquad prefix -> child coordinator AgentRun input -> bridged TeamMemberInputEvent`
 - Child internal coordination spine (UC-004): `Child coordinator send_message_to child leaf -> child MixedTeamManager.deliverInterAgentMessage -> child leaf handle -> child event bridge -> parent stream with prefixed sourcePath`
+- Child-to-parent reporting spine (UC-012): `Child coordinator send_message_to('program_manager') -> scoped communication recipient descriptor -> child MixedTeamManager parent-boundary bridge -> parent MixedTeamManager.deliverInterAgentMessage with senderPath BuildSquad/review_lead -> parent Communication event -> program_manager AgentRun input -> MEMBER_INPUT/live transcript`
 - Restore/open spine (UC-006): `getTeamRunResumeConfig/restore -> TeamRunMetadataStore canonical memberTree -> TeamRunMetadataMapper -> recursive runtime context -> MixedTeamRunBackendFactory -> lazy member handles`
 - Frontend display/focus spine (UC-008/UC-009): `Backend metadata/definition memberTree -> frontend parser/topology utility -> AgentTeamContextsStore -> recursive tree rows/grid/spotlight -> focusedMemberRouteKey`
 - Durable projection/open spine (UC-011): `Agent raw traces/provider projection/local projection -> AgentRunViewProjectionService merge + dedupe -> getTeamMemberRunProjection -> runProjectionConversation defensive dedupe -> leaf conversation`
@@ -667,6 +999,7 @@ The spine inventory is intentionally complete across the approved use cases. Imp
 - Agent output event spine: `AgentRun event -> MixedAgentMemberHandle -> publishProcessedTeamAgentEvents -> TeamRunEventSourceType.AGENT with sourcePath -> WebSocket -> TeamStreamingService -> leaf AgentContext`
 - Child event bridge spine: `Child TeamRun event -> MixedSubTeamMemberHandle prefix sourcePath -> parent TeamRun subscribers -> WebSocket/projection consumers`
 - Team communication event spine: `MixedTeamManager communication payload -> TeamCommunicationService projection -> WebSocket TEAM_COMMUNICATION_MESSAGE -> TeamCommunicationStore participant-aware upsert`
+- Upward reporting event spine: `Child parent-boundary delivery -> parent Communication payload with nested sender sourcePath -> TeamCommunicationStore perspectives -> parent recipient MEMBER_INPUT -> TeamStreamingService program_manager conversation upsert`
 - Metadata refresh spine: `TeamRun event/status change -> debounced TeamRunService.refreshRunMetadata -> TeamRunMetadataMapper -> TeamRunMetadataStore.writeMetadata(memberTree)`
 
 ## Spine Narratives (Mandatory)
@@ -679,11 +1012,11 @@ The spine inventory is intentionally complete across the approved use cases. Imp
 | DS-004 | All external command target payloads are normalized into `TeamMemberSelector` before entering domain/backend code. Bare names are edge-only and rejected when ambiguous. | Transport payload, selector adapter, `TeamRun` command | Transport adapter + `TeamMemberSelector` helpers | Legacy payload field reading, GraphQL/WebSocket shape mapping |
 | DS-005 | Direct leaf user sends post to the selected leaf handle. The frontend may optimistically show the user message, but the accepted backend member-input event is the canonical live confirmation and dedupe source. | Leaf selector, MixedAgentMemberHandle, AgentRun | `MixedTeamManager`/`MixedAgentMemberHandle` | Client message IDs, optimistic message upsert |
 | DS-006 | Subteam user sends resolve to a parent subteam handle. The child team chooses its default/coordinator target and publishes the actual recipient leaf input event back through the parent bridge. | Subteam handle, child TeamRun, child coordinator handle | `MixedSubTeamMemberHandle` + child `MixedTeamManager` | Child default target resolution, event prefixing |
-| DS-007 | Parent agent communication creates a parent-level team message to an `agent_team` recipient, then separately delivers recipient-visible input to the child coordinator. These are linked but not the same projection row. | Delivery request, communication payload, child input | `MixedTeamManager.deliverInterAgentMessage` | Delivery trace IDs, reference files, sender/receiver participant mapping |
+| DS-007 | Parent agent communication targets a communication-visible subteam representative such as `review_lead`; the descriptor carries represented `BuildSquad` identity and routes through the subteam handle to the child coordinator. The parent communication row and child transcript input are linked but not the same projection row. | Communication recipient descriptor, delivery request, communication payload, child input | `MemberCommunicationRosterBuilder` + `MixedTeamManager.deliverInterAgentMessage` | Delivery trace IDs, reference files, sender/receiver participant mapping, represented-subteam metadata |
 | DS-008 | Inside a child team, `send_message_to` uses the child manager's own members and selectors. Parent code only sees the bridged result with prefixed `sourcePath`. | Child member context, child manager, child leaf handles | Child `MixedTeamManager` | Child communication projection, parent event bridge |
 | DS-009 | Every backend-delivered recipient input that the live UI must display emits a member-routed input event. The frontend routes by recipient path and upserts by message identity, never deriving child prompts from team communication messages. | Member input payload, WebSocket external-user message, leaf conversation | Backend member-input producer + `TeamStreamingService` | Payload mapping, duplicate optimistic/live merge |
 | DS-010 | Agent runtime output is published as agent events with canonical source path. Child events are prefixed before reaching parent clients. | AgentRun event, TeamRunEvent, WebSocket message | `MixedAgentMemberHandle` / event bridge | Event pipeline processors, transport aliases |
-| DS-011 | Parent-level team communication is stored and rendered as participant-aware communication, including `agent_team` receivers. It does not impersonate the receiver as an agent run. | Communication event, projection row, frontend message | `TeamCommunicationService` + `TeamCommunicationStore` | Reference files, perspective/grouping logic |
+| DS-011 | Parent-level team communication is stored and rendered as participant-aware communication, including actual representative participants plus represented-subteam metadata. It does not impersonate a structural `agent_team` node as an agent run. | Communication event, projection row, frontend message | `TeamCommunicationService` + `TeamCommunicationStore` | Reference files, perspective/grouping logic, represented-subteam fields |
 | DS-012 | Tool approval request events carry route/path identity from the requesting leaf. Approval commands round-trip that identity into selectors and reject subteam or ambiguous bare-name targets. | Tool lifecycle event, approval token, selector command | Stream handler + `MixedTeamManager` | Approval token serialization, frontend target cache |
 | DS-013 | Recursive metadata is refreshed from runtime context and stored as the parent run's canonical `memberTree`. Legacy flat metadata is rejected, not migrated. | Runtime context, metadata mapper, metadata store | `TeamRunMetadataMapper` + `TeamRunMetadataStore` | Debounce timers, history summaries, derived flattener |
 | DS-014 | Restore reconstructs the same recursive topology and lazy handle contexts from canonical metadata. Child team run IDs remain inside parent member metadata. | Resume config, recursive runtime context, backend factory | `TeamRunService` + `MixedTeamRunBackendFactory` | Workspace root resolution, platform IDs |
@@ -692,6 +1025,9 @@ The spine inventory is intentionally complete across the approved use cases. Imp
 | DS-017 | Presentation policy uses team membership labels as primary identity everywhere and treats route breadcrumbs/agent definition names as secondary metadata. | TeamMemberNode, AgentContext, display rows | `useTeamMemberPresentation` | Avatar lookup, tooltip/subtitle formatting |
 | DS-018 | Parent lifecycle commands iterate active member handles and cascade to child teams, then clear subscriptions and contexts. | Mixed manager, handles, child TeamRun | `MixedTeamManager` | Error aggregation, cleanup ordering |
 | DS-019 | History read models project one parent run with recursive member rows. Child internal team runs are nested rows, not global top-level history records. | History index, TeamTreeNode, member rows | Run-history services + frontend row builders | Workspace grouping, active/historical merge |
+| DS-020 | A child coordinator sends a report to a parent-boundary recipient by direct visible member name. The child manager resolves the recipient against scoped communication recipients, bridges the request to the parent manager, and the parent delivers to its own member handle. | Child sender, communication recipient descriptor, parent-boundary bridge, parent recipient handle | `MemberCommunicationRosterBuilder` + child `MixedTeamManager` + parent `MixedTeamManager` | Communication recipient descriptors, nested sender normalization |
+| DS-021 | The accepted upward report updates parent Team Messages, subteam communication perspective, and the parent recipient transcript exactly once. Communication and transcript rows are linked but not conflated. | Parent communication row, subteam perspective row, parent member input | `TeamCommunicationService` + member input event producer | Delivery trace IDs, frontend perspective filtering |
+| DS-022 | A `send_message_to` argument is resolved against the current member's scoped communication roster: local teammates, subteam representatives, or parent-boundary recipients as applicable. Non-exposed or ambiguous targets fail before delivery. | Tool recipient name, communication recipient descriptor, selector | `MemberCommunicationRosterBuilder` + `MemberTeamContextBuilder` + manager recipient resolver | Visible-name uniqueness, instruction/schema enum generation |
 
 ## Spine Actors / Main-Line Nodes
 
@@ -705,6 +1041,8 @@ The spine inventory is intentionally complete across the approved use cases. Imp
 - `MixedTeamMemberHandle` (`MixedAgentMemberHandle` / `MixedSubTeamMemberHandle`)
 - `AgentRun` / child `TeamRun`
 - `TeamRunMemberInputEventPayload` / member input event producer
+- `MemberCommunicationRosterBuilder` / `MemberTeamRecipientDescriptor` communication-recipient model
+- `ParentBoundaryBridge` for child-to-parent reporting
 - `AgentTeamStreamHandler` transport command/event mapper
 - `TeamCommunicationService`
 - `TeamRunMetadataMapper`
@@ -727,9 +1065,11 @@ The spine inventory is intentionally complete across the approved use cases. Imp
 | `MixedTeamMemberHandle` | Common command/event/status contract for one executable member. |
 | `MixedAgentMemberHandle` | AgentRun creation/restore, agent message delivery, tool approval, agent event subscription. |
 | `MixedSubTeamMemberHandle` | Parent-owned internal child `TeamRun` creation/restore, default child-team message delivery, child event subscription, child lifecycle. |
+| `ParentBoundaryBridge` | Scoped upward delivery from an internal child run back into the parent mixed manager without global run lookup. |
+| `MemberCommunicationRosterBuilder` / `MemberTeamRecipientDescriptor` / `MemberTeamContextBuilder` | Local, subteam-representative, and parent-boundary recipient exposure, tool recipient names, selector/target-team-run identity, representation metadata, and ambiguity rejection. |
 | `TeamRunMemberInputEventPayload` / member input producer | Canonical backend event for accepted recipient-side inputs that must appear in live leaf transcripts. |
 | `AgentTeamStreamHandler` | Edge adapter for WebSocket command selectors and team-event-to-transport payload mapping, including `MEMBER_INPUT -> EXTERNAL_USER_MESSAGE`. |
-| `TeamCommunicationService` | Backend participant-aware communication projection for parent-level member communication, including `agent_team` receivers. |
+| `TeamCommunicationService` | Backend participant-aware communication projection for parent-level member communication, including actual subteam representative participants and represented-subteam metadata. |
 | `TeamRunMetadataMapper` | Recursive team-run metadata projection and restore context construction. |
 | `AgentRunViewProjectionService` / projection dedupe normalizer | Semantic projection merge/dedupe across local/provider/fallback projection sources before GraphQL responses. |
 | Frontend topology utilities | Convert nested definitions and recursive metadata into `TeamMemberNode` trees and derived leaf-agent lists. |
@@ -762,6 +1102,7 @@ If `MixedTeamRunBackend` remains a public runtime facade, it is a thin entry wra
 | Exact JSON row merge for run projections | Cannot dedupe the same logical message when one source has a timestamp and another has `ts: null`. | Semantic projection dedupe normalizer under run-history projection. | In This Change | GraphQL must return deduped rows; frontend dedupe is defensive only. |
 | Frontend flat-only active team display (`resolveLeafTeamMembers` -> `members` map as UI topology) | Omits subteam nodes such as `BuildSquad`. | Recursive `TeamMemberNode` tree with derived leaf indexes. | In This Change | This is the validation-blocking UI failure. |
 | Frontend flat metadata schema (`runVersion` + `memberMetadata`) as current restore type | Conflicts with canonical backend `memberTree`. | Recursive frontend metadata parser/types. | In This Change | No frontend compatibility parser for old flat schema. |
+| Flat `allowedRecipientNames` as the authoritative communication model | Cannot distinguish local teammates, subteam representatives, and parent-boundary report recipients and would flatten hierarchy. | `communicationRecipients: MemberTeamRecipientDescriptor[]` with derived `allowedRecipientNames` for tool schema only. | In This Change | Do not append parent recipients to `members` as fake local teammates. |
 | Component-local primary label choices such as preferring `agentDefinitionName` in one view and `memberName` in another | Causes active/history nested row identity drift. | `useTeamMemberPresentation` primary/secondary label policy. | In This Change | Agent definition name stays secondary metadata, not the primary row label. |
 
 ## Return Or Event Spine(s) (If Applicable)
@@ -770,6 +1111,7 @@ If `MixedTeamRunBackend` remains a public runtime facade, it is a thin entry wra
 - Top-level agent event: `AgentRun event -> MixedAgentMemberHandle -> MixedTeamManager.publish(event with sourcePath [memberName]) -> TeamRun subscribers/WebSocket`
 - Subteam child event: `Child TeamRun event -> MixedSubTeamMemberHandle event bridge -> parent MixedTeamManager.publish(event with sourcePath [subteamName, ...childSourcePath]) -> TeamRun subscribers/WebSocket`
 - Parent communication event: `MixedTeamManager.deliverInterAgentMessage -> TeamRunEventSourceType.COMMUNICATION with sender/receiver participants -> TeamCommunicationService projection -> WebSocket TEAM_COMMUNICATION_MESSAGE -> TeamCommunicationStore`
+- Upward parent-boundary report event: `Child MixedTeamManager parent-boundary bridge -> parent MixedTeamManager.deliverInterAgentMessage -> COMMUNICATION with nested sender sourcePath -> parent recipient MEMBER_INPUT -> frontend TeamCommunicationStore and leaf transcript`
 - Durable projection return path: `local/provider projection sources -> semantic dedupe normalizer -> getTeamMemberRunProjection -> frontend projection hydration defensive dedupe -> leaf conversation`
 - Status event: `member status changes -> MixedTeamManager.deriveTeamStatus() -> TeamRunEventSourceType.TEAM status event`
 
@@ -780,6 +1122,12 @@ Parent owner: `MixedTeamManager`
 `Member command -> ensure handle ready -> execute handle command -> update runtime context -> derive status -> publish status if changed`
 
 This bounded local spine is important because both agent and subteam handles must obey identical lifecycle sequencing.
+
+Parent owner: child `MixedTeamManager` recipient resolver
+
+`send_message_to recipient -> match local allowed recipient -> otherwise match parent-boundary bridge recipient -> normalize target team run/selector -> reject if no scoped match`
+
+This bounded local spine is important because upward reporting must be possible without flattening all parent members into the child team.
 
 Parent owner: `MixedSubTeamMemberHandle`
 
@@ -811,6 +1159,8 @@ This local spine prevents nested live events from falling back to whichever memb
 | WebSocket mapping | DS-009, DS-010, DS-011 | AgentTeamStreamHandler | Convert `TeamRunEvent` to client messages. | Transport-specific shaping. | Mixed manager would become transport-aware. |
 | Member input event mapping | DS-005, DS-006, DS-007, DS-009 | Leaf member handle / stream handler | Publish accepted recipient inputs as `MEMBER_INPUT` and map them to live `EXTERNAL_USER_MESSAGE` payloads. | Live transcript must show the actual receiving leaf input. | Frontend would guess child coordinator from parent communication. |
 | Delivery trace identity | DS-007, DS-009, DS-015 | Mixed delivery and projection owners | Link parent communication message, recipient input event, and projection row IDs. | Prevents conflating or duplicating related records. | Rows would be deduped only by brittle content guesses. |
+| Communication roster recipient exposure | DS-007, DS-020, DS-022 | `MemberCommunicationRosterBuilder`, `MemberTeamContextBuilder`, parent/child `MixedTeamManager` | Expose scoped local recipients, subteam representatives, and upward parent-boundary recipients with target team-run/path/route identity. | Child agents need a report-back channel without global peer flattening. | Parent members would be appended as fake local teammates or become unreachable. |
+| Nested sender participant normalization | DS-020, DS-021 | Parent `MixedTeamManager` communication payload builder | Use request sender path/route when the sender is a child leaf not present as a parent top-level context. | Upward reports must show `BuildSquad/review_lead`, not an empty/unknown sender. | Parent communication projections would lose nested sender identity. |
 | Projection dedupe | DS-015 | AgentRunViewProjectionService | Semantically merge local/provider projection rows and remove timestamp/null duplicates. | Current exact JSON merge is too weak. | Components would hide duplicates differently and GraphQL would remain wrong. |
 | Frontend tree projection | DS-006 | `AgentTeamContextsStore` | Build display tree and leaf indexes from definition/metadata. | UI needs both recursive display and leaf conversation lookup. | Components would each flatten or guess topology differently. |
 | Frontend event identity mapping | DS-007 | `TeamStreamingService` | Resolve source path/route to member node or leaf context. | Streaming payloads carry transport aliases plus canonical identity. | Activity would attach to focused or wrong flat member. |
@@ -843,6 +1193,7 @@ This local spine prevents nested live events from falling back to whichever memb
 | Run projection normalization | Semantic conversation/activity dedupe for merged projection sources. | DS-015 | `AgentRunViewProjectionService` | Extend/Create small owned normalizer | Fixes Round 5 timestamp/null duplicates at GraphQL source. |
 | Frontend team topology/read model | Recursive `TeamMemberNode` display tree, route-key indexes, leaf agent lookup maps. | DS-016 | `AgentTeamContextsStore` | Extend/Create reusable frontend topology utility | Replaces leaf-only display topology. |
 | Frontend workspace/history/team UI | Recursive tree rendering, subteam focus/group cards, nested launch config groups. | DS-016, DS-019 | Workspace/team components | Extend | Must show subteam nodes in active and historical UI. |
+| Parent-boundary communication bridge | Controlled child-to-parent report routing and nested sender normalization. | DS-020, DS-021, DS-022 | Child and parent `MixedTeamManager` | Extend mixed runtime/team communication | Reuses `InterAgentMessageDeliveryRequest`, `TeamCommunicationService`, and `MEMBER_INPUT` rather than a new global messaging system. |
 | Frontend streaming/activity/communication | Path-aware event dispatch, approval identity, participant displays. | DS-009, DS-010, DS-011, DS-012 | `TeamStreamingService`, `TeamCommunicationStore` | Extend | Keeps event identity aligned with backend `sourcePath`. |
 | Frontend presentation policy | Stable nested member primary/secondary labels. | DS-017 | `useTeamMemberPresentation` | Extend | Prevents active/history label drift. |
 
@@ -859,6 +1210,8 @@ This local spine prevents nested live events from falling back to whichever memb
 | `mixed-team-member-registry.ts` | Mixed runtime | Member handle registry | Resolve/cache handles by top-level name/route key/path. | Keeps lookup policy out of manager flow. | Yes |
 | `mixed-sub-team-run-factory.ts` | Mixed runtime | Child run factory | Create/restore parent-owned internal child `TeamRun` from subteam config/context without registering it as a top-level active/history run. | Avoids using global top-level run manager for internal members. | Yes |
 | `mixed-team-event-bridge.ts` | Mixed runtime | Event bridge | Prefix child event paths and publish to parent. | Isolates event path rewrite. | Yes |
+| `parent-boundary-bridge.ts` or owned types in `mixed-team-run-context.ts` | Mixed runtime | Parent-boundary bridge contract | Serializable parent link plus delivery handler wiring for child-to-parent reports. | Keeps upward reporting explicit and scoped. | Yes |
+| `member-team-recipient.ts` or owned types in `member-team-context.ts` | Team communication domain | Communication recipient descriptor | Distinguish local agents, subteam representatives, parent-boundary agents, and parent-boundary representatives using one delivery/participant coordinate shape. | Avoids flat recipient-name policy spread across runtimes. | Yes |
 
 ## Reusable Owned Structures Check
 
@@ -867,6 +1220,7 @@ This local spine prevents nested live events from falling back to whichever memb
 | Member path and route key derivation | `agent-team-execution/domain/team-run-member-identity.ts` | Team run domain | Used by topology, metadata, context, stream. | Yes | Yes | A generic string helper with no team semantics. |
 | Discriminated member config/context narrowing | `team-run-member-config.ts`, `team-run-member-context.ts` | Team run domain | Avoid repeated `"agent_team"` checks. | Yes | Yes | A kitchen-sink config with optional agent/team fields. |
 | Recursive metadata flattening for projections | `team-run-metadata-flattener.ts` | Run history metadata | Existing projections need leaf/member views. | Yes | Yes | Compatibility wrapper preserving old schema as authoritative. |
+| Scoped send-message recipients | `member-team-context.ts` / `member-team-recipient.ts` | Team communication domain | Tool handlers, instructions, and child manager routing need the same recipient scope model. | Yes | Yes | A flat list that treats parent recipients as local teammates. |
 | Frontend recursive member tree and leaf indexes | `autobyteus-web/utils/teamDefinitionMembers.ts` plus frontend context types | Frontend team topology | Draft/config/history/workspace components need one topology shape. | Yes | Yes | A flattening helper that hides subteam nodes. |
 
 ## Shared Structure / Data Model Tightness Check
@@ -916,19 +1270,23 @@ This local spine prevents nested live events from falling back to whichever memb
 | `autobyteus-server-ts/src/run-history/services/team-run-history-service.ts` | Run history projection | Resume/history DTO consumer | Use flattener-derived views for resume config and summaries; expose tree where needed. | Current code reads flat metadata directly. |
 | `autobyteus-server-ts/src/run-history/services/team-member-run-view-projection-service.ts` | Run history projection | Leaf member projection consumer | Resolve only agent leaf metadata from the flattener by route key/path. Reject subteam route keys when an agent projection is requested. | Current code assumes every metadata member is an agent. |
 | `autobyteus-server-ts/src/run-history/services/run-file-change-projection-service.ts` | Run history projection | File-change projection consumer | Resolve leaf agent members through flattener-derived agent metadata. | Current code searches flat `memberMetadata`. |
-| `autobyteus-server-ts/src/agent-team-execution/domain/member-team-context.ts` | Team communication domain | Member descriptor contract | Replace agent-only descriptor with discriminated agent/subteam descriptors carrying member path/route and member kind. | Parent agents must see subteam members as addressable recipients. |
-| `autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts` | Team communication domain | Descriptor builder | Build member-kind-aware descriptors and allowed recipient selectors, not only allowed recipient names. | Subteam recipients have no runtimeKind and must not be hidden. |
-| `autobyteus-server-ts/src/agent-team-execution/domain/inter-agent-message-delivery.ts` | Team communication domain | Delivery command DTO | Add recipient/sender selector, route key, and path fields. Keep names display-only. | Enables path-safe parent-to-subteam delivery. |
+| `autobyteus-server-ts/src/agent-team-execution/domain/member-team-context.ts` | Team communication domain | Member/recipient descriptor contract | Keep structural `members` as same-boundary descriptors and add scoped `communicationRecipients` for local agents, subteam representatives, and parent-boundary recipients. | Parent and child agents need representative/upward communication without fake local teammates or flat name-only routing. |
+| `autobyteus-server-ts/src/agent-team-execution/services/member-communication-roster-builder.ts` | Team communication domain | Communication roster owner | Derive scoped `communicationRecipients` from structural topology, subteam coordinator identities, parent-boundary bridge input, and uniqueness policy. | Keeps representative/downward/upward visibility policy out of runtime tool adapters and structural member lists. |
+| `autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts` | Team communication domain | Descriptor builder | Build member-kind-aware local descriptors plus scoped communication recipient descriptors from `MemberCommunicationRosterBuilder`; derive `allowedRecipientNames` only for tool schema/instructions. | Subteam representatives and upward report recipients need path/scope/representation identity, not only names. |
+| `autobyteus-server-ts/src/agent-team-execution/domain/inter-agent-message-delivery.ts` | Team communication domain | Delivery command DTO | Define the participant-shaped request: `teamRunId`, sender participant, recipient participant plus selector, content, references, and trace IDs using `TeamMemberAddress`. Do not keep loose scalar identity fields. | Enables path-safe parent-to-representative delivery and child-to-parent reporting with nested sender identity. |
 | `autobyteus-server-ts/src/agent-team-execution/services/inter-agent-message-router.ts` | Team communication runtime | Agent recipient adapter | Accept resolved agent member delivery only; subteam delivery is owned by `MixedSubTeamMemberHandle`. | Avoids routing subteam messages through an agent-only router. |
 | `autobyteus-server-ts/src/agent-team-execution/services/inter-agent-message-runtime-builders.ts` | Team communication runtime | Message/event builders | Build member-kind-aware communication events and recipient-visible messages with path/route identity. | Current payload names are agent-only. |
+| `autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-sub-team-run-factory.ts` | Mixed runtime | Child factory / bridge wiring | Accept parent-boundary bridge/link input when creating/restoring internal child TeamRuns. | Child managers need a parent-owned delivery bridge; global run lookup is forbidden. |
+| `autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts` | Mixed runtime | Local and upward communication owner | Route participant-shaped delivery requests. For nested representative selectors, resolve the executable top-level subteam handle while publishing actual leaf sender/receiver participants; for parent-boundary descriptors, delegate through the bridge instead of resolving locally. | Parent-to-representative delivery must publish receiver `BuildSquad/review_lead`; parent-boundary reports must preserve sender `BuildSquad/review_lead` and deliver to parent recipients. |
+| `autobyteus-server-ts/src/agent-execution/backends/codex/team-communication/codex-send-message-dynamic-tool-registration.ts` and Claude send-message handlers | Agent runtime tool adapters | Tool recipient adapter | Resolve parsed `recipient_name` against `communicationRecipients` descriptors instead of structural `members`; build sender/recipient participants from the descriptor `delivery` and `participant` shapes before calling delivery. | Tool adapters are the edge between model output and scoped communication identity. |
 | `autobyteus-server-ts/src/agent-team-execution/domain/team-run-event.ts` | Team run domain events | Event contract | Add `TeamRunEventSourceType.MEMBER_INPUT` and `TeamRunMemberInputEventPayload` for accepted recipient-side inputs. | Live leaf transcript cannot be derived from parent communication events. |
 | `autobyteus-server-ts/src/agent-team-execution/services/team-member-input-event-builder.ts` (or equivalent owned file) | Team runtime events | Member input event builder | Build stable message IDs/dedupe keys, recipient identity, sender trace fields, and context/reference metadata for `MEMBER_INPUT`. | Avoids duplicating payload construction across agent and subteam/member delivery paths. |
 | `autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts` | WebSocket transport | Event mapper | Map `MEMBER_INPUT` to `EXTERNAL_USER_MESSAGE` with `source_path`, `member_route_key`, `message_id`, `dedupe_key`, and sender/communication trace fields. | Round 5 live child transcript depends on route-aware transport payloads. |
 | `autobyteus-server-ts/src/run-history/projection/run-projection-dedupe.ts` (or equivalent owned normalizer) | Run history projection | Semantic dedupe | Dedupe conversation rows from merged local/provider projections and prefer timestamped/richer rows. | Exact JSON merge leaves duplicate `ts: null` messages. |
 | `autobyteus-server-ts/src/run-history/services/agent-run-view-projection-service.ts` | Run history projection | Projection merge owner | Invoke semantic dedupe when combining local, primary, complementary, and fallback projections. | GraphQL should not return duplicate logical rows. |
-| `autobyteus-server-ts/src/services/team-communication/team-communication-types.ts` | Team communication projection | Projection schema | Store sender/receiver participants with member kind, path, route key, run IDs, and optional team definition ID. | Projection must represent subteam receivers without pretending they are agents. |
+| `autobyteus-server-ts/src/services/team-communication/team-communication-types.ts` | Team communication projection | Projection schema | Store sender/receiver participants with member kind, path, route key, run IDs, optional team definition ID, and represented-subteam metadata. | Projection must represent subteam representatives without losing the structural team boundary. |
 | `autobyteus-server-ts/src/services/team-communication/team-communication-normalizer.ts` | Team communication projection | Projection normalizer | Normalize member-kind-aware communication payloads from team events. | Current normalizer consumes agent-shaped sender/receiver fields. |
-| `autobyteus-server-ts/src/services/team-communication/team-communication-service.ts` | Team communication projection | Projection event consumer | Consume canonical team communication events, not only `TeamRunEventSourceType.AGENT` with `TEAM_COMMUNICATION_MESSAGE`. | AC-003 depends on parent-level subteam-recipient projection. |
+| `autobyteus-server-ts/src/services/team-communication/team-communication-service.ts` | Team communication projection | Projection event consumer | Consume canonical team communication events, not only `TeamRunEventSourceType.AGENT` with `TEAM_COMMUNICATION_MESSAGE`. | AC-003 depends on parent-level representative-recipient projection with represented-subteam context. |
 | `autobyteus-web/services/agentStreaming/handlers/externalUserMessageHandler.ts` | Frontend stream handling | Leaf transcript input handler | Upsert user messages by `message_id`/`dedupe_key` and use `received_at` from backend input event. | Avoids duplicates when backend echoes direct leaf sends and adds missing subteam child prompts. |
 | `autobyteus-web/services/runHydration/runProjectionConversation.ts` | Frontend projection hydration | Defensive conversation builder | Dedupe stale projection rows before building `Conversation`; preserve backend ordering after dedupe. | UI should remain robust even if cached/stale payload contains duplicate rows. |
 | `autobyteus-web/composables/useTeamMemberPresentation.ts` | Frontend presentation | Label policy owner | Primary labels come from membership node display/member name; route and agent definition names are secondary. | Active/history label drift is caused by component-local label choices. |
@@ -949,6 +1307,8 @@ This local spine prevents nested live events from falling back to whichever memb
 - Frontend topology utilities own recursive `TeamMemberNode` construction and derived leaf-agent lists. Launch config builders use the derived leaves; display components use the tree.
 - Frontend `TeamStreamingService` owns client-side stream event routing by source path/route key. Handlers must not fall back to the focused member when canonical nested identity is present.
 - Frontend `TeamCommunicationStore` owns nested communication read-model normalization with sender/receiver participant identity.
+- `ParentBoundaryBridge` is the only allowed child-to-parent delivery bridge for internal child runs. It is built by the parent subteam handle/factory and must not be replaced by global top-level run lookup.
+- `MemberCommunicationRosterBuilder` owns the distinction between structural members, subteam representatives, and parent-boundary reporting recipients. `MemberTeamContextBuilder` attaches those descriptors to member contexts; tool adapters consume descriptors and must not infer recipients from structural names.
 - Frontend `runProjectionConversation` owns projection-to-conversation hydration and defensive row dedupe, but it is not the primary duplicate-fix boundary.
 - Frontend `useTeamMemberPresentation` owns primary/secondary member labels across active and history surfaces.
 
@@ -963,6 +1323,8 @@ This local spine prevents nested live events from falling back to whichever memb
 | `TeamRunMetadataStore` | Canonical recursive metadata validation/read/write. | `TeamRunService`, run-history services. | Store accepts `runVersion`/flat `memberMetadata`, silently returns `null`, or migrates old schema. | Strengthen store schema validation and explicit unsupported-legacy errors. |
 | `TeamRunMetadataMapper` | Runtime config/context <-> canonical metadata conversion. | `TeamRunService`. | Mapper reads raw JSON files, validates old schemas, or guesses topology from definitions. | Add mapper helper over canonical `TeamRunMetadata`. |
 | `team-run-metadata-flattener.ts` | Derived flat views from `memberTree`. | Run-history/member/file-change projections. | Projections read `metadata.memberMetadata` or each duplicate recursive traversal. | Add flattener helper for the needed derived view. |
+| `ParentBoundaryBridge` | Parent mixed manager delivery handler and scoped parent-boundary communication recipients. | Child `MixedTeamManager` / child member contexts. | Child manager looks up global runs or treats parent members as local teammates. | Add scoped bridge API and communication recipient descriptors. |
+| `MemberCommunicationRosterBuilder` / `MemberTeamContextBuilder` | Local members, subteam representatives, and scoped communication recipient descriptors. | Tool adapters and member-run instruction composer. | Tool handlers search only structural `members` or construct bare selectors for hidden recipients. | Add `communicationRecipients` lookup and derived tool names. |
 | Backend `MEMBER_INPUT` event producer | Accepted recipient-side input payloads and message identity. | Member handles, stream handler, frontend transcript. | Frontend derives child leaf prompts from parent communication events or `INTER_AGENT_MESSAGE` original-content events. | Add member input event payload and producer at the accepting leaf boundary. |
 | `AgentRunViewProjectionService` | Merged local/provider projection bundle. | `getTeamMemberRunProjection`, run-open/hydration. | Frontend components hide duplicates while GraphQL still returns them. | Add semantic projection dedupe normalizer at merge point. |
 | Frontend `AgentTeamContextsStore` | `memberTree`, member-node indexes, leaf-agent contexts, focus identity. | Workspace tree, team panels, grid, spotlight, composer. | Components call `resolveLeafTeamMembers` and render flat leaves directly. | Add context getters for tree nodes, visible children, and leaf contexts. |
@@ -980,6 +1342,8 @@ Allowed:
 - `MixedTeamManager -> MixedTeamMemberRegistry -> MixedTeamMemberHandle`
 - `MixedAgentMemberHandle -> AgentRunManager`
 - `MixedSubTeamMemberHandle -> MixedSubTeamRunFactory -> MixedTeamRunBackendFactory` for internal child runs
+- `MixedSubTeamMemberHandle -> ParentBoundaryBridge -> child MixedTeamManager -> parent MixedTeamManager.deliverInterAgentMessage` for controlled child-to-parent reports
+- Tool adapters (`send_message_to`) -> `MemberTeamContext.communicationRecipients` -> `InterAgentMessageDeliveryRequest` selectors/scope/representation metadata
 - `MixedAgentMemberHandle / child MixedAgentMemberHandle -> team-member-input-event-builder -> MixedTeamManager.publish`
 - `AgentTeamStreamHandler.convertTeamEvent -> MEMBER_INPUT payload -> EXTERNAL_USER_MESSAGE transport payload`
 - `TeamRunMetadataStore -> TeamRunMetadata` canonical schema validation
@@ -1002,7 +1366,7 @@ Forbidden:
 - Metadata store or mapper keeps old flat restore support, migration branches, dual schemas, silent `null` fallback, or recovery for historical team metadata.
 - Run-history projection consumers read `metadata.memberMetadata` directly; use flattener-derived views over `memberTree`.
 - Projection consumers or components suppress duplicate projection rows locally while backend `getTeamMemberRunProjection` still returns duplicate logical messages.
-- Child team members bypassing the subteam boundary to directly send to arbitrary parent leaf agents in this change.
+- Child team members bypassing the parent-boundary bridge to directly send to arbitrary parent/grandparent/sibling leaf agents. Controlled immediate-parent reporting must use scoped `communicationRecipients`.
 - Frontend components using `resolveLeafTeamMembers` or `AgentTeamContext.members` as the display topology.
 - Frontend launch config lookup by flat child `memberName` for nested leaves.
 - Frontend current metadata parser accepting `runVersion`/flat `memberMetadata` as the canonical restore schema.
@@ -1019,16 +1383,17 @@ Forbidden:
 | `TeamManager.postMessage(message, selector)` | Manager command interface | Manager-level routing. | `TeamMemberSelector`. | Flat managers reject nested path selectors. |
 | `TeamMemberSelector` (`team-run-member-identity.ts`) | Team run identity | Canonical command target shape. | `{ memberPath }` or `{ memberRouteKey }`; `{ memberName }` only for top-level/unambiguous boundary lookup. | Avoids overloading raw strings for nested leaf operations. |
 | `MixedTeamManager.postMessage(message, selector)` | Mixed team runtime | Route user message to top-level agent or subteam. | `TeamMemberSelector` only; edge adapters convert strings before this method is called. | Subteam target defaults to child coordinator. |
-| `MixedTeamManager.deliverInterAgentMessage(request)` | Mixed team runtime | Route parent-level member communication. | Recipient selector resolved in the current team boundary. | Child-internal communication stays in child manager; parent sees subteam as one member. |
+| `MixedTeamManager.deliverInterAgentMessage(request)` | Mixed team runtime | Route participant-shaped member communication. | `request.teamRunId` is the coordinate root; `request.recipient.selector` is relative to that root. Nested selectors may resolve to a top-level subteam handle, but communication identity remains the actual nested participant. | Child-internal communication stays in child manager; parent-to-representative delivery enters through the parent root and subteam handle. |
 | `MixedTeamMemberHandle.postMessage(message)` | Member handle | Post user-visible work to agent or team. | No external selector; handle already resolved. | Subteam handle calls child `TeamRun.postMessage(message, null)`. |
-| `MixedTeamMemberHandle.deliverInterMemberMessage(request)` | Member handle | Deliver teammate message to resolved recipient. | Request + resolved parent sender `sourcePath`. | Agent and subteam map differently. |
+| `MixedTeamMemberHandle.deliverInterMemberMessage(request)` | Member handle | Deliver teammate message to resolved executable handle. | Participant-shaped request. For subteam handles, a nested recipient address under the subteam path is stripped into a child-local selector. | Agent and subteam map differently, but event identity stays on request participants. |
 | `TeamRunEventSourceType.MEMBER_INPUT` | Team run live transcript event | Represent accepted recipient-side user/inbound input for the actual leaf recipient. | `sourcePath`/`memberRouteKey` of recipient leaf + `messageId`/`dedupeKey`. | Maps to WebSocket `EXTERNAL_USER_MESSAGE`; distinct from parent `COMMUNICATION`. |
 | `InterAgentDeliveryTrace` / delivery message IDs | Inter-agent delivery identity | Link parent communication and child/leaf transcript input without conflating them. | `communicationMessageId`, `recipientInputMessageId`, `createdAt`. | Required for dedupe/live/projection consistency. |
 | `TeamRunMetadataStore.readMetadata/writeMetadata` | Metadata persistence schema | Persist and validate only canonical recursive metadata. | `TeamRunMetadata.memberTree`; no `runVersion`, no flat `memberMetadata`. | Unsupported historical flat metadata raises explicit unsupported-legacy/topology-lost instead of null/migration/fallback. |
 | `TeamRunMetadataMapper.buildRestoreContext(metadata)` | Metadata restore | Rebuild recursive context. | `teamRunId` + recursive `memberTree` shape. | No version field; legacy flat metadata is rejected and never inflated into nested topology. |
 | `RunProjectionDedupe.normalize(conversation)` | Run projection normalization | Return one row per logical conversation message. | `messageId`/`dedupeKey` first, semantic fallback keys second. | Timestamped/richer rows win over `ts: null` duplicates. |
 | `getTeamMemberRunProjection(teamRunId, memberRouteKey)` | Leaf projection query | Return deduped projection for a leaf agent route. | Parent `teamRunId` + leaf `memberRouteKey`. | Reject subteam route keys for leaf conversation projection. |
-| `TeamCommunicationService` canonical communication projection | Team communication projection | Store parent-level member communication including subteam recipients. | Sender/receiver participant kind/path/route/run IDs. | Does not project an `agent_team` recipient as an agent runtime. |
+| `TeamCommunicationService` canonical communication projection | Team communication projection | Store parent-level member communication including representative participants and represented-subteam metadata. | Sender/receiver participant kind/path/route/run IDs plus `representedSubTeam`. | Does not project an abstract `agent_team` recipient as an agent runtime. |
+| GraphQL/WebSocket team communication DTOs | Communication transport projection | Expose backend communication participants, including `sender.representedSubTeam` and `receiver.representedSubTeam`, without flattening or string-only aliases. | DTO fields mirror `TeamCommunicationParticipant` plus represented-subteam object. | Transport may add display aliases, but must not drop represented-subteam identity. |
 | Frontend `AgentTeamContextsStore.focusMember(routeKey)` | Active team UI selection | Focus agent leaf or subteam node. | Canonical `memberRouteKey`; may be `agent` or `agent_team`. | Subteam focus opens group view/composer, not `AgentContext` hydration. |
 | Frontend launch config builder | Team launch config | Build `TeamMemberConfigInput[]` for leaf agents. | Leaf `memberRouteKey` from recursive tree. | No flat child-name override lookup. |
 | Frontend run-history metadata parser | Historical/restore UI | Parse authoritative recursive metadata. | `metadata.memberTree`. | No `runVersion`/`memberMetadata` current schema. |
@@ -1047,7 +1412,7 @@ Forbidden:
 | --- | --- | --- | --- | --- |
 | `TeamDefinitionTopologyPlanner.buildPlan` | Yes | Yes | Low | Require path/route-key matching. |
 | `MixedTeamManager.postMessage` | Yes | Yes | Low | Accept `TeamMemberSelector` only; raw strings are normalized by transport/domain edge adapters before reaching the mixed manager. |
-| `MixedTeamManager.deliverInterAgentMessage` | Yes | Yes | Low | Resolve recipient selector inside the current team boundary; parent-to-subteam targets the subteam member, not child leaves. |
+| `MixedTeamManager.deliverInterAgentMessage` | Yes | Yes | Low | Route participant-shaped requests: root-relative representative selectors may resolve to a top-level subteam handle for execution, but communication/event identity remains the actual representative leaf. Parent-boundary requests from child managers go through `ParentBoundaryBridge`. |
 | `approveToolInvocation` | Yes | Yes | Low | Approval request events expose `sourcePath`; approval command uses path/route selector and rejects ambiguity. |
 | `MEMBER_INPUT` event | Yes | Yes | Low | Source path is the recipient leaf; payload carries message/dedupe identity and optional sender trace. |
 | `RunProjectionDedupe` | Yes | Yes | Low | Use identity keys first, semantic timestamp/null fallback second; backend GraphQL returns deduped rows. |
@@ -1114,7 +1479,7 @@ Forbidden:
 | `autobyteus-web/services/agentStreaming/handlers/externalUserMessageHandler.ts` | File | Frontend live input handler | Upsert `EXTERNAL_USER_MESSAGE` into leaf conversation by backend message identity/dedupe key. | Existing handler for user-visible input messages. | Team communication projection or child route guessing. |
 | `autobyteus-web/services/runHydration/runProjectionConversation.ts` | File | Frontend projection hydration | Convert deduped projection rows into conversation messages; defensively dedupe stale rows. | Existing projection-to-conversation owner. | Backend projection source selection. |
 | `autobyteus-web/composables/useTeamMemberPresentation.ts` | File | Frontend presentation policy | Compute primary membership label, secondary route breadcrumb, definition subtitle, initials/avatar inputs. | Existing shared presentation composable. | Component-specific hidden label precedence. |
-| `autobyteus-web/stores/teamCommunicationStore.ts` | File | Frontend communication read model | Store nested sender/receiver participant identities. | Existing communication store. | Grouping only by run ID/name. |
+| `autobyteus-web/stores/teamCommunicationStore.ts` | File | Frontend communication read model | Store nested sender/receiver participant identities plus represented-subteam metadata. | Existing communication store. | Grouping only by run ID/name or dropping representation context. |
 
 ## Folder Boundary Check
 
@@ -1136,7 +1501,7 @@ Forbidden:
 | --- | --- | --- | --- |
 | Nested route identity | `['EngineeringDept', 'CodeReviewTeam', 'Reviewer'] -> 'EngineeringDept/CodeReviewTeam/Reviewer'` | Bare `Reviewer` as global identity. | Multiple departments may have a `Reviewer`. |
 | Member-handle boundary | `MixedTeamManager -> MixedTeamMemberHandle.postMessage()` | `if (member.refType === 'agent_team') { ... } else { agentRun... }` repeated in every command. | Keeps lifecycle/routing centralized. |
-| Posting to subteam | Parent `send_message_to('CodeReviewTeam')` -> subteam `TeamRun.postMessage(message, null)` -> child coordinator. | Parent resolves `CodeReviewTeam` to child leaf `Reviewer` and posts directly. | Preserves department/team boundary. |
+| Parent communication to subteam representative | Parent `send_message_to('Reviewer')` where `Reviewer` represents `CodeReviewTeam` -> descriptor target `CodeReviewTeam/Reviewer` -> subteam handle strips prefix -> child coordinator. | Parent exposes abstract `CodeReviewTeam` as an agent-like recipient or posts directly to a child leaf without subteam-boundary metadata. | Preserves department/team boundary while using the responsible coordinator as the visible communication member. |
 | Event attribution | `sourcePath: ['CodeReviewTeam', 'Reviewer']`, with transport deriving `source_route_key: 'CodeReviewTeam/Reviewer'` if needed. | `subTeamNodeName: 'Reviewer'` as authoritative identity or no path. | Distinguishes subteam path from leaf member identity. |
 | Frontend workspace tree | `Parent Team -> BuildSquad [team] -> BuildSquad/review_lead` | `Parent Team -> review_lead` as a parent-level row. | Shows the addressed subteam boundary. |
 | Frontend subteam focus | Selecting `BuildSquad` opens group panel and composer targets `BuildSquad`. | Try to find `AgentContext` for `BuildSquad` and fail/hide composer. | Subteam is a selectable team member, not a leaf agent. |
@@ -1175,26 +1540,27 @@ Layering is explanatory only; ownership boundaries above are authoritative.
 5. Update mixed run context/factory to create recursive mixed contexts and pass them to `MixedTeamManager`.
 6. Add mixed member handle contract, agent handle, subteam handle, registry, child run factory, and event bridge.
 7. Refactor `MixedTeamManager` to depend on member handles and remove direct `AgentRun` maps/agent-only command paths.
-8. Update member-team context, inter-agent delivery DTOs/builders, and team communication projection/service to use member-kind-aware descriptors, selector/path identities, and subteam-recipient communication events.
+8. Update member-team context, inter-agent delivery DTOs/builders, and team communication projection/service to use participant-shaped descriptors, absolute-route selector/path identities, and represented-subteam communication events.
 9. Update metadata types/store/mapper to canonical recursive `TeamRunMetadata` with no version suffix/field, delete/replace old flat metadata restore code, reject unsupported historical metadata immediately, and update flattener-based projection consumers to use canonical `sourcePath` with derived transport aliases.
 10. Update frontend topology/types: `TeamMemberNode`, `AgentTeamContext.memberTree`, route-key member-node indexes, leaf agent context map, and `focusedMemberRouteKey`.
 11. Update frontend draft/launch path to build recursive definition trees and leaf launch configs keyed by canonical nested route keys; remove flat child-name override lookup.
 12. Update frontend run history/restore parsing and read models to consume `metadata.memberTree` and render nested member rows recursively.
 13. Update frontend workspace/team components for subteam rows, subteam focus/group cards, grid/spotlight mixed node rendering, and composer targeting by route/path.
-14. Add backend `MEMBER_INPUT` event/payload generation for accepted recipient-side inputs, including parent-to-subteam delivery trace IDs and source-path recipient identity; map it to WebSocket `EXTERNAL_USER_MESSAGE`.
+14. Add backend `MEMBER_INPUT` event/payload generation for accepted recipient-side inputs, including parent-to-representative delivery trace IDs and source-path recipient identity; map it to WebSocket `EXTERNAL_USER_MESSAGE`.
 15. Update frontend streaming handlers so `EXTERNAL_USER_MESSAGE` routes by source path/route key and upserts by message ID/dedupe key; do not derive leaf prompts from communication messages.
 16. Add backend run-projection semantic dedupe at `AgentRunViewProjectionService` merge time and defensive frontend dedupe in `runProjectionConversation`.
 17. Centralize frontend member labels in `useTeamMemberPresentation` and update active/history row builders to use membership labels as primary.
 18. Update frontend streaming, tool approval, activity, and communication stores to resolve/display canonical source path, member route key, and participant kind/path/route.
-19. Update tests that currently assert nested definitions flatten for backend or frontend to either target non-nested flat behavior or assert recursive mixed nested behavior.
-20. Run focused backend unit/integration tests, frontend store/component tests, then the seeded full-stack browser validations from `fullstack-nested-team-ui-validation-failure.md` and `fullstack-nested-team-live-child-transcript-validation-failure.md`; run live provider E2E only after environment setup is complete.
+19. Add communication recipient descriptors, representative roster projection, and bridge routing for child-to-parent reports; update tool handlers to resolve against `communicationRecipients` rather than structural `members`, update parent-to-subteam representative delivery to target coordinator routes, and update parent communication event publishing to use nested sender/receiver paths when participants are representatives.
+20. Update tests that currently assert nested definitions flatten for backend or frontend to either target non-nested flat behavior or assert recursive mixed nested behavior.
+21. Run focused backend unit/integration tests, frontend store/component tests, then the seeded full-stack browser validations from `fullstack-nested-team-ui-validation-failure.md` and `fullstack-nested-team-live-child-transcript-validation-failure.md`; run live provider E2E only after environment setup is complete.
 
 ## Key Tradeoffs
 
 - Recursive metadata is a larger change than storing child runs globally, but it keeps nested teams owned by the parent run and avoids top-level active/history clutter.
 - Choosing mixed for any nested definition may route same-runtime nested teams away from existing Codex/Claude team managers, but that matches the product direction that mixed is the superset manager.
 - Path-based identity is stricter than bare names, but it is required for organization-like structures where departments repeat role names.
-- Deferring direct cross-level child-to-parent messaging keeps the team boundary clean and mirrors AutoByteus-ts subteam behavior.
+- Supporting controlled child-to-immediate-parent reporting is more complex than top-down-only delegation, but it is required for realistic delegation. The design keeps the boundary clean by using explicit parent-boundary recipient descriptors and rejecting arbitrary cross-level/global messaging.
 
 ## Risks
 
@@ -1205,6 +1571,7 @@ Layering is explanatory only; ownership boundaries above are authoritative.
 - Frontend currently has tests and types that assert flat nested display; those must be replaced, not preserved as compatibility coverage.
 - Subteam focus must not accidentally call leaf-only projection APIs for `agent_team` route keys; group nodes require separate rendering and communication/activity summaries.
 - Activity and team communication display can become confusing if sender/receiver participant paths are not shown as breadcrumbs.
+- Upward reporting can become unsafe if implemented by flattening parent members into child teammates. Keep parent-boundary recipients as explicit scoped descriptors and reject non-exposed targets.
 - Live transcript and communication projection can become duplicated/confusing if parent communication events are reused as child leaf transcript messages. Keep `COMMUNICATION` and `MEMBER_INPUT` separate.
 - Direct leaf sends can duplicate optimistic frontend user messages if backend member-input echoes are appended blindly. Upsert by `message_id`/`dedupe_key`.
 - Projection dedupe fallback keys can accidentally collapse intentionally repeated identical messages if they are too broad. Only use content/timestamp-null fallback to collapse same-merge-batch/adjacent timestamp-null duplicates unless a stable message ID exists.

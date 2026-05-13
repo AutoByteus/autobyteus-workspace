@@ -15,6 +15,9 @@
 - Full-stack communication failure note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/fullstack-nested-team-communication-validation-failure.md`
 - Round 5 live child transcript/display failure note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/fullstack-nested-team-live-child-transcript-validation-failure.md`
 - Round 5 live transcript/projection/presentation design rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/round5-live-transcript-projection-presentation-design-rework-note.md`
+- Upward nested-team reporting / representative routing design rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/upward-nested-team-reporting-design-rework-note.md`
+- Delivery Round 6 Electron build blocker note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/delivery-round6-electron-build-blocker.md`
+- Delivery Round 6 Electron build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/electron-build.log`
 - Failure screenshot: `/Users/normy/.autobyteus/browser-artifacts/995de5-1778644109170.png`
 - Round 4 nested subteam UI screenshots: `/Users/normy/.autobyteus/browser-artifacts/e47bac-1778653656912.png`, `/Users/normy/.autobyteus/browser-artifacts/e47bac-1778653663419.png`
 - Round 5 live communication/transcript screenshots: `/Users/normy/.autobyteus/browser-artifacts/382035-1778656478050.png`, `/Users/normy/.autobyteus/browser-artifacts/382035-1778656693356.png`, `/Users/normy/.autobyteus/browser-artifacts/382035-1778657119879.png`
@@ -43,6 +46,30 @@ Round 9 frontend/full-stack presentation rework added:
 - Workspace history GraphQL now exposes recursive `memberTree` JSON for team run rows; frontend history rows are built from the recursive tree and flattened only for display/projection.
 - Team communication GraphQL and frontend stores include participant `memberKind`, `memberPath`, and `memberRouteKey` fields for sender/receiver display and routing.
 - Seed fixture generation was updated for nested mixed-team UI validation fixtures.
+
+
+## Round 11 Communication-Roster / Representative Routing Implementation Update
+
+Architecture review Round 11 approved the revised communication-roster and representative-routing design. I implemented the approved contract instead of patching around the old scalar delivery fields.
+
+- Replaced the old inter-agent delivery request shape with participant-shaped endpoints: `sender.participant`, `recipient.participant`, `participant.address`, and explicit `delivery.selector` / `request.recipient.selector` identity. Descriptor/address invariants now reject divergent `memberPath` / `memberRouteKey` / `address` coordinates.
+- Added `MemberCommunicationRosterBuilder` and `inter-agent-message-delivery-request-builder` so tools resolve `recipient_name` through a scoped roster rather than structural member lookup. Duplicate visible recipient names now fail fast as ambiguous.
+- Parent members now see subteam coordinator representatives by visible leaf name. For example `program_manager -> review_lead` creates a parent-rooted recipient participant at `BuildSquad/review_lead`, with `representedSubTeam=BuildSquad`, and delivery uses an explicit route-key selector.
+- `MixedSubTeamMemberHandle.deliverInterMemberMessage(...)` now strips the parent subteam prefix and posts to the child-local selector instead of sending all inter-member deliveries to `null`. Structural subteam composer/default routing still uses the child team's configured default target.
+- Child mixed runs receive parent-boundary context. The child coordinator can send upward to parent roster entries, and `MixedTeamManager` bridges those messages back through the parent-owned manager with absolute sender identity such as `BuildSquad/review_lead`; no `reply_to_sender`, `replyAddress`, or stored reply context was introduced.
+- Communication projection/transport now carries `representedSubTeam` metadata, including address, through canonical communication events, the team communication projection store, GraphQL, WebSocket payloads, the frontend team communication store, and display badges/breadcrumbs.
+- AutoByteus, Codex, and Claude send-message tool adapters now all build delivery requests through the same roster/participant request builder.
+- Frontend Team Communication perspective matching treats represented-subteam metadata as a valid match for focused subteam selectors while preserving exact nested leaf route/path matching.
+- `teamCommunicationStore` types were split into `teamCommunicationTypes.ts` to keep changed source files under the team source-size guardrail.
+
+Focused Round 11 regression coverage added or updated:
+
+- Duplicate visible communication recipient names are rejected.
+- Parent-to-representative roster descriptors use absolute route-key delivery for `BuildSquad/review_lead`.
+- Structural subteam default routing remains intact while explicit representative delivery strips to the child-local selector.
+- Child-to-parent bridge delivery publishes absolute sender identity and rejects unreachable parent boundaries.
+- Canonical communication projection/WebSocket/store/panel preserve and display represented-subteam metadata.
+- Frontend focused subteam perspectives match representative-leaf communication by `representedSubTeam` route/path.
 
 
 ## Code Review Round 5 Local Fix Update
@@ -110,6 +137,18 @@ Round 9 code review returned `CR-ROUND9-006` because the semantic fallback proje
 - Added backend regression coverage preserving two identical no-ID/no-timestamp rows while keeping timestamped/null duplicate coverage passing.
 - Added frontend regression coverage preserving two identical no-ID/no-timestamp rows in `buildConversationFromProjection(...)` while keeping timestamped/null duplicate coverage passing.
 
+
+## Delivery Round 6 Electron Build Local Fix Update
+
+Delivery Round 6 reached a packaged-build blocker before Electron packaging because `pnpm audit:localization-literals` found three unresolved product literals in nested-team workspace UI. This is a local localization/source issue, not a broader design issue. The source fix is complete and intentionally scoped to the audit blocker while preserving delivery-owned docs/report edits already present in the worktree.
+
+- `AgentTeamEventMonitor.vue` now renders the focused-subteam label through `workspace.components.workspace.team.AgentTeamEventMonitor.focused_subteam`.
+- `TeamMemberMonitorTile.vue` now renders the subteam-members section label through `workspace.components.workspace.team.TeamMemberMonitorTile.subteam_members`.
+- `TeamWorkspaceView.vue` now renders the subteam composer placeholder and submit label through `workspace.components.workspace.team.TeamWorkspaceView.send_subteam_placeholder` and `workspace.components.workspace.team.TeamWorkspaceView.send_to_subteam`.
+- English and `zh-CN` catalog entries were added in `autobyteus-web/localization/messages/{en,zh-CN}/workspace.ts`.
+- Focused component test fixtures for `AgentTeamEventMonitor` and `TeamWorkspaceView` were updated to use the current recursive team context shape while covering the localized components.
+- I reran the exact failed guard command from the delivery blocker, and it now passes with zero unresolved findings. I did not rerun the full macOS Electron packaging command in this implementation pass; delivery can resume the README-selected packaged build after code review passes.
+
 ## Key Files Or Areas
 
 Backend / GraphQL edges touched in this round:
@@ -160,6 +199,16 @@ Frontend stream/communication/routing:
 - `autobyteus-web/services/agentStreaming/protocol/messageTypes.ts`
 - `autobyteus-web/stores/teamCommunicationStore.ts`
 - `autobyteus-web/graphql/queries/runHistoryQueries.ts`
+
+Delivery Round 6 localization/build blocker:
+
+- `autobyteus-web/components/workspace/team/AgentTeamEventMonitor.vue`
+- `autobyteus-web/components/workspace/team/TeamMemberMonitorTile.vue`
+- `autobyteus-web/components/workspace/team/TeamWorkspaceView.vue`
+- `autobyteus-web/localization/messages/en/workspace.ts`
+- `autobyteus-web/localization/messages/zh-CN/workspace.ts`
+- `autobyteus-web/components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts`
+- `autobyteus-web/components/workspace/team/__tests__/TeamWorkspaceView.spec.ts`
 
 Frontend presentation surfaces:
 
@@ -254,6 +303,35 @@ Focused tests updated/added:
 
 Passed:
 
+
+- Round 11 representative-routing focused backend checks:
+  - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false && pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/member-team-context-builder.test.ts tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts tests/unit/agent-team-execution/mixed-team-manager.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts tests/unit/services/team-communication/team-communication-service.test.ts --reporter=dot`
+  - Result: TypeScript build check passed; Vitest `6 passed`, `27 passed`.
+
+- Round 11 representative-routing focused frontend checks:
+  - `pnpm -C autobyteus-web exec vitest run stores/__tests__/teamCommunicationStore.spec.ts components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts --reporter=dot`
+  - Result: `3 passed`, `26 passed`.
+  - Notes: output includes the existing KaTeX quirks-mode warning from Markdown renderer tests.
+
+- Round 11 localization/build guard and hygiene checks:
+  - `pnpm -C autobyteus-web audit:localization-literals`
+  - `git diff --check`
+  - Custom changed-source size audit over changed non-test `.ts` / `.vue` files.
+  - Result: localization audit passed with zero unresolved findings; whitespace check passed; no changed non-test TS/Vue source file over 500 non-empty lines.
+
+- Delivery Round 6 localization/build blocker check:
+  - `pnpm -C autobyteus-web audit:localization-literals`
+  - Result: passed with zero unresolved findings.
+
+- Delivery Round 6 localized component fixture check:
+  - `pnpm -C autobyteus-web exec vitest run components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts components/workspace/team/__tests__/TeamMemberMonitorTile.spec.ts components/workspace/team/__tests__/TeamWorkspaceView.spec.ts --reporter=dot`
+  - Result: `3 passed`, `13 passed`.
+
+- Delivery Round 6 whitespace and size guard checks:
+  - `git diff --check`
+  - Custom changed-source size audit over changed/untracked non-test `.ts` / `.vue` files.
+  - Result: passed; no changed/untracked non-test TS/Vue source file over 500 non-empty lines.
+
 - API/E2E Round 5 local-fix focused backend checks:
   - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts tests/unit/run-history/services/agent-run-view-projection-service.test.ts --reporter=dot`
   - Result: `3 passed`, `23 passed`.
@@ -327,8 +405,72 @@ Please prioritize code review and then API/E2E/browser validation for:
 9. Reopen stopped nested runs and verify `getTeamMemberRunProjection(..., memberRouteKey: "BuildSquad/review_lead")` no longer renders duplicate timestamped plus `ts: null` copies.
 10. Compare active/new and opened/stopped rows for the seeded nested team; primary labels should be membership labels (`program_manager`, `BuildSquad`, `review_lead`, `qa_specialist`) consistently, with definition names remaining secondary metadata.
 11. Re-run the Round 4 full-stack parent-to-subteam communication flow and verify live `TEAM_COMMUNICATION_MESSAGE` ingestion populates `teamCommunication.getMessagesForTeam(teamRunId)` without manual GraphQL hydration.
-12. Run the required full-stack browser validation against the prior screenshot failure paths after code review passes.
+12. Verify the Round 11 representative-routing path: parent `program_manager` should see visible `review_lead`, send to parent-root route `BuildSquad/review_lead`, show Team Messages as `program_manager -> BuildSquad / review_lead` with a represented `BuildSquad` badge, and the child coordinator should receive the actual inbound prompt.
+13. Verify duplicate visible recipient names across reachable roster entries are rejected as ambiguous rather than routed by bare name.
+14. Verify child coordinator upward reporting to `program_manager` creates parent-level communication with sender route `BuildSquad/review_lead` and no reply-state shortcut.
+15. Run the required full-stack browser validation against the prior screenshot failure paths after code review passes.
 
 ## API / E2E / Executable Validation Still Required
 
 API, E2E, and full-stack browser validation remain required after code review and are owned by `api_e2e_engineer`. No downstream validation sign-off is claimed in this implementation handoff.
+
+## Code Review Round 12 Local Fix Update
+
+Round 12 `Local Fix` findings from `review-report.md` are addressed in this implementation pass:
+
+- `CR-ROUND11-001`: tightened participant/address invariants in `inter-agent-message-delivery.ts` so `participant.memberPath` must exactly match `participant.address.memberPath`, represented-subteam paths must exactly match their address paths, represented-subteam team-run IDs must remain aligned with the participant address, and represented-subteam paths must be a prefix of the represented leaf path. Parent-boundary sender normalization in `mixed-team-manager.ts` now uses root-aware full-prefix checks instead of first-segment matching.
+- `CR-ROUND11-002`: normalized bridged child `COMMUNICATION` events in `mixed-team-event-bridge.ts` so the outer event and the communication payload are parent-rooted together while preserving nested source/participant route identity. `TeamCommunicationService` now keys canonical communication projection rows by the outer event team-run ID at the stream/projection boundary.
+- `CR-ROUND11-003`: updated the live nested runtime E2E durable assertions in `nested-mixed-team-runtime-graphql.e2e.test.ts` to assert flattened sender/receiver transport fields and represented-subteam metadata instead of the obsolete nested `payload.receiver` object shape.
+
+Regression coverage added/updated:
+
+- Backend participant invariant tests preserve exact participant/address path equality and reject divergent participant or represented-subteam address paths.
+- Backend mixed-manager tests cover already-parent-rooted child senders and the full-prefix/root-aware normalization case that first-segment matching would misroute.
+- Backend event-bridge and team-communication-service tests cover child-internal `BuildSquad/review_lead -> BuildSquad/qa_specialist` communication being visible under the parent team run.
+- Frontend team communication store tests cover parent-run visibility and route/path perspective lookup for child-internal nested communication.
+
+## Code Review Round 12 Local Checks
+
+Passed:
+
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false`
+  - Result: passed.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/inter-agent-message-delivery.test.ts tests/unit/agent-team-execution/member-team-context-builder.test.ts tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts tests/unit/agent-team-execution/mixed-team-manager.test.ts tests/unit/agent-team-execution/mixed-team-event-bridge.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts tests/unit/services/team-communication/team-communication-service.test.ts --reporter=dot`
+  - Result: `8` files passed, `35` tests passed.
+- `pnpm -C autobyteus-web exec vitest run stores/__tests__/teamCommunicationStore.spec.ts components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts --reporter=dot`
+  - Result: `3` files passed, `27` tests passed.
+  - Notes: output includes the existing KaTeX quirks-mode warning from Markdown renderer tests.
+- `pnpm -C autobyteus-web audit:localization-literals`
+  - Result: passed with zero unresolved findings.
+- `git diff --check`
+  - Result: passed.
+- Custom changed/untracked non-test `.ts` / `.vue` source size audit.
+  - Result: `41` changed/untracked non-test source files checked; no file exceeded `500` non-empty lines.
+
+API/E2E/full-stack validation remains paused until code review passes again.
+
+## Code Review Round 13 Local Fix Update
+
+Round 13 re-review left only the narrow `CR-ROUND11-002` sourcePath edge open. This local fix keeps the Round 12 payload/projection normalization intact and adjusts bridged outer `sourcePath` prefixing to use event root context instead of path content alone:
+
+- `mixed-team-event-bridge.ts`: `prefixMixedSubTeamEvent(...)` now calls the same root-aware prefix helper used for participants, with `event.teamRunId === parentTeamRunId` as the already-parent-rooted signal. Child-run events are always prefixed by the parent subteam path, even when their child-local `sourcePath` begins with the same segment as `sourcePrefix`.
+- `mixed-team-event-bridge.test.ts`: added the same-name regression requested by code review: `sourcePrefix: ["BuildSquad"]`, child event `teamRunId: "child-run"`, child-local `sourcePath: ["BuildSquad"]` now bridges to canonical outer `sourcePath: ["BuildSquad", "BuildSquad"]` and keeps the prefixed participant route/address aligned.
+
+## Code Review Round 13 Local Checks
+
+Passed:
+
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false`
+  - Result: passed.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/mixed-team-event-bridge.test.ts --reporter=dot`
+  - Result: `1` file passed, `2` tests passed.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/inter-agent-message-delivery.test.ts tests/unit/agent-team-execution/member-team-context-builder.test.ts tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts tests/unit/agent-team-execution/mixed-team-manager.test.ts tests/unit/agent-team-execution/mixed-team-event-bridge.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts tests/unit/services/team-communication/team-communication-service.test.ts --reporter=dot`
+  - Result: `8` files passed, `36` tests passed.
+- `pnpm -C autobyteus-web audit:localization-literals`
+  - Result: passed with zero unresolved findings.
+- `git diff --check`
+  - Result: passed.
+- Custom changed/untracked non-test `.ts` / `.vue` source size audit.
+  - Result: `41` changed/untracked non-test source files checked; no file exceeded `500` non-empty lines.
+
+API/E2E/full-stack validation remains paused until code review passes again.

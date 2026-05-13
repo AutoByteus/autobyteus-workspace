@@ -595,7 +595,7 @@ Rules:
       try {
         const parentDelegationStartIndex = firstConnection.messages.length;
         const parentDelegationArgs = JSON.stringify({
-          recipient_name: "BuildSquad",
+          recipient_name: "review_lead",
           content: `Reply with exactly ${parentToSubteamToken} and nothing else.`,
           message_type: "nested_parent_to_subteam",
         });
@@ -610,12 +610,21 @@ Rules:
           (message) =>
             message.type === "TEAM_COMMUNICATION_MESSAGE" &&
             samePath(message.payload.source_path, ["program_manager"]) &&
-            typeof message.payload.receiver === "object" &&
-            !Array.isArray(message.payload.receiver) &&
-            (message.payload.receiver as Record<string, unknown>).memberKind === "agent_team" &&
-            (message.payload.receiver as Record<string, unknown>).memberName === "BuildSquad" &&
+            message.payload.senderMemberKind === "agent" &&
+            message.payload.senderMemberName === "program_manager" &&
+            samePath(message.payload.senderMemberPath, ["program_manager"]) &&
+            message.payload.senderMemberRouteKey === "program_manager" &&
+            message.payload.receiverMemberKind === "agent" &&
+            message.payload.receiverMemberName === "review_lead" &&
+            samePath(message.payload.receiverMemberPath, ["BuildSquad", "review_lead"]) &&
+            message.payload.receiverMemberRouteKey === "BuildSquad/review_lead" &&
+            typeof message.payload.receiverRepresentedSubTeam === "object" &&
+            !Array.isArray(message.payload.receiverRepresentedSubTeam) &&
+            (message.payload.receiverRepresentedSubTeam as Record<string, unknown>).memberName === "BuildSquad" &&
+            (message.payload.receiverRepresentedSubTeam as Record<string, unknown>).memberRouteKey === "BuildSquad" &&
+            message.payload.receiver === undefined &&
             message.payload.content === `Reply with exactly ${parentToSubteamToken} and nothing else.`,
-          "parent communication event to subteam receiver",
+          "parent communication event to represented child receiver",
         );
 
         await waitForMessageAfter(

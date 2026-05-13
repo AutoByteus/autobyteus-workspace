@@ -1,6 +1,7 @@
 import { GetTeamCommunicationMessages } from '~/graphql/queries/runHistoryQueries';
 import type { GetTeamCommunicationMessagesQueryData } from '~/stores/runHistoryTypes';
-import { useTeamCommunicationStore, type TeamCommunicationMessage } from '~/stores/teamCommunicationStore';
+import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
+import type { TeamCommunicationMessage } from '~/stores/teamCommunicationTypes';
 
 export const hydrateTeamCommunicationMessages = (
   teamRunId: string,

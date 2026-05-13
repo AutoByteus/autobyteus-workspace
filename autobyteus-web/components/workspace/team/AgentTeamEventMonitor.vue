@@ -14,7 +14,9 @@
       class="h-full overflow-y-auto p-6"
     >
       <div class="rounded-xl border border-slate-200 bg-slate-50 p-5">
-        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Focused subteam</p>
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">
+          {{ $t('workspace.components.workspace.team.AgentTeamEventMonitor.focused_subteam') }}
+        </p>
         <h3 class="mt-1 text-lg font-semibold text-slate-900">{{ focusedMemberNode.displayName }}</h3>
         <p class="mt-1 text-sm text-slate-500">{{ focusedMemberNode.memberRouteKey }}</p>
         <div class="mt-4 grid gap-3 md:grid-cols-2">

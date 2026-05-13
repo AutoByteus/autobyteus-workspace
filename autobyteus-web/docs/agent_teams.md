@@ -78,11 +78,14 @@ That surface owns:
 
 - the team-level default runtime/model/config selection,
 - shared workspace / auto-execute / skill-access fields,
-- leaf-member override rows flattened from nested team definitions and keyed by
-  backend `memberRouteKey`, and
+- a recursive member override tree for nested team definitions, with subteam
+  group rows and leaf-member override controls keyed by backend
+  `memberRouteKey`, and
 - runtime-scoped model catalog loading for the team default plus any explicit member runtime overrides.
 
-`MemberOverrideItem.vue` is the authoritative row owner for per-member launch overrides. Each leaf member can:
+`MemberOverrideTree.vue` owns nested grouping and forwards leaf updates to
+`MemberOverrideItem.vue`, the authoritative row owner for per-member launch
+overrides. Each leaf member can:
 
 - inherit the global runtime/model/config,
 - choose an explicit runtime override,
@@ -186,11 +189,22 @@ for inspection and treats null metadata as not recorded; backend recovery,
 materialization, or backfill is outside the Agent Teams frontend module.
 
 Backend team-run metadata is recursive for nested teams. Frontend history and
-selected-run surfaces may flatten leaf members for display/config rows, but
-route-key/path identity from metadata remains authoritative for reconnect,
-stream attribution, and command targeting. Stream payloads for nested activity
-can include `member_path`, `member_route_key`, `source_path`, and
-`source_route_key`; one-name aliases are display compatibility only.
+selected-run surfaces use that tree for subteam grouping while deriving flat
+leaf-agent maps only where a leaf runtime context is required. `AgentTeamContext`
+therefore carries `memberTree`, `memberNodesByRouteKey`,
+`leafAgentContextsByRouteKey`, and `focusedMemberRouteKey`.
+Route-key/path identity from metadata remains authoritative for reconnect,
+stream attribution, focus changes, and command targeting. Stream payloads for
+nested activity can include `member_path`, `member_route_key`, `source_path`,
+and `source_route_key`; one-name aliases are display compatibility only.
+
+Subteam focus is a real UI state. Focusing a subteam such as `BuildSquad`
+shows the subteam Team Messages perspective, while focusing a leaf such as
+`BuildSquad/review_lead` shows that member transcript. Display labels use the
+membership label at the current boundary (`BuildSquad`, `review_lead`,
+`qa_specialist`) rather than stale flattened route copies. Internal child team
+runs are opened through their parent subteam node and should not appear as
+separate top-level history rows.
 
 ## Store Ownership
 

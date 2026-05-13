@@ -125,17 +125,24 @@ export class ClaudeTeamManager implements TeamManager {
     if (!teamContext) {
       return buildRunNotFoundResult("unknown");
     }
-    const memberContext = this.resolveTargetMemberContext(request.recipientSelector);
+    const memberContext = this.resolveTargetMemberContext(request.recipient.selector);
     if ("accepted" in memberContext) {
       return memberContext;
     }
     const memberRun = await this.ensureMemberReady(memberContext);
-    const senderMemberName =
-      request.senderMemberName ?? this.resolveSenderMemberContext(request.senderRunId)?.memberName ?? null;
-    const normalizedRequest: InterAgentMessageDeliveryRequest = {
-      ...request,
-      senderMemberName,
-    };
+    const senderContext = this.resolveSenderMemberContext(request.sender.participant.memberRunId);
+    const normalizedRequest: InterAgentMessageDeliveryRequest = senderContext
+      ? {
+          ...request,
+          sender: {
+            ...request.sender,
+            participant: {
+              ...request.sender.participant,
+              memberName: request.sender.participant.memberName || senderContext.memberName,
+            },
+          },
+        }
+      : request;
     const result = await memberRun.postUserMessage(
       buildInterAgentDeliveryInputMessage(normalizedRequest),
     );

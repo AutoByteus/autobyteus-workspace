@@ -24,6 +24,11 @@ Bridges runtime stream events to GraphQL and WebSocket transport clients.
   `source_route_key` or `member_path` / `member_route_key` for the requesting
   agent. If only an active `agent_id` is present, the handler maps it back to
   the recorded member path before calling the domain command.
+- Team member input is emitted as `EXTERNAL_USER_MESSAGE` from backend
+  `MEMBER_INPUT` events. Those payloads carry stable message/dedupe identity,
+  input origin, recipient member path/route key, optional sender identity, and
+  context-file locators so nested child transcripts show inbound prompts before
+  the responding assistant output.
 - `STOP_GENERATION` is a control request, not a send-readiness signal. Clients should leave the affected run/member in a sending or interrupted-in-flight state until the backend stream emits the terminal lifecycle/status projection (`TURN_COMPLETED` / `AGENT_STATUS IDLE`, or an error path) for that turn. Claude Agent SDK sessions in particular emit that projection only after their active query has been aborted/closed and the per-turn cleanup task has settled, so same-run follow-up chat does not reuse stale SDK process resources.
 - Segment order and segment identity are backend-owned. WebSocket handlers forward `SEGMENT_*` events in runtime emission order for both single-agent and team streams; clients should append/coalesce only when the backend-provided `segment_type` and `id` identify the same provider text or tool segment, not by turn-level heuristics or provider-specific UI repair logic.
 - Missing or unrestorable runs close the socket with the subject-specific not-found error (`AGENT_NOT_FOUND` or `TEAM_NOT_FOUND`) and close code `4004`. A resolved run whose event stream cannot be subscribed closes with `*_STREAM_UNAVAILABLE` and close code `1011`.

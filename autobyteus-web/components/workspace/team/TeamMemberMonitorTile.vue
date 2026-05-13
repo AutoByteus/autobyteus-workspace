@@ -67,7 +67,9 @@
         v-else-if="memberNode?.memberKind === 'agent_team'"
         class="h-full overflow-y-auto rounded-lg border border-slate-200 bg-white p-3"
       >
-        <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Subteam members</p>
+        <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+          {{ $t('workspace.components.workspace.team.TeamMemberMonitorTile.subteam_members') }}
+        </p>
         <div class="space-y-2">
           <button
             v-for="child in subteamChildRows"

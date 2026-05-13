@@ -44,7 +44,6 @@ const normalizeReferenceFiles = (
   return normalized;
 };
 
-
 export const buildInterAgentMessageReferenceFileEntries = (input: {
   teamRunId: string;
   messageId: string;
@@ -70,13 +69,11 @@ const buildReferenceFilesBlock = (referenceFiles: string[]): string =>
 export const buildRecipientVisibleInterAgentMessageContent = (
   request: InterAgentMessageDeliveryRequest,
 ): string => {
-  const senderName =
-    typeof request.senderMemberName === "string" && request.senderMemberName.trim().length > 0
-      ? request.senderMemberName.trim()
-      : request.senderRunId;
+  const sender = request.sender.participant;
+  const senderName = sender.memberName?.trim() || sender.memberRunId;
   const referenceFiles = normalizeReferenceFiles(request.referenceFiles);
   return (
-    `You received a message from sender name: ${senderName}, sender id: ${request.senderRunId}\n` +
+    `You received a message from sender name: ${senderName}, sender id: ${sender.memberRunId}\n` +
     `message:\n${request.content}${buildReferenceFilesBlock(referenceFiles)}`
   );
 };
@@ -85,21 +82,24 @@ export const buildInterAgentDeliveryInputMessage = (
   request: InterAgentMessageDeliveryRequest,
 ): AgentInputUserMessage => {
   const referenceFiles = normalizeReferenceFiles(request.referenceFiles);
+  const sender = request.sender.participant;
+  const recipient = request.recipient.participant;
+  const visibleContent = buildRecipientVisibleInterAgentMessageContent(request);
   const messageId = request.recipientInputMessageId?.trim() || buildTeamMemberInputMessageId({
     teamRunId: request.teamRunId,
-    memberRunId: request.recipientRouteKey ?? "unknown-recipient",
-    memberRouteKey: request.recipientRouteKey ?? "unknown-recipient",
-    content: buildRecipientVisibleInterAgentMessageContent(request),
+    memberRunId: recipient.memberRunId,
+    memberRouteKey: recipient.memberRouteKey,
+    content: visibleContent,
     receivedAt: request.parentCommunicationMessageId ?? "",
     parentCommunicationMessageId: request.parentCommunicationMessageId ?? null,
   });
   const dedupeKey = request.recipientInputDedupeKey?.trim() || buildTeamMemberInputDedupeKey({
     teamRunId: request.teamRunId,
-    memberRouteKey: request.recipientRouteKey ?? "unknown-recipient",
+    memberRouteKey: recipient.memberRouteKey,
     messageId,
   });
   return new AgentInputUserMessage(
-    buildRecipientVisibleInterAgentMessageContent(request),
+    visibleContent,
     SenderType.AGENT,
     null,
     {
@@ -107,26 +107,18 @@ export const buildInterAgentDeliveryInputMessage = (
       recipient_input_message_id: messageId,
       dedupe_key: dedupeKey,
       input_origin: "inter_agent_delivery",
-      sender_agent_id: request.senderRunId,
-      sender_agent_name: request.senderMemberName ?? null,
-      ...(request.senderRouteKey ? {
-        sender_route_key: request.senderRouteKey,
-        sender_member_route_key: request.senderRouteKey,
-      } : {}),
-      ...(request.senderPath ? {
-        sender_path: request.senderPath,
-        sender_member_path: request.senderPath,
-      } : {}),
+      sender_agent_id: sender.memberRunId,
+      sender_agent_name: sender.memberName,
+      sender_route_key: sender.memberRouteKey,
+      sender_member_route_key: sender.memberRouteKey,
+      sender_path: sender.memberPath,
+      sender_member_path: sender.memberPath,
       original_message_type: resolveMessageType(request.messageType),
       team_run_id: request.teamRunId,
-      ...(request.recipientRouteKey ? {
-        receiver_route_key: request.recipientRouteKey,
-        receiver_member_route_key: request.recipientRouteKey,
-      } : {}),
-      ...(request.recipientPath ? {
-        receiver_path: request.recipientPath,
-        receiver_member_path: request.recipientPath,
-      } : {}),
+      receiver_route_key: recipient.memberRouteKey,
+      receiver_member_route_key: recipient.memberRouteKey,
+      receiver_path: recipient.memberPath,
+      receiver_member_path: recipient.memberPath,
       ...(request.parentCommunicationMessageId ? {
         parent_communication_message_id: request.parentCommunicationMessageId,
       } : {}),
@@ -145,9 +137,11 @@ export const buildInterAgentMessageAgentRunEvent = (input: {
     typeof input.createdAt === "string" && input.createdAt.trim().length > 0
       ? input.createdAt.trim()
       : new Date().toISOString();
+  const sender = input.request.sender.participant;
+  const recipient = input.request.recipient.participant;
   const messageId = buildTeamCommunicationMessageId({
     teamRunId: input.request.teamRunId,
-    senderRunId: input.request.senderRunId,
+    senderRunId: sender.memberRunId,
     receiverRunId: input.recipientRunId,
     messageType,
     content: input.request.content,
@@ -161,21 +155,17 @@ export const buildInterAgentMessageAgentRunEvent = (input: {
     payload: {
       message_id: messageId,
       team_run_id: input.request.teamRunId,
-      sender_agent_id: input.request.senderRunId,
-      sender_agent_name: input.request.senderMemberName ?? null,
-      ...(input.request.senderRouteKey ? {
-        sender_route_key: input.request.senderRouteKey,
-        sender_member_route_key: input.request.senderRouteKey,
-      } : {}),
-      ...(input.request.senderPath ? {
-        sender_path: input.request.senderPath,
-        sender_member_path: input.request.senderPath,
-      } : {}),
+      sender_agent_id: sender.memberRunId,
+      sender_agent_name: sender.memberName,
+      sender_route_key: sender.memberRouteKey,
+      sender_member_route_key: sender.memberRouteKey,
+      sender_path: sender.memberPath,
+      sender_member_path: sender.memberPath,
       receiver_run_id: input.recipientRunId,
-      receiver_agent_name: input.request.recipientMemberName ?? input.request.recipientRouteKey ?? null,
-      ...(input.request.recipientRouteKey ? { receiver_member_route_key: input.request.recipientRouteKey } : {}),
-      ...(input.request.recipientPath ? { receiver_member_path: input.request.recipientPath } : {}),
-      recipient_role_name: input.request.recipientMemberName ?? input.request.recipientRouteKey ?? null,
+      receiver_agent_name: recipient.memberName,
+      receiver_member_route_key: recipient.memberRouteKey,
+      receiver_member_path: recipient.memberPath,
+      recipient_role_name: recipient.memberName,
       content: input.request.content,
       message_type: messageType,
       reference_files: referenceFiles,

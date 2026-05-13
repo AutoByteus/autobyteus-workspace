@@ -15,6 +15,7 @@ import {
   MixedAgentMemberContext,
   MixedSubTeamMemberContext,
   MixedTeamRunContext,
+  type MixedParentBoundaryContext,
   type MixedTeamMemberContext,
 } from "./mixed-team-run-context.js";
 import { MixedTeamRunBackend } from "./mixed-team-run-backend.js";
@@ -37,8 +38,8 @@ export class MixedTeamRunBackendFactory implements TeamRunBackendFactory {
       options.memberLayout ??
       new TeamMemberMemoryLayout(appConfigProvider.config.getMemoryDir());
     this.subTeamRunFactory = new MixedSubTeamRunFactory({
-      buildContext: (config, teamRunId, restoreRuntimeContext) =>
-        this.buildTeamRunContext(config, teamRunId, restoreRuntimeContext),
+      buildContext: (config, teamRunId, restoreRuntimeContext, parentBoundary) =>
+        this.buildTeamRunContext(config, teamRunId, restoreRuntimeContext, parentBoundary),
       createTeamManager: (context) => this.createTeamManager(context, this.subTeamRunFactory),
     });
   }
@@ -61,6 +62,7 @@ export class MixedTeamRunBackendFactory implements TeamRunBackendFactory {
     config: TeamRunConfig,
     teamRunId: string,
     restoreRuntimeContext: MixedTeamRunContext | null = null,
+    parentBoundary: MixedParentBoundaryContext | null = null,
   ): TeamRunContext<MixedTeamRunContext> {
     const memberTree = this.attachRuntimeIdentity(config.memberTree, teamRunId);
     const runtimeContext = new MixedTeamRunContext({
@@ -68,6 +70,7 @@ export class MixedTeamRunBackendFactory implements TeamRunBackendFactory {
       memberContexts: memberTree.map((memberConfig) =>
         this.buildRuntimeMemberContext(memberConfig, restoreRuntimeContext),
       ),
+      parentBoundary,
     });
 
     return new TeamRunContext({

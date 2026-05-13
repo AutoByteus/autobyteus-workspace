@@ -70,6 +70,7 @@ export class MixedTeamMemberRegistry {
           subTeamRunFactory: this.options.subTeamRunFactory,
           publish: this.options.publish,
           notifyStatusChange: this.options.notifyStatusChange,
+          deliverInterAgentMessage: this.options.deliverInterAgentMessage,
         });
     this.handles.set(context.memberRouteKey, handle);
     return handle;

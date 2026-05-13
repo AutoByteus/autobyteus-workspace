@@ -1,6 +1,12 @@
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
-import type { InterAgentMessageDeliveryHandler } from "./inter-agent-message-delivery.js";
+import type {
+  InterAgentMessageDeliveryHandler,
+  InterAgentMessageParticipant,
+  TeamMemberAddress,
+  TeamRepresentedSubTeam,
+} from "./inter-agent-message-delivery.js";
 import type { TeamBackendKind } from "./team-backend-kind.js";
+import type { TeamMemberSelector } from "./team-run-member-identity.js";
 
 export type AgentMemberTeamDescriptor = {
   memberKind: "agent";
@@ -9,6 +15,18 @@ export type AgentMemberTeamDescriptor = {
   memberRouteKey: string;
   memberRunId: string;
   runtimeKind: RuntimeKind;
+  role: string | null;
+  description: string | null;
+  address: TeamMemberAddress;
+};
+
+export type SubTeamRepresentativeDescriptor = {
+  memberKind: "agent";
+  memberName: string;
+  memberPath: string[];
+  memberRouteKey: string;
+  memberRunId: string;
+  runtimeKind?: RuntimeKind | null;
   role: string | null;
   description: string | null;
 };
@@ -20,12 +38,38 @@ export type SubTeamMemberTeamDescriptor = {
   memberRouteKey: string;
   memberRunId: string;
   teamDefinitionId: string;
+  childTeamRunId?: string | null;
   coordinatorMemberRouteKey: string | null;
+  representative: SubTeamRepresentativeDescriptor | null;
   role: string | null;
   description: string | null;
+  address: TeamMemberAddress;
 };
 
 export type MemberTeamDescriptor = AgentMemberTeamDescriptor | SubTeamMemberTeamDescriptor;
+
+export type MemberCommunicationRecipientScope =
+  | "local_agent"
+  | "subteam_representative"
+  | "parent_boundary_agent";
+
+export type MemberTeamRecipientDescriptor = {
+  recipientName: string;
+  scope: MemberCommunicationRecipientScope;
+  participant: InterAgentMessageParticipant;
+  delivery: {
+    teamRunId: string;
+    selector: TeamMemberSelector;
+  };
+  description: string | null;
+  role: string | null;
+};
+
+export type ParentBoundaryCommunicationContext = {
+  parentTeamRunId: string;
+  representedSubTeam: TeamRepresentedSubTeam;
+  parentMembers: AgentMemberTeamDescriptor[];
+};
 
 export class MemberTeamContext {
   readonly teamRunId: string;
@@ -37,6 +81,7 @@ export class MemberTeamContext {
   readonly memberRunId: string;
   readonly teamInstruction: string | null;
   readonly members: MemberTeamDescriptor[];
+  readonly communicationRecipients: MemberTeamRecipientDescriptor[];
   readonly allowedRecipientNames: string[];
   readonly sendMessageToEnabled: boolean;
   readonly deliverInterAgentMessage: InterAgentMessageDeliveryHandler | null;
@@ -51,6 +96,7 @@ export class MemberTeamContext {
     memberRunId: string;
     teamInstruction?: string | null;
     members?: MemberTeamDescriptor[] | null;
+    communicationRecipients?: MemberTeamRecipientDescriptor[] | null;
     allowedRecipientNames?: string[] | null;
     sendMessageToEnabled?: boolean;
     deliverInterAgentMessage?: InterAgentMessageDeliveryHandler | null;
@@ -64,7 +110,8 @@ export class MemberTeamContext {
     this.memberRunId = input.memberRunId;
     this.teamInstruction = input.teamInstruction ?? null;
     this.members = [...(input.members ?? [])];
-    this.allowedRecipientNames = [...(input.allowedRecipientNames ?? [])];
+    this.communicationRecipients = [...(input.communicationRecipients ?? [])];
+    this.allowedRecipientNames = [...(input.allowedRecipientNames ?? this.communicationRecipients.map((recipient) => recipient.recipientName))];
     this.sendMessageToEnabled = Boolean(input.sendMessageToEnabled);
     this.deliverInterAgentMessage = input.deliverInterAgentMessage ?? null;
   }

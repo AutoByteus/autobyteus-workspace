@@ -2,7 +2,7 @@ import type { AgentRuntimeKind, SkillAccessMode } from '~/types/agent/AgentRunCo
 import type { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { RunProjectionConversationEntry } from '~/services/runHydration/runProjectionConversation';
 import type { RunProjectionActivityEntry } from '~/services/runHydration/runProjectionActivityHydration';
-import type { TeamCommunicationMessage } from '~/stores/teamCommunicationStore';
+import type { TeamCommunicationMessage } from '~/stores/teamCommunicationTypes';
 
 export type RunKnownStatus = 'ACTIVE' | 'IDLE' | 'ERROR' | 'TERMINATED';
 

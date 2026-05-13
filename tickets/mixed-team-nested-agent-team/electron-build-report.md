@@ -3,18 +3,19 @@
 ## Scope
 
 - Ticket: `mixed-team-nested-agent-team`
-- Date: `2026-05-12`
+- Date: `2026-05-13`
 - Purpose: Build a local macOS Electron artifact for user verification before repository finalization.
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team`
 - Branch: `codex/mixed-team-nested-agent-team`
-- Integrated base: `origin/personal @ 9d8a1aa665d6d37fb9b249cb9829ea729289a27`
+- Integrated base: `origin/personal @ aed54f77d0fbe10eea8ff67201375337b94ce362`
+- Ticket branch integration commit before this build: `f80cde6688aebf6802be054f38806946377f240b`
+- App/package version: `1.3.4`
 
 ## README Instructions Read
 
-- Root `README.md` was reviewed for workspace setup/build/release context.
 - `autobyteus-web/README.md` was reviewed for desktop build instructions.
 - README-selected host command: `pnpm build:electron:mac` from `autobyteus-web/`.
-- For local testing, the command was run with no-signing/no-notarization env based on the README's local macOS build guidance and existing project practice.
+- The README also documents local macOS no-timestamp/no-signing-style environment for local builds; this build used the project-local no-signing/no-notarization variables below and `AUTOBYTEUS_BUILD_FLAVOR=personal`.
 
 ## Command Run
 
@@ -36,23 +37,24 @@ Full log:
 
 ## Result
 
-- Overall package command result: `Partial success / DMG packaging failed`
+- Overall package command result: `Pass`
 - Pre-build guards passed:
   - `guard:web-boundary`
   - `guard:localization-boundary`
-  - `audit:localization-literals` with zero unresolved findings; existing Node module-type warning was emitted.
+  - `audit:localization-literals` with zero unresolved findings.
 - Backend server preparation completed and rebuilt native Electron dependencies.
 - Nuxt/Electron renderer and main/preload production build completed.
 - Electron app bundle was produced.
-- macOS ZIP artifact was produced and zip integrity passed.
-- DMG creation failed during `hdiutil resize` with macOS exit code `35` (`Die Ressource ist zeitweilig nicht verfügbar` / resource temporarily unavailable). This is a local DMG packaging failure after the app/zip were produced.
+- macOS DMG, ZIP, and both blockmaps were produced.
+- The build log shows expected local unsigned-build notes because `APPLE_SIGNING_IDENTITY` was unset.
 
 ## Testable Artifacts
 
 - Direct app path: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.3.zip`
-- ZIP blockmap: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.3.zip.blockmap`
-- DMG: `Not produced because hdiutil failed during DMG packaging`
+- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.4.dmg`
+- DMG blockmap: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.4.dmg.blockmap`
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.4.zip`
+- ZIP blockmap: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.4.zip.blockmap`
 
 ## Artifact Verification
 
@@ -60,24 +62,25 @@ Commands run from repository root:
 
 ```bash
 test -d autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
-test -f autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.3.zip
-du -sh autobyteus-web/electron-dist/mac-arm64/AutoByteus.app autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.3.zip autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.3.zip.blockmap
 /usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Info.plist
+/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Info.plist
 /usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Info.plist
-zip -T autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.3.zip
+zip -T autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.4.zip
+hdiutil verify autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.4.dmg
 ```
 
 Results:
 
 - `AutoByteus.app`: `1.2G`
+- DMG: `368M`
 - ZIP: `369M`
-- ZIP blockmap: `376K`
-- App version: `1.3.3`
+- App version: `1.3.4`
 - Bundle id: `com.autobyteus.app`
 - ZIP integrity: `OK`
+- DMG checksum verification: `VALID`
 
 ## User Testing Notes
 
 - This local build is unsigned because `APPLE_SIGNING_IDENTITY` is unset; macOS may require right-click / Control-click -> Open.
 - To avoid embedded backend port conflicts, quit any currently running AutoByteus app before opening this app bundle.
-- If a DMG is required specifically, rerun the macOS build after clearing local `hdiutil`/mounted-image contention; the app and ZIP are already available for functional testing.
+- The prior Round 6 localization-audit blocker is resolved; the successful build was produced after code review accepted the localized UI literals.

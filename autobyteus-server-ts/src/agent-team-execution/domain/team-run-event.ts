@@ -1,5 +1,6 @@
 import type { AgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import type { TeamMemberAddress, TeamRepresentedSubTeam } from "./inter-agent-message-delivery.js";
 import { buildMemberRouteKeyFromPath } from "./team-run-member-identity.js";
 
 export enum TeamRunEventSourceType {
@@ -41,8 +42,10 @@ export type TeamCommunicationParticipant = {
   memberPath: string[];
   memberRouteKey: string;
   memberRunId: string;
+  address?: TeamMemberAddress | null;
   platformRunId?: string | null;
   teamDefinitionId?: string | null;
+  representedSubTeam?: TeamRepresentedSubTeam | null;
 };
 
 export type TeamRunCommunicationEventPayload = {

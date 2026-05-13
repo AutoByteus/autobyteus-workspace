@@ -2,9 +2,11 @@ import {
   EMPTY_TEAM_COMMUNICATION_PROJECTION,
   type TeamCommunicationMessage,
   type TeamCommunicationProjection,
+  type TeamCommunicationRepresentedSubTeam,
   type TeamCommunicationReferenceFile,
   type TeamCommunicationReferenceFileType,
 } from "./team-communication-types.js";
+import type { TeamMemberAddress } from "../../agent-team-execution/domain/inter-agent-message-delivery.js";
 import {
   buildTeamCommunicationMessageId,
   buildTeamCommunicationReferenceId,
@@ -46,6 +48,47 @@ const normalizeMemberPath = (value: unknown): string[] | null => {
   }
   const path = value.map((entry) => entry.trim()).filter(Boolean);
   return path.length > 0 ? path : null;
+};
+
+const normalizeTeamMemberAddress = (value: unknown): TeamMemberAddress | null => {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return null;
+  }
+  const record = value as Record<string, unknown>;
+  const teamRunId = normalizeRequiredString(record.teamRunId ?? record.team_run_id);
+  const memberPath = normalizeMemberPath(record.memberPath ?? record.member_path);
+  const memberRouteKey = normalizeRequiredString(record.memberRouteKey ?? record.member_route_key);
+  if (!teamRunId || !memberPath || !memberRouteKey) {
+    return null;
+  }
+  return { teamRunId, memberPath, memberRouteKey };
+};
+
+const normalizeRepresentedSubTeam = (value: unknown): TeamCommunicationRepresentedSubTeam | null => {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return null;
+  }
+  const record = value as Record<string, unknown>;
+  const memberName = normalizeRequiredString(record.memberName ?? record.member_name);
+  const memberPath = normalizeMemberPath(record.memberPath ?? record.member_path);
+  const memberRouteKey = normalizeRequiredString(record.memberRouteKey ?? record.member_route_key);
+  const memberRunId = normalizeRequiredString(record.memberRunId ?? record.member_run_id);
+  const teamDefinitionId = normalizeRequiredString(record.teamDefinitionId ?? record.team_definition_id);
+  const childTeamRunId = normalizeOptionalString(record.childTeamRunId ?? record.child_team_run_id);
+  const address = normalizeTeamMemberAddress(record.address);
+  if (!memberName || !memberPath || !memberRouteKey || !memberRunId || !teamDefinitionId || !address) {
+    return null;
+  }
+  return {
+    memberKind: "agent_team",
+    memberName,
+    memberPath,
+    memberRouteKey,
+    memberRunId,
+    teamDefinitionId,
+    childTeamRunId,
+    address,
+  };
 };
 
 export const inferTeamCommunicationReferenceFileType = (
@@ -239,6 +282,9 @@ export const normalizeTeamCommunicationMessage = (
     senderMemberRouteKey:
       normalizeOptionalString(rawEntry.senderMemberRouteKey)
       ?? normalizeOptionalString(rawEntry.sender_member_route_key),
+    senderRepresentedSubTeam:
+      normalizeRepresentedSubTeam(rawEntry.senderRepresentedSubTeam)
+      ?? normalizeRepresentedSubTeam(rawEntry.sender_represented_subteam),
     receiverRunId,
     receiverMemberKind:
       normalizeMemberKind(rawEntry.receiverMemberKind)
@@ -253,6 +299,9 @@ export const normalizeTeamCommunicationMessage = (
     receiverMemberRouteKey:
       normalizeOptionalString(rawEntry.receiverMemberRouteKey)
       ?? normalizeOptionalString(rawEntry.receiver_member_route_key),
+    receiverRepresentedSubTeam:
+      normalizeRepresentedSubTeam(rawEntry.receiverRepresentedSubTeam)
+      ?? normalizeRepresentedSubTeam(rawEntry.receiver_represented_subteam),
     content,
     messageType,
     createdAt,
@@ -304,6 +353,22 @@ export const cloneTeamCommunicationProjection = (
   version: 1,
   messages: projection.messages.map((message) => ({
     ...message,
+    senderRepresentedSubTeam: message.senderRepresentedSubTeam ? {
+      ...message.senderRepresentedSubTeam,
+      memberPath: [...message.senderRepresentedSubTeam.memberPath],
+      address: {
+        ...message.senderRepresentedSubTeam.address,
+        memberPath: [...message.senderRepresentedSubTeam.address.memberPath],
+      },
+    } : null,
+    receiverRepresentedSubTeam: message.receiverRepresentedSubTeam ? {
+      ...message.receiverRepresentedSubTeam,
+      memberPath: [...message.receiverRepresentedSubTeam.memberPath],
+      address: {
+        ...message.receiverRepresentedSubTeam.address,
+        memberPath: [...message.receiverRepresentedSubTeam.address.memberPath],
+      },
+    } : null,
     referenceFiles: message.referenceFiles.map((reference) => ({ ...reference })),
   })),
 });

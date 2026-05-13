@@ -123,6 +123,11 @@ Flat leaf-agent views are derived through `team-run-metadata-flattener.ts` for
 projection/search consumers. The derived flat view is not authoritative for
 restore topology.
 
+Nested child team runs are not independent workspace-history rows. Their child
+`teamRunId` is retained on the parent subteam metadata node for restore and
+projection, while default workspace history lists the parent team run and its
+recursive member tree.
+
 ## Projection Model
 
 Projection is runtime-aware and reconstructs a canonical historical replay bundle from persisted runtime-specific artifacts.
@@ -188,6 +193,11 @@ The `agent-memory` subsystem no longer owns the canonical replay DTO. It supplie
 - Codex projection prefers persisted Codex thread history through the Codex history reader, then can fall back to local memory when the runtime-specific history is unavailable.
 - Claude projection prefers persisted Claude session history through the Claude history reader, then can fall back to local memory when the runtime-specific history is unavailable.
 - `AgentRunViewProjectionService` may merge complementary local-memory rows with runtime-specific provider rows before deciding the projection is complete. This is required when the runtime-native provider is conversation-only (for example Claude session history with no activity rows) and local memory contains lifecycle-derived `activities`, and it also preserves early local trace history alongside later runtime-native history during restored team-member projection. Exact row matches are de-duplicated after merge.
+- Projection dedupe is identity-aware. Rows with explicit message or tool
+  invocation identity are merged by that identity; semantic duplicates with one
+  missing timestamp may merge into the richer row. Repeated user/assistant rows
+  that have no explicit identity and no timestamp are preserved as separate
+  rows so repeated direct messages do not disappear during restore/open.
 
 Normalization model:
 

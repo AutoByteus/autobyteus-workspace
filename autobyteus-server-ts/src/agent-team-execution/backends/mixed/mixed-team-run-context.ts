@@ -1,4 +1,9 @@
 import type { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
+import type { AgentMemberTeamDescriptor } from "../../domain/member-team-context.js";
+import type {
+  InterAgentMessageDeliveryHandler,
+  TeamRepresentedSubTeam,
+} from "../../domain/inter-agent-message-delivery.js";
 import type {
   TeamAgentMemberRuntimeContext,
   TeamMemberRuntimeContext,
@@ -75,18 +80,28 @@ export class MixedSubTeamMemberContext implements TeamSubTeamMemberRuntimeContex
 
 export type MixedTeamMemberContext = MixedAgentMemberContext | MixedSubTeamMemberContext;
 
+export type MixedParentBoundaryContext = {
+  parentTeamRunId: string;
+  representedSubTeam: TeamRepresentedSubTeam;
+  parentMembers: AgentMemberTeamDescriptor[];
+  deliverInterAgentMessage: InterAgentMessageDeliveryHandler;
+};
+
 export type MixedTeamRunContextInput = {
   coordinatorMemberRouteKey: string | null;
   memberContexts: MixedTeamMemberContext[];
+  parentBoundary?: MixedParentBoundaryContext | null;
 };
 
 export class MixedTeamRunContext {
   readonly coordinatorMemberRouteKey: string | null;
   readonly memberContexts: MixedTeamMemberContext[];
+  readonly parentBoundary: MixedParentBoundaryContext | null;
 
   constructor(input: MixedTeamRunContextInput) {
     this.coordinatorMemberRouteKey = input.coordinatorMemberRouteKey;
     this.memberContexts = [...input.memberContexts];
+    this.parentBoundary = input.parentBoundary ?? null;
   }
 }
 

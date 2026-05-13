@@ -67,6 +67,16 @@ Team events expose path-aware member identity:
 - `sub_team_node_name` is a deprecated display alias only and must not be used
   as routing identity.
 
+Team member input is also emitted explicitly. When a user or inter-agent
+delivery is accepted for a concrete leaf member, the backend emits a
+`MEMBER_INPUT` team event and the WebSocket adapter forwards it as
+`EXTERNAL_USER_MESSAGE` for that member. The payload includes `message_id`,
+`dedupe_key`, `input_origin`, recipient member path/route identity, optional
+sender path/route identity, and context-file locators. This keeps child team
+transcripts truthful: an inbound parent-to-subteam prompt is rendered in the
+child coordinator transcript before the child assistant reply instead of being
+reconstructed from Team Communication rows after the fact.
+
 ## Connection And Command Recovery Contract
 
 Connection establishment is restore-aware:

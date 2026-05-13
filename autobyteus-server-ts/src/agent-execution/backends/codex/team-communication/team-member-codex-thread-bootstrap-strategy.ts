@@ -47,7 +47,11 @@ export class TeamMemberCodexThreadBootstrapStrategy implements CodexThreadBootst
       agentInstruction: input.agentInstruction,
       currentMemberName: memberTeamContext.memberName,
       sendMessageToEnabled,
-      teammates: memberTeamContext.members,
+      teammates: memberTeamContext.communicationRecipients.map((recipient) => ({
+        memberName: recipient.recipientName,
+        role: recipient.role,
+        description: recipient.description,
+      })),
     });
 
     return {
@@ -65,18 +69,8 @@ export class TeamMemberCodexThreadBootstrapStrategy implements CodexThreadBootst
       dynamicToolRegistrations:
         sendMessageToEnabled && memberTeamContext.deliverInterAgentMessage
           ? buildSendMessageToDynamicToolRegistrations({
-              allowedRecipientNames: memberTeamContext.allowedRecipientNames,
               deliverInterAgentMessage: memberTeamContext.deliverInterAgentMessage,
-              senderRunId: input.runContext.runId,
-              senderMemberName: memberTeamContext.memberName,
-              senderMemberPath: memberTeamContext.memberPath,
-              senderMemberRouteKey: memberTeamContext.memberRouteKey,
-              teamRunId: memberTeamContext.teamRunId,
-              members: memberTeamContext.members.map((member) => ({
-                memberName: member.memberName,
-                memberPath: member.memberPath,
-                memberRouteKey: member.memberRouteKey,
-              })),
+              memberTeamContext,
             })
           : null,
     };

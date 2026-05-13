@@ -2,7 +2,12 @@ import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-in
 import type { AgentOperationResult } from "../../../../agent-execution/domain/agent-operation-result.js";
 import type { TeamRun } from "../../../domain/team-run.js";
 import type { TeamRunContext } from "../../../domain/team-run-context.js";
-import type { InterAgentMessageDeliveryRequest } from "../../../domain/inter-agent-message-delivery.js";
+import {
+  buildTeamMemberAddress,
+  type InterAgentMessageDeliveryHandler,
+  type InterAgentMessageDeliveryRequest,
+} from "../../../domain/inter-agent-message-delivery.js";
+import type { AgentMemberTeamDescriptor } from "../../../domain/member-team-context.js";
 import {
   stripSelectorTopLevel,
   type TeamMemberSelector,
@@ -33,6 +38,7 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
     subTeamRunFactory: MixedSubTeamRunFactory;
     publish: MixedTeamEventPublish;
     notifyStatusChange: MixedTeamStatusChange;
+    deliverInterAgentMessage: InterAgentMessageDeliveryHandler;
   }) {
     this.context = options.context;
   }
@@ -54,7 +60,8 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
 
   async deliverInterMemberMessage(request: InterAgentMessageDeliveryRequest): Promise<AgentOperationResult> {
     const childRun = await this.ensureReady();
-    const result = await childRun.postMessage(buildInterAgentDeliveryInputMessage(request), null);
+    const childSelector = stripSelectorTopLevel(request.recipient.selector);
+    const result = await childRun.postMessage(buildInterAgentDeliveryInputMessage(request), childSelector);
     this.options.notifyStatusChange();
     return { ...result, memberRunId: this.context.memberRunId, memberName: this.context.memberName };
   }
@@ -101,12 +108,51 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
       subTeamConfig: this.options.config,
       childTeamRunId: this.context.childTeamRunId ?? this.options.config.childTeamRunId ?? null,
       restoreRuntimeContext,
+      parentBoundary: {
+        parentTeamRunId: this.options.parentContext.runId,
+        representedSubTeam: {
+          memberKind: "agent_team",
+          memberName: this.context.memberName,
+          memberPath: [...this.context.memberPath],
+          memberRouteKey: this.context.memberRouteKey,
+          memberRunId: this.context.memberRunId,
+          teamDefinitionId: this.context.teamDefinitionId,
+          childTeamRunId: this.context.childTeamRunId ?? this.options.config.childTeamRunId ?? null,
+          address: buildTeamMemberAddress({
+            teamRunId: this.options.parentContext.runId,
+            memberPath: this.context.memberPath,
+            memberRouteKey: this.context.memberRouteKey,
+          }),
+        },
+        parentMembers: this.buildParentBoundaryMembers(),
+        deliverInterAgentMessage: this.options.deliverInterAgentMessage,
+      },
     });
     this.context.childTeamRunId = this.childRun.runId;
     this.context.childRuntimeContext = this.childRun.getRuntimeContext() as MixedTeamRunContext;
     this.bindEvents(this.childRun);
     this.publishStatus("IDLE");
     return this.childRun;
+  }
+
+  private buildParentBoundaryMembers(): AgentMemberTeamDescriptor[] {
+    return this.options.parentContext.runtimeContext.memberContexts
+      .filter((memberContext) => memberContext.memberKind === "agent")
+      .map((memberContext) => ({
+        memberKind: "agent" as const,
+        memberName: memberContext.memberName,
+        memberPath: [...memberContext.memberPath],
+        memberRouteKey: memberContext.memberRouteKey,
+        memberRunId: memberContext.memberRunId,
+        runtimeKind: memberContext.runtimeKind,
+        role: null,
+        description: null,
+        address: buildTeamMemberAddress({
+          teamRunId: this.options.parentContext.runId,
+          memberPath: memberContext.memberPath,
+          memberRouteKey: memberContext.memberRouteKey,
+        }),
+      }));
   }
 
   private bindEvents(childRun: TeamRun): void {

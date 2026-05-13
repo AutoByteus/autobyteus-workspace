@@ -268,3 +268,61 @@ Design conclusions:
 4. Deduplicate projection rows at backend projection merge/normalization before GraphQL returns them; frontend hydration dedupe is defensive only.
 5. Use membership labels (`TeamMemberNode.displayName`/`memberName`) as primary labels across active and history rows; agent definition names and route keys are secondary metadata.
 6. The revised design spec now includes explicit spines for topology, launch config, command selector normalization, user-to-subteam delivery, parent-agent-to-subteam delivery, live member input, event rebroadcast, communication projection, tool approval, metadata, restore, projection dedupe, frontend recursive display, presentation, lifecycle, and top-level history projection.
+
+
+## Communication Roster / Representative Design Addendum (2026-05-13)
+
+Manual full-stack testing and follow-up requirements discussion refined the nested-team communication model. `program_manager -> BuildSquad` proved the structural boundary can route to the child coordinator, but the user clarified that normal `send_message_to` visibility should model real organization communication: parent members see the responsible subteam coordinator/representative (`review_lead`) rather than the abstract team node (`BuildSquad`), and the coordinator sees both local child teammates and exposed immediate parent-boundary members.
+
+Additional current-code evidence:
+
+| Date | Source Type | Exact Source / Command | Purpose | Observation | Design Impact? |
+| --- | --- | --- | --- | --- | --- |
+| 2026-05-13 | Code | `autobyteus-server-ts/src/agent-team-execution/domain/member-team-context.ts` | Inspect agent-visible team context. | Context has structural `members` and derived `allowedRecipientNames`, but no scoped communication-recipient descriptors or represented-subteam identity. | Yes: structural topology and communication-visible roster need separate owned projections. |
+| 2026-05-13 | Code | `autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts` | Inspect recipient exposure. | `allowedRecipientNames` is derived only from current team `members`, excluding the current member. Parent members see `BuildSquad`; child coordinator sees only child-local teammates. | Yes: parent communication should expose `review_lead` as `BuildSquad` representative, and child coordinator should see `program_manager`. |
+| 2026-05-13 | Code | `autobyteus-server-ts/src/agent-team-execution/services/member-run-instruction-composer.ts` | Inspect runtime instruction prompt. | Instructions say `recipient_name` must exactly match a teammate from one flat list. | Yes: runtime prompt must group scoped communication recipients and not present parent recipients as fake local teammates. |
+| 2026-05-13 | Code | `autobyteus-server-ts/src/agent-execution/backends/codex/team-communication/codex-send-message-dynamic-tool-registration.ts`, `autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-send-message-tool-call-handler.ts`, `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-team-communication-context-builder.ts` | Inspect send_message_to resolution. | Tool handlers find recipients only in `memberTeamContext.members`, then fall back to a bare name selector inside the current team run. | Yes: handlers need `communicationRecipients` descriptors with target team-run, selector, scope, actual member identity, and represented-subteam metadata. |
+| 2026-05-13 | Code | `autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts` | Inspect delivery owner. | `deliverInterAgentMessage()` resolves both sender and recipient inside the manager's current `runtimeContext.memberContexts`; nested upward sender is not a top-level parent context and parent-to-representative requires nested recipient identity. | Yes: parent delivery must accept normalized nested sender/receiver identity instead of falling back to empty source path or abstract subteam receiver. |
+| 2026-05-13 | Code | `autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-sub-team-member-handle.ts`, `mixed-sub-team-run-factory.ts` | Inspect child run creation/delivery. | Child runs are created internally by the parent subteam handle; inter-member delivery currently posts to child default/coordinator with `null`, which works for abstract subteam target but loses explicit representative target identity. | Yes: subteam handle should strip nested target selectors and pass explicit child coordinator selectors for representative delivery; bridge should be parent-owned/internal, not global run lookup. |
+
+Design conclusion:
+
+- Top-down-only and abstract-subteam-as-tool-recipient are not sufficient for realistic delegation.
+- Add a `MemberCommunicationRosterBuilder` that derives scoped `communicationRecipients` from structural topology and parent-boundary bridge input.
+- Parent communication rosters expose subteam coordinators/representatives, e.g. `program_manager` can call `send_message_to('review_lead')` and backend routes that to `BuildSquad/review_lead` through the `BuildSquad` subteam boundary.
+- Child coordinator rosters combine local child recipients plus exposed immediate parent-boundary recipients, e.g. `BuildSquad/review_lead` can call `send_message_to('qa_specialist')` or `send_message_to('program_manager')`.
+- Do not use `reply_to_sender`, `replyAddress`, or stored reply state as a routing mechanism. Sender/receiver address trace fields remain useful for events/projections/debugging, but routing uses the current scoped communication recipient descriptors.
+- Route upward delivery through the parent-owned mixed runtime bridge: child manager resolves a parent-boundary recipient, calls the parent delivery handler, parent manager publishes a communication event with nested sender `sourcePath` such as `['BuildSquad', 'review_lead']`, and the parent recipient `program_manager` receives a `MEMBER_INPUT` transcript event.
+- UI/projection should show downward communication as `program_manager -> review_lead` with `BuildSquad` represented-subteam context, upward reports as `BuildSquad/review_lead -> program_manager`, and one recipient transcript input. It should not create a synthetic sender-side child user prompt.
+- Boundary policy: immediate parent-boundary recipients only; reject grandparents, unrelated runs, sibling subteam internals, hidden parent recipients, and duplicate/ambiguous visible recipient names.
+
+## Design Reset / Current Turn Evidence (2026-05-13)
+
+The user approved updating requirements and starting another design round on top of the existing `codex/mixed-team-nested-agent-team` worktree state. I reloaded the `solution-designer` skill and `design-principles.md` before revising artifacts, especially the data-flow spine sufficiency and authoritative-boundary rules.
+
+Commands / sources consulted in this reset:
+
+- `sed -n '1,220p' /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-engineering-team/agents/solution-designer/SKILL.md`
+- `sed -n '1,260p' /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-engineering-team/agents/solution-designer/design-principles.md`
+- `git -C /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team branch --show-current` -> `codex/mixed-team-nested-agent-team`
+- Re-read `requirements-doc.md`, `investigation-notes.md`, and `design-spec.md` in the task ticket folder.
+- Re-checked current implementation evidence for the refined communication roster boundary in `member-team-context.ts`, `member-team-context-builder.ts`, `member-run-instruction-composer.ts`, Codex/Claude/AutoByteus send-message adapters, `mixed-team-manager.ts`, `mixed-sub-team-member-handle.ts`, and `mixed-sub-team-run-factory.ts`.
+
+Reset conclusion:
+
+- The old `reply_to_sender`/stored reply-state design is explicitly rejected after user clarification.
+- The required refactor is a scoped communication roster/representative model: structural topology stays nested, while `send_message_to` visibility exposes actual responsible coordinator/representative member names with descriptor-owned routing and represented-subteam metadata.
+- The design spec now contains explicit data-flow spines for topology, launch config, command selector normalization, user-to-subteam delivery, parent-to-subteam representative delivery, child internal delivery, child-to-parent reporting, member-input/live transcript, communication projection, tool approval, metadata/restore, projection dedupe, frontend display/focus, lifecycle, and history projection.
+
+
+## Architecture Review Round 10 Design-Impact Response (2026-05-13)
+
+Architecture review Round 10 failed with two blocking design conflicts: parent-to-subteam representative delivery had competing contracts, and communication recipient/projection DTO shapes were not semantically tight enough.
+
+Revision response:
+
+- Chose one canonical **absolute-route representative delivery** contract. `InterAgentMessageDeliveryRequest.teamRunId` is the coordinate root/projection owner, and sender/recipient paths/selectors are relative to that run. Parent-to-representative delivery targets `BuildSquad/review_lead` under the parent root; `MixedTeamManager` may resolve the executable handle to top-level `BuildSquad`, but event/trace identity remains the actual representative leaf.
+- Defined `MixedSubTeamMemberHandle.deliverInterMemberMessage()` responsibility to strip its subteam path prefix from nested recipient addresses and pass an explicit child-local selector into `childRun.postMessage(...)`. It uses `null` only for structural subteam group posts without an explicit representative target.
+- Tightened descriptors around `delivery: { teamRunId, selector }` plus `participant: TeamCommunicationParticipant & { address }`; removed loose parallel target/actual fields from the target shape.
+- Added concrete `representedSubTeam` fields to `TeamCommunicationParticipant` / projection payload flow and specified propagation through `MixedTeamManager.buildCommunicationPayload`, `TeamCommunicationService`, GraphQL/WebSocket DTOs, and frontend `TeamCommunicationStore`.
+- Removed stale hidden-reply wording from active design mappings.

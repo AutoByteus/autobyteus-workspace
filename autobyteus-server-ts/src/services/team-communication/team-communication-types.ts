@@ -1,3 +1,5 @@
+import type { TeamMemberAddress } from "../../agent-team-execution/domain/inter-agent-message-delivery.js";
+
 export type TeamCommunicationReferenceFileType =
   | "file"
   | "image"
@@ -16,6 +18,17 @@ export interface TeamCommunicationReferenceFile {
   updatedAt: string;
 }
 
+export interface TeamCommunicationRepresentedSubTeam {
+  memberKind: "agent_team";
+  memberName: string;
+  memberPath: string[];
+  memberRouteKey: string;
+  memberRunId: string;
+  teamDefinitionId: string;
+  childTeamRunId?: string | null;
+  address: TeamMemberAddress;
+}
+
 export interface TeamCommunicationMessage {
   messageId: string;
   teamRunId: string;
@@ -24,11 +37,13 @@ export interface TeamCommunicationMessage {
   senderMemberName?: string | null;
   senderMemberPath?: string[] | null;
   senderMemberRouteKey?: string | null;
+  senderRepresentedSubTeam?: TeamCommunicationRepresentedSubTeam | null;
   receiverRunId: string;
   receiverMemberKind?: "agent" | "agent_team" | null;
   receiverMemberName?: string | null;
   receiverMemberPath?: string[] | null;
   receiverMemberRouteKey?: string | null;
+  receiverRepresentedSubTeam?: TeamCommunicationRepresentedSubTeam | null;
   content: string;
   messageType: string;
   createdAt: string;

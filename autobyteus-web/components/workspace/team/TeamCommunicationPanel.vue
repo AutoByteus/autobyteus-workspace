@@ -50,6 +50,13 @@
                       >
                         Team
                       </span>
+                      <span
+                        v-if="message.counterpartRepresentedSubTeam"
+                        class="ml-1 rounded-full border border-indigo-200 bg-indigo-50 px-1.5 py-0.5 text-[0.625rem] font-semibold text-indigo-600"
+                        data-test="team-communication-represented-subteam"
+                      >
+                        {{ representedSubTeamLabel(message) }}
+                      </span>
                       <span class="ml-1 text-xs text-gray-500">
                         · {{ counterpartMetadata(message) }}
                       </span>
@@ -125,6 +132,13 @@
                     Team
                   </span>
                   <span class="truncate">{{ counterpartName(selectedMessage) }}</span>
+                  <span
+                    v-if="selectedMessage.counterpartRepresentedSubTeam"
+                    class="rounded-full border border-indigo-200 bg-indigo-50 px-1.5 py-0.5 text-[0.625rem] font-semibold text-indigo-600"
+                    data-test="team-communication-detail-represented-subteam"
+                  >
+                    {{ representedSubTeamLabel(selectedMessage) }}
+                  </span>
                 </span>
               </div>
             </div>
@@ -148,13 +162,13 @@
 import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useLocalization } from '~/composables/useLocalization';
-import {
-  useTeamCommunicationStore,
-  type TeamCommunicationMemberKind,
-  type TeamCommunicationParticipantSelector,
-  type TeamCommunicationPerspectiveMessage,
-  type TeamCommunicationReferenceFile,
-} from '~/stores/teamCommunicationStore';
+import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
+import type {
+  TeamCommunicationMemberKind,
+  TeamCommunicationParticipantSelector,
+  TeamCommunicationPerspectiveMessage,
+  TeamCommunicationReferenceFile,
+} from '~/stores/teamCommunicationTypes';
 import MarkdownRenderer from '~/components/conversation/segments/renderer/MarkdownRenderer.vue';
 import TeamCommunicationReferenceViewer from './TeamCommunicationReferenceViewer.vue';
 
@@ -219,6 +233,15 @@ const counterpartName = (message: TeamCommunicationPerspectiveMessage): string =
     || message.counterpartMemberName
     || message.counterpartRunId
     || t('workspace.components.workspace.team.TeamCommunicationPanel.unknown_teammate');
+};
+const representedSubTeamLabel = (message: TeamCommunicationPerspectiveMessage): string => {
+  const name = message.counterpartRepresentedSubTeam?.memberPath?.filter(Boolean).join(' / ')
+    || message.counterpartRepresentedSubTeam?.memberRouteKey
+    || message.counterpartRepresentedSubTeam?.memberName
+    || '';
+  return name
+    ? `${t('workspace.components.workspace.team.TeamCommunicationPanel.represents_subteam')} ${name}`
+    : '';
 };
 const referenceFileName = (filePath: string): string => filePath.split('/').pop() || filePath;
 const fileExtension = (filePath: string): string => {

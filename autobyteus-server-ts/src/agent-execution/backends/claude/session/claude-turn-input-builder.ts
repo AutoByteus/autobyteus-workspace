@@ -14,7 +14,11 @@ export const buildClaudeTurnInput = (options: {
     agentInstruction: options.runContext.runtimeContext.agentInstruction,
     currentMemberName: memberTeamContext?.memberName ?? null,
     sendMessageToEnabled: options.sendMessageToEnabled,
-    teammates: memberTeamContext?.members ?? [],
+    teammates: memberTeamContext?.communicationRecipients.map((recipient) => ({
+      memberName: recipient.recipientName,
+      role: recipient.role,
+      description: recipient.description,
+    })) ?? [],
   });
   if (
     !instructionComposition.teamInstruction &&

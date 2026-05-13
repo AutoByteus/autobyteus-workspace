@@ -158,7 +158,7 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
     }
 
     try {
-      const recipientContext = this.resolveTargetMemberContext(request.recipientSelector);
+      const recipientContext = this.resolveTargetMemberContext(request.recipient.selector);
       if ("accepted" in recipientContext) {
         return recipientContext;
       }

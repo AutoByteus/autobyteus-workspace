@@ -68,6 +68,10 @@ Manages running team runs, selecting the authoritative team backend, restoring p
 - Communication projections preserve sender/receiver `memberKind`,
   `memberPath`, and `memberRouteKey` so a subteam recipient remains visible as
   an `agent_team` member instead of being misrepresented as a leaf agent.
+- Leaf member input is emitted as a separate member-input event with stable
+  message/dedupe identity. For inter-agent delivery into a child team, this
+  event is what lets the child coordinator transcript show the inbound
+  "received a message from ..." prompt before the child reply.
 - Recipient-visible content still includes generated **Reference files:**
   blocks only from explicit structured `reference_files`.
 - Runtime adapters must expose `send_message_to` as one logical team-delivery
@@ -108,6 +112,9 @@ Manages running team runs, selecting the authoritative team backend, restoring p
   coordinator route key, and child member tree. Restore recreates the parent
   mixed runtime with subteam handles that can restore their child `TeamRun`s on
   demand.
+- Internal child team runs are implementation detail for the parent nested run.
+  They can be restored through their parent subteam handle, but workspace
+  history should not list them as independent top-level team rows.
 - Historical flat team metadata is not compatibility-read for nested topology;
   unsupported legacy metadata fails instead of guessing a lost tree.
 - Every Codex and Claude member receives a member `memoryDir` on create and restore, including single-runtime Claude teams and mixed-runtime members. The storage path is `memory/agent_teams/<teamRunId>/<memberRunId>/...`.
