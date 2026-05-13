@@ -19,6 +19,7 @@ import { MemoryManager } from '../../../../src/memory/memory-manager.js';
 import { MemoryStore } from '../../../../src/memory/store/base-store.js';
 import { MemoryType } from '../../../../src/memory/models/memory-types.js';
 import { BaseTool, type ToolExecutionOptions } from '../../../../src/tools/base-tool.js';
+import { ParameterSchema, ParameterDefinition, ParameterType } from '../../../../src/utils/parameter-schema.js';
 import type { ChunkResponse } from '../../../../src/llm/utils/response-types.js';
 
 class DummyLLM extends BaseLLM {
@@ -211,7 +212,49 @@ class ExternalToolResultLLM extends BaseLLM {
       yield {
         content: '',
         is_complete: true,
-        tool_calls: [{ index: 0, arguments_delta: '{"job":"async"}' }]
+        tool_calls: [{ index: 0, arguments_delta: '{"job":"async","priority":"7"}' }]
+      } as ChunkResponse;
+      return;
+    }
+
+    yield { content: `reply-${callIndex}`, is_complete: true } as ChunkResponse;
+  }
+}
+
+class OneShotToolCallLLM extends BaseLLM {
+  requestMessages: Message[][] = [];
+
+  constructor(
+    model: LLMModel,
+    config: LLMConfig,
+    private readonly toolName: string,
+    private readonly callId: string,
+    private readonly argumentsJson: string
+  ) {
+    super(model, config);
+  }
+
+  protected async _sendMessagesToLLM(_messages: Message[]): Promise<CompleteResponse> {
+    return new CompleteResponse({ content: 'ok' });
+  }
+
+  protected async *_streamMessagesToLLM(
+    messages: Message[],
+    _kwargs: Record<string, unknown>,
+    _options?: LLMInvocationOptions
+  ): AsyncGenerator<ChunkResponse, void, unknown> {
+    this.requestMessages.push(messages);
+    const callIndex = this.requestMessages.length;
+
+    if (callIndex === 1) {
+      yield {
+        content: '',
+        tool_calls: [{ index: 0, call_id: this.callId, name: this.toolName }]
+      } as ChunkResponse;
+      yield {
+        content: '',
+        is_complete: true,
+        tool_calls: [{ index: 0, arguments_delta: this.argumentsJson }]
       } as ChunkResponse;
       return;
     }
@@ -244,7 +287,6 @@ class ApprovalTool extends BaseTool<AgentContext, Record<string, unknown>, strin
 
 class ExternalResultTool extends BaseTool<AgentContext, Record<string, unknown>, string> {
   executeCalls = 0;
-  readonly toolResultExecutionMode = 'external_result' as const;
 
   static getName(): string {
     return 'external_result_tool';
@@ -255,7 +297,24 @@ class ExternalResultTool extends BaseTool<AgentContext, Record<string, unknown>,
   }
 
   static getArgumentSchema() {
-    return null;
+    const schema = new ParameterSchema();
+    schema.addParameter(new ParameterDefinition({
+      name: 'job',
+      type: ParameterType.STRING,
+      description: 'External job name',
+      required: true
+    }));
+    schema.addParameter(new ParameterDefinition({
+      name: 'priority',
+      type: ParameterType.INTEGER,
+      description: 'External job priority',
+      required: false
+    }));
+    return schema;
+  }
+
+  protected getToolResultExecutionMode(): 'external_result' {
+    return 'external_result';
   }
 
   protected async _execute(
@@ -265,6 +324,20 @@ class ExternalResultTool extends BaseTool<AgentContext, Record<string, unknown>,
   ): Promise<string> {
     this.executeCalls += 1;
     return 'should-not-run-in-process';
+  }
+}
+
+class FailingModeExternalResultTool extends ExternalResultTool {
+  static getName(): string {
+    return 'failing_mode_external_result_tool';
+  }
+
+  static getDescription(): string {
+    return 'External-result test tool with failing mode resolver';
+  }
+
+  protected getToolResultExecutionMode(): 'external_result' {
+    throw new Error('mode resolver failed');
   }
 }
 
@@ -811,6 +884,10 @@ describe('Agent runtime integration', () => {
 
     const context = new AgentContext(agentId, config, state);
     const runtime = new AgentRuntime(context);
+    const startedTools: any[] = [];
+    context.statusManager?.notifier?.subscribe(EventType.AGENT_TOOL_EXECUTION_STARTED, (payload) => {
+      startedTools.push(payload);
+    });
 
     try {
       runtime.start();
@@ -823,6 +900,12 @@ describe('Agent runtime integration', () => {
       );
       expect(resultWaiterReady).toBe(true);
       expect(externalTool.executeCalls).toBe(0);
+      expect(startedTools).toHaveLength(1);
+      expect(startedTools[0]).toMatchObject({
+        invocation_id: 'call_external_result_1',
+        tool_name: ExternalResultTool.getName(),
+        arguments: { job: 'async', priority: 7 }
+      });
 
       const postResult = await runtime.postToolResult({
         kind: 'tool_result',
@@ -851,6 +934,138 @@ describe('Agent runtime integration', () => {
         () => context.currentStatus === AgentStatus.IDLE && context.state.activeTurn === null
       );
       expect(settled).toBe(true);
+    } finally {
+      if (runtime.isRunning) {
+        await runtime.stop(2);
+      }
+      await llm.cleanup();
+    }
+  }, 20000);
+
+  it('fails an external-result tool before publishing started when preflight rejects invalid args', async () => {
+    const llm = new OneShotToolCallLLM(
+      makeModel(),
+      new LLMConfig(),
+      ExternalResultTool.getName(),
+      'call_external_result_invalid_args',
+      '{"priority":"3"}'
+    );
+    const externalTool = new ExternalResultTool();
+    const config = new AgentConfig(
+      'RuntimeExternalToolPreflightAgent',
+      'Tester',
+      'External tool preflight test agent',
+      llm,
+      null,
+      [externalTool],
+      true
+    );
+    const agentId = `runtime_external_tool_preflight_${Date.now()}`;
+
+    const state = new AgentRuntimeState(agentId, null, null);
+    state.llmInstance = llm;
+    state.toolInstances = { [ExternalResultTool.getName()]: externalTool };
+    attachMemory(state);
+
+    const context = new AgentContext(agentId, config, state);
+    const runtime = new AgentRuntime(context);
+    const startedTools: any[] = [];
+    const failedTools: any[] = [];
+    context.statusManager?.notifier?.subscribe(EventType.AGENT_TOOL_EXECUTION_STARTED, (payload) => {
+      startedTools.push(payload);
+    });
+    context.statusManager?.notifier?.subscribe(EventType.AGENT_TOOL_EXECUTION_FAILED, (payload) => {
+      failedTools.push(payload);
+    });
+
+    try {
+      runtime.start();
+      const ready = await waitForStatus(context, (status) => status === AgentStatus.IDLE || status === AgentStatus.ERROR);
+      expect(ready).toBe(true);
+
+      await runtime.submitEvent(new UserMessageReceivedEvent(new AgentInputUserMessage('invalid external result args')));
+      const continuationReachedLlm = await waitForCondition(() => llm.requestMessages.length === 2);
+      expect(continuationReachedLlm).toBe(true);
+
+      expect(startedTools).toHaveLength(0);
+      expect(externalTool.executeCalls).toBe(0);
+      expect(context.state.activeTurn?.toolInputPort.hasToolResultWaiter('call_external_result_invalid_args')).not.toBe(true);
+      expect(failedTools).toHaveLength(1);
+      expect(failedTools[0]).toMatchObject({
+        invocation_id: 'call_external_result_invalid_args',
+        tool_name: ExternalResultTool.getName()
+      });
+      expect(String(failedTools[0].error)).toContain('Invalid arguments');
+      expect(String(failedTools[0].error)).toContain("Required parameter 'job' is missing");
+
+      const continuationUserContent =
+        llm.requestMessages[1]
+          .filter((message) => message.role === MessageRole.USER)
+          .at(-1)?.content ?? '';
+      expect(continuationUserContent).toContain('call_external_result_invalid_args');
+      expect(continuationUserContent).toContain('Invalid arguments');
+    } finally {
+      if (runtime.isRunning) {
+        await runtime.stop(2);
+      }
+      await llm.cleanup();
+    }
+  }, 20000);
+
+  it('fails an external-result tool before publishing started when mode resolution throws', async () => {
+    const llm = new OneShotToolCallLLM(
+      makeModel(),
+      new LLMConfig(),
+      FailingModeExternalResultTool.getName(),
+      'call_external_result_mode_failure',
+      '{"job":"async"}'
+    );
+    const externalTool = new FailingModeExternalResultTool();
+    const config = new AgentConfig(
+      'RuntimeExternalToolModeFailureAgent',
+      'Tester',
+      'External tool mode failure test agent',
+      llm,
+      null,
+      [externalTool],
+      true
+    );
+    const agentId = `runtime_external_tool_mode_failure_${Date.now()}`;
+
+    const state = new AgentRuntimeState(agentId, null, null);
+    state.llmInstance = llm;
+    state.toolInstances = { [FailingModeExternalResultTool.getName()]: externalTool };
+    attachMemory(state);
+
+    const context = new AgentContext(agentId, config, state);
+    const runtime = new AgentRuntime(context);
+    const startedTools: any[] = [];
+    const failedTools: any[] = [];
+    context.statusManager?.notifier?.subscribe(EventType.AGENT_TOOL_EXECUTION_STARTED, (payload) => {
+      startedTools.push(payload);
+    });
+    context.statusManager?.notifier?.subscribe(EventType.AGENT_TOOL_EXECUTION_FAILED, (payload) => {
+      failedTools.push(payload);
+    });
+
+    try {
+      runtime.start();
+      const ready = await waitForStatus(context, (status) => status === AgentStatus.IDLE || status === AgentStatus.ERROR);
+      expect(ready).toBe(true);
+
+      await runtime.submitEvent(new UserMessageReceivedEvent(new AgentInputUserMessage('mode resolver failure')));
+      const continuationReachedLlm = await waitForCondition(() => llm.requestMessages.length === 2);
+      expect(continuationReachedLlm).toBe(true);
+
+      expect(startedTools).toHaveLength(0);
+      expect(externalTool.executeCalls).toBe(0);
+      expect(context.state.activeTurn?.toolInputPort.hasToolResultWaiter('call_external_result_mode_failure')).not.toBe(true);
+      expect(failedTools).toHaveLength(1);
+      expect(failedTools[0]).toMatchObject({
+        invocation_id: 'call_external_result_mode_failure',
+        tool_name: FailingModeExternalResultTool.getName()
+      });
+      expect(String(failedTools[0].error)).toContain('mode resolver failed');
     } finally {
       if (runtime.isRunning) {
         await runtime.stop(2);

@@ -4,21 +4,12 @@ import { ToolInvocationPipeline } from '../pipelines/tool-invocation-pipeline.js
 import { formatToCleanString } from '../../utils/llm-output-formatter.js';
 import { buildToolLifecyclePayloadFromInvocation } from '../handlers/tool-lifecycle-payload.js';
 import { isAgentInterruptionError } from '../interruption/agent-interruption.js';
+import type { BaseTool, ToolExecutionPreparation } from '../../tools/base-tool.js';
 import type { AgentContext } from '../context/agent-context.js';
 import type { AgentTurn } from '../agent-turn.js';
 import type { AgentOutbox } from '../outbox/agent-outbox.js';
 import type { ToolApprovalInputMessage } from '../tool-approval-command.js';
 import type { ToolResultInputMessage } from '../tool-result-command.js';
-
-export type ToolResultExecutionMode = 'in_process' | 'external_result';
-
-export type ToolResultExecutionModeProvider = {
-  toolResultExecutionMode?: ToolResultExecutionMode;
-  getToolResultExecutionMode?: (
-    context: AgentContext,
-    invocation: ToolInvocation
-  ) => ToolResultExecutionMode | Promise<ToolResultExecutionMode>;
-};
 
 export class ToolPhase {
   private readonly invocationPipeline = new ToolInvocationPipeline();
@@ -79,7 +70,9 @@ export class ToolPhase {
       }
     }
 
-    const toolInstance: any = context.getTool(toolName);
+    const toolInstance = context.getTool(toolName) as
+      | BaseTool<AgentContext, Record<string, unknown>, unknown>
+      | undefined;
     if (!toolInstance) {
       const errorMessage = `Tool '${toolName}' not found or configured for agent '${agentId}'.`;
       outbox.publishToolLog({
@@ -92,9 +85,15 @@ export class ToolPhase {
       return new ToolResultEvent(toolName, null, invocationId, errorMessage, undefined, activeTurnId, false);
     }
 
-    turn.executionScope.throwIfAborted({ kind: 'tool_execution_start', operationId: invocationId });
-    const awaitsExternalResult = await this.shouldAwaitExternalToolResult(toolInstance, context, toolInvocation);
-    turn.executionScope.throwIfAborted({ kind: 'tool_execution_start', operationId: invocationId });
+    const preparation = await this.prepareToolExecution(toolInstance, toolInvocation, context, turn, outbox);
+    if (preparation instanceof ToolResultEvent) {
+      return preparation;
+    }
+
+    arguments_ = preparation.args;
+    toolInvocation.arguments = arguments_;
+
+    const awaitsExternalResult = preparation.resultExecutionMode === 'external_result';
     const externalResultPromise = awaitsExternalResult
       ? this.waitForExternalToolResult(toolInvocation, context, turn, outbox)
       : null;
@@ -180,16 +179,46 @@ export class ToolPhase {
     }
   }
 
-  private async shouldAwaitExternalToolResult(
-    toolInstance: any,
+  private async prepareToolExecution(
+    toolInstance: BaseTool<AgentContext, Record<string, unknown>, unknown>,
+    toolInvocation: ToolInvocation,
     context: AgentContext,
-    invocation: ToolInvocation
-  ): Promise<boolean> {
-    const provider = toolInstance as ToolResultExecutionModeProvider;
-    const mode = typeof provider.getToolResultExecutionMode === 'function'
-      ? await provider.getToolResultExecutionMode(context, invocation)
-      : provider.toolResultExecutionMode;
-    return mode === 'external_result';
+    turn: AgentTurn,
+    outbox: AgentOutbox
+  ): Promise<ToolExecutionPreparation<Record<string, unknown>> | ToolResultEvent> {
+    try {
+      const preparation = await turn.executionScope.runAbortable(
+        { kind: 'tool_execution_prepare', operationId: toolInvocation.id },
+        () => toolInstance.prepareExecution(context, toolInvocation.arguments, {
+          signal: turn.executionScope.signal,
+          turnId: turn.turnId,
+          invocationId: toolInvocation.id
+        })
+      );
+      turn.executionScope.throwIfAborted({ kind: 'tool_execution_prepare', operationId: toolInvocation.id });
+      return preparation;
+    } catch (error) {
+      if (isAgentInterruptionError(error)) throw error;
+      turn.executionScope.throwIfAborted({ kind: 'tool_execution_prepare_error', operationId: toolInvocation.id });
+      const errorMessage = `Error preparing tool '${toolInvocation.name}' (ID: ${toolInvocation.id}): ${String(error)}`;
+      const errorDetails = error instanceof Error ? error.stack ?? String(error) : String(error);
+      outbox.publishToolLog({
+        log_entry: `[TOOL_PREPARE_EXCEPTION] ${errorMessage}\nDetails:\n${errorDetails}`,
+        tool_invocation_id: toolInvocation.id,
+        tool_name: toolInvocation.name,
+        turn_id: toolInvocation.turnId ?? turn.turnId
+      });
+      outbox.publishError(`ToolExecution.Prepare.${toolInvocation.name}`, errorMessage, errorDetails);
+      return new ToolResultEvent(
+        toolInvocation.name,
+        null,
+        toolInvocation.id,
+        errorMessage,
+        toolInvocation.arguments,
+        toolInvocation.turnId ?? turn.turnId,
+        false
+      );
+    }
   }
 
   private async waitForExternalToolResult(

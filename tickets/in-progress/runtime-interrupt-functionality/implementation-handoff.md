@@ -49,7 +49,7 @@ Round 15 local fixes for the scheduler/awaitable command review findings:
 
 Round 16 local fix for the remaining `CR-015` external/async result path:
 
-- Added a production `ToolPhase` external-result branch for tools that declare `toolResultExecutionMode: 'external_result'` or implement `getToolResultExecutionMode(...)`.
+- Added a production `ToolPhase` external-result branch for tools whose `BaseTool` boundary resolves `getToolResultExecutionMode(...)` to `external_result`.
 - The branch registers the real `TurnToolInputPort.waitForToolResults(...)` waiter before publishing tool-start lifecycle/logs, so `AgentMessageInbox -> AgentMessageScheduler -> ToolResultMessageHandler -> AgentRuntimeState -> TurnToolInputPort` can wake the active phase instead of returning a false success.
 - External results rejoin the same `ToolPhase -> ToolResultPipeline -> ToolResultContinuationBuilder -> AgentInputPipeline(SenderType.TOOL)` continuation path used by in-process tool results.
 - Direct in-process tools still execute and return results locally; with no external waiter, external `postToolResult(...)` remains rejected as `no_result_consumer`.
@@ -59,6 +59,14 @@ Round 10 architecture addendum implementation:
 - Renamed final source from `llm-turn-phase.ts` / `LlmTurnPhase` to `llm-phase.ts` / `LlmPhase` as approved by the architecture addendum.
 - Renamed phase helper files to `llm-phase-tools.ts` and `llm-phase-compaction.ts`, and updated active imports/exports/tests to the final naming.
 - Preserved the broad phase ownership: `LlmPhase` still owns request assembly, context/compaction preparation, provider streaming, streaming-parser integration, outcome production, assistant-memory ingestion, and interrupted/failed segment finalization.
+
+Round 17/18 local fix for `CR-017` external-result tool preflight:
+
+- Moved `ToolResultExecutionMode` into the owned tool boundary in `BaseTool` and removed the phase-local duck-typed mode provider from `ToolPhase`.
+- Added `BaseTool.prepareExecution(...)`, which performs the same agent-id setup, argument coercion, schema validation, type validation, pre-abort guard, and tool-owned result-mode resolution without invoking `_execute(...)`.
+- Changed `ToolPhase` to call `prepareExecution(...)` before publishing `ToolExecutionStarted` and before registering/relying on an external result waiter.
+- Preflight failures and mode resolver failures now return normal failed `ToolResultEvent`s and continue through existing tool-result processing/terminal lifecycle. They do not publish started/pending external execution and do not register result waiters.
+- Added BaseTool unit coverage and runtime integration coverage for invalid/missing required args, successful external-result argument coercion, and mode resolver failure while preserving the external-result happy path and no-waiter rejection semantics.
 
 ## Key Files Or Areas
 
@@ -84,14 +92,18 @@ Round 10 architecture addendum implementation:
   - `autobyteus-ts/src/agent/context/agent-context.ts`
   - `autobyteus-ts/src/agent/bootstrap-steps/system-prompt-processing-step.ts`
   - `autobyteus-ts/src/agent/agent.ts`
-- External/async tool result command contract:
+- External/async tool result command contract and tool-owned preflight:
   - `autobyteus-ts/src/agent/tool-result-command.ts`
+  - `autobyteus-ts/src/tools/base-tool.ts`
+  - `autobyteus-ts/src/tools/index.ts`
+  - `BaseTool.prepareExecution(...)` owns argument coercion/schema validation/pre-abort/mode resolution before `ToolPhase` can publish external execution.
 - Focused tests:
   - `autobyteus-ts/tests/unit/agent/message-inbox/agent-message-inbox.test.ts`
   - `autobyteus-ts/tests/unit/agent/message-inbox/agent-message-scheduler.test.ts`
   - `autobyteus-ts/tests/unit/agent/message-inbox/inbox-queue-store.test.ts`
   - `autobyteus-ts/tests/unit/agent/loop/turn-tool-input-port.test.ts`
   - `autobyteus-ts/tests/integration/agent/runtime/agent-runtime.test.ts`
+  - `autobyteus-ts/tests/unit/tools/base-tool.test.ts`
   - updated runtime/state/worker/context tests.
 
 ## Important Assumptions
@@ -136,8 +148,9 @@ Round 10 architecture addendum implementation:
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: Yes.
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): Yes.
 - Notes:
-  - Largest changed implementation sources remain below the 500 effective-line hard limit: `agent-runtime-state.ts` 401, `tool-phase.ts` 322, `agent-worker.ts` 300, `llm-phase.ts` 208, `turn-tool-input-port.ts` 208, `agent-message-inbox.ts` 198, `agent-message-scheduler.ts` 166, `inbox-queue-store.ts` 158 effective non-empty lines.
+  - Largest changed implementation sources remain below the 500 effective-line hard limit: `agent-runtime-state.ts` 401, `tool-phase.ts` 351, `agent-worker.ts` 300, `base-tool.ts` 296, `llm-phase.ts` 208, `turn-tool-input-port.ts` 208, `agent-message-inbox.ts` 198, `agent-message-scheduler.ts` 166, `inbox-queue-store.ts` 158 effective non-empty lines.
   - The final LLM phase rename left no active `LlmTurnPhase` / `llm-turn-phase` references in `autobyteus-ts/src` or `autobyteus-ts/tests`.
+  - The CR-017 fix left no `ToolResultExecutionModeProvider`, phase-local `toolResultExecutionMode` duck type, or `executePrepared` references in active source/tests.
   - This pass intentionally removed the old first-stage inbox/queue/turn-input-box source files instead of leaving compatibility re-exports.
 
 ## Environment Or Dependency Notes
@@ -153,14 +166,20 @@ Passed:
 - `git diff --check HEAD`
 - `pnpm -C autobyteus-ts exec vitest run tests/integration/agent/runtime/agent-runtime.test.ts tests/unit/agent/loop/turn-tool-input-port.test.ts tests/unit/agent/context/agent-runtime-state.test.ts`
   - Result: 3 files passed, 28 tests passed.
-- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/interruption/abortable-operation.test.ts tests/unit/agent/loop/agent-turn-runner.test.ts tests/unit/agent/loop/turn-tool-input-port.test.ts tests/unit/agent/message-inbox/agent-message-inbox.test.ts tests/unit/agent/message-inbox/agent-message-scheduler.test.ts tests/unit/agent/message-inbox/inbox-queue-store.test.ts tests/unit/agent/context/agent-runtime-state.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/unit/agent/runtime/agent-worker.test.ts tests/integration/agent/runtime/agent-runtime.test.ts tests/integration/agent/tool-approval-flow.test.ts`
-  - Result: 11 files passed, 75 tests passed.
 - `grep -R "LlmTurn\|llm-turn" -n autobyteus-ts/src autobyteus-ts/tests || true`
   - Result: no active source/test references remained after the final `LlmPhase` rename.
 - Changed-source effective-line audit for Round 10 renamed files and touch points.
   - Result: `agent-turn-runner.ts` 148, `llm-phase.ts` 208, `llm-phase-compaction.ts` 69, `llm-phase-tools.ts` 39, `loop/index.ts` 5 effective non-empty lines.
 - `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/loop/agent-turn-runner.test.ts tests/integration/agent/runtime/agent-runtime.test.ts`
   - Result: 2 files passed, 10 tests passed.
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/tools/base-tool.test.ts tests/integration/agent/runtime/agent-runtime.test.ts`
+  - Result: 2 files passed, 19 tests passed.
+- `grep -R "ToolResultExecutionModeProvider\|toolResultExecutionMode\|executePrepared" -n autobyteus-ts/src autobyteus-ts/tests || true`
+  - Result: no active phase-local mode provider / duck-typed mode property / prepared-execution bypass references remained.
+- Changed-source effective-line audit for CR-017 files.
+  - Result: `tool-phase.ts` 351, `base-tool.ts` 296, `tools/index.ts` 20 effective non-empty lines; tests are outside the source hard limit.
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/tools/base-tool.test.ts tests/unit/agent/interruption/abortable-operation.test.ts tests/unit/agent/loop/agent-turn-runner.test.ts tests/unit/agent/loop/turn-tool-input-port.test.ts tests/unit/agent/message-inbox/agent-message-inbox.test.ts tests/unit/agent/message-inbox/agent-message-scheduler.test.ts tests/unit/agent/message-inbox/inbox-queue-store.test.ts tests/unit/agent/context/agent-runtime-state.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/unit/agent/runtime/agent-worker.test.ts tests/integration/agent/runtime/agent-runtime.test.ts tests/integration/agent/tool-approval-flow.test.ts`
+  - Result: 12 files passed, 86 tests passed.
 - `pnpm -C autobyteus-ts run build`
   - Passed, including runtime dependency verification.
 - `pnpm -C autobyteus-server-ts run build:full`
