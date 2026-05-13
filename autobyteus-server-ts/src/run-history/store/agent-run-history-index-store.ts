@@ -146,6 +146,41 @@ export class AgentRunHistoryIndexStore {
     });
   }
 
+  async mutateRow(
+    runId: string,
+    reducer: (
+      current: AgentRunHistoryIndexRowRecord | null,
+    ) =>
+      | AgentRunHistoryIndexRowRecord
+      | null
+      | Promise<AgentRunHistoryIndexRowRecord | null>,
+  ): Promise<AgentRunHistoryIndexRowRecord | null> {
+    let result: AgentRunHistoryIndexRowRecord | null = null;
+    await this.queueWrite(async () => {
+      const index = await this.readIndexFile();
+      const current =
+        index.rows.find((row) => row.runId === runId) ?? null;
+      const next = await reducer(current ? normalizeRow(current) : null);
+      if (!next) {
+        return;
+      }
+
+      const normalized = normalizeRow({
+        ...next,
+        runId,
+      });
+      const rows = index.rows
+        .filter((row) => row.runId !== runId)
+        .concat(normalized);
+      await this.writeIndexFile({
+        version: AGENT_RUN_HISTORY_INDEX_RECORD_VERSION,
+        rows,
+      });
+      result = normalized;
+    });
+    return result;
+  }
+
   async removeRow(runId: string): Promise<void> {
     await this.queueWrite(async () => {
       const index = await this.readIndexFile();

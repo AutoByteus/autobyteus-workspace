@@ -9,6 +9,22 @@ const compactSummary = (value: string | null): string => {
   return `${normalized.slice(0, 97)}...`;
 };
 
+const resolveFirstNonEmptySummary = (
+  existingSummary: string | null | undefined,
+  nextSummary: string | null | undefined,
+): string | undefined => {
+  const existing = compactSummary(existingSummary ?? null);
+  if (existing) {
+    return existing;
+  }
+
+  if (nextSummary === undefined || nextSummary === null) {
+    return undefined;
+  }
+
+  return compactSummary(nextSummary);
+};
+
 const parseStatus = (value: unknown): "ACTIVE" | "IDLE" | "ERROR" | null => {
   if (typeof value !== "string") {
     return null;
@@ -62,4 +78,5 @@ export {
   compactSummary,
   extractSummaryFromRawTraces,
   parseStatus,
+  resolveFirstNonEmptySummary,
 };

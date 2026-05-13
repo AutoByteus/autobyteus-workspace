@@ -131,6 +131,66 @@ describe("AgentRunHistoryIndexService", () => {
     expect((await indexStore.getRow("run-1"))?.lastActivityAt).toBe("2026-03-26T12:00:00.000Z");
   });
 
+  it("keeps the first recorded summary when an earlier metadata lookup resolves after later activity", async () => {
+    const { AgentRunHistoryIndexService } = await import(
+      "../../../../src/run-history/services/agent-run-history-index-service.js"
+    );
+    const indexStore = new AgentRunHistoryIndexStore(memoryDir);
+    let resolveAgentName!: (value: { name: string }) => void;
+    const agentNamePromise = new Promise<{ name: string }>((resolve) => {
+      resolveAgentName = resolve;
+    });
+    const getAgentDefinitionById = vi.fn()
+      .mockReturnValueOnce(agentNamePromise)
+      .mockResolvedValue({ name: "Agent One" });
+    const service = new AgentRunHistoryIndexService(memoryDir, {
+      indexStore,
+      agentDefinitionService: {
+        getAgentDefinitionById,
+      },
+      agentRunManager: {
+        hasActiveRun: vi.fn().mockReturnValue(false),
+        listActiveRuns: vi.fn().mockReturnValue([]),
+      },
+    });
+
+    await indexStore.upsertRow({
+      runId: "run-1",
+      agentDefinitionId: "agent-def-1",
+      agentName: "Agent One",
+      workspaceRootPath: "/tmp/workspace",
+      summary: "",
+      lastKnownStatus: "IDLE",
+      lastActivityAt: "2026-03-26T10:00:00.000Z",
+    });
+
+    const firstActivity = service.recordRunActivity({
+      runId: "run-1",
+      metadata: buildMetadata(),
+      summary: "first summary",
+      lastKnownStatus: "ACTIVE",
+      lastActivityAt: "2026-03-26T11:00:00.000Z",
+    });
+    await vi.waitFor(() => {
+      expect(getAgentDefinitionById).toHaveBeenCalledTimes(1);
+    });
+    const secondActivity = service.recordRunActivity({
+      runId: "run-1",
+      metadata: buildMetadata(),
+      summary: "second summary should not replace the first",
+      lastKnownStatus: "ACTIVE",
+      lastActivityAt: "2026-03-26T12:00:00.000Z",
+    });
+
+    await Promise.resolve();
+    expect(getAgentDefinitionById).toHaveBeenCalledTimes(1);
+    resolveAgentName({ name: "Agent One" });
+    await Promise.all([firstActivity, secondActivity]);
+
+    expect((await indexStore.getRow("run-1"))?.summary).toBe("first summary");
+    expect((await indexStore.getRow("run-1"))?.lastActivityAt).toBe("2026-03-26T12:00:00.000Z");
+  });
+
   it("marks runs as TERMINATED on recordRunTerminated", async () => {
     const { AgentRunHistoryIndexService } = await import(
       "../../../../src/run-history/services/agent-run-history-index-service.js"
