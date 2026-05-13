@@ -11,12 +11,11 @@ import {
   ShutdownRequestedEvent,
   UserMessageReceivedEvent,
   InterAgentMessageReceivedEvent,
-  ToolExecutionApprovalEvent,
   LifecycleEvent
 } from '../events/agent-events.js';
 import { applyEventAndDeriveStatus } from '../status/status-update-utils.js';
 import { AgentWorker } from './agent-worker.js';
-import { AgentInputBox } from '../input-box/agent-input-box.js';
+import { AgentMessageInbox } from '../message-inbox/agent-message-inbox.js';
 import {
   normalizeInterruptReason,
   type AgentInterruptOptions,
@@ -26,6 +25,10 @@ import type {
   ToolApprovalInputMessage,
   PostToolApprovalResult
 } from '../tool-approval-command.js';
+import type {
+  ToolResultInputMessage,
+  PostToolResultResult
+} from '../tool-result-command.js';
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -54,27 +57,27 @@ export class AgentRuntime {
 
   async submitEvent(event: BaseEvent): Promise<void> {
     const agentId = this.context.agentId;
-    if (!this.worker || !this.worker.isAlive()) {
+    if (!this.worker || !this.worker.isAlive() || this.worker.isStopping()) {
       throw new Error(`Agent '${agentId}' worker is not active.`);
     }
 
     if (event instanceof UserMessageReceivedEvent) {
-      await this.getAgentInputBox().enqueueUserMessage(event);
+      await this.getAgentMessageInbox().postUserMessage(event);
     } else if (event instanceof InterAgentMessageReceivedEvent) {
-      await this.getAgentInputBox().enqueueInterAgentMessage(event);
+      await this.getAgentMessageInbox().postInterAgentMessage(event);
     } else if (event instanceof LifecycleEvent) {
-      await this.getAgentInputBox().enqueueLifecycleMessage(event);
+      await this.getAgentMessageInbox().postLifecycleMessage(event);
     } else {
       throw new TypeError(
         `AgentRuntime '${agentId}' rejects unsupported runtime input event '${event.constructor.name}'. ` +
-        'Route turn-local operational events through AgentTurnRunner/AgentTurnInputBox.'
+        'Route turn-local operational events through AgentTurnRunner/TurnToolInputPort.'
       );
     }
   }
 
   async postToolApproval(input: ToolApprovalInputMessage): Promise<PostToolApprovalResult> {
     const agentId = this.context.agentId;
-    if (!this.worker || !this.worker.isAlive()) {
+    if (!this.worker || !this.worker.isAlive() || this.worker.isStopping()) {
       return {
         accepted: false,
         code: 'runtime_stopped',
@@ -83,30 +86,28 @@ export class AgentRuntime {
       };
     }
 
-    const result = this.context.state.postToolApprovalToActiveTurn(input);
-    if (!result.accepted) {
-      console.warn(
-        `AgentRuntime '${agentId}': Tool approval '${input.invocationId}' rejected: ${result.code} ${result.message}`
-      );
-      return result;
-    }
-
-    await this.applyEventAndDeriveStatus(
-      new ToolExecutionApprovalEvent(
-        result.invocationId,
-        input.approved,
-        input.reason ?? undefined,
-        result.turnId
-      )
-    );
-    return result;
+    return this.getAgentMessageInbox().postToolApproval(input);
   }
 
-  private getAgentInputBox(): AgentInputBox {
-    if (!this.context.state.agentInputBox) {
-      this.context.state.agentInputBox = new AgentInputBox();
+  async postToolResult(input: ToolResultInputMessage): Promise<PostToolResultResult> {
+    const agentId = this.context.agentId;
+    if (!this.worker || !this.worker.isAlive() || this.worker.isStopping()) {
+      return {
+        accepted: false,
+        code: 'runtime_stopped',
+        invocationId: input.invocationId,
+        message: `Agent '${agentId}' runtime is not running.`
+      };
     }
-    return this.context.state.agentInputBox;
+
+    return this.getAgentMessageInbox().postToolResult(input);
+  }
+
+  private getAgentMessageInbox(): AgentMessageInbox {
+    if (!this.context.state.agentMessageInbox) {
+      this.context.state.agentMessageInbox = new AgentMessageInbox();
+    }
+    return this.context.state.agentMessageInbox;
   }
 
   start(): void {

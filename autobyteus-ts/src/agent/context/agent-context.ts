@@ -1,7 +1,7 @@
 import { AgentConfig } from './agent-config.js';
 import { AgentRuntimeState } from './agent-runtime-state.js';
 import { AgentStatus } from '../status/status-enum.js';
-import type { AgentInputBox } from '../input-box/agent-input-box.js';
+import type { AgentMessageInbox } from '../message-inbox/agent-message-inbox.js';
 import { ToolInvocation } from '../tool-invocation.js';
 import type { BaseLLM } from '../../llm/base.js';
 import type { BaseTool } from '../../tools/base-tool.js';
@@ -56,16 +56,16 @@ export class AgentContext {
     this.state.llmInstance = value;
   }
 
-  get agentInputBox(): AgentInputBox {
-    if (!this.state.agentInputBox) {
+  get agentMessageInbox(): AgentMessageInbox {
+    if (!this.state.agentMessageInbox) {
       console.error(
-        `AgentContext for '${this.agentId}': Attempted to access 'agentInputBox' before it was initialized by AgentWorker.`
+        `AgentContext for '${this.agentId}': Attempted to access 'agentMessageInbox' before it was initialized by AgentWorker.`
       );
       throw new Error(
-        `Agent '${this.agentId}': AgentInputBox has not been initialized. This typically occurs during agent bootstrapping.`
+        `Agent '${this.agentId}': AgentMessageInbox has not been initialized. This typically occurs during agent bootstrapping.`
       );
     }
-    return this.state.agentInputBox;
+    return this.state.agentMessageInbox;
   }
 
   get currentStatus(): AgentStatus {
@@ -134,13 +134,13 @@ export class AgentContext {
   }
 
   toString(): string {
-    const inputBoxStatus = this.state.agentInputBox ? 'Initialized' : 'Pending Init';
+    const inputBoxStatus = this.state.agentMessageInbox ? 'Initialized' : 'Pending Init';
     return (
       `AgentContext(agentId='${this.agentId}', ` +
       `currentStatus='${this.state.currentStatus}', ` +
       `llmInitialized=${this.state.llmInstance !== null}, ` +
       `toolsInitialized=${this.state.toolInstances !== null}, ` +
-      `agentInputBoxStatus='${inputBoxStatus}')`
+      `agentMessageInboxStatus='${inputBoxStatus}')`
     );
   }
 }

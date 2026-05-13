@@ -53,7 +53,7 @@ export class ToolPhase {
       arguments_ = toolInvocation.arguments;
       invocationId = toolInvocation.id;
       toolInvocation.turnId = activeTurnId;
-      turn.inputBox.registerToolInvocation(invocationId);
+      turn.toolInputPort.registerToolInvocation(invocationId);
     } catch (error) {
       if (isAgentInterruptionError(error)) throw error;
       const errorMessage = `Error in tool invocation preprocessor for tool '${toolName}': ${error}`;
@@ -159,7 +159,7 @@ export class ToolPhase {
     turn: AgentTurn,
     outbox: AgentOutbox
   ): Promise<ToolResultEvent | null> {
-    turn.inputBox.registerToolInvocation(toolInvocation.id);
+    turn.toolInputPort.registerToolInvocation(toolInvocation.id);
     context.storePendingToolInvocation(toolInvocation);
     outbox.publishToolApprovalRequested({
       ...buildToolLifecyclePayloadFromInvocation(context.agentId, toolInvocation),
@@ -168,7 +168,7 @@ export class ToolPhase {
 
     let approvalEvent: ToolApprovalInputMessage;
     try {
-      approvalEvent = await turn.inputBox.waitForApproval(
+      approvalEvent = await turn.toolInputPort.waitForApproval(
         toolInvocation.id,
         { signal: turn.executionScope.signal, reason: () => turn.executionScope.getReason() }
       );

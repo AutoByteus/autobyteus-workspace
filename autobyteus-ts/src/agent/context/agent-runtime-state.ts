@@ -2,7 +2,7 @@ import { AgentEventStore } from '../events/event-store.js';
 import { AgentStatus } from '../status/status-enum.js';
 import { ToolInvocation } from '../tool-invocation.js';
 import { AgentTurn } from '../agent-turn.js';
-import type { AgentInputBox } from '../input-box/agent-input-box.js';
+import type { AgentMessageInbox } from '../message-inbox/agent-message-inbox.js';
 import { RecentSettledInvocationCache } from './recent-settled-invocation-cache.js';
 import { ToDoList } from '../../task-management/todo-list.js';
 import { BaseLLM } from '../../llm/base.js';
@@ -18,6 +18,13 @@ import {
 
 import type { AgentStatusDeriver } from '../status/status-deriver.js';
 import type { AgentStatusManager } from '../status/manager.js';
+import type { TurnOutcome } from '../agent-turn.js';
+import {
+  normalizeToolResultInvocationId,
+  normalizeToolResultTurnId,
+  type ToolResultInputMessage,
+  type PostToolResultResult
+} from '../tool-result-command.js';
 
 type ToolInstances = Record<string, BaseTool>;
 
@@ -26,13 +33,15 @@ export class AgentRuntimeState {
   currentStatus: AgentStatus;
   llmInstance: BaseLLM | null = null;
   toolInstances: ToolInstances | null = null;
-  agentInputBox: AgentInputBox | null = null;
+  agentMessageInbox: AgentMessageInbox | null = null;
   eventStore: AgentEventStore | null = null;
   statusDeriver: AgentStatusDeriver | null = null;
   workspaceRootPath: string | null;
   pendingToolApprovals: Record<string, ToolInvocation>;
   customData: Record<string, any>;
   activeTurn: AgentTurn | null = null;
+  activeTurnTask: Promise<TurnOutcome> | null = null;
+  activeTurnTaskTurnId: string | null = null;
   recentSettledInvocationIds: RecentSettledInvocationCache;
   todoList: ToDoList | null = null;
   memoryManager: MemoryManager | null = null;
@@ -66,7 +75,7 @@ export class AgentRuntimeState {
     this.recentSettledInvocationIds = new RecentSettledInvocationCache();
 
     console.info(
-      `AgentRuntimeState initialized for agent_id '${this.agentId}'. Initial status: ${this.currentStatus}. Workspace linked. AgentInputBox pending initialization. Output data via notifier.`
+      `AgentRuntimeState initialized for agent_id '${this.agentId}'. Initial status: ${this.currentStatus}. Workspace linked. AgentMessageInbox pending initialization. Output data via notifier.`
     );
   }
 
@@ -98,6 +107,29 @@ export class AgentRuntimeState {
     }
     if (this.activeWorkingContextCheckpoint?.turnId === resolvedTurnId) {
       this.activeWorkingContextCheckpoint = null;
+    }
+    return resolvedTurnId;
+  }
+
+  registerActiveTurnTask(turnId: string, task: Promise<TurnOutcome>): void {
+    if (!turnId || typeof turnId !== 'string') {
+      throw new Error(`Agent '${this.agentId}': active turn task requires a non-empty turnId.`);
+    }
+    this.activeTurnTaskTurnId = turnId;
+    this.activeTurnTask = task;
+  }
+
+  clearActiveTurnTask(turnId?: string | null): string | null {
+    const resolvedTurnId =
+      typeof turnId === 'string' && turnId.trim().length > 0
+        ? turnId.trim()
+        : this.activeTurnTaskTurnId;
+    if (!resolvedTurnId) {
+      return null;
+    }
+    if (this.activeTurnTaskTurnId === resolvedTurnId) {
+      this.activeTurnTask = null;
+      this.activeTurnTaskTurnId = null;
     }
     return resolvedTurnId;
   }
@@ -197,7 +229,7 @@ export class AgentRuntimeState {
       };
     }
 
-    const postResult = activeTurn.inputBox.postApproval({
+    const postResult = activeTurn.toolInputPort.postApproval({
       kind: 'tool_approval',
       invocationId,
       turnId: activeTurn.turnId,
@@ -221,6 +253,100 @@ export class AgentRuntimeState {
             invocationId,
             turnId: activeTurn.turnId,
             message: postResult.message ?? `Tool approval '${invocationId}' is not pending.`
+          };
+    }
+
+    return {
+      accepted: true,
+      code: 'posted',
+      turnId: activeTurn.turnId,
+      invocationId
+    };
+  }
+
+
+  postToolResultToActiveTurn(input: ToolResultInputMessage): PostToolResultResult {
+    const invocationId = normalizeToolResultInvocationId(input.invocationId) ?? String(input.invocationId ?? '');
+    const activeTurn = this.activeTurn;
+    if (!activeTurn) {
+      return {
+        accepted: false,
+        code: 'no_active_turn',
+        invocationId,
+        message: `Agent '${this.agentId}' has no active turn for tool result '${invocationId}'.`
+      };
+    }
+
+    const turnId = normalizeToolResultTurnId(input.turnId);
+    if (turnId && turnId !== activeTurn.turnId) {
+      return {
+        accepted: false,
+        code: 'stale_turn',
+        invocationId,
+        turnId,
+        activeTurnId: activeTurn.turnId,
+        message: `Tool result '${invocationId}' belongs to stale turn '${turnId}', active turn is '${activeTurn.turnId}'.`
+      };
+    }
+
+    if (activeTurn.isSettled) {
+      return {
+        accepted: false,
+        code: 'stale_turn',
+        invocationId,
+        turnId: activeTurn.turnId,
+        activeTurnId: activeTurn.turnId,
+        message: `Tool result '${invocationId}' targets already-settled turn '${activeTurn.turnId}'.`
+      };
+    }
+
+    if (activeTurn.executionScope.isInterrupted) {
+      return {
+        accepted: false,
+        code: 'interrupted_turn',
+        invocationId,
+        turnId: activeTurn.turnId,
+        message: `Tool result '${invocationId}' targets interrupted turn '${activeTurn.turnId}'.`
+      };
+    }
+
+    const activeBatch = activeTurn.activeToolInvocationBatch;
+    if (!activeBatch || !activeBatch.getExpectedInvocationIds().includes(invocationId)) {
+      return {
+        accepted: false,
+        code: 'no_pending_invocation',
+        invocationId,
+        turnId: activeTurn.turnId,
+        message: `Tool result invocation '${invocationId}' is not pending for active turn '${activeTurn.turnId}'.`
+      };
+    }
+
+    const postResult = activeTurn.toolInputPort.postToolResult({
+      kind: 'tool_result',
+      invocationId,
+      turnId: activeTurn.turnId,
+      ...(input.toolName ? { toolName: input.toolName } : {}),
+      ...(Object.prototype.hasOwnProperty.call(input, 'result') ? { result: input.result } : {}),
+      ...(input.error ? { error: input.error } : {}),
+      ...(input.toolArgs ? { toolArgs: input.toolArgs } : {}),
+      ...(typeof input.isDenied === 'boolean' ? { isDenied: input.isDenied } : {})
+    });
+    if (!postResult.accepted) {
+      const code = postResult.code === 'closed' ? 'interrupted_turn' : 'no_pending_invocation';
+      return code === 'interrupted_turn'
+        ? {
+            accepted: false,
+            code,
+            invocationId,
+            turnId: activeTurn.turnId,
+            message: postResult.message ?? `Tool result '${invocationId}' could not be posted to interrupted turn.`
+          }
+        : {
+            accepted: false,
+            code,
+            invocationId,
+            turnId: activeTurn.turnId,
+            message: postResult.message ?? `Tool result '${invocationId}' is not pending.`
           };
     }
 
@@ -279,13 +405,13 @@ export class AgentRuntimeState {
   toString(): string {
     const llmStatus = this.llmInstance ? 'Initialized' : 'Not Initialized';
     const toolsStatus = this.toolInstances ? `${Object.keys(this.toolInstances).length} Initialized` : 'Not Initialized';
-    const inputBoxStatus = this.agentInputBox ? 'Initialized' : 'Not Initialized';
+    const inputBoxStatus = this.agentMessageInbox ? 'Initialized' : 'Not Initialized';
     const activeTurnStatus = this.activeTurn ? 'Active' : 'Inactive';
 
     return (
       `AgentRuntimeState(agentId='${this.agentId}', currentStatus='${this.currentStatus}', ` +
       `llmStatus='${llmStatus}', toolsStatus='${toolsStatus}', ` +
-      `agentInputBoxStatus='${inputBoxStatus}', ` +
+      `agentMessageInboxStatus='${inputBoxStatus}', ` +
       `pendingApprovals=${Object.keys(this.pendingToolApprovals).length}, ` +
       `agentTurn='${activeTurnStatus}')`
     );

@@ -15,6 +15,10 @@ import {
   normalizeToolApprovalInvocationId,
   type PostToolApprovalResult
 } from './tool-approval-command.js';
+import {
+  normalizeToolResultInvocationId,
+  type PostToolResultResult
+} from './tool-result-command.js';
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -75,6 +79,28 @@ export class Agent {
       reason: reason ?? null,
       ...(options.turnId ? { turnId: options.turnId } : {}),
       ...(options.requestedBy ? { requestedBy: options.requestedBy } : {})
+    });
+  }
+
+  async postToolExecutionResult(
+    toolInvocationId: string,
+    result: unknown,
+    options: { turnId?: string; toolName?: string; error?: string; toolArgs?: Record<string, unknown>; isDenied?: boolean } = {}
+  ): Promise<PostToolResultResult> {
+    const invocationId = normalizeToolResultInvocationId(toolInvocationId);
+    if (!invocationId) {
+      throw new Error('tool_invocation_id must be a non-empty string.');
+    }
+
+    return this.runtime.postToolResult({
+      kind: 'tool_result',
+      invocationId,
+      result,
+      ...(options.turnId ? { turnId: options.turnId } : {}),
+      ...(options.toolName ? { toolName: options.toolName } : {}),
+      ...(options.error ? { error: options.error } : {}),
+      ...(options.toolArgs ? { toolArgs: options.toolArgs } : {}),
+      ...(typeof options.isDenied === 'boolean' ? { isDenied: options.isDenied } : {})
     });
   }
 

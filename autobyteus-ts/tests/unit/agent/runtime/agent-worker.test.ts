@@ -25,13 +25,14 @@ vi.mock('../../../../src/agent/loop/agent-turn-runner.js', () => ({
 }));
 
 import { AgentWorker } from '../../../../src/agent/runtime/agent-worker.js';
-import { AgentInputBox } from '../../../../src/agent/input-box/agent-input-box.js';
+import { AgentMessageInbox } from '../../../../src/agent/message-inbox/agent-message-inbox.js';
 import { AgentRuntimeState } from '../../../../src/agent/context/agent-runtime-state.js';
 import { AgentConfig } from '../../../../src/agent/context/agent-config.js';
 import { AgentContext } from '../../../../src/agent/context/agent-context.js';
 import { AgentStatus } from '../../../../src/agent/status/status-enum.js';
 import { AgentStatusDeriver } from '../../../../src/agent/status/status-deriver.js';
 import { UserMessageReceivedEvent } from '../../../../src/agent/events/agent-events.js';
+import { ToolInvocation } from '../../../../src/agent/tool-invocation.js';
 import { AgentInputUserMessage } from '../../../../src/agent/message/agent-input-user-message.js';
 import { CompleteResponse } from '../../../../src/llm/utils/response-types.js';
 import { BaseLLM, type LLMInvocationOptions } from '../../../../src/llm/base.js';
@@ -133,13 +134,13 @@ describe('AgentWorker', () => {
 
   it('runs one AgentTurnRunner for an external scheduler event', async () => {
     const context = makeContext();
-    context.state.agentInputBox = new AgentInputBox();
+    context.state.agentMessageInbox = new AgentMessageInbox();
     const worker = new AgentWorker(context);
     vi.spyOn(worker as any, 'initialize').mockResolvedValue(true as any);
 
     worker.start();
     await delay(10);
-    await context.state.agentInputBox.enqueueUserMessage(
+    await context.state.agentMessageInbox.postUserMessage(
       new UserMessageReceivedEvent(new AgentInputUserMessage('hello'))
     );
 
@@ -151,7 +152,7 @@ describe('AgentWorker', () => {
 
   it('start/stop lifecycle toggles isAlive and runs shutdown cleanup', async () => {
     const context = makeContext();
-    context.state.agentInputBox = new AgentInputBox();
+    context.state.agentMessageInbox = new AgentMessageInbox();
     const worker = new AgentWorker(context);
     vi.spyOn(worker as any, 'initialize').mockResolvedValue(true as any);
 
@@ -164,31 +165,56 @@ describe('AgentWorker', () => {
     expect(mocks.shutdownRun).toHaveBeenCalledWith(context);
   });
 
-  it('does not start a queued external turn after stop is requested while idle', async () => {
+  it('does not start a queued external turn after stop is requested', async () => {
     const context = makeContext();
-    const queuedEvent = new UserMessageReceivedEvent(new AgentInputUserMessage('queued before stop wake'));
-    let releaseNextInput!: (value: unknown) => void;
-    const nextInput = new Promise((resolve) => {
-      releaseNextInput = resolve;
+    const worker = new AgentWorker(context);
+    (worker as any).stopRequested = true;
+
+    const result = await (worker as any).startTurnRunner(
+      new UserMessageReceivedEvent(new AgentInputUserMessage('queued before stop wake'))
+    );
+
+    expect(result).toMatchObject({ accepted: false, code: 'runtime_stopping' });
+    expect(mocks.runnerRun).not.toHaveBeenCalled();
+  });
+
+  it('keeps the scheduler loop alive for active-turn tool approval messages while a runner is active', async () => {
+    const context = makeContext();
+    context.state.agentMessageInbox = new AgentMessageInbox();
+    let releaseRunner!: () => void;
+    mocks.runnerRun.mockImplementation(async () => {
+      await new Promise<void>((resolve) => { releaseRunner = resolve; });
+      return { kind: 'completed', turnId: 'turn-1' };
     });
-    context.state.agentInputBox = {
-      nextTurnTriggerWhenIdle: vi.fn(() => nextInput),
-      enqueueLifecycleMessage: vi.fn(async () => undefined)
-    } as any;
     const worker = new AgentWorker(context);
     vi.spyOn(worker as any, 'initialize').mockResolvedValue(true as any);
 
     worker.start();
-    expect(await waitForCondition(() =>
-      (context.state.agentInputBox!.nextTurnTriggerWhenIdle as any).mock.calls.length === 1
-    )).toBe(true);
+    await delay(10);
+    await context.state.agentMessageInbox.postUserMessage(
+      new UserMessageReceivedEvent(new AgentInputUserMessage('hello'))
+    );
 
-    const stopPromise = worker.stop(0.5);
-    await Promise.resolve();
-    releaseNextInput({ kind: 'turn_trigger', source: 'user_message', event: queuedEvent });
-    await stopPromise;
+    expect(await waitForCondition(() => context.state.activeTurn !== null)).toBe(true);
+    const activeTurn = context.state.activeTurn!;
+    activeTurn.startToolInvocationBatch([new ToolInvocation('tool', {}, 'inv-approval', activeTurn.turnId)]);
+    context.state.storePendingToolInvocation(new ToolInvocation('tool', {}, 'inv-approval', activeTurn.turnId));
+    const approvalPromise = activeTurn.toolInputPort.waitForApproval('inv-approval', {
+      signal: activeTurn.executionScope.signal
+    });
 
-    expect(mocks.runnerRun).not.toHaveBeenCalled();
-    expect(worker.isAlive()).toBe(false);
-  });
-});
+    const postPromise = context.state.agentMessageInbox.postToolApproval({
+      kind: 'tool_approval',
+      invocationId: 'inv-approval',
+      turnId: activeTurn.turnId,
+      approved: true,
+      reason: 'ok'
+    });
+
+    await expect(postPromise).resolves.toMatchObject({ accepted: true, code: 'posted' });
+    await expect(approvalPromise).resolves.toMatchObject({ approved: true, invocationId: 'inv-approval' });
+
+    releaseRunner();
+    expect(await waitForCondition(() => context.state.activeTurn === null)).toBe(true);
+    await worker.stop(0.2);
+  });});

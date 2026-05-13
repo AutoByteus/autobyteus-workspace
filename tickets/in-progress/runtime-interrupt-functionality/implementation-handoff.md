@@ -6,398 +6,135 @@
 - Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/investigation-notes.md`
 - Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/design-spec.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/design-review-report.md`
-- Code review report addressed in this local-fix round: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/review-report.md`
+- Latest code review report context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/review-report.md`
 
 ## What Changed
 
-Implemented the approved clean-cut native interrupt/runtime-loop redesign.
+Implemented the approved Round 9 inbound-message refactor on top of the native interrupt/runtime-loop implementation.
 
-- Added first-class single-agent `interrupt(...)` on `Agent`, `AgentRuntime`, and active `AgentTurn`/`TurnExecutionScope`; interrupt is turn-scoped and keeps the runtime reusable.
-- Extracted direct per-turn execution ownership into `AgentTurnRunner`, `LlmTurnPhase`, `ToolPhase`, `AgentTurnInputBox`, typed processor pipelines, `ToolResultContinuationBuilder`, and `AgentOutbox`.
-- Removed normal LLM/tool/continuation turn control from `WorkerEventDispatcher` and the old `agent/handlers/*` chain; `AgentWorker` now owns runtime bootstrap/scheduling/shutdown and starts one `AgentTurnRunner` per external trigger.
-- Preserved same-turn tool continuation through `ToolResultPipeline -> ToolResultContinuationBuilder -> AgentInputPipeline(SenderType.TOOL) -> buildLLMUserMessage`.
-- Propagated abort signals through `BaseLLM` public calls, LLM provider adapters, `BaseTool`, functional tools, MCP tools, and terminal `run_bash` foreground execution.
-- Added explicit interrupt status/events/stream payloads: `INTERRUPTING`, turn interrupted, and tool execution interrupted.
-- Added native team interrupt aggregation for cached/running members only, including `partial_timeout` and per-member result details.
-- Updated native Autobyteus server backends and WebSocket/UI protocol from stop-generation wording to `INTERRUPT_GENERATION`; native backend interrupt no longer calls stop.
-- Removed stale old-handler tests and added/updated focused unit/integration coverage for the new runner/input-box/interruption paths.
-- Addressed code-review CR-001 by adding turn-start working-context checkpoints and interrupted-turn restore/suppression owned by `AgentRuntimeState`/`MemoryManager`; raw trace/history is retained while incomplete working-context user/tool fragments are removed before the next LLM request.
-- Addressed code-review CR-002 by tightening `AgentTurnInputBox` invocation identity acceptance, rejecting unknown/duplicate/stale approval/result messages, publishing terminal tool-interrupted lifecycle when pending approval is interrupted, and terminalizing pending approval rows on frontend `TURN_INTERRUPTED`.
-- Resolved delivery-stage latest-base merge conflict by preserving explicit inter-agent `reference_files` behavior in `AgentInputPipeline`/input-pipeline tests while keeping the deleted legacy `inter-agent-message-event-handler` path removed.
-- Addressed code-review CR-003 by adding interrupted-finalization contracts for streaming handlers/parsers; active text/tool/write/edit/reasoning segments now emit interrupted `SEGMENT_END` metadata and interrupted tool segments do not produce valid tool invocations.
-- Addressed code-review CR-004 by forwarding `LLMInvocationOptions.signal` through `AutobyteusLLM` to `AutobyteusClient` and Axios `/send-message` and `/stream-message` requests.
-- Addressed code-review CR-005 by extracting native Autobyteus team event processing/enrichment/member context resolution into `AutoByteusTeamRunEventProcessor`, reducing `autobyteus-team-run-backend.ts` below the 500-line hard limit.
-- Addressed code-review CR-006 by removing dormant `AgentTurnInputBox` tool-result/continuation lanes and keeping direct `ToolPhase` return values as the authoritative tool-result flow.
-- Resolved the API/E2E Round 3 delivery latest-base merge conflict against `origin/personal` by keeping the extracted `AutoByteusTeamRunEventProcessor` as the native team event-processing owner, folding in latest Team Communication `message_id` / `reference_file_entries` enrichment for explicit `reference_files`, preserving de-duplication, and keeping native team interrupt on `interrupt(...)` with no stop fallback.
-- Reconciled conflicted server/web docs to preserve `INTERRUPT_GENERATION` terminology while retaining latest Claude active-terminate settlement and Team Communication reference-route documentation.
-- Implemented the approved AgentInputBox addendum:
-  - Added `AgentInputBox` as the first-class single-agent runtime inbound boundary for external turn-starting user and inter-agent messages.
-  - Rewired `AgentRuntime.submitEvent(...)` and `AgentWorker` so normal turn triggers enter through `AgentInputBox.nextTurnTriggerWhenIdle(...) -> AgentWorker -> AgentTurn -> AgentTurnRunner`.
-  - Demoted `AgentInputEventQueueManager` to generic queue storage with no domain-event semantics and no runtime-level caller access.
-  - Kept turn-local approvals/results/continuations out of `AgentInputBox`; approvals still route directly to the active `AgentTurnInputBox`, and `SenderType.TOOL` continuations remain same-turn pipeline outputs.
-  - Added explicit discriminants for turn triggers vs runtime lifecycle notifications so lifecycle messages cannot be treated as turn triggers.
-- Addressed code-review CR-007 and CR-008 for the AgentInputBox addendum:
-  - Narrowed the `AgentInputBox` lifecycle lane from `BaseEvent` to `LifecycleEvent` and rejected unsupported turn/phase operational events such as pending tool invocations and LLM phase events.
-  - Updated `AgentRuntime.submitEvent(...)` to reject unsupported turn-local operational events instead of queuing them through the lifecycle lane.
-  - Added a stop preemption guard after `AgentInputBox.nextTurnTriggerWhenIdle(...)` returns so a queued external turn trigger cannot start after `stop()` has begun.
-- Addressed code-review CR-009 and CR-010:
-  - Normalized outbound native Autobyteus segment WebSocket payloads at the server boundary to canonical `turn_id`, stripping legacy `turnId` from `SEGMENT_START`, `SEGMENT_CONTENT`, and `SEGMENT_END` payloads while preserving interrupted metadata.
-  - Added failed-finalization for non-interrupt LLM stream errors: active text/tool/write/edit/reasoning segments now emit failed `SEGMENT_END` metadata with the stream error, failed partial tool segments do not produce tool invocations/continuations, and frontend projection terminalizes partial tool rows as `error`.
-- Implemented the approved Round 8 external tool approval/denial spine:
-  - Added `ToolApprovalInputMessage` / `PostToolApprovalResult` as the typed approval command contract.
-  - Rewired `Agent.postToolExecutionApproval(...)` to call `AgentRuntime.postToolApproval(...)` directly without starting runtime work or submitting an operational event.
-  - Added `AgentRuntimeState.postToolApprovalToActiveTurn(...)` validation for active turn, optional turn ID, pending/active invocation identity, settled/interrupted turn state, and duplicate/unknown approval results before posting to the active `AgentTurnInputBox`.
-  - Kept `ToolPhase.waitForApproval(...)` consuming only active-turn input-box messages, and left `ToolExecutionApprovalEvent` as a status/event-store projection rather than a runtime turn-control input.
-  - Updated the native server backend to map accepted and stale/no-active/no-pending/interrupted native approval outcomes to `AgentOperationResult` without treating normal races as command failures.
-  - Updated team approval routing to call the target member agent's public `postToolExecutionApproval(...)` API and not member runtime internals or turn input-box internals.
-- Addressed code-review CR-011 through CR-013:
-  - Added pre-start interruption guards for `TurnExecutionScope.runAbortable(...)` and async iterator wrapping so already-aborted turns do not invoke request/tool/preprocessor thunks or request the next iterator item.
-  - Added post-await interruption fences across `AgentTurnRunner`, `LlmTurnPhase`, and `ToolPhase` before normal-completion status, outbox, memory-ingestion, tool-terminal, and continuation side effects.
-  - Tightened runtime approval validation so approval/denial acceptance requires a pending approval marker in `AgentRuntimeState.pendingToolApprovals`; active auto-executing tool-batch membership alone is no longer sufficient.
-  - Added unit regression coverage for already-aborted run/iterator starts, post-LLM and post-tool late-interrupt seams, and auto-executing active-batch/no-pending approval rejection.
-
-## Key Files Or Areas
-
-- Core interrupt primitives:
-  - `autobyteus-ts/src/agent/interruption/agent-interruption.ts`
-  - `autobyteus-ts/src/agent/interruption/abortable-operation.ts`
-  - `autobyteus-ts/src/agent/interruption/turn-execution-scope.ts`
-- Direct turn loop and phase owners:
-  - `autobyteus-ts/src/agent/loop/agent-turn-runner.ts`
-  - `autobyteus-ts/src/agent/loop/llm-turn-phase.ts`
-  - `autobyteus-ts/src/agent/loop/tool-phase.ts`
-  - `autobyteus-ts/src/agent/loop/agent-turn-input-box.ts`
-  - `autobyteus-ts/src/agent/loop/tool-result-continuation-builder.ts`
-- Typed pipelines/outbox:
-  - `autobyteus-ts/src/agent/pipelines/*`
-  - `autobyteus-ts/src/agent/outbox/agent-outbox.ts`
-  - Latest-base inter-agent `reference_files` ingestion now lives in `AgentInputPipeline.convertInterAgentEvent`; the old handler path remains removed.
-- Streaming interrupted-finalization:
-  - `autobyteus-ts/src/agent/streaming/handlers/streaming-response-handler.ts`
-  - `autobyteus-ts/src/agent/streaming/handlers/*-streaming-response-handler.ts`
-  - `autobyteus-ts/src/agent/streaming/parser/*`
-  - `autobyteus-ts/src/agent/streaming/adapters/invocation-adapter.ts`
-  - `autobyteus-web/services/agentStreaming/handlers/segmentHandler.ts`
-- Segment protocol normalization:
-  - `autobyteus-server-ts/src/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.ts`
-  - `autobyteus-server-ts/src/services/agent-streaming/agent-run-event-message-mapper.ts`
-  - `autobyteus-web/services/agentStreaming/protocol/messageTypes.ts`
-- Provider cancellation mapping:
-  - `autobyteus-ts/src/llm/api/autobyteus-llm.ts`
-  - `autobyteus-ts/src/clients/autobyteus-client.ts`
-- Runtime wiring and working-context interruption checkpointing:
+- Replaced the architecture-facing runtime inbox model with `AgentMessageInbox` under `autobyteus-ts/src/agent/message-inbox/`.
+  - It owns typed lanes for turn-starting messages, active-turn tool messages, and runtime lifecycle messages.
+  - It stores parked future turn-start messages while an active runner is executing.
+  - Awaitable active-turn commands resolve only after scheduler/handler completion, not after low-level enqueue.
+- Replaced the low-level queue manager with `InboxQueueStore` under the message-inbox subsystem.
+  - The store is generic queue/availability storage only; it has no agent event/domain routing knowledge.
+- Added `AgentMessageScheduler` and typed message handlers.
+  - `TurnStartMessageHandler` starts an `AgentTurnRunner` task only when idle and does not own LLM/tool phase progression.
+  - `ToolApprovalMessageHandler` routes approval commands through `AgentRuntimeState` validation and into the active turn tool input port.
+  - `ToolResultMessageHandler` provides the same active-turn lane for external/async tool results.
+  - `RuntimeLifecycleMessageHandler` keeps lifecycle/terminal messages discriminated from turn triggers.
+- Renamed/reshaped the active-turn approval primitive into `TurnToolInputPort`.
+  - It is internal to `AgentTurn`/`ToolPhase` and handles tool approval plus external tool result wait/post semantics.
+  - It rejects turn mismatch, unknown invocation, duplicate, closed/interrupted, and late messages.
+- Reworked `AgentWorker` to supervise a background active runner task while keeping the scheduler loop alive.
+  - Active runner task ownership is recorded on `AgentRuntimeState` via `registerActiveTurnTask(...)` / `clearActiveTurnTask(...)`.
+  - The inbox loop remains available for active-turn tool approvals/results and lifecycle messages while a turn is waiting.
+  - Queued user/inter-agent turn-start messages remain parked until active-turn settlement wakes dispatchability.
+- Rewired `AgentRuntime.postToolApproval(...)` through `AgentMessageInbox.postToolApproval(...)` instead of directly posting to active-turn internals.
+- Added a concrete `ToolResultInputMessage` / `PostToolResultResult` command contract plus `AgentRuntime.postToolResult(...)` and `Agent.postToolExecutionResult(...)` for external/async tool result routing.
+- Removed obsolete first-stage files and tests:
   - `autobyteus-ts/src/agent/input-box/agent-input-box.ts`
   - `autobyteus-ts/src/agent/input-box/index.ts`
   - `autobyteus-ts/src/agent/events/agent-input-event-queue-manager.ts`
+  - `autobyteus-ts/src/agent/loop/agent-turn-input-box.ts`
+  - corresponding old unit tests.
+
+The existing finite turn path remains intact: `AgentTurnRunner` / `LlmTurnPhase` / `ToolPhase` / typed pipelines still own normal LLM/tool/continuation progression; no old `WorkerEventDispatcher` or `agent/handlers` normal-flow loop was reintroduced.
+
+## Key Files Or Areas
+
+- New inbound boundary and scheduler:
+  - `autobyteus-ts/src/agent/message-inbox/agent-message-inbox.ts`
+  - `autobyteus-ts/src/agent/message-inbox/inbox-queue-store.ts`
+  - `autobyteus-ts/src/agent/message-inbox/agent-message-scheduler.ts`
+  - `autobyteus-ts/src/agent/message-inbox/handlers/*.ts`
+- Active-turn tool input primitive:
+  - `autobyteus-ts/src/agent/loop/turn-tool-input-port.ts`
+  - `autobyteus-ts/src/agent/agent-turn.ts`
+  - `autobyteus-ts/src/agent/loop/tool-phase.ts`
+- Runtime/worker/state rewiring:
   - `autobyteus-ts/src/agent/runtime/agent-worker.ts`
   - `autobyteus-ts/src/agent/runtime/agent-runtime.ts`
   - `autobyteus-ts/src/agent/context/agent-runtime-state.ts`
-  - `autobyteus-ts/src/memory/memory-manager.ts`
-  - `autobyteus-ts/src/memory/working-context-snapshot.ts`
-  - `autobyteus-ts/src/agent/factory/agent-factory.ts`
-- External approval command boundary:
-  - `autobyteus-ts/src/agent/tool-approval-command.ts`
+  - `autobyteus-ts/src/agent/context/agent-context.ts`
+  - `autobyteus-ts/src/agent/bootstrap-steps/system-prompt-processing-step.ts`
   - `autobyteus-ts/src/agent/agent.ts`
-  - `autobyteus-ts/src/agent/runtime/agent-runtime.ts`
-  - `autobyteus-ts/src/agent/context/agent-runtime-state.ts`
-  - `autobyteus-ts/src/agent/loop/agent-turn-input-box.ts`
-  - `autobyteus-ts/src/agent/loop/tool-phase.ts`
-  - `autobyteus-ts/src/agent-team/handlers/tool-approval-team-event-handler.ts`
-  - `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts`
-- Interruption fence fixes:
-  - `autobyteus-ts/src/agent/interruption/turn-execution-scope.ts`
-  - `autobyteus-ts/src/agent/interruption/abortable-operation.ts`
-  - `autobyteus-ts/src/agent/loop/agent-turn-runner.ts`
-  - `autobyteus-ts/src/agent/loop/llm-turn-phase.ts`
-  - `autobyteus-ts/src/agent/loop/tool-phase.ts`
-  - `autobyteus-ts/src/agent/context/agent-runtime-state.ts`
-- Removed old turn-control files:
-  - `autobyteus-ts/src/agent/events/worker-event-dispatcher.ts`
-  - `autobyteus-ts/src/agent/handlers/*` normal-flow handlers, except `tool-lifecycle-payload.ts` remains as a non-control payload formatter.
-- Team interrupt:
-  - `autobyteus-ts/src/agent-team/context/team-manager.ts`
-  - `autobyteus-ts/src/agent-team/runtime/agent-team-runtime.ts`
-  - `autobyteus-ts/src/agent-team/agent-team.ts`
-- Server and web protocol/frontend projection:
-  - `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts`
-  - `autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend.ts`
-  - `autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-event-processor.ts`
-  - `autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend-utils.ts`
-  - `autobyteus-server-ts/src/services/agent-streaming/*`
-  - `autobyteus-web/services/agentStreaming/*`
-  - `autobyteus-web/services/agentStreaming/handlers/agentStatusHandler.ts`
-  - `autobyteus-web/stores/*RunStore.ts`, `activeContextStore.ts`, and status/tool lifecycle UI helpers.
+- External/async tool result command contract:
+  - `autobyteus-ts/src/agent/tool-result-command.ts`
+- Focused tests:
+  - `autobyteus-ts/tests/unit/agent/message-inbox/agent-message-inbox.test.ts`
+  - `autobyteus-ts/tests/unit/agent/message-inbox/inbox-queue-store.test.ts`
+  - `autobyteus-ts/tests/unit/agent/loop/turn-tool-input-port.test.ts`
+  - updated runtime/state/worker/context tests.
 
 ## Important Assumptions
 
-- `stop()` remains terminal shutdown; `interrupt()` is current-turn cancellation and must not run shutdown cleanup.
-- Active-turn interruption is side-band runtime control, not a queued user/turn event.
-- LLM/tool adapters that support `AbortSignal` should abort underlying work; unsupported/blocked async iterators are abandoned without blocking turn settlement.
-- The protected LLM provider hook remains permissive at the type level to avoid breaking local/custom subclass implementations; the public `sendMessages`/`streamMessages` entrypoints carry the typed `LLMInvocationOptions` signal contract.
-- Team interrupt intentionally targets only already cached/running members and does not lazy-start stopped or absent nodes.
+- `interrupt(...)` remains side-band and targets only the active `AgentTurn` / `TurnExecutionScope`; it does not enter the inbox.
+- `stop(...)` remains terminal shutdown and can preempt queued future turn-starting messages.
+- In-process tool execution may still return direct `ToolResultEvent`s from `ToolPhase`; the new tool-result inbox lane is for externalized/asynchronous tool result delivery.
+- Active-turn tool approvals/results require runtime-state validation before reaching `TurnToolInputPort`; external callers and server/team routing must not access the port directly.
+- `ToolExecutionApprovalEvent` remains a status/projection event, not a runtime input event.
 
 ## Known Risks
 
-- Broad package-level typechecks include many existing test/config issues outside this change. Source build checks for changed packages pass; targeted tests for changed behavior pass.
-- Working-context restore/suppression is now covered by unit/integration tests, but API/E2E should still exercise it with real provider streams and real memory stores. Raw traces are intentionally preserved for history/audit; only the working-context snapshot is restored.
-- Real provider cancellation behavior may vary by SDK. The core runner abandons stalled streams promptly, but downstream validation should confirm each provider adapter does not leak user-visible continuations after interrupt.
-- Terminal foreground command interruption closes the terminal session; downstream validation should confirm this is acceptable for current terminal UX.
-- Server/web docs were minimally updated for protocol naming; delivery should still perform integrated documentation sync/no-impact review against the final branch state.
+- API/E2E revalidation is still required after code review because this refactor changes the runtime scheduler/inbound boundary.
+- Existing delivery-owned docs/report artifacts in the worktree still contain prior terminology and were not updated in this implementation pass except for this handoff. Delivery docs sync should reconcile public docs after review/validation.
+- External/async tool result routing is now concretely modeled and locally tested, but no broad API/E2E external tool-host scenario was run by implementation.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: Larger Requirement / Behavior Change
-- Reviewed root-cause classification: Boundary Or Ownership Issue + Missing Invariant
-- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): Refactor Needed Now
-- Implementation matched the reviewed assessment (`Yes`/`No`): Yes
-- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): N/A
+- Reviewed change posture: Larger runtime refactor / behavior-preserving boundary cleanup with new active-turn tool-result command lane.
+- Reviewed root-cause classification: Boundary Or Ownership Issue + Missing Invariant.
+- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): Refactor Needed Now.
+- Implementation matched the reviewed assessment (`Yes`/`No`): Yes.
+- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): N/A.
 - Evidence / notes:
-  - `AgentTurnRunner` directly calls input/LLM/tool/result/continuation/response pipelines for normal turn flow.
-  - `WorkerEventDispatcher` and old normal-flow handlers were removed from source.
-  - Native server agent/team interrupt paths call `interrupt(...)` and do not fall back to `stop()`.
-  - Tool continuation remains a `SenderType.TOOL` same-turn input and is covered by focused tests.
-  - CR-001 checkpoint/restore is covered by `agent-runtime-state` unit coverage and runtime integration tests showing interrupted LLM/tool-intent context is absent from the next LLM request.
-  - CR-002 approval/tool lifecycle fencing is covered by input-box/runtime integration and frontend projection tests.
-  - Delivery reroute reference-file conflict was resolved without resurrecting old handler turn control; `AgentInputPipeline` now publishes `reference_files`, adds exactly one LLM-visible reference-file block, and preserves metadata for inter-agent inputs.
-  - CR-003 streaming interruption is covered by handler unit tests and runtime integration asserting interrupted `SEGMENT_END` publication for an active streamed response.
-  - CR-004 Autobyteus cancellation is covered by LLM/client unit tests asserting `AbortSignal` propagation to Axios request config.
-  - CR-005 file-size cleanup split native team event processing into an owned processor; after latest-base reconciliation effective non-empty source lines are 260 for the backend, 308 for the processor, and 39 for the shared backend utility file.
-  - CR-006 dormant result/continuation input-box APIs and side writes were removed; `ToolPhase` return values remain the single tool-result authority.
-  - AgentInputBox addendum is implemented as an authoritative runtime inbox boundary; runtime callers no longer depend on both `AgentInputBox` and the queue manager internals, and the queue manager is generic storage only.
-  - CR-007 lifecycle-lane tightening is covered by `AgentInputBox` rejection tests for `PendingToolInvocationEvent`, `LLMUserMessageReadyEvent`, and `LLMCompleteResponseReceivedEvent`, plus a runtime rejection test proving unsupported operational events are not queued as lifecycle input.
-  - CR-008 shutdown preemption is covered by an `AgentWorker` regression test proving a queued user turn trigger does not invoke `AgentTurnRunner.run` after `stop()` begins while the worker is idle.
-  - CR-009 segment payload canonicalization is covered by native server converter/mapper tests for `SEGMENT_START`, `SEGMENT_CONTENT`, and `SEGMENT_END`, including interrupted segment metadata and assertions that `turnId` does not leak.
-  - CR-010 non-interrupt stream-error terminalization is covered by streaming handler unit tests, runtime integration coverage for failed partial text/tool streams with no approval/continuation, and frontend segment/status projection tests for failed partial tool rows.
-  - CR-011 pre-start abort fencing is covered by abortable-operation tests proving already-aborted `TurnExecutionScope.runAbortable(...)` does not invoke the supplied thunk, already-aborted iterators are not acquired, and aborted iterators do not request another item.
-  - CR-012 post-await interruption seams are covered by `AgentTurnRunner` tests proving late post-LLM and post-tool interrupts produce interrupted outcomes without final LLM response processing, turn completion, tool-result processing, or terminal tool success/failure publication.
-  - CR-013 approval validation is covered by a runtime test proving an active auto-executing tool-batch invocation with no pending approval marker rejects approval as `no_pending_invocation` and does not mutate runtime status.
+  - Runtime callers now depend on `AgentMessageInbox`, not both an inbox and queue internals.
+  - Queue storage is private/generic `InboxQueueStore` with no domain message classification.
+  - Typed handlers are entry handlers only and do not call LLM/tool phase chains.
+  - `AgentWorker` supervises active runner tasks and wakes scheduler dispatchability on settlement.
+  - Active-turn approvals/results cannot start new turns and return explicit no-active/stale/no-pending/interrupted/runtime-stopped outcomes.
+  - Source grep over active `autobyteus-ts/src` and tests found no remaining `AgentInputBox`, `AgentTurnInputBox`, or `AgentInputEventQueueManager` references.
 
 ## Legacy / Compatibility Removal Check
 
-- Backward-compatibility mechanisms introduced: None for runtime behavior. The LLM protected hook type is intentionally permissive while public invocation APIs are typed for `LLMInvocationOptions`.
-- Legacy old-behavior retained in scope: No
-- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: Yes
-- Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): Yes
-- Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: Yes
-- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): Yes
+- Backward-compatibility mechanisms introduced: None.
+- Legacy old-behavior retained in scope: No.
+- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: Yes.
+- Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): Yes.
+- Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: Yes.
+- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): Yes.
 - Notes:
-  - `LlmTurnPhase` was split with tool-schema and compaction helpers to keep the phase file below the implementation size-pressure threshold.
-  - Existing larger source files received limited deltas and were not expanded beyond their existing responsibilities.
-  - `AutoByteusTeamRunBackend` was split into a command/bridge backend and a native event processor to satisfy the hard size limit without introducing pass-through-only helpers; latest Team Communication backend utilities are imported by the processor for real normalization/extraction work rather than re-expanding the backend.
-  - `AgentTurnInputBox` now owns approval side-band traffic only; tool-result aggregation/continuation remains in `ToolPhase`/`AgentTurnRunner`.
-  - `AgentInputBox` now owns runtime-level external turn-starting input and a strictly lifecycle-only runtime-control lane. `AgentInputEventQueueManager` no longer knows about user/inter-agent/tool/lifecycle event classes and is only storage behind `AgentInputBox`.
+  - Largest changed implementation sources remain below the 500 effective-line hard limit: `agent-runtime-state.ts` 381, `agent-worker.ts` 284, `turn-tool-input-port.ts` 204, `agent-message-inbox.ts` 150, `agent-message-scheduler.ts` 120 effective non-empty lines.
+  - This pass intentionally removed the old first-stage inbox/queue/turn-input-box source files instead of leaving compatibility re-exports.
 
 ## Environment Or Dependency Notes
 
 - Workspace root: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality`
 - Branch: `codex/runtime-interrupt-functionality`
-- `pnpm install --frozen-lockfile` had been run before implementation checks.
-- `pnpm -C autobyteus-web exec nuxi prepare` was run to generate ignored `.nuxt` types required by targeted Nuxt/Vitest execution.
-- Server selected tests reset the SQLite test DB under `autobyteus-server-ts/tests/.tmp`.
+- No dependency or lockfile changes were made in this implementation pass.
 
 ## Local Implementation Checks Run
 
 Passed:
 
-- `git diff --check`
-- `pnpm -C autobyteus-ts run build`
-- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/events/agent-input-event-queue-manager.test.ts tests/unit/agent/context/agent-runtime-state.test.ts tests/unit/agent/status/status-deriver.test.ts tests/unit/agent/status/status-update-utils.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/unit/agent/runtime/agent-worker.test.ts tests/unit/agent/pipelines/agent-input-pipeline.test.ts tests/unit/agent/loop/agent-turn-input-box.test.ts tests/unit/agent/loop/tool-result-continuation-builder.test.ts tests/unit/agent/interruption/abortable-operation.test.ts tests/integration/agent/runtime/agent-runtime.test.ts`
-  - Result: 11 files passed, 55 tests passed.
-- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent-team/context/team-manager.test.ts`
-  - Result: 1 file passed, 9 tests passed.
-- `pnpm -C autobyteus-server-ts run build:full`
-- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts tests/integration/agent-team-execution/autobyteus-team-run-backend.integration.test.ts tests/unit/services/agent-streaming/agent-stream-handler.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts`
-  - Result: 4 files passed, 32 tests passed.
-
-Additional checks after API/E2E Round 3 delivery latest-base conflict resolution local fix:
-
 - `git diff --check HEAD`
-  - Passed after completing the latest-base merge commit; only delivery-owned report artifacts remain unstaged.
-- `git diff --check HEAD -- autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend.ts autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-event-processor.ts autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend-utils.ts autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md autobyteus-server-ts/docs/modules/agent_execution.md autobyteus-web/docs/agent_execution_architecture.md`
-  - Passed before commit for the resolved conflict files.
-- `git diff --cached --check -- autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend.ts autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-event-processor.ts autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend-utils.ts autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md autobyteus-server-ts/docs/modules/agent_execution.md autobyteus-web/docs/agent_execution_architecture.md`
-  - Passed.
-- `pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent-team-execution/autobyteus-team-run-backend.integration.test.ts tests/unit/agent-execution/events/team-communication-message-event-processor.test.ts tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts`
-  - Result: 3 files passed, 14 tests passed.
-- `pnpm -C autobyteus-server-ts run build:full`
-  - Passed.
-
-Additional checks after code-review CR-003 through CR-006 local fixes:
-
-- `git diff --check HEAD`
-  - Passed.
-- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/streaming/handlers/pass-through-streaming-response-handler.test.ts tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts tests/unit/agent/streaming/handlers/parsing-streaming-response-handler.test.ts tests/unit/llm/api/autobyteus-llm.test.ts tests/unit/clients/autobyteus-client.test.ts tests/unit/agent/loop/agent-turn-input-box.test.ts tests/integration/agent/runtime/agent-runtime.test.ts`
-  - Result: 7 files passed, 61 tests passed.
-- `pnpm -C autobyteus-ts run build`
-  - Passed, including runtime dependency verification.
-- `pnpm -C autobyteus-web exec vitest run services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts stores/__tests__/agentRunStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts components/agentInput/__tests__/AgentUserInputTextArea.spec.ts`
-  - Result: 6 files passed, 69 tests passed.
-- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts tests/integration/agent-team-execution/autobyteus-team-run-backend.integration.test.ts tests/unit/services/agent-streaming/agent-stream-handler.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts`
-  - Result: 4 files passed, 36 tests passed.
-- `pnpm -C autobyteus-server-ts run build:full`
-  - Passed.
-
-Additional checks after delivery latest-base conflict resolution local fix:
-
-- `git diff --check HEAD`
-  - Passed.
-- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/pipelines/agent-input-pipeline.test.ts tests/unit/agent/message/inter-agent-message.test.ts tests/unit/agent/message/send-message-to.test.ts tests/unit/agent-team/handlers/inter-agent-message-request-event-handler.test.ts`
-  - Result: 4 files passed, 24 tests passed.
-- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/context/agent-runtime-state.test.ts tests/unit/agent/loop/agent-turn-input-box.test.ts tests/unit/agent/interruption/abortable-operation.test.ts tests/integration/agent/runtime/agent-runtime.test.ts`
-  - Result: 4 files passed, 24 tests passed.
-- `pnpm -C autobyteus-ts run build`
-  - Passed, including runtime dependency verification.
-
-Additional checks after code-review local fixes:
-
-- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/context/agent-runtime-state.test.ts tests/unit/agent/loop/agent-turn-input-box.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/unit/agent/runtime/agent-worker.test.ts tests/integration/agent/runtime/agent-runtime.test.ts`
-  - Result: 5 files passed, 38 tests passed.
-- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/context/agent-runtime-state.test.ts tests/unit/agent/loop/agent-turn-input-box.test.ts tests/unit/agent/interruption/abortable-operation.test.ts tests/integration/agent/runtime/agent-runtime.test.ts`
-  - Result: 4 files passed, 24 tests passed.
-- `pnpm -C autobyteus-web exec vitest run services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts stores/__tests__/agentRunStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts components/agentInput/__tests__/AgentUserInputTextArea.spec.ts`
-  - Result: 5 files passed, 50 tests passed.
-- `pnpm -C autobyteus-server-ts run build:full`
-  - Passed after local fixes.
-- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts tests/integration/agent-team-execution/autobyteus-team-run-backend.integration.test.ts tests/unit/services/agent-streaming/agent-stream-handler.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts`
-  - Result: 4 files passed, 32 tests passed.
-
-Additional checks after API/E2E Round 3 delivery latest-base conflict resolution local fix:
-
-- `git diff --check HEAD -- autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend.ts autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-event-processor.ts autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend-utils.ts autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md autobyteus-server-ts/docs/modules/agent_execution.md autobyteus-web/docs/agent_execution_architecture.md`
-  - Passed.
-- `git diff --cached --check -- autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend.ts autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-event-processor.ts autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend-utils.ts autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md autobyteus-server-ts/docs/modules/agent_execution.md autobyteus-web/docs/agent_execution_architecture.md`
-  - Passed.
-- `pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent-team-execution/autobyteus-team-run-backend.integration.test.ts tests/unit/agent-execution/events/team-communication-message-event-processor.test.ts tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts`
-  - Result: 3 files passed, 14 tests passed.
-- `pnpm -C autobyteus-server-ts run build:full`
-  - Passed.
-
-Additional checks after AgentInputBox addendum implementation:
-
-- `git diff --check HEAD`
-  - Passed.
-- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/events/agent-input-event-queue-manager.test.ts tests/unit/agent/input-box/agent-input-box.test.ts tests/unit/agent/context/agent-context.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/unit/agent/runtime/agent-worker.test.ts tests/unit/agent/loop/agent-turn-input-box.test.ts tests/integration/agent/runtime/agent-runtime.test.ts tests/integration/agent/tool-approval-flow.test.ts`
-  - Result: 8 files passed, 44 tests passed.
-- `pnpm -C autobyteus-ts run build`
-  - Passed, including runtime dependency verification.
-- Changed source implementation file size check:
-  - `agent-input-event-queue-manager.ts`: 126 effective non-empty lines.
-  - `agent-input-box.ts`: 126 effective non-empty lines.
-  - `agent-worker.ts`: 243 effective non-empty lines.
-  - `agent-runtime.ts`: 186 effective non-empty lines.
-  - Other changed source files remain below 220 effective non-empty lines.
-
-Additional checks after code-review CR-007 and CR-008 local fixes:
-
-- `git diff --check HEAD`
-  - Passed.
-- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/input-box/agent-input-box.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/unit/agent/runtime/agent-worker.test.ts tests/unit/agent/events/agent-input-event-queue-manager.test.ts`
-  - Result: 4 files passed, 26 tests passed.
-- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/events/agent-input-event-queue-manager.test.ts tests/unit/agent/input-box/agent-input-box.test.ts tests/unit/agent/context/agent-context.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/unit/agent/runtime/agent-worker.test.ts tests/unit/agent/loop/agent-turn-input-box.test.ts tests/integration/agent/runtime/agent-runtime.test.ts tests/integration/agent/tool-approval-flow.test.ts`
-  - Result: 8 files passed, 47 tests passed.
-- `pnpm -C autobyteus-ts run build`
-  - Passed, including runtime dependency verification.
-- Changed source implementation file size check after CR-007/CR-008:
-  - `agent-input-event-queue-manager.ts`: 126 effective non-empty lines.
-  - `agent-input-box.ts`: 126 effective non-empty lines.
-  - `agent-runtime.ts`: 192 effective non-empty lines.
-  - `agent-worker.ts`: 247 effective non-empty lines.
-
-Additional checks after code-review CR-009 and CR-010 local fixes:
-
-- `git diff --check HEAD`
-  - Passed.
-- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/streaming/handlers/pass-through-streaming-response-handler.test.ts tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts tests/unit/agent/streaming/handlers/parsing-streaming-response-handler.test.ts tests/integration/agent/runtime/agent-runtime.test.ts`
-  - Result: 4 files passed, 43 tests passed.
-- `pnpm -C autobyteus-ts run build`
-  - Passed, including runtime dependency verification.
-- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts`
-  - Result: 2 files passed, 28 tests passed.
-- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/agent-streaming/agent-stream-handler.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts`
-  - Result: 2 files passed, 23 tests passed.
-- `pnpm -C autobyteus-server-ts run build:full`
-  - Passed.
-- `pnpm -C autobyteus-web exec vitest run services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts stores/__tests__/agentRunStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts components/agentInput/__tests__/AgentUserInputTextArea.spec.ts`
-  - Result: 6 files passed, 71 tests passed.
-- Changed source implementation file size check after CR-009/CR-010:
-  - `autobyteus-stream-event-converter.ts`: 138 effective non-empty lines.
-  - `agent-run-event-message-mapper.ts`: 140 effective non-empty lines.
-  - `llm-turn-phase.ts`: 199 effective non-empty lines.
-  - `api-tool-call-streaming-response-handler.ts`: 361 effective non-empty lines.
-  - `agentStatusHandler.ts`: 245 effective non-empty lines.
-  - `segmentHandler.ts`: 386 effective non-empty lines.
-
-Additional checks after Round 8 external approval/denial spine implementation:
-
-- `git diff --check HEAD`
-  - Passed.
-- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/agent.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/unit/agent/loop/agent-turn-input-box.test.ts tests/unit/agent-team/handlers/tool-approval-team-event-handler.test.ts tests/integration/agent/runtime/agent-runtime.test.ts tests/integration/agent/tool-approval-flow.test.ts`
-  - Result: 6 files passed, 39 tests passed.
-- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts tests/unit/services/agent-streaming/agent-stream-handler.test.ts`
-  - Result: 2 files passed, 21 tests passed.
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/message-inbox/agent-message-inbox.test.ts tests/unit/agent/message-inbox/inbox-queue-store.test.ts tests/unit/agent/loop/turn-tool-input-port.test.ts tests/unit/agent/context/agent-runtime-state.test.ts tests/unit/agent/context/agent-context.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/unit/agent/runtime/agent-worker.test.ts`
+  - Result: 7 files passed, 54 tests passed.
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/interruption/abortable-operation.test.ts tests/unit/agent/loop/agent-turn-runner.test.ts tests/unit/agent/loop/turn-tool-input-port.test.ts tests/unit/agent/message-inbox/agent-message-inbox.test.ts tests/unit/agent/message-inbox/inbox-queue-store.test.ts tests/unit/agent/context/agent-runtime-state.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/unit/agent/runtime/agent-worker.test.ts tests/integration/agent/runtime/agent-runtime.test.ts tests/integration/agent/tool-approval-flow.test.ts`
+  - Result: 10 files passed, 67 tests passed.
 - `pnpm -C autobyteus-ts run build`
   - Passed, including runtime dependency verification.
 - `pnpm -C autobyteus-server-ts run build:full`
   - Passed.
-- Changed source implementation file size check after Round 8 approval-spine implementation:
-  - `autobyteus-agent-run-backend.ts`: 211 effective non-empty lines.
-  - `tool-approval-team-event-handler.ts`: 57 effective non-empty lines.
-  - `agent.ts`: 106 effective non-empty lines.
-  - `agent-runtime-state.ts`: 266 effective non-empty lines.
-  - `agent-events.ts`: 150 effective non-empty lines.
-  - `agent-turn-input-box.ts`: 151 effective non-empty lines.
-  - `tool-phase.ts`: 213 effective non-empty lines.
-  - `agent-runtime.ts`: 204 effective non-empty lines.
-  - `index.ts`: 45 effective non-empty lines.
-  - `tool-approval-command.ts`: 29 effective non-empty lines.
-
-Additional checks after code-review CR-011 through CR-013 local fixes:
-
-- `git diff --check HEAD`
-  - Passed.
-- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/interruption/abortable-operation.test.ts tests/unit/agent/loop/agent-turn-runner.test.ts tests/unit/agent/runtime/agent-runtime.test.ts`
-  - Result: 3 files passed, 24 tests passed.
-- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/interruption/abortable-operation.test.ts tests/unit/agent/loop/agent-turn-runner.test.ts tests/unit/agent/loop/agent-turn-input-box.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/integration/agent/runtime/agent-runtime.test.ts tests/integration/agent/tool-approval-flow.test.ts`
-  - Result: 6 files passed, 40 tests passed.
-- `pnpm -C autobyteus-ts run build`
-  - Passed, including runtime dependency verification.
-- `pnpm -C autobyteus-server-ts run build:full`
-  - Passed.
-- Changed source implementation file size check after CR-011/CR-012/CR-013:
-  - `abortable-operation.ts`: 96 effective non-empty lines.
-  - `turn-execution-scope.ts`: 113 effective non-empty lines.
-  - `agent-turn-runner.ts`: 148 effective non-empty lines.
-  - `llm-turn-phase.ts`: 208 effective non-empty lines.
-  - `tool-phase.ts`: 219 effective non-empty lines.
-  - `agent-runtime-state.ts`: 265 effective non-empty lines.
-
-Blocked / not used as pass criteria:
-
-- `pnpm -C autobyteus-ts exec tsc -p tsconfig.json --noEmit`
-  - Fails on broad existing test-suite type issues, e.g. implicit-any callback parameters in benchmark/diagnostic tests, listener callbacks returning numbers, stale CLI test export names, extension constructor typing, and unknown tool-result test assertions.
-  - `tsconfig.build.json` source build passes.
-- `pnpm -C autobyteus-server-ts run typecheck`
-  - Fails with existing `TS6059` rootDir/include mismatch because `tsconfig.json` has `rootDir: src` while including `tests`.
-  - `tsconfig.build.json` source build passes.
-- `pnpm -C autobyteus-web exec tsc -p tsconfig.json --noEmit`
-  - Fails on broad existing Nuxt/test/electron typing issues, including component-test relative `.vue` module resolution, build script type-only imports, browser shell electron API declarations, and several unrelated store/test strictness errors.
-  - Targeted changed web tests pass.
-- `pnpm -C autobyteus-web exec nuxi typecheck`
-  - Fails on the same broad existing Nuxt/test/electron typing baseline, including build script type-only imports, stale component/store test fixtures, browser shell electron API declarations, and unrelated strictness errors.
-  - Targeted changed web tests pass.
 
 ## Downstream Validation Hints / Suggested Scenarios
 
-- Single-agent WebSocket: start native Autobyteus run, send a long LLM prompt, send `INTERRUPT_GENERATION`, verify turn interrupted event/status, runtime stays reusable, and next user message runs normally.
-- Streaming UI projection: interrupt after assistant text/tool-call/file segments have started and verify each active segment receives one interrupted `SEGMENT_END` with `interrupted: true` and no valid tool continuation is produced from a partial tool call.
-- Stream-error UI projection: force a native Autobyteus LLM stream error after partial text and tool-call segments; verify outbound segment messages use `turn_id`, active segments receive failed `SEGMENT_END` metadata, partial tool rows end as `error`, and no approval/continuation is produced.
-- Tool execution: run a long foreground `run_bash`, interrupt during execution, verify tool interrupted event/log, no tool-result continuation LLM call, and later turn works.
-- Pending approval: request a tool approval, interrupt before approval, verify pending approval is cleared/rejected, a terminal tool-interrupted lifecycle event reaches the client, frontend approval controls become disabled/interrupted, and late approval does not resume the old turn.
-- Working context: interrupt during LLM stream and after tool intents are appended; verify the next LLM request excludes incomplete interrupted-turn user/tool context while raw history remains inspectable.
-- Tool continuation: normal non-interrupted tool result should still become one `SenderType.TOOL` continuation with media context files and input processors applied.
-- Team interrupt: interrupt native team while one or more members are running; verify no stopped/lazy member starts, aggregate status is `accepted`/`partial_timeout`/`partial_failure` as appropriate, and team runtime remains reusable.
-- Provider adapters: exercise OpenAI-compatible, OpenAI responses, Anthropic, Gemini, Mistral, Ollama, MCP tool calls, and terminal command cancellation against real or controlled long-running operations.
+- Re-run approval/denial API flows while a turn is waiting to verify `AgentRuntime.postToolApproval(...) -> AgentMessageInbox.postToolApproval(...) -> AgentMessageScheduler -> ToolApprovalMessageHandler -> AgentRuntimeState -> TurnToolInputPort -> ToolPhase.waitForApproval` end to end.
+- Exercise queued user/inter-agent messages arriving during a long-running active turn; they should remain parked until the active turn settles while tool approvals/results and lifecycle messages continue dispatching.
+- Exercise stop during active turn and stop while future turn-start messages are parked; terminal shutdown must not start the parked turn.
+- If an external/async tool-host path is available, exercise `postToolResult(...)` for accepted, stale, no-active, interrupted, and duplicate outcomes.
 
 ## API / E2E / Executable Validation Still Required
 
-Yes. This handoff includes implementation-scoped builds and targeted tests only. API/E2E executable validation, realistic provider/tool/team scenarios, and any additional durable validation coverage remain owned by `api_e2e_engineer` after code review.
+Yes. This implementation pass only ran implementation-scoped unit/narrow integration/build checks. API/E2E validation should resume after code review passes.

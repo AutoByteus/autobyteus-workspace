@@ -168,6 +168,80 @@ describe('AgentRuntimeState', () => {
     expect(state.resolveTurnIdForIdleEvent('   ')).toBe('turn-active');
   });
 
+
+  it('validates pending approvals through the active turn TurnToolInputPort only when approval is pending', async () => {
+    const state = new AgentRuntimeState('agent-approval');
+    state.memoryManager = {
+      startTurn: () => 'turn-1',
+      createWorkingContextTurnCheckpoint: (turnId: string) => ({ turnId, messages: [], lastCompactionTs: null }),
+      restoreWorkingContextTurnCheckpoint: vi.fn()
+    } as any;
+    const activeTurn = state.startActiveTurn('turn-1');
+    activeTurn.startToolInvocationBatch([new ToolInvocation('tool', {}, 'inv-approval', 'turn-1')]);
+
+    const autoExecuteResult = state.postToolApprovalToActiveTurn({
+      kind: 'tool_approval',
+      invocationId: 'inv-approval',
+      turnId: 'turn-1',
+      approved: true
+    });
+    expect(autoExecuteResult.accepted).toBe(false);
+    expect(autoExecuteResult.code).toBe('no_pending_invocation');
+
+    state.storePendingToolInvocation(new ToolInvocation('tool', {}, 'inv-approval', 'turn-1'));
+    const waitPromise = activeTurn.toolInputPort.waitForApproval('inv-approval', {
+      signal: activeTurn.executionScope.signal
+    });
+    const posted = state.postToolApprovalToActiveTurn({
+      kind: 'tool_approval',
+      invocationId: 'inv-approval',
+      turnId: 'turn-1',
+      approved: true
+    });
+
+    expect(posted).toEqual({ accepted: true, code: 'posted', turnId: 'turn-1', invocationId: 'inv-approval' });
+    await expect(waitPromise).resolves.toMatchObject({ approved: true, invocationId: 'inv-approval' });
+  });
+
+  it('validates external tool results through the active turn TurnToolInputPort', async () => {
+    const state = new AgentRuntimeState('agent-result');
+    state.memoryManager = {
+      startTurn: () => 'turn-1',
+      createWorkingContextTurnCheckpoint: (turnId: string) => ({ turnId, messages: [], lastCompactionTs: null }),
+      restoreWorkingContextTurnCheckpoint: vi.fn()
+    } as any;
+    const activeTurn = state.startActiveTurn('turn-1');
+
+    const noPending = state.postToolResultToActiveTurn({
+      kind: 'tool_result',
+      invocationId: 'inv-result',
+      turnId: 'turn-1',
+      result: { ok: true }
+    });
+    expect(noPending.accepted).toBe(false);
+    expect(noPending.code).toBe('no_pending_invocation');
+
+    activeTurn.startToolInvocationBatch([new ToolInvocation('tool', {}, 'inv-result', 'turn-1')]);
+    const waitPromise = activeTurn.toolInputPort.waitForToolResult('inv-result', {
+      signal: activeTurn.executionScope.signal
+    });
+    const posted = state.postToolResultToActiveTurn({
+      kind: 'tool_result',
+      invocationId: 'inv-result',
+      turnId: 'turn-1',
+      toolName: 'tool',
+      result: { ok: true }
+    });
+
+    expect(posted).toEqual({ accepted: true, code: 'posted', turnId: 'turn-1', invocationId: 'inv-result' });
+    await expect(waitPromise).resolves.toMatchObject({
+      kind: 'tool_result',
+      invocationId: 'inv-result',
+      toolName: 'tool',
+      result: { ok: true }
+    });
+  });
+
   it('renders a readable string representation', () => {
     const state = new AgentRuntimeState('agent-10');
 

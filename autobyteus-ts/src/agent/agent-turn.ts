@@ -1,6 +1,6 @@
 import type { ToolInvocation } from './tool-invocation.js';
 import { ToolInvocationBatch } from './tool-invocation-batch.js';
-import { AgentTurnInputBox } from './loop/agent-turn-input-box.js';
+import { TurnToolInputPort } from './loop/turn-tool-input-port.js';
 import { TurnExecutionScope } from './interruption/turn-execution-scope.js';
 import type { AgentInterruptResult } from './interruption/agent-interruption.js';
 
@@ -12,7 +12,7 @@ export type TurnOutcome =
 
 export class AgentTurn {
   turnId: string;
-  readonly inputBox: AgentTurnInputBox;
+  readonly toolInputPort: TurnToolInputPort;
   readonly executionScope: TurnExecutionScope;
   toolInvocationBatches: ToolInvocationBatch[] = [];
   activeToolInvocationBatch: ToolInvocationBatch | null = null;
@@ -25,7 +25,7 @@ export class AgentTurn {
       throw new Error('AgentTurn requires a non-empty turnId.');
     }
     this.turnId = turnId;
-    this.inputBox = new AgentTurnInputBox(turnId);
+    this.toolInputPort = new TurnToolInputPort(turnId);
     this.executionScope = new TurnExecutionScope(turnId);
     this.settlementPromise = new Promise<TurnOutcome>((resolve) => {
       this.settlementResolve = resolve;
@@ -51,7 +51,7 @@ export class AgentTurn {
       };
     }
     const result = this.executionScope.interrupt(reason);
-    this.inputBox.close('interrupted');
+    this.toolInputPort.close('interrupted');
     return result;
   }
 
@@ -61,7 +61,7 @@ export class AgentTurn {
     }
     this.settledOutcome = outcome;
     this.executionScope.markSettled();
-    this.inputBox.close(outcome.kind === 'completed' ? 'completed' : outcome.kind);
+    this.toolInputPort.close(outcome.kind === 'completed' ? 'completed' : outcome.kind);
     this.settlementResolve(outcome);
     return outcome;
   }
@@ -82,7 +82,7 @@ export class AgentTurn {
 
     this.toolInvocationBatches.push(batch);
     this.activeToolInvocationBatch = batch;
-    this.inputBox.registerToolInvocations(batch.getExpectedInvocationIds());
+    this.toolInputPort.registerToolInvocations(batch.getExpectedInvocationIds());
     return batch;
   }
 
