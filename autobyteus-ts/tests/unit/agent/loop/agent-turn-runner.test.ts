@@ -73,7 +73,11 @@ vi.mock('../../../../src/agent/outbox/agent-outbox.js', () => ({
 
 import { AgentTurnRunner } from '../../../../src/agent/loop/agent-turn-runner.js';
 import { AgentRuntimeState } from '../../../../src/agent/context/agent-runtime-state.js';
-import { UserMessageReceivedEvent } from '../../../../src/agent/events/agent-events.js';
+import {
+  LLMUserMessageReadyEvent,
+  ToolContinuationReadyEvent,
+  UserMessageReceivedEvent
+} from '../../../../src/agent/events/agent-events.js';
 import { AgentInputUserMessage } from '../../../../src/agent/message/agent-input-user-message.js';
 import { ToolInvocation } from '../../../../src/agent/tool-invocation.js';
 import { ToolResultEvent } from '../../../../src/agent/events/agent-events.js';
@@ -127,6 +131,51 @@ describe('AgentTurnRunner interruption fences', () => {
     expect(restoreWorkingContextTurnCheckpoint).toHaveBeenCalledOnce();
     expect(mocks.publishTurnCompleted).not.toHaveBeenCalled();
     expect(mocks.publishTurnInterrupted).toHaveBeenCalledWith('turn-1', 'post_llm_interrupt');
+  });
+
+  it('uses ToolContinuationReadyEvent instead of synthetic LLMUserMessageReadyEvent for native tool-history continuations', async () => {
+    const { context, turn } = makeContextAndTurn();
+    const invocation = new ToolInvocation('tool', {}, 'inv-1', 'turn-1');
+    mocks.llmRun
+      .mockResolvedValueOnce({
+        kind: 'tool_invocations',
+        response: new CompleteResponse({ content: '' }),
+        toolInvocations: [invocation]
+      })
+      .mockResolvedValueOnce({
+        kind: 'final',
+        response: new CompleteResponse({ content: 'done' })
+      });
+    mocks.toolRun.mockResolvedValue([
+      new ToolResultEvent('tool', { ok: true }, 'inv-1', undefined, {}, 'turn-1', false)
+    ]);
+    mocks.inputProcessToolContinuation.mockResolvedValue({
+      llmUserMessage: { role: 'tool', content: 'Native API tool continuation' },
+      sourceEvent: {} as any,
+      llmRequestMode: 'tool_history_only'
+    });
+
+    const outcome = await new AgentTurnRunner(context, turn).run(makeTrigger());
+
+    expect(outcome).toMatchObject({ kind: 'completed', turnId: 'turn-1' });
+    const appliedEvents = mocks.applyEventAndDeriveStatus.mock.calls.map(([event]) => event);
+    expect(
+      appliedEvents.some(
+        (event) => event instanceof ToolContinuationReadyEvent && event.turnId === 'turn-1'
+      )
+    ).toBe(true);
+    expect(
+      appliedEvents.filter(
+        (event) =>
+          event instanceof LLMUserMessageReadyEvent &&
+          String((event as LLMUserMessageReadyEvent).llmUserMessage?.content ?? '').includes(
+            'Native API tool continuation'
+          )
+      )
+    ).toHaveLength(0);
+    expect(mocks.llmRun.mock.calls[1][0]).toEqual(expect.objectContaining({
+      llmRequestMode: 'tool_history_only'
+    }));
   });
 
   it('does not process tool results or publish terminal tool success after an interrupt accepted at the post-tool seam', async () => {

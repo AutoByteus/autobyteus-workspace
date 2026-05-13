@@ -5,7 +5,11 @@ import path from 'node:path';
 import { AgentConfig } from '../../../src/agent/context/agent-config.js';
 import { AgentContext } from '../../../src/agent/context/agent-context.js';
 import { AgentRuntimeState } from '../../../src/agent/context/agent-runtime-state.js';
-import { UserMessageReceivedEvent } from '../../../src/agent/events/agent-events.js';
+import {
+  LLMUserMessageReadyEvent,
+  ToolContinuationReadyEvent,
+  UserMessageReceivedEvent
+} from '../../../src/agent/events/agent-events.js';
 import { AgentRuntime } from '../../../src/agent/runtime/agent-runtime.js';
 import { AgentStatus } from '../../../src/agent/status/status-enum.js';
 import { MemoryIngestInputProcessor } from '../../../src/agent/input-processor/memory-ingest-input-processor.js';
@@ -380,6 +384,20 @@ describe('provider-native tool continuation integration flow', () => {
         expect(continuationCapture).toBeTruthy();
         assertNoSyntheticAggregateUserText(continuationCapture.messages);
         assertNoSyntheticAggregateUserText(continuationCapture.renderedPayload);
+
+        const eventStoreEvents = runtimeState.eventStore?.allEvents().map((envelope) => envelope.event) ?? [];
+        const toolContinuationEvents = eventStoreEvents.filter(
+          (event) => event instanceof ToolContinuationReadyEvent
+        ) as ToolContinuationReadyEvent[];
+        expect(toolContinuationEvents.map((event) => event.turnId)).toEqual(['turn_0001']);
+        const syntheticNativeReadyEvents = eventStoreEvents.filter(
+          (event) =>
+            event instanceof LLMUserMessageReadyEvent &&
+            String((event as LLMUserMessageReadyEvent).llmUserMessage?.content ?? '').includes(
+              'Native API tool continuation'
+            )
+        );
+        expect(syntheticNativeReadyEvents).toHaveLength(0);
 
         const internalUserMessages = continuationCapture.messages.filter((message) => message.role === MessageRole.USER);
         expect(internalUserMessages.map((message) => message.content)).toEqual(['Use both tools.']);

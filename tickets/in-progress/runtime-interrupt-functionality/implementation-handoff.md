@@ -230,3 +230,44 @@ Latest-base integration checks added in this handoff:
 ## API / E2E / Executable Validation Still Required
 
 Yes. This implementation pass only ran implementation-scoped unit/narrow integration/build checks. API/E2E validation should resume after code review passes.
+
+## Round 20 Local Fix — CR-018 Native Tool Continuation Event Seam
+
+### Summary
+
+Addressed `CR-018` from code review Round 20. `AgentTurnRunner` now uses the typed continuation-status seam for provider-native tool-history-only continuations:
+
+- `nextInput.llmRequestMode === 'tool_history_only'` now applies `ToolContinuationReadyEvent(turnId)` before `LlmPhase` runs.
+- Normal `append_user_message` paths continue to apply `LLMUserMessageReadyEvent(nextInput.llmUserMessage, turnId)`.
+- Native API tool-history continuations therefore no longer record a synthetic `LLMUserMessageReadyEvent` containing `Native API tool continuation` for a request that is intentionally not appended/sent as an LLM user message.
+
+### Files Updated
+
+- `autobyteus-ts/src/agent/loop/agent-turn-runner.ts`
+  - Added `buildLlmPhaseReadyEvent(...)` to choose `ToolContinuationReadyEvent` vs `LLMUserMessageReadyEvent` from `AgentInputPipelineResult.llmRequestMode`.
+- `autobyteus-ts/tests/unit/agent/loop/agent-turn-runner.test.ts`
+  - Added focused runner coverage for native tool-history-only continuation event selection and absence of synthetic native `LLMUserMessageReadyEvent`.
+- `autobyteus-ts/tests/integration/agent/provider-native-tool-continuation-flow.test.ts`
+  - Added provider-native integration assertions that the event store records `ToolContinuationReadyEvent` and no synthetic native continuation `LLMUserMessageReadyEvent`.
+
+### Local Implementation Checks Run
+
+Passed:
+
+- `git diff --check`
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/loop/agent-turn-runner.test.ts tests/integration/agent/provider-native-tool-continuation-flow.test.ts`
+  - Result: 2 files passed, 8 tests passed.
+- `pnpm -C autobyteus-ts run build`
+  - Passed, including runtime dependency verification.
+- `pnpm -C autobyteus-server-ts run build:full`
+  - Passed, including built-in agents bootstrap smoke check.
+- `rg "new LLMUserMessageReadyEvent\\(nextInput\\.llmUserMessage|Native API tool continuation" autobyteus-ts/src/agent autobyteus-ts/tests/unit/agent/loop/agent-turn-runner.test.ts autobyteus-ts/tests/integration/agent/provider-native-tool-continuation-flow.test.ts`
+  - Result: no runner synthetic `LLMUserMessageReadyEvent(nextInput.llmUserMessage, ...)` call remains; `Native API tool continuation` references are limited to the intentional builder/memory metadata and regression tests.
+- `rg "ToolContinuationReadyEvent" autobyteus-ts/src/agent/loop/agent-turn-runner.ts autobyteus-ts/src/agent/status/status-deriver.ts autobyteus-ts/src/agent/input-processor/memory-ingest-input-processor.ts autobyteus-ts/tests/unit/agent/loop/agent-turn-runner.test.ts autobyteus-ts/tests/integration/agent/provider-native-tool-continuation-flow.test.ts`
+  - Result: production runner now constructs the event; status derivation and memory source-event naming remain aligned with tests.
+- Changed implementation source effective-line audit.
+  - Result: `agent-turn-runner.ts` 161 effective non-empty lines; below the 500-line hard limit.
+
+### Remaining Workflow Note
+
+API/E2E remains paused until code review re-runs and passes this Round 20 local fix.

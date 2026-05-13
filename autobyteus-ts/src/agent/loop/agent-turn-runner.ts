@@ -5,6 +5,7 @@ import {
   LLMCompleteResponseReceivedEvent,
   LLMUserMessageReadyEvent,
   PendingToolInvocationEvent,
+  ToolContinuationReadyEvent,
   ToolResultEvent,
   UserMessageReceivedEvent
 } from '../events/agent-events.js';
@@ -50,8 +51,8 @@ export class AgentTurnRunner {
 
       while (true) {
         this.turn.executionScope.throwIfAborted({ kind: 'turn_loop' });
-        await this.applyStatusEvent(new LLMUserMessageReadyEvent(nextInput.llmUserMessage, turnId));
-        this.turn.executionScope.throwIfAborted({ kind: 'llm_user_message_status' });
+        await this.applyStatusEvent(this.buildLlmPhaseReadyEvent(nextInput, turnId));
+        this.turn.executionScope.throwIfAborted({ kind: 'llm_phase_ready_status' });
         const llmOutcome = await this.llmPhase.run(nextInput, this.context, this.turn, this.outbox);
         this.turn.executionScope.throwIfAborted({ kind: 'post_llm_phase' });
 
@@ -131,6 +132,16 @@ export class AgentTurnRunner {
       await this.applyStatusEvent(new AgentErrorEvent(errorMessage, String(error)));
       return this.turn.settle({ kind: 'failed', turnId, error });
     }
+  }
+
+  private buildLlmPhaseReadyEvent(
+    input: AgentInputPipelineResult,
+    turnId: string
+  ): LLMUserMessageReadyEvent | ToolContinuationReadyEvent {
+    if (input.llmRequestMode === 'tool_history_only') {
+      return new ToolContinuationReadyEvent(turnId);
+    }
+    return new LLMUserMessageReadyEvent(input.llmUserMessage, turnId);
   }
 
   private async applyStatusEvent(event: Parameters<typeof applyEventAndDeriveStatus>[0]): Promise<void> {
