@@ -61,13 +61,13 @@ User asked on 2026-05-05: “codex, and claude code both of them have abort func
 | 2026-05-05 | Code | `autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts`, `claude-active-turn-execution.ts`, `claude-session-event-converter.ts` | Compare Claude interrupt behavior | Claude session creates per-turn `AbortController`, marks active turn interrupted, clears pending approvals, closes active query, awaits settled task, emits turn interrupted, maps it to TURN_COMPLETED + IDLE. Useful target pattern for native Autobyteus. | No |
 | 2026-05-05 | Code | `autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend.ts` | Inspect native team interrupt mapping | Native team backend also calls `team.stop()` inside `interrupt()`. | Yes: add native team interrupt propagation. |
 | 2026-05-05 | Code | `autobyteus-ts/src/agent-team/agent-team.ts`, `runtime/agent-team-runtime.ts`, `context/team-manager.ts`, shutdown steps | Inspect native team ownership | Team runtime has stop only. TeamManager can enumerate cached agents/subteams, and shutdown steps already stop all running nodes for teardown. Interrupt should reuse/extend TeamManager enumeration without running shutdown cleanup. | Yes: add team interrupt API and propagation. |
-| 2026-05-05 | Code | `autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts`, `agent-team-stream-handler.ts`, `models.ts` | Inspect WebSocket command path | Client message `STOP_GENERATION` is handled by calling `activeRun.interrupt(...)` / `activeRun.interrupt()` for teams. | No major transport blocker; may rename internal methods for clarity. |
-| 2026-05-05 | Code | `autobyteus-web/services/agentStreaming/*`, `stores/agentRunStore.ts`, `stores/agentTeamRunStore.ts`, `types/agent/AgentStatus.ts`, `composables/useStatusVisuals.ts` | Inspect frontend command/status representation | Frontend sends `STOP_GENERATION`, store methods named `stopGeneration`, and status enum lacks `interrupting`. UI already uses command as abort-current-generation button; may need status/event additions. | Yes: update if explicit interrupting/interrupted state is added. |
+| 2026-05-05 | Code | `autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts`, `agent-team-stream-handler.ts`, `models.ts` | Inspect original WebSocket command path | Original baseline had app-owned stop-generation naming while server behavior called `activeRun.interrupt(...)` / `activeRun.interrupt()` for teams. The current ticket worktree has since renamed this command to `INTERRUPT_GENERATION`. | No major transport blocker; preserve interrupt semantics. |
+| 2026-05-05 | Code | `autobyteus-web/services/agentStreaming/*`, `stores/agentRunStore.ts`, `stores/agentTeamRunStore.ts`, `types/agent/AgentStatus.ts`, `composables/useStatusVisuals.ts` | Inspect original frontend command/status representation | Original baseline used stop-generation naming while semantically aborting the current generation. The current ticket worktree has since renamed the client command/store service path to `interruptGeneration` / `INTERRUPT_GENERATION`. | Yes: preserve stream feedback semantics and UI state clearing. |
 | 2026-05-05 | Code | `autobyteus-ts/tests/integration/agent/runtime/agent-runtime.test.ts` | Inspect current runtime validation patterns | Existing tests cover start/stop and active-turn queue ordering with controllable LLM. This is a good place for native interrupt tests. | Yes |
 
 ## Current Behavior / Current Flow
 
-- Current entrypoint or first observable boundary: For single agent UI, `AgentStreamingService.stopGeneration()` sends `STOP_GENERATION`; server `AgentStreamHandler.handleStopGeneration()` resolves the active run and calls `activeRun.interrupt(null)`; `AgentRun.interrupt()` delegates to the backend.
+- Current entrypoint or first observable boundary: For single-agent UI, `AgentUserInputTextArea.handleStop()` calls `activeContextStore.interruptGeneration()`, `agentRunStore.interruptGeneration(...)`, and `AgentStreamingService.interruptGeneration()`, which sends `{ type: 'INTERRUPT_GENERATION' }`; server `AgentStreamHandler` resolves the active run and calls `activeRun.interrupt(null)`. Team UI follows the analogous `agentTeamRunStore` / `TeamStreamingService` / `AgentTeamStreamHandler` path and calls `activeRun.interrupt()`.
 - Current execution flow:
   - Native single-agent runtime: `Agent.postUserMessage()` -> `AgentRuntime.submitEvent()` -> `AgentWorker.asyncRun()` -> `WorkerEventDispatcher.dispatch()` -> `UserInputMessageEventHandler` -> `LLMUserMessageReadyEventHandler` -> `BaseLLM.streamMessages()` -> provider stream -> optional tool invocation events -> `ToolInvocationExecutionEventHandler` -> `BaseTool.execute()` -> `ToolResultEventHandler` -> tool continuation -> next LLM call -> `AgentIdleEvent`.
   - Native single-agent stop: `Agent.stop()` -> `AgentRuntime.stop()` -> `AgentWorker.stop()` -> loop stop flag + shutdown cleanup -> terminal `AgentStoppedEvent`.
@@ -152,7 +152,7 @@ User asked on 2026-05-05: “codex, and claude code both of them have abort func
 ## Constraints / Dependencies / Compatibility Facts
 
 - Existing `stop()` semantics are terminal and used by removal/shutdown paths; do not repurpose stop.
-- Existing server `STOP_GENERATION` client message name is misleading but currently maps to domain `interrupt()` for all runtimes. The native implementation can be fixed without requiring a new WebSocket command, though internal naming/status clarity should be improved.
+- Current ticket protocol uses `INTERRUPT_GENERATION` and store/service methods named `interruptGeneration`. Existing frontend behavior deliberately does not clear `isSending` optimistically; it waits for stream feedback such as `TURN_INTERRUPTED` or idle/error/shutdown status. Native Autobyteus must emit those events/statuses to keep UI behavior aligned with Codex/Claude.
 - LLM kwargs are currently forwarded to provider request parameters. Cancellation must not be added as a normal provider kwarg unless each provider strips/translates it; a separate options channel is safer.
 - JavaScript async interruption is cooperative; hard preemption of synchronous tool code is not possible.
 - Tool side effects cannot be rolled back generically.
@@ -198,7 +198,7 @@ This addendum uses the already-implemented first refactor in the current ticket 
 Current implemented path now differs from the original baseline:
 
 - External turn-starting flow is now `AgentRuntime.submitEvent(...) -> AgentInputBox.enqueueUserMessage/enqueueInterAgentMessage(...) -> AgentWorker.asyncRun() -> AgentInputBox.nextTurnTriggerWhenIdle(...) -> AgentTurnRunner.run(...)`.
-- Normal LLM/tool progression is now direct runner/phase flow: `AgentTurnRunner -> AgentInputPipeline -> LlmTurnPhase -> ToolPhase -> ToolResultPipeline -> ToolResultContinuationBuilder -> AgentInputPipeline(SenderType.TOOL) -> LLMResponsePipeline/AgentOutbox`.
+- Normal LLM/tool progression is now direct runner/phase flow: `AgentTurnRunner -> AgentInputPipeline -> LlmTurnPhase -> ToolPhase -> ToolResultPipeline -> ToolResultContinuationBuilder -> AgentInputPipeline(SenderType.TOOL) -> LLMResponsePipeline + AgentExternalEventNotifier notifications`.
 - External approvals now route through `Agent.postToolExecutionApproval(...) -> AgentRuntime.postToolApproval(...) -> AgentRuntimeState.postToolApprovalToActiveTurn(...) -> AgentTurnInputBox.postApproval(...) -> ToolPhase.waitForApproval(...)`.
 - `AgentInputEventQueueManager` has been demoted to generic storage behind `AgentInputBox`; however its architecture-facing name remains queue/event/manager oriented and does not communicate the intended agent-message inbox model.
 - `AgentTurnInputBox` is currently approval-focused after dormant result/continuation lanes were removed; as a top-level concept its name suggests a second general inbox and is less intuitive than treating it as an internal turn tool input port.
@@ -206,10 +206,75 @@ Current implemented path now differs from the original baseline:
 
 Second-stage design impact:
 
-- Preserve the successful first-stage extraction of `AgentTurnRunner`, current `LlmTurnPhase`, `ToolPhase`, typed pipelines, `TurnExecutionScope`, and `AgentOutbox`, but rename the final LLM phase owner to symmetric `LlmPhase`.
+- Preserve the successful first-stage extraction of `AgentTurnRunner`, current `LlmTurnPhase`, `ToolPhase`, typed pipelines, `TurnExecutionScope`, and external notifications through the existing `AgentExternalEventNotifier`, but rename the final LLM phase owner to symmetric `LlmPhase` and remove the first-stage `AgentOutbox` wrapper from the final design.
 - Replace architecture-facing `AgentInputBox`/`AgentTurnInputBox` terminology with one `AgentMessageInbox` plus semantic lanes and an internal `TurnToolInputPort`.
 - Rename/move low-level queue storage from `AgentInputEventQueueManager` to an implementation-named `InboxQueueStore` or equivalent under the inbox subsystem.
 - Add `AgentMessageScheduler` as the owner of dispatchability/routing policy above `AgentMessageInbox` lane APIs, and typed `AgentMessageHandler`s as the owner of message-family entry handling. Handlers may invoke pipelines/domain owners but must not recreate the old normal-flow LLM/tool handler chain.
 - Naming refinement from user review: avoid generic `ActiveTurnMessagePort` / `TurnAwaitableInputPort`; the target primitive is tool-specific and should be named `TurnToolInputPort`. It handles tool approval now and future external/async tool result delivery if tool execution is externalized; non-tool awaited input should get a separate phase-specific primitive.
 
 - Phase naming refinement from user review: final design should use symmetric `LlmPhase` / `ToolPhase`. `LlmTurnPhase` remains current first-stage evidence only; target file/class names should be `llm-phase.ts` / `LlmPhase`.
+
+
+## Frontend / External Consumer Compatibility Addendum
+
+Date: 2026-05-13.
+
+User review clarified that `AgentExternalEventNotifier` is not merely an output convenience. It is the external-observable projection boundary for facts produced inside the agent, including inter-agent communication facts that downstream consumers render. I inspected the current worktree frontend/server/native event paths to ensure the final design does not remove a consumer-visible event family while removing the first-stage `AgentOutbox` wrapper.
+
+Relevant inspected sources:
+
+- `autobyteus-web/components/agentInput/AgentUserInputTextArea.vue`
+- `autobyteus-web/stores/activeContextStore.ts`
+- `autobyteus-web/stores/agentRunStore.ts`
+- `autobyteus-web/stores/agentTeamRunStore.ts`
+- `autobyteus-web/services/agentStreaming/AgentStreamingService.ts`
+- `autobyteus-web/services/agentStreaming/TeamStreamingService.ts`
+- `autobyteus-web/services/agentStreaming/protocol/messageTypes.ts`
+- `autobyteus-web/services/agentStreaming/handlers/agentStatusHandler.ts`
+- `autobyteus-web/services/agentStreaming/handlers/toolLifecycleHandler.ts`
+- `autobyteus-web/services/agentStreaming/handlers/teamHandler.ts`
+- `autobyteus-web/stores/teamCommunicationStore.ts`
+- `autobyteus-server-ts/src/services/agent-streaming/models.ts`
+- `autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts`
+- `autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts`
+- `autobyteus-server-ts/src/services/agent-streaming/agent-run-event-message-mapper.ts`
+- `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts`
+- `autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend.ts`
+- `autobyteus-server-ts/src/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.ts`
+- `autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-event-processor.ts`
+- `autobyteus-server-ts/src/agent-execution/events/processors/team-communication/team-communication-message-event-processor.ts`
+- `autobyteus-ts/src/agent/events/notifiers.ts`
+- `autobyteus-ts/src/agent/streaming/streams/agent-event-stream.ts`
+- `autobyteus-ts/src/agent/pipelines/agent-input-pipeline.ts`
+- `autobyteus-ts/src/agent/outbox/agent-outbox.ts`
+
+Findings:
+
+1. Current frontend interrupt command path is already named interrupt: `AgentUserInputTextArea` calls `activeContextStore.interruptGeneration()`, which routes to `agentRunStore.interruptGeneration(runId)` or `agentTeamRunStore.interruptGeneration(teamRunId)`. `AgentStreamingService` and `TeamStreamingService` send `{ type: 'INTERRUPT_GENERATION' }`.
+2. Server command path accepts `ClientMessageType.INTERRUPT_GENERATION`: `AgentStreamHandler` calls `activeRun.interrupt(null)` and `AgentTeamStreamHandler` calls `activeRun.interrupt()`.
+3. Native Autobyteus server backends in the current ticket worktree already model the desired backend shape: `AutoByteusAgentRunBackend.interrupt(...)` calls native `agent.interrupt(...)` when present and returns unsupported rather than falling back to stop; `AutoByteusTeamRunBackend.interrupt()` calls native `team.interrupt(...)` when present.
+4. Frontend stores intentionally do not clear `isSending` optimistically when interrupt is clicked. Existing tests assert this behavior. `agentStatusHandler.handleTurnInterrupted(...)` and idle/error/shutdown status handling are what clear `isSending` and mark conversations/tool segments terminal.
+5. Current protocol definitions include `TURN_INTERRUPTED`, `TOOL_EXECUTION_INTERRUPTED`, `INTER_AGENT_MESSAGE`, and `TEAM_COMMUNICATION_MESSAGE` on both server and frontend sides.
+6. Inter-agent observable event chain is currently real and consumer-visible: `AgentInputPipeline.convertInterAgentEvent(...)` calls `outbox.publishInterAgentMessage(...)`; `AgentOutbox.publishInterAgentMessage(...)` forwards to `AgentExternalEventNotifier.notifyAgentDataInterAgentMessageReceived(...)`; `AgentEventStream` maps `AGENT_DATA_INTER_AGENT_MESSAGE_RECEIVED` to `StreamEventType.INTER_AGENT_MESSAGE`; server conversion maps it to `AgentRunEventType.INTER_AGENT_MESSAGE`; native team event processing enriches team/member metadata; `TeamCommunicationMessageProcessor` derives `TEAM_COMMUNICATION_MESSAGE`; `TeamStreamingService` sends `INTER_AGENT_MESSAGE` to `handleInterAgentMessage(...)` for conversation segment rendering and sends `TEAM_COMMUNICATION_MESSAGE` to `teamCommunicationStore.upsertFromBackendPayload(...)`.
+7. Therefore the final design may remove `AgentOutbox` only by replacing outbox forwarding calls with direct semantic `AgentExternalEventNotifier` calls (or a tight notifier interface over that same owner). It must not remove `notifyAgentDataInterAgentMessageReceived(...)` / `notifyAgentDataSystemTaskNotificationReceived(...)` publications or change the payload fields consumed by the server/frontend chain.
+
+Verification command run from `autobyteus-web`:
+
+```bash
+pnpm exec vitest run \
+  services/agentStreaming/__tests__/AgentStreamingService.spec.ts \
+  services/agentStreaming/__tests__/TeamStreamingService.spec.ts \
+  services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts \
+  services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts \
+  stores/__tests__/agentRunStore.spec.ts \
+  stores/__tests__/agentTeamRunStore.spec.ts \
+  stores/__tests__/teamCommunicationStore.spec.ts
+```
+
+Result: passed, 7 test files / 61 tests. This focused run covered frontend interrupt command sending, no optimistic `isSending` clearing, turn/tool interrupted handlers, team streaming dispatch, and team communication store normalization. An earlier accidental broad `pnpm test:nuxt -- run ...` run executed the whole web suite and failed one unrelated localization glossary test (`zhCnGlossaryConsistency` deprecated term check); the focused streaming/store run passed.
+
+Design impact:
+
+- `AgentExternalEventNotifier` wording in the design should be read as “events observable by consumers outside the internal agent control loop,” not as “events that originated outside the agent.”
+- Add an explicit inter-agent/system-task external-consumer data-flow spine and acceptance criteria.
+- Add explicit frontend interrupt contract: native Autobyteus must emit `TURN_INTERRUPTED`, optional `TOOL_EXECUTION_INTERRUPTED`, and idle status feedback through the same event stream/server/frontend path used by Codex/Claude-compatible UI handling.

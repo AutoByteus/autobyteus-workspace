@@ -3,95 +3,100 @@
 ## Scope
 
 - Ticket: `runtime-interrupt-functionality`
-- Trigger: Delivery resumed after API/E2E Round 8 pass on implementation commit `44974bccb924d8b6cb2caaa85abab4ba2ad23d92` (`fix(agent): fence interrupted turn seams`) and the delivery-required latest tracked-base refresh.
-- Bootstrap base reference: `origin/personal` at `1bed2087bc583add5f07d61a1e7fd61da28a4a2a` when the task branch was created.
-- Integrated base reference used for docs sync: `origin/personal` at `263e89c595f6942e7e826daf19cea9a9fd254459`, already contained by ticket branch HEAD `44974bccb924d8b6cb2caaa85abab4ba2ad23d92` after prior merge `2f623a02e47423cd1b5f1622edd8890d59dd1445` (`merge: refresh runtime interrupt against latest personal`).
-- Delivery refresh reference: `git fetch origin --prune` on `2026-05-09` confirmed the branch was `ahead 14, behind 0` relative to `origin/personal`; no additional latest-base merge/checkpoint was required before regenerating this docs sync.
-- Post-refresh verification reference: API/E2E Round 8 pass in `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/api-e2e-validation-report.md`; delivery reran the build, focused interrupted-seam/approval/protocol/projection suites, and static hygiene recorded in `release-deployment-report.md`.
+- Delivery owner: `delivery_engineer`
+- Date: `2026-05-13`
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality`
+- Trigger: Delivery resumed after Code Review Round 24 passed the API/E2E Round 11 full-team evidence update.
+- Latest implementation commit validated by API/E2E: `d8dea3c668e315812576ea73e3bf89dcaf622d93` (`fix(agent): emit native tool continuation ready event`).
+- Latest authoritative API/E2E report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/api-e2e-validation-report.md` (`Pass`, Round 11, now including `VAL-039`).
+- Latest authoritative code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/review-report.md` (`Pass / Ready for delivery`, Round 24, score `9.7/10`).
+- Integrated base checked by delivery: `origin/personal` at `62279949129196ca6b9c5891fd685886256ddbbb` after `git fetch origin --prune` on `2026-05-13`.
+- Integrated ticket HEAD used for docs sync: `d8dea3c668e315812576ea73e3bf89dcaf622d93`.
+- Branch relationship at delivery refresh: `ahead 23, behind 0` relative to `origin/personal`; no new merge/checkpoint was required in this delivery round.
 
-## Why Docs Were Updated
+## Result
 
-- Summary: Long-lived docs now match the Round-8-passed integrated native AutoByteus runtime, interrupt-seam fencing, pending-only approval authority, approval spine, interrupt, streaming, segment transport, and frontend projection state. Delivery added the Round 14 / Round 8 behavior to canonical docs: pre-aborted `TurnExecutionScope` thunks and iterators are suppressed before work starts; `AgentTurnRunner`, `LlmTurnPhase`, and `ToolPhase` fence after awaited LLM/tool seams before normal completion, memory, outbox, terminal tool success, result, or continuation side effects; and `AgentRuntimeState.postToolApprovalToActiveTurn(...)` requires a real pending-approval marker rather than active tool-batch membership.
-- Why this should live in long-lived project docs: The ticket changed core runtime ownership, cancellation, mailbox, approval, streaming, segment transport, and user-visible protocol semantics. Future implementation and validation work needs canonical docs to prevent reintroducing post-interrupt normal completion at await seams, pre-abort thunk/iterator startup, approval-as-active-batch authority, approval-as-runtime-mailbox input, direct member runtime/input-box bypasses, stale approval turn starts, camel-case outbound segment turn aliases, unterminated failed streams, failed partial tool invocation creation, the legacy dispatcher/handler control flow, stop-generation fallback, operational-events-through-lifecycle-lane behavior, premature frontend send readiness, or reference-file parsing/projection mistakes.
+`Pass / Updated`
+
+This report supersedes the prior Round-11/Round-23 delivery artifact. Round 24 reviewed a validation-report evidence update and full-file live team E2E rerun; it did not change production source behavior or long-lived doc semantics. Delivery regenerated this report so the final package reflects the latest authoritative review and validation evidence.
+
+The earlier `delivery-merge-blocker-report.md` remains historical context only; the latest-base conflict it documented was resolved before the current `d8dea3c6` integrated state was reviewed and revalidated.
+
+## Why Docs Were Updated Or Reconfirmed
+
+The long-lived project docs were already synchronized in the previous delivery pass for the final runtime behavior. Round 24 did not require additional long-lived behavior documentation because it added/accepted full-team E2E evidence for already-documented team/runtime behavior rather than changing implementation behavior.
+
+Delivery kept the long-lived docs updates from the prior pass because they remain necessary and accurate:
+
+- `AgentMessageInbox` / `AgentMessageScheduler` are the runtime mailbox/scheduler, not `AgentInputBox` / `AgentInputEventQueueManager`.
+- Active-turn approvals and external tool results use the active-turn inbox lane and `TurnToolInputPort`.
+- `AgentRuntime.submitEvent(...)` rejects turn-local operational events instead of hiding them in lifecycle input.
+- `BaseTool.prepareExecution(...)` owns external-result mode/preflight before started lifecycle or result-waiter registration.
+- Native `api_tool_call` tool-result continuation uses `tool_history_only`, `ToolContinuationReadyEvent`, and structured provider history rather than a synthetic aggregate user message.
+- Final server/WebSocket command terminology is `INTERRUPT_GENERATION`; no stop-generation fallback is part of the active protocol.
+- Retired single-agent dispatcher/handler paths remain removed and must not be resurrected in docs or implementation.
+
+Round 24 promotes validation confidence, not new product semantics: the full real AutoByteus team GraphQL/WebSocket E2E file now proves approve-tool/restore/continue, pending-approval interrupt and targeted follow-up, terminate/restore targeted follow-up, and team-member projection in one live LM Studio run.
 
 ## Long-Lived Docs Reviewed
 
-| Doc Path | Why It Was Reviewed | Result (`Updated`/`No change`/`Needs follow-up`) | Notes |
-| --- | --- | --- | --- |
-| `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md` | Canonical runtime loop/interrupt/mailbox/approval doc. | Updated | Added interrupt fences at awaited seams, pre-start abort guards, and pending-only approval authority. Existing approval spine, native interrupt, lifecycle, failed stream, and reference-file sections remain current. |
-| `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md` | User-visible WebSocket control/protocol contract. | Updated | Clarified that native approval commands require actual pending approval records; active auto-executing tool-batch membership alone is not approval authority. Existing active-only command and approval-spine docs remain current. |
-| `autobyteus-server-ts/docs/modules/agent_streaming.md` | Backend stream bridge operational doc. | Updated | Added pending-only approval authority to operational guidance for `APPROVE_TOOL` / `DENY_TOOL`. Existing active-only interrupt, canonical segment, failed terminalization, and restore-aware send notes remain current. |
-| `autobyteus-web/docs/agent_execution_architecture.md` | Frontend approval controls and stream projection. | Updated | Clarified that visible tool rows are not approval authority; buttons should be shown for `awaiting-approval` rows and backend rejection remains authoritative for stale active-but-not-pending approval attempts. |
-| `autobyteus-ts/docs/api_tool_call_streaming_design.md` | API tool-call streaming and invocation adapter contract. | Updated | Prior failed finalization and partial-tool suppression docs reviewed as current after Round 8. |
-| `autobyteus-ts/docs/streaming_parser_design.md` | Parser/segment event contract. | Updated | Prior terminal `SEGMENT_END` metadata docs reviewed as current after Round 8. |
-| `autobyteus-ts/docs/event_driven_core_design.md` | Core event/runner ownership and mailbox doc. | Updated | Prior AgentInputBox/lifecycle/stop-preemption docs reviewed as current. |
-| `autobyteus-ts/docs/lifecycle_event_sourced_engine_design.md` | Implemented lifecycle appendix. | Updated | Prior mailbox and stop-preemption docs reviewed as current. |
-| `autobyteus-ts/docs/agent_processor_and_engine_design.md` | Processor/engine flow doc. | Updated | Prior delivery sync removed independent queued tool-result wording; reviewed as current. |
-| `autobyteus-ts/docs/agent_memory_design.md` | Memory docs with runtime-loop call stacks. | Updated | Prior handler-path correction reviewed as current. |
-| `autobyteus-ts/docs/agent_memory_design_nodejs.md` | NodeJS variant of memory docs. | Updated | Prior handler-path correction reviewed as current. |
-| `autobyteus-ts/docs/tool_call_formatting_and_parsing.md` | Tool parsing docs intersect with stream parser behavior. | Updated | Reviewed as current with latest streaming parser docs. |
-| `autobyteus-ts/docs/llm_module_design_nodejs.md` | AutoByteus LLM signal propagation. | Updated | Prior signal propagation docs reviewed as current. |
-| `autobyteus-ts/docs/turn_terminology.md` | Turn naming and `turn_id`/`turnId` vocabulary. | Updated | Reviewed; server transport docs remain the source of truth for outbound segment `turn_id`. |
-| `autobyteus-server-ts/docs/modules/agent_execution.md` | Backend execution module docs. | Updated | Reviewed as current for native interrupt, signal propagation, and backend execution behavior. |
-| `autobyteus-server-ts/docs/modules/agent_team_execution.md` | Native team backend split and Team Communication behavior. | Updated | Reviewed as current after Round 8 team approval validation. |
-| `autobyteus-web/docs/agent_artifacts.md` | Artifact-vs-Team Communication reference boundary. | No change | Current docs already keep Team Communication references out of Agent Artifacts. |
-
-## Docs Updated
-
-| Doc Path | Type Of Update | What Changed | Why |
-| --- | --- | --- | --- |
-| `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md` | Delivery docs sync | Added pre-start abort/iterator guard rules, post-await interrupt fences in `AgentTurnRunner` / `LlmTurnPhase` / `ToolPhase`, and pending-only approval authority. | Promotes CR-011, CR-012, and CR-013 runtime behavior to canonical runtime docs. |
-| `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md` | Delivery docs sync | Documented that `APPROVE_TOOL` / `DENY_TOOL` require pending approval records and must reject active auto-executing tool-batch members without status mutation. | Keeps the transport protocol aligned with pending-only approval authority. |
-| `autobyteus-server-ts/docs/modules/agent_streaming.md` | Delivery docs sync | Added operational note that active tool-batch membership alone is not enough authority for approval commands. | Keeps stream bridge docs aligned with native backend approval command handling. |
-| `autobyteus-web/docs/agent_execution_architecture.md` | Delivery docs sync | Clarified that approval UI should be tied to `awaiting-approval` rows and backend rejection remains authoritative for stale active-but-not-pending attempts. | Prevents frontend-local approval assumptions and aligns UI docs with Round 8 projection validation. |
+| Doc Path | Result | Notes |
+| --- | --- | --- |
+| `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md` | Updated / still current | Documents `AgentMessageInbox`, `AgentMessageScheduler`, `TurnToolInputPort`, active-turn approval/result spines, `BaseTool.prepareExecution(...)`, interrupt/stop boundary, and native `tool_history_only` continuation behavior. |
+| `autobyteus-ts/docs/event_driven_core_design.md` | Updated / still current | Describes the current inbox/scheduler/turn-runner architecture and retired dispatcher/registry absence. |
+| `autobyteus-ts/docs/lifecycle_event_sourced_engine_design.md` | Updated / still current | Implemented appendix uses current inbox/scheduler, `AgentTurnRunner`, `LlmPhase`, `ToolPhase`, approval/result handlers, and inter-agent reference-file ownership. |
+| `autobyteus-ts/docs/agent_memory_design.md` | Updated / still current | Handler call stacks replaced with `AgentTurnRunner`, `AgentInputPipeline`, `LlmPhase`, `ToolPhase`, `AgentRuntimeState`, and `ToolResultContinuationBuilder`; turn-id wording corrected. |
+| `autobyteus-ts/docs/agent_memory_design_nodejs.md` | Updated / still current | Mirrors the memory-design corrections from the main memory doc. |
+| `autobyteus-ts/docs/tool_call_formatting_and_parsing.md` | Updated / still current | Documents current parsing/execution flow, native tool-result acceptance, `BaseTool.prepareExecution(...)`, and `ToolContinuationReadyEvent`/`tool_history_only` continuation semantics. |
+| `autobyteus-ts/docs/api_tool_call_streaming_design.md` | Updated / still current | Documents current `LlmPhase`, `ToolPhase`, `ToolResultPipeline`, and `ToolResultContinuationBuilder` ownership. |
+| `autobyteus-ts/docs/tool_schema_and_configuration.md` | Updated / still current | Corrects native provider schema-passing owner to `LlmPhase`. |
+| `autobyteus-ts/docs/turn_terminology.md` | Updated / still current | Corrects `ToolInvocationBatch` source and native continuation wording. |
+| `autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md` | Updated / still current | Uses current `AgentMessageInbox`/`AgentMessageScheduler` lane behavior. |
+| `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md` | Reviewed / No change | Already aligned with `INTERRUPT_GENERATION`, active-only interrupt, canonical stream events, approvals, and current protocol shape. |
+| `autobyteus-server-ts/docs/modules/agent_execution.md` | Reviewed / No change | Already aligned with native interrupt/runtime execution behavior relevant to this ticket. |
+| `autobyteus-server-ts/docs/modules/agent_streaming.md` | Reviewed / No change | Already aligned with active protocol/streaming behavior. |
+| `autobyteus-server-ts/docs/modules/agent_team_execution.md` | Reviewed / No change | Already aligned with team execution and Team Communication reference-file behavior. |
+| `autobyteus-web/docs/agent_execution_architecture.md` | Reviewed / No change | Already aligned with frontend interrupt/status/tool projection behavior. |
+| `autobyteus-web/docs/agent_artifacts.md` | Reviewed / No change | No impact; Team Communication reference files remain separate from Agent Artifacts. |
 
 ## Durable Design / Runtime Knowledge Promoted
 
-| Topic | What Future Readers Need To Understand | Source Ticket Artifact(s) | Target Long-Lived Doc |
-| --- | --- | --- | --- |
-| CR-011 pre-start abort guards | Already-aborted `runAbortable(...)` thunks and `iterateAbortable(...)` / `iterateWithAbort(...)` iterators must be suppressed before thunk invocation, iterator acquisition, or next-item request. | `review-report.md`, `api-e2e-validation-report.md` | `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md` |
-| CR-012 late interrupt seam fences | After awaited LLM/tool seams, accepted interrupts must be checked before normal assistant completion, memory/outbox effects, tool terminal success, result processing, or continuation publication. | `review-report.md`, `api-e2e-validation-report.md`, `implementation-handoff.md` | `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md` |
-| CR-013 pending-only approval authority | Only invocations stored in `pendingToolApprovals` are approvable; active auto-executing batch membership alone must reject as `no_pending_invocation` without status mutation. | `review-report.md`, `api-e2e-validation-report.md` | `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md`, `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md`, `autobyteus-server-ts/docs/modules/agent_streaming.md`, `autobyteus-web/docs/agent_execution_architecture.md` |
-| Round 12 native approval spine | Tool approvals/denials route through `Agent.postToolExecutionApproval(...) -> AgentRuntime.postToolApproval(...) -> AgentRuntimeState.postToolApprovalToActiveTurn(...) -> AgentTurnInputBox.postApproval(...) -> ToolPhase.waitForApproval(...)`. | `review-report.md`, `api-e2e-validation-report.md`, `implementation-handoff.md` | `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md` |
-| Projection-only approval event | `ToolExecutionApprovalEvent` is status/event-store projection output after a valid decision; it is not accepted by `AgentRuntime.submitEvent(...)` / `AgentInputBox` as runtime input. | `review-report.md`, `api-e2e-validation-report.md` | `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md`, `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md` |
-| Rejected approval outcomes | Stale, no-active-turn, no-pending-invocation, runtime-stopped, and interrupted-turn approvals are explicit non-turn-starting outcomes and must not restore runs or enqueue lifecycle work. | `review-report.md`, `api-e2e-validation-report.md` | `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md`, `autobyteus-server-ts/docs/modules/agent_streaming.md`, `autobyteus-web/docs/agent_execution_architecture.md` |
-| Native team approval routing | Team approval commands resolve the member and call the member agent's public `postToolExecutionApproval(...)` API through the async team event path; they must not bypass member runtime state. | `review-report.md`, `api-e2e-validation-report.md` | `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md`, `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md` |
-| Frontend approval projection | Approval buttons send active-context control commands only; authoritative UI state returns through backend `TOOL_APPROVED`, `TOOL_DENIED`, `TOOL_EXECUTION_*`, `ERROR`, and status/lifecycle events. | `api-e2e-validation-report.md`, focused delivery rerun | `autobyteus-web/docs/agent_execution_architecture.md` |
-| CR-009 segment turn identity | Outbound `SEGMENT_START`, `SEGMENT_CONTENT`, and `SEGMENT_END` payloads use canonical `turn_id`; native AutoByteus conversion drops segment-level `turnId`, and the WebSocket mapper normalizes tolerated legacy aliases back to `turn_id`. | `review-report.md`, `api-e2e-validation-report.md`, `implementation-handoff.md` | `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md`, `autobyteus-server-ts/docs/modules/agent_streaming.md` |
-| CR-010 failed stream terminalization | Non-interrupt LLM stream errors terminalize active text/tool/write/edit/reasoning segments with `failed: true` and an error message before publishing the runtime error. | `review-report.md`, `api-e2e-validation-report.md`, `implementation-handoff.md` | `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md`, `autobyteus-ts/docs/api_tool_call_streaming_design.md`, `autobyteus-ts/docs/streaming_parser_design.md`, `autobyteus-web/docs/agent_execution_architecture.md` |
-| CR-007 runtime mailbox guard | `AgentInputBox` accepts only external user messages, inter-agent messages, and runtime lifecycle events; turn-local operational events remain outside the lifecycle lane. | `review-report.md`, `api-e2e-validation-report.md` | `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md`, `autobyteus-ts/docs/event_driven_core_design.md`, `autobyteus-ts/docs/lifecycle_event_sourced_engine_design.md` |
-| CR-008 stop/shutdown preemption | Terminal stop/shutdown sets the worker stop flag and wakes lifecycle handling before queued user/inter-agent triggers can start a new `AgentTurnRunner.run(...)`. | `review-report.md`, `api-e2e-validation-report.md` | `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md`, `autobyteus-ts/docs/event_driven_core_design.md`, `autobyteus-ts/docs/lifecycle_event_sourced_engine_design.md` |
-| Native interrupt vs terminal stop | `AgentRuntime.interrupt()` targets the active `AgentTurn`; it aborts active work, restores the working-context checkpoint, settles the turn as interrupted, and leaves the runtime reusable. `stop()` remains terminal shutdown and cleanup. | `design-spec.md`, `implementation-handoff.md`, `review-report.md`, `api-e2e-validation-report.md` | `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md`, `autobyteus-server-ts/docs/modules/agent_execution.md`, `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md` |
-| Team Communication reference files | Explicit `send_message_to.reference_files` become normalized message-owned `reference_file_entries`; clients consume `TEAM_COMMUNICATION_MESSAGE` rather than parsing rendered text or inserting those references into Agent Artifacts. | `api-e2e-validation-report.md`, `review-report.md` | `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md`, `autobyteus-server-ts/docs/modules/agent_team_execution.md`, `autobyteus-web/docs/agent_execution_architecture.md` |
-
-## Removed / Replaced Components Recorded
-
-| Old Component / Path / Concept | What Replaced It | Where The New Truth Is Documented |
+| Topic | Current durable truth | Target docs |
 | --- | --- | --- |
-| Post-await LLM/tool phase completion without rechecking accepted interrupts | `TurnExecutionScope.throwIfAborted(...)` fences before normal completion, terminal success, result processing, and continuation side effects. | `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md` |
-| Already-aborted thunks/iterators starting work | Pre-start `runAbortable(...)`, `iterateAbortable(...)`, and `iterateWithAbort(...)` guards. | `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md` |
-| Active tool-batch membership acting as approval authority | Pending-only approval validation through `pendingToolApprovals`. | `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md`, `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md` |
-| Approval as a queued runtime `ToolExecutionApprovalEvent` input | Public/runtime active-turn approval command spine and projection-only approval event output. | `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md`, `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md` |
-| Team/server code bypassing member runtime approval state | Team command path calls the member agent's public `postToolExecutionApproval(...)` API. | `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md`, `autobyteus-server-ts/docs/modules/agent_streaming.md` |
-| Outbound segment payloads carrying camel-case `turnId` | Canonical outbound `turn_id`; server mapper strips/normalizes aliases. | `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md`, `autobyteus-server-ts/docs/modules/agent_streaming.md` |
-| Non-interrupt stream errors leaving open/in-progress segments | Failed terminal `SEGMENT_END` payloads plus frontend terminal error projection. | `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md`, `autobyteus-ts/docs/api_tool_call_streaming_design.md`, `autobyteus-web/docs/agent_execution_architecture.md` |
-| Failed partial tool segments producing executable invocations/continuations | `ToolInvocationAdapter` suppression for `failed`/`interrupted` terminal segments. | `autobyteus-ts/docs/api_tool_call_streaming_design.md`, `autobyteus-ts/docs/streaming_parser_design.md` |
-| Runtime lifecycle lane accepting arbitrary operational events | `AgentInputBox` accepts only lifecycle `LifecycleEvent` objects in its lifecycle lane; `AgentRuntime.submitEvent(...)` rejects unsupported events. | `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md`, `autobyteus-ts/docs/event_driven_core_design.md`, `autobyteus-ts/docs/lifecycle_event_sourced_engine_design.md` |
-| Single-agent `WorkerEventDispatcher` normal-flow LLM/tool/continuation ownership | `AgentWorker` scheduling plus `AgentTurnRunner`, `LlmTurnPhase`, `ToolPhase`, and pipelines. | `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md`, `autobyteus-ts/docs/event_driven_core_design.md`, `autobyteus-ts/docs/lifecycle_event_sourced_engine_design.md` |
-| Stop-generation fallback for native interrupt | Active-only `INTERRUPT_GENERATION` delegates to native runtime interrupt; inactive/stale controls do not restore and do not fall back to stop. | `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md`, `autobyteus-server-ts/docs/modules/agent_execution.md`, `autobyteus-web/docs/agent_execution_architecture.md` |
+| Runtime mailbox | `AgentMessageInbox` has `runtime_lifecycle`, `active_turn`, and `turn_start` lanes. `AgentMessageScheduler` dispatches turn-start messages only while idle. | `agent_runtime_loop_and_interrupt.md`, `event_driven_core_design.md`, `lifecycle_event_sourced_engine_design.md`, `agent_team_runtime_and_task_coordination.md` |
+| Active-turn approval spine | `Agent.postToolExecutionApproval(...) -> AgentRuntime.postToolApproval(...) -> AgentMessageInbox(active_turn) -> ToolApprovalMessageHandler -> AgentRuntimeState.postToolApprovalToActiveTurn(...) -> TurnToolInputPort.postApproval(...) -> ToolPhase.waitForApproval(...)`. | `agent_runtime_loop_and_interrupt.md`, `lifecycle_event_sourced_engine_design.md` |
+| External tool-result spine | `Agent.postToolResult(...) -> AgentRuntime.postToolResult(...) -> AgentMessageInbox(active_turn) -> ToolResultMessageHandler -> AgentRuntimeState.postToolResultToActiveTurn(...) -> TurnToolInputPort.postToolResult(...) -> ToolPhase.waitForToolResult(...)`. | `agent_runtime_loop_and_interrupt.md`, `event_driven_core_design.md`, `lifecycle_event_sourced_engine_design.md` |
+| External-result preflight | `BaseTool.prepareExecution(...)` owns agent-id setup, coercion, schema/type validation, abort check, and mode resolution before lifecycle start or waiter registration. | `agent_runtime_loop_and_interrupt.md`, `tool_call_formatting_and_parsing.md` |
+| Native tool continuation | Native `api_tool_call` results use `tool_history_only`, `ToolContinuationReadyEvent`, and structured `assistant.tool_calls` / `role: "tool"` history; they do not append a synthetic aggregate user message. | `agent_runtime_loop_and_interrupt.md`, `tool_call_formatting_and_parsing.md`, `api_tool_call_streaming_design.md`, `turn_terminology.md`, memory docs |
+| Interrupt and stop boundary | `AgentRuntime.interrupt()` is active-turn side-band control and leaves the runtime reusable; `stop()` / terminate is terminal runtime shutdown/settlement and cleanup. No stop-generation fallback. | `agent_runtime_loop_and_interrupt.md`, server/web docs reviewed as current |
+| Real AutoByteus team E2E confidence | Round 24 accepted full-file live LM Studio team E2E evidence: approve/restore/continue, interrupt targeted follow-up, terminate/restore targeted follow-up, and member projection all pass together. | Validation/report artifacts; no long-lived product-doc change needed because behavior docs already cover it. |
+| Retired control flow | The old single-agent dispatcher/handler normal flow remains removed. Docs must not point future work back to `WorkerEventDispatcher`, `EventHandlerRegistry`, `AgentInputEventQueueManager`, or old LLM/tool result handlers as active owners. | `event_driven_core_design.md`, `lifecycle_event_sourced_engine_design.md`, memory docs, tool docs |
+| Final interrupt protocol terminology | Durable E2E validation and active protocol use `INTERRUPT_GENERATION`; stale `STOP_GENERATION` validation terminology was removed by API/E2E Round 10 and remains accepted through Round 24. | Validation assets; server/web docs reviewed as current |
 
-## No-Impact Decision (Use Only If Truly No Docs Changes Are Needed)
+## Delivery Docs Review Checks
 
-- Docs impact: `N/A`
-- Rationale: Docs impact existed; delivery updated long-lived TypeScript, server, and web docs for the Round 14 interrupted-seam and pending-approval authority behavior.
+Delivery reviewed docs and active surfaces with these checks on the Round-24 integrated state:
+
+- `git fetch origin --prune` — confirmed `origin/personal` at `62279949129196ca6b9c5891fd685886256ddbbb`, branch `ahead 23, behind 0`.
+- `git diff --check HEAD` — passed.
+- Line-start conflict marker scan across `autobyteus-ts`, `autobyteus-server-ts`, `autobyteus-web`, and ticket artifacts — passed.
+- Active-source/update-file grep found no `STOP_GENERATION`, `stop_generation`, `stop generation`, or `stopGeneration` matches in checked TS/server/web runtime surfaces and updated E2E files.
+- `VAL-039` and full-team evidence are present in the API/E2E and review reports.
+- `RUN_LMSTUDIO_E2E=1 LMSTUDIO_MODEL_ID=qwen3.6-27b-ud-mlx pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts` — passed in delivery: `1` file, `4` tests passed, `0` skipped.
+- `pnpm -C autobyteus-server-ts run build:full` — passed, including built-in agents bootstrap smoke check.
+
+## No-Impact Decision
+
+- Docs impact from Round 24 specifically: `No additional long-lived doc changes required`
+- Rationale: Round 24 changed/accepted validation evidence, not production runtime behavior or public protocol semantics. The necessary long-lived docs updates from the prior delivery pass remain current and are carried forward in this final package.
 
 ## Delivery Continuation
 
 - Result: `Pass`
 - Next owner: `delivery_engineer`
-- Notes: Docs sync is complete against the Round-8-passed, latest-base-current integrated state. Repository finalization, ticket archival, push, merge into `personal`, and any release/deployment work remain on hold until explicit user verification/approval.
+- Notes: Docs sync is complete against the Round-11-passed, Code-Review-Round-24-approved integrated state. Repository finalization, ticket archival, commit, push, merge into `personal`, release/deployment, and cleanup remain on hold until explicit user verification/approval.
 
-## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
+## Blocked Or Escalated Follow-Up
 
 - Classification: `N/A`
 - Recommended recipient: `N/A`

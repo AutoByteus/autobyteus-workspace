@@ -458,7 +458,7 @@ Use **processors** where possible to ingest traces and keep handlers clean:
 - Input processor (runs last): capture processed user input
 - Tool result processor: capture tool outcomes
 
-Assistant responses are ingested in `LLMUserMessageReadyEventHandler` after the
+Assistant responses are ingested by `LlmPhase` / `AgentTurnRunner` after the
 LLM stream completes (no separate response processor yet).
 
 This keeps accumulation consistent and centralizes memory ingestion.
@@ -541,7 +541,7 @@ Raw traces are stored line-by-line, but compaction plans them into
 **Turn definition**
 
 - One processed non-tool user message still creates one `turn_id`.
-- `turn_id` is generated at `LLMUserMessageReadyEvent` time.
+- `turn_id` is generated when `AgentRuntimeState.startActiveTurn()` calls `MemoryManager.startTurn()` at outer turn start.
 - Tool call intents and tool results inherit the `turn_id` stored on the
   `ToolInvocation`, even if the result arrives later.
 - Tool continuation does **not** mint a new turn; it reuses the active
@@ -575,7 +575,7 @@ Raw traces are stored line-by-line, but compaction plans them into
 UserMessageReceivedEvent
    │
    ▼
-UserInputMessageEventHandler
+AgentTurnRunner / AgentInputPipeline
    │   (input processors run here)
    └─► MemoryIngestInputProcessor (order 900)
    │      ├─► MemoryManager.ingestUserMessage(...)
@@ -583,12 +583,12 @@ UserInputMessageEventHandler
    ▼
 LLMUserMessageReadyEvent
    ▼
-LLMUserMessageReadyEventHandler
+AgentTurnRunner / LlmPhase
 
-Native api_tool_call tool-result continuation skips UserInputMessageEventHandler:
-ToolResultEventHandler ─► validate active batch/invocation/turn before processors
+Native api_tool_call tool-result continuation skips AgentTurnRunner / AgentInputPipeline:
+ToolPhase / AgentRuntimeState ─► validate active batch/invocation/turn before processors
    └─► accepted result processors ─► MemoryManager.ingestToolResult(...)
-   └─► ToolContinuationReadyEvent ─► LLMUserMessageReadyEventHandler
+   └─► ToolContinuationReadyEvent ─► AgentTurnRunner / LlmPhase
    ├─► LLMRequestAssembler.prepareToolContinuationRequest(...)
    │      └─► PendingCompactionExecutor.executeIfRequired(...)
    │            ├─► CompactionWindowPlanner.plan(...)
@@ -600,7 +600,7 @@ ToolResultEventHandler ─► validate active batch/invocation/turn before proce
    └─► MemoryManager.ingestAssistantResponse(...)
 
 ToolResultEvent
-   └─► ToolResultEventHandler
+   └─► ToolPhase / AgentRuntimeState
          └─► MemoryIngestToolResultProcessor (order 900)
                └─► MemoryManager.ingestToolResult(...)
 
@@ -786,7 +786,7 @@ if prompt_tokens > 0.8 * input_budget:
 
 ### Where the trigger lives
 
-- **LLMUserMessageReadyEventHandler** (post-response):
+- **LlmPhase / AgentTurnRunner** (post-response):
   1. Receives `TokenUsage` from the provider (exact prompt tokens)
   2. Evaluates the compaction policy
   3. Sets `MemoryManager.compaction_required = True`
@@ -807,8 +807,8 @@ provider-specific counting logic in the request path.
 ### 15.1 Where LLM is triggered today
 
 - `UserMessageReceivedEvent`
-  - `UserInputMessageEventHandler` creates `LLMUserMessageReadyEvent`
-- `LLMUserMessageReadyEventHandler` calls:
+  - `AgentTurnRunner / AgentInputPipeline` creates `LLMUserMessageReadyEvent`
+- `LlmPhase` calls:
 - `context.state.llmInstance.streamMessages(...)` with assembled messages
 
 Legacy `conversation_history` has been removed. LLM providers are stateless.
@@ -824,10 +824,10 @@ Refactor the LLM call site to delegate prompt construction to memory:
 
 ```
 UserMessageReceivedEvent
-  └─► UserInputMessageEventHandler
+  └─► AgentTurnRunner / AgentInputPipeline
         └─► LLMUserMessageReadyEvent (processed input)
               └─► MemoryManager.ingestUserMessage(...)
-                    └─► LLMUserMessageReadyEventHandler
+                    └─► AgentTurnRunner / LlmPhase
                           ├─► LLMRequestAssembler.prepareRequest(processedUser)
                           ├─► LLM.streamMessages(messages, renderedPayload)
                           └─► MemoryManager.ingestAssistantResponse(...)
@@ -1104,8 +1104,9 @@ DeepSeek thinking-mode continuation.
 
 **Agent integration**
 
-- `LLMUserMessageReadyEventHandler` calls
-  `LLMRequestAssembler.prepareRequest(...)`, which runs `PendingCompactionExecutor` before passing messages to the LLM.
+- `LlmPhase` calls
+  `LLMRequestAssembler.prepareRequest(...)` or
+  `LLMRequestAssembler.prepareToolContinuationRequest(...)`, which runs `PendingCompactionExecutor` before passing messages to the LLM.
 
 **Tests**
 
@@ -1154,8 +1155,8 @@ User asks a question; no tool calls are emitted.
 **Call stack (debug-trace style)**
 
 ```
-LLMUserMessageReadyEventHandler.handle(...)
-  at src/agent/handlers/llm-user-message-ready-event-handler.ts
+LlmPhase.run(...)
+  at src/agent/loop/llm-phase.ts
   └─► LLMRequestAssembler.prepareRequest(...)
         at src/agent/llm-request-assembler.ts
         ├─► PendingCompactionExecutor.executeIfRequired(...)
@@ -1188,8 +1189,8 @@ LLM emits one or more tool calls; tools run; results return; LLM continues.
 **Call stack (debug-trace style)**
 
 ```
-LLMUserMessageReadyEventHandler.handle(...)
-  at src/agent/handlers/llm-user-message-ready-event-handler.ts
+LlmPhase.run(...)
+  at src/agent/loop/llm-phase.ts
   └─► LLMRequestAssembler.prepareRequest(...)
         at src/agent/llm-request-assembler.ts
   └─► LLM.streamMessages(messages, tools)
@@ -1202,11 +1203,11 @@ LLMUserMessageReadyEventHandler.handle(...)
                           at src/memory/working-context-snapshot.ts
               └─► PendingToolInvocationEvent
                     at src/agent/events/agent-events.ts
-                    └─► ToolInvocationRequestEventHandler.handle(...)
-                          at src/agent/handlers/tool-invocation-request-event-handler.ts
+                    └─► ToolPhase.executeInvocation(...)
+                          at src/agent/loop/tool-phase.ts
                           └─► ToolResultEvent
                                 at src/agent/events/agent-events.ts
-                                └─► ToolResultEventHandler validates active batch/invocation/turn
+                                └─► ToolPhase / AgentRuntimeState validate active batch/invocation/turn
                                       before native memory mutation
                                       └─► MemoryIngestToolResultProcessor.process(...)
                                             at src/agent/tool-execution-result-processor/memory-ingest-tool-result-processor.ts
@@ -1215,8 +1216,8 @@ LLMUserMessageReadyEventHandler.handle(...)
                                                   └─► WorkingContextSnapshot.appendToolResult(...)
                                                         at src/memory/working-context-snapshot.ts
                                 └─► Tool continuation arrives on the same turn
-                                      ├─► native api_tool_call: ToolResultEventHandler records `tool_continuation`
-                                      │     and enqueues ToolContinuationReadyEvent
+                                      ├─► native api_tool_call: ToolResultContinuationBuilder records `tool_continuation`
+                                      │     and AgentTurnRunner emits ToolContinuationReadyEvent
                                       └─► legacy text mode: MemoryIngestInputProcessor records `tool_continuation`
                                             for aggregate TOOL-origin input
 ```
@@ -1235,8 +1236,8 @@ before the next LLM call.
 **Call stack (debug-trace style)**
 
 ```
-LLMUserMessageReadyEventHandler.handle(...)
-  at src/agent/handlers/llm-user-message-ready-event-handler.ts
+LlmPhase.run(...)
+  at src/agent/loop/llm-phase.ts
   └─► LLMRequestAssembler.prepareRequest(...)
         at src/agent/llm-request-assembler.ts
         ├─► PendingCompactionExecutor.executeIfRequired(...)
@@ -1436,14 +1437,14 @@ without reintroducing direct-model compaction summarization.
 
 ```
 UserMessageReceivedEvent
-  └─► UserInputMessageEventHandler
+  └─► AgentTurnRunner / AgentInputPipeline
         └─► Input processors
         └─► MemoryIngestInputProcessor (order 900)
               ├─► MemoryManager.ingestUserMessage(...)
               └─► MemoryManager.ingestToolContinuationBoundary(...) for legacy TOOL sender
         └─► LLMUserMessageReadyEvent
 
-ToolResultEventHandler (native api_tool_call)
+ToolPhase / ToolResultContinuationBuilder (native api_tool_call)
   └─► validate active batch/invocation/turn identity
   └─► accepted tool result processors
         └─► MemoryIngestToolResultProcessor (order 900)
@@ -1451,7 +1452,7 @@ ToolResultEventHandler (native api_tool_call)
   └─► MemoryManager.ingestToolContinuationBoundary(...)
   └─► ToolContinuationReadyEvent
 
-LLMUserMessageReadyEventHandler
+AgentTurnRunner / LlmPhase
   ├─► request = LLMRequestAssembler.prepareRequest(...) or prepareToolContinuationRequest(...)
   │     ├─► PendingCompactionExecutor.executeIfRequired(...)
   │     │     ├─► CompactionWindowPlanner.plan(listRawTracesOrdered(), activeTurnId)
@@ -1466,7 +1467,7 @@ LLMUserMessageReadyEventHandler
   ├─► PendingToolInvocationEvent
   └─► MemoryManager.ingestAssistantResponse(...)
 
-ToolResultEventHandler
+ToolPhase / AgentRuntimeState
   └─► Tool result processors
         └─► MemoryIngestToolResultProcessor (order 900)
               └─► MemoryManager.ingestToolResult(...)
@@ -1660,11 +1661,11 @@ Turns are created when a processed non-tool user message is ready.
 These decisions are required to keep data flow consistent and avoid ambiguity:
 
 1. **Turn ID propagation**
-   - `turn_id` is assigned at `LLMUserMessageReadyEvent`.
+   - `turn_id` is assigned by `AgentRuntimeState.startActiveTurn()` at outer turn start.
    - It is stored on `ToolInvocation` metadata and propagated to `ToolResultEvent`.
 
 2. **Assistant response ingestion point**
-   - Ingest assistant output directly in `LLMUserMessageReadyEventHandler`.
+   - Ingest assistant output directly in `LlmPhase` / `AgentTurnRunner`.
    - Do not rely on optional LLM response processors.
 
 3. **Raw trace pruning strategy**

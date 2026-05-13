@@ -625,12 +625,12 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
       );
       expect(harness.runContext.runtimeContext.hasCompletedTurn).toBe(false);
 
-      harness.socket.send(JSON.stringify({ type: "STOP_GENERATION" }));
+      harness.socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
       await waitForCondition(
         () =>
           firstQuery.close.mock.calls.length === 1 &&
           harness.runContext.runtimeContext.activeTurnId === null,
-        "memory test STOP_GENERATION interrupt settlement",
+        "memory test INTERRUPT_GENERATION interrupt settlement",
       );
 
       const rememberedMessagePromise = waitForJsonMessage(
@@ -659,7 +659,7 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
     }
   });
 
-  it("resumes the same WebSocket follow-up with the adopted provider session id after STOP_GENERATION", async () => {
+  it("resumes the same WebSocket follow-up with the adopted provider session id after INTERRUPT_GENERATION", async () => {
     const runId = "claude-ws-interrupt-provider";
     const providerSessionId = "claude-provider-session-from-first-query";
     const firstQuery = createProviderSessionThenPendingQuery(providerSessionId);
@@ -686,12 +686,12 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
       expect(harness.sdkCalls[0]?.options?.resume).toBeUndefined();
       expect(harness.runContext.runtimeContext.hasCompletedTurn).toBe(false);
 
-      harness.socket.send(JSON.stringify({ type: "STOP_GENERATION" }));
+      harness.socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
       await waitForCondition(
         () =>
           firstQuery.close.mock.calls.length === 1 &&
           harness.runContext.runtimeContext.activeTurnId === null,
-        "STOP_GENERATION interrupt settlement",
+        "INTERRUPT_GENERATION interrupt settlement",
       );
 
       harness.socket.send(
@@ -718,7 +718,7 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
     }
   });
 
-  it("resumes a targeted Claude team member follow-up sent on the same team WebSocket after STOP_GENERATION", async () => {
+  it("resumes a targeted Claude team member follow-up sent on the same team WebSocket after INTERRUPT_GENERATION", async () => {
     const teamRunId = "claude-team-ws-interrupt";
     const memberRunId = "claude-team-member-alpha";
     const memberName = "alpha";
@@ -751,12 +751,12 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
       );
       expect(harness.sdkCalls[0]?.options?.resume).toBeUndefined();
 
-      harness.socket.send(JSON.stringify({ type: "STOP_GENERATION" }));
+      harness.socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
       await waitForCondition(
         () =>
           firstQuery.close.mock.calls.length === 1 &&
           harness.runContext.runtimeContext.activeTurnId === null,
-        "team STOP_GENERATION interrupt settlement",
+        "team INTERRUPT_GENERATION interrupt settlement",
       );
 
       harness.socket.send(
@@ -782,7 +782,7 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
     }
   });
 
-  it("does not send the local run id as SDK resume when STOP_GENERATION happens before a provider session id exists", async () => {
+  it("does not send the local run id as SDK resume when INTERRUPT_GENERATION happens before a provider session id exists", async () => {
     const runId = "claude-ws-interrupt-placeholder";
     const firstQuery = createPendingQueryWithoutProviderSession();
     const secondProviderSessionId = "claude-provider-session-after-placeholder";
@@ -808,12 +808,12 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
       expect(harness.runContext.runtimeContext.sessionId).toBe(runId);
       expect(harness.runContext.runtimeContext.hasCompletedTurn).toBe(false);
 
-      harness.socket.send(JSON.stringify({ type: "STOP_GENERATION" }));
+      harness.socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
       await waitForCondition(
         () =>
           firstQuery.close.mock.calls.length === 1 &&
           harness.runContext.runtimeContext.activeTurnId === null,
-        "placeholder STOP_GENERATION interrupt settlement",
+        "placeholder INTERRUPT_GENERATION interrupt settlement",
       );
 
       harness.socket.send(
@@ -842,7 +842,7 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
 
 describeLiveClaudeRuntime("Claude Agent SDK websocket interrupt/resume live E2E", () => {
   it(
-    "uses the real Claude SDK to preserve context after STOP_GENERATION interrupts an incomplete turn",
+    "uses the real Claude SDK to preserve context after INTERRUPT_GENERATION interrupts an incomplete turn",
     async () => {
       const workspaceRoot = await createWorkspace("claude-live-interrupt-ws");
       const marker = `LIVE_INTERRUPT_CONTEXT_${randomUUID()}`;
@@ -893,7 +893,7 @@ describeLiveClaudeRuntime("Claude Agent SDK websocket interrupt/resume live E2E"
         expect(providerSessionId).not.toBe(runId);
         expect(harness.runContext.runtimeContext.hasCompletedTurn).toBe(false);
 
-        harness.socket.send(JSON.stringify({ type: "STOP_GENERATION" }));
+        harness.socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
         await waitForCondition(
           () => harness.runContext.runtimeContext.activeTurnId === null,
           "live Claude interrupt settlement",

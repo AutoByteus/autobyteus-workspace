@@ -6,7 +6,7 @@ This design update is a second-stage refactor on top of the current ticket workt
 
 Current implemented single-agent runtime path in this worktree:
 
-`Agent.postUserMessage() -> AgentRuntime.submitEvent(...) -> AgentInputBox.enqueueUserMessage(...) -> AgentWorker.asyncRun() -> AgentInputBox.nextTurnTriggerWhenIdle(...) -> AgentRuntimeState.startActiveTurn(...) -> AgentTurnRunner.run(...) -> AgentInputPipeline -> LlmTurnPhase (target rename: LlmPhase) -> ToolPhase -> ToolResultPipeline -> ToolResultContinuationBuilder -> AgentInputPipeline(SenderType.TOOL) -> LLMResponsePipeline / AgentOutbox -> AgentIdleEvent`
+`Agent.postUserMessage() -> AgentRuntime.submitEvent(...) -> AgentInputBox.enqueueUserMessage(...) -> AgentWorker.asyncRun() -> AgentInputBox.nextTurnTriggerWhenIdle(...) -> AgentRuntimeState.startActiveTurn(...) -> AgentTurnRunner.run(...) -> AgentInputPipeline -> LlmTurnPhase (target rename: LlmPhase) -> ToolPhase -> ToolResultPipeline -> ToolResultContinuationBuilder -> AgentInputPipeline(SenderType.TOOL) -> LLMResponsePipeline + AgentExternalEventNotifier notifications -> AgentIdleEvent`
 
 Current implemented approval path:
 
@@ -19,7 +19,7 @@ Current implemented interrupt path:
 Important current-state improvements already present:
 
 - `WorkerEventDispatcher` and old normal-flow `agent/handlers/*` turn-control choreography are removed from the implemented normal LLM/tool/continuation path.
-- `AgentTurnRunner`, current `LlmTurnPhase` (target final name `LlmPhase`), `ToolPhase`, typed processor pipelines, `TurnExecutionScope`, and `AgentOutbox` now own the core turn flow.
+- `AgentTurnRunner`, current `LlmTurnPhase` (target final name `LlmPhase`), `ToolPhase`, typed processor pipelines, and `TurnExecutionScope` now own the core turn flow; `AgentExternalEventNotifier` remains the external observable-event boundary.
 - `AgentInputBox` is already a semantic boundary above `AgentInputEventQueueManager` for external turn-starting messages and lifecycle input.
 - `AgentTurnInputBox` is currently an active-turn approval wait/post primitive; dormant tool-result/continuation lanes were removed in the implemented code.
 
@@ -98,7 +98,7 @@ Target concepts:
 
 | Concept | Lifetime | Responsibility | Must Not Own |
 | --- | --- | --- | --- |
-| `AgentRuntime` | Agent session | Public lifecycle/control: start, stop, interrupt, submit messages, expose status, own inbox/outbox/state/worker. | LLM/tool phase execution, provider cancellation details, message-type handler internals. |
+| `AgentRuntime` | Agent session | Public lifecycle/control: start, stop, interrupt, submit messages, expose status, own inbox/state/worker and external-event notifier lifecycle. | LLM/tool phase execution, provider cancellation details, message-type handler internals. |
 | `AgentMessageInbox` | Runtime session | Store inbound agent messages using typed semantic lanes, preserve parked work, and expose lane/claim/awaitable-reply primitives to the scheduler. | Scheduling policy, turn-loop decisions, LLM/tool execution, runtime shutdown cleanup. |
 | `AgentWorker` | Runtime worker loop | Bootstrap, run the inbox loop, call `AgentMessageScheduler`, coordinate terminal shutdown. | Message routing policy and normal LLM/tool phase progression. |
 | `AgentMessageScheduler` | Runtime session | Choose what inbound message is dispatchable given inbox lanes plus runtime/turn state; invoke the correct typed handler. | Queue storage mechanics, processor logic, LLM/tool phase work, provider/tool cancellation. |
@@ -131,7 +131,7 @@ Final implementation rule:
 - `AgentTurnRunner` remains the only owner of normal LLM/tool/continuation progression.
 - `AgentMessageScheduler` owns inbound dispatchability and routing policy only.
 - Typed message handlers are entry handlers; they may call pipelines/domain owners but must not recreate the deleted old chain: `UserHandler -> LLMHandler -> ToolHandler -> ToolResultHandler -> LLMHandler`.
-- Public event/stream notifications remain observations/outbox outputs, not hidden turn-control messages.
+- Public event/stream notifications remain external observations, not hidden turn-control messages.
 
 ## Concept Inventory Before Spines
 
@@ -146,7 +146,7 @@ Before choosing file changes, the architecture should make these concepts explic
 | AgentMessageScheduler | Runtime message-routing policy. | Implicit `AgentWorker` / `AgentRuntime` branches. | Decide dispatchability by message kind, active-turn state, lifecycle state, and stop state using inbox lane APIs; invoke typed handlers. | Prevents worker or inbox storage from becoming a routing blob. |
 | AgentMessageHandler | Entry handler for one inbound message family. | Currently implicit branches and direct runtime/state calls. | Validate/normalize one message kind and call the right domain owner or processor pipeline. | Handlers are not LLM/tool phase owners. |
 | TurnToolInputPort | Internal turn-scoped tool input wait/wake port. | Current `AgentTurnInputBox` approval wait/post primitive. | Deliver validated tool approvals and future async tool results to the current `ToolPhase`. | Internal to `AgentTurn` / `ToolPhase`; not a second public inbox. |
-| Agent outbox | Canonical outbound lane for agent-produced facts/data. | `AgentOutbox`, notifier/event stream. | Publish assistant output, segment deltas, tool lifecycle/logs, approvals, errors, artifacts, state updates, turn lifecycle. | Outbox messages do not advance turn control flow. |
+| AgentExternalEventNotifier | External observable-event boundary for agent-produced facts/data. | `AgentExternalEventNotifier`, `EventEmitter` / `EventManager`, `AgentEventStream`. | Publish assistant output, segment deltas, tool lifecycle/logs, approvals, errors, artifacts, state updates, turn lifecycle. | External events do not advance turn control flow and are separate from inbox messages. |
 | Agent turn | One finite unit of agent reasoning started by a turn-starting message. | `AgentTurn` with turn ID, batch, scope, current tool-approval wait primitive. | Turn ID, active batches, `TurnToolInputPort`, execution scope, settlement/interruption metadata. | TOOL continuations stay inside the same turn. |
 | Agent turn runner / agent loop | Finite reasoning loop for one turn. | `AgentTurnRunner`. | Process input, call LLM, run tools, feed tool continuations, finish or settle interrupted. | This remains the core domain boundary. |
 | Turn execution scope | Cancellation/operation scope for one turn. | `TurnExecutionScope`. | Abort signal, active operation, abort callbacks, `AgentInterruptionError`, late-result fencing. | Mechanical cancellation primitive used by runner phases. |
@@ -156,7 +156,7 @@ Before choosing file changes, the architecture should make these concepts explic
 | LLM/tool phase services | Turn-local phase work. | `LlmPhase`, `ToolPhase`. | Execute one LLM or tool phase under `TurnExecutionScope`. | Final message handlers must not own this work. |
 | Event/notification stream | Observability and client updates. | Notifier, stream events, WebSocket mappers. | Report statuses, stream segments, tool lifecycle, turn interrupted/completed. | Observes facts; does not drive the internal loop. |
 
-Design rule: **the inbox stores typed messages; the scheduler chooses the handler; handlers call pipelines/domain owners; the runner controls turn-local LLM/tool flow; the execution scope interrupts active operations; outbox/events notify observers.**
+Design rule: **the inbox stores typed messages; the scheduler chooses the handler; handlers call pipelines/domain owners; the runner controls turn-local LLM/tool flow; the execution scope interrupts active operations; `AgentExternalEventNotifier` notifies external observers.**
 
 ## Corrected Conceptual Data-Flow Spines
 
@@ -173,7 +173,8 @@ These are the spines the implementation should preserve or create. The later det
 | CDF-007 | Tool result continuation | Ordered tool results from `ToolPhase` or active-turn result messages | tool result processors -> continuation builder -> `AgentInputPipeline` with `SenderType.TOOL` and existing active turn | Next processed LLM input in same turn | `ToolResultPipeline` / `ToolResultContinuationBuilder` / `AgentInputPipeline` |
 | CDF-008 | Interrupt active turn | User control command, not inbox turn traffic | server/backend -> `AgentRuntime.interrupt()` -> active `AgentTurn.executionScope.interrupt()` -> active phase aborts/abandons | Runner settles turn interrupted; worker/inbox loop remains alive | `AgentRuntime` / `AgentTurnRunner` / `TurnExecutionScope` |
 | CDF-009 | Pending approval response | Server/backend/native approval command arrives while turn waits | `AgentRunBackend.approveToolInvocation` -> native `Agent.postToolExecutionApproval` -> `AgentRuntime.postToolApproval` -> `AgentMessageInbox.postAwaitable(ToolApprovalMessage)` -> scheduler -> `ToolApprovalMessageHandler` -> state validation -> `TurnToolInputPort.postApproval` -> `ToolPhase.waitForApproval` resumes | Tool phase resumes approved/denied, or explicit stale/no-active/no-pending/interrupted result is returned without starting a turn | `AgentMessageInbox` / `AgentMessageScheduler` / `ToolApprovalMessageHandler` / `TurnToolInputPort` |
-| CDF-010 | Outbox / observability | Domain fact or agent-produced output occurs in any spine | phase/pipeline publishes to `AgentOutbox` -> notifier/event stream/WebSocket/frontend | Client sees assistant output/status/segments/tool lifecycle/turn outcome | `AgentOutbox` + event/notification pipeline |
+| CDF-010 | External observable-event publication | Domain fact or agent-produced output occurs in any spine | phase/pipeline/runtime calls `AgentExternalEventNotifier.notify...` -> `EventEmitter`/`EventManager` -> `AgentEventStream` -> backend/WebSocket/frontend | Client sees assistant output/status/segments/tool lifecycle/turn outcome | `AgentExternalEventNotifier` + event/stream pipeline |
+| CDF-010A | Inter-agent communication projection | Inter-agent/system message is accepted as an inbound trigger | input pipeline converts message for LLM use and publishes the observable communication fact through `AgentExternalEventNotifier` -> stream/server/team processors enrich and derive team communication events -> frontend renders conversation/team communication projections | Existing consumers continue to see inter-agent communication after outbox removal | `AgentInputPipeline` + `AgentExternalEventNotifier` + team event processors |
 | CDF-011 | Terminal shutdown | `AgentRuntime.stop()` / lifecycle stop message | mark stopping -> side-band cancel active turn if needed -> lifecycle handler/shutdown orchestrator cleans LLM/tools/MCP/resources exactly once -> stopped | Runtime lifecycle complete | `AgentRuntime` / `AgentWorker` / shutdown lifecycle pipeline |
 | CDF-012 | External/async tool result delivery | External tool host/callback submits a result for an active invocation | tool result enters `AgentMessageInbox` active-turn lane -> scheduler -> `ToolResultMessageHandler` -> `AgentRuntimeState` validates active turn/invocation -> `TurnToolInputPort.postToolResult` -> `ToolPhase.waitForToolResults` resumes -> CDF-007 tool result continuation | Valid async result joins the current tool batch, or stale/no-active/no-pending/interrupted result is dropped without starting a turn | `AgentMessageInbox` / `AgentMessageScheduler` / `ToolResultMessageHandler` / `TurnToolInputPort` / `ToolPhase` |
 
@@ -183,6 +184,7 @@ Important spine constraints:
 - CDF-009 and CDF-012 can use the unified inbox only because the worker inbox loop keeps running while the active `AgentTurnRunner` task is active.
 - CDF-007 must go through CDF-003. Tool results must not be fed directly to the LLM.
 - CDF-010 observes and reports facts. It must not be required to advance CDF-003 through CDF-007.
+- CDF-010A is mandatory consumer compatibility: inter-agent/system communication events describe internal agent facts but must still be externally observable through the existing notifier/stream/server/frontend chain.
 - CDF-002 enforces the one-active-turn invariant for turn-starting messages; active-turn messages can be dispatched while a turn is active but cannot create a second turn.
 - CDF-001 and CDF-011 are runtime lifecycle spines. They must not be mixed into the per-turn runner and must not run during a normal generation interrupt.
 - CDF-009 and CDF-012 are tool-specific active-turn message spines. If a future non-tool phase needs external input, it should get its own phase-specific wait/wake primitive rather than broadening `TurnToolInputPort`.
@@ -198,7 +200,8 @@ Important spine constraints:
 | Tool result arrives asynchronously from outside the phase | CDF-012 routes through inbox/scheduler/handler/state validation into `TurnToolInputPort`, then rejoins CDF-007. | Complete for the target architecture; in-process tool results may still return directly inside `ToolPhase`. |
 | Interrupt during LLM/tool/approval wait | CDF-008 interrupts the active scope side-band; CDF-006/CDF-009/CDF-012 are fenced by `TurnToolInputPort` and runtime state. | Complete: interrupt is not delayed behind inbox dispatch. |
 | Later user message while turn is active | CDF-002 parks turn-starting messages; scheduler keeps CDF-009/CDF-012/lifecycle messages dispatchable. | Complete: one active turn is preserved without blocking active-turn messages. |
-| Outbound status/output/tool lifecycle | CDF-010 publishes through `AgentOutbox` only. | Complete: outbox never advances turn control flow. |
+| Outbound status/output/tool lifecycle | CDF-010 publishes through `AgentExternalEventNotifier` only. | Complete: external observable events never advance turn control flow. |
+| Inter-agent/system communication consumers | CDF-010A preserves `INTER_AGENT_MESSAGE`, `TEAM_COMMUNICATION_MESSAGE`, and `SYSTEM_TASK_NOTIFICATION` consumer projections while removing `AgentOutbox`. | Complete: notifier remains semantic publication boundary; stream/server/frontend consumers stay compatible. |
 | Terminal stop/shutdown | CDF-011 runs shutdown cleanup exactly once and remains separate from normal interrupt. | Complete: stop and interrupt semantics remain distinct. |
 
 ## Phase Naming Symmetry
@@ -343,57 +346,110 @@ Boundary rule: server/native backends call the public native facade; the facade 
 
 Team note: native team approval routing remains a team/member boundary concern. A team-level approval command should locate the target member and call that member agent's `postToolExecutionApproval(...)`; it must not bypass the member runtime's `AgentRuntime.postToolApproval(...)` path.
 
-## Outbox Lane Model
+## External Event Notifier Model
 
-If the architecture names an inbox, it should also name the outbound side. Today outbound behavior is scattered through direct notifier calls from handlers and processors:
+The final design should **not** introduce `AgentOutbox` or a separate `AgentOutboundEventPublisher`. The existing `AgentExternalEventNotifier` already represents the intended concept: external observable agent events for consumers outside the agent's internal control flow. Here **external** means external to the agent's internal control loop, not that the underlying fact originated outside the agent. Some externally observed facts are internal agent facts, especially inter-agent communication and system-task notifications used by team UI projections.
 
-- assistant complete response;
-- streaming segment start/content/end events;
-- tool execution started/succeeded/failed logs;
-- tool approval requested/approved/denied;
-- output-generation errors;
-- compaction status;
-- artifacts, todo updates, system task notifications, inter-agent message notifications;
-- turn started/completed/interrupted.
+This preserves the original distinction in the codebase:
 
-The target design should introduce an **AgentOutbox** as the canonical outbound publication boundary. It does not need to be a durable queue; it can be a thin façade over `AgentExternalEventNotifier` / stream payload builders as long as it is the final domain publication owner. The important part is ownership.
+- **Internal runtime messages**: user messages, inter-agent messages, tool approvals/results, lifecycle commands, and turn-starting work. These belong to `AgentMessageInbox` / `AgentMessageScheduler` and may drive runtime control flow.
+- **External observable events**: assistant output, streaming segments, tool lifecycle, status, artifacts, inter-agent-message notifications, and turn lifecycle facts. These belong to `AgentExternalEventNotifier` and are consumed by `AgentEventStream`, server backends, WebSocket clients, CLIs, history projections, and other observers.
 
-| Outbox Lane | Messages | Producer | Consumer | Notes |
+`AgentExternalEventNotifier` remains the canonical external-event publication boundary. It may continue to extend/use the shared `EventEmitter` / `EventManager` infrastructure, but `EventEmitter` is low-level subscription infrastructure, not the agent-domain owner.
+
+| External Event Family | Messages | Producer | Consumer | Notes |
 | --- | --- | --- | --- | --- |
-| Assistant output lane | final assistant response, final/error output | LLM response/output pipeline | notifier/event stream/server/UI | May later support output processors before publishing. |
-| Streaming segment lane | reasoning/text/media/tool-call segment events | LLM phase / streaming handler | stream pipeline/server/UI | Must support interrupted segment finalization. |
-| Tool lifecycle lane | approval requested/approved/denied, execution started/succeeded/failed/interrupted, tool logs | tool phase / tool pipelines | stream pipeline/server/UI | Interrupted tool is distinct from failed tool. |
-| Turn lifecycle lane | turn started/completed/interrupted, status changes | runtime/runner | status manager/notifier/server/UI | Turn interruption is not runtime shutdown. |
-| Runtime lifecycle lane | bootstrap, ready, error, shutdown, stopped | runtime lifecycle pipeline | status manager/notifier/server/UI | Runtime lifecycle, not turn-local output. |
-| Artifact/state update lane | artifacts, todo list, compaction status, memory/context notifications | relevant services/pipelines | stream pipeline/server/UI | Observability/state publication. |
+| Assistant output | final assistant response, final/error output | LLM response/output pipeline | `AgentExternalEventNotifier` -> `AgentEventStream` -> backend/server/UI | May later support output processors before publishing. |
+| Streaming segments | reasoning/text/media/tool-call segment start/content/end | `LlmPhase` / streaming handler | stream pipeline/server/UI | Must support interrupted segment finalization. |
+| Tool lifecycle | approval requested/approved/denied, execution started/succeeded/failed/interrupted, tool logs | `ToolPhase` / tool pipelines | stream pipeline/server/UI | Interrupted tool is distinct from failed tool. |
+| Turn/status lifecycle | turn started/completed/interrupted, status changes | runtime/runner/status manager | status manager/notifier/server/UI | Turn interruption is not runtime shutdown. |
+| Runtime lifecycle | bootstrap, ready, error, shutdown, stopped | runtime lifecycle pipeline | status manager/notifier/server/UI | Runtime lifecycle, not turn-local output. |
+| Inter-agent / system communication projection | inter-agent-message notification, system task notification | `AgentInputPipeline` while adapting an inbound inter-agent/system message for LLM input | `AgentEventStream` -> server/team processors -> WebSocket/frontend conversation/team communication stores | Observable projection of an internal communication fact; must be preserved when removing `AgentOutbox`. |
+| Artifact/state updates | artifacts, todo list, compaction status, memory/context notifications | relevant services/pipelines | stream pipeline/server/UI | Observability/state publication. |
 
-Design rule: **inbox messages drive work; outbox messages publish facts/results. Outbox messages must not be required to advance the internal agent loop.**
+### External Consumer Compatibility / Inter-Agent Event Contract
 
-This avoids the same fragmentation problem on the outbound side. Instead of each handler directly knowing every notifier method, runner phases and pipelines publish domain outbox messages:
+`AgentExternalEventNotifier` is a consumer contract as much as a publisher contract. The final refactor must preserve existing downstream consumers that render agent communication and lifecycle state. Removing the duplicate `AgentOutbox` wrapper means replacing each `outbox.publish...` call with the corresponding semantic notifier method; it does **not** mean deleting those publications.
+
+Required inter-agent observable spine:
+
+```text
+AgentMessageInbox receives InterAgentInboxMessage
+  -> AgentMessageScheduler / TurnStartMessageHandler starts an AgentTurn
+  -> AgentInputPipeline converts InterAgentMessageReceivedEvent to SenderType.AGENT LLM input
+  -> AgentExternalEventNotifier.notifyAgentDataInterAgentMessageReceived(payload)
+  -> AgentEventStream maps AGENT_DATA_INTER_AGENT_MESSAGE_RECEIVED to StreamEventType.INTER_AGENT_MESSAGE
+  -> AutoByteusStreamEventConverter maps to AgentRunEventType.INTER_AGENT_MESSAGE
+  -> AutoByteusTeamRunEventProcessor enriches team/member sender+receiver metadata
+  -> TeamCommunicationMessageProcessor derives TEAM_COMMUNICATION_MESSAGE
+  -> AgentRunEventMessageMapper maps to WebSocket ServerMessageType.INTER_AGENT_MESSAGE / TEAM_COMMUNICATION_MESSAGE
+  -> TeamStreamingService dispatches INTER_AGENT_MESSAGE to conversation segment rendering
+     and TEAM_COMMUNICATION_MESSAGE to teamCommunicationStore
+```
+
+Payload shape that must remain compatible with current frontend/server consumers:
+
+- `INTER_AGENT_MESSAGE`: `sender_agent_id`, optional `sender_agent_name`, optional `team_run_id`, optional `receiver_run_id`, optional `receiver_agent_name`, `recipient_role_name`, `content`, `message_type`, optional `message_id`, optional `reference_files`, optional `reference_file_entries`, optional `created_at`/`updated_at`, plus `agent_id`/`agent_name` when needed for team member routing.
+- `TEAM_COMMUNICATION_MESSAGE`: normalized camel-case team communication payload (`messageId`, `teamRunId`, `senderRunId`, `receiverRunId`, member names, content, messageType, timestamps, `referenceFiles`) derived from the enriched inter-agent message.
+- `SYSTEM_TASK_NOTIFICATION`: `sender_id`, `content`, and optional member routing fields.
+
+Boundary rules:
+
+- `AgentInputPipeline` may notify `AgentExternalEventNotifier` when it converts inter-agent/system input into an LLM-facing message because that publication is an external-observable projection, not a turn-control action.
+- `AgentExternalEventNotifier.notifyAgentDataInterAgentMessageReceived(...)` and `notifyAgentDataSystemTaskNotificationReceived(...)` must remain semantic notifier methods in `agent/events/notifiers.ts`; do not replace them with low-level `emit(...)` calls.
+- `AgentEventStream`, server converters, team event processors, and frontend streaming handlers remain consumers/projections; they must not be used to advance `AgentTurnRunner` or scheduler control flow.
+- Final source must have no `AgentOutbox` wrapper, but the existing consumer-visible event families and payload fields must stay covered by tests.
+
+### Frontend Interrupt Command / Event Contract
+
+Current frontend code already uses the interrupt command path for both single-agent and team contexts. The final native Autobyteus runtime must emit the same observable events that Codex and Claude flows use so the UI is not broken:
+
+```text
+AgentUserInputTextArea primary action while isSending
+  -> activeContextStore.interruptGeneration()
+  -> agentRunStore.interruptGeneration(runId) or agentTeamRunStore.interruptGeneration(teamRunId)
+  -> AgentStreamingService / TeamStreamingService sends { type: 'INTERRUPT_GENERATION' }
+  -> AgentStreamHandler / AgentTeamStreamHandler resolves active run
+  -> activeRun.interrupt(...)
+  -> Autobyteus backend calls native Agent.interrupt(...) / AgentTeam.interrupt(...)
+```
+
+The frontend intentionally does **not** clear `isSending` optimistically at button click. It clears sending only when stream feedback arrives, primarily `TURN_INTERRUPTED` and/or `AGENT_STATUS` idle/error/shutdown. Therefore Autobyteus native interrupt must publish, through `AgentExternalEventNotifier` and the existing event stream/server mapper chain:
+
+- `TURN_INTERRUPTED` with `turn_id`, `reason`, `interrupted: true`, and member routing fields when applicable;
+- `TOOL_EXECUTION_INTERRUPTED` for interrupted active tool invocations, with `invocation_id`, `tool_name`, `turn_id`, `reason`, and routing fields;
+- an idle status update after interrupted turn settlement, or equivalent existing status mapping that produces idle client state.
+
+Design rule: **inbox messages drive work; external events publish facts/results. External events must not be required to advance the internal agent loop, but they are required to preserve external consumers and UI correctness.**
+
+Allowed final publication shape:
 
 ```ts
-outbox.publish({
-  kind: 'tool_execution_interrupted',
-  turnId,
-  invocationId,
+notifier.notifyAgentToolExecutionInterrupted({
+  turn_id: turnId,
+  invocation_id: invocationId,
   reason,
 });
 
-outbox.publish({
-  kind: 'assistant_complete',
-  turnId,
-  response,
-});
+notifier.notifyAgentDataAssistantCompleteResponse(response);
 ```
 
-Then `AgentOutbox` maps those to existing notifier/event-stream payloads. This creates a single place to add new interrupt-specific outbound messages such as `turn_interrupted` and `tool_execution_interrupted`.
+Forbidden final publication shape:
+
+```ts
+// Do not add a wrapper that only forwards to AgentExternalEventNotifier.
+agentOutbox.publishToolExecutionInterrupted(...);
+
+// Do not bypass the semantic notifier with low-level EventEmitter/EventManager calls.
+notifier.emit(EventType.AGENT_TOOL_EXECUTION_INTERRUPTED, rawPayload);
+```
 
 File guidance:
 
-- Add `autobyteus-ts/src/agent/outbox/agent-outbox.ts` as a small publication façade.
-- Keep `AgentExternalEventNotifier` as the low-level emitter for now.
-- Route runner, phase, pipeline, and lifecycle publication through outbox calls; do not add new direct notifier calls from turn-control code.
-- Do not make outbox a control queue for the runner; it is observation/output only.
+- Keep `autobyteus-ts/src/agent/events/notifiers.ts` as the single external observable-event boundary. Extend `AgentExternalEventNotifier` there when new interrupt events or payload helpers are needed.
+- Remove the first-stage `autobyteus-ts/src/agent/outbox/` wrapper from the final design/source.
+- Runner, phase, pipeline, and lifecycle code may depend on the semantic `AgentExternalEventNotifier` methods, but must not call low-level `EventEmitter.emit(...)` or `EventManager.emit(...)` directly.
+- `AgentEventStream` remains an observer/converter of notifier events; it does not drive turn control.
 
 ## Bootstrap / Shutdown Fit Analysis
 
@@ -491,7 +547,7 @@ stop: terminally cancel work if needed, then cleanup resources
 
 ### Bootstrap/Shutdown Refactor Guidance
 
-- Add `AgentBootstrapper.run(context)` for single-agent, mirroring `AgentTeamBootstrapper.run(context)`. Remove bootstrap event choreography as a control-flow mechanism; lifecycle events are emitted through AgentOutbox/status notification only.
+- Add `AgentBootstrapper.run(context)` for single-agent, mirroring `AgentTeamBootstrapper.run(context)`. Remove bootstrap event choreography as a control-flow mechanism; lifecycle events are emitted through AgentExternalEventNotifier/status notification only.
 - Extract `SystemPromptPipeline` under `agent/pipelines` so system prompt processors join the processor-pipeline concept while remaining bootstrap-owned.
 - Keep `AgentShutdownOrchestrator` and team shutdown orchestrator as lifecycle pipeline owners. Do not move them under `AgentTurnRunner`.
 - Ensure `interrupt()` never triggers `AgentShutdownOrchestrator`; ensure `stop()` still does.
@@ -505,7 +561,7 @@ The second-stage refactor is not a cosmetic rename. It clarifies the remaining i
 
 | Object | Kind | Owns | Must Not Own | Why |
 | --- | --- | --- | --- | --- |
-| `AgentRuntime` | Public lifecycle/control boundary | `start`, terminal `stop`, side-band `interrupt`, message submission, run status access, runtime-owned inbox/scheduler/worker/outbox/state creation. | LLM/tool phase execution, provider cancellation details, message-handler internals. | Keeps external API stable and separates terminal lifecycle/control from turn work. |
+| `AgentRuntime` | Public lifecycle/control boundary | `start`, terminal `stop`, side-band `interrupt`, message submission, run status access, runtime-owned inbox/scheduler/worker/state creation and external-event notifier lifecycle. | LLM/tool phase execution, provider cancellation details, message-handler internals. | Keeps external API stable and separates terminal lifecycle/control from turn work. |
 | `AgentMessageInbox` | Runtime inbound boundary | Typed inbound agent messages, semantic lanes, parked external work, lane availability, claim/park mechanics, awaitable command replies where needed. | Scheduling policy, turn-loop execution, phase logic. | One intuitive inbox for user, agent, lifecycle, tool approval/result messages without a second public inbox. |
 | `AgentWorker` | Long-lived runtime loop | Runtime init, bootstrap, inbox loop, calling scheduler for dispatchable messages, terminal shutdown coordination. | Message routing policy, normal LLM/tool reasoning loop, processor execution. | Keeps the runtime alive while an active turn task runs. |
 | `AgentMessageScheduler` | Dispatch policy owner | Decide dispatchability by message kind, inbox lane, and runtime/turn state; claim messages through `AgentMessageInbox`; invoke typed message handlers; leave future external messages parked while active. | Inbox storage mechanics, processor logic, phase execution, provider/tool cancellation. | Makes scheduling explicit instead of spreading `if` branches across worker/runtime. |
@@ -812,9 +868,9 @@ This is a significant refactor, but it improves locality, makes interruption nat
 ## Legacy Removal Policy (Mandatory)
 
 - Policy: `No backward compatibility; remove legacy code paths.`
-- Required final-state policy: old event-handler queue choreography for normal LLM/tool turn progression must be removed. Remaining event/listener code may only serve external input boundaries, lifecycle observation, or outbox delivery; it must not serve as hidden control flow.
+- Required final-state policy: old event-handler queue choreography for normal LLM/tool turn progression must be removed. Remaining event/listener code may only serve external input boundaries, lifecycle observation, or external event delivery; it must not serve as hidden control flow.
 - Required action: remove the native Autobyteus backend behavior that implements `interrupt()` by calling `stop()`.
-- Required action: replace misleading stop-generation command naming in the app-owned WebSocket/store layer with interrupt-generation naming, rather than adding a dual stop/interrupt command path. The user-facing button may still say “Stop” if product wants that label, but code/protocol ownership should use interrupt semantics.
+- Required action: preserve the current `INTERRUPT_GENERATION` / `interruptGeneration` command naming in the app-owned WebSocket/store layer, remove any leftover stop-generation code naming if found, and do not add a dual stop/interrupt command path. The user-facing button may still say “Stop” if product wants that label, but code/protocol ownership should use interrupt semantics.
 - Required action: stop treating aborted LLM/tool work as normal errors or normal completions.
 - The design must not leave a fallback branch where native interrupt silently uses stop.
 
@@ -826,17 +882,18 @@ This is a significant refactor, but it improves locality, makes interruption nat
 | DS-002 | Primary End-to-End | `AgentRuntime.interrupt()` during LLM phase | `LlmPhase` aborts/abandons provider stream; no assistant completion is ingested | `AgentTurnRunner` + `TurnExecutionScope` + `BaseLLM` boundary | Ensures interruption reaches LLM without relying on worker-dispatched handlers. |
 | DS-003 | Primary End-to-End | `AgentRuntime.interrupt()` during tool phase | `ToolPhase` aborts/abandons active tool execution; late result fenced; no continuation LLM call | `AgentTurnRunner` + `TurnExecutionScope` + `BaseTool` boundary | Ensures interruption reaches tools and same-turn batch mechanics. |
 | DS-004 | Primary End-to-End | User interrupts native team run | Running member agents/sub-teams are interrupted and team returns idle without teardown | `AgentTeamRuntime` / `TeamManager` | Native team backend currently calls stop; team behavior must match interrupt semantics. |
-| DS-005 | Return-Event | Interrupted turn/tool status | Frontend observes interrupting/interrupted lifecycle and can clear sending state | `AgentOutbox` / runtime event/status pipeline | Prevents interruption from looking like success, failure, or shutdown. |
+| DS-005 | Return-Event | Interrupted turn/tool status | Frontend observes interrupting/interrupted lifecycle and can clear sending state | `AgentExternalEventNotifier` / runtime event/status pipeline | Prevents interruption from looking like success, failure, or shutdown. |
 | DS-006 | Bounded Local | Active `AgentTurnRunner` operation | `TurnExecutionScope.runAbortable` returns/throws interruption and runner settles | `AgentTurnRunner` + `TurnExecutionScope` | Queue-based worker dispatch is not the normal turn-control path; operations are scoped directly under the turn. |
 | DS-007 | Bounded Local | Tool batch settlement under active turn | Expected invocation IDs are settled/fenced and `TurnToolInputPort` is closed/cleared on interrupt | `AgentTurn` / `TurnToolInputPort` / `AgentRuntimeState` | Prevents late tool results from reviving an interrupted turn. |
 | DS-008 | Primary End-to-End | External approve/deny tool command | `ToolPhase.waitForApproval` receives valid decision or runtime returns stale/no-active/no-pending/interrupted result | `AgentRuntime` / `AgentRuntimeState` / `TurnToolInputPort` / `ToolPhase` | Completes UC-003/CDF-009 after removing old approval handler path. |
 | DS-009 | Primary End-to-End | External/async tool result arrives for an active invocation | `ToolPhase.waitForToolResults` receives the validated result or stale/no-active/no-pending/interrupted result is fenced | `AgentMessageScheduler` / `AgentRuntimeState` / `TurnToolInputPort` / `ToolPhase` | Completes the tool-result-in-inbox path without allowing tool results to start turns or bypass CDF-007. |
+| DS-010 | Return-Event | Inter-agent/system message is accepted as input | Frontend conversation/team communication consumers receive compatible `INTER_AGENT_MESSAGE`, derived `TEAM_COMMUNICATION_MESSAGE`, and system task notifications | `AgentInputPipeline` / `AgentExternalEventNotifier` / event stream + server/team processors | Prevents the outbox-removal refactor from breaking existing team communication rendering. |
 
 ## Primary Execution Spine(s)
 
 Single-agent native interrupt:
 
-`Client Interrupt Command -> AgentRunBackend.interrupt -> Agent.interrupt -> AgentRuntime.interrupt -> Active AgentTurnRunner/TurnExecutionScope Interrupt -> LlmPhase/ToolPhase Aborts Or Abandons -> AgentTurn Interrupted Settlement -> AgentOutbox Turn/Tool Interrupted Events -> Runtime Idle Status`
+`Client Interrupt Command -> AgentRunBackend.interrupt -> Agent.interrupt -> AgentRuntime.interrupt -> Active AgentTurnRunner/TurnExecutionScope Interrupt -> LlmPhase/ToolPhase Aborts Or Abandons -> AgentTurn Interrupted Settlement -> AgentExternalEventNotifier Turn/Tool Interrupted Events -> Runtime Idle Status`
 
 Native LLM interruption:
 
@@ -844,7 +901,7 @@ Native LLM interruption:
 
 Native tool interruption:
 
-`AgentRuntime.interrupt -> AgentTurn.executionScope.interrupt -> ToolPhase abortable execute -> BaseTool / terminal / MCP cancellation -> TurnToolInputPort fences expected invocation IDs -> AgentOutbox tool-interrupted lifecycle -> no ToolResultContinuationBuilder call -> interrupted turn settlement`
+`AgentRuntime.interrupt -> AgentTurn.executionScope.interrupt -> ToolPhase abortable execute -> BaseTool / terminal / MCP cancellation -> TurnToolInputPort fences expected invocation IDs -> AgentExternalEventNotifier tool-interrupted lifecycle -> no ToolResultContinuationBuilder call -> interrupted turn settlement`
 
 Native tool approval/denial response:
 
@@ -862,11 +919,11 @@ Native team interruption:
 
 | Spine ID | Short Narrative | Main Domain Subject Nodes | Governing Owner | Key Off-Spine Concerns |
 | --- | --- | --- | --- | --- |
-| DS-001 | The user asks to cancel the current native generation. The server backend calls native `Agent.interrupt()`. Runtime signals the active `AgentTurn` side-band through the runner/scope. The active phase service sees the scope interruption, stops producing normal output, and returns/throws `AgentInterruptionError` to `AgentTurnRunner`. The runner closes the turn tool input port, publishes interrupted facts through `AgentOutbox`, settles the turn interrupted, and the runtime remains running/idle. | Client command, AgentRunBackend, AgentRuntime, AgentTurnRunner, AgentTurn, TurnExecutionScope, AgentOutbox | AgentRuntime / AgentTurnRunner / AgentTurn | Server backend, status projection, stream events |
+| DS-001 | The user asks to cancel the current native generation. The server backend calls native `Agent.interrupt()`. Runtime signals the active `AgentTurn` side-band through the runner/scope. The active phase service sees the scope interruption, stops producing normal output, and returns/throws `AgentInterruptionError` to `AgentTurnRunner`. The runner closes the turn tool input port, publishes interrupted facts through `AgentExternalEventNotifier`, settles the turn interrupted, and the runtime remains running/idle. | Client command, AgentRunBackend, AgentRuntime, AgentTurnRunner, AgentTurn, TurnExecutionScope, AgentExternalEventNotifier | AgentRuntime / AgentTurnRunner / AgentTurn | Server backend, status projection, stream events |
 | DS-002 | While LLM streaming is active, interrupt aborts the active turn scope. `LlmPhase` races provider iteration against the scope, asks the provider/iterator to abort/close when supported, closes open response segments with interruption metadata, skips assistant ingestion and `LLMResponsePipeline`, and returns interruption to the runner. | AgentRuntime, AgentTurnRunner, TurnExecutionScope, LlmPhase, BaseLLM, provider | AgentTurnRunner + TurnExecutionScope + BaseLLM | Streaming parser/segments, memory working-context rollback/suppression |
-| DS-003 | While a tool is running, interrupt aborts the active turn scope. `ToolPhase` races tool execution against that scope. Participating tools receive the signal; terminal foreground command closes its session. The phase publishes tool-interrupted lifecycle through `AgentOutbox`, marks/fences expected invocation IDs, closes/fences the turn tool input port for that batch, and returns interruption without building a TOOL continuation. | AgentRuntime, AgentTurnRunner, TurnExecutionScope, ToolPhase, BaseTool, TurnToolInputPort | AgentTurnRunner + TurnExecutionScope + BaseTool | Terminal/MCP cancellation, recent-settled cache, pending approval cleanup |
+| DS-003 | While a tool is running, interrupt aborts the active turn scope. `ToolPhase` races tool execution against that scope. Participating tools receive the signal; terminal foreground command closes its session. The phase publishes tool-interrupted lifecycle through `AgentExternalEventNotifier`, marks/fences expected invocation IDs, closes/fences the turn tool input port for that batch, and returns interruption without building a TOOL continuation. | AgentRuntime, AgentTurnRunner, TurnExecutionScope, ToolPhase, BaseTool, TurnToolInputPort | AgentTurnRunner + TurnExecutionScope + BaseTool | Terminal/MCP cancellation, recent-settled cache, pending approval cleanup |
 | DS-004 | A team interrupt is a coordination operation, not shutdown. The native team runtime enters interrupting, asks TeamManager to interrupt all currently running cached agents/sub-teams, waits boundedly for member settlement, and returns team status to idle/interrupted. | Team backend, AgentTeamRuntime, TeamManager, member AgentRuntime | AgentTeamRuntime / TeamManager | Member context mapping, team status/events |
-| DS-005 | Interrupt outcome travels through `AgentOutbox`, native notifier, stream conversion, server WebSocket mapper, and frontend handlers as interrupting/interrupted metadata. UI can clear sending state and keep the run online. | AgentOutbox, AgentExternalEventNotifier, AgentEventStream, server converter, WebSocket mapper, frontend handlers | AgentOutbox / runtime event pipeline | Status visuals, protocol enum |
+| DS-005 | Interrupt outcome travels through `AgentExternalEventNotifier`, `AgentEventStream`, server stream conversion, WebSocket mapper, and frontend handlers as interrupting/interrupted metadata. UI can clear sending state and keep the run online. | AgentExternalEventNotifier, AgentEventStream, server converter, WebSocket mapper, frontend handlers | AgentExternalEventNotifier / runtime event pipeline | Status visuals, protocol enum |
 | DS-006 | The worker remains the serialized inbox loop, but normal turn execution is not worker-dispatched handler choreography. Active runner phase services execute operations through `TurnExecutionScope` while the worker loop remains available for active-turn/lifecycle message dispatch and preserves unrelated parked messages. | AgentWorker, AgentMessageScheduler, AgentTurnRunner, TurnExecutionScope, phase services | AgentTurnRunner / TurnExecutionScope / AgentMessageScheduler | Signal-aware phase operations, active-turn message dispatch, late-promise logging |
 | DS-007 | Interruption invalidates all same-turn pending/queued continuation work. Tool approvals are cleared or rejected by active-turn identity. Invocation IDs expected by the active batch are marked recently settled/fenced so stale late results are ignored. | AgentTurn, TurnToolInputPort, AgentRuntimeState, recent settled cache | AgentTurn / TurnToolInputPort / AgentRuntimeState | Message predicates, pending approval map |
 | DS-008 | External approval/denial is a runtime active-turn message, not a new turn and not an old event-handler path. The server/backend command calls the native facade, runtime posts an awaitable inbox message, scheduler dispatches `ToolApprovalMessageHandler`, validation occurs against active turn/pending invocation, and the waiting `ToolPhase` resumes or returns a stale/no-active/no-pending/interrupted outcome. | AgentRunBackend, Agent facade, AgentRuntime, AgentMessageInbox, AgentMessageScheduler, ToolApprovalMessageHandler, AgentRuntimeState, TurnToolInputPort, ToolPhase | AgentRuntime / AgentMessageScheduler / AgentRuntimeState / TurnToolInputPort | Server command mapping, stale result mapping, team member routing |
@@ -885,7 +942,7 @@ Native team interruption:
 - TurnExecutionScope: per-turn cancellation and late-result fencing primitive.
 - LlmPhase / ToolPhase: direct phase services called by the runner.
 - BaseLLM / BaseTool: provider/tool boundary where cancellation leaves runtime internals.
-- AgentOutbox / runtime event/status pipeline: publishes interrupting/interrupted state to server/UI.
+- AgentExternalEventNotifier / runtime event/status pipeline: publishes interrupting/interrupted state to server/UI.
 
 ## Ownership Map
 
@@ -898,7 +955,7 @@ Native team interruption:
 - `AgentTurn` owns turn ID, active tool batch, `TurnToolInputPort`, `TurnExecutionScope`, active operation metadata, interrupted flag, and settlement promise.
 - `AgentRuntimeState` owns active-turn storage, pending approval indexes needed across external approval routing, approval input validation/stale-result classification, recent settled invocation IDs, and working-context turn checkpoint restoration/suppression.
 - `AgentInputPipeline`, `ToolInvocationPipeline`, `ToolResultPipeline`, `LLMResponsePipeline`, and `SystemPromptPipeline` own typed processor orchestration.
-- `AgentOutbox` owns outbound domain publication above the low-level notifier/event-stream.
+- `AgentExternalEventNotifier` owns external observable-event publication above low-level `EventEmitter` / `EventManager` infrastructure.
 - `BaseLLM` owns the stable cancellation-aware LLM invocation contract; provider adapters own SDK-specific signal mapping.
 - `BaseTool` owns the stable cancellation-aware tool execution contract; concrete tools own transport/process-specific cancellation.
 - `AgentTeamRuntime` owns team-level interrupt command; `TeamManager` owns propagation to currently managed member nodes.
@@ -924,22 +981,26 @@ If a public facade exists, it is thin: `Agent` and `AgentTeam` expose commands b
 | --- | --- | --- | --- | --- |
 | `AutoByteusAgentRunBackend.interrupt()` calling `agent.stop()` | Incorrectly conflates interrupt with terminal shutdown. | `agent.interrupt()` / `AgentRuntime.interrupt()` | In This Change | No fallback to stop. If native agent lacks interrupt, return unsupported command failure. |
 | `AutoByteusTeamRunBackend.interrupt()` calling `team.stop()` | Incorrectly terminates native team on interrupt. | `team.interrupt()` / `AgentTeamRuntime.interrupt()` | In This Change | No fallback to stop. |
-| Queue/handler choreography for normal turn loop | It hides the finite agent loop across worker-dispatched handlers. | `AgentTurnRunner` + direct phase/pipeline services | In This Change | Old queue events may remain only as outbox/lifecycle/external boundary facts, not turn-control flow. |
+| Queue/handler choreography for normal turn loop | It hides the finite agent loop across worker-dispatched handlers. | `AgentTurnRunner` + direct phase/pipeline services | In This Change | Old queue events may remain only as external-event/lifecycle/external boundary facts, not turn-control flow. |
 | Treating `InboxQueueStore` as the semantic agent inbox | Queue storage should not own turn-starting eligibility or domain routing. | `AgentMessageInbox` in `agent/message-inbox/agent-message-inbox.ts`, with queue manager as optional low-level storage. | In This Change | Prevents tool results/approvals from being mistaken for turn-starting inbox messages. |
-| Queue-only idea for interrupt | Normal queued work cannot preempt an active phase operation. | Side-band `AgentRuntime.interrupt()` -> active `TurnExecutionScope` | In This Change | Interrupt events can still be published through outbox/status. |
-| Treating abort as LLM/tool error | Interrupted work is not a runtime error or tool failure. | `AgentInterruptionError` and interrupted lifecycle outbox events. | In This Change | Provider/tool abort exceptions must normalize to interruption. |
+| Queue-only idea for interrupt | Normal queued work cannot preempt an active phase operation. | Side-band `AgentRuntime.interrupt()` -> active `TurnExecutionScope` | In This Change | Interrupt events can still be published through external-event/status. |
+| Treating abort as LLM/tool error | Interrupted work is not a runtime error or tool failure. | `AgentInterruptionError` and interrupted lifecycle external events. | In This Change | Provider/tool abort exceptions must normalize to interruption. |
 | Normal tool-continuation after interrupted tool batch | Would let an interrupted turn continue. | Turn-scoped `TurnToolInputPort` close/fencing + recent settled invocation IDs. | In This Change | Late results ignored. |
-| App-owned `STOP_GENERATION` protocol/store naming | It hides the domain distinction the task is fixing. | `INTERRUPT_GENERATION` / `interruptGeneration` names. | In This Change | Keep product button label only if desired; code/protocol should use interrupt. |
+| Any remaining app-owned `STOP_GENERATION` protocol/store naming | It hides the domain distinction the task is fixing. | `INTERRUPT_GENERATION` / `interruptGeneration` names. | In This Change / Already Partly Done | Current ticket frontend/server code already uses `INTERRUPT_GENERATION`; final implementation should keep that shape and remove any leftover stop-generation code names if found. |
 
 ## Return Or Event Spine(s) (If Applicable)
 
 Single-agent interrupted status/event return:
 
-`AgentTurnRunner settlement -> AgentOutbox -> AgentExternalEventNotifier -> AgentEventStream -> AutoByteusStreamEventConverter -> AgentRunEventMessageMapper -> WebSocket ServerMessage -> frontend streaming handler -> context status/isSending update`
+`AgentTurnRunner settlement -> AgentExternalEventNotifier -> AgentEventStream -> AutoByteusStreamEventConverter -> AgentRunEventMessageMapper -> WebSocket ServerMessage -> frontend streaming handler -> context status/isSending update`
 
 Tool interrupted event return:
 
-`ToolPhase -> AgentOutbox.toolExecutionInterrupted -> AgentExternalEventNotifier -> AgentEventStream -> server converter -> TOOL_EXECUTION_INTERRUPTED message -> frontend activity/tool lifecycle handler`
+`ToolPhase -> AgentExternalEventNotifier.notifyAgentToolExecutionInterrupted -> AgentEventStream -> server converter -> TOOL_EXECUTION_INTERRUPTED message -> frontend activity/tool lifecycle handler`
+
+Inter-agent communication projection return:
+
+`AgentInputPipeline.convertInterAgentEvent -> AgentExternalEventNotifier.notifyAgentDataInterAgentMessageReceived -> AgentEventStream -> AutoByteusStreamEventConverter -> AutoByteusTeamRunEventProcessor enriches metadata -> TeamCommunicationMessageProcessor derives TEAM_COMMUNICATION_MESSAGE -> AgentRunEventMessageMapper -> TeamStreamingService -> conversation inter_agent_message segment + teamCommunicationStore`
 
 Team interrupted return:
 
@@ -984,7 +1045,7 @@ Team interrupted return:
 | Runtime message inbox boundary | `InboxQueueStore` low-level queues | Create semantic boundary under `agent/message-inbox` | Typed lanes, parking, and awaitable active-turn commands need a semantic owner above queue storage; dispatchability belongs to `AgentMessageScheduler`. | Leaving this only as event queue storage makes the worker/queue look like the domain inbox and obscures message semantics. |
 | Finite agent loop runner | Currently implicit in `AgentWorker` + queued handlers | Create/Extract under `agent/loop` | The per-turn LLM/tool continuation loop needs a finite owner that can be interrupted independently from the long-lived worker. | Keeping this implicit in AgentWorker preserves the stop/interrupt ambiguity. |
 | Processor pipeline orchestration | Currently duplicated across handlers/bootstrap steps | Create under `agent/pipelines` | Ordered processor execution, type validation, and error policy should be consistent but domain-typed. | Existing processor folders define processors, not shared orchestration. |
-| Outbox publication boundary | Direct notifier calls scattered across handlers/processors | Create under `agent/outbox` | Phase services need one outbound publication boundary for assistant output, streaming, tool lifecycle, turn/runtime lifecycle, and errors. | Notifier is a low-level emitter, not a domain outbox owner. |
+| External observable-event boundary | Existing `AgentExternalEventNotifier` already has semantic `notify...` methods; first-stage `AgentOutbox` wrapper duplicates it. | Extend `agent/events/notifiers.ts`; remove `agent/outbox`. | Phase services and input/lifecycle pipelines need one outbound publication boundary for assistant output, streaming, tool lifecycle, inter-agent/system-task communication facts, turn/runtime lifecycle, and errors. | `EventEmitter` / `EventManager` are low-level infrastructure; `AgentExternalEventNotifier` is the domain boundary. |
 | Input processing pipeline | Currently embedded in `UserInputMessageEventHandler` | Extract under `agent/pipelines` | External user input and tool continuation must use identical input processor and multimodal conversion behavior. | Leaving it only in an event handler would force the runner either to enqueue local events or bypass behavior. |
 | Tool invocation/result/response pipelines | Currently embedded in `ToolInvocationExecutionEventHandler`, `ToolResultEventHandler`, `LLMCompleteResponseReceivedEventHandler` | Extract under `agent/pipelines` | Runner needs explicit typed pipelines for each phase while preserving current processor behavior. | Keeping these only in handlers preserves fragmented control flow. |
 | System prompt pipeline | Currently embedded in `SystemPromptProcessingStep` | Extract under `agent/pipelines` | Bootstrap should use the same typed pipeline concept for system prompt processors. | Keeping system prompt processing as one-off code preserves processor orchestration duplication. |
@@ -1019,11 +1080,11 @@ Team interrupted return:
 | Agent interruption support | error/result/options types and abortable operation utilities | DS-001, DS-002, DS-003, DS-006 | AgentRuntime / AgentTurn / TurnExecutionScope / phase services | Create New | Small concrete folder under `agent/interruption`. |
 | LLM invocation | signal-aware send/stream and provider mapping | DS-002 | BaseLLM | Extend | Use separate invocation options from provider kwargs. |
 | Tool execution | signal-aware execute and interrupted lifecycle | DS-003 | BaseTool / ToolPhase | Extend | Built-in terminal/MCP get concrete support first. |
-| Agent outbox | outbound assistant/tool/segment/lifecycle/error/artifact messages | DS-005, CDF-010 | AgentOutbox | Create/Extract | Canonical publication boundary above notifier/event stream. |
+| Agent external event notifier | outbound assistant/tool/segment/lifecycle/error/artifact/inter-agent/system-task observable facts | DS-005, DS-010, CDF-010, CDF-010A | AgentExternalEventNotifier | Extend | Existing canonical publication boundary above `EventEmitter` / `EventManager`; remove duplicate `AgentOutbox` while preserving consumer-visible event families. |
 | Runtime streaming events | interrupting/interrupted status and tool/turn interruption events | DS-005 | Notifier / stream pipeline | Extend | Single-agent and team event streams. |
 | Native team runtime control | team interrupt propagation to members | DS-004 | AgentTeamRuntime / TeamManager | Extend | Do not reuse shutdown steps. |
 | Server backend adapters | map domain interrupt to native interrupt APIs | DS-001, DS-004 | AgentRunBackend / TeamRunBackend | Extend | Remove stop fallback. |
-| Frontend protocol/store/status | send interrupt command and reflect interrupted lifecycle | DS-005 | AgentStreamingService / stores | Extend/Rename | Replace app-owned STOP_GENERATION naming. |
+| Frontend protocol/store/status | send interrupt command and reflect interrupted lifecycle | DS-005 | AgentStreamingService / stores | Extend/Verify | Current ticket code already sends `INTERRUPT_GENERATION`; preserve this path and verify stream feedback clears `isSending`. |
 
 ## Draft File Responsibility Mapping
 
@@ -1038,8 +1099,8 @@ Team interrupted return:
 | `autobyteus-ts/src/agent/message-inbox/agent-message-scheduler.ts` | Agent message scheduling | AgentMessageScheduler | Dispatchability and handler selection by message kind and runtime/turn state. | Keeps routing policy out of worker and storage. | AgentMessageHandler registry |
 | `autobyteus-ts/src/agent/message-inbox/handlers/*.ts` | Agent message handlers | Typed AgentMessageHandlers | Turn-start, tool-approval, tool-result, and lifecycle entry handlers. | Handlers call domain owners/pipelines without recreating phase choreography. | AgentInboxMessage types |
 | `autobyteus-ts/src/agent/loop/agent-turn-runner.ts` | Agent turn loop execution | AgentTurnRunner | Finite reasoning loop around input -> LLM -> tools -> continuation -> idle/interrupted. | New owner for the per-turn agent loop formerly implicit in worker queue choreography. | `AgentTurn`, `TurnExecutionScope` |
-| `autobyteus-ts/src/agent/loop/llm-phase.ts` | Agent turn loop execution | LlmPhase | Request assembly, context/compaction preparation, signal-aware provider streaming, stream parsing, interrupted segment finalization, and final/tool outcome return. | One phase service owns LLM-phase behavior under the runner. | `LLMInvocationOptions`, `TurnExecutionScope`, `AgentOutbox` |
-| `autobyteus-ts/src/agent/loop/tool-phase.ts` | Agent turn loop execution | ToolPhase | Tool invocation preprocessing, approval coordination, signal-aware tool execution, ordered result collection, tool interruption lifecycle, and stale-result fencing. | One phase service owns tool-phase behavior under the runner. | `ToolExecutionOptions`, `TurnToolInputPort`, `AgentOutbox` |
+| `autobyteus-ts/src/agent/loop/llm-phase.ts` | Agent turn loop execution | LlmPhase | Request assembly, context/compaction preparation, signal-aware provider streaming, stream parsing, interrupted segment finalization, and final/tool outcome return. | One phase service owns LLM-phase behavior under the runner. | `LLMInvocationOptions`, `TurnExecutionScope`, `AgentExternalEventNotifier` |
+| `autobyteus-ts/src/agent/loop/tool-phase.ts` | Agent turn loop execution | ToolPhase | Tool invocation preprocessing, approval coordination, signal-aware tool execution, ordered result collection, tool interruption lifecycle, and stale-result fencing. | One phase service owns tool-phase behavior under the runner. | `ToolExecutionOptions`, `TurnToolInputPort`, `AgentExternalEventNotifier` |
 | `autobyteus-ts/src/agent/loop/turn-tool-input-port.ts` | Agent turn loop execution | TurnToolInputPort | Internal per-turn wait/post port for validated tool approvals and future async tool results keyed by turn/invocation identity. | Keeps turn-scoped tool input delivery private to the active turn while all inbound messages enter AgentMessageInbox. | `AgentTurn`, `TurnExecutionScope` |
 | `autobyteus-ts/src/agent/pipelines/processor-pipeline-runner.ts` | Processor pipeline orchestration | ProcessorPipelineRunner | Shared ordered processor execution helper with domain-specific error policies supplied by callers. | Avoids duplicated sorting/validation while keeping typed domain pipelines. | Existing processor interfaces |
 | `autobyteus-ts/src/agent/pipelines/agent-input-pipeline.ts` | Agent input pipeline | AgentInputPipeline | Apply input processors, preserve sender-type/turn rules, build LLM user message data. | Moves current input transformation into a direct runner-callable pipeline. | `AgentInputUserMessage`, LLM input data |
@@ -1050,7 +1111,7 @@ Team interrupted return:
 | `autobyteus-ts/src/agent/loop/tool-result-continuation-builder.ts` | Tool continuation construction | ToolResultContinuationBuilder | Aggregate ordered tool results into SenderType.TOOL AgentInputUserMessage with ContextFiles. | Preserves current tool-continuation message contract outside queue routing. | Tool result data, `AgentInputUserMessage` |
 | `autobyteus-ts/src/agent/context/agent-runtime-state.ts` | Agent turn lifecycle | AgentRuntimeState | Request/settle active turn interruption, validate/post active-turn tool approval/result input, clear pending approvals, drop/fence same-turn work, restore/suppress checkpoint. | State already owns activeTurn/pending approvals/recent settled cache. | `AgentTurn`, `ToolApprovalInputMessage`, `ToolResultInputMessage` |
 | `autobyteus-ts/src/agent/message-inbox/inbox-queue-store.ts` | Agent message inbox | InboxQueueStore | Generic async queue/availability storage behind `AgentMessageInbox`. | Storage owns mechanics only; inbox/scheduler own domain identity. | N/A |
-| `autobyteus-ts/src/agent/outbox/agent-outbox.ts` | Agent outbox | AgentOutbox | Domain publication façade for assistant output, segments, tool lifecycle, turn/runtime lifecycle, errors, artifacts. | One outbound boundary above low-level notifier. | AgentExternalEventNotifier |
+| `autobyteus-ts/src/agent/events/notifiers.ts` | Agent external event notifier | AgentExternalEventNotifier | Semantic external observable-event methods for assistant output, segments, tool lifecycle, inter-agent/system-task notifications, turn/runtime lifecycle, errors, artifacts, and interruption outcomes. | Existing outbound boundary; extend here instead of adding `agent/outbox` or another publisher wrapper; preserve `notifyAgentDataInterAgentMessageReceived` and `notifyAgentDataSystemTaskNotificationReceived`. | Low-level turn control or inbox scheduling. |
 | `autobyteus-ts/src/agent/events/agent-events.ts` | Runtime events | Event model | `AgentInterruptRequestedEvent`, `AgentTurnInterruptedEvent`. | Existing event definitions file for observable lifecycle facts. | Interruption types |
 | `autobyteus-ts/src/agent/status/status-enum.ts` / `status-deriver.ts` / `status-update-utils.ts` | Runtime status | Status deriver | Add interrupting state and interrupted transition metadata. | Existing status owners. | New events |
 | `autobyteus-ts/src/agent/streaming/handlers/streaming-response-handler.ts` and implementations | Streaming segments | Streaming response handler | Add `interrupt(reason)` finalization path for open segments. | Existing streaming segment owner; not a turn-control owner. | Interruption metadata |
@@ -1098,8 +1159,8 @@ Team interrupted return:
 | `autobyteus-ts/src/agent/message-inbox/agent-message-scheduler.ts` | Agent message scheduling | AgentMessageScheduler | Select dispatchable inbox messages and dispatch typed handlers by message kind/state. | Makes scheduling an explicit owner. | AgentMessageHandler registry |
 | `autobyteus-ts/src/agent/message-inbox/handlers/*.ts` | Agent message handlers | Typed AgentMessageHandlers | Turn-start, approval, result, and lifecycle entry handling. | Keeps inbound handling separate from LLM/tool phases. | AgentInboxMessage types |
 | `autobyteus-ts/src/agent/loop/agent-turn-runner.ts` | Agent turn loop execution | AgentTurnRunner | Run one finite agent loop from trigger input through LLM/tool cycles to idle or interrupted settlement. | Separates turn execution from long-lived worker mailbox. | AgentTurn, TurnExecutionScope |
-| `autobyteus-ts/src/agent/loop/llm-phase.ts` | Agent turn loop execution | LlmPhase | Run one LLM phase: request assembly, context preparation, provider streaming through scope, streaming parser integration, response/tool outcome production, interrupted finalization. | Makes the LLM phase a direct runner-owned service instead of a queued handler. | LLMInvocationOptions, AgentOutbox |
-| `autobyteus-ts/src/agent/loop/tool-phase.ts` | Agent turn loop execution | ToolPhase | Run one tool phase: invocation preprocessing, approval request/wait, signal-aware execution, result collection, interrupted lifecycle, stale-result fencing. | Makes the tool phase a direct runner-owned service instead of queued request/execution/result handlers. | ToolExecutionOptions, TurnToolInputPort, AgentOutbox |
+| `autobyteus-ts/src/agent/loop/llm-phase.ts` | Agent turn loop execution | LlmPhase | Run one LLM phase: request assembly, context preparation, provider streaming through scope, streaming parser integration, response/tool outcome production, interrupted finalization. | Makes the LLM phase a direct runner-owned service instead of a queued handler. | LLMInvocationOptions, AgentExternalEventNotifier |
+| `autobyteus-ts/src/agent/loop/tool-phase.ts` | Agent turn loop execution | ToolPhase | Run one tool phase: invocation preprocessing, approval request/wait, signal-aware execution, result collection, interrupted lifecycle, stale-result fencing. | Makes the tool phase a direct runner-owned service instead of queued request/execution/result handlers. | ToolExecutionOptions, TurnToolInputPort, AgentExternalEventNotifier |
 | `autobyteus-ts/src/agent/loop/turn-tool-input-port.ts` | Agent turn loop execution | TurnToolInputPort | Wait/post/fence tool approvals and future async tool result messages. | Internal turn-scoped tool input primitive, not a public inbox. | AgentTurn, invocation IDs |
 | `autobyteus-ts/src/agent/pipelines/processor-pipeline-runner.ts` | Processor pipeline orchestration | ProcessorPipelineRunner | Shared helper for ordered processor execution, with typed domain pipelines choosing contracts and error behavior. | Reduces duplicated processor loops without erasing domain differences. | Existing processor interfaces |
 | `autobyteus-ts/src/agent/pipelines/agent-input-pipeline.ts` | Agent input pipeline | AgentInputPipeline | Shared processing of external and TOOL-continuation input into LLM-ready input data. | Prevents runner extraction from bypassing input processors. | AgentInputUserMessage, input processors |
@@ -1115,7 +1176,7 @@ Team interrupted return:
 | `autobyteus-ts/src/agent/status/status-deriver.ts` | Status model | AgentStatusDeriver | Map interrupt requested -> interrupting, turn interrupted -> idle. | Existing status reducer. | New events |
 | `autobyteus-ts/src/agent/runtime/agent-runtime.ts` | Runtime control | AgentRuntime | Public `interrupt()`, active-turn approval input (`postToolApproval`), out-of-band signal, bounded settlement wait. | Existing runtime command owner. | Interruption result, PostToolApprovalResult |
 | `autobyteus-ts/src/agent/agent.ts` | Public facade | Agent | Delegate `interrupt()` and `postToolExecutionApproval(...)` to runtime. | Thin facade. | Interruption result, PostToolApprovalResult |
-| `autobyteus-ts/src/agent/outbox/agent-outbox.ts` | Agent outbox | AgentOutbox | Domain publication façade above notifier/event stream. | One owner for outbound domain messages. | AgentExternalEventNotifier |
+| `autobyteus-ts/src/agent/events/notifiers.ts` | Agent external event notifier | AgentExternalEventNotifier | External observable-event publication methods above `EventEmitter` / `EventManager`, including inter-agent and system-task notification methods required by frontend/team communication consumers. | Existing owner for outbound domain events; no `AgentOutbox` wrapper. | Low-level turn control or inbox scheduling. |
 | `autobyteus-ts/src/agent/streaming/*` and `events/event-types.ts` | Runtime streaming | Streaming/event pipeline | Turn/tool interrupted event types, payloads, and interrupted segment finalization. | Existing streaming surface; observation only. | TurnInterruptionData |
 | `autobyteus-ts/src/llm/base.ts` or `llm/invocation-options.ts` | LLM invocation | BaseLLM | Add signal-aware invocation options. | Existing LLM boundary. | AbortSignal |
 | Provider files under `autobyteus-ts/src/llm/api/` | LLM provider adapters | Provider classes | Map/catch abort for each SDK. | Each provider owns its transport. | LLMInvocationOptions |
@@ -1135,7 +1196,7 @@ Team interrupted return:
 - `LlmPhase` and `ToolPhase` may use the active turn execution scope and interruption helpers. They do not own global interruption policy or runtime lifecycle.
 - LLM provider adapters own SDK-specific abort mapping. Runtime, runner, and phase services must not branch on provider class names.
 - Concrete tools own process/transport-specific cancellation. `ToolPhase` must not know how to kill terminal sessions or cancel MCP calls beyond invoking the `BaseTool` cancellation-aware boundary.
-- `WorkerEventDispatcher` and old turn-advancing event handlers are not normal turn-control owners. Any remaining event/listener code is restricted to external input boundaries, lifecycle observation, public event surfaces, or outbox delivery.
+- `WorkerEventDispatcher` and old turn-advancing event handlers are not normal turn-control owners. Any remaining event/listener code is restricted to external input boundaries, lifecycle observation, public event surfaces, or external event delivery.
 - Server Autobyteus backends must use the native public facade. They must not call runtime internals or stop as a substitute.
 - Team interrupt propagation is owned by `AgentTeamRuntime`/`TeamManager`, not by server team backend.
 
@@ -1154,9 +1215,9 @@ Team interrupted return:
 | `AgentTurn.executionScope` | AbortController/signal, abort listeners, operation metadata, late-result fencing | `AgentRuntime`, `AgentTurnRunner`, `LlmPhase`, `ToolPhase` | Phase services creating unrelated AbortControllers or ad-hoc race policy for the same turn | Extend TurnExecutionScope/AgentTurn methods. |
 | `BaseLLM.streamMessages(..., options)` | Provider signal mapping | `LlmPhase` | Phase service inspecting provider class to inject signal | Extend BaseLLM/provider contract. |
 | `BaseTool.execute(..., options)` | Tool signal mapping | `ToolPhase` | Phase service checking terminal/MCP tool classes | Extend BaseTool/concrete tool contract. |
-| `AgentOutbox` | Notifier/event-stream payload publication | Runner, phase services, lifecycle pipeline, processor pipelines | Direct notifier scattering from turn-control code or outbox used to advance loop | Add typed outbox messages. |
+| `AgentExternalEventNotifier` | External observable-event publication above `EventEmitter` / `EventManager` | Runner, phase services, lifecycle pipeline, processor pipelines | Direct low-level `emit(...)` calls, duplicate publisher/outbox wrappers, or notifier events used to advance loop | Add typed semantic notifier methods. |
 | `AgentTeamRuntime.interrupt()` | Member propagation and team status | `AgentTeam`, server team backend | Team backend calling `team.stop()` | Add team interrupt API/result. |
-| Stream event pipeline | Event type conversion and WebSocket mapping | AgentOutbox/notifiers, server stream command models, frontend | UI polling runtime internals for interrupted state | Add stream events/status payload. |
+| Stream event pipeline | Event type conversion and WebSocket mapping | AgentExternalEventNotifier, AgentEventStream, server stream command models, frontend | UI polling runtime internals for interrupted state | Add stream events/status payload. |
 
 ## Dependency Rules
 
@@ -1174,7 +1235,7 @@ Allowed:
 - `AgentTurnRunner` directly calls `LlmPhase`, `ToolPhase`, and typed pipeline services, and owns turn-local continuation control flow.
 - `AgentTurnRunner` must use `AgentInputPipeline` for initial input and tool-continuation input before every LLM phase.
 - `AgentTurnRunner` / `ToolPhase` may use `ToolResultContinuationBuilder` to preserve one tool-result message shape.
-- Runner phases and pipelines should publish outbound facts through `AgentOutbox` rather than scattered direct notifier calls.
+- Runner phases and pipelines should publish outbound facts through semantic `AgentExternalEventNotifier` methods rather than low-level `EventEmitter` / `EventManager` calls or duplicate wrapper classes.
 - `AgentTurnRunner`, `LlmPhase`, and `ToolPhase` may use `AgentTurn.executionScope` / interruption helpers and call state settlement helpers.
 - `LlmPhase` may depend on the `BaseLLM` cancellation-aware API, not provider adapters.
 - `ToolPhase` may depend on the `BaseTool` cancellation-aware API, not concrete tools.
@@ -1190,7 +1251,7 @@ Forbidden:
 - `WorkerEventDispatcher` must not dispatch the normal LLM/tool/continuation loop in the final implementation.
 - Old queued phase handlers must not remain as alternate owners for normal LLM/tool/request/result flow.
 - `AgentTurnRunner` must not feed raw tool results directly to the LLM or bypass `context.config.inputProcessors` for SenderType.TOOL continuations.
-- Outbox messages must not be used as the mechanism that advances the internal agent loop.
+- External observable events must not be used as the mechanism that advances the internal agent loop.
 - `InboxQueueStore` must not hard-code domain-specific event classes; `AgentMessageInbox` provides typed lane metadata and `AgentMessageScheduler` provides predicates/dispatchability rules.
 - External callers must not bypass `AgentMessageInbox` by writing directly to `InboxQueueStore`.
 - Active-turn messages inside `AgentMessageInbox` must never be classified as turn-starting messages.
@@ -1209,7 +1270,7 @@ This section narrows the second-stage target architecture into implementation co
 
 Purpose: public runtime control plane.
 
-Owns: `start`, terminal `stop`, side-band `interrupt`, runtime-owned inbox/scheduler/worker/outbox/state lifecycle, status access, and public submission APIs.
+Owns: `start`, terminal `stop`, side-band `interrupt`, runtime-owned inbox/scheduler/worker/state lifecycle, status access, public submission APIs, and access to the external-event notifier.
 
 Does not own: LLM/tool phase control flow, processor pipeline execution, provider/tool cancellation mechanics, or message-handler internals.
 
@@ -1373,7 +1434,7 @@ Rules: settlement is idempotent; late LLM/tool/approval outcomes are fenced; TOO
 
 Purpose: finite interruptible agent loop for one active turn.
 
-Owns turn-local sequence: input pipeline -> LLM phase -> tool phase -> tool-result continuation -> next LLM phase, plus interruption catch/settlement and outbox publication.
+Owns turn-local sequence: input pipeline -> LLM phase -> tool phase -> tool-result continuation -> next LLM phase, plus interruption catch/settlement and external observable-event notification.
 
 ```ts
 class AgentTurnRunner {
@@ -1381,7 +1442,7 @@ class AgentTurnRunner {
 }
 ```
 
-Rule: runner may call `AgentInputPipeline`, `LlmPhase`, `ToolPhase`, `ToolResultPipeline`, `ToolResultContinuationBuilder`, `LLMResponsePipeline`, and `AgentOutbox`; it must not read parked inbox messages or own runtime lifecycle.
+Rule: runner may call `AgentInputPipeline`, `LlmPhase`, `ToolPhase`, `ToolResultPipeline`, `ToolResultContinuationBuilder`, `LLMResponsePipeline`, and `AgentExternalEventNotifier`; it must not read parked inbox messages or own runtime lifecycle.
 
 ### `TurnExecutionScope` Contract
 
@@ -1389,9 +1450,17 @@ Purpose: mechanical cancellation and late-result fencing for one turn.
 
 Owns signal, active operation metadata, abort callbacks, abortable promise/iterator helpers, interruption normalization, and late-result logging/fencing. It does not own business decisions or runtime lifecycle.
 
-### `AgentOutbox` Contract
+### `AgentExternalEventNotifier` Contract
 
-Purpose: outbound publication boundary above notifier/event-stream implementations. Outbox messages publish facts/results and never advance the internal loop.
+Purpose: semantic external observable-event boundary above low-level `EventEmitter` / `EventManager` infrastructure. External observable events publish facts/results and never advance the internal loop. The notifier must preserve all existing consumer-visible families, including assistant/segment/tool/turn/status/artifact facts and inter-agent/system-task communication facts.
+
+Required methods to preserve/extend rather than replace with a wrapper:
+
+- `notifyAgentDataInterAgentMessageReceived(payload)`
+- `notifyAgentDataSystemTaskNotificationReceived(payload)`
+- `notifyAgentTurnInterrupted(turnId, reason)`
+- `notifyAgentToolExecutionInterrupted(payload)`
+- existing assistant, segment, tool approval/execution, todo/artifact/status/error notification methods
 
 ### Processor Pipeline Contracts
 
@@ -1444,7 +1513,7 @@ Purpose: outbound publication boundary above notifier/event-stream implementatio
 | INV-006 | `interrupt()` is side-band and must not be blocked behind inbox work. | `AgentRuntime` |
 | INV-007 | Normal interrupt never runs shutdown cleanup. | `AgentRuntime` / lifecycle tests |
 | INV-008 | Stop always remains terminal and runs shutdown cleanup exactly once. | `AgentRuntime` / `AgentWorker` |
-| INV-009 | Outbox publication is observation/output only, not internal control flow. | `AgentOutbox` / runner |
+| INV-009 | External observable-event publication is observation/output only, not internal control flow. | `AgentExternalEventNotifier` / runner |
 | INV-010 | Bootstrap must complete before any external trigger starts a turn. | `AgentWorker` lifecycle |
 | INV-011 | Turn settlement is idempotent and fences late results. | `AgentTurn` / `TurnExecutionScope` |
 | INV-012 | Provider/tool-specific cancellation stays below `BaseLLM` / `BaseTool`. | provider/tool adapters |
@@ -1463,7 +1532,7 @@ Purpose: outbound publication boundary above notifier/event-stream implementatio
 | Shutdown request / stop | runtime control/lifecycle lane | lifecycle handler / runtime stop | No | runtime ID | terminal; blocks new turn starts |
 | Interrupt request | side-band `AgentRuntime.interrupt()` | active turn scope | No | optional `turnId` | no-active/stale-turn result if applicable |
 | Low-level queued storage entry | private `InboxQueueStore` | none by itself | No | storage metadata | storage does not decide routing |
-| Assistant/segment/tool lifecycle output | `AgentOutbox` | outbox sinks | No | `turnId`/invocation if applicable | publish only; never enqueue as turn input |
+| Assistant/segment/tool lifecycle output | `AgentExternalEventNotifier` | external event subscribers | No | `turnId`/invocation if applicable | publish only; never enqueue as turn input |
 
 ## Event Handler / Listener Final-State Model
 
@@ -1473,7 +1542,7 @@ Final rule:
 
 ```text
 AgentTurnRunner and explicit phase/pipeline services own turn-local control flow.
-Event/listener code may remain only for external input boundaries, lifecycle observation, or outbox delivery.
+Event/listener code may remain only for external input boundaries, lifecycle observation, or external event delivery.
 No event-handler chain may remain as the hidden agent loop.
 No intermediate turn-control state is part of the design.
 ```
@@ -1482,7 +1551,7 @@ No intermediate turn-control state is part of the design.
 
 | Current Handler / Listener Area | Current Role | Final State | Required Final Action |
 | --- | --- | --- | --- |
-| `BootstrapEventHandler` | Drives bootstrap through queued step events. | Removed from bootstrap control flow. | `AgentBootstrapper.run(context)` owns bootstrap; bootstrap facts publish through lifecycle/outbox/status. |
+| `BootstrapEventHandler` | Drives bootstrap through queued step events. | Removed from bootstrap control flow. | `AgentBootstrapper.run(context)` owns bootstrap; bootstrap facts publish through lifecycle/external-event/status. |
 | `UserInputMessageEventHandler` | Applies input processors, starts/reuses turn, enqueues LLM-ready event. | Removed from normal turn flow. | `AgentInputPipeline` owns transformation; `AgentWorker`/`AgentTurnRunner` call it directly. |
 | `InterAgentMessageEventHandler` | Handles inter-agent input. | Removed from turn flow; replaced by `AgentMessageInbox` external trigger routing. | Inter-agent messages enter `AgentMessageInbox` and are processed by the same scheduler/runner path as user triggers. |
 | `LLMUserMessageReadyEventHandler` | Owns request assembly, streaming, parsing, tool-intent enqueue. | Removed from normal turn flow. | `LlmPhase` called by `AgentTurnRunner` owns LLM phase; no queued `LLMUserMessageReadyEvent` is needed for normal runner flow. |
@@ -1493,7 +1562,7 @@ No intermediate turn-control state is part of the design.
 | `ToolResultEventHandler` | Applies result processors, emits lifecycle, aggregates continuation, enqueues TOOL input. | Removed from normal turn flow. | `ToolResultPipeline` + `ToolResultContinuationBuilder` + `AgentInputPipeline` called by runner own continuation. |
 | `LifecycleEventLogger` / generic lifecycle listeners | Logs/projects lifecycle facts. | May remain as observers. | Observation only; no turn advancement. |
 | `WorkerEventDispatcher` | Dispatches every event and indirectly advances the loop. | Removed from normal turn flow; may remain only for non-turn lifecycle observation if still useful. | Must not dispatch normal LLM/tool/continuation loop. |
-| `AgentExternalEventNotifier` listeners / EventEmitter | Low-level outbound delivery. | Remain low-level sinks behind `AgentOutbox`. | Runner/pipelines publish through `AgentOutbox`; low-level listeners only deliver outbound facts. |
+| `AgentExternalEventNotifier` / `EventEmitter` listeners | External observable-event delivery. | `AgentExternalEventNotifier` remains the semantic publisher; `EventEmitter`/listeners remain delivery infrastructure. | Runner/pipelines publish through `AgentExternalEventNotifier`; listeners only deliver outbound facts and never advance turns. |
 
 ### Clean-Cut Target Flow
 
@@ -1511,7 +1580,7 @@ AgentMessageInbox trigger
   -> AgentTurnRunner calls ToolResultPipeline + ToolResultContinuationBuilder
   -> AgentTurnRunner calls AgentInputPipeline(SenderType.TOOL)
   -> AgentTurnRunner loops or completes
-  -> AgentOutbox publishes facts/results
+  -> AgentExternalEventNotifier publishes facts/results
 ```
 
 Tool approval target:
@@ -1546,7 +1615,7 @@ Events remain valuable, but only in these roles:
 ```text
 External input boundary: yes.
 Runtime lifecycle observations: yes.
-Outbox notifications/server/UI streams: yes.
+External observable events/server/UI streams: yes.
 Turn-local control-flow engine: no.
 ```
 
@@ -1558,7 +1627,7 @@ The final implementation must pass review/test checks that:
 - `AgentTurnRunner` directly calls phase/pipeline services for normal turn execution;
 - no duplicate LLM/tool continuation path exists;
 - event/listener code cannot process stale active-turn messages after interruption;
-- new interruption events are published through `AgentOutbox`, not scattered new notifier calls;
+- new interruption events are published through semantic `AgentExternalEventNotifier` methods, not low-level `EventEmitter.emit(...)` calls or duplicate wrapper classes;
 - `WorkerEventDispatcher` is not the semantic owner of the finite agent loop;
 - old internal queue events that only existed to advance the normal turn loop are removed from final turn control flow.
 
@@ -1597,7 +1666,7 @@ Required final components:
 
 Safety gate: processor ordering/error behavior is preserved; old handlers no longer own these transformations in the normal turn path.
 
-### Work Package 2 — AgentMessageInbox / Scheduler / Handlers / TurnToolInputPort / AgentOutbox
+### Work Package 2 — AgentMessageInbox / Scheduler / Handlers / TurnToolInputPort / AgentExternalEventNotifier
 
 Goal: establish explicit inbound/outbound boundaries and dispatch ownership.
 
@@ -1608,7 +1677,7 @@ Required final components:
 - `AgentMessageScheduler` for dispatchability and handler selection;
 - typed `AgentMessageHandler`s for turn-start, tool approval, tool result, and lifecycle entry handling;
 - `TurnToolInputPort` as the internal turn-scoped tool wait/post primitive;
-- `AgentOutbox` for assistant output, streaming segments, tool lifecycle, errors, lifecycle facts, artifacts/state updates.
+- `AgentExternalEventNotifier` for assistant output, streaming segments, tool lifecycle, errors, lifecycle facts, artifacts/state updates.
 
 Safety gate:
 
@@ -1616,7 +1685,8 @@ Safety gate:
 - stale/no-active/no-pending/interrupted outcomes are explicit;
 - tool approvals and external/async tool results reach `TurnToolInputPort` only after scheduler/handler/runtime-state validation;
 - the worker loop stays alive for active-turn/lifecycle dispatch while a runner task is active;
-- outbox is publication-only and does not advance the loop.
+- external observable-event publication is notification-only and does not advance the loop;
+- inter-agent/system communication publications remain visible to `AgentEventStream`, server team processors, `TeamStreamingService`, conversation segment rendering, and `teamCommunicationStore` after `AgentOutbox` removal.
 
 ### Work Package 3 — Direct Bootstrap / Shutdown Lifecycle
 
@@ -1690,9 +1760,9 @@ Goal: clean-cut decommission of old control-flow owners.
 Required final cleanup:
 
 - remove native interrupt-to-stop fallback;
-- remove app-owned `STOP_GENERATION` naming where in scope;
+- keep the current `INTERRUPT_GENERATION` / `interruptGeneration` command path and remove any remaining app-owned `STOP_GENERATION` naming where found;
 - remove old internal queue events/handlers that only advanced the normal LLM/tool/continuation loop;
-- keep only external input boundaries, lifecycle observations, and outbox delivery listeners;
+- keep only external input boundaries, lifecycle observations, and external event delivery listeners;
 - remove duplicate paths where both runner and handler chain can advance the same turn.
 
 Safety gate: source review confirms no final implementation path leaves the old handler chain as the hidden agent loop.
@@ -1713,7 +1783,7 @@ Safety gate: source review confirms no final implementation path leaves the old 
 | `AgentTeamRuntime.interrupt(options?)` | Team runtime control | Propagate to member nodes and update team status. | Reason/timeout. | Does not shutdown. |
 | `AgentRunBackend.approveToolInvocation(invocationId, approved, reason?)` | Cross-runtime server run | Runtime-kind tool approval/denial command. | Required invocation ID, approved boolean, optional reason; future turn ID should be explicit if protocol adds it. | Existing interface retained and mapped to native approval API. |
 | `AgentRunBackend.interrupt(turnId?)` | Cross-runtime server run | Runtime-kind interrupt command. | Optional platform turn ID. | Existing interface retained. |
-| WebSocket `INTERRUPT_GENERATION` | Client command | Interrupt active generation for run/team. | Optional `turn_id` payload if available. | Replaces app-owned `STOP_GENERATION` name. |
+| WebSocket `INTERRUPT_GENERATION` | Client command | Interrupt active generation for run/team. | Optional `turn_id` payload if available. | Current ticket protocol shape; keep as the single app-owned interrupt command. |
 
 Rule: do not overload `stop(timeout?)` with interrupt options. Stop remains terminal and takes only shutdown timeout.
 
@@ -1739,7 +1809,7 @@ Rule: do not overload `stop(timeout?)` with interrupt options. Stop remains term
 | Runtime scheduler | `AgentMessageScheduler` | Yes | Low | Use this name for dispatch policy; do not hide routing in the worker loop. |
 | Message handlers | `*MessageHandler` | Yes | Medium | Keep handlers as entry handlers only, not phase-chain owners. |
 | Terminal runtime shutdown | `stop` | Yes | Low | Keep only for terminal shutdown. |
-| Client command | `INTERRUPT_GENERATION` | Yes | Low | Replace `STOP_GENERATION` in app-owned protocol. |
+| Client command | `INTERRUPT_GENERATION` | Yes | Low | Preserve current app-owned protocol and do not reintroduce stop-generation naming. |
 | Active cancellation object | `AgentTurn` signal/interruption | Yes | Low | Avoid separate generic cancellation manager unless needed. |
 | Status | `interrupting` | Yes | Low | No terminal `interrupted` agent status; final status is idle with turn interrupted event. |
 
@@ -1771,8 +1841,7 @@ Rule: do not overload `stop(timeout?)` with interrupt options. Stop remains term
 | `autobyteus-ts/src/agent/pipelines/tool-result-pipeline.ts` | File | ToolResultPipeline | Applies tool execution result processors. | Single owner of post-tool processing before continuation. | Continuation message formatting. |
 | `autobyteus-ts/src/agent/pipelines/llm-response-pipeline.ts` | File | LLMResponsePipeline | Applies LLM response/output processors and final assistant emission policy. | Single owner of response processor orchestration. | LLM streaming/provider code. |
 | `autobyteus-ts/src/agent/pipelines/system-prompt-pipeline.ts` | File | SystemPromptPipeline | Applies system prompt processors for bootstrap. | Single owner of system prompt processor orchestration. | Runtime init or turn execution. |
-| `autobyteus-ts/src/agent/outbox/` | Folder | Agent outbox | Outbound domain message publication façade and typed payloads if needed. | Complements inbox lanes and reduces direct notifier scattering. | Turn control flow or provider execution. |
-| `autobyteus-ts/src/agent/outbox/agent-outbox.ts` | File | AgentOutbox | Publish assistant/tool/segment/lifecycle/error/artifact messages to existing notifier/streams. | Single outbound publication boundary. | Input box scheduling or state mutation. |
+| `autobyteus-ts/src/agent/events/notifiers.ts` | File | AgentExternalEventNotifier | Publish assistant/tool/segment/lifecycle/error/artifact messages through semantic `notify...` methods above `EventEmitter` / `EventManager`. | Existing single external observable-event boundary; final design removes `agent/outbox`. | Input box scheduling, turn control flow, or provider execution. |
 | `autobyteus-ts/src/agent/interruption/` | Folder | Agent interruption support | Small concrete support area for interruption types/utilities. | Shared by runtime, turn state, phase services, tests. | Runtime lifecycle ownership or provider-specific cancellation. |
 | `autobyteus-ts/src/agent/interruption/agent-interruption.ts` | File | Interruption model | Options/result/error/guards. | One semantic data shape. | Stop/terminate semantics. |
 | `autobyteus-ts/src/agent/interruption/abortable-operation.ts` | File | Abortable operation utility | Promise/iterator abort racing and late-result logging. | Reused by `TurnExecutionScope`, `LlmPhase`, and `ToolPhase`. | Provider/tool-specific behavior. |
@@ -1781,7 +1850,7 @@ Rule: do not overload `stop(timeout?)` with interrupt options. Stop remains term
 | `autobyteus-ts/src/agent/runtime/agent-runtime.ts` | File | AgentRuntime | `interrupt()` authoritative command, `postToolApproval()` awaitable inbox submission command, and status projection. | Existing lifecycle/command owner. | Provider/tool-specific abort or direct TurnToolInputPort bypass without scheduler/state validation. |
 | `autobyteus-ts/src/agent/agent.ts` | File | Agent facade | Public native methods including `interrupt()` and `postToolExecutionApproval(...)`, delegating to runtime. | Existing facade owner. | Active-turn validation or inbox mutation. |
 | `autobyteus-ts/src/agent/events/` | Folder | Event model | Observable lifecycle/status event definitions and event-store projections. | Events remain for lifecycle/observation; inbox storage moves under `agent/message-inbox`. | Normal LLM/tool/continuation turn control or inbox storage. |
-| `autobyteus-ts/src/agent/streaming/` | Folder | Streaming/event publication | Segment and stream payload handling behind `AgentOutbox`. | Streaming is an outbox sink/segment concern. | Turn-loop advancement. |
+| `autobyteus-ts/src/agent/streaming/` | Folder | Streaming/event publication | Segment and stream payload handling behind `AgentExternalEventNotifier`. | Streaming is an external event subscriber/segment concern. | Turn-loop advancement. |
 | `autobyteus-ts/src/llm/` / `src/llm/api/` | Folder/files | LLM boundary | Signal-aware invocation API and provider mapping. | Existing provider subsystem. | Agent turn cleanup. |
 | `autobyteus-ts/src/tools/` | Folder/files | Tool boundary | Signal-aware execution API and concrete cancellation. | Existing tool subsystem. | Runtime status policy. |
 | `autobyteus-ts/src/agent-team/runtime/agent-team-runtime.ts` | File | Team runtime | Native team interrupt command. | Existing team lifecycle owner. | Member lookup internals beyond TeamManager call. |
@@ -1797,7 +1866,7 @@ Rule: do not overload `stop(timeout?)` with interrupt options. Stop remains term
 | `agent/message-inbox` | Main-Line Domain-Control | Yes | Medium | Unified inbound boundary plus scheduler/handlers; keep storage private and keep LLM/tool phase work in `agent/loop`. |
 | `agent/loop` | Main-Line Domain-Control | Yes | Medium | New runner boundary must contain only finite per-turn control flow and turn-local continuation construction, not long-lived worker lifecycle. |
 | `agent/pipelines` | Off-Spine Concern | Yes | Medium | Shared processor pipeline orchestrators used by the turn runner and final phase services; must not become the agent loop itself. |
-| `agent/outbox` | Off-Spine Concern | Yes | Low | Outbound domain publication boundary above notifier/streaming. |
+| `agent/events/notifiers.ts` | Off-Spine Concern | Yes | Low | Existing outbound observable-event boundary above `EventEmitter` / `EventManager`; no separate outbox folder. |
 | `agent/interruption` | Off-Spine Concern | Yes | Low | Concrete support for AgentRuntime/AgentTurn, not generic shared cancellation. |
 | `agent/runtime` | Main-Line Domain-Control | Yes | Low | Runtime command owner remains here. |
 | `agent/context` | Main-Line Domain-Control | Yes | Medium | RuntimeState already large; keep only state mutation/cleanup, not utility races. |
@@ -1824,7 +1893,7 @@ Rule: do not overload `stop(timeout?)` with interrupt options. Stop remains term
 | Candidate Compatibility Mechanism | Why It Was Considered | Rejection Decision (`Rejected`/`N/A`) | Clean-Cut Replacement / Removal Plan |
 | --- | --- | --- | --- |
 | Keep native `interrupt()` as stop fallback when `agent.interrupt` missing | Would avoid changing backend interface immediately. | Rejected | Add native interrupt API and return unsupported result if adapter receives an incompatible object. |
-| Support both `STOP_GENERATION` and `INTERRUPT_GENERATION` indefinitely | Avoids updating existing app code/tests. | Rejected | Rename app-owned protocol/store code in one change. If external clients exist, document release note rather than dual path. |
+| Support both `STOP_GENERATION` and `INTERRUPT_GENERATION` indefinitely | Avoids updating older app code/tests. | Rejected | Current ticket code uses `INTERRUPT_GENERATION`; keep a clean single command. If external clients exist, document release note rather than dual path. |
 | Treat abort exceptions as normal tool/LLM failures | Reuses existing error handling. | Rejected | Normalize to `AgentInterruptionError` and interrupted lifecycle events. |
 | Let interrupted tool result flow through `ToolResultEvent` with an error string | Reuses continuation pipeline. | Rejected | Emit interrupted lifecycle and suppress tool continuation. |
 | Add a second local AbortController in each phase service | Fast local patch. | Rejected | Active `AgentTurn` owns the one signal for the turn. |
@@ -1869,3 +1938,4 @@ Layering follows ownership; callers above runtime must not depend directly on ac
 - Server/native approval tests should assert `AgentRunBackend.approveToolInvocation` calls `agent.postToolExecutionApproval`, which calls `AgentRuntime.postToolApproval`, and valid approvals wake `ToolPhase.waitForApproval` through `TurnToolInputPort`.
 - Post-interrupt approval tests should assert stale approvals return explicit stale/interrupted/no-pending results and do not start a new turn.
 - Frontend tests should assert the interrupt command is sent and `isSending` clears only on interrupted/idle stream feedback, not optimistically at button click.
+- Frontend/team communication tests should assert `INTER_AGENT_MESSAGE` still creates conversation inter-agent segments and derived `TEAM_COMMUNICATION_MESSAGE` still updates `teamCommunicationStore`; this is required because `AgentOutbox` removal must not remove `AgentExternalEventNotifier` inter-agent publications.

@@ -56,7 +56,7 @@ API-provided tool calls. We need to:
                                   │
                                   ▼
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                   LLMUserMessageReadyEventHandler                             │
+│                            LlmPhase                                           │
 │  Selects handler based on AUTOBYTEUS_STREAM_PARSER:                          │
 │    - "xml" / "json" / "sentinel" → ParsingStreamingResponseHandler           │
 │    - "api_tool_call"             → ApiToolCallStreamingResponseHandler       │
@@ -516,9 +516,9 @@ async function* _streamUserMessageToLLM(
 
 ---
 
-## 9. Handler Orchestration
+## 9. Runtime Orchestration
 
-### 9.1. `LLMUserMessageReadyEventHandler` (MODIFIED)
+### 9.1. `LlmPhase` and `StreamingResponseHandlerFactory`
 
 **Key changes**:
 
@@ -558,16 +558,19 @@ for await (const chunkResponse of context.state.llmInstance.streamUserMessage(ll
 
 ### 9.2. Native Tool-Result Continuation
 
-`ToolResultEventHandler` owns native result acceptance and the native-vs-legacy
-continuation split. In native `api_tool_call` mode it first validates active
-batch/provider identity before result processors can mutate memory: missing
-invocation ids, unknown invocation ids, turn mismatches, duplicates, and
-no-active-batch results are rejected without raw `tool_result` traces,
-working-context `ToolResultPayload`s, `tool_continuation` traces, or continuation
-events. After an accepted tool invocation batch settles:
+`ToolPhase`, `ToolResultPipeline`, and `ToolResultContinuationBuilder` own
+native result acceptance and the native-vs-legacy continuation split. In native
+`api_tool_call` mode the active turn first validates active batch/provider
+identity before result processors can mutate memory: missing invocation ids,
+unknown invocation ids, turn mismatches, duplicates/late results, closed or
+interrupted ports, no active result waiter, and no-active-batch results are
+rejected without raw `tool_result` traces, working-context `ToolResultPayload`s,
+`tool_continuation` traces, or continuation events. After an accepted tool
+invocation batch settles:
 
-- In `api_tool_call` mode it enqueues an internal `ToolContinuationReadyEvent`.
-  `LLMUserMessageReadyEventHandler` then calls
+- In `api_tool_call` mode `ToolResultContinuationBuilder` marks the same-turn
+  continuation as `tool_history_only`; `AgentTurnRunner` emits an internal
+  `ToolContinuationReadyEvent`. `LlmPhase` then calls
   `LLMRequestAssembler.prepareToolContinuationRequest(...)`, which renders the
   current working context as-is. The next OpenAI-compatible request contains the
   prior `assistant.tool_calls` message plus matching `role: "tool"` result
@@ -743,15 +746,16 @@ Similar formatters exist for:
 
 ### 13.3. Design: Tool Schema Passing
 
-**Option A: Pass via `LLMUserMessageReadyEventHandler` (Recommended)**
+**Implemented option: pass via `LlmPhase`**
 
-The handler already has access to tool definitions. When `api_tool_call` mode is selected:
+`LlmPhase` resolves provider-aware schemas through
+`StreamingResponseHandlerFactory`. When `api_tool_call` mode is selected:
 
 1. Format tool definitions to API schema
 2. Pass as `tools` kwarg to LLM stream
 
 ```ts
-// In LLMUserMessageReadyEventHandler.handle()
+// In LlmPhase
 if (formatOverride === 'api_tool_call') {
   const toolDefinitions = context.state.toolNames
     .map((name) => defaultToolRegistry.getToolDefinition(name))

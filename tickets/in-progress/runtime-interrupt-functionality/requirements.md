@@ -18,10 +18,12 @@ The requested behavior: interrupt should cancel the current active work unit, in
 - `LLMUserMessageReadyEventHandler` awaits `llmInstance.streamMessages(...)` without any abort signal; LLM provider implementations do not accept a runtime cancellation option.
 - `ToolInvocationExecutionEventHandler` awaits `toolInstance.execute(context, args)` without a cancellation option; `BaseTool.execute` and `_execute` do not receive an AbortSignal. Foreground `run_bash` creates a local `TerminalSessionManager` that cannot currently be interrupted by the active turn.
 - Tool batch continuation depends on `ToolResultEventHandler` aggregating active-batch results and enqueueing a tool-continuation user message. Interrupt must clear active batches and stale same-turn queue events so an interrupted tool result does not drive another LLM call.
-- Server-native Autobyteus single-agent backend maps `interrupt()` to `agent.stop()`. Server-native Autobyteus team backend maps `interrupt()` to `team.stop()`. Codex and Claude backends already have real interrupt paths.
-- UI/services currently send `STOP_GENERATION`, but the server treats that command as an interrupt operation (`activeRun.interrupt(...)`) for all backends. The main product gap is the native Autobyteus runtime/backend implementation, not the presence of a WebSocket command path.
+- Original baseline server-native Autobyteus single-agent backend mapped `interrupt()` to `agent.stop()`, and team backend mapped `interrupt()` to `team.stop()`, while Codex and Claude backends already had real interrupt paths. Current ticket code has begun replacing this with native `agent.interrupt(...)` / `team.interrupt(...)`; final design must preserve that clean separation and complete the runtime architecture.
+- Current ticket UI/services send `INTERRUPT_GENERATION`; server single-agent and team stream handlers resolve the active run and call `activeRun.interrupt(...)`. The main product gap is the native Autobyteus runtime/backend implementation and event parity, not the presence of a WebSocket command path.
 - Current ticket implementation has already completed the first major refactor: normal turn execution now flows through `AgentInputBox -> AgentWorker -> AgentTurnRunner -> LlmTurnPhase/ToolPhase/pipelines`, with `AgentRuntime.postToolApproval(...) -> AgentRuntimeState.postToolApprovalToActiveTurn(...) -> AgentTurnInputBox.postApproval(...)` for approvals. `WorkerEventDispatcher` and old normal-flow handlers are no longer the turn-loop owners.
 - The next design refinement uses that implemented state as the base and cleans up the remaining inbound-message model: `AgentInputBox`/`AgentTurnInputBox` and `AgentInputEventQueueManager` are understandable as an intermediate step, but the final architecture should expose one semantic `AgentMessageInbox`, an explicit `AgentMessageScheduler`, typed `AgentMessageHandler`s, and an internal tool-specific `TurnToolInputPort` rather than two top-level inbox concepts plus a queue-manager name.
+- Existing frontend and server consumers depend on inter-agent/system-task observable events: `notifyAgentDataInterAgentMessageReceived(...)` maps through `AgentEventStream`/server conversion/team processors into `INTER_AGENT_MESSAGE` conversation segments and derived `TEAM_COMMUNICATION_MESSAGE` store updates. Removing `AgentOutbox` must preserve these notifier publications and payload shapes.
+- The frontend interrupt button path already sends `INTERRUPT_GENERATION` for single-agent and team contexts and intentionally keeps `isSending` true until stream feedback (`TURN_INTERRUPTED` and/or idle status) arrives. Native Autobyteus interrupt must emit the same event/status semantics as Codex/Claude so the UI does not hang.
 
 ## Design Health Assessment (Mandatory)
 
@@ -36,7 +38,7 @@ The requested behavior: interrupt should cancel the current active work unit, in
 
 1. Introduce an explicit finite AgentTurnRunner/agent-loop owner plus turn-scoped interrupt control in `autobyteus-ts` instead of overloading stop or treating AgentWorker/internal queue events as the turn loop.
 2. Replace the architecture-facing `AgentInputBox` / `AgentTurnInputBox` split with a unified `AgentMessageInbox` that stores typed inbound agent messages in semantic lanes: turn-starting user/inter-agent messages, active-turn messages such as tool approvals/results, lifecycle messages, and parked future work. The separate turn-scoped tool input primitive should be an internal `TurnToolInputPort`, not a second public inbox concept and not a generic all-phase awaitable input object.
-3. Introduce an AgentOutbox publication boundary for assistant output, streaming segments, tool lifecycle/logs, approvals, errors, turn/runtime lifecycle, artifacts, and state updates.
+3. Use the existing `AgentExternalEventNotifier` as the single external observable-event boundary for assistant output, streaming segments, tool lifecycle/logs, approvals, errors, inter-agent/system-task communication facts, turn/runtime lifecycle, artifacts, and state updates; do not introduce a separate AgentOutbox wrapper.
 4. Extract typed processor pipeline orchestrators for input, tool invocation, tool result, LLM response/output, and system prompt processing so runner phases and lifecycle bootstrap can reuse existing processors without duplicating or bypassing behavior.
 5. Treat bootstrap and shutdown as runtime lifecycle pipelines: bootstrap prepares the runtime before `AgentMessageInbox` turn-starting messages are dispatched, shutdown runs only for terminal stop/worker exit, and neither is part of normal generation interrupt.
 6. Add public `interrupt(...)` APIs on native `Agent`, `AgentRuntime`, `AgentTeam`, and `AgentTeamRuntime` while leaving `stop(...)` as terminal runtime shutdown.
@@ -60,6 +62,7 @@ Large
 - UC-005: Server/UI command path for active generation interruption uses the backend `interrupt()` operation consistently across Autobyteus, Codex, and Claude runtimes.
 - UC-006: Terminal/MCP/LLM provider adapters receive cancellation context where supported and otherwise cannot keep the AgentTurn blocked indefinitely.
 - UC-007: Bootstrap and shutdown lifecycle behavior remains correct under the new runner/pipeline architecture and stays separate from normal interrupt.
+- UC-008: Existing frontend/server consumers for inter-agent communication, team communication messages, system task notifications, and interrupt button state continue to work after the inbox/outbox refactor.
 
 ## Out of Scope
 
@@ -81,7 +84,8 @@ Large
 - FR-004D1: `AgentMessageInbox` shall be the first-class semantic runtime inbound boundary above low-level queue storage; it shall own typed inbound message storage, preserve unrelated external messages while a turn is active, and expose lane/candidate/claim APIs to the scheduler without leaking queue-manager mechanics or owning routing policy.
 - FR-004D2: `AgentMessageScheduler` shall own message dispatchability and routing policy: external user/inter-agent messages start a turn only when idle, active-turn messages are routed only to the active turn, lifecycle messages are handled by runtime lifecycle handlers, stale messages produce explicit reject/drop outcomes, and interrupt remains side-band runtime control.
 - FR-004D3: Typed `AgentMessageHandler`s shall handle inbound message families and call the appropriate domain owner or processor pipeline. They shall not recreate the old event-handler chain for LLM/tool phase progression.
-- FR-004E: Agent-produced outbound facts and data shall flow through an AgentOutbox publication boundary above existing notifier/event-stream implementations, including assistant output, streaming segments, tool lifecycle/logs, approvals, errors, artifacts, state updates, and turn/runtime lifecycle messages.
+- FR-004E: Agent-produced outbound facts and data shall flow through the existing `AgentExternalEventNotifier` as the single external observable-event boundary, including assistant output, streaming segments, tool lifecycle/logs, approvals, errors, inter-agent/system-task communication facts, artifacts, state updates, and turn/runtime lifecycle messages. The final design shall not add a separate AgentOutbox or duplicate publisher wrapper.
+- FR-004E1: Inter-agent and system-task observable event publications shall be preserved when removing `AgentOutbox`: `AgentInputPipeline` conversion shall still publish through `AgentExternalEventNotifier.notifyAgentDataInterAgentMessageReceived(...)` / `notifyAgentDataSystemTaskNotificationReceived(...)`, `AgentEventStream` and server/team processors shall still map/enrich/derive `INTER_AGENT_MESSAGE` and `TEAM_COMMUNICATION_MESSAGE`, and frontend `TeamStreamingService` consumers shall still render conversation segments and update `teamCommunicationStore`.
 - FR-005: Interrupting pending approval shall clear pending approval state for the interrupted turn and ignore later stale approval/denial messages for those invocation IDs.
 - FR-005A: External tool approval/denial commands shall route through the final public/runtime boundary (`AgentRunBackend.approveToolInvocation` -> native `Agent.postToolExecutionApproval` -> `AgentRuntime.postToolApproval`), enter `AgentMessageInbox` as awaitable active-turn messages, and be validated by scheduler/handler/runtime-state logic against active turn, optional turn ID, pending invocation ID, and interruption/settlement state before any message is posted through the active turn's internal `TurnToolInputPort`.
 - FR-005B: Externally delivered or asynchronous tool results, when present, shall enter `AgentMessageInbox` as active-turn tool-result messages, be dispatched by `AgentMessageScheduler` to `ToolResultMessageHandler`, be validated against active turn and expected invocation identity by runtime state, and wake `ToolPhase` through `TurnToolInputPort`; normal in-process tool execution may still return results directly inside `ToolPhase`.
@@ -95,10 +99,10 @@ Large
 - FR-011: Native Autobyteus server backend `interrupt()` shall call native `agent.interrupt(...)`, not `agent.stop(...)`.
 - FR-012: Native Autobyteus team backend `interrupt()` shall call native `team.interrupt(...)`, not `team.stop(...)`.
 - FR-013: Native team interrupt shall propagate interruption to currently running member agents and sub-teams and return the team runtime to idle without teardown.
-- FR-014: Runtime events/statuses shall distinguish interrupting/interrupted work from error and shutdown; clients shall be able to tell whether a turn or tool ended because of interruption.
+- FR-014: Runtime events/statuses shall distinguish interrupting/interrupted work from error and shutdown; clients shall be able to tell whether a turn or tool ended because of interruption. Native Autobyteus interrupt shall publish the frontend-compatible `TURN_INTERRUPTED`, optional `TOOL_EXECUTION_INTERRUPTED`, and idle-status stream feedback needed for existing interrupt button behavior.
 - FR-015: Repeated interrupt requests for the same active turn shall be idempotent and shall not emit duplicate terminal turn/tool outcomes.
-- FR-016: Implementation shall preserve the documented component contracts, state-machine transitions, message routing rules, and final work-package safety gates for `AgentRuntime`, `AgentWorker`, `AgentMessageInbox`, `AgentMessageScheduler`, typed `AgentMessageHandler`s, `TurnToolInputPort`, `AgentTurnRunner`, `LlmPhase`, `ToolPhase`, `TurnExecutionScope`, `AgentOutbox`, and typed processor pipelines.
-- FR-017: Final implementation shall be a clean-cut refactor: normal LLM/tool/continuation turn progression shall be owned by `AgentTurnRunner` and phase/pipeline services, and old event-handler queue choreography shall be removed from normal turn control. Remaining event/listener code shall be limited to external input boundaries, lifecycle observation, or outbox delivery only.
+- FR-016: Implementation shall preserve the documented component contracts, state-machine transitions, message routing rules, and final work-package safety gates for `AgentRuntime`, `AgentWorker`, `AgentMessageInbox`, `AgentMessageScheduler`, typed `AgentMessageHandler`s, `TurnToolInputPort`, `AgentTurnRunner`, `LlmPhase`, `ToolPhase`, `TurnExecutionScope`, `AgentExternalEventNotifier`, and typed processor pipelines.
+- FR-017: Final implementation shall be a clean-cut refactor: normal LLM/tool/continuation turn progression shall be owned by `AgentTurnRunner` and phase/pipeline services, and old event-handler queue choreography shall be removed from normal turn control. Remaining event/listener code shall be limited to external input boundaries, lifecycle observation, or external event delivery only.
 
 ## Acceptance Criteria
 
@@ -113,7 +117,8 @@ Large
 - AC-004D1: AgentMessageInbox tests/review verify external user/inter-agent messages, lifecycle messages, and active-turn messages enter the semantic inbox, the scheduler claims typed messages through AgentMessageInbox rather than direct queue storage, and tool results/approvals/continuations cannot start turns.
 - AC-004D2: AgentMessageScheduler tests verify routing outcomes for idle external messages, busy external messages, valid active-turn messages, stale active-turn messages, lifecycle messages, stopped runtime, and side-band interrupt exclusion.
 - AC-004D3: Message-handler tests/review verify handlers call typed pipelines/domain owners and do not own normal LLM/tool phase progression.
-- AC-004E: Outbox tests verify new turn/tool interruption outbound messages are published through AgentOutbox and mapped to existing notifier/event-stream outputs without being used to advance turn control flow.
+- AC-004E: External-event tests verify new turn/tool interruption outbound messages are published through `AgentExternalEventNotifier` and mapped to existing event-stream outputs without being used to advance turn control flow; no separate AgentOutbox wrapper remains in the final source.
+- AC-004E1: Inter-agent/system-task event tests verify `notifyAgentDataInterAgentMessageReceived(...)` and `notifyAgentDataSystemTaskNotificationReceived(...)` still map through `AgentEventStream` and server/team processors into `INTER_AGENT_MESSAGE`, derived `TEAM_COMMUNICATION_MESSAGE`, and frontend conversation/team communication store updates with compatible payload fields after `AgentOutbox` removal.
 - AC-005: Interrupt during pending tool approval clears `pendingToolApprovals` for that turn; a later approval for that invocation is rejected/ignored as stale without changing runtime status.
 - AC-005A: Server/native approval routing tests verify `AgentRunBackend.approveToolInvocation` reaches native `Agent.postToolExecutionApproval`, `AgentRuntime.postToolApproval` posts an awaitable active-turn inbox message, `ToolApprovalMessageHandler`/runtime-state validation checks active turn and pending invocation, valid approvals wake `ToolPhase.waitForApproval` through `TurnToolInputPort`, and no-active/stale-turn/no-pending/interrupted approvals return explicit non-turn-starting outcomes.
 - AC-005B: External/async tool-result routing tests verify `ToolResultInboxMessage` enters `AgentMessageInbox`, scheduler dispatches `ToolResultMessageHandler`, runtime-state validation checks active turn and expected invocation identity, valid results wake `ToolPhase.waitForToolResults` through `TurnToolInputPort`, stale/interrupted results are fenced, and in-process tool results still follow direct `ToolPhase -> ToolResultPipeline -> ToolResultContinuationBuilder -> AgentInputPipeline(SenderType.TOOL)` flow.
@@ -123,11 +128,11 @@ Large
 - AC-007: `AutoByteusAgentRunBackend.interrupt()` unit tests verify `agent.interrupt()` is invoked and `agent.stop()` is not invoked.
 - AC-008: `AutoByteusTeamRunBackend.interrupt()` unit tests verify `team.interrupt()` is invoked and `team.stop()` is not invoked.
 - AC-009: Native team integration test proves an interrupted active member returns to idle while the team remains active/reusable.
-- AC-010: WebSocket/streaming tests verify the active generation command reaches `activeRun.interrupt(...)` and clients receive an idle/turn-settled update with interruption metadata.
+- AC-010: WebSocket/streaming tests verify the frontend interrupt button sends `INTERRUPT_GENERATION`, server single-agent/team handlers route it to `activeRun.interrupt(...)`, native Autobyteus backends call native `Agent.interrupt(...)` / `AgentTeam.interrupt(...)`, and clients receive `TURN_INTERRUPTED` and/or idle status feedback that clears `isSending` without optimistic client-side clearing.
 - AC-011: Foreground `run_bash` interruption kills/closes the active terminal session and reports an interrupted tool outcome; background `run_bash` behavior is unchanged and documented as out of scope.
 - AC-012: LLM provider tests/mocks verify the active turn signal is passed through BaseLLM and provider adapters, and an abort does not get reported as a normal LLM error.
 - AC-013: Architecture/code review verifies component boundaries, state-machine transitions, message routing rules, and final work-package safety gates match the design; no implementation path leaves `AgentWorker` as the owner of turn-local LLM/tool control flow.
-- AC-014: Final source review verifies no duplicate control-flow owners remain: normal turn execution no longer depends on `WorkerEventDispatcher` dispatching the old LLM/tool/continuation handler chain, and remaining event/listener code is limited to external input boundaries, lifecycle observation, or outbox delivery only.
+- AC-014: Final source review verifies no duplicate control-flow owners remain: normal turn execution no longer depends on `WorkerEventDispatcher` dispatching the old LLM/tool/continuation handler chain, and remaining event/listener code is limited to external input boundaries, lifecycle observation, or external event delivery only.
 
 ## Constraints / Dependencies
 
@@ -162,6 +167,7 @@ Large
 | UC-005 | FR-011, FR-012, FR-014 |
 | UC-006 | FR-009, FR-010 |
 | UC-007 | FR-008, FR-008A, FR-008B |
+| UC-008 | FR-004E, FR-004E1, FR-014 |
 
 ## Acceptance-Criteria-To-Scenario Intent
 
@@ -178,7 +184,8 @@ Large
 | AC-004D1 | AgentMessageInbox is the semantic runtime inbox above queue storage. |
 | AC-004D2 | AgentMessageScheduler owns dispatch decisions by message type and runtime/turn state. |
 | AC-004D3 | Typed message handlers invoke pipelines/domain owners without recreating old phase-handler choreography. |
-| AC-004E | AgentOutbox is the outbound boundary for new interruption events and remains observation-only. |
+| AC-004E | `AgentExternalEventNotifier` is the outbound boundary for new interruption events, remains observation-only, and is not wrapped by a separate AgentOutbox. |
+| AC-004E1 | Existing inter-agent/system-task observable event consumers remain compatible after removing the outbox wrapper. |
 | AC-005 | Pending approval state is cleared safely. |
 | AC-005A | External approval/denial routes through runtime validation into TurnToolInputPort. |
 | AC-005B | External/async tool results route through runtime validation into TurnToolInputPort and rejoin the normal tool-result continuation pipeline. |

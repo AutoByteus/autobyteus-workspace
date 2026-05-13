@@ -18,8 +18,12 @@ Unlike many sequential agent frameworks, AutoByteus agents run **in parallel**.
 
 ### 2.2 The Event Pipeline
 Communication handles are asynchronous and queue-based:
-1.  **Input Queues:** Every agent has an `AgentInputEventQueueManager` containing queues (e.g., `user_message_queue`, `internal_system_event_queue`).
-2.  **Agent Loop:** The agent’s serialized async loop continuously polls these queues.
+1.  **Agent Mailbox:** Every agent has an `AgentMessageInbox` with
+    `runtime_lifecycle`, `active_turn`, and `turn_start` lanes.
+2.  **Agent Scheduler:** The agent’s serialized async loop asks
+    `AgentMessageScheduler` for the next dispatchable message. Turn-start
+    messages wait while an active turn is running; active-turn tool
+    approvals/results can wake that turn.
 3.  **Turn Execution:** User and inter-agent messages start one `AgentTurn` and run through `AgentTurnRunner`; lifecycle/control events are applied by the runtime loop.
 
 For the single-agent turn-loop and interrupt boundary, see
