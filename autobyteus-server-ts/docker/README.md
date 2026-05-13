@@ -35,18 +35,30 @@ Windows PowerShell:
 powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.ps1 | iex; autobyteus-docker install"
 ```
 
-Then use direct local commands. `start` checks/pulls the image and only recreates the managed container when the image/config changed or the container is missing:
+Then use direct local commands. `new-container` checks/pulls the image and creates the next indexed managed container:
 
 ```bash
-autobyteus-docker start
+autobyteus-docker new-container
 ```
 
-The default node uses `autobyteus-server` as its friendly name and prefers these host ports when available: Backend `8001`, VNC `5908`, noVNC `6080`, and Chrome debug `9228`. If a port is busy, the launcher retries with fresh ports.
+The first node uses `autobyteus-server-0` as its friendly name and prefers these host ports when available: Backend `8001`, VNC `5908`, noVNC `6080`, and Chrome debug `9228`. If a port is busy, the launcher retries with fresh ports. Repeated `new-container` calls create `autobyteus-server-1`, `autobyteus-server-2`, and so on.
 
-Start a new isolated Docker node:
+Upgrade every managed Docker node to the latest image while keeping named volumes:
 
 ```bash
-autobyteus-docker start --new
+autobyteus-docker upgrade --all
+```
+
+Remove every managed Docker node while keeping named volumes:
+
+```bash
+autobyteus-docker destroy --all
+```
+
+Reset to one fresh managed Docker node:
+
+```bash
+autobyteus-docker reset
 ```
 
 Show the Backend URL again:
@@ -188,13 +200,15 @@ survive container recreation.
 
 Public launcher commands for no-clone users:
 
-- `autobyteus-docker install` / `autobyteus-docker update`: Install or refresh the local launcher without touching Docker containers, volumes, or state.
-- `autobyteus-docker start`: Check/pull the configured image, start the default Docker node, and recreate the managed container only when the image/config changed or the container is missing.
-- `autobyteus-docker start --new`: Start a new friendly Docker node with automatic ports.
-- `autobyteus-docker urls`: Show Backend/noVNC/VNC/debug URLs for the default node.
+- `autobyteus-docker install`: Install or replace the local launcher without touching Docker containers, volumes, or state.
+- `autobyteus-docker new-container`: Check/pull the configured image and create the next indexed managed Docker node (`autobyteus-server-0`, `autobyteus-server-1`, ...).
+- `autobyteus-docker upgrade --all`: Recreate all managed containers with the latest image while keeping named volumes.
+- `autobyteus-docker destroy --all`: Remove all managed containers and unused old images while keeping named volumes.
+- `autobyteus-docker reset`: Destroy all managed containers, keep volumes, then create a fresh `autobyteus-server-0`.
+- `autobyteus-docker urls`: Show Backend/noVNC/VNC/debug URLs for `autobyteus-server-0` by default.
 - `autobyteus-docker status`: Show managed launcher nodes.
-- `autobyteus-docker logs`: Show Docker logs for the default node.
-- `autobyteus-docker stop`: Stop the default node without removing named volumes.
+- `autobyteus-docker logs`: Show Docker logs for `autobyteus-server-0` by default.
+- `autobyteus-docker stop`: Stop `autobyteus-server-0` by default without removing named volumes.
 - `autobyteus-docker stop --all`: Stop all launcher-managed nodes without removing named volumes.
 
 Source helper commands for cloned-repository development:
