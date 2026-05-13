@@ -96,6 +96,26 @@ describe('WorkspaceDesktopLayout', () => {
     expect(wrapper.text()).toContain('Select or run an agent');
   });
 
+
+  it('keeps the center/right split in a clipped shrink-safe flex row', () => {
+    const wrapper = mountComponent({
+      agentSelection: { selectedType: 'team', selectedRunId: '456' },
+      workspaceCenterView: { mode: 'chat' },
+    });
+
+    const root = wrapper.get('[data-test="workspace-desktop-layout"]');
+    expect(root.classes()).toContain('min-w-0');
+    expect(root.classes()).toContain('overflow-hidden');
+
+    const handle = wrapper.get('[data-test="workspace-right-resize-handle"]');
+    expect(handle.classes()).toContain('drag-handle');
+
+    const rightPanel = wrapper.get('[data-test="workspace-right-panel"]');
+    expect(rightPanel.classes()).toContain('flex-none');
+    expect(rightPanel.classes()).toContain('min-w-0');
+    expect(rightPanel.classes()).toContain('overflow-hidden');
+  });
+
   it('keeps the center content shell clipped instead of making it an outer scroll owner', () => {
     const wrapper = mountComponent({
       agentSelection: { selectedType: 'agent', selectedRunId: '123' },
