@@ -127,7 +127,7 @@ runIntegration('Agent single-flow integration (LM Studio)', () => {
     const tool = registerWriteFileTool();
     const toolArgs = { path: path.join(workspace, 'poem.txt'), content: 'Roses are red.' };
 
-    const llm = await createLmstudioLLM({ requireToolChoice: true, forceFactoryDiscovery: true });
+    const llm = await createLmstudioLLM({ forceFactoryDiscovery: true });
     if (!llm) return;
 
     expect(llm.model.runtime).toBe('lmstudio');

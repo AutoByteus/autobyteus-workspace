@@ -49,6 +49,15 @@ Two OpenAI-style paths coexist:
 
 - **Built-in OpenAI-style providers** such as DeepSeek, Grok, Kimi, Qwen, GLM,
   and MiniMax still use `OpenAICompatibleLLM`.
+- OpenAI-compatible Chat Completions payloads are built through
+  `OpenAICompatibleRequestBuilder`, which maps `LLMConfig` generation controls,
+  merges provider-specific `extraParams`, filters framework-internal kwargs, owns
+  `tools` placement, and preserves explicit lower-level `tool_choice`
+  pass-through. The default agent/server path leaves `tool_choice` unset.
+- Provider adapters keep provider-specific request legality local before
+  delegating to that builder. `KimiLLM`, for example, normalizes `kimi-k2.5` and
+  `kimi-k2.6` requests to Moonshot-safe temperature defaults unless the caller
+  explicitly passes a per-request `temperature`.
 - **Saved custom providers** use:
   - `openai-compatible-endpoint-discovery.ts` for `/models` probing
   - `OpenAICompatibleEndpointModel`
@@ -122,7 +131,10 @@ Provider adapters own request-shape differences:
   thinking budgets or an adapter-injected default `temperature`.
 - `DeepSeekLLM` continues to use the OpenAI-compatible DeepSeek path for V4.
 - `KimiLLM` keeps tool-call continuation safe for `kimi-k2.6` by disabling
-  thinking when tool workflows have no explicit thinking override.
+  thinking when tool workflows have no explicit thinking override. For
+  `kimi-k2.5` and `kimi-k2.6`, Kimi also normalizes provider-safe temperature
+  defaults: `0.6` for tool workflows and `1` for non-tool requests, while
+  preserving explicit per-request temperature kwargs.
 
 For image and audio/TTS catalogs, including OpenAI `gpt-image-2` and Gemini TTS
 models, see `docs/provider_model_catalogs.md`.
@@ -164,6 +176,57 @@ Responses streaming (official OpenAI) emits:
 
 Custom OpenAI-compatible providers stay on the existing OpenAI-style tool-call
 path rather than the Responses event format.
+
+In that OpenAI-compatible path, native API tool-call mode keeps tool metadata
+and history provider-native: schemas are sent through `tools`, the default
+agent/server path leaves `tool_choice` unset, and LM Studio uses
+`assistant.tool_calls` plus `role: "tool"` history instead of prompt-template
+`[TOOL_CALL]` / `[TOOL_RESULT]` text. Legacy text-shaped LM Studio history
+remains available only when an explicit text-parser mode is selected. Native
+tool-result continuations render the existing working context directly and do
+not append an extra aggregate `role: "user"` message containing tool results.
+
+DeepSeek is the provider-specific reasoning replay exception on this shared
+OpenAI-compatible transport: `DeepSeekLLM` installs `DeepSeekChatRenderer`, which
+emits preserved assistant `Message.reasoning_content` as DeepSeek
+`reasoning_content` on assistant messages, including assistant `tool_calls` turns
+needed for thinking-mode continuation. The default `OpenAIChatRenderer` used by
+generic OpenAI-compatible clients, custom endpoints, and LM Studio deliberately
+omits that extension field.
+
+The same native-history rule applies to the first-party provider adapters that
+have native tool APIs. `ToolCallPayload` and `ToolResultPayload` remain the
+internal memory contract, while each prompt renderer converts those semantic
+entries to the provider's wire format only when `resolveToolCallFormat()` is
+`api_tool_call`:
+
+| Provider path | Native history shape in `api_tool_call` mode |
+| --- | --- |
+| DeepSeek Chat | OpenAI-compatible `assistant.tool_calls` followed by matching `role: "tool"` messages; assistant messages with preserved `Message.reasoning_content` also render DeepSeek `reasoning_content`. |
+| Gemini | model turns with `functionCall` parts followed by user `functionResponse` parts, preserving the function-call `id` when present. |
+| Ollama | assistant messages with `tool_calls` followed by `role: "tool"` result messages containing `tool_name`. |
+| Anthropic | assistant `tool_use` blocks followed immediately by user `tool_result` blocks, with result blocks first in that user message. |
+| Mistral | assistant `tool_calls` followed by `role: "tool"` messages containing `name`, `content`, and `tool_call_id`. |
+| OpenAI Responses | `function_call` input items followed by `function_call_output` items keyed by `call_id`. |
+
+Streaming converters can attach `nativeToolCallContext` to normalized tool calls
+for provider metadata that must survive stateless continuation, such as Gemini
+model parts, Anthropic tool-use blocks, Mistral/Ollama native call records, and
+OpenAI Responses function-call items. The normalized final `id`, `name`, and
+arguments remain authoritative during replay so stale preserved metadata cannot
+override the tool invocation stored in working context.
+
+If tool results settle in a different order than the assistant's tool-call
+batch, native renderers replay those results in the original assistant
+`ToolCallSpec[]` order. Providers that require coalesced result turns
+(currently Gemini and Anthropic) render one ordered result turn/block group for
+the batch. When `resolveToolCallFormat()` is `xml`, `json`, or `sentinel`, the
+same providers use their explicit text-history renderers and keep legacy
+`[TOOL_CALL]` / `[TOOL_RESULT]` history isolated to those non-native modes.
+Native provider payloads must also omit the older synthetic aggregate
+tool-result user text, including the
+`The following tool executions have completed...` prefix, legacy
+`Tool: <name> (ID: ...)` lines, and aggregate `Status: Success` markers.
 
 ## 9. Autobyteus RPA Runtime Conversation Contract
 
@@ -273,12 +336,19 @@ Focused unit coverage for this contract lives in:
 - `tests/unit/llm/models.test.ts`
 - `tests/unit/llm/openai-compatible-endpoint-provider.test.ts`
 - `tests/unit/llm/api/autobyteus-llm.test.ts`
+- `tests/unit/llm/api/provider-native-request-payloads.test.ts`
 - `tests/unit/llm/prompt-renderers/autobyteus-prompt-renderer.test.ts`
+- `tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts`
 - `tests/unit/clients/autobyteus-client.test.ts`
 - `tests/unit/agent/loop/agent-turn-input-box.test.ts`
 - `tests/unit/agent/loop/tool-result-continuation-builder.test.ts`
 
-Broader integration tests remain under `tests/integration/llm/...`.
+Provider-native continuation integration coverage lives in
+`tests/integration/agent/provider-native-tool-continuation-flow.test.ts`; it
+drives the local agent event loop across the in-scope native providers, verifies
+that native tool results continue through provider-native carriers, and rejects
+the old synthetic aggregate user message. Broader integration tests remain
+under `tests/integration/llm/...`.
 
 ## 11. Where to Update
 
@@ -287,6 +357,9 @@ Broader integration tests remain under `tests/integration/llm/...`.
   `src/llm/metadata/curated-model-metadata.ts`.
 - Keep provider-specific request-shape behavior in the matching
   `src/llm/api/*` adapter.
+- Keep provider-specific native tool history in
+  `src/llm/prompt-renderers/*-prompt-renderer.ts`; choose native vs legacy
+  text history through `src/llm/prompt-renderers/provider-tool-history-renderer-selection.ts`.
 - Add image models in `src/multimedia/image/image-client-factory.ts`.
 - Add audio/TTS models in `src/multimedia/audio/audio-client-factory.ts`.
 - Add Gemini API-key / Vertex runtime model mappings in

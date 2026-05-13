@@ -1,0 +1,58 @@
+{
+  "probe_date": "2026-05-09",
+  "purpose": "Verify full framework request assembly after a native API tool call and tool result, not only renderer behavior.",
+  "result_summary": "OpenAIChatRenderer correctly renders stored ToolResultPayload as role:'tool', but the existing tool-continuation event path also appends an additional role:'user' message containing aggregated tool-result text before the next provider request.",
+  "renderedPayload": [
+    {
+      "role": "system",
+      "content": "system"
+    },
+    {
+      "role": "user",
+      "content": "List files."
+    },
+    {
+      "role": "assistant",
+      "content": null,
+      "tool_calls": [
+        {
+          "id": "call_abc123",
+          "type": "function",
+          "function": {
+            "name": "run_bash",
+            "arguments": "{\"command\":\"ls -la\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_abc123",
+      "content": "total 8\n-rw-r--r-- README.md"
+    },
+    {
+      "role": "user",
+      "content": "The following tool executions have completed. Please analyze their results and decide the next course of action.\n\nTool: run_bash (ID: call_abc123)\nStatus: Success\nResult:\ntotal 8\n-rw-r--r-- README.md"
+    }
+  ],
+  "expected_native_api_payload_shape": [
+    "system",
+    "user",
+    "assistant.tool_calls",
+    "tool"
+  ],
+  "observed_extra_message": {
+    "role": "user",
+    "reason": "ToolResultEventHandler dispatches SenderType.TOOL AgentInputUserMessage; UserInputMessageEventHandler builds LLMUserMessage; LLMRequestAssembler.prepareRequest always appends the incoming LLMUserMessage as MessageRole.USER."
+  },
+  "affected_files": [
+    "src/agent/handlers/tool-result-event-handler.ts",
+    "src/agent/handlers/user-input-message-event-handler.ts",
+    "src/agent/llm-request-assembler.ts",
+    "src/agent/input-processor/memory-ingest-input-processor.ts",
+    "src/agent/tool-execution-result-processor/memory-ingest-tool-result-processor.ts",
+    "src/memory/memory-manager.ts",
+    "src/memory/working-context-snapshot.ts",
+    "src/llm/prompt-renderers/openai-chat-renderer.ts"
+  ]
+}

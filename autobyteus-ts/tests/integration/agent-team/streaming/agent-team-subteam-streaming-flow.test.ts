@@ -115,9 +115,9 @@ runIntegration('Agent team sub-team streaming integration (LM Studio, api_tool_c
     const tool = registerWriteFileTool();
     const toolArgs = { path: path.join(tempDirSubCoordinator, 'subteam_output.txt'), content: 'Sub-team output.' };
 
-    parentLlm = await createLmstudioLLM({ requireToolChoice: true });
+    parentLlm = await createLmstudioLLM({});
     if (!parentLlm) return;
-    subLlm = await createLmstudioLLM({ requireToolChoice: true });
+    subLlm = await createLmstudioLLM({});
     if (!subLlm) return;
 
     const parentCoordinatorConfig = new AgentConfig(

@@ -102,6 +102,18 @@ export class LLMUserMessageReadyEvent extends AgentOperationalEvent {
   }
 }
 
+export class ToolContinuationReadyEvent extends AgentOperationalEvent {
+  turnId: string;
+
+  constructor(turnId: string) {
+    super();
+    if (typeof turnId !== 'string' || !turnId.trim()) {
+      throw new Error('ToolContinuationReadyEvent requires a non-empty turnId.');
+    }
+    this.turnId = turnId.trim();
+  }
+}
+
 export class LLMCompleteResponseReceivedEvent extends AgentOperationalEvent {
   completeResponse: CompleteResponse;
   isError: boolean;

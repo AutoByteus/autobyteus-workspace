@@ -7,12 +7,13 @@ import { TokenUsage } from '../utils/token-usage.js';
 import { Message } from '../utils/messages.js';
 import { convertMistralToolCalls } from '../converters/mistral-tool-call-converter.js';
 import { LLMProvider } from '../providers.js';
-import { MistralPromptRenderer } from '../prompt-renderers/mistral-prompt-renderer.js';
+import { BasePromptRenderer } from '../prompt-renderers/base-prompt-renderer.js';
+import { createMistralPromptRendererForToolFormat } from '../prompt-renderers/provider-tool-history-renderer-selection.js';
 
 export class MistralLLM extends BaseLLM {
   protected client: Mistral;
   protected maxTokens: number | null;
-  protected _renderer: MistralPromptRenderer;
+  protected _renderer: BasePromptRenderer;
 
   constructor(model?: LLMModel, llmConfig?: LLMConfig) {
     const effectiveModel =
@@ -34,7 +35,7 @@ export class MistralLLM extends BaseLLM {
 
     this.client = new Mistral({ apiKey });
     this.maxTokens = config.maxTokens ?? null;
-    this._renderer = new MistralPromptRenderer();
+    this._renderer = createMistralPromptRendererForToolFormat();
   }
 
   private toTokenUsage(usage: any): TokenUsage | null {

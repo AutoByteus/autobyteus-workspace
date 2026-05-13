@@ -14,6 +14,7 @@ import {
   UserMessageReceivedEvent,
   InterAgentMessageReceivedEvent,
   LLMUserMessageReadyEvent,
+  ToolContinuationReadyEvent,
   LLMCompleteResponseReceivedEvent,
   PendingToolInvocationEvent,
   ToolExecutionApprovalEvent,
@@ -86,6 +87,10 @@ describe('AgentStatusDeriver', () => {
     deriver = new AgentStatusDeriver(AgentStatus.ERROR);
     [, newStatus] = deriver.apply(new LLMUserMessageReadyEvent({} as any, 'turn-1'));
     expect(newStatus).toBe(AgentStatus.ERROR);
+
+    deriver = new AgentStatusDeriver(AgentStatus.PROCESSING_TOOL_RESULT);
+    [, newStatus] = deriver.apply(new ToolContinuationReadyEvent('turn-1'));
+    expect(newStatus).toBe(AgentStatus.AWAITING_LLM_RESPONSE);
 
     deriver = new AgentStatusDeriver(AgentStatus.AWAITING_LLM_RESPONSE);
     [, newStatus] = deriver.apply(new LLMCompleteResponseReceivedEvent({} as any));

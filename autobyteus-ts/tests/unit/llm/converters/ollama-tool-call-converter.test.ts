@@ -28,7 +28,21 @@ describe('convertOllamaToolCalls', () => {
         index: 0,
         call_id: 'call_1',
         name: 'write_file',
-        arguments_delta: '{"file_path":"hello.py","content":"print(1)"}'
+        arguments_delta: '{"file_path":"hello.py","content":"print(1)"}',
+        native_context: {
+          provider: 'ollama',
+          toolCall: {
+            id: 'call_1',
+            function: {
+              index: 0,
+              name: 'write_file',
+              arguments: {
+                file_path: 'hello.py',
+                content: 'print(1)'
+              }
+            }
+          }
+        }
       }
     ]);
   });
@@ -49,7 +63,17 @@ describe('convertOllamaToolCalls', () => {
         index: 0,
         call_id: 'call_2',
         name: 'search',
-        arguments_delta: '{"query":"autobyteus"}'
+        arguments_delta: '{"query":"autobyteus"}',
+        native_context: {
+          provider: 'ollama',
+          toolCall: {
+            id: 'call_2',
+            function: {
+              name: 'search',
+              arguments: '{"query":"autobyteus"}'
+            }
+          }
+        }
       }
     ]);
   });

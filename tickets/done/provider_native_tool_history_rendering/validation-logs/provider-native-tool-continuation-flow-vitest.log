@@ -1,0 +1,234 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/provider-native-tool-history-rendering/autobyteus-ts/autobyteus-ts
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+AgentRuntimeState initialized for agent_id 'agent_gemini'. Initial status: uninitialized. Workspace linked. InputQueues pending initialization. Output data via notifier.
+Successfully registered tool definition: 'get_weather'
+Successfully registered tool definition: 'get_time'
+AgentConfig created for name='NativeContinuationgemini', role='integration tester'. Tool call format: api_tool_call
+AgentContext composed for agent_id 'agent_gemini'. Config and State linked.
+MemoryIngestInputProcessor stored processed user input with turnId turn-1
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+LLMUserMessageReadyEventHandler initialized.
+Agent 'agent_gemini' handling LLMUserMessageReadyEvent: 'Use both tools.'
+Agent 'agent_gemini' preparing to send full message to LLM:
+---
+Use both tools.
+---
+Agent 'agent_gemini': Streaming handler selected: ApiToolCallStreamingResponseHandler
+Agent 'agent_gemini': Passing 2 tool schemas to LLM API (Provider: GEMINI).
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+ApiToolCallStreamingResponseHandler finalized 2 tool invocations.
+Agent 'agent_gemini': Parsed 2 tool invocations from streaming parser.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+Agent 'agent_gemini' enqueued LLMCompleteResponseReceivedEvent from LLMUserMessageReadyEventHandler.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+ToolResultEventHandler initialized.
+MemoryIngestToolResultProcessor deferred active native API batch result for turnId turn-1
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+MemoryIngestToolResultProcessor deferred active native API batch result for turnId turn-1
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+Agent 'agent_gemini' enqueued native API tool continuation for turn 'turn-1' after 2 tool result(s); no aggregate user message was added.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+Agent 'agent_gemini' handling ToolContinuationReadyEvent for turn 'turn-1'.
+Agent 'agent_gemini' preparing native API tool continuation without appending a user message.
+Agent 'agent_gemini': Streaming handler selected: ApiToolCallStreamingResponseHandler
+Agent 'agent_gemini': Passing 2 tool schemas to LLM API (Provider: GEMINI).
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'gemini' with native tool results and no duplicated aggregate user message
+Agent 'agent_gemini' enqueued LLMCompleteResponseReceivedEvent from LLMUserMessageReadyEventHandler.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+AgentRuntimeState initialized for agent_id 'agent_ollama'. Initial status: uninitialized. Workspace linked. InputQueues pending initialization. Output data via notifier.
+Successfully registered tool definition: 'get_weather'
+Successfully registered tool definition: 'get_time'
+AgentConfig created for name='NativeContinuationollama', role='integration tester'. Tool call format: api_tool_call
+AgentContext composed for agent_id 'agent_ollama'. Config and State linked.
+MemoryIngestInputProcessor stored processed user input with turnId turn-1
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+LLMUserMessageReadyEventHandler initialized.
+Agent 'agent_ollama' handling LLMUserMessageReadyEvent: 'Use both tools.'
+Agent 'agent_ollama' preparing to send full message to LLM:
+---
+Use both tools.
+---
+Agent 'agent_ollama': Streaming handler selected: ApiToolCallStreamingResponseHandler
+Agent 'agent_ollama': Passing 2 tool schemas to LLM API (Provider: OLLAMA).
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+ApiToolCallStreamingResponseHandler finalized 2 tool invocations.
+Agent 'agent_ollama': Parsed 2 tool invocations from streaming parser.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+Agent 'agent_ollama' enqueued LLMCompleteResponseReceivedEvent from LLMUserMessageReadyEventHandler.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+ToolResultEventHandler initialized.
+MemoryIngestToolResultProcessor deferred active native API batch result for turnId turn-1
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+MemoryIngestToolResultProcessor deferred active native API batch result for turnId turn-1
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+Agent 'agent_ollama' enqueued native API tool continuation for turn 'turn-1' after 2 tool result(s); no aggregate user message was added.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+Agent 'agent_ollama' handling ToolContinuationReadyEvent for turn 'turn-1'.
+Agent 'agent_ollama' preparing native API tool continuation without appending a user message.
+Agent 'agent_ollama': Streaming handler selected: ApiToolCallStreamingResponseHandler
+Agent 'agent_ollama': Passing 2 tool schemas to LLM API (Provider: OLLAMA).
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'ollama' with native tool results and no duplicated aggregate user message
+Agent 'agent_ollama' enqueued LLMCompleteResponseReceivedEvent from LLMUserMessageReadyEventHandler.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+AgentRuntimeState initialized for agent_id 'agent_anthropic'. Initial status: uninitialized. Workspace linked. InputQueues pending initialization. Output data via notifier.
+Successfully registered tool definition: 'get_weather'
+Successfully registered tool definition: 'get_time'
+AgentConfig created for name='NativeContinuationanthropic', role='integration tester'. Tool call format: api_tool_call
+AgentContext composed for agent_id 'agent_anthropic'. Config and State linked.
+MemoryIngestInputProcessor stored processed user input with turnId turn-1
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+LLMUserMessageReadyEventHandler initialized.
+Agent 'agent_anthropic' handling LLMUserMessageReadyEvent: 'Use both tools.'
+Agent 'agent_anthropic' preparing to send full message to LLM:
+---
+Use both tools.
+---
+Agent 'agent_anthropic': Streaming handler selected: ApiToolCallStreamingResponseHandler
+Agent 'agent_anthropic': Passing 2 tool schemas to LLM API (Provider: ANTHROPIC).
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+ApiToolCallStreamingResponseHandler finalized 2 tool invocations.
+Agent 'agent_anthropic': Parsed 2 tool invocations from streaming parser.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+Agent 'agent_anthropic' enqueued LLMCompleteResponseReceivedEvent from LLMUserMessageReadyEventHandler.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+ToolResultEventHandler initialized.
+MemoryIngestToolResultProcessor deferred active native API batch result for turnId turn-1
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+MemoryIngestToolResultProcessor deferred active native API batch result for turnId turn-1
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+Agent 'agent_anthropic' enqueued native API tool continuation for turn 'turn-1' after 2 tool result(s); no aggregate user message was added.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+Agent 'agent_anthropic' handling ToolContinuationReadyEvent for turn 'turn-1'.
+Agent 'agent_anthropic' preparing native API tool continuation without appending a user message.
+Agent 'agent_anthropic': Streaming handler selected: ApiToolCallStreamingResponseHandler
+Agent 'agent_anthropic': Passing 2 tool schemas to LLM API (Provider: ANTHROPIC).
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'anthropic' with native tool results and no duplicated aggregate user message
+Agent 'agent_anthropic' enqueued LLMCompleteResponseReceivedEvent from LLMUserMessageReadyEventHandler.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+AgentRuntimeState initialized for agent_id 'agent_mistral'. Initial status: uninitialized. Workspace linked. InputQueues pending initialization. Output data via notifier.
+Successfully registered tool definition: 'get_weather'
+Successfully registered tool definition: 'get_time'
+AgentConfig created for name='NativeContinuationmistral', role='integration tester'. Tool call format: api_tool_call
+AgentContext composed for agent_id 'agent_mistral'. Config and State linked.
+MemoryIngestInputProcessor stored processed user input with turnId turn-1
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+LLMUserMessageReadyEventHandler initialized.
+Agent 'agent_mistral' handling LLMUserMessageReadyEvent: 'Use both tools.'
+Agent 'agent_mistral' preparing to send full message to LLM:
+---
+Use both tools.
+---
+Agent 'agent_mistral': Streaming handler selected: ApiToolCallStreamingResponseHandler
+Agent 'agent_mistral': Passing 2 tool schemas to LLM API (Provider: MISTRAL).
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+ApiToolCallStreamingResponseHandler finalized 2 tool invocations.
+Agent 'agent_mistral': Parsed 2 tool invocations from streaming parser.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+Agent 'agent_mistral' enqueued LLMCompleteResponseReceivedEvent from LLMUserMessageReadyEventHandler.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+ToolResultEventHandler initialized.
+MemoryIngestToolResultProcessor deferred active native API batch result for turnId turn-1
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+MemoryIngestToolResultProcessor deferred active native API batch result for turnId turn-1
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+Agent 'agent_mistral' enqueued native API tool continuation for turn 'turn-1' after 2 tool result(s); no aggregate user message was added.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+Agent 'agent_mistral' handling ToolContinuationReadyEvent for turn 'turn-1'.
+Agent 'agent_mistral' preparing native API tool continuation without appending a user message.
+Agent 'agent_mistral': Streaming handler selected: ApiToolCallStreamingResponseHandler
+Agent 'agent_mistral': Passing 2 tool schemas to LLM API (Provider: MISTRAL).
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'mistral' with native tool results and no duplicated aggregate user message
+Agent 'agent_mistral' enqueued LLMCompleteResponseReceivedEvent from LLMUserMessageReadyEventHandler.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+AgentRuntimeState initialized for agent_id 'agent_openai_responses'. Initial status: uninitialized. Workspace linked. InputQueues pending initialization. Output data via notifier.
+Successfully registered tool definition: 'get_weather'
+Successfully registered tool definition: 'get_time'
+AgentConfig created for name='NativeContinuationopenai_responses', role='integration tester'. Tool call format: api_tool_call
+AgentContext composed for agent_id 'agent_openai_responses'. Config and State linked.
+MemoryIngestInputProcessor stored processed user input with turnId turn-1
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+LLMUserMessageReadyEventHandler initialized.
+Agent 'agent_openai_responses' handling LLMUserMessageReadyEvent: 'Use both tools.'
+Agent 'agent_openai_responses' preparing to send full message to LLM:
+---
+Use both tools.
+---
+Agent 'agent_openai_responses': Streaming handler selected: ApiToolCallStreamingResponseHandler
+Agent 'agent_openai_responses': Passing 2 tool schemas to LLM API (Provider: OPENAI).
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+ApiToolCallStreamingResponseHandler finalized 2 tool invocations.
+Agent 'agent_openai_responses': Parsed 2 tool invocations from streaming parser.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+Agent 'agent_openai_responses' enqueued LLMCompleteResponseReceivedEvent from LLMUserMessageReadyEventHandler.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+ToolResultEventHandler initialized.
+MemoryIngestToolResultProcessor deferred active native API batch result for turnId turn-1
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+MemoryIngestToolResultProcessor deferred active native API batch result for turnId turn-1
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+Agent 'agent_openai_responses' enqueued native API tool continuation for turn 'turn-1' after 2 tool result(s); no aggregate user message was added.
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+Agent 'agent_openai_responses' handling ToolContinuationReadyEvent for turn 'turn-1'.
+Agent 'agent_openai_responses' preparing native API tool continuation without appending a user message.
+Agent 'agent_openai_responses': Streaming handler selected: ApiToolCallStreamingResponseHandler
+Agent 'agent_openai_responses': Passing 2 tool schemas to LLM API (Provider: OPENAI).
+
+stdout | tests/integration/agent/provider-native-tool-continuation-flow.test.ts > provider-native tool continuation integration flow > continues 'openai_responses' with native tool results and no duplicated aggregate user message
+Agent 'agent_openai_responses' enqueued LLMCompleteResponseReceivedEvent from LLMUserMessageReadyEventHandler.
+
+ ✓ tests/integration/agent/provider-native-tool-continuation-flow.test.ts (5 tests) 27ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  07:25:12
+   Duration  770ms (transform 495ms, setup 26ms, import 631ms, tests 27ms, environment 0ms)

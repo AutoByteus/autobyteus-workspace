@@ -626,7 +626,7 @@ runIntegration('run_bash scenario benchmark integration (LM Studio)', () => {
     const workspace = await fs.mkdtemp(path.join(os.tmpdir(), `run-bash-scenario-${definition.id}-`));
     const runtime = await definition.setup(workspace);
     const startedAt = Date.now();
-    const llm = await createLmstudioLLM({ requireToolChoice: true, temperature: 0 });
+    const llm = await createLmstudioLLM({ temperature: 0 });
     if (!llm) {
       await fs.rm(workspace, { recursive: true, force: true });
       return {

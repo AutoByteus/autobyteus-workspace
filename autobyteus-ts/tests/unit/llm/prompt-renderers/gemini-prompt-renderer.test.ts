@@ -23,24 +23,23 @@ describe('GeminiPromptRenderer', () => {
     ]);
   });
 
-  it('renders tool payloads as text', async () => {
+  it('renders tool payloads as native functionCall/functionResponse parts', async () => {
     const renderer = new GeminiPromptRenderer();
-    const toolArgs = { query: 'autobyteus' };
-    const toolResult = { status: 'ok' };
     const messages = [
       new Message(MessageRole.ASSISTANT, {
         content: null,
-        tool_payload: new ToolCallPayload([{ id: 'call_1', name: 'search', arguments: toolArgs }])
+        tool_payload: new ToolCallPayload([{ id: 'call_1', name: 'search', arguments: { query: 'autobyteus' } }])
       }),
       new Message(MessageRole.TOOL, {
-        tool_payload: new ToolResultPayload('call_1', 'search', toolResult)
+        tool_payload: new ToolResultPayload('call_1', 'search', { status: 'ok' })
       })
     ];
 
     const rendered = await renderer.render(messages);
     expect(rendered).toEqual([
-      { role: 'model', parts: [{ text: "[TOOL_CALL] search {'query': 'autobyteus'}" }] },
-      { role: 'user', parts: [{ text: "[TOOL_RESULT] search {'status': 'ok'}" }] }
+      { role: 'model', parts: [{ functionCall: { id: 'call_1', name: 'search', args: { query: 'autobyteus' } } }] },
+      { role: 'user', parts: [{ functionResponse: { id: 'call_1', name: 'search', response: { result: { status: 'ok' } } } }] }
     ]);
+    expect(JSON.stringify(rendered)).not.toContain('[TOOL_');
   });
 });

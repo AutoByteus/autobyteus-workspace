@@ -6,7 +6,8 @@ import { CompleteResponse, ChunkResponse } from '../utils/response-types.js';
 import { TokenUsage } from '../utils/token-usage.js';
 import { Message, MessageRole } from '../utils/messages.js';
 import { convertAnthropicToolCall } from '../converters/anthropic-tool-call-converter.js';
-import { AnthropicPromptRenderer } from '../prompt-renderers/anthropic-prompt-renderer.js';
+import { BasePromptRenderer } from '../prompt-renderers/base-prompt-renderer.js';
+import { createAnthropicPromptRendererForToolFormat } from '../prompt-renderers/provider-tool-history-renderer-selection.js';
 import type {
   ContentBlock,
   MessageCreateParamsNonStreaming,
@@ -118,7 +119,7 @@ const splitClaudeContentBlocks = (blocks: ContentBlock[] | null | undefined): { 
 export class AnthropicLLM extends BaseLLM {
   protected client: Anthropic;
   protected maxTokens: number;
-  protected _renderer: AnthropicPromptRenderer;
+  protected _renderer: BasePromptRenderer;
 
   constructor(model: LLMModel, llmConfig?: LLMConfig) {
     if (!llmConfig) {
@@ -134,7 +135,7 @@ export class AnthropicLLM extends BaseLLM {
 
     this.client = new Anthropic({ apiKey });
     this.maxTokens = llmConfig.maxTokens ?? 8192;
-    this._renderer = new AnthropicPromptRenderer();
+    this._renderer = createAnthropicPromptRendererForToolFormat();
   }
 
   protected async _sendMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>, options: LLMInvocationOptions = {}): Promise<CompleteResponse> {

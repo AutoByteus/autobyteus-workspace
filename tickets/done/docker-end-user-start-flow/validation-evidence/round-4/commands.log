@@ -1,0 +1,9 @@
+Validation evidence round 4 started 2026-05-12T13:16:27Z
+## environment
+Docker version 29.0.1, build eedd969
+v22.21.1
+10.28.2
+Darwin MacBookPro 25.2.0 Darwin Kernel Version 25.2.0: Tue Nov 18 21:09:40 PST 2025; root:xnu-12377.61.12~1/RELEASE_ARM64_T6000 arm64
+## pre-existing managed containers
+NAMES               STATUS             PORTS
+autobyteus-server   Up About an hour   0.0.0.0:5908->5900/tcp, [::]:5908->5900/tcp, 0.0.0.0:52448->6080/tcp, [::]:52448->6080/tcp, 0.0.0.0:8001->8000/tcp, [::]:8001->8000/tcp, 0.0.0.0:9228->9223/tcp, [::]:9228->9223/tcp

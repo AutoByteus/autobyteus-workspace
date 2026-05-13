@@ -83,4 +83,68 @@ describe('OpenAIChatRenderer', () => {
       }
     ]);
   });
+
+  it('omits reasoning_content for non-tool assistant messages by default', async () => {
+    const rendered = await new OpenAIChatRenderer().render([
+      new Message(MessageRole.ASSISTANT, {
+        content: 'The answer is 42.',
+        reasoning_content: 'because'
+      })
+    ]) as any[];
+
+    expect(rendered[0]).toMatchObject({
+      role: 'assistant',
+      content: 'The answer is 42.'
+    });
+    expect(rendered[0]).not.toHaveProperty('reasoning_content');
+  });
+
+  it('omits reasoning_content on assistant tool-call messages by default', async () => {
+    const rendered = await new OpenAIChatRenderer().render([
+      new Message(MessageRole.ASSISTANT, {
+        content: 'I will inspect the workspace.',
+        reasoning_content: 'Need the current directory before answering.',
+        tool_payload: new ToolCallPayload([
+          { id: 'call_1', name: 'run_bash', arguments: { command: 'pwd' } }
+        ])
+      })
+    ]) as any[];
+
+    expect(rendered[0]).toMatchObject({
+      role: 'assistant',
+      content: 'I will inspect the workspace.',
+      tool_calls: [
+        {
+          id: 'call_1',
+          type: 'function',
+          function: {
+            name: 'run_bash',
+            arguments: JSON.stringify({ command: 'pwd' })
+          }
+        }
+      ]
+    });
+    expect(rendered[0]).not.toHaveProperty('reasoning_content');
+  });
+
+  it('does not synthesize reasoning_content for any generic rendered role', async () => {
+    const rendered = await new OpenAIChatRenderer().render([
+      new Message(MessageRole.ASSISTANT, {
+        content: 'Empty reasoning is still an explicit provider field.',
+        reasoning_content: ''
+      }),
+      new Message(MessageRole.USER, {
+        content: 'hello',
+        reasoning_content: 'should not render on user'
+      }),
+      new Message(MessageRole.SYSTEM, {
+        content: 'system',
+        reasoning_content: 'should not render on system'
+      })
+    ]) as any[];
+
+    expect(rendered[0]).not.toHaveProperty('reasoning_content');
+    expect(rendered[1]).not.toHaveProperty('reasoning_content');
+    expect(rendered[2]).not.toHaveProperty('reasoning_content');
+  });
 });

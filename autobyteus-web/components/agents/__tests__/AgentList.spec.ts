@@ -183,7 +183,7 @@ describe('AgentList', () => {
     expect(cards[1].props('agentDef')).toMatchObject({ id: '1' });
   });
 
-  it('renders regular agents by team-local, application, and shared origin sections', async () => {
+  it('renders regular agents by application and shared origin sections while excluding team-local agents', async () => {
     const wrapper = await mountComponent({
       agentDefs: [
         {
@@ -214,16 +214,14 @@ describe('AgentList', () => {
     });
 
     const text = wrapper.text();
-    expect(text).toContain('Team local agents');
-    expect(text).toContain('Research Workspace / Literature Review Team');
-    expect(text).toContain('Application team hint');
+    expect(text).not.toContain('Team local agents');
+    expect(text).not.toContain('Literature Review Team');
     expect(text).toContain('Application agents');
     expect(text).toContain('Research Workspace');
     expect(text).toContain('Shared agents');
 
     const cards = wrapper.findAllComponents({ name: 'AgentCard' });
     expect(cards.map((card) => (card.props('agentDef') as any).id)).toEqual([
-      'team-agent',
       'app-agent',
       'shared-agent',
     ]);
@@ -246,7 +244,25 @@ describe('AgentList', () => {
     expect(cards.map((card) => (card.props('agentDef') as any).id)).toEqual(['1', '2']);
   });
 
-  it('searches owner names in a flat result grid', async () => {
+  it('excludes featured team-local agents from browse results', async () => {
+    const wrapper = await mountComponent({
+      agentDefs: [
+        { id: 'shared-agent', name: 'Shared Agent', description: 'Shared Desc', ownershipScope: 'SHARED' },
+        { id: 'team-agent', name: 'Team Agent', description: 'Team Desc', ownershipScope: 'TEAM_LOCAL' },
+      ],
+      featuredSettingValue: JSON.stringify({
+        version: 1,
+        items: [{ resourceKind: 'AGENT', definitionId: 'team-agent', sortOrder: 10 }],
+      }),
+    });
+
+    expect(wrapper.text()).not.toContain('Featured agents');
+    const cards = wrapper.findAllComponents({ name: 'AgentCard' });
+    expect(cards).toHaveLength(1);
+    expect(cards[0].props('agentDef')).toMatchObject({ id: 'shared-agent' });
+  });
+
+  it('searches only discoverable owner names in a flat result grid', async () => {
     const wrapper = await mountComponent({
       agentDefs: [
         {
@@ -256,6 +272,14 @@ describe('AgentList', () => {
           ownershipScope: 'TEAM_LOCAL',
           ownerTeamId: 'team-literature',
           ownerTeamName: 'Literature Review Team',
+          ownerApplicationId: 'app-research',
+          ownerApplicationName: 'Research Workspace',
+        },
+        {
+          id: 'app-agent',
+          name: 'Application Agent',
+          description: 'Application work.',
+          ownershipScope: 'APPLICATION_OWNED',
           ownerApplicationId: 'app-research',
           ownerApplicationName: 'Research Workspace',
         },
@@ -275,7 +299,7 @@ describe('AgentList', () => {
     expect(wrapper.text()).not.toContain('Shared agents');
     const cards = wrapper.findAllComponents({ name: 'AgentCard' });
     expect(cards).toHaveLength(1);
-    expect(cards[0].props('agentDef')).toMatchObject({ id: 'source-collector' });
+    expect(cards[0].props('agentDef')).toMatchObject({ id: 'app-agent' });
   });
 
   it('shows error when no target nodes are available for sync', async () => {

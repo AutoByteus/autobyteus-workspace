@@ -10,7 +10,10 @@ describe('WorkingContextSnapshot', () => {
     const toolCalls: ToolCallSpec[] = [
       { id: 'call-1', name: 'tool', arguments: { a: 1 } }
     ];
-    snapshot.appendToolCalls(toolCalls);
+    snapshot.appendToolCalls(toolCalls, {
+      content: 'I will call a tool.',
+      reasoningContent: 'Tool result is needed.'
+    });
     snapshot.appendToolResult('call-1', 'tool', { ok: true });
 
     const messages = snapshot.buildMessages();
@@ -18,6 +21,8 @@ describe('WorkingContextSnapshot', () => {
     expect(messages[0].role).toBe(MessageRole.USER);
     expect(messages[1].role).toBe(MessageRole.ASSISTANT);
     expect(messages[2].role).toBe(MessageRole.ASSISTANT);
+    expect(messages[2].content).toBe('I will call a tool.');
+    expect(messages[2].reasoning_content).toBe('Tool result is needed.');
     expect(messages[3].role).toBe(MessageRole.TOOL);
   });
 

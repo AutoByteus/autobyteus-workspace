@@ -1,0 +1,908 @@
+{
+  "generatedAt": "2026-05-10T05:06:08.604Z",
+  "distPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/provider-native-tool-history-rendering/autobyteus-ts/autobyteus-ts/dist",
+  "distGitHead": "8ff0cd3c622b4a2d2a8a2e2311014ff5b60ffcec",
+  "mode": "api_tool_call",
+  "probe": "provider-native-api-payload-capture",
+  "liveProviderCalls": false,
+  "captureMethod": "LLM API classes invoked through sendMessages() with SDK clients replaced by in-process fakes before network I/O.",
+  "assertions": [
+    {
+      "id": "GEMINI-REQUEST-NATIVE-CALL-ORDER",
+      "pass": true,
+      "details": {
+        "ids": [
+          "call_a",
+          "call_b"
+        ]
+      }
+    },
+    {
+      "id": "GEMINI-REQUEST-RESPONSE-ORDER",
+      "pass": true,
+      "details": {
+        "ids": [
+          "call_a",
+          "call_b"
+        ]
+      }
+    },
+    {
+      "id": "GEMINI-REQUEST-FINAL-ARGS",
+      "pass": true,
+      "details": {
+        "args": [
+          {
+            "city": "Berlin",
+            "unit": "celsius"
+          },
+          {
+            "city": "Berlin"
+          }
+        ]
+      }
+    },
+    {
+      "id": "GEMINI-REQUEST-THINKING-METADATA-PRESERVED",
+      "pass": true,
+      "details": {
+        "parts": [
+          {
+            "text": "internal thinking marker",
+            "thought": true,
+            "thoughtSignature": "gemini-thought-sig-1"
+          },
+          {
+            "functionCall": {
+              "id": "call_a",
+              "name": "get_weather",
+              "args": {
+                "city": "Berlin",
+                "unit": "celsius"
+              }
+            },
+            "providerOnly": "keep-a"
+          },
+          {
+            "functionCall": {
+              "id": "call_b",
+              "name": "get_time",
+              "args": {
+                "city": "Berlin"
+              }
+            },
+            "providerOnly": "keep-b"
+          }
+        ]
+      }
+    },
+    {
+      "id": "GEMINI-REQUEST-NO-LEGACY-TEXT",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "id": "GEMINI-REQUEST-TOOLS-PRESENT",
+      "pass": true,
+      "details": {
+        "tools": [
+          {
+            "functionDeclarations": [
+              {
+                "name": "get_weather",
+                "description": "Return weather for a city.",
+                "parameters": {
+                  "type": "object",
+                  "properties": {
+                    "city": {
+                      "type": "string"
+                    },
+                    "unit": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "city"
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "OLLAMA-REQUEST-NATIVE-CALLS",
+      "pass": true,
+      "details": {
+        "assistant": {
+          "role": "assistant",
+          "content": "I will use tools.",
+          "tool_calls": [
+            {
+              "id": "call_a",
+              "type": "function",
+              "function": {
+                "index": 0,
+                "name": "get_weather",
+                "arguments": {
+                  "city": "Berlin",
+                  "unit": "celsius"
+                }
+              }
+            },
+            {
+              "id": "call_b",
+              "type": "function",
+              "function": {
+                "index": 1,
+                "name": "get_time",
+                "arguments": {
+                  "city": "Berlin"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "OLLAMA-REQUEST-TOOL-RESULT-ORDER",
+      "pass": true,
+      "details": {
+        "toolNames": [
+          "get_weather",
+          "get_time"
+        ]
+      }
+    },
+    {
+      "id": "OLLAMA-REQUEST-TOOL-RESULT-CONTENT-STRING",
+      "pass": true,
+      "details": {
+        "toolMessages": [
+          {
+            "role": "tool",
+            "tool_name": "get_weather",
+            "content": "{\"temp_c\":21,\"condition\":\"clear\"}"
+          },
+          {
+            "role": "tool",
+            "tool_name": "get_time",
+            "content": "{\"local_time\":\"10:00\"}"
+          }
+        ]
+      }
+    },
+    {
+      "id": "OLLAMA-REQUEST-NO-LEGACY-TEXT",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "id": "OLLAMA-REQUEST-TOOLS-PRESENT",
+      "pass": true,
+      "details": {
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "get_weather",
+              "description": "Return weather for a city.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "city": {
+                    "type": "string"
+                  },
+                  "unit": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "city"
+                ]
+              }
+            }
+          },
+          {
+            "type": "function",
+            "function": {
+              "name": "get_time",
+              "description": "Return local time for a city.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "city": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "city"
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "ANTHROPIC-REQUEST-TOOL-USE-ORDER",
+      "pass": true,
+      "details": {
+        "toolUseIds": [
+          "call_a",
+          "call_b"
+        ]
+      }
+    },
+    {
+      "id": "ANTHROPIC-REQUEST-STRICT-ADJACENCY",
+      "pass": true,
+      "details": {
+        "next": {
+          "role": "user",
+          "content": [
+            {
+              "type": "tool_result",
+              "tool_use_id": "call_a",
+              "content": "{\"temp_c\":21,\"condition\":\"clear\"}"
+            },
+            {
+              "type": "tool_result",
+              "tool_use_id": "call_b",
+              "content": "{\"local_time\":\"10:00\"}"
+            },
+            {
+              "type": "text",
+              "text": "I will use tools."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ANTHROPIC-REQUEST-TOOL-RESULT-ORDER",
+      "pass": true,
+      "details": {
+        "resultIds": [
+          "call_a",
+          "call_b"
+        ]
+      }
+    },
+    {
+      "id": "ANTHROPIC-REQUEST-FINAL-INPUT",
+      "pass": true,
+      "details": {
+        "assistant": {
+          "role": "assistant",
+          "content": [
+            {
+              "type": "text",
+              "text": "I will use tools."
+            },
+            {
+              "type": "tool_use",
+              "id": "call_a",
+              "name": "get_weather",
+              "input": {
+                "city": "Berlin",
+                "unit": "celsius"
+              },
+              "cache_control": {
+                "type": "ephemeral"
+              }
+            },
+            {
+              "type": "tool_use",
+              "id": "call_b",
+              "name": "get_time",
+              "input": {
+                "city": "Berlin"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ANTHROPIC-REQUEST-NO-LEGACY-TEXT",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "id": "MISTRAL-REQUEST-NATIVE-CALL-ORDER",
+      "pass": true,
+      "details": {
+        "ids": [
+          "call_a",
+          "call_b"
+        ]
+      }
+    },
+    {
+      "id": "MISTRAL-REQUEST-FINAL-ARGS",
+      "pass": true,
+      "details": {
+        "arguments": [
+          "{\"city\":\"Berlin\",\"unit\":\"celsius\"}",
+          "{\"city\":\"Berlin\"}"
+        ]
+      }
+    },
+    {
+      "id": "MISTRAL-REQUEST-TOOL-RESULT-ORDER",
+      "pass": true,
+      "details": {
+        "toolCallIds": [
+          "call_a",
+          "call_b"
+        ]
+      }
+    },
+    {
+      "id": "MISTRAL-REQUEST-NO-LEGACY-TEXT",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "id": "OPENAI-RESPONSES-REQUEST-FUNCTION-CALL-ORDER",
+      "pass": true,
+      "details": {
+        "callIds": [
+          "call_a",
+          "call_b"
+        ]
+      }
+    },
+    {
+      "id": "OPENAI-RESPONSES-REQUEST-FUNCTION-CALL-ITEM-ID-RETAINED",
+      "pass": true,
+      "details": {
+        "ids": [
+          "fc_a",
+          "fc_b"
+        ]
+      }
+    },
+    {
+      "id": "OPENAI-RESPONSES-REQUEST-FINAL-ARGS",
+      "pass": true,
+      "details": {
+        "arguments": [
+          "{\"city\":\"Berlin\",\"unit\":\"celsius\"}",
+          "{\"city\":\"Berlin\"}"
+        ]
+      }
+    },
+    {
+      "id": "OPENAI-RESPONSES-REQUEST-OUTPUT-CALL-ID-ORDER",
+      "pass": true,
+      "details": {
+        "callIds": [
+          "call_a",
+          "call_b"
+        ]
+      }
+    },
+    {
+      "id": "OPENAI-RESPONSES-REQUEST-NO-LEGACY-TEXT",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "id": "OPENAI-RESPONSES-REQUEST-TOOLS-NORMALIZED",
+      "pass": true,
+      "details": {
+        "tools": [
+          {
+            "type": "function",
+            "name": "get_weather",
+            "description": "Return weather for a city.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "city": {
+                  "type": "string"
+                },
+                "unit": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "city"
+              ]
+            }
+          },
+          {
+            "type": "function",
+            "name": "get_time",
+            "description": "Return local time for a city.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "city": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "city"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "allPassed": true,
+  "capturedPayloads": {
+    "gemini": {
+      "model": "gemini-3-flash-preview",
+      "contents": [
+        {
+          "role": "user",
+          "parts": [
+            {
+              "text": "Use both tools, then continue."
+            }
+          ]
+        },
+        {
+          "role": "model",
+          "parts": [
+            {
+              "text": "internal thinking marker",
+              "thought": true,
+              "thoughtSignature": "gemini-thought-sig-1"
+            },
+            {
+              "functionCall": {
+                "id": "call_a",
+                "name": "get_weather",
+                "args": {
+                  "city": "Berlin",
+                  "unit": "celsius"
+                }
+              },
+              "providerOnly": "keep-a"
+            },
+            {
+              "functionCall": {
+                "id": "call_b",
+                "name": "get_time",
+                "args": {
+                  "city": "Berlin"
+                }
+              },
+              "providerOnly": "keep-b"
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "parts": [
+            {
+              "functionResponse": {
+                "id": "call_a",
+                "name": "get_weather",
+                "response": {
+                  "result": {
+                    "temp_c": 21,
+                    "condition": "clear"
+                  }
+                }
+              }
+            },
+            {
+              "functionResponse": {
+                "id": "call_b",
+                "name": "get_time",
+                "response": {
+                  "result": {
+                    "local_time": "10:00"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "config": {
+        "responseMimeType": "text/plain",
+        "systemInstruction": "System prompt for payload capture.",
+        "temperature": 0,
+        "maxOutputTokens": 128,
+        "tools": [
+          {
+            "functionDeclarations": [
+              {
+                "name": "get_weather",
+                "description": "Return weather for a city.",
+                "parameters": {
+                  "type": "object",
+                  "properties": {
+                    "city": {
+                      "type": "string"
+                    },
+                    "unit": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "city"
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "ollama": {
+      "model": "llama3.1",
+      "messages": [
+        {
+          "role": "system",
+          "content": "System prompt included as message where provider supports it."
+        },
+        {
+          "role": "user",
+          "content": "Use both tools, then continue."
+        },
+        {
+          "role": "assistant",
+          "content": "I will use tools.",
+          "tool_calls": [
+            {
+              "id": "call_a",
+              "type": "function",
+              "function": {
+                "index": 0,
+                "name": "get_weather",
+                "arguments": {
+                  "city": "Berlin",
+                  "unit": "celsius"
+                }
+              }
+            },
+            {
+              "id": "call_b",
+              "type": "function",
+              "function": {
+                "index": 1,
+                "name": "get_time",
+                "arguments": {
+                  "city": "Berlin"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_name": "get_weather",
+          "content": "{\"temp_c\":21,\"condition\":\"clear\"}"
+        },
+        {
+          "role": "tool",
+          "tool_name": "get_time",
+          "content": "{\"local_time\":\"10:00\"}"
+        }
+      ],
+      "stream": false,
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "get_weather",
+            "description": "Return weather for a city.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "city": {
+                  "type": "string"
+                },
+                "unit": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "city"
+              ]
+            }
+          }
+        },
+        {
+          "type": "function",
+          "function": {
+            "name": "get_time",
+            "description": "Return local time for a city.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "city": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "city"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "anthropic": {
+      "model": "claude-sonnet-4-5",
+      "max_tokens": 128,
+      "messages": [
+        {
+          "role": "user",
+          "content": "Use both tools, then continue."
+        },
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "type": "text",
+              "text": "I will use tools."
+            },
+            {
+              "type": "tool_use",
+              "id": "call_a",
+              "name": "get_weather",
+              "input": {
+                "city": "Berlin",
+                "unit": "celsius"
+              },
+              "cache_control": {
+                "type": "ephemeral"
+              }
+            },
+            {
+              "type": "tool_use",
+              "id": "call_b",
+              "name": "get_time",
+              "input": {
+                "city": "Berlin"
+              }
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "tool_result",
+              "tool_use_id": "call_a",
+              "content": "{\"temp_c\":21,\"condition\":\"clear\"}"
+            },
+            {
+              "type": "tool_result",
+              "tool_use_id": "call_b",
+              "content": "{\"local_time\":\"10:00\"}"
+            },
+            {
+              "type": "text",
+              "text": "I will use tools."
+            }
+          ]
+        }
+      ],
+      "system": "System prompt included as message where provider supports it.",
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "get_weather",
+            "description": "Return weather for a city.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "city": {
+                  "type": "string"
+                },
+                "unit": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "city"
+              ]
+            }
+          }
+        },
+        {
+          "type": "function",
+          "function": {
+            "name": "get_time",
+            "description": "Return local time for a city.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "city": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "city"
+              ]
+            }
+          }
+        }
+      ],
+      "temperature": 0
+    },
+    "mistral": {
+      "model": "mistral-large-2512",
+      "messages": [
+        {
+          "role": "system",
+          "content": "System prompt included as message where provider supports it."
+        },
+        {
+          "role": "user",
+          "content": "Use both tools, then continue."
+        },
+        {
+          "role": "assistant",
+          "content": "I will use tools.",
+          "tool_calls": [
+            {
+              "id": "call_a",
+              "type": "function",
+              "function": {
+                "name": "get_weather",
+                "arguments": "{\"city\":\"Berlin\",\"unit\":\"celsius\"}"
+              }
+            },
+            {
+              "id": "call_b",
+              "type": "function",
+              "function": {
+                "name": "get_time",
+                "arguments": "{\"city\":\"Berlin\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "name": "get_weather",
+          "content": "{\"temp_c\":21,\"condition\":\"clear\"}",
+          "tool_call_id": "call_a"
+        },
+        {
+          "role": "tool",
+          "name": "get_time",
+          "content": "{\"local_time\":\"10:00\"}",
+          "tool_call_id": "call_b"
+        }
+      ],
+      "temperature": 0,
+      "maxTokens": 128,
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "get_weather",
+            "description": "Return weather for a city.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "city": {
+                  "type": "string"
+                },
+                "unit": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "city"
+              ]
+            }
+          }
+        },
+        {
+          "type": "function",
+          "function": {
+            "name": "get_time",
+            "description": "Return local time for a city.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "city": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "city"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "openai_responses": {
+      "model": "gpt-5.1",
+      "input": [
+        {
+          "type": "message",
+          "role": "system",
+          "content": "System prompt included as message where provider supports it."
+        },
+        {
+          "type": "message",
+          "role": "user",
+          "content": "Use both tools, then continue."
+        },
+        {
+          "type": "function_call",
+          "id": "fc_a",
+          "call_id": "call_a",
+          "name": "get_weather",
+          "arguments": "{\"city\":\"Berlin\",\"unit\":\"celsius\"}",
+          "status": "completed"
+        },
+        {
+          "type": "function_call",
+          "id": "fc_b",
+          "call_id": "call_b",
+          "name": "get_time",
+          "arguments": "{\"city\":\"Berlin\"}",
+          "status": "completed"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "call_a",
+          "output": "{\"temp_c\":21,\"condition\":\"clear\"}"
+        },
+        {
+          "type": "function_call_output",
+          "call_id": "call_b",
+          "output": "{\"local_time\":\"10:00\"}"
+        }
+      ],
+      "max_output_tokens": 128,
+      "tools": [
+        {
+          "type": "function",
+          "name": "get_weather",
+          "description": "Return weather for a city.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "city": {
+                "type": "string"
+              },
+              "unit": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "city"
+            ]
+          }
+        },
+        {
+          "type": "function",
+          "name": "get_time",
+          "description": "Return local time for a city.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "city": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "city"
+            ]
+          }
+        }
+      ],
+      "tool_choice": "auto"
+    }
+  }
+}

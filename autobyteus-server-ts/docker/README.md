@@ -17,7 +17,78 @@ The runtime image also ships with:
 
 ## Quick Start
 
-If you want to run the published image directly, without cloning this repository, use:
+### No-clone users: public launcher
+
+If you want to run the published image without cloning this repository, use the public launcher. It pulls `autobyteus/autobyteus-server:latest`, creates named volumes per node, chooses non-conflicting ports, and prints the Backend URL for **Settings → Nodes → Add Remote Node**.
+
+Install the local launcher once:
+
+macOS / Linux:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.sh | bash -s -- install
+```
+
+Windows PowerShell:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.ps1 | iex; autobyteus-docker install"
+```
+
+Then use direct local commands. `start` checks/pulls the image and only recreates the managed container when the image/config changed or the container is missing:
+
+```bash
+autobyteus-docker start
+```
+
+The default node uses `autobyteus-server` as its friendly name and prefers these host ports when available: Backend `8001`, VNC `5908`, noVNC `6080`, and Chrome debug `9228`. If a port is busy, the launcher retries with fresh ports.
+
+Start a new isolated Docker node:
+
+```bash
+autobyteus-docker start --new
+```
+
+Show the Backend URL again:
+
+```bash
+autobyteus-docker urls
+```
+
+Stop the default node without removing named volumes:
+
+```bash
+autobyteus-docker stop
+```
+
+Launcher state is stored outside the source tree:
+
+- macOS / Linux default: `$HOME/.autobyteus/docker-server`
+- Windows default: `%LOCALAPPDATA%\AutoByteus\docker-server`
+- Override: `AUTOBYTEUS_DOCKER_STATE_DIR`
+
+### Source checkout users: developer helper
+
+If you have this repository locally, the `docker-start.sh` source helper remains available for local builds, source-checkout development, and release-image refresh testing:
+
+```bash
+cd autobyteus-server-ts/docker
+
+# Start default server from local source build
+./docker-start.sh up
+
+# Start from the published remote release image instead of building locally
+./docker-start.sh up --pull-remote
+
+# Show mapped ports and URLs
+./docker-start.sh ports
+```
+
+The source helper uses Docker Compose project names internally and stores project state under `autobyteus-server-ts/docker/.runtime/`. Packaged app users should use the public launcher above instead.
+
+### Advanced direct Docker fallback
+
+If you cannot use the launcher, the low-level `docker run` shape is:
 
 ```bash
 docker run -d \
@@ -37,11 +108,7 @@ docker run -d \
   autobyteus/autobyteus-server:latest
 ```
 
-Stop it with:
-
-```bash
-docker stop autobyteus-server
-```
+This direct command is intentionally not the primary no-clone path because it has fixed ports and no multi-node state management.
 
 ## Compaction Runtime Settings
 
@@ -88,27 +155,6 @@ default. There is currently no separate env knob for that transport policy. If
 a local runtime still fails under large prompts, lower
 `AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE` first.
 
-If you have this repository locally, the easiest way to manage multiple isolated instances is using the `docker-start.sh` script. It automatically detects available ports to avoid collisions and supports multiple isolated instances.
-
-```bash
-cd autobyteus-server-ts/docker
-
-# Start default server (builds locally by default)
-./docker-start.sh up
-
-# Start Chinese (zh) variant
-./docker-start.sh up --variant zh
-
-# Start from the published remote release image instead of building locally
-./docker-start.sh up --pull-remote
-
-# Start multiple isolated instances
-./docker-start.sh up --project instance-1
-./docker-start.sh up --project instance-2
-```
-
-The script saves the assigned ports for each project in a hidden `.runtime/` folder, ensuring consistent mapping.
-
 ## CLI Auth Model
 
 Codex CLI and Claude Code are preinstalled in the image. The intended auth flow is:
@@ -122,11 +168,11 @@ Codex CLI and Claude Code are preinstalled in the image. The intended auth flow 
 Use `codex login` directly in the default container shell. The container runs as
 `root`, so `sudo codex login` is not required in the normal Docker setup.
 
-The container runs as `root`, and `/root` is persisted in a Docker-managed named volume per Compose project. That means:
+The container runs as `root`, and `/root` is persisted in a Docker-managed named volume per launcher node or source-helper project. That means:
 
-- auth state is isolated per project/instance,
-- auth state survives normal restart and recreate for the same project,
-- auth state is removed if you explicitly remove the project's volumes.
+- auth state is isolated per Docker node/instance,
+- auth state survives normal restart and recreate for the same friendly node,
+- auth state is removed only if you explicitly remove that node's volumes.
 
 Host credential folders are not mounted into the container by default.
 
@@ -140,7 +186,20 @@ survive container recreation.
 
 ## Management Commands
 
-- `./docker-start.sh ps`: Show running instances and their names.
+Public launcher commands for no-clone users:
+
+- `autobyteus-docker install` / `autobyteus-docker update`: Install or refresh the local launcher without touching Docker containers, volumes, or state.
+- `autobyteus-docker start`: Check/pull the configured image, start the default Docker node, and recreate the managed container only when the image/config changed or the container is missing.
+- `autobyteus-docker start --new`: Start a new friendly Docker node with automatic ports.
+- `autobyteus-docker urls`: Show Backend/noVNC/VNC/debug URLs for the default node.
+- `autobyteus-docker status`: Show managed launcher nodes.
+- `autobyteus-docker logs`: Show Docker logs for the default node.
+- `autobyteus-docker stop`: Stop the default node without removing named volumes.
+- `autobyteus-docker stop --all`: Stop all launcher-managed nodes without removing named volumes.
+
+Source helper commands for cloned-repository development:
+
+- `./docker-start.sh ps`: Show source-helper instances and their names.
 - `./docker-start.sh logs`: Tail logs for an instance.
 - `./docker-start.sh ports`: Show mapped ports and URLs for an instance.
 - `./docker-start.sh down`: Stop an instance.
@@ -232,7 +291,7 @@ Manual republish:
 - Optionally provide `image_name` if you want to override the default repository.
 - Enable `publish_zh` when you want the manual run to publish the `zh` variant instead of the default image.
 
-## Endpoints (Default)
+## Endpoints (Default When Available)
 
 - GraphQL: `http://localhost:8001/graphql`
 - REST: `http://localhost:8001/rest/*`
@@ -243,14 +302,19 @@ Manual republish:
 
 ## Data and Persistence
 
-Named volumes (per project):
+Public launcher named volumes (per friendly node):
+- `<node-name>-workspace`: built artifacts
+- `<node-name>-data`: `.env`, SQLite DB, logs, media, memory
+- `<node-name>-root-home`: in-container root home, including Codex/Claude auth state
+
+Source helper named volumes (per Compose project):
 - `<project>_autobyteus-server-workspace`: built artifacts
 - `<project>_autobyteus-server-data`: `.env`, SQLite DB, logs, media, memory
 - `<project>_autobyteus-server-root-home`: in-container root home, including Codex/Claude auth state
 
 Server data directory in container: `/home/autobyteus/data`
 
-To reset Codex/Claude login for an instance, remove the project volumes:
+To reset Codex/Claude login for a source-helper instance, remove the project volumes:
 
 ```bash
 ./docker-start.sh down --volumes

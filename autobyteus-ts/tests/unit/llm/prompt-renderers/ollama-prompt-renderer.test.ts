@@ -22,24 +22,27 @@ describe('OllamaPromptRenderer', () => {
     ]);
   });
 
-  it('renders tool payloads as text', async () => {
+  it('renders tool payloads as native Ollama tool messages', async () => {
     const renderer = new OllamaPromptRenderer();
-    const toolArgs = { query: 'autobyteus' };
-    const toolResult = { status: 'ok' };
     const messages = [
       new Message(MessageRole.ASSISTANT, {
         content: null,
-        tool_payload: new ToolCallPayload([{ id: 'call_1', name: 'search', arguments: toolArgs }])
+        tool_payload: new ToolCallPayload([{ id: 'call_1', name: 'search', arguments: { query: 'autobyteus' } }])
       }),
       new Message(MessageRole.TOOL, {
-        tool_payload: new ToolResultPayload('call_1', 'search', toolResult)
+        tool_payload: new ToolResultPayload('call_1', 'search', { status: 'ok' })
       })
     ];
 
     const rendered = await renderer.render(messages);
     expect(rendered).toEqual([
-      { role: 'assistant', content: "[TOOL_CALL] search {'query': 'autobyteus'}" },
-      { role: 'user', content: "[TOOL_RESULT] search {'status': 'ok'}" }
+      {
+        role: 'assistant',
+        content: '',
+        tool_calls: [{ id: 'call_1', type: 'function', function: { index: 0, name: 'search', arguments: { query: 'autobyteus' } } }]
+      },
+      { role: 'tool', tool_name: 'search', content: JSON.stringify({ status: 'ok' }) }
     ]);
+    expect(JSON.stringify(rendered)).not.toContain('[TOOL_');
   });
 });

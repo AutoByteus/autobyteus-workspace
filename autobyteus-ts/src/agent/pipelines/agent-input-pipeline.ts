@@ -3,6 +3,7 @@ import { AgentInputUserMessage } from '../message/agent-input-user-message.js';
 import { buildLLMUserMessage } from '../message/multimodal-message-builder.js';
 import { SenderType } from '../sender-type.js';
 import { resolveTeamCommunicationContext } from '../../agent-team/context/team-communication-context.js';
+import { getToolContinuationMode, NATIVE_API_TOOL_CONTINUATION_MODE } from '../message/tool-continuation-metadata.js';
 import { sortProcessors } from './processor-pipeline-runner.js';
 import type { LLMUserMessage } from '../../llm/user-message.js';
 import type { AgentContext } from '../context/agent-context.js';
@@ -19,10 +20,13 @@ type InputProcessorLike = {
   ) => Promise<AgentInputUserMessage>;
 };
 
+export type LlmRequestMode = 'append_user_message' | 'tool_history_only';
+
 export type AgentInputPipelineResult = {
   llmUserMessage: LLMUserMessage;
   turnId: string;
   sourceEvent: UserMessageReceivedEvent;
+  llmRequestMode?: LlmRequestMode;
 };
 
 function isInputProcessor(value: unknown): value is InputProcessorLike {
@@ -125,10 +129,18 @@ export class AgentInputPipeline {
       }
     }
 
+    const originalToolContinuationMode = getToolContinuationMode(originalMessage);
+    const processedToolContinuationMode = getToolContinuationMode(processedMessage) ?? originalToolContinuationMode;
+    const llmRequestMode: LlmRequestMode =
+      isToolContinuation && processedToolContinuationMode === NATIVE_API_TOOL_CONTINUATION_MODE
+        ? 'tool_history_only'
+        : 'append_user_message';
+
     return {
       llmUserMessage: buildLLMUserMessage(processedMessage),
       turnId: turn.turnId,
-      sourceEvent: event
+      sourceEvent: event,
+      llmRequestMode
     };
   }
 

@@ -922,12 +922,19 @@ describe('Agent runtime integration', () => {
 
       const continuationReachedLlm = await waitForCondition(() => llm.requestMessages.length === 2);
       expect(continuationReachedLlm).toBe(true);
-      const continuationUserContent =
-        llm.requestMessages[1]
-          .filter((message) => message.role === MessageRole.USER)
-          .at(-1)?.content ?? '';
-      expect(continuationUserContent).toContain('Tool: external_result_tool (ID: call_external_result_1)');
-      expect(continuationUserContent).toContain('external-ok');
+      const continuationMessages = llm.requestMessages[1];
+      expect(continuationMessages.filter((message) => message.role === MessageRole.USER).map((message) => message.content)).toEqual([
+        'needs external result'
+      ]);
+      const continuationToolPayload = continuationMessages
+        .filter((message) => message.role === MessageRole.TOOL)
+        .at(-1)?.tool_payload as any;
+      expect(continuationToolPayload).toMatchObject({
+        toolCallId: 'call_external_result_1',
+        toolName: ExternalResultTool.getName(),
+        toolResult: 'external-ok',
+        toolError: null
+      });
       expect(externalTool.executeCalls).toBe(0);
 
       const settled = await waitForCondition(
@@ -998,12 +1005,19 @@ describe('Agent runtime integration', () => {
       expect(String(failedTools[0].error)).toContain('Invalid arguments');
       expect(String(failedTools[0].error)).toContain("Required parameter 'job' is missing");
 
-      const continuationUserContent =
-        llm.requestMessages[1]
-          .filter((message) => message.role === MessageRole.USER)
-          .at(-1)?.content ?? '';
-      expect(continuationUserContent).toContain('call_external_result_invalid_args');
-      expect(continuationUserContent).toContain('Invalid arguments');
+      const continuationMessages = llm.requestMessages[1];
+      expect(continuationMessages.filter((message) => message.role === MessageRole.USER).map((message) => message.content)).toEqual([
+        'invalid external result args'
+      ]);
+      const continuationToolPayload = continuationMessages
+        .filter((message) => message.role === MessageRole.TOOL)
+        .at(-1)?.tool_payload as any;
+      expect(continuationToolPayload).toMatchObject({
+        toolCallId: 'call_external_result_invalid_args',
+        toolName: ExternalResultTool.getName()
+      });
+      expect(String(continuationToolPayload.toolError)).toContain('Invalid arguments');
+      expect(String(continuationToolPayload.toolError)).toContain("Required parameter 'job' is missing");
     } finally {
       if (runtime.isRunning) {
         await runtime.stop(2);

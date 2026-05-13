@@ -161,6 +161,29 @@ describe('AgentDetail', () => {
     expect(wrapper.get('[data-test="instruction-toggle"]').attributes('aria-expanded')).toBe('true')
   })
 
+  it('emits team-detail navigation from back action when return context is present', async () => {
+    const wrapper = mount(AgentDetail, {
+      props: {
+        agentDefinitionId: 'agent-1',
+        returnToTeamId: 'team-1',
+      },
+      global: {
+        stubs: {
+          AgentDeleteConfirmDialog: true,
+          AgentDuplicateButton: true,
+        },
+      },
+    })
+
+    expect(wrapper.text()).toContain(translate('agents.components.agents.AgentDetail.back_to_team'))
+
+    await wrapper.find('button').trigger('click')
+
+    expect(wrapper.emitted('navigate')).toEqual([[
+      { target: 'agent-team', view: 'team-detail', id: 'team-1' },
+    ]])
+  })
+
   it('navigates to edit view after duplicate completes', async () => {
     const wrapper = mount(AgentDetail, {
       props: {

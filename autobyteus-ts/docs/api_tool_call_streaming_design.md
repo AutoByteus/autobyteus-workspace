@@ -56,7 +56,7 @@ API-provided tool calls. We need to:
                                   │
                                   ▼
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                            LlmTurnPhase                                      │
+│                   LLMUserMessageReadyEventHandler                             │
 │  Selects handler based on AUTOBYTEUS_STREAM_PARSER:                          │
 │    - "xml" / "json" / "sentinel" → ParsingStreamingResponseHandler           │
 │    - "api_tool_call"             → ApiToolCallStreamingResponseHandler       │
@@ -78,7 +78,7 @@ API-provided tool calls. We need to:
                                   │ get_all_invocations()
                                   ▼
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│          AgentTurnRunner status projection → ToolPhase execution             │
+│                     PendingToolInvocationEvent → Execution                    │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -290,13 +290,6 @@ class PassThroughStreamingResponseHandler extends StreamingResponseHandler {
 arguments in the `SEGMENT_END` event's `metadata.arguments` field. The adapter uses
 this instead of parsing the content buffer.
 
-**Failed finalization contract**: A non-interrupt LLM stream failure calls
-`finalizeFailed(error)` on the active streaming handler. Open text/tool/write/edit
-segments emit terminal `SEGMENT_END` payloads with `failed: true` and `error`.
-This is distinct from `finalizeInterrupted(reason)`, which emits
-`interrupted: true`. Failed partial tool segments are display/error records only;
-they must not create `ToolInvocation`s or same-turn continuations.
-
 ```ts
 type ToolCallState = {
   segmentId: string;
@@ -412,9 +405,8 @@ if (startMetadata.arguments) {
 }
 ```
 
-The adapter must also suppress terminal segments whose end payload/metadata says
-`interrupted` or `failed`; those partial segments are not executable tool
-invocations.
+**No code change required** - the existing adapter logic already supports pre-parsed
+arguments via metadata. The API tool call handler just needs to provide them.
 
 ---
 
@@ -444,10 +436,22 @@ export function convert(
 }
 ```
 
-### 7.2. Future Converters
+### 7.2. Provider Converters
 
-- `AnthropicToolCallConverter`: Convert Anthropic's `content_block_delta` with `input_json_delta`
-- `GeminiToolCallConverter`: Convert Gemini's `functionCall` responses
+Native API tool-call providers normalize their streaming/function-call output to
+the shared `ToolCallDelta` boundary:
+
+- `openai-tool-call-converter.ts`: OpenAI Chat-style `tool_calls` deltas.
+- `anthropic-tool-call-converter.ts`: Anthropic content blocks with
+  `tool_use` / `input_json_delta` semantics.
+- `gemini-tool-call-converter.ts`: Gemini `functionCall` parts.
+- `mistral-tool-call-converter.ts`: Mistral function-call deltas.
+- `ollama-tool-call-converter.ts`: Ollama `message.tool_calls`.
+
+Converters may attach `native_context` for provider metadata that a stateless
+continuation needs to replay exactly enough provider-native history. The
+normalized call id, name, and parsed arguments are still the authoritative
+tool-invocation fields consumed by the runtime.
 
 ---
 
@@ -455,12 +459,39 @@ export function convert(
 
 ### 8.1. `OpenAICompatibleLLM._stream_user_message_to_llm` (MODIFIED)
 
+OpenAI-compatible Chat Completions requests are assembled through
+`OpenAICompatibleRequestBuilder` before the SDK call. The builder is the
+authoritative place for this path to:
+
+- map `LLMConfig` controls (`temperature`, `topP`, penalties, stop sequences,
+  `maxTokens`, and `extraParams`) into the request body;
+- filter framework-internal kwargs such as `logicalConversationId` and
+  `requestId`;
+- attach provider-native `tools`; pass `tool_choice` only when an explicit
+  lower-level caller supplies `kwargs.tool_choice`, never as an agent/server
+  default.
+
+Provider adapters may normalize provider-specific request legality before
+calling the shared builder. Keep those rules in the provider adapter rather than
+adding provider-specific branches to `OpenAICompatibleRequestBuilder`; for
+example, `KimiLLM` normalizes `kimi-k2.5` / `kimi-k2.6` temperature and thinking
+defaults for Moonshot-safe tool workflows before delegating to the shared
+OpenAI-compatible request path.
+
 ```ts
 async function* _streamUserMessageToLLM(
   userMessage: LLMUserMessage,
   kwargs: Record<string, unknown> = {}
 ): AsyncGenerator<ChunkResponse> {
   // ... existing setup ...
+
+  const params = OpenAICompatibleRequestBuilder.build({
+    model: this.model.value,
+    messages: formattedMessages,
+    stream: true,
+    config: this.config,
+    kwargs
+  });
 
   for await (const chunk of stream) {
     const delta = chunk.choices[0].delta;
@@ -487,13 +518,22 @@ async function* _streamUserMessageToLLM(
 
 ## 9. Handler Orchestration
 
-### 9.1. `LlmTurnPhase` (MODIFIED)
+### 9.1. `LLMUserMessageReadyEventHandler` (MODIFIED)
 
 **Key changes**:
 
 1. Pass full `ChunkResponse` to handler (not just `chunk.content`)
 2. Select handler based on `AUTOBYTEUS_STREAM_PARSER`
-3. Use `api_tool_call` for SDK tool calls
+3. Use `api_tool_call` for SDK tool calls.
+4. Pass provider-native `tools` to the LLM when API tools are present; the
+   default agent/server path does not emit `tool_choice`.
+5. Emit a diagnostic, not a fallback tool invocation, when API mode receives
+   legacy-looking `[TOOL_CALL] ...` assistant text and zero native tool calls.
+6. When native tool calls are parsed, pass the accumulated assistant content and
+   reasoning into `MemoryManager.ingestToolIntents(...)` so the assistant
+   `ToolCallPayload` message preserves the full provider-returned envelope.
+7. Consume native tool-result continuation events by rendering the current
+   working context without appending another user message.
 
 ```ts
 // Determine handler type (factory encapsulates format override + parser config)
@@ -501,22 +541,85 @@ const { handler, toolSchemas } = StreamingResponseHandlerFactory.create({
   toolNames,
   provider,
   onSegmentEvent: emitSegmentEvent,
+  onToolInvocation: emitToolInvocation,
   agentId,
 });
 
+const streamKwargs = { tools: toolSchemas };
+
 // Stream processing loop
-for await (const chunkResponse of context.state.llmInstance.streamMessages(
-  messages,
-  renderedPayload,
-  { tools: toolSchemas },
-  { signal: turn.executionScope.signal, turnId }
-)) {
+for await (const chunkResponse of context.state.llmInstance.streamUserMessage(llmUserMessage, streamKwargs)) {
   // ... aggregation logic ...
 
   // Feed full ChunkResponse to handler (not just content!)
   handler.feed(chunkResponse);
 }
 ```
+
+### 9.2. Native Tool-Result Continuation
+
+`ToolResultEventHandler` owns native result acceptance and the native-vs-legacy
+continuation split. In native `api_tool_call` mode it first validates active
+batch/provider identity before result processors can mutate memory: missing
+invocation ids, unknown invocation ids, turn mismatches, duplicates, and
+no-active-batch results are rejected without raw `tool_result` traces,
+working-context `ToolResultPayload`s, `tool_continuation` traces, or continuation
+events. After an accepted tool invocation batch settles:
+
+- In `api_tool_call` mode it enqueues an internal `ToolContinuationReadyEvent`.
+  `LLMUserMessageReadyEventHandler` then calls
+  `LLMRequestAssembler.prepareToolContinuationRequest(...)`, which renders the
+  current working context as-is. The next OpenAI-compatible request contains the
+  prior `assistant.tool_calls` message plus matching `role: "tool"` result
+  messages, and it does **not** append the aggregate text beginning
+  `The following tool executions have completed...` as `role: "user"`.
+- In legacy `xml`, `json`, and `sentinel` parser modes it keeps the aggregate
+  `SenderType.TOOL` user-input continuation path, because those modes lack a
+  provider-native tool-result channel.
+
+The server-side input customization path remains intact for normal inputs and
+intentional legacy text-mode continuations. Native API mode avoids that path for
+provider-visible tool results instead of weakening server input formatting.
+
+For DeepSeek thinking-mode turns, the same continuation path also preserves the
+assistant reasoning envelope: `Message.reasoning_content` remains in working
+context on the assistant tool-call message, and only `DeepSeekChatRenderer`
+emits it as provider-visible `reasoning_content` on the next request.
+
+### 9.3. Provider-Native History Renderer Selection
+
+`api_tool_call` mode selects provider-native history renderers for all
+first-party providers with native tool-result channels. Non-native `xml`,
+`json`, and `sentinel` formats select explicit text-history renderers so stored
+`ToolCallPayload` / `ToolResultPayload` messages do not accidentally become
+native tool objects when the configured parser mode expects text.
+
+| Provider | Native renderer output | Non-native renderer output |
+| --- | --- | --- |
+| Gemini | model `functionCall` parts and user `functionResponse` parts | text history via `gemini-text-tool-history-renderer.ts` |
+| Ollama | assistant `tool_calls` and `role: "tool"` result messages with `tool_name` | text history via `ollama-text-tool-history-renderer.ts` |
+| Anthropic | assistant `tool_use` blocks and immediately-following user `tool_result` blocks | text history via `anthropic-text-tool-history-renderer.ts` |
+| Mistral | assistant `tool_calls` and `role: "tool"` messages with `tool_call_id` and `name` | text history via `mistral-text-tool-history-renderer.ts` |
+| OpenAI Responses | `function_call` and `function_call_output` items keyed by `call_id` | text history via `openai-responses-text-tool-history-renderer.ts` |
+
+For parallel tool-call batches, renderers order completed results by the
+assistant tool-call order before they build provider-visible history. Gemini and
+Anthropic coalesce adjacent matching results into one result turn/block group
+because those providers require ordered result parts/blocks immediately after
+the tool-use turn. OpenAI-compatible Chat / LM Studio keeps its existing
+`assistant.tool_calls` plus `role: "tool"` request shape. DeepSeek uses the same
+OpenAI-compatible shape, but its dedicated renderer additionally replays
+preserved assistant `Message.reasoning_content` as DeepSeek `reasoning_content`;
+generic OpenAI-compatible renderers omit that extension field.
+
+Native provider payloads must not contain the old synthetic aggregate result
+message text, including the
+`The following tool executions have completed...` prefix, legacy
+`Tool: <name> (ID: ...)` lines, `Status: Success` markers, or legacy
+`[TOOL_CALL]` / `[TOOL_RESULT]` tags. Provider-native user-role result carriers,
+such as Gemini `functionResponse` turns and Anthropic `tool_result` blocks,
+remain valid because they carry structured native result payloads rather than
+the aggregate text continuation.
 
 ---
 
@@ -540,6 +643,11 @@ class AgentConfig {
 }
 ```
 
+The agent/server path intentionally leaves provider `tool_choice` unset. Direct
+lower-level LLM callers may still pass explicit `kwargs.tool_choice` into the
+OpenAI-compatible request builder for focused tests or specialized integrations,
+but product-configurable tool choice is out of scope for this path.
+
 ---
 
 ## 11. File Summary & Concerns
@@ -549,12 +657,25 @@ class AgentConfig {
 | `src/llm/utils/tool-call-delta.ts`                            | Common data structure for tool call updates  | **NEW**  |
 | `src/llm/utils/response-types.ts`                             | Add `tool_calls` field to `ChunkResponse`    | MODIFIED |
 | `src/llm/converters/openai-tool-call-converter.ts`            | Normalize OpenAI SDK format                  | **NEW**  |
+| `src/llm/api/openai-compatible-request-builder.ts`            | Build safe OpenAI-compatible Chat Completions payloads | **NEW** |
 | `src/llm/api/openai-compatible-llm.ts`                        | Convert tool calls, include in ChunkResponse | MODIFIED |
+| `src/tools/usage/formatters/openai-tool-schema-normalizer.ts` | Normalize OpenAI-compatible JSON Schema parameters | **NEW** |
+| `src/agent/streaming/handlers/api-tool-call-text-diagnostic.ts` | Diagnose legacy text-shaped tool calls in API mode | **NEW** |
 | `src/agent/streaming/handlers/streaming-response-handler.ts`               | Change `feed(string)` to `feed(ChunkResponse)`  | MODIFIED |
 | `src/agent/streaming/handlers/parsing-streaming-response-handler.ts`       | Use `chunk.content`                          | MODIFIED |
 | `src/agent/streaming/handlers/pass-through-streaming-response-handler.ts`  | Use `chunk.content`                          | MODIFIED |
 | `src/agent/streaming/handlers/api-tool-call-streaming-response-handler.ts` | New handler for SDK tool calls               | **NEW**  |
-| `src/agent/loop/llm-turn-phase.ts`  | Streaming-handler selection, pass full ChunkResponse   | MODIFIED |
+| `src/agent/handlers/llm-user-message-ready-event-handler.ts`  | Handler selection, pass full ChunkResponse   | MODIFIED |
+| `src/agent/handlers/tool-result-event-handler.ts`             | Route native API tool-result continuations without aggregate user message; preserve legacy text continuation | MODIFIED |
+| `src/agent/events/agent-events.ts`                            | Add internal `ToolContinuationReadyEvent`     | MODIFIED |
+| `src/agent/llm-request-assembler.ts`                          | Add tool-continuation request assembly without appending user input | MODIFIED |
+| `src/llm/prompt-renderers/lmstudio-text-tool-history-renderer.ts` | Keep LM Studio `[TOOL_CALL]` history text scoped to explicit text-parser modes | **NEW** |
+| `src/llm/prompt-renderers/provider-tool-history-renderer-selection.ts` | Select native provider history only for `api_tool_call`; select text history for `xml`/`json`/`sentinel` | **NEW** |
+| `src/llm/prompt-renderers/{anthropic,gemini,mistral,ollama,openai-responses}-text-tool-history-renderer.ts` | Keep legacy text tool history isolated to non-native parser modes | **NEW** |
+| `src/llm/prompt-renderers/{anthropic,gemini,mistral,ollama,openai-responses}-prompt-renderer.ts` | Render stored semantic tool history into provider-native request payloads | MODIFIED |
+| `src/llm/prompt-renderers/native-tool-payload-format.ts`       | Shared native argument/result serialization helpers | **NEW** |
+| `src/llm/utils/messages.ts`                                    | Carry optional `nativeToolCallContext` on normalized tool calls | MODIFIED |
+| `src/llm/utils/tool-call-delta.ts`                             | Carry provider-native context alongside normalized deltas | MODIFIED |
 | `src/utils/tool-call-format.ts`                               | Remove legacy "native" alias                 | MODIFIED |
 
 ---
@@ -594,17 +715,26 @@ We already have formatters that convert tool definitions to API schemas:
 // src/tools/usage/formatters/openai-json-schema-formatter.ts
 class OpenAiJsonSchemaFormatter extends BaseSchemaFormatter {
   provide(toolDefinition: ToolDefinition): Record<string, unknown> {
+    const parameters = normalizeOpenAiToolParameters(
+      toolDefinition.argumentSchema.toJsonSchemaDict()
+    );
+
     return {
       type: 'function',
       function: {
         name: toolDefinition.name,
         description: toolDefinition.description,
-        parameters: toolDefinition.argumentSchema.toJsonSchemaDict(),
+        parameters,
       },
     };
   }
 }
 ```
+
+`normalizeOpenAiToolParameters(...)` recursively sets
+`additionalProperties: false` on object schemas. `function.strict` is not
+enabled by default because strict mode also requires optional fields to be
+represented with nullable-required semantics, which is intentionally deferred.
 
 Similar formatters exist for:
 
@@ -613,15 +743,15 @@ Similar formatters exist for:
 
 ### 13.3. Design: Tool Schema Passing
 
-**Option A: Pass via `LlmTurnPhase` (Recommended)**
+**Option A: Pass via `LLMUserMessageReadyEventHandler` (Recommended)**
 
-The LLM turn phase already resolves turn tool definitions. When `api_tool_call` mode is selected:
+The handler already has access to tool definitions. When `api_tool_call` mode is selected:
 
 1. Format tool definitions to API schema
 2. Pass as `tools` kwarg to LLM stream
 
 ```ts
-// In LlmTurnPhase.run()
+// In LLMUserMessageReadyEventHandler.handle()
 if (formatOverride === 'api_tool_call') {
   const toolDefinitions = context.state.toolNames
     .map((name) => defaultToolRegistry.getToolDefinition(name))
@@ -644,16 +774,13 @@ async _streamUserMessageToLLM(
   kwargs: Record<string, unknown> = {}
 ): AsyncGenerator<ChunkResponse> {
   // ...
-  const params = {
+  const params = OpenAICompatibleRequestBuilder.build({
     model: this.model.value,
     messages: formattedMessages,
     stream: true,
-  };
-
-  // Include tools if provided
-  if (kwargs.tools) {
-    params.tools = kwargs.tools;
-  }
+    config: this.config,
+    kwargs
+  });
 
   const stream = this.client.chat.completions.create(params);
   // ...
@@ -664,8 +791,9 @@ async _streamUserMessageToLLM(
 
 | File                                                     | Change                            |
 | -------------------------------------------------------- | --------------------------------- |
-| `src/agent/loop/llm-turn-phase.ts` | Format tool schemas, pass to LLM with turn-scoped options  |
-| `src/llm/api/openai-compatible-llm.ts`                       | Accept `tools` kwarg, pass to API |
+| `src/agent/handlers/llm-user-message-ready-event-handler.ts` | Format tool schemas, pass `tools` to LLM without default `tool_choice`, emit API text-leak diagnostics |
+| `src/llm/api/openai-compatible-request-builder.ts`           | Map config fields, filter internal kwargs, pass `tools`, and preserve explicit lower-level `tool_choice` kwargs |
+| `src/llm/api/openai-compatible-llm.ts`                       | Use request builder for sync and streaming API calls |
 | (similar for other LLM providers)                        | Accept `tools` kwarg              |
 
 ---
@@ -675,7 +803,11 @@ async _streamUserMessageToLLM(
 1. **Provider Detection**: Auto-detect when to use `api_tool_call` based on provider capabilities
    instead of requiring explicit configuration.
 
-2. **Hybrid Mode**: Some responses may contain both text-embedded and API tool calls.
-   Current design handles this by treating them as separate concerns.
+2. **Hybrid Mode**: Some responses may contain both text-embedded and API tool
+   calls. Native API mode does not execute text-embedded fallbacks; it keeps
+   legacy-looking text as assistant output and emits diagnostics so the provider
+   or model mismatch is visible.
 
-3. **Tool Choice**: Support `tool_choice` parameter for forcing specific tool usage.
+3. **Strict Function Tools**: Full strict-mode support remains future work and
+   should be added only with nullable-required optional-field conversion and
+   provider compatibility checks.

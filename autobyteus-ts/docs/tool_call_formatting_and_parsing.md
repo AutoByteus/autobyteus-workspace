@@ -35,7 +35,7 @@ maps those segments into tool calls.
 ## Non-goals
 
 - Designing new tool syntaxes beyond JSON/XML.
-- Replacing the current `AgentTurnRunner` / phase-service execution pipeline.
+- Replacing the existing event-driven execution pipeline.
 - Introducing new runtime registries for custom parsing strategies.
 
 ## High-level Flow
@@ -52,8 +52,8 @@ ToolManifestInjectorProcessor
       ▼
 LLM
       ▼
-LlmTurnPhase
-      │  (StreamingResponseHandlerFactory + selected streaming handler)
+LLMUserMessageReadyEventHandler
+      │  (StreamingResponseHandler)
       ▼
 StreamingParser + ToolInvocationAdapter
       │
@@ -61,7 +61,7 @@ StreamingParser + ToolInvocationAdapter
 ToolInvocation list (per stream)
       │
       ▼
-AgentTurnRunner status projection -> ToolPhase execution -> ToolResultPipeline
+PendingToolInvocationEvent -> tool execution -> ToolResultEventHandler
 ```
 
 ## Formatter / Example / Parser Contract
@@ -140,6 +140,20 @@ The manifest is injected into the system prompt by
 `ToolManifestInjectorProcessor`, which appends an "Accessible Tools" section
 directly at the end of the system prompt. No placeholder is required.
 
+In native API tool-call mode (`api_tool_call`), `AgentConfig` removes the
+`ToolManifestInjectorProcessor` from the default processor set. Tool definitions
+are passed through provider-native request metadata instead of prompt text:
+
+- `StreamingResponseHandlerFactory` resolves the provider-aware tool schemas.
+- `LLMUserMessageReadyEventHandler` sends them as the LLM request `tools`
+  field.
+- The default agent/server path does not emit `tool_choice`; lower-level direct
+  LLM callers can still pass explicit `kwargs.tool_choice` for focused tests or
+  specialized integrations.
+- Native tool-result continuation uses an internal continuation event and
+  structured `assistant.tool_calls` / `role: "tool"` history; it does not append
+  the legacy aggregate tool-result text as another `role: "user"` message.
+
 Key files:
 
 - `src/agent/system-prompt-processor/tool-manifest-injector-processor.ts`
@@ -159,6 +173,12 @@ Parsing is performed during streaming by the FSM-based `StreamingParser`.
   - `sentinel`: explicit sentinel markers.
   - `api_tool_call`: disables tool-tag parsing (provider-native tool calls only).
   - Unset or invalid values default to `api_tool_call`.
+
+`api_tool_call` is intentionally not a hybrid fallback mode. If an
+OpenAI-compatible provider returns assistant text that looks like a legacy
+`[TOOL_CALL] ...` payload but no native `tool_calls` were parsed, the text is
+kept as assistant output and an `ApiToolCallTextDiagnostic` is emitted; the
+framework does not execute that text through a legacy parser.
 
 #### Provider-Aware JSON Parsing
 
@@ -190,7 +210,7 @@ Key files:
 
 Tool parsing is wired into the agent loop via the streaming handler:
 
-- `LlmTurnPhase` streams chunks through the selected streaming response handler.
+- `LLMUserMessageReadyEventHandler` streams chunks through `StreamingResponseHandler`.
 - Completed tool segments are converted into `ToolInvocation` objects.
 - The handler enqueues `PendingToolInvocationEvent` entries once the stream is finalized.
 
@@ -199,20 +219,28 @@ Tool parsing is wired into the agent loop via the streaming handler:
 means tool approval requests and UI segment rendering can be correlated without
 any additional mapping.
 
-Tool execution results are processed by `ToolResultPipeline`, then aggregated
-into a same-turn `SenderType.TOOL` continuation by `ToolResultContinuationBuilder`.
-For multi-tool turns, results are reordered to match the invocation
-sequence before being sent back to the LLM.
+Tool execution results are routed by `ToolResultEventHandler`. For native
+API mode, the handler validates the active batch, invocation id, turn id, and
+duplicate state before result processors can mutate memory. Multi-tool native
+results keep their provider `tool_call_id` identity so continuation rendering can
+match results to the original tool calls. The continuation shape then depends on
+the selected mode:
+
+- `api_tool_call`: enqueue `ToolContinuationReadyEvent` and render the current
+  working context without appending a synthetic user message. Provider-visible
+  history carries structured `assistant.tool_calls` plus matching `role: "tool"`
+  messages only.
+- `xml`, `json`, `sentinel`: preserve the aggregate textual
+  `SenderType.TOOL` continuation message, because these parser modes do not
+  have a provider-native `role: "tool"` channel.
 
 Key files:
 
-- `src/agent/loop/llm-turn-phase.ts`
-- `src/agent/loop/agent-turn-runner.ts`
+- `src/agent/handlers/llm-user-message-ready-event-handler.ts`
 - `src/agent/streaming/handlers/streaming-response-handler.ts`
 - `src/agent/tool-invocation.ts`
-- `src/agent/loop/tool-phase.ts`
-- `src/agent/pipelines/tool-result-pipeline.ts`
-- `src/agent/loop/tool-result-continuation-builder.ts`
+- `src/agent/handlers/tool-result-event-handler.ts`
+- `src/agent/llm-request-assembler.ts`
 
 ### 5) Configuration and Overrides
 
@@ -223,12 +251,21 @@ Key files:
 - `xml` selects XML parsing/formatting, `json` selects JSON parsing with
   provider-aware JSON signatures, `sentinel` selects the sentinel parser, and
   `api_tool_call` relies on provider-native tool-call schemas and stream events.
+- The default agent/server path leaves provider `tool_choice` unset. Product-
+  configurable tool choice is intentionally out of scope; direct lower-level LLM
+  callers may pass explicit `kwargs.tool_choice` when they own that provider
+  request shape.
+- LM Studio uses structured OpenAI-compatible chat history in native API mode
+  (`assistant.tool_calls` and `role: "tool"` messages). The legacy
+  `[TOOL_CALL]` / `[TOOL_RESULT]` history text remains available only through
+  `LMStudioTextToolHistoryRenderer` when an explicit text-parser mode is
+  selected.
 
 Key files:
 
 - `src/agent/streaming/parser/parser-factory.ts`
 - `src/utils/tool-call-format.ts`
-- `src/agent/loop/llm-turn-phase.ts`
+- `src/agent/handlers/llm-user-message-ready-event-handler.ts`
 
 ## Design Patterns
 
@@ -256,3 +293,7 @@ To add a new tool:
 - The streaming parser only interprets configured tag formats; unknown tags are streamed as text.
 - For provider-native tool calls, set `AUTOBYTEUS_STREAM_PARSER=api_tool_call`
   and rely on the provider stream.
+- Do not mix prompt-template tool syntax into native API mode. Native mode sends
+  schemas through `tools`, sends prior tool history as provider-native
+  structured messages where supported, and treats legacy-looking text as
+  ordinary assistant text plus a diagnostic.

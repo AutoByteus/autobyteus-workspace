@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { ApiToolCallStreamingResponseHandler } from '../../../../../src/agent/streaming/handlers/api-tool-call-streaming-response-handler.js';
 import { SegmentEvent, SegmentEventType, SegmentType } from '../../../../../src/agent/streaming/segments/segment-events.js';
 import { ChunkResponse } from '../../../../../src/llm/utils/response-types.js';
+import { convertGeminiToolCalls } from '../../../../../src/llm/converters/gemini-tool-call-converter.js';
 
 const TURN_ID = 'turn_test';
 
@@ -138,6 +139,32 @@ describe('ApiToolCallStreamingResponseHandler basics', () => {
     expect(toolEnd?.payload.metadata.tool_name).toBe('search_web');
     expect(handler.getAllInvocations()).toEqual([]);
   });
+
+  it('carries provider-native context from deltas to tool invocations', () => {
+    const handler = new ApiToolCallStreamingResponseHandler({ turnId: TURN_ID });
+    const nativeContext = {
+      provider: 'openai_responses' as const,
+      functionCallItem: { type: 'function_call', call_id: 'call_ctx', name: 'test' }
+    };
+
+    handler.feed(
+      new ChunkResponse({
+        content: '',
+        tool_calls: [{ index: 0, call_id: 'call_ctx', name: 'test', native_context: nativeContext }]
+      })
+    );
+    handler.feed(
+      new ChunkResponse({
+        content: '',
+        tool_calls: [{ index: 0, arguments_delta: '{}' }]
+      })
+    );
+    handler.finalize();
+
+    const invocations = handler.getAllInvocations();
+    expect(invocations).toHaveLength(1);
+    expect(invocations[0].nativeToolCallContext).toEqual(nativeContext);
+  });
 });
 
 describe('ApiToolCallStreamingResponseHandler parallel tool calls', () => {
@@ -179,6 +206,30 @@ describe('ApiToolCallStreamingResponseHandler parallel tool calls', () => {
     expect(bashInv).toBeDefined();
     expect(writeInv!.arguments).toEqual({ path: 'test.py', content: '' });
     expect(bashInv!.arguments).toEqual({ command: 'python test.py' });
+  });
+
+  it('keeps multiple Gemini functionCall parts as distinct invocations', () => {
+    const handler = new ApiToolCallStreamingResponseHandler({ turnId: TURN_ID });
+    const firstCall = convertGeminiToolCalls({
+      functionCall: { id: 'call_a', name: 'get_weather', args: { city: 'Berlin' } }
+    }, 0)!;
+    const secondCall = convertGeminiToolCalls({
+      functionCall: { id: 'call_b', name: 'get_time', args: { city: 'Berlin' } }
+    }, 1)!;
+
+    handler.feed(new ChunkResponse({
+      content: '',
+      tool_calls: [...firstCall, ...secondCall]
+    }));
+    handler.finalize();
+
+    const invocations = handler.getAllInvocations();
+    expect(invocations.map((invocation) => invocation.id)).toEqual(['call_a', 'call_b']);
+    expect(invocations.map((invocation) => invocation.name)).toEqual(['get_weather', 'get_time']);
+    expect(invocations.map((invocation) => invocation.arguments)).toEqual([
+      { city: 'Berlin' },
+      { city: 'Berlin' }
+    ]);
   });
 });
 

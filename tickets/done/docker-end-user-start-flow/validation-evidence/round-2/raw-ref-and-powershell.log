@@ -1,0 +1,17 @@
+## remote branch/ref checks
+origin	git@github.com-ryan:AutoByteus/autobyteus-workspace.git (fetch)
+origin	git@github.com-ryan:AutoByteus/autobyteus-workspace.git (push)
+be56cab9b41b850c92690d79a8dfa70c52c369a0	refs/heads/personal
+## raw script reachability before integration to personal
+URL: https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.sh
+HTTP 404
+404: Not Found
+URL: https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.ps1
+HTTP 404
+404: Not Found
+## native PowerShell availability
+## PowerShell container platform availability
+linux/amd64
+linux/arm/v7
+windows/amd64
+## cleanup manifest temp

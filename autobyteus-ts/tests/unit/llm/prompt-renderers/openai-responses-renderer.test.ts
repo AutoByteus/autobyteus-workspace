@@ -23,7 +23,7 @@ describe('OpenAIResponsesRenderer', () => {
     ]);
   });
 
-  it('renders tool call payloads as message content', async () => {
+  it('renders tool call payloads as function_call items', async () => {
     const renderer = new OpenAIResponsesRenderer();
     const toolPayload = new ToolCallPayload([
       { id: 'call_1', name: 'list_directory', arguments: { path: 'src' } }
@@ -34,14 +34,18 @@ describe('OpenAIResponsesRenderer', () => {
 
     expect(rendered).toEqual([
       {
-        type: 'message',
-        role: 'assistant',
-        content: `[TOOL_CALL] list_directory ${JSON.stringify({ path: 'src' })}`
+        type: 'function_call',
+        id: 'call_1',
+        call_id: 'call_1',
+        name: 'list_directory',
+        arguments: JSON.stringify({ path: 'src' }),
+        status: 'completed'
       }
     ]);
+    expect(JSON.stringify(rendered)).not.toContain('[TOOL_');
   });
 
-  it('renders tool result payloads as user content', async () => {
+  it('renders tool result payloads as function_call_output items', async () => {
     const renderer = new OpenAIResponsesRenderer();
     const toolPayload = new ToolResultPayload('call_1', 'list_directory', ['app.py']);
     const messages = [new Message(MessageRole.TOOL, { tool_payload: toolPayload })];
@@ -50,9 +54,9 @@ describe('OpenAIResponsesRenderer', () => {
 
     expect(rendered).toEqual([
       {
-        type: 'message',
-        role: 'user',
-        content: `[TOOL_RESULT] list_directory ${JSON.stringify(['app.py'])}`
+        type: 'function_call_output',
+        call_id: 'call_1',
+        output: JSON.stringify(['app.py'])
       }
     ]);
   });

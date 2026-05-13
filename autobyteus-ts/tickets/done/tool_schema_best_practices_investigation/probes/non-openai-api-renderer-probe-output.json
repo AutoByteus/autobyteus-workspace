@@ -1,0 +1,196 @@
+{
+  "probe": "non-openai-api-renderer-probe",
+  "generatedAt": "2026-05-09T20:26:43.836Z",
+  "summary": [
+    {
+      "provider": "openai-compatible-chat",
+      "nativeShapeObserved": true,
+      "containsLegacyToolCallText": false,
+      "containsLegacyToolResultText": false
+    },
+    {
+      "provider": "gemini",
+      "nativeShapeObserved": false,
+      "containsLegacyToolCallText": true,
+      "containsLegacyToolResultText": true
+    },
+    {
+      "provider": "ollama",
+      "nativeShapeObserved": false,
+      "containsLegacyToolCallText": true,
+      "containsLegacyToolResultText": true
+    },
+    {
+      "provider": "anthropic",
+      "nativeShapeObserved": false,
+      "containsLegacyToolCallText": true,
+      "containsLegacyToolResultText": true
+    },
+    {
+      "provider": "mistral",
+      "nativeShapeObserved": false,
+      "containsLegacyToolCallText": true,
+      "containsLegacyToolResultText": true
+    },
+    {
+      "provider": "openai-responses",
+      "nativeShapeObserved": false,
+      "containsLegacyToolCallText": true,
+      "containsLegacyToolResultText": true
+    }
+  ],
+  "results": [
+    {
+      "provider": "openai-compatible-chat",
+      "expectedNativeShape": "assistant.tool_calls followed by role=tool/tool_call_id",
+      "nativeShapeObserved": true,
+      "containsLegacyToolCallText": false,
+      "containsLegacyToolResultText": false,
+      "rendered": [
+        {
+          "role": "user",
+          "content": "inspect"
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "call_1",
+              "type": "function",
+              "function": {
+                "name": "run_bash",
+                "arguments": "{\"command\":\"pwd\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "call_1",
+          "content": "{\"stdout\":\"/tmp\\n\"}"
+        }
+      ]
+    },
+    {
+      "provider": "gemini",
+      "expectedNativeShape": "model part=functionCall followed by functionResponse part (role user/tool depending SDK case)",
+      "nativeShapeObserved": false,
+      "containsLegacyToolCallText": true,
+      "containsLegacyToolResultText": true,
+      "rendered": [
+        {
+          "role": "user",
+          "parts": [
+            {
+              "text": "inspect"
+            }
+          ]
+        },
+        {
+          "role": "model",
+          "parts": [
+            {
+              "text": "[TOOL_CALL] run_bash {'command': 'pwd'}"
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "parts": [
+            {
+              "text": "[TOOL_RESULT] run_bash {'stdout': '/tmp\n'}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "provider": "ollama",
+      "expectedNativeShape": "assistant.tool_calls followed by role=tool/tool_name/content",
+      "nativeShapeObserved": false,
+      "containsLegacyToolCallText": true,
+      "containsLegacyToolResultText": true,
+      "rendered": [
+        {
+          "role": "user",
+          "content": "inspect"
+        },
+        {
+          "role": "assistant",
+          "content": "[TOOL_CALL] run_bash {'command': 'pwd'}"
+        },
+        {
+          "role": "user",
+          "content": "[TOOL_RESULT] run_bash {'stdout': '/tmp\n'}"
+        }
+      ]
+    },
+    {
+      "provider": "anthropic",
+      "expectedNativeShape": "assistant content block type=tool_use followed by user content block type=tool_result",
+      "nativeShapeObserved": false,
+      "containsLegacyToolCallText": true,
+      "containsLegacyToolResultText": true,
+      "rendered": [
+        {
+          "role": "user",
+          "content": "inspect"
+        },
+        {
+          "role": "assistant",
+          "content": "[TOOL_CALL] run_bash {\"command\": \"pwd\"}"
+        },
+        {
+          "role": "user",
+          "content": "[TOOL_RESULT] run_bash {\"stdout\": \"/tmp\\n\"}"
+        }
+      ]
+    },
+    {
+      "provider": "mistral",
+      "expectedNativeShape": "assistant.tool_calls followed by role=tool/name/tool_call_id/content",
+      "nativeShapeObserved": false,
+      "containsLegacyToolCallText": true,
+      "containsLegacyToolResultText": true,
+      "rendered": [
+        {
+          "role": "user",
+          "content": "inspect"
+        },
+        {
+          "role": "assistant",
+          "content": "[TOOL_CALL] run_bash {'command': 'pwd'}"
+        },
+        {
+          "role": "user",
+          "content": "[TOOL_RESULT] run_bash {'stdout': '/tmp\n'}"
+        }
+      ]
+    },
+    {
+      "provider": "openai-responses",
+      "expectedNativeShape": "Responses input items: function_call output item preserved then function_call_output item with call_id/output",
+      "nativeShapeObserved": false,
+      "containsLegacyToolCallText": true,
+      "containsLegacyToolResultText": true,
+      "rendered": [
+        {
+          "type": "message",
+          "role": "user",
+          "content": "inspect"
+        },
+        {
+          "type": "message",
+          "role": "assistant",
+          "content": "[TOOL_CALL] run_bash {\"command\":\"pwd\"}"
+        },
+        {
+          "type": "message",
+          "role": "user",
+          "content": "[TOOL_RESULT] run_bash {\"stdout\":\"/tmp\\n\"}"
+        }
+      ]
+    }
+  ]
+}

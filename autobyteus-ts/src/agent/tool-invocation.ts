@@ -1,10 +1,19 @@
+import type { ProviderNativeToolCallContext } from '../llm/utils/tool-call-delta.js';
+
 export class ToolInvocation {
   name: string;
   arguments: Record<string, unknown>;
   id: string;
   turnId?: string;
+  nativeToolCallContext?: ProviderNativeToolCallContext;
 
-  constructor(name: string, arguments_: Record<string, unknown>, id: string, turnId?: string) {
+  constructor(
+    name: string,
+    arguments_: Record<string, unknown>,
+    id: string,
+    turnId?: string,
+    nativeToolCallContext?: ProviderNativeToolCallContext
+  ) {
     if (!id) {
       throw new Error('ToolInvocation requires a non-empty id.');
     }
@@ -19,6 +28,7 @@ export class ToolInvocation {
     this.arguments = arguments_;
     this.id = id;
     this.turnId = turnId;
+    this.nativeToolCallContext = nativeToolCallContext;
   }
 
   isValid(): boolean {
@@ -27,6 +37,9 @@ export class ToolInvocation {
 
   toString(): string {
     const turnSegment = this.turnId ? `, turnId='${this.turnId}'` : '';
-    return `ToolInvocation(id='${this.id}', name='${this.name}', arguments=${JSON.stringify(this.arguments)}${turnSegment})`;
+    const nativeContextSegment = this.nativeToolCallContext
+      ? `, nativeToolCallContext=${JSON.stringify(this.nativeToolCallContext)}`
+      : '';
+    return `ToolInvocation(id='${this.id}', name='${this.name}', arguments=${JSON.stringify(this.arguments)}${turnSegment}${nativeContextSegment})`;
   }
 }

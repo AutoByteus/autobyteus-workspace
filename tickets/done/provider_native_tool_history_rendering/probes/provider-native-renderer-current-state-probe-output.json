@@ -1,0 +1,174 @@
+{
+  "generatedAt": "2026-05-10T03:45:50.527Z",
+  "distPath": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/dist",
+  "distGitHead": "8ff0cd3c622b4a2d2a8a2e2311014ff5b60ffcec",
+  "results": [
+    {
+      "provider": "openai-compatible-chat",
+      "nativeShapeObserved": true,
+      "containsLegacyToolCallText": false,
+      "containsLegacyToolResultText": false,
+      "rendered": [
+        {
+          "role": "system",
+          "content": "system prompt"
+        },
+        {
+          "role": "user",
+          "content": "inspect"
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "call_1",
+              "type": "function",
+              "function": {
+                "name": "run_bash",
+                "arguments": "{\"command\":\"pwd\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "call_1",
+          "content": "{\"stdout\":\"/tmp\\n\"}"
+        }
+      ]
+    },
+    {
+      "provider": "gemini",
+      "nativeShapeObserved": false,
+      "containsLegacyToolCallText": true,
+      "containsLegacyToolResultText": true,
+      "rendered": [
+        {
+          "role": "user",
+          "parts": [
+            {
+              "text": "inspect"
+            }
+          ]
+        },
+        {
+          "role": "model",
+          "parts": [
+            {
+              "text": "[TOOL_CALL] run_bash {'command': 'pwd'}"
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "parts": [
+            {
+              "text": "[TOOL_RESULT] run_bash {'stdout': '/tmp\n'}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "provider": "ollama",
+      "nativeShapeObserved": false,
+      "containsLegacyToolCallText": true,
+      "containsLegacyToolResultText": true,
+      "rendered": [
+        {
+          "role": "system",
+          "content": "system prompt"
+        },
+        {
+          "role": "user",
+          "content": "inspect"
+        },
+        {
+          "role": "assistant",
+          "content": "[TOOL_CALL] run_bash {'command': 'pwd'}"
+        },
+        {
+          "role": "user",
+          "content": "[TOOL_RESULT] run_bash {'stdout': '/tmp\n'}"
+        }
+      ]
+    },
+    {
+      "provider": "anthropic",
+      "nativeShapeObserved": false,
+      "containsLegacyToolCallText": true,
+      "containsLegacyToolResultText": true,
+      "rendered": [
+        {
+          "role": "user",
+          "content": "system prompt"
+        },
+        {
+          "role": "user",
+          "content": "inspect"
+        },
+        {
+          "role": "assistant",
+          "content": "[TOOL_CALL] run_bash {\"command\": \"pwd\"}"
+        },
+        {
+          "role": "user",
+          "content": "[TOOL_RESULT] run_bash {\"stdout\": \"/tmp\\n\"}"
+        }
+      ]
+    },
+    {
+      "provider": "mistral",
+      "nativeShapeObserved": false,
+      "containsLegacyToolCallText": true,
+      "containsLegacyToolResultText": true,
+      "rendered": [
+        {
+          "role": "system",
+          "content": "system prompt"
+        },
+        {
+          "role": "user",
+          "content": "inspect"
+        },
+        {
+          "role": "assistant",
+          "content": "[TOOL_CALL] run_bash {'command': 'pwd'}"
+        },
+        {
+          "role": "user",
+          "content": "[TOOL_RESULT] run_bash {'stdout': '/tmp\n'}"
+        }
+      ]
+    },
+    {
+      "provider": "openai-responses",
+      "nativeShapeObserved": false,
+      "containsLegacyToolCallText": true,
+      "containsLegacyToolResultText": true,
+      "rendered": [
+        {
+          "type": "message",
+          "role": "system",
+          "content": "system prompt"
+        },
+        {
+          "type": "message",
+          "role": "user",
+          "content": "inspect"
+        },
+        {
+          "type": "message",
+          "role": "assistant",
+          "content": "[TOOL_CALL] run_bash {\"command\":\"pwd\"}"
+        },
+        {
+          "type": "message",
+          "role": "user",
+          "content": "[TOOL_RESULT] run_bash {\"stdout\":\"/tmp\\n\"}"
+        }
+      ]
+    }
+  ]
+}

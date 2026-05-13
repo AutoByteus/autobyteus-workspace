@@ -22,7 +22,11 @@ export function convertMistralToolCalls(toolCalls: unknown[] | null | undefined)
       index: callIndex,
       call_id: typeof call?.id === 'string' ? call.id : undefined,
       name: typeof fn?.name === 'string' ? fn.name : undefined,
-      arguments_delta: typeof fn?.arguments === 'string' ? fn.arguments : undefined
+      arguments_delta: typeof fn?.arguments === 'string' ? fn.arguments : undefined,
+      native_context: {
+        provider: 'mistral',
+        toolCall: call as unknown as Record<string, unknown>
+      }
     };
   });
 }

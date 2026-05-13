@@ -4,7 +4,10 @@ import { ToolInvocationAdapter } from '../adapters/invocation-adapter.js';
 import { WriteFileContentStreamer, EditFileContentStreamer } from '../api-tool-call/file-content-streamer.js';
 import { ToolInvocation } from '../../tool-invocation.js';
 import { ChunkResponse } from '../../../llm/utils/response-types.js';
-import type { ToolCallDelta } from '../../../llm/utils/tool-call-delta.js';
+import type {
+  ProviderNativeToolCallContext,
+  ToolCallDelta
+} from '../../../llm/utils/tool-call-delta.js';
 import { randomUUID } from 'node:crypto';
 
 type ToolCallState = {
@@ -16,6 +19,7 @@ type ToolCallState = {
   path?: string;
   segmentStarted: boolean;
   pendingContent: string;
+  nativeToolCallContext?: ProviderNativeToolCallContext;
 };
 
 export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandler {
@@ -114,11 +118,16 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
             segmentType: resolved.segmentType,
             streamer: resolved.streamer,
             segmentStarted: false,
-            pendingContent: ''
+            pendingContent: '',
+            nativeToolCallContext: delta.native_context ?? undefined
           });
 
           if (resolved.segmentType === SegmentType.TOOL_CALL && toolName) {
-            const startEvent = SegmentEvent.start(this.turnId, segId, resolved.segmentType, { tool_name: toolName });
+            const metadata: Record<string, any> = { tool_name: toolName };
+            if (delta.native_context) {
+              metadata.native_tool_call_context = delta.native_context;
+            }
+            const startEvent = SegmentEvent.start(this.turnId, segId, resolved.segmentType, metadata);
             const state = this.activeTools.get(delta.index);
             if (state) {
               state.segmentStarted = true;
@@ -129,6 +138,9 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
         }
 
         const state = this.activeTools.get(delta.index)!;
+        if (delta.native_context) {
+          state.nativeToolCallContext = delta.native_context;
+        }
 
         if (delta.arguments_delta !== undefined && delta.arguments_delta !== null) {
           state.accumulatedArgs += delta.arguments_delta;
@@ -139,7 +151,11 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
                 state.pendingContent += delta.arguments_delta;
                 continue;
               }
-              const startEvent = SegmentEvent.start(this.turnId, state.segmentId, state.segmentType, { tool_name: state.name });
+              const metadata: Record<string, any> = { tool_name: state.name };
+              if (state.nativeToolCallContext) {
+                metadata.native_tool_call_context = state.nativeToolCallContext;
+              }
+              const startEvent = SegmentEvent.start(this.turnId, state.segmentId, state.segmentType, metadata);
               state.segmentStarted = true;
               this.emit(startEvent);
               events.push(startEvent);
@@ -161,6 +177,9 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
 
             if (!state.segmentStarted && state.path) {
               const metadata: Record<string, any> = { tool_name: state.name, path: state.path };
+              if (state.nativeToolCallContext) {
+                metadata.native_tool_call_context = state.nativeToolCallContext;
+              }
               const startEvent = SegmentEvent.start(this.turnId, state.segmentId, state.segmentType, metadata);
               state.segmentStarted = true;
               this.emit(startEvent);
@@ -188,7 +207,11 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
         if (delta.name && !state.name) {
           state.name = delta.name;
           if (state.segmentType === SegmentType.TOOL_CALL && !state.segmentStarted) {
-            const startEvent = SegmentEvent.start(this.turnId, state.segmentId, state.segmentType, { tool_name: state.name });
+            const metadata: Record<string, any> = { tool_name: state.name };
+            if (state.nativeToolCallContext) {
+              metadata.native_tool_call_context = state.nativeToolCallContext;
+            }
+            const startEvent = SegmentEvent.start(this.turnId, state.segmentId, state.segmentType, metadata);
             state.segmentStarted = true;
             this.emit(startEvent);
             events.push(startEvent);
@@ -226,6 +249,9 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
           if (state.path) {
             metadata.path = state.path;
           }
+          if (state.nativeToolCallContext) {
+            metadata.native_tool_call_context = state.nativeToolCallContext;
+          }
           const startEvent = SegmentEvent.start(this.turnId, state.segmentId, state.segmentType, metadata);
           state.segmentStarted = true;
           this.emit(startEvent);
@@ -239,7 +265,11 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
         }
       }
       if (state.segmentType === SegmentType.TOOL_CALL && !state.segmentStarted && state.name) {
-        const startEvent = SegmentEvent.start(this.turnId, state.segmentId, state.segmentType, { tool_name: state.name });
+        const metadata: Record<string, any> = { tool_name: state.name };
+        if (state.nativeToolCallContext) {
+          metadata.native_tool_call_context = state.nativeToolCallContext;
+        }
+        const startEvent = SegmentEvent.start(this.turnId, state.segmentId, state.segmentType, metadata);
         state.segmentStarted = true;
         this.emit(startEvent);
         events.push(startEvent);
@@ -269,7 +299,10 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
           payload: {
             metadata: {
               tool_name: state.name,
-              arguments: parsedArgs
+              arguments: parsedArgs,
+              ...(state.nativeToolCallContext
+                ? { native_tool_call_context: state.nativeToolCallContext }
+                : {})
             }
           }
         });
@@ -277,6 +310,9 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
         const metadata: Record<string, any> = {};
         if (state.path) {
           metadata.path = state.path;
+        }
+        if (state.nativeToolCallContext) {
+          metadata.native_tool_call_context = state.nativeToolCallContext;
         }
         endEvent = SegmentEvent.end(
           this.turnId,

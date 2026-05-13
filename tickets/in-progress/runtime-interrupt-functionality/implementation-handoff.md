@@ -7,6 +7,7 @@
 - Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/design-spec.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/design-review-report.md`
 - Latest code review report context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/review-report.md`
+- Latest delivery merge blocker report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/delivery-merge-blocker-report.md`
 
 ## What Changed
 
@@ -68,6 +69,18 @@ Round 17/18 local fix for `CR-017` external-result tool preflight:
 - Preflight failures and mode resolver failures now return normal failed `ToolResultEvent`s and continue through existing tool-result processing/terminal lifecycle. They do not publish started/pending external execution and do not register result waiters.
 - Added BaseTool unit coverage and runtime integration coverage for invalid/missing required args, successful external-result argument coercion, and mode resolver failure while preserving the external-result happy path and no-waiter rejection semantics.
 
+Latest-base integration local fix after delivery merge blocker:
+
+- Completed the in-progress `origin/personal` merge from `62279949129196ca6b9c5891fd685886256ddbbb` on top of delivery checkpoint `ac83015b3a5d0188c7b49d0f4940c85ff29ad626`.
+- Preserved deletion of retired single-agent handler/queue files and kept `AgentFactory` on the native runtime path with no default single-agent handler registry.
+- Merged latest provider-native tool-history behavior into the native `AgentTurnRunner` / `LlmPhase` path without resurrecting `LLMUserMessageReadyEventHandler` / `ToolResultEventHandler` as normal-flow owners.
+- Added `tool-continuation-metadata.ts` plus `AgentInputPipelineResult.llmRequestMode` so native API tool continuations are explicit `SenderType.TOOL` messages that tell `LlmPhase` to assemble the next LLM request from working-context tool history only, while synthetic aggregate TOOL messages remain available for non-native formats.
+- Changed `ToolResultContinuationBuilder` to persist ordered native API tool-result batches through `MemoryManager.ingestToolResults(..., { source: 'native_api_ordered_batch' })` and emit a metadata-marked TOOL continuation instead of appending a synthetic aggregate user message for `api_tool_call`.
+- Updated `MemoryIngestInputProcessor` to record a native API continuation boundary with explicit source/content metadata.
+- Ported the latest-base provider-native continuation integration test off the removed legacy handler/queue choreography and onto production `AgentRuntime -> AgentMessageInbox -> AgentMessageScheduler -> AgentTurnRunner -> LlmPhase/ToolPhase` execution.
+- Merged `MemoryManager` conflict by preserving Round-9 working-context turn checkpoint/restore and latest-base assistant content/reasoning ingestion for provider-native tool calls.
+- Accepted latest-base long-lived docs where delivery conflicts were documentation-only; delivery docs sync remains responsible for final public-doc reconciliation after review/API-E2E.
+
 ## Key Files Or Areas
 
 - New inbound boundary and scheduler:
@@ -79,7 +92,11 @@ Round 17/18 local fix for `CR-017` external-result tool preflight:
   - `autobyteus-ts/src/agent/loop/turn-tool-input-port.ts`
   - `autobyteus-ts/src/agent/agent-turn.ts`
   - `autobyteus-ts/src/agent/loop/tool-phase.ts`
+  - `autobyteus-ts/src/agent/loop/tool-result-continuation-builder.ts`
+  - `autobyteus-ts/src/agent/pipelines/agent-input-pipeline.ts`
+  - `autobyteus-ts/src/agent/message/tool-continuation-metadata.ts`
   - `ToolPhase` now owns the external-result execution mode branch and waits through `TurnToolInputPort.waitForToolResults(...)`.
+  - `ToolResultContinuationBuilder` now owns native API ordered-batch continuation metadata/result ingestion under the active turn.
 - LLM phase final source naming:
   - `autobyteus-ts/src/agent/loop/llm-phase.ts`
   - `autobyteus-ts/src/agent/loop/llm-phase-tools.ts`
@@ -103,6 +120,8 @@ Round 17/18 local fix for `CR-017` external-result tool preflight:
   - `autobyteus-ts/tests/unit/agent/message-inbox/inbox-queue-store.test.ts`
   - `autobyteus-ts/tests/unit/agent/loop/turn-tool-input-port.test.ts`
   - `autobyteus-ts/tests/integration/agent/runtime/agent-runtime.test.ts`
+  - `autobyteus-ts/tests/integration/agent/provider-native-tool-continuation-flow.test.ts`
+  - `autobyteus-ts/tests/unit/agent/loop/tool-result-continuation-builder.test.ts`
   - `autobyteus-ts/tests/unit/tools/base-tool.test.ts`
   - updated runtime/state/worker/context tests.
 
@@ -136,6 +155,7 @@ Round 17/18 local fix for `CR-017` external-result tool preflight:
   - Active-turn approvals/results cannot start new turns and return explicit no-active/stale/no-pending/interrupted/runtime-stopped outcomes.
   - External tool-result success now requires an active result consumer, not just active-batch membership.
   - `ToolPhase` owns the external-result execution mode branch and rejoins normal tool-result continuation after the active result waiter is woken.
+  - Native API tool-result continuations now use ordered working-context tool history rather than synthetic aggregate user messages, through an explicit metadata-marked TOOL continuation request mode.
   - Worker shutdown drains unresolved awaitable inbox messages with explicit terminal command results.
   - Source grep over active `autobyteus-ts/src` and tests found no remaining `AgentInputBox`, `AgentTurnInputBox`, or `AgentInputEventQueueManager` references.
 
@@ -157,7 +177,7 @@ Round 17/18 local fix for `CR-017` external-result tool preflight:
 
 - Workspace root: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality`
 - Branch: `codex/runtime-interrupt-functionality`
-- No dependency or lockfile changes were made in this implementation pass.
+- The latest-base merge brings upstream package/documentation changes from `origin/personal`; this local conflict-resolution pass did not add new dependency changes beyond that integrated base.
 
 ## Local Implementation Checks Run
 
@@ -184,6 +204,21 @@ Passed:
   - Passed, including runtime dependency verification.
 - `pnpm -C autobyteus-server-ts run build:full`
   - Passed.
+
+Latest-base integration checks added in this handoff:
+
+- `git diff --cached --check`
+  - Passed after resolving upstream trailing-whitespace additions in staged docs/log artifacts.
+- Single-agent legacy grep: `rg "agent-input-event-queue-manager|llm-user-message-ready-event-handler|tool-result-event-handler|getDefaultEventHandlerRegistry|EventHandlerRegistry|WorkerEventDispatcher|agent/handlers" autobyteus-ts/src/agent autobyteus-ts/tests/unit/agent autobyteus-ts/tests/integration/agent/runtime/agent-runtime.test.ts autobyteus-ts/tests/integration/agent/provider-native-tool-continuation-flow.test.ts || true`
+  - Result: only the expected factory assertion that `getDefaultEventHandlerRegistry` is undefined; no active legacy handler/dispatcher normal-flow path.
+- Changed implementation source effective-line audit over staged files.
+  - Result: no changed implementation source file exceeded 500 effective non-empty lines.
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/factory/agent-factory.test.ts tests/unit/memory/memory-manager.test.ts tests/unit/memory/memory-tool-continuation-reasoning.test.ts tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts tests/unit/llm/api/openai-compatible-llm.test.ts tests/unit/tools/base-tool.test.ts tests/unit/agent/loop/agent-turn-runner.test.ts tests/unit/agent/loop/tool-result-continuation-builder.test.ts tests/unit/agent/loop/turn-tool-input-port.test.ts tests/unit/agent/pipelines/agent-input-pipeline.test.ts tests/integration/agent/runtime/agent-runtime.test.ts tests/integration/agent/provider-native-tool-continuation-flow.test.ts`
+  - Result: 12 files passed, 88 tests passed.
+- `pnpm -C autobyteus-ts run build`
+  - Passed, including runtime dependency verification.
+- `pnpm -C autobyteus-server-ts run build:full`
+  - Passed, including built-in agents bootstrap smoke check.
 
 ## Downstream Validation Hints / Suggested Scenarios
 

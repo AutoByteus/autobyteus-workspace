@@ -1,0 +1,8 @@
+## PowerShell parser/help smoke in Linux arm64 PowerShell container
+Unable to find image 'mcr.microsoft.com/powershell:latest' locally
+latest: Pulling from powershell
+Digest: sha256:810c4f1e0c9d23022c3ec18c50a6205ee4b60766f1739d329b2948df1fd7d5b0
+Status: Image is up to date for mcr.microsoft.com/powershell:latest
+docker: Error response from daemon: image with reference mcr.microsoft.com/powershell:latest was found but does not provide the specified platform (linux/arm64)
+
+Run 'docker run --help' for more information

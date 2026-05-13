@@ -1,3 +1,5 @@
-## What's New
+## Improvements
+- Refined the Settings → Nodes / Node Manager page with a calmer card layout, lighter command panels, improved spacing, and easier scanning on desktop screens.
 
-- Improved internal architecture clarity for application communication, making the platform easier to extend with future streaming and notification features.
+## Fixes
+- Fixed single-agent run history titles so the first user message remains the stable row title instead of being replaced by later follow-up messages.

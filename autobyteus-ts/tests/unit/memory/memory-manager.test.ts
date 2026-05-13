@@ -120,6 +120,54 @@ describe('MemoryManager', () => {
     }
   });
 
+  it('preserves provider-native tool-call context in grouped tool intents', () => {
+    const tempDir = makeTempDir();
+    try {
+      const store = new FileMemoryStore(tempDir, 'agent_mem_native_tool_context');
+      const manager = new MemoryManager({ store });
+      const turnId = manager.startTurn();
+      const invocation = new ToolInvocation(
+        'search',
+        { q: 'abc' },
+        'call_1',
+        turnId,
+        { provider: 'gemini', functionCallPart: { functionCall: { id: 'call_1', name: 'search' } } }
+      );
+
+      manager.ingestToolIntents([invocation], turnId);
+
+      const payload = manager.getWorkingContextMessages()[0].tool_payload as ToolCallPayload;
+      expect(payload.toolCalls[0].nativeToolCallContext).toEqual(invocation.nativeToolCallContext);
+    } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('ingests ordered tool result batches in received order', () => {
+    const tempDir = makeTempDir();
+    try {
+      const store = new FileMemoryStore(tempDir, 'agent_mem_ordered_tool_results');
+      const manager = new MemoryManager({ store });
+      const turnId = manager.startTurn();
+
+      manager.ingestToolResults([
+        new ToolResultEvent('tool_A', 'result A', 'call_A', undefined, undefined, turnId),
+        new ToolResultEvent('tool_B', 'result B', 'call_B', undefined, undefined, turnId)
+      ], turnId, { source: 'native_api_ordered_batch' });
+
+      const messages = manager.getWorkingContextMessages();
+      expect(messages.map((message) => message.role)).toEqual([MessageRole.TOOL, MessageRole.TOOL]);
+      expect(messages.map((message) => (message.tool_payload as any).toolCallId)).toEqual(['call_A', 'call_B']);
+      const rawItems = store.list(MemoryType.RAW_TRACE) as RawTraceItem[];
+      expect(rawItems.map((item) => item.sourceEvent)).toEqual([
+        'native_api_ordered_batch',
+        'native_api_ordered_batch'
+      ]);
+    } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
   it('can skip appending assistant response to working context snapshot', () => {
     const tempDir = makeTempDir();
     try {

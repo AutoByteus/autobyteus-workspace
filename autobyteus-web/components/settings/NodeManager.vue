@@ -1,230 +1,234 @@
 <template>
-  <div class="h-full flex flex-col overflow-hidden">
-    <div class="flex items-center justify-between px-8 pt-8 pb-4 flex-shrink-0">
+  <div class="h-full flex flex-col overflow-hidden bg-slate-50">
+    <div class="flex flex-shrink-0 items-center justify-between border-b border-slate-200 bg-white/95 px-8 py-5">
       <h2 class="text-xl font-semibold text-gray-900">{{ $t('settings.components.settings.NodeManager.node_manager') }}</h2>
     </div>
 
-    <div class="flex-1 overflow-auto p-8 space-y-6">
-      <section class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h3 class="text-sm font-semibold text-blue-800">{{ $t('settings.components.settings.NodeManager.current_window_node') }}</h3>
-        <p class="mt-2 text-sm text-blue-900">
-          {{ currentNode?.name || $t('settings.components.settings.NodeManager.currentNodeUnknown') }}
-          <span class="ml-2 text-xs uppercase tracking-wide px-2 py-0.5 rounded bg-blue-100 text-blue-700">
-            {{ currentNodeTypeLabel }}
-          </span>
-        </p>
-        <p v-if="currentNode?.baseUrl" class="mt-1 text-xs text-blue-700 font-mono">
-          {{ currentNode.baseUrl }}
-        </p>
-      </section>
+    <div class="flex-1 overflow-auto px-6 py-6 lg:px-8">
+      <div class="mx-auto w-full max-w-7xl space-y-5">
+        <section class="rounded-2xl border border-blue-100 bg-white p-5 shadow-sm">
+          <h3 class="text-sm font-semibold text-slate-900">{{ $t('settings.components.settings.NodeManager.current_window_node') }}</h3>
+          <p class="mt-2 text-sm text-slate-700">
+            {{ currentNode?.name || $t('settings.components.settings.NodeManager.currentNodeUnknown') }}
+            <span class="ml-2 rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-blue-700">
+              {{ currentNodeTypeLabel }}
+            </span>
+          </p>
+          <p v-if="currentNode?.baseUrl" class="mt-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-mono text-xs text-slate-600">
+            {{ currentNode.baseUrl }}
+          </p>
+        </section>
 
-      <RemoteBrowserSharingPanel />
+        <RemoteBrowserSharingPanel />
 
-      <section class="border border-gray-200 rounded-lg p-4">
-        <h3 class="text-sm font-semibold text-gray-900">{{ $t('settings.components.settings.NodeManager.add_remote_node') }}</h3>
-        <p class="text-xs text-gray-500 mt-1">{{ $t('settings.components.settings.NodeManager.add_a_node_and_optionally_bootstrap') }}</p>
+        <DockerNodeStartGuideCard />
 
-        <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
-          <input
-            v-model="addForm.name"
-            type="text"
-            :placeholder="$t('settings.components.settings.NodeManager.node_name')"
-            class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
-            data-testid="node-name-input"
-          />
-          <input
-            v-model="addForm.baseUrl"
-            type="text"
-            :placeholder="$t('settings.components.settings.NodeManager.http_host_port')"
-            class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm font-mono"
-            data-testid="node-url-input"
-          />
-        </div>
+        <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <h3 class="text-sm font-semibold text-gray-900">{{ $t('settings.components.settings.NodeManager.add_remote_node') }}</h3>
+          <p class="text-xs text-gray-500 mt-1">{{ $t('settings.components.settings.NodeManager.add_a_node_and_optionally_bootstrap') }}</p>
 
-        <div class="mt-3 flex items-center gap-2">
-          <button
-            class="px-4 py-2 rounded-md bg-blue-600 text-white text-sm disabled:opacity-50"
-            :disabled="isAdding || isSyncingBootstrap"
-            @click="onAddRemoteNode"
-            data-testid="add-node-button"
-          >
-            {{ isAdding ? $t('settings.components.settings.NodeManager.adding') : $t('settings.components.settings.NodeManager.addNode') }}
-          </button>
-        </div>
-
-        <label class="mt-3 flex items-center gap-2 text-sm text-gray-700">
-          <input
-            v-model="bootstrapSyncOnAdd"
-            type="checkbox"
-            class="rounded border-gray-300"
-            data-testid="bootstrap-sync-on-add"
-          />{{ $t('settings.components.settings.NodeManager.bootstrap_sync_from_current_window_node') }}</label>
-
-        <p v-if="isSyncingBootstrap" class="mt-2 text-xs text-blue-700">{{ $t('settings.components.settings.NodeManager.running_bootstrap_sync') }}</p>
-        <p v-if="addError" class="mt-2 text-sm text-red-600" data-testid="add-node-error">
-          {{ addError }}
-        </p>
-        <p v-if="addInfo" class="mt-2 text-sm text-blue-600" data-testid="add-node-info">
-          {{ addInfo }}
-        </p>
-        <ul v-if="addWarnings.length > 0" class="mt-2 text-xs text-amber-700 list-disc list-inside">
-          <li v-for="warning in addWarnings" :key="warning">{{ warning }}</li>
-        </ul>
-      </section>
-
-      <section class="border border-gray-200 rounded-lg p-4">
-        <h3 class="text-sm font-semibold text-gray-900">{{ $t('settings.components.settings.NodeManager.run_full_sync') }}</h3>
-        <p class="mt-1 text-xs text-gray-500">{{ $t('settings.components.settings.NodeManager.select_one_source_node_and_one') }}</p>
-
-        <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
-          <div>
-            <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-600">{{ $t('settings.components.settings.NodeManager.source_node') }}</label>
-            <select
-              v-model="fullSyncSourceNodeId"
-              class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
-              data-testid="full-sync-source-select"
-            >
-              <option v-for="node in nodeStore.nodes" :key="node.id" :value="node.id">
-                {{ node.name }} ({{ node.baseUrl }})
-              </option>
-            </select>
+          <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
+            <input
+              v-model="addForm.name"
+              type="text"
+              :placeholder="$t('settings.components.settings.NodeManager.node_name')"
+              class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm transition focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100"
+              data-testid="node-name-input"
+            />
+            <input
+              v-model="addForm.baseUrl"
+              type="text"
+              :placeholder="$t('settings.components.settings.NodeManager.http_host_port')"
+              class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm shadow-sm transition focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100"
+              data-testid="node-url-input"
+            />
           </div>
-        </div>
 
-        <div class="mt-4">
-          <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-600">{{ $t('settings.components.settings.NodeManager.target_nodes') }}</p>
-          <div v-if="availableTargetNodes.length === 0" class="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700">{{ $t('settings.components.settings.NodeManager.no_target_nodes_available_add_at') }}</div>
-          <div v-else class="space-y-2">
-            <label
-              v-for="node in availableTargetNodes"
-              :key="node.id"
-              class="flex items-center gap-2 rounded-md border border-gray-200 px-3 py-2 hover:bg-gray-50"
+          <div class="mt-3 flex items-center gap-2">
+            <button
+              class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 disabled:opacity-50"
+              :disabled="isAdding || isSyncingBootstrap"
+              @click="onAddRemoteNode"
+              data-testid="add-node-button"
             >
-              <input
-                v-model="fullSyncTargetNodeIds"
-                type="checkbox"
-                :value="node.id"
-                :data-testid="`full-sync-target-${node.id}`"
-                class="rounded border-gray-300"
-              />
-              <span class="text-sm text-gray-800">{{ node.name }}</span>
-              <span class="ml-auto text-xs font-mono text-gray-500">{{ node.baseUrl }}</span>
-            </label>
+              {{ isAdding ? $t('settings.components.settings.NodeManager.adding') : $t('settings.components.settings.NodeManager.addNode') }}
+            </button>
           </div>
-        </div>
 
-        <div class="mt-4">
-          <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-600">{{ $t('settings.components.settings.NodeManager.scope') }}</p>
-          <div class="flex flex-wrap gap-3">
-            <label
-              v-for="scopeOption in scopeOptions"
-              :key="scopeOption.value"
-              class="inline-flex items-center gap-2 rounded-md border border-gray-200 px-3 py-1.5 text-sm text-gray-700"
-            >
-              <input
-                v-model="fullSyncScope"
-                type="checkbox"
-                :value="scopeOption.value"
-                class="rounded border-gray-300"
-              />
-              {{ $t(scopeOption.labelKey) }}
-            </label>
+          <label class="mt-3 flex items-center gap-2 text-sm text-gray-700">
+            <input
+              v-model="bootstrapSyncOnAdd"
+              type="checkbox"
+              class="rounded border-slate-300 text-blue-600 focus:ring-blue-200"
+              data-testid="bootstrap-sync-on-add"
+            />{{ $t('settings.components.settings.NodeManager.bootstrap_sync_from_current_window_node') }}</label>
+
+          <p v-if="isSyncingBootstrap" class="mt-2 text-xs text-blue-700">{{ $t('settings.components.settings.NodeManager.running_bootstrap_sync') }}</p>
+          <p v-if="addError" class="mt-2 text-sm text-red-600" data-testid="add-node-error">
+            {{ addError }}
+          </p>
+          <p v-if="addInfo" class="mt-2 text-sm text-blue-600" data-testid="add-node-info">
+            {{ addInfo }}
+          </p>
+          <ul v-if="addWarnings.length > 0" class="mt-2 text-xs text-amber-700 list-disc list-inside">
+            <li v-for="warning in addWarnings" :key="warning">{{ warning }}</li>
+          </ul>
+        </section>
+
+        <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <h3 class="text-sm font-semibold text-gray-900">{{ $t('settings.components.settings.NodeManager.run_full_sync') }}</h3>
+          <p class="mt-1 text-xs text-gray-500">{{ $t('settings.components.settings.NodeManager.select_one_source_node_and_one') }}</p>
+
+          <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-600">{{ $t('settings.components.settings.NodeManager.source_node') }}</label>
+              <select
+                v-model="fullSyncSourceNodeId"
+                class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm transition focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100"
+                data-testid="full-sync-source-select"
+              >
+                <option v-for="node in nodeStore.nodes" :key="node.id" :value="node.id">
+                  {{ node.name }} ({{ node.baseUrl }})
+                </option>
+              </select>
+            </div>
           </div>
-        </div>
 
-        <div class="mt-4 flex items-center gap-2">
-          <button
-            class="px-4 py-2 rounded-md bg-blue-600 text-white text-sm disabled:opacity-50"
-            :disabled="isRunningFullSync"
-            @click="onRunFullSync"
-            data-testid="full-sync-run-button"
-          >
-            {{ isRunningFullSync ? $t('settings.components.settings.NodeManager.syncing') : $t('settings.components.settings.NodeManager.run_full_sync') }}
-          </button>
-        </div>
-
-        <p v-if="fullSyncError" class="mt-2 text-sm text-red-600" data-testid="full-sync-error">
-          {{ fullSyncError }}
-        </p>
-        <p v-if="fullSyncInfo" class="mt-2 text-sm text-blue-600" data-testid="full-sync-info">
-          {{ fullSyncInfo }}
-        </p>
-        <NodeSyncReportPanel
-          v-if="fullSyncReport"
-          :report="fullSyncReport"
-          :title="$t('settings.components.settings.NodeManager.full_sync_report')"
-          data-testid="full-sync-report"
-        />
-      </section>
-
-      <section class="border border-gray-200 rounded-lg overflow-hidden">
-        <div class="px-4 py-3 bg-gray-50 border-b border-gray-200">
-          <h3 class="text-sm font-semibold text-gray-900">{{ $t('settings.components.settings.NodeManager.configured_nodes') }}</h3>
-        </div>
-
-        <div class="divide-y divide-gray-200">
-          <div
-            v-for="node in nodeStore.nodes"
-            :key="node.id"
-            class="px-4 py-3 flex flex-col gap-3 md:flex-row md:items-center md:justify-between"
-          >
-            <div class="min-w-0 flex-1">
-              <div class="flex items-center gap-2">
+          <div class="mt-4">
+            <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-600">{{ $t('settings.components.settings.NodeManager.target_nodes') }}</p>
+            <div v-if="availableTargetNodes.length === 0" class="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700">{{ $t('settings.components.settings.NodeManager.no_target_nodes_available_add_at') }}</div>
+            <div v-else class="space-y-2">
+              <label
+                v-for="node in availableTargetNodes"
+                :key="node.id"
+                class="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 shadow-sm transition hover:border-blue-200 hover:bg-blue-50/40"
+              >
                 <input
-                  v-model="renameDrafts[node.id]"
-                  :disabled="node.nodeType === 'embedded' || busyNodeId === node.id"
-                  class="w-full md:max-w-sm rounded-md border border-gray-300 px-2 py-1.5 text-sm"
-                  :data-testid="`node-name-${node.id}`"
+                  v-model="fullSyncTargetNodeIds"
+                  type="checkbox"
+                  :value="node.id"
+                  :data-testid="`full-sync-target-${node.id}`"
+                  class="rounded border-slate-300 text-blue-600 focus:ring-blue-200"
                 />
-                <span class="text-xs uppercase tracking-wide px-2 py-0.5 rounded bg-gray-100 text-gray-700">
-                  {{ nodeTypeLabel(node.nodeType) }}
-                </span>
-                <span
-                  class="text-xs px-2 py-0.5 rounded"
-                  :class="{
-                    'bg-green-100 text-green-700': node.capabilityProbeState === 'ready',
-                    'bg-amber-100 text-amber-700': node.capabilityProbeState === 'degraded',
-                    'bg-gray-100 text-gray-700': !node.capabilityProbeState || node.capabilityProbeState === 'unknown',
-                  }"
-                >
-                  {{ capabilityStateLabel(node.capabilityProbeState) }}
-                </span>
-              </div>
-              <p class="mt-1 text-xs text-gray-500 font-mono break-all">{{ node.baseUrl }}</p>
-            </div>
-
-            <div class="flex items-center gap-2">
-              <RemoteNodePairingControls :node="node" />
-              <button
-                class="px-3 py-1.5 rounded-md border border-gray-300 text-sm text-gray-700 hover:bg-gray-50"
-                @click="onFocusNode(node.id)"
-                :disabled="isNodeBusy(node.id)"
-                :data-testid="`focus-node-${node.id}`"
-              >
-                {{ $t('settings.components.settings.NodeManager.open') }}
-              </button>
-              <button
-                v-if="node.nodeType === 'remote'"
-                class="px-3 py-1.5 rounded-md border border-blue-300 text-sm text-blue-700 hover:bg-blue-50"
-                @click="onRenameNode(node.id)"
-                :disabled="isNodeBusy(node.id)"
-                :data-testid="`rename-node-${node.id}`"
-              >
-                {{ $t('settings.components.settings.NodeManager.rename') }}
-              </button>
-              <button
-                v-if="node.nodeType === 'remote'"
-                class="px-3 py-1.5 rounded-md border border-red-300 text-sm text-red-700 hover:bg-red-50"
-                @click="onRemoveRemoteNode(node.id)"
-                :disabled="isNodeBusy(node.id)"
-                :data-testid="`remove-node-${node.id}`"
-              >
-                {{ $t('settings.components.settings.NodeManager.remove') }}
-              </button>
+                <span class="text-sm text-gray-800">{{ node.name }}</span>
+                <span class="ml-auto text-xs font-mono text-gray-500">{{ node.baseUrl }}</span>
+              </label>
             </div>
           </div>
-        </div>
-      </section>
+
+          <div class="mt-4">
+            <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-600">{{ $t('settings.components.settings.NodeManager.scope') }}</p>
+            <div class="flex flex-wrap gap-3">
+              <label
+                v-for="scopeOption in scopeOptions"
+                :key="scopeOption.value"
+                class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-700"
+              >
+                <input
+                  v-model="fullSyncScope"
+                  type="checkbox"
+                  :value="scopeOption.value"
+                  class="rounded border-slate-300 text-blue-600 focus:ring-blue-200"
+                />
+                {{ $t(scopeOption.labelKey) }}
+              </label>
+            </div>
+          </div>
+
+          <div class="mt-4 flex items-center gap-2">
+            <button
+              class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 disabled:opacity-50"
+              :disabled="isRunningFullSync"
+              @click="onRunFullSync"
+              data-testid="full-sync-run-button"
+            >
+              {{ isRunningFullSync ? $t('settings.components.settings.NodeManager.syncing') : $t('settings.components.settings.NodeManager.run_full_sync') }}
+            </button>
+          </div>
+
+          <p v-if="fullSyncError" class="mt-2 text-sm text-red-600" data-testid="full-sync-error">
+            {{ fullSyncError }}
+          </p>
+          <p v-if="fullSyncInfo" class="mt-2 text-sm text-blue-600" data-testid="full-sync-info">
+            {{ fullSyncInfo }}
+          </p>
+          <NodeSyncReportPanel
+            v-if="fullSyncReport"
+            :report="fullSyncReport"
+            :title="$t('settings.components.settings.NodeManager.full_sync_report')"
+            data-testid="full-sync-report"
+          />
+        </section>
+
+        <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <div class="border-b border-slate-200 bg-slate-50 px-5 py-4">
+            <h3 class="text-sm font-semibold text-gray-900">{{ $t('settings.components.settings.NodeManager.configured_nodes') }}</h3>
+          </div>
+
+          <div class="divide-y divide-slate-100">
+            <div
+              v-for="node in nodeStore.nodes"
+              :key="node.id"
+              class="flex flex-col gap-3 px-5 py-4 transition hover:bg-slate-50/80 md:flex-row md:items-center md:justify-between"
+            >
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2">
+                  <input
+                    v-model="renameDrafts[node.id]"
+                    :disabled="node.nodeType === 'embedded' || busyNodeId === node.id"
+                    class="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-sm shadow-sm transition disabled:bg-slate-50 disabled:text-slate-500 md:max-w-sm"
+                    :data-testid="`node-name-${node.id}`"
+                  />
+                  <span class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-slate-700">
+                    {{ nodeTypeLabel(node.nodeType) }}
+                  </span>
+                  <span
+                    class="rounded-full px-2.5 py-1 text-xs font-semibold"
+                    :class="{
+                      'bg-green-100 text-green-700': node.capabilityProbeState === 'ready',
+                      'bg-amber-100 text-amber-700': node.capabilityProbeState === 'degraded',
+                      'bg-gray-100 text-gray-700': !node.capabilityProbeState || node.capabilityProbeState === 'unknown',
+                    }"
+                  >
+                    {{ capabilityStateLabel(node.capabilityProbeState) }}
+                  </span>
+                </div>
+                <p class="mt-1 text-xs text-gray-500 font-mono break-all">{{ node.baseUrl }}</p>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <RemoteNodePairingControls :node="node" />
+                <button
+                  class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
+                  @click="onFocusNode(node.id)"
+                  :disabled="isNodeBusy(node.id)"
+                  :data-testid="`focus-node-${node.id}`"
+                >
+                  {{ $t('settings.components.settings.NodeManager.open') }}
+                </button>
+                <button
+                  v-if="node.nodeType === 'remote'"
+                  class="rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-700 transition hover:border-blue-300 hover:bg-blue-100"
+                  @click="onRenameNode(node.id)"
+                  :disabled="isNodeBusy(node.id)"
+                  :data-testid="`rename-node-${node.id}`"
+                >
+                  {{ $t('settings.components.settings.NodeManager.rename') }}
+                </button>
+                <button
+                  v-if="node.nodeType === 'remote'"
+                  class="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-sm font-medium text-red-700 transition hover:border-red-300 hover:bg-red-100"
+                  @click="onRemoveRemoteNode(node.id)"
+                  :disabled="isNodeBusy(node.id)"
+                  :data-testid="`remove-node-${node.id}`"
+                >
+                  {{ $t('settings.components.settings.NodeManager.remove') }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
     </div>
   </div>
 </template>
@@ -232,6 +236,7 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 import NodeSyncReportPanel from '~/components/sync/NodeSyncReportPanel.vue';
+import DockerNodeStartGuideCard from '~/components/settings/DockerNodeStartGuideCard.vue';
 import RemoteBrowserSharingPanel from '~/components/settings/RemoteBrowserSharingPanel.vue';
 import RemoteNodePairingControls from '~/components/settings/RemoteNodePairingControls.vue';
 import { useLocalization } from '~/composables/useLocalization';

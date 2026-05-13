@@ -1,0 +1,203 @@
+INSTALL_DIR=/tmp/autobyteus-install-e2e.7F4N0h
+STATE_DIR=/tmp/autobyteus-install-state-e2e.4FAkAo
+LAUNCHER=/tmp/autobyteus-install-e2e.7F4N0h/autobyteus-docker
+DATE_UTC=2026-05-12T13:23:50Z
+
+## pre-clean unique validation node if left from an earlier attempt
+
+## start named node with installed launcher
+[AutoByteus Docker] Pulling autobyteus/autobyteus-server:latest
+latest: Pulling from autobyteus/autobyteus-server
+Digest: sha256:8006705559a1b74f88e462e3699cb136895ae8c4b846aa274cb94c51e8be0549
+Status: Image is up to date for autobyteus/autobyteus-server:latest
+docker.io/autobyteus/autobyteus-server:latest
+[AutoByteus Docker] Started e2e-install-node.
+AutoByteus Docker node: e2e-install-node
+Container: e2e-install-node
+Image: autobyteus/autobyteus-server:latest
+Backend: http://localhost:56173
+GraphQL: http://localhost:56173/graphql
+noVNC: http://localhost:56175
+VNC: localhost:56174
+Chrome debug: localhost:56176
+Next step: paste Backend into Add Remote Node in AutoByteus.
+
+## state after named start
+NODE_NAME=e2e-install-node
+CONTAINER_NAME=e2e-install-node
+BACKEND_PORT=56173
+VNC_PORT=56174
+NOVNC_PORT=56175
+DEBUG_PORT=56176
+IMAGE_REF=autobyteus/autobyteus-server:latest
+CREATED_AT=2026-05-12T13:23:50Z
+UPDATED_AT=2026-05-12T13:23:54Z
+
+## wait for named backend health
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+{"status":"ok","message":"Server is running"}
+health ok on attempt 4
+
+## GraphQL typename probe
+{"data":{"__typename":"Query"}}
+
+## urls/status/logs for named node
+AutoByteus Docker node: e2e-install-node
+Container: e2e-install-node
+Image: autobyteus/autobyteus-server:latest
+Backend: http://localhost:56173
+GraphQL: http://localhost:56173/graphql
+noVNC: http://localhost:56175
+VNC: localhost:56174
+Chrome debug: localhost:56176
+Next step: paste Backend into Add Remote Node in AutoByteus.
+NODE                     CONTAINER                STATUS         BACKEND
+e2e-install-node         e2e-install-node         running        http://localhost:56173 (autobyteus/autobyteus-server:latest)
+2026-05-12 13:23:59,712 DEBG 'autobyteus_server' stdout output:
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+
+2026-05-12 13:24:00,715 INFO reaped unknown pid 472 (exit status 0)
+2026-05-12 13:24:00,715 DEBG received SIGCHLD indicating a child quit
+2026-05-12 13:24:00,797 DEBG 'chrome' stderr output:
+[45:113:0512/132400.797761:ERROR:google_apis/gcm/engine/mcs_client.cc:700]   Error code: 401  Error message: Authentication Failed: wrong_secret
+[45:113:0512/132400.797783:ERROR:google_apis/gcm/engine/mcs_client.cc:702] Failed to log in to GCM, resetting connection.
+
+2026-05-12 13:24:00,798 DEBG 'chrome' stderr output:
+[45:113:0512/132400.798222:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+
+2026-05-12 13:24:00,799 DEBG 'chrome' stderr output:
+[45:113:0512/132400.799538:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+
+2026-05-12 13:24:00,800 DEBG 'chrome' stderr output:
+[45:113:0512/132400.799918:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+
+
+## start --new with installed launcher
+[AutoByteus Docker] Pulling autobyteus/autobyteus-server:latest
+latest: Pulling from autobyteus/autobyteus-server
+Digest: sha256:8006705559a1b74f88e462e3699cb136895ae8c4b846aa274cb94c51e8be0549
+Status: Image is up to date for autobyteus/autobyteus-server:latest
+docker.io/autobyteus/autobyteus-server:latest
+[AutoByteus Docker] Started autobyteus-server-2.
+AutoByteus Docker node: autobyteus-server-2
+Container: autobyteus-server-2
+Image: autobyteus/autobyteus-server:latest
+Backend: http://localhost:56209
+GraphQL: http://localhost:56209/graphql
+noVNC: http://localhost:56211
+VNC: localhost:56210
+Chrome debug: localhost:56212
+Next step: paste Backend into Add Remote Node in AutoByteus.
+NEW_NAME=autobyteus-server-2
+
+## state after start --new
+NODE_NAME=autobyteus-server-2
+CONTAINER_NAME=autobyteus-server-2
+BACKEND_PORT=56209
+VNC_PORT=56210
+NOVNC_PORT=56211
+DEBUG_PORT=56212
+IMAGE_REF=autobyteus/autobyteus-server:latest
+CREATED_AT=2026-05-12T13:24:01Z
+UPDATED_AT=2026-05-12T13:24:04Z
+
+## wait for new-node backend health
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+{"status":"ok","message":"Server is running"}
+new-node health ok on attempt 4
+
+NODE                     CONTAINER                STATUS         BACKEND
+autobyteus-server-2      autobyteus-server-2      running        http://localhost:56209 (autobyteus/autobyteus-server:latest)
+e2e-install-node         e2e-install-node         running        http://localhost:56173 (autobyteus/autobyteus-server:latest)
+
+## stale occupied noVNC port retry using Docker-published 6080
+## edited stale state
+NODE_NAME=e2e-install-node
+CONTAINER_NAME=e2e-install-node
+BACKEND_PORT=56173
+VNC_PORT=56174
+NOVNC_PORT=6080
+DEBUG_PORT=56176
+IMAGE_REF=autobyteus/autobyteus-server:latest
+CREATED_AT=2026-05-12T13:23:50Z
+UPDATED_AT=2026-05-12T13:23:54Z
+
+[AutoByteus Docker] Pulling autobyteus/autobyteus-server:latest
+latest: Pulling from autobyteus/autobyteus-server
+Digest: sha256:8006705559a1b74f88e462e3699cb136895ae8c4b846aa274cb94c51e8be0549
+Status: Image is up to date for autobyteus/autobyteus-server:latest
+docker.io/autobyteus/autobyteus-server:latest
+[AutoByteus Docker] Port bind failed; retrying with fresh ports (attempt 2/5).
+[AutoByteus Docker] Port bind failed; retrying with fresh ports (attempt 3/5).
+[AutoByteus Docker] Started e2e-install-node.
+AutoByteus Docker node: e2e-install-node
+Container: e2e-install-node
+Image: autobyteus/autobyteus-server:latest
+Backend: http://localhost:56262
+GraphQL: http://localhost:56262/graphql
+noVNC: http://localhost:56264
+VNC: localhost:56263
+Chrome debug: localhost:56265
+Next step: paste Backend into Add Remote Node in AutoByteus.
+
+## state after retry
+NODE_NAME=e2e-install-node
+CONTAINER_NAME=e2e-install-node
+BACKEND_PORT=56262
+VNC_PORT=56263
+NOVNC_PORT=56264
+DEBUG_PORT=56265
+IMAGE_REF=autobyteus/autobyteus-server:latest
+CREATED_AT=2026-05-12T13:23:50Z
+UPDATED_AT=2026-05-12T13:24:20Z
+
+## wait for retry backend health
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+{"status":"ok","message":"Server is running"}
+retry health ok on attempt 4
+
+AutoByteus Docker node: e2e-install-node
+Container: e2e-install-node
+Image: autobyteus/autobyteus-server:latest
+Backend: http://localhost:56262
+GraphQL: http://localhost:56262/graphql
+noVNC: http://localhost:56264
+VNC: localhost:56263
+Chrome debug: localhost:56265
+Next step: paste Backend into Add Remote Node in AutoByteus.
+NODE                     CONTAINER                STATUS         BACKEND
+autobyteus-server-2      autobyteus-server-2      running        http://localhost:56209 (autobyteus/autobyteus-server:latest)
+e2e-install-node         e2e-install-node         running        http://localhost:56262 (autobyteus/autobyteus-server:latest)
+
+## stop --all in validation state dir
+[AutoByteus Docker] Stopped autobyteus-server-2. Named volumes were kept.
+[AutoByteus Docker] Stopped e2e-install-node. Named volumes were kept.
+
+## status after stop --all
+NODE                     CONTAINER                STATUS         BACKEND
+autobyteus-server-2      autobyteus-server-2      exited         http://localhost:56209 (autobyteus/autobyteus-server:latest)
+e2e-install-node         e2e-install-node         exited         http://localhost:56262 (autobyteus/autobyteus-server:latest)
+
+## cleanup validation containers and unique volumes
+cleanup complete for e2e-install-node and autobyteus-server-2
+
+## docker ps after validation cleanup (pre-existing managed default should remain)
+NAMES                                     STATUS             PORTS                                                                                                                                                                                        launcher
+autobyteus-server                         Up About an hour   0.0.0.0:5908->5900/tcp, [::]:5908->5900/tcp, 0.0.0.0:52448->6080/tcp, [::]:52448->6080/tcp, 0.0.0.0:8001->8000/tcp, [::]:8001->8000/tcp, 0.0.0.0:9228->9223/tcp, [::]:9228->9223/tcp         server-docker
+autobyteus-server-autobyteus-server-1     Up 2 days          0.0.0.0:60635->5900/tcp, [::]:60635->5900/tcp, 0.0.0.0:60637->6080/tcp, [::]:60637->6080/tcp, 0.0.0.0:60634->8000/tcp, [::]:60634->8000/tcp, 0.0.0.0:60638->9223/tcp, [::]:60638->9223/tcp
+llm-server-3                              Up 5 days          0.0.0.0:5905->5900/tcp, [::]:5905->5900/tcp, 0.0.0.0:6085->6080/tcp, [::]:6085->6080/tcp, 0.0.0.0:51743->51739/tcp, [::]:51743->51739/tcp
+llm-server-2                              Up 5 days          0.0.0.0:5903->5900/tcp, [::]:5903->5900/tcp, 0.0.0.0:6083->6080/tcp, [::]:6083->6080/tcp, 0.0.0.0:51741->51739/tcp, [::]:51741->51739/tcp
+llm-server-1                              Up 5 days          0.0.0.0:5902->5900/tcp, [::]:5902->5900/tcp, 0.0.0.0:6082->6080/tcp, [::]:6082->6080/tcp, 0.0.0.0:51740->51739/tcp, [::]:51740->51739/tcp
+llm-server-0                              Up 5 days          0.0.0.0:5900->5900/tcp, [::]:5900->5900/tcp, 0.0.0.0:6080->6080/tcp, [::]:6080->6080/tcp, 0.0.0.0:51739->51739/tcp, [::]:51739->51739/tcp
+llm-server-source-0                       Up 5 days          0.0.0.0:5904->5900/tcp, [::]:5904->5900/tcp, 0.0.0.0:6084->6080/tcp, [::]:6084->6080/tcp, 0.0.0.0:51742->51739/tcp, [::]:51742->51739/tcp
+openclaw-subscription                     Up 5 days          127.0.0.1:9223->9223/tcp, 127.0.0.1:5901->5900/tcp, 127.0.0.1:6081->6080/tcp
+chrome-vnc-tigervnc                       Up 5 days          0.0.0.0:5907->5900/tcp, [::]:5907->5900/tcp, 0.0.0.0:9227->9223/tcp, [::]:9227->9223/tcp
+buildx_buildkit_multi-platform-builder0   Up 5 days

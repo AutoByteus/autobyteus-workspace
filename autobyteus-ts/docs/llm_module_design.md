@@ -121,7 +121,10 @@ Current examples of provider-specific model rules:
 - `deepseek-v4-flash` and `deepseek-v4-pro` use the existing DeepSeek
   OpenAI-compatible adapter with their V4 thinking schema.
 - `kimi-k2.6` disables thinking automatically for tool workflows when the
-  caller has not supplied an explicit thinking override.
+  caller has not supplied an explicit thinking override. `kimi-k2.5` and
+  `kimi-k2.6` also normalize provider-safe temperature defaults: tool
+  workflows use `temperature: 0.6`, non-tool requests use `temperature: 1`, and
+  explicit per-request `temperature` kwargs are preserved.
 
 See `docs/provider_model_catalogs.md` for the catalog ownership map across LLM,
 audio/TTS, and image models.
@@ -174,6 +177,31 @@ src/llm/
 
 This config can be set globally per model in `LLMFactory` or overridden per instance during `createLLM`.
 
+For OpenAI-compatible Chat Completions providers, `OpenAICompatibleRequestBuilder`
+is the single request-body construction boundary. It maps `LLMConfig`
+generation controls to provider fields (`temperature`, `top_p`,
+`frequency_penalty`, `presence_penalty`, `stop`, and
+`max_completion_tokens`), merges `extraParams` for provider-specific extensions,
+filters framework-internal kwargs such as `logicalConversationId` and
+`requestId`, attaches `tools`, and passes `tool_choice` only when a
+lower-level direct caller explicitly supplies `kwargs.tool_choice`. This keeps
+provider request payloads deterministic and prevents
+agent bookkeeping identifiers from leaking to OpenAI-compatible endpoints.
+Provider adapters can still normalize provider-specific request legality before
+delegating to this builder. For example, `KimiLLM` keeps `kimi-k2.5` and
+`kimi-k2.6` on Moonshot-safe temperature defaults unless a caller explicitly
+passes a per-request `temperature`.
+
+Prompt renderers, not `OpenAICompatibleRequestBuilder`, own provider-visible
+message-history extensions. The default `OpenAIChatRenderer` is conservative and
+omits internal `Message.reasoning_content` from generic OpenAI-compatible
+requests. `DeepSeekLLM` explicitly installs `DeepSeekChatRenderer`, which
+replays preserved assistant `Message.reasoning_content` as DeepSeek
+`reasoning_content` on assistant messages, including assistant messages that also
+carry `tool_calls` for thinking-mode continuation. Custom OpenAI-compatible
+endpoints and LM Studio stay on the generic non-emitting renderer unless a future
+provider-capability design opts them in.
+
 ## 6.1 Local Runtime Transport Hardening
 
 LM Studio and Ollama can spend minutes in prompt processing before they emit the
@@ -186,6 +214,12 @@ OpenAI-compatible caller:
 - `LMStudioLLM` injects that fetch helper and also sets a high finite OpenAI SDK
   timeout (`LOCAL_PROVIDER_SDK_TIMEOUT_MS`, currently `24h`) because the SDK
   default is shorter and `timeout: 0` is not a true disable path there.
+- In native API tool-call mode, `LMStudioLLM` uses `OpenAIChatRenderer` so prior
+  tool calls/results are sent as structured OpenAI-compatible history
+  (`assistant.tool_calls` plus `role: "tool"` messages). The legacy
+  `[TOOL_CALL]` / `[TOOL_RESULT]` text history renderer is scoped to explicit
+  text-parser modes only. Native tool-result continuations do not append an
+  additional aggregate `role: "user"` message containing the same tool results.
 - `OllamaLLM` injects the same shared fetch helper through its adapter.
 - Non-local / cloud OpenAI-compatible providers keep default SDK transport
   behavior unless a separate review explicitly widens that policy.
@@ -193,6 +227,43 @@ OpenAI-compatible caller:
 This hardening still matters to compaction when the selected visible compactor
 agent uses a local model and sends a large request before the next parent-agent
 LLM leg is allowed to continue.
+
+## 6.2 Native API Tool-Call History Rendering
+
+In native API tool-call mode, working-context tool history stays semantic until
+the final provider renderer boundary. The runtime stores assistant tool calls as
+`ToolCallPayload` and tool outputs as `ToolResultPayload`; the selected provider
+renderer then maps those entries to provider-native request history instead of
+legacy prompt text.
+
+Current native mappings are:
+
+| Provider path | Native history shape |
+| --- | --- |
+| OpenAI-compatible Chat / LM Studio | `assistant.tool_calls` plus matching `role: "tool"` messages. Generic `OpenAIChatRenderer` omits internal `Message.reasoning_content`. |
+| DeepSeek Chat | Same OpenAI-compatible tool-call/result shape, with `DeepSeekChatRenderer` replaying preserved assistant `Message.reasoning_content` as DeepSeek `reasoning_content` for thinking-mode continuation. |
+| Gemini | model `functionCall` parts plus user `functionResponse` parts, preserving call ids when available. |
+| Ollama | assistant `tool_calls` plus `role: "tool"` result messages with `tool_name`. |
+| Anthropic | assistant `tool_use` blocks plus immediately-following user `tool_result` blocks. |
+| Mistral | assistant `tool_calls` plus `role: "tool"` messages with `tool_call_id` and `name`. |
+| OpenAI Responses | `function_call` items plus `function_call_output` items keyed by `call_id`. |
+
+Renderer selection is mode-aware. `api_tool_call` selects the native provider
+renderer; `xml`, `json`, and `sentinel` select explicit text-history renderers
+so non-native parser modes continue to emit their configured
+`[TOOL_CALL]` / `[TOOL_RESULT]`-style history. Native tool-result continuation
+does not append an additional aggregate user message such as
+`The following tool executions have completed...`, legacy
+`Tool: <name> (ID: ...)` lines, or aggregate `Status: Success` markers; the
+next LLM request is assembled from the existing working context and rendered
+through the provider's native channel.
+
+For parallel tool-call batches, renderers replay results in the original
+assistant tool-call order rather than result completion order. Gemini and
+Anthropic coalesce adjacent result payloads into one provider-valid user result
+turn/block group. Streaming converters may preserve provider-native metadata in
+`nativeToolCallContext` for stateless replay, but the normalized stored
+`id`, `name`, and arguments remain authoritative in the rendered request.
 
 ## 7. Dynamic Model Reloading
 

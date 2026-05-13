@@ -55,12 +55,26 @@ endpoint. The registered V4 schema exposes:
 
 No new DeepSeek transport path is required for these models.
 
+Forced native tool choice is provider/model dependent. Live validation showed
+`deepseek-chat` accepts a `tool_choice: "required"` request with tools, while
+the currently configured `deepseek-v4-flash` / `deepseek-reasoner` forced-tool
+path can be rejected by the provider with a `deepseek-reasoner does not support
+this tool_choice` error. Treat this as a model capability constraint rather
+than a shared request-builder contract; select a capable model or avoid forced
+tool choice where the provider rejects it.
+
 ### Kimi K2.6
 
-`kimi-k2.6` follows the same safe tool-workflow normalization as `kimi-k2.5`:
-when a request uses tools and the caller has not explicitly supplied a
-thinking override, the Kimi adapter sends `thinking: { type: "disabled" }` to
-avoid strict ordering errors in tool-call continuations.
+`kimi-k2.6` follows the same safe request normalization as `kimi-k2.5`:
+
+- when a request uses tools and the caller has not explicitly supplied a
+  thinking override, the Kimi adapter sends `thinking: { type: "disabled" }` to
+  avoid strict ordering errors in tool-call continuations;
+- for `kimi-k2.5` and `kimi-k2.6`, config-level/default temperatures are
+  normalized to provider-safe values before the shared OpenAI-compatible request
+  builder runs: tool workflows use `temperature: 0.6`, non-tool requests use
+  `temperature: 1`, and explicit per-request `temperature` kwargs are
+  preserved.
 
 ### OpenAI GPT Image 2
 

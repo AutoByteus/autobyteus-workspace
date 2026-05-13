@@ -2,6 +2,8 @@
  * Core Message types for LLM interaction.
  */
 
+import type { ProviderNativeToolCallContext } from './tool-call-delta.js';
+
 export enum MessageRole {
   SYSTEM = "system",
   USER = "user",
@@ -13,6 +15,7 @@ export type ToolCallSpec = {
   id: string;
   name: string;
   arguments: Record<string, any>;
+  nativeToolCallContext?: ProviderNativeToolCallContext;
 };
 
 export class ToolCallPayload {
@@ -87,7 +90,8 @@ export class Message {
         tool_calls: this.tool_payload.toolCalls.map((call) => ({
           id: call.id,
           name: call.name,
-          arguments: call.arguments
+          arguments: call.arguments,
+          nativeToolCallContext: call.nativeToolCallContext
         }))
       };
     }

@@ -2,6 +2,7 @@ import { OpenAICompatibleLLM } from './openai-compatible-llm.js';
 import { LLMModel } from '../models.js';
 import { LLMConfig } from '../utils/llm-config.js';
 import { LLMProvider } from '../providers.js';
+import { DeepSeekChatRenderer } from '../prompt-renderers/deepseek-chat-renderer.js';
 
 export class DeepSeekLLM extends OpenAICompatibleLLM {
   constructor(model?: LLMModel, llmConfig?: LLMConfig) {
@@ -17,5 +18,6 @@ export class DeepSeekLLM extends OpenAICompatibleLLM {
     const config = llmConfig ?? new LLMConfig();
 
     super(effectiveModel, 'DEEPSEEK_API_KEY', 'https://api.deepseek.com', config);
+    this._renderer = new DeepSeekChatRenderer();
   }
 }

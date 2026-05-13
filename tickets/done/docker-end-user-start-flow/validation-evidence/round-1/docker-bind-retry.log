@@ -1,0 +1,36 @@
+STATE_DIR=/tmp/autobyteus-docker-e2e.qwRecf
+## stop default node before stale-state bind-retry test
+[AutoByteus Docker] Stopped autobyteus-server. Named volumes were kept.
+occupying stale backend port 8001
+holding 8001
+## restart default; first docker run should bind-fail then retry with fresh ports
+[AutoByteus Docker] Pulling autobyteus/autobyteus-server:latest
+latest: Pulling from autobyteus/autobyteus-server
+Digest: sha256:8006705559a1b74f88e462e3699cb136895ae8c4b846aa274cb94c51e8be0549
+Status: Image is up to date for autobyteus/autobyteus-server:latest
+docker.io/autobyteus/autobyteus-server:latest
+[AutoByteus Docker] Started autobyteus-server.
+AutoByteus Docker node: autobyteus-server
+Container: autobyteus-server
+Image: autobyteus/autobyteus-server:latest
+Backend: http://localhost:8001
+GraphQL: http://localhost:8001/graphql
+noVNC: http://localhost:59841
+VNC: localhost:5908
+Chrome debug: localhost:9228
+Next step: paste Backend into Add Remote Node in AutoByteus.
+holder kill status=0
+## updated default state
+NODE_NAME=autobyteus-server
+CONTAINER_NAME=autobyteus-server
+BACKEND_PORT=8001
+VNC_PORT=5908
+NOVNC_PORT=59841
+DEBUG_PORT=9228
+IMAGE_REF=autobyteus/autobyteus-server:latest
+CREATED_AT=2026-05-12T06:11:32Z
+UPDATED_AT=2026-05-12T06:13:45Z
+## status after retry
+NODE                     CONTAINER                STATUS         BACKEND
+autobyteus-server-2      autobyteus-server-2      running        http://localhost:59897 (autobyteus/autobyteus-server:latest)
+autobyteus-server        autobyteus-server        running        http://localhost:8001 (autobyteus/autobyteus-server:latest)

@@ -1,0 +1,14 @@
+# Delivery integrated raw URL check - 2026-05-12T14:46:13Z
+
+## Git refs
+HEAD=ec09019a9d21c3013f5bdfd0c43f69d4f13c85d5
+origin/personal=d066ac32d77e8caf019d41c083eed04d95b17bdd
+merge-base=d066ac32d77e8caf019d41c083eed04d95b17bdd
+ahead-behind=2	0
+
+## Remote personal ref
+d066ac32d77e8caf019d41c083eed04d95b17bdd	refs/heads/personal
+
+## Raw URL status after base integration, before repository finalization push
+https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.sh -> 404
+https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.ps1 -> 404

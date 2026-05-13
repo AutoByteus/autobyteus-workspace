@@ -22,6 +22,11 @@ export type WorkingContextTurnCheckpoint = {
   lastCompactionTs: number | null;
 };
 
+export type ToolIntentIngestionOptions = {
+  assistantContent?: string | null;
+  assistantReasoning?: string | null;
+};
+
 export class MemoryManager {
   store: MemoryStore;
   turnTracker: TurnTracker;
@@ -113,11 +118,19 @@ export class MemoryManager {
     this.store.add([trace]);
   }
 
-  ingestToolIntent(toolInvocation: ToolInvocation, turnId?: string): void {
-    this.ingestToolIntents([toolInvocation], turnId);
+  ingestToolIntent(
+    toolInvocation: ToolInvocation,
+    turnId?: string,
+    options?: ToolIntentIngestionOptions
+  ): void {
+    this.ingestToolIntents([toolInvocation], turnId, options);
   }
 
-  ingestToolIntents(toolInvocations: ToolInvocation[], turnId?: string): void {
+  ingestToolIntents(
+    toolInvocations: ToolInvocation[],
+    turnId?: string,
+    options?: ToolIntentIngestionOptions
+  ): void {
     if (!toolInvocations.length) {
       return;
     }
@@ -154,41 +167,72 @@ export class MemoryManager {
       toolCalls.push({
         id: invocation.id,
         name: invocation.name,
-        arguments: invocation.arguments
+        arguments: invocation.arguments,
+        nativeToolCallContext: invocation.nativeToolCallContext
       } as ToolCallSpec);
     }
 
     this.store.add(traces);
-    this.workingContextSnapshot.appendToolCalls(toolCalls);
+    this.workingContextSnapshot.appendToolCalls(toolCalls, {
+      content: options?.assistantContent ?? null,
+      reasoningContent: options?.assistantReasoning ?? null
+    });
   }
 
   ingestToolResult(event: ToolResultEvent, turnId?: string): void {
-    const effectiveTurnId = event.turnId ?? turnId;
-    if (!effectiveTurnId) {
-      throw new Error('turnId is required to ingest tool result');
+    this.ingestToolResults([event], turnId);
+  }
+
+  ingestToolResults(
+    events: ToolResultEvent[],
+    turnId?: string,
+    options?: { source?: string }
+  ): void {
+    if (!events.length) {
+      return;
     }
 
-    const trace = new RawTraceItem({
-      id: `rt_${Date.now()}`,
-      ts: Date.now() / 1000,
-      turnId: effectiveTurnId,
-      seq: this.nextSeq(effectiveTurnId),
-      traceType: 'tool_result',
-      content: '',
-      sourceEvent: 'ToolResultEvent',
-      toolName: event.toolName,
-      toolCallId: event.toolInvocationId ?? null,
-      toolArgs: event.toolArgs ?? null,
-      toolResult: event.result,
-      toolError: event.error ?? null
-    });
+    const traces: RawTraceItem[] = [];
+    let effectiveTurnId: string | null = null;
+    const sourceEvent = options?.source ?? 'ToolResultEvent';
 
-    this.store.add([trace]);
-    this.workingContextSnapshot.appendToolResult(
-      event.toolInvocationId ?? '',
-      event.toolName,
-      event.result,
-      event.error ?? null
+    for (const event of events) {
+      const eventTurnId = event.turnId ?? turnId;
+      if (!eventTurnId) {
+        throw new Error('turnId is required to ingest tool result');
+      }
+      if (!effectiveTurnId) {
+        effectiveTurnId = eventTurnId;
+      } else if (effectiveTurnId !== eventTurnId) {
+        throw new Error('All tool results in a batch must belong to the same turnId');
+      }
+
+      traces.push(
+        new RawTraceItem({
+          id: `rt_${Date.now()}_${event.toolInvocationId ?? traces.length}`,
+          ts: Date.now() / 1000,
+          turnId: eventTurnId,
+          seq: this.nextSeq(eventTurnId),
+          traceType: 'tool_result',
+          content: '',
+          sourceEvent,
+          toolName: event.toolName,
+          toolCallId: event.toolInvocationId ?? null,
+          toolArgs: event.toolArgs ?? null,
+          toolResult: event.result,
+          toolError: event.error ?? null
+        })
+      );
+    }
+
+    this.store.add(traces);
+    this.workingContextSnapshot.appendToolResults(
+      events.map((event) => ({
+        toolCallId: event.toolInvocationId ?? '',
+        toolName: event.toolName,
+        toolResult: event.result,
+        toolError: event.error ?? null
+      }))
     );
   }
 

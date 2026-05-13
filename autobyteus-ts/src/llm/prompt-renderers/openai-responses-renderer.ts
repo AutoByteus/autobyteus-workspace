@@ -2,6 +2,7 @@ import { BasePromptRenderer } from './base-prompt-renderer.js';
 import {
   Message,
   ToolCallPayload,
+  ToolCallSpec,
   ToolResultPayload
 } from '../utils/messages.js';
 import {
@@ -10,29 +11,37 @@ import {
   getMimeType,
   isValidMediaPath
 } from '../utils/media-payload-formatter.js';
+import {
+  stringifyJsonArguments,
+  stringifyToolResultForProvider,
+} from './native-tool-payload-format.js';
 
-type RenderedMessage = Record<string, any>;
+export type OpenAIResponsesRenderedItem = Record<string, any>;
+type OrderedResultGroup = { results: ToolResultPayload[]; consumed: number };
 
 export class OpenAIResponsesRenderer extends BasePromptRenderer {
-  async render(messages: Message[]): Promise<RenderedMessage[]> {
-    const rendered: RenderedMessage[] = [];
+  async render(messages: Message[]): Promise<OpenAIResponsesRenderedItem[]> {
+    const rendered: OpenAIResponsesRenderedItem[] = [];
 
-    for (const msg of messages) {
+    for (let index = 0; index < messages.length; index += 1) {
+      const msg = messages[index];
+
       if (msg.tool_payload instanceof ToolCallPayload) {
-        rendered.push({
-          type: 'message',
-          role: 'assistant',
-          content: formatToolCalls(msg.tool_payload)
-        });
+        const payload = msg.tool_payload;
+        for (const call of payload.toolCalls) {
+          rendered.push(this.renderToolCall(call));
+        }
+
+        const group = this.collectFollowingResults(messages, index + 1, payload.toolCalls);
+        for (const result of group.results) {
+          rendered.push(this.renderToolResult(result));
+        }
+        index += group.consumed;
         continue;
       }
 
       if (msg.tool_payload instanceof ToolResultPayload) {
-        rendered.push({
-          type: 'message',
-          role: 'user',
-          content: formatToolResult(msg.tool_payload)
-        });
+        rendered.push(this.renderToolResult(msg.tool_payload));
         continue;
       }
 
@@ -47,9 +56,9 @@ export class OpenAIResponsesRenderer extends BasePromptRenderer {
           msg.image_urls.map((url) => mediaSourceToBase64(url))
         );
 
-        for (let index = 0; index < base64Images.length; index += 1) {
-          const result = base64Images[index];
-          const source = msg.image_urls[index];
+        for (let imageIndex = 0; imageIndex < base64Images.length; imageIndex += 1) {
+          const result = base64Images[imageIndex];
+          const source = msg.image_urls[imageIndex];
           if (result.status !== 'fulfilled') {
             console.error(`Error processing image ${source}: ${result.reason}`);
             continue;
@@ -66,8 +75,6 @@ export class OpenAIResponsesRenderer extends BasePromptRenderer {
         }
 
         if (msg.audio_urls.length) {
-          // The OpenAI Responses API in this codebase path does not currently accept input_audio
-          // as message content; keep graceful degradation instead of sending invalid payloads.
           console.warn('OpenAI Responses input audio is not supported in this runtime path; skipping.');
         }
         if (msg.video_urls.length) {
@@ -91,23 +98,61 @@ export class OpenAIResponsesRenderer extends BasePromptRenderer {
 
     return rendered;
   }
-}
 
-function formatToolCalls(payload: ToolCallPayload): string {
-  return payload.toolCalls
-    .map((call) => `[TOOL_CALL] ${call.name} ${JSON.stringify(call.arguments)}`)
-    .join('\n');
-}
+  private renderToolCall(call: ToolCallSpec): OpenAIResponsesRenderedItem {
+    const nativeContext = call.nativeToolCallContext;
+    if (nativeContext?.provider === 'openai_responses' && nativeContext.functionCallItem) {
+      return {
+        ...nativeContext.functionCallItem,
+        type: 'function_call',
+        id: nativeContext.functionCallItem.id ?? call.id,
+        call_id: call.id,
+        name: call.name,
+        arguments: stringifyJsonArguments(call.arguments),
+        status: nativeContext.functionCallItem.status ?? 'completed'
+      };
+    }
 
-function formatToolResult(payload: ToolResultPayload): string {
-  if (payload.toolError) {
-    return `[TOOL_ERROR] ${payload.toolName} ${payload.toolError}`;
+    return {
+      type: 'function_call',
+      id: call.id,
+      call_id: call.id,
+      name: call.name,
+      arguments: stringifyJsonArguments(call.arguments),
+      status: 'completed'
+    };
   }
-  if (payload.toolResult === null || payload.toolResult === undefined) {
-    return `[TOOL_RESULT] ${payload.toolName}`;
+
+  private renderToolResult(payload: ToolResultPayload): OpenAIResponsesRenderedItem {
+    return {
+      type: 'function_call_output',
+      call_id: payload.toolCallId,
+      output: stringifyToolResultForProvider(payload.toolResult, payload.toolError)
+    };
   }
-  const resultText = Array.isArray(payload.toolResult) || typeof payload.toolResult === 'object'
-    ? JSON.stringify(payload.toolResult)
-    : String(payload.toolResult);
-  return `[TOOL_RESULT] ${payload.toolName} ${resultText}`;
+
+  private collectFollowingResults(
+    messages: Message[],
+    startIndex: number,
+    toolCalls: ToolCallSpec[]
+  ): OrderedResultGroup {
+    const order = new Map(toolCalls.map((call, index) => [call.id, index]));
+    const results: ToolResultPayload[] = [];
+    let consumed = 0;
+
+    for (let idx = startIndex; idx < messages.length; idx += 1) {
+      const payload = messages[idx].tool_payload;
+      if (!(payload instanceof ToolResultPayload) || !order.has(payload.toolCallId)) {
+        break;
+      }
+      results.push(payload);
+      consumed += 1;
+    }
+
+    results.sort(
+      (left, right) => (order.get(left.toolCallId) ?? Number.MAX_SAFE_INTEGER) -
+        (order.get(right.toolCallId) ?? Number.MAX_SAFE_INTEGER)
+    );
+    return { results, consumed };
+  }
 }

@@ -40,6 +40,10 @@ export function convertOllamaToolCalls(toolCalls: OllamaToolCall[] | null | unde
     index: typeof toolCall.function?.index === 'number' ? toolCall.function.index : fallbackIndex,
     call_id: toolCall.id || undefined,
     name: toolCall.function?.name || undefined,
-    arguments_delta: serializeOllamaToolArguments(toolCall.function?.arguments)
+    arguments_delta: serializeOllamaToolArguments(toolCall.function?.arguments),
+    native_context: {
+      provider: 'ollama',
+      toolCall: toolCall as unknown as Record<string, unknown>
+    }
   }));
 }

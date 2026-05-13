@@ -85,7 +85,9 @@ export class LlmPhase {
     try {
       request = await turn.executionScope.runAbortable(
         { kind: 'llm_request_assembly' },
-        () => assembler.prepareRequest(input.llmUserMessage, activeTurnId, systemPrompt ?? undefined)
+        () => input.llmRequestMode === 'tool_history_only'
+          ? assembler.prepareToolContinuationRequest(activeTurnId, systemPrompt ?? undefined)
+          : assembler.prepareRequest(input.llmUserMessage, activeTurnId, systemPrompt ?? undefined)
       );
     } catch (error) {
       if (error instanceof CompactionPreparationError) {
@@ -196,7 +198,10 @@ export class LlmPhase {
         parsedToolInvocationCount = toolInvocations.length;
         turn.executionScope.throwIfAborted({ kind: 'llm_tool_intents' });
         turn.startToolInvocationBatch(toolInvocations);
-        memoryManager.ingestToolIntents(toolInvocations, activeTurnId);
+        memoryManager.ingestToolIntents(toolInvocations, activeTurnId, {
+          assistantContent: completeResponseText || null,
+          assistantReasoning: completeReasoningText || null
+        });
       }
     }
 

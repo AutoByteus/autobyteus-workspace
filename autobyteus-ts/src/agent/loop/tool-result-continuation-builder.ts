@@ -3,9 +3,64 @@ import { ContextFile } from '../message/context-file.js';
 import { AgentInputUserMessage } from '../message/agent-input-user-message.js';
 import { SenderType } from '../sender-type.js';
 import { formatToCleanString } from '../../utils/llm-output-formatter.js';
+import { resolveToolCallFormat } from '../../utils/tool-call-format.js';
+import {
+  NATIVE_API_TOOL_CONTINUATION_MODE,
+  TOOL_CONTINUATION_MODE_METADATA_KEY
+} from '../message/tool-continuation-metadata.js';
+import type { AgentContext } from '../context/agent-context.js';
+import type { AgentTurn } from '../agent-turn.js';
 
 export class ToolResultContinuationBuilder {
-  build(processedEvents: ToolResultEvent[]): AgentInputUserMessage {
+  build(
+    processedEvents: ToolResultEvent[],
+    options: { context?: AgentContext | null; turn?: AgentTurn | null } = {}
+  ): AgentInputUserMessage {
+    if (resolveToolCallFormat() === 'api_tool_call' && options.context && options.turn) {
+      return this.buildNativeApiContinuation(processedEvents, options.context, options.turn);
+    }
+
+    return this.buildSyntheticUserContinuation(processedEvents);
+  }
+
+  private buildNativeApiContinuation(
+    processedEvents: ToolResultEvent[],
+    context: AgentContext,
+    turn: AgentTurn
+  ): AgentInputUserMessage {
+    const turnId = this.resolveContinuationTurnId(processedEvents, turn);
+    if (!turnId) {
+      throw new Error(
+        `Agent '${context.agentId}' cannot continue native API tool results without an active turn or result turnId.`
+      );
+    }
+
+    context.state.memoryManager?.ingestToolResults(processedEvents, turnId, {
+      source: 'native_api_ordered_batch'
+    });
+
+    return new AgentInputUserMessage(
+      'Native API tool continuation',
+      SenderType.TOOL,
+      null,
+      {
+        [TOOL_CONTINUATION_MODE_METADATA_KEY]: NATIVE_API_TOOL_CONTINUATION_MODE,
+        turn_id: turnId,
+        tool_result_count: processedEvents.length
+      }
+    );
+  }
+
+  private resolveContinuationTurnId(processedEvents: ToolResultEvent[], turn: AgentTurn): string | null {
+    for (const processedEvent of processedEvents) {
+      if (typeof processedEvent.turnId === 'string' && processedEvent.turnId.trim().length > 0) {
+        return processedEvent.turnId.trim();
+      }
+    }
+    return turn.turnId ?? null;
+  }
+
+  private buildSyntheticUserContinuation(processedEvents: ToolResultEvent[]): AgentInputUserMessage {
     const aggregatedContentParts: string[] = [];
     const mediaContextFiles: ContextFile[] = [];
 

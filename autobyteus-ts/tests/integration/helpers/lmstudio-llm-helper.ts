@@ -40,7 +40,6 @@ const resolveModelId = async (options?: { forceFactoryDiscovery?: boolean }): Pr
 };
 
 export const createLmstudioLLM = async (options?: {
-  requireToolChoice?: boolean;
   temperature?: number;
   forceFactoryDiscovery?: boolean;
 }): Promise<BaseLLM | null> => {
@@ -53,13 +52,6 @@ export const createLmstudioLLM = async (options?: {
 
   if (options?.temperature !== undefined) {
     llm.config.temperature = options.temperature;
-  }
-
-  if (options?.requireToolChoice) {
-    const originalStream = llm.streamUserMessage.bind(llm);
-    (llm as any).streamUserMessage = async function* (userMessage: any, kwargs: Record<string, any> = {}) {
-      yield* originalStream(userMessage, { ...kwargs, tool_choice: 'required' });
-    };
   }
 
   return llm;

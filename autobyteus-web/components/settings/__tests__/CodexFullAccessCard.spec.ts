@@ -61,9 +61,9 @@ describe('CodexFullAccessCard', () => {
     const { wrapper } = await mountComponent([sandboxSetting('workspace-write')])
 
     expect(wrapper.text()).toContain('Codex full access')
-    expect(wrapper.text()).toContain('Allow Codex to run with full filesystem access')
-    expect(wrapper.text()).toContain('no filesystem sandboxing')
-    expect(wrapper.text()).toContain('Applies to new Codex sessions.')
+    expect(wrapper.text()).toContain('Allow full filesystem access')
+    expect(wrapper.text()).toContain('danger-full-access')
+    expect(wrapper.text()).toContain('Applies to new sessions.')
     expect(wrapper.find('[data-testid="codex-full-access-toggle"]').attributes('role')).toBe('switch')
     expect(wrapper.findAll('input[type="checkbox"]')).toHaveLength(0)
     expect(wrapper.findAll('input[type="radio"]')).toHaveLength(0)

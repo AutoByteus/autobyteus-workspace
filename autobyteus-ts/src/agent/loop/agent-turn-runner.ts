@@ -103,7 +103,10 @@ export class AgentTurnRunner {
           );
         }
 
-        const continuationInput = this.continuationBuilder.build(processedResults);
+        const continuationInput = this.continuationBuilder.build(processedResults, {
+          context: this.context,
+          turn: this.turn
+        });
         nextInput = await this.inputPipeline.processToolContinuation(
           continuationInput,
           this.context,
