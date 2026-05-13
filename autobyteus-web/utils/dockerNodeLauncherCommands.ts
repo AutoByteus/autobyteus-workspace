@@ -5,8 +5,10 @@ export type DockerLauncherCommandPhase = 'install' | 'direct';
 export type DockerLauncherCommandId =
   | 'macos-linux-install'
   | 'windows-powershell-install'
-  | 'direct-start'
-  | 'direct-start-new'
+  | 'direct-new-container'
+  | 'direct-upgrade-all'
+  | 'direct-destroy-all'
+  | 'direct-reset'
   | 'direct-urls'
   | 'direct-status'
   | 'direct-logs'
@@ -76,23 +78,43 @@ export function buildDockerNodeLauncherCommands(): DockerLauncherCommand[] {
       isPrimary: true,
     },
     {
-      id: 'direct-start',
+      id: 'direct-new-container',
       phase: 'direct',
       platform: 'installed-cli',
       platformLabelKey: INSTALLED_CLI_PLATFORM_LABEL_KEY,
-      titleKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.start.title',
-      descriptionKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.start.description',
-      command: buildDirectLauncherCommand(['start']),
+      titleKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.newContainer.title',
+      descriptionKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.newContainer.description',
+      command: buildDirectLauncherCommand(['new-container']),
       isPrimary: true,
     },
     {
-      id: 'direct-start-new',
+      id: 'direct-upgrade-all',
       phase: 'direct',
       platform: 'installed-cli',
       platformLabelKey: INSTALLED_CLI_PLATFORM_LABEL_KEY,
-      titleKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.startNew.title',
-      descriptionKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.startNew.description',
-      command: buildDirectLauncherCommand(['start', '--new']),
+      titleKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.upgradeAll.title',
+      descriptionKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.upgradeAll.description',
+      command: buildDirectLauncherCommand(['upgrade', '--all']),
+      isPrimary: true,
+    },
+    {
+      id: 'direct-destroy-all',
+      phase: 'direct',
+      platform: 'installed-cli',
+      platformLabelKey: INSTALLED_CLI_PLATFORM_LABEL_KEY,
+      titleKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.destroyAll.title',
+      descriptionKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.destroyAll.description',
+      command: buildDirectLauncherCommand(['destroy', '--all']),
+      isPrimary: true,
+    },
+    {
+      id: 'direct-reset',
+      phase: 'direct',
+      platform: 'installed-cli',
+      platformLabelKey: INSTALLED_CLI_PLATFORM_LABEL_KEY,
+      titleKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.reset.title',
+      descriptionKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.reset.description',
+      command: buildDirectLauncherCommand(['reset']),
       isPrimary: true,
     },
     {
