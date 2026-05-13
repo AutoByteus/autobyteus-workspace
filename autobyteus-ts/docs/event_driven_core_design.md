@@ -101,8 +101,8 @@ normal-flow handler chain in the active runtime.
 - `ToolResultPipeline` and `ToolResultContinuationBuilder` to process accepted
   tool results and build either legacy TOOL-origin continuation input or native
   `ToolContinuationReadyEvent` / `tool_history_only` continuation.
-- `LLMResponsePipeline` and `AgentOutbox` to publish final assistant output and
-  notifier events.
+- `LLMResponsePipeline` and `AgentExternalEventNotifier` to publish final
+  assistant output and other semantic external-observable events.
 
 Tool approvals and external tool results are therefore active-turn controls, not
 new turn triggers.
@@ -129,9 +129,11 @@ LLM-visible `Reference files:` block.
 
 The event-driven core emits external, streamable events for UIs and monitoring:
 
-- `AgentOutbox` centralizes agent runtime event publication.
-- `AgentExternalEventNotifier` emits status updates, segment events, tool
-  lifecycle events, and data events.
+- `AgentExternalEventNotifier` is the semantic external-observable boundary for
+  agent runtime publication. Runner, phases, and pipelines call its typed
+  `notify...` methods directly rather than going through an outbox wrapper.
+- The notifier emits status updates, segment events, tool lifecycle/log events,
+  inter-agent/system-task data events, and assistant output events.
 - `AgentEventStream` maps notifier events into stream records.
 - Agent-team stream handlers enrich and project member events, team
   communication messages, and reference-file entries.
@@ -171,7 +173,8 @@ terminal states.
   adapters.
 - Add tool execution/result behavior in `BaseTool.prepareExecution(...)`,
   `ToolPhase`, `ToolResultPipeline`, or `ToolResultContinuationBuilder`.
-- Add stream outputs through `AgentOutbox`/notifier event mappings.
+- Add stream outputs through `AgentExternalEventNotifier` and the corresponding
+  stream mapping layer.
 - Add runtime lifecycle behavior through `RuntimeLifecycleMessageHandler` or the
   shutdown/bootstrap orchestrators.
 

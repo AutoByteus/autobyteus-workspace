@@ -321,8 +321,8 @@ single-agent dispatcher/normal-flow handlers are retired.
    LLM/tool/continuation loop to `AgentTurnRunner`.
 4. `AgentTurnRunner` uses `AgentInputPipeline`, `LlmPhase`, `ToolPhase`,
    `ToolResultPipeline`, `ToolResultContinuationBuilder`, and
-   `LLMResponsePipeline` to publish lifecycle/status events through `AgentOutbox`
-   and the notifier.
+   `LLMResponsePipeline` to publish lifecycle/status/data facts through
+   `AgentExternalEventNotifier`.
 
 ### Event Pipeline (Primary)
 
@@ -350,7 +350,7 @@ active turn and emits idle state after a completed turn.
 
 | Input | Owner | Emits / publishes | Notes |
 | --- | --- | --- | --- |
-| `InterAgentMessageReceivedEvent` | `AgentInputPipeline.convertInterAgentEvent(...)` inside `AgentTurnRunner` | normal LLM turn input plus stream projection through `AgentOutbox` | Preserves structured `reference_files`; adds one LLM-visible `Reference files:` block. |
+| `InterAgentMessageReceivedEvent` | `AgentInputPipeline.convertInterAgentEvent(...)` inside `AgentTurnRunner` | normal LLM turn input plus stream projection through `AgentExternalEventNotifier` | Preserves structured `reference_files`; adds one LLM-visible `Reference files:` block. |
 
 ### Bootstrapping Flow (Internal)
 

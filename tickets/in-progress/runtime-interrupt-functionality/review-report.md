@@ -2,36 +2,43 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `API/E2E Validation-Code Re-Review`
+- Review Entry Point: `Implementation Review`
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/requirements.md`
-- Current Review Round: `24`
-- Trigger: API/E2E Round 11 evidence update after the user specifically requested the broader Agent Team flow. API/E2E reran the full real AutoByteus team LM Studio E2E file, updated the canonical validation report, and routed the validation/report update back for code-review re-review before delivery resumes.
-- Prior Review Round Reviewed: `23`
-- Latest Authoritative Round: `24`
+- Current Review Round: `25`
+- Trigger: Round 12 AgentExternalEventNotifier / AgentOutbox-removal implementation handoff, with commits `5a326107` (`docs(ticket): record round 12 review package`) and `39dc00d8` (`refactor(agent): replace outbox with external notifier`).
+- Prior Review Round Reviewed: `24`
+- Latest Authoritative Round: `25`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/design-spec.md`
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/design-review-report.md`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/implementation-handoff.md`
 - Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/api-e2e-validation-report.md`
-- API / E2E Validation Started Yet: `Yes; API/E2E Round 11 passed implementation behavior and added/updated durable validation plus validation-report evidence`
-- Repository-Resident Durable Validation Added Or Updated After Prior Review: `Yes — validation report updated with full real AutoByteus team LM Studio E2E file evidence; Round 11 durable E2E files remain part of the accepted package`
+- API / E2E Validation Started Yet: `Yes previously; paused again because implementation source changed after the accepted Round 11 validation package`
+- Repository-Resident Durable Validation Added Or Updated After Prior Review: `No new API/E2E-authored durable validation in this implementation round; previously accepted validation artifacts remain in the cumulative package`
 
 ## Review Scope
 
-This round is a validation-code/evidence re-review, not a fresh implementation review. Scope was limited to the API/E2E-authored Round 11 evidence update and the already-reviewed Round 11 durable validation package:
+This was a fresh deep implementation review of the Round 12 outbound-boundary refactor, not a narrow delta-only check. The review reloaded the code-reviewer workflow, the shared design principles, the prior findings history, and the full scorecard criteria.
 
-- `tickets/in-progress/runtime-interrupt-functionality/api-e2e-validation-report.md`
-  - Now records the full real AutoByteus team suite run with LM Studio: `4` tests passed, `0` skipped.
-  - Adds `VAL-039` to document that the full team flow suite remains healthy after adding interrupt/terminate tests.
-- `autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts`
-  - Already accepted in Round 23; re-reviewed here through the full-file run and validation report update.
-  - Full run covers existing approve-tool/restore/continue, new team interrupt targeted follow-up, new team terminate/restore targeted follow-up, and team member projection after terminate/restore/continue.
-- `autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts`
-  - Already accepted in Round 23 for real AutoByteus single-agent LM Studio interrupt and terminate/restore follow-up tests.
-- `autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts`
-  - Round 10 durable validation update remains accepted: stale `STOP_GENERATION` wording/commands were aligned to `INTERRUPT_GENERATION`.
+In-scope implementation changes:
 
-No production source implementation files were changed by this evidence update.
+- Removed `autobyteus-ts/src/agent/outbox/agent-outbox.ts` and `autobyteus-ts/src/agent/outbox/index.ts`.
+- Replaced in-scope `AgentOutbox.publish...` calls with semantic `AgentExternalEventNotifier.notify...` calls in:
+  - `autobyteus-ts/src/agent/loop/agent-turn-runner.ts`
+  - `autobyteus-ts/src/agent/loop/llm-phase.ts`
+  - `autobyteus-ts/src/agent/loop/tool-phase.ts`
+  - `autobyteus-ts/src/agent/pipelines/agent-input-pipeline.ts`
+  - `autobyteus-ts/src/agent/pipelines/llm-response-pipeline.ts`
+- Removed the unused outbox dependency from `autobyteus-ts/src/agent/loop/llm-phase-compaction.ts`.
+- Preserved inter-agent/system-task observable projections through `AgentInputPipeline -> AgentExternalEventNotifier`.
+- Reviewed the implementation handoff and the Round 12 architecture package recorded in commit `5a326107` as context.
+
+Primary data-flow spines reviewed:
+
+1. `AgentTurnRunner -> LlmPhase/ToolPhase/Pipelines -> AgentExternalEventNotifier.notify... -> EventEmitter/EventManager -> AgentEventStream -> server converter/mapper -> WebSocket/frontend consumers`.
+2. `InterAgentMessageReceivedEvent -> AgentInputPipeline.convertInterAgentEvent -> AgentExternalEventNotifier.notifyAgentDataInterAgentMessageReceived -> AgentEventStream -> AutoByteusTeamRunEventProcessor -> TeamCommunicationMessageProcessor -> TeamStreamingService/teamCommunicationStore`.
+3. `System SenderType input -> AgentInputPipeline.processForLlm -> AgentExternalEventNotifier.notifyAgentDataSystemTaskNotificationReceived -> AgentEventStream/server/frontend system-task consumers`.
+4. `Tool approval/execution/interruption -> ToolPhase -> AgentExternalEventNotifier tool lifecycle/log methods -> AgentEventStream/server/web projection`.
 
 ## Round History
 
@@ -60,152 +67,157 @@ No production source implementation files were changed by this evidence update.
 | 21 | CR-018 local-fix commit `d8dea3c6` | `CR-018` | 0 blocking | Pass / Ready for API/E2E validation | No | Runner emits `ToolContinuationReadyEvent` for `tool_history_only`; tests cover absence of synthetic native ready event. |
 | 22 | API/E2E Round 10 durable validation update | Validation-code scope after Round 21 pass | 0 blocking | Pass / Ready for delivery | No | Claude SDK WebSocket interrupt/resume E2E asset now uses `INTERRUPT_GENERATION`; superseded by Round 11 validation expansion. |
 | 23 | API/E2E Round 11 durable validation update | Round 22 validation-code pass plus new live AutoByteus LM Studio E2E coverage | 0 blocking | Pass / Ready for delivery | No | Real AutoByteus LM Studio single-agent/team interrupt and terminate/restore follow-up tests were reviewed and rerun successfully. |
-| 24 | API/E2E Round 11 full-team evidence update | Round 23 pass state plus full team flow evidence | 0 blocking | Pass / Ready for delivery | Yes | Full real AutoByteus team LM Studio E2E file passed `4` tests with `0` skipped and the validation report update is accepted. |
+| 24 | API/E2E Round 11 full-team evidence update | Round 23 pass state plus full team flow evidence | 0 blocking | Pass / Ready for delivery | No | Full real AutoByteus team LM Studio E2E file passed `4` tests with `0` skipped and validation report update was accepted. |
+| 25 | Round 12 AgentExternalEventNotifier / AgentOutbox removal implementation | All prior source findings plus outbound-boundary design risks | 0 blocking | Pass / Ready for API/E2E validation | Yes | Duplicate `AgentOutbox` wrapper removed; runner/phases/pipelines call semantic notifier boundary directly; consumer-visible inter-agent/system-task events preserved. |
 
-## Prior Findings Resolution Check
+## Prior Findings Resolution Check (Mandatory On Round >1)
 
-All prior source-review findings remain resolved. This round changed validation evidence/reporting only, and the full real AutoByteus team suite strengthens rather than weakens the prior validation state.
+| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 1 | `CR-001` | Blocking | Still resolved | No working-context/restore source path was weakened; targeted runtime/provider-native/tool approval suites passed. | No regression found. |
+| 1 | `CR-002` | Blocking | Still resolved | Tool approval/interruption lifecycle still flows through `ToolPhase` and semantic notifier methods; integration approval tests passed. | No regression found. |
+| 5 | `CR-003` | Blocking | Still resolved | Segment finalization still publishes through `notifyAgentSegmentEvent(...)`; streaming/server converter tests passed. | No regression found. |
+| 5 | `CR-004` | Blocking | Still resolved | LLM signal path unchanged; build and runtime integration suites passed. | No regression found. |
+| 5 | `CR-005` | Blocking | Still resolved | Changed implementation files are below the 500-line hard limit; server team backend tests passed. | No regression found. |
+| 5 | `CR-006` | Blocking | Still resolved | `AgentOutbox` removal did not resurrect old dispatcher/handler control flow; `AgentOutbox|agent/outbox` grep found no active TS source/test references. | No regression found. |
+| 8 | `CR-007` | Blocking | Still resolved | Runtime lifecycle lane unchanged; notifier remains observation/output only and is not a control-flow input. | No regression found. |
+| 8 | `CR-008` | Blocking | Still resolved | Stop/interrupt fences unchanged; runtime/tool approval integration tests passed. | No regression found. |
+| 10 | `CR-009` | Blocking | Still resolved | Segment payloads continue through existing `SegmentEvent.toDict()` and server converter tests passed. | No regression found. |
+| 10 | `CR-010` | Blocking | Still resolved | Failed/interrupted segment publication remains in `LlmPhase`; targeted runtime/streaming-related tests passed. | No regression found. |
+| 13 | `CR-011` | Blocking | Still resolved | Abort guards unchanged; runtime integration tests passed. | No regression found. |
+| 13 | `CR-012` | Blocking | Still resolved | Runner still fences after awaited phase/pipeline boundaries before normal completion/terminal side effects. | No regression found. |
+| 13 | `CR-013` | Blocking | Still resolved | Approval authority unchanged; tool approval flow tests passed. | No regression found. |
+| 15 | `CR-014` | Blocking | Still resolved | Scheduler/inbox source unchanged; runtime integration and provider-native continuation tests passed. | No regression found. |
+| 15 | `CR-015` | Blocking | Still resolved | External-result waiter path unchanged except semantic notifier calls; runtime integration tests passed. | No regression found. |
+| 15 | `CR-016` | Blocking | Still resolved | Shutdown settlement source unchanged; runtime integration passed. | No regression found. |
+| 17 | `CR-017` | Blocking | Still resolved | `ToolPhase` still prepares through `BaseTool.prepareExecution(...)` before started/pending lifecycle; runtime integration tests passed. | No regression found. |
+| 20 | `CR-018` | Blocking | Still resolved | `ToolContinuationReadyEvent` path unchanged; provider-native continuation integration test passed. | No regression found. |
 
-| Finding Group | Previous Severity | Current Resolution | Evidence | Notes |
-| --- | --- | --- | --- | --- |
-| `CR-001`-`CR-002` working-context restore and pending approval lifecycle/identity | Blocking | Still resolved | Round 23 live interrupt tests observed no stale file side effects and terminal pending-approval interruption; Round 24 full team run also passed approve/restore/interrupt/terminate/projection flows. | No regression found. |
-| `CR-003`-`CR-006` streaming finalization, signal propagation, team backend split, dormant lane cleanup | Blocking | Still resolved | No production streaming/team backend source changed; full team E2E passed. | No regression found. |
-| `CR-007`-`CR-008` runtime lifecycle lane and stop preemption | Blocking | Still resolved | Full team run includes terminate/restore and same-WebSocket continuation. | No regression found. |
-| `CR-009`-`CR-010` canonical segment shape and failed stream finalization | Blocking | Still resolved | No mapper/converter/projection source changed; prior server/web validation remains accepted. | No regression found. |
-| `CR-011`-`CR-013` abort fences and pending-only approval authority | Blocking | Still resolved | Full team run covers real pending approval, approval, interrupt, terminate, restore, and continuation paths without stale writes. | No regression found. |
-| `CR-014`-`CR-016` scheduler liveness, external-result fencing, shutdown settlement | Blocking | Still resolved | Full team run exercises live team runtime continuation after restore and projection after terminate/restore/continue. | No regression found. |
-| `CR-017` BaseTool preflight/mode ownership | Blocking | Still resolved | No tool preflight source changed; live `write_file` approval flows remain healthy. | No regression found. |
-| `CR-018` native tool continuation event | Blocking | Still resolved | No native continuation source changed; Round 10/21 provider-native evidence remains accepted. | No regression found. |
+## Source File Size And Structure Audit
 
-## Validation-Code Size And Structure Audit
+Changed implementation source files only. Test files are excluded from the 500-line hard limit.
 
-Test files are excluded from the 500-line implementation source hard limit. This table records validation-code quality and maintainability pressure.
-
-| File | Effective Non-Empty Lines | Test/Source | Structure Check | Placement Check | Classification | Required Action |
-| --- | ---: | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts` | 1802 | Test | Already accepted in Round 23. Large file, but the single-agent live AutoByteus additions are scenario-local and use existing E2E helpers. | Correct server E2E runtime folder. | Pass with pre-existing size pressure | None for this review. |
-| `autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts` | 974 | Test | Already accepted in Round 23. Round 24 reran the full file and confirmed both existing and new team flows pass together. | Correct server E2E runtime folder. | Pass with size pressure | None for this review; future major additions should extract shared live-team helpers. |
-| `autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts` | 869 | Test | Round 10 terminology/protocol alignment remains accepted. | Correct server E2E runtime folder. | Pass with pre-existing size pressure | None. |
-| `tickets/in-progress/runtime-interrupt-functionality/api-e2e-validation-report.md` | N/A | Artifact | Report now records the full real team suite evidence, adds `VAL-039`, and keeps Round 11 coverage gaps/out-of-scope boundaries clear. | Correct ticket artifact folder. | Pass | None. |
+| Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
+| --- | ---: | --- | --- | --- | --- | --- | --- |
+| `autobyteus-ts/src/agent/loop/agent-turn-runner.ts` | 165 | Pass | Pass | Cohesive turn orchestration; now calls semantic notifier boundary directly for turn/tool terminal facts. | Correct loop owner. | Pass | None. |
+| `autobyteus-ts/src/agent/loop/llm-phase.ts` | 216 | Pass | Pass | Cohesive LLM phase; segment/error publication uses semantic notifier, request assembly/streaming ownership unchanged. | Correct loop owner. | Pass | None. |
+| `autobyteus-ts/src/agent/loop/tool-phase.ts` | 351 | Pass | Attention | Larger file, but still owns one coherent tool phase: preprocessing, approval, direct/external execution, interruption, logs. No new unrelated responsibility introduced. | Correct loop owner. | Pass with size pressure | Watch future growth; split only if a real sub-owner emerges. |
+| `autobyteus-ts/src/agent/loop/llm-phase-compaction.ts` | 67 | Pass | Pass | Removed unused outbox dependency; compaction reporter remains the status publication owner. | Correct loop/compaction helper. | Pass | None. |
+| `autobyteus-ts/src/agent/pipelines/agent-input-pipeline.ts` | 158 | Pass | Pass | Input adaptation remains cohesive; inter-agent/system projections are external-observable side effects, not turn control. | Correct pipeline owner. | Pass | None. |
+| `autobyteus-ts/src/agent/pipelines/llm-response-pipeline.ts` | 53 | Pass | Pass | Final response processors and assistant-complete publication remain narrow. | Correct pipeline owner. | Pass | None. |
+| `autobyteus-ts/src/agent/outbox/agent-outbox.ts` | Deleted | N/A | N/A | Duplicate forwarding wrapper removed. | Removed obsolete folder. | Pass | None. |
+| `autobyteus-ts/src/agent/outbox/index.ts` | Deleted | N/A | N/A | Obsolete barrel removed. | Removed obsolete folder. | Pass | None. |
 
 ## Structural / Design Checks
 
 | Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present and evidence-backed | Pass | The validation report now captures the user's broader team-flow challenge and records full-file live team evidence. | None. |
-| Data-flow spine inventory clarity and preservation | Pass | Full team run exercises GraphQL team creation/restore/projection, Fastify WebSocket routing, real AutoByteus worker runtime, LM Studio execution, tool approval, interrupt, terminate/restore, targeted follow-up, and projection surfaces. | None. |
-| Ownership boundary preservation and clarity | Pass | Tests remain at public GraphQL/WebSocket boundaries and do not bypass into runtime internals. | None. |
-| Off-spine concern clarity | Pass | LM Studio gating/model selection stays in the E2E harness; production source is unchanged. | None. |
-| Existing capability/subsystem reuse check | Pass | API/E2E reused the existing team E2E file and broadened the command run instead of adding duplicate validation harnesses. | None. |
-| Reusable owned structures check | Pass | No new production or shared structures were introduced by this evidence update. | None. |
-| Shared-structure/data-model tightness check | Pass | No DTO/schema churn; existing public contracts are used. | None. |
-| Repeated coordination ownership check | Pass | Full team run confirms team coordination, restore, targeted member messaging, and projection flows work in one suite. | None. |
-| Empty indirection check | Pass | No forwarding-only layer added. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Evidence update belongs in the validation report; full team behavior remains in the team runtime E2E file. | None. |
-| Ownership-driven dependency check | Pass | Public API/WebSocket surfaces are authoritative for this E2E validation. | None. |
-| Authoritative Boundary Rule check | Pass | No mixed-level dependency or private runtime boundary bypass in the reviewed validation path. | None. |
-| File placement check | Pass | Report and tests remain in correct ticket/server E2E locations. | None. |
-| Interface/API/query/command/service-method clarity | Pass | Public `INTERRUPT_GENERATION`, team terminate/restore, approval, targeted send, and projection paths are covered. | None. |
-| Naming quality and naming-to-responsibility alignment | Pass | `VAL-039` and report wording accurately identify the full real team E2E suite. | None. |
-| No unjustified duplication | Pass | No duplicate full-team file was added; the existing file was rerun. | None. |
-| Patch-on-patch complexity control | Pass | The update adds evidence/reporting only. | None. |
-| Dead/obsolete cleanup completeness | Pass | No new obsolete stop terminology introduced. | None. |
-| Test quality | Pass | Full team live suite passed all four tests with no skips. | None. |
-| Test maintainability | Pass | File-size pressure remains noted but not blocking. | Future helper extraction if more live team cases are added. |
-| Delivery readiness | Pass | Validation-code/evidence re-review passes; delivery can resume after required latest-base/integrated-state checks. | Route to `delivery_engineer`. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Requirements/design identify `AgentOutbox` as duplicate boundary and `AgentExternalEventNotifier` as existing authoritative external-observable event boundary. Implementation removes the wrapper and preserves consumer events. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | Reviewed spines from runner/phases/pipelines to notifier, event stream, server mapper, and frontend/team consumers. Direct notifier calls preserve the event spine without becoming control flow. | None. |
+| Ownership boundary preservation and clarity | Pass | `AgentExternalEventNotifier` owns semantic external publication; `EventEmitter/EventManager` remain low-level infrastructure; runner/phases/pipelines own production of facts, not delivery mechanics. | None. |
+| Off-spine concern clarity | Pass | Observable publication is off-spine around the turn/runtime spine and serves status/UI/history consumers. It does not compete with `AgentMessageInbox` or `AgentTurnRunner` for turn control. | None. |
+| Existing capability/subsystem reuse check | Pass | Existing notifier subsystem is reused instead of adding another publisher wrapper. | None. |
+| Reusable owned structures check | Pass | Removed repeated forwarding methods in `AgentOutbox`; semantic notifier methods remain the reusable owned boundary. | None. |
+| Shared-structure/data-model tightness check | Pass | No new kitchen-sink DTO or parallel event model introduced. Existing payload shapes are preserved. | None. |
+| Repeated coordination ownership check | Pass | Event publication policy is centralized at `AgentExternalEventNotifier`; no duplicate outbox coordination remains. | None. |
+| Empty indirection check | Pass | Empty `AgentOutbox` forwarding wrapper was deleted. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Runner, LLM phase, tool phase, and pipelines each keep their existing subject responsibility while using notifier for observable facts. | None. |
+| Ownership-driven dependency check | Pass | Dependencies flow from domain owners to the semantic notifier boundary. No runner/phase/pipeline direct dependency on `EventManager` or server/web mappers. | None. |
+| Authoritative Boundary Rule check | Pass | Callers above observable-event delivery depend on `AgentExternalEventNotifier`, not both the notifier and its internal `EventEmitter/EventManager`. No mixed-level dependency was found in runner/phase/pipeline code. | None. |
+| File placement check | Pass | Deleted `agent/outbox`; changed files remain under loop/pipeline owners; notifier remains in `agent/events/notifiers.ts`. | None. |
+| Flat-vs-over-split layout judgment | Pass | Removing the outbox folder simplifies the layout without artificial over-splitting. | None. |
+| Interface/API/query/command/service-method boundary clarity | Pass | Calls are typed semantic `notify...` methods such as `notifyAgentToolExecutionInterrupted`, `notifyAgentDataInterAgentMessageReceived`, and `notifyAgentDataSystemTaskNotificationReceived`. | None. |
+| Naming quality and naming-to-responsibility alignment check | Pass | `notifier` and semantic method names match external observable publication responsibility. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | Duplicate outbox forwarding methods removed. | None. |
+| Patch-on-patch complexity control | Pass | Refactor is clean-cut and does not add adapter compatibility or dual publication paths. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | `AgentOutbox` source and barrel deleted; in-scope grep found no `AgentOutbox` or `agent/outbox` source/test references. | None. |
+| Test quality is acceptable for the changed behavior | Pass | Unit tests cover runner notifier calls and input pipeline inter-agent/system publication; integration/server/web tests cover approval/runtime/provider-native/team communication/projection paths. | None. |
+| Test maintainability is acceptable for the changed behavior | Pass | Tests assert semantic notifier methods rather than a wrapper. Some mocks use partial notifier objects with `as any`, acceptable for focused unit tests. | None. |
+| Validation or delivery readiness for the next workflow stage | Pass | Implementation review passes; API/E2E should rerun because implementation source changed after prior validation. | Route to `api_e2e_engineer`. |
+| No backward-compatibility mechanisms | Pass | No compatibility wrapper or dual outbox/notifier path remains. | None. |
+| No legacy code retention for old behavior | Pass | `agent/outbox/` removed and active source/test references are gone. | None. |
 
-## Review Scorecard
+## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): `9.7`
-- Overall score (`/100`): `97/100`
-- Score calculation note: Scores summarize validation-code/evidence quality and readiness; the pass decision is based on no blocking findings and passed live/static review checks.
+- Overall score (`/10`): `9.5`
+- Overall score (`/100`): `95/100`
+- Score calculation note: Scores summarize current implementation quality. The pass decision is based on no blocking findings and all mandatory structural checks passing.
 
 | Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 9.8 | The full team run now covers team creation, approval, restore/continue, interrupt, terminate/restore, targeted follow-up, and member projection. | Live free-text non-tool-boundary interruption remains outside this full team run. | Keep deterministic TS coverage for timing-sensitive seams. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.8 | Validation stays at public GraphQL/WebSocket boundaries. | No material weakness. | None. |
-| `3` | `API / Interface / Query / Command Clarity` | 9.8 | Public team commands and projection APIs are exercised together. | No material weakness. | None. |
-| `4` | `Separation of Concerns and File Placement` | 9.3 | Correct file/report placement. | Team E2E file is large. | Extract helpers if more scenarios are added. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.6 | No unnecessary shared model churn. | N/A. | None. |
-| `6` | `Naming Quality and Local Readability` | 9.7 | Report and scenario names clearly communicate full real team coverage. | Long E2E traces/tests require careful reading. | Helper extraction later if needed. |
-| `7` | `Validation Readiness` | 9.9 | Review reran the full live team suite and it passed `4/4` with `0` skipped. | Requires local LM Studio/model. | Keep gating documented. |
-| `8` | `Runtime Correctness Under Edge Cases` | 9.7 | Full team run adds approve/restore/projection proof on top of interrupt/terminate proof. | Not every provider/streaming timing case is live-tested. | Existing lower-level suites remain necessary. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.7 | No obsolete stop-command compatibility reintroduced. | Historical docs/artifacts still need delivery reconciliation. | Delivery docs refresh. |
-| `10` | `Cleanup Completeness` | 9.6 | Canonical validation report now includes the broader team evidence requested by the user. | Pre-existing docs/delivery artifacts still modified. | Delivery owns final artifact refresh. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.6 | The observable-event spine is now clearer: producer owners call `AgentExternalEventNotifier`, which flows to event stream/server/web consumers. | The full event path spans many packages and still requires careful test coverage. | API/E2E should rerun representative stream/UI paths after this source change. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.7 | Duplicate outbox boundary removed; notifier is the single authoritative outbound observable-event boundary. | The notifier is still a broad boundary by nature, so semantic method discipline must continue. | Keep adding narrow typed `notify...` methods rather than generic payload sinks. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.5 | Calls use explicit semantic methods for turn, segment, tool, assistant, inter-agent, and system-task facts. | Notifier payloads are still mostly `Record<string, any>`, inherited from existing event infrastructure. | Future tightening could add typed payload aliases without changing the boundary. |
+| `4` | `Separation of Concerns and File Placement` | 9.4 | File placement matches loop/pipeline/notifier ownership and obsolete outbox folder is gone. | `tool-phase.ts` remains a sizeable but coherent phase file. | Split only if future changes reveal a real sub-owner. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.4 | No parallel event model remains; existing stream payload classes and notifier methods are reused. | Payload shapes remain flexible records in the notifier API. | Tighten event payload typing incrementally if it becomes a maintenance issue. |
+| `6` | `Naming Quality and Local Readability` | 9.6 | `notifier` naming and method names align with external observable publication. | Broad notifier surface requires readers to know event-family semantics. | Keep names domain-specific and avoid generic `notifyEvent`. |
+| `7` | `Validation Readiness` | 9.5 | Targeted TS/server/web tests and builds passed locally. | Full API/E2E has not rerun after this source change. | API/E2E should validate live/protocol surfaces before delivery resumes. |
+| `8` | `Runtime Correctness Under Edge Cases` | 9.4 | Interrupt fences, approval paths, provider-native continuation, and team communication tests passed. | Review did not rerun live LM Studio E2E or every frontend projection suite. | API/E2E should revalidate affected observable event paths. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.8 | Clean-cut deletion of `AgentOutbox`; active agent source/tests have no outbox references. | Unrelated server/web messaging-gateway code still uses the word outbox for a different subsystem. | None for this scope. |
+| `10` | `Cleanup Completeness` | 9.5 | Deleted obsolete wrapper files, removed imports/parameters, and updated focused tests. | Prior validation/docs artifacts remain cumulative context for delivery/API/E2E. | Downstream stages should refresh reports after revalidation. |
 
 ## Findings
 
-No active blocking findings remain in Round 24.
+No active blocking findings remain in Round 25.
 
-### Validation evidence update — full real AutoByteus team LM Studio E2E file
+### Accepted change — `AgentOutbox` removal and direct semantic notifier boundary
 
-- Severity: N/A — accepted validation/report update
+- Severity: N/A — accepted implementation change
 - Current status: `Accepted`
 - Evidence:
-  - The canonical validation report now includes `VAL-039` for the full real AutoByteus team E2E file.
-  - API/E2E recorded the full run as `1` file passed, `4` tests passed, `0` skipped.
-  - Review-local rerun passed: `RUN_LMSTUDIO_E2E=1 LMSTUDIO_MODEL_ID=qwen3.6-27b-ud-mlx pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts` — `1` file passed, `4` tests passed.
-  - The passed tests were:
-    - `creates a real team, approves a tool call, restores it, and continues on the same websocket`
-    - `interrupts a live AutoByteus team pending tool approval and accepts a targeted follow-up message on the same websocket`
-    - `terminates a live AutoByteus team pending tool approval, restores it, and accepts a targeted follow-up message on the same websocket`
-    - `serves team member projection after terminate, restore, and continue`
-
-### Previously accepted Round 11 live AutoByteus LM Studio durable validation
-
-- Severity: N/A — still accepted
-- Current status: `Accepted`
-- Evidence:
-  - Round 23 reviewed and reran the targeted live single-agent and team interrupt/terminate subsets successfully.
-  - This Round 24 full team run strengthens the team-side evidence by proving all four team scenarios pass together without skips.
+  - `autobyteus-ts/src/agent/outbox/agent-outbox.ts` and `autobyteus-ts/src/agent/outbox/index.ts` are deleted.
+  - `AgentTurnRunner`, `LlmPhase`, `ToolPhase`, `AgentInputPipeline`, and `LLMResponsePipeline` call semantic `AgentExternalEventNotifier.notify...` methods directly.
+  - `rg "AgentOutbox|agent/outbox" autobyteus-ts/src autobyteus-ts/tests || true` returned no active TS source/test references.
+  - `rg "\.emit\(" autobyteus-ts/src/agent/loop autobyteus-ts/src/agent/pipelines || true` returned no low-level emit calls.
+  - Inter-agent/system-task publication methods are preserved in `AgentInputPipeline` and covered by focused tests.
 
 ## Test Quality And Validation-Readiness Verdict
 
 | Area | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- |
-| Delivery Readiness | Ready for delivery handoff after validation-code/evidence re-review | Pass | Delivery should resume and perform its required tracked-base refresh/integrated-state checks. |
-| Tests | Test quality is acceptable | Pass | Full real team suite covers approval, restore/continue, interrupt, terminate/restore, targeted follow-up, and projection. |
-| Tests | Test maintainability is acceptable | Pass | Large file size remains a noted pressure only. |
-| Tests | Review findings are clear enough for the next owner before delivery resumes | Pass | No active findings remain. |
+| Validation Readiness | Ready for next workflow stage (`API / E2E`) | Pass | Source implementation changed after prior validation; API/E2E should resume from this reviewed state. |
+| Tests | Test quality is acceptable | Pass | Tests cover direct notifier calls, consumer-visible inter-agent/system-task publication, tool approval/runtime/provider-native flows, server event conversion/team communication, and selected web projections. |
+| Tests | Test maintainability is acceptable | Pass | Tests no longer depend on `AgentOutbox`; targeted mocks are acceptable. |
+| Tests | Review findings are clear enough for the next owner before API/E2E resumes | Pass | No blocking findings remain; API/E2E should focus on outbound observable event parity. |
 
-Review-local checks run in Round 24:
+Review-local checks run in Round 25:
 
-- `git diff --check HEAD` — passed.
-- `RUN_LMSTUDIO_E2E=1 LMSTUDIO_MODEL_ID=qwen3.6-27b-ud-mlx pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts` — passed (`1` file, `4` tests passed, `0` skipped).
+- `git diff --check` — passed.
+- `rg "AgentOutbox|agent/outbox" autobyteus-ts/src autobyteus-ts/tests || true` — no matches.
+- `rg "outbox\b" autobyteus-ts/src/agent autobyteus-ts/tests/unit/agent autobyteus-ts/tests/integration/agent || true` — no matches.
+- `rg "\.emit\(" autobyteus-ts/src/agent/loop autobyteus-ts/src/agent/pipelines || true` — no matches.
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/loop/agent-turn-runner.test.ts tests/unit/agent/pipelines/agent-input-pipeline.test.ts tests/integration/agent/tool-approval-flow.test.ts tests/integration/agent/runtime/agent-runtime.test.ts tests/integration/agent/provider-native-tool-continuation-flow.test.ts` — passed (`5` files, `30` tests).
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts tests/unit/agent-execution/events/team-communication-message-event-processor.test.ts tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts tests/integration/agent-team-execution/autobyteus-team-run-backend.integration.test.ts` — passed (`4` files, `38` tests).
+- `pnpm -C autobyteus-web exec vitest run services/agentStreaming/__tests__/TeamStreamingService.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts` — passed (`3` files, `30` tests).
+- `pnpm -C autobyteus-ts run build` — passed, including runtime dependency verification.
+- `pnpm -C autobyteus-server-ts run build:full` — passed, including built-in agents bootstrap smoke check.
 
-API/E2E Round 11 checks accepted as evidence:
+Not run in Round 25 by code review:
 
-- Full team live run above passed in API/E2E before this re-review.
-- Earlier Round 11 live targeted single-agent and team runs passed.
-- `git diff --check HEAD` passed after report update.
-- `pnpm -C autobyteus-server-ts run build:full` passed, including built-in agents bootstrap smoke check.
-- Cumulative Round 10 implementation validation remains valid: `autobyteus-ts` provider-native/runtime suite (`12` files, `89` tests), Claude fake-SDK interrupt/resume (`4` passed, `1` skipped), server WebSocket/protocol (`7` files, `72` tests), web projection/control (`11` files, `107` tests), `autobyteus-ts run build`, `autobyteus-web nuxi prepare`.
-
-Not run in Round 24 by code review:
-
+- Full live LM Studio E2E.
 - Full browser/Electron E2E.
-- Full broad package typechecks beyond documented build commands.
-- Live free-text in-flight streaming interruption without a tool approval boundary.
+- Broad package typechecks beyond the documented successful build commands and known baseline limitations.
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | Evidence update did not add compatibility behavior; final `INTERRUPT_GENERATION` terminology remains in force. |
-| No legacy old-behavior retention in changed scope | Pass | No obsolete stop-command path was reintroduced by the report update/full team run. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | No stale validation/source item requiring removal was found in this evidence update. |
+| No backward-compatibility mechanisms in changed scope | Pass | No dual outbox/notifier publication path remains. |
+| No legacy old-behavior retention in changed scope | Pass | `AgentOutbox` files are deleted and active TS source/tests have no references. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Obsolete outbox wrapper and barrel are removed. |
 
-## Dead / Obsolete / Legacy Items Requiring Removal
+## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
 
-No dead/obsolete/legacy source or validation item requiring immediate removal was found in Round 24.
+No dead/obsolete/legacy source or validation item requiring immediate removal was found in Round 25.
 
 ## Docs-Impact Verdict
 
 - Docs impact: `Yes`
-- Why: Delivery should ensure durable documentation, validation summaries, and final handoff artifacts consistently describe the broader full real AutoByteus team LM Studio proof, final `INTERRUPT_GENERATION` terminology, provider-native `ToolContinuationReadyEvent`, and final runtime-loop boundaries.
+- Why: The Round 12 design/docs package already records the final `AgentExternalEventNotifier` boundary and `AgentOutbox` removal, but API/E2E/delivery should ensure final handoff and docs-sync artifacts reflect the now-implemented source state.
 - Files or areas likely affected:
+  - `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md`
+  - `autobyteus-ts/docs/event_driven_core_design.md`
   - `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md`
-  - `autobyteus-server-ts/docs/modules/agent_execution.md`
   - `autobyteus-web/docs/agent_execution_architecture.md`
   - `tickets/in-progress/runtime-interrupt-functionality/docs-sync-report.md`
   - `tickets/in-progress/runtime-interrupt-functionality/handoff-summary.md`
@@ -214,23 +226,23 @@ No dead/obsolete/legacy source or validation item requiring immediate removal wa
 
 - Latest Authoritative Result: `Pass`
 - Classification: N/A
-- Reason: API/E2E validation report update and durable validation evidence are accepted; no active blocking review findings remain.
+- Reason: Implementation review passes; no active blocking review findings remain.
 
 ## Recommended Recipient
 
-- `delivery_engineer`
+- `api_e2e_engineer`
 
-Routing note: Delivery should refresh against the latest tracked remote/base state, record the integrated-state check, then regenerate or supersede stale delivery/docs artifacts before final handoff.
+Routing note: API/E2E should revalidate from commit `39dc00d8` because implementation source changed after the previously accepted Round 11 validation. Suggested focus: observable event parity through server/web stream surfaces, inter-agent/system-task projections, tool lifecycle/logs, interruption events, provider-native continuations, and live AutoByteus paths as appropriate.
 
 ## Residual Risks
 
-- The live LM Studio E2E tests are gated and require local LM Studio plus the configured model (`LMSTUDIO_MODEL_ID=qwen3.6-27b-ud-mlx` in the recorded/review-local runs). This is appropriate for optional live validation but must remain documented.
-- The live team run proves stable team approval/interrupt/terminate/restore/projection seams. It does not live-test every free-text in-flight streaming cancellation timing case; deterministic lower-level validation remains part of the evidence package for those seams.
-- The single-agent and team E2E files are large. This is acceptable for this gate, but future live-runtime additions should extract shared helper modules to avoid further harness bloat.
-- Pre-existing delivery artifacts (`docs-sync-report.md`, `release-deployment-report.md`, `handoff-summary.md`, `turn-tool-input-port-explainer.html`, `delivery-merge-blocker-report.md`) must be refreshed, superseded, or explicitly reconciled by delivery after its latest-base integrated-state check.
+- `AgentExternalEventNotifier` is intentionally broad. The implementation is acceptable because calls remain semantic, but future changes should avoid adding generic raw event/payload sinks.
+- Notifier payload methods still accept flexible `Record<string, any>` payloads. This is inherited from existing event infrastructure, not introduced here; future tightening could add typed payload aliases.
+- `tool-phase.ts` remains a larger cohesive phase file. It is under the hard limit and passed review, but future unrelated additions should consider extracting a true sub-owner.
+- Full API/E2E has not rerun after this implementation source change; API/E2E must run before delivery resumes.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass / Ready for delivery`
-- Score Summary: `9.7/10` (`97/100`)
-- Notes: API/E2E Round 11 evidence update is accepted. The full real AutoByteus team LM Studio E2E file was reviewed and rerun successfully with `4` tests passed and `0` skipped. Delivery can resume.
+- Review Decision: `Pass / Ready for API/E2E validation`
+- Score Summary: `9.5/10` (`95/100`)
+- Notes: Round 12 implementation cleanly removes `AgentOutbox`, preserves semantic outbound publication through `AgentExternalEventNotifier`, passes source-size/design/legacy/test checks, and is ready for API/E2E revalidation.

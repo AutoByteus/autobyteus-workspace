@@ -95,7 +95,7 @@ uses these collaborators:
 - `LlmPhase`
   - assembles memory-backed LLM requests;
   - passes `{ signal, turnId }` into `BaseLLM.streamMessages(...)`;
-  - streams segments through `AgentOutbox`;
+  - publishes streamed segment facts through `AgentExternalEventNotifier`;
   - parses text/API tool calls through the streaming response handler factory;
   - checks the `TurnExecutionScope` before starting or consuming LLM streams
     and again after awaited LLM seams before publishing normal assistant
@@ -129,8 +129,10 @@ uses these collaborators:
     appending a synthetic provider-visible user message.
 - `LLMResponsePipeline`
   - applies final response processors and publishes assistant output.
-- `AgentOutbox`
-  - centralizes runtime event publication to the external notifier.
+- `AgentExternalEventNotifier`
+  - centralizes semantic external-observable runtime publication such as
+    status, turn, segment, tool lifecycle/log, inter-agent, system-task, and
+    assistant-output events.
 
 The old single-agent `WorkerEventDispatcher` and normal-flow handler files are
 removed. Do not reintroduce them as parallel control-flow owners for LLM calls,
@@ -265,8 +267,8 @@ Inter-agent messages with explicit `reference_files` are handled by
 `AgentInputPipeline.convertInterAgentEvent(...)`, not by a legacy handler. The
 pipeline:
 
-- publishes the inter-agent message through `AgentOutbox` for notifier/stream
-  projection;
+- publishes the inter-agent message through `AgentExternalEventNotifier` for
+  stream projection;
 - preserves structured `reference_files` metadata;
 - adds one LLM-visible `Reference files:` block to the recipient input;
 - keeps prose-only file paths as ordinary message content.
