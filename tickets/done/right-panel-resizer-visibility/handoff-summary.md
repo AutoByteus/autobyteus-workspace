@@ -4,7 +4,7 @@
 
 - Ticket: right-panel-resizer-visibility
 - Date: 2026-05-13
-- Current Status: `Verified; Repository Finalization In Progress`
+- Current Status: `Verified; Finalized`
 - Workflow State Source: `tickets/done/right-panel-resizer-visibility/workflow-state.md`
 
 ## Delivery Summary
@@ -84,10 +84,10 @@
 - Ticket branch: `codex/right-panel-resizer-visibility`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Commit status: Pending final ticket-branch commit from archived state.
-- Push status: Pending ticket-branch push.
-- Merge status: Pending merge into `origin/personal`.
-- Release/publication/deployment status: Not required; user requested no new release/version bump.
-- Worktree cleanup status: Pending repository finalization.
-- Local branch cleanup status: Pending repository finalization.
-- Blockers / notes: None at user-verification handoff; repository finalization in progress.
+- Commit status: Completed — ticket branch commit `5e714968` (`fix(workspace): keep right panel splitter visible`) plus final target-branch handoff metadata update.
+- Push status: Completed — pushed `origin/codex/right-panel-resizer-visibility` and `origin/personal`.
+- Merge status: Completed — fast-forward merged `codex/right-panel-resizer-visibility` into `personal`.
+- Release/publication/deployment status: Not required; user requested no new release/version bump, so no release, tag, deployment, or version bump was run.
+- Worktree cleanup status: Completed — removed `/Users/normy/autobyteus_org/autobyteus-worktrees/right-panel-resizer-visibility` and ran `git worktree prune`.
+- Local branch cleanup status: Completed — deleted local branch `codex/right-panel-resizer-visibility`; remote branch was left intact per workflow policy.
+- Blockers / notes: None.
