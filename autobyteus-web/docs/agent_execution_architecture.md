@@ -280,7 +280,7 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
 1.  **Run File Changes (`RunFileChangesStore`)**:
     - Listens to `FILE_CHANGE` plus reopen hydration from `getRunFileChanges(runId)`.
     - Owns the run-scoped projection for touched files and generated outputs.
-    - Tracks latest-visible discoverability so the Artifacts tab can auto-focus when a new Agent Artifact row appears.
+    - Tracks latest-visible discoverability so the Artifacts tab can select/refresh the newest row after the user opens it, without stealing focus from other right-side tabs.
     - Keeps transient `write_file` buffers only until committed previews are fetched from the server-backed run preview route.
 2.  **Team Communication (`TeamCommunicationStore`)**:
     - Listens to accepted `INTER_AGENT_MESSAGE` live payloads plus team reopen hydration from `getTeamCommunicationMessages(teamRunId)`.
