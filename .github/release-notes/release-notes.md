@@ -1,5 +1,6 @@
-# Release Notes: Docker Guide command hotfix
+# Release Notes — Disable Artifact Auto-Focus
 
-- Updated Settings → Nodes → Docker Guide to show the new Docker launcher commands: `new-container`, `upgrade --all`, `destroy --all`, and `reset`.
-- Removed stale Docker Guide references to removed `start` and `start --new` commands.
-- Updated Docker launcher docs to use the install-only, indexed-container command model.
+## Fixes
+
+- Stopped new agent artifacts from automatically switching the right-side panel to the Artifacts tab.
+- Kept artifact updates visible in the Artifacts tab when users open it manually, without interrupting work in other tabs.
