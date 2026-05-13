@@ -6,7 +6,8 @@ LAUNCHER_LABEL_VALUE="server-docker"
 NODE_LABEL_KEY="com.autobyteus.nodeName"
 CONFIG_LABEL_KEY="com.autobyteus.configHash"
 CONFIG_HASH_VERSION="v1"
-DEFAULT_NODE_NAME="autobyteus-server"
+NODE_NAME_PREFIX="autobyteus-server"
+DEFAULT_NODE_NAME="${NODE_NAME_PREFIX}-0"
 DEFAULT_IMAGE="autobyteus/autobyteus-server"
 DEFAULT_TAG="latest"
 MAX_RUN_ATTEMPTS=5
@@ -22,10 +23,11 @@ Usage:
   curl -fsSL <script-url> | bash -s -- install
 
 Commands:
-  install            Install or update the local autobyteus-docker CLI
-  update             Alias for install
-  start              Check image updates and start the default Docker node
-  start --new        Start a new Docker node with automatic name and ports
+  install            Install or replace the local autobyteus-docker CLI
+  new-container      Create a new Docker node with automatic indexed name and ports
+  upgrade --all      Upgrade all managed Docker nodes to the latest image
+  destroy --all      Remove all managed Docker nodes, keeping named volumes
+  reset              Destroy all managed Docker nodes, then create autobyteus-server-0
   urls | ports       Show Backend, GraphQL, noVNC, VNC, and debug URLs
   status | ps        Show managed Docker nodes
   logs               Show Docker logs for a managed node
@@ -35,11 +37,10 @@ Commands:
 Advanced temporary use: curl -fsSL <script-url> | bash -s -- <command> [options]
 
 Options:
-  --name <name>      Friendly node name (default: ${DEFAULT_NODE_NAME})
+  --name <name>      Friendly node name for status/logs/urls/stop (default: ${DEFAULT_NODE_NAME})
   --tag <tag>        Docker image tag (default: ${DEFAULT_TAG})
   --image <image>    Docker image repository or full image ref (default: ${DEFAULT_IMAGE})
-  --new              Create the next available friendly node name
-  --all              Apply stop/status to all managed nodes
+  --all              Required for upgrade/destroy; also applies stop/status to all managed nodes
   -h, --help         Show this help
 
 State:
@@ -89,13 +90,13 @@ install_launcher() {
   trap - RETURN
 
   log "Installed AutoByteus Docker launcher: ${install_path}"
-  printf 'Next commands:\n  autobyteus-docker start\n  autobyteus-docker start --new\n  autobyteus-docker urls\n'
+  printf 'Next commands:\n  autobyteus-docker new-container\n  autobyteus-docker upgrade --all\n  autobyteus-docker urls\n'
   if path_has_dir "$dir"; then
     log "Install directory is already on PATH."
     return
   fi
 
-  printf 'PATH guidance:\n  This shell cannot find autobyteus-docker until %s is on PATH.\n  Use direct path now: "%s" start\n  For this shell session: export PATH="%s:%s"\n  To persist, add that export line to your shell profile, then open a new terminal.\n' "$dir" "$install_path" "$dir" "\$PATH"
+  printf 'PATH guidance:\n  This shell cannot find autobyteus-docker until %s is on PATH.\n  Use direct path now: "%s" new-container\n  For this shell session: export PATH="%s:%s"\n  To persist, add that export line to your shell profile, then open a new terminal.\n' "$dir" "$install_path" "$dir" "\$PATH"
 }
 
 normalize_node_name() {
@@ -182,6 +183,45 @@ container_for_node() {
     --format '{{.Names}}' 2>/dev/null | head -n 1
 }
 
+managed_node_names() {
+  local file name container value
+  {
+    shopt -s nullglob
+    for file in "$(state_dir)"/*.env; do
+      load_state "$file"
+      name="${NODE_NAME:-$(basename "$file" .env)}"
+      [[ -n "$name" ]] && printf '%s\n' "$name"
+    done
+    shopt -u nullglob
+
+    docker ps -a \
+      --filter "label=${LAUNCHER_LABEL_KEY}=${LAUNCHER_LABEL_VALUE}" \
+      --format '{{.Names}}' 2>/dev/null | while IFS= read -r container; do
+        [[ -n "$container" ]] || continue
+        value="$(docker inspect --format "{{ index .Config.Labels \"${NODE_LABEL_KEY}\" }}" "$container" 2>/dev/null || true)"
+        [[ -z "$value" || "$value" == "<no value>" ]] && value="$container"
+        printf '%s\n' "$value"
+      done
+  } | awk 'NF && !seen[$0]++'
+}
+
+managed_container_names() {
+  local file name container
+  {
+    shopt -s nullglob
+    for file in "$(state_dir)"/*.env; do
+      load_state "$file"
+      name="${CONTAINER_NAME:-${NODE_NAME:-$(basename "$file" .env)}}"
+      [[ -n "$name" ]] && printf '%s\n' "$name"
+    done
+    shopt -u nullglob
+
+    docker ps -a \
+      --filter "label=${LAUNCHER_LABEL_KEY}=${LAUNCHER_LABEL_VALUE}" \
+      --format '{{.Names}}' 2>/dev/null || true
+  } | awk 'NF && !seen[$0]++'
+}
+
 reserve_port() {
   local port="${1:-}"
   [[ -n "$port" ]] || return 0
@@ -266,11 +306,10 @@ node_name_available() {
 }
 
 next_node_name() {
-  local base="$DEFAULT_NODE_NAME" index candidate
-  if node_name_available "$base"; then printf '%s\n' "$base"; return; fi
-  index=2
+  local index candidate
+  index=0
   while true; do
-    candidate="${base}-${index}"
+    candidate="${NODE_NAME_PREFIX}-${index}"
     if node_name_available "$candidate"; then printf '%s\n' "$candidate"; return; fi
     index=$((index + 1))
   done
@@ -444,17 +483,120 @@ start_node() {
   done
 }
 
+image_id_in_use() {
+  local image_id="$1" container current
+  [[ -n "$image_id" ]] || return 1
+  while IFS= read -r container; do
+    [[ -n "$container" ]] || continue
+    current="$(container_image_id "$container")"
+    [[ "$current" == "$image_id" ]] && return 0
+  done < <(docker ps -a --format '{{.Names}}' 2>/dev/null || true)
+  return 1
+}
+
+remove_unused_image_ids() {
+  local image_id seen=" "
+  for image_id in "$@"; do
+    [[ -n "$image_id" ]] || continue
+    [[ "$seen" == *" ${image_id} "* ]] && continue
+    seen+=" ${image_id}"
+    if image_id_in_use "$image_id"; then
+      log "Keeping image ${image_id}; it is still used by a Docker container."
+      continue
+    fi
+    docker image inspect "$image_id" >/dev/null 2>&1 || continue
+    if docker image rm "$image_id" >/dev/null 2>&1; then
+      log "Removed unused AutoByteus server image ${image_id}."
+    fi
+  done
+}
+
+managed_container_image_ids() {
+  local container image_id
+  while IFS= read -r container; do
+    [[ -n "$container" ]] || continue
+    container_exists "$container" || continue
+    image_id="$(container_image_id "$container")"
+    [[ -n "$image_id" ]] && printf '%s\n' "$image_id"
+  done < <(managed_container_names)
+}
+
+remove_all_state_files() {
+  local file
+  shopt -s nullglob
+  for file in "$(state_dir)"/*.env; do
+    rm -f "$file"
+  done
+  shopt -u nullglob
+}
+
+destroy_all_nodes() {
+  local container image_id any=0 image_ids=()
+  while IFS= read -r image_id; do
+    [[ -n "$image_id" ]] && image_ids+=("$image_id")
+  done < <(managed_container_image_ids)
+
+  while IFS= read -r container; do
+    [[ -n "$container" ]] || continue
+    if container_exists "$container"; then
+      docker rm -f "$container" >/dev/null
+      log "Removed managed container ${container}. Named volumes were kept."
+      any=1
+    fi
+  done < <(managed_container_names)
+
+  remove_all_state_files
+
+  if [[ "$any" != "1" ]]; then
+    log "No managed Docker containers were found."
+  fi
+  remove_unused_image_ids "${image_ids[@]}"
+}
+
+upgrade_all_nodes() {
+  local image_ref="$1" node image_id image_ids=() any=0 prefer_defaults
+  while IFS= read -r image_id; do
+    [[ -n "$image_id" ]] && image_ids+=("$image_id")
+  done < <(managed_container_image_ids)
+
+  while IFS= read -r node; do
+    [[ -n "$node" ]] || continue
+    prefer_defaults=0
+    [[ "$node" == "$DEFAULT_NODE_NAME" ]] && prefer_defaults=1
+    start_node "$node" "$image_ref" "$prefer_defaults"
+    any=1
+  done < <(managed_node_names)
+
+  if [[ "$any" != "1" ]]; then
+    log "No managed Docker nodes found."
+    return
+  fi
+  remove_unused_image_ids "${image_ids[@]}"
+}
+
+create_new_container() {
+  local image_ref="$1" node_name prefer_defaults=0
+  node_name="$(next_node_name)"
+  [[ "$node_name" == "$DEFAULT_NODE_NAME" ]] && prefer_defaults=1
+  start_node "$node_name" "$image_ref" "$prefer_defaults"
+}
+
+reset_nodes() {
+  local image_ref="$1"
+  destroy_all_nodes
+  start_node "$DEFAULT_NODE_NAME" "$image_ref" "1"
+}
+
 resolve_target_name() {
-  local explicit_name="$1" create_new="$2"
+  local explicit_name="$1"
   if [[ -n "$explicit_name" ]]; then normalize_node_name "$explicit_name"; return; fi
-  if [[ "$create_new" == "1" ]]; then next_node_name; return; fi
   printf '%s\n' "$DEFAULT_NODE_NAME"
 }
 
 show_urls() {
   local node_name="$1" file
   file="$(state_path_for "$node_name")"
-  [[ -f "$file" ]] || fail "No launcher state found for ${node_name}. Run start first."
+  [[ -f "$file" ]] || fail "No launcher state found for ${node_name}. Run new-container first."
   load_state "$file"
   print_urls "${NODE_NAME:-$node_name}" "${CONTAINER_NAME:-$node_name}" "${IMAGE_REF:-unknown}"
 }
@@ -514,12 +656,11 @@ show_logs() {
 }
 
 main() {
-  local cmd="${1:-help}" create_new=0 stop_all=0 name_arg="" tag="$DEFAULT_TAG" image="$DEFAULT_IMAGE" extra=()
+  local cmd="${1:-help}" stop_all=0 name_arg="" tag="$DEFAULT_TAG" image="$DEFAULT_IMAGE" extra=()
   [[ "$cmd" == "help" || "$cmd" == "--help" || "$cmd" == "-h" ]] && { usage; return; }
   shift || true
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      --new) create_new=1; shift ;;
       --all) stop_all=1; shift ;;
       --name) [[ $# -gt 1 ]] || fail "--name requires a value"; name_arg="$2"; shift 2 ;;
       --tag) [[ $# -gt 1 ]] || fail "--tag requires a value"; tag="$2"; shift 2 ;;
@@ -530,27 +671,50 @@ main() {
     esac
   done
 
-  local node_name image_ref prefer_defaults
+  local node_name image_ref
 
   case "$cmd" in
-    install|update)
+    install)
       [[ "${#extra[@]}" -eq 0 ]] || fail "Unknown ${cmd} option(s): ${extra[*]}"
       install_launcher
       return
       ;;
   esac
 
+  case "$cmd" in
+    new-container|upgrade|destroy|reset|urls|ports|status|ps|stop|logs) ;;
+    *) usage; exit 1 ;;
+  esac
+
   ensure_state_dir
   assert_docker
-  node_name="$(resolve_target_name "$name_arg" "$create_new")"
+  node_name="$(resolve_target_name "$name_arg")"
   image_ref="$(image_ref_for "$image" "$tag")"
 
   case "$cmd" in
-    start)
-      [[ "${#extra[@]}" -eq 0 ]] || fail "Unknown start option(s): ${extra[*]}"
-      prefer_defaults=0
-      [[ "$node_name" == "$DEFAULT_NODE_NAME" && "$create_new" == "0" && -z "$name_arg" ]] && prefer_defaults=1
-      start_node "$node_name" "$image_ref" "$prefer_defaults"
+    new-container)
+      [[ "${#extra[@]}" -eq 0 ]] || fail "Unknown new-container option(s): ${extra[*]}"
+      [[ "$stop_all" != "1" ]] || fail "new-container creates one node and does not accept --all."
+      [[ -z "$name_arg" ]] || fail "new-container always chooses the next indexed name; do not pass --name."
+      create_new_container "$image_ref"
+      ;;
+    upgrade)
+      [[ "${#extra[@]}" -eq 0 ]] || fail "Unknown upgrade option(s): ${extra[*]}"
+      [[ "$stop_all" == "1" ]] || fail "upgrade affects every managed node; rerun with --all."
+      [[ -z "$name_arg" ]] || fail "upgrade --all does not accept --name."
+      upgrade_all_nodes "$image_ref"
+      ;;
+    destroy)
+      [[ "${#extra[@]}" -eq 0 ]] || fail "Unknown destroy option(s): ${extra[*]}"
+      [[ "$stop_all" == "1" ]] || fail "destroy affects every managed node; rerun with --all."
+      [[ -z "$name_arg" ]] || fail "destroy --all does not accept --name."
+      destroy_all_nodes
+      ;;
+    reset)
+      [[ "${#extra[@]}" -eq 0 ]] || fail "Unknown reset option(s): ${extra[*]}"
+      [[ "$stop_all" != "1" ]] || fail "reset already applies to all managed nodes and does not accept --all."
+      [[ -z "$name_arg" ]] || fail "reset always recreates ${DEFAULT_NODE_NAME}; do not pass --name."
+      reset_nodes "$image_ref"
       ;;
     urls|ports) show_urls "$node_name" ;;
     status|ps) if [[ -n "$name_arg" ]]; then show_status "$node_name"; else show_status ""; fi ;;

@@ -9,7 +9,8 @@ $Script:LauncherLabelValue = 'server-docker'
 $Script:NodeLabelKey = 'com.autobyteus.nodeName'
 $Script:ConfigLabelKey = 'com.autobyteus.configHash'
 $Script:ConfigHashVersion = 'v1'
-$Script:DefaultNodeName = 'autobyteus-server'
+$Script:NodeNamePrefix = 'autobyteus-server'
+$Script:DefaultNodeName = "$($Script:NodeNamePrefix)-0"
 $Script:DefaultImage = 'autobyteus/autobyteus-server'
 $Script:DefaultTag = 'latest'
 $Script:MaxRunAttempts = 5
@@ -24,10 +25,11 @@ Usage:
   powershell -NoProfile -ExecutionPolicy Bypass -Command "irm <script-url> | iex; autobyteus-docker install"
 
 Commands:
-  install            Install or update the local autobyteus-docker CLI
-  update             Alias for install
-  start              Check image updates and start the default Docker node
-  start --new        Start a new Docker node with automatic name and ports
+  install            Install or replace the local autobyteus-docker CLI
+  new-container      Create a new Docker node with automatic indexed name and ports
+  upgrade --all      Upgrade all managed Docker nodes to the latest image
+  destroy --all      Remove all managed Docker nodes, keeping named volumes
+  reset              Destroy all managed Docker nodes, then create autobyteus-server-0
   urls | ports       Show Backend, GraphQL, noVNC, VNC, and debug URLs
   status | ps        Show managed Docker nodes
   logs               Show Docker logs for a managed node
@@ -37,11 +39,10 @@ Commands:
 Advanced temporary use: powershell -NoProfile -ExecutionPolicy Bypass -Command "irm <script-url> | iex; autobyteus-docker <command> [options]"
 
 Options:
-  --name <name>      Friendly node name (default: $Script:DefaultNodeName)
+  --name <name>      Friendly node name for status/logs/urls/stop (default: $Script:DefaultNodeName)
   --tag <tag>        Docker image tag (default: $Script:DefaultTag)
   --image <image>    Docker image repository or full image ref (default: $Script:DefaultImage)
-  --new              Create the next available friendly node name
-  --all              Apply stop/status to all managed nodes
+  --all              Required for upgrade/destroy; also applies stop/status to all managed nodes
   -h, --help         Show this help
 
 State:
@@ -97,9 +98,9 @@ function Install-Launcher {
 
   Write-LauncherInfo "Installed AutoByteus Docker launcher: $ps1Path"
   Write-Host "Command shim: $cmdPath"
-  Write-Host "Next commands:`n  autobyteus-docker start`n  autobyteus-docker start --new`n  autobyteus-docker urls"
+  Write-Host "Next commands:`n  autobyteus-docker new-container`n  autobyteus-docker upgrade --all`n  autobyteus-docker urls"
   if (Test-DirectoryOnPath $installDir) { Write-LauncherInfo 'Install directory is already on PATH.'; return }
-  Write-Host "PATH guidance:`n  This shell cannot find 'autobyteus-docker' until $installDir is on User PATH.`n  Use direct path now:`n    powershell -NoProfile -ExecutionPolicy Bypass -File `"$ps1Path`" start`n  To add this directory to your User PATH without admin rights, run:`n    [Environment]::SetEnvironmentVariable('Path', [Environment]::GetEnvironmentVariable('Path', 'User') + ';$installDir', 'User')`n  Then open a new PowerShell window."
+  Write-Host "PATH guidance:`n  This shell cannot find 'autobyteus-docker' until $installDir is on User PATH.`n  Use direct path now:`n    powershell -NoProfile -ExecutionPolicy Bypass -File `"$ps1Path`" new-container`n  To add this directory to your User PATH without admin rights, run:`n    [Environment]::SetEnvironmentVariable('Path', [Environment]::GetEnvironmentVariable('Path', 'User') + ';$installDir', 'User')`n  Then open a new PowerShell window."
 }
 
 function Normalize-NodeName([string]$Raw) {
@@ -158,6 +159,56 @@ function Get-ContainerForNode([string]$NodeName) {
   $containers = & docker ps -a --filter "label=$Script:LauncherLabelKey=$Script:LauncherLabelValue" --filter "label=$Script:NodeLabelKey=$NodeName" --format '{{.Names}}' 2>$null
   if ($containers) { return @($containers)[0] }
   $null
+}
+
+function Add-UniqueString($List, $Seen, [string]$Value) {
+  if ([string]::IsNullOrWhiteSpace($Value)) { return }
+  if ($Seen.Add($Value)) { [void]$List.Add($Value) }
+}
+
+function Get-ManagedNodeNames {
+  $names = [System.Collections.Generic.List[string]]::new()
+  $seen = [System.Collections.Generic.HashSet[string]]::new()
+
+  if (Test-Path (Get-StateDir)) {
+    Get-ChildItem -Path (Get-StateDir) -Filter '*.json' | ForEach-Object {
+      try {
+        $state = Get-Content -Raw -Path $_.FullName | ConvertFrom-Json
+        $name = if ($state.nodeName) { $state.nodeName } else { [System.IO.Path]::GetFileNameWithoutExtension($_.Name) }
+        Add-UniqueString $names $seen $name
+      } catch { }
+    }
+  }
+
+  $containers = & docker ps -a --filter "label=$Script:LauncherLabelKey=$Script:LauncherLabelValue" --format '{{.Names}}' 2>$null
+  foreach ($container in @($containers)) {
+    if (-not $container) { continue }
+    $nodeName = & docker inspect --format "{{ index .Config.Labels `"$Script:NodeLabelKey`" }}" $container 2>$null
+    if ($LASTEXITCODE -ne 0 -or -not $nodeName -or $nodeName -eq '<no value>') { $nodeName = $container }
+    Add-UniqueString $names $seen ([string]$nodeName)
+  }
+
+  $names.ToArray()
+}
+
+function Get-ManagedContainerNames {
+  $names = [System.Collections.Generic.List[string]]::new()
+  $seen = [System.Collections.Generic.HashSet[string]]::new()
+
+  if (Test-Path (Get-StateDir)) {
+    Get-ChildItem -Path (Get-StateDir) -Filter '*.json' | ForEach-Object {
+      try {
+        $state = Get-Content -Raw -Path $_.FullName | ConvertFrom-Json
+        $name = if ($state.containerName) { $state.containerName } elseif ($state.nodeName) { $state.nodeName } else { [System.IO.Path]::GetFileNameWithoutExtension($_.Name) }
+        Add-UniqueString $names $seen $name
+      } catch { }
+    }
+  }
+
+  $containers = & docker ps -a --filter "label=$Script:LauncherLabelKey=$Script:LauncherLabelValue" --format '{{.Names}}' 2>$null
+  foreach ($container in @($containers)) { Add-UniqueString $names $seen ([string]$container) }
+
+  $names.ToArray()
 }
 
 function Test-PortAvailable([int]$Port) {
@@ -238,10 +289,9 @@ function Test-NodeNameAvailable([string]$NodeName) {
 }
 
 function Get-NextNodeName {
-  if (Test-NodeNameAvailable $Script:DefaultNodeName) { return $Script:DefaultNodeName }
-  $index = 2
+  $index = 0
   while ($true) {
-    $candidate = "$Script:DefaultNodeName-$index"
+    $candidate = "$Script:NodeNamePrefix-$index"
     if (Test-NodeNameAvailable $candidate) { return $candidate }
     $index += 1
   }
@@ -442,9 +492,89 @@ function Start-Node([string]$NodeName, [string]$ImageRef, [bool]$PreferDefaults)
   }
 }
 
+function Test-ImageIdInUse([string]$ImageId) {
+  if ([string]::IsNullOrWhiteSpace($ImageId)) { return $false }
+  $containers = & docker ps -a --format '{{.Names}}' 2>$null
+  foreach ($container in @($containers)) {
+    if (-not $container) { continue }
+    if ((Get-ContainerImageId $container) -eq $ImageId) { return $true }
+  }
+  $false
+}
+
+function Remove-UnusedImageIds([string[]]$ImageIds) {
+  $seen = [System.Collections.Generic.HashSet[string]]::new()
+  foreach ($imageId in @($ImageIds)) {
+    if ([string]::IsNullOrWhiteSpace($imageId)) { continue }
+    if (-not $seen.Add($imageId)) { continue }
+    if (Test-ImageIdInUse $imageId) {
+      Write-LauncherInfo "Keeping image $imageId; it is still used by a Docker container."
+      continue
+    }
+    & docker image inspect $imageId *> $null
+    if ($LASTEXITCODE -ne 0) { continue }
+    & docker image rm $imageId *> $null
+    if ($LASTEXITCODE -eq 0) { Write-LauncherInfo "Removed unused AutoByteus server image $imageId." }
+  }
+}
+
+function Get-ManagedContainerImageIds {
+  $ids = [System.Collections.Generic.List[string]]::new()
+  foreach ($container in @(Get-ManagedContainerNames)) {
+    if (-not $container) { continue }
+    if (-not (Test-ContainerExists $container)) { continue }
+    $imageId = Get-ContainerImageId $container
+    if ($imageId) { [void]$ids.Add($imageId) }
+  }
+  $ids.ToArray()
+}
+
+function Remove-AllStateFiles {
+  if (-not (Test-Path (Get-StateDir))) { return }
+  Get-ChildItem -Path (Get-StateDir) -Filter '*.json' | Remove-Item -Force -ErrorAction SilentlyContinue
+}
+
+function Destroy-AllNodes {
+  $imageIds = @(Get-ManagedContainerImageIds)
+  $any = $false
+  foreach ($container in @(Get-ManagedContainerNames)) {
+    if (-not $container) { continue }
+    if (Test-ContainerExists $container) {
+      & docker rm -f $container *> $null
+      Write-LauncherInfo "Removed managed container $container. Named volumes were kept."
+      $any = $true
+    }
+  }
+  Remove-AllStateFiles
+  if (-not $any) { Write-LauncherInfo 'No managed Docker containers were found.' }
+  Remove-UnusedImageIds $imageIds
+}
+
+function Upgrade-AllNodes([string]$ImageRef) {
+  $nodes = @(Get-ManagedNodeNames)
+  if ($nodes.Count -eq 0) { Write-LauncherInfo 'No managed Docker nodes found.'; return }
+  $imageIds = @(Get-ManagedContainerImageIds)
+  foreach ($node in $nodes) {
+    $preferDefaults = $node -eq $Script:DefaultNodeName
+    Start-Node $node $ImageRef $preferDefaults
+  }
+  Remove-UnusedImageIds $imageIds
+}
+
+function New-Container([string]$ImageRef) {
+  $nodeName = Get-NextNodeName
+  $preferDefaults = $nodeName -eq $Script:DefaultNodeName
+  Start-Node $nodeName $ImageRef $preferDefaults
+}
+
+function Reset-Nodes([string]$ImageRef) {
+  Destroy-AllNodes
+  Start-Node $Script:DefaultNodeName $ImageRef $true
+}
+
 function Show-Urls([string]$NodeName) {
   $state = Read-NodeState $NodeName
-  if (-not $state) { Fail-Launcher "No launcher state found for $NodeName. Run start first." }
+  if (-not $state) { Fail-Launcher "No launcher state found for $NodeName. Run new-container first." }
   Print-Urls $state
 }
 
@@ -490,9 +620,8 @@ function Show-Logs([string]$NodeName, [string[]]$ExtraArgs) {
   & docker logs @ExtraArgs $state.containerName
 }
 
-function Resolve-TargetName([string]$ExplicitName, [bool]$CreateNew) {
+function Resolve-TargetName([string]$ExplicitName) {
   if ($ExplicitName) { return Normalize-NodeName $ExplicitName }
-  if ($CreateNew) { return Get-NextNodeName }
   $Script:DefaultNodeName
 }
 
@@ -501,10 +630,9 @@ function Invoke-AutoByteusDocker {
   $cmd = if ($CommandArgs.Count -gt 0) { $CommandArgs[0] } else { 'help' }
   if ($cmd -in @('help', '-h', '--help')) { Show-AutoByteusDockerHelp; return }
 
-  $createNew = $false; $stopAll = $false; $nameArg = ''; $tag = $Script:DefaultTag; $image = $Script:DefaultImage; $extra = @()
+  $stopAll = $false; $nameArg = ''; $tag = $Script:DefaultTag; $image = $Script:DefaultImage; $extra = @()
   for ($i = 1; $i -lt $CommandArgs.Count; $i += 1) {
     switch ($CommandArgs[$i]) {
-      '--new' { $createNew = $true }
       '--all' { $stopAll = $true }
       '--name' { $i += 1; if ($i -ge $CommandArgs.Count) { Fail-Launcher '--name requires a value' }; $nameArg = $CommandArgs[$i] }
       '--tag' { $i += 1; if ($i -ge $CommandArgs.Count) { Fail-Launcher '--tag requires a value' }; $tag = $CommandArgs[$i] }
@@ -518,23 +646,47 @@ function Invoke-AutoByteusDocker {
   }
 
   switch ($cmd) {
-    { $_ -in @('install', 'update') } {
+    'install' {
       if ($extra.Count -gt 0) { Fail-Launcher "Unknown $cmd option(s): $($extra -join ' ')" }
       Install-Launcher
       return
     }
   }
 
+  if ($cmd -notin @('new-container', 'upgrade', 'destroy', 'reset', 'urls', 'ports', 'status', 'ps', 'stop', 'logs')) {
+    Show-AutoByteusDockerHelp
+    exit 1
+  }
+
   Ensure-StateDir
   Assert-Docker
-  $nodeName = Resolve-TargetName $nameArg $createNew
+  $nodeName = Resolve-TargetName $nameArg
   $imageRef = Get-ImageRef $image $tag
 
   switch ($cmd) {
-    'start' {
-      if ($extra.Count -gt 0) { Fail-Launcher "Unknown start option(s): $($extra -join ' ')" }
-      $preferDefaults = $nodeName -eq $Script:DefaultNodeName -and -not $createNew -and -not $nameArg
-      Start-Node $nodeName $imageRef $preferDefaults
+    'new-container' {
+      if ($extra.Count -gt 0) { Fail-Launcher "Unknown new-container option(s): $($extra -join ' ')" }
+      if ($stopAll) { Fail-Launcher 'new-container creates one node and does not accept --all.' }
+      if ($nameArg) { Fail-Launcher 'new-container always chooses the next indexed name; do not pass --name.' }
+      New-Container $imageRef
+    }
+    'upgrade' {
+      if ($extra.Count -gt 0) { Fail-Launcher "Unknown upgrade option(s): $($extra -join ' ')" }
+      if (-not $stopAll) { Fail-Launcher 'upgrade affects every managed node; rerun with --all.' }
+      if ($nameArg) { Fail-Launcher 'upgrade --all does not accept --name.' }
+      Upgrade-AllNodes $imageRef
+    }
+    'destroy' {
+      if ($extra.Count -gt 0) { Fail-Launcher "Unknown destroy option(s): $($extra -join ' ')" }
+      if (-not $stopAll) { Fail-Launcher 'destroy affects every managed node; rerun with --all.' }
+      if ($nameArg) { Fail-Launcher 'destroy --all does not accept --name.' }
+      Destroy-AllNodes
+    }
+    'reset' {
+      if ($extra.Count -gt 0) { Fail-Launcher "Unknown reset option(s): $($extra -join ' ')" }
+      if ($stopAll) { Fail-Launcher 'reset already applies to all managed nodes and does not accept --all.' }
+      if ($nameArg) { Fail-Launcher "reset always recreates $Script:DefaultNodeName; do not pass --name." }
+      Reset-Nodes $imageRef
     }
     { $_ -in @('urls', 'ports') } { Show-Urls $nodeName }
     { $_ -in @('status', 'ps') } { Show-Status $(if ($nameArg) { $nodeName } else { '' }) }
