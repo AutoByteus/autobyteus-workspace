@@ -78,7 +78,8 @@ That surface owns:
 
 - the team-level default runtime/model/config selection,
 - shared workspace / auto-execute / skill-access fields,
-- leaf-member override rows flattened from nested team definitions, and
+- leaf-member override rows flattened from nested team definitions and keyed by
+  backend `memberRouteKey`, and
 - runtime-scoped model catalog loading for the team default plus any explicit member runtime overrides.
 
 `MemberOverrideItem.vue` is the authoritative row owner for per-member launch overrides. Each leaf member can:
@@ -148,6 +149,13 @@ The frontend still creates a local temporary team context first, but mixed-runti
 
 This is the frontend contract that makes the backend `TeamBackendKind.MIXED` path reachable from the actual app UX rather than only from backend/API-only proof.
 
+For nested team definitions, the backend launches through the mixed topology
+path even when all leaf members use the same runtime. Leaf launch configs must
+therefore preserve `memberRouteKey` so duplicate leaf names under different
+subteams stay distinguishable. A top-level subteam is a first-class runtime
+target: sending to that member routes into the child team default/coordinator
+instead of flattening to an arbitrary child leaf.
+
 ## Stopped Team Follow-Up And Termination State
 
 `agentTeamRunStore.sendMessageToFocusedMember()` supports follow-up chat against existing team runs after local stop/termination:
@@ -176,6 +184,13 @@ Reopen/hydration supplies the values that selected read-only team config
 displays. The frontend treats non-null metadata from the backend as authoritative
 for inspection and treats null metadata as not recorded; backend recovery,
 materialization, or backfill is outside the Agent Teams frontend module.
+
+Backend team-run metadata is recursive for nested teams. Frontend history and
+selected-run surfaces may flatten leaf members for display/config rows, but
+route-key/path identity from metadata remains authoritative for reconnect,
+stream attribution, and command targeting. Stream payloads for nested activity
+can include `member_path`, `member_route_key`, `source_path`, and
+`source_route_key`; one-name aliases are display compatibility only.
 
 ## Store Ownership
 

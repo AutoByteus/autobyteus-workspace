@@ -3,6 +3,14 @@ import type { TeamCommunicationMessagePayload } from '~/services/agentStreaming/
 
 export type TeamCommunicationReferenceFileType = 'file' | 'image' | 'audio' | 'video' | 'pdf' | 'csv' | 'excel' | 'other';
 export type TeamCommunicationDirection = 'sent' | 'received';
+export type TeamCommunicationMemberKind = 'agent' | 'agent_team';
+
+export interface TeamCommunicationParticipantSelector {
+  memberRunId?: string | null;
+  memberKind?: TeamCommunicationMemberKind | null;
+  memberPath?: string[] | null;
+  memberRouteKey?: string | null;
+}
 
 export interface TeamCommunicationReferenceFile {
   referenceId: string;
@@ -16,9 +24,15 @@ export interface TeamCommunicationMessage {
   messageId: string;
   teamRunId: string;
   senderRunId: string;
+  senderMemberKind?: 'agent' | 'agent_team' | null;
   senderMemberName?: string | null;
+  senderMemberPath?: string[] | null;
+  senderMemberRouteKey?: string | null;
   receiverRunId: string;
+  receiverMemberKind?: 'agent' | 'agent_team' | null;
   receiverMemberName?: string | null;
+  receiverMemberPath?: string[] | null;
+  receiverMemberRouteKey?: string | null;
   content: string;
   messageType: string;
   createdAt: string;
@@ -29,13 +43,19 @@ export interface TeamCommunicationMessage {
 export interface TeamCommunicationPerspectiveMessage extends TeamCommunicationMessage {
   direction: TeamCommunicationDirection;
   counterpartRunId: string;
+  counterpartMemberKind: 'agent' | 'agent_team' | null;
   counterpartMemberName: string | null;
+  counterpartMemberPath: string[] | null;
+  counterpartMemberRouteKey: string | null;
   message: TeamCommunicationMessage;
 }
 
 export interface TeamCommunicationPerspectiveGroup {
   counterpartRunId: string;
+  counterpartMemberKind: 'agent' | 'agent_team' | null;
   counterpartMemberName: string | null;
+  counterpartMemberPath: string[] | null;
+  counterpartMemberRouteKey: string | null;
   messages: TeamCommunicationPerspectiveMessage[];
 }
 
@@ -79,6 +99,15 @@ const inferType = (filePath: string): TeamCommunicationReferenceFileType => {
 
 const readString = (value: unknown): string | null =>
   typeof value === 'string' && value.trim().length > 0 ? value.trim() : null;
+
+const readMemberKind = (value: unknown): TeamCommunicationMemberKind | null =>
+  value === 'agent' || value === 'agent_team' ? value : null;
+
+const readStringPath = (value: unknown): string[] | null => {
+  if (!Array.isArray(value)) return null;
+  const path = value.map((entry) => readString(entry)).filter((entry): entry is string => Boolean(entry));
+  return path.length > 0 ? path : null;
+};
 
 const timestampOrNow = (value: unknown): string => readString(value) ?? new Date().toISOString();
 
@@ -137,9 +166,15 @@ const normalizeMessage = (
     messageId: message.messageId,
     teamRunId,
     senderRunId: message.senderRunId,
+    senderMemberKind: message.senderMemberKind ?? null,
     senderMemberName: message.senderMemberName ?? null,
+    senderMemberPath: message.senderMemberPath ?? null,
+    senderMemberRouteKey: message.senderMemberRouteKey ?? null,
     receiverRunId: message.receiverRunId,
+    receiverMemberKind: message.receiverMemberKind ?? null,
     receiverMemberName: message.receiverMemberName ?? null,
+    receiverMemberPath: message.receiverMemberPath ?? null,
+    receiverMemberRouteKey: message.receiverMemberRouteKey ?? null,
     content: message.content,
     messageType: message.messageType || 'agent_message',
     createdAt,
@@ -162,9 +197,15 @@ const normalizeMessageFromPayload = (
     messageId: readString(payload.messageId) || `${teamRunId}:${senderRunId}:${receiverRunId}:${createdAt}`,
     teamRunId,
     senderRunId,
+    senderMemberKind: readMemberKind(payload.senderMemberKind),
     senderMemberName: payload.senderMemberName ?? null,
+    senderMemberPath: readStringPath(payload.senderMemberPath),
+    senderMemberRouteKey: payload.senderMemberRouteKey ?? null,
     receiverRunId,
+    receiverMemberKind: readMemberKind(payload.receiverMemberKind),
     receiverMemberName: payload.receiverMemberName ?? null,
+    receiverMemberPath: readStringPath(payload.receiverMemberPath),
+    receiverMemberRouteKey: payload.receiverMemberRouteKey ?? null,
     content: payload.content,
     messageType: payload.messageType || 'agent_message',
     createdAt,
@@ -188,9 +229,15 @@ const applyMessageSnapshot = (
   source: TeamCommunicationMessage,
 ): void => {
   target.senderRunId = source.senderRunId;
+  target.senderMemberKind = source.senderMemberKind ?? null;
   target.senderMemberName = source.senderMemberName ?? null;
+  target.senderMemberPath = source.senderMemberPath ?? null;
+  target.senderMemberRouteKey = source.senderMemberRouteKey ?? null;
   target.receiverRunId = source.receiverRunId;
+  target.receiverMemberKind = source.receiverMemberKind ?? null;
   target.receiverMemberName = source.receiverMemberName ?? null;
+  target.receiverMemberPath = source.receiverMemberPath ?? null;
+  target.receiverMemberRouteKey = source.receiverMemberRouteKey ?? null;
   target.content = source.content;
   target.messageType = source.messageType;
   target.createdAt = target.createdAt || source.createdAt;
@@ -207,6 +254,106 @@ const compareMessagesDesc = (
   return left.messageId.localeCompare(right.messageId);
 };
 
+const normalizeRouteKey = (value: string | null | undefined): string | null =>
+  readString(value)?.replace(/\\/g, '/').replace(/\/{2,}/g, '/').replace(/^\/+|\/+$/g, '') || null;
+
+const normalizeParticipantPath = (value: string[] | null | undefined): string[] | null => {
+  if (!Array.isArray(value)) {
+    return null;
+  }
+  const path = value.map((segment) => readString(segment)).filter((segment): segment is string => Boolean(segment));
+  return path.length > 0 ? path : null;
+};
+
+const routeKeyFromPath = (path: string[] | null): string | null =>
+  path && path.length > 0 ? normalizeRouteKey(path.join('/')) : null;
+
+const pathsEqual = (left: string[] | null, right: string[] | null): boolean =>
+  Boolean(left && right && left.length === right.length && left.every((segment, index) => segment === right[index]));
+
+const normalizeParticipantSelector = (
+  selector: string | TeamCommunicationParticipantSelector,
+): Required<TeamCommunicationParticipantSelector> | null => {
+  if (typeof selector === 'string') {
+    const memberRunId = readString(selector);
+    return memberRunId
+      ? { memberRunId, memberKind: null, memberPath: null, memberRouteKey: null }
+      : null;
+  }
+
+  const memberPath = normalizeParticipantPath(selector.memberPath);
+  const memberRouteKey = normalizeRouteKey(selector.memberRouteKey) ?? routeKeyFromPath(memberPath);
+  const memberRunId = readString(selector.memberRunId);
+  const memberKind = readMemberKind(selector.memberKind);
+
+  if (!memberRunId && !memberRouteKey && !memberPath && !memberKind) {
+    return null;
+  }
+
+  return {
+    memberRunId,
+    memberKind,
+    memberPath,
+    memberRouteKey,
+  };
+};
+
+const participantKindMatches = (
+  selectorKind: TeamCommunicationMemberKind | null,
+  messageKind: TeamCommunicationMemberKind | null | undefined,
+): boolean => !selectorKind || !messageKind || selectorKind === messageKind;
+
+const participantMatches = (
+  selector: Required<TeamCommunicationParticipantSelector>,
+  participant: {
+    runId: string;
+    memberKind?: TeamCommunicationMemberKind | null;
+    memberPath?: string[] | null;
+    memberRouteKey?: string | null;
+  },
+): boolean => {
+  if (!participantKindMatches(selector.memberKind, participant.memberKind)) {
+    return false;
+  }
+
+  const participantPath = normalizeParticipantPath(participant.memberPath ?? null);
+  const participantRouteKey = normalizeRouteKey(participant.memberRouteKey) ?? routeKeyFromPath(participantPath);
+
+  if (pathsEqual(selector.memberPath, participantPath)) {
+    return true;
+  }
+
+  if (selector.memberRouteKey && participantRouteKey) {
+    return selector.memberRouteKey === participantRouteKey;
+  }
+
+  if (selector.memberRunId && selector.memberRunId === participant.runId) {
+    return true;
+  }
+
+  return false;
+};
+
+const messageSenderMatches = (
+  message: TeamCommunicationMessage,
+  selector: Required<TeamCommunicationParticipantSelector>,
+): boolean => participantMatches(selector, {
+  runId: message.senderRunId,
+  memberKind: message.senderMemberKind,
+  memberPath: message.senderMemberPath,
+  memberRouteKey: message.senderMemberRouteKey,
+});
+
+const messageReceiverMatches = (
+  message: TeamCommunicationMessage,
+  selector: Required<TeamCommunicationParticipantSelector>,
+): boolean => participantMatches(selector, {
+  runId: message.receiverRunId,
+  memberKind: message.receiverMemberKind,
+  memberPath: message.receiverMemberPath,
+  memberRouteKey: message.receiverMemberRouteKey,
+});
+
 const buildPerspectiveMessage = (
   message: TeamCommunicationMessage,
   direction: TeamCommunicationDirection,
@@ -214,9 +361,18 @@ const buildPerspectiveMessage = (
   ...message,
   direction,
   counterpartRunId: direction === 'sent' ? message.receiverRunId : message.senderRunId,
+  counterpartMemberKind: direction === 'sent'
+    ? (message.receiverMemberKind ?? null)
+    : (message.senderMemberKind ?? null),
   counterpartMemberName: direction === 'sent'
     ? (message.receiverMemberName ?? null)
     : (message.senderMemberName ?? null),
+  counterpartMemberPath: direction === 'sent'
+    ? (message.receiverMemberPath ?? null)
+    : (message.senderMemberPath ?? null),
+  counterpartMemberRouteKey: direction === 'sent'
+    ? (message.receiverMemberRouteKey ?? null)
+    : (message.senderMemberRouteKey ?? null),
   message,
 });
 
@@ -225,11 +381,18 @@ const groupPerspectiveMessages = (
 ): TeamCommunicationPerspectiveGroup[] => {
   const groupsByCounterpart = new Map<string, TeamCommunicationPerspectiveGroup>();
   messages.forEach((message) => {
-    const key = message.counterpartRunId || message.counterpartMemberName || 'unknown';
+    const key = message.counterpartMemberRouteKey
+      || message.counterpartMemberPath?.join('/')
+      || message.counterpartRunId
+      || message.counterpartMemberName
+      || 'unknown';
     if (!groupsByCounterpart.has(key)) {
       groupsByCounterpart.set(key, {
         counterpartRunId: message.counterpartRunId,
+        counterpartMemberKind: message.counterpartMemberKind,
         counterpartMemberName: message.counterpartMemberName,
+        counterpartMemberPath: message.counterpartMemberPath,
+        counterpartMemberRouteKey: message.counterpartMemberRouteKey,
         messages: [],
       });
     }
@@ -246,8 +409,17 @@ const groupPerspectiveMessages = (
       const rightLatest = right.messages[0]?.createdAt || '';
       const byCreatedAt = rightLatest.localeCompare(leftLatest);
       if (byCreatedAt !== 0) return byCreatedAt;
-      return (left.counterpartMemberName || left.counterpartRunId)
-        .localeCompare(right.counterpartMemberName || right.counterpartRunId);
+      return (
+        left.counterpartMemberRouteKey ||
+        left.counterpartMemberPath?.join('/') ||
+        left.counterpartMemberName ||
+        left.counterpartRunId
+      ).localeCompare(
+        right.counterpartMemberRouteKey ||
+        right.counterpartMemberPath?.join('/') ||
+        right.counterpartMemberName ||
+        right.counterpartRunId,
+      );
     });
 };
 
@@ -262,19 +434,19 @@ export const useTeamCommunicationStore = defineStore('teamCommunication', {
 
     getPerspectiveForMember: (state) => (
       teamRunId: string,
-      memberRunId: string,
+      participantSelector: string | TeamCommunicationParticipantSelector,
     ): TeamCommunicationPerspective => {
-      const normalizedMemberRunId = memberRunId.trim();
-      if (!teamRunId || !normalizedMemberRunId) {
+      const selector = normalizeParticipantSelector(participantSelector);
+      if (!teamRunId || !selector) {
         return { sentGroups: [], receivedGroups: [], messages: [] };
       }
 
       const teamMessages = state.messagesByTeam.get(teamRunId) || [];
       const sent = teamMessages
-        .filter((message) => message.senderRunId === normalizedMemberRunId)
+        .filter((message) => messageSenderMatches(message, selector))
         .map((message) => buildPerspectiveMessage(message, 'sent'));
       const received = teamMessages
-        .filter((message) => message.receiverRunId === normalizedMemberRunId)
+        .filter((message) => messageReceiverMatches(message, selector))
         .map((message) => buildPerspectiveMessage(message, 'received'));
       const sentGroups = groupPerspectiveMessages(sent);
       const receivedGroups = groupPerspectiveMessages(received);

@@ -1,4 +1,5 @@
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import type { TeamRunMemberMetadata } from "../store/team-run-metadata-types.js";
 import type {
   TeamRunDeleteLifecycleRecord,
   TeamRunIndexFileRecord,
@@ -42,4 +43,5 @@ export interface TeamRunHistoryItem {
   deleteLifecycle: TeamRunDeleteLifecycle;
   isActive: boolean;
   members: TeamRunMemberHistoryItem[];
+  memberTree: TeamRunMemberMetadata[];
 }

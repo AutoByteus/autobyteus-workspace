@@ -20,6 +20,8 @@ Enable the backend mixed team manager to execute nested agent-team members as re
 - Current WebSocket command payloads and tool-approval routing are bare-name/agent-id oriented (`target_member_name`, `target_agent_name`, `agent_name`, `agent_id`). Nested mixed execution needs path/route selectors in command payloads and must emit those selectors in approval-request events.
 - Current `TeamRunEvent` has optional `subTeamNodeName`. The refined design uses `sourcePath` as the canonical domain identity for runtime-sourced events; any one-name subteam display field is derived at transport/projection edges only.
 - Verification command attempted in the dedicated worktree failed before tests ran because that worktree has no installed `node_modules`/`tsc` binaries.
+- Full-stack seeded browser validation on 2026-05-13 proved the backend nested runtime and recursive metadata work, but the frontend active workspace/run UI still flattens nested teams into leaf agents. The visible tree showed `program_manager`, `review_lead`, and `qa_specialist` directly under the parent team and omitted the `BuildSquad` `agent_team` node even though backend `memberTree` contained `BuildSquad` with child route keys `BuildSquad/review_lead` and `BuildSquad/qa_specialist`.
+- Later full-stack validation on 2026-05-13 proved parent-to-subteam live communication projection now works, but exposed three remaining UI/projection defects: the live child coordinator transcript omits the inbound inter-agent prompt, opened child coordinator projections duplicate timestamped messages with `ts: null` copies, and active nested member rows use agent definition names while restored/history rows use member names. These defects require a focused event/projection/presentation invariant rather than ad hoc component fixes.
 
 ## Design Health Assessment (Mandatory)
 
@@ -42,6 +44,7 @@ Enable the backend mixed team manager to execute nested agent-team members as re
 - Make `sourcePath` the single canonical event-source identity in the team-run domain. Derive legacy/display fields such as `sub_team_node_name` only in WebSocket/GraphQL/projection mappers.
 - Store run metadata in the canonical recursive `TeamRunMetadata` shape with no `V2` type name and no `runVersion` field; its `memberTree` should be typed as `TeamRunMemberMetadata[]` rather than `TeamRunMemberMetadataNode[]`. Legacy flat metadata must never be guessed back into nested topology and should fail restore with an explicit unsupported legacy-metadata/topology-lost error.
 - Extend command payloads and tool-approval payloads with route/path selectors so nested leaf operations never depend on ambiguous bare member names.
+- Extend the frontend active team context, run-history tree, team members panel, grid, spotlight, launch config, streaming router, and communication/activity projections to preserve and render recursive `TeamMemberNode` trees. Leaf-agent lookup maps are allowed only as derived indexes for conversations/projections; they must not be the display source of truth.
 
 ## Scope Classification (`Small`/`Medium`/`Large`)
 
@@ -58,12 +61,16 @@ This crosses team-definition traversal, team-run launch config shape, backend se
 - UC-005: Parent team streams include nested agent/team/task-plan events with unambiguous subteam path attribution.
 - UC-006: Interrupt, terminate, and restore a parent mixed run without orphaning or losing nested subteam runtime state.
 - UC-007: Validate and reject circular nested team definitions and ambiguous/duplicate member route identities.
+- UC-008: Display active and historical nested team runs as recursive trees that include subteam nodes, not only flattened leaf agents.
+- UC-009: Let users select/focus a subteam node as a team member and send work to that subteam boundary, while leaf-agent selection continues to show leaf conversations and projections.
+- UC-010: Configure nested team launches from the frontend using canonical leaf route keys under expandable subteam groups.
+- UC-011: During live and restored nested runs, show the same recipient-side child leaf conversation, without duplicate projection messages, and with one stable member-label policy across active and history views.
 
 ## Out of Scope
 
 - Deprecating or deleting the AutoByteus, Codex, or Claude team managers in this change.
 - Direct child-to-parent or arbitrary cross-level leaf-to-leaf messaging that bypasses the addressed subteam boundary.
-- Full frontend UX redesign for visualizing arbitrary organization trees, beyond maintaining backend payloads needed by existing stream/projection surfaces.
+- Arbitrary organization-chart/productivity-suite redesign beyond the minimum nested team tree, launch config, focus/grid/spotlight, history/restore, and activity/communication behavior required for this feature.
 - Reworking task-plan semantics across nested mixed teams beyond event propagation and independent child team context.
 - Running live external-provider E2E tests as part of this design stage.
 
@@ -90,6 +97,15 @@ This crosses team-definition traversal, team-run launch config shape, backend se
 - REQ-019: `TeamMemberSelector` MUST be the authoritative public/domain command identity across `TeamRun`, `TeamRunBackend`, `TeamManager`, and mixed manager command methods. Raw string targets MUST exist only at transport or other edge adapters and MUST be normalized into a selector before entering the domain/backend command chain.
 - REQ-020: `TeamRunMetadataStore` MUST validate and persist the canonical recursive `TeamRunMetadata.memberTree` schema, remove support for `runVersion`/flat `memberMetadata`, and throw/report explicit unsupported legacy-metadata/topology-lost errors for historical flat metadata instead of returning generic missing/invalid metadata. Derived flat views MUST be produced only by a projection flattener, not by the store schema.
 - REQ-021: Team communication descriptors, delivery requests, events, and projections MUST be member-kind-aware and path-aware so a parent agent can address a subteam member as a recipient while the child team coordinator processes the message internally. Subteam communication projection MUST NOT pretend the subteam is an agent runtime.
+- REQ-022: Frontend active team context MUST preserve a recursive `TeamMemberNode`/member tree for draft, active, restored, and historical team runs. A flat leaf-agent map may exist only as a derived lookup for agent conversations/projections; it MUST NOT be the source of truth for display, selection, or launch topology.
+- REQ-023: Workspace run trees and team member panels MUST render subteam members as expandable/selectable group rows with their nested children, for example `Nested Mixed Runtime Delivery Team -> BuildSquad -> review_lead/qa_specialist`. Nested leaf agents MUST be displayed under their subteam path and MUST NOT appear as parent-level siblings of the subteam.
+- REQ-024: Frontend focus, grid, and spotlight modes MUST support both agent leaf nodes and `agent_team` nodes. Selecting an agent leaf focuses its agent conversation/projection; selecting a subteam focuses a team/group view and message target for that subteam rather than trying to hydrate it as an `AgentContext`.
+- REQ-025: Sending a user message from the frontend to a selected subteam node MUST target that subteam by `memberRouteKey`/`memberPath` and let the backend route to the child coordinator. Sending to a leaf agent MUST use the leaf canonical route key, such as `BuildSquad/review_lead`.
+- REQ-026: Frontend launch config and member override state MUST key leaf-agent runtime/model/workspace overrides by canonical nested `memberRouteKey`, not flat child member names. Subteam group rows may display inherited/default configuration summaries but MUST NOT require or store agent runtime fields.
+- REQ-027: Frontend run history, restore, streaming, activity, tool approval, and team communication projections MUST consume canonical recursive metadata/event identity (`memberTree`, `sourcePath`, sender/receiver participant kind/path/route). They MUST NOT require `runVersion`, flat `memberMetadata`, or bare `agent_name` as authoritative nested identity.
+- REQ-028: Recipient-side live leaf conversations MUST be driven by backend member-routed input events for the actual receiving leaf agent. The frontend MUST NOT synthesize child leaf conversation messages from parent-level team communication events, because only the backend knows the resolved child coordinator route and exact recipient-visible prompt.
+- REQ-029: `getTeamMemberRunProjection` and frontend hydration MUST return/render each logical conversation message once. When multiple projection sources contain the same logical message, deduplication MUST prefer the row with a valid timestamp and richer metadata and MUST not emit a duplicate `ts: null` copy.
+- REQ-030: Active, opened, stopped, and historical nested team member rows MUST share one presentation policy. The primary row label is the team membership label (`TeamMemberNode.displayName`/`memberName`), while agent definition names and full route keys are secondary/tooltip/breadcrumb metadata and not the primary label.
 
 ## Acceptance Criteria
 
@@ -108,6 +124,15 @@ This crosses team-definition traversal, team-run launch config shape, backend se
 - AC-013: Public command tests prove `TeamRun.postMessage`, `TeamRunBackend.postMessage`, `TeamManager.postMessage`, and `approveToolInvocation` route by `TeamMemberSelector`/route key/path; duplicate nested leaf names cannot be targeted by ambiguous bare strings.
 - AC-014: Metadata store tests prove canonical recursive `memberTree` metadata reads/writes, derived flattening for history/projection consumers, and fail-fast unsupported legacy-metadata/topology-lost behavior for old flat metadata containing `runVersion` or `memberMetadata`.
 - AC-015: A parent communication event for `Coordinator -> CodeReviewTeam` records sender and receiver member kind/path/route identity in the parent team communication projection, while child coordinator processing appears separately through the child event bridge under `sourcePath: ['CodeReviewTeam', '<childCoordinator>']`.
+- AC-016: In the seeded full-stack browser scenario, the workspace run tree shows `Nested Mixed Runtime Delivery Team` with a visible expandable `BuildSquad` team node and nested `BuildSquad/review_lead` and `BuildSquad/qa_specialist` leaves; `review_lead` and `qa_specialist` do not appear as flat parent-level siblings.
+- AC-017: Frontend store tests prove active team context contains a recursive member tree including `BuildSquad`, a member-node index keyed by `BuildSquad`, `BuildSquad/review_lead`, and `BuildSquad/qa_specialist`, and a leaf-agent context lookup keyed only by canonical leaf route keys.
+- AC-018: Selecting `BuildSquad` in tree/grid/spotlight focuses a subteam/group view and sending a message emits a route/path target for `BuildSquad`; selecting `BuildSquad/review_lead` focuses that leaf agent and uses the leaf route key.
+- AC-019: Launch configuration UI groups nested leaf overrides under the subteam node and sends `TeamMemberConfigInput.memberRouteKey` values such as `BuildSquad/review_lead`; override lookup by flat `review_lead` is rejected for nested children.
+- AC-020: Opening/restoring a historical nested team run uses backend `metadata.memberTree` as the authoritative display tree and does not require or parse `runVersion`/flat `memberMetadata` as the current schema.
+- AC-021: Activity, tool approval, and team communication panels display nested breadcrumbs/badges from `sourcePath` and participant kind/path/route, including parent-level `program_manager -> BuildSquad` and child-level `BuildSquad/review_lead` events.
+- AC-022: In the seeded browser scenario, after `program_manager` sends to `BuildSquad`, focusing `BuildSquad/review_lead` live shows the inbound `You received a message from sender name: program_manager ...` prompt followed by the child coordinator reply, in the same order as `getTeamMemberRunProjection`.
+- AC-023: `getTeamMemberRunProjection(teamRunId, "BuildSquad/review_lead")` for the seeded run returns one row per logical user/assistant message; timestamped rows are not repeated by `ts: null` duplicates, and opening/restoring the run renders each message once.
+- AC-024: The active/new workspace tree and opened/history tree for the seeded nested team use the same primary row labels (`program_manager`, `BuildSquad`, `review_lead`, `qa_specialist`, or configured membership display names) while route breadcrumbs and agent definition names remain available as secondary metadata.
 
 ## Constraints / Dependencies
 
@@ -117,6 +142,7 @@ This crosses team-definition traversal, team-run launch config shape, backend se
 - Existing `TeamRun`, `TeamRunBackend`, and `TeamRunEvent` contracts should be strengthened rather than bypassed.
 - Existing single-runtime team managers should not be expanded for nested execution in this change.
 - The dedicated worktree currently lacks installed dependencies; validation commands requiring `tsc`/Vitest need environment setup before execution.
+- Full-stack browser validation must use the worktree backend/frontend setup recorded in `fullstack-nested-team-ui-validation-failure.md` and assert the seeded nested UI tree, because backend-only E2E is no longer sufficient for this feature.
 
 ## Assumptions
 
@@ -129,7 +155,7 @@ This crosses team-definition traversal, team-run launch config shape, backend se
 
 - GraphQL/create-run inputs currently accept leaf-oriented member configs. Implementation should require path/route-keyed launch config matching for nested explicit launches while keeping bare names only for top-level/unambiguous cases.
 - WebSocket/tool-approval payloads currently use bare names or agent IDs; nested approval requires emitted `sourcePath`/derived route identity and command selectors that can route to a nested leaf.
-- Run history UX may need later updates to display tree topology instead of flat member lists, but top-level history should not be cluttered with internal child team runs.
+- Run history UX is now in scope for nested display: it must show recursive member trees under the parent top-level team while still not listing internal child team runs as independent top-level runs.
 - Application binding summaries currently collect leaf descriptors with team paths; those paths should align with the new mixed topology route keys.
 
 ## Requirement-To-Use-Case Coverage
@@ -157,6 +183,15 @@ This crosses team-definition traversal, team-run launch config shape, backend se
 | REQ-019 | UC-002, UC-003, UC-007 |
 | REQ-020 | UC-006 |
 | REQ-021 | UC-003, UC-005 |
+| REQ-022 | UC-008, UC-009 |
+| REQ-023 | UC-008 |
+| REQ-024 | UC-008, UC-009 |
+| REQ-025 | UC-009 |
+| REQ-026 | UC-010 |
+| REQ-027 | UC-005, UC-008, UC-009 |
+| REQ-028 | UC-003, UC-009, UC-011 |
+| REQ-029 | UC-006, UC-011 |
+| REQ-030 | UC-008, UC-011 |
 
 ## Acceptance-Criteria-To-Scenario Intent
 
@@ -177,7 +212,16 @@ This crosses team-definition traversal, team-run launch config shape, backend se
 | AC-013 | Public command chain uses selector identity, not raw strings. |
 | AC-014 | Metadata store and projection flattening own canonical schema/fail-fast legacy behavior. |
 | AC-015 | Team communication projection supports subteam recipients without agent impersonation. |
+| AC-016 | Browser workspace tree renders subteam nodes and nested leaves. |
+| AC-017 | Frontend active context stores recursive tree plus derived leaf lookup maps. |
+| AC-018 | Selecting/sending to subteam vs leaf uses correct group/leaf semantics. |
+| AC-019 | Frontend launch config uses canonical nested route keys. |
+| AC-020 | Historical nested runs display from recursive `memberTree`. |
+| AC-021 | Activity/tool/team communication panels display nested source/recipient identity. |
+| AC-022 | Live child coordinator transcript includes the backend-delivered inbound prompt. |
+| AC-023 | Durable and hydrated child coordinator projections dedupe timestamped/null duplicates. |
+| AC-024 | Active and history nested member rows use one primary label policy. |
 
 ## Approval Status
 
-Scope inferred from the user's explicit investigation/design request. After review and user clarification, the requirements were refined to lock the design posture on mixed-only nested execution for new nested launches, parent-owned child runs, canonical `sourcePath`, canonical recursive `TeamRunMetadata` with no version suffix/field, and path-aware command/tool-approval payloads. Re-open only if the user wants a smaller discovery-only deliverable or a different API compatibility posture.
+Scope inferred from the user's explicit investigation/design request. After review and user clarification, the requirements were refined to lock the design posture on mixed-only nested execution for new nested launches, parent-owned child runs, canonical `sourcePath`, canonical recursive `TeamRunMetadata` with no version suffix/field, and path-aware command/tool-approval payloads. The 2026-05-13 full-stack validation failures re-opened the requirements only for frontend nested-team tree/config/workspace/history/activity behavior and the focused live transcript/projection/presentation invariants in REQ-028 through REQ-030; backend nested runtime direction remains unchanged.

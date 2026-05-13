@@ -12,7 +12,13 @@ import { DEFAULT_AGENT_RUNTIME_KIND, type AgentRunConfig } from '~/types/agent/A
 import { AgentRunState } from '~/types/agent/AgentRunState';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { Conversation } from '~/types/conversation';
-import { normalizeMemberRouteKey, resolveLeafTeamMembers } from '~/utils/teamDefinitionMembers';
+import {
+  buildTeamMemberTreeFromDefinition,
+  flattenLeafAgentMemberNodes,
+  indexTeamMemberNodesByRouteKey,
+  normalizeMemberRouteKey,
+  resolveInitialFocusedMemberRouteKey,
+} from '~/utils/teamDefinitionMembers';
 import { buildTeamRunMemberConfigRecords } from '~/utils/teamRunMemberConfigBuilder';
 import {
   ensureHistoricalTeamMemberHydrated,
@@ -44,19 +50,25 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
       return Array.from(state.teams.values());
     },
 
-    /** Returns the focused member context for the active team. */
+    /** Returns the focused leaf agent context for the active team, or null when a subteam node is focused. */
     focusedMemberContext(): AgentContext | null {
       const activeTeam = this.activeTeamContext;
       if (!activeTeam) return null;
-      return activeTeam.members.get(activeTeam.focusedMemberName) || null;
+      return activeTeam.leafAgentContextsByRouteKey.get(activeTeam.focusedMemberRouteKey) || null;
     },
 
-    /** Returns all members for the active team with their member names. */
-    teamMembers(): { memberName: string; context: AgentContext }[] {
+    focusedMemberNode() {
+      const activeTeam = this.activeTeamContext;
+      if (!activeTeam) return null;
+      return activeTeam.memberNodesByRouteKey.get(activeTeam.focusedMemberRouteKey) || null;
+    },
+
+    /** Returns all leaf agent contexts for the active team. */
+    teamMembers(): { memberRouteKey: string; context: AgentContext }[] {
       const activeTeam = this.activeTeamContext;
       if (!activeTeam) return [];
-      return Array.from(activeTeam.members.entries()).map(([memberName, context]) => ({
-        memberName,
+      return Array.from(activeTeam.leafAgentContextsByRouteKey.entries()).map(([memberRouteKey, context]) => ({
+        memberRouteKey,
         context,
       }));
     },
@@ -92,14 +104,13 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
       }
 
       const teamRunId = `temp-team-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-
-      // Create members
-      const members = new Map<string, AgentContext>();
-
-      const leafMembers = resolveLeafTeamMembers(teamDef, {
+      const memberTree = buildTeamMemberTreeFromDefinition(teamDef, {
         getTeamDefinitionById: (teamDefinitionId: string) =>
           teamDefinitionStore.getAgentTeamDefinitionById(teamDefinitionId),
       });
+      const memberNodesByRouteKey = indexTeamMemberNodesByRouteKey(memberTree);
+      const leafMembers = flattenLeafAgentMemberNodes(memberTree);
+      const leafAgentContextsByRouteKey = new Map<string, AgentContext>();
 
       const memberConfigRecords = buildTeamRunMemberConfigRecords({
         config: template,
@@ -136,24 +147,25 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
           new AgentRunState(conversation.id, conversation)
         );
 
-        members.set(memberRecord.memberRouteKey, memberContext);
+        leafAgentContextsByRouteKey.set(memberRecord.memberRouteKey, memberContext);
       }
 
       const configCopy = buildEditableTeamRunSeed(template) as TeamRunConfig;
-
       const coordinatorMemberRouteKey = normalizeMemberRouteKey(teamDef.coordinatorMemberName);
-      let focusedMemberName = coordinatorMemberRouteKey;
-      if (!members.has(focusedMemberName)) {
-        focusedMemberName = members.keys().next().value || '';
-      }
+      const focusedMemberRouteKey = resolveInitialFocusedMemberRouteKey({
+        memberTree,
+        coordinatorMemberRouteKey,
+      });
 
       const newContext: AgentTeamContext = {
         teamRunId,
         config: configCopy,
-        members,
+        memberTree,
+        memberNodesByRouteKey,
+        leafAgentContextsByRouteKey,
         coordinatorMemberRouteKey,
         historicalHydration: null,
-        focusedMemberName,
+        focusedMemberRouteKey,
         currentStatus: AgentTeamStatus.Idle,
         isSubscribed: false,
         taskPlan: null,
@@ -171,7 +183,7 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
       if (!context) return;
 
       context.config.isLocked = true;
-      context.members.forEach((member) => {
+      context.leafAgentContextsByRouteKey.forEach((member) => {
         member.config.isLocked = true;
       });
     },
@@ -181,7 +193,7 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
       if (!context) return;
 
       context.teamRunId = permanentTeamRunId;
-      context.members.forEach(member => {
+      context.leafAgentContextsByRouteKey.forEach(member => {
         if (member.state.conversation.id.startsWith(temporaryTeamRunId)) {
           const memberRunId = member.state.conversation.id.replace(
             temporaryTeamRunId,
@@ -221,7 +233,6 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
 
         const selectionStore = useAgentSelectionStore();
         if (selectionStore.selectedType === 'team' && selectionStore.selectedRunId === teamRunId) {
-          // Auto-select another team run if available
           const remainingTeams = Array.from(this.teams.keys());
           if (remainingTeams.length > 0) {
             selectionStore.selectRun(remainingTeams[0], 'team');
@@ -232,18 +243,28 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
       }
     },
 
-    setFocusedMember(memberName: string) {
+    setFocusedMember(memberRouteKey: string) {
       const activeTeam = this.activeTeamContext;
-      if (!activeTeam || !activeTeam.members.has(memberName) || activeTeam.focusedMemberName === memberName) {
+      const normalizedMemberRouteKey = memberRouteKey.trim();
+      if (
+        !activeTeam ||
+        !activeTeam.memberNodesByRouteKey.has(normalizedMemberRouteKey) ||
+        activeTeam.focusedMemberRouteKey === normalizedMemberRouteKey
+      ) {
         return;
       }
 
-      activeTeam.focusedMemberName = memberName;
+      activeTeam.focusedMemberRouteKey = normalizedMemberRouteKey;
     },
 
-    async focusMemberAndEnsureHydrated(teamRunId: string, memberName: string): Promise<void> {
+    async focusMemberAndEnsureHydrated(teamRunId: string, memberRouteKey: string): Promise<void> {
       const teamContext = this.teams.get(teamRunId);
       if (!teamContext) {
+        return;
+      }
+      const normalizedMemberRouteKey = memberRouteKey.trim();
+      const targetNode = teamContext.memberNodesByRouteKey.get(normalizedMemberRouteKey) || null;
+      if (!targetNode) {
         return;
       }
 
@@ -253,14 +274,18 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
         selectionStore.selectedRunId === teamRunId;
 
       if (isActiveSelection) {
-        this.setFocusedMember(memberName);
-      } else if (teamContext.members.has(memberName) && teamContext.focusedMemberName !== memberName) {
-        teamContext.focusedMemberName = memberName;
+        this.setFocusedMember(normalizedMemberRouteKey);
+      } else if (teamContext.focusedMemberRouteKey !== normalizedMemberRouteKey) {
+        teamContext.focusedMemberRouteKey = normalizedMemberRouteKey;
+      }
+
+      if (targetNode.memberKind !== 'agent') {
+        return;
       }
 
       await ensureHistoricalTeamMemberHydrated({
         teamContext,
-        memberRouteKey: memberName,
+        memberRouteKey: normalizedMemberRouteKey,
       });
     },
 
@@ -279,7 +304,7 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
 
       await ensureHistoricalTeamMembersHydrated({
         teamContext,
-        memberRouteKeys: Array.from(teamContext.members.keys()),
+        memberRouteKeys: Array.from(teamContext.leafAgentContextsByRouteKey.keys()),
       });
     },
   },

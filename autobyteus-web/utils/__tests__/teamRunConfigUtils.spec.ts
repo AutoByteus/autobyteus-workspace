@@ -8,6 +8,12 @@ import {
 } from '~/utils/teamRunConfigUtils'
 import { evaluateTeamRunLaunchReadiness } from '~/utils/teamRunLaunchReadiness'
 
+const agentMetadataMember = (member: Record<string, unknown>) => ({
+  memberKind: 'agent' as const,
+  memberPath: String(member.memberRouteKey).split('/'),
+  ...member,
+} as any)
+
 describe('teamRunConfigUtils', () => {
   it('treats only property presence as an explicit member llmConfig override', () => {
     expect(hasExplicitMemberLlmConfigOverride(undefined)).toBe(false)
@@ -61,11 +67,11 @@ describe('teamRunConfigUtils', () => {
         teamDefinitionId: 'team-def-1',
         teamDefinitionName: 'Test Team',
         coordinatorMemberRouteKey: 'professor',
-        runVersion: 1,
         createdAt: '2026-03-30T00:00:00.000Z',
         updatedAt: '2026-03-30T00:00:00.000Z',
-        memberMetadata: [
-          {
+        archivedAt: null,
+        memberTree: [
+          agentMetadataMember({
             memberRouteKey: 'professor',
             memberName: 'Professor',
             memberRunId: 'member-1',
@@ -77,8 +83,8 @@ describe('teamRunConfigUtils', () => {
             skillAccessMode: 'GLOBAL_DISCOVERY',
             llmConfig: { reasoning_effort: 'high' },
             workspaceRootPath: '/tmp/workspace',
-          },
-          {
+          }),
+          agentMetadataMember({
             memberRouteKey: 'student',
             memberName: 'Student',
             memberRunId: 'member-2',
@@ -90,8 +96,8 @@ describe('teamRunConfigUtils', () => {
             skillAccessMode: 'GLOBAL_DISCOVERY',
             llmConfig: { reasoning_effort: 'high' },
             workspaceRootPath: '/tmp/workspace',
-          },
-          {
+          }),
+          agentMetadataMember({
             memberRouteKey: 'critic',
             memberName: 'Critic',
             memberRunId: 'member-3',
@@ -103,7 +109,7 @@ describe('teamRunConfigUtils', () => {
             skillAccessMode: 'GLOBAL_DISCOVERY',
             llmConfig: null,
             workspaceRootPath: '/tmp/workspace',
-          },
+          }),
         ],
       },
       firstWorkspaceId: 'ws-1',
@@ -116,7 +122,7 @@ describe('teamRunConfigUtils', () => {
     expect(config.autoExecuteTools).toBe(true)
     expect(config.skillAccessMode).toBe('GLOBAL_DISCOVERY')
     expect(config.memberOverrides).toEqual({
-      Critic: {
+      critic: {
         agentDefinitionId: 'agent-c',
         autoExecuteTools: false,
         llmConfig: null,
@@ -131,11 +137,11 @@ describe('teamRunConfigUtils', () => {
         teamDefinitionId: 'team-def-2',
         teamDefinitionName: 'Mixed Team',
         coordinatorMemberRouteKey: 'writer',
-        runVersion: 1,
         createdAt: '2026-03-30T00:00:00.000Z',
         updatedAt: '2026-03-30T00:00:00.000Z',
-        memberMetadata: [
-          {
+        archivedAt: null,
+        memberTree: [
+          agentMetadataMember({
             memberRouteKey: 'writer',
             memberName: 'Writer',
             memberRunId: 'member-1',
@@ -147,8 +153,8 @@ describe('teamRunConfigUtils', () => {
             skillAccessMode: 'PRELOADED_ONLY',
             llmConfig: null,
             workspaceRootPath: '/tmp/workspace',
-          },
-          {
+          }),
+          agentMetadataMember({
             memberRouteKey: 'reviewer',
             memberName: 'Reviewer',
             memberRunId: 'member-2',
@@ -160,7 +166,7 @@ describe('teamRunConfigUtils', () => {
             skillAccessMode: 'PRELOADED_ONLY',
             llmConfig: null,
             workspaceRootPath: '/tmp/workspace',
-          },
+          }),
         ],
       },
       firstWorkspaceId: 'ws-2',
@@ -169,7 +175,7 @@ describe('teamRunConfigUtils', () => {
 
     expect(config.runtimeKind).toBe('codex_app_server')
     expect(config.memberOverrides).toEqual({
-      Reviewer: {
+      reviewer: {
         agentDefinitionId: 'agent-reviewer',
         runtimeKind: 'claude_agent_sdk',
         llmModelIdentifier: 'claude-sonnet',
@@ -184,11 +190,11 @@ describe('teamRunConfigUtils', () => {
         teamDefinitionId: 'team-def-3',
         teamDefinitionName: 'Mixed Restore Team',
         coordinatorMemberRouteKey: 'writer',
-        runVersion: 1,
         createdAt: '2026-04-23T00:00:00.000Z',
         updatedAt: '2026-04-23T00:00:00.000Z',
-        memberMetadata: [
-          {
+        archivedAt: null,
+        memberTree: [
+          agentMetadataMember({
             memberRouteKey: 'writer',
             memberName: 'Writer',
             memberRunId: 'member-1',
@@ -200,8 +206,8 @@ describe('teamRunConfigUtils', () => {
             skillAccessMode: 'PRELOADED_ONLY',
             llmConfig: { thinking_level: 4 },
             workspaceRootPath: '/tmp/workspace',
-          },
-          {
+          }),
+          agentMetadataMember({
             memberRouteKey: 'researcher',
             memberName: 'Researcher',
             memberRunId: 'member-2',
@@ -213,8 +219,8 @@ describe('teamRunConfigUtils', () => {
             skillAccessMode: 'PRELOADED_ONLY',
             llmConfig: { thinking_level: 4 },
             workspaceRootPath: '/tmp/workspace',
-          },
-          {
+          }),
+          agentMetadataMember({
             memberRouteKey: 'reviewer',
             memberName: 'Reviewer',
             memberRunId: 'member-3',
@@ -226,8 +232,8 @@ describe('teamRunConfigUtils', () => {
             skillAccessMode: 'PRELOADED_ONLY',
             llmConfig: { reasoning_effort: 'high' },
             workspaceRootPath: '/tmp/workspace',
-          },
-          {
+          }),
+          agentMetadataMember({
             memberRouteKey: 'implementer',
             memberName: 'Implementer',
             memberRunId: 'member-4',
@@ -239,8 +245,8 @@ describe('teamRunConfigUtils', () => {
             skillAccessMode: 'PRELOADED_ONLY',
             llmConfig: { reasoning_effort: 'high' },
             workspaceRootPath: '/tmp/workspace',
-          },
-          {
+          }),
+          agentMetadataMember({
             memberRouteKey: 'critic',
             memberName: 'Critic',
             memberRunId: 'member-5',
@@ -252,7 +258,7 @@ describe('teamRunConfigUtils', () => {
             skillAccessMode: 'PRELOADED_ONLY',
             llmConfig: { reasoning_effort: 'medium' },
             workspaceRootPath: '/tmp/workspace',
-          },
+          }),
         ],
       },
       firstWorkspaceId: 'ws-3',
@@ -263,19 +269,19 @@ describe('teamRunConfigUtils', () => {
     expect(config.llmModelIdentifier).toBe('codex-model-a')
     expect(config.llmConfig).toEqual({ reasoning_effort: 'high' })
     expect(config.memberOverrides).toEqual({
-      Writer: {
+      writer: {
         agentDefinitionId: 'agent-writer',
         runtimeKind: 'autobyteus',
         llmModelIdentifier: 'auto-model-z',
         llmConfig: { thinking_level: 4 },
       },
-      Researcher: {
+      researcher: {
         agentDefinitionId: 'agent-researcher',
         runtimeKind: 'autobyteus',
         llmModelIdentifier: 'auto-model-z',
         llmConfig: { thinking_level: 4 },
       },
-      Critic: {
+      critic: {
         agentDefinitionId: 'agent-critic',
         llmModelIdentifier: 'codex-model-b',
         llmConfig: { reasoning_effort: 'medium' },

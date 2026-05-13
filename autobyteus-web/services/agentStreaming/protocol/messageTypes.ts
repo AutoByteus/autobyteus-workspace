@@ -60,6 +60,10 @@ export interface SegmentStartPayload {
   segment_type: SegmentType;
   agent_id?: string;
   agent_name?: string;
+  member_route_key?: string;
+  member_path?: string[];
+  source_route_key?: string;
+  source_path?: string[];
   metadata?: Record<string, any>;
 }
 
@@ -70,6 +74,10 @@ export interface SegmentContentPayload {
   segment_type?: SegmentType;
   agent_id?: string;
   agent_name?: string;
+  member_route_key?: string;
+  member_path?: string[];
+  source_route_key?: string;
+  source_path?: string[];
 }
 
 export interface SegmentEndPayload {
@@ -77,6 +85,10 @@ export interface SegmentEndPayload {
   turn_id: string | null;
   agent_id?: string;
   agent_name?: string;
+  member_route_key?: string;
+  member_path?: string[];
+  source_route_key?: string;
+  source_path?: string[];
   metadata?: Record<string, any>;
 }
 
@@ -86,6 +98,10 @@ export interface AgentStatusPayload {
   turn_id?: string | null;
   agent_id?: string;
   agent_name?: string;
+  member_route_key?: string;
+  member_path?: string[];
+  source_route_key?: string;
+  source_path?: string[];
   trigger?: string | null;
   tool_name?: string | null;
   error_message?: string | null;
@@ -108,6 +124,10 @@ export interface CompactionStatusPayload {
   error_message?: string | null;
   agent_id?: string;
   agent_name?: string;
+  member_route_key?: string;
+  member_path?: string[];
+  source_route_key?: string;
+  source_path?: string[];
 }
 
 export interface ExternalUserMessageContextFilePathPayload {
@@ -118,6 +138,9 @@ export interface ExternalUserMessageContextFilePathPayload {
 export interface ExternalUserMessagePayload {
   content: string;
   received_at?: string | null;
+  message_id?: string | null;
+  dedupe_key?: string | null;
+  input_origin?: 'user_message' | 'inter_agent_delivery' | string | null;
   provider?: string | null;
   transport?: string | null;
   account_id?: string | null;
@@ -127,6 +150,15 @@ export interface ExternalUserMessagePayload {
   context_file_paths?: ExternalUserMessageContextFilePathPayload[];
   agent_name?: string;
   agent_id?: string;
+  member_route_key?: string;
+  member_path?: string[];
+  source_route_key?: string;
+  source_path?: string[];
+  sender_agent_id?: string | null;
+  sender_agent_name?: string | null;
+  sender_member_route_key?: string | null;
+  sender_member_path?: string[] | null;
+  parent_communication_message_id?: string | null;
 }
 
 export interface TeamStatusPayload {
@@ -134,6 +166,8 @@ export interface TeamStatusPayload {
   old_status?: string | null;
   error_message?: string | null;
   sub_team_node_name?: string | null;
+  source_route_key?: string;
+  source_path?: string[];
 }
 
 export interface ToolApprovalRequestedPayload {
@@ -144,6 +178,10 @@ export interface ToolApprovalRequestedPayload {
   approval_token?: ToolApprovalTokenPayload;
   agent_name?: string;
   agent_id?: string;
+  member_route_key?: string;
+  member_path?: string[];
+  source_route_key?: string;
+  source_path?: string[];
 }
 
 export interface ToolApprovedPayload {
@@ -168,10 +206,11 @@ export interface ToolDeniedPayload {
 
 export interface ToolApprovalTokenPayload {
   teamRunId: string;
-  runVersion: number;
   invocationId: string;
   invocationVersion: number;
-  targetMemberName: string;
+  targetMemberName?: string;
+  targetMemberRouteKey?: string;
+  targetMemberPath?: string[];
 }
 
 export interface ToolExecutionStartedPayload {
@@ -281,13 +320,22 @@ export interface TeamCommunicationMessagePayload {
   teamRunId: string;
   senderRunId: string;
   senderMemberName?: string | null;
+  senderMemberKind?: 'agent' | 'agent_team' | null;
+  senderMemberPath?: string[] | null;
+  senderMemberRouteKey?: string | null;
   receiverRunId: string;
   receiverMemberName?: string | null;
+  receiverMemberKind?: 'agent' | 'agent_team' | null;
+  receiverMemberPath?: string[] | null;
+  receiverMemberRouteKey?: string | null;
   content: string;
   messageType: string;
   createdAt: string;
   updatedAt: string;
   referenceFiles: TeamCommunicationReferenceFilePayload[];
+  source_path?: string[];
+  source_route_key?: string;
+  sub_team_node_name?: string | null;
 }
 
 export interface InterAgentMessagePayload {
@@ -394,12 +442,20 @@ export interface SendMessagePayload {
   context_file_paths?: string[];
   image_urls?: string[];
   target_member_name?: string;
+  target_member_route_key?: string;
+  target_member_path?: string[];
+  message_id?: string;
+  dedupe_key?: string;
 }
 
 export interface ToolActionPayload {
   invocation_id: string;
   agent_name?: string;
   agent_id?: string;
+  member_route_key?: string;
+  member_path?: string[];
+  source_route_key?: string;
+  source_path?: string[];
   reason?: string;
   approval_token?: ToolApprovalTokenPayload;
 }

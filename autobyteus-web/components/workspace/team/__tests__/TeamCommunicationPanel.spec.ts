@@ -16,11 +16,12 @@ const labels: Record<string, string> = {
   'workspace.components.workspace.team.TeamCommunicationPanel.select_message': 'Select a message to read the full content.',
 };
 
-const mountSubject = () => mount(TeamCommunicationPanel, {
+const mountSubject = (propOverrides: Record<string, unknown> = {}) => mount(TeamCommunicationPanel, {
   props: {
     teamRunId: 'team-1',
     focusedMemberRunId: 'focused-run',
     focusedMemberName: 'Focused Member',
+    ...propOverrides,
   },
   global: {
     stubs: {
@@ -88,8 +89,8 @@ describe('TeamCommunicationPanel.vue', () => {
     await wrapper.vm.$nextTick();
 
     const text = wrapper.text();
-    expect(wrapper.get('[data-test="team-communication-left-list"]').exists()).toBe(true);
-    expect(wrapper.get('[data-test="team-communication-detail-pane"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="team-communication-left-list"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="team-communication-detail-pane"]').exists()).toBe(true);
     const rows = wrapper.findAll('[data-test="team-communication-message-row"]');
     expect(rows).toHaveLength(2);
     expect(rows[0].text()).toContain('Assignment');
@@ -126,6 +127,139 @@ describe('TeamCommunicationPanel.vue', () => {
     const referenceIcons = wrapper.findAll('[data-test="team-communication-reference-icon"]').map((icon) => icon.attributes('data-icon'));
     expect(referenceIcons).toContain('vscode-icons:file-type-markdown');
     expect(referenceIcons).toContain('vscode-icons:file-type-text');
+  });
+
+  it('displays nested breadcrumbs and team badges for subteam and nested leaf participants', async () => {
+    const store = useTeamCommunicationStore();
+    store.replaceProjection('team-1', [
+      {
+        messageId: 'message-to-subteam',
+        teamRunId: 'team-1',
+        senderRunId: 'focused-run',
+        senderMemberKind: 'agent',
+        senderMemberName: 'program_manager',
+        senderMemberPath: ['program_manager'],
+        senderMemberRouteKey: 'program_manager',
+        receiverRunId: 'build-squad-run',
+        receiverMemberKind: 'agent_team',
+        receiverMemberName: 'BuildSquad',
+        receiverMemberPath: ['BuildSquad'],
+        receiverMemberRouteKey: 'BuildSquad',
+        content: 'Please coordinate this build.',
+        messageType: 'assignment',
+        createdAt: '2026-04-12T10:00:00.000Z',
+        updatedAt: '2026-04-12T10:00:00.000Z',
+        referenceFiles: [],
+      },
+      {
+        messageId: 'message-from-nested-leaf',
+        teamRunId: 'team-1',
+        senderRunId: 'review-run',
+        senderMemberKind: 'agent',
+        senderMemberName: 'review_lead',
+        senderMemberPath: ['BuildSquad', 'review_lead'],
+        senderMemberRouteKey: 'BuildSquad/review_lead',
+        receiverRunId: 'focused-run',
+        receiverMemberKind: 'agent',
+        receiverMemberName: 'program_manager',
+        receiverMemberPath: ['program_manager'],
+        receiverMemberRouteKey: 'program_manager',
+        content: 'Review is complete.',
+        messageType: 'status_update',
+        createdAt: '2026-04-12T10:01:00.000Z',
+        updatedAt: '2026-04-12T10:01:00.000Z',
+        referenceFiles: [],
+      },
+    ]);
+
+    const wrapper = mountSubject();
+    await wrapper.vm.$nextTick();
+
+    const text = wrapper.text();
+    expect(text).toContain('to BuildSquad');
+    expect(text).toContain('from BuildSquad / review_lead');
+    expect(wrapper.find('[data-test="team-communication-counterpart-kind"]').text()).toBe('Team');
+
+    const rows = wrapper.findAll('[data-test="team-communication-message-row"]');
+    await rows[1].get('[data-test="team-communication-message-summary"]').trigger('click');
+    await wrapper.vm.$nextTick();
+    expect(wrapper.get('[data-test="team-communication-detail-counterpart-kind"]').text()).toBe('Team');
+  });
+
+  it('shows a focused subteam message by route/path when the subteam has no member run id', async () => {
+    const store = useTeamCommunicationStore();
+    store.replaceProjection('team-1', [
+      {
+        messageId: 'message-to-build-squad',
+        teamRunId: 'team-1',
+        senderRunId: 'pm-run',
+        senderMemberKind: 'agent',
+        senderMemberName: 'program_manager',
+        senderMemberPath: ['program_manager'],
+        senderMemberRouteKey: 'program_manager',
+        receiverRunId: 'internal-child-team-run',
+        receiverMemberKind: 'agent_team',
+        receiverMemberName: 'BuildSquad',
+        receiverMemberPath: ['BuildSquad'],
+        receiverMemberRouteKey: 'BuildSquad',
+        content: 'Please coordinate this build.',
+        messageType: 'assignment',
+        createdAt: '2026-04-12T10:02:00.000Z',
+        updatedAt: '2026-04-12T10:02:00.000Z',
+        referenceFiles: [],
+      },
+    ]);
+
+    const wrapper = mountSubject({
+      focusedMemberRunId: '',
+      focusedMemberKind: 'agent_team',
+      focusedMemberRouteKey: 'BuildSquad',
+      focusedMemberPath: ['BuildSquad'],
+    });
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.find('[data-test="team-communication-split"]').exists()).toBe(true);
+    expect(wrapper.text()).toContain('Assignment');
+    expect(wrapper.text()).toContain('from program_manager');
+    expect(wrapper.get('[data-test="team-communication-message-markdown"]').text()).toContain('Please coordinate this build.');
+  });
+
+  it('shows a nested leaf message by route/path when the focused run id is stale', async () => {
+    const store = useTeamCommunicationStore();
+    store.replaceProjection('team-1', [
+      {
+        messageId: 'message-to-review-lead',
+        teamRunId: 'team-1',
+        senderRunId: 'pm-run',
+        senderMemberKind: 'agent',
+        senderMemberName: 'program_manager',
+        senderMemberPath: ['program_manager'],
+        senderMemberRouteKey: 'program_manager',
+        receiverRunId: 'new-review-run',
+        receiverMemberKind: 'agent',
+        receiverMemberName: 'review_lead',
+        receiverMemberPath: ['BuildSquad', 'review_lead'],
+        receiverMemberRouteKey: 'BuildSquad/review_lead',
+        content: 'Please review the implementation.',
+        messageType: 'handoff',
+        createdAt: '2026-04-12T10:03:00.000Z',
+        updatedAt: '2026-04-12T10:03:00.000Z',
+        referenceFiles: [],
+      },
+    ]);
+
+    const wrapper = mountSubject({
+      focusedMemberRunId: 'stale-review-run',
+      focusedMemberKind: 'agent',
+      focusedMemberRouteKey: 'BuildSquad/review_lead',
+      focusedMemberPath: ['BuildSquad', 'review_lead'],
+    });
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.find('[data-test="team-communication-split"]').exists()).toBe(true);
+    expect(wrapper.text()).toContain('Handoff');
+    expect(wrapper.text()).toContain('from program_manager');
+    expect(wrapper.get('[data-test="team-communication-message-markdown"]').text()).toContain('Please review the implementation.');
   });
 
   it('keeps message summary and reference rows as sibling interactive controls', async () => {

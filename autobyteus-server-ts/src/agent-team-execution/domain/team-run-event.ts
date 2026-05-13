@@ -7,6 +7,7 @@ export enum TeamRunEventSourceType {
   TEAM = "TEAM",
   TASK_PLAN = "TASK_PLAN",
   COMMUNICATION = "COMMUNICATION",
+  MEMBER_INPUT = "MEMBER_INPUT",
 }
 
 export type TeamRunStatusUpdateData = {
@@ -55,11 +56,40 @@ export type TeamRunCommunicationEventPayload = {
   createdAt: string;
 };
 
+export type TeamRunMemberInputOrigin =
+  | "user_message"
+  | "inter_agent_delivery";
+
+export type TeamRunMemberInputContextFile = {
+  path: string;
+  type?: string | null;
+};
+
+export type TeamRunMemberInputEventPayload = {
+  messageId: string;
+  dedupeKey: string;
+  teamRunId: string;
+  recipientMemberRunId: string;
+  recipientMemberName: string;
+  recipientMemberPath: string[];
+  recipientMemberRouteKey: string;
+  content: string;
+  inputOrigin: TeamRunMemberInputOrigin;
+  receivedAt: string;
+  contextFilePaths: TeamRunMemberInputContextFile[];
+  senderRunId?: string | null;
+  senderMemberName?: string | null;
+  senderMemberPath?: string[] | null;
+  senderMemberRouteKey?: string | null;
+  parentCommunicationMessageId?: string | null;
+};
+
 export type TeamRunEventData =
   | TeamRunStatusUpdateData
   | TeamRunAgentEventPayload
   | TeamRunTaskPlanEventPayload
-  | TeamRunCommunicationEventPayload;
+  | TeamRunCommunicationEventPayload
+  | TeamRunMemberInputEventPayload;
 
 export type TeamRunEvent = {
   eventSourceType: TeamRunEventSourceType;

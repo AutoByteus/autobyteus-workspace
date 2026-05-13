@@ -5,24 +5,37 @@
 - Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/requirements-doc.md`
 - Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/investigation-notes.md`
 - Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-spec.md`
+- Design Rework Note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/round5-live-transcript-projection-presentation-design-rework-note.md`
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/implementation-handoff.md`
 - Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/review-report.md`
-- Current Validation Round: 2
-- Trigger: Code review Round 3 returned `CR-VALIDATION-001`, a `Local Fix` limited to repository-resident durable validation fixture code added/updated during API/E2E.
-- Prior Round Reviewed: Round 1 validation report and Round 3 code-review finding `CR-VALIDATION-001`.
-- Latest Authoritative Round: Round 2
+- Current Validation Round: 6
+- Trigger: Code review Round 10 pass after Round 5 live transcript/projection/presentation fixes and `CR-ROUND9-006` projection dedupe re-review.
+- Prior Round Reviewed: Round 5 failures `E2E-NESTED-011`, `E2E-NESTED-012`, and `E2E-NESTED-013`.
+- Latest Authoritative Round: Round 6
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Failures Rechecked | New Failures Found | Result | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Code review Round 2 pass plus live nested E2E request | N/A | None in final Round 1 validation state | Pass | No | Added durable live nested mixed-runtime GraphQL/WebSocket E2E and updated stale integration fixtures to canonical nested metadata/runtime-context shapes. |
-| 2 | Code review Round 3 `CR-VALIDATION-001` validation-only local fix | `CR-VALIDATION-001` | None | Pass | Yes | Fixed canonical selector/source identity fixture shapes in `mixed-team-run-backend.integration.test.ts`, scanned updated durable validation files, and reran focused checks. |
+| 1 | Code review Round 2 pass plus live nested E2E request | N/A | None in final Round 1 validation state | Pass | No | Added durable live nested mixed-runtime GraphQL/WebSocket E2E and updated backend integration coverage for recursive metadata/runtime-context shapes. |
+| 2 | Code review Round 3 `CR-VALIDATION-001` validation-only local fix | `CR-VALIDATION-001` | None | Pass | No | Fixed canonical selector/source identity fixture shapes in `mixed-team-run-backend.integration.test.ts`, scanned updated durable validation files, and reran focused checks. |
+| 3 | User-requested seeded full-stack browser validation | None from Round 2 | Frontend active team UI flattened nested child team and omitted `BuildSquad` subteam node despite backend recursive metadata | Fail | No | Routed design/implementation reset; see `fullstack-nested-team-ui-validation-failure.md`. |
+| 4 | Code review Round 7 pass after frontend nested-team rework | Round 3 nested UI flattening | Live frontend communication store/panel did not ingest parent-to-subteam `TEAM_COMMUNICATION_MESSAGE` even though backend projection was correct and child Codex response arrived | Fail | No | Nested UI and subteam routing worked; live communication display was blocked. See `fullstack-nested-team-communication-validation-failure.md`. |
+| 5 | Code review Round 8 pass after live communication event flattening fix and user browser recheck | `E2E-NESTED-009` | Live child coordinator transcript omitted inbound inter-agent message; active/history nested member labels were inconsistent; opened child projection duplicated timestamp/null messages | Fail | No | Previous parent/subteam Team Messages blocker was resolved, but delivery remained blocked. See `fullstack-nested-team-live-child-transcript-validation-failure.md`. |
+| 6 | Code review Round 10 pass after live transcript/projection/presentation fixes | `E2E-NESTED-011`, `E2E-NESTED-012`, `E2E-NESTED-013` | None | Pass | Yes | Real full-stack nested mixed-runtime validation passed. Parent-to-subteam message, child coordinator inbound prompt/reply transcript, restore dedupe, route labels, subteam communication perspective, history exclusion, and terminate cleanup all passed. |
 
 ## Validation Basis
 
-Round 2 is limited to the code-review finding against API/E2E-owned durable validation. The original live provider-backed E2E evidence remains valid and was accepted by code review; this round corrected the repository-resident integration fixture so it encodes the same canonical selector/source-path contract required by the implementation.
+Round 6 validated the latest code-review-passed implementation in a real full-stack setup using the worktree backend and frontend, seeded nested definitions, LM Studio-backed AutoByteus parent runtime, Codex App Server child coordinator runtime, and Claude Agent SDK child sibling runtime. This was not the Electron app backend.
+
+Round 6 specifically rechecked the user-observed browser issues from Round 5:
+
+- The parent `program_manager -> BuildSquad` Team Messages record appears live exactly once.
+- Focusing `BuildSquad/review_lead` shows the inbound `You received a message from sender name: program_manager...` prompt before the child reply.
+- Restored/opened child coordinator projections no longer show timestamp/null duplicate copies.
+- Active and history rows use membership labels consistently (`program_manager`, `BuildSquad`, `review_lead`, `qa_specialist`).
+- Repeated identical prompts/replies are preserved in focused regressions, and sequential repeated identical live prompts/replies were preserved in frontend and GraphQL projection.
 
 ## Compatibility / Legacy Scope Check
 
@@ -32,189 +45,211 @@ Round 2 is limited to the code-review finding against API/E2E-owned durable vali
 - If compatibility-related invalid scope was observed, reroute classification used: N/A
 - Upstream recipient notified: N/A
 
-Notes: Round 2 removed the stale validation-only alias/internal raw shape identified by `CR-VALIDATION-001`. Delivery requests in the backend integration fixture now include canonical `recipientSelector` and source display fields remain optional alias/backfill data. Team event fixtures now include canonical `sourcePath` plus `memberPath` and `memberRouteKey` source identity.
-
 ## Validation Surfaces / Modes
 
-- Durable E2E: in-process GraphQL schema plus real Fastify team WebSocket, launching a real nested mixed-runtime team. Round 1 live result remains accepted; Round 2 did not modify this E2E.
-- Integration tests: team run service, manager, mixed backend, and mixed backend factory behavior.
-- Focused unit tests: topology, metadata mapping, mixed sub-team member handle, mixed backend factory, and `TeamRun` coordinator routing.
-- Static executable checks: TypeScript build check and whitespace diff check.
-- Durable validation scan: reviewed updated API/E2E-owned durable validation files for stale recipient-name-only delivery requests and source-path-less event fixtures.
+- Full-stack browser validation: worktree backend on `127.0.0.1:8000`, worktree Nuxt frontend on `127.0.0.1:3020`, Browser automation, real GraphQL, real team WebSocket.
+- Live runtime validation: AutoByteus/LM Studio parent, Codex App Server nested coordinator, Claude Agent SDK nested sibling configured from the frontend run form/store.
+- Backend GraphQL probes: `getTeamCommunicationMessages`, `getTeamRunResumeConfig`, `getTeamMemberRunProjection`, `listWorkspaceRunHistory`.
+- Browser store/DOM probes and screenshots for current workspace, team communication state, child transcript, subteam focus, history/open state, and visible labels.
+- Focused backend/frontend regression suites for team streaming, member input, projection dedupe, history rows, and communication panels.
+- Static/type checks: server source build typecheck and `git diff --check`.
 
 ## Platform / Runtime Targets
 
-- Host: `Darwin MacBookPro 25.2.0 ... RELEASE_ARM64_T6000 arm64`
-- Node: `v22.21.1`
-- pnpm: `10.28.2`
-- Vitest: `v4.0.18`
-- Codex CLI from Round 1 live run: `codex-cli 0.130.0`
-- Claude Code from Round 1 live run: `2.1.131 (Claude Code)`
-- LM Studio discovery from Round 1 live run: `http://127.0.0.1:1234`, 28 LM Studio models discovered; total LLM catalog count 119.
+- Host: macOS/Darwin arm64 worktree environment.
+- Frontend endpoint: `http://127.0.0.1:3020/workspace`.
+- Backend endpoint: `http://127.0.0.1:8000/graphql`.
+- Team WebSocket endpoint: `ws://localhost:8000/ws/agent-team` from frontend bound endpoint config.
+- Parent runtime/model: AutoByteus/LM Studio `qwen/qwen3.5-35b-a3b:lmstudio@127.0.0.1:1234`.
+- Child coordinator runtime/model: Codex App Server `gpt-5.4-mini`.
+- Child sibling runtime/model: Claude Agent SDK `haiku`.
 
 ## Lifecycle / Upgrade / Restart / Migration Checks
 
-- Round 1 live terminate cascade was validated through `terminateAgentTeamRun`, with active parent and child team run IDs removed from `AgentTeamRunManager`, and leaf agent run IDs removed from `AgentRunManager`.
-- Round 1 restore was validated through `restoreAgentTeamRun`, including post-restore child coordinator messaging and recursive metadata preservation.
-- Round 2 integration/unit reruns exercised the SQLite test database migration reset through the Vitest harness.
-- Live interrupt-while-generating was not exercised; command dispatch/selector paths remain covered by integration tests, and live terminate cascade remains covered by the durable E2E.
+- Worktree backend was rebuilt before validation and started with SQLite database `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts/db/fullstack-e2e-round10.db`; migrations applied successfully during startup.
+- Worktree `.env` files matched the main superrepo `.env` files for `autobyteus-server-ts/.env` and `autobyteus-web/.env` by SHA-256 hash before startup.
+- Seed script successfully created/updated the nested test fixtures.
+- Live terminate cleanup was exercised for `team_nested-mixed-runtime-delivery-team_9e860077`; frontend status became `shutdown_complete`, backend `getTeamRunResumeConfig(...).isActive` returned `false`, and internal child team runs were not listed as independent top-level history rows.
+- Restore/open-from-history was exercised for nested child member route `BuildSquad/review_lead`; opened projection rendered each logical message once and did not show timestamp/null duplicate pairs.
 
 ## Coverage Matrix
 
 | Scenario ID | Scenario | Surface | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| E2E-NESTED-001 | Launch parent team with AutoByteus parent member and nested child team containing Codex coordinator plus Claude teammate | Live GraphQL/WebSocket E2E | Pass | Round 1 live E2E passed; E2E file unchanged in Round 2 |
-| E2E-NESTED-002 | Parent AutoByteus `send_message_to` dispatch to top-level `BuildSquad` subteam and child Codex response bridged to parent stream | Live GraphQL/WebSocket E2E | Pass | Team communication event receiver `memberKind: agent_team`; Codex response source path `BuildSquad/review_lead` |
-| E2E-NESTED-003 | Child Codex coordinator uses `send_message_to` to Claude sibling and Claude response bridges to parent stream | Live GraphQL/WebSocket E2E | Pass | `TOOL_EXECUTION_SUCCEEDED` for `send_message_to`; Claude response source path `BuildSquad/qa_specialist` |
-| E2E-NESTED-004 | Recursive metadata contains subteam `teamRunId` and leaf platform IDs for AutoByteus/Codex/Claude | Live GraphQL/WebSocket E2E | Pass | Metadata assertions before terminate and after restore |
-| E2E-NESTED-005 | Internal child team run is not listed as independent top-level active/history run | Live GraphQL/WebSocket E2E | Pass | `listActiveRuns()` and `listWorkspaceRunHistory` include parent and exclude child team run ID |
-| E2E-NESTED-006 | Terminate cascade removes parent/child team activity and leaf agent runs | Live GraphQL/WebSocket E2E | Pass | `terminateAgentTeamRun` assertions and `AgentRunManager.listActiveRuns()` exclusions |
-| E2E-NESTED-007 | Restore from recursive metadata preserves child platform IDs and post-restore subteam routing | Live GraphQL/WebSocket E2E | Pass | `restoreAgentTeamRun`, metadata equality assertions, post-restore Codex response |
-| INT-NESTED-001 | Canonical integration fixtures for mixed backend/service/manager use recursive metadata and selector objects | Integration | Pass | Round 2: 4 integration files, 31 tests passed |
-| INT-NESTED-002 | `CR-VALIDATION-001`: backend integration delivery request fixtures use canonical `recipientSelector`; event fixtures include `sourcePath`, `memberPath`, and `memberRouteKey` | Integration/static fixture review | Pass | Updated `mixed-team-run-backend.integration.test.ts`; affected file passed 3 tests; broader integration suite passed |
-| UNIT-NESTED-001 | Focused topology/metadata/mixed-subteam regressions | Unit | Pass | Round 2: 5 files, 9 tests passed |
+| E2E-NESTED-001 | Launch parent team with AutoByteus parent member and nested child team containing Codex coordinator plus Claude teammate | Live browser + backend GraphQL/WebSocket | Pass | Team run `team_nested-mixed-runtime-delivery-team_9e860077`; member tree contained `program_manager`, `BuildSquad`, `BuildSquad/review_lead`, `BuildSquad/qa_specialist`. |
+| E2E-NESTED-002 | Parent AutoByteus `send_message_to` dispatch to top-level `BuildSquad` subteam and child Codex response bridged to parent stream | Live browser + runtimes | Pass | Parent tool call succeeded; `BuildSquad/review_lead` returned `FRONTEND_PARENT_TO_SUBTEAM_R10_1778669597873`. |
+| E2E-NESTED-003 | Direct subteam focus/composer routes user message to child coordinator | Live browser + runtimes | Pass | Focused `BuildSquad`; sequential duplicate prompt token `FRONTEND_SEQ_REPEAT_R10_1778670118421` produced two child user turns and two child replies. |
+| E2E-NESTED-004 | Recursive metadata contains subteam teamRunId and nested leaf platform/runtime IDs | Backend GraphQL | Pass | `getTeamRunResumeConfig` preserved `BuildSquad` as `agent_team` with child team run `team_nested-build-squad-team_8632f2d9` and nested route keys. |
+| E2E-NESTED-005 | Internal child team run is not listed as independent top-level history run | Backend GraphQL | Pass | `listWorkspaceRunHistory` listed parent run `team_nested-mixed-runtime-delivery-team_9e860077` and no top-level `nested-build-squad-team` child rows. |
+| E2E-NESTED-006 | Terminate cascade removes live runtime state from frontend/backend active state | Live browser + backend GraphQL | Pass | `terminateTeamRun` returned `true`; parent and leaf statuses became `shutdown_complete`; backend resume config `isActive=false`. |
+| E2E-NESTED-008 | Team list/run/sidebar/workspace render nested `BuildSquad` as a first-class team node, not flattened leaves | Live browser | Pass | Sidebar and subteam focus showed `BuildSquad TEAM` with nested `review_lead` and `qa_specialist` leaves. |
+| E2E-NESTED-009 | Parent-to-subteam communication display/badges update live in frontend | Live browser + team WebSocket | Pass | Parent Team tab showed one `Frontend Parent To Subteam R10` message to `BuildSquad`; `BuildSquad` perspective showed the same message as received from `program_manager`. |
+| E2E-NESTED-010 | Focused route/path-aware communication perspective for subteam | Browser store/UI | Pass | `BuildSquad` perspective count was `1`, direction `received`, content matched the parent-to-subteam prompt. |
+| E2E-NESTED-011 | Live child coordinator conversation shows inbound parent/subteam message as well as child reply | Live browser + backend projection | Pass | Focusing `BuildSquad/review_lead` showed the inbound `You received a message from sender name: program_manager...` turn before the `FRONTEND_PARENT_TO_SUBTEAM_R10_1778669597873` assistant reply. |
+| E2E-NESTED-012 | Nested member labels are consistent between active and opened/stopped runs | Browser UI | Pass | Active and opened rows used membership labels `program_manager`, `BuildSquad`, `review_lead`, `qa_specialist`; agent definition names no longer replaced primary member labels. |
+| E2E-NESTED-013 | Opening/restoring a nested child member projection renders each logical message once | Backend GraphQL + browser open path | Pass | `getTeamMemberRunProjection` returned timestamped rows without timestamp/null copies; opened UI rendered the expected child transcript without duplicate stale rows. |
+| E2E-NESTED-014 | Repeated identical prompts/replies are not collapsed | Focused tests + live sequential check | Pass | Backend/frontend focused tests cover no-ID/no-timestamp preservation; live sequential token `FRONTEND_SEQ_REPEAT_R10_1778670118421` produced two user rows and two assistant rows in GraphQL projection. |
+| INT-NESTED-001 | Backend focused communication/member-input/projection regressions | Vitest | Pass | 3 files / 23 tests passed. |
+| INT-NESTED-002 | Frontend focused streaming/hydration/history/communication regressions | Vitest | Pass | 6 files / 31 tests passed. |
+| TYPE-NESTED-001 | Server source build typecheck | `tsc -p tsconfig.build.json --noEmit` | Pass | Command completed successfully. |
+| STATIC-NESTED-001 | Whitespace/diff check | Git | Pass | `git diff --check` passed. |
 
 ## Test Scope
 
-The live E2E creates a small but realistic nested team:
+Round 6's full-stack validation used the seeded nested mixed team requested by the user:
 
-- Parent team: `program_manager` on AutoByteus/LMStudio plus nested `BuildSquad`.
-- Child team `BuildSquad`: `review_lead` on Codex plus `qa_specialist` on Claude.
-- Real GraphQL creates definitions and run configuration with explicit nested route keys.
-- Real team WebSocket sends parent and subteam messages and observes bridged runtime events.
-- The test cleans up created definitions, runs, and temporary workspaces/app data.
+- Parent team: `Nested Mixed Runtime Delivery Team`
+- Parent coordinator: `program_manager` on AutoByteus/LM Studio
+- Child team: `BuildSquad`
+- Child coordinator: `BuildSquad/review_lead` on Codex App Server
+- Child sibling: `BuildSquad/qa_specialist` on Claude Agent SDK
 
-Round 2's fixture fix is limited to `mixed-team-run-backend.integration.test.ts` and does not change production code or the live E2E body.
+The test used frontend launch/config/open paths, real backend GraphQL/WebSocket boundaries, and live external runtimes. Browser store scripting was used only to set deterministic model overrides, issue exact validation prompts, and inspect state; the app under test still launched the real backend team run and streamed real runtime events.
 
 ## Validation Setup / Environment
 
-Commands were run from `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team` on branch `codex/mixed-team-nested-agent-team`.
+Commands run from `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team`.
 
-Live E2E enabling flags from Round 1:
+Environment confirmation:
 
 ```bash
-RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1
+# Worktree and main superrepo env files matched by hash before startup:
+# autobyteus-server-ts/.env hash db8bd9de3649 == main hash db8bd9de3649
+# autobyteus-web/.env hash cf559f0364b7 == main hash cf559f0364b7
 ```
 
-The ungated E2E command skips the live test by default unless those flags and CLI binaries are available.
+Backend build and startup:
+
+```bash
+python3 -m py_compile scripts/seed-personal-test-fixtures.py
+pnpm -C autobyteus-server-ts build
+APP_ENV=development \
+AUTOBYTEUS_SERVER_HOST=http://localhost:8000 \
+DATABASE_URL="file:/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts/db/fullstack-e2e-round10.db" \
+PRISMA_QUERY_ENGINE_LIBRARY="/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/libquery_engine-darwin-arm64.dylib.node" \
+PRISMA_SCHEMA_ENGINE_BINARY="/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/schema-engine-darwin-arm64" \
+node dist/app.js --host 127.0.0.1 --port 8000
+```
+
+Seed and frontend:
+
+```bash
+python3 scripts/seed-personal-test-fixtures.py --graphql-url http://127.0.0.1:8000/graphql --wait-retries 10 --wait-delay 1
+pnpm -C autobyteus-web dev --port 3020 --host 127.0.0.1
+```
+
+Browser endpoint: `http://127.0.0.1:3020/workspace`.
 
 ## Tests Implemented Or Updated
 
-- Added in Round 1: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts`
-- Updated in Round 2 for `CR-VALIDATION-001`: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts`
-- Updated in Round 1 and rechecked in Round 2:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts`
+Round 6 added no repository-resident durable validation code. It updated the validation report only.
+
+Durable validation added by implementation and re-reviewed by code review Round 10 includes focused coverage for live member input, projection dedupe, history labels, repeated no-ID/no-timestamp preservation, and team communication perspectives.
 
 ## Durable Validation Added To The Codebase
 
-- Repository-resident durable validation added or updated this round: `Yes`
-- Paths added or updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts`
-- Durable validation paths from Round 1 still in package:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts`
-- If `Yes`, returned through `code_reviewer` before delivery: `Yes, recommended and routed by this report/handoff`
-- Post-validation code review artifact: Pending code reviewer re-review of Round 2 validation-only fixture fix.
+- Repository-resident durable validation added or updated in Round 6 by API/E2E: `No`
+- Validation/report artifacts updated in Round 6:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/api-e2e-validation-report.md`
+- If `Yes`, returned through `code_reviewer` before delivery: N/A
+- Post-validation code review artifact: Code review Round 10 already passed the implementation-owned durable validation before this API/E2E round resumed.
 
 ## Other Validation Artifacts
 
-No temporary artifact files are retained. Round 2 scan evidence:
-
-```bash
-rg -n -C 4 "deliverInterAgentMessage" autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts
-rg -n -C 2 "recipientMemberName|recipient_name" autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts
-rg -n -C 3 "eventSourceType:|sourcePath:|source_path" autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts
-```
-
-Result: no remaining backend/domain delivery request fixture without `recipientSelector`; raw `recipient_name` remains only in the live E2E's explicit tool/transport prompt path; event fixtures in the updated backend integration file now include canonical source identity.
+- Round 3 failure note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/fullstack-nested-team-ui-validation-failure.md`
+- Round 4 communication failure note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/fullstack-nested-team-communication-validation-failure.md`
+- Round 5 child transcript/display failure note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/fullstack-nested-team-live-child-transcript-validation-failure.md`
+- Round 6 screenshots:
+  - Child coordinator live transcript with inbound prompt and reply: `/Users/normy/.autobyteus/browser-artifacts/495f98-1778669670385.png`
+  - Parent Team Messages record to `BuildSquad`: `/Users/normy/.autobyteus/browser-artifacts/495f98-1778669684950.png`
+  - Restored/opened child transcript without stale timestamp/null duplicates: `/Users/normy/.autobyteus/browser-artifacts/495f98-1778670341523.png`
+  - `BuildSquad` subteam focus and received Team Messages perspective: `/Users/normy/.autobyteus/browser-artifacts/495f98-1778670357299.png`
 
 ## Temporary Validation Methods / Scaffolding
 
-None retained. The live E2E creates temporary app-data and workspace directories under the OS temp directory and removes them in test cleanup.
+No temporary repository scripts were retained. Browser store probes, DOM text capture, screenshots, and GraphQL shell probes were used as temporary validation methods to inspect live frontend state, backend projection state, and opened history state.
 
 ## Dependencies Mocked Or Emulated
 
-- Live E2E: no mocked Codex, Claude, or AutoByteus/LMStudio runtimes; GraphQL schema and Fastify WebSocket are started in-process for the test boundary.
-- Integration/unit suites: use existing mocked backend/manager dependencies where appropriate for focused selector, approval, lifecycle, and metadata assertions.
-- SQLite test database is reset by the test harness.
+- Round 6 full-stack validation: no mocked AutoByteus/LM Studio, Codex, or Claude runtimes for the live nested flow.
+- Focused Vitest suites: existing unit/component mocks only.
 
 ## Prior Failure Resolution Check (Mandatory On Round >1)
 
 | Prior Round | Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Code review Round 3 | `CR-VALIDATION-001` | `Local Fix` limited to API/E2E-owned durable validation code | Resolved in Round 2 validation work | `mixed-team-run-backend.integration.test.ts` delivery fixtures now include canonical `recipientSelector`, optional display aliases, `senderSelector`/path/route-key context; event fixtures/assertions now include `sourcePath`, `memberPath`, and `memberRouteKey`; affected and broader focused suites pass | Returned to `code_reviewer` for re-review as required. |
+| Round 3 | Full-stack UI flattened nested `BuildSquad` child team and omitted subteam node | Design/implementation reset | Resolved | Round 6 sidebar, focus, history, and subteam view render `BuildSquad` as a nested `agent_team` with nested leaves. | No flattening regression observed. |
+| Round 4 | `E2E-NESTED-009`: live frontend communication store/panel did not ingest parent-to-subteam `TEAM_COMMUNICATION_MESSAGE` | `Local Fix` | Resolved | Round 6 parent Team tab and `BuildSquad` perspective both showed the canonical parent-to-subteam communication message live/restored. | No manual GraphQL hydration was needed. |
+| Round 5 | `E2E-NESTED-011`: live child coordinator transcript omitted inbound parent/subteam prompt | `Local Fix` after design rework | Resolved | Live `BuildSquad/review_lead` conversation contained the inbound `You received...program_manager` user turn before the child reply. | Screenshot `495f98-1778669670385.png`. |
+| Round 5 | `E2E-NESTED-012`: active/history labels inconsistent | `Local Fix` after design rework | Resolved | New active/offline row and opened/history rows both used membership labels: `program_manager`, `BuildSquad`, `review_lead`, `qa_specialist`. | Visible in Round 6 screenshots and DOM capture. |
+| Round 5 | `E2E-NESTED-013`: opened child projection duplicated timestamp/null rows | `Local Fix` after design rework | Resolved | GraphQL `getTeamMemberRunProjection` and opened UI rendered no timestamp/null duplicate copies. | Round 6 opened child transcript rendered expected logical rows once. |
+| Code review Round 10 | `CR-ROUND9-006`: projection dedupe must preserve repeated no-ID/no-timestamp rows while collapsing timestamp/null duplicates | `Local Fix` | Resolved by review and rechecked by validation | Backend focused tests 3 files / 23 tests passed; frontend focused tests 6 files / 31 tests passed; live sequential repeated prompt token preserved two user and two assistant rows in GraphQL projection. | No new durable validation was added by API/E2E. |
 
 ## Scenarios Checked
 
-- `CR-VALIDATION-001` fixture correction in backend integration delivery requests.
-- Canonical event source identity in backend integration event fixtures/assertions.
-- Scan of API/E2E-updated durable validation files for stale alias-only/internal raw shapes.
-- Existing real nested mixed launch evidence across AutoByteus/LMStudio, Codex, and Claude remains valid.
-- Parent-to-subteam communication to `BuildSquad`.
-- Child Codex coordinator event bridge and source-path propagation.
-- Codex-to-Claude child sibling communication through `send_message_to`.
-- Recursive metadata before termination and after restore.
-- Child team run suppression from independent top-level active/history listings.
-- Terminate cascade for parent/child/leaf agent runs.
-- Restore from recursive metadata and post-restore child coordinator route.
-- Selector/tool approval dispatch in focused integration coverage.
-- Canonical no-legacy metadata/test fixture shape.
+- Worktree backend/frontend startup independent from the Electron app backend.
+- Seeded nested team definitions from `scripts/seed-personal-test-fixtures.py`.
+- Nested team config readiness and deterministic mixed runtime overrides.
+- Mixed runtime launch using AutoByteus/LM Studio parent, Codex child coordinator, Claude child sibling configuration.
+- Parent-to-subteam `send_message_to` route to `BuildSquad`.
+- Child coordinator inbound member input live transcript and child reply.
+- Parent Team Messages display and `BuildSquad` received-message perspective.
+- Direct subteam focus/composer routing to `BuildSquad` coordinator.
+- Sequential repeated identical direct subteam prompts/replies.
+- Backend canonical team communication projection and route/path identity.
+- Recursive history/resume metadata and child top-level history exclusion.
+- Open-from-history nested child member projection and frontend hydration.
+- Active/stopped nested member label consistency.
+- Terminate cleanup.
 
 ## Passed
 
-Round 2 focused validation:
+Backend focused validation:
 
 ```bash
-pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts --reporter=dot
-# Result: 1 file passed, 3 tests passed; Duration 729ms
+pnpm -C autobyteus-server-ts exec vitest run \
+  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts \
+  tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts \
+  tests/unit/run-history/services/agent-run-view-projection-service.test.ts \
+  --reporter=dot
+# Result: 3 files passed, 23 tests passed
 ```
 
-```bash
-pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent-team-execution/team-run-service.integration.test.ts tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts tests/integration/agent-team-execution/mixed-team-run-backend-factory.integration.test.ts --reporter=dot
-# Result: 4 files passed, 31 tests passed; Duration 7.46s
-```
+Frontend focused validation:
 
 ```bash
-pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/team-run.test.ts tests/unit/agent-team-execution/team-definition-topology-planner.test.ts tests/unit/agent-team-execution/team-run-metadata-mapper.test.ts tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts tests/unit/agent-team-execution/mixed-team-run-backend-factory.test.ts --reporter=dot
-# Result: 5 files passed, 9 tests passed; Duration 6.98s
+pnpm -C autobyteus-web exec vitest run \
+  services/agentStreaming/__tests__/TeamStreamingService.spec.ts \
+  services/runHydration/__tests__/runProjectionConversation.spec.ts \
+  stores/__tests__/runHistoryTeamRows.spec.ts \
+  stores/__tests__/teamCommunicationStore.spec.ts \
+  components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts \
+  components/workspace/team/__tests__/TeamOverviewPanel.spec.ts \
+  --reporter=dot
+# Result: 6 files passed, 31 tests passed
 ```
 
-```bash
-pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts --reporter=dot
-# Result: 1 file skipped, 1 test skipped; Duration 6.22s; confirms default live-gating behavior and E2E import remains healthy
-```
+Server source build typecheck and static check:
 
 ```bash
 pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false
 # Result: passed
-```
 
-```bash
 git diff --check
 # Result: passed
 ```
 
-Accepted Round 1 live evidence, not rerun in Round 2 because the live E2E file and implementation were not changed by the validation-only fixture fix:
-
-```bash
-RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts --reporter=dot
-# Result: 1 file passed, 1 test passed; Duration 45.11s (tests 38.77s)
-```
+Live positive checks are recorded in the coverage matrix.
 
 ## Failed
 
-None in the latest validated state.
-
-Round 2 directly resolved the Round 3 code-review failure `CR-VALIDATION-001`.
+None in Round 6.
 
 ## Not Tested / Out Of Scope
 
-- Full browser UI was not exercised; the relevant boundary here is GraphQL plus team WebSocket plus runtime orchestration.
+- Manual approval/denial UI was not re-exercised in Round 6; focused changed-area tests covered route/path approval source propagation from prior rounds, and this round used auto-execute tools to keep the live mixed-runtime validation deterministic.
 - Production multi-node/distributed deployment behavior was not exercised.
-- Live manual human approval/denial UI workflow was not exercised; selector/tool approval command routing is covered by focused integration tests.
-- Live interrupt during an actively generating nested child response was not exercised; terminate cascade was live-tested end-to-end.
+- Release packaging/deployment is out of API/E2E scope.
 
 ## Blocked
 
@@ -222,26 +257,40 @@ None.
 
 ## Cleanup Performed
 
-- Live E2E deletes created agent definitions, team definitions, team runs, temporary app-data directories, and temporary workspace roots.
-- No retained temporary scripts or harness files outside durable test additions/updates.
+- The live team run `team_nested-mixed-runtime-delivery-team_9e860077` was terminated through the frontend store.
+- Frontend context statuses became `shutdown_complete` for parent plus leaf members.
+- Backend `getTeamRunResumeConfig(teamRunId: "team_nested-mixed-runtime-delivery-team_9e860077").isActive` returned `false`.
+- Internal child team run `team_nested-build-squad-team_8632f2d9` was not listed as an independent top-level history row.
+- Worktree validation services started for this round were stopped after validation; ports `3020` and `8000` were clear after shutdown.
 
 ## Classification
 
-No unresolved failure remains in API/E2E validation. Because repository-resident durable validation was updated again in Round 2 after code review, the next required recipient remains `code_reviewer` for validation-code re-review before delivery.
+`Pass`.
 
 ## Recommended Recipient
 
-`code_reviewer`
+`delivery_engineer`
 
 ## Evidence / Notes
 
-- `CR-VALIDATION-001` was resolved without touching production implementation code.
-- The backend integration fixture no longer normalizes obsolete recipient-name-only delivery DTOs or source-path-less team events.
-- Raw `recipient_name` remains only in the live E2E where it intentionally exercises the external `send_message_to` tool/transport argument format, not the backend/domain fixture boundary.
-- Durable validation updates should be code-reviewed before delivery per team workflow.
+Primary Round 6 live run:
+
+- Parent team run: `team_nested-mixed-runtime-delivery-team_9e860077`
+- Child team run: `team_nested-build-squad-team_8632f2d9`
+- Parent member run: `program_manager_837f751fb42efd66`
+- Child coordinator member run: `buildsquad_review_lead_033df19cf51395c3`
+- Parent-to-subteam token: `FRONTEND_PARENT_TO_SUBTEAM_R10_1778669597873`
+- Sequential repeated direct subteam token: `FRONTEND_SEQ_REPEAT_R10_1778670118421`
+
+Key GraphQL evidence:
+
+- `getTeamCommunicationMessages(teamRunId)` returned one message from `program_manager` to receiver route/path/kind `BuildSquad` / `["BuildSquad"]` / `agent_team` with message type `frontend_parent_to_subteam_r10`.
+- `getTeamMemberRunProjection(teamRunId, memberRouteKey: "BuildSquad/review_lead")` returned the inbound parent prompt and child reply without timestamp/null duplicate copies.
+- After sequential repeated direct subteam prompts, `getTeamMemberRunProjection` contained two user rows and two assistant rows for `FRONTEND_SEQ_REPEAT_R10_1778670118421`.
+- `listWorkspaceRunHistory` did not expose `nested-build-squad-team` / `team_nested-build-squad-team_8632f2d9` as a top-level history run.
 
 ## Latest Authoritative Result
 
 - Result values: `Pass` / `Fail` / `Blocked`
 - Result: `Pass`
-- Notes: Round 2 validation-only local fix is complete and focused checks pass. Route to code reviewer because durable validation was updated after the prior code-review pass.
+- Notes: Round 6 full-stack validation proves the real nested mixed-runtime flow works through the frontend and backend: parent-to-subteam communication appears in Team Messages, the nested child coordinator live transcript shows the inbound prompt before the reply, restored projections are deduped correctly, repeated sequential identical prompts/replies are preserved, labels are consistent, and cleanup/history behavior is correct.

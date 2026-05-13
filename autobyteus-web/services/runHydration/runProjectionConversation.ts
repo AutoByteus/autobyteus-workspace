@@ -28,6 +28,84 @@ const asRecord = (value: unknown): Record<string, unknown> => {
   return value as Record<string, unknown>;
 };
 
+const normalizeText = (value?: string | null): string => (value || '').trim();
+
+const normalizeTs = (value?: number | null): number | null => {
+  return typeof value === 'number' && Number.isFinite(value) && value > 0 ? value : null;
+};
+
+const stableJson = (value: unknown): string => {
+  if (value === null || value === undefined) {
+    return '';
+  }
+  if (typeof value !== 'object') {
+    return String(value);
+  }
+  if (Array.isArray(value)) {
+    return `[${value.map((item) => stableJson(item)).join(',')}]`;
+  }
+  const record = value as Record<string, unknown>;
+  return `{${Object.keys(record).sort().map((key) => `${key}:${stableJson(record[key])}`).join(',')}}`;
+};
+
+const projectionEntryKey = (entry: RunProjectionConversationEntry): string => [
+  entry.kind,
+  entry.role || '',
+  normalizeText(entry.content),
+  normalizeText(entry.toolName),
+  stableJson(entry.toolArgs),
+  stableJson(entry.toolResult),
+  normalizeText(entry.toolError),
+  stableJson(entry.media),
+].join('\0');
+
+const projectionEntriesCanMerge = (
+  left: RunProjectionConversationEntry,
+  right: RunProjectionConversationEntry,
+): boolean => {
+  if (projectionEntryKey(left) !== projectionEntryKey(right)) {
+    return false;
+  }
+  const leftTs = normalizeTs(left.ts);
+  const rightTs = normalizeTs(right.ts);
+  if (leftTs === null && rightTs === null) {
+    return false;
+  }
+  return leftTs === null || rightTs === null || leftTs === rightTs;
+};
+
+const mergeProjectionEntry = (
+  current: RunProjectionConversationEntry,
+  incoming: RunProjectionConversationEntry,
+): RunProjectionConversationEntry => ({
+  ...current,
+  ...incoming,
+  ts: normalizeTs(incoming.ts) ?? normalizeTs(current.ts),
+  invocationId: incoming.invocationId ?? current.invocationId ?? null,
+  role: incoming.role ?? current.role ?? null,
+  content: incoming.content ?? current.content ?? null,
+  toolName: incoming.toolName ?? current.toolName ?? null,
+  toolArgs: incoming.toolArgs ?? current.toolArgs ?? null,
+  toolResult: incoming.toolResult ?? current.toolResult ?? null,
+  toolError: incoming.toolError ?? current.toolError ?? null,
+  media: incoming.media ?? current.media ?? null,
+});
+
+const dedupeProjectionEntries = (
+  entries: RunProjectionConversationEntry[],
+): RunProjectionConversationEntry[] => {
+  const deduped: RunProjectionConversationEntry[] = [];
+  for (const entry of entries) {
+    const existingIndex = deduped.findIndex((candidate) => projectionEntriesCanMerge(candidate, entry));
+    if (existingIndex >= 0) {
+      deduped[existingIndex] = mergeProjectionEntry(deduped[existingIndex], entry);
+      continue;
+    }
+    deduped.push(entry);
+  }
+  return deduped;
+};
+
 const buildMediaSegments = (entry: RunProjectionConversationEntry): AIResponseSegment[] => {
   if (!entry.media || typeof entry.media !== 'object') {
     return [];
@@ -190,7 +268,7 @@ export const buildConversationFromProjection = (
     pendingAIMessage = null;
   };
 
-  entries.forEach((entry, index) => {
+  dedupeProjectionEntries(entries).forEach((entry, index) => {
     const timestamp = toDate(entry.ts);
 
     if (entry.kind === 'message' && entry.role === 'user') {

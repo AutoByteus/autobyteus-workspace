@@ -21,20 +21,26 @@
       <div v-if="teamMembers.length === 0" class="text-center text-sm text-gray-500 pt-8">{{ $t('workspace.components.workspace.team.TeamMembersPanel.no_active_team_members') }}</div>
       <div
         v-for="member in teamMembers"
-        :key="member.memberName"
-        @click="selectMember(member.memberName)"
+        :key="member.node.memberRouteKey"
+        @click="selectMember(member.node.memberRouteKey)"
         class="p-3 rounded-lg cursor-pointer transition-colors duration-150 border"
-        :class="focusedMemberName === member.memberName
+        :style="{ marginLeft: `${member.depth * 16}px` }"
+        :class="focusedMemberRouteKey === member.node.memberRouteKey
           ? 'bg-indigo-100 border-indigo-300 shadow-sm'
           : 'bg-white border-gray-200 hover:bg-gray-100 hover:border-gray-300'"
       >
         <div class="flex justify-between items-center">
-          <p class="font-medium text-sm truncate" :title="member.memberName">{{ member.memberName }}</p>
-          <span v-if="isCoordinator(member.memberName)" class="text-xs font-bold text-yellow-800 bg-yellow-200 px-2 py-0.5 rounded-full">
+          <div class="min-w-0">
+            <p class="font-medium text-sm truncate" :title="member.node.memberRouteKey">
+              {{ member.node.displayName || member.node.memberName }}
+            </p>
+            <p v-if="member.node.memberKind === 'agent_team'" class="mt-0.5 text-xs text-slate-500">Subteam</p>
+          </div>
+          <span v-if="isCoordinator(member.node.memberRouteKey)" class="text-xs font-bold text-yellow-800 bg-yellow-200 px-2 py-0.5 rounded-full">
             Coord
           </span>
         </div>
-        <div class="mt-2">
+        <div v-if="member.context" class="mt-2">
           <AgentStatusDisplay :status="member.context.state.currentStatus" />
         </div>
       </div>
@@ -54,45 +60,47 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
-import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import AgentStatusDisplay from '~/components/workspace/agent/AgentStatusDisplay.vue';
 import AgentDeleteConfirmDialog from '~/components/agents/AgentDeleteConfirmDialog.vue';
+import { flattenTeamMemberNodesForDisplay } from '~/utils/teamDefinitionMembers';
 
 const teamContextsStore = useAgentTeamContextsStore();
 const teamRunStore = useAgentTeamRunStore();
-const teamDefinitionStore = useAgentTeamDefinitionStore();
 
 const showTerminateConfirm = ref(false);
 
-const teamMembers = computed(() => teamContextsStore.teamMembers);
-const focusedMemberName = computed(() => teamContextsStore.activeTeamContext?.focusedMemberName);
+const teamMembers = computed(() => {
+  const team = teamContextsStore.activeTeamContext;
+  if (!team) {
+    return [];
+  }
+  return flattenTeamMemberNodesForDisplay(team.memberTree).map((entry) => ({
+    ...entry,
+    context: team.leafAgentContextsByRouteKey.get(entry.node.memberRouteKey) || null,
+  }));
+});
+const focusedMemberRouteKey = computed(() => teamContextsStore.activeTeamContext?.focusedMemberRouteKey);
 const activeTeam = computed(() => teamContextsStore.activeTeamContext);
 const teamName = computed(() => activeTeam.value?.config.teamDefinitionName || 'this team');
 const coordinatorName = computed(() => {
   const teamDefId = activeTeam.value?.config.teamDefinitionId;
   if (!teamDefId) return null;
-  return teamDefinitionStore.getAgentTeamDefinitionById(teamDefId)?.coordinatorMemberName || null;
-});
-
-onMounted(() => {
-  if (teamDefinitionStore.agentTeamDefinitions.length === 0) {
-    teamDefinitionStore.fetchAllAgentTeamDefinitions();
-  }
+  return teamContextsStore.activeTeamContext?.coordinatorMemberRouteKey || null;
 });
 
 const isTeamRunTemporary = computed(() => {
   return teamContextsStore.activeTeamContext?.teamRunId.startsWith('temp-') ?? false;
 });
 
-const isCoordinator = (memberName: string) => {
-  return memberName === coordinatorName.value;
+const isCoordinator = (memberRouteKey: string) => {
+  return memberRouteKey === coordinatorName.value;
 };
 
-const selectMember = (memberName: string) => {
-  teamContextsStore.setFocusedMember(memberName);
+const selectMember = (memberRouteKey: string) => {
+  teamContextsStore.setFocusedMember(memberRouteKey);
 };
 
 const promptTerminateTeam = () => {

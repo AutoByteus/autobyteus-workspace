@@ -23,10 +23,14 @@ export const useWorkspaceHistorySelectionActions = (params: {
   emitRunSelected: (payload: { type: 'agent' | 'team'; runId: string }) => void;
   emitRunCreated: (payload: { type: 'agent'; definitionId: string }) => void;
 }) => {
+  const flattenTeamRows = (rows: readonly TeamMemberTreeRow[]): TeamMemberTreeRow[] =>
+    rows.flatMap((row) => [row, ...flattenTeamRows(row.children)]);
+
   const resolveTeamTargetMember = (team: TeamTreeNode): TeamMemberTreeRow | null => {
-    const focusedMemberKey = team.focusedMemberName.trim();
+    const focusedMemberKey = team.focusedMemberRouteKey.trim();
+    const rows = flattenTeamRows(team.memberTree.length > 0 ? team.memberTree : team.members);
     if (focusedMemberKey) {
-      const focusedMember = team.members.find((member) =>
+      const focusedMember = rows.find((member) =>
         member.memberRouteKey === focusedMemberKey || member.memberName === focusedMemberKey,
       );
       if (focusedMember) {
@@ -34,7 +38,7 @@ export const useWorkspaceHistorySelectionActions = (params: {
       }
     }
 
-    return team.members[0] ?? null;
+    return rows[0] ?? null;
   };
 
   const onSelectRun = async (run: RunTreeRow): Promise<void> => {

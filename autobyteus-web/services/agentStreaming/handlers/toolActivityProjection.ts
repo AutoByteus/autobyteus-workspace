@@ -1,5 +1,5 @@
 import type { AgentContext } from '~/types/agent/AgentContext';
-import type { EditFileSegment, TerminalCommandSegment, ToolCallSegment, ToolInvocationStatus, WriteFileSegment } from '~/types/segments';
+import type { EditFileSegment, TerminalCommandSegment, ToolApprovalTarget, ToolCallSegment, ToolInvocationStatus, WriteFileSegment } from '~/types/segments';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { buildInvocationAliases, invocationIdsMatch } from '~/utils/invocationAliases';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
@@ -148,6 +148,7 @@ export const upsertActivityFromToolSegment = (
       status: segment.status,
       contextText: getContextText(toolName, mergedArguments),
       arguments: mergedArguments,
+      approvalTarget: segment.approvalTarget ?? null,
       logs: [...segment.logs],
       result: segment.result,
       error: segment.error,
@@ -194,6 +195,17 @@ export const updateActivityStatus = (
   const activityStore = useAgentActivityStore();
   for (const activityInvocationId of resolveActivityInvocationIds(context, invocationId)) {
     activityStore.updateActivityStatus(context.state.runId, activityInvocationId, status);
+  }
+};
+
+export const updateActivityApprovalTarget = (
+  context: AgentContext,
+  invocationId: string,
+  approvalTarget: ToolApprovalTarget | null,
+): void => {
+  const activityStore = useAgentActivityStore();
+  for (const activityInvocationId of resolveActivityInvocationIds(context, invocationId)) {
+    activityStore.updateActivityApprovalTarget(context.state.runId, activityInvocationId, approvalTarget);
   }
 };
 

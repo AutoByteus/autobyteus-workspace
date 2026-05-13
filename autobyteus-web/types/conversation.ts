@@ -60,6 +60,8 @@ export interface UserMessage extends Message {
   type: 'user';
   text: string;
   contextFilePaths?: ContextAttachment[];
+  messageId?: string;
+  dedupeKey?: string;
   promptTokens?: number;
   promptCost?: number;
 }

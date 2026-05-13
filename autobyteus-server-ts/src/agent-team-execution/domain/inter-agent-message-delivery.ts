@@ -15,6 +15,9 @@ export interface InterAgentMessageDeliveryRequest {
   content: string;
   messageType?: string | null;
   referenceFiles?: string[] | null;
+  parentCommunicationMessageId?: string | null;
+  recipientInputMessageId?: string | null;
+  recipientInputDedupeKey?: string | null;
 }
 
 export type InterAgentMessageDeliveryHandler = (

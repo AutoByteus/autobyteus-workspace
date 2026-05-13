@@ -219,6 +219,98 @@ describe("AgentRunViewProjectionService", () => {
     ]);
   });
 
+  it("deduplicates projection rows when one provider returns timestamped rows and another returns null timestamp copies", async () => {
+    const memoryDir = await createTempMemoryDir();
+    const runId = "run-merged-duplicate-rows";
+
+    const codexProvider = createProvider(
+      RuntimeKind.CODEX_APP_SERVER,
+      vi.fn(async (input) => ({
+        runId: input.source.runId,
+        conversation: [
+          { kind: "message", role: "user", content: "inbound child prompt", ts: null },
+          { kind: "message", role: "assistant", content: "child reply", ts: null },
+        ],
+        activities: [],
+        summary: "inbound child prompt",
+        lastActivityAt: null,
+      })),
+    );
+    const fallbackProvider = createProvider(
+      RuntimeKind.AUTOBYTEUS,
+      vi.fn(async () => ({
+        runId,
+        conversation: [
+          { kind: "message", role: "user", content: "inbound child prompt", ts: 100 },
+          { kind: "message", role: "assistant", content: "child reply", ts: 101 },
+        ],
+        activities: [],
+        summary: "inbound child prompt",
+        lastActivityAt: "1970-01-01T00:01:41.000Z",
+      })),
+    );
+
+    const service = new AgentRunViewProjectionService(memoryDir, {
+      providerRegistry: new FakeRunProjectionProviderRegistry(fallbackProvider, [codexProvider]),
+    });
+
+    const projection = await service.getProjectionFromMetadata({
+      runId,
+      metadata: createMetadata(RuntimeKind.CODEX_APP_SERVER, runId),
+      localProjection: {
+        runId,
+        conversation: [
+          { kind: "message", role: "user", content: "inbound child prompt", ts: 100 },
+          { kind: "message", role: "assistant", content: "child reply", ts: 101 },
+        ],
+        activities: [],
+        summary: "inbound child prompt",
+        lastActivityAt: "1970-01-01T00:01:41.000Z",
+      },
+      allowFallbackProvider: false,
+    });
+
+    expect(codexProvider.buildProjection).toHaveBeenCalledTimes(1);
+    expect(projection.conversation).toEqual([
+      { kind: "message", role: "user", content: "inbound child prompt", ts: 100 },
+      { kind: "message", role: "assistant", content: "child reply", ts: 101 },
+    ]);
+  });
+
+  it("preserves repeated no-id no-timestamp projection rows", async () => {
+    const memoryDir = await createTempMemoryDir();
+    const runId = "run-repeated-no-timestamp";
+
+    const provider = createProvider(
+      RuntimeKind.AUTOBYTEUS,
+      vi.fn(async (input) => ({
+        runId: input.source.runId,
+        conversation: [
+          { kind: "message", role: "user", content: "repeat this", ts: null },
+          { kind: "message", role: "user", content: "repeat this", ts: null },
+        ],
+        activities: [],
+        summary: "repeat this",
+        lastActivityAt: null,
+      })),
+    );
+
+    const service = new AgentRunViewProjectionService(memoryDir, {
+      providerRegistry: new FakeRunProjectionProviderRegistry(provider),
+    });
+
+    const projection = await service.getProjectionFromMetadata({
+      runId,
+      metadata: createMetadata(RuntimeKind.AUTOBYTEUS, runId),
+      allowFallbackProvider: false,
+    });
+
+    expect(projection.conversation).toEqual([
+      { kind: "message", role: "user", content: "repeat this", ts: null },
+      { kind: "message", role: "user", content: "repeat this", ts: null },
+    ]);
+  });
+
   it("keeps local-memory tool activities when Claude runtime projection is conversation-only", async () => {
     const memoryDir = await createTempMemoryDir();
     const runId = "run-claude-local-activity-merge";

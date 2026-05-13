@@ -9,6 +9,28 @@
       :inter-agent-sender-name-by-id="interAgentSenderNameById"
       class="h-full"
     />
+    <div
+      v-else-if="focusedMemberNode?.memberKind === 'agent_team'"
+      class="h-full overflow-y-auto p-6"
+    >
+      <div class="rounded-xl border border-slate-200 bg-slate-50 p-5">
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Focused subteam</p>
+        <h3 class="mt-1 text-lg font-semibold text-slate-900">{{ focusedMemberNode.displayName }}</h3>
+        <p class="mt-1 text-sm text-slate-500">{{ focusedMemberNode.memberRouteKey }}</p>
+        <div class="mt-4 grid gap-3 md:grid-cols-2">
+          <button
+            v-for="child in focusedMemberNode.children"
+            :key="child.memberRouteKey"
+            type="button"
+            class="rounded-lg border border-slate-200 bg-white p-3 text-left transition hover:border-indigo-200 hover:bg-indigo-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+            @click="focusMemberRouteKey(child.memberRouteKey)"
+          >
+            <p class="truncate text-sm font-medium text-slate-900">{{ child.displayName || child.memberName }}</p>
+            <p class="mt-0.5 truncate text-xs text-slate-500">{{ child.memberRouteKey }}</p>
+          </button>
+        </div>
+      </div>
+    </div>
     <div v-else class="p-8 text-center text-gray-500 h-full flex items-center justify-center">
       <div v-if="!activeTeam">
         <p>{{ $t('workspace.components.workspace.team.AgentTeamEventMonitor.no_active_team_session') }}</p>
@@ -31,25 +53,35 @@ const { getInterAgentSenderNameById, getMemberAvatarUrl, getMemberDisplayName } 
 
 const activeTeam = computed(() => teamContextsStore.activeTeamContext);
 const focusedMember = computed(() => teamContextsStore.focusedMemberContext);
+const focusedMemberNode = computed(() => teamContextsStore.focusedMemberNode);
 const conversationOfFocusedMember = computed(() => focusedMember.value?.state.conversation);
 
 const focusedMemberDisplayName = computed(() => {
   const team = activeTeam.value;
-  if (!team?.focusedMemberName) {
+  if (!team?.focusedMemberRouteKey) {
     return '';
   }
-  return getMemberDisplayName(team.focusedMemberName, focusedMember.value);
+  return focusedMemberNode.value?.displayName
+    || getMemberDisplayName(team.focusedMemberRouteKey, focusedMember.value);
 });
 
 const focusedMemberAvatarUrl = computed(() => {
   const team = activeTeam.value;
-  if (!team?.focusedMemberName || !focusedMember.value) {
+  if (!team?.focusedMemberRouteKey || !focusedMember.value) {
     return null;
   }
-  return getMemberAvatarUrl(team.focusedMemberName, focusedMember.value) || null;
+  return getMemberAvatarUrl(team.focusedMemberRouteKey, focusedMember.value) || null;
 });
 
 const interAgentSenderNameById = computed<Record<string, string>>(() => {
   return getInterAgentSenderNameById(activeTeam.value);
 });
+
+const focusMemberRouteKey = (memberRouteKey: string) => {
+  const teamRunId = activeTeam.value?.teamRunId;
+  if (!teamRunId) {
+    return;
+  }
+  void teamContextsStore.focusMemberAndEnsureHydrated?.(teamRunId, memberRouteKey);
+};
 </script>

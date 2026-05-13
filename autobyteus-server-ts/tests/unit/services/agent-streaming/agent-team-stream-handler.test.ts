@@ -96,6 +96,118 @@ describe("AgentTeamStreamHandler", () => {
     expect(message.payload.agent_id).toBe("agent-xyz");
   });
 
+  it("projects canonical team communication events to the flattened websocket payload", () => {
+    const handler = new AgentTeamStreamHandler(
+      undefined,
+      createTeamRunService(null) as any,
+    );
+
+    const message = handler.convertTeamEvent({
+      eventSourceType: TeamRunEventSourceType.COMMUNICATION,
+      teamRunId: "team-1",
+      sourcePath: ["program_manager"],
+      data: {
+        messageId: "message-1",
+        teamRunId: "team-1",
+        sender: {
+          memberKind: "agent",
+          memberName: "program_manager",
+          memberPath: ["program_manager"],
+          memberRouteKey: "program_manager",
+          memberRunId: "program-manager-run",
+        },
+        receiver: {
+          memberKind: "agent_team",
+          memberName: "BuildSquad",
+          memberPath: ["BuildSquad"],
+          memberRouteKey: "BuildSquad",
+          memberRunId: "build-squad-run",
+          teamDefinitionId: "build-squad-definition",
+        },
+        content: "Reply with exactly token.",
+        messageType: "frontend_parent_to_subteam",
+        referenceFiles: [],
+        createdAt: "2026-05-13T06:00:00.000Z",
+      },
+    });
+
+    expect(message.type).toBe(ServerMessageType.TEAM_COMMUNICATION_MESSAGE);
+    expect(message.payload).toMatchObject({
+      messageId: "message-1",
+      teamRunId: "team-1",
+      senderRunId: "program-manager-run",
+      senderMemberKind: "agent",
+      senderMemberName: "program_manager",
+      senderMemberPath: ["program_manager"],
+      senderMemberRouteKey: "program_manager",
+      receiverRunId: "build-squad-run",
+      receiverMemberKind: "agent_team",
+      receiverMemberName: "BuildSquad",
+      receiverMemberPath: ["BuildSquad"],
+      receiverMemberRouteKey: "BuildSquad",
+      content: "Reply with exactly token.",
+      messageType: "frontend_parent_to_subteam",
+      referenceFiles: [],
+      createdAt: "2026-05-13T06:00:00.000Z",
+      updatedAt: "2026-05-13T06:00:00.000Z",
+      source_path: ["program_manager"],
+      source_route_key: "program_manager",
+    });
+    expect(message.payload.sender).toBeUndefined();
+    expect(message.payload.receiver).toBeUndefined();
+  });
+
+  it("maps member input events to external user messages with canonical nested source identity", () => {
+    const handler = new AgentTeamStreamHandler(
+      undefined,
+      createTeamRunService(null) as any,
+    );
+
+    const message = handler.convertTeamEvent({
+      eventSourceType: TeamRunEventSourceType.MEMBER_INPUT,
+      teamRunId: "team-1",
+      sourcePath: ["BuildSquad", "review_lead"],
+      data: {
+        messageId: "member-input-1",
+        dedupeKey: "member_input:team-1:BuildSquad/review_lead:member-input-1",
+        teamRunId: "team-1",
+        recipientMemberRunId: "review-lead-run",
+        recipientMemberName: "review_lead",
+        recipientMemberPath: ["review_lead"],
+        recipientMemberRouteKey: "review_lead",
+        content: "You received a message from sender name: program_manager",
+        inputOrigin: "inter_agent_delivery",
+        receivedAt: "2026-05-13T06:30:00.000Z",
+        contextFilePaths: [],
+        senderRunId: "program-manager-run",
+        senderMemberName: "program_manager",
+        senderMemberPath: ["program_manager"],
+        senderMemberRouteKey: "program_manager",
+        parentCommunicationMessageId: "team-message-1",
+      },
+    });
+
+    expect(message.type).toBe(ServerMessageType.EXTERNAL_USER_MESSAGE);
+    expect(message.payload).toMatchObject({
+      content: "You received a message from sender name: program_manager",
+      message_id: "member-input-1",
+      dedupe_key: "member_input:team-1:BuildSquad/review_lead:member-input-1",
+      input_origin: "inter_agent_delivery",
+      received_at: "2026-05-13T06:30:00.000Z",
+      agent_name: "review_lead",
+      agent_id: "review-lead-run",
+      member_route_key: "BuildSquad/review_lead",
+      member_path: ["BuildSquad", "review_lead"],
+      source_route_key: "BuildSquad/review_lead",
+      source_path: ["BuildSquad", "review_lead"],
+      sender_agent_id: "program-manager-run",
+      sender_agent_name: "program_manager",
+      sender_member_route_key: "program_manager",
+      sender_member_path: ["program_manager"],
+      parent_communication_message_id: "team-message-1",
+    });
+  });
+
   it("connects through TeamRunService.resolveTeamRun and sends CONNECTED plus initial status", async () => {
     const teamRun = createTeamRun();
     const teamRunService = createTeamRunService(null, {

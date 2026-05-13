@@ -16,7 +16,14 @@ import { MixedTeamRunContext, type MixedTeamMemberContext } from "./mixed-team-r
 import { MixedSubTeamRunFactory } from "./mixed-sub-team-run-factory.js";
 import { MixedTeamMemberRegistry } from "./members/mixed-team-member-registry.js";
 import { buildTeamCommunicationMessageId } from "../../../services/team-communication/team-communication-identity.js";
-import { buildInterAgentMessageReferenceFileEntries } from "../../services/inter-agent-message-runtime-builders.js";
+import {
+  buildInterAgentMessageReferenceFileEntries,
+  buildRecipientVisibleInterAgentMessageContent,
+} from "../../services/inter-agent-message-runtime-builders.js";
+import {
+  buildTeamMemberInputDedupeKey,
+  buildTeamMemberInputMessageId,
+} from "../../services/team-member-input-event-builder.js";
 
 const buildRunNotFoundResult = (teamRunId: string): AgentOperationResult => ({
   accepted: false,
@@ -92,13 +99,18 @@ export class MixedTeamManager implements TeamManager {
     }
     const normalizedRequest = this.normalizeDeliveryRequest(request, senderContext, resolvedRecipient);
     const communicationPayload = this.buildCommunicationPayload(normalizedRequest, senderContext, resolvedRecipient);
+    const tracedRequest = this.attachRecipientInputTrace(
+      normalizedRequest,
+      communicationPayload,
+      resolvedRecipient,
+    );
     this.publish({
       eventSourceType: TeamRunEventSourceType.COMMUNICATION,
       teamRunId: teamContext.runId,
       sourcePath: senderContext?.memberPath ?? [],
       data: communicationPayload,
     });
-    const result = await this.memberRegistry.getOrCreate(resolvedRecipient).deliverInterMemberMessage(normalizedRequest);
+    const result = await this.memberRegistry.getOrCreate(resolvedRecipient).deliverInterMemberMessage(tracedRequest);
     this.publishTeamStatusIfChanged();
     return { ...result, memberRunId: resolvedRecipient.memberRunId, memberName: resolvedRecipient.memberName };
   }
@@ -154,6 +166,33 @@ export class MixedTeamManager implements TeamManager {
     this.eventListeners.add(listener);
     return () => {
       this.eventListeners.delete(listener);
+    };
+  }
+
+  private attachRecipientInputTrace(
+    request: InterAgentMessageDeliveryRequest,
+    communicationPayload: TeamRunCommunicationEventPayload,
+    recipientContext: MixedTeamMemberContext,
+  ): InterAgentMessageDeliveryRequest {
+    const messageId = request.recipientInputMessageId?.trim() || buildTeamMemberInputMessageId({
+      teamRunId: request.teamRunId,
+      memberRunId: recipientContext.memberRunId,
+      memberRouteKey: recipientContext.memberRouteKey,
+      content: buildRecipientVisibleInterAgentMessageContent(request),
+      receivedAt: communicationPayload.createdAt,
+      parentCommunicationMessageId: communicationPayload.messageId,
+    });
+    return {
+      ...request,
+      parentCommunicationMessageId: communicationPayload.messageId,
+      recipientInputMessageId: messageId,
+      recipientInputDedupeKey:
+        request.recipientInputDedupeKey?.trim() ||
+        buildTeamMemberInputDedupeKey({
+          teamRunId: request.teamRunId,
+          memberRouteKey: recipientContext.memberRouteKey,
+          messageId,
+        }),
     };
   }
 

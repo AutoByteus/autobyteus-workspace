@@ -80,7 +80,7 @@ export const recoverActiveRunsFromHistory = async (
       ) {
         existingTeamContext.currentStatus = AgentTeamStatus.Uninitialized;
       }
-      existingTeamContext.members.forEach((memberContext) => {
+      existingTeamContext.leafAgentContextsByRouteKey.forEach((memberContext) => {
         memberContext.config.isLocked = true;
         if (
           memberContext.state.currentStatus === AgentStatus.Idle

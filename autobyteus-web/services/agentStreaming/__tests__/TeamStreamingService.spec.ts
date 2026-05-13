@@ -37,8 +37,8 @@ describe('TeamStreamingService', () => {
 
     const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
     const teamContext = {
-      focusedMemberName: 'worker-a',
-      members: new Map([
+      focusedMemberRouteKey: 'worker-a',
+      leafAgentContextsByRouteKey: new Map([
         [
           'worker-a',
           {
@@ -63,10 +63,9 @@ describe('TeamStreamingService', () => {
           agent_name: 'worker-a',
           approval_token: {
             teamRunId: 'run-1',
-            runVersion: 2,
             invocationId: 'inv-1',
             invocationVersion: 1,
-            targetMemberName: 'worker-a',
+            targetMemberRouteKey: 'worker-a',
           },
         },
       }),
@@ -78,11 +77,79 @@ describe('TeamStreamingService', () => {
     const outbound = JSON.parse(wsClient.send.mock.calls[0][0]);
     expect(outbound.type).toBe('APPROVE_TOOL');
     expect(outbound.payload.invocation_id).toBe('inv-1');
+    expect(outbound.payload.member_route_key).toBe('worker-a');
     expect(outbound.payload.approval_token).toMatchObject({
       teamRunId: 'run-1',
-      runVersion: 2,
       invocationId: 'inv-1',
-      targetMemberName: 'worker-a',
+      targetMemberRouteKey: 'worker-a',
+    });
+  });
+
+  it('uses the approval request source route when approving after focus changes', () => {
+    const callbacks = new Map<string, (payload?: any) => void>();
+    const wsClient = {
+      state: 'disconnected',
+      connect: vi.fn(),
+      disconnect: vi.fn(),
+      send: vi.fn(),
+      on: vi.fn((event: string, cb: (payload?: any) => void) => {
+        callbacks.set(event, cb);
+      }),
+      off: vi.fn(),
+    } as any;
+
+    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+    const reviewLeadConversation = { messages: [], updatedAt: '' } as any;
+    const programManagerConversation = { messages: [], updatedAt: '' } as any;
+    const teamContext = {
+      focusedMemberRouteKey: 'program_manager',
+      leafAgentContextsByRouteKey: new Map([
+        [
+          'program_manager',
+          {
+            state: { runId: 'pm-run-1', compactionStatus: null },
+            conversation: programManagerConversation,
+          },
+        ],
+        [
+          'BuildSquad/review_lead',
+          {
+            state: { runId: 'review-run-1', compactionStatus: null },
+            conversation: reviewLeadConversation,
+          },
+        ],
+      ]),
+    } as any;
+
+    service.connect('team-1', teamContext);
+    callbacks.get('onMessage')?.(
+      JSON.stringify({
+        type: 'TOOL_APPROVAL_REQUESTED',
+        payload: {
+          invocation_id: 'inv-nested',
+          tool_name: 'run_bash',
+          arguments: { command: 'pnpm test' },
+          member_route_key: 'BuildSquad/review_lead',
+          member_path: ['BuildSquad', 'review_lead'],
+          source_route_key: 'BuildSquad/review_lead',
+          source_path: ['BuildSquad', 'review_lead'],
+        },
+      }),
+    );
+
+    teamContext.focusedMemberRouteKey = 'program_manager';
+    service.approveTool('inv-nested');
+
+    expect(reviewLeadConversation.messages).toHaveLength(1);
+    expect(programManagerConversation.messages).toHaveLength(0);
+    const outbound = JSON.parse(wsClient.send.mock.calls[0][0]);
+    expect(outbound.type).toBe('APPROVE_TOOL');
+    expect(outbound.payload).toMatchObject({
+      invocation_id: 'inv-nested',
+      member_route_key: 'BuildSquad/review_lead',
+      member_path: ['BuildSquad', 'review_lead'],
+      source_route_key: 'BuildSquad/review_lead',
+      source_path: ['BuildSquad', 'review_lead'],
     });
   });
 
@@ -102,8 +169,8 @@ describe('TeamStreamingService', () => {
     const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
     const teamContext = {
       isSubscribed: false,
-      focusedMemberName: 'worker-a',
-      members: new Map([
+      focusedMemberRouteKey: 'worker-a',
+      leafAgentContextsByRouteKey: new Map([
         [
           'worker-a',
           {
@@ -138,8 +205,8 @@ describe('TeamStreamingService', () => {
     const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
     const originalContext = {
       isSubscribed: false,
-      focusedMemberName: 'worker-a',
-      members: new Map([
+      focusedMemberRouteKey: 'worker-a',
+      leafAgentContextsByRouteKey: new Map([
         [
           'worker-a',
           {
@@ -151,8 +218,8 @@ describe('TeamStreamingService', () => {
     } as any;
     const replacementContext = {
       isSubscribed: false,
-      focusedMemberName: 'worker-a',
-      members: new Map([
+      focusedMemberRouteKey: 'worker-a',
+      leafAgentContextsByRouteKey: new Map([
         [
           'worker-a',
           {
@@ -191,8 +258,8 @@ describe('TeamStreamingService', () => {
     const studentConversation: { messages: any[]; updatedAt: string } = { messages: [], updatedAt: '' };
     const teamContext = {
       isSubscribed: false,
-      focusedMemberName: 'Student',
-      members: new Map([
+      focusedMemberRouteKey: 'Student',
+      leafAgentContextsByRouteKey: new Map([
         [
           'Professor',
           {
@@ -231,8 +298,8 @@ describe('TeamStreamingService', () => {
       text: 'hello from telegram',
     });
     expect(professorConversation.messages[0].timestamp.toISOString()).toBe('2026-03-10T20:15:00.000Z');
-    expect((teamContext.members.get('Professor') as any).state.runId).toBe('prof-run-2');
-    expect((teamContext.members.get('Professor') as any).isSending).toBe(true);
+    expect((teamContext.leafAgentContextsByRouteKey.get('Professor') as any).state.runId).toBe('prof-run-2');
+    expect((teamContext.leafAgentContextsByRouteKey.get('Professor') as any).isSending).toBe(true);
     expect(studentConversation.messages).toHaveLength(0);
   });
 
@@ -251,8 +318,8 @@ describe('TeamStreamingService', () => {
 
     const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
     const teamContext = {
-      focusedMemberName: 'worker-a',
-      members: new Map([
+      focusedMemberRouteKey: 'worker-a',
+      leafAgentContextsByRouteKey: new Map([
         [
           'worker-a',
           {
@@ -310,8 +377,8 @@ describe('TeamStreamingService', () => {
     const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
     const conversation = { messages: [], updatedAt: '' } as any;
     const teamContext = {
-      focusedMemberName: 'worker-a',
-      members: new Map([
+      focusedMemberRouteKey: 'worker-a',
+      leafAgentContextsByRouteKey: new Map([
         [
           'worker-a',
           {
@@ -372,8 +439,8 @@ describe('TeamStreamingService', () => {
     const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
     const conversation = { messages: [], updatedAt: '' } as any;
     const teamContext = {
-      focusedMemberName: 'worker-a',
-      members: new Map([
+      focusedMemberRouteKey: 'worker-a',
+      leafAgentContextsByRouteKey: new Map([
         [
           'worker-a',
           {
@@ -410,6 +477,147 @@ describe('TeamStreamingService', () => {
     expect(conversation.messages).toHaveLength(0);
   });
 
+  it('routes live parent-to-subteam communication payloads to the team communication store', () => {
+    const callbacks = new Map<string, (payload?: any) => void>();
+    const wsClient = {
+      state: 'disconnected',
+      connect: vi.fn(),
+      disconnect: vi.fn(),
+      send: vi.fn(),
+      on: vi.fn((event: string, cb: (payload?: any) => void) => {
+        callbacks.set(event, cb);
+      }),
+      off: vi.fn(),
+    } as any;
+
+    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+    const programManagerConversation = { messages: [], updatedAt: '' } as any;
+    const reviewLeadConversation = { messages: [], updatedAt: '' } as any;
+    const teamContext = {
+      focusedMemberRouteKey: 'program_manager',
+      leafAgentContextsByRouteKey: new Map([
+        [
+          'program_manager',
+          {
+            state: { runId: 'program-manager-run', compactionStatus: null },
+            conversation: programManagerConversation,
+          },
+        ],
+        [
+          'BuildSquad/review_lead',
+          {
+            state: { runId: 'review-lead-run', compactionStatus: null },
+            conversation: reviewLeadConversation,
+          },
+        ],
+      ]),
+    } as any;
+
+    const payload = {
+      messageId: 'message-parent-to-subteam',
+      teamRunId: 'team-1',
+      senderRunId: 'program-manager-run',
+      senderMemberKind: 'agent',
+      senderMemberName: 'program_manager',
+      senderMemberPath: ['program_manager'],
+      senderMemberRouteKey: 'program_manager',
+      receiverRunId: 'build-squad-run',
+      receiverMemberKind: 'agent_team',
+      receiverMemberName: 'BuildSquad',
+      receiverMemberPath: ['BuildSquad'],
+      receiverMemberRouteKey: 'BuildSquad',
+      content: 'Reply with exactly token.',
+      messageType: 'frontend_parent_to_subteam',
+      createdAt: '2026-05-13T06:00:00.000Z',
+      updatedAt: '2026-05-13T06:00:00.000Z',
+      referenceFiles: [],
+      source_path: ['program_manager'],
+      source_route_key: 'program_manager',
+    };
+
+    service.connect('team-1', teamContext);
+    callbacks.get('onMessage')?.(
+      JSON.stringify({
+        type: 'TEAM_COMMUNICATION_MESSAGE',
+        payload,
+      }),
+    );
+
+    expect(upsertTeamCommunicationMessageMock).toHaveBeenCalledWith(payload);
+    expect(programManagerConversation.messages).toHaveLength(0);
+    expect(reviewLeadConversation.messages).toHaveLength(0);
+  });
+
+  it('routes live member input echoes to the resolved nested leaf and upserts duplicate echoes by identity', () => {
+    const callbacks = new Map<string, (payload?: any) => void>();
+    const wsClient = {
+      state: 'disconnected',
+      connect: vi.fn(),
+      disconnect: vi.fn(),
+      send: vi.fn(),
+      on: vi.fn((event: string, cb: (payload?: any) => void) => {
+        callbacks.set(event, cb);
+      }),
+      off: vi.fn(),
+    } as any;
+
+    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+    const programManagerConversation = { messages: [], updatedAt: '' } as any;
+    const reviewLeadConversation = { messages: [], updatedAt: '' } as any;
+    const teamContext = {
+      focusedMemberRouteKey: 'program_manager',
+      leafAgentContextsByRouteKey: new Map([
+        [
+          'program_manager',
+          {
+            state: { runId: 'program-manager-run', compactionStatus: null },
+            conversation: programManagerConversation,
+            isSending: false,
+          },
+        ],
+        [
+          'BuildSquad/review_lead',
+          {
+            state: { runId: 'review-lead-run', compactionStatus: null },
+            conversation: reviewLeadConversation,
+            isSending: false,
+          },
+        ],
+      ]),
+    } as any;
+
+    const payload = {
+      content: 'You received a message from sender name: program_manager, sender id: program-manager-run',
+      received_at: '2026-05-13T06:30:00.000Z',
+      message_id: 'member-input-1',
+      dedupe_key: 'member_input:team-1:BuildSquad/review_lead:member-input-1',
+      input_origin: 'inter_agent_delivery',
+      agent_name: 'review_lead',
+      agent_id: 'review-lead-run',
+      member_route_key: 'BuildSquad/review_lead',
+      member_path: ['BuildSquad', 'review_lead'],
+      source_route_key: 'BuildSquad/review_lead',
+      source_path: ['BuildSquad', 'review_lead'],
+      sender_agent_id: 'program-manager-run',
+      sender_agent_name: 'program_manager',
+      parent_communication_message_id: 'team-message-1',
+    };
+
+    service.connect('team-1', teamContext);
+    callbacks.get('onMessage')?.(JSON.stringify({ type: 'EXTERNAL_USER_MESSAGE', payload }));
+    callbacks.get('onMessage')?.(JSON.stringify({ type: 'EXTERNAL_USER_MESSAGE', payload }));
+
+    expect(programManagerConversation.messages).toHaveLength(0);
+    expect(reviewLeadConversation.messages).toHaveLength(1);
+    expect(reviewLeadConversation.messages[0]).toMatchObject({
+      type: 'user',
+      text: payload.content,
+      messageId: 'member-input-1',
+      dedupeKey: 'member_input:team-1:BuildSquad/review_lead:member-input-1',
+    });
+    expect(reviewLeadConversation.messages[0].timestamp.toISOString()).toBe('2026-05-13T06:30:00.000Z');
+  });
+
   it('routes compaction lifecycle messages to the targeted member context', () => {
     const callbacks = new Map<string, (payload?: any) => void>();
     const wsClient = {
@@ -435,8 +643,8 @@ describe('TeamStreamingService', () => {
       isSending: false,
     };
     const teamContext = {
-      focusedMemberName: 'Student',
-      members: new Map([
+      focusedMemberRouteKey: 'Student',
+      leafAgentContextsByRouteKey: new Map([
         ['Professor', professorContext],
         ['Student', studentContext],
       ]),

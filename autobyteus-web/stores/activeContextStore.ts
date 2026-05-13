@@ -9,6 +9,7 @@ import { useRunHistoryStore } from './runHistoryStore';
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig';
 import type { ContextFilePath } from '~/types/conversation';
+import type { ToolApprovalTarget } from '~/types/segments';
 
 /**
  * @store useActiveContextStore
@@ -125,14 +126,18 @@ export const useActiveContextStore = defineStore('activeContext', () => {
     }
   };
 
-  const postToolExecutionApproval = async (invocationId: string, isApproved: boolean, reason: string | null = null) => {
-    const context = activeAgentContext.value;
-    _assertContext(context);
-
+  const postToolExecutionApproval = async (
+    invocationId: string,
+    isApproved: boolean,
+    reason: string | null = null,
+    approvalTarget: ToolApprovalTarget | null = null,
+  ) => {
     if (selectionStore.selectedType === 'agent') {
+      const context = activeAgentContext.value;
+      _assertContext(context);
       await agentRunStore.postToolExecutionApproval(context.state.runId, invocationId, isApproved, reason);
     } else if (selectionStore.selectedType === 'team') {
-      await agentTeamRunStore.postToolExecutionApproval(invocationId, isApproved, reason);
+      await agentTeamRunStore.postToolExecutionApproval(invocationId, isApproved, reason, approvalTarget);
     } else {
       throw new Error('Cannot approve tool: Unknown selection type.');
     }

@@ -4,6 +4,10 @@ import {
   getRunProjectionProviderRegistry,
   RunProjectionProviderRegistry,
 } from "../projection/run-projection-provider-registry.js";
+import {
+  dedupeRunProjectionActivityEntries,
+  dedupeRunProjectionConversationEntries,
+} from "../projection/run-projection-dedupe.js";
 import type {
   RunProjectionProvider,
   RunProjectionProviderInput,
@@ -53,22 +57,39 @@ const mergeProjectionRows = <T extends RunProjectionConversationEntry | RunProje
   return merged;
 };
 
+const dedupeProjectionBundle = (projection: RunProjection): RunProjection => {
+  const bundle = buildRunProjectionBundle(
+    projection.runId,
+    dedupeRunProjectionConversationEntries(projection.conversation),
+    dedupeRunProjectionActivityEntries(projection.activities),
+  );
+  return {
+    ...bundle,
+    summary: bundle.summary ?? projection.summary,
+    lastActivityAt: bundle.lastActivityAt ?? projection.lastActivityAt,
+  };
+};
+
 const mergeProjectionBundles = (
   runId: string,
   primaryProjection: RunProjection | null,
   secondaryProjection: RunProjection | null,
 ): RunProjection | null => {
   if (!primaryProjection) {
-    return secondaryProjection;
+    return secondaryProjection ? dedupeProjectionBundle(secondaryProjection) : null;
   }
   if (!secondaryProjection) {
-    return primaryProjection;
+    return dedupeProjectionBundle(primaryProjection);
   }
 
   const bundle = buildRunProjectionBundle(
     runId,
-    mergeProjectionRows(primaryProjection.conversation, secondaryProjection.conversation),
-    mergeProjectionRows(primaryProjection.activities, secondaryProjection.activities),
+    dedupeRunProjectionConversationEntries(
+      mergeProjectionRows(primaryProjection.conversation, secondaryProjection.conversation),
+    ),
+    dedupeRunProjectionActivityEntries(
+      mergeProjectionRows(primaryProjection.activities, secondaryProjection.activities),
+    ),
   );
 
   return {
@@ -174,7 +195,8 @@ export class AgentRunViewProjectionService {
     mode: "primary" | "fallback",
   ): Promise<RunProjection | null> {
     try {
-      return await provider.buildProjection(input);
+      const projection = await provider.buildProjection(input);
+      return projection ? dedupeProjectionBundle(projection) : null;
     } catch (error) {
       logger.warn(
         `[AgentRunViewProjectionService] ${mode} projection failed for run '${input.source.runId}' (${provider.runtimeKind ?? RuntimeKind.AUTOBYTEUS}): ${String(error)}`,

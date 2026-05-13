@@ -33,9 +33,10 @@ const nestedTeamDef = {
   id: 'team-nested',
   name: 'Nested Team',
   nodes: [
-    { memberName: 'Parent Team', refType: 'AGENT_TEAM', ref: 'sub-team-1' },
+    { memberName: 'program_manager', refType: 'AGENT', ref: 'agent-pm' },
+    { memberName: 'BuildSquad', refType: 'AGENT_TEAM', ref: 'sub-team-1' },
   ],
-  coordinatorMemberName: 'Parent Team',
+  coordinatorMemberName: 'program_manager',
 }
 
 const mockConfig = {
@@ -150,8 +151,8 @@ describe('TeamRunConfigForm', () => {
             name: 'Sub Team',
             coordinatorMemberName: 'Leaf A',
             nodes: [
-              { memberName: 'Leaf A', refType: 'AGENT', ref: 'agent-leaf-a' },
-              { memberName: 'Leaf B', refType: 'AGENT', ref: 'agent-leaf-b' },
+              { memberName: 'review_lead', refType: 'AGENT', ref: 'agent-review' },
+              { memberName: 'qa_specialist', refType: 'AGENT', ref: 'agent-qa' },
             ],
           }
         }
@@ -189,7 +190,7 @@ describe('TeamRunConfigForm', () => {
           MemberOverrideItem: {
             name: 'MemberOverrideItem',
             template: '<div class="member-override-item-stub"></div>',
-            props: ['memberName', 'override', 'isCoordinator', 'disabled', 'advancedInitiallyExpanded', 'missingHistoricalConfig', 'globalRuntimeKind', 'globalLlmModel', 'globalLlmConfig'],
+            props: ['memberName', 'memberRouteKey', 'memberBreadcrumb', 'override', 'isCoordinator', 'disabled', 'advancedInitiallyExpanded', 'missingHistoricalConfig', 'globalRuntimeKind', 'globalLlmModel', 'globalLlmConfig'],
             emits: ['update:override'],
           },
         },
@@ -308,13 +309,37 @@ describe('TeamRunConfigForm', () => {
     })
   })
 
-  it('flattens nested team definitions into leaf member rows', () => {
+  it('renders nested leaf overrides under their subteam group and keeps route-key override identity', async () => {
     const { wrapper } = buildWrapper({}, nestedTeamDef)
-    const items = wrapper.findAllComponents({ name: 'MemberOverrideItem' })
+    await wrapper.vm.$nextTick()
 
-    expect(items).toHaveLength(2)
-    expect(items[0].props('memberName')).toBe('Leaf A')
-    expect(items[1].props('memberName')).toBe('Leaf B')
+    const groups = wrapper.findAll('[data-test="member-override-group"]')
+    expect(groups).toHaveLength(1)
+    expect(groups[0].text()).toContain('BuildSquad')
+    expect(groups[0].text()).toContain('BuildSquad')
+
+    const items = wrapper.findAllComponents({ name: 'MemberOverrideItem' })
+    const itemTexts = groups[0].findAllComponents({ name: 'MemberOverrideItem' })
+
+    expect(items).toHaveLength(3)
+    expect(items[0].props('memberRouteKey')).toBe('program_manager')
+    expect(itemTexts).toHaveLength(2)
+    expect(itemTexts[0].props('memberName')).toBe('review_lead')
+    expect(itemTexts[0].props('memberRouteKey')).toBe('BuildSquad/review_lead')
+    expect(itemTexts[0].props('memberBreadcrumb')).toBe('BuildSquad / review_lead')
+    expect(itemTexts[1].props('memberName')).toBe('qa_specialist')
+    expect(itemTexts[1].props('memberRouteKey')).toBe('BuildSquad/qa_specialist')
+
+    itemTexts[0].vm.$emit('update:override', 'BuildSquad/review_lead', {
+      agentDefinitionId: 'agent-review',
+      runtimeKind: 'codex_app_server',
+    })
+    expect((wrapper.props('config') as any).memberOverrides).toMatchObject({
+      'BuildSquad/review_lead': {
+        agentDefinitionId: 'agent-review',
+        runtimeKind: 'codex_app_server',
+      },
+    })
   })
 
   it('renders selected existing team run configuration as read-only while keeping member overrides inspectable', async () => {

@@ -1,4 +1,5 @@
 import type { TeamRunMetadataPayload } from '~/stores/runHistoryTypes'
+import { flattenTeamRunAgentMetadata } from '~/stores/runHistoryMetadata'
 import {
   DEFAULT_AGENT_RUNTIME_KIND,
   runtimeKindToLabel,
@@ -37,7 +38,7 @@ const modelConfigKey = (config: Record<string, unknown> | null | undefined): str
 const memberRouteKey = (member: { memberRouteKey: string; memberName: string }): string =>
   member.memberRouteKey?.trim() || member.memberName.trim()
 
-type TeamMetadataMember = TeamRunMetadataPayload['memberMetadata'][number]
+type TeamMetadataMember = ReturnType<typeof flattenTeamRunAgentMetadata>[number]
 
 const normalizedMetadataMemberRuntimeKind = (
   member: TeamMetadataMember,
@@ -220,7 +221,7 @@ export const reconstructTeamRunConfigFromMetadata = (params: {
   firstWorkspaceId: string | null
   isLocked: boolean
 }): TeamRunConfig => {
-  const members = params.metadata.memberMetadata
+  const members = flattenTeamRunAgentMetadata(params.metadata.memberTree)
   if (members.length === 0) {
     return {
       teamDefinitionId: params.metadata.teamDefinitionId,
@@ -286,7 +287,7 @@ export const reconstructTeamRunConfigFromMetadata = (params: {
     }
 
     if (hasMeaningfulMemberOverride(override)) {
-      memberOverrides[member.memberName] = override
+      memberOverrides[memberRouteKey(member)] = override
     }
   })
 

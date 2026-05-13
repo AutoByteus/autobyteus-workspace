@@ -31,10 +31,28 @@ class TeamCommunicationMessageObject {
   senderRunId!: string;
 
   @Field(() => String, { nullable: true })
+  senderMemberKind?: string | null;
+
+  @Field(() => [String], { nullable: true })
+  senderMemberPath?: string[] | null;
+
+  @Field(() => String, { nullable: true })
+  senderMemberRouteKey?: string | null;
+
+  @Field(() => String, { nullable: true })
   senderMemberName?: string | null;
 
   @Field(() => String)
   receiverRunId!: string;
+
+  @Field(() => String, { nullable: true })
+  receiverMemberKind?: string | null;
+
+  @Field(() => [String], { nullable: true })
+  receiverMemberPath?: string[] | null;
+
+  @Field(() => String, { nullable: true })
+  receiverMemberRouteKey?: string | null;
 
   @Field(() => String, { nullable: true })
   receiverMemberName?: string | null;

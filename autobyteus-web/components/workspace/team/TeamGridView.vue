@@ -13,12 +13,13 @@
         :class="gridColumnClasses"
       >
         <TeamMemberMonitorTile
-          v-for="[memberName, memberContext] in teamContext.members"
-          :key="memberName"
+          v-for="entry in displayEntries"
+          :key="entry.node.memberRouteKey"
           class="min-h-0"
-          :member-name="memberName"
-          :member-context="memberContext"
-          :is-focused="memberName === focusedMemberName"
+          :class="entry.depth > 0 ? 'ml-3 border-l-2 border-slate-100 pl-3' : ''"
+          :member-node="entry.node"
+          :member-context="teamContext.leafAgentContextsByRouteKey.get(entry.node.memberRouteKey) || null"
+          :is-focused="entry.node.memberRouteKey === focusedMemberRouteKey"
           :team-context="teamContext"
           @select="$emit('select-member', $event)"
         />
@@ -31,18 +32,23 @@
 import { computed } from 'vue';
 import TeamMemberMonitorTile from '~/components/workspace/team/TeamMemberMonitorTile.vue';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
+import { flattenTeamMemberNodesForDisplay } from '~/utils/teamDefinitionMembers';
 
 const props = defineProps<{
   teamContext: AgentTeamContext;
-  focusedMemberName: string;
+  focusedMemberRouteKey: string;
 }>();
 
 defineEmits<{
-  (e: 'select-member', memberName: string): void;
+  (e: 'select-member', memberRouteKey: string): void;
 }>();
 
+const displayEntries = computed(() =>
+  flattenTeamMemberNodesForDisplay(props.teamContext.memberTree),
+);
+
 const gridColumnClasses = computed(() => {
-  const memberCount = props.teamContext.members.size;
+  const memberCount = displayEntries.value.length;
 
   if (memberCount <= 1) {
     return 'grid-cols-1';

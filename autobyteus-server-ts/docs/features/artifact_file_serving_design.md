@@ -32,7 +32,8 @@ Artifacts tab.
    `reference_files` absolute local paths.
 2. Accepted delivery emits one `INTER_AGENT_MESSAGE` payload with message id,
    sender/receiver identity, content, message type, and structured reference
-   metadata.
+   metadata. Nested teams use path-aware participant identity:
+   `memberKind`, `memberPath`, and `memberRouteKey`.
 3. `TeamCommunicationMessageProcessor` converts accepted `INTER_AGENT_MESSAGE`
    events into one normalized `TEAM_COMMUNICATION_MESSAGE` per message.
 4. `TeamCommunicationService` observes derived `TEAM_COMMUNICATION_MESSAGE`
@@ -58,6 +59,7 @@ route.
 | Team communication projection | `src/services/team-communication/*` | Message-first projection, identity, normalization, and content resolution. |
 | Team communication API | `src/api/graphql/types/team-communication.ts`, `src/api/rest/team-communication.ts` | Hydrate messages and stream child reference content. |
 | AutoByteus team bridge | `src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend.ts` | Converts/enriches native team events once before fan-out. |
+| Mixed nested team event bridge | `src/agent-team-execution/backends/mixed/events/mixed-team-event-bridge.ts` | Prefixes child team event `sourcePath` with the parent subteam path before projection/fan-out. |
 
 ## Storage
 
@@ -74,4 +76,6 @@ agent_teams/<teamRunId>/team_communication_messages.json
 ```
 
 Both projections store metadata only. Current filesystem bytes are read on demand
-when the user opens a preview.
+when the user opens a preview. Team Communication metadata is message-owned and
+participant-path-aware; it is not scoped to the receiver run id and it should not
+be mirrored into member Artifacts rows.

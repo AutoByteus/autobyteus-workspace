@@ -1,6 +1,6 @@
 <template>
   <div class="flex h-full min-h-0 overflow-hidden bg-white">
-    <div v-if="!teamRunId || !focusedMemberRunId" class="flex flex-1 items-center justify-center p-4 text-center text-sm text-gray-400">
+    <div v-if="!teamRunId || !hasFocusedMemberIdentity" class="flex flex-1 items-center justify-center p-4 text-center text-sm text-gray-400">
       {{ $t('workspace.components.workspace.team.TeamCommunicationPanel.no_focused_member') }}
     </div>
 
@@ -42,6 +42,13 @@
                     <div class="min-w-0 truncate">
                       <span class="text-sm font-semibold" :class="isMessageSelected(message) ? 'text-blue-700' : 'text-gray-800'">
                         {{ compactMessageLabel(message) }}
+                      </span>
+                      <span
+                        v-if="message.counterpartMemberKind === 'agent_team'"
+                        class="ml-1 rounded-full border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[0.625rem] font-semibold uppercase tracking-wide text-slate-500"
+                        data-test="team-communication-counterpart-kind"
+                      >
+                        Team
                       </span>
                       <span class="ml-1 text-xs text-gray-500">
                         · {{ counterpartMetadata(message) }}
@@ -110,6 +117,13 @@
                     class="h-3.5 w-3.5 shrink-0"
                     aria-hidden="true"
                   />
+                  <span
+                    v-if="selectedMessage.counterpartMemberKind === 'agent_team'"
+                    class="rounded-full border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[0.625rem] font-semibold uppercase tracking-wide text-slate-500"
+                    data-test="team-communication-detail-counterpart-kind"
+                  >
+                    Team
+                  </span>
                   <span class="truncate">{{ counterpartName(selectedMessage) }}</span>
                 </span>
               </div>
@@ -134,14 +148,22 @@
 import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useLocalization } from '~/composables/useLocalization';
-import { useTeamCommunicationStore, type TeamCommunicationPerspectiveMessage, type TeamCommunicationReferenceFile } from '~/stores/teamCommunicationStore';
+import {
+  useTeamCommunicationStore,
+  type TeamCommunicationMemberKind,
+  type TeamCommunicationParticipantSelector,
+  type TeamCommunicationPerspectiveMessage,
+  type TeamCommunicationReferenceFile,
+} from '~/stores/teamCommunicationStore';
 import MarkdownRenderer from '~/components/conversation/segments/renderer/MarkdownRenderer.vue';
 import TeamCommunicationReferenceViewer from './TeamCommunicationReferenceViewer.vue';
 
 const props = defineProps<{
   teamRunId: string;
-  focusedMemberRunId: string;
-  focusedMemberName?: string | null;
+  focusedMemberRunId?: string | null;
+  focusedMemberRouteKey?: string | null;
+  focusedMemberPath?: string[] | null;
+  focusedMemberKind?: TeamCommunicationMemberKind | null;
 }>();
 
 const { t } = useLocalization();
@@ -153,8 +175,19 @@ const referenceRefreshSignal = ref(0);
 const leftPaneWidth = ref(232);
 let removeResizeListeners: (() => void) | null = null;
 
+const focusedParticipantSelector = computed<TeamCommunicationParticipantSelector>(() => ({
+  memberRunId: props.focusedMemberRunId ?? null,
+  memberRouteKey: props.focusedMemberRouteKey ?? null,
+  memberPath: props.focusedMemberPath ?? null,
+  memberKind: props.focusedMemberKind ?? null,
+}));
+const hasFocusedMemberIdentity = computed(() => Boolean(
+  props.focusedMemberRunId?.trim()
+    || props.focusedMemberRouteKey?.trim()
+    || (props.focusedMemberPath?.length ?? 0) > 0,
+));
 const perspective = computed(() =>
-  teamCommunicationStore.getPerspectiveForMember(props.teamRunId, props.focusedMemberRunId),
+  teamCommunicationStore.getPerspectiveForMember(props.teamRunId, focusedParticipantSelector.value),
 );
 const displayMessages = computed(() => perspective.value.messages);
 const selectedMessage = computed(() =>
@@ -179,8 +212,14 @@ const counterpartMetadata = (message: TeamCommunicationPerspectiveMessage): stri
     ? `${t('workspace.components.workspace.team.TeamCommunicationPanel.to_counterpart')} ${counterpartName(message)}`
     : `${t('workspace.components.workspace.team.TeamCommunicationPanel.from_counterpart')} ${counterpartName(message)}`;
 };
-const counterpartName = (message: TeamCommunicationPerspectiveMessage): string =>
-  message.counterpartMemberName || message.counterpartRunId || t('workspace.components.workspace.team.TeamCommunicationPanel.unknown_teammate');
+const counterpartName = (message: TeamCommunicationPerspectiveMessage): string => {
+  const pathLabel = message.counterpartMemberPath?.filter(Boolean).join(' / ') || '';
+  return pathLabel
+    || message.counterpartMemberRouteKey
+    || message.counterpartMemberName
+    || message.counterpartRunId
+    || t('workspace.components.workspace.team.TeamCommunicationPanel.unknown_teammate');
+};
 const referenceFileName = (filePath: string): string => filePath.split('/').pop() || filePath;
 const fileExtension = (filePath: string): string => {
   const name = referenceFileName(filePath).toLowerCase();

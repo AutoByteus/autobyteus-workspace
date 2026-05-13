@@ -38,6 +38,14 @@ server subscribers. This preserves stateful file-change ordering for
 `write_file` events and avoids duplicate derivation when multiple websocket/API
 subscribers are attached.
 
+Nested mixed-team events use the same processed-event boundary but prefix child
+team events with the parent subteam member path before fan-out. The canonical
+source identity is `TeamRunEvent.sourcePath`; the WebSocket transport derives
+`source_route_key` from that path and may include the deprecated
+`sub_team_node_name` only as a display alias. Downstream processors and
+projections must use path/route identity, not the one-segment alias, when
+attributing nested leaf output.
+
 Team Communication references use the accepted `INTER_AGENT_MESSAGE` as
 processor input. The raw message payload carries `message_id`, sender/receiver
 identity, natural `content`, `message_type`, and structured reference metadata
@@ -47,7 +55,11 @@ frontend chat rendering, and user clicks are not reference-declaration
 authorities. `TeamCommunicationMessageProcessor` emits one normalized
 `TEAM_COMMUNICATION_MESSAGE` event per accepted message, and
 `TeamCommunicationService` persists those derived events once per team run in
-`agent_teams/<teamRunId>/team_communication_messages.json`. The frontend
+`agent_teams/<teamRunId>/team_communication_messages.json`. The persisted
+message stores sender and receiver `memberKind`, `memberPath`, and
+`memberRouteKey`, so parent-to-subteam messages remain projected against the
+subteam boundary and child leaf messages remain projected against their full
+path. The frontend
 projects focused-member sent/received message views in the Team tab from
 `TEAM_COMMUNICATION_MESSAGE`, while raw `INTER_AGENT_MESSAGE` remains the
 conversation display source. Recipient runtime input may include one generated

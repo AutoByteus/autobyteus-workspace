@@ -15,6 +15,7 @@ import {
   type TeamRunEvent,
   type TeamRunAgentEventPayload,
   type TeamRunCommunicationEventPayload,
+  type TeamRunMemberInputEventPayload,
   type TeamRunStatusUpdateData,
   type TeamRunTaskPlanEventPayload,
   getTeamRunEventSourceRouteKey,
@@ -39,6 +40,8 @@ import {
 } from "./models.js";
 import { serializePayload } from "./payload-serialization.js";
 import { resolveTeamMemberSelectorFromPayload } from "./team-member-selector-payload-adapter.js";
+import { buildTeamCommunicationMessagePayload } from "./team-communication-message-payload.js";
+import { buildTeamMemberInputMessagePayload } from "./team-member-input-message-payload.js";
 
 export type WebSocketConnection = {
   send: (data: string) => void;
@@ -314,9 +317,17 @@ export class AgentTeamStreamHandler {
     }
 
     const contextPayload = contextFiles.map((file) => file.toDict());
+    const metadata: Record<string, unknown> = { input_origin: "user_message" };
+    if (typeof payload.message_id === "string" && payload.message_id.trim().length > 0) {
+      metadata.message_id = payload.message_id.trim();
+    }
+    if (typeof payload.dedupe_key === "string" && payload.dedupe_key.trim().length > 0) {
+      metadata.dedupe_key = payload.dedupe_key.trim();
+    }
     const userMessage = AgentInputUserMessage.fromDict({
       content,
       context_files: contextPayload.length > 0 ? contextPayload : null,
+      metadata,
     });
 
     const result = await teamRun.postMessage(userMessage, targetSelector);
@@ -504,7 +515,18 @@ export class AgentTeamStreamHandler {
 
     if (event.eventSourceType === TeamRunEventSourceType.COMMUNICATION) {
       return new ServerMessage(ServerMessageType.TEAM_COMMUNICATION_MESSAGE, {
-        ...serializePayload(event.data as TeamRunCommunicationEventPayload),
+        ...buildTeamCommunicationMessagePayload(event.data as TeamRunCommunicationEventPayload),
+        ...sourcePayload,
+      });
+    }
+
+    if (event.eventSourceType === TeamRunEventSourceType.MEMBER_INPUT) {
+      return new ServerMessage(ServerMessageType.EXTERNAL_USER_MESSAGE, {
+        ...buildTeamMemberInputMessagePayload({
+          eventPayload: event.data as TeamRunMemberInputEventPayload,
+          sourceRouteKey,
+          sourcePath,
+        }),
         ...sourcePayload,
       });
     }

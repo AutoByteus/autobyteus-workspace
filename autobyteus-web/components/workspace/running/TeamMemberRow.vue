@@ -4,7 +4,7 @@
     :class="isFocused 
       ? 'bg-indigo-50 text-indigo-900' 
       : 'hover:bg-gray-50 text-gray-600'"
-    @click="$emit('select', memberName)"
+    @click="$emit('select', memberRouteKey)"
   >
     <!-- Status Dot -->
     <span 
@@ -32,13 +32,14 @@ import { AgentStatus } from '~/types/agent/AgentStatus';
 
 const props = defineProps<{
   memberName: string;
-  memberContext: AgentContext | undefined;
+  memberRouteKey: string;
+  memberContext: AgentContext | null | undefined;
   isFocused: boolean;
   isCoordinator: boolean;
 }>();
 
 defineEmits<{
-  (e: 'select', memberName: string): void;
+  (e: 'select', memberRouteKey: string): void;
 }>();
 
 const statusColor = computed(() => {

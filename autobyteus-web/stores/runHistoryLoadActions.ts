@@ -180,7 +180,7 @@ const reconcileDiscoveredActiveRuns = async (
     if (teamContext.currentStatus !== AgentTeamStatus.Error) {
       teamContext.currentStatus = AgentTeamStatus.ShutdownComplete;
     }
-    teamContext.members.forEach((memberContext) => {
+    teamContext.leafAgentContextsByRouteKey.forEach((memberContext) => {
       if (memberContext.state.currentStatus !== AgentStatus.Error) {
         memberContext.state.currentStatus = AgentStatus.ShutdownComplete;
       }
@@ -192,7 +192,7 @@ const reconcileDiscoveredActiveRuns = async (
     if (existingTeamContext) {
       existingTeamContext.config.isLocked = true;
       existingTeamContext.currentStatus = normalizeTeamRuntimeStatus('ACTIVE');
-      existingTeamContext.members.forEach((memberContext) => {
+      existingTeamContext.leafAgentContextsByRouteKey.forEach((memberContext) => {
         memberContext.config.isLocked = true;
       });
       if (!existingTeamContext.isSubscribed) {
@@ -211,7 +211,7 @@ const reconcileDiscoveredActiveRuns = async (
       });
       teamContextsStore.addTeamContext(result.hydratedContext);
       hydrateTeamMemberActivitiesFromProjection({
-        members: result.hydratedContext.members,
+        members: result.hydratedContext.leafAgentContextsByRouteKey,
         projectionByMemberRouteKey: result.projectionByMemberRouteKey,
       });
       agentTeamRunStore.connectToTeamStream(teamRunId);

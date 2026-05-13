@@ -8,7 +8,11 @@ import type {
   TeamMemberRunProjectionPayload,
   TeamRunResumeConfigPayload,
 } from '~/stores/runHistoryTypes';
-import { parseTeamRunMetadata, toTeamMemberKey } from '~/stores/runHistoryMetadata';
+import {
+  flattenTeamRunAgentMetadata,
+  parseTeamRunMetadata,
+  toTeamMemberKey,
+} from '~/stores/runHistoryMetadata';
 import {
   applyProjectionToTeamMemberContext,
   buildTeamMemberContexts,
@@ -24,6 +28,8 @@ import { normalizeAgentRuntimeStatus, normalizeTeamRuntimeStatus } from './runti
 import { reconstructTeamRunConfigFromMetadata } from '~/utils/teamRunConfigUtils';
 import { hydrateActivitiesFromProjection } from './runProjectionActivityHydration';
 import { fetchAndHydrateTeamCommunicationForTeam } from './teamCommunicationHydrationService';
+import { indexTeamMemberNodesByRouteKey } from '~/utils/teamDefinitionMembers';
+import { teamMemberNodesFromMetadata } from '~/utils/teamMemberMetadataNodes';
 
 export interface LoadTeamRunContextHydrationInput {
   teamRunId: string;
@@ -85,6 +91,23 @@ const resolveFocusKey = (params: {
   return params.availableMemberRouteKeys[0] || '';
 };
 
+const collectMetadataMemberRouteKeys = (metadata: ReturnType<typeof parseTeamRunMetadata>): string[] => {
+  const keys: string[] = [];
+  const visit = (members: typeof metadata.memberTree): void => {
+    for (const member of members) {
+      const routeKey = toTeamMemberKey(member).trim();
+      if (routeKey) {
+        keys.push(routeKey);
+      }
+      if (member.memberKind === 'agent_team') {
+        visit(member.memberTree);
+      }
+    }
+  };
+  visit(metadata.memberTree);
+  return keys;
+};
+
 const applyMemberStatuses = (
   members: Map<string, any>,
   snapshots: TeamMemberLiveSnapshot[],
@@ -141,7 +164,7 @@ const buildHistoricalHydrationState = (params: {
   const loadedKeys = new Set(params.loadedMemberRouteKeys.map((key) => key.trim()).filter(Boolean));
   const erroredKeys = new Set((params.erroredMemberRouteKeys || []).map((key) => key.trim()).filter(Boolean));
 
-  params.metadata.memberMetadata.forEach((member) => {
+  flattenTeamRunAgentMetadata(params.metadata.memberTree).forEach((member) => {
     const normalizedMemberRouteKey = toTeamMemberKey(member).trim();
     if (!normalizedMemberRouteKey) {
       return;
@@ -185,10 +208,9 @@ const buildMemberMetadataEnvelope = (params: {
     teamDefinitionId: params.teamContext.config.teamDefinitionId,
     teamDefinitionName: params.teamContext.config.teamDefinitionName,
     coordinatorMemberRouteKey: params.teamContext.coordinatorMemberRouteKey || '',
-    runVersion: 0,
     createdAt: historicalHydration.createdAt,
     updatedAt: historicalHydration.updatedAt,
-    memberMetadata: [member],
+    memberTree: [member],
   };
 };
 
@@ -202,6 +224,7 @@ const buildHydratedTeamContext = (params: {
   memberStatuses: TeamMemberLiveSnapshot[];
   historicalHydration: HistoricalTeamHydrationState | null;
 }): AgentTeamContext => {
+  const memberTree = teamMemberNodesFromMetadata(params.metadata.memberTree);
   const context = {
     teamRunId: params.metadata.teamRunId,
     config: reconstructTeamRunConfigFromMetadata({
@@ -209,10 +232,12 @@ const buildHydratedTeamContext = (params: {
       firstWorkspaceId: params.firstWorkspaceId,
       isLocked: params.resumeConfig.isActive,
     }),
-    members: params.members,
+    memberTree,
+    memberNodesByRouteKey: indexTeamMemberNodesByRouteKey(memberTree),
+    leafAgentContextsByRouteKey: params.members,
     coordinatorMemberRouteKey: params.metadata.coordinatorMemberRouteKey,
     historicalHydration: params.historicalHydration,
-    focusedMemberName: params.focusedMemberRouteKey,
+    focusedMemberRouteKey: params.focusedMemberRouteKey,
     currentStatus: normalizeTeamRuntimeStatus(params.currentStatus),
     isSubscribed: false,
     taskPlan: null,
@@ -255,7 +280,7 @@ const loadLiveTeamRunContextHydrationPayload = async (input: {
     ensureWorkspaceByRootPath: input.ensureWorkspaceByRootPath,
   });
 
-  const availableMemberRouteKeys = Array.from(members.keys());
+  const availableMemberRouteKeys = collectMetadataMemberRouteKeys(input.metadata);
   const focusedMemberRouteKey = resolveFocusKey({
     requestedMemberRouteKey: input.requestedMemberRouteKey,
     coordinatorMemberRouteKey: input.metadata.coordinatorMemberRouteKey,
@@ -284,9 +309,7 @@ const loadHistoricalTeamRunContextHydrationPayload = async (input: {
   requestedMemberRouteKey?: string | null;
   ensureWorkspaceByRootPath: (rootPath: string) => Promise<string | null>;
 }): Promise<LoadedTeamRunContextHydrationPayload> => {
-  const availableMemberRouteKeys = input.metadata.memberMetadata
-    .map((member) => toTeamMemberKey(member).trim())
-    .filter(Boolean);
+  const availableMemberRouteKeys = collectMetadataMemberRouteKeys(input.metadata);
   const focusedMemberRouteKey = resolveFocusKey({
     requestedMemberRouteKey: input.requestedMemberRouteKey,
     coordinatorMemberRouteKey: input.metadata.coordinatorMemberRouteKey,
@@ -298,12 +321,17 @@ const loadHistoricalTeamRunContextHydrationPayload = async (input: {
   }
 
   const client = getApolloClient();
-  const focusedProjection = await fetchTeamMemberProjection({
-    client,
-    getTeamMemberRunProjectionQuery: GetTeamMemberRunProjection,
-    teamRunId: input.metadata.teamRunId,
-    memberRouteKey: focusedMemberRouteKey,
-  });
+  const focusedMetadata = flattenTeamRunAgentMetadata(input.metadata.memberTree).find(
+    (member) => toTeamMemberKey(member).trim() === focusedMemberRouteKey,
+  ) || null;
+  const focusedProjection = focusedMetadata
+    ? await fetchTeamMemberProjection({
+        client,
+        getTeamMemberRunProjectionQuery: GetTeamMemberRunProjection,
+        teamRunId: input.metadata.teamRunId,
+        memberRouteKey: focusedMemberRouteKey,
+      })
+    : null;
   const projectionByMemberRouteKey = new Map<string, TeamMemberRunProjectionPayload | null>();
   if (focusedProjection) {
     projectionByMemberRouteKey.set(focusedMemberRouteKey, focusedProjection);
@@ -323,10 +351,7 @@ const loadHistoricalTeamRunContextHydrationPayload = async (input: {
     ensureWorkspaceByRootPath: input.ensureWorkspaceByRootPath,
   });
 
-  if (focusedProjection) {
-    const focusedMetadata = input.metadata.memberMetadata.find(
-      (member) => toTeamMemberKey(member).trim() === focusedMemberRouteKey,
-    );
+  if (focusedProjection && focusedMetadata) {
     const focusedMemberContext = members.get(focusedMemberRouteKey) || null;
     if (focusedMetadata && focusedMemberContext) {
       applyProjectionToTeamMemberContext({
@@ -350,7 +375,7 @@ const loadHistoricalTeamRunContextHydrationPayload = async (input: {
     historicalHydration: buildHistoricalHydrationState({
       metadata: input.metadata,
       loadedMemberRouteKeys: focusedProjection ? [focusedMemberRouteKey] : [],
-      erroredMemberRouteKeys: focusedProjection ? [] : [focusedMemberRouteKey],
+      erroredMemberRouteKeys: focusedMetadata && !focusedProjection ? [focusedMemberRouteKey] : [],
     }),
     projectionByMemberRouteKey,
   };
@@ -361,7 +386,7 @@ export const applyLiveTeamStatusSnapshot = (
   snapshot: TeamLiveStatusSnapshot,
 ): void => {
   context.currentStatus = normalizeTeamRuntimeStatus(snapshot.currentStatus);
-  applyMemberStatuses(context.members, snapshot.memberStatuses || []);
+  applyMemberStatuses(context.leafAgentContextsByRouteKey, snapshot.memberStatuses || []);
 };
 
 export const loadTeamRunContextHydrationPayload = async (
@@ -472,7 +497,7 @@ export const ensureHistoricalTeamMemberHydrated = async (params: {
     memberRouteKey: normalizedMemberRouteKey,
   });
   const memberMetadata = historicalHydration.memberMetadataByRouteKey[normalizedMemberRouteKey];
-  const memberContext = params.teamContext.members.get(normalizedMemberRouteKey) || null;
+  const memberContext = params.teamContext.leafAgentContextsByRouteKey.get(normalizedMemberRouteKey) || null;
   if (!memberMetadataEnvelope || !memberMetadata || !memberContext) {
     historicalHydration.memberProjectionLoadStateByRouteKey[normalizedMemberRouteKey] = 'error';
     return;

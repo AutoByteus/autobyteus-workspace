@@ -76,6 +76,7 @@ import { useActiveContextStore } from '~/stores/activeContextStore';
 import { useRightSideTabs } from '~/composables/useRightSideTabs';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { getToolDisplaySummary } from '~/utils/toolDisplaySummary';
+import type { ToolApprovalTarget } from '~/types/segments';
 
 const props = defineProps<{
   invocationId: string;
@@ -83,6 +84,7 @@ const props = defineProps<{
   status: string;
   args?: Record<string, any> | string;
   errorMessage?: string;
+  approvalTarget?: ToolApprovalTarget | null;
 }>();
 
 const activeContextStore = useActiveContextStore();
@@ -129,7 +131,7 @@ const approve = async () => {
   if (isProcessing.value) return;
   isProcessing.value = true;
   try {
-    await activeContextStore.postToolExecutionApproval(props.invocationId, true);
+    await activeContextStore.postToolExecutionApproval(props.invocationId, true, null, props.approvalTarget ?? null);
   } finally {
     isProcessing.value = false;
   }
@@ -139,7 +141,12 @@ const deny = async () => {
   if (isProcessing.value) return;
   isProcessing.value = true;
   try {
-    await activeContextStore.postToolExecutionApproval(props.invocationId, false, 'User denied via inline chat.');
+    await activeContextStore.postToolExecutionApproval(
+      props.invocationId,
+      false,
+      'User denied via inline chat.',
+      props.approvalTarget ?? null,
+    );
   } finally {
     isProcessing.value = false;
   }

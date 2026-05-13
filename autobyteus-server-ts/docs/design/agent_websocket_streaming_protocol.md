@@ -58,6 +58,15 @@ The focused frontend member decides whether a message is shown in the sent or
 received Team Communication perspective; sender/receiver identity is metadata on
 the message, not a receiver-owned route or projection owner.
 
+Team events expose path-aware member identity:
+
+- `source_path` is the canonical event source path for nested teams.
+- `source_route_key` is the slash-delimited normalized form of `source_path`.
+- agent-sourced events also carry `member_path` and `member_route_key` for the
+  producing member.
+- `sub_team_node_name` is a deprecated display alias only and must not be used
+  as routing identity.
+
 ## Connection And Command Recovery Contract
 
 Connection establishment is restore-aware:
@@ -67,7 +76,23 @@ Connection establishment is restore-aware:
 3. If no active runtime exists, the service attempts to restore the persisted run.
 4. The handler creates a WebSocket session only after it has a runtime subject and can subscribe to that subject's event stream.
 
-`SEND_MESSAGE` follows the same restore-aware boundary. On every follow-up chat message, the handler resolves the session's run again, rebinds the WebSocket subscription if a stopped persisted run was restored, and posts the user input to the resolved runtime subject. For team runs, the payload's `target_member_name` / `target_agent_name` remains the member routing key for the restored team runtime.
+`SEND_MESSAGE` follows the same restore-aware boundary. On every follow-up chat
+message, the handler resolves the session's run again, rebinds the WebSocket
+subscription if a stopped persisted run was restored, and posts the user input
+to the resolved runtime subject.
+
+For team runs, the command target is a `TeamMemberSelector` normalized at the
+WebSocket edge. Preferred nested target fields are:
+
+- `target_member_path` / `targetMemberPath`: array of path segments, for
+  example `["research", "writer"]`
+- `target_member_route_key` / `targetMemberRouteKey`: normalized route key, for
+  example `research/writer`
+
+Legacy `target_member_name` / `target_agent_name` / camelCase equivalents are
+accepted only as bare member-name selectors. They are suitable for top-level or
+otherwise unambiguous members and must not be used to address duplicate nested
+leaf names.
 
 Control commands remain active-only:
 
@@ -76,6 +101,22 @@ Control commands remain active-only:
 - `DENY_TOOL`
 
 Those commands intentionally require an already-active runtime lookup and do not call the restore path. Clients should not treat approval/stop messages as a way to resume a stopped run; stopped-run recovery is owned by connection setup, explicit restore mutations, and `SEND_MESSAGE`.
+
+Tool approval and denial target the agent that produced the pending approval
+request. Preferred payload identity is the source identity emitted with the
+event:
+
+- `source_path` / `sourcePath`, `member_path` / `memberPath`, or
+  `target_member_path` / `targetMemberPath`
+- `source_route_key` / `sourceRouteKey`, `member_route_key` /
+  `memberRouteKey`, or `target_member_route_key` / `targetMemberRouteKey`
+
+Name fields (`agent_name`, `member_name`, `target_member_name`,
+`target_agent_name`, and camelCase equivalents) remain fallback edge aliases.
+If only `agent_id` is present, the handler maps that active runtime member id
+back to the recorded member path before invoking the domain approval command.
+An approval request aimed at a subteam member rather than a leaf agent is
+rejected by the runtime.
 
 `STOP_GENERATION` should also not be treated as an immediate send-readiness
 acknowledgement. A client that sends stop should wait for the backend's

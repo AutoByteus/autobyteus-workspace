@@ -5,181 +5,330 @@
 - Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/requirements-doc.md`
 - Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/investigation-notes.md`
 - Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-review-report.md`
 - Architecture pause note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/architecture-review-pause-note.md`
 - Design-owner recheck note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-owner-recheck-note.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-review-report.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/review-report.md`
+- Prior code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/review-report.md`
+- Prior API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/api-e2e-validation-report.md`
+- Full-stack UI failure note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/fullstack-nested-team-ui-validation-failure.md`
+- Frontend rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/frontend-nested-team-ui-design-rework-note.md`
+- Full-stack communication failure note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/fullstack-nested-team-communication-validation-failure.md`
+- Round 5 live child transcript/display failure note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/fullstack-nested-team-live-child-transcript-validation-failure.md`
+- Round 5 live transcript/projection/presentation design rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/round5-live-transcript-projection-presentation-design-rework-note.md`
+- Failure screenshot: `/Users/normy/.autobyteus/browser-artifacts/995de5-1778644109170.png`
+- Round 4 nested subteam UI screenshots: `/Users/normy/.autobyteus/browser-artifacts/e47bac-1778653656912.png`, `/Users/normy/.autobyteus/browser-artifacts/e47bac-1778653663419.png`
+- Round 5 live communication/transcript screenshots: `/Users/normy/.autobyteus/browser-artifacts/382035-1778656478050.png`, `/Users/normy/.autobyteus/browser-artifacts/382035-1778656693356.png`, `/Users/normy/.autobyteus/browser-artifacts/382035-1778657119879.png`
 
 ## What Changed
 
-Implemented the approved nested mixed-agent-team design in `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team` on branch `codex/mixed-team-nested-agent-team`.
+Implemented the approved Round 9 nested mixed-agent-team package in `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team` on branch `codex/mixed-team-nested-agent-team`.
 
-Main changes:
+Backend implementation from the earlier approved rounds remains in place:
 
-- Added recursive mixed-team topology planning so definitions containing nested `agent_team` nodes route to `TeamBackendKind.MIXED` and no longer execute through flattened nested leaf traversal.
-- Added `TeamMemberSelector`/path/route identity helpers and carried selector-bearing command targets through `TeamRun`, `TeamRunBackend`, `TeamManager`, mixed manager, WebSocket/channel/application adapters, and tool approval routing.
-- Reworked team run config/context/events into recursive member-tree structures with discriminated `agent` and `agent_team` variants.
-- Reworked mixed runtime execution around `MixedTeamMemberHandle`, with separate agent and subteam member handles, an internal child-team factory, event bridging, cascade lifecycle handling, and parent-owned child `TeamRun`s that are not globally registered as top-level runs.
-- Replaced authoritative flat run metadata with canonical recursive `TeamRunMetadata.memberTree`; legacy flat `memberMetadata`/`runVersion` payloads now fail fast with unsupported legacy metadata/topology-lost semantics.
-- Added a metadata flattener for derived projection views and updated run-history, memory, file-change, and member-view consumers to use projections from recursive metadata rather than historical flat metadata.
-- Made `TeamRunEvent.sourcePath` the canonical source identity. Root/team-level status events use `sourcePath: []`; member events use full member paths; route/display aliases are derived at projection/transport edges.
-- Added member-kind/path-aware team communication events and delivery DTOs so subteams can be addressed as subteam members without pretending they are agent runtimes. Parent-to-subteam delivery posts to the child team coordinator/default target through the child `TeamRun`.
-- Updated focused unit tests and fixtures for recursive metadata, selectors, nested topology planning, restore mapping, communication delivery, and stream/channel/application edge adapters.
+- Nested `agent_team` definitions route to `TeamBackendKind.MIXED`; no nested flattening backend mode was introduced.
+- Mixed runtime uses live `MixedTeamMemberHandle` boundaries with agent and subteam variants, and child team runs are parent-owned internal `TeamRun`s rather than globally registered top-level runs.
+- `TeamMemberSelector` route/path identity is used at runtime command boundaries; raw strings remain only transport/application edge adapters.
+- Recursive `TeamRunMetadata.memberTree` is canonical. Legacy flat `memberMetadata`/`runVersion` metadata is rejected as unsupported legacy metadata/topology-lost instead of guessed or migrated.
+- `TeamRunEvent.sourcePath` is canonical; route keys/display names/legacy fields are derived only at projection/transport edges.
+- Team communication projections carry member kind/path/route data so subteams are not impersonated as agent runtimes.
+
+Round 9 frontend/full-stack presentation rework added:
+
+- A recursive frontend team topology read model: `TeamMemberNode` (`agent` / `agent_team`), `AgentTeamContext.memberTree`, `memberNodesByRouteKey`, `leafAgentContextsByRouteKey`, and `focusedMemberRouteKey`.
+- Recursive definition-to-UI helpers and metadata-to-UI helpers for nested display/read models while retaining flat leaf lists only as derived projections.
+- Draft launch, active run state, history reopen, restore hydration, running sidebar, workspace history, team grid/spotlight/members/overview/event-monitor surfaces updated away from leaf-only `members` / `focusedMemberName` authority.
+- Team run config and member overrides now use nested route keys for leaf agent overrides.
+- Team streaming sends `target_member_route_key` and tool approval sends `member_route_key`; inbound event routing prefers route/path identity before legacy edge aliases.
+- Subteam focus/composer behavior: focusing a subteam is allowed, renders a subteam summary/composer state, and does not incorrectly hydrate or treat the subteam as a leaf `AgentContext`.
+- Workspace history GraphQL now exposes recursive `memberTree` JSON for team run rows; frontend history rows are built from the recursive tree and flattened only for display/projection.
+- Team communication GraphQL and frontend stores include participant `memberKind`, `memberPath`, and `memberRouteKey` fields for sender/receiver display and routing.
+- Seed fixture generation was updated for nested mixed-team UI validation fixtures.
 
 
-## Code Review Round 1 Local Fix Update
+## Code Review Round 5 Local Fix Update
 
-Code review Round 1 returned `Local Fix` findings in `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/review-report.md`. Both blocking findings were addressed before re-review:
+Round 5 code review returned `Local Fix` findings in `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/review-report.md`. The bounded fixes are complete:
 
-- `CR-NESTED-001` fixed: `TeamRun.postMessage(..., null)` now resolves a configured `coordinatorMemberRouteKey` before falling back to coordinator name or sole-member behavior. `MixedSubTeamMemberHandle` still uses the child `TeamRun` boundary, and a new multi-member child subteam regression proves parent-to-subteam dispatch reaches the stripped child coordinator route (`Reviewer`) instead of returning `TARGET_MEMBER_REQUIRED`.
-- `CR-NESTED-002` fixed: mixed restore now reconstructs recursive `MixedTeamRunContext` snapshots from `TeamRunMetadata.memberTree`, including subteam `childRuntimeContext`s and nested leaf `platformAgentRunId`s. `MixedSubTeamRunFactory.createOrRestore()` accepts the saved child runtime identity and `MixedTeamRunBackendFactory.buildTeamRunContext()` uses it to seed lazily restored child agent contexts. `MixedSubTeamMemberHandle.ensureReady()` preserves the saved child runtime snapshot while recreating an inactive child run. Regression coverage proves immediate metadata refresh preserves nested platform IDs and lazy child restoration receives relative child contexts with saved platform IDs.
+- `CR-ROUND9-001` fixed: grid and spotlight now use recursive display entries, so `BuildSquad`, `BuildSquad/review_lead`, and `BuildSquad/qa_specialist` are first-class selectable route-key targets. Subteam child rows inside subteam cards and focus-mode subteam summaries are actionable, and component event parameters now represent `memberRouteKey` rather than member names.
+- `CR-ROUND9-002` fixed: `TOOL_APPROVAL_REQUESTED` source/member route and path identity is captured into tool segments and activity records, passed through `ToolCallIndicator` and `activeContextStore`, and sent by `agentTeamRunStore` / `TeamStreamingService` without consulting current UI focus. The stream service also caches approval request source identity by invocation ID for direct approve/deny calls.
+- `CR-ROUND9-003` fixed: launch config member overrides render from recursive member-tree presentation via `MemberOverrideTree.vue`, with subteam group rows and nested leaf overrides keyed by canonical `memberRouteKey`. `MemberOverrideItem.vue` displays breadcrumbs/route context for nested leaves.
+- `CR-ROUND9-004` initially addressed in Round 5 at the presentation-model layer: team communication perspective view models carry counterpart kind/path/route, group by route/path before run ID, and display breadcrumbs plus a visible `Team` badge for subteam participants. Round 6 completed the remaining focused-member route/path filtering gap below.
+- `CR-ROUND9-005` fixed: generated untracked `autobyteus-web/logs/fullstack-nested-web-20260513-053943.{pid,log}` artifacts were removed from the product tree.
 
-Additional files touched for the local fix:
+Additional focused regression coverage added for BuildSquad-style nested grid/spotlight focus, event-source tool approval after focus changes, grouped launch config overrides, nested communication breadcrumbs/badges, and approval target parser/handler propagation.
 
-- `autobyteus-server-ts/src/agent-team-execution/domain/team-run.ts`
-- `autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-context.ts`
-- `autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts`
-- `autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-sub-team-run-factory.ts`
-- `autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-sub-team-member-handle.ts`
-- `autobyteus-server-ts/src/agent-team-execution/services/team-run-runtime-context-support.ts`
-- `autobyteus-server-ts/tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts`
-- `autobyteus-server-ts/tests/unit/agent-team-execution/team-run.test.ts`
-- `autobyteus-server-ts/tests/unit/agent-team-execution/team-run-metadata-mapper.test.ts`
+
+## Code Review Round 6 Local Fix Update
+
+Round 6 code review kept `CR-ROUND9-004` open because the communication panel display improvements were still filtered by `memberRunId` only. The remaining local fix is complete:
+
+- `teamCommunicationStore.getPerspectiveForMember(...)` now accepts a typed participant selector containing `memberRunId`, `memberRouteKey`, `memberPath`, and `memberKind` instead of requiring only a runtime run ID.
+- Perspective matching now checks sender/receiver `memberRouteKey` and `memberPath` identity before falling back to runtime run IDs, while preserving the existing string run-ID adapter for edge callers.
+- `TeamOverviewPanel.vue` now passes focused route key/path/kind to `TeamCommunicationPanel.vue`, so focused subteams without leaf `memberRunId` still get their messages counted and displayed.
+- `TeamCommunicationPanel.vue` now computes perspective from the full participant selector and treats route/path identity as sufficient focus identity.
+- Regression coverage was added for a focused `BuildSquad` subteam with no `memberRunId` receiving a `program_manager -> BuildSquad` message, plus a nested `BuildSquad/review_lead` leaf matching by route/path when its runtime run ID is stale/unavailable.
+
+## API/E2E Round 4 Local Fix Update
+
+API/E2E full-stack validation found `E2E-NESTED-009`: persisted GraphQL communication projection and manual frontend hydration worked, but live `TEAM_COMMUNICATION_MESSAGE` WebSocket ingestion left the frontend Team Communication store empty after `program_manager -> BuildSquad` messages. The local fix is complete:
+
+- Added `autobyteus-server-ts/src/services/agent-streaming/team-communication-message-payload.ts` as the transport-edge projection from canonical nested `TeamRunCommunicationEventPayload` (`sender` / `receiver` participants) into the flattened live `TEAM_COMMUNICATION_MESSAGE` payload consumed by the frontend store.
+- Updated `AgentTeamStreamHandler.convertTeamEvent(...)` to use that projection for `TeamRunEventSourceType.COMMUNICATION`, including `senderRunId`, `senderMemberKind`, `senderMemberPath`, `senderMemberRouteKey`, `receiverRunId`, `receiverMemberKind`, `receiverMemberPath`, `receiverMemberRouteKey`, `createdAt`, and `updatedAt`. Nested domain `sender` / `receiver` objects are no longer emitted as the live frontend payload.
+- Kept `source_path` / `source_route_key` as stream edge source identity fields alongside the flattened message projection.
+- Updated frontend protocol typing so `TeamCommunicationMessagePayload` explicitly allows the stream source identity aliases attached by the backend.
+- Added backend regression coverage proving canonical parent-to-subteam communication events are flattened for WebSocket delivery, and frontend regression coverage proving a live parent-to-subteam `TEAM_COMMUNICATION_MESSAGE` is routed into the Team Communication store rather than a leaf conversation.
+
+
+## API/E2E Round 5 Local Fix Update
+
+API/E2E full-stack validation then found three local implementation blockers in `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/fullstack-nested-team-live-child-transcript-validation-failure.md`. The design was reworked by `solution_designer` before this implementation pass; I implemented that refined spine rather than a frontend-only patch.
+
+- `E2E-NESTED-011` fixed at the backend-owned leaf-input boundary:
+  - Added `TeamRunEventSourceType.MEMBER_INPUT` and `TeamRunMemberInputEventPayload` as a recipient-side transcript event separate from parent-level `COMMUNICATION`.
+  - `MixedAgentMemberHandle.postMessage(...)` now emits `MEMBER_INPUT` after accepted direct user input.
+  - `MixedAgentMemberHandle.deliverInterMemberMessage(...)` emits `MEMBER_INPUT` with `inputOrigin: "inter_agent_delivery"` for direct leaf inter-member delivery.
+  - Mixed agent handles no longer use legacy `INTER_AGENT_MESSAGE` as the canonical recipient transcript event; parent/team message display remains owned by `COMMUNICATION`, and resolved leaf transcript display is owned by `MEMBER_INPUT`.
+  - Parent-to-subteam delivery uses `MixedSubTeamMemberHandle` and the child manager default coordinator path; the child leaf emits `MEMBER_INPUT`, and the subteam event bridge preserves canonical nested `sourcePath`.
+  - `AgentTeamStreamHandler` maps `MEMBER_INPUT` to existing live `EXTERNAL_USER_MESSAGE` with `source_path`, `source_route_key`, `member_route_key`, `member_path`, `message_id`, `dedupe_key`, and parent communication linkage. The frontend no longer needs to synthesize child prompts from `TEAM_COMMUNICATION_MESSAGE`.
+  - Frontend `TeamStreamingService` routes those live leaf input echoes by nested route/source identity; `externalUserMessageHandler` upserts by `message_id` / `dedupe_key` so backend echoes do not duplicate optimistic direct user messages.
+- `E2E-NESTED-013` fixed at the backend projection merge boundary:
+  - Added `run-projection-dedupe.ts` under the run-history projection subsystem.
+  - `AgentRunViewProjectionService` now deduplicates conversation and activity rows from all provider/local merge paths, preferring rows with valid timestamps and richer fields over `ts: null` copies.
+  - Frontend `runProjectionConversation.ts` performs defensive conversation-entry dedupe during hydration so stale duplicate projection rows still render once.
+- `E2E-NESTED-012` fixed for active/history presentation consistency:
+  - `useTeamMemberPresentation()` now treats membership route/member labels as the primary display name and leaves agent definition names as secondary metadata/avatar lookup.
+  - Active team history rows from `buildTeamRowsFromContext(...)` use `TeamMemberNode.displayName/memberName`, not `AgentRunConfig.agentDefinitionName`, so active/new and opened/stopped rows use the same primary labels.
+- Direct team sends now attach client-generated `messageId`/`dedupeKey` to the optimistic user row and WebSocket `SEND_MESSAGE` payload; the backend copies those IDs into the `AgentInputUserMessage` metadata and the live `MEMBER_INPUT` echo.
+
+## Code Review Round 9 Local Fix Update
+
+Round 9 code review returned `CR-ROUND9-006` because the semantic fallback projection dedupe was still too broad for no-explicit-ID rows:
+
+- Backend `run-projection-dedupe.ts` now only semantically merges no-explicit-ID rows when at least one side has a valid timestamp and the rows are otherwise semantically equal, or when both sides have the same non-null timestamp.
+- Backend dedupe no longer merges identical no-explicit-ID rows when both timestamps are absent/null, preserving intentional repeated messages from providers that do not emit timestamps.
+- Frontend defensive hydration dedupe in `runProjectionConversation.ts` uses the same conservative rule.
+- Added backend regression coverage preserving two identical no-ID/no-timestamp rows while keeping timestamped/null duplicate coverage passing.
+- Added frontend regression coverage preserving two identical no-ID/no-timestamp rows in `buildConversationFromProjection(...)` while keeping timestamped/null duplicate coverage passing.
 
 ## Key Files Or Areas
 
-- Identity and command boundary:
-  - `autobyteus-server-ts/src/agent-team-execution/domain/team-run-member-identity.ts`
-  - `autobyteus-server-ts/src/agent-team-execution/domain/team-run.ts`
-  - `autobyteus-server-ts/src/agent-team-execution/backends/team-run-backend.ts`
-  - `autobyteus-server-ts/src/agent-team-execution/backends/team-manager.ts`
-  - `autobyteus-server-ts/src/services/agent-streaming/team-member-selector-payload-adapter.ts`
-- Recursive topology/config/context:
-  - `autobyteus-server-ts/src/agent-team-execution/services/team-definition-topology-planner.ts`
-  - `autobyteus-server-ts/src/agent-team-execution/domain/team-run-config.ts`
-  - `autobyteus-server-ts/src/agent-team-execution/domain/team-run-context.ts`
-  - `autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts`
-  - `autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts`
-- Mixed runtime:
-  - `autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts`
-  - `autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts`
-  - `autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-sub-team-run-factory.ts`
-  - `autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-team-member-handle.ts`
-  - `autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts`
-  - `autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-sub-team-member-handle.ts`
-  - `autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-team-member-registry.ts`
-  - `autobyteus-server-ts/src/agent-team-execution/backends/mixed/events/mixed-team-event-bridge.ts`
-- Metadata and projections:
-  - `autobyteus-server-ts/src/run-history/store/team-run-metadata-types.ts`
-  - `autobyteus-server-ts/src/run-history/store/team-run-metadata-store.ts`
-  - `autobyteus-server-ts/src/agent-team-execution/services/team-run-metadata-mapper.ts`
-  - `autobyteus-server-ts/src/run-history/services/team-run-metadata-flattener.ts`
-  - `autobyteus-server-ts/src/run-history/services/*team*projection*` / `team-run-history-*` consumers
-  - `autobyteus-server-ts/src/agent-memory/services/team-memory-index-service.ts`
-- Communication and event projection:
-  - `autobyteus-server-ts/src/agent-team-execution/domain/team-run-event.ts`
-  - `autobyteus-server-ts/src/agent-team-execution/domain/member-team-context.ts`
-  - `autobyteus-server-ts/src/agent-team-execution/domain/inter-agent-message-delivery.ts`
-  - `autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts`
-  - `autobyteus-server-ts/src/agent-team-execution/services/inter-agent-message-runtime-builders.ts`
-  - `autobyteus-server-ts/src/services/team-communication/team-communication-types.ts`
-  - `autobyteus-server-ts/src/services/team-communication/team-communication-normalizer.ts`
-  - `autobyteus-server-ts/src/services/team-communication/team-communication-service.ts`
+Backend / GraphQL edges touched in this round:
+
+- `autobyteus-server-ts/src/run-history/domain/team-run-history-index-types.ts`
+- `autobyteus-server-ts/src/run-history/services/team-run-history-service.ts`
+- `autobyteus-server-ts/src/run-history/projection/run-projection-dedupe.ts`
+- `autobyteus-server-ts/src/run-history/services/agent-run-view-projection-service.ts`
+- `autobyteus-server-ts/src/agent-team-execution/domain/team-run-event.ts`
+- `autobyteus-server-ts/src/agent-team-execution/domain/inter-agent-message-delivery.ts`
+- `autobyteus-server-ts/src/agent-team-execution/services/team-member-input-event-builder.ts`
+- `autobyteus-server-ts/src/agent-team-execution/services/inter-agent-message-runtime-builders.ts`
+- `autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts`
+- `autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts`
+- `autobyteus-server-ts/src/api/graphql/types/run-history.ts`
+- `autobyteus-server-ts/src/api/graphql/types/team-communication.ts`
+- `autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts`
+- `autobyteus-server-ts/src/services/agent-streaming/team-communication-message-payload.ts`
+- `autobyteus-server-ts/src/services/agent-streaming/team-member-input-message-payload.ts`
+
+Frontend topology/read model:
+
+- `autobyteus-web/types/agent/AgentTeamContext.ts`
+- `autobyteus-web/utils/teamDefinitionMembers.ts`
+- `autobyteus-web/utils/teamMemberMetadataNodes.ts`
+- `autobyteus-web/stores/agentTeamContextsStore.ts`
+- `autobyteus-web/stores/agentTeamRunStore.ts`
+- `autobyteus-web/types/agent/TeamRunConfig.ts`
+- `autobyteus-web/utils/teamRunMemberConfigBuilder.ts`
+- `autobyteus-web/utils/teamRunConfigUtils.ts`
+
+Frontend history/restore/projection:
+
+- `autobyteus-web/stores/runHistoryTypes.ts`
+- `autobyteus-web/stores/runHistoryMetadata.ts`
+- `autobyteus-web/stores/runHistoryTeamHelpers.ts`
+- `autobyteus-web/stores/runHistoryTeamRows.ts`
+- `autobyteus-web/stores/runHistoryLoadActions.ts`
+- `autobyteus-web/stores/runHistorySelectionActions.ts`
+- `autobyteus-web/services/runHydration/teamRunContextHydrationService.ts`
+- `autobyteus-web/services/runHydration/runProjectionConversation.ts`
+- `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts`
+- `autobyteus-web/services/runRecovery/activeRunRecoveryCoordinator.ts`
+
+Frontend stream/communication/routing:
+
+- `autobyteus-web/services/agentStreaming/TeamStreamingService.ts`
+- `autobyteus-web/services/agentStreaming/protocol/messageTypes.ts`
+- `autobyteus-web/stores/teamCommunicationStore.ts`
+- `autobyteus-web/graphql/queries/runHistoryQueries.ts`
+
+Frontend presentation surfaces:
+
+- `autobyteus-web/components/workspace/team/TeamWorkspaceView.vue`
+- `autobyteus-web/components/workspace/team/TeamGridView.vue`
+- `autobyteus-web/components/workspace/team/TeamSpotlightView.vue`
+- `autobyteus-web/components/workspace/team/TeamMemberMonitorTile.vue`
+- `autobyteus-web/components/workspace/team/TeamMembersPanel.vue`
+- `autobyteus-web/components/workspace/team/TeamOverviewPanel.vue`
+- `autobyteus-web/components/workspace/team/AgentTeamEventMonitor.vue`
+- `autobyteus-web/components/workspace/team/TeamCommunicationPanel.vue`
+- `autobyteus-web/components/workspace/running/RunningAgentsPanel.vue`
+- `autobyteus-web/components/workspace/running/RunningTeamGroup.vue`
+- `autobyteus-web/components/workspace/running/RunningTeamRow.vue`
+- `autobyteus-web/components/workspace/running/TeamMemberRow.vue`
+- `autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue`
+- `autobyteus-web/components/workspace/config/TeamRunConfigForm.vue`
+- `autobyteus-web/components/workspace/config/MemberOverrideItem.vue`
+- `autobyteus-web/components/workspace/config/MemberOverrideTree.vue`
+- `autobyteus-web/components/agentInput/ContextFilePathInputArea.vue`
+
+Focused tests updated/added:
+
+- `autobyteus-web/stores/__tests__/agentTeamContextsStore.spec.ts`
+- `autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts`
+- `autobyteus-web/components/workspace/team/__tests__/TeamGridView.spec.ts`
+- `autobyteus-web/components/workspace/team/__tests__/TeamSpotlightView.spec.ts`
+- `autobyteus-web/components/workspace/team/__tests__/TeamOverviewPanel.spec.ts`
+- `autobyteus-web/components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts`
+- `autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.spec.ts`
+- `autobyteus-web/services/agentStreaming/handlers/__tests__/toolLifecycleParsers.spec.ts`
+- `autobyteus-web/services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts`
+- `autobyteus-web/services/agentStreaming/handlers/__tests__/toolLifecycleOrdering.spec.ts`
+- `autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts`
+- `autobyteus-web/components/conversation/__tests__/ToolCallIndicator.spec.ts`
+- `autobyteus-web/stores/__tests__/agentActivityStore.spec.ts`
+- `autobyteus-web/stores/__tests__/runHistoryTeamRows.spec.ts`
+- `autobyteus-web/services/runHydration/__tests__/runProjectionConversation.spec.ts`
+- `autobyteus-web/utils/__tests__/teamRunConfigUtils.spec.ts`
+- `autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts`
+- `autobyteus-server-ts/tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts`
+- `autobyteus-server-ts/tests/unit/run-history/services/agent-run-view-projection-service.test.ts`
+- `autobyteus-server-ts/tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts`
 
 ## Important Assumptions
 
-- `TeamRunConfig.memberTree` is canonical for nested topology; `TeamRunConfig.memberConfigs` remains only a derived leaf-agent projection for existing edge consumers and non-nested/single-runtime paths.
-- Raw string target fields remain only at transport/application/channel edges and are immediately adapted to `TeamMemberSelector`.
-- Single-runtime managers continue to support non-nested teams and reject nested selectors clearly; mixed runtime owns nested selector routing.
-- Parent-owned internal child team runs are created by mixed runtime code and intentionally are not registered as global top-level active/history runs.
-- For root/team-level status events the implementation uses `sourcePath: []`; member/child events carry full member paths.
+- `TeamRunMetadata.memberTree` and frontend `AgentTeamContext.memberTree` are the authoritative topology structures.
+- Flat leaf lists in UI/history are display/projection products only and must not be used to infer nested topology.
+- `memberRouteKey` is the stable frontend route identity for nested members; `TeamRunEvent.sourcePath` / `memberPath` remain the canonical path shapes where domain/source identity is required.
+- Parent team communication records and recipient leaf transcript records are intentionally separate: `COMMUNICATION` feeds Team Messages, while `MEMBER_INPUT` feeds the resolved leaf conversation.
+- Subteam focus is a valid UI focus state but has no leaf `AgentContext`; leaf hydration and optimistic conversation updates are skipped when the focused node is a subteam.
+- Legacy `agent_name` / `target_member_name` fields remain edge aliases for transport compatibility only; new frontend sends route-key fields for team messages and approval actions.
 
 ## Known Risks
 
-- Full live API/E2E validation is still required for actual nested mixed team launch, parent-to-subteam delivery, child event bridging, sourcePath round-trips, and restore from recursive metadata.
-- The full unit suite still has existing failures outside this nested-team implementation scope; see local checks below. Focused nested-team/metadata/communication suites pass.
-- Some existing edge consumers still expose legacy-shaped flat fields as projections. They are derived from recursive config/metadata and should be reviewed carefully for accidental reintroduction of flat metadata authority.
+- Full-stack browser validation is still required after code review. I did not claim API/E2E/browser sign-off here because the implementation-engineer role owns implementation-scoped checks only.
+- Frontend full typecheck is not currently a clean signal: `vue-tsc` is not installed and `nuxi typecheck` fails on many existing/baseline issues across tests/components/stores. Targeted changed-area Vitest coverage passed.
+- Server package `pnpm typecheck` is not currently a clean signal because `tsconfig.json` includes `tests` while `rootDir` is `src`, causing broad `TS6059`; server source build typecheck passes with `tsconfig.build.json`.
+- Some older un-focused frontend tests still reference legacy flat context names such as `focusedMemberName`; those are outside the focused update set and will need broader cleanup if the repository requires full-suite typecheck/test cleanup.
+- Full-stack/browser validation still needs to verify the actual nested-team fixture visually after this code review pass; implementation checks did not stand up that environment.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: Feature / larger requirement.
-- Reviewed root-cause classification: Boundary or ownership issue plus shared-structure looseness from flat traversal, flat metadata, raw-string command targets, and agent-only mixed runtime state.
+- Reviewed change posture: Feature / larger nested-team runtime and UI behavior change.
+- Reviewed root-cause classification: Boundary or ownership issue plus shared-structure looseness from flat traversal/flat metadata/raw-string targeting/leaf-only UI state.
 - Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): Refactor Needed Now.
 - Implementation matched the reviewed assessment (`Yes`/`No`): Yes.
-- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): N/A; no new design-impact blocker was found during implementation.
-- Evidence / notes: Implemented selector command boundary, recursive topology/config/context/metadata, mixed member handles, canonical `sourcePath`, derived projection flattener, and member-kind-aware communication projection per approved Round 8 design.
+- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): Yes earlier in the loop; the user explicitly challenged design quality and `solution_designer` produced the Round 5 live transcript/projection/presentation rework note before this implementation pass.
+- Evidence / notes: The frontend now has recursive topology authority and route-key indexes; backend history/communication/member-input streams expose recursive/nested participant data; command/tool approval paths use route identity; projection dedupe now lives at the run-history projection merge boundary.
 
 ## Legacy / Compatibility Removal Check
 
-- Backward-compatibility mechanisms introduced: `None`.
-- Legacy old-behavior retained in scope: `No` for nested mixed execution and metadata authority.
-- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes` within the changed nested-team execution/metadata paths.
-- Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`; config/context/metadata/member descriptors are discriminated by `agent` vs `agent_team`.
-- Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`; no upstream reroute was required.
-- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`; all source files checked at 0 effective non-empty-line violations over 500.
-- Notes: The implementation deliberately rejects old flat metadata markers (`memberMetadata`, `runVersion`) instead of guessing or migrating topology. Existing transport aliases and flat list views are derived projections only.
+- Backward-compatibility mechanisms introduced: `None` for nested topology authority.
+- Legacy old-behavior retained in scope: `No`; legacy flat metadata authority is rejected, grid/spotlight/config override surfaces now render recursive route-key presentation, and flat UI lists are derived projections only.
+- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes` within changed nested-team UI/runtime paths; legacy edge alias fields remain only as transport aliases.
+- Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`; member structures are discriminated by `agent` vs `agent_team` and indexes are keyed by route identity.
+- Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`; implementation resumed only after the Round 5 rework note supplied explicit data-flow spines for the live transcript/projection/presentation defects.
+- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`; `runHistoryTeamRows.ts` was split out of `runHistoryTeamHelpers.ts`, and the final audit found no changed non-test TS/Vue source file over 500 effective non-empty lines.
+- Notes: `resolveLeafTeamMembers` still exists as a derived leaf helper, but it now emits nested route keys and is not an authoritative nested topology source.
 
 ## Environment Or Dependency Notes
 
-- Dependencies were installed before validation (`pnpm install`).
-- Shared packages were built through `prepare:shared` as part of `typecheck`, and direct build/type checks used `tsconfig.build.json` for server source validation.
-- `pnpm -C autobyteus-server-ts run typecheck --pretty false` currently fails because `tsconfig.json` includes `tests` while `rootDir` is `src`, producing `TS6059` for many test files outside `src`. This is a project configuration issue unrelated to the nested-team source changes; `tsconfig.build.json` source typecheck passes.
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team`
+- Branch: `codex/mixed-team-nested-agent-team`
+- Dependencies are present in the worktree; focused Vitest/TypeScript commands ran locally.
+- `pnpm -C autobyteus-web exec vue-tsc --noEmit` fails immediately because `vue-tsc` is not installed in this workspace.
+- `pnpm -C autobyteus-web exec tsc --noEmit --pretty false` is not a clean frontend signal in this workspace; it exits non-zero on broad existing/baseline project and test type errors across unrelated areas (examples include missing `.vue` declarations in many tests, Electron/browser shell bridge typing gaps, and unrelated store/test type mismatches).
+- `pnpm -C autobyteus-web exec nuxi typecheck --noEmit` exits non-zero with broad existing/baseline errors, including examples in `build/scripts/*`, stale tests such as `components/agentInput/__tests__/ContextFilePathInputArea.spec.ts` still constructing `focusedMemberName`, missing `~/stores/agents`, `stores/browserShellStore.ts` missing bridge APIs, and many unrelated test/store type issues. A grep of the latest typecheck log for the latest API/E2E local-fix touched frontend files returned no matches; the remaining failures are broad pre-existing/baseline project errors outside the local fix.
+- `pnpm -C autobyteus-server-ts typecheck` exits non-zero with `TS6059` because tests are included while `rootDir` is `src`; `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` passes.
 
 ## Local Implementation Checks Run
 
 Passed:
 
-- `pnpm install`
-- `pnpm -C autobyteus-server-ts run prepare:shared`
-- `pnpm -C autobyteus-server-ts exec prisma generate --schema ./prisma/schema.prisma`
-- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false`
-- `git diff --check`
-- Source-size guard: `checked 693 source files; violations 0`
-- Focused nested team / metadata / projection / stream / channel / application suite:
-  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution tests/unit/run-history/store/team-run-metadata-store.test.ts tests/unit/run-history/services/team-run-history-index-service.test.ts tests/unit/run-history/services/team-run-history-service.test.ts tests/unit/run-history/team-member-run-view-projection-service.test.ts tests/unit/run-history/services/run-file-change-projection-service.test.ts tests/unit/run-history/team-run-metadata-service.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts tests/unit/agent-memory/team-memory-index-service.test.ts tests/unit/application-orchestration/application-orchestration-host-service.test.ts tests/unit/external-channel/runtime/channel-team-run-facade.test.ts --reporter=dot`
-  - Result after local fixes: `22 passed`, `79 passed`.
-- Focused communication/backend context suite:
-  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/team-communication tests/unit/agent-team-execution/member-team-context-builder.test.ts tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts tests/unit/agent-execution/backends/claude/team-communication/claude-send-message-tool-call-handler.test.ts tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts tests/unit/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.test.ts --reporter=dot`
-  - Result: `8 passed`, `24 passed`.
+- API/E2E Round 5 local-fix focused backend checks:
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts tests/unit/run-history/services/agent-run-view-projection-service.test.ts --reporter=dot`
+  - Result: `3 passed`, `23 passed`.
+  - Notes: covers `MEMBER_INPUT` → live `EXTERNAL_USER_MESSAGE` transport projection, inter-agent delivery metadata linking parent communication to recipient input, backend projection dedupe of timestamped/null duplicate rows, and preservation of repeated no-ID/no-timestamp rows.
 
+- API/E2E Round 5 local-fix focused frontend checks:
+  - `pnpm -C autobyteus-web exec vitest run services/agentStreaming/__tests__/TeamStreamingService.spec.ts services/runHydration/__tests__/runProjectionConversation.spec.ts stores/__tests__/runHistoryTeamRows.spec.ts stores/__tests__/teamCommunicationStore.spec.ts components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts components/workspace/team/__tests__/TeamOverviewPanel.spec.ts --reporter=dot`
+  - Result: `6 passed`, `31 passed`.
+  - Notes: covers live nested leaf `EXTERNAL_USER_MESSAGE` routing/upsert, defensive hydration dedupe for timestamped/null duplicates, preservation of repeated no-ID/no-timestamp rows, active/history membership-label consistency, and retained route/path-aware team communication perspectives.
 
-- Code-review original recheck subset:
-  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/team-run.test.ts tests/unit/agent-team-execution/team-definition-topology-planner.test.ts tests/unit/agent-team-execution/team-run-metadata-mapper.test.ts --reporter=dot`
-  - Result after local fixes: `3 passed`, `7 passed`.
-- Code-review local-fix regression suite:
-  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/team-run.test.ts tests/unit/agent-team-execution/team-definition-topology-planner.test.ts tests/unit/agent-team-execution/team-run-metadata-mapper.test.ts tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts tests/unit/agent-team-execution/mixed-team-run-backend-factory.test.ts --reporter=dot`
-  - Result: `5 passed`, `9 passed`.
-- Post-fix source/type hygiene:
+- Server source build typecheck after Round 5 local fix:
   - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false`
+  - Result: passed.
+
+- API/E2E Round 4 focused live communication contract checks:
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts tests/unit/services/team-communication/team-communication-service.test.ts --reporter=dot && pnpm -C autobyteus-web exec vitest run services/agentStreaming/__tests__/TeamStreamingService.spec.ts stores/__tests__/teamCommunicationStore.spec.ts components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts components/workspace/team/__tests__/TeamOverviewPanel.spec.ts --reporter=dot`
+  - Result: backend `2 passed`, `12 passed`; frontend `4 passed`, `24 passed`.
+  - Notes: backend includes the new canonical COMMUNICATION event-to-flattened WebSocket payload regression; frontend includes the new live parent-to-subteam communication-store ingestion regression.
+
+- Frontend focused Round 6 communication-perspective regression check:
+  - `pnpm -C autobyteus-web exec vitest run stores/__tests__/teamCommunicationStore.spec.ts components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts components/workspace/team/__tests__/TeamOverviewPanel.spec.ts --reporter=dot`
+  - Result: `3 passed`, `14 passed`.
+  - Notes: output includes expected KaTeX quirks-mode warnings.
+
+- Frontend focused changed-area and Round 5/Round 6/API-E2E local-fix regression suite:
+  - `pnpm -C autobyteus-web exec vitest run stores/__tests__/agentTeamContextsStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts stores/__tests__/agentActivityStore.spec.ts stores/__tests__/teamCommunicationStore.spec.ts components/workspace/team/__tests__/TeamGridView.spec.ts components/workspace/team/__tests__/TeamSpotlightView.spec.ts components/workspace/team/__tests__/TeamOverviewPanel.spec.ts components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts components/workspace/config/__tests__/TeamRunConfigForm.spec.ts components/conversation/__tests__/ToolCallIndicator.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleParsers.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleOrdering.spec.ts utils/__tests__/teamRunConfigUtils.spec.ts services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts --reporter=dot`
+  - Result: `16 passed`, `108 passed`.
+  - Notes: output includes expected negative-test backend termination and malformed-denied-payload logs plus KaTeX quirks-mode warnings.
+- Backend focused tests:
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/run-history/services/team-run-history-service.test.ts tests/unit/run-history/services/workspace-run-history-service.test.ts tests/unit/run-history/store/team-run-metadata-store.test.ts tests/unit/services/team-communication/team-communication-service.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts tests/unit/agent-team-execution/team-run.test.ts tests/unit/agent-team-execution/team-definition-topology-planner.test.ts tests/unit/agent-team-execution/team-run-metadata-mapper.test.ts --reporter=dot`
+  - Result: `8 passed`, `29 passed`.
+- Server source build typecheck:
+  - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false`
+  - Result: passed.
+- Frontend typecheck probe:
+  - `pnpm -C autobyteus-web exec nuxi typecheck --noEmit`
+  - Result: still exits `1` on broad existing/baseline project errors; latest log grep for latest API/E2E local-fix touched frontend files returned no matches.
+- Whitespace check:
   - `git diff --check`
-  - Source-size guard: `checked 693 source files; violations 0`.
+  - Result: passed.
+- Changed-source size guard:
+  - Custom audit over changed non-test `.ts` / `.vue` files excluding generated files.
+  - Result: `source-size audit passed: no changed non-test TS/Vue source file over 500 non-empty lines`.
+- Generated log cleanup:
+  - `git status --short | grep 'autobyteus-web/logs' || true`
+  - Result: no output; Round 5 generated log/pid files are removed.
 
 Failed / not used as implementation sign-off:
 
-- `pnpm -C autobyteus-server-ts run typecheck --pretty false`
-  - Fails with `TS6059` because tests are included by `tsconfig.json` but outside `rootDir: src`.
-- `pnpm -C autobyteus-server-ts exec vitest run tests/unit --reporter=dot`
-  - Result: `5 failed | 281 passed (286)` test files, `4 failed | 1306 passed (1310)` tests.
-  - Remaining failures are outside the nested-team implementation area:
-    - `tests/unit/startup/agent-customization-loader.test.ts`: missing import for non-existent `src/agent-customization/processors/tool-result/media-tool-result-url-transformer-processor.js` (and related tool-result processor path).
-    - `tests/unit/agent-packages/package-root-summary.test.ts`: assertion omits current `applicationCount: 0` field.
-    - `tests/unit/application-engine/application-engine-host-service.test.ts`: application worker closed unexpectedly.
-    - `tests/unit/agent-execution/backends/claude/claude-agent-run-backend.test.ts`: expected send result omits current `turnId`.
-    - `tests/unit/agent-customization/processors/response-customization/media-url-transformer-processor.test.ts`: media segment metadata URL assertion mismatch.
+- `pnpm -C autobyteus-web exec vue-tsc --noEmit`
+  - Fails: `Command "vue-tsc" not found`.
+- `pnpm -C autobyteus-web exec tsc --noEmit --pretty false`
+  - Fails with broad existing/baseline project and test type errors outside this implementation slice; not used as local sign-off.
+- `pnpm -C autobyteus-web exec nuxi typecheck --noEmit`
+  - Fails with broad existing/baseline project errors; not a clean full-project signal for this implementation slice.
+- `pnpm -C autobyteus-server-ts typecheck`
+  - Fails with `TS6059` because package `tsconfig.json` includes `tests` outside `rootDir: src`.
 
 ## Downstream Validation Hints / Suggested Scenarios
 
-Please prioritize executable validation for:
+Please prioritize code review and then API/E2E/browser validation for:
 
-1. Launch a mixed parent team with at least one `agent_team` top-level member and confirm backend selection is `MIXED`.
-2. Confirm internal child team runs are not listed/registered as top-level global active/history runs unless launched directly by the user.
-3. Parent agent `send_message_to` a subteam member; verify the parent communication projection records receiver `memberKind: "agent_team"` with receiver path/route and the child coordinator/default target receives the recipient-visible message.
-4. Confirm nested child leaf agent events bridge to the parent with `sourcePath` like `["SubTeam", "LeafAgent"]` and no domain reliance on `subTeamNodeName`.
-5. Verify tool approval/command paths using nested `memberPath` and `memberRouteKey` selectors, and reject ambiguous bare-name nested leaf targeting.
-6. Stop/interrupt a parent mixed run and verify cascade through child team handles and leaf agent handles.
-7. Persist, stop, restore a nested mixed team run and verify recursive `memberTree` metadata restores child team run IDs and nested leaf platform run IDs.
-8. Verify legacy flat metadata containing top-level `memberMetadata` or `runVersion` fails fast with unsupported legacy-metadata/topology-lost behavior.
+1. Launch the nested mixed team fixture and verify the team grid/sidebar/history show recursive groups instead of flattened duplicate leaf rows.
+2. Focus a subteam node and verify the workspace shows subteam summary/composer behavior without hydrating it as a leaf agent.
+3. Send from the focused parent/team composer to a nested route key and verify WebSocket payload uses `target_member_route_key`.
+4. Trigger a nested leaf tool approval and verify approve/deny payload round-trips the exact nested `member_route_key` / source identity.
+5. Restore/reopen a nested mixed team run from history and verify `memberTree`, `memberNodesByRouteKey`, and `leafAgentContextsByRouteKey` reconstruct correctly.
+6. Confirm history/team communication panels display participant kind/path/route-aware messages, including subteam recipients.
+7. Verify legacy flat metadata containing `memberMetadata` or `runVersion` fails fast rather than silently flattening or guessing topology.
+8. Re-run the Round 5 full-stack path: `program_manager -> BuildSquad` should still create one live Team Messages record, and focusing `BuildSquad/review_lead` should show the inbound `You received a message from sender name: program_manager...` prompt before the child reply.
+9. Reopen stopped nested runs and verify `getTeamMemberRunProjection(..., memberRouteKey: "BuildSquad/review_lead")` no longer renders duplicate timestamped plus `ts: null` copies.
+10. Compare active/new and opened/stopped rows for the seeded nested team; primary labels should be membership labels (`program_manager`, `BuildSquad`, `review_lead`, `qa_specialist`) consistently, with definition names remaining secondary metadata.
+11. Re-run the Round 4 full-stack parent-to-subteam communication flow and verify live `TEAM_COMMUNICATION_MESSAGE` ingestion populates `teamCommunication.getMessagesForTeam(teamRunId)` without manual GraphQL hydration.
+12. Run the required full-stack browser validation against the prior screenshot failure paths after code review passes.
 
 ## API / E2E / Executable Validation Still Required
 
-API, E2E, and broader executable validation remain required and are owned by `api_e2e_engineer` after code review. No API/E2E sign-off is claimed in this implementation handoff.
+API, E2E, and full-stack browser validation remain required after code review and are owned by `api_e2e_engineer`. No downstream validation sign-off is claimed in this implementation handoff.

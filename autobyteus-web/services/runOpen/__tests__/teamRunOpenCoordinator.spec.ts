@@ -68,12 +68,14 @@ const metadata = {
   teamDefinitionId: 'team-def-1',
   teamDefinitionName: 'Team',
   coordinatorMemberRouteKey: 'member-a',
-  runVersion: 1,
   createdAt: '2026-05-02T00:00:00.000Z',
   updatedAt: '2026-05-02T00:00:00.000Z',
-  memberMetadata: [
+  archivedAt: null,
+  memberTree: [
     {
+      memberKind: 'agent',
       memberRouteKey: 'member-a',
+      memberPath: ['member-a'],
       memberName: 'Member A',
       memberRunId: 'run-a',
       agentDefinitionId: 'agent-a',
@@ -85,7 +87,9 @@ const metadata = {
       llmConfig: null,
     },
     {
+      memberKind: 'agent',
       memberRouteKey: 'member-b',
+      memberPath: ['member-b'],
       memberName: 'Member B',
       memberRunId: 'run-b',
       agentDefinitionId: 'agent-b',
@@ -126,6 +130,27 @@ const createPayload = (members: Map<string, any>, projectionByMemberRouteKey: Ma
   projectionByMemberRouteKey,
 });
 
+const memberTree = [
+  {
+    memberKind: 'agent',
+    memberName: 'Member A',
+    displayName: 'Member A',
+    memberPath: ['member-a'],
+    memberRouteKey: 'member-a',
+    agentDefinitionId: 'agent-a',
+  },
+  {
+    memberKind: 'agent',
+    memberName: 'Member B',
+    displayName: 'Member B',
+    memberPath: ['member-b'],
+    memberRouteKey: 'member-b',
+    agentDefinitionId: 'agent-b',
+  },
+];
+
+const memberNodesByRouteKey = new Map(memberTree.map((node) => [node.memberRouteKey, node]));
+
 describe('openTeamRun', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -141,7 +166,9 @@ describe('openTeamRun', () => {
     const existingContext = {
       teamRunId: 'team-1',
       config: {},
-      members: new Map([
+      memberTree,
+      memberNodesByRouteKey,
+      leafAgentContextsByRouteKey: new Map([
         ['member-a', {
           config: { isLocked: true },
           state: {
@@ -153,7 +180,7 @@ describe('openTeamRun', () => {
       ]),
       coordinatorMemberRouteKey: 'member-a',
       historicalHydration: null,
-      focusedMemberName: 'member-a',
+      focusedMemberRouteKey: 'member-a',
       currentStatus: 'Processing',
       isSubscribed: true,
       taskPlan: null,
@@ -175,7 +202,7 @@ describe('openTeamRun', () => {
       ensureWorkspaceByRootPath: vi.fn(),
     });
 
-    expect(existingContext.members.get('member-a')?.state.conversation).toBe(liveConversation);
+    expect(existingContext.leafAgentContextsByRouteKey.get('member-a')?.state.conversation).toBe(liveConversation);
     expect(hydrateTeamMemberActivitiesFromProjectionMock).not.toHaveBeenCalled();
     expect(connectToTeamStreamMock).toHaveBeenCalledWith('team-1');
   });
@@ -200,7 +227,9 @@ describe('openTeamRun', () => {
     expect(addTeamContextMock).toHaveBeenCalledWith(
       expect.objectContaining({
         teamRunId: 'team-1',
-        members: projectedMembers,
+        leafAgentContextsByRouteKey: projectedMembers,
+        memberTree: expect.any(Array),
+        memberNodesByRouteKey: expect.any(Map),
       }),
     );
     expect(hydrateTeamMemberActivitiesFromProjectionMock).toHaveBeenCalledWith({
@@ -214,12 +243,14 @@ describe('openTeamRun', () => {
     const existingContext = {
       teamRunId: 'team-1',
       config: {},
-      members: new Map([
+      memberTree,
+      memberNodesByRouteKey,
+      leafAgentContextsByRouteKey: new Map([
         ['member-a', createMemberContext('run-a', 'live-conversation')],
       ]),
       coordinatorMemberRouteKey: 'member-a',
       historicalHydration: null,
-      focusedMemberName: 'member-a',
+      focusedMemberRouteKey: 'member-a',
       currentStatus: 'Processing',
       isSubscribed: true,
       taskPlan: null,
@@ -244,7 +275,7 @@ describe('openTeamRun', () => {
     });
 
     expect(hydrateTeamMemberActivitiesFromProjectionMock).toHaveBeenCalledWith({
-      members: existingContext.members,
+      members: existingContext.leafAgentContextsByRouteKey,
       projectionByMemberRouteKey,
       memberRouteKeys: ['member-b'],
     });

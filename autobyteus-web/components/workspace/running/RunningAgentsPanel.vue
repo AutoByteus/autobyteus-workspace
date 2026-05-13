@@ -29,7 +29,7 @@
             :definition-name="group.definitionName"
             :runs="group.runs"
             :selected-run-id="selectedTeamRunId"
-            :coordinator-name="getCoordinatorName(group.definitionId)"
+            :coordinator-route-key="getCoordinatorRouteKey(group.runs[0] || null)"
             @create="createTeamRun"
             @select="selectTeamRun"
             @delete="deleteTeamRun"
@@ -153,7 +153,7 @@ const getTeamUpdatedAt = (team: AgentTeamContext): string | null | undefined => 
     return team.historicalHydration.updatedAt;
   }
 
-  return Array.from(team.members.values())
+  return Array.from(team.leafAgentContextsByRouteKey.values())
     .map((member) => member.state.conversation?.updatedAt)
     .sort((left, right) => toTimestamp(right) - toTimestamp(left))[0] ?? null;
 };
@@ -210,16 +210,14 @@ const selectTeamRun = (runId: string) => {
   emit('run-selected', { type: 'team', runId });
 };
 
-const selectTeamMember = (teamRunId: string, memberName: string) => {
-  // First ensure the team is selected
+const selectTeamMember = (teamRunId: string, memberRouteKey: string) => {
   selectionStore.selectRun(teamRunId, 'team');
-  // Then focus the member
-  teamContextsStore.setFocusedMember(memberName);
+  teamContextsStore.setFocusedMember(memberRouteKey);
   emit('run-selected', { type: 'team', runId: teamRunId });
 };
 
-const getCoordinatorName = (definitionId: string): string | undefined => {
-  return teamDefinitionStore.getAgentTeamDefinitionById(definitionId)?.coordinatorMemberName;
+const getCoordinatorRouteKey = (team: AgentTeamContext | null): string | undefined => {
+  return team?.coordinatorMemberRouteKey || undefined;
 };
 
 const deleteAgentRun = async (runId: string) => {

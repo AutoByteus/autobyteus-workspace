@@ -118,6 +118,7 @@ export class TeamRunHistoryService {
           llmConfig: member.llmConfig ?? null,
           workspaceRootPath: member.workspaceRootPath,
         })),
+        memberTree: metadata.memberTree,
       });
     }
 

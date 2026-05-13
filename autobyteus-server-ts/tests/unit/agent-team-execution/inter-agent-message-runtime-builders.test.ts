@@ -61,6 +61,37 @@ describe("inter-agent-message-runtime-builders", () => {
     );
   });
 
+  it("carries recipient member-input identity and parent communication linkage in delivery metadata", () => {
+    const inputMessage = buildInterAgentDeliveryInputMessage({
+      senderRunId: "program-manager-run",
+      senderMemberName: "program_manager",
+      senderRouteKey: "program_manager",
+      senderPath: ["program_manager"],
+      teamRunId: "team-1",
+      recipientMemberName: "BuildSquad",
+      recipientRouteKey: "BuildSquad",
+      recipientPath: ["BuildSquad"],
+      recipientSelector: { kind: "route_key", memberRouteKey: "BuildSquad" },
+      content: "Reply with exactly TOKEN.",
+      messageType: "frontend_parent_to_subteam",
+      parentCommunicationMessageId: "team-message-1",
+      recipientInputMessageId: "member-input-1",
+      recipientInputDedupeKey: "member_input:team-1:BuildSquad:member-input-1",
+    });
+
+    expect(inputMessage.metadata).toEqual(expect.objectContaining({
+      message_id: "member-input-1",
+      recipient_input_message_id: "member-input-1",
+      dedupe_key: "member_input:team-1:BuildSquad:member-input-1",
+      input_origin: "inter_agent_delivery",
+      sender_member_route_key: "program_manager",
+      sender_member_path: ["program_manager"],
+      receiver_member_route_key: "BuildSquad",
+      receiver_member_path: ["BuildSquad"],
+      parent_communication_message_id: "team-message-1",
+    }));
+  });
+
   it("falls back to sender run id when sender name is unavailable", () => {
     const request = {
       senderRunId: "run-123",

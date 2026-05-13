@@ -44,6 +44,7 @@ import {
   inferSegmentTypeFromTool,
   isProjectableToolSegment,
   setActivityResult,
+  updateActivityApprovalTarget,
   syncActivityToolName,
   updateActivityArguments,
   updateActivityStatus,
@@ -199,11 +200,13 @@ export function handleToolApprovalRequested(
     if (isPlaceholderToolName(segment.toolName)) {
       segment.toolName = parsed.toolName;
     }
+    segment.approvalTarget = parsed.approvalTarget;
   }
 
   const transitioned = applyApprovalRequestedState(segment);
   syncActivityToolName(context, parsed.invocationId, parsed.toolName);
   updateActivityArguments(context, parsed.invocationId, parsed.arguments);
+  updateActivityApprovalTarget(context, parsed.invocationId, parsed.approvalTarget);
   if (transitioned) {
     updateActivityStatus(context, parsed.invocationId, 'awaiting-approval');
   }

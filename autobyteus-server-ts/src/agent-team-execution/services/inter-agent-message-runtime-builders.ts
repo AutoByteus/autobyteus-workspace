@@ -10,6 +10,10 @@ import {
   buildTeamCommunicationReferenceId,
 } from "../../services/team-communication/team-communication-identity.js";
 import { inferTeamCommunicationReferenceFileType } from "../../services/team-communication/team-communication-normalizer.js";
+import {
+  buildTeamMemberInputDedupeKey,
+  buildTeamMemberInputMessageId,
+} from "./team-member-input-event-builder.js";
 
 const resolveMessageType = (value: string | null | undefined): string => {
   if (typeof value !== "string" || value.trim().length === 0) {
@@ -81,11 +85,28 @@ export const buildInterAgentDeliveryInputMessage = (
   request: InterAgentMessageDeliveryRequest,
 ): AgentInputUserMessage => {
   const referenceFiles = normalizeReferenceFiles(request.referenceFiles);
+  const messageId = request.recipientInputMessageId?.trim() || buildTeamMemberInputMessageId({
+    teamRunId: request.teamRunId,
+    memberRunId: request.recipientRouteKey ?? "unknown-recipient",
+    memberRouteKey: request.recipientRouteKey ?? "unknown-recipient",
+    content: buildRecipientVisibleInterAgentMessageContent(request),
+    receivedAt: request.parentCommunicationMessageId ?? "",
+    parentCommunicationMessageId: request.parentCommunicationMessageId ?? null,
+  });
+  const dedupeKey = request.recipientInputDedupeKey?.trim() || buildTeamMemberInputDedupeKey({
+    teamRunId: request.teamRunId,
+    memberRouteKey: request.recipientRouteKey ?? "unknown-recipient",
+    messageId,
+  });
   return new AgentInputUserMessage(
     buildRecipientVisibleInterAgentMessageContent(request),
     SenderType.AGENT,
     null,
     {
+      message_id: messageId,
+      recipient_input_message_id: messageId,
+      dedupe_key: dedupeKey,
+      input_origin: "inter_agent_delivery",
       sender_agent_id: request.senderRunId,
       sender_agent_name: request.senderMemberName ?? null,
       ...(request.senderRouteKey ? {
@@ -105,6 +126,9 @@ export const buildInterAgentDeliveryInputMessage = (
       ...(request.recipientPath ? {
         receiver_path: request.recipientPath,
         receiver_member_path: request.recipientPath,
+      } : {}),
+      ...(request.parentCommunicationMessageId ? {
+        parent_communication_message_id: request.parentCommunicationMessageId,
       } : {}),
       reference_files: referenceFiles,
     },

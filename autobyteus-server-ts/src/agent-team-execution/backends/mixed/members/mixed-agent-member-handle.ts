@@ -18,13 +18,19 @@ import { RuntimeKind } from "../../../../runtime-management/runtime-kind-enum.js
 import type { TeamRunContext } from "../../../domain/team-run-context.js";
 import type { InterAgentMessageDeliveryRequest } from "../../../domain/inter-agent-message-delivery.js";
 import type { TeamMemberSelector } from "../../../domain/team-run-member-identity.js";
-import { TeamRunEventSourceType, type TeamRunAgentEventPayload } from "../../../domain/team-run-event.js";
+import {
+  TeamRunEventSourceType,
+  type TeamRunAgentEventPayload,
+  type TeamRunMemberInputEventPayload,
+} from "../../../domain/team-run-event.js";
 import type { TeamMemberRunConfig } from "../../../domain/team-run-config.js";
 import { TeamBackendKind } from "../../../domain/team-backend-kind.js";
 import { getMemberTeamContextBuilder, type MemberTeamContextBuilder } from "../../../services/member-team-context-builder.js";
 import { getInterAgentMessageRouter, type InterAgentMessageRouter } from "../../../services/inter-agent-message-router.js";
-import { publishProcessedTeamAgentEvents } from "../../../services/publish-processed-team-agent-events.js";
-import { buildInterAgentMessageAgentRunEvent } from "../../../services/inter-agent-message-runtime-builders.js";
+import {
+  buildInterAgentDeliveryInputMessage,
+} from "../../../services/inter-agent-message-runtime-builders.js";
+import { buildTeamMemberInputEventPayload } from "../../../services/team-member-input-event-builder.js";
 import type { MixedTeamRunContext, MixedAgentMemberContext } from "../mixed-team-run-context.js";
 import type { MixedTeamEventPublish, MixedTeamMemberHandle, MixedTeamStatusChange } from "./mixed-team-member-handle.js";
 
@@ -59,6 +65,9 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
     const run = await this.ensureReady();
     const result = await run.postUserMessage(message);
     this.context.platformAgentRunId = run.getPlatformAgentRunId() ?? this.context.platformAgentRunId;
+    if (result.accepted) {
+      this.publishMemberInput(message);
+    }
     this.options.notifyStatusChange();
     return { ...result, memberRunId: this.context.memberRunId, memberName: this.context.memberName };
   }
@@ -71,19 +80,23 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
     });
     this.context.platformAgentRunId = run.getPlatformAgentRunId() ?? this.context.platformAgentRunId;
     if (result.accepted) {
-      await publishProcessedTeamAgentEvents({
-        teamRunId: this.options.teamContext.runId,
-        runContext: run.context,
-        runtimeKind: this.context.runtimeKind,
-        memberName: this.context.memberName,
-        memberRunId: this.context.memberRunId,
-        sourcePath: this.context.memberPath,
-        agentEvents: [buildInterAgentMessageAgentRunEvent({ recipientRunId: this.context.memberRunId, request })],
-        publishTeamEvent: this.options.publish,
-      });
+      this.publishMemberInput(buildInterAgentDeliveryInputMessage(request));
     }
     this.options.notifyStatusChange();
     return { ...result, memberRunId: this.context.memberRunId, memberName: this.context.memberName };
+  }
+
+  private publishMemberInput(message: AgentInputUserMessage): void {
+    this.options.publish({
+      eventSourceType: TeamRunEventSourceType.MEMBER_INPUT,
+      teamRunId: this.options.teamContext.runId,
+      sourcePath: this.context.memberPath,
+      data: buildTeamMemberInputEventPayload({
+        teamRunId: this.options.teamContext.runId,
+        memberContext: this.context,
+        message,
+      }) satisfies TeamRunMemberInputEventPayload,
+    });
   }
 
   async approveToolInvocation(
