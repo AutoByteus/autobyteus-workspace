@@ -108,4 +108,33 @@ describe('AgentMessageInbox', () => {
       code: 'no_active_turn'
     });
   });
+
+  it('settles queued awaitable active-turn commands during shutdown drain', async () => {
+    const inbox = new AgentMessageInbox();
+    const approvalPromise = inbox.postToolApproval({
+      kind: 'tool_approval',
+      invocationId: 'approval-1',
+      approved: true
+    });
+    const resultPromise = inbox.postToolResult({
+      kind: 'tool_result',
+      invocationId: 'result-1',
+      result: { ok: true }
+    });
+
+    const drained = inbox.settleQueuedAwaitablesForShutdown('agent-1');
+
+    expect(drained.map((message) => message.kind)).toEqual(['tool_approval', 'tool_result']);
+    await expect(timeout(approvalPromise)).resolves.toMatchObject({
+      accepted: false,
+      code: 'runtime_stopped',
+      invocationId: 'approval-1'
+    });
+    await expect(timeout(resultPromise)).resolves.toMatchObject({
+      accepted: false,
+      code: 'runtime_stopped',
+      invocationId: 'result-1'
+    });
+  });
+
 });

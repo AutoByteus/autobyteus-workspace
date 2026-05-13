@@ -6,7 +6,7 @@ export type TurnToolInputPortCloseReason = 'completed' | 'interrupted' | 'failed
 
 export type PostTurnToolMessageResult = {
   accepted: boolean;
-  code?: 'closed' | 'turn_mismatch' | 'unknown_invocation' | 'duplicate' | 'accepted';
+  code?: 'closed' | 'turn_mismatch' | 'unknown_invocation' | 'duplicate' | 'no_waiter' | 'accepted';
   message?: string;
 };
 
@@ -37,7 +37,6 @@ export class TurnToolInputPort {
   private readonly settledApprovalIds = new Set<string>();
   private readonly settledResultIds = new Set<string>();
   private readonly approvals: ToolApprovalInputMessage[] = [];
-  private readonly toolResults: ToolResultInputMessage[] = [];
   private readonly approvalWaiters: Array<Waiter<ToolApprovalInputMessage>> = [];
   private readonly resultWaiters: Array<Waiter<ToolResultInputMessage>> = [];
 
@@ -94,7 +93,7 @@ export class TurnToolInputPort {
   }
 
   postToolResult(message: ToolResultInputMessage): PostTurnToolMessageResult {
-    const validation = this.validatePost(message, this.settledResultIds, this.toolResults);
+    const validation = this.validatePost(message, this.settledResultIds, []);
     if (!validation.accepted || !('invocationId' in validation)) {
       return validation;
     }
@@ -110,8 +109,21 @@ export class TurnToolInputPort {
       return { accepted: true, code: 'accepted' };
     }
 
-    this.toolResults.push(message);
-    return { accepted: true, code: 'accepted' };
+    return {
+      accepted: false,
+      code: 'no_waiter',
+      message: `Tool invocation '${invocationId}' has no active result waiter for turn '${this.turnId}'.`
+    };
+  }
+
+  hasToolResultWaiter(invocationId: string): boolean {
+    const normalized = normalizeInvocationId(invocationId);
+    if (!normalized) {
+      return false;
+    }
+    return this.resultWaiters.some((waiter) =>
+      waiter.predicate({ kind: 'tool_result', invocationId: normalized, turnId: this.turnId })
+    );
   }
 
   waitForToolResult(
@@ -119,12 +131,6 @@ export class TurnToolInputPort {
     options: { signal: AbortSignal; reason?: () => string }
   ): Promise<ToolResultInputMessage> {
     this.registerToolInvocation(invocationId);
-    const existingIndex = this.toolResults.findIndex((message) => message.invocationId === invocationId);
-    if (existingIndex >= 0) {
-      const [message] = this.toolResults.splice(existingIndex, 1);
-      this.settledResultIds.add(invocationId);
-      return Promise.resolve(message);
-    }
     return this.waitFor(this.resultWaiters, (message) => message.invocationId === invocationId, options);
   }
 
@@ -149,7 +155,6 @@ export class TurnToolInputPort {
     this.approvalWaiters.length = 0;
     this.resultWaiters.length = 0;
     this.approvals.length = 0;
-    this.toolResults.length = 0;
     this.knownToolInvocationIds.clear();
     this.settledApprovalIds.clear();
     this.settledResultIds.clear();

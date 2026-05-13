@@ -49,6 +49,16 @@ describe('TurnToolInputPort', () => {
     });
   });
 
+  it('rejects external tool results when no active result waiter exists', () => {
+    const port = new TurnToolInputPort('turn-1');
+    port.registerToolInvocation('inv-1');
+
+    const result = port.postToolResult({ kind: 'tool_result', invocationId: 'inv-1', result: { ok: true } });
+
+    expect(result.accepted).toBe(false);
+    expect(result.code).toBe('no_waiter');
+  });
+
   it('rejects unknown invocation messages and duplicate late messages', async () => {
     const port = new TurnToolInputPort('turn-1');
 

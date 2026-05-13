@@ -8,7 +8,7 @@ import {
 } from '../events/agent-events.js';
 import type { ToolApprovalInputMessage, PostToolApprovalResult } from '../tool-approval-command.js';
 import type { ToolResultInputMessage, PostToolResultResult } from '../tool-result-command.js';
-import { InboxQueueStore, type InboxLane } from './inbox-queue-store.js';
+import { InboxQueueStore, type CancellableWait, type InboxLane } from './inbox-queue-store.js';
 import type {
   AgentInboxCandidateSnapshot,
   AgentInboxMessage,
@@ -70,6 +70,14 @@ export class AgentMessageInbox {
     return this.store.waitForAvailability(options.signal);
   }
 
+  createAvailabilityWaiter(options: { signal?: AbortSignal } = {}): CancellableWait {
+    return this.store.createAvailabilityWaiter(options.signal);
+  }
+
+  get availabilityVersion(): number {
+    return this.store.version;
+  }
+
   wakeAvailability(): void {
     this.store.wakeAvailability();
   }
@@ -103,6 +111,49 @@ export class AgentMessageInbox {
 
   drainForShutdown(): AgentInboxMessage[] {
     return this.store.drain(DRAIN_PRIORITY);
+  }
+
+  settleQueuedAwaitablesForShutdown(agentId: string): AgentInboxMessage[] {
+    const drained = this.drainForShutdown();
+    for (const message of drained) {
+      if (!message.awaitable) {
+        continue;
+      }
+      switch (message.kind) {
+        case 'tool_approval':
+          this.resolveAwaitable(message, {
+            accepted: false,
+            code: 'runtime_stopped',
+            invocationId: message.input.invocationId,
+            message: `Agent '${agentId}' runtime is stopping.`
+          });
+          break;
+        case 'tool_result':
+          this.resolveAwaitable(message, {
+            accepted: false,
+            code: 'runtime_stopped',
+            invocationId: message.input.invocationId,
+            message: `Agent '${agentId}' runtime is stopping.`
+          });
+          break;
+        case 'user_message':
+        case 'inter_agent_message':
+          this.resolveAwaitable(message, {
+            accepted: false,
+            code: 'runtime_stopping',
+            message: `Agent '${agentId}' runtime is stopping.`
+          });
+          break;
+        case 'runtime_lifecycle':
+          this.resolveAwaitable(message, {
+            accepted: true,
+            code: 'shutdown_requested',
+            stopRequested: true
+          });
+          break;
+      }
+    }
+    return drained;
   }
 
   qsize(lane?: InboxLane): number {

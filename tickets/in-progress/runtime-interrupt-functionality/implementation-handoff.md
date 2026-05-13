@@ -41,6 +41,12 @@ Implemented the approved Round 9 inbound-message refactor on top of the native i
 
 The existing finite turn path remains intact: `AgentTurnRunner` / `LlmTurnPhase` / `ToolPhase` / typed pipelines still own normal LLM/tool/continuation progression; no old `WorkerEventDispatcher` or `agent/handlers` normal-flow loop was reintroduced.
 
+Round 15 local fixes for the scheduler/awaitable command review findings:
+
+- Fixed `CR-014` scheduler liveness by making `AgentMessageScheduler` use versioned availability/dispatchability waits. The scheduler now rechecks dispatchability immediately after registering both waiters, detects active-turn settlement that happens in that seam, and cancels losing `Promise.race` waiters so parked turn-start messages are not stranded and waiter arrays do not leak.
+- Fixed `CR-015` external/async tool-result command semantics by requiring a real active `TurnToolInputPort` result waiter before `AgentRuntimeState.postToolResultToActiveTurn(...)` can return success. Active-batch membership alone now returns `no_result_consumer`; `TurnToolInputPort.postToolResult(...)` no longer queues result messages without a waiter; `posted` is reserved for a result that an active consumer can actually receive.
+- Fixed `CR-016` shutdown settlement by draining queued inbox awaitables from `AgentWorker` shutdown and resolving them with explicit terminal command results (`runtime_stopped` / `runtime_stopping` / `shutdown_requested`) instead of leaving unresolved promises behind when the scheduler exits.
+
 ## Key Files Or Areas
 
 - New inbound boundary and scheduler:
@@ -63,6 +69,7 @@ The existing finite turn path remains intact: `AgentTurnRunner` / `LlmTurnPhase`
   - `autobyteus-ts/src/agent/tool-result-command.ts`
 - Focused tests:
   - `autobyteus-ts/tests/unit/agent/message-inbox/agent-message-inbox.test.ts`
+  - `autobyteus-ts/tests/unit/agent/message-inbox/agent-message-scheduler.test.ts`
   - `autobyteus-ts/tests/unit/agent/message-inbox/inbox-queue-store.test.ts`
   - `autobyteus-ts/tests/unit/agent/loop/turn-tool-input-port.test.ts`
   - updated runtime/state/worker/context tests.
@@ -79,7 +86,7 @@ The existing finite turn path remains intact: `AgentTurnRunner` / `LlmTurnPhase`
 
 - API/E2E revalidation is still required after code review because this refactor changes the runtime scheduler/inbound boundary.
 - Existing delivery-owned docs/report artifacts in the worktree still contain prior terminology and were not updated in this implementation pass except for this handoff. Delivery docs sync should reconcile public docs after review/validation.
-- External/async tool result routing is now concretely modeled and locally tested, but no broad API/E2E external tool-host scenario was run by implementation.
+- External/async tool result routing is now concretely modeled and locally tested. Until a production external/async `ToolPhase` consumer is wired, posted results are explicitly rejected with `no_result_consumer` rather than reported as accepted and ignored. No broad API/E2E external tool-host scenario was run by implementation.
 
 ## Task Design Health Assessment Implementation Check
 
@@ -93,7 +100,10 @@ The existing finite turn path remains intact: `AgentTurnRunner` / `LlmTurnPhase`
   - Queue storage is private/generic `InboxQueueStore` with no domain message classification.
   - Typed handlers are entry handlers only and do not call LLM/tool phase chains.
   - `AgentWorker` supervises active runner tasks and wakes scheduler dispatchability on settlement.
+  - `AgentMessageScheduler` owns the wait/dispatchability seam with versioned wakeups and cancellable waiters.
   - Active-turn approvals/results cannot start new turns and return explicit no-active/stale/no-pending/interrupted/runtime-stopped outcomes.
+  - External tool-result success now requires an active result consumer, not just active-batch membership.
+  - Worker shutdown drains unresolved awaitable inbox messages with explicit terminal command results.
   - Source grep over active `autobyteus-ts/src` and tests found no remaining `AgentInputBox`, `AgentTurnInputBox`, or `AgentInputEventQueueManager` references.
 
 ## Legacy / Compatibility Removal Check
@@ -105,7 +115,7 @@ The existing finite turn path remains intact: `AgentTurnRunner` / `LlmTurnPhase`
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: Yes.
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): Yes.
 - Notes:
-  - Largest changed implementation sources remain below the 500 effective-line hard limit: `agent-runtime-state.ts` 381, `agent-worker.ts` 284, `turn-tool-input-port.ts` 204, `agent-message-inbox.ts` 150, `agent-message-scheduler.ts` 120 effective non-empty lines.
+  - Largest changed implementation sources remain below the 500 effective-line hard limit: `agent-runtime-state.ts` 401, `agent-worker.ts` 300, `turn-tool-input-port.ts` 208, `agent-message-inbox.ts` 198, `agent-message-scheduler.ts` 166, `inbox-queue-store.ts` 158 effective non-empty lines.
   - This pass intentionally removed the old first-stage inbox/queue/turn-input-box source files instead of leaving compatibility re-exports.
 
 ## Environment Or Dependency Notes
@@ -119,10 +129,10 @@ The existing finite turn path remains intact: `AgentTurnRunner` / `LlmTurnPhase`
 Passed:
 
 - `git diff --check HEAD`
-- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/message-inbox/agent-message-inbox.test.ts tests/unit/agent/message-inbox/inbox-queue-store.test.ts tests/unit/agent/loop/turn-tool-input-port.test.ts tests/unit/agent/context/agent-runtime-state.test.ts tests/unit/agent/context/agent-context.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/unit/agent/runtime/agent-worker.test.ts`
-  - Result: 7 files passed, 54 tests passed.
-- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/interruption/abortable-operation.test.ts tests/unit/agent/loop/agent-turn-runner.test.ts tests/unit/agent/loop/turn-tool-input-port.test.ts tests/unit/agent/message-inbox/agent-message-inbox.test.ts tests/unit/agent/message-inbox/inbox-queue-store.test.ts tests/unit/agent/context/agent-runtime-state.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/unit/agent/runtime/agent-worker.test.ts tests/integration/agent/runtime/agent-runtime.test.ts tests/integration/agent/tool-approval-flow.test.ts`
-  - Result: 10 files passed, 67 tests passed.
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/message-inbox/agent-message-inbox.test.ts tests/unit/agent/message-inbox/agent-message-scheduler.test.ts tests/unit/agent/message-inbox/inbox-queue-store.test.ts tests/unit/agent/loop/turn-tool-input-port.test.ts tests/unit/agent/context/agent-runtime-state.test.ts tests/unit/agent/context/agent-context.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/unit/agent/runtime/agent-worker.test.ts`
+  - Result: 8 files passed, 61 tests passed.
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/interruption/abortable-operation.test.ts tests/unit/agent/loop/agent-turn-runner.test.ts tests/unit/agent/loop/turn-tool-input-port.test.ts tests/unit/agent/message-inbox/agent-message-inbox.test.ts tests/unit/agent/message-inbox/agent-message-scheduler.test.ts tests/unit/agent/message-inbox/inbox-queue-store.test.ts tests/unit/agent/context/agent-runtime-state.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/unit/agent/runtime/agent-worker.test.ts tests/integration/agent/runtime/agent-runtime.test.ts tests/integration/agent/tool-approval-flow.test.ts`
+  - Result: 11 files passed, 74 tests passed.
 - `pnpm -C autobyteus-ts run build`
   - Passed, including runtime dependency verification.
 - `pnpm -C autobyteus-server-ts run build:full`

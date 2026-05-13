@@ -1,5 +1,10 @@
 export type InboxLane = 'turn_start' | 'active_turn' | 'runtime_lifecycle';
 
+export type CancellableWait = {
+  promise: Promise<void>;
+  cancel: () => void;
+};
+
 class AsyncQueue<T extends { messageId: string }> {
   private items: T[] = [];
 
@@ -38,6 +43,7 @@ class AsyncQueue<T extends { messageId: string }> {
 export class InboxQueueStore<T extends { messageId: string }> {
   private readonly queues = new Map<InboxLane, AsyncQueue<T>>();
   private availabilityWaiters: Array<() => void> = [];
+  private availabilityVersion = 0;
 
   constructor(lanes: readonly InboxLane[]) {
     if (!Array.isArray(lanes) || lanes.length === 0) {
@@ -53,6 +59,10 @@ export class InboxQueueStore<T extends { messageId: string }> {
 
   get laneNames(): InboxLane[] {
     return Array.from(this.queues.keys());
+  }
+
+  get version(): number {
+    return this.availabilityVersion;
   }
 
   enqueue(lane: InboxLane, item: T): void {
@@ -106,27 +116,54 @@ export class InboxQueueStore<T extends { messageId: string }> {
   }
 
   async waitForAvailability(signal?: AbortSignal): Promise<void> {
+    if (!this.empty()) {
+      return;
+    }
+    const waiter = this.createAvailabilityWaiter(signal);
+    await waiter.promise;
+  }
+
+  createAvailabilityWaiter(signal?: AbortSignal): CancellableWait {
     if (signal?.aborted) {
-      throw new Error('Inbox queue wait aborted.');
+      return {
+        promise: Promise.reject(new Error('Inbox queue wait aborted.')),
+        cancel: () => undefined
+      };
     }
 
-    await new Promise<void>((resolve, reject) => {
-      const waiter = () => {
+    let settled = false;
+    let waiter!: () => void;
+    let onAbort!: () => void;
+    const cleanup = () => {
+      this.availabilityWaiters = this.availabilityWaiters.filter((entry) => entry !== waiter);
+      signal?.removeEventListener('abort', onAbort);
+    };
+
+    const promise = new Promise<void>((resolve, reject) => {
+      waiter = () => {
+        if (settled) return;
+        settled = true;
         cleanup();
         resolve();
       };
-      const onAbort = () => {
+      onAbort = () => {
+        if (settled) return;
+        settled = true;
         cleanup();
         reject(new Error('Inbox queue wait aborted.'));
       };
-      const cleanup = () => {
-        this.availabilityWaiters = this.availabilityWaiters.filter((entry) => entry !== waiter);
-        signal?.removeEventListener('abort', onAbort);
-      };
-
       this.availabilityWaiters.push(waiter);
       signal?.addEventListener('abort', onAbort, { once: true });
     });
+
+    return {
+      promise,
+      cancel: () => {
+        if (settled) return;
+        settled = true;
+        cleanup();
+      }
+    };
   }
 
   private getQueue(lane: InboxLane): AsyncQueue<T> {
@@ -138,6 +175,7 @@ export class InboxQueueStore<T extends { messageId: string }> {
   }
 
   private notifyAvailability(): void {
+    this.availabilityVersion += 1;
     const waiters = this.availabilityWaiters;
     this.availabilityWaiters = [];
     for (const waiter of waiters) {

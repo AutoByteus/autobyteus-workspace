@@ -217,4 +217,25 @@ describe('AgentWorker', () => {
     releaseRunner();
     expect(await waitForCondition(() => context.state.activeTurn === null)).toBe(true);
     await worker.stop(0.2);
-  });});
+  });
+
+  it('settles queued awaitable inbox commands during shutdown drain', async () => {
+    const context = makeContext();
+    context.state.agentMessageInbox = new AgentMessageInbox();
+    const worker = new AgentWorker(context);
+    const approvalPromise = context.state.agentMessageInbox.postToolApproval({
+      kind: 'tool_approval',
+      invocationId: 'approval-shutdown',
+      approved: true
+    });
+
+    (worker as any).settleQueuedAwaitablesForShutdown();
+
+    await expect(approvalPromise).resolves.toMatchObject({
+      accepted: false,
+      code: 'runtime_stopped',
+      invocationId: 'approval-shutdown'
+    });
+    expect(context.state.agentMessageInbox.qsize()).toBe(0);
+  });
+});

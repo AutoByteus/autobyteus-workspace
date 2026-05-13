@@ -42,4 +42,12 @@ describe('InboxQueueStore', () => {
 
     await expect(waitPromise).resolves.toBeUndefined();
   });
+
+  it('does not park availability waiters when messages are already queued', async () => {
+    const store = new InboxQueueStore<{ messageId: string }>(['turn_start']);
+
+    store.enqueue('turn_start', { messageId: 'first' });
+
+    await expect(timeout(store.waitForAvailability(), 50)).resolves.toBeUndefined();
+  });
 });

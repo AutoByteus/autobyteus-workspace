@@ -222,6 +222,16 @@ describe('AgentRuntimeState', () => {
     expect(noPending.code).toBe('no_pending_invocation');
 
     activeTurn.startToolInvocationBatch([new ToolInvocation('tool', {}, 'inv-result', 'turn-1')]);
+    const noConsumer = state.postToolResultToActiveTurn({
+      kind: 'tool_result',
+      invocationId: 'inv-result',
+      turnId: 'turn-1',
+      toolName: 'tool',
+      result: { ok: true }
+    });
+    expect(noConsumer.accepted).toBe(false);
+    expect(noConsumer.code).toBe('no_result_consumer');
+
     const waitPromise = activeTurn.toolInputPort.waitForToolResult('inv-result', {
       signal: activeTurn.executionScope.signal
     });

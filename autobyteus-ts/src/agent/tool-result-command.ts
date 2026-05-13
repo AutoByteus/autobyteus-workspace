@@ -14,6 +14,7 @@ export type PostToolResultResult =
   | { accepted: false; code: 'no_active_turn'; invocationId: string; message: string }
   | { accepted: false; code: 'stale_turn'; invocationId: string; turnId?: string; activeTurnId?: string; message: string }
   | { accepted: false; code: 'no_pending_invocation'; invocationId: string; turnId: string; message: string }
+  | { accepted: false; code: 'no_result_consumer'; invocationId: string; turnId: string; message: string }
   | { accepted: false; code: 'interrupted_turn'; invocationId: string; turnId: string; message: string }
   | { accepted: false; code: 'runtime_stopped'; invocationId: string; message: string };
 

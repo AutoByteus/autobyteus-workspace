@@ -321,6 +321,16 @@ export class AgentRuntimeState {
       };
     }
 
+    if (!activeTurn.toolInputPort.hasToolResultWaiter(invocationId)) {
+      return {
+        accepted: false,
+        code: 'no_result_consumer',
+        invocationId,
+        turnId: activeTurn.turnId,
+        message: `Tool result invocation '${invocationId}' has no active external result consumer for turn '${activeTurn.turnId}'.`
+      };
+    }
+
     const postResult = activeTurn.toolInputPort.postToolResult({
       kind: 'tool_result',
       invocationId,
@@ -332,22 +342,33 @@ export class AgentRuntimeState {
       ...(typeof input.isDenied === 'boolean' ? { isDenied: input.isDenied } : {})
     });
     if (!postResult.accepted) {
-      const code = postResult.code === 'closed' ? 'interrupted_turn' : 'no_pending_invocation';
-      return code === 'interrupted_turn'
-        ? {
-            accepted: false,
-            code,
-            invocationId,
-            turnId: activeTurn.turnId,
-            message: postResult.message ?? `Tool result '${invocationId}' could not be posted to interrupted turn.`
-          }
-        : {
-            accepted: false,
-            code,
-            invocationId,
-            turnId: activeTurn.turnId,
-            message: postResult.message ?? `Tool result '${invocationId}' is not pending.`
-          };
+      if (postResult.code === 'closed') {
+        return {
+          accepted: false,
+          code: 'interrupted_turn',
+          invocationId,
+          turnId: activeTurn.turnId,
+          message: postResult.message ?? `Tool result '${invocationId}' could not be posted to interrupted turn.`
+        };
+      }
+      if (postResult.code === 'no_waiter') {
+        return {
+          accepted: false,
+          code: 'no_result_consumer',
+          invocationId,
+          turnId: activeTurn.turnId,
+          message:
+            postResult.message ??
+            `Tool result invocation '${invocationId}' has no active external result consumer for turn '${activeTurn.turnId}'.`
+        };
+      }
+      return {
+        accepted: false,
+        code: 'no_pending_invocation',
+        invocationId,
+        turnId: activeTurn.turnId,
+        message: postResult.message ?? `Tool result '${invocationId}' is not pending.`
+      };
     }
 
     return {
@@ -357,7 +378,6 @@ export class AgentRuntimeState {
       invocationId
     };
   }
-
 
   shouldEnterIdleAfterLlmResponse(currentStatus: AgentStatus): boolean {
     return (

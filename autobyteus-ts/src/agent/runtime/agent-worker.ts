@@ -217,6 +217,7 @@ export class AgentWorker {
       console.error(`Fatal error in AgentWorker '${agentId}' asyncRun() loop: ${error}`);
     } finally {
       await this.waitForActiveRunnerToSettle();
+      this.settleQueuedAwaitablesForShutdown();
       console.info(`AgentWorker '${agentId}' asyncRun() loop has finished.`);
       console.info(`AgentWorker '${agentId}': Running shutdown sequence on worker loop.`);
       const orchestrator = new AgentShutdownOrchestrator();
@@ -275,6 +276,19 @@ export class AgentWorker {
       this.context.state.clearActiveTurnTask(turn.turnId);
       this.scheduler?.wakeDispatchabilityChanged();
       this.context.state.agentMessageInbox?.wakeAvailability();
+    }
+  }
+
+  private settleQueuedAwaitablesForShutdown(): void {
+    const inbox = this.context.state.agentMessageInbox;
+    if (!inbox) {
+      return;
+    }
+    const drained = inbox.settleQueuedAwaitablesForShutdown(this.context.agentId);
+    if (drained.length > 0) {
+      console.info(
+        `AgentWorker '${this.context.agentId}': Drained ${drained.length} queued inbox message(s) during shutdown.`
+      );
     }
   }
 

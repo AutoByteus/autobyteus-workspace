@@ -23,8 +23,11 @@ export type AgentMessageSchedulerHandlers = {
   toolResultHandler: AgentMessageHandler<ToolResultInboxMessage>;
 };
 
+type CancellableWait = { promise: Promise<void>; cancel: () => void };
+
 export class AgentMessageScheduler {
   private dispatchabilityWaiters: Array<() => void> = [];
+  private dispatchabilityVersion = 0;
 
   constructor(
     private readonly context: AgentContext,
@@ -41,7 +44,7 @@ export class AgentMessageScheduler {
       if (message) {
         return message;
       }
-      await this.waitForAvailabilityOrDispatchability(input.inbox, input.signal);
+      await this.waitForAvailabilityOrDispatchability(input.inbox, input.runtimeState, input.signal);
     }
   }
 
@@ -57,6 +60,7 @@ export class AgentMessageScheduler {
   }
 
   wakeDispatchabilityChanged(): void {
+    this.dispatchabilityVersion += 1;
     const waiters = this.dispatchabilityWaiters;
     this.dispatchabilityWaiters = [];
     for (const waiter of waiters) {
@@ -96,37 +100,87 @@ export class AgentMessageScheduler {
 
   private async waitForAvailabilityOrDispatchability(
     inbox: AgentMessageInbox,
+    runtimeState: AgentRuntimeState,
     signal?: AbortSignal
   ): Promise<void> {
     if (signal?.aborted) {
       throw new Error('Agent message scheduler wait aborted.');
     }
 
-    await Promise.race([
-      inbox.waitForAvailability({ signal }),
-      this.waitForDispatchabilityChanged(signal)
-    ]);
+    if (this.hasDispatchable(inbox, runtimeState)) {
+      return;
+    }
+
+    const availabilityVersion = inbox.availabilityVersion;
+    const dispatchabilityVersion = this.dispatchabilityVersion;
+    const availabilityWait = inbox.createAvailabilityWaiter({ signal });
+    const dispatchabilityWait = this.createDispatchabilityWaiter(signal);
+    const cleanup = () => {
+      availabilityWait.cancel();
+      dispatchabilityWait.cancel();
+    };
+
+    if (
+      this.hasDispatchable(inbox, runtimeState) ||
+      inbox.availabilityVersion !== availabilityVersion ||
+      this.dispatchabilityVersion !== dispatchabilityVersion
+    ) {
+      cleanup();
+      return;
+    }
+
+    try {
+      await Promise.race([availabilityWait.promise, dispatchabilityWait.promise]);
+    } finally {
+      cleanup();
+    }
   }
 
-  private async waitForDispatchabilityChanged(signal?: AbortSignal): Promise<void> {
+  private hasDispatchable(inbox: AgentMessageInbox, runtimeState: AgentRuntimeState): boolean {
+    const priority = runtimeState.activeTurn || runtimeState.activeTurnTask ? ACTIVE_TURN_PRIORITY : IDLE_PRIORITY;
+    return priority.some((lane) => inbox.peekFirst(lane) !== null);
+  }
+
+  private createDispatchabilityWaiter(signal?: AbortSignal): CancellableWait {
     if (signal?.aborted) {
-      throw new Error('Agent message scheduler wait aborted.');
+      return {
+        promise: Promise.reject(new Error('Agent message scheduler wait aborted.')),
+        cancel: () => undefined
+      };
     }
-    await new Promise<void>((resolve, reject) => {
-      const waiter = () => {
+
+    let settled = false;
+    let waiter!: () => void;
+    let onAbort!: () => void;
+    const cleanup = () => {
+      this.dispatchabilityWaiters = this.dispatchabilityWaiters.filter((entry) => entry !== waiter);
+      signal?.removeEventListener('abort', onAbort);
+    };
+
+    const promise = new Promise<void>((resolve, reject) => {
+      waiter = () => {
+        if (settled) return;
+        settled = true;
         cleanup();
         resolve();
       };
-      const onAbort = () => {
+      onAbort = () => {
+        if (settled) return;
+        settled = true;
         cleanup();
         reject(new Error('Agent message scheduler wait aborted.'));
-      };
-      const cleanup = () => {
-        this.dispatchabilityWaiters = this.dispatchabilityWaiters.filter((entry) => entry !== waiter);
-        signal?.removeEventListener('abort', onAbort);
       };
       this.dispatchabilityWaiters.push(waiter);
       signal?.addEventListener('abort', onAbort, { once: true });
     });
+
+    return {
+      promise,
+      cancel: () => {
+        if (settled) return;
+        settled = true;
+        cleanup();
+      }
+    };
   }
 }
