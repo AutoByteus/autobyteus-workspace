@@ -2,7 +2,7 @@
 
 ## Status (`Draft`/`Design-ready`/`Refined`)
 
-Design-ready
+Refined
 
 ## Goal / Problem Statement
 
@@ -20,6 +20,8 @@ The requested behavior: interrupt should cancel the current active work unit, in
 - Tool batch continuation depends on `ToolResultEventHandler` aggregating active-batch results and enqueueing a tool-continuation user message. Interrupt must clear active batches and stale same-turn queue events so an interrupted tool result does not drive another LLM call.
 - Server-native Autobyteus single-agent backend maps `interrupt()` to `agent.stop()`. Server-native Autobyteus team backend maps `interrupt()` to `team.stop()`. Codex and Claude backends already have real interrupt paths.
 - UI/services currently send `STOP_GENERATION`, but the server treats that command as an interrupt operation (`activeRun.interrupt(...)`) for all backends. The main product gap is the native Autobyteus runtime/backend implementation, not the presence of a WebSocket command path.
+- Current ticket implementation has already completed the first major refactor: normal turn execution now flows through `AgentInputBox -> AgentWorker -> AgentTurnRunner -> LlmTurnPhase/ToolPhase/pipelines`, with `AgentRuntime.postToolApproval(...) -> AgentRuntimeState.postToolApprovalToActiveTurn(...) -> AgentTurnInputBox.postApproval(...)` for approvals. `WorkerEventDispatcher` and old normal-flow handlers are no longer the turn-loop owners.
+- The next design refinement uses that implemented state as the base and cleans up the remaining inbound-message model: `AgentInputBox`/`AgentTurnInputBox` and `AgentInputEventQueueManager` are understandable as an intermediate step, but the final architecture should expose one semantic `AgentMessageInbox`, an explicit `AgentMessageScheduler`, typed `AgentMessageHandler`s, and an internal tool-specific `TurnToolInputPort` rather than two top-level inbox concepts plus a queue-manager name.
 
 ## Design Health Assessment (Mandatory)
 
@@ -33,15 +35,17 @@ The requested behavior: interrupt should cancel the current active work unit, in
 ## Recommendations
 
 1. Introduce an explicit finite AgentTurnRunner/agent-loop owner plus turn-scoped interrupt control in `autobyteus-ts` instead of overloading stop or treating AgentWorker/internal queue events as the turn loop.
-2. Introduce typed input-box lanes: `AgentInputBox` for turn-starting triggers, `AgentTurnInputBox` for tool results/approvals/continuations, lifecycle lane for bootstrap/shutdown/status, and side-band control for interrupt.
+2. Replace the architecture-facing `AgentInputBox` / `AgentTurnInputBox` split with a unified `AgentMessageInbox` that stores typed inbound agent messages in semantic lanes: turn-starting user/inter-agent messages, active-turn messages such as tool approvals/results, lifecycle messages, and parked future work. The separate turn-scoped tool input primitive should be an internal `TurnToolInputPort`, not a second public inbox concept and not a generic all-phase awaitable input object.
 3. Introduce an AgentOutbox publication boundary for assistant output, streaming segments, tool lifecycle/logs, approvals, errors, turn/runtime lifecycle, artifacts, and state updates.
 4. Extract typed processor pipeline orchestrators for input, tool invocation, tool result, LLM response/output, and system prompt processing so runner phases and lifecycle bootstrap can reuse existing processors without duplicating or bypassing behavior.
-5. Treat bootstrap and shutdown as runtime lifecycle pipelines: bootstrap prepares the runtime before AgentInputBox-triggered turns, shutdown runs only for terminal stop/worker exit, and neither is part of normal generation interrupt.
+5. Treat bootstrap and shutdown as runtime lifecycle pipelines: bootstrap prepares the runtime before `AgentMessageInbox` turn-starting messages are dispatched, shutdown runs only for terminal stop/worker exit, and neither is part of normal generation interrupt.
 6. Add public `interrupt(...)` APIs on native `Agent`, `AgentRuntime`, `AgentTeam`, and `AgentTeamRuntime` while leaving `stop(...)` as terminal runtime shutdown.
 7. Introduce a turn execution scope as the architectural cancellation boundary, then propagate that scope/signal into explicit LLM/tool phase services, LLM invocation, request assembly/compaction, streaming response handlers, tool execution, MCP tools, and foreground terminal tools.
 8. Treat interrupted turns as settled/idle, not successful, failed, or stopped. Emit explicit interruption metadata and avoid producing tool-continuation LLM input from interrupted work.
 9. Update native server Autobyteus backends to call native interrupt APIs rather than stop.
 10. Add tests that prove interrupt unblocks active LLM/tool awaits and the same runtime can accept a later user message.
+11. Add an explicit `AgentMessageScheduler` and typed message handlers so the inbox loop is easy to reason about: scheduler selects the dispatchable message and handler by message kind plus runtime/turn state; handlers invoke the right domain owner or processor pipeline without becoming the LLM/tool phase chain.
+12. Use symmetric final phase names `LlmPhase` and `ToolPhase`; treat current `LlmTurnPhase` as a first-stage implementation name to rename in the final architecture.
 
 ## Scope Classification (`Small`/`Medium`/`Large`)
 
@@ -73,14 +77,18 @@ Large
 - FR-004A: Non-interrupted tool-result continuation shall preserve current behavior: aggregate ordered tool results into a `SenderType.TOOL` `AgentInputUserMessage`, preserve media `ContextFile` attachments, apply configured input processors, build the LLM user message through the existing multimodal conversion path, and reuse the active turn rather than starting a new turn.
 - FR-004B: The implementation shall separate mailbox/runtime events from turn-local business control flow by introducing explicit turn runner and phase/pipeline services; normal LLM/tool/continuation progression shall not be owned by internal queue-event choreography in the final implementation.
 - FR-004C: Existing processor extension points shall be preserved through typed pipeline orchestrators: input processors, tool invocation preprocessors, tool execution result processors, LLM response/output processors, and system prompt processors.
-- FR-004D: Tool results, tool approvals, and tool continuations shall be modeled as `AgentTurnInputBox` messages keyed by turn/invocation identity; they shall not be accepted as `AgentInputBox` messages that can start a new turn.
-- FR-004D1: `AgentInputBox` shall be a first-class semantic runtime inbound boundary above low-level queue storage; it shall own external turn-starting message eligibility, preserve unrelated external messages while a turn is active, and be the source consumed by the AgentWorker scheduler.
+- FR-004D: Tool results, tool approvals, and same-turn continuations shall be modeled as active-turn agent messages keyed by turn/invocation identity; they shall never be eligible to start a new turn.
+- FR-004D1: `AgentMessageInbox` shall be the first-class semantic runtime inbound boundary above low-level queue storage; it shall own typed inbound message storage, preserve unrelated external messages while a turn is active, and expose lane/candidate/claim APIs to the scheduler without leaking queue-manager mechanics or owning routing policy.
+- FR-004D2: `AgentMessageScheduler` shall own message dispatchability and routing policy: external user/inter-agent messages start a turn only when idle, active-turn messages are routed only to the active turn, lifecycle messages are handled by runtime lifecycle handlers, stale messages produce explicit reject/drop outcomes, and interrupt remains side-band runtime control.
+- FR-004D3: Typed `AgentMessageHandler`s shall handle inbound message families and call the appropriate domain owner or processor pipeline. They shall not recreate the old event-handler chain for LLM/tool phase progression.
 - FR-004E: Agent-produced outbound facts and data shall flow through an AgentOutbox publication boundary above existing notifier/event-stream implementations, including assistant output, streaming segments, tool lifecycle/logs, approvals, errors, artifacts, state updates, and turn/runtime lifecycle messages.
 - FR-005: Interrupting pending approval shall clear pending approval state for the interrupted turn and ignore later stale approval/denial messages for those invocation IDs.
+- FR-005A: External tool approval/denial commands shall route through the final public/runtime boundary (`AgentRunBackend.approveToolInvocation` -> native `Agent.postToolExecutionApproval` -> `AgentRuntime.postToolApproval`), enter `AgentMessageInbox` as awaitable active-turn messages, and be validated by scheduler/handler/runtime-state logic against active turn, optional turn ID, pending invocation ID, and interruption/settlement state before any message is posted through the active turn's internal `TurnToolInputPort`.
+- FR-005B: Externally delivered or asynchronous tool results, when present, shall enter `AgentMessageInbox` as active-turn tool-result messages, be dispatched by `AgentMessageScheduler` to `ToolResultMessageHandler`, be validated against active turn and expected invocation identity by runtime state, and wake `ToolPhase` through `TurnToolInputPort`; normal in-process tool execution may still return results directly inside `ToolPhase`.
 - FR-006: Native interrupt shall clear or invalidate turn-scoped queued work (`LLMUserMessageReadyEvent`, tool invocation request/execution/result events, and tool-continuation input) for the interrupted turn while preserving unrelated later external user messages.
 - FR-007: After successful native interrupt settlement, the runtime shall remain running and reusable; a later user message can start a new turn without requiring runtime restart.
 - FR-008: Native `stop(timeout?)` shall retain terminal shutdown semantics and shall not become a synonym for interrupt.
-- FR-008A: Bootstrap and shutdown shall remain runtime lifecycle pipelines outside `AgentTurnRunner`: bootstrap must complete before external AgentInputBox triggers start turns; normal interrupt shall not execute shutdown cleanup; terminal stop shall execute shutdown cleanup exactly once.
+- FR-008A: Bootstrap and shutdown shall remain runtime lifecycle pipelines outside `AgentTurnRunner`: bootstrap must complete before `AgentMessageInbox` turn-starting messages are dispatched; normal interrupt shall not execute shutdown cleanup; terminal stop shall execute shutdown cleanup exactly once.
 - FR-008B: Single-agent bootstrap shall use direct lifecycle orchestration (`AgentBootstrapper.run(context)`) with bootstrap events used only for lifecycle notification/observation if kept; system prompt processors shall be preserved via a typed `SystemPromptPipeline`.
 - FR-009: LLM invocation APIs shall accept a cancellation option that provider adapters map to SDK/fetch abort mechanisms where available and to cooperative runtime abandonment where not available.
 - FR-010: Tool execution APIs shall accept a cancellation option; built-in foreground terminal tools and MCP tool adapters shall participate in interruption as far as their transports allow.
@@ -89,7 +97,7 @@ Large
 - FR-013: Native team interrupt shall propagate interruption to currently running member agents and sub-teams and return the team runtime to idle without teardown.
 - FR-014: Runtime events/statuses shall distinguish interrupting/interrupted work from error and shutdown; clients shall be able to tell whether a turn or tool ended because of interruption.
 - FR-015: Repeated interrupt requests for the same active turn shall be idempotent and shall not emit duplicate terminal turn/tool outcomes.
-- FR-016: Implementation shall preserve the documented component contracts, state-machine transitions, message routing rules, and final work-package safety gates for `AgentRuntime`, `AgentWorker`, `AgentInputBox`, `AgentTurnInputBox`, `AgentTurnRunner`, `TurnExecutionScope`, `AgentOutbox`, and typed processor pipelines.
+- FR-016: Implementation shall preserve the documented component contracts, state-machine transitions, message routing rules, and final work-package safety gates for `AgentRuntime`, `AgentWorker`, `AgentMessageInbox`, `AgentMessageScheduler`, typed `AgentMessageHandler`s, `TurnToolInputPort`, `AgentTurnRunner`, `LlmPhase`, `ToolPhase`, `TurnExecutionScope`, `AgentOutbox`, and typed processor pipelines.
 - FR-017: Final implementation shall be a clean-cut refactor: normal LLM/tool/continuation turn progression shall be owned by `AgentTurnRunner` and phase/pipeline services, and old event-handler queue choreography shall be removed from normal turn control. Remaining event/listener code shall be limited to external input boundaries, lifecycle observation, or outbox delivery only.
 
 ## Acceptance Criteria
@@ -101,10 +109,14 @@ Large
 - AC-004A: A non-interrupted tool-result continuation test verifies that configured input processors are invoked for the `SenderType.TOOL` continuation message, the same turn ID is reused, media context files are preserved, and exactly one next LLM call receives the processed tool-result message.
 - AC-004B: Architecture/code review verifies that `AgentTurnRunner` and extracted phase/pipeline services own turn-local LLM/tool continuation flow, while `AgentWorker` remains a mailbox/scheduler/lifecycle worker and does not directly encode the reasoning loop.
 - AC-004C: Processor pipeline tests verify existing processor ordering and error behavior are preserved for input, tool invocation, tool result, and LLM response/output processors after extraction.
-- AC-004D: AgentTurnInputBox tests verify tool results/approvals are accepted only for the active turn/invocation, stale or post-interrupt messages are ignored, and external user messages remain queued separately.
-- AC-004D1: AgentInputBox tests/review verify external user/inter-agent messages enter the semantic AgentInputBox, the worker consumes triggers from AgentInputBox rather than direct queue storage, and tool results/approvals/continuations cannot start turns through AgentInputBox.
+- AC-004D: Active-turn message tests verify tool results/approvals are accepted only for the active turn/invocation, stale or post-interrupt messages are ignored, and external user/inter-agent messages remain queued separately.
+- AC-004D1: AgentMessageInbox tests/review verify external user/inter-agent messages, lifecycle messages, and active-turn messages enter the semantic inbox, the scheduler claims typed messages through AgentMessageInbox rather than direct queue storage, and tool results/approvals/continuations cannot start turns.
+- AC-004D2: AgentMessageScheduler tests verify routing outcomes for idle external messages, busy external messages, valid active-turn messages, stale active-turn messages, lifecycle messages, stopped runtime, and side-band interrupt exclusion.
+- AC-004D3: Message-handler tests/review verify handlers call typed pipelines/domain owners and do not own normal LLM/tool phase progression.
 - AC-004E: Outbox tests verify new turn/tool interruption outbound messages are published through AgentOutbox and mapped to existing notifier/event-stream outputs without being used to advance turn control flow.
 - AC-005: Interrupt during pending tool approval clears `pendingToolApprovals` for that turn; a later approval for that invocation is rejected/ignored as stale without changing runtime status.
+- AC-005A: Server/native approval routing tests verify `AgentRunBackend.approveToolInvocation` reaches native `Agent.postToolExecutionApproval`, `AgentRuntime.postToolApproval` posts an awaitable active-turn inbox message, `ToolApprovalMessageHandler`/runtime-state validation checks active turn and pending invocation, valid approvals wake `ToolPhase.waitForApproval` through `TurnToolInputPort`, and no-active/stale-turn/no-pending/interrupted approvals return explicit non-turn-starting outcomes.
+- AC-005B: External/async tool-result routing tests verify `ToolResultInboxMessage` enters `AgentMessageInbox`, scheduler dispatches `ToolResultMessageHandler`, runtime-state validation checks active turn and expected invocation identity, valid results wake `ToolPhase.waitForToolResults` through `TurnToolInputPort`, stale/interrupted results are fenced, and in-process tool results still follow direct `ToolPhase -> ToolResultPipeline -> ToolResultContinuationBuilder -> AgentInputPipeline(SenderType.TOOL)` flow.
 - AC-006: `agent.stop()` and `runtime.stop()` still transition to shutdown complete and unregister/cleanup runtime resources.
 - AC-006A: Bootstrap tests verify successful bootstrap reaches ready/idle before external turns are processed, bootstrap failure reaches error, and interrupt during bootstrap returns no-active-turn/not-interruptible without invoking shutdown cleanup.
 - AC-006B: Stop tests verify shutdown cleanup runs exactly once, including when stop is requested during an active turn; normal interrupt tests verify shutdown cleanup is not invoked and runtime remains reusable.
@@ -143,9 +155,9 @@ Large
 
 | Use Case | Covered Requirements |
 | --- | --- |
-| UC-001 | FR-001, FR-002, FR-003, FR-004D1, FR-006, FR-007, FR-009, FR-014, FR-015, FR-016, FR-017 |
-| UC-002 | FR-001, FR-002, FR-004, FR-004A, FR-004B, FR-004C, FR-004D, FR-004D1, FR-004E, FR-006, FR-007, FR-010, FR-014, FR-015, FR-016, FR-017 |
-| UC-003 | FR-004B, FR-004C, FR-004D, FR-004D1, FR-005, FR-006, FR-014, FR-015, FR-016, FR-017 |
+| UC-001 | FR-001, FR-002, FR-003, FR-004D1, FR-004D2, FR-004D3, FR-006, FR-007, FR-009, FR-014, FR-015, FR-016, FR-017 |
+| UC-002 | FR-001, FR-002, FR-004, FR-004A, FR-004B, FR-004C, FR-004D, FR-004D1, FR-004D2, FR-004D3, FR-004E, FR-005B, FR-006, FR-007, FR-010, FR-014, FR-015, FR-016, FR-017 |
+| UC-003 | FR-004B, FR-004C, FR-004D, FR-004D1, FR-004D2, FR-004D3, FR-005, FR-005A, FR-005B, FR-006, FR-014, FR-015, FR-016, FR-017 |
 | UC-004 | FR-012, FR-013, FR-014 |
 | UC-005 | FR-011, FR-012, FR-014 |
 | UC-006 | FR-009, FR-010 |
@@ -162,10 +174,14 @@ Large
 | AC-004A | Tool-result continuation still flows through input processors and same-turn LLM input. |
 | AC-004B | Turn-local flow is owned by runner/phase services, not fragmented queue choreography. |
 | AC-004C | Typed processor pipeline extraction preserves existing processor behavior. |
-| AC-004D | AgentTurnInputBox separates tool results/approvals from `AgentInputBox` turn-starting messages. |
-| AC-004D1 | AgentInputBox is the semantic runtime inbox above queue storage. |
+| AC-004D | Active-turn messages are fenced from turn-starting messages. |
+| AC-004D1 | AgentMessageInbox is the semantic runtime inbox above queue storage. |
+| AC-004D2 | AgentMessageScheduler owns dispatch decisions by message type and runtime/turn state. |
+| AC-004D3 | Typed message handlers invoke pipelines/domain owners without recreating old phase-handler choreography. |
 | AC-004E | AgentOutbox is the outbound boundary for new interruption events and remains observation-only. |
 | AC-005 | Pending approval state is cleared safely. |
+| AC-005A | External approval/denial routes through runtime validation into TurnToolInputPort. |
+| AC-005B | External/async tool results route through runtime validation into TurnToolInputPort and rejoin the normal tool-result continuation pipeline. |
 | AC-006 | Stop remains terminal lifecycle control. |
 | AC-006A | Bootstrap lifecycle is ready/error before turns and is not normal interrupt. |
 | AC-006B | Shutdown lifecycle runs on stop, not on reusable interrupt. |

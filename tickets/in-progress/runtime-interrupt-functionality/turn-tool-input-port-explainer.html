@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Agent Inbox vs Active Turn Port</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --muted: #94a3b8;
+      --text: #e5e7eb;
+      --blue: #38bdf8;
+      --green: #34d399;
+      --yellow: #fbbf24;
+      --red: #fb7185;
+      --purple: #a78bfa;
+      --border: #334155;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top, #1e293b, var(--bg));
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    header {
+      padding: 28px 32px 12px;
+      text-align: center;
+    }
+    h1 { margin: 0 0 8px; font-size: 30px; }
+    .subtitle { color: var(--muted); font-size: 16px; }
+    .legend {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
+      padding: 10px 24px 20px;
+    }
+    .pill { border: 1px solid var(--border); border-radius: 999px; padding: 6px 10px; background: #0b1220; color: #cbd5e1; font-size: 13px; }
+    main { max-width: 1220px; margin: 0 auto; padding: 8px 24px 36px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(160px, 1fr));
+      gap: 14px;
+      align-items: stretch;
+    }
+    .box {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      min-height: 132px;
+      padding: 16px;
+      background: rgba(15, 23, 42, 0.84);
+      position: relative;
+      transition: all .25s ease;
+      box-shadow: 0 14px 30px rgba(0,0,0,.18);
+    }
+    .box h2 { margin: 0 0 8px; font-size: 17px; }
+    .box p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
+    .box small { display: block; margin-top: 10px; color: #64748b; }
+    .active { transform: translateY(-4px); box-shadow: 0 0 0 2px var(--blue), 0 0 34px rgba(56,189,248,.33); }
+    .waiting { box-shadow: 0 0 0 2px var(--yellow), 0 0 34px rgba(251,191,36,.28); }
+    .success { box-shadow: 0 0 0 2px var(--green), 0 0 34px rgba(52,211,153,.26); }
+    .danger { box-shadow: 0 0 0 2px var(--red), 0 0 34px rgba(251,113,133,.26); }
+    .inbox { border-color: rgba(56,189,248,.6); }
+    .port { border-color: rgba(251,191,36,.7); background: linear-gradient(180deg, rgba(251,191,36,.12), rgba(15,23,42,.84)); }
+    .runner { border-color: rgba(167,139,250,.7); }
+    .controls {
+      display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+      margin: 24px 0 18px;
+    }
+    button {
+      border: 0; border-radius: 12px; padding: 11px 14px;
+      background: #2563eb; color: white; font-weight: 700; cursor: pointer;
+      box-shadow: 0 8px 20px rgba(37,99,235,.28);
+    }
+    button:hover { filter: brightness(1.1); }
+    button.secondary { background: #475569; }
+    button.approve { background: #059669; }
+    button.interrupt { background: #e11d48; }
+    .status {
+      margin: 0 auto 20px;
+      max-width: 980px;
+      border: 1px solid var(--border);
+      background: rgba(2,6,23,.65);
+      border-radius: 16px;
+      padding: 14px 16px;
+      min-height: 76px;
+    }
+    .status strong { color: var(--blue); }
+    .note {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 20px;
+    }
+    .note-card {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: rgba(15,23,42,.68);
+      padding: 16px;
+    }
+    .note-card h3 { margin: 0 0 8px; }
+    .note-card ul { margin: 8px 0 0 20px; color: #cbd5e1; line-height: 1.55; }
+    .arrow {
+      text-align: center; color: var(--muted); font-size: 28px; align-self: center;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .row2 { margin-top: 14px; grid-template-columns: repeat(7, minmax(100px, 1fr)); }
+    .wide { grid-column: span 2; }
+    .token {
+      position: fixed; width: 18px; height: 18px; border-radius: 50%; background: var(--green);
+      box-shadow: 0 0 20px rgba(52,211,153,.8); z-index: 20; pointer-events: none; opacity: 0;
+    }
+    .queue-list { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+    .queue-item { border: 1px solid #334155; border-radius: 10px; padding: 7px 8px; background: #020617; color: #dbeafe; font-size: 12px; }
+    .queue-item.yellow { color: #fef3c7; }
+    .queue-item.muted { color: #94a3b8; }
+    code { color: #fef08a; }
+    @media (max-width: 900px) {
+      .grid, .row2, .note { grid-template-columns: 1fr; }
+      .arrow { transform: rotate(90deg); }
+      .wide { grid-column: auto; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>One Agent Inbox + One Private Turn Wait Port</h1>
+    <div class="subtitle">The yellow box is tool-specific: it is not another inbox. It is where ToolPhase waits/wakes for approval or async tool results.</div>
+  </header>
+
+  <div class="legend">
+    <span class="pill">Blue = runtime inbox / scheduler</span>
+    <span class="pill">Purple = active agent turn</span>
+    <span class="pill">Yellow = private per-turn wait point</span>
+    <span class="pill">Red = interrupt closes/fences the wait point</span>
+  </div>
+
+  <main>
+    <section class="grid" aria-label="main flow">
+      <div id="user" class="box">
+        <h2>1. External input</h2>
+        <p>User message, inter-agent message, or tool approval command arrives from outside.</p>
+      </div>
+      <div class="arrow">→</div>
+      <div id="inbox" class="box inbox">
+        <h2>2. AgentMessageInbox</h2>
+        <p>The one real runtime inbox. It stores typed messages in lanes.</p>
+        <div id="inboxList" class="queue-list"><div class="queue-item muted">empty</div></div>
+      </div>
+      <div class="arrow">→</div>
+      <div id="scheduler" class="box inbox">
+        <h2>3. AgentMessageScheduler</h2>
+        <p>Chooses which inbox message is dispatchable and which handler receives it.</p>
+      </div>
+    </section>
+
+    <section class="grid row2" aria-label="turn flow">
+      <div id="handler" class="box">
+        <h2>4. Message handler</h2>
+        <p>Entry handler only. Starts a turn or validates an active-turn message.</p>
+      </div>
+      <div class="arrow">→</div>
+      <div id="runner" class="box runner wide">
+        <h2>5. AgentTurnRunner</h2>
+        <p>The finite loop for this turn: input pipeline → LLM phase → tool phase → continuation → final.</p>
+      </div>
+      <div class="arrow">→</div>
+      <div id="tool" class="box runner">
+        <h2>6. ToolPhase</h2>
+        <p>If a tool needs approval, ToolPhase pauses and waits.</p>
+      </div>
+      <div class="arrow">↔</div>
+      <div id="port" class="box port wide">
+        <h2>7. TurnToolInputPort</h2>
+        <p><strong>Final design name:</strong> tool-specific private wait/wake point.</p>
+        <p>This is private to the active turn. It lets ToolPhase wait for approval and be woken later.</p>
+        <small id="portState">state: no active waiter</small>
+      </div>
+    </section>
+
+    <div class="controls">
+      <button onclick="stepUserMessage()">1. Send user message</button>
+      <button onclick="stepToolNeedsApproval()">2. Tool asks approval</button>
+      <button class="approve" onclick="stepApprove()">3. User approves</button>
+      <button class="interrupt" onclick="stepInterrupt()">Interrupt turn</button>
+      <button class="secondary" onclick="resetDemo()">Reset</button>
+    </div>
+
+    <div id="status" class="status">
+      <strong>Start:</strong> Click “Send user message”. Watch how the real inbox starts a turn, then the private turn port is used only when ToolPhase waits.
+    </div>
+
+    <section class="note">
+      <div class="note-card">
+        <h3>Why not put approval directly into ToolPhase?</h3>
+        <ul>
+          <li>The approval comes from outside: server/UI/backend.</li>
+          <li>It must enter the normal runtime boundary first: <code>AgentMessageInbox</code>.</li>
+          <li>Scheduler + handler validate turn ID and invocation ID.</li>
+          <li>Only valid approval wakes the private turn wait point.</li>
+        </ul>
+      </div>
+      <div class="note-card">
+        <h3>Why have the private port?</h3>
+        <ul>
+          <li>Because ToolPhase may be waiting mid-turn.</li>
+          <li>The worker/inbox loop keeps running while ToolPhase waits.</li>
+          <li>The port wakes exactly the waiting invocation.</li>
+          <li>If the turn is interrupted, the port closes, so late approval cannot revive old work.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <div id="token" class="token"></div>
+
+  <script>
+    let state = 'idle';
+    const statusEl = document.getElementById('status');
+    const inboxList = document.getElementById('inboxList');
+    const portState = document.getElementById('portState');
+    const boxes = ['user','inbox','scheduler','handler','runner','tool','port'];
+
+    function clearClasses() {
+      boxes.forEach(id => document.getElementById(id).classList.remove('active','waiting','success','danger'));
+    }
+    function mark(id, cls='active') { document.getElementById(id).classList.add(cls); }
+    function setStatus(html) { statusEl.innerHTML = html; }
+    function setInbox(items) {
+      inboxList.innerHTML = items.length ? items.map(i => `<div class="queue-item ${i.kind || ''}">${i.text}</div>`).join('') : '<div class="queue-item muted">empty</div>';
+    }
+    function resetDemo() {
+      state = 'idle'; clearClasses(); setInbox([]); portState.textContent = 'state: no active waiter';
+      setStatus('<strong>Reset:</strong> The agent has one real inbox. The private turn port appears only inside an active turn when something needs to wait.');
+    }
+    function stepUserMessage() {
+      state = 'turn-running'; clearClasses();
+      mark('user'); mark('inbox'); mark('scheduler'); mark('handler'); mark('runner', 'success');
+      setInbox([{ text: 'UserInboxMessage: "Please use tool"' }]);
+      setStatus('<strong>User message:</strong> It enters <code>AgentMessageInbox</code>. Scheduler sees runtime is idle, so <code>TurnStartMessageHandler</code> starts <code>AgentTurnRunner</code>. The worker loop stays alive.');
+      setTimeout(() => setInbox([]), 900);
+    }
+    function stepToolNeedsApproval() {
+      if (state === 'idle') stepUserMessage();
+      state = 'waiting-approval'; clearClasses();
+      mark('runner','success'); mark('tool','waiting'); mark('port','waiting');
+      portState.textContent = 'state: waiting for invocation tool_123 approval';
+      setInbox([]);
+      setStatus('<strong>Tool needs approval:</strong> <code>ToolPhase</code> pauses inside the active turn and waits on the private <code>TurnToolInputPort</code>. This is not a second inbox; it is just a wait/wake point.');
+    }
+    function stepApprove() {
+      if (state !== 'waiting-approval') stepToolNeedsApproval();
+      state = 'approved'; clearClasses();
+      mark('user'); mark('inbox'); mark('scheduler'); mark('handler'); mark('port','success'); mark('tool','success'); mark('runner','success');
+      setInbox([{ text: 'ToolApprovalInboxMessage: approve tool_123', kind: 'yellow' }]);
+      portState.textContent = 'state: approval delivered; waiter woke';
+      setStatus('<strong>Approval:</strong> Approval still enters the one real <code>AgentMessageInbox</code>. Scheduler sends it to <code>ToolApprovalMessageHandler</code>. After validation, the handler calls <code>port.postApproval(...)</code>, waking the waiting <code>ToolPhase</code>.');
+      setTimeout(() => setInbox([]), 1200);
+    }
+    function stepInterrupt() {
+      state = 'interrupted'; clearClasses();
+      mark('runner','danger'); mark('tool','danger'); mark('port','danger');
+      portState.textContent = 'state: closed/fenced because turn was interrupted';
+      setInbox([{ text: 'Future user messages stay parked safely' }]);
+      setStatus('<strong>Interrupt:</strong> <code>AgentRuntime.interrupt()</code> is side-band. It interrupts the active turn scope and closes/fences the private port. If a late approval arrives after this, scheduler/handler reject it as stale; it cannot wake the old ToolPhase.');
+    }
+  </script>
+</body>
+</html>

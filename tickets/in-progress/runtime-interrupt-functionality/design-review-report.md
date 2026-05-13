@@ -5,59 +5,57 @@
 - Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/requirements.md`
 - Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/investigation-notes.md`
 - Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/design-spec.md`
-- Current Review Round: 6
-- Trigger: AgentInputBox concreteness addendum after user identified that the runtime inbox was too conceptual.
-- Prior Review Round Reviewed: Round 5 in this same canonical report path.
-- Latest Authoritative Round: 6
-- Current-State Evidence Basis: Updated requirements/design artifacts, prior investigation notes, and targeted verification of AgentInputBox ownership, boundary map, dependency rules, invariants, interface mapping, folder/file mapping, message routing, and prior clean-final-state blockers.
+- Optional Visualization Reviewed As Non-Authoritative Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/turn-tool-input-port-explainer.html`
+- Current Review Round: 10
+- Trigger: Addendum review for phase naming symmetry: final target names should be `LlmPhase` and `ToolPhase`; `LlmTurnPhase` is current first-stage implementation evidence only.
+- Prior Review Round Reviewed: Round 9 fresh independent review approved the second-stage `AgentMessageInbox` / `AgentMessageScheduler` / typed handler / `TurnToolInputPort` architecture.
+- Latest Authoritative Round: 10
+- Current-State Evidence Basis: Shared design principles reloaded; requirements/investigation/design artifacts re-read for phase naming; greps verified target mappings use `llm-phase.ts` / `LlmPhase`, `LlmCallPhase` is rejected, and remaining `LlmTurnPhase` references are current-state evidence or explicit rename notes rather than target class/file names.
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Initial architecture review | N/A | Non-blocking advisories | Pass | No | Initial runner/scope/outbox direction approved. |
-| 2 | Handler/listener migration addendum | Non-blocking advisories | Non-blocking handler advisory | Pass | No | Later superseded by stricter final-state requirement. |
-| 3 | Clean final-state addendum | Prior advisories | Non-blocking doc advisory | Pass | No | Final-state rule improved but still conflicted with old sections. |
-| 4 | Final-ideal-state-only addendum | Prior advisories | AR-B-001 through AR-B-004 | Fail / Needs Design Rework | No | Temporary adapter / handler-owner contradictions remained. |
-| 5 | Rework after Round 4 findings | AR-B-001 through AR-B-004 | No blocking findings | Pass / Approved | No | Final-only design became internally consistent. |
-| 6 | AgentInputBox concreteness addendum | Round 5 clean-final-state gates | No blocking findings | **Pass / Approved** | Yes | AgentInputBox is now a concrete semantic owner above low-level queue storage. |
+| 1-6 | Earlier iterative reviews/addenda | Earlier blocker set resolved by Round 6 | N/A | Prior result was Pass | No | Superseded by later independent reviews. |
+| 7 | Fresh independent architecture review | Rechecked design from first principles | AR-B-005 | Fail / NEEDS DESIGN REWORK | No | Approval routing into active turn input was incomplete. |
+| 8 | AR-B-005 rework review | AR-B-005 and previous blocker classes | None | Pass / APPROVED FOR IMPLEMENTATION | No | Approval route was completed for the first-stage model. |
+| 9 | Fresh independent review of second-stage inbox/scheduler/TurnToolInputPort refinement | Rechecked all prior blockers and new unified inbox model | None blocking | Pass / APPROVED FOR IMPLEMENTATION | No | Approved final-state message-inbox architecture. |
+| 10 | Phase naming symmetry addendum | Rechecked CDF/DS spines, target mappings, and old-handler/middle-state blockers | None blocking | **Pass / APPROVED FOR IMPLEMENTATION** | Yes | `LlmPhase` / `ToolPhase` final naming is coherent and implementation-ready. |
 
 ## Reviewed Design Spec
 
-The updated design makes `AgentInputBox` concrete enough for implementation and review. It is now a first-class runtime inbound boundary in requirements, CDF-002, ownership map, boundary map, dependency rules, component contracts, invariants, message routing, interface mapping, file/folder mapping, and final work-package gates.
+The latest design keeps the Round 9 final-state architecture intact and adds a targeted naming refinement:
 
-The clean final-state model from Round 5 remains intact: normal turn execution is owned by `AgentTurnRunner`, `LlmTurnPhase`, `ToolPhase`, typed pipelines, `AgentTurnInputBox`, `TurnExecutionScope`, and `AgentOutbox`, not by `WorkerEventDispatcher` or old queued handlers.
+- final LLM/tool phase pair is **`LlmPhase` / `ToolPhase`**;
+- target file mapping is `autobyteus-ts/src/agent/loop/llm-phase.ts` with class `LlmPhase`;
+- `LlmTurnPhase` is explicitly current first-stage implementation evidence only and must be renamed in the final architecture;
+- `LlmCallPhase` is explicitly rejected because the phase owns more than a raw provider call: request assembly, context/compaction preparation, provider streaming, parser integration, final/tool outcome production, and interrupted segment finalization.
+
+This improves symmetry without changing the governing ownership model:
+
+```text
+AgentMessageInbox -> AgentMessageScheduler -> typed entry handler -> AgentTurnRunner
+AgentTurnRunner -> AgentInputPipeline -> LlmPhase -> ToolPhase -> ToolResultPipeline -> ToolResultContinuationBuilder -> AgentInputPipeline(SenderType.TOOL)
+Tool approval/result active-turn messages -> scheduler/handler/runtime-state validation -> TurnToolInputPort -> ToolPhase wait resumes
+interrupt -> AgentRuntime.interrupt() side-band -> active AgentTurn.executionScope -> LlmPhase/ToolPhase aborts or abandons -> runner settles interrupted
+```
 
 ## Task Design Health Assessment Verdict
 
 | Assessment Area | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Assessment is present for the current task posture | Pass | Larger requirement / behavior change classification remains present. | None. |
-| Root-cause classification is explicit and evidence-backed | Pass | Boundary/ownership issue and missing invariant remain correct. The AgentInputBox update addresses an additional boundary-clarity gap. | None. |
-| Refactor needed now decision is explicit | Pass | FR-004B, FR-004D1, FR-016, FR-017 and AC-004D1/AC-014 require final boundaries and safety gates. | None. |
-| Refactor decision is reflected in concrete design sections | Pass | AgentInputBox is in concrete contracts, mappings, invariants, routing, and work packages. | None. |
+| Assessment is present for the current task posture | Pass | Requirements and design classify the work as a larger requirement / behavior change plus second-stage refactor. | None. |
+| Root-cause classification is explicit and evidence-backed | Pass | Original interrupt/stop issue and the remaining inbound-message naming/ownership issue are backed by current worktree evidence. | None. |
+| Refactor needed now decision is explicit | Pass | Design continues to require final `AgentMessageInbox`, `AgentMessageScheduler`, typed handlers, `TurnToolInputPort`, `AgentTurnRunner`, `LlmPhase`, and `ToolPhase`. | None. |
+| Refactor decision is supported by concrete design sections | Pass | CDF/DS spines, component contracts, interface mapping, file mapping, and safety gates use the final naming and ownership model. | None. |
 
 ## Prior Findings Resolution Check
 
 | Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| 4 | AR-B-001 | Blocking | Resolved | No permissive temporary/middle-state language found; final work packages are not stopping points. | Still enforced by AC-014. |
-| 4 | AR-B-002 | Blocking | Resolved | Normal LLM/tool/request/result flow remains assigned to final phase/pipeline owners. | Pass. |
-| 4 | AR-B-003 | Blocking | Resolved | DS/CDF narratives use runner/phase-service/outbox spines. | Pass. |
-| 4 | AR-B-004 | Blocking | Resolved | Target mapping does not reserve `agent/handlers/*` as phase owners. | Pass. |
-| 5 | AR-NB-005 | Non-blocking | Resolved | Requirements coverage now includes FR-017 under UC-003. | No further action. |
-
-## AgentInputBox Addendum Verdict
-
-| Review Area | Result | Evidence | Required Action |
-| --- | --- | --- | --- |
-| AgentInputBox is a concrete first-class owner | Pass | `autobyteus-ts/src/agent/input-box/agent-input-box.ts` appears in draft/final file mappings and target folder mapping. | None. |
-| CDF-002 spine is concrete and complete | Pass | CDF-002 starts at external input entering `AgentInputBox`, then `nextTurnTriggerWhenIdle -> AgentWorker -> AgentTurn -> AgentTurnRunner`. | None. |
-| Authoritative Boundary Rule is satisfied | Pass | Boundary map forbids direct low-level queue writes; dependency rules require runtime/worker to use `AgentInputBox`, not `AgentInputEventQueueManager`. | None. |
-| Low-level queue storage is correctly demoted | Pass | `AgentInputEventQueueManager` is mapped as generic storage/filter/drop behind owning box APIs. | None. |
-| Turn-local messages cannot start turns through AgentInputBox | Pass | FR-004D/FR-004D1, INV-002A, routing table, and AC-004D1 forbid tool results/approvals/continuations entering AgentInputBox. | None. |
-| Interface is implementation-ready | Pass | Contract exposes `enqueue(...)`, `nextTurnTriggerWhenIdle(...)`, and `drainOrPreserveForShutdown()`, plus message/trigger types. | None. |
-| Tests/review gates exist | Pass | AC-004D1 and Work Package 2 require verification of AgentInputBox as semantic inbox above queue storage. | None. |
+| 4 | AR-B-001 through AR-B-004 | Blocking | Resolved | No target temporary adapter/middle-state handler loop remains; final handler-chain forbidden shapes are still explicit. | Not reopened. |
+| 7 | AR-B-005 | Blocking | Resolved | CDF-009 remains complete through `AgentRuntime.postToolApproval -> AgentMessageInbox -> AgentMessageScheduler -> ToolApprovalMessageHandler -> AgentRuntimeState -> TurnToolInputPort`. | Not reopened. |
+| 9 | Runner task / result-shape advisories | Non-blocking | Still advisory | Naming addendum does not change these implementation risks. | Carry forward. |
 
 ## Spine Inventory Verdict
 
@@ -74,216 +72,177 @@ The clean final-state model from Round 5 remains intact: normal turn execution i
 | CDF-009 | Pending approval response | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | CDF-010 | Outbox/observability | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | CDF-011 | Terminal shutdown | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| EH-final | Final handler/listener decommission | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| CDF-012 | External/async tool result delivery | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+
+## DS Spine Inventory Verdict
+
+| Spine ID | Scope Classification | Classification Is Sound? | Start/End Complete? | Governing Owner Clear? | Verdict | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| DS-001 | Primary End-to-End | Pass | Pass | Pass | Pass | Names `LlmPhase/ToolPhase` as phase owners in the interrupt path. |
+| DS-002 | Primary End-to-End | Pass | Pass | Pass | Pass | `LlmPhase` naming is correct because it owns full LLM phase behavior, not only provider call. |
+| DS-003 | Primary End-to-End | Pass | Pass | Pass | Pass | Symmetric with `ToolPhase`. |
+| DS-004 | Primary End-to-End | Pass | Pass | Pass | Pass | Team interrupt unaffected by naming addendum. |
+| DS-005 | Return-Event | Pass | Pass | Pass | Pass | Outbox/status return unchanged. |
+| DS-006 | Bounded Local | Pass | Pass | Pass | Pass | Runner/scope local flow unchanged. |
+| DS-007 | Bounded Local | Pass | Pass | Pass | Pass | Tool-batch fencing unchanged. |
+| DS-008 | Primary End-to-End | Pass | Pass | Pass | Pass | Approval route remains complete. |
+| DS-009 | Primary End-to-End | Pass | Pass | Pass | Pass | External/async tool-result route remains complete. |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
-| Subsystem / Capability Area | Ownership Allocation Is Clear? | Reuse / Extend / Create-New Decision Is Sound? | Supports Right Spine Owners? | Verdict | Notes |
+| Subsystem / Capability Area | Ownership Allocation Is Clear? | Reuse / Extend / Create-New Decision Is Sound? | Supports The Right Spine Owners? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Agent input box | Pass | Pass | Pass | Pass | New `agent/input-box` boundary owns runtime-level external turn-starting inbox semantics. |
-| Queue storage | Pass | Pass | Pass | Pass | `AgentInputEventQueueManager` remains generic storage only behind input-box APIs. |
-| Agent worker / scheduler | Pass | Pass | Pass | Pass | Worker consumes from `AgentInputBox`, starts one runner, does not own turn loop. |
-| Agent turn loop execution | Pass | Pass | Pass | Pass | `AgentTurnRunner` remains final loop owner. |
-| LLM/tool phase services | Pass | Pass | Pass | Pass | `LlmTurnPhase` and `ToolPhase` remain direct phase owners. |
-| AgentTurnInputBox | Pass | Pass | Pass | Pass | Active-turn approvals/results/continuations are kept out of AgentInputBox. |
-| AgentOutbox | Pass | Pass | Pass | Pass | Publication-only outbound boundary. |
+| Agent runtime control | Pass | Pass | Pass | Pass | Public command/lifecycle owner unchanged. |
+| Agent message inbox | Pass | Pass | Pass | Pass | Unified inbound boundary unchanged. |
+| Agent message scheduler | Pass | Pass | Pass | Pass | Dispatchability owner unchanged. |
+| Typed message handlers | Pass | Pass | Pass | Pass | Entry handlers only. |
+| Agent turn runner | Pass | Pass | Pass | Pass | Finite turn loop owner unchanged. |
+| `LlmPhase` | Pass | Pass | Pass | Pass | Symmetric with `ToolPhase`; target file/class mapping is clear. |
+| `ToolPhase` | Pass | Pass | Pass | Pass | Existing target name remains coherent. |
+| TurnToolInputPort | Pass | Pass | Pass | Pass | Internal tool wait/wake boundary unchanged. |
+| TurnExecutionScope | Pass | Pass | Pass | Pass | Per-turn cancellation primitive unchanged. |
+| AgentOutbox | Pass | Pass | Pass | Pass | Publication boundary unchanged. |
 
 ## Reusable Owned Structures Verdict
 
-| Repeated Structure / Logic | Extraction Need Evaluated? | Shared File Choice Sound? | Ownership Clear? | Verdict | Notes |
+| Repeated Structure / Logic | Extraction Need Was Evaluated? | Shared File Choice Is Sound? | Ownership Of Shared Structure Is Clear? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Runtime inbox message/trigger shape | Pass | Pass | Pass | Pass | `AgentInputBoxMessage` and `AgentInputBoxTrigger` belong to the semantic input-box boundary. |
-| Low-level queue filtering/storage | Pass | Pass | Pass | Pass | Generic storage behind input-box APIs; no domain routing. |
-| Tool result / approval turn-local routing | Pass | Pass | Pass | Pass | Owned by `AgentTurnInputBox`, not AgentInputBox. |
-| Processor pipelines / phase services / outbox | Pass | Pass | Pass | Pass | Round 5 verdict unchanged. |
+| Phase-service naming | Pass | Pass | Pass | Pass | `LlmPhase` / `ToolPhase` gives symmetric phase pair; `LlmCallPhase` rejected for being too narrow. |
+| Inbound message lanes/scheduler/handlers | Pass | Pass | Pass | Pass | Naming addendum does not disrupt the unified inbox model. |
+| Tool approval/result active-turn inputs | Pass | Pass | Pass | Pass | Continue through `TurnToolInputPort`. |
+| Processor pipelines | Pass | Pass | Pass | Pass | Still typed and separate from phase naming. |
 
 ## Shared Structure / Data Model Tightness Verdict
 
-| Shared Structure / Type / Schema | One Clear Meaning Per Field? | Redundant Attributes Removed? | Overlapping Representation Risk Controlled? | Shared Core / Variant Decision Sound? | Verdict | Notes |
+| Shared Structure / Type / Schema | One Clear Meaning Per Field? | Redundant Attributes Removed? | Overlapping Representation Risk Is Controlled? | Shared Core Vs Specialized Variant Decision Is Sound? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| `AgentInputBoxMessage` | Pass | Pass | Pass | Pass | Pass | Must discriminate external turn-starting/system-facing input from turn-local tool/approval messages. |
-| `AgentInputBoxTrigger` | Pass | Pass | Pass | Pass | Pass | Represents one eligible external trigger only. |
-| `AgentInterruptOptions` / `AgentInterruptResult` | Pass | Pass | Pass | Pass | Pass | Unchanged. |
-| `LLMInvocationOptions` / `ToolExecutionOptions` | Pass | Pass | Pass | N/A | Pass | Unchanged. |
+| `LlmPhase` concept | Pass | Pass | Pass | Pass | Pass | Phase owns request assembly, streaming, parser integration, outcome production, and interruption handling. |
+| `LlmCallPhase` rejected alternative | Pass | Pass | Pass | Pass | Pass | Rejection prevents narrowing the owner to only provider-call plumbing. |
+| `AgentInboxMessage` and active-turn message shapes | Pass | Pass | Pass | Pass | Pass | Unchanged from Round 9. |
+| `TurnToolInputPort` message shapes | Pass | Pass | Pass | Pass | Pass | Unchanged from Round 9. |
 
 ## Removal / Decommission Completeness Verdict
 
-| Item / Area | Obsolete Piece Named? | Replacement Owner Clear? | Removal Scope Explicit? | Verdict | Notes |
+| Item / Area | Redundant / Obsolete Piece To Remove Is Named? | Replacement Owner / Structure Is Clear? | Removal / Decommission Scope Is Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Treating `AgentInputEventQueueManager` as semantic inbox | Pass | Pass | Pass | Pass | Replaced by `AgentInputBox`; queue manager optional storage only. |
-| Queue/handler choreography for normal turn loop | Pass | Pass | Pass | Pass | Replaced by runner/phase services. |
-| Native interrupt-to-stop fallback | Pass | Pass | Pass | Pass | Removed in target. |
-| App-owned STOP_GENERATION naming | Pass | Pass | Pass | Pass | Replaced by interrupt naming. |
+| Target `LlmTurnPhase` name | Pass | Pass | Pass | Pass | Design says it is first-stage evidence only and target is `LlmPhase`. |
+| `llm-turn-phase.ts` target file path | Pass | Pass | Pass | Pass | Target mapping uses `agent/loop/llm-phase.ts`. |
+| `LlmCallPhase` alternative | Pass | Pass | Pass | Pass | Explicitly rejected as too narrow. |
+| Old handler queue choreography | Pass | Pass | Pass | Pass | Still rejected as final path. |
+| Two public inbox concepts | Pass | Pass | Pass | Pass | Still replaced by `AgentMessageInbox` + internal `TurnToolInputPort`. |
 
 ## File Responsibility Mapping Verdict
 
-| File / Area | Responsibility Singular And Clear? | Matches Intended Owner? | Retightened After Extraction? | Verdict | Notes |
+| File / Area | Responsibility Is Singular And Clear? | Responsibility Matches Intended Owner/Boundary? | Responsibilities Were Re-Tightened After Shared-Structure Extraction? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `agent/input-box/agent-input-box.ts` | Pass | Pass | Pass | Pass | Semantic runtime inbox and trigger eligibility owner. |
-| `agent/events/agent-input-event-queue-manager.ts` | Pass | Pass | Pass | Pass | Generic storage/filtering behind owning box APIs. |
-| `agent/loop/agent-turn-input-box.ts` | Pass | Pass | Pass | Pass | Active-turn tool result/approval/continuation lane. |
-| `agent/loop/agent-turn-runner.ts` | Pass | Pass | Pass | Pass | Finite turn-loop owner. |
-| `agent/loop/llm-turn-phase.ts` / `tool-phase.ts` | Pass | Pass | Pass | Pass | Direct phase owners. |
-| `agent/pipelines/*` | Pass | Pass | Pass | Pass | Typed processor orchestration. |
-| `agent/outbox/agent-outbox.ts` | Pass | Pass | Pass | Pass | Publication boundary. |
+| `autobyteus-ts/src/agent/loop/llm-phase.ts` | Pass | Pass | Pass | Pass | Target class `LlmPhase`; owns full LLM phase under runner/scope. |
+| `autobyteus-ts/src/agent/loop/tool-phase.ts` | Pass | Pass | Pass | Pass | Symmetric with `LlmPhase`; owns tool phase. |
+| `autobyteus-ts/src/agent/loop/agent-turn-runner.ts` | Pass | Pass | Pass | Pass | Calls `LlmPhase` / `ToolPhase` directly. |
+| `agent/message-inbox/*` | Pass | Pass | Pass | Pass | Unchanged from Round 9. |
+| `agent/loop/turn-tool-input-port.ts` | Pass | Pass | Pass | Pass | Unchanged from Round 9. |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
-| Owner / Boundary | Allowed Dependencies Clear? | Forbidden Shortcuts Explicit? | Direction Coherent With Ownership? | Verdict | Notes |
+| Owner / Boundary | Allowed Dependencies Are Clear? | Forbidden Shortcuts Are Explicit? | Direction Is Coherent With Ownership? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `AgentRuntime` -> `AgentInputBox` | Pass | Pass | Pass | Pass | Runtime submits external turn-starting input through semantic inbox. |
-| `AgentWorker` -> `AgentInputBox` | Pass | Pass | Pass | Pass | Worker consumes `nextTurnTriggerWhenIdle(...)`. |
-| `AgentInputBox` -> queue storage | Pass | Pass | Pass | Pass | Queue manager is internal storage only. |
-| `AgentTurnRunner` -> phase/pipeline services | Pass | Pass | Pass | Pass | Final direct calls preserved. |
-| `WorkerEventDispatcher` / old handlers | Pass | Pass | Pass | Pass | Forbidden for normal loop. |
-| `AgentOutbox` -> notifier/listeners | Pass | Pass | Pass | Pass | Sinks only. |
+| `AgentTurnRunner` -> `LlmPhase` / `ToolPhase` | Pass | Pass | Pass | Pass | Direct calls remain the normal phase path. |
+| `LlmPhase` -> BaseLLM/provider boundary | Pass | Pass | Pass | Pass | Provider-specific abort logic remains below BaseLLM. |
+| `ToolPhase` -> BaseTool/tool boundary | Pass | Pass | Pass | Pass | Tool-specific cancellation remains below BaseTool. |
+| Scheduler/handlers -> domain owners | Pass | Pass | Pass | Pass | Handlers still do not own the phase chain. |
+| External approval/result -> inbox/scheduler/handler/state/port | Pass | Pass | Pass | Pass | Direct port bypass remains forbidden. |
 
 ## Boundary Encapsulation Verdict
 
-| Boundary / Owner | Authoritative Entry Point Clear? | Internal Mechanisms Stay Internal? | Caller Bypass Risk Controlled? | Verdict | Notes |
+| Boundary / Owner | Authoritative Public Entry Point Is Clear? | Internal Owned Mechanisms Stay Internal? | Caller Bypass Risk Is Controlled? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `AgentInputBox` | Pass | Pass | Pass | Pass | Encapsulates low-level queue storage and turn-trigger eligibility. |
-| `AgentTurnInputBox` | Pass | Pass | Pass | Pass | Encapsulates active-turn tool/approval/continuation inputs. |
-| `AgentRuntime.interrupt()` | Pass | Pass | Pass | Pass | Public side-band interrupt boundary. |
-| `AgentTurnRunner` | Pass | Pass | Pass | Pass | No hidden handler loop in target design. |
-| `AgentOutbox` | Pass | Pass | Pass | Pass | Outbound sink boundary. |
+| `LlmPhase` | Pass | Pass | Pass | Pass | It is a phase service under `AgentTurnRunner`, not a public command boundary. |
+| `ToolPhase` | Pass | Pass | Pass | Pass | Symmetric phase service. |
+| `AgentMessageInbox` | Pass | Pass | Pass | Pass | Still the only semantic inbound boundary above storage. |
+| `AgentMessageScheduler` | Pass | Pass | Pass | Pass | Still the only dispatchability owner. |
+| `TurnToolInputPort` | Pass | Pass | Pass | Pass | Still internal to active turn/tool phase. |
 
 ## Interface Boundary Verdict
 
-| Interface / API / Command / Method | Subject Clear? | Responsibility Singular? | Identity Shape Explicit? | Generic Boundary Risk | Verdict |
+| Interface / API / Query / Command / Method | Subject Is Clear? | Responsibility Is Singular? | Identity Shape Is Explicit? | Generic Boundary Risk | Verdict |
 | --- | --- | --- | --- | --- | --- |
-| `AgentInputBox.enqueue(...)` | Pass | Pass | Pass | Low | Pass |
-| `AgentInputBox.nextTurnTriggerWhenIdle(...)` | Pass | Pass | Pass | Low | Pass |
-| `AgentRuntime.interrupt(options?)` | Pass | Pass | Pass | Low | Pass |
 | `AgentTurnRunner.run(trigger)` | Pass | Pass | Pass | Low | Pass |
-| `LlmTurnPhase.run(...)` / `ToolPhase.run(...)` | Pass | Pass | Pass | Low | Pass |
-| `AgentOutbox.publish(...)` | Pass | Pass | Pass | Low | Pass |
+| `LlmPhase.run(...)` target concept | Pass | Pass | Pass | Low | Pass |
+| `ToolPhase.run(...)` target concept | Pass | Pass | Pass | Low | Pass |
+| `AgentRuntime.postToolApproval(input)` | Pass | Pass | Pass | Low | Pass |
+| `AgentMessageScheduler.dispatch(...)` | Pass | Pass | Pass | Low | Pass |
+| `TurnToolInputPort.postApproval/postToolResult` | Pass | Pass | Pass | Low | Pass |
 
 ## Subsystem / Folder / File Placement Verdict
 
-| Path / Item | Target Placement Clear? | Folder Matches Owner? | Mixed-Layer / Over-Split Risk | Verdict | Notes |
+| Path / Item | Target Placement Is Clear? | Folder Matches Owning Boundary? | Mixed-Layer Or Over-Split Risk | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `autobyteus-ts/src/agent/input-box/` | Pass | Pass | Low | Pass | Runtime-level inbound boundary. |
-| `autobyteus-ts/src/agent/events/` | Pass | Pass | Medium | Pass | Event model and queue storage only; no normal turn control. |
-| `autobyteus-ts/src/agent/loop/` | Pass | Pass | Medium | Pass | Runner, phase services, turn-local box/builder. |
-| `autobyteus-ts/src/agent/pipelines/` | Pass | Pass | Medium | Pass | Typed processor pipelines. |
-| `autobyteus-ts/src/agent/outbox/` | Pass | Pass | Low | Pass | Publication boundary. |
+| `agent/loop/llm-phase.ts` | Pass | Pass | Low | Pass | Correct location for LLM phase service under turn loop. |
+| `agent/loop/tool-phase.ts` | Pass | Pass | Low | Pass | Symmetric phase service. |
+| `agent/loop/` | Pass | Pass | Medium | Pass | Runner/phase/port/continuation remain cohesive. |
+| `agent/message-inbox/` | Pass | Pass | Medium | Pass | Unchanged from Round 9. |
 
 ## Existing Capability / Subsystem Reuse Verdict
 
-| Need / Concern | Existing Capability Area Checked? | Reuse / Extension Decision Sound? | New Support Piece Justified? | Verdict | Notes |
+| Need / Concern | Existing Capability Area Was Checked? | Reuse / Extension Decision Is Sound? | New Support Piece Is Justified? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Low-level queue storage | Pass | Pass | N/A | Pass | Reused behind AgentInputBox/AgentTurnInputBox only. |
-| Semantic runtime inbox | Pass | Pass | Pass | Pass | New `agent/input-box` boundary justified. |
-| Active-turn input lane | Pass | Pass | Pass | Pass | `AgentTurnInputBox` remains turn-local. |
-| Runtime/runner/phase/outbox architecture | Pass | Pass | Pass | Pass | No regression from Round 5. |
+| Current first-stage `LlmTurnPhase` implementation | Pass | Pass | N/A | Pass | Treat as current implementation evidence to rename/refactor to target `LlmPhase`. |
+| Existing `ToolPhase` | Pass | Pass | N/A | Pass | Keeps name and pairs symmetrically with `LlmPhase`. |
+| Existing runner/phase/pipeline architecture | Pass | Pass | N/A | Pass | Naming refinement does not disturb architecture. |
 
 ## Legacy / Backward-Compatibility Verdict
 
-| Area | Compatibility Wrapper / Dual Path Exists In Final Design? | Clean-Cut Removal Explicit? | Verdict | Notes |
+| Area | Compatibility Wrapper / Dual-Path / Legacy Retention Exists? | Clean-Cut Removal Is Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- |
-| Treating queue manager as semantic inbox | No | Pass | Pass | Replaced by AgentInputBox. |
-| Old handler queue choreography | No | Pass | Pass | Still removed from normal turn control. |
-| `WorkerEventDispatcher` as loop owner | No | Pass | Pass | Still forbidden. |
-| Native interrupt-to-stop fallback | No | Pass | Pass | Removed. |
+| Keeping `LlmTurnPhase` as target alongside `LlmPhase` | No | Pass | Pass | Design makes `LlmTurnPhase` current evidence only. |
+| `LlmCallPhase` alternate naming | No | Pass | Pass | Rejected. |
+| Old WorkerEventDispatcher handler loop | No | Pass | Pass | Still forbidden. |
+| Transitional/middle-state adapter final design | No | Pass | Pass | Still forbidden. |
 
 ## Migration / Refactor Safety Verdict
 
-| Area | Package Realistic? | Intermediate State Avoided As Final? | Cleanup / Removal Explicit? | Verdict |
+| Area | Sequence / Work Package Is Realistic? | Temporary Seams Rejected As Final? | Cleanup / Removal Is Explicit? | Verdict |
 | --- | --- | --- | --- | --- |
-| Work Package 1 typed pipelines | Pass | Pass | Pass | Pass |
-| Work Package 2 AgentInputBox / AgentTurnInputBox / AgentOutbox | Pass | Pass | Pass | Pass |
-| Work Package 5 runner/phase services | Pass | Pass | Pass | Pass |
-| Work Package 7 old choreography cleanup | Pass | Pass | Pass | Pass |
+| Phase rename from `LlmTurnPhase` to `LlmPhase` | Pass | Pass | Pass | Pass |
+| Existing runner/phase/pipeline finalization | Pass | Pass | Pass | Pass |
+| Unified inbox/scheduler/handler finalization | Pass | Pass | Pass | Pass |
 
 ## Example Adequacy Verdict
 
-| Topic / Area | Example Needed? | Example Present And Clear? | Bad Shape Explained? | Verdict | Notes |
+| Topic / Area | Example Was Needed? | Example Is Present And Clear? | Bad / Avoided Shape Is Explained When Helpful? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| AgentInputBox vs AgentTurnInputBox | Yes | Pass | Pass | Pass | Routing table and contracts make allowed/forbidden messages explicit. |
-| Low-level queue storage boundary | Yes | Pass | Pass | Pass | Queue storage entries cannot decide domain routing. |
-| Clean-cut target flow | Yes | Pass | Pass | Pass | Round 5 target flow remains intact. |
+| Phase naming symmetry | Yes | Pass | Pass | Pass | Section explains `LlmPhase`/`ToolPhase` and rejects `LlmCallPhase`. |
+| Current vs target phase name | Yes | Pass | N/A | Pass | Design marks current `LlmTurnPhase` as current-state evidence with target rename. |
+| CDF-009/CDF-012 paths | Yes | Pass | Pass | Pass | Unchanged and complete. |
 
 ## Missing Use Cases / Open Unknowns
 
 | Item | Why It Matters | Required Action | Status |
 | --- | --- | --- | --- |
-| Lifecycle message variants inside AgentInputBox | The contract permits `RuntimeLifecycleInputMessage` where queueing is appropriate; implementation must keep non-turn lifecycle events from becoming turn triggers. | Use explicit discriminated message kinds and ensure `nextTurnTriggerWhenIdle(...)` returns only eligible turn triggers. | Non-blocking implementation precision. |
-| Team partial-timeout result shape | Team interrupt may have mixed member outcomes. | Define conservative aggregate/per-member behavior in code/tests. | Non-blocking implementation detail. |
-| Provider/MCP physical cancellation support | SDKs/transports differ. | Verify per adapter and use local abandonment/fencing where needed. | Residual implementation risk. |
-
-## User-Requested Use-Case Coverage Verdict
-
-| Use Case | Verdict | Notes |
-| --- | --- | --- |
-| UC-001 LLM interrupt | Pass | External trigger starts through AgentInputBox; LLM interrupt path unchanged and valid. |
-| UC-002 foreground tool interrupt | Pass | AgentInputBox does not accept tool results/approvals; tool phase and TurnInputBox remain owners. |
-| UC-003 pending approval / same-turn continuation | Pass | FR-004D1 and AC-004D1 now cover AgentInputBox/TurnInputBox separation. |
-| UC-004 native team interrupt | Pass | No conflict. |
-| UC-005 server/UI consistency | Pass | Runtime input and interrupt command boundaries are clearer. |
-| UC-006 provider/tool cancellation participation | Pass | No conflict. |
-| UC-007 bootstrap/shutdown separation | Pass | Bootstrap ready gate before AgentInputBox triggers remains explicit. |
-
-## Existing Behavior Preservation Verdict
-
-| Existing Behavior | Verdict | Evidence |
-| --- | --- | --- |
-| External user/inter-agent messages remain queued behind active turn | Pass | AgentInputBox owns preservation while active turn runs. |
-| TOOL continuation remains same-turn and not new-turn input | Pass | INV-002A, INV-004, AgentTurnInputBox, continuation builder, and AgentInputPipeline enforce this. |
-| Processor extension points preserved | Pass | Typed pipelines remain required. |
-| Bootstrap/shutdown behavior preserved | Pass | Lifecycle pipeline remains outside runner and input-box turn triggers. |
-| Stop remains terminal | Pass | Stop/shutdown cleanup unchanged. |
-
-## Component Contracts / State Machines / Routing Verdict
-
-| Area | Verdict | Evidence |
-| --- | --- | --- |
-| `AgentInputBox` contract | Pass | Purpose, accepted/rejected messages, API shape, concrete file, and ownership rules are defined. |
-| `AgentWorker` contract | Pass | Consumes eligible triggers from AgentInputBox. |
-| `AgentTurnInputBox` contract | Pass | Active-turn messages remain separate. |
-| Invariants | Pass | INV-002A added and owned by AgentInputBox. |
-| Message routing | Pass | Low-level queue storage sits behind owning boxes and cannot decide domain routing. |
-| Clean final-state handler model | Pass | No regression; old handler chain remains forbidden. |
+| None blocking | Naming addendum does not create a missing use case or ownership gap. | None before implementation. | Closed for design. |
+| Source rename execution | The final implementation must actually rename current first-stage `llm-turn-phase.ts` / class if present. | Implementation should include import/path/test updates to `llm-phase.ts` / `LlmPhase`. | Non-blocking implementation advisory. |
+| Runner task supervision | Prior non-blocking implementation risk remains. | Supervise active runner task outcomes and scheduler wakeups. | Non-blocking implementation advisory. |
+| External/async result acknowledgement shape | Prior non-blocking implementation risk remains. | Make result acknowledgement concrete if external callbacks need it. | Non-blocking implementation advisory. |
 
 ## Review Decision
 
-- **Pass / APPROVED for implementation.**
+- **Pass / APPROVED FOR IMPLEMENTATION**.
 
-Rationale: AgentInputBox is now a sufficiently concrete semantic owner. The addendum closes the prior conceptual gap by naming the runtime inbox boundary, demoting `AgentInputEventQueueManager` to low-level storage, adding explicit APIs, invariants, message routing, requirements, acceptance criteria, and folder/file mappings. The clean final-state model remains intact.
+The phase naming addendum improves the design. `LlmPhase` / `ToolPhase` is a cleaner, symmetric target pair. `LlmTurnPhase` is now correctly limited to current implementation evidence/current-state wording, and target file/class mapping uses `llm-phase.ts` / `LlmPhase`. This naming refinement does not weaken any previously approved data-flow spines or final-state ownership boundaries.
 
 ## Findings
 
-No blocking findings.
+None blocking.
 
-Non-blocking advisories:
+### Non-blocking implementation advisories
 
-### AR-NB-002 — Keep status enum changes minimal and explicitly mapped
-
-- Type: Implementation precision advisory
-- Severity: Non-blocking
-- Evidence: Design adds interrupting/interrupted lifecycle distinctions while existing runtime has processing statuses.
-- Required update: Add only necessary status/event mappings and tests proving interrupted turn settles to idle with interruption metadata.
-- Recommended recipient: `implementation_engineer`
-
-### AR-NB-003 — Define team interrupt partial-timeout result shape in code/tests
-
-- Type: Implementation detail advisory
-- Severity: Non-blocking
-- Evidence: Team interrupt propagation is designed; exact aggregate result for mixed member settlement remains light.
-- Required update: Implement/log conservative per-member or aggregate behavior while keeping team reusable and avoiding shutdown cleanup.
-- Recommended recipient: `implementation_engineer`
-
-### AR-NB-006 — Keep AgentInputBox lifecycle messages explicitly non-turn-trigger unless typed otherwise
-
-- Type: Implementation precision advisory
-- Severity: Non-blocking
-- Evidence: `AgentInputBox` may accept lifecycle notifications where queueing is appropriate, while `nextTurnTriggerWhenIdle(...)` exposes turn triggers.
-- Required update: Use discriminated message kinds so non-turn lifecycle messages cannot be returned as turn triggers or confused with external user/inter-agent input.
-- Recommended recipient: `implementation_engineer`
+1. Rename current first-stage `llm-turn-phase.ts` / `LlmTurnPhase` implementation and imports to `llm-phase.ts` / `LlmPhase` in the final source state.
+2. Keep `LlmPhase` broad enough to own the full LLM phase, not just a provider call; do not reintroduce a narrow `LlmCallPhase` wrapper.
+3. Continue to enforce Round 9 advisories: supervised active runner task, concrete external/async tool-result result shape when needed, typed handlers as entry handlers only, and lifecycle message discrimination.
 
 ## Classification
 
-No blocking design findings. Remaining items are non-blocking implementation precision advisories.
+- No blocking `Design Impact`, `Requirement Gap`, or `Unclear` findings remain.
+- Residual items are implementation/code-review checks, not design blockers.
 
 ## Recommended Recipient
 
@@ -291,12 +250,10 @@ No blocking design findings. Remaining items are non-blocking implementation pre
 
 ## Residual Risks
 
-- Large refactor risk remains; AC-014 must verify no hidden legacy handler-loop control path remains.
-- AgentInputBox implementation must not leak domain routing into low-level queue storage.
-- Provider SDK and MCP cancellation support varies; unsupported transports need local abandonment and late-result fencing.
-- Working-context rollback/suppression for partial interrupted turns requires targeted validation.
+- Implementation may accidentally leave both `LlmTurnPhase` and `LlmPhase` paths/imports if the rename is incomplete.
+- Large clean-cut refactor risks from Round 9 remain: no hidden handler-chain control path, no detached runner task failures, and no direct `TurnToolInputPort` bypass.
 
 ## Latest Authoritative Result
 
-- Review Decision: **Pass / APPROVED for implementation**
-- Notes: Proceed to implementation with AgentInputBox as a first-class semantic inbound boundary and with FR-017/AC-014 as mandatory final source-review gates.
+- Review Decision: **Pass / APPROVED FOR IMPLEMENTATION**
+- Notes: Phase naming symmetry addendum is approved. The latest target architecture is `AgentMessageInbox` / `AgentMessageScheduler` / typed handlers / `AgentTurnRunner` / `LlmPhase` / `ToolPhase` / `TurnToolInputPort` / `TurnExecutionScope` / `AgentOutbox`.

@@ -12,89 +12,90 @@
 ## Integrated Branch State
 
 - Bootstrap base: `origin/personal` at `1bed2087bc583add5f07d61a1e7fd61da28a4a2a`
-- Latest tracked base checked during delivery: `origin/personal` at `bb7a0d23f1895a3c85ff2c9bd7067adb1a843938` after `git fetch origin --prune` on `2026-05-08`
-- API/E2E Round 5 reviewed fix commit: `f37d140348b594b5775483099488a472b8cdebb0` (`fix(agent): tighten input box lifecycle handling`)
-- Delivery safety checkpoint before latest-base integration: `19915a89bfce4f8566d3f6c19edde49dc0e38ef7` (`chore(ticket): checkpoint runtime interrupt round 5 handoff`)
-- Latest integrated ticket branch HEAD: `9c3057f1a6b1a411152e079d19a294ab2d790b9d` (`merge: refresh runtime interrupt against latest personal`)
-- Ahead/behind at delivery refresh after merge: ticket branch contains `origin/personal` and is ahead of `origin/personal`; no newer remote base remained after the merge.
+- Prior latest-base integration: merge commit `2f623a02e47423cd1b5f1622edd8890d59dd1445` (`merge: refresh runtime interrupt against latest personal`) integrated `origin/personal` at `263e89c595f6942e7e826daf19cea9a9fd254459` after safety checkpoint `4fcd56156c0b4d237a37296b658df911fb0131cf`.
+- Latest tracked base checked during Round-8 delivery: `origin/personal` at `263e89c595f6942e7e826daf19cea9a9fd254459` after `git fetch origin --prune` on `2026-05-09`.
+- API/E2E Round 8 reviewed fix commit: `44974bccb924d8b6cb2caaa85abab4ba2ad23d92` (`fix(agent): fence interrupted turn seams`).
+- Current ticket branch HEAD at delivery refresh: `44974bccb924d8b6cb2caaa85abab4ba2ad23d92`.
+- Ahead/behind at delivery refresh: ticket branch was `ahead 14, behind 0` relative to `origin/personal`; no new base merge/checkpoint was needed in Round-8 delivery.
 
 ## Implementation Summary
 
-The ticket redesigns native AutoByteus interrupt handling, runtime mailbox boundaries, and the single-agent runtime loop:
+The ticket redesigns native AutoByteus interrupt handling, interrupt seam fencing, active-turn approval routing, runtime mailbox boundaries, segment transport, failed stream finalization, and the single-agent runtime loop:
 
 - `AgentRuntime.interrupt()` interrupts the active `AgentTurn` without stopping the worker/runtime, restores the turn-start working-context checkpoint, closes approval waits, and leaves the runtime reusable for follow-up turns.
 - `stop()` remains terminal shutdown/cleanup and is not the user generation-interrupt path.
 - `AgentInputBox` is the runtime mailbox for external user messages, inter-agent messages, and lifecycle events only.
 - `AgentRuntime.submitEvent(...)` rejects unsupported operational events instead of queuing them through the lifecycle lane.
-- Tool approvals are posted directly to the active turn's `AgentTurnInputBox`; tool results and same-turn TOOL continuations remain inside the active `AgentTurnRunner`/`ToolPhase` flow.
+- `TurnExecutionScope.runAbortable(...)`, `iterateAbortable(...)`, and `iterateWithAbort(...)` guard already-aborted turns before thunk invocation, iterator acquisition, or next-item request.
+- `AgentTurnRunner`, `LlmTurnPhase`, and `ToolPhase` fence accepted interrupts after awaited LLM/tool seams before normal assistant completion, memory/outbox side effects, terminal tool success, tool-result processing, or same-turn continuation publication.
+- Tool approval/denial commands route through `Agent.postToolExecutionApproval(...) -> AgentRuntime.postToolApproval(...) -> AgentRuntimeState.postToolApprovalToActiveTurn(...) -> AgentTurnInputBox.postApproval(...) -> ToolPhase.waitForApproval(...)`.
+- `ToolExecutionApprovalEvent` remains status/event-store projection output only; it is not accepted as runtime mailbox input that can start or advance turn control flow.
+- Pending-only approval authority is enforced: only invocations in `pendingToolApprovals` are approvable; active auto-executing tool-batch membership alone rejects as `no_pending_invocation` without status mutation.
+- Stale, no-active-turn, no-pending-invocation, runtime-stopped, and interrupted-turn approvals return explicit non-turn-starting outcomes.
+- Team approval commands resolve the target member and call that member agent's public `postToolExecutionApproval(...)` API through the async team event path rather than bypassing member runtime state.
+- Tool results and same-turn TOOL continuations remain inside the active `AgentTurnRunner`/`ToolPhase` flow.
 - Terminal stop/shutdown preempts queued external user/inter-agent triggers before `AgentTurnRunner.run(...)` can start another turn.
 - The normal single-agent LLM/tool/continuation flow is owned by `AgentTurnRunner`, `LlmTurnPhase`, `ToolPhase`, and typed pipelines rather than deleted normal-flow dispatcher/handler files.
-- `AgentTurnInputBox` is approval-only; tool results are direct `ToolPhase` returns processed by `ToolResultPipeline` and converted into same-turn continuations by `ToolResultContinuationBuilder`.
-- Streaming interruption finalization terminalizes active text/tool segments across runtime handlers/parsers and frontend projections.
 - `LLMInvocationOptions.signal` reaches AutoByteus RPA requests through `AutobyteusLLM` -> `AutobyteusClient` -> Axios for both `/send-message` and `/stream-message`.
-- Native team execution preserves the backend split and latest-base Team Communication integration, including normalized/deduplicated `reference_files`, `message_id`, `created_at`, and message-owned `reference_file_entries`.
+- Native AutoByteus outbound `SEGMENT_*` payloads canonicalize the turn field to `turn_id`; segment-level `turnId` aliases are stripped before WebSocket delivery.
+- Non-interrupt LLM stream errors terminalize open text/tool/write/edit/reasoning segments with `failed: true` and an error message.
+- Failed partial tool segments are display/error records only and do not become tool invocations, tool results, or same-turn continuations.
+- Frontend segment/status projection marks failed segment/tool rows as terminal errors, keeps interrupted rows distinct from failed rows, and sends approval button decisions as active-context control commands while waiting for backend lifecycle/tool/status projection as authority.
+- Native team execution preserves the backend split and Team Communication integration, including normalized/deduplicated `reference_files`, `message_id`, `created_at`, and message-owned `reference_file_entries`.
 
 ## Review / Validation State
 
 - Latest code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/review-report.md`
-  - Latest authoritative review round: `9`
-  - Decision: pass for API/E2E revalidation after local fix commit `f37d140348b594b5775483099488a472b8cdebb0` addressed `CR-007` and `CR-008`.
+  - Latest authoritative review round: `14`
+  - Decision: `Pass / Ready for API/E2E revalidation` after implementation commit `44974bccb924d8b6cb2caaa85abab4ba2ad23d92` addressed `CR-011`, `CR-012`, and `CR-013`.
+  - Score: `9.1/10` (`91/100`).
 - Latest API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/api-e2e-validation-report.md`
-  - Result: `Pass` in Round 5.
-  - Durable validation code added/updated in Round 5: `No`; no code-review reroute required.
+  - Result: `Pass` in Round 8.
+  - Durable validation/source/test files added or updated in Round 8: `No`; no code-review reroute required.
 
-Round 5 validation evidence included:
+Round 8 API/E2E evidence included:
 
+- TS interrupted-seam/approval focused suite passed: `6` files / `40` tests.
+- Server approval/protocol suite passed: `7` files / `72` tests.
+- Web approval/projection suite passed: `11` files / `107` tests.
+- Broader `autobyteus-ts` regression suite passed: `13` files / `94` tests.
+- Live native AutoByteus single-agent GraphQL/WebSocket approval E2E passed with LM Studio: `1` test passed / `15` skipped.
+- Live native AutoByteus team GraphQL/WebSocket approval/restore/continue E2E passed with LM Studio: `1` test passed / `1` skipped.
+- `git diff --check HEAD`, `pnpm -C autobyteus-ts run build`, `pnpm -C autobyteus-server-ts run build:full`, and `pnpm -C autobyteus-web exec nuxi prepare` all passed.
+- Static legacy/approval-spine greps and changed-source line-count audit passed.
+
+Delivery latest-base checks after `git fetch origin --prune` on `2026-05-09`:
+
+- `origin/personal` remained `263e89c595f6942e7e826daf19cea9a9fd254459` and the ticket branch remained `ahead 14, behind 0`; no new merge was required.
 - `git diff --check HEAD` passed.
-- `pnpm -C autobyteus-ts run build` passed, including runtime dependency verification.
-- `pnpm -C autobyteus-server-ts run build:full` passed, including built-in agents bootstrap smoke check.
-- Round 9 targeted input-box/runtime suite passed: `4` files / `26` tests.
-- Prior runtime/interrupt regression suite passed: `11` files / `80` tests.
-- Server no-stop/WebSocket regression suite passed: `6` files / `50` tests.
-- Web interrupt/status regression suite passed: `6` files / `69` tests.
-- Effective source line counts passed: `agent-input-box.ts` 126, `agent-runtime.ts` 192, `agent-worker.ts` 247.
-- Lifecycle-lane call-site grep reviewed with no unsupported source call remaining.
-- Static checks found no dormant input-box result/continuation APIs, no legacy single-agent dispatcher/handler symbols, and no active-source/web stop-generation fallback symbols.
-
-Delivery latest-base checks after merging `origin/personal` `bb7a0d23f1895a3c85ff2c9bd7067adb1a843938`:
-
-- Safety checkpoint: `19915a89bfce4f8566d3f6c19edde49dc0e38ef7`.
-- Merge commit: `9c3057f1a6b1a411152e079d19a294ab2d790b9d`.
-- `git diff --check HEAD` passed.
-- Reviewed docs/source/ticket paths had no line-start merge conflict markers.
-- Long-lived docs grep found no stale deleted single-agent handler/dispatcher paths except the intentional note that the old `WorkerEventDispatcher` path is removed.
-- Long-lived docs grep found no stop-generation fallback strings.
+- Reviewed source/docs/ticket paths had no line-start merge conflict markers.
+- Active source/web grep found no stop-generation fallback strings.
+- Legacy/dormant runtime path grep found no old single-agent dispatcher/handler path, no dormant result/continuation lane, no approval-as-runtime-input pattern, and no old approval handler/enqueue symbols in active source/web surfaces checked.
 - `pnpm -C autobyteus-ts run build` passed.
-- Focused TS runtime/input/tool-parser Vitest passed: `6` files / `40` tests.
 - `pnpm -C autobyteus-server-ts run build:full` passed.
 - `pnpm -C autobyteus-web exec nuxi prepare` passed.
+- TS interrupted-seam/approval focused suite passed: `6` files / `40` tests.
+- Server approval/protocol focused suite passed: `7` files / `72` tests.
+- Web approval/projection focused suite passed: `11` files / `107` tests.
 
 ## Docs Sync
 
 - Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/docs-sync-report.md`
 - Result: `Pass / Updated`
-- Round-5 delivery-owned long-lived docs updates:
+- Round-8 delivery-owned long-lived docs updates:
   - `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md`
-  - `autobyteus-ts/docs/event_driven_core_design.md`
-  - `autobyteus-ts/docs/lifecycle_event_sourced_engine_design.md`
-- Prior delivery-updated docs were rechecked and retained as current:
-  - `autobyteus-ts/docs/agent_processor_and_engine_design.md`
-  - `autobyteus-ts/docs/agent_memory_design.md`
-  - `autobyteus-ts/docs/agent_memory_design_nodejs.md`
-  - `autobyteus-ts/docs/tool_call_formatting_and_parsing.md`
-  - `autobyteus-ts/docs/llm_module_design_nodejs.md`
-- Branch-updated server/web docs were reviewed and retained as current, including:
   - `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md`
-  - `autobyteus-server-ts/docs/modules/agent_execution.md`
   - `autobyteus-server-ts/docs/modules/agent_streaming.md`
-  - `autobyteus-server-ts/docs/modules/agent_team_execution.md`
   - `autobyteus-web/docs/agent_execution_architecture.md`
+- Prior delivery-updated docs were rechecked and retained as current, including runtime mailbox, lifecycle preemption, AutoByteus signal propagation, native interrupt/no-stop-fallback, approval spine, runner ownership, canonical `turn_id`, failed stream terminalization, failed partial tool suppression, and Team Communication reference-file docs.
 
 ## Residual Risks / Out-of-Scope Validation
 
 - Live paid-provider cancellation across every provider remains out of scope; targeted local/client and provider-facing tests covered the implemented signal paths.
 - Full browser/Nuxt/Electron E2E remains out of scope; validation included `nuxi prepare`, focused web tests, and frontend store/streaming validation.
-- Latest-base Claude E2E tests contain upstream `STOP_GENERATION` strings, but active source/web runtime surfaces for this ticket have no stop-generation fallback matches; this nuance is recorded in the API/E2E report.
+- Claude live approval E2E was not run in Round 8 because `RUN_CLAUDE_E2E` was not enabled.
+- API/E2E retained the non-blocking exploratory Codex approval-policy observation from Round 7: with `RUN_CODEX_E2E=1`, `codex-cli 0.128.0` auto-executed the workspace shell command without first emitting `TOOL_APPROVAL_REQUESTED` despite `autoExecuteTools: false`. This is out of scope for this native AutoByteus approval-spine ticket and should be tracked separately if product scope requires Codex `autoExecuteTools: false` to force all workspace-command approvals.
+- Broad package `tsc --noEmit` issues remain documented baseline limitations; build targets and focused validation passed.
 
 ## Cumulative Artifact Package
 

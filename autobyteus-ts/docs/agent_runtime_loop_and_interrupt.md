@@ -55,9 +55,15 @@ only. It accepts:
 - runtime lifecycle events (`LifecycleEvent`).
 
 `AgentRuntime.submitEvent(...)` rejects unsupported operational events instead
-of hiding them in the lifecycle queue. Tool approvals are posted directly to the
-active turn's `AgentTurnInputBox`; if no active turn exists, the approval is
-ignored. Tool results and same-turn TOOL continuations remain inside
+of hiding them in the lifecycle queue. Tool approval decisions are not
+turn-starting runtime input: callers must use
+`Agent.postToolExecutionApproval(...)`, which delegates to
+`AgentRuntime.postToolApproval(...)` and
+`AgentRuntimeState.postToolApprovalToActiveTurn(...)` before waking the active
+turn's `AgentTurnInputBox.postApproval(...)`. If there is no active turn, no
+pending invocation, a stale turn id, or an interrupted turn, the runtime returns
+an explicit non-turn-starting rejection result. Tool results and same-turn TOOL
+continuations remain inside
 `AgentTurnRunner`/`ToolPhase`/`ToolResultContinuationBuilder` and must not enter
 the runtime mailbox.
 
@@ -77,11 +83,20 @@ uses these collaborators:
   - assembles memory-backed LLM requests;
   - passes `{ signal, turnId }` into `BaseLLM.streamMessages(...)`;
   - streams segments through `AgentOutbox`;
-  - parses text/API tool calls through the streaming response handler factory.
+  - parses text/API tool calls through the streaming response handler factory;
+  - checks the `TurnExecutionScope` before starting or consuming LLM streams
+    and again after awaited LLM seams before publishing normal assistant
+    completion side effects;
+  - on non-interrupt LLM stream errors, failed-terminalizes any active text,
+    tool, write/edit, or reasoning segments before publishing the runtime error.
 - `ToolPhase`
   - runs tool invocations under the active `TurnExecutionScope`;
   - passes cancellation context into tools that support it;
-  - waits for approval through `AgentTurnInputBox` when needed.
+  - waits for approval through `AgentTurnInputBox` when needed, with
+    `ToolPhase.waitForApproval(...)` as the only consumer of active-turn
+    approval messages;
+  - checks for accepted interrupts after awaited tool seams before publishing
+    tool terminal success, tool results, or continuation input.
 - `ToolResultPipeline`
   - applies configured tool-result processors to the direct results returned by
     `ToolPhase`; tool results are not posted back through `AgentTurnInputBox`.
@@ -95,6 +110,59 @@ uses these collaborators:
 The old single-agent `WorkerEventDispatcher` and normal-flow handler files are
 removed. Do not reintroduce them as parallel control-flow owners for LLM calls,
 tool execution, tool results, or inter-agent message ingestion.
+
+## Tool Approval Spine
+
+Pending tool approvals are part of the active turn boundary, not the runtime
+lifecycle mailbox. The native single-agent path is:
+
+1. external API/UI/CLI calls `Agent.postToolExecutionApproval(...)`;
+2. `AgentRuntime.postToolApproval(...)` checks runtime liveness and delegates to
+   `AgentRuntimeState.postToolApprovalToActiveTurn(...)`;
+3. runtime state verifies the active turn, turn id, pending-approval marker,
+   and interruption state before calling `AgentTurnInputBox.postApproval(...)`;
+4. `ToolPhase.waitForApproval(...)` consumes the posted decision and continues
+   or denies the pending invocation.
+
+`ToolExecutionApprovalEvent` is still published for status/projection after a
+valid approval decision, but it is not accepted by `AgentRuntime.submitEvent(...)`
+or `AgentInputBox` as runtime input. Stale, no-active-turn, no-pending-invocation,
+runtime-stopped, and interrupted-turn approval attempts must not start a turn,
+restore a turn, or enqueue lifecycle work.
+
+Active tool-batch membership is not approval authority. Only invocations stored
+in `AgentRuntimeState.pendingToolApprovals` are approvable; attempts to approve
+auto-executing or otherwise active-but-not-pending invocations return
+`no_pending_invocation` and must not mutate status.
+
+Team approval commands follow the same boundary by resolving the target member
+and calling that member agent's public `postToolExecutionApproval(...)` API via
+the team event handler. Team code must not bypass member runtime state or post
+approval events directly into a member mailbox.
+
+## Interrupt Fences At Awaited Seams
+
+Accepted interrupts can arrive while a turn is suspended at an awaited seam.
+Every owner that resumes from such a seam must check the `TurnExecutionScope`
+before performing normal side effects:
+
+- `TurnExecutionScope.runAbortable(...)` checks for an already-aborted turn
+  before invoking the thunk.
+- `TurnExecutionScope.iterateAbortable(...)` and the underlying
+  `iterateWithAbort(...)` check before acquiring an iterator and before each
+  next-item request.
+- `AgentTurnRunner` fences after external input processing, after LLM phase,
+  before and after final response processing, after tool phase, before and
+  after terminal tool lifecycle, after continuation processing, and before
+  continuation status publication.
+- `LlmTurnPhase` fences before stream start/iteration/finalization and before
+  publishing normal LLM-derived assistant response side effects.
+- `ToolPhase` fences before tool execution, after awaited execution, and before
+  terminal success/result publication.
+
+These fences prevent a late accepted interrupt from being followed by normal
+assistant completion, memory updates, tool terminal success, tool-result
+processing, or same-turn continuation publication for the interrupted turn.
 
 ## Native Interrupt Semantics
 
@@ -139,6 +207,11 @@ prompt authority for follow-up turns.
 completed. Tool execution results are direct `ToolPhase` returns owned by the
 active turn, so there is no separate input-box tool-result lane that can revive
 an already-terminal turn.
+
+Failed LLM streams are not treated as interrupts. Streaming handlers emit
+terminal `SEGMENT_END` events with `failed: true` and an error message for
+open segments; `ToolInvocationAdapter` suppresses failed partial tool segments
+so they do not become invocations, tool results, or same-turn continuations.
 
 ## Inter-Agent Reference Files
 

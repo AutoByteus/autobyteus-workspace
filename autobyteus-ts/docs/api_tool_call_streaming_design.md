@@ -290,6 +290,13 @@ class PassThroughStreamingResponseHandler extends StreamingResponseHandler {
 arguments in the `SEGMENT_END` event's `metadata.arguments` field. The adapter uses
 this instead of parsing the content buffer.
 
+**Failed finalization contract**: A non-interrupt LLM stream failure calls
+`finalizeFailed(error)` on the active streaming handler. Open text/tool/write/edit
+segments emit terminal `SEGMENT_END` payloads with `failed: true` and `error`.
+This is distinct from `finalizeInterrupted(reason)`, which emits
+`interrupted: true`. Failed partial tool segments are display/error records only;
+they must not create `ToolInvocation`s or same-turn continuations.
+
 ```ts
 type ToolCallState = {
   segmentId: string;
@@ -405,8 +412,9 @@ if (startMetadata.arguments) {
 }
 ```
 
-**No code change required** - the existing adapter logic already supports pre-parsed
-arguments via metadata. The API tool call handler just needs to provide them.
+The adapter must also suppress terminal segments whose end payload/metadata says
+`interrupted` or `failed`; those partial segments are not executable tool
+invocations.
 
 ---
 

@@ -2,226 +2,224 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review — CR-009/CR-010 Local Fix Re-Review`
+- Review Entry Point: `Implementation Review`
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/requirements.md`
-- Current Review Round: `11`
-- Trigger: Implementation local fix commit `f8625a09` (`fix(agent): terminalize failed streams and canonicalize segments`) addressing Round 10 blockers `CR-009` and `CR-010`.
-- Prior Review Round Reviewed: `10`
-- Latest Authoritative Round: `11`
+- Current Review Round: `19`
+- Trigger: CR-017 local-fix handoff for commit `8c378202` (`fix(agent): preflight external tool results`).
+- Prior Review Round Reviewed: `18`
+- Latest Authoritative Round: `19`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/design-spec.md`
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/design-review-report.md`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/implementation-handoff.md`
 - Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/api-e2e-validation-report.md`
-- API / E2E Validation Started Yet: `Yes — earlier API/E2E passed before subsequent implementation/addendum source changes; API/E2E must revalidate the latest source state before delivery resumes.`
-- Repository-Resident Durable Validation Added Or Updated After Prior Review: `No API/E2E-authored durable validation in this round; implementation-owned source and tests changed.`
+- API / E2E Validation Started Yet: `Yes, earlier round passed; paused for implementation local fixes before resumption`
+- Repository-Resident Durable Validation Added Or Updated After Prior Review: `No in this Round 19 implementation-review entry point`
 
-## Review Method
+## Review Scope
 
-Round 11 re-reviewed the CR-009/CR-010 local fix against the full artifact chain, the `code-reviewer` skill, and the shared design principles. The focus was bounded to the prior blocking findings while rechecking surrounding protocol, stream terminalization, legacy-cleanup, and validation-readiness gates.
+This round re-reviewed the CR-017 local fix and the current implementation state before API/E2E resumes:
+
+- `BaseTool` as the authoritative tool execution/preflight boundary.
+- `ToolPhase` use of `BaseTool.prepareExecution(...)` before publishing tool-start lifecycle and before registering/relying on external-result waiters.
+- Removal of the phase-local `ToolResultExecutionModeProvider` duck type and old `toolResultExecutionMode` property path.
+- External-result positive path, invalid-argument preflight failure path, mode-resolution failure path, and no-waiter rejection path.
+- Surrounding final runtime control model: `AgentMessageInbox` / scheduler / typed handlers own inbound dispatch; `AgentTurnRunner` / `LlmPhase` / `ToolPhase` / typed pipelines own normal LLM/tool/continuation progression.
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Implementation handoff | N/A | 2 blocking | Changes requested | No | Working-context restore and pending-approval lifecycle/invocation identity blocked API/E2E handoff. |
+| 1 | Initial implementation handoff | N/A | 2 blocking | Changes requested | No | Working-context restore and pending-approval lifecycle/invocation identity blocked API/E2E handoff. |
 | 2 | Local fixes handoff | `CR-001`, `CR-002` | 0 blocking | Pass / Ready for API/E2E validation | No | Working-context and approval lifecycle fixes passed re-review. |
 | 3 | API/E2E durable-validation re-review | Round 2 pass state plus durable validation additions | 0 blocking | Pass / Ready for delivery | No | API/E2E-added durable validation passed source re-review. |
-| 4 | Delivery-reroute latest-base merge/local fix | Rounds 1-3 pass state plus merge-conflict resolution | 0 blocking | Pass / Ready for API/E2E revalidation | No | `reference_files` inter-agent behavior was ported into the new input pipeline. |
-| 5 | User-requested independent deep review | Rounds 1-4 pass state rechecked broadly | 4 blocking | Changes requested | No | Deep review found missed LLM segment interruption finalization, missing AutobyteusLLM/AutobyteusClient signal propagation, source-size hard-limit breach, and a dormant input-box result/continuation path. |
-| 6 | Implementation local fix commit `a78c92e6` | `CR-003`, `CR-004`, `CR-005`, `CR-006` | 0 blocking | Pass / Ready for API/E2E revalidation | No | Round 5 blockers were resolved in source/tests. |
-| 7 | Latest-base merge commit `0a134bf0` | `CR-001` through `CR-006`, Round 6 pass state, latest-base conflict resolution | 0 blocking | Pass / Ready for API/E2E revalidation | No | Runtime-interrupt design was preserved after merging latest `origin/personal`; Team Communication behavior integrated into the extracted processor. |
-| 8 | AgentInputBox addendum commit `805321bd` | `CR-001` through `CR-006`, Round 7 pass state | 2 blocking | Changes requested | No | AgentInputBox was directionally correct, but lifecycle lane was too broad and stop/shutdown could still run a queued turn after terminal shutdown was requested. |
-| 9 | Local fix commit `f37d1403` | `CR-007`, `CR-008`, prior resolved findings | 0 blocking | Pass / Ready for API/E2E revalidation | No | Lifecycle input is restricted to `LifecycleEvent`; worker stop preempts dequeued turn triggers before `runTurn`. |
-| 10 | User-requested independent complete review | `CR-001` through `CR-008`, full design-principles pass | 2 blocking | Changes requested | No | Fresh review found segment protocol normalization drift and missing non-interrupt stream-error terminalization. |
-| 11 | Local fix commit `f8625a09` | `CR-009`, `CR-010`, prior resolved findings | 0 blocking | Pass / Ready for API/E2E revalidation | Yes | Canonical segment `turn_id` and failed stream terminalization are now implemented and tested. |
+| 4 | Delivery latest-base reroute | Prior pass state | 0 blocking | Pass / Ready for API/E2E revalidation | No | Latest-base reference-file behavior was integrated without resurrecting legacy handlers. |
+| 5 | Deep independent review | Prior pass state | 4 blocking | Changes requested | No | Segment finalization, signal propagation, team backend file size, and dormant lane cleanup. |
+| 6 | Local fixes for `CR-003`-`CR-006` | `CR-003`-`CR-006` | 0 blocking | Pass / Ready for API/E2E validation | No | Local fixes passed. |
+| 7 | Latest-base reroute | Round 6 pass state | 0 blocking | Pass / Ready for API/E2E validation | No | Team event processor extraction survived latest-base merge. |
+| 8 | AgentInputBox addendum | Prior pass state | 2 blocking | Changes requested | No | Lifecycle lane and stop-preemption gaps. |
+| 9 | Local fixes for `CR-007`-`CR-008` | `CR-007`, `CR-008` | 0 blocking | Pass / Ready for API/E2E validation | No | First-stage input-box fixes passed. |
+| 10 | Independent complete review | Prior pass state | 2 blocking | Changes requested | No | Segment canonicalization and failed stream finalization gaps. |
+| 11 | Local fixes for `CR-009`-`CR-010` | `CR-009`, `CR-010` | 0 blocking | Pass / Ready for API/E2E validation | No | Segment/failed-finalization fixes passed. |
+| 12 | Approval-spine local fix | Prior pass state | 0 blocking | Pass / Ready for API/E2E validation | No | Approval routing via active turn boundary passed. |
+| 13 | Independent complete review | Prior pass state | 3 blocking | Changes requested | No | Late-interrupt seams and approval marker gap. |
+| 14 | Local fixes for `CR-011`-`CR-013` | `CR-011`, `CR-012`, `CR-013` | 0 blocking | Pass / Ready for API/E2E validation | No | Interruption seam fences passed. |
+| 15 | Message-inbox scheduler implementation commit `d02b0fc3` | `CR-001` through `CR-013` | 3 blocking | Changes requested | No | Scheduler wait race, external result false success, and queued awaitable shutdown settlement. |
+| 16 | Round 15 local-fix commit `dbd6bf7a` | `CR-014`, `CR-015`, `CR-016` | 0 new blocking | Changes requested | No | Scheduler/shutdown blockers fixed; external result success path still missing. |
+| 17 | Round 16 local-fix commit `e23cc58f` | `CR-015` | 1 new blocking | Changes requested | No | Real `ToolPhase` external-result waiter/continuation path exists, but external-result branch bypasses `BaseTool` argument validation/coercion and uses an implicit duck-typed mode contract. |
+| 18 | Round 10 naming addendum commit `d4812094` plus current source re-review | `CR-017` | 0 new blocking | Changes requested | No | `LlmPhase` rename was clean, but `CR-017` remained unresolved. |
+| 19 | CR-017 local-fix commit `8c378202` | `CR-017` | 0 blocking | Pass / Ready for API/E2E validation | Yes | External-result mode/preflight now lives in `BaseTool`; invalid args and mode failures become normal failed tool results before started/pending lifecycle. |
 
-## Review Scope
-
-Reviewed files changed by commit `f8625a09`, plus adjacent behavior needed to verify the findings:
-
-- Server protocol normalization:
-  - `autobyteus-server-ts/src/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.ts`
-  - `autobyteus-server-ts/src/services/agent-streaming/agent-run-event-message-mapper.ts`
-  - Associated server unit tests.
-- Failed stream terminalization:
-  - `autobyteus-ts/src/agent/loop/llm-turn-phase.ts`
-  - `autobyteus-ts/src/agent/streaming/handlers/*-streaming-response-handler.ts`
-  - `autobyteus-ts/src/agent/streaming/adapters/invocation-adapter.ts`
-  - Associated unit and runtime integration tests.
-- Frontend projection:
-  - `autobyteus-web/services/agentStreaming/protocol/messageTypes.ts`
-  - `autobyteus-web/services/agentStreaming/handlers/segmentHandler.ts`
-  - `autobyteus-web/services/agentStreaming/handlers/agentStatusHandler.ts`
-  - Associated web handler/store/component tests.
-
-This is still an implementation-review pass. API/E2E must revalidate after this pass before delivery resumes.
-
-## Prior Findings Resolution Check (Mandatory On Round >1)
+## Prior Findings Resolution Check
 
 | Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `CR-001` | Blocking | Still resolved | Working-context checkpoint/restore code was not regressed; runtime integration suite still passes. | No regression found. |
-| 1 | `CR-002` | Blocking | Still resolved | Approval traffic still routes through `AgentTurnInputBox`; no stale approval path was reintroduced. | No regression found. |
-| 5 | `CR-003` | Blocking | Still resolved | Interruption still uses `finalizeInterrupted(...)`; new failed-finalization path is separate and does not remove interruption metadata handling. | No regression found. |
-| 5 | `CR-004` | Blocking | Still resolved | Provider/client signal propagation was not changed by this fix; source builds pass. | No regression found. |
-| 5 | `CR-005` | Blocking | Still resolved | Changed implementation files remain below 500 effective non-empty lines. | No regression found. |
-| 5 | `CR-006` | Blocking | Still resolved | No dormant tool-result/continuation lanes were reintroduced. | No regression found. |
-| 8 | `CR-007` | Blocking | Still resolved | AgentInputBox lifecycle lane remains lifecycle-only. | No regression found. |
-| 8 | `CR-008` | Blocking | Still resolved | Worker stop preemption was not changed. | No regression found. |
-| 10 | `CR-009` | Blocking | Resolved | `AutoByteusStreamEventConverter` emits canonical `turn_id`, strips nested legacy `turnId`/`turn_id`; `AgentRunEventMessageMapper` normalizes all `SEGMENT_*` messages to `turn_id` and removes outbound `turnId`. Server tests cover all segment variants and interrupted metadata. | Pass. |
-| 10 | `CR-010` | Blocking | Resolved | `StreamingResponseHandler` now requires `finalizeFailed(...)`; `LlmTurnPhase` invokes it on generic stream errors and closes reasoning as failed; handlers emit failed segment ends; `ToolInvocationAdapter` ignores failed tool segments; web segment/error handlers project failed tool rows as terminal errors. Runtime/web tests cover partial text/tool streams that throw. | Pass. |
+| 1 | `CR-001` | Blocking | Still resolved | Interrupted turns still restore working context before settlement. | No regression found. |
+| 1 | `CR-002` | Blocking | Still resolved | Approval identity validation remains active-turn scoped through `AgentRuntimeState` and `TurnToolInputPort`. | No regression found. |
+| 5 | `CR-003` | Blocking | Still resolved | Interrupted/failed stream finalization remains implemented. | No regression found. |
+| 5 | `CR-004` | Blocking | Still resolved | LLM/client signal propagation remains present; build passed. | No regression found. |
+| 5 | `CR-005` | Blocking | Still resolved | Changed implementation source files remain below 500 effective non-empty lines. | `ToolPhase`, `BaseTool`, `AgentRuntimeState`, and `AgentWorker` are pressure files. |
+| 5 | `CR-006` | Blocking | Still resolved | Old dormant first-stage input-box lanes are absent from active source grep. | No regression found. |
+| 8 | `CR-007` | Blocking | Still resolved | Message inbox path rejects unsupported turn-local operational submissions. | No regression found. |
+| 8 | `CR-008` | Blocking | Still resolved | Stop preemption remains present in worker/scheduler flow. | No regression found. |
+| 10 | `CR-009` | Blocking | Still resolved | Segment canonicalization remains implemented. | No regression found. |
+| 10 | `CR-010` | Blocking | Still resolved | Failed stream terminalization remains implemented. | No regression found. |
+| 13 | `CR-011` | Blocking | Still resolved | Abort pre-start guards remain implemented. | No regression found. |
+| 13 | `CR-012` | Blocking | Still resolved | Post-await interrupt fences remain implemented in runner/phases. | No regression found. |
+| 13 | `CR-013` | Blocking | Still resolved | Approval acceptance still requires a pending approval entry. | No regression found. |
+| 15 | `CR-014` | Blocking | Still resolved | Scheduler versioned wait/recheck/cancellable waiter implementation remains present; targeted tests passed. | No regression found. |
+| 15 | `CR-015` | Blocking | Still resolved | `ToolPhase` still owns a real `external_result` branch backed by `TurnToolInputPort.waitForToolResults(...)`; happy-path runtime test passed. | No regression found. |
+| 15 | `CR-016` | Blocking | Still resolved | Queued awaitable shutdown settlement remains implemented. | No regression found. |
+| 17 | `CR-017` | Blocking | Resolved | `ToolResultExecutionMode` and `ToolExecutionPreparation` now live in `autobyteus-ts/src/tools/base-tool.ts`; `BaseTool.prepareExecution(...)` performs agent-id setup, coercion, schema/type validation, abort check, and mode resolution without invoking `_execute(...)`; `ToolPhase` calls it before started lifecycle and before registering an external-result waiter; phase-local duck type and `toolResultExecutionMode` property references are absent from active source/tests. | BaseTool and runtime tests cover coercion, missing required args, mode failure, no execution, no started lifecycle, and no result waiter on failure. |
 
-## Source File Size And Structure Audit (Changed Implementation Source)
+## Source File Size And Structure Audit
 
-Effective non-empty lines exclude blank lines and comment-only lines. No changed implementation source file exceeds the hard `>500` line limit.
+Effective non-empty lines exclude blank lines and comment-only lines. Test files are excluded from the hard-limit audit.
 
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | ---: | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.ts` | 138 | Pass | Pass | Native stream-to-run-event conversion owns canonical native segment payload shape. | Correct backend event folder. | Pass | No action. |
-| `autobyteus-server-ts/src/services/agent-streaming/agent-run-event-message-mapper.ts` | 140 | Pass | Pass | Server-message mapper owns final WebSocket payload normalization. | Correct streaming service folder. | Pass | No action. |
-| `autobyteus-ts/src/agent/loop/llm-turn-phase.ts` | 199 | Pass | Pass | LLM phase now owns all LLM stream terminal paths: normal, interrupted, and failed. | Correct loop folder. | Pass | No action. |
-| `autobyteus-ts/src/agent/streaming/adapters/invocation-adapter.ts` | 133 | Pass | Pass | Tool invocation adapter rejects interrupted and failed terminal segments before invocation creation. | Correct streaming adapter folder. | Pass | No action. |
-| `autobyteus-ts/src/agent/streaming/handlers/api-tool-call-streaming-response-handler.ts` | 361 | Pass | Pressure | API tool-call streaming handler owns API-tool segment lifecycle; failed-finalization is placed with existing interrupted-finalization. | Correct handler folder. | Pass with pressure | Avoid unrelated growth; future large additions should extract real owned concerns. |
-| `autobyteus-ts/src/agent/streaming/handlers/parsing-streaming-response-handler.ts` | 129 | Pass | Pass | Parser handler owns parser-backed failed-finalization translation. | Correct handler folder. | Pass | No action. |
-| `autobyteus-ts/src/agent/streaming/handlers/pass-through-streaming-response-handler.ts` | 112 | Pass | Pass | Pass-through handler owns text-only failed-finalization. | Correct handler folder. | Pass | No action. |
-| `autobyteus-ts/src/agent/streaming/handlers/streaming-response-handler.ts` | 12 | Pass | Pass | Base handler contract now requires the three terminalization modes. | Correct handler folder. | Pass | No action. |
-| `autobyteus-web/services/agentStreaming/handlers/agentStatusHandler.ts` | 229 | Pass | Pressure | Status/error handler owns generic error projection and terminalizes open non-terminal tool projections. | Correct handler folder. | Pass with pressure | Avoid unrelated growth. |
-| `autobyteus-web/services/agentStreaming/handlers/segmentHandler.ts` | 359 | Pass | Pressure | Segment handler owns segment-end metadata projection, including failed/interrupted terminal states. | Correct handler folder. | Pass with pressure | Avoid unrelated growth. |
-| `autobyteus-web/services/agentStreaming/protocol/messageTypes.ts` | 374 | Pass | Pressure | Protocol types now include failed/error metadata on segment end. | Correct protocol folder. | Pass with pressure | No action. |
+| `autobyteus-ts/src/tools/base-tool.ts` | 296 | Pass | Pressure | `BaseTool` now owns the common execution preparation contract plus existing execution validation/coercion. This strengthens the authoritative tool boundary. | Correct tools subsystem. | Pass with pressure | Avoid unrelated growth; if more mode/preflight policy is added, consider an owned tool-execution contract helper under `tools`. |
+| `autobyteus-ts/src/tools/index.ts` | 20 | Pass | Pass | Exports the tool execution/preparation contract types. | Correct tools subsystem barrel. | Pass | None. |
+| `autobyteus-ts/src/agent/loop/tool-phase.ts` | 351 | Pass | Pressure | `ToolPhase` owns tool-phase sequencing, approval, execution start, external wait, and terminal handling; it now depends on the BaseTool boundary rather than a duck-typed internal shape. | Correct loop folder. | Pass with pressure | Avoid unrelated growth. |
+| `autobyteus-ts/src/agent/loop/llm-phase.ts` | 208 | Pass | Pass | Final `LlmPhase` remains focused on LLM execution/finalization. | Correct loop folder. | Pass | None. |
+| `autobyteus-ts/src/agent/loop/agent-turn-runner.ts` | 148 | Pass | Pass | Runner owns turn orchestration and terminal tool lifecycle emission. | Correct loop folder. | Pass | None. |
+| `autobyteus-ts/src/agent/loop/turn-tool-input-port.ts` | 208 | Pass | Pass | Internal turn-scoped tool wait/post primitive. | Correct loop folder. | Pass | None. |
+| `autobyteus-ts/src/agent/context/agent-runtime-state.ts` | 401 | Pass | Pressure | Runtime state owns active turn/task plus approval/result validation. | Correct context/state file. | Pass with pressure | Avoid unrelated growth. |
+| `autobyteus-ts/src/agent/message-inbox/agent-message-inbox.ts` | 198 | Pass | Pass | Semantic inbox owns typed lane posting and awaitable settlement. | Correct message-inbox folder. | Pass | None. |
+| `autobyteus-ts/src/agent/message-inbox/handlers/tool-result-message-handler.ts` | 10 | Pass | Pass | Entry handler delegates active-turn result validation to runtime state. | Correct handlers folder. | Pass | None. |
 
 ## Structural / Design Checks
 
 | Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Fix preserves the native interrupt/runtime-loop design while adding bounded terminalization/protocol-contract corrections. | None. |
-| Data-flow spine inventory clarity and preservation under shared principles | Pass | Outbound segment spine is now canonical: native event -> converter `turn_id` -> mapper `turn_id` -> web protocol/handlers. | None. |
-| Ownership boundary preservation and clarity | Pass | Protocol normalization is centralized at server boundary; failed stream terminalization is centralized in LLM phase/streaming handlers; web projection owns UI terminal states. | None. |
-| Off-spine concern clarity | Pass | Mapper/converter, streaming handlers, adapter, and web handlers remain off-spine concerns serving the owning runtime/protocol spines. | None. |
-| Existing capability/subsystem reuse check | Pass | Fix extends existing converter/mapper/handler/adapter owners rather than adding parallel compatibility layers. | None. |
-| Reusable owned structures check | Pass | Failed-finalization is added to the shared streaming handler contract and implemented by each existing concrete owner. | None. |
-| Shared-structure/data-model tightness check | Pass | Segment payloads now use canonical `turn_id`; `turnId` is stripped from outbound segment messages. | None. |
-| Repeated coordination ownership check | Pass | Final WebSocket normalization is owned by `AgentRunEventMessageMapper`; provider parser behavior is owned by streaming handlers. | None. |
-| Empty indirection check | Pass | No pass-through-only boundary was added. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Fixes are placed in the files that already own conversion, terminalization, invocation creation, and frontend projection. | None. |
-| Ownership-driven dependency check | Pass | No caller depends on both an owner and its internal helper/queue for these fixes. | None. |
-| Authoritative Boundary Rule check | Pass | Server mapper enforces external protocol shape before messages leave the server boundary; frontend does not need a compatibility shim for `turnId`. | None. |
-| File placement check | Pass | Changed files match owning concerns. | None. |
-| Flat-vs-over-split layout judgment | Pass | No artificial module split; local additions are small enough and ownership-aligned. | None. |
-| Interface/API/query/command/service-method boundary clarity | Pass | Segment-end failure metadata is explicit (`failed`, `error`); segment turn identity is explicit (`turn_id`). | None. |
-| Naming quality and naming-to-responsibility alignment check | Pass | `finalizeFailed`, `normalizeSegmentPayload`, and failure metadata names align with behavior. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | Handler implementations mirror a shared terminalization contract without duplicating policy in callers. | None. |
-| Patch-on-patch complexity control | Pass | Fix is bounded and removes ambiguity rather than adding dual paths. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | Legacy `turnId` is stripped from outbound segment messages; old control-flow paths remain absent. | None. |
-| Test quality is acceptable for the changed behavior | Pass | Tests cover server converter, server mapper, handler failed-finalization, runtime failed stream with partial text/tool, and web projection on segment-end and generic error. | None. |
-| Test maintainability is acceptable for the changed behavior | Pass | Tests are focused and colocated with source owners. | None. |
-| Validation or delivery readiness for the next workflow stage | Pass | Code review passes; API/E2E should now revalidate the latest source before delivery. | Route to `api_e2e_engineer`. |
-| No backward-compatibility mechanisms | Pass | Legacy `turnId` is accepted only as mapper input for normalization and is not emitted; no old behavior path is preserved as authoritative. | None. |
-| No legacy code retention for old behavior | Pass | No `STOP_GENERATION`, old dispatcher, or old handler-chain turn-control path was reintroduced. | None. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | CR-017 is now addressed as a bounded ownership-boundary local fix: the tool subsystem owns mode/preflight, and ToolPhase owns runtime sequencing. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | External result path remains `LLM tool call -> ToolPhase -> BaseTool.prepareExecution -> TurnToolInputPort waiter -> runtime.postToolResult -> ToolResultPipeline -> SenderType.TOOL continuation`. | None. |
+| Ownership boundary preservation and clarity | Pass | Tool argument preparation and mode selection are now owned by `BaseTool`; `ToolPhase` no longer reads phase-local duck-typed fields. | None. |
+| Off-spine concern clarity | Pass | Inbox/scheduler/result handler remain support mechanisms for the active turn rather than competing normal-flow owners. | None. |
+| Existing capability/subsystem reuse check | Pass | The fix reused and strengthened `BaseTool` instead of inventing a parallel validation path in `ToolPhase`. | None. |
+| Reusable owned structures check | Pass | `ToolResultExecutionMode` and `ToolExecutionPreparation` are exported from the tool subsystem and reused by the phase. | None. |
+| Shared-structure/data-model tightness check | Pass | The preparation shape is compact: `toolName`, coerced `args`, and `resultExecutionMode`; no kitchen-sink optional shape was introduced. | None. |
+| Repeated coordination ownership check | Pass | Argument validation/coercion policy remains single-owned by `BaseTool`; result waiter acceptance remains single-owned by `TurnToolInputPort` / runtime state. | None. |
+| Empty indirection check | Pass | `prepareExecution(...)` owns concrete validation/coercion/mode-preparation policy; it is not a pass-through layer. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Base tool owns tool preparation; phase owns publish/wait/execute sequencing. | None. |
+| Ownership-driven dependency check | Pass | `ToolPhase` depends on the authoritative `BaseTool` boundary only, not on `BaseTool` plus private internals. | None. |
+| Authoritative Boundary Rule check | Pass | The previous boundary bypass is removed: callers above the tool boundary use `BaseTool.prepareExecution(...)` / `BaseTool.execute(...)`. | None. |
+| File placement check | Pass | Contract types and preflight API are in `tools/base-tool.ts`; runtime sequencing remains in `agent/loop/tool-phase.ts`. | None. |
+| Flat-vs-over-split layout judgment | Pass | Keeping preparation in `BaseTool` is readable for this scope; no artificial module split was needed. | None. |
+| Interface/API/query/command/service-method boundary clarity | Pass | `prepareExecution(...)` is explicit and subject-owned; tool result mode is a typed tool-boundary concept. | None. |
+| Naming quality and naming-to-responsibility alignment check | Pass | `prepareExecution`, `ToolExecutionPreparation`, and `getToolResultExecutionMode` align with the behavior. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | Validation/coercion is factored through `prepareArguments(...)`; no duplicate phase-side validation was added. | None. |
+| Patch-on-patch complexity control | Pass | The fix removes the prior duck-typed shortcut and keeps the external-result branch bounded. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Active grep found no `ToolResultExecutionModeProvider`, `toolResultExecutionMode`, `executePrepared`, `LlmTurn`, or `llm-turn` references. | None. |
+| Test quality is acceptable for the changed behavior | Pass | Tests cover BaseTool preparation/coercion/no-execute, validation errors, mode errors, runtime happy path, invalid args before started/waiter, mode failure before started/waiter, and no-waiter behavior. | None. |
+| Test maintainability is acceptable for the changed behavior | Pass | Unit tests cover tool-boundary mechanics; integration tests prove runtime behavior through the real phase and inbox path. | None. |
+| Validation or delivery readiness for the next workflow stage | Pass | Implementation review passes; API/E2E should revalidate the latest source state before delivery resumes. | Route to `api_e2e_engineer`. |
+| No backward-compatibility mechanisms (no compatibility wrappers/dual-path behavior) | Pass | The old phase-local property path was removed rather than retained as a compatibility branch. | None. |
+| No legacy code retention for old behavior | Pass | Old dispatcher/handler normal-flow path remains absent; old LLM phase naming is absent from active source/tests. | None. |
 
-## Review Scorecard (Mandatory)
+## Review Scorecard
 
-- Overall score (`/10`): `9.2`
-- Overall score (`/100`): `92`
-- Score calculation note: Simple average for trend visibility only. The pass decision is based on resolved blocking findings and passing mandatory structural gates.
+- Overall score (`/10`): `9.3`
+- Overall score (`/100`): `93/100`
+- Score calculation note: Scores summarize current quality; the pass decision is based on no remaining blocking findings and passing mandatory structural gates.
 
 | Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 9.3 | Segment outbound spine and failed stream terminalization spine are now clear and test-backed. | Multiple packages still make the full spine broad. | API/E2E should verify the integrated path. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.2 | Fixes landed in authoritative owners: converter/mapper, LLM phase, streaming handlers, adapter, frontend handlers. | `agentStatusHandler.ts` and `segmentHandler.ts` remain size-pressure files. | Avoid unrelated growth in those files. |
-| `3` | `API / Interface / Query / Command Clarity` | 9.2 | `turn_id`, `failed`, and `error` are explicit protocol shapes. | Mapper still accepts legacy `turnId` input to normalize mixed upstream run events. | Keep outbound protocol canonical and avoid adding frontend compatibility shims. |
-| `4` | `Separation of Concerns and File Placement` | 9.1 | Placement matches responsibility; no hard-limit breach. | API tool-call handler is still above proactive threshold. | Extract only future real sub-concerns if growth continues. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.2 | Segment turn identity is canonicalized; terminalization is in the shared handler contract. | Failure metadata is minimal but adequate; future statuses should not create parallel aliases. | Keep one terminal metadata vocabulary. |
-| `6` | `Naming Quality and Local Readability` | 9.2 | New names are direct and responsibility-aligned. | Minor cognitive load from three terminalization modes. | Maintain tests documenting each mode. |
-| `7` | `Validation Readiness` | 9.1 | Targeted TS/server/web tests plus builds passed; new regression coverage closes the gaps. | Full API/E2E/browser/live-provider validation remains pending. | API/E2E should rerun latest integrated state. |
-| `8` | `Runtime Correctness Under Edge Cases` | 9.1 | Partial stream failure now closes text/tool segments and suppresses failed tool invocations/continuations. | Generic LLM stream errors are still represented as an error response plus error event by existing design. | API/E2E should verify user-visible behavior is acceptable. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.4 | Legacy `turnId` is normalized away at boundary; old turn-control paths remain absent. | No material weakness. | Preserve clean-cut posture. |
-| `10` | `Cleanup Completeness` | 9.1 | Round 10 blockers are resolved with source and tests. | Adjacent delivery docs/report artifacts remain unstaged from workflow context. | Delivery should reconcile after API/E2E. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.4 | The external result spine is now explicit and tested from LLM tool call to same-turn continuation. | API/E2E still needs realistic backend/WebSocket confirmation after source fixes. | Revalidate under API/E2E. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.3 | Tool preflight/mode ownership moved to `BaseTool`; `ToolPhase` no longer bypasses the tool boundary. | `BaseTool` and `ToolPhase` are pressure files. | Avoid unrelated growth and extract only if new owned concerns appear. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.2 | `prepareExecution(...)` and exported tool preparation/mode types are explicit and subject-owned. | Direct `execute(...)` still prepares in-process tools separately after phase preflight; acceptable but worth keeping idempotent. | Keep mode resolution pure/idempotent; if future cost grows, add an owned prepared-execution API deliberately. |
+| `4` | `Separation of Concerns and File Placement` | 9.2 | Tool preparation lives in tools; runtime sequencing lives in loop phase. | Source line pressure remains in `ToolPhase`, `BaseTool`, and `AgentRuntimeState`. | Avoid broadening these files. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.3 | Preparation shape is tight and mode type is reusable from the tool subsystem. | No material weakness. | None beyond ongoing discipline. |
+| `6` | `Naming Quality and Local Readability` | 9.4 | New names are discoverable and align with responsibilities; final LLM phase naming remains clean. | Minor indentation inconsistency in adjacent `BaseTool` code pre-existed/continues. | Format opportunistically if touched later. |
+| `7` | `Validation Readiness` | 9.3 | Review ran targeted and broader runtime/tool suites plus builds; CR-017 scenarios have durable tests. | Full API/E2E/browser/live-provider coverage is still the next stage, not part of code review. | API/E2E should resume. |
+| `8` | `Runtime Correctness Under Edge Cases` | 9.2 | Invalid external args and mode resolver errors now fail normally before started/pending/waiter; interruption/no-waiter paths remain covered. | External-result feature is still relatively new and should be stressed under transport races. | API/E2E should include stale/late/invalid external result cases. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.5 | No legacy dispatcher/handler path, no old mode property branch, and no old LLM naming remain active. | None material. | Maintain clean-cut posture. |
+| `10` | `Cleanup Completeness` | 9.3 | Obsolete phase-local mode provider and prepared-execution bypass references are absent. | Existing docs/report artifacts remain staged/unstaged workflow context outside this implementation commit. | Delivery/docs stage should reconcile documentation after API/E2E. |
 
 ## Findings
 
-No unresolved Round 11 findings.
+No active blocking findings remain in Round 19.
 
-Resolved findings retained for traceability:
+### `CR-017` — External-result tools bypass the authoritative `BaseTool` execution/preflight contract
 
-- `CR-001` — Working-context checkpoint/restore for interrupted turns: resolved in Round 2, still resolved.
-- `CR-002` — Pending approval terminal lifecycle and invocation identity: resolved in Round 2, still resolved.
-- `CR-003` — Interrupted LLM streams must close active non-reasoning segments and avoid partial tool invocations: resolved in Round 6, still resolved.
-- `CR-004` — AutobyteusLLM/AutobyteusClient must propagate cancellation signal: resolved in Round 6, still resolved.
-- `CR-005` — Changed team backend source file exceeded 500 effective lines: resolved in Round 6 and preserved in later rounds.
-- `CR-006` — Dormant AgentTurnInputBox tool-result/continuation lanes: resolved in Round 6, still resolved.
-- `CR-007` — AgentInputBox lifecycle lane accepted turn-local operational events through `BaseEvent`: resolved in Round 9, still resolved.
-- `CR-008` — Stop/shutdown did not preempt queued external turn triggers: resolved in Round 9, still resolved.
-- `CR-009` — Segment WebSocket payload leaked `turnId` instead of canonical `turn_id`: resolved in Round 11.
-- `CR-010` — Non-interrupt LLM stream errors did not terminalize active streamed segments/tool projections: resolved in Round 11.
+- Severity: Previously Blocking
+- Current status: `Resolved in commit 8c378202`
+- Evidence of resolution:
+  - `ToolResultExecutionMode` and `ToolExecutionPreparation` are defined/exported from `autobyteus-ts/src/tools/base-tool.ts`.
+  - `BaseTool.prepareExecution(...)` performs argument coercion, schema/type validation, abort check, agent-id setup, and tool-owned mode resolution without invoking `_execute(...)`.
+  - `ToolPhase` calls `prepareExecution(...)` before publishing `ToolExecutionStarted` and before registering/relying on an external-result waiter.
+  - Preflight and mode-resolution failures return normal failed `ToolResultEvent`s and do not publish started/pending external execution or register result waiters.
+  - Active grep found no `ToolResultExecutionModeProvider`, old `toolResultExecutionMode` property, or `executePrepared` bypass references in `autobyteus-ts/src` / `autobyteus-ts/tests`.
+  - Durable tests cover BaseTool preparation and runtime invalid/mode-failure external-result behavior.
 
 ## Test Quality And Validation-Readiness Verdict
 
 | Area | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- |
-| Validation Readiness | Ready for the next workflow stage (`API / E2E`) | Pass | Code review passes; API/E2E must revalidate latest source state before delivery. |
-| Tests | Test quality is acceptable | Pass | Tests cover converter/mapper protocol shape, failed stream terminalization, no failed tool invocation, and frontend projection. |
-| Tests | Test maintainability is acceptable | Pass | Tests are source-owner scoped and regression-oriented. |
-| Tests | Review findings are clear enough for the next owner before API / E2E or delivery resumes | Pass | No source blockers remain; API/E2E can resume. |
+| Validation Readiness | Ready for the next workflow stage (`API / E2E`) | Pass | API/E2E should resume against the latest source state. |
+| Tests | Test quality is acceptable | Pass | Unit and runtime integration coverage directly exercise the previously missing CR-017 cases. |
+| Tests | Test maintainability is acceptable | Pass | Unit tests stay at the tool boundary; integration tests stay at runtime behavior. |
+| Tests | Review findings are clear enough for the next owner before API / E2E or delivery resumes | Pass | No active review findings remain; residual risks are documented for API/E2E. |
 
-Review-local checks run in Round 11:
+Review-local checks run in Round 19:
 
 - `git diff --check HEAD` — passed.
-- Effective changed source line audit — passed hard limit; no changed implementation source exceeded 500 effective non-empty lines.
-- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/streaming/handlers/pass-through-streaming-response-handler.test.ts tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts tests/unit/agent/streaming/handlers/parsing-streaming-response-handler.test.ts tests/integration/agent/runtime/agent-runtime.test.ts` — passed (`4` files, `43` tests).
-- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts tests/unit/services/agent-streaming/agent-stream-handler.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts` — passed (`4` files, `51` tests).
-- `pnpm -C autobyteus-web exec vitest run services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts stores/__tests__/agentRunStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts components/agentInput/__tests__/AgentUserInputTextArea.spec.ts` — passed (`6` files, `71` tests).
+- `grep -R "ToolResultExecutionModeProvider\|toolResultExecutionMode\|executePrepared\|LlmTurn\|llm-turn" -n autobyteus-ts/src autobyteus-ts/tests || true` — no active source/test references found.
+- Effective source line audit — passed hard limit; no changed implementation source exceeded 500 effective non-empty lines.
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/tools/base-tool.test.ts tests/integration/agent/runtime/agent-runtime.test.ts tests/unit/agent/loop/turn-tool-input-port.test.ts tests/unit/agent/context/agent-runtime-state.test.ts` — passed (`4` files, `39` tests).
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/tools/base-tool.test.ts tests/unit/agent/interruption/abortable-operation.test.ts tests/unit/agent/loop/agent-turn-runner.test.ts tests/unit/agent/loop/turn-tool-input-port.test.ts tests/unit/agent/message-inbox/agent-message-inbox.test.ts tests/unit/agent/message-inbox/agent-message-scheduler.test.ts tests/unit/agent/message-inbox/inbox-queue-store.test.ts tests/unit/agent/context/agent-runtime-state.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/unit/agent/runtime/agent-worker.test.ts tests/integration/agent/runtime/agent-runtime.test.ts tests/integration/agent/tool-approval-flow.test.ts` — passed (`12` files, `86` tests).
 - `pnpm -C autobyteus-ts run build` — passed, including runtime dependency verification.
-- `pnpm -C autobyteus-server-ts run build:full` — passed.
+- `pnpm -C autobyteus-server-ts run build:full` — passed, including built-in agents bootstrap smoke check.
 
-Not run in Round 11:
+Not run in Round 19:
 
-- Full API/E2E/browser validation.
+- Full browser/Electron E2E.
 - Live paid-provider cancellation checks.
-- Broad package-level noEmit/typecheck paths documented upstream as baseline/non-blocking limitations; implementation handoff records the attempted `autobyteus-web` Nuxt typecheck remains blocked by existing baseline issues.
+- Full API/E2E server protocol validation.
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | Legacy `turnId` is tolerated only as inbound normalization input and is stripped from outbound segment messages. |
-| No legacy old-behavior retention in changed scope | Pass | Old single-agent dispatcher/handler normal-flow control remains absent. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | No dead/obsolete legacy runtime path requiring removal was found. |
+| No backward-compatibility mechanisms in changed scope | Pass | Old phase-local mode provider/property path is removed instead of retained. |
+| No legacy old-behavior retention in changed scope | Pass | Old dispatcher/handler normal-flow path remains absent; old `llm-turn` name is absent from active source/tests. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No obsolete source/test item requiring removal was found. |
 
-## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
+## Dead / Obsolete / Legacy Items Requiring Removal
 
-No dead/obsolete/legacy items requiring removal were found in this round.
+No dead/obsolete/legacy source item requiring immediate removal was found in Round 19.
 
 ## Docs-Impact Verdict
 
 - Docs impact: `Yes`
-- Why: Final docs should reflect that segment WebSocket payloads use canonical `turn_id`, segment-end can carry failed/error metadata, and all LLM stream terminal outcomes close active streamed segments/tool projections.
+- Why: Final docs should describe external-result mode as a formal `BaseTool`/tool-boundary contract with preparation/preflight semantics.
 - Files or areas likely affected:
-  - `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md`
+  - `tickets/in-progress/runtime-interrupt-functionality/design-spec.md`
+  - `tickets/in-progress/runtime-interrupt-functionality/implementation-handoff.md`
   - `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md`
-  - `autobyteus-web/docs/agent_execution_architecture.md`
+  - `tickets/in-progress/runtime-interrupt-functionality/turn-tool-input-port-explainer.html`
 
 ## Classification
 
 - Latest Authoritative Result: `Pass`
-- Classification: N/A for pass.
-- Reason: Round 10 blockers are resolved in implementation-owned source/tests with no new blocking findings.
+- Classification: N/A
+- Reason: No active blocking findings remain in implementation-owned source review.
 
 ## Recommended Recipient
 
 - `api_e2e_engineer`
 
-Routing note: This is an implementation-review pass. Because source changed after prior API/E2E validation, route to API/E2E revalidation, not delivery.
+Routing note: API/E2E should revalidate the latest source state before delivery resumes.
 
 ## Residual Risks
 
-- Full API/E2E/browser/live-provider validation is still required against the latest source state.
-- `api-tool-call-streaming-response-handler.ts`, `segmentHandler.ts`, `agentStatusHandler.ts`, and protocol/store/frontend files remain above proactive size-pressure thresholds; avoid unrelated growth.
-- Worktree still includes pre-existing unstaged docs/ticket artifact updates from adjacent workflow stages; delivery should reconcile after API/E2E.
-- Generic LLM stream errors are still represented through the existing error response plus error event shape; API/E2E should verify this user-visible behavior remains acceptable.
+- The inbox/scheduler model is a significant concurrency change. API/E2E should stress queued turn-start work, active-turn approval/result messages, interrupt, stop, shutdown, and late/stale messages under realistic backend/WebSocket paths.
+- `ToolPhase`, `BaseTool`, `AgentRuntimeState`, and `AgentWorker` are line-pressure files. No hard-limit breach exists, but future fixes should stay narrow.
+- External/async tool-result support is now real and code-review clean, but API/E2E should include accepted, invalid/stale/late, and interrupted external result scenarios if practical.
+- `ToolPhase` intentionally preflights through `BaseTool.prepareExecution(...)` and then in-process execution still enters `BaseTool.execute(...)`; this preserves the authoritative execution boundary. Keep mode resolution pure/idempotent unless a future owned prepared-execution API is deliberately designed.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass — ready for API/E2E revalidation; not ready for delivery until revalidation completes`
-- Score Summary: `9.2/10` (`92/100`)
-- Notes: `CR-009` and `CR-010` are resolved. Segment wire payloads are canonicalized to `turn_id`, and non-interrupt LLM stream errors now failed-terminalize active streamed segments/tool projections without producing tool invocations or continuations.
+- Review Decision: `Pass / Ready for API/E2E validation`
+- Score Summary: `9.3/10` (`93/100`)
+- Notes: Commit `8c378202` resolves `CR-017`. The external-result mode/preflight contract is now owned by `BaseTool`, `ToolPhase` uses that boundary before started lifecycle and waiter registration, and targeted plus broader runtime checks passed.
