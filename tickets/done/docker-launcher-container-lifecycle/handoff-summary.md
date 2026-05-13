@@ -44,3 +44,18 @@ autobyteus-docker reset
 ```
 
 Confirm volumes remain present after destroy/reset.
+
+
+## Finalization completed
+
+- Ticket archived under `tickets/done/docker-launcher-container-lifecycle`.
+- Implementation branch committed and pushed: `codex/docker-launcher-container-lifecycle`.
+- Merged into `personal` and pushed.
+- Release helper ran for `v1.3.5`.
+- Release tag pushed: `v1.3.5`.
+- GitHub Actions release workflows completed successfully:
+  - Desktop Release: success
+  - Release Messaging Gateway: success
+  - Server Docker Release: success
+- Dedicated local worktree removed and local ticket branch deleted after merge.
+- Completed at: 2026-05-13T14:44:58Z
