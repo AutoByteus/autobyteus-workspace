@@ -8,7 +8,6 @@ import { AgentTurn } from '../../../src/agent/agent-turn.js';
 import { ToolResultEvent } from '../../../src/agent/events/agent-events.js';
 import { ToolPhase } from '../../../src/agent/loop/tool-phase.js';
 import { ToolResultPipeline } from '../../../src/agent/pipelines/tool-result-pipeline.js';
-import { AgentOutbox } from '../../../src/agent/outbox/agent-outbox.js';
 import { applyEventAndDeriveStatus } from '../../../src/agent/status/status-update-utils.js';
 import { ToolInvocation } from '../../../src/agent/tool-invocation.js';
 import { waitForAgentToBeIdle } from '../../../src/agent/utils/wait-for-idle.js';
@@ -126,11 +125,12 @@ const runToolPhaseForApprovalTest = async (
     throw new Error('Tool approval test requires an active turn.');
   }
 
-  const outbox = new AgentOutbox(
-    fixture.agent.context.statusManager?.notifier ?? null,
-    fixture.agent.agentId
+  const rawResults = await new ToolPhase().run(
+    [invocation],
+    fixture.agent.context,
+    turn,
+    fixture.agent.context.statusManager?.notifier ?? null
   );
-  const rawResults = await new ToolPhase().run([invocation], fixture.agent.context, turn, outbox);
   const resultPipeline = new ToolResultPipeline();
   const processedResults: ToolResultEvent[] = [];
 

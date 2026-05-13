@@ -9,13 +9,13 @@ const mocks = vi.hoisted(() => ({
   toolResultProcess: vi.fn(),
   llmResponseProcess: vi.fn(async () => undefined),
   continuationBuild: vi.fn(),
-  publishTurnStarted: vi.fn(),
-  publishTurnCompleted: vi.fn(),
-  publishTurnInterrupted: vi.fn(),
-  publishError: vi.fn(),
-  publishToolExecutionSucceeded: vi.fn(),
-  publishToolExecutionFailed: vi.fn(),
-  publishToolLog: vi.fn()
+  notifyTurnStarted: vi.fn(),
+  notifyTurnCompleted: vi.fn(),
+  notifyTurnInterrupted: vi.fn(),
+  notifyError: vi.fn(),
+  notifyToolExecutionSucceeded: vi.fn(),
+  notifyToolExecutionFailed: vi.fn(),
+  notifyToolLog: vi.fn()
 }));
 
 vi.mock('../../../../src/agent/status/status-update-utils.js', () => ({
@@ -59,18 +59,6 @@ vi.mock('../../../../src/agent/loop/tool-result-continuation-builder.js', () => 
   }
 }));
 
-vi.mock('../../../../src/agent/outbox/agent-outbox.js', () => ({
-  AgentOutbox: class MockAgentOutbox {
-    publishTurnStarted = mocks.publishTurnStarted;
-    publishTurnCompleted = mocks.publishTurnCompleted;
-    publishTurnInterrupted = mocks.publishTurnInterrupted;
-    publishError = mocks.publishError;
-    publishToolExecutionSucceeded = mocks.publishToolExecutionSucceeded;
-    publishToolExecutionFailed = mocks.publishToolExecutionFailed;
-    publishToolLog = mocks.publishToolLog;
-  }
-}));
-
 import { AgentTurnRunner } from '../../../../src/agent/loop/agent-turn-runner.js';
 import { AgentRuntimeState } from '../../../../src/agent/context/agent-runtime-state.js';
 import {
@@ -95,7 +83,17 @@ const makeContextAndTurn = () => {
   const context = {
     agentId: 'agent-1',
     state,
-    statusManager: null
+    statusManager: {
+      notifier: {
+        notifyAgentTurnStarted: mocks.notifyTurnStarted,
+        notifyAgentTurnCompleted: mocks.notifyTurnCompleted,
+        notifyAgentTurnInterrupted: mocks.notifyTurnInterrupted,
+        notifyAgentErrorOutputGeneration: mocks.notifyError,
+        notifyAgentToolExecutionSucceeded: mocks.notifyToolExecutionSucceeded,
+        notifyAgentToolExecutionFailed: mocks.notifyToolExecutionFailed,
+        notifyAgentDataToolLog: mocks.notifyToolLog
+      }
+    }
   } as any;
   return { context, turn, restoreWorkingContextTurnCheckpoint };
 };
@@ -129,8 +127,8 @@ describe('AgentTurnRunner interruption fences', () => {
     expect(outcome).toMatchObject({ kind: 'interrupted', turnId: 'turn-1', reason: 'post_llm_interrupt' });
     expect(mocks.llmResponseProcess).not.toHaveBeenCalled();
     expect(restoreWorkingContextTurnCheckpoint).toHaveBeenCalledOnce();
-    expect(mocks.publishTurnCompleted).not.toHaveBeenCalled();
-    expect(mocks.publishTurnInterrupted).toHaveBeenCalledWith('turn-1', 'post_llm_interrupt');
+    expect(mocks.notifyTurnCompleted).not.toHaveBeenCalled();
+    expect(mocks.notifyTurnInterrupted).toHaveBeenCalledWith('turn-1', 'post_llm_interrupt');
   });
 
   it('uses ToolContinuationReadyEvent instead of synthetic LLMUserMessageReadyEvent for native tool-history continuations', async () => {
@@ -196,9 +194,9 @@ describe('AgentTurnRunner interruption fences', () => {
     expect(outcome).toMatchObject({ kind: 'interrupted', turnId: 'turn-1', reason: 'post_tool_interrupt' });
     expect(mocks.toolResultProcess).not.toHaveBeenCalled();
     expect(restoreWorkingContextTurnCheckpoint).toHaveBeenCalledOnce();
-    expect(mocks.publishToolExecutionSucceeded).not.toHaveBeenCalled();
-    expect(mocks.publishToolExecutionFailed).not.toHaveBeenCalled();
-    expect(mocks.publishTurnCompleted).not.toHaveBeenCalled();
-    expect(mocks.publishTurnInterrupted).toHaveBeenCalledWith('turn-1', 'post_tool_interrupt');
+    expect(mocks.notifyToolExecutionSucceeded).not.toHaveBeenCalled();
+    expect(mocks.notifyToolExecutionFailed).not.toHaveBeenCalled();
+    expect(mocks.notifyTurnCompleted).not.toHaveBeenCalled();
+    expect(mocks.notifyTurnInterrupted).toHaveBeenCalledWith('turn-1', 'post_tool_interrupt');
   });
 });

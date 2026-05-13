@@ -15,7 +15,7 @@ import { evaluateLlmPhaseCompaction } from './llm-phase-compaction.js';
 import type { AgentContext } from '../context/agent-context.js';
 import type { AgentTurn } from '../agent-turn.js';
 import type { AgentInputPipelineResult } from '../pipelines/agent-input-pipeline.js';
-import type { AgentOutbox } from '../outbox/agent-outbox.js';
+import type { AgentExternalEventNotifier } from '../events/notifiers.js';
 import type { ToolInvocation } from '../tool-invocation.js';
 import type { TokenUsage } from '../../llm/utils/token-usage.js';
 
@@ -28,13 +28,13 @@ export class LlmPhase {
     input: AgentInputPipelineResult,
     context: AgentContext,
     turn: AgentTurn,
-    outbox: AgentOutbox
+    notifier: AgentExternalEventNotifier | null
   ): Promise<LlmPhaseOutcome> {
     const agentId = context.agentId;
     const llmInstance = context.state.llmInstance as BaseLLM | null;
     if (!llmInstance) {
       const errorMessage = `Agent '${agentId}' requires an initialized LLM instance.`;
-      outbox.publishError('LlmPhase.pre_llm_check', errorMessage);
+      notifier?.notifyAgentErrorOutputGeneration('LlmPhase.pre_llm_check', errorMessage);
       throw new Error(errorMessage);
     }
 
@@ -59,7 +59,7 @@ export class LlmPhase {
     const handlerResult = StreamingResponseHandlerFactory.create({
       toolNames,
       provider,
-      onSegmentEvent: (segmentEvent) => outbox.publishSegment(segmentEvent),
+      onSegmentEvent: (segmentEvent) => notifier?.notifyAgentSegmentEvent(segmentEvent.toDict()),
       turnId: activeTurnId,
       agentId,
       xmlArgumentSchemaResolver: buildToolArgumentSchemaResolver(context)
@@ -92,7 +92,7 @@ export class LlmPhase {
     } catch (error) {
       if (error instanceof CompactionPreparationError) {
         turn.executionScope.throwIfAborted({ kind: 'llm_request_assembly' });
-        outbox.publishError('LlmPhase.prepareRequest', error.message, String(error.cause ?? error));
+        notifier?.notifyAgentErrorOutputGeneration('LlmPhase.prepareRequest', error.message, String(error.cause ?? error));
         return {
           kind: 'final',
           isError: true,
@@ -134,9 +134,13 @@ export class LlmPhase {
         if (chunkResponse.reasoning) {
           if (!currentReasoningPartId) {
             currentReasoningPartId = `${segmentIdPrefix}reasoning_${randomUUID().replace(/-/g, '')}`;
-            outbox.publishSegment(SegmentEvent.start(activeTurnId, currentReasoningPartId, SegmentType.REASONING));
+            notifier?.notifyAgentSegmentEvent(
+              SegmentEvent.start(activeTurnId, currentReasoningPartId, SegmentType.REASONING).toDict()
+            );
           }
-          outbox.publishSegment(SegmentEvent.content(activeTurnId, currentReasoningPartId, chunkResponse.reasoning));
+          notifier?.notifyAgentSegmentEvent(
+            SegmentEvent.content(activeTurnId, currentReasoningPartId, chunkResponse.reasoning).toDict()
+          );
         }
 
         streamingHandler.feed(chunkResponse);
@@ -145,18 +149,18 @@ export class LlmPhase {
       turn.executionScope.throwIfAborted({ kind: 'llm_stream_finalize' });
       streamingHandler.finalize();
       if (currentReasoningPartId) {
-        outbox.publishSegment(SegmentEvent.end(activeTurnId, currentReasoningPartId));
+        notifier?.notifyAgentSegmentEvent(SegmentEvent.end(activeTurnId, currentReasoningPartId).toDict());
         currentReasoningPartId = null;
       }
     } catch (error) {
       if (isAgentInterruptionError(error)) {
         streamingHandler.finalizeInterrupted(error.reason);
         if (currentReasoningPartId) {
-          outbox.publishSegment(
+          notifier?.notifyAgentSegmentEvent(
             SegmentEvent.end(activeTurnId, currentReasoningPartId, {
               interrupted: true,
               reason: error.reason
-            })
+            }).toDict()
           );
           currentReasoningPartId = null;
         }
@@ -166,15 +170,15 @@ export class LlmPhase {
       const errorMessage = `Error processing your request with the LLM: ${String(error)}`;
       streamingHandler.finalizeFailed(errorMessage);
       if (currentReasoningPartId) {
-        outbox.publishSegment(
+        notifier?.notifyAgentSegmentEvent(
           SegmentEvent.end(activeTurnId, currentReasoningPartId, {
             failed: true,
             error: errorMessage
-          })
+          }).toDict()
         );
         currentReasoningPartId = null;
       }
-      outbox.publishError('LlmPhase.stream', errorMessage, String(error));
+      notifier?.notifyAgentErrorOutputGeneration('LlmPhase.stream', errorMessage, String(error));
       return {
         kind: 'final',
         isError: true,
@@ -220,8 +224,7 @@ export class LlmPhase {
       tokenUsage,
       activeTurnId,
       compactionReporter,
-      runtimeSettingsResolver,
-      outbox
+      runtimeSettingsResolver
     });
 
     const toolInvocations = turn.activeToolInvocationBatch && parsedToolInvocationCount > 0

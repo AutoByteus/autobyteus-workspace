@@ -16,13 +16,13 @@ import { ToolResultPipeline } from '../pipelines/tool-result-pipeline.js';
 import { ToolResultContinuationBuilder } from './tool-result-continuation-builder.js';
 import { LlmPhase } from './llm-phase.js';
 import { ToolPhase } from './tool-phase.js';
-import { AgentOutbox } from '../outbox/agent-outbox.js';
 import { buildToolLifecyclePayloadFromResult } from '../handlers/tool-lifecycle-payload.js';
 import { formatToCleanString } from '../../utils/llm-output-formatter.js';
 import { isAgentInterruptionError } from '../interruption/agent-interruption.js';
 import type { AgentContext } from '../context/agent-context.js';
 import type { AgentTurn, TurnOutcome } from '../agent-turn.js';
 import type { AgentInputPipelineResult } from '../pipelines/agent-input-pipeline.js';
+import type { AgentExternalEventNotifier } from '../events/notifiers.js';
 
 export type AgentTurnTrigger = UserMessageReceivedEvent | InterAgentMessageReceivedEvent;
 
@@ -33,27 +33,27 @@ export class AgentTurnRunner {
   private readonly toolResultPipeline = new ToolResultPipeline();
   private readonly llmResponsePipeline = new LLMResponsePipeline();
   private readonly continuationBuilder = new ToolResultContinuationBuilder();
-  private readonly outbox: AgentOutbox;
+  private readonly notifier: AgentExternalEventNotifier | null;
 
   constructor(private readonly context: AgentContext, private readonly turn: AgentTurn) {
-    this.outbox = new AgentOutbox(context.statusManager?.notifier ?? null, context.agentId);
+    this.notifier = context.statusManager?.notifier ?? null;
   }
 
   async run(trigger: AgentTurnTrigger): Promise<TurnOutcome> {
     const turnId = this.turn.turnId;
     try {
       this.turn.executionScope.throwIfAborted({ kind: 'turn_start' });
-      this.outbox.publishTurnStarted(turnId);
+      this.notifier?.notifyAgentTurnStarted(turnId);
       await this.applyStatusEvent(trigger);
       this.turn.executionScope.throwIfAborted({ kind: 'external_trigger_status' });
-      let nextInput = await this.inputPipeline.processExternalTrigger(trigger, this.context, this.turn, this.outbox);
+      let nextInput = await this.inputPipeline.processExternalTrigger(trigger, this.context, this.turn, this.notifier);
       this.turn.executionScope.throwIfAborted({ kind: 'input_pipeline' });
 
       while (true) {
         this.turn.executionScope.throwIfAborted({ kind: 'turn_loop' });
         await this.applyStatusEvent(this.buildLlmPhaseReadyEvent(nextInput, turnId));
         this.turn.executionScope.throwIfAborted({ kind: 'llm_phase_ready_status' });
-        const llmOutcome = await this.llmPhase.run(nextInput, this.context, this.turn, this.outbox);
+        const llmOutcome = await this.llmPhase.run(nextInput, this.context, this.turn, this.notifier);
         this.turn.executionScope.throwIfAborted({ kind: 'post_llm_phase' });
 
         if (llmOutcome.kind === 'final') {
@@ -61,12 +61,12 @@ export class AgentTurnRunner {
             new LLMCompleteResponseReceivedEvent(llmOutcome.response, llmOutcome.isError ?? false, turnId)
           );
           this.turn.executionScope.throwIfAborted({ kind: 'pre_llm_response_pipeline' });
-          await this.llmResponsePipeline.processFinalResponse(llmOutcome.response, this.context, this.outbox, {
+          await this.llmResponsePipeline.processFinalResponse(llmOutcome.response, this.context, this.notifier, {
             isError: llmOutcome.isError ?? false,
             turnId
           });
           this.turn.executionScope.throwIfAborted({ kind: 'post_llm_response_pipeline' });
-          this.outbox.publishTurnCompleted(turnId);
+          this.notifier?.notifyAgentTurnCompleted(turnId);
           return this.turn.settle({ kind: 'completed', turnId });
         }
 
@@ -75,7 +75,7 @@ export class AgentTurnRunner {
           await this.applyStatusEvent(new PendingToolInvocationEvent(invocation));
         }
 
-        const rawResults = await this.toolPhase.run(llmOutcome.toolInvocations, this.context, this.turn, this.outbox);
+        const rawResults = await this.toolPhase.run(llmOutcome.toolInvocations, this.context, this.turn, this.notifier);
         this.turn.executionScope.throwIfAborted({ kind: 'post_tool_phase' });
         const processedResults: ToolResultEvent[] = [];
         for (const rawResult of rawResults) {
@@ -112,7 +112,7 @@ export class AgentTurnRunner {
           continuationInput,
           this.context,
           this.turn,
-          this.outbox
+          this.notifier
         );
         this.turn.executionScope.throwIfAborted({ kind: 'post_tool_continuation_pipeline' });
         await this.applyStatusEvent(nextInput.sourceEvent);
@@ -122,13 +122,17 @@ export class AgentTurnRunner {
       if (isAgentInterruptionError(error)) {
         const reason = error.reason;
         this.context.state.restoreWorkingContextForInterruptedTurn(turnId);
-        this.outbox.publishTurnInterrupted(turnId, reason);
+        this.notifier?.notifyAgentTurnInterrupted(turnId, reason);
         await this.applyStatusEvent(new AgentTurnInterruptedEvent(turnId, reason));
         return this.turn.settle({ kind: 'interrupted', turnId, reason });
       }
 
       const errorMessage = `Agent turn '${turnId}' failed: ${String(error)}`;
-      this.outbox.publishError('AgentTurnRunner', errorMessage, error instanceof Error ? error.stack : String(error));
+      this.notifier?.notifyAgentErrorOutputGeneration(
+        'AgentTurnRunner',
+        errorMessage,
+        error instanceof Error ? error.stack : String(error)
+      );
       await this.applyStatusEvent(new AgentErrorEvent(errorMessage, String(error)));
       return this.turn.settle({ kind: 'failed', turnId, error });
     }
@@ -155,18 +159,18 @@ export class AgentTurnRunner {
 
     const payloadBase = buildToolLifecyclePayloadFromResult(this.context.agentId, processedEvent);
     if (processedEvent.error) {
-      this.outbox.publishToolExecutionFailed({ ...payloadBase, error: processedEvent.error });
+      this.notifier?.notifyAgentToolExecutionFailed({ ...payloadBase, error: processedEvent.error });
       return;
     }
 
-    this.outbox.publishToolExecutionSucceeded({
+    this.notifier?.notifyAgentToolExecutionSucceeded({
       ...payloadBase,
       result: processedEvent.result ?? null
     });
 
     const toolInvocationId = processedEvent.toolInvocationId ?? 'N/A';
     try {
-      this.outbox.publishToolLog({
+      this.notifier?.notifyAgentDataToolLog({
         log_entry: `[TOOL_RESULT_SUCCESS_PROCESSED] Agent_ID: ${this.context.agentId}, Tool: ${processedEvent.toolName}, Invocation_ID: ${toolInvocationId}, Result: ${formatToCleanString(processedEvent.result)}`,
         tool_invocation_id: toolInvocationId,
         tool_name: processedEvent.toolName,

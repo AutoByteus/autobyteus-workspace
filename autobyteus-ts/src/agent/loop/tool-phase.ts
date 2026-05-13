@@ -7,7 +7,7 @@ import { isAgentInterruptionError } from '../interruption/agent-interruption.js'
 import type { BaseTool, ToolExecutionPreparation } from '../../tools/base-tool.js';
 import type { AgentContext } from '../context/agent-context.js';
 import type { AgentTurn } from '../agent-turn.js';
-import type { AgentOutbox } from '../outbox/agent-outbox.js';
+import type { AgentExternalEventNotifier } from '../events/notifiers.js';
 import type { ToolApprovalInputMessage } from '../tool-approval-command.js';
 import type { ToolResultInputMessage } from '../tool-result-command.js';
 
@@ -18,12 +18,12 @@ export class ToolPhase {
     invocations: ToolInvocation[],
     context: AgentContext,
     turn: AgentTurn,
-    outbox: AgentOutbox
+    notifier: AgentExternalEventNotifier | null
   ): Promise<ToolResultEvent[]> {
     const results: ToolResultEvent[] = [];
     for (const originalInvocation of invocations) {
       turn.executionScope.throwIfAborted({ kind: 'tool_phase' });
-      const result = await this.runOneInvocation(originalInvocation, context, turn, outbox);
+      const result = await this.runOneInvocation(originalInvocation, context, turn, notifier);
       turn.executionScope.throwIfAborted({ kind: 'post_tool_invocation' });
       if (result) {
         results.push(result);
@@ -36,7 +36,7 @@ export class ToolPhase {
     originalInvocation: ToolInvocation,
     context: AgentContext,
     turn: AgentTurn,
-    outbox: AgentOutbox
+    notifier: AgentExternalEventNotifier | null
   ): Promise<ToolResultEvent | null> {
     const agentId = context.agentId;
     const activeTurnId = turn.turnId;
@@ -64,7 +64,7 @@ export class ToolPhase {
     }
 
     if (!context.autoExecuteTools) {
-      const approvalResult = await this.waitForApproval(toolInvocation, context, turn, outbox);
+      const approvalResult = await this.waitForApproval(toolInvocation, context, turn, notifier);
       if (approvalResult) {
         return approvalResult;
       }
@@ -75,17 +75,17 @@ export class ToolPhase {
       | undefined;
     if (!toolInstance) {
       const errorMessage = `Tool '${toolName}' not found or configured for agent '${agentId}'.`;
-      outbox.publishToolLog({
+      notifier?.notifyAgentDataToolLog({
         log_entry: `[TOOL_ERROR] ${errorMessage}`,
         tool_invocation_id: invocationId,
         tool_name: toolName,
         turn_id: activeTurnId
       });
-      outbox.publishError(`ToolExecution.ToolNotFound.${toolName}`, errorMessage);
+      notifier?.notifyAgentErrorOutputGeneration(`ToolExecution.ToolNotFound.${toolName}`, errorMessage);
       return new ToolResultEvent(toolName, null, invocationId, errorMessage, undefined, activeTurnId, false);
     }
 
-    const preparation = await this.prepareToolExecution(toolInstance, toolInvocation, context, turn, outbox);
+    const preparation = await this.prepareToolExecution(toolInstance, toolInvocation, context, turn, notifier);
     if (preparation instanceof ToolResultEvent) {
       return preparation;
     }
@@ -95,17 +95,17 @@ export class ToolPhase {
 
     const awaitsExternalResult = preparation.resultExecutionMode === 'external_result';
     const externalResultPromise = awaitsExternalResult
-      ? this.waitForExternalToolResult(toolInvocation, context, turn, outbox)
+      ? this.waitForExternalToolResult(toolInvocation, context, turn, notifier)
       : null;
 
-    outbox.publishToolExecutionStarted({
+    notifier?.notifyAgentToolExecutionStarted({
       ...buildToolLifecyclePayloadFromInvocation(agentId, toolInvocation),
       arguments: arguments_
     });
 
     let argsStr = '';
     try { argsStr = formatToCleanString(arguments_); } catch { argsStr = String(arguments_); }
-    outbox.publishToolLog({
+    notifier?.notifyAgentDataToolLog({
       log_entry: `[TOOL_CALL] Agent_ID: ${agentId}, Tool: ${toolName}, Invocation_ID: ${invocationId}, Arguments: ${argsStr}`,
       tool_invocation_id: invocationId,
       tool_name: toolName,
@@ -113,7 +113,7 @@ export class ToolPhase {
     });
 
     if (externalResultPromise) {
-      outbox.publishToolLog({
+      notifier?.notifyAgentDataToolLog({
         log_entry: `[TOOL_EXTERNAL_RESULT_PENDING] Agent_ID: ${agentId}, Tool: ${toolName}, Invocation_ID: ${invocationId}`,
         tool_invocation_id: invocationId,
         tool_name: toolName,
@@ -136,7 +136,7 @@ export class ToolPhase {
       let resultJsonForLog = '';
       try { resultJsonForLog = formatToCleanString(executionResult); }
       catch { resultJsonForLog = formatToCleanString(String(executionResult)); }
-      outbox.publishToolLog({
+      notifier?.notifyAgentDataToolLog({
         log_entry: `[TOOL_RESULT] ${resultJsonForLog}`,
         tool_invocation_id: invocationId,
         tool_name: toolName,
@@ -151,12 +151,12 @@ export class ToolPhase {
         } else {
           context.state.recentSettledInvocationIds.add(invocationId);
         }
-        outbox.publishToolExecutionInterrupted({
+        notifier?.notifyAgentToolExecutionInterrupted({
           ...buildToolLifecyclePayloadFromInvocation(agentId, toolInvocation),
           reason: error.reason,
           interrupted: true
         });
-        outbox.publishToolLog({
+        notifier?.notifyAgentDataToolLog({
           log_entry: `[TOOL_INTERRUPTED] Agent_ID: ${agentId}, Tool: ${toolName}, Invocation_ID: ${invocationId}, Reason: ${error.reason}`,
           tool_invocation_id: invocationId,
           tool_name: toolName,
@@ -168,13 +168,13 @@ export class ToolPhase {
       turn.executionScope.throwIfAborted({ kind: 'tool_execution_error', operationId: invocationId });
       const errorMessage = `Error executing tool '${toolName}' (ID: ${invocationId}): ${String(error)}`;
       const errorDetails = error instanceof Error ? error.stack ?? String(error) : String(error);
-      outbox.publishToolLog({
+      notifier?.notifyAgentDataToolLog({
         log_entry: `[TOOL_EXCEPTION] ${errorMessage}\nDetails:\n${errorDetails}`,
         tool_invocation_id: invocationId,
         tool_name: toolName,
         turn_id: activeTurnId
       });
-      outbox.publishError(`ToolExecution.Exception.${toolName}`, errorMessage, errorDetails);
+      notifier?.notifyAgentErrorOutputGeneration(`ToolExecution.Exception.${toolName}`, errorMessage, errorDetails);
       return new ToolResultEvent(toolName, null, invocationId, errorMessage, undefined, activeTurnId, false);
     }
   }
@@ -184,7 +184,7 @@ export class ToolPhase {
     toolInvocation: ToolInvocation,
     context: AgentContext,
     turn: AgentTurn,
-    outbox: AgentOutbox
+    notifier: AgentExternalEventNotifier | null
   ): Promise<ToolExecutionPreparation<Record<string, unknown>> | ToolResultEvent> {
     try {
       const preparation = await turn.executionScope.runAbortable(
@@ -202,13 +202,13 @@ export class ToolPhase {
       turn.executionScope.throwIfAborted({ kind: 'tool_execution_prepare_error', operationId: toolInvocation.id });
       const errorMessage = `Error preparing tool '${toolInvocation.name}' (ID: ${toolInvocation.id}): ${String(error)}`;
       const errorDetails = error instanceof Error ? error.stack ?? String(error) : String(error);
-      outbox.publishToolLog({
+      notifier?.notifyAgentDataToolLog({
         log_entry: `[TOOL_PREPARE_EXCEPTION] ${errorMessage}\nDetails:\n${errorDetails}`,
         tool_invocation_id: toolInvocation.id,
         tool_name: toolInvocation.name,
         turn_id: toolInvocation.turnId ?? turn.turnId
       });
-      outbox.publishError(`ToolExecution.Prepare.${toolInvocation.name}`, errorMessage, errorDetails);
+      notifier?.notifyAgentErrorOutputGeneration(`ToolExecution.Prepare.${toolInvocation.name}`, errorMessage, errorDetails);
       return new ToolResultEvent(
         toolInvocation.name,
         null,
@@ -225,7 +225,7 @@ export class ToolPhase {
     toolInvocation: ToolInvocation,
     context: AgentContext,
     turn: AgentTurn,
-    outbox: AgentOutbox
+    notifier: AgentExternalEventNotifier | null
   ): Promise<ToolResultEvent> {
     try {
       const [message] = await turn.toolInputPort.waitForToolResults(
@@ -233,7 +233,7 @@ export class ToolPhase {
         { signal: turn.executionScope.signal, reason: () => turn.executionScope.getReason() }
       );
       turn.executionScope.throwIfAborted({ kind: 'external_tool_result', operationId: toolInvocation.id });
-      this.publishExternalToolResultLog(message, toolInvocation, context, turn, outbox);
+      this.publishExternalToolResultLog(message, toolInvocation, context, turn, notifier);
       return new ToolResultEvent(
         message.toolName ?? toolInvocation.name,
         Object.prototype.hasOwnProperty.call(message, 'result') ? message.result : null,
@@ -251,12 +251,12 @@ export class ToolPhase {
         } else {
           context.state.recentSettledInvocationIds.add(toolInvocation.id);
         }
-        outbox.publishToolExecutionInterrupted({
+        notifier?.notifyAgentToolExecutionInterrupted({
           ...buildToolLifecyclePayloadFromInvocation(context.agentId, toolInvocation),
           reason: error.reason,
           interrupted: true
         });
-        outbox.publishToolLog({
+        notifier?.notifyAgentDataToolLog({
           log_entry: `[TOOL_INTERRUPTED] Agent_ID: ${context.agentId}, Tool: ${toolInvocation.name}, Invocation_ID: ${toolInvocation.id}, Reason: ${error.reason}`,
           tool_invocation_id: toolInvocation.id,
           tool_name: toolInvocation.name,
@@ -272,13 +272,13 @@ export class ToolPhase {
     toolInvocation: ToolInvocation,
     context: AgentContext,
     turn: AgentTurn,
-    outbox: AgentOutbox
+    notifier: AgentExternalEventNotifier | null
   ): void {
     const toolName = message.toolName ?? toolInvocation.name;
     let resultJsonForLog = '';
     try { resultJsonForLog = formatToCleanString(message.result); }
     catch { resultJsonForLog = formatToCleanString(String(message.result)); }
-    outbox.publishToolLog({
+    notifier?.notifyAgentDataToolLog({
       log_entry: message.error
         ? `[TOOL_RESULT_ERROR] ${message.error}`
         : `[TOOL_RESULT] ${resultJsonForLog}`,
@@ -287,7 +287,7 @@ export class ToolPhase {
       turn_id: message.turnId ?? turn.turnId
     });
     if (message.error) {
-      outbox.publishError(`ToolExecution.ExternalResult.${toolName}`, message.error);
+      notifier?.notifyAgentErrorOutputGeneration(`ToolExecution.ExternalResult.${toolName}`, message.error);
     }
     context.state.recentSettledInvocationIds.add(message.invocationId);
   }
@@ -296,11 +296,11 @@ export class ToolPhase {
     toolInvocation: ToolInvocation,
     context: AgentContext,
     turn: AgentTurn,
-    outbox: AgentOutbox
+    notifier: AgentExternalEventNotifier | null
   ): Promise<ToolResultEvent | null> {
     turn.toolInputPort.registerToolInvocation(toolInvocation.id);
     context.storePendingToolInvocation(toolInvocation);
-    outbox.publishToolApprovalRequested({
+    notifier?.notifyAgentToolApprovalRequested({
       ...buildToolLifecyclePayloadFromInvocation(context.agentId, toolInvocation),
       arguments: toolInvocation.arguments
     });
@@ -313,7 +313,7 @@ export class ToolPhase {
       );
     } catch (error) {
       if (isAgentInterruptionError(error)) {
-        this.publishApprovalInterrupted(toolInvocation, context, turn, outbox, error.reason);
+        this.publishApprovalInterrupted(toolInvocation, context, turn, notifier, error.reason);
       }
       throw error;
     }
@@ -321,7 +321,7 @@ export class ToolPhase {
     turn.executionScope.throwIfAborted({ kind: 'tool_approval', operationId: toolInvocation.id });
     const retrievedInvocation = context.state.retrievePendingToolInvocation(toolInvocation.id) ?? toolInvocation;
     if (approvalEvent.approved) {
-      outbox.publishToolApproved({
+      notifier?.notifyAgentToolApproved({
         ...buildToolLifecyclePayloadFromInvocation(context.agentId, retrievedInvocation),
         reason: approvalEvent.reason ?? null
       });
@@ -329,7 +329,7 @@ export class ToolPhase {
     }
 
     const denialReason = approvalEvent.reason ?? 'Tool execution was denied by user/system.';
-    outbox.publishToolDenied({
+    notifier?.notifyAgentToolDenied({
       ...buildToolLifecyclePayloadFromInvocation(context.agentId, retrievedInvocation),
       reason: denialReason,
       error: denialReason
@@ -349,7 +349,7 @@ export class ToolPhase {
     toolInvocation: ToolInvocation,
     context: AgentContext,
     turn: AgentTurn,
-    outbox: AgentOutbox,
+    notifier: AgentExternalEventNotifier | null,
     reason: string
   ): void {
     const activeBatch = turn.activeToolInvocationBatch;
@@ -359,13 +359,13 @@ export class ToolPhase {
       context.state.recentSettledInvocationIds.add(toolInvocation.id);
     }
 
-    outbox.publishToolExecutionInterrupted({
+    notifier?.notifyAgentToolExecutionInterrupted({
       ...buildToolLifecyclePayloadFromInvocation(context.agentId, toolInvocation),
       arguments: toolInvocation.arguments,
       reason,
       interrupted: true
     });
-    outbox.publishToolLog({
+    notifier?.notifyAgentDataToolLog({
       log_entry: `[TOOL_INTERRUPTED] Agent_ID: ${context.agentId}, Tool: ${toolInvocation.name}, Invocation_ID: ${toolInvocation.id}, Reason: ${reason}`,
       tool_invocation_id: toolInvocation.id,
       tool_name: toolInvocation.name,

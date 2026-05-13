@@ -2,7 +2,7 @@ import { LLMCompleteResponseReceivedEvent } from '../events/agent-events.js';
 import { sortProcessors } from './processor-pipeline-runner.js';
 import type { CompleteResponse } from '../../llm/utils/response-types.js';
 import type { AgentContext } from '../context/agent-context.js';
-import type { AgentOutbox } from '../outbox/agent-outbox.js';
+import type { AgentExternalEventNotifier } from '../events/notifiers.js';
 
 type LLMResponseProcessorLike = {
   getName: () => string;
@@ -30,7 +30,7 @@ export class LLMResponsePipeline {
   async processFinalResponse(
     response: CompleteResponse,
     context: AgentContext,
-    outbox: AgentOutbox,
+    notifier: AgentExternalEventNotifier | null,
     options: { isError?: boolean; turnId?: string | null } = {}
   ): Promise<void> {
     const event = new LLMCompleteResponseReceivedEvent(
@@ -48,11 +48,11 @@ export class LLMResponsePipeline {
           console.error(
             `Agent '${context.agentId}': Error while using LLMResponseProcessor '${processor.getName()}': ${error}.`
           );
-          outbox.publishError(`LLMResponseProcessor.${processor.getName()}`, String(error));
+          notifier?.notifyAgentErrorOutputGeneration(`LLMResponseProcessor.${processor.getName()}`, String(error));
         }
       }
     }
 
-    outbox.publishAssistantComplete(response);
+    notifier?.notifyAgentDataAssistantCompleteResponse(response);
   }
 }

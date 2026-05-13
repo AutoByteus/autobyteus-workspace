@@ -10,7 +10,6 @@ import { SenderType } from '../../../../src/agent/sender-type.js';
 import { InterAgentMessageReceivedEvent, UserMessageReceivedEvent } from '../../../../src/agent/events/agent-events.js';
 import { InterAgentMessage } from '../../../../src/agent/message/inter-agent-message.js';
 import { AgentTurn } from '../../../../src/agent/agent-turn.js';
-import { AgentOutbox } from '../../../../src/agent/outbox/agent-outbox.js';
 import { CompleteResponse } from '../../../../src/llm/utils/response-types.js';
 import { BaseLLM, type LLMInvocationOptions } from '../../../../src/llm/base.js';
 import { LLMModel } from '../../../../src/llm/models.js';
@@ -94,6 +93,31 @@ describe('AgentInputPipeline', () => {
     );
   });
 
+  it('publishes system task notifications through the semantic notifier exactly once', async () => {
+    const { context, turn } = makeContextAndTurn();
+    const notifier = {
+      notifyAgentDataSystemTaskNotificationReceived: vi.fn()
+    };
+    const pipeline = new AgentInputPipeline();
+    const event = new UserMessageReceivedEvent(
+      new AgentInputUserMessage('system task update', SenderType.SYSTEM, null, {
+        sender_id: 'system_scheduler'
+      })
+    );
+
+    const result = await pipeline.processForLlm(event, context, turn, {
+      startsNewTurn: true,
+      notifier: notifier as any
+    });
+
+    expect(notifier.notifyAgentDataSystemTaskNotificationReceived).toHaveBeenCalledOnce();
+    expect(notifier.notifyAgentDataSystemTaskNotificationReceived).toHaveBeenCalledWith({
+      sender_id: 'system_scheduler',
+      content: 'system task update'
+    });
+    expect(String(result.llmUserMessage.content)).toContain('system task update');
+  });
+
   it('converts inter-agent messages with resolved sender display name and strict recipient input shape', async () => {
     const { context, turn } = makeContextAndTurn();
     attachTeamCommunicationContext(
@@ -103,7 +127,6 @@ describe('AgentInputPipeline', () => {
     const notifier = {
       notifyAgentDataInterAgentMessageReceived: vi.fn()
     };
-    const outbox = new AgentOutbox(notifier, context.agentId);
     const pipeline = new AgentInputPipeline();
     const interAgentMsg = new InterAgentMessage(
       context.config.role,
@@ -117,7 +140,7 @@ describe('AgentInputPipeline', () => {
       new InterAgentMessageReceivedEvent(interAgentMsg),
       context,
       turn,
-      outbox
+      notifier as any
     );
 
     expect(notifier.notifyAgentDataInterAgentMessageReceived).toHaveBeenCalledWith({
@@ -151,7 +174,6 @@ describe('AgentInputPipeline', () => {
     const notifier = {
       notifyAgentDataInterAgentMessageReceived: vi.fn()
     };
-    const outbox = new AgentOutbox(notifier, context.agentId);
     const pipeline = new AgentInputPipeline();
     const interAgentMsg = new InterAgentMessage(
       context.config.role,
@@ -166,7 +188,7 @@ describe('AgentInputPipeline', () => {
       new InterAgentMessageReceivedEvent(interAgentMsg),
       context,
       turn,
-      outbox
+      notifier as any
     );
 
     expect(notifier.notifyAgentDataInterAgentMessageReceived).toHaveBeenCalledWith(expect.objectContaining({

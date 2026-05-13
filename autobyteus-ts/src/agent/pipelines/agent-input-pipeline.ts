@@ -8,7 +8,7 @@ import { sortProcessors } from './processor-pipeline-runner.js';
 import type { LLMUserMessage } from '../../llm/user-message.js';
 import type { AgentContext } from '../context/agent-context.js';
 import type { AgentTurn } from '../agent-turn.js';
-import type { AgentOutbox } from '../outbox/agent-outbox.js';
+import type { AgentExternalEventNotifier } from '../events/notifiers.js';
 
 type InputProcessorLike = {
   getName: () => string;
@@ -64,29 +64,29 @@ export class AgentInputPipeline {
     event: UserMessageReceivedEvent | InterAgentMessageReceivedEvent,
     context: AgentContext,
     turn: AgentTurn,
-    outbox?: AgentOutbox | null
+    notifier?: AgentExternalEventNotifier | null
   ): Promise<AgentInputPipelineResult> {
     const userEvent = event instanceof InterAgentMessageReceivedEvent
-      ? this.convertInterAgentEvent(event, context, outbox ?? null)
+      ? this.convertInterAgentEvent(event, context, notifier ?? null)
       : event;
-    return this.processForLlm(userEvent, context, turn, { startsNewTurn: true, outbox });
+    return this.processForLlm(userEvent, context, turn, { startsNewTurn: true, notifier });
   }
 
   async processToolContinuation(
     message: AgentInputUserMessage,
     context: AgentContext,
     turn: AgentTurn,
-    outbox?: AgentOutbox | null
+    notifier?: AgentExternalEventNotifier | null
   ): Promise<AgentInputPipelineResult> {
     const event = new UserMessageReceivedEvent(message);
-    return this.processForLlm(event, context, turn, { startsNewTurn: false, outbox });
+    return this.processForLlm(event, context, turn, { startsNewTurn: false, notifier });
   }
 
   async processForLlm(
     event: UserMessageReceivedEvent,
     context: AgentContext,
     turn: AgentTurn,
-    options: { startsNewTurn: boolean; outbox?: AgentOutbox | null }
+    options: { startsNewTurn: boolean; notifier?: AgentExternalEventNotifier | null }
   ): Promise<AgentInputPipelineResult> {
     const originalMessage = event.agentInputUserMessage;
     const isToolContinuation = originalMessage.senderType === SenderType.TOOL;
@@ -105,7 +105,7 @@ export class AgentInputPipeline {
     }
 
     if (originalMessage.senderType === SenderType.SYSTEM) {
-      options.outbox?.publishSystemTaskNotification({
+      options.notifier?.notifyAgentDataSystemTaskNotificationReceived({
         sender_id: originalMessage.metadata?.sender_id ?? 'system',
         content: originalMessage.content
       });
@@ -147,10 +147,10 @@ export class AgentInputPipeline {
   private convertInterAgentEvent(
     event: InterAgentMessageReceivedEvent,
     context: AgentContext,
-    outbox: AgentOutbox | null
+    notifier: AgentExternalEventNotifier | null
   ): UserMessageReceivedEvent {
     const interAgentMsg = event.interAgentMessage;
-    outbox?.publishInterAgentMessage({
+    notifier?.notifyAgentDataInterAgentMessageReceived({
       sender_agent_id: interAgentMsg.senderAgentId,
       recipient_role_name: interAgentMsg.recipientRoleName,
       content: interAgentMsg.content,

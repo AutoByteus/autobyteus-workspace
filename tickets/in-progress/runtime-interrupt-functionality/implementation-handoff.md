@@ -271,3 +271,65 @@ Passed:
 ### Remaining Workflow Note
 
 API/E2E remains paused until code review re-runs and passes this Round 20 local fix.
+
+## Round 12 Architecture Implementation — AgentExternalEventNotifier Boundary / AgentOutbox Removal
+
+### Summary
+
+Implemented the Round 12 architecture addendum that makes `AgentExternalEventNotifier` the single external-observable publication boundary and removes the first-stage `AgentOutbox` wrapper from active source.
+
+Key changes:
+
+- Removed `autobyteus-ts/src/agent/outbox/` entirely.
+- `AgentTurnRunner` now stores `context.statusManager?.notifier` directly and calls semantic `notify...` methods for turn lifecycle, errors, terminal tool lifecycle, and tool logs.
+- `LlmPhase` now publishes segment and LLM error facts through semantic notifier methods (`notifyAgentSegmentEvent`, `notifyAgentErrorOutputGeneration`).
+- `ToolPhase` now publishes tool approval, execution, interruption, error, and log facts directly through semantic notifier methods.
+- `LLMResponsePipeline` now publishes final assistant output and response-processor errors through the notifier.
+- `AgentInputPipeline` now publishes inter-agent and system-task observable projections directly through `notifyAgentDataInterAgentMessageReceived(...)` and `notifyAgentDataSystemTaskNotificationReceived(...)` while preserving payload shape and same-turn TOOL isolation.
+- `LlmPhase` compaction evaluation no longer carries an unused outbox parameter; compaction status continues through `CompactionRuntimeReporter` and `AgentExternalEventNotifier`.
+
+### Files Updated
+
+- Removed:
+  - `autobyteus-ts/src/agent/outbox/agent-outbox.ts`
+  - `autobyteus-ts/src/agent/outbox/index.ts`
+- Modified:
+  - `autobyteus-ts/src/agent/loop/agent-turn-runner.ts`
+  - `autobyteus-ts/src/agent/loop/llm-phase.ts`
+  - `autobyteus-ts/src/agent/loop/llm-phase-compaction.ts`
+  - `autobyteus-ts/src/agent/loop/tool-phase.ts`
+  - `autobyteus-ts/src/agent/pipelines/agent-input-pipeline.ts`
+  - `autobyteus-ts/src/agent/pipelines/llm-response-pipeline.ts`
+  - `autobyteus-ts/tests/unit/agent/loop/agent-turn-runner.test.ts`
+  - `autobyteus-ts/tests/unit/agent/pipelines/agent-input-pipeline.test.ts`
+  - `autobyteus-ts/tests/integration/agent/tool-approval-flow.test.ts`
+
+### Local Implementation Checks Run
+
+Passed:
+
+- `git diff --check`
+- `rg "AgentOutbox|agent/outbox|outbox\\b" autobyteus-ts/src autobyteus-ts/tests || true`
+  - Result: no active source/test references remain.
+- `rg "\\.emit\\(" autobyteus-ts/src/agent/loop autobyteus-ts/src/agent/pipelines || true`
+  - Result: no runner/phase/pipeline low-level emit calls; code uses semantic notifier methods.
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/loop/agent-turn-runner.test.ts tests/unit/agent/pipelines/agent-input-pipeline.test.ts tests/integration/agent/tool-approval-flow.test.ts tests/integration/agent/runtime/agent-runtime.test.ts tests/integration/agent/provider-native-tool-continuation-flow.test.ts`
+  - Result: 5 files passed, 30 tests passed.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts tests/unit/agent-execution/events/team-communication-message-event-processor.test.ts tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts tests/integration/agent-team-execution/autobyteus-team-run-backend.integration.test.ts`
+  - Result: 4 files passed, 38 tests passed.
+- `pnpm -C autobyteus-ts run build`
+  - Passed, including runtime dependency verification.
+- `pnpm -C autobyteus-server-ts run build:full`
+  - Passed, including built-in agents bootstrap smoke check.
+- Changed implementation source effective-line audit:
+  - `agent-turn-runner.ts` 165
+  - `llm-phase.ts` 216
+  - `tool-phase.ts` 351
+  - `llm-phase-compaction.ts` 67
+  - `agent-input-pipeline.ts` 158
+  - `llm-response-pipeline.ts` 53
+  - All changed implementation source files remain below the 500 effective-line hard limit.
+
+### Remaining Workflow Note
+
+API/E2E remains paused until code review re-runs and passes this Round 12 architecture implementation. Existing API/E2E durable validation artifacts in the worktree are from prior accepted validation/code-review rounds and are included for cumulative context; this implementation pass did not author new API/E2E coverage beyond implementation-scoped unit/integration checks above.

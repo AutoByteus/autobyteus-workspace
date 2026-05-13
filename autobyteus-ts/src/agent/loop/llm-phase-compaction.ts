@@ -2,7 +2,6 @@ import { applyCompactionPolicy, resolveTokenBudget } from '../token-budget.js';
 import type { BaseLLM } from '../../llm/base.js';
 import type { TokenUsage } from '../../llm/utils/token-usage.js';
 import type { AgentContext } from '../context/agent-context.js';
-import type { AgentOutbox } from '../outbox/agent-outbox.js';
 import type { CompactionRuntimeReporter } from '../compaction/compaction-runtime-reporter.js';
 import type { CompactionRuntimeSettingsResolver } from '../../memory/compaction/compaction-runtime-settings.js';
 
@@ -13,7 +12,6 @@ export function evaluateLlmPhaseCompaction(input: {
   activeTurnId: string;
   compactionReporter: CompactionRuntimeReporter;
   runtimeSettingsResolver: CompactionRuntimeSettingsResolver;
-  outbox: AgentOutbox;
 }): void {
   const {
     llmInstance,
