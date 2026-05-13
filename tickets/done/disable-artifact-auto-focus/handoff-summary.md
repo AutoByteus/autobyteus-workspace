@@ -79,3 +79,15 @@ Per workflow rules, I have **not** moved the ticket to `tickets/done/`, committe
 ## User Verification
 
 User verified the fix and requested ticket finalization plus a new release at `2026-05-13T19:10:00+0200`. Finalization target remains `origin/personal`; planned release version is `v1.3.7`.
+
+## Finalization Completed
+
+Completed at `2026-05-13T19:20:00+0200`.
+
+- Archived ticket under `tickets/done/disable-artifact-auto-focus/`.
+- Committed ticket/source changes on `codex/disable-artifact-auto-focus`: `358eb49b`.
+- Pushed ticket branch to `origin/codex/disable-artifact-auto-focus`.
+- Merged into `personal`: merge commit `d92d0053`.
+- Ran release helper for `v1.3.7`: release commit `629b598f`; tag `v1.3.7` pushed.
+- GitHub Actions release workflows were triggered by the tag push.
+- Removed dedicated worktree and deleted local ticket branch.
