@@ -20,6 +20,14 @@ describe('default layout source', () => {
     expect(content).toContain("isApplicationImmersive.value ? 'bg-slate-950' : 'bg-blue-50'")
   })
 
+
+  it('allows the main workspace shell to shrink next to the left sidebar', () => {
+    const filePath = resolve(process.cwd(), 'layouts/default.vue')
+    const content = readFileSync(filePath, 'utf-8')
+
+    expect(content).toContain('flex-1 min-w-0 overflow-hidden')
+  })
+
   it('closes mobile menu on route changes via watcher', () => {
     const filePath = resolve(process.cwd(), 'layouts/default.vue')
     const content = readFileSync(filePath, 'utf-8')

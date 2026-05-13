@@ -77,7 +77,7 @@ const leftPanelStyle = computed(() => (
 ))
 
 const mainContentClasses = computed(() => [
-  'relative z-0 flex-1 overflow-hidden w-full',
+  'relative z-0 flex-1 min-w-0 overflow-hidden w-full',
   isApplicationImmersive.value ? 'bg-slate-950' : 'bg-blue-50',
 ])
 
