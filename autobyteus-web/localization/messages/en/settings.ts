@@ -316,6 +316,8 @@ const settingsMessages = {
   'settings.components.settings.NodeManager.nodeType.embedded': 'embedded',
   'settings.components.settings.NodeManager.nodeType.remote': 'remote',
   'settings.components.settings.NodeManager.nodeType.unknown': 'unknown',
+  'settings.components.settings.NodeManager.tabs.manageNodes': 'Manage Nodes',
+  'settings.components.settings.NodeManager.tabs.dockerGuide': 'Docker Guide',
   'settings.components.settings.NodeManager.capability.ready': 'ready',
   'settings.components.settings.NodeManager.capability.degraded': 'degraded',
   'settings.components.settings.NodeManager.capability.unknown': 'unknown',
