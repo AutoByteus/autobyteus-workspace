@@ -188,6 +188,38 @@ class ApprovalToolCallingLLM extends BaseLLM {
   }
 }
 
+class ExternalToolResultLLM extends BaseLLM {
+  requestMessages: Message[][] = [];
+
+  protected async _sendMessagesToLLM(_messages: Message[]): Promise<CompleteResponse> {
+    return new CompleteResponse({ content: 'ok' });
+  }
+
+  protected async *_streamMessagesToLLM(
+    messages: Message[],
+    _kwargs: Record<string, unknown>,
+    _options?: LLMInvocationOptions
+  ): AsyncGenerator<ChunkResponse, void, unknown> {
+    this.requestMessages.push(messages);
+    const callIndex = this.requestMessages.length;
+
+    if (callIndex === 1) {
+      yield {
+        content: '',
+        tool_calls: [{ index: 0, call_id: 'call_external_result_1', name: ExternalResultTool.getName() }]
+      } as ChunkResponse;
+      yield {
+        content: '',
+        is_complete: true,
+        tool_calls: [{ index: 0, arguments_delta: '{"job":"async"}' }]
+      } as ChunkResponse;
+      return;
+    }
+
+    yield { content: `reply-${callIndex}`, is_complete: true } as ChunkResponse;
+  }
+}
+
 class ApprovalTool extends BaseTool<AgentContext, Record<string, unknown>, string> {
   static getName(): string {
     return 'approval_tool';
@@ -207,6 +239,32 @@ class ApprovalTool extends BaseTool<AgentContext, Record<string, unknown>, strin
     _options?: ToolExecutionOptions
   ): Promise<string> {
     return 'should-not-run-without-approval';
+  }
+}
+
+class ExternalResultTool extends BaseTool<AgentContext, Record<string, unknown>, string> {
+  executeCalls = 0;
+  readonly toolResultExecutionMode = 'external_result' as const;
+
+  static getName(): string {
+    return 'external_result_tool';
+  }
+
+  static getDescription(): string {
+    return 'External-result test tool';
+  }
+
+  static getArgumentSchema() {
+    return null;
+  }
+
+  protected async _execute(
+    _context: AgentContext,
+    _args?: Record<string, unknown>,
+    _options?: ToolExecutionOptions
+  ): Promise<string> {
+    this.executeCalls += 1;
+    return 'should-not-run-in-process';
   }
 }
 
@@ -724,6 +782,75 @@ describe('Agent runtime integration', () => {
       expect(nextMessages.some((message) => message.content === 'after interrupt')).toBe(true);
       expect(nextMessages.some((message) => message.content === 'needs approval')).toBe(false);
       expect(nextMessages.some((message) => message.tool_payload)).toBe(false);
+    } finally {
+      if (runtime.isRunning) {
+        await runtime.stop(2);
+      }
+      await llm.cleanup();
+    }
+  }, 20000);
+
+  it('routes an external async tool result through inbox dispatch into ToolPhase continuation', async () => {
+    const llm = new ExternalToolResultLLM(makeModel(), new LLMConfig());
+    const externalTool = new ExternalResultTool();
+    const config = new AgentConfig(
+      'RuntimeExternalToolResultAgent',
+      'Tester',
+      'External tool result routing test agent',
+      llm,
+      null,
+      [externalTool],
+      true
+    );
+    const agentId = `runtime_external_tool_result_${Date.now()}`;
+
+    const state = new AgentRuntimeState(agentId, null, null);
+    state.llmInstance = llm;
+    state.toolInstances = { [ExternalResultTool.getName()]: externalTool };
+    attachMemory(state);
+
+    const context = new AgentContext(agentId, config, state);
+    const runtime = new AgentRuntime(context);
+
+    try {
+      runtime.start();
+      const ready = await waitForStatus(context, (status) => status === AgentStatus.IDLE || status === AgentStatus.ERROR);
+      expect(ready).toBe(true);
+
+      await runtime.submitEvent(new UserMessageReceivedEvent(new AgentInputUserMessage('needs external result')));
+      const resultWaiterReady = await waitForCondition(
+        () => Boolean(context.state.activeTurn?.toolInputPort.hasToolResultWaiter('call_external_result_1'))
+      );
+      expect(resultWaiterReady).toBe(true);
+      expect(externalTool.executeCalls).toBe(0);
+
+      const postResult = await runtime.postToolResult({
+        kind: 'tool_result',
+        invocationId: 'call_external_result_1',
+        toolName: ExternalResultTool.getName(),
+        result: 'external-ok'
+      });
+
+      expect(postResult).toMatchObject({
+        accepted: true,
+        code: 'posted',
+        invocationId: 'call_external_result_1'
+      });
+
+      const continuationReachedLlm = await waitForCondition(() => llm.requestMessages.length === 2);
+      expect(continuationReachedLlm).toBe(true);
+      const continuationUserContent =
+        llm.requestMessages[1]
+          .filter((message) => message.role === MessageRole.USER)
+          .at(-1)?.content ?? '';
+      expect(continuationUserContent).toContain('Tool: external_result_tool (ID: call_external_result_1)');
+      expect(continuationUserContent).toContain('external-ok');
+      expect(externalTool.executeCalls).toBe(0);
+
+      const settled = await waitForCondition(
+        () => context.currentStatus === AgentStatus.IDLE && context.state.activeTurn === null
+      );
+      expect(settled).toBe(true);
     } finally {
       if (runtime.isRunning) {
         await runtime.stop(2);

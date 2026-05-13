@@ -47,6 +47,13 @@ Round 15 local fixes for the scheduler/awaitable command review findings:
 - Fixed `CR-015` external/async tool-result command semantics by requiring a real active `TurnToolInputPort` result waiter before `AgentRuntimeState.postToolResultToActiveTurn(...)` can return success. Active-batch membership alone now returns `no_result_consumer`; `TurnToolInputPort.postToolResult(...)` no longer queues result messages without a waiter; `posted` is reserved for a result that an active consumer can actually receive.
 - Fixed `CR-016` shutdown settlement by draining queued inbox awaitables from `AgentWorker` shutdown and resolving them with explicit terminal command results (`runtime_stopped` / `runtime_stopping` / `shutdown_requested`) instead of leaving unresolved promises behind when the scheduler exits.
 
+Round 16 local fix for the remaining `CR-015` external/async result path:
+
+- Added a production `ToolPhase` external-result branch for tools that declare `toolResultExecutionMode: 'external_result'` or implement `getToolResultExecutionMode(...)`.
+- The branch registers the real `TurnToolInputPort.waitForToolResults(...)` waiter before publishing tool-start lifecycle/logs, so `AgentMessageInbox -> AgentMessageScheduler -> ToolResultMessageHandler -> AgentRuntimeState -> TurnToolInputPort` can wake the active phase instead of returning a false success.
+- External results rejoin the same `ToolPhase -> ToolResultPipeline -> ToolResultContinuationBuilder -> AgentInputPipeline(SenderType.TOOL)` continuation path used by in-process tool results.
+- Direct in-process tools still execute and return results locally; with no external waiter, external `postToolResult(...)` remains rejected as `no_result_consumer`.
+
 ## Key Files Or Areas
 
 - New inbound boundary and scheduler:
@@ -58,6 +65,7 @@ Round 15 local fixes for the scheduler/awaitable command review findings:
   - `autobyteus-ts/src/agent/loop/turn-tool-input-port.ts`
   - `autobyteus-ts/src/agent/agent-turn.ts`
   - `autobyteus-ts/src/agent/loop/tool-phase.ts`
+  - `ToolPhase` now owns the external-result execution mode branch and waits through `TurnToolInputPort.waitForToolResults(...)`.
 - Runtime/worker/state rewiring:
   - `autobyteus-ts/src/agent/runtime/agent-worker.ts`
   - `autobyteus-ts/src/agent/runtime/agent-runtime.ts`
@@ -72,6 +80,7 @@ Round 15 local fixes for the scheduler/awaitable command review findings:
   - `autobyteus-ts/tests/unit/agent/message-inbox/agent-message-scheduler.test.ts`
   - `autobyteus-ts/tests/unit/agent/message-inbox/inbox-queue-store.test.ts`
   - `autobyteus-ts/tests/unit/agent/loop/turn-tool-input-port.test.ts`
+  - `autobyteus-ts/tests/integration/agent/runtime/agent-runtime.test.ts`
   - updated runtime/state/worker/context tests.
 
 ## Important Assumptions
@@ -86,7 +95,7 @@ Round 15 local fixes for the scheduler/awaitable command review findings:
 
 - API/E2E revalidation is still required after code review because this refactor changes the runtime scheduler/inbound boundary.
 - Existing delivery-owned docs/report artifacts in the worktree still contain prior terminology and were not updated in this implementation pass except for this handoff. Delivery docs sync should reconcile public docs after review/validation.
-- External/async tool result routing is now concretely modeled and locally tested. Until a production external/async `ToolPhase` consumer is wired, posted results are explicitly rejected with `no_result_consumer` rather than reported as accepted and ignored. No broad API/E2E external tool-host scenario was run by implementation.
+- External/async tool result routing is now concretely modeled and locally tested through the production `ToolPhase` waiter path. No broad API/E2E external tool-host scenario was run by implementation.
 
 ## Task Design Health Assessment Implementation Check
 
@@ -103,6 +112,7 @@ Round 15 local fixes for the scheduler/awaitable command review findings:
   - `AgentMessageScheduler` owns the wait/dispatchability seam with versioned wakeups and cancellable waiters.
   - Active-turn approvals/results cannot start new turns and return explicit no-active/stale/no-pending/interrupted/runtime-stopped outcomes.
   - External tool-result success now requires an active result consumer, not just active-batch membership.
+  - `ToolPhase` owns the external-result execution mode branch and rejoins normal tool-result continuation after the active result waiter is woken.
   - Worker shutdown drains unresolved awaitable inbox messages with explicit terminal command results.
   - Source grep over active `autobyteus-ts/src` and tests found no remaining `AgentInputBox`, `AgentTurnInputBox`, or `AgentInputEventQueueManager` references.
 
@@ -115,7 +125,7 @@ Round 15 local fixes for the scheduler/awaitable command review findings:
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: Yes.
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): Yes.
 - Notes:
-  - Largest changed implementation sources remain below the 500 effective-line hard limit: `agent-runtime-state.ts` 401, `agent-worker.ts` 300, `turn-tool-input-port.ts` 208, `agent-message-inbox.ts` 198, `agent-message-scheduler.ts` 166, `inbox-queue-store.ts` 158 effective non-empty lines.
+  - Largest changed implementation sources remain below the 500 effective-line hard limit: `agent-runtime-state.ts` 401, `tool-phase.ts` 322, `agent-worker.ts` 300, `turn-tool-input-port.ts` 208, `agent-message-inbox.ts` 198, `agent-message-scheduler.ts` 166, `inbox-queue-store.ts` 158 effective non-empty lines.
   - This pass intentionally removed the old first-stage inbox/queue/turn-input-box source files instead of leaving compatibility re-exports.
 
 ## Environment Or Dependency Notes
@@ -129,10 +139,10 @@ Round 15 local fixes for the scheduler/awaitable command review findings:
 Passed:
 
 - `git diff --check HEAD`
-- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/message-inbox/agent-message-inbox.test.ts tests/unit/agent/message-inbox/agent-message-scheduler.test.ts tests/unit/agent/message-inbox/inbox-queue-store.test.ts tests/unit/agent/loop/turn-tool-input-port.test.ts tests/unit/agent/context/agent-runtime-state.test.ts tests/unit/agent/context/agent-context.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/unit/agent/runtime/agent-worker.test.ts`
-  - Result: 8 files passed, 61 tests passed.
+- `pnpm -C autobyteus-ts exec vitest run tests/integration/agent/runtime/agent-runtime.test.ts tests/unit/agent/loop/turn-tool-input-port.test.ts tests/unit/agent/context/agent-runtime-state.test.ts`
+  - Result: 3 files passed, 28 tests passed.
 - `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/interruption/abortable-operation.test.ts tests/unit/agent/loop/agent-turn-runner.test.ts tests/unit/agent/loop/turn-tool-input-port.test.ts tests/unit/agent/message-inbox/agent-message-inbox.test.ts tests/unit/agent/message-inbox/agent-message-scheduler.test.ts tests/unit/agent/message-inbox/inbox-queue-store.test.ts tests/unit/agent/context/agent-runtime-state.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/unit/agent/runtime/agent-worker.test.ts tests/integration/agent/runtime/agent-runtime.test.ts tests/integration/agent/tool-approval-flow.test.ts`
-  - Result: 11 files passed, 74 tests passed.
+  - Result: 11 files passed, 75 tests passed.
 - `pnpm -C autobyteus-ts run build`
   - Passed, including runtime dependency verification.
 - `pnpm -C autobyteus-server-ts run build:full`
@@ -143,7 +153,7 @@ Passed:
 - Re-run approval/denial API flows while a turn is waiting to verify `AgentRuntime.postToolApproval(...) -> AgentMessageInbox.postToolApproval(...) -> AgentMessageScheduler -> ToolApprovalMessageHandler -> AgentRuntimeState -> TurnToolInputPort -> ToolPhase.waitForApproval` end to end.
 - Exercise queued user/inter-agent messages arriving during a long-running active turn; they should remain parked until the active turn settles while tool approvals/results and lifecycle messages continue dispatching.
 - Exercise stop during active turn and stop while future turn-start messages are parked; terminal shutdown must not start the parked turn.
-- If an external/async tool-host path is available, exercise `postToolResult(...)` for accepted, stale, no-active, interrupted, and duplicate outcomes.
+- If a server/API external tool-host path is available, exercise `postToolResult(...)` for accepted production waiter, stale, no-active, interrupted, duplicate, and no-consumer outcomes.
 
 ## API / E2E / Executable Validation Still Required
 
