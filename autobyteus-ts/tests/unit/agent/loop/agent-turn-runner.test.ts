@@ -29,8 +29,8 @@ vi.mock('../../../../src/agent/pipelines/agent-input-pipeline.js', () => ({
   }
 }));
 
-vi.mock('../../../../src/agent/loop/llm-turn-phase.js', () => ({
-  LlmTurnPhase: class MockLlmTurnPhase {
+vi.mock('../../../../src/agent/loop/llm-phase.js', () => ({
+  LlmPhase: class MockLlmPhase {
     run = mocks.llmRun;
   }
 }));

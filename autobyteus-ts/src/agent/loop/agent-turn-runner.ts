@@ -13,7 +13,7 @@ import { AgentInputPipeline } from '../pipelines/agent-input-pipeline.js';
 import { LLMResponsePipeline } from '../pipelines/llm-response-pipeline.js';
 import { ToolResultPipeline } from '../pipelines/tool-result-pipeline.js';
 import { ToolResultContinuationBuilder } from './tool-result-continuation-builder.js';
-import { LlmTurnPhase } from './llm-turn-phase.js';
+import { LlmPhase } from './llm-phase.js';
 import { ToolPhase } from './tool-phase.js';
 import { AgentOutbox } from '../outbox/agent-outbox.js';
 import { buildToolLifecyclePayloadFromResult } from '../handlers/tool-lifecycle-payload.js';
@@ -27,7 +27,7 @@ export type AgentTurnTrigger = UserMessageReceivedEvent | InterAgentMessageRecei
 
 export class AgentTurnRunner {
   private readonly inputPipeline = new AgentInputPipeline();
-  private readonly llmPhase = new LlmTurnPhase();
+  private readonly llmPhase = new LlmPhase();
   private readonly toolPhase = new ToolPhase();
   private readonly toolResultPipeline = new ToolResultPipeline();
   private readonly llmResponsePipeline = new LLMResponsePipeline();

@@ -10,8 +10,8 @@ import { CompactionRuntimeReporter } from '../compaction/compaction-runtime-repo
 import { CompactionRuntimeSettingsResolver } from '../../memory/compaction/compaction-runtime-settings.js';
 import { PendingCompactionExecutor } from '../../memory/compaction/pending-compaction-executor.js';
 import { isAgentInterruptionError } from '../interruption/agent-interruption.js';
-import { buildToolArgumentSchemaResolver, resolveTurnToolNames } from './llm-turn-phase-tools.js';
-import { evaluateLlmTurnCompaction } from './llm-turn-phase-compaction.js';
+import { buildToolArgumentSchemaResolver, resolveTurnToolNames } from './llm-phase-tools.js';
+import { evaluateLlmPhaseCompaction } from './llm-phase-compaction.js';
 import type { AgentContext } from '../context/agent-context.js';
 import type { AgentTurn } from '../agent-turn.js';
 import type { AgentInputPipelineResult } from '../pipelines/agent-input-pipeline.js';
@@ -19,22 +19,22 @@ import type { AgentOutbox } from '../outbox/agent-outbox.js';
 import type { ToolInvocation } from '../tool-invocation.js';
 import type { TokenUsage } from '../../llm/utils/token-usage.js';
 
-export type LlmTurnPhaseOutcome =
+export type LlmPhaseOutcome =
   | { kind: 'final'; response: CompleteResponse; isError?: boolean }
   | { kind: 'tool_invocations'; response: CompleteResponse; toolInvocations: ToolInvocation[] };
 
-export class LlmTurnPhase {
+export class LlmPhase {
   async run(
     input: AgentInputPipelineResult,
     context: AgentContext,
     turn: AgentTurn,
     outbox: AgentOutbox
-  ): Promise<LlmTurnPhaseOutcome> {
+  ): Promise<LlmPhaseOutcome> {
     const agentId = context.agentId;
     const llmInstance = context.state.llmInstance as BaseLLM | null;
     if (!llmInstance) {
       const errorMessage = `Agent '${agentId}' requires an initialized LLM instance.`;
-      outbox.publishError('LlmTurnPhase.pre_llm_check', errorMessage);
+      outbox.publishError('LlmPhase.pre_llm_check', errorMessage);
       throw new Error(errorMessage);
     }
 
@@ -90,7 +90,7 @@ export class LlmTurnPhase {
     } catch (error) {
       if (error instanceof CompactionPreparationError) {
         turn.executionScope.throwIfAborted({ kind: 'llm_request_assembly' });
-        outbox.publishError('LlmTurnPhase.prepareRequest', error.message, String(error.cause ?? error));
+        outbox.publishError('LlmPhase.prepareRequest', error.message, String(error.cause ?? error));
         return {
           kind: 'final',
           isError: true,
@@ -172,7 +172,7 @@ export class LlmTurnPhase {
         );
         currentReasoningPartId = null;
       }
-      outbox.publishError('LlmTurnPhase.stream', errorMessage, String(error));
+      outbox.publishError('LlmPhase.stream', errorMessage, String(error));
       return {
         kind: 'final',
         isError: true,
@@ -204,12 +204,12 @@ export class LlmTurnPhase {
     memoryManager.ingestAssistantResponse(
       completeResponse,
       activeTurnId,
-      'LlmTurnPhase',
+      'LlmPhase',
       { appendToWorkingContext: parsedToolInvocationCount === 0 }
     );
 
     turn.executionScope.throwIfAborted({ kind: 'llm_compaction' });
-    evaluateLlmTurnCompaction({
+    evaluateLlmPhaseCompaction({
       llmInstance,
       memoryManager,
       tokenUsage,

@@ -6,7 +6,7 @@ import type { AgentOutbox } from '../outbox/agent-outbox.js';
 import type { CompactionRuntimeReporter } from '../compaction/compaction-runtime-reporter.js';
 import type { CompactionRuntimeSettingsResolver } from '../../memory/compaction/compaction-runtime-settings.js';
 
-export function evaluateLlmTurnCompaction(input: {
+export function evaluateLlmPhaseCompaction(input: {
   llmInstance: BaseLLM;
   memoryManager: NonNullable<AgentContext['state']['memoryManager']>;
   tokenUsage: TokenUsage | null;

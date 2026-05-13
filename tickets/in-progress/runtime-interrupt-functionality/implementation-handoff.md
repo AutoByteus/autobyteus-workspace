@@ -39,7 +39,7 @@ Implemented the approved Round 9 inbound-message refactor on top of the native i
   - `autobyteus-ts/src/agent/loop/agent-turn-input-box.ts`
   - corresponding old unit tests.
 
-The existing finite turn path remains intact: `AgentTurnRunner` / `LlmTurnPhase` / `ToolPhase` / typed pipelines still own normal LLM/tool/continuation progression; no old `WorkerEventDispatcher` or `agent/handlers` normal-flow loop was reintroduced.
+The existing finite turn path remains intact: `AgentTurnRunner` / `LlmPhase` / `ToolPhase` / typed pipelines still own normal LLM/tool/continuation progression; no old `WorkerEventDispatcher` or `agent/handlers` normal-flow loop was reintroduced.
 
 Round 15 local fixes for the scheduler/awaitable command review findings:
 
@@ -54,6 +54,12 @@ Round 16 local fix for the remaining `CR-015` external/async result path:
 - External results rejoin the same `ToolPhase -> ToolResultPipeline -> ToolResultContinuationBuilder -> AgentInputPipeline(SenderType.TOOL)` continuation path used by in-process tool results.
 - Direct in-process tools still execute and return results locally; with no external waiter, external `postToolResult(...)` remains rejected as `no_result_consumer`.
 
+Round 10 architecture addendum implementation:
+
+- Renamed final source from `llm-turn-phase.ts` / `LlmTurnPhase` to `llm-phase.ts` / `LlmPhase` as approved by the architecture addendum.
+- Renamed phase helper files to `llm-phase-tools.ts` and `llm-phase-compaction.ts`, and updated active imports/exports/tests to the final naming.
+- Preserved the broad phase ownership: `LlmPhase` still owns request assembly, context/compaction preparation, provider streaming, streaming-parser integration, outcome production, assistant-memory ingestion, and interrupted/failed segment finalization.
+
 ## Key Files Or Areas
 
 - New inbound boundary and scheduler:
@@ -66,6 +72,11 @@ Round 16 local fix for the remaining `CR-015` external/async result path:
   - `autobyteus-ts/src/agent/agent-turn.ts`
   - `autobyteus-ts/src/agent/loop/tool-phase.ts`
   - `ToolPhase` now owns the external-result execution mode branch and waits through `TurnToolInputPort.waitForToolResults(...)`.
+- LLM phase final source naming:
+  - `autobyteus-ts/src/agent/loop/llm-phase.ts`
+  - `autobyteus-ts/src/agent/loop/llm-phase-tools.ts`
+  - `autobyteus-ts/src/agent/loop/llm-phase-compaction.ts`
+  - `AgentTurnRunner` now imports/constructs `LlmPhase`; `loop/index.ts` exports `llm-phase.js`.
 - Runtime/worker/state rewiring:
   - `autobyteus-ts/src/agent/runtime/agent-worker.ts`
   - `autobyteus-ts/src/agent/runtime/agent-runtime.ts`
@@ -125,7 +136,8 @@ Round 16 local fix for the remaining `CR-015` external/async result path:
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: Yes.
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): Yes.
 - Notes:
-  - Largest changed implementation sources remain below the 500 effective-line hard limit: `agent-runtime-state.ts` 401, `tool-phase.ts` 322, `agent-worker.ts` 300, `turn-tool-input-port.ts` 208, `agent-message-inbox.ts` 198, `agent-message-scheduler.ts` 166, `inbox-queue-store.ts` 158 effective non-empty lines.
+  - Largest changed implementation sources remain below the 500 effective-line hard limit: `agent-runtime-state.ts` 401, `tool-phase.ts` 322, `agent-worker.ts` 300, `llm-phase.ts` 208, `turn-tool-input-port.ts` 208, `agent-message-inbox.ts` 198, `agent-message-scheduler.ts` 166, `inbox-queue-store.ts` 158 effective non-empty lines.
+  - The final LLM phase rename left no active `LlmTurnPhase` / `llm-turn-phase` references in `autobyteus-ts/src` or `autobyteus-ts/tests`.
   - This pass intentionally removed the old first-stage inbox/queue/turn-input-box source files instead of leaving compatibility re-exports.
 
 ## Environment Or Dependency Notes
@@ -143,6 +155,12 @@ Passed:
   - Result: 3 files passed, 28 tests passed.
 - `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/interruption/abortable-operation.test.ts tests/unit/agent/loop/agent-turn-runner.test.ts tests/unit/agent/loop/turn-tool-input-port.test.ts tests/unit/agent/message-inbox/agent-message-inbox.test.ts tests/unit/agent/message-inbox/agent-message-scheduler.test.ts tests/unit/agent/message-inbox/inbox-queue-store.test.ts tests/unit/agent/context/agent-runtime-state.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/unit/agent/runtime/agent-worker.test.ts tests/integration/agent/runtime/agent-runtime.test.ts tests/integration/agent/tool-approval-flow.test.ts`
   - Result: 11 files passed, 75 tests passed.
+- `grep -R "LlmTurn\|llm-turn" -n autobyteus-ts/src autobyteus-ts/tests || true`
+  - Result: no active source/test references remained after the final `LlmPhase` rename.
+- Changed-source effective-line audit for Round 10 renamed files and touch points.
+  - Result: `agent-turn-runner.ts` 148, `llm-phase.ts` 208, `llm-phase-compaction.ts` 69, `llm-phase-tools.ts` 39, `loop/index.ts` 5 effective non-empty lines.
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/loop/agent-turn-runner.test.ts tests/integration/agent/runtime/agent-runtime.test.ts`
+  - Result: 2 files passed, 10 tests passed.
 - `pnpm -C autobyteus-ts run build`
   - Passed, including runtime dependency verification.
 - `pnpm -C autobyteus-server-ts run build:full`
