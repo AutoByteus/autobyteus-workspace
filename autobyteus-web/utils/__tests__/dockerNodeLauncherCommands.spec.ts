@@ -22,8 +22,10 @@ describe('dockerNodeLauncherCommands', () => {
     expect(commands.map((command) => command.id)).toEqual([
       'macos-linux-install',
       'windows-powershell-install',
-      'direct-start',
-      'direct-start-new',
+      'direct-new-container',
+      'direct-upgrade-all',
+      'direct-destroy-all',
+      'direct-reset',
       'direct-urls',
       'direct-status',
       'direct-logs',
@@ -36,13 +38,16 @@ describe('dockerNodeLauncherCommands', () => {
       `powershell -NoProfile -ExecutionPolicy Bypass -Command "irm ${dockerNodeLauncherScriptUrls.powershell} | iex; autobyteus-docker install"`,
     );
     expect(commands.filter((command) => command.phase === 'direct').map((command) => command.command)).toEqual([
-      'autobyteus-docker start',
-      'autobyteus-docker start --new',
+      'autobyteus-docker new-container',
+      'autobyteus-docker upgrade --all',
+      'autobyteus-docker destroy --all',
+      'autobyteus-docker reset',
       'autobyteus-docker urls',
       'autobyteus-docker status',
       'autobyteus-docker logs',
       'autobyteus-docker stop',
     ]);
     expect(commands.map((command) => command.command).join('\n')).not.toContain('bash -s -- start');
+    expect(commands.map((command) => command.command).join('\n')).not.toContain('autobyteus-docker start');
   });
 });

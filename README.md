@@ -54,11 +54,14 @@ Windows PowerShell:
 powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.ps1 | iex; autobyteus-docker install"
 ```
 
-Then use direct local commands. `start` checks/pulls the image and only recreates the managed container when the image/config changed or the container is missing:
+Then use direct local commands. `new-container` checks/pulls the image and creates the next indexed managed container:
 
 ```bash
-autobyteus-docker start
+autobyteus-docker new-container
 ```
+
+Repeated `new-container` calls create `autobyteus-server-0`, then
+`autobyteus-server-1`, then `autobyteus-server-2`, and so on.
 
 Claude Agent SDK sessions automatically read Claude Code filesystem settings.
 For this Docker image, the `user` Claude Code settings source resolves to
@@ -77,10 +80,22 @@ noVNC:   printed by the launcher, usually http://localhost:6080
 VNC:     printed by the launcher, usually localhost:5908
 ```
 
-Start a new isolated Docker node:
+Upgrade every managed Docker node to the latest image while keeping named volumes:
 
 ```bash
-autobyteus-docker start --new
+autobyteus-docker upgrade --all
+```
+
+Remove every managed Docker node while keeping named volumes:
+
+```bash
+autobyteus-docker destroy --all
+```
+
+Reset to one fresh managed Docker node:
+
+```bash
+autobyteus-docker reset
 ```
 
 Show the Backend URL again:
