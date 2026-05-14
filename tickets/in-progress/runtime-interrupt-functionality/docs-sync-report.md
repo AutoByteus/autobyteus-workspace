@@ -1,119 +1,94 @@
 # Docs Sync Report
 
-## Post-Refresh Electron Build Addendum — 2026-05-14
-
-After this report was prepared, the user requested another refresh of `origin/personal` before building Electron for manual testing. Delivery refreshed `origin/personal` again and found the ticket branch `ahead 35, behind 2`. The existing reviewed delivery/report artifacts were protected in local checkpoint commit `d273d1c1` (`chore(ticket): checkpoint runtime interrupt round 17 handoff`), then `origin/personal` at `cabe20dd94fc8b3000c9856991675159264d93b0` (`chore(release): bump workspace release version to 1.3.9`) was merged into the ticket branch as `3dfc9bcf25b841af27865f0daa25a737178fecff`.
-
-The latest-base merge brought the completed `autobyteus-ts-bash-html-corruption` terminal/run_bash work from `personal`. Three conflicts were resolved by preserving the latest-base stateless non-PTY `ShellCommandExecutor` / ordinary background-process adoption behavior while retaining this ticket's tool execution `AbortSignal` path for interrupt cancellation. Focused terminal validation passed after the merge: `pnpm -C autobyteus-ts exec vitest run tests/unit/tools/terminal/run-bash.test.ts tests/integration/tools/terminal/terminal-tools.test.ts tests/unit/tools/terminal/command-execution/shell-command-executor.test.ts` (`3` files / `16` tests).
-
-Electron README instructions were then followed from `autobyteus-web`. The local macOS README command variant passed:
-
-```bash
-NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac
-```
-
-Build log: `/tmp/runtime-interrupt-electron-macos-build-20260514-114342.log`. Built artifacts are under `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/autobyteus-web/electron-dist/`, including `AutoByteus_enterprise_macos-arm64-1.3.9.dmg`, `AutoByteus_enterprise_macos-arm64-1.3.9.zip`, and `mac-arm64/AutoByteus.app`. Branch relationship after the merge/build is `ahead 37, behind 0` relative to `origin/personal`. No additional long-lived docs were changed by this Electron build step.
-
-
 ## Scope
 
 - Ticket: `runtime-interrupt-functionality`
 - Delivery owner: `delivery_engineer`
 - Date: `2026-05-14`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality`
-- Trigger: Delivery resumed after API/E2E Round 17 passed Round 29 code review and the user-requested server-side AutoByteus runtime E2E rerun at commit `32a216a84801f3468efd24a293bb417f8503ea8c` (`test(agent): align deterministic broad test expectations`).
-- Latest implementation review: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/review-report.md` (`Pass / Ready for API/E2E resume`, Round 29).
-- Latest authoritative API/E2E report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/api-e2e-validation-report.md` (`Pass / Ready for delivery`, Round 17).
-- Integrated base checked by delivery: `origin/personal` at `839148ba058b8d85a96288ce56fef69beef22266` after `git fetch origin --prune` on `2026-05-14`.
-- Integrated delivery HEAD used for docs sync: `32a216a84801f3468efd24a293bb417f8503ea8c`.
-- Branch relationship after delivery refresh: `ahead 35, behind 0` relative to `origin/personal`; no latest-base merge/checkpoint was required in this delivery round.
+- Trigger: Delivery resumed after Code Review Round 31 and API/E2E Round 18 passed implementation commit `01b7c186c985520ff8ea9086fc89efeb6153a0b7` (`fix(agent): guard active turn cleanup`).
+- Latest authoritative code review: Round 31, `Pass / Ready for API/E2E resume`, `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/review-report.md`.
+- Latest authoritative API/E2E validation: Round 18, `Pass / Ready for delivery`, `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/api-e2e-validation-report.md`.
+- Tracked base refreshed by delivery: `origin/personal` at `cabe20dd94fc8b3000c9856991675159264d93b0` after `git fetch origin --prune` on `2026-05-14`.
+- Integrated delivery HEAD used for docs sync: `01b7c186c985520ff8ea9086fc89efeb6153a0b7` before this ticket-artifact refresh commit.
+- Branch relationship after refresh: `ahead 41, behind 0` relative to `origin/personal`; no latest-base merge/checkpoint was required in this delivery round.
 
 ## Result
 
-`Pass / No additional long-lived docs change required`
+`Pass / No additional long-lived product docs change required`
 
-This report supersedes the prior Round-15 delivery artifact. Delivery refreshed against the latest tracked base, confirmed the ticket branch was already current with `origin/personal`, reran focused delivery checks, and verified that Round 29 / Round 17 changed test/config expectations and validation artifacts rather than production runtime behavior.
+This report supersedes the prior Round 17 / post-Electron-build delivery artifact. Round 18 changed production runtime source for the active-turn cleanup guard, but the durable user-facing/runtime design documents remain accurate. The changed implementation details are captured in the ticket artifacts (`implementation-handoff.md`, `review-report.md`, `api-e2e-validation-report.md`, and this delivery package).
 
-No long-lived product/runtime docs were updated in this delivery pass. The earlier runtime docs sync for the event-inbox handler rename remains current.
+## Round 18 Docs Impact Decision
 
-## Round 17 Docs Impact Decision
+Round 18 validates a bounded runtime cleanup invariant:
 
-Round 17 validated a reviewed local fix for deterministic active test drift and Vitest discovery hygiene:
+- `AgentRuntimeState.clearSettledActiveTurnIfStillActive(...)` only clears a matching active turn after it has settled.
+- Live or mismatched active turns are protected and return `null` from the clear operation.
+- `AgentWorker.observeTurnSettlement(...)` waits for turn settlement and then asks runtime state to clear only the settled matching turn.
+- Tool-approval integration tests now use the active-turn state boundary instead of bypassing aggregate lifecycle setup.
 
-- `autobyteus-ts/vitest.config.ts` excludes stale `tickets/done` and `tmp-*` artifact tests from default discovery while preserving Vitest defaults.
-- Deterministic tests were aligned with active canonical contracts such as `turn_id`, `TOOL_APPROVAL_REQUESTED`, `provider_type`, OpenAI strict JSON schema expectations, `run_bash` signal options, and memory-ingest labels.
-- A package-local certificate fixture was added for certificate utility tests.
-- No production source under `autobyteus-ts/src`, `autobyteus-server-ts/src`, or `autobyteus-web` changed in commit `32a216a8`.
+No long-lived docs were changed because the existing architecture docs already describe active-turn/runtime ownership at the correct level; this fix tightens an internal cleanup contract without changing public protocol, user-facing behavior, or documented product flows. Code review Round 31 also classified docs impact as ticket artifacts only.
 
-Therefore no long-lived product docs needed changes. The relevant durable truth is recorded in ticket-local validation, review, and delivery artifacts rather than canonical product docs.
+## Long-Lived Docs Reviewed / No-Impact Basis
 
-## Long-Lived Docs Reviewed
-
-| Doc Path | Result | Notes |
+| Area | Result | Reason |
 | --- | --- | --- |
-| `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md` | Reviewed / No change | Still accurate after Round 15 handler terminology sync; Round 17 changed no runtime source behavior. |
-| `autobyteus-ts/docs/event_driven_core_design.md` | Reviewed / No change | Still accurate; event-inbox handler terminology remains current. |
-| `autobyteus-ts/docs/lifecycle_event_sourced_engine_design.md` | Reviewed / No change | Still accurate; legitimate processor-pipeline wording remains distinct from event-inbox handlers. |
-| `autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md` | Reviewed / No change | Still accurate; Round 17 changed no team runtime behavior. |
-| `autobyteus-ts/docs/agent_memory_design.md` | Reviewed / No change | No impact from deterministic test/config fix. |
-| `autobyteus-ts/docs/agent_memory_design_nodejs.md` | Reviewed / No change | No impact from deterministic test/config fix. |
-| `autobyteus-ts/docs/tool_call_formatting_and_parsing.md` | Reviewed / No change | No impact from deterministic test/config fix. |
-| `autobyteus-ts/docs/api_tool_call_streaming_design.md` | Reviewed / No change | Provider-native behavior was revalidated; docs remain current. |
-| `autobyteus-ts/docs/tool_schema_and_configuration.md` | Reviewed / No change | No impact from deterministic test/config fix. |
-| `autobyteus-ts/docs/turn_terminology.md` | Reviewed / No change | No impact from deterministic test/config fix. |
-| `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md` | Reviewed / No change | Server-side AutoByteus GraphQL/WebSocket E2E passed; protocol docs remain current. |
-| `autobyteus-server-ts/docs/modules/agent_execution.md` | Reviewed / No change | Server execution behavior remains aligned. |
-| `autobyteus-server-ts/docs/modules/agent_streaming.md` | Reviewed / No change | Stream bridge behavior remains aligned. |
-| `autobyteus-server-ts/docs/modules/agent_team_execution.md` | Reviewed / No change | Team runtime/WebSocket E2E passed; docs remain current. |
-| `autobyteus-web/docs/agent_execution_architecture.md` | Reviewed / No change | Round 17 did not change frontend behavior. |
-| `autobyteus-web/docs/agent_artifacts.md` | Reviewed / No change | No impact. |
+| Native interrupt/runtime-loop docs | No change | Interrupt/terminate semantics remain unchanged and were revalidated. |
+| Event-inbox/runtime-state design docs | No change | Active-turn ownership remains the same; only settled-only cleanup was tightened. |
+| Server WebSocket protocol docs | No change | Protocol remains `INTERRUPT_GENERATION`; live single/team GraphQL/WebSocket E2E passed. |
+| Web/frontend projection docs | No change | No frontend source changed in Round 18. |
+| Electron/desktop docs | No change | The README build flow was followed successfully; no docs change required. |
 
-## Durable Test/Validation Knowledge Recorded In Ticket Artifacts
+## Delivery Integrated-State Checks
 
-| Topic | Current truth | Recorded in |
-| --- | --- | --- |
-| Default Vitest discovery | Default `autobyteus-ts` Vitest discovery no longer lists stale `tickets/done` or `tmp-*` tests. | API/E2E report, review report, this delivery report. |
-| Deterministic active test drift | Reviewed expectations now align with current canonical runtime/test contracts. | Review report and API/E2E report. |
-| Broad unit confidence | `pnpm -C autobyteus-ts exec vitest run tests/unit` passed (`354` files / `1730` tests). | API/E2E report and `/tmp/round29_autobyteus_ts_unit_sweep.log`. |
-| Server-side live AutoByteus E2E | Single-agent and team GraphQL/WebSocket LM Studio E2E passed after the user-requested rerun. | API/E2E report and `/tmp/round29_server_autobyteus_e2e.log`. |
-| Provider/live-environment scope | Round 16 provider/live-environment failures remain explicitly unclaimed and out of scope unless the user expands scope. | API/E2E report, review report, release/deployment report. |
+Delivery refreshed the tracked base and ran these checks after API/E2E Round 18:
 
-## Round 17 Evidence Recorded
-
-API/E2E Round 17 accepted evidence:
-
-- Deterministic local-fix subset: `9` files / `27` tests passed. Log: `/tmp/round29_deterministic_validation.log`.
-- Focused compaction with canonical LM Studio model ID: `2` files / `3` tests passed. Log: `/tmp/round29_compaction_runtime_validation.log`.
-- Focused event/runtime/provider-native/approval suite: `12` files / `87` tests passed. Log: `/tmp/round29_compaction_runtime_validation.log`.
-- Broad deterministic `autobyteus-ts` unit sweep: `354` files / `1730` tests passed. Log: `/tmp/round29_autobyteus_ts_unit_sweep.log`.
-- Builds: `pnpm -C autobyteus-ts run build` and `pnpm -C autobyteus-server-ts run build:full` passed. Log: `/tmp/round29_build_validation.log`.
-- User-requested server-side AutoByteus runtime E2E passed. Log: `/tmp/round29_server_autobyteus_e2e.log`.
-- Single-agent server-side E2E passed: `3` tests passed / `15` skipped.
-- Team server-side E2E passed: `4` tests passed / `0` skipped.
-
-## Delivery Docs Review Checks
-
-Delivery reviewed docs and active surfaces with these checks on the latest integrated state:
-
-- `git fetch origin --prune` — confirmed `origin/personal` at `839148ba058b8d85a96288ce56fef69beef22266`.
-- Branch relationship after refresh — `ahead 35, behind 0`; no latest-base merge required.
-- `git diff --check`, `git diff --check HEAD`, and `git diff --check 32a216a84801^ 32a216a84801` — passed.
-- Production-source change check for commit `32a216a8` across `autobyteus-ts/src`, `autobyteus-server-ts/src`, and `autobyteus-web` — `0` production source files changed.
-- `pnpm -C autobyteus-ts exec vitest list | rg 'tickets/done|tmp-' || true` — no stale `tickets/done` or `tmp-*` tests listed.
-- Active legacy/stop/outbox scan — no message-wrapper/legacy inbox, `AgentOutbox`, `WorkerEventDispatcher`, or stop-generation fallback matches in checked active source/test/runtime surfaces.
-- Delivery reran deterministic local-fix subset — passed (`9` files / `27` tests).
+- `git fetch origin --prune` — confirmed `origin/personal` at `cabe20dd94fc8b3000c9856991675159264d93b0`.
+- Branch relationship — `ahead 41, behind 0`; no merge required.
+- `git diff --check`, `git diff --check HEAD`, and `git diff --check 01b7c186^ 01b7c186` — passed.
+- Stale/legacy active-turn/outbox/stop-generation grep — no forbidden matches in checked active source/test/runtime surfaces.
+- Focused cleanup/runtime delivery rerun — passed (`3` files / `24` tests):
+  - `tests/unit/agent/context/agent-runtime-state.test.ts`
+  - `tests/unit/agent/event-inbox/agent-event-scheduler.test.ts`
+  - `tests/integration/agent/tool-approval-flow.test.ts`
 - `pnpm -C autobyteus-ts run build` — passed, including runtime dependency verification.
 - `pnpm -C autobyteus-server-ts run build:full` — passed, including built-in agents bootstrap smoke check.
-- `pnpm -C autobyteus-web exec nuxi prepare` — passed.
+- Round 18 Electron macOS local test build — passed from `autobyteus-web` using the README local macOS no-notarization command.
+
+Delivery log: `/tmp/runtime-interrupt-round18-delivery-checks.log`.
+
+## API/E2E Round 18 Evidence Accepted
+
+- `/tmp/round31_ts_runtime_validation.log`: `git diff --check`, commit diff check, stale-grep guard, focused TS runtime/approval/provider-native suite (`13` files / `90` tests), approval no-timeout-warning slice, `tsc --noEmit`, and `autobyteus-ts` build passed.
+- `/tmp/round31_server_focused_validation.log`: focused server WebSocket/team/runtime suite (`6` files / `51` tests) and `autobyteus-server-ts build:full` passed.
+- `/tmp/round31_server_autobyteus_live_e2e.log`: live LM Studio-backed AutoByteus single-agent/team GraphQL/WebSocket E2E passed (`2` files / `9` AutoByteus tests, `13` Codex/Claude-provider tests skipped by env).
+
+## Electron Test Build Refreshed For Current State
+
+Because Round 18 changed runtime production source after the previous local Electron build, delivery rebuilt Electron so manual testing uses the current `01b7c186` runtime state.
+
+Build command from `autobyteus-web/README.md` local macOS guidance:
+
+```bash
+NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac
+```
+
+Build log: `/tmp/runtime-interrupt-round18-electron-macos-build-20260514-162303.log`.
+
+Artifacts:
+
+- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.9.dmg`
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.9.zip`
+- App bundle: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+
+
+## Residual / Out-Of-Scope Classification Preserved
+
+Provider/live-environment failures from the earlier Round 16 broad all-test sweep remain explicitly unclaimed and out of scope unless the user expands scope: MCP toy servers requiring `/opt/homebrew/bin/uv`, local media host `192.168.2.124:29695`, Autobyteus/RPA live LLM/audio/image timeouts/500s, and fully parallel LM Studio live-agent/team flakiness.
 
 ## Delivery Continuation
 
 - Result: `Pass`
 - Next owner: `delivery_engineer`
-- Notes: Docs sync and delivery artifacts are complete against the Round-17-passed, Round-29-reviewed, latest-base integrated state. Repository finalization, ticket archival, final commit, push, merge into `personal`, release/deployment, and cleanup remain on hold until explicit user verification/approval.
-
-## Blocked Or Escalated Follow-Up
-
-- Classification: `N/A`
-- Recommended recipient: `N/A`
-- Why docs could not be finalized truthfully: `N/A` — docs sync completed with explicit no-impact decision for long-lived docs.
+- Repository finalization, ticket archival, final push, merge into `personal`, release/deployment, and cleanup remain on hold until explicit user verification/approval.
