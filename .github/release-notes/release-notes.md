@@ -1,12 +1,13 @@
 ## What's New
-- Reworked agent `run_bash` execution so commands run through a stateless, non-interactive shell instead of an interactive PTY session.
-- Added PID-based background process visibility for shell-native background jobs, including `get_background_processes` for listing active managed processes.
+- Native AutoByteus agent and team runs now support interrupting the active turn without terminating the run.
+- After an interrupt, users can send follow-up messages on the same run or team session instead of starting over.
 
 ## Improvements
-- Large generated files, including standalone HTML apps written through heredocs or redirects, now preserve exact bytes without terminal prompt, echo, or wrapping corruption.
-- Background commands now use ordinary shell syntax such as `command > log 2>&1 &`, with process output and stop actions keyed by public numeric PIDs.
-- Terminal documentation now clearly separates agent `run_bash` behavior from server/web interactive terminal sessions.
+- Improved pending tool-approval handling so interrupt and terminate are distinct, reliable actions.
+- Improved runtime memory after interruptions so accepted user input, streamed assistant output, and completed tool results remain available for safe follow-up turns.
+- Improved team run recovery so targeted member follow-up works after interrupt, terminate, restore, and continue flows.
 
 ## Fixes
-- Removed the legacy `run_bash` background parameter from parser, schema, formatter, and prompt usage surfaces.
-- Preserved server/web interactive terminal behavior while isolating agent command execution from PTY-specific artifacts.
+- Fixed legacy stop-generation fallback paths for native AutoByteus interrupt handling.
+- Fixed several runtime-loop edge cases around active-turn cleanup, streaming finalization, tool approvals, external tool results, and provider-native continuations.
+- Fixed server/WebSocket and frontend projection paths so interrupted and failed segments settle consistently.
