@@ -102,6 +102,10 @@ uses these collaborators:
   - checks the `TurnExecutionScope` before starting or consuming LLM streams
     and again after awaited LLM seams before publishing normal assistant
     completion side effects;
+  - on accepted interrupt, terminalizes open stream segments as interrupted and
+    records already streamed assistant text/reasoning through
+    `MemoryManager.ingestAssistantResponse(..., 'LlmPhaseInterruptedPartial')`
+    before rethrowing the interruption;
   - on non-interrupt LLM stream errors, failed-terminalizes any active text,
     tool, write/edit, or reasoning segments before publishing the runtime error.
 - `ToolPhase`
@@ -117,10 +121,9 @@ uses these collaborators:
   - waits for external tool results through `TurnToolInputPort` only for
     prepared invocations that resolved to external-result mode;
   - reports each completed direct or external tool result to `AgentTurnRunner`
-    before the post-tool abort fence so memory can ingest an interruption marker
-    and refresh provider-safe projection with completed facts, without
-    publishing normal terminal success or continuation side effects after an
-    accepted interrupt;
+    before the post-tool abort fence so memory can record completed facts and
+    repair the next LLM prompt safely, without publishing normal terminal
+    success or continuation side effects after an accepted interrupt;
   - checks for accepted interrupts after awaited tool seams before publishing
     tool terminal success, tool results, or continuation input.
 - `ToolResultPipeline`
@@ -219,8 +222,9 @@ before performing normal side effects:
 These fences prevent a late accepted interrupt from being followed by normal
 assistant completion, final-response memory updates, tool terminal success,
 normal tool-result processing, or same-turn continuation publication for the
-interrupted turn. Interrupted-turn finalization may still record an interrupt
-marker and completed tool-result facts for safe future context.
+interrupted turn. Interrupted-turn memory work may still record already emitted
+assistant text/reasoning, completed tool-result facts, and an operation-boundary
+note for safe future context.
 
 ## Native Interrupt Semantics
 
@@ -237,12 +241,15 @@ When an active turn exists:
    expected invocation ids are fenced as recently settled;
 5. active LLM streams, tool executions, terminal foreground commands, and MCP
    calls receive or observe the abort signal where supported;
-6. `AgentTurnRunner` catches the interruption, calls
-   `MemoryManager.ingestInterruptionMarker(...)` and then
-   `MemoryManager.refreshWorkingContextProjection(...)`, publishes
+6. `LlmPhase` records already streamed assistant text/reasoning when present,
+   using source event `LlmPhaseInterruptedPartial`;
+7. `AgentTurnRunner` catches the interruption, records completed tool facts
+   without appending them as a same-turn continuation, appends an
+   `operation_boundary` trace through `MemoryManager.appendRawTrace(...)`, calls
+   `MemoryManager.projectWorkingContextForNextLlm(...)`, publishes
    `TURN_INTERRUPTED`, applies `AgentTurnInterruptedEvent`, and settles the turn
    as `interrupted`;
-7. the worker keeps running and can accept a later follow-up turn.
+8. the worker keeps running and can accept a later follow-up turn.
 
 When no active turn exists, `interrupt(...)` returns `no_active_turn` and does
 not start or stop the runtime.
@@ -259,24 +266,28 @@ shutdown cleanup.
 
 At turn start, `MemoryManager.startTurn()` creates the turn identity used by
 raw traces and working-context updates. If the turn is interrupted,
-`AgentTurnRunner` uses the memory-native interruption API pair instead of
-rolling back a runtime-owned snapshot:
+runtime/turn code does not roll back a pre-turn snapshot. Instead, memory keeps
+facts that were committed before the interrupt and then repairs the next LLM
+context:
 
-1. `MemoryManager.ingestInterruptionMarker({ scope, reason, completedToolResults })`
-   records a single interrupted-turn raw-trace marker and non-denied completed
-   tool results observed by `ToolPhase` before the accepted interrupt,
-   deduplicating existing raw `tool_result` traces.
-2. `MemoryManager.refreshWorkingContextProjection({ mode: 'provider_safe', fenceScope: scope })`
-   projects the next working context through
-   `projectInterruptedTurnWorkingContext(...)`.
+1. accepted user input remains in raw history and working context;
+2. already streamed assistant text/reasoning is recorded as an assistant fact
+   with source `LlmPhaseInterruptedPartial`;
+3. completed non-denied tool results observed by `ToolPhase` are ingested as raw
+   `tool_result` facts with `appendToWorkingContext: false`, so they are
+   remembered without creating same-turn continuation input;
+4. `AgentTurnRunner` appends an `operation_boundary` raw trace noting that the
+   turn was interrupted before normal completion;
+5. `MemoryManager.projectWorkingContextForNextLlm({ mode: 'llm_safe', fenceIncompleteToolProtocolScope, includeCommittedFacts: true })`
+   rebuilds the next prompt through `projectLlmSafeWorkingContext(...)`.
 
-The interrupted-turn projector is provider-safe. Complete native tool
-call/result sequences can remain structured history. Unsafe partial native
-tool-call protocol is removed from future provider prompts. Completed results
-from an interrupted partial batch are preserved as assistant-text facts, followed
-by the interrupted-turn marker. Follow-up turns therefore keep accepted user
-input and completed facts without replaying malformed or incomplete tool-call
-protocol.
+The LLM-safe projector can keep complete native tool call/result sequences as
+structured history. Unsafe partial native tool-call protocol is removed from
+future provider prompts. Completed results from an interrupted partial batch are
+preserved as assistant-text facts, followed by the operation-boundary note.
+Follow-up turns therefore keep accepted user input, interrupted assistant
+partial output, and completed facts without replaying malformed or incomplete
+tool-call protocol.
 
 `TurnToolInputPort` rejects late approvals and external tool results after a
 turn is interrupted or completed. Direct tool execution results remain

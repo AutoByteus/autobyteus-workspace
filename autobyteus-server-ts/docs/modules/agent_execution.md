@@ -85,12 +85,13 @@ the `autobyteus-ts` runtime. `AgentRun.interrupt(...)` delegates to
 `AgentRuntime.interrupt(...)`, which targets only the active `AgentTurn` and
 leaves the worker/runtime alive for a later follow-up. The native runner passes
 the active turn's `AbortSignal` through LLM, MCP, tool, and terminal execution
-boundaries where supported, finalizes interrupted-turn memory, and rejects stale
-approvals/results after the turn input box is closed. Interrupted-turn memory
-projection removes unsafe partial native tool-call protocol from future provider
-prompts while retaining accepted user input and completed tool-result facts.
-This is distinct from `stop()`, which remains terminal runtime shutdown and
-runs cleanup.
+boundaries where supported, records already committed memory facts plus an
+operation-boundary note, and rejects stale approvals/results after the turn
+input box is closed. Interrupted-turn memory projection removes unsafe partial
+native tool-call protocol from future provider prompts while retaining accepted
+user input, interrupted streamed assistant text/reasoning, and completed
+tool-result facts. This is distinct from `stop()`, which remains terminal
+runtime shutdown and runs cleanup.
 
 Claude browser MCP tools add one extra converter responsibility: allowlisted
 `mcp__autobyteus_browser__<tool>` names for known stable browser tools are

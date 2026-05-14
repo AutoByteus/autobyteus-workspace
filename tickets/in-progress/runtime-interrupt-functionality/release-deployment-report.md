@@ -2,7 +2,7 @@
 
 ## Scope
 
-Delivery-stage latest-base refresh, integrated-state checks, long-lived docs sync, local Electron test build refresh, final handoff preparation, and user-verification hold for `runtime-interrupt-functionality` after Code Review Round 34 and API/E2E Round 20 passed commit `7f38b6040a4059e6c7e7c33df0f391280d5d1a6f` (`refactor(memory): use interruption marker projection APIs`).
+Delivery-stage latest-base refresh, integrated-state checks, long-lived docs sync, local Electron test build refresh, final handoff preparation, and user-verification hold for `runtime-interrupt-functionality` after Code Review Round 36 and API/E2E Round 21 passed commit `abf59e8eb500a321c9798fa92a1ff4eb50f8c482` (`fix(agent): retain interrupted streamed assistant output`).
 
 Repository finalization, ticket archival, push, merge into `personal`, tag, publication, deployment, release, and cleanup have **not** been run. They remain blocked on explicit user verification/approval.
 
@@ -12,71 +12,75 @@ Repository finalization, ticket archival, push, merge into `personal`, tag, publ
 - Ticket branch: `codex/runtime-interrupt-functionality`
 - Finalization target: `origin/personal` / local `personal`
 - Latest tracked base checked by delivery: `origin/personal` at `cabe20dd94fc8b3000c9856991675159264d93b0`
-- Latest implementation commit validated by API/E2E: `7f38b6040a4059e6c7e7c33df0f391280d5d1a6f` (`refactor(memory): use interruption marker projection APIs`)
+- Latest implementation commit validated by API/E2E: `abf59e8eb500a321c9798fa92a1ff4eb50f8c482` (`fix(agent): retain interrupted streamed assistant output`)
 - Delivery refresh command: `git fetch origin --prune` on `2026-05-14`
-- Branch relationship after refresh: `ahead 46, behind 0`
+- Branch relationship after refresh: `ahead 49, behind 0`
 - Latest-base integration action in this delivery round: `No merge required`; ticket branch already contained latest tracked `origin/personal`.
-- Prior latest-base merge/blocker/Electron-build context is superseded by this Round 20 delivery pass unless explicitly referenced as historical context.
+- Prior latest-base merge/blocker/Electron-build context is superseded by this Round 21 delivery pass unless explicitly referenced as historical context.
 
 ## Review / Validation Gate Status
 
 - Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/review-report.md`
-  - Latest review round: `34`
+  - Latest review round: `36`
   - Decision: `Pass — ready for API/E2E revalidation`
-  - Scope: memory-native interruption marker/projection APIs replacing rejected lifecycle-finalization naming while preserving CR-022 completed tool-result retention.
+  - Scope: CR-023 interrupted streamed assistant output retention while preserving CR-022 completed tool-result retention and the generic memory fact/projection boundary.
 - API/E2E report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/api-e2e-validation-report.md`
-  - Latest authoritative validation round: `20`
+  - Latest authoritative validation round: `21`
   - Result: `Pass / Ready for delivery`
-  - Repository-resident durable validation changed by API/E2E Round 20: `No`
-  - Production source changed by API/E2E Round 20: `No`; implementation commit `7f38b604` changed production runtime/memory source before API/E2E.
-  - Code-review reroute after Round 20: `Not required`; API/E2E changed only the validation report artifact.
+  - Repository-resident durable validation changed by API/E2E Round 21: `No`
+  - Production source changed by API/E2E Round 21: `No`; implementation commit `abf59e8e` changed production runtime/memory source before API/E2E.
+  - Code-review reroute after Round 21: `Not required`; API/E2E changed only the validation report artifact.
 
 ## Delivery Integrated-State Checks
 
 | Check | Result | Notes |
 | --- | --- | --- |
 | `git fetch origin --prune` | Pass | `origin/personal` checked at `cabe20dd94fc8b3000c9856991675159264d93b0`. |
-| Branch relationship | Pass | `ahead 46, behind 0`; no latest-base merge required. |
-| Diff hygiene | Pass | `git diff --check`, `git diff --check HEAD`, and `git diff --check 7f38b604^ 7f38b604` passed. |
-| Rejected memory API grep | Pass | No rejected interruption-finalization API matches in active `autobyteus-ts/src` or `autobyteus-ts/tests`. |
-| Required memory API grep | Pass | `ingestInterruptionMarker`, `refreshWorkingContextProjection`, and `MemoryProjectionScope` present in active source/tests. |
-| Stale/legacy grep | Pass | No checkpoint rollback ownership, old outbox/message-wrapper/handler path, or stop-generation fallback matches in checked active source/test/runtime surfaces. |
-| Focused Round 20 delivery rerun | Pass | `4` files / `32` tests passed. |
+| Branch relationship | Pass | `ahead 49, behind 0`; no latest-base merge required. |
+| Diff hygiene | Pass | `git diff --check`, `git diff --check HEAD`, and `git diff --check abf59e8e^ abf59e8e` passed. |
+| Rejected memory/rollback API grep | Pass | No superseded interruption-finalization, marker/projection, interrupted-projector, or checkpoint rollback API matches in active `autobyteus-ts/src` or `autobyteus-ts/tests`. |
+| Required memory/CR-023 API grep | Pass | `appendRawTrace`, `projectWorkingContextForNextLlm`, `ingestAssistantResponse`, `LlmPhaseInterruptedPartial`, and `working-context-llm-safe-projector` present in active source/tests. |
+| Legacy/no-stop grep | Pass | No old outbox/message-wrapper/handler path or stop-generation fallback matches in checked active source/test/runtime surfaces. |
+| Focused Round 21 delivery rerun | Pass | `4` files / `32` tests passed. |
 | `pnpm -C autobyteus-ts run build` | Pass | Build passed with runtime dependency verification. |
 | `pnpm -C autobyteus-server-ts run build:full` | Pass | Full server build passed, including built-in agents bootstrap smoke check. |
-| Round 20 temporary log availability | Pass | API/E2E, delivery, and Electron logs listed below are present. |
-| Round 20 Electron macOS test build | Pass | README local macOS no-notarization command passed; artifacts are under `autobyteus-web/electron-dist`. |
+| Round 21 temporary log availability | Pass | API/E2E, delivery, and Electron logs listed below are present. |
+| Round 21 Electron macOS test build | Pass | README local macOS no-notarization command passed; artifacts are under `autobyteus-web/electron-dist`. |
 
-Delivery log: `/tmp/runtime-interrupt-round20-delivery-checks.log`.
+Delivery log: `/tmp/runtime-interrupt-round21-delivery-checks.log`.
 
-## API/E2E Round 20 Evidence Accepted For Delivery
+## API/E2E Round 21 Evidence Accepted For Delivery
 
-- Focused TS memory API/runtime/provider-native suite: `12` files / `86` tests passed.
-- Named interrupted multi-tool slice passed.
+- Focused TS CR-023/runtime/memory/provider-native suite: `16` files / `129` tests passed.
+- Named CR-023 and CR-022 slices passed.
 - `pnpm -C autobyteus-ts exec tsc -p tsconfig.build.json --noEmit` passed.
 - `pnpm -C autobyteus-ts run build` passed.
-- Server event/WebSocket/team suite: `7` files / `72` tests passed.
+- Server event/WebSocket/team suite: `7` files / `72` tests passed on rerun.
 - Web projection suite: `5` files / `65` tests passed.
 - `pnpm -C autobyteus-server-ts run build:full` passed.
 - Live LM Studio-backed AutoByteus GraphQL/WebSocket E2E passed: `2` files / `9` AutoByteus tests, with `13` Codex/Claude-provider tests skipped by environment.
+- API/E2E recorded one prior transient server ordering/timing failure; the selected case, full file, and full seven-file server suite all passed on immediate rerun, so no implementation blocker remains.
 
-Round 20 logs:
+Round 21 logs:
 
-- Delivery integrated-state checks: `/tmp/runtime-interrupt-round20-delivery-checks.log`
-- Delivery artifact/docs hygiene: `/tmp/runtime-interrupt-round20-delivery-artifact-hygiene.log`
-- API/E2E TS memory API validation: `/tmp/round34_ts_memory_api_validation.log`
-- API/E2E server/web projection validation: `/tmp/round34_server_web_projection_validation.log`
-- API/E2E live AutoByteus E2E: `/tmp/round34_server_autobyteus_live_e2e.log`
-- API/E2E report hygiene: `/tmp/round34_report_update_check.log`
-- Round 20 Electron build: `/tmp/runtime-interrupt-round20-electron-macos-build-20260514-203940.log`
+- Delivery integrated-state checks: `/tmp/runtime-interrupt-round21-delivery-checks.log`
+- Delivery artifact/docs hygiene: `/tmp/runtime-interrupt-round21-delivery-artifact-hygiene.log`
+- API/E2E TS CR-023 validation: `/tmp/round36_ts_cr023_validation.log`
+- API/E2E server projection validation rerun: `/tmp/round36_server_projection_validation_rerun.log`
+- API/E2E web projection/server build rerun: `/tmp/round36_web_projection_server_build_rerun.log`
+- API/E2E live AutoByteus E2E: `/tmp/round36_server_autobyteus_live_e2e.log`
+- API/E2E team WebSocket selected rerun: `/tmp/round36_agent_team_ws_missing_restore_rerun.log`
+- API/E2E team WebSocket full rerun: `/tmp/round36_agent_team_ws_full_rerun.log`
+- API/E2E report hygiene: `/tmp/round36_report_update_check.log`
+- Round 21 Electron build: `/tmp/runtime-interrupt-round21-electron-macos-build-20260514-214816.log`
 
 ## Local Electron Test Build
 
-Delivery rebuilt the macOS Electron app after Round 20 because the prior Electron build predated implementation commit `7f38b604`.
+Delivery rebuilt the macOS Electron app after Round 21 because the prior Electron build predated implementation commit `abf59e8e`.
 
 - README reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/autobyteus-web/README.md`
 - Build command: `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac`
-- Build log: `/tmp/runtime-interrupt-round20-electron-macos-build-20260514-203940.log`
+- Build log: `/tmp/runtime-interrupt-round21-electron-macos-build-20260514-214816.log`
 - Signing/notarization: skipped intentionally for local test build (`APPLE_TEAM_ID=` / no signing identity).
 - Result: `Pass`
 
@@ -90,8 +94,10 @@ Artifacts:
 
 - Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/docs-sync-report.md`
 - Result: `Pass / Long-lived docs updated`
-- Updated long-lived doc:
+- Updated long-lived docs:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/autobyteus-ts/docs/event_driven_core_design.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/autobyteus-server-ts/docs/modules/agent_execution.md`
 
 ## Release / Deployment Decision
 
@@ -105,14 +111,14 @@ Artifacts:
 ## Residual Risks / Out-of-Scope Items To Preserve
 
 - Provider/live-environment failures from the Round 16 broad all-test sweep remain explicitly unclaimed and out of scope unless the user expands scope: MCP toy servers requiring `/opt/homebrew/bin/uv`, local media host `192.168.2.124:29695`, Autobyteus/RPA live LLM/audio/image timeouts/500s, and fully parallel LM Studio live agent/team flakiness.
-- Live LM Studio tests are gated by local LM Studio/model availability. Round 20 passed live AutoByteus single-agent/team GraphQL/WebSocket E2E with LM Studio.
-- Round 20 did not rerun browser UI automation; prior Round 13/Round 14 browser evidence remains accepted, and Round 20 live server-side E2E plus Electron build passed.
+- Live LM Studio tests are gated by local LM Studio/model availability. Round 21 passed live AutoByteus single-agent/team GraphQL/WebSocket E2E with LM Studio.
+- Round 21 did not rerun browser UI automation; prior Round 13/Round 14 browser evidence remains accepted, and Round 21 live server-side E2E plus Electron build passed.
 - The Electron build is unsigned/not notarized and intended only for local manual testing.
 - Live paid-provider cancellation across every provider remains out of scope.
-- Broad package `tsc --noEmit` baseline limitations remain documented; the Round 20 scoped `autobyteus-ts` `tsc --noEmit` and builds passed.
+- Broad package `tsc --noEmit` baseline limitations remain documented; the Round 21 scoped `autobyteus-ts` `tsc --noEmit` and builds passed.
 
 ## Final Status
 
 `Ready for user verification / finalization hold`.
 
-Delivery artifacts, docs sync, integrated checks, and a current local Electron test build are complete against the Round-20-passed, Round-34-reviewed, latest-base integrated state. Await explicit approval before moving the ticket to `done`, final commit/push, merge into `personal`, release/deployment, or cleanup.
+Delivery artifacts, docs sync, integrated checks, and a current local Electron test build are complete against the Round-21-passed, Round-36-reviewed, latest-base integrated state. Await explicit approval before moving the ticket to `done`, final commit/push, merge into `personal`, release/deployment, or cleanup.

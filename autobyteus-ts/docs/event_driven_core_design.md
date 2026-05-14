@@ -151,11 +151,12 @@ terminal states.
 - **One active turn:** `AgentRuntimeState` owns the active turn and rejects
   overlapping turn starts.
 - **Side-band interrupt:** `AgentRuntime.interrupt()` aborts the active
-  `TurnExecutionScope`, closes `TurnToolInputPort`, finalizes the interrupted
-  turn in memory, publishes interrupted terminal state, and leaves the runtime
-  reusable. Memory removes unsafe partial native tool-call protocol from the
-  next provider prompt while retaining accepted input and completed tool-result
-  facts.
+  `TurnExecutionScope`, closes `TurnToolInputPort`, records already committed
+  memory facts plus an operation boundary, publishes interrupted terminal state,
+  and leaves the runtime reusable. Memory removes unsafe partial native
+  tool-call protocol from the next provider prompt while retaining accepted
+  input, interrupted streamed assistant text/reasoning, and completed
+  tool-result facts.
 - **Terminal stop:** `stop()` requests shutdown, settles queued awaitables, and
   prevents queued turn-start messages from running after shutdown begins.
 - **Awaited-seam fences:** LLM, tool, input, final-response, and continuation

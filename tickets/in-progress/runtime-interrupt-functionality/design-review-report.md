@@ -1,308 +1,244 @@
-# Design Review Report
+# Architecture Review Report — runtime-interrupt-functionality
 
-## Review Round Meta
+## Review metadata
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/design-spec.md`
-- Code Review Report Reviewed For Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/review-report.md`
-- Current Review Round: 18
-- Trigger: Addendum review after the user identified that the earlier `MemoryManager.finalizeInterruptedTurn(...)` name leaked turn-lifecycle language into the memory boundary. The design now uses memory-native APIs: `MemoryManager.ingestInterruptionMarker(...)` and `MemoryManager.refreshWorkingContextProjection(...)`.
-- Prior Review Round Reviewed: Round 17 approved the memory-ownership rework conceptually, but used the now-rejected `finalizeInterruptedTurn(...)` method name in the review report.
-- Latest Authoritative Round: 18
-- Current-State Evidence Basis: Architecture-reviewer skill and shared design principles reloaded. Requirements, investigation notes, design spec, current code-review report, and current source greps were inspected, especially `MemoryManager.ingestInterruptionMarker(...)`, `MemoryManager.refreshWorkingContextProjection(...)`, `WorkingContextSnapshot`, `AgentRuntimeState`, `AgentTurnRunner`, `AgentTurn`, `LLMRequestAssembler`, CDF-013, DS-011, FR-019, AC-016, INV-013, INV-014, and Work Package 4A.
+- Reviewer: architecture_reviewer
+- Review round: Round 19 — memory fact-ingestion vs same-turn continuation addendum
+- Date: 2026-05-14
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality`
+- Branch: `codex/runtime-interrupt-functionality`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/design-spec.md`
+- Code-review/design-impact context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/review-report.md`
 
-## Round History
+## Decision
 
-| Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1-6 | Earlier iterative reviews/addenda | Earlier blocker set resolved by Round 6 | N/A | Prior result was Pass | No | Superseded by later reviews. |
-| 7 | Fresh independent architecture review | Rechecked design from first principles | AR-B-005 | Fail / NEEDS DESIGN REWORK | No | Approval routing into active turn input was incomplete. |
-| 8 | AR-B-005 rework review | AR-B-005 and previous blockers | None | Pass | No | Approval route completed. |
-| 9 | Second-stage inbox/scheduler/TurnToolInputPort refinement | Rechecked unified inbox model | None blocking | Pass | No | Superseded by later event-centric design. |
-| 10 | Phase naming symmetry addendum | Rechecked phase naming | None blocking | Pass | No | `LlmPhase` / `ToolPhase` approved. |
-| 11 | External event boundary correction | Rechecked outbound model | None blocking | Pass | No | `AgentExternalEventNotifier` replaced `AgentOutbox`. |
-| 12 | Consumer-event parity addendum | Rechecked inter-agent/system consumers | None blocking | Pass | No | CDF-010A / DS-010 approved. |
-| 13 | Event-centric inbound rework | Rechecked wrapper-removal target | None blocking | Pass | No | `AgentEventInbox` / scheduler / event-centric target approved. |
-| 14 | CR-019 handler naming rework | Rechecked event-inbox dispatch naming and guardrails | None blocking | Pass | No | `InboxEventHandler` naming resolved CR-019. |
-| 15 | AgentTurn encapsulation review | Rechecked `AgentTurn`, runner, and active task ownership | AR-B-006 | Fail / NEEDS DESIGN REWORK | No | Active turn execution/run handle needed to be encapsulated by `AgentTurn`. |
-| 16 | AR-B-006 rework review | AR-B-006 | None blocking | Pass / APPROVED FOR IMPLEMENTATION | No | `AgentTurn` aggregate boundary approved. |
-| 17 | Interrupted-turn memory ownership rework | AR-B-006 and previous final-state guardrails | None blocking | Pass / APPROVED FOR IMPLEMENTATION | No | `MemoryManager` owns interrupted-turn retention/projection; superseded by Round 18 naming refinement. |
-| 18 | Memory-native API naming addendum | Round 17 memory ownership pass | None blocking | **Pass / APPROVED FOR IMPLEMENTATION** | Yes | `ingestInterruptionMarker(...)` and `refreshWorkingContextProjection(...)` replace the turn-lifecycle-sounding `finalizeInterruptedTurn(...)` name. |
+**APPROVED for implementation.**
 
-## Reviewed Design Spec
+The latest addendum improves the architecture. It correctly separates:
 
-Latest authoritative memory/interrupt shape:
+1. **fact/history ingestion** — owned by `MemoryManager`; from
+2. **same-turn LLM continuation** — owned by `AgentTurn`, `AgentTurnRunner`, `ToolPhase`, and the turn execution state machine.
+
+This resolves the earlier risk that interruption-specific memory APIs could leak turn lifecycle semantics into the memory subsystem. The target now uses generic memory operations plus an explicit LLM-safe projection step. This is a stronger and cleaner boundary than both prior alternatives:
+
+- `MemoryManager.finalizeInterruptedTurn(...)` — rejected because memory should not finalize turns.
+- `MemoryManager.ingestInterruptionMarker(...)` as the main abstraction — rejected because interruption is not the central memory primitive; committed facts are.
+
+No blocking architecture findings remain in this addendum.
+
+## Scope of this review
+
+This review focused on the latest memory-boundary refinement:
+
+- completed tool results before interrupt are committed facts/history;
+- completed tool results must not be fed to the LLM as same-turn continuation after interrupt;
+- natural assistant output already emitted/visible is remembered, partial when appropriate;
+- unsafe provider-native tool-call fragments are repaired/fenced before the next LLM request;
+- `MemoryManager` exposes generic fact-ingestion and projection APIs rather than turn-lifecycle or interruption-specific APIs.
+
+The review also checked consistency with the already-approved final-state architecture:
+
+- event-centric inbound model with `AgentEventInbox`, `AgentEventScheduler`, and thin `InboxEventHandler`s;
+- `AgentTurn` aggregate owns private execution handle and turn-local ports/scope;
+- `AgentTurnRunner`, `LlmPhase`, `ToolPhase`, typed pipelines, `TurnToolInputPort`, and `TurnExecutionScope` own normal turn flow;
+- `AgentExternalEventNotifier` remains the external observable-event projection boundary;
+- no `AgentOutbox` wrapper;
+- no old `WorkerEventDispatcher` / legacy handler-chain normal turn ownership;
+- no `activeTurnTask` / `activeRunner` peer state in runtime state;
+- no whole pre-turn working-context restore on normal interrupt.
+
+## Architecture assessment
+
+### 1. Memory ownership boundary
+
+**Pass.**
+
+The design now assigns memory responsibilities to memory-native operations:
+
+- `ingestUserMessage(...)`
+- `ingestAssistantResponse(...)`
+- `ingestToolIntents(...)`
+- `ingestToolResults(...)`
+- optional `appendRawTrace(...)`
+- `projectWorkingContextForNextLlm(...)`
+
+This follows the Single Responsibility Principle:
+
+- `MemoryManager` stores committed facts and projects prompt context.
+- `AgentTurn` / `AgentTurnRunner` / `ToolPhase` decide whether the turn continues or stops.
+- `LLMRequestAssembler` reads already-projected context; it does not own interruption repair policy.
+
+The design no longer makes `MemoryManager` a turn lifecycle participant. That is the correct boundary.
+
+### 2. Fact ingestion vs continuation commit
+
+**Pass.**
+
+The key architectural distinction is now explicit:
+
+- A completed tool result can be **remembered** as a fact.
+- The same result can be **withheld from same-turn LLM continuation** when the turn was interrupted before continuation.
+
+The `appendToWorkingContext` option is acceptable when interpreted narrowly:
+
+- `appendToWorkingContext: false` must mean “do not append this fact as an immediate provider-native continuation message.”
+- It must not mean “do not remember the fact.”
+
+The design states this clearly enough through FR-019 / AC-016 and the memory projection contract.
+
+### 3. Interrupted-turn projection spine
+
+**Pass.**
+
+The DS-011 / CDF-013 spine is now coherent:
 
 ```text
-interrupt = execution control, not memory erase
-
-accepted / emitted / executed before interrupt
-  -> committed history
-unsafe incomplete provider-native continuation
-  -> fenced / summarized / not continued
+accepted user input / emitted assistant facts / completed tool facts
+  -> generic MemoryManager fact ingestion / raw trace retention
+  -> AgentTurn interrupted outcome stops same-turn continuation
+  -> MemoryManager.projectWorkingContextForNextLlm({ mode: 'llm_safe', ... })
+  -> provider-safe future working context
+  -> next LLM request remembers the interrupted history without invalid tool protocol
 ```
 
-Approved ownership split:
+This spine fixes the reproduced bug class: later LLM context must not behave as if the interrupted request never happened.
 
-```text
-AgentRuntime / AgentTurn / AgentTurnRunner / LlmPhase / ToolPhase
-  own execution interruption, phase cancellation, settlement outcome, and late-result fencing
+### 4. Tool-result scenario from user discussion
 
-MemoryManager / WorkingContextSnapshot
-  own raw trace retention, working-context state, compaction/snapshot consistency,
-  interrupted-turn marker/projection, and future provider-safe prompt context
+**Pass.**
 
-AgentExternalEventNotifier / stream/UI
-  own external observable projection of already-published facts
-```
+For the concrete scenario:
 
-Approved CDF-013 target:
+1. User asks to create a game.
+2. LLM emits natural text and a tool call.
+3. Tool execution completes and result is fetched.
+4. Interrupt happens before the tool result is fed back to the LLM.
 
-```text
-Accepted user input / emitted assistant facts / completed tool facts
-  -> MemoryManager raw trace history
-  -> AgentTurn interrupted outcome
-  -> MemoryManager.ingestInterruptionMarker({ scope: { kind: 'agent_turn', id: turnId }, reason })
-  -> MemoryManager.refreshWorkingContextProjection({ mode: 'provider_safe', fenceScope: { kind: 'agent_turn', id: turnId } })
-  -> provider-safe working-context projection with interruption marker
-  -> next LLM request uses remembered interrupted history
-```
+The target behavior is now correctly defined:
 
-The design explicitly rejects the old normal-interrupt shape:
+- accepted user message: retained;
+- emitted natural assistant text: retained as assistant history/fact, partial if needed;
+- tool intent: retained as observed intent/fact where safe;
+- completed tool result: retained as committed fact/raw history;
+- same-turn continuation with that tool result: suppressed after interrupt;
+- next LLM prompt: built from a repaired LLM-safe projection, not raw invalid tool-call fragments.
 
-```text
-AgentTurnRunner catches interruption
-  -> restore working context to pre-turn checkpoint
-```
+This is the right semantic split.
 
-This is the correct direction. It keeps the memory/history authoritative boundary in `MemoryManager` and prevents UI/raw/event history from diverging from future prompt context.
+### 5. No whole-turn rollback on normal interrupt
 
-## Task Design Health Assessment Verdict
+**Pass.**
 
-| Assessment Area | Result | Evidence | Required Action |
-| --- | --- | --- | --- |
-| Assessment is present for current task posture | Pass | Design spec classifies this as a larger behavior/refactor with boundary/ownership issues, including memory ownership on interrupt. | None. |
-| Root-cause classification is explicit and evidence-backed | Pass | Investigation notes trace current code: `startActiveTurn` creates a working-context checkpoint, runner interruption calls `restoreWorkingContextForInterruptedTurn`, and `MemoryManager.restoreWorkingContextTurnCheckpoint` resets future prompt context despite raw/UI history retaining facts. | None. |
-| Refactor needed now / no refactor needed decision is explicit | Pass | FR-019, CDF-013, DS-011, INV-013/014, and Work Package 4A require removing whole-turn restore and adding memory-owned interrupted-turn projection. | None. |
-| Refactor decision is supported by concrete design sections | Pass | Requirements, investigation notes, data-flow spines, ownership maps, boundary rules, contracts, invariants, file mapping, and work packages all name `MemoryManager` as the owner. | None. |
+The design explicitly rejects the previous checkpoint restore behavior for normal interrupt. That is necessary.
 
-## Prior Findings Resolution Check
+A normal interrupt is control-flow cancellation, not history erasure. Restoring the entire pre-turn working context after already accepted/emitted/executed facts creates inconsistent truth between UI/event history and future LLM context. The updated design removes that contradiction.
 
-| Prior Round / Report | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
-| --- | --- | --- | --- | --- | --- |
-| Round 15/16 | AR-B-006 | Blocking Design Impact, resolved in Round 16 | Still resolved | `AgentRuntimeState` remains selector/router only; `AgentTurn` owns private execution handle; current design still forbids `activeTurnTask`, `activeRunner`, and `registerActiveTurnTask(...)`. | Not reopened. |
-| New memory rework | Memory ownership issue | Design-impact rework requested | Resolved in design | `MemoryManager.ingestInterruptionMarker(...)` appends memory history and `MemoryManager.refreshWorkingContextProjection(...)` owns provider-safe prompt projection; normal interrupt must not restore working context to pre-turn checkpoint. | Ready for implementation. |
-| Code Review Round 27 / Review Round 14 | CR-019 | Design Impact | Still resolved | Event-inbox dispatch targets remain `InboxEventHandler`s under `agent/event-inbox/handlers`. | Not reopened. |
-| Round 13 | Event-centric target | Approved | Still accepted | Final inbound model remains `AgentEventInboxEntry -> AgentEventScheduler -> InboxEventHandler`, with typed runtime events as canonical payloads. | Not reopened. |
-| Round 11-12 | `AgentExternalEventNotifier` / consumer parity | Approved | Still accepted | `AgentExternalEventNotifier` remains external observable boundary; `AgentOutbox` remains rejected. | Not reopened. |
-| Earlier | Legacy handler-chain blockers | Resolved | Still accepted | Runner/phases own normal turn flow; old normal-flow handlers remain removed. | Not reopened. |
+Terminal `stop()` / shutdown cleanup can remain separate and terminal; that is not changed by this addendum.
 
-## Spine Inventory Verdict
+### 6. Compatibility with event-centric architecture
 
-| Spine ID | Scope | Spine Is Readable? | Narrative Is Clear? | Facade Vs Governing Owner Is Clear? | Main Domain Subject Naming Is Clear? | Ownership Is Clear? | Off-Spine Concerns Stay Off Main Line? | Verdict |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| CDF-001 | Runtime bootstrap | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| CDF-002 | External event to turn | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| CDF-003 | Input processing to LLM leg | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
-| CDF-004 | LLM phase | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| CDF-005 | Final response/output | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| CDF-006 | Tool invocation phase | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| CDF-007 | Tool result continuation | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| CDF-008 | Interrupt active turn | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| CDF-009 | Pending approval response | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| CDF-010 | External observable-event publication | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| CDF-010A | Inter-agent/system communication projection | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| CDF-011 | Terminal shutdown | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| CDF-012 | External/async tool result delivery | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| CDF-013 | Interrupted-turn memory projection | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+**Pass.**
 
-### Focused Spine Notes
+The memory changes do not disturb the approved event-centric architecture:
 
-- DS-001/CDF-008 remain coherent: side-band interrupt targets `AgentTurn.executionScope`, active phases abort/abandon, the turn settles interrupted, and runtime stays reusable.
-- DS-002 now correctly splits LLM-phase interruption from memory policy: `LlmPhase` closes/interruption-finalizes streaming protocol and skips normal completed-assistant ingestion; memory-owned projection handles any already emitted facts safely.
-- DS-003 preserves completed/executed tool facts while still suppressing unsafe same-turn continuation and fencing late results.
-- DS-006/DS-007 keep active-turn execution and tool-port state inside `AgentTurn`/`TurnToolInputPort` without moving memory rollback into the turn aggregate.
-- DS-008/DS-009 still route approval/result events through event inbox, scheduler, thin handlers, runtime-state active-turn identity routing, and `AgentTurn` posting methods.
-- DS-010 remains a return/event spine through `AgentExternalEventNotifier`; no outbox resurrection is introduced.
-- DS-011/CDF-013 is complete: committed facts enter memory/history, interrupted outcome triggers memory marker ingestion and projection refresh, future working context is provider-safe, and next LLM requests read the memory-owned projection.
+- inbound commands/events still enter through `AgentEventInbox` and scheduler-selected thin `InboxEventHandler`s;
+- interrupt remains side-band through `AgentRuntime.interrupt()` and does not wait behind inbox scheduling;
+- tool approval/result events still route through runtime-state identity selection and then into `AgentTurn` / `TurnToolInputPort`;
+- observable output remains through `AgentExternalEventNotifier`;
+- the external stream/UI projection remains observational and does not advance turn control.
 
-## Subsystem / Capability-Area Allocation Verdict
+### 7. Data-flow spines reviewed
 
-| Subsystem / Capability Area | Ownership Allocation Is Clear? | Reuse / Extend / Create-New Decision Is Sound? | Supports The Right Spine Owners? | Verdict | Notes |
-| --- | --- | --- | --- | --- | --- |
-| Agent runtime / interrupt control | Pass | Pass | Pass | Pass | Execution control only; does not own memory rollback. |
-| Agent turn aggregate | Pass | Pass | Pass | Pass | Owns execution internals and settlement, not working-context projection. |
-| Agent turn runner / phases | Pass | Pass | Pass | Pass | Report outcomes/facts and use memory APIs; do not edit snapshots directly. |
-| MemoryManager / working context | Pass | Pass | Pass | Pass | Correct authoritative owner for raw trace retention and future prompt projection. |
-| Agent event inbox / scheduler / handlers | Pass | Pass | Pass | Pass | Existing approved event-centric inbound architecture is preserved. |
-| AgentExternalEventNotifier | Pass | Pass | Pass | Pass | External observable projection remains separate from memory and control flow. |
+| Spine | Review result |
+|---|---|
+| DS-001 / CDF-008 interrupt command to active turn settlement | Pass. Interrupt remains side-band and settles active turn without stopping runtime. |
+| DS-002 LLM-phase interruption and partial assistant/memory handling | Pass. Partial/emitted assistant facts are retained when observable/committed; unsafe protocol fragments are fenced. |
+| DS-003 tool-phase interruption and late-result fencing | Pass. Completed facts are retained; late/unsafe same-turn continuation is suppressed/fenced. |
+| DS-006 / DS-007 active-turn aggregate and tool input port | Pass. Turn internals remain encapsulated in `AgentTurn`; runtime state does not own runner handles. |
+| DS-008 approval event routing | Pass. Approval remains event-inbox -> handler -> runtime-state identity check -> `AgentTurn` / `TurnToolInputPort`. |
+| DS-009 external/async tool-result routing | Pass. External results route to active turn by identity; stale/interrupted outcomes are fenced. |
+| DS-010 inter-agent/system external observable projection | Pass. Memory addendum does not break notifier/event-stream/team communication projection. |
+| DS-011 / CDF-013 interrupted-turn memory projection | Pass. Fact retention and continuation suppression are now complete and well-owned. |
 
-## Reusable Owned Structures Verdict
+## Design-principle evaluation
 
-| Repeated Structure / Logic | Extraction Need Was Evaluated? | Shared File Choice Is Sound? | Ownership Of Shared Structure Is Clear? | Verdict | Notes |
-| --- | --- | --- | --- | --- | --- |
-| Interrupted-turn memory projection | Pass | Pass | Pass | Pass | `MemoryManager.ingestInterruptionMarker(...)` plus `MemoryManager.refreshWorkingContextProjection(...)` are the right memory-native operations; an optional memory-owned projector remains acceptable for complex projection logic. |
-| Provider-safe working-context projection | Pass | Pass | Pass | Pass | Projection is behind memory boundary; `LLMRequestAssembler` remains a reader. |
-| Turn interruption outcome | Pass | Pass | Pass | Pass | `AgentTurnRunner` returns `TurnOutcome`; `AgentTurn` records settlement; memory consumes outcome metadata. |
-| Active turn execution handle | Pass | Pass | Pass | Pass | Still private to `AgentTurn`; not reopened. |
+### Single Responsibility Principle
 
-## Shared Structure / Data Model Tightness Verdict
+**Pass.**
 
-| Shared Structure / Type / Schema | One Clear Meaning Per Field? | Redundant Attributes Removed? | Overlapping Representation Risk Is Controlled? | Shared Core Vs Specialized Variant / Composition Decision Is Sound? | Verdict | Notes |
-| --- | --- | --- | --- | --- | --- | --- |
-| `AgentTurn` | Pass | Pass | Pass | Pass | Pass | Execution aggregate only, no memory checkpoint/restore role. |
-| `MemoryManager.ingestInterruptionMarker` input | Pass | Pass | Pass | Pass | Pass | Scope metadata anchors the memory marker without implying turn lifecycle ownership. |
-| `MemoryManager.refreshWorkingContextProjection` input | Pass | Pass | Pass | Pass | Pass | Projection/fence options are memory-native and do not control turn execution. |
-| Working-context interrupted-turn marker/projection | Pass | Pass | Pass | Pass | Pass | Examples distinguish safe summary/marker from invalid native tool-call fragments. |
-| Raw memory trace history | Pass | Pass | Pass | Pass | Pass | Append-only committed facts are separate from provider-safe working-context projection. |
+- `AgentTurn`: aggregate root for turn identity, turn-local state, execution scope, tool input port, private execution handle, settlement.
+- `AgentTurnRunner`: finite LLM/tool/continuation algorithm.
+- `ToolPhase`: tool invocation/approval/result collection and continuation decision in the active turn.
+- `MemoryManager`: fact ingestion, raw trace retention, working-context projection.
+- `LLMRequestAssembler`: reads projected context and assembles provider request.
 
-## Removal / Decommission Completeness Verdict
+The latest design avoids making `MemoryManager` a hidden lifecycle controller.
 
-| Item / Area | Redundant / Obsolete Piece To Remove Is Named? | Replacement Owner / Structure Is Clear? | Removal / Decommission Scope Is Explicit? | Verdict | Notes |
-| --- | --- | --- | --- | --- | --- |
-| Whole-turn working-context restore on normal interrupt | Pass | Pass | Pass | Pass | Replaced by memory-native interruption marker ingestion plus provider-safe projection refresh. |
-| `AgentTurn` / `AgentRuntimeState` working-context checkpoint/restore policy | Pass | Pass | Pass | Pass | Explicitly forbidden for normal interrupt. |
-| Runtime-state peer active task/run concept | Pass | Pass | Pass | Pass | Still rejected. |
-| `AgentOutbox` / duplicate publisher wrapper | Pass | Pass | Pass | Pass | Still rejected. |
-| Event-inbox `processors/` / `*EventProcessor` target naming | Pass | Pass | Pass | Pass | Still rejected in favor of `InboxEventHandler`. |
-| Old normal-flow handler chain | Pass | Pass | Pass | Pass | Still removed from normal turn flow. |
+### Separation of lifetimes
 
-## File Responsibility Mapping Verdict
+**Pass.**
 
-| File / Area | Responsibility Is Singular And Clear? | Responsibility Matches Intended Owner/Boundary? | Responsibilities Were Re-Tightened After Shared-Structure Extraction? | Verdict | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `autobyteus-ts/src/memory/memory-manager.ts` | Pass | Pass | Pass | Pass | Owns interruption marker ingestion and provider-safe working-context projection. |
-| optional `autobyteus-ts/src/memory/working-context-interrupted-turn-projector.ts` | Pass | Pass | Pass | Pass | Optional helper stays under memory if projection logic grows. |
-| `autobyteus-ts/src/agent/agent-turn.ts` | Pass | Pass | Pass | Pass | Must not own working-context checkpoint/restore policy. |
-| `autobyteus-ts/src/agent/context/agent-runtime-state.ts` | Pass | Pass | Pass | Pass | Active-turn selector/router only; no memory rollback. |
-| `autobyteus-ts/src/agent/loop/agent-turn-runner.ts` | Pass | Pass | Pass | Pass | Reports interruption outcome; does not reconstruct working context. |
-| `autobyteus-ts/src/agent/llm-request-assembler.ts` | Pass | Pass | Pass | Pass | Reader of `MemoryManager.getWorkingContextMessages()`, not memory policy owner. |
-| `autobyteus-ts/src/agent/streaming/handlers/*` | Pass | Pass | Pass | Pass | May finalize open segments as interrupted; not turn-control owner. |
+Runtime lifecycle, turn execution, tool batch state, memory history, and external observable streams remain distinct lifetimes.
 
-## Dependency Direction / Forbidden Shortcut Verdict
+The memory projection may be refreshed because a turn was interrupted, but the memory subsystem does not own the turn’s lifetime.
 
-| Owner / Boundary | Allowed Dependencies Are Clear? | Forbidden Shortcuts Are Explicit? | Direction Is Coherent With Ownership? | Verdict | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `AgentTurnRunner` / `AgentTurn` -> memory-native marker/projection APIs | Pass | Pass | Pass | Pass | Reporting outcome/scope metadata to `ingestInterruptionMarker(...)` and `refreshWorkingContextProjection(...)` is allowed; direct snapshot restore/editing is forbidden. |
-| `MemoryManager` -> working-context projection | Pass | Pass | Pass | Pass | Owns prompt projection and provider-safe fencing. |
-| `LLMRequestAssembler` -> `MemoryManager.getWorkingContextMessages()` | Pass | Pass | Pass | Pass | Assembler reads already-projected context only. |
-| `AgentRuntimeState` -> active turn | Pass | Pass | Pass | Pass | No memory restore or runner-task peer state. |
-| Event stream/UI -> observable history | Pass | Pass | Pass | Pass | Observes facts; does not decide future memory projection. |
+### Structured cancellation
 
-## Boundary Encapsulation Verdict
+**Pass.**
 
-| Boundary / Owner | Authoritative Public Entry Point Is Clear? | Internal Owned Mechanisms Stay Internal? | Caller Bypass Risk Is Controlled? | Verdict | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `MemoryManager` | Pass | Pass | Pass | Pass | Raw trace + working-context projection authority is clear. |
-| `AgentTurn` | Pass | Pass | Pass | Pass | Execution aggregate only. |
-| `AgentRuntimeState` | Pass | Pass | Pass | Pass | Active-turn selector only. |
-| `AgentTurnRunner` | Pass | Pass | Pass | Pass | Algorithm/outcome owner; memory policy stays out. |
-| `AgentExternalEventNotifier` | Pass | Pass | Pass | Pass | External observable boundary only; not resurrected as `AgentOutbox`. |
+Interrupt remains owned by `TurnExecutionScope` and turn/phase services. Memory records facts and projects safe future context after the turn outcome is known; it does not cancel work.
 
-## Interface Boundary Verdict
+### Command/event separation
 
-| Interface / API / Query / Command / Method | Subject Is Clear? | Responsibility Is Singular? | Identity Shape Is Explicit? | Generic Boundary Risk | Verdict |
-| --- | --- | --- | --- | --- | --- |
-| `MemoryManager.ingestInterruptionMarker(...)` | Pass | Pass | Pass | Low | Pass |
-| `MemoryManager.refreshWorkingContextProjection(...)` | Pass | Pass | Pass | Low | Pass |
-| `MemoryManager.getWorkingContextMessages()` | Pass | Pass | N/A | Low | Pass |
-| `AgentTurn.waitForSettlement(...)` | Pass | Pass | Pass | Low | Pass |
-| `AgentTurnRunner.run(...) -> TurnOutcome` | Pass | Pass | Pass | Low | Pass |
-| `AgentRuntime.interrupt(...)` | Pass | Pass | Pass | Low | Pass |
-| `AgentTurn.postToolApproval(...)` / `postToolResult(...)` | Pass | Pass | Pass | Low | Pass |
+**Pass.**
 
-## Subsystem / Folder / File Placement Verdict
+Internal commands/events drive runtime behavior. External observable events publish facts only. Memory facts are not used as a turn-control bus.
 
-| Path / Item | Target Placement Is Clear? | Folder Matches Owning Boundary? | Mixed-Layer Or Over-Split Risk | Verdict | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `autobyteus-ts/src/memory/` | Pass | Pass | Low | Pass | Correct home for interrupted-turn projection. |
-| optional `memory/working-context-interrupted-turn-projector.ts` | Pass | Pass | Low | Pass | Optional split is justified only if projection grows. |
-| `agent/agent-turn.ts` | Pass | Pass | Low | Pass | Explicitly excludes memory rollback/projection. |
-| `agent/loop/agent-turn-runner.ts` | Pass | Pass | Low | Pass | Algorithm only. |
-| `agent/events/notifiers.ts` | Pass | Pass | Low | Pass | Observable publication only. |
+### Encapsulation
 
-## Existing Capability / Subsystem Reuse Verdict
+**Pass.**
 
-| Need / Concern | Existing Capability Area Was Checked? | Reuse / Extension Decision Is Sound? | New Support Piece Is Justified? | Verdict | Notes |
-| --- | --- | --- | --- | --- | --- |
-| Future LLM context ownership | Pass | Pass | N/A | Pass | Existing `MemoryManager` already feeds `LLMRequestAssembler`; it should own projection. |
-| Raw trace retention | Pass | Pass | N/A | Pass | Existing memory subsystem is the right append-only history owner. |
-| External observable history | Pass | Pass | N/A | Pass | Existing notifier/event-stream/UI path remains consumer projection. |
-| Provider-safe partial protocol fencing | Pass | Pass | Pass | Pass | Optional memory projector is justified if needed for complexity. |
+The latest addendum improves encapsulation by preventing runtime/turn lifecycle vocabulary from leaking into `MemoryManager` API names.
 
-## Legacy / Backward-Compatibility Verdict
+### Idempotence and late-result safety
 
-| Area | Compatibility Wrapper / Dual-Path / Legacy Retention Exists? | Clean-Cut Removal Is Explicit? | Verdict | Notes |
-| --- | --- | --- | --- | --- |
-| Pre-turn working-context restore on normal interrupt | No final retention | Pass | Pass | Must be removed for normal interrupt; bootstrap/snapshot restore remains lifecycle only. |
-| `AgentOutbox` wrapper | No | Pass | Pass | Still rejected. |
-| Event-inbox processor naming | No | Pass | Pass | Still rejected. |
-| Old handler-chain turn control | No | Pass | Pass | Still rejected. |
-| Active-turn task peer state | No | Pass | Pass | Still rejected. |
+**Pass with implementation attention.**
 
-## Migration / Refactor Safety Verdict
+The design requires stale/late post-interrupt approvals and tool results to be fenced. The memory API must also avoid duplicating committed facts if a result is observed through both an execution return path and a late external callback. That is an implementation-level idempotence requirement, but the architecture has a clear place to enforce it: fact ingestion keyed by turn/tool invocation/result identity.
 
-| Area | Sequence / Work Package Is Realistic? | Temporary Seams Rejected As Final? | Cleanup / Removal Is Explicit? | Verdict |
-| --- | --- | --- | --- | --- |
-| Work Package 4A — Memory-owned interrupted-turn projection | Pass | Pass | Pass | Pass |
-| AgentTurn aggregate cleanup | Pass | Pass | Pass | Pass |
-| Event-centric inbound architecture | Pass | Pass | Pass | Pass |
-| Outbound notifier preservation | Pass | Pass | Pass | Pass |
+## Non-blocking implementation guidance
 
-## Example Adequacy Verdict
+These are not design blockers, but they should be preserved during implementation:
 
-| Topic / Area | Example Was Needed? | Example Is Present And Clear? | Bad / Avoided Shape Is Explained When Helpful? | Verdict | Notes |
-| --- | --- | --- | --- | --- | --- |
-| Provider-safe interrupted user-only turn | Yes | Pass | Pass | Pass | Example preserves user request plus interruption marker. |
-| Provider-safe interrupted tool turn | Yes | Pass | Pass | Pass | Example summarizes completed tool fact without invalid partial native tool protocol. |
-| Forbidden pre-turn context restore | Yes | Pass | Pass | Pass | Bad shape is explicitly named. |
-| Forbidden invalid native tool protocol fragment | Yes | Pass | Pass | Pass | Bad partial tool-call sequence is explicit. |
+1. **Keep `appendToWorkingContext` narrow.**
+   It controls immediate working-context append/continuation shape, not whether facts are retained.
 
-## Missing Use Cases / Open Unknowns
+2. **Prefer typed fact ingestion over broad raw trace writes.**
+   `appendRawTrace(...)` should remain supplementary. Core user/assistant/tool facts should go through typed ingestion APIs so projection can reason about them safely.
 
-| Item | Why It Matters | Required Action | Status |
-| --- | --- | --- | --- |
-| None blocking | UC-009/FR-019/AC-016 and CDF-013/DS-011 cover the reproduced memory divergence. | None before implementation. | Closed for design. |
-| Settlement/projection ordering | If active turn clears before `MemoryManager.ingestInterruptionMarker(...)` and `MemoryManager.refreshWorkingContextProjection(...)` complete, a parked next turn could start against stale context. | Implementation should make marker ingestion and projection refresh part of settlement completion before `waitForSettlement()` resolves or before scheduler wake/active-turn clear permits the next turn. Design already implies this via the bounded spine and `already-projected` wording; enforce in code review/tests. | Advisory. |
-| Source of partial assistant facts | Some emitted assistant facts may currently exist only as stream/event data, not durable memory trace. | Implement only provider-safe committed/available assistant facts; do not invent content. If partial fact capture is added, keep ingestion/projection memory-owned. | Advisory. |
+3. **Make fact ingestion idempotent by identity.**
+   Use stable turn ID, invocation ID, result ID/source event, or equivalent dedupe keys to avoid duplicate remembered tool facts.
 
-## Review Decision
+4. **Project before the next LLM request.**
+   The safety-critical step is that the next LLM request reads the repaired LLM-safe projection, not stale pre-interrupt context or invalid raw provider-native fragments.
 
-- **Pass / APPROVED FOR IMPLEMENTATION**.
+5. **Represent operation-boundary notes deliberately.**
+   If the projection needs to tell the next LLM that prior work was interrupted, use a memory-owned projected note/summary. Do not reintroduce a turn-lifecycle API on `MemoryManager`.
 
-The memory-ownership rework is architecturally sound. It correctly treats interrupt as execution control and assigns history/projection policy to `MemoryManager`, the existing owner of raw traces and future LLM working context. The design prevents the reported divergence by removing whole-turn working-context restore on normal interrupt and adding CDF-013/DS-011 for provider-safe interrupted-turn projection.
+## Blocking findings
 
-Earlier final-state rules remain intact: no temporary adapters/middle-state handler chains, no `AgentOutbox`, event-inbox dispatch targets remain `InboxEventHandler`s, no peer active-turn task state outside `AgentTurn`, no old `WorkerEventDispatcher` normal turn loop, and no normal-interrupt pre-turn working-context restore.
+None.
 
-## Findings
+## Non-blocking findings
 
-None blocking.
+None requiring design rework.
 
-### Non-blocking implementation advisories
+## Final verdict
 
-1. Make memory marker ingestion and projection refresh part of interrupted settlement before the next turn can be scheduled. A next LLM request must read the already-refreshed provider-safe projection.
-2. Remove normal-interrupt calls to `restoreWorkingContextForInterruptedTurn(...)` / `restoreWorkingContextTurnCheckpoint(...)`, but do not break bootstrap/lifecycle working-context snapshot restore.
-3. Keep `AgentTurn` and `AgentTurnRunner` from directly editing `WorkingContextSnapshot`; they may report turn outcome to `MemoryManager.ingestInterruptionMarker(...) / refreshWorkingContextProjection(...)` only.
-4. Preserve CDF-007: completed tool facts may be remembered, but unsafe same-turn tool continuation to LLM remains suppressed after interrupt.
-5. When retaining partial assistant/tool facts, keep provider validity first: summarize/mark interruption rather than preserving invalid native tool-call fragments.
+**APPROVED for implementation.**
 
-## Classification
+The latest addendum is architecturally better than the earlier memory-interruption API shapes. It correctly models interruption as a turn execution concern and memory as a generic fact/history/projection concern. It preserves committed history without continuing unsafe same-turn protocol after interruption.
 
-- No blocking `Design Impact`, `Requirement Gap`, or `Unclear` findings remain.
-- The interrupted-turn memory ownership issue is resolved at the design level.
-
-## Recommended Recipient
-
-`implementation_engineer`
-
-## Residual Risks
-
-- The main implementation risk is ordering: if memory marker ingestion/projection refresh occurs after active-turn clear/scheduler wake, a parked message could start before the context projection is refreshed. Tests should verify the next LLM request includes the interrupted turn marker and accepted user input.
-- Provider-native tool-call protocols are strict; projection code must prefer safe summaries/markers over invalid partial assistant/tool-call sequences.
-- Compaction/snapshot interactions need focused coverage so interrupted-turn projection remains durable and does not corrupt later context restoration.
-
-## Latest Authoritative Result
-
-- Review Decision: **Pass / APPROVED FOR IMPLEMENTATION**
-- Notes: Latest authoritative target uses `AgentEventInbox` / `AgentEventScheduler` / `InboxEventHandler`s / `AgentTurn` aggregate / `AgentTurnRunner` algorithm / `LlmPhase` / `ToolPhase` / `TurnToolInputPort` / `TurnExecutionScope` / real processor pipelines / `AgentExternalEventNotifier` / `MemoryManager.ingestInterruptionMarker(...) / refreshWorkingContextProjection(...)` for interrupted-turn memory projection. Round 18 supersedes Round 17 and approves the memory-native API naming refinement.
+Recommended routing: implementation may proceed from the updated requirements, investigation notes, and design spec.
