@@ -4,7 +4,7 @@ import { CompleteResponse } from '../llm/utils/response-types.js';
 import { ToolResultEvent } from '../agent/events/agent-events.js';
 import { ToolInvocation } from '../agent/tool-invocation.js';
 
-import { RawTraceItem } from './models/raw-trace-item.js';
+import { RawTraceItem, type RawTraceItemOptions } from './models/raw-trace-item.js';
 import { MemoryType } from './models/memory-types.js';
 import { CompactionPolicy } from './policies/compaction-policy.js';
 import { Compactor } from './compaction/compactor.js';
@@ -15,11 +15,17 @@ import { WorkingContextSnapshot } from './working-context-snapshot.js';
 import { WorkingContextSnapshotSerializer } from './working-context-snapshot-serializer.js';
 import { WorkingContextSnapshotStore } from './store/working-context-snapshot-store.js';
 import { buildToolInteractions } from './tool-interaction-builder.js';
-import { projectInterruptedTurnWorkingContext } from './working-context-interrupted-turn-projector.js';
+import { projectLlmSafeWorkingContext } from './working-context-llm-safe-projector.js';
 
 export type ToolIntentIngestionOptions = {
+  appendToWorkingContext?: boolean;
   assistantContent?: string | null;
   assistantReasoning?: string | null;
+};
+
+export type ToolResultIngestionOptions = {
+  source?: string;
+  appendToWorkingContext?: boolean;
 };
 
 export type MemoryProjectionScope = {
@@ -27,20 +33,23 @@ export type MemoryProjectionScope = {
   id: string;
 };
 
-export type IngestInterruptionMarkerInput = {
+export type AppendRawTraceInput = RawTraceItem | (
+  Omit<RawTraceItemOptions, 'id' | 'ts' | 'seq'> &
+  Partial<Pick<RawTraceItemOptions, 'id' | 'ts' | 'seq'>>
+);
+
+export type ProjectWorkingContextForNextLlmInput = {
+  mode?: 'llm_safe';
+  fenceIncompleteToolProtocolScope?: MemoryProjectionScope;
+  includeCommittedFacts?: boolean;
+};
+
+export type OperationBoundaryNoteInput = {
   scope: MemoryProjectionScope;
   reason?: string | null;
-  observedAt?: Date;
-  completedToolResults?: ToolResultEvent[];
 };
 
-export type RefreshWorkingContextProjectionInput = {
-  mode?: 'provider_safe';
-  fenceScope?: MemoryProjectionScope;
-};
-
-const INTERRUPTED_TURN_TRACE_TYPE = 'turn_interrupted';
-const INTERRUPTED_TURN_SOURCE_EVENT = 'AgentTurnInterruptedEvent';
+const OPERATION_BOUNDARY_TRACE_TYPE = 'operation_boundary';
 
 export class MemoryManager {
   store: MemoryStore;
@@ -176,10 +185,12 @@ export class MemoryManager {
     }
 
     this.store.add(traces);
-    this.workingContextSnapshot.appendToolCalls(toolCalls, {
-      content: options?.assistantContent ?? null,
-      reasoningContent: options?.assistantReasoning ?? null
-    });
+    if (options?.appendToWorkingContext !== false) {
+      this.workingContextSnapshot.appendToolCalls(toolCalls, {
+        content: options?.assistantContent ?? null,
+        reasoningContent: options?.assistantReasoning ?? null
+      });
+    }
   }
 
   ingestToolResult(event: ToolResultEvent, turnId?: string): void {
@@ -189,15 +200,21 @@ export class MemoryManager {
   ingestToolResults(
     events: ToolResultEvent[],
     turnId?: string,
-    options?: { source?: string }
+    options?: ToolResultIngestionOptions
   ): void {
     if (!events.length) {
       return;
     }
 
     const traces: RawTraceItem[] = [];
+    const ingestedEvents: ToolResultEvent[] = [];
     let effectiveTurnId: string | null = null;
     const sourceEvent = options?.source ?? 'ToolResultEvent';
+    const existingToolResultIds = new Set(
+      this.listRawTracesOrdered()
+        .filter((item) => item.traceType === 'tool_result' && item.toolCallId)
+        .map((item) => `${item.turnId}:${item.toolCallId}`)
+    );
 
     for (const event of events) {
       const eventTurnId = event.turnId ?? turnId;
@@ -208,6 +225,14 @@ export class MemoryManager {
         effectiveTurnId = eventTurnId;
       } else if (effectiveTurnId !== eventTurnId) {
         throw new Error('All tool results in a batch must belong to the same turnId');
+      }
+
+      const resultIdentity = event.toolInvocationId ? `${eventTurnId}:${event.toolInvocationId}` : null;
+      if (resultIdentity && existingToolResultIds.has(resultIdentity)) {
+        continue;
+      }
+      if (resultIdentity) {
+        existingToolResultIds.add(resultIdentity);
       }
 
       traces.push(
@@ -226,11 +251,17 @@ export class MemoryManager {
           toolError: event.error ?? null
         })
       );
+      ingestedEvents.push(event);
     }
 
-    this.store.add(traces);
+    if (traces.length) {
+      this.store.add(traces);
+    }
+    if (options?.appendToWorkingContext === false || !ingestedEvents.length) {
+      return;
+    }
     this.workingContextSnapshot.appendToolResults(
-      events.map((event) => ({
+      ingestedEvents.map((event) => ({
         toolCallId: event.toolInvocationId ?? '',
         toolName: event.toolName,
         toolResult: event.result,
@@ -262,52 +293,54 @@ export class MemoryManager {
     this.persistWorkingContextSnapshot();
   }
 
-  async ingestInterruptionMarker(input: IngestInterruptionMarkerInput): Promise<void> {
-    const turnId = this.requireAgentTurnScopeId(input.scope, 'MemoryManager.ingestInterruptionMarker');
-    const completedToolResults = this.normalizeInterruptedCompletedToolResults(
-      input.completedToolResults ?? [],
-      turnId
-    );
-    this.recordInterruptedCompletedToolResults(completedToolResults, turnId);
-
-    const markerContent = this.buildInterruptedTurnMarker(turnId, input.reason);
-    const existingMarker = this.listRawTracesOrdered().some(
-      (item) => item.turnId === turnId && item.traceType === INTERRUPTED_TURN_TRACE_TYPE
-    );
-    if (!existingMarker) {
-      const observedAt = input.observedAt instanceof Date && !Number.isNaN(input.observedAt.getTime())
-        ? input.observedAt
-        : new Date();
-      this.store.add([
-        new RawTraceItem({
-          id: `rt_${observedAt.getTime()}_${turnId}_interrupted`,
-          ts: observedAt.getTime() / 1000,
-          turnId,
-          seq: this.nextSeq(turnId),
-          traceType: INTERRUPTED_TURN_TRACE_TYPE,
-          content: markerContent,
-          sourceEvent: INTERRUPTED_TURN_SOURCE_EVENT
-        })
-      ]);
+  appendRawTrace(input: AppendRawTraceInput): RawTraceItem {
+    const trace = input instanceof RawTraceItem
+      ? input
+      : new RawTraceItem({
+          ...input,
+          id: input.id ?? `rt_${Date.now()}_${input.turnId}_${input.traceType}`,
+          ts: input.ts ?? Date.now() / 1000,
+          seq: input.seq ?? this.nextSeq(input.turnId)
+        });
+    const currentSeq = this.seqByTurn.get(trace.turnId) ?? 0;
+    if (trace.seq > currentSeq) {
+      this.seqByTurn.set(trace.turnId, trace.seq);
     }
+    this.store.add([trace]);
+    return trace;
   }
 
-  async refreshWorkingContextProjection(input: RefreshWorkingContextProjectionInput = {}): Promise<void> {
-    const mode = input.mode ?? 'provider_safe';
-    if (mode !== 'provider_safe') {
-      throw new Error(`MemoryManager.refreshWorkingContextProjection does not support mode '${mode}'.`);
+  buildOperationBoundaryNote(input: OperationBoundaryNoteInput): string {
+    const scopeId = this.requireAgentTurnScopeId(input.scope, 'MemoryManager.buildOperationBoundaryNote');
+    const reasonText = input.reason ? ` Reason: ${input.reason}.` : '';
+    return (
+      `System note: turn '${scopeId}' was interrupted before normal completion.${reasonText} ` +
+      'Preserve accepted user input and completed facts as history, but do not continue any incomplete tool-call protocol from that turn.'
+    );
+  }
+
+  async projectWorkingContextForNextLlm(input: ProjectWorkingContextForNextLlmInput = {}): Promise<void> {
+    const mode = input.mode ?? 'llm_safe';
+    if (mode !== 'llm_safe') {
+      throw new Error(`MemoryManager.projectWorkingContextForNextLlm does not support mode '${mode}'.`);
     }
 
-    const fenceTurnId = input.fenceScope
-      ? this.requireAgentTurnScopeId(input.fenceScope, 'MemoryManager.refreshWorkingContextProjection')
+    const fenceTurnId = input.fenceIncompleteToolProtocolScope
+      ? this.requireAgentTurnScopeId(
+          input.fenceIncompleteToolProtocolScope,
+          'MemoryManager.projectWorkingContextForNextLlm'
+        )
       : null;
-    const markerContent = fenceTurnId ? this.getInterruptionMarkerContent(fenceTurnId) : null;
-    const completedToolResults = fenceTurnId ? this.getCompletedToolResultsForTurn(fenceTurnId) : [];
+    const boundaryContent = fenceTurnId ? this.getOperationBoundaryNoteContent(fenceTurnId) : null;
+    const completedToolResults =
+      fenceTurnId && input.includeCommittedFacts !== false
+        ? this.getCompletedToolResultsForTurn(fenceTurnId)
+        : [];
 
     const currentMessages = this.workingContextSnapshot.buildMessages();
-    const projectedMessages = projectInterruptedTurnWorkingContext(
+    const projectedMessages = projectLlmSafeWorkingContext(
       currentMessages,
-      markerContent,
+      boundaryContent,
       completedToolResults
     );
     this.resetWorkingContextSnapshot(projectedMessages, this.workingContextSnapshot.lastCompactionTs);
@@ -366,9 +399,9 @@ export class MemoryManager {
     return scope.id.trim();
   }
 
-  private getInterruptionMarkerContent(turnId: string): string | null {
+  private getOperationBoundaryNoteContent(turnId: string): string | null {
     const marker = this.listRawTracesOrdered()
-      .filter((item) => item.turnId === turnId && item.traceType === INTERRUPTED_TURN_TRACE_TYPE)
+      .filter((item) => item.turnId === turnId && item.traceType === OPERATION_BOUNDARY_TRACE_TYPE)
       .at(-1);
     return marker?.content ?? null;
   }
@@ -386,69 +419,4 @@ export class MemoryManager {
       ));
   }
 
-  private buildInterruptedTurnMarker(turnId: string, reason?: string | null): string {
-    const reasonText = reason ? ` Reason: ${reason}.` : '';
-    return (
-      `System note: turn '${turnId}' was interrupted before normal completion.${reasonText} ` +
-      'Preserve accepted user input and completed facts as history, but do not continue any incomplete tool-call protocol from that turn.'
-    );
-  }
-
-  private normalizeInterruptedCompletedToolResults(
-    events: ToolResultEvent[],
-    turnId: string
-  ): ToolResultEvent[] {
-    return events
-      .filter((event) => !event.isDenied)
-      .filter((event) => !event.turnId || event.turnId === turnId)
-      .map((event) => new ToolResultEvent(
-        event.toolName,
-        event.result,
-        event.toolInvocationId,
-        event.error,
-        event.toolArgs,
-        turnId,
-        event.isDenied
-      ));
-  }
-
-  private recordInterruptedCompletedToolResults(events: ToolResultEvent[], turnId: string): void {
-    if (!events.length) {
-      return;
-    }
-
-    const existingToolResultIds = new Set(
-      this.listRawTracesOrdered()
-        .filter((item) => item.turnId === turnId && item.traceType === 'tool_result' && item.toolCallId)
-        .map((item) => item.toolCallId as string)
-    );
-    const traces: RawTraceItem[] = [];
-
-    for (const event of events) {
-      if (event.toolInvocationId && existingToolResultIds.has(event.toolInvocationId)) {
-        continue;
-      }
-      if (event.toolInvocationId) {
-        existingToolResultIds.add(event.toolInvocationId);
-      }
-      traces.push(new RawTraceItem({
-        id: `rt_${Date.now()}_${event.toolInvocationId ?? traces.length}_interrupted_tool_result`,
-        ts: Date.now() / 1000,
-        turnId,
-        seq: this.nextSeq(turnId),
-        traceType: 'tool_result',
-        content: '',
-        sourceEvent: 'InterruptedTurnCompletedToolResult',
-        toolName: event.toolName,
-        toolCallId: event.toolInvocationId ?? null,
-        toolArgs: event.toolArgs ?? null,
-        toolResult: event.result,
-        toolError: event.error ?? null
-      }));
-    }
-
-    if (traces.length) {
-      this.store.add(traces);
-    }
-  }
 }

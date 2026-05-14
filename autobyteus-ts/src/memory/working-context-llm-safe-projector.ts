@@ -13,7 +13,7 @@ type ToolProtocolProjection = {
   completedResultPayloadsByMessageIndex: Map<number, ToolResultPayload[]>;
 };
 
-export function projectInterruptedTurnWorkingContext(
+export function projectLlmSafeWorkingContext(
   messages: Message[],
   markerContent: string | null,
   completedToolResults: ToolResultEvent[] = []

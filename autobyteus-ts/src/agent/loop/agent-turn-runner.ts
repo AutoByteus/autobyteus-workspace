@@ -122,15 +122,28 @@ export class AgentTurnRunner {
       if (isAgentInterruptionError(error)) {
         const reason = error.reason;
         const interruptionScope = { kind: 'agent_turn' as const, id: turnId };
-        await this.context.state.memoryManager?.ingestInterruptionMarker({
-          scope: interruptionScope,
-          reason,
-          completedToolResults: completedToolResultsForInterruptedProjection
-        });
-        await this.context.state.memoryManager?.refreshWorkingContextProjection({
-          mode: 'provider_safe',
-          fenceScope: interruptionScope
-        });
+        const memoryManager = this.context.state.memoryManager;
+        if (memoryManager) {
+          const completedToolFacts = this.buildCompletedToolFactsForMemory(
+            completedToolResultsForInterruptedProjection,
+            turnId
+          );
+          memoryManager.ingestToolResults(completedToolFacts, turnId, {
+            source: 'ToolResultEvent',
+            appendToWorkingContext: false
+          });
+          memoryManager.appendRawTrace({
+            turnId,
+            traceType: 'operation_boundary',
+            content: memoryManager.buildOperationBoundaryNote({ scope: interruptionScope, reason }),
+            sourceEvent: 'AgentTurnInterruptedEvent'
+          });
+          await memoryManager.projectWorkingContextForNextLlm({
+            mode: 'llm_safe',
+            fenceIncompleteToolProtocolScope: interruptionScope,
+            includeCommittedFacts: true
+          });
+        }
         this.notifier?.notifyAgentTurnInterrupted(turnId, reason);
         await this.applyStatusEvent(new AgentTurnInterruptedEvent(turnId, reason));
         return { kind: 'interrupted', turnId, reason };
@@ -159,6 +172,21 @@ export class AgentTurnRunner {
 
   private async applyStatusEvent(event: Parameters<typeof applyEventAndDeriveStatus>[0]): Promise<void> {
     await applyEventAndDeriveStatus(event, this.context);
+  }
+
+  private buildCompletedToolFactsForMemory(events: ToolResultEvent[], turnId: string): ToolResultEvent[] {
+    return events
+      .filter((event) => !event.isDenied)
+      .filter((event) => !event.turnId || event.turnId === turnId)
+      .map((event) => new ToolResultEvent(
+        event.toolName,
+        event.result,
+        event.toolInvocationId,
+        event.error,
+        event.toolArgs,
+        turnId,
+        event.isDenied
+      ));
   }
 
   private emitToolTerminalLifecycle(processedEvent: ToolResultEvent): void {

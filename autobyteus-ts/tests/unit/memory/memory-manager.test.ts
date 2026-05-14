@@ -28,6 +28,17 @@ const makeTrace = (
     content,
     sourceEvent: 'TestEvent'
   });
+const appendOperationBoundaryNote = (manager: MemoryManager, turnId: string, reason: string) => {
+  manager.appendRawTrace({
+    turnId,
+    traceType: 'operation_boundary',
+    content: manager.buildOperationBoundaryNote({
+      scope: { kind: 'agent_turn', id: turnId },
+      reason
+    }),
+    sourceEvent: 'AgentTurnInterruptedEvent'
+  });
+};
 
 describe('MemoryManager', () => {
   it('ingests user message and assistant response with sequencing', () => {
@@ -297,7 +308,7 @@ describe('MemoryManager', () => {
     }
   });
 
-  it('ingests interruption markers and refreshes working-context projection without restoring accepted user input', async () => {
+  it('appends operation-boundary notes and projects working context without restoring accepted user input', async () => {
     const tempDir = makeTempDir();
     try {
       const store = new FileMemoryStore(tempDir, 'agent_mem_interrupted_projection');
@@ -313,8 +324,11 @@ describe('MemoryManager', () => {
       manager.ingestUserMessage(new LLMUserMessage({ content: 'interrupted user input' }), turnId, 'LLMUserMessageReadyEvent');
       manager.ingestToolIntent(new ToolInvocation('read_file', { path: '/tmp/incomplete.txt' }, 'inv-interrupt', turnId), turnId);
 
-      await manager.ingestInterruptionMarker({ scope: { kind: 'agent_turn', id: turnId }, reason: 'user_interrupt' });
-      await manager.refreshWorkingContextProjection({ mode: 'provider_safe', fenceScope: { kind: 'agent_turn', id: turnId } });
+      appendOperationBoundaryNote(manager, turnId, 'user_interrupt');
+      await manager.projectWorkingContextForNextLlm({
+        mode: 'llm_safe',
+        fenceIncompleteToolProtocolScope: { kind: 'agent_turn', id: turnId }
+      });
 
       const messages = manager.getWorkingContextMessages();
       expect(messages.some((message) => message.content === 'stable system prompt')).toBe(true);
@@ -330,7 +344,7 @@ describe('MemoryManager', () => {
       const rawItems = manager.listRawTracesOrdered();
       expect(rawItems.some((item) => item.traceType === 'user' && item.content === 'interrupted user input')).toBe(true);
       expect(rawItems.some((item) =>
-        item.traceType === 'turn_interrupted' &&
+        item.traceType === 'operation_boundary' &&
         item.sourceEvent === 'AgentTurnInterruptedEvent' &&
         item.content.includes('user_interrupt')
       )).toBe(true);
@@ -339,7 +353,7 @@ describe('MemoryManager', () => {
     }
   });
 
-  it('keeps complete native tool-call history while adding the interrupted marker', async () => {
+  it('keeps complete native tool-call history while adding an operation-boundary note', async () => {
     const tempDir = makeTempDir();
     try {
       const store = new FileMemoryStore(tempDir, 'agent_mem_interrupted_complete_tools');
@@ -353,8 +367,11 @@ describe('MemoryManager', () => {
         turnId
       );
 
-      await manager.ingestInterruptionMarker({ scope: { kind: 'agent_turn', id: turnId }, reason: 'post_tool_interrupt' });
-      await manager.refreshWorkingContextProjection({ mode: 'provider_safe', fenceScope: { kind: 'agent_turn', id: turnId } });
+      appendOperationBoundaryNote(manager, turnId, 'post_tool_interrupt');
+      await manager.projectWorkingContextForNextLlm({
+        mode: 'llm_safe',
+        fenceIncompleteToolProtocolScope: { kind: 'agent_turn', id: turnId }
+      });
 
       const messages = manager.getWorkingContextMessages();
       expect(messages.some((message) => message.tool_payload instanceof ToolCallPayload)).toBe(true);
@@ -379,13 +396,18 @@ describe('MemoryManager', () => {
           { id: 'call_B', name: 'slow_tool', arguments: {} }
         ])
       }));
-      manager.workingContextSnapshot.appendMessage(new Message(MessageRole.TOOL, {
-        content: null,
-        tool_payload: new ToolResultPayload('call_A', 'safe_tool', 'SAFE_FACT')
-      }));
+      manager.ingestToolResults([
+        new ToolResultEvent('safe_tool', 'SAFE_FACT', 'call_A', undefined, {}, turnId)
+      ], turnId, {
+        source: 'ToolResultEvent',
+        appendToWorkingContext: false
+      });
 
-      await manager.ingestInterruptionMarker({ scope: { kind: 'agent_turn', id: turnId }, reason: 'user_interrupt' });
-      await manager.refreshWorkingContextProjection({ mode: 'provider_safe', fenceScope: { kind: 'agent_turn', id: turnId } });
+      appendOperationBoundaryNote(manager, turnId, 'user_interrupt');
+      await manager.projectWorkingContextForNextLlm({
+        mode: 'llm_safe',
+        fenceIncompleteToolProtocolScope: { kind: 'agent_turn', id: turnId }
+      });
 
       const messages = manager.getWorkingContextMessages();
       expect(messages.some((message) => message.tool_payload)).toBe(false);
@@ -393,10 +415,20 @@ describe('MemoryManager', () => {
         typeof message.content === 'string' &&
         message.content.includes('Interrupted tool request was fenced') &&
         message.content.includes('safe_tool') &&
-        message.content.includes('slow_tool') &&
+        message.content.includes('slow_tool')
+      )).toBe(true);
+      expect(messages.some((message) =>
+        typeof message.content === 'string' &&
+        message.content.includes('Completed tool results before interruption') &&
+        message.content.includes('safe_tool') &&
         message.content.includes('SAFE_FACT')
       )).toBe(true);
       expect(messages.at(-1)?.content).toContain(`turn '${turnId}' was interrupted`);
+      expect(manager.listRawTracesOrdered().some((item) =>
+        item.traceType === 'tool_result' &&
+        item.toolCallId === 'call_A' &&
+        item.toolResult === 'SAFE_FACT'
+      )).toBe(true);
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
