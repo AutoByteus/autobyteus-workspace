@@ -14,71 +14,60 @@
 - Bootstrap base: `origin/personal` at `1bed2087bc583add5f07d61a1e7fd61da28a4a2a`
 - Current tracked base checked by delivery: `origin/personal` at `839148ba058b8d85a96288ce56fef69beef22266`
 - Delivery refresh: `git fetch origin --prune` on `2026-05-14`
-- Latest implementation commit validated by API/E2E: `9c57cc16d2e4ba2ea1e5bca4e4ad009aa460ce00` (`refactor(agent): rename event inbox processors to handlers`)
-- Current ticket branch HEAD: `9c57cc16d2e4ba2ea1e5bca4e4ad009aa460ce00`
-- Ahead/behind after delivery refresh: `ahead 33, behind 0` relative to `origin/personal`
+- Latest implementation commit validated by API/E2E: `32a216a84801f3468efd24a293bb417f8503ea8c` (`test(agent): align deterministic broad test expectations`)
+- Current ticket branch HEAD: `32a216a84801f3468efd24a293bb417f8503ea8c`
+- Ahead/behind after delivery refresh: `ahead 35, behind 0` relative to `origin/personal`
 - Latest-base action in this delivery round: no merge/checkpoint required; ticket branch already contained latest tracked `origin/personal`.
 - Historical merge blocker: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/delivery-merge-blocker-report.md` is superseded context only.
 
 ## Implementation Summary
 
-The ticket redesigns native AutoByteus interrupt handling, runtime-loop ownership, event-inbox scheduling, active-turn approvals/results, provider-native tool continuation, external-observable event publication, server/WebSocket control terminology, and frontend projection guardrails:
+The ticket redesigns native AutoByteus interrupt handling, runtime-loop ownership, event-inbox scheduling, active-turn approvals/results, provider-native tool continuation, external-observable event publication, server/WebSocket control terminology, and frontend projection guardrails. The latest Round 29 local fix also aligns deterministic tests and default discovery with the current implementation state:
 
 - `AgentRuntime.interrupt()` interrupts the active `AgentTurn` without stopping the worker/runtime, restores the turn-start working-context checkpoint, closes active-turn waits, and leaves the runtime reusable for follow-up turns.
 - `stop()` / terminate remains terminal shutdown/settlement and cleanup, not the user generation-interrupt path.
 - `AgentEventInbox` is the runtime event inbox with `runtime_lifecycle`, `active_turn`, and `turn_start` lanes. It stores canonical typed event entries plus queue/awaitable metadata, not domain-specific message-wrapper objects.
 - `AgentEventScheduler` dispatches turn-start event entries only while idle, and lifecycle/active-turn tool approval/result event entries while a turn is active.
-- Event-inbox scheduler delegates are now handlers: `InboxEventHandler`, `TurnStartInboxEventHandler`, `RuntimeLifecycleInboxEventHandler`, `ToolApprovalInboxEventHandler`, and `ToolResultInboxEventHandler`, wired through `AgentEventSchedulerHandlers`, `canHandle(...)`, and `handle(...)`.
-- The removed `event-inbox/processors/` folder and `AgentEventProcessor` contract are not retained as compatibility wrappers. Real processor pipelines elsewhere remain unchanged.
+- Event-inbox scheduler delegates are handlers: `InboxEventHandler`, `TurnStartInboxEventHandler`, `RuntimeLifecycleInboxEventHandler`, `ToolApprovalInboxEventHandler`, and `ToolResultInboxEventHandler`, wired through `AgentEventSchedulerHandlers`, `canHandle(...)`, and `handle(...)`.
 - `AgentRuntime.submitEvent(...)` accepts external user/inter-agent/lifecycle events and rejects unsupported turn-local operational events instead of queuing them through lifecycle input.
-- `TurnExecutionScope.runAbortable(...)`, `iterateAbortable(...)`, and `iterateWithAbort(...)` guard already-aborted turns before thunk invocation, iterator acquisition, or next-item request.
 - `AgentTurnRunner`, `LlmPhase`, and `ToolPhase` fence accepted interrupts after awaited LLM/tool seams before normal assistant completion, memory/notifier side effects, terminal tool success, tool-result processing, or same-turn continuation publication.
-- `AgentExternalEventNotifier` is the direct semantic external-observable event boundary. The duplicate `AgentOutbox` wrapper and barrel were removed; runner/phases/pipelines call typed `notify...` methods directly and do not call low-level `.emit(...)`.
-- The intermediate `AgentMessageInbox`, `AgentMessageScheduler`, `AgentMessageHandler`, `AgentInboxMessage`, `UserInboxMessage`, `ToolApprovalInputMessage`, `ToolResultInputMessage`, and `message-inbox` paths are retired and absent from active TS source/tests.
+- `AgentExternalEventNotifier` is the direct semantic external-observable event boundary; `AgentOutbox` remains deleted.
 - Tool approval/denial commands route through `Agent.postToolExecutionApproval(...) -> AgentRuntime.postToolApprovalEvent(ToolExecutionApprovalEvent) -> AgentEventInbox(active_turn) -> ToolApprovalInboxEventHandler -> AgentRuntimeState.postToolApprovalEventToActiveTurn(...) -> TurnToolInputPort.postApproval(...) -> ToolPhase.waitForApproval(...)`.
-- `ToolExecutionApprovalEvent` remains status/event-store projection output after accepted decisions and is also the canonical active-turn posted event; it is not accepted through `AgentRuntime.submitEvent(...)` as turn-start or lifecycle input.
-- Pending-only approval authority is enforced: only invocations in `pendingToolApprovals` are approvable; active auto-executing tool-batch membership alone rejects as `no_pending_invocation` without status mutation.
 - External async tool results route through `Agent.postToolExecutionResult(...) -> AgentRuntime.postToolResultEvent(ToolResultEvent) -> AgentEventInbox(active_turn) -> ToolResultInboxEventHandler -> AgentRuntimeState.postToolResultEventToActiveTurn(...) -> TurnToolInputPort.postToolResult(...) -> ToolPhase.waitForExternalToolResult(...)`.
-- `BaseTool.prepareExecution(...)` owns external-result preflight/mode resolution before started lifecycle or result-waiter registration.
-- Invalid external-result args, mode resolver failures, stale/late/duplicate/no-waiter/wrong-turn/closed/interrupted/stopped result attempts fail with explicit outcomes and do not revive a terminal turn.
-- Native provider `api_tool_call` tool-result continuation uses `tool_history_only`, emits `ToolContinuationReadyEvent`, and renders structured `assistant.tool_calls` / `role: "tool"` history without adding a synthetic aggregate user message.
-- Terminal stop/shutdown preempts queued external user/inter-agent triggers before another turn can start.
-- The normal single-agent LLM/tool/continuation flow is owned by `AgentTurnRunner`, `LlmPhase`, `ToolPhase`, typed pipelines, the external notifier, and the event inbox scheduler, not by retired dispatcher/message-wrapper/handler files or an outbox wrapper.
-- `LLMInvocationOptions.signal` reaches AutoByteus RPA requests through `AutobyteusLLM -> AutobyteusClient -> Axios` for both `/send-message` and `/stream-message`.
-- Native AutoByteus outbound `SEGMENT_*` payloads canonicalize the turn field to `turn_id`; segment-level `turnId` aliases are stripped before WebSocket delivery.
-- Non-interrupt LLM stream errors terminalize open text/tool/write/edit/reasoning segments with `failed: true` and an error message.
-- Failed partial tool segments are display/error records only and do not become tool invocations, tool results, or same-turn continuations.
-- Frontend segment/status projection marks failed segment/tool rows as terminal errors, keeps interrupted rows distinct from failed rows, and sends approval button decisions as active-context control commands while waiting for backend lifecycle/tool/status projection as authority.
-- Native team execution preserves the backend split and Team Communication integration, including normalized/deduplicated `reference_files`, `message_id`, `created_at`, and message-owned `reference_file_entries`.
-- Server/WebSocket and durable E2E validation use final `INTERRUPT_GENERATION` terminology; stale `STOP_GENERATION` validation wording was removed in API/E2E Round 10 and remains accepted.
+- Native provider `api_tool_call` tool-result continuation uses `tool_history_only`, emits `ToolContinuationReadyEvent`, and renders structured provider history without adding a synthetic aggregate user message.
+- Native AutoByteus outbound segment payloads canonicalize the turn field to `turn_id`.
+- Frontend segment/status projection keeps failed/interrupted/tool rows terminal and distinct, with backend lifecycle/status projection as authority.
+- Native team execution preserves Team Communication integration, including normalized/deduplicated `reference_files`, generated/preserved message metadata, and message-owned `reference_file_entries`.
+- Server/WebSocket and durable E2E validation use final `INTERRUPT_GENERATION` terminology; stale `STOP_GENERATION` validation wording remains removed.
+- Default `autobyteus-ts` Vitest discovery excludes stale `tickets/done` and `tmp-*` artifacts, so historical tickets do not masquerade as current active tests.
+- Deterministic tests now assert current canonical contracts (`turn_id`, `TOOL_APPROVAL_REQUESTED`, `provider_type`, strict OpenAI JSON schema, `run_bash` signal option, memory-ingest label argument) without adding production compatibility paths.
 
 ## Review / Validation State
 
 - Latest code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/review-report.md`
-  - Latest implementation review round: `28`
-  - Decision: `Pass / Ready for API/E2E validation`
-  - Scope: CR-019 rename from event-inbox processor terminology to handler terminology.
+  - Latest implementation review round: `29`
+  - Decision: `Pass / Ready for API/E2E resume`
+  - Scope: deterministic active-test drift and Vitest discovery hygiene; provider/live-environment failures explicitly out of scope unless requested separately.
 - Latest API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/api-e2e-validation-report.md`
-  - Latest authoritative validation round: `15`
+  - Latest authoritative validation round: `17`
   - Result: `Pass / Ready for delivery`
-  - Repository-resident durable validation added or updated in Round 15: `No`
-  - Production source changed in Round 15: `No`
-  - Code-review reroute after Round 15: `Not required`.
+  - Repository-resident durable validation added or updated by API/E2E Round 17: `No`
+  - Production source changed by API/E2E Round 17: `No`
+  - Code-review reroute after Round 17: `Not required`; Round 29 already reviewed the test/config changes.
 
-Round 15 accepted evidence:
+Round 17 accepted evidence:
 
-- `/tmp/round28_validation.log` ended with `ALL ROUND28 API/E2E VALIDATION PASSED`.
-- Static guardrails passed: removed processor path, handler names present, no legacy inbox/message-wrapper/outbox/dispatcher/stop-fallback matches.
-- TS runtime/provider-native suite passed: `12` files / `87` tests.
-- Server runtime/WebSocket/team suite passed: `8` files / `79` tests.
-- Web stream/store projection suite passed: `6` files / `73` tests.
-- Builds/prep passed: `autobyteus-ts` build, `autobyteus-server-ts build:full`, and `autobyteus-web nuxi prepare`.
-- LM Studio probe passed with `28` models discovered, including `qwen3.6-27b-ud-mlx`.
-- Real LM Studio AutoByteus single-agent E2E passed: approval, pending-approval interrupt with same-WebSocket follow-up, and terminate/restore follow-up (`3` tests passed, `15` skipped).
-- Real LM Studio AutoByteus team E2E passed: approve/restore/continue, team interrupt with targeted follow-up, team terminate/restore with targeted follow-up, and member projection after restore (`4` tests passed, `0` skipped).
+- Deterministic local-fix subset passed: `9` files / `27` tests (`/tmp/round29_deterministic_validation.log`).
+- Default Vitest discovery no longer lists stale `tickets/done` or `tmp-*` tests.
+- Focused compaction passed: `2` files / `3` tests (`/tmp/round29_compaction_runtime_validation.log`).
+- Focused event/runtime/provider-native/approval suite passed: `12` files / `87` tests (`/tmp/round29_compaction_runtime_validation.log`).
+- Broad deterministic `autobyteus-ts` unit sweep passed: `354` files / `1730` tests (`/tmp/round29_autobyteus_ts_unit_sweep.log`).
+- Builds passed: `pnpm -C autobyteus-ts run build` and `pnpm -C autobyteus-server-ts run build:full` (`/tmp/round29_build_validation.log`).
+- User-requested server-side AutoByteus runtime E2E passed (`/tmp/round29_server_autobyteus_e2e.log`): single-agent `3` tests passed / `15` skipped; team `4` tests passed / `0` skipped.
 
 Cumulative accepted evidence also includes:
 
+- Round 15 event-inbox handler rename validation.
 - Round 14 full post-restart rerun and fresh browser/frontend same-run continuation proof.
 - Round 13 real browser single-agent/team interrupt and terminate validation with screenshots:
   - `/Users/normy/.autobyteus/browser-artifacts/7b3309-1778669159559.png`
@@ -86,20 +75,19 @@ Cumulative accepted evidence also includes:
 - Round 12 notifier/runtime/provider, server stream/WebSocket/team, web stream/projection/store, live single-agent LM Studio, and full live team LM Studio evidence.
 - Round 11 real AutoByteus single-agent/team live LM Studio interrupt/terminate/follow-up validation.
 - Round 10 provider-native continuation, server/WebSocket, web projection, Claude fake-SDK, and no-stop-fallback validation.
-- Prior validation for CR-001 through CR-018 guardrails.
+- Prior validation for CR-001 through CR-019 guardrails.
 
 ## Delivery Latest-Base / Integrated-State Checks
 
 Delivery checks after `git fetch origin --prune` on `2026-05-14`:
 
 - `origin/personal` checked at `839148ba058b8d85a96288ce56fef69beef22266`.
-- Ticket branch is `ahead 33, behind 0`; no latest-base merge/checkpoint was required.
-- `git diff --check HEAD` and `git diff --check 9c57cc16d2e4^ 9c57cc16d2e4` passed.
-- Confirmed no event-inbox `processors/` source/test directory remains.
-- Stale event-inbox processor-term scan in active TS source/tests passed.
-- Required handler-term scan passed (`43` matches recorded).
-- Retired legacy symbol scan found no message-wrapper/legacy inbox, `AgentOutbox`, `WorkerEventDispatcher`, or stop-generation fallback matches in checked active source/test/runtime surfaces.
-- Event-inbox/runtime TS suite passed: `5` files / `38` tests.
+- Ticket branch is `ahead 35, behind 0`; no latest-base merge/checkpoint was required.
+- `git diff --check`, `git diff --check HEAD`, and `git diff --check 32a216a84801^ 32a216a84801` passed.
+- Commit `32a216a8` changed `0` production source files under `autobyteus-ts/src`, `autobyteus-server-ts/src`, and `autobyteus-web`.
+- Default Vitest discovery stale ticket/tmp scan passed.
+- Active legacy/stop/outbox scan passed.
+- Delivery deterministic local-fix subset rerun passed: `9` files / `27` tests.
 - `pnpm -C autobyteus-ts run build` passed.
 - `pnpm -C autobyteus-server-ts run build:full` passed.
 - `pnpm -C autobyteus-web exec nuxi prepare` passed.
@@ -107,15 +95,8 @@ Delivery checks after `git fetch origin --prune` on `2026-05-14`:
 ## Docs Sync
 
 - Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/docs-sync-report.md`
-- Result: `Pass / Verified`
-- Round 15 long-lived doc impact: CR-019 already updated affected runtime docs to handler terminology; delivery verified no additional long-lived doc edits were required.
-
-Relevant long-lived docs reviewed:
-
-- `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md`
-- `autobyteus-ts/docs/event_driven_core_design.md`
-- `autobyteus-ts/docs/lifecycle_event_sourced_engine_design.md`
-- `autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md`
+- Result: `Pass / No additional long-lived docs change required`
+- Round 17 long-lived doc impact: none. The reviewed local fix changed tests, test fixture, and Vitest discovery configuration only; no production runtime behavior or product docs changed.
 
 ## Release / Deployment
 
@@ -125,11 +106,12 @@ Relevant long-lived docs reviewed:
 
 ## Residual Risks / Out-of-Scope Validation
 
-- Live LM Studio tests are gated by local LM Studio/model availability (`RUN_LMSTUDIO_E2E=1`, `LMSTUDIO_MODEL_ID=qwen3.6-27b-ud-mlx`). API/E2E Rounds 11-15 successfully exercised the relevant local live paths.
-- Round 15 did not rerun browser UI because CR-019 was a behavior-neutral runtime handler rename; targeted web projection suites and `nuxi prepare` passed, and Round 14/Round 13 browser evidence remains accepted.
-- Non-blocking Round 14 observation: existing frontend context could keep showing `currentStatus: "processing_user_input"` / assistant headers as `Thinking` after interrupted/reused-run follow-ups completed. Backend completion/status, fresh WebSocket `IDLE`, `activeContextStore.isSending === false`, and visible continuation all passed. Track visual status-label settling separately if product wants immediate label convergence.
+- Provider/live-environment failures from the Round 16 full all-test sweep remain explicitly unclaimed and out of Round 17 scope unless the user expands scope: MCP toy servers requiring `/opt/homebrew/bin/uv`, local media host `192.168.2.124:29695`, Autobyteus/RPA live LLM/audio/image timeouts/500s, and fully parallel LM Studio live agent/team flakiness.
+- Live LM Studio tests are gated by local LM Studio/model availability (`RUN_LMSTUDIO_E2E=1`, `LMSTUDIO_MODEL_ID=qwen3.6-27b-ud-mlx`). API/E2E Round 17 passed the user-requested server-side single-agent and team LM Studio E2E rerun.
+- Round 17 did not rerun browser UI because the local fix was test/discovery-focused and server-side AutoByteus runtime E2E was explicitly requested and passed. Round 14/Round 13 browser evidence remains accepted.
+- Non-blocking Round 14 frontend status-label observation remains historical context.
 - Prior Round 13 non-blocking observations remain non-blocking context: one first-message/new-run pending-approval path did not expose `Stop generation` after temporary-run promotion, and one navigation/reconnection path logged transient run-metadata JSON parsing; existing-run pending interrupt and UI continuation passed.
-- Live paid-provider cancellation across every provider remains out of scope; targeted local/client, provider-facing, fake-SDK, live LM Studio, and browser validation covered the implemented paths.
+- Live paid-provider cancellation across every provider remains out of scope.
 - Live Claude SDK E2E remains gated/skipped unless `RUN_CLAUDE_E2E` is enabled; fake-SDK Claude E2E passed in prior evidence.
 - A WebSocket client command for external tool-result submission is not in the reviewed protocol; native public/runtime result submission was validated instead.
 - Broad package `tsc --noEmit` issues remain documented baseline limitations; build commands and focused validation passed.
@@ -149,10 +131,11 @@ Relevant long-lived docs reviewed:
 - Handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/handoff-summary.md`
 - Historical merge blocker context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/delivery-merge-blocker-report.md`
 - Prior explainer context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/turn-tool-input-port-explainer.html`
-- Round 28 API/E2E log: `/tmp/round28_validation.log`
-- Round 11 live single-agent E2E validation file: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts`
-- Round 11/12 live team E2E validation file: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts`
-- Round 10 Claude E2E validation file: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts`
+- Round 29 deterministic validation log: `/tmp/round29_deterministic_validation.log`
+- Round 29 compaction/runtime validation log: `/tmp/round29_compaction_runtime_validation.log`
+- Round 29 autobyteus-ts unit sweep log: `/tmp/round29_autobyteus_ts_unit_sweep.log`
+- Round 29 build validation log: `/tmp/round29_build_validation.log`
+- Round 29 server AutoByteus E2E log: `/tmp/round29_server_autobyteus_e2e.log`
 - Round 13 browser screenshot: `/Users/normy/.autobyteus/browser-artifacts/7b3309-1778669159559.png`
 - Round 13 browser screenshot: `/Users/normy/.autobyteus/browser-artifacts/7b3309-1778669334741.png`
 

@@ -8,10 +8,10 @@
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/implementation-handoff.md`
 - Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/review-report.md`
-- Current Validation Round: `16`
-- Trigger: User-requested post-Round-28 expansion to rerun compaction E2E and a broad `autobyteus-ts` test sweep after the large runtime/event-inbox refactor, classifying credential/environment-gated failures separately.
-- Prior Round Reviewed: `15`
-- Latest Authoritative Round: `16`
+- Current Validation Round: `17`
+- Trigger: Code review Round 29 after API/E2E Round 16 local fix commits `02a89afc` (`docs(ticket): record round 16 validation reports`) and `32a216a8` (`test(agent): align deterministic broad test expectations`), requiring API/E2E resume of deterministic broad-discovery checks, compaction, focused runtime gates, and builds while preserving the provider/live-environment out-of-scope classification.
+- Prior Round Reviewed: `16`
+- Latest Authoritative Round: `17`
 
 ## Round History
 
@@ -32,13 +32,14 @@
 | 13 | User-requested real browser/frontend validation with local backend/frontend, seeding, LM Studio, single-agent, and team UI flows. | Round 12 live backend/API evidence rechecked from the UI path. | None blocking. | Pass; no durable validation changed in this round | No | Started backend/frontend from README paths, seeded fixtures, launched dedicated AutoByteus single-agent and team definitions in the browser, clicked visible `Stop generation` and terminate controls, verified post-interrupt follow-up responses, interrupted pending approval lifecycle, stop/shutdown behavior, and file absence. |
 | 14 | Code review Round 26 after event-inbox refactor plus user-requested full rerun after computer restart. | Round 13 browser/live/API evidence and all earlier automated guardrails rerun. | None blocking; recorded a non-blocking frontend status-label projection observation after interrupt/follow-up. | Pass; no durable validation changed in this round | No | Restarted backend/frontend on fresh ports/data, reran automated TS/server/web/build/static suites, reran real LM Studio AutoByteus single-agent and team E2E, seeded UI fixtures, launched a dedicated browser AutoByteus agent, interrupted a live turn, then sent two successful same-run follow-ups despite a stale visible status label. |
 | 15 | Code review Round 28 after CR-019 handler rename commit `9c57cc16`. | Round 14 runtime/WebSocket/provider-native/LM Studio/build/static evidence rerun against the handler-named event-inbox implementation. | None | Pass; no durable validation changed in this round | No | Reran stale-processor/handler guardrails, TS event-inbox/runtime/provider-native suites, server single/team WebSocket suites, web projection suites, builds, and real LM Studio AutoByteus single-agent/team interrupt/terminate/follow-up E2E. |
-| 16 | User requested compaction E2E plus broad `autobyteus-ts` test sweep after the large refactor. | Round 15 pass evidence kept; compaction-specific tests rerun directly. | Yes. Focused compaction E2E passed, but the broad `autobyteus-ts` all-test sweep failed with deterministic active-test failures plus environment/live-provider failures. | Fail for broad `autobyteus-ts` suite; Local Fix/triage required before claiming all project tests work | Yes | Focused compaction passed (`16` files / `34` tests, then focused smoke `2` files / `3` tests). Full `pnpm -C autobyteus-ts exec vitest run` failed (`28` files failed, `33` tests failed, `2` unhandled MCP uv errors). |
+| 16 | User requested compaction E2E plus broad `autobyteus-ts` test sweep after the large refactor. | Round 15 pass evidence kept; compaction-specific tests rerun directly. | Yes. Focused compaction E2E passed, but the broad `autobyteus-ts` all-test sweep failed with deterministic active-test failures plus environment/live-provider failures. | Fail for broad `autobyteus-ts` suite; Local Fix/triage required before claiming all project tests work | No | Focused compaction passed (`16` files / `34` tests, then focused smoke `2` files / `3` tests). Full `pnpm -C autobyteus-ts exec vitest run` failed (`28` files failed, `33` tests failed, `2` unhandled MCP uv errors). |
+| 17 | Code review Round 29 after deterministic test-discovery/test-expectation local fix commits `02a89afc` and `32a216a8`. | Round 16 deterministic failures and compaction rerun. | None in scoped deterministic/runtime/compaction/build validation. Provider/live-environment broad-suite failures remain unclaimed/out of scope. | Pass; no durable validation changed by API/E2E in this round | Yes | Stale ticket/tmp discovery absent; deterministic fixed subset passed (`9` files / `27` tests); focused compaction passed (`2` files / `3` tests); focused event/runtime/provider-native/approval suite passed (`12` files / `87` tests); broad unit sweep passed (`354` files / `1730` tests); TS and server builds passed; server-side live AutoByteus single-agent/team GraphQL/WebSocket E2E passed. |
 
 ## Validation Basis
 
-Validation was derived from the reviewed requirements/design, the implementation handoff, the Round 28 code-review report, the prior API/E2E history, direct observation of the current worktree at commit `9c57cc16d2e4` (`refactor(agent): rename event inbox processors to handlers`), and the user's explicit requirement that interrupt/stop proof be real AutoByteus runtime E2E rather than Codex/Claude runtime-owned behavior.
+Validation was derived from the reviewed requirements/design, the implementation handoff, the Round 29 code-review report, the prior API/E2E history, direct observation of the current worktree at commit `32a216a84801` (`test(agent): align deterministic broad test expectations`), and the user's explicit requirement that interrupt/stop proof be real AutoByteus runtime E2E rather than Codex/Claude runtime-owned behavior.
 
-Current Round 16 acceptance focus:
+Current Round 17 acceptance focus:
 
 - `AgentExternalEventNotifier` must remain the single external observable-event boundary after `AgentOutbox` deletion.
 - Runner, phases, and pipelines must not publish through the removed `AgentOutbox`, direct low-level `.emit(...)`, or a compatibility wrapper.
@@ -49,7 +50,8 @@ Current Round 16 acceptance focus:
 - Event-inbox handler rename must be behavior-neutral: `handlers/`, `InboxEventHandler`, `AgentEventSchedulerHandlers`, `canHandle(entry)`, and `handle(entry, context)` must replace processor terminology without resurrecting legacy normal-flow `agent/handlers/*` or wrapper/message-inbox paths.
 - Runtime, WebSocket, provider-native, web projection, build, and live LM Studio AutoByteus single-agent/team interrupt/terminate/follow-up behavior must remain green after the handler rename.
 - User-requested compaction E2E must still pass in focused execution.
-- User-requested broad `autobyteus-ts` sweep must either pass or have failures classified as credential/environment-gated, baseline/out-of-suite, or active deterministic failures requiring a local fix.
+- User-requested broad `autobyteus-ts` deterministic/local sweep must pass after the Round 29 local fix.
+- Provider/live-environment broad-suite failures from Round 16 remain explicitly unclaimed and out of scope unless the user expands scope to make those providers/environments green.
 
 ## Compatibility / Legacy Scope Check
 
@@ -70,7 +72,7 @@ Round 12/13 compatibility evidence:
 
 ## Validation Surfaces / Modes
 
-Round 13-16 used these validation modes:
+Round 13-17 used these validation modes:
 
 - TS unit/integration validation for runner, input pipeline, approval flow, runtime interrupt/external-result behavior, and provider-native tool continuation.
 - Server unit/integration validation for AutoByteus stream conversion, team communication message processing, single/team stream handlers, single/team WebSocket integration, and AutoByteus team backend execution.
@@ -81,13 +83,15 @@ Round 13-16 used these validation modes:
 - Browser UI automation against local Nuxt frontend and local backend for single-agent/team launch, interrupt, terminate, and follow-up flows.
 - Focused `autobyteus-ts` memory compaction unit/integration/E2E suite.
 - Broad `autobyteus-ts` Vitest sweep using the package's default Vitest discovery, with credential/environment failures classified separately.
+- Round 17 broad deterministic unit sweep under `autobyteus-ts/tests/unit` plus fixed deterministic subset rerun.
 
 ## Platform / Runtime Targets
 
 - Host: macOS/Darwin on `arm64`.
 - Current date/timezone during latest validation: `2026-05-14`, Europe/Berlin.
 - Workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality`.
-- Latest commit validated: `9c57cc16d2e4` (`refactor(agent): rename event inbox processors to handlers`).
+- Latest commit validated: `32a216a84801` (`test(agent): align deterministic broad test expectations`).
+- Round 17 temporary logs: `/tmp/round29_deterministic_validation.log`, `/tmp/round29_compaction_runtime_validation.log`, `/tmp/round29_autobyteus_ts_unit_sweep.log`, `/tmp/round29_build_validation.log`, `/tmp/round29_server_autobyteus_e2e.log`.
 - Round 16 temporary logs: `/tmp/round28_compaction_tests_rerun.log`, `/tmp/round28_compaction_smoke_after_full.log`, `/tmp/round28_autobyteus_ts_all_tests.log`, `/tmp/round28_autobyteus_ts_deterministic_failures_rerun.log`.
 - Prior Round 14 commit validated: `311048639403` (`refactor(agent): replace message inbox with event inbox`).
 - Prior Round 13 commit validated: `39dc00d81258ed74cd31b9affd8c65adb2e4ba28`.
@@ -127,7 +131,7 @@ Round 13-16 used these validation modes:
 
 ## Test Scope
 
-In scope through Round 16:
+In scope through Round 17:
 
 - Direct semantic notifier boundary after `AgentOutbox` removal.
 - Inter-agent/system-task observable projections.
@@ -138,12 +142,14 @@ In scope through Round 16:
 - Static no-legacy/no-compatibility guardrails and builds.
 - Focused compaction E2E/unit/integration coverage in `autobyteus-ts`.
 - Broad `autobyteus-ts` Vitest discovery as an exploratory/user-requested whole-package health sweep.
+- Round 17 deterministic fixed subset, default discovery hygiene, focused compaction/runtime gates, broad unit sweep, and builds after the local fix.
 
-Out of direct Round 16 scope:
+Out of direct Round 17 scope:
 
 - Live free-text in-flight streaming interruption without a pending tool approval boundary. Deterministic TS integration covers in-flight LLM-turn interruption; live LM Studio coverage uses the stable pending-approval seam to avoid live-model timing flakiness.
 - Electron E2E; browser UI automation was added in Round 13 against the local Nuxt frontend/backend.
 - Broad package `tsc --noEmit` typechecks remain out of scope as pass criteria due to documented baseline limitations in the implementation handoff.
+- Provider/live-environment failures from the Round 16 full all-test sweep remain unclaimed and out of Round 17 scope unless explicitly requested: MCP toy servers requiring `/opt/homebrew/bin/uv`, local media host `192.168.2.124:29695`, Autobyteus/RPA live LLM/audio/image timeouts/500s, and fully parallel LM Studio live agent/team flakiness.
 - Final tracked-base refresh/check remains owned by delivery.
 
 ## Validation Setup / Environment
@@ -156,7 +162,7 @@ Out of direct Round 16 scope:
 
 ## Tests Implemented Or Updated
 
-Round 16 repository-resident durable validation added or updated by API/E2E: `None`.
+Round 17 repository-resident durable validation added or updated by API/E2E: `None`.
 
 Previously added API/E2E durable validation remains in the branch and was accepted by code review Rounds 22-24:
 
@@ -164,7 +170,7 @@ Previously added API/E2E durable validation remains in the branch and was accept
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts`
 
-No production source files and no repository-resident validation files were changed during Round 16 API/E2E.
+No production source files and no repository-resident validation files were changed during Round 17 API/E2E.
 
 ## Durable Validation Added To The Codebase
 
@@ -568,6 +574,99 @@ Result: `10` files failed; `13` tests failed, `14` passed. Evidence log: `/tmp/r
 
 Round 16 result: `Fail` for the user-requested broad `autobyteus-ts` all-test health claim. Focused compaction E2E/runtime tests passed, and the Round 15 CR-019 API/E2E gate evidence remains valid; however, the full `autobyteus-ts` sweep is not green and contains deterministic active test failures that need implementation/test triage or explicit baseline documentation before delivery can claim all `autobyteus-ts` tests still work.
 
+### Round 17 Addendum — Round 29 Local-Fix Revalidation
+
+Trigger: code review Round 29 passed the API/E2E Round 16 local fix. Reviewed commits were `02a89afc` (report documentation) and `32a216a8` (deterministic test expectations and discovery hygiene). API/E2E resumed validation against commit `32a216a84801`.
+
+Provider/live-environment broad-suite failures from Round 16 were kept explicitly unclaimed and out of scope per the Round 29 review guidance; this round validates the deterministic local-fix surface, compaction, focused runtime behavior, broad unit coverage, and builds.
+
+#### Round 17 Commands And Results
+
+Discovery / deterministic fixed subset log: `/tmp/round29_deterministic_validation.log`.
+
+Passed:
+
+- `git diff --check`
+- `git diff --check HEAD`
+- `pnpm -C autobyteus-ts exec vitest list | rg 'tickets/done|tmp-' || true`
+  - Result: no stale `tickets/done` or `tmp-*` tests listed by default discovery.
+- Deterministic fixed subset:
+
+```bash
+pnpm -C autobyteus-ts exec vitest run   tests/unit/cli/agent-team-focus-pane-history.test.ts   tests/unit/cli/cli-display.test.ts   tests/unit/cli/agent-team-renderables.test.ts   tests/unit/events/event-types.test.ts   tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts   tests/unit/tools/terminal/run-bash.test.ts   tests/integration/tools/usage/formatters/openai-json-schema-formatter.test.ts   tests/integration/llm/models.test.ts   tests/unit/clients/cert-utils.test.ts
+```
+
+Result: `9` files passed; `27` tests passed.
+
+Compaction/runtime log: `/tmp/round29_compaction_runtime_validation.log`.
+
+Passed:
+
+- Focused compaction with canonical LM Studio identifier:
+
+```bash
+LMSTUDIO_MODEL_ID='qwen3.6-27b-ud-mlx:lmstudio@127.0.0.1:1234' LMSTUDIO_TARGET_TEXT_MODEL='qwen3.6-27b-ud-mlx' pnpm -C autobyteus-ts exec vitest run   tests/integration/agent/memory-compaction-flow.test.ts   tests/integration/agent/runtime/agent-runtime-compaction.test.ts
+```
+
+Result: `2` files passed; `3` tests passed. `memory-compaction-flow.test.ts` passed in `43.481s`.
+
+- Focused event/runtime/provider-native/approval suite:
+
+```bash
+pnpm -C autobyteus-ts exec vitest run   tests/unit/agent/event-inbox/agent-event-inbox.test.ts   tests/unit/agent/event-inbox/agent-event-scheduler.test.ts   tests/unit/agent/event-inbox/inbox-queue-store.test.ts   tests/unit/agent/loop/turn-tool-input-port.test.ts   tests/unit/agent/context/agent-context.test.ts   tests/unit/agent/context/agent-runtime-state.test.ts   tests/unit/agent/runtime/agent-runtime.test.ts   tests/unit/agent/runtime/agent-worker.test.ts   tests/unit/agent/agent.test.ts   tests/integration/agent/runtime/agent-runtime.test.ts   tests/integration/agent/provider-native-tool-continuation-flow.test.ts   tests/integration/agent/tool-approval-flow.test.ts
+```
+
+Result: `12` files passed; `87` tests passed.
+
+Broad deterministic unit sweep log: `/tmp/round29_autobyteus_ts_unit_sweep.log`.
+
+```bash
+pnpm -C autobyteus-ts exec vitest run tests/unit
+```
+
+Result: `354` files passed; `1730` tests passed.
+
+Build log: `/tmp/round29_build_validation.log`.
+
+Passed:
+
+- `pnpm -C autobyteus-ts run build` — passed, including runtime dependency verification.
+- `pnpm -C autobyteus-server-ts run build:full` — passed, including built-in agents bootstrap smoke check.
+
+Server-side AutoByteus runtime E2E log: `/tmp/round29_server_autobyteus_e2e.log`.
+
+Passed after the user requested server-side AutoByteus-runtime E2E proof:
+
+- Single-agent AutoByteus GraphQL/WebSocket E2E:
+
+```bash
+RUN_LMSTUDIO_E2E=1 LMSTUDIO_MODEL_ID='qwen3.6-27b-ud-mlx:lmstudio@127.0.0.1:1234' LMSTUDIO_TARGET_TEXT_MODEL='qwen3.6-27b-ud-mlx' pnpm -C autobyteus-server-ts exec vitest run   tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts   -t 'AutoByteus.*(routes tool approval over websocket|interrupts a live AutoByteus pending tool approval|terminates a live AutoByteus pending tool approval)'
+```
+
+Result: `1` file passed; `3` tests passed; `15` skipped. Passed server-side AutoByteus scenarios:
+
+  - `interrupts a live AutoByteus pending tool approval and accepts a follow-up message on the same websocket`
+  - `terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket`
+  - `routes tool approval over websocket and streams the normalized tool lifecycle`
+
+- Team AutoByteus GraphQL/WebSocket E2E:
+
+```bash
+RUN_LMSTUDIO_E2E=1 LMSTUDIO_MODEL_ID='qwen3.6-27b-ud-mlx:lmstudio@127.0.0.1:1234' LMSTUDIO_TARGET_TEXT_MODEL='qwen3.6-27b-ud-mlx' pnpm -C autobyteus-server-ts exec vitest run   tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts
+```
+
+Result: `1` file passed; `4` tests passed; `0` skipped. Passed server-side AutoByteus team scenarios:
+
+  - `creates a real team, approves a tool call, restores it, and continues on the same websocket`
+  - `interrupts a live AutoByteus team pending tool approval and accepts a targeted follow-up message on the same websocket`
+  - `terminates a live AutoByteus team pending tool approval, restores it, and accepts a targeted follow-up message on the same websocket`
+  - `serves team member projection after terminate, restore, and continue`
+
+#### Round 17 Result
+
+Round 17 result: `Pass` for the resumed API/E2E scope. The Round 16 deterministic active failures are resolved, stale ticket/tmp discovery is excluded from default Vitest discovery, focused compaction still works with LM Studio, focused runtime/provider-native/approval behavior remains green, all `autobyteus-ts` unit tests pass, TS/server builds pass, and server-side live AutoByteus single-agent/team GraphQL/WebSocket E2E passes. No production source or repository-resident validation files were changed by API/E2E in this round.
+
+
 
 ## Passed
 
@@ -636,13 +735,9 @@ Commands/checks run and passed in Round 13:
 
 ## Failed
 
-Round 16 broad `autobyteus-ts` all-test sweep failed.
+No blocking Round 17 validation failures.
 
-- Full command: `LMSTUDIO_MODEL_ID='qwen3.6-27b-ud-mlx:lmstudio@127.0.0.1:1234' LMSTUDIO_TARGET_TEXT_MODEL='qwen3.6-27b-ud-mlx' pnpm -C autobyteus-ts exec vitest run`.
-- Result: `28` failed files, `457` passed files, `11` skipped files; `33` failed tests, `1990` passed tests, `33` skipped tests; `2` unhandled MCP `uv` spawn errors.
-- Evidence: `/tmp/round28_autobyteus_ts_all_tests.log`.
-- A focused deterministic rerun still failed `10` files / `13` tests; evidence: `/tmp/round28_autobyteus_ts_deterministic_failures_rerun.log`.
-- Focused compaction tests are **not** failing when run directly with the canonical LM Studio identifier; compaction passed `16` files / `34` tests and passed a follow-up smoke `2` files / `3` tests.
+Round 16 broad `autobyteus-ts` all-test sweep failed before the local fix. Round 17 rechecked and resolved the deterministic active failures and discovery-hygiene issue in the scoped local-fix surface. Provider/live-environment failures from the Round 16 full all-test sweep remain explicitly unclaimed and out of Round 17 scope.
 
 A static command attempt in Round 13 initially used `python`, which is not available on this host; the effective source line audit was rerun successfully with `python3`. This was an environment command selection issue, not an implementation failure.
 
@@ -655,33 +750,35 @@ A static command attempt in Round 13 initially used `python`, which is not avail
 
 ## Blocked
 
-No blocker prevented compaction-focused validation; compaction passed.
+None for the Round 17 scoped API/E2E resume.
 
-The broad all-test sweep includes environment-gated failures (`uv` missing, local media host refused, missing certificate path, live Autobyteus/RPA timeout/500 behavior). Those are classified separately from the deterministic active test failures. The deterministic active test failures are not a validation-environment blocker; they require local fix/triage.
+Provider/live-environment failures from the Round 16 full all-test sweep remain explicitly unclaimed and out of scope for Round 17, not blockers for the deterministic local-fix revalidation.
 
 ## Cleanup Performed
 
 - No repository-resident temporary validation scaffolding was retained.
 - Round 13 used temporary local backend/frontend data under `/tmp/autobyteus-ui-e2e-20260513-121623`; Round 14 used `/tmp/autobyteus-ui-e2e-round26-live-XG7rZZXo`. Round 15 retained only the temporary command log `/tmp/round28_validation.log`; live E2E temporary test directories were handled by existing cleanup hooks. Browser screenshot artifacts from Round 13 were retained under `/Users/normy/.autobyteus/browser-artifacts/` for evidence.
 - Round 16 retained temporary command logs under `/tmp`: `/tmp/round28_compaction_tests.log`, `/tmp/round28_compaction_tests_rerun.log`, `/tmp/round28_compaction_smoke_after_full.log`, `/tmp/round28_autobyteus_ts_all_tests.log`, and `/tmp/round28_autobyteus_ts_deterministic_failures_rerun.log`.
+- Round 17 retained temporary command logs under `/tmp`: `/tmp/round29_deterministic_validation.log`, `/tmp/round29_compaction_runtime_validation.log`, `/tmp/round29_autobyteus_ts_unit_sweep.log`, `/tmp/round29_build_validation.log`, and `/tmp/round29_server_autobyteus_e2e.log`.
 
 ## Classification
 
-- Round 16 focused compaction result: `Pass`.
-- Round 16 user-requested broad `autobyteus-ts` all-test health result: `Fail`.
-- Repository-resident durable validation changed during Round 16 API/E2E: `No`.
-- Classification: `Local Fix / implementation-test triage required` before delivery can claim that all `autobyteus-ts` tests still work. The deterministic active test failures are not solely missing-credential issues.
-- The Round 15 CR-019-specific AutoByteus runtime/WebSocket/provider-native/LM Studio interrupt/terminate/follow-up validation remains passing, but the latest user-requested expanded test gate is not green.
+- Round 17 focused compaction result: `Pass`.
+- Round 17 deterministic broad-discovery/local-fix result: `Pass`.
+- Round 17 broad `autobyteus-ts` unit sweep result: `Pass`.
+- Repository-resident durable validation changed during Round 17 API/E2E: `No`.
+- Classification: `Pass / Ready for delivery`. The Round 16 deterministic active failures are resolved in the reviewed local-fix state. Provider/live-environment failures from the Round 16 full all-test sweep remain explicitly unclaimed and out of scope.
 
 ## Recommended Recipient
 
-`implementation_engineer`
+`delivery_engineer`
 
-Reason: focused compaction E2E passed, but the user-requested broad `autobyteus-ts` sweep failed with deterministic active test failures in addition to environment/live-provider failures. Because no repository-resident durable validation was changed by API/E2E, this is a local implementation/test-triage reroute rather than a validation-code re-review. Delivery should not resume until the deterministic active test failures are fixed or explicitly classified as accepted baseline/out-of-scope by the appropriate owner.
+Reason: API/E2E resumed after Round 29 code review and passed the deterministic fixed subset, default discovery hygiene, focused compaction, focused runtime/provider-native/approval suite, broad unit sweep, TS/server builds, and server-side live AutoByteus single-agent/team GraphQL/WebSocket E2E against commit `32a216a84801`. No repository-resident durable validation was added or updated by API/E2E in Round 17; the test/config changes were already reviewed by code review Round 29. Delivery should refresh against the tracked base, regenerate/supersede stale delivery artifacts, preserve the provider/live-environment out-of-scope classification, and proceed with final handoff checks.
 
 ## Evidence / Notes
 
-- Latest commit validated: `9c57cc16d2e4` (`refactor(agent): rename event inbox processors to handlers`).
+- Latest commit validated: `32a216a84801` (`test(agent): align deterministic broad test expectations`).
+- Round 17 temporary logs: `/tmp/round29_deterministic_validation.log`, `/tmp/round29_compaction_runtime_validation.log`, `/tmp/round29_autobyteus_ts_unit_sweep.log`, `/tmp/round29_build_validation.log`, `/tmp/round29_server_autobyteus_e2e.log`.
 - Round 16 temporary logs: `/tmp/round28_compaction_tests_rerun.log`, `/tmp/round28_compaction_smoke_after_full.log`, `/tmp/round28_autobyteus_ts_all_tests.log`, `/tmp/round28_autobyteus_ts_deterministic_failures_rerun.log`.
 - Prior Round 14 commit validated: `311048639403` (`refactor(agent): replace message inbox with event inbox`).
 - Prior Round 13 commit validated: `39dc00d81258ed74cd31b9affd8c65adb2e4ba28` (`refactor(agent): replace outbox with external notifier`).
@@ -693,5 +790,5 @@ Reason: focused compaction E2E passed, but the user-requested broad `autobyteus-
 ## Latest Authoritative Result
 
 - Result values: `Pass` / `Fail` / `Blocked`
-- Result: `Fail`
-- Notes: Round 16 proves focused compaction E2E/runtime coverage is working with LM Studio when the canonical model identifier is used, but the user-requested broad `autobyteus-ts` all-test sweep is not green. Full sweep result: `28` failed files / `33` failed tests / `2` unhandled MCP `uv` errors. Several failures are environment/live-provider gated, but the deterministic rerun confirmed active test failures that are not only missing-credential issues. Route to `implementation_engineer` for local fix/triage before delivery resumes.
+- Result: `Pass`
+- Notes: Round 17 resumed after Round 29 code review and passed deterministic fixed subset (`9` files / `27` tests), stale ticket/tmp discovery check, focused compaction (`2` files / `3` tests), focused event/runtime/provider-native/approval suite (`12` files / `87` tests), broad `autobyteus-ts` unit sweep (`354` files / `1730` tests), `autobyteus-ts` build, `autobyteus-server-ts build:full`, and server-side live AutoByteus runtime E2E (`3` single-agent tests and `4` team tests). Provider/live-environment failures from the prior full all-test sweep remain unclaimed/out of scope. No repository-resident durable validation changed in API/E2E Round 17; ready for delivery.
