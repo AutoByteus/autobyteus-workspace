@@ -12,11 +12,13 @@
 ## Integrated Branch State
 
 - Bootstrap base: `origin/personal` at `1bed2087bc583add5f07d61a1e7fd61da28a4a2a`
-- Current tracked base checked by delivery: `origin/personal` at `62279949129196ca6b9c5891fd685886256ddbbb`
+- Current tracked base checked by delivery: `origin/personal` at `aed54f77d0fbe10eea8ff67201375337b94ce362`
 - Delivery refresh: `git fetch origin --prune` on `2026-05-13`
-- Current ticket branch HEAD: `39dc00d81258ed74cd31b9affd8c65adb2e4ba28` (`refactor(agent): replace outbox with external notifier`)
-- Ahead/behind after delivery refresh: `ahead 25, behind 0` relative to `origin/personal`
-- Latest-base action in this delivery round: no merge/checkpoint required; current ticket branch already contains the tracked base.
+- Latest implementation commit validated before delivery merge: `39dc00d81258ed74cd31b9affd8c65adb2e4ba28` (`refactor(agent): replace outbox with external notifier`)
+- Delivery safety checkpoint before latest-base merge: `a9f2b5dc700bce2a6094edb45d6fe8552713b57e` (`chore(ticket): checkpoint runtime interrupt round 13 handoff`)
+- Current ticket branch HEAD: `460c402a402f0e02512b933287e62f52297da75b` (`Merge remote-tracking branch 'origin/personal' into codex/runtime-interrupt-functionality`)
+- Ahead/behind after delivery refresh/merge: `ahead 27, behind 0` relative to `origin/personal`
+- Latest-base action in this delivery round: merged `origin/personal`, bringing in the right-panel resizer visibility fix and completed ticket artifacts.
 - Historical merge blocker: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/delivery-merge-blocker-report.md` is superseded context only.
 
 ## Implementation Summary
@@ -52,53 +54,59 @@ The ticket redesigns native AutoByteus interrupt handling, runtime-loop ownershi
 
 - Latest code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/review-report.md`
   - Latest implementation review round: `25`
-  - Decision: `Pass / Ready for API/E2E validation`
+  - Decision: `Pass`
   - Scope: fresh deep review of `AgentOutbox` removal and direct `AgentExternalEventNotifier` publication boundary.
 - Latest API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/api-e2e-validation-report.md`
-  - Latest authoritative validation round: `12`
+  - Latest authoritative validation round: `13`
   - Result: `Pass / Ready for delivery`
-  - Repository-resident durable validation added or updated in Round 12: `No`
-  - Code-review reroute after Round 12: `Not required`; prior API/E2E durable validation was accepted by Code Review Rounds 22-24.
+  - Repository-resident durable validation added or updated in Round 13: `No`
+  - Production source changed in Round 13: `No`
+  - Code-review reroute after Round 13: `Not required`.
 
-Round 12 API/E2E accepted evidence:
+Round 13 browser/frontend accepted evidence:
 
-- TS notifier/runtime/provider suite passed: `5` files / `30` tests.
-- Server stream/WebSocket/team suite passed: `8` files / `75` tests.
-- Web stream/projection/store suite passed: `6` files / `73` tests.
-- Live single-agent AutoByteus LM Studio GraphQL/WebSocket E2E passed: `3` tests with `RUN_LMSTUDIO_E2E=1 LMSTUDIO_MODEL_ID=qwen3.6-27b-ud-mlx`.
-- Live AutoByteus team LM Studio GraphQL/WebSocket E2E full file passed: `4` tests / `0` skipped.
-- Static hygiene passed: no `AgentOutbox|agent/outbox`, no changed-scope `outbox\b`, no low-level `.emit(...)` in loop/pipelines, and `git diff --check HEAD` passed.
-- Builds/prep passed: `pnpm -C autobyteus-ts run build`, `pnpm -C autobyteus-server-ts run build:full`, and `pnpm -C autobyteus-web exec nuxi prepare`.
+- Backend from README path on `http://127.0.0.1:18080` with clean SQLite data dir `/tmp/autobyteus-ui-e2e-20260513-121623/data`.
+- Nuxt frontend from README path on `http://127.0.0.1:13000` with local backend/agent-WS/team-WS endpoints.
+- Seed script: `python3 scripts/seed-personal-test-fixtures.py --graphql-url http://127.0.0.1:18080/graphql --wait-retries 10 --wait-delay 1`.
+- Real AutoByteus runtime with LM Studio model `qwen3.6-27b-ud-mlx:lmstudio@127.0.0.1:1234`.
+- Single-agent browser validation passed for in-flight `Stop generation`, pending-approval `Stop generation`, post-interrupt follow-ups, terminal `interrupted` / `user_interrupt`, and target-file absence.
+- Single-agent stop validation passed for visible `Terminate run` on a pending-tool run to `shutdown_complete`, target file absent.
+- Team browser validation passed for focused-member `Stop generation`, follow-up after interrupt, and `Terminate team` to `shutdown_complete` / member Offline.
+- Browser screenshots retained:
+  - `/Users/normy/.autobyteus/browser-artifacts/7b3309-1778669159559.png`
+  - `/Users/normy/.autobyteus/browser-artifacts/7b3309-1778669334741.png`
 
 Cumulative accepted evidence also includes:
 
+- Round 12 notifier/runtime/provider, server stream/WebSocket/team, web stream/projection/store, live single-agent LM Studio, and full live team LM Studio evidence.
 - Round 11 real AutoByteus single-agent/team live LM Studio interrupt/terminate/follow-up validation.
 - Round 10 provider-native continuation, server/WebSocket, web projection, Claude fake-SDK, and no-stop-fallback validation.
 - Prior validation for CR-001 through CR-018 guardrails.
 
 ## Delivery Latest-Base / Integrated-State Checks
 
-Delivery checks after `git fetch origin --prune` on `2026-05-13`:
+Delivery checks after `git fetch origin --prune` and `git merge --no-edit origin/personal` on `2026-05-13`:
 
-- `origin/personal` remained `62279949129196ca6b9c5891fd685886256ddbbb`.
-- Ticket branch remained `ahead 25, behind 0`; no new base merge/checkpoint was needed.
-- `git diff --check HEAD` passed.
-- Conflict marker scan across reviewed source/docs/ticket paths passed.
-- `AgentOutbox|agent/outbox` scan in `autobyteus-ts/src` and `autobyteus-ts/tests` found no matches.
-- Changed-scope `outbox` token scan across agent loop/pipeline/context/events/test surfaces found no matches.
-- Low-level `.emit(...)` scan in `autobyteus-ts/src/agent/loop` and `autobyteus-ts/src/agent/pipelines` found no matches.
-- Active/update-file stop-generation scan found no matches.
+- `origin/personal` checked at `aed54f77d0fbe10eea8ff67201375337b94ce362`.
+- Delivery created safety checkpoint `a9f2b5dc700bce2a6094edb45d6fe8552713b57e` before merging over reviewed/validated docs/report edits.
+- Merge commit `460c402a402f0e02512b933287e62f52297da75b` completed without conflicts.
+- Ticket branch is `ahead 27, behind 0` relative to `origin/personal`.
+- `git diff --check` and `git diff --check origin/personal` passed after delivery fixed one trailing-whitespace line in `agent_runtime_loop_and_interrupt.md`.
+- Exact conflict marker scan across reviewed source/docs/ticket paths passed.
+- Active runtime/source scan found no `STOP_GENERATION`, `stop_generation`, `stop generation`, `stopGeneration`, `AgentOutbox`, or `agent/outbox` matches.
+- Latest-base frontend layout tests passed: `pnpm -C autobyteus-web exec vitest run components/layout/__tests__/WorkspaceDesktopLayout.spec.ts composables/__tests__/useRightPanel.spec.ts layouts/__tests__/default.spec.ts` (`3` files / `15` tests).
+- `pnpm -C autobyteus-web exec nuxi prepare` passed.
 - `pnpm -C autobyteus-ts run build` passed.
 - `pnpm -C autobyteus-server-ts run build:full` passed.
-- `pnpm -C autobyteus-web exec nuxi prepare` passed.
 
 ## Docs Sync
 
 - Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/docs-sync-report.md`
 - Result: `Pass / Updated`
-- Round 12 long-lived doc impact: updated TypeScript runtime docs that still named `AgentOutbox` so they now describe `AgentExternalEventNotifier` as the direct semantic external-observable boundary.
+- Round 13 long-lived doc impact: no additional product-doc change required; Round 13 changed validation evidence only.
+- Prior Round 12 long-lived doc impact remains present: TypeScript runtime docs were updated to replace obsolete `AgentOutbox` wording with `AgentExternalEventNotifier` as the direct semantic external-observable boundary.
 
-Docs updated in this delivery pass:
+Docs updated/retained in this delivery pass:
 
 - `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md`
 - `autobyteus-ts/docs/event_driven_core_design.md`
@@ -112,14 +120,15 @@ Docs updated in this delivery pass:
 
 ## Residual Risks / Out-of-Scope Validation
 
-- Live LM Studio tests are gated by local LM Studio/model availability (`RUN_LMSTUDIO_E2E=1`, `LMSTUDIO_MODEL_ID=qwen3.6-27b-ud-mlx`). API/E2E Round 12 ran the single-agent and full team live paths successfully.
-- Live paid-provider cancellation across every provider remains out of scope; targeted local/client, provider-facing, fake-SDK, and live LM Studio validation covered the implemented paths.
+- Live LM Studio tests are gated by local LM Studio/model availability (`RUN_LMSTUDIO_E2E=1`, `LMSTUDIO_MODEL_ID=qwen3.6-27b-ud-mlx`). API/E2E Rounds 11-13 successfully exercised the relevant local live paths.
+- Round 13 real browser validation covered targeted single-agent/team interrupt and terminate flows. Broader full-browser/Nuxt/Electron matrix coverage remains outside this delivery gate unless requested separately.
+- Non-blocking Round 13 observation: on one first-message/new-run path, the UI did not expose `Stop generation` while at pending tool approval after temporary-run promotion; the same pending-approval interrupt path passed on an existing browser run.
+- Non-blocking Round 13 observation: backend logs had transient `Failed reading run metadata ... Unexpected end of JSON input` during browser navigation/reconnection; UI WebSocket reconnection and follow-up succeeded.
+- Live paid-provider cancellation across every provider remains out of scope; targeted local/client, provider-facing, fake-SDK, live LM Studio, and browser validation covered the implemented paths.
 - Live Claude SDK E2E remains gated/skipped unless `RUN_CLAUDE_E2E` is enabled; fake-SDK Claude E2E passed in prior evidence.
-- Full browser/Nuxt/Electron E2E remains out of scope; validation used focused web suites plus `nuxi prepare`.
 - A WebSocket client command for external tool-result submission is not in the reviewed protocol; native public/runtime result submission was validated instead.
 - Broad package `tsc --noEmit` issues remain documented baseline limitations; build commands and focused validation passed.
 - Exploratory Codex approval-policy behavior from earlier API/E2E remains out of scope for this native AutoByteus approval-spine/runtime ticket.
-- The live Round 11/12 tests cover pending-approval interrupt/terminate seams; deterministic lower-level tests remain the source for non-approval free-text in-flight cancellation cases.
 
 ## Cumulative Artifact Package
 
@@ -138,6 +147,8 @@ Docs updated in this delivery pass:
 - Round 11 live single-agent E2E validation file: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts`
 - Round 11/12 live team E2E validation file: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts`
 - Round 10 Claude E2E validation file: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts`
+- Round 13 browser screenshot: `/Users/normy/.autobyteus/browser-artifacts/7b3309-1778669159559.png`
+- Round 13 browser screenshot: `/Users/normy/.autobyteus/browser-artifacts/7b3309-1778669334741.png`
 
 ## Pending Finalization Steps After User Verification
 

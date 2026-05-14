@@ -5,12 +5,11 @@
 - Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/requirements.md`
 - Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/investigation-notes.md`
 - Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/design-spec.md`
-- Optional Visualization Reviewed As Non-Authoritative Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/turn-tool-input-port-explainer.html`
-- Current Review Round: 12
-- Trigger: Fresh review after consumer-event parity addendum: `AgentExternalEventNotifier` is the external-observable projection boundary for facts produced inside the agent, including inter-agent/system-task communication facts; CDF-010A / DS-010 and frontend interrupt event/status contract were added.
-- Prior Review Round Reviewed: Round 11 approved replacing `AgentOutbox` with `AgentExternalEventNotifier` as the outbound observable-event boundary. Round 12 rechecks that this removal does not break current inter-agent/system-task consumers.
-- Latest Authoritative Round: 12
-- Current-State Evidence Basis: Shared design principles reloaded; updated requirements, investigation notes, and design spec re-read. Reviewed UC-008, FR-004E/FR-004E1, AC-004E/AC-004E1, strengthened AC-010, CDF-001 through CDF-012 plus CDF-010A, DS-001 through DS-010, External Event Notifier Model, frontend interrupt command/event contract, component contracts, dependency rules, file mapping, invariants, message routing, and final safety gates. Spot-checked current code paths for `AgentInputPipeline` outbox calls, notifier methods, `AgentEventStream` mappings, server event conversions, and web team/system notification handlers.
+- Current Review Round: 13
+- Trigger: Fresh architecture review after event-centric rework. The target changed from `AgentMessageInbox` / domain message wrappers to typed runtime events plus `AgentEventInboxEntry` queue metadata, with `AgentEventScheduler` and typed `AgentEventProcessor`s.
+- Prior Review Round Reviewed: Round 12 approved the prior message-inbox design plus consumer-event parity. Round 13 supersedes the inbound model while retaining runner/phase/port/scope/notifier conclusions.
+- Latest Authoritative Round: 13
+- Current-State Evidence Basis: Shared design principles reloaded; requirements, investigation notes, design spec, current `agent-events.ts`, and current first-stage message-inbox files were inspected. Review focused on CDF-001 through CDF-012 plus CDF-010A, DS-001 through DS-010, approval/result routing, frontend stream feedback, inter-agent/team communication projections, final file mapping, boundary/ownership rules, and remaining `AgentMessageInbox` / wrapper references.
 
 ## Round History
 
@@ -19,58 +18,68 @@
 | 1-6 | Earlier iterative reviews/addenda | Earlier blocker set resolved by Round 6 | N/A | Prior result was Pass | No | Superseded by later independent reviews. |
 | 7 | Fresh independent architecture review | Rechecked design from first principles | AR-B-005 | Fail / NEEDS DESIGN REWORK | No | Approval routing into active turn input was incomplete. |
 | 8 | AR-B-005 rework review | AR-B-005 and previous blocker classes | None | Pass / APPROVED FOR IMPLEMENTATION | No | Approval route completed for the first-stage model. |
-| 9 | Fresh independent review of second-stage inbox/scheduler/TurnToolInputPort refinement | Rechecked all prior blockers and new unified inbox model | None blocking | Pass / APPROVED FOR IMPLEMENTATION | No | Approved final-state message-inbox architecture. |
+| 9 | Fresh independent review of second-stage inbox/scheduler/TurnToolInputPort refinement | Rechecked all prior blockers and new unified inbox model | None blocking | Pass / APPROVED FOR IMPLEMENTATION | No | Approved the then-current message-inbox architecture. |
 | 10 | Phase naming symmetry addendum | Rechecked CDF/DS spines, target mappings, and old-handler/middle-state blockers | None blocking | Pass / APPROVED FOR IMPLEMENTATION | No | `LlmPhase` / `ToolPhase` final naming approved. |
 | 11 | External observable-event boundary correction | Rechecked outbound model plus all spines/boundaries | None blocking | Pass / APPROVED FOR IMPLEMENTATION | No | `AgentExternalEventNotifier` replaced `AgentOutbox` as final outbound boundary. |
-| 12 | Consumer-event parity addendum | Rechecked outbound removal against inter-agent/system-task consumers and frontend interrupt behavior | None blocking | **Pass / APPROVED FOR IMPLEMENTATION** | Yes | CDF-010A / DS-010 and AC-004E1 close the consumer-preservation risk. |
+| 12 | Consumer-event parity addendum | Rechecked outbound removal against inter-agent/system-task consumers and frontend interrupt behavior | None blocking | Pass / APPROVED FOR IMPLEMENTATION | No | CDF-010A / DS-010 and AC-004E1 closed consumer-preservation risk. |
+| 13 | Event-centric inbound rework | Rechecked all prior blocker classes and wrapper-removal target | None blocking | **Pass / APPROVED FOR IMPLEMENTATION** | Yes | Event-centric `AgentEventInbox` / `AgentEventScheduler` / `AgentEventProcessor` design is approved. |
 
 ## Reviewed Design Spec
 
-Latest authoritative target architecture:
+The latest design makes the runtime inbound side event-centric:
 
 ```text
-Internal inbound/control:
-AgentMessageInbox -> AgentWorker inbox loop -> AgentMessageScheduler -> thin typed AgentMessageHandler -> domain owner / pipeline
-
-Turn-local flow:
-AgentTurnRunner -> AgentInputPipeline -> LlmPhase -> ToolPhase -> ToolResultPipeline -> ToolResultContinuationBuilder -> AgentInputPipeline(SenderType.TOOL) -> LLMResponsePipeline
-
-Active-turn tool input:
-AgentMessageInbox active-turn lane -> AgentMessageScheduler -> ToolApprovalMessageHandler / ToolResultMessageHandler -> AgentRuntimeState validation -> TurnToolInputPort -> ToolPhase wait resumes
-
-Interrupt:
-AgentUserInputTextArea -> interruptGeneration store/service path -> WebSocket INTERRUPT_GENERATION -> server activeRun.interrupt(...) -> native Agent/Team interrupt -> AgentRuntime.interrupt() side-band -> active AgentTurn.executionScope -> LlmPhase/ToolPhase aborts or abandons -> AgentTurnRunner settles interrupted
-
-External-observable projection:
-phase/pipeline/runtime fact -> AgentExternalEventNotifier.notify... -> EventEmitter/EventManager infrastructure -> AgentEventStream -> server/team processors -> WebSocket/frontend/CLI/history consumers
+Typed runtime event
+  -> AgentEventInboxEntry { entryId, lane, event, awaitable? }
+  -> AgentWorker inbox loop
+  -> AgentEventScheduler
+  -> typed AgentEventProcessor
+  -> AgentTurnRunner / runtime lifecycle / TurnToolInputPort
 ```
 
-The addendum correctly clarifies that **external** in `AgentExternalEventNotifier` means external to the internal control loop, not externally originated. Inter-agent and system-task notifications are internal agent facts but external-observable projections. Removing `AgentOutbox` is therefore valid only if every current consumer-visible publication is replaced by direct semantic `AgentExternalEventNotifier` calls.
+The canonical domain object is the typed event (`UserMessageReceivedEvent`, `InterAgentMessageReceivedEvent`, `LifecycleEvent`, `ToolExecutionApprovalEvent`, `ToolResultEvent`). `AgentEventInboxEntry` is only delivery metadata. The target explicitly rejects `AgentMessageInbox`, `AgentInboxMessage`, `UserInboxMessage`, `ToolApprovalInputMessage`, `ToolResultInputMessage`, and equivalent domain-message wrappers.
+
+The rest of the approved architecture remains intact:
+
+```text
+AgentTurnRunner -> AgentInputPipeline -> LlmPhase -> ToolPhase
+  -> ToolResultPipeline -> ToolResultContinuationBuilder
+  -> AgentInputPipeline(SenderType.TOOL) -> LLMResponsePipeline
+
+interrupt -> AgentRuntime.interrupt() side-band
+  -> active AgentTurn.executionScope
+  -> LlmPhase/ToolPhase aborts or abandons
+  -> AgentTurnRunner settles interrupted
+
+observable facts -> AgentExternalEventNotifier.notify...
+  -> EventEmitter/EventManager infrastructure
+  -> AgentEventStream -> server/team processors -> WebSocket/frontend consumers
+```
 
 ## Task Design Health Assessment Verdict
 
 | Assessment Area | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Assessment is present for the current task posture | Pass | Requirements classify the work as large behavior change/refactor and add UC-008 for consumer compatibility. | None. |
-| Root-cause classification is explicit and evidence-backed | Pass | Artifacts identify boundary/ownership issues: stop-vs-interrupt, old handler choreography, duplicate outbox wrapper, and consumer-visible event dependency. | None. |
-| Refactor needed now decision is explicit | Pass | Design requires clean-cut final architecture: `AgentMessageInbox`, scheduler, thin handlers, runner/phases/pipelines, `TurnToolInputPort`, `TurnExecutionScope`, and `AgentExternalEventNotifier`; no `AgentOutbox`. | None. |
-| Refactor decision is supported by concrete sections | Pass | CDF/DS spines, External Event Notifier Model, contracts, dependency rules, file mappings, and safety gates align with the final-state refactor. | None. |
+| Assessment is present for the current task posture | Pass | Requirements classify the work as a large behavior change/refactor and explicitly cite the event-wrapper problem. | None. |
+| Root-cause classification is explicit and evidence-backed | Pass | Investigation notes show current first-stage `AgentMessageInbox` wrappers duplicate canonical events already consumed by runner/pipeline code. | None. |
+| Refactor needed now decision is explicit | Pass | The final target requires `AgentEventInbox`, `AgentEventScheduler`, typed `AgentEventProcessor`s, direct runner/phases/pipelines, `TurnToolInputPort`, `TurnExecutionScope`, and `AgentExternalEventNotifier`. | None. |
+| Refactor decision is supported by concrete sections | Pass | CDF/DS spines, contracts, boundary rules, invariants, routing table, file mapping, and work-package gates all describe the event-centric final architecture. | None. |
 
 ## Prior Findings Resolution Check
 
 | Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| 4 | AR-B-001 through AR-B-004 | Blocking | Resolved | Final design still rejects temporary adapters, duplicate turn-control owners, and old queue-handler LLM/tool choreography. | Not reopened. |
-| 7 | AR-B-005 | Blocking | Resolved | CDF-009 / DS-008 route approvals through server/native/runtime -> inbox -> scheduler/handler/state -> `TurnToolInputPort`. | Not reopened. |
-| 9 | Runner task / result-shape advisories | Non-blocking | Still advisory | Addendum does not change runner-task supervision or external async-result acknowledgement risk. | Carry forward. |
-| 11 | Outbound boundary risk after removing `AgentOutbox` | Non-blocking risk | Strengthened / resolved | CDF-010A, DS-010, FR-004E1, AC-004E1, and frontend test evidence explicitly preserve inter-agent/system-task consumer event families. | No blocker remains. |
+| 4 | AR-B-001 through AR-B-004 | Blocking | Resolved | Final design still rejects temporary adapters, duplicate turn-control owners, and old event-handler LLM/tool choreography. | Not reopened. |
+| 7 | AR-B-005 | Blocking | Resolved | Approval route is complete through `AgentRuntime.postToolApprovalEvent -> AgentEventInbox -> AgentEventScheduler -> ToolApprovalEventProcessor -> AgentRuntimeState -> TurnToolInputPort`. | Not reopened. |
+| 11-12 | Outbound boundary / consumer parity risk | Non-blocking risk | Resolved | `AgentExternalEventNotifier` remains the boundary, `AgentOutbox` is removed, and CDF-010A / DS-010 preserve inter-agent/system-task consumers. | Not reopened. |
+| 12 | Message-wrapper target | Previously approved but challenged | Superseded by better design | Final target now rejects the wrapper domain model and keeps typed events canonical. | Event-centric model is cleaner. |
 
 ## Spine Inventory Verdict
 
 | Spine ID | Scope | Spine Is Readable? | Narrative Is Clear? | Facade Vs Governing Owner Is Clear? | Main Domain Subject Naming Is Clear? | Ownership Is Clear? | Off-Spine Concerns Stay Off Main Line? | Verdict |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | CDF-001 | Runtime bootstrap | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| CDF-002 | External trigger to turn | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| CDF-002 | External event to turn | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | CDF-003 | Input processing to LLM leg | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 | CDF-004 | LLM phase | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | CDF-005 | Final response/output | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
@@ -85,26 +94,26 @@ The addendum correctly clarifies that **external** in `AgentExternalEventNotifie
 
 ### Spine Review Notes
 
-- CDF-010A is the right missing return/event spine. It stretches from accepted inter-agent/system input through LLM-input conversion, semantic notifier publication, event stream conversion, server/team enrichment, derived `TEAM_COMMUNICATION_MESSAGE`, and frontend conversation/store consumers.
-- CDF-010A is correctly classified as an external-observable projection, not an internal turn-control path. It preserves consumer behavior without reintroducing `AgentOutbox` as a second publisher boundary.
-- CDF-008 remains side-band and not blocked behind inbox scheduling.
-- CDF-009 and CDF-012 remain active-turn message spines and cannot start a turn or bypass runtime-state validation.
-- CDF-007 still routes tool results through `ToolResultPipeline` and `AgentInputPipeline(SenderType.TOOL)` before the next LLM leg.
+- CDF-002 is correctly stretched from typed event submission through inbox entry, scheduler, `TurnStartEventProcessor`, active turn creation, and runner start.
+- CDF-008 remains side-band runtime control and cannot be delayed behind inbox scheduling.
+- CDF-009 and CDF-012 are complete active-turn event paths; both validate through scheduler/processor/runtime state before `TurnToolInputPort` delivery.
+- CDF-007 preserves the existing behavior: tool results go through `ToolResultPipeline -> ToolResultContinuationBuilder -> AgentInputPipeline(SenderType.TOOL)` before the next LLM leg.
+- CDF-010/CDF-010A remain external-observable projection spines only; they do not advance internal turn control.
 
 ## DS Spine Inventory Verdict
 
 | Spine ID | Scope Classification | Classification Is Sound? | Start/End Complete? | Governing Owner Clear? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| DS-001 | Primary End-to-End | Pass | Pass | Pass | Pass | Native single-agent interrupt remains complete. |
-| DS-002 | Primary End-to-End | Pass | Pass | Pass | Pass | LLM interruption remains under runner/scope/BaseLLM boundaries. |
-| DS-003 | Primary End-to-End | Pass | Pass | Pass | Pass | Tool interruption remains under runner/scope/BaseTool/port boundaries. |
+| DS-001 | Primary End-to-End | Pass | Pass | Pass | Pass | Native single-agent interrupt path remains complete. |
+| DS-002 | Primary End-to-End | Pass | Pass | Pass | Pass | LLM cancellation is under runner/scope/BaseLLM boundaries. |
+| DS-003 | Primary End-to-End | Pass | Pass | Pass | Pass | Tool cancellation and suppressed continuation are explicit. |
 | DS-004 | Primary End-to-End | Pass | Pass | Pass | Pass | Team interrupt remains non-shutdown propagation. |
-| DS-005 | Return-Event | Pass | Pass | Pass | Pass | Frontend interrupt/status return path is now explicit enough for `isSending` behavior. |
-| DS-006 | Bounded Local | Pass | Pass | Pass | Pass | Worker loop remains scheduler/lifecycle, not turn loop. |
-| DS-007 | Bounded Local | Pass | Pass | Pass | Pass | Tool-batch fencing and port closure remain explicit. |
-| DS-008 | Primary End-to-End | Pass | Pass | Pass | Pass | Approval route remains complete. |
-| DS-009 | Primary End-to-End | Pass | Pass | Pass | Pass | External/async tool-result route remains complete. |
-| DS-010 | Return-Event | Pass | Pass | Pass | Pass | Preserves inter-agent/system-task frontend/team communication projections after `AgentOutbox` removal. |
+| DS-005 | Return-Event | Pass | Pass | Pass | Pass | Frontend interrupted/idle feedback path is preserved. |
+| DS-006 | Bounded Local | Pass | Pass | Pass | Pass | Worker remains inbox loop; runner/scope own turn operations. |
+| DS-007 | Bounded Local | Pass | Pass | Pass | Pass | Tool-batch fencing and port closure are explicit. |
+| DS-008 | Primary End-to-End | Pass | Pass | Pass | Pass | Approval route uses canonical `ToolExecutionApprovalEvent`. |
+| DS-009 | Primary End-to-End | Pass | Pass | Pass | Pass | External/async result route uses canonical `ToolResultEvent`. |
+| DS-010 | Return-Event | Pass | Pass | Pass | Pass | Inter-agent/system projection is complete in inventory and External Event Notifier section; add row to mandatory narrative table as cleanup. |
 
 ## Use-Case Coverage Verdict
 
@@ -117,147 +126,150 @@ The addendum correctly clarifies that **external** in `AgentExternalEventNotifie
 | UC-005 shared server/UI command consistency | Pass | Frontend command contract, FR-011/014, AC-010. |
 | UC-006 provider/tool cancellation participation | Pass | Turn scope + BaseLLM/BaseTool boundaries, FR-009/010, AC-011/012. |
 | UC-007 bootstrap/shutdown separate from interrupt | Pass | CDF-001/011, FR-008A/008B, AC-006A/006B. |
-| UC-008 existing frontend/server consumer compatibility | Pass | CDF-010A/DS-010, FR-004E1, AC-004E1, investigation evidence and focused 61-test web run. |
+| UC-008 existing frontend/server consumer compatibility | Pass | CDF-010A/DS-010, FR-004E1, AC-004E1. |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
 | Subsystem / Capability Area | Ownership Allocation Is Clear? | Reuse / Extend / Create-New Decision Is Sound? | Supports The Right Spine Owners? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Agent runtime control | Pass | Pass | Pass | Pass | Public lifecycle/control owner remains `AgentRuntime`. |
-| Agent message inbox | Pass | Pass | Pass | Pass | One semantic inbound boundary; queue storage remains private. |
-| Agent message scheduler | Pass | Pass | Pass | Pass | Dispatchability and handler selection separated from inbox and worker. |
-| Thin typed message handlers | Pass | Pass | Pass | Pass | Entry handlers only; no LLM/tool phase chain. |
+| Agent event inbox | Pass | Pass | Pass | Pass | New semantic event boundary above private queue storage. |
+| Agent event scheduler | Pass | Pass | Pass | Pass | Dispatchability and processor selection are explicit. |
+| Typed event processors | Pass | Pass | Pass | Pass | Entry processors only; no LLM/tool phase chain. |
 | Agent turn runner | Pass | Pass | Pass | Pass | Finite turn loop owner remains explicit. |
 | `LlmPhase` / `ToolPhase` | Pass | Pass | Pass | Pass | Direct phase services under runner. |
 | `TurnToolInputPort` | Pass | Pass | Pass | Pass | Internal tool wait/wake boundary. |
 | `TurnExecutionScope` | Pass | Pass | Pass | Pass | Turn-scoped cancellation/fencing owner. |
-| `AgentExternalEventNotifier` | Pass | Pass | Pass | Pass | Correct single external-observable projection boundary; preserving inter-agent/system-task methods is explicitly required. |
-| Event stream/server/team/frontend projections | Pass | Pass | Pass | Pass | Consumers/converters only; they do not drive turn control flow. |
+| `AgentExternalEventNotifier` | Pass | Pass | Pass | Pass | External-observable projection boundary; no `AgentOutbox`. |
+| Event stream/server/team/frontend projections | Pass | Pass | Pass | Pass | Consumers/converters only; no turn control. |
 
 ## Reusable Owned Structures Verdict
 
 | Repeated Structure / Logic | Extraction Need Was Evaluated? | Shared File Choice Is Sound? | Ownership Of Shared Structure Is Clear? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| External observable publication | Pass | Pass | Pass | Pass | Reuse/extend `AgentExternalEventNotifier`; removing `AgentOutbox` avoids empty indirection. |
-| Inter-agent/system-task projection | Pass | Pass | Pass | Pass | CDF-010A keeps observable projection attached to `AgentInputPipeline` conversion and notifier publication. |
-| Frontend interrupt feedback | Pass | Pass | Pass | Pass | Existing service/store/handler contracts are preserved; no optimistic clearing. |
-| Processor pipelines | Pass | Pass | Pass | Pass | Typed and domain-specific; not replaced by generic untyped pipeline. |
-| Abortable operation support | Pass | Pass | Pass | Pass | Shared under turn scope/interruption utilities; provider/tool details stay below BaseLLM/BaseTool. |
+| Inbound event queue metadata | Pass | Pass | Pass | Pass | `AgentEventInboxEntry` is a tight envelope around a canonical event, not a domain wrapper. |
+| Event dispatchability policy | Pass | Pass | Pass | Pass | `AgentEventScheduler` owns routing and wakeup. |
+| Event-family entry processing | Pass | Pass | Pass | Pass | `AgentEventProcessor`s are thin and bounded. |
+| Processor pipelines | Pass | Pass | Pass | Pass | Domain processor pipelines remain separate from event processors. |
+| External observable publication | Pass | Pass | Pass | Pass | Reuse/extend `AgentExternalEventNotifier`; remove `AgentOutbox`. |
+| Abortable operation support | Pass | Pass | Pass | Pass | Shared under turn scope/interruption utilities. |
 
 ## Shared Structure / Data Model Tightness Verdict
 
 | Shared Structure / Type / Schema | One Clear Meaning Per Field? | Redundant Attributes Removed? | Overlapping Representation Risk Is Controlled? | Shared Core Vs Specialized Variant / Composition Decision Is Sound? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| `AgentInboxMessage` union | Pass | Pass | Pass | Pass | Pass | Internal message shapes remain distinct from external event payloads. |
-| `ToolApprovalInputMessage` / result shape | Pass | Pass | Pass | Pass | Pass | Explicit identity and classified outcomes. |
-| `ToolResultInputMessage` / async result shape | Pass | Pass | Pass | Pass | Pass | Active-turn identity and stale fencing remain explicit. |
-| `INTER_AGENT_MESSAGE` payload | Pass | Pass | Pass | Pass | Pass | Required fields and optional routing/reference fields are listed. |
-| `TEAM_COMMUNICATION_MESSAGE` payload | Pass | Pass | Pass | Pass | Pass | Derived normalized camel-case frontend/store payload is specified. |
-| `SYSTEM_TASK_NOTIFICATION` payload | Pass | Pass | Pass | Pass | Pass | Required `sender_id` and `content` plus routing fields are specified. |
-| Interrupt frontend event payloads | Pass | Pass | Pass | Pass | Pass | `TURN_INTERRUPTED`, optional `TOOL_EXECUTION_INTERRUPTED`, and idle status feedback are specified. |
+| `AgentEventInboxEntry` | Pass | Pass | Pass | Pass | Pass | Fields are queue metadata only: entry ID, lane, canonical event, awaitable completion. |
+| Typed runtime events | Pass | Pass | Pass | Pass | Pass | Existing events remain canonical domain payloads. |
+| `ToolExecutionApprovalEvent` | Pass | Pass | Pass | Pass | Pass | Approval identity and decision are explicit. |
+| `ToolResultEvent` | Pass | Pass | Pass | Pass | Pass | Optional turn/invocation fields are validated before active-turn delivery. |
+| `INTER_AGENT_MESSAGE` / `TEAM_COMMUNICATION_MESSAGE` / `SYSTEM_TASK_NOTIFICATION` payloads | Pass | Pass | Pass | Pass | Pass | Consumer payload compatibility remains documented. |
+| Interrupt frontend event payloads | Pass | Pass | Pass | Pass | Pass | `TURN_INTERRUPTED`, optional `TOOL_EXECUTION_INTERRUPTED`, and idle feedback are specified. |
 
 ## Removal / Decommission Completeness Verdict
 
 | Item / Area | Redundant / Obsolete Piece To Remove Is Named? | Replacement Owner / Structure Is Clear? | Removal / Decommission Scope Is Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `AgentOutbox` / `agent/outbox` wrapper | Pass | Pass | Pass | Pass | Replacement is direct semantic `AgentExternalEventNotifier` calls; consumer event families must remain. |
+| `AgentMessageInbox` / message-wrapper domain model | Pass | Pass | Pass | Pass | Replaced by `AgentEventInbox` + `AgentEventInboxEntry` with canonical typed events. |
+| `UserInboxMessage`, `ToolApprovalInputMessage`, `ToolResultInputMessage` equivalents | Pass | Pass | Pass | Pass | Rejected as target domain wrappers. |
+| `AgentOutbox` / `agent/outbox` wrapper | Pass | Pass | Pass | Pass | Direct semantic notifier calls replace forwarding. |
 | Low-level `EventEmitter.emit(...)` / `EventManager.emit(...)` by domain code | Pass | Pass | Pass | Pass | Domain code must call notifier methods. |
-| Old WorkerEventDispatcher turn loop | Pass | Pass | Pass | Pass | Replacement is runner/phase/pipeline direct flow. |
-| Old turn-advancing `agent/handlers/*` | Pass | Pass | Pass | Pass | Final handler model removes them from normal turn control. |
-| Native interrupt-to-stop fallback | Pass | Pass | Pass | Pass | Replacement is native interrupt. |
-| Dual `STOP_GENERATION` / `INTERRUPT_GENERATION` path | Pass | Pass | Pass | Pass | Design keeps only interrupt naming in app-owned protocol. |
+| Old WorkerEventDispatcher turn loop | Pass | Pass | Pass | Pass | Replaced by runner/phase/pipeline direct flow. |
+| Old turn-advancing `agent/handlers/*` | Pass | Pass | Pass | Pass | Final processors do not recreate the handler chain. |
+| Native interrupt-to-stop fallback | Pass | Pass | Pass | Pass | Replaced by native interrupt. |
+| Dual `STOP_GENERATION` / `INTERRUPT_GENERATION` path | Pass | Pass | Pass | Pass | Single interrupt command retained. |
 
 ## File Responsibility Mapping Verdict
 
 | File / Area | Responsibility Is Singular And Clear? | Responsibility Matches Intended Owner/Boundary? | Responsibilities Were Re-Tightened After Shared-Structure Extraction? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `autobyteus-ts/src/agent/events/notifiers.ts` | Pass | Pass | Pass | Pass | Existing boundary owns semantic notify methods including inter-agent/system-task and interruption methods. |
-| `autobyteus-ts/src/agent/pipelines/agent-input-pipeline.ts` | Pass | Pass | Pass | Pass | Converts user/inter-agent/system/TOOL input for LLM use and may publish the inter-agent/system external projection via notifier. |
-| `autobyteus-ts/src/agent/streaming/` | Pass | Pass | Pass | Pass | Event stream projection/subscription only. |
-| `autobyteus-server-ts` stream converters/processors | Pass | Pass | Pass | Pass | Server maps/enriches notifier events; does not own agent control flow. |
-| `autobyteus-web/services/agentStreaming/*` and stores | Pass | Pass | Pass | Pass | Sends interrupt command and renders stream feedback; does not mutate runtime internals. |
-| `autobyteus-ts/src/agent/message-inbox/*` | Pass | Pass | Pass | Pass | Unified inbound message boundary and scheduling components. |
+| `autobyteus-ts/src/agent/event-inbox/agent-event-inbox.ts` | Pass | Pass | Pass | Pass | Semantic lane/inbox boundary above storage. |
+| `autobyteus-ts/src/agent/event-inbox/inbox-queue-store.ts` | Pass | Pass | Pass | Pass | Private async queue/availability storage only. |
+| `autobyteus-ts/src/agent/event-inbox/agent-event-scheduler.ts` | Pass | Pass | Pass | Pass | Dispatchability and processor selection owner. |
+| `autobyteus-ts/src/agent/event-inbox/processors/` | Pass | Pass | Pass | Pass | Entry processors, not old handler-chain phase owners. |
 | `autobyteus-ts/src/agent/loop/*` | Pass | Pass | Pass | Pass | Runner/phases/port/continuation own finite turn flow. |
-| Removed `autobyteus-ts/src/agent/outbox/` | Pass | Pass | Pass | Pass | Removal is correct if all former forwarding calls are replaced with semantic notifier calls. |
+| `autobyteus-ts/src/agent/pipelines/*` | Pass | Pass | Pass | Pass | Typed domain processor orchestration. |
+| `autobyteus-ts/src/agent/events/notifiers.ts` | Pass | Pass | Pass | Pass | External-observable notifier methods. |
+| Removed `autobyteus-ts/src/agent/message-inbox/*` wrappers | Pass | Pass | Pass | Pass | Replace with event-inbox final files. |
+| Removed `autobyteus-ts/src/agent/outbox/` | Pass | Pass | Pass | Pass | Replace forwarding with notifier calls. |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
 | Owner / Boundary | Allowed Dependencies Are Clear? | Forbidden Shortcuts Are Explicit? | Direction Is Coherent With Ownership? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `AgentInputPipeline` -> `AgentExternalEventNotifier` | Pass | Pass | Pass | Pass | Allowed only for external-observable input projection; not for turn control. |
-| Runner/phases/pipelines -> `AgentExternalEventNotifier` | Pass | Pass | Pass | Pass | Semantic publication only; no raw emit calls. |
-| `AgentExternalEventNotifier` -> EventEmitter/EventManager | Pass | Pass | Pass | Pass | Low-level event infrastructure remains encapsulated. |
-| `AgentEventStream` / server / frontend consumers | Pass | Pass | Pass | Pass | Consumers/projections only; they do not advance scheduler/runner. |
-| `AgentMessageInbox` / scheduler | Pass | Pass | Pass | Pass | Internal control messages remain separate from external events. |
-| External approval/result -> inbox/scheduler/handler/state/port | Pass | Pass | Pass | Pass | Direct port/queue bypass remains forbidden. |
-| Server backend -> native facade/runtime | Pass | Pass | Pass | Pass | Backend must not call stop fallback or native internals. |
+| `AgentRuntime` -> `AgentEventInbox` | Pass | Pass | Pass | Pass | Runtime submits typed events; no second domain message object. |
+| `AgentEventInbox` -> `InboxQueueStore` | Pass | Pass | Pass | Pass | Queue store is private storage only. |
+| `AgentEventScheduler` -> processors | Pass | Pass | Pass | Pass | Scheduler owns dispatchability; processors own entry processing. |
+| Event processors -> `AgentRuntimeState` / `TurnToolInputPort` | Pass | Pass | Pass | Pass | Validation occurs before port delivery. |
+| `AgentTurnRunner` -> phases/pipelines | Pass | Pass | Pass | Pass | Direct runner flow remains normal turn path. |
+| Runner/phases/pipelines -> `AgentExternalEventNotifier` | Pass | Pass | Pass | Pass | Observable publication only. |
+| Server/frontend -> public native/runtime APIs | Pass | Pass | Pass | Pass | No runtime internals or stop fallback. |
 
 ## Boundary Encapsulation Verdict
 
 | Boundary / Owner | Authoritative Public Entry Point Is Clear? | Internal Owned Mechanisms Stay Internal? | Caller Bypass Risk Is Controlled? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `AgentExternalEventNotifier` | Pass | Pass | Pass | Pass | Semantic `notify...` methods remain the sole external observable-event boundary. |
-| `AgentMessageInbox` | Pass | Pass | Pass | Pass | Inbound storage/lane boundary; not confused with external events. |
-| `AgentMessageScheduler` | Pass | Pass | Pass | Pass | Dispatchability owner; worker does not encode routing policy. |
+| `AgentRuntime.interrupt()` | Pass | Pass | Pass | Pass | Side-band interrupt remains authoritative. |
+| `AgentRuntime.postToolApprovalEvent()` | Pass | Pass | Pass | Pass | Approval command enters as canonical event and awaitable inbox entry. |
+| `AgentEventInbox` | Pass | Pass | Pass | Pass | Encapsulates queue store and lane entry APIs. |
+| `AgentEventScheduler` | Pass | Pass | Pass | Pass | Encapsulates routing/dispatchability policy. |
 | `TurnToolInputPort` | Pass | Pass | Pass | Pass | Internal to active turn/tool phase. |
-| `AgentRuntime.interrupt()` | Pass | Pass | Pass | Pass | Side-band runtime command remains authoritative. |
-| `AgentTurnRunner` | Pass | Pass | Pass | Pass | Finite turn flow owner; events/handlers do not compete. |
-| Frontend streaming services/stores | Pass | Pass | Pass | Pass | Transport/UI projection only; runtime state changes come from stream feedback. |
+| `AgentTurnRunner` | Pass | Pass | Pass | Pass | Finite turn flow owner; processors/events do not compete. |
+| `AgentExternalEventNotifier` | Pass | Pass | Pass | Pass | Semantic notifier methods above raw event infrastructure. |
 
 ## Interface Boundary Verdict
 
 | Interface / API / Command / Method | Subject Is Clear? | Responsibility Is Singular? | Identity Shape Is Explicit? | Generic Boundary Risk | Verdict |
 | --- | --- | --- | --- | --- | --- |
-| `AgentExternalEventNotifier.notifyAgentDataInterAgentMessageReceived` | Pass | Pass | Pass | Low | Pass |
-| `AgentExternalEventNotifier.notifyAgentDataSystemTaskNotificationReceived` | Pass | Pass | Pass | Low | Pass |
-| `AgentExternalEventNotifier.notifyAgentTurnInterrupted` / `notifyAgentToolExecutionInterrupted` | Pass | Pass | Pass | Low | Pass |
-| `AgentMessageInbox.post/postAwaitable/lane APIs` | Pass | Pass | Pass | Low | Pass |
-| `AgentMessageScheduler.nextDispatchable/dispatch` | Pass | Pass | Pass | Low | Pass |
-| `AgentRuntime.interrupt(options?)` | Pass | Pass | Pass | Low | Pass |
-| `AgentRuntime.postToolApproval(input)` | Pass | Pass | Pass | Low | Pass |
+| `AgentRuntime.submitEvent(event: BaseEvent)` | Pass | Pass | Pass | Low | Pass |
+| `AgentRuntime.postToolApprovalEvent(event)` | Pass | Pass | Pass | Low | Pass |
+| `AgentRuntime.postToolResultEvent(event)` | Pass | Pass | Pass | Low | Pass |
+| `AgentEventInbox.postEvent/postAwaitableEvent/lane APIs` | Pass | Pass | Pass | Low | Pass |
+| `AgentEventScheduler.nextDispatchable/dispatch` | Pass | Pass | Pass | Low | Pass |
+| `AgentEventProcessor.process(entry)` | Pass | Pass | Pass | Low | Pass |
 | `TurnToolInputPort.postApproval/postToolResult` | Pass | Pass | Pass | Low | Pass |
+| `AgentRuntime.interrupt(options?)` | Pass | Pass | Pass | Low | Pass |
 | WebSocket `INTERRUPT_GENERATION` | Pass | Pass | Pass | Low | Pass |
 
 ## Subsystem / Folder / File Placement Verdict
 
 | Path / Item | Target Placement Is Clear? | Folder Matches Owning Boundary? | Mixed-Layer Or Over-Split Risk | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `agent/events/notifiers.ts` | Pass | Pass | Low | Pass | Correct existing location for external-observable event boundary. |
-| `agent/pipelines/agent-input-pipeline.ts` | Pass | Pass | Medium | Pass | Input conversion plus compatible projection publication is acceptable because it preserves current input-received semantics; see advisory to keep final mapping explicit. |
-| `agent/streaming/` | Pass | Pass | Low | Pass | Subscriber/projection concern behind notifier. |
-| `agent/message-inbox/` | Pass | Pass | Medium | Pass | Inbound boundary/scheduler/handlers; no phase execution. |
-| `agent/loop/` | Pass | Pass | Medium | Pass | Runner/phase/port/continuation; no worker lifecycle. |
-| Removed `agent/outbox/` | Pass | Pass | Low | Pass | Removal is correct and now consumer-safe. |
+| `agent/event-inbox/` | Pass | Pass | Medium | Pass | Cohesive inbound event boundary; keep phase work out. |
+| `agent/event-inbox/processors/` | Pass | Pass | Low | Pass | Correct rename away from old handler-chain semantics. |
+| `agent/loop/` | Pass | Pass | Medium | Pass | Runner/phase/port/continuation are cohesive; no worker lifecycle. |
+| `agent/pipelines/` | Pass | Pass | Medium | Pass | Off-spine transformation owners; no turn scheduling. |
+| `agent/events/notifiers.ts` | Pass | Pass | Low | Pass | Existing outbound observable boundary. |
+| Removed `agent/message-inbox/` | Pass | Pass | Low | Pass | Final target moves to `agent/event-inbox/`. |
+| Removed `agent/outbox/` | Pass | Pass | Low | Pass | Final target uses notifier directly. |
 
 ## Existing Capability / Subsystem Reuse Verdict
 
 | Need / Concern | Existing Capability Area Was Checked? | Reuse / Extension Decision Is Sound? | New Support Piece Is Justified? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| External observable event publication | Pass | Pass | N/A | Pass | Reuse `AgentExternalEventNotifier`; no new `AgentOutbox`. |
-| Inter-agent/system-task frontend consumers | Pass | Pass | N/A | Pass | Preserve existing notifier -> stream -> server/team -> frontend chain. |
-| Frontend interrupt command/status handling | Pass | Pass | N/A | Pass | Existing interrupt service/store path and handlers are preserved. |
-| Low-level event delivery | Pass | Pass | N/A | Pass | `EventEmitter`/`EventManager` remain infrastructure only. |
-| Inbound runtime messages | Pass | Pass | N/A | Pass | Kept in inbox/scheduler, not conflated with external events. |
+| Canonical inbound payloads | Pass | Pass | N/A | Pass | Existing typed runtime events are reused instead of wrapped. |
+| External observable events | Pass | Pass | N/A | Pass | Reuse `AgentExternalEventNotifier`; no new `AgentOutbox`. |
+| Turn loop execution | Pass | Pass | N/A | Pass | Existing first-stage runner/phases/pipelines remain the right owners. |
+| Frontend interrupt path | Pass | Pass | N/A | Pass | Existing `INTERRUPT_GENERATION` path is preserved. |
+| Inter-agent/team communication consumers | Pass | Pass | N/A | Pass | Existing stream/server/frontend projection chain is preserved. |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Area | Compatibility Wrapper / Dual-Path / Legacy Retention Exists? | Clean-Cut Removal Is Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- |
-| `AgentOutbox` wrapper final state | No | Pass | Pass | Removed, with direct notifier replacement required. |
-| Duplicate outbound publisher wrappers | No | Pass | Pass | FR-004E forbids. |
-| Direct low-level event emission by domain code | No | Pass | Pass | Forbidden outside notifier infrastructure. |
-| Old WorkerEventDispatcher handler loop | No | Pass | Pass | Still forbidden as normal turn control. |
+| `AgentMessageInbox` / message wrappers final state | No | Pass | Pass | Current-state/rejected-target references are acceptable. |
+| `AgentOutbox` wrapper final state | No | Pass | Pass | Removed with notifier replacement. |
+| Old WorkerEventDispatcher handler loop | No | Pass | Pass | Still forbidden. |
 | Transitional/middle-state adapter final design | No | Pass | Pass | Final work-package gates reject intermediate stopping points. |
-| Dual stop/interrupt frontend commands | No | Pass | Pass | Keep `INTERRUPT_GENERATION`; do not support both indefinitely. |
+| Dual stop/interrupt frontend commands | No | Pass | Pass | Keep `INTERRUPT_GENERATION`; remove leftover stop naming. |
 
 ## Migration / Refactor Safety Verdict
 
 | Area | Sequence / Work Package Is Realistic? | Temporary Seams Rejected As Final? | Cleanup / Removal Is Explicit? | Verdict |
 | --- | --- | --- | --- | --- |
+| `AgentMessageInbox` -> `AgentEventInbox` conversion | Pass | Pass | Pass | Pass |
+| Event processor finalization | Pass | Pass | Pass | Pass |
+| Approval/result event routing | Pass | Pass | Pass | Pass |
 | `AgentOutbox` removal with notifier replacement | Pass | Pass | Pass | Pass |
-| Inter-agent/system-task consumer parity | Pass | Pass | Pass | Pass |
-| Frontend interrupt feedback parity | Pass | Pass | Pass | Pass |
-| Unified inbox/scheduler/handler finalization | Pass | Pass | Pass | Pass |
 | Runner/phase/pipeline finalization | Pass | Pass | Pass | Pass |
 | Old handler queue choreography removal | Pass | Pass | Pass | Pass |
 
@@ -265,29 +277,38 @@ The addendum correctly clarifies that **external** in `AgentExternalEventNotifie
 
 | Topic / Area | Example Was Needed? | Example Is Present And Clear? | Bad / Avoided Shape Is Explained When Helpful? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Inter-agent communication projection | Yes | Pass | N/A | Pass | The required chain from `AgentInputPipeline` to `teamCommunicationStore` is concrete. |
-| Frontend interrupt command/event path | Yes | Pass | N/A | Pass | The path from text area to native interrupt and stream feedback is concrete. |
-| External vs internal event distinction | Yes | Pass | Pass | Pass | Design explains external means outside the control loop and forbids using external events as control flow. |
-| `AgentOutbox` removal shape | Yes | Pass | Pass | Pass | Design requires replacing outbox forwarding with semantic notifier calls and forbids duplicate wrappers. |
-| CDF-009/CDF-012 active-turn paths | Yes | Pass | Pass | Pass | Still explicit. |
+| Event inbox entry shape | Yes | Pass | Pass | Pass | The envelope example clarifies event vs metadata. |
+| Approval event route | Yes | Pass | N/A | Pass | CDF-009 and code sketch are concrete. |
+| External async result route | Yes | Pass | N/A | Pass | CDF-012 is concrete. |
+| Inter-agent projection | Yes | Pass | N/A | Pass | Full consumer chain is documented. |
+| Forbidden old event-handler flow | Yes | Pass | Pass | Pass | Forbidden shapes are explicit. |
+
+## AgentMessage / Wrapper Reference Check
+
+| Reference Type | Review Result | Evidence |
+| --- | --- | --- |
+| `AgentMessageInbox`, `AgentInboxMessage`, `ToolApprovalInputMessage`, `ToolResultInputMessage` in current-state sections | Acceptable | They are used as current first-stage evidence/problem statement. |
+| Explicit rejection of message wrappers | Pass | Design says not to expose those domain-message wrappers in target code. |
+| Accidental target ownership by old message wrappers | Not found | Target components, contracts, CDFs, file mapping, and FR/AC use `AgentEventInbox`, event entries, and canonical typed events. |
+| Generic word “message” in a few narrative sentences | Non-blocking | Some narrative text says “active-turn message” generically, but target APIs/files use events. Clean up terminology during implementation/design polish. |
 
 ## Missing Use Cases / Open Unknowns
 
 | Item | Why It Matters | Required Action | Status |
 | --- | --- | --- | --- |
-| None blocking | UC-008, CDF-010A, DS-010, FR-004E1, AC-004E1, and strengthened AC-010 close the newly identified consumer/event parity gap. | None before implementation. | Closed for design. |
-| Final file mapping wording for notifier/input pipeline | A few derived mapping rows still summarize `AgentInputPipeline` as pure LLM input transformation and one final notifier row omits inter-agent/system-task in the short responsibility text, even though earlier mapping/contracts/spines require it. | Implementation/code review should enforce the stronger FR/CDF/contract wording; optional design text cleanup could align these rows. | Non-blocking advisory. |
-| Semantic notifier method discipline | `AgentExternalEventNotifier` could become a generic raw-payload sink if implementation adds broad emit-like methods. | Keep cohesive typed `notify...` methods and encapsulate raw emit. | Non-blocking advisory. |
-| Runner task supervision | Prior implementation risk remains. | Supervise active runner task outcomes and scheduler wakeups. | Non-blocking advisory. |
-| External/async tool-result acknowledgement shape | Prior implementation risk remains. | Make acknowledgement concrete if external callbacks need synchronous reply/ack. | Non-blocking advisory. |
+| None blocking | The event-centric design covers interrupt, approval, async result, bootstrap/shutdown, frontend stream feedback, and inter-agent/team communication projection. | None before implementation. | Closed for design. |
+| DS-010 missing from the mandatory narrative table | The design inventory and External Event Notifier section fully describe DS-010, but the narrative table currently stops at DS-009. | Non-blocking doc cleanup: add DS-010 row to the Spine Narratives table. | Advisory. |
+| Work Package 2 title still says “Handlers” | The body and file mapping use `AgentEventProcessor`; the title could confuse implementers. | Non-blocking doc cleanup: rename heading to `AgentEventInbox / Scheduler / Processors / ...`. | Advisory. |
+| `AgentExternalEventNotifier` method discipline | Notifier could become a raw generic emit sink if implemented carelessly. | Keep typed semantic notify methods; encapsulate raw emit. | Advisory. |
+| Runner task supervision | Prior implementation risk remains. | Supervise active runner task outcomes and scheduler wakeups. | Advisory. |
 
 ## Review Decision
 
 - **Pass / APPROVED FOR IMPLEMENTATION**.
 
-The updated design is architecturally sound and more complete. The CDF-010A / DS-010 addition correctly captures a consumer-visible return/event spine that was under-specified in the previous outbound-boundary correction. Removing `AgentOutbox` is still the right final architecture, but now the design makes clear that removal means replacing forwarding calls with direct semantic `AgentExternalEventNotifier` calls while preserving inter-agent/system-task event families and payload shapes.
+The revised event-centric architecture is better aligned with the existing Autobyteus runtime. It removes an unnecessary domain-message wrapper layer and uses typed runtime events as the canonical payload, while keeping queue metadata in a narrow `AgentEventInboxEntry`. This follows the Authoritative Boundary Rule: callers use `AgentRuntime`, `AgentEventInbox`, and `AgentEventScheduler`; they do not bypass to `InboxQueueStore` or `TurnToolInputPort`. It also avoids the Empty Indirection smell introduced by wrapping events into parallel message objects.
 
-The frontend interrupt path is also sufficiently specified: the UI sends `INTERRUPT_GENERATION`, does not clear `isSending` optimistically, and waits for `TURN_INTERRUPTED` and/or idle status feedback through the existing stream/server/frontend chain. This is compatible with Codex/Claude-style behavior and sufficient for native Autobyteus interrupt.
+The design still preserves the important earlier architecture decisions: `AgentWorker` is a long-lived inbox/lifecycle loop, `AgentTurnRunner` owns finite LLM/tool/continuation flow, `TurnExecutionScope` owns cancellation/fencing, `TurnToolInputPort` is internal and tool-specific, and `AgentExternalEventNotifier` is the external-observable publication boundary.
 
 ## Findings
 
@@ -295,16 +316,17 @@ None blocking.
 
 ### Non-blocking implementation advisories
 
-1. When removing `AgentOutbox`, replace every `outbox.publish...` call with the corresponding semantic `AgentExternalEventNotifier.notify...` call; do not delete the inter-agent/system-task publications.
-2. Keep `AgentExternalEventNotifier` semantic. Runner/phase/pipeline/lifecycle code should call typed `notify...` methods, not raw event names or low-level emit methods.
-3. Ensure `AgentInputPipeline`'s inter-agent/system conversion path publishes exactly once per accepted inbound message and cannot duplicate events on retries or same-turn TOOL continuations.
-4. Tighten final file-mapping text during implementation/review to reflect that `AgentInputPipeline` owns inter-agent/system input projection side effects and `AgentExternalEventNotifier` owns inter-agent/system-task notification methods.
-5. Preserve focused frontend tests for `INTERRUPT_GENERATION`, no optimistic `isSending` clearing, `TURN_INTERRUPTED`/tool interruption handlers, `INTER_AGENT_MESSAGE`, derived `TEAM_COMMUNICATION_MESSAGE`, and `teamCommunicationStore` updates.
+1. Implement `AgentEventInboxEntry` as metadata only; do not recreate `AgentInboxMessage` under a new name.
+2. Replace first-stage `message-inbox/handlers` with `event-inbox/processors`; keep processors thin entry processors and do not let them own LLM/tool phase progression.
+3. Replace `AgentRuntime.postToolApproval(ToolApprovalInputMessage)` with event-centric `AgentRuntime.postToolApprovalEvent(ToolExecutionApprovalEvent)` and preserve the public `Agent.postToolExecutionApproval(...)` facade.
+4. Remove all final-source `UserInboxMessage`, `ToolApprovalInputMessage`, `ToolResultInputMessage`, and equivalent wrapper types unless they are test fixtures explicitly asserting removal.
+5. Preserve `AgentOutbox` removal while keeping all semantic `AgentExternalEventNotifier` publications and payload compatibility.
+6. Add/keep tests for parked turn-starting events, active-turn approval/result dispatch while a runner task is active, stale/interrupted approval/result outcomes, side-band interrupt, and no old handler-chain turn progression.
 
 ## Classification
 
 - No blocking `Design Impact`, `Requirement Gap`, or `Unclear` findings remain.
-- Residual items are implementation/code-review checks, not design blockers.
+- Residual items are implementation/code-review and minor documentation cleanup checks, not design blockers.
 
 ## Recommended Recipient
 
@@ -312,11 +334,11 @@ None blocking.
 
 ## Residual Risks
 
-- The largest implementation risk is accidental consumer regression while deleting `AgentOutbox`; code review must verify all former forwarding methods have direct notifier replacements and payload parity tests.
-- `AgentInputPipeline` now has an intentional observable-projection side effect for inter-agent/system input. This is acceptable for preserving current semantics but should be constrained and tested to prevent duplicate projection events.
-- The worker loop must still dispatch active-turn/lifecycle messages while an `AgentTurnRunner` task is active; otherwise CDF-009/CDF-012 would be structurally correct but operationally blocked.
+- The main implementation risk is renaming without fully removing old wrapper types or old message-inbox handler imports.
+- Event-centric naming could still be confused with external observable events; implementation should keep `AgentEventInbox` internal-control events clearly separated from `AgentExternalEventNotifier` observable events.
+- The worker loop must continue dispatching active-turn/lifecycle event entries while an `AgentTurnRunner` task is active; otherwise approval/result spines would block operationally.
 
 ## Latest Authoritative Result
 
 - Review Decision: **Pass / APPROVED FOR IMPLEMENTATION**
-- Notes: Latest authoritative target architecture is `AgentMessageInbox` / `AgentMessageScheduler` / thin typed message handlers / `AgentTurnRunner` / `LlmPhase` / `ToolPhase` / `TurnToolInputPort` / `TurnExecutionScope` / typed pipelines / `AgentExternalEventNotifier`. No `AgentOutbox` or duplicate publisher wrapper remains in the final target, and inter-agent/system-task observable event consumers must remain compatible through CDF-010A / DS-010.
+- Notes: Latest authoritative target architecture is `AgentEventInbox` / `AgentEventScheduler` / thin typed `AgentEventProcessor`s / `AgentTurnRunner` / `LlmPhase` / `ToolPhase` / `TurnToolInputPort` / `TurnExecutionScope` / typed pipelines / `AgentExternalEventNotifier`. No `AgentMessageInbox` domain-wrapper target, `AgentOutbox`, duplicate publisher wrapper, old normal-flow handler chain, or native interrupt-to-stop fallback remains in the final target.

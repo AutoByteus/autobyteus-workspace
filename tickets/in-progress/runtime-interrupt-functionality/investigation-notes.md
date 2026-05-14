@@ -123,6 +123,7 @@ User asked on 2026-05-05: “codex, and claude code both of them have abort func
 | --- | --- | --- | --- | --- |
 | 2026-05-05 | Static trace | Manual source trace from `AgentStreamingService.stopGeneration()` through server `AgentStreamHandler.handleStopGeneration()` to `AgentRunBackend.interrupt()` implementations. | Shared command path is already “interrupt” at server domain level. Codex/Claude implement real interrupt, Autobyteus maps to stop. | Native runtime/backend gap is isolated enough to design without reinventing cross-runtime command abstraction. |
 | 2026-05-05 | Static trace | Manual source trace from `AgentWorker.asyncRun()` through LLM/tool handlers. | Active dispatch is awaited synchronously by the worker loop; queue-based events cannot preempt current handler. | Interrupt needs direct active-turn signal and handler/provider/tool cooperation. |
+| 2026-05-14 | Static trace / source inspection | `find autobyteus-ts/src/agent -maxdepth 3 -type f` filtered with `rg` for message-inbox, event-inbox, turn-tool, agent-turn-runner, llm phase, tool-phase, and events/agent-events paths; `sed -n` on `agent-inbox-message.ts`, `agent-message-inbox.ts`, `agent-runtime.ts`; `rg` for event and inbox wrapper references. | Current first-stage code has `AgentMessageInbox` / `AgentInboxMessage` wrappers around typed events, while `AgentTurnRunner` and `AgentInputPipeline` already consume `UserMessageReceivedEvent` / `InterAgentMessageReceivedEvent` directly; tool command wrappers duplicate existing `ToolExecutionApprovalEvent` / `ToolResultEvent`. | Final design should be event-centric: `AgentEventInboxEntry` wraps only queue metadata, canonical payload remains typed event, and `ToolExecutionApprovalEvent` / `ToolResultEvent` route through scheduler/processors to `TurnToolInputPort`. |
 
 ## External / Public Source Findings
 
@@ -177,43 +178,56 @@ User asked on 2026-05-05: “codex, and claude code both of them have abort func
 - Current domain/backend interface: `autobyteus-server-ts/src/agent-execution/domain/agent-run.ts` delegates `approveToolInvocation(...)` to `AgentRunBackend.approveToolInvocation(...)`; `autobyteus-server-ts/src/agent-execution/backends/agent-run-backend.ts` defines that backend method.
 - Current native backend path: `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts` calls `agent.postToolExecutionApproval(invocationId, approved, reason)` and maps errors to `AgentOperationResult`.
 - Original pre-refactor native facade/runtime path: `autobyteus-ts/src/agent/agent.ts` created `ToolExecutionApprovalEvent` in `postToolExecutionApproval(...)`; `autobyteus-ts/src/agent/runtime/agent-runtime.ts` enqueued it through `inputEventQueues.enqueueToolApprovalEvent(...)`; original event-handler registration included `ToolExecutionApprovalEventHandler`.
-- Implemented first-refactor native facade/runtime path: `Agent.postToolExecutionApproval(...) -> AgentRuntime.postToolApproval(...) -> AgentRuntimeState.postToolApprovalToActiveTurn(...) -> AgentTurnInputBox.postApproval(...) -> ToolPhase.waitForApproval(...)`.
-- Second-stage design impact: preserve this public/runtime approval spine but route the validated turn-scoped tool input delivery through the renamed internal `TurnToolInputPort` under the unified `AgentMessageInbox` / scheduler / handler model.
+- Implemented first-refactor native facade/runtime path: `Agent.postToolExecutionApproval(...) -> AgentRuntime.postToolApproval(...) -> AgentRuntimeState.postToolApprovalToActiveTurn(...) -> TurnToolInputPort.postApproval(...) -> ToolPhase.waitForApproval(...)`.
+- Second-stage design impact: preserve this public/runtime approval spine but make the runtime-facing payload the canonical `ToolExecutionApprovalEvent`, routed through the unified `AgentEventInbox` / `AgentEventScheduler` / `ToolApprovalEventProcessor` model before delivery to internal `TurnToolInputPort`.
 
-## Current Worktree Baseline Addendum (Second-Stage Message-Inbox Design)
+## Current Worktree Baseline Addendum (Second-Stage Event-Inbox Design)
 
-Date: 2026-05-12.
+Date: 2026-05-12; revised 2026-05-14 after user review of event-vs-message wrapping.
 
 This addendum uses the already-implemented first refactor in the current ticket worktree as the base for the next design update. Relevant inspected sources:
 
 - `autobyteus-ts/src/agent/runtime/agent-runtime.ts`
 - `autobyteus-ts/src/agent/runtime/agent-worker.ts`
-- `autobyteus-ts/src/agent/input-box/agent-input-box.ts`
-- `autobyteus-ts/src/agent/events/agent-input-event-queue-manager.ts`
-- `autobyteus-ts/src/agent/loop/agent-turn-input-box.ts`
+- `autobyteus-ts/src/agent/message-inbox/agent-message-inbox.ts`
+- `autobyteus-ts/src/agent/message-inbox/agent-inbox-message.ts`
+- `autobyteus-ts/src/agent/message-inbox/agent-message-scheduler.ts`
+- `autobyteus-ts/src/agent/message-inbox/handlers/*.ts`
+- `autobyteus-ts/src/agent/message-inbox/inbox-queue-store.ts`
+- `autobyteus-ts/src/agent/loop/turn-tool-input-port.ts`
 - `autobyteus-ts/src/agent/loop/agent-turn-runner.ts`
+- `autobyteus-ts/src/agent/loop/llm-phase.ts`
 - `autobyteus-ts/src/agent/loop/tool-phase.ts`
 - `autobyteus-ts/src/agent/context/agent-runtime-state.ts`
+- `autobyteus-ts/src/agent/events/agent-events.ts`
+- `autobyteus-ts/src/agent/tool-approval-command.ts`
+- `autobyteus-ts/src/agent/tool-result-command.ts`
 
 Current implemented path now differs from the original baseline:
 
-- External turn-starting flow is now `AgentRuntime.submitEvent(...) -> AgentInputBox.enqueueUserMessage/enqueueInterAgentMessage(...) -> AgentWorker.asyncRun() -> AgentInputBox.nextTurnTriggerWhenIdle(...) -> AgentTurnRunner.run(...)`.
-- Normal LLM/tool progression is now direct runner/phase flow: `AgentTurnRunner -> AgentInputPipeline -> LlmTurnPhase -> ToolPhase -> ToolResultPipeline -> ToolResultContinuationBuilder -> AgentInputPipeline(SenderType.TOOL) -> LLMResponsePipeline + AgentExternalEventNotifier notifications`.
-- External approvals now route through `Agent.postToolExecutionApproval(...) -> AgentRuntime.postToolApproval(...) -> AgentRuntimeState.postToolApprovalToActiveTurn(...) -> AgentTurnInputBox.postApproval(...) -> ToolPhase.waitForApproval(...)`.
-- `AgentInputEventQueueManager` has been demoted to generic storage behind `AgentInputBox`; however its architecture-facing name remains queue/event/manager oriented and does not communicate the intended agent-message inbox model.
-- `AgentTurnInputBox` is currently approval-focused after dormant result/continuation lanes were removed; as a top-level concept its name suggests a second general inbox and is less intuitive than treating it as an internal turn tool input port.
-- `AgentWorker` now owns bootstrap, long-running inbox loop, trigger selection, active-turn start/await, and terminal shutdown; it no longer owns the finite LLM/tool loop. The remaining readability gap is that scheduling and message handling are still implicit in the worker/runtime `if` branches rather than explicit `AgentMessageScheduler` and typed message handlers.
+- External turn-starting flow is now `AgentRuntime.submitEvent(UserMessageReceivedEvent | InterAgentMessageReceivedEvent) -> AgentMessageInbox.postUserMessage/postInterAgentMessage(...) -> AgentWorker.asyncRun() -> AgentMessageScheduler.nextDispatchable(...) -> TurnStartMessageHandler -> AgentTurnRunner.run(event)`.
+- Normal LLM/tool progression is now direct runner/phase flow: `AgentTurnRunner -> AgentInputPipeline -> LlmPhase -> ToolPhase -> ToolResultPipeline -> ToolResultContinuationBuilder -> AgentInputPipeline(SenderType.TOOL) -> LLMResponsePipeline + AgentExternalEventNotifier notifications`.
+- External approvals currently route through `Agent.postToolExecutionApproval(...) -> AgentRuntime.postToolApproval(ToolApprovalInputMessage) -> AgentMessageInbox.postToolApproval(...) -> AgentMessageScheduler -> ToolApprovalMessageHandler -> AgentRuntimeState.postToolApprovalToActiveTurn(...) -> TurnToolInputPort.postApproval(...) -> ToolPhase.waitForApproval(...)`.
+- The first-stage implementation already has useful lane storage, scheduler, turn runner, phase services, `TurnExecutionScope`, and `TurnToolInputPort`. The remaining issue is not the presence of a mailbox loop; it is the extra domain-message wrapping around an already event-oriented runtime.
+
+Event-vs-message evidence:
+
+- `agent-events.ts` already defines the canonical domain events used by the runtime: `UserMessageReceivedEvent`, `InterAgentMessageReceivedEvent`, `LifecycleEvent`, `ToolExecutionApprovalEvent`, and `ToolResultEvent`.
+- `agent-turn-runner.ts` already accepts `AgentTurnTrigger = UserMessageReceivedEvent | InterAgentMessageReceivedEvent`; `agent-input-pipeline.ts` also processes `UserMessageReceivedEvent | InterAgentMessageReceivedEvent` directly.
+- The current `agent-inbox-message.ts` introduces parallel wrappers: `UserInboxMessage` wraps `UserMessageReceivedEvent`, `InterAgentInboxMessage` wraps `InterAgentMessageReceivedEvent`, `RuntimeLifecycleInboxMessage` wraps `LifecycleEvent`, and tool input wrappers use `ToolApprovalInputMessage` / `ToolResultInputMessage` instead of the canonical `ToolExecutionApprovalEvent` / `ToolResultEvent`.
+- `agent-message-inbox.ts` therefore performs `Event -> InboxMessage -> Event` wrapping/unwrapping for user/inter-agent/lifecycle events and creates separate command-message shapes for tool approval/result. This is a shared-structure looseness smell: two representations describe the same inbound domain fact.
+- Repository reference counts are also asymmetric: event types are already widespread and stable, while the new message-wrapper types are concentrated in the first-stage inbox files/tests. A full conversion to a new message domain would be broad and unnecessary; an event-centric inbox cleanup is the smaller clean-cut refactor.
 
 Second-stage design impact:
 
-- Preserve the successful first-stage extraction of `AgentTurnRunner`, current `LlmTurnPhase`, `ToolPhase`, typed pipelines, `TurnExecutionScope`, and external notifications through the existing `AgentExternalEventNotifier`, but rename the final LLM phase owner to symmetric `LlmPhase` and remove the first-stage `AgentOutbox` wrapper from the final design.
-- Replace architecture-facing `AgentInputBox`/`AgentTurnInputBox` terminology with one `AgentMessageInbox` plus semantic lanes and an internal `TurnToolInputPort`.
-- Rename/move low-level queue storage from `AgentInputEventQueueManager` to an implementation-named `InboxQueueStore` or equivalent under the inbox subsystem.
-- Add `AgentMessageScheduler` as the owner of dispatchability/routing policy above `AgentMessageInbox` lane APIs, and typed `AgentMessageHandler`s as the owner of message-family entry handling. Handlers may invoke pipelines/domain owners but must not recreate the old normal-flow LLM/tool handler chain.
-- Naming refinement from user review: avoid generic `ActiveTurnMessagePort` / `TurnAwaitableInputPort`; the target primitive is tool-specific and should be named `TurnToolInputPort`. It handles tool approval now and future external/async tool result delivery if tool execution is externalized; non-tool awaited input should get a separate phase-specific primitive.
-
-- Phase naming refinement from user review: final design should use symmetric `LlmPhase` / `ToolPhase`. `LlmTurnPhase` remains current first-stage evidence only; target file/class names should be `llm-phase.ts` / `LlmPhase`.
-
+- Preserve the successful first-stage extraction of `AgentTurnRunner`, `LlmPhase`, `ToolPhase`, typed pipelines, `TurnExecutionScope`, `TurnToolInputPort`, and external notifications through the existing `AgentExternalEventNotifier`.
+- Rename/move the current `message-inbox` concept to an event-centric `agent/event-inbox` subsystem: `AgentEventInbox`, `AgentEventInboxEntry`, `AgentEventScheduler`, typed `AgentEventProcessor`s, and private `InboxQueueStore`.
+- Keep the canonical payload as a typed `BaseEvent`; the inbox entry only adds queue metadata (`entryId`, `lane`, awaitable completion). Do not introduce or keep domain wrappers such as `UserInboxMessage`, `ToolApprovalInputMessage`, or `ToolResultInputMessage` in the final architecture.
+- Route public tool approval commands as `ToolExecutionApprovalEvent` entries through `AgentRuntime.postToolApprovalEvent(...) -> AgentEventInbox.postAwaitableEvent(...) -> AgentEventScheduler -> ToolApprovalEventProcessor -> AgentRuntimeState -> TurnToolInputPort`.
+- Route future external/async tool results as `ToolResultEvent` entries through `AgentRuntime.postToolResultEvent(...) -> AgentEventInbox -> AgentEventScheduler -> ToolResultEventProcessor -> AgentRuntimeState -> TurnToolInputPort`; in-process tool results may still return directly inside `ToolPhase`.
+- Keep `TurnToolInputPort` internal and tool-specific. It handles tool approval now and future external/async tool result delivery if tool execution is externalized; non-tool awaited input should get a separate phase-specific primitive.
+- Keep `AgentExternalEventNotifier` as the external observable-event boundary and remove the first-stage `AgentOutbox` wrapper from the final design.
+- Phase naming refinement from user review: final design should use symmetric `LlmPhase` / `ToolPhase`.
 
 ## Frontend / External Consumer Compatibility Addendum
 

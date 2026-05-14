@@ -1,6 +1,6 @@
 # Agent Runtime Loop and Native Interrupt
 
-**Status:** Active  
+**Status:** Active
 **Date:** 2026-05-05
 
 ## Purpose
