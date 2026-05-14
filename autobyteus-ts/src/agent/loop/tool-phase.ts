@@ -1,4 +1,4 @@
-import { ToolResultEvent } from '../events/agent-events.js';
+import { ToolExecutionApprovalEvent, ToolResultEvent } from '../events/agent-events.js';
 import { ToolInvocation } from '../tool-invocation.js';
 import { ToolInvocationPipeline } from '../pipelines/tool-invocation-pipeline.js';
 import { formatToCleanString } from '../../utils/llm-output-formatter.js';
@@ -8,8 +8,6 @@ import type { BaseTool, ToolExecutionPreparation } from '../../tools/base-tool.j
 import type { AgentContext } from '../context/agent-context.js';
 import type { AgentTurn } from '../agent-turn.js';
 import type { AgentExternalEventNotifier } from '../events/notifiers.js';
-import type { ToolApprovalInputMessage } from '../tool-approval-command.js';
-import type { ToolResultInputMessage } from '../tool-result-command.js';
 
 export class ToolPhase {
   private readonly invocationPipeline = new ToolInvocationPipeline();
@@ -237,7 +235,7 @@ export class ToolPhase {
       return new ToolResultEvent(
         message.toolName ?? toolInvocation.name,
         Object.prototype.hasOwnProperty.call(message, 'result') ? message.result : null,
-        message.invocationId,
+        message.toolInvocationId,
         message.error,
         message.toolArgs ?? toolInvocation.arguments,
         message.turnId ?? turn.turnId,
@@ -268,13 +266,14 @@ export class ToolPhase {
   }
 
   private publishExternalToolResultLog(
-    message: ToolResultInputMessage,
+    message: ToolResultEvent,
     toolInvocation: ToolInvocation,
     context: AgentContext,
     turn: AgentTurn,
     notifier: AgentExternalEventNotifier | null
   ): void {
-    const toolName = message.toolName ?? toolInvocation.name;
+    const toolName = message.toolName || toolInvocation.name;
+    const invocationId = message.toolInvocationId ?? toolInvocation.id;
     let resultJsonForLog = '';
     try { resultJsonForLog = formatToCleanString(message.result); }
     catch { resultJsonForLog = formatToCleanString(String(message.result)); }
@@ -282,14 +281,14 @@ export class ToolPhase {
       log_entry: message.error
         ? `[TOOL_RESULT_ERROR] ${message.error}`
         : `[TOOL_RESULT] ${resultJsonForLog}`,
-      tool_invocation_id: message.invocationId,
+      tool_invocation_id: invocationId,
       tool_name: toolName,
       turn_id: message.turnId ?? turn.turnId
     });
     if (message.error) {
       notifier?.notifyAgentErrorOutputGeneration(`ToolExecution.ExternalResult.${toolName}`, message.error);
     }
-    context.state.recentSettledInvocationIds.add(message.invocationId);
+    context.state.recentSettledInvocationIds.add(invocationId);
   }
 
   private async waitForApproval(
@@ -305,7 +304,7 @@ export class ToolPhase {
       arguments: toolInvocation.arguments
     });
 
-    let approvalEvent: ToolApprovalInputMessage;
+    let approvalEvent: ToolExecutionApprovalEvent;
     try {
       approvalEvent = await turn.toolInputPort.waitForApproval(
         toolInvocation.id,
@@ -320,7 +319,7 @@ export class ToolPhase {
 
     turn.executionScope.throwIfAborted({ kind: 'tool_approval', operationId: toolInvocation.id });
     const retrievedInvocation = context.state.retrievePendingToolInvocation(toolInvocation.id) ?? toolInvocation;
-    if (approvalEvent.approved) {
+    if (approvalEvent.isApproved) {
       notifier?.notifyAgentToolApproved({
         ...buildToolLifecyclePayloadFromInvocation(context.agentId, retrievedInvocation),
         reason: approvalEvent.reason ?? null

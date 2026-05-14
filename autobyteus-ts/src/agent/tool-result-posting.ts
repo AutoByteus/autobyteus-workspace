@@ -1,14 +1,3 @@
-export type ToolResultInputMessage = {
-  kind: 'tool_result';
-  invocationId: string;
-  turnId?: string;
-  toolName?: string;
-  result?: unknown;
-  error?: string;
-  toolArgs?: Record<string, unknown>;
-  isDenied?: boolean;
-};
-
 export type PostToolResultResult =
   | { accepted: true; code: 'posted'; turnId: string; invocationId: string }
   | { accepted: false; code: 'no_active_turn'; invocationId: string; message: string }

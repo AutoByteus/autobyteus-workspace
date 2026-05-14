@@ -1,7 +1,7 @@
 import { BaseAgentTeamEventHandler } from './base-agent-team-event-handler.js';
 import { ToolApprovalTeamEvent, AgentTeamErrorEvent } from '../events/agent-team-events.js';
 import type { AgentTeamContext } from '../context/agent-team-context.js';
-import type { PostToolApprovalResult } from '../../agent/tool-approval-command.js';
+import type { PostToolApprovalResult } from '../../agent/tool-approval-result.js';
 
 type ApprovalTargetAgent = {
   postToolExecutionApproval: (

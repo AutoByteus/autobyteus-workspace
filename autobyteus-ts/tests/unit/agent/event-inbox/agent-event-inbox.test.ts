@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { AgentMessageInbox } from '../../../../src/agent/message-inbox/agent-message-inbox.js';
+import { AgentEventInbox } from '../../../../src/agent/event-inbox/agent-event-inbox.js';
 import {
   AgentReadyEvent,
   InterAgentMessageReceivedEvent,
@@ -21,82 +21,80 @@ const timeout = <T>(promise: Promise<T>, ms = 1000): Promise<T> =>
     new Promise<T>((_, reject) => setTimeout(() => reject(new Error('timed out')), ms))
   ]);
 
-describe('AgentMessageInbox', () => {
-  it('stores user, inter-agent, and lifecycle messages in discriminated lanes', async () => {
-    const inbox = new AgentMessageInbox();
+describe('AgentEventInbox', () => {
+  it('stores typed runtime events in event lanes with metadata-only entries', async () => {
+    const inbox = new AgentEventInbox();
     const userEvent = new UserMessageReceivedEvent(new AgentInputUserMessage('hello'));
     const interAgentEvent = new InterAgentMessageReceivedEvent({} as any);
     const lifecycleEvent = new AgentReadyEvent();
 
-    await inbox.postUserMessage(userEvent);
-    await inbox.postInterAgentMessage(interAgentEvent);
-    await inbox.postLifecycleMessage(lifecycleEvent);
+    await inbox.postUserEvent(userEvent);
+    await inbox.postInterAgentEvent(interAgentEvent);
+    await inbox.postLifecycleEvent(lifecycleEvent);
 
     const snapshot = inbox.peekCandidates();
-    expect(snapshot.turn_start.map((message) => message.kind)).toEqual(['user_message', 'inter_agent_message']);
-    expect(snapshot.runtime_lifecycle.map((message) => message.kind)).toEqual(['runtime_lifecycle']);
+    expect(snapshot.turn_start.map((entry) => entry.event)).toEqual([userEvent, interAgentEvent]);
+    expect(snapshot.turn_start.every((entry) => !('kind' in entry) && !('input' in entry))).toBe(true);
+    expect(snapshot.runtime_lifecycle.map((entry) => entry.event)).toEqual([lifecycleEvent]);
     expect(snapshot.active_turn).toEqual([]);
   });
 
-  it('keeps lifecycle messages explicitly discriminated so they are not turn triggers', async () => {
-    const inbox = new AgentMessageInbox();
+  it('keeps lifecycle entries in the lifecycle lane so they are not turn triggers', async () => {
+    const inbox = new AgentEventInbox();
     const lifecycleEvent = new AgentReadyEvent();
 
-    await inbox.postLifecycleMessage(lifecycleEvent);
+    await inbox.postLifecycleEvent(lifecycleEvent);
     const claimed = inbox.claimFirst('runtime_lifecycle');
 
     expect(claimed).toMatchObject({
-      kind: 'runtime_lifecycle',
       lane: 'runtime_lifecycle',
       event: lifecycleEvent
     });
+    expect(claimed).not.toHaveProperty('kind');
+    expect(claimed).not.toHaveProperty('input');
   });
 
-  it('rejects TOOL continuations and operational events on the lifecycle lane', async () => {
-    const inbox = new AgentMessageInbox();
+  it('rejects TOOL continuations and non-lifecycle events through lifecycle helper', async () => {
+    const inbox = new AgentEventInbox();
 
     await expect(
-      inbox.postLifecycleMessage(new ToolExecutionApprovalEvent('invocation-1', true) as any)
-    ).rejects.toThrow(/operational tool events/);
+      inbox.postLifecycleEvent(new ToolExecutionApprovalEvent('invocation-1', true) as any)
+    ).rejects.toThrow(/LifecycleEvent/);
 
     await expect(
-      inbox.postLifecycleMessage(new ToolResultEvent('tool', { ok: true }, 'invocation-1') as any)
-    ).rejects.toThrow(/operational tool events/);
+      inbox.postLifecycleEvent(new ToolResultEvent('tool', { ok: true }, 'invocation-1') as any)
+    ).rejects.toThrow(/LifecycleEvent/);
 
     await expect(
-      inbox.postUserMessage(
+      inbox.postUserEvent(
         new UserMessageReceivedEvent(new AgentInputUserMessage('tool result', SenderType.TOOL))
       )
     ).rejects.toThrow(/TOOL continuations/);
 
     await expect(
-      inbox.postLifecycleMessage(
+      inbox.postLifecycleEvent(
         new PendingToolInvocationEvent(new ToolInvocation('tool', {}, 'invocation-1')) as any
       )
     ).rejects.toThrow(/LifecycleEvent/);
 
     await expect(
-      inbox.postLifecycleMessage(new LLMUserMessageReadyEvent({} as any, 'turn-1') as any)
+      inbox.postLifecycleEvent(new LLMUserMessageReadyEvent({} as any, 'turn-1') as any)
     ).rejects.toThrow(/LifecycleEvent/);
 
     await expect(
-      inbox.postLifecycleMessage(
+      inbox.postLifecycleEvent(
         new LLMCompleteResponseReceivedEvent(new CompleteResponse({ content: 'done' }), false, 'turn-1') as any
       )
     ).rejects.toThrow(/LifecycleEvent/);
   });
 
-  it('resolves awaitable active-turn messages only through handler completion', async () => {
-    const inbox = new AgentMessageInbox();
-    const resultPromise = inbox.postToolApproval({
-      kind: 'tool_approval',
-      invocationId: 'inv-1',
-      approved: true
-    });
-    const message = inbox.claimFirst('active_turn');
+  it('resolves awaitable active-turn events only through processor completion', async () => {
+    const inbox = new AgentEventInbox();
+    const resultPromise = inbox.postToolApprovalEvent(new ToolExecutionApprovalEvent('inv-1', true));
+    const entry = inbox.claimFirst('active_turn');
 
-    expect(message?.kind).toBe('tool_approval');
-    inbox.resolveAwaitable(message!, {
+    expect(entry?.event).toBeInstanceOf(ToolExecutionApprovalEvent);
+    inbox.resolveAwaitable(entry!, {
       accepted: false,
       code: 'no_active_turn',
       invocationId: 'inv-1',
@@ -109,22 +107,17 @@ describe('AgentMessageInbox', () => {
     });
   });
 
-  it('settles queued awaitable active-turn commands during shutdown drain', async () => {
-    const inbox = new AgentMessageInbox();
-    const approvalPromise = inbox.postToolApproval({
-      kind: 'tool_approval',
-      invocationId: 'approval-1',
-      approved: true
-    });
-    const resultPromise = inbox.postToolResult({
-      kind: 'tool_result',
-      invocationId: 'result-1',
-      result: { ok: true }
-    });
+  it('settles queued awaitable active-turn events during shutdown drain', async () => {
+    const inbox = new AgentEventInbox();
+    const approvalPromise = inbox.postToolApprovalEvent(new ToolExecutionApprovalEvent('approval-1', true));
+    const resultPromise = inbox.postToolResultEvent(new ToolResultEvent('tool', { ok: true }, 'result-1'));
 
     const drained = inbox.settleQueuedAwaitablesForShutdown('agent-1');
 
-    expect(drained.map((message) => message.kind)).toEqual(['tool_approval', 'tool_result']);
+    expect(drained.map((entry) => entry.event.constructor.name)).toEqual([
+      'ToolExecutionApprovalEvent',
+      'ToolResultEvent'
+    ]);
     await expect(timeout(approvalPromise)).resolves.toMatchObject({
       accepted: false,
       code: 'runtime_stopped',
@@ -136,5 +129,4 @@ describe('AgentMessageInbox', () => {
       invocationId: 'result-1'
     });
   });
-
 });

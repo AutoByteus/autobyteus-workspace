@@ -5,6 +5,8 @@ import { InterAgentMessage } from './message/inter-agent-message.js';
 import {
   UserMessageReceivedEvent,
   InterAgentMessageReceivedEvent,
+  ToolExecutionApprovalEvent,
+  ToolResultEvent,
   BaseEvent
 } from './events/agent-events.js';
 import type {
@@ -14,11 +16,11 @@ import type {
 import {
   normalizeToolApprovalInvocationId,
   type PostToolApprovalResult
-} from './tool-approval-command.js';
+} from './tool-approval-result.js';
 import {
   normalizeToolResultInvocationId,
   type PostToolResultResult
-} from './tool-result-command.js';
+} from './tool-result-posting.js';
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -72,14 +74,15 @@ export class Agent {
       throw new TypeError('is_approved must be a boolean.');
     }
 
-    return this.runtime.postToolApproval({
-      kind: 'tool_approval',
-      invocationId,
-      approved: isApproved,
-      reason: reason ?? null,
-      ...(options.turnId ? { turnId: options.turnId } : {}),
-      ...(options.requestedBy ? { requestedBy: options.requestedBy } : {})
-    });
+    return this.runtime.postToolApprovalEvent(
+      new ToolExecutionApprovalEvent(
+        invocationId,
+        isApproved,
+        reason ?? undefined,
+        options.turnId,
+        options.requestedBy
+      )
+    );
   }
 
   async postToolExecutionResult(
@@ -92,16 +95,17 @@ export class Agent {
       throw new Error('tool_invocation_id must be a non-empty string.');
     }
 
-    return this.runtime.postToolResult({
-      kind: 'tool_result',
-      invocationId,
-      result,
-      ...(options.turnId ? { turnId: options.turnId } : {}),
-      ...(options.toolName ? { toolName: options.toolName } : {}),
-      ...(options.error ? { error: options.error } : {}),
-      ...(options.toolArgs ? { toolArgs: options.toolArgs } : {}),
-      ...(typeof options.isDenied === 'boolean' ? { isDenied: options.isDenied } : {})
-    });
+    return this.runtime.postToolResultEvent(
+      new ToolResultEvent(
+        options.toolName ?? '',
+        result,
+        invocationId,
+        options.error,
+        options.toolArgs,
+        options.turnId,
+        options.isDenied ?? false
+      )
+    );
   }
 
   get currentStatus(): AgentStatus {

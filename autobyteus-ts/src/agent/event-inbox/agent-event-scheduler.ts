@@ -1,60 +1,65 @@
+import {
+  InterAgentMessageReceivedEvent,
+  LifecycleEvent,
+  ToolExecutionApprovalEvent,
+  ToolResultEvent,
+  UserMessageReceivedEvent
+} from '../events/agent-events.js';
 import type { AgentContext } from '../context/agent-context.js';
 import type { AgentRuntimeState } from '../context/agent-runtime-state.js';
 import type { InboxLane } from './inbox-queue-store.js';
-import type { AgentMessageInbox } from './agent-message-inbox.js';
+import type { AgentEventInbox } from './agent-event-inbox.js';
 import type {
-  AgentInboxMessage,
-  AgentMessageHandlerResult,
-  InterAgentInboxMessage,
-  RuntimeLifecycleInboxMessage,
-  ToolApprovalInboxMessage,
-  ToolResultInboxMessage,
-  UserInboxMessage
-} from './agent-inbox-message.js';
-import type { AgentMessageHandler } from './handlers/agent-message-handler.js';
+  AgentEventInboxEntry,
+  AgentEventProcessorResult,
+  ActiveTurnEventInboxEntry,
+  RuntimeLifecycleEventInboxEntry,
+  TurnStartEventInboxEntry
+} from './agent-event-inbox-entry.js';
+import type { AgentEventProcessor } from './processors/agent-event-processor.js';
 
 const ACTIVE_TURN_PRIORITY: readonly InboxLane[] = ['runtime_lifecycle', 'active_turn'] as const;
 const IDLE_PRIORITY: readonly InboxLane[] = ['runtime_lifecycle', 'active_turn', 'turn_start'] as const;
 
-export type AgentMessageSchedulerHandlers = {
-  userMessageHandler: AgentMessageHandler<UserInboxMessage | InterAgentInboxMessage>;
-  lifecycleHandler: AgentMessageHandler<RuntimeLifecycleInboxMessage>;
-  toolApprovalHandler: AgentMessageHandler<ToolApprovalInboxMessage>;
-  toolResultHandler: AgentMessageHandler<ToolResultInboxMessage>;
+export type AgentEventSchedulerProcessors = {
+  turnStartProcessor: AgentEventProcessor<TurnStartEventInboxEntry>;
+  lifecycleProcessor: AgentEventProcessor<RuntimeLifecycleEventInboxEntry>;
+  toolApprovalProcessor: AgentEventProcessor<ActiveTurnEventInboxEntry>;
+  toolResultProcessor: AgentEventProcessor<ActiveTurnEventInboxEntry>;
 };
 
 type CancellableWait = { promise: Promise<void>; cancel: () => void };
 
-export class AgentMessageScheduler {
+export class AgentEventScheduler {
   private dispatchabilityWaiters: Array<() => void> = [];
   private dispatchabilityVersion = 0;
 
   constructor(
     private readonly context: AgentContext,
-    private readonly handlers: AgentMessageSchedulerHandlers
+    private readonly processors: AgentEventSchedulerProcessors
   ) {}
 
   async nextDispatchable(input: {
-    inbox: AgentMessageInbox;
+    inbox: AgentEventInbox;
     runtimeState: AgentRuntimeState;
     signal?: AbortSignal;
-  }): Promise<AgentInboxMessage> {
+  }): Promise<AgentEventInboxEntry> {
     while (true) {
-      const message = this.claimNextDispatchable(input.inbox, input.runtimeState);
-      if (message) {
-        return message;
+      const entry = this.claimNextDispatchable(input.inbox, input.runtimeState);
+      if (entry) {
+        return entry;
       }
       await this.waitForAvailabilityOrDispatchability(input.inbox, input.runtimeState, input.signal);
     }
   }
 
-  async dispatch(message: AgentInboxMessage): Promise<AgentMessageHandlerResult> {
+  async dispatch(entry: AgentEventInboxEntry): Promise<AgentEventProcessorResult> {
     try {
-      const result = await this.handlerFor(message).handle(message as never, this.context);
-      this.context.state.agentMessageInbox?.resolveAwaitable(message, result);
+      const result = await this.processorFor(entry).process(entry as never, this.context);
+      this.context.state.agentEventInbox?.resolveAwaitable(entry, result);
       return result;
     } catch (error) {
-      this.context.state.agentMessageInbox?.rejectAwaitable(message, error);
+      this.context.state.agentEventInbox?.rejectAwaitable(entry, error);
       throw error;
     }
   }
@@ -69,42 +74,43 @@ export class AgentMessageScheduler {
   }
 
   private claimNextDispatchable(
-    inbox: AgentMessageInbox,
+    inbox: AgentEventInbox,
     runtimeState: AgentRuntimeState
-  ): AgentInboxMessage | null {
+  ): AgentEventInboxEntry | null {
     const priority = runtimeState.activeTurn || runtimeState.activeTurnTask ? ACTIVE_TURN_PRIORITY : IDLE_PRIORITY;
     for (const lane of priority) {
-      const message = inbox.claimFirst(lane);
-      if (message) {
-        return message;
+      const entry = inbox.claimFirst(lane);
+      if (entry) {
+        return entry;
       }
     }
     return null;
   }
 
-  private handlerFor(message: AgentInboxMessage): AgentMessageHandler<any> {
-    switch (message.kind) {
-      case 'user_message':
-      case 'inter_agent_message':
-        return this.handlers.userMessageHandler;
-      case 'runtime_lifecycle':
-        return this.handlers.lifecycleHandler;
-      case 'tool_approval':
-        return this.handlers.toolApprovalHandler;
-      case 'tool_result':
-        return this.handlers.toolResultHandler;
-      default:
-        throw new Error(`Unsupported agent inbox message kind '${(message as { kind?: unknown }).kind}'.`);
+  private processorFor(entry: AgentEventInboxEntry): AgentEventProcessor<any> {
+    const event = entry.event;
+    if (event instanceof UserMessageReceivedEvent || event instanceof InterAgentMessageReceivedEvent) {
+      return this.processors.turnStartProcessor;
     }
+    if (event instanceof ToolExecutionApprovalEvent) {
+      return this.processors.toolApprovalProcessor;
+    }
+    if (event instanceof ToolResultEvent) {
+      return this.processors.toolResultProcessor;
+    }
+    if (event instanceof LifecycleEvent) {
+      return this.processors.lifecycleProcessor;
+    }
+    throw new Error(`Unsupported agent event inbox entry event '${event.constructor.name}'.`);
   }
 
   private async waitForAvailabilityOrDispatchability(
-    inbox: AgentMessageInbox,
+    inbox: AgentEventInbox,
     runtimeState: AgentRuntimeState,
     signal?: AbortSignal
   ): Promise<void> {
     if (signal?.aborted) {
-      throw new Error('Agent message scheduler wait aborted.');
+      throw new Error('Agent event scheduler wait aborted.');
     }
 
     if (this.hasDispatchable(inbox, runtimeState)) {
@@ -136,7 +142,7 @@ export class AgentMessageScheduler {
     }
   }
 
-  private hasDispatchable(inbox: AgentMessageInbox, runtimeState: AgentRuntimeState): boolean {
+  private hasDispatchable(inbox: AgentEventInbox, runtimeState: AgentRuntimeState): boolean {
     const priority = runtimeState.activeTurn || runtimeState.activeTurnTask ? ACTIVE_TURN_PRIORITY : IDLE_PRIORITY;
     return priority.some((lane) => inbox.peekFirst(lane) !== null);
   }
@@ -144,7 +150,7 @@ export class AgentMessageScheduler {
   private createDispatchabilityWaiter(signal?: AbortSignal): CancellableWait {
     if (signal?.aborted) {
       return {
-        promise: Promise.reject(new Error('Agent message scheduler wait aborted.')),
+        promise: Promise.reject(new Error('Agent event scheduler wait aborted.')),
         cancel: () => undefined
       };
     }
@@ -168,7 +174,7 @@ export class AgentMessageScheduler {
         if (settled) return;
         settled = true;
         cleanup();
-        reject(new Error('Agent message scheduler wait aborted.'));
+        reject(new Error('Agent event scheduler wait aborted.'));
       };
       this.dispatchabilityWaiters.push(waiter);
       signal?.addEventListener('abort', onAbort, { once: true });

@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AgentRuntimeState } from '../../../../src/agent/context/agent-runtime-state.js';
 import { AgentStatus } from '../../../../src/agent/status/status-enum.js';
+import { ToolExecutionApprovalEvent, ToolResultEvent } from '../../../../src/agent/events/agent-events.js';
 import { ToolInvocation } from '../../../../src/agent/tool-invocation.js';
 import { MemoryManager } from '../../../../src/memory/memory-manager.js';
 import { MemoryStore } from '../../../../src/memory/store/base-store.js';
@@ -179,12 +180,7 @@ describe('AgentRuntimeState', () => {
     const activeTurn = state.startActiveTurn('turn-1');
     activeTurn.startToolInvocationBatch([new ToolInvocation('tool', {}, 'inv-approval', 'turn-1')]);
 
-    const autoExecuteResult = state.postToolApprovalToActiveTurn({
-      kind: 'tool_approval',
-      invocationId: 'inv-approval',
-      turnId: 'turn-1',
-      approved: true
-    });
+    const autoExecuteResult = state.postToolApprovalEventToActiveTurn(new ToolExecutionApprovalEvent('inv-approval', true, undefined, 'turn-1'));
     expect(autoExecuteResult.accepted).toBe(false);
     expect(autoExecuteResult.code).toBe('no_pending_invocation');
 
@@ -192,15 +188,10 @@ describe('AgentRuntimeState', () => {
     const waitPromise = activeTurn.toolInputPort.waitForApproval('inv-approval', {
       signal: activeTurn.executionScope.signal
     });
-    const posted = state.postToolApprovalToActiveTurn({
-      kind: 'tool_approval',
-      invocationId: 'inv-approval',
-      turnId: 'turn-1',
-      approved: true
-    });
+    const posted = state.postToolApprovalEventToActiveTurn(new ToolExecutionApprovalEvent('inv-approval', true, undefined, 'turn-1'));
 
     expect(posted).toEqual({ accepted: true, code: 'posted', turnId: 'turn-1', invocationId: 'inv-approval' });
-    await expect(waitPromise).resolves.toMatchObject({ approved: true, invocationId: 'inv-approval' });
+    await expect(waitPromise).resolves.toMatchObject({ isApproved: true, toolInvocationId: 'inv-approval' });
   });
 
   it('validates external tool results through the active turn TurnToolInputPort', async () => {
@@ -212,41 +203,23 @@ describe('AgentRuntimeState', () => {
     } as any;
     const activeTurn = state.startActiveTurn('turn-1');
 
-    const noPending = state.postToolResultToActiveTurn({
-      kind: 'tool_result',
-      invocationId: 'inv-result',
-      turnId: 'turn-1',
-      result: { ok: true }
-    });
+    const noPending = state.postToolResultEventToActiveTurn(new ToolResultEvent('tool', { ok: true }, 'inv-result', undefined, undefined, 'turn-1'));
     expect(noPending.accepted).toBe(false);
     expect(noPending.code).toBe('no_pending_invocation');
 
     activeTurn.startToolInvocationBatch([new ToolInvocation('tool', {}, 'inv-result', 'turn-1')]);
-    const noConsumer = state.postToolResultToActiveTurn({
-      kind: 'tool_result',
-      invocationId: 'inv-result',
-      turnId: 'turn-1',
-      toolName: 'tool',
-      result: { ok: true }
-    });
+    const noConsumer = state.postToolResultEventToActiveTurn(new ToolResultEvent('tool', { ok: true }, 'inv-result', undefined, undefined, 'turn-1'));
     expect(noConsumer.accepted).toBe(false);
     expect(noConsumer.code).toBe('no_result_consumer');
 
     const waitPromise = activeTurn.toolInputPort.waitForToolResult('inv-result', {
       signal: activeTurn.executionScope.signal
     });
-    const posted = state.postToolResultToActiveTurn({
-      kind: 'tool_result',
-      invocationId: 'inv-result',
-      turnId: 'turn-1',
-      toolName: 'tool',
-      result: { ok: true }
-    });
+    const posted = state.postToolResultEventToActiveTurn(new ToolResultEvent('tool', { ok: true }, 'inv-result', undefined, undefined, 'turn-1'));
 
     expect(posted).toEqual({ accepted: true, code: 'posted', turnId: 'turn-1', invocationId: 'inv-result' });
     await expect(waitPromise).resolves.toMatchObject({
-      kind: 'tool_result',
-      invocationId: 'inv-result',
+      toolInvocationId: 'inv-result',
       toolName: 'tool',
       result: { ok: true }
     });

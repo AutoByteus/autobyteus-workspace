@@ -5,7 +5,7 @@ export type CancellableWait = {
   cancel: () => void;
 };
 
-class AsyncQueue<T extends { messageId: string }> {
+class AsyncQueue<T extends { entryId: string }> {
   private items: T[] = [];
 
   put(item: T): void {
@@ -16,8 +16,8 @@ class AsyncQueue<T extends { messageId: string }> {
     return this.items[0] ?? null;
   }
 
-  claim(messageId: string): T | null {
-    const index = this.items.findIndex((item) => item.messageId === messageId);
+  claim(entryId: string): T | null {
+    const index = this.items.findIndex((item) => item.entryId === entryId);
     if (index < 0) {
       return null;
     }
@@ -40,7 +40,7 @@ class AsyncQueue<T extends { messageId: string }> {
   }
 }
 
-export class InboxQueueStore<T extends { messageId: string }> {
+export class InboxQueueStore<T extends { entryId: string }> {
   private readonly queues = new Map<InboxLane, AsyncQueue<T>>();
   private availabilityWaiters: Array<() => void> = [];
   private availabilityVersion = 0;
@@ -74,9 +74,9 @@ export class InboxQueueStore<T extends { messageId: string }> {
     return this.getQueue(lane).peek();
   }
 
-  claim(messageId: string): T | null {
+  claim(entryId: string): T | null {
     for (const queue of this.queues.values()) {
-      const item = queue.claim(messageId);
+      const item = queue.claim(entryId);
       if (item) {
         return item;
       }

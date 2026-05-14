@@ -47,7 +47,7 @@ import { AgentRuntime } from '../../../../src/agent/runtime/agent-runtime.js';
 import { AgentConfig } from '../../../../src/agent/context/agent-config.js';
 import { AgentRuntimeState } from '../../../../src/agent/context/agent-runtime-state.js';
 import { AgentContext } from '../../../../src/agent/context/agent-context.js';
-import { AgentMessageInbox } from '../../../../src/agent/message-inbox/agent-message-inbox.js';
+import { AgentEventInbox } from '../../../../src/agent/event-inbox/agent-event-inbox.js';
 import { AgentStatus } from '../../../../src/agent/status/status-enum.js';
 import {
   ShutdownRequestedEvent,
@@ -56,6 +56,7 @@ import {
   AgentInterruptRequestedEvent,
   UserMessageReceivedEvent,
   ToolExecutionApprovalEvent,
+  ToolResultEvent,
   PendingToolInvocationEvent
 } from '../../../../src/agent/events/agent-events.js';
 import { AgentInputUserMessage } from '../../../../src/agent/message/agent-input-user-message.js';
@@ -256,26 +257,21 @@ describe('AgentRuntime', () => {
     expect(activeTurn.executionScope.signal.aborted).toBe(false);
   });
 
-  it('posts tool approvals as awaitable AgentMessageInbox active-turn messages', async () => {
+  it('posts tool approvals as awaitable AgentEventInbox active-turn events', async () => {
     const context = makeContext();
     const runtime = new AgentRuntime(context, {} as any);
-    const inbox = new AgentMessageInbox();
-    inbox.postToolApproval = vi.fn(async () => ({
+    const inbox = new AgentEventInbox();
+    inbox.postToolApprovalEvent = vi.fn(async () => ({
       accepted: true,
       code: 'posted',
       turnId: 'turn-1',
       invocationId: 'inv-1'
     })) as any;
-    context.state.agentMessageInbox = inbox;
+    context.state.agentEventInbox = inbox;
     mocks.workerInstance.isAlive.mockReturnValue(true);
 
-    const result = await runtime.postToolApproval({
-      kind: 'tool_approval',
-      invocationId: 'inv-1',
-      turnId: 'turn-1',
-      approved: true,
-      reason: 'approved'
-    });
+    const event = new ToolExecutionApprovalEvent('inv-1', true, 'approved', 'turn-1');
+    const result = await runtime.postToolApprovalEvent(event);
 
     expect(result).toEqual({
       accepted: true,
@@ -283,35 +279,24 @@ describe('AgentRuntime', () => {
       turnId: 'turn-1',
       invocationId: 'inv-1'
     });
-    expect(inbox.postToolApproval).toHaveBeenCalledWith({
-      kind: 'tool_approval',
-      invocationId: 'inv-1',
-      turnId: 'turn-1',
-      approved: true,
-      reason: 'approved'
-    });
+    expect(inbox.postToolApprovalEvent).toHaveBeenCalledWith(event);
   });
 
-  it('posts external tool results as awaitable AgentMessageInbox active-turn messages', async () => {
+  it('posts external tool results as awaitable AgentEventInbox active-turn events', async () => {
     const context = makeContext();
     const runtime = new AgentRuntime(context, {} as any);
-    const inbox = new AgentMessageInbox();
-    inbox.postToolResult = vi.fn(async () => ({
+    const inbox = new AgentEventInbox();
+    inbox.postToolResultEvent = vi.fn(async () => ({
       accepted: true,
       code: 'posted',
       turnId: 'turn-1',
       invocationId: 'inv-1'
     })) as any;
-    context.state.agentMessageInbox = inbox;
+    context.state.agentEventInbox = inbox;
     mocks.workerInstance.isAlive.mockReturnValue(true);
 
-    const result = await runtime.postToolResult({
-      kind: 'tool_result',
-      invocationId: 'inv-1',
-      turnId: 'turn-1',
-      toolName: 'tool',
-      result: { ok: true }
-    });
+    const event = new ToolResultEvent('tool', { ok: true }, 'inv-1', undefined, undefined, 'turn-1');
+    const result = await runtime.postToolResultEvent(event);
 
     expect(result).toEqual({
       accepted: true,
@@ -319,13 +304,7 @@ describe('AgentRuntime', () => {
       turnId: 'turn-1',
       invocationId: 'inv-1'
     });
-    expect(inbox.postToolResult).toHaveBeenCalledWith({
-      kind: 'tool_result',
-      invocationId: 'inv-1',
-      turnId: 'turn-1',
-      toolName: 'tool',
-      result: { ok: true }
-    });
+    expect(inbox.postToolResultEvent).toHaveBeenCalledWith(event);
   });
 
   it('returns runtime_stopped for tool approvals/results when the worker is inactive or stopping', async () => {
@@ -333,11 +312,9 @@ describe('AgentRuntime', () => {
     const runtime = new AgentRuntime(context, {} as any);
     mocks.workerInstance.isAlive.mockReturnValue(false);
 
-    const inactiveApproval = await runtime.postToolApproval({
-      kind: 'tool_approval',
-      invocationId: 'inv-1',
-      approved: true
-    });
+    const inactiveApproval = await runtime.postToolApprovalEvent(
+      new ToolExecutionApprovalEvent('inv-1', true)
+    );
     expect(inactiveApproval).toEqual({
       accepted: false,
       code: 'runtime_stopped',
@@ -347,11 +324,9 @@ describe('AgentRuntime', () => {
 
     mocks.workerInstance.isAlive.mockReturnValue(true);
     mocks.workerInstance.isStopping.mockReturnValue(true);
-    const stoppingResult = await runtime.postToolResult({
-      kind: 'tool_result',
-      invocationId: 'inv-1',
-      result: { ok: true }
-    });
+    const stoppingResult = await runtime.postToolResultEvent(
+      new ToolResultEvent('tool', { ok: true }, 'inv-1')
+    );
 
     expect(stoppingResult).toEqual({
       accepted: false,
@@ -362,26 +337,26 @@ describe('AgentRuntime', () => {
     expect(mocks.workerInstance.start).not.toHaveBeenCalled();
   });
 
-  it('routes external turn-starting input through AgentMessageInbox', async () => {
+  it('routes external turn-starting input through AgentEventInbox', async () => {
     const context = makeContext();
     const runtime = new AgentRuntime(context, {} as any);
-    const agentMessageInbox = new AgentMessageInbox();
-    agentMessageInbox.postUserMessage = vi.fn(async () => undefined) as any;
-    context.state.agentMessageInbox = agentMessageInbox;
+    const agentEventInbox = new AgentEventInbox();
+    agentEventInbox.postUserEvent = vi.fn(async () => undefined) as any;
+    context.state.agentEventInbox = agentEventInbox;
     mocks.workerInstance.isAlive.mockReturnValue(true);
 
     const event = new UserMessageReceivedEvent(new AgentInputUserMessage('hello'));
     await runtime.submitEvent(event);
 
-    expect(agentMessageInbox.postUserMessage).toHaveBeenCalledWith(event);
+    expect(agentEventInbox.postUserEvent).toHaveBeenCalledWith(event);
   });
 
   it('rejects unsupported turn-local operational events instead of queuing them as lifecycle input', async () => {
     const context = makeContext();
     const runtime = new AgentRuntime(context, {} as any);
-    const agentMessageInbox = new AgentMessageInbox();
-    agentMessageInbox.postLifecycleMessage = vi.fn(async () => undefined) as any;
-    context.state.agentMessageInbox = agentMessageInbox;
+    const agentEventInbox = new AgentEventInbox();
+    agentEventInbox.postLifecycleEvent = vi.fn(async () => undefined) as any;
+    context.state.agentEventInbox = agentEventInbox;
     mocks.workerInstance.isAlive.mockReturnValue(true);
 
     await expect(
@@ -392,6 +367,6 @@ describe('AgentRuntime', () => {
       runtime.submitEvent(new ToolExecutionApprovalEvent('invocation-1', true))
     ).rejects.toThrow(/unsupported runtime input event 'ToolExecutionApprovalEvent'/);
 
-    expect(agentMessageInbox.postLifecycleMessage).not.toHaveBeenCalled();
+    expect(agentEventInbox.postLifecycleEvent).not.toHaveBeenCalled();
   });
 });

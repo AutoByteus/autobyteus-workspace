@@ -8,12 +8,12 @@ import {
   ShutdownRequestedEvent,
   BaseEvent
 } from '../events/agent-events.js';
-import { AgentMessageInbox } from '../message-inbox/agent-message-inbox.js';
-import { AgentMessageScheduler } from '../message-inbox/agent-message-scheduler.js';
-import { RuntimeLifecycleMessageHandler } from '../message-inbox/handlers/runtime-lifecycle-message-handler.js';
-import { ToolApprovalMessageHandler } from '../message-inbox/handlers/tool-approval-message-handler.js';
-import { ToolResultMessageHandler } from '../message-inbox/handlers/tool-result-message-handler.js';
-import { TurnStartMessageHandler } from '../message-inbox/handlers/turn-start-message-handler.js';
+import { AgentEventInbox } from '../event-inbox/agent-event-inbox.js';
+import { AgentEventScheduler } from '../event-inbox/agent-event-scheduler.js';
+import { RuntimeLifecycleEventProcessor } from '../event-inbox/processors/runtime-lifecycle-event-processor.js';
+import { ToolApprovalEventProcessor } from '../event-inbox/processors/tool-approval-event-processor.js';
+import { ToolResultEventProcessor } from '../event-inbox/processors/tool-result-event-processor.js';
+import { TurnStartEventProcessor } from '../event-inbox/processors/turn-start-event-processor.js';
 import { AgentEventStore } from '../events/event-store.js';
 import { AgentStatusDeriver } from '../status/status-deriver.js';
 import { applyEventAndDeriveStatus } from '../status/status-update-utils.js';
@@ -22,7 +22,7 @@ import { AgentTurnRunner, type AgentTurnTrigger } from '../loop/agent-turn-runne
 import { AgentShutdownOrchestrator } from '../shutdown-steps/agent-shutdown-orchestrator.js';
 import type { AgentContext } from '../context/agent-context.js';
 import type { TurnOutcome } from '../agent-turn.js';
-import type { AgentInboxMessage, TurnStartMessageResult } from '../message-inbox/agent-inbox-message.js';
+import type { AgentEventInboxEntry, TurnStartEventResult } from '../event-inbox/agent-event-inbox-entry.js';
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -35,7 +35,7 @@ export class AgentWorker {
   private stopRequested = false;
   private stopInitiated = false;
   private doneCallbacks: Array<(result: PromiseSettledResult<void>) => void> = [];
-  private scheduler: AgentMessageScheduler | null = null;
+  private scheduler: AgentEventScheduler | null = null;
 
   constructor(context: AgentContext, _eventHandlerRegistry?: unknown) {
     this.context = context;
@@ -141,21 +141,21 @@ export class AgentWorker {
       console.info(`Agent '${agentId}': Runtime init completed (status deriver initialized).`);
     }
 
-    if (!this.context.state.agentMessageInbox) {
-      this.context.state.agentMessageInbox = new AgentMessageInbox();
-      console.info(`Agent '${agentId}': Runtime init completed (AgentMessageInbox initialized).`);
+    if (!this.context.state.agentEventInbox) {
+      this.context.state.agentEventInbox = new AgentEventInbox();
+      console.info(`Agent '${agentId}': Runtime init completed (AgentEventInbox initialized).`);
     }
 
-    this.scheduler = new AgentMessageScheduler(this.context, {
-      userMessageHandler: new TurnStartMessageHandler((trigger) => this.startTurnRunner(trigger)),
-      lifecycleHandler: new RuntimeLifecycleMessageHandler(
+    this.scheduler = new AgentEventScheduler(this.context, {
+      turnStartProcessor: new TurnStartEventProcessor((trigger) => this.startTurnRunner(trigger)),
+      lifecycleProcessor: new RuntimeLifecycleEventProcessor(
         (event) => this.applyStatusEvent(event),
         () => { this.stopRequested = true; }
       ),
-      toolApprovalHandler: new ToolApprovalMessageHandler((event) => this.applyStatusEvent(event)),
-      toolResultHandler: new ToolResultMessageHandler()
+      toolApprovalProcessor: new ToolApprovalEventProcessor((event) => this.applyStatusEvent(event)),
+      toolResultProcessor: new ToolResultEventProcessor()
     });
-    console.info(`Agent '${agentId}': Runtime init completed (AgentMessageScheduler initialized).`);
+    console.info(`Agent '${agentId}': Runtime init completed (AgentEventScheduler initialized).`);
     return true;
   }
 
@@ -179,34 +179,34 @@ export class AgentWorker {
         return;
       }
 
-      console.info(`AgentWorker '${agentId}' initialized successfully. Entering main message scheduler loop.`);
+      console.info(`AgentWorker '${agentId}' initialized successfully. Entering main event scheduler loop.`);
       while (!this.stopRequested) {
-        const inbox = this.context.state.agentMessageInbox!;
+        const inbox = this.context.state.agentEventInbox!;
         const scheduler = this.scheduler!;
-        let message: AgentInboxMessage | null = null;
+        let entry: AgentEventInboxEntry | null = null;
         try {
-          message = await scheduler.nextDispatchable({
+          entry = await scheduler.nextDispatchable({
             inbox,
             runtimeState: this.context.state
           });
         } catch {
-          message = null;
+          entry = null;
         }
 
-        if (!message) {
+        if (!entry) {
           continue;
         }
 
-        if (this.stopRequested && message.lane === 'turn_start') {
+        if (this.stopRequested && entry.lane === 'turn_start') {
           break;
         }
 
         try {
-          await scheduler.dispatch(message);
+          await scheduler.dispatch(entry);
         } catch (error) {
-          console.error(`Fatal error in AgentWorker '${agentId}' scheduler message handling: ${error}`);
+          console.error(`Fatal error in AgentWorker '${agentId}' scheduler event processing: ${error}`);
           await this.applyStatusEvent(
-            new AgentErrorEvent('Agent worker scheduler message failed.', String(error))
+            new AgentErrorEvent('Agent worker scheduler event failed.', String(error))
           );
           this.stopRequested = true;
         }
@@ -232,7 +232,7 @@ export class AgentWorker {
     }
   }
 
-  private async startTurnRunner(trigger: AgentTurnTrigger): Promise<TurnStartMessageResult> {
+  private async startTurnRunner(trigger: AgentTurnTrigger): Promise<TurnStartEventResult> {
     const agentId = this.context.agentId;
     if (this.stopRequested) {
       return {
@@ -275,19 +275,19 @@ export class AgentWorker {
       this.context.state.completeActiveTurn(turn.turnId);
       this.context.state.clearActiveTurnTask(turn.turnId);
       this.scheduler?.wakeDispatchabilityChanged();
-      this.context.state.agentMessageInbox?.wakeAvailability();
+      this.context.state.agentEventInbox?.wakeAvailability();
     }
   }
 
   private settleQueuedAwaitablesForShutdown(): void {
-    const inbox = this.context.state.agentMessageInbox;
+    const inbox = this.context.state.agentEventInbox;
     if (!inbox) {
       return;
     }
     const drained = inbox.settleQueuedAwaitablesForShutdown(this.context.agentId);
     if (drained.length > 0) {
       console.info(
-        `AgentWorker '${this.context.agentId}': Drained ${drained.length} queued inbox message(s) during shutdown.`
+        `AgentWorker '${this.context.agentId}': Drained ${drained.length} queued inbox event(s) during shutdown.`
       );
     }
   }
@@ -323,8 +323,8 @@ export class AgentWorker {
       activeTurn.interrupt('runtime_stop');
     }
 
-    if (this.context.state.agentMessageInbox) {
-      await this.context.state.agentMessageInbox.postLifecycleMessage(new AgentStoppedEvent());
+    if (this.context.state.agentEventInbox) {
+      await this.context.state.agentEventInbox.postLifecycleEvent(new AgentStoppedEvent());
       this.scheduler?.wakeDispatchabilityChanged();
     }
 

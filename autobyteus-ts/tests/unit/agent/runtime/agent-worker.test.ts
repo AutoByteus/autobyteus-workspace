@@ -25,13 +25,13 @@ vi.mock('../../../../src/agent/loop/agent-turn-runner.js', () => ({
 }));
 
 import { AgentWorker } from '../../../../src/agent/runtime/agent-worker.js';
-import { AgentMessageInbox } from '../../../../src/agent/message-inbox/agent-message-inbox.js';
+import { AgentEventInbox } from '../../../../src/agent/event-inbox/agent-event-inbox.js';
 import { AgentRuntimeState } from '../../../../src/agent/context/agent-runtime-state.js';
 import { AgentConfig } from '../../../../src/agent/context/agent-config.js';
 import { AgentContext } from '../../../../src/agent/context/agent-context.js';
 import { AgentStatus } from '../../../../src/agent/status/status-enum.js';
 import { AgentStatusDeriver } from '../../../../src/agent/status/status-deriver.js';
-import { UserMessageReceivedEvent } from '../../../../src/agent/events/agent-events.js';
+import { ToolExecutionApprovalEvent, UserMessageReceivedEvent } from '../../../../src/agent/events/agent-events.js';
 import { ToolInvocation } from '../../../../src/agent/tool-invocation.js';
 import { AgentInputUserMessage } from '../../../../src/agent/message/agent-input-user-message.js';
 import { CompleteResponse } from '../../../../src/llm/utils/response-types.js';
@@ -134,13 +134,13 @@ describe('AgentWorker', () => {
 
   it('runs one AgentTurnRunner for an external scheduler event', async () => {
     const context = makeContext();
-    context.state.agentMessageInbox = new AgentMessageInbox();
+    context.state.agentEventInbox = new AgentEventInbox();
     const worker = new AgentWorker(context);
     vi.spyOn(worker as any, 'initialize').mockResolvedValue(true as any);
 
     worker.start();
     await delay(10);
-    await context.state.agentMessageInbox.postUserMessage(
+    await context.state.agentEventInbox.postUserEvent(
       new UserMessageReceivedEvent(new AgentInputUserMessage('hello'))
     );
 
@@ -152,7 +152,7 @@ describe('AgentWorker', () => {
 
   it('start/stop lifecycle toggles isAlive and runs shutdown cleanup', async () => {
     const context = makeContext();
-    context.state.agentMessageInbox = new AgentMessageInbox();
+    context.state.agentEventInbox = new AgentEventInbox();
     const worker = new AgentWorker(context);
     vi.spyOn(worker as any, 'initialize').mockResolvedValue(true as any);
 
@@ -180,7 +180,7 @@ describe('AgentWorker', () => {
 
   it('keeps the scheduler loop alive for active-turn tool approval messages while a runner is active', async () => {
     const context = makeContext();
-    context.state.agentMessageInbox = new AgentMessageInbox();
+    context.state.agentEventInbox = new AgentEventInbox();
     let releaseRunner!: () => void;
     mocks.runnerRun.mockImplementation(async () => {
       await new Promise<void>((resolve) => { releaseRunner = resolve; });
@@ -191,7 +191,7 @@ describe('AgentWorker', () => {
 
     worker.start();
     await delay(10);
-    await context.state.agentMessageInbox.postUserMessage(
+    await context.state.agentEventInbox.postUserEvent(
       new UserMessageReceivedEvent(new AgentInputUserMessage('hello'))
     );
 
@@ -203,16 +203,12 @@ describe('AgentWorker', () => {
       signal: activeTurn.executionScope.signal
     });
 
-    const postPromise = context.state.agentMessageInbox.postToolApproval({
-      kind: 'tool_approval',
-      invocationId: 'inv-approval',
-      turnId: activeTurn.turnId,
-      approved: true,
-      reason: 'ok'
-    });
+    const postPromise = context.state.agentEventInbox.postToolApprovalEvent(
+      new ToolExecutionApprovalEvent('inv-approval', true, 'ok', activeTurn.turnId)
+    );
 
     await expect(postPromise).resolves.toMatchObject({ accepted: true, code: 'posted' });
-    await expect(approvalPromise).resolves.toMatchObject({ approved: true, invocationId: 'inv-approval' });
+    await expect(approvalPromise).resolves.toMatchObject({ isApproved: true, toolInvocationId: 'inv-approval' });
 
     releaseRunner();
     expect(await waitForCondition(() => context.state.activeTurn === null)).toBe(true);
@@ -221,13 +217,11 @@ describe('AgentWorker', () => {
 
   it('settles queued awaitable inbox commands during shutdown drain', async () => {
     const context = makeContext();
-    context.state.agentMessageInbox = new AgentMessageInbox();
+    context.state.agentEventInbox = new AgentEventInbox();
     const worker = new AgentWorker(context);
-    const approvalPromise = context.state.agentMessageInbox.postToolApproval({
-      kind: 'tool_approval',
-      invocationId: 'approval-shutdown',
-      approved: true
-    });
+    const approvalPromise = context.state.agentEventInbox.postToolApprovalEvent(
+      new ToolExecutionApprovalEvent('approval-shutdown', true)
+    );
 
     (worker as any).settleQueuedAwaitablesForShutdown();
 
@@ -236,6 +230,6 @@ describe('AgentWorker', () => {
       code: 'runtime_stopped',
       invocationId: 'approval-shutdown'
     });
-    expect(context.state.agentMessageInbox.qsize()).toBe(0);
+    expect(context.state.agentEventInbox.qsize()).toBe(0);
   });
 });

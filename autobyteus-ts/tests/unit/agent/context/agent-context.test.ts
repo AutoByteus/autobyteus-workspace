@@ -3,7 +3,7 @@ import { AgentContext } from '../../../../src/agent/context/agent-context.js';
 import { AgentConfig } from '../../../../src/agent/context/agent-config.js';
 import { AgentRuntimeState } from '../../../../src/agent/context/agent-runtime-state.js';
 import { AgentStatus } from '../../../../src/agent/status/status-enum.js';
-import { AgentMessageInbox } from '../../../../src/agent/message-inbox/agent-message-inbox.js';
+import { AgentEventInbox } from '../../../../src/agent/event-inbox/agent-event-inbox.js';
 import { ToolInvocation } from '../../../../src/agent/tool-invocation.js';
 import { BaseLLM } from '../../../../src/llm/base.js';
 import { LLMModel } from '../../../../src/llm/models.js';
@@ -72,17 +72,17 @@ describe('AgentContext', () => {
     expect(context.customData).toEqual({});
   });
 
-  it('throws when AgentMessageInbox is not initialized', () => {
+  it('throws when AgentEventInbox is not initialized', () => {
     const llm = makeLLM();
     const config = new AgentConfig('name', 'role', 'desc', llm);
     const state = new AgentRuntimeState('agent-3');
 
     const context = new AgentContext('agent-3', config, state);
 
-    expect(() => context.agentMessageInbox).toThrow(/AgentMessageInbox/);
+    expect(() => context.agentEventInbox).toThrow(/AgentEventInbox/);
 
-    state.agentMessageInbox = new AgentMessageInbox();
-    expect(context.agentMessageInbox).toBe(state.agentMessageInbox);
+    state.agentEventInbox = new AgentEventInbox();
+    expect(context.agentEventInbox).toBe(state.agentEventInbox);
   });
 
   it('gets tools and warns when missing', () => {

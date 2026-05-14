@@ -1,12 +1,3 @@
-export type ToolApprovalInputMessage = {
-  kind: 'tool_approval';
-  invocationId: string;
-  turnId?: string;
-  approved: boolean;
-  reason?: string | null;
-  requestedBy?: string;
-};
-
 export type PostToolApprovalResult =
   | { accepted: true; code: 'posted'; turnId: string; invocationId: string }
   | { accepted: false; code: 'no_active_turn'; invocationId: string; message: string }

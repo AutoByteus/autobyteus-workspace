@@ -6,7 +6,7 @@ import { AgentContext } from '../../../../src/agent/context/agent-context.js';
 import { AgentRuntime } from '../../../../src/agent/runtime/agent-runtime.js';
 import { AgentStatus } from '../../../../src/agent/status/status-enum.js';
 import { AgentInputUserMessage } from '../../../../src/agent/message/agent-input-user-message.js';
-import { UserMessageReceivedEvent } from '../../../../src/agent/events/agent-events.js';
+import { ToolExecutionApprovalEvent, ToolResultEvent, UserMessageReceivedEvent } from '../../../../src/agent/events/agent-events.js';
 import { BaseLLM, type LLMInvocationOptions } from '../../../../src/llm/base.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
@@ -838,11 +838,9 @@ describe('Agent runtime integration', () => {
       expect(restoredMessages.some((message) => message.content === 'needs approval')).toBe(false);
       expect(restoredMessages.some((message) => message.tool_payload)).toBe(false);
 
-      const lateApproval = await runtime.postToolApproval({
-        kind: 'tool_approval',
-        invocationId: 'call_approval_1',
-        approved: true
-      });
+      const lateApproval = await runtime.postToolApprovalEvent(
+        new ToolExecutionApprovalEvent('call_approval_1', true)
+      );
       await delay(50);
       expect(lateApproval.accepted).toBe(false);
       expect(llm.requestMessages).toHaveLength(1);
@@ -907,12 +905,9 @@ describe('Agent runtime integration', () => {
         arguments: { job: 'async', priority: 7 }
       });
 
-      const postResult = await runtime.postToolResult({
-        kind: 'tool_result',
-        invocationId: 'call_external_result_1',
-        toolName: ExternalResultTool.getName(),
-        result: 'external-ok'
-      });
+      const postResult = await runtime.postToolResultEvent(
+        new ToolResultEvent(ExternalResultTool.getName(), 'external-ok', 'call_external_result_1')
+      );
 
       expect(postResult).toMatchObject({
         accepted: true,

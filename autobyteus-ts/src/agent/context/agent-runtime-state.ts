@@ -1,8 +1,9 @@
 import { AgentEventStore } from '../events/event-store.js';
+import { ToolExecutionApprovalEvent, ToolResultEvent } from '../events/agent-events.js';
 import { AgentStatus } from '../status/status-enum.js';
 import { ToolInvocation } from '../tool-invocation.js';
 import { AgentTurn } from '../agent-turn.js';
-import type { AgentMessageInbox } from '../message-inbox/agent-message-inbox.js';
+import type { AgentEventInbox } from '../event-inbox/agent-event-inbox.js';
 import { RecentSettledInvocationCache } from './recent-settled-invocation-cache.js';
 import { ToDoList } from '../../task-management/todo-list.js';
 import { BaseLLM } from '../../llm/base.js';
@@ -12,9 +13,8 @@ import type { WorkingContextSnapshotBootstrapOptions } from '../../memory/restor
 import {
   normalizeToolApprovalInvocationId,
   normalizeToolApprovalTurnId,
-  type ToolApprovalInputMessage,
   type PostToolApprovalResult
-} from '../tool-approval-command.js';
+} from '../tool-approval-result.js';
 
 import type { AgentStatusDeriver } from '../status/status-deriver.js';
 import type { AgentStatusManager } from '../status/manager.js';
@@ -22,9 +22,8 @@ import type { TurnOutcome } from '../agent-turn.js';
 import {
   normalizeToolResultInvocationId,
   normalizeToolResultTurnId,
-  type ToolResultInputMessage,
   type PostToolResultResult
-} from '../tool-result-command.js';
+} from '../tool-result-posting.js';
 
 type ToolInstances = Record<string, BaseTool>;
 
@@ -33,7 +32,7 @@ export class AgentRuntimeState {
   currentStatus: AgentStatus;
   llmInstance: BaseLLM | null = null;
   toolInstances: ToolInstances | null = null;
-  agentMessageInbox: AgentMessageInbox | null = null;
+  agentEventInbox: AgentEventInbox | null = null;
   eventStore: AgentEventStore | null = null;
   statusDeriver: AgentStatusDeriver | null = null;
   workspaceRootPath: string | null;
@@ -75,7 +74,7 @@ export class AgentRuntimeState {
     this.recentSettledInvocationIds = new RecentSettledInvocationCache();
 
     console.info(
-      `AgentRuntimeState initialized for agent_id '${this.agentId}'. Initial status: ${this.currentStatus}. Workspace linked. AgentMessageInbox pending initialization. Output data via notifier.`
+      `AgentRuntimeState initialized for agent_id '${this.agentId}'. Initial status: ${this.currentStatus}. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.`
     );
   }
 
@@ -173,8 +172,8 @@ export class AgentRuntimeState {
     }
   }
 
-  postToolApprovalToActiveTurn(input: ToolApprovalInputMessage): PostToolApprovalResult {
-    const invocationId = normalizeToolApprovalInvocationId(input.invocationId) ?? String(input.invocationId ?? '');
+  postToolApprovalEventToActiveTurn(event: ToolExecutionApprovalEvent): PostToolApprovalResult {
+    const invocationId = normalizeToolApprovalInvocationId(event.toolInvocationId) ?? String(event.toolInvocationId ?? '');
     const activeTurn = this.activeTurn;
     if (!activeTurn) {
       return {
@@ -185,7 +184,7 @@ export class AgentRuntimeState {
       };
     }
 
-    const turnId = normalizeToolApprovalTurnId(input.turnId);
+    const turnId = normalizeToolApprovalTurnId(event.turnId);
     if (turnId && turnId !== activeTurn.turnId) {
       return {
         accepted: false,
@@ -229,14 +228,9 @@ export class AgentRuntimeState {
       };
     }
 
-    const postResult = activeTurn.toolInputPort.postApproval({
-      kind: 'tool_approval',
-      invocationId,
-      turnId: activeTurn.turnId,
-      approved: input.approved,
-      reason: input.reason ?? null,
-      ...(input.requestedBy ? { requestedBy: input.requestedBy } : {})
-    });
+    event.toolInvocationId = invocationId;
+    event.turnId = activeTurn.turnId;
+    const postResult = activeTurn.toolInputPort.postApproval(event);
     if (!postResult.accepted) {
       const code = postResult.code === 'closed' ? 'interrupted_turn' : 'no_pending_invocation';
       return code === 'interrupted_turn'
@@ -264,9 +258,8 @@ export class AgentRuntimeState {
     };
   }
 
-
-  postToolResultToActiveTurn(input: ToolResultInputMessage): PostToolResultResult {
-    const invocationId = normalizeToolResultInvocationId(input.invocationId) ?? String(input.invocationId ?? '');
+  postToolResultEventToActiveTurn(event: ToolResultEvent): PostToolResultResult {
+    const invocationId = normalizeToolResultInvocationId(event.toolInvocationId) ?? String(event.toolInvocationId ?? '');
     const activeTurn = this.activeTurn;
     if (!activeTurn) {
       return {
@@ -277,7 +270,7 @@ export class AgentRuntimeState {
       };
     }
 
-    const turnId = normalizeToolResultTurnId(input.turnId);
+    const turnId = normalizeToolResultTurnId(event.turnId);
     if (turnId && turnId !== activeTurn.turnId) {
       return {
         accepted: false,
@@ -331,16 +324,9 @@ export class AgentRuntimeState {
       };
     }
 
-    const postResult = activeTurn.toolInputPort.postToolResult({
-      kind: 'tool_result',
-      invocationId,
-      turnId: activeTurn.turnId,
-      ...(input.toolName ? { toolName: input.toolName } : {}),
-      ...(Object.prototype.hasOwnProperty.call(input, 'result') ? { result: input.result } : {}),
-      ...(input.error ? { error: input.error } : {}),
-      ...(input.toolArgs ? { toolArgs: input.toolArgs } : {}),
-      ...(typeof input.isDenied === 'boolean' ? { isDenied: input.isDenied } : {})
-    });
+    event.toolInvocationId = invocationId;
+    event.turnId = activeTurn.turnId;
+    const postResult = activeTurn.toolInputPort.postToolResult(event);
     if (!postResult.accepted) {
       if (postResult.code === 'closed') {
         return {
@@ -425,13 +411,13 @@ export class AgentRuntimeState {
   toString(): string {
     const llmStatus = this.llmInstance ? 'Initialized' : 'Not Initialized';
     const toolsStatus = this.toolInstances ? `${Object.keys(this.toolInstances).length} Initialized` : 'Not Initialized';
-    const inputBoxStatus = this.agentMessageInbox ? 'Initialized' : 'Not Initialized';
+    const inputBoxStatus = this.agentEventInbox ? 'Initialized' : 'Not Initialized';
     const activeTurnStatus = this.activeTurn ? 'Active' : 'Inactive';
 
     return (
       `AgentRuntimeState(agentId='${this.agentId}', currentStatus='${this.currentStatus}', ` +
       `llmStatus='${llmStatus}', toolsStatus='${toolsStatus}', ` +
-      `agentMessageInboxStatus='${inputBoxStatus}', ` +
+      `agentEventInboxStatus='${inputBoxStatus}', ` +
       `pendingApprovals=${Object.keys(this.pendingToolApprovals).length}, ` +
       `agentTurn='${activeTurnStatus}')`
     );

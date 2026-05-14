@@ -3,7 +3,7 @@ import { Agent } from '../../../src/agent/agent.js';
 import { AgentStatus } from '../../../src/agent/status/status-enum.js';
 import { AgentInputUserMessage } from '../../../src/agent/message/agent-input-user-message.js';
 import { InterAgentMessage } from '../../../src/agent/message/inter-agent-message.js';
-import { UserMessageReceivedEvent, InterAgentMessageReceivedEvent } from '../../../src/agent/events/agent-events.js';
+import { UserMessageReceivedEvent, InterAgentMessageReceivedEvent, ToolExecutionApprovalEvent } from '../../../src/agent/events/agent-events.js';
 import { AgentRuntime } from '../../../src/agent/runtime/agent-runtime.js';
 import { AgentRuntimeState } from '../../../src/agent/context/agent-runtime-state.js';
 import { AgentConfig } from '../../../src/agent/context/agent-config.js';
@@ -47,15 +47,21 @@ const makeRuntimeStub = (context: AgentContext, isRunning: boolean) => {
   runtime.start = vi.fn();
   runtime.stop = vi.fn(async () => undefined);
   runtime.submitEvent = vi.fn(async () => undefined);
-  runtime.postToolApproval = vi.fn(async (input) => ({
+  runtime.postToolApprovalEvent = vi.fn(async (event) => ({
     accepted: true,
     code: 'posted',
-    turnId: input.turnId ?? 'turn-1',
-    invocationId: input.invocationId
+    turnId: event.turnId ?? 'turn-1',
+    invocationId: event.toolInvocationId
+  }));
+  runtime.postToolResultEvent = vi.fn(async (event) => ({
+    accepted: true,
+    code: 'posted',
+    turnId: event.turnId ?? 'turn-1',
+    invocationId: event.toolInvocationId ?? ''
   }));
   Object.defineProperty(runtime, 'isRunning', { get: () => isRunning });
   Object.defineProperty(runtime, 'currentStatus', { get: () => AgentStatus.IDLE, configurable: true });
-  return runtime as AgentRuntime & { start: any; stop: any; submitEvent: any; postToolApproval: any };
+  return runtime as AgentRuntime & { start: any; stop: any; submitEvent: any; postToolApprovalEvent: any; postToolResultEvent: any };
 };
 
 describe('Agent', () => {
@@ -108,10 +114,12 @@ describe('Agent', () => {
 
     expect(runtime.start).not.toHaveBeenCalled();
     expect(runtime.submitEvent).not.toHaveBeenCalled();
-    expect(runtime.postToolApproval).toHaveBeenCalledWith({
-      kind: 'tool_approval',
-      invocationId: 'tid-1',
-      approved: true,
+    expect(runtime.postToolApprovalEvent).toHaveBeenCalledOnce();
+    const approvalEvent = runtime.postToolApprovalEvent.mock.calls[0][0];
+    expect(approvalEvent).toBeInstanceOf(ToolExecutionApprovalEvent);
+    expect(approvalEvent).toMatchObject({
+      toolInvocationId: 'tid-1',
+      isApproved: true,
       reason: 'ok',
       turnId: 'turn-1'
     });

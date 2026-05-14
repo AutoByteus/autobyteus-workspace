@@ -11,24 +11,20 @@ import {
   ShutdownRequestedEvent,
   UserMessageReceivedEvent,
   InterAgentMessageReceivedEvent,
-  LifecycleEvent
+  LifecycleEvent,
+  ToolExecutionApprovalEvent,
+  ToolResultEvent
 } from '../events/agent-events.js';
 import { applyEventAndDeriveStatus } from '../status/status-update-utils.js';
 import { AgentWorker } from './agent-worker.js';
-import { AgentMessageInbox } from '../message-inbox/agent-message-inbox.js';
+import { AgentEventInbox } from '../event-inbox/agent-event-inbox.js';
 import {
   normalizeInterruptReason,
   type AgentInterruptOptions,
   type AgentInterruptResult
 } from '../interruption/agent-interruption.js';
-import type {
-  ToolApprovalInputMessage,
-  PostToolApprovalResult
-} from '../tool-approval-command.js';
-import type {
-  ToolResultInputMessage,
-  PostToolResultResult
-} from '../tool-result-command.js';
+import type { PostToolApprovalResult } from '../tool-approval-result.js';
+import type { PostToolResultResult } from '../tool-result-posting.js';
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -62,11 +58,11 @@ export class AgentRuntime {
     }
 
     if (event instanceof UserMessageReceivedEvent) {
-      await this.getAgentMessageInbox().postUserMessage(event);
+      await this.getAgentEventInbox().postUserEvent(event);
     } else if (event instanceof InterAgentMessageReceivedEvent) {
-      await this.getAgentMessageInbox().postInterAgentMessage(event);
+      await this.getAgentEventInbox().postInterAgentEvent(event);
     } else if (event instanceof LifecycleEvent) {
-      await this.getAgentMessageInbox().postLifecycleMessage(event);
+      await this.getAgentEventInbox().postLifecycleEvent(event);
     } else {
       throw new TypeError(
         `AgentRuntime '${agentId}' rejects unsupported runtime input event '${event.constructor.name}'. ` +
@@ -75,39 +71,39 @@ export class AgentRuntime {
     }
   }
 
-  async postToolApproval(input: ToolApprovalInputMessage): Promise<PostToolApprovalResult> {
+  async postToolApprovalEvent(event: ToolExecutionApprovalEvent): Promise<PostToolApprovalResult> {
     const agentId = this.context.agentId;
     if (!this.worker || !this.worker.isAlive() || this.worker.isStopping()) {
       return {
         accepted: false,
         code: 'runtime_stopped',
-        invocationId: input.invocationId,
+        invocationId: event.toolInvocationId,
         message: `Agent '${agentId}' runtime is not running.`
       };
     }
 
-    return this.getAgentMessageInbox().postToolApproval(input);
+    return this.getAgentEventInbox().postToolApprovalEvent(event);
   }
 
-  async postToolResult(input: ToolResultInputMessage): Promise<PostToolResultResult> {
+  async postToolResultEvent(event: ToolResultEvent): Promise<PostToolResultResult> {
     const agentId = this.context.agentId;
     if (!this.worker || !this.worker.isAlive() || this.worker.isStopping()) {
       return {
         accepted: false,
         code: 'runtime_stopped',
-        invocationId: input.invocationId,
+        invocationId: event.toolInvocationId ?? '',
         message: `Agent '${agentId}' runtime is not running.`
       };
     }
 
-    return this.getAgentMessageInbox().postToolResult(input);
+    return this.getAgentEventInbox().postToolResultEvent(event);
   }
 
-  private getAgentMessageInbox(): AgentMessageInbox {
-    if (!this.context.state.agentMessageInbox) {
-      this.context.state.agentMessageInbox = new AgentMessageInbox();
+  private getAgentEventInbox(): AgentEventInbox {
+    if (!this.context.state.agentEventInbox) {
+      this.context.state.agentEventInbox = new AgentEventInbox();
     }
-    return this.context.state.agentMessageInbox;
+    return this.context.state.agentEventInbox;
   }
 
   start(): void {
