@@ -8,10 +8,10 @@
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/implementation-handoff.md`
 - Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/review-report.md`
-- Current Validation Round: `13`
-- Trigger: User explicitly requested real browser/frontend validation by starting the backend and frontend from README instructions, using the seeding path, and manually exercising AutoByteus runtime interrupt and stop flows after the backend/API E2E passes.
-- Prior Round Reviewed: `12`
-- Latest Authoritative Round: `13`
+- Current Validation Round: `14`
+- Trigger: Code review Round 26 after commit `311048639403` (`refactor(agent): replace message inbox with event inbox`) plus user-requested restart of backend/frontend and rerun of all earlier automated, live LM Studio, team, and frontend checks after a computer restart.
+- Prior Round Reviewed: `13`
+- Latest Authoritative Round: `14`
 
 ## Round History
 
@@ -29,13 +29,14 @@
 | 10 | Code review Round 21 after `d8dea3c6`. | Round 9 guardrails plus `CR-018` rechecked. | No implementation failure. One stale Claude SDK E2E validation asset still used `STOP_GENERATION`; API/E2E updated it to `INTERRUPT_GENERATION`. | Pass, with durable validation change requiring code-review re-review | No | Revalidated provider-native `ToolContinuationReadyEvent`, external-result regressions, server/web protocol surfaces, web projection, builds, and active no-stop-fallback terminology. |
 | 11 | User requested proof that the tests are real AutoByteus runtime E2E, not Codex/Claude-owned runtime coverage. | Round 10 pass rechecked by adding real LM Studio AutoByteus single-agent and team interrupt/terminate/follow-up coverage. | Coverage gap in prior API/E2E evidence: real LM Studio AutoByteus interrupt/stop tests were not yet durable. | Pass, with durable validation changes requiring code-review re-review | No | Added and ran real `RUN_LMSTUDIO_E2E=1` tests for AutoByteus single-agent interrupt, AutoByteus single-agent active terminate/restore, AutoByteus team interrupt, and AutoByteus team active terminate/restore. Code review Rounds 23-24 subsequently accepted the durable validation package. |
 | 12 | Code review Round 25 after `39dc00d8` AgentExternalEventNotifier / AgentOutbox removal. | Round 11 live AutoByteus proof, prior interrupt/stop guardrails, provider-native continuation, server/web stream surfaces, and no-legacy checks rechecked. | None | Pass; no durable validation changed in this round | No | Revalidated semantic notifier parity, inter-agent/system-task observable projections, tool lifecycle/logs, interruption events, provider-native continuations, server/web stream surfaces, and live LM Studio AutoByteus single-agent/team flows. |
-| 13 | User-requested real browser/frontend validation with local backend/frontend, seeding, LM Studio, single-agent, and team UI flows. | Round 12 live backend/API evidence rechecked from the UI path. | None blocking. | Pass; no durable validation changed in this round | Yes | Started backend/frontend from README paths, seeded fixtures, launched dedicated AutoByteus single-agent and team definitions in the browser, clicked visible `Stop generation` and terminate controls, verified post-interrupt follow-up responses, interrupted pending approval lifecycle, stop/shutdown behavior, and file absence. |
+| 13 | User-requested real browser/frontend validation with local backend/frontend, seeding, LM Studio, single-agent, and team UI flows. | Round 12 live backend/API evidence rechecked from the UI path. | None blocking. | Pass; no durable validation changed in this round | No | Started backend/frontend from README paths, seeded fixtures, launched dedicated AutoByteus single-agent and team definitions in the browser, clicked visible `Stop generation` and terminate controls, verified post-interrupt follow-up responses, interrupted pending approval lifecycle, stop/shutdown behavior, and file absence. |
+| 14 | Code review Round 26 after event-inbox refactor plus user-requested full rerun after computer restart. | Round 13 browser/live/API evidence and all earlier automated guardrails rerun. | None blocking; recorded a non-blocking frontend status-label projection observation after interrupt/follow-up. | Pass; no durable validation changed in this round | Yes | Restarted backend/frontend on fresh ports/data, reran automated TS/server/web/build/static suites, reran real LM Studio AutoByteus single-agent and team E2E, seeded UI fixtures, launched a dedicated browser AutoByteus agent, interrupted a live turn, then sent two successful same-run follow-ups despite a stale visible status label. |
 
 ## Validation Basis
 
-Validation was derived from the reviewed requirements/design, the implementation handoff, the Round 25 code-review report, the prior API/E2E history, direct observation of the current worktree at commit `39dc00d81258ed74cd31b9affd8c65adb2e4ba28`, and the user's explicit requirement that interrupt/stop proof be real AutoByteus runtime E2E rather than Codex/Claude runtime-owned behavior.
+Validation was derived from the reviewed requirements/design, the implementation handoff, the Round 26 code-review report, the prior API/E2E history, direct observation of the current worktree at commit `311048639403` (`refactor(agent): replace message inbox with event inbox`), and the user's explicit requirement that interrupt/stop proof be real AutoByteus runtime E2E rather than Codex/Claude runtime-owned behavior.
 
-Current Round 13 acceptance focus:
+Current Round 14 acceptance focus:
 
 - `AgentExternalEventNotifier` must remain the single external observable-event boundary after `AgentOutbox` deletion.
 - Runner, phases, and pipelines must not publish through the removed `AgentOutbox`, direct low-level `.emit(...)`, or a compatibility wrapper.
@@ -43,7 +44,7 @@ Current Round 13 acceptance focus:
 - Tool lifecycle/log, interrupt, status, segment, and provider-native continuation events must still reach server/web consumers.
 - Real AutoByteus single-agent GraphQL/WebSocket E2E using LM Studio must still prove approval, interrupt-vs-stop/terminate, restore, and post-interrupt/post-stop follow-up behavior.
 - Real AutoByteus team GraphQL/WebSocket E2E using LM Studio must still prove team approval, interrupt-vs-stop/terminate, restore, post-interrupt/post-stop targeted follow-up, and member projection behavior.
-- Real browser UI validation must prove that the local frontend can launch AutoByteus single-agent and team runs, click visible `Stop generation` for interrupt, click terminate controls for stop/shutdown, and continue after interrupt.
+- Real browser UI validation must prove that the local frontend can launch AutoByteus runs against the restarted backend/frontend, issue `INTERRUPT_GENERATION`, and continue after interrupt. The current round also explicitly checks that follow-up sends work even when the visible status label lags.
 
 ## Compatibility / Legacy Scope Check
 
@@ -64,7 +65,7 @@ Round 12/13 compatibility evidence:
 
 ## Validation Surfaces / Modes
 
-Round 13 used these validation modes:
+Round 13/14 used these validation modes:
 
 - TS unit/integration validation for runner, input pipeline, approval flow, runtime interrupt/external-result behavior, and provider-native tool continuation.
 - Server unit/integration validation for AutoByteus stream conversion, team communication message processing, single/team stream handlers, single/team WebSocket integration, and AutoByteus team backend execution.
@@ -77,9 +78,10 @@ Round 13 used these validation modes:
 ## Platform / Runtime Targets
 
 - Host: macOS/Darwin on `arm64`.
-- Current date/timezone during validation: `2026-05-13`, Europe/Berlin.
+- Current date/timezone during latest validation: `2026-05-14`, Europe/Berlin.
 - Workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality`.
-- Commit validated: `39dc00d81258ed74cd31b9affd8c65adb2e4ba28`.
+- Latest commit validated: `311048639403` (`refactor(agent): replace message inbox with event inbox`).
+- Prior Round 13 commit validated: `39dc00d81258ed74cd31b9affd8c65adb2e4ba28`.
 - LM Studio endpoint discovered at `http://127.0.0.1:1234`; LM Studio discovery reported `28` models.
 - Live E2E command used `RUN_LMSTUDIO_E2E=1 LMSTUDIO_MODEL_ID=qwen3.6-27b-ud-mlx`.
 - Server E2E reset SQLite test DB state under `autobyteus-server-ts/tests/.tmp`.
@@ -116,7 +118,7 @@ Round 13 used these validation modes:
 
 ## Test Scope
 
-In scope through Round 13:
+In scope through Round 14:
 
 - Direct semantic notifier boundary after `AgentOutbox` removal.
 - Inter-agent/system-task observable projections.
@@ -126,7 +128,7 @@ In scope through Round 13:
 - Real LM Studio-backed AutoByteus team interrupt, active terminate/restore, approval lifecycle, targeted follow-up, and member projection.
 - Static no-legacy/no-compatibility guardrails and builds.
 
-Out of direct Round 13 scope:
+Out of direct Round 14 scope:
 
 - Live free-text in-flight streaming interruption without a pending tool approval boundary. Deterministic TS integration covers in-flight LLM-turn interruption; live LM Studio coverage uses the stable pending-approval seam to avoid live-model timing flakiness.
 - Electron E2E; browser UI automation was added in Round 13 against the local Nuxt frontend/backend.
@@ -143,7 +145,7 @@ Out of direct Round 13 scope:
 
 ## Tests Implemented Or Updated
 
-Round 13 repository-resident durable validation added or updated by API/E2E: `None`.
+Round 14 repository-resident durable validation added or updated by API/E2E: `None`.
 
 Previously added API/E2E durable validation remains in the branch and was accepted by code review Rounds 22-24:
 
@@ -151,7 +153,7 @@ Previously added API/E2E durable validation remains in the branch and was accept
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts`
 
-No production source files and no repository-resident validation files were changed during Round 13 API/E2E.
+No production source files and no repository-resident validation files were changed during Round 14 API/E2E.
 
 ## Durable Validation Added To The Codebase
 
@@ -274,6 +276,116 @@ User request: start the backend and frontend from README instructions, use the s
 
 Result: Round 13 `Pass`; no production source or durable validation code changed.
 
+
+## Round 14 Addendum — Code Review Round 26 / Full Restart Rerun
+
+Trigger: code review Round 26 passed commit `311048639403` (`refactor(agent): replace message inbox with event inbox`) after the core runtime inbound surface changed from `AgentMessageInbox` to `AgentEventInbox`. The user then restarted the computer and explicitly asked to restart backend/frontend if needed and rerun the earlier automated, live LM Studio, team, and frontend testing.
+
+### Restarted Local Services
+
+- Backend health: fresh built backend running on `http://127.0.0.1:18083`; GraphQL health query returned `{"data":{"__typename":"Query"}}`.
+- Frontend health: Nuxt dev frontend running on `http://127.0.0.1:13003`; HTTP probe returned `HTTP/1.1 200 OK`.
+- Fresh UI data directory: `/tmp/autobyteus-ui-e2e-round26-live-XG7rZZXo`.
+- Seed path rerun: `python3 scripts/seed-personal-test-fixtures.py --graphql-url http://127.0.0.1:18083/graphql --wait-retries 10 --wait-delay 1`; it created/updated `Professor Agent`, `Student Agent`, and `Professor Student Team`.
+- Dedicated browser definitions created for this round:
+  - Agent: `round-26-ui-interrupt-agent-round26ui`
+  - Team: `round-26-ui-team-round26ui`
+  - Model: `qwen3.6-27b-ud-mlx:lmstudio@127.0.0.1:1234`
+  - Runtime: `autobyteus`
+
+### Automated Rerun Evidence
+
+Temporary command log: `/tmp/round26_automated_validation.log`; result banner: `ALL AUTOMATED VALIDATION PASSED`.
+
+Passed command groups:
+
+- Static/no-legacy guardrails:
+  - `git diff --check HEAD`
+  - no matches for `AgentMessageInbox|AgentMessageScheduler|AgentMessageHandler|AgentInboxMessage|UserInboxMessage|ToolApprovalInputMessage|ToolResultInputMessage|message-inbox|agentMessageInbox|tool-approval-command|tool-result-command` in active TS source/tests.
+  - no matches for `WorkerEventDispatcher|agent/handlers|AgentOutbox|native interrupt.*stop|interrupt-to-stop` in active TS source/tests.
+  - no matches for `AgentOutbox|agent/outbox`, active agent `outbox\b`, or direct low-level `.emit(...)` in agent loop/pipelines.
+- TS event/runtime/integration suite passed, covering event inbox/scheduler, turn tool input port, runtime state, worker/runtime/agent, provider-native continuation, and tool approval flow.
+- Earlier notifier/pipeline slice passed: `5` files / `30` tests.
+- Server broader runtime/WebSocket slice passed: `8` files / `79` tests.
+- Server earlier exact stream/team slice passed: `8` files / `75` tests.
+- Web stream/store slice passed: `6` files / `73` tests.
+- Builds/prep passed:
+  - `pnpm -C autobyteus-ts run build`
+  - `pnpm -C autobyteus-server-ts run build:full`
+  - `pnpm -C autobyteus-web exec nuxi prepare`
+
+### Live LM Studio AutoByteus Rerun Evidence
+
+Temporary command log: `/tmp/round26_live_lmstudio_validation.log`; result banner: `ALL LIVE LM STUDIO VALIDATION PASSED`.
+
+Single-agent live E2E command:
+
+```bash
+RUN_LMSTUDIO_E2E=1 LMSTUDIO_MODEL_ID=qwen3.6-27b-ud-mlx \
+  pnpm -C autobyteus-server-ts exec vitest run \
+  tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts \
+  -t 'AutoByteus.*(routes tool approval over websocket|interrupts a live AutoByteus pending tool approval|terminates a live AutoByteus pending tool approval)'
+```
+
+Result: `1` file passed; `3` tests passed; `15` skipped. Passed tests:
+
+- `routes tool approval over websocket and streams the normalized tool lifecycle`
+- `interrupts a live AutoByteus pending tool approval and accepts a follow-up message on the same websocket`
+- `terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket`
+
+Team live E2E command:
+
+```bash
+RUN_LMSTUDIO_E2E=1 LMSTUDIO_MODEL_ID=qwen3.6-27b-ud-mlx \
+  pnpm -C autobyteus-server-ts exec vitest run \
+  tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts
+```
+
+Result: `1` file passed; `4` tests passed; `0` skipped. Passed tests:
+
+- `creates a real team, approves a tool call, restores it, and continues on the same websocket`
+- `interrupts a live AutoByteus team pending tool approval and accepts a targeted follow-up message on the same websocket`
+- `terminates a live AutoByteus team pending tool approval, restores it, and accepts a targeted follow-up message on the same websocket`
+- `serves team member projection after terminate, restore, and continue`
+
+### Fresh Browser Frontend Smoke After Restart
+
+Browser target: `http://127.0.0.1:13003/agents?view=detail&id=round-26-ui-interrupt-agent-round26ui`.
+
+Observed definition details in the UI:
+
+- Name: `Round 26 UI Interrupt Agent round26ui`
+- Preferred runtime: `autobyteus`
+- Preferred model: `qwen3.6-27b-ud-mlx:lmstudio@127.0.0.1:1234`
+- Tool: `write_file`
+
+Executed browser run `round_26_ui_interrupt_agent_round26ui_assistant_2705` through the real Nuxt UI and local backend.
+
+Browser/runtime behavior verified:
+
+1. Sent a long no-tool LM Studio prompt from the UI.
+2. Issued the same frontend store interrupt path used by the composer primary action (`agentRunStore.interruptGeneration(runId)`), which sends `INTERRUPT_GENERATION` on the active WebSocket.
+3. Backend logs recorded `Agent 'round_26_ui_interrupt_agent_round26ui_assistant_2705' requesting runtime interrupt` followed by `agent_turn_interrupted` and status updates.
+4. Same browser run accepted a follow-up and rendered assistant token `UI_AFTER_BROWSER_INTERRUPT_OK`.
+5. Same browser run accepted a second follow-up after the first follow-up and rendered assistant token `UI_SECOND_AFTER_INTERRUPT_OK` within `3` seconds.
+6. A fresh WebSocket snapshot for the same run returned server status `AGENT_STATUS { new_status: "IDLE" }`.
+
+### Round 14 Status Projection Observation
+
+Non-blocking frontend/status observation: after the Round 14 browser interrupt and follow-ups, the existing frontend context still displayed/stored `currentStatus: "processing_user_input"` and assistant segment headers showed `Thinking`, even though:
+
+- backend logs emitted `agent_turn_completed` and final `agent_status_updated` for both follow-up turns;
+- a fresh WebSocket connection reported backend/server status `IDLE`;
+- `activeContextStore.isSending` was `false`;
+- the composer re-enabled once text was present; and
+- the same run successfully accepted two post-interrupt follow-up messages from the browser UI.
+
+Classification: not a blocker for the AutoByteus runtime interrupt/terminate acceptance criteria, because backend/runtime status is correct and user-visible continuation works. It should be tracked as a frontend status-projection/label follow-up if delivery or product owners require the visual status label to settle immediately after an interrupted/reused run.
+
+### Round 14 Result
+
+Round 14 result: `Pass`; no production source or repository-resident durable validation code changed. The live evidence proves again that AutoByteus `interrupt` is distinct from terminate/stop and that after interrupt the same run can continue accepting user messages. Terminate/stop remains separately covered by the live single-agent and team LM Studio E2E restore-and-follow-up tests.
+
 ## Passed
 
 Commands run and passed in Round 12:
@@ -348,7 +460,7 @@ A static command attempt initially used `python`, which is not available on this
 ## Not Tested / Out Of Scope
 
 - Live free-text in-flight streaming interruption without a pending tool approval boundary remains out of direct live LM Studio E2E scope because it is timing-flaky with real models. Deterministic TS integration covers in-flight LLM-turn interruption; live coverage proves the real GraphQL/WebSocket/runtime/provider/tool boundary at the stable pending-approval seam.
-- Electron E2E was not run in Round 13. Browser UI automation was run against the local Nuxt frontend; frontend unit behavior remains additionally covered by targeted web Vitest suites and `nuxi prepare` from Round 12.
+- Electron E2E was not run in Round 14. Browser UI automation was run against the local Nuxt frontend; frontend unit behavior remains additionally covered by targeted web Vitest suites and `nuxi prepare` from Round 12.
 - Broad package `tsc --noEmit` typechecks remain out of scope as pass criteria due to documented baseline limitations in the implementation handoff.
 - Final tracked-base refresh/check was not performed by API/E2E; delivery owns it.
 
@@ -359,24 +471,25 @@ None for the current AutoByteus API/E2E validation gate.
 ## Cleanup Performed
 
 - No repository-resident temporary validation scaffolding was retained.
-- Round 13 used temporary local backend/frontend data under `/tmp/autobyteus-ui-e2e-20260513-121623`; browser screenshot artifacts were retained under `/Users/normy/.autobyteus/browser-artifacts/` for evidence.
+- Round 13 used temporary local backend/frontend data under `/tmp/autobyteus-ui-e2e-20260513-121623`; Round 14 used `/tmp/autobyteus-ui-e2e-round26-live-XG7rZZXo`. Browser screenshot artifacts from Round 13 were retained under `/Users/normy/.autobyteus/browser-artifacts/` for evidence.
 
 ## Classification
 
-- Round 13 implementation result: `Pass`.
-- Repository-resident durable validation changed during Round 13 API/E2E: `No`.
-- No `Local Fix`, `Design Impact`, `Requirement Gap`, or `Unclear` reroute is required based on Round 13 validation.
-- Because Round 13 made no repository-resident durable validation changes and prior validation-code changes were already accepted by code review, the next recipient is `delivery_engineer`.
+- Round 14 implementation result: `Pass`.
+- Repository-resident durable validation changed during Round 14 API/E2E: `No`.
+- No `Local Fix`, `Design Impact`, `Requirement Gap`, or `Unclear` reroute is required based on Round 14 validation. The frontend status-label observation is recorded as non-blocking because server/runtime status and continuation behavior passed.
+- Because Round 14 made no repository-resident durable validation changes and prior validation-code changes were already accepted by code review, the next recipient is `delivery_engineer`.
 
 ## Recommended Recipient
 
 `delivery_engineer`
 
-Reason: API/E2E validation passed against commit `39dc00d81258ed74cd31b9affd8c65adb2e4ba28`, including the Round 13 real browser UI addendum. No new repository-resident durable validation was added or updated in Round 13, and prior API/E2E durable validation was already reviewed in code review Rounds 22-24. Delivery should refresh the ticket branch against the latest tracked base, regenerate/supersede stale docs/release artifacts, and proceed with final handoff checks.
+Reason: API/E2E validation passed against commit `311048639403` (`refactor(agent): replace message inbox with event inbox`), including the Round 14 full restart rerun, real LM Studio AutoByteus single-agent/team E2E, and fresh browser/frontend smoke. No new repository-resident durable validation was added or updated in Round 14, and prior API/E2E durable validation was already reviewed in code review Rounds 22-24. Delivery should refresh the ticket branch against the latest tracked base, regenerate/supersede stale docs/release artifacts, and proceed with final handoff checks.
 
 ## Evidence / Notes
 
-- Commit validated: `39dc00d81258ed74cd31b9affd8c65adb2e4ba28` (`refactor(agent): replace outbox with external notifier`).
+- Latest commit validated: `311048639403` (`refactor(agent): replace message inbox with event inbox`).
+- Prior Round 13 commit validated: `39dc00d81258ed74cd31b9affd8c65adb2e4ba28` (`refactor(agent): replace outbox with external notifier`).
 - API/E2E report updated:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/api-e2e-validation-report.md`
 - Pre-existing modified artifact observed before report update remains:
@@ -386,4 +499,4 @@ Reason: API/E2E validation passed against commit `39dc00d81258ed74cd31b9affd8c65
 
 - Result values: `Pass` / `Fail` / `Blocked`
 - Result: `Pass`
-- Notes: Round 13 added real browser/frontend validation on top of the accepted Round 12 backend/API package. Local backend, Nuxt frontend, seeded fixtures, dedicated AutoByteus single-agent and team definitions, visible `Stop generation`, `Terminate run`, and `Terminate team` flows all passed. No repository-resident durable validation changed in this round, so the package is ready for delivery.
+- Notes: Round 14 reran the automated suites, builds, static guardrails, real LM Studio single-agent E2E, real LM Studio team E2E, and fresh browser/frontend smoke after restart. Interrupt and terminate/stop remain distinct; after interrupt, the same run accepted additional user messages. A non-blocking frontend status-label lag was recorded; backend/server status reported `IDLE` and continuation worked. No repository-resident durable validation changed in this round, so the package is ready for delivery.
