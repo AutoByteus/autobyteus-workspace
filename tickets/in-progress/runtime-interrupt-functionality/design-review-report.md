@@ -5,74 +5,70 @@
 - Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/requirements.md`
 - Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/investigation-notes.md`
 - Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/design-spec.md`
-- Current Review Round: 13
-- Trigger: Fresh architecture review after event-centric rework. The target changed from `AgentMessageInbox` / domain message wrappers to typed runtime events plus `AgentEventInboxEntry` queue metadata, with `AgentEventScheduler` and typed `AgentEventProcessor`s.
-- Prior Review Round Reviewed: Round 12 approved the prior message-inbox design plus consumer-event parity. Round 13 supersedes the inbound model while retaining runner/phase/port/scope/notifier conclusions.
-- Latest Authoritative Round: 13
-- Current-State Evidence Basis: Shared design principles reloaded; requirements, investigation notes, design spec, current `agent-events.ts`, and current first-stage message-inbox files were inspected. Review focused on CDF-001 through CDF-012 plus CDF-010A, DS-001 through DS-010, approval/result routing, frontend stream feedback, inter-agent/team communication projections, final file mapping, boundary/ownership rules, and remaining `AgentMessageInbox` / wrapper references.
+- Code Review Report Reviewed For CR-019 Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/review-report.md`
+- Current Review Round: 14
+- Trigger: Focused architecture review of CR-019 design-impact rework. Code review found that event-inbox `Processor` naming obscured the actual scheduler-selected handler/delegation role.
+- Prior Review Round Reviewed: Round 13 approved the event-centric target architecture. Round 14 reviews only the naming/design-language rework from `AgentEventProcessor` / `event-inbox/processors` to `InboxEventHandler` / `event-inbox/handlers`.
+- Latest Authoritative Round: 14
+- Current-State Evidence Basis: Architecture-reviewer skill and shared design principles reloaded; requirements, investigation notes, design spec, and code review report CR-019 section inspected. Review focused on FR-018, AC-015, CDF-002, CDF-009, CDF-012, handler contracts, file mapping, work-package gates, and guardrails separating inbox handlers from legacy `agent/handlers/*` and real processor pipelines.
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1-6 | Earlier iterative reviews/addenda | Earlier blocker set resolved by Round 6 | N/A | Prior result was Pass | No | Superseded by later independent reviews. |
+| 1-6 | Earlier iterative reviews/addenda | Earlier blocker set resolved by Round 6 | N/A | Prior result was Pass | No | Superseded by later reviews. |
 | 7 | Fresh independent architecture review | Rechecked design from first principles | AR-B-005 | Fail / NEEDS DESIGN REWORK | No | Approval routing into active turn input was incomplete. |
-| 8 | AR-B-005 rework review | AR-B-005 and previous blocker classes | None | Pass / APPROVED FOR IMPLEMENTATION | No | Approval route completed for the first-stage model. |
-| 9 | Fresh independent review of second-stage inbox/scheduler/TurnToolInputPort refinement | Rechecked all prior blockers and new unified inbox model | None blocking | Pass / APPROVED FOR IMPLEMENTATION | No | Approved the then-current message-inbox architecture. |
-| 10 | Phase naming symmetry addendum | Rechecked CDF/DS spines, target mappings, and old-handler/middle-state blockers | None blocking | Pass / APPROVED FOR IMPLEMENTATION | No | `LlmPhase` / `ToolPhase` final naming approved. |
-| 11 | External observable-event boundary correction | Rechecked outbound model plus all spines/boundaries | None blocking | Pass / APPROVED FOR IMPLEMENTATION | No | `AgentExternalEventNotifier` replaced `AgentOutbox` as final outbound boundary. |
-| 12 | Consumer-event parity addendum | Rechecked outbound removal against inter-agent/system-task consumers and frontend interrupt behavior | None blocking | Pass / APPROVED FOR IMPLEMENTATION | No | CDF-010A / DS-010 and AC-004E1 closed consumer-preservation risk. |
-| 13 | Event-centric inbound rework | Rechecked all prior blocker classes and wrapper-removal target | None blocking | **Pass / APPROVED FOR IMPLEMENTATION** | Yes | Event-centric `AgentEventInbox` / `AgentEventScheduler` / `AgentEventProcessor` design is approved. |
+| 8 | AR-B-005 rework review | AR-B-005 and previous blockers | None | Pass | No | Approval route completed. |
+| 9 | Second-stage inbox/scheduler/TurnToolInputPort refinement | Rechecked unified inbox model | None blocking | Pass | No | Superseded by later event-centric design. |
+| 10 | Phase naming symmetry addendum | Rechecked phase naming | None blocking | Pass | No | `LlmPhase` / `ToolPhase` approved. |
+| 11 | External event boundary correction | Rechecked outbound model | None blocking | Pass | No | `AgentExternalEventNotifier` replaced `AgentOutbox`. |
+| 12 | Consumer-event parity addendum | Rechecked inter-agent/system consumers | None blocking | Pass | No | CDF-010A / DS-010 approved. |
+| 13 | Event-centric inbound rework | Rechecked wrapper-removal target | None blocking | Pass | No | `AgentEventInbox` / scheduler / event-centric target approved. |
+| 14 | CR-019 handler naming rework | Rechecked event-inbox dispatch naming and guardrails | None blocking | **Pass / APPROVED FOR IMPLEMENTATION** | Yes | `InboxEventHandler` naming resolves CR-019. |
 
 ## Reviewed Design Spec
 
-The latest design makes the runtime inbound side event-centric:
+Latest authoritative inbound naming target:
 
 ```text
 Typed runtime event
   -> AgentEventInboxEntry { entryId, lane, event, awaitable? }
   -> AgentWorker inbox loop
   -> AgentEventScheduler
-  -> typed AgentEventProcessor
-  -> AgentTurnRunner / runtime lifecycle / TurnToolInputPort
+  -> InboxEventHandler.handle(entry, context)
+  -> AgentTurnRunner / runtime lifecycle / AgentRuntimeState / TurnToolInputPort
 ```
 
-The canonical domain object is the typed event (`UserMessageReceivedEvent`, `InterAgentMessageReceivedEvent`, `LifecycleEvent`, `ToolExecutionApprovalEvent`, `ToolResultEvent`). `AgentEventInboxEntry` is only delivery metadata. The target explicitly rejects `AgentMessageInbox`, `AgentInboxMessage`, `UserInboxMessage`, `ToolApprovalInputMessage`, `ToolResultInputMessage`, and equivalent domain-message wrappers.
+Approved final names:
 
-The rest of the approved architecture remains intact:
+- `autobyteus-ts/src/agent/event-inbox/handlers/`
+- `InboxEventHandler`
+- `TurnStartInboxEventHandler`
+- `ToolApprovalInboxEventHandler`
+- `ToolResultInboxEventHandler`
+- `RuntimeLifecycleInboxEventHandler`
+- `AgentEventSchedulerHandlers`
+- `canHandle(...)` / `handle(entry, context)`
 
-```text
-AgentTurnRunner -> AgentInputPipeline -> LlmPhase -> ToolPhase
-  -> ToolResultPipeline -> ToolResultContinuationBuilder
-  -> AgentInputPipeline(SenderType.TOOL) -> LLMResponsePipeline
-
-interrupt -> AgentRuntime.interrupt() side-band
-  -> active AgentTurn.executionScope
-  -> LlmPhase/ToolPhase aborts or abandons
-  -> AgentTurnRunner settles interrupted
-
-observable facts -> AgentExternalEventNotifier.notify...
-  -> EventEmitter/EventManager infrastructure
-  -> AgentEventStream -> server/team processors -> WebSocket/frontend consumers
-```
+The design now correctly says these handlers handle one claimed `AgentEventInboxEntry`, perform small type/guard work, and delegate to authoritative owners. They are not processor pipelines and must not be inflated to justify the handler name.
 
 ## Task Design Health Assessment Verdict
 
 | Assessment Area | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Assessment is present for the current task posture | Pass | Requirements classify the work as a large behavior change/refactor and explicitly cite the event-wrapper problem. | None. |
-| Root-cause classification is explicit and evidence-backed | Pass | Investigation notes show current first-stage `AgentMessageInbox` wrappers duplicate canonical events already consumed by runner/pipeline code. | None. |
-| Refactor needed now decision is explicit | Pass | The final target requires `AgentEventInbox`, `AgentEventScheduler`, typed `AgentEventProcessor`s, direct runner/phases/pipelines, `TurnToolInputPort`, `TurnExecutionScope`, and `AgentExternalEventNotifier`. | None. |
-| Refactor decision is supported by concrete sections | Pass | CDF/DS spines, contracts, boundary rules, invariants, routing table, file mapping, and work-package gates all describe the event-centric final architecture. | None. |
+| Assessment is present for the current task posture | Pass | Requirements and investigation notes identify CR-019 as design-language/naming impact in a large refactor. | None. |
+| Root-cause classification is explicit and evidence-backed | Pass | Code review evidence shows `*EventProcessor.process(...)` classes are scheduler-selected inbox entry delegates, not processor chains. | None. |
+| Refactor needed now decision is explicit | Pass | FR-018 and AC-015 require final source to use handler terminology and remove event-inbox `*EventProcessor` / `processors/` naming. | None. |
+| Refactor decision is supported by concrete sections | Pass | Concept inventory, CDFs, contracts, invariants/routing, work packages, and file mapping use `InboxEventHandler` and `event-inbox/handlers`. | None. |
 
 ## Prior Findings Resolution Check
 
-| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
+| Prior Round / Report | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| 4 | AR-B-001 through AR-B-004 | Blocking | Resolved | Final design still rejects temporary adapters, duplicate turn-control owners, and old event-handler LLM/tool choreography. | Not reopened. |
-| 7 | AR-B-005 | Blocking | Resolved | Approval route is complete through `AgentRuntime.postToolApprovalEvent -> AgentEventInbox -> AgentEventScheduler -> ToolApprovalEventProcessor -> AgentRuntimeState -> TurnToolInputPort`. | Not reopened. |
-| 11-12 | Outbound boundary / consumer parity risk | Non-blocking risk | Resolved | `AgentExternalEventNotifier` remains the boundary, `AgentOutbox` is removed, and CDF-010A / DS-010 preserve inter-agent/system-task consumers. | Not reopened. |
-| 12 | Message-wrapper target | Previously approved but challenged | Superseded by better design | Final target now rejects the wrapper domain model and keeps typed events canonical. | Event-centric model is cleaner. |
+| Code Review Round 27 | CR-019 | Design Impact | Resolved in design | FR-018, AC-015, investigation addendum, handler contracts, CDF-002/009/012, and file mapping all use handler/delegation naming. | Ready for implementation rename. |
+| Round 13 | Event-centric target | Approved | Preserved | `AgentEventInboxEntry` remains metadata-only and typed runtime events remain canonical. | Not reopened. |
+| Round 11-12 | `AgentOutbox` / consumer parity | Approved | Preserved | `AgentExternalEventNotifier` remains external observable boundary and `AgentOutbox` remains rejected. | Not reopened. |
+| Earlier | Legacy handler-chain blockers | Resolved | Preserved | Design explicitly distinguishes `event-inbox/handlers` from removed normal-flow `agent/handlers/*`; runner/phases still own turn flow. | Not reopened. |
 
 ## Spine Inventory Verdict
 
@@ -92,223 +88,170 @@ observable facts -> AgentExternalEventNotifier.notify...
 | CDF-011 | Terminal shutdown | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | CDF-012 | External/async tool result delivery | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 
-### Spine Review Notes
+### Focused Spine Notes
 
-- CDF-002 is correctly stretched from typed event submission through inbox entry, scheduler, `TurnStartEventProcessor`, active turn creation, and runner start.
-- CDF-008 remains side-band runtime control and cannot be delayed behind inbox scheduling.
-- CDF-009 and CDF-012 are complete active-turn event paths; both validate through scheduler/processor/runtime state before `TurnToolInputPort` delivery.
-- CDF-007 preserves the existing behavior: tool results go through `ToolResultPipeline -> ToolResultContinuationBuilder -> AgentInputPipeline(SenderType.TOOL)` before the next LLM leg.
-- CDF-010/CDF-010A remain external-observable projection spines only; they do not advance internal turn control.
+- CDF-002 now reads correctly: `AgentEventInbox -> AgentEventScheduler -> TurnStartInboxEventHandler -> AgentTurnRunner`. This solves CR-019 without changing ownership.
+- CDF-009 remains complete: server/native approval -> `AgentRuntime.postToolApprovalEvent` -> awaitable inbox entry -> scheduler -> `ToolApprovalInboxEventHandler` -> runtime-state validation -> `TurnToolInputPort` -> `ToolPhase.waitForApproval`.
+- CDF-012 remains complete: external/async `ToolResultEvent` -> active-turn inbox lane -> scheduler -> `ToolResultInboxEventHandler` -> runtime-state validation -> `TurnToolInputPort` -> `ToolPhase` -> CDF-007 continuation.
+- CDF-007 still routes through real processor pipelines and `AgentInputPipeline(SenderType.TOOL)`, not through inbox handlers.
 
-## DS Spine Inventory Verdict
+## Naming / Ownership Verdict For CR-019
 
-| Spine ID | Scope Classification | Classification Is Sound? | Start/End Complete? | Governing Owner Clear? | Verdict | Notes |
-| --- | --- | --- | --- | --- | --- | --- |
-| DS-001 | Primary End-to-End | Pass | Pass | Pass | Pass | Native single-agent interrupt path remains complete. |
-| DS-002 | Primary End-to-End | Pass | Pass | Pass | Pass | LLM cancellation is under runner/scope/BaseLLM boundaries. |
-| DS-003 | Primary End-to-End | Pass | Pass | Pass | Pass | Tool cancellation and suppressed continuation are explicit. |
-| DS-004 | Primary End-to-End | Pass | Pass | Pass | Pass | Team interrupt remains non-shutdown propagation. |
-| DS-005 | Return-Event | Pass | Pass | Pass | Pass | Frontend interrupted/idle feedback path is preserved. |
-| DS-006 | Bounded Local | Pass | Pass | Pass | Pass | Worker remains inbox loop; runner/scope own turn operations. |
-| DS-007 | Bounded Local | Pass | Pass | Pass | Pass | Tool-batch fencing and port closure are explicit. |
-| DS-008 | Primary End-to-End | Pass | Pass | Pass | Pass | Approval route uses canonical `ToolExecutionApprovalEvent`. |
-| DS-009 | Primary End-to-End | Pass | Pass | Pass | Pass | External/async result route uses canonical `ToolResultEvent`. |
-| DS-010 | Return-Event | Pass | Pass | Pass | Pass | Inter-agent/system projection is complete in inventory and External Event Notifier section; add row to mandatory narrative table as cleanup. |
-
-## Use-Case Coverage Verdict
-
-| Use Case | Coverage Verdict | Evidence |
+| Review Question | Verdict | Evidence |
 | --- | --- | --- |
-| UC-001 interrupt during native LLM stream/call | Pass | CDF-008, DS-001/DS-002, FR-001..003, AC-001/002/012. |
-| UC-002 interrupt during native foreground tool call | Pass | CDF-006/008, DS-003, FR-004/010/014, AC-003/004/011. |
-| UC-003 pending approval / same-turn continuation | Pass | CDF-007/009/012, DS-007/008/009, FR-004A/D/005A/005B, AC-004A/D/005A/005B. |
-| UC-004 native team interrupt without teardown | Pass | DS-004, FR-012/013, AC-008/009. |
-| UC-005 shared server/UI command consistency | Pass | Frontend command contract, FR-011/014, AC-010. |
-| UC-006 provider/tool cancellation participation | Pass | Turn scope + BaseLLM/BaseTool boundaries, FR-009/010, AC-011/012. |
-| UC-007 bootstrap/shutdown separate from interrupt | Pass | CDF-001/011, FR-008A/008B, AC-006A/006B. |
-| UC-008 existing frontend/server consumer compatibility | Pass | CDF-010A/DS-010, FR-004E1, AC-004E1. |
+| Handler naming solves CR-019 | Pass | FR-018 and AC-015 require `event-inbox/handlers`, `InboxEventHandler`, `*InboxEventHandler`, `AgentEventSchedulerHandlers`, and `handle(...)`. |
+| Handler naming no longer implies processor-pipeline ownership | Pass | Handler contracts say handlers are scheduler-selected entry delegates and must not own phase loops or processor pipelines. |
+| Event-inbox handlers are distinct from removed legacy `agent/handlers/*` chain | Pass | Design states this does not resurrect the removed normal-flow chain; final handler names are scoped with `InboxEventHandler`; old queued phase handlers remain removed. |
+| Real processor-pipeline terminology remains reserved | Pass | Processor pipeline terminology remains on `AgentInputPipeline`, `ToolInvocationPipeline`, `ToolResultPipeline`, `LLMResponsePipeline`, `SystemPromptPipeline`, and `ProcessorPipelineRunner`. |
+| Thin handler shape is acceptable | Pass | Design explicitly says handlers do small type/guard work and delegate; their thinness should not be inflated. |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
 | Subsystem / Capability Area | Ownership Allocation Is Clear? | Reuse / Extend / Create-New Decision Is Sound? | Supports The Right Spine Owners? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Agent runtime control | Pass | Pass | Pass | Pass | Public lifecycle/control owner remains `AgentRuntime`. |
-| Agent event inbox | Pass | Pass | Pass | Pass | New semantic event boundary above private queue storage. |
-| Agent event scheduler | Pass | Pass | Pass | Pass | Dispatchability and processor selection are explicit. |
-| Typed event processors | Pass | Pass | Pass | Pass | Entry processors only; no LLM/tool phase chain. |
-| Agent turn runner | Pass | Pass | Pass | Pass | Finite turn loop owner remains explicit. |
-| `LlmPhase` / `ToolPhase` | Pass | Pass | Pass | Pass | Direct phase services under runner. |
-| `TurnToolInputPort` | Pass | Pass | Pass | Pass | Internal tool wait/wake boundary. |
-| `TurnExecutionScope` | Pass | Pass | Pass | Pass | Turn-scoped cancellation/fencing owner. |
-| `AgentExternalEventNotifier` | Pass | Pass | Pass | Pass | External-observable projection boundary; no `AgentOutbox`. |
-| Event stream/server/team/frontend projections | Pass | Pass | Pass | Pass | Consumers/converters only; no turn control. |
+| Agent event inbox | Pass | Pass | Pass | Pass | Owns typed event entries and lane APIs. |
+| Agent event scheduler | Pass | Pass | Pass | Pass | Owns dispatchability and selects handlers. |
+| Inbox event handlers | Pass | Pass | Pass | Pass | Entry delegates only; do not own turn flow. |
+| Agent turn runner | Pass | Pass | Pass | Pass | Still owns finite LLM/tool/continuation loop. |
+| Processor pipelines | Pass | Pass | Pass | Pass | Real processor orchestration remains in `agent/pipelines`. |
+| Agent external event notifier | Pass | Pass | Pass | Pass | External observable boundary remains unchanged. |
 
 ## Reusable Owned Structures Verdict
 
 | Repeated Structure / Logic | Extraction Need Was Evaluated? | Shared File Choice Is Sound? | Ownership Of Shared Structure Is Clear? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Inbound event queue metadata | Pass | Pass | Pass | Pass | `AgentEventInboxEntry` is a tight envelope around a canonical event, not a domain wrapper. |
-| Event dispatchability policy | Pass | Pass | Pass | Pass | `AgentEventScheduler` owns routing and wakeup. |
-| Event-family entry processing | Pass | Pass | Pass | Pass | `AgentEventProcessor`s are thin and bounded. |
-| Processor pipelines | Pass | Pass | Pass | Pass | Domain processor pipelines remain separate from event processors. |
-| External observable publication | Pass | Pass | Pass | Pass | Reuse/extend `AgentExternalEventNotifier`; remove `AgentOutbox`. |
-| Abortable operation support | Pass | Pass | Pass | Pass | Shared under turn scope/interruption utilities. |
+| Scheduler-selected inbox event handling | Pass | Pass | Pass | Pass | `InboxEventHandler` interface is the right shared handler contract. |
+| Event-handler registry / injected set | Pass | Pass | Pass | Pass | `AgentEventSchedulerHandlers` accurately names scheduler-facing handler collection. |
+| Real processor pipeline execution | Pass | Pass | Pass | Pass | Preserved under pipeline services, not moved into event-inbox handlers. |
 
 ## Shared Structure / Data Model Tightness Verdict
 
 | Shared Structure / Type / Schema | One Clear Meaning Per Field? | Redundant Attributes Removed? | Overlapping Representation Risk Is Controlled? | Shared Core Vs Specialized Variant / Composition Decision Is Sound? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| `AgentEventInboxEntry` | Pass | Pass | Pass | Pass | Pass | Fields are queue metadata only: entry ID, lane, canonical event, awaitable completion. |
-| Typed runtime events | Pass | Pass | Pass | Pass | Pass | Existing events remain canonical domain payloads. |
-| `ToolExecutionApprovalEvent` | Pass | Pass | Pass | Pass | Pass | Approval identity and decision are explicit. |
-| `ToolResultEvent` | Pass | Pass | Pass | Pass | Pass | Optional turn/invocation fields are validated before active-turn delivery. |
-| `INTER_AGENT_MESSAGE` / `TEAM_COMMUNICATION_MESSAGE` / `SYSTEM_TASK_NOTIFICATION` payloads | Pass | Pass | Pass | Pass | Pass | Consumer payload compatibility remains documented. |
-| Interrupt frontend event payloads | Pass | Pass | Pass | Pass | Pass | `TURN_INTERRUPTED`, optional `TOOL_EXECUTION_INTERRUPTED`, and idle feedback are specified. |
+| `AgentEventInboxEntry` | Pass | Pass | Pass | Pass | Pass | Remains queue metadata around canonical event. |
+| `InboxEventHandlerResult` | Pass | Pass | Pass | Pass | Pass | Awaitable result shape for scheduler/inbox completion; does not imply processor pipeline ownership. |
+| Typed runtime events | Pass | Pass | Pass | Pass | Pass | Remain canonical domain payloads. |
 
 ## Removal / Decommission Completeness Verdict
 
 | Item / Area | Redundant / Obsolete Piece To Remove Is Named? | Replacement Owner / Structure Is Clear? | Removal / Decommission Scope Is Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `AgentMessageInbox` / message-wrapper domain model | Pass | Pass | Pass | Pass | Replaced by `AgentEventInbox` + `AgentEventInboxEntry` with canonical typed events. |
-| `UserInboxMessage`, `ToolApprovalInputMessage`, `ToolResultInputMessage` equivalents | Pass | Pass | Pass | Pass | Rejected as target domain wrappers. |
-| `AgentOutbox` / `agent/outbox` wrapper | Pass | Pass | Pass | Pass | Direct semantic notifier calls replace forwarding. |
-| Low-level `EventEmitter.emit(...)` / `EventManager.emit(...)` by domain code | Pass | Pass | Pass | Pass | Domain code must call notifier methods. |
-| Old WorkerEventDispatcher turn loop | Pass | Pass | Pass | Pass | Replaced by runner/phase/pipeline direct flow. |
-| Old turn-advancing `agent/handlers/*` | Pass | Pass | Pass | Pass | Final processors do not recreate the handler chain. |
-| Native interrupt-to-stop fallback | Pass | Pass | Pass | Pass | Replaced by native interrupt. |
-| Dual `STOP_GENERATION` / `INTERRUPT_GENERATION` path | Pass | Pass | Pass | Pass | Single interrupt command retained. |
+| `event-inbox/processors/` and `*EventProcessor` final naming | Pass | Pass | Pass | Pass | Replaced by `event-inbox/handlers/` and `*InboxEventHandler`. |
+| `AgentMessageInbox` / message wrappers | Pass | Pass | Pass | Pass | Still rejected as target. |
+| `AgentOutbox` / duplicate publisher wrapper | Pass | Pass | Pass | Pass | Still rejected as target. |
+| Old normal-flow `agent/handlers/*` ownership | Pass | Pass | Pass | Pass | Still removed from normal turn flow. |
+| Native interrupt-to-stop fallback | Pass | Pass | Pass | Pass | Still forbidden. |
 
 ## File Responsibility Mapping Verdict
 
 | File / Area | Responsibility Is Singular And Clear? | Responsibility Matches Intended Owner/Boundary? | Responsibilities Were Re-Tightened After Shared-Structure Extraction? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `autobyteus-ts/src/agent/event-inbox/agent-event-inbox.ts` | Pass | Pass | Pass | Pass | Semantic lane/inbox boundary above storage. |
-| `autobyteus-ts/src/agent/event-inbox/inbox-queue-store.ts` | Pass | Pass | Pass | Pass | Private async queue/availability storage only. |
-| `autobyteus-ts/src/agent/event-inbox/agent-event-scheduler.ts` | Pass | Pass | Pass | Pass | Dispatchability and processor selection owner. |
-| `autobyteus-ts/src/agent/event-inbox/processors/` | Pass | Pass | Pass | Pass | Entry processors, not old handler-chain phase owners. |
-| `autobyteus-ts/src/agent/loop/*` | Pass | Pass | Pass | Pass | Runner/phases/port/continuation own finite turn flow. |
-| `autobyteus-ts/src/agent/pipelines/*` | Pass | Pass | Pass | Pass | Typed domain processor orchestration. |
-| `autobyteus-ts/src/agent/events/notifiers.ts` | Pass | Pass | Pass | Pass | External-observable notifier methods. |
-| Removed `autobyteus-ts/src/agent/message-inbox/*` wrappers | Pass | Pass | Pass | Pass | Replace with event-inbox final files. |
-| Removed `autobyteus-ts/src/agent/outbox/` | Pass | Pass | Pass | Pass | Replace forwarding with notifier calls. |
+| `autobyteus-ts/src/agent/event-inbox/handlers/` | Pass | Pass | Pass | Pass | Correct final folder for scheduler-selected handlers. |
+| `inbox-event-handler.ts` / `InboxEventHandler` | Pass | Pass | Pass | Pass | Interface name matches role. |
+| `turn-start-inbox-event-handler.ts` | Pass | Pass | Pass | Pass | Starts runner task; does not own runner loop. |
+| `tool-approval-inbox-event-handler.ts` | Pass | Pass | Pass | Pass | Delegates validation/posting through runtime state / port. |
+| `tool-result-inbox-event-handler.ts` | Pass | Pass | Pass | Pass | Handles external/async result entry; in-process tool execution remains in `ToolPhase`. |
+| `runtime-lifecycle-inbox-event-handler.ts` | Pass | Pass | Pass | Pass | Lifecycle entry handling only. |
+| `agent/pipelines/*` | Pass | Pass | Pass | Pass | Processor pipeline terms remain here. |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
 | Owner / Boundary | Allowed Dependencies Are Clear? | Forbidden Shortcuts Are Explicit? | Direction Is Coherent With Ownership? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `AgentRuntime` -> `AgentEventInbox` | Pass | Pass | Pass | Pass | Runtime submits typed events; no second domain message object. |
-| `AgentEventInbox` -> `InboxQueueStore` | Pass | Pass | Pass | Pass | Queue store is private storage only. |
-| `AgentEventScheduler` -> processors | Pass | Pass | Pass | Pass | Scheduler owns dispatchability; processors own entry processing. |
-| Event processors -> `AgentRuntimeState` / `TurnToolInputPort` | Pass | Pass | Pass | Pass | Validation occurs before port delivery. |
-| `AgentTurnRunner` -> phases/pipelines | Pass | Pass | Pass | Pass | Direct runner flow remains normal turn path. |
-| Runner/phases/pipelines -> `AgentExternalEventNotifier` | Pass | Pass | Pass | Pass | Observable publication only. |
-| Server/frontend -> public native/runtime APIs | Pass | Pass | Pass | Pass | No runtime internals or stop fallback. |
+| `AgentEventScheduler` -> `InboxEventHandler`s | Pass | Pass | Pass | Pass | Scheduler selects handler by event/lane/state. |
+| `InboxEventHandler` -> authoritative owners | Pass | Pass | Pass | Pass | Handlers delegate to runner task starter, runtime state, lifecycle/status owner, or turn port after validation. |
+| `InboxEventHandler` vs pipelines | Pass | Pass | Pass | Pass | Handlers may call pipelines where appropriate but do not own processor ordering or phase logic. |
+| `AgentEventInbox` -> `InboxQueueStore` | Pass | Pass | Pass | Pass | Queue store remains internal. |
+| External callers -> runtime/facade APIs | Pass | Pass | Pass | Pass | No direct `TurnToolInputPort` or queue-store bypass. |
 
 ## Boundary Encapsulation Verdict
 
 | Boundary / Owner | Authoritative Public Entry Point Is Clear? | Internal Owned Mechanisms Stay Internal? | Caller Bypass Risk Is Controlled? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `AgentRuntime.interrupt()` | Pass | Pass | Pass | Pass | Side-band interrupt remains authoritative. |
-| `AgentRuntime.postToolApprovalEvent()` | Pass | Pass | Pass | Pass | Approval command enters as canonical event and awaitable inbox entry. |
-| `AgentEventInbox` | Pass | Pass | Pass | Pass | Encapsulates queue store and lane entry APIs. |
-| `AgentEventScheduler` | Pass | Pass | Pass | Pass | Encapsulates routing/dispatchability policy. |
-| `TurnToolInputPort` | Pass | Pass | Pass | Pass | Internal to active turn/tool phase. |
-| `AgentTurnRunner` | Pass | Pass | Pass | Pass | Finite turn flow owner; processors/events do not compete. |
-| `AgentExternalEventNotifier` | Pass | Pass | Pass | Pass | Semantic notifier methods above raw event infrastructure. |
+| `AgentRuntime.postToolApprovalEvent()` | Pass | Pass | Pass | Pass | Approval command enters as event entry; handler/runtimestate validates before port. |
+| `AgentEventInbox` | Pass | Pass | Pass | Pass | Inbox owns lane/entry APIs above storage. |
+| `AgentEventScheduler` | Pass | Pass | Pass | Pass | Scheduler owns dispatchability. |
+| `InboxEventHandler`s | Pass | Pass | Pass | Pass | Handlers are narrow delegates. |
+| `TurnToolInputPort` | Pass | Pass | Pass | Pass | Internal turn/tool wait-wake primitive. |
+| `AgentTurnRunner` | Pass | Pass | Pass | Pass | Still finite turn-loop owner. |
 
 ## Interface Boundary Verdict
 
 | Interface / API / Command / Method | Subject Is Clear? | Responsibility Is Singular? | Identity Shape Is Explicit? | Generic Boundary Risk | Verdict |
 | --- | --- | --- | --- | --- | --- |
-| `AgentRuntime.submitEvent(event: BaseEvent)` | Pass | Pass | Pass | Low | Pass |
+| `InboxEventHandler.canHandle(event)` | Pass | Pass | Pass | Low | Pass |
+| `InboxEventHandler.handle(entry, context)` | Pass | Pass | Pass | Low | Pass |
+| `AgentEventSchedulerHandlers` | Pass | Pass | Pass | Low | Pass |
 | `AgentRuntime.postToolApprovalEvent(event)` | Pass | Pass | Pass | Low | Pass |
 | `AgentRuntime.postToolResultEvent(event)` | Pass | Pass | Pass | Low | Pass |
-| `AgentEventInbox.postEvent/postAwaitableEvent/lane APIs` | Pass | Pass | Pass | Low | Pass |
-| `AgentEventScheduler.nextDispatchable/dispatch` | Pass | Pass | Pass | Low | Pass |
-| `AgentEventProcessor.process(entry)` | Pass | Pass | Pass | Low | Pass |
-| `TurnToolInputPort.postApproval/postToolResult` | Pass | Pass | Pass | Low | Pass |
-| `AgentRuntime.interrupt(options?)` | Pass | Pass | Pass | Low | Pass |
-| WebSocket `INTERRUPT_GENERATION` | Pass | Pass | Pass | Low | Pass |
+| `AgentEventInbox.postEvent/postAwaitableEvent` | Pass | Pass | Pass | Low | Pass |
 
 ## Subsystem / Folder / File Placement Verdict
 
 | Path / Item | Target Placement Is Clear? | Folder Matches Owning Boundary? | Mixed-Layer Or Over-Split Risk | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `agent/event-inbox/` | Pass | Pass | Medium | Pass | Cohesive inbound event boundary; keep phase work out. |
-| `agent/event-inbox/processors/` | Pass | Pass | Low | Pass | Correct rename away from old handler-chain semantics. |
-| `agent/loop/` | Pass | Pass | Medium | Pass | Runner/phase/port/continuation are cohesive; no worker lifecycle. |
-| `agent/pipelines/` | Pass | Pass | Medium | Pass | Off-spine transformation owners; no turn scheduling. |
-| `agent/events/notifiers.ts` | Pass | Pass | Low | Pass | Existing outbound observable boundary. |
-| Removed `agent/message-inbox/` | Pass | Pass | Low | Pass | Final target moves to `agent/event-inbox/`. |
-| Removed `agent/outbox/` | Pass | Pass | Low | Pass | Final target uses notifier directly. |
+| `agent/event-inbox/handlers/` | Pass | Pass | Low | Pass | Correct for scheduler-selected inbox event handlers. |
+| `agent/event-inbox/agent-event-scheduler.ts` | Pass | Pass | Low | Pass | Scheduler references `AgentEventSchedulerHandlers`. |
+| `agent/pipelines/` | Pass | Pass | Low | Pass | Real processor pipeline services remain separate. |
+| removed `agent/event-inbox/processors/` | Pass | Pass | Low | Pass | Removed/rejected as final source naming. |
+| removed legacy `agent/handlers/*` normal-flow chain | Pass | Pass | Low | Pass | Not reopened by inbox handler terminology. |
 
 ## Existing Capability / Subsystem Reuse Verdict
 
 | Need / Concern | Existing Capability Area Was Checked? | Reuse / Extension Decision Is Sound? | New Support Piece Is Justified? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Canonical inbound payloads | Pass | Pass | N/A | Pass | Existing typed runtime events are reused instead of wrapped. |
-| External observable events | Pass | Pass | N/A | Pass | Reuse `AgentExternalEventNotifier`; no new `AgentOutbox`. |
-| Turn loop execution | Pass | Pass | N/A | Pass | Existing first-stage runner/phases/pipelines remain the right owners. |
-| Frontend interrupt path | Pass | Pass | N/A | Pass | Existing `INTERRUPT_GENERATION` path is preserved. |
-| Inter-agent/team communication consumers | Pass | Pass | N/A | Pass | Existing stream/server/frontend projection chain is preserved. |
+| Inbound event handling | Pass | Pass | N/A | Pass | Handler naming better fits scheduler-selected entry handling. |
+| Processor pipeline terminology | Pass | Pass | N/A | Pass | Kept for existing processor extension points. |
+| Legacy handler chain avoidance | Pass | Pass | N/A | Pass | Scoped `InboxEventHandler` naming prevents confusion. |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Area | Compatibility Wrapper / Dual-Path / Legacy Retention Exists? | Clean-Cut Removal Is Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- |
-| `AgentMessageInbox` / message wrappers final state | No | Pass | Pass | Current-state/rejected-target references are acceptable. |
-| `AgentOutbox` wrapper final state | No | Pass | Pass | Removed with notifier replacement. |
-| Old WorkerEventDispatcher handler loop | No | Pass | Pass | Still forbidden. |
-| Transitional/middle-state adapter final design | No | Pass | Pass | Final work-package gates reject intermediate stopping points. |
-| Dual stop/interrupt frontend commands | No | Pass | Pass | Keep `INTERRUPT_GENERATION`; remove leftover stop naming. |
+| `*EventProcessor` final event-inbox naming | No | Pass | Pass | AC-015 forbids final event-inbox `*EventProcessor` / `processors/` naming. |
+| Old `agent/handlers/*` normal turn path | No | Pass | Pass | Still removed from normal turn control. |
+| Message wrappers | No | Pass | Pass | Still rejected as target. |
+| `AgentOutbox` wrapper | No | Pass | Pass | Still rejected as target. |
+| Interrupt-to-stop fallback | No | Pass | Pass | Still forbidden. |
 
 ## Migration / Refactor Safety Verdict
 
 | Area | Sequence / Work Package Is Realistic? | Temporary Seams Rejected As Final? | Cleanup / Removal Is Explicit? | Verdict |
 | --- | --- | --- | --- | --- |
-| `AgentMessageInbox` -> `AgentEventInbox` conversion | Pass | Pass | Pass | Pass |
-| Event processor finalization | Pass | Pass | Pass | Pass |
-| Approval/result event routing | Pass | Pass | Pass | Pass |
-| `AgentOutbox` removal with notifier replacement | Pass | Pass | Pass | Pass |
-| Runner/phase/pipeline finalization | Pass | Pass | Pass | Pass |
-| Old handler queue choreography removal | Pass | Pass | Pass | Pass |
+| `event-inbox/processors` -> `event-inbox/handlers` rename | Pass | Pass | Pass | Pass |
+| `process(...)` -> `handle(...)` rename | Pass | Pass | Pass | Pass |
+| Scheduler handler collection rename | Pass | Pass | Pass | Pass |
+| CDF-002 / CDF-009 / CDF-012 behavior preservation | Pass | Pass | Pass | Pass |
+| Guardrails against old handler-chain ownership | Pass | Pass | Pass | Pass |
 
 ## Example Adequacy Verdict
 
 | Topic / Area | Example Was Needed? | Example Is Present And Clear? | Bad / Avoided Shape Is Explained When Helpful? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Event inbox entry shape | Yes | Pass | Pass | Pass | The envelope example clarifies event vs metadata. |
-| Approval event route | Yes | Pass | N/A | Pass | CDF-009 and code sketch are concrete. |
-| External async result route | Yes | Pass | N/A | Pass | CDF-012 is concrete. |
-| Inter-agent projection | Yes | Pass | N/A | Pass | Full consumer chain is documented. |
-| Forbidden old event-handler flow | Yes | Pass | Pass | Pass | Forbidden shapes are explicit. |
-
-## AgentMessage / Wrapper Reference Check
-
-| Reference Type | Review Result | Evidence |
-| --- | --- | --- |
-| `AgentMessageInbox`, `AgentInboxMessage`, `ToolApprovalInputMessage`, `ToolResultInputMessage` in current-state sections | Acceptable | They are used as current first-stage evidence/problem statement. |
-| Explicit rejection of message wrappers | Pass | Design says not to expose those domain-message wrappers in target code. |
-| Accidental target ownership by old message wrappers | Not found | Target components, contracts, CDFs, file mapping, and FR/AC use `AgentEventInbox`, event entries, and canonical typed events. |
-| Generic word “message” in a few narrative sentences | Non-blocking | Some narrative text says “active-turn message” generically, but target APIs/files use events. Clean up terminology during implementation/design polish. |
+| CR-019 naming target | Yes | Pass | Pass | Pass | Investigation and design show final names and explain why processor naming was wrong. |
+| Approval handler flow | Yes | Pass | N/A | Pass | `ToolApprovalInboxEventHandler.handle` flow is explicit. |
+| Handler vs legacy handler chain | Yes | Pass | Pass | Pass | Design explicitly distinguishes event-inbox handlers from old normal-flow handlers. |
 
 ## Missing Use Cases / Open Unknowns
 
 | Item | Why It Matters | Required Action | Status |
 | --- | --- | --- | --- |
-| None blocking | The event-centric design covers interrupt, approval, async result, bootstrap/shutdown, frontend stream feedback, and inter-agent/team communication projection. | None before implementation. | Closed for design. |
-| DS-010 missing from the mandatory narrative table | The design inventory and External Event Notifier section fully describe DS-010, but the narrative table currently stops at DS-009. | Non-blocking doc cleanup: add DS-010 row to the Spine Narratives table. | Advisory. |
-| Work Package 2 title still says “Handlers” | The body and file mapping use `AgentEventProcessor`; the title could confuse implementers. | Non-blocking doc cleanup: rename heading to `AgentEventInbox / Scheduler / Processors / ...`. | Advisory. |
-| `AgentExternalEventNotifier` method discipline | Notifier could become a raw generic emit sink if implemented carelessly. | Keep typed semantic notify methods; encapsulate raw emit. | Advisory. |
-| Runner task supervision | Prior implementation risk remains. | Supervise active runner task outcomes and scheduler wakeups. | Advisory. |
+| None blocking | CR-019 is a naming/design-language issue, not missing behavior. CDFs and use cases remain complete. | None before implementation. | Closed for design. |
+| Minor stale wording: recommendation line says scheduler selects entry and “processor” | Requirements recommendation 11 still uses one generic “processor” word while the surrounding sentence and FR/AC use handlers. | Non-blocking doc cleanup: change to “handler” for consistency. | Advisory. |
+| Minor stale wording: invariant uses `AgentRuntime.postToolApproval` instead of `postToolApprovalEvent` | CDF/interface/FR use the correct event method. | Non-blocking doc cleanup: update invariant text. | Advisory. |
+| Minor stale wording: interface boundary check says “processor routing” | The section otherwise says scheduler/handler. | Non-blocking doc cleanup: update to “handler routing.” | Advisory. |
 
 ## Review Decision
 
 - **Pass / APPROVED FOR IMPLEMENTATION**.
 
-The revised event-centric architecture is better aligned with the existing Autobyteus runtime. It removes an unnecessary domain-message wrapper layer and uses typed runtime events as the canonical payload, while keeping queue metadata in a narrow `AgentEventInboxEntry`. This follows the Authoritative Boundary Rule: callers use `AgentRuntime`, `AgentEventInbox`, and `AgentEventScheduler`; they do not bypass to `InboxQueueStore` or `TurnToolInputPort`. It also avoids the Empty Indirection smell introduced by wrapping events into parallel message objects.
+The CR-019 rework is architecturally sound and resolves the code-review design-impact finding. Handler terminology is the right fit for scheduler-selected inbox event dispatch targets because these classes handle one claimed event entry and delegate to authoritative owners. The design also clearly preserves the distinction between:
 
-The design still preserves the important earlier architecture decisions: `AgentWorker` is a long-lived inbox/lifecycle loop, `AgentTurnRunner` owns finite LLM/tool/continuation flow, `TurnExecutionScope` owns cancellation/fencing, `TurnToolInputPort` is internal and tool-specific, and `AgentExternalEventNotifier` is the external-observable publication boundary.
+1. narrow `event-inbox` handlers;
+2. removed legacy normal-flow `agent/handlers/*`; and
+3. real processor pipelines under `agent/pipelines`.
+
+The rename is behavior-neutral and does not reopen message wrappers, `AgentOutbox`, interrupt-to-stop fallback, or old handler-chain turn ownership.
 
 ## Findings
 
@@ -316,17 +259,15 @@ None blocking.
 
 ### Non-blocking implementation advisories
 
-1. Implement `AgentEventInboxEntry` as metadata only; do not recreate `AgentInboxMessage` under a new name.
-2. Replace first-stage `message-inbox/handlers` with `event-inbox/processors`; keep processors thin entry processors and do not let them own LLM/tool phase progression.
-3. Replace `AgentRuntime.postToolApproval(ToolApprovalInputMessage)` with event-centric `AgentRuntime.postToolApprovalEvent(ToolExecutionApprovalEvent)` and preserve the public `Agent.postToolExecutionApproval(...)` facade.
-4. Remove all final-source `UserInboxMessage`, `ToolApprovalInputMessage`, `ToolResultInputMessage`, and equivalent wrapper types unless they are test fixtures explicitly asserting removal.
-5. Preserve `AgentOutbox` removal while keeping all semantic `AgentExternalEventNotifier` publications and payload compatibility.
-6. Add/keep tests for parked turn-starting events, active-turn approval/result dispatch while a runner task is active, stale/interrupted approval/result outcomes, side-band interrupt, and no old handler-chain turn progression.
+1. Perform the rename cohesively across source, tests, exports, and docs: `event-inbox/processors` -> `event-inbox/handlers`, `*EventProcessor` -> `*InboxEventHandler`, `process(...)` -> `handle(...)`, and scheduler collection -> `AgentEventSchedulerHandlers`.
+2. Keep `InboxEventHandler` implementations intentionally thin. Do not add artificial business logic just to justify the handler name.
+3. Preserve all Round 13 guardrails: typed events remain canonical, `AgentEventInboxEntry` is metadata only, no message wrappers, no `AgentOutbox`, no interrupt-to-stop fallback, and no old handler-chain turn progression.
+4. Clean up the minor stale words noted above during implementation/doc polish.
 
 ## Classification
 
 - No blocking `Design Impact`, `Requirement Gap`, or `Unclear` findings remain.
-- Residual items are implementation/code-review and minor documentation cleanup checks, not design blockers.
+- CR-019 is resolved at the design level and ready for implementation.
 
 ## Recommended Recipient
 
@@ -334,11 +275,10 @@ None blocking.
 
 ## Residual Risks
 
-- The main implementation risk is renaming without fully removing old wrapper types or old message-inbox handler imports.
-- Event-centric naming could still be confused with external observable events; implementation should keep `AgentEventInbox` internal-control events clearly separated from `AgentExternalEventNotifier` observable events.
-- The worker loop must continue dispatching active-turn/lifecycle event entries while an `AgentTurnRunner` task is active; otherwise approval/result spines would block operationally.
+- The main implementation risk is an incomplete rename that leaves imports, test names, or exports using event-inbox `Processor` terminology.
+- The word “handler” can be misread because of the removed legacy handlers; code review should verify the scoped `InboxEventHandler` name and folder placement prevent this confusion and that handlers remain thin delegates.
 
 ## Latest Authoritative Result
 
 - Review Decision: **Pass / APPROVED FOR IMPLEMENTATION**
-- Notes: Latest authoritative target architecture is `AgentEventInbox` / `AgentEventScheduler` / thin typed `AgentEventProcessor`s / `AgentTurnRunner` / `LlmPhase` / `ToolPhase` / `TurnToolInputPort` / `TurnExecutionScope` / typed pipelines / `AgentExternalEventNotifier`. No `AgentMessageInbox` domain-wrapper target, `AgentOutbox`, duplicate publisher wrapper, old normal-flow handler chain, or native interrupt-to-stop fallback remains in the final target.
+- Notes: Latest authoritative target uses `AgentEventInbox` / `AgentEventScheduler` / scheduler-selected `InboxEventHandler`s / `AgentTurnRunner` / `LlmPhase` / `ToolPhase` / `TurnToolInputPort` / `TurnExecutionScope` / real processor pipelines / `AgentExternalEventNotifier`. CR-019 naming rework is approved.

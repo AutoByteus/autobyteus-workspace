@@ -4,13 +4,13 @@
 
 This document describes the event-driven core that powers Autobyteus agents,
 agent teams, and workflows. It focuses on how runtimes serialize work through
-mailboxes, route events to the active owner, publish streamable status/output,
+event inboxes, route events to the active owner, publish streamable status/output,
 and shut down cleanly.
 
 The implementation intentionally separates two concerns:
 
-- **Runtime mailboxes** serialize externally submitted work and lifecycle
-  control.
+- **Runtime event inboxes** serialize externally submitted work and lifecycle
+  control while preserving canonical typed event payloads.
 - **Turn owners** (`AgentTurnRunner` plus its phases) own one active agent turn's
   LLM/tool/continuation loop.
 
@@ -34,50 +34,52 @@ control for the active turn and is distinct from `stop()`.
 
 ---
 
-## 3. Agent Mailbox and Scheduler
+## 3. Agent Event Inbox and Scheduler
 
-### 3.1 AgentMessageInbox lanes
+### 3.1 AgentEventInbox lanes
 
-The single-agent runtime uses `AgentMessageInbox` instead of the retired
-multi-queue dispatcher. The inbox has three lanes:
+The single-agent runtime uses `AgentEventInbox` instead of the retired
+multi-queue dispatcher or the intermediate message-wrapper inbox. The inbox
+stores typed event entries and has three lanes:
 
-| Lane | Accepted messages | Purpose |
+| Lane | Accepted events | Purpose |
 | --- | --- | --- |
 | `runtime_lifecycle` | `LifecycleEvent` values such as ready/shutdown notifications | Runtime bootstrap/shutdown/control work. Operational tool events are rejected here. |
-| `active_turn` | awaitable tool approval and external tool-result messages | Wakes the already-active turn without starting another turn. |
+| `active_turn` | awaitable `ToolExecutionApprovalEvent` and `ToolResultEvent` entries | Wakes the already-active turn without starting another turn. |
 | `turn_start` | `UserMessageReceivedEvent` and `InterAgentMessageReceivedEvent` | Starts a new outer `AgentTurn` only while the runtime is idle. |
 
-`AgentMessageInbox` rejects same-turn TOOL sender continuations and rejects
-`ToolExecutionApprovalEvent` / `ToolResultEvent` as lifecycle input. Same-turn
+`AgentEventInbox` rejects same-turn TOOL sender continuations and rejects
+unsupported operational events as lifecycle or turn-start input. Same-turn
 continuations remain inside the turn runner, while public tool approvals/results
-enter through the active-turn lane.
+enter as canonical active-turn events through `postToolApprovalEvent(...)` and
+`postToolResultEvent(...)`.
 
 ### 3.2 Dispatchability priorities
 
-`AgentMessageScheduler` chooses dispatchable inbox messages based on runtime
+`AgentEventScheduler` chooses dispatchable event entries based on runtime
 state:
 
 - While a turn is active or settling: `runtime_lifecycle` first, then
   `active_turn`. New `turn_start` messages wait.
 - While idle: `runtime_lifecycle`, then `active_turn`, then `turn_start`.
 
-This means terminal lifecycle notifications and active-turn control messages can
+This means terminal lifecycle notifications and active-turn control events can
 wake the worker, but queued user/inter-agent triggers do not preempt or overlap
 an active turn. On shutdown, queued awaitables are settled with explicit stopped
 results.
 
-### 3.3 Scheduler handlers
+### 3.3 Scheduler processors
 
-The scheduler dispatches to a small fixed handler set:
+The scheduler dispatches to a small fixed processor set:
 
-- `TurnStartMessageHandler` creates and runs a new `AgentTurn` through
+- `TurnStartEventProcessor` creates and runs a new `AgentTurn` through
   `AgentTurnRunner`.
-- `RuntimeLifecycleMessageHandler` applies runtime lifecycle notifications.
-- `ToolApprovalMessageHandler` calls
-  `AgentRuntimeState.postToolApprovalToActiveTurn(...)` and publishes
+- `RuntimeLifecycleEventProcessor` applies runtime lifecycle notifications.
+- `ToolApprovalEventProcessor` calls
+  `AgentRuntimeState.postToolApprovalEventToActiveTurn(...)` and publishes
   `ToolExecutionApprovalEvent` only after the active turn accepts the decision.
-- `ToolResultMessageHandler` calls
-  `AgentRuntimeState.postToolResultToActiveTurn(...)`.
+- `ToolResultEventProcessor` calls
+  `AgentRuntimeState.postToolResultEventToActiveTurn(...)`.
 
 There is no single-agent `WorkerEventDispatcher`, `EventHandlerRegistry`, or
 normal-flow handler chain in the active runtime.
@@ -116,7 +118,7 @@ coordination. Team code can route a command to a member agent, but member-agent
 turn controls must go through the member's public APIs. For example, team tool
 approval commands resolve the target member and call
 `memberAgent.postToolExecutionApproval(...)`; they do not bypass the member
-runtime state or inject tool events directly into a member inbox.
+runtime state or inject tool events directly into a member event inbox.
 
 Team communication events are projected through the team/server stream pipeline.
 When inter-agent messages carry structured `reference_files`, the recipient
@@ -175,7 +177,7 @@ terminal states.
   `ToolPhase`, `ToolResultPipeline`, or `ToolResultContinuationBuilder`.
 - Add stream outputs through `AgentExternalEventNotifier` and the corresponding
   stream mapping layer.
-- Add runtime lifecycle behavior through `RuntimeLifecycleMessageHandler` or the
+- Add runtime lifecycle behavior through `RuntimeLifecycleEventProcessor` or the
   shutdown/bootstrap orchestrators.
 
 Do not add new normal-flow control by resurrecting retired dispatcher or handler
@@ -187,9 +189,9 @@ classes.
 
 - Agent runtime wrapper: `src/agent/runtime/agent-runtime.ts`
 - Agent worker loop: `src/agent/runtime/agent-worker.ts`
-- Agent inbox: `src/agent/message-inbox/agent-message-inbox.ts`
-- Agent scheduler: `src/agent/message-inbox/agent-message-scheduler.ts`
-- Scheduler handlers: `src/agent/message-inbox/handlers/*`
+- Agent event inbox: `src/agent/event-inbox/agent-event-inbox.ts`
+- Agent event scheduler: `src/agent/event-inbox/agent-event-scheduler.ts`
+- Scheduler processors: `src/agent/event-inbox/processors/*`
 - Runtime state: `src/agent/context/agent-runtime-state.ts`
 - Turn runner: `src/agent/loop/agent-turn-runner.ts`
 - LLM phase: `src/agent/loop/llm-phase.ts`

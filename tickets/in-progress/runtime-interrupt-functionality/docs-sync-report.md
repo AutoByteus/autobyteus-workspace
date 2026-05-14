@@ -4,118 +4,117 @@
 
 - Ticket: `runtime-interrupt-functionality`
 - Delivery owner: `delivery_engineer`
-- Date: `2026-05-13`
+- Date: `2026-05-14`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality`
-- Trigger: Delivery resumed after API/E2E Round 13 passed the user-requested real browser/frontend validation.
-- Latest implementation commit validated before delivery merge: `39dc00d81258ed74cd31b9affd8c65adb2e4ba28` (`refactor(agent): replace outbox with external notifier`).
-- Latest implementation review: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/review-report.md` (`Pass`, Round 25).
-- Latest authoritative API/E2E report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/api-e2e-validation-report.md` (`Pass`, Round 13; no production source and no repository-resident durable validation changed in this API/E2E round).
-- Integrated base checked by delivery: `origin/personal` at `aed54f77d0fbe10eea8ff67201375337b94ce362` after `git fetch origin --prune` on `2026-05-13`.
-- Delivery safety checkpoint before latest-base merge: `a9f2b5dc700bce2a6094edb45d6fe8552713b57e` (`chore(ticket): checkpoint runtime interrupt round 13 handoff`).
-- Integrated delivery merge commit: `460c402a402f0e02512b933287e62f52297da75b` (`Merge remote-tracking branch 'origin/personal' into codex/runtime-interrupt-functionality`).
-- Branch relationship after delivery refresh/merge: `ahead 27, behind 0` relative to `origin/personal`.
+- Trigger: Delivery resumed after API/E2E Round 14 passed Code Review Round 26 at commit `3110486394037520dbe83df47663c5ee8091cb63` (`refactor(agent): replace message inbox with event inbox`) and the user-requested full rerun after a computer restart.
+- Latest implementation review: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/review-report.md` (`Pass / Ready for API/E2E validation`, Round 26).
+- Latest authoritative API/E2E report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/api-e2e-validation-report.md` (`Pass`, Round 14; no production source and no repository-resident durable validation changed in this API/E2E round).
+- Integrated base checked by delivery: `origin/personal` at `839148ba058b8d85a96288ce56fef69beef22266` after `git fetch origin --prune` on `2026-05-14`.
+- Delivery safety checkpoint before latest-base merge: `3c54589ac49e07a1bede70781e4aebab9f7798c6` (`chore(ticket): checkpoint runtime interrupt round 14 reports`).
+- Integrated delivery merge commit: `82bf9cf591d6b45db0f8f3d95c9b8310e0e8cbba` (`Merge remote-tracking branch 'origin/personal' into codex/runtime-interrupt-functionality`).
+- Branch relationship after delivery refresh/merge: `ahead 31, behind 0` relative to `origin/personal`.
 
 ## Result
 
 `Pass / Updated`
 
-This report supersedes the prior Round-12 delivery artifact. Delivery refreshed against the latest tracked base, protected the incoming Round-13/report/docs state with a local checkpoint, merged the latest `origin/personal`, reran integrated checks, and updated delivery artifacts for the Round-13 browser validation evidence.
+This report supersedes the prior Round-13 delivery artifact. Delivery refreshed against the latest tracked base, protected the incoming Round-14 review/API-E2E report state with a local checkpoint, merged the latest `origin/personal`, reran integrated checks, updated long-lived docs for the event-inbox refactor, and updated delivery artifacts for the Round-14 restart/full-rerun evidence.
 
-The earlier `delivery-merge-blocker-report.md` remains historical context only; the latest-base conflict it documented was resolved before the current reviewed/revalidated state, and the current delivery merge completed without conflicts.
+The earlier `delivery-merge-blocker-report.md` remains historical context only; the current delivery merge completed without conflicts.
 
-## Round 13 Docs Impact Decision
+## Why Docs Were Updated
 
-Round 13 did not change production source files or repository-resident durable validation files. It added real browser/frontend validation evidence for the existing runtime interrupt/terminate behavior. No additional long-lived product-doc changes were required specifically for Round 13.
+Round 14 validated the final second-stage inbound runtime refactor:
 
-The long-lived TypeScript runtime docs that were updated during the prior delivery pass remain current after the latest-base merge:
+- `AgentMessageInbox`, `AgentMessageScheduler`, message-wrapper input types, and message-handler names were removed from active TS source/tests.
+- `AgentEventInbox` is now the single semantic inbound event boundary.
+- `AgentEventScheduler` dispatches canonical event entries from the `runtime_lifecycle`, `active_turn`, and `turn_start` lanes.
+- Typed `AgentEventProcessor`s now own runtime-lifecycle, turn-start, tool-approval, and tool-result dispatch.
+- Tool approvals/results use canonical `ToolExecutionApprovalEvent` and `ToolResultEvent` objects through `AgentRuntime.postToolApprovalEvent(...)` / `AgentRuntime.postToolResultEvent(...)`; separate `ToolApprovalInputMessage` / `ToolResultInputMessage` wrappers must not be reintroduced.
 
-- `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md`
-- `autobyteus-ts/docs/event_driven_core_design.md`
-- `autobyteus-ts/docs/lifecycle_event_sourced_engine_design.md`
-
-Those docs continue to describe `AgentExternalEventNotifier` as the direct semantic external-observable boundary after the `AgentOutbox` removal refactor.
+Several long-lived docs still described the intermediate `AgentMessageInbox` / message-wrapper design. Delivery updated them to match the final reviewed and revalidated implementation state.
 
 ## Long-Lived Docs Reviewed
 
 | Doc Path | Result | Notes |
 | --- | --- | --- |
-| `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md` | Already updated / whitespace hygiene fixed | Describes `AgentExternalEventNotifier` as the semantic publisher for status, turn, segment, tool lifecycle/log, inter-agent, system-task, and assistant-output events. Delivery also removed a trailing-whitespace issue found by branch diff hygiene. |
-| `autobyteus-ts/docs/event_driven_core_design.md` | Already updated / still current | Describes direct `AgentExternalEventNotifier` ownership and typed `notify...` methods instead of the deleted `AgentOutbox` wrapper. |
-| `autobyteus-ts/docs/lifecycle_event_sourced_engine_design.md` | Already updated / still current | Documents lifecycle/status/data publication through `AgentExternalEventNotifier` and inter-agent projection through the notifier. |
-| `autobyteus-ts/docs/agent_memory_design.md` | Reviewed / No change | Runtime call stacks already use current runner/phase/pipeline owners and do not name the removed `AgentOutbox`. |
-| `autobyteus-ts/docs/agent_memory_design_nodejs.md` | Reviewed / No change | Mirrors memory-design corrections and does not name the removed `AgentOutbox`. |
-| `autobyteus-ts/docs/tool_call_formatting_and_parsing.md` | Reviewed / No change | Current tool-call flow does not name the removed `AgentOutbox`. |
-| `autobyteus-ts/docs/api_tool_call_streaming_design.md` | Reviewed / No change | Current API tool-call streaming doc does not name the removed `AgentOutbox`. |
-| `autobyteus-ts/docs/tool_schema_and_configuration.md` | Reviewed / No change | No impact from notifier boundary refactor or Round-13 browser validation. |
-| `autobyteus-ts/docs/turn_terminology.md` | Reviewed / No change | No impact from Round-13 browser validation. |
-| `autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md` | Reviewed / No change | Current mailbox/team coordination wording remains accurate. |
-| `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md` | Reviewed / No change | Protocol semantics unchanged; Round 13 validated the live browser paths against local server/WebSocket endpoints. |
+| `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md` | Updated | Replaced `AgentMessageInbox`/`AgentMessageScheduler`/message-handler wording with `AgentEventInbox`, `AgentEventScheduler`, and event processors; documented canonical active-turn `ToolExecutionApprovalEvent` / `ToolResultEvent` spines. |
+| `autobyteus-ts/docs/event_driven_core_design.md` | Updated | Updated agent mailbox/scheduler sections, dispatchability priorities, extension points, and key files to the event-inbox subsystem. |
+| `autobyteus-ts/docs/lifecycle_event_sourced_engine_design.md` | Updated | Updated the implemented Appendix A flow map from the intermediate message inbox to canonical event inbox entries and event processors. |
+| `autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md` | Updated | Updated the concurrency/event-pipeline overview so every agent has an `AgentEventInbox` storing canonical typed events. |
+| `autobyteus-ts/docs/agent_memory_design.md` | Reviewed / No change | Runtime call stacks already use current runner/phase/pipeline owners and do not name the removed inbox wrappers. |
+| `autobyteus-ts/docs/agent_memory_design_nodejs.md` | Reviewed / No change | Mirrors memory-design corrections and does not name the removed inbox wrappers. |
+| `autobyteus-ts/docs/tool_call_formatting_and_parsing.md` | Reviewed / No change | Current tool-call flow remains accurate. |
+| `autobyteus-ts/docs/api_tool_call_streaming_design.md` | Reviewed / No change | Current API tool-call streaming doc remains accurate. |
+| `autobyteus-ts/docs/tool_schema_and_configuration.md` | Reviewed / No change | No impact from the event-inbox refactor. |
+| `autobyteus-ts/docs/turn_terminology.md` | Reviewed / No change | No impact from the event-inbox refactor. |
+| `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md` | Reviewed / No change | Protocol semantics unchanged; Round 14 revalidated server/WebSocket and browser paths. |
 | `autobyteus-server-ts/docs/modules/agent_execution.md` | Reviewed / No change | Runtime execution behavior remains aligned. |
-| `autobyteus-server-ts/docs/modules/agent_streaming.md` | Reviewed / No change | Stream bridge behavior remains aligned with the notifier-backed event stream. |
+| `autobyteus-server-ts/docs/modules/agent_streaming.md` | Reviewed / No change | Stream bridge behavior remains aligned. |
 | `autobyteus-server-ts/docs/modules/agent_team_execution.md` | Reviewed / No change | Team communication and member stream behavior remains aligned. |
-| `autobyteus-web/docs/agent_execution_architecture.md` | Reviewed / No change | Frontend projection behavior was validated in real browser flows; no architecture-doc change was needed. |
+| `autobyteus-web/docs/agent_execution_architecture.md` | Reviewed / No ticket-local change | The latest base touched this doc for unrelated stream/UI behavior; no additional runtime-inbox doc change was needed for this ticket. |
 | `autobyteus-web/docs/agent_artifacts.md` | Reviewed / No change | No impact; Team Communication references remain separate from Agent Artifacts. |
 
-Notes on unrelated `outbox` wording: server/web messaging gateway docs still mention callback or provider outbox queues for a different subsystem. Those are not `AgentOutbox` and are intentionally unchanged.
+Notes on unrelated `outbox` wording: server/web messaging gateway docs may mention callback or provider outbox queues for other subsystems. Those are not `AgentOutbox` and are intentionally unchanged.
 
 ## Durable Design / Runtime Knowledge Promoted
 
-| Topic | Current durable truth | Target docs/artifacts |
+| Topic | Current durable truth | Target docs |
 | --- | --- | --- |
-| Observable-event boundary | `AgentExternalEventNotifier` is the direct semantic external-observable boundary. `AgentOutbox` has been deleted and should not be reintroduced as a duplicate wrapper. | `agent_runtime_loop_and_interrupt.md`, `event_driven_core_design.md`, `lifecycle_event_sourced_engine_design.md` |
-| Typed notifier calls | Runner/phases/pipelines publish facts through semantic `notify...` methods, not low-level `.emit(...)` and not a compatibility outbox. | `event_driven_core_design.md` |
-| Runtime mailbox | `AgentMessageInbox` has `runtime_lifecycle`, `active_turn`, and `turn_start` lanes. `AgentMessageScheduler` dispatches turn-start messages only while idle. | Existing docs remain current. |
-| Active-turn approval/result spines | Approvals/results remain active-turn controls through `AgentMessageInbox(active_turn)`, handlers, runtime state, and `TurnToolInputPort`. | Existing docs remain current. |
-| Native tool continuation | Native `api_tool_call` results use `tool_history_only`, `ToolContinuationReadyEvent`, and structured `assistant.tool_calls` / `role: "tool"` history. | Existing docs remain current. |
-| Browser/front-end evidence | Round 13 validated real browser single-agent and team interrupt/terminate flows through local Nuxt + backend + LM Studio. | API/E2E report and delivery handoff artifacts; no extra product-doc change needed. |
-| Final interrupt protocol terminology | Durable E2E validation and active protocol use `INTERRUPT_GENERATION`; no stop-generation fallback. | Existing docs remain current. |
+| Event-inbox boundary | `AgentEventInbox` is the single semantic inbound runtime boundary. It stores canonical typed event entries plus lane/awaitable metadata, not domain-specific message wrappers. | `agent_runtime_loop_and_interrupt.md`, `event_driven_core_design.md`, `lifecycle_event_sourced_engine_design.md`, `agent_team_runtime_and_task_coordination.md` |
+| Event scheduler | `AgentEventScheduler` selects `runtime_lifecycle` / `active_turn` entries while a turn is active and selects `turn_start` only while idle. | `agent_runtime_loop_and_interrupt.md`, `event_driven_core_design.md`, `lifecycle_event_sourced_engine_design.md` |
+| Active-turn approval/result spines | Approvals/results are canonical `ToolExecutionApprovalEvent` / `ToolResultEvent` entries routed through event processors to `AgentRuntimeState` and `TurnToolInputPort`. | `agent_runtime_loop_and_interrupt.md`, `event_driven_core_design.md`, `lifecycle_event_sourced_engine_design.md` |
+| Removed wrappers | `AgentMessageInbox`, `AgentMessageScheduler`, `AgentMessageHandler`, `AgentInboxMessage`, `UserInboxMessage`, `ToolApprovalInputMessage`, `ToolResultInputMessage`, and `message-inbox` paths are retired. | All updated runtime docs. |
+| Observable-event boundary | `AgentExternalEventNotifier` remains the direct semantic external-observable boundary. `AgentOutbox` has been deleted and should not be reintroduced as a duplicate wrapper. | Existing updated docs remain current. |
+| Browser/frontend evidence | Round 14 revalidated real browser same-run continuation after `INTERRUPT_GENERATION` following a computer restart. | Validation/report artifacts; product docs do not need extra browser-test wording. |
+| Final interrupt semantics | Interrupt cancels the active turn and leaves the AutoByteus runtime reusable. Terminate/stop shuts down the run and is covered separately by restore/follow-up E2E. | Existing updated docs remain current. |
 
-## Round 13 Browser Evidence Recorded
+## Round 14 Evidence Recorded
 
-API/E2E Round 13 validated the final UX-visible interrupt/terminate behavior using local browser/frontend execution:
+API/E2E Round 14 validated the current state after computer restart:
 
-- Backend: `http://127.0.0.1:18080`, clean SQLite data dir under `/tmp/autobyteus-ui-e2e-20260513-121623/data`.
-- Frontend: `http://127.0.0.1:13000`, with backend, agent WebSocket, and team WebSocket endpoints pointed at the local backend.
-- Seed command: `python3 scripts/seed-personal-test-fixtures.py --graphql-url http://127.0.0.1:18080/graphql --wait-retries 10 --wait-delay 1`.
-- Real runtime/model: AutoByteus runtime with LM Studio model `qwen3.6-27b-ud-mlx:lmstudio@127.0.0.1:1234`.
-- Single-agent browser path: in-flight `Stop generation`, pending-approval `Stop generation`, post-interrupt follow-ups, and target-file absence all passed.
-- Single-agent terminate path: visible `Terminate run` on a pending-tool run reached `shutdown_complete`, with target file absent.
-- Team browser path: focused-member `Stop generation`, follow-up, and `Terminate team` to `shutdown_complete` / member Offline all passed.
-- Screenshots retained:
-  - `/Users/normy/.autobyteus/browser-artifacts/7b3309-1778669159559.png`
-  - `/Users/normy/.autobyteus/browser-artifacts/7b3309-1778669334741.png`
+- Local backend restarted on `http://127.0.0.1:18083`; local frontend restarted on `http://127.0.0.1:13003`; both health checks passed.
+- Seed script was rerun and dedicated Round 26 UI definitions were created with `runtimeKind: autobyteus` and LM Studio model `qwen3.6-27b-ud-mlx:lmstudio@127.0.0.1:1234`.
+- Automated/static/build validation passed; temporary log `/tmp/round26_automated_validation.log` ended with `ALL AUTOMATED VALIDATION PASSED`.
+- Live LM Studio validation passed; temporary log `/tmp/round26_live_lmstudio_validation.log` ended with `ALL LIVE LM STUDIO VALIDATION PASSED`.
+- Real single-agent LM Studio E2E passed: tool approval, pending-approval `INTERRUPT_GENERATION` with same-WebSocket follow-up, and terminate/restore with same-WebSocket follow-up.
+- Real agent-team LM Studio E2E passed: approve/restore/continue, team interrupt with targeted follow-up, team terminate/restore with targeted follow-up, and member projection after restore.
+- Fresh browser/frontend smoke passed: browser run `round_26_ui_interrupt_agent_round26ui_assistant_2705` issued `INTERRUPT_GENERATION`, backend logged `agent_turn_interrupted`, and the same run accepted two additional frontend follow-up messages rendering `UI_AFTER_BROWSER_INTERRUPT_OK` and `UI_SECOND_AFTER_INTERRUPT_OK`.
 
-Non-blocking observations preserved from the validation report:
+Non-blocking observation preserved from the validation report:
 
-- One first-message/new-run path did not expose `Stop generation` while at pending tool approval after temporary-run promotion. The same pending-approval interrupt path was verified successfully on an existing browser run, so this was not a delivery blocker.
-- During browser navigation/reconnection, backend logs included transient `Failed reading run metadata ... Unexpected end of JSON input`; the UI WebSocket reconnected and follow-up succeeded, so this was recorded as non-blocking.
+- The existing frontend context could continue to display/store `currentStatus: "processing_user_input"` and assistant headers as `Thinking` after interrupted/reused-run follow-ups completed. Backend logs emitted completion/status updates, a fresh WebSocket status snapshot reported `IDLE`, `activeContextStore.isSending` was `false`, and visible continuation worked. This is recorded as a non-blocking frontend status-projection/label follow-up, not an AutoByteus runtime interrupt/terminate blocker.
 
 ## Delivery Docs Review Checks
 
 Delivery reviewed docs and active surfaces with these checks on the latest integrated state:
 
-- `git fetch origin --prune` — confirmed `origin/personal` at `aed54f77d0fbe10eea8ff67201375337b94ce362`.
-- Local safety checkpoint before merge — `a9f2b5dc700bce2a6094edb45d6fe8552713b57e`.
-- `git merge --no-edit origin/personal` — passed, producing merge commit `460c402a402f0e02512b933287e62f52297da75b`.
-- Branch relationship after merge — `ahead 27, behind 0` relative to `origin/personal`.
-- `git diff --check` and `git diff --check origin/personal` — passed after delivery removed one trailing-whitespace line from `agent_runtime_loop_and_interrupt.md`.
+- `git fetch origin --prune` — confirmed `origin/personal` at `839148ba058b8d85a96288ce56fef69beef22266`.
+- Local safety checkpoint before merge — `3c54589ac49e07a1bede70781e4aebab9f7798c6`.
+- `git merge --no-edit origin/personal` — passed, producing merge commit `82bf9cf591d6b45db0f8f3d95c9b8310e0e8cbba`.
+- Branch relationship after merge — `ahead 31, behind 0` relative to `origin/personal`.
+- `git diff --check HEAD` and `git diff --check origin/personal` — passed.
 - Exact line-start conflict marker scan across source/docs/ticket paths — passed.
+- Active-source/test scan for retired event-inbox predecessor symbols — no `AgentMessageInbox`, `AgentMessageScheduler`, `AgentMessageHandler`, `AgentInboxMessage`, `UserInboxMessage`, `ToolApprovalInputMessage`, `ToolResultInputMessage`, `message-inbox`, `agentMessageInbox`, `tool-approval-command`, or `tool-result-command` matches in checked TS source/tests.
 - Active-source scan for `STOP_GENERATION`, `stop_generation`, `stop generation`, `stopGeneration`, `AgentOutbox`, and `agent/outbox` — no matches in checked active TS/server/web runtime surfaces.
-- `pnpm -C autobyteus-web exec vitest run components/layout/__tests__/WorkspaceDesktopLayout.spec.ts composables/__tests__/useRightPanel.spec.ts layouts/__tests__/default.spec.ts` — passed (`3` files / `15` tests), covering the latest-base right-panel layout changes merged after Round 13.
-- `pnpm -C autobyteus-web exec nuxi prepare` — passed.
+- Runtime docs scan — no stale `AgentMessageInbox` / message-wrapper names remain in long-lived docs after this sync.
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/event-inbox/agent-event-inbox.test.ts tests/unit/agent/event-inbox/agent-event-scheduler.test.ts tests/unit/agent/event-inbox/inbox-queue-store.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/integration/agent/runtime/agent-runtime.test.ts tests/unit/agent/loop/turn-tool-input-port.test.ts tests/unit/agent/context/agent-runtime-state.test.ts tests/unit/agent/runtime/agent-worker.test.ts tests/unit/agent/agent.test.ts tests/unit/agent/context/agent-context.test.ts` — passed (`10` files / `76` tests).
+- `pnpm -C autobyteus-server-ts exec vitest run ...` focused server stream/WebSocket/team suite — passed (`8` files / `79` tests).
+- `pnpm -C autobyteus-web exec vitest run ...` focused web stream/projection/store/layout suite — passed (`8` files / `85` tests).
 - `pnpm -C autobyteus-ts run build` — passed, including runtime dependency verification.
 - `pnpm -C autobyteus-server-ts run build:full` — passed, including built-in agents bootstrap smoke check.
+- `pnpm -C autobyteus-web exec nuxi prepare` — passed.
 
 ## No-Impact Decision
 
-- Docs impact from Round 13 specifically: `No additional long-lived docs change required`
-- Rationale: Round 13 provided real browser/frontend validation evidence without changing production behavior or durable repository validation. Existing updated docs already describe the final interrupt/runtime/notifier behavior.
+- Docs impact from Round 14 specifically: `Yes`
+- Rationale: Round 14 validated the final event-inbox source state, and long-lived docs still referenced the superseded message-inbox / message-wrapper model. Delivery updated canonical docs accordingly.
 
 ## Delivery Continuation
 
 - Result: `Pass`
 - Next owner: `delivery_engineer`
-- Notes: Docs sync and delivery artifacts are complete against the Round-13-passed browser/frontend validation and the latest-base integrated state. Repository finalization, ticket archival, final commit, push, merge into `personal`, release/deployment, and cleanup remain on hold until explicit user verification/approval.
+- Notes: Docs sync and delivery artifacts are complete against the Round-14-passed, Round-26-reviewed, latest-base integrated state. Repository finalization, ticket archival, final commit, push, merge into `personal`, release/deployment, and cleanup remain on hold until explicit user verification/approval.
 
 ## Blocked Or Escalated Follow-Up
 

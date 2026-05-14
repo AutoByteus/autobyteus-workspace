@@ -1,7 +1,7 @@
 # Agent Runtime Loop and Native Interrupt
 
 **Status:** Active
-**Date:** 2026-05-05
+**Date:** 2026-05-14
 
 ## Purpose
 
@@ -11,7 +11,7 @@ AutoByteus single-agent runtime after the native interrupt redesign.
 The important ownership rule is:
 
 - `AgentWorker` owns runtime lifecycle, bootstrap, shutdown, and selecting the
-  next external turn trigger from the mailbox.
+  next external turn trigger from the event inbox.
 - `AgentTurnRunner` owns the finite LLM/tool/continuation loop for one
   `AgentTurn`.
 - `AgentRuntime.interrupt()` is side-band control for the active turn. It is
@@ -23,12 +23,12 @@ The important ownership rule is:
 2. `AgentWorker` performs runtime init:
    - `AgentEventStore`
    - `AgentStatusDeriver`
-   - `AgentMessageInbox`
-   - `AgentMessageScheduler`
+   - `AgentEventInbox`
+   - `AgentEventScheduler`
 3. `AgentWorker` runs direct bootstrap through `AgentBootstrapper.run(context)`.
 4. `SystemPromptPipeline` applies system-prompt processors during bootstrap.
 5. `AgentReadyEvent` moves the runtime to the ready/idle state.
-6. The worker loop waits for the next scheduler event.
+6. The worker loop waits for the next dispatchable event entry.
 
 Bootstrap and shutdown are lifecycle work. They are not part of an agent turn,
 and normal generation interrupt does not run shutdown cleanup.
@@ -37,7 +37,7 @@ and normal generation interrupt does not run shutdown cleanup.
 
 External user and inter-agent inputs enter the runtime through
 `AgentRuntime.submitEvent(...)` and are queued in the `turn_start` lane of
-`AgentMessageInbox`.
+`AgentEventInbox`.
 When the worker selects a `UserMessageReceivedEvent` or
 `InterAgentMessageReceivedEvent`, it:
 
@@ -49,16 +49,16 @@ When the worker selects a `UserMessageReceivedEvent` or
 
 Only one active turn is allowed per runtime.
 
-`AgentMessageInbox` is the runtime mailbox. It has three lanes:
+`AgentEventInbox` is the runtime event inbox. It has three lanes:
 
-- `turn_start` for external user messages (`UserMessageReceivedEvent`) and
-  inter-agent messages (`InterAgentMessageReceivedEvent`);
+- `turn_start` for external user events (`UserMessageReceivedEvent`) and
+  inter-agent events (`InterAgentMessageReceivedEvent`);
 - `active_turn` for awaitable active-turn controls such as tool approvals and
   external tool results;
 - `runtime_lifecycle` for runtime lifecycle events (`LifecycleEvent`).
 
-`AgentMessageScheduler` dispatches `turn_start` messages only while the runtime
-is idle. While a turn is active, it dispatches lifecycle messages and
+`AgentEventScheduler` dispatches `turn_start` entries only while the runtime
+is idle. While a turn is active, it dispatches lifecycle entries and
 `active_turn` controls so the active turn can be interrupted, approved, or fed
 external tool results without starting another turn.
 
@@ -66,19 +66,19 @@ external tool results without starting another turn.
 of hiding them in the lifecycle queue. Tool approval decisions are not
 turn-starting runtime input: callers must use
 `Agent.postToolExecutionApproval(...)`, which delegates to
-`AgentRuntime.postToolApproval(...)`, an awaitable active-turn inbox message,
-`ToolApprovalMessageHandler`, and
-`AgentRuntimeState.postToolApprovalToActiveTurn(...)` before waking the active
+`AgentRuntime.postToolApprovalEvent(...)`, an awaitable active-turn event entry,
+`ToolApprovalEventProcessor`, and
+`AgentRuntimeState.postToolApprovalEventToActiveTurn(...)` before waking the active
 turn's `TurnToolInputPort.postApproval(...)`. If there is no active turn, no
 pending invocation, a stale turn id, or an interrupted turn, the runtime returns
 an explicit non-turn-starting rejection result.
 
 External tool results use the same active-turn boundary through
-`AgentRuntime.postToolResult(...)`, `ToolResultMessageHandler`, and
-`AgentRuntimeState.postToolResultToActiveTurn(...)` before waking
+`AgentRuntime.postToolResultEvent(...)`, `ToolResultEventProcessor`, and
+`AgentRuntimeState.postToolResultEventToActiveTurn(...)` before waking
 `TurnToolInputPort.postToolResult(...)`. Same-turn TOOL continuations remain
 inside `AgentTurnRunner`/`ToolPhase`/`ToolResultContinuationBuilder` and must not
-enter the runtime mailbox as `SenderType.TOOL` user input.
+enter the runtime event inbox as `SenderType.TOOL` user input.
 
 ## Turn Execution Ownership
 
@@ -111,7 +111,7 @@ uses these collaborators:
   - passes cancellation context into tools that support it;
   - waits for approval through `TurnToolInputPort` when needed, with
     `ToolPhase.waitForApproval(...)` as the only consumer of active-turn
-    approval messages;
+    approval decisions;
   - waits for external tool results through `TurnToolInputPort` only for
     prepared invocations that resolved to external-result mode;
   - checks for accepted interrupts after awaited tool seams before publishing
@@ -119,7 +119,7 @@ uses these collaborators:
 - `ToolResultPipeline`
   - applies configured tool-result processors to the direct results returned by
     `ToolPhase`; direct tool results are not posted back through the runtime
-    mailbox.
+    event inbox.
 - `ToolResultContinuationBuilder`
   - builds the same-turn `SenderType.TOOL` continuation input for legacy
     text-parser modes;
@@ -134,20 +134,21 @@ uses these collaborators:
     status, turn, segment, tool lifecycle/log, inter-agent, system-task, and
     assistant-output events.
 
-The old single-agent `WorkerEventDispatcher` and normal-flow handler files are
-removed. Do not reintroduce them as parallel control-flow owners for LLM calls,
-tool execution, tool results, or inter-agent message ingestion.
+The old single-agent `WorkerEventDispatcher`, message-wrapper inbox files,
+and normal-flow handler files are removed. Do not reintroduce them as parallel
+control-flow owners for LLM calls, tool execution, tool results, or inter-agent
+message ingestion.
 
 ## Tool Approval Spine
 
 Pending tool approvals are part of the active turn boundary, not the runtime
-lifecycle mailbox. The native single-agent path is:
+lifecycle lane. The native single-agent path is:
 
 1. external API/UI/CLI calls `Agent.postToolExecutionApproval(...)`;
-2. `AgentRuntime.postToolApproval(...)` checks runtime liveness and posts an
-   awaitable active-turn inbox message;
-3. `ToolApprovalMessageHandler` delegates to
-   `AgentRuntimeState.postToolApprovalToActiveTurn(...)`;
+2. `AgentRuntime.postToolApprovalEvent(...)` checks runtime liveness and posts
+   an awaitable active-turn event entry;
+3. `ToolApprovalEventProcessor` delegates to
+   `AgentRuntimeState.postToolApprovalEventToActiveTurn(...)`;
 4. runtime state verifies the active turn, turn id, pending-approval marker,
    and interruption state before calling `TurnToolInputPort.postApproval(...)`;
 5. `ToolPhase.waitForApproval(...)` consumes the posted decision and continues
@@ -155,7 +156,7 @@ lifecycle mailbox. The native single-agent path is:
 
 `ToolExecutionApprovalEvent` is still published for status/projection after a
 valid approval decision, but it is not accepted by `AgentRuntime.submitEvent(...)`
-or `AgentMessageInbox` as runtime lifecycle input. Stale, no-active-turn,
+or `AgentEventInbox` as runtime lifecycle input. Stale, no-active-turn,
 no-pending-invocation, runtime-stopped, and interrupted-turn approval attempts
 must not start a turn, restore a turn, or enqueue lifecycle work.
 
@@ -167,17 +168,17 @@ auto-executing or otherwise active-but-not-pending invocations return
 Team approval commands follow the same boundary by resolving the target member
 and calling that member agent's public `postToolExecutionApproval(...)` API via
 the team event handler. Team code must not bypass member runtime state or post
-approval events directly into a member mailbox.
+approval events directly into a member event inbox.
 
 ## External Tool Result Spine
 
 External-result tools are also active-turn controls. The native path is:
 
-1. external API or integration calls `Agent.postToolResult(...)`;
-2. `AgentRuntime.postToolResult(...)` checks runtime liveness and posts an
-   awaitable active-turn inbox message;
-3. `ToolResultMessageHandler` delegates to
-   `AgentRuntimeState.postToolResultToActiveTurn(...)`;
+1. external API or integration calls `Agent.postToolExecutionResult(...)`;
+2. `AgentRuntime.postToolResultEvent(...)` checks runtime liveness and posts
+   an awaitable active-turn event entry;
+3. `ToolResultEventProcessor` delegates to
+   `AgentRuntimeState.postToolResultEventToActiveTurn(...)`;
 4. runtime state verifies an active turn and forwards the result to
    `TurnToolInputPort.postToolResult(...)`;
 5. `ToolPhase.waitForToolResult(...)` consumes the result for a prepared
@@ -239,7 +240,7 @@ not start or stop the runtime.
 active turn, it interrupts the turn with a runtime-stop reason and then runs the
 shutdown orchestrator. The worker sets its stop flag before enqueuing the
 terminal lifecycle notification and checks that flag again after waking from
-the mailbox, so already-queued user/inter-agent turn triggers are not started
+the event inbox, so already-queued user/inter-agent turn triggers are not started
 after terminal stop/shutdown begins. User generation interrupt must not run
 shutdown cleanup.
 
