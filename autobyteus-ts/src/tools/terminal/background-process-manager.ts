@@ -1,153 +1,301 @@
-import { randomBytes } from 'node:crypto';
+import { spawn, type ChildProcess } from 'node:child_process';
+import type { Readable } from 'node:stream';
 import { OutputBuffer } from './output-buffer.js';
-import { getDefaultSessionFactory, getFallbackSessionFactories } from './session-factory.js';
-import { startTerminalSessionWithFallback } from './session-startup.js';
-import { BackgroundProcessOutput, ProcessInfo } from './types.js';
 import { stripAnsiCodes } from './ansi-utils.js';
-import type { TerminalSession, TerminalSessionFactory } from './terminal-session.js';
+import {
+  BackgroundProcessInfo,
+  BackgroundProcessOutput,
+  type BackgroundProcessStatus
+} from './types.js';
+import {
+  NonInteractiveShellResolver,
+  type NonInteractiveShellInvocation
+} from './command-execution/non-interactive-shell-resolver.js';
+import {
+  ProcessGroupObserver,
+  type ObservedProcess
+} from './command-execution/process-group-observer.js';
+import {
+  HOST_PROCESS_TARGET,
+  ShellProcessIdentityParser,
+  type ProcessExecutionTarget
+} from './command-execution/process-identity.js';
 
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+export interface AdoptObservedProcessesOptions {
+  command: string;
+  effectiveCwd: string;
+  processGroupId?: number;
+  processTarget?: ProcessExecutionTarget;
+  processes: ObservedProcess[];
+  stdout?: Readable | null;
+  stderr?: Readable | null;
+  initialOutput?: Buffer | string | null;
 }
 
-class BackgroundProcess {
-  processId: string;
-  command: string;
-  session: TerminalSession;
-  outputBuffer: OutputBuffer;
-  startedAt: number;
-  readerPromise: Promise<void> | null = null;
-  cancelled = false;
+class BackgroundProcessRecord {
+  readonly pid: number;
+  readonly command: string;
+  readonly startedAt: Date;
+  readonly effectiveCwd: string;
+  readonly processGroupId?: number;
+  readonly processTarget: ProcessExecutionTarget;
+  readonly outputBuffer: OutputBuffer;
+  readonly child?: ChildProcess;
+  status: BackgroundProcessStatus = 'running';
+  exitCode: number | null = null;
 
-  constructor(processId: string, command: string, session: TerminalSession, outputBuffer: OutputBuffer) {
-    this.processId = processId;
-    this.command = command;
-    this.session = session;
-    this.outputBuffer = outputBuffer;
-    this.startedAt = Date.now() / 1000;
+  constructor(options: {
+    pid: number;
+    command: string;
+    effectiveCwd: string;
+    outputBuffer: OutputBuffer;
+    startedAt?: Date;
+    processGroupId?: number;
+    processTarget?: ProcessExecutionTarget;
+    child?: ChildProcess;
+  }) {
+    this.pid = options.pid;
+    this.command = options.command;
+    this.effectiveCwd = options.effectiveCwd;
+    this.processGroupId = options.processGroupId;
+    this.processTarget = options.processTarget ?? HOST_PROCESS_TARGET;
+    this.outputBuffer = options.outputBuffer;
+    this.startedAt = options.startedAt ?? new Date();
+    this.child = options.child;
   }
 
-  get isRunning(): boolean {
-    return this.session.isAlive;
-  }
-
-  toInfo(): ProcessInfo {
-    return new ProcessInfo(this.processId, this.command, this.startedAt, this.isRunning);
+  toInfo(): BackgroundProcessInfo {
+    return new BackgroundProcessInfo(
+      this.pid,
+      this.command,
+      this.startedAt,
+      this.status,
+      this.effectiveCwd
+    );
   }
 }
 
 export class BackgroundProcessManager {
-  private sessionFactory: TerminalSessionFactory;
-  private fallbackSessionFactories: TerminalSessionFactory[];
-  private maxOutputBytes: number;
-  private processes: Map<string, BackgroundProcess> = new Map();
-  private counter = 0;
+  private readonly maxOutputBytes: number;
+  private readonly resolver: NonInteractiveShellResolver;
+  private readonly observer: ProcessGroupObserver;
+  private readonly processes: Map<number, BackgroundProcessRecord> = new Map();
 
   constructor(
-    sessionFactory?: TerminalSessionFactory,
     maxOutputBytes: number = 1_000_000,
-    fallbackSessionFactories?: TerminalSessionFactory[],
+    resolver: NonInteractiveShellResolver = new NonInteractiveShellResolver(),
+    observer: ProcessGroupObserver = new ProcessGroupObserver()
   ) {
-    this.sessionFactory = sessionFactory ?? getDefaultSessionFactory();
-    this.fallbackSessionFactories =
-      fallbackSessionFactories ?? (sessionFactory ? [] : getFallbackSessionFactories(this.sessionFactory));
     this.maxOutputBytes = maxOutputBytes;
+    this.resolver = resolver;
+    this.observer = observer;
   }
 
-  private generateId(): string {
-    this.counter += 1;
-    return `bg_${String(this.counter).padStart(3, '0')}`;
-  }
-
-  async startProcess(command: string, cwd: string): Promise<string> {
-    const processId = this.generateId();
-    const sessionId = `bg-${randomBytes(4).toString('hex')}`;
-
-    const { session } = await startTerminalSessionWithFallback({
-      sessionId,
-      cwd,
-      primaryFactory: this.sessionFactory,
-      fallbackFactories: this.fallbackSessionFactories,
-    });
+  async startCommand(command: string, cwd: string): Promise<BackgroundProcessInfo> {
+    const invocation = this.resolver.resolve(command, cwd);
+    const child = this.spawnDetached(invocation);
     const outputBuffer = new OutputBuffer(this.maxOutputBytes);
+    const identityParser = new ShellProcessIdentityParser(invocation.shellIdentityMarker);
+    let exitedCode: number | null | undefined;
+    let errored = false;
+    const hostPid = child.pid;
 
-    const bgProcess = new BackgroundProcess(processId, command, session, outputBuffer);
-
-    let normalized = command;
-    if (!normalized.endsWith('\n')) {
-      normalized += '\n';
+    if (hostPid === undefined) {
+      throw new Error('Background process failed to start: child process did not expose a PID.');
     }
-    await session.write(Buffer.from(normalized, 'utf8'));
 
-    bgProcess.readerPromise = this.readLoop(bgProcess);
-    this.processes.set(processId, bgProcess);
+    this.attachOutputBuffer(outputBuffer, child.stdout, child.stderr, identityParser);
+    child.on('exit', (code) => {
+      exitedCode = code;
+    });
+    child.on('error', () => {
+      errored = true;
+    });
 
-    return processId;
-  }
-
-  private async readLoop(process: BackgroundProcess): Promise<void> {
+    let shellIdentity: { pid: number; processGroupId?: number; processTarget: ProcessExecutionTarget };
     try {
-      while (process.session.isAlive && !process.cancelled) {
-        try {
-          const data = await process.session.read(0.1);
-          if (data) {
-            process.outputBuffer.append(data);
-          }
-        } catch {
-          break;
-        }
-        await sleep(50);
+      shellIdentity = await this.resolveStartedProcessIdentity(invocation, hostPid, identityParser);
+    } catch (error) {
+      child.kill('SIGTERM');
+      throw error;
+    }
+
+    const record = new BackgroundProcessRecord({
+      pid: shellIdentity.pid,
+      command,
+      effectiveCwd: cwd,
+      processGroupId: shellIdentity.processGroupId,
+      processTarget: shellIdentity.processTarget,
+      outputBuffer,
+      child
+    });
+
+    child.on('exit', (code) => {
+      record.exitCode = code;
+      if (record.status === 'running') {
+        record.status = 'exited';
       }
-    } catch {
-      // swallow background errors
+    });
+    child.on('error', () => {
+      if (record.status === 'running') {
+        record.status = 'exited';
+      }
+    });
+    if (exitedCode !== undefined || errored) {
+      record.exitCode = exitedCode ?? null;
+      record.status = 'exited';
     }
+
+    this.processes.set(shellIdentity.pid, record);
+    return record.toInfo();
   }
 
-  getOutput(processId: string, lines: number = 100): BackgroundProcessOutput {
-    const process = this.processes.get(processId);
-    if (!process) {
-      throw new Error(`Process ${processId} not found`);
+  adoptObservedProcesses(options: AdoptObservedProcessesOptions): BackgroundProcessInfo[] {
+    const outputBuffer = new OutputBuffer(this.maxOutputBytes);
+    if (options.initialOutput) {
+      outputBuffer.append(options.initialOutput);
     }
 
-    const rawOutput = process.outputBuffer.getLines(lines);
-    const cleanOutput = stripAnsiCodes(rawOutput);
-    return new BackgroundProcessOutput(cleanOutput, process.isRunning, processId);
+    const records: BackgroundProcessRecord[] = [];
+    for (const process of options.processes) {
+      if (this.processes.has(process.pid)) {
+        const existing = this.processes.get(process.pid);
+        if (existing) {
+          records.push(existing);
+        }
+        continue;
+      }
+
+      const record = new BackgroundProcessRecord({
+        pid: process.pid,
+        command: options.command,
+        effectiveCwd: options.effectiveCwd,
+        processGroupId: options.processGroupId ?? process.processGroupId,
+        processTarget: options.processTarget,
+        outputBuffer
+      });
+      this.processes.set(process.pid, record);
+      records.push(record);
+    }
+
+    if (records.length > 0) {
+      this.attachOutput(records[0], options.stdout ?? null, options.stderr ?? null);
+    }
+
+    return records.map((record) => record.toInfo());
   }
 
-  async stopProcess(processId: string): Promise<boolean> {
-    const process = this.processes.get(processId);
-    if (!process) {
+  async listProcesses(): Promise<BackgroundProcessInfo[]> {
+    await this.refreshStatuses();
+    return Array.from(this.processes.values()).map((process) => process.toInfo());
+  }
+
+  async getOutput(pid: number, lines: number = 100): Promise<BackgroundProcessOutput> {
+    const record = this.processes.get(pid);
+    if (!record) {
+      throw new Error(`Process ${pid} not found`);
+    }
+
+    await this.refreshStatus(record);
+    const rawOutput = record.outputBuffer.getLines(lines);
+    return new BackgroundProcessOutput(stripAnsiCodes(rawOutput), record.status === 'running', pid, record.status);
+  }
+
+  async stopProcess(pid: number): Promise<boolean> {
+    const record = this.processes.get(pid);
+    if (!record) {
       return false;
     }
 
-    process.cancelled = true;
-
-    if (process.readerPromise) {
-      await process.readerPromise;
+    const stopped = await this.observer.stopProcess(record.pid, record.processGroupId, record.processTarget);
+    if (record.child && (!stopped || record.processTarget.kind === 'wsl')) {
+      record.child.kill('SIGTERM');
     }
 
-    await process.session.close();
-    this.processes.delete(processId);
+    record.status = 'stopped';
+    this.processes.delete(pid);
     return true;
   }
 
   async stopAll(): Promise<number> {
-    const ids = Array.from(this.processes.keys());
-    for (const processId of ids) {
-      await this.stopProcess(processId);
+    const pids = Array.from(this.processes.keys());
+    for (const pid of pids) {
+      await this.stopProcess(pid);
     }
-    return ids.length;
-  }
-
-  listProcesses(): Record<string, ProcessInfo> {
-    const result: Record<string, ProcessInfo> = {};
-    for (const [processId, process] of this.processes.entries()) {
-      result[processId] = process.toInfo();
-    }
-    return result;
+    return pids.length;
   }
 
   get processCount(): number {
     return this.processes.size;
+  }
+
+  private spawnDetached(invocation: NonInteractiveShellInvocation): ChildProcess {
+    return spawn(invocation.executable, invocation.args, {
+      cwd: invocation.cwd,
+      env: invocation.env,
+      detached: true,
+      stdio: ['ignore', 'pipe', 'pipe']
+    });
+  }
+
+  private async resolveStartedProcessIdentity(
+    invocation: NonInteractiveShellInvocation,
+    hostPid: number,
+    identityParser: ShellProcessIdentityParser
+  ): Promise<{ pid: number; processGroupId?: number; processTarget: ProcessExecutionTarget }> {
+    if (invocation.kind !== 'windows-wsl') {
+      return { pid: hostPid, processGroupId: hostPid, processTarget: HOST_PROCESS_TARGET };
+    }
+
+    const identity = await identityParser.waitForIdentity(1500);
+    if (!identity) {
+      throw new Error('Background process failed to start: WSL shell did not report its Linux PID.');
+    }
+
+    return {
+      pid: identity.pid,
+      processGroupId: identity.processGroupId,
+      processTarget: invocation.processTarget
+    };
+  }
+
+  private attachOutput(
+    record: BackgroundProcessRecord,
+    stdout?: Readable | null,
+    stderr?: Readable | null
+  ): void {
+    this.attachOutputBuffer(record.outputBuffer, stdout, stderr);
+  }
+
+  private attachOutputBuffer(
+    outputBuffer: OutputBuffer,
+    stdout?: Readable | null,
+    stderr?: Readable | null,
+    identityParser?: ShellProcessIdentityParser
+  ): void {
+    stdout?.on('data', (data: Buffer | string) => {
+      outputBuffer.append(data);
+    });
+    stderr?.on('data', (data: Buffer | string) => {
+      const filtered = identityParser ? identityParser.filter(data) : data;
+      if (filtered.length > 0) {
+        outputBuffer.append(filtered);
+      }
+    });
+  }
+
+  private async refreshStatuses(): Promise<void> {
+    await Promise.all(Array.from(this.processes.values()).map((record) => this.refreshStatus(record)));
+  }
+
+  private async refreshStatus(record: BackgroundProcessRecord): Promise<void> {
+    if (record.status !== 'running') {
+      return;
+    }
+
+    const running = await this.observer.isProcessRunning(record.pid, record.processTarget);
+    if (!running) {
+      record.status = 'exited';
+    }
   }
 }

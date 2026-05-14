@@ -151,7 +151,6 @@ All done!
     expect(invocations[0].name).toBe('run_bash');
     expect(invocations[0].arguments).toEqual({
       command: 'mkdir -p tmp_dir && cd tmp_dir && printf "hello" > note.txt && cat note.txt',
-      background: true,
       timeout_seconds: 30
     });
   });
@@ -168,8 +167,7 @@ All done!
     expect(invocations).toHaveLength(1);
     expect(invocations[0].name).toBe('run_bash');
     expect(invocations[0].arguments).toEqual({
-      command: 'mkdir -p project && cd project && pwd',
-      background: false
+      command: 'mkdir -p project && cd project && pwd'
     });
   });
 

@@ -1,0 +1,38 @@
+{
+  "provider": "openai",
+  "model": "gpt-5.5",
+  "status": "file_integrity_pass_continuation_known_out_of_scope_error",
+  "workspace": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/validation-evidence/workspaces/openai-full-agent-2026-05-14T09-02-39-228Z",
+  "memoryDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/validation-evidence/workspaces/openai-full-agent-memory-2026-05-14T09-02-39-228Z",
+  "commandSha256": "83297e34a8b60089ff744b01933ebb1bfc2c04f6bb788724bcdaac0785f9a3e7",
+  "commandLength": 1039,
+  "fileSummary": {
+    "relativePath": "agent-jet-game/index.html",
+    "expectedBytes": 54945,
+    "actualBytes": 54945,
+    "expectedSha256": "144b04209b9229d1eb5c59ba100a2e380120e39392498bcda07802cc70f94f9b",
+    "actualSha256": "144b04209b9229d1eb5c59ba100a2e380120e39392498bcda07802cc70f94f9b",
+    "exactBytesMatch": true
+  },
+  "tracesSummary": {
+    "rawTraceCount": 5,
+    "traceTypes": [
+      "user",
+      "tool_call",
+      "assistant",
+      "tool_result",
+      "tool_continuation"
+    ],
+    "toolCallCount": 1,
+    "toolResultCount": 1,
+    "assistantCount": 1,
+    "finalStatus": "idle"
+  },
+  "error": null,
+  "continuationObservation": {
+    "observed": true,
+    "summary": "After exact run_bash execution and tool_result ingestion, OpenAI Responses tool continuation reproduced the known out-of-scope reasoning/function_call replay error documented in the design spec.",
+    "errorExcerpt": "400 Item of type 'function_call' was provided without its required 'reasoning' item",
+    "scopeAssessment": "Out of scope for the non-PTY/stateless run_bash refactor per design-spec.md; file bytes and tool execution path passed."
+  }
+}

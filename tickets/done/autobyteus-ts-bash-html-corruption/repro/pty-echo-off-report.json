@@ -1,0 +1,50 @@
+{
+  "expected": "89137452ca99af727693af103de7b637a540860ee91dda164c2bbfe8ab3ebd99",
+  "reports": [
+    {
+      "label": "pty-no-echo-single",
+      "setup": "stty -echo",
+      "chunkSize": null,
+      "timedOut": true,
+      "stdoutLen": 76,
+      "stdoutPreview": "> > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > ",
+      "stdoutTail": "> > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > ",
+      "file": {
+        "exists": false,
+        "error": "Error: ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/repro/pty-no-echo-single/jet-game/index.html'"
+      }
+    },
+    {
+      "label": "pty-no-echo-chunk256",
+      "setup": "stty -echo",
+      "chunkSize": 256,
+      "timedOut": false,
+      "stdoutLen": 233,
+      "stdoutPreview": "> > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > ~/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/repro/pty-no-echo-chunk256 $ ",
+      "stdoutTail": "> > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > ~/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/repro/pty-no-echo-chunk256 $ ",
+      "file": {
+        "exists": true,
+        "matchesExpected": true,
+        "bytes": 1564,
+        "sha256": "89137452ca99af727693af103de7b637a540860ee91dda164c2bbfe8ab3ebd99",
+        "excerpt": " 0.4;\n      jet.x = Math.max(20, Math.min(canvas.width - 20, jet.x + jet.vx));\n      jet.y = Math.max(20, Math.min(canvas.height - 20, jet.y + jet.vy));\n      jet.vx *= 0.94; jet.vy *= 0.94; jet.score += 1;\n      ctx.fillStyle = '#08111f'; ctx.fillRect(0, 0, canvas.width, canvas.height);\n      ctx.fillStyle = '#66e0ff'; ctx.beginPath();\n      ctx.m"
+      }
+    },
+    {
+      "label": "pty-echo-chunk128",
+      "setup": null,
+      "chunkSize": 128,
+      "timedOut": false,
+      "stdoutLen": 1851,
+      "stdoutPreview": "mkdir  \r-p jet-game && cat > jet-game/index.html <<'EOF_HTML'\r\n> <!DOCTYPE html>\r\n> <html lang=\"en\">\r\n> <head>\r\n>   <meta charset=\"utf-8\" />\r\n>   <title>Jet Game</title>\r\n>   <style>\r\n    body { margin: 0; background: #08111f; color: white; font-family: Arial, sans-serif; }\r\n    canvas { display: block; width: 100vw; height: 100vh; }\r\n  </style>\r\n</head>\r\n<body>\r\n  <canvas id=\"game\"></canvas>\r\n  <script>\r\n    const canvas = document.getElementById('game');\r\n    const ctx = canvas.getContext('2d'",
+      "stdoutTail": "ht; }\r\n    addEventListener('resize', resize); resize();\r\n    addEventListener('keydown', e => keys.add(e.key));\r\n    addEventListener(>     function resize() { canvas.width = innerWidth; canvas.height = innerHeight \r; }\r\n>     addEventListener('resize', resize); resize();\r\n>     addEventListener('keydown', e => keys.add(e.key));\r\n>     addEventListener('keyup', e => keys.delete(e.key));\r\n>     function loop() {\r\n>       jet.vx += (keys.has('ArrowRight') - keys.has('ArrowLeft')) * 0.4;\r\n>       jet.vy += (keys.has('ArrowDown') - keys.has('ArrowUp')) * 0.4;\r\n>       jet.x = Math.max(20, Math.min(canvas.width - 20, jet.x + jet.vx));\r\n>       jet.y = Math.max(20, Math.min(canvas.height - 20, jet.y + jet.vy));\r\n>       jet.vx *= 0.94; jet.vy *= 0.94; jet.score += 1;\r\n>       ctx.fillStyle = '#",
+      "file": {
+        "exists": true,
+        "matchesExpected": true,
+        "bytes": 1564,
+        "sha256": "89137452ca99af727693af103de7b637a540860ee91dda164c2bbfe8ab3ebd99",
+        "excerpt": " 0.4;\n      jet.x = Math.max(20, Math.min(canvas.width - 20, jet.x + jet.vx));\n      jet.y = Math.max(20, Math.min(canvas.height - 20, jet.y + jet.vy));\n      jet.vx *= 0.94; jet.vy *= 0.94; jet.score += 1;\n      ctx.fillStyle = '#08111f'; ctx.fillRect(0, 0, canvas.width, canvas.height);\n      ctx.fillStyle = '#66e0ff'; ctx.beginPath();\n      ctx.m"
+      }
+    }
+  ]
+}

@@ -1,0 +1,126 @@
+{
+  "runId": "2026-05-14T08-54-12-065Z",
+  "platform": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v22.21.1",
+    "shell": "/bin/bash"
+  },
+  "workspace": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/validation-evidence/workspaces/local-terminal-2026-05-14T08-54-12-065Z",
+  "largeHtml": {
+    "expectedBytes": 155275,
+    "actualBytes": 155275,
+    "expectedSha256": "42c2d926e719998ea35401727c69b51a12af53a386bcc679e4c60a045a53d0e4",
+    "actualSha256": "42c2d926e719998ea35401727c69b51a12af53a386bcc679e4c60a045a53d0e4",
+    "result": {
+      "stdout": "sha256=42c2d926e719998ea35401727c69b51a12af53a386bcc679e4c60a045a53d0e4\nbytes=155275\n",
+      "stderr": "",
+      "exitCode": 0,
+      "timedOut": false,
+      "effectiveCwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/validation-evidence/workspaces/local-terminal-2026-05-14T08-54-12-065Z",
+      "backgroundProcesses": []
+    },
+    "fileRelativePath": "jet-game/index.html"
+  },
+  "bashNativeBackground": {
+    "command": "(for i in 1 2 3 4; do echo bash_native_$i; sleep 0.15; done; sleep 30) &",
+    "result": {
+      "stdout": "",
+      "stderr": "",
+      "exitCode": 0,
+      "timedOut": false,
+      "effectiveCwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/validation-evidence/workspaces/local-terminal-2026-05-14T08-54-12-065Z",
+      "backgroundProcesses": [
+        {
+          "pid": 44049,
+          "command": "(for i in 1 2 3 4; do echo bash_native_$i; sleep 0.15; done; sleep 30) &",
+          "startedAt": "2026-05-14T08:54:12.383Z",
+          "status": "running",
+          "effectiveCwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/validation-evidence/workspaces/local-terminal-2026-05-14T08-54-12-065Z"
+        },
+        {
+          "pid": 44050,
+          "command": "(for i in 1 2 3 4; do echo bash_native_$i; sleep 0.15; done; sleep 30) &",
+          "startedAt": "2026-05-14T08:54:12.383Z",
+          "status": "running",
+          "effectiveCwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/validation-evidence/workspaces/local-terminal-2026-05-14T08-54-12-065Z"
+        }
+      ]
+    },
+    "pids": [
+      44049,
+      44050
+    ],
+    "listAfterRunBash": {
+      "processes": [
+        {
+          "pid": 44049,
+          "command": "(for i in 1 2 3 4; do echo bash_native_$i; sleep 0.15; done; sleep 30) &",
+          "startedAt": "2026-05-14T08:54:12.383Z",
+          "status": "running",
+          "effectiveCwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/validation-evidence/workspaces/local-terminal-2026-05-14T08-54-12-065Z"
+        },
+        {
+          "pid": 44050,
+          "command": "(for i in 1 2 3 4; do echo bash_native_$i; sleep 0.15; done; sleep 30) &",
+          "startedAt": "2026-05-14T08:54:12.383Z",
+          "status": "exited",
+          "effectiveCwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/validation-evidence/workspaces/local-terminal-2026-05-14T08-54-12-065Z"
+        }
+      ]
+    },
+    "output": {
+      "output": "bash_native_1\nbash_native_2\nbash_native_3\nbash_native_4\n",
+      "isRunning": true,
+      "pid": 44049,
+      "status": "running"
+    },
+    "stopResults": [
+      {
+        "status": "stopped",
+        "pid": 44049
+      },
+      {
+        "status": "stopped",
+        "pid": 44050
+      }
+    ],
+    "listAfterStop": {
+      "processes": []
+    }
+  },
+  "startBackgroundProcess": {
+    "command": "for i in 1 2 3 4; do echo startproc_$i; sleep 0.15; done; sleep 30",
+    "result": {
+      "pid": 44106,
+      "command": "for i in 1 2 3 4; do echo startproc_$i; sleep 0.15; done; sleep 30",
+      "startedAt": "2026-05-14T08:54:13.978Z",
+      "status": "running",
+      "effectiveCwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/validation-evidence/workspaces/local-terminal-2026-05-14T08-54-12-065Z"
+    },
+    "listAfterStart": {
+      "processes": [
+        {
+          "pid": 44106,
+          "command": "for i in 1 2 3 4; do echo startproc_$i; sleep 0.15; done; sleep 30",
+          "startedAt": "2026-05-14T08:54:13.978Z",
+          "status": "running",
+          "effectiveCwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/validation-evidence/workspaces/local-terminal-2026-05-14T08-54-12-065Z"
+        }
+      ]
+    },
+    "output": {
+      "output": "startproc_1\nstartproc_2\nstartproc_3\nstartproc_4\n",
+      "isRunning": true,
+      "pid": 44106,
+      "status": "running"
+    },
+    "stopResult": {
+      "status": "stopped",
+      "pid": 44106
+    },
+    "listAfterStop": {
+      "processes": []
+    }
+  }
+}

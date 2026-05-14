@@ -3,71 +3,45 @@ import type { BaseTool } from '../../base-tool.js';
 import { ToolCategory } from '../../tool-category.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../../../utils/parameter-schema.js';
 import { defaultToolRegistry } from '../../registry/tool-registry.js';
-import { BackgroundProcessManager } from '../background-process-manager.js';
-import type { AgentContextLike } from './run-bash.js';
-
-let defaultBackgroundManager: BackgroundProcessManager | null = null;
-
-function getBackgroundManager(context: AgentContextLike | null | undefined): BackgroundProcessManager {
-  if (!context) {
-    if (!defaultBackgroundManager) {
-      defaultBackgroundManager = new BackgroundProcessManager();
-    }
-    return defaultBackgroundManager;
-  }
-
-  const contextRecord = context as Record<string, unknown>;
-  const existing = contextRecord._backgroundProcessManager as BackgroundProcessManager | undefined;
-
-  if (!existing) {
-    const manager = new BackgroundProcessManager();
-    contextRecord._backgroundProcessManager = manager;
-    return manager;
-  }
-
-  if (!contextRecord._backgroundProcessManager) {
-    contextRecord._backgroundProcessManager = existing;
-  }
-
-  return existing;
-}
+import { getBackgroundManager, type AgentContextLike } from '../background-process-context.js';
 
 export async function getProcessOutput(
   context: AgentContextLike | null,
-  processId: string,
+  pid: number,
   lines: number = 100
-): Promise<{ output: string; isRunning: boolean; processId: string; error?: string }>
-{
+): Promise<{ output: string; isRunning: boolean; pid: number; status?: string; error?: string }> {
   const manager = getBackgroundManager(context);
 
   try {
-    const result = manager.getOutput(processId, lines);
+    const result = await manager.getOutput(pid, lines);
     return {
       output: result.output,
       isRunning: result.isRunning,
-      processId: result.processId
+      pid: result.pid,
+      status: result.status
     };
   } catch {
     return {
       output: '',
       isRunning: false,
-      processId,
-      error: `Process '${processId}' not found. It may have already stopped or never existed.`
+      pid,
+      status: 'exited',
+      error: `Process '${pid}' not found. It may have already stopped or never existed.`
     };
   }
 }
 
 const argumentSchema = new ParameterSchema();
 argumentSchema.addParameter(new ParameterDefinition({
-  name: 'process_id',
-  type: ParameterType.STRING,
-  description: "Parameter 'process_id' for tool 'get_process_output'.",
+  name: 'pid',
+  type: ParameterType.INTEGER,
+  description: "OS PID returned by run_bash backgroundProcesses, start_background_process, or get_background_processes.",
   required: true
 }));
 argumentSchema.addParameter(new ParameterDefinition({
   name: 'lines',
   type: ParameterType.INTEGER,
-  description: "Parameter 'lines' for tool 'get_process_output'.",
+  description: "Maximum number of recent output lines to return.",
   required: false,
   defaultValue: 100
 }));
@@ -79,10 +53,10 @@ export function registerGetProcessOutputTool(): BaseTool {
   if (!defaultToolRegistry.getToolDefinition(TOOL_NAME)) {
     cachedTool = tool({
       name: TOOL_NAME,
-      description: 'Get recent output from a background process.',
+      description: 'Get recent captured output from a managed background process by PID.',
       argumentSchema,
       category: ToolCategory.SYSTEM,
-      paramNames: ['context', 'process_id', 'lines']
+      paramNames: ['context', 'pid', 'lines']
     })(getProcessOutput) as BaseTool;
     return cachedTool;
   }

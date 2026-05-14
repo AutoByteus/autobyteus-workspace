@@ -2,19 +2,21 @@
 
 ## Context
 
-`node-pty` is not a reliable Android runtime dependency. For Android support (`Termux + Node.js`), terminal tools use a direct-shell backend implemented with `child_process` pipes.
+`node-pty` is not a reliable Android runtime dependency. For Android support (`Termux + Node.js`), interactive terminal sessions use a direct-shell backend implemented with `child_process` pipes.
+
+This document describes the `TerminalSessionManager`/server terminal session backend. Agent-facing `run_bash` execution is now a separate stateless, non-interactive command-execution path; it does not use `DirectShellSession`, PTY, or persistent terminal-session state.
 
 ## Goals
 
-- Keep existing terminal tool contracts unchanged.
-- Support stateful shell execution on Android without PTY.
+- Keep the interactive terminal session contract unchanged.
+- Support persistent terminal-session execution on Android without PTY.
 - Keep non-Android PTY preference unchanged while allowing shared startup recovery when PTY bootstrap fails.
 - Centralize backend selection policy in one place.
 
 ## Non-goals
 
 - Full PTY/TUI parity on Android.
-- Replacing tool names or response schema.
+- Replacing agent tool names or response schema.
 - Changing WebSocket protocol.
 
 ## Concrete Design
@@ -68,15 +70,13 @@ Core and server terminal managers both depend on this shared contract.
 - Exit code is fetched by a second command: `echo $?`.
 - ANSI codes are stripped before returning `TerminalResult`.
 
-This preserves stateful behavior (`cd`, environment changes) across calls.
+This preserves stateful behavior (`cd`, environment changes) across calls for callers that intentionally use `TerminalSessionManager`/interactive terminal sessions. Agent `run_bash` calls are stateless and must pass `cwd` explicitly for location-sensitive commands.
 
 ### 5) Background process semantics (`background-process-manager.ts`)
 
-- Starts a dedicated session per background process.
-- Writes command once, then continuously reads output in a loop.
-- Stores bounded output in ring buffer (`OutputBuffer`).
-- `getOutput` returns cleaned recent lines and running state.
-- `stopProcess` closes session and removes process handle.
+- This historical section applied when background tool behavior was session-backed.
+- Current agent background-process behavior is PID-keyed and owned by `BackgroundProcessManager` plus `command-execution/` internals, not by persistent `DirectShellSession` instances.
+- `run_bash` adopts ordinary live background descendants from normal shell `&` syntax, and `start_background_process` starts a non-interactive shell process that is tracked by public `pid`.
 
 ### 6) Android packaging/runtime gate (workspace integration)
 

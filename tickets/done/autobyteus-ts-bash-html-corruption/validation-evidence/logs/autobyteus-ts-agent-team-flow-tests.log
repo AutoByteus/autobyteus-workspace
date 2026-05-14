@@ -1,0 +1,1815 @@
+### 2026-05-14T11:12:16+02:00 agent-team flow E2E/integration tests
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/autobyteus-ts
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  override existing env vars with { override: true }
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+stderr | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Failed to resolve model metadata for provider GEMINI: Gemini metadata request failed with status 400
+
+stderr | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Failed to resolve model metadata for provider GEMINI: Gemini metadata request failed with status 400
+
+stderr | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Failed to resolve model metadata for provider GEMINI: Gemini metadata request failed with status 400
+
+stderr | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Failed to resolve model metadata for provider ANTHROPIC: Anthropic metadata request failed with status 401
+
+stderr | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Failed to resolve model metadata for provider ANTHROPIC: Anthropic metadata request failed with status 401
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stderr | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Finished LM Studio discovery. Total models registered: 28
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Discovering Autobyteus models from host: https://localhost:51739
+
+stderr | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stderr | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Finished LM Studio discovery. Total models registered: 28
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Discovering Autobyteus models from host: https://localhost:51739
+
+stderr | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stderr | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Failed to resolve model metadata for provider ANTHROPIC: Anthropic metadata request failed with status 401
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stderr | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Finished LM Studio discovery. Total models registered: 28
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Discovering Autobyteus models from host: https://localhost:51739
+
+stderr | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Discovering Autobyteus models from host: https://localhost:51740
+
+stderr | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Discovering Autobyteus models from host: https://localhost:51740
+
+stderr | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Discovering Autobyteus models from host: https://localhost:51740
+
+stderr | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Finished Autobyteus discovery. Total models registered: 68
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentTeamBuilder initialized for team: 'ParentTeam'.
+Building AgentTeam from builder...
+AgentTeamConfig created successfully. Name: 'ParentTeam'. Total nodes: 2. Coordinator: 'ParentCoordinator'.
+AgentTeamFactory (Singleton) initialized.
+AgentTeamRuntimeState initialized for team 'team_25d12fe7'.
+AgentTeamContext composed for team 'team_25d12fe7'.
+AgentTeamEventHandlerRegistry initialized.
+Handler 'ProcessUserMessageEventHandler' registered for event 'ProcessUserMessageEvent'.
+Handler 'InterAgentMessageRequestEventHandler' registered for event 'InterAgentMessageRequestEvent'.
+Handler 'ToolApprovalTeamEventHandler' registered for event 'ToolApprovalTeamEvent'.
+Handler 'LifecycleAgentTeamEventHandler' registered for event 'AgentTeamBootstrapStartedEvent'.
+Handler 'LifecycleAgentTeamEventHandler' registered for event 'AgentTeamReadyEvent'.
+Handler 'LifecycleAgentTeamEventHandler' registered for event 'AgentTeamIdleEvent'.
+Handler 'LifecycleAgentTeamEventHandler' registered for event 'AgentTeamShutdownRequestedEvent'.
+Handler 'LifecycleAgentTeamEventHandler' registered for event 'AgentTeamStoppedEvent'.
+Handler 'LifecycleAgentTeamEventHandler' registered for event 'AgentTeamErrorEvent'.
+AgentTeamWorker initialized for team 'team_25d12fe7'.
+AgentEventMultiplexer initialized for team 'team_25d12fe7'.
+AgentTeamRuntime initialized for team 'team_25d12fe7'.
+AgentFactory (Singleton) initialized.
+TeamManager created for team 'team_25d12fe7'.
+AgentTeam facade created for team ID 'team_25d12fe7'.
+Agent Team 'team_25d12fe7' created and stored successfully.
+AgentTeamRuntime for 'team_25d12fe7': Starting worker.
+AgentTeamWorker 'team_25d12fe7': Starting...
+Team 'team_25d12fe7': Runtime init completed (event store initialized).
+Team 'team_25d12fe7': Runtime init completed (status deriver initialized).
+AgentTeamInputEventQueueManager initialized.
+Team 'team_25d12fe7': Runtime init completed (input queues initialized).
+Waiting for team 'team_25d12fe7' to become idle (timeout: 60s)...
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_25d12fe7' Logged AgentTeamBootstrapStartedEvent. Current status: bootstrapping
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_25d12fe7': Bootstrapper starting.
+Team 'team_25d12fe7': Executing TeamContextInitializationStep.
+Team 'team_25d12fe7': TaskPlan initialized and attached to team state.
+Team 'team_25d12fe7': Successfully bridged TaskPlan events to the team notifier.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_25d12fe7': Executing TaskNotifierInitializationStep.
+Team 'team_25d12fe7': Task notification mode is 'agent_manual_notification'. Skipping event-driven notifier setup.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_25d12fe7': Executing AgentConfigurationPreparationStep to prepare all agent configurations.
+Team 'team_25d12fe7': Prepared final config for agent 'ParentCoordinator' with user-defined tools: FunctionalTool
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_25d12fe7': Executing CoordinatorInitializationStep.
+Lazily creating agent node 'ParentCoordinator' using pre-prepared configuration.
+AgentRuntimeState initialized for agent_id 'parentcoordinator_coordinator_4055'. Initial status: uninitialized. Workspace linked. InputQueues pending initialization. Output data via notifier.
+Agent 'parentcoordinator_coordinator_4055': LLM instance 'LMStudioLLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'parentcoordinator_coordinator_4055'. Config and State linked.
+EventHandlerRegistry initialized.
+UserInputMessageEventHandler initialized.
+Handler 'UserInputMessageEventHandler' registered for event class 'UserMessageReceivedEvent'.
+InterAgentMessageReceivedEventHandler initialized.
+Handler 'InterAgentMessageReceivedEventHandler' registered for event class 'InterAgentMessageReceivedEvent'.
+LLMCompleteResponseReceivedEventHandler initialized.
+Handler 'LLMCompleteResponseReceivedEventHandler' registered for event class 'LLMCompleteResponseReceivedEvent'.
+ToolInvocationRequestEventHandler initialized.
+Handler 'ToolInvocationRequestEventHandler' registered for event class 'PendingToolInvocationEvent'.
+ToolResultEventHandler initialized.
+Handler 'ToolResultEventHandler' registered for event class 'ToolResultEvent'.
+GenericEventHandler initialized.
+Handler 'GenericEventHandler' registered for event class 'GenericEvent'.
+ToolExecutionApprovalEventHandler initialized.
+Handler 'ToolExecutionApprovalEventHandler' registered for event class 'ToolExecutionApprovalEvent'.
+LLMUserMessageReadyEventHandler initialized.
+Handler 'LLMUserMessageReadyEventHandler' registered for event class 'LLMUserMessageReadyEvent'.
+Handler 'LLMUserMessageReadyEventHandler' registered for event class 'ToolContinuationReadyEvent'.
+ToolInvocationExecutionEventHandler initialized.
+Handler 'ToolInvocationExecutionEventHandler' registered for event class 'ExecuteToolInvocationEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapStartedEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapStepRequestedEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapStepCompletedEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapCompletedEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentReadyEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentStoppedEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentIdleEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'ShutdownRequestedEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentErrorEvent'.
+Instantiating AgentRuntime for agent_id: 'parentcoordinator_coordinator_4055' with config: 'ParentCoordinator'.
+AgentWorker initialized for agent_id 'parentcoordinator_coordinator_4055'.
+Registered AgentContext for agent_id 'parentcoordinator_coordinator_4055'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'parentcoordinator_coordinator_4055'. Context registered.
+Agent facade initialized for agent_id 'parentcoordinator_coordinator_4055'.
+Agent 'parentcoordinator_coordinator_4055' created and stored successfully.
+AgentEventStream (ID: c33c8073-3bd7-4e8f-b93b-d028540243d4) initialized for agent_id 'parentcoordinator_coordinator_4055'. Subscribed to notifier.
+AgentEventBridge created and task started for agent 'ParentCoordinator'.
+AgentEventMultiplexer started agent event bridge for 'ParentCoordinator'.
+Team 'team_25d12fe7': Node 'ParentCoordinator' is not running. Starting on-demand.
+Agent 'parentcoordinator_coordinator_4055' requesting runtime to start.
+AgentRuntime for 'parentcoordinator_coordinator_4055': Starting worker.
+AgentWorker 'parentcoordinator_coordinator_4055': Starting...
+AgentWorker 'parentcoordinator_coordinator_4055' asyncRun(): Starting.
+Agent 'parentcoordinator_coordinator_4055': Runtime init completed (event store initialized).
+Agent 'parentcoordinator_coordinator_4055': Runtime init completed (status deriver initialized).
+Agent 'parentcoordinator_coordinator_4055': Runtime init completed (input queues initialized).
+Waiting for agent 'parentcoordinator_coordinator_4055' to become idle (timeout: 60s)...
+AgentEventStream (ID: 0bf401b3-a405-428f-a881-cbaaf42ad1d0) initialized for agent_id 'parentcoordinator_coordinator_4055'. Subscribed to notifier.
+Agent 'parentcoordinator_coordinator_4055': Starting internal initialization process using bootstrap events.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentExternalEventNotifier (NotifierID: f8661144-4349-4d3f-8804-dd5ac82fe9e3, AgentID: parentcoordinator_coordinator_4055) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Agent 'parentcoordinator_coordinator_4055': Bootstrap started with 3 steps.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Agent 'parentcoordinator_coordinator_4055': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Agent 'parentcoordinator_coordinator_4055': Executing SystemPromptProcessingStep.
+Agent 'parentcoordinator_coordinator_4055': Appending team manifest to system prompt.
+Agent 'parentcoordinator_coordinator_4055': System prompt processor 'TeamManifestInjector' applied successfully.
+Agent 'parentcoordinator_coordinator_4055': No skills found in registry. Skipping injection.
+Agent 'parentcoordinator_coordinator_4055': System prompt processor 'AvailableSkillsProcessor' applied successfully.
+Agent 'parentcoordinator_coordinator_4055': Final processed system prompt configured on LLM instance. Final length: 104.
+Agent 'parentcoordinator_coordinator_4055': Final processed system prompt:
+---
+You are a helpful assistant.
+
+## Team Manifest
+
+- name: SubTeam
+  description: Sub-team integration test
+---
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Agent 'parentcoordinator_coordinator_4055': Bootstrap completed successfully. Emitting AgentReadyEvent.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentExternalEventNotifier (NotifierID: f8661144-4349-4d3f-8804-dd5ac82fe9e3, AgentID: parentcoordinator_coordinator_4055) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Agent 'parentcoordinator_coordinator_4055' Logged AgentReadyEvent. Current agent status: idle
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentWorker 'parentcoordinator_coordinator_4055' initialized successfully. Entering main event loop.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Agent 'parentcoordinator_coordinator_4055' has become idle.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentEventStream (ID: 0bf401b3-a405-428f-a881-cbaaf42ad1d0) for 'parentcoordinator_coordinator_4055': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_25d12fe7': Coordinator 'ParentCoordinator' initialized and started via TeamManager.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_25d12fe7': All bootstrap steps completed successfully.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_25d12fe7' Logged AgentTeamReadyEvent. Current status: idle
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_25d12fe7' has become idle.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Agent Team 'team_25d12fe7': postMessage called. Target: 'SubTeam'.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Lazily creating sub-team node 'SubTeam' in team 'team_25d12fe7'.
+AgentTeamRuntimeState initialized for team 'team_6acd3525'.
+AgentTeamContext composed for team 'team_6acd3525'.
+AgentTeamEventHandlerRegistry initialized.
+Handler 'ProcessUserMessageEventHandler' registered for event 'ProcessUserMessageEvent'.
+Handler 'InterAgentMessageRequestEventHandler' registered for event 'InterAgentMessageRequestEvent'.
+Handler 'ToolApprovalTeamEventHandler' registered for event 'ToolApprovalTeamEvent'.
+Handler 'LifecycleAgentTeamEventHandler' registered for event 'AgentTeamBootstrapStartedEvent'.
+Handler 'LifecycleAgentTeamEventHandler' registered for event 'AgentTeamReadyEvent'.
+Handler 'LifecycleAgentTeamEventHandler' registered for event 'AgentTeamIdleEvent'.
+Handler 'LifecycleAgentTeamEventHandler' registered for event 'AgentTeamShutdownRequestedEvent'.
+Handler 'LifecycleAgentTeamEventHandler' registered for event 'AgentTeamStoppedEvent'.
+Handler 'LifecycleAgentTeamEventHandler' registered for event 'AgentTeamErrorEvent'.
+AgentTeamWorker initialized for team 'team_6acd3525'.
+AgentEventMultiplexer initialized for team 'team_6acd3525'.
+AgentTeamRuntime initialized for team 'team_6acd3525'.
+TeamManager created for team 'team_6acd3525'.
+AgentTeam facade created for team ID 'team_6acd3525'.
+Agent Team 'team_6acd3525' created and stored successfully.
+TeamEventBridge created and task started for sub-team 'SubTeam'.
+AgentEventMultiplexer started team event bridge for 'SubTeam'.
+Team 'team_25d12fe7': Node 'SubTeam' is not running. Starting on-demand.
+AgentTeamRuntime for 'team_6acd3525': Starting worker.
+AgentTeamWorker 'team_6acd3525': Starting...
+Team 'team_6acd3525': Runtime init completed (event store initialized).
+Team 'team_6acd3525': Runtime init completed (status deriver initialized).
+AgentTeamInputEventQueueManager initialized.
+Team 'team_6acd3525': Runtime init completed (input queues initialized).
+Waiting for team 'team_6acd3525' to become idle (timeout: 120s)...
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_6acd3525' Logged AgentTeamBootstrapStartedEvent. Current status: bootstrapping
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_6acd3525': Bootstrapper starting.
+Team 'team_6acd3525': Executing TeamContextInitializationStep.
+Team 'team_6acd3525': TaskPlan initialized and attached to team state.
+Team 'team_6acd3525': Successfully bridged TaskPlan events to the team notifier.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_6acd3525': Executing TaskNotifierInitializationStep.
+Team 'team_6acd3525': Task notification mode is 'agent_manual_notification'. Skipping event-driven notifier setup.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_6acd3525': Executing AgentConfigurationPreparationStep to prepare all agent configurations.
+Team 'team_6acd3525': Prepared final config for agent 'SubCoordinator' with user-defined tools: FunctionalTool
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_6acd3525': Executing CoordinatorInitializationStep.
+Lazily creating agent node 'SubCoordinator' using pre-prepared configuration.
+AgentRuntimeState initialized for agent_id 'subcoordinator_coordinator_1969'. Initial status: uninitialized. Workspace linked. InputQueues pending initialization. Output data via notifier.
+Agent 'subcoordinator_coordinator_1969': LLM instance 'LMStudioLLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'subcoordinator_coordinator_1969'. Config and State linked.
+EventHandlerRegistry initialized.
+UserInputMessageEventHandler initialized.
+Handler 'UserInputMessageEventHandler' registered for event class 'UserMessageReceivedEvent'.
+InterAgentMessageReceivedEventHandler initialized.
+Handler 'InterAgentMessageReceivedEventHandler' registered for event class 'InterAgentMessageReceivedEvent'.
+LLMCompleteResponseReceivedEventHandler initialized.
+Handler 'LLMCompleteResponseReceivedEventHandler' registered for event class 'LLMCompleteResponseReceivedEvent'.
+ToolInvocationRequestEventHandler initialized.
+Handler 'ToolInvocationRequestEventHandler' registered for event class 'PendingToolInvocationEvent'.
+ToolResultEventHandler initialized.
+Handler 'ToolResultEventHandler' registered for event class 'ToolResultEvent'.
+GenericEventHandler initialized.
+Handler 'GenericEventHandler' registered for event class 'GenericEvent'.
+ToolExecutionApprovalEventHandler initialized.
+Handler 'ToolExecutionApprovalEventHandler' registered for event class 'ToolExecutionApprovalEvent'.
+LLMUserMessageReadyEventHandler initialized.
+Handler 'LLMUserMessageReadyEventHandler' registered for event class 'LLMUserMessageReadyEvent'.
+Handler 'LLMUserMessageReadyEventHandler' registered for event class 'ToolContinuationReadyEvent'.
+ToolInvocationExecutionEventHandler initialized.
+Handler 'ToolInvocationExecutionEventHandler' registered for event class 'ExecuteToolInvocationEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapStartedEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapStepRequestedEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapStepCompletedEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapCompletedEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentReadyEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentStoppedEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentIdleEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'ShutdownRequestedEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentErrorEvent'.
+Instantiating AgentRuntime for agent_id: 'subcoordinator_coordinator_1969' with config: 'SubCoordinator'.
+AgentWorker initialized for agent_id 'subcoordinator_coordinator_1969'.
+Registered AgentContext for agent_id 'subcoordinator_coordinator_1969'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'subcoordinator_coordinator_1969'. Context registered.
+Agent facade initialized for agent_id 'subcoordinator_coordinator_1969'.
+Agent 'subcoordinator_coordinator_1969' created and stored successfully.
+AgentEventStream (ID: 9c03728e-222b-44c9-8390-85001911d696) initialized for agent_id 'subcoordinator_coordinator_1969'. Subscribed to notifier.
+AgentEventBridge created and task started for agent 'SubCoordinator'.
+AgentEventMultiplexer started agent event bridge for 'SubCoordinator'.
+Team 'team_6acd3525': Node 'SubCoordinator' is not running. Starting on-demand.
+Agent 'subcoordinator_coordinator_1969' requesting runtime to start.
+AgentRuntime for 'subcoordinator_coordinator_1969': Starting worker.
+AgentWorker 'subcoordinator_coordinator_1969': Starting...
+AgentWorker 'subcoordinator_coordinator_1969' asyncRun(): Starting.
+Agent 'subcoordinator_coordinator_1969': Runtime init completed (event store initialized).
+Agent 'subcoordinator_coordinator_1969': Runtime init completed (status deriver initialized).
+Agent 'subcoordinator_coordinator_1969': Runtime init completed (input queues initialized).
+Waiting for agent 'subcoordinator_coordinator_1969' to become idle (timeout: 60s)...
+AgentEventStream (ID: b767865e-d1bf-4c40-8c1e-98cf7bae6023) initialized for agent_id 'subcoordinator_coordinator_1969'. Subscribed to notifier.
+Agent 'subcoordinator_coordinator_1969': Starting internal initialization process using bootstrap events.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentExternalEventNotifier (NotifierID: 99da4e1a-e4c3-4637-b52f-00c890150edf, AgentID: subcoordinator_coordinator_1969) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Agent 'subcoordinator_coordinator_1969': Bootstrap started with 3 steps.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Agent 'subcoordinator_coordinator_1969': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Agent 'subcoordinator_coordinator_1969': Executing SystemPromptProcessingStep.
+Agent 'subcoordinator_coordinator_1969': Appending team manifest to system prompt.
+Agent 'subcoordinator_coordinator_1969': System prompt processor 'TeamManifestInjector' applied successfully.
+Agent 'subcoordinator_coordinator_1969': No skills found in registry. Skipping injection.
+Agent 'subcoordinator_coordinator_1969': System prompt processor 'AvailableSkillsProcessor' applied successfully.
+Agent 'subcoordinator_coordinator_1969': Final processed system prompt configured on LLM instance. Final length: 111.
+Agent 'subcoordinator_coordinator_1969': Final processed system prompt:
+---
+You are a helpful assistant.
+
+## Team Manifest
+
+You are working alone. You have no team members to delegate to.
+---
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Agent 'subcoordinator_coordinator_1969': Bootstrap completed successfully. Emitting AgentReadyEvent.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentExternalEventNotifier (NotifierID: 99da4e1a-e4c3-4637-b52f-00c890150edf, AgentID: subcoordinator_coordinator_1969) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Agent 'subcoordinator_coordinator_1969' Logged AgentReadyEvent. Current agent status: idle
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentWorker 'subcoordinator_coordinator_1969' initialized successfully. Entering main event loop.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Agent 'subcoordinator_coordinator_1969' has become idle.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentEventStream (ID: b767865e-d1bf-4c40-8c1e-98cf7bae6023) for 'subcoordinator_coordinator_1969': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_6acd3525': Coordinator 'SubCoordinator' initialized and started via TeamManager.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_6acd3525': All bootstrap steps completed successfully.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_6acd3525' Logged AgentTeamReadyEvent. Current status: idle
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_6acd3525' has become idle.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Agent Team 'team_6acd3525': postMessage called. Target: 'SubCoordinator'.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_25d12fe7': Routed user message to sub-team node 'SubTeam'.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentExternalEventNotifier (NotifierID: 99da4e1a-e4c3-4637-b52f-00c890150edf, AgentID: subcoordinator_coordinator_1969) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_6acd3525': Routed user message to agent node 'SubCoordinator'.
+AgentExternalEventNotifier (NotifierID: 99da4e1a-e4c3-4637-b52f-00c890150edf, AgentID: subcoordinator_coordinator_1969) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+Agent 'subcoordinator_coordinator_1969' handling UserMessageReceivedEvent (type: user): 'Use the write_file tool to write "Sub-team output." to "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-team-sub-coordinator-iGsPB3/subteam_output.txt". Use that exact absolute path and do not respond with plain text.'
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Agent 'subcoordinator_coordinator_1969': Input processor 'MemoryIngestInputProcessor' applied successfully.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Agent 'subcoordinator_coordinator_1969' processed AgentInputUserMessage and enqueued LLMUserMessageReadyEvent.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_25d12fe7' Logged AgentTeamIdleEvent. Current status: idle
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_6acd3525' Logged AgentTeamIdleEvent. Current status: idle
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentExternalEventNotifier (NotifierID: 99da4e1a-e4c3-4637-b52f-00c890150edf, AgentID: subcoordinator_coordinator_1969) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Agent 'subcoordinator_coordinator_1969' handling LLMUserMessageReadyEvent: 'Use the write_file tool to write "Sub-team output." to "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-team-sub-coordinator-iGsPB3/subteam_output.txt". Use that exact absolute path and do not respond with plain text.'
+Agent 'subcoordinator_coordinator_1969': Streaming handler selected: ApiToolCallStreamingResponseHandler
+Agent 'subcoordinator_coordinator_1969': Passing 1 tool schemas to LLM API (Provider: LMSTUDIO).
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Finished Autobyteus discovery. Total models registered: 68
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+AgentTeamBuilder initialized for team: 'IntegrationTeam'.
+Building AgentTeam from builder...
+AgentTeamConfig created successfully. Name: 'IntegrationTeam'. Total nodes: 2. Coordinator: 'Coordinator'.
+AgentTeamFactory (Singleton) initialized.
+AgentTeamRuntimeState initialized for team 'team_ab836d1c'.
+AgentTeamContext composed for team 'team_ab836d1c'.
+AgentTeamEventHandlerRegistry initialized.
+Handler 'ProcessUserMessageEventHandler' registered for event 'ProcessUserMessageEvent'.
+Handler 'InterAgentMessageRequestEventHandler' registered for event 'InterAgentMessageRequestEvent'.
+Handler 'ToolApprovalTeamEventHandler' registered for event 'ToolApprovalTeamEvent'.
+Handler 'LifecycleAgentTeamEventHandler' registered for event 'AgentTeamBootstrapStartedEvent'.
+Handler 'LifecycleAgentTeamEventHandler' registered for event 'AgentTeamReadyEvent'.
+Handler 'LifecycleAgentTeamEventHandler' registered for event 'AgentTeamIdleEvent'.
+Handler 'LifecycleAgentTeamEventHandler' registered for event 'AgentTeamShutdownRequestedEvent'.
+Handler 'LifecycleAgentTeamEventHandler' registered for event 'AgentTeamStoppedEvent'.
+Handler 'LifecycleAgentTeamEventHandler' registered for event 'AgentTeamErrorEvent'.
+AgentTeamWorker initialized for team 'team_ab836d1c'.
+AgentEventMultiplexer initialized for team 'team_ab836d1c'.
+AgentTeamRuntime initialized for team 'team_ab836d1c'.
+AgentFactory (Singleton) initialized.
+TeamManager created for team 'team_ab836d1c'.
+AgentTeam facade created for team ID 'team_ab836d1c'.
+Agent Team 'team_ab836d1c' created and stored successfully.
+AgentTeamRuntime for 'team_ab836d1c': Starting worker.
+AgentTeamWorker 'team_ab836d1c': Starting...
+Team 'team_ab836d1c': Runtime init completed (event store initialized).
+Team 'team_ab836d1c': Runtime init completed (status deriver initialized).
+AgentTeamInputEventQueueManager initialized.
+Team 'team_ab836d1c': Runtime init completed (input queues initialized).
+Waiting for team 'team_ab836d1c' to become idle (timeout: 60s)...
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Team 'team_ab836d1c' Logged AgentTeamBootstrapStartedEvent. Current status: bootstrapping
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Team 'team_ab836d1c': Bootstrapper starting.
+Team 'team_ab836d1c': Executing TeamContextInitializationStep.
+Team 'team_ab836d1c': TaskPlan initialized and attached to team state.
+Team 'team_ab836d1c': Successfully bridged TaskPlan events to the team notifier.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Team 'team_ab836d1c': Executing TaskNotifierInitializationStep.
+Team 'team_ab836d1c': Task notification mode is 'agent_manual_notification'. Skipping event-driven notifier setup.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Team 'team_ab836d1c': Executing AgentConfigurationPreparationStep to prepare all agent configurations.
+Team 'team_ab836d1c': Prepared final config for agent 'Worker' with user-defined tools: FunctionalTool
+Team 'team_ab836d1c': Prepared final config for agent 'Coordinator' with user-defined tools: FunctionalTool
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Team 'team_ab836d1c': Executing CoordinatorInitializationStep.
+Lazily creating agent node 'Coordinator' using pre-prepared configuration.
+AgentRuntimeState initialized for agent_id 'coordinator_6236'. Initial status: uninitialized. Workspace linked. InputQueues pending initialization. Output data via notifier.
+Agent 'coordinator_6236': LLM instance 'LMStudioLLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'coordinator_6236'. Config and State linked.
+EventHandlerRegistry initialized.
+UserInputMessageEventHandler initialized.
+Handler 'UserInputMessageEventHandler' registered for event class 'UserMessageReceivedEvent'.
+InterAgentMessageReceivedEventHandler initialized.
+Handler 'InterAgentMessageReceivedEventHandler' registered for event class 'InterAgentMessageReceivedEvent'.
+LLMCompleteResponseReceivedEventHandler initialized.
+Handler 'LLMCompleteResponseReceivedEventHandler' registered for event class 'LLMCompleteResponseReceivedEvent'.
+ToolInvocationRequestEventHandler initialized.
+Handler 'ToolInvocationRequestEventHandler' registered for event class 'PendingToolInvocationEvent'.
+ToolResultEventHandler initialized.
+Handler 'ToolResultEventHandler' registered for event class 'ToolResultEvent'.
+GenericEventHandler initialized.
+Handler 'GenericEventHandler' registered for event class 'GenericEvent'.
+ToolExecutionApprovalEventHandler initialized.
+Handler 'ToolExecutionApprovalEventHandler' registered for event class 'ToolExecutionApprovalEvent'.
+LLMUserMessageReadyEventHandler initialized.
+Handler 'LLMUserMessageReadyEventHandler' registered for event class 'LLMUserMessageReadyEvent'.
+Handler 'LLMUserMessageReadyEventHandler' registered for event class 'ToolContinuationReadyEvent'.
+ToolInvocationExecutionEventHandler initialized.
+Handler 'ToolInvocationExecutionEventHandler' registered for event class 'ExecuteToolInvocationEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapStartedEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapStepRequestedEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapStepCompletedEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapCompletedEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentReadyEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentStoppedEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentIdleEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'ShutdownRequestedEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentErrorEvent'.
+Instantiating AgentRuntime for agent_id: 'coordinator_6236' with config: 'Coordinator'.
+AgentWorker initialized for agent_id 'coordinator_6236'.
+Registered AgentContext for agent_id 'coordinator_6236'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'coordinator_6236'. Context registered.
+Agent facade initialized for agent_id 'coordinator_6236'.
+Agent 'coordinator_6236' created and stored successfully.
+AgentEventStream (ID: 14c5a28e-10d4-47d4-acdf-8e56c794330f) initialized for agent_id 'coordinator_6236'. Subscribed to notifier.
+AgentEventBridge created and task started for agent 'Coordinator'.
+AgentEventMultiplexer started agent event bridge for 'Coordinator'.
+Team 'team_ab836d1c': Node 'Coordinator' is not running. Starting on-demand.
+Agent 'coordinator_6236' requesting runtime to start.
+AgentRuntime for 'coordinator_6236': Starting worker.
+AgentWorker 'coordinator_6236': Starting...
+AgentWorker 'coordinator_6236' asyncRun(): Starting.
+Agent 'coordinator_6236': Runtime init completed (event store initialized).
+Agent 'coordinator_6236': Runtime init completed (status deriver initialized).
+Agent 'coordinator_6236': Runtime init completed (input queues initialized).
+Waiting for agent 'coordinator_6236' to become idle (timeout: 60s)...
+AgentEventStream (ID: e865ba55-f41f-4acc-a7ac-8938be4d1423) initialized for agent_id 'coordinator_6236'. Subscribed to notifier.
+Agent 'coordinator_6236': Starting internal initialization process using bootstrap events.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+AgentExternalEventNotifier (NotifierID: 605caed7-4b6f-419e-acd3-80f77d0158f7, AgentID: coordinator_6236) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Agent 'coordinator_6236': Bootstrap started with 3 steps.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Agent 'coordinator_6236': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Agent 'coordinator_6236': Executing SystemPromptProcessingStep.
+Agent 'coordinator_6236': Appending team manifest to system prompt.
+Agent 'coordinator_6236': System prompt processor 'TeamManifestInjector' applied successfully.
+Agent 'coordinator_6236': No skills found in registry. Skipping injection.
+Agent 'coordinator_6236': System prompt processor 'AvailableSkillsProcessor' applied successfully.
+Agent 'coordinator_6236': Final processed system prompt configured on LLM instance. Final length: 89.
+Agent 'coordinator_6236': Final processed system prompt:
+---
+You are a helpful assistant.
+
+## Team Manifest
+
+- name: Worker
+  description: Team worker
+---
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Agent 'coordinator_6236': Bootstrap completed successfully. Emitting AgentReadyEvent.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+AgentExternalEventNotifier (NotifierID: 605caed7-4b6f-419e-acd3-80f77d0158f7, AgentID: coordinator_6236) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Agent 'coordinator_6236' Logged AgentReadyEvent. Current agent status: idle
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+AgentWorker 'coordinator_6236' initialized successfully. Entering main event loop.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Agent 'coordinator_6236' has become idle.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+AgentEventStream (ID: e865ba55-f41f-4acc-a7ac-8938be4d1423) for 'coordinator_6236': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Team 'team_ab836d1c': Coordinator 'Coordinator' initialized and started via TeamManager.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Team 'team_ab836d1c': All bootstrap steps completed successfully.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Team 'team_ab836d1c' Logged AgentTeamReadyEvent. Current status: idle
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Team 'team_ab836d1c' has become idle.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Agent Team 'team_ab836d1c': postMessage called. Target: 'Worker'.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Lazily creating agent node 'Worker' using pre-prepared configuration.
+AgentRuntimeState initialized for agent_id 'worker_8452'. Initial status: uninitialized. Workspace linked. InputQueues pending initialization. Output data via notifier.
+Agent 'worker_8452': LLM instance 'LMStudioLLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'worker_8452'. Config and State linked.
+EventHandlerRegistry initialized.
+UserInputMessageEventHandler initialized.
+Handler 'UserInputMessageEventHandler' registered for event class 'UserMessageReceivedEvent'.
+InterAgentMessageReceivedEventHandler initialized.
+Handler 'InterAgentMessageReceivedEventHandler' registered for event class 'InterAgentMessageReceivedEvent'.
+LLMCompleteResponseReceivedEventHandler initialized.
+Handler 'LLMCompleteResponseReceivedEventHandler' registered for event class 'LLMCompleteResponseReceivedEvent'.
+ToolInvocationRequestEventHandler initialized.
+Handler 'ToolInvocationRequestEventHandler' registered for event class 'PendingToolInvocationEvent'.
+ToolResultEventHandler initialized.
+Handler 'ToolResultEventHandler' registered for event class 'ToolResultEvent'.
+GenericEventHandler initialized.
+Handler 'GenericEventHandler' registered for event class 'GenericEvent'.
+ToolExecutionApprovalEventHandler initialized.
+Handler 'ToolExecutionApprovalEventHandler' registered for event class 'ToolExecutionApprovalEvent'.
+LLMUserMessageReadyEventHandler initialized.
+Handler 'LLMUserMessageReadyEventHandler' registered for event class 'LLMUserMessageReadyEvent'.
+Handler 'LLMUserMessageReadyEventHandler' registered for event class 'ToolContinuationReadyEvent'.
+ToolInvocationExecutionEventHandler initialized.
+Handler 'ToolInvocationExecutionEventHandler' registered for event class 'ExecuteToolInvocationEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapStartedEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapStepRequestedEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapStepCompletedEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapCompletedEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentReadyEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentStoppedEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentIdleEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'ShutdownRequestedEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentErrorEvent'.
+Instantiating AgentRuntime for agent_id: 'worker_8452' with config: 'Worker'.
+AgentWorker initialized for agent_id 'worker_8452'.
+Registered AgentContext for agent_id 'worker_8452'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'worker_8452'. Context registered.
+Agent facade initialized for agent_id 'worker_8452'.
+Agent 'worker_8452' created and stored successfully.
+AgentEventStream (ID: 81d74450-8219-4523-9eab-0a08a8cf860b) initialized for agent_id 'worker_8452'. Subscribed to notifier.
+AgentEventBridge created and task started for agent 'Worker'.
+AgentEventMultiplexer started agent event bridge for 'Worker'.
+Team 'team_ab836d1c': Node 'Worker' is not running. Starting on-demand.
+Agent 'worker_8452' requesting runtime to start.
+AgentRuntime for 'worker_8452': Starting worker.
+AgentWorker 'worker_8452': Starting...
+AgentWorker 'worker_8452' asyncRun(): Starting.
+Agent 'worker_8452': Runtime init completed (event store initialized).
+Agent 'worker_8452': Runtime init completed (status deriver initialized).
+Agent 'worker_8452': Runtime init completed (input queues initialized).
+Waiting for agent 'worker_8452' to become idle (timeout: 60s)...
+AgentEventStream (ID: 3e9f9309-596e-445e-9ba8-8123573cbfe8) initialized for agent_id 'worker_8452'. Subscribed to notifier.
+Agent 'worker_8452': Starting internal initialization process using bootstrap events.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+AgentExternalEventNotifier (NotifierID: 80b261f3-e8bc-4486-90b1-413eadb167c4, AgentID: worker_8452) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Agent 'worker_8452': Bootstrap started with 3 steps.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Agent 'worker_8452': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Agent 'worker_8452': Executing SystemPromptProcessingStep.
+Agent 'worker_8452': Appending team manifest to system prompt.
+Agent 'worker_8452': System prompt processor 'TeamManifestInjector' applied successfully.
+Agent 'worker_8452': No skills found in registry. Skipping injection.
+Agent 'worker_8452': System prompt processor 'AvailableSkillsProcessor' applied successfully.
+Agent 'worker_8452': Final processed system prompt configured on LLM instance. Final length: 99.
+Agent 'worker_8452': Final processed system prompt:
+---
+You are a helpful assistant.
+
+## Team Manifest
+
+- name: Coordinator
+  description: Team coordinator
+---
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Agent 'worker_8452': Bootstrap completed successfully. Emitting AgentReadyEvent.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+AgentExternalEventNotifier (NotifierID: 80b261f3-e8bc-4486-90b1-413eadb167c4, AgentID: worker_8452) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Agent 'worker_8452' Logged AgentReadyEvent. Current agent status: idle
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+AgentWorker 'worker_8452' initialized successfully. Entering main event loop.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Agent 'worker_8452' has become idle.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+AgentEventStream (ID: 3e9f9309-596e-445e-9ba8-8123573cbfe8) for 'worker_8452': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+AgentExternalEventNotifier (NotifierID: 80b261f3-e8bc-4486-90b1-413eadb167c4, AgentID: worker_8452) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Team 'team_ab836d1c': Routed user message to agent node 'Worker'.
+AgentExternalEventNotifier (NotifierID: 80b261f3-e8bc-4486-90b1-413eadb167c4, AgentID: worker_8452) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+Agent 'worker_8452' handling UserMessageReceivedEvent (type: user): 'Call write_file exactly once with arguments {"path":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-team-worker-V5UK4H/team_output.txt","content":"Team worker output."}. Use the provided absolute path exactly and do not respond with plain text.'
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Agent 'worker_8452': Input processor 'MemoryIngestInputProcessor' applied successfully.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Agent 'worker_8452' processed AgentInputUserMessage and enqueued LLMUserMessageReadyEvent.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Team 'team_ab836d1c' Logged AgentTeamIdleEvent. Current status: idle
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+AgentExternalEventNotifier (NotifierID: 80b261f3-e8bc-4486-90b1-413eadb167c4, AgentID: worker_8452) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Agent 'worker_8452' handling LLMUserMessageReadyEvent: 'Call write_file exactly once with arguments {"path":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-team-worker-V5UK4H/team_output.txt","content":"Team worker output."}. Use the provided absolute path exactly and do not respond with plain text.'
+Agent 'worker_8452': Streaming handler selected: ApiToolCallStreamingResponseHandler
+Agent 'worker_8452': Passing 1 tool schemas to LLM API (Provider: LMSTUDIO).
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Finished Autobyteus discovery. Total models registered: 68
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+AgentTeamBuilder initialized for team: 'StreamingTeam'.
+Building AgentTeam from builder...
+AgentTeamConfig created successfully. Name: 'StreamingTeam'. Total nodes: 2. Coordinator: 'Coordinator'.
+AgentTeamFactory (Singleton) initialized.
+AgentTeamRuntimeState initialized for team 'team_d6db7f8e'.
+AgentTeamContext composed for team 'team_d6db7f8e'.
+AgentTeamEventHandlerRegistry initialized.
+Handler 'ProcessUserMessageEventHandler' registered for event 'ProcessUserMessageEvent'.
+Handler 'InterAgentMessageRequestEventHandler' registered for event 'InterAgentMessageRequestEvent'.
+Handler 'ToolApprovalTeamEventHandler' registered for event 'ToolApprovalTeamEvent'.
+Handler 'LifecycleAgentTeamEventHandler' registered for event 'AgentTeamBootstrapStartedEvent'.
+Handler 'LifecycleAgentTeamEventHandler' registered for event 'AgentTeamReadyEvent'.
+Handler 'LifecycleAgentTeamEventHandler' registered for event 'AgentTeamIdleEvent'.
+Handler 'LifecycleAgentTeamEventHandler' registered for event 'AgentTeamShutdownRequestedEvent'.
+Handler 'LifecycleAgentTeamEventHandler' registered for event 'AgentTeamStoppedEvent'.
+Handler 'LifecycleAgentTeamEventHandler' registered for event 'AgentTeamErrorEvent'.
+AgentTeamWorker initialized for team 'team_d6db7f8e'.
+AgentEventMultiplexer initialized for team 'team_d6db7f8e'.
+AgentTeamRuntime initialized for team 'team_d6db7f8e'.
+AgentFactory (Singleton) initialized.
+TeamManager created for team 'team_d6db7f8e'.
+AgentTeam facade created for team ID 'team_d6db7f8e'.
+Agent Team 'team_d6db7f8e' created and stored successfully.
+AgentTeamRuntime for 'team_d6db7f8e': Starting worker.
+AgentTeamWorker 'team_d6db7f8e': Starting...
+Team 'team_d6db7f8e': Runtime init completed (event store initialized).
+Team 'team_d6db7f8e': Runtime init completed (status deriver initialized).
+AgentTeamInputEventQueueManager initialized.
+Team 'team_d6db7f8e': Runtime init completed (input queues initialized).
+Waiting for team 'team_d6db7f8e' to become idle (timeout: 60s)...
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Team 'team_d6db7f8e' Logged AgentTeamBootstrapStartedEvent. Current status: bootstrapping
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Team 'team_d6db7f8e': Bootstrapper starting.
+Team 'team_d6db7f8e': Executing TeamContextInitializationStep.
+Team 'team_d6db7f8e': TaskPlan initialized and attached to team state.
+Team 'team_d6db7f8e': Successfully bridged TaskPlan events to the team notifier.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Team 'team_d6db7f8e': Executing TaskNotifierInitializationStep.
+Team 'team_d6db7f8e': Task notification mode is 'agent_manual_notification'. Skipping event-driven notifier setup.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Team 'team_d6db7f8e': Executing AgentConfigurationPreparationStep to prepare all agent configurations.
+Team 'team_d6db7f8e': Prepared final config for agent 'Worker' with user-defined tools: FunctionalTool
+Team 'team_d6db7f8e': Prepared final config for agent 'Coordinator' with user-defined tools: FunctionalTool
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Team 'team_d6db7f8e': Executing CoordinatorInitializationStep.
+Lazily creating agent node 'Coordinator' using pre-prepared configuration.
+AgentRuntimeState initialized for agent_id 'coordinator_1032'. Initial status: uninitialized. Workspace linked. InputQueues pending initialization. Output data via notifier.
+Agent 'coordinator_1032': LLM instance 'LMStudioLLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'coordinator_1032'. Config and State linked.
+EventHandlerRegistry initialized.
+UserInputMessageEventHandler initialized.
+Handler 'UserInputMessageEventHandler' registered for event class 'UserMessageReceivedEvent'.
+InterAgentMessageReceivedEventHandler initialized.
+Handler 'InterAgentMessageReceivedEventHandler' registered for event class 'InterAgentMessageReceivedEvent'.
+LLMCompleteResponseReceivedEventHandler initialized.
+Handler 'LLMCompleteResponseReceivedEventHandler' registered for event class 'LLMCompleteResponseReceivedEvent'.
+ToolInvocationRequestEventHandler initialized.
+Handler 'ToolInvocationRequestEventHandler' registered for event class 'PendingToolInvocationEvent'.
+ToolResultEventHandler initialized.
+Handler 'ToolResultEventHandler' registered for event class 'ToolResultEvent'.
+GenericEventHandler initialized.
+Handler 'GenericEventHandler' registered for event class 'GenericEvent'.
+ToolExecutionApprovalEventHandler initialized.
+Handler 'ToolExecutionApprovalEventHandler' registered for event class 'ToolExecutionApprovalEvent'.
+LLMUserMessageReadyEventHandler initialized.
+Handler 'LLMUserMessageReadyEventHandler' registered for event class 'LLMUserMessageReadyEvent'.
+Handler 'LLMUserMessageReadyEventHandler' registered for event class 'ToolContinuationReadyEvent'.
+ToolInvocationExecutionEventHandler initialized.
+Handler 'ToolInvocationExecutionEventHandler' registered for event class 'ExecuteToolInvocationEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapStartedEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapStepRequestedEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapStepCompletedEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapCompletedEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentReadyEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentStoppedEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentIdleEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'ShutdownRequestedEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentErrorEvent'.
+Instantiating AgentRuntime for agent_id: 'coordinator_1032' with config: 'Coordinator'.
+AgentWorker initialized for agent_id 'coordinator_1032'.
+Registered AgentContext for agent_id 'coordinator_1032'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'coordinator_1032'. Context registered.
+Agent facade initialized for agent_id 'coordinator_1032'.
+Agent 'coordinator_1032' created and stored successfully.
+AgentEventStream (ID: bf514ad0-5228-4e43-8cd8-4d6a4b2e273b) initialized for agent_id 'coordinator_1032'. Subscribed to notifier.
+AgentEventBridge created and task started for agent 'Coordinator'.
+AgentEventMultiplexer started agent event bridge for 'Coordinator'.
+Team 'team_d6db7f8e': Node 'Coordinator' is not running. Starting on-demand.
+Agent 'coordinator_1032' requesting runtime to start.
+AgentRuntime for 'coordinator_1032': Starting worker.
+AgentWorker 'coordinator_1032': Starting...
+AgentWorker 'coordinator_1032' asyncRun(): Starting.
+Agent 'coordinator_1032': Runtime init completed (event store initialized).
+Agent 'coordinator_1032': Runtime init completed (status deriver initialized).
+Agent 'coordinator_1032': Runtime init completed (input queues initialized).
+Waiting for agent 'coordinator_1032' to become idle (timeout: 60s)...
+AgentEventStream (ID: 299a0979-6978-4dea-901f-2bb820b45c35) initialized for agent_id 'coordinator_1032'. Subscribed to notifier.
+Agent 'coordinator_1032': Starting internal initialization process using bootstrap events.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+AgentExternalEventNotifier (NotifierID: 00b03e19-d0e5-48c4-9900-7ab3e4def3a7, AgentID: coordinator_1032) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Agent 'coordinator_1032': Bootstrap started with 3 steps.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Agent 'coordinator_1032': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Agent 'coordinator_1032': Executing SystemPromptProcessingStep.
+Agent 'coordinator_1032': Appending team manifest to system prompt.
+Agent 'coordinator_1032': System prompt processor 'TeamManifestInjector' applied successfully.
+Agent 'coordinator_1032': No skills found in registry. Skipping injection.
+Agent 'coordinator_1032': System prompt processor 'AvailableSkillsProcessor' applied successfully.
+Agent 'coordinator_1032': Final processed system prompt configured on LLM instance. Final length: 89.
+Agent 'coordinator_1032': Final processed system prompt:
+---
+You are a helpful assistant.
+
+## Team Manifest
+
+- name: Worker
+  description: Team worker
+---
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Agent 'coordinator_1032': Bootstrap completed successfully. Emitting AgentReadyEvent.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+AgentExternalEventNotifier (NotifierID: 00b03e19-d0e5-48c4-9900-7ab3e4def3a7, AgentID: coordinator_1032) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Agent 'coordinator_1032' Logged AgentReadyEvent. Current agent status: idle
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+AgentWorker 'coordinator_1032' initialized successfully. Entering main event loop.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Agent 'coordinator_1032' has become idle.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+AgentEventStream (ID: 299a0979-6978-4dea-901f-2bb820b45c35) for 'coordinator_1032': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Team 'team_d6db7f8e': Coordinator 'Coordinator' initialized and started via TeamManager.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Team 'team_d6db7f8e': All bootstrap steps completed successfully.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Team 'team_d6db7f8e' Logged AgentTeamReadyEvent. Current status: idle
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Team 'team_d6db7f8e' has become idle.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Agent Team 'team_d6db7f8e': postMessage called. Target: 'Worker'.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Lazily creating agent node 'Worker' using pre-prepared configuration.
+AgentRuntimeState initialized for agent_id 'worker_7423'. Initial status: uninitialized. Workspace linked. InputQueues pending initialization. Output data via notifier.
+Agent 'worker_7423': LLM instance 'LMStudioLLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'worker_7423'. Config and State linked.
+EventHandlerRegistry initialized.
+UserInputMessageEventHandler initialized.
+Handler 'UserInputMessageEventHandler' registered for event class 'UserMessageReceivedEvent'.
+InterAgentMessageReceivedEventHandler initialized.
+Handler 'InterAgentMessageReceivedEventHandler' registered for event class 'InterAgentMessageReceivedEvent'.
+LLMCompleteResponseReceivedEventHandler initialized.
+Handler 'LLMCompleteResponseReceivedEventHandler' registered for event class 'LLMCompleteResponseReceivedEvent'.
+ToolInvocationRequestEventHandler initialized.
+Handler 'ToolInvocationRequestEventHandler' registered for event class 'PendingToolInvocationEvent'.
+ToolResultEventHandler initialized.
+Handler 'ToolResultEventHandler' registered for event class 'ToolResultEvent'.
+GenericEventHandler initialized.
+Handler 'GenericEventHandler' registered for event class 'GenericEvent'.
+ToolExecutionApprovalEventHandler initialized.
+Handler 'ToolExecutionApprovalEventHandler' registered for event class 'ToolExecutionApprovalEvent'.
+LLMUserMessageReadyEventHandler initialized.
+Handler 'LLMUserMessageReadyEventHandler' registered for event class 'LLMUserMessageReadyEvent'.
+Handler 'LLMUserMessageReadyEventHandler' registered for event class 'ToolContinuationReadyEvent'.
+ToolInvocationExecutionEventHandler initialized.
+Handler 'ToolInvocationExecutionEventHandler' registered for event class 'ExecuteToolInvocationEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapStartedEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapStepRequestedEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapStepCompletedEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapCompletedEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentReadyEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentStoppedEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentIdleEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'ShutdownRequestedEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentErrorEvent'.
+Instantiating AgentRuntime for agent_id: 'worker_7423' with config: 'Worker'.
+AgentWorker initialized for agent_id 'worker_7423'.
+Registered AgentContext for agent_id 'worker_7423'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'worker_7423'. Context registered.
+Agent facade initialized for agent_id 'worker_7423'.
+Agent 'worker_7423' created and stored successfully.
+AgentEventStream (ID: 8fd113c4-f805-41c6-abb9-d42537782629) initialized for agent_id 'worker_7423'. Subscribed to notifier.
+AgentEventBridge created and task started for agent 'Worker'.
+AgentEventMultiplexer started agent event bridge for 'Worker'.
+Team 'team_d6db7f8e': Node 'Worker' is not running. Starting on-demand.
+Agent 'worker_7423' requesting runtime to start.
+AgentRuntime for 'worker_7423': Starting worker.
+AgentWorker 'worker_7423': Starting...
+AgentWorker 'worker_7423' asyncRun(): Starting.
+Agent 'worker_7423': Runtime init completed (event store initialized).
+Agent 'worker_7423': Runtime init completed (status deriver initialized).
+Agent 'worker_7423': Runtime init completed (input queues initialized).
+Waiting for agent 'worker_7423' to become idle (timeout: 60s)...
+AgentEventStream (ID: 9acf8ff3-42e0-4707-b71d-7f91d2775c51) initialized for agent_id 'worker_7423'. Subscribed to notifier.
+Agent 'worker_7423': Starting internal initialization process using bootstrap events.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+AgentExternalEventNotifier (NotifierID: 008738a0-d53a-4589-a4c6-cb2be8865da0, AgentID: worker_7423) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Agent 'worker_7423': Bootstrap started with 3 steps.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Agent 'worker_7423': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Agent 'worker_7423': Executing SystemPromptProcessingStep.
+Agent 'worker_7423': Appending team manifest to system prompt.
+Agent 'worker_7423': System prompt processor 'TeamManifestInjector' applied successfully.
+Agent 'worker_7423': No skills found in registry. Skipping injection.
+Agent 'worker_7423': System prompt processor 'AvailableSkillsProcessor' applied successfully.
+Agent 'worker_7423': Final processed system prompt configured on LLM instance. Final length: 99.
+Agent 'worker_7423': Final processed system prompt:
+---
+You are a helpful assistant.
+
+## Team Manifest
+
+- name: Coordinator
+  description: Team coordinator
+---
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Agent 'worker_7423': Bootstrap completed successfully. Emitting AgentReadyEvent.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+AgentExternalEventNotifier (NotifierID: 008738a0-d53a-4589-a4c6-cb2be8865da0, AgentID: worker_7423) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Agent 'worker_7423' Logged AgentReadyEvent. Current agent status: idle
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Agent 'worker_7423' has become idle.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+AgentEventStream (ID: 9acf8ff3-42e0-4707-b71d-7f91d2775c51) for 'worker_7423': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Team 'team_d6db7f8e': Routed user message to agent node 'Worker'.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+AgentWorker 'worker_7423' initialized successfully. Entering main event loop.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+AgentExternalEventNotifier (NotifierID: 008738a0-d53a-4589-a4c6-cb2be8865da0, AgentID: worker_7423) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+AgentExternalEventNotifier (NotifierID: 008738a0-d53a-4589-a4c6-cb2be8865da0, AgentID: worker_7423) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+Agent 'worker_7423' handling UserMessageReceivedEvent (type: user): 'Use the write_file tool to write "Team streaming output." to "stream_output.txt". Do not respond with plain text.'
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Agent 'worker_7423': Input processor 'MemoryIngestInputProcessor' applied successfully.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Agent 'worker_7423' processed AgentInputUserMessage and enqueued LLMUserMessageReadyEvent.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Team 'team_d6db7f8e' Logged AgentTeamIdleEvent. Current status: idle
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+AgentExternalEventNotifier (NotifierID: 008738a0-d53a-4589-a4c6-cb2be8865da0, AgentID: worker_7423) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Agent 'worker_7423' handling LLMUserMessageReadyEvent: 'Use the write_file tool to write "Team streaming output." to "stream_output.txt". Do not respond with plain text.'
+Agent 'worker_7423': Streaming handler selected: ApiToolCallStreamingResponseHandler
+Agent 'worker_7423': Passing 1 tool schemas to LLM API (Provider: LMSTUDIO).
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+Agent 'worker_7423': Parsed 1 tool invocations from streaming parser.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+compaction_budget_evaluated {
+  agent_id: 'worker_7423',
+  prompt_tokens: 466,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 262144,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 262144,
+  reserved_output_tokens: 0,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 261888,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 130944,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Agent 'worker_7423' enqueued LLMCompleteResponseReceivedEvent from LLMUserMessageReadyEventHandler.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+AgentExternalEventNotifier (NotifierID: 008738a0-d53a-4589-a4c6-cb2be8865da0, AgentID: worker_7423) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Agent 'worker_7423' handling LLMCompleteResponseReceivedEvent. Response Length: 2, Reasoning Length: 361, IsErrorFlagged: false, TokenUsage: [object Object]
+Agent 'worker_7423' received full LLM content for processing:
+---
+
+
+
+---
+Agent 'worker_7423': No LLMResponseProcessor handled the response. Emitting the full LLM response as a final answer and completion signal.
+AgentExternalEventNotifier (NotifierID: 008738a0-d53a-4589-a4c6-cb2be8865da0, AgentID: worker_7423) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+AgentExternalEventNotifier (NotifierID: 008738a0-d53a-4589-a4c6-cb2be8865da0, AgentID: worker_7423) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 008738a0-d53a-4589-a4c6-cb2be8865da0, AgentID: worker_7423) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+AgentExternalEventNotifier (NotifierID: 008738a0-d53a-4589-a4c6-cb2be8865da0, AgentID: worker_7423) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+AgentExternalEventNotifier (NotifierID: 008738a0-d53a-4589-a4c6-cb2be8865da0, AgentID: worker_7423) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+AgentExternalEventNotifier (NotifierID: 008738a0-d53a-4589-a4c6-cb2be8865da0, AgentID: worker_7423) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 008738a0-d53a-4589-a4c6-cb2be8865da0, AgentID: worker_7423) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Agent 'worker_7423' enqueued native API tool continuation for turn 'turn_0001' after 1 tool result(s); no aggregate user message was added.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+AgentExternalEventNotifier (NotifierID: 008738a0-d53a-4589-a4c6-cb2be8865da0, AgentID: worker_7423) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Agent 'worker_7423' handling ToolContinuationReadyEvent for turn 'turn_0001'.
+Agent 'worker_7423': Streaming handler selected: ApiToolCallStreamingResponseHandler
+Agent 'worker_7423': Passing 1 tool schemas to LLM API (Provider: LMSTUDIO).
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+Agent 'worker_8452': Parsed 1 tool invocations from streaming parser.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+compaction_budget_evaluated {
+  agent_id: 'worker_8452',
+  prompt_tokens: 521,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 262144,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 262144,
+  reserved_output_tokens: 0,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 261888,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 130944,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Agent 'worker_8452' enqueued LLMCompleteResponseReceivedEvent from LLMUserMessageReadyEventHandler.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+AgentExternalEventNotifier (NotifierID: 80b261f3-e8bc-4486-90b1-413eadb167c4, AgentID: worker_8452) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Agent 'worker_8452' handling LLMCompleteResponseReceivedEvent. Response Length: 2, Reasoning Length: 340, IsErrorFlagged: false, TokenUsage: [object Object]
+Agent 'worker_8452' received full LLM content for processing:
+---
+
+
+
+---
+Agent 'worker_8452': No LLMResponseProcessor handled the response. Emitting the full LLM response as a final answer and completion signal.
+AgentExternalEventNotifier (NotifierID: 80b261f3-e8bc-4486-90b1-413eadb167c4, AgentID: worker_8452) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+AgentExternalEventNotifier (NotifierID: 80b261f3-e8bc-4486-90b1-413eadb167c4, AgentID: worker_8452) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 80b261f3-e8bc-4486-90b1-413eadb167c4, AgentID: worker_8452) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+AgentExternalEventNotifier (NotifierID: 80b261f3-e8bc-4486-90b1-413eadb167c4, AgentID: worker_8452) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+AgentExternalEventNotifier (NotifierID: 80b261f3-e8bc-4486-90b1-413eadb167c4, AgentID: worker_8452) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+AgentExternalEventNotifier (NotifierID: 80b261f3-e8bc-4486-90b1-413eadb167c4, AgentID: worker_8452) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 80b261f3-e8bc-4486-90b1-413eadb167c4, AgentID: worker_8452) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Agent 'worker_8452' enqueued native API tool continuation for turn 'turn_0001' after 1 tool result(s); no aggregate user message was added.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+AgentExternalEventNotifier (NotifierID: 80b261f3-e8bc-4486-90b1-413eadb167c4, AgentID: worker_8452) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Agent 'worker_8452' handling ToolContinuationReadyEvent for turn 'turn_0001'.
+Agent 'worker_8452': Streaming handler selected: ApiToolCallStreamingResponseHandler
+Agent 'worker_8452': Passing 1 tool schemas to LLM API (Provider: LMSTUDIO).
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+compaction_budget_evaluated {
+  agent_id: 'worker_7423',
+  prompt_tokens: 580,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 262144,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 262144,
+  reserved_output_tokens: 0,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 261888,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 130944,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Agent 'worker_7423' enqueued LLMCompleteResponseReceivedEvent from LLMUserMessageReadyEventHandler.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+AgentExternalEventNotifier (NotifierID: 008738a0-d53a-4589-a4c6-cb2be8865da0, AgentID: worker_7423) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Agent 'worker_7423' handling LLMCompleteResponseReceivedEvent. Response Length: 223, Reasoning Length: 0, IsErrorFlagged: false, TokenUsage: [object Object]
+Agent 'worker_7423' received full LLM content for processing:
+---
+
+
+I have successfully written "Team streaming output." to the file `stream_output.txt`. The file has been created at `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-team-stream-worker-FLHvtk/stream_output.txt`.
+---
+Agent 'worker_7423': No LLMResponseProcessor handled the response. Emitting the full LLM response as a final answer and completion signal.
+AgentExternalEventNotifier (NotifierID: 008738a0-d53a-4589-a4c6-cb2be8865da0, AgentID: worker_7423) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+AgentExternalEventNotifier (NotifierID: 008738a0-d53a-4589-a4c6-cb2be8865da0, AgentID: worker_7423) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+AgentExternalEventNotifier (NotifierID: 008738a0-d53a-4589-a4c6-cb2be8865da0, AgentID: worker_7423) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Agent 'worker_7423' Logged AgentIdleEvent. Current agent status: idle
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+Agent 'subcoordinator_coordinator_1969': Parsed 1 tool invocations from streaming parser.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+compaction_budget_evaluated {
+  agent_id: 'subcoordinator_coordinator_1969',
+  prompt_tokens: 523,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 262144,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 262144,
+  reserved_output_tokens: 0,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 261888,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 130944,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Agent 'subcoordinator_coordinator_1969' enqueued LLMCompleteResponseReceivedEvent from LLMUserMessageReadyEventHandler.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentExternalEventNotifier (NotifierID: 99da4e1a-e4c3-4637-b52f-00c890150edf, AgentID: subcoordinator_coordinator_1969) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Agent 'subcoordinator_coordinator_1969' handling LLMCompleteResponseReceivedEvent. Response Length: 2, Reasoning Length: 497, IsErrorFlagged: false, TokenUsage: [object Object]
+Agent 'subcoordinator_coordinator_1969' received full LLM content for processing:
+---
+
+
+
+---
+Agent 'subcoordinator_coordinator_1969': No LLMResponseProcessor handled the response. Emitting the full LLM response as a final answer and completion signal.
+AgentExternalEventNotifier (NotifierID: 99da4e1a-e4c3-4637-b52f-00c890150edf, AgentID: subcoordinator_coordinator_1969) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentExternalEventNotifier (NotifierID: 99da4e1a-e4c3-4637-b52f-00c890150edf, AgentID: subcoordinator_coordinator_1969) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 99da4e1a-e4c3-4637-b52f-00c890150edf, AgentID: subcoordinator_coordinator_1969) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentExternalEventNotifier (NotifierID: 99da4e1a-e4c3-4637-b52f-00c890150edf, AgentID: subcoordinator_coordinator_1969) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentExternalEventNotifier (NotifierID: 99da4e1a-e4c3-4637-b52f-00c890150edf, AgentID: subcoordinator_coordinator_1969) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentExternalEventNotifier (NotifierID: 99da4e1a-e4c3-4637-b52f-00c890150edf, AgentID: subcoordinator_coordinator_1969) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 99da4e1a-e4c3-4637-b52f-00c890150edf, AgentID: subcoordinator_coordinator_1969) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Agent 'subcoordinator_coordinator_1969' enqueued native API tool continuation for turn 'turn_0001' after 1 tool result(s); no aggregate user message was added.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentExternalEventNotifier (NotifierID: 99da4e1a-e4c3-4637-b52f-00c890150edf, AgentID: subcoordinator_coordinator_1969) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Agent 'subcoordinator_coordinator_1969' handling ToolContinuationReadyEvent for turn 'turn_0001'.
+Agent 'subcoordinator_coordinator_1969': Streaming handler selected: ApiToolCallStreamingResponseHandler
+Agent 'subcoordinator_coordinator_1969': Passing 1 tool schemas to LLM API (Provider: LMSTUDIO).
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+AgentTeamWorker 'team_d6db7f8e': Stop requested.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Team 'team_d6db7f8e' Logged AgentTeamStoppedEvent. Current status: shutdown_complete
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Team 'team_d6db7f8e': Shutdown signal received. Cleaning up.
+Team 'team_d6db7f8e': Shutdown orchestrator starting.
+Team 'team_d6db7f8e': Executing BridgeCleanupStep.
+AgentEventMultiplexer for 'team_d6db7f8e' shutting down all event bridges.
+Cancelling AgentEventBridge for 'Coordinator'.
+AgentEventStream (ID: bf514ad0-5228-4e43-8cd8-4d6a4b2e273b) for 'coordinator_1032': close() called. Unsubscribing all listeners and signaling.
+Cancelling AgentEventBridge for 'Worker'.
+AgentEventStream (ID: 8fd113c4-f805-41c6-abb9-d42537782629) for 'worker_7423': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+AgentEventBridge for 'Coordinator' cancelled successfully.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+AgentEventBridge for 'Worker' cancelled successfully.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+All event bridges for team 'team_d6db7f8e' have been shut down by multiplexer.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Team 'team_d6db7f8e': Executing SubTeamShutdownStep.
+Team 'team_d6db7f8e': No running sub-teams to shut down.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Team 'team_d6db7f8e': Executing AgentTeamShutdownStep.
+Team 'team_d6db7f8e': Shutting down 2 running agents.
+Agent 'coordinator_1032' requesting runtime to stop (timeout: 10s).
+Agent 'worker_7423' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: 00b03e19-d0e5-48c4-9900-7ab3e4def3a7, AgentID: coordinator_1032) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 008738a0-d53a-4589-a4c6-cb2be8865da0, AgentID: worker_7423) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+AgentWorker 'coordinator_1032': Stop requested.
+AgentWorker 'worker_7423': Stop requested.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+AgentExternalEventNotifier (NotifierID: 00b03e19-d0e5-48c4-9900-7ab3e4def3a7, AgentID: coordinator_1032) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 008738a0-d53a-4589-a4c6-cb2be8865da0, AgentID: worker_7423) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Agent 'coordinator_1032' Logged AgentStoppedEvent. Current agent status: shutdown_complete
+Agent 'worker_7423' Logged AgentStoppedEvent. Current agent status: shutdown_complete
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+AgentWorker 'coordinator_1032' asyncRun() loop has finished.
+AgentWorker 'coordinator_1032': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+AgentWorker 'coordinator_1032': Shutdown resource cleanup completed successfully.
+AgentWorker 'coordinator_1032': Shutdown sequence completed.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Unregistered AgentContext for agent_id 'coordinator_1032'.
+AgentRuntime for 'coordinator_1032': Context unregistered.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+AgentRuntime for 'coordinator_1032' stop() method completed.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+AgentWorker 'worker_7423' asyncRun() loop has finished.
+AgentWorker 'worker_7423': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+AgentWorker 'worker_7423': Shutdown resource cleanup completed successfully.
+AgentWorker 'worker_7423': Shutdown sequence completed.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Unregistered AgentContext for agent_id 'worker_7423'.
+AgentRuntime for 'worker_7423': Context unregistered.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+AgentRuntime for 'worker_7423' stop() method completed.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Removing agent 'coordinator_1032'. Attempting graceful shutdown.
+Agent 'coordinator_1032' requesting runtime to stop (timeout: 10s).
+Removing agent 'worker_7423'. Attempting graceful shutdown.
+Agent 'worker_7423' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Team 'team_d6db7f8e': Shutdown orchestration completed.
+
+stdout | tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Team 'team_d6db7f8e': Shutdown resource cleanup completed successfully.
+
+ ❯ tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts (1 test | 1 failed) 20017ms
+     × rebroadcasts agent events and team status updates 20016ms
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+compaction_budget_evaluated {
+  agent_id: 'worker_8452',
+  prompt_tokens: 680,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 262144,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 262144,
+  reserved_output_tokens: 0,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 261888,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 130944,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Agent 'worker_8452' enqueued LLMCompleteResponseReceivedEvent from LLMUserMessageReadyEventHandler.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+AgentExternalEventNotifier (NotifierID: 80b261f3-e8bc-4486-90b1-413eadb167c4, AgentID: worker_8452) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Agent 'worker_8452' handling LLMCompleteResponseReceivedEvent. Response Length: 120, Reasoning Length: 123, IsErrorFlagged: false, TokenUsage: [object Object]
+Agent 'worker_8452' received full LLM content for processing:
+---
+
+
+File created/updated at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-team-worker-V5UK4H/team_output.txt
+---
+Agent 'worker_8452': No LLMResponseProcessor handled the response. Emitting the full LLM response as a final answer and completion signal.
+AgentExternalEventNotifier (NotifierID: 80b261f3-e8bc-4486-90b1-413eadb167c4, AgentID: worker_8452) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+AgentExternalEventNotifier (NotifierID: 80b261f3-e8bc-4486-90b1-413eadb167c4, AgentID: worker_8452) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+AgentExternalEventNotifier (NotifierID: 80b261f3-e8bc-4486-90b1-413eadb167c4, AgentID: worker_8452) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Agent 'worker_8452' Logged AgentIdleEvent. Current agent status: idle
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+AgentTeamWorker 'team_ab836d1c': Stop requested.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Team 'team_ab836d1c' Logged AgentTeamStoppedEvent. Current status: shutdown_complete
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Team 'team_ab836d1c': Shutdown signal received. Cleaning up.
+Team 'team_ab836d1c': Shutdown orchestrator starting.
+Team 'team_ab836d1c': Executing BridgeCleanupStep.
+AgentEventMultiplexer for 'team_ab836d1c' shutting down all event bridges.
+Cancelling AgentEventBridge for 'Coordinator'.
+AgentEventStream (ID: 14c5a28e-10d4-47d4-acdf-8e56c794330f) for 'coordinator_6236': close() called. Unsubscribing all listeners and signaling.
+Cancelling AgentEventBridge for 'Worker'.
+AgentEventStream (ID: 81d74450-8219-4523-9eab-0a08a8cf860b) for 'worker_8452': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+AgentEventBridge for 'Coordinator' cancelled successfully.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+AgentEventBridge for 'Worker' cancelled successfully.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+All event bridges for team 'team_ab836d1c' have been shut down by multiplexer.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Team 'team_ab836d1c': Executing SubTeamShutdownStep.
+Team 'team_ab836d1c': No running sub-teams to shut down.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Team 'team_ab836d1c': Executing AgentTeamShutdownStep.
+Team 'team_ab836d1c': Shutting down 2 running agents.
+Agent 'coordinator_6236' requesting runtime to stop (timeout: 10s).
+Agent 'worker_8452' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: 605caed7-4b6f-419e-acd3-80f77d0158f7, AgentID: coordinator_6236) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 80b261f3-e8bc-4486-90b1-413eadb167c4, AgentID: worker_8452) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+AgentWorker 'coordinator_6236': Stop requested.
+AgentWorker 'worker_8452': Stop requested.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+AgentExternalEventNotifier (NotifierID: 605caed7-4b6f-419e-acd3-80f77d0158f7, AgentID: coordinator_6236) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 80b261f3-e8bc-4486-90b1-413eadb167c4, AgentID: worker_8452) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Agent 'coordinator_6236' Logged AgentStoppedEvent. Current agent status: shutdown_complete
+Agent 'worker_8452' Logged AgentStoppedEvent. Current agent status: shutdown_complete
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+AgentWorker 'coordinator_6236' asyncRun() loop has finished.
+AgentWorker 'coordinator_6236': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+AgentWorker 'coordinator_6236': Shutdown resource cleanup completed successfully.
+AgentWorker 'coordinator_6236': Shutdown sequence completed.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Unregistered AgentContext for agent_id 'coordinator_6236'.
+AgentRuntime for 'coordinator_6236': Context unregistered.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+AgentRuntime for 'coordinator_6236' stop() method completed.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+AgentWorker 'worker_8452' asyncRun() loop has finished.
+AgentWorker 'worker_8452': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+AgentWorker 'worker_8452': Shutdown resource cleanup completed successfully.
+AgentWorker 'worker_8452': Shutdown sequence completed.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Unregistered AgentContext for agent_id 'worker_8452'.
+AgentRuntime for 'worker_8452': Context unregistered.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+AgentRuntime for 'worker_8452' stop() method completed.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Removing agent 'coordinator_6236'. Attempting graceful shutdown.
+Agent 'coordinator_6236' requesting runtime to stop (timeout: 10s).
+Removing agent 'worker_8452'. Attempting graceful shutdown.
+Agent 'worker_8452' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Team 'team_ab836d1c': Shutdown orchestration completed.
+
+stdout | tests/integration/agent-team/agent-team-single-flow.test.ts > Agent team integration (LM Studio, api_tool_call) > routes a message to a worker and executes a tool call
+Team 'team_ab836d1c': Shutdown resource cleanup completed successfully.
+
+ ✓ tests/integration/agent-team/agent-team-single-flow.test.ts (1 test) 21454ms
+     ✓ routes a message to a worker and executes a tool call  21453ms
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+compaction_budget_evaluated {
+  agent_id: 'subcoordinator_coordinator_1969',
+  prompt_tokens: 686,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 262144,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 262144,
+  reserved_output_tokens: 0,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 261888,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 130944,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Agent 'subcoordinator_coordinator_1969' enqueued LLMCompleteResponseReceivedEvent from LLMUserMessageReadyEventHandler.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentExternalEventNotifier (NotifierID: 99da4e1a-e4c3-4637-b52f-00c890150edf, AgentID: subcoordinator_coordinator_1969) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Agent 'subcoordinator_coordinator_1969' handling LLMCompleteResponseReceivedEvent. Response Length: 170, Reasoning Length: 0, IsErrorFlagged: false, TokenUsage: [object Object]
+Agent 'subcoordinator_coordinator_1969' received full LLM content for processing:
+---
+
+
+I have written "Sub-team output." to the specified file at `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-team-sub-coordinator-iGsPB3/subteam_output.txt`.
+---
+Agent 'subcoordinator_coordinator_1969': No LLMResponseProcessor handled the response. Emitting the full LLM response as a final answer and completion signal.
+AgentExternalEventNotifier (NotifierID: 99da4e1a-e4c3-4637-b52f-00c890150edf, AgentID: subcoordinator_coordinator_1969) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentExternalEventNotifier (NotifierID: 99da4e1a-e4c3-4637-b52f-00c890150edf, AgentID: subcoordinator_coordinator_1969) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentExternalEventNotifier (NotifierID: 99da4e1a-e4c3-4637-b52f-00c890150edf, AgentID: subcoordinator_coordinator_1969) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Agent 'subcoordinator_coordinator_1969' Logged AgentIdleEvent. Current agent status: idle
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentTeamWorker 'team_25d12fe7': Stop requested.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_25d12fe7' Logged AgentTeamStoppedEvent. Current status: shutdown_complete
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_25d12fe7': Shutdown signal received. Cleaning up.
+Team 'team_25d12fe7': Shutdown orchestrator starting.
+Team 'team_25d12fe7': Executing BridgeCleanupStep.
+AgentEventMultiplexer for 'team_25d12fe7' shutting down all event bridges.
+Cancelling AgentEventBridge for 'ParentCoordinator'.
+AgentEventStream (ID: c33c8073-3bd7-4e8f-b93b-d028540243d4) for 'parentcoordinator_coordinator_4055': close() called. Unsubscribing all listeners and signaling.
+Cancelling TeamEventBridge for 'SubTeam'.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentEventBridge for 'ParentCoordinator' cancelled successfully.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+TeamEventBridge for 'SubTeam' cancelled successfully.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+All event bridges for team 'team_25d12fe7' have been shut down by multiplexer.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_25d12fe7': Executing SubTeamShutdownStep.
+Team 'team_25d12fe7': Shutting down 1 running sub-teams.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentTeamWorker 'team_6acd3525': Stop requested.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_6acd3525' Logged AgentTeamStoppedEvent. Current status: shutdown_complete
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_6acd3525': Shutdown signal received. Cleaning up.
+Team 'team_6acd3525': Shutdown orchestrator starting.
+Team 'team_6acd3525': Executing BridgeCleanupStep.
+AgentEventMultiplexer for 'team_6acd3525' shutting down all event bridges.
+Cancelling AgentEventBridge for 'SubCoordinator'.
+AgentEventStream (ID: 9c03728e-222b-44c9-8390-85001911d696) for 'subcoordinator_coordinator_1969': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentEventBridge for 'SubCoordinator' cancelled successfully.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+All event bridges for team 'team_6acd3525' have been shut down by multiplexer.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_6acd3525': Executing SubTeamShutdownStep.
+Team 'team_6acd3525': No running sub-teams to shut down.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_6acd3525': Executing AgentTeamShutdownStep.
+Team 'team_6acd3525': Shutting down 1 running agents.
+Agent 'subcoordinator_coordinator_1969' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentExternalEventNotifier (NotifierID: 99da4e1a-e4c3-4637-b52f-00c890150edf, AgentID: subcoordinator_coordinator_1969) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentWorker 'subcoordinator_coordinator_1969': Stop requested.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentExternalEventNotifier (NotifierID: 99da4e1a-e4c3-4637-b52f-00c890150edf, AgentID: subcoordinator_coordinator_1969) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Agent 'subcoordinator_coordinator_1969' Logged AgentStoppedEvent. Current agent status: shutdown_complete
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentWorker 'subcoordinator_coordinator_1969' asyncRun() loop has finished.
+AgentWorker 'subcoordinator_coordinator_1969': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentWorker 'subcoordinator_coordinator_1969': Shutdown resource cleanup completed successfully.
+AgentWorker 'subcoordinator_coordinator_1969': Shutdown sequence completed.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Unregistered AgentContext for agent_id 'subcoordinator_coordinator_1969'.
+AgentRuntime for 'subcoordinator_coordinator_1969': Context unregistered.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentRuntime for 'subcoordinator_coordinator_1969' stop() method completed.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Removing agent 'subcoordinator_coordinator_1969'. Attempting graceful shutdown.
+Agent 'subcoordinator_coordinator_1969' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_6acd3525': Shutdown orchestration completed.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_6acd3525': Shutdown resource cleanup completed successfully.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_25d12fe7': Executing AgentTeamShutdownStep.
+Team 'team_25d12fe7': Shutting down 1 running agents.
+Agent 'parentcoordinator_coordinator_4055' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentExternalEventNotifier (NotifierID: f8661144-4349-4d3f-8804-dd5ac82fe9e3, AgentID: parentcoordinator_coordinator_4055) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentWorker 'parentcoordinator_coordinator_4055': Stop requested.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentExternalEventNotifier (NotifierID: f8661144-4349-4d3f-8804-dd5ac82fe9e3, AgentID: parentcoordinator_coordinator_4055) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Agent 'parentcoordinator_coordinator_4055' Logged AgentStoppedEvent. Current agent status: shutdown_complete
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentWorker 'parentcoordinator_coordinator_4055' asyncRun() loop has finished.
+AgentWorker 'parentcoordinator_coordinator_4055': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentWorker 'parentcoordinator_coordinator_4055': Shutdown resource cleanup completed successfully.
+AgentWorker 'parentcoordinator_coordinator_4055': Shutdown sequence completed.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Unregistered AgentContext for agent_id 'parentcoordinator_coordinator_4055'.
+AgentRuntime for 'parentcoordinator_coordinator_4055': Context unregistered.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+AgentRuntime for 'parentcoordinator_coordinator_4055' stop() method completed.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Removing agent 'parentcoordinator_coordinator_4055'. Attempting graceful shutdown.
+Agent 'parentcoordinator_coordinator_4055' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_25d12fe7': Shutdown orchestration completed.
+
+stdout | tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts > Agent team sub-team streaming integration (LM Studio, api_tool_call) > rebroadcasts sub-team events to the parent stream
+Team 'team_25d12fe7': Shutdown resource cleanup completed successfully.
+
+ ✓ tests/integration/agent-team/streaming/agent-team-subteam-streaming-flow.test.ts (1 test) 31222ms
+     ✓ rebroadcasts sub-team events to the parent stream  31221ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts > Agent team streaming integration (LM Studio, api_tool_call) > rebroadcasts agent events and team status updates
+Error: Test timed out in 20000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts:106:3
+    104|   });
+    105| 
+    106|   it('rebroadcasts agent events and team status updates', async () => {
+       |   ^
+    107|     const tool = registerWriteFileTool();
+    108|     const toolArgs = { path: 'stream_output.txt', content: 'Team strea…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 2 passed (3)
+   Start at  11:12:16
+   Duration  33.24s (transform 3.25s, setup 77ms, import 5.62s, tests 72.69s, environment 0ms)
+

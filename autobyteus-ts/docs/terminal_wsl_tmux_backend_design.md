@@ -6,6 +6,11 @@ The current Windows terminal backend uses `pywinpty` (ConPTY). It is unstable
 and difficult to bundle in one-file builds. We want a Windows backend that is
 stable, explicit, and avoids `pywinpty` entirely.
 
+This document describes the interactive terminal session backend used by the
+server/web terminal path. Agent-facing `run_bash` execution is now a separate
+stateless, non-interactive WSL/bash path; it does not use tmux or persistent
+terminal-session state.
+
 ## Goals
 
 - Replace the Windows PTY backend with a WSL + `tmux` implementation.

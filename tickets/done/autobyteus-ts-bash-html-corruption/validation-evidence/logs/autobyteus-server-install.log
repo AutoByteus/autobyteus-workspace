@@ -1,0 +1,10 @@
+### 2026-05-14T10:55:37+02:00 pnpm install --filter autobyteus-server-ts... --frozen-lockfile
+Scope: 3 of 11 workspace projects
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+.                                        | +122 ++++++++++++
+Progress: resolved 122, reused 122, downloaded 0, added 122, done
+autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+autobyteus-ts postinstall: [node-pty-fix] ok: /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+autobyteus-ts postinstall: Done
+Done in 1.1s using pnpm v10.28.2

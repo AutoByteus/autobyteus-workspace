@@ -29,8 +29,11 @@ describe('RunBashXmlFormatter (integration)', () => {
     expect(schema).toContain('`cwd="relative/or/absolute/path"`');
     expect(schema).toContain('relative values resolve from the workspace root');
     expect(schema).toContain('Each successful result includes `effectiveCwd`');
+    expect(schema).not.toContain('background="true|false"');
     expect(example).toContain('python -m pytest tests/ -v');
     expect(example).toContain('cwd="tests"');
     expect(example).toContain('pwd > runtime/pwd.txt');
+    expect(example).toContain('npm run dev > server.log 2>&1 &');
+    expect(example).not.toContain('background="true"');
   });
 });

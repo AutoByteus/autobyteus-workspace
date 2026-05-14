@@ -1,0 +1,20 @@
+{
+  "provider": "kimi",
+  "model": "kimi-k2.6",
+  "status": "provider_skipped_rate_limited",
+  "workspace": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/validation-evidence/workspaces/provider-kimi-2026-05-14T09-01-08-078Z",
+  "envPresence": {
+    "OPENAI_API_KEY": true,
+    "KIMI_API_KEY": true
+  },
+  "command": {
+    "expectedCommandLength": 2273,
+    "expectedCommandSha256": "bcbbfec3e126bc0b3335c0fcbb1b48a6cbfdcb4189bac97bb6bca3cdba86c7bc",
+    "expectedHtmlBytes": 122140,
+    "expectedHtmlSha256": "2109f17a337294c1ec09299991d4051bbf3571868d4e72dc6a644d41fd5588b7"
+  },
+  "rawChunkSummary": [],
+  "invocationSummary": null,
+  "executionSummary": null,
+  "providerError": "Error in API streaming: Error: 429 Your account org-*** / proj-*** <ak-***> request reached organization TPD rate limit, current: 1504794, limit: 1500000"
+}

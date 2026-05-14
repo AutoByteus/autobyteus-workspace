@@ -62,19 +62,19 @@ describe('StreamingParser (integration)', () => {
     expect(runBashSegments.length).toBeGreaterThanOrEqual(1);
   });
 
-  it('parses run_bash metadata from custom XML tag attributes', () => {
+  it('parses supported run_bash metadata from custom XML tag attributes and ignores background', () => {
     const segments = collectSegments([
       "Run this:<run_bash background='true' timeout_seconds='7'>ls -la</run_bash>"
     ]);
     const runBashSegment = segments.find((segment) => segment.type === SegmentType.RUN_BASH);
     expect(runBashSegment).toBeDefined();
     expect(runBashSegment?.metadata).toMatchObject({
-      background: true,
       timeout_seconds: 7
     });
+    expect(runBashSegment?.metadata?.background).toBeUndefined();
   });
 
-  it('parses run_bash metadata from tool arguments', () => {
+  it('parses supported run_bash metadata from tool arguments and ignores background', () => {
     const config = createConfig({ parseToolCalls: true, strategyOrder: ['xml_tag'] });
     const events = collectEvents([
       "<tool name='run_bash'><arguments><arg name='background'>true</arg><arg name='timeoutSeconds'>11</arg><arg name='command'>echo hi</arg></arguments></tool>"
@@ -89,9 +89,9 @@ describe('StreamingParser (integration)', () => {
     expect(endEvent).toBeDefined();
     expect(endEvent?.payload.metadata).toMatchObject({
       tool_name: 'run_bash',
-      background: true,
       timeout_seconds: 11
     });
+    expect(endEvent?.payload.metadata.background).toBeUndefined();
   });
 
   it('parses a tool tag when tool parsing is enabled', () => {

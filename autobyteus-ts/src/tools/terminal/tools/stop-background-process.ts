@@ -3,49 +3,22 @@ import type { BaseTool } from '../../base-tool.js';
 import { ToolCategory } from '../../tool-category.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../../../utils/parameter-schema.js';
 import { defaultToolRegistry } from '../../registry/tool-registry.js';
-import { BackgroundProcessManager } from '../background-process-manager.js';
-import type { AgentContextLike } from './run-bash.js';
-
-let defaultBackgroundManager: BackgroundProcessManager | null = null;
-
-function getBackgroundManager(context: AgentContextLike | null | undefined): BackgroundProcessManager {
-  if (!context) {
-    if (!defaultBackgroundManager) {
-      defaultBackgroundManager = new BackgroundProcessManager();
-    }
-    return defaultBackgroundManager;
-  }
-
-  const contextRecord = context as Record<string, unknown>;
-  const existing = contextRecord._backgroundProcessManager as BackgroundProcessManager | undefined;
-
-  if (!existing) {
-    const manager = new BackgroundProcessManager();
-    contextRecord._backgroundProcessManager = manager;
-    return manager;
-  }
-
-  if (!contextRecord._backgroundProcessManager) {
-    contextRecord._backgroundProcessManager = existing;
-  }
-
-  return existing;
-}
+import { getBackgroundManager, type AgentContextLike } from '../background-process-context.js';
 
 export async function stopBackgroundProcess(
   context: AgentContextLike | null,
-  processId: string
-): Promise<{ status: string; processId: string }> {
+  pid: number
+): Promise<{ status: string; pid: number }> {
   const manager = getBackgroundManager(context);
-  const success = await manager.stopProcess(processId);
-  return { status: success ? 'stopped' : 'not_found', processId };
+  const success = await manager.stopProcess(pid);
+  return { status: success ? 'stopped' : 'not_found', pid };
 }
 
 const argumentSchema = new ParameterSchema();
 argumentSchema.addParameter(new ParameterDefinition({
-  name: 'process_id',
-  type: ParameterType.STRING,
-  description: "Parameter 'process_id' for tool 'stop_background_process'.",
+  name: 'pid',
+  type: ParameterType.INTEGER,
+  description: "OS PID returned by run_bash backgroundProcesses, start_background_process, or get_background_processes.",
   required: true
 }));
 
@@ -56,10 +29,10 @@ export function registerStopBackgroundProcessTool(): BaseTool {
   if (!defaultToolRegistry.getToolDefinition(TOOL_NAME)) {
     cachedTool = tool({
       name: TOOL_NAME,
-      description: 'Stop a running background process.',
+      description: 'Stop a managed background process by PID.',
       argumentSchema,
       category: ToolCategory.SYSTEM,
-      paramNames: ['context', 'process_id']
+      paramNames: ['context', 'pid']
     })(stopBackgroundProcess) as BaseTool;
     return cachedTool;
   }

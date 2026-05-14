@@ -126,16 +126,6 @@ export class XmlRunBashToolParsingState extends XmlToolParsingState {
   }
 
   private extractMetadataFromAttributes(openingTag: string): void {
-    const backgroundRaw = this.readAttribute(openingTag, 'background');
-    if (backgroundRaw !== null) {
-      const normalized = backgroundRaw.trim().toLowerCase();
-      if (['true', '1', 'yes'].includes(normalized)) {
-        this.extractedMetadata.background = true;
-      } else if (['false', '0', 'no'].includes(normalized)) {
-        this.extractedMetadata.background = false;
-      }
-    }
-
     const timeoutRaw =
       this.readAttribute(openingTag, 'timeout_seconds') ??
       this.readAttribute(openingTag, 'timeoutSeconds');
@@ -149,18 +139,6 @@ export class XmlRunBashToolParsingState extends XmlToolParsingState {
 
   private extractMetadataFromArgumentBuffer(buffer: string): void {
     let updated = false;
-
-    const backgroundMatch = /<arg\s+name=["']background["']>([\s\S]*?)<\/arg>/i.exec(buffer);
-    if (backgroundMatch && this.extractedMetadata.background === undefined) {
-      const normalized = (backgroundMatch[1] ?? '').trim().toLowerCase();
-      if (['true', '1', 'yes'].includes(normalized)) {
-        this.extractedMetadata.background = true;
-        updated = true;
-      } else if (['false', '0', 'no'].includes(normalized)) {
-        this.extractedMetadata.background = false;
-        updated = true;
-      }
-    }
 
     const timeoutMatch =
       /<arg\s+name=["']timeout_seconds["']>([\s\S]*?)<\/arg>/i.exec(buffer) ??

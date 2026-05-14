@@ -1,0 +1,178 @@
+### 2026-05-14T10:54:53+02:00 parser/adapter/formatter/schema vitest suite
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/autobyteus-ts
+
+stdout | tests/integration/agent/streaming/full-streaming-flow.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/streaming/parser/parser-context.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/streaming/parser/states/xml-run-bash-tool-parsing-state.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/streaming/parser/states/xml-edit-file-tool-parsing-state.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/streaming/parser/streaming-parser.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/agent/streaming/parser/streaming-parser.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/streaming/parser/states/xml-write-file-tool-parsing-state.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/streaming/parser/xml-tag-initialization-state.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚙️  override existing env vars with { override: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/streaming/parser/invocation-adapter.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stderr | tests/unit/agent/streaming/parser/invocation-adapter.test.ts > ToolInvocationAdapter basics > ignores write_file without path
+Tool segment seg_x ended without required arguments for write_file
+
+ ✓ tests/unit/agent/streaming/parser/invocation-adapter.test.ts (21 tests) 8ms
+ ✓ tests/unit/agent/streaming/parser/parser-context.test.ts (20 tests) 5ms
+ ✓ tests/unit/agent/streaming/parser/xml-tag-initialization-state.test.ts (16 tests) 5ms
+ ✓ tests/unit/agent/streaming/parser/states/xml-write-file-tool-parsing-state.test.ts (11 tests) 6ms
+ ✓ tests/unit/agent/streaming/parser/states/xml-edit-file-tool-parsing-state.test.ts (10 tests) 7ms
+ ✓ tests/unit/agent/streaming/parser/states/xml-run-bash-tool-parsing-state.test.ts (10 tests) 11ms
+ ✓ tests/unit/agent/streaming/parser/streaming-parser.test.ts (17 tests) 9ms
+ ✓ tests/integration/agent/streaming/parser/streaming-parser.test.ts (14 tests) 9ms
+ ✓ tests/integration/agent/streaming/full-streaming-flow.test.ts (15 tests) 11ms
+stdout | tests/unit/agent/streaming/parser/json-parsing-states.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/streaming/adapters/tool-call-parsing.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/streaming/parser/text-state.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/streaming/parser/states/custom-xml-tag-run-bash-parsing-state.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/streaming/parser/stream-scanner.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/streaming/parser/states/xml-tool-parsing-state.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/streaming/parser/event-emitter.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/streaming/parser/state-factory.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/streaming/parser/events.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/agent/streaming/parser/json-parsing-states.test.ts (18 tests) 7ms
+ ✓ tests/unit/agent/streaming/parser/stream-scanner.test.ts (20 tests) 4ms
+ ✓ tests/unit/agent/streaming/adapters/tool-call-parsing.test.ts (11 tests) 4ms
+ ✓ tests/unit/agent/streaming/parser/event-emitter.test.ts (8 tests) 5ms
+ ✓ tests/unit/agent/streaming/parser/text-state.test.ts (11 tests) 5ms
+ ✓ tests/unit/agent/streaming/parser/events.test.ts (9 tests) 4ms
+ ✓ tests/unit/agent/streaming/parser/states/custom-xml-tag-run-bash-parsing-state.test.ts (8 tests) 5ms
+ ✓ tests/unit/agent/streaming/parser/state-factory.test.ts (8 tests) 4ms
+ ✓ tests/unit/agent/streaming/parser/states/xml-tool-parsing-state.test.ts (6 tests) 11ms
+stdout | tests/unit/agent/streaming/parser/sentinel-parsing-state.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/streaming/parser/states/custom-xml-tag-write-file-parsing-state.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/streaming/parser/parser-factory.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/streaming/parser/json-parsing-strategies.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/streaming/adapters/tool-syntax-registry.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/agent/streaming/parser/xml-tool-parsing-state-registry.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/tools/usage/formatters/run-bash-xml-formatter.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  override existing env vars with { override: true }
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/agent/streaming/parser/states/custom-xml-tag-write-file-parsing-state.test.ts (4 tests) 4ms
+ ✓ tests/unit/agent/streaming/adapters/tool-syntax-registry.test.ts (7 tests) 3ms
+ ✓ tests/unit/agent/streaming/parser/parser-factory.test.ts (7 tests) 3ms
+ ✓ tests/unit/agent/streaming/parser/sentinel-parsing-state.test.ts (3 tests) 3ms
+stdout | tests/integration/tools/usage/formatters/run-bash-xml-formatter.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/agent/streaming/parser/xml-tool-parsing-state-registry.test.ts (4 tests) 2ms
+ ✓ tests/integration/tools/usage/formatters/run-bash-xml-formatter.test.ts (1 test) 2ms
+ ✓ tests/unit/agent/streaming/parser/json-parsing-strategies.test.ts (7 tests) 3ms
+ ✓ tests/unit/tools/usage/formatters/run-bash-xml-formatter.test.ts (2 tests) 2ms
+stdout | tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts > run_bash OpenAI-compatible schema > uses the function-tool envelope with closed object parameters and no default strict flag
+Successfully registered tool definition: 'run_bash'
+
+ ✓ tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts (1 test) 3ms
+
+ Test Files  27 passed (27)
+      Tests  269 passed (269)
+   Start at  10:54:53
+   Duration  756ms (transform 1.60s, setup 517ms, import 2.46s, tests 142ms, environment 2ms)
+
