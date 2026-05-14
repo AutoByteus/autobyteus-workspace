@@ -16,33 +16,40 @@
 
 ## What Changed
 
-Implemented the latest approved memory addendum: memory now exposes generic fact/history ingestion and next-LLM projection operations, while same-turn continuation remains owned by the normal `ToolResultPipeline -> ToolResultContinuationBuilder -> AgentInputPipeline(SenderType.TOOL)` path only.
+Addressed Round 35 code review finding `CR-023` while preserving the latest approved memory addendum and prior CR-022 tool-result retention behavior.
 
-### Generic memory ingestion/projection boundary
+### CR-023 partial streamed assistant retention
 
-- Removed the previously introduced interruption-specific public memory APIs from active source/tests:
+- `LlmPhase` now commits safe available interrupted streamed assistant output through the typed memory boundary before rethrowing `AgentInterruptionError`.
+- The interruption catch path keeps existing segment finalization behavior and then calls:
+  - `memoryManager.ingestAssistantResponse(new CompleteResponse({ content, reasoning, usage: null }), turnId, 'LlmPhaseInterruptedPartial')`
+  - only when accumulated streamed text or reasoning is non-empty.
+- Projection still remains owned by `MemoryManager`; `LlmPhase` does not build future prompt summaries or projection notes.
+- Existing interruption semantics are preserved:
+  - no `LLMResponsePipeline` execution;
+  - no normal completion status/event;
+  - no same-turn continuation after interrupt;
+  - no ingestion of partial native tool-call payloads as tool intents/results.
+
+### Generic memory ingestion/projection boundary remains intact
+
+- The previous implementation remains in place:
+  - completed interrupted tool results are committed through `MemoryManager.ingestToolResults(..., { appendToWorkingContext: false })`;
+  - an `operation_boundary` raw trace note is appended via `appendRawTrace(...)`;
+  - `projectWorkingContextForNextLlm(...)` refreshes provider-safe future prompt context before interrupted settlement is published.
+- The removed interruption-specific memory APIs/projector remain absent from active source/tests:
   - `MemoryManager.ingestInterruptionMarker(...)`
   - `MemoryManager.refreshWorkingContextProjection(...)`
   - `working-context-interrupted-turn-projector.ts` / `projectInterruptedTurnWorkingContext(...)`
-- Added generic memory-facing operations:
-  - `MemoryManager.ingestToolResults(..., { appendToWorkingContext: false })` for committed completed tool-result facts that must be retained in raw history without becoming same-turn continuation payloads.
-  - `MemoryManager.appendRawTrace(...)` for narrow generic raw trace appends.
-  - `MemoryManager.buildOperationBoundaryNote(...)` for memory-owned projection notes about an operation boundary.
-  - `MemoryManager.projectWorkingContextForNextLlm(...)` for provider-safe future prompt projection before the next LLM request.
-  - `working-context-llm-safe-projector.ts` / `projectLlmSafeWorkingContext(...)` for the projection implementation.
-- `MemoryManager.ingestToolIntents(...)` and `ingestToolResults(...)` now support narrow `appendToWorkingContext` control so callers can distinguish committed facts/history from same-turn provider continuation.
-- `ingestToolResults(...)` dedupes remembered tool-result facts by `turnId + toolInvocationId`, preventing repeated interrupted-settlement projection from duplicating completed result facts.
+- Completed tool results before an interrupt are retained as committed facts/history and can appear in the next LLM request as safe summary text, but are not fed back as same-turn TOOL continuation after interrupt.
 
-### Interrupted settlement preserves facts but suppresses same-turn continuation
+### Regression coverage added/updated
 
-- `AgentTurnRunner` still observes completed tool results as they complete inside `ToolPhase`, before post-tool abort fences.
-- On interruption, `AgentTurnRunner` now:
-  1. normalizes completed non-denied tool results as memory facts for the active turn;
-  2. calls `memoryManager.ingestToolResults(completedFacts, turnId, { source: 'ToolResultEvent', appendToWorkingContext: false })`;
-  3. appends an `operation_boundary` raw trace note;
-  4. awaits `memoryManager.projectWorkingContextForNextLlm({ mode: 'llm_safe', fenceIncompleteToolProtocolScope, includeCommittedFacts: true })` before publishing interrupted settlement.
-- Completed tool results before an interrupt are retained as committed facts/history and can appear in the next LLM request as safe summary text.
-- They are not fed back as same-turn tool continuation after interrupt; partial provider-native tool-call protocol is fenced from future provider prompts.
+- The runtime segment-interrupt integration test now covers:
+  - streamed assistant text emitted before interrupt is retained in raw memory and the next LLM request;
+  - a partial provider-native tool-call segment is terminalized as interrupted;
+  - the next LLM request contains no unsafe `tool_payload` from the partial native tool-call protocol;
+  - the operation-boundary note and follow-up user message are still present.
 
 ### Prior guardrails preserved
 
@@ -53,6 +60,9 @@ Implemented the latest approved memory addendum: memory now exposes generic fact
 
 ## Key Files Or Areas
 
+- Partial streamed assistant retention:
+  - `autobyteus-ts/src/agent/loop/llm-phase.ts`
+  - `autobyteus-ts/tests/integration/agent/runtime/agent-runtime.test.ts`
 - Interrupted settlement and completed-fact memory handoff:
   - `autobyteus-ts/src/agent/loop/agent-turn-runner.ts`
   - `autobyteus-ts/tests/unit/agent/loop/agent-turn-runner.test.ts`
@@ -61,41 +71,37 @@ Implemented the latest approved memory addendum: memory now exposes generic fact
   - `autobyteus-ts/src/memory/working-context-llm-safe-projector.ts`
   - Removed/renamed from `autobyteus-ts/src/memory/working-context-interrupted-turn-projector.ts`
   - `autobyteus-ts/tests/unit/memory/memory-manager.test.ts`
-- Existing runtime regression coverage exercised with this pass:
-  - `autobyteus-ts/tests/integration/agent/runtime/agent-runtime.test.ts`
-  - `autobyteus-ts/tests/integration/agent/tool-approval-flow.test.ts`
 
 ## Important Assumptions
 
-- The latest architecture addendum is a boundary/naming correction under the approved memory-ownership design; no requirement/design reroute was needed.
-- Operation-boundary notes are memory-owned projection details, not turn lifecycle finalization APIs.
-- Provider-safe projection should retain accepted history and completed facts as text when native tool protocol is incomplete, not reconstruct partial provider-native tool-call/tool-result payloads.
-- Normal, non-interrupted tool-result continuation ownership remains unchanged and still flows through the typed turn pipeline.
+- Partial streamed assistant text/reasoning already emitted to the user is safe to retain as assistant history/fact memory when available.
+- Partial provider-native tool-call protocol is not safe to retain as provider-native tool payload after interrupt; it remains represented only through segment interruption and memory-owned operation-boundary projection, not as same-turn continuation.
+- Normal, non-interrupted tool-result continuation ownership remains unchanged and still flows through `ToolResultPipeline -> ToolResultContinuationBuilder -> AgentInputPipeline(SenderType.TOOL)`.
 - Broad provider/live/legacy-suite failures from API/E2E Round 16 remain outside this implementation fix per user clarification; this pass ran implementation-scoped checks only.
 
 ## Known Risks
 
-- The provider-safe completed-tool-result summary text is intentionally conservative. Code review should verify wording and dedupe behavior are acceptable for future prompts.
-- The `onToolResult` callback remains a narrow internal seam between `ToolPhase` and `AgentTurnRunner`; if future work needs richer per-tool memory streaming, it should stay within the same turn/memory boundaries rather than bypassing them.
+- Interrupted streamed assistant text is appended to working context as an assistant message before projection. Code review should verify this is the desired future-context shape versus requiring a more explicit summary wrapper for partial assistant facts.
+- Reasoning-only partial output is retained in working-context message reasoning fields; raw trace content remains text-oriented because `RawTraceItem` does not currently model reasoning separately.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: local implementation correction after the latest architecture addendum.
-- Reviewed root-cause classification: boundary/ownership language issue; memory should expose generic fact/history ingestion and projection, not interruption-specific turn-finalization methods.
-- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): Refactor Needed Now; remove the interruption-specific memory APIs and rename the projector to the generic next-LLM projection concern.
+- Reviewed change posture: local implementation correction after Round 35 code review.
+- Reviewed root-cause classification: local implementation defect inside the existing `LlmPhase` owner; streamed assistant text was observed but not committed to memory before interruption settlement.
+- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): No broader refactor needed; use the existing typed `MemoryManager.ingestAssistantResponse(...)` boundary and keep projection in memory.
 - Implementation matched the reviewed assessment (`Yes`/`No`): Yes.
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): N/A.
-- Evidence / notes: active source/tests no longer reference `ingestInterruptionMarker`, `refreshWorkingContextProjection`, `finalizeInterruptedTurn`, or the interrupted-turn projector name; interrupted settlement uses generic memory operations and awaits projection before publishing interruption settlement.
+- Evidence / notes: `LlmPhase` now commits non-empty interrupted partial assistant text/reasoning before rethrowing interruption; the runtime regression proves follow-up context retention and partial native tool-payload fencing.
 
 ## Legacy / Compatibility Removal Check
 
 - Backward-compatibility mechanisms introduced: None.
 - Legacy old-behavior retained in scope: No.
-- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: Yes; the interruption-specific memory APIs/projector name were removed rather than retained as aliases.
-- Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): Yes; memory projection scope, raw trace append input, and tool result ingestion options remain narrow.
+- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: Yes; the interruption-specific memory APIs/projector name remain removed rather than retained as aliases.
+- Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): Yes; the fix reuses `ingestAssistantResponse` rather than adding an interruption-specific memory API.
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: Yes.
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): Yes.
-- Notes: no source implementation file changed in this pass exceeds 500 effective non-empty lines.
+- Notes: `llm-phase.ts` is 227 effective non-empty lines after the fix, under the hard 500-line source limit; the small addition was kept inside the existing LLM phase owner rather than adding a pass-through helper.
 
 ## Environment Or Dependency Notes
 
@@ -107,8 +113,12 @@ Implemented the latest approved memory addendum: memory now exposes generic fact
 
 Passed:
 
-- `pnpm -C autobyteus-ts exec vitest run tests/unit/memory/memory-manager.test.ts tests/unit/agent/context/agent-runtime-state.test.ts tests/unit/agent/loop/agent-turn-runner.test.ts tests/unit/agent/loop/tool-result-continuation-builder.test.ts tests/integration/agent/runtime/agent-runtime.test.ts tests/integration/agent/tool-approval-flow.test.ts tests/unit/memory/working-context-snapshot-bootstrapper.test.ts tests/unit/memory/memory-manager-working-context-snapshot-persistence.test.ts tests/unit/agent/context/agent-context.test.ts tests/unit/agent/runtime/agent-worker.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/unit/agent/status/status-update-utils.test.ts`
-  - Result: 12 files passed, 92 tests passed.
+- Focused CR-023/memory suite:
+  - `pnpm -C autobyteus-ts exec vitest run tests/integration/agent/runtime/agent-runtime.test.ts tests/unit/agent/loop/agent-turn-runner.test.ts tests/unit/memory/memory-manager.test.ts`
+  - Result: 3 files passed, 27 tests passed.
+- Broader affected runtime/memory/approval/streaming suite:
+  - `pnpm -C autobyteus-ts exec vitest run tests/unit/memory/memory-manager.test.ts tests/unit/agent/context/agent-runtime-state.test.ts tests/unit/agent/loop/agent-turn-runner.test.ts tests/unit/agent/loop/tool-result-continuation-builder.test.ts tests/integration/agent/runtime/agent-runtime.test.ts tests/integration/agent/tool-approval-flow.test.ts tests/unit/memory/working-context-snapshot-bootstrapper.test.ts tests/unit/memory/memory-manager-working-context-snapshot-persistence.test.ts tests/unit/agent/context/agent-context.test.ts tests/unit/agent/runtime/agent-worker.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/unit/agent/status/status-update-utils.test.ts tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts`
+  - Result: 13 files passed, 108 tests passed.
 - `pnpm -C autobyteus-ts exec tsc -p tsconfig.build.json --noEmit`
   - Passed.
 - `pnpm -C autobyteus-ts run build`
@@ -121,6 +131,7 @@ Passed:
   - `rg -n "ingestInterruptionMarker|refreshWorkingContextProjection|finalizeInterruptedTurn|FinalizeInterruptedTurn|working-context-interrupted-turn-projector|projectInterruptedTurnWorkingContext|restoreWorkingContextForInterruptedTurn|restoreWorkingContextTurnCheckpoint|createWorkingContextTurnCheckpoint|restoreWorkingContextCheckpoint|WorkingContextTurnCheckpoint|workingContextCheckpoint" autobyteus-ts/src autobyteus-ts/tests || true`
   - Result: no active source/test matches.
 - Changed-source effective line audit:
+  - `autobyteus-ts/src/agent/loop/llm-phase.ts`: 227 effective non-empty lines.
   - `autobyteus-ts/src/agent/loop/agent-turn-runner.ts`: 201 effective non-empty lines.
   - `autobyteus-ts/src/agent/loop/tool-phase.ts`: 336 effective non-empty lines.
   - `autobyteus-ts/src/memory/memory-manager.ts`: 377 effective non-empty lines.
@@ -135,13 +146,12 @@ Not claimed / out of scope for this local fix:
 ## Downstream Validation Hints / Suggested Scenarios
 
 - Code review should verify:
-  - no active source/test references remain to the rejected interruption-specific memory APIs/projector;
-  - completed tool results are captured before post-tool abort fences and ingested as committed memory facts with `appendToWorkingContext: false`;
-  - projection is awaited before interrupted settlement is published;
-  - partial native tool-call batches fence provider-unsafe protocol while preserving completed result facts as safe text;
-  - normal tool-result continuation ownership still flows through `ToolResultPipeline -> ToolResultContinuationBuilder -> AgentInputPipeline(SenderType.TOOL)`;
-  - terminal success/output/continuation side effects remain suppressed on late interrupts.
-- API/E2E should still cover interrupt/follow-up, pending approval interrupt/follow-up, external-result paths, provider-native tool continuations, and compaction smoke after code review passes.
+  - non-empty partial streamed assistant content/reasoning is committed through `MemoryManager.ingestAssistantResponse(...)` before LLM interruption is rethrown;
+  - no `LLMResponsePipeline`, normal completion status, or same-turn continuation runs on interrupt;
+  - partial provider-native tool-call payloads are not retained as `tool_payload` in the next LLM request;
+  - completed tool results are still captured before post-tool abort fences and ingested as committed memory facts with `appendToWorkingContext: false`;
+  - normal tool-result continuation ownership still flows through `ToolResultPipeline -> ToolResultContinuationBuilder -> AgentInputPipeline(SenderType.TOOL)`.
+- API/E2E should still cover interrupt/follow-up, pending approval interrupt/follow-up, external-result paths, provider-native tool continuations, streamed output interruption, and compaction smoke after code review passes.
 
 ## API / E2E / Executable Validation Still Required
 

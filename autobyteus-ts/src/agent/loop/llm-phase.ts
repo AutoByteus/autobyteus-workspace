@@ -164,6 +164,17 @@ export class LlmPhase {
           );
           currentReasoningPartId = null;
         }
+        if (completeResponseText || completeReasoningText) {
+          memoryManager.ingestAssistantResponse(
+            new CompleteResponse({
+              content: completeResponseText,
+              reasoning: completeReasoningText || null,
+              usage: null
+            }),
+            activeTurnId,
+            'LlmPhaseInterruptedPartial'
+          );
+        }
         throw error;
       }
 

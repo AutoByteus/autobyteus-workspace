@@ -88,6 +88,7 @@ class ControllableLLM extends BaseLLM {
 }
 
 class SegmentInterruptLLM extends BaseLLM {
+  requestMessages: Message[][] = [];
   private releaseAfterFirstChunk: (() => void) | null = null;
   private readonly firstChunkYielded: Promise<void>;
   private resolveFirstChunkYielded!: () => void;
@@ -112,11 +113,27 @@ class SegmentInterruptLLM extends BaseLLM {
   }
 
   protected async *_streamMessagesToLLM(
-    _messages: Message[],
+    messages: Message[],
     _kwargs: Record<string, unknown>,
     _options?: LLMInvocationOptions
   ): AsyncGenerator<ChunkResponse, void, unknown> {
+    this.requestMessages.push(messages);
+    const callIndex = this.requestMessages.length;
+    if (callIndex > 1) {
+      yield { content: `reply-${callIndex}`, is_complete: true } as ChunkResponse;
+      return;
+    }
+
     yield { content: 'partial streamed text' } as ChunkResponse;
+    yield {
+      content: '',
+      tool_calls: [{
+        index: 0,
+        call_id: 'call_partial_interrupt',
+        name: ApprovalTool.getName(),
+        arguments_delta: '{"path":"/tmp/partial'
+      }]
+    } as ChunkResponse;
     this.resolveFirstChunkYielded();
     await new Promise<void>((resolve) => {
       this.releaseAfterFirstChunk = resolve;
@@ -735,14 +752,23 @@ describe('Agent runtime integration', () => {
     }
   }, 20000);
 
-  it('closes active streamed response segment as interrupted when LLM turn is interrupted', async () => {
+  it('retains interrupted streamed assistant text while fencing partial native tool payloads', async () => {
     const llm = new SegmentInterruptLLM(makeModel(), new LLMConfig());
-    const config = new AgentConfig('RuntimeSegmentInterruptAgent', 'Tester', 'Segment interrupt test agent', llm);
+    const approvalTool = new ApprovalTool();
+    const config = new AgentConfig(
+      'RuntimeSegmentInterruptAgent',
+      'Tester',
+      'Segment interrupt test agent',
+      llm,
+      null,
+      [approvalTool],
+      false
+    );
     const agentId = `runtime_segment_interrupt_${Date.now()}`;
 
     const state = new AgentRuntimeState(agentId, null, null);
     state.llmInstance = llm;
-    state.toolInstances = {};
+    state.toolInstances = { [ApprovalTool.getName()]: approvalTool };
     attachMemory(state);
 
     const context = new AgentContext(agentId, config, state);
@@ -772,10 +798,49 @@ describe('Agent runtime integration', () => {
       const interruptedEnd = segmentEvents.find((event) =>
         event?.type === 'SEGMENT_END' &&
         event?.turn_id === activeTurnId &&
-        event?.payload?.interrupted === true
+        event?.payload?.interrupted === true &&
+        segmentEvents.some((startEvent) =>
+          startEvent?.type === 'SEGMENT_START' &&
+          startEvent?.segment_id === event.segment_id &&
+          startEvent?.segment_type === 'text'
+        )
       );
       expect(interruptedEnd).toBeDefined();
       expect(interruptedEnd.payload.reason).toBe('user_interrupt');
+
+      const interruptedToolEnd = segmentEvents.find((event) =>
+        event?.type === 'SEGMENT_END' &&
+        event?.segment_id === 'call_partial_interrupt' &&
+        event?.turn_id === activeTurnId &&
+        event?.payload?.interrupted === true
+      );
+      expect(interruptedToolEnd).toBeDefined();
+      expect(interruptedToolEnd.payload.reason).toBe('user_interrupt');
+      expect(interruptedToolEnd.payload.metadata).toMatchObject({
+        tool_name: ApprovalTool.getName()
+      });
+
+      await runtime.submitEvent(new UserMessageReceivedEvent(new AgentInputUserMessage('after stream interrupt')));
+      const nextCallStarted = await waitForCondition(() => llm.requestMessages.length === 2);
+      expect(nextCallStarted).toBe(true);
+
+      const nextMessages = llm.requestMessages[1];
+      expect(nextMessages.some((message) => message.content === 'stream then interrupt')).toBe(true);
+      expect(nextMessages.some((message) => message.content === 'partial streamed text')).toBe(true);
+      expect(nextMessages.some((message) =>
+        typeof message.content === 'string' &&
+        message.content.includes(`turn '${activeTurnId}' was interrupted`) &&
+        message.content.includes('user_interrupt')
+      )).toBe(true);
+      expect(nextMessages.some((message) => message.tool_payload)).toBe(false);
+      expect(nextMessages.some((message) => message.content === 'after stream interrupt')).toBe(true);
+
+      const rawTraces = context.memoryManager?.listRawTracesOrdered() ?? [];
+      expect(rawTraces.some((item) =>
+        item.traceType === 'assistant' &&
+        item.sourceEvent === 'LlmPhaseInterruptedPartial' &&
+        item.content === 'partial streamed text'
+      )).toBe(true);
     } finally {
       llm.unblock();
       if (runtime.isRunning) {
