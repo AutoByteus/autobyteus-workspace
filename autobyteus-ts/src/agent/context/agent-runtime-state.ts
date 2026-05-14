@@ -87,7 +87,7 @@ export class AgentRuntimeState {
     return nextTurn;
   }
 
-  clearActiveTurnIfStillActive(turnId?: string | null): string | null {
+  clearSettledActiveTurnIfStillActive(turnId?: string | null): string | null {
     const resolvedTurnId =
       typeof turnId === 'string' && turnId.trim().length > 0
         ? turnId.trim()
@@ -96,10 +96,11 @@ export class AgentRuntimeState {
       return null;
     }
 
-    if (this.activeTurn?.turnId === resolvedTurnId) {
+    if (this.activeTurn?.turnId === resolvedTurnId && this.activeTurn.isSettled) {
       this.activeTurn = null;
+      return resolvedTurnId;
     }
-    return resolvedTurnId;
+    return null;
   }
 
   restoreWorkingContextForInterruptedTurn(turnId: string): boolean {

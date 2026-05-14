@@ -171,6 +171,22 @@ describe('AgentRuntimeState', () => {
     expect(messages[0].content).toBe('stable system prompt');
   });
 
+  it('only clears a matching active turn after the turn has settled', () => {
+    const state = new AgentRuntimeState('agent-clear-settled');
+    attachMemoryManager(state, 'turn-live');
+    const activeTurn = state.startActiveTurn('turn-live');
+
+    expect(state.clearSettledActiveTurnIfStillActive(activeTurn.turnId)).toBeNull();
+    expect(state.activeTurn).toBe(activeTurn);
+
+    activeTurn.settle({ kind: 'completed', turnId: activeTurn.turnId });
+
+    expect(state.clearSettledActiveTurnIfStillActive('other-turn')).toBeNull();
+    expect(state.activeTurn).toBe(activeTurn);
+    expect(state.clearSettledActiveTurnIfStillActive(activeTurn.turnId)).toBe(activeTurn.turnId);
+    expect(state.activeTurn).toBeNull();
+  });
+
   it('resolves the idle event turn id from active turn first and then the fallback', () => {
     const state = new AgentRuntimeState('agent-9');
 

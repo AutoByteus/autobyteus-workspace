@@ -83,7 +83,8 @@ describe('AgentEventScheduler', () => {
       const result = originalClaim(candidateInbox, candidateState);
       if (firstClaim) {
         firstClaim = false;
-        state.clearActiveTurnIfStillActive('turn-active');
+        state.activeTurn?.settle({ kind: 'completed', turnId: 'turn-active' });
+        state.clearSettledActiveTurnIfStillActive('turn-active');
         scheduler.wakeDispatchabilityChanged();
       }
       return result;
@@ -107,7 +108,8 @@ describe('AgentEventScheduler', () => {
     const nextPromise = scheduler.nextDispatchable({ inbox, runtimeState: state });
     expect(await waitForCondition(() => schedulerWaiterCount(scheduler) === 1 && storeWaiterCount(inbox) === 1)).toBe(true);
 
-    state.clearActiveTurnIfStillActive('turn-active');
+    state.activeTurn?.settle({ kind: 'completed', turnId: 'turn-active' });
+    state.clearSettledActiveTurnIfStillActive('turn-active');
     scheduler.wakeDispatchabilityChanged();
     const entry = await timeout(nextPromise, 200);
 

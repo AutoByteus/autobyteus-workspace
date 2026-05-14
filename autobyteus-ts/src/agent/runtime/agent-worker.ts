@@ -282,7 +282,7 @@ export class AgentWorker {
     } catch (error) {
       console.error(`AgentWorker '${this.context.agentId}': Active turn settlement observer failed: ${error}`);
     } finally {
-      this.context.state.clearActiveTurnIfStillActive(turn.turnId);
+      this.context.state.clearSettledActiveTurnIfStillActive(turn.turnId);
       this.scheduler?.wakeDispatchabilityChanged();
       this.context.state.agentEventInbox?.wakeAvailability();
     }
