@@ -117,9 +117,10 @@ uses these collaborators:
   - waits for external tool results through `TurnToolInputPort` only for
     prepared invocations that resolved to external-result mode;
   - reports each completed direct or external tool result to `AgentTurnRunner`
-    before the post-tool abort fence so interrupted-turn memory finalization can
-    retain completed facts without publishing normal terminal success or
-    continuation side effects after an accepted interrupt;
+    before the post-tool abort fence so memory can ingest an interruption marker
+    and refresh provider-safe projection with completed facts, without
+    publishing normal terminal success or continuation side effects after an
+    accepted interrupt;
   - checks for accepted interrupts after awaited tool seams before publishing
     tool terminal success, tool results, or continuation input.
 - `ToolResultPipeline`
@@ -237,8 +238,10 @@ When an active turn exists:
 5. active LLM streams, tool executions, terminal foreground commands, and MCP
    calls receive or observe the abort signal where supported;
 6. `AgentTurnRunner` catches the interruption, calls
-   `MemoryManager.finalizeInterruptedTurn(...)`, publishes `TURN_INTERRUPTED`,
-   applies `AgentTurnInterruptedEvent`, and settles the turn as `interrupted`;
+   `MemoryManager.ingestInterruptionMarker(...)` and then
+   `MemoryManager.refreshWorkingContextProjection(...)`, publishes
+   `TURN_INTERRUPTED`, applies `AgentTurnInterruptedEvent`, and settles the turn
+   as `interrupted`;
 7. the worker keeps running and can accept a later follow-up turn.
 
 When no active turn exists, `interrupt(...)` returns `no_active_turn` and does
@@ -256,13 +259,15 @@ shutdown cleanup.
 
 At turn start, `MemoryManager.startTurn()` creates the turn identity used by
 raw traces and working-context updates. If the turn is interrupted,
-`AgentTurnRunner` calls `MemoryManager.finalizeInterruptedTurn(...)` instead of
-rolling back a runtime-owned snapshot. Memory then:
+`AgentTurnRunner` uses the memory-native interruption API pair instead of
+rolling back a runtime-owned snapshot:
 
-1. records a single interrupted-turn raw-trace marker;
-2. records non-denied completed tool results observed by `ToolPhase` before the
-   accepted interrupt, deduplicating existing raw `tool_result` traces;
-3. projects the next working context with
+1. `MemoryManager.ingestInterruptionMarker({ scope, reason, completedToolResults })`
+   records a single interrupted-turn raw-trace marker and non-denied completed
+   tool results observed by `ToolPhase` before the accepted interrupt,
+   deduplicating existing raw `tool_result` traces.
+2. `MemoryManager.refreshWorkingContextProjection({ mode: 'provider_safe', fenceScope: scope })`
+   projects the next working context through
    `projectInterruptedTurnWorkingContext(...)`.
 
 The interrupted-turn projector is provider-safe. Complete native tool
