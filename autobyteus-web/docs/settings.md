@@ -87,15 +87,17 @@ Provides insights into the application's token consumption and associated costs.
 
 Manage local/remote node registrations and synchronization operations.
 
-- **Start Docker node guide:** `components/settings/DockerNodeStartGuideCard.vue` renders before the Add Remote Node form and gives packaged-app users copyable no-clone commands for running a published server Docker node.
-  - macOS/Linux and Windows PowerShell primary commands install or update the local `autobyteus-docker` launcher once from the public raw GitHub URL.
-  - After install, the guide shows direct local commands such as `autobyteus-docker start`, `autobyteus-docker start --new`, `autobyteus-docker urls`, `autobyteus-docker status`, `autobyteus-docker logs`, and `autobyteus-docker stop`.
+- **Tabbed layout:** `components/settings/NodeManagerTabs.vue` is the visible page header for Settings → Nodes. It splits the page into a default **Manage Nodes** tab and a **Docker Guide** tab without rendering an additional redundant `Node Manager` title.
+- **Manage Nodes tab:** contains the actionable node-management settings and operations: current window node (`components/settings/CurrentWindowNodeCard.vue`), `Remote Browser Sharing`, Add Remote Node, Run Full Sync, and Configured Nodes.
+- **Docker Guide tab:** `components/settings/DockerNodeStartGuideCard.vue` gives packaged-app users copyable no-clone commands for running a published server Docker node. This content is tutorial/help guidance rather than saved node settings, so it is intentionally separated from the management form flow.
+  - macOS/Linux and Windows PowerShell primary commands install or replace the local `autobyteus-docker` launcher once from the public raw GitHub URL.
+  - After install, the guide shows direct local commands such as `autobyteus-docker new-container`, `autobyteus-docker upgrade --all`, `autobyteus-docker destroy --all`, `autobyteus-docker reset`, `autobyteus-docker urls`, `autobyteus-docker status`, `autobyteus-docker logs`, and `autobyteus-docker stop`.
   - The command catalog lives in `utils/dockerNodeLauncherCommands.ts`; public script paths, the raw GitHub owner/repo/ref, install commands, and direct command variants should be changed there rather than duplicated in the component template.
-  - The guide tells users to paste the launcher-printed Backend URL into Add Remote Node below. The app remains responsible for remote-node registration/probing, while the external launcher owns Docker lifecycle.
-  - The default Docker launcher command is idempotent for the default node; `start` checks/pulls the server image and only recreates the managed container when the image/config changed or the container is missing. `start --new` is the user-facing way to create a new isolated node with automatic naming and ports.
-- Register and rename remote nodes.
-- Validate connectivity/capabilities.
-- Trigger focused or full sync operations between nodes.
+  - The guide tells users to paste the launcher-printed Backend URL into Add Remote Node on the Manage Nodes tab. The app remains responsible for remote-node registration/probing, while the external launcher owns Docker lifecycle.
+  - `new-container` creates the next indexed managed node (`autobyteus-server-0`, `autobyteus-server-1`, ...). `upgrade --all`, `destroy --all`, and `reset` provide explicit all-node lifecycle actions while keeping Docker volumes.
+- Register and rename remote nodes from the Manage Nodes tab.
+- Validate connectivity/capabilities from the Manage Nodes tab.
+- Trigger focused or full sync operations between nodes from the Manage Nodes tab.
 - In Electron, `Remote Browser Sharing` is an advanced opt-in setting for sharing the local Browser runtime with selected remote nodes.
 - Changing the remote-browser-sharing listener host requires restarting Electron because the Browser bridge listener is started by Electron main during desktop bootstrap.
 - Pairing and revoke actions are per remote node, and successful pair/unpair operations refresh remote browser-tool availability without restarting the remote node server.

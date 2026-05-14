@@ -1,0 +1,52 @@
+{
+  "capturedAt": "2026-05-14T04:36:28Z",
+  "frontendUrl": "http://127.0.0.1:3002/workspace",
+  "backendUrl": "http://127.0.0.1:8000/graphql",
+  "seededAgent": {
+    "id": "daily-assistant-runtime-validation",
+    "name": "Daily Assistant - Runtime Validation",
+    "toolNames": ["run_bash"],
+    "selectedRuntimeKind": "autobyteus",
+    "selectedLlmModel": "Kimi / kimi-k2.5",
+    "updatePayload": "runtime-validation-20260514/update-daily-assistant-kimi-five-fibonacci.json",
+    "updateResponse": "runtime-validation-20260514/update-daily-assistant-kimi-five-fibonacci.response.json"
+  },
+  "prompt": "MULTI_BASH_FIBONACCI_FIVE_TOOL_VALIDATION. Use run_bash exactly five times in this order: 1 create fibonacci_validation.py that prints the first 12 Fibonacci numbers comma-separated; 2 run python3 fibonacci_validation.py; 3 run a bash assertion that output equals 0,1,1,2,3,5,8,13,21,34,55,89; 4 run wc -c fibonacci_validation.py; 5 run tail -n 5 fibonacci_validation.py. After all five shell calls succeed, reply with MULTI_BASH_FIBONACCI_FIVE_DONE.",
+  "browserValidation": {
+    "hasExpectedOutput": true,
+    "hasDoneMarker": true,
+    "activityEventCountText": "Activity 5 Events",
+    "activitySuccessCount": 5,
+    "runBashOccurrenceCountInVisibleText": 14,
+    "visibleTranscriptToolCards": [
+      "run_bash · cat > fibonacci_validation.py << 'EOF' ... EOF",
+      "run_bash · python3 fibonacci_validation.py",
+      "run_bash · output=$(python3 fibonacci_validation.py) && [ \"$output\" = \"0,1,1,2,3,5,8,13,21,34,55,89\" ] && echo \"Assertion passed: output matches expected\"",
+      "run_bash · wc -c fibonacci_validation.py",
+      "run_bash · tail -n 5 fibonacci_validation.py"
+    ],
+    "visibleActivityRows": [
+      "run_bash SUCCESS",
+      "run_bash SUCCESS",
+      "run_bash SUCCESS",
+      "run_bash SUCCESS",
+      "run_bash SUCCESS"
+    ],
+    "assistantFinalSummaryMarkers": [
+      "All five shell calls completed successfully",
+      "0,1,1,2,3,5,8,13,21,34,55,89",
+      "MULTI_BASH_FIBONACCI_FIVE_DONE"
+    ],
+    "browserScreenshotPath": "/Users/normy/.autobyteus/browser-artifacts/d67b00-1778733358878.png"
+  },
+  "backendRuntimeEvidenceObservedInServerLog": {
+    "llmInstance": "KimiLLM",
+    "provider": "KIMI",
+    "streamingHandler": "ApiToolCallStreamingResponseHandler",
+    "toolSchemaCount": 1,
+    "parsedToolInvocations": 5,
+    "continuation": "native API tool continuation for turn turn_0001 after 5 tool result(s)",
+    "turnCompleted": true,
+    "finalStatus": "idle"
+  }
+}

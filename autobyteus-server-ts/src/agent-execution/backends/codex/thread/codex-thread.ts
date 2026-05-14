@@ -252,7 +252,7 @@ export class CodexThread {
         method: CodexThreadEventName.LOCAL_TOOL_APPROVED,
         params: {
           invocation_id: approval.invocationId,
-          itemId: approval.itemId,
+          itemId: approval.invocationId,
           approvalId: approval.approvalId,
           requestId: approval.requestId,
           ...(approval.toolName ? { tool_name: approval.toolName } : {}),
@@ -337,11 +337,8 @@ export class CodexThread {
     });
   }
 
-  recordApprovalRecord(record: CodexApprovalRecord, aliases: string[] = []): void {
+  recordApprovalRecord(record: CodexApprovalRecord): void {
     this.approvalRecords.set(record.invocationId, record);
-    for (const alias of aliases) {
-      this.approvalRecords.set(alias, record);
-    }
   }
 
   trackPendingMcpToolCall(call: CodexPendingMcpToolCall): void {
@@ -381,24 +378,11 @@ export class CodexThread {
   }
 
   findApprovalRecord(invocationId: string): CodexApprovalRecord | null {
-    const direct = this.approvalRecords.get(invocationId);
-    if (direct) {
-      return direct;
-    }
-    const trimmed = invocationId.trim();
-    if (!trimmed) {
-      return null;
-    }
-    const baseId = trimmed.includes(":") ? trimmed.split(":")[0] ?? null : null;
-    if (baseId) {
-      return this.approvalRecords.get(baseId) ?? null;
-    }
-    return null;
+    return this.approvalRecords.get(invocationId) ?? null;
   }
 
   deleteApprovalRecord(record: CodexApprovalRecord): void {
     this.approvalRecords.delete(record.invocationId);
-    this.approvalRecords.delete(record.itemId);
   }
 
   clearApprovalRecords(): void {

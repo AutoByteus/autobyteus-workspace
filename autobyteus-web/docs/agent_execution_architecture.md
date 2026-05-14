@@ -277,13 +277,14 @@ These handlers are pure functions that take a payload and an `AgentContext`, and
 - Enforces normal non-terminal progress while allowing provider order where `TOOL_EXECUTION_STARTED` can arrive before `TOOL_APPROVAL_REQUESTED`; in that case `awaiting-approval` remains the active UI state until approval/denial/terminal events arrive.
 - Enforces terminal precedence: `success` / `error` / `denied` are terminal and cannot be regressed by later non-terminal events or logs.
 - Hydrates arguments from lifecycle payloads. `TOOL_APPROVAL_REQUESTED` and `TOOL_EXECUTION_STARTED` are the primary sources; `TOOL_EXECUTION_SUCCEEDED` and `TOOL_EXECUTION_FAILED` may also carry arguments as a defensive result-first recovery path for runtimes whose start event is missed or arrives out of order.
-- Owns lifecycle state transitions and delegates Activity projection to `toolActivityProjection.ts`. Lifecycle events create the row if no segment has seeded it yet, and otherwise update the same Activity row by invocation id/aliases.
+- Owns lifecycle state transitions and delegates Activity projection to `toolActivityProjection.ts`. Lifecycle events create the row if no segment has seeded it yet, and otherwise update the same Activity row by exact invocation id only.
 
 #### `toolActivityProjection.ts`
 
 - Owns the shared live Activity projection policy used by both segment and lifecycle handlers.
 - Seeds pending/running Activity visibility from eligible tool-like `SEGMENT_START` payloads so the right-side Activity panel appears when the middle tool card appears.
-- Deduplicates segment-first and lifecycle-first paths by invocation id/aliases, merges arguments and tool names, projects logs/result/error updates, and preserves terminal status precedence.
+- Deduplicates segment-first and lifecycle-first paths by exact invocation id only, merges arguments and tool names, projects logs/result/error updates, and preserves terminal status precedence.
+- Treats backend/provider invocation ids as opaque identity tokens for distinct tool calls. Colon suffixes are never stripped or aliased by frontend projection: provider-generated ordinals such as `run_bash:0`, `run_bash:1`, semantic-looking suffixes such as `call_1:write_file`, and approval metadata suffixes such as `call_1:approval-1` are distinct ids unless the backend emits the same canonical id on every related event. Producer adapters must keep approval ids and other provider metadata out of public `invocation_id`.
 - Skips placeholder or missing generic tool names to avoid noisy blank Activity rows.
 
 ### Sidecar Store Pattern
@@ -293,7 +294,7 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
 1.  **Run File Changes (`RunFileChangesStore`)**:
     - Listens to `FILE_CHANGE` plus reopen hydration from `getRunFileChanges(runId)`.
     - Owns the run-scoped projection for touched files and generated outputs.
-    - Tracks latest-visible discoverability so the Artifacts tab can auto-focus when a new Agent Artifact row appears.
+    - Tracks latest-visible discoverability so the Artifacts tab can select/refresh the newest row after the user opens it, without stealing focus from other right-side tabs.
     - Keeps transient `write_file` buffers only until committed previews are fetched from the server-backed run preview route.
 2.  **Team Communication (`TeamCommunicationStore`)**:
     - Listens to accepted `INTER_AGENT_MESSAGE` live payloads plus team reopen hydration from `getTeamCommunicationMessages(teamRunId)`.

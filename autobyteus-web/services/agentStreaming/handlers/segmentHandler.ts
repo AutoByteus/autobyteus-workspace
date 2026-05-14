@@ -12,7 +12,6 @@ import type { SegmentStartPayload, SegmentContentPayload, SegmentEndPayload } fr
 import { createSegmentFromPayload } from '../protocol/segmentTypes';
 import { hasStreamSegmentId, matchesStreamSegmentIdentity, setStreamSegmentIdentity } from './segmentIdentity';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
-import { invocationIdsMatch } from '~/utils/invocationAliases';
 import { isProjectableToolSegment, upsertActivityFromToolSegment } from './toolActivityProjection';
 
 function extractToolCallArgumentsFromMetadata(metadata?: Record<string, any>): Record<string, any> {
@@ -267,7 +266,7 @@ export function findSegmentById(
         }
         if (
           ['tool_call', 'write_file', 'terminal_command', 'edit_file'].includes(segment.type) &&
-          invocationIdsMatch((segment as ToolInvocationLifecycle).invocationId, segmentId)
+          (segment as ToolInvocationLifecycle).invocationId === segmentId
         ) {
           return segment;
         }

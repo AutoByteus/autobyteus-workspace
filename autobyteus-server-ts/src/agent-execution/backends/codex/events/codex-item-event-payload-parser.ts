@@ -222,10 +222,6 @@ export class CodexItemEventPayloadParser {
     if (!invocationBase) {
       return null;
     }
-    const approvalId = asString(payload.approval_id) ?? asString(payload.approvalId);
-    if (approvalId && !invocationBase.includes(":")) {
-      return `${invocationBase}:${approvalId}`;
-    }
     return invocationBase;
   }
 

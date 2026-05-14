@@ -55,7 +55,6 @@ import { useFileExplorerStore } from '~/stores/fileExplorer';
 import { useRightPanel } from '~/composables/useRightPanel';
 import { useRightSideTabs } from '~/composables/useRightSideTabs';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
-import { useRunFileChangesStore } from '~/stores/runFileChangesStore';
 import TabList from '~/components/tabs/TabList.vue';
 import TeamOverviewPanel from '~/components/workspace/team/TeamOverviewPanel.vue';
 import Terminal from '~/components/workspace/tools/Terminal.vue';
@@ -69,7 +68,6 @@ import { useWorkspaceStore } from '~/stores/workspace';
 const selectionStore = useAgentSelectionStore();
 const activeContextStore = useActiveContextStore();
 const fileExplorerStore = useFileExplorerStore();
-const runFileChangesStore = useRunFileChangesStore();
 const todoStore = useAgentTodoStore();
 const workspaceStore = useWorkspaceStore();
 
@@ -77,9 +75,6 @@ const { activeTab, visibleTabs, setActiveTab } = useRightSideTabs();
 const { toggleRightPanel } = useRightPanel();
 
 const currentAgentRunId = computed(() => activeContextStore.activeAgentContext?.state.runId ?? '');
-const latestVisibleArtifactSignal = computed(() =>
-  runFileChangesStore.getLatestVisibleArtifactSignalForRun(currentAgentRunId.value),
-);
 
 const handleTabSelect = (tabName: string) => {
   setActiveTab(tabName as any);
@@ -121,13 +116,6 @@ watch(() => {
     setActiveTab('files');
   }
 }, { deep: true });
-
-// Auto-switch to Artifacts tab when a touched file becomes newly visible
-watch(latestVisibleArtifactSignal, (newSignal) => {
-  if (newSignal && activeTab.value !== 'artifacts') {
-    setActiveTab('artifacts');
-  }
-});
 
 </script>
 

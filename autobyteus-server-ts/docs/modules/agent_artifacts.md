@@ -54,6 +54,13 @@ are rendered in the Team tab, not as Sent/Received rows in the Artifacts tab.
   `/runs/:runId/file-change-content`.
 - Keep Team Communication message/reference storage separate at
   `agent_teams/<teamRunId>/team_communication_messages.json`.
+- Treat source invocation ids as opaque tool-call identities when correlating
+  `FILE_CHANGE` context. The context store is keyed by exact source invocation
+  id only: numeric/provider ordinals such as `run_bash:0`, semantic-looking
+  suffixes such as `call_1:write_file`, and approval metadata suffixes such as
+  `call_1:approval-1` are different ids from their bases. Runtime producers
+  must emit the same canonical source invocation id on related events instead
+  of relying on server-side alias repair.
 
 ## Notes
 

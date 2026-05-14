@@ -1,0 +1,23 @@
+{
+    "data": {
+        "agentDefinitions": [
+            {
+                "id": "autobyteus-memory-compactor",
+                "name": "Memory Compactor",
+                "toolNames": [],
+                "defaultLaunchConfig": null
+            },
+            {
+                "id": "daily-assistant-runtime-validation",
+                "name": "Daily Assistant - Runtime Validation",
+                "toolNames": [
+                    "run_bash"
+                ],
+                "defaultLaunchConfig": {
+                    "runtimeKind": "autobyteus",
+                    "llmModelIdentifier": "kimi-k2.5"
+                }
+            }
+        ]
+    }
+}

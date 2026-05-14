@@ -232,11 +232,29 @@ describe('NodeManager', () => {
     expect(wrapper.find('[data-testid="remote-browser-sharing-panel"]').exists()).toBe(true);
   });
 
-  it('renders the Docker node start guide before Add Remote Node', async () => {
+  it('renders the node management tab by default and keeps Docker guide separate', async () => {
     const wrapper = mount(NodeManager);
     await wrapper.vm.$nextTick();
 
+    expect(wrapper.get('[data-testid="node-manager-tab-manage"]').attributes('aria-selected')).toBe('true');
+    expect(wrapper.get('[data-testid="node-manager-tab-dockerGuide"]').attributes('aria-selected')).toBe('false');
+    expect(wrapper.find('h2').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="node-manager-panel-manage"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="add-node-button"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="docker-node-start-guide-card"]').exists()).toBe(false);
+  });
+
+  it('renders the Docker node start guide only in the Docker guide tab', async () => {
+    const wrapper = mount(NodeManager);
+    await wrapper.vm.$nextTick();
+
+    await wrapper.get('[data-testid="node-manager-tab-dockerGuide"]').trigger('click');
+
+    expect(wrapper.get('[data-testid="node-manager-tab-manage"]').attributes('aria-selected')).toBe('false');
+    expect(wrapper.get('[data-testid="node-manager-tab-dockerGuide"]').attributes('aria-selected')).toBe('true');
+    expect(wrapper.find('[data-testid="node-manager-panel-dockerGuide"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="docker-node-start-guide-card"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="add-node-button"]').exists()).toBe(false);
   });
 
   it('runs full sync with explicit source and selected targets', async () => {

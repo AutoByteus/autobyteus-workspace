@@ -1,0 +1,25 @@
+{
+    "data": {
+        "agentDefinitions": [
+            {
+                "id": "autobyteus-memory-compactor",
+                "name": "Memory Compactor",
+                "toolNames": [],
+                "defaultLaunchConfig": null
+            },
+            {
+                "id": "daily-assistant-runtime-validation",
+                "name": "Daily Assistant - Runtime Validation",
+                "toolNames": [
+                    "read_file",
+                    "write_file",
+                    "run_bash"
+                ],
+                "defaultLaunchConfig": {
+                    "runtimeKind": "autobyteus",
+                    "llmModelIdentifier": "qwen/qwen3.5-35b-a3b:lmstudio@127.0.0.1:1234"
+                }
+            }
+        ]
+    }
+}

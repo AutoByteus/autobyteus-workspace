@@ -97,22 +97,25 @@ describe('RightSideTabs', () => {
     expect(shell.classes()).not.toContain('overflow-auto');
   });
 
-  it('switches to Artifacts when a touched file becomes newly visible', async () => {
+  it('does not switch to Artifacts when a touched file becomes newly visible', async () => {
     mountSubject();
     setActiveTab.mockClear();
 
     latestVisibleArtifactSignal.value = 'run-1:src/test.md:1';
     await nextTick();
 
-    expect(setActiveTab).toHaveBeenCalledWith('artifacts');
+    expect(setActiveTab).not.toHaveBeenCalledWith('artifacts');
+    expect(setActiveTab).not.toHaveBeenCalled();
   });
 
-  it('does not reswitch when the artifacts tab is already active', async () => {
-    activeTab.value = 'artifacts';
+  it('does not let repeated artifact signals steal focus from the current tab', async () => {
+    activeTab.value = 'terminal';
     mountSubject();
     setActiveTab.mockClear();
 
     latestVisibleArtifactSignal.value = 'run-1:src/test.md:1';
+    await nextTick();
+    latestVisibleArtifactSignal.value = 'run-1:src/other.md:2';
     await nextTick();
 
     expect(setActiveTab).not.toHaveBeenCalled();

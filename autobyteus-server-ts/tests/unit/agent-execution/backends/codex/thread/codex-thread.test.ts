@@ -238,6 +238,67 @@ describe("CodexThread MCP tool approval bridge", () => {
   });
 });
 
+describe("CodexThread approval identity", () => {
+  it("stores Codex terminal approvals by exact item id while keeping approvalId as metadata", async () => {
+    const { thread, client } = createThread(false);
+    const messages: Array<{ method: string; params: Record<string, unknown> }> = [];
+    thread.subscribeAppServerMessages((message) => {
+      messages.push(message);
+    });
+
+    thread.handleAppServerRequest(303, CodexThreadEventName.ITEM_COMMAND_EXECUTION_REQUEST_APPROVAL, {
+      itemId: "item-terminal-1",
+      approvalId: "approval-1",
+      command: "pwd",
+    });
+
+    expect(client.respondError).not.toHaveBeenCalled();
+    expect(thread.findApprovalRecord("item-terminal-1")).toEqual(
+      expect.objectContaining({
+        requestId: 303,
+        method: CodexThreadEventName.ITEM_COMMAND_EXECUTION_REQUEST_APPROVAL,
+        invocationId: "item-terminal-1",
+        approvalId: "approval-1",
+        responseMode: "decision",
+        toolName: "run_bash",
+      }),
+    );
+    expect(thread.findApprovalRecord("item-terminal-1:approval-1")).toBeNull();
+    expect(messages).toContainEqual(
+      expect.objectContaining({
+        method: CodexThreadEventName.ITEM_COMMAND_EXECUTION_REQUEST_APPROVAL,
+        params: expect.objectContaining({
+          invocation_id: "item-terminal-1",
+          itemId: "item-terminal-1",
+          approvalId: "approval-1",
+        }),
+      }),
+    );
+
+    await expect(thread.approveTool("item-terminal-1:approval-1", true)).rejects.toThrow(
+      "No pending approval found for invocation 'item-terminal-1:approval-1'.",
+    );
+    expect(client.respondSuccess).not.toHaveBeenCalled();
+
+    await thread.approveTool("item-terminal-1", true);
+
+    expect(client.respondSuccess).toHaveBeenCalledWith(303, { decision: "accept" });
+    expect(thread.findApprovalRecord("item-terminal-1")).toBeNull();
+    expect(messages).toContainEqual(
+      expect.objectContaining({
+        method: CodexThreadEventName.LOCAL_TOOL_APPROVED,
+        params: expect.objectContaining({
+          invocation_id: "item-terminal-1",
+          itemId: "item-terminal-1",
+          approvalId: "approval-1",
+          requestId: 303,
+          tool_name: "run_bash",
+        }),
+      }),
+    );
+  });
+});
+
 describe("CodexThread turn payload", () => {
   it("passes the configured Codex serviceTier to turn/start", async () => {
     const { thread, client } = createThread(false, { serviceTier: "fast" });
