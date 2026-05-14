@@ -16,30 +16,38 @@
 
 ## What Changed
 
-Addressed Code Review Round 30 local fixes on top of the AR-B-006 active-turn aggregate rework.
+Implemented the approved Round 17 interrupted-turn memory-ownership rework while preserving the prior AR-B-006 active-turn aggregate and Round 30 local fixes.
 
-### Round 30 fixes
+### Round 17 memory-ownership implementation
 
-- `CR-020`: renamed and tightened active-turn clearing:
-  - `AgentRuntimeState.clearActiveTurnIfStillActive(...)` was replaced with `clearSettledActiveTurnIfStillActive(...)`.
-  - The method now clears only a matching active turn that has already settled.
-  - A live/unsettled active turn returns `null` and remains active, preventing orphaned runners and duplicate-turn admission.
-  - Added unit coverage proving live turns are not cleared, mismatched settled turns are not cleared, and matching settled turns are cleared.
-- `CR-021`: repaired `tool-approval-flow` integration helper to respect the aggregate boundary:
-  - removed direct `state.activeTurn = new AgentTurn(...)` assignment while a worker is running;
-  - helper now creates the turn through `state.startActiveTurn(...)`;
-  - direct phase-only test execution settles the turn and clears it through `clearSettledActiveTurnIfStillActive(...)` in `finally`;
-  - added a console warning spy assertion that focused cleanup does not emit `Timeout waiting for worker loop to terminate`.
+- Added `MemoryManager.finalizeInterruptedTurn(...)` as the memory-owned interrupted-turn projection boundary.
+  - Records a raw trace marker with `traceType: 'turn_interrupted'` and source event `AgentTurnInterruptedEvent`.
+  - Finalizes the future `WorkingContextSnapshot` with an interrupted-turn marker.
+  - Retains accepted user input and completed/safe facts already in working context.
+  - Fences incomplete native tool-call protocol by replacing unsafe assistant tool-call payloads with text summaries and dropping associated incomplete tool-result payloads from future provider context.
+- Removed normal-interrupt working-context checkpoint rollback:
+  - `AgentTurn` no longer stores/restores working-context checkpoints.
+  - `AgentRuntimeState.startActiveTurn(...)` no longer creates turn-local working-context checkpoints.
+  - `AgentRuntimeState.restoreWorkingContextForInterruptedTurn(...)` and turn checkpoint restore APIs were removed.
+  - `AgentTurnRunner` now awaits `memoryManager.finalizeInterruptedTurn(...)` in the `AgentInterruptionError` path before publishing `AgentTurnInterruptedEvent` and returning the interrupted `TurnOutcome`.
+- Updated AC-016 coverage:
+  - interrupted first user message remains in the next LLM request;
+  - the next LLM request includes the interrupted-turn marker;
+  - pending-approval interruption keeps the accepted user input while removing unsafe native tool-call payloads from provider context.
 
-### Prior AR-B-006 implementation state preserved
+### Prior Round 30 fixes preserved
+
+- `CR-020`: `AgentRuntimeState.clearSettledActiveTurnIfStillActive(...)` still clears only a matching active turn that is already settled.
+- `CR-021`: `tool-approval-flow` direct phase helper still uses `state.startActiveTurn(...)`, settles/clears deterministically, and asserts no worker stop-timeout warning.
+
+### Prior AR-B-006 aggregate state preserved
 
 - `AgentTurn` remains the aggregate root for active-turn internals:
   - private execution promise/handle created by `startExecution(...)`;
   - idempotent settlement and `waitForSettlement()` boundary;
-  - turn-owned `TurnExecutionScope`, `TurnToolInputPort`, active tool batch, pending approval map, and working-context checkpoint;
-  - turn-owned approval/result posting guards before delivery to `TurnToolInputPort`.
+  - turn-owned `TurnExecutionScope`, `TurnToolInputPort`, active tool batch, pending approval map, and approval/result posting guards before delivery to `TurnToolInputPort`.
 - `AgentRuntimeState` remains narrowed to active-turn selector and router:
-  - creates the active `AgentTurn` and attaches the checkpoint to the turn;
+  - creates the active `AgentTurn`;
   - routes approval/result events by active-turn identity only;
   - clears the active turn only after matching settlement;
   - does not own active runner task/promise, pending approval map storage, recent settled invocation cache, or working-context checkpoint storage.
@@ -49,53 +57,54 @@ Addressed Code Review Round 30 local fixes on top of the AR-B-006 active-turn ag
 
 ## Key Files Or Areas
 
-- Runtime active-turn selector/routing:
-  - `autobyteus-ts/src/agent/context/agent-runtime-state.ts`
-- Worker settlement observer:
-  - `autobyteus-ts/src/agent/runtime/agent-worker.ts`
-- Approval integration helper:
-  - `autobyteus-ts/tests/integration/agent/tool-approval-flow.test.ts`
-- Focused active-turn/scheduler tests:
-  - `autobyteus-ts/tests/unit/agent/context/agent-runtime-state.test.ts`
-  - `autobyteus-ts/tests/unit/agent/event-inbox/agent-event-scheduler.test.ts`
-- Prior aggregate files still relevant for review:
+- Interrupted-turn memory projection:
+  - `autobyteus-ts/src/memory/memory-manager.ts`
+  - `autobyteus-ts/tests/unit/memory/memory-manager.test.ts`
+- Turn aggregate and active-turn selector cleanup:
   - `autobyteus-ts/src/agent/agent-turn.ts`
-  - `autobyteus-ts/src/agent/runtime/agent-runtime.ts`
+  - `autobyteus-ts/src/agent/context/agent-runtime-state.ts`
+- Interrupted settlement call site:
   - `autobyteus-ts/src/agent/loop/agent-turn-runner.ts`
-  - `autobyteus-ts/src/agent/loop/tool-phase.ts`
-  - `autobyteus-ts/src/agent/event-inbox/agent-event-scheduler.ts`
-  - `autobyteus-ts/src/agent/event-inbox/handlers/tool-approval-inbox-event-handler.ts`
-  - `autobyteus-ts/src/agent/event-inbox/handlers/tool-result-inbox-event-handler.ts`
+  - `autobyteus-ts/tests/unit/agent/loop/agent-turn-runner.test.ts`
+- Runtime AC-016 coverage:
+  - `autobyteus-ts/tests/integration/agent/runtime/agent-runtime.test.ts`
+- Updated local test fixtures after checkpoint removal:
+  - `autobyteus-ts/tests/unit/agent/context/agent-context.test.ts`
+  - `autobyteus-ts/tests/unit/agent/context/agent-runtime-state.test.ts`
+  - `autobyteus-ts/tests/unit/agent/runtime/agent-runtime.test.ts`
+  - `autobyteus-ts/tests/unit/agent/runtime/agent-worker.test.ts`
+  - `autobyteus-ts/tests/unit/agent/status/status-update-utils.test.ts`
 
 ## Important Assumptions
 
-- Round 30 findings are bounded implementation lifecycle/boundary fixes; the approved AR-B-006 design remains directionally correct.
-- Phase-only approval integration tests may run against a real idle runtime to exercise the public approval facade, but any directly created active turn must be created through `AgentRuntimeState.startActiveTurn(...)` and settled/cleared deterministically.
+- Round 17 is a local implementation rework under the approved design. No requirement/design reroute was needed.
+- The provider-safe projection intentionally does not invent missing partial streamed assistant content. It preserves committed working-context facts and raw trace markers, and fences incomplete native tool-call protocol from future provider prompts.
+- Bootstrap/lifecycle working-context snapshot restore remains through `resetWorkingContextSnapshot(...)` and the existing bootstrapper; only normal interrupt pre-turn checkpoint restore was removed.
 - Broad provider/live/legacy-suite failures from API/E2E Round 16 remain outside this implementation fix per user clarification; this pass ran implementation-scoped checks only.
 
 ## Known Risks
 
-- This remains core runtime ownership code. Focused unit/integration coverage and builds pass, but API/E2E should re-run after code review because active-turn lifecycle behavior changed.
-- `AgentTurn` intentionally remains the aggregate root and is larger than before; source-file size remains below the hard 500 effective-line limit.
+- Interrupted-turn projection is core memory behavior. Focused unit/integration coverage and builds pass, but API/E2E should re-run after code review because future prompt context changed.
+- The projection currently summarizes incomplete tool-call payloads generically. If later requirements need richer partial assistant/tool facts in provider context, that should remain inside the memory-owned projection boundary.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: Local Fix after Code Review Round 30.
-- Reviewed root-cause classification: missing invariant around active-turn clearing (`CR-020`) and test boundary bypass of the aggregate lifecycle (`CR-021`).
-- Reviewed refactor decision: Refactor needed locally, no design reroute needed.
+- Reviewed change posture: approved implementation rework after Round 17 architecture review.
+- Reviewed root-cause classification: boundary/ownership issue; turn execution control was restoring memory state directly.
+- Reviewed refactor decision: refactor required locally to move interrupted-turn memory policy to `MemoryManager` and remove turn-owned checkpoint restore.
 - Implementation matched the reviewed assessment: Yes.
 - If challenged, routed as `Design Impact`: N/A.
-- Evidence / notes: active-turn clearing now encodes settled-only semantics; approval integration no longer directly assigns `state.activeTurn` while a real worker is running.
+- Evidence / notes: `AgentTurn`/`AgentRuntimeState` no longer own checkpoint restore; `AgentTurnRunner` reports the interrupted outcome to `MemoryManager.finalizeInterruptedTurn(...)`; `LLMRequestAssembler` remains a reader of `MemoryManager.getWorkingContextMessages()`.
 
 ## Legacy / Compatibility Removal Check
 
 - Backward-compatibility mechanisms introduced: None.
 - Legacy old-behavior retained in scope: No.
-- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: Yes for this scope; no new compatibility shims were introduced.
-- Shared structures remain tight: Yes; `AgentTurn` owns aggregate state, while `AgentRuntimeState` stays narrowed to active-turn selection/routing/settled clearing.
+- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: Yes; normal-interrupt checkpoint restore APIs and stale tests/mocks were removed.
+- Shared structures remain tight: Yes; `AgentTurn` owns execution/settlement/ports, while memory projection policy belongs to `MemoryManager`.
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: Yes.
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): Yes.
-- Notes: no message wrappers, `AgentOutbox`, legacy `WorkerEventDispatcher` turn loop, old `agent/handlers` normal flow, or native interrupt-to-stop fallback were introduced.
+- Notes: no message wrappers, `AgentOutbox`, legacy `WorkerEventDispatcher` turn loop, old `agent/handlers` normal flow, native interrupt-to-stop fallback, or turn-owned working-context rollback were introduced.
 
 ## Environment Or Dependency Notes
 
@@ -109,15 +118,20 @@ Passed:
 
 - `git diff --check`
 - Source guardrail grep:
-  - `rg -n "clearActiveTurnIfStillActive|activeTurnTask|activeRunner|registerActiveTurnTask|clearActiveTurnTask|completeActiveTurn|RecentSettledInvocationCache|recentSettledInvocationIds|activeWorkingContextCheckpoint|WorkerEventDispatcher|src/agent/handlers|agent/handlers" autobyteus-ts/src autobyteus-ts/tests || true`
-  - Result: no active source/test matches for forbidden old/peer-state terms.
+  - `rg -n "restoreWorkingContextForInterruptedTurn|restoreWorkingContextTurnCheckpoint|createWorkingContextTurnCheckpoint|restoreWorkingContextCheckpoint|WorkingContextTurnCheckpoint|workingContextCheckpoint" autobyteus-ts/src autobyteus-ts/tests || true`
+  - Result: no active source/test matches for removed normal-interrupt checkpoint restore terms.
 - Changed-source effective line audit:
-  - `agent-runtime-state.ts`: 231 effective non-empty lines.
-  - `agent-worker.ts`: 308 effective non-empty lines.
+  - `autobyteus-ts/src/memory/memory-manager.ts`: 383 effective non-empty lines.
+  - `autobyteus-ts/src/agent/agent-turn.ts`: 289 effective non-empty lines.
+  - `autobyteus-ts/src/agent/context/agent-runtime-state.ts`: 222 effective non-empty lines.
+  - `autobyteus-ts/src/agent/loop/agent-turn-runner.ts`: 164 effective non-empty lines.
   - all changed source implementation files under 500 effective non-empty lines.
-- Focused AR-B-006 + approval-flow tests:
-  - `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/tool-invocation.test.ts tests/unit/agent/context/agent-runtime-state.test.ts tests/unit/agent/context/agent-context.test.ts tests/unit/agent/status/status-update-utils.test.ts tests/unit/agent/event-inbox/agent-event-scheduler.test.ts tests/unit/agent/runtime/agent-worker.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/unit/agent/loop/agent-turn-runner.test.ts tests/unit/agent/loop/turn-tool-input-port.test.ts tests/integration/agent/runtime/agent-runtime.test.ts tests/integration/agent/tool-approval-flow.test.ts`
-  - Result: 11 files passed, 88 tests passed.
+- Focused Round 17 memory/runtime tests:
+  - `pnpm -C autobyteus-ts exec vitest run tests/unit/memory/memory-manager.test.ts tests/unit/agent/context/agent-runtime-state.test.ts tests/unit/agent/loop/agent-turn-runner.test.ts tests/integration/agent/runtime/agent-runtime.test.ts`
+  - Result: 4 files passed, 39 tests passed.
+- Additional affected fixture/bootstrap/approval tests:
+  - `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/context/agent-context.test.ts tests/unit/agent/runtime/agent-worker.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/unit/agent/status/status-update-utils.test.ts tests/integration/agent/tool-approval-flow.test.ts tests/unit/memory/working-context-snapshot-bootstrapper.test.ts tests/unit/memory/memory-manager-working-context-snapshot-persistence.test.ts`
+  - Result: 7 files passed, 49 tests passed.
 - `pnpm -C autobyteus-ts exec tsc -p tsconfig.build.json --noEmit`
   - Passed.
 - `pnpm -C autobyteus-ts run build`
@@ -133,11 +147,13 @@ Not claimed / out of scope for this local fix:
 ## Downstream Validation Hints / Suggested Scenarios
 
 - Code review should verify:
-  - `clearSettledActiveTurnIfStillActive(...)` cannot clear live active turns;
-  - worker settlement observer calls the settled-only clear after `turn.waitForSettlement()`;
-  - `tool-approval-flow` uses `state.startActiveTurn(...)`, settles after direct `ToolPhase` execution, clears via settled-only API, and asserts no stop-timeout warning;
-  - prior AR-B-006 aggregate boundaries remain intact.
-- API/E2E should still cover interrupt/follow-up and external-result paths after code review passes.
+  - `MemoryManager.finalizeInterruptedTurn(...)` owns interrupted-turn retention/projection and is awaited before interrupted settlement returns;
+  - no normal-interrupt code path restores working context wholesale to a pre-turn checkpoint;
+  - `AgentTurn`/`AgentRuntimeState` do not edit or restore `WorkingContextSnapshot` directly;
+  - incomplete native tool-call payloads are fenced from future working context while accepted user input and an interrupted-turn marker remain;
+  - bootstrap/lifecycle snapshot restore through `resetWorkingContextSnapshot(...)` remains intact;
+  - prior AR-B-006 aggregate boundaries and Round 30 settled-only clear remain intact.
+- API/E2E should still cover interrupt/follow-up, pending approval interrupt/follow-up, external-result paths, and compaction smoke after code review passes.
 
 ## API / E2E / Executable Validation Still Required
 

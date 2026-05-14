@@ -7,7 +7,7 @@ import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
 import { MemoryType } from '../../../src/memory/models/memory-types.js';
 import { RawTraceItem } from '../../../src/memory/models/raw-trace-item.js';
 import { LLMUserMessage } from '../../../src/llm/user-message.js';
-import { MessageRole, ToolCallPayload } from '../../../src/llm/utils/messages.js';
+import { Message, MessageRole, ToolCallPayload, ToolResultPayload } from '../../../src/llm/utils/messages.js';
 import { ToolResultEvent } from '../../../src/agent/events/agent-events.js';
 import { ToolInvocation } from '../../../src/agent/tool-invocation.js';
 import { ToolInteractionStatus } from '../../../src/memory/models/tool-interaction.js';
@@ -292,6 +292,72 @@ describe('MemoryManager', () => {
       const rawItems = manager.listRawTracesOrdered();
       expect(rawItems.map((item) => item.traceType)).toEqual(['tool_result', 'tool_continuation']);
       expect(rawItems[1]?.content).toBe('Tool continuation');
+    } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('finalizes interrupted turns without restoring accepted user input out of working context', async () => {
+    const tempDir = makeTempDir();
+    try {
+      const store = new FileMemoryStore(tempDir, 'agent_mem_interrupted_projection');
+      const manager = new MemoryManager({ store });
+      const turnId = manager.startTurn();
+
+      manager.workingContextSnapshot.appendMessage(
+        new Message(MessageRole.SYSTEM, { content: 'stable system prompt' })
+      );
+      manager.workingContextSnapshot.appendMessage(
+        new Message(MessageRole.USER, { content: 'interrupted user input' })
+      );
+      manager.ingestUserMessage(new LLMUserMessage({ content: 'interrupted user input' }), turnId, 'LLMUserMessageReadyEvent');
+      manager.ingestToolIntent(new ToolInvocation('read_file', { path: '/tmp/incomplete.txt' }, 'inv-interrupt', turnId), turnId);
+
+      await manager.finalizeInterruptedTurn({ turnId, reason: 'user_interrupt' });
+
+      const messages = manager.getWorkingContextMessages();
+      expect(messages.some((message) => message.content === 'stable system prompt')).toBe(true);
+      expect(messages.some((message) => message.content === 'interrupted user input')).toBe(true);
+      expect(messages.some((message) =>
+        typeof message.content === 'string' &&
+        message.content.includes(`turn '${turnId}' was interrupted`) &&
+        message.content.includes('user_interrupt')
+      )).toBe(true);
+      expect(messages.some((message) => message.tool_payload instanceof ToolCallPayload)).toBe(false);
+      expect(messages.some((message) => message.tool_payload instanceof ToolResultPayload)).toBe(false);
+
+      const rawItems = manager.listRawTracesOrdered();
+      expect(rawItems.some((item) => item.traceType === 'user' && item.content === 'interrupted user input')).toBe(true);
+      expect(rawItems.some((item) =>
+        item.traceType === 'turn_interrupted' &&
+        item.sourceEvent === 'AgentTurnInterruptedEvent' &&
+        item.content.includes('user_interrupt')
+      )).toBe(true);
+    } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('keeps complete native tool-call history while adding the interrupted marker', async () => {
+    const tempDir = makeTempDir();
+    try {
+      const store = new FileMemoryStore(tempDir, 'agent_mem_interrupted_complete_tools');
+      const manager = new MemoryManager({ store });
+      const turnId = manager.startTurn();
+
+      const invocation = new ToolInvocation('search', { q: 'abc' }, 'call_complete', turnId);
+      manager.ingestToolIntent(invocation, turnId);
+      manager.ingestToolResult(
+        new ToolResultEvent('search', { ok: true }, 'call_complete', undefined, { q: 'abc' }, turnId),
+        turnId
+      );
+
+      await manager.finalizeInterruptedTurn({ turnId, reason: 'post_tool_interrupt' });
+
+      const messages = manager.getWorkingContextMessages();
+      expect(messages.some((message) => message.tool_payload instanceof ToolCallPayload)).toBe(true);
+      expect(messages.some((message) => message.tool_payload instanceof ToolResultPayload)).toBe(true);
+      expect(messages.at(-1)?.content).toContain(`turn '${turnId}' was interrupted`);
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }

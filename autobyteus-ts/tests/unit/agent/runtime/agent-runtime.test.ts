@@ -93,9 +93,7 @@ const makeContext = () => {
   const config = new AgentConfig('name', 'role', 'desc', llm);
   const state = new AgentRuntimeState('agent-1');
   state.memoryManager = {
-    startTurn: () => 'turn-1',
-    createWorkingContextTurnCheckpoint: (turnId: string) => ({ turnId, messages: [], lastCompactionTs: null }),
-    restoreWorkingContextTurnCheckpoint: vi.fn()
+    startTurn: () => 'turn-1'
   } as any;
   return new AgentContext('agent-1', config, state);
 };

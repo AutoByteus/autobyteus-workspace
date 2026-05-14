@@ -12,7 +12,6 @@ import {
   normalizeToolResultInvocationId,
   type PostToolResultResult
 } from './tool-result-posting.js';
-import type { MemoryManager, WorkingContextTurnCheckpoint } from '../memory/memory-manager.js';
 
 export type TurnOutcome =
   | { kind: 'completed'; turnId: string }
@@ -41,7 +40,6 @@ export class AgentTurn {
   private settledOutcome: TurnOutcome | null = null;
   private settlementResolve!: (outcome: TurnOutcome) => void;
   private readonly settlementPromise: Promise<TurnOutcome>;
-  private workingContextCheckpoint: WorkingContextTurnCheckpoint | null = null;
 
   constructor(turnId: string) {
     if (!turnId) {
@@ -90,26 +88,6 @@ export class AgentTurn {
 
   waitForSettlement(): Promise<TurnOutcome> {
     return this.settlementPromise;
-  }
-
-  setWorkingContextCheckpoint(checkpoint: WorkingContextTurnCheckpoint): void {
-    if (checkpoint.turnId !== this.turnId) {
-      throw new Error(
-        `Working context checkpoint belongs to turn '${checkpoint.turnId}', not '${this.turnId}'.`
-      );
-    }
-    this.workingContextCheckpoint = checkpoint;
-  }
-
-  restoreWorkingContextCheckpoint(memoryManager: MemoryManager): boolean {
-    const checkpoint = this.workingContextCheckpoint;
-    if (!checkpoint || checkpoint.turnId !== this.turnId) {
-      return false;
-    }
-
-    memoryManager.restoreWorkingContextTurnCheckpoint(checkpoint);
-    this.workingContextCheckpoint = null;
-    return true;
   }
 
   interrupt(reason: string): AgentInterruptResult {
@@ -312,7 +290,6 @@ export class AgentTurn {
     this.executionScope.markSettled();
     this.toolInputPort.close(outcome.kind === 'completed' ? 'completed' : outcome.kind);
     this.pendingToolApprovals.clear();
-    this.workingContextCheckpoint = null;
     this.settlementResolve(outcome);
     return outcome;
   }

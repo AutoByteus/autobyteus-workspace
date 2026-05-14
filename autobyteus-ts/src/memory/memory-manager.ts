@@ -1,8 +1,15 @@
 import { LLMUserMessage } from '../llm/user-message.js';
-import { Message, ToolCallSpec } from '../llm/utils/messages.js';
+import {
+  Message,
+  MessageRole,
+  ToolCallPayload,
+  ToolCallSpec,
+  ToolResultPayload
+} from '../llm/utils/messages.js';
 import { CompleteResponse } from '../llm/utils/response-types.js';
 import { ToolResultEvent } from '../agent/events/agent-events.js';
 import { ToolInvocation } from '../agent/tool-invocation.js';
+import type { TurnOutcome } from '../agent/agent-turn.js';
 
 import { RawTraceItem } from './models/raw-trace-item.js';
 import { MemoryType } from './models/memory-types.js';
@@ -16,16 +23,19 @@ import { WorkingContextSnapshotSerializer } from './working-context-snapshot-ser
 import { WorkingContextSnapshotStore } from './store/working-context-snapshot-store.js';
 import { buildToolInteractions } from './tool-interaction-builder.js';
 
-export type WorkingContextTurnCheckpoint = {
-  turnId: string;
-  messages: Message[];
-  lastCompactionTs: number | null;
-};
-
 export type ToolIntentIngestionOptions = {
   assistantContent?: string | null;
   assistantReasoning?: string | null;
 };
+
+export type FinalizeInterruptedTurnInput = {
+  turnId: string;
+  reason?: string | null;
+  outcome?: TurnOutcome | null;
+};
+
+const INTERRUPTED_TURN_TRACE_TYPE = 'turn_interrupted';
+const INTERRUPTED_TURN_SOURCE_EVENT = 'AgentTurnInterruptedEvent';
 
 export class MemoryManager {
   store: MemoryStore;
@@ -59,18 +69,6 @@ export class MemoryManager {
 
   startTurn(): string {
     return this.turnTracker.nextTurnId();
-  }
-
-  createWorkingContextTurnCheckpoint(turnId: string): WorkingContextTurnCheckpoint {
-    return {
-      turnId,
-      messages: this.workingContextSnapshot.buildMessages(),
-      lastCompactionTs: this.workingContextSnapshot.lastCompactionTs
-    };
-  }
-
-  restoreWorkingContextTurnCheckpoint(checkpoint: WorkingContextTurnCheckpoint): void {
-    this.resetWorkingContextSnapshot(checkpoint.messages, checkpoint.lastCompactionTs);
   }
 
   requestCompaction(): void {
@@ -259,6 +257,39 @@ export class MemoryManager {
     this.persistWorkingContextSnapshot();
   }
 
+  async finalizeInterruptedTurn(input: FinalizeInterruptedTurnInput): Promise<void> {
+    const turnId = input.turnId?.trim();
+    if (!turnId) {
+      throw new Error('MemoryManager.finalizeInterruptedTurn requires a non-empty turnId.');
+    }
+
+    const reason = input.reason ?? (input.outcome?.kind === 'interrupted' ? input.outcome.reason : undefined);
+    const markerContent = this.buildInterruptedTurnMarker(turnId, reason);
+    const existingMarker = this.listRawTracesOrdered().some(
+      (item) => item.turnId === turnId && item.traceType === INTERRUPTED_TURN_TRACE_TYPE
+    );
+    if (!existingMarker) {
+      this.store.add([
+        new RawTraceItem({
+          id: `rt_${Date.now()}_${turnId}_interrupted`,
+          ts: Date.now() / 1000,
+          turnId,
+          seq: this.nextSeq(turnId),
+          traceType: INTERRUPTED_TURN_TRACE_TYPE,
+          content: markerContent,
+          sourceEvent: INTERRUPTED_TURN_SOURCE_EVENT
+        })
+      ]);
+    }
+
+    const currentMessages = this.workingContextSnapshot.buildMessages();
+    const projectedMessages = this.projectInterruptedTurnWorkingContext(
+      currentMessages,
+      markerContent
+    );
+    this.resetWorkingContextSnapshot(projectedMessages, this.workingContextSnapshot.lastCompactionTs);
+  }
+
   listRawTracesOrdered(limit?: number): RawTraceItem[] {
     return this.store.listRawTracesOrdered(limit);
   }
@@ -303,5 +334,96 @@ export class MemoryManager {
       rawItems = rawItems.filter((item) => item.turnId === turnId);
     }
     return buildToolInteractions(rawItems);
+  }
+
+  private buildInterruptedTurnMarker(turnId: string, reason?: string | null): string {
+    const reasonText = reason ? ` Reason: ${reason}.` : '';
+    return (
+      `System note: turn '${turnId}' was interrupted before normal completion.${reasonText} ` +
+      'Preserve accepted user input and completed facts as history, but do not continue any incomplete tool-call protocol from that turn.'
+    );
+  }
+
+  private projectInterruptedTurnWorkingContext(messages: Message[], markerContent: string): Message[] {
+    const toolProtocolProjection = this.classifyToolProtocolMessages(messages);
+    const projected: Message[] = [];
+
+    for (const message of messages) {
+      if (message.tool_payload instanceof ToolCallPayload) {
+        const calls = message.tool_payload.toolCalls;
+        if (calls.some((call) => toolProtocolProjection.unsafeToolCallIds.has(call.id))) {
+          const summary = this.buildInterruptedToolCallSummary(message.tool_payload);
+          projected.push(new Message(MessageRole.ASSISTANT, {
+            content: [
+              message.content,
+              summary
+            ].filter((part): part is string => Boolean(part && part.trim().length > 0)).join('\n\n') || summary,
+            reasoning_content: message.reasoning_content
+          }));
+          continue;
+        }
+      }
+
+      if (
+        message.tool_payload instanceof ToolResultPayload &&
+        !toolProtocolProjection.safeToolResultIds.has(message.tool_payload.toolCallId)
+      ) {
+        continue;
+      }
+
+      projected.push(message);
+    }
+
+    if (!projected.some((message) => message.content === markerContent)) {
+      projected.push(new Message(MessageRole.USER, { content: markerContent }));
+    }
+    return projected;
+  }
+
+  private classifyToolProtocolMessages(messages: Message[]): {
+    unsafeToolCallIds: Set<string>;
+    safeToolResultIds: Set<string>;
+  } {
+    const unsafeToolCallIds = new Set<string>();
+    const safeToolResultIds = new Set<string>();
+
+    for (let index = 0; index < messages.length; index += 1) {
+      const payload = messages[index].tool_payload;
+      if (!(payload instanceof ToolCallPayload)) {
+        continue;
+      }
+      const callIds = payload.toolCalls.map((call) => call.id).filter(Boolean);
+      const expected = new Set(callIds);
+      const observed = new Set<string>();
+      let cursor = index + 1;
+      while (cursor < messages.length && messages[cursor].tool_payload instanceof ToolResultPayload) {
+        const resultPayload = messages[cursor].tool_payload as ToolResultPayload;
+        if (expected.has(resultPayload.toolCallId)) {
+          observed.add(resultPayload.toolCallId);
+        }
+        cursor += 1;
+      }
+
+      if (!expected.size || observed.size !== expected.size) {
+        for (const callId of callIds) {
+          unsafeToolCallIds.add(callId);
+        }
+        continue;
+      }
+
+      for (const callId of observed) {
+        safeToolResultIds.add(callId);
+      }
+    }
+
+    return { unsafeToolCallIds, safeToolResultIds };
+  }
+
+  private buildInterruptedToolCallSummary(payload: ToolCallPayload): string {
+    const toolNames = payload.toolCalls
+      .map((call) => call.name)
+      .filter((name): name is string => Boolean(name && name.trim().length > 0));
+    const suffix = toolNames.length ? ` Tool request(s): ${toolNames.join(', ')}.` : '';
+    return `Interrupted tool request was fenced from native tool-call history.${suffix}`;
   }
 }

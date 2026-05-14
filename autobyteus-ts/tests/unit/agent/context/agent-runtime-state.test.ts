@@ -3,40 +3,10 @@ import { AgentRuntimeState } from '../../../../src/agent/context/agent-runtime-s
 import { AgentStatus } from '../../../../src/agent/status/status-enum.js';
 import { ToolExecutionApprovalEvent, ToolResultEvent } from '../../../../src/agent/events/agent-events.js';
 import { ToolInvocation } from '../../../../src/agent/tool-invocation.js';
-import { MemoryManager } from '../../../../src/memory/memory-manager.js';
-import { MemoryStore } from '../../../../src/memory/store/base-store.js';
-import { MemoryType } from '../../../../src/memory/models/memory-types.js';
-import { Message, MessageRole } from '../../../../src/llm/utils/messages.js';
-
-class InMemoryStore extends MemoryStore {
-  private items: any[] = [];
-
-  add(items: Iterable<any>): void {
-    for (const item of items) {
-      this.items.push(item);
-    }
-  }
-
-  list(memoryType: MemoryType, limit?: number): any[] {
-    const filtered = this.items.filter((item) => item?.memoryType === memoryType);
-    return typeof limit === 'number' ? filtered.slice(-limit) : filtered;
-  }
-
-  listRawTracesOrdered(limit?: number): any[] {
-    return this.list(MemoryType.RAW_TRACE, limit);
-  }
-
-  pruneRawTracesById(traceIdsToRemove: Iterable<string>): void {
-    const ids = new Set(Array.from(traceIdsToRemove));
-    this.items = this.items.filter((item) => item?.memoryType !== MemoryType.RAW_TRACE || !ids.has(item.id));
-  }
-}
 
 const attachMemoryManager = (state: AgentRuntimeState, turnId = 'turn-test'): void => {
   state.memoryManager = {
-    startTurn: () => turnId,
-    createWorkingContextTurnCheckpoint: (id: string) => ({ turnId: id, messages: [], lastCompactionTs: null }),
-    restoreWorkingContextTurnCheckpoint: vi.fn()
+    startTurn: () => turnId
   } as any;
 };
 
@@ -128,9 +98,7 @@ describe('AgentRuntimeState', () => {
   it('interrupts the active turn and fences pending approvals for that turn', () => {
     const state = new AgentRuntimeState('agent-8');
     state.memoryManager = {
-      startTurn: () => 'turn-1',
-      createWorkingContextTurnCheckpoint: (turnId: string) => ({ turnId, messages: [], lastCompactionTs: null }),
-      restoreWorkingContextTurnCheckpoint: vi.fn()
+      startTurn: () => 'turn-1'
     } as any;
     const activeTurn = state.startActiveTurn();
     const invocation = new ToolInvocation('tool', {}, 'inv-1');
@@ -143,32 +111,6 @@ describe('AgentRuntimeState', () => {
     expect(result.status).toBe('accepted');
     expect(activeTurn.executionScope.signal.aborted).toBe(true);
     expect(state.pendingToolApprovals).toEqual({});
-  });
-
-  it('restores the turn-start working context checkpoint for interrupted turns', () => {
-    const state = new AgentRuntimeState('agent-checkpoint');
-    const memoryManager = new MemoryManager({ store: new InMemoryStore() });
-    memoryManager.workingContextSnapshot.appendMessage(
-      new Message(MessageRole.SYSTEM, { content: 'stable system prompt' })
-    );
-    state.memoryManager = memoryManager;
-
-    const activeTurn = state.startActiveTurn('turn-restore');
-    memoryManager.workingContextSnapshot.appendMessage(
-      new Message(MessageRole.USER, { content: 'interrupted user input' })
-    );
-    memoryManager.ingestToolIntents(
-      [new ToolInvocation('read_file', { path: '/tmp/incomplete.txt' }, 'inv-restore')],
-      activeTurn.turnId
-    );
-
-    expect(memoryManager.getWorkingContextMessages()).toHaveLength(3);
-    expect(state.restoreWorkingContextForInterruptedTurn(activeTurn.turnId)).toBe(true);
-
-    const messages = memoryManager.getWorkingContextMessages();
-    expect(messages).toHaveLength(1);
-    expect(messages[0].role).toBe(MessageRole.SYSTEM);
-    expect(messages[0].content).toBe('stable system prompt');
   });
 
   it('only clears a matching active turn after the turn has settled', () => {
@@ -201,9 +143,7 @@ describe('AgentRuntimeState', () => {
   it('validates pending approvals through the active turn TurnToolInputPort only when approval is pending', async () => {
     const state = new AgentRuntimeState('agent-approval');
     state.memoryManager = {
-      startTurn: () => 'turn-1',
-      createWorkingContextTurnCheckpoint: (turnId: string) => ({ turnId, messages: [], lastCompactionTs: null }),
-      restoreWorkingContextTurnCheckpoint: vi.fn()
+      startTurn: () => 'turn-1'
     } as any;
     const activeTurn = state.startActiveTurn('turn-1');
     activeTurn.startToolInvocationBatch([new ToolInvocation('tool', {}, 'inv-approval', 'turn-1')]);
@@ -225,9 +165,7 @@ describe('AgentRuntimeState', () => {
   it('validates external tool results through the active turn TurnToolInputPort', async () => {
     const state = new AgentRuntimeState('agent-result');
     state.memoryManager = {
-      startTurn: () => 'turn-1',
-      createWorkingContextTurnCheckpoint: (turnId: string) => ({ turnId, messages: [], lastCompactionTs: null }),
-      restoreWorkingContextTurnCheckpoint: vi.fn()
+      startTurn: () => 'turn-1'
     } as any;
     const activeTurn = state.startActiveTurn('turn-1');
 

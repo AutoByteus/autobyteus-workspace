@@ -82,9 +82,7 @@ const makeContext = () => {
   context.state.statusManagerRef = { emit_status_update: vi.fn(async () => undefined) } as any;
   context.state.statusDeriver = new AgentStatusDeriver(AgentStatus.UNINITIALIZED);
   context.state.memoryManager = {
-    startTurn: () => 'turn-1',
-    createWorkingContextTurnCheckpoint: (turnId: string) => ({ turnId, messages: [], lastCompactionTs: null }),
-    restoreWorkingContextTurnCheckpoint: vi.fn()
+    startTurn: () => 'turn-1'
   } as any;
   return context;
 };

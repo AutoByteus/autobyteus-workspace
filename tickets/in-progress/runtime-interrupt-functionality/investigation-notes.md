@@ -324,3 +324,36 @@ Design impact:
 - `AgentExternalEventNotifier` wording in the design should be read as “events observable by consumers outside the internal agent control loop,” not as “events that originated outside the agent.”
 - Add an explicit inter-agent/system-task external-consumer data-flow spine and acceptance criteria.
 - Add explicit frontend interrupt contract: native Autobyteus must emit `TURN_INTERRUPTED`, optional `TOOL_EXECUTION_INTERRUPTED`, and idle status feedback through the same event stream/server/frontend path used by Codex/Claude-compatible UI handling.
+
+## Interrupted Turn Memory / Working Context Addendum
+
+Date: 2026-05-14.
+
+User reported an Electron-built runtime scenario where the visible conversation showed an earlier interrupted task request (for example, “think about a game which you can create in html and create it and play yourself”), but later model responses claimed the first user message was “stop please.” This strongly indicates divergence between visible/event history and the working context used to populate later LLM prompts.
+
+Relevant inspected sources in the current worktree:
+
+- `autobyteus-ts/src/agent/context/agent-runtime-state.ts`
+- `autobyteus-ts/src/agent/agent-turn.ts`
+- `autobyteus-ts/src/agent/loop/agent-turn-runner.ts`
+- `autobyteus-ts/src/memory/memory-manager.ts`
+- `autobyteus-ts/src/memory/working-context-snapshot.ts`
+- `autobyteus-ts/src/agent/llm-request-assembler.ts`
+- `autobyteus-ts/src/agent/pipelines/agent-input-pipeline.ts`
+- `autobyteus-ts/src/agent/input-processor/memory-ingest-input-processor.ts`
+
+Findings:
+
+1. `AgentRuntimeState.startActiveTurn(...)` creates an `AgentTurn` and currently attaches a working-context checkpoint from `memoryManager.createWorkingContextTurnCheckpoint(nextTurnId)`.
+2. `AgentTurnRunner` catches `AgentInterruptionError` and calls `this.context.state.restoreWorkingContextForInterruptedTurn(turnId)` before publishing `AgentTurnInterruptedEvent`.
+3. `AgentTurn.restoreWorkingContextCheckpoint(...)` calls `memoryManager.restoreWorkingContextTurnCheckpoint(checkpoint)`, which resets `MemoryManager.workingContextSnapshot` back to the checkpoint messages.
+4. `LLMRequestAssembler.prepareRequest(...)` appends the current user message to `memoryManager.workingContextSnapshot` before rendering the final LLM payload, while `MemoryIngestInputProcessor` also records accepted user input as raw trace through `memoryManager.ingestUserMessage(...)`.
+5. Therefore the raw trace/event/UI history may contain the accepted user message and observed activity, while `workingContextSnapshot` can be reset to the pre-turn checkpoint after interrupt. Later LLM requests are populated from `memoryManager.getWorkingContextMessages()`, so the model may not see the interrupted turn's accepted user message even though the UI still displays it.
+
+Design impact:
+
+- This exposes a boundary/ownership issue: `AgentTurn` / `AgentTurnRunner` should not define memory rollback policy by restoring the working context wholesale to a pre-turn checkpoint.
+- `AgentTurn` should own execution lifecycle only: interrupt, settlement, tool input port, execution scope, private execution handle.
+- `MemoryManager` / memory subsystem should own raw trace retention, working-context projection, and interrupted-turn memory finalization.
+- Correct semantic rule: everything already accepted/emitted/executed before interrupt is history. Interrupt fences future continuation and unsafe provider protocol state; it does not erase accepted user input or observed tool/assistant facts.
+- The final design should replace wholesale pre-turn working-context restore on normal interrupt with a memory-owned `finalizeInterruptedTurn(...)` or equivalent projection policy: keep raw/event history append-only, preserve committed user/assistant/tool facts, add a turn-interrupted marker, and produce a provider-safe future working context that avoids invalid partial tool-call protocol.

@@ -18,6 +18,12 @@ Current implemented interrupt path before the AR-B-006 boundary correction:
 
 The final target keeps the observable behavior but removes the state-owned interrupt/task boundary: `AgentRuntime.interrupt(...) -> AgentRuntimeState.activeTurn -> AgentTurn.interrupt(...) -> activeTurn.waitForSettlement(...)`.
 
+Current implemented memory/working-context behavior exposed by user testing:
+
+`AgentRuntimeState.startActiveTurn(...) -> memoryManager.createWorkingContextTurnCheckpoint(...) -> turn runs and appends user/tool/assistant protocol state to workingContextSnapshot -> AgentTurnRunner catches interruption -> context.state.restoreWorkingContextForInterruptedTurn(turnId) -> memoryManager.restoreWorkingContextTurnCheckpoint(...)`
+
+This can reset the future LLM working context to the state before the interrupted turn even though the UI/event stream and raw traces still show the accepted user message and observed activity. The final target must treat interrupt as turn settlement, not as erasure of already accepted/emitted/executed history.
+
 Important current-state improvements already present:
 
 - `WorkerEventDispatcher` and old normal-flow `agent/handlers/*` turn-control choreography are removed from the implemented normal LLM/tool/continuation path.
@@ -32,6 +38,7 @@ Remaining design pressure exposed by the user discussion:
 - Scheduling and inbox-event handling are still implicit in `AgentWorker` / `AgentRuntime` branches rather than explicit `AgentEventScheduler` and typed `InboxEventHandler`s.
 - If tool approvals/results are treated as active-turn events, the inbox loop cannot block behind `await AgentTurnRunner.run(...)`; it must keep processing active-turn events while an active turn's private execution is running.
 - `AgentRuntimeState` currently still exposes active execution bookkeeping (`activeTurnTask` / task registration) beside `activeTurn`. That leaks an internal execution handle outside the `AgentTurn` aggregate and is a boundary issue to remove in the final target.
+- Normal interrupt currently restores the working context to a pre-turn checkpoint, which can make later LLM calls forget accepted user input and observed activity from the interrupted turn. Memory retention/projection must be governed by the memory subsystem, not by `AgentTurnRunner` checkpoint rollback.
 
 Therefore the next target design keeps the successful turn-runner/phase/pipeline extraction but refactors the remaining inbound side into:
 
@@ -52,6 +59,7 @@ Add first-class native Autobyteus interruption as a turn-scoped runtime-control 
 - LLM/tool phases run under the active turn runner and turn execution scope. Passing `{ signal }` into BaseLLM/BaseTool/provider/tool APIs is downstream adapter plumbing, not the architectural owner of interruption.
 - `LlmPhase`, `ToolPhase`, LLM providers, concrete tools, and selected built-in tool adapters receive the active turn scope/signal and translate it into provider/tool cancellation or local abandonment.
 - Interrupted turns settle to idle with explicit interruption metadata, not success, error, or shutdown.
+- Interrupted turns do not erase already accepted/emitted/executed history. The memory subsystem keeps committed facts and finalizes a provider-safe future working-context projection with an interrupted-turn marker while fencing unsafe incomplete protocol continuation.
 - Native server Autobyteus backends call native `interrupt()` APIs instead of `stop()`.
 - Native team interrupt propagates to currently running member agents/sub-teams without invoking team shutdown cleanup.
 - Second-stage inbound refactor replaces the architecture-facing `AgentMessageInbox` / `AgentInboxMessage` message-wrapper model with one event-centric `AgentEventInbox`, explicit `AgentEventScheduler`, typed `InboxEventHandler`s, and an internal `TurnToolInputPort`.
@@ -153,6 +161,8 @@ Before choosing file changes, the architecture should make these concepts explic
 | InboxEventHandler | Entry handler for one inbound event family. | Currently implicit branches and direct runtime/state calls. | Validate/normalize one event family and delegate to the right domain owner or processor pipeline. | Inbox event handlers are not LLM/tool phase owners. |
 | TurnToolInputPort | Internal turn-scoped tool input wait/wake port. | Current `turn-tool-input-port.ts` approval wait/post primitive. | Deliver validated tool approvals and future async tool results to the current `ToolPhase`. | Internal to `AgentTurn` / `ToolPhase`; not a second public inbox. |
 | AgentExternalEventNotifier | External observable-event boundary for agent-produced facts/data. | `AgentExternalEventNotifier`, `EventEmitter` / `EventManager`, `AgentEventStream`. | Publish assistant output, segment deltas, tool lifecycle/logs, approvals, errors, artifacts, state updates, turn lifecycle. | External events do not advance turn control flow and are separate from inbound event inbox entries. |
+| MemoryManager / working context | Memory/history and future prompt-context owner. | `MemoryManager`, `WorkingContextSnapshot`, raw trace store, snapshot store. | Retain accepted/emitted/executed facts, build provider-safe LLM working context, finalize interrupted-turn memory projection. | `AgentTurn` reports lifecycle outcome; memory owns what is remembered. |
+| Interrupted turn memory projection | Provider-safe representation of an interrupted turn. | Currently missing; current pre-turn checkpoint restore is too broad. | Preserve committed facts and add an interrupted-turn marker while excluding unsafe incomplete native tool-call protocol. | Prevents the model from forgetting user messages after interrupt. |
 | Agent turn | One finite unit of agent reasoning started by a turn-starting event. | `AgentTurn` with turn ID, batch, scope, current tool-approval wait primitive, and first-stage task stored in runtime state. | Turn ID, active batches, `TurnToolInputPort`, execution scope, settlement/interruption metadata, and private execution handle exposed only through `startExecution(...)` / `waitForSettlement(...)`. | TOOL continuations stay inside the same turn; runtime state must not store the turn's task separately. |
 | Agent turn runner / agent loop | Finite reasoning loop for one turn. | `AgentTurnRunner`. | Process input, call LLM, run tools, feed tool continuations, return final/interrupted outcome to `AgentTurn` settlement. | This remains the core algorithm boundary but not the aggregate/task owner. |
 | Turn execution scope | Cancellation/operation scope for one turn. | `TurnExecutionScope`. | Abort signal, active operation, abort callbacks, `AgentInterruptionError`, late-result fencing. | Mechanical cancellation primitive used by runner phases. |
@@ -183,6 +193,7 @@ These are the spines the implementation should preserve or create. The later det
 | CDF-010A | Inter-agent communication projection | Inter-agent/system message is accepted as an inbound trigger | input pipeline converts message for LLM use and publishes the observable communication fact through `AgentExternalEventNotifier` -> stream/server/team processors enrich and derive team communication events -> frontend renders conversation/team communication projections | Existing consumers continue to see inter-agent communication after outbox removal | `AgentInputPipeline` + `AgentExternalEventNotifier` + team event processors |
 | CDF-011 | Terminal shutdown | `AgentRuntime.stop()` / lifecycle stop message | mark stopping -> side-band cancel active turn if needed -> lifecycle handler/shutdown orchestrator cleans LLM/tools/MCP/resources exactly once -> stopped | Runtime lifecycle complete | `AgentRuntime` / `AgentWorker` / shutdown lifecycle pipeline |
 | CDF-012 | External/async tool result delivery | External tool host/callback submits `ToolResultEvent` for an active invocation | `ToolResultEvent` enters `AgentEventInbox` active-turn lane -> scheduler -> `ToolResultInboxEventHandler` -> `AgentRuntimeState.routeToolResultToActiveTurn(...)` validates active turn identity -> `activeTurn.postToolResult(...)` validates pending invocation through the turn aggregate -> `TurnToolInputPort.postToolResult` -> `ToolPhase.waitForToolResults` resumes -> CDF-007 tool result continuation | Valid async result joins the current tool batch, or stale/no-active/no-pending/interrupted result is dropped without starting a turn | `AgentEventInbox` / `AgentEventScheduler` / `ToolResultInboxEventHandler` / `AgentRuntimeState` / `AgentTurn` / `TurnToolInputPort` / `ToolPhase` |
+| CDF-013 | Interrupted turn memory finalization | `AgentTurn` settles interrupted after accepted/emitted/executed facts exist | runner/turn reports interrupted outcome -> `MemoryManager.finalizeInterruptedTurn(turnId, reason)` or equivalent memory-owned projection -> raw traces/event history remain append-only -> working context is rebuilt/finalized as provider-safe messages containing accepted user input, observed assistant/tool facts when safe, and an interrupted-turn marker -> next LLM request uses that working context | Later turns remember what happened without continuing unsafe partial protocol | `MemoryManager` / working-context projection |
 
 Important spine constraints:
 
@@ -194,6 +205,7 @@ Important spine constraints:
 - CDF-002 enforces the one-active-turn invariant for turn-starting events; active-turn events can be dispatched while a turn is active but cannot create a second turn.
 - CDF-001 and CDF-011 are runtime lifecycle spines. They must not be mixed into the per-turn runner and must not run during a normal generation interrupt.
 - CDF-009 and CDF-012 are tool-specific active-turn event spines. If a future non-tool phase needs external input, it should get its own phase-specific wait/wake primitive rather than broadening `TurnToolInputPort`.
+- CDF-013 is memory-owned. `AgentTurn` / `AgentTurnRunner` may provide turn ID, reason, and lifecycle outcome, but must not restore or rewrite working context directly.
 
 ### Conceptual Spine Completeness Check
 
@@ -209,6 +221,7 @@ Important spine constraints:
 | Outbound status/output/tool lifecycle | CDF-010 publishes through `AgentExternalEventNotifier` only. | Complete: external observable events never advance turn control flow. |
 | Inter-agent/system communication consumers | CDF-010A preserves `INTER_AGENT_MESSAGE`, `TEAM_COMMUNICATION_MESSAGE`, and `SYSTEM_TASK_NOTIFICATION` consumer projections while removing `AgentOutbox`. | Complete: notifier remains semantic publication boundary; stream/server/frontend consumers stay compatible. |
 | Terminal stop/shutdown | CDF-011 runs shutdown cleanup exactly once and remains separate from normal interrupt. | Complete: stop and interrupt semantics remain distinct. |
+| Interrupted turn memory retention | CDF-013 keeps accepted/emitted/executed facts and finalizes a provider-safe interrupted-turn projection. | Complete: interrupt ends execution but does not erase history. |
 
 ## Phase Naming Symmetry
 
@@ -770,6 +783,84 @@ AgentTurnRunner
 
 So the design does not remove the tool-result-as-user-input behavior; it makes that behavior an explicit shared capability instead of an accidental side effect of queue routing.
 
+## Interrupted Turn Memory / Working Context Ownership Model
+
+Interrupt is an execution control action. It must not be treated as a memory erase action.
+
+The final design separates three history/context layers:
+
+| Layer | Owner | Rule On Interrupt | Why |
+| --- | --- | --- | --- |
+| External observable event history | `AgentExternalEventNotifier` / event stream / UI consumers | Keep already published user/assistant/tool/turn facts. | Users saw these facts; they are history. |
+| Durable raw memory trace history | `MemoryManager` raw trace store | Keep accepted user input, emitted assistant facts when available, tool invocations/results/interruption facts, and turn interrupted marker. | Memory is append-only history of what happened. |
+| Future LLM working context | `MemoryManager` / working-context projection | Rebuild/finalize provider-safe context from raw/committed facts; include the interrupted turn, but avoid invalid partial native tool-call protocol. | Future prompts must remember history without violating provider message rules. |
+
+Correct semantic rule:
+
+```text
+accepted / emitted / executed before interrupt = committed history
+unsafe not-yet-completed protocol continuation = fenced, not continued
+```
+
+Therefore the final implementation must remove normal-interrupt behavior shaped like:
+
+```text
+AgentTurnRunner catches interruption
+  -> restore working context to pre-turn checkpoint
+```
+
+That shape is wrong because it lets an execution controller erase memory owned by `MemoryManager`; it also makes later LLM calls forget accepted user input that remains visible in the conversation UI.
+
+Target shape:
+
+```text
+AgentTurnRunner catches interruption
+  -> return interrupted TurnOutcome
+AgentTurn settles interrupted
+  -> MemoryManager.finalizeInterruptedTurn(turnId, reason)
+MemoryManager
+  -> keeps raw traces/event facts
+  -> fences incomplete native tool-call protocol
+  -> appends/projects an interrupted-turn marker
+  -> persists provider-safe working context
+```
+
+The exact method name can vary, but the ownership must not vary: **`MemoryManager` owns memory commit/projection policy.** `AgentTurn` may hold a turn ID and settlement state; it must not own a working-context checkpoint that restores memory to a pre-turn state. `AgentRuntimeState` must not own memory rollback either.
+
+Provider-safe projection examples:
+
+```text
+Good future context after interrupted user-only turn:
+User: think about a game which you can create in html and create it and play yourself
+Assistant/System note: The previous turn was interrupted before completion.
+```
+
+```text
+Good future context after interrupted tool turn:
+User: create and play an HTML game
+Assistant/System note: The assistant began working and executed tool run_bash successfully before the turn was interrupted.
+Assistant/System note: The previous turn was interrupted; incomplete tool continuation was not completed.
+```
+
+Forbidden future context:
+
+```text
+// Bad: forgets accepted history
+User: stop please
+
+// Bad: invalid partial native tool protocol
+Assistant: tool_calls=[call_1, call_2]
+Tool: result for call_1 only
+```
+
+Design consequences:
+
+- `MemoryIngestInputProcessor` / `AgentInputPipeline` may record accepted user input, but interrupted turn finalization belongs to `MemoryManager`.
+- `LlmPhase` / streaming response handlers may expose partial assistant text/events; memory ingestion of interrupted assistant facts should be a memory-owned API, not a runner-local snapshot restore.
+- `ToolPhase` / `ToolResultPipeline` may record completed tool facts; interrupted or incomplete tool protocol must be projected safely by memory.
+- `LLMRequestAssembler` continues to populate the next provider request from `MemoryManager.getWorkingContextMessages()`, but that working context must already be the memory-owned safe projection.
+- Normal completion still commits normal provider protocol shape. Interrupt completion commits an interrupted-turn projection instead.
+
 ## Event Loop Fragmentation / Target Control-Flow Simplification
 
 The current architecture is hard to reason about because the same event/queue mechanism is being used for multiple different purposes:
@@ -888,9 +979,9 @@ This is a significant refactor, but it improves locality, makes interruption nat
 - Current design issue found (`Yes`/`No`/`Unclear`): Yes
 - Root cause classification (`Local Implementation Defect`/`Missing Invariant`/`Boundary Or Ownership Issue`/`Duplicated Policy Or Coordination`/`File Placement Or Responsibility Drift`/`Shared Structure Looseness`/`Legacy Or Compatibility Pressure`/`No Design Issue Found`/`Unclear`): Boundary Or Ownership Issue + Missing Invariant + File Placement / Responsibility Drift
 - Refactor needed now (`Yes`/`No`/`Deferred`/`Unclear`): Yes
-- Evidence: The first-stage worktree already fixed the original hidden-loop problem by introducing `AgentTurnRunner`, phase services, typed pipelines, `TurnExecutionScope`, and native interrupt routing. Remaining design issues are inbound-event clarity and active-turn encapsulation: current code exposes `AgentMessageInbox` plus `AgentInboxMessage` wrappers, and `AgentRuntimeState` still exposes active execution bookkeeping beside `activeTurn`.
-- Design response: Preserve the implemented runner/phase/pipeline/interrupt architecture, refactor the inbound side to `AgentEventInbox -> AgentEventScheduler -> typed InboxEventHandler -> pipeline/domain owner`, keep `TurnToolInputPort` internal to the active turn, and move private execution handle/settlement ownership fully inside `AgentTurn`.
-- Refactor rationale: A superficial rename would not solve dispatch ownership. A second public active-turn inbox keeps the mental model less intuitive. A unified inbox is safe only if scheduling is explicit and the worker loop remains able to dispatch active-turn/lifecycle events while one active turn's private execution is running.
+- Evidence: The first-stage worktree already fixed the original hidden-loop problem by introducing `AgentTurnRunner`, phase services, typed pipelines, `TurnExecutionScope`, and native interrupt routing. Remaining design issues are inbound-event clarity, active-turn encapsulation, and memory ownership on interrupt: current code exposes `AgentMessageInbox` plus `AgentInboxMessage` wrappers, `AgentRuntimeState` still exposes active execution bookkeeping beside `activeTurn`, and the current interruption catch path can restore the working context to a pre-turn checkpoint even though UI/raw traces show accepted user input and observed tool/assistant activity.
+- Design response: Preserve the implemented runner/phase/pipeline/interrupt architecture, refactor the inbound side to `AgentEventInbox -> AgentEventScheduler -> typed InboxEventHandler -> pipeline/domain owner`, keep `TurnToolInputPort` internal to the active turn, move private execution handle/settlement ownership fully inside `AgentTurn`, and move interrupted-turn memory finalization into `MemoryManager` so interrupt stops execution without erasing accepted/emitted/executed history.
+- Refactor rationale: A superficial rename would not solve dispatch ownership. A second public active-turn inbox keeps the mental model less intuitive. A wholesale working-context rollback on normal interrupt solves provider-protocol safety by violating memory ownership. A unified event inbox is safe only if scheduling is explicit and the worker loop remains able to dispatch active-turn/lifecycle events while one active turn's private execution is running; interrupted memory is safe only if `MemoryManager` owns a provider-safe projection instead of letting turn execution controllers restore snapshots.
 - Intentional deferrals and residual risk, if any: Full rollback of external tool side effects is deferred/out of scope. Some third-party SDKs or remote MCP servers may not physically stop remote work; local runtime must still abandon late results and surface local interruption.
 
 ## Terminology
@@ -933,6 +1024,7 @@ This is a significant refactor, but it improves locality, makes interruption nat
 | DS-008 | Primary End-to-End | External approve/deny tool command | `ToolPhase.waitForApproval` receives valid decision or runtime returns stale/no-active/no-pending/interrupted result | `AgentRuntime` / `AgentRuntimeState` / `AgentTurn` / `TurnToolInputPort` / `ToolPhase` | Completes UC-003/CDF-009 after removing old approval handler path and runtime-state ownership of port internals. |
 | DS-009 | Primary End-to-End | External/async tool result arrives for an active invocation | `ToolPhase.waitForToolResults` receives the validated result or stale/no-active/no-pending/interrupted result is fenced | `AgentEventScheduler` / `AgentRuntimeState` / `AgentTurn` / `TurnToolInputPort` / `ToolPhase` | Completes the tool-result-in-inbox path without allowing tool results to start turns, bypass CDF-007, or bypass the turn aggregate. |
 | DS-010 | Return-Event | Inter-agent/system message is accepted as input | Frontend conversation/team communication consumers receive compatible `INTER_AGENT_MESSAGE`, derived `TEAM_COMMUNICATION_MESSAGE`, and system task notifications | `AgentInputPipeline` / `AgentExternalEventNotifier` / event stream + server/team processors | Prevents the outbox-removal refactor from breaking existing team communication rendering. |
+| DS-011 | Primary End-to-End / Memory Projection | Interrupt after accepted user input, emitted assistant facts, or completed tool facts | Next LLM request remembers the interrupted turn safely while incomplete native tool-call protocol is fenced | `MemoryManager` / working-context projection | Prevents UI/raw-history facts from diverging from prompt memory after interrupt. |
 
 ## Primary Execution Spine(s)
 
@@ -942,7 +1034,7 @@ Single-agent native interrupt:
 
 Native LLM interruption:
 
-`AgentRuntime.interrupt -> AgentTurn.executionScope.interrupt -> LlmPhase abortable provider stream -> BaseLLM/provider request abort or local abandonment -> streaming segment interruption finalization -> skip assistant ingestion/output pipeline -> interrupted turn settlement`
+`AgentRuntime.interrupt -> AgentTurn.executionScope.interrupt -> LlmPhase abortable provider stream -> BaseLLM/provider request abort or local abandonment -> streaming segment interruption finalization -> skip normal completed-assistant ingestion/output pipeline -> memory-owned interrupted projection -> interrupted turn settlement`
 
 Native tool interruption:
 
@@ -956,6 +1048,10 @@ External/async tool result response:
 
 `External Tool Result Callback -> AgentRuntime.postToolResultEvent(ToolResultEvent) -> AgentEventInbox active-turn lane -> AgentEventScheduler -> ToolResultInboxEventHandler -> AgentRuntimeState.routeToolResultToActiveTurn -> AgentTurn.postToolResult -> TurnToolInputPort.postToolResult -> ToolPhase.waitForToolResults resumes -> ToolResultPipeline -> ToolResultContinuationBuilder -> AgentInputPipeline(SenderType.TOOL)`
 
+Interrupted-turn memory retention:
+
+`Accepted user input / emitted assistant facts / completed tool facts -> MemoryManager raw trace history -> AgentTurn interrupted outcome -> MemoryManager.finalizeInterruptedTurn(turnId, reason) -> provider-safe working-context projection with interrupted-turn marker -> next LLM request uses remembered interrupted history`
+
 Native team interruption:
 
 `Team Interrupt Command -> AutoByteusTeamRunBackend.interrupt -> AgentTeam.interrupt -> AgentTeamRuntime.interrupt -> TeamManager interrupt running nodes -> member AgentRuntime interrupts -> Team idle/interrupted status`
@@ -965,7 +1061,7 @@ Native team interruption:
 | Spine ID | Short Narrative | Main Domain Subject Nodes | Governing Owner | Key Off-Spine Concerns |
 | --- | --- | --- | --- | --- |
 | DS-001 | The user asks to cancel the current native generation. The server backend calls native `Agent.interrupt()`. Runtime reads `AgentRuntimeState.activeTurn` and signals the active `AgentTurn` side-band through `turn.interrupt(...)`; it does not access a runner task. The active phase service sees the scope interruption, stops producing normal output, and returns/throws `AgentInterruptionError` to `AgentTurnRunner`. The runner returns an interrupted outcome through the turn's private execution boundary; `AgentTurn` closes/fences turn-local ports, records idempotent settlement, publishes/coordinates interrupted facts through `AgentExternalEventNotifier`, and the runtime remains running/idle after active-turn clear-by-ID. | Client command, AgentRunBackend, AgentRuntime, AgentRuntimeState, AgentTurn, AgentTurnRunner, TurnExecutionScope, AgentExternalEventNotifier | AgentRuntime / AgentTurn / AgentTurnRunner | Server backend, status projection, stream events |
-| DS-002 | While LLM streaming is active, interrupt aborts the active turn scope. `LlmPhase` races provider iteration against the scope, asks the provider/iterator to abort/close when supported, closes open response segments with interruption metadata, skips assistant ingestion and `LLMResponsePipeline`, and returns interruption to the runner. | AgentRuntime, AgentTurnRunner, TurnExecutionScope, LlmPhase, BaseLLM, provider | AgentTurnRunner + TurnExecutionScope + BaseLLM | Streaming parser/segments, memory working-context rollback/suppression |
+| DS-002 | While LLM streaming is active, interrupt aborts the active turn scope. `LlmPhase` races provider iteration against the scope, asks the provider/iterator to abort/close when supported, closes open response segments with interruption metadata, skips normal completed-assistant ingestion and `LLMResponsePipeline`, finalizes any already emitted assistant facts through the memory-owned interrupted-turn projection, and returns interruption to the runner. | AgentRuntime, AgentTurnRunner, TurnExecutionScope, LlmPhase, BaseLLM, provider | AgentTurnRunner + TurnExecutionScope + BaseLLM | Streaming parser/segments, memory-owned interrupted-turn projection |
 | DS-003 | While a tool is running, interrupt aborts the active turn scope. `ToolPhase` races tool execution against that scope. Participating tools receive the signal; terminal foreground command closes its session. The phase publishes tool-interrupted lifecycle through `AgentExternalEventNotifier`, asks the active `AgentTurn`/`TurnToolInputPort` boundary to fence expected invocation IDs, closes/fences the turn tool input port for that batch, and returns interruption without building a TOOL continuation. | AgentRuntime, AgentTurn, AgentTurnRunner, TurnExecutionScope, ToolPhase, BaseTool, TurnToolInputPort | AgentTurnRunner + TurnExecutionScope + BaseTool | Terminal/MCP cancellation, turn-local port/batch fencing |
 | DS-004 | A team interrupt is a coordination operation, not shutdown. The native team runtime enters interrupting, asks TeamManager to interrupt all currently running cached agents/sub-teams, waits boundedly for member settlement, and returns team status to idle/interrupted. | Team backend, AgentTeamRuntime, TeamManager, member AgentRuntime | AgentTeamRuntime / TeamManager | Member context mapping, team status/events |
 | DS-005 | Interrupt outcome travels through `AgentExternalEventNotifier`, `AgentEventStream`, server stream conversion, WebSocket mapper, and frontend handlers as interrupting/interrupted metadata. UI can clear sending state and keep the run online. | AgentExternalEventNotifier, AgentEventStream, server converter, WebSocket mapper, frontend handlers | AgentExternalEventNotifier / runtime event pipeline | Status visuals, protocol enum |
@@ -973,6 +1069,7 @@ Native team interruption:
 | DS-007 | Interruption invalidates all same-turn pending/queued continuation work. Tool approvals are cleared or rejected by active-turn identity. Invocation IDs expected by the active batch are marked settled/fenced inside the active `AgentTurn` / `TurnToolInputPort` boundary so stale late results are ignored. | AgentTurn, TurnToolInputPort, ToolPhase | AgentTurn / TurnToolInputPort | Event predicates, pending approval map inside the turn aggregate |
 | DS-008 | External approval/denial is a runtime active-turn event, not a new turn and not an old event-handler path. The server/backend command calls the native facade, runtime posts an awaitable inbox event, scheduler dispatches `ToolApprovalInboxEventHandler`, runtime state validates active turn identity, `AgentTurn.postToolApproval(...)` validates pending invocation and posts to `TurnToolInputPort`, and the waiting `ToolPhase` resumes or returns a stale/no-active/no-pending/interrupted outcome. | AgentRunBackend, Agent facade, AgentRuntime, AgentEventInbox, AgentEventScheduler, ToolApprovalInboxEventHandler, AgentRuntimeState, AgentTurn, TurnToolInputPort, ToolPhase | AgentRuntime / AgentEventScheduler / AgentRuntimeState / AgentTurn / TurnToolInputPort | Server command mapping, stale result mapping, team member routing |
 | DS-009 | If tool execution is externalized or a tool result arrives asynchronously, the result is an active-turn inbox event. Scheduler dispatches `ToolResultInboxEventHandler`; runtime state validates active turn identity; `AgentTurn.postToolResult(...)` validates expected invocation identity and wakes `TurnToolInputPort`; then normal CDF-007 tool-result processing builds the TOOL-sender continuation. Invalid or late results are fenced and cannot start a turn. | Tool result callback, AgentEventInbox, AgentEventScheduler, ToolResultInboxEventHandler, AgentRuntimeState, AgentTurn, TurnToolInputPort, ToolPhase, ToolResultPipeline | AgentEventScheduler / AgentRuntimeState / AgentTurn / ToolPhase | External tool host/callback mapping, stale result classification, turn-local settled/fenced invocation IDs |
+| DS-011 | When a turn is interrupted after facts are already accepted, emitted, or executed, the turn reports an interrupted outcome but does not decide what memory forgets. `MemoryManager` keeps raw trace facts append-only, records an interrupted-turn marker, and rebuilds/finalizes the future working context as a provider-safe projection. The projection may summarize/mark partial assistant/tool facts, but it must not preserve an invalid native tool-call protocol fragment or erase the accepted user message. | MemoryManager, raw trace store, WorkingContextSnapshot, AgentTurn outcome, LLMRequestAssembler | MemoryManager / working-context projection | Provider message validity, compaction/snapshot consistency, raw trace retention |
 
 ## Spine Actors / Main-Line Nodes
 
@@ -985,6 +1082,7 @@ Native team interruption:
 - AgentTurn: active-turn aggregate root, private execution handle owner, tool input port owner, interruption/settlement owner.
 - AgentTurnRunner: finite per-turn agent loop algorithm owner.
 - AgentRuntimeState: active-turn reference and identity routing owner only.
+- MemoryManager / working context: memory/history owner that turns raw committed facts plus interrupted-turn outcome into provider-safe future prompt context.
 - TurnExecutionScope: per-turn cancellation and late-result fencing primitive.
 - LlmPhase / ToolPhase: direct phase services called by the runner.
 - BaseLLM / BaseTool: provider/tool boundary where cancellation leaves runtime internals.
@@ -999,7 +1097,8 @@ Native team interruption:
 - `LlmPhase` owns one LLM phase: request assembly, compaction preparation, provider streaming, streaming parser integration, and phase-level interruption handling.
 - `ToolPhase` owns one tool phase: invocation preprocessing, approval coordination through `TurnToolInputPort`, abortable execution, result collection, and tool-interrupted lifecycle publication.
 - `AgentTurn` owns turn ID, active tool batch, `TurnToolInputPort`, `TurnExecutionScope`, active operation metadata, interrupted flag, private execution handle, public `startExecution`/`waitForSettlement` boundary, and settlement promise.
-- `AgentRuntimeState` owns active-turn storage and identity routing only: start active turn, no-active/stale-turn classification, route approval/result to the active turn, and clear active turn by ID after settlement. It must not own pending approval maps, recent settled invocation IDs, port internals, or runner task/promise state.
+- `AgentRuntimeState` owns active-turn storage and identity routing only: start active turn, no-active/stale-turn classification, route approval/result to the active turn, and clear active turn by ID after settlement. It must not own pending approval maps, recent settled invocation IDs, port internals, runner task/promise state, or working-context rollback policy.
+- `MemoryManager` owns raw trace retention, working-context state, compaction/snapshot interaction, and interrupted-turn memory finalization/projection. It must keep accepted/emitted/executed facts append-only and build the provider-safe prompt context used by the next `LLMRequestAssembler` call.
 - `AgentInputPipeline`, `ToolInvocationPipeline`, `ToolResultPipeline`, `LLMResponsePipeline`, and `SystemPromptPipeline` own typed handler orchestration.
 - `AgentExternalEventNotifier` owns external observable-event publication above low-level `EventEmitter` / `EventManager` infrastructure.
 - `BaseLLM` owns the stable cancellation-aware LLM invocation contract; provider adapters own SDK-specific signal mapping.
@@ -1032,6 +1131,7 @@ If a public facade exists, it is thin: `Agent` and `AgentTeam` expose commands b
 | Queue-only idea for interrupt | Normal queued work cannot preempt an active phase operation. | Side-band `AgentRuntime.interrupt()` -> active `TurnExecutionScope` | In This Change | Interrupt events can still be published through external-event/status. |
 | Treating abort as LLM/tool error | Interrupted work is not a runtime error or tool failure. | `AgentInterruptionError` and interrupted lifecycle external events. | In This Change | Provider/tool abort exceptions must normalize to interruption. |
 | Normal tool-continuation after interrupted tool batch | Would let an interrupted turn continue. | Turn-scoped `AgentTurn` / `TurnToolInputPort` close and expected-invocation fencing. | In This Change | Late results ignored. |
+| Whole-turn working-context restore on normal interrupt | It erases accepted/emitted/executed facts from the next prompt and lets execution control own memory policy. | `MemoryManager.finalizeInterruptedTurn(...)` / provider-safe working-context projection. | In This Change | Raw trace/event history remains append-only; only unsafe incomplete provider-native protocol fragments are fenced or summarized. |
 | Any remaining app-owned `STOP_GENERATION` protocol/store naming | It hides the domain distinction the task is fixing. | `INTERRUPT_GENERATION` / `interruptGeneration` names. | In This Change / Already Partly Done | Current ticket frontend/server code already uses `INTERRUPT_GENERATION`; final implementation should keep that shape and remove any leftover stop-generation code names if found. |
 
 ## Return Or Event Spine(s) (If Applicable)
@@ -1059,7 +1159,7 @@ Team interrupted return:
   - Why it matters: The worker remains serialized but does not own turn-local LLM/tool control flow.
 
 - Parent owner: `AgentTurn`
-  - Spine: `startActiveTurn -> create TurnToolInputPort/scope/checkpoint -> begin runner operation -> interrupt scope -> settle interrupted -> resolve settlement -> clear active turn`
+  - Spine: `startActiveTurn -> create TurnToolInputPort/scope -> begin runner operation -> interrupt scope -> settle interrupted -> MemoryManager.finalizeInterruptedTurn -> resolve settlement -> clear active turn`
   - Why it matters: This is the turn-scoped state machine that keeps LLM/tool/approval interruption consistent.
 
 - Parent owner: `ToolPhase`
@@ -1077,7 +1177,7 @@ Team interrupted return:
 | Interruption error/result types | DS-001, DS-002, DS-003 | AgentRuntime / AgentTurnRunner / phase services | Stable interrupted outcome and error normalization. | Prevents abort exceptions being treated as provider/tool errors. | Each phase/provider invents incompatible abort checks. |
 | Abortable operation utility | DS-002, DS-003, DS-006 | TurnExecutionScope / phase services | Race promises/async iterators against AbortSignal, close iterators, attach late rejection logging. | JS cannot preempt promises; abortable utilities give phase services a consistent pattern. | Worker or runtime would need unsafe parallel completion semantics. |
 | Active-turn tool event predicate | DS-007, DS-009 | AgentEventScheduler / AgentRuntimeState / AgentTurn / TurnToolInputPort | Identify/drop/fence tool approval/result events belonging to interrupted turn while preserving parked AgentEventInbox event entries. Runtime state performs active-turn identity checks; `AgentTurn` owns pending-invocation and port-level fencing. | Prevents interrupted continuations. | Generic queue storage or runtime state becomes domain-aware of every turn-internal event shape. |
-| Working-context interruption checkpoint | DS-002, DS-003 | AgentTurn / MemoryManager | Restore/suppress working context additions from interrupted turn through a turn-owned checkpoint reference. | Avoids incomplete user/tool/assistant fragments driving future LLM calls without expanding runtime state beyond active-turn selection. | LlmPhase would own memory rollback policy. |
+| Interrupted-turn memory projection | DS-002, DS-003, DS-011 | MemoryManager / working-context projection | Retain accepted/emitted/executed facts and finalize provider-safe working context with an interrupted-turn marker while fencing incomplete protocol. | Avoids both forgotten history and invalid partial tool-call protocol. | AgentTurnRunner or AgentTurn would own memory rollback/projection policy. |
 | Provider signal mapping | DS-002 | BaseLLM/provider adapters | Translate generic signal to OpenAI/Anthropic/Gemini/Ollama/etc SDK capabilities. | Keeps provider details below BaseLLM boundary. | LlmPhase would depend on provider internals. |
 | Tool signal mapping | DS-003 | BaseTool/concrete tools | Translate generic signal to terminal/MCP/local tool behavior. | Keeps process/transport cancellation below tool boundary. | ToolPhase would know terminal/MCP internals. |
 | Frontend status visualization | DS-005 | UI stores/components | Display interrupting/interrupted and clear sending state. | User-visible correctness. | Runtime would leak UI-specific semantics. |
@@ -1091,6 +1191,7 @@ Team interrupted return:
 | Runtime event inbox boundary | `InboxQueueStore` low-level queues | Create semantic boundary under `agent/event-inbox` | Typed lanes, parking, and awaitable active-turn commands need a semantic owner above queue storage; dispatchability belongs to `AgentEventScheduler`. | Leaving this only as event queue storage makes the worker/queue look like the domain inbox and obscures event semantics. |
 | Finite agent loop runner | Currently implicit in `AgentWorker` + queued handlers | Create/Extract under `agent/loop` | The per-turn LLM/tool continuation loop needs a finite owner that can be interrupted independently from the long-lived worker. | Keeping this implicit in AgentWorker preserves the stop/interrupt ambiguity. |
 | Processor pipeline orchestration | Currently duplicated across handlers/bootstrap steps | Create under `agent/pipelines` | Ordered processor execution, type validation, and error policy should be consistent but domain-typed. | Existing processor folders define processors, not shared orchestration. |
+| Interrupted-turn memory projection | Existing `MemoryManager`, raw trace store, `WorkingContextSnapshot`, compaction/snapshot support | Extend memory subsystem | Memory already owns future LLM context and history; interrupted finalization is a memory projection policy, not a turn execution concern. | N/A |
 | External observable-event boundary | Existing `AgentExternalEventNotifier` already has semantic `notify...` methods; first-stage `AgentOutbox` wrapper duplicates it. | Extend `agent/events/notifiers.ts`; remove `agent/outbox`. | Phase services and input/lifecycle pipelines need one outbound publication boundary for assistant output, streaming, tool lifecycle, inter-agent/system-task communication facts, turn/runtime lifecycle, and errors. | `EventEmitter` / `EventManager` are low-level infrastructure; `AgentExternalEventNotifier` is the domain boundary. |
 | Input processing pipeline | Currently embedded in `UserInputMessageEventHandler` | Extract under `agent/pipelines` | External user input and tool continuation must use identical input processor and multimodal conversion behavior. | Leaving it only in an event handler would force the runner either to enqueue local events or bypass behavior. |
 | Tool invocation/result/response pipelines | Currently embedded in `ToolInvocationExecutionEventHandler`, `ToolResultEventHandler`, `LLMCompleteResponseReceivedEventHandler` | Extract under `agent/pipelines` | Runner needs explicit typed pipelines for each phase while preserving current processor behavior. | Keeping these only in handlers preserves fragmented control flow. |
@@ -1111,12 +1212,13 @@ Team interrupted return:
 | Subsystem / Capability Area | Owns Which Concerns | Related Spine ID(s) | Governing Owner(s) Served | Decision (`Reuse`/`Extend`/`Create New`) | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Agent runtime control | start/stop/interrupt, active turn command, status projection | DS-001, DS-006 | AgentRuntime | Extend | Stop remains terminal. |
-| Agent turn lifecycle/interruption | private execution handle, AbortSignal, active operation, interrupted settlement, tool-port fencing, working-context checkpoint coordination | DS-001, DS-002, DS-003, DS-006, DS-007 | AgentTurn | Extend | `AgentTurn` is the aggregate root; `AgentRuntimeState` is only the active-turn selector and identity router. |
+| Agent turn lifecycle/interruption | private execution handle, AbortSignal, active operation, interrupted settlement, and tool-port fencing | DS-001, DS-002, DS-003, DS-006, DS-007 | AgentTurn | Extend | `AgentTurn` is the aggregate root; memory projection is owned by `MemoryManager`; `AgentRuntimeState` is only the active-turn selector and identity router. |
 | Agent turn loop execution | finite per-trigger LLM/tool loop, continuation, runner-level interruption catch/outcome production | DS-001, DS-002, DS-003, DS-006, DS-007 | AgentTurnRunner | Create/Extract | Separates finite agent loop algorithm from long-lived AgentWorker mailbox and from active-turn execution-handle storage. |
 | Agent event inbox | unified typed inbound lanes, parked external events, active-turn command events, lifecycle events | CDF-002, CDF-009, CDF-012, DS-006, DS-007, DS-008, DS-009 | AgentEventInbox / AgentEventScheduler | Reshape current AgentMessageInbox | One semantic inbox with lanes; scheduler owns dispatchability; active-turn events cannot start turns. |
 | Tool approval routing | public/native/server approval command as awaitable inbox event entry, scheduler/handler validation, active-turn identity routing, turn-owned pending-invocation validation, turn tool input port delivery | CDF-009 | AgentRuntime / AgentEventInbox / AgentEventScheduler / ToolApprovalInboxEventHandler / AgentRuntimeState / AgentTurn / TurnToolInputPort | Extend/Create explicit route | Completes approval path without old approval event handler routing or runtime-state ownership of turn internals. |
 | External/async tool result routing | external result as active-turn inbox event, scheduler/handler validation, active-turn identity routing, turn-owned pending-invocation validation, turn tool input port delivery, then normal continuation | CDF-012, CDF-007 | AgentEventInbox / AgentEventScheduler / ToolResultInboxEventHandler / AgentRuntimeState / AgentTurn / TurnToolInputPort / ToolPhase | Create explicit route when externalized tool execution exists | Prevents tool results from starting turns, bypassing tool-result/input pipelines, or writing directly to turn-port internals. |
 | Processor pipeline orchestration | typed ordered processor execution and shared error/logging policy | DS-001, DS-002, DS-003 | ProcessorPipelineRunner + domain pipelines | Create/Extract | Provides consistency without making one untyped generic processor abstraction. |
+| Agent memory / working-context projection | raw trace retention, working-context messages, interrupted-turn marker, provider-safe projection after interrupt, compaction/snapshot consistency | CDF-013, DS-011 | MemoryManager / WorkingContextSnapshot | Extend | Interrupt is execution settlement, not memory erasure; `MemoryManager` must retain history while fencing invalid partial provider protocol. |
 | Agent input pipeline | input processors, sender-type handling, multimodal LLM user message construction | DS-001, DS-002, DS-003 | AgentInputPipeline | Create/Extract | Preserves current UserInputMessageEventHandler behavior for both external and tool-continuation input. |
 | Tool invocation pipeline | tool invocation preprocessors and approval preparation | DS-003 | ToolInvocationPipeline | Create/Extract | Keeps tool-call preparation outside worker and reusable by runner. |
 | Tool result pipeline | tool execution result processors and memory ingest | DS-003, DS-007 | ToolResultPipeline | Create/Extract | Preserves result processor behavior before continuation building. |
@@ -1139,7 +1241,9 @@ Team interrupted return:
 | `autobyteus-ts/src/agent/interruption/agent-interruption.ts` | Agent interruption support | Runtime interruption model | `AgentInterruptOptions`, `AgentInterruptResult`, `AgentInterruptionError`, `isAgentInterruptionError`, reason normalization. | One semantic model for interrupted outcome. | N/A |
 | `autobyteus-ts/src/agent/interruption/turn-execution-scope.ts` | Agent interruption support | TurnExecutionScope | Per-turn cancellation scope: signal owner, abort listener registry, operation runner, late-result fencing hooks. | Architectural container for interruptible turn execution. | `AgentInterruptionError`, abortable helpers |
 | `autobyteus-ts/src/agent/interruption/abortable-operation.ts` | Agent interruption support | Abortable operation utility | Abort-aware promise and async-iterator utilities plus late-promise handling used by the turn execution scope. | Operational utility separate from domain types. | `AgentInterruptionError` |
-| `autobyteus-ts/src/agent/agent-turn.ts` | Agent turn lifecycle | AgentTurn | Turn ID, private execution promise/handle, `startExecution(...)`, `waitForSettlement(...)`, signal/scope, interrupted flag, active operation, idempotent settlement, tool input port, tool batch. | Existing turn owner becomes the aggregate root for active-turn internals. | `AgentInterruptOptions`, `AgentTurnRunner`, `TurnOutcome` |
+| `autobyteus-ts/src/agent/agent-turn.ts` | Agent turn lifecycle | AgentTurn | Turn ID, private execution promise/handle, `startExecution(...)`, `waitForSettlement(...)`, signal/scope, interrupted flag, active operation, idempotent settlement, tool input port, tool batch. It must not own a working-context checkpoint/restore policy. | Existing turn owner becomes the aggregate root for active-turn internals only. | `AgentInterruptOptions`, `AgentTurnRunner`, `TurnOutcome` |
+| `autobyteus-ts/src/memory/memory-manager.ts` | Agent memory / working-context projection | MemoryManager | Raw trace retention, working-context updates, snapshots/compaction integration, and `finalizeInterruptedTurn(...)` or equivalent interrupted-turn projection API. | Existing memory owner already feeds LLM context; interrupted history retention belongs here. | WorkingContextSnapshot, raw trace models |
+| `autobyteus-ts/src/memory/working-context-interrupted-turn-projector.ts` (optional) | Agent memory / working-context projection | Interrupted-turn projector | Small extracted projection helper if `finalizeInterruptedTurn(...)` would otherwise mix provider-safe message construction into the broader manager. | Optional owned helper under memory, not under agent loop. | WorkingContextSnapshot |
 | `autobyteus-ts/src/agent/event-inbox/agent-event-inbox.ts` | Agent event inbox | AgentEventInbox | Typed inbound lanes, `post`, `postAwaitable`, lane availability, candidate peek, claim, parking, and awaitable reply resolution above low-level storage. | Makes one agent inbox first-class while keeping dispatch policy outside storage. | `AgentEventInboxEntry`, `InboxEventHandlerResult` |
 | `autobyteus-ts/src/agent/event-inbox/inbox-queue-store.ts` | Agent event inbox | InboxQueueStore | Low-level async queue/availability storage. | Replaces architecture-facing queue-manager naming with private storage. | N/A |
 | `autobyteus-ts/src/agent/event-inbox/agent-event-scheduler.ts` | Agent event scheduling | AgentEventScheduler | Dispatchability and handler selection by event class/lane and runtime/turn state. | Keeps routing policy out of worker and storage. | AgentEventSchedulerHandlers |
@@ -1199,7 +1303,9 @@ Team interrupted return:
 | `autobyteus-ts/src/agent/interruption/turn-execution-scope.ts` | Agent interruption support | TurnExecutionScope | Per-turn interruptible execution container, operation runner, abort listener registry, and late-result fencing hooks. | Architectural cancellation boundary, not provider/tool adapter code. | `AgentInterruptionError`, abortable helper |
 | `autobyteus-ts/src/agent/interruption/abortable-operation.ts` | Agent interruption support | Abortable operation utility | Abort-aware promise/iterator helpers and late-result logging used by scope/phase services. | Operational helper only. | `AgentInterruptionError` |
 | `autobyteus-ts/src/agent/interruption/index.ts` | Agent interruption support | Public exports | Export interruption support. | Keeps import paths stable. | N/A |
-| `autobyteus-ts/src/agent/agent-turn.ts` | Agent turn lifecycle | AgentTurn | Own the turn execution scope, private execution promise/handle, interrupted state, active operation, tool input port, idempotent settlement promise, and batch state. | Existing turn owner becomes the aggregate root; runtime state stores only the active turn reference. | Interruption types, TurnOutcome |
+| `autobyteus-ts/src/agent/agent-turn.ts` | Agent turn lifecycle | AgentTurn | Own the turn execution scope, private execution promise/handle, interrupted state, active operation, tool input port, idempotent settlement promise, and batch state. It does not own memory rollback or working-context projection. | Existing turn owner becomes the aggregate root; runtime state stores only the active turn reference. | Interruption types, TurnOutcome |
+| `autobyteus-ts/src/memory/memory-manager.ts` | Agent memory / working-context projection | MemoryManager | Own `finalizeInterruptedTurn(...)` or equivalent, raw trace retention, provider-safe working-context projection, interrupted-turn marker, and removal of normal-interrupt pre-turn restore. | Existing memory owner is the future-prompt source used by `LLMRequestAssembler`; interrupt memory behavior belongs here. | WorkingContextSnapshot, raw trace models |
+| `autobyteus-ts/src/memory/working-context-interrupted-turn-projector.ts` (optional) | Agent memory / working-context projection | Interrupted-turn projector | Encapsulate provider-safe conversion of partial/interrupted turn facts into prompt messages if the logic grows beyond one manager method. | Keeps projection logic memory-owned and testable. | WorkingContextSnapshot |
 | `autobyteus-ts/src/agent/event-inbox/agent-event-inbox.ts` | Agent event inbox | AgentEventInbox | Own typed inbound lanes, parked events, lane availability, candidate peek/claim, and awaitable active-turn commands. | Makes inbox semantics explicit above queue storage while scheduler owns dispatch policy. | AgentEventInboxEntry, InboxEventHandlerResult |
 | `autobyteus-ts/src/agent/event-inbox/inbox-queue-store.ts` | Agent event inbox | InboxQueueStore | Private async queue/availability storage for inbox lanes. | Low-level storage only. | N/A |
 | `autobyteus-ts/src/agent/event-inbox/agent-event-scheduler.ts` | Agent event scheduling | AgentEventScheduler | Select dispatchable inbox event entries and dispatch typed handlers by event class/lane/state. | Makes scheduling an explicit owner. | AgentEventSchedulerHandlers |
@@ -1238,7 +1344,8 @@ Team interrupted return:
 ## Ownership Boundaries
 
 - Upstream callers must use `Agent.interrupt()` / `AgentRuntime.interrupt()` for native agent interruption. They must not reach into `AgentRuntimeState.activeTurn.signal`, `AgentTurn.executionScope.signal`, or any private execution promise/runner handle directly.
-- `AgentRuntimeState` must expose only `activeTurn: AgentTurn | null` plus narrow creation/routing/clear methods. It must not expose or store `activeTurnTask`, `activeRunner`, or `activeTurnExecutionHandle` as sibling state.
+- `AgentRuntimeState` must expose only `activeTurn: AgentTurn | null` plus narrow creation/routing/clear methods. It must not expose or store `activeTurnTask`, `activeRunner`, or `activeTurnExecutionHandle` as sibling state, and it must not restore working context for normal turn interruption.
+- `MemoryManager` is the authoritative boundary for raw history and working-context projection. `AgentTurn`, `AgentTurnRunner`, and `AgentRuntimeState` must report turn outcomes/facts to memory-owned APIs rather than holding/restoring memory checkpoints themselves.
 - `AgentTurnRunner` owns turn-local LLM/tool/continuation decisions. It calls `AgentInputPipeline`, `LlmPhase`, `ToolPhase`, `ToolResultPipeline`, `ToolResultContinuationBuilder`, and `LLMResponsePipeline` directly.
 - `LlmPhase` and `ToolPhase` may use the active turn execution scope and interruption helpers. They do not own global interruption policy or runtime lifecycle.
 - LLM provider adapters own SDK-specific abort mapping. Runtime, runner, and phase services must not branch on provider class names.
@@ -1253,6 +1360,7 @@ Team interrupted return:
 | --- | --- | --- | --- | --- |
 | `AgentRuntime.interrupt()` | Active `AgentTurn` aggregate, turn execution scope, status events, settlement wait | `Agent`, server Autobyteus backend, tests | Backend calling `agent.stop()`, mutating active turn directly, or reaching for a runner task | Add result/options to `interrupt()`. |
 | `AgentTurn` aggregate | Private execution promise/handle, `TurnExecutionScope`, `TurnToolInputPort`, tool batches, settlement state | `AgentRuntime`, `TurnStartInboxEventHandler`, `ToolPhase`, runtime tests | `AgentRuntimeState.activeTurnTask`, `AgentRuntimeState.activeRunner`, worker/scheduler storing runner promise as peer state, or direct writes to turn port internals | Add `startExecution(...)`, `interrupt(...)`, `waitForSettlement(...)`, and narrow turn event-posting methods on `AgentTurn`. |
+| `MemoryManager` / working-context projection | Raw trace store, working-context messages, interrupted-turn marker/projection, compaction/snapshot consistency | `AgentTurnRunner`, `LlmPhase`, `ToolPhase`, `LLMRequestAssembler`, tests | `AgentTurn` or `AgentRuntimeState` restoring a pre-turn checkpoint on normal interrupt, runner editing `WorkingContextSnapshot` directly, or prompt assembler reconstructing memory policy | Add `finalizeInterruptedTurn(...)` / focused projection helper APIs on the memory boundary. |
 | `AgentRuntime.postToolApprovalEvent()` | Awaitable active-turn approval event submission through `AgentEventInbox`, scheduler/handler validation, approval result classification | `Agent.postToolExecutionApproval`, native/team facades, server Autobyteus backend tests | Server/native code writing directly to `TurnToolInputPort`, `InboxQueueStore`, or old approval handlers | Add `ToolExecutionApprovalEvent`, `ToolExecutionApprovalEvent` entry, and `PostToolApprovalResult` contract. |
 | `AgentEventInbox` | Low-level queue storage, semantic lanes, parked events, lane availability, claim/park mechanics, awaitable command replies | `AgentRuntime.submitEvent`, `AgentWorker`, `AgentEventScheduler`, runtime tests | Callers pushing directly into `InboxQueueStore`, or scheduler/handlers bypassing inbox lanes | Add semantic post/postAwaitable/wait/peek/claim APIs. |
 | `AgentTurnRunner` | Per-turn LLM/tool continuation algorithm and interruption catch/outcome production | `AgentTurn.startExecution(...)`, runtime tests | Worker/event dispatcher directly owning turn-local LLM/tool loop policy, runner storing itself in runtime state, or runner bypassing input pipeline for tool continuation | Extract runner methods and call shared `AgentInputPipeline` / `ToolResultContinuationBuilder`; keep execution-handle ownership in `AgentTurn`. |
@@ -1285,6 +1393,7 @@ Allowed:
 - `AgentTurnRunner` / `ToolPhase` may use `ToolResultContinuationBuilder` to preserve one tool-result message shape.
 - Runner phases and pipelines should publish outbound facts through semantic `AgentExternalEventNotifier` methods rather than low-level `EventEmitter` / `EventManager` calls or duplicate wrapper classes.
 - `AgentTurnRunner`, `LlmPhase`, and `ToolPhase` may use `AgentTurn.executionScope` / interruption helpers. `AgentTurnRunner` returns a `TurnOutcome`; `AgentTurn` records settlement. Runtime-state clearing happens only through `clearActiveTurnIfStillActive(turnId)` after `turn.waitForSettlement()`.
+- `AgentTurnRunner` / `AgentTurn` may report an interrupted turn outcome to `MemoryManager.finalizeInterruptedTurn(...)` or an equivalent memory-owned API; `LLMRequestAssembler` then reads the already-projected context through `MemoryManager.getWorkingContextMessages()`.
 - `LlmPhase` may depend on the `BaseLLM` cancellation-aware API, not provider adapters.
 - `ToolPhase` may depend on the `BaseTool` cancellation-aware API, not concrete tools.
 - Provider adapters may depend on provider SDK-specific request options.
@@ -1310,6 +1419,7 @@ Forbidden:
 - LLM/tool abort must not be reported as normal provider/tool error.
 - Interrupted tool result must not enqueue a tool-continuation user message.
 - Provider-specific abort logic must not leak into runner or phase services.
+- Normal interrupt must not restore the working context wholesale to a pre-turn checkpoint, and `AgentTurn` / `AgentTurnRunner` / `AgentRuntimeState` must not own working-context rollback/projection policy.
 
 ## Implementation-Ready Component Contracts
 
@@ -1455,6 +1565,30 @@ Rules:
 - Clearing/closing this port on interrupt must not delete unrelated parked `AgentEventInbox` events.
 - This port is tool-specific. Do not route user-message events, inter-agent events, lifecycle events, or non-tool phase wakeups through it.
 
+### `MemoryManager` Interrupted-Turn Projection Contract
+
+Purpose: memory/history owner for accepted facts and future LLM prompt context.
+
+Owns raw trace retention, working-context messages, snapshot/compaction consistency, and interrupted-turn projection. It does not own turn execution, cancellation, or scheduler dispatch.
+
+```ts
+class MemoryManager {
+  finalizeInterruptedTurn(input: {
+    turnId: string;
+    reason?: string;
+    outcome?: TurnOutcome;
+  }): Promise<void>;
+  getWorkingContextMessages(): Promise<LLMMessage[]>;
+}
+```
+
+Rules:
+
+- Raw trace/event history for accepted user input, emitted assistant facts, tool invocations/results, and interruption markers is append-only for facts already observed before interrupt.
+- The future working context must be provider-safe: it may include an interrupted-turn marker or summary, but must not preserve invalid partial native tool-call protocol fragments.
+- The memory manager may rebuild the working context from raw traces/committed facts or apply a focused projection update, but that choice stays behind the memory boundary.
+- `AgentTurn`, `AgentTurnRunner`, and `AgentRuntimeState` do not hold or restore working-context checkpoints for normal interrupt.
+
 ### `AgentRuntimeState` Active-Turn Routing Contract
 
 Purpose: active-turn identity selector and stale active-turn routing boundary.
@@ -1474,6 +1608,7 @@ Rules:
 
 - Runtime state owns only the active-turn reference, active-turn creation, optional turn-ID stale classification, and clear-by-turn-ID after settlement.
 - Runtime state must not store `activeTurnTask`, `activeRunner`, a runner promise, or an `AgentTurnExecutionHandle` as peer state beside `activeTurn`.
+- Runtime state must not own working-context checkpoint restoration or interrupted-turn memory projection.
 - Runtime state must not inspect or mutate `TurnToolInputPort` internals. After no-active/stale-turn checks, it calls public `AgentTurn.postToolApproval(...)` / `AgentTurn.postToolResult(...)` methods.
 - Pending-invocation validation, interrupted-turn classification, and port delivery are owned by the active `AgentTurn` aggregate and its `TurnToolInputPort` / tool-batch state.
 - Inbox event handlers ask runtime state to route; they do not inspect/modify active-turn internals directly.
@@ -1508,6 +1643,7 @@ Rules:
 - `AgentTurn` is the only owner of the private execution promise/handle created by `startExecution(...)`.
 - `startExecution(...)` may create an `AgentTurnRunner` through the factory, call `runner.run(trigger)`, and translate the returned `TurnOutcome` or interruption/error into idempotent settlement.
 - `AgentTurn` owns pending invocation validation and delivery to `TurnToolInputPort`; external callers and inbox handlers do not post directly to the port.
+- `AgentTurn` does not own memory rollback/projection; it may expose turn identity/outcome needed by `MemoryManager.finalizeInterruptedTurn(...)`.
 - Settlement is idempotent; late LLM/tool/approval outcomes are fenced; TOOL continuations reuse the same turn.
 - `AgentRuntimeState` may hold the `AgentTurn` reference and clear it by ID after settlement, but it must not hold the private execution promise/handle.
 
@@ -1599,6 +1735,8 @@ Required methods to preserve/extend rather than replace with a wrapper:
 | INV-010 | Bootstrap must complete before any external trigger starts a turn. | `AgentWorker` lifecycle |
 | INV-011 | Turn settlement is idempotent and fences late results. | `AgentTurn` / `TurnExecutionScope` |
 | INV-012 | Provider/tool-specific cancellation stays below `BaseLLM` / `BaseTool`. | provider/tool adapters |
+| INV-013 | Normal interrupt never restores working context wholesale to a pre-turn checkpoint; interrupted-turn memory finalization is owned by `MemoryManager`. | `MemoryManager` / tests |
+| INV-014 | Accepted user input, emitted assistant facts, completed tool facts, and interruption markers already observed before interrupt remain append-only history. | `MemoryManager` / `AgentExternalEventNotifier` |
 
 ## Event Routing Rules
 
@@ -1730,7 +1868,8 @@ Required tests/evidence:
 - current input processor ordering;
 - current tool result processor ordering;
 - current LLM response processor behavior;
-- current server native interrupt incorrectly calls stop, captured as the bug to remove.
+- current server native interrupt incorrectly calls stop, captured as the bug to remove;
+- current interrupted-turn memory behavior that can forget an accepted user message after pre-turn working-context restore.
 
 Safety gate: tests prove existing behavior that must survive the refactor.
 
@@ -1788,15 +1927,30 @@ Safety gate: bootstrap/shutdown tests pass, including interrupt during bootstrap
 
 ### Work Package 4 — AgentTurn / TurnExecutionScope
 
-Goal: add finite turn state and cancellation primitive.
+Goal: add finite turn state and cancellation primitive while removing memory rollback responsibility from the turn aggregate.
 
 Required final components:
 
 - `AgentTurn` owns `turnId`, private execution promise/handle, `startExecution(...)`, `waitForSettlement(...)`, `TurnToolInputPort`, `TurnExecutionScope`, tool batches, and settlement;
+- `AgentTurn` no longer stores or restores working-context checkpoints for normal interrupt;
 - `TurnExecutionScope` owns abort signal, abort listeners, abortable promise/iterator helpers, late-result fencing;
 - late LLM/tool/approval results cannot revive a settled turn.
 
 Safety gate: idempotent interrupt/settlement and late-result fencing tests pass; source review confirms no `AgentRuntimeState.activeTurnTask`, `activeRunner`, `registerActiveTurnTask(...)`, or equivalent peer execution-handle storage remains.
+
+### Work Package 4A — Memory-Owned Interrupted-Turn Projection
+
+Goal: make interrupted-turn memory behavior match the ownership model and user-observed history semantics.
+
+Required final behavior:
+
+- remove normal-interrupt calls to `restoreWorkingContextForInterruptedTurn(...)` / pre-turn checkpoint restore;
+- add `MemoryManager.finalizeInterruptedTurn(...)` or equivalent memory-owned projection API;
+- retain raw trace/event facts for accepted user input, emitted assistant facts, completed tool facts, and interruption marker;
+- rebuild or finalize `WorkingContextSnapshot` as provider-safe prompt history that remembers the interrupted turn while fencing incomplete native tool-call protocol;
+- keep `LLMRequestAssembler` as a reader of `MemoryManager.getWorkingContextMessages()` rather than an owner of interrupted projection policy.
+
+Safety gate: AC-016 passes with a runtime test that interrupts after an accepted first user message and verifies the next LLM request includes that earlier message/interrupted-turn marker rather than starting history at the post-interrupt message.
 
 ### Work Package 5 — AgentTurnRunner And Phase Services
 
@@ -1835,7 +1989,7 @@ Required final behavior:
 - server native backend maps interrupt to native `agent.interrupt`, not stop;
 - team interrupt propagates member interrupts, not team stop.
 
-Safety gate: acceptance tests AC-001 through AC-014 pass.
+Safety gate: acceptance tests AC-001 through AC-014 and AC-016 pass.
 
 ### Work Package 7 — Remove Old Turn-Control Choreography
 
@@ -1863,6 +2017,7 @@ Safety gate: source review confirms no final implementation path leaves the old 
 | `AgentTurn.startExecution(runnerFactory, trigger)` | Active turn aggregate | Attach the private execution handle for one turn and run the runner algorithm. | Current turn plus trigger. | Internal; callers above `AgentTurn` do not keep the handle. |
 | `AgentTurn.interrupt(reason)` | Active turn aggregate | Idempotently abort signal and record metadata. | Current turn ID only. | Internal to runtime; does not expose runner task. |
 | `AgentTurn.waitForSettlement(options?)` | Active turn aggregate | Await the turn's idempotent settlement. | Current turn ID only. | Used by runtime/handler as a boundary, not a task handle. |
+| `MemoryManager.finalizeInterruptedTurn({ turnId, reason, outcome })` | Agent memory / working-context projection | Preserve committed facts and rebuild/finalize provider-safe prompt context after interruption. | Required turn ID, optional reason/outcome metadata. | Authoritative memory boundary; no pre-turn restore by turn/runtime state. |
 | `BaseLLM.streamMessages(messages, renderedPayload, kwargs, options?)` | LLM invocation | Stream with optional cancellation. | `LLMInvocationOptions.signal`, `turnId`. | `kwargs` remains provider params. |
 | `BaseTool.execute(context, args, options?)` | Tool execution | Execute with optional cancellation. | `ToolExecutionOptions.signal`, `turnId`, `invocationId`. | Existing tools may ignore signal; `ToolPhase` still runs through `TurnExecutionScope` late-result fencing. |
 | `AgentTeam.interrupt(options?)` | Native team runtime | Public team cancel-current-work command. | Reason/timeout; no member selector for this requirement. | Interrupts all running cached nodes. |
@@ -1881,6 +2036,7 @@ Rule: do not overload `stop(timeout?)` with interrupt options. Stop remains term
 | `AgentEventInbox` | Yes | Yes | Low | Event class/lane must distinguish turn-starting, active-turn, and lifecycle events without owning scheduler policy or exposing queue storage. |
 | `AgentEventScheduler` | Yes | Yes | Low | Scheduler owns dispatchability and processor routing; typed handlers own processing. |
 | `AgentRuntime.postToolApprovalEvent` | Yes | Yes | Low | Invocation ID is required; optional turn ID must match active turn; stale/no-active/no-pending outcomes are explicit. |
+| `MemoryManager.finalizeInterruptedTurn` | Yes | Yes | Low | Turn ID anchors projection; method owns memory policy only and does not cancel execution or route events. |
 | `BaseLLM.streamMessages` | Yes | Yes | Low | Keep provider kwargs separate from invocation options. |
 | `BaseTool.execute` | Yes | Yes | Low | Options are execution metadata, not tool arguments. |
 | WebSocket interrupt command | Yes | Yes | Low | Payload uses `turn_id`, not generic ID. |
@@ -1928,10 +2084,12 @@ Rule: do not overload `stop(timeout?)` with interrupt options. Stop remains term
 | `autobyteus-ts/src/agent/pipelines/llm-response-pipeline.ts` | File | LLMResponsePipeline | Applies LLM response/output processors and final assistant emission policy. | Single owner of response processor orchestration. | LLM streaming/provider code. |
 | `autobyteus-ts/src/agent/pipelines/system-prompt-pipeline.ts` | File | SystemPromptPipeline | Applies system prompt processors for bootstrap. | Single owner of system prompt processor orchestration. | Runtime init or turn execution. |
 | `autobyteus-ts/src/agent/events/notifiers.ts` | File | AgentExternalEventNotifier | Publish assistant/tool/segment/lifecycle/error/artifact messages through semantic `notify...` methods above `EventEmitter` / `EventManager`. | Existing single external observable-event boundary; final design removes `agent/outbox`. | Input box scheduling, turn control flow, or provider execution. |
+| `autobyteus-ts/src/memory/memory-manager.ts` | File | MemoryManager | Raw trace retention, working-context messages, snapshots/compaction integration, and interrupted-turn provider-safe projection. | Existing memory owner is the future LLM context source. | Turn execution handle, scheduler dispatch, or provider/tool cancellation. |
+| `autobyteus-ts/src/memory/working-context-interrupted-turn-projector.ts` (optional) | File | Interrupted-turn projection helper | Focused provider-safe projection of interrupted-turn facts if needed. | Keeps projection logic memory-owned and testable if it grows. | Agent turn execution or inbox routing. |
 | `autobyteus-ts/src/agent/interruption/` | Folder | Agent interruption support | Small concrete support area for interruption types/utilities. | Shared by runtime, turn state, phase services, tests. | Runtime lifecycle ownership or provider-specific cancellation. |
 | `autobyteus-ts/src/agent/interruption/agent-interruption.ts` | File | Interruption model | Options/result/error/guards. | One semantic data shape. | Stop/terminate semantics. |
 | `autobyteus-ts/src/agent/interruption/abortable-operation.ts` | File | Abortable operation utility | Promise/iterator abort racing and late-result logging. | Reused by `TurnExecutionScope`, `LlmPhase`, and `ToolPhase`. | Provider/tool-specific behavior. |
-| `autobyteus-ts/src/agent/agent-turn.ts` | File | AgentTurn | Turn signal, private execution handle, operation, settlement, tool input port, batch fencing, and turn-owned checkpoint reference. | Existing active turn owner becomes aggregate root. | Queue storage, runtime status emission, or public lifecycle commands. |
+| `autobyteus-ts/src/agent/agent-turn.ts` | File | AgentTurn | Turn signal, private execution handle, operation, settlement, tool input port, and batch fencing. | Existing active turn owner becomes aggregate root for execution lifecycle only. | Queue storage, runtime status emission, public lifecycle commands, or working-context rollback/projection. |
 | `autobyteus-ts/src/agent/context/agent-runtime-state.ts` | File | AgentRuntimeState | Active-turn reference, creation, active-turn identity routing, and clear-by-turn-ID after settlement. | Existing state owner narrowed to the active-turn selector. | Public runtime command API, runner promise storage, port internals, or turn-local cleanup/fencing. |
 | `autobyteus-ts/src/agent/runtime/agent-runtime.ts` | File | AgentRuntime | `interrupt()` authoritative command, `postToolApprovalEvent()` awaitable inbox submission command, and status projection. | Existing lifecycle/command owner. | Provider/tool-specific abort or direct TurnToolInputPort bypass without scheduler/state validation. |
 | `autobyteus-ts/src/agent/agent.ts` | File | Agent facade | Public native methods including `interrupt()` and `postToolExecutionApproval(...)`, delegating to runtime. | Existing facade owner. | Active-turn validation or inbox mutation. |
@@ -1955,7 +2113,8 @@ Rule: do not overload `stop(timeout?)` with interrupt options. Stop remains term
 | `agent/events/notifiers.ts` | Off-Spine Concern | Yes | Low | Existing outbound observable-event boundary above `EventEmitter` / `EventManager`; no separate outbox folder. |
 | `agent/interruption` | Off-Spine Concern | Yes | Low | Concrete support for AgentRuntime/AgentTurn, not generic shared cancellation. |
 | `agent/runtime` | Main-Line Domain-Control | Yes | Low | Runtime command owner remains here. |
-| `agent/context` | Main-Line Domain-Control | Yes | Medium | RuntimeState already large; narrow it to active-turn reference/identity routing and move turn-local cleanup/fencing into `AgentTurn`. |
+| `agent/context` | Main-Line Domain-Control | Yes | Medium | RuntimeState already large; narrow it to active-turn reference/identity routing and move turn-local cleanup/fencing into `AgentTurn`; remove working-context restore policy from runtime state. |
+| `memory` | Off-Spine Concern | Yes | Medium | Memory owns raw traces and working-context projection used by LLM requests; interrupted-turn projection belongs here, not under turn execution. |
 | `llm/api` | Persistence-Provider/Adapter | Yes | Low | Provider-specific cancellation belongs here. |
 | `tools/terminal` | Persistence-Provider/Adapter | Yes | Low | Terminal process cancellation belongs here. |
 | `server-ts/agent-execution/backends/autobyteus` | Transport/Adapter | Yes | Low | Server adapter only maps command to native public API. |
@@ -2008,7 +2167,7 @@ Layering follows ownership; callers above runtime must not depend directly on ac
 - Provider SDK signal support may differ. Implementation must verify each SDK call signature and keep unsupported providers locally abandonable via the abortable operation utility.
 - Remote MCP tools may continue executing after local interruption. The runtime must surface local interruption and ignore late results; true remote cancellation may be best-effort.
 - If a tool performs irreversible side effects before observing the signal, interruption cannot roll them back.
-- Working-context rollback/suppression must be carefully implemented so interrupted turns do not corrupt compaction snapshots or future LLM context.
+- Interrupted-turn memory projection must be carefully implemented so interrupted turns do not corrupt compaction snapshots, future LLM context, or provider-native tool-call protocol while still preserving accepted history.
 - Frontend/status tests may need updates because `interrupting` is a new non-terminal state and `interrupted` is an event, not a final agent status.
 
 ## Guidance For Implementation

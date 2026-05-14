@@ -82,7 +82,6 @@ export class AgentRuntimeState {
     const nextTurnId =
       typeof turnId === 'string' && turnId.trim().length > 0 ? turnId.trim() : memoryManager.startTurn();
     const nextTurn = new AgentTurn(nextTurnId);
-    nextTurn.setWorkingContextCheckpoint(memoryManager.createWorkingContextTurnCheckpoint(nextTurnId));
     this.activeTurn = nextTurn;
     return nextTurn;
   }
@@ -101,16 +100,6 @@ export class AgentRuntimeState {
       return resolvedTurnId;
     }
     return null;
-  }
-
-  restoreWorkingContextForInterruptedTurn(turnId: string): boolean {
-    const activeTurn = this.activeTurn;
-    const memoryManager = this.memoryManager;
-    if (!activeTurn || activeTurn.turnId !== turnId || !memoryManager) {
-      return false;
-    }
-
-    return activeTurn.restoreWorkingContextCheckpoint(memoryManager);
   }
 
   interruptActiveTurn(reason: string): import('../interruption/agent-interruption.js').AgentInterruptResult {

@@ -75,9 +75,7 @@ describe('status_update_utils', () => {
   it('builds status update data for tool denied', () => {
     const invocation = new ToolInvocation('deny_tool', {}, 'tid3');
     agentContext.state.memoryManager = {
-      startTurn: () => 'turn-deny',
-      createWorkingContextTurnCheckpoint: (turnId: string) => ({ turnId, messages: [], lastCompactionTs: null }),
-      restoreWorkingContextTurnCheckpoint: () => undefined
+      startTurn: () => 'turn-deny'
     } as any;
     const activeTurn = agentContext.state.startActiveTurn('turn-deny');
     invocation.turnId = activeTurn.turnId;

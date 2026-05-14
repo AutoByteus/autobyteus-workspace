@@ -633,7 +633,12 @@ describe('Agent runtime integration', () => {
       await runtime.submitEvent(new UserMessageReceivedEvent(new AgentInputUserMessage('next message')));
       const nextCallStarted = await waitForCondition(() => llm.calls.length === 2);
       expect(nextCallStarted).toBe(true);
-      expect(llm.requestMessages[1].some((message) => message.content === 'please wait')).toBe(false);
+      expect(llm.requestMessages[1].some((message) => message.content === 'please wait')).toBe(true);
+      expect(llm.requestMessages[1].some((message) =>
+        typeof message.content === 'string' &&
+        message.content.includes(`turn '${activeTurnId}' was interrupted`) &&
+        message.content.includes('user_interrupt')
+      )).toBe(true);
       expect(llm.requestMessages[1].some((message) => message.content === 'next message')).toBe(true);
     } finally {
       llm.unblockFirstResponse();
@@ -770,7 +775,7 @@ describe('Agent runtime integration', () => {
     }
   }, 20000);
 
-  it('interrupts pending tool approval with a terminal tool lifecycle and restores tool-intent working context', async () => {
+  it('interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context', async () => {
     const llm = new ApprovalToolCallingLLM(makeModel(), new LLMConfig());
     const approvalTool = new ApprovalTool();
     const config = new AgentConfig(
@@ -834,9 +839,14 @@ describe('Agent runtime integration', () => {
         interrupted: true
       });
 
-      const restoredMessages = context.memoryManager?.getWorkingContextMessages() ?? [];
-      expect(restoredMessages.some((message) => message.content === 'needs approval')).toBe(false);
-      expect(restoredMessages.some((message) => message.tool_payload)).toBe(false);
+      const finalizedMessages = context.memoryManager?.getWorkingContextMessages() ?? [];
+      expect(finalizedMessages.some((message) => message.content === 'needs approval')).toBe(true);
+      expect(finalizedMessages.some((message) =>
+        typeof message.content === 'string' &&
+        message.content.includes(`turn '${activeTurnId}' was interrupted`) &&
+        message.content.includes('user_interrupt')
+      )).toBe(true);
+      expect(finalizedMessages.some((message) => message.tool_payload)).toBe(false);
 
       const lateApproval = await runtime.postToolApprovalEvent(
         new ToolExecutionApprovalEvent('call_approval_1', true)
@@ -851,7 +861,12 @@ describe('Agent runtime integration', () => {
 
       const nextMessages = llm.requestMessages[1];
       expect(nextMessages.some((message) => message.content === 'after interrupt')).toBe(true);
-      expect(nextMessages.some((message) => message.content === 'needs approval')).toBe(false);
+      expect(nextMessages.some((message) => message.content === 'needs approval')).toBe(true);
+      expect(nextMessages.some((message) =>
+        typeof message.content === 'string' &&
+        message.content.includes(`turn '${activeTurnId}' was interrupted`) &&
+        message.content.includes('user_interrupt')
+      )).toBe(true);
       expect(nextMessages.some((message) => message.tool_payload)).toBe(false);
     } finally {
       if (runtime.isRunning) {

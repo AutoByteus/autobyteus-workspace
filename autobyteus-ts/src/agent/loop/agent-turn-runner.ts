@@ -116,7 +116,11 @@ export class AgentTurnRunner {
     } catch (error) {
       if (isAgentInterruptionError(error)) {
         const reason = error.reason;
-        this.context.state.restoreWorkingContextForInterruptedTurn(turnId);
+        await this.context.state.memoryManager?.finalizeInterruptedTurn({
+          turnId,
+          reason,
+          outcome: { kind: 'interrupted', turnId, reason }
+        });
         this.notifier?.notifyAgentTurnInterrupted(turnId, reason);
         await this.applyStatusEvent(new AgentTurnInterruptedEvent(turnId, reason));
         return { kind: 'interrupted', turnId, reason };
