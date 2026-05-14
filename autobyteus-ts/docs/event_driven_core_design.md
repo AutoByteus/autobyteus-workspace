@@ -68,17 +68,17 @@ wake the worker, but queued user/inter-agent triggers do not preempt or overlap
 an active turn. On shutdown, queued awaitables are settled with explicit stopped
 results.
 
-### 3.3 Scheduler processors
+### 3.3 Scheduler handlers
 
-The scheduler dispatches to a small fixed processor set:
+The scheduler dispatches to a small fixed handler set:
 
-- `TurnStartEventProcessor` creates and runs a new `AgentTurn` through
+- `TurnStartInboxEventHandler` creates and runs a new `AgentTurn` through
   `AgentTurnRunner`.
-- `RuntimeLifecycleEventProcessor` applies runtime lifecycle notifications.
-- `ToolApprovalEventProcessor` calls
+- `RuntimeLifecycleInboxEventHandler` applies runtime lifecycle notifications.
+- `ToolApprovalInboxEventHandler` calls
   `AgentRuntimeState.postToolApprovalEventToActiveTurn(...)` and publishes
   `ToolExecutionApprovalEvent` only after the active turn accepts the decision.
-- `ToolResultEventProcessor` calls
+- `ToolResultInboxEventHandler` calls
   `AgentRuntimeState.postToolResultEventToActiveTurn(...)`.
 
 There is no single-agent `WorkerEventDispatcher`, `EventHandlerRegistry`, or
@@ -177,7 +177,7 @@ terminal states.
   `ToolPhase`, `ToolResultPipeline`, or `ToolResultContinuationBuilder`.
 - Add stream outputs through `AgentExternalEventNotifier` and the corresponding
   stream mapping layer.
-- Add runtime lifecycle behavior through `RuntimeLifecycleEventProcessor` or the
+- Add runtime lifecycle behavior through `RuntimeLifecycleInboxEventHandler` or the
   shutdown/bootstrap orchestrators.
 
 Do not add new normal-flow control by resurrecting retired dispatcher or handler
@@ -191,7 +191,7 @@ classes.
 - Agent worker loop: `src/agent/runtime/agent-worker.ts`
 - Agent event inbox: `src/agent/event-inbox/agent-event-inbox.ts`
 - Agent event scheduler: `src/agent/event-inbox/agent-event-scheduler.ts`
-- Scheduler processors: `src/agent/event-inbox/processors/*`
+- Scheduler handlers: `src/agent/event-inbox/handlers/*`
 - Runtime state: `src/agent/context/agent-runtime-state.ts`
 - Turn runner: `src/agent/loop/agent-turn-runner.ts`
 - LLM phase: `src/agent/loop/llm-phase.ts`

@@ -1,31 +1,24 @@
-import {
-  InterAgentMessageReceivedEvent,
-  LifecycleEvent,
-  ToolExecutionApprovalEvent,
-  ToolResultEvent,
-  UserMessageReceivedEvent
-} from '../events/agent-events.js';
 import type { AgentContext } from '../context/agent-context.js';
 import type { AgentRuntimeState } from '../context/agent-runtime-state.js';
 import type { InboxLane } from './inbox-queue-store.js';
 import type { AgentEventInbox } from './agent-event-inbox.js';
 import type {
   AgentEventInboxEntry,
-  AgentEventProcessorResult,
+  InboxEventHandlerResult,
   ActiveTurnEventInboxEntry,
   RuntimeLifecycleEventInboxEntry,
   TurnStartEventInboxEntry
 } from './agent-event-inbox-entry.js';
-import type { AgentEventProcessor } from './processors/agent-event-processor.js';
+import type { InboxEventHandler } from './handlers/inbox-event-handler.js';
 
 const ACTIVE_TURN_PRIORITY: readonly InboxLane[] = ['runtime_lifecycle', 'active_turn'] as const;
 const IDLE_PRIORITY: readonly InboxLane[] = ['runtime_lifecycle', 'active_turn', 'turn_start'] as const;
 
-export type AgentEventSchedulerProcessors = {
-  turnStartProcessor: AgentEventProcessor<TurnStartEventInboxEntry>;
-  lifecycleProcessor: AgentEventProcessor<RuntimeLifecycleEventInboxEntry>;
-  toolApprovalProcessor: AgentEventProcessor<ActiveTurnEventInboxEntry>;
-  toolResultProcessor: AgentEventProcessor<ActiveTurnEventInboxEntry>;
+export type AgentEventSchedulerHandlers = {
+  turnStartHandler: InboxEventHandler<TurnStartEventInboxEntry>;
+  lifecycleHandler: InboxEventHandler<RuntimeLifecycleEventInboxEntry>;
+  toolApprovalHandler: InboxEventHandler<ActiveTurnEventInboxEntry>;
+  toolResultHandler: InboxEventHandler<ActiveTurnEventInboxEntry>;
 };
 
 type CancellableWait = { promise: Promise<void>; cancel: () => void };
@@ -36,7 +29,7 @@ export class AgentEventScheduler {
 
   constructor(
     private readonly context: AgentContext,
-    private readonly processors: AgentEventSchedulerProcessors
+    private readonly handlers: AgentEventSchedulerHandlers
   ) {}
 
   async nextDispatchable(input: {
@@ -53,9 +46,10 @@ export class AgentEventScheduler {
     }
   }
 
-  async dispatch(entry: AgentEventInboxEntry): Promise<AgentEventProcessorResult> {
+  async dispatch(entry: AgentEventInboxEntry): Promise<InboxEventHandlerResult> {
     try {
-      const result = await this.processorFor(entry).process(entry as never, this.context);
+      const handler = this.handlerFor(entry);
+      const result = await handler.handle(entry as never, this.context);
       this.context.state.agentEventInbox?.resolveAwaitable(entry, result);
       return result;
     } catch (error) {
@@ -87,21 +81,18 @@ export class AgentEventScheduler {
     return null;
   }
 
-  private processorFor(entry: AgentEventInboxEntry): AgentEventProcessor<any> {
-    const event = entry.event;
-    if (event instanceof UserMessageReceivedEvent || event instanceof InterAgentMessageReceivedEvent) {
-      return this.processors.turnStartProcessor;
+  private handlerFor(entry: AgentEventInboxEntry): InboxEventHandler<any> {
+    const handlers: InboxEventHandler[] = [
+      this.handlers.turnStartHandler,
+      this.handlers.toolApprovalHandler,
+      this.handlers.toolResultHandler,
+      this.handlers.lifecycleHandler
+    ];
+    const handler = handlers.find((candidate) => candidate.canHandle(entry));
+    if (!handler) {
+      throw new Error(`Unsupported agent event inbox entry event '${entry.event.constructor.name}'.`);
     }
-    if (event instanceof ToolExecutionApprovalEvent) {
-      return this.processors.toolApprovalProcessor;
-    }
-    if (event instanceof ToolResultEvent) {
-      return this.processors.toolResultProcessor;
-    }
-    if (event instanceof LifecycleEvent) {
-      return this.processors.lifecycleProcessor;
-    }
-    throw new Error(`Unsupported agent event inbox entry event '${event.constructor.name}'.`);
+    return handler;
   }
 
   private async waitForAvailabilityOrDispatchability(

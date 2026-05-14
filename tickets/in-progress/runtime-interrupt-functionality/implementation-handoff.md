@@ -16,91 +16,77 @@
 
 ## What Changed
 
-Implemented the approved Round 13 event-centric inbox target. This supersedes the first-stage `AgentMessageInbox` / message-wrapper implementation.
+Implemented the focused CR-019 architecture-approved terminology fix: the event-inbox scheduler-selected delegates are now named handlers, not processors.
 
-- Added `autobyteus-ts/src/agent/event-inbox/` as the owned inbound event subsystem:
-  - `AgentEventInbox` accepts typed runtime events and wraps them only in queue metadata entries: `AgentEventInboxEntry { entryId, lane, event, awaitable? }`.
-  - `InboxQueueStore` remains private generic lane/availability storage with no domain routing knowledge.
-  - `AgentEventScheduler` dispatches lifecycle, active-turn, and parked turn-start lanes without owning LLM/tool phase progression.
-  - Typed event processors are thin entry processors only; they route to `AgentTurnRunner`, runtime lifecycle handling, or `AgentRuntimeState` / `TurnToolInputPort`.
-- Removed the rejected first-stage message wrappers and subsystem from active source/tests:
-  - `AgentMessageInbox`, `AgentInboxMessage`, `AgentMessageScheduler`, `AgentMessageHandler`.
-  - `UserInboxMessage`, `ToolApprovalInputMessage`, `ToolResultInputMessage`, and equivalent wrapper shapes.
-  - The old `autobyteus-ts/src/agent/message-inbox/` and `autobyteus-ts/tests/unit/agent/message-inbox/` folders.
-- Replaced runtime approval/result posting with event-centric APIs:
-  - `AgentRuntime.postToolApprovalEvent(ToolExecutionApprovalEvent)`.
-  - `AgentRuntime.postToolResultEvent(ToolResultEvent)`.
-  - Public `Agent.postToolExecutionApproval(...)` and `Agent.postToolExecutionResult(...)` remain the stable facades and now construct typed events.
-- Changed `AgentRuntimeState` and `TurnToolInputPort` to use typed `ToolExecutionApprovalEvent` / `ToolResultEvent` directly for active-turn approval/result delivery.
-- Updated `AgentWorker` runtime initialization, scheduler loop, active-runner wakeup, and shutdown drain from message terminology to event terminology.
-- Preserved all previously reviewed guardrails:
-  - `AgentTurnRunner` / `LlmPhase` / `ToolPhase` / typed pipelines still own normal LLM/tool/continuation progression.
-  - No old `WorkerEventDispatcher` or `agent/handlers` chain is used for normal turn flow.
-  - `AgentExternalEventNotifier` remains the external-observable publication boundary; `AgentOutbox` remains removed.
-  - Provider-native tool-history continuations keep the typed `ToolContinuationReadyEvent` seam.
-  - `BaseTool.prepareExecution(...)` remains the authority for external-result preflight before tool-start publication or result-waiter registration.
+- Renamed `autobyteus-ts/src/agent/event-inbox/processors/` to `autobyteus-ts/src/agent/event-inbox/handlers/`.
+- Renamed the scheduler delegate contract from `AgentEventProcessor` to `InboxEventHandler`.
+- Renamed concrete event-inbox delegates:
+  - `TurnStartEventProcessor` -> `TurnStartInboxEventHandler`
+  - `RuntimeLifecycleEventProcessor` -> `RuntimeLifecycleInboxEventHandler`
+  - `ToolApprovalEventProcessor` -> `ToolApprovalInboxEventHandler`
+  - `ToolResultEventProcessor` -> `ToolResultInboxEventHandler`
+- Renamed scheduler configuration from `AgentEventSchedulerProcessors` / `*Processor` fields to `AgentEventSchedulerHandlers` / `*Handler` fields.
+- Renamed delegate method `process(entry, context)` to `handle(entry, context)` and added explicit `canHandle(entry)` selection on each handler.
+- Kept the Round 13 event-inbox architecture intact:
+  - Typed runtime events remain the canonical domain objects.
+  - `AgentEventInboxEntry` remains queue metadata only: `{ entryId, lane, event, awaitable? }`.
+  - `AgentEventScheduler` still performs lane scheduling/dispatch only; it does not own LLM/tool phase progression.
+  - Event-inbox handlers remain thin entry delegates to `AgentTurnRunner`, runtime lifecycle handling, or `AgentRuntimeState` / `TurnToolInputPort`.
+- Updated event-inbox tests and relevant docs to use handler terminology while preserving real processor-pipeline terminology for `AgentInputPipeline`, `ToolInvocationPipeline`, `ToolResultPipeline`, `LLMResponsePipeline`, `SystemPromptPipeline`, and lifecycle extension processors.
 
 ## Key Files Or Areas
 
-- New event inbox subsystem:
+- Event-inbox handler subsystem:
+  - `autobyteus-ts/src/agent/event-inbox/handlers/inbox-event-handler.ts`
+  - `autobyteus-ts/src/agent/event-inbox/handlers/turn-start-inbox-event-handler.ts`
+  - `autobyteus-ts/src/agent/event-inbox/handlers/runtime-lifecycle-inbox-event-handler.ts`
+  - `autobyteus-ts/src/agent/event-inbox/handlers/tool-approval-inbox-event-handler.ts`
+  - `autobyteus-ts/src/agent/event-inbox/handlers/tool-result-inbox-event-handler.ts`
+- Scheduler/inbox typing:
+  - `autobyteus-ts/src/agent/event-inbox/agent-event-scheduler.ts`
   - `autobyteus-ts/src/agent/event-inbox/agent-event-inbox.ts`
   - `autobyteus-ts/src/agent/event-inbox/agent-event-inbox-entry.ts`
-  - `autobyteus-ts/src/agent/event-inbox/agent-event-scheduler.ts`
-  - `autobyteus-ts/src/agent/event-inbox/inbox-queue-store.ts`
-  - `autobyteus-ts/src/agent/event-inbox/processors/*.ts`
-- Runtime/worker/state/facade rewiring:
-  - `autobyteus-ts/src/agent/runtime/agent-runtime.ts`
+  - `autobyteus-ts/src/agent/event-inbox/index.ts`
+- Runtime wiring:
   - `autobyteus-ts/src/agent/runtime/agent-worker.ts`
-  - `autobyteus-ts/src/agent/context/agent-runtime-state.ts`
-  - `autobyteus-ts/src/agent/context/agent-context.ts`
-  - `autobyteus-ts/src/agent/bootstrap-steps/system-prompt-processing-step.ts`
-  - `autobyteus-ts/src/agent/agent.ts`
-- Active-turn event delivery:
-  - `autobyteus-ts/src/agent/loop/turn-tool-input-port.ts`
-  - `autobyteus-ts/src/agent/loop/tool-phase.ts`
-  - `autobyteus-ts/src/agent/events/agent-events.ts`
-- Result type exports / public typing:
-  - `autobyteus-ts/src/agent/tool-approval-result.ts`
-  - `autobyteus-ts/src/agent/tool-result-posting.ts`
-  - `autobyteus-ts/src/index.ts`
 - Updated tests:
-  - `autobyteus-ts/tests/unit/agent/event-inbox/*.test.ts`
-  - `autobyteus-ts/tests/unit/agent/runtime/agent-runtime.test.ts`
-  - `autobyteus-ts/tests/unit/agent/runtime/agent-worker.test.ts`
-  - `autobyteus-ts/tests/unit/agent/context/agent-runtime-state.test.ts`
-  - `autobyteus-ts/tests/unit/agent/loop/turn-tool-input-port.test.ts`
-  - `autobyteus-ts/tests/unit/agent/agent.test.ts`
-  - `autobyteus-ts/tests/integration/agent/runtime/agent-runtime.test.ts`
+  - `autobyteus-ts/tests/unit/agent/event-inbox/agent-event-inbox.test.ts`
+  - `autobyteus-ts/tests/unit/agent/event-inbox/agent-event-scheduler.test.ts`
+- Terminology/docs cleanup:
+  - `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md`
+  - `autobyteus-ts/docs/event_driven_core_design.md`
+  - `autobyteus-ts/docs/lifecycle_event_sourced_engine_design.md`
 
 ## Important Assumptions
 
-- The Round 13 architecture review supersedes the earlier AgentMessageInbox/message-wrapper target and is authoritative for this implementation pass.
-- Runtime turn-starting input remains `UserMessageReceivedEvent` / `InterAgentMessageReceivedEvent`; same-turn `SenderType.TOOL` continuations remain internal to the turn pipeline and are still rejected by the runtime inbox boundary.
-- Public `Agent` approval/result facades are preserved, but runtime-internal posting is now event-centric.
+- The focused CR-019 architecture review is authoritative for this local fix and keeps the Round 13 event-centric target intact.
+- `handlers` under `agent/event-inbox/` are intentionally distinct from the retired legacy `agent/handlers/*` normal-flow chain.
+- Real processor-pipeline terminology remains valid outside this event-inbox scheduler delegate context.
+- This pass is a cohesive rename/terminology correction only; no behavior change was intended beyond the delegate contract name and selection method shape.
 
 ## Known Risks
 
-- This is an implementation-scoped refactor and local confidence pass only. API/E2E revalidation still needs to resume after code review passes.
-- Prior residual validation risks remain from upstream reports: live paid-provider cancellation coverage and full browser/Nuxt/Electron E2E are still downstream validation scope, not covered by this local pass.
+- This is an implementation-scoped local fix and confidence pass only. API/E2E revalidation should resume only after code review passes.
+- Prior residual validation risks remain from upstream reports: live paid-provider cancellation coverage and full browser/Nuxt/Electron E2E are downstream validation scope, not covered by this local pass.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: architecture refactor / cleanup of first-stage message-wrapper implementation.
-- Reviewed root-cause classification: boundary/ownership issue and legacy/compatibility pressure from wrapper messages competing with typed runtime events.
+- Reviewed change posture: local architecture terminology/refactor fix for CR-019.
+- Reviewed root-cause classification: naming and responsibility clarity issue; scheduler-selected event-inbox delegates were incorrectly called processors, competing with established pipeline processor terminology.
 - Reviewed refactor decision: Refactor Needed Now.
 - Implementation matched the reviewed assessment: Yes.
-- If challenged, routed as `Design Impact`: N/A; Round 13 design was clear and implementable.
-- Evidence / notes: final source now uses typed runtime events as the domain objects and keeps `AgentEventInboxEntry` as metadata only; old message-wrapper names and files are removed from active source/tests.
+- If challenged, routed as `Design Impact`: N/A; focused CR-019 architecture review approved the handler terminology and file mapping.
+- Evidence / notes: active event-inbox source/tests now use `InboxEventHandler`, `*InboxEventHandler`, `AgentEventSchedulerHandlers`, `handle(entry, context)`, and `canHandle(entry)` under `autobyteus-ts/src/agent/event-inbox/handlers/`; stale event-inbox processor names and `event-inbox/processors` are removed from active source/tests/docs.
 
 ## Legacy / Compatibility Removal Check
 
 - Backward-compatibility mechanisms introduced: None.
 - Legacy old-behavior retained in scope: No.
-- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: Yes.
-- Shared structures remain tight: Yes; `AgentEventInboxEntry` has only queue metadata plus the canonical event.
+- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: Yes; the event-inbox `processors/` folder and processor-named files/types were removed rather than retained as wrappers.
+- Shared structures remain tight: Yes; `AgentEventInboxEntry` remains metadata-only and no message-wrapper domain shapes were reintroduced.
 - Canonical shared design guidance was reapplied during implementation: Yes.
-- Changed source implementation files stayed within proactive size-pressure guardrails: Yes; effective-line audit found no changed implementation source file above 500 effective non-empty lines.
-- Notes: `ToolApprovalInputMessage` / `ToolResultInputMessage` are removed rather than retained as adapters.
+- Changed source implementation files stayed within proactive size-pressure guardrails: Yes; effective-line audit found no changed implementation source file above 450 effective non-empty lines.
+- Notes: no `AgentMessageInbox`, message wrappers, `AgentOutbox`, legacy `WorkerEventDispatcher` turn loop, or native interrupt-to-stop fallback was introduced or retained.
 
 ## Environment Or Dependency Notes
 
@@ -113,18 +99,26 @@ Implemented the approved Round 13 event-centric inbox target. This supersedes th
 Passed:
 
 - `git diff --check`
-- Forbidden wrapper/source grep:
-  - `rg "AgentMessageInbox|AgentMessageScheduler|AgentMessageHandler|AgentInboxMessage|UserInboxMessage|ToolApprovalInputMessage|ToolResultInputMessage|message-inbox|agentMessageInbox|tool-approval-command|tool-result-command" autobyteus-ts/src autobyteus-ts/tests -n || true`
-  - Result: no active source/test references.
-- Legacy normal-flow grep:
-  - `rg "WorkerEventDispatcher|agent/handlers|AgentOutbox|native interrupt.*stop|interrupt-to-stop" autobyteus-ts/src autobyteus-ts/tests -n || true`
-  - Result: no old normal-flow dispatcher/handler/outbox/stop-fallback path references.
-- Changed-source effective-line audit:
-  - Result: no changed implementation source file exceeded 500 effective non-empty lines.
-- `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/event-inbox/agent-event-inbox.test.ts tests/unit/agent/event-inbox/agent-event-scheduler.test.ts tests/unit/agent/event-inbox/inbox-queue-store.test.ts tests/unit/agent/loop/turn-tool-input-port.test.ts tests/unit/agent/context/agent-context.test.ts tests/unit/agent/context/agent-runtime-state.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/unit/agent/runtime/agent-worker.test.ts tests/unit/agent/agent.test.ts`
-  - Result: 9 files passed, 66 tests passed.
-- `pnpm -C autobyteus-ts exec vitest run tests/integration/agent/runtime/agent-runtime.test.ts tests/integration/agent/provider-native-tool-continuation-flow.test.ts`
+- Focused event-inbox unit tests:
+  - `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/event-inbox/agent-event-inbox.test.ts tests/unit/agent/event-inbox/agent-event-scheduler.test.ts tests/unit/agent/event-inbox/inbox-queue-store.test.ts tests/unit/agent/runtime/agent-worker.test.ts`
+  - Result: 4 files passed, 20 tests passed.
+- Broader runtime/event-inbox unit suite:
+  - `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/event-inbox/agent-event-inbox.test.ts tests/unit/agent/event-inbox/agent-event-scheduler.test.ts tests/unit/agent/event-inbox/inbox-queue-store.test.ts tests/unit/agent/loop/turn-tool-input-port.test.ts tests/unit/agent/context/agent-context.test.ts tests/unit/agent/context/agent-runtime-state.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/unit/agent/runtime/agent-worker.test.ts tests/unit/agent/agent.test.ts`
+  - Result: 9 files passed, 67 tests passed.
+- Narrow integration continuity suite:
+  - `pnpm -C autobyteus-ts exec vitest run tests/integration/agent/runtime/agent-runtime.test.ts tests/integration/agent/provider-native-tool-continuation-flow.test.ts`
   - Result: 2 files passed, 15 tests passed.
+- Event-inbox stale terminology grep:
+  - `rg "EventProcessor|AgentEventProcessor|AgentEventSchedulerProcessors|event-inbox/processors|turnStartProcessor|lifecycleProcessor|toolApprovalProcessor|toolResultProcessor|process\(entry|\.process\(entry" autobyteus-ts/src/agent/event-inbox autobyteus-ts/src/agent/runtime/agent-worker.ts autobyteus-ts/tests/unit/agent/event-inbox -n || true`
+  - Result: no stale event-inbox processor/source terms found.
+- Handler target grep:
+  - `rg "InboxEventHandler|AgentEventSchedulerHandlers|handle\(entry|canHandle|event-inbox/handlers" autobyteus-ts/src/agent/event-inbox autobyteus-ts/src/agent/runtime/agent-worker.ts autobyteus-ts/tests/unit/agent/event-inbox -n`
+  - Result: expected handler names and file paths found.
+- Legacy/message-wrapper guardrail grep:
+  - `rg "WorkerEventDispatcher|AgentOutbox|native interrupt.*stop|interrupt-to-stop|AgentMessageInbox|AgentInboxMessage|UserInboxMessage|ToolApprovalInputMessage|ToolResultInputMessage|message-inbox|agentMessageInbox" autobyteus-ts/src autobyteus-ts/tests -n || true`
+  - Result: no active source/test references found.
+- Changed-source effective-line audit:
+  - Result: no changed implementation source file exceeded 450 effective non-empty lines.
 - `pnpm -C autobyteus-ts run build`
   - Passed, including runtime dependency verification.
 - `pnpm -C autobyteus-server-ts run build:full`
@@ -132,10 +126,9 @@ Passed:
 
 ## Downstream Validation Hints / Suggested Scenarios
 
-- Re-run approval/denial API flows and team-member approval routing to verify public facades still produce typed events into the active turn.
-- Exercise external async tool result posting through server/API surfaces for accepted, stale-turn, no-active-turn, interrupted-turn, no-consumer, and duplicate/late outcomes.
-- Exercise queued user/inter-agent inputs while a turn is active; turn-starting events should park until active-turn settlement while active-turn tool events and lifecycle events continue dispatching.
-- Re-run frontend interrupt/projection scenarios to confirm no regression in interrupted/failed segment and tool projection behavior.
+- Code review should verify CR-019 specifically: event-inbox scheduler-selected delegates are handlers, not processors, and are thin delegates only.
+- Re-check that processor terminology remains only where it belongs: input/tool/LLM/system-prompt pipelines and lifecycle extension processors.
+- Re-check that no message-wrapper target code, `AgentOutbox`, old `WorkerEventDispatcher` / legacy handler-chain turn progression, or native interrupt-to-stop fallback reappeared.
 
 ## API / E2E / Executable Validation Still Required
 

@@ -88,7 +88,7 @@ describe('AgentEventInbox', () => {
     ).rejects.toThrow(/LifecycleEvent/);
   });
 
-  it('resolves awaitable active-turn events only through processor completion', async () => {
+  it('resolves awaitable active-turn events only through handler completion', async () => {
     const inbox = new AgentEventInbox();
     const resultPromise = inbox.postToolApprovalEvent(new ToolExecutionApprovalEvent('inv-1', true));
     const entry = inbox.claimFirst('active_turn');

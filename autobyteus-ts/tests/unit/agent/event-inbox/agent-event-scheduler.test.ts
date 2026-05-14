@@ -2,9 +2,9 @@ import { describe, it, expect, vi } from 'vitest';
 import { AgentEventInbox } from '../../../../src/agent/event-inbox/agent-event-inbox.js';
 import { AgentEventScheduler } from '../../../../src/agent/event-inbox/agent-event-scheduler.js';
 import { AgentRuntimeState } from '../../../../src/agent/context/agent-runtime-state.js';
-import { ToolExecutionApprovalEvent, UserMessageReceivedEvent } from '../../../../src/agent/events/agent-events.js';
+import { ToolExecutionApprovalEvent, ToolResultEvent, UserMessageReceivedEvent } from '../../../../src/agent/events/agent-events.js';
 import { AgentInputUserMessage } from '../../../../src/agent/message/agent-input-user-message.js';
-import type { AgentEventSchedulerProcessors } from '../../../../src/agent/event-inbox/agent-event-scheduler.js';
+import type { AgentEventSchedulerHandlers } from '../../../../src/agent/event-inbox/agent-event-scheduler.js';
 
 const timeout = <T>(promise: Promise<T>, ms = 1000): Promise<T> =>
   Promise.race([
@@ -23,11 +23,23 @@ const waitForCondition = async (predicate: () => boolean, timeoutMs = 1000): Pro
   return false;
 };
 
-const makeProcessors = (): AgentEventSchedulerProcessors => ({
-  turnStartProcessor: { process: vi.fn(async () => ({ accepted: true, code: 'turn_started', turnId: 'turn-1' })) } as any,
-  lifecycleProcessor: { process: vi.fn(async () => ({ accepted: true, code: 'lifecycle_applied' })) } as any,
-  toolApprovalProcessor: { process: vi.fn(async () => ({ accepted: false, code: 'no_active_turn', invocationId: 'inv-1', message: 'no active turn' })) } as any,
-  toolResultProcessor: { process: vi.fn(async () => ({ accepted: false, code: 'no_active_turn', invocationId: 'inv-1', message: 'no active turn' })) } as any
+const makeHandlers = (): AgentEventSchedulerHandlers => ({
+  turnStartHandler: {
+    canHandle: vi.fn((entry) => entry.lane === 'turn_start'),
+    handle: vi.fn(async () => ({ accepted: true, code: 'turn_started', turnId: 'turn-1' }))
+  } as any,
+  lifecycleHandler: {
+    canHandle: vi.fn((entry) => entry.lane === 'runtime_lifecycle'),
+    handle: vi.fn(async () => ({ accepted: true, code: 'lifecycle_applied' }))
+  } as any,
+  toolApprovalHandler: {
+    canHandle: vi.fn((entry) => entry.lane === 'active_turn' && entry.event instanceof ToolExecutionApprovalEvent),
+    handle: vi.fn(async () => ({ accepted: false, code: 'no_active_turn', invocationId: 'inv-1', message: 'no active turn' }))
+  } as any,
+  toolResultHandler: {
+    canHandle: vi.fn((entry) => entry.lane === 'active_turn' && entry.event instanceof ToolResultEvent),
+    handle: vi.fn(async () => ({ accepted: false, code: 'no_active_turn', invocationId: 'inv-1', message: 'no active turn' }))
+  } as any
 });
 
 const storeWaiterCount = (inbox: AgentEventInbox): number =>
@@ -37,12 +49,32 @@ const schedulerWaiterCount = (scheduler: AgentEventScheduler): number =>
   ((scheduler as any).dispatchabilityWaiters as unknown[]).length;
 
 describe('AgentEventScheduler', () => {
+  it('dispatches through the matching inbox event handler', async () => {
+    const inbox = new AgentEventInbox();
+    const state = new AgentRuntimeState('agent-dispatch-handler');
+    state.agentEventInbox = inbox;
+    const context = { state } as any;
+    const handlers = makeHandlers();
+    const scheduler = new AgentEventScheduler(context, handlers);
+
+    const resultPromise = inbox.postToolApprovalEvent(new ToolExecutionApprovalEvent('inv-1', true));
+    const entry = inbox.claimFirst('active_turn');
+    expect(entry).not.toBeNull();
+
+    const result = await scheduler.dispatch(entry!);
+
+    expect(handlers.toolApprovalHandler.handle).toHaveBeenCalledWith(entry, context);
+    expect(handlers.turnStartHandler.handle).not.toHaveBeenCalled();
+    expect(handlers.toolResultHandler.handle).not.toHaveBeenCalled();
+    await expect(resultPromise).resolves.toEqual(result);
+  });
+
   it('does not strand a parked turn-start event when active-turn settlement wakes before wait registration', async () => {
     const inbox = new AgentEventInbox();
     const state = new AgentRuntimeState('agent-lost-wake');
     state.activeTurnTaskTurnId = 'turn-active';
     state.activeTurnTask = new Promise<any>(() => undefined);
-    const scheduler = new AgentEventScheduler({ state } as any, makeProcessors());
+    const scheduler = new AgentEventScheduler({ state } as any, makeHandlers());
     await inbox.postUserEvent(new UserMessageReceivedEvent(new AgentInputUserMessage('queued')));
 
     const originalClaim = (scheduler as any).claimNextDispatchable.bind(scheduler);
@@ -70,7 +102,7 @@ describe('AgentEventScheduler', () => {
     const state = new AgentRuntimeState('agent-dispatchability-cleanup');
     state.activeTurnTaskTurnId = 'turn-active';
     state.activeTurnTask = new Promise<any>(() => undefined);
-    const scheduler = new AgentEventScheduler({ state } as any, makeProcessors());
+    const scheduler = new AgentEventScheduler({ state } as any, makeHandlers());
     await inbox.postUserEvent(new UserMessageReceivedEvent(new AgentInputUserMessage('parked')));
 
     const nextPromise = scheduler.nextDispatchable({ inbox, runtimeState: state });
@@ -90,7 +122,7 @@ describe('AgentEventScheduler', () => {
     const state = new AgentRuntimeState('agent-availability-cleanup');
     state.activeTurnTaskTurnId = 'turn-active';
     state.activeTurnTask = new Promise<any>(() => undefined);
-    const scheduler = new AgentEventScheduler({ state } as any, makeProcessors());
+    const scheduler = new AgentEventScheduler({ state } as any, makeHandlers());
 
     const nextPromise = scheduler.nextDispatchable({ inbox, runtimeState: state });
     expect(await waitForCondition(() => schedulerWaiterCount(scheduler) === 1 && storeWaiterCount(inbox) === 1)).toBe(true);

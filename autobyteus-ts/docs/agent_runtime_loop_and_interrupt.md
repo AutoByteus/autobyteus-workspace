@@ -67,14 +67,14 @@ of hiding them in the lifecycle queue. Tool approval decisions are not
 turn-starting runtime input: callers must use
 `Agent.postToolExecutionApproval(...)`, which delegates to
 `AgentRuntime.postToolApprovalEvent(...)`, an awaitable active-turn event entry,
-`ToolApprovalEventProcessor`, and
+`ToolApprovalInboxEventHandler`, and
 `AgentRuntimeState.postToolApprovalEventToActiveTurn(...)` before waking the active
 turn's `TurnToolInputPort.postApproval(...)`. If there is no active turn, no
 pending invocation, a stale turn id, or an interrupted turn, the runtime returns
 an explicit non-turn-starting rejection result.
 
 External tool results use the same active-turn boundary through
-`AgentRuntime.postToolResultEvent(...)`, `ToolResultEventProcessor`, and
+`AgentRuntime.postToolResultEvent(...)`, `ToolResultInboxEventHandler`, and
 `AgentRuntimeState.postToolResultEventToActiveTurn(...)` before waking
 `TurnToolInputPort.postToolResult(...)`. Same-turn TOOL continuations remain
 inside `AgentTurnRunner`/`ToolPhase`/`ToolResultContinuationBuilder` and must not
@@ -147,7 +147,7 @@ lifecycle lane. The native single-agent path is:
 1. external API/UI/CLI calls `Agent.postToolExecutionApproval(...)`;
 2. `AgentRuntime.postToolApprovalEvent(...)` checks runtime liveness and posts
    an awaitable active-turn event entry;
-3. `ToolApprovalEventProcessor` delegates to
+3. `ToolApprovalInboxEventHandler` delegates to
    `AgentRuntimeState.postToolApprovalEventToActiveTurn(...)`;
 4. runtime state verifies the active turn, turn id, pending-approval marker,
    and interruption state before calling `TurnToolInputPort.postApproval(...)`;
@@ -177,7 +177,7 @@ External-result tools are also active-turn controls. The native path is:
 1. external API or integration calls `Agent.postToolExecutionResult(...)`;
 2. `AgentRuntime.postToolResultEvent(...)` checks runtime liveness and posts
    an awaitable active-turn event entry;
-3. `ToolResultEventProcessor` delegates to
+3. `ToolResultInboxEventHandler` delegates to
    `AgentRuntimeState.postToolResultEventToActiveTurn(...)`;
 4. runtime state verifies an active turn and forwards the result to
    `TurnToolInputPort.postToolResult(...)`;

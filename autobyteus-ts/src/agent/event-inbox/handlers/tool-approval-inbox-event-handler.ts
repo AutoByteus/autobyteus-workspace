@@ -1,17 +1,21 @@
 import { ToolExecutionApprovalEvent } from '../../events/agent-events.js';
 import type { AgentContext } from '../../context/agent-context.js';
 import type { PostToolApprovalResult } from '../../tool-approval-result.js';
-import type { ActiveTurnEventInboxEntry } from '../agent-event-inbox-entry.js';
-import type { AgentEventProcessor } from './agent-event-processor.js';
+import type { ActiveTurnEventInboxEntry, AgentEventInboxEntry } from '../agent-event-inbox-entry.js';
+import type { InboxEventHandler } from './inbox-event-handler.js';
 
 export type ApplyAgentStatusEvent = (event: ToolExecutionApprovalEvent) => Promise<void>;
 
-export class ToolApprovalEventProcessor implements AgentEventProcessor<ActiveTurnEventInboxEntry> {
+export class ToolApprovalInboxEventHandler implements InboxEventHandler<ActiveTurnEventInboxEntry> {
   constructor(private readonly applyStatusEvent: ApplyAgentStatusEvent) {}
 
-  async process(entry: ActiveTurnEventInboxEntry, context: AgentContext): Promise<PostToolApprovalResult> {
+  canHandle(entry: AgentEventInboxEntry): entry is ActiveTurnEventInboxEntry {
+    return entry.lane === 'active_turn' && entry.event instanceof ToolExecutionApprovalEvent;
+  }
+
+  async handle(entry: ActiveTurnEventInboxEntry, context: AgentContext): Promise<PostToolApprovalResult> {
     if (!(entry.event instanceof ToolExecutionApprovalEvent)) {
-      throw new TypeError('ToolApprovalEventProcessor requires a ToolExecutionApprovalEvent.');
+      throw new TypeError('ToolApprovalInboxEventHandler requires a ToolExecutionApprovalEvent.');
     }
     const result = context.state.postToolApprovalEventToActiveTurn(entry.event);
     if (result.accepted) {

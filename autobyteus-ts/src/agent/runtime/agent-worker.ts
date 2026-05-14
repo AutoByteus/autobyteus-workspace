@@ -10,10 +10,10 @@ import {
 } from '../events/agent-events.js';
 import { AgentEventInbox } from '../event-inbox/agent-event-inbox.js';
 import { AgentEventScheduler } from '../event-inbox/agent-event-scheduler.js';
-import { RuntimeLifecycleEventProcessor } from '../event-inbox/processors/runtime-lifecycle-event-processor.js';
-import { ToolApprovalEventProcessor } from '../event-inbox/processors/tool-approval-event-processor.js';
-import { ToolResultEventProcessor } from '../event-inbox/processors/tool-result-event-processor.js';
-import { TurnStartEventProcessor } from '../event-inbox/processors/turn-start-event-processor.js';
+import { RuntimeLifecycleInboxEventHandler } from '../event-inbox/handlers/runtime-lifecycle-inbox-event-handler.js';
+import { ToolApprovalInboxEventHandler } from '../event-inbox/handlers/tool-approval-inbox-event-handler.js';
+import { ToolResultInboxEventHandler } from '../event-inbox/handlers/tool-result-inbox-event-handler.js';
+import { TurnStartInboxEventHandler } from '../event-inbox/handlers/turn-start-inbox-event-handler.js';
 import { AgentEventStore } from '../events/event-store.js';
 import { AgentStatusDeriver } from '../status/status-deriver.js';
 import { applyEventAndDeriveStatus } from '../status/status-update-utils.js';
@@ -147,13 +147,13 @@ export class AgentWorker {
     }
 
     this.scheduler = new AgentEventScheduler(this.context, {
-      turnStartProcessor: new TurnStartEventProcessor((trigger) => this.startTurnRunner(trigger)),
-      lifecycleProcessor: new RuntimeLifecycleEventProcessor(
+      turnStartHandler: new TurnStartInboxEventHandler((trigger) => this.startTurnRunner(trigger)),
+      lifecycleHandler: new RuntimeLifecycleInboxEventHandler(
         (event) => this.applyStatusEvent(event),
         () => { this.stopRequested = true; }
       ),
-      toolApprovalProcessor: new ToolApprovalEventProcessor((event) => this.applyStatusEvent(event)),
-      toolResultProcessor: new ToolResultEventProcessor()
+      toolApprovalHandler: new ToolApprovalInboxEventHandler((event) => this.applyStatusEvent(event)),
+      toolResultHandler: new ToolResultInboxEventHandler()
     });
     console.info(`Agent '${agentId}': Runtime init completed (AgentEventScheduler initialized).`);
     return true;

@@ -20,14 +20,14 @@ export type RuntimeLifecycleEventResult = {
   stopRequested?: boolean;
 };
 
-export type AgentEventProcessorResult =
+export type InboxEventHandlerResult =
   | TurnStartEventResult
   | RuntimeLifecycleEventResult
   | PostToolApprovalResult
   | PostToolResultResult;
 
 export type AwaitableCompletion = {
-  resolve: (result: AgentEventProcessorResult) => void;
+  resolve: (result: InboxEventHandlerResult) => void;
   reject: (error: unknown) => void;
 };
 

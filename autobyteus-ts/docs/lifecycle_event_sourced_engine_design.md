@@ -306,7 +306,7 @@ A lifecycle event‑sourced design keeps **events as the single source of truth*
 
 This appendix documents the **implemented agent runtime behavior** in code. The
 current single-agent implementation uses `AgentEventInbox`,
-`AgentEventScheduler`, typed `AgentEventProcessor`s, and `AgentTurnRunner`;
+`AgentEventScheduler`, typed `InboxEventHandler`s, and `AgentTurnRunner`;
 the earlier standalone single-agent dispatcher, normal-flow handlers, and
 message-wrapper inbox are retired.
 
@@ -319,7 +319,7 @@ message-wrapper inbox are retired.
    `runtime_lifecycle` lane.
 2. `AgentEventScheduler` selects lifecycle/active-turn event entries while a
    turn is active, and selects `turn_start` entries only while idle.
-3. `TurnStartEventProcessor` creates an `AgentTurn` and delegates the whole
+3. `TurnStartInboxEventHandler` creates an `AgentTurn` and delegates the whole
    LLM/tool/continuation loop to `AgentTurnRunner`.
 4. `AgentTurnRunner` uses `AgentInputPipeline`, `LlmPhase`, `ToolPhase`,
    `ToolResultPipeline`, `ToolResultContinuationBuilder`, and
@@ -332,7 +332,7 @@ message-wrapper inbox are retired.
 
 | Input / phase | Owner | Emits / publishes | Notes |
 | --- | --- | --- | --- |
-| `UserMessageReceivedEvent` / `InterAgentMessageReceivedEvent` | `TurnStartEventProcessor` + `AgentTurnRunner` | turn-scoped `LLMUserMessageReadyEvent` status/projection | Routes user and inter-agent input through `AgentInputPipeline`; inter-agent reference files are preserved and rendered once for the recipient LLM. |
+| `UserMessageReceivedEvent` / `InterAgentMessageReceivedEvent` | `TurnStartInboxEventHandler` + `AgentTurnRunner` | turn-scoped `LLMUserMessageReadyEvent` status/projection | Routes user and inter-agent input through `AgentInputPipeline`; inter-agent reference files are preserved and rendered once for the recipient LLM. |
 | LLM request/stream | `LlmPhase` | streamed segments, tool invocations, `LLMCompleteResponseReceivedEvent` where appropriate | Passes abort signal and `turnId`; fences awaited seams before normal assistant side effects. |
 | Final response | `LLMResponsePipeline` through `AgentTurnRunner` | assistant output and idle/terminal status | Runs only if the turn has not accepted an interrupt. |
 
@@ -344,8 +344,8 @@ active turn and emits idle state after a completed turn.
 | Input / phase | Owner | Emits / publishes | Notes |
 | --- | --- | --- | --- |
 | Parsed tool invocations | `AgentTurnRunner` + `ToolPhase` | tool lifecycle started/pending/terminal events, approval requests, tool results | `BaseTool.prepareExecution(...)` owns agent-id setup, argument coercion/schema/type validation, abort check, and external-result mode resolution before started lifecycle/waiter registration. |
-| Tool approval command | `Agent.postToolExecutionApproval(...)` -> `AgentRuntime.postToolApprovalEvent(...)` -> active-turn `AgentEventInbox` entry -> `ToolApprovalEventProcessor` -> `AgentRuntimeState.postToolApprovalEventToActiveTurn(...)` | `ToolExecutionApprovalEvent` only after accepted approval | Rejected when there is no active turn, stale turn, no pending approval, stopped runtime, or interrupted turn. |
-| External tool result command | `Agent.postToolExecutionResult(...)` -> `AgentRuntime.postToolResultEvent(...)` -> active-turn `AgentEventInbox` entry -> `ToolResultEventProcessor` -> `AgentRuntimeState.postToolResultEventToActiveTurn(...)` | accepted result wakes `TurnToolInputPort` | Unknown, duplicate/late, turn-mismatched, no-waiter, closed/interrupted, and stopped cases are explicit rejections. |
+| Tool approval command | `Agent.postToolExecutionApproval(...)` -> `AgentRuntime.postToolApprovalEvent(...)` -> active-turn `AgentEventInbox` entry -> `ToolApprovalInboxEventHandler` -> `AgentRuntimeState.postToolApprovalEventToActiveTurn(...)` | `ToolExecutionApprovalEvent` only after accepted approval | Rejected when there is no active turn, stale turn, no pending approval, stopped runtime, or interrupted turn. |
+| External tool result command | `Agent.postToolExecutionResult(...)` -> `AgentRuntime.postToolResultEvent(...)` -> active-turn `AgentEventInbox` entry -> `ToolResultInboxEventHandler` -> `AgentRuntimeState.postToolResultEventToActiveTurn(...)` | accepted result wakes `TurnToolInputPort` | Unknown, duplicate/late, turn-mismatched, no-waiter, closed/interrupted, and stopped cases are explicit rejections. |
 | Tool result continuation | `ToolResultPipeline` + `ToolResultContinuationBuilder` | `ToolContinuationReadyEvent` for native `api_tool_call`, or `SenderType.TOOL` continuation input for legacy text modes | Native mode continues with structured `assistant.tool_calls` / `role: "tool"` history and no synthetic user message. |
 
 #### Inter-Agent Messages

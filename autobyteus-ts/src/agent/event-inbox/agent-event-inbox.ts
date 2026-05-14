@@ -15,7 +15,7 @@ import { InboxQueueStore, type CancellableWait, type InboxLane } from './inbox-q
 import type {
   AgentEventInboxCandidateSnapshot,
   AgentEventInboxEntry,
-  AgentEventProcessorResult,
+  InboxEventHandlerResult,
   ActiveTurnEventInboxEntry,
   RuntimeLifecycleEventInboxEntry,
   TurnStartEventInboxEntry
@@ -74,9 +74,9 @@ export class AgentEventInbox {
     return this.postAwaitable(event) as Promise<PostToolResultResult>;
   }
 
-  async postAwaitable(event: BaseEvent): Promise<AgentEventProcessorResult> {
+  async postAwaitable(event: BaseEvent): Promise<InboxEventHandlerResult> {
     const entry = this.createEntry(event);
-    return new Promise<AgentEventProcessorResult>((resolve, reject) => {
+    return new Promise<InboxEventHandlerResult>((resolve, reject) => {
       entry.awaitable = { resolve, reject };
       this.store.enqueue(entry.lane, entry);
     });
@@ -115,7 +115,7 @@ export class AgentEventInbox {
     return candidate ? this.claim(candidate.entryId) : null;
   }
 
-  resolveAwaitable(entry: AgentEventInboxEntry, result: AgentEventProcessorResult): void {
+  resolveAwaitable(entry: AgentEventInboxEntry, result: InboxEventHandlerResult): void {
     entry.awaitable?.resolve(result);
     entry.awaitable = undefined;
   }
