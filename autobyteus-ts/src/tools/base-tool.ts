@@ -4,6 +4,20 @@ import { ToolConfig } from './tool-config.js';
 import { ToolState } from './tool-state.js';
 import type { ToolDefinition } from './registry/tool-definition.js';
 
+export type ToolExecutionOptions = {
+  signal?: AbortSignal | null;
+  turnId?: string | null;
+  invocationId?: string | null;
+};
+
+export type ToolResultExecutionMode = 'in_process' | 'external_result';
+
+export type ToolExecutionPreparation<TArgs extends Record<string, unknown> = Record<string, unknown>> = {
+  toolName: string;
+  args: TArgs;
+  resultExecutionMode: ToolResultExecutionMode;
+};
+
 export type ToolClass = {
   new (config?: ToolConfig): BaseTool;
   getName(): string;
@@ -59,6 +73,14 @@ export abstract class BaseTool<
 
   protected getName(): string {
     return (this.constructor as typeof BaseTool).getName();
+  }
+
+  protected getToolResultExecutionMode(
+    _context: TContext,
+    _args: TArgs,
+    _options: ToolExecutionOptions
+  ): ToolResultExecutionMode | Promise<ToolResultExecutionMode> {
+    return 'in_process';
   }
 
   private coerceArgumentTypes(args: Record<string, unknown>): Record<string, unknown> {
@@ -237,9 +259,38 @@ export abstract class BaseTool<
     return value !== null && typeof value === 'object' && !Array.isArray(value);
   }
 
-  public async execute(context: TContext, args: TArgs = {} as TArgs): Promise<TResult> {
-     const toolName = this.getName();
+  public async prepareExecution(
+    context: TContext,
+    args: TArgs = {} as TArgs,
+    options: ToolExecutionOptions = {}
+  ): Promise<ToolExecutionPreparation<TArgs>> {
+    const toolName = this.getName();
+    const coercedArgs = this.prepareArguments(context, args, options, toolName);
+    const resultExecutionMode = this.normalizeToolResultExecutionMode(
+      await this.getToolResultExecutionMode(context, coercedArgs, options),
+      toolName
+    );
 
+    return { toolName, args: coercedArgs, resultExecutionMode };
+  }
+
+  public async execute(context: TContext, args: TArgs = {} as TArgs, options: ToolExecutionOptions = {}): Promise<TResult> {
+     const prepared = await this.prepareExecution(context, args, options);
+     if (options.signal?.aborted) {
+       throw new Error(`Tool '${prepared.toolName}' execution aborted before start.`);
+     }
+
+     return this._execute(context, prepared.args, options);
+  }
+
+  protected abstract _execute(context: TContext, args?: TArgs, options?: ToolExecutionOptions): Promise<TResult>;
+
+  private prepareArguments(
+    context: TContext,
+    args: TArgs,
+    options: ToolExecutionOptions,
+    toolName: string
+  ): TArgs {
      const contextAgentId = (context as { agentId?: string } | null | undefined)?.agentId;
      if (this.agentId === null && typeof contextAgentId === 'string') {
        this.setAgentId(contextAgentId);
@@ -263,10 +314,22 @@ export abstract class BaseTool<
        );
      }
 
-     return this._execute(context, coercedArgs as TArgs);
+     if (options.signal?.aborted) {
+       throw new Error(`Tool '${toolName}' execution aborted before start.`);
+     }
+
+     return coercedArgs as TArgs;
   }
 
-  protected abstract _execute(context: TContext, args?: TArgs): Promise<TResult>;
+  private normalizeToolResultExecutionMode(
+    mode: ToolResultExecutionMode,
+    toolName: string
+  ): ToolResultExecutionMode {
+    if (mode === 'in_process' || mode === 'external_result') {
+      return mode;
+    }
+    throw new Error(`Invalid tool result execution mode for tool '${toolName}': ${String(mode)}`);
+  }
 
   public async cleanup(): Promise<void> {
     // no-op

@@ -1,4 +1,9 @@
-export { BaseTool } from './base-tool.js';
+export {
+  BaseTool,
+  type ToolExecutionOptions,
+  type ToolExecutionPreparation,
+  type ToolResultExecutionMode
+} from './base-tool.js';
 export { tool } from './functional-tool.js';
 export { ToolConfig } from './tool-config.js';
 export { ToolOrigin } from './tool-origin.js';

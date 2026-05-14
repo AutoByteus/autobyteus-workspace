@@ -93,7 +93,7 @@ describe("AutoByteusStreamEventConverter", () => {
       runId: "run-1",
       payload: {
         id: "seg-1",
-        turnId: "turn-1",
+        turn_id: "turn-1",
         segment_type: "assistant_text",
         content: "hello",
       },
@@ -114,7 +114,7 @@ describe("AutoByteusStreamEventConverter", () => {
       eventType: AgentRunEventType.SEGMENT_CONTENT,
       payload: {
         id: "seg-2",
-        turnId: "turn-2",
+        turn_id: "turn-2",
         text: "chunk",
       },
     });
@@ -132,8 +132,61 @@ describe("AutoByteusStreamEventConverter", () => {
       eventType: AgentRunEventType.SEGMENT_END,
       payload: {
         id: "seg-3",
-        turnId: "turn-3",
+        turn_id: "turn-3",
       },
+    });
+  });
+
+  it("canonicalizes native segment payloads to turn_id for all segment event variants", () => {
+    const start = converter.convert({
+      event_type: StreamEventType.SEGMENT_EVENT,
+      data: {
+        event_type: "SEGMENT_START",
+        segment_id: "seg-start",
+        segment_type: "text",
+        turn_id: "turn-native",
+        payload: { metadata: { role: "assistant" }, turnId: "legacy-nested" },
+      },
+    } as any);
+    const content = converter.convert({
+      event_type: StreamEventType.SEGMENT_EVENT,
+      data: {
+        event_type: "SEGMENT_CONTENT",
+        segment_id: "seg-content",
+        turn_id: "turn-native",
+        payload: { delta: "partial", turn_id: "nested-wrong" },
+      },
+    } as any);
+    const end = converter.convert({
+      event_type: StreamEventType.SEGMENT_EVENT,
+      data: {
+        event_type: "SEGMENT_END",
+        segment_id: "seg-end",
+        turn_id: "turn-native",
+        payload: {
+          interrupted: true,
+          reason: "user_interrupt",
+          metadata: { tool_name: "search_web" },
+          turnId: "legacy-nested",
+        },
+      },
+    } as any);
+
+    for (const event of [start, content, end]) {
+      expect(event?.payload).toMatchObject({ turn_id: "turn-native" });
+      expect(event?.payload).not.toHaveProperty("turnId");
+    }
+    expect(start?.payload).toMatchObject({
+      id: "seg-start",
+      segment_type: "text",
+      metadata: { role: "assistant" },
+    });
+    expect(content?.payload).toMatchObject({ id: "seg-content", delta: "partial" });
+    expect(end?.payload).toMatchObject({
+      id: "seg-end",
+      interrupted: true,
+      reason: "user_interrupt",
+      metadata: { tool_name: "search_web" },
     });
   });
 

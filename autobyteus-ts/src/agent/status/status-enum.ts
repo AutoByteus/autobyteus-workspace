@@ -9,6 +9,7 @@ export enum AgentStatus {
   TOOL_DENIED = 'tool_denied',
   EXECUTING_TOOL = 'executing_tool',
   PROCESSING_TOOL_RESULT = 'processing_tool_result',
+  INTERRUPTING = 'interrupting',
   SHUTTING_DOWN = 'shutting_down',
   SHUTDOWN_COMPLETE = 'shutdown_complete',
   ERROR = 'error'
@@ -27,7 +28,8 @@ export namespace AgentStatus {
       AgentStatus.AWAITING_TOOL_APPROVAL,
       AgentStatus.TOOL_DENIED,
       AgentStatus.EXECUTING_TOOL,
-      AgentStatus.PROCESSING_TOOL_RESULT
+      AgentStatus.PROCESSING_TOOL_RESULT,
+      AgentStatus.INTERRUPTING
     ].includes(status);
   }
 

@@ -8,8 +8,32 @@ import { AgentTeamConfig } from './agent-team-config.js';
 import type { AgentTeamRuntime } from '../runtime/agent-team-runtime.js';
 import type { AgentEventMultiplexer } from '../streaming/agent-event-multiplexer.js';
 import type { InterAgentMessageRequestEvent, ProcessUserMessageEvent } from '../events/agent-team-events.js';
+import type { AgentInterruptResult } from '../../agent/interruption/agent-interruption.js';
 
 export type ManagedNode = Agent | AgentTeam;
+
+export type TeamInterruptOptions = {
+  reason?: string | null;
+  timeoutMs?: number | null;
+  targetMemberName?: string | null;
+};
+
+export type TeamMemberInterruptResult = {
+  memberName: string;
+  accepted: boolean;
+  status: string;
+  message?: string;
+  turnId?: string | null;
+};
+
+export type TeamInterruptResult = {
+  accepted: boolean;
+  status: 'accepted' | 'no_running_nodes' | 'partial_failure' | 'partial_timeout';
+  reason: string;
+  interruptedCount: number;
+  memberResults: TeamMemberInterruptResult[];
+  message?: string;
+};
 
 export class TeamManager {
   teamId: string;
@@ -157,5 +181,87 @@ export class TeamManager {
 
     this.coordinatorAgentRef = node;
     return node;
+  }
+
+  async interruptRunningNodes(options: TeamInterruptOptions = {}): Promise<TeamInterruptResult> {
+    const reason =
+      typeof options.reason === 'string' && options.reason.trim().length > 0
+        ? options.reason.trim()
+        : 'user_interrupt';
+    const targetMemberName =
+      typeof options.targetMemberName === 'string' && options.targetMemberName.trim().length > 0
+        ? options.targetMemberName.trim()
+        : null;
+
+    const candidates = Array.from(this.nodesCache.entries())
+      .filter(([memberName, node]) => {
+        if (targetMemberName && memberName !== targetMemberName) {
+          return false;
+        }
+        return node.isRunning && typeof (node as { interrupt?: unknown }).interrupt === 'function';
+      });
+
+    if (candidates.length === 0) {
+      return {
+        accepted: false,
+        status: 'no_running_nodes',
+        reason,
+        interruptedCount: 0,
+        memberResults: [],
+        message: targetMemberName
+          ? `Team '${this.teamId}' has no running interruptible node named '${targetMemberName}'.`
+          : `Team '${this.teamId}' has no running interruptible nodes.`
+      };
+    }
+
+    const memberResults = await Promise.all(
+      candidates.map(async ([memberName, node]): Promise<TeamMemberInterruptResult> => {
+        try {
+          const result = await (node as {
+            interrupt: (options?: { reason?: string | null; timeoutMs?: number | null }) => Promise<AgentInterruptResult | TeamInterruptResult>;
+          }).interrupt({
+            reason,
+            timeoutMs: options.timeoutMs ?? null
+          });
+
+          return {
+            memberName,
+            accepted: result.accepted,
+            status: result.status,
+            message: result.message,
+            turnId: 'turnId' in result ? result.turnId ?? null : null
+          };
+        } catch (error) {
+          return {
+            memberName,
+            accepted: false,
+            status: 'interrupt_failed',
+            message: String(error),
+            turnId: null
+          };
+        }
+      })
+    );
+
+    const interruptedCount = memberResults.filter((result) => result.accepted).length;
+    const hasTimeout = memberResults.some((result) => result.status === 'settlement_timeout' || result.status === 'partial_timeout');
+    const hasFailure = memberResults.some((result) => !result.accepted);
+    const status: TeamInterruptResult['status'] = hasTimeout
+      ? 'partial_timeout'
+      : hasFailure
+        ? 'partial_failure'
+        : 'accepted';
+
+    return {
+      accepted: interruptedCount > 0,
+      status,
+      reason,
+      interruptedCount,
+      memberResults,
+      message:
+        status === 'accepted'
+          ? undefined
+          : `Team '${this.teamId}' interrupt completed with status '${status}'.`
+    };
   }
 }

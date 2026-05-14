@@ -1,5 +1,5 @@
 import { Ollama } from 'ollama';
-import { BaseLLM } from '../base.js';
+import { BaseLLM, type LLMInvocationOptions } from '../base.js';
 import { LLMModel } from '../models.js';
 import { LLMConfig } from '../utils/llm-config.js';
 import { CompleteResponse, ChunkResponse } from '../utils/response-types.js';
@@ -83,10 +83,14 @@ export class OllamaLLM extends BaseLLM {
 
   protected async _sendMessagesToLLM(
     messages: Message[],
-    kwargs: Record<string, unknown>
+    kwargs: Record<string, unknown>,
+    options: LLMInvocationOptions = {}
   ): Promise<CompleteResponse> {
     const formattedMessages = await this._renderer.render(messages);
-    const response: any = await this.client.chat(this.buildChatRequest(formattedMessages, kwargs, false) as any);
+    const abort = () => this.client.abort();
+    options.signal?.addEventListener('abort', abort, { once: true });
+    try {
+      const response: any = await this.client.chat(this.buildChatRequest(formattedMessages, kwargs, false) as any);
     const messageParts = this.extractMessageParts(response?.message);
 
     const promptTokens = response?.prompt_eval_count ?? 0;
@@ -97,77 +101,87 @@ export class OllamaLLM extends BaseLLM {
       total_tokens: promptTokens + completionTokens
     };
 
-    return new CompleteResponse({
-      content: messageParts.content,
-      reasoning: messageParts.reasoning,
-      usage
-    });
+      return new CompleteResponse({
+        content: messageParts.content,
+        reasoning: messageParts.reasoning,
+        usage
+      });
+    } finally {
+      options.signal?.removeEventListener('abort', abort);
+    }
   }
 
   protected async *_streamMessagesToLLM(
     messages: Message[],
-    kwargs: Record<string, unknown>
+    kwargs: Record<string, unknown>,
+    options: LLMInvocationOptions = {}
   ): AsyncGenerator<ChunkResponse, void, unknown> {
     const formattedMessages = await this._renderer.render(messages);
-    const stream = await this.client.chat(this.buildChatRequest(formattedMessages, kwargs, true) as any);
+    const abort = () => this.client.abort();
+    options.signal?.addEventListener('abort', abort, { once: true });
+    try {
+      const stream = await this.client.chat(this.buildChatRequest(formattedMessages, kwargs, true) as any);
 
-    let accumulatedMain = '';
-    let accumulatedReasoning = '';
-    let inReasoning = false;
-    let finalResponse: any = null;
+      let accumulatedMain = '';
+      let accumulatedReasoning = '';
+      let inReasoning = false;
+      let finalResponse: any = null;
 
-    for await (const part of stream as AsyncIterable<any>) {
-      const explicitThinking = typeof part?.message?.thinking === 'string' ? part.message.thinking : '';
-      if (explicitThinking) {
-        accumulatedReasoning += explicitThinking;
-        yield new ChunkResponse({ content: '', reasoning: explicitThinking });
-      }
+      for await (const part of stream as AsyncIterable<any>) {
+        const explicitThinking = typeof part?.message?.thinking === 'string' ? part.message.thinking : '';
+        if (explicitThinking) {
+          accumulatedReasoning += explicitThinking;
+          yield new ChunkResponse({ content: '', reasoning: explicitThinking });
+        }
 
-      let token: string = part?.message?.content ?? '';
+        let token: string = part?.message?.content ?? '';
 
-      if (token.includes('<think>')) {
-        inReasoning = true;
-        const parts = token.split('<think>');
-        token = parts[parts.length - 1] ?? '';
-      }
+        if (token.includes('<think>')) {
+          inReasoning = true;
+          const parts = token.split('<think>');
+          token = parts[parts.length - 1] ?? '';
+        }
 
-      if (token.includes('</think>')) {
-        inReasoning = false;
-        const parts = token.split('</think>');
-        token = parts[parts.length - 1] ?? '';
-      }
+        if (token.includes('</think>')) {
+          inReasoning = false;
+          const parts = token.split('</think>');
+          token = parts[parts.length - 1] ?? '';
+        }
 
-      if (inReasoning) {
-        accumulatedReasoning += token;
-        yield new ChunkResponse({ content: '', reasoning: token });
-      } else {
-        accumulatedMain += token;
-        if (token) {
-          yield new ChunkResponse({ content: token, reasoning: null });
+        if (inReasoning) {
+          accumulatedReasoning += token;
+          yield new ChunkResponse({ content: '', reasoning: token });
+        } else {
+          accumulatedMain += token;
+          if (token) {
+            yield new ChunkResponse({ content: token, reasoning: null });
+          }
+        }
+
+        const toolDeltas = convertOllamaToolCalls(part?.message?.tool_calls);
+        if (toolDeltas) {
+          yield new ChunkResponse({ content: '', reasoning: null, tool_calls: toolDeltas });
+        }
+
+        if (part?.done) {
+          finalResponse = part;
         }
       }
 
-      const toolDeltas = convertOllamaToolCalls(part?.message?.tool_calls);
-      if (toolDeltas) {
-        yield new ChunkResponse({ content: '', reasoning: null, tool_calls: toolDeltas });
+      let usage: TokenUsage | null = null;
+      if (finalResponse) {
+        const promptTokens = finalResponse?.prompt_eval_count ?? 0;
+        const completionTokens = finalResponse?.eval_count ?? 0;
+        usage = {
+          prompt_tokens: promptTokens,
+          completion_tokens: completionTokens,
+          total_tokens: promptTokens + completionTokens
+        };
       }
 
-      if (part?.done) {
-        finalResponse = part;
-      }
+      yield new ChunkResponse({ content: '', reasoning: null, is_complete: true, usage });
+    } finally {
+      options.signal?.removeEventListener('abort', abort);
     }
-
-    let usage: TokenUsage | null = null;
-    if (finalResponse) {
-      const promptTokens = finalResponse?.prompt_eval_count ?? 0;
-      const completionTokens = finalResponse?.eval_count ?? 0;
-      usage = {
-        prompt_tokens: promptTokens,
-        completion_tokens: completionTokens,
-        total_tokens: promptTokens + completionTokens
-      };
-    }
-
-    yield new ChunkResponse({ content: '', reasoning: null, is_complete: true, usage });
   }
 }

@@ -7,16 +7,13 @@ import { AgentContext } from '../../../src/agent/context/agent-context.js';
 import { AgentRuntimeState } from '../../../src/agent/context/agent-runtime-state.js';
 import {
   LLMUserMessageReadyEvent,
-  PendingToolInvocationEvent,
   ToolContinuationReadyEvent,
-  ToolResultEvent,
   UserMessageReceivedEvent
 } from '../../../src/agent/events/agent-events.js';
-import { LLMUserMessageReadyEventHandler } from '../../../src/agent/handlers/llm-user-message-ready-event-handler.js';
-import { ToolResultEventHandler } from '../../../src/agent/handlers/tool-result-event-handler.js';
+import { AgentRuntime } from '../../../src/agent/runtime/agent-runtime.js';
+import { AgentStatus } from '../../../src/agent/status/status-enum.js';
 import { MemoryIngestInputProcessor } from '../../../src/agent/input-processor/memory-ingest-input-processor.js';
 import { AgentInputUserMessage } from '../../../src/agent/message/agent-input-user-message.js';
-import { buildLLMUserMessage } from '../../../src/agent/message/multimodal-message-builder.js';
 import { MemoryIngestToolResultProcessor } from '../../../src/agent/tool-execution-result-processor/memory-ingest-tool-result-processor.js';
 import { BaseLLM } from '../../../src/llm/base.js';
 import { LLMModel } from '../../../src/llm/models.js';
@@ -46,24 +43,6 @@ const originalEnv = { ...process.env };
 
 const SYNTHETIC_AGGREGATE_PREFIX =
   'The following tool executions have completed. Please analyze their results and decide the next course of action.';
-
-class CapturingQueues {
-  internalEvents: any[] = [];
-  toolInvocationEvents: any[] = [];
-  toolContinuationEvents: any[] = [];
-
-  async enqueueInternalSystemEvent(event: any) {
-    this.internalEvents.push(event);
-  }
-
-  async enqueueToolInvocationRequest(event: any) {
-    this.toolInvocationEvents.push(event);
-  }
-
-  async enqueueToolContinuationInput(event: any) {
-    this.toolContinuationEvents.push(event);
-  }
-}
 
 type ProviderCase = {
   name: 'gemini' | 'ollama' | 'anthropic' | 'mistral' | 'openai_responses';
@@ -259,6 +238,23 @@ const providerCases: ProviderCase[] = [
   { name: 'openai_responses', provider: LLMProvider.OPENAI, renderer: () => new OpenAIResponsesRenderer() }
 ];
 
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const waitForCondition = async (
+  predicate: () => boolean,
+  timeoutMs = 8000,
+  intervalMs = 25
+): Promise<boolean> => {
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    if (predicate()) {
+      return true;
+    }
+    await delay(intervalMs);
+  }
+  return false;
+};
+
 const assertNoSyntheticAggregateUserText = (value: unknown) => {
   const text = JSON.stringify(value);
   expect(text).not.toContain(SYNTHETIC_AGGREGATE_PREFIX);
@@ -343,6 +339,7 @@ describe('provider-native tool continuation integration flow', () => {
     async (providerCase) => {
       const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), `native-continuation-${providerCase.name}-`));
       const llm = new ScriptedProviderLLM(providerCase);
+      let runtime: AgentRuntime | null = null;
 
       try {
         const memoryManager = new MemoryManager({
@@ -350,21 +347,8 @@ describe('provider-native tool continuation integration flow', () => {
         });
         const runtimeState = new AgentRuntimeState(`agent_${providerCase.name}`, tempDir);
         runtimeState.memoryManager = memoryManager;
-        runtimeState.inputEventQueues = new CapturingQueues() as any;
         runtimeState.llmInstance = llm;
         runtimeState.toolInstances = registerIntegrationTools();
-        runtimeState.statusManagerRef = {
-          notifier: {
-            notifyAgentSegmentEvent: () => undefined,
-            notifyAgentErrorOutputGeneration: () => undefined,
-            notifyAgentDataToolLog: () => undefined,
-            notifyAgentToolExecutionSucceeded: () => undefined,
-            notifyAgentToolExecutionFailed: () => undefined,
-            notifyAgentTurnStarted: () => undefined,
-            notifyAgentTurnCompleted: () => undefined
-          }
-        } as any;
-
         const config = new AgentConfig(
           `NativeContinuation${providerCase.name}`,
           'integration tester',
@@ -379,50 +363,41 @@ describe('provider-native tool continuation integration flow', () => {
           [new MemoryIngestToolResultProcessor()]
         );
         const context = new AgentContext(runtimeState.agentId, config, runtimeState);
-        const turnId = runtimeState.startActiveTurn('turn-1').turnId;
-        const agentInput = new AgentInputUserMessage('Use both tools.');
-        await new MemoryIngestInputProcessor().process(agentInput, context, null as any);
+        runtime = new AgentRuntime(context);
 
-        const llmHandler = new LLMUserMessageReadyEventHandler();
-        await llmHandler.handle(
-          new LLMUserMessageReadyEvent(buildLLMUserMessage(agentInput), turnId),
-          context
+        runtime.start();
+        const ready = await waitForCondition(
+          () => context.currentStatus === AgentStatus.IDLE || context.currentStatus === AgentStatus.ERROR
         );
+        expect(ready).toBe(true);
+        expect(context.currentStatus).toBe(AgentStatus.IDLE);
 
-        const queues = runtimeState.inputEventQueues as unknown as CapturingQueues;
-        expect(queues.toolInvocationEvents).toHaveLength(2);
-        expect(queues.toolInvocationEvents.every((event) => event instanceof PendingToolInvocationEvent)).toBe(true);
-        expect(runtimeState.activeTurn?.activeToolInvocationBatch).not.toBeNull();
+        await runtime.submitEvent(new UserMessageReceivedEvent(new AgentInputUserMessage('Use both tools.')));
 
-        const resultHandler = new ToolResultEventHandler();
-        await resultHandler.handle(
-          new ToolResultEvent('get_time', { local_time: '10:00' }, 'call_b', undefined, { city: 'Berlin' }, turnId),
-          context
+        const continuationReached = await waitForCondition(
+          () => llm.renderCaptures.length >= 2 && runtimeState.activeTurn === null,
+          10000
         );
-        expect(queues.toolContinuationEvents).toHaveLength(0);
-
-        await resultHandler.handle(
-          new ToolResultEvent(
-            'get_weather',
-            { temp_c: 21, condition: 'clear' },
-            'call_a',
-            undefined,
-            { city: 'Berlin', unit: 'celsius' },
-            turnId
-          ),
-          context
-        );
-
-        expect(queues.toolContinuationEvents).toHaveLength(1);
-        expect(queues.toolContinuationEvents[0]).toBeInstanceOf(ToolContinuationReadyEvent);
-        expect(queues.toolContinuationEvents[0]).not.toBeInstanceOf(UserMessageReceivedEvent);
-
-        await llmHandler.handle(queues.toolContinuationEvents[0] as ToolContinuationReadyEvent, context);
+        expect(continuationReached).toBe(true);
 
         const continuationCapture = llm.renderCaptures[1];
         expect(continuationCapture).toBeTruthy();
         assertNoSyntheticAggregateUserText(continuationCapture.messages);
         assertNoSyntheticAggregateUserText(continuationCapture.renderedPayload);
+
+        const eventStoreEvents = runtimeState.eventStore?.allEvents().map((envelope) => envelope.event) ?? [];
+        const toolContinuationEvents = eventStoreEvents.filter(
+          (event) => event instanceof ToolContinuationReadyEvent
+        ) as ToolContinuationReadyEvent[];
+        expect(toolContinuationEvents.map((event) => event.turnId)).toEqual(['turn_0001']);
+        const syntheticNativeReadyEvents = eventStoreEvents.filter(
+          (event) =>
+            event instanceof LLMUserMessageReadyEvent &&
+            String((event as LLMUserMessageReadyEvent).llmUserMessage?.content ?? '').includes(
+              'Native API tool continuation'
+            )
+        );
+        expect(syntheticNativeReadyEvents).toHaveLength(0);
 
         const internalUserMessages = continuationCapture.messages.filter((message) => message.role === MessageRole.USER);
         expect(internalUserMessages.map((message) => message.content)).toEqual(['Use both tools.']);
@@ -442,6 +417,9 @@ describe('provider-native tool continuation integration flow', () => {
 
         assertProviderNativeToolResults(providerCase.name, continuationCapture.renderedPayload);
       } finally {
+        if (runtime?.isRunning) {
+          await runtime.stop(2);
+        }
         fs.rmSync(tempDir, { recursive: true, force: true });
       }
     }

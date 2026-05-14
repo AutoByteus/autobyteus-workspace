@@ -75,7 +75,11 @@ export class TerminalSessionManager {
     this.outputBuffer.clear();
   }
 
-  async executeCommand(command: string, timeoutSeconds: number = DEFAULT_TIMEOUT_SECONDS): Promise<TerminalResult> {
+  async executeCommand(
+    command: string,
+    timeoutSeconds: number = DEFAULT_TIMEOUT_SECONDS,
+    options: { signal?: AbortSignal | null } = {}
+  ): Promise<TerminalResult> {
     if (!this.session) {
       throw new Error('Session not started. Call ensureStarted first.');
     }
@@ -87,41 +91,54 @@ export class TerminalSessionManager {
       normalized += '\n';
     }
 
-    await this.session.write(Buffer.from(normalized, 'utf8'));
+    const abortListener = () => {
+      void this.close().catch(() => undefined);
+    };
+    options.signal?.addEventListener('abort', abortListener, { once: true });
 
-    let timedOut = false;
-    const start = Date.now();
+    try {
+      await this.session.write(Buffer.from(normalized, 'utf8'));
 
-    while (true) {
-      const elapsed = (Date.now() - start) / 1000;
-      if (elapsed >= timeoutSeconds) {
-        timedOut = true;
-        break;
-      }
+      let timedOut = false;
+      const start = Date.now();
 
-      try {
-        const data = await this.session.read(0.1);
-        if (data) {
-          this.outputBuffer.append(data);
-          const current = this.outputBuffer.getAll();
-          if (this.promptDetector.check(current)) {
-            break;
-          }
+      while (true) {
+        const elapsed = (Date.now() - start) / 1000;
+        if (options.signal?.aborted) {
+          timedOut = true;
+          break;
         }
-      } catch (error) {
-        break;
+        if (elapsed >= timeoutSeconds) {
+          timedOut = true;
+          break;
+        }
+
+        try {
+          const data = await this.session.read(0.1);
+          if (data) {
+            this.outputBuffer.append(data);
+            const current = this.outputBuffer.getAll();
+            if (this.promptDetector.check(current)) {
+              break;
+            }
+          }
+        } catch (error) {
+          break;
+        }
       }
+
+      const output = this.outputBuffer.getAll();
+      const cleanOutput = stripAnsiCodes(output);
+
+      let exitCode: number | null = null;
+      if (!timedOut) {
+        exitCode = await this.getExitCode();
+      }
+
+      return new TerminalResult(cleanOutput, '', exitCode, timedOut, this.cwd ?? '');
+    } finally {
+      options.signal?.removeEventListener('abort', abortListener);
     }
-
-    const output = this.outputBuffer.getAll();
-    const cleanOutput = stripAnsiCodes(output);
-
-    let exitCode: number | null = null;
-    if (!timedOut) {
-      exitCode = await this.getExitCode();
-    }
-
-    return new TerminalResult(cleanOutput, '', exitCode, timedOut, this.cwd ?? '');
   }
 
   async close(): Promise<void> {

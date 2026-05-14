@@ -8,11 +8,16 @@ import {
   AgentTeamErrorEvent,
   AgentTeamStoppedEvent,
   AgentTeamShutdownRequestedEvent,
+  AgentTeamIdleEvent,
   ProcessUserMessageEvent
 } from '../events/agent-team-events.js';
 import { AgentTeamExternalEventNotifier } from '../streaming/agent-team-event-notifier.js';
 import { AgentEventMultiplexer } from '../streaming/agent-event-multiplexer.js';
 import { AgentTeamWorker } from './agent-team-worker.js';
+import type {
+  TeamInterruptOptions,
+  TeamInterruptResult
+} from '../context/team-manager.js';
 
 export class AgentTeamRuntime {
   context: AgentTeamContext;
@@ -63,6 +68,32 @@ export class AgentTeamRuntime {
     await this.applyEventAndDeriveStatus(new AgentTeamShutdownRequestedEvent());
     await this.worker.stop(timeout);
     await this.applyEventAndDeriveStatus(new AgentTeamStoppedEvent());
+  }
+
+  async interrupt(options: TeamInterruptOptions = {}): Promise<TeamInterruptResult> {
+    const teamId = this.context.teamId;
+    const teamManager = this.context.state.teamManager;
+    const reason =
+      typeof options.reason === "string" && options.reason.trim().length > 0
+        ? options.reason.trim()
+        : "user_interrupt";
+
+    if (!this.worker.isAlive() || !teamManager) {
+      return {
+        accepted: false,
+        status: "no_running_nodes",
+        reason,
+        interruptedCount: 0,
+        memberResults: [],
+        message: `Team '${teamId}' has no running interruptible nodes.`
+      };
+    }
+
+    const result = await teamManager.interruptRunningNodes({ ...options, reason });
+    if (result.accepted) {
+      await this.applyEventAndDeriveStatus(new AgentTeamIdleEvent());
+    }
+    return result;
   }
 
   async submitEvent(event: BaseAgentTeamEvent): Promise<void> {

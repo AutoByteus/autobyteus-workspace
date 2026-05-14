@@ -1,8 +1,9 @@
 import { AgentStatus } from './status-enum.js';
 import {
   AgentErrorEvent,
+  AgentInterruptRequestedEvent,
+  AgentTurnInterruptedEvent,
   PendingToolInvocationEvent,
-  ExecuteToolInvocationEvent,
   ToolExecutionApprovalEvent,
   ToolResultEvent,
   BaseEvent
@@ -22,8 +23,6 @@ export function buildStatusUpdateData(
     let toolName: string | undefined;
     if (event instanceof PendingToolInvocationEvent) {
       toolName = event.toolInvocation.name;
-    } else if (event instanceof ExecuteToolInvocationEvent) {
-      toolName = event.toolInvocation.name;
     } else if (event instanceof ToolExecutionApprovalEvent) {
       const pending = context.state.pendingToolApprovals[event.toolInvocationId];
       toolName = pending ? pending.name : 'unknown_tool';
@@ -31,6 +30,14 @@ export function buildStatusUpdateData(
     if (toolName) {
       return { tool_name: toolName };
     }
+  }
+
+  if (newStatus === AgentStatus.INTERRUPTING && event instanceof AgentInterruptRequestedEvent) {
+    return { turn_id: event.turnId, reason: event.reason };
+  }
+
+  if (newStatus === AgentStatus.IDLE && event instanceof AgentTurnInterruptedEvent) {
+    return { turn_id: event.turnId, reason: event.reason, interrupted: true };
   }
 
   if (newStatus === AgentStatus.PROCESSING_TOOL_RESULT && event instanceof ToolResultEvent) {

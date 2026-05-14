@@ -73,6 +73,7 @@ type FakeTeam = {
   currentStatus: string;
   postMessage: ReturnType<typeof vi.fn>;
   postToolExecutionApproval: ReturnType<typeof vi.fn>;
+  interrupt: ReturnType<typeof vi.fn>;
   stop: ReturnType<typeof vi.fn>;
 };
 
@@ -151,6 +152,7 @@ const createBackend = (
     currentStatus: "IDLE",
     postMessage: vi.fn().mockResolvedValue(undefined),
     postToolExecutionApproval: vi.fn().mockResolvedValue(undefined),
+    interrupt: vi.fn().mockResolvedValue({ accepted: true, status: "accepted" }),
     stop: vi.fn().mockResolvedValue(undefined),
     ...overrides,
   };
@@ -232,8 +234,13 @@ describe("AutoByteusTeamRunBackend integration", () => {
       "approved",
     );
 
-    await expect(backend.interrupt()).resolves.toEqual({ accepted: true });
-    expect(team.stop).toHaveBeenCalledTimes(1);
+    await expect(backend.interrupt()).resolves.toEqual({
+      accepted: true,
+      code: "accepted",
+      message: undefined,
+    });
+    expect(team.interrupt).toHaveBeenCalledWith({ reason: "user_interrupt" });
+    expect(team.stop).not.toHaveBeenCalled();
 
     await expect(backend.terminate()).resolves.toEqual({ accepted: true });
   });

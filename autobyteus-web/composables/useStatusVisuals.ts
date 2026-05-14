@@ -44,6 +44,8 @@ export function useStatusVisuals(status: Ref<string | undefined>) {
         return { text: 'Executing Tool', colorClass: 'bg-cyan-500 animate-pulse', iconName: 'heroicons:play-solid' };
       case AgentStatus.ProcessingToolResult:
         return { text: 'Processing Tool Result', colorClass: 'bg-blue-500 animate-pulse', iconName: 'heroicons:cog-solid' };
+      case AgentStatus.Interrupting:
+        return { text: 'Interrupting', colorClass: 'bg-orange-500 animate-pulse', iconName: 'heroicons:pause-circle-solid' };
 
       // Terminal states
       case AgentStatus.Error:

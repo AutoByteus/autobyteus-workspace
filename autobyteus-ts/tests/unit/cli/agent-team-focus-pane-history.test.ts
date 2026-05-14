@@ -19,6 +19,7 @@ describe('buildHistoryLines', () => {
         data: {
           event_type: SegmentEventType.START,
           segment_id: 'seg-1',
+          turn_id: 'turn-1',
           segment_type: SegmentType.WRITE_FILE,
           payload: { metadata: { path: '/tmp/demo.txt' } }
         }
@@ -28,6 +29,7 @@ describe('buildHistoryLines', () => {
         data: {
           event_type: SegmentEventType.CONTENT,
           segment_id: 'seg-1',
+          turn_id: 'turn-1',
           payload: { delta: 'hello' }
         }
       }),
@@ -35,7 +37,8 @@ describe('buildHistoryLines', () => {
         event_type: StreamEventType.SEGMENT_EVENT,
         data: {
           event_type: SegmentEventType.END,
-          segment_id: 'seg-1'
+          segment_id: 'seg-1',
+          turn_id: 'turn-1'
         }
       }),
       new StreamEvent({
@@ -71,6 +74,7 @@ describe('buildHistoryLines', () => {
         data: {
           event_type: SegmentEventType.START,
           segment_id: 'seg-2',
+          turn_id: 'turn-1',
           segment_type: SegmentType.TOOL_CALL,
           payload: { metadata: { tool_name: 'search_web' } }
         }

@@ -244,9 +244,13 @@ empty, or non-string ids are rejected before any HTTP request is sent.
 id used by the instance.
 
 `AutobyteusClient.sendMessage(...)` and `AutobyteusClient.streamMessage(...)`
-use the same request object:
+use the same request object. Both methods also accept `{ signal }` as the
+second options argument; `AutobyteusLLM` passes `LLMInvocationOptions.signal`
+through to those client calls so native runtime interrupts abort the underlying
+Axios `/send-message` and `/stream-message` requests:
 
 ```ts
+const abortController = new AbortController();
 let responseText = '';
 
 for await (const chunk of client.streamMessage({
@@ -285,7 +289,7 @@ for await (const chunk of client.streamMessage({
     ],
     current_message_index: 3
   }
-})) {
+}, { signal: abortController.signal })) {
   responseText += chunk.content ?? '';
   if (chunk.is_complete) {
     break;
@@ -336,7 +340,8 @@ Focused unit coverage for this contract lives in:
 - `tests/unit/llm/prompt-renderers/autobyteus-prompt-renderer.test.ts`
 - `tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts`
 - `tests/unit/clients/autobyteus-client.test.ts`
-- `tests/unit/agent/handlers/llm-user-message-ready-event-handler.test.ts`
+- `tests/unit/agent/loop/agent-turn-input-box.test.ts`
+- `tests/unit/agent/loop/tool-result-continuation-builder.test.ts`
 
 Provider-native continuation integration coverage lives in
 `tests/integration/agent/provider-native-tool-continuation-flow.test.ts`; it

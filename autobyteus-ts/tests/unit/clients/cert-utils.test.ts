@@ -5,6 +5,7 @@ import { getCertificateInfo, verifyCertificate, CertificateError } from '../../.
 
 const resolveCertPath = (): string => {
   const candidates = [
+    path.resolve(process.cwd(), 'tests/fixtures/certificates/cert.pem'),
     path.resolve(process.cwd(), '../autobyteus/clients/certificates/cert.pem'),
     path.resolve(process.cwd(), '../autobyteus/autobyteus/clients/certificates/cert.pem')
   ];

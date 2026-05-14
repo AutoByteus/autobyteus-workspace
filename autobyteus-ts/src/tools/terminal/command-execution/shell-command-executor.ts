@@ -13,6 +13,7 @@ import {
 export interface ShellCommandExecutorOptions {
   timeoutSeconds?: number;
   backgroundManager?: BackgroundProcessManager;
+  signal?: AbortSignal | null;
 }
 
 function sleep(ms: number): Promise<void> {
@@ -72,6 +73,33 @@ export class ShellCommandExecutor {
     child.stderr?.on('data', onStderr);
 
     return new Promise<TerminalResult>((resolve) => {
+      const stopActiveProcess = async (): Promise<void> => {
+        const shellIdentity = this.getShellIdentity(invocation.kind, invocation.processTarget, child.pid, identityParser.identity);
+        if (shellIdentity) {
+          const stopped = await this.observer.stopProcess(
+            shellIdentity.pid,
+            shellIdentity.processGroupId,
+            shellIdentity.target
+          );
+          if (stopped) {
+            return;
+          }
+        }
+
+        if (child.pid !== undefined) {
+          try {
+            child.kill('SIGTERM');
+          } catch {
+            // Best effort cancellation cleanup.
+          }
+        }
+      };
+
+      const abortHandler = () => {
+        timedOut = true;
+        void stopActiveProcess();
+      };
+
       const finalize = async (exitCode: number | null, errorMessage?: string) => {
         if (settled) {
           return;
@@ -79,6 +107,7 @@ export class ShellCommandExecutor {
         settled = true;
         shellExited = true;
         clearTimeout(timer);
+        options.signal?.removeEventListener('abort', abortHandler);
 
         const pendingStderr = identityParser.flush();
         if (pendingStderr.length > 0) {
@@ -124,28 +153,7 @@ export class ShellCommandExecutor {
 
       const timer = setTimeout(() => {
         timedOut = true;
-        const shellIdentity = this.getShellIdentity(invocation.kind, invocation.processTarget, child.pid, identityParser.identity);
-        if (shellIdentity) {
-          void this.observer.stopProcess(
-            shellIdentity.pid,
-            shellIdentity.processGroupId,
-            shellIdentity.target
-          ).then((stopped) => {
-            if (!stopped) {
-              try {
-                child.kill('SIGTERM');
-              } catch {
-                // Best effort timeout cleanup.
-              }
-            }
-          });
-        } else if (child.pid !== undefined) {
-          try {
-            child.kill('SIGTERM');
-          } catch {
-            // Best effort timeout cleanup.
-          }
-        }
+        void stopActiveProcess();
       }, timeoutMs);
 
       child.once('exit', (code) => {
@@ -155,6 +163,14 @@ export class ShellCommandExecutor {
       child.once('error', (error) => {
         void finalize(null, error.message);
       });
+
+      if (options.signal) {
+        if (options.signal.aborted) {
+          abortHandler();
+        } else {
+          options.signal.addEventListener('abort', abortHandler, { once: true });
+        }
+      }
     });
   }
 

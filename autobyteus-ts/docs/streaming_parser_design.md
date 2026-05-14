@@ -135,15 +135,20 @@ The parser emits `SegmentEvent` objects with three lifecycle types:
 | ----------------- | -------------------------- | ------------------------------ |
 | `SEGMENT_START`   | `segment_type`, `metadata` | Opening tag detected           |
 | `SEGMENT_CONTENT` | `delta` (text chunk)       | Content available to stream    |
-| `SEGMENT_END`     | –                          | Closing tag found or finalized |
+| `SEGMENT_END`     | optional terminal metadata | Closing tag found or finalized |
 
 ### Contract Boundary (Streaming vs. Semantics)
 
 - The **parser only streams content** and boundaries. It does **not** parse tool arguments.
 - `SEGMENT_START` may include minimal display metadata (e.g., `tool_name`, `path`).
-- `SEGMENT_END` is purely a boundary signal and should not carry parsed arguments.
+- Normal parser `SEGMENT_END` is a boundary signal and should not carry parsed
+  arguments. Runtime-owned terminalization may add `interrupted`/`reason` or
+  `failed`/`error` fields when a stream is interrupted or fails before a normal
+  close.
 - Tool arguments are built later by the `ToolInvocationAdapter` and are surfaced via
   tool lifecycle events (approval/auto-executing).
+- Failed or interrupted partial tool segments are terminal display records only;
+  the adapter must not convert them into executable invocations.
 
 ### Payload Schema (All Segment Events)
 
@@ -170,6 +175,13 @@ The parser emits `SegmentEvent` objects with three lifecycle types:
   "type": "SEGMENT_END",
   "segment_id": "seg_1",
   "payload": {}
+}
+
+// failed SEGMENT_END
+{
+  "type": "SEGMENT_END",
+  "segment_id": "seg_1",
+  "payload": { "failed": true, "error": "Error processing your request with the LLM: ..." }
 }
 ```
 
@@ -258,22 +270,20 @@ Buffer: "print('hi')</write_file>"
 Final emit: remaining content, then SEGMENT_END
 ```
 
-## Integration with Event Handler
+## Integration with LLM Turn Phase
 
-The `LLMUserMessageReadyEventHandler` integrates the parser via the
-`StreamingResponseHandlerFactory`:
+`LlmTurnPhase` integrates the parser via the `StreamingResponseHandlerFactory`:
 
 ```ts
-async function handle(event: LLMUserMessageReadyEvent) {
+async function runLlmPhase(input: AgentInputPipelineResult) {
   const { handler } = StreamingResponseHandlerFactory.create({
     toolNames,
     provider,
     onSegmentEvent: emitPartEvent,
-    onToolInvocation: emitToolInvocation,
     agentId,
   });
 
-  for await (const chunk of llm.streamUserMessage(message)) {
+  for await (const chunk of llm.streamMessages(messages, renderedPayload, kwargs, { signal })) {
     // Pass the full ChunkResponse object
     handler.feed(chunk);
   }
@@ -294,7 +304,7 @@ Agent default:
 
 - If `AUTOBYTEUS_STREAM_PARSER` is not set, the default is `api_tool_call`.
 
-When `AUTOBYTEUS_STREAM_PARSER` is set to `xml` or `json`, the agent handler
+When `AUTOBYTEUS_STREAM_PARSER` is set to `xml` or `json`, `LlmTurnPhase`
 selects the corresponding parser strategy. JSON parsing uses provider-aware
 signature patterns and parsing strategies to match tool formatting examples.
 

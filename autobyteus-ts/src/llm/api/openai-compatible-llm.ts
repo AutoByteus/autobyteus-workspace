@@ -1,5 +1,5 @@
 import type { ClientOptions as OpenAIClientOptions, OpenAI } from 'openai';
-import { BaseLLM } from '../base.js';
+import { BaseLLM, type LLMInvocationOptions } from '../base.js';
 import { LLMModel } from '../models.js';
 import { LLMConfig } from '../utils/llm-config.js';
 import { CompleteResponse, ChunkResponse } from '../utils/response-types.js';
@@ -107,7 +107,7 @@ export class OpenAICompatibleLLM extends BaseLLM {
     );
   }
 
-  protected async _sendMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>): Promise<CompleteResponse> {
+  protected async _sendMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>, options: LLMInvocationOptions = {}): Promise<CompleteResponse> {
     const formattedMessages = await this._renderer.render(messages) as ChatCompletionMessageParam[];
     const params = OpenAICompatibleRequestBuilder.build({
       model: this.model.value,
@@ -117,7 +117,8 @@ export class OpenAICompatibleLLM extends BaseLLM {
     });
 
     try {
-      const response = await this.client.chat.completions.create(params as any); // Cast for extra params flexibility
+      const requestOptions = options.signal ? { signal: options.signal } : undefined;
+      const response = await this.client.chat.completions.create(params as any, requestOptions as any); // Cast for extra params flexibility
       const choice = response.choices[0];
       const message = choice.message;
       
@@ -133,7 +134,7 @@ export class OpenAICompatibleLLM extends BaseLLM {
     }
   }
 
-  protected async *_streamMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>): AsyncGenerator<ChunkResponse, void, unknown> {
+  protected async *_streamMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>, options: LLMInvocationOptions = {}): AsyncGenerator<ChunkResponse, void, unknown> {
     const formattedMessages = await this._renderer.render(messages) as ChatCompletionMessageParam[];
     const params = OpenAICompatibleRequestBuilder.build({
       model: this.model.value,
@@ -144,7 +145,8 @@ export class OpenAICompatibleLLM extends BaseLLM {
     });
 
     try {
-      const stream = await this.client.chat.completions.create(params) as unknown as AsyncIterable<ChatCompletionChunk>;
+      const requestOptions = options.signal ? { signal: options.signal } : undefined;
+      const stream = await this.client.chat.completions.create(params, requestOptions as any) as unknown as AsyncIterable<ChatCompletionChunk>;
       
       for await (const chunk of stream) {
         if (chunk.choices && chunk.choices.length > 0) {

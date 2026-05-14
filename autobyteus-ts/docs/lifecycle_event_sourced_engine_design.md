@@ -304,45 +304,61 @@ A lifecycle event‑sourced design keeps **events as the single source of truth*
 
 ## Appendix A. Implementation Details (Agent Event Flow Map)
 
-This appendix documents the **implemented agent runtime behavior** in code. The design and implementation are now aligned.
+This appendix documents the **implemented agent runtime behavior** in code. The
+current single-agent implementation uses `AgentEventInbox`,
+`AgentEventScheduler`, typed `InboxEventHandler`s, and `AgentTurnRunner`;
+the earlier standalone single-agent dispatcher, normal-flow handlers, and
+message-wrapper inbox are retired.
 
 ### High-Level Data Flow
 
-1. External inputs (user, inter-agent, approvals) and internal events are enqueued into `AgentInputEventQueueManager`.
-2. `AgentWorker` pulls the next event (internal-only while bootstrapping).
-3. `WorkerEventDispatcher` appends the event to the event store (if configured), **derives status**, emits lifecycle + external status notifications, then dispatches to a handler.
-4. The handler may enqueue additional events, continuing the chain.
+1. External user/inter-agent inputs enter `AgentEventInbox` as canonical typed
+   events on the `turn_start` lane. Tool approvals and external tool results
+   enter as awaitable `ToolExecutionApprovalEvent` / `ToolResultEvent` entries
+   on the `active_turn` lane. Runtime lifecycle notifications enter the
+   `runtime_lifecycle` lane.
+2. `AgentEventScheduler` selects lifecycle/active-turn event entries while a
+   turn is active, and selects `turn_start` entries only while idle.
+3. `TurnStartInboxEventHandler` creates an `AgentTurn` and delegates the whole
+   LLM/tool/continuation loop to `AgentTurnRunner`.
+4. `AgentTurnRunner` uses `AgentInputPipeline`, `LlmPhase`, `ToolPhase`,
+   `ToolResultPipeline`, `ToolResultContinuationBuilder`, and
+   `LLMResponsePipeline` to publish lifecycle/status/data facts through
+   `AgentExternalEventNotifier`.
 
 ### Event Pipeline (Primary)
 
 #### User Input -> LLM -> Response
 
-| Event                              | Handler                                   | Emits (next events)                                | Notes                                                                          |
-| ---------------------------------- | ----------------------------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------ |
-| `UserMessageReceivedEvent`         | `UserInputMessageEventHandler`            | `LLMUserMessageReadyEvent`                         | Routes all user/system/tool/inter-agent input through the same input pipeline. |
-| `LLMUserMessageReadyEvent`         | `LLMUserMessageReadyEventHandler`         | `LLMCompleteResponseReceivedEvent`                 | Streams chunks to notifier, aggregates full response.                          |
-| `LLMCompleteResponseReceivedEvent` | `LLMCompleteResponseReceivedEventHandler` | (Processors may emit `PendingToolInvocationEvent`) | Always notifies a complete response event.                                     |
+| Input / phase | Owner | Emits / publishes | Notes |
+| --- | --- | --- | --- |
+| `UserMessageReceivedEvent` / `InterAgentMessageReceivedEvent` | `TurnStartInboxEventHandler` + `AgentTurnRunner` | turn-scoped `LLMUserMessageReadyEvent` status/projection | Routes user and inter-agent input through `AgentInputPipeline`; inter-agent reference files are preserved and rendered once for the recipient LLM. |
+| LLM request/stream | `LlmPhase` | streamed segments, tool invocations, `LLMCompleteResponseReceivedEvent` where appropriate | Passes abort signal and `turnId`; fences awaited seams before normal assistant side effects. |
+| Final response | `LLMResponsePipeline` through `AgentTurnRunner` | assistant output and idle/terminal status | Runs only if the turn has not accepted an interrupt. |
 
-Additional note: after `LLMCompleteResponseReceivedEvent` is handled, the dispatcher may enqueue `AgentIdleEvent` if there are no pending tool approvals and the tool invocation queue is empty.
+Additional note: `AgentTurnRunner` settles the active `AgentTurn`. The
+`AgentWorker` settlement observer emits idle state after a completed turn and
+clears the active turn only when the same turn has settled.
 
 #### Tool Invocation and Results
 
-| Event                         | Handler                              | Emits (next events)                                                             | Notes                                                                                                    |
-| ----------------------------- | ------------------------------------ | ------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `PendingToolInvocationEvent`  | `ToolInvocationRequestEventHandler`  | `ToolResultEvent` (auto) or approval notification                               | If manual approval is needed, it stores pending invocation and emits an approval request (not an event). |
-| `ToolExecutionApprovalEvent`  | `ToolExecutionApprovalEventHandler`  | `ApprovedToolInvocationEvent` (approved) or `LLMUserMessageReadyEvent` (denied) | Denials go back to the LLM.                                                                              |
-| `ApprovedToolInvocationEvent` | `ApprovedToolInvocationEventHandler` | `ToolResultEvent`                                                               | Executes tool after approval.                                                                            |
-| `ToolResultEvent`             | `ToolResultEventHandler`             | `ToolContinuationReadyEvent` in native `api_tool_call`; `UserMessageReceivedEvent` aggregate in legacy text modes | Validates active-batch/provider identity before processors mutate memory; native mode continues with structured `role: "tool"` history, while legacy modes use the aggregate prompt. |
+| Input / phase | Owner | Emits / publishes | Notes |
+| --- | --- | --- | --- |
+| Parsed tool invocations | `AgentTurnRunner` + `ToolPhase` | tool lifecycle started/pending/terminal events, approval requests, tool results | `BaseTool.prepareExecution(...)` owns agent-id setup, argument coercion/schema/type validation, abort check, and external-result mode resolution before started lifecycle/waiter registration. |
+| Tool approval command | `Agent.postToolExecutionApproval(...)` -> `AgentRuntime.postToolApprovalEvent(...)` -> active-turn `AgentEventInbox` entry -> `ToolApprovalInboxEventHandler` -> `AgentRuntimeState.postToolApprovalEventToActiveTurn(...)` | `ToolExecutionApprovalEvent` only after accepted approval | Rejected when there is no active turn, stale turn, no pending approval, stopped runtime, or interrupted turn. |
+| External tool result command | `Agent.postToolExecutionResult(...)` -> `AgentRuntime.postToolResultEvent(...)` -> active-turn `AgentEventInbox` entry -> `ToolResultInboxEventHandler` -> `AgentRuntimeState.postToolResultEventToActiveTurn(...)` | accepted result wakes `TurnToolInputPort` | Unknown, duplicate/late, turn-mismatched, no-waiter, closed/interrupted, and stopped cases are explicit rejections. |
+| Tool result continuation | `ToolResultPipeline` + `ToolResultContinuationBuilder` | `ToolContinuationReadyEvent` for native `api_tool_call`, or `SenderType.TOOL` continuation input for legacy text modes | Native mode continues with structured `assistant.tool_calls` / `role: "tool"` history and no synthetic user message. |
 
 #### Inter-Agent Messages
 
-| Event                            | Handler                                 | Emits (next events)        | Notes                                                  |
-| -------------------------------- | --------------------------------------- | -------------------------- | ------------------------------------------------------ |
-| `InterAgentMessageReceivedEvent` | `InterAgentMessageReceivedEventHandler` | `UserMessageReceivedEvent` | Normalizes inter-agent traffic into the same pipeline. |
+| Input | Owner | Emits / publishes | Notes |
+| --- | --- | --- | --- |
+| `InterAgentMessageReceivedEvent` | `AgentInputPipeline.convertInterAgentEvent(...)` inside `AgentTurnRunner` | normal LLM turn input plus stream projection through `AgentExternalEventNotifier` | Preserves structured `reference_files`; adds one LLM-visible `Reference files:` block. |
 
 ### Bootstrapping Flow (Internal)
 
-Runtime init is **not** an event. It happens once in `AgentWorker._runtime_init` to create the event store, status deriver, and input queues.
+Runtime init is **not** an event. It happens once in `AgentWorker` to create the
+event store, status deriver, and `AgentEventInbox`.
 
 | Event                         | Handler                 | Emits (next events)                                             | Notes                            |
 | ----------------------------- | ----------------------- | --------------------------------------------------------------- | -------------------------------- |

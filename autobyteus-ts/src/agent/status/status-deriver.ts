@@ -4,6 +4,8 @@ import {
   AgentStoppedEvent,
   AgentErrorEvent,
   AgentIdleEvent,
+  AgentInterruptRequestedEvent,
+  AgentTurnInterruptedEvent,
   ShutdownRequestedEvent,
   BootstrapStartedEvent,
   BootstrapCompletedEvent,
@@ -14,7 +16,6 @@ import {
   LLMCompleteResponseReceivedEvent,
   PendingToolInvocationEvent,
   ToolExecutionApprovalEvent,
-  ExecuteToolInvocationEvent,
   ToolResultEvent,
   BaseEvent
 } from '../events/agent-events.js';
@@ -50,6 +51,18 @@ export class AgentStatusDeriver {
       return AgentStatus.IDLE;
     }
     if (event instanceof AgentIdleEvent) {
+      return AgentStatus.IDLE;
+    }
+    if (event instanceof AgentInterruptRequestedEvent) {
+      if (currentStatus === AgentStatus.ERROR) {
+        return currentStatus;
+      }
+      return AgentStatus.INTERRUPTING;
+    }
+    if (event instanceof AgentTurnInterruptedEvent) {
+      if (currentStatus === AgentStatus.ERROR || currentStatus === AgentStatus.SHUTTING_DOWN) {
+        return currentStatus;
+      }
       return AgentStatus.IDLE;
     }
     if (event instanceof ShutdownRequestedEvent) {
@@ -91,9 +104,6 @@ export class AgentStatusDeriver {
       if (context && context.autoExecuteTools === false) {
         return AgentStatus.AWAITING_TOOL_APPROVAL;
       }
-      return AgentStatus.EXECUTING_TOOL;
-    }
-    if (event instanceof ExecuteToolInvocationEvent) {
       return AgentStatus.EXECUTING_TOOL;
     }
     if (event instanceof ToolExecutionApprovalEvent) {

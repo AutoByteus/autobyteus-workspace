@@ -9,11 +9,12 @@ const STATUS_RANK: Record<ToolInvocationStatus, number> = {
   success: 99,
   error: 99,
   denied: 99,
+  interrupted: 99,
 };
 
 export const isTerminalToolInvocationStatus = (
   status: ToolInvocationStatus,
-): boolean => status === 'success' || status === 'error' || status === 'denied';
+): boolean => status === 'success' || status === 'error' || status === 'denied' || status === 'interrupted';
 
 export const canTransitionToolInvocationStatus = (
   currentStatus: ToolInvocationStatus,

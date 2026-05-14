@@ -13,8 +13,8 @@ vi.mock('../../../../src/tools/mcp/server/proxy.js', () => {
       mocks.constructorSpy(agentId, serverId);
     }
 
-    callTool(toolName: string, args: Record<string, any>) {
-      return mocks.callToolMock(toolName, args);
+    callTool(toolName: string, args: Record<string, any>, options?: Record<string, unknown>) {
+      return mocks.callToolMock(toolName, args, options);
     }
   }
 
@@ -77,8 +77,33 @@ describe('GenericMcpTool', () => {
     const result = await (tool as any)._execute(context, remoteToolArgs);
 
     expect(mocks.constructorSpy).toHaveBeenCalledWith('test_agent_001', 'test_server_123');
-    expect(mocks.callToolMock).toHaveBeenCalledWith('remote_calculator', remoteToolArgs);
+    expect(mocks.callToolMock).toHaveBeenCalledWith('remote_calculator', remoteToolArgs, { signal: undefined });
     expect(result).toEqual(expectedResult);
+  });
+
+  it('passes execution AbortSignal to the remote MCP proxy call', async () => {
+    const schema = buildSchema();
+    const tool = new GenericMcpTool(
+      'test_server_123',
+      'remote_calculator',
+      'MyCalculator',
+      'A remote calculator tool.',
+      schema
+    );
+    mocks.callToolMock.mockResolvedValue({ ok: true });
+    const controller = new AbortController();
+
+    await tool.execute(
+      { agentId: 'test_agent_001' },
+      { param1: 'value1' },
+      { signal: controller.signal }
+    );
+
+    expect(mocks.callToolMock).toHaveBeenCalledWith(
+      'remote_calculator',
+      { param1: 'value1' },
+      { signal: controller.signal }
+    );
   });
 
   it('propagates proxy failures', async () => {

@@ -116,6 +116,10 @@ export class AgentExternalEventNotifier extends EventEmitter {
     this.emitEvent(EventType.AGENT_TURN_COMPLETED, { turn_id: turnId });
   }
 
+  notifyAgentTurnInterrupted(turnId: string, reason: string): void {
+    this.emitEvent(EventType.AGENT_TURN_INTERRUPTED, { turn_id: turnId, reason, interrupted: true });
+  }
+
   notifyAgentDataAssistantCompleteResponse(completeResponse: CompleteResponse): void {
     this.emitEvent(EventType.AGENT_DATA_ASSISTANT_COMPLETE_RESPONSE, completeResponse);
   }
@@ -154,6 +158,10 @@ export class AgentExternalEventNotifier extends EventEmitter {
 
   notifyAgentToolExecutionFailed(errorData: Record<string, any>): void {
     this.emitEvent(EventType.AGENT_TOOL_EXECUTION_FAILED, errorData);
+  }
+
+  notifyAgentToolExecutionInterrupted(interruptedData: Record<string, any>): void {
+    this.emitEvent(EventType.AGENT_TOOL_EXECUTION_INTERRUPTED, interruptedData);
   }
 
   notifyAgentDataSystemTaskNotificationReceived(notificationData: Record<string, any>): void {

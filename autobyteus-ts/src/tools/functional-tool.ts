@@ -1,5 +1,5 @@
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../utils/parameter-schema.js';
-import { BaseTool } from './base-tool.js';
+import { BaseTool, type ToolExecutionOptions } from './base-tool.js';
 import { ToolConfig } from './tool-config.js';
 import { ToolDefinition } from './registry/tool-definition.js';
 import { defaultToolRegistry } from './registry/tool-registry.js';
@@ -75,11 +75,13 @@ export class FunctionalTool extends BaseTool<unknown, Record<string, unknown>, u
   public getArgumentSchema(): ParameterSchema | null { return this._argumentSchema; }
   public getConfigSchema(): ParameterSchema | null { return this._configSchema; }
 
-  protected async _execute(context: unknown, argsByName: Record<string, unknown> = {}): Promise<unknown> {
+  protected async _execute(context: unknown, argsByName: Record<string, unknown> = {}, options: ToolExecutionOptions = {}): Promise<unknown> {
     const args: unknown[] = [];
     for (const paramName of this._callParamOrder) {
       if (paramName === 'context') {
         args.push(context);
+      } else if (paramName === 'executionOptions' || paramName === 'options') {
+        args.push(options);
       } else if (paramName === 'tool_state' || paramName === 'toolState') {
         args.push(this.toolState);
       } else if (Object.prototype.hasOwnProperty.call(argsByName, paramName)) {

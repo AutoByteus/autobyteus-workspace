@@ -26,6 +26,7 @@ describe('InteractiveCliDisplay', () => {
         data: {
           event_type: SegmentEventType.START,
           segment_id: 'seg-1',
+          turn_id: 'turn-1',
           segment_type: SegmentType.REASONING,
           payload: {}
         }
@@ -37,6 +38,7 @@ describe('InteractiveCliDisplay', () => {
         data: {
           event_type: SegmentEventType.CONTENT,
           segment_id: 'seg-1',
+          turn_id: 'turn-1',
           payload: { delta: 'Thought.' }
         }
       })
@@ -46,7 +48,8 @@ describe('InteractiveCliDisplay', () => {
         event_type: StreamEventType.SEGMENT_EVENT,
         data: {
           event_type: SegmentEventType.END,
-          segment_id: 'seg-1'
+          segment_id: 'seg-1',
+          turn_id: 'turn-1'
         }
       })
     );
@@ -64,6 +67,7 @@ describe('InteractiveCliDisplay', () => {
         data: {
           event_type: SegmentEventType.START,
           segment_id: 'seg-2',
+          turn_id: 'turn-1',
           segment_type: SegmentType.WRITE_FILE,
           payload: { metadata: { path: '/tmp/demo.txt' } }
         }
@@ -75,6 +79,7 @@ describe('InteractiveCliDisplay', () => {
         data: {
           event_type: SegmentEventType.CONTENT,
           segment_id: 'seg-2',
+          turn_id: 'turn-1',
           payload: { delta: 'hello' }
         }
       })
@@ -84,7 +89,8 @@ describe('InteractiveCliDisplay', () => {
         event_type: StreamEventType.SEGMENT_EVENT,
         data: {
           event_type: SegmentEventType.END,
-          segment_id: 'seg-2'
+          segment_id: 'seg-2',
+          turn_id: 'turn-1'
         }
       })
     );
@@ -98,10 +104,11 @@ describe('InteractiveCliDisplay', () => {
 
     await display.handleStreamEvent(
       new StreamEvent({
-        event_type: StreamEventType.TOOL_INVOCATION_APPROVAL_REQUESTED,
+        event_type: StreamEventType.TOOL_APPROVAL_REQUESTED,
         data: {
           invocation_id: 'inv-1',
           tool_name: 'run_bash',
+          turn_id: 'turn-1',
           arguments: { command: 'ls' }
         }
       })

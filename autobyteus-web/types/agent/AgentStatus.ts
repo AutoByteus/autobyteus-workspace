@@ -9,6 +9,7 @@ export enum AgentStatus {
   ToolDenied = 'tool_denied',
   ExecutingTool = 'executing_tool',
   ProcessingToolResult = 'processing_tool_result',
+  Interrupting = 'interrupting',
   ShuttingDown = 'shutting_down',
   ShutdownComplete = 'shutdown_complete',
   Error = 'error',

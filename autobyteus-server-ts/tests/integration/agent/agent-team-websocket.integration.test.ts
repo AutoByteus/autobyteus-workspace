@@ -66,6 +66,7 @@ class FakeTeam {
   messages: AgentInputUserMessage[] = [];
   approvals: Array<{ agentName: string; invocationId: string; approved: boolean; reason: string | null }> = [];
   lastTarget: string | null = null;
+  interruptCalls = 0;
   stopCalls = 0;
 
   constructor(teamRunId: string) {
@@ -93,6 +94,10 @@ class FakeTeam {
 
   async stop(): Promise<void> {
     this.stopCalls += 1;
+  }
+
+  async interrupt(): Promise<void> {
+    this.interruptCalls += 1;
   }
 }
 
@@ -163,7 +168,7 @@ class FakeTeamRun {
   }
 
   async interrupt(): Promise<{ accepted: true }> {
-    await this.team.stop();
+    await this.team.interrupt();
     return { accepted: true };
   }
 }
@@ -291,9 +296,10 @@ describe("Agent team websocket integration", () => {
     expect(team.messages[0].contextFiles?.length).toBe(2);
     expect(team.lastTarget).toBe("alpha");
 
-    socket.send(JSON.stringify({ type: "STOP_GENERATION" }));
-    await waitForCondition(() => team.stopCalls === 1);
-    expect(team.stopCalls).toBe(1);
+    socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
+    await waitForCondition(() => team.interruptCalls === 1);
+    expect(team.interruptCalls).toBe(1);
+    expect(team.stopCalls).toBe(0);
 
     const agentMessagePromise = waitForMessage(socket);
     const agentEvent: AgentRunEvent = {
@@ -552,7 +558,7 @@ describe("Agent team websocket integration", () => {
     await app.close();
   });
 
-  it("keeps STOP_GENERATION active-only and does not restore a stopped team run", async () => {
+  it("keeps INTERRUPT_GENERATION active-only and does not restore a stopped team run", async () => {
     const team = new FakeTeam("team-stop-active-only");
     const stream = new FakeTeamStream();
     const teamRun = new FakeTeamRun(team, stream);
@@ -590,8 +596,9 @@ describe("Agent team websocket integration", () => {
     await waitForOpen(socket);
     await connectedPromise;
 
-    socket.send(JSON.stringify({ type: "STOP_GENERATION" }));
+    socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
     await new Promise((resolve) => setTimeout(resolve, 80));
+    expect(team.interruptCalls).toBe(0);
     expect(team.stopCalls).toBe(0);
     expect(resolveCalls).toBe(1);
 

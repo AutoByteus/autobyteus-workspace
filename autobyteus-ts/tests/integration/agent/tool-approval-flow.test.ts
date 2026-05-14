@@ -1,11 +1,14 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
 import { AgentFactory } from '../../../src/agent/factory/agent-factory.js';
 import { AgentConfig } from '../../../src/agent/context/agent-config.js';
-import { AgentTurn } from '../../../src/agent/agent-turn.js';
-import { PendingToolInvocationEvent, ToolResultEvent } from '../../../src/agent/events/agent-events.js';
+import type { TurnOutcome } from '../../../src/agent/agent-turn.js';
+import { ToolResultEvent } from '../../../src/agent/events/agent-events.js';
+import { ToolPhase } from '../../../src/agent/loop/tool-phase.js';
+import { ToolResultPipeline } from '../../../src/agent/pipelines/tool-result-pipeline.js';
+import { applyEventAndDeriveStatus } from '../../../src/agent/status/status-update-utils.js';
 import { ToolInvocation } from '../../../src/agent/tool-invocation.js';
 import { waitForAgentToBeIdle } from '../../../src/agent/utils/wait-for-idle.js';
 import { BaseLLM } from '../../../src/llm/base.js';
@@ -106,50 +109,94 @@ const createAgentFixture = async (tools: any[]): Promise<AgentFixture> => {
   return { agent, llm, workspaceDir, memoryDir };
 };
 
-const assignActiveTurn = (fixture: AgentFixture): string => {
-  const memoryManager = fixture.agent.context.state.memoryManager;
-  const turnId = memoryManager?.startTurn() ?? `turn_${Date.now()}`;
-  fixture.agent.context.state.activeTurn = new AgentTurn(turnId);
-  return turnId;
+const startApprovalTestTurn = (fixture: AgentFixture): string => {
+  const turn = fixture.agent.context.state.startActiveTurn();
+  return turn.turnId;
+};
+
+const runToolPhaseForApprovalTest = async (
+  fixture: AgentFixture,
+  invocation: ToolInvocation
+): Promise<ToolResultEvent[]> => {
+  const turn = fixture.agent.context.state.activeTurn;
+  if (!turn) {
+    throw new Error('Tool approval test requires an active turn.');
+  }
+
+  let outcome: TurnOutcome = { kind: 'completed', turnId: turn.turnId };
+  try {
+    const rawResults = await new ToolPhase().run(
+      [invocation],
+      fixture.agent.context,
+      turn,
+      fixture.agent.context.statusManager?.notifier ?? null
+    );
+    const resultPipeline = new ToolResultPipeline();
+    const processedResults: ToolResultEvent[] = [];
+
+    for (const rawResult of rawResults) {
+      const processed = await resultPipeline.process(rawResult, fixture.agent.context);
+      processedResults.push(processed);
+      await applyEventAndDeriveStatus(processed, fixture.agent.context);
+    }
+
+    return processedResults;
+  } catch (error) {
+    outcome = { kind: 'failed', turnId: turn.turnId, error };
+    throw error;
+  } finally {
+    if (!turn.isSettled) {
+      turn.settle(outcome);
+    }
+    fixture.agent.context.state.clearSettledActiveTurnIfStillActive(turn.turnId);
+  }
 };
 
 describe('Tool approval integration flow', () => {
   let fixture: AgentFixture | null = null;
   let previousMemoryDir: string | undefined;
+  let consoleWarnSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
+    consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     defaultToolRegistry.clear();
     previousMemoryDir = process.env.AUTOBYTEUS_MEMORY_DIR;
   });
 
   afterEach(async () => {
-    if (fixture) {
-      await fixture.agent.stop(2);
-      await fixture.llm.cleanup();
-      await fs.rm(fixture.workspaceDir, { recursive: true, force: true });
-      await fs.rm(fixture.memoryDir, { recursive: true, force: true });
-      fixture = null;
-    }
-    if (previousMemoryDir) {
-      process.env.AUTOBYTEUS_MEMORY_DIR = previousMemoryDir;
-    } else {
-      delete process.env.AUTOBYTEUS_MEMORY_DIR;
+    try {
+      if (fixture) {
+        await fixture.agent.stop(2);
+        await fixture.llm.cleanup();
+        await fs.rm(fixture.workspaceDir, { recursive: true, force: true });
+        await fs.rm(fixture.memoryDir, { recursive: true, force: true });
+        fixture = null;
+      }
+      const timeoutWarnings = consoleWarnSpy.mock.calls.filter(([message]) =>
+        String(message).includes('Timeout waiting for worker loop to terminate')
+      );
+      expect(timeoutWarnings).toEqual([]);
+    } finally {
+      consoleWarnSpy.mockRestore();
+      if (previousMemoryDir) {
+        process.env.AUTOBYTEUS_MEMORY_DIR = previousMemoryDir;
+      } else {
+        delete process.env.AUTOBYTEUS_MEMORY_DIR;
+      }
     }
   });
 
   it('executes write_file after approval', async () => {
     const writeTool = registerWriteFileTool();
     fixture = await createAgentFixture([writeTool]);
-    const turnId = assignActiveTurn(fixture);
+    const turnId = startApprovalTestTurn(fixture);
 
     const finalPath = path.join(fixture.workspaceDir, 'poem.txt');
     const content = 'hello from approval';
     const invocationId = `write-${Date.now()}`;
     const invocation = new ToolInvocation('write_file', { path: finalPath, content }, invocationId, turnId);
 
-    await fixture.agent.context.inputEventQueues.enqueueInternalSystemEvent(
-      new PendingToolInvocationEvent(invocation)
-    );
+    const phasePromise = runToolPhaseForApprovalTest(fixture, invocation);
 
     await waitFor(
       () => Boolean(fixture!.agent.context.state.pendingToolApprovals[invocationId]),
@@ -159,6 +206,7 @@ describe('Tool approval integration flow', () => {
     );
 
     await fixture.agent.postToolExecutionApproval(invocationId, true, 'approved');
+    await phasePromise;
 
     await waitFor(
       async () => {
@@ -181,7 +229,7 @@ describe('Tool approval integration flow', () => {
   it('executes read_file after approval and records tool output', async () => {
     const readTool = registerReadFileTool();
     fixture = await createAgentFixture([readTool]);
-    const turnId = assignActiveTurn(fixture);
+    const turnId = startApprovalTestTurn(fixture);
 
     const targetPath = path.join(fixture.workspaceDir, 'sample.txt');
     const fileContent = 'line1\nline2\n';
@@ -190,9 +238,7 @@ describe('Tool approval integration flow', () => {
     const invocationId = `read-${Date.now()}`;
     const invocation = new ToolInvocation('read_file', { path: targetPath }, invocationId, turnId);
 
-    await fixture.agent.context.inputEventQueues.enqueueInternalSystemEvent(
-      new PendingToolInvocationEvent(invocation)
-    );
+    const phasePromise = runToolPhaseForApprovalTest(fixture, invocation);
 
     await waitFor(
       () => Boolean(fixture!.agent.context.state.pendingToolApprovals[invocationId]),
@@ -202,6 +248,7 @@ describe('Tool approval integration flow', () => {
     );
 
     await fixture.agent.postToolExecutionApproval(invocationId, true, 'approved');
+    await phasePromise;
 
     await waitFor(
       async () => {
@@ -231,7 +278,7 @@ describe('Tool approval integration flow', () => {
   it('executes edit_file after approval', async () => {
     const patchTool = registerEditFileTool();
     fixture = await createAgentFixture([patchTool]);
-    const turnId = assignActiveTurn(fixture);
+    const turnId = startApprovalTestTurn(fixture);
 
     const initialContent = 'line1\nline2\nline3\n';
     const targetPath = path.join(fixture.workspaceDir, 'patch_target.txt');
@@ -245,9 +292,7 @@ describe('Tool approval integration flow', () => {
       turnId
     );
 
-    await fixture.agent.context.inputEventQueues.enqueueInternalSystemEvent(
-      new PendingToolInvocationEvent(invocation)
-    );
+    const phasePromise = runToolPhaseForApprovalTest(fixture, invocation);
 
     await waitFor(
       () => Boolean(fixture!.agent.context.state.pendingToolApprovals[invocationId]),
@@ -257,6 +302,7 @@ describe('Tool approval integration flow', () => {
     );
 
     await fixture.agent.postToolExecutionApproval(invocationId, true, 'approved');
+    await phasePromise;
 
     await waitFor(
       async () => {
@@ -280,7 +326,7 @@ describe('Tool approval integration flow', () => {
   runBashIntegration('executes run_bash after approval', async () => {
     const runBashTool = registerRunBashTool();
     fixture = await createAgentFixture([runBashTool]);
-    const turnId = assignActiveTurn(fixture);
+    const turnId = startApprovalTestTurn(fixture);
 
     const invocationId = `bash-${Date.now()}`;
     const invocation = new ToolInvocation(
@@ -290,9 +336,7 @@ describe('Tool approval integration flow', () => {
       turnId
     );
 
-    await fixture.agent.context.inputEventQueues.enqueueInternalSystemEvent(
-      new PendingToolInvocationEvent(invocation)
-    );
+    const phasePromise = runToolPhaseForApprovalTest(fixture, invocation);
 
     await waitFor(
       () => Boolean(fixture!.agent.context.state.pendingToolApprovals[invocationId]),
@@ -302,6 +346,7 @@ describe('Tool approval integration flow', () => {
     );
 
     await fixture.agent.postToolExecutionApproval(invocationId, true, 'approved');
+    await phasePromise;
 
     await waitFor(
       () => {
@@ -335,7 +380,7 @@ describe('Tool approval integration flow', () => {
   runBashIntegration('executes run_bash bash-native background command after approval', async () => {
     const runBashTool = registerRunBashTool();
     fixture = await createAgentFixture([runBashTool]);
-    const turnId = assignActiveTurn(fixture);
+    const turnId = startApprovalTestTurn(fixture);
 
     const invocationId = `bash-bg-${Date.now()}`;
     const invocation = new ToolInvocation(
@@ -345,9 +390,7 @@ describe('Tool approval integration flow', () => {
       turnId
     );
 
-    await fixture.agent.context.inputEventQueues.enqueueInternalSystemEvent(
-      new PendingToolInvocationEvent(invocation)
-    );
+    const phasePromise = runToolPhaseForApprovalTest(fixture, invocation);
 
     await waitFor(
       () => Boolean(fixture!.agent.context.state.pendingToolApprovals[invocationId]),
@@ -357,6 +400,7 @@ describe('Tool approval integration flow', () => {
     );
 
     await fixture.agent.postToolExecutionApproval(invocationId, true, 'approved');
+    await phasePromise;
 
     await waitFor(
       () => {

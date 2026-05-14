@@ -76,6 +76,9 @@ export class WorkingContextSnapshot {
   reset(snapshotMessages: Iterable<Message>, lastCompactionTs?: number | null): void {
     this.messages = Array.from(snapshotMessages);
     this.epochId += 1;
-    this.lastCompactionTs = typeof lastCompactionTs === 'number' ? lastCompactionTs : Date.now() / 1000;
+    this.lastCompactionTs =
+      arguments.length >= 2
+        ? lastCompactionTs ?? null
+        : Date.now() / 1000;
   }
 }

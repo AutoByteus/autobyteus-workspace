@@ -22,7 +22,7 @@ const activeContextStoreMock = reactive({
   updateRequirement: vi.fn(),
   updateRequirementForContext: vi.fn(),
   send: vi.fn(),
-  stopGeneration: vi.fn(),
+  interruptGeneration: vi.fn(),
 })
 
 const voiceInputStoreMock = reactive({

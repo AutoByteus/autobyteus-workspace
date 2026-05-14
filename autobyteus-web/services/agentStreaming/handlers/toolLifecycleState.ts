@@ -21,14 +21,14 @@ export const isTerminalStatus = (status: ToolInvocationStatus): boolean =>
 
 const canTransitionToNonTerminal = (
   currentStatus: ToolInvocationStatus,
-  nextStatus: Exclude<ToolInvocationStatus, 'success' | 'error' | 'denied'>,
+  nextStatus: Exclude<ToolInvocationStatus, 'success' | 'error' | 'denied' | 'interrupted'>,
 ): boolean => {
   return canTransitionToolInvocationStatus(currentStatus, nextStatus);
 };
 
 const applyNonTerminalStatus = (
   segment: ToolLifecycleSegment,
-  nextStatus: Exclude<ToolInvocationStatus, 'success' | 'error' | 'denied'>,
+  nextStatus: Exclude<ToolInvocationStatus, 'success' | 'error' | 'denied' | 'interrupted'>,
 ): boolean => {
   if (!canTransitionToNonTerminal(segment.status, nextStatus)) {
     return false;
@@ -83,6 +83,19 @@ export const applyDeniedState = (
   segment.status = 'denied';
   segment.result = null;
   segment.error = error ?? reason;
+  return true;
+};
+
+export const applyExecutionInterruptedState = (
+  segment: ToolLifecycleSegment,
+  reason: string,
+): boolean => {
+  if (segment.status === 'success' || segment.status === 'error' || segment.status === 'denied') {
+    return false;
+  }
+  segment.status = 'interrupted';
+  segment.result = null;
+  segment.error = reason;
   return true;
 };
 

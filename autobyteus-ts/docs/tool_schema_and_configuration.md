@@ -126,9 +126,9 @@ const createUser = tool({
     - `ToolSchemaProvider` resolves the provider-aware runtime argument schema
       formatter.
     - In native API tool-call mode (`AUTOBYTEUS_STREAM_PARSER=api_tool_call`),
-      `LLMUserMessageReadyEventHandler` passes those schemas to the LLM as the
-      provider-native `tools` request field. The tool manifest is not injected
-      into the system prompt in this mode.
+      `LlmPhase` passes those schemas to the LLM as the provider-native `tools`
+      request field. The tool manifest is not injected into the system prompt in
+      this mode.
     - In text-parser modes (`xml`, `json`, `sentinel`), the formatter output is
       still used to build prompt-visible tool instructions.
 5.  **Formatters**:

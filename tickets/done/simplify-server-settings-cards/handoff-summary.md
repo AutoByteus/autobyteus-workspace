@@ -1,7 +1,7 @@
 # Handoff Summary
 
 ## Goal Achieved
-The UI texts for the "Codex full access" and "Streaming parser" settings cards have been successfully simplified. We replaced dense, technical descriptions and environment variable references with cleaner, user-friendly language in both English and Chinese localization files. 
+The UI texts for the "Codex full access" and "Streaming parser" settings cards have been successfully simplified. We replaced dense, technical descriptions and environment variable references with cleaner, user-friendly language in both English and Chinese localization files.
 
 ## Modified Files
 - `autobyteus-web/localization/messages/en/settings.ts` (Removed legacy technical strings for the target cards).

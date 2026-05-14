@@ -7,6 +7,7 @@ export interface StreamingParserProtocol {
   readonly config: ParserConfig;
   feed(chunk: string): SegmentEvent[];
   finalize(): SegmentEvent[];
+  interrupt(reason: string): SegmentEvent[];
 }
 
 export const ENV_PARSER_NAME = 'AUTOBYTEUS_STREAM_PARSER';

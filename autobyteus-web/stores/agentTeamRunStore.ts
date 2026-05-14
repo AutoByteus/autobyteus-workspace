@@ -414,23 +414,23 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
 
     },
 
-    stopGeneration(teamRunId?: string): boolean {
+    interruptGeneration(teamRunId?: string): boolean {
       const teamContextsStore = useAgentTeamContextsStore();
       const activeTeam = teamContextsStore.activeTeamContext;
       const resolvedTeamRunId = (teamRunId && teamRunId.trim()) || activeTeam?.teamRunId;
 
       if (!resolvedTeamRunId) {
-        console.warn('Cannot stop generation: no active team ID.');
+        console.warn('Cannot interrupt generation: no active team ID.');
         return false;
       }
 
       const service = teamStreamingServices.get(resolvedTeamRunId);
       if (!service) {
-        console.warn(`Cannot stop generation: no streaming service for team '${resolvedTeamRunId}'.`);
+        console.warn(`Cannot interrupt generation: no streaming service for team '${resolvedTeamRunId}'.`);
         return false;
       }
 
-      service.stopGeneration();
+      service.interruptGeneration();
       return true;
     },
   },

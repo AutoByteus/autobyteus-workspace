@@ -36,6 +36,37 @@ describe('ParsingStreamingResponseHandler basics', () => {
     handler.finalize();
     expect(() => handler.feed(chunk('more data'))).toThrow();
   });
+
+  it('finalizeInterrupted closes active text segment with interruption metadata', () => {
+    const handler = new ParsingStreamingResponseHandler({ turnId: TURN_ID });
+    handler.feed(chunk('partial text'));
+
+    const events = handler.finalizeInterrupted('user_interrupt');
+
+    expect(events).toHaveLength(1);
+    expect(events[0].event_type).toBe(SegmentEventType.END);
+    expect(events[0].payload).toMatchObject({
+      interrupted: true,
+      reason: 'user_interrupt'
+    });
+    expect(handler.finalize()).toEqual([]);
+  });
+
+  it('finalizeFailed closes active text segment with failure metadata', () => {
+    const handler = new ParsingStreamingResponseHandler({ turnId: TURN_ID });
+    handler.feed(chunk('partial text'));
+
+    const events = handler.finalizeFailed('stream failed');
+
+    expect(events).toHaveLength(1);
+    expect(events[0].event_type).toBe(SegmentEventType.END);
+    expect(events[0].payload).toMatchObject({
+      failed: true,
+      error: 'stream failed'
+    });
+    expect(events[0].payload.interrupted).toBeUndefined();
+    expect(handler.finalize()).toEqual([]);
+  });
 });
 
 describe('ParsingStreamingResponseHandler callbacks', () => {
@@ -117,6 +148,36 @@ describe('ParsingStreamingResponseHandler tool integration', () => {
       throw new Error('Expected tool start event');
     }
     expect(invocations[0].id).toBe(toolStart.segment_id);
+  });
+
+  it('finalizeInterrupted closes active tool segment without creating an invocation', () => {
+    const handler = new ParsingStreamingResponseHandler({ turnId: TURN_ID });
+    handler.feed(chunk('<tool name="read_file"><path>/tmp/partial'));
+
+    const events = handler.finalizeInterrupted('user_interrupt');
+
+    const endEvent = events.find((event) => event.event_type === SegmentEventType.END);
+    expect(endEvent).toBeDefined();
+    expect(endEvent?.payload).toMatchObject({
+      interrupted: true,
+      reason: 'user_interrupt'
+    });
+    expect(handler.getAllInvocations()).toEqual([]);
+  });
+
+  it('finalizeFailed closes active tool segment without creating an invocation', () => {
+    const handler = new ParsingStreamingResponseHandler({ turnId: TURN_ID });
+    handler.feed(chunk('<tool name="read_file"><path>/tmp/partial'));
+
+    const events = handler.finalizeFailed('stream failed');
+
+    const endEvent = events.find((event) => event.event_type === SegmentEventType.END);
+    expect(endEvent).toBeDefined();
+    expect(endEvent?.payload).toMatchObject({
+      failed: true,
+      error: 'stream failed'
+    });
+    expect(handler.getAllInvocations()).toEqual([]);
   });
 });
 

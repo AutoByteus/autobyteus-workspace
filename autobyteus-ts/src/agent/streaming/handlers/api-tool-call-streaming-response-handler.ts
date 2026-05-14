@@ -333,6 +333,88 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
     return events;
   }
 
+  finalizeInterrupted(reason: string): SegmentEvent[] {
+    if (this.isFinalized) {
+      return [];
+    }
+    this.isFinalized = true;
+    const events: SegmentEvent[] = [];
+
+    if (this.textSegmentId) {
+      const endEvent = SegmentEvent.end(this.turnId, this.textSegmentId, {
+        interrupted: true,
+        reason
+      });
+      this.emit(endEvent);
+      events.push(endEvent);
+      this.textSegmentId = null;
+    }
+
+    for (const state of this.activeTools.values()) {
+      if (!state.segmentStarted) {
+        continue;
+      }
+      const metadata: Record<string, any> = {};
+      if (state.name) {
+        metadata.tool_name = state.name;
+      }
+      if (state.path) {
+        metadata.path = state.path;
+      }
+      const endEvent = SegmentEvent.end(this.turnId, state.segmentId, {
+        interrupted: true,
+        reason,
+        ...(Object.keys(metadata).length ? { metadata } : {})
+      });
+      this.emit(endEvent);
+      events.push(endEvent);
+    }
+    this.activeTools.clear();
+
+    return events;
+  }
+
+  finalizeFailed(error: string): SegmentEvent[] {
+    if (this.isFinalized) {
+      return [];
+    }
+    this.isFinalized = true;
+    const events: SegmentEvent[] = [];
+
+    if (this.textSegmentId) {
+      const endEvent = SegmentEvent.end(this.turnId, this.textSegmentId, {
+        failed: true,
+        error
+      });
+      this.emit(endEvent);
+      events.push(endEvent);
+      this.textSegmentId = null;
+    }
+
+    for (const state of this.activeTools.values()) {
+      if (!state.segmentStarted) {
+        continue;
+      }
+      const metadata: Record<string, any> = {};
+      if (state.name) {
+        metadata.tool_name = state.name;
+      }
+      if (state.path) {
+        metadata.path = state.path;
+      }
+      const endEvent = SegmentEvent.end(this.turnId, state.segmentId, {
+        failed: true,
+        error,
+        ...(Object.keys(metadata).length ? { metadata } : {})
+      });
+      this.emit(endEvent);
+      events.push(endEvent);
+    }
+    this.activeTools.clear();
+
+    return events;
+  }
+
   getAllEvents(): SegmentEvent[] {
     return [...this.allEvents];
   }

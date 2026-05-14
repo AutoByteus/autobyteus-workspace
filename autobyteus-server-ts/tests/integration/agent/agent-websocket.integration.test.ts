@@ -60,6 +60,7 @@ class FakeAgent {
   agentRunId: string;
   messages: AgentInputUserMessage[] = [];
   approvals: Array<{ invocationId: string; approved: boolean; reason: string | null }> = [];
+  interruptCalls = 0;
   stopCalls = 0;
 
   constructor(agentRunId: string) {
@@ -80,6 +81,10 @@ class FakeAgent {
 
   async stop(): Promise<void> {
     this.stopCalls += 1;
+  }
+
+  async interrupt(): Promise<void> {
+    this.interruptCalls += 1;
   }
 }
 
@@ -132,7 +137,7 @@ class FakeAgentManager {
         return { accepted: true };
       },
       interrupt: async () => {
-        await this.agent.stop();
+        await this.agent.interrupt();
         return { accepted: true };
       },
     };
@@ -255,9 +260,10 @@ describe("Agent websocket integration", () => {
     await waitForCondition(() => agent.approvals.length === 1);
     expect(agent.approvals[0]).toEqual({ invocationId: "inv-123", approved: true, reason: "ok" });
 
-    socket.send(JSON.stringify({ type: "STOP_GENERATION" }));
-    await waitForCondition(() => agent.stopCalls === 1);
-    expect(agent.stopCalls).toBe(1);
+    socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
+    await waitForCondition(() => agent.interruptCalls === 1);
+    expect(agent.interruptCalls).toBe(1);
+    expect(agent.stopCalls).toBe(0);
 
     const segmentPromise = waitForMessage(socket);
     const event: AgentRunEvent = {
@@ -479,7 +485,7 @@ describe("Agent websocket integration", () => {
     await app.close();
   });
 
-  it("keeps STOP_GENERATION active-only and does not restore a stopped run", async () => {
+  it("keeps INTERRUPT_GENERATION active-only and does not restore a stopped run", async () => {
     const agent = new FakeAgent("agent-stop-active-only");
     const stream = new FakeEventStream();
     const manager = new FakeAgentManager(agent, stream);
@@ -516,8 +522,9 @@ describe("Agent websocket integration", () => {
     await waitForOpen(socket);
     await connectedPromise;
 
-    socket.send(JSON.stringify({ type: "STOP_GENERATION" }));
+    socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
     await new Promise((resolve) => setTimeout(resolve, 80));
+    expect(agent.interruptCalls).toBe(0);
     expect(agent.stopCalls).toBe(0);
     expect(resolveCalls).toBe(1);
 

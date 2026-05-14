@@ -13,6 +13,7 @@ export const AGENT_STATUS_ICONS: Record<AgentStatus, string> = {
   [AgentStatus.TOOL_DENIED]: '❌',
   [AgentStatus.EXECUTING_TOOL]: '🛠️',
   [AgentStatus.PROCESSING_TOOL_RESULT]: '⚙️',
+  [AgentStatus.INTERRUPTING]: '⏸️',
   [AgentStatus.SHUTTING_DOWN]: '🌙',
   [AgentStatus.SHUTDOWN_COMPLETE]: '⚫',
   [AgentStatus.ERROR]: '❗'

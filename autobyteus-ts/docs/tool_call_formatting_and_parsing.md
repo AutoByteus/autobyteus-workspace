@@ -52,7 +52,7 @@ ToolManifestInjectorProcessor
       ▼
 LLM
       ▼
-LLMUserMessageReadyEventHandler
+AgentTurnRunner / LlmPhase
       │  (StreamingResponseHandler)
       ▼
 StreamingParser + ToolInvocationAdapter
@@ -61,7 +61,7 @@ StreamingParser + ToolInvocationAdapter
 ToolInvocation list (per stream)
       │
       ▼
-PendingToolInvocationEvent -> tool execution -> ToolResultEventHandler
+AgentTurnRunner / ToolPhase -> ToolResultPipeline -> continuation
 ```
 
 ## Formatter / Example / Parser Contract
@@ -145,8 +145,8 @@ In native API tool-call mode (`api_tool_call`), `AgentConfig` removes the
 are passed through provider-native request metadata instead of prompt text:
 
 - `StreamingResponseHandlerFactory` resolves the provider-aware tool schemas.
-- `LLMUserMessageReadyEventHandler` sends them as the LLM request `tools`
-  field.
+- `LlmPhase` sends them as the LLM request `tools` field through
+  `LLMRequestAssembler`/provider-native request metadata.
 - The default agent/server path does not emit `tool_choice`; lower-level direct
   LLM callers can still pass explicit `kwargs.tool_choice` for focused tests or
   specialized integrations.
@@ -208,38 +208,43 @@ Key files:
 
 ### 4) LLM Response Processing and Tool Invocation
 
-Tool parsing is wired into the agent loop via the streaming handler:
+Tool parsing is wired into the agent turn loop via the streaming handler:
 
-- `LLMUserMessageReadyEventHandler` streams chunks through `StreamingResponseHandler`.
+- `LlmPhase` streams chunks through `StreamingResponseHandler`.
 - Completed tool segments are converted into `ToolInvocation` objects.
-- The handler enqueues `PendingToolInvocationEvent` entries once the stream is finalized.
+- `AgentTurnRunner` hands the resulting invocation list to `ToolPhase` once the
+  stream is finalized.
 
 **ID coupling guarantee:** the `ToolInvocation.id` for streamed tool calls is
 **exactly the same** as the `segment_id` emitted by the streaming parser. This
 means tool approval requests and UI segment rendering can be correlated without
 any additional mapping.
 
-Tool execution results are routed by `ToolResultEventHandler`. For native
-API mode, the handler validates the active batch, invocation id, turn id, and
-duplicate state before result processors can mutate memory. Multi-tool native
-results keep their provider `tool_call_id` identity so continuation rendering can
-match results to the original tool calls. The continuation shape then depends on
-the selected mode:
+Tool execution results are routed by `ToolPhase` and `ToolResultPipeline`.
+`BaseTool.prepareExecution(...)` performs external-result mode/preflight before
+started lifecycle or waiters are registered. For native API mode, the active turn
+validates the active batch, invocation id, turn id, duplicate/late state, and
+external result waiter before result processors can mutate memory. Multi-tool
+native results keep their provider `tool_call_id` identity so continuation
+rendering can match results to the original tool calls. The continuation shape
+then depends on the selected mode:
 
-- `api_tool_call`: enqueue `ToolContinuationReadyEvent` and render the current
-  working context without appending a synthetic user message. Provider-visible
-  history carries structured `assistant.tool_calls` plus matching `role: "tool"`
-  messages only.
+- `api_tool_call`: `ToolResultContinuationBuilder` marks the continuation
+  `tool_history_only`, `AgentTurnRunner` emits `ToolContinuationReadyEvent`, and
+  `LlmPhase` renders the current working context without appending a synthetic
+  user message. Provider-visible history carries structured
+  `assistant.tool_calls` plus matching `role: "tool"` messages only.
 - `xml`, `json`, `sentinel`: preserve the aggregate textual
   `SenderType.TOOL` continuation message, because these parser modes do not
   have a provider-native `role: "tool"` channel.
 
 Key files:
 
-- `src/agent/handlers/llm-user-message-ready-event-handler.ts`
+- `src/agent/loop/llm-phase.ts`
+- `src/agent/loop/tool-phase.ts`
+- `src/agent/loop/tool-result-continuation-builder.ts`
 - `src/agent/streaming/handlers/streaming-response-handler.ts`
 - `src/agent/tool-invocation.ts`
-- `src/agent/handlers/tool-result-event-handler.ts`
 - `src/agent/llm-request-assembler.ts`
 
 ### 5) Configuration and Overrides

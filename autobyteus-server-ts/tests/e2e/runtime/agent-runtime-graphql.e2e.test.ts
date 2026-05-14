@@ -813,6 +813,186 @@ const defineRuntimeSuite = (input: {
       }
     }, 180_000);
 
+    if (input.runtimeKind === "autobyteus") {
+      it("interrupts a live AutoByteus pending tool approval and accepts a follow-up message on the same websocket", async () => {
+        const workspaceRootPath = await mkdtemp(
+          path.join(os.tmpdir(), `${input.runtimeKind}-runtime-interrupt-workspace-`),
+        );
+        createdWorkspaceRoots.add(workspaceRootPath);
+        const llmModelIdentifier = await fetchModelIdentifier();
+        const agentDefinitionId = await createAgentDefinition(["write_file"]);
+        const runId = await createAgentRun({
+          agentDefinitionId,
+          llmModelIdentifier,
+          workspaceRootPath,
+          autoExecuteTools: false,
+        });
+
+        const { app, socket, messages } = await openAgentSocket(runId);
+        try {
+          const targetRelativePath = `interrupt-${randomUUID().replace(/-/g, "_")}.txt`;
+          const targetAbsolutePath = path.join(workspaceRootPath, targetRelativePath);
+          const expectedContent = `INTERRUPT_SHOULD_NOT_WRITE_${randomUUID().replace(/-/g, "_")}`;
+          const interruptStartIndex = messages.length;
+          socket.send(
+            JSON.stringify({
+              type: "SEND_MESSAGE",
+              payload: {
+                content:
+                  `Create the file ${targetRelativePath} with exactly this content: ${expectedContent}. ` +
+                  "Use the write_file tool exactly once, perform the real tool call, and do not answer with plain text.",
+              },
+            }),
+          );
+
+          const approvalRequested = await waitForMessageAfter(
+            messages,
+            interruptStartIndex,
+            (message) => message.type === "TOOL_APPROVAL_REQUESTED",
+            "AutoByteus TOOL_APPROVAL_REQUESTED before interrupt",
+          );
+          const invocationId = resolveInvocationId(approvalRequested.payload);
+          expect(invocationId).toBeTruthy();
+
+          socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
+
+          await waitForMessageAfter(
+            messages,
+            interruptStartIndex,
+            (message) =>
+              message.type === "TOOL_EXECUTION_INTERRUPTED" &&
+              resolveInvocationId(message.payload) === invocationId,
+            "AutoByteus TOOL_EXECUTION_INTERRUPTED after interrupt",
+          );
+          await waitForMessageAfter(
+            messages,
+            interruptStartIndex,
+            (message) => message.type === "TURN_INTERRUPTED",
+            "AutoByteus TURN_INTERRUPTED after interrupt",
+          );
+          await waitForMessageAfter(
+            messages,
+            interruptStartIndex,
+            (message) =>
+              message.type === "AGENT_STATUS" && message.payload.new_status === "IDLE",
+            "AutoByteus AGENT_STATUS IDLE after interrupt",
+          );
+          await expect(readFile(targetAbsolutePath, "utf-8")).rejects.toMatchObject({
+            code: "ENOENT",
+          });
+
+          const followUpToken = `AUTOBYTEUS_INTERRUPT_FOLLOWUP_${randomUUID().replace(/-/g, "_")}`;
+          const followUpStartIndex = messages.length;
+          socket.send(
+            JSON.stringify({
+              type: "SEND_MESSAGE",
+              payload: {
+                content: `Reply with exactly ${followUpToken} and nothing else.`,
+              },
+            }),
+          );
+
+          await waitForMessageAfter(
+            messages,
+            followUpStartIndex,
+            (message) => assistantTextMatches(message, followUpToken),
+            `AutoByteus assistant text containing ${followUpToken} after interrupt`,
+            180_000,
+          );
+          await waitForMessageAfter(
+            messages,
+            followUpStartIndex,
+            (message) =>
+              message.type === "AGENT_STATUS" && message.payload.new_status === "IDLE",
+            "AutoByteus AGENT_STATUS IDLE after interrupt follow-up",
+            180_000,
+          );
+        } finally {
+          socket.close();
+          await app.close();
+          await terminateAgentRun(runId).catch(() => undefined);
+        }
+      }, 240_000);
+
+      it("terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket", async () => {
+        const workspaceRootPath = await mkdtemp(
+          path.join(os.tmpdir(), `${input.runtimeKind}-runtime-active-terminate-workspace-`),
+        );
+        createdWorkspaceRoots.add(workspaceRootPath);
+        const llmModelIdentifier = await fetchModelIdentifier();
+        const agentDefinitionId = await createAgentDefinition(["write_file"]);
+        const runId = await createAgentRun({
+          agentDefinitionId,
+          llmModelIdentifier,
+          workspaceRootPath,
+          autoExecuteTools: false,
+        });
+
+        const { app, socket, messages } = await openAgentSocket(runId);
+        try {
+          const targetRelativePath = `terminate-${randomUUID().replace(/-/g, "_")}.txt`;
+          const targetAbsolutePath = path.join(workspaceRootPath, targetRelativePath);
+          const expectedContent = `TERMINATE_SHOULD_NOT_WRITE_${randomUUID().replace(/-/g, "_")}`;
+          const terminateStartIndex = messages.length;
+          socket.send(
+            JSON.stringify({
+              type: "SEND_MESSAGE",
+              payload: {
+                content:
+                  `Create the file ${targetRelativePath} with exactly this content: ${expectedContent}. ` +
+                  "Use the write_file tool exactly once, perform the real tool call, and do not answer with plain text.",
+              },
+            }),
+          );
+
+          await waitForMessageAfter(
+            messages,
+            terminateStartIndex,
+            (message) => message.type === "TOOL_APPROVAL_REQUESTED",
+            "AutoByteus TOOL_APPROVAL_REQUESTED before active terminate",
+          );
+
+          await terminateAgentRun(runId);
+          await expect(readFile(targetAbsolutePath, "utf-8")).rejects.toMatchObject({
+            code: "ENOENT",
+          });
+
+          await restoreAgentRun(runId);
+
+          const followUpToken = `AUTOBYTEUS_TERMINATE_FOLLOWUP_${randomUUID().replace(/-/g, "_")}`;
+          const followUpStartIndex = messages.length;
+          socket.send(
+            JSON.stringify({
+              type: "SEND_MESSAGE",
+              payload: {
+                content: `Reply with exactly ${followUpToken} and nothing else.`,
+              },
+            }),
+          );
+
+          await waitForMessageAfter(
+            messages,
+            followUpStartIndex,
+            (message) => assistantTextMatches(message, followUpToken),
+            `AutoByteus assistant text containing ${followUpToken} after active terminate restore`,
+            180_000,
+          );
+          await waitForMessageAfter(
+            messages,
+            followUpStartIndex,
+            (message) =>
+              message.type === "AGENT_STATUS" && message.payload.new_status === "IDLE",
+            "AutoByteus AGENT_STATUS IDLE after active terminate restore follow-up",
+            180_000,
+          );
+        } finally {
+          socket.close();
+          await app.close();
+          await terminateAgentRun(runId).catch(() => undefined);
+        }
+      }, 240_000);
+    }
+
     if (input.runtimeKind === "claude_agent_sdk") {
       it("terminates an active tool-approval run, restores it, reconnects, and continues streaming", async () => {
         const workspaceRootPath = await mkdtemp(

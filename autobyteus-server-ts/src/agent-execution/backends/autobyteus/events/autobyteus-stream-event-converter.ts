@@ -19,6 +19,9 @@ const resolveStatusHint = (
   if (eventType === StreamEventType.TURN_COMPLETED) {
     return "IDLE";
   }
+  if (eventType === StreamEventType.TURN_INTERRUPTED) {
+    return "IDLE";
+  }
   if (eventType === StreamEventType.AGENT_STATUS_UPDATED) {
     const nextStatus =
       typeof payload.new_status === "string"
@@ -63,6 +66,7 @@ const resolveSegmentEventType = (payload: Record<string, unknown>): AgentRunEven
 const eventTypeByStreamEvent = new Map<StreamEventType, AgentRunEventType>([
   [StreamEventType.TURN_STARTED, AgentRunEventType.TURN_STARTED],
   [StreamEventType.TURN_COMPLETED, AgentRunEventType.TURN_COMPLETED],
+  [StreamEventType.TURN_INTERRUPTED, AgentRunEventType.TURN_INTERRUPTED],
   [StreamEventType.AGENT_STATUS_UPDATED, AgentRunEventType.AGENT_STATUS],
   [StreamEventType.COMPACTION_STATUS, AgentRunEventType.COMPACTION_STATUS],
   [StreamEventType.ASSISTANT_COMPLETE_RESPONSE, AgentRunEventType.ASSISTANT_COMPLETE],
@@ -72,6 +76,7 @@ const eventTypeByStreamEvent = new Map<StreamEventType, AgentRunEventType>([
   [StreamEventType.TOOL_EXECUTION_STARTED, AgentRunEventType.TOOL_EXECUTION_STARTED],
   [StreamEventType.TOOL_EXECUTION_SUCCEEDED, AgentRunEventType.TOOL_EXECUTION_SUCCEEDED],
   [StreamEventType.TOOL_EXECUTION_FAILED, AgentRunEventType.TOOL_EXECUTION_FAILED],
+  [StreamEventType.TOOL_EXECUTION_INTERRUPTED, AgentRunEventType.TOOL_EXECUTION_INTERRUPTED],
   [StreamEventType.TOOL_INTERACTION_LOG_ENTRY, AgentRunEventType.TOOL_LOG],
   [StreamEventType.SYSTEM_TASK_NOTIFICATION, AgentRunEventType.SYSTEM_TASK_NOTIFICATION],
   [StreamEventType.INTER_AGENT_MESSAGE, AgentRunEventType.INTER_AGENT_MESSAGE],
@@ -99,6 +104,17 @@ export class AutoByteusStreamEventConverter {
       if (!turnId) {
         return null;
       }
+      const nestedPayload =
+        payload.payload &&
+        typeof payload.payload === "object" &&
+        !Array.isArray(payload.payload)
+          ? (payload.payload as Record<string, unknown>)
+          : {};
+      const {
+        turnId: _legacyNestedTurnId,
+        turn_id: _nestedTurnId,
+        ...canonicalNestedPayload
+      } = nestedPayload;
       return {
         eventType,
         runId: this.runId,
@@ -107,13 +123,9 @@ export class AutoByteusStreamEventConverter {
             typeof payload.segment_id === "string" && payload.segment_id.length > 0
               ? payload.segment_id
               : "",
-          turnId,
+          turn_id: turnId,
           ...(payload.segment_type !== undefined ? { segment_type: payload.segment_type } : {}),
-          ...((payload.payload &&
-          typeof payload.payload === "object" &&
-          !Array.isArray(payload.payload))
-            ? (payload.payload as Record<string, unknown>)
-            : {}),
+          ...canonicalNestedPayload,
         },
         statusHint,
       };

@@ -371,7 +371,7 @@ describe("AgentStreamHandler", () => {
     );
   });
 
-  it("keeps stop-generation active-only and does not restore a stopped agent run", async () => {
+  it("keeps interrupt-generation active-only and does not restore a stopped agent run", async () => {
     const activeRun = createActiveRun();
     const agentRunService = createAgentRunService(activeRun);
     const handler = new AgentStreamHandler(new AgentSessionManager(), agentRunService as any);
@@ -387,7 +387,7 @@ describe("AgentStreamHandler", () => {
     await handler.handleMessage(
       sessionId as string,
       JSON.stringify({
-        type: ClientMessageType.STOP_GENERATION,
+        type: ClientMessageType.INTERRUPT_GENERATION,
       }),
     );
 

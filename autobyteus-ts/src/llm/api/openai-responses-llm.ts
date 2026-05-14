@@ -1,6 +1,6 @@
 import { OpenAI as OpenAIClient } from 'openai';
 import { ResponseStreamEvent } from 'openai/resources/responses/responses.mjs';
-import { BaseLLM } from '../base.js';
+import { BaseLLM, type LLMInvocationOptions } from '../base.js';
 import { LLMModel } from '../models.js';
 import { LLMConfig } from '../utils/llm-config.js';
 import { Message } from '../utils/messages.js';
@@ -130,7 +130,8 @@ export class OpenAIResponsesLLM extends BaseLLM {
 
   protected async _sendMessagesToLLM(
     messages: Message[],
-    kwargs: Record<string, unknown>
+    kwargs: Record<string, unknown>,
+    options: LLMInvocationOptions = {}
   ): Promise<CompleteResponse> {
     const formattedMessages = await this._renderer.render(messages);
     const params: Record<string, unknown> = {
@@ -160,7 +161,8 @@ export class OpenAIResponsesLLM extends BaseLLM {
     }
 
     try {
-      const response: any = await this.client.responses.create(params as any);
+      const requestOptions = options.signal ? { signal: options.signal } : undefined;
+      const response: any = await this.client.responses.create(params as any, requestOptions as any);
       const { content, reasoning } = this.extractOutputContent(response.output ?? []);
 
       return new CompleteResponse({
@@ -175,7 +177,8 @@ export class OpenAIResponsesLLM extends BaseLLM {
 
   protected async *_streamMessagesToLLM(
     messages: Message[],
-    kwargs: Record<string, unknown>
+    kwargs: Record<string, unknown>,
+    options: LLMInvocationOptions = {}
   ): AsyncGenerator<ChunkResponse, void, unknown> {
     const formattedMessages = await this._renderer.render(messages);
     const params: Record<string, unknown> = {
@@ -222,7 +225,8 @@ export class OpenAIResponsesLLM extends BaseLLM {
     let accumulatedReasoning = '';
 
     try {
-      const stream = await this.client.responses.create(params as any) as unknown as AsyncIterable<ResponseStreamEvent>;
+      const requestOptions = options.signal ? { signal: options.signal } : undefined;
+      const stream = await this.client.responses.create(params as any, requestOptions as any) as unknown as AsyncIterable<ResponseStreamEvent>;
 
       for await (const event of stream) {
         const eventType = (event as any)?.type;

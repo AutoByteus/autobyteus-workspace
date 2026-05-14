@@ -237,7 +237,7 @@ describe("AgentTeamStreamHandler", () => {
     );
   });
 
-  it("keeps stop-generation active-only and does not restore a stopped team run", async () => {
+  it("keeps interrupt-generation active-only and does not restore a stopped team run", async () => {
     const teamRun = createTeamRun();
     const teamRunService = createTeamRunService(teamRun);
     const handler = new AgentTeamStreamHandler(
@@ -256,7 +256,7 @@ describe("AgentTeamStreamHandler", () => {
     await handler.handleMessage(
       sessionId as string,
       JSON.stringify({
-        type: ClientMessageType.STOP_GENERATION,
+        type: ClientMessageType.INTERRUPT_GENERATION,
       }),
     );
 

@@ -17,6 +17,7 @@ export type {
   ToolExecutionStartedPayload,
   ToolExecutionSucceededPayload,
   ToolExecutionFailedPayload,
+  ToolExecutionInterruptedPayload,
   ToolLogPayload,
   TodoListUpdatePayload,
   TaskPlanEventPayload,

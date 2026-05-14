@@ -1,5 +1,5 @@
 import { tool } from '../../functional-tool.js';
-import type { BaseTool } from '../../base-tool.js';
+import type { BaseTool, ToolExecutionOptions } from '../../base-tool.js';
 import { ToolCategory } from '../../tool-category.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../../../utils/parameter-schema.js';
 import { defaultToolRegistry } from '../../registry/tool-registry.js';
@@ -15,13 +15,15 @@ export async function runBash(
   context: AgentContextLike | null,
   command: string,
   cwd?: string | null,
-  timeoutSeconds: number = 30
+  timeoutSeconds: number = 30,
+  executionOptions: ToolExecutionOptions = {}
 ): Promise<TerminalResult> {
   const resolvedCwd = resolveExecutionCwd(context, cwd);
   const executor = new ShellCommandExecutor();
   return executor.execute(command, resolvedCwd, {
     timeoutSeconds,
-    backgroundManager: getBackgroundManager(context)
+    backgroundManager: getBackgroundManager(context),
+    signal: executionOptions.signal ?? undefined
   });
 }
 
@@ -58,7 +60,7 @@ export function registerRunBashTool(): BaseTool {
         'Execute a stateless non-interactive bash command in a working directory. If cwd is omitted, the workspace root is used. If cwd is provided, it may be absolute or workspace-root-relative. Use normal shell syntax such as `command > log.txt 2>&1 &` for long-running background jobs; any live ordinary background descendants are returned as backgroundProcesses with PID identities. The result includes effectiveCwd so you can confirm where the command actually ran.',
       argumentSchema,
       category: ToolCategory.SYSTEM,
-      paramNames: ['context', 'command', 'cwd', 'timeout_seconds']
+      paramNames: ['context', 'command', 'cwd', 'timeout_seconds', 'executionOptions']
     })(runBash) as BaseTool;
     return cachedTool;
   }

@@ -3,7 +3,7 @@ import { AgentContext } from '../../../../src/agent/context/agent-context.js';
 import { AgentConfig } from '../../../../src/agent/context/agent-config.js';
 import { AgentRuntimeState } from '../../../../src/agent/context/agent-runtime-state.js';
 import { AgentStatus } from '../../../../src/agent/status/status-enum.js';
-import { AgentInputEventQueueManager } from '../../../../src/agent/events/agent-input-event-queue-manager.js';
+import { AgentEventInbox } from '../../../../src/agent/event-inbox/agent-event-inbox.js';
 import { ToolInvocation } from '../../../../src/agent/tool-invocation.js';
 import { BaseLLM } from '../../../../src/llm/base.js';
 import { LLMModel } from '../../../../src/llm/models.js';
@@ -72,17 +72,17 @@ describe('AgentContext', () => {
     expect(context.customData).toEqual({});
   });
 
-  it('throws when input queues are not initialized', () => {
+  it('throws when AgentEventInbox is not initialized', () => {
     const llm = makeLLM();
     const config = new AgentConfig('name', 'role', 'desc', llm);
     const state = new AgentRuntimeState('agent-3');
 
     const context = new AgentContext('agent-3', config, state);
 
-    expect(() => context.inputEventQueues).toThrow(/Input event queues/);
+    expect(() => context.agentEventInbox).toThrow(/AgentEventInbox/);
 
-    state.inputEventQueues = new AgentInputEventQueueManager();
-    expect(context.inputEventQueues).toBe(state.inputEventQueues);
+    state.agentEventInbox = new AgentEventInbox();
+    expect(context.agentEventInbox).toBe(state.agentEventInbox);
   });
 
   it('gets tools and warns when missing', () => {
@@ -102,9 +102,13 @@ describe('AgentContext', () => {
     const llm = makeLLM();
     const config = new AgentConfig('name', 'role', 'desc', llm);
     const state = new AgentRuntimeState('agent-5');
+    state.memoryManager = {
+      startTurn: () => 'turn-context'
+    } as any;
+    const activeTurn = state.startActiveTurn('turn-context');
     const context = new AgentContext('agent-5', config, state);
 
-    const invocation = new ToolInvocation('tool', { a: 1 }, 'inv-1');
+    const invocation = new ToolInvocation('tool', { a: 1 }, 'inv-1', activeTurn.turnId);
 
     context.storePendingToolInvocation(invocation);
     expect(context.pendingToolApprovals['inv-1']).toBe(invocation);

@@ -64,8 +64,8 @@ const sendTeamMessageOverSocket = (
   );
 };
 
-const sendStopGenerationOverSocket = (socket: WebSocket): void => {
-  socket.send(JSON.stringify({ type: "STOP_GENERATION" }));
+const sendInterruptGenerationOverSocket = (socket: WebSocket): void => {
+  socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
 };
 
 type TeamStreamMessage = { type: string; payload: Record<string, unknown> };
@@ -918,7 +918,7 @@ Rules:
         );
 
         const interruptStartIndex = streamMessages.length;
-        sendStopGenerationOverSocket(teamSocket);
+        sendInterruptGenerationOverSocket(teamSocket);
 
         await waitForTeamStreamMessageAfter(
           streamMessages,

@@ -1,5 +1,5 @@
 import { Mistral } from '@mistralai/mistralai';
-import { BaseLLM } from '../base.js';
+import { BaseLLM, type LLMInvocationOptions } from '../base.js';
 import { LLMModel } from '../models.js';
 import { LLMConfig } from '../utils/llm-config.js';
 import { CompleteResponse, ChunkResponse } from '../utils/response-types.js';
@@ -47,7 +47,7 @@ export class MistralLLM extends BaseLLM {
     };
   }
 
-  protected async _sendMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>): Promise<CompleteResponse> {
+  protected async _sendMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>, options: LLMInvocationOptions = {}): Promise<CompleteResponse> {
     const formattedMessages = await this._renderer.render(messages);
 
     const params: any = {
@@ -64,7 +64,7 @@ export class MistralLLM extends BaseLLM {
     }
 
     try {
-      const response = await this.client.chat.complete(params);
+      const response = await this.client.chat.complete(params, options.signal ? { signal: options.signal } as any : undefined);
       const message = response.choices?.[0]?.message;
       let content = '';
       if (typeof message?.content === 'string') {
@@ -85,7 +85,7 @@ export class MistralLLM extends BaseLLM {
     }
   }
 
-  protected async *_streamMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>): AsyncGenerator<ChunkResponse, void, unknown> {
+  protected async *_streamMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>, options: LLMInvocationOptions = {}): AsyncGenerator<ChunkResponse, void, unknown> {
     const formattedMessages = await this._renderer.render(messages);
     const params: any = {
       model: this.model.value,
@@ -102,7 +102,7 @@ export class MistralLLM extends BaseLLM {
     }
 
     try {
-      const stream = await this.client.chat.stream(params);
+      const stream = await this.client.chat.stream(params, options.signal ? { signal: options.signal } as any : undefined);
       for await (const event of stream) {
         const chunk = event.data;
         const choice = chunk?.choices?.[0];

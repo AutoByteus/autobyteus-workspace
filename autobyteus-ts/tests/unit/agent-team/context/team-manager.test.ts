@@ -91,6 +91,7 @@ const makeMockAgentInstance = (agentId: string, running: boolean = false) => {
   const agent = Object.assign(Object.create(Agent.prototype), {
     agentId,
     start: vi.fn(),
+    interrupt: vi.fn(async () => ({ accepted: true, status: 'accepted', turnId: 'turn-1', reason: 'user_interrupt' })),
     setRunning: (value: boolean) => {
       isRunning = value;
     }
@@ -234,5 +235,64 @@ describe('TeamManager', () => {
     await expect(manager.ensureNodeIsReady('forgotten_agent')).rejects.toThrow(
       'No pre-prepared agent configuration found'
     );
+  });
+
+  it('interrupts only cached running nodes without lazy-starting missing members', async () => {
+    const runtime = makeRuntime();
+    const multiplexer = makeMultiplexer();
+    const manager = new TeamManager('test_team', runtime, multiplexer as any);
+    const runningAgent = makeMockAgentInstance('running-agent', true);
+    const stoppedAgent = makeMockAgentInstance('stopped-agent', false);
+    (manager as any).nodesCache.set('running', runningAgent);
+    (manager as any).nodesCache.set('stopped', stoppedAgent);
+
+    const result = await manager.interruptRunningNodes({ reason: 'user_interrupt', timeoutMs: 123 });
+
+    expect(result.accepted).toBe(true);
+    expect(result.status).toBe('accepted');
+    expect(result.interruptedCount).toBe(1);
+    expect(result.memberResults).toEqual([
+      expect.objectContaining({ memberName: 'running', accepted: true, status: 'accepted', turnId: 'turn-1' })
+    ]);
+    expect(runningAgent.interrupt).toHaveBeenCalledWith({ reason: 'user_interrupt', timeoutMs: 123 });
+    expect(stoppedAgent.interrupt).not.toHaveBeenCalled();
+    expect(runtime.context.getNodeConfigByName).not.toHaveBeenCalled();
+  });
+
+  it('returns partial_timeout when any running member times out', async () => {
+    const runtime = makeRuntime();
+    const multiplexer = makeMultiplexer();
+    const manager = new TeamManager('test_team', runtime, multiplexer as any);
+    const okAgent = makeMockAgentInstance('ok-agent', true);
+    const timeoutAgent = makeMockAgentInstance('timeout-agent', true);
+    timeoutAgent.interrupt.mockResolvedValue({
+      accepted: true,
+      status: 'settlement_timeout',
+      turnId: 'turn-timeout',
+      reason: 'user_interrupt'
+    });
+    (manager as any).nodesCache.set('ok', okAgent);
+    (manager as any).nodesCache.set('timeout', timeoutAgent);
+
+    const result = await manager.interruptRunningNodes({ reason: 'user_interrupt' });
+
+    expect(result.accepted).toBe(true);
+    expect(result.status).toBe('partial_timeout');
+    expect(result.interruptedCount).toBe(2);
+    expect(result.memberResults.map((member) => member.status)).toEqual(['accepted', 'settlement_timeout']);
+  });
+
+  it('returns no_running_nodes for empty or stopped caches', async () => {
+    const runtime = makeRuntime();
+    const multiplexer = makeMultiplexer();
+    const manager = new TeamManager('test_team', runtime, multiplexer as any);
+    (manager as any).nodesCache.set('stopped', makeMockAgentInstance('stopped-agent', false));
+
+    const result = await manager.interruptRunningNodes({ targetMemberName: 'stopped' });
+
+    expect(result.accepted).toBe(false);
+    expect(result.status).toBe('no_running_nodes');
+    expect(result.interruptedCount).toBe(0);
+    expect(result.memberResults).toEqual([]);
   });
 });
