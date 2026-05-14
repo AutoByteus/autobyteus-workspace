@@ -3,11 +3,11 @@
 ## Ticket
 
 - Ticket: `runtime-interrupt-functionality`
-- Current ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality`
+- Current ticket path after finalization: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality`
 - Ticket branch: `codex/runtime-interrupt-functionality`
 - Finalization target: `origin/personal` / local `personal`
-- Current delivery status: `Ready for user verification / finalization hold`
+- Current delivery status: `User verified / release finalization approved`
 
 ## Integrated Branch State
 
@@ -17,7 +17,7 @@
 - Current ticket branch HEAD before this delivery-owned docs/artifact refresh commit: `abf59e8eb500a321c9798fa92a1ff4eb50f8c482`
 - Ahead/behind after delivery refresh: `ahead 49, behind 0` relative to `origin/personal`
 - Latest-base action in this delivery round: no merge/checkpoint required; ticket branch already contained latest tracked `origin/personal`.
-- Historical merge blocker: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/delivery-merge-blocker-report.md` is superseded context only.
+- Historical merge blocker: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/delivery-merge-blocker-report.md` is superseded context only.
 
 ## Implementation Summary
 
@@ -43,11 +43,11 @@ Cumulative behavior preserved:
 
 ## Review / Validation State
 
-- Latest code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/review-report.md`
+- Latest code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/review-report.md`
   - Latest review round: `36`
   - Decision: `Pass — ready for API/E2E revalidation`
   - Scope: CR-023 interrupted streamed assistant output retention while preserving CR-022 completed tool-result retention and the generic memory fact/projection boundary.
-- Latest API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/api-e2e-validation-report.md`
+- Latest API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/api-e2e-validation-report.md`
   - Latest authoritative validation round: `21`
   - Result: `Pass / Ready for delivery`
   - Repository-resident durable validation added or updated by API/E2E Round 21: `No`
@@ -84,7 +84,7 @@ Artifact/docs hygiene log: `/tmp/runtime-interrupt-round21-delivery-artifact-hyg
 
 ## Docs Sync
 
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/docs-sync-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/docs-sync-report.md`
 - Result: `Pass / Long-lived docs updated`
 - Updated long-lived docs:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md`
@@ -115,10 +115,12 @@ Note: this is an unsigned/not-notarized local test build only.
 
 ## Release / Deployment
 
-- Release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/release-deployment-report.md`
-- Release/deployment result: `No release/deployment performed`
-- Local Electron test build: `Passed`
-- Reason: This workflow stage is local ticket delivery/final handoff. Repository finalization and any push/merge/release/deployment work require explicit user verification/approval first.
+- Release/deployment report after archival: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/release-deployment-report.md`
+- User verification: `Passed`; the user verified the Round 21 Electron build works.
+- Release version planned: `1.3.10`
+- Release notes after archival: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/release-notes.md`
+- Release method: documented root helper `pnpm release 1.3.10 -- --release-notes tickets/done/runtime-interrupt-functionality/release-notes.md` after merging the archived ticket into local `personal`.
+- Resolved finalization blocker: FR-020 / AC-017 DeepSeek textual-markup sanitization was deferred out of this ticket and is not part of the release scope.
 
 ## Residual Risks / Out-of-Scope Validation
 
@@ -131,18 +133,18 @@ Note: this is an unsigned/not-notarized local test build only.
 
 ## Cumulative Artifact Package
 
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/design-review-report.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/implementation-handoff.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/review-report.md`
-- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/api-e2e-validation-report.md`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/docs-sync-report.md`
-- Delivery / release / deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/release-deployment-report.md`
-- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/handoff-summary.md`
-- Historical blocker context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/delivery-merge-blocker-report.md`
-- Prior explainer context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/turn-tool-input-port-explainer.html`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/design-review-report.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/implementation-handoff.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/review-report.md`
+- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/api-e2e-validation-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/docs-sync-report.md`
+- Delivery / release / deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/release-deployment-report.md`
+- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/handoff-summary.md`
+- Historical blocker context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/delivery-merge-blocker-report.md`
+- Prior explainer context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/turn-tool-input-port-explainer.html`
 
 Round 21 logs:
 
@@ -163,16 +165,11 @@ Electron artifacts:
 - ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.9.zip`
 - App bundle: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
 
-## Pending Finalization Steps After User Verification
+## Finalization Plan
 
-1. Refresh `origin/personal` again.
-2. If the target advanced, protect current delivery edits, integrate latest base, rerun required checks, update artifacts if behavior/handoff changes, and request renewed verification if needed.
-3. Move the ticket folder from `tickets/in-progress/runtime-interrupt-functionality` to `tickets/done/runtime-interrupt-functionality`.
-4. Commit any remaining final ticket-state changes.
-5. Push the ticket branch.
-6. Update local `personal` from `origin/personal`, merge the ticket branch, and push `personal`.
-7. Perform cleanup only after the target branch update is safe.
-
-## Verification Request
-
-Please review the current integrated state, delivery artifacts, updated long-lived docs, and refreshed Electron test build. If acceptable, explicitly approve finalization so delivery can archive the ticket, commit/push the ticket branch, merge into `personal`, and perform cleanup according to the workflow.
+1. Ticket folder archived to `tickets/done/runtime-interrupt-functionality`.
+2. Commit and push the ticket branch.
+3. Update local `personal` from `origin/personal`, merge the ticket branch, and push `personal`.
+4. Run the documented release helper for `1.3.10`, using the archived ticket release notes.
+5. Verify the release tag/workflow trigger and report final status.
+6. Perform cleanup only after target branch and release state are safe.

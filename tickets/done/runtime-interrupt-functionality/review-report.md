@@ -3,16 +3,16 @@
 ## Review Round Meta
 
 - **Review Entry Point:** Implementation Review
-- **Requirements Doc Reviewed As Context:** `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/requirements.md`
+- **Requirements Doc Reviewed As Context:** `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/requirements.md`
 - **Current Review Round:** Round 36 — CR-023 local fix review
 - **Trigger:** Implementation handoff for commit `abf59e8e` (`fix(agent): retain interrupted streamed assistant output`)
 - **Prior Review Round Reviewed:** Round 35 — memory fact/projection refactor review, local fix required for CR-023 at `8a338728`
 - **Latest Authoritative Round:** Round 36
-- **Investigation Notes Reviewed As Context:** `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/investigation-notes.md`
-- **Design Spec Reviewed As Context:** `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/design-spec.md`
-- **Design Review Report Reviewed As Context:** `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/design-review-report.md`
-- **Implementation Handoff Reviewed As Context:** `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/implementation-handoff.md`
-- **Validation Report Reviewed As Context:** `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/api-e2e-validation-report.md`
+- **Investigation Notes Reviewed As Context:** `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/investigation-notes.md`
+- **Design Spec Reviewed As Context:** `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/design-spec.md`
+- **Design Review Report Reviewed As Context:** `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/design-review-report.md`
+- **Implementation Handoff Reviewed As Context:** `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/implementation-handoff.md`
+- **Validation Report Reviewed As Context:** `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/api-e2e-validation-report.md`
 - **API / E2E Validation Started Yet:** Yes previously; currently paused pending this implementation re-review
 - **Repository-Resident Durable Validation Added Or Updated After Prior Review:** No in this implementation round
 - **Reviewed Commit:** `abf59e8e` — `fix(agent): retain interrupted streamed assistant output`

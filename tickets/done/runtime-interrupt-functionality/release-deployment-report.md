@@ -4,7 +4,7 @@
 
 Delivery-stage latest-base refresh, integrated-state checks, long-lived docs sync, local Electron test build refresh, final handoff preparation, and user-verification hold for `runtime-interrupt-functionality` after Code Review Round 36 and API/E2E Round 21 passed commit `abf59e8eb500a321c9798fa92a1ff4eb50f8c482` (`fix(agent): retain interrupted streamed assistant output`).
 
-Repository finalization, ticket archival, push, merge into `personal`, tag, publication, deployment, release, and cleanup have **not** been run. They remain blocked on explicit user verification/approval.
+User verification was received on 2026-05-14 after the Round 21 Electron build was tested successfully. Release finalization is approved and will archive the ticket, merge to `personal`, and publish version `1.3.10` through the documented release helper after this report is archived.
 
 ## Integrated Branch State
 
@@ -14,17 +14,17 @@ Repository finalization, ticket archival, push, merge into `personal`, tag, publ
 - Latest tracked base checked by delivery: `origin/personal` at `cabe20dd94fc8b3000c9856991675159264d93b0`
 - Latest implementation commit validated by API/E2E: `abf59e8eb500a321c9798fa92a1ff4eb50f8c482` (`fix(agent): retain interrupted streamed assistant output`)
 - Delivery refresh command: `git fetch origin --prune` on `2026-05-14`
-- Branch relationship after refresh: `ahead 49, behind 0`
+- Branch relationship after Round 21 delivery checkpoint: `ahead 50, behind 0` after commit `ab9def6d4a41e6442555ca911a85667b684e7ce1`
 - Latest-base integration action in this delivery round: `No merge required`; ticket branch already contained latest tracked `origin/personal`.
 - Prior latest-base merge/blocker/Electron-build context is superseded by this Round 21 delivery pass unless explicitly referenced as historical context.
 
 ## Review / Validation Gate Status
 
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/review-report.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/review-report.md`
   - Latest review round: `36`
   - Decision: `Pass — ready for API/E2E revalidation`
   - Scope: CR-023 interrupted streamed assistant output retention while preserving CR-022 completed tool-result retention and the generic memory fact/projection boundary.
-- API/E2E report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/api-e2e-validation-report.md`
+- API/E2E report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/api-e2e-validation-report.md`
   - Latest authoritative validation round: `21`
   - Result: `Pass / Ready for delivery`
   - Repository-resident durable validation changed by API/E2E Round 21: `No`
@@ -92,7 +92,7 @@ Artifacts:
 
 ## Docs Sync
 
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/docs-sync-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/docs-sync-report.md`
 - Result: `Pass / Long-lived docs updated`
 - Updated long-lived docs:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md`
@@ -101,12 +101,14 @@ Artifacts:
 
 ## Release / Deployment Decision
 
-- Release required now: `No`
-- Deployment required now: `No`
-- Package publication required now: `No`
+- Release required now: `Yes`
+- Release version planned: `1.3.10`
+- Deployment required now: `GitHub tag release workflow` via repository release helper
+- Package publication required now: `Yes`; release helper will bump desktop and messaging gateway package versions, sync curated release notes, update the managed messaging release manifest, commit, tag, and push.
 - Migration required now: `No`
-- Local Electron test build produced: `Yes`
-- Reason: This stage is local delivery/final handoff for a ticket branch. No explicit release/deployment scope was requested. Repository finalization and any push/merge/release/deployment work are intentionally held for user verification.
+- Local Electron test build produced and user-verified: `Yes`
+- Release notes prepared: `tickets/done/runtime-interrupt-functionality/release-notes.md` after ticket archival.
+- Resolved finalization blocker: FR-020 / AC-017 DeepSeek textual-markup sanitization was deferred out of this ticket by solution design and is not part of the release scope.
 
 ## Residual Risks / Out-of-Scope Items To Preserve
 
@@ -119,6 +121,6 @@ Artifacts:
 
 ## Final Status
 
-`Ready for user verification / finalization hold`.
+`Ready for repository finalization and release`.
 
-Delivery artifacts, docs sync, integrated checks, and a current local Electron test build are complete against the Round-21-passed, Round-36-reviewed, latest-base integrated state. Await explicit approval before moving the ticket to `done`, final commit/push, merge into `personal`, release/deployment, or cleanup.
+The user verified the current Electron build. Solution design resolved the transient FR-020 / AC-017 finalization blocker by deferring that requirement out of scope. Delivery may archive the ticket, push the ticket branch, merge into `personal`, and run the documented release helper for version `1.3.10`.

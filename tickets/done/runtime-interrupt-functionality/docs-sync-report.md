@@ -7,8 +7,8 @@
 - Date: `2026-05-14`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality`
 - Trigger: Delivery resumed after Code Review Round 36 and API/E2E Round 21 passed implementation commit `abf59e8eb500a321c9798fa92a1ff4eb50f8c482` (`fix(agent): retain interrupted streamed assistant output`).
-- Latest authoritative code review: Round 36, `Pass — ready for API/E2E revalidation`, `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/review-report.md`.
-- Latest authoritative API/E2E validation: Round 21, `Pass / Ready for delivery`, `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/api-e2e-validation-report.md`.
+- Latest authoritative code review: Round 36, `Pass — ready for API/E2E revalidation`, `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/review-report.md`.
+- Latest authoritative API/E2E validation: Round 21, `Pass / Ready for delivery`, `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/api-e2e-validation-report.md`.
 - Tracked base refreshed by delivery: `origin/personal` at `cabe20dd94fc8b3000c9856991675159264d93b0` after `git fetch origin --prune` on `2026-05-14`.
 - Integrated delivery HEAD used for docs sync: `abf59e8eb500a321c9798fa92a1ff4eb50f8c482` before this delivery-owned docs/artifact refresh commit.
 - Branch relationship after refresh: `ahead 49, behind 0` relative to `origin/personal`; no latest-base merge/checkpoint was required in this delivery round.
@@ -31,12 +31,12 @@ This report supersedes prior Round 20 delivery artifacts. Round 21 finalized the
 
 The following upstream artifacts were already modified before delivery and are part of the cumulative Round 21 package:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/requirements.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/investigation-notes.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/design-spec.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/design-review-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/review-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/api-e2e-validation-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/requirements.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/investigation-notes.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/design-spec.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/design-review-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/review-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/api-e2e-validation-report.md`
 
 They record CR-023, Code Review Round 36, and API/E2E Round 21 evidence.
 

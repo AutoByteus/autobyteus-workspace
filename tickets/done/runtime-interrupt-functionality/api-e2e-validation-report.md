@@ -2,12 +2,12 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/implementation-handoff.md`
+- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/review-report.md`
 - Current Validation Round: `21`
 - Trigger: Code review Round 36 after implementation commit `abf59e8e` (`fix(agent): retain interrupted streamed assistant output`), requiring API/E2E resume because runtime/memory/LLM streaming source behavior changed after the prior validation pass.
 - Prior Round Reviewed: `20`
@@ -217,13 +217,13 @@ No production source files and no repository-resident validation files were chan
 
 ## Other Validation Artifacts
 
-- Canonical validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/api-e2e-validation-report.md`
+- Canonical validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/api-e2e-validation-report.md`
 - Prior delivery/docs context to be verified/regenerated/superseded by delivery after this revalidation:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/docs-sync-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/release-deployment-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/handoff-summary.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/turn-tool-input-port-explainer.html`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/delivery-merge-blocker-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/docs-sync-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/release-deployment-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/handoff-summary.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/turn-tool-input-port-explainer.html`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/delivery-merge-blocker-report.md`
 
 ## Temporary Validation Methods / Scaffolding
 
@@ -1316,12 +1316,12 @@ Reason: API/E2E resumed after Round 36 code review and passed focused TS CR-023/
 - Prior Round 14 commit validated: `311048639403` (`refactor(agent): replace message inbox with event inbox`).
 - Prior Round 13 commit validated: `39dc00d81258ed74cd31b9affd8c65adb2e4ba28` (`refactor(agent): replace outbox with external notifier`).
 - API/E2E report updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/api-e2e-validation-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/api-e2e-validation-report.md`
 - Pre-existing modified upstream artifacts observed before this report update remain:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/investigation-notes.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/design-spec.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/design-review-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/review-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/investigation-notes.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/design-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/design-review-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality/review-report.md`
 
 ## Latest Authoritative Result
 

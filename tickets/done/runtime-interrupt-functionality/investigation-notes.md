@@ -23,7 +23,7 @@ User asked on 2026-05-05: “codex, and claude code both of them have abort func
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/done/runtime-interrupt-functionality`
 - Current Branch: `codex/runtime-interrupt-functionality`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality`
 - Bootstrap Base Branch: `origin/personal`
@@ -243,7 +243,7 @@ Relevant inspected current sources from the review package:
 - `autobyteus-ts/src/agent/event-inbox/processors/tool-approval-event-processor.ts`
 - `autobyteus-ts/src/agent/event-inbox/processors/tool-result-event-processor.ts`
 - `autobyteus-ts/src/agent/event-inbox/processors/runtime-lifecycle-event-processor.ts`
-- `tickets/in-progress/runtime-interrupt-functionality/review-report.md` finding `CR-019`
+- `tickets/done/runtime-interrupt-functionality/review-report.md` finding `CR-019`
 
 Observed responsibility:
 
