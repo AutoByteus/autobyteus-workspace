@@ -1,5 +1,20 @@
 # Docs Sync Report
 
+## Post-Refresh Electron Build Addendum — 2026-05-14
+
+After this report was prepared, the user requested another refresh of `origin/personal` before building Electron for manual testing. Delivery refreshed `origin/personal` again and found the ticket branch `ahead 35, behind 2`. The existing reviewed delivery/report artifacts were protected in local checkpoint commit `d273d1c1` (`chore(ticket): checkpoint runtime interrupt round 17 handoff`), then `origin/personal` at `cabe20dd94fc8b3000c9856991675159264d93b0` (`chore(release): bump workspace release version to 1.3.9`) was merged into the ticket branch as `3dfc9bcf25b841af27865f0daa25a737178fecff`.
+
+The latest-base merge brought the completed `autobyteus-ts-bash-html-corruption` terminal/run_bash work from `personal`. Three conflicts were resolved by preserving the latest-base stateless non-PTY `ShellCommandExecutor` / ordinary background-process adoption behavior while retaining this ticket's tool execution `AbortSignal` path for interrupt cancellation. Focused terminal validation passed after the merge: `pnpm -C autobyteus-ts exec vitest run tests/unit/tools/terminal/run-bash.test.ts tests/integration/tools/terminal/terminal-tools.test.ts tests/unit/tools/terminal/command-execution/shell-command-executor.test.ts` (`3` files / `16` tests).
+
+Electron README instructions were then followed from `autobyteus-web`. The local macOS README command variant passed:
+
+```bash
+NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac
+```
+
+Build log: `/tmp/runtime-interrupt-electron-macos-build-20260514-114342.log`. Built artifacts are under `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/autobyteus-web/electron-dist/`, including `AutoByteus_enterprise_macos-arm64-1.3.9.dmg`, `AutoByteus_enterprise_macos-arm64-1.3.9.zip`, and `mac-arm64/AutoByteus.app`. Branch relationship after the merge/build is `ahead 37, behind 0` relative to `origin/personal`. No additional long-lived docs were changed by this Electron build step.
+
+
 ## Scope
 
 - Ticket: `runtime-interrupt-functionality`

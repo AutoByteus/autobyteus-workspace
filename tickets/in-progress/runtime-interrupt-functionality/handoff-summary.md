@@ -1,5 +1,21 @@
 # Handoff Summary
 
+## Post-Refresh Electron Build Addendum — 2026-05-14
+
+The user requested another `origin/personal` refresh before building Electron for testing. Delivery refreshed and found the branch `ahead 35, behind 2`, checkpointed the existing reviewed Round 17 report artifacts in `d273d1c1`, then merged `origin/personal` at `cabe20dd94fc8b3000c9856991675159264d93b0` into the ticket branch. Current integrated HEAD is `3dfc9bcf25b841af27865f0daa25a737178fecff`, and current branch relationship is `ahead 37, behind 0` relative to `origin/personal`.
+
+Merge conflicts from latest base were limited to terminal `run_bash` files. They were resolved by keeping the latest-base stateless non-PTY shell executor/background-process adoption model and preserving this ticket's `ToolExecutionOptions.signal` cancellation path. Focused terminal validation passed (`3` files / `16` tests).
+
+Electron was then built per `autobyteus-web/README.md` using the local macOS no-notarization command. Build passed. Test artifacts for the user:
+
+- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.9.dmg`
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.9.zip`
+- App bundle: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- Build log: `/tmp/runtime-interrupt-electron-macos-build-20260514-114342.log`
+
+This build is local/unsigned/not notarized and was produced only for manual testing. Repository finalization is still not done.
+
+
 ## Ticket
 
 - Ticket: `runtime-interrupt-functionality`

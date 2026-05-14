@@ -1,5 +1,30 @@
 # Delivery / Release / Deployment Report
 
+## Post-Refresh Electron Build Addendum — 2026-05-14
+
+At the user's request, delivery refreshed `origin/personal` again before producing a local Electron build for manual testing. The branch had become `ahead 35, behind 2`; delivery made a local safety checkpoint commit `d273d1c1` for the reviewed Round 17 report artifacts, merged `origin/personal` at `cabe20dd94fc8b3000c9856991675159264d93b0` into the ticket branch, and resolved the terminal `run_bash` conflicts in merge commit `3dfc9bcf25b841af27865f0daa25a737178fecff`. The merge preserves latest-base stateless shell/background-process behavior and this ticket's execution-signal interruption behavior. Current branch relationship after integration is `ahead 37, behind 0`.
+
+Post-merge validation performed before the Electron build:
+
+- Focused terminal conflict-resolution suite passed: `3` files / `16` tests.
+- `git diff --check HEAD` passed after the merge commit.
+- The Electron build's `prepare-server` step rebuilt `autobyteus-ts` and `autobyteus-server-ts`; both completed successfully, including runtime dependency verification and built-in agents bootstrap smoke check.
+
+README-guided local macOS Electron build passed from `autobyteus-web` using:
+
+```bash
+NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac
+```
+
+Build log: `/tmp/runtime-interrupt-electron-macos-build-20260514-114342.log`. Output artifacts:
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.9.dmg`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.9.zip`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+
+This was a local unsigned/not-notarized test build only. No release tag, GitHub release, deployment, push, merge into `personal`, or ticket archival was performed. Finalization remains on hold pending explicit user approval.
+
+
 ## Scope
 
 Delivery-stage latest-base refresh, integrated-state checks, docs sync/no-impact decision, final handoff preparation, and user-verification hold for `runtime-interrupt-functionality` after Code Review Round 29 and API/E2E Round 17 passed deterministic broad-test expectation/discovery fixes plus the user-requested server-side AutoByteus runtime E2E rerun.
