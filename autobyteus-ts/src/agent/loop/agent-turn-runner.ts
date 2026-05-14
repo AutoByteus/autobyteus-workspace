@@ -121,11 +121,15 @@ export class AgentTurnRunner {
     } catch (error) {
       if (isAgentInterruptionError(error)) {
         const reason = error.reason;
-        await this.context.state.memoryManager?.finalizeInterruptedTurn({
-          turnId,
+        const interruptionScope = { kind: 'agent_turn' as const, id: turnId };
+        await this.context.state.memoryManager?.ingestInterruptionMarker({
+          scope: interruptionScope,
           reason,
-          outcome: { kind: 'interrupted', turnId, reason },
           completedToolResults: completedToolResultsForInterruptedProjection
+        });
+        await this.context.state.memoryManager?.refreshWorkingContextProjection({
+          mode: 'provider_safe',
+          fenceScope: interruptionScope
         });
         this.notifier?.notifyAgentTurnInterrupted(turnId, reason);
         await this.applyStatusEvent(new AgentTurnInterruptedEvent(turnId, reason));

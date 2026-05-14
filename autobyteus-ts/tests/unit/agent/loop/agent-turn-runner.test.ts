@@ -73,10 +73,12 @@ import { CompleteResponse } from '../../../../src/llm/utils/response-types.js';
 
 const makeContextAndTurn = () => {
   const state = new AgentRuntimeState('agent-1');
-  const finalizeInterruptedTurn = vi.fn(async () => undefined);
+  const ingestInterruptionMarker = vi.fn(async () => undefined);
+  const refreshWorkingContextProjection = vi.fn(async () => undefined);
   state.memoryManager = {
     startTurn: () => 'turn-1',
-    finalizeInterruptedTurn
+    ingestInterruptionMarker,
+    refreshWorkingContextProjection
   } as any;
   const turn = state.startActiveTurn('turn-1');
   const context = {
@@ -94,7 +96,7 @@ const makeContextAndTurn = () => {
       }
     }
   } as any;
-  return { context, turn, finalizeInterruptedTurn };
+  return { context, turn, ingestInterruptionMarker, refreshWorkingContextProjection };
 };
 
 const makeTrigger = () => new UserMessageReceivedEvent(new AgentInputUserMessage('hello'));
@@ -112,7 +114,7 @@ describe('AgentTurnRunner interruption fences', () => {
   });
 
   it('does not publish final LLM completion after an interrupt accepted at the post-LLM seam', async () => {
-    const { context, turn, finalizeInterruptedTurn } = makeContextAndTurn();
+    const { context, turn, ingestInterruptionMarker, refreshWorkingContextProjection } = makeContextAndTurn();
     mocks.llmRun.mockImplementation(async (_nextInput, _context, activeTurn) => {
       activeTurn.interrupt('post_llm_interrupt');
       return {
@@ -125,12 +127,18 @@ describe('AgentTurnRunner interruption fences', () => {
 
     expect(outcome).toMatchObject({ kind: 'interrupted', turnId: 'turn-1', reason: 'post_llm_interrupt' });
     expect(mocks.llmResponseProcess).not.toHaveBeenCalled();
-    expect(finalizeInterruptedTurn).toHaveBeenCalledWith({
-      turnId: 'turn-1',
+    expect(ingestInterruptionMarker).toHaveBeenCalledWith({
+      scope: { kind: 'agent_turn', id: 'turn-1' },
       reason: 'post_llm_interrupt',
-      outcome: { kind: 'interrupted', turnId: 'turn-1', reason: 'post_llm_interrupt' },
       completedToolResults: []
     });
+    expect(refreshWorkingContextProjection).toHaveBeenCalledWith({
+      mode: 'provider_safe',
+      fenceScope: { kind: 'agent_turn', id: 'turn-1' }
+    });
+    expect(ingestInterruptionMarker.mock.invocationCallOrder[0]).toBeLessThan(
+      refreshWorkingContextProjection.mock.invocationCallOrder[0]
+    );
     expect(mocks.notifyTurnCompleted).not.toHaveBeenCalled();
     expect(mocks.notifyTurnInterrupted).toHaveBeenCalledWith('turn-1', 'post_llm_interrupt');
   });
@@ -181,7 +189,7 @@ describe('AgentTurnRunner interruption fences', () => {
   });
 
   it('does not process tool results or publish terminal tool success after an interrupt accepted at the post-tool seam', async () => {
-    const { context, turn, finalizeInterruptedTurn } = makeContextAndTurn();
+    const { context, turn, ingestInterruptionMarker, refreshWorkingContextProjection } = makeContextAndTurn();
     const invocation = new ToolInvocation('tool', {}, 'inv-1', 'turn-1');
     mocks.llmRun.mockResolvedValue({
       kind: 'tool_invocations',
@@ -199,12 +207,18 @@ describe('AgentTurnRunner interruption fences', () => {
 
     expect(outcome).toMatchObject({ kind: 'interrupted', turnId: 'turn-1', reason: 'post_tool_interrupt' });
     expect(mocks.toolResultProcess).not.toHaveBeenCalled();
-    expect(finalizeInterruptedTurn).toHaveBeenCalledWith({
-      turnId: 'turn-1',
+    expect(ingestInterruptionMarker).toHaveBeenCalledWith({
+      scope: { kind: 'agent_turn', id: 'turn-1' },
       reason: 'post_tool_interrupt',
-      outcome: { kind: 'interrupted', turnId: 'turn-1', reason: 'post_tool_interrupt' },
       completedToolResults: [completedResult]
     });
+    expect(refreshWorkingContextProjection).toHaveBeenCalledWith({
+      mode: 'provider_safe',
+      fenceScope: { kind: 'agent_turn', id: 'turn-1' }
+    });
+    expect(ingestInterruptionMarker.mock.invocationCallOrder[0]).toBeLessThan(
+      refreshWorkingContextProjection.mock.invocationCallOrder[0]
+    );
     expect(mocks.notifyToolExecutionSucceeded).not.toHaveBeenCalled();
     expect(mocks.notifyToolExecutionFailed).not.toHaveBeenCalled();
     expect(mocks.notifyTurnCompleted).not.toHaveBeenCalled();

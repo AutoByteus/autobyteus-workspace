@@ -15,7 +15,7 @@ type ToolProtocolProjection = {
 
 export function projectInterruptedTurnWorkingContext(
   messages: Message[],
-  markerContent: string,
+  markerContent: string | null,
   completedToolResults: ToolResultEvent[] = []
 ): Message[] {
   const toolProtocolProjection = classifyToolProtocolMessages(messages);
@@ -68,7 +68,7 @@ export function projectInterruptedTurnWorkingContext(
     }));
   }
 
-  if (!projected.some((message) => message.content === markerContent)) {
+  if (markerContent && !projected.some((message) => message.content === markerContent)) {
     projected.push(new Message(MessageRole.USER, { content: markerContent }));
   }
   return projected;

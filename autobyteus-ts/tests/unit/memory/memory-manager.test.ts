@@ -297,7 +297,7 @@ describe('MemoryManager', () => {
     }
   });
 
-  it('finalizes interrupted turns without restoring accepted user input out of working context', async () => {
+  it('ingests interruption markers and refreshes working-context projection without restoring accepted user input', async () => {
     const tempDir = makeTempDir();
     try {
       const store = new FileMemoryStore(tempDir, 'agent_mem_interrupted_projection');
@@ -313,7 +313,8 @@ describe('MemoryManager', () => {
       manager.ingestUserMessage(new LLMUserMessage({ content: 'interrupted user input' }), turnId, 'LLMUserMessageReadyEvent');
       manager.ingestToolIntent(new ToolInvocation('read_file', { path: '/tmp/incomplete.txt' }, 'inv-interrupt', turnId), turnId);
 
-      await manager.finalizeInterruptedTurn({ turnId, reason: 'user_interrupt' });
+      await manager.ingestInterruptionMarker({ scope: { kind: 'agent_turn', id: turnId }, reason: 'user_interrupt' });
+      await manager.refreshWorkingContextProjection({ mode: 'provider_safe', fenceScope: { kind: 'agent_turn', id: turnId } });
 
       const messages = manager.getWorkingContextMessages();
       expect(messages.some((message) => message.content === 'stable system prompt')).toBe(true);
@@ -352,7 +353,8 @@ describe('MemoryManager', () => {
         turnId
       );
 
-      await manager.finalizeInterruptedTurn({ turnId, reason: 'post_tool_interrupt' });
+      await manager.ingestInterruptionMarker({ scope: { kind: 'agent_turn', id: turnId }, reason: 'post_tool_interrupt' });
+      await manager.refreshWorkingContextProjection({ mode: 'provider_safe', fenceScope: { kind: 'agent_turn', id: turnId } });
 
       const messages = manager.getWorkingContextMessages();
       expect(messages.some((message) => message.tool_payload instanceof ToolCallPayload)).toBe(true);
@@ -382,7 +384,8 @@ describe('MemoryManager', () => {
         tool_payload: new ToolResultPayload('call_A', 'safe_tool', 'SAFE_FACT')
       }));
 
-      await manager.finalizeInterruptedTurn({ turnId, reason: 'user_interrupt' });
+      await manager.ingestInterruptionMarker({ scope: { kind: 'agent_turn', id: turnId }, reason: 'user_interrupt' });
+      await manager.refreshWorkingContextProjection({ mode: 'provider_safe', fenceScope: { kind: 'agent_turn', id: turnId } });
 
       const messages = manager.getWorkingContextMessages();
       expect(messages.some((message) => message.tool_payload)).toBe(false);

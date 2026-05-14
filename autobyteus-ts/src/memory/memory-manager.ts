@@ -3,7 +3,6 @@ import { ToolCallSpec } from '../llm/utils/messages.js';
 import { CompleteResponse } from '../llm/utils/response-types.js';
 import { ToolResultEvent } from '../agent/events/agent-events.js';
 import { ToolInvocation } from '../agent/tool-invocation.js';
-import type { TurnOutcome } from '../agent/agent-turn.js';
 
 import { RawTraceItem } from './models/raw-trace-item.js';
 import { MemoryType } from './models/memory-types.js';
@@ -23,11 +22,21 @@ export type ToolIntentIngestionOptions = {
   assistantReasoning?: string | null;
 };
 
-export type FinalizeInterruptedTurnInput = {
-  turnId: string;
+export type MemoryProjectionScope = {
+  kind: 'agent_turn';
+  id: string;
+};
+
+export type IngestInterruptionMarkerInput = {
+  scope: MemoryProjectionScope;
   reason?: string | null;
-  outcome?: TurnOutcome | null;
+  observedAt?: Date;
   completedToolResults?: ToolResultEvent[];
+};
+
+export type RefreshWorkingContextProjectionInput = {
+  mode?: 'provider_safe';
+  fenceScope?: MemoryProjectionScope;
 };
 
 const INTERRUPTED_TURN_TRACE_TYPE = 'turn_interrupted';
@@ -253,28 +262,26 @@ export class MemoryManager {
     this.persistWorkingContextSnapshot();
   }
 
-  async finalizeInterruptedTurn(input: FinalizeInterruptedTurnInput): Promise<void> {
-    const turnId = input.turnId?.trim();
-    if (!turnId) {
-      throw new Error('MemoryManager.finalizeInterruptedTurn requires a non-empty turnId.');
-    }
-
+  async ingestInterruptionMarker(input: IngestInterruptionMarkerInput): Promise<void> {
+    const turnId = this.requireAgentTurnScopeId(input.scope, 'MemoryManager.ingestInterruptionMarker');
     const completedToolResults = this.normalizeInterruptedCompletedToolResults(
       input.completedToolResults ?? [],
       turnId
     );
     this.recordInterruptedCompletedToolResults(completedToolResults, turnId);
 
-    const reason = input.reason ?? (input.outcome?.kind === 'interrupted' ? input.outcome.reason : undefined);
-    const markerContent = this.buildInterruptedTurnMarker(turnId, reason);
+    const markerContent = this.buildInterruptedTurnMarker(turnId, input.reason);
     const existingMarker = this.listRawTracesOrdered().some(
       (item) => item.turnId === turnId && item.traceType === INTERRUPTED_TURN_TRACE_TYPE
     );
     if (!existingMarker) {
+      const observedAt = input.observedAt instanceof Date && !Number.isNaN(input.observedAt.getTime())
+        ? input.observedAt
+        : new Date();
       this.store.add([
         new RawTraceItem({
-          id: `rt_${Date.now()}_${turnId}_interrupted`,
-          ts: Date.now() / 1000,
+          id: `rt_${observedAt.getTime()}_${turnId}_interrupted`,
+          ts: observedAt.getTime() / 1000,
           turnId,
           seq: this.nextSeq(turnId),
           traceType: INTERRUPTED_TURN_TRACE_TYPE,
@@ -283,6 +290,19 @@ export class MemoryManager {
         })
       ]);
     }
+  }
+
+  async refreshWorkingContextProjection(input: RefreshWorkingContextProjectionInput = {}): Promise<void> {
+    const mode = input.mode ?? 'provider_safe';
+    if (mode !== 'provider_safe') {
+      throw new Error(`MemoryManager.refreshWorkingContextProjection does not support mode '${mode}'.`);
+    }
+
+    const fenceTurnId = input.fenceScope
+      ? this.requireAgentTurnScopeId(input.fenceScope, 'MemoryManager.refreshWorkingContextProjection')
+      : null;
+    const markerContent = fenceTurnId ? this.getInterruptionMarkerContent(fenceTurnId) : null;
+    const completedToolResults = fenceTurnId ? this.getCompletedToolResultsForTurn(fenceTurnId) : [];
 
     const currentMessages = this.workingContextSnapshot.buildMessages();
     const projectedMessages = projectInterruptedTurnWorkingContext(
@@ -337,6 +357,33 @@ export class MemoryManager {
       rawItems = rawItems.filter((item) => item.turnId === turnId);
     }
     return buildToolInteractions(rawItems);
+  }
+
+  private requireAgentTurnScopeId(scope: MemoryProjectionScope | undefined, operation: string): string {
+    if (!scope || scope.kind !== 'agent_turn' || typeof scope.id !== 'string' || !scope.id.trim()) {
+      throw new Error(`${operation} requires an agent_turn scope with a non-empty id.`);
+    }
+    return scope.id.trim();
+  }
+
+  private getInterruptionMarkerContent(turnId: string): string | null {
+    const marker = this.listRawTracesOrdered()
+      .filter((item) => item.turnId === turnId && item.traceType === INTERRUPTED_TURN_TRACE_TYPE)
+      .at(-1);
+    return marker?.content ?? null;
+  }
+
+  private getCompletedToolResultsForTurn(turnId: string): ToolResultEvent[] {
+    return this.listRawTracesOrdered()
+      .filter((item) => item.turnId === turnId && item.traceType === 'tool_result')
+      .map((item) => new ToolResultEvent(
+        item.toolName ?? 'unknown_tool',
+        item.toolResult,
+        item.toolCallId ?? undefined,
+        item.toolError ?? undefined,
+        item.toolArgs ?? undefined,
+        turnId
+      ));
   }
 
   private buildInterruptedTurnMarker(turnId: string, reason?: string | null): string {
