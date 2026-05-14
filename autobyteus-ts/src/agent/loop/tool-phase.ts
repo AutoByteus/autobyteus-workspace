@@ -9,6 +9,10 @@ import type { AgentContext } from '../context/agent-context.js';
 import type { AgentTurn } from '../agent-turn.js';
 import type { AgentExternalEventNotifier } from '../events/notifiers.js';
 
+export type ToolPhaseRunOptions = {
+  onToolResult?: (event: ToolResultEvent) => void | Promise<void>;
+};
+
 export class ToolPhase {
   private readonly invocationPipeline = new ToolInvocationPipeline();
 
@@ -16,16 +20,18 @@ export class ToolPhase {
     invocations: ToolInvocation[],
     context: AgentContext,
     turn: AgentTurn,
-    notifier: AgentExternalEventNotifier | null
+    notifier: AgentExternalEventNotifier | null,
+    options: ToolPhaseRunOptions = {}
   ): Promise<ToolResultEvent[]> {
     const results: ToolResultEvent[] = [];
     for (const originalInvocation of invocations) {
       turn.executionScope.throwIfAborted({ kind: 'tool_phase' });
       const result = await this.runOneInvocation(originalInvocation, context, turn, notifier);
-      turn.executionScope.throwIfAborted({ kind: 'post_tool_invocation' });
       if (result) {
         results.push(result);
+        await options.onToolResult?.(result);
       }
+      turn.executionScope.throwIfAborted({ kind: 'post_tool_invocation' });
     }
     return results;
   }

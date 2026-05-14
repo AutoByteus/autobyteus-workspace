@@ -362,4 +362,40 @@ describe('MemoryManager', () => {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
   });
+
+  it('projects partial native tool batches as safe text while retaining completed result facts', async () => {
+    const tempDir = makeTempDir();
+    try {
+      const store = new FileMemoryStore(tempDir, 'agent_mem_interrupted_partial_tools');
+      const manager = new MemoryManager({ store });
+      const turnId = manager.startTurn();
+
+      manager.workingContextSnapshot.appendMessage(new Message(MessageRole.ASSISTANT, {
+        content: null,
+        tool_payload: new ToolCallPayload([
+          { id: 'call_A', name: 'safe_tool', arguments: {} },
+          { id: 'call_B', name: 'slow_tool', arguments: {} }
+        ])
+      }));
+      manager.workingContextSnapshot.appendMessage(new Message(MessageRole.TOOL, {
+        content: null,
+        tool_payload: new ToolResultPayload('call_A', 'safe_tool', 'SAFE_FACT')
+      }));
+
+      await manager.finalizeInterruptedTurn({ turnId, reason: 'user_interrupt' });
+
+      const messages = manager.getWorkingContextMessages();
+      expect(messages.some((message) => message.tool_payload)).toBe(false);
+      expect(messages.some((message) =>
+        typeof message.content === 'string' &&
+        message.content.includes('Interrupted tool request was fenced') &&
+        message.content.includes('safe_tool') &&
+        message.content.includes('slow_tool') &&
+        message.content.includes('SAFE_FACT')
+      )).toBe(true);
+      expect(messages.at(-1)?.content).toContain(`turn '${turnId}' was interrupted`);
+    } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
 });

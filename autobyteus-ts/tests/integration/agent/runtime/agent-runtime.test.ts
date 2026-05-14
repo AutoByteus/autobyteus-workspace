@@ -263,6 +263,44 @@ class OneShotToolCallLLM extends BaseLLM {
   }
 }
 
+class MultiToolInterruptLLM extends BaseLLM {
+  requestMessages: Message[][] = [];
+
+  protected async _sendMessagesToLLM(_messages: Message[]): Promise<CompleteResponse> {
+    return new CompleteResponse({ content: 'ok' });
+  }
+
+  protected async *_streamMessagesToLLM(
+    messages: Message[],
+    _kwargs: Record<string, unknown>,
+    _options?: LLMInvocationOptions
+  ): AsyncGenerator<ChunkResponse, void, unknown> {
+    this.requestMessages.push(messages);
+    const callIndex = this.requestMessages.length;
+
+    if (callIndex === 1) {
+      yield {
+        content: '',
+        tool_calls: [
+          { index: 0, call_id: 'call_safe_fact', name: SafeFactTool.getName() },
+          { index: 1, call_id: 'call_blocking', name: BlockingTool.getName() }
+        ]
+      } as ChunkResponse;
+      yield {
+        content: '',
+        is_complete: true,
+        tool_calls: [
+          { index: 0, arguments_delta: '{}' },
+          { index: 1, arguments_delta: '{}' }
+        ]
+      } as ChunkResponse;
+      return;
+    }
+
+    yield { content: `reply-${callIndex}`, is_complete: true } as ChunkResponse;
+  }
+}
+
 class ApprovalTool extends BaseTool<AgentContext, Record<string, unknown>, string> {
   static getName(): string {
     return 'approval_tool';
@@ -282,6 +320,54 @@ class ApprovalTool extends BaseTool<AgentContext, Record<string, unknown>, strin
     _options?: ToolExecutionOptions
   ): Promise<string> {
     return 'should-not-run-without-approval';
+  }
+}
+
+class SafeFactTool extends BaseTool<AgentContext, Record<string, unknown>, string> {
+  executeCalls = 0;
+
+  static getName(): string {
+    return 'safe_fact_tool';
+  }
+
+  static getDescription(): string {
+    return 'Returns a safe fact before a later tool blocks.';
+  }
+
+  static getArgumentSchema() {
+    return null;
+  }
+
+  protected async _execute(
+    _context: AgentContext,
+    _args?: Record<string, unknown>,
+    _options?: ToolExecutionOptions
+  ): Promise<string> {
+    this.executeCalls += 1;
+    return 'SAFE_FACT';
+  }
+}
+
+class BlockingTool extends BaseTool<AgentContext, Record<string, unknown>, string> {
+  static getName(): string {
+    return 'blocking_tool';
+  }
+
+  static getDescription(): string {
+    return 'Blocks until the active turn is interrupted.';
+  }
+
+  static getArgumentSchema() {
+    return null;
+  }
+
+  protected async _execute(
+    _context: AgentContext,
+    _args?: Record<string, unknown>,
+    _options?: ToolExecutionOptions
+  ): Promise<string> {
+    await new Promise<void>(() => undefined);
+    return 'SHOULD_NOT_COMPLETE';
   }
 }
 
@@ -868,6 +954,84 @@ describe('Agent runtime integration', () => {
         message.content.includes('user_interrupt')
       )).toBe(true);
       expect(nextMessages.some((message) => message.tool_payload)).toBe(false);
+    } finally {
+      if (runtime.isRunning) {
+        await runtime.stop(2);
+      }
+      await llm.cleanup();
+    }
+  }, 20000);
+
+  it('retains completed tool result facts when a later tool in the batch is interrupted', async () => {
+    const llm = new MultiToolInterruptLLM(makeModel(), new LLMConfig());
+    const safeTool = new SafeFactTool();
+    const blockingTool = new BlockingTool();
+    const config = new AgentConfig(
+      'RuntimePartialToolInterruptAgent',
+      'Tester',
+      'Partial tool interrupt retention test agent',
+      llm,
+      null,
+      [safeTool, blockingTool],
+      true
+    );
+    const agentId = `runtime_partial_tool_interrupt_${Date.now()}`;
+
+    const state = new AgentRuntimeState(agentId, null, null);
+    state.llmInstance = llm;
+    state.toolInstances = {
+      [SafeFactTool.getName()]: safeTool,
+      [BlockingTool.getName()]: blockingTool
+    };
+    attachMemory(state);
+
+    const context = new AgentContext(agentId, config, state);
+    const runtime = new AgentRuntime(context);
+    const startedTools: any[] = [];
+    context.statusManager?.notifier?.subscribe(EventType.AGENT_TOOL_EXECUTION_STARTED, (payload) => {
+      startedTools.push(payload);
+    });
+
+    try {
+      runtime.start();
+      const ready = await waitForStatus(context, (status) => status === AgentStatus.IDLE || status === AgentStatus.ERROR);
+      expect(ready).toBe(true);
+
+      await runtime.submitEvent(new UserMessageReceivedEvent(new AgentInputUserMessage('run two tools')));
+      const blockingStarted = await waitForCondition(
+        () => safeTool.executeCalls === 1 &&
+          startedTools.some((payload) => payload?.invocation_id === 'call_blocking')
+      );
+      expect(blockingStarted).toBe(true);
+
+      const activeTurnId = context.state.activeTurn?.turnId;
+      expect(activeTurnId).toBeTruthy();
+      const interruptResult = await runtime.interrupt({
+        turnId: activeTurnId,
+        reason: 'user_interrupt',
+        timeoutMs: 1000
+      });
+      expect(interruptResult.accepted).toBe(true);
+      expect(context.currentStatus).toBe(AgentStatus.IDLE);
+
+      await runtime.submitEvent(new UserMessageReceivedEvent(new AgentInputUserMessage('after tool interrupt')));
+      const nextCallStarted = await waitForCondition(() => llm.requestMessages.length === 2);
+      expect(nextCallStarted).toBe(true);
+
+      const nextMessages = llm.requestMessages[1];
+      expect(nextMessages.some((message) => message.content === 'run two tools')).toBe(true);
+      expect(nextMessages.some((message) =>
+        typeof message.content === 'string' &&
+        message.content.includes('SAFE_FACT') &&
+        message.content.includes(SafeFactTool.getName())
+      )).toBe(true);
+      expect(nextMessages.some((message) =>
+        typeof message.content === 'string' &&
+        message.content.includes(`turn '${activeTurnId}' was interrupted`) &&
+        message.content.includes('user_interrupt')
+      )).toBe(true);
+      expect(nextMessages.some((message) => message.tool_payload)).toBe(false);
+      expect(nextMessages.some((message) => message.content === 'after tool interrupt')).toBe(true);
     } finally {
       if (runtime.isRunning) {
         await runtime.stop(2);

@@ -128,7 +128,8 @@ describe('AgentTurnRunner interruption fences', () => {
     expect(finalizeInterruptedTurn).toHaveBeenCalledWith({
       turnId: 'turn-1',
       reason: 'post_llm_interrupt',
-      outcome: { kind: 'interrupted', turnId: 'turn-1', reason: 'post_llm_interrupt' }
+      outcome: { kind: 'interrupted', turnId: 'turn-1', reason: 'post_llm_interrupt' },
+      completedToolResults: []
     });
     expect(mocks.notifyTurnCompleted).not.toHaveBeenCalled();
     expect(mocks.notifyTurnInterrupted).toHaveBeenCalledWith('turn-1', 'post_llm_interrupt');
@@ -187,9 +188,11 @@ describe('AgentTurnRunner interruption fences', () => {
       response: new CompleteResponse({ content: '' }),
       toolInvocations: [invocation]
     });
-    mocks.toolRun.mockImplementation(async (_invocations, _context, activeTurn) => {
+    const completedResult = new ToolResultEvent('tool', { ok: true }, 'inv-1', undefined, {}, 'turn-1', false);
+    mocks.toolRun.mockImplementation(async (_invocations, _context, activeTurn, _notifier, options) => {
+      await options.onToolResult(completedResult);
       activeTurn.interrupt('post_tool_interrupt');
-      return [new ToolResultEvent('tool', { ok: true }, 'inv-1', undefined, {}, 'turn-1', false)];
+      return [completedResult];
     });
 
     const outcome = await new AgentTurnRunner(context, turn).run(makeTrigger());
@@ -199,7 +202,8 @@ describe('AgentTurnRunner interruption fences', () => {
     expect(finalizeInterruptedTurn).toHaveBeenCalledWith({
       turnId: 'turn-1',
       reason: 'post_tool_interrupt',
-      outcome: { kind: 'interrupted', turnId: 'turn-1', reason: 'post_tool_interrupt' }
+      outcome: { kind: 'interrupted', turnId: 'turn-1', reason: 'post_tool_interrupt' },
+      completedToolResults: [completedResult]
     });
     expect(mocks.notifyToolExecutionSucceeded).not.toHaveBeenCalled();
     expect(mocks.notifyToolExecutionFailed).not.toHaveBeenCalled();

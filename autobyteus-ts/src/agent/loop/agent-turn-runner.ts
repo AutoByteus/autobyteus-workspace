@@ -41,6 +41,7 @@ export class AgentTurnRunner {
 
   async run(trigger: AgentTurnTrigger): Promise<TurnOutcome> {
     const turnId = this.turn.turnId;
+    const completedToolResultsForInterruptedProjection: ToolResultEvent[] = [];
     try {
       this.turn.executionScope.throwIfAborted({ kind: 'turn_start' });
       this.notifier?.notifyAgentTurnStarted(turnId);
@@ -75,7 +76,11 @@ export class AgentTurnRunner {
           await this.applyStatusEvent(new PendingToolInvocationEvent(invocation));
         }
 
-        const rawResults = await this.toolPhase.run(llmOutcome.toolInvocations, this.context, this.turn, this.notifier);
+        const rawResults = await this.toolPhase.run(llmOutcome.toolInvocations, this.context, this.turn, this.notifier, {
+          onToolResult: (event) => {
+            completedToolResultsForInterruptedProjection.push(event);
+          }
+        });
         this.turn.executionScope.throwIfAborted({ kind: 'post_tool_phase' });
         const processedResults: ToolResultEvent[] = [];
         for (const rawResult of rawResults) {
@@ -119,7 +124,8 @@ export class AgentTurnRunner {
         await this.context.state.memoryManager?.finalizeInterruptedTurn({
           turnId,
           reason,
-          outcome: { kind: 'interrupted', turnId, reason }
+          outcome: { kind: 'interrupted', turnId, reason },
+          completedToolResults: completedToolResultsForInterruptedProjection
         });
         this.notifier?.notifyAgentTurnInterrupted(turnId, reason);
         await this.applyStatusEvent(new AgentTurnInterruptedEvent(turnId, reason));

@@ -1,11 +1,5 @@
 import { LLMUserMessage } from '../llm/user-message.js';
-import {
-  Message,
-  MessageRole,
-  ToolCallPayload,
-  ToolCallSpec,
-  ToolResultPayload
-} from '../llm/utils/messages.js';
+import { ToolCallSpec } from '../llm/utils/messages.js';
 import { CompleteResponse } from '../llm/utils/response-types.js';
 import { ToolResultEvent } from '../agent/events/agent-events.js';
 import { ToolInvocation } from '../agent/tool-invocation.js';
@@ -22,6 +16,7 @@ import { WorkingContextSnapshot } from './working-context-snapshot.js';
 import { WorkingContextSnapshotSerializer } from './working-context-snapshot-serializer.js';
 import { WorkingContextSnapshotStore } from './store/working-context-snapshot-store.js';
 import { buildToolInteractions } from './tool-interaction-builder.js';
+import { projectInterruptedTurnWorkingContext } from './working-context-interrupted-turn-projector.js';
 
 export type ToolIntentIngestionOptions = {
   assistantContent?: string | null;
@@ -32,6 +27,7 @@ export type FinalizeInterruptedTurnInput = {
   turnId: string;
   reason?: string | null;
   outcome?: TurnOutcome | null;
+  completedToolResults?: ToolResultEvent[];
 };
 
 const INTERRUPTED_TURN_TRACE_TYPE = 'turn_interrupted';
@@ -263,6 +259,12 @@ export class MemoryManager {
       throw new Error('MemoryManager.finalizeInterruptedTurn requires a non-empty turnId.');
     }
 
+    const completedToolResults = this.normalizeInterruptedCompletedToolResults(
+      input.completedToolResults ?? [],
+      turnId
+    );
+    this.recordInterruptedCompletedToolResults(completedToolResults, turnId);
+
     const reason = input.reason ?? (input.outcome?.kind === 'interrupted' ? input.outcome.reason : undefined);
     const markerContent = this.buildInterruptedTurnMarker(turnId, reason);
     const existingMarker = this.listRawTracesOrdered().some(
@@ -283,9 +285,10 @@ export class MemoryManager {
     }
 
     const currentMessages = this.workingContextSnapshot.buildMessages();
-    const projectedMessages = this.projectInterruptedTurnWorkingContext(
+    const projectedMessages = projectInterruptedTurnWorkingContext(
       currentMessages,
-      markerContent
+      markerContent,
+      completedToolResults
     );
     this.resetWorkingContextSnapshot(projectedMessages, this.workingContextSnapshot.lastCompactionTs);
   }
@@ -344,86 +347,61 @@ export class MemoryManager {
     );
   }
 
-  private projectInterruptedTurnWorkingContext(messages: Message[], markerContent: string): Message[] {
-    const toolProtocolProjection = this.classifyToolProtocolMessages(messages);
-    const projected: Message[] = [];
-
-    for (const message of messages) {
-      if (message.tool_payload instanceof ToolCallPayload) {
-        const calls = message.tool_payload.toolCalls;
-        if (calls.some((call) => toolProtocolProjection.unsafeToolCallIds.has(call.id))) {
-          const summary = this.buildInterruptedToolCallSummary(message.tool_payload);
-          projected.push(new Message(MessageRole.ASSISTANT, {
-            content: [
-              message.content,
-              summary
-            ].filter((part): part is string => Boolean(part && part.trim().length > 0)).join('\n\n') || summary,
-            reasoning_content: message.reasoning_content
-          }));
-          continue;
-        }
-      }
-
-      if (
-        message.tool_payload instanceof ToolResultPayload &&
-        !toolProtocolProjection.safeToolResultIds.has(message.tool_payload.toolCallId)
-      ) {
-        continue;
-      }
-
-      projected.push(message);
-    }
-
-    if (!projected.some((message) => message.content === markerContent)) {
-      projected.push(new Message(MessageRole.USER, { content: markerContent }));
-    }
-    return projected;
+  private normalizeInterruptedCompletedToolResults(
+    events: ToolResultEvent[],
+    turnId: string
+  ): ToolResultEvent[] {
+    return events
+      .filter((event) => !event.isDenied)
+      .filter((event) => !event.turnId || event.turnId === turnId)
+      .map((event) => new ToolResultEvent(
+        event.toolName,
+        event.result,
+        event.toolInvocationId,
+        event.error,
+        event.toolArgs,
+        turnId,
+        event.isDenied
+      ));
   }
 
-  private classifyToolProtocolMessages(messages: Message[]): {
-    unsafeToolCallIds: Set<string>;
-    safeToolResultIds: Set<string>;
-  } {
-    const unsafeToolCallIds = new Set<string>();
-    const safeToolResultIds = new Set<string>();
-
-    for (let index = 0; index < messages.length; index += 1) {
-      const payload = messages[index].tool_payload;
-      if (!(payload instanceof ToolCallPayload)) {
-        continue;
-      }
-      const callIds = payload.toolCalls.map((call) => call.id).filter(Boolean);
-      const expected = new Set(callIds);
-      const observed = new Set<string>();
-      let cursor = index + 1;
-      while (cursor < messages.length && messages[cursor].tool_payload instanceof ToolResultPayload) {
-        const resultPayload = messages[cursor].tool_payload as ToolResultPayload;
-        if (expected.has(resultPayload.toolCallId)) {
-          observed.add(resultPayload.toolCallId);
-        }
-        cursor += 1;
-      }
-
-      if (!expected.size || observed.size !== expected.size) {
-        for (const callId of callIds) {
-          unsafeToolCallIds.add(callId);
-        }
-        continue;
-      }
-
-      for (const callId of observed) {
-        safeToolResultIds.add(callId);
-      }
+  private recordInterruptedCompletedToolResults(events: ToolResultEvent[], turnId: string): void {
+    if (!events.length) {
+      return;
     }
 
-    return { unsafeToolCallIds, safeToolResultIds };
-  }
+    const existingToolResultIds = new Set(
+      this.listRawTracesOrdered()
+        .filter((item) => item.turnId === turnId && item.traceType === 'tool_result' && item.toolCallId)
+        .map((item) => item.toolCallId as string)
+    );
+    const traces: RawTraceItem[] = [];
 
-  private buildInterruptedToolCallSummary(payload: ToolCallPayload): string {
-    const toolNames = payload.toolCalls
-      .map((call) => call.name)
-      .filter((name): name is string => Boolean(name && name.trim().length > 0));
-    const suffix = toolNames.length ? ` Tool request(s): ${toolNames.join(', ')}.` : '';
-    return `Interrupted tool request was fenced from native tool-call history.${suffix}`;
+    for (const event of events) {
+      if (event.toolInvocationId && existingToolResultIds.has(event.toolInvocationId)) {
+        continue;
+      }
+      if (event.toolInvocationId) {
+        existingToolResultIds.add(event.toolInvocationId);
+      }
+      traces.push(new RawTraceItem({
+        id: `rt_${Date.now()}_${event.toolInvocationId ?? traces.length}_interrupted_tool_result`,
+        ts: Date.now() / 1000,
+        turnId,
+        seq: this.nextSeq(turnId),
+        traceType: 'tool_result',
+        content: '',
+        sourceEvent: 'InterruptedTurnCompletedToolResult',
+        toolName: event.toolName,
+        toolCallId: event.toolInvocationId ?? null,
+        toolArgs: event.toolArgs ?? null,
+        toolResult: event.result,
+        toolError: event.error ?? null
+      }));
+    }
+
+    if (traces.length) {
+      this.store.add(traces);
+    }
   }
 }
