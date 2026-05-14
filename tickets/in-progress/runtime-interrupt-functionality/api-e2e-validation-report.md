@@ -8,10 +8,10 @@
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/implementation-handoff.md`
 - Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/tickets/in-progress/runtime-interrupt-functionality/review-report.md`
-- Current Validation Round: `18`
-- Trigger: Code review Round 31 after implementation commit `01b7c186` (`fix(agent): guard active turn cleanup`), requiring API/E2E resume of focused runtime interrupt/approval/result, provider-native continuation, and affected server/API/E2E gates after production source changed.
-- Prior Round Reviewed: `17`
-- Latest Authoritative Round: `18`
+- Current Validation Round: `19`
+- Trigger: Code review Round 33 after implementation commit `eddd4f3b` (`fix(agent): retain interrupted completed tool results`), requiring API/E2E resume because runtime/memory source behavior changed after the prior validation pass.
+- Prior Round Reviewed: `18`
+- Latest Authoritative Round: `19`
 
 ## Round History
 
@@ -34,14 +34,19 @@
 | 15 | Code review Round 28 after CR-019 handler rename commit `9c57cc16`. | Round 14 runtime/WebSocket/provider-native/LM Studio/build/static evidence rerun against the handler-named event-inbox implementation. | None | Pass; no durable validation changed in this round | No | Reran stale-processor/handler guardrails, TS event-inbox/runtime/provider-native suites, server single/team WebSocket suites, web projection suites, builds, and real LM Studio AutoByteus single-agent/team interrupt/terminate/follow-up E2E. |
 | 16 | User requested compaction E2E plus broad `autobyteus-ts` test sweep after the large refactor. | Round 15 pass evidence kept; compaction-specific tests rerun directly. | Yes. Focused compaction E2E passed, but the broad `autobyteus-ts` all-test sweep failed with deterministic active-test failures plus environment/live-provider failures. | Fail for broad `autobyteus-ts` suite; Local Fix/triage required before claiming all project tests work | No | Focused compaction passed (`16` files / `34` tests, then focused smoke `2` files / `3` tests). Full `pnpm -C autobyteus-ts exec vitest run` failed (`28` files failed, `33` tests failed, `2` unhandled MCP uv errors). |
 | 17 | Code review Round 29 after deterministic test-discovery/test-expectation local fix commits `02a89afc` and `32a216a8`. | Round 16 deterministic failures and compaction rerun. | None in scoped deterministic/runtime/compaction/build validation. Provider/live-environment broad-suite failures remain unclaimed/out of scope. | Pass; no durable validation changed by API/E2E in this round | No | Stale ticket/tmp discovery absent; deterministic fixed subset passed (`9` files / `27` tests); focused compaction passed (`2` files / `3` tests); focused event/runtime/provider-native/approval suite passed (`12` files / `87` tests); broad unit sweep passed (`354` files / `1730` tests); TS and server builds passed; server-side live AutoByteus single-agent/team GraphQL/WebSocket E2E passed. |
-| 18 | Code review Round 31 after `01b7c186` active-turn cleanup guard fix. | Round 17 pass evidence plus Round 31 `CR-020`/`CR-021` focus revalidated. | None. | Pass; no durable validation changed by API/E2E in this round | Yes | Focused TS runtime/approval/provider-native suite passed (`13` files / `90` tests); approval no-timeout-warning slice passed; `tsc --noEmit`, TS build, server focused WebSocket/team suite (`6` files / `51` tests), server build, and live LM Studio AutoByteus single-agent/team GraphQL/WebSocket E2E passed (`2` files / `9` tests, `13` Codex/Claude-provider tests skipped by env). |
+| 18 | Code review Round 31 after `01b7c186` active-turn cleanup guard fix. | Round 17 pass evidence plus Round 31 `CR-020`/`CR-021` focus revalidated. | None. | Pass; no durable validation changed by API/E2E in this round | No | Focused TS runtime/approval/provider-native suite passed (`13` files / `90` tests); approval no-timeout-warning slice passed; `tsc --noEmit`, TS build, server focused WebSocket/team suite (`6` files / `51` tests), server build, and live LM Studio AutoByteus single-agent/team GraphQL/WebSocket E2E passed (`2` files / `9` tests, `13` Codex/Claude-provider tests skipped by env). |
+| 19 | Code review Round 33 after `eddd4f3b` CR-022 interrupted completed tool-result retention fix. | Round 18 pass evidence plus CR-022 memory/runtime projection focus revalidated. | None. | Pass; no durable validation changed by API/E2E in this round | Yes | Focused TS CR-022/runtime/provider-native suite passed (`11` files / `84` tests); named interrupted multi-tool slice passed; `tsc --noEmit`, TS build, server event/WebSocket/team suite (`7` files / `72` tests), web projection suite (`5` files / `65` tests), server build, and live LM Studio AutoByteus single-agent/team GraphQL/WebSocket E2E passed (`2` files / `9` tests, `13` Codex/Claude-provider tests skipped by env). |
 
 ## Validation Basis
 
-Validation was derived from the reviewed requirements/design, the implementation handoff, the Round 31 code-review report, the prior API/E2E history, direct observation of the current worktree at commit `01b7c186c985` (`fix(agent): guard active turn cleanup`), and the user's explicit requirement that interrupt/stop proof be real AutoByteus runtime E2E rather than Codex/Claude runtime-owned behavior.
+Validation was derived from the reviewed requirements/design, the implementation handoff, the Round 33 code-review report, the prior API/E2E history, direct observation of the current worktree at commit `eddd4f3bfb4a` (`fix(agent): retain interrupted completed tool results`), and the user's explicit requirement that interrupt/stop proof be real AutoByteus runtime E2E rather than Codex/Claude runtime-owned behavior.
 
-Current Round 18 acceptance focus:
+Current Round 19 acceptance focus:
 
+- Completed tool-result facts from an interrupted multi-tool batch must be retained for future safe working-context reasoning.
+- Partial native tool-call protocol from interrupted batches must be fenced from provider prompts while completed result facts are projected safely.
+- Provider-native tool-history continuation must still use the correct continuation path after the CR-022 memory/runtime changes.
+- Server/WebSocket and web projections must remain safe and terminal after interrupted tool/result flows.
 - `AgentRuntimeState.clearSettledActiveTurnIfStillActive(...)` must only clear matching settled active turns; live or mismatched active turns must remain protected.
 - `AgentWorker.observeTurnSettlement(...)` must not produce worker-loop timeout regressions after settled-only cleanup.
 - Runtime interrupt/approval/result, provider-native continuation, server WebSocket/team paths, and live AutoByteus LM Studio E2E must remain green after the Round 31 production-source change.
@@ -76,7 +81,7 @@ Round 12/13 compatibility evidence:
 
 ## Validation Surfaces / Modes
 
-Round 13-18 used these validation modes:
+Round 13-19 used these validation modes:
 
 - TS unit/integration validation for runner, input pipeline, approval flow, runtime interrupt/external-result behavior, and provider-native tool continuation.
 - Server unit/integration validation for AutoByteus stream conversion, team communication message processing, single/team stream handlers, single/team WebSocket integration, and AutoByteus team backend execution.
@@ -89,13 +94,15 @@ Round 13-18 used these validation modes:
 - Broad `autobyteus-ts` Vitest sweep using the package's default Vitest discovery, with credential/environment failures classified separately.
 - Round 17 broad deterministic unit sweep under `autobyteus-ts/tests/unit` plus fixed deterministic subset rerun.
 - Round 18 active-turn cleanup/runtime/provider-native/server/live AutoByteus focused revalidation after production-source change.
+- Round 19 interrupted completed tool-result retention, provider-native continuation, server/WebSocket/web projection, and live AutoByteus focused revalidation after production-source change.
 
 ## Platform / Runtime Targets
 
 - Host: macOS/Darwin on `arm64`.
 - Current date/timezone during latest validation: `2026-05-14`, Europe/Berlin.
 - Workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality`.
-- Latest commit validated: `01b7c186c985` (`fix(agent): guard active turn cleanup`).
+- Latest commit validated: `eddd4f3bfb4a` (`fix(agent): retain interrupted completed tool results`).
+- Round 19 temporary logs: `/tmp/round33_ts_cr022_validation.log`, `/tmp/round33_server_web_projection_validation.log`, `/tmp/round33_server_autobyteus_live_e2e.log`.
 - Round 18 temporary logs: `/tmp/round31_ts_runtime_validation.log`, `/tmp/round31_server_focused_validation.log`, `/tmp/round31_server_autobyteus_live_e2e.log`.
 - Round 17 temporary logs: `/tmp/round29_deterministic_validation.log`, `/tmp/round29_compaction_runtime_validation.log`, `/tmp/round29_autobyteus_ts_unit_sweep.log`, `/tmp/round29_build_validation.log`, `/tmp/round29_server_autobyteus_e2e.log`.
 - Round 16 temporary logs: `/tmp/round28_compaction_tests_rerun.log`, `/tmp/round28_compaction_smoke_after_full.log`, `/tmp/round28_autobyteus_ts_all_tests.log`, `/tmp/round28_autobyteus_ts_deterministic_failures_rerun.log`.
@@ -134,10 +141,14 @@ Round 13-18 used these validation modes:
 | VAL-043 | Changed files remain below source-size guardrails and cohesive | Source line audit | Pass | Effective non-empty counts: runner `165`, LLM phase `216`, tool phase `351`, compaction `67`, input pipeline `158`, response pipeline `53`, notifier `161`. |
 | VAL-044 | Real browser UI single-agent AutoByteus interrupt/stop with LM Studio | Local backend + Nuxt frontend + Browser automation | Pass | Browser run `ui_e2e_interrupt_agent_6615af7f_assistant_4312` accepted follow-up after visible `Stop generation`; pending `write_file` approval interrupted as `user_interrupt`; terminate run path produced `shutdown_complete`; no target files were written. |
 | VAL-045 | Real browser UI AutoByteus team interrupt/stop with LM Studio | Local backend + Nuxt frontend + Browser automation | Pass | Browser team run `team_ui-e2e-team-6615af7f_2e82d54f` member `worker_dfafcf710079841c` accepted `TEAM_AFTER_INTERRUPT_6615AF7F` after visible `Stop generation`; `Terminate team` produced `shutdown_complete`. |
+| VAL-046 | Round 31 settled-active-turn cleanup and no-timeout approval regression | TS runtime/provider-native/approval suite | Pass | `/tmp/round31_ts_runtime_validation.log`; focused approval slice produced no timeout-warning regression. |
+| VAL-047 | Round 31 server/API/E2E AutoByteus runtime regression | Server WebSocket/team suite + live LM Studio AutoByteus E2E | Pass | `/tmp/round31_server_focused_validation.log`, `/tmp/round31_server_autobyteus_live_e2e.log`. |
+| VAL-048 | Interrupted completed tool-result fact retention and provider-safe projection | TS memory/runtime/provider-native suites + named interrupted multi-tool integration slice | Pass | `/tmp/round33_ts_cr022_validation.log`; focused suite passed `11` files / `84` tests and named interrupted multi-tool slice passed. |
+| VAL-049 | CR-022 server/WebSocket/web projection safety and live AutoByteus regression | Server event/WebSocket/team suite + web projection suite + live LM Studio AutoByteus E2E | Pass | `/tmp/round33_server_web_projection_validation.log`, `/tmp/round33_server_autobyteus_live_e2e.log`; live single-agent/team E2E passed `2` files / `9` tests. |
 
 ## Test Scope
 
-In scope through Round 18:
+In scope through Round 19:
 
 - Direct semantic notifier boundary after `AgentOutbox` removal.
 - Inter-agent/system-task observable projections.
@@ -150,8 +161,9 @@ In scope through Round 18:
 - Broad `autobyteus-ts` Vitest discovery as an exploratory/user-requested whole-package health sweep.
 - Round 17 deterministic fixed subset, default discovery hygiene, focused compaction/runtime gates, broad unit sweep, and builds after the local fix.
 - Round 18 active-turn cleanup guard regression, no-timeout approval-flow slice, runtime/provider-native/approval checks, server WebSocket/team checks, server build, and live LM Studio AutoByteus single-agent/team GraphQL/WebSocket E2E after the production-source change.
+- Round 19 interrupted completed tool-result fact retention, partial-native-protocol-safe interrupted projection, provider-native continuation, server/WebSocket/web projection checks, server/TS builds, and live LM Studio AutoByteus single-agent/team GraphQL/WebSocket E2E after the production-source change.
 
-Out of direct Round 18 scope:
+Out of direct Round 19 scope:
 
 - Live free-text in-flight streaming interruption without a pending tool approval boundary. Deterministic TS integration covers in-flight LLM-turn interruption; live LM Studio coverage uses the stable pending-approval seam to avoid live-model timing flakiness.
 - Electron E2E; browser UI automation was added in Round 13 against the local Nuxt frontend/backend.
@@ -169,7 +181,7 @@ Out of direct Round 18 scope:
 
 ## Tests Implemented Or Updated
 
-Round 18 repository-resident durable validation added or updated by API/E2E: `None`.
+Round 19 repository-resident durable validation added or updated by API/E2E: `None`.
 
 Previously added API/E2E durable validation remains in the branch and was accepted by code review Rounds 22-24:
 
@@ -177,7 +189,7 @@ Previously added API/E2E durable validation remains in the branch and was accept
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts`
 
-No production source files and no repository-resident validation files were changed during Round 18 API/E2E.
+No production source files and no repository-resident validation files were changed during Round 19 API/E2E.
 
 ## Durable Validation Added To The Codebase
 
@@ -215,6 +227,7 @@ No production source files and no repository-resident validation files were chan
 | User challenge | Prior evidence did not include real AutoByteus LM Studio interrupt/stop E2E for single-agent and team. | API/E2E coverage gap. | Still resolved. | Round 12 reran real single-agent and full team LM Studio E2E successfully. | This was a validation coverage gap, not a production implementation failure. |
 | Prior blockers `CR-001` through `CR-018` | Previously blocking source findings, resolved in earlier rounds. | Previously resolved. | Still covered by cumulative Round 12 validation. | TS, server, web, static, build, and live AutoByteus tests passed. | No regression found. |
 | Code review Round 31 | Production runtime source changed in `01b7c186` after Round 17 validation; `CR-020`/`CR-021` active-turn cleanup and approval no-timeout behavior required API/E2E resume. | Requires API/E2E revalidation. | Resolved by Round 18 API/E2E. | `/tmp/round31_ts_runtime_validation.log`, `/tmp/round31_server_focused_validation.log`, `/tmp/round31_server_autobyteus_live_e2e.log`. | No regression found; no repository-resident validation changed. |
+| Code review Round 33 | Production runtime/memory source changed in `eddd4f3b` after Round 18 validation; `CR-022` interrupted completed tool-result retention and provider-safe projection required API/E2E resume. | Requires API/E2E revalidation. | Resolved by Round 19 API/E2E. | `/tmp/round33_ts_cr022_validation.log`, `/tmp/round33_server_web_projection_validation.log`, `/tmp/round33_server_autobyteus_live_e2e.log`. | No regression found; no repository-resident validation changed. |
 
 ## Scenarios Checked
 
@@ -274,6 +287,23 @@ No production source files and no repository-resident validation files were chan
 - Confirmed interrupt is still not terminate: interrupted pending-approval runs reached interrupted lifecycle and accepted same-WebSocket follow-up messages.
 - Confirmed terminate/stop remains distinct: active terminate/restore tests restored the run/team and accepted follow-up messages.
 - Evidence: `/tmp/round31_server_focused_validation.log` and `/tmp/round31_server_autobyteus_live_e2e.log`.
+- Result: Pass.
+
+### VAL-048 — Round 33 interrupted completed tool-result retention
+
+- Revalidated memory/runtime behavior after `CR-022`: a completed tool result in an interrupted multi-tool batch is retained as a safe future working-context fact.
+- Revalidated that unsafe partial native tool-call protocol is fenced from provider prompts while completed result facts are preserved as assistant text.
+- Revalidated provider-native tool-history continuation and interrupted multi-tool runtime integration after the memory/runner/tool-phase source change.
+- Evidence: `/tmp/round33_ts_cr022_validation.log`.
+- Result: Pass.
+
+### VAL-049 — Round 33 server/WebSocket/web projection and live AutoByteus regression
+
+- Revalidated server event conversion, single/team stream handlers, single/team WebSocket integration, and AutoByteus team backend execution after CR-022.
+- Revalidated web segment/status/tool lifecycle/store projection after interrupted tool/result changes.
+- Re-ran live LM Studio GraphQL/WebSocket E2E for both AutoByteus single-agent and team flows.
+- Confirmed interrupt remains distinct from terminate/stop and same-WebSocket follow-up continues to work for both single-agent and team flows.
+- Evidence: `/tmp/round33_server_web_projection_validation.log` and `/tmp/round33_server_autobyteus_live_e2e.log`.
 - Result: Pass.
 
 ## Round 13 Browser UI Addendum — Real Frontend Validation
@@ -793,6 +823,95 @@ Round 18 result: `Pass` for the resumed API/E2E scope. The Round 31 active-turn 
 
 
 
+
+### Round 19 Addendum — Round 33 CR-022 Interrupted Completed Tool-Result Revalidation
+
+Trigger: code review Round 33 passed implementation commit `eddd4f3b` (`fix(agent): retain interrupted completed tool results`). API/E2E resumed validation against commit `eddd4f3bfb4ae4a27c8c706752db8daec792b682` because runtime/memory source behavior changed after Round 18.
+
+Round 19 kept the Round 16 provider/live-environment broad-suite failures explicitly unclaimed and out of scope. This round validates CR-022 completed tool-result retention for interrupted turns, provider-safe working-context projection, provider-native continuation, server/WebSocket/web projection safety, builds, and live LM Studio AutoByteus single-agent/team runtime E2E.
+
+#### Round 19 Commands And Results
+
+Focused TS CR-022/runtime/provider-native log: `/tmp/round33_ts_cr022_validation.log`.
+
+Passed:
+
+- `git diff --check`
+- `git diff --check eddd4f3b^ eddd4f3b`
+- Forbidden/stale guardrail grep over `autobyteus-ts/src autobyteus-ts/tests` found no active `clearActiveTurnIfStillActive`, active-turn peer/task/cache, old dispatcher/handler, `AgentOutbox`, `AgentMessageInbox`, `message-inbox`, interrupt-to-stop, or checkpoint/rollback matches.
+- Changed source effective line audit passed: `agent-turn-runner.ts` `170`, `tool-phase.ts` `336`, `memory-manager.ts` `366`, `working-context-interrupted-turn-projector.ts` `141`.
+- Focused CR-022/runtime/provider-native suite:
+
+```bash
+pnpm -C autobyteus-ts exec vitest run   tests/unit/memory/memory-manager.test.ts   tests/unit/memory/memory-tool-continuation-reasoning.test.ts   tests/unit/memory/tool-interaction-builder.test.ts   tests/unit/agent/loop/agent-turn-runner.test.ts   tests/unit/agent/runtime/agent-runtime.test.ts   tests/unit/agent/runtime/agent-worker.test.ts   tests/unit/agent/context/agent-runtime-state.test.ts   tests/unit/agent/loop/turn-tool-input-port.test.ts   tests/integration/agent/runtime/agent-runtime.test.ts   tests/integration/agent/tool-approval-flow.test.ts   tests/integration/agent/provider-native-tool-continuation-flow.test.ts
+```
+
+Result: `11` files passed; `84` tests passed.
+
+- Focused named CR-022 integration slice:
+
+```bash
+pnpm -C autobyteus-ts exec vitest run tests/integration/agent/runtime/agent-runtime.test.ts -t "retains completed tool result facts when a later tool in the batch is interrupted"
+```
+
+Result: `1` file passed; `1` selected test passed; `10` skipped.
+
+- `pnpm -C autobyteus-ts exec tsc -p tsconfig.build.json --noEmit` — passed.
+- `pnpm -C autobyteus-ts run build` — passed, including runtime dependency verification.
+
+Server/WebSocket/web projection validation log: `/tmp/round33_server_web_projection_validation.log`.
+
+Passed:
+
+```bash
+pnpm -C autobyteus-server-ts exec vitest run   tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts   tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts   tests/unit/services/agent-streaming/agent-stream-handler.test.ts   tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts   tests/integration/agent/agent-websocket.integration.test.ts   tests/integration/agent/agent-team-websocket.integration.test.ts   tests/integration/agent-team-execution/autobyteus-team-run-backend.integration.test.ts
+```
+
+Result: `7` files passed; `72` tests passed.
+
+```bash
+pnpm -C autobyteus-web exec vitest run   services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts   services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts   services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts   stores/__tests__/agentRunStore.spec.ts   stores/__tests__/agentTeamRunStore.spec.ts
+```
+
+Result: `5` files passed; `65` tests passed.
+
+- `pnpm -C autobyteus-server-ts run build:full` — passed, including built-in agents bootstrap smoke check.
+
+Live AutoByteus server GraphQL/WebSocket E2E log: `/tmp/round33_server_autobyteus_live_e2e.log`.
+
+Environment:
+
+- LM Studio `/v1/models` probe succeeded at `http://127.0.0.1:1234` and listed `qwen3.6-27b-ud-mlx` among available models.
+- Command used `RUN_LMSTUDIO_E2E=1 LMSTUDIO_MODEL_ID='qwen3.6-27b-ud-mlx:lmstudio@127.0.0.1:1234' LMSTUDIO_TARGET_TEXT_MODEL='qwen3.6-27b-ud-mlx'`.
+
+Passed:
+
+```bash
+pnpm -C autobyteus-server-ts exec vitest run   tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts   tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts
+```
+
+Result: `2` files passed; `9` AutoByteus tests passed; `13` Codex/Claude-provider tests skipped by environment flags.
+
+Passed single-agent scenarios:
+
+- `creates a run, restores it, and continues streaming on the same websocket`
+- `interrupts a live AutoByteus pending tool approval and accepts a follow-up message on the same websocket`
+- `terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket`
+- `serves run history and projection after terminate, restore, and continue`
+- `routes tool approval over websocket and streams the normalized tool lifecycle`
+
+Passed team scenarios:
+
+- `creates a real team, approves a tool call, restores it, and continues on the same websocket`
+- `interrupts a live AutoByteus team pending tool approval and accepts a targeted follow-up message on the same websocket`
+- `terminates a live AutoByteus team pending tool approval, restores it, and accepts a targeted follow-up message on the same websocket`
+- `serves team member projection after terminate, restore, and continue`
+
+#### Round 19 Result
+
+Round 19 result: `Pass` for the resumed API/E2E scope. The Round 33 CR-022 source change is revalidated: completed tool-result facts from interrupted multi-tool batches remain available to future safe working context, unsafe partial native tool-call protocol is fenced, provider-native continuation still works, TS type/build gates pass, server/WebSocket/web projection gates pass, server build passes, and live LM Studio AutoByteus single-agent/team GraphQL/WebSocket E2E proves both interrupt and terminate/stop remain distinct and followed by valid same-WebSocket follow-up behavior. No production source or repository-resident validation files were changed by API/E2E in this round.
+
+
 ## Passed
 
 Commands run and passed in Round 12:
@@ -860,9 +979,9 @@ Commands/checks run and passed in Round 13:
 
 ## Failed
 
-No blocking Round 18 validation failures.
+No blocking Round 19 validation failures.
 
-Round 16 broad `autobyteus-ts` all-test sweep failed before the local fix. Round 17 rechecked and resolved the deterministic active failures and discovery-hygiene issue in the scoped local-fix surface. Provider/live-environment failures from the Round 16 full all-test sweep remain explicitly unclaimed and out of Round 18 scope.
+Round 16 broad `autobyteus-ts` all-test sweep failed before the local fix. Round 17 rechecked and resolved the deterministic active failures and discovery-hygiene issue in the scoped local-fix surface. Provider/live-environment failures from the Round 16 full all-test sweep remain explicitly unclaimed and out of Round 19 scope.
 
 A static command attempt in Round 13 initially used `python`, which is not available on this host; the effective source line audit was rerun successfully with `python3`. This was an environment command selection issue, not an implementation failure.
 
@@ -875,9 +994,9 @@ A static command attempt in Round 13 initially used `python`, which is not avail
 
 ## Blocked
 
-None for the Round 18 scoped API/E2E resume.
+None for the Round 19 scoped API/E2E resume.
 
-Provider/live-environment failures from the Round 16 full all-test sweep remain explicitly unclaimed and out of scope for Round 18, not blockers for the active-turn cleanup revalidation.
+Provider/live-environment failures from the Round 16 full all-test sweep remain explicitly unclaimed and out of scope for Round 19, not blockers for the CR-022 interrupted completed tool-result revalidation.
 
 ## Cleanup Performed
 
@@ -889,21 +1008,22 @@ Provider/live-environment failures from the Round 16 full all-test sweep remain 
 
 ## Classification
 
-- Round 18 focused TS runtime/approval/provider-native result: `Pass`.
-- Round 18 server focused WebSocket/team/runtime result: `Pass`.
-- Round 18 live LM Studio AutoByteus single-agent/team GraphQL/WebSocket E2E result: `Pass`.
-- Repository-resident durable validation changed during Round 18 API/E2E: `No`.
-- Classification: `Pass / Ready for delivery`. The Round 31 active-turn cleanup source change is revalidated, and no timeout-warning, interrupt, approval, provider-native, server, or live AutoByteus E2E regression was found. Provider/live-environment failures from the Round 16 full all-test sweep remain explicitly unclaimed and out of scope.
+- Round 19 focused TS CR-022/runtime/provider-native result: `Pass`.
+- Round 19 server/WebSocket/web projection result: `Pass`.
+- Round 19 live LM Studio AutoByteus single-agent/team GraphQL/WebSocket E2E result: `Pass`.
+- Repository-resident durable validation changed during Round 19 API/E2E: `No`.
+- Classification: `Pass / Ready for delivery`. The Round 33 interrupted completed tool-result retention source change is revalidated, and no CR-022 memory/runtime, provider-native, server/WebSocket/web projection, interrupt, terminate/stop, or live AutoByteus E2E regression was found. Provider/live-environment failures from the Round 16 full all-test sweep remain explicitly unclaimed and out of scope.
 
 ## Recommended Recipient
 
 `delivery_engineer`
 
-Reason: API/E2E resumed after Round 31 code review and passed focused TS runtime/approval/provider-native checks, the approval no-timeout-warning slice, `tsc --noEmit`, TS build, server focused WebSocket/team/runtime checks, server build, and live LM Studio AutoByteus single-agent/team GraphQL/WebSocket E2E against commit `01b7c186c985`. No repository-resident durable validation was added or updated by API/E2E in Round 18. Delivery should refresh against the tracked base, regenerate/supersede stale delivery artifacts, preserve the provider/live-environment out-of-scope classification, and proceed with final handoff checks.
+Reason: API/E2E resumed after Round 33 code review and passed focused TS CR-022/runtime/provider-native checks, the named interrupted multi-tool integration slice, `tsc --noEmit`, TS build, server event/WebSocket/team checks, web projection checks, server build, and live LM Studio AutoByteus single-agent/team GraphQL/WebSocket E2E against commit `eddd4f3bfb4a`. No repository-resident durable validation was added or updated by API/E2E in Round 19. Delivery should refresh against the tracked base, regenerate/supersede stale delivery artifacts, preserve the provider/live-environment out-of-scope classification, and proceed with final handoff checks.
 
 ## Evidence / Notes
 
-- Latest commit validated: `01b7c186c985` (`fix(agent): guard active turn cleanup`).
+- Latest commit validated: `eddd4f3bfb4a` (`fix(agent): retain interrupted completed tool results`).
+- Round 19 temporary logs: `/tmp/round33_ts_cr022_validation.log`, `/tmp/round33_server_web_projection_validation.log`, `/tmp/round33_server_autobyteus_live_e2e.log`.
 - Round 18 temporary logs: `/tmp/round31_ts_runtime_validation.log`, `/tmp/round31_server_focused_validation.log`, `/tmp/round31_server_autobyteus_live_e2e.log`.
 - Round 17 temporary logs: `/tmp/round29_deterministic_validation.log`, `/tmp/round29_compaction_runtime_validation.log`, `/tmp/round29_autobyteus_ts_unit_sweep.log`, `/tmp/round29_build_validation.log`, `/tmp/round29_server_autobyteus_e2e.log`.
 - Round 16 temporary logs: `/tmp/round28_compaction_tests_rerun.log`, `/tmp/round28_compaction_smoke_after_full.log`, `/tmp/round28_autobyteus_ts_all_tests.log`, `/tmp/round28_autobyteus_ts_deterministic_failures_rerun.log`.
@@ -918,4 +1038,4 @@ Reason: API/E2E resumed after Round 31 code review and passed focused TS runtime
 
 - Result values: `Pass` / `Fail` / `Blocked`
 - Result: `Pass`
-- Notes: Round 18 resumed after Round 31 code review and passed focused TS runtime/approval/provider-native validation (`13` files / `90` tests), approval no-timeout-warning slice (`1` focused test, `4` skipped), `tsc --noEmit`, `autobyteus-ts` build, server focused WebSocket/team/runtime suite (`6` files / `51` tests), `autobyteus-server-ts build:full`, and live LM Studio AutoByteus runtime E2E (`2` files passed; `9` AutoByteus tests passed; `13` Codex/Claude-provider tests skipped by env). Provider/live-environment failures from the prior full all-test sweep remain unclaimed/out of scope. No repository-resident durable validation changed in API/E2E Round 18; ready for delivery.
+- Notes: Round 19 resumed after Round 33 code review and passed focused TS CR-022/runtime/provider-native validation (`11` files / `84` tests), the named interrupted multi-tool integration slice (`1` selected test, `10` skipped), `tsc --noEmit`, `autobyteus-ts` build, server event/WebSocket/team suite (`7` files / `72` tests), web projection suite (`5` files / `65` tests), `autobyteus-server-ts build:full`, and live LM Studio AutoByteus runtime E2E (`2` files passed; `9` AutoByteus tests passed; `13` Codex/Claude-provider tests skipped by env). Provider/live-environment failures from the prior full all-test sweep remain unclaimed/out of scope. No repository-resident durable validation changed in API/E2E Round 19; ready for delivery.

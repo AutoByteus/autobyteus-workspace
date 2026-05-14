@@ -336,8 +336,9 @@ message-wrapper inbox are retired.
 | LLM request/stream | `LlmPhase` | streamed segments, tool invocations, `LLMCompleteResponseReceivedEvent` where appropriate | Passes abort signal and `turnId`; fences awaited seams before normal assistant side effects. |
 | Final response | `LLMResponsePipeline` through `AgentTurnRunner` | assistant output and idle/terminal status | Runs only if the turn has not accepted an interrupt. |
 
-Additional note: `AgentTurnRunner` returns to `AgentWorker`, which clears the
-active turn and emits idle state after a completed turn.
+Additional note: `AgentTurnRunner` settles the active `AgentTurn`. The
+`AgentWorker` settlement observer emits idle state after a completed turn and
+clears the active turn only when the same turn has settled.
 
 #### Tool Invocation and Results
 
