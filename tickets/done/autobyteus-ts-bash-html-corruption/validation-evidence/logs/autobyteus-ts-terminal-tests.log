@@ -1,0 +1,197 @@
+### 2026-05-14T10:54:38+02:00 pnpm --dir autobyteus-ts exec vitest --run tests/unit/tools/terminal tests/integration/tools/terminal
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/autobyteus-ts
+
+stdout | tests/unit/tools/terminal/pty-session.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/tools/terminal/background-process-manager.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/tools/terminal/background-process-manager.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/tools/terminal/terminal-session-manager.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/tools/terminal/terminal-tools.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/tools/terminal/direct-shell-session.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/tools/terminal/pty-session.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/tools/terminal/terminal-session-manager.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/tools/terminal/command-execution/process-group-observer.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/tools/terminal/terminal-session-manager.test.ts > TerminalSessionManager > ensureStarted creates session
+TerminalSessionManager started backend 'MockPtySession' in '/tmp'.
+
+stdout | tests/integration/tools/terminal/terminal-tools.test.ts
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+
+stdout | tests/integration/tools/terminal/terminal-session-manager.test.ts > TerminalSessionManager Integration > executes echo command
+TerminalSessionManager started backend 'PtySession' in '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-Roc412'.
+
+stdout | tests/integration/tools/terminal/direct-shell-session.test.ts > DirectShellSession integration > executes commands through TerminalSessionManager
+TerminalSessionManager started backend 'DirectShellSession' with shell 'sh' in '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-direct-shell-Nc26LI'.
+
+stdout | tests/unit/tools/terminal/terminal-session-manager.test.ts > TerminalSessionManager > ensureStarted is idempotent
+TerminalSessionManager started backend 'MockPtySession' in '/tmp'.
+
+ ✓ tests/unit/tools/terminal/pty-session.test.ts (11 tests) 718ms
+stdout | tests/unit/tools/terminal/run-bash.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/tools/terminal/command-execution/process-group-observer.test.ts (4 tests) 953ms
+     ✓ finds and stops live descendants in a detached shell process group  445ms
+stdout | tests/unit/tools/terminal/wsl-tmux-session.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚙️  override existing env vars with { override: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/tools/terminal/terminal-session-manager.test.ts > TerminalSessionManager > executeCommand returns TerminalResult
+TerminalSessionManager started backend 'MockPtySession' in '/tmp'.
+
+ ✓ tests/unit/tools/terminal/wsl-tmux-session.test.ts (3 tests) 205ms
+stdout | tests/unit/tools/terminal/command-execution/shell-command-executor.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/tools/terminal/terminal-session-manager.test.ts > TerminalSessionManager Integration > persists working directory across commands
+TerminalSessionManager started backend 'PtySession' in '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-hyR0j3'.
+
+stdout | tests/integration/tools/terminal/direct-shell-session.test.ts > DirectShellSession integration > preserves shell state across commands
+TerminalSessionManager started backend 'DirectShellSession' with shell 'sh' in '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-direct-shell-nP5exE'.
+
+ ✓ tests/unit/tools/terminal/run-bash.test.ts (5 tests) 555ms
+ ✓ tests/integration/tools/terminal/background-process-manager.test.ts (2 tests) 1374ms
+     ✓ starts process and captures output  864ms
+     ✓ stops running process  509ms
+stdout | tests/unit/tools/terminal/node-pty-bootstrap.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/tools/terminal/direct-shell-session.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/tools/terminal/command-execution/shell-command-executor.test.ts (1 test) 130ms
+ ✓ tests/unit/tools/terminal/node-pty-bootstrap.test.ts (3 tests) 7ms
+ ✓ tests/unit/tools/terminal/direct-shell-session.test.ts (4 tests) 7ms
+stdout | tests/unit/tools/terminal/output-buffer.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  override existing env vars with { override: true }
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/tools/terminal/output-buffer.test.ts (11 tests) 4ms
+stdout | tests/unit/tools/terminal/wsl-utils.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/tools/terminal/command-execution/non-interactive-shell-resolver.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/tools/terminal/wsl-utils.test.ts (7 tests) 3ms
+ ✓ tests/unit/tools/terminal/command-execution/non-interactive-shell-resolver.test.ts (2 tests) 4ms
+ ✓ tests/unit/tools/terminal/background-process-manager.test.ts (5 tests) 1594ms
+     ✓ starts, tracks, reads, and stops background commands by WSL Linux PID  306ms
+     ✓ startCommand returns PID metadata and captures output  862ms
+     ✓ stopProcess removes a managed process  311ms
+stdout | tests/unit/tools/terminal/prompt-detector.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/tools/terminal/prompt-detector.test.ts (10 tests) 3ms
+stdout | tests/unit/tools/terminal/ansi-utils.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚙️  override existing env vars with { override: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/tools/terminal/session-factory.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/tools/terminal/types.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/tools/terminal/ansi-utils.test.ts (4 tests) 2ms
+ ✓ tests/unit/tools/terminal/types.test.ts (4 tests) 2ms
+ ✓ tests/unit/tools/terminal/session-factory.test.ts (5 tests) 2ms
+stdout | tests/unit/tools/terminal/terminal-session-manager.test.ts > TerminalSessionManager > close cleans up session
+TerminalSessionManager started backend 'MockPtySession' in '/tmp'.
+
+ ✓ tests/integration/tools/terminal/pty-session.test.ts (5 tests) 2554ms
+     ✓ writes command and reads output  410ms
+     ✓ persists working directory across commands  815ms
+     ✓ persists environment variables  919ms
+stdout | tests/unit/tools/terminal/terminal-session-manager.test.ts > TerminalSessionManager > falls back to provided session factory when primary startup fails
+TerminalSessionManager started backend 'MockPtySession' in '/tmp'.
+
+stdout | tests/integration/tools/terminal/terminal-session-manager.test.ts > TerminalSessionManager Integration > handles timeouts
+TerminalSessionManager started backend 'PtySession' in '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-T7iILF'.
+
+ ✓ tests/unit/tools/terminal/terminal-session-manager.test.ts (7 tests) 3621ms
+     ✓ ensureStarted creates session  520ms
+     ✓ ensureStarted is idempotent  517ms
+     ✓ executeCommand returns TerminalResult  1031ms
+     ✓ close cleans up session  518ms
+     ✓ falls back to provided session factory when primary startup fails  1032ms
+ ✓ tests/integration/tools/terminal/direct-shell-session.test.ts (3 tests) 3960ms
+     ✓ executes commands through TerminalSessionManager  1231ms
+     ✓ preserves shell state across commands  1763ms
+     ✓ supports non-PTY background process lifecycle separately from direct shell sessions  965ms
+ ✓ tests/integration/tools/terminal/terminal-session-manager.test.ts (3 tests) 4747ms
+     ✓ executes echo command  1233ms
+     ✓ persists working directory across commands  1767ms
+     ✓ handles timeouts  1746ms
+ ✓ tests/integration/tools/terminal/terminal-tools.test.ts (9 tests) 5232ms
+     ✓ run_bash respects timeout  1005ms
+     ✓ run_bash adopts an ordinary bash background process  1087ms
+     ✓ background process lifecycle  922ms
+     ✓ can manage multiple background processes independently  1676ms
+
+ Test Files  21 passed (21)
+      Tests  108 passed (108)
+   Start at  10:54:39
+   Duration  5.56s (transform 867ms, setup 439ms, import 1.07s, tests 25.68s, environment 2ms)
+

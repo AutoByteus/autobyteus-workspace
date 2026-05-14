@@ -1,0 +1,186 @@
+### 2026-05-14T11:02:38+02:00 OpenAI full agent run_bash-only HTML validation
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+AgentRuntimeState initialized for agent_id 'openaifullagentrunbashhtmlvalidation_validationagent_4728'. Initial status: uninitialized. Workspace linked. InputQueues pending initialization. Output data via notifier.
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728': LLM instance 'OpenAILLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'openaifullagentrunbashhtmlvalidation_validationagent_4728'. Config and State linked.
+EventHandlerRegistry initialized.
+UserInputMessageEventHandler initialized.
+Handler 'UserInputMessageEventHandler' registered for event class 'UserMessageReceivedEvent'.
+InterAgentMessageReceivedEventHandler initialized.
+Handler 'InterAgentMessageReceivedEventHandler' registered for event class 'InterAgentMessageReceivedEvent'.
+LLMCompleteResponseReceivedEventHandler initialized.
+Handler 'LLMCompleteResponseReceivedEventHandler' registered for event class 'LLMCompleteResponseReceivedEvent'.
+ToolInvocationRequestEventHandler initialized.
+Handler 'ToolInvocationRequestEventHandler' registered for event class 'PendingToolInvocationEvent'.
+ToolResultEventHandler initialized.
+Handler 'ToolResultEventHandler' registered for event class 'ToolResultEvent'.
+GenericEventHandler initialized.
+Handler 'GenericEventHandler' registered for event class 'GenericEvent'.
+ToolExecutionApprovalEventHandler initialized.
+Handler 'ToolExecutionApprovalEventHandler' registered for event class 'ToolExecutionApprovalEvent'.
+LLMUserMessageReadyEventHandler initialized.
+Handler 'LLMUserMessageReadyEventHandler' registered for event class 'LLMUserMessageReadyEvent'.
+Handler 'LLMUserMessageReadyEventHandler' registered for event class 'ToolContinuationReadyEvent'.
+ToolInvocationExecutionEventHandler initialized.
+Handler 'ToolInvocationExecutionEventHandler' registered for event class 'ExecuteToolInvocationEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapStartedEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapStepRequestedEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapStepCompletedEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapCompletedEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentReadyEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentStoppedEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentIdleEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'ShutdownRequestedEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentErrorEvent'.
+Instantiating AgentRuntime for agent_id: 'openaifullagentrunbashhtmlvalidation_validationagent_4728' with config: 'OpenAIFullAgentRunBashHtmlValidation'.
+AgentWorker initialized for agent_id 'openaifullagentrunbashhtmlvalidation_validationagent_4728'.
+Registered AgentContext for agent_id 'openaifullagentrunbashhtmlvalidation_validationagent_4728'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'openaifullagentrunbashhtmlvalidation_validationagent_4728'. Context registered.
+Agent facade initialized for agent_id 'openaifullagentrunbashhtmlvalidation_validationagent_4728'.
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728' created and stored successfully.
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728' requesting runtime to start.
+AgentRuntime for 'openaifullagentrunbashhtmlvalidation_validationagent_4728': Starting worker.
+AgentWorker 'openaifullagentrunbashhtmlvalidation_validationagent_4728': Starting...
+AgentWorker 'openaifullagentrunbashhtmlvalidation_validationagent_4728' asyncRun(): Starting.
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728': Runtime init completed (event store initialized).
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728': Runtime init completed (status deriver initialized).
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728': Runtime init completed (input queues initialized).
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728': Starting internal initialization process using bootstrap events.
+AgentExternalEventNotifier (NotifierID: 1645d382-0c3f-4c4f-a7e0-1b5cc4c78a6c, AgentID: openaifullagentrunbashhtmlvalidation_validationagent_4728) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728': Bootstrap started with 3 steps.
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728': Executing McpServerPrewarmingStep.
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728': Executing SystemPromptProcessingStep.
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728': No skills found in registry. Skipping injection.
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728': System prompt processor 'AvailableSkillsProcessor' applied successfully.
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728': Final processed system prompt configured on LLM instance. Final length: 180.
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728': Final processed system prompt:
+---
+You are a deterministic tool caller. Use only the run_bash tool. Preserve command text exactly. After the tool result, reply with one short sentence and do not call any more tools.
+---
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728': Bootstrap completed successfully. Emitting AgentReadyEvent.
+AgentExternalEventNotifier (NotifierID: 1645d382-0c3f-4c4f-a7e0-1b5cc4c78a6c, AgentID: openaifullagentrunbashhtmlvalidation_validationagent_4728) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728' Logged AgentReadyEvent. Current agent status: idle
+AgentWorker 'openaifullagentrunbashhtmlvalidation_validationagent_4728' initialized successfully. Entering main event loop.
+AgentExternalEventNotifier (NotifierID: 1645d382-0c3f-4c4f-a7e0-1b5cc4c78a6c, AgentID: openaifullagentrunbashhtmlvalidation_validationagent_4728) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 1645d382-0c3f-4c4f-a7e0-1b5cc4c78a6c, AgentID: openaifullagentrunbashhtmlvalidation_validationagent_4728) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728' handling UserMessageReceivedEvent (type: user): 'Use run_bash exactly once with cwd "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/validation-evidence/workspaces/openai-full-agent-2026-05-14T09-02-39-228Z" and timeout_seconds 20. The command must have SHA-256 83297e34a8b60089ff744b01933ebb1bfc2c04f6bb788724bcdaac0785f9a3e7 and must be exactly between BEGIN_COMMAND and END_COMMAND.
+BEGIN_COMMAND
+node <<'NODE'
+const fs=require('node:fs');const crypto=require('node:crypto');function makeExpectedHtml(){const rows=[];for(let i=0;i<900;i+=1)rows.push(`<i data-star="${i}" style="left:${(i*19)%100}vw;top:${(i*23)%100}vh"></i>`);const data=[];for(let i=0;i<500;i+=1)data.push(`{x:${(i*17)%1200},y:${(i*41)%680},s:${i%9}}`);return `<!doctype html>\n<title>OpenAI Full Agent Jet</title>\n<style>body{margin:0;background:#020b18;color:#cff}i{position:absolute;width:2px;height:2px;background:white}.hud{position:fixed;top:0;left:0;padding:12px}</style>\n<div class="hud">OpenAI Full Agent Jet</div>\n${rows.join('\n')}\n<script>const enemies=[${data.join(',')}];console.log('openai-full-agent-jet', enemies.length, document.querySelectorAll('i').length);</script>\n`; }const html=makeExpectedHtml();fs.mkdirSync('agent-jet-game',{recursive:true});fs.writeFileSync('agent-jet-game/index.html',html,'utf8');console.log('sha256='+crypto.createHash('sha256').update(html).digest('hex'));console.log('bytes='+Buffer.byteLength(html,'utf8'));
+NODE
+END_COMMAND
+After the tool completes, provide a final one-sentence confirmation.'
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728': Input processor 'MemoryIngestInputProcessor' applied successfully.
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728' processed AgentInputUserMessage and enqueued LLMUserMessageReadyEvent.
+AgentExternalEventNotifier (NotifierID: 1645d382-0c3f-4c4f-a7e0-1b5cc4c78a6c, AgentID: openaifullagentrunbashhtmlvalidation_validationagent_4728) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728' handling LLMUserMessageReadyEvent: 'Use run_bash exactly once with cwd "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/validation-evidence/workspaces/openai-full-agent-2026-05-14T09-02-39-228Z" and timeout_seconds 20. The command must have SHA-256 83297e34a8b60089ff744b01933ebb1bfc2c04f6bb788724bcdaac0785f9a3e7 and must be exactly between BEGIN_COMMAND and END_COMMAND.
+BEGIN_COMMAND
+node <<'NODE'
+const fs=require('node:fs');const crypto=require('node:crypto');function makeExpectedHtml(){const rows=[];for(let i=0;i<900;i+=1)rows.push(`<i data-star="${i}" style="left:${(i*19)%100}vw;top:${(i*23)%100}vh"></i>`);const data=[];for(let i=0;i<500;i+=1)data.push(`{x:${(i*17)%1200},y:${(i*41)%680},s:${i%9}}`);return `<!doctype html>\n<title>OpenAI Full Agent Jet</title>\n<style>body{margin:0;background:#020b18;color:#cff}i{position:absolute;width:2px;height:2px;background:white}.hud{position:fixed;top:0;left:0;padding:12px}</style>\n<div class="hud">OpenAI Full Agent Jet</div>\n${rows.join('\n')}\n<script>const enemies=[${data.join(',')}];console.log('openai-full-agent-jet', enemies.length, document.querySelectorAll('i').length);</script>\n`; }const html=makeExpectedHtml();fs.mkdirSync('agent-jet-game',{recursive:true});fs.writeFileSync('agent-jet-game/index.html',html,'utf8');console.log('sha256='+crypto.createHash('sha256').update(html).digest('hex'));console.log('bytes='+Buffer.byteLength(html,'utf8'));
+NODE
+END_COMMAND
+After the tool completes, provide a final one-sentence confirmation.'
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728': Streaming handler selected: ApiToolCallStreamingResponseHandler
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728': Passing 1 tool schemas to LLM API (Provider: OPENAI).
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728': Parsed 1 tool invocations from streaming parser.
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728' enqueued LLMCompleteResponseReceivedEvent from LLMUserMessageReadyEventHandler.
+AgentExternalEventNotifier (NotifierID: 1645d382-0c3f-4c4f-a7e0-1b5cc4c78a6c, AgentID: openaifullagentrunbashhtmlvalidation_validationagent_4728) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728' handling LLMCompleteResponseReceivedEvent. Response Length: 0, Reasoning Length: 0, IsErrorFlagged: false, TokenUsage: [object Object]
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728' received full LLM content for processing:
+---
+
+---
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728': No LLMResponseProcessor handled the response. Emitting the full LLM response as a final answer and completion signal.
+AgentExternalEventNotifier (NotifierID: 1645d382-0c3f-4c4f-a7e0-1b5cc4c78a6c, AgentID: openaifullagentrunbashhtmlvalidation_validationagent_4728) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 1645d382-0c3f-4c4f-a7e0-1b5cc4c78a6c, AgentID: openaifullagentrunbashhtmlvalidation_validationagent_4728) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 1645d382-0c3f-4c4f-a7e0-1b5cc4c78a6c, AgentID: openaifullagentrunbashhtmlvalidation_validationagent_4728) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 1645d382-0c3f-4c4f-a7e0-1b5cc4c78a6c, AgentID: openaifullagentrunbashhtmlvalidation_validationagent_4728) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 1645d382-0c3f-4c4f-a7e0-1b5cc4c78a6c, AgentID: openaifullagentrunbashhtmlvalidation_validationagent_4728) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 1645d382-0c3f-4c4f-a7e0-1b5cc4c78a6c, AgentID: openaifullagentrunbashhtmlvalidation_validationagent_4728) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 1645d382-0c3f-4c4f-a7e0-1b5cc4c78a6c, AgentID: openaifullagentrunbashhtmlvalidation_validationagent_4728) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728' enqueued native API tool continuation for turn 'turn_0001' after 1 tool result(s); no aggregate user message was added.
+AgentExternalEventNotifier (NotifierID: 1645d382-0c3f-4c4f-a7e0-1b5cc4c78a6c, AgentID: openaifullagentrunbashhtmlvalidation_validationagent_4728) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728' handling ToolContinuationReadyEvent for turn 'turn_0001'.
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728': Streaming handler selected: ApiToolCallStreamingResponseHandler
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728': Passing 1 tool schemas to LLM API (Provider: OPENAI).
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728' error during LLM stream: Error: Error in OPENAI Responses API streaming: 400 Item 'fc_0a09c22b67240f36006a058fb183308197b361077a4b32e365' of type 'function_call' was provided without its required 'reasoning' item: 'rs_0a09c22b67240f36006a058fb07ef081979d35e2fcf5045d1e'.
+AgentExternalEventNotifier (NotifierID: 1645d382-0c3f-4c4f-a7e0-1b5cc4c78a6c, AgentID: openaifullagentrunbashhtmlvalidation_validationagent_4728) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728' enqueued LLMCompleteResponseReceivedEvent with error details.
+AgentExternalEventNotifier (NotifierID: 1645d382-0c3f-4c4f-a7e0-1b5cc4c78a6c, AgentID: openaifullagentrunbashhtmlvalidation_validationagent_4728) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728' handling LLMCompleteResponseReceivedEvent. Response Length: 289, Reasoning Length: 0, IsErrorFlagged: true, TokenUsage: null
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728' received full LLM content for processing:
+---
+Error processing your request with the LLM: Error: Error in OPENAI Responses API streaming: 400 Item 'fc_0a09c22b67240f36006a058fb183308197b361077a4b32e365' of type 'function_call' was provided without its required 'reasoning' item: 'rs_0a09c22b67240f36006a058fb07ef081979d35e2fcf5045d1e'.
+---
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728': LLMCompleteResponseReceivedEvent was marked as an error response. Skipping LLMResponseProcessor attempts.
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728': No LLMResponseProcessor handled the response. Emitting the full LLM response as a final answer and completion signal.
+AgentExternalEventNotifier (NotifierID: 1645d382-0c3f-4c4f-a7e0-1b5cc4c78a6c, AgentID: openaifullagentrunbashhtmlvalidation_validationagent_4728) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 1645d382-0c3f-4c4f-a7e0-1b5cc4c78a6c, AgentID: openaifullagentrunbashhtmlvalidation_validationagent_4728) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 1645d382-0c3f-4c4f-a7e0-1b5cc4c78a6c, AgentID: openaifullagentrunbashhtmlvalidation_validationagent_4728) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728' Logged AgentIdleEvent. Current agent status: idle
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728' requesting runtime to stop (timeout: 5s).
+AgentExternalEventNotifier (NotifierID: 1645d382-0c3f-4c4f-a7e0-1b5cc4c78a6c, AgentID: openaifullagentrunbashhtmlvalidation_validationagent_4728) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+AgentWorker 'openaifullagentrunbashhtmlvalidation_validationagent_4728': Stop requested.
+AgentExternalEventNotifier (NotifierID: 1645d382-0c3f-4c4f-a7e0-1b5cc4c78a6c, AgentID: openaifullagentrunbashhtmlvalidation_validationagent_4728) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+Agent 'openaifullagentrunbashhtmlvalidation_validationagent_4728' Logged AgentStoppedEvent. Current agent status: shutdown_complete
+AgentWorker 'openaifullagentrunbashhtmlvalidation_validationagent_4728' asyncRun() loop has finished.
+AgentWorker 'openaifullagentrunbashhtmlvalidation_validationagent_4728': Running shutdown sequence on worker loop.
+AgentWorker 'openaifullagentrunbashhtmlvalidation_validationagent_4728': Shutdown resource cleanup completed successfully.
+AgentWorker 'openaifullagentrunbashhtmlvalidation_validationagent_4728': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'openaifullagentrunbashhtmlvalidation_validationagent_4728'.
+AgentRuntime for 'openaifullagentrunbashhtmlvalidation_validationagent_4728': Context unregistered.
+AgentRuntime for 'openaifullagentrunbashhtmlvalidation_validationagent_4728' stop() method completed.
+{
+  "status": "pass",
+  "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/validation-evidence/logs/openai-full-agent-run-bash-html-2026-05-14T09-02-39-228Z.json",
+  "fileSummary": {
+    "relativePath": "agent-jet-game/index.html",
+    "expectedBytes": 54945,
+    "actualBytes": 54945,
+    "expectedSha256": "144b04209b9229d1eb5c59ba100a2e380120e39392498bcda07802cc70f94f9b",
+    "actualSha256": "144b04209b9229d1eb5c59ba100a2e380120e39392498bcda07802cc70f94f9b",
+    "exactBytesMatch": true
+  },
+  "tracesSummary": {
+    "rawTraceCount": 5,
+    "traceTypes": [
+      "user",
+      "tool_call",
+      "assistant",
+      "tool_result",
+      "tool_continuation"
+    ],
+    "toolCallCount": 1,
+    "toolResultCount": 1,
+    "assistantCount": 1,
+    "finalStatus": "idle"
+  },
+  "error": null
+}

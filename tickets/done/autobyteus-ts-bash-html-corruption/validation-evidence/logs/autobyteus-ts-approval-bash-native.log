@@ -1,0 +1,193 @@
+### 2026-05-14T10:54:59+02:00 bash-native approval scenario
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/autobyteus-ts
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+Successfully registered tool definition: 'run_bash'
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+AgentRuntimeState initialized for agent_id 'approvalagent_tester_7182'. Initial status: uninitialized. Workspace linked. InputQueues pending initialization. Output data via notifier.
+Agent 'approvalagent_tester_7182': LLM instance 'DummyLLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'approvalagent_tester_7182'. Config and State linked.
+EventHandlerRegistry initialized.
+UserInputMessageEventHandler initialized.
+Handler 'UserInputMessageEventHandler' registered for event class 'UserMessageReceivedEvent'.
+InterAgentMessageReceivedEventHandler initialized.
+Handler 'InterAgentMessageReceivedEventHandler' registered for event class 'InterAgentMessageReceivedEvent'.
+LLMCompleteResponseReceivedEventHandler initialized.
+Handler 'LLMCompleteResponseReceivedEventHandler' registered for event class 'LLMCompleteResponseReceivedEvent'.
+ToolInvocationRequestEventHandler initialized.
+Handler 'ToolInvocationRequestEventHandler' registered for event class 'PendingToolInvocationEvent'.
+ToolResultEventHandler initialized.
+Handler 'ToolResultEventHandler' registered for event class 'ToolResultEvent'.
+GenericEventHandler initialized.
+Handler 'GenericEventHandler' registered for event class 'GenericEvent'.
+ToolExecutionApprovalEventHandler initialized.
+Handler 'ToolExecutionApprovalEventHandler' registered for event class 'ToolExecutionApprovalEvent'.
+LLMUserMessageReadyEventHandler initialized.
+Handler 'LLMUserMessageReadyEventHandler' registered for event class 'LLMUserMessageReadyEvent'.
+Handler 'LLMUserMessageReadyEventHandler' registered for event class 'ToolContinuationReadyEvent'.
+ToolInvocationExecutionEventHandler initialized.
+Handler 'ToolInvocationExecutionEventHandler' registered for event class 'ExecuteToolInvocationEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapStartedEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapStepRequestedEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapStepCompletedEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapCompletedEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentReadyEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentStoppedEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentIdleEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'ShutdownRequestedEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentErrorEvent'.
+Instantiating AgentRuntime for agent_id: 'approvalagent_tester_7182' with config: 'ApprovalAgent'.
+AgentWorker initialized for agent_id 'approvalagent_tester_7182'.
+Registered AgentContext for agent_id 'approvalagent_tester_7182'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'approvalagent_tester_7182'. Context registered.
+Agent facade initialized for agent_id 'approvalagent_tester_7182'.
+Agent 'approvalagent_tester_7182' created and stored successfully.
+Agent 'approvalagent_tester_7182' requesting runtime to start.
+AgentRuntime for 'approvalagent_tester_7182': Starting worker.
+AgentWorker 'approvalagent_tester_7182': Starting...
+AgentWorker 'approvalagent_tester_7182' asyncRun(): Starting.
+Agent 'approvalagent_tester_7182': Runtime init completed (event store initialized).
+Agent 'approvalagent_tester_7182': Runtime init completed (status deriver initialized).
+Agent 'approvalagent_tester_7182': Runtime init completed (input queues initialized).
+Waiting for agent 'approvalagent_tester_7182' to become idle (timeout: 10s)...
+AgentEventStream (ID: 88449433-4374-4825-838d-2b484ec9c932) initialized for agent_id 'approvalagent_tester_7182'. Subscribed to notifier.
+Agent 'approvalagent_tester_7182': Starting internal initialization process using bootstrap events.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+AgentExternalEventNotifier (NotifierID: 297f8f87-6238-46c6-b56f-649245b4d4f7, AgentID: approvalagent_tester_7182) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+Agent 'approvalagent_tester_7182': Bootstrap started with 3 steps.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+Agent 'approvalagent_tester_7182': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+Agent 'approvalagent_tester_7182': Executing SystemPromptProcessingStep.
+Agent 'approvalagent_tester_7182': No skills found in registry. Skipping injection.
+Agent 'approvalagent_tester_7182': System prompt processor 'AvailableSkillsProcessor' applied successfully.
+Agent 'approvalagent_tester_7182': Final processed system prompt configured on LLM instance. Final length: 28.
+Agent 'approvalagent_tester_7182': Final processed system prompt:
+---
+You are a helpful assistant.
+---
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+Agent 'approvalagent_tester_7182': Bootstrap completed successfully. Emitting AgentReadyEvent.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+AgentExternalEventNotifier (NotifierID: 297f8f87-6238-46c6-b56f-649245b4d4f7, AgentID: approvalagent_tester_7182) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+Agent 'approvalagent_tester_7182' Logged AgentReadyEvent. Current agent status: idle
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+AgentWorker 'approvalagent_tester_7182' initialized successfully. Entering main event loop.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+Agent 'approvalagent_tester_7182' has become idle.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+AgentEventStream (ID: 88449433-4374-4825-838d-2b484ec9c932) for 'approvalagent_tester_7182': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+AgentExternalEventNotifier (NotifierID: 297f8f87-6238-46c6-b56f-649245b4d4f7, AgentID: approvalagent_tester_7182) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+Agent 'approvalagent_tester_7182': Stored pending tool invocation 'bash-bg-1778748901232' (run_bash).
+AgentExternalEventNotifier (NotifierID: 297f8f87-6238-46c6-b56f-649245b4d4f7, AgentID: approvalagent_tester_7182) emitted agent_tool_approval_requested. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+AgentExternalEventNotifier (NotifierID: 297f8f87-6238-46c6-b56f-649245b4d4f7, AgentID: approvalagent_tester_7182) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+Agent 'approvalagent_tester_7182': Retrieved pending tool invocation 'bash-bg-1778748901232' (run_bash).
+AgentExternalEventNotifier (NotifierID: 297f8f87-6238-46c6-b56f-649245b4d4f7, AgentID: approvalagent_tester_7182) emitted agent_tool_approved. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+AgentExternalEventNotifier (NotifierID: 297f8f87-6238-46c6-b56f-649245b4d4f7, AgentID: approvalagent_tester_7182) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 297f8f87-6238-46c6-b56f-649245b4d4f7, AgentID: approvalagent_tester_7182) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+AgentExternalEventNotifier (NotifierID: 297f8f87-6238-46c6-b56f-649245b4d4f7, AgentID: approvalagent_tester_7182) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+AgentExternalEventNotifier (NotifierID: 297f8f87-6238-46c6-b56f-649245b4d4f7, AgentID: approvalagent_tester_7182) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+Agent 'approvalagent_tester_7182': Ignoring native API tool result for invocation 'bash-bg-1778748901232' because no active tool invocation batch can validate its provider tool_call_id.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+Agent 'approvalagent_tester_7182' requesting runtime to stop (timeout: 2s).
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+AgentExternalEventNotifier (NotifierID: 297f8f87-6238-46c6-b56f-649245b4d4f7, AgentID: approvalagent_tester_7182) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+AgentWorker 'approvalagent_tester_7182': Stop requested.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+AgentExternalEventNotifier (NotifierID: 297f8f87-6238-46c6-b56f-649245b4d4f7, AgentID: approvalagent_tester_7182) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+Agent 'approvalagent_tester_7182' Logged AgentStoppedEvent. Current agent status: shutdown_complete
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+AgentWorker 'approvalagent_tester_7182' asyncRun() loop has finished.
+AgentWorker 'approvalagent_tester_7182': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+AgentWorker 'approvalagent_tester_7182': Shutdown resource cleanup completed successfully.
+AgentWorker 'approvalagent_tester_7182': Shutdown sequence completed.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+Unregistered AgentContext for agent_id 'approvalagent_tester_7182'.
+AgentRuntime for 'approvalagent_tester_7182': Context unregistered.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+AgentRuntime for 'approvalagent_tester_7182' stop() method completed.
+
+ ✓ tests/integration/agent/tool-approval-flow.test.ts (5 tests | 4 skipped) 564ms
+     ✓ executes run_bash bash-native background command after approval  563ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 4 skipped (5)
+   Start at  10:55:00
+   Duration  1.77s (transform 748ms, setup 24ms, import 1.09s, tests 564ms, environment 0ms)
+

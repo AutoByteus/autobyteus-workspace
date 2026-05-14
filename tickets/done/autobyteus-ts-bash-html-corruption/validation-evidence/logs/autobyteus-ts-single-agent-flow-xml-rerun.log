@@ -1,0 +1,385 @@
+### 2026-05-14T11:11:42+02:00 rerun LM Studio XML single-agent flow
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/autobyteus-ts
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[dotenv@17.3.1] injecting env (9) from .env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stderr | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+Failed to resolve model metadata for provider GEMINI: Gemini metadata request failed with status 400
+
+stderr | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+Failed to resolve model metadata for provider ANTHROPIC: Anthropic metadata request failed with status 401
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stderr | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+Finished LM Studio discovery. Total models registered: 28
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+Discovering Autobyteus models from host: https://localhost:51739
+
+stderr | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+Discovering Autobyteus models from host: https://localhost:51740
+
+stderr | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+Finished Autobyteus discovery. Total models registered: 68
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+AgentFactory (Singleton) initialized.
+AgentRuntimeState initialized for agent_id 'singleagentxml_tester_1573'. Initial status: uninitialized. Workspace linked. InputQueues pending initialization. Output data via notifier.
+Agent 'singleagentxml_tester_1573': LLM instance 'LMStudioLLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'singleagentxml_tester_1573'. Config and State linked.
+EventHandlerRegistry initialized.
+UserInputMessageEventHandler initialized.
+Handler 'UserInputMessageEventHandler' registered for event class 'UserMessageReceivedEvent'.
+InterAgentMessageReceivedEventHandler initialized.
+Handler 'InterAgentMessageReceivedEventHandler' registered for event class 'InterAgentMessageReceivedEvent'.
+LLMCompleteResponseReceivedEventHandler initialized.
+Handler 'LLMCompleteResponseReceivedEventHandler' registered for event class 'LLMCompleteResponseReceivedEvent'.
+ToolInvocationRequestEventHandler initialized.
+Handler 'ToolInvocationRequestEventHandler' registered for event class 'PendingToolInvocationEvent'.
+ToolResultEventHandler initialized.
+Handler 'ToolResultEventHandler' registered for event class 'ToolResultEvent'.
+GenericEventHandler initialized.
+Handler 'GenericEventHandler' registered for event class 'GenericEvent'.
+ToolExecutionApprovalEventHandler initialized.
+Handler 'ToolExecutionApprovalEventHandler' registered for event class 'ToolExecutionApprovalEvent'.
+LLMUserMessageReadyEventHandler initialized.
+Handler 'LLMUserMessageReadyEventHandler' registered for event class 'LLMUserMessageReadyEvent'.
+Handler 'LLMUserMessageReadyEventHandler' registered for event class 'ToolContinuationReadyEvent'.
+ToolInvocationExecutionEventHandler initialized.
+Handler 'ToolInvocationExecutionEventHandler' registered for event class 'ExecuteToolInvocationEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapStartedEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapStepRequestedEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapStepCompletedEvent'.
+Handler 'BootstrapEventHandler' registered for event class 'BootstrapCompletedEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentReadyEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentStoppedEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentIdleEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'ShutdownRequestedEvent'.
+Handler 'LifecycleEventLogger' registered for event class 'AgentErrorEvent'.
+Instantiating AgentRuntime for agent_id: 'singleagentxml_tester_1573' with config: 'SingleAgentXml'.
+AgentWorker initialized for agent_id 'singleagentxml_tester_1573'.
+Registered AgentContext for agent_id 'singleagentxml_tester_1573'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'singleagentxml_tester_1573'. Context registered.
+Agent facade initialized for agent_id 'singleagentxml_tester_1573'.
+Agent 'singleagentxml_tester_1573' created and stored successfully.
+Agent 'singleagentxml_tester_1573' requesting runtime to start.
+AgentRuntime for 'singleagentxml_tester_1573': Starting worker.
+AgentWorker 'singleagentxml_tester_1573': Starting...
+AgentWorker 'singleagentxml_tester_1573' asyncRun(): Starting.
+Agent 'singleagentxml_tester_1573': Runtime init completed (event store initialized).
+Agent 'singleagentxml_tester_1573': Runtime init completed (status deriver initialized).
+Agent 'singleagentxml_tester_1573': Runtime init completed (input queues initialized).
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+Agent 'singleagentxml_tester_1573': Starting internal initialization process using bootstrap events.
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+AgentExternalEventNotifier (NotifierID: 6d369a19-3a69-4f40-b6ed-2d6f22c3f6cd, AgentID: singleagentxml_tester_1573) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+Agent 'singleagentxml_tester_1573': Bootstrap started with 3 steps.
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+Agent 'singleagentxml_tester_1573': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+Agent 'singleagentxml_tester_1573': Executing SystemPromptProcessingStep.
+Agent 'singleagentxml_tester_1573': Injected 1 tools.
+Agent 'singleagentxml_tester_1573': System prompt processor 'ToolManifestInjector' applied successfully.
+Agent 'singleagentxml_tester_1573': No skills found in registry. Skipping injection.
+Agent 'singleagentxml_tester_1573': System prompt processor 'AvailableSkillsProcessor' applied successfully.
+Agent 'singleagentxml_tester_1573': Final processed system prompt configured on LLM instance. Final length: 2192.
+Agent 'singleagentxml_tester_1573': Final processed system prompt:
+---
+You MUST use the provided XML tool format. Respond with a single XML tool call only.
+
+## Accessible Tools
+
+To use this tool, you must construct an XML block exactly like the examples below. Ensure all tags are correctly named and nested. Pay close attention to how arguments, especially complex ones like lists and objects, are formatted.
+
+Formatting Lists/Arrays: For any argument that is a list (an array), you MUST wrap each individual value in its own `<item>` tag. Do not use comma-separated strings or JSON-style `[...]` arrays within a single tag.
+
+Correct:
+<arg name="dependencies">
+    <item>task_1</item>
+    <item>task_2</item>
+</arg>
+
+Incorrect:
+<arg name="dependencies">[task_1, task_2]</arg>
+<arg name="dependencies">task_1, task_2</arg>
+
+---
+
+## Tool Definition:
+<tool name="write_file">
+    <arguments>
+        <arg name="path" type="string" description="The filesystem path where the file will be written. This may be absolute or relative to the configured workspace root. Relative paths are resolved from the workspace root, never from prior shell cd state." required="true" />
+        <arg name="content" type="string" description="The content to write to the file." required="true">
+            IMPORTANT: To ensure reliable streaming, you MUST enclose the file content with the sentinel tags __START_CONTENT__ and __END_CONTENT__.
+            The parser will strip these tags, but they are critical for preventing XML parsing errors if the content contains special characters.
+        </arg>
+    </arguments>
+</tool>
+
+## Tool Usage Examples and Guidelines:
+### Example 1: Create a Python file
+        
+<tool name="write_file">
+    <arguments>
+        <arg name="path">/path/to/hello.py</arg>
+        <arg name="content">
+__START_CONTENT__
+def hello():
+    print("Hello, World!")
+
+if __name__ == "__main__":
+    hello()
+__END_CONTENT__
+        </arg>
+    </arguments>
+</tool>
+
+### Example 2: Create a configuration file
+
+<tool name="write_file">
+    <arguments>
+        <arg name="path">/path/to/config/settings.json</arg>
+        <arg name="content">
+__START_CONTENT__
+{
+    "debug": true,
+    "log_level": "INFO"
+}
+__END_CONTENT__
+        </arg>
+    </arguments>
+</tool>
+---
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+Agent 'singleagentxml_tester_1573': Bootstrap completed successfully. Emitting AgentReadyEvent.
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+AgentExternalEventNotifier (NotifierID: 6d369a19-3a69-4f40-b6ed-2d6f22c3f6cd, AgentID: singleagentxml_tester_1573) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+Agent 'singleagentxml_tester_1573' Logged AgentReadyEvent. Current agent status: idle
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+AgentWorker 'singleagentxml_tester_1573' initialized successfully. Entering main event loop.
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+AgentExternalEventNotifier (NotifierID: 6d369a19-3a69-4f40-b6ed-2d6f22c3f6cd, AgentID: singleagentxml_tester_1573) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+AgentExternalEventNotifier (NotifierID: 6d369a19-3a69-4f40-b6ed-2d6f22c3f6cd, AgentID: singleagentxml_tester_1573) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+Agent 'singleagentxml_tester_1573' handling UserMessageReceivedEvent (type: user): 'Use the write_file tool to write "Roses are red." to "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-agent-R0KM1L/poem.txt". Use that exact absolute path and return only the XML tool call and nothing else.'
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+Agent 'singleagentxml_tester_1573': Input processor 'MemoryIngestInputProcessor' applied successfully.
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+Agent 'singleagentxml_tester_1573' processed AgentInputUserMessage and enqueued LLMUserMessageReadyEvent.
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+AgentExternalEventNotifier (NotifierID: 6d369a19-3a69-4f40-b6ed-2d6f22c3f6cd, AgentID: singleagentxml_tester_1573) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+Agent 'singleagentxml_tester_1573' handling LLMUserMessageReadyEvent: 'Use the write_file tool to write "Roses are red." to "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-agent-R0KM1L/poem.txt". Use that exact absolute path and return only the XML tool call and nothing else.'
+Agent 'singleagentxml_tester_1573': Streaming handler selected: ParsingStreamingResponseHandler
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+Agent 'singleagentxml_tester_1573': Parsed 1 tool invocations from streaming parser.
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+compaction_budget_evaluated {
+  agent_id: 'singleagentxml_tester_1573',
+  prompt_tokens: 655,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 262144,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 262144,
+  reserved_output_tokens: 0,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 261888,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 130944,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+Agent 'singleagentxml_tester_1573' enqueued LLMCompleteResponseReceivedEvent from LLMUserMessageReadyEventHandler.
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+AgentExternalEventNotifier (NotifierID: 6d369a19-3a69-4f40-b6ed-2d6f22c3f6cd, AgentID: singleagentxml_tester_1573) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+Agent 'singleagentxml_tester_1573' handling LLMCompleteResponseReceivedEvent. Response Length: 273, Reasoning Length: 560, IsErrorFlagged: false, TokenUsage: [object Object]
+Agent 'singleagentxml_tester_1573' received full LLM content for processing:
+---
+
+
+<tool name="write_file">
+    <arguments>
+        <arg name="path">/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-agent-R0KM1L/poem.txt</arg>
+        <arg name="content">
+__START_CONTENT__
+Roses are red.
+__END_CONTENT__
+        </arg>
+    </arguments>
+</tool>
+---
+Agent 'singleagentxml_tester_1573': No LLMResponseProcessor handled the response. Emitting the full LLM response as a final answer and completion signal.
+AgentExternalEventNotifier (NotifierID: 6d369a19-3a69-4f40-b6ed-2d6f22c3f6cd, AgentID: singleagentxml_tester_1573) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+AgentExternalEventNotifier (NotifierID: 6d369a19-3a69-4f40-b6ed-2d6f22c3f6cd, AgentID: singleagentxml_tester_1573) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 6d369a19-3a69-4f40-b6ed-2d6f22c3f6cd, AgentID: singleagentxml_tester_1573) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+AgentExternalEventNotifier (NotifierID: 6d369a19-3a69-4f40-b6ed-2d6f22c3f6cd, AgentID: singleagentxml_tester_1573) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+AgentExternalEventNotifier (NotifierID: 6d369a19-3a69-4f40-b6ed-2d6f22c3f6cd, AgentID: singleagentxml_tester_1573) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+AgentExternalEventNotifier (NotifierID: 6d369a19-3a69-4f40-b6ed-2d6f22c3f6cd, AgentID: singleagentxml_tester_1573) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 6d369a19-3a69-4f40-b6ed-2d6f22c3f6cd, AgentID: singleagentxml_tester_1573) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+Agent 'singleagentxml_tester_1573' enqueued tool continuation input with aggregated results from 1 tool(s) and 0 media file(s).
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+AgentExternalEventNotifier (NotifierID: 6d369a19-3a69-4f40-b6ed-2d6f22c3f6cd, AgentID: singleagentxml_tester_1573) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+Agent 'singleagentxml_tester_1573' handling UserMessageReceivedEvent (type: tool): 'The following tool executions have completed. Please analyze their results and decide the next course of action.
+
+Tool: write_file (ID: turn_ccb86534efb74d3b9a0febff8eebcb1a:seg_2)
+Status: Success
+Result:
+File created/updated at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-agent-R0KM1L/poem.txt'
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+Agent 'singleagentxml_tester_1573': Input processor 'MemoryIngestInputProcessor' applied successfully.
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+Agent 'singleagentxml_tester_1573' processed AgentInputUserMessage and enqueued LLMUserMessageReadyEvent.
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+AgentExternalEventNotifier (NotifierID: 6d369a19-3a69-4f40-b6ed-2d6f22c3f6cd, AgentID: singleagentxml_tester_1573) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+Agent 'singleagentxml_tester_1573' handling LLMUserMessageReadyEvent: 'The following tool executions have completed. Please analyze their results and decide the next course of action.
+
+Tool: write_file (ID: turn_ccb86534efb74d3b9a0febff8eebcb1a:seg_2)
+Status: Success
+Result:
+File created/updated at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-agent-R0KM1L/poem.txt'
+Agent 'singleagentxml_tester_1573': Streaming handler selected: ParsingStreamingResponseHandler
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+Agent 'singleagentxml_tester_1573' requesting runtime to stop (timeout: 5s).
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+AgentExternalEventNotifier (NotifierID: 6d369a19-3a69-4f40-b6ed-2d6f22c3f6cd, AgentID: singleagentxml_tester_1573) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+AgentWorker 'singleagentxml_tester_1573': Stop requested.
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+compaction_budget_evaluated {
+  agent_id: 'singleagentxml_tester_1573',
+  prompt_tokens: 1028,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 262144,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 262144,
+  reserved_output_tokens: 0,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 261888,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 130944,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+Agent 'singleagentxml_tester_1573' enqueued LLMCompleteResponseReceivedEvent from LLMUserMessageReadyEventHandler.
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+AgentWorker 'singleagentxml_tester_1573' asyncRun() loop has finished.
+AgentWorker 'singleagentxml_tester_1573': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+AgentWorker 'singleagentxml_tester_1573': Shutdown resource cleanup completed successfully.
+AgentWorker 'singleagentxml_tester_1573': Shutdown sequence completed.
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+AgentExternalEventNotifier (NotifierID: 6d369a19-3a69-4f40-b6ed-2d6f22c3f6cd, AgentID: singleagentxml_tester_1573) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+Unregistered AgentContext for agent_id 'singleagentxml_tester_1573'.
+AgentRuntime for 'singleagentxml_tester_1573': Context unregistered.
+
+stdout | tests/integration/agent/agent-single-flow-xml.test.ts > Agent single-flow integration (LM Studio, XML) > executes a tool call end-to-end using XML tool format
+AgentRuntime for 'singleagentxml_tester_1573' stop() method completed.
+
+ ✓ tests/integration/agent/agent-single-flow-xml.test.ts (3 tests | 2 skipped) 13797ms
+     ✓ executes a tool call end-to-end using XML tool format  13796ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 2 skipped (3)
+   Start at  11:11:43
+   Duration  15.59s (transform 1.00s, setup 31ms, import 1.66s, tests 13.80s, environment 0ms)
+

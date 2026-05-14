@@ -9,14 +9,13 @@ describe('tool-syntax-registry', () => {
     expect(spec?.toolName).toBe('run_bash');
   });
 
-  it('maps run_bash content and metadata to tool arguments', () => {
+  it('maps run_bash content and supported metadata to tool arguments without background', () => {
     const spec = getToolSyntaxSpec(SegmentType.RUN_BASH);
     const args = spec?.buildArguments({ cwd: 'apps/web', background: true, timeout_seconds: 45 }, 'npm run dev');
 
     expect(args).toEqual({
       command: 'npm run dev',
       cwd: 'apps/web',
-      background: true,
       timeout_seconds: 45
     });
   });

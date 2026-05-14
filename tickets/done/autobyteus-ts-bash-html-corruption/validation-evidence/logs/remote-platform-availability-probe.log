@@ -1,0 +1,9 @@
+### 2026-05-14T10:57:04+02:00 default SSH probe via mcp__ssh_remote__ (destination ryan-ai@192.168.2.142)
+Linux ryan-ai 6.8.0-84-generic #84~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Tue Sep  9 14:29:36 UTC 2 x86_64 x86_64 x86_64 GNU/Linux
+{"platform":"linux","arch":"x64","version":"v20.19.1"}
+### remote wsl
+wsl.exe: command not found
+wsl: command not found
+### remote android
+adb: command not found
+termux-prefix-missing

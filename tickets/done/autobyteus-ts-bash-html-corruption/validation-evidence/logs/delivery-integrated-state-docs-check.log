@@ -1,0 +1,42 @@
+$ git fetch origin --prune
+Result: completed earlier in delivery; origin/personal remained at 839148ba058b8d85a96288ce56fef69beef22266
+
+$ git rev-list --left-right --count HEAD...origin/personal
+0	0
+
+$ rg stale terminal contract docs search
+autobyteus-ts/docs/terminal_android_direct_shell_backend_design.md:79:- `run_bash` adopts ordinary live background descendants from normal shell `&` syntax, and `start_background_process` starts a non-interactive shell process that is tracked by public `pid`.
+autobyteus-ts/docs/terminal_tools.md:3:Terminal tools provide stateless non-interactive command execution for agents plus PID-keyed background process management. Interactive PTY terminal sessions are a separate server/web terminal capability and are not used by the agent `run_bash` tool.
+autobyteus-ts/docs/terminal_tools.md:60:- Commands that redirect output to files may produce little or no captured background output; read the log file with a later `run_bash` call.
+autobyteus-ts/docs/terminal_tools.md:112:- `pid` (number): PID returned by `run_bash`, `start_background_process`, or `get_background_processes`.
+
+$ git diff --check
+Result: pass
+
+## Delivery refresh after updated API/E2E package
+$ git fetch origin --prune
+Result: completed; origin/personal 839148ba058b8d85a96288ce56fef69beef22266
+
+$ git rev-list --left-right --count HEAD...origin/personal
+0	0
+
+$ rg updated validation report coverage markers
+107:| AV-013 | Existing single-agent E2E flows prove agent tool-call execution still works outside the targeted harness | LM Studio vitest integration tests: `agent-single-flow`, `agent-single-flow-xml`, and `full-tool-roundtrip-flow` | Pass with transparent flake handling: combined run passed `agent-single-flow` and `full-tool-roundtrip-flow`; XML tool test missed its 20s file wait in the combined run and then passed in immediate isolated rerun (1 passed / 2 skipped) | `autobyteus-ts-single-agent-flow-tests.log`; `autobyteus-ts-single-agent-flow-xml-rerun.log` |
+108:| AV-014 | Existing agent-team E2E flows prove team routing/streaming still work | LM Studio vitest integration tests: `agent-team-single-flow`, `agent-team-streaming-flow`, and `agent-team-subteam-streaming-flow` | Pass with transparent flake handling: combined run passed team routing and sub-team streaming; team streaming hit its 20s timeout in the combined run and then passed in immediate isolated rerun (1 passed) | `autobyteus-ts-agent-team-flow-tests.log`; `autobyteus-ts-agent-team-streaming-flow-rerun.log` |
+118:- existing single-agent LM Studio flow execution through file-write tool calls, XML tool calls, and full round-trip tool continuation;
+119:- existing agent-team LM Studio flow execution through worker routing, team event rebroadcasting, and sub-team event rebroadcasting;
+199:See the Coverage Matrix for AV-001 through AV-014.
+211:- Existing single-agent LM Studio E2E flows passed: `agent-single-flow`, `full-tool-roundtrip-flow`, and the XML tool-call flow after isolated rerun.
+212:- Existing agent-team LM Studio E2E flows passed: team single-flow, team streaming after isolated rerun, and sub-team streaming.
+277:- Existing single-agent LM Studio E2E bundle — 2 files passed / 1 timing-sensitive XML flow failed in combined run; immediate isolated XML rerun passed.
+278:- Existing agent-team LM Studio E2E bundle — 2 files passed / 1 timing-sensitive team-streaming flow timed out in combined run; immediate isolated team-streaming rerun passed.
+282:## Latest Authoritative Result
+
+$ ls updated E2E evidence logs
+-rw-r--r--@ 1 normy  staff  149710 May 14 11:12 tickets/in-progress/autobyteus-ts-bash-html-corruption/validation-evidence/logs/autobyteus-ts-agent-team-flow-tests.log
+-rw-r--r--@ 1 normy  staff   45295 May 14 11:14 tickets/in-progress/autobyteus-ts-bash-html-corruption/validation-evidence/logs/autobyteus-ts-agent-team-streaming-flow-rerun.log
+-rw-r--r--@ 1 normy  staff   98236 May 14 11:11 tickets/in-progress/autobyteus-ts-bash-html-corruption/validation-evidence/logs/autobyteus-ts-single-agent-flow-tests.log
+-rw-r--r--@ 1 normy  staff   27132 May 14 11:11 tickets/in-progress/autobyteus-ts-bash-html-corruption/validation-evidence/logs/autobyteus-ts-single-agent-flow-xml-rerun.log
+
+$ git diff --check
+Result: pass

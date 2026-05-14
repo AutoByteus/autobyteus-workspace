@@ -1,0 +1,32 @@
+# Workspace dependency install for Electron build
+timestamp_utc=2026-05-14T09-19-52-352Z
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption
+node=v22.21.1
+pnpm=10.28.2
+
+$ pnpm install --frozen-lockfile
+Scope: all 11 workspace projects
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +1290
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 1290, reused 1289, downloaded 0, added 118
+Progress: resolved 1290, reused 1289, downloaded 0, added 402
+Progress: resolved 1290, reused 1289, downloaded 0, added 768
+Progress: resolved 1290, reused 1289, downloaded 0, added 1053
+Progress: resolved 1290, reused 1289, downloaded 0, added 1290, done
+.../node_modules/@whiskeysockets/baileys preinstall$ node ./engine-requirements.js
+.../node_modules/@whiskeysockets/baileys preinstall: Done
+
+autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+autobyteus-ts postinstall: [node-pty-fix] ok: /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+autobyteus-ts postinstall: Done
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: lzma-native@8.0.6.                                  │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 6.4s using pnpm v10.28.2
+pnpm_install_exit_status=0

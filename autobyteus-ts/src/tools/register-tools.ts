@@ -8,6 +8,7 @@ import { registerInsertInFileTool } from './file/insert-in-file.js';
 import { registerLoadSkillTool } from './skill/load-skill.js';
 import { registerRunBashTool } from './terminal/tools/run-bash.js';
 import { registerStartBackgroundProcessTool } from './terminal/tools/start-background-process.js';
+import { registerGetBackgroundProcessesTool } from './terminal/tools/get-background-processes.js';
 import { registerGetProcessOutputTool } from './terminal/tools/get-process-output.js';
 import { registerStopBackgroundProcessTool } from './terminal/tools/stop-background-process.js';
 import { SendMessageTo } from '../agent/message/send-message-to.js';
@@ -39,6 +40,7 @@ export function registerTools(): void {
   registerLoadSkillTool();
   registerRunBashTool();
   registerStartBackgroundProcessTool();
+  registerGetBackgroundProcessesTool();
   registerGetProcessOutputTool();
   registerStopBackgroundProcessTool();
 

@@ -100,7 +100,7 @@ describe('ToolInvocationAdapter basics', () => {
     });
   });
 
-  it('creates run_bash invocation with background metadata', () => {
+  it('creates run_bash invocation with supported metadata and drops background metadata', () => {
     const adapter = new ToolInvocationAdapter();
     const events = [
       SegmentEvent.start(TURN_ID, 'seg_3_bg', SegmentType.RUN_BASH, { background: true, timeout_seconds: 45 }),
@@ -113,7 +113,6 @@ describe('ToolInvocationAdapter basics', () => {
     expect(invocations[0].name).toBe('run_bash');
     expect(invocations[0].arguments).toEqual({
       command: 'npm run dev',
-      background: true,
       timeout_seconds: 45
     });
   });

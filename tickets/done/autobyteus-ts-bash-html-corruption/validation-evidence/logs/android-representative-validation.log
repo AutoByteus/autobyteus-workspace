@@ -1,0 +1,8 @@
+### 2026-05-14T10:56:47+02:00 Android representative env validation
+{
+  "status": "pass",
+  "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/validation-evidence/logs/android-representative-validation-2026-05-14T08-56-47-360Z.json",
+  "defaultSessionFactory": "DirectShellSession",
+  "resolverExecutable": "/system/bin/sh",
+  "expectedHash": "174992ee49dd64e2b0c834a8bba0dd5a7e2386439260408aa2d9a29e687b8f81"
+}

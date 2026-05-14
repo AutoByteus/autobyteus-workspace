@@ -29,7 +29,7 @@ describe('CustomXmlTagRunBashParsingState basics', () => {
     expect(ctx.currentState).toBeInstanceOf(TextState);
   });
 
-  it('extracts supported tag attributes into metadata', () => {
+  it('extracts supported timeout tag attributes into metadata and ignores background', () => {
     const ctx = createContext();
     ctx.append('ls -la</run_bash>');
 
@@ -43,7 +43,7 @@ describe('CustomXmlTagRunBashParsingState basics', () => {
     const events = ctx.getAndClearEvents();
     const startEvents = events.filter((e) => e.event_type === SegmentEventType.START);
     const metadata = startEvents[0].payload.metadata;
-    expect(metadata).toEqual({ background: true, timeout_seconds: 120 });
+    expect(metadata).toEqual({ timeout_seconds: 120 });
   });
 
   it('normalizes timeoutSeconds attribute alias to timeout_seconds metadata', () => {
@@ -63,7 +63,7 @@ describe('CustomXmlTagRunBashParsingState basics', () => {
     expect(metadata).toEqual({ timeout_seconds: 42 });
   });
 
-  it('ignores invalid background and timeout attribute values', () => {
+  it('ignores background attributes and invalid timeout values', () => {
     const ctx = createContext();
     ctx.append('echo invalid</run_bash>');
 
@@ -80,7 +80,7 @@ describe('CustomXmlTagRunBashParsingState basics', () => {
     expect(startEvents[0].payload.metadata).toBeUndefined();
   });
 
-  it('accepts yes/no background aliases', () => {
+  it('does not emit metadata for yes/no background aliases', () => {
     const yesCtx = createContext();
     yesCtx.append('echo yes</run_bash>');
     const yesState = new CustomXmlTagRunBashParsingState(yesCtx, "<run_bash background='yes'>");
@@ -88,7 +88,7 @@ describe('CustomXmlTagRunBashParsingState basics', () => {
     yesState.run();
     const yesEvents = yesCtx.getAndClearEvents();
     const yesStart = yesEvents.find((e) => e.event_type === SegmentEventType.START);
-    expect(yesStart?.payload.metadata).toEqual({ background: true });
+    expect(yesStart?.payload.metadata).toBeUndefined();
 
     const noCtx = createContext();
     noCtx.append('echo no</run_bash>');
@@ -97,7 +97,7 @@ describe('CustomXmlTagRunBashParsingState basics', () => {
     noState.run();
     const noEvents = noCtx.getAndClearEvents();
     const noStart = noEvents.find((e) => e.event_type === SegmentEventType.START);
-    expect(noStart?.payload.metadata).toEqual({ background: false });
+    expect(noStart?.payload.metadata).toBeUndefined();
   });
 
   it('preserves comments in content', () => {

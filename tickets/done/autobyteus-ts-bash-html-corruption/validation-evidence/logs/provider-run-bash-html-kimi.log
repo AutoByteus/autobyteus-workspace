@@ -1,0 +1,16 @@
+### 2026-05-14T11:01:07+02:00 provider run_bash HTML validation: Kimi kimi-k2.6
+Successfully registered tool definition: 'run_bash'
+{
+  "status": "complete",
+  "results": [
+    {
+      "provider": "kimi",
+      "model": "kimi-k2.6",
+      "status": "provider_skipped_rate_limited",
+      "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/validation-evidence/logs/provider-run-bash-html-kimi-2026-05-14T09-01-08-078Z.json",
+      "invocationSummary": null,
+      "executionSummary": null,
+      "providerError": "Error in API streaming: Error: 429 Your account org-*** / proj-*** <ak-***> request reached organization TPD rate limit, current: 1504794, limit: 1500000"
+    }
+  ]
+}

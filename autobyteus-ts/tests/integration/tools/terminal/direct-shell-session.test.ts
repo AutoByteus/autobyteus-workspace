@@ -47,20 +47,20 @@ runDirectShellIntegration('DirectShellSession integration', () => {
     });
   });
 
-  it('supports background process lifecycle', async () => {
+  it('supports non-PTY background process lifecycle separately from direct shell sessions', async () => {
     await withTempDir(async (tempDir) => {
-      const background = new BackgroundProcessManager(DirectShellSession);
-      const processId = await background.startProcess(
-        'for i in 1 2 3; do echo ds_$i; sleep 0.1; done; sleep 3',
+      const background = new BackgroundProcessManager();
+      const info = await background.startCommand(
+        'for i in 1 2 3; do echo ds_$i; sleep 0.1; done; sleep 10',
         tempDir
       );
 
       await new Promise((resolve) => setTimeout(resolve, 600));
-      const output = background.getOutput(processId, 20);
+      const output = await background.getOutput(info.pid, 20);
       expect(output.output).toContain('ds_');
       expect(output.isRunning).toBe(true);
 
-      const stopped = await background.stopProcess(processId);
+      const stopped = await background.stopProcess(info.pid);
       expect(stopped).toBe(true);
     });
   });

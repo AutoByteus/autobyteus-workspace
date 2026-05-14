@@ -1,10 +1,9 @@
-import { describe, it, expect, vi, afterEach } from 'vitest';
+import { describe, it, expect, afterEach } from 'vitest';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { runBash } from '../../../../src/tools/terminal/tools/run-bash.js';
 import { TerminalResult } from '../../../../src/tools/terminal/types.js';
-import { TerminalSessionManager } from '../../../../src/tools/terminal/terminal-session-manager.js';
 
 const tempRoots: string[] = [];
 
@@ -18,7 +17,6 @@ function createTempWorkspace(subdir?: string): string {
 }
 
 afterEach(() => {
-  vi.restoreAllMocks();
   while (tempRoots.length > 0) {
     const next = tempRoots.pop();
     if (next) {
@@ -28,116 +26,70 @@ afterEach(() => {
 });
 
 describe('runBash', () => {
-  it('runs in foreground by default using terminal session manager', async () => {
+  it('executes foreground commands through the non-PTY shell executor', async () => {
     const workspaceRoot = createTempWorkspace(path.join('packages', 'api'));
-    const terminalManager = {
-      ensureStarted: vi.fn(async () => undefined),
-      executeCommand: vi.fn(async () => new TerminalResult('ok', '', 0, false, path.join(workspaceRoot, 'packages', 'api'))),
-      close: vi.fn(async () => undefined)
-    };
-    const context: any = {
-      workspaceRootPath: workspaceRoot
-    };
-    vi.spyOn(TerminalSessionManager.prototype, 'ensureStarted').mockImplementation(terminalManager.ensureStarted);
-    vi.spyOn(TerminalSessionManager.prototype, 'executeCommand').mockImplementation(terminalManager.executeCommand);
-    vi.spyOn(TerminalSessionManager.prototype, 'close').mockImplementation(terminalManager.close);
+    const context: any = { workspaceRootPath: workspaceRoot };
+    const cwd = path.join(workspaceRoot, 'packages', 'api');
 
-    const result = await runBash(context, 'echo ok', path.join(workspaceRoot, 'packages', 'api'));
+    const result = await runBash(context, 'printf "ok"', cwd);
 
-    expect(terminalManager.ensureStarted).toHaveBeenCalledWith(path.join(workspaceRoot, 'packages', 'api'));
-    expect(terminalManager.executeCommand).toHaveBeenCalledWith('echo ok', 30, { signal: undefined });
-    expect(terminalManager.close).toHaveBeenCalled();
     expect(result).toBeInstanceOf(TerminalResult);
-    expect((result as TerminalResult).stdout).toBe('ok');
-    expect((result as TerminalResult).effectiveCwd).toBe(path.join(workspaceRoot, 'packages', 'api'));
+    expect(result.stdout).toBe('ok');
+    expect(result.stderr).toBe('');
+    expect(result.exitCode).toBe(0);
+    expect(result.timedOut).toBe(false);
+    expect(result.effectiveCwd).toBe(cwd);
+    expect(result.backgroundProcesses).toEqual([]);
   });
 
-  it('runs in background when background=true and returns process handle metadata', async () => {
-    const workspaceRoot = createTempWorkspace(path.join('apps', 'web'));
-    const terminalManager = {
-      ensureStarted: vi.fn(async () => undefined),
-      executeCommand: vi.fn(async () => new TerminalResult('should-not-run', '', 0, false, path.join(workspaceRoot, 'apps', 'web')))
-    };
-    const backgroundManager = {
-      startProcess: vi.fn(async () => 'bg_123')
-    };
-    const context: any = {
-      workspaceRootPath: workspaceRoot,
-      _terminalSessionManager: terminalManager,
-      _backgroundProcessManager: backgroundManager
-    };
+  it('writes large heredoc content without PTY corruption', async () => {
+    const workspaceRoot = createTempWorkspace();
+    const context: any = { workspaceRootPath: workspaceRoot };
+    const html = [
+      '<!doctype html>',
+      '<html>',
+      '<head><meta charset="utf-8"><title>Jet Game</title></head>',
+      '<body>',
+      '<canvas id="game" width="800" height="450"></canvas>',
+      '<script>',
+      'const planes = Array.from({ length: 200 }, (_, i) => ({ x: i * 7, y: Math.sin(i) * 20 }));',
+      'console.log(JSON.stringify(planes.slice(0, 3)));',
+      '</script>',
+      '</body>',
+      '</html>',
+      ''
+    ].join('\n');
+    const command = `cat > jet.html <<'HTML'\n${html}HTML`;
 
-    const result = await runBash(context, 'npm run dev', path.join(workspaceRoot, 'apps', 'web'), 45, true);
+    const result = await runBash(context, command, workspaceRoot);
+    const written = fs.readFileSync(path.join(workspaceRoot, 'jet.html'), 'utf8');
 
-    expect(backgroundManager.startProcess).toHaveBeenCalledWith('npm run dev', path.join(workspaceRoot, 'apps', 'web'));
-    expect(result).toMatchObject({
-      mode: 'background',
-      processId: 'bg_123',
-      command: 'npm run dev',
-      status: 'started',
-      effectiveCwd: path.join(workspaceRoot, 'apps', 'web')
-    });
-    expect(Number.isNaN(Date.parse((result as any).startedAt))).toBe(false);
-  });
-
-  it('uses provided absolute cwd when workspace base path is unavailable', async () => {
-    const explicitDir = createTempWorkspace();
-    const backgroundManager = {
-      startProcess: vi.fn(async () => 'bg_999')
-    };
-    const context: any = {
-      workspaceRootPath: null,
-      _backgroundProcessManager: backgroundManager
-    };
-
-    await runBash(context, 'sleep 10', explicitDir, 30, true);
-
-    expect(backgroundManager.startProcess).toHaveBeenCalledWith('sleep 10', explicitDir);
+    expect(result.exitCode).toBe(0);
+    expect(written).toBe(html);
   });
 
   it('uses the workspace root when cwd is omitted', async () => {
     const workspaceRoot = createTempWorkspace(path.join('packages', 'api'));
-    const terminalManager = {
-      ensureStarted: vi.fn(async () => undefined),
-      executeCommand: vi.fn(async () => new TerminalResult('ok', '', 0, false, workspaceRoot)),
-      close: vi.fn(async () => undefined)
-    };
-    const context: any = {
-      workspaceRootPath: workspaceRoot
-    };
-    vi.spyOn(TerminalSessionManager.prototype, 'ensureStarted').mockImplementation(terminalManager.ensureStarted);
-    vi.spyOn(TerminalSessionManager.prototype, 'executeCommand').mockImplementation(terminalManager.executeCommand);
-    vi.spyOn(TerminalSessionManager.prototype, 'close').mockImplementation(terminalManager.close);
+    const context: any = { workspaceRootPath: workspaceRoot };
 
-    await runBash(context, 'pwd');
+    const result = await runBash(context, 'pwd');
 
-    expect(terminalManager.ensureStarted).toHaveBeenCalledWith(workspaceRoot);
+    expect(fs.realpathSync(result.stdout.trim())).toBe(fs.realpathSync(workspaceRoot));
+    expect(result.effectiveCwd).toBe(workspaceRoot);
   });
 
   it('resolves relative cwd paths from the workspace root when provided', async () => {
-    const workspaceRoot = createTempWorkspace();
-    fs.mkdirSync(path.join(workspaceRoot, 'packages', 'api'), { recursive: true });
-    const terminalManager = {
-      ensureStarted: vi.fn(async () => undefined),
-      executeCommand: vi.fn(async () => new TerminalResult('ok', '', 0, false, path.join(workspaceRoot, 'packages', 'api'))),
-      close: vi.fn(async () => undefined)
-    };
-    const context: any = {
-      workspaceRootPath: workspaceRoot
-    };
-    vi.spyOn(TerminalSessionManager.prototype, 'ensureStarted').mockImplementation(terminalManager.ensureStarted);
-    vi.spyOn(TerminalSessionManager.prototype, 'executeCommand').mockImplementation(terminalManager.executeCommand);
-    vi.spyOn(TerminalSessionManager.prototype, 'close').mockImplementation(terminalManager.close);
+    const workspaceRoot = createTempWorkspace(path.join('packages', 'api'));
+    const context: any = { workspaceRootPath: workspaceRoot };
 
-    await runBash(context, 'echo ok', path.join('packages', 'api'));
+    const result = await runBash(context, 'pwd', path.join('packages', 'api'));
 
-    expect(terminalManager.ensureStarted).toHaveBeenCalledWith(path.join(workspaceRoot, 'packages', 'api'));
+    expect(fs.realpathSync(result.stdout.trim())).toBe(fs.realpathSync(path.join(workspaceRoot, 'packages', 'api')));
+    expect(result.effectiveCwd).toBe(path.join(workspaceRoot, 'packages', 'api'));
   });
 
   it('rejects relative cwd paths when no workspace is configured', async () => {
-    const context: any = {
-      workspaceRootPath: null
-    };
+    const context: any = { workspaceRootPath: null };
 
     await expect(runBash(context, 'echo nope', 'relative/path')).rejects.toThrow(/must be absolute when no workspace root is configured/);
   });

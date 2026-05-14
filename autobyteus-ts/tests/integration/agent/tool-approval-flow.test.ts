@@ -358,7 +358,7 @@ describe('Tool approval integration flow', () => {
     expect(result.effectiveCwd).toBe(fixture.workspaceDir);
   });
 
-  runBashIntegration('executes run_bash background mode after approval', async () => {
+  runBashIntegration('executes run_bash bash-native background command after approval', async () => {
     const runBashTool = registerRunBashTool();
     fixture = await createAgentFixture([runBashTool]);
     const turnId = assignActiveTurn(fixture);
@@ -366,7 +366,7 @@ describe('Tool approval integration flow', () => {
     const invocationId = `bash-bg-${Date.now()}`;
     const invocation = new ToolInvocation(
       'run_bash',
-      { command: "printf 'bg_ok'", background: true, timeout_seconds: 5 },
+      { command: "(printf 'bg_ok'; sleep 10) &", timeout_seconds: 5 },
       invocationId,
       turnId
     );
@@ -394,7 +394,7 @@ describe('Tool approval integration flow', () => {
       },
       5000,
       50,
-      'run_bash background tool result'
+      'run_bash bash-native background tool result'
     );
 
     const events = fixture.agent.context.state.eventStore?.allEvents() ?? [];
@@ -405,11 +405,16 @@ describe('Tool approval integration flow', () => {
     );
 
     expect(toolEvent).toBeDefined();
-    const result = (toolEvent as { event: ToolResultEvent }).event.result as Record<string, unknown>;
-    expect(result.mode).toBe('background');
-    expect(result.status).toBe('started');
-    expect(result.command).toBe("printf 'bg_ok'");
-    expect(typeof result.processId).toBe('string');
+    const result = (toolEvent as { event: ToolResultEvent }).event.result as TerminalResult;
+    expect(result.exitCode).toBe(0);
+    expect(result.backgroundProcesses.length).toBeGreaterThanOrEqual(1);
+    expect(result.backgroundProcesses[0].pid).toBeGreaterThan(0);
+    expect(result.backgroundProcesses[0].command).toBe("(printf 'bg_ok'; sleep 10) &");
     expect(result.effectiveCwd).toBe(fixture.workspaceDir);
+
+    const manager = (fixture.agent.context as unknown as Record<string, any>)._backgroundProcessManager;
+    for (const process of result.backgroundProcesses) {
+      await manager?.stopProcess(process.pid);
+    }
   });
 });

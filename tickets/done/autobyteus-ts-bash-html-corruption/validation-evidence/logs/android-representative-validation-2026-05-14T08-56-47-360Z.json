@@ -1,0 +1,39 @@
+{
+  "runId": "2026-05-14T08-56-47-360Z",
+  "hostPlatform": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "node": "v22.21.1"
+  },
+  "emulatedAndroidEnv": {
+    "ANDROID_ROOT": "/system",
+    "ANDROID_DATA": "/data"
+  },
+  "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-android-representative-DXc8C9",
+  "defaultSessionFactory": "DirectShellSession",
+  "noPathResolverInvocation": {
+    "executable": "/system/bin/sh",
+    "args": [
+      "-c",
+      "printf android_sh"
+    ],
+    "kind": "posix",
+    "processTarget": {
+      "kind": "host"
+    }
+  },
+  "runBashExactWrite": {
+    "expectedHash": "174992ee49dd64e2b0c834a8bba0dd5a7e2386439260408aa2d9a29e687b8f81",
+    "actualHash": "174992ee49dd64e2b0c834a8bba0dd5a7e2386439260408aa2d9a29e687b8f81",
+    "expectedBytes": 109,
+    "actualBytes": 109,
+    "result": {
+      "stdout": "174992ee49dd64e2b0c834a8bba0dd5a7e2386439260408aa2d9a29e687b8f81\n",
+      "stderr": "",
+      "exitCode": 0,
+      "timedOut": false,
+      "effectiveCwd": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-android-representative-DXc8C9",
+      "backgroundProcesses": []
+    }
+  }
+}

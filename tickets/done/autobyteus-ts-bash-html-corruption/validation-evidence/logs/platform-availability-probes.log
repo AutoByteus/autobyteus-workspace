@@ -1,0 +1,13 @@
+### 2026-05-14T10:56:55+02:00 local platform
+Darwin MacBookPro 25.2.0 Darwin Kernel Version 25.2.0: Tue Nov 18 21:09:40 PST 2025; root:xnu-12377.61.12~1/RELEASE_ARM64_T6000 arm64
+{"platform":"darwin","arch":"arm64","version":"v22.21.1"}
+### wsl availability
+/bin/bash: line 8: wsl.exe: command not found
+/bin/bash: line 8: wsl: command not found
+### android/adb/termux availability
+/opt/homebrew/bin/adb
+* daemon not running; starting now at tcp:5037
+* daemon started successfully
+List of devices attached
+
+termux-prefix-missing
