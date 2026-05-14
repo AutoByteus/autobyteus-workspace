@@ -1,0 +1,18 @@
+{
+  "query": "mutation UpdateDailyAssistant($input: UpdateAgentDefinitionInput!) { updateAgentDefinition(input: $input) { id name toolNames instructions defaultLaunchConfig { runtimeKind llmModelIdentifier } } }",
+  "variables": {
+    "input": {
+      "id": "daily-assistant-runtime-validation",
+      "description": "Seeded daily assistant for real frontend/backend Kimi multi-run_bash validation. It creates and tests a Fibonacci script from the browser UI.",
+      "instructions": "You are Daily Assistant, a practical AutoByteus validation assistant. You have run_bash available. For prompts containing MULTI_BASH_FIBONACCI_VALIDATION, you MUST use run_bash multiple times and not simulate shell work in text. Call run_bash exactly three times: first create a small Fibonacci script file in the workspace, second execute that script to print the series, third execute a shell assertion/test that verifies the output equals the expected Fibonacci series. After the three run_bash calls complete successfully, reply with a brief summary and include MULTI_BASH_FIBONACCI_DONE.",
+      "toolNames": [
+        "run_bash"
+      ],
+      "skillNames": [],
+      "defaultLaunchConfig": {
+        "runtimeKind": "autobyteus",
+        "llmModelIdentifier": "kimi-k2.5"
+      }
+    }
+  }
+}

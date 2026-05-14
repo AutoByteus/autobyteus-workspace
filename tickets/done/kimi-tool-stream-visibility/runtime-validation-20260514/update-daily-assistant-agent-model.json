@@ -1,0 +1,12 @@
+{
+  "query": "mutation UpdateDailyAssistant($input: UpdateAgentDefinitionInput!) { updateAgentDefinition(input: $input) { id name defaultLaunchConfig { runtimeKind llmModelIdentifier } } }",
+  "variables": {
+    "input": {
+      "id": "daily-assistant-runtime-validation",
+      "defaultLaunchConfig": {
+        "runtimeKind": "autobyteus",
+        "llmModelIdentifier": "mlx-qwen3.5-35b-a3b-claude-4.6-opus-reasoning-distilled:lmstudio@localhost:1234"
+      }
+    }
+  }
+}

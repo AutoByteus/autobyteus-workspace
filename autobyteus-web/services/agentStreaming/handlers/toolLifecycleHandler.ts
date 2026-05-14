@@ -38,7 +38,6 @@ import {
 } from './toolLifecycleParsers';
 import { setStreamSegmentIdentity } from './segmentIdentity';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
-import { buildInvocationAliases } from '~/utils/invocationAliases';
 import {
   addActivityLog,
   inferSegmentTypeFromTool,
@@ -50,15 +49,13 @@ import {
   upsertActivityFromToolSegment,
 } from './toolActivityProjection';
 
-const resolveToolSegmentByAlias = (
+const resolveToolSegmentById = (
   context: AgentContext,
   invocationId: string,
 ): ToolLifecycleSegment | null => {
-  for (const alias of buildInvocationAliases(invocationId)) {
-    const segment = findSegmentById(context, alias);
-    if (isProjectableToolSegment(segment)) {
-      return segment;
-    }
+  const segment = findSegmentById(context, invocationId);
+  if (isProjectableToolSegment(segment)) {
+    return segment;
   }
   return null;
 };
@@ -138,7 +135,7 @@ const ensureToolLifecycleSegment = (
   toolName: string,
   argumentsPayload: Record<string, any>,
 ): ToolLifecycleSegment => {
-  const existing = resolveToolSegmentByAlias(context, invocationId);
+  const existing = resolveToolSegmentById(context, invocationId);
   if (existing) {
     upsertActivityFromToolSegment(context, invocationId, existing, argumentsPayload);
     return existing;

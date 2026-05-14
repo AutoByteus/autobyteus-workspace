@@ -8,20 +8,12 @@ import type { CodexAppServerMessage } from "./codex-app-server-message.js";
 import { CodexThreadEventName } from "../events/codex-thread-event-name.js";
 import type { CodexThread } from "./codex-thread.js";
 
-const resolveApprovalInvocationCandidates = (params: JsonObject) => {
+const resolveApprovalIdentity = (params: JsonObject) => {
   const itemId = asString(params.itemId);
   const approvalId = asString(params.approvalId);
-  if (!itemId) {
-    return { primary: null, aliases: [], itemId: null, approvalId };
-  }
-  if (!approvalId) {
-    return { primary: itemId, aliases: [], itemId, approvalId: null };
-  }
   return {
-    primary: `${itemId}:${approvalId}`,
-    aliases: [itemId],
-    itemId,
-    approvalId,
+    invocationId: itemId,
+    approvalId: approvalId ?? null,
   };
 };
 
@@ -116,7 +108,6 @@ const handleMcpToolApprovalRequest = ({
     requestId,
     method: "mcpServer/elicitation/request",
     invocationId: pendingCall.invocationId,
-    itemId: pendingCall.invocationId,
     approvalId: null,
     responseMode: "mcp_server_elicitation",
     toolName: resolvedToolName,
@@ -208,8 +199,8 @@ export const handleAppServerRequest = async ({
   const eventMethod = method.trim();
 
   if (isApprovalRequestMethod(eventMethod)) {
-    const invocation = resolveApprovalInvocationCandidates(params);
-    if (!invocation.primary || !invocation.itemId) {
+    const invocation = resolveApprovalIdentity(params);
+    if (!invocation.invocationId) {
       codexThread.client.respondError(requestId, -32602, "Approval request missing itemId.");
       return;
     }
@@ -217,8 +208,7 @@ export const handleAppServerRequest = async ({
     const record: CodexApprovalRecord = {
       requestId,
       method: eventMethod,
-      invocationId: invocation.primary,
-      itemId: invocation.itemId,
+      invocationId: invocation.invocationId,
       approvalId: invocation.approvalId,
       responseMode: "decision",
       toolName:
@@ -226,11 +216,14 @@ export const handleAppServerRequest = async ({
           ? "edit_file"
           : "run_bash",
     };
-    codexThread.recordApprovalRecord(record, invocation.aliases);
+    codexThread.recordApprovalRecord(record);
 
     emitEvent(codexThread, {
       method: eventMethod,
-      params,
+      params: {
+        ...params,
+        invocation_id: invocation.invocationId,
+      },
       request_id: requestId,
     });
     return;
