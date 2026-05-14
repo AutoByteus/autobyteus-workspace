@@ -71,7 +71,7 @@ export class AgentEventScheduler {
     inbox: AgentEventInbox,
     runtimeState: AgentRuntimeState
   ): AgentEventInboxEntry | null {
-    const priority = runtimeState.activeTurn || runtimeState.activeTurnTask ? ACTIVE_TURN_PRIORITY : IDLE_PRIORITY;
+    const priority = runtimeState.activeTurn ? ACTIVE_TURN_PRIORITY : IDLE_PRIORITY;
     for (const lane of priority) {
       const entry = inbox.claimFirst(lane);
       if (entry) {
@@ -134,7 +134,7 @@ export class AgentEventScheduler {
   }
 
   private hasDispatchable(inbox: AgentEventInbox, runtimeState: AgentRuntimeState): boolean {
-    const priority = runtimeState.activeTurn || runtimeState.activeTurnTask ? ACTIVE_TURN_PRIORITY : IDLE_PRIORITY;
+    const priority = runtimeState.activeTurn ? ACTIVE_TURN_PRIORITY : IDLE_PRIORITY;
     return priority.some((lane) => inbox.peekFirst(lane) !== null);
   }
 

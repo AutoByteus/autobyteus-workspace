@@ -13,6 +13,6 @@ export class ToolResultInboxEventHandler implements InboxEventHandler<ActiveTurn
     if (!(entry.event instanceof ToolResultEvent)) {
       throw new TypeError('ToolResultInboxEventHandler requires a ToolResultEvent.');
     }
-    return context.state.postToolResultEventToActiveTurn(entry.event);
+    return context.state.routeToolResultToActiveTurn(entry.event);
   }
 }

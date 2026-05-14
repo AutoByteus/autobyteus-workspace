@@ -241,39 +241,48 @@ export class AgentWorker {
         message: `Agent '${agentId}' is stopping; queued turn trigger will not start.`
       };
     }
-    if (this.context.state.activeTurn || this.context.state.activeTurnTask) {
+    if (this.context.state.activeTurn) {
       return {
         accepted: false,
         code: 'active_turn_exists',
-        activeTurnId: this.context.state.activeTurn?.turnId ?? this.context.state.activeTurnTaskTurnId ?? undefined,
+        activeTurnId: this.context.state.activeTurn.turnId,
         message: `Agent '${agentId}' already has an active turn.`
       };
     }
 
     const turn = this.context.state.startActiveTurn();
-    const task = this.superviseTurnRunner(trigger, turn);
-    this.context.state.registerActiveTurnTask(turn.turnId, task);
+    turn.startExecution({
+      trigger,
+      runnerFactory: () => ({
+        run: (runnerTrigger) => this.runTurn(runnerTrigger, turn)
+      })
+    });
+    void this.observeTurnSettlement(turn);
     return { accepted: true, code: 'turn_started', turnId: turn.turnId };
   }
 
-  private async superviseTurnRunner(trigger: AgentTurnTrigger, turn: NonNullable<AgentContext['state']['activeTurn']>): Promise<TurnOutcome> {
-    let outcome: TurnOutcome;
+  private async runTurn(trigger: AgentTurnTrigger, turn: NonNullable<AgentContext['state']['activeTurn']>): Promise<TurnOutcome> {
     try {
-      outcome = await new AgentTurnRunner(this.context, turn).run(trigger);
-      if (outcome.kind === 'completed') {
-        await this.applyStatusEvent(new AgentIdleEvent(outcome.turnId));
-      }
-      return outcome;
+      return await new AgentTurnRunner(this.context, turn).run(trigger);
     } catch (error) {
       console.error(`AgentWorker '${this.context.agentId}': Active turn runner failed outside normal outcome handling: ${error}`);
       await this.applyStatusEvent(
         new AgentErrorEvent('Active turn runner failed unexpectedly.', String(error))
       );
-      outcome = turn.settle({ kind: 'failed', turnId: turn.turnId, error });
-      return outcome;
+      return { kind: 'failed', turnId: turn.turnId, error };
+    }
+  }
+
+  private async observeTurnSettlement(turn: NonNullable<AgentContext['state']['activeTurn']>): Promise<void> {
+    try {
+      const outcome = await turn.waitForSettlement();
+      if (outcome.kind === 'completed') {
+        await this.applyStatusEvent(new AgentIdleEvent(outcome.turnId));
+      }
+    } catch (error) {
+      console.error(`AgentWorker '${this.context.agentId}': Active turn settlement observer failed: ${error}`);
     } finally {
-      this.context.state.completeActiveTurn(turn.turnId);
-      this.context.state.clearActiveTurnTask(turn.turnId);
+      this.context.state.clearActiveTurnIfStillActive(turn.turnId);
       this.scheduler?.wakeDispatchabilityChanged();
       this.context.state.agentEventInbox?.wakeAvailability();
     }
@@ -293,14 +302,14 @@ export class AgentWorker {
   }
 
   private async waitForActiveRunnerToSettle(): Promise<void> {
-    const activeTask = this.context.state.activeTurnTask;
-    if (!activeTask) {
+    const activeTurn = this.context.state.activeTurn;
+    if (!activeTurn) {
       return;
     }
     try {
-      await activeTask;
+      await activeTurn.waitForSettlement();
     } catch {
-      // superviseTurnRunner already emits status errors; shutdown must continue.
+      // runTurn/observer already emit status errors; shutdown must continue.
     }
   }
 

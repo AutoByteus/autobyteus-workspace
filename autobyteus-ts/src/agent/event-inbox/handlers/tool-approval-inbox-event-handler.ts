@@ -17,7 +17,7 @@ export class ToolApprovalInboxEventHandler implements InboxEventHandler<ActiveTu
     if (!(entry.event instanceof ToolExecutionApprovalEvent)) {
       throw new TypeError('ToolApprovalInboxEventHandler requires a ToolExecutionApprovalEvent.');
     }
-    const result = context.state.postToolApprovalEventToActiveTurn(entry.event);
+    const result = context.state.routeToolApprovalToActiveTurn(entry.event);
     if (result.accepted) {
       entry.event.turnId = result.turnId;
       await this.applyStatusEvent(entry.event);

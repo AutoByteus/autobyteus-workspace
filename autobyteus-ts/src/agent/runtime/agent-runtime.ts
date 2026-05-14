@@ -186,7 +186,8 @@ export class AgentRuntime {
     }
 
     await this.applyEventAndDeriveStatus(new AgentInterruptRequestedEvent(activeTurn.turnId, reason));
-    const result = this.context.state.interruptActiveTurn(reason);
+    const result = activeTurn.interrupt(reason);
+    this.context.state.clearPendingToolApprovalsForTurn(activeTurn.turnId);
     if (!result.accepted && result.status !== 'already_interrupted') {
       return result;
     }
@@ -196,7 +197,7 @@ export class AgentRuntime {
         ? options.timeoutMs
         : 5000;
     const settlement = await Promise.race([
-      activeTurn.settlementPromise,
+      activeTurn.waitForSettlement(),
       delay(timeoutMs).then(() => null)
     ]);
 

@@ -102,9 +102,15 @@ describe('AgentContext', () => {
     const llm = makeLLM();
     const config = new AgentConfig('name', 'role', 'desc', llm);
     const state = new AgentRuntimeState('agent-5');
+    state.memoryManager = {
+      startTurn: () => 'turn-context',
+      createWorkingContextTurnCheckpoint: (turnId: string) => ({ turnId, messages: [], lastCompactionTs: null }),
+      restoreWorkingContextTurnCheckpoint: vi.fn()
+    } as any;
+    const activeTurn = state.startActiveTurn('turn-context');
     const context = new AgentContext('agent-5', config, state);
 
-    const invocation = new ToolInvocation('tool', { a: 1 }, 'inv-1');
+    const invocation = new ToolInvocation('tool', { a: 1 }, 'inv-1', activeTurn.turnId);
 
     context.storePendingToolInvocation(invocation);
     expect(context.pendingToolApprovals['inv-1']).toBe(invocation);

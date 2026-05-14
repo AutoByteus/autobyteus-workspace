@@ -4,6 +4,7 @@ import { AgentEventScheduler } from '../../../../src/agent/event-inbox/agent-eve
 import { AgentRuntimeState } from '../../../../src/agent/context/agent-runtime-state.js';
 import { ToolExecutionApprovalEvent, ToolResultEvent, UserMessageReceivedEvent } from '../../../../src/agent/events/agent-events.js';
 import { AgentInputUserMessage } from '../../../../src/agent/message/agent-input-user-message.js';
+import { AgentTurn } from '../../../../src/agent/agent-turn.js';
 import type { AgentEventSchedulerHandlers } from '../../../../src/agent/event-inbox/agent-event-scheduler.js';
 
 const timeout = <T>(promise: Promise<T>, ms = 1000): Promise<T> =>
@@ -72,8 +73,7 @@ describe('AgentEventScheduler', () => {
   it('does not strand a parked turn-start event when active-turn settlement wakes before wait registration', async () => {
     const inbox = new AgentEventInbox();
     const state = new AgentRuntimeState('agent-lost-wake');
-    state.activeTurnTaskTurnId = 'turn-active';
-    state.activeTurnTask = new Promise<any>(() => undefined);
+    state.activeTurn = new AgentTurn('turn-active');
     const scheduler = new AgentEventScheduler({ state } as any, makeHandlers());
     await inbox.postUserEvent(new UserMessageReceivedEvent(new AgentInputUserMessage('queued')));
 
@@ -83,7 +83,7 @@ describe('AgentEventScheduler', () => {
       const result = originalClaim(candidateInbox, candidateState);
       if (firstClaim) {
         firstClaim = false;
-        state.clearActiveTurnTask('turn-active');
+        state.clearActiveTurnIfStillActive('turn-active');
         scheduler.wakeDispatchabilityChanged();
       }
       return result;
@@ -100,15 +100,14 @@ describe('AgentEventScheduler', () => {
   it('cleans up the losing availability waiter when dispatchability wins', async () => {
     const inbox = new AgentEventInbox();
     const state = new AgentRuntimeState('agent-dispatchability-cleanup');
-    state.activeTurnTaskTurnId = 'turn-active';
-    state.activeTurnTask = new Promise<any>(() => undefined);
+    state.activeTurn = new AgentTurn('turn-active');
     const scheduler = new AgentEventScheduler({ state } as any, makeHandlers());
     await inbox.postUserEvent(new UserMessageReceivedEvent(new AgentInputUserMessage('parked')));
 
     const nextPromise = scheduler.nextDispatchable({ inbox, runtimeState: state });
     expect(await waitForCondition(() => schedulerWaiterCount(scheduler) === 1 && storeWaiterCount(inbox) === 1)).toBe(true);
 
-    state.clearActiveTurnTask('turn-active');
+    state.clearActiveTurnIfStillActive('turn-active');
     scheduler.wakeDispatchabilityChanged();
     const entry = await timeout(nextPromise, 200);
 
@@ -120,8 +119,7 @@ describe('AgentEventScheduler', () => {
   it('cleans up the losing dispatchability waiter when inbox availability wins', async () => {
     const inbox = new AgentEventInbox();
     const state = new AgentRuntimeState('agent-availability-cleanup');
-    state.activeTurnTaskTurnId = 'turn-active';
-    state.activeTurnTask = new Promise<any>(() => undefined);
+    state.activeTurn = new AgentTurn('turn-active');
     const scheduler = new AgentEventScheduler({ state } as any, makeHandlers());
 
     const nextPromise = scheduler.nextDispatchable({ inbox, runtimeState: state });

@@ -4,11 +4,10 @@ import { AgentStatus } from '../status/status-enum.js';
 import { ToolInvocation } from '../tool-invocation.js';
 import { AgentTurn } from '../agent-turn.js';
 import type { AgentEventInbox } from '../event-inbox/agent-event-inbox.js';
-import { RecentSettledInvocationCache } from './recent-settled-invocation-cache.js';
 import { ToDoList } from '../../task-management/todo-list.js';
 import { BaseLLM } from '../../llm/base.js';
 import type { BaseTool } from '../../tools/base-tool.js';
-import type { MemoryManager, WorkingContextTurnCheckpoint } from '../../memory/memory-manager.js';
+import type { MemoryManager } from '../../memory/memory-manager.js';
 import type { WorkingContextSnapshotBootstrapOptions } from '../../memory/restore/working-context-snapshot-bootstrapper.js';
 import {
   normalizeToolApprovalInvocationId,
@@ -18,7 +17,6 @@ import {
 
 import type { AgentStatusDeriver } from '../status/status-deriver.js';
 import type { AgentStatusManager } from '../status/manager.js';
-import type { TurnOutcome } from '../agent-turn.js';
 import {
   normalizeToolResultInvocationId,
   normalizeToolResultTurnId,
@@ -36,18 +34,13 @@ export class AgentRuntimeState {
   eventStore: AgentEventStore | null = null;
   statusDeriver: AgentStatusDeriver | null = null;
   workspaceRootPath: string | null;
-  pendingToolApprovals: Record<string, ToolInvocation>;
   customData: Record<string, any>;
   activeTurn: AgentTurn | null = null;
-  activeTurnTask: Promise<TurnOutcome> | null = null;
-  activeTurnTaskTurnId: string | null = null;
-  recentSettledInvocationIds: RecentSettledInvocationCache;
   todoList: ToDoList | null = null;
   memoryManager: MemoryManager | null = null;
   restoreOptions: WorkingContextSnapshotBootstrapOptions | null = null;
   processedSystemPrompt: string | null = null;
   statusManagerRef: AgentStatusManager | null = null;
-  private activeWorkingContextCheckpoint: WorkingContextTurnCheckpoint | null = null;
 
   constructor(
     agentId: string,
@@ -69,9 +62,7 @@ export class AgentRuntimeState {
     this.agentId = agentId;
     this.currentStatus = AgentStatus.UNINITIALIZED;
     this.workspaceRootPath = workspaceRootPath;
-    this.pendingToolApprovals = {};
     this.customData = customData ?? {};
-    this.recentSettledInvocationIds = new RecentSettledInvocationCache();
 
     console.info(
       `AgentRuntimeState initialized for agent_id '${this.agentId}'. Initial status: ${this.currentStatus}. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.`
@@ -79,6 +70,10 @@ export class AgentRuntimeState {
   }
 
   startActiveTurn(turnId?: string | null): AgentTurn {
+    if (this.activeTurn && !this.activeTurn.isSettled) {
+      throw new Error(`Agent '${this.agentId}' already has active turn '${this.activeTurn.turnId}'.`);
+    }
+
     const memoryManager = this.memoryManager;
     if (!memoryManager) {
       throw new Error(`Agent '${this.agentId}': Cannot start a turn without a memory manager.`);
@@ -87,12 +82,12 @@ export class AgentRuntimeState {
     const nextTurnId =
       typeof turnId === 'string' && turnId.trim().length > 0 ? turnId.trim() : memoryManager.startTurn();
     const nextTurn = new AgentTurn(nextTurnId);
-    this.activeWorkingContextCheckpoint = memoryManager.createWorkingContextTurnCheckpoint(nextTurnId);
+    nextTurn.setWorkingContextCheckpoint(memoryManager.createWorkingContextTurnCheckpoint(nextTurnId));
     this.activeTurn = nextTurn;
     return nextTurn;
   }
 
-  completeActiveTurn(turnId?: string | null): string | null {
+  clearActiveTurnIfStillActive(turnId?: string | null): string | null {
     const resolvedTurnId =
       typeof turnId === 'string' && turnId.trim().length > 0
         ? turnId.trim()
@@ -104,45 +99,17 @@ export class AgentRuntimeState {
     if (this.activeTurn?.turnId === resolvedTurnId) {
       this.activeTurn = null;
     }
-    if (this.activeWorkingContextCheckpoint?.turnId === resolvedTurnId) {
-      this.activeWorkingContextCheckpoint = null;
-    }
-    return resolvedTurnId;
-  }
-
-  registerActiveTurnTask(turnId: string, task: Promise<TurnOutcome>): void {
-    if (!turnId || typeof turnId !== 'string') {
-      throw new Error(`Agent '${this.agentId}': active turn task requires a non-empty turnId.`);
-    }
-    this.activeTurnTaskTurnId = turnId;
-    this.activeTurnTask = task;
-  }
-
-  clearActiveTurnTask(turnId?: string | null): string | null {
-    const resolvedTurnId =
-      typeof turnId === 'string' && turnId.trim().length > 0
-        ? turnId.trim()
-        : this.activeTurnTaskTurnId;
-    if (!resolvedTurnId) {
-      return null;
-    }
-    if (this.activeTurnTaskTurnId === resolvedTurnId) {
-      this.activeTurnTask = null;
-      this.activeTurnTaskTurnId = null;
-    }
     return resolvedTurnId;
   }
 
   restoreWorkingContextForInterruptedTurn(turnId: string): boolean {
-    const checkpoint = this.activeWorkingContextCheckpoint;
+    const activeTurn = this.activeTurn;
     const memoryManager = this.memoryManager;
-    if (!checkpoint || checkpoint.turnId !== turnId || !memoryManager) {
+    if (!activeTurn || activeTurn.turnId !== turnId || !memoryManager) {
       return false;
     }
 
-    memoryManager.restoreWorkingContextTurnCheckpoint(checkpoint);
-    this.activeWorkingContextCheckpoint = null;
-    return true;
+    return activeTurn.restoreWorkingContextCheckpoint(memoryManager);
   }
 
   interruptActiveTurn(reason: string): import('../interruption/agent-interruption.js').AgentInterruptResult {
@@ -157,22 +124,16 @@ export class AgentRuntimeState {
     }
     const result = this.activeTurn.interrupt(reason);
     this.clearPendingToolApprovalsForTurn(this.activeTurn.turnId);
-    const activeBatch = this.activeTurn.activeToolInvocationBatch;
-    if (activeBatch) {
-      this.recentSettledInvocationIds.addMany(activeBatch.getExpectedInvocationIds());
-    }
     return result;
   }
 
   clearPendingToolApprovalsForTurn(turnId: string): void {
-    for (const [invocationId, invocation] of Object.entries(this.pendingToolApprovals)) {
-      if (!invocation.turnId || invocation.turnId === turnId) {
-        delete this.pendingToolApprovals[invocationId];
-      }
+    if (this.activeTurn?.turnId === turnId) {
+      this.activeTurn.clearPendingToolApprovals();
     }
   }
 
-  postToolApprovalEventToActiveTurn(event: ToolExecutionApprovalEvent): PostToolApprovalResult {
+  routeToolApprovalToActiveTurn(event: ToolExecutionApprovalEvent): PostToolApprovalResult {
     const invocationId = normalizeToolApprovalInvocationId(event.toolInvocationId) ?? String(event.toolInvocationId ?? '');
     const activeTurn = this.activeTurn;
     if (!activeTurn) {
@@ -196,69 +157,10 @@ export class AgentRuntimeState {
       };
     }
 
-    if (activeTurn.isSettled) {
-      return {
-        accepted: false,
-        code: 'stale_turn',
-        invocationId,
-        turnId: activeTurn.turnId,
-        activeTurnId: activeTurn.turnId,
-        message: `Tool approval '${invocationId}' targets already-settled turn '${activeTurn.turnId}'.`
-      };
-    }
-
-    if (activeTurn.executionScope.isInterrupted) {
-      return {
-        accepted: false,
-        code: 'interrupted_turn',
-        invocationId,
-        turnId: activeTurn.turnId,
-        message: `Tool approval '${invocationId}' targets interrupted turn '${activeTurn.turnId}'.`
-      };
-    }
-
-    const pendingInvocation = this.pendingToolApprovals[invocationId];
-    if (!pendingInvocation || (pendingInvocation.turnId && pendingInvocation.turnId !== activeTurn.turnId)) {
-      return {
-        accepted: false,
-        code: 'no_pending_invocation',
-        invocationId,
-        turnId: activeTurn.turnId,
-        message: `Tool approval invocation '${invocationId}' is not pending for active turn '${activeTurn.turnId}'.`
-      };
-    }
-
-    event.toolInvocationId = invocationId;
-    event.turnId = activeTurn.turnId;
-    const postResult = activeTurn.toolInputPort.postApproval(event);
-    if (!postResult.accepted) {
-      const code = postResult.code === 'closed' ? 'interrupted_turn' : 'no_pending_invocation';
-      return code === 'interrupted_turn'
-        ? {
-            accepted: false,
-            code,
-            invocationId,
-            turnId: activeTurn.turnId,
-            message: postResult.message ?? `Tool approval '${invocationId}' could not be posted to interrupted turn.`
-          }
-        : {
-            accepted: false,
-            code,
-            invocationId,
-            turnId: activeTurn.turnId,
-            message: postResult.message ?? `Tool approval '${invocationId}' is not pending.`
-          };
-    }
-
-    return {
-      accepted: true,
-      code: 'posted',
-      turnId: activeTurn.turnId,
-      invocationId
-    };
+    return activeTurn.postToolApproval(event);
   }
 
-  postToolResultEventToActiveTurn(event: ToolResultEvent): PostToolResultResult {
+  routeToolResultToActiveTurn(event: ToolResultEvent): PostToolResultResult {
     const invocationId = normalizeToolResultInvocationId(event.toolInvocationId) ?? String(event.toolInvocationId ?? '');
     const activeTurn = this.activeTurn;
     if (!activeTurn) {
@@ -282,87 +184,7 @@ export class AgentRuntimeState {
       };
     }
 
-    if (activeTurn.isSettled) {
-      return {
-        accepted: false,
-        code: 'stale_turn',
-        invocationId,
-        turnId: activeTurn.turnId,
-        activeTurnId: activeTurn.turnId,
-        message: `Tool result '${invocationId}' targets already-settled turn '${activeTurn.turnId}'.`
-      };
-    }
-
-    if (activeTurn.executionScope.isInterrupted) {
-      return {
-        accepted: false,
-        code: 'interrupted_turn',
-        invocationId,
-        turnId: activeTurn.turnId,
-        message: `Tool result '${invocationId}' targets interrupted turn '${activeTurn.turnId}'.`
-      };
-    }
-
-    const activeBatch = activeTurn.activeToolInvocationBatch;
-    if (!activeBatch || !activeBatch.getExpectedInvocationIds().includes(invocationId)) {
-      return {
-        accepted: false,
-        code: 'no_pending_invocation',
-        invocationId,
-        turnId: activeTurn.turnId,
-        message: `Tool result invocation '${invocationId}' is not pending for active turn '${activeTurn.turnId}'.`
-      };
-    }
-
-    if (!activeTurn.toolInputPort.hasToolResultWaiter(invocationId)) {
-      return {
-        accepted: false,
-        code: 'no_result_consumer',
-        invocationId,
-        turnId: activeTurn.turnId,
-        message: `Tool result invocation '${invocationId}' has no active external result consumer for turn '${activeTurn.turnId}'.`
-      };
-    }
-
-    event.toolInvocationId = invocationId;
-    event.turnId = activeTurn.turnId;
-    const postResult = activeTurn.toolInputPort.postToolResult(event);
-    if (!postResult.accepted) {
-      if (postResult.code === 'closed') {
-        return {
-          accepted: false,
-          code: 'interrupted_turn',
-          invocationId,
-          turnId: activeTurn.turnId,
-          message: postResult.message ?? `Tool result '${invocationId}' could not be posted to interrupted turn.`
-        };
-      }
-      if (postResult.code === 'no_waiter') {
-        return {
-          accepted: false,
-          code: 'no_result_consumer',
-          invocationId,
-          turnId: activeTurn.turnId,
-          message:
-            postResult.message ??
-            `Tool result invocation '${invocationId}' has no active external result consumer for turn '${activeTurn.turnId}'.`
-        };
-      }
-      return {
-        accepted: false,
-        code: 'no_pending_invocation',
-        invocationId,
-        turnId: activeTurn.turnId,
-        message: postResult.message ?? `Tool result '${invocationId}' is not pending.`
-      };
-    }
-
-    return {
-      accepted: true,
-      code: 'posted',
-      turnId: activeTurn.turnId,
-      invocationId
-    };
+    return activeTurn.postToolResult(event);
   }
 
   shouldEnterIdleAfterLlmResponse(currentStatus: AgentStatus): boolean {
@@ -370,6 +192,10 @@ export class AgentRuntimeState {
       currentStatus === AgentStatus.ANALYZING_LLM_RESPONSE &&
       Object.keys(this.pendingToolApprovals).length === 0
     );
+  }
+
+  get pendingToolApprovals(): Record<string, ToolInvocation> {
+    return this.activeTurn?.pendingToolApprovalsSnapshot ?? {};
   }
 
   resolveTurnIdForIdleEvent(fallbackTurnId?: string | null): string | null {
@@ -389,16 +215,23 @@ export class AgentRuntimeState {
       );
       return;
     }
-    this.pendingToolApprovals[invocation.id] = invocation;
+    const activeTurn = this.activeTurn;
+    if (activeTurn && activeTurn.turnId === invocation.turnId) {
+      activeTurn.storePendingToolInvocation(invocation);
+    } else {
+      console.error(
+        `Agent '${this.agentId}': Cannot store pending tool invocation '${invocation.id}' without matching active turn '${invocation.turnId ?? 'unknown'}'.`
+      );
+      return;
+    }
     console.info(
       `Agent '${this.agentId}': Stored pending tool invocation '${invocation.id}' (${invocation.name}).`
     );
   }
 
   retrievePendingToolInvocation(invocationId: string): ToolInvocation | undefined {
-    const invocation = this.pendingToolApprovals[invocationId];
+    const invocation = this.activeTurn?.retrievePendingToolInvocation(invocationId);
     if (invocation) {
-      delete this.pendingToolApprovals[invocationId];
       console.info(
         `Agent '${this.agentId}': Retrieved pending tool invocation '${invocationId}' (${invocation.name}).`
       );

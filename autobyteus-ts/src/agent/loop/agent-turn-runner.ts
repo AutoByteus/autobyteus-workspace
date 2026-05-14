@@ -67,7 +67,7 @@ export class AgentTurnRunner {
           });
           this.turn.executionScope.throwIfAborted({ kind: 'post_llm_response_pipeline' });
           this.notifier?.notifyAgentTurnCompleted(turnId);
-          return this.turn.settle({ kind: 'completed', turnId });
+          return { kind: 'completed', turnId };
         }
 
         for (const invocation of llmOutcome.toolInvocations) {
@@ -96,12 +96,7 @@ export class AgentTurnRunner {
         this.turn.executionScope.throwIfAborted({ kind: 'post_tool_terminal_lifecycle' });
         const activeBatch = this.turn.activeToolInvocationBatch;
         if (activeBatch) {
-          this.context.state.recentSettledInvocationIds.addMany(activeBatch.getExpectedInvocationIds());
           this.turn.clearActiveToolInvocationBatch(activeBatch);
-        } else {
-          this.context.state.recentSettledInvocationIds.addMany(
-            processedResults.map((event) => event.toolInvocationId).filter((id): id is string => Boolean(id))
-          );
         }
 
         const continuationInput = this.continuationBuilder.build(processedResults, {
@@ -124,7 +119,7 @@ export class AgentTurnRunner {
         this.context.state.restoreWorkingContextForInterruptedTurn(turnId);
         this.notifier?.notifyAgentTurnInterrupted(turnId, reason);
         await this.applyStatusEvent(new AgentTurnInterruptedEvent(turnId, reason));
-        return this.turn.settle({ kind: 'interrupted', turnId, reason });
+        return { kind: 'interrupted', turnId, reason };
       }
 
       const errorMessage = `Agent turn '${turnId}' failed: ${String(error)}`;
@@ -134,7 +129,7 @@ export class AgentTurnRunner {
         error instanceof Error ? error.stack : String(error)
       );
       await this.applyStatusEvent(new AgentErrorEvent(errorMessage, String(error)));
-      return this.turn.settle({ kind: 'failed', turnId, error });
+      return { kind: 'failed', turnId, error };
     }
   }
 

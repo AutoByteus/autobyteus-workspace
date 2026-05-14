@@ -3,6 +3,16 @@ import { ToolInvocationBatch } from './tool-invocation-batch.js';
 import { TurnToolInputPort } from './loop/turn-tool-input-port.js';
 import { TurnExecutionScope } from './interruption/turn-execution-scope.js';
 import type { AgentInterruptResult } from './interruption/agent-interruption.js';
+import { ToolExecutionApprovalEvent, ToolResultEvent } from './events/agent-events.js';
+import {
+  normalizeToolApprovalInvocationId,
+  type PostToolApprovalResult
+} from './tool-approval-result.js';
+import {
+  normalizeToolResultInvocationId,
+  type PostToolResultResult
+} from './tool-result-posting.js';
+import type { MemoryManager, WorkingContextTurnCheckpoint } from '../memory/memory-manager.js';
 
 export type TurnOutcome =
   | { kind: 'completed'; turnId: string }
@@ -10,15 +20,28 @@ export type TurnOutcome =
   | { kind: 'failed'; turnId: string; error: unknown }
   | { kind: 'stopped'; turnId: string; reason: string };
 
+export type AgentTurnRunnerLike<TTrigger> = {
+  run(trigger: TTrigger): Promise<TurnOutcome>;
+};
+
+export type AgentTurnExecutionOptions<TTrigger> = {
+  trigger: TTrigger;
+  runnerFactory: () => AgentTurnRunnerLike<TTrigger>;
+  onUnexpectedError?: (error: unknown) => Promise<TurnOutcome> | TurnOutcome;
+};
+
 export class AgentTurn {
   turnId: string;
   readonly toolInputPort: TurnToolInputPort;
   readonly executionScope: TurnExecutionScope;
   toolInvocationBatches: ToolInvocationBatch[] = [];
   activeToolInvocationBatch: ToolInvocationBatch | null = null;
+  private readonly pendingToolApprovals = new Map<string, ToolInvocation>();
+  private executionPromise: Promise<TurnOutcome> | null = null;
   private settledOutcome: TurnOutcome | null = null;
   private settlementResolve!: (outcome: TurnOutcome) => void;
-  readonly settlementPromise: Promise<TurnOutcome>;
+  private readonly settlementPromise: Promise<TurnOutcome>;
+  private workingContextCheckpoint: WorkingContextTurnCheckpoint | null = null;
 
   constructor(turnId: string) {
     if (!turnId) {
@@ -40,6 +63,55 @@ export class AgentTurn {
     return this.settledOutcome;
   }
 
+  get pendingToolApprovalsSnapshot(): Record<string, ToolInvocation> {
+    return Object.fromEntries(this.pendingToolApprovals.entries());
+  }
+
+  startExecution<TTrigger>(options: AgentTurnExecutionOptions<TTrigger>): void {
+    if (this.executionPromise) {
+      throw new Error(`Turn '${this.turnId}' execution has already started.`);
+    }
+
+    this.executionPromise = (async () => {
+      try {
+        const runner = options.runnerFactory();
+        const outcome = await runner.run(options.trigger);
+        return this.settle(outcome);
+      } catch (error) {
+        const outcome = options.onUnexpectedError
+          ? await options.onUnexpectedError(error)
+          : { kind: 'failed' as const, turnId: this.turnId, error };
+        return this.settle(outcome);
+      }
+    })();
+
+    void this.executionPromise.catch(() => undefined);
+  }
+
+  waitForSettlement(): Promise<TurnOutcome> {
+    return this.settlementPromise;
+  }
+
+  setWorkingContextCheckpoint(checkpoint: WorkingContextTurnCheckpoint): void {
+    if (checkpoint.turnId !== this.turnId) {
+      throw new Error(
+        `Working context checkpoint belongs to turn '${checkpoint.turnId}', not '${this.turnId}'.`
+      );
+    }
+    this.workingContextCheckpoint = checkpoint;
+  }
+
+  restoreWorkingContextCheckpoint(memoryManager: MemoryManager): boolean {
+    const checkpoint = this.workingContextCheckpoint;
+    if (!checkpoint || checkpoint.turnId !== this.turnId) {
+      return false;
+    }
+
+    memoryManager.restoreWorkingContextTurnCheckpoint(checkpoint);
+    this.workingContextCheckpoint = null;
+    return true;
+  }
+
   interrupt(reason: string): AgentInterruptResult {
     if (this.settledOutcome) {
       return {
@@ -55,6 +127,183 @@ export class AgentTurn {
     return result;
   }
 
+  storePendingToolInvocation(invocation: ToolInvocation): void {
+    if (!invocation || !invocation.id) {
+      return;
+    }
+    if (invocation.turnId && invocation.turnId !== this.turnId) {
+      throw new Error(
+        `Pending tool invocation '${invocation.id}' belongs to turn '${invocation.turnId}', not '${this.turnId}'.`
+      );
+    }
+    invocation.turnId = this.turnId;
+    this.pendingToolApprovals.set(invocation.id, invocation);
+    this.toolInputPort.registerToolInvocation(invocation.id);
+  }
+
+  retrievePendingToolInvocation(invocationId: string): ToolInvocation | undefined {
+    const invocation = this.pendingToolApprovals.get(invocationId);
+    if (invocation) {
+      this.pendingToolApprovals.delete(invocationId);
+    }
+    return invocation;
+  }
+
+  clearPendingToolApprovals(): void {
+    this.pendingToolApprovals.clear();
+  }
+
+  postToolApproval(event: ToolExecutionApprovalEvent): PostToolApprovalResult {
+    const invocationId = normalizeToolApprovalInvocationId(event.toolInvocationId) ?? String(event.toolInvocationId ?? '');
+
+    if (this.isSettled) {
+      return {
+        accepted: false,
+        code: 'stale_turn',
+        invocationId,
+        turnId: this.turnId,
+        activeTurnId: this.turnId,
+        message: `Tool approval '${invocationId}' targets already-settled turn '${this.turnId}'.`
+      };
+    }
+
+    if (this.executionScope.isInterrupted) {
+      return {
+        accepted: false,
+        code: 'interrupted_turn',
+        invocationId,
+        turnId: this.turnId,
+        message: `Tool approval '${invocationId}' targets interrupted turn '${this.turnId}'.`
+      };
+    }
+
+    const pendingInvocation = this.pendingToolApprovals.get(invocationId);
+    if (!pendingInvocation || (pendingInvocation.turnId && pendingInvocation.turnId !== this.turnId)) {
+      return {
+        accepted: false,
+        code: 'no_pending_invocation',
+        invocationId,
+        turnId: this.turnId,
+        message: `Tool approval invocation '${invocationId}' is not pending for active turn '${this.turnId}'.`
+      };
+    }
+
+    event.toolInvocationId = invocationId;
+    event.turnId = this.turnId;
+    const postResult = this.toolInputPort.postApproval(event);
+    if (!postResult.accepted) {
+      const code = postResult.code === 'closed' ? 'interrupted_turn' : 'no_pending_invocation';
+      return code === 'interrupted_turn'
+        ? {
+            accepted: false,
+            code,
+            invocationId,
+            turnId: this.turnId,
+            message: postResult.message ?? `Tool approval '${invocationId}' could not be posted to interrupted turn.`
+          }
+        : {
+            accepted: false,
+            code,
+            invocationId,
+            turnId: this.turnId,
+            message: postResult.message ?? `Tool approval '${invocationId}' is not pending.`
+          };
+    }
+
+    return {
+      accepted: true,
+      code: 'posted',
+      turnId: this.turnId,
+      invocationId
+    };
+  }
+
+  postToolResult(event: ToolResultEvent): PostToolResultResult {
+    const invocationId = normalizeToolResultInvocationId(event.toolInvocationId) ?? String(event.toolInvocationId ?? '');
+
+    if (this.isSettled) {
+      return {
+        accepted: false,
+        code: 'stale_turn',
+        invocationId,
+        turnId: this.turnId,
+        activeTurnId: this.turnId,
+        message: `Tool result '${invocationId}' targets already-settled turn '${this.turnId}'.`
+      };
+    }
+
+    if (this.executionScope.isInterrupted) {
+      return {
+        accepted: false,
+        code: 'interrupted_turn',
+        invocationId,
+        turnId: this.turnId,
+        message: `Tool result '${invocationId}' targets interrupted turn '${this.turnId}'.`
+      };
+    }
+
+    const activeBatch = this.activeToolInvocationBatch;
+    if (!activeBatch || !activeBatch.getExpectedInvocationIds().includes(invocationId)) {
+      return {
+        accepted: false,
+        code: 'no_pending_invocation',
+        invocationId,
+        turnId: this.turnId,
+        message: `Tool result invocation '${invocationId}' is not pending for active turn '${this.turnId}'.`
+      };
+    }
+
+    if (!this.toolInputPort.hasToolResultWaiter(invocationId)) {
+      return {
+        accepted: false,
+        code: 'no_result_consumer',
+        invocationId,
+        turnId: this.turnId,
+        message: `Tool result invocation '${invocationId}' has no active external result consumer for turn '${this.turnId}'.`
+      };
+    }
+
+    event.toolInvocationId = invocationId;
+    event.turnId = this.turnId;
+    const postResult = this.toolInputPort.postToolResult(event);
+    if (!postResult.accepted) {
+      if (postResult.code === 'closed') {
+        return {
+          accepted: false,
+          code: 'interrupted_turn',
+          invocationId,
+          turnId: this.turnId,
+          message: postResult.message ?? `Tool result '${invocationId}' could not be posted to interrupted turn.`
+        };
+      }
+      if (postResult.code === 'no_waiter') {
+        return {
+          accepted: false,
+          code: 'no_result_consumer',
+          invocationId,
+          turnId: this.turnId,
+          message:
+            postResult.message ??
+            `Tool result invocation '${invocationId}' has no active external result consumer for turn '${this.turnId}'.`
+        };
+      }
+      return {
+        accepted: false,
+        code: 'no_pending_invocation',
+        invocationId,
+        turnId: this.turnId,
+        message: postResult.message ?? `Tool result '${invocationId}' is not pending.`
+      };
+    }
+
+    return {
+      accepted: true,
+      code: 'posted',
+      turnId: this.turnId,
+      invocationId
+    };
+  }
+
   settle(outcome: TurnOutcome): TurnOutcome {
     if (this.settledOutcome) {
       return this.settledOutcome;
@@ -62,6 +311,8 @@ export class AgentTurn {
     this.settledOutcome = outcome;
     this.executionScope.markSettled();
     this.toolInputPort.close(outcome.kind === 'completed' ? 'completed' : outcome.kind);
+    this.pendingToolApprovals.clear();
+    this.workingContextCheckpoint = null;
     this.settlementResolve(outcome);
     return outcome;
   }

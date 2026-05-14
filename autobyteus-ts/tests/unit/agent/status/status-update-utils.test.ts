@@ -68,14 +68,20 @@ describe('status_update_utils', () => {
 
   it('builds status update data for execution approval unknown tool', () => {
     const event = new ToolExecutionApprovalEvent('missing', true);
-    agentContext.state.pendingToolApprovals = {};
     const data = buildStatusUpdateData(event, agentContext, AgentStatus.EXECUTING_TOOL);
     expect(data).toEqual({ tool_name: 'unknown_tool' });
   });
 
   it('builds status update data for tool denied', () => {
     const invocation = new ToolInvocation('deny_tool', {}, 'tid3');
-    agentContext.state.pendingToolApprovals = { tid3: invocation };
+    agentContext.state.memoryManager = {
+      startTurn: () => 'turn-deny',
+      createWorkingContextTurnCheckpoint: (turnId: string) => ({ turnId, messages: [], lastCompactionTs: null }),
+      restoreWorkingContextTurnCheckpoint: () => undefined
+    } as any;
+    const activeTurn = agentContext.state.startActiveTurn('turn-deny');
+    invocation.turnId = activeTurn.turnId;
+    agentContext.state.storePendingToolInvocation(invocation);
     const event = new ToolExecutionApprovalEvent('tid3', false);
     const data = buildStatusUpdateData(event, agentContext, AgentStatus.TOOL_DENIED);
     expect(data).toEqual({ tool_name: 'deny_tool', denial_for_tool: 'deny_tool' });

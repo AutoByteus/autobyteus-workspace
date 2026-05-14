@@ -32,6 +32,14 @@ class InMemoryStore extends MemoryStore {
   }
 }
 
+const attachMemoryManager = (state: AgentRuntimeState, turnId = 'turn-test'): void => {
+  state.memoryManager = {
+    startTurn: () => turnId,
+    createWorkingContextTurnCheckpoint: (id: string) => ({ turnId: id, messages: [], lastCompactionTs: null }),
+    restoreWorkingContextTurnCheckpoint: vi.fn()
+  } as any;
+};
+
 describe('AgentRuntimeState', () => {
   beforeEach(() => {
     vi.spyOn(console, 'info').mockImplementation(() => undefined);
@@ -76,7 +84,9 @@ describe('AgentRuntimeState', () => {
 
   it('stores and retrieves pending tool invocations', () => {
     const state = new AgentRuntimeState('agent-4');
-    const invocation = new ToolInvocation('tool', { foo: 'bar' }, 'inv-1');
+    attachMemoryManager(state, 'turn-pending');
+    const activeTurn = state.startActiveTurn('turn-pending');
+    const invocation = new ToolInvocation('tool', { foo: 'bar' }, 'inv-1', activeTurn.turnId);
 
     state.storePendingToolInvocation(invocation);
     expect(state.pendingToolApprovals['inv-1']).toBe(invocation);
@@ -105,10 +115,12 @@ describe('AgentRuntimeState', () => {
 
     expect(state.shouldEnterIdleAfterLlmResponse(AgentStatus.ANALYZING_LLM_RESPONSE)).toBe(true);
 
-    state.pendingToolApprovals = { inv1: new ToolInvocation('tool', {}, 'inv1') };
+    attachMemoryManager(state, 'turn-idle');
+    const activeTurn = state.startActiveTurn('turn-idle');
+    state.storePendingToolInvocation(new ToolInvocation('tool', {}, 'inv1', activeTurn.turnId));
     expect(state.shouldEnterIdleAfterLlmResponse(AgentStatus.ANALYZING_LLM_RESPONSE)).toBe(false);
 
-    state.pendingToolApprovals = {};
+    state.clearPendingToolApprovalsForTurn(activeTurn.turnId);
     expect(state.shouldEnterIdleAfterLlmResponse(AgentStatus.ANALYZING_LLM_RESPONSE)).toBe(true);
     expect(state.shouldEnterIdleAfterLlmResponse(AgentStatus.AWAITING_LLM_RESPONSE)).toBe(false);
   });
@@ -180,7 +192,7 @@ describe('AgentRuntimeState', () => {
     const activeTurn = state.startActiveTurn('turn-1');
     activeTurn.startToolInvocationBatch([new ToolInvocation('tool', {}, 'inv-approval', 'turn-1')]);
 
-    const autoExecuteResult = state.postToolApprovalEventToActiveTurn(new ToolExecutionApprovalEvent('inv-approval', true, undefined, 'turn-1'));
+    const autoExecuteResult = state.routeToolApprovalToActiveTurn(new ToolExecutionApprovalEvent('inv-approval', true, undefined, 'turn-1'));
     expect(autoExecuteResult.accepted).toBe(false);
     expect(autoExecuteResult.code).toBe('no_pending_invocation');
 
@@ -188,7 +200,7 @@ describe('AgentRuntimeState', () => {
     const waitPromise = activeTurn.toolInputPort.waitForApproval('inv-approval', {
       signal: activeTurn.executionScope.signal
     });
-    const posted = state.postToolApprovalEventToActiveTurn(new ToolExecutionApprovalEvent('inv-approval', true, undefined, 'turn-1'));
+    const posted = state.routeToolApprovalToActiveTurn(new ToolExecutionApprovalEvent('inv-approval', true, undefined, 'turn-1'));
 
     expect(posted).toEqual({ accepted: true, code: 'posted', turnId: 'turn-1', invocationId: 'inv-approval' });
     await expect(waitPromise).resolves.toMatchObject({ isApproved: true, toolInvocationId: 'inv-approval' });
@@ -203,19 +215,19 @@ describe('AgentRuntimeState', () => {
     } as any;
     const activeTurn = state.startActiveTurn('turn-1');
 
-    const noPending = state.postToolResultEventToActiveTurn(new ToolResultEvent('tool', { ok: true }, 'inv-result', undefined, undefined, 'turn-1'));
+    const noPending = state.routeToolResultToActiveTurn(new ToolResultEvent('tool', { ok: true }, 'inv-result', undefined, undefined, 'turn-1'));
     expect(noPending.accepted).toBe(false);
     expect(noPending.code).toBe('no_pending_invocation');
 
     activeTurn.startToolInvocationBatch([new ToolInvocation('tool', {}, 'inv-result', 'turn-1')]);
-    const noConsumer = state.postToolResultEventToActiveTurn(new ToolResultEvent('tool', { ok: true }, 'inv-result', undefined, undefined, 'turn-1'));
+    const noConsumer = state.routeToolResultToActiveTurn(new ToolResultEvent('tool', { ok: true }, 'inv-result', undefined, undefined, 'turn-1'));
     expect(noConsumer.accepted).toBe(false);
     expect(noConsumer.code).toBe('no_result_consumer');
 
     const waitPromise = activeTurn.toolInputPort.waitForToolResult('inv-result', {
       signal: activeTurn.executionScope.signal
     });
-    const posted = state.postToolResultEventToActiveTurn(new ToolResultEvent('tool', { ok: true }, 'inv-result', undefined, undefined, 'turn-1'));
+    const posted = state.routeToolResultToActiveTurn(new ToolResultEvent('tool', { ok: true }, 'inv-result', undefined, undefined, 'turn-1'));
 
     expect(posted).toEqual({ accepted: true, code: 'posted', turnId: 'turn-1', invocationId: 'inv-result' });
     await expect(waitPromise).resolves.toMatchObject({

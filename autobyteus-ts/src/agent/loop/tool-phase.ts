@@ -143,12 +143,6 @@ export class ToolPhase {
       return new ToolResultEvent(toolName, executionResult, invocationId, undefined, arguments_, activeTurnId, false);
     } catch (error) {
       if (isAgentInterruptionError(error)) {
-        const activeBatch = turn.activeToolInvocationBatch;
-        if (activeBatch) {
-          context.state.recentSettledInvocationIds.addMany(activeBatch.getExpectedInvocationIds());
-        } else {
-          context.state.recentSettledInvocationIds.add(invocationId);
-        }
         notifier?.notifyAgentToolExecutionInterrupted({
           ...buildToolLifecyclePayloadFromInvocation(agentId, toolInvocation),
           reason: error.reason,
@@ -243,12 +237,6 @@ export class ToolPhase {
       );
     } catch (error) {
       if (isAgentInterruptionError(error)) {
-        const activeBatch = turn.activeToolInvocationBatch;
-        if (activeBatch) {
-          context.state.recentSettledInvocationIds.addMany(activeBatch.getExpectedInvocationIds());
-        } else {
-          context.state.recentSettledInvocationIds.add(toolInvocation.id);
-        }
         notifier?.notifyAgentToolExecutionInterrupted({
           ...buildToolLifecyclePayloadFromInvocation(context.agentId, toolInvocation),
           reason: error.reason,
@@ -288,7 +276,6 @@ export class ToolPhase {
     if (message.error) {
       notifier?.notifyAgentErrorOutputGeneration(`ToolExecution.ExternalResult.${toolName}`, message.error);
     }
-    context.state.recentSettledInvocationIds.add(invocationId);
   }
 
   private async waitForApproval(
@@ -351,13 +338,6 @@ export class ToolPhase {
     notifier: AgentExternalEventNotifier | null,
     reason: string
   ): void {
-    const activeBatch = turn.activeToolInvocationBatch;
-    if (activeBatch) {
-      context.state.recentSettledInvocationIds.addMany(activeBatch.getExpectedInvocationIds());
-    } else {
-      context.state.recentSettledInvocationIds.add(toolInvocation.id);
-    }
-
     notifier?.notifyAgentToolExecutionInterrupted({
       ...buildToolLifecyclePayloadFromInvocation(context.agentId, toolInvocation),
       arguments: toolInvocation.arguments,
