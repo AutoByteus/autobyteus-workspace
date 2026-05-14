@@ -1,0 +1,30 @@
+{
+  "capturedAt": "2026-05-14T04:50:43.666Z",
+  "frontendUrl": "http://127.0.0.1:3002/workspace",
+  "backendUrl": "http://127.0.0.1:8000/graphql",
+  "runtime": "codex_app_server",
+  "selectedModel": "OpenAI / GPT-5.5 (default reasoning: medium)",
+  "promptMarker": "CODEX_GPT55_FIVE_SEPARATE_TOOL_CALLS_E2E",
+  "browserValidation": {
+    "hasDoneMarker": true,
+    "doneMarker": "CODEX_GPT55_FIVE_TOOL_CALLS_DONE",
+    "assertionOutputObserved": "CODEX_MULTI_ASSERT_OK",
+    "activityEventCountText": "Activity 5 Events",
+    "activitySuccessCount": 5,
+    "visibleTranscriptToolCards": [
+      "run_bash · /bin/bash -lc \"printf 'CODEX_MULTI_STEP_1\\\\n' > codex_multi_validation.txt\"",
+      "run_bash · /bin/bash -lc \"printf 'CODEX_MULTI_STEP_2\\\\n' >> codex_multi_validation.txt\"",
+      "run_bash · /bin/bash -lc 'cat codex_multi_validation.txt'",
+      "run_bash · /bin/bash -lc 'wc -l codex_multi_validation.txt'",
+      "run_bash · /bin/bash -lc 'grep -q CODEX_MULTI_STEP_2 codex_multi_validation.txt && echo CODEX_MULTI_ASSERT_OK'"
+    ],
+    "visibleActivityRows": [
+      "run_bash SUCCESS",
+      "run_bash SUCCESS",
+      "run_bash SUCCESS",
+      "run_bash SUCCESS",
+      "run_bash SUCCESS"
+    ],
+    "browserScreenshotPath": "/Users/normy/.autobyteus/browser-artifacts/0ac7a1-1778734248941.png"
+  }
+}

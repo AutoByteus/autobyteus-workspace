@@ -1,0 +1,50 @@
+{
+  "capturedAt": "2026-05-14T04:32:01.008Z",
+  "frontendUrl": "http://127.0.0.1:3002/workspace",
+  "backendUrl": "http://127.0.0.1:8000/graphql",
+  "seededAgent": {
+    "id": "daily-assistant-runtime-validation",
+    "name": "Daily Assistant - Runtime Validation",
+    "toolNames": ["run_bash"],
+    "defaultLaunchConfig": {
+      "runtimeKind": "autobyteus",
+      "llmModelIdentifier": "kimi-k2.5"
+    },
+    "sourceEvidence": "runtime-validation-20260514/kimi-seeded-agent-definitions.query.json"
+  },
+  "prompt": "MULTI_BASH_FIBONACCI_VALIDATION. Use run_bash exactly three times: first create fibonacci_validation.py in the workspace that prints the first 12 Fibonacci numbers as comma-separated values; second run python3 fibonacci_validation.py; third run a bash assertion that checks the output equals 0,1,1,2,3,5,8,13,21,34,55,89. After the three shell calls succeed, reply with MULTI_BASH_FIBONACCI_DONE.",
+  "browserValidation": {
+    "hasExpectedOutput": true,
+    "hasDoneMarker": true,
+    "activitySuccessCount": 3,
+    "runBashOccurrenceCountInVisibleText": 10,
+    "visibleToolCards": [
+      "run_bash · cat > fibonacci_validation.py << 'EOF' ... EOF",
+      "run_bash · python3 fibonacci_validation.py",
+      "run_bash · output=$(python3 fibonacci_validation.py) && expected=\"0,1,1,2,3,5,8,13,21,34,55,89\" && [ \"$output\" = \"$expected\" ] ..."
+    ],
+    "visibleActivityRows": [
+      "run_bash SUCCESS",
+      "run_bash SUCCESS",
+      "run_bash SUCCESS"
+    ],
+    "assistantFinalSummaryMarkers": [
+      "All three run_bash calls completed successfully",
+      "0,1,1,2,3,5,8,13,21,34,55,89",
+      "MULTI_BASH_FIBONACCI_DONE"
+    ],
+    "screenshotPath": "/Users/normy/.autobyteus/browser-artifacts/4f5e9e-1778732967622.png"
+  },
+  "visibleEvidenceLines": [
+    "run_bash · cat > fibonacci_validation.py << 'EOF' ... EOF",
+    "run_bash · python3 fibonacci_validation.py",
+    "run_bash · output=$(python3 fibonacci_validation.py) && expected=\"0,1,1,2,3,5,8,13,21,34,55,89\" ...",
+    "All three run_bash calls completed successfully",
+    "Executed the script with python3 fibonacci_validation.py - output: 0,1,1,2,3,5,8,13,21,34,55,89",
+    "MULTI_BASH_FIBONACCI_DONE",
+    "Activity 3 Events",
+    "run_bash SUCCESS",
+    "run_bash SUCCESS",
+    "run_bash SUCCESS"
+  ]
+}
