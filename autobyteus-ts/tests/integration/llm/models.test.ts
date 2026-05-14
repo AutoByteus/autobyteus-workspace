@@ -15,7 +15,7 @@ describe('LLMModel (integration)', () => {
     });
     const info = model.toModelInfo();
     expect(info.model_identifier).toBe('gpt-4o');
-    expect(info.provider).toBe('OPENAI');
+    expect(info.provider_type).toBe('OPENAI');
     expect(info.max_context_tokens).toBe(128000);
     expect(info.active_context_tokens).toBe(64000);
     expect(info.max_input_tokens).toBeNull();

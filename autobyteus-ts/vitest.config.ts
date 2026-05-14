@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config';
+import { configDefaults, defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
@@ -7,6 +7,11 @@ export default defineConfig({
     // Environment defaults to node
     environment: 'node',
     // Increase timeout for integration tests might be needed later
-    testTimeout: 20000, 
+    testTimeout: 20000,
+    exclude: [
+      ...configDefaults.exclude,
+      'tickets/**',
+      'tmp-*/**'
+    ],
   },
 });

@@ -45,7 +45,7 @@ describe('runBash', () => {
     const result = await runBash(context, 'echo ok', path.join(workspaceRoot, 'packages', 'api'));
 
     expect(terminalManager.ensureStarted).toHaveBeenCalledWith(path.join(workspaceRoot, 'packages', 'api'));
-    expect(terminalManager.executeCommand).toHaveBeenCalledWith('echo ok', 30);
+    expect(terminalManager.executeCommand).toHaveBeenCalledWith('echo ok', 30, { signal: undefined });
     expect(terminalManager.close).toHaveBeenCalled();
     expect(result).toBeInstanceOf(TerminalResult);
     expect((result as TerminalResult).stdout).toBe('ok');

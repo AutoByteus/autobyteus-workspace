@@ -77,7 +77,8 @@ describe('MemoryIngestInputProcessor', () => {
     expect(memoryManager.ingestUserMessage).not.toHaveBeenCalled();
     expect(memoryManager.ingestToolContinuationBoundary).toHaveBeenCalledWith(
       'turn_existing',
-      'ToolContinuationInput'
+      'ToolContinuationInput',
+      'Tool continuation'
     );
   });
 

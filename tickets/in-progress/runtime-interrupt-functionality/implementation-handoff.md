@@ -16,120 +16,109 @@
 
 ## What Changed
 
-Implemented the focused CR-019 architecture-approved terminology fix: the event-inbox scheduler-selected delegates are now named handlers, not processors.
+Addressed API/E2E Round 16's deterministic active-test drift from the user-requested broad `autobyteus-ts` sweep, while treating provider/live-environment and stale legacy-ticket failures as out-of-scope per user clarification.
 
-- Renamed `autobyteus-ts/src/agent/event-inbox/processors/` to `autobyteus-ts/src/agent/event-inbox/handlers/`.
-- Renamed the scheduler delegate contract from `AgentEventProcessor` to `InboxEventHandler`.
-- Renamed concrete event-inbox delegates:
-  - `TurnStartEventProcessor` -> `TurnStartInboxEventHandler`
-  - `RuntimeLifecycleEventProcessor` -> `RuntimeLifecycleInboxEventHandler`
-  - `ToolApprovalEventProcessor` -> `ToolApprovalInboxEventHandler`
-  - `ToolResultEventProcessor` -> `ToolResultInboxEventHandler`
-- Renamed scheduler configuration from `AgentEventSchedulerProcessors` / `*Processor` fields to `AgentEventSchedulerHandlers` / `*Handler` fields.
-- Renamed delegate method `process(entry, context)` to `handle(entry, context)` and added explicit `canHandle(entry)` selection on each handler.
-- Kept the Round 13 event-inbox architecture intact:
-  - Typed runtime events remain the canonical domain objects.
-  - `AgentEventInboxEntry` remains queue metadata only: `{ entryId, lane, event, awaitable? }`.
-  - `AgentEventScheduler` still performs lane scheduling/dispatch only; it does not own LLM/tool phase progression.
-  - Event-inbox handlers remain thin entry delegates to `AgentTurnRunner`, runtime lifecycle handling, or `AgentRuntimeState` / `TurnToolInputPort`.
-- Updated event-inbox tests and relevant docs to use handler terminology while preserving real processor-pipeline terminology for `AgentInputPipeline`, `ToolInvocationPipeline`, `ToolResultPipeline`, `LLMResponsePipeline`, `SystemPromptPipeline`, and lifecycle extension processors.
+- Updated active CLI stream tests to construct canonical current stream payloads:
+  - segment events now include required canonical `turn_id`.
+  - tool approval request test now uses current `tool_approval_requested` event type and required `turn_id` payload.
+- Updated active test expectations to current implementation contracts:
+  - `renderToolAutoExecuting` expectation replaced by current `renderToolExecutionStarted` export.
+  - `EventType` count and assertions include the three current runtime event types: interrupted turn, interrupted tool execution, and compaction status.
+  - `MemoryIngestInputProcessor` test expects the third raw-trace label argument passed to `ingestToolContinuationBoundary(...)`.
+  - `run_bash` test expects the third `{ signal }` execution option now passed to `TerminalSessionManager.executeCommand(...)`.
+  - OpenAI tool schema no-argument integration expectation includes `additionalProperties: false`, matching current normalizer policy.
+  - `LLMModel.toModelInfo()` integration expectation uses current `provider_type` field rather than stale `provider`.
+- Added a repository-local test certificate fixture and made the cert utility test prefer it, avoiding dependency on a missing external sibling checkout path.
+- Updated `autobyteus-ts/vitest.config.ts` to preserve Vitest's default excludes and also exclude repository ticket artifacts and temporary work directories from default test discovery. This keeps stale ticket investigation artifacts out of the package's broad test command without hiding active `src`/`tests` coverage.
+- Preserved prior CR-019 implementation state: event-inbox scheduler-selected delegates remain handlers (`InboxEventHandler`, `*InboxEventHandler`, `AgentEventSchedulerHandlers`, `handle(...)`, `canHandle(...)`) under `autobyteus-ts/src/agent/event-inbox/handlers/`.
 
 ## Key Files Or Areas
 
-- Event-inbox handler subsystem:
-  - `autobyteus-ts/src/agent/event-inbox/handlers/inbox-event-handler.ts`
-  - `autobyteus-ts/src/agent/event-inbox/handlers/turn-start-inbox-event-handler.ts`
-  - `autobyteus-ts/src/agent/event-inbox/handlers/runtime-lifecycle-inbox-event-handler.ts`
-  - `autobyteus-ts/src/agent/event-inbox/handlers/tool-approval-inbox-event-handler.ts`
-  - `autobyteus-ts/src/agent/event-inbox/handlers/tool-result-inbox-event-handler.ts`
-- Scheduler/inbox typing:
-  - `autobyteus-ts/src/agent/event-inbox/agent-event-scheduler.ts`
-  - `autobyteus-ts/src/agent/event-inbox/agent-event-inbox.ts`
-  - `autobyteus-ts/src/agent/event-inbox/agent-event-inbox-entry.ts`
-  - `autobyteus-ts/src/agent/event-inbox/index.ts`
-- Runtime wiring:
-  - `autobyteus-ts/src/agent/runtime/agent-worker.ts`
-- Updated tests:
-  - `autobyteus-ts/tests/unit/agent/event-inbox/agent-event-inbox.test.ts`
-  - `autobyteus-ts/tests/unit/agent/event-inbox/agent-event-scheduler.test.ts`
-- Terminology/docs cleanup:
-  - `autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md`
-  - `autobyteus-ts/docs/event_driven_core_design.md`
-  - `autobyteus-ts/docs/lifecycle_event_sourced_engine_design.md`
+- Active test expectation fixes:
+  - `autobyteus-ts/tests/unit/cli/agent-team-focus-pane-history.test.ts`
+  - `autobyteus-ts/tests/unit/cli/cli-display.test.ts`
+  - `autobyteus-ts/tests/unit/cli/agent-team-renderables.test.ts`
+  - `autobyteus-ts/tests/unit/events/event-types.test.ts`
+  - `autobyteus-ts/tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts`
+  - `autobyteus-ts/tests/unit/tools/terminal/run-bash.test.ts`
+  - `autobyteus-ts/tests/integration/tools/usage/formatters/openai-json-schema-formatter.test.ts`
+  - `autobyteus-ts/tests/integration/llm/models.test.ts`
+  - `autobyteus-ts/tests/unit/clients/cert-utils.test.ts`
+- Test discovery hygiene:
+  - `autobyteus-ts/vitest.config.ts`
+- New local fixture:
+  - `autobyteus-ts/tests/fixtures/certificates/cert.pem`
 
 ## Important Assumptions
 
-- The focused CR-019 architecture review is authoritative for this local fix and keeps the Round 13 event-centric target intact.
-- `handlers` under `agent/event-inbox/` are intentionally distinct from the retired legacy `agent/handlers/*` normal-flow chain.
-- Real processor-pipeline terminology remains valid outside this event-inbox scheduler delegate context.
-- This pass is a cohesive rename/terminology correction only; no behavior change was intended beyond the delegate contract name and selection method shape.
+- The user clarified that legacy-code/stale-artifact failures and provider/live-environment failures from the broad sweep are not in scope and should not block delivery.
+- API/E2E Round 16 already classified missing `/opt/homebrew/bin/uv`, local media host refusal, live provider/API timeouts/500/invalid stream behavior, and similar provider/environment failures separately; this implementation pass does not attempt to make those green.
+- The stale `tickets/done/tool_schema_best_practices_investigation/schema-best-practice-compliance.test.ts` artifact is not active package validation. It is now excluded from default Vitest discovery by config, rather than being repaired as product test code.
+- No production runtime source was changed in this pass; changes are test/config/fixture updates only.
 
 ## Known Risks
 
-- This is an implementation-scoped local fix and confidence pass only. API/E2E revalidation should resume only after code review passes.
-- Prior residual validation risks remain from upstream reports: live paid-provider cancellation coverage and full browser/Nuxt/Electron E2E are downstream validation scope, not covered by this local pass.
+- A completely unconstrained broad `vitest run` can still surface provider/live-environment tests depending on local services, credentials, or external servers. Those remain validation-environment/provider-owned and are not claimed green here.
+- API/E2E should re-run any required focused live provider gates after code review if downstream wants refreshed provider evidence.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: local architecture terminology/refactor fix for CR-019.
-- Reviewed root-cause classification: naming and responsibility clarity issue; scheduler-selected event-inbox delegates were incorrectly called processors, competing with established pipeline processor terminology.
-- Reviewed refactor decision: Refactor Needed Now.
+- Reviewed change posture: API/E2E local fix / implementation-test triage after broad test sweep.
+- Reviewed root-cause classification: test contract drift and test-discovery hygiene issue for deterministic active failures; provider/live and stale-ticket failures are out-of-scope/baseline per user clarification.
+- Reviewed refactor decision: No production refactor needed now.
 - Implementation matched the reviewed assessment: Yes.
-- If challenged, routed as `Design Impact`: N/A; focused CR-019 architecture review approved the handler terminology and file mapping.
-- Evidence / notes: active event-inbox source/tests now use `InboxEventHandler`, `*InboxEventHandler`, `AgentEventSchedulerHandlers`, `handle(entry, context)`, and `canHandle(entry)` under `autobyteus-ts/src/agent/event-inbox/handlers/`; stale event-inbox processor names and `event-inbox/processors` are removed from active source/tests/docs.
+- If challenged, routed as `Design Impact`: N/A.
+- Evidence / notes: deterministic active failures from the API/E2E rerun now pass in a focused rerun; ticket artifacts are excluded from default test discovery; provider/live failures remain explicitly unclaimed.
 
 ## Legacy / Compatibility Removal Check
 
 - Backward-compatibility mechanisms introduced: None.
 - Legacy old-behavior retained in scope: No.
-- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: Yes; the event-inbox `processors/` folder and processor-named files/types were removed rather than retained as wrappers.
-- Shared structures remain tight: Yes; `AgentEventInboxEntry` remains metadata-only and no message-wrapper domain shapes were reintroduced.
+- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: N/A for this test/config-only local fix.
+- Shared structures remain tight: Yes; no production shared structures changed.
 - Canonical shared design guidance was reapplied during implementation: Yes.
-- Changed source implementation files stayed within proactive size-pressure guardrails: Yes; effective-line audit found no changed implementation source file above 450 effective non-empty lines.
-- Notes: no `AgentMessageInbox`, message wrappers, `AgentOutbox`, legacy `WorkerEventDispatcher` turn loop, or native interrupt-to-stop fallback was introduced or retained.
+- Changed source implementation files stayed within proactive size-pressure guardrails: Yes; no `autobyteus-ts/src` implementation files changed in this pass.
+- Notes: no message wrappers, `AgentOutbox`, legacy `WorkerEventDispatcher` turn loop, or native interrupt-to-stop fallback were introduced or retained.
 
 ## Environment Or Dependency Notes
 
 - Workspace root: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality`
 - Branch: `codex/runtime-interrupt-functionality`
 - No new dependencies were added.
+- Local certificate fixture: `autobyteus-ts/tests/fixtures/certificates/cert.pem`.
 
 ## Local Implementation Checks Run
 
 Passed:
 
 - `git diff --check`
-- Focused event-inbox unit tests:
-  - `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/event-inbox/agent-event-inbox.test.ts tests/unit/agent/event-inbox/agent-event-scheduler.test.ts tests/unit/agent/event-inbox/inbox-queue-store.test.ts tests/unit/agent/runtime/agent-worker.test.ts`
-  - Result: 4 files passed, 20 tests passed.
-- Broader runtime/event-inbox unit suite:
-  - `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/event-inbox/agent-event-inbox.test.ts tests/unit/agent/event-inbox/agent-event-scheduler.test.ts tests/unit/agent/event-inbox/inbox-queue-store.test.ts tests/unit/agent/loop/turn-tool-input-port.test.ts tests/unit/agent/context/agent-context.test.ts tests/unit/agent/context/agent-runtime-state.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/unit/agent/runtime/agent-worker.test.ts tests/unit/agent/agent.test.ts`
-  - Result: 9 files passed, 67 tests passed.
-- Narrow integration continuity suite:
-  - `pnpm -C autobyteus-ts exec vitest run tests/integration/agent/runtime/agent-runtime.test.ts tests/integration/agent/provider-native-tool-continuation-flow.test.ts`
-  - Result: 2 files passed, 15 tests passed.
-- Event-inbox stale terminology grep:
-  - `rg "EventProcessor|AgentEventProcessor|AgentEventSchedulerProcessors|event-inbox/processors|turnStartProcessor|lifecycleProcessor|toolApprovalProcessor|toolResultProcessor|process\(entry|\.process\(entry" autobyteus-ts/src/agent/event-inbox autobyteus-ts/src/agent/runtime/agent-worker.ts autobyteus-ts/tests/unit/agent/event-inbox -n || true`
-  - Result: no stale event-inbox processor/source terms found.
-- Handler target grep:
-  - `rg "InboxEventHandler|AgentEventSchedulerHandlers|handle\(entry|canHandle|event-inbox/handlers" autobyteus-ts/src/agent/event-inbox autobyteus-ts/src/agent/runtime/agent-worker.ts autobyteus-ts/tests/unit/agent/event-inbox -n`
-  - Result: expected handler names and file paths found.
-- Legacy/message-wrapper guardrail grep:
-  - `rg "WorkerEventDispatcher|AgentOutbox|native interrupt.*stop|interrupt-to-stop|AgentMessageInbox|AgentInboxMessage|UserInboxMessage|ToolApprovalInputMessage|ToolResultInputMessage|message-inbox|agentMessageInbox" autobyteus-ts/src autobyteus-ts/tests -n || true`
-  - Result: no active source/test references found.
+- Deterministic active failure rerun:
+  - `pnpm -C autobyteus-ts exec vitest run tests/unit/cli/agent-team-focus-pane-history.test.ts tests/unit/cli/cli-display.test.ts tests/unit/cli/agent-team-renderables.test.ts tests/unit/events/event-types.test.ts tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts tests/unit/tools/terminal/run-bash.test.ts tests/integration/tools/usage/formatters/openai-json-schema-formatter.test.ts tests/integration/llm/models.test.ts tests/unit/clients/cert-utils.test.ts`
+  - Result: 9 files passed, 27 tests passed.
+- Compaction smoke continuity:
+  - `pnpm -C autobyteus-ts exec vitest run tests/integration/agent/memory-compaction-flow.test.ts tests/integration/agent/runtime/agent-runtime-compaction.test.ts`
+  - Result: 2 files passed, 3 tests passed.
+- Ticket/tmp default discovery hygiene:
+  - `pnpm -C autobyteus-ts exec vitest list | rg 'tickets/done|tmp-' || true`
+  - Result: no ticket/tmp tests listed.
 - Changed-source effective-line audit:
-  - Result: no changed implementation source file exceeded 450 effective non-empty lines.
+  - Result: no changed implementation source files under `autobyteus-ts/src`; no source files above guardrail.
 - `pnpm -C autobyteus-ts run build`
   - Passed, including runtime dependency verification.
 - `pnpm -C autobyteus-server-ts run build:full`
   - Passed, including built-in agents bootstrap smoke check.
 
+Not claimed / out of scope for this local fix:
+
+- Provider/live-environment broad-suite failures from API/E2E Round 16, including missing `uv`, unavailable media host, live Autobyteus/RPA/provider timeouts/errors, and credential/service-dependent cases.
+- Stale historical ticket investigation tests as active product validation.
+
 ## Downstream Validation Hints / Suggested Scenarios
 
-- Code review should verify CR-019 specifically: event-inbox scheduler-selected delegates are handlers, not processors, and are thin delegates only.
-- Re-check that processor terminology remains only where it belongs: input/tool/LLM/system-prompt pipelines and lifecycle extension processors.
-- Re-check that no message-wrapper target code, `AgentOutbox`, old `WorkerEventDispatcher` / legacy handler-chain turn progression, or native interrupt-to-stop fallback reappeared.
+- Code review should verify this pass only updates active deterministic tests/config/fixture and does not alter production runtime behavior.
+- API/E2E can keep provider/live-environment failures classified separately unless a user explicitly asks for those providers/environments to be made green.
+- If API/E2E reruns broad package discovery, ticket/tmp artifacts should no longer be discovered by default.
 
 ## API / E2E / Executable Validation Still Required
 
-Yes. This implementation pass only ran implementation-scoped unit/narrow integration/build checks. API/E2E validation should resume after code review passes.
+Yes. This implementation pass only ran implementation-scoped focused checks and builds. API/E2E validation should resume after code review passes, with provider/live-environment failures classified separately per user clarification.
