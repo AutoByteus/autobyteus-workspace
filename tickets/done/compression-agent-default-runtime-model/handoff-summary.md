@@ -4,24 +4,25 @@
 
 - Ticket: `compression-agent-default-runtime-model`
 - Date: `2026-05-15`
-- Current Status: `Verified by user; repository finalization and release in progress`
-- Task worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/compression-agent-default-runtime-model`
+- Current Status: `Finalized and released`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compression-agent-default-runtime-model`
 - Ticket branch: `codex/compression-agent-default-runtime-model`
 - Finalization target: `origin/personal` -> local `personal`
+- Published release: `v1.3.11`
 
 ## Integrated-State Refresh
 
 - Delivery refresh command: `git fetch --prune origin`
 - Bootstrap base reference: `origin/personal` at `bd0db54317173d8997a373a39b3373451874abae`
-- Latest tracked base checked: `origin/personal` at `bd0db54317173d8997a373a39b3373451874abae`
+- Latest tracked base checked before delivery edits: `origin/personal` at `bd0db54317173d8997a373a39b3373451874abae`
 - Base advanced since bootstrap / previous reviewed state: `No`
-- Integration method: `Already current`; no merge or rebase was needed.
+- Integration method: `Already current`; no merge or rebase was needed before delivery-owned edits.
 - Local checkpoint commit: `Not needed`; no base integration was required before delivery-owned edits.
-- Delivery-owned edits started only after confirming the branch was current with `origin/personal`: `Yes`
 - Post-refresh verification:
   - `pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts` — passed, 1 file / 5 tests.
   - `git diff --check` — passed.
-  - Stale-copy scan for prior no-fallback/not-configured phrases — passed with no matches in the affected docs/settings surfaces.
+  - Stale-copy scan for prior no-fallback/not-configured phrases — passed with no matches in affected docs/settings surfaces.
+- Refresh after user verification: `origin/personal` was still at `bd0db54317173d8997a373a39b3373451874abae`; no renewed verification was required.
 
 ## Delivery Summary
 
@@ -32,8 +33,8 @@
   - Visible compactor-run creation and status/error metadata use the effective runtime/model selected by the resolver path.
   - Settings UI, server setting description, and durable memory docs now describe inherited blank compactor runtime/model fields.
 - Planned scope reference:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compression-agent-default-runtime-model/tickets/done/compression-agent-default-runtime-model/requirements.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compression-agent-default-runtime-model/tickets/done/compression-agent-default-runtime-model/design-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compression-agent-default-runtime-model/requirements.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compression-agent-default-runtime-model/design-spec.md`
 - Deferred / not delivered:
   - No new runtime providers, model catalogs, or provider-specific defaults.
   - No change to compaction prompt/content policy or JSON output schema.
@@ -60,6 +61,10 @@
   - diff hygiene — passed.
 - Code review:
   - Round 2 post-validation durable-validation review passed with no blocking findings.
+- Release workflow verification:
+  - Release Messaging Gateway workflow: success — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/25903038520
+  - Server Docker Release workflow: success — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/25903038515
+  - Desktop Release workflow: success — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/25903038507
 - Acceptance-criteria closure summary:
   - Parent fallback, explicit override preservation, partial field fallback, no-selected-definition failure, no-parent-fallback failure, resolver/runner/factory coverage, UI copy, and durable docs are all covered by the reviewed implementation and validation artifacts.
 - Known non-blocking limitations / watch items:
@@ -71,7 +76,7 @@
 ## Documentation Sync Summary
 
 - Docs sync artifact:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compression-agent-default-runtime-model/tickets/done/compression-agent-default-runtime-model/docs-sync-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compression-agent-default-runtime-model/docs-sync-report.md`
 - Docs result: `Updated`
 - Docs / durable copy updated:
   - `autobyteus-ts/docs/agent_memory_design.md`
@@ -87,11 +92,11 @@
 
 - Release notes required for requested repository release: `Yes`
 - Release notes artifact:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compression-agent-default-runtime-model/tickets/done/compression-agent-default-runtime-model/release-notes.md`
-- Notes:
-  - Release requested by user after verification. The archived release-notes artifact will be passed to the documented repository release helper.
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compression-agent-default-runtime-model/release-notes.md`
+- Release notes consumed by release helper: `Yes`
+- GitHub release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.11
 
-## User Verification Hold
+## User Verification
 
 - Waiting for explicit user verification: `No`
 - User verification received: `Yes` on 2026-05-15
@@ -100,25 +105,31 @@
 
 ## Cumulative Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/compression-agent-default-runtime-model/tickets/done/compression-agent-default-runtime-model/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/compression-agent-default-runtime-model/tickets/done/compression-agent-default-runtime-model/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/compression-agent-default-runtime-model/tickets/done/compression-agent-default-runtime-model/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compression-agent-default-runtime-model/tickets/done/compression-agent-default-runtime-model/design-review-report.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/compression-agent-default-runtime-model/tickets/done/compression-agent-default-runtime-model/implementation-handoff.md`
-- Latest code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compression-agent-default-runtime-model/tickets/done/compression-agent-default-runtime-model/review-report.md`
-- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compression-agent-default-runtime-model/tickets/done/compression-agent-default-runtime-model/api-e2e-validation-report.md`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compression-agent-default-runtime-model/tickets/done/compression-agent-default-runtime-model/docs-sync-report.md`
-- Delivery / release / deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compression-agent-default-runtime-model/tickets/done/compression-agent-default-runtime-model/release-deployment-report.md`
-- Release notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/compression-agent-default-runtime-model/tickets/done/compression-agent-default-runtime-model/release-notes.md`
-- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/compression-agent-default-runtime-model/tickets/done/compression-agent-default-runtime-model/handoff-summary.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compression-agent-default-runtime-model/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compression-agent-default-runtime-model/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compression-agent-default-runtime-model/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compression-agent-default-runtime-model/design-review-report.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compression-agent-default-runtime-model/implementation-handoff.md`
+- Latest code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compression-agent-default-runtime-model/review-report.md`
+- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compression-agent-default-runtime-model/api-e2e-validation-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compression-agent-default-runtime-model/docs-sync-report.md`
+- Delivery / release / deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compression-agent-default-runtime-model/release-deployment-report.md`
+- Release notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compression-agent-default-runtime-model/release-notes.md`
+- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compression-agent-default-runtime-model/handoff-summary.md`
 
 ## Finalization Record
 
-- Ticket archived to: `/Users/normy/autobyteus_org/autobyteus-worktrees/compression-agent-default-runtime-model/tickets/done/compression-agent-default-runtime-model`
-- Commit status: `In progress`
-- Push status: `Pending`
-- Merge status: `Pending`
-- Release/publication/deployment status: `Pending requested release`
-- Worktree cleanup status: `Pending repository finalization and release`
-- Blockers / notes:
-  - No technical blocker is known. Final hashes and release version will be recorded after repository finalization and release complete.
+- Ticket archived to: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compression-agent-default-runtime-model`
+- Ticket branch commit: `9795e617b43069f8fac8f6e2f51e1f894d6b80ae` (`fix(compaction): inherit compactor runtime from parent`)
+- Ticket branch push: `Completed` to `origin/codex/compression-agent-default-runtime-model` before merge.
+- Finalization target branch: `personal`
+- Merge commit: `756f7fd9` (`Merge compression agent default runtime model`)
+- Target branch push after merge: `Completed`
+- Release commit: `50332a2d05184c8856faa35b1aae961d4b5fb7c6` (`chore(release): bump workspace release version to 1.3.11`)
+- Release tag: `v1.3.11`
+- Release publication status: `Completed`
+- Release workflow status: `Completed`; Desktop, Messaging Gateway, and Server Docker workflows all succeeded.
+- Worktree cleanup status: `Completed` (`/Users/normy/autobyteus_org/autobyteus-worktrees/compression-agent-default-runtime-model` removed)
+- Local ticket branch cleanup status: `Completed`
+- Remote ticket branch cleanup status: `Completed`
+- Blockers / notes: None.
