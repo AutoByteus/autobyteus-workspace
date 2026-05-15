@@ -113,8 +113,8 @@ const selectedAgentSummary = computed(() => {
   if (!definition) {
     return t('settings.components.settings.CompactionConfigCard.noCompactorAgentWarning')
   }
-  const runtime = definition.defaultLaunchConfig?.runtimeKind || t('settings.components.settings.CompactionConfigCard.runtimeNotConfigured')
-  const model = definition.defaultLaunchConfig?.llmModelIdentifier || t('settings.components.settings.CompactionConfigCard.modelNotConfigured')
+  const runtime = definition.defaultLaunchConfig?.runtimeKind || t('settings.components.settings.CompactionConfigCard.runtimeInheritsFromRunningAgent')
+  const model = definition.defaultLaunchConfig?.llmModelIdentifier || t('settings.components.settings.CompactionConfigCard.modelInheritsFromRunningAgent')
   return `${t('settings.components.settings.CompactionConfigCard.selectedLaunchConfig')}: ${runtime} / ${model}`
 })
 

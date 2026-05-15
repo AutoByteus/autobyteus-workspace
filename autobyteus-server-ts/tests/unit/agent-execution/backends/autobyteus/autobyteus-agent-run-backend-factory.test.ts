@@ -378,8 +378,11 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     expect(compactionAgentRunnerFactory).toHaveBeenCalledWith({
       agentDefinitionId: "agent-1",
       workspaceRootPath: path.join("/tmp", "workspace-1"),
+      runtimeKind: RuntimeKind.AUTOBYTEUS,
+      llmModelIdentifier: "dummy-model",
     });
     expect(built.agentConfig.compactionAgentRunner).toBe(compactionRunner);
+    expect(built.resolvedRunConfig.runtimeKind).toBe(RuntimeKind.AUTOBYTEUS);
   });
 
 });

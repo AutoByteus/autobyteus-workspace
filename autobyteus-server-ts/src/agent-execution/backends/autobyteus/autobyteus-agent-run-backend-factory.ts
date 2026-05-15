@@ -85,6 +85,8 @@ type AutoByteusRuntimeAgentLike = AgentLike & AutoByteusAgentLike;
 export type CompactionAgentRunnerFactoryInput = {
   agentDefinitionId: string;
   workspaceRootPath: string | null;
+  runtimeKind: RuntimeKind;
+  llmModelIdentifier: string;
 };
 
 export type CompactionAgentRunnerFactory = (
@@ -92,10 +94,20 @@ export type CompactionAgentRunnerFactory = (
 ) => Promise<CompactionAgentRunner | null> | CompactionAgentRunner | null;
 
 const createDefaultCompactionAgentRunner: CompactionAgentRunnerFactory = async ({
+  agentDefinitionId,
   workspaceRootPath,
+  runtimeKind,
+  llmModelIdentifier,
 }) => {
   const module = await import("../../compaction/server-compaction-agent-runner.js");
-  return new module.ServerCompactionAgentRunner({ workspaceRootPath });
+  return new module.ServerCompactionAgentRunner({
+    workspaceRootPath,
+    parentLaunchFallback: {
+      runtimeKind,
+      llmModelIdentifier,
+      sourceAgentDefinitionId: agentDefinitionId,
+    },
+  });
 };
 
 export type AutoByteusAgentRunBackendFactoryOptions = {
@@ -434,6 +446,9 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       logger.info(`Using temp workspace (ID: ${workspaceInstance.workspaceId}) for agent.`);
     }
     const workspaceRootPath = workspaceInstance?.getBasePath?.() ?? null;
+    const effectiveRuntimeKind =
+      runtimeKindFromString(options.runtimeKind, RuntimeKind.AUTOBYTEUS) ??
+      RuntimeKind.AUTOBYTEUS;
 
     const initialCustomData = {
       agent_definition_id: agentDefinitionId,
@@ -454,6 +469,8 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
     const compactionAgentRunner = await this.compactionAgentRunnerFactory({
       agentDefinitionId,
       workspaceRootPath,
+      runtimeKind: effectiveRuntimeKind,
+      llmModelIdentifier,
     });
 
     return {
@@ -465,9 +482,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
         memoryDir: options.memoryDir ?? null,
         llmConfig: llmConfig ?? null,
         skillAccessMode: skillAccessMode ?? SkillAccessMode.PRELOADED_ONLY,
-        runtimeKind:
-          runtimeKindFromString(options.runtimeKind, RuntimeKind.AUTOBYTEUS) ??
-          RuntimeKind.AUTOBYTEUS,
+        runtimeKind: effectiveRuntimeKind,
         memberTeamContext: options.memberTeamContext ?? null,
         applicationExecutionContext: options.applicationExecutionContext ?? null,
       }),
