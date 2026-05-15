@@ -16,13 +16,18 @@ import {
 import { buildInterAgentDeliveryInputMessage } from "../../services/inter-agent-message-runtime-builders.js";
 import type { AutoByteusTeamRunContext } from "./autobyteus-team-run-context.js";
 import { AutoByteusTeamRunEventProcessor } from "./autobyteus-team-run-event-processor.js";
+import { projectAutoByteusAgentStatus } from "../../../agent-execution/backends/autobyteus/events/autobyteus-status-projector.js";
+import type { AgentStatusPayload } from "../../../agent-execution/domain/agent-status-payload.js";
+import { deriveTeamApiStatus } from "../../domain/team-status-aggregation.js";
 
 type AutoByteusTeamLike = {
   teamId: string;
   context?: {
     agents?: Array<{
       agentId?: string | null;
+      currentStatus?: unknown;
       context?: {
+        state?: { activeTurn?: unknown | null } | null;
         config?: {
           name?: string | null;
         } | null;
@@ -97,6 +102,9 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
       memberRunIdsByName: options.memberRunIdsByName,
       runtimeContext: options.runtimeContext ?? null,
       teamRunConfig: options.teamRunConfig ?? null,
+      getMemberStatusSnapshot: (memberRunId, memberName) =>
+        this.getMemberStatusSnapshotFor(memberRunId, memberName),
+      getTeamStatusSnapshot: () => this.getStatusSnapshot(),
     });
   }
 
@@ -120,8 +128,68 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
     };
   }
 
-  getStatus(): string | null {
-    return this.team.currentStatus ?? null;
+  getStatusSnapshot() {
+    const memberStatuses = this.getMemberStatusSnapshots();
+    return {
+      status: deriveTeamApiStatus({
+        memberStatuses,
+        nativeTeamStatus: this.team.currentStatus,
+      }),
+    };
+  }
+
+  getMemberStatusSnapshots() {
+    const members = this.team.context?.agents ?? [];
+    return members.flatMap((member) => {
+      const memberName = member.context?.config?.name?.trim() ?? "";
+      if (!memberName) {
+        return [];
+      }
+      return [projectAutoByteusAgentStatus({
+        currentStatus: member.currentStatus,
+        context: member.context ?? null,
+        agentId: member.agentId ?? null,
+        agentName: memberName,
+      })];
+    });
+  }
+
+  private getMemberStatusSnapshotFor(
+    memberRunId: string,
+    memberName: string | null,
+  ): AgentStatusPayload {
+    const normalizedMemberName = memberName?.trim() ?? "";
+    const runtimeMemberContext = this.options.runtimeContext?.memberContexts.find(
+      (context) =>
+        context.memberRunId === memberRunId ||
+        context.memberName === normalizedMemberName ||
+        context.nativeAgentId === memberRunId,
+    ) ?? null;
+    const nativeAgentId = runtimeMemberContext?.nativeAgentId ?? null;
+    const nativeMember = (this.team.context?.agents ?? []).find((member) => {
+      const nativeMemberName = member.context?.config?.name?.trim() ?? "";
+      return (
+        member.agentId === memberRunId ||
+        (nativeAgentId !== null && member.agentId === nativeAgentId) ||
+        (normalizedMemberName.length > 0 && nativeMemberName === normalizedMemberName)
+      );
+    }) ?? null;
+
+    if (!nativeMember) {
+      return {
+        status: "idle",
+        can_interrupt: false,
+        agent_id: memberRunId,
+        ...(normalizedMemberName ? { agent_name: normalizedMemberName } : {}),
+      };
+    }
+
+    return projectAutoByteusAgentStatus({
+      currentStatus: nativeMember.currentStatus,
+      context: nativeMember.context ?? null,
+      agentId: nativeMember.agentId ?? memberRunId,
+      agentName: normalizedMemberName || nativeMember.context?.config?.name || null,
+    });
   }
 
   async postMessage(

@@ -3,29 +3,18 @@ import {
   type AgentRunEvent,
 } from "../../agent-execution/domain/agent-run-event.js";
 import { ServerMessage, ServerMessageType } from "./models.js";
+import { buildAgentStatusPayload } from "../../agent-execution/domain/agent-status-payload.js";
 import { serializePayload } from "./payload-serialization.js";
 
 const normalizeStatusPayload = (payload: Record<string, unknown>): Record<string, unknown> => {
-  const nextStatus =
-    typeof payload.new_status === "string" ? payload.new_status.trim().toUpperCase() : payload.new_status;
-  const previousStatus =
-    typeof payload.old_status === "string" ? payload.old_status.trim().toUpperCase() : payload.old_status;
-  const turnId =
-    typeof payload.turn_id === "string"
-      ? payload.turn_id.trim()
-      : typeof payload.turnId === "string"
-        ? payload.turnId.trim()
-        : payload.turn_id === null || payload.turnId === null
-          ? null
-          : undefined;
-
-  return {
-    ...payload,
-    ...(nextStatus !== undefined ? { new_status: nextStatus } : {}),
-    ...(previousStatus !== undefined ? { old_status: previousStatus } : {}),
-    ...(turnId !== undefined ? { turn_id: turnId } : {}),
-  };
+  return buildAgentStatusPayload({
+    status: payload.status,
+    canInterrupt: payload.can_interrupt === true,
+    agentId: typeof payload.agent_id === "string" ? payload.agent_id : null,
+    agentName: typeof payload.agent_name === "string" ? payload.agent_name : null,
+  });
 };
+
 
 
 const normalizeCompactionPayload = (payload: Record<string, unknown>): Record<string, unknown> => {

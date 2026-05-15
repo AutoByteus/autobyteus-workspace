@@ -9,6 +9,9 @@ import { ClaudeSession } from "../../../../../../src/agent-execution/backends/cl
 import { ClaudeSessionMessageCache } from "../../../../../../src/agent-execution/backends/claude/session/claude-session-message-cache.js";
 import { ClaudeSessionToolUseCoordinator } from "../../../../../../src/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.js";
 import { ClaudeSessionEventName } from "../../../../../../src/agent-execution/backends/claude/events/claude-session-event-name.js";
+import { ClaudeSessionEventConverter } from "../../../../../../src/agent-execution/backends/claude/events/claude-session-event-converter.js";
+import { projectClaudeAgentStatus } from "../../../../../../src/agent-execution/backends/claude/events/claude-status-projector.js";
+import { AgentRunEventType } from "../../../../../../src/agent-execution/domain/agent-run-event.js";
 import { buildConfiguredAgentToolExposure } from "../../../../../../src/agent-execution/shared/configured-agent-tool-exposure.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
 import type { ClaudeSdkQueryLike } from "../../../../../../src/runtime-management/claude/client/claude-sdk-client.js";
@@ -177,6 +180,52 @@ describe("ClaudeSession", () => {
     await expect(session.sendTurn(new AgentInputUserMessage("hello"))).rejects.toThrow(
       "Claude runtime turn is already active for run 'run-1'.",
     );
+  });
+
+  it("applies idle status before emitting normal turn completion", async () => {
+    const { session } = createSession({
+      query: createResultQuery("claude-session-completed-status"),
+    });
+    const converter = new ClaudeSessionEventConverter("run-1", () =>
+      projectClaudeAgentStatus(session.getStatusSnapshotSource()),
+    );
+    const events: Array<{
+      method: string;
+      statusSource: ReturnType<ClaudeSession["getStatusSnapshotSource"]>;
+    }> = [];
+    const convertedStatusPayloads: Record<string, unknown>[] = [];
+    session.subscribeRuntimeEvents((event) => {
+      const statusSource = session.getStatusSnapshotSource();
+      events.push({
+        method: event.method,
+        statusSource,
+      });
+      for (const converted of converter.convert(event)) {
+        if (converted.eventType === AgentRunEventType.AGENT_STATUS) {
+          convertedStatusPayloads.push(converted.payload);
+        }
+      }
+    });
+
+    await session.sendTurn(new AgentInputUserMessage("complete normally"));
+    await waitFor(
+      () => events.some((event) => event.method === ClaudeSessionEventName.TURN_COMPLETED),
+      "Claude normal turn completion",
+    );
+
+    const completionEvent = events.find(
+      (event) => event.method === ClaudeSessionEventName.TURN_COMPLETED,
+    );
+    expect(completionEvent?.statusSource).toEqual({
+      currentStatus: "IDLE",
+      activeTurnId: null,
+      isInterrupting: false,
+    });
+    expect(convertedStatusPayloads.at(-1)).toMatchObject({
+      status: "idle",
+      can_interrupt: false,
+    });
+    expect(session.hasCompletedTurn).toBe(true);
   });
 
   it("settles an interrupted active turn before emitting TURN_INTERRUPTED", async () => {

@@ -14,7 +14,13 @@ describe("AgentTeamStreamHandler", () => {
   const createTeamRun = (overrides: Record<string, unknown> = {}) => ({
     runId: "team-1",
     runtimeKind: "autobyteus",
-    getStatus: vi.fn().mockReturnValue("ACTIVE"),
+    getStatusSnapshot: vi.fn().mockReturnValue({ status: "running" }),
+    getMemberStatusSnapshots: vi.fn().mockReturnValue([{
+      status: "running",
+      can_interrupt: true,
+      agent_id: "member-42",
+      agent_name: "worker-a",
+    }]),
     subscribeToEvents: vi.fn().mockReturnValue(() => {}),
     postMessage: vi.fn().mockResolvedValue({ accepted: true }),
     approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
@@ -121,9 +127,18 @@ describe("AgentTeamStreamHandler", () => {
       },
     });
     expect(JSON.parse(connection.send.mock.calls[1][0])).toMatchObject({
+      type: ServerMessageType.AGENT_STATUS,
+      payload: {
+        status: "running",
+        can_interrupt: true,
+        agent_id: "member-42",
+        agent_name: "worker-a",
+      },
+    });
+    expect(JSON.parse(connection.send.mock.calls[2][0])).toMatchObject({
       type: ServerMessageType.TEAM_STATUS,
       payload: {
-        new_status: "ACTIVE",
+        status: "running",
       },
     });
   });
@@ -329,7 +344,9 @@ describe("AgentTeamStreamHandler", () => {
       ),
     ).toBe(1);
 
-    expect(JSON.parse(connection.send.mock.calls[2][0])).toMatchObject({
+    const lastSentMessage = connection.send.mock.calls.at(-1)?.[0];
+    expect(lastSentMessage).toBeTypeOf("string");
+    expect(JSON.parse(lastSentMessage as string)).toMatchObject({
       type: ServerMessageType.EXTERNAL_USER_MESSAGE,
       payload: {
         content: "hello from telegram",
@@ -361,7 +378,7 @@ describe("AgentTeamStreamHandler", () => {
         eventSourceType: TeamRunEventSourceType.TEAM,
         teamRunId: "team-1",
         data: {
-          new_status: "ACTIVE",
+          status: "running",
         },
       };
 

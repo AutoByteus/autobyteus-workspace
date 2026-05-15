@@ -29,11 +29,14 @@ describe("AutoByteusStreamEventConverter", () => {
       event_type: streamEventType,
       data: { invocation_id: "inv-1", detail: "ok" },
     } as any);
+    const isStatusEvent = streamEventType === StreamEventType.AGENT_STATUS_UPDATED;
 
     expect(event).toEqual({
       eventType: agentRunEventType,
       runId: "run-1",
-      payload: { invocation_id: "inv-1", detail: "ok" },
+      payload: isStatusEvent
+        ? { status: "idle", can_interrupt: false }
+        : { invocation_id: "inv-1", detail: "ok" },
       statusHint:
         streamEventType === StreamEventType.ERROR_EVENT
           ? "ERROR"
@@ -41,28 +44,38 @@ describe("AutoByteusStreamEventConverter", () => {
             ? "ACTIVE"
             : streamEventType === StreamEventType.TURN_COMPLETED
               ? "IDLE"
+              : isStatusEvent
+                ? "IDLE"
               : null,
     });
   });
 
   it("treats idle and error agent status updates as explicit status hints", () => {
     expect(
-      converter.convert({
+      new AutoByteusStreamEventConverter("run-1", () => ({
+        status: "idle",
+        can_interrupt: false,
+      })).convert({
         event_type: StreamEventType.AGENT_STATUS_UPDATED,
-        data: { new_status: "idle" },
+        data: {},
       } as any),
     )?.toMatchObject({
       eventType: AgentRunEventType.AGENT_STATUS,
+      payload: { status: "idle", can_interrupt: false },
       statusHint: "IDLE",
     });
 
     expect(
-      converter.convert({
+      new AutoByteusStreamEventConverter("run-1", () => ({
+        status: "error",
+        can_interrupt: false,
+      })).convert({
         event_type: StreamEventType.AGENT_STATUS_UPDATED,
-        data: { status: "error" },
+        data: {},
       } as any),
     )?.toMatchObject({
       eventType: AgentRunEventType.AGENT_STATUS,
+      payload: { status: "error", can_interrupt: false },
       statusHint: "ERROR",
     });
   });

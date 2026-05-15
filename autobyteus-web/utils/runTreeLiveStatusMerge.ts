@@ -22,11 +22,7 @@ const toRunStatusOverlay = (status: AgentStatus): LiveStatusOverlay => {
     return { isActive: false, lastKnownStatus: 'ERROR' };
   }
 
-  if (
-    status === AgentStatus.Uninitialized ||
-    status === AgentStatus.ShutdownComplete ||
-    status === AgentStatus.ToolDenied
-  ) {
+  if (status === AgentStatus.Idle) {
     return { isActive: false, lastKnownStatus: 'IDLE' };
   }
 

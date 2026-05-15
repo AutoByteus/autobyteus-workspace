@@ -115,7 +115,7 @@ const buildTeamContext = (overrides: Record<string, any> = {}) => ({
           agentAvatarUrl: null,
         },
         state: {
-          currentStatus: AgentStatus.ExecutingTool,
+          currentStatus: AgentStatus.Running,
           conversation: { agentName: 'Professor', messages: [] },
         },
       },
@@ -184,7 +184,7 @@ describe('TeamWorkspaceView', () => {
 
   it('shows focused member status in header', () => {
     const wrapper = mountComponent();
-    expect(wrapper.get('[data-test="header-status"]').text()).toBe(AgentStatus.ExecutingTool);
+    expect(wrapper.get('[data-test="header-status"]').text()).toBe(AgentStatus.Running);
   });
 
   it('shows focused member avatar in header when available', () => {

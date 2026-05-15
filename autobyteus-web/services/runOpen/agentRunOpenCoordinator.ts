@@ -40,8 +40,8 @@ export const openAgentRun = async (
   });
   config.isLocked = shouldTreatAsLive;
   const liveStatus = shouldTreatAsLive
-    ? AgentStatus.Uninitialized
-    : AgentStatus.ShutdownComplete;
+    ? AgentStatus.Running
+    : AgentStatus.Idle;
 
   if (strategy === 'KEEP_LIVE_CONTEXT') {
     agentContextsStore.patchConfigOnly(input.runId, {

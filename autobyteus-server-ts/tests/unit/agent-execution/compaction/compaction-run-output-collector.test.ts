@@ -60,7 +60,10 @@ describe("CompactionRunOutputCollector", () => {
       segment_type: "text",
       delta: '{"episodic_summary":"claude"}',
     }));
-    collector.observe(event(AgentRunEventType.AGENT_STATUS, { new_status: "IDLE" }, "IDLE"));
+    collector.observe(event(AgentRunEventType.AGENT_STATUS, {
+      status: "idle",
+      can_interrupt: false,
+    }, "IDLE"));
 
     await expect(output).resolves.toBe('{"episodic_summary":"claude"}');
   });

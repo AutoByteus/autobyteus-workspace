@@ -4,6 +4,7 @@ import {
 } from "../../../domain/agent-run-event.js";
 import { isBrowserToolName } from "../../../../agent-tools/browser/browser-tool-contract.js";
 import { isMediaToolName } from "../../../../agent-tools/media/media-tool-contract.js";
+import type { AgentStatusPayload } from "../../../domain/agent-status-payload.js";
 import { serializePayload } from "../../../../services/agent-streaming/payload-serialization.js";
 import { asObject, asString, type ClaudeSessionEvent } from "../claude-runtime-shared.js";
 import { isClaudeSendMessageMcpToolName } from "../claude-send-message-tool-name.js";
@@ -100,7 +101,13 @@ export const deriveClaudeAgentRunStatusHint = (
 };
 
 export class ClaudeSessionEventConverter {
-  constructor(private readonly runId: string) {}
+  constructor(
+    private readonly runId: string,
+    private readonly getStatusPayload: () => AgentStatusPayload = () => ({
+      status: "idle",
+      can_interrupt: false,
+    }),
+  ) {}
 
   convert(event: ClaudeSessionEvent): AgentRunEvent[] {
     const claudeEventName = event.method.trim();
@@ -111,21 +118,18 @@ export class ClaudeSessionEventConverter {
       case ClaudeSessionEventName.TURN_STARTED:
         return this.createLifecycleEvents(claudeEventName, AgentRunEventType.TURN_STARTED, {
           ...(turnId ? { turnId } : {}),
-        }, {
-          new_status: "RUNNING",
-          old_status: null,
-          ...(turnId ? { turnId } : {}),
         });
       case ClaudeSessionEventName.TURN_COMPLETED:
-      case ClaudeSessionEventName.TURN_INTERRUPTED:
-      case ClaudeSessionEventName.SESSION_TERMINATED:
         return this.createLifecycleEvents(claudeEventName, AgentRunEventType.TURN_COMPLETED, {
           ...(turnId ? { turnId } : {}),
-        }, {
-          new_status: "IDLE",
-          old_status: "RUNNING",
+        });
+      case ClaudeSessionEventName.TURN_INTERRUPTED:
+        return this.createLifecycleEvents(claudeEventName, AgentRunEventType.TURN_INTERRUPTED, {
           ...(turnId ? { turnId } : {}),
         });
+      case ClaudeSessionEventName.SESSION_TERMINATED:
+      case ClaudeSessionEventName.STATUS_CHANGED:
+        return [this.createStatusEvent(claudeEventName)];
       case ClaudeSessionEventName.STATUS_COMPACTING:
         return [this.createEvent(
           claudeEventName,
@@ -276,11 +280,14 @@ export class ClaudeSessionEventConverter {
         )];
       }
       case ClaudeSessionEventName.ERROR:
-        return [this.createEvent(
-          claudeEventName,
-          AgentRunEventType.ERROR,
-          buildErrorPayload(payload),
-        )];
+        return [
+          this.createStatusEvent(claudeEventName, { status: "error", can_interrupt: false }),
+          this.createEvent(
+            claudeEventName,
+            AgentRunEventType.ERROR,
+            buildErrorPayload(payload),
+          ),
+        ];
       default:
         return [];
     }
@@ -288,14 +295,26 @@ export class ClaudeSessionEventConverter {
 
   private createLifecycleEvents(
     claudeEventName: string,
-    lifecycleEventType: AgentRunEventType.TURN_STARTED | AgentRunEventType.TURN_COMPLETED,
+    lifecycleEventType:
+      | AgentRunEventType.TURN_STARTED
+      | AgentRunEventType.TURN_COMPLETED
+      | AgentRunEventType.TURN_INTERRUPTED,
     lifecyclePayload: Record<string, unknown>,
-    statusPayload: Record<string, unknown>,
   ): AgentRunEvent[] {
     return [
       this.createEvent(claudeEventName, lifecycleEventType, lifecyclePayload),
-      this.createEvent(claudeEventName, AgentRunEventType.AGENT_STATUS, statusPayload),
+      this.createStatusEvent(claudeEventName),
     ];
+  }
+
+  private createStatusEvent(
+    claudeEventName: string,
+    payload: Partial<AgentStatusPayload> = {},
+  ): AgentRunEvent {
+    return this.createEvent(claudeEventName, AgentRunEventType.AGENT_STATUS, {
+      ...this.getStatusPayload(),
+      ...payload,
+    });
   }
 
   private createEvent(

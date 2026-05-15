@@ -112,7 +112,7 @@ describe("CodexTeamRunBackend integration", () => {
     expect(backend.runId).toBe("team-codex-1");
     expect(backend.teamBackendKind).toBe(TeamBackendKind.CODEX_APP_SERVER);
     expect(backend.isActive()).toBe(true);
-    expect(backend.getStatus()).toBe("IDLE");
+    expect(backend.getStatusSnapshot()).toEqual({ status: "idle" });
     expect(backend.getRuntimeContext()).toBe(context.runtimeContext);
 
     const userMessage = new AgentInputUserMessage("coordinate the task");
@@ -202,7 +202,7 @@ describe("CodexTeamRunBackend integration", () => {
       accepted: false,
       code: "RUN_NOT_FOUND",
     });
-    expect(backend.getStatus()).toBeNull();
+    expect(backend.getStatusSnapshot()).toEqual({ status: "idle" });
   });
 
   it("forwards team events from the manager subscription", () => {
@@ -251,8 +251,7 @@ describe("CodexTeamRunBackend integration", () => {
       eventSourceType: TeamRunEventSourceType.TEAM,
       teamRunId: "team-codex-1",
       data: {
-        old_status: "PROCESSING",
-        new_status: "IDLE",
+        status: "idle",
       },
     });
     expect(observed).toHaveLength(1);

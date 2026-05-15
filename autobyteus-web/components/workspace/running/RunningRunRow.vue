@@ -63,22 +63,10 @@ const runLabel = computed(() => {
 const statusColor = computed(() => {
   switch (props.run.state.currentStatus) {
     case AgentStatus.Idle: return 'bg-green-400';
-    case AgentStatus.Bootstrapping:
-    case AgentStatus.ProcessingUserInput:
-    case AgentStatus.ExecutingTool:
-    case AgentStatus.ProcessingToolResult:
-    case AgentStatus.AnalyzingLlmResponse:
-    case AgentStatus.Interrupting:
+    case AgentStatus.Running:
       return 'bg-blue-400 animate-pulse';
-    case AgentStatus.AwaitingToolApproval:
-    case AgentStatus.AwaitingLlmResponse:
-      return 'bg-yellow-400';
     case AgentStatus.Error:
-    case AgentStatus.ToolDenied:
       return 'bg-red-500';
-    case AgentStatus.ShuttingDown:
-    case AgentStatus.ShutdownComplete:
-      return 'bg-gray-400';
     default: return 'bg-gray-300';
   }
 });

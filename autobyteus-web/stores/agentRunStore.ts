@@ -363,7 +363,8 @@ export const useAgentRunStore = defineStore('agentRun', {
 
         if (context) {
           context.isSending = false;
-          context.state.currentStatus = AgentStatus.ShutdownComplete;
+          context.state.currentStatus = AgentStatus.Idle;
+          context.state.canInterrupt = false;
         }
       };
 

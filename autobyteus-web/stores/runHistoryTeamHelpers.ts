@@ -16,9 +16,9 @@ export const toHistoryTeamStatus = (
     return AgentTeamStatus.Error;
   }
   if (!team.isActive) {
-    return AgentTeamStatus.ShutdownComplete;
+    return AgentTeamStatus.Idle;
   }
-  return AgentTeamStatus.Processing;
+  return AgentTeamStatus.Running;
 };
 
 export const toTeamRunStatus = (
@@ -28,10 +28,7 @@ export const toTeamRunStatus = (
     return { isActive: false, lastKnownStatus: 'ERROR' };
   }
 
-  if (
-    status === AgentTeamStatus.Uninitialized ||
-    status === AgentTeamStatus.ShutdownComplete
-  ) {
+  if (status === AgentTeamStatus.Idle) {
     return { isActive: false, lastKnownStatus: 'IDLE' };
   }
 
@@ -45,11 +42,7 @@ const toTeamMemberRunStatus = (
     return { isActive: false, lastKnownStatus: 'ERROR' };
   }
 
-  if (
-    status === AgentStatus.Uninitialized ||
-    status === AgentStatus.ShutdownComplete ||
-    status === AgentStatus.ToolDenied
-  ) {
+  if (status === AgentStatus.Idle) {
     return { isActive: false, lastKnownStatus: 'IDLE' };
   }
 
@@ -399,8 +392,9 @@ export const applyProjectionToTeamMemberContext = (params: {
   params.memberContext.state.runId = memberRunId;
   params.memberContext.state.conversation = conversation;
   params.memberContext.state.currentStatus = params.isActive
-    ? AgentStatus.Uninitialized
-    : AgentStatus.ShutdownComplete;
+    ? AgentStatus.Running
+    : AgentStatus.Idle;
+  params.memberContext.state.canInterrupt = false;
 
   if (params.projection) {
     hydrateActivitiesFromProjection(memberRunId, params.projection.activities || []);
@@ -445,7 +439,8 @@ export const buildTeamMemberContexts = async (params: {
     });
 
     const state = new AgentRunState(memberRunId, conversation);
-    state.currentStatus = params.isActive ? AgentStatus.Uninitialized : AgentStatus.ShutdownComplete;
+    state.currentStatus = params.isActive ? AgentStatus.Running : AgentStatus.Idle;
+    state.canInterrupt = false;
     members.set(
       normalizedMemberRouteKey,
       new AgentContext(memberConfig, state),

@@ -154,14 +154,14 @@ describe('agentTeamRunStore', () => {
     expect(mockDisconnect).toHaveBeenCalledTimes(1);
   });
 
-  it('marks team as shutdown but keeps context for history restore after terminate', async () => {
+  it('marks team as idle but keeps context for history restore after terminate', async () => {
     const teamContext = {
       teamRunId: 'team-1',
       isSubscribed: true,
-      currentStatus: AgentTeamStatus.Processing,
+      currentStatus: AgentTeamStatus.Running,
       unsubscribe: undefined as undefined | (() => void),
       members: new Map([
-        ['member-a', { state: { runId: 'agent-a', currentStatus: AgentStatus.ProcessingUserInput } }],
+        ['member-a', { isSending: true, state: { runId: 'agent-a', currentStatus: AgentStatus.Running, canInterrupt: true } }],
         ['member-b', { state: { runId: 'agent-b', currentStatus: AgentStatus.Idle } }],
       ]),
     };
@@ -184,9 +184,11 @@ describe('agentTeamRunStore', () => {
     expect(mockDisconnect).toHaveBeenCalledTimes(1);
     expect(teamContext.unsubscribe).toBeUndefined();
     expect(teamContext.isSubscribed).toBe(false);
-    expect(teamContext.currentStatus).toBe(AgentTeamStatus.ShutdownComplete);
-    expect(teamContext.members.get('member-a')?.state.currentStatus).toBe(AgentStatus.ShutdownComplete);
-    expect(teamContext.members.get('member-b')?.state.currentStatus).toBe(AgentStatus.ShutdownComplete);
+    expect(teamContext.currentStatus).toBe(AgentTeamStatus.Idle);
+    expect(teamContext.members.get('member-a')?.state.currentStatus).toBe(AgentStatus.Idle);
+    expect(teamContext.members.get('member-a')?.state.canInterrupt).toBe(false);
+    expect(teamContext.members.get('member-a')?.isSending).toBe(false);
+    expect(teamContext.members.get('member-b')?.state.currentStatus).toBe(AgentStatus.Idle);
     expect(mockClearActivities).toHaveBeenCalledWith('agent-a');
     expect(mockClearActivities).toHaveBeenCalledWith('agent-b');
     expect(teamContextsStoreMock.removeTeamContext).not.toHaveBeenCalled();
@@ -199,10 +201,10 @@ describe('agentTeamRunStore', () => {
     const teamContext = {
       teamRunId: 'team-terminate-fails-1',
       isSubscribed: true,
-      currentStatus: AgentTeamStatus.Processing,
+      currentStatus: AgentTeamStatus.Running,
       unsubscribe: undefined as undefined | (() => void),
       members: new Map([
-        ['member-a', { state: { runId: 'agent-a', currentStatus: AgentStatus.ProcessingUserInput } }],
+        ['member-a', { state: { runId: 'agent-a', currentStatus: AgentStatus.Running } }],
       ]),
     };
     teamContextsStoreMock.getTeamContextById.mockReturnValue(teamContext);

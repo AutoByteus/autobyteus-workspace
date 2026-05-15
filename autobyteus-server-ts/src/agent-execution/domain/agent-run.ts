@@ -41,8 +41,8 @@ export class AgentRun {
     return this.backend.getPlatformAgentRunId();
   }
 
-  getStatus(): string | null {
-    return this.backend.getStatus();
+  getStatusSnapshot() {
+    return this.backend.getStatusSnapshot();
   }
 
   subscribeToEvents(

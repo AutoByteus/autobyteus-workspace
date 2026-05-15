@@ -52,7 +52,7 @@ describe('runTreeLiveStatusMerge', () => {
         'run-history-b',
         {
           state: {
-            currentStatus: AgentStatus.Bootstrapping,
+            currentStatus: AgentStatus.Running,
             conversation: { updatedAt: '2026-01-05T00:00:00.000Z' },
           },
         },
@@ -73,7 +73,7 @@ describe('runTreeLiveStatusMerge', () => {
     expect(draft?.lastKnownStatus).toBe('ACTIVE');
   });
 
-  it('keeps idle live contexts active while preserving terminal status mapping', () => {
+  it('maps idle and error live contexts to inactive history rows', () => {
     const contexts = new Map<string, any>([
       [
         'run-history-a',
@@ -101,8 +101,8 @@ describe('runTreeLiveStatusMerge', () => {
 
     expect(runA?.isActive).toBe(false);
     expect(runA?.lastKnownStatus).toBe('ERROR');
-    expect(runB?.isActive).toBe(true);
-    expect(runB?.lastKnownStatus).toBe('ACTIVE');
+    expect(runB?.isActive).toBe(false);
+    expect(runB?.lastKnownStatus).toBe('IDLE');
   });
 
   it('overlays matching persisted history row summary with the live first user message', () => {
@@ -111,7 +111,7 @@ describe('runTreeLiveStatusMerge', () => {
         'run-history-b',
         {
           state: {
-            currentStatus: AgentStatus.Bootstrapping,
+            currentStatus: AgentStatus.Running,
             conversation: {
               updatedAt: '2026-01-05T00:00:00.000Z',
               messages: [

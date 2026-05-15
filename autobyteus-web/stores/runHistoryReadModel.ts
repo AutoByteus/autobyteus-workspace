@@ -10,6 +10,7 @@ import type {
 import {
   buildRunTreeProjection,
   type DraftRunSnapshot,
+  type ProjectionRunKnownStatus,
   type RunTreeWorkspaceNode,
 } from '~/utils/runTreeProjection';
 import { mergeRunTreeWithLiveContexts } from '~/utils/runTreeLiveStatusMerge';
@@ -90,20 +91,28 @@ const summarizeDraftRun = (
   return `${DEFAULT_DRAFT_SUMMARY_PREFIX}${agentName}`.trim();
 };
 
-const toRunStatus = (status: AgentStatus): Pick<RunHistoryItem, 'isActive' | 'lastKnownStatus'> => {
+const toRunStatus = (status: AgentStatus): { isActive: boolean; lastKnownStatus: ProjectionRunKnownStatus } => {
   if (status === AgentStatus.Error) {
     return { isActive: false, lastKnownStatus: 'ERROR' };
   }
 
-  if (
-    status === AgentStatus.Uninitialized ||
-    status === AgentStatus.ShutdownComplete ||
-    status === AgentStatus.ToolDenied
-  ) {
+  if (status === AgentStatus.Idle) {
     return { isActive: false, lastKnownStatus: 'IDLE' };
   }
 
   return { isActive: true, lastKnownStatus: 'ACTIVE' };
+};
+
+const normalizeProjectionRunStatus = (
+  status: RunHistoryItem['lastKnownStatus'],
+): ProjectionRunKnownStatus => {
+  if (status === 'ERROR') {
+    return 'ERROR';
+  }
+  if (status === 'ACTIVE') {
+    return 'ACTIVE';
+  }
+  return 'IDLE';
 };
 
 export const buildRunHistoryTreeNodes = (params: {
@@ -164,7 +173,7 @@ export const buildRunHistoryTreeNodes = (params: {
     }
   }
 
-  const persistedWorkspaces: RunHistoryWorkspaceGroup[] = params.workspaceGroups.map((workspace) => ({
+  const persistedWorkspaces = params.workspaceGroups.map((workspace) => ({
     ...workspace,
     agentDefinitions: workspace.agentDefinitions.map((agent) => ({
       ...agent,
@@ -172,6 +181,10 @@ export const buildRunHistoryTreeNodes = (params: {
         agent.agentAvatarUrl ??
         agentAvatarByDefinitionId.get(agent.agentDefinitionId) ??
         null,
+      runs: agent.runs.map((run) => ({
+        ...run,
+        lastKnownStatus: normalizeProjectionRunStatus(run.lastKnownStatus),
+      })),
     })),
   }));
 

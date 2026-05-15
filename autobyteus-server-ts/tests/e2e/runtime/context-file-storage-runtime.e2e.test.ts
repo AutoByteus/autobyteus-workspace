@@ -152,7 +152,7 @@ const assistantCompletedWithText = (message: WsMessage, agentName?: string): boo
 
 const idleStatusMatches = (message: WsMessage, agentName?: string): boolean =>
   message.type === "AGENT_STATUS" &&
-  message.payload.new_status === "IDLE" &&
+  message.payload.status === "idle" &&
   (!agentName || message.payload.agent_name === agentName);
 
 const waitForWorkingContextImagePath = async (

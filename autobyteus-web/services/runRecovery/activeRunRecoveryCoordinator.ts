@@ -47,9 +47,8 @@ export const recoverActiveRunsFromHistory = async (
     const existingContext = agentContextsStore.getRun(runId);
     if (existingContext) {
       existingContext.config.isLocked = true;
-      if (existingContext.state.currentStatus === AgentStatus.ShutdownComplete) {
-        existingContext.state.currentStatus = AgentStatus.Uninitialized;
-      }
+      existingContext.state.currentStatus = AgentStatus.Running;
+      existingContext.state.canInterrupt = false;
 
       if (!existingContext.isSubscribed) {
         agentRunStore.connectToAgentStream(runId);
@@ -74,20 +73,11 @@ export const recoverActiveRunsFromHistory = async (
     const existingTeamContext = teamContextsStore.getTeamContextById(teamRunId);
     if (existingTeamContext) {
       existingTeamContext.config.isLocked = true;
-      if (
-        existingTeamContext.currentStatus === AgentTeamStatus.Idle
-        || existingTeamContext.currentStatus === AgentTeamStatus.ShutdownComplete
-      ) {
-        existingTeamContext.currentStatus = AgentTeamStatus.Uninitialized;
-      }
+      existingTeamContext.currentStatus = AgentTeamStatus.Running;
       existingTeamContext.members.forEach((memberContext) => {
         memberContext.config.isLocked = true;
-        if (
-          memberContext.state.currentStatus === AgentStatus.Idle
-          || memberContext.state.currentStatus === AgentStatus.ShutdownComplete
-        ) {
-          memberContext.state.currentStatus = AgentStatus.Uninitialized;
-        }
+        memberContext.state.currentStatus = AgentStatus.Running;
+        memberContext.state.canInterrupt = false;
       });
 
       if (!existingTeamContext.isSubscribed) {

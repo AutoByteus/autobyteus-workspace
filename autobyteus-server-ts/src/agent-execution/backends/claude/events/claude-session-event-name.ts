@@ -3,6 +3,7 @@ export enum ClaudeSessionEventName {
   TURN_COMPLETED = "turn/completed",
   TURN_INTERRUPTED = "turn/interrupted",
   SESSION_TERMINATED = "session/terminated",
+  STATUS_CHANGED = "session/status/changed",
   STATUS_COMPACTING = "session/status/compacting",
   COMPACT_BOUNDARY = "session/compactBoundary",
   ITEM_ADDED = "item/added",

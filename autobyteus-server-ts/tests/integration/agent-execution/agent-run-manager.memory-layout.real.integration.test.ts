@@ -160,7 +160,7 @@ describe("AgentRunService real memory layout integration", () => {
       new AgentInputUserMessage("first real turn"),
     );
     expect(firstMessageResult?.accepted).toBe(true);
-    await waitFor(() => createdRun?.getStatus() === "idle");
+    await waitFor(() => createdRun?.getStatusSnapshot().status === "idle");
 
     const runRawTracePath = path.join(memoryDir, "agents", runId.runId, "raw_traces.jsonl");
     const rootRawTracePath = path.join(memoryDir, "raw_traces.jsonl");
@@ -188,7 +188,7 @@ describe("AgentRunService real memory layout integration", () => {
       new AgentInputUserMessage("second real turn"),
     );
     expect(secondMessageResult?.accepted).toBe(true);
-    await waitFor(() => restoredRun?.getStatus() === "idle");
+    await waitFor(() => restoredRun?.getStatusSnapshot().status === "idle");
 
     await waitFor(async () => {
       try {

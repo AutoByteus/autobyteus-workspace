@@ -107,7 +107,7 @@ const createMemberContext = (runId: string, conversationId: string) => ({
       id: conversationId,
       messages: [],
     },
-    currentStatus: 'Uninitialized',
+    currentStatus: 'running',
   },
 });
 

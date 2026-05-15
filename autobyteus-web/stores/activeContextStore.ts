@@ -34,6 +34,7 @@ export const useActiveContextStore = defineStore('activeContext', () => {
   });
 
   const isSending = computed<boolean>(() => activeAgentContext.value?.isSending ?? false);
+  const canInterrupt = computed<boolean>(() => activeAgentContext.value?.state.canInterrupt ?? false);
   const currentRequirement = computed<string>(() => activeAgentContext.value?.requirement ?? '');
   const currentContextPaths = computed<ContextFilePath[]>(() => activeAgentContext.value?.contextFilePaths ?? []);
   const activeConfig = computed<AgentRunConfig | null>(() => activeAgentContext.value?.config ?? null);
@@ -185,6 +186,7 @@ export const useActiveContextStore = defineStore('activeContext', () => {
   return {
     activeAgentContext,
     isSending,
+    canInterrupt,
     currentRequirement,
     currentContextPaths,
     activeConfig,

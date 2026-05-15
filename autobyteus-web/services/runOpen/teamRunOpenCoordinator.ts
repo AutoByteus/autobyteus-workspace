@@ -83,8 +83,8 @@ export const openTeamRun = async (
     historicalHydration,
     focusedMemberName: focusedMemberRouteKey,
     currentStatus: shouldTreatAsLive
-      ? AgentTeamStatus.Uninitialized
-      : AgentTeamStatus.ShutdownComplete,
+      ? AgentTeamStatus.Running
+      : AgentTeamStatus.Idle,
     isSubscribed: false,
     taskPlan: null,
     taskStatuses: null,

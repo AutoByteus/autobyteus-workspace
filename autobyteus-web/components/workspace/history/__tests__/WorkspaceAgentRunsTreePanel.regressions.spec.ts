@@ -222,7 +222,7 @@ describe('WorkspaceAgentRunsTreePanel regressions', () => {
         lastActivityAt: '2026-01-01T02:00:00.000Z',
         lastKnownStatus: 'IDLE',
         isActive: false,
-        currentStatus: 'shutdown_complete',
+        currentStatus: 'idle',
         deleteLifecycle: 'READY',
         focusedMemberName: 'super_agent',
         members: [
@@ -296,7 +296,7 @@ describe('WorkspaceAgentRunsTreePanel regressions', () => {
         lastActivityAt: '2026-01-01T03:00:00.000Z',
         lastKnownStatus: 'IDLE',
         isActive: false,
-        currentStatus: 'shutdown_complete',
+        currentStatus: 'idle',
         deleteLifecycle: 'READY',
         focusedMemberName: 'history_member',
         members: [

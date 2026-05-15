@@ -605,7 +605,7 @@ describe('runHistoryStore', () => {
     expect(store.isRuntimeLockedForRun('run-1')).toBe(true);
     expect(agentContextsStoreMock.upsertProjectionContext).toHaveBeenCalledWith(
       expect.objectContaining({
-        status: 'uninitialized',
+        status: 'running',
         config: expect.objectContaining({
           runtimeKind: 'codex_app_server',
         }),
@@ -712,7 +712,7 @@ describe('runHistoryStore', () => {
     expect(agentContextsStoreMock.upsertProjectionContext).toHaveBeenCalledWith(
       expect.objectContaining({
         runId: 'run-2',
-        status: 'shutdown_complete',
+        status: 'idle',
       }),
     );
     expect(store.isRuntimeLockedForRun('run-2')).toBe(true);
@@ -798,7 +798,7 @@ describe('runHistoryStore', () => {
     expect(agentContextsStoreMock.upsertProjectionContext).toHaveBeenCalledWith(
       expect.objectContaining({
         runId: 'run-stale-1',
-        status: 'uninitialized',
+        status: 'running',
         config: expect.objectContaining({
           isLocked: true,
         }),
@@ -1259,7 +1259,7 @@ describe('runHistoryStore', () => {
     expect(runB?.lastActivityAt).toBe('2026-01-03T00:00:00.000Z');
   });
 
-  it('treats idle draft contexts as active in tree projection', () => {
+  it('projects idle draft contexts as idle in tree projection', () => {
     const store = useRunHistoryStore();
     workspaceStoreMock.allWorkspaces = [
       { workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'Alpha' },
@@ -1289,8 +1289,8 @@ describe('runHistoryStore', () => {
     const draft = nodes[0]?.agents[0]?.runs.find((run) => run.runId === 'temp-1');
 
     expect(draft?.source).toBe('draft');
-    expect(draft?.isActive).toBe(true);
-    expect(draft?.lastKnownStatus).toBe('ACTIVE');
+    expect(draft?.isActive).toBe(false);
+    expect(draft?.lastKnownStatus).toBe('IDLE');
   });
 
   it('selectTreeRun delegates to openRun for history rows', async () => {
@@ -1446,7 +1446,7 @@ describe('runHistoryStore', () => {
           config: { workspaceId: 'ws-1', agentDefinitionName: 'Super Agent' },
           state: {
             runId: 'member-run-1',
-            currentStatus: 'shutdown_complete',
+            currentStatus: 'idle',
             conversation: {
               id: 'member-run-1',
               messages: [
@@ -1459,7 +1459,7 @@ describe('runHistoryStore', () => {
         }],
       ]),
       focusedMemberName: 'super_agent',
-      currentStatus: 'shutdown_complete',
+      currentStatus: 'idle',
       isSubscribed: false,
       taskPlan: null,
       taskStatuses: null,
@@ -1616,7 +1616,7 @@ describe('runHistoryStore', () => {
           config: { workspaceId: 'ws-1', agentDefinitionName: 'Student' },
           state: {
             runId: 'member-student-1',
-            currentStatus: 'shutdown_complete',
+            currentStatus: 'idle',
             conversation: {
               id: 'member-student-1',
               messages: [],
@@ -1801,7 +1801,7 @@ describe('runHistoryStore', () => {
         }],
       ]),
       focusedMemberName: 'api_e2e_engineer',
-      currentStatus: 'shutdown_complete',
+      currentStatus: 'idle',
       isSubscribed: false,
       taskPlan: null,
       taskStatuses: null,
@@ -1871,7 +1871,7 @@ describe('runHistoryStore', () => {
         },
       },
       focusedMemberName: 'api_e2e_engineer',
-      currentStatus: 'shutdown_complete',
+      currentStatus: 'idle',
       isSubscribed: false,
       taskPlan: null,
       taskStatuses: null,
@@ -2025,7 +2025,7 @@ describe('runHistoryStore', () => {
     expect(hydratedTeam).toBeTruthy();
     expect(hydratedTeam.focusedMemberName).toBe('super_agent');
     expect(hydratedTeam.members.get('super_agent')?.state.conversation.messages.length).toBe(2);
-    expect(hydratedTeam.members.get('super_agent')?.state.currentStatus).toBe('shutdown_complete');
+    expect(hydratedTeam.members.get('super_agent')?.state.currentStatus).toBe('idle');
     expect(hydratedTeam.members.get('architect_reviewer')?.state.conversation.messages.length).toBe(0);
     expect(hydratedTeam.historicalHydration?.memberProjectionLoadStateByRouteKey).toEqual({
       super_agent: 'loaded',
@@ -2104,8 +2104,8 @@ describe('runHistoryStore', () => {
 
     const hydratedTeam = teamContextsStoreMock.teams.get('team-1');
     expect(hydratedTeam).toBeTruthy();
-    expect(hydratedTeam.currentStatus).toBe('uninitialized');
-    expect(hydratedTeam.members.get('super_agent')?.state.currentStatus).toBe('uninitialized');
+    expect(hydratedTeam.currentStatus).toBe('running');
+    expect(hydratedTeam.members.get('super_agent')?.state.currentStatus).toBe('running');
     expect(agentTeamRunStoreMock.connectToTeamStream).toHaveBeenCalledWith('team-1');
   });
 
@@ -2173,7 +2173,7 @@ describe('runHistoryStore', () => {
     const hydratedTeam = teamContextsStoreMock.teams.get('team-stale-1');
     expect(hydratedTeam).toBeTruthy();
     expect(agentTeamRunStoreMock.connectToTeamStream).toHaveBeenCalledWith('team-stale-1');
-    expect(hydratedTeam.currentStatus).toBe('uninitialized');
+    expect(hydratedTeam.currentStatus).toBe('running');
     expect(hydratedTeam.config.isLocked).toBe(true);
   });
 

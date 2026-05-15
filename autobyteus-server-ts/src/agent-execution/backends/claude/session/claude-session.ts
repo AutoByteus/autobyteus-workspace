@@ -1,7 +1,6 @@
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import {
   logger,
-  asObject,
   asString,
   nowTimestampSeconds,
   type ClaudeSessionEvent,
@@ -9,7 +8,6 @@ import {
 import { resolveClaudeStreamChunkSessionId } from "../claude-runtime-message-normalizers.js";
 import { ClaudeSessionEventName } from "../events/claude-session-event-name.js";
 import { logRawClaudeSessionChunkDetails } from "../events/claude-session-event-debug.js";
-import { buildClaudeSessionMcpServers } from "./build-claude-session-mcp-servers.js";
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
 import { ClaudeSessionMessageCache } from "./claude-session-message-cache.js";
 import type { ClaudeSessionToolUseCoordinator } from "./claude-session-tool-use-coordinator.js";
@@ -26,6 +24,8 @@ import {
   isClaudeTurnTerminalChunk,
 } from "./claude-session-output-events.js";
 import { ClaudeTextSegmentProjector } from "./claude-text-segment-projector.js";
+import { buildClaudeSessionMcpServerConfig } from "./claude-session-mcp-server-config.js";
+import { processOrderedClaudeContentBlocks } from "./claude-session-content-block-processor.js";
 import type { ClaudeSdkClient, ClaudeSdkQueryLike } from "../../../../runtime-management/claude/client/claude-sdk-client.js";
 
 import { dispatchRuntimeEvent } from "../../shared/runtime-event-dispatch.js";
@@ -34,6 +34,7 @@ const formatClaudeRuntimeError = (error: unknown): string =>
   error instanceof Error ? error.stack ?? error.message : String(error);
 
 type ClaudeSessionTurnExecutionInput = { turnId: string; content: string; abortController: AbortController };
+type ClaudeSessionStatus = "IDLE" | "RUNNING" | "ERROR";
 
 export type ClaudeSessionDependencies = {
   sessionMessageCache: ClaudeSessionMessageCache;
@@ -58,6 +59,8 @@ export class ClaudeSession {
   readonly listeners: Set<(event: ClaudeSessionEvent) => void>;
   activeAbortController: AbortController | null;
   private activeTurnExecution: ClaudeActiveTurnExecution | null = null;
+  private currentStatus: ClaudeSessionStatus;
+  private isInterruptingActiveTurn = false;
   private rawClaudeChunkSequence = 0;
 
   constructor(input: ClaudeSessionStateInput) {
@@ -67,6 +70,7 @@ export class ClaudeSession {
     this.activeAbortController = input.activeAbortController ?? null;
     this.runContext.runtimeContext.activeTurnId =
       input.activeTurnId ?? input.runContext.runtimeContext.activeTurnId ?? null;
+    this.currentStatus = this.runContext.runtimeContext.activeTurnId ? "RUNNING" : "IDLE";
   }
 
   get runId(): string {
@@ -87,6 +91,14 @@ export class ClaudeSession {
 
   get activeTurnId(): string | null {
     return this.runContext.runtimeContext.activeTurnId;
+  }
+
+  getStatusSnapshotSource() {
+    return {
+      currentStatus: this.currentStatus,
+      activeTurnId: this.activeTurnId,
+      isInterrupting: this.isInterruptingActiveTurn,
+    };
   }
 
   get model(): string {
@@ -139,6 +151,8 @@ export class ClaudeSession {
     const abortController = new AbortController();
     const activeTurn = createClaudeActiveTurnExecution(turnId, abortController);
     this.activeTurnExecution = activeTurn;
+    this.currentStatus = "RUNNING";
+    this.isInterruptingActiveTurn = false;
     this.setActiveTurn(turnId);
     this.setActiveAbortController(abortController);
     this.dependencies.sessionMessageCache.appendMessage(this.sessionId, {
@@ -162,13 +176,13 @@ export class ClaudeSession {
           content,
           abortController,
         });
-        if (!isClaudeActiveTurnInterrupted(activeTurn)) {
-          this.markTurnCompleted(turnId);
-        }
       } catch (error) {
         if (isClaudeActiveTurnInterrupted(activeTurn)) {
           return;
         }
+        this.currentStatus = "ERROR";
+        this.isInterruptingActiveTurn = false;
+        this.clearActiveTurn();
         this.emitRuntimeEvent({
           method: ClaudeSessionEventName.ERROR,
           params: {
@@ -230,6 +244,11 @@ export class ClaudeSession {
   ): Promise<void> {
     const interruptedTurnId = activeTurn.turnId;
     activeTurn.interrupted = true;
+    this.isInterruptingActiveTurn = true;
+    this.emitRuntimeEvent({
+      method: ClaudeSessionEventName.STATUS_CHANGED,
+      params: { turnId: interruptedTurnId },
+    });
     this.dependencies.toolingCoordinator.clearPendingToolApprovals(
       this.runId,
       pendingToolApprovalReason,
@@ -238,6 +257,9 @@ export class ClaudeSession {
     activeTurn.abortController.abort();
     this.closeActiveTurnQuery(activeTurn);
     await activeTurn.settledTask;
+    this.currentStatus = "IDLE";
+    this.isInterruptingActiveTurn = false;
+    this.clearActiveTurn();
     this.emitRuntimeEvent({
       method: ClaudeSessionEventName.TURN_INTERRUPTED,
       params: {
@@ -248,6 +270,13 @@ export class ClaudeSession {
 
   async terminate(): Promise<void> {
     await this.dependencies.terminateRunSession();
+    this.currentStatus = "IDLE";
+    this.isInterruptingActiveTurn = false;
+    this.clearActiveTurn();
+    this.emitRuntimeEvent({
+      method: ClaudeSessionEventName.SESSION_TERMINATED,
+      params: { sessionId: this.sessionId },
+    });
   }
 
   adoptResolvedSessionId(
@@ -282,6 +311,8 @@ export class ClaudeSession {
 
   markTurnCompleted(turnId: string | null = null): void {
     this.runContext.runtimeContext.hasCompletedTurn = true;
+    this.currentStatus = "IDLE";
+    this.isInterruptingActiveTurn = false;
     if (!turnId || this.runContext.runtimeContext.activeTurnId === turnId) {
       this.runContext.runtimeContext.activeTurnId = null;
     }
@@ -301,6 +332,8 @@ export class ClaudeSession {
       this.clearActiveAbortController();
     }
     if (this.activeTurnId === activeTurn.turnId) {
+      this.currentStatus = "IDLE";
+      this.isInterruptingActiveTurn = false;
       this.clearActiveTurn();
     }
   }
@@ -349,6 +382,8 @@ export class ClaudeSession {
       // best-effort cleanup
     } finally {
       this.dependencies.activeQueriesByRunId.delete(this.runId);
+      this.currentStatus = "IDLE";
+      this.isInterruptingActiveTurn = false;
       this.clearActiveTurn();
     }
   }
@@ -366,11 +401,15 @@ export class ClaudeSession {
       content: options.content,
       sendMessageToEnabled: toolingOptions.sendMessageToToolingEnabled,
     });
-    const mcpServers = await this.buildSessionMcpServers({
+    const mcpServers = await buildClaudeSessionMcpServerConfig({
       sendMessageToToolingEnabled: toolingOptions.sendMessageToToolingEnabled,
       enabledBrowserToolNames: toolingOptions.enabledBrowserToolNames,
       enabledMediaToolNames: toolingOptions.enabledMediaToolNames,
       publishArtifactsToolingEnabled: toolingOptions.publishArtifactsToolingEnabled,
+      runContext: this.runContext,
+      sdkClient: this.dependencies.sdkClient,
+      toolingCoordinator: this.dependencies.toolingCoordinator,
+      emitRuntimeEvent: (event) => this.emitRuntimeEvent(event),
     });
     const query = await this.dependencies.sdkClient.startQueryTurn({
       prompt: turnInput,
@@ -435,10 +474,12 @@ export class ClaudeSession {
           this.emitRuntimeEvent(compactionEvent);
         }
         const isTerminalChunk = isClaudeTurnTerminalChunk(chunk);
-        const processedOrderedContent = this.processOrderedClaudeContentBlocks(
+        const processedOrderedContent = processOrderedClaudeContentBlocks({
           chunk,
           textProjector,
-        );
+          runContext: this.runContext,
+          toolingCoordinator: this.dependencies.toolingCoordinator,
+        });
         if (!processedOrderedContent) {
           this.dependencies.toolingCoordinator.processToolLifecycleChunk(this.runContext, chunk);
           textProjector.processChunk(chunk);
@@ -471,74 +512,13 @@ export class ClaudeSession {
       });
     }
 
+    this.markTurnCompleted(options.turnId);
     this.emitRuntimeEvent({
       method: ClaudeSessionEventName.TURN_COMPLETED,
       params: {
         turnId: options.turnId,
         sessionId: this.sessionId,
       },
-    });
-  }
-
-  private processOrderedClaudeContentBlocks(
-    chunk: unknown,
-    textProjector: ClaudeTextSegmentProjector,
-  ): boolean {
-    const payload = asObject(chunk);
-    if (!payload) {
-      return false;
-    }
-
-    const messagePayload = asObject(payload.message);
-    const contentBlocks = Array.isArray(messagePayload?.content)
-      ? (messagePayload.content as unknown[])
-      : [];
-    if (contentBlocks.length === 0) {
-      return false;
-    }
-
-    const messageType = asString(payload.type);
-    for (let index = 0; index < contentBlocks.length; index += 1) {
-      const block = contentBlocks[index];
-      if (messageType === "assistant") {
-        textProjector.processAssistantContentBlock({
-          chunk: payload,
-          message: messagePayload ?? {},
-          block,
-          contentBlockIndex: index,
-        });
-      }
-      this.dependencies.toolingCoordinator.processToolLifecycleContentBlock(this.runContext, {
-        messageType,
-        block,
-      });
-    }
-    return true;
-  }
-
-  private async buildSessionMcpServers(input: {
-    sendMessageToToolingEnabled: boolean;
-    enabledBrowserToolNames: string[];
-    enabledMediaToolNames: string[];
-    publishArtifactsToolingEnabled: boolean;
-  }): Promise<Record<string, unknown> | null> {
-    return buildClaudeSessionMcpServers({
-      sendMessageToToolingEnabled: input.sendMessageToToolingEnabled,
-      enabledBrowserToolNames: input.enabledBrowserToolNames,
-      enabledMediaToolNames: input.enabledMediaToolNames,
-      publishArtifactsToolingEnabled: input.publishArtifactsToolingEnabled,
-      runContext: this.runContext,
-      sdkClient: this.dependencies.sdkClient,
-      requestToolApproval: input.sendMessageToToolingEnabled
-        ? ({ invocationId, toolName, toolArguments }) =>
-            this.dependencies.toolingCoordinator.requestToolApprovalDecision({
-              runContext: this.runContext,
-              invocationId,
-              toolName,
-              toolInput: toolArguments,
-            })
-        : null,
-      emitEvent: (_runContext, event) => this.emitRuntimeEvent(event),
     });
   }
 

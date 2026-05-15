@@ -440,7 +440,7 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
     const interruptStartedAt = Date.now();
     await thread.interrupt(turn.turnId);
     await waitForThreadState(
-      () => thread.getStatus() === "IDLE" || thread.getStatus() === "ERROR" || thread.activeTurnId === null,
+      () => thread.getStatusSnapshotSource().currentStatus === "IDLE" || thread.getStatusSnapshotSource().currentStatus === "ERROR" || thread.activeTurnId === null,
       20_000,
     );
     expect(Date.now() - interruptStartedAt).toBeLessThan(20_000);

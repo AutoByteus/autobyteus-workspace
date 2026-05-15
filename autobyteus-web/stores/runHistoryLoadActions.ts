@@ -141,8 +141,9 @@ const reconcileDiscoveredActiveRuns = async (
       agentRunStore.disconnectAgentStream(runId);
     }
     if (context.state.currentStatus !== AgentStatus.Error) {
-      context.state.currentStatus = AgentStatus.ShutdownComplete;
+      context.state.currentStatus = AgentStatus.Idle;
     }
+    context.state.canInterrupt = false;
   }
 
   for (const runId of activeAgentRunIds) {
@@ -178,12 +179,13 @@ const reconcileDiscoveredActiveRuns = async (
       agentTeamRunStore.disconnectTeamStream(teamContext.teamRunId);
     }
     if (teamContext.currentStatus !== AgentTeamStatus.Error) {
-      teamContext.currentStatus = AgentTeamStatus.ShutdownComplete;
+      teamContext.currentStatus = AgentTeamStatus.Idle;
     }
     teamContext.members.forEach((memberContext) => {
       if (memberContext.state.currentStatus !== AgentStatus.Error) {
-        memberContext.state.currentStatus = AgentStatus.ShutdownComplete;
+        memberContext.state.currentStatus = AgentStatus.Idle;
       }
+      memberContext.state.canInterrupt = false;
     });
   }
 

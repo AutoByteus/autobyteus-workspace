@@ -49,6 +49,8 @@ export const handleAppServerNotification = (
     } else if (statusType === "error" || statusType === "failed") {
       codexThread.setCurrentStatus("ERROR");
     }
+  } else if (eventMethod === CodexThreadEventName.ERROR) {
+    codexThread.setCurrentStatus("ERROR");
   } else if (eventMethod === CodexThreadEventName.THREAD_TOKEN_USAGE_UPDATED) {
     const nextThreadId = resolveThreadIdFromAppServerMessage(params);
     if (nextThreadId) {

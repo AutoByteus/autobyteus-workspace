@@ -157,9 +157,11 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
 
         if (teamContext) {
           teamContext.isSubscribed = false;
-          teamContext.currentStatus = AgentTeamStatus.ShutdownComplete;
+          teamContext.currentStatus = AgentTeamStatus.Idle;
           teamContext.members.forEach((member) => {
-            member.state.currentStatus = AgentStatus.ShutdownComplete;
+            member.isSending = false;
+            member.state.currentStatus = AgentStatus.Idle;
+            member.state.canInterrupt = false;
             useAgentActivityStore().clearActivities(member.state.runId);
           });
         }
@@ -222,6 +224,8 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       teamContext.isSubscribed = false;
       teamContext.members.forEach((member) => {
         member.isSending = false;
+        member.state.currentStatus = AgentStatus.Idle;
+        member.state.canInterrupt = false;
         useAgentActivityStore().clearActivities(member.state.runId);
       });
 

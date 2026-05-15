@@ -118,23 +118,19 @@ export const useWorkspaceHistoryTreeState = (params: {
 
   const teamStatusClass = (status: AgentTeamStatus): string => {
     switch (status) {
-      case AgentTeamStatus.Processing:
+      case AgentTeamStatus.Running:
         return 'bg-blue-500 animate-pulse';
       case AgentTeamStatus.Idle:
         return 'bg-green-500';
-      case AgentTeamStatus.Bootstrapping:
-        return 'bg-purple-500 animate-pulse';
       case AgentTeamStatus.Error:
         return 'bg-red-500';
-      case AgentTeamStatus.ShutdownComplete:
-        return 'bg-gray-400';
       default:
         return 'bg-gray-300';
     }
   };
 
   const canTerminateTeam = (status: AgentTeamStatus): boolean =>
-    status !== AgentTeamStatus.ShutdownComplete && status !== AgentTeamStatus.Uninitialized;
+    status !== AgentTeamStatus.Idle;
 
   return {
     activeStatusClass,

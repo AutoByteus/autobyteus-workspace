@@ -237,8 +237,11 @@ describe("CodexThreadEventConverter", () => {
     })).toEqual([]);
   });
 
-  it("still maps thread status changes into AGENT_STATUS", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+  it("maps thread status changes into normalized AGENT_STATUS payloads", () => {
+    const converter = new CodexThreadEventConverter("run-1", null, () => ({
+      status: "running",
+      can_interrupt: true,
+    }));
 
     const converted = converter.convert({
       method: CodexThreadEventName.THREAD_STATUS_CHANGED,
@@ -254,15 +257,17 @@ describe("CodexThreadEventConverter", () => {
       eventType: AgentRunEventType.AGENT_STATUS,
       runId: "run-1",
       payload: {
-        status: {
-          type: "inProgress",
-        },
+        status: "running",
+        can_interrupt: true,
       },
     });
   });
 
-  it("emits explicit turn lifecycle plus preserved agent-status events", () => {
-    const converter = new CodexThreadEventConverter("run-1");
+  it("emits explicit turn lifecycle plus normalized agent-status events", () => {
+    const converter = new CodexThreadEventConverter("run-1", null, () => ({
+      status: "idle",
+      can_interrupt: false,
+    }));
 
     const converted = converter.convert({
       method: CodexThreadEventName.TURN_COMPLETED,
@@ -286,9 +291,8 @@ describe("CodexThreadEventConverter", () => {
       eventType: AgentRunEventType.AGENT_STATUS,
       runId: "run-1",
       payload: {
-        new_status: "IDLE",
-        old_status: "RUNNING",
-        turnId: "turn-codex-1",
+        status: "idle",
+        can_interrupt: false,
       },
     });
   });

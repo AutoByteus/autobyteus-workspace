@@ -37,7 +37,7 @@ describe("AgentStreamHandler", () => {
     runId: "agent-123",
     runtimeKind: "autobyteus",
     isActive: vi.fn().mockReturnValue(true),
-    getStatus: vi.fn().mockReturnValue("ACTIVE"),
+    getStatusSnapshot: vi.fn().mockReturnValue({ status: "running", can_interrupt: true }),
     subscribeToEvents: vi.fn((listener: (event: unknown) => void) => {
       const stream = createStream([]);
       void (async () => {
@@ -198,15 +198,15 @@ describe("AgentStreamHandler", () => {
     await flush();
 
     expect(connection.send).toHaveBeenCalledTimes(3);
-    const payload = JSON.parse(connection.send.mock.calls[2][0]);
-    expect(payload).toMatchObject({
+    const messages = connection.send.mock.calls.map(([raw]) => JSON.parse(raw));
+    expect(messages).toContainEqual(expect.objectContaining({
       type: ServerMessageType.SEGMENT_CONTENT,
-      payload: {
+      payload: expect.objectContaining({
         id: "item-1",
         delta: "hello",
         segment_type: "text",
-      },
-    });
+      }),
+    }));
   });
 
   it("maps turn lifecycle AgentRunEvents directly to websocket messages", async () => {
@@ -241,13 +241,13 @@ describe("AgentStreamHandler", () => {
     await flush();
 
     expect(connection.send).toHaveBeenCalledTimes(3);
-    const payload = JSON.parse(connection.send.mock.calls[2][0]);
-    expect(payload).toMatchObject({
+    const messages = connection.send.mock.calls.map(([raw]) => JSON.parse(raw));
+    expect(messages).toContainEqual(expect.objectContaining({
       type: ServerMessageType.TURN_COMPLETED,
-      payload: {
+      payload: expect.objectContaining({
         turn_id: "turn-3",
-      },
-    });
+      }),
+    }));
   });
 
   it("registers the websocket connection for run-scoped live message broadcasts", async () => {

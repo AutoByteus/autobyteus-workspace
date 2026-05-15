@@ -87,15 +87,10 @@ export interface SegmentEndPayload {
 }
 
 export interface AgentStatusPayload {
-  new_status: string;
-  old_status?: string | null;
-  turn_id?: string | null;
+  status: 'idle' | 'running' | 'error';
+  can_interrupt: boolean;
   agent_id?: string;
   agent_name?: string;
-  trigger?: string | null;
-  tool_name?: string | null;
-  error_message?: string | null;
-  error_details?: string | null;
 }
 
 export interface CompactionStatusPayload {
@@ -136,10 +131,7 @@ export interface ExternalUserMessagePayload {
 }
 
 export interface TeamStatusPayload {
-  new_status: string;
-  old_status?: string | null;
-  error_message?: string | null;
-  sub_team_node_name?: string | null;
+  status: 'idle' | 'running' | 'error';
 }
 
 export interface ToolApprovalRequestedPayload {
