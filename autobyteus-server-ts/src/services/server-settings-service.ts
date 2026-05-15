@@ -92,7 +92,7 @@ export class ServerSettingsService {
 
     this.registerPredefinedSetting(
       AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID,
-      "Agent definition id for the memory compactor agent. Configure that agent's runtime and model on the selected agent definition.",
+      "Agent definition id for the memory compactor agent. Blank runtime/model fields on the selected compactor inherit from the running parent agent.",
     );
 
     this.registerPredefinedSetting(

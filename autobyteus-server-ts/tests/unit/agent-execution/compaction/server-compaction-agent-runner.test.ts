@@ -59,7 +59,13 @@ const createService = (run: FakeRun) => ({
   })),
 });
 
-const settingsResolver = {
+const parentLaunchFallback = {
+  runtimeKind: RuntimeKind.AUTOBYTEUS,
+  llmModelIdentifier: "parent-model",
+  sourceAgentDefinitionId: "parent-agent",
+};
+
+const createSettingsResolver = () => ({
   resolve: vi.fn(async () => ({
     agentDefinitionId: "memory-compactor",
     agentName: "Memory Compactor",
@@ -68,7 +74,7 @@ const settingsResolver = {
     llmConfig: { reasoning_effort: "medium" },
     skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
   })),
-};
+});
 
 describe("ServerCompactionAgentRunner", () => {
   it("creates a normal visible run, posts one task, collects output, and terminates", async () => {
@@ -81,10 +87,12 @@ describe("ServerCompactionAgentRunner", () => {
       createEvent(AgentRunEventType.TURN_COMPLETED, { turn_id: "turn-1" }, "IDLE"),
     ]);
     const agentRunService = createService(run);
+    const settingsResolver = createSettingsResolver();
     const runner = new ServerCompactionAgentRunner({
       settingsResolver: settingsResolver as any,
       agentRunService: agentRunService as any,
       workspaceRootPath: "/tmp/workspace",
+      parentLaunchFallback,
       timeoutMs: 1_000,
     });
 
@@ -104,8 +112,9 @@ describe("ServerCompactionAgentRunner", () => {
       autoExecuteTools: false,
       llmConfig: { reasoning_effort: "medium" },
       skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
-      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-    });
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      });
+    expect(settingsResolver.resolve).toHaveBeenCalledWith(parentLaunchFallback);
     expect(run.postedMessage).toBeInstanceOf(AgentInputUserMessage);
     expect(run.postedMessage).toMatchObject({
       content: "compact this",
@@ -138,10 +147,12 @@ describe("ServerCompactionAgentRunner", () => {
       createEvent(AgentRunEventType.TOOL_APPROVAL_REQUESTED, { tool_name: "run_bash" }),
     ]);
     const agentRunService = createService(run);
+    const settingsResolver = createSettingsResolver();
     const runner = new ServerCompactionAgentRunner({
       settingsResolver: settingsResolver as any,
       agentRunService: agentRunService as any,
       workspaceRootPath: "/tmp/workspace",
+      parentLaunchFallback,
       timeoutMs: 1_000,
     });
 
@@ -197,10 +208,12 @@ describe("ServerCompactionAgentRunner", () => {
     async ({ events, timeoutMs, expectedMessage }) => {
       const run = new FakeRun(events);
       const agentRunService = createService(run);
+      const settingsResolver = createSettingsResolver();
       const runner = new ServerCompactionAgentRunner({
         settingsResolver: settingsResolver as any,
         agentRunService: agentRunService as any,
         workspaceRootPath: "/tmp/workspace",
+        parentLaunchFallback,
         timeoutMs,
       });
 
@@ -231,4 +244,20 @@ describe("ServerCompactionAgentRunner", () => {
       expect(agentRunService.terminateAgentRun).toHaveBeenCalledWith("compaction-run-1");
     },
   );
+
+  it("describes the configured compactor using the parent launch fallback context", async () => {
+    const settingsResolver = createSettingsResolver();
+    const runner = new ServerCompactionAgentRunner({
+      settingsResolver: settingsResolver as any,
+      parentLaunchFallback,
+    });
+
+    await expect(runner.describeConfiguredCompactor()).resolves.toEqual({
+      compactionAgentDefinitionId: "memory-compactor",
+      compactionAgentName: "Memory Compactor",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      modelIdentifier: "codex:gpt-5",
+    });
+    expect(settingsResolver.resolve).toHaveBeenCalledWith(parentLaunchFallback);
+  });
 });

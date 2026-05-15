@@ -325,9 +325,11 @@ Compaction produces **structured memory artifacts** and a new working context sn
 6. Resolve the configured compactor agent from
    `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID`; server startup seeds and
    selects `autobyteus-memory-compactor` when the setting is blank. The
-   selected agent's default launch config supplies runtime, model, and model
-   config. Missing or invalid launch configuration fails at the compaction
-   gate; there is no active-model fallback.
+   selected agent's default launch config supplies explicit runtime/model
+   overrides and model config. Blank or invalid selected runtime/model fields
+   inherit from the triggering parent run's effective runtime/model; compaction
+   fails if the selected definition is missing or a required runtime/model field
+   is absent from both the selected compactor and parent fallback context.
 7. Create a normal visible compactor agent run, post one compaction task, collect
    the final JSON-only assistant output, terminate the run, and leave the run in
    history for inspection. The task output contract remains:
@@ -370,7 +372,7 @@ Compaction produces **structured memory artifacts** and a new working context sn
 | Setting | Purpose | Default / Behavior |
 | --- | --- | --- |
 | `AUTOBYTEUS_COMPACTION_TRIGGER_RATIO` | Overrides the post-response trigger ratio used for subsequent budget checks. | Defaults to `0.8`; parsed as a positive decimal and clamped to `<= 1`. |
-| `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` | Selects the memory compactor agent definition. The selected agent's normal default launch config selects runtime/model/config. | Server startup seeds and selects `autobyteus-memory-compactor` when blank. If the selected/default agent lacks valid runtime/model launch defaults, required compaction fails clearly; there is no active-model fallback. |
+| `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` | Selects the memory compactor agent definition. The selected agent's normal default launch config can explicitly override runtime/model and provide model config. | Server startup seeds and selects `autobyteus-memory-compactor` when blank. Blank or invalid runtime/model fields on the selected/default agent inherit from the running parent agent; required compaction fails clearly only when no selected definition exists or a required field is absent from both sources. |
 | `AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE` | Lowers the effective context ceiling for safer budgeting (for example when a provider fails before its advertised maximum). | Blank disables the override; positive values are floored to an integer token ceiling. |
 | `AUTOBYTEUS_COMPACTION_DEBUG_LOGS` | Enables verbose compaction diagnostics. | Disabled by default; truthy values such as `1`, `true`, `yes`, `on` enable detailed logs. |
 
@@ -864,9 +866,10 @@ mutation.
 
 Use model registry defaults and per-agent config overrides to decide **when**
 the parent run should compact based on context budget behavior. These settings
-do not choose the compaction summarization model; the selected compactor
-agent's default launch config owns runtime, model, and model config through
-`AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID`.
+do not choose the compaction summarization model. The selected compactor
+agent's default launch config can explicitly override runtime/model and provide
+model config through `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID`; blank
+runtime/model fields inherit from the running parent agent.
 
 **Model defaults (LLMModel)**
 
@@ -1394,13 +1397,16 @@ without reintroducing direct-model compaction summarization.
 
 - `autobyteus-server-ts/src/agent-execution/compaction/default-compactor-agent/`
   - File-backed default agent template. `agent-config.json` intentionally keeps
-    `defaultLaunchConfig: null`; operators configure runtime/model through the
-    normal agent editor before required compaction can use that default.
+    `defaultLaunchConfig: null`; by default it inherits runtime/model from the
+    running parent agent, while operators can still configure explicit
+    runtime/model overrides through the normal agent editor.
 
 - `autobyteus-server-ts/src/agent-execution/compaction/compaction-agent-settings-resolver.ts`
   - Resolves `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` to the selected normal
-    `AgentDefinition.defaultLaunchConfig` and fails actionably when launch
-    defaults are missing or invalid.
+    `AgentDefinition.defaultLaunchConfig`, applies selected explicit
+    runtime/model values over the parent fallback context, and fails actionably
+    when a selected definition is missing or a required runtime/model field is
+    absent from both sources.
 
 - `autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts`
   - Creates the visible normal compactor run, posts one task, collects output,

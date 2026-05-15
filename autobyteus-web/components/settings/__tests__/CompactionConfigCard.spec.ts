@@ -52,6 +52,22 @@ const agentDefinitions = [
       llmConfig: null,
     },
   },
+  {
+    id: 'inheriting-compactor',
+    name: 'Inheriting Compactor',
+    role: 'summarizer',
+    description: 'Inherits launch settings.',
+    instructions: '',
+    toolNames: [],
+    inputProcessorNames: [],
+    llmResponseProcessorNames: [],
+    systemPromptProcessorNames: [],
+    toolExecutionResultProcessorNames: [],
+    toolInvocationPreprocessorNames: [],
+    lifecycleProcessorNames: [],
+    skillNames: [],
+    defaultLaunchConfig: null,
+  },
 ]
 
 const mountComponent = async () => {
@@ -139,6 +155,16 @@ describe('CompactionConfigCard', () => {
     expect(options).toContain('Memory Compactor (summarizer)')
     expect(options).toContain('Helper (assistant)')
     expect(wrapper.get('[data-testid="compaction-agent-summary"]').text()).toContain('codex_app_server / codex:gpt-5')
+  })
+
+  it('summarizes blank compactor runtime and model fields as inherited from the running agent', async () => {
+    const { wrapper } = await mountComponent()
+
+    await wrapper.get('[data-testid="compaction-agent-select"]').setValue('inheriting-compactor')
+
+    const summary = wrapper.get('[data-testid="compaction-agent-summary"]').text()
+    expect(summary).toContain('inherits runtime from running agent')
+    expect(summary).toContain('inherits model from running agent')
   })
 
   it('saves typed compaction settings through the server settings store', async () => {
