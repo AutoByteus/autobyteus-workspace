@@ -135,6 +135,16 @@ Control commands remain active-only:
 
 Those commands intentionally require an already-active runtime lookup and do not call the restore path. Clients should not treat interrupt/approval messages as a way to resume a stopped run; stopped-run recovery is owned by connection setup, explicit restore mutations, and `SEND_MESSAGE`.
 
+Team interrupt uses a stricter command shape than single-agent interrupt. A
+client sending `INTERRUPT_GENERATION` to `/ws/agent-team/:teamRunId` must include
+`payload.target_member_name` as the stable focused-member route key. It may also
+include `payload.agent_id`, but that value is only a guard for the expected
+member run id; it is never the authoritative selector. The server rejects
+missing `target_member_name` and route-key/run-id mismatches without invoking a
+member runtime and without falling back to aggregate team interruption. The
+single-agent `/ws/agent/:runId` command remains a no-payload
+`INTERRUPT_GENERATION`.
+
 Approval commands are active-turn control commands, not queued runtime input.
 For native AutoByteus single-agent runs, `APPROVE_TOOL` / `DENY_TOOL` delegate
 to the active run backend and then to the agent's public
@@ -161,10 +171,11 @@ contract, that idle projection is an `AGENT_STATUS` payload such as
 `{ status: "idle", can_interrupt: false }`.
 
 Native AutoByteus runtimes follow the same interrupt-vs-stop split:
-`INTERRUPT_GENERATION` delegates to the active run/team `interrupt(...)` path,
-while terminal stop/termination remains the shutdown path. Stale or inactive
-control commands must not restore a stopped run and must not fall back to
-shutdown cleanup.
+single-agent `INTERRUPT_GENERATION` delegates to the active run
+`interrupt(...)` path, while team `INTERRUPT_GENERATION` delegates through the
+active team member `interruptMember(...)` route described above. Terminal
+stop/termination remains the shutdown path. Stale or inactive control commands
+must not restore a stopped run and must not fall back to shutdown cleanup.
 
 Explicit GraphQL termination of an active Claude Agent SDK run follows the same
 provider-settlement invariant before final session termination. The session must

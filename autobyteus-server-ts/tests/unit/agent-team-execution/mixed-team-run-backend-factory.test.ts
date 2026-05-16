@@ -19,7 +19,7 @@ describe("MixedTeamRunBackendFactory", () => {
           postMessage: async () => ({ accepted: true }),
           deliverInterAgentMessage: async () => ({ accepted: true }),
           approveToolInvocation: async () => ({ accepted: true }),
-          interrupt: async () => ({ accepted: true }),
+          interruptMember: async () => ({ accepted: true }),
           terminate: async () => ({ accepted: true }),
           subscribeToEvents: () => () => undefined,
         };

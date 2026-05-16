@@ -82,6 +82,27 @@ const buildCommandFailure = (operation: string, error: unknown): AgentOperationR
   message: `Failed to ${operation}: ${String(error)}`,
 });
 
+const buildTargetMemberRequiredResult = (): AgentOperationResult => ({
+  accepted: false,
+  code: "TARGET_MEMBER_REQUIRED",
+  message: "targetMemberRouteKey is required.",
+});
+
+const buildTargetMemberNotFoundResult = (targetMemberRouteKey: string): AgentOperationResult => ({
+  accepted: false,
+  code: "TARGET_MEMBER_NOT_FOUND",
+  message: `Team member route key '${targetMemberRouteKey}' was not found.`,
+});
+
+const buildTargetMemberRunMismatchResult = (
+  targetMemberRouteKey: string,
+  targetMemberRunId: string,
+): AgentOperationResult => ({
+  accepted: false,
+  code: "TARGET_MEMBER_RUN_MISMATCH",
+  message: `Team member route key '${targetMemberRouteKey}' does not match member run '${targetMemberRunId}'.`,
+});
+
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
 };
@@ -260,7 +281,10 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
     }
   }
 
-  async interrupt(): Promise<AgentOperationResult> {
+  async interruptMember(
+    targetMemberRouteKey: string,
+    targetMemberRunId: string | null = null,
+  ): Promise<AgentOperationResult> {
     if (!this.isActive()) {
       return buildRunNotFoundResult(this.runId);
     }
@@ -271,15 +295,39 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
         message: "Native Autobyteus team does not expose interrupt().",
       };
     }
+    const normalizedTargetMemberRouteKey = targetMemberRouteKey.trim();
+    if (!normalizedTargetMemberRouteKey) {
+      return buildTargetMemberRequiredResult();
+    }
+    const targetMemberContext = this.options.runtimeContext?.memberContexts.find(
+      (memberContext) => memberContext.memberRouteKey === normalizedTargetMemberRouteKey,
+    ) ?? null;
+    if (!targetMemberContext) {
+      return buildTargetMemberNotFoundResult(normalizedTargetMemberRouteKey);
+    }
+    const normalizedTargetMemberRunId = targetMemberRunId?.trim();
+    if (
+      normalizedTargetMemberRunId &&
+      normalizedTargetMemberRunId !== targetMemberContext.memberRunId
+    ) {
+      return buildTargetMemberRunMismatchResult(
+        normalizedTargetMemberRouteKey,
+        normalizedTargetMemberRunId,
+      );
+    }
+
     try {
-      const result = await this.team.interrupt({ reason: "user_interrupt" });
+      const result = await this.team.interrupt({
+        reason: "user_interrupt",
+        targetMemberName: targetMemberContext.memberName,
+      });
       return {
         accepted: result.accepted,
         code: result.accepted ? result.status : (result.status ?? "INTERRUPT_REJECTED"),
         message: result.message,
       };
     } catch (error) {
-      return buildCommandFailure("interrupt team run", error);
+      return buildCommandFailure("interrupt team member", error);
     }
   }
 

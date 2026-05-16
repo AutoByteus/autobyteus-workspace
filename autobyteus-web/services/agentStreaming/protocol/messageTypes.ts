@@ -416,8 +416,56 @@ export interface ToolActionPayload {
   approval_token?: ToolApprovalTokenPayload;
 }
 
+export interface InterruptGenerationPayload {
+  /**
+   * Stable team member route key.
+   *
+   * The wire field name is retained for compatibility with the existing
+   * focused-member send payload family, but callers must treat the value as a
+   * route key rather than a display-only member name.
+   */
+  target_member_name: string;
+  /**
+   * Optional member run id used only as a stale-target guard. It must never be
+   * used as the authoritative target selector.
+   */
+  agent_id?: string;
+}
+
+export type SendMessageClientMessage = {
+  type: 'SEND_MESSAGE';
+  payload: SendMessagePayload;
+};
+
+export type AgentInterruptGenerationClientMessage = {
+  type: 'INTERRUPT_GENERATION';
+};
+
+export type TeamInterruptGenerationClientMessage = {
+  type: 'INTERRUPT_GENERATION';
+  payload: InterruptGenerationPayload;
+};
+
+export type ApproveToolClientMessage = {
+  type: 'APPROVE_TOOL';
+  payload: ToolActionPayload;
+};
+
+export type DenyToolClientMessage = {
+  type: 'DENY_TOOL';
+  payload: ToolActionPayload;
+};
+
 export type ClientMessage =
-  | { type: 'SEND_MESSAGE'; payload: SendMessagePayload }
-  | { type: 'INTERRUPT_GENERATION' }
-  | { type: 'APPROVE_TOOL'; payload: ToolActionPayload }
-  | { type: 'DENY_TOOL'; payload: ToolActionPayload };
+  | SendMessageClientMessage
+  | AgentInterruptGenerationClientMessage
+  | ApproveToolClientMessage
+  | DenyToolClientMessage;
+
+export type TeamClientMessage =
+  | SendMessageClientMessage
+  | TeamInterruptGenerationClientMessage
+  | ApproveToolClientMessage
+  | DenyToolClientMessage;
+
+export type SerializableClientMessage = ClientMessage | TeamClientMessage;

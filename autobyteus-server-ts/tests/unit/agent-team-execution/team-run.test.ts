@@ -16,7 +16,7 @@ const createBackend = () => ({
   postMessage: vi.fn().mockResolvedValue({ accepted: true }),
   deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
   approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
-  interrupt: vi.fn().mockResolvedValue({ accepted: true }),
+  interruptMember: vi.fn().mockResolvedValue({ accepted: true }),
   terminate: vi.fn().mockResolvedValue({ accepted: true }),
 });
 
@@ -65,5 +65,45 @@ describe("TeamRun", () => {
     await run.postMessage(new AgentInputUserMessage("continue"));
 
     expect(backend.postMessage).toHaveBeenCalledWith(expect.any(AgentInputUserMessage), "Coordinator");
+  });
+
+  it("delegates member interrupt by route key and optional run guard", async () => {
+    const backend = createBackend();
+    const run = new TeamRun({
+      context: new TeamRunContext({
+        runId: "team-run-1",
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        coordinatorMemberName: null,
+        config: null,
+        runtimeContext: { memberContexts: [] },
+      }),
+      backend: backend as never,
+    });
+
+    await expect(run.interruptMember(" code_reviewer ", "member-run-2")).resolves.toEqual({
+      accepted: true,
+    });
+
+    expect(backend.interruptMember).toHaveBeenCalledWith("code_reviewer", "member-run-2");
+  });
+
+  it("rejects member interrupt without a route key", async () => {
+    const backend = createBackend();
+    const run = new TeamRun({
+      context: new TeamRunContext({
+        runId: "team-run-1",
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        coordinatorMemberName: null,
+        config: null,
+        runtimeContext: { memberContexts: [] },
+      }),
+      backend: backend as never,
+    });
+
+    await expect(run.interruptMember("   ")).resolves.toMatchObject({
+      accepted: false,
+      code: "TARGET_MEMBER_REQUIRED",
+    });
+    expect(backend.interruptMember).not.toHaveBeenCalled();
   });
 });

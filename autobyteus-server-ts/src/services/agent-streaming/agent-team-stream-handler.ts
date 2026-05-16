@@ -46,6 +46,11 @@ type ClientMessage = {
   payload?: Record<string, unknown>;
 };
 
+type InterruptGenerationTarget = {
+  targetMemberRouteKey: string;
+  targetMemberRunId: string | null;
+};
+
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
   warn: (...args: unknown[]) => console.warn(...args),
@@ -159,7 +164,7 @@ export class AgentTeamStreamHandler {
       }
 
       if (msgType === ClientMessageType.INTERRUPT_GENERATION) {
-        await this.handleInterruptGeneration(teamRunId);
+        await this.handleInterruptGeneration(teamRunId, payload);
       } else if (msgType === ClientMessageType.APPROVE_TOOL) {
         await this.handleToolApproval(teamRunId, payload, true);
       } else if (msgType === ClientMessageType.DENY_TOOL) {
@@ -323,19 +328,53 @@ export class AgentTeamStreamHandler {
     });
   }
 
-  private async handleInterruptGeneration(teamRunId: string): Promise<void> {
+  private async handleInterruptGeneration(
+    teamRunId: string,
+    payload: Record<string, unknown>,
+  ): Promise<void> {
     const activeRun = this.resolveCommandRun(teamRunId);
     if (!activeRun) {
       logger.warn(`INTERRUPT_GENERATION rejected for team run ${teamRunId}: active run not found.`);
       return;
     }
 
-    const result = await activeRun.interrupt();
+    const target = this.extractInterruptGenerationTarget(payload);
+    if (!target) {
+      logger.warn(`INTERRUPT_GENERATION rejected for team run ${teamRunId}: target member route key missing.`);
+      return;
+    }
+
+    const result = await activeRun.interruptMember(
+      target.targetMemberRouteKey,
+      target.targetMemberRunId,
+    );
     if (!result.accepted) {
       logger.warn(
         `INTERRUPT_GENERATION rejected for team run ${teamRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
       );
     }
+  }
+
+  private extractInterruptGenerationTarget(
+    payload: Record<string, unknown>,
+  ): InterruptGenerationTarget | null {
+    const targetMemberRouteKey =
+      typeof payload.target_member_name === "string"
+        ? payload.target_member_name.trim()
+        : "";
+    if (!targetMemberRouteKey) {
+      return null;
+    }
+
+    const targetMemberRunId =
+      typeof payload.agent_id === "string" && payload.agent_id.trim().length > 0
+        ? payload.agent_id.trim()
+        : null;
+
+    return {
+      targetMemberRouteKey,
+      targetMemberRunId,
+    };
   }
 
   private async handleToolApproval(

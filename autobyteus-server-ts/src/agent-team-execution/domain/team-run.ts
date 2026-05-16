@@ -90,8 +90,22 @@ export class TeamRun {
     );
   }
 
-  async interrupt(): Promise<AgentOperationResult> {
-    return this.backend.interrupt();
+  async interruptMember(
+    targetMemberRouteKey: string,
+    targetMemberRunId: string | null = null,
+  ): Promise<AgentOperationResult> {
+    const normalizedTargetMemberRouteKey = targetMemberRouteKey.trim();
+    if (!normalizedTargetMemberRouteKey) {
+      return {
+        accepted: false,
+        code: "TARGET_MEMBER_REQUIRED",
+        message: "targetMemberRouteKey is required.",
+      };
+    }
+    return this.backend.interruptMember(
+      normalizedTargetMemberRouteKey,
+      targetMemberRunId,
+    );
   }
 
   async terminate(): Promise<AgentOperationResult> {

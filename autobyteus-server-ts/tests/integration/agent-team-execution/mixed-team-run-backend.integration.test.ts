@@ -81,10 +81,12 @@ const createManager = () => {
 
   return {
     hasActiveMembers: vi.fn(() => active),
+    getStatusSnapshot: vi.fn(() => ({ status: "idle" })),
+    getMemberStatusSnapshots: vi.fn(() => []),
     postMessage: vi.fn().mockResolvedValue({ accepted: true }),
     deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
     approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
-    interrupt: vi.fn().mockResolvedValue({ accepted: true }),
+    interruptMember: vi.fn().mockResolvedValue({ accepted: true }),
     terminate: vi.fn().mockResolvedValue({ accepted: true }),
     subscribeToEvents: vi.fn((listener: TeamRunEventListener) => {
       listeners.add(listener);
@@ -154,8 +156,8 @@ describe("MixedTeamRunBackend integration", () => {
       "approved",
     );
 
-    await expect(backend.interrupt()).resolves.toEqual({ accepted: true });
-    expect(manager.interrupt).toHaveBeenCalledTimes(1);
+    await expect(backend.interruptMember("reviewer-route", "reviewer-run")).resolves.toEqual({ accepted: true });
+    expect(manager.interruptMember).toHaveBeenCalledWith("reviewer-route", "reviewer-run");
 
     await expect(backend.terminate()).resolves.toEqual({ accepted: true });
     expect(manager.terminate).toHaveBeenCalledTimes(1);
@@ -198,7 +200,7 @@ describe("MixedTeamRunBackend integration", () => {
       accepted: false,
       code: "RUN_NOT_FOUND",
     });
-    await expect(backend.interrupt()).resolves.toMatchObject({
+    await expect(backend.interruptMember("reviewer-route", "reviewer-run")).resolves.toMatchObject({
       accepted: false,
       code: "RUN_NOT_FOUND",
     });

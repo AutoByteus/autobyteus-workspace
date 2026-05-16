@@ -29,6 +29,9 @@ export interface TeamRunBackend {
     approved: boolean,
     reason?: string | null,
   ): Promise<AgentOperationResult>;
-  interrupt(): Promise<AgentOperationResult>;
+  interruptMember(
+    targetMemberRouteKey: string,
+    targetMemberRunId?: string | null,
+  ): Promise<AgentOperationResult>;
   terminate(): Promise<AgentOperationResult>;
 }

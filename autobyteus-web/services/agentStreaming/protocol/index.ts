@@ -3,6 +3,8 @@ export type {
   SegmentType,
   ServerMessage,
   ClientMessage,
+  TeamClientMessage,
+  SerializableClientMessage,
   ConnectedPayload,
   SegmentStartPayload,
   SegmentContentPayload,
@@ -26,6 +28,7 @@ export type {
   FileChangePayload,
   ErrorPayload,
   SendMessagePayload,
+  InterruptGenerationPayload,
   ToolActionPayload,
 } from './messageTypes';
 
