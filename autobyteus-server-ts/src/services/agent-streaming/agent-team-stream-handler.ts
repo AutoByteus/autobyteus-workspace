@@ -9,6 +9,7 @@ import {
   TeamRunService,
   getTeamRunService,
 } from "../../agent-team-execution/services/team-run-service.js";
+import { selectorToRouteKey } from "../../agent-team-execution/domain/team-run-member-identity.js";
 import {
   TeamRunEventSourceType,
   type TeamRunEvent,
@@ -36,11 +37,15 @@ import { serializePayload } from "./payload-serialization.js";
 import { buildTeamCommunicationMessagePayload } from "./team-communication-message-payload.js";
 import { buildTeamMemberInputMessagePayload } from "./team-member-input-message-payload.js";
 import {
+  INTERRUPT_GENERATION_INVALID_TARGET_MESSAGE,
+  INTERRUPT_GENERATION_MISSING_TARGET_MESSAGE,
   SEND_MESSAGE_INVALID_TARGET_MESSAGE,
   TEAM_COMMAND_INVALID_TARGET_CODE,
   TOOL_APPROVAL_INVALID_TARGET_MESSAGE,
   TOOL_APPROVAL_MISSING_TARGET_MESSAGE,
   hasInvalidCommandSelectorFields,
+  resolveInterruptGenerationTargetRunId,
+  resolveInterruptGenerationTargetSelector,
   resolveSendMessageTargetSelector,
   resolveToolApprovalTargetSelector,
 } from "./team-command-selector-parser.js";
@@ -57,6 +62,11 @@ export type WebSocketConnection = {
 type ClientMessage = {
   type?: string;
   payload?: Record<string, unknown>;
+};
+
+type InterruptGenerationTarget = {
+  targetMemberRouteKey: string;
+  targetMemberRunId: string | null;
 };
 
 const logger = {
@@ -174,7 +184,7 @@ export class AgentTeamStreamHandler {
       }
 
       if (msgType === ClientMessageType.INTERRUPT_GENERATION) {
-        await this.handleInterruptGeneration(teamRunId);
+        await this.handleInterruptGeneration(teamRunId, payload, connection ?? null);
       } else if (msgType === ClientMessageType.APPROVE_TOOL) {
         await this.handleToolApproval(teamRunId, payload, true, connection ?? null);
       } else if (msgType === ClientMessageType.DENY_TOOL) {
@@ -349,19 +359,56 @@ export class AgentTeamStreamHandler {
     });
   }
 
-  private async handleInterruptGeneration(teamRunId: string): Promise<void> {
+  private async handleInterruptGeneration(
+    teamRunId: string,
+    payload: Record<string, unknown>,
+    connection: WebSocketConnection | null,
+  ): Promise<void> {
     const activeRun = this.resolveCommandRun(teamRunId);
     if (!activeRun) {
       logger.warn(`INTERRUPT_GENERATION rejected for team run ${teamRunId}: active run not found.`);
       return;
     }
 
-    const result = await activeRun.interrupt();
+    if (hasInvalidCommandSelectorFields(payload)) {
+      logger.warn(`INTERRUPT_GENERATION rejected for team run ${teamRunId}: ${INTERRUPT_GENERATION_INVALID_TARGET_MESSAGE}`);
+      this.sendInvalidTarget(connection, INTERRUPT_GENERATION_INVALID_TARGET_MESSAGE);
+      return;
+    }
+
+    const target = this.extractInterruptGenerationTarget(payload);
+    if (!target) {
+      logger.warn(`INTERRUPT_GENERATION rejected for team run ${teamRunId}: ${INTERRUPT_GENERATION_MISSING_TARGET_MESSAGE}`);
+      this.sendInvalidTarget(connection, INTERRUPT_GENERATION_MISSING_TARGET_MESSAGE);
+      return;
+    }
+
+    const result = await activeRun.interruptMember(
+      target.targetMemberRouteKey,
+      target.targetMemberRunId,
+    );
     if (!result.accepted) {
       logger.warn(
         `INTERRUPT_GENERATION rejected for team run ${teamRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
       );
+      if (typeof result.code === "string" && result.code.startsWith("TARGET_MEMBER_")) {
+        this.sendInvalidTarget(connection, result.message ?? INTERRUPT_GENERATION_INVALID_TARGET_MESSAGE);
+      }
     }
+  }
+
+  private extractInterruptGenerationTarget(
+    payload: Record<string, unknown>,
+  ): InterruptGenerationTarget | null {
+    const targetSelector = resolveInterruptGenerationTargetSelector(payload);
+    if (!targetSelector) {
+      return null;
+    }
+
+    return {
+      targetMemberRouteKey: selectorToRouteKey(targetSelector),
+      targetMemberRunId: resolveInterruptGenerationTargetRunId(payload),
+    };
   }
 
   private async handleToolApproval(

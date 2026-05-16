@@ -18,7 +18,12 @@ import {
   type TeamRunStatusUpdateData,
 } from "../../domain/team-run-event.js";
 import type { TeamMemberSelector } from "../../domain/team-run-member-identity.js";
-import { buildMemberRouteKeyFromPath, selectorFromMemberPath } from "../../domain/team-run-member-identity.js";
+import {
+  buildMemberRouteKeyFromPath,
+  selectorFromMemberPath,
+  selectorFromMemberRouteKey,
+  selectorToRouteKey,
+} from "../../domain/team-run-member-identity.js";
 import type { TeamManager } from "../team-manager.js";
 import { MixedTeamRunContext, type MixedTeamMemberContext } from "./mixed-team-run-context.js";
 import { MixedSubTeamRunFactory } from "./mixed-sub-team-run-factory.js";
@@ -45,6 +50,31 @@ const isOperationResult = (
 
 const pathStartsWith = (path: readonly string[], prefix: readonly string[]): boolean =>
   path.length >= prefix.length && prefix.every((segment, index) => path[index] === segment);
+
+const buildTargetMemberRunMismatchResult = (
+  targetMemberRouteKey: string,
+  targetMemberRunId: string,
+): AgentOperationResult => ({
+  accepted: false,
+  code: "TARGET_MEMBER_RUN_MISMATCH",
+  message: `Team member route key '${targetMemberRouteKey}' does not match member run '${targetMemberRunId}'.`,
+});
+
+const buildTargetMemberNotFoundResult = (
+  targetMemberRouteKey: string,
+): AgentOperationResult => ({
+  accepted: false,
+  code: "TARGET_MEMBER_NOT_FOUND",
+  message: `Team member route key '${targetMemberRouteKey}' was not found.`,
+});
+
+const buildTargetMemberRunInactiveResult = (
+  targetMemberRouteKey: string,
+): AgentOperationResult => ({
+  accepted: false,
+  code: "RUN_NOT_FOUND",
+  message: `Team member route key '${targetMemberRouteKey}' is not active.`,
+});
 
 export class MixedTeamManager implements TeamManager {
   private teamContext: TeamRunContext<MixedTeamRunContext> | null;
@@ -178,18 +208,54 @@ export class MixedTeamManager implements TeamManager {
     return this.memberRegistry.getOrCreate(resolved).approveToolInvocation(target, invocationId, approved, reason ?? null);
   }
 
-  async interrupt(): Promise<AgentOperationResult> {
+  async interruptMember(
+    targetMemberRouteKey: string,
+    targetMemberRunId: string | null = null,
+  ): Promise<AgentOperationResult> {
     if (!this.teamContext) {
       return buildRunNotFoundResult("unknown");
     }
-    for (const handle of this.memberRegistry.listHandles()) {
-      const result = await handle.interrupt();
-      if (!result.accepted) {
-        return result;
-      }
+    const normalizedTargetMemberRouteKey = targetMemberRouteKey.trim();
+    if (!normalizedTargetMemberRouteKey) {
+      return {
+        accepted: false,
+        code: "TARGET_MEMBER_REQUIRED",
+        message: "target member selector is required.",
+      };
     }
-    this.publishTeamStatusIfChanged();
-    return { accepted: true };
+    const targetSelector = selectorFromMemberRouteKey(normalizedTargetMemberRouteKey);
+    const canonicalTargetMemberRouteKey = selectorToRouteKey(targetSelector);
+    const memberContext = this.memberRegistry.resolveContext(targetSelector);
+    if (isOperationResult(memberContext)) {
+      return memberContext.code === "TARGET_MEMBER_NOT_FOUND"
+        ? buildTargetMemberNotFoundResult(canonicalTargetMemberRouteKey)
+        : memberContext;
+    }
+    const normalizedTargetMemberRunId = targetMemberRunId?.trim();
+    if (
+      normalizedTargetMemberRunId &&
+      memberContext.memberRouteKey === canonicalTargetMemberRouteKey &&
+      normalizedTargetMemberRunId !== memberContext.memberRunId
+    ) {
+      return buildTargetMemberRunMismatchResult(
+        canonicalTargetMemberRouteKey,
+        normalizedTargetMemberRunId,
+      );
+    }
+
+    const handle = this.memberRegistry.getOrCreate(memberContext);
+    if (!handle.isActive()) {
+      return buildTargetMemberRunInactiveResult(canonicalTargetMemberRouteKey);
+    }
+
+    const result = await handle.interrupt(
+      targetSelector,
+      normalizedTargetMemberRunId ?? null,
+    );
+    if (result.accepted) {
+      this.publishTeamStatusIfChanged();
+    }
+    return result;
   }
 
   async terminate(): Promise<AgentOperationResult> {

@@ -64,8 +64,22 @@ const sendTeamMessageOverSocket = (
   );
 };
 
-const sendInterruptGenerationOverSocket = (socket: WebSocket): void => {
-  socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
+const sendInterruptGenerationOverSocket = (
+  socket: WebSocket,
+  input: {
+    targetMemberRouteKey: string;
+    targetMemberRunId?: string | null;
+  },
+): void => {
+  socket.send(
+    JSON.stringify({
+      type: "INTERRUPT_GENERATION",
+      payload: {
+        target_member_route_key: input.targetMemberRouteKey,
+        ...(input.targetMemberRunId ? { target_member_run_id: input.targetMemberRunId } : {}),
+      },
+    }),
+  );
 };
 
 type TeamStreamMessage = { type: string; payload: Record<string, unknown> };
@@ -908,7 +922,7 @@ Rules:
             "Use the write_file tool exactly once, use a relative path, and do not answer with plain text.",
         });
 
-        await waitForTeamStreamMessageAfter(
+        const approvalRequested = await waitForTeamStreamMessageAfter(
           streamMessages,
           toolTurnStartIndex,
           (message) =>
@@ -916,9 +930,17 @@ Rules:
             message.payload.agent_name === "worker",
           "worker TOOL_APPROVAL_REQUESTED before interrupt",
         );
+        const workerRunId =
+          typeof approvalRequested.payload.agent_id === "string" &&
+          approvalRequested.payload.agent_id.trim().length > 0
+            ? approvalRequested.payload.agent_id.trim()
+            : undefined;
 
         const interruptStartIndex = streamMessages.length;
-        sendInterruptGenerationOverSocket(teamSocket);
+        sendInterruptGenerationOverSocket(teamSocket, {
+          targetMemberRouteKey: "worker",
+          targetMemberRunId: workerRunId,
+        });
 
         await waitForTeamStreamMessageAfter(
           streamMessages,

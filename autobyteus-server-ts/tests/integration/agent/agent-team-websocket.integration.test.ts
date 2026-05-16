@@ -66,6 +66,7 @@ class FakeTeam {
   messages: AgentInputUserMessage[] = [];
   approvals: Array<{ agentName: string; invocationId: string; approved: boolean; reason: string | null }> = [];
   lastTarget: string | null = null;
+  lastInterruptTarget: string | null = null;
   interruptCalls = 0;
   stopCalls = 0;
 
@@ -96,7 +97,8 @@ class FakeTeam {
     this.stopCalls += 1;
   }
 
-  async interrupt(): Promise<void> {
+  async interrupt(options?: { targetMemberRouteKey?: string | null }): Promise<void> {
+    this.lastInterruptTarget = options?.targetMemberRouteKey ?? null;
     this.interruptCalls += 1;
   }
 }
@@ -127,6 +129,12 @@ class FakeTeamRun {
           memberRunId: "member-42",
           getPlatformAgentRunId: () => null,
         },
+        {
+          memberName: "beta",
+          memberRouteKey: "beta",
+          memberRunId: "member-99",
+          getPlatformAgentRunId: () => null,
+        },
       ],
     },
   };
@@ -135,6 +143,10 @@ class FakeTeamRun {
       {
         memberName: "alpha",
         memberRunId: "member-42",
+      },
+      {
+        memberName: "beta",
+        memberRunId: "member-99",
       },
     ],
   };
@@ -185,8 +197,20 @@ class FakeTeamRun {
     return { accepted: true };
   }
 
-  async interrupt(): Promise<{ accepted: true }> {
-    await this.team.interrupt();
+  async interruptMember(
+    targetMemberRouteKey: string,
+    targetMemberRunId?: string | null,
+  ): Promise<{ accepted: true } | { accepted: false; code: string }> {
+    const memberContext = this.context.runtimeContext.memberContexts.find(
+      (context) => context.memberRouteKey === targetMemberRouteKey,
+    );
+    if (!memberContext) {
+      return { accepted: false, code: "TARGET_MEMBER_NOT_FOUND" };
+    }
+    if (targetMemberRunId && targetMemberRunId !== memberContext.memberRunId) {
+      return { accepted: false, code: "TARGET_MEMBER_RUN_MISMATCH" };
+    }
+    await this.team.interrupt({ targetMemberRouteKey });
     return { accepted: true };
   }
 }
@@ -347,9 +371,16 @@ describe("Agent team websocket integration", () => {
     });
     expect(team.messages).toHaveLength(2);
 
-    socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
+    socket.send(JSON.stringify({
+      type: "INTERRUPT_GENERATION",
+      payload: {
+        target_member_route_key: "alpha",
+        target_member_run_id: "member-42",
+      },
+    }));
     await waitForCondition(() => team.interruptCalls === 1);
     expect(team.interruptCalls).toBe(1);
+    expect(team.lastInterruptTarget).toBe("alpha");
     expect(team.stopCalls).toBe(0);
 
     const agentMessagePromise = waitForMessage(socket);
@@ -647,11 +678,89 @@ describe("Agent team websocket integration", () => {
     await waitForOpen(socket);
     await connectedPromise;
 
-    socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
+    socket.send(
+      JSON.stringify({
+        type: "INTERRUPT_GENERATION",
+        payload: {
+          target_member_route_key: "alpha",
+          target_member_run_id: "member-42",
+        },
+      }),
+    );
     await new Promise((resolve) => setTimeout(resolve, 80));
     expect(team.interruptCalls).toBe(0);
     expect(team.stopCalls).toBe(0);
     expect(resolveCalls).toBe(1);
+
+    socket.close();
+    await app.close();
+  });
+
+  it("rejects invalid team websocket interrupt targets without falling back or retargeting", async () => {
+    const team = new FakeTeam("team-invalid-interrupt-target");
+    const stream = new FakeTeamStream();
+    const teamRunService = new FakeTeamRunService(team, stream);
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      teamRunService as unknown as any,
+    );
+
+    const app = fastify();
+    await app.register(websocket);
+    await registerAgentWebsocket(
+      app,
+      {
+        connect: async () => null,
+        handleMessage: async () => {},
+        disconnect: async () => {},
+      } as unknown as Parameters<typeof registerAgentWebsocket>[1],
+      handler,
+    );
+    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+    const url = new URL(address);
+    const socket = new WebSocket(
+      `ws://${url.hostname}:${url.port}/ws/agent-team/team-invalid-interrupt-target`,
+    );
+    const connectedPromise = waitForMessage(socket);
+
+    await waitForOpen(socket);
+    await connectedPromise;
+
+    socket.send(
+      JSON.stringify({
+        type: "INTERRUPT_GENERATION",
+        payload: {},
+      }),
+    );
+    await new Promise((resolve) => setTimeout(resolve, 80));
+    expect(team.interruptCalls).toBe(0);
+    expect(team.lastInterruptTarget).toBeNull();
+
+    socket.send(
+      JSON.stringify({
+        type: "INTERRUPT_GENERATION",
+        payload: {
+          target_member_route_key: "beta",
+          target_member_run_id: "member-42",
+        },
+      }),
+    );
+    await new Promise((resolve) => setTimeout(resolve, 80));
+    expect(team.interruptCalls).toBe(0);
+    expect(team.lastInterruptTarget).toBeNull();
+
+    socket.send(
+      JSON.stringify({
+        type: "INTERRUPT_GENERATION",
+        payload: {
+          target_member_route_key: "beta",
+          target_member_run_id: "member-99",
+        },
+      }),
+    );
+    await waitForCondition(() => team.interruptCalls === 1);
+    expect(team.lastInterruptTarget).toBe("beta");
+    expect(team.stopCalls).toBe(0);
 
     socket.close();
     await app.close();

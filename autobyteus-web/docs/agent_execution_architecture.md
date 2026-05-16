@@ -107,6 +107,13 @@ server boundary projects those details into the coarse API status and computes
 `can_interrupt` from the runtime-owned active-turn/snapshot source. `isSending`
 remains a local submit-flight and disabled-input signal only; it must not be
 used to show the stop button or to infer that an interrupt can be accepted.
+When the selected context is a team, stop/interrupt dispatch must resolve the
+same focused member as the composer send path at click time. The frontend sends
+team `INTERRUPT_GENERATION` with `target_member_route_key` set to the focused
+member route key and `target_member_run_id` set only as an optional focused
+member run-id guard. If there is no focused leaf member, the focused context is
+stale, or no active team streaming service exists, the frontend must not send a
+team interrupt command.
 Run-history refresh, active recovery, and run-open hydration must preserve an
 already-live `running/canInterrupt=true` single run or focused team member while
 that live stream remains authoritative, but terminal `offline` or `error`

@@ -654,8 +654,21 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
       );
       const invocationId = resolveInvocationId(approvalRequested.payload);
       expect(invocationId).toBeTruthy();
+      const workerRunId =
+        typeof approvalRequested.payload.agent_id === "string" &&
+        approvalRequested.payload.agent_id.trim().length > 0
+          ? approvalRequested.payload.agent_id.trim()
+          : undefined;
 
-      socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
+      socket.send(
+        JSON.stringify({
+          type: "INTERRUPT_GENERATION",
+          payload: {
+            target_member_route_key: "worker",
+            ...(workerRunId ? { target_member_run_id: workerRunId } : {}),
+          },
+        }),
+      );
 
       await waitForMessageAfter(
         messages,

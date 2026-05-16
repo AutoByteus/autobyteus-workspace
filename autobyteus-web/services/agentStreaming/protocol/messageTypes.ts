@@ -501,8 +501,49 @@ export interface ToolActionPayload {
   approval_token?: ToolApprovalTokenPayload;
 }
 
+export interface InterruptGenerationPayload {
+  target_member_route_key?: string;
+  target_member_path?: string[];
+  targetMemberRouteKey?: string;
+  targetMemberPath?: string[];
+  target_member_run_id?: string;
+  targetMemberRunId?: string;
+}
+
+export type SendMessageClientMessage = {
+  type: 'SEND_MESSAGE';
+  payload: SendMessagePayload;
+};
+
+export type AgentInterruptGenerationClientMessage = {
+  type: 'INTERRUPT_GENERATION';
+};
+
+export type TeamInterruptGenerationClientMessage = {
+  type: 'INTERRUPT_GENERATION';
+  payload: InterruptGenerationPayload;
+};
+
+export type ApproveToolClientMessage = {
+  type: 'APPROVE_TOOL';
+  payload: ToolActionPayload;
+};
+
+export type DenyToolClientMessage = {
+  type: 'DENY_TOOL';
+  payload: ToolActionPayload;
+};
+
 export type ClientMessage =
-  | { type: 'SEND_MESSAGE'; payload: SendMessagePayload }
-  | { type: 'INTERRUPT_GENERATION' }
-  | { type: 'APPROVE_TOOL'; payload: ToolActionPayload }
-  | { type: 'DENY_TOOL'; payload: ToolActionPayload };
+  | SendMessageClientMessage
+  | AgentInterruptGenerationClientMessage
+  | ApproveToolClientMessage
+  | DenyToolClientMessage;
+
+export type TeamClientMessage =
+  | SendMessageClientMessage
+  | TeamInterruptGenerationClientMessage
+  | ApproveToolClientMessage
+  | DenyToolClientMessage;
+
+export type SerializableClientMessage = ClientMessage | TeamClientMessage;

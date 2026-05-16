@@ -10,6 +10,8 @@ import {
 } from "../../../domain/inter-agent-message-delivery.js";
 import type { AgentMemberTeamDescriptor } from "../../../domain/member-team-context.js";
 import {
+  selectorFromMemberRouteKey,
+  selectorToRouteKey,
   stripSelectorTopLevel,
   type TeamMemberSelector,
 } from "../../../domain/team-run-member-identity.js";
@@ -25,6 +27,14 @@ const unsupportedSubteamApproval = (memberName: string): AgentOperationResult =>
   accepted: false,
   code: "TARGET_MEMBER_NOT_AGENT",
   message: `Team member '${memberName}' is a subteam; approve a nested agent by memberPath or memberRouteKey.`,
+});
+
+const buildTargetMemberRunInactiveResult = (
+  targetMemberRouteKey: string,
+): AgentOperationResult => ({
+  accepted: false,
+  code: "RUN_NOT_FOUND",
+  message: `Team member route key '${targetMemberRouteKey}' is not active.`,
 });
 
 export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
@@ -86,8 +96,33 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
     return childRun.approveToolInvocation(childSelector, invocationId, approved, reason ?? null);
   }
 
-  async interrupt(): Promise<AgentOperationResult> {
-    return this.childRun ? this.childRun.interrupt() : { accepted: true };
+  async interrupt(
+    target: TeamMemberSelector | null,
+    targetMemberRunId: string | null = null,
+  ): Promise<AgentOperationResult> {
+    if (!this.childRun?.isActive()) {
+      const targetRouteKey = target ? selectorToRouteKey(target) : this.context.memberRouteKey;
+      return buildTargetMemberRunInactiveResult(targetRouteKey);
+    }
+
+    const childSelector = target ? stripSelectorTopLevel(target) : null;
+    if (childSelector) {
+      return this.childRun.interruptMember(
+        selectorToRouteKey(childSelector),
+        targetMemberRunId,
+      );
+    }
+
+    const defaultChildRouteKey = this.resolveDefaultChildRouteKey();
+    if (!defaultChildRouteKey) {
+      return {
+        accepted: false,
+        code: "TARGET_MEMBER_REQUIRED",
+        message: "target member selector is required.",
+      };
+    }
+
+    return this.childRun.interruptMember(defaultChildRouteKey, null);
   }
 
   async terminate(): Promise<AgentOperationResult> {
@@ -160,6 +195,29 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
           memberRouteKey: memberContext.memberRouteKey,
         }),
       }));
+  }
+
+  private resolveDefaultChildRouteKey(): string | null {
+    const configuredRouteKey = this.options.config.coordinatorMemberRouteKey?.trim();
+    if (configuredRouteKey) {
+      return selectorToRouteKey(selectorFromMemberRouteKey(configuredRouteKey));
+    }
+    const runtimeContext = this.childRun?.getRuntimeContext();
+    const coordinatorRouteKey =
+      typeof runtimeContext?.coordinatorMemberRouteKey === "string" &&
+      runtimeContext.coordinatorMemberRouteKey.trim().length > 0
+        ? runtimeContext.coordinatorMemberRouteKey.trim()
+        : null;
+    if (coordinatorRouteKey) {
+      return selectorToRouteKey(selectorFromMemberRouteKey(coordinatorRouteKey));
+    }
+    const memberContexts = Array.isArray((runtimeContext as MixedTeamRunContext | null)?.memberContexts)
+      ? (runtimeContext as MixedTeamRunContext).memberContexts
+      : [];
+    if (memberContexts.length === 1) {
+      return selectorToRouteKey(selectorFromMemberRouteKey(memberContexts[0].memberRouteKey));
+    }
+    return null;
   }
 
   private bindEvents(childRun: TeamRun): void {

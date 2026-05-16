@@ -18,7 +18,10 @@ export interface MixedTeamMemberHandle {
     approved: boolean,
     reason?: string | null,
   ): Promise<AgentOperationResult>;
-  interrupt(): Promise<AgentOperationResult>;
+  interrupt(
+    target: TeamMemberSelector | null,
+    targetMemberRunId?: string | null,
+  ): Promise<AgentOperationResult>;
   terminate(): Promise<AgentOperationResult>;
   dispose(): void;
 }

@@ -18,13 +18,13 @@ describe("AgentTeamStreamHandler", () => {
     getMemberStatusSnapshots: vi.fn().mockReturnValue([{
       status: "running",
       can_interrupt: true,
-      agent_id: "member-42",
+      target_member_run_id: "member-42",
       agent_name: "worker-a",
     }]),
     subscribeToEvents: vi.fn().mockReturnValue(() => {}),
     postMessage: vi.fn().mockResolvedValue({ accepted: true }),
     approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
-    interrupt: vi.fn().mockResolvedValue({ accepted: true }),
+    interruptMember: vi.fn().mockResolvedValue({ accepted: true }),
     context: {
       runtimeContext: {
         memberContexts: [
@@ -280,7 +280,7 @@ describe("AgentTeamStreamHandler", () => {
       payload: {
         status: "running",
         can_interrupt: true,
-        agent_id: "member-42",
+        target_member_run_id: "member-42",
         agent_name: "worker-a",
       },
     });
@@ -531,11 +531,133 @@ describe("AgentTeamStreamHandler", () => {
       sessionId as string,
       JSON.stringify({
         type: ClientMessageType.INTERRUPT_GENERATION,
+        payload: {
+          target_member_route_key: "worker-a",
+          target_member_run_id: "member-42",
+        },
       }),
     );
 
     expect(teamRunService.resolveTeamRun).not.toHaveBeenCalled();
-    expect(teamRun.interrupt).not.toHaveBeenCalled();
+    expect(teamRun.interruptMember).not.toHaveBeenCalled();
+  });
+
+  it("routes interrupt-generation to the explicit member route key with run-id as guard", async () => {
+    const teamRun = createTeamRun();
+    const teamRunService = createTeamRunService(teamRun);
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      teamRunService as any,
+    );
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    const sessionId = await handler.connect(connection, "team-1");
+
+    await handler.handleMessage(
+      sessionId as string,
+      JSON.stringify({
+        type: ClientMessageType.INTERRUPT_GENERATION,
+        payload: {
+          target_member_route_key: "worker-a",
+          target_member_run_id: "member-42",
+        },
+      }),
+    );
+
+    expect(teamRun.interruptMember).toHaveBeenCalledWith("worker-a", "member-42");
+  });
+
+  it("routes interrupt-generation with structured camelCase member path selectors", async () => {
+    const teamRun = createTeamRun();
+    const teamRunService = createTeamRunService(teamRun);
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      teamRunService as any,
+    );
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    const sessionId = await handler.connect(connection, "team-1");
+
+    await handler.handleMessage(
+      sessionId as string,
+      JSON.stringify({
+        type: ClientMessageType.INTERRUPT_GENERATION,
+        payload: {
+          targetMemberPath: ["BuildSquad", "review_lead"],
+          targetMemberRunId: "child-member-1",
+        },
+      }),
+    );
+
+    expect(teamRun.interruptMember).toHaveBeenCalledWith("BuildSquad/review_lead", "child-member-1");
+  });
+
+  it("rejects interrupt-generation without a target instead of falling back to team-wide interrupt", async () => {
+    const teamRun = createTeamRun();
+    const teamRunService = createTeamRunService(teamRun);
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      teamRunService as any,
+    );
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    const sessionId = await handler.connect(connection, "team-1");
+
+    await handler.handleMessage(
+      sessionId as string,
+      JSON.stringify({
+        type: ClientMessageType.INTERRUPT_GENERATION,
+        payload: {},
+      }),
+    );
+
+    expect(teamRun.interruptMember).not.toHaveBeenCalled();
+    expect(getSentErrors(connection).at(-1)).toMatchObject({
+      payload: {
+        code: "INVALID_TARGET",
+      },
+    });
+  });
+
+  it("rejects scalar interrupt target aliases with invalid-target errors", async () => {
+    const teamRun = createTeamRun();
+    const teamRunService = createTeamRunService(teamRun);
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      teamRunService as any,
+    );
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    const sessionId = await handler.connect(connection, "team-1");
+
+    await handler.handleMessage(
+      sessionId as string,
+      JSON.stringify({
+        type: ClientMessageType.INTERRUPT_GENERATION,
+        payload: {
+          target_member_name: "worker-a",
+        },
+      }),
+    );
+
+    expect(teamRun.interruptMember).not.toHaveBeenCalled();
+    expect(getSentErrors(connection).at(-1)).toMatchObject({
+      payload: {
+        code: "INVALID_TARGET",
+      },
+    });
   });
 
   it("routes approval commands with explicit member path selectors", async () => {

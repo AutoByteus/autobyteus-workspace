@@ -178,11 +178,23 @@ export const useActiveContextStore = defineStore('activeContext', () => {
     }
 
     if (selectionStore.selectedType === 'team') {
-      const activeTeamRunId = agentTeamContextsStore.activeTeamContext?.teamRunId;
-      if (!activeTeamRunId) {
+      const activeTeam = agentTeamContextsStore.activeTeamContext;
+      if (!activeTeam) {
         throw new Error('Cannot interrupt generation: No active team context.');
       }
-      return agentTeamRunStore.interruptGeneration(activeTeamRunId);
+      const targetMemberRouteKey = activeTeam.focusedMemberRouteKey?.trim() ?? '';
+      if (!targetMemberRouteKey || !activeTeam.leafAgentContextsByRouteKey.has(targetMemberRouteKey)) {
+        throw new Error('Cannot interrupt generation: No focused team member target.');
+      }
+      const focusedMember = activeTeam.leafAgentContextsByRouteKey.get(targetMemberRouteKey);
+      if (!focusedMember || focusedMember !== context) {
+        throw new Error('Cannot interrupt generation: Focused team member target is stale.');
+      }
+      return agentTeamRunStore.interruptFocusedMemberGeneration({
+        teamRunId: activeTeam.teamRunId,
+        targetMemberRouteKey,
+        targetMemberRunId: context.state.runId,
+      });
     }
 
     throw new Error('Cannot interrupt generation: Unknown selection type.');

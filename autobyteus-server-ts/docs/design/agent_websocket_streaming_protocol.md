@@ -161,10 +161,9 @@ WebSocket edge. Preferred nested target fields are:
 - `target_member_route_key` / `targetMemberRouteKey`: normalized route key, for
   example `research/writer`
 
-Legacy `target_member_name` / `target_agent_name` / camelCase equivalents are
-accepted only as bare member-name selectors. They are suitable for top-level or
-otherwise unambiguous members and must not be used to address duplicate nested
-leaf names.
+Scalar name/id aliases such as `target_member_name`, `target_agent_name`,
+`agent_id`, and camelCase equivalents are invalid command targets. Team command
+callers must send path or route-key selectors.
 
 Control commands remain active-only:
 
@@ -183,12 +182,22 @@ event:
 - `source_route_key` / `sourceRouteKey`, `member_route_key` /
   `memberRouteKey`, or `target_member_route_key` / `targetMemberRouteKey`
 
-Name fields (`agent_name`, `member_name`, `target_member_name`,
-`target_agent_name`, and camelCase equivalents) remain fallback edge aliases.
-If only `agent_id` is present, the handler maps that active runtime member id
-back to the recorded member path before invoking the domain approval command.
+Name/id fields (`agent_name`, `member_name`, `target_member_name`,
+`target_agent_name`, `agent_id`, and camelCase equivalents) are display or
+legacy metadata only and are rejected as command target identity.
 An approval request aimed at a subteam member rather than a leaf agent is
 rejected by the runtime.
+
+Team interrupt uses a stricter command shape than single-agent interrupt. A
+client sending `INTERRUPT_GENERATION` to `/ws/agent-team/:teamRunId` must include
+`payload.target_member_path` / `targetMemberPath` or
+`payload.target_member_route_key` / `targetMemberRouteKey`. It may also include
+`payload.target_member_run_id` / `targetMemberRunId`, but that value is only a
+guard for the expected member run id; it is never the authoritative selector.
+The server rejects missing target selectors and route-key/run-id mismatches
+without invoking a member runtime and without falling back to aggregate team
+interruption. The single-agent `/ws/agent/:runId` command remains a no-payload
+`INTERRUPT_GENERATION`.
 
 Approval commands are active-turn control commands, not queued runtime input.
 For native AutoByteus single-agent runs, `APPROVE_TOOL` / `DENY_TOOL` delegate
@@ -216,10 +225,11 @@ contract, that idle projection is an `AGENT_STATUS` payload such as
 `{ status: "idle", can_interrupt: false }`.
 
 Native AutoByteus runtimes follow the same interrupt-vs-stop split:
-`INTERRUPT_GENERATION` delegates to the active run/team `interrupt(...)` path,
-while terminal stop/termination remains the shutdown path. Stale or inactive
-control commands must not restore a stopped run and must not fall back to
-shutdown cleanup.
+single-agent `INTERRUPT_GENERATION` delegates to the active run
+`interrupt(...)` path, while team `INTERRUPT_GENERATION` delegates through the
+active team member `interruptMember(...)` route described above. Terminal
+stop/termination remains the shutdown path. Stale or inactive control commands
+must not restore a stopped run and must not fall back to shutdown cleanup.
 
 Explicit GraphQL termination of an active Claude Agent SDK run follows the same
 provider-settlement invariant before final session termination. The session must

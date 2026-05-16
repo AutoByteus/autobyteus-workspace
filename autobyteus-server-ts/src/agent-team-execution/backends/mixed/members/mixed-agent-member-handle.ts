@@ -119,7 +119,18 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
     return run.approveToolInvocation(invocationId, approved, reason ?? null);
   }
 
-  async interrupt(): Promise<AgentOperationResult> {
+  async interrupt(
+    _target: TeamMemberSelector | null,
+    targetMemberRunId: string | null = null,
+  ): Promise<AgentOperationResult> {
+    const normalizedTargetMemberRunId = targetMemberRunId?.trim();
+    if (normalizedTargetMemberRunId && normalizedTargetMemberRunId !== this.context.memberRunId) {
+      return {
+        accepted: false,
+        code: "TARGET_MEMBER_RUN_MISMATCH",
+        message: `Team member route key '${this.context.memberRouteKey}' does not match member run '${normalizedTargetMemberRunId}'.`,
+      };
+    }
     return this.agentRun ? this.agentRun.interrupt() : { accepted: true };
   }
 

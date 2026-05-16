@@ -70,6 +70,12 @@ interface TerminateAgentTeamRunMutationPayload {
   } | null;
 }
 
+export interface FocusedTeamMemberInterruptTarget {
+  teamRunId: string;
+  targetMemberRouteKey: string;
+  targetMemberRunId?: string | null;
+}
+
 export const useAgentTeamRunStore = defineStore('agentTeamRun', {
   state: () => ({
     isLaunching: false,
@@ -437,23 +443,29 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
 
     },
 
-    interruptGeneration(teamRunId?: string): boolean {
-      const teamContextsStore = useAgentTeamContextsStore();
-      const activeTeam = teamContextsStore.activeTeamContext;
-      const resolvedTeamRunId = (teamRunId && teamRunId.trim()) || activeTeam?.teamRunId;
+    interruptFocusedMemberGeneration(target: FocusedTeamMemberInterruptTarget): boolean {
+      const teamRunId = target.teamRunId.trim();
+      const targetMemberRouteKey = target.targetMemberRouteKey.trim();
 
-      if (!resolvedTeamRunId) {
-        console.warn('Cannot interrupt generation: no active team ID.');
+      if (!teamRunId) {
+        console.warn('Cannot interrupt generation: team run ID is required.');
+        return false;
+      }
+      if (!targetMemberRouteKey) {
+        console.warn('Cannot interrupt generation: target member route key is required.');
         return false;
       }
 
-      const service = teamStreamingServices.get(resolvedTeamRunId);
+      const service = teamStreamingServices.get(teamRunId);
       if (!service) {
-        console.warn(`Cannot interrupt generation: no streaming service for team '${resolvedTeamRunId}'.`);
+        console.warn(`Cannot interrupt generation: no streaming service for team '${teamRunId}'.`);
         return false;
       }
 
-      service.interruptGeneration();
+      service.interruptGeneration({
+        targetMemberRouteKey,
+        targetMemberRunId: target.targetMemberRunId,
+      });
       return true;
     },
   },

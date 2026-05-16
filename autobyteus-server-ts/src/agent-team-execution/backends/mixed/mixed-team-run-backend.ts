@@ -115,11 +115,25 @@ export class MixedTeamRunBackend implements TeamRunBackend {
     }
   }
 
-  async interrupt(): Promise<AgentOperationResult> {
+  async interruptMember(
+    targetMemberRouteKey: string,
+    targetMemberRunId: string | null = null,
+  ): Promise<AgentOperationResult> {
     if (!this.isActive()) {
       return buildRunNotFoundResult(this.runId);
     }
-    return this.teamManager.interrupt();
+    if (typeof targetMemberRouteKey !== "string" || targetMemberRouteKey.trim().length === 0) {
+      return buildTargetMemberRequiredResult();
+    }
+
+    try {
+      return await this.teamManager.interruptMember(
+        targetMemberRouteKey.trim(),
+        targetMemberRunId,
+      );
+    } catch (error) {
+      return buildCommandFailure("interrupt team member", error);
+    }
   }
 
   async terminate(): Promise<AgentOperationResult> {

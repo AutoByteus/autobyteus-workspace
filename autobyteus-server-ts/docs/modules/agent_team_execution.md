@@ -35,14 +35,13 @@ Manages running team runs, selecting the authoritative team backend, restoring p
 - `TeamMemberSelector` is the domain/backend command identity:
   - `{ kind: "path", memberPath: [...] }`
   - `{ kind: "route_key", memberRouteKey: "subteam/leaf" }`
-  - `{ kind: "top_level_name", memberName: "member" }`
 - `memberPath` / `memberRouteKey` are canonical for nested members. Raw
   transport strings such as `target_member_name`, `target_agent_name`, and
-  `agent_name` are edge inputs only and are normalized to selectors before
-  entering `TeamRun`, `TeamRunBackend`, or a concrete manager.
-- Bare-name selectors are valid for top-level members and unambiguous
-  non-nested boundaries. If duplicate leaf names exist under different
-  subteams, command callers must use `memberPath` or `memberRouteKey`.
+  `agent_name` are not command selectors and are rejected at public command
+  boundaries.
+- Top-level executable handles may be derived only from an already accepted
+  `memberPath[0]` or first route-key segment. Bare names are never an
+  authoritative public command selector.
 - Posting a message to a top-level subteam member creates/restores the child
   `TeamRun` and posts to that child team's default/coordinator target. The
   parent runtime does not choose an arbitrary flattened child leaf.
@@ -137,6 +136,7 @@ Manages running team runs, selecting the authoritative team backend, restoring p
 - `TeamRunService.resolveTeamRun(teamRunId)` is the canonical restore-aware lookup boundary for callers that are allowed to resume a stopped persisted team run. It returns the active team runtime when present and otherwise attempts persisted restore before returning `null`.
 - Team WebSocket connection and `SEND_MESSAGE` dispatch use `resolveTeamRun(...)`, so a follow-up message to a stopped-but-persisted team can restore the team runtime, rebind stream subscription to the restored `TeamRun`, and post to the requested member route.
 - Active-only team controls still use the active lookup path. `INTERRUPT_GENERATION` and tool approval/denial commands must not restore a stopped team run as a side effect.
+- Team generation interrupt is intentionally member-scoped. `TeamRun.interruptMember(targetMemberRouteKey, targetMemberRunId?)` is the domain boundary; backend managers resolve the route key as the authoritative target and use the optional run id only as a stale-target guard. A missing target or route-key/run-id mismatch rejects without retargeting or falling back to a team-wide interrupt.
 - Persisted member metadata still carries the member runtime kind and platform-native run/thread/session id needed for restore.
 - `applicationExecutionContext` stays member-local and flows through create/restore for both single-runtime and mixed team members.
 - Accepted restored follow-up messages call

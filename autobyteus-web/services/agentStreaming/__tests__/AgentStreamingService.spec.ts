@@ -136,6 +136,16 @@ describe('AgentStreamingService', () => {
         expect(handleBrowserToolExecutionSucceededMock).toHaveBeenCalledWith(payload);
     });
 
+    it('serializes single-agent interrupt without a team target payload', () => {
+        service.interruptGeneration();
+
+        const clientMock = (service as any).wsClient;
+        expect(clientMock.send).toHaveBeenCalledTimes(1);
+        expect(JSON.parse(clientMock.send.mock.calls[0][0])).toEqual({
+            type: 'INTERRUPT_GENERATION',
+        });
+    });
+
     it('routes compaction lifecycle messages through the compaction status handler', () => {
         (service as any).dispatchMessage(
             {

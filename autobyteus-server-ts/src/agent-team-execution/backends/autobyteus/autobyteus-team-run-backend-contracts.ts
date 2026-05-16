@@ -73,6 +73,30 @@ export const buildCommandFailure = (
   message: `Failed to ${operation}: ${String(error)}`,
 });
 
+
+export const buildTargetMemberRequiredResult = (): AgentOperationResult => ({
+  accepted: false,
+  code: "TARGET_MEMBER_REQUIRED",
+  message: "target member selector is required.",
+});
+
+export const buildTargetMemberNotFoundResult = (
+  targetMemberRouteKey: string,
+): AgentOperationResult => ({
+  accepted: false,
+  code: "TARGET_MEMBER_NOT_FOUND",
+  message: `Team member route key '${targetMemberRouteKey}' was not found.`,
+});
+
+export const buildTargetMemberRunMismatchResult = (
+  targetMemberRouteKey: string,
+  targetMemberRunId: string,
+): AgentOperationResult => ({
+  accepted: false,
+  code: "TARGET_MEMBER_RUN_MISMATCH",
+  message: `Team member route key '${targetMemberRouteKey}' does not match member run '${targetMemberRunId}'.`,
+});
+
 export const buildTargetResolutionFailure = (
   selector: TeamMemberSelector,
   message: string,

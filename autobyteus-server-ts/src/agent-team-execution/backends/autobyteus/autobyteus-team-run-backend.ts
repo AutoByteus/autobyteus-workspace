@@ -23,6 +23,9 @@ import {
   autoByteusTeamRunBackendLogger as logger,
   buildCommandFailure,
   buildRunNotFoundResult,
+  buildTargetMemberNotFoundResult,
+  buildTargetMemberRequiredResult,
+  buildTargetMemberRunMismatchResult,
   buildTargetResolutionFailure,
   type AutoByteusTeamLike,
   type AutoByteusTeamRunBackendOptions,
@@ -231,6 +234,56 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
       };
     } catch (error) {
       return buildCommandFailure("interrupt team run", error);
+    }
+  }
+
+  async interruptMember(
+    targetMemberRouteKey: string,
+    targetMemberRunId: string | null = null,
+  ): Promise<AgentOperationResult> {
+    if (!this.isActive()) {
+      return buildRunNotFoundResult(this.runId);
+    }
+    if (!this.team.interrupt) {
+      return {
+        accepted: false,
+        code: "UNSUPPORTED_RUNTIME_COMMAND",
+        message: "Native Autobyteus team does not expose interrupt().",
+      };
+    }
+    const normalizedTargetMemberRouteKey = targetMemberRouteKey.trim();
+    if (!normalizedTargetMemberRouteKey) {
+      return buildTargetMemberRequiredResult();
+    }
+    const targetMemberContext = this.options.runtimeContext?.memberContexts.find(
+      (memberContext) => memberContext.memberRouteKey === normalizedTargetMemberRouteKey,
+    ) ?? null;
+    if (!targetMemberContext) {
+      return buildTargetMemberNotFoundResult(normalizedTargetMemberRouteKey);
+    }
+    const normalizedTargetMemberRunId = targetMemberRunId?.trim();
+    if (
+      normalizedTargetMemberRunId &&
+      normalizedTargetMemberRunId !== targetMemberContext.memberRunId
+    ) {
+      return buildTargetMemberRunMismatchResult(
+        normalizedTargetMemberRouteKey,
+        normalizedTargetMemberRunId,
+      );
+    }
+
+    try {
+      const result = await this.team.interrupt({
+        reason: "user_interrupt",
+        targetMemberName: targetMemberContext.memberName,
+      });
+      return {
+        accepted: result.accepted,
+        code: result.accepted ? result.status : (result.status ?? "INTERRUPT_REJECTED"),
+        message: result.message,
+      };
+    } catch (error) {
+      return buildCommandFailure("interrupt team member", error);
     }
   }
 

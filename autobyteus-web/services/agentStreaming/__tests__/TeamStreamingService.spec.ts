@@ -157,6 +157,53 @@ describe('TeamStreamingService', () => {
     });
   });
 
+  it('serializes focused member interrupt with route-key target and optional run guard', () => {
+    const wsClient = {
+      state: 'disconnected',
+      connect: vi.fn(),
+      disconnect: vi.fn(),
+      send: vi.fn(),
+      on: vi.fn(),
+      off: vi.fn(),
+    } as any;
+
+    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+    service.interruptGeneration({
+      targetMemberRouteKey: 'code_reviewer',
+      targetMemberRunId: 'team-1::code_reviewer',
+    });
+
+    expect(wsClient.send).toHaveBeenCalledTimes(1);
+    const outbound = JSON.parse(wsClient.send.mock.calls[0][0]);
+    expect(outbound).toEqual({
+      type: 'INTERRUPT_GENERATION',
+      payload: {
+        target_member_route_key: 'code_reviewer',
+        target_member_run_id: 'team-1::code_reviewer',
+      },
+    });
+  });
+
+  it('requires a focused member route key for team interrupt serialization', () => {
+    const wsClient = {
+      state: 'disconnected',
+      connect: vi.fn(),
+      disconnect: vi.fn(),
+      send: vi.fn(),
+      on: vi.fn(),
+      off: vi.fn(),
+    } as any;
+
+    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+
+    expect(() =>
+      service.interruptGeneration({
+        targetMemberRouteKey: '   ',
+      }),
+    ).toThrow('target member route key is required');
+    expect(wsClient.send).not.toHaveBeenCalled();
+  });
+
   it('marks team subscription state on connect and disconnect callbacks', () => {
     const callbacks = new Map<string, (payload?: any) => void>();
     const wsClient = {

@@ -12,6 +12,12 @@ export const TOOL_APPROVAL_INVALID_TARGET_MESSAGE =
 export const TOOL_APPROVAL_MISSING_TARGET_MESSAGE =
   "Tool approval target missing; include member/source/target path or route selector fields.";
 
+export const INTERRUPT_GENERATION_INVALID_TARGET_MESSAGE =
+  "INTERRUPT_GENERATION target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.";
+
+export const INTERRUPT_GENERATION_MISSING_TARGET_MESSAGE =
+  "INTERRUPT_GENERATION target missing; include target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.";
+
 const COMMAND_SCALAR_SELECTOR_KEYS = [
   "agent_id",
   "agent_name",
@@ -64,3 +70,22 @@ export const resolveToolApprovalTargetSelector = (
     "targetMemberRouteKey",
   ],
 });
+
+export const resolveInterruptGenerationTargetSelector = (
+  payload: Record<string, unknown>,
+): TeamMemberSelector | null => resolveTeamMemberSelectorFromPayload(payload, {
+  pathKeys: ["target_member_path", "targetMemberPath"],
+  routeKeyKeys: ["target_member_route_key", "targetMemberRouteKey"],
+});
+
+export const resolveInterruptGenerationTargetRunId = (
+  payload: Record<string, unknown>,
+): string | null => {
+  for (const key of ["target_member_run_id", "targetMemberRunId"]) {
+    const value = payload[key];
+    if (typeof value === "string" && value.trim().length > 0) {
+      return value.trim();
+    }
+  }
+  return null;
+};
